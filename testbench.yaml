@@ -1,0 +1,17 @@
+laravel: '@testbench'
+
+providers:
+  - Bambamboole\Lattice\LatticeServiceProvider
+  - Inertia\ServiceProvider
+  - Workbench\App\Providers\WorkbenchServiceProvider
+
+workbench:
+  start: '/'
+  welcome: false
+  discovers:
+    web: true
+    api: false
+    commands: false
+    components: false
+    views: true
+  build: []

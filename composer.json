@@ -1,0 +1,89 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "bambamboole/lattice",
+    "description": "Server-driven React components for Laravel and Inertia.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "inertia",
+        "react",
+        "server-driven-ui"
+    ],
+    "require": {
+        "php": "^8.3",
+        "inertiajs/inertia-laravel": "^3.0",
+        "illuminate/http": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/support": "^11.0 || ^12.0 || ^13.0",
+        "spatie/laravel-package-tools": "^1.16 || ^2.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/boost": "^2.4",
+        "laravel/pint": "^1.16",
+        "orchestra/testbench": "^9.0 || ^10.0 || ^11.0",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-browser": "^4.3",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "rector/rector": "^2.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bambamboole\\Lattice\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bambamboole\\Lattice\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "@analyse",
+            "./vendor/bin/pest",
+            "npm run typecheck",
+            "npm run test"
+        ],
+        "test:browser": "./vendor/bin/pest tests/Browser",
+        "test:lint": "./vendor/bin/pint --test",
+        "lint": "./vendor/bin/pint",
+        "analyse": "./vendor/bin/phpstan analyse",
+        "rector": "./vendor/bin/rector process",
+        "rector:test": "./vendor/bin/rector process --dry-run",
+        "fix": [
+            "npm run lint:fix",
+            "npm run format",
+            "@rector",
+            "@lint"
+        ],
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve --ansi"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bambamboole\\Lattice\\LatticeServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

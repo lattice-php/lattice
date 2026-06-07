@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "noImplicitAny": true,
+    "paths": {
+      "@/*": ["./resources/js/*"]
+    },
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ESNext"
+  },
+  "include": [
+    "resources/js/**/*.d.ts",
+    "resources/js/**/*.ts",
+    "resources/js/**/*.tsx",
+    "workbench/resources/js/**/*.ts",
+    "workbench/resources/js/**/*.tsx",
+    "vite.config.ts"
+  ]
+}

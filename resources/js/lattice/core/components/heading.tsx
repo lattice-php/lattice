@@ -1,0 +1,40 @@
+import { getNumberProp, getStringProp } from "@/lattice/core/props";
+import type { LatticeRendererComponent } from "@/lattice/core/types";
+import { cn } from "@/lib/utils";
+
+declare module "@/lattice/core/types" {
+  interface LatticeComponentProps {
+    heading: {
+      level?: number;
+      text?: string;
+    };
+  }
+}
+
+const HeadingComponent: LatticeRendererComponent<"heading"> = ({ node }) => {
+  const text = getStringProp(node.props, "text");
+  const level = Math.min(Math.max(getNumberProp(node.props, "level", 1), 1), 6);
+  const className = cn(
+    "max-w-3xl font-semibold tracking-normal text-balance text-foreground",
+    level === 1 && "text-4xl leading-tight sm:text-5xl",
+    level === 2 && "text-2xl",
+    level > 2 && "text-lg",
+  );
+
+  switch (level) {
+    case 1:
+      return <h1 className={className}>{text}</h1>;
+    case 2:
+      return <h2 className={className}>{text}</h2>;
+    case 3:
+      return <h3 className={className}>{text}</h3>;
+    case 4:
+      return <h4 className={className}>{text}</h4>;
+    case 5:
+      return <h5 className={className}>{text}</h5>;
+    default:
+      return <h6 className={className}>{text}</h6>;
+  }
+};
+
+export default HeadingComponent;
