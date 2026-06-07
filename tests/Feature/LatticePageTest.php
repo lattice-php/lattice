@@ -13,11 +13,16 @@ use Bambamboole\Lattice\Components\Text;
 use Bambamboole\Lattice\Enums\Align;
 use Bambamboole\Lattice\Enums\Gap;
 use Bambamboole\Lattice\Enums\Width;
+use Bambamboole\Lattice\Forms\FormDefinition;
+use Bambamboole\Lattice\Lattice;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Testing\AssertableInertia;
+use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Pages\WorkbenchHomePage;
 
 use function Pest\Laravel\get;
+use function Pest\Laravel\patch;
 use function Pest\Laravel\withoutVite;
 
 test('lattice component factories stay open for extension', function () {
@@ -68,6 +73,41 @@ test('forms can disable their default submit button', function () {
                 'submitButton' => false,
             ],
         ]);
+});
+
+test('registered forms serialize their configured endpoint and isolated error bag', function () {
+    config(['lattice.forms.endpoint' => 'custom/forms/{form}']);
+
+    Lattice::forms([WorkbenchProfileForm::class]);
+
+    expect(Form::use(WorkbenchProfileForm::class)->toArray())
+        ->toMatchArray([
+            'type' => 'form',
+            'id' => 'settings.profile',
+            'props' => [
+                'action' => '/custom/forms/settings.profile',
+                'errorBag' => 'settings_profile',
+                'method' => 'patch',
+                'submitButton' => false,
+            ],
+            'children' => [
+                [
+                    'type' => 'text',
+                    'props' => [
+                        'text' => 'Profile details',
+                    ],
+                ],
+            ],
+        ]);
+});
+
+test('registered forms can be submitted through the package endpoint', function () {
+    Lattice::forms([WorkbenchProfileForm::class]);
+
+    patch('/lattice/forms/settings.profile', ['name' => 'Taylor'])
+        ->assertRedirect('/submitted');
+
+    expect(session('handled-form'))->toBe('Taylor');
 });
 
 test('links and horizontal stacks serialize as separate composable primitives', function () {
@@ -192,3 +232,24 @@ test('workbench pages serialize package component trees for inertia', function (
             ->where('lattice.components.0.children.1.children.0.type', 'card')
             ->where('lattice.components.0.children.1.children.0.props.title', 'Components'));
 });
+
+#[Bambamboole\Lattice\Attributes\Form('settings.profile')]
+class WorkbenchProfileForm extends FormDefinition
+{
+    public function definition(Form $form): Form
+    {
+        return $form
+            ->method('patch')
+            ->schema([
+                Text::make('Profile details'),
+            ])
+            ->withoutSubmitButton();
+    }
+
+    public function handle(Request $request): Response
+    {
+        $request->session()->put('handled-form', $request->string('name')->toString());
+
+        return redirect('/submitted');
+    }
+}

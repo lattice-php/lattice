@@ -2,11 +2,27 @@
 
 namespace Bambamboole\Lattice\Components;
 
+use Bambamboole\Lattice\Forms\FormDefinition;
+use Bambamboole\Lattice\Forms\FormRegistry;
+
 class Form extends InteractiveComponent
 {
     public static function make(string $id): static
     {
         return (new static)->id($id);
+    }
+
+    /**
+     * @param  class-string<FormDefinition>  $form
+     */
+    public static function use(string $form): static
+    {
+        $registered = app(FormRegistry::class)->component($form);
+
+        return (new static)
+            ->id($registered->id)
+            ->props($registered->props)
+            ->children($registered->children);
     }
 
     public function action(string $action): static

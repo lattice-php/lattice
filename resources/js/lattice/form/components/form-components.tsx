@@ -15,6 +15,7 @@ declare module "@/lattice/core/types" {
   interface LatticeComponentProps {
     form: {
       action?: string;
+      errorBag?: string;
       method?: LatticeFormMethod;
       resetOnError?: boolean | string[];
       resetOnSuccess?: boolean | string[];
@@ -65,6 +66,7 @@ declare module "@/lattice/core/types" {
 export const FormComponent: LatticeRendererComponent<"form"> = ({ children, node }) => {
   const props = node.props ?? {};
   const action = props.action ?? "#";
+  const errorBag = props.errorBag;
   const method = props.method ?? "post";
   const resetOnError = props.resetOnError ?? false;
   const resetOnSuccess = props.resetOnSuccess ?? [];
@@ -75,6 +77,7 @@ export const FormComponent: LatticeRendererComponent<"form"> = ({ children, node
     <InertiaForm
       action={action}
       data-lattice-component={node.id}
+      errorBag={errorBag}
       method={method}
       resetOnError={resetOnError}
       resetOnSuccess={resetOnSuccess}
