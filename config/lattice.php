@@ -14,4 +14,10 @@ return [
         'middleware' => ['web'],
         'registered' => [],
     ],
+
+    'actions' => [
+        'endpoint' => 'lattice/actions/{action}',
+        'middleware' => ['web'],
+        'registered' => [],
+    ],
 ];

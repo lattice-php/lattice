@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { actionComponents } from "./action";
 import { authComponents } from "./auth";
 import { formComponents } from "./form";
 import { tableComponents } from "./table";
@@ -22,6 +23,7 @@ describe("lattice component registry", () => {
       fallback: expect.any(Function),
     });
 
+    expect(latticeRegistry.action?.mode).toBe("lazy");
     expect(latticeRegistry["auth.passkey-verify"]?.mode).toBe("lazy");
     expect(latticeRegistry["auth.two-factor-challenge-form"]?.mode).toBe("lazy");
     expect(latticeRegistry["form.checkbox"]?.mode).toBe("lazy");
@@ -32,7 +34,8 @@ describe("lattice component registry", () => {
     expect(latticeRegistry.table?.mode).toBe("lazy");
   });
 
-  it("keeps form and table components in separate registries", () => {
+  it("keeps action form and table components in separate registries", () => {
+    expect(actionComponents.name).toBe("lattice/action");
     expect(authComponents.name).toBe("lattice/auth");
     expect(formComponents.name).toBe("lattice/form");
     expect(tableComponents.name).toBe("lattice/table");

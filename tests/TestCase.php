@@ -18,7 +18,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function getEnvironmentSetUp($app): void
     {
-        $database = dirname(__DIR__).'/workbench/database/database.sqlite';
+        $database = getenv('LATTICE_TEST_DATABASE') ?: sys_get_temp_dir().'/lattice-package-tests/database-'.getmypid().'.sqlite';
 
         if (! is_dir(dirname($database))) {
             mkdir(dirname($database), 0755, true);
@@ -27,6 +27,10 @@ abstract class TestCase extends BaseTestCase
         if (! file_exists($database)) {
             touch($database);
         }
+
+        putenv("LATTICE_TEST_DATABASE={$database}");
+        $_ENV['LATTICE_TEST_DATABASE'] = $database;
+        $_SERVER['LATTICE_TEST_DATABASE'] = $database;
 
         $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
         $app['config']->set('database.default', 'sqlite');

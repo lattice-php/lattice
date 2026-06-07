@@ -27,13 +27,13 @@ it('lists workbench users in the table', function (): void {
         ->assertNoSmoke();
 });
 
-it('paginates workbench users in the table', function (): void {
+it('loads more workbench users in the infinite table', function (): void {
     seedWorkbenchUsers();
 
     visit('/')
-        ->click('Next')
+        ->click('Load more')
+        ->assertSee('Maya Chen')
         ->assertSee('Browser User 26')
-        ->assertDontSee('Maya Chen')
         ->assertNoSmoke();
 });
 

@@ -22,8 +22,18 @@ export type LatticeNode<TType extends string = string> = {
 
 export type LatticePagePayload = {
   components: LatticeNode[];
+  container: LatticePageContainer;
+  layout: LatticePageLayout;
   title: string | null;
 };
+
+export type LatticeKnownPageContainer = "centered" | "default";
+
+export type LatticePageContainer = LatticeKnownPageContainer | (string & {});
+
+export type LatticeKnownPageLayout = "app" | "auth" | "none" | "settings";
+
+export type LatticePageLayout = LatticeKnownPageLayout | (string & {});
 
 export type LatticeRendererComponentProps<TType extends string = string> = {
   children: ReactNode;

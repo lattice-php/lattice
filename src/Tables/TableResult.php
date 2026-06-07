@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Tables;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Collection;
 use JsonSerializable;
 
 final readonly class TableResult implements JsonSerializable
@@ -38,12 +40,63 @@ final readonly class TableResult implements JsonSerializable
                 ->values()
                 ->all(),
             [
+                'mode' => PaginationType::Table->value,
                 'currentPage' => $paginator->currentPage(),
                 'lastPage' => $paginator->lastPage(),
                 'perPage' => $paginator->perPage(),
                 'total' => $paginator->total(),
                 'from' => $paginator->firstItem(),
                 'to' => $paginator->lastItem(),
+                'hasMore' => $paginator->hasMorePages(),
+                'nextPage' => $paginator->hasMorePages() ? $paginator->currentPage() + 1 : null,
+            ],
+        );
+    }
+
+    /**
+     * @param  Paginator<int, mixed>  $paginator
+     */
+    public static function fromSimplePaginator(
+        Paginator $paginator,
+        PaginationType $type = PaginationType::Infinite,
+    ): self {
+        return new self(
+            collect($paginator->items())
+                ->map(fn (mixed $item): array => self::serializeRow($item))
+                ->values()
+                ->all(),
+            [
+                'mode' => $type->value,
+                'currentPage' => $paginator->currentPage(),
+                'perPage' => $paginator->perPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+                'hasMore' => $paginator->hasMorePages(),
+                'nextPage' => $paginator->hasMorePages() ? $paginator->currentPage() + 1 : null,
+            ],
+        );
+    }
+
+    /**
+     * @param  iterable<int, mixed>  $items
+     */
+    public static function fromItems(iterable $items, PaginationType $type = PaginationType::None): self
+    {
+        $rows = Collection::make($items)
+            ->map(fn (mixed $item): array => self::serializeRow($item))
+            ->values()
+            ->all();
+        $total = count($rows);
+
+        return new self(
+            $rows,
+            [
+                'mode' => $type->value,
+                'total' => $total,
+                'from' => $total > 0 ? 1 : 0,
+                'to' => $total,
+                'hasMore' => false,
+                'nextPage' => null,
             ],
         );
     }

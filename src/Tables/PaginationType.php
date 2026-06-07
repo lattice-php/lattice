@@ -1,0 +1,13 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Bambamboole\Lattice\Tables;
+
+enum PaginationType: string
+{
+    case None = 'none';
+    case Simple = 'simple';
+    case Table = 'table';
+    case Infinite = 'infinite';
+}

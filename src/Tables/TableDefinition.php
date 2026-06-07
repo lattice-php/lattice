@@ -18,5 +18,17 @@ abstract class TableDefinition
         return 25;
     }
 
+    public function pagination(): PaginationType|string
+    {
+        return PaginationType::Table;
+    }
+
+    public function paginationType(): PaginationType
+    {
+        $type = $this->pagination();
+
+        return $type instanceof PaginationType ? $type : PaginationType::from($type);
+    }
+
     abstract public function query(TableQuery $query): TableResult;
 }

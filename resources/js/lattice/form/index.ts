@@ -7,6 +7,7 @@ import { FormSkeletonComponent } from "./skeleton";
 
 type FormComponentName =
   | "CheckboxComponent"
+  | "ChoiceComponent"
   | "FormComponent"
   | "HiddenInputComponent"
   | "PasswordInputComponent"
@@ -33,6 +34,7 @@ export const formComponents = createLatticePlugin({
       fallback: FormSkeletonComponent,
     }),
     "form.checkbox": lazyComponent(loadFormComponent("CheckboxComponent")),
+    "form.choice": lazyComponent(loadFormComponent("ChoiceComponent")),
     "form.hidden-input": lazyComponent(loadFormComponent("HiddenInputComponent")),
     "form.password-input": lazyComponent(loadFormComponent("PasswordInputComponent")),
     "form.submit-button": lazyComponent(loadFormComponent("SubmitButtonComponent")),

@@ -169,4 +169,212 @@ describe("Lattice table component", () => {
       );
     });
   });
+
+  it("appends infinite table rows and resets them when sorting", async () => {
+    const fetch = vi
+      .fn<typeof globalThis.fetch>()
+      .mockResolvedValueOnce(
+        Response.json({
+          data: [{ id: 2, name: "Ada" }],
+          pagination: {
+            currentPage: 2,
+            hasMore: false,
+            mode: "infinite",
+            nextPage: null,
+            perPage: 1,
+          },
+          state: {
+            filters: {},
+            page: 2,
+            perPage: 1,
+            sorts: [],
+          },
+        }),
+      )
+      .mockResolvedValueOnce(
+        Response.json({
+          data: [{ id: 3, name: "Grace" }],
+          pagination: {
+            currentPage: 1,
+            hasMore: false,
+            mode: "infinite",
+            nextPage: null,
+            perPage: 1,
+          },
+          state: {
+            filters: {},
+            page: 1,
+            perPage: 1,
+            sorts: [{ key: "name", direction: "asc" }],
+          },
+        }),
+      );
+
+    vi.stubGlobal("fetch", fetch);
+
+    const node = {
+      id: "workbench.users",
+      props: {
+        columns: [
+          {
+            key: "name",
+            label: "Name",
+            sortable: true,
+          },
+        ],
+        data: [{ id: 1, name: "Taylor" }],
+        endpoint: "/lattice/tables/workbench.users",
+        pagination: {
+          currentPage: 1,
+          hasMore: true,
+          mode: "infinite",
+          nextPage: 2,
+          perPage: 1,
+        },
+        state: {
+          filters: {},
+          page: 1,
+          perPage: 1,
+          sorts: [],
+        },
+      },
+      type: "table",
+    } satisfies LatticeNode<"table">;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    fireEvent.click(screen.getByRole("button", { name: "Load more" }));
+
+    await screen.findByRole("cell", { name: "Ada" });
+
+    expect(screen.getByRole("cell", { name: "Taylor" })).toBeVisible();
+    expect(fetch).toHaveBeenNthCalledWith(1, "/lattice/tables/workbench.users?page=2&per_page=1", {
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Sort Name" }));
+
+    await screen.findByRole("cell", { name: "Grace" });
+
+    expect(screen.queryByRole("cell", { name: "Taylor" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("cell", { name: "Ada" })).not.toBeInTheDocument();
+    expect(fetch).toHaveBeenNthCalledWith(
+      2,
+      "/lattice/tables/workbench.users?sort=name&page=1&per_page=1",
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      },
+    );
+  });
+
+  it("renders small tables without pagination controls", () => {
+    const node = {
+      id: "workbench.small-users",
+      props: {
+        columns: [
+          {
+            key: "name",
+            label: "Name",
+          },
+        ],
+        data: [{ id: 1, name: "Taylor" }],
+        pagination: {
+          mode: "none",
+          total: 1,
+        },
+        state: {
+          filters: {},
+          page: 1,
+          perPage: 25,
+          sorts: [],
+        },
+      },
+      type: "table",
+    } satisfies LatticeNode<"table">;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    expect(screen.getByRole("cell", { name: "Taylor" })).toBeVisible();
+    expect(screen.queryByRole("button", { name: "Previous" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Next" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Load more" })).not.toBeInTheDocument();
+  });
+
+  it("renders numbered controls for table pagination", async () => {
+    const fetch = vi.fn<typeof globalThis.fetch>(async () =>
+      Response.json({
+        data: [{ id: 3, name: "Grace" }],
+        pagination: {
+          currentPage: 3,
+          hasMore: true,
+          lastPage: 4,
+          mode: "table",
+          nextPage: 4,
+          perPage: 1,
+          from: 3,
+          to: 3,
+          total: 4,
+        },
+        state: {
+          filters: {},
+          page: 3,
+          perPage: 1,
+          sorts: [],
+        },
+      }),
+    );
+
+    vi.stubGlobal("fetch", fetch);
+
+    const node = {
+      id: "workbench.users",
+      props: {
+        columns: [
+          {
+            key: "name",
+            label: "Name",
+          },
+        ],
+        data: [{ id: 2, name: "Ada" }],
+        endpoint: "/lattice/tables/workbench.users",
+        pagination: {
+          currentPage: 2,
+          hasMore: true,
+          lastPage: 4,
+          mode: "table",
+          nextPage: 3,
+          perPage: 1,
+          from: 2,
+          to: 2,
+          total: 4,
+        },
+        state: {
+          filters: {},
+          page: 2,
+          perPage: 1,
+          sorts: [],
+        },
+      },
+      type: "table",
+    } satisfies LatticeNode<"table">;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    expect(screen.getByRole("button", { name: "Page 2" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByText("Showing 2-2 of 4")).toBeVisible();
+
+    fireEvent.click(screen.getByRole("button", { name: "Page 3" }));
+
+    await screen.findByRole("cell", { name: "Grace" });
+
+    expect(fetch).toHaveBeenCalledWith("/lattice/tables/workbench.users?page=3&per_page=1", {
+      headers: {
+        Accept: "application/json",
+      },
+    });
+  });
 });

@@ -1,15 +1,22 @@
 import { Form as InertiaForm } from "@inertiajs/react";
+import { useEffect, useMemo, useState } from "react";
 import PasswordInput from "@/components/password-input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/lib/utils";
 import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@/lattice/core/props";
-import type { LatticeRendererComponent } from "@/lattice/core/types";
+import type { LatticeNodeProps, LatticeRendererComponent } from "@/lattice/core/types";
 import { LatticeFormProvider, useLatticeForm } from "./context";
 import { FormFieldFrame } from "./field";
 import type { LatticeFormLabelAction, LatticeFormMethod } from "./types";
+
+type ChoiceOption = {
+  label: string;
+  value: string;
+};
 
 declare module "@/lattice/core/types" {
   interface LatticeComponentProps {
@@ -28,6 +35,14 @@ declare module "@/lattice/core/types" {
       name?: string;
       required?: boolean;
       tabIndex?: number;
+    };
+    "form.choice": {
+      event?: string;
+      label?: string;
+      name?: string;
+      options?: ChoiceOption[];
+      tabIndex?: number;
+      value?: string;
     };
     "form.hidden-input": {
       name?: string;
@@ -61,6 +76,22 @@ declare module "@/lattice/core/types" {
       value?: string;
     };
   }
+}
+
+function getChoiceOptions(props: LatticeNodeProps | undefined): ChoiceOption[] {
+  const value = props?.options;
+
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter(
+    (option): option is ChoiceOption =>
+      typeof option === "object" &&
+      option !== null &&
+      typeof option.label === "string" &&
+      typeof option.value === "string",
+  );
 }
 
 export const FormComponent: LatticeRendererComponent<"form"> = ({ children, node }) => {
@@ -182,6 +213,73 @@ export const CheckboxComponent: LatticeRendererComponent<"form.checkbox"> = ({ n
       />
       <Label htmlFor={name}>{getStringProp(node.props, "label")}</Label>
     </div>
+  );
+};
+
+export const ChoiceComponent: LatticeRendererComponent<"form.choice"> = ({ node }) => {
+  const { errors } = useLatticeForm();
+  const name = getStringProp(node.props, "name");
+  const options = useMemo(() => getChoiceOptions(node.props), [node.props]);
+  const fallbackValue = options[0]?.value ?? "";
+  const value = getStringProp(node.props, "value", fallbackValue);
+  const event = getStringProp(node.props, "event");
+  const [selectedValue, setSelectedValue] = useState(value);
+
+  useEffect(() => {
+    setSelectedValue(value);
+  }, [value]);
+
+  function selectOption(nextValue: string): void {
+    setSelectedValue(nextValue);
+
+    if (event) {
+      window.dispatchEvent(
+        new CustomEvent(event, {
+          detail: {
+            name,
+            value: nextValue,
+          },
+        }),
+      );
+    }
+  }
+
+  if (options.length === 0) {
+    return null;
+  }
+
+  return (
+    <FormFieldFrame error={errors[name]} label={getStringProp(node.props, "label")} name={name}>
+      <input name={name} type="hidden" value={selectedValue} />
+      <div
+        aria-label={getStringProp(node.props, "label")}
+        className="inline-flex w-fit max-w-full gap-1 overflow-x-auto rounded-lg bg-muted p-1"
+        role="radiogroup"
+      >
+        {options.map((option) => {
+          const isSelected = selectedValue === option.value;
+
+          return (
+            <button
+              aria-checked={isSelected}
+              className={cn(
+                "whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                isSelected
+                  ? "bg-background text-foreground shadow-xs"
+                  : "text-muted-foreground hover:bg-background/60 hover:text-foreground",
+              )}
+              key={option.value}
+              onClick={() => selectOption(option.value)}
+              role="radio"
+              tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
+              type="button"
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    </FormFieldFrame>
   );
 };
 

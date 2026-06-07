@@ -1,5 +1,6 @@
 export {
   CheckboxComponent,
+  ChoiceComponent,
   FormComponent,
   HiddenInputComponent,
   PasswordInputComponent,

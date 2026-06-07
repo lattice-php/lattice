@@ -2,8 +2,14 @@
 
 declare(strict_types=1);
 
+use Bambamboole\Lattice\Actions\ActionDefinition;
+use Bambamboole\Lattice\Actions\ActionResult;
+use Bambamboole\Lattice\Actions\Effect;
+use Bambamboole\Lattice\Attributes\Action;
+use Bambamboole\Lattice\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Components\Badge;
 use Bambamboole\Lattice\Components\Form;
+use Bambamboole\Lattice\Components\Forms\Choice;
 use Bambamboole\Lattice\Components\Link;
 use Bambamboole\Lattice\Components\Stack;
 use Bambamboole\Lattice\Components\Tab;
@@ -15,14 +21,20 @@ use Bambamboole\Lattice\Enums\Gap;
 use Bambamboole\Lattice\Enums\Width;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Lattice;
+use Bambamboole\Lattice\Page;
+use Bambamboole\Lattice\PageSchema;
 use Bambamboole\Lattice\Tables\Columns\TextColumn;
+use Bambamboole\Lattice\Tables\EloquentTableDefinition;
+use Bambamboole\Lattice\Tables\PaginationType;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableQuery;
 use Bambamboole\Lattice\Tables\TableResult;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Testing\AssertableInertia;
+use Orchestra\Testbench\Factories\UserFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Pages\WorkbenchHomePage;
 use Workbench\App\Seeders\WorkbenchUserSeeder;
@@ -31,6 +43,7 @@ use Workbench\App\Tables\UsersTable as WorkbenchAppUsersTable;
 use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\patch;
+use function Pest\Laravel\postJson;
 use function Pest\Laravel\withoutVite;
 
 test('lattice component factories stay open for extension', function () {
@@ -79,6 +92,41 @@ test('forms can disable their default submit button', function () {
             'id' => 'profile-form',
             'props' => [
                 'submitButton' => false,
+            ],
+        ]);
+});
+
+test('form choices serialize options value and change events', function () {
+    expect(Choice::make('appearance', 'Appearance')
+        ->value('system')
+        ->event('lattice:appearance-change')
+        ->options([
+            Choice::option('Light', 'light'),
+            Choice::option('Dark', 'dark'),
+            Choice::option('System', 'system'),
+        ])
+        ->toArray())
+        ->toMatchArray([
+            'type' => 'form.choice',
+            'props' => [
+                'label' => 'Appearance',
+                'name' => 'appearance',
+                'value' => 'system',
+                'event' => 'lattice:appearance-change',
+                'options' => [
+                    [
+                        'label' => 'Light',
+                        'value' => 'light',
+                    ],
+                    [
+                        'label' => 'Dark',
+                        'value' => 'dark',
+                    ],
+                    [
+                        'label' => 'System',
+                        'value' => 'system',
+                    ],
+                ],
             ],
         ]);
 });
@@ -249,6 +297,182 @@ test('workbench users table exposes timestamp columns for each row', function ()
         ]);
 });
 
+test('eloquent tables can use infinite pagination metadata', function () {
+    User::query()->delete();
+
+    foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
+        UserFactory::new()->create([
+            'name' => $name,
+            'email' => str($name)->slug()->append('@example.com')->toString(),
+        ]);
+    }
+
+    Lattice::tables([WorkbenchInfiniteUsersTable::class]);
+
+    $table = Table::use(WorkbenchInfiniteUsersTable::class)->toArray();
+
+    expect($table['props']['pagination'])
+        ->toMatchArray([
+            'mode' => 'infinite',
+            'currentPage' => 1,
+            'hasMore' => true,
+            'nextPage' => 2,
+            'perPage' => 2,
+            'from' => 1,
+            'to' => 2,
+        ]);
+
+    getJson('/lattice/tables/workbench.infinite-users?per_page=2')
+        ->assertOk()
+        ->assertJsonCount(2, 'data')
+        ->assertJsonPath('pagination.mode', 'infinite')
+        ->assertJsonPath('pagination.currentPage', 1)
+        ->assertJsonPath('pagination.hasMore', true)
+        ->assertJsonPath('pagination.nextPage', 2)
+        ->assertJsonPath('state.page', 1)
+        ->assertJsonPath('state.perPage', 2);
+
+    getJson('/lattice/tables/workbench.infinite-users?per_page=2&page=2')
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('pagination.mode', 'infinite')
+        ->assertJsonPath('pagination.currentPage', 2)
+        ->assertJsonPath('pagination.hasMore', false)
+        ->assertJsonPath('pagination.nextPage', null);
+});
+
+test('eloquent tables use table pagination with totals by default', function () {
+    User::query()->delete();
+
+    foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
+        UserFactory::new()->create([
+            'name' => $name,
+            'email' => str($name)->slug()->append('@example.com')->toString(),
+        ]);
+    }
+
+    Lattice::tables([WorkbenchDefaultUsersTable::class]);
+
+    getJson('/lattice/tables/workbench.default-users?per_page=2')
+        ->assertOk()
+        ->assertJsonCount(2, 'data')
+        ->assertJsonPath('pagination.mode', 'table')
+        ->assertJsonPath('pagination.total', 3)
+        ->assertJsonPath('pagination.lastPage', 2)
+        ->assertJsonPath('pagination.hasMore', true)
+        ->assertJsonPath('pagination.nextPage', 2);
+});
+
+test('eloquent tables can use simple pagination without totals', function () {
+    User::query()->delete();
+
+    foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
+        UserFactory::new()->create([
+            'name' => $name,
+            'email' => str($name)->slug()->append('@example.com')->toString(),
+        ]);
+    }
+
+    Lattice::tables([WorkbenchSimpleUsersTable::class]);
+
+    getJson('/lattice/tables/workbench.simple-users?per_page=2')
+        ->assertOk()
+        ->assertJsonCount(2, 'data')
+        ->assertJsonPath('pagination.mode', 'simple')
+        ->assertJsonMissingPath('pagination.total')
+        ->assertJsonPath('pagination.hasMore', true)
+        ->assertJsonPath('pagination.nextPage', 2);
+});
+
+test('eloquent tables can disable pagination for small datasets', function () {
+    User::query()->delete();
+
+    foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
+        UserFactory::new()->create([
+            'name' => $name,
+            'email' => str($name)->slug()->append('@example.com')->toString(),
+        ]);
+    }
+
+    Lattice::tables([WorkbenchSmallUsersTable::class]);
+
+    getJson('/lattice/tables/workbench.small-users?per_page=1')
+        ->assertOk()
+        ->assertJsonCount(3, 'data')
+        ->assertJsonPath('pagination.mode', 'none')
+        ->assertJsonPath('pagination.total', 3)
+        ->assertJsonPath('pagination.hasMore', false);
+});
+
+test('registered actions serialize their configured endpoint method label and effects', function () {
+    config(['lattice.actions.endpoint' => 'custom/actions/{action}']);
+
+    Lattice::actions([WorkbenchPingAction::class]);
+
+    expect(ActionComponent::use(WorkbenchPingAction::class)->toArray())
+        ->toMatchArray([
+            'type' => 'action',
+            'id' => 'workbench.ping',
+            'props' => [
+                'endpoint' => '/custom/actions/workbench.ping',
+                'label' => 'Ping',
+                'method' => 'post',
+                'variant' => 'secondary',
+                'effects' => [
+                    [
+                        'type' => 'toast',
+                        'message' => 'Ready.',
+                    ],
+                    [
+                        'type' => 'reloadComponent',
+                        'component' => 'workbench.users',
+                    ],
+                ],
+            ],
+        ]);
+});
+
+test('registered actions can be handled through the package endpoint', function () {
+    Lattice::actions([WorkbenchPingAction::class]);
+
+    postJson('/lattice/actions/workbench.ping', ['name' => 'Taylor'])
+        ->assertOk()
+        ->assertJsonPath('ok', true)
+        ->assertJsonPath('data.handled', 'Taylor')
+        ->assertJsonPath('effects.0.type', 'toast')
+        ->assertJsonPath('effects.0.message', 'Action handled.')
+        ->assertJsonPath('effects.1.type', 'reloadComponent')
+        ->assertJsonPath('effects.1.component', 'workbench.users');
+});
+
+test('actions can serialize confirmation modal configuration', function () {
+    expect(ActionComponent::make('delete-account')
+        ->label('Delete account')
+        ->method('delete')
+        ->variant('destructive')
+        ->confirm(
+            title: 'Delete account?',
+            description: 'This cannot be undone.',
+            confirmLabel: 'Delete account',
+            cancelLabel: 'Keep account',
+        )
+        ->toArray())
+        ->toMatchArray([
+            'type' => 'action',
+            'id' => 'delete-account',
+            'props' => [
+                'label' => 'Delete account',
+                'method' => 'delete',
+                'variant' => 'destructive',
+                'confirmation' => [
+                    'title' => 'Delete account?',
+                    'description' => 'This cannot be undone.',
+                    'confirmLabel' => 'Delete account',
+                    'cancelLabel' => 'Keep account',
+                ],
+            ],
+        ]);
+});
 
 test('links and horizontal stacks serialize as separate composable primitives', function () {
     expect(Stack::make('prompt')->direction('row')->gap(Gap::ExtraSmall)->children([
@@ -352,6 +576,44 @@ test('the workbench home route uses a workbench-owned page directly', function (
     expect(Route::getRoutes()->getByName('home')?->getActionName())->toBe(WorkbenchHomePage::class);
 });
 
+test('pages serialize layout and container metadata', function () {
+    $defaultPage = new class extends Page
+    {
+        public function content(PageSchema $schema): PageSchema
+        {
+            return $schema->component(Text::make('Default page'));
+        }
+    };
+
+    $configuredPage = new class extends Page
+    {
+        public function layout(): string
+        {
+            return 'settings';
+        }
+
+        public function container(): string
+        {
+            return 'default';
+        }
+
+        public function content(PageSchema $schema): PageSchema
+        {
+            return $schema->component(Text::make('Configured page'));
+        }
+    };
+
+    expect($defaultPage->toArray())
+        ->toMatchArray([
+            'layout' => 'none',
+            'container' => 'centered',
+        ])
+        ->and($configuredPage->toArray())
+        ->toMatchArray([
+            'layout' => 'settings',
+            'container' => 'default',
+        ]);
+});
 
 test('workbench pages serialize package component trees for inertia', function () {
     withoutVite();
@@ -361,6 +623,8 @@ test('workbench pages serialize package component trees for inertia', function (
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page')
             ->where('lattice.title', 'Lattice Workbench')
+            ->where('lattice.layout', 'none')
+            ->where('lattice.container', 'centered')
             ->where('lattice.components.0.type', 'stack')
             ->where('lattice.components.0.key', 'workbench-page')
             ->where('lattice.components.0.children.0.type', 'stack')
@@ -441,5 +705,157 @@ class WorkbenchUsersTable extends TableDefinition
                 ),
             ],
         ]);
+    }
+}
+
+/**
+ * @extends EloquentTableDefinition<User>
+ *
+ * @phpstan-extends EloquentTableDefinition<User>
+ */
+#[Bambamboole\Lattice\Attributes\Table('workbench.infinite-users')]
+class WorkbenchInfiniteUsersTable extends EloquentTableDefinition
+{
+    public function pagination(): PaginationType
+    {
+        return PaginationType::Infinite;
+    }
+
+    public function perPage(): int
+    {
+        return 2;
+    }
+
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->label('Name')->sortable(),
+            TextColumn::make('email')->label('Email'),
+        ];
+    }
+
+    /**
+     * @return Builder<User>
+     */
+    public function builder(TableQuery $query): Builder
+    {
+        return User::query()->select(['id', 'name', 'email'])->orderBy('id');
+    }
+}
+
+/**
+ * @extends EloquentTableDefinition<User>
+ *
+ * @phpstan-extends EloquentTableDefinition<User>
+ */
+#[Bambamboole\Lattice\Attributes\Table('workbench.default-users')]
+class WorkbenchDefaultUsersTable extends EloquentTableDefinition
+{
+    public function perPage(): int
+    {
+        return 2;
+    }
+
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->label('Name')->sortable(),
+        ];
+    }
+
+    /**
+     * @return Builder<User>
+     */
+    public function builder(TableQuery $query): Builder
+    {
+        return User::query()->select(['id', 'name'])->orderBy('id');
+    }
+}
+
+/**
+ * @extends EloquentTableDefinition<User>
+ *
+ * @phpstan-extends EloquentTableDefinition<User>
+ */
+#[Bambamboole\Lattice\Attributes\Table('workbench.simple-users')]
+class WorkbenchSimpleUsersTable extends EloquentTableDefinition
+{
+    public function pagination(): PaginationType
+    {
+        return PaginationType::Simple;
+    }
+
+    public function perPage(): int
+    {
+        return 2;
+    }
+
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->label('Name')->sortable(),
+        ];
+    }
+
+    /**
+     * @return Builder<User>
+     */
+    public function builder(TableQuery $query): Builder
+    {
+        return User::query()->select(['id', 'name'])->orderBy('id');
+    }
+}
+
+/**
+ * @extends EloquentTableDefinition<User>
+ *
+ * @phpstan-extends EloquentTableDefinition<User>
+ */
+#[Bambamboole\Lattice\Attributes\Table('workbench.small-users')]
+class WorkbenchSmallUsersTable extends EloquentTableDefinition
+{
+    public function pagination(): PaginationType
+    {
+        return PaginationType::None;
+    }
+
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->label('Name')->sortable(),
+        ];
+    }
+
+    /**
+     * @return Builder<User>
+     */
+    public function builder(TableQuery $query): Builder
+    {
+        return User::query()->select(['id', 'name'])->orderBy('id');
+    }
+}
+
+#[Action('workbench.ping')]
+class WorkbenchPingAction extends ActionDefinition
+{
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action
+            ->label('Ping')
+            ->method('post')
+            ->variant('secondary')
+            ->effects([
+                Effect::toast('Ready.'),
+                Effect::reloadComponent('workbench.users'),
+            ]);
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        return ActionResult::success([
+            'handled' => $request->string('name')->toString(),
+        ])
+            ->toast('Action handled.')
+            ->reloadComponent('workbench.users');
     }
 }

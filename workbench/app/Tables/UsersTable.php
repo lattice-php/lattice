@@ -7,6 +7,7 @@ namespace Workbench\App\Tables;
 use Bambamboole\Lattice\Attributes\Table as TableAttribute;
 use Bambamboole\Lattice\Tables\Columns\TextColumn;
 use Bambamboole\Lattice\Tables\EloquentTableDefinition;
+use Bambamboole\Lattice\Tables\PaginationType;
 use Bambamboole\Lattice\Tables\TableQuery;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
@@ -28,6 +29,12 @@ class UsersTable extends EloquentTableDefinition
             TextColumn::make('created_at')->label('Created at')->sortable()->date('Y-m-d H:i:s'),
             TextColumn::make('updated_at')->label('Updated at')->sortable()->date('Y-m-d H:i:s'),
         ];
+    }
+
+    #[\Override]
+    public function pagination(): PaginationType
+    {
+        return PaginationType::Infinite;
     }
 
     #[\Override]

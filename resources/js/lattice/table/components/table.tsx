@@ -1,6 +1,6 @@
 import type { LatticeRendererComponent } from "@/lattice/core/types";
 import { ArrowDown, ArrowUp, Check, ChevronsUpDown, Copy, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type TableColumn = {
   key: string;
@@ -37,7 +37,10 @@ type TableState = {
 
 type TablePagination = {
   currentPage?: number;
+  hasMore?: boolean;
   lastPage?: number;
+  mode?: "infinite" | "none" | "simple" | "table";
+  nextPage?: number | null;
   perPage?: number;
   total?: number;
   from?: number | null;
@@ -263,11 +266,27 @@ function nextSort(sorts: TableSort[], column: TableColumn): TableSort[] {
     return [...sorts, { key: column.key, direction: "asc" }];
   }
 
-  if (currentSort?.direction === "asc") {
+  if (currentSort.direction === "asc") {
     return [...remainingSorts, { key: column.key, direction: "desc" }];
   }
 
   return remainingSorts;
+}
+
+function getRowKey(row: TableRow, index: number): string {
+  const key = row.id ?? row.uuid ?? row.key ?? index;
+
+  return String(key);
+}
+
+function getVisiblePages(currentPage: number, lastPage: number): number[] {
+  if (lastPage <= 5) {
+    return Array.from({ length: lastPage }, (_, index) => index + 1);
+  }
+
+  const start = Math.max(1, Math.min(currentPage - 2, lastPage - 4));
+
+  return Array.from({ length: 5 }, (_, index) => start + index);
 }
 
 const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
@@ -279,40 +298,51 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
   const [state, setState] = useState(initialState);
   const [filters, setFilters] = useState(initialState.filters);
   const [processing, setProcessing] = useState(false);
+  const infiniteLoaderRef = useRef<HTMLDivElement | null>(null);
+  const currentPage = pagination.currentPage ?? state.page;
+  const lastPage = pagination.lastPage ?? currentPage;
+  const paginationType = pagination.mode ?? "table";
+  const isInfinite = paginationType === "infinite";
+  const isSimple = paginationType === "simple";
+  const isTable = paginationType === "table";
+  const visiblePages = getVisiblePages(currentPage, lastPage);
+  const hasNextPage = pagination.hasMore ?? currentPage < lastPage;
 
-  async function load(nextState: TableState): Promise<void> {
-    if (!endpoint) {
-      return;
-    }
+  const load = useCallback(
+    async (nextState: TableState, append = false): Promise<void> => {
+      if (!endpoint) {
+        return;
+      }
 
-    setProcessing(true);
+      setProcessing(true);
 
-    try {
-      const response = await fetch(buildEndpoint(endpoint, nextState), {
-        headers: {
-          Accept: "application/json",
-        },
-      });
-      const result = (await response.json()) as TableResponse;
-      const resultState = getState(result.state);
+      try {
+        const response = await fetch(buildEndpoint(endpoint, nextState), {
+          headers: {
+            Accept: "application/json",
+          },
+        });
+        const result = (await response.json()) as TableResponse;
+        const resultState = getState(result.state);
+        const resultRows = getRows(result.data);
 
-      setRows(getRows(result.data));
-      setPagination(getPagination(result.pagination));
-      setState(resultState);
-      setFilters(resultState.filters);
-    } finally {
-      setProcessing(false);
-    }
-  }
+        setRows((currentRows) => (append ? [...currentRows, ...resultRows] : resultRows));
+        setPagination(getPagination(result.pagination));
+        setState(resultState);
+        setFilters(resultState.filters);
+      } finally {
+        setProcessing(false);
+      }
+    },
+    [endpoint],
+  );
 
   function sort(column: TableColumn): void {
-    const nextState = {
+    void load({
       ...state,
       page: 1,
       sorts: nextSort(state.sorts, column),
-    };
-
-    void load(nextState);
+    });
   }
 
   function clearSort(sort: TableSort): void {
@@ -338,8 +368,46 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
     });
   }
 
-  const currentPage = pagination.currentPage ?? state.page;
-  const lastPage = pagination.lastPage ?? currentPage;
+  const loadMore = useCallback((): void => {
+    if (processing || !pagination.hasMore) {
+      return;
+    }
+
+    void load(
+      {
+        ...state,
+        page: pagination.nextPage ?? currentPage + 1,
+      },
+      true,
+    );
+  }, [currentPage, load, pagination.hasMore, pagination.nextPage, processing, state]);
+
+  useEffect(() => {
+    if (
+      !isInfinite ||
+      !pagination.hasMore ||
+      processing ||
+      !infiniteLoaderRef.current ||
+      typeof IntersectionObserver === "undefined"
+    ) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          loadMore();
+        }
+      },
+      {
+        rootMargin: "240px",
+      },
+    );
+
+    observer.observe(infiniteLoaderRef.current);
+
+    return () => observer.disconnect();
+  }, [isInfinite, loadMore, pagination.hasMore, processing]);
 
   return (
     <div data-lattice-component={node.id} className="overflow-hidden rounded-md border">
@@ -435,7 +503,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
         </thead>
         <tbody>
           {rows.map((row, index) => (
-            <tr key={index} className="border-b last:border-b-0">
+            <tr key={getRowKey(row, index)} className="border-b last:border-b-0">
               {columns.map((column) => (
                 <td key={column.key} className="p-4 align-middle">
                   <TextCell column={column} row={row} value={row[column.key]} />
@@ -451,24 +519,73 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
             ? `Page ${currentPage}`
             : `Showing ${pagination.from ?? 0}-${pagination.to ?? 0} of ${pagination.total}`}
         </span>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
-            disabled={processing || currentPage <= 1}
-            onClick={() => page(currentPage - 1)}
-          >
-            Previous
-          </button>
-          <button
-            type="button"
-            className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
-            disabled={processing || currentPage >= lastPage}
-            onClick={() => page(currentPage + 1)}
-          >
-            Next
-          </button>
-        </div>
+        {isInfinite ? (
+          <div ref={infiniteLoaderRef} className="flex items-center gap-2">
+            {pagination.hasMore ? (
+              <button
+                type="button"
+                className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+                disabled={processing}
+                onClick={loadMore}
+              >
+                {processing ? "Loading..." : "Load more"}
+              </button>
+            ) : (
+              <span className="text-muted-foreground">All rows loaded</span>
+            )}
+          </div>
+        ) : isSimple ? (
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+              disabled={processing || currentPage <= 1}
+              onClick={() => page(currentPage - 1)}
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+              disabled={processing || !hasNextPage}
+              onClick={() => page(currentPage + 1)}
+            >
+              Next
+            </button>
+          </div>
+        ) : isTable ? (
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+              disabled={processing || currentPage <= 1}
+              onClick={() => page(currentPage - 1)}
+            >
+              Previous
+            </button>
+            {visiblePages.map((pageNumber) => (
+              <button
+                key={pageNumber}
+                type="button"
+                className="inline-flex size-9 items-center justify-center rounded-md border font-medium disabled:opacity-50"
+                disabled={processing || pageNumber === currentPage}
+                aria-current={pageNumber === currentPage ? "page" : undefined}
+                aria-label={`Page ${pageNumber}`}
+                onClick={() => page(pageNumber)}
+              >
+                {pageNumber}
+              </button>
+            ))}
+            <button
+              type="button"
+              className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+              disabled={processing || !hasNextPage}
+              onClick={() => page(currentPage + 1)}
+            >
+              Next
+            </button>
+          </div>
+        ) : null}
       </div>
     </div>
   );

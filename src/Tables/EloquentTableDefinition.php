@@ -20,8 +20,31 @@ abstract class EloquentTableDefinition extends TableDefinition
 
     public function query(TableQuery $query): TableResult
     {
+        $builder = $this->applyQuery($this->builder($query), $query);
+
+        if ($this->paginationType() === PaginationType::None) {
+            return TableResult::fromItems($builder->get(), PaginationType::None);
+        }
+
+        if ($this->paginationType() === PaginationType::Infinite) {
+            return TableResult::fromSimplePaginator($builder->simplePaginate(
+                perPage: $query->perPage(),
+                page: $query->page(),
+            ));
+        }
+
+        if ($this->paginationType() === PaginationType::Simple) {
+            return TableResult::fromSimplePaginator(
+                $builder->simplePaginate(
+                    perPage: $query->perPage(),
+                    page: $query->page(),
+                ),
+                PaginationType::Simple,
+            );
+        }
+
         return TableResult::fromPaginator(
-            $this->applyQuery($this->builder($query), $query)->paginate(
+            $builder->paginate(
                 perPage: $query->perPage(),
                 page: $query->page(),
             ),
