@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { createContext, Suspense, useContext, useMemo } from "react";
 import type { ReactNode } from "react";
 import type { LatticeComponentRegistry } from "./registry";
 import type { LatticeNode, LatticeUnknownComponent } from "./types";
@@ -13,6 +13,24 @@ function MissingComponent({ node }: { node: LatticeNode }) {
   );
 }
 
+type LatticeRendererContextValue = {
+  fallback: ReactNode;
+  missingComponent: LatticeUnknownComponent;
+  registry: LatticeComponentRegistry;
+};
+
+const LatticeRendererContext = createContext<LatticeRendererContextValue | null>(null);
+
+export function useLatticeRendererContext(): LatticeRendererContextValue {
+  const context = useContext(LatticeRendererContext);
+
+  if (!context) {
+    throw new Error("Lattice renderer context is not available.");
+  }
+
+  return context;
+}
+
 export function LatticeRenderer({
   fallback = null,
   missingComponent: UnknownComponent = MissingComponent,
@@ -24,15 +42,28 @@ export function LatticeRenderer({
   nodes: LatticeNode[];
   registry: LatticeComponentRegistry;
 }) {
-  return nodes.map((node, index) => (
-    <LatticeNodeRenderer
-      fallback={fallback}
-      key={node.key ?? node.id ?? `${node.type}-${index}`}
-      missingComponent={UnknownComponent}
-      node={node}
-      registry={registry}
-    />
-  ));
+  const context = useMemo(
+    () => ({
+      fallback,
+      missingComponent: UnknownComponent,
+      registry,
+    }),
+    [fallback, registry, UnknownComponent],
+  );
+
+  return (
+    <LatticeRendererContext.Provider value={context}>
+      {nodes.map((node, index) => (
+        <LatticeNodeRenderer
+          fallback={fallback}
+          key={node.key ?? node.id ?? `${node.type}-${index}`}
+          missingComponent={UnknownComponent}
+          node={node}
+          registry={registry}
+        />
+      ))}
+    </LatticeRendererContext.Provider>
+  );
 }
 
 function LatticeNodeRenderer({

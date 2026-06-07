@@ -6,6 +6,7 @@ namespace Bambamboole\Lattice;
 
 use Bambamboole\Lattice\Actions\ActionRegistry;
 use Bambamboole\Lattice\Forms\FormRegistry;
+use Bambamboole\Lattice\Fragments\FragmentRegistry;
 use Bambamboole\Lattice\Tables\TableRegistry;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
@@ -28,6 +29,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
     {
         $this->app->singleton(FormRegistry::class);
         $this->app->singleton(TableRegistry::class);
+        $this->app->singleton(FragmentRegistry::class);
         $this->app->singleton(ActionRegistry::class);
 
         if (! Router::hasMacro('latticePage')) {
@@ -47,6 +49,12 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         if (is_array($tables) && $tables !== []) {
             Lattice::tables($tables);
+        }
+
+        $fragments = config('lattice.fragments.registered', []);
+
+        if (is_array($fragments) && $fragments !== []) {
+            Lattice::fragments($fragments);
         }
 
         $actions = config('lattice.actions.registered', []);

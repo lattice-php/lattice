@@ -6,11 +6,14 @@ use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionResult;
 use Bambamboole\Lattice\Actions\Effect;
 use Bambamboole\Lattice\Attributes\Action;
+use Bambamboole\Lattice\Attributes\Fragment;
 use Bambamboole\Lattice\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Components\Badge;
 use Bambamboole\Lattice\Components\Form;
 use Bambamboole\Lattice\Components\Forms\Choice;
+use Bambamboole\Lattice\Components\Fragment as FragmentComponent;
 use Bambamboole\Lattice\Components\Link;
+use Bambamboole\Lattice\Components\Modal;
 use Bambamboole\Lattice\Components\Stack;
 use Bambamboole\Lattice\Components\Tab;
 use Bambamboole\Lattice\Components\Table;
@@ -20,6 +23,7 @@ use Bambamboole\Lattice\Enums\Align;
 use Bambamboole\Lattice\Enums\Gap;
 use Bambamboole\Lattice\Enums\Width;
 use Bambamboole\Lattice\Forms\FormDefinition;
+use Bambamboole\Lattice\Fragments\FragmentDefinition;
 use Bambamboole\Lattice\Lattice;
 use Bambamboole\Lattice\Page;
 use Bambamboole\Lattice\PageSchema;
@@ -584,6 +588,51 @@ test('actions can serialize confirmation modal configuration', function () {
         ]);
 });
 
+test('modals serialize composable children for action driven dialogs', function () {
+    expect(Modal::make('settings.two-factor-setup')
+        ->title('Set up two-factor authentication')
+        ->description('Scan the QR code with your authenticator app.')
+        ->children([
+            Text::make('Recovery codes will appear here.'),
+        ])
+        ->toArray())
+        ->toMatchArray([
+            'type' => 'modal',
+            'id' => 'settings.two-factor-setup',
+            'props' => [
+                'title' => 'Set up two-factor authentication',
+                'description' => 'Scan the QR code with your authenticator app.',
+            ],
+            'children' => [
+                [
+                    'type' => 'text',
+                    'props' => [
+                        'text' => 'Recovery codes will appear here.',
+                    ],
+                ],
+            ],
+        ]);
+});
+
+test('registered fragments serialize lazy endpoints and return component schemas', function () {
+    Lattice::fragments([WorkbenchTwoFactorSetupFragment::class]);
+
+    expect(FragmentComponent::lazy(WorkbenchTwoFactorSetupFragment::class)->toArray())
+        ->toMatchArray([
+            'type' => 'fragment',
+            'id' => 'workbench.two-factor-setup',
+            'props' => [
+                'endpoint' => '/lattice/fragments/workbench.two-factor-setup',
+                'lazy' => true,
+            ],
+        ]);
+
+    getJson('/lattice/fragments/workbench.two-factor-setup')
+        ->assertOk()
+        ->assertJsonPath('components.0.type', 'text')
+        ->assertJsonPath('components.0.props.text', 'Authenticator setup loaded.');
+});
+
 test('links and horizontal stacks serialize as separate composable primitives', function () {
     expect(Stack::make('prompt')->direction('row')->gap(Gap::ExtraSmall)->children([
         Text::make('Need access?'),
@@ -804,6 +853,24 @@ test('pages use laravel controller resolution for constructor dependencies rende
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page')
             ->where('lattice.components.0.props.text', 'Injected Route Bound User details details')
+        );
+});
+
+test('pages can authorize requests before rendering', function () {
+    Route::latticePage('authorized-page', WorkbenchAuthorizedPage::class)
+        ->middleware('web')
+        ->name('authorized-page.show');
+
+    withoutVite();
+
+    get('/authorized-page')
+        ->assertForbidden();
+
+    get('/authorized-page?allow=yes')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('lattice/page')
+            ->where('lattice.components.0.props.text', 'Authorized page')
         );
 });
 
@@ -1217,6 +1284,28 @@ final class WorkbenchPageDependency
     public function label(): string
     {
         return 'Injected';
+    }
+}
+
+final class WorkbenchAuthorizedPage extends Page
+{
+    public function authorize(Request $request): bool
+    {
+        return $request->query('allow') === 'yes';
+    }
+
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Authorized page'));
+    }
+}
+
+#[Fragment('workbench.two-factor-setup')]
+final class WorkbenchTwoFactorSetupFragment extends FragmentDefinition
+{
+    public function schema(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Authenticator setup loaded.'));
     }
 }
 

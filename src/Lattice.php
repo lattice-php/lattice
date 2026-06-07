@@ -9,6 +9,8 @@ use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionRegistry;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
+use Bambamboole\Lattice\Fragments\FragmentDefinition;
+use Bambamboole\Lattice\Fragments\FragmentRegistry;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableRegistry;
 use Illuminate\Routing\Route;
@@ -30,6 +32,14 @@ class Lattice
     public static function tables(string|array $tables): void
     {
         app(TableRegistry::class)->register($tables);
+    }
+
+    /**
+     * @param  class-string<FragmentDefinition>|array<int, class-string<FragmentDefinition>>  $fragments
+     */
+    public static function fragments(string|array $fragments): void
+    {
+        app(FragmentRegistry::class)->register($fragments);
     }
 
     /**

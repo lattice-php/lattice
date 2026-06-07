@@ -15,6 +15,12 @@ return [
         'registered' => [],
     ],
 
+    'fragments' => [
+        'endpoint' => 'lattice/fragments/{fragment}',
+        'middleware' => ['web'],
+        'registered' => [],
+    ],
+
     'actions' => [
         'endpoint' => 'lattice/actions/{action}',
         'middleware' => ['web'],

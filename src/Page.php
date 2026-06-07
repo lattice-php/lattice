@@ -28,28 +28,9 @@ abstract class Page
         return PageContainer::Centered;
     }
 
-    public function __invoke(Request $request): Response
+    public function authorize(Request $request): bool
     {
-        if (! method_exists($this, 'render')) {
-            throw new BadMethodCallException(sprintf(
-                'Method %s::render does not exist.',
-                static::class,
-            ));
-        }
-
-        $this->boot($request);
-
-        $schema = $this->{'render'}(PageSchema::make());
-
-        if (! $schema instanceof PageSchema) {
-            throw new UnexpectedValueException(sprintf(
-                'Method %s::render must return an instance of %s.',
-                static::class,
-                PageSchema::class,
-            ));
-        }
-
-        return $this->response($schema);
+        return true;
     }
 
     /**
@@ -65,7 +46,7 @@ abstract class Page
             ));
         }
 
-        $this->boot(app(Request::class));
+        abort_unless($this->authorize(app(Request::class)), 403);
 
         $schema = $this->{$method}(...array_values($parameters));
 
@@ -85,8 +66,6 @@ abstract class Page
     {
         return 'lattice/page';
     }
-
-    protected function boot(Request $request): void {}
 
     /**
      * @return array{title: string|null, layout: string, container: string, components: array<int, array<string, mixed>>}
