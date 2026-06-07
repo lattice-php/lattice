@@ -48,7 +48,13 @@ describe("Lattice form schema components", () => {
           label: "Forgot your password?",
           tabIndex: 5,
         },
+        confirmation: {
+          label: "Confirm password",
+          name: "password_confirmation",
+          placeholder: "Confirm password",
+        },
         name: "password",
+        passwordRules: "minlength:8",
         required: true,
       },
       type: "form.password-input",
@@ -94,6 +100,11 @@ describe("Lattice form schema components", () => {
     expect(screen.getByRole("textbox", { name: "Email address" })).toHaveAttribute("readonly");
     expect(document.querySelector('input[type="hidden"][name="token"]')).toHaveValue("reset-token");
     expect(screen.getByLabelText("Password")).toHaveAttribute("name", "password");
+    expect(screen.getByLabelText("Confirm password")).toHaveAttribute(
+      "name",
+      "password_confirmation",
+    );
+    expect(screen.getByLabelText("Confirm password")).toHaveAttribute("passwordrules", "minlength:8");
     expect(screen.getByRole("checkbox", { name: "Remember me" })).toBeVisible();
     expect(screen.getByRole("link", { name: "Forgot your password?" })).toHaveAttribute(
       "href",

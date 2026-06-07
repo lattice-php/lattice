@@ -53,6 +53,15 @@ class PasswordInput extends Component
         return $this->prop('passwordRules', $passwordRules);
     }
 
+    public function needsConfirmation(?string $label = null, ?string $placeholder = null): static
+    {
+        return $this->prop('confirmation', [
+            'label' => $label ?? 'Confirm password',
+            'name' => $this->props['name'].'_confirmation',
+            'placeholder' => $placeholder ?? $label ?? 'Confirm password',
+        ]);
+    }
+
     protected function type(): string
     {
         return 'form.password-input';

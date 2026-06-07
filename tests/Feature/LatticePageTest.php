@@ -11,6 +11,7 @@ use Bambamboole\Lattice\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Components\Badge;
 use Bambamboole\Lattice\Components\Form;
 use Bambamboole\Lattice\Components\Forms\Choice;
+use Bambamboole\Lattice\Components\Forms\PasswordInput;
 use Bambamboole\Lattice\Components\Fragment as FragmentComponent;
 use Bambamboole\Lattice\Components\Link;
 use Bambamboole\Lattice\Components\Modal;
@@ -99,6 +100,28 @@ test('forms can disable their default submit button', function () {
             'id' => 'profile-form',
             'props' => [
                 'submitButton' => false,
+            ],
+        ]);
+});
+
+test('password inputs can request automatic confirmation fields', function () {
+    expect(PasswordInput::make('password', 'Password')
+        ->required()
+        ->passwordRules('minlength:8')
+        ->needsConfirmation()
+        ->toArray())
+        ->toMatchArray([
+            'type' => 'form.password-input',
+            'props' => [
+                'confirmation' => [
+                    'label' => 'Confirm password',
+                    'name' => 'password_confirmation',
+                    'placeholder' => 'Confirm password',
+                ],
+                'label' => 'Password',
+                'name' => 'password',
+                'passwordRules' => 'minlength:8',
+                'required' => true,
             ],
         ]);
 });

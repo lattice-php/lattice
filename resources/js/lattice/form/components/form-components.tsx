@@ -18,6 +18,12 @@ type ChoiceOption = {
   value: string;
 };
 
+type PasswordConfirmation = {
+  label?: string;
+  name?: string;
+  placeholder?: string;
+};
+
 declare module "@/lattice/core/types" {
   interface LatticeComponentProps {
     form: {
@@ -51,6 +57,7 @@ declare module "@/lattice/core/types" {
     "form.password-input": {
       autoComplete?: string;
       autoFocus?: boolean;
+      confirmation?: PasswordConfirmation;
       label?: string;
       labelAction?: LatticeFormLabelAction;
       name?: string;
@@ -92,6 +99,25 @@ function getChoiceOptions(props: LatticeNodeProps | undefined): ChoiceOption[] {
       typeof option.label === "string" &&
       typeof option.value === "string",
   );
+}
+
+function getPasswordConfirmation(
+  props: LatticeNodeProps | undefined,
+): PasswordConfirmation | undefined {
+  const value = props?.confirmation;
+
+  if (typeof value !== "object" || value === null) {
+    return undefined;
+  }
+
+  const confirmation = value as Record<string, unknown>;
+
+  return {
+    label: typeof confirmation.label === "string" ? confirmation.label : undefined,
+    name: typeof confirmation.name === "string" ? confirmation.name : undefined,
+    placeholder:
+      typeof confirmation.placeholder === "string" ? confirmation.placeholder : undefined,
+  };
 }
 
 export const FormComponent: LatticeRendererComponent<"form"> = ({ children, node }) => {
@@ -170,25 +196,48 @@ export const PasswordInputComponent: LatticeRendererComponent<"form.password-inp
 }) => {
   const { errors } = useLatticeForm();
   const name = getStringProp(node.props, "name");
+  const confirmation = getPasswordConfirmation(node.props);
+  const confirmationName = confirmation?.name ?? `${name}_confirmation`;
+  const passwordRules = getStringProp(node.props, "passwordRules") || undefined;
 
   return (
-    <FormFieldFrame
-      error={errors[name]}
-      label={getStringProp(node.props, "label")}
-      labelAction={node.props?.labelAction}
-      name={name}
-    >
-      <PasswordInput
-        autoComplete={getStringProp(node.props, "autoComplete")}
-        autoFocus={getBooleanProp(node.props, "autoFocus")}
-        id={name}
+    <div className="grid gap-6">
+      <FormFieldFrame
+        error={errors[name]}
+        label={getStringProp(node.props, "label")}
+        labelAction={node.props?.labelAction}
         name={name}
-        placeholder={getStringProp(node.props, "placeholder")}
-        passwordrules={getStringProp(node.props, "passwordRules") || undefined}
-        required={getBooleanProp(node.props, "required")}
-        tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
-      />
-    </FormFieldFrame>
+      >
+        <PasswordInput
+          autoComplete={getStringProp(node.props, "autoComplete")}
+          autoFocus={getBooleanProp(node.props, "autoFocus")}
+          id={name}
+          name={name}
+          placeholder={getStringProp(node.props, "placeholder")}
+          passwordrules={passwordRules}
+          required={getBooleanProp(node.props, "required")}
+          tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
+        />
+      </FormFieldFrame>
+
+      {confirmation && (
+        <FormFieldFrame
+          error={errors[confirmationName]}
+          label={confirmation.label ?? "Confirm password"}
+          name={confirmationName}
+        >
+          <PasswordInput
+            autoComplete="new-password"
+            id={confirmationName}
+            name={confirmationName}
+            placeholder={confirmation.placeholder ?? confirmation.label ?? "Confirm password"}
+            passwordrules={passwordRules}
+            required={getBooleanProp(node.props, "required")}
+            tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
+          />
+        </FormFieldFrame>
+      )}
+    </div>
   );
 };
 
