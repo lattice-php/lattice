@@ -9,10 +9,12 @@ use Bambamboole\Lattice\Components\Card;
 use Bambamboole\Lattice\Components\Grid;
 use Bambamboole\Lattice\Components\Heading;
 use Bambamboole\Lattice\Components\Stack;
+use Bambamboole\Lattice\Components\Table;
 use Bambamboole\Lattice\Components\Text;
 use Bambamboole\Lattice\Enums\Gap;
 use Bambamboole\Lattice\Page;
 use Bambamboole\Lattice\PageSchema;
+use Workbench\App\Tables\UsersTable;
 
 final class WorkbenchHomePage extends Page
 {
@@ -40,6 +42,8 @@ final class WorkbenchHomePage extends Page
                             Card::make('Components', 'Server-side component trees serialize to typed React nodes.'),
                             Card::make('Renderer', 'The package renderer resolves registered component types.'),
                         ]),
+                    Heading::make('Workbench users', 2),
+                    Table::use(UsersTable::class),
                 ]),
         ]);
     }

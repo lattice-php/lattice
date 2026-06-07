@@ -14,4 +14,9 @@ workbench:
     commands: false
     components: false
     views: true
-  build: []
+  build:
+    - workbench:create-sqlite-db
+    - migrate
+    - db:seed:
+        --class: Workbench\App\Seeders\WorkbenchUserSeeder
+        --force: true

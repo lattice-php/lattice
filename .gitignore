@@ -6,6 +6,7 @@
 /.phpunit.result.cache
 /vendor/orchestra/testbench-core/laravel
 /public/build
+/workbench/database/database.sqlite
 /tests/Browser/Screenshots
 /tests/Browser/FailureScreenshots
 .phpstorm.meta.php

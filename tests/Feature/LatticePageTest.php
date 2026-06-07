@@ -15,13 +15,21 @@ use Bambamboole\Lattice\Enums\Gap;
 use Bambamboole\Lattice\Enums\Width;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Lattice;
+use Bambamboole\Lattice\Tables\Columns\TextColumn;
+use Bambamboole\Lattice\Tables\TableDefinition;
+use Bambamboole\Lattice\Tables\TableQuery;
+use Bambamboole\Lattice\Tables\TableResult;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Testing\AssertableInertia;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Pages\WorkbenchHomePage;
+use Workbench\App\Seeders\WorkbenchUserSeeder;
+use Workbench\App\Tables\UsersTable as WorkbenchAppUsersTable;
 
 use function Pest\Laravel\get;
+use function Pest\Laravel\getJson;
 use function Pest\Laravel\patch;
 use function Pest\Laravel\withoutVite;
 
@@ -109,6 +117,138 @@ test('registered forms can be submitted through the package endpoint', function 
 
     expect(session('handled-form'))->toBe('Taylor');
 });
+
+test('registered tables serialize their configured endpoint columns state and initial data', function () {
+    config(['lattice.tables.endpoint' => 'custom/tables/{table}']);
+
+    Lattice::tables([WorkbenchUsersTable::class]);
+
+    expect(Table::use(WorkbenchUsersTable::class)->toArray())
+        ->toMatchArray([
+            'type' => 'table',
+            'id' => 'workbench.users',
+            'props' => [
+                'endpoint' => '/custom/tables/workbench.users',
+                'columns' => [
+                    [
+                        'key' => 'name',
+                        'label' => 'Name',
+                        'type' => 'text',
+                        'sortable' => true,
+                        'filter' => [
+                            'enabled' => true,
+                            'type' => 'partial',
+                        ],
+                    ],
+                    [
+                        'key' => 'status',
+                        'label' => 'Status',
+                        'type' => 'text',
+                        'filter' => [
+                            'enabled' => true,
+                            'type' => 'exact',
+                        ],
+                    ],
+                    [
+                        'key' => 'email',
+                        'label' => 'Email',
+                        'type' => 'text',
+                        'sortable' => true,
+                    ],
+                ],
+                'data' => [
+                    [
+                        'name' => 'Taylor',
+                        'status' => null,
+                        'sorts' => [],
+                    ],
+                ],
+                'state' => [
+                    'filters' => [],
+                    'sorts' => [],
+                    'page' => 1,
+                    'perPage' => 25,
+                ],
+                'pagination' => [],
+            ],
+        ]);
+});
+
+test('registered tables parse spatie style filters sorts and pagination through the endpoint', function () {
+    Lattice::tables([WorkbenchUsersTable::class]);
+
+    getJson('/lattice/tables/workbench.users?filter[status]=active&filter[name]=tay&sort=-name,email&page=2&per_page=50')
+        ->assertOk()
+        ->assertJsonPath('data.0.name', 'Taylor')
+        ->assertJsonPath('data.0.status', 'active')
+        ->assertJsonPath('data.0.sorts.0.key', 'name')
+        ->assertJsonPath('data.0.sorts.0.direction', 'desc')
+        ->assertJsonPath('data.0.sorts.1.key', 'email')
+        ->assertJsonPath('data.0.sorts.1.direction', 'asc')
+        ->assertJsonPath('state.filters.status', 'active')
+        ->assertJsonPath('state.filters.name', 'tay')
+        ->assertJsonPath('state.page', 2)
+        ->assertJsonPath('state.perPage', 50);
+});
+
+test('registered tables reject filters and sorts that are not allowed by columns', function () {
+    Lattice::tables([WorkbenchUsersTable::class]);
+
+    getJson('/lattice/tables/workbench.users?filter[password]=secret')
+        ->assertUnprocessable()
+        ->assertJsonPath('message', 'Filter [password] is not allowed for table [workbench.users].');
+
+    getJson('/lattice/tables/workbench.users?sort=password')
+        ->assertUnprocessable()
+        ->assertJsonPath('message', 'Sort [password] is not allowed for table [workbench.users].');
+});
+
+test('text columns serialize display modifiers', function () {
+    expect(TextColumn::make('published_at')
+        ->label('Published')
+        ->date('Y-m-d')
+        ->copyable()
+        ->link('/posts/{id}')
+        ->toArray())
+        ->toMatchArray([
+            'key' => 'published_at',
+            'label' => 'Published',
+            'type' => 'text',
+            'date' => [
+                'format' => 'Y-m-d',
+            ],
+            'copyable' => true,
+            'link' => [
+                'href' => '/posts/{id}',
+                'external' => false,
+            ],
+        ]);
+});
+
+test('workbench users table exposes timestamp columns for each row', function () {
+    Lattice::tables([WorkbenchAppUsersTable::class]);
+
+    $columns = Table::use(WorkbenchAppUsersTable::class)->toArray()['props']['columns'];
+
+    expect(array_column($columns, 'key'))->toBe(['name', 'email', 'created_at', 'updated_at'])
+        ->and($columns[2])->toMatchArray([
+            'key' => 'created_at',
+            'label' => 'Created at',
+            'sortable' => true,
+            'date' => [
+                'format' => 'Y-m-d H:i:s',
+            ],
+        ])
+        ->and($columns[3])->toMatchArray([
+            'key' => 'updated_at',
+            'label' => 'Updated at',
+            'sortable' => true,
+            'date' => [
+                'format' => 'Y-m-d H:i:s',
+            ],
+        ]);
+});
+
 
 test('links and horizontal stacks serialize as separate composable primitives', function () {
     expect(Stack::make('prompt')->direction('row')->gap(Gap::ExtraSmall)->children([
@@ -212,6 +352,7 @@ test('the workbench home route uses a workbench-owned page directly', function (
     expect(Route::getRoutes()->getByName('home')?->getActionName())->toBe(WorkbenchHomePage::class);
 });
 
+
 test('workbench pages serialize package component trees for inertia', function () {
     withoutVite();
 
@@ -233,6 +374,18 @@ test('workbench pages serialize package component trees for inertia', function (
             ->where('lattice.components.0.children.1.children.0.props.title', 'Components'));
 });
 
+test('workbench user seeder creates sample table data idempotently', function () {
+    app(WorkbenchUserSeeder::class)->run();
+    app(WorkbenchUserSeeder::class)->run();
+
+    expect(User::query()->count())->toBe(1000)
+        ->and(User::query()->where('email', 'ada@example.com')->value('name'))->toBe('Ada Lovelace')
+        ->and(User::query()->where('email', 'workbench-user-994@example.com')->exists())->toBeTrue()
+        ->and(User::query()->distinct()->count('created_at'))->toBe(1000)
+        ->and(User::query()->distinct()->count('updated_at'))->toBe(1000)
+        ->and(User::query()->whereColumn('updated_at', '<', 'created_at')->doesntExist())->toBeTrue();
+});
+
 #[Bambamboole\Lattice\Attributes\Form('settings.profile')]
 class WorkbenchProfileForm extends FormDefinition
 {
@@ -251,5 +404,42 @@ class WorkbenchProfileForm extends FormDefinition
         $request->session()->put('handled-form', $request->string('name')->toString());
 
         return redirect('/submitted');
+    }
+}
+
+#[Bambamboole\Lattice\Attributes\Table('workbench.users')]
+class WorkbenchUsersTable extends TableDefinition
+{
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')
+                ->label('Name')
+                ->sortable()
+                ->filterable(),
+            TextColumn::make('status')
+                ->label('Status')
+                ->filterableExact(),
+            TextColumn::make('email')
+                ->label('Email')
+                ->sortable(),
+        ];
+    }
+
+    public function query(TableQuery $query): TableResult
+    {
+        return TableResult::make([
+            [
+                'name' => 'Taylor',
+                'status' => $query->filter('status'),
+                'sorts' => array_map(
+                    fn ($sort): array => [
+                        'key' => $sort->key,
+                        'direction' => $sort->direction,
+                    ],
+                    $query->sorts(),
+                ),
+            ],
+        ]);
     }
 }

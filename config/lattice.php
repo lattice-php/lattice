@@ -8,4 +8,10 @@ return [
         'middleware' => ['web'],
         'registered' => [],
     ],
+
+    'tables' => [
+        'endpoint' => 'lattice/tables/{table}',
+        'middleware' => ['web'],
+        'registered' => [],
+    ],
 ];

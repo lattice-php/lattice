@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Providers;
 
+use Bambamboole\Lattice\Lattice;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Boost\Install\GuidelineComposer;
 use Laravel\Boost\Install\SkillComposer;
@@ -12,6 +13,7 @@ use Laravel\Roster\Roster;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
+use Workbench\App\Tables\UsersTable;
 
 use function Orchestra\Testbench\package_path;
 
@@ -25,6 +27,10 @@ class WorkbenchServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Lattice::tables([
+            UsersTable::class,
+        ]);
+
         $this->pointBoostAtPackageRoot();
         $this->redirectBoostSkillsToPackageRoot();
     }

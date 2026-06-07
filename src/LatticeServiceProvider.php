@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice;
 
 use Bambamboole\Lattice\Forms\FormRegistry;
+use Bambamboole\Lattice\Tables\TableRegistry;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -23,6 +24,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         $this->app->singleton(FormRegistry::class);
+        $this->app->singleton(TableRegistry::class);
     }
 
     public function packageBooted(): void
@@ -31,6 +33,12 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         if (is_array($forms) && $forms !== []) {
             Lattice::forms($forms);
+        }
+
+        $tables = config('lattice.tables.registered', []);
+
+        if (is_array($tables) && $tables !== []) {
+            Lattice::tables($tables);
         }
     }
 }
