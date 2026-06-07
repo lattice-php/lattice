@@ -1,6 +1,8 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { LatticeNode } from "@/lattice/core/types";
+import { IconRendererProvider } from "@/lattice/icons";
+import type { LatticeIconRenderer } from "@/lattice/icons";
 import ActionComponent from "./action";
 
 const http = vi.hoisted(() => ({
@@ -43,6 +45,35 @@ describe("Lattice action component", () => {
     await waitFor(() => {
       expect(http.post).toHaveBeenCalledWith("/lattice/actions/send-test-email");
     });
+  });
+
+  it("renders configured icons through the icon renderer", () => {
+    const iconRenderer = vi.fn<LatticeIconRenderer>(({ icon }) => (
+      <span data-testid="action-icon">{icon}</span>
+    ));
+
+    const node = {
+      props: {
+        endpoint: "/lattice/actions/send-test-email",
+        icon: "custom.spark",
+        label: "Send test email",
+        method: "post",
+      },
+      type: "action",
+    } satisfies LatticeNode<"action">;
+
+    render(
+      <IconRendererProvider mode="replace" renderer={iconRenderer}>
+        <ActionComponent node={node}>{null}</ActionComponent>
+      </IconRendererProvider>,
+    );
+
+    expect(iconRenderer).toHaveBeenCalledWith({
+      className: "size-4",
+      icon: "custom.spark",
+    });
+    expect(screen.getByTestId("action-icon")).toHaveTextContent("custom.spark");
+    expect(screen.getByRole("button", { name: "custom.sparkSend test email" })).toBeVisible();
   });
 
   it("opens a confirmation modal before submitting destructive actions", async () => {

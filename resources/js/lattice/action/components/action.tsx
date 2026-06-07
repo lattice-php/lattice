@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { getStringProp } from "@/lattice/core/props";
 import type { LatticeNodeProps, LatticeRendererComponent } from "@/lattice/core/types";
+import { IconRenderer } from "@/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, isActionEffect } from "../effects";
 import type { LatticeActionEffect } from "../effects";
 
@@ -29,6 +30,7 @@ declare module "@/lattice/core/types" {
       confirmation?: LatticeActionConfirmation;
       effects?: LatticeActionEffect[];
       endpoint?: string;
+      icon?: string;
       label?: string;
       method?: LatticeActionMethod;
       variant?: LatticeActionVariant;
@@ -62,6 +64,7 @@ function getConfirmation(props: LatticeNodeProps | undefined): LatticeActionConf
 
 const ActionComponent: LatticeRendererComponent<"action"> = ({ node }) => {
   const endpoint = getStringProp(node.props, "endpoint");
+  const icon = getStringProp(node.props, "icon");
   const label = getStringProp(node.props, "label", "Run action");
   const method = getActionMethod(node.props);
   const http = useHttp<Record<string, never>, LatticeActionResponse>({});
@@ -109,7 +112,7 @@ const ActionComponent: LatticeRendererComponent<"action"> = ({ node }) => {
         type="button"
         variant={node.props?.variant ?? "default"}
       >
-        {http.processing && <Spinner />}
+        {http.processing ? <Spinner /> : icon && <IconRenderer className="size-4" icon={icon} />}
         {label}
       </Button>
 

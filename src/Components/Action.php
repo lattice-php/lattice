@@ -2,6 +2,7 @@
 
 namespace Bambamboole\Lattice\Components;
 
+use BackedEnum;
 use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionRegistry;
 use Bambamboole\Lattice\Actions\Effect;
@@ -43,6 +44,11 @@ class Action extends InteractiveComponent
     public function variant(string $variant): static
     {
         return $this->prop('variant', $variant);
+    }
+
+    public function icon(BackedEnum|string $icon): static
+    {
+        return $this->prop('icon', $icon instanceof BackedEnum ? (string) $icon->value : $icon);
     }
 
     public function confirm(
