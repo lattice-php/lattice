@@ -1,11 +1,12 @@
-import type { LatticeRendererComponent } from "@/lattice/core/types";
+import type { LatticeNode, LatticeRendererComponent } from "@/lattice/core/types";
 import { ArrowDown, ArrowUp, Check, ChevronsUpDown, Copy, X } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type TableColumn = {
+  columns?: TableColumn[];
   key: string;
   label: string;
-  type?: "text";
+  type?: "stack" | "text";
   sortable?: boolean;
   filter?: {
     enabled?: boolean;
@@ -22,6 +23,11 @@ type TableColumn = {
 };
 
 type TableRow = Record<string, unknown>;
+
+type TableRowMeta = {
+  actions?: LatticeNode[];
+  key?: string;
+};
 
 type TableSort = {
   key: string;
@@ -50,8 +56,16 @@ type TablePagination = {
 type TableResponse = {
   data?: TableRow[];
   pagination?: TablePagination;
+  rows?: TableRowMeta[];
   state?: Partial<TableState>;
 };
+
+type ReloadComponentEvent = CustomEvent<{
+  component?: string;
+  type?: string;
+}>;
+
+const TableActionComponent = lazy(() => import("@/lattice/action/components/action"));
 
 declare module "@/lattice/core/types" {
   interface LatticeComponentProps {
@@ -59,7 +73,10 @@ declare module "@/lattice/core/types" {
       columns?: TableColumn[];
       data?: TableRow[];
       endpoint?: string;
+      lazy?: boolean;
+      layout?: string;
       pagination?: Record<string, unknown>;
+      rows?: TableRowMeta[];
       state?: Record<string, unknown>;
     };
   }
@@ -91,12 +108,26 @@ function getRows(value: unknown): TableRow[] {
   );
 }
 
+function getRowMetadata(value: unknown): TableRowMeta[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter(
+    (row): row is TableRowMeta => typeof row === "object" && row !== null && !Array.isArray(row),
+  );
+}
+
 function getPagination(value: unknown): TablePagination {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return {};
   }
 
   return value as TablePagination;
+}
+
+function flattenColumns(columns: TableColumn[]): TableColumn[] {
+  return columns.flatMap((column) => [column, ...flattenColumns(column.columns ?? [])]);
 }
 
 function getState(value: unknown): TableState {
@@ -203,7 +234,7 @@ function getColumnSort(state: TableState, column: TableColumn): TableSort | unde
 }
 
 function getSortColumn(columns: TableColumn[], sort: TableSort): TableColumn | undefined {
-  return columns.find((column) => column.key === sort.key);
+  return flattenColumns(columns).find((column) => column.key === sort.key);
 }
 
 function getColumnAriaSort(sort: TableSort | undefined): "ascending" | "descending" | undefined {
@@ -289,15 +320,37 @@ function getVisiblePages(currentPage: number, lastPage: number): number[] {
   return Array.from({ length: 5 }, (_, index) => start + index);
 }
 
+function getColumnGridTemplate(columns: TableColumn[], hasActions: boolean): string {
+  const tracks: string[] = columns.map((column) =>
+    column.type === "stack" ? "minmax(16rem, 2fr)" : "minmax(9rem, 1fr)",
+  );
+
+  if (hasActions) {
+    tracks.push("max-content");
+  }
+
+  return tracks.join(" ");
+}
+
+function getRowMeta(rowMetadata: TableRowMeta[], row: TableRow, index: number): TableRowMeta {
+  const rowKey = getRowKey(row, index);
+
+  return rowMetadata.find((metadata) => metadata.key === rowKey) ?? rowMetadata[index] ?? {};
+}
+
 const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
   const columns = getColumns(node.props?.columns);
+  const interactiveColumns = useMemo(() => flattenColumns(columns), [columns]);
   const endpoint = typeof node.props?.endpoint === "string" ? node.props.endpoint : null;
+  const isLazy = node.props?.lazy === true;
   const initialState = useMemo(() => getState(node.props?.state), [node.props?.state]);
   const [rows, setRows] = useState(() => getRows(node.props?.data));
+  const [rowMetadata, setRowMetadata] = useState(() => getRowMetadata(node.props?.rows));
   const [pagination, setPagination] = useState(() => getPagination(node.props?.pagination));
   const [state, setState] = useState(initialState);
   const [filters, setFilters] = useState(initialState.filters);
-  const [processing, setProcessing] = useState(false);
+  const [processing, setProcessing] = useState(isLazy);
+  const [hasLoaded, setHasLoaded] = useState(!isLazy);
   const infiniteLoaderRef = useRef<HTMLDivElement | null>(null);
   const currentPage = pagination.currentPage ?? state.page;
   const lastPage = pagination.lastPage ?? currentPage;
@@ -307,6 +360,8 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
   const isTable = paginationType === "table";
   const visiblePages = getVisiblePages(currentPage, lastPage);
   const hasNextPage = pagination.hasMore ?? currentPage < lastPage;
+  const hasActions = rowMetadata.some((metadata) => (metadata.actions?.length ?? 0) > 0);
+  const gridTemplateColumns = getColumnGridTemplate(columns, hasActions);
 
   const load = useCallback(
     async (nextState: TableState, append = false): Promise<void> => {
@@ -325,11 +380,16 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
         const result = (await response.json()) as TableResponse;
         const resultState = getState(result.state);
         const resultRows = getRows(result.data);
+        const resultRowMetadata = getRowMetadata(result.rows);
 
         setRows((currentRows) => (append ? [...currentRows, ...resultRows] : resultRows));
+        setRowMetadata((currentRowMetadata) =>
+          append ? [...currentRowMetadata, ...resultRowMetadata] : resultRowMetadata,
+        );
         setPagination(getPagination(result.pagination));
         setState(resultState);
         setFilters(resultState.filters);
+        setHasLoaded(true);
       } finally {
         setProcessing(false);
       }
@@ -367,6 +427,30 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
       page,
     });
   }
+
+  useEffect(() => {
+    if (!isLazy || hasLoaded) {
+      return;
+    }
+
+    void load(state);
+  }, [hasLoaded, isLazy, load, state]);
+
+  useEffect(() => {
+    function reload(event: Event): void {
+      const detail = (event as ReloadComponentEvent).detail;
+
+      if (detail?.component !== node.id) {
+        return;
+      }
+
+      void load(state);
+    }
+
+    window.addEventListener("lattice:reload-component", reload);
+
+    return () => window.removeEventListener("lattice:reload-component", reload);
+  }, [load, node.id, state]);
 
   const loadMore = useCallback((): void => {
     if (processing || !pagination.hasMore) {
@@ -411,9 +495,9 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
 
   return (
     <div data-lattice-component={node.id} className="overflow-hidden rounded-md border">
-      {columns.some((column) => column.filter?.enabled) && (
+      {interactiveColumns.some((column) => column.filter?.enabled) && (
         <div className="flex flex-wrap items-end gap-3 border-b p-4">
-          {columns
+          {interactiveColumns
             .filter((column) => column.filter?.enabled)
             .map((column) => (
               <label key={column.key} className="grid gap-1 text-sm font-medium">
@@ -470,126 +554,213 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
           })}
         </div>
       )}
-      <table className="w-full caption-bottom text-sm">
-        <thead className="border-b bg-muted/50">
-          <tr>
-            {columns.map((column) => {
-              const columnSort = getColumnSort(state, column);
+      <div className="w-full text-sm" role="table">
+        <div className="border-b bg-muted/50" role="rowgroup">
+          <div
+            className="hidden min-w-full md:grid md:grid-cols-[var(--lattice-table-columns)]"
+            role="row"
+            style={{ "--lattice-table-columns": gridTemplateColumns } as never}
+          >
+            {columns.map((column) => (
+              <ColumnHeader
+                column={column}
+                key={column.key}
+                processing={processing}
+                sort={sort}
+                state={state}
+              />
+            ))}
+            {hasActions && (
+              <div
+                className="h-10 px-4 text-right align-middle font-medium text-muted-foreground"
+                role="columnheader"
+              >
+                Actions
+              </div>
+            )}
+          </div>
+        </div>
+        <div role="rowgroup">
+          {!hasLoaded ? (
+            <div className="p-4 text-muted-foreground" role="row">
+              <div role="cell">Loading rows...</div>
+            </div>
+          ) : (
+            rows.map((row, index) => {
+              const metadata = getRowMeta(rowMetadata, row, index);
+              const actions = metadata.actions ?? [];
 
               return (
-                <th
-                  key={column.key}
-                  scope="col"
-                  aria-sort={getColumnAriaSort(columnSort)}
-                  className="h-10 px-4 text-left align-middle font-medium text-muted-foreground"
+                <div
+                  key={metadata.key ?? getRowKey(row, index)}
+                  className="grid grid-cols-1 border-b last:border-b-0 md:grid-cols-[var(--lattice-table-columns)]"
+                  role="row"
+                  style={{ "--lattice-table-columns": gridTemplateColumns } as never}
                 >
-                  {column.sortable ? (
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1.5 font-medium"
-                      disabled={processing}
-                      onClick={() => sort(column)}
+                  {columns.map((column) => (
+                    <div key={column.key} className="grid gap-1 p-4 align-middle" role="cell">
+                      <span
+                        aria-hidden="true"
+                        className="text-xs font-medium text-muted-foreground md:hidden"
+                      >
+                        {column.label}
+                      </span>
+                      <ColumnCell column={column} row={row} />
+                    </div>
+                  ))}
+                  {actions.length > 0 && (
+                    <div
+                      className="flex items-center justify-start gap-2 p-4 md:justify-end"
+                      role="cell"
                     >
-                      {`Sort ${column.label}`}
-                      <SortIndicator sort={columnSort} />
-                    </button>
-                  ) : (
-                    column.label
+                      {actions.map((action, actionIndex) => (
+                        <Suspense fallback={null} key={action.key ?? action.id ?? actionIndex}>
+                          {action.type === "action" ? (
+                            <TableActionComponent node={action as LatticeNode<"action">}>
+                              {null}
+                            </TableActionComponent>
+                          ) : null}
+                        </Suspense>
+                      ))}
+                    </div>
                   )}
-                </th>
+                </div>
               );
-            })}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, index) => (
-            <tr key={getRowKey(row, index)} className="border-b last:border-b-0">
-              {columns.map((column) => (
-                <td key={column.key} className="p-4 align-middle">
-                  <TextCell column={column} row={row} value={row[column.key]} />
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="flex items-center justify-between gap-3 border-t p-4 text-sm">
-        <span>
-          {pagination.total === undefined
-            ? `Page ${currentPage}`
-            : `Showing ${pagination.from ?? 0}-${pagination.to ?? 0} of ${pagination.total}`}
-        </span>
-        {isInfinite ? (
-          <div ref={infiniteLoaderRef} className="flex items-center gap-2">
-            {pagination.hasMore ? (
+            })
+          )}
+        </div>
+      </div>
+      {hasLoaded && (
+        <div className="flex items-center justify-between gap-3 border-t p-4 text-sm">
+          <span>
+            {pagination.total === undefined
+              ? `Page ${currentPage}`
+              : `Showing ${pagination.from ?? 0}-${pagination.to ?? 0} of ${pagination.total}`}
+          </span>
+          {isInfinite ? (
+            <div ref={infiniteLoaderRef} className="flex items-center gap-2">
+              {pagination.hasMore ? (
+                <button
+                  type="button"
+                  className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+                  disabled={processing}
+                  onClick={loadMore}
+                >
+                  {processing ? "Loading..." : "Load more"}
+                </button>
+              ) : (
+                <span className="text-muted-foreground">All rows loaded</span>
+              )}
+            </div>
+          ) : isSimple ? (
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
-                disabled={processing}
-                onClick={loadMore}
+                disabled={processing || currentPage <= 1}
+                onClick={() => page(currentPage - 1)}
               >
-                {processing ? "Loading..." : "Load more"}
+                Previous
               </button>
-            ) : (
-              <span className="text-muted-foreground">All rows loaded</span>
-            )}
-          </div>
-        ) : isSimple ? (
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
-              disabled={processing || currentPage <= 1}
-              onClick={() => page(currentPage - 1)}
-            >
-              Previous
-            </button>
-            <button
-              type="button"
-              className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
-              disabled={processing || !hasNextPage}
-              onClick={() => page(currentPage + 1)}
-            >
-              Next
-            </button>
-          </div>
-        ) : isTable ? (
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
-              disabled={processing || currentPage <= 1}
-              onClick={() => page(currentPage - 1)}
-            >
-              Previous
-            </button>
-            {visiblePages.map((pageNumber) => (
               <button
-                key={pageNumber}
                 type="button"
-                className="inline-flex size-9 items-center justify-center rounded-md border font-medium disabled:opacity-50"
-                disabled={processing || pageNumber === currentPage}
-                aria-current={pageNumber === currentPage ? "page" : undefined}
-                aria-label={`Page ${pageNumber}`}
-                onClick={() => page(pageNumber)}
+                className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+                disabled={processing || !hasNextPage}
+                onClick={() => page(currentPage + 1)}
               >
-                {pageNumber}
+                Next
               </button>
-            ))}
-            <button
-              type="button"
-              className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
-              disabled={processing || !hasNextPage}
-              onClick={() => page(currentPage + 1)}
-            >
-              Next
-            </button>
-          </div>
-        ) : null}
-      </div>
+            </div>
+          ) : isTable ? (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+                disabled={processing || currentPage <= 1}
+                onClick={() => page(currentPage - 1)}
+              >
+                Previous
+              </button>
+              {visiblePages.map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  type="button"
+                  className="inline-flex size-9 items-center justify-center rounded-md border font-medium disabled:opacity-50"
+                  disabled={processing || pageNumber === currentPage}
+                  aria-current={pageNumber === currentPage ? "page" : undefined}
+                  aria-label={`Page ${pageNumber}`}
+                  onClick={() => page(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              ))}
+              <button
+                type="button"
+                className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+                disabled={processing || !hasNextPage}
+                onClick={() => page(currentPage + 1)}
+              >
+                Next
+              </button>
+            </div>
+          ) : null}
+        </div>
+      )}
     </div>
   );
 };
+
+function ColumnHeader({
+  column,
+  processing,
+  sort,
+  state,
+}: {
+  column: TableColumn;
+  processing: boolean;
+  sort: (column: TableColumn) => void;
+  state: TableState;
+}) {
+  const columnSort = getColumnSort(state, column);
+
+  return (
+    <div
+      aria-sort={getColumnAriaSort(columnSort)}
+      className="h-10 px-4 text-left align-middle font-medium text-muted-foreground"
+      role="columnheader"
+    >
+      {column.sortable ? (
+        <button
+          type="button"
+          className="inline-flex items-center gap-1.5 font-medium"
+          disabled={processing}
+          onClick={() => sort(column)}
+        >
+          {`Sort ${column.label}`}
+          <SortIndicator sort={columnSort} />
+        </button>
+      ) : (
+        column.label
+      )}
+    </div>
+  );
+}
+
+function ColumnCell({ column, row }: { column: TableColumn; row: TableRow }) {
+  if (column.type === "stack") {
+    return (
+      <div className="grid gap-1">
+        {(column.columns ?? []).map((stackedColumn) => (
+          <span key={stackedColumn.key}>
+            <TextCell column={stackedColumn} row={row} value={row[stackedColumn.key]} />
+          </span>
+        ))}
+      </div>
+    );
+  }
+
+  return <TextCell column={column} row={row} value={row[column.key]} />;
+}
 
 function TextCell({ column, row, value }: { column: TableColumn; row: TableRow; value: unknown }) {
   const text = formatCell(value, column);

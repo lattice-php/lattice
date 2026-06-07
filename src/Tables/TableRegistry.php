@@ -39,12 +39,33 @@ class TableRegistry
         $definition = $this->make($table);
         $columns = $definition->columns();
         $query = TableQuery::empty($columns, $key, $definition->perPage());
-        $result = $definition->query($query);
+        $result = $this->decorateResult($definition, $definition->query($query));
 
         return TableComponent::make($key)
             ->endpoint($this->endpointFor($key))
             ->columns($columns)
+            ->layout($definition->layout())
             ->result($result, $query);
+    }
+
+    /**
+     * @param  class-string<TableDefinition>  $table
+     */
+    public function lazyComponent(string $table): TableComponent
+    {
+        $key = $this->registeredKeyFor($table);
+        $definition = $this->make($table);
+        $columns = $definition->columns();
+        $query = TableQuery::empty($columns, $key, $definition->perPage());
+        $result = TableResult::make([])
+            ->pagination(['mode' => $definition->paginationType()->value]);
+
+        return TableComponent::make($key)
+            ->endpoint($this->endpointFor($key))
+            ->columns($columns)
+            ->layout($definition->layout())
+            ->result($result, $query)
+            ->prop('lazy', true);
     }
 
     /**
@@ -56,7 +77,7 @@ class TableRegistry
         $columns = $definition->columns();
         $query = TableQuery::fromRequest($request, $columns, $key, $definition->perPage());
 
-        return $definition->query($query)->toArray($query);
+        return $this->decorateResult($definition, $definition->query($query))->toArray($query);
     }
 
     public function resolve(string $key): TableDefinition
@@ -114,5 +135,20 @@ class TableRegistry
     private function make(string $table): TableDefinition
     {
         return $this->container->make($table);
+    }
+
+    private function decorateResult(TableDefinition $definition, TableResult $result): TableResult
+    {
+        return $result->rows(function (array $row, int $index) use ($definition): array {
+            $actions = array_map(
+                fn ($action): array => $action->toArray(),
+                $definition->actions($row),
+            );
+
+            return array_filter([
+                'key' => (string) ($row['id'] ?? $row['uuid'] ?? $row['key'] ?? $index),
+                'actions' => $actions,
+            ], fn (mixed $value, string $key): bool => $key === 'actions' ? $value !== [] : $actions !== [], ARRAY_FILTER_USE_BOTH);
+        });
     }
 }

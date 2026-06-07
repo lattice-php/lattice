@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { LatticeNode } from "@/lattice/core/types";
 import { IconRendererProvider } from "@/lattice/icons";
@@ -14,6 +15,9 @@ const http = vi.hoisted(() => ({
 }));
 
 vi.mock("@inertiajs/react", () => ({
+  router: {
+    reload: vi.fn<() => void>(),
+  },
   useHttp: () => http,
 }));
 
@@ -24,6 +28,7 @@ describe("Lattice action component", () => {
     http.post.mockReset();
     http.put.mockReset();
     http.processing = false;
+    vi.mocked(router.reload).mockReset();
   });
 
   it("submits the configured action endpoint", async () => {
@@ -132,15 +137,20 @@ describe("Lattice action component", () => {
           component: "settings.profile",
           type: "reloadComponent",
         },
+        {
+          type: "reloadPage",
+        },
       ],
       ok: true,
     });
 
     const toastListener = vi.fn<(event: Event) => void>();
     const reloadListener = vi.fn<(event: Event) => void>();
+    const reloadPageListener = vi.fn<(event: Event) => void>();
 
     window.addEventListener("lattice:toast", toastListener);
     window.addEventListener("lattice:reload-component", reloadListener);
+    window.addEventListener("lattice:reload-page", reloadPageListener);
 
     const node = {
       props: {
@@ -159,6 +169,7 @@ describe("Lattice action component", () => {
     await waitFor(() => {
       expect(toastListener).toHaveBeenCalledTimes(1);
       expect(reloadListener).toHaveBeenCalledTimes(1);
+      expect(reloadPageListener).toHaveBeenCalledTimes(1);
     });
 
     const [[toastEvent]] = toastListener.mock.calls as [[CustomEvent]];
@@ -172,9 +183,11 @@ describe("Lattice action component", () => {
       component: "settings.profile",
       type: "reloadComponent",
     });
+    expect(router.reload).toHaveBeenCalledWith();
 
     window.removeEventListener("lattice:toast", toastListener);
     window.removeEventListener("lattice:reload-component", reloadListener);
+    window.removeEventListener("lattice:reload-page", reloadPageListener);
   });
 
   it("dispatches failed responses as action errors", async () => {

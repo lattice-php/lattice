@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice;
 
+use BadMethodCallException;
 use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionRegistry;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableRegistry;
+use Illuminate\Routing\Route;
+use Illuminate\Routing\Router;
 
 class Lattice
 {
@@ -35,5 +38,20 @@ class Lattice
     public static function actions(string|array $actions): void
     {
         app(ActionRegistry::class)->register($actions);
+    }
+
+    /**
+     * @param  class-string<Page>  $page
+     */
+    public static function page(string $uri, string $page): Route
+    {
+        if (! method_exists($page, 'render')) {
+            throw new BadMethodCallException(sprintf(
+                'Method %s::render does not exist.',
+                $page,
+            ));
+        }
+
+        return app(Router::class)->get($uri, [$page, 'render']);
     }
 }

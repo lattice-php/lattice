@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Workbench\App\Pages\WorkbenchHomePage;
+use Workbench\App\Pages\WorkbenchTablesPage;
 
-Route::get('/', WorkbenchHomePage::class)->name('home');
+Route::latticePage('/', WorkbenchHomePage::class)->name('home');
+Route::latticePage('/tables', WorkbenchTablesPage::class)->name('tables');
 Route::get('/dashboard', fn (): string => 'Dashboard')->name('dashboard');
 Route::get('/login', fn (): string => 'Login')->name('login');
 Route::post('/login', fn () => redirect()->route('home'))->name('login.store');

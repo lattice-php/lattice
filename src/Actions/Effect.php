@@ -26,6 +26,11 @@ final readonly class Effect implements JsonSerializable
         return new self('reloadComponent', ['component' => $component]);
     }
 
+    public static function reloadPage(): self
+    {
+        return new self('reloadPage');
+    }
+
     public static function openModal(string $modal): self
     {
         return new self('openModal', ['modal' => $modal]);

@@ -5,7 +5,7 @@ import { ChoiceComponent } from "./form-components";
 
 describe("Lattice form choice component", () => {
   it("renders choices and dispatches change events", () => {
-    const handleChange = vi.fn();
+    const handleChange = vi.fn<(event: Event) => void>();
     const node = {
       props: {
         event: "lattice:appearance-change",
@@ -35,7 +35,9 @@ describe("Lattice form choice component", () => {
 
     expect(screen.getByRole("radio", { name: "Dark" })).toHaveAttribute("aria-checked", "true");
     expect(handleChange).toHaveBeenCalledTimes(1);
-    expect((handleChange.mock.calls[0]?.[0] as CustomEvent).detail).toEqual({
+    const [[changeEvent]] = handleChange.mock.calls as [[CustomEvent]];
+
+    expect(changeEvent.detail).toEqual({
       name: "appearance",
       value: "dark",
     });

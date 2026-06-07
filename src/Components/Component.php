@@ -19,6 +19,8 @@ abstract class Component implements JsonSerializable
      */
     protected array $children = [];
 
+    protected bool $shouldRender = true;
+
     public function __construct(protected ?string $key = null) {}
 
     abstract protected function type(): string;
@@ -50,6 +52,18 @@ abstract class Component implements JsonSerializable
         return $this;
     }
 
+    public function when(bool $condition): static
+    {
+        $this->shouldRender = $condition;
+
+        return $this;
+    }
+
+    public function shouldRender(): bool
+    {
+        return $this->shouldRender;
+    }
+
     /**
      * @param  array<int, Component>  $children
      */
@@ -78,7 +92,10 @@ abstract class Component implements JsonSerializable
             'props' => $this->props,
             'children' => array_map(
                 fn (Component $child): array => $child->toArray(),
-                $this->children,
+                array_values(array_filter(
+                    $this->children,
+                    fn (Component $child): bool => $child->shouldRender(),
+                )),
             ),
         ];
 

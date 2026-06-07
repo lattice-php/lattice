@@ -40,7 +40,10 @@ final class PageSchema
     {
         return array_map(
             fn (Component $component): array => $component->toArray(),
-            $this->components,
+            array_values(array_filter(
+                $this->components,
+                fn (Component $component): bool => $component->shouldRender(),
+            )),
         );
     }
 }

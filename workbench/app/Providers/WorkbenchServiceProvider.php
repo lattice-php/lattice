@@ -13,7 +13,11 @@ use Laravel\Roster\Roster;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
+use Workbench\App\Tables\UsersInfiniteTable;
+use Workbench\App\Tables\UsersNoneTable;
+use Workbench\App\Tables\UsersSimpleTable;
 use Workbench\App\Tables\UsersTable;
+use Workbench\App\Tables\UsersTablePaginationTable;
 
 use function Orchestra\Testbench\package_path;
 
@@ -29,6 +33,10 @@ class WorkbenchServiceProvider extends ServiceProvider
     {
         Lattice::tables([
             UsersTable::class,
+            UsersNoneTable::class,
+            UsersSimpleTable::class,
+            UsersTablePaginationTable::class,
+            UsersInfiniteTable::class,
         ]);
 
         $this->pointBoostAtPackageRoot();

@@ -23,6 +23,7 @@ use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Lattice;
 use Bambamboole\Lattice\Page;
 use Bambamboole\Lattice\PageSchema;
+use Bambamboole\Lattice\Tables\Columns\StackColumn;
 use Bambamboole\Lattice\Tables\Columns\TextColumn;
 use Bambamboole\Lattice\Tables\EloquentTableDefinition;
 use Bambamboole\Lattice\Tables\PaginationType;
@@ -37,6 +38,7 @@ use Inertia\Testing\AssertableInertia;
 use Orchestra\Testbench\Factories\UserFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Pages\WorkbenchHomePage;
+use Workbench\App\Pages\WorkbenchTablesPage;
 use Workbench\App\Seeders\WorkbenchUserSeeder;
 use Workbench\App\Tables\UsersTable as WorkbenchAppUsersTable;
 
@@ -45,6 +47,7 @@ use function Pest\Laravel\getJson;
 use function Pest\Laravel\patch;
 use function Pest\Laravel\postJson;
 use function Pest\Laravel\withoutVite;
+use function Pest\Laravel\withSession;
 
 test('lattice component factories stay open for extension', function () {
     $badgeClass = (new class extends Badge {})::class;
@@ -94,6 +97,31 @@ test('forms can disable their default submit button', function () {
                 'submitButton' => false,
             ],
         ]);
+});
+
+test('components can opt out of rendering with when', function () {
+    $page = new class extends Page
+    {
+        public function render(PageSchema $schema): PageSchema
+        {
+            return $schema->components([
+                Text::make('Visible root'),
+                Text::make('Hidden root')->when(false),
+                Stack::make('nested')->children([
+                    Text::make('Visible child'),
+                    Text::make('Hidden child')->when(false),
+                ]),
+            ]);
+        }
+    };
+
+    $pageData = $page->toArray($page->render(PageSchema::make()));
+
+    expect($pageData['components'])
+        ->toHaveCount(2)
+        ->and($pageData['components'][0]['props']['text'])->toBe('Visible root')
+        ->and($pageData['components'][1]['children'])->toHaveCount(1)
+        ->and($pageData['components'][1]['children'][0]['props']['text'])->toBe('Visible child');
 });
 
 test('form choices serialize options value and change events', function () {
@@ -219,6 +247,88 @@ test('registered tables serialize their configured endpoint columns state and in
                 ],
                 'pagination' => [],
             ],
+        ]);
+});
+
+test('registered tables can serialize lazily without running their query', function () {
+    config(['lattice.tables.endpoint' => 'custom/tables/{table}']);
+
+    Lattice::tables([WorkbenchLazyUsersTable::class]);
+
+    expect(Table::lazy(WorkbenchLazyUsersTable::class)->toArray())
+        ->toMatchArray([
+            'type' => 'table',
+            'id' => 'workbench.lazy-users',
+            'props' => [
+                'endpoint' => '/custom/tables/workbench.lazy-users',
+                'lazy' => true,
+                'columns' => [
+                    [
+                        'key' => 'name',
+                        'label' => 'Name',
+                        'type' => 'text',
+                    ],
+                ],
+                'data' => [],
+                'state' => [
+                    'filters' => [],
+                    'sorts' => [],
+                    'page' => 1,
+                    'perPage' => 25,
+                ],
+                'pagination' => [
+                    'mode' => 'table',
+                ],
+            ],
+        ]);
+});
+
+test('registered tables serialize grid layout stack columns and row actions', function () {
+    Lattice::actions([WorkbenchPingAction::class]);
+    Lattice::tables([WorkbenchStackedUsersTable::class]);
+
+    $table = Table::use(WorkbenchStackedUsersTable::class)->toArray();
+
+    expect($table)
+        ->toMatchArray([
+            'type' => 'table',
+            'id' => 'workbench.stacked-users',
+        ])
+        ->and($table['props']['layout'])->toBe('grid')
+        ->and($table['props']['columns'])->toMatchArray([
+            [
+                'key' => 'identity',
+                'label' => 'Identity',
+                'type' => 'stack',
+                'columns' => [
+                    [
+                        'key' => 'name',
+                        'label' => 'Name',
+                        'type' => 'text',
+                        'sortable' => true,
+                    ],
+                    [
+                        'key' => 'email',
+                        'label' => 'Email',
+                        'type' => 'text',
+                    ],
+                ],
+            ],
+            [
+                'key' => 'status',
+                'label' => 'Status',
+                'type' => 'text',
+            ],
+        ])
+        ->and($table['props']['rows'][0]['key'])->toBe('1')
+        ->and($table['props']['rows'][0]['actions'][0])->toMatchArray([
+            'type' => 'action',
+            'id' => 'workbench.ping',
+        ])
+        ->and($table['props']['rows'][0]['actions'][0]['props'])
+        ->toMatchArray([
+            'label' => 'Ping',
+            'method' => 'post',
         ]);
 });
 
@@ -537,7 +647,9 @@ test('tabs serialize tab panels as composable children', function () {
             'type' => 'tabs',
             'key' => 'settings-tabs',
             'props' => [
+                'activeValue' => 'security',
                 'defaultValue' => 'security',
+                'queryKey' => 'tabs',
             ],
             'children' => [
                 [
@@ -572,14 +684,133 @@ test('tabs serialize tab panels as composable children', function () {
         ]);
 });
 
+test('tabs can customize their query string key', function () {
+    expect(Tabs::make('settings-tabs')
+        ->queryKey('settings-tab')
+        ->toArray())
+        ->toMatchArray([
+            'type' => 'tabs',
+            'key' => 'settings-tabs',
+            'props' => [
+                'activeValue' => '',
+                'queryKey' => 'settings-tab',
+            ],
+        ]);
+});
+
+test('tabs ignore hidden tab children when resolving their active value', function () {
+    $tabs = Tabs::make('settings-tabs')
+        ->defaultValue('security')
+        ->children([
+            Tab::make('profile', 'Profile'),
+            Tab::make('security', 'Security')->when(false),
+        ])
+        ->toArray();
+
+    expect($tabs['props']['activeValue'])->toBe('profile')
+        ->and($tabs['children'])->toHaveCount(1)
+        ->and($tabs['children'][0]['props']['value'])->toBe('profile');
+});
+
+test('tabs hydrate their active value from the request query string', function () {
+    Route::latticePage('query-tabs', WorkbenchTabsPage::class)->middleware('web')->name('query-tabs.show');
+
+    withoutVite();
+
+    get('/query-tabs?tabs=security')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('lattice/page')
+            ->where('lattice.components.0.props.defaultValue', 'profile')
+            ->where('lattice.components.0.props.activeValue', 'security')
+        );
+});
+
+test('confirmed inactive tabs serialize only their tab metadata', function () {
+    $tabs = Tabs::make('settings-tabs')
+        ->defaultValue('profile')
+        ->children([
+            Tab::make('profile', 'Profile')->children([
+                Text::make('Profile form'),
+            ]),
+            Tab::make('security', 'Security')
+                ->confirm()
+                ->children([
+                    Text::make('Security form'),
+                ]),
+        ])
+        ->toArray();
+
+    expect($tabs['props']['activeValue'])->toBe('profile')
+        ->and($tabs['props']['defaultValue'])->toBe('profile')
+        ->and($tabs['props']['queryKey'])->toBe('tabs')
+        ->and($tabs['children'][0]['props']['value'])->toBe('profile')
+        ->and($tabs['children'][1]['props']['value'])->toBe('security')
+        ->and($tabs['children'][1]['props']['confirm'])->toMatchArray([
+            'required' => true,
+            'redirectUrl' => '/user/confirm-password',
+        ])
+        ->and($tabs['children'][1])->not->toHaveKey('children');
+});
+
+test('confirmed active tabs redirect to password confirmation when the password is not confirmed', function () {
+    Route::latticePage('confirmed-tabs', WorkbenchConfirmedTabsPage::class)->middleware('web')->name('confirmed-tabs.show');
+    config(['session.driver' => 'array']);
+
+    get('/confirmed-tabs?tabs=security')
+        ->assertRedirect('/user/confirm-password');
+
+    expect(session('url.intended'))->toContain('/confirmed-tabs?tabs=security');
+});
+
+test('confirmed active tabs serialize their children after password confirmation', function () {
+    Route::latticePage('confirmed-tabs', WorkbenchConfirmedTabsPage::class)->middleware('web')->name('confirmed-tabs.show');
+
+    withoutVite();
+    config(['session.driver' => 'array']);
+
+    withSession(['auth.password_confirmed_at' => time()]);
+
+    get('/confirmed-tabs?tabs=security')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('lattice/page')
+            ->where('lattice.components.0.props.activeValue', 'security')
+            ->where('lattice.components.0.children.1.children.0.props.text', 'Security form')
+        );
+});
+
 test('the workbench home route uses a workbench-owned page directly', function () {
-    expect(Route::getRoutes()->getByName('home')?->getActionName())->toBe(WorkbenchHomePage::class);
+    expect(Route::getRoutes()->getByName('home')?->getActionName())->toBe(WorkbenchHomePage::class.'@render');
+});
+
+test('the workbench tables route uses lazy pagination tab tables', function () {
+    expect(Route::getRoutes()->getByName('tables')?->getActionName())->toBe(WorkbenchTablesPage::class.'@render');
+});
+
+test('pages use laravel controller resolution for constructor dependencies render dependencies and route arguments', function () {
+    $user = UserFactory::new()->create([
+        'name' => 'Route Bound User',
+    ]);
+
+    Route::latticePage('page-injection/{user}/{label}', WorkbenchInjectedPage::class)
+        ->middleware('web')
+        ->name('page-injection.show');
+
+    withoutVite();
+
+    get("/page-injection/{$user->getKey()}/details")
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('lattice/page')
+            ->where('lattice.components.0.props.text', 'Injected Route Bound User details details')
+        );
 });
 
 test('pages serialize layout and container metadata', function () {
     $defaultPage = new class extends Page
     {
-        public function content(PageSchema $schema): PageSchema
+        public function render(PageSchema $schema): PageSchema
         {
             return $schema->component(Text::make('Default page'));
         }
@@ -597,18 +828,18 @@ test('pages serialize layout and container metadata', function () {
             return 'default';
         }
 
-        public function content(PageSchema $schema): PageSchema
+        public function render(PageSchema $schema): PageSchema
         {
             return $schema->component(Text::make('Configured page'));
         }
     };
 
-    expect($defaultPage->toArray())
+    expect($defaultPage->toArray($defaultPage->render(PageSchema::make())))
         ->toMatchArray([
             'layout' => 'none',
             'container' => 'centered',
         ])
-        ->and($configuredPage->toArray())
+        ->and($configuredPage->toArray($configuredPage->render(PageSchema::make())))
         ->toMatchArray([
             'layout' => 'settings',
             'container' => 'default',
@@ -636,6 +867,34 @@ test('workbench pages serialize package component trees for inertia', function (
             ->where('lattice.components.0.children.1.type', 'grid')
             ->where('lattice.components.0.children.1.children.0.type', 'card')
             ->where('lattice.components.0.children.1.children.0.props.title', 'Components'));
+});
+
+test('workbench tables page serializes lazy tables for each pagination type', function () {
+    withoutVite();
+
+    get('/tables')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('lattice/page')
+            ->where('lattice.title', 'Lattice Tables')
+            ->where('lattice.components.0.type', 'stack')
+            ->where('lattice.components.0.key', 'tables-page')
+            ->where('lattice.components.0.children.1.type', 'tabs')
+            ->where('lattice.components.0.children.1.props.defaultValue', 'none')
+            ->where('lattice.components.0.children.1.children.0.props.value', 'none')
+            ->where('lattice.components.0.children.1.children.0.children.1.id', 'workbench.users.none')
+            ->where('lattice.components.0.children.1.children.0.children.1.props.lazy', true)
+            ->where('lattice.components.0.children.1.children.0.children.1.props.data', [])
+            ->where('lattice.components.0.children.1.children.0.children.1.props.pagination.mode', 'none')
+            ->where('lattice.components.0.children.1.children.1.props.value', 'simple')
+            ->where('lattice.components.0.children.1.children.1.children.1.id', 'workbench.users.simple')
+            ->where('lattice.components.0.children.1.children.1.children.1.props.pagination.mode', 'simple')
+            ->where('lattice.components.0.children.1.children.2.props.value', 'table')
+            ->where('lattice.components.0.children.1.children.2.children.1.id', 'workbench.users.table')
+            ->where('lattice.components.0.children.1.children.2.children.1.props.pagination.mode', 'table')
+            ->where('lattice.components.0.children.1.children.3.props.value', 'infinite')
+            ->where('lattice.components.0.children.1.children.3.children.1.id', 'workbench.users.infinite')
+            ->where('lattice.components.0.children.1.children.3.children.1.props.pagination.mode', 'infinite'));
 });
 
 test('workbench user seeder creates sample table data idempotently', function () {
@@ -705,6 +964,22 @@ class WorkbenchUsersTable extends TableDefinition
                 ),
             ],
         ]);
+    }
+}
+
+#[Bambamboole\Lattice\Attributes\Table('workbench.lazy-users')]
+class WorkbenchLazyUsersTable extends TableDefinition
+{
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->label('Name'),
+        ];
+    }
+
+    public function query(TableQuery $query): TableResult
+    {
+        throw new RuntimeException('Lazy table query should not run during serialization.');
     }
 }
 
@@ -832,6 +1107,116 @@ class WorkbenchSmallUsersTable extends EloquentTableDefinition
     public function builder(TableQuery $query): Builder
     {
         return User::query()->select(['id', 'name'])->orderBy('id');
+    }
+}
+
+#[Bambamboole\Lattice\Attributes\Table('workbench.stacked-users')]
+class WorkbenchStackedUsersTable extends TableDefinition
+{
+    public function layout(): string
+    {
+        return 'grid';
+    }
+
+    public function pagination(): PaginationType
+    {
+        return PaginationType::None;
+    }
+
+    public function columns(): array
+    {
+        return [
+            StackColumn::make('identity')
+                ->label('Identity')
+                ->columns([
+                    TextColumn::make('name')->label('Name')->sortable(),
+                    TextColumn::make('email')->label('Email'),
+                ]),
+            TextColumn::make('status')->label('Status'),
+        ];
+    }
+
+    public function actions(array $row): array
+    {
+        return [
+            ActionComponent::use(WorkbenchPingAction::class),
+        ];
+    }
+
+    public function query(TableQuery $query): TableResult
+    {
+        return TableResult::make([
+            [
+                'id' => 1,
+                'name' => 'Taylor',
+                'email' => 'taylor@example.com',
+                'status' => 'Active',
+            ],
+        ]);
+    }
+}
+
+final class WorkbenchTabsPage extends Page
+{
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(
+            Tabs::make('settings-tabs')
+                ->defaultValue('profile')
+                ->children([
+                    Tab::make('profile', 'Profile')->children([
+                        Text::make('Profile form'),
+                    ]),
+                    Tab::make('security', 'Security')->children([
+                        Text::make('Security form'),
+                    ]),
+                ]),
+        );
+    }
+}
+
+final class WorkbenchConfirmedTabsPage extends Page
+{
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(
+            Tabs::make('settings-tabs')
+                ->defaultValue('profile')
+                ->children([
+                    Tab::make('profile', 'Profile')->children([
+                        Text::make('Profile form'),
+                    ]),
+                    Tab::make('security', 'Security')
+                        ->confirm()
+                        ->children([
+                            Text::make('Security form'),
+                        ]),
+                ]),
+        );
+    }
+}
+
+final class WorkbenchInjectedPage extends Page
+{
+    public function __construct(private WorkbenchPageDependency $dependency) {}
+
+    public function render(PageSchema $schema, Request $request, User $user, string $label): PageSchema
+    {
+        return $schema->component(Text::make(sprintf(
+            '%s %s %s %s',
+            $this->dependency->label(),
+            (string) $user->getAttribute('name'),
+            $label,
+            $request->route('label'),
+        )));
+    }
+}
+
+final class WorkbenchPageDependency
+{
+    public function label(): string
+    {
+        return 'Injected';
     }
 }
 

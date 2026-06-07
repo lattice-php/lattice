@@ -93,6 +93,80 @@ describe("Lattice table component", () => {
     expect(screen.getByRole("button", { name: "Copied Email" })).toBeVisible();
   });
 
+  it("renders grid rows with stack columns and row actions without table cells", async () => {
+    const node = {
+      id: "workbench.stacked-users",
+      props: {
+        columns: [
+          {
+            key: "identity",
+            label: "Identity",
+            type: "stack",
+            columns: [
+              {
+                key: "name",
+                label: "Name",
+                type: "text",
+                sortable: true,
+              },
+              {
+                key: "email",
+                label: "Email",
+                type: "text",
+              },
+            ],
+          },
+          {
+            key: "status",
+            label: "Status",
+            type: "text",
+          },
+        ],
+        data: [
+          {
+            id: 1,
+            name: "Taylor",
+            email: "taylor@example.com",
+            status: "Active",
+          },
+        ],
+        layout: "grid",
+        rows: [
+          {
+            key: "1",
+            actions: [
+              {
+                id: "workbench.ping",
+                props: {
+                  endpoint: "/lattice/actions/workbench.ping",
+                  label: "Ping",
+                  method: "post",
+                  variant: "secondary",
+                },
+                type: "action",
+              },
+            ],
+          },
+        ],
+        state: {
+          filters: {},
+          page: 1,
+          perPage: 25,
+          sorts: [],
+        },
+      },
+      type: "table",
+    } satisfies LatticeNode<"table">;
+
+    const { container } = render(<TableComponent node={node}>{null}</TableComponent>);
+
+    expect(container.querySelector("td")).not.toBeInTheDocument();
+    expect(screen.getByRole("table")).toBeVisible();
+    expect(screen.getByRole("cell", { name: /Taylor/ })).toHaveTextContent("taylor@example.com");
+    expect(screen.getByRole("cell", { name: "Active" })).toBeVisible();
+    expect(await screen.findByRole("button", { name: "Ping" })).toBeVisible();
+  });
+
   it("adds and clears individual sorts through the table endpoint", async () => {
     const fetch = vi.fn<typeof globalThis.fetch>(async () =>
       Response.json({
@@ -168,6 +242,71 @@ describe("Lattice table component", () => {
         },
       );
     });
+  });
+
+  it("reloads itself when a matching reload component event is dispatched", async () => {
+    const fetch = vi.fn<typeof globalThis.fetch>(async () =>
+      Response.json({
+        data: [{ id: 2, name: "Ada" }],
+        pagination: {
+          mode: "none",
+        },
+        rows: [],
+        state: {
+          filters: {},
+          page: 1,
+          perPage: 25,
+          sorts: [],
+        },
+      }),
+    );
+
+    vi.stubGlobal("fetch", fetch);
+
+    const node = {
+      id: "settings.passkeys",
+      props: {
+        columns: [
+          {
+            key: "name",
+            label: "Name",
+          },
+        ],
+        data: [{ id: 1, name: "Taylor" }],
+        endpoint: "/lattice/tables/settings.passkeys",
+        pagination: {
+          mode: "none",
+        },
+        rows: [],
+        state: {
+          filters: {},
+          page: 1,
+          perPage: 25,
+          sorts: [],
+        },
+      },
+      type: "table",
+    } satisfies LatticeNode<"table">;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    window.dispatchEvent(
+      new CustomEvent("lattice:reload-component", {
+        detail: {
+          component: "settings.passkeys",
+          type: "reloadComponent",
+        },
+      }),
+    );
+
+    await screen.findByRole("cell", { name: "Ada" });
+
+    expect(fetch).toHaveBeenCalledWith("/lattice/tables/settings.passkeys?page=1&per_page=25", {
+      headers: {
+        Accept: "application/json",
+      },
+    });
+    expect(screen.queryByRole("cell", { name: "Taylor" })).not.toBeInTheDocument();
   });
 
   it("appends infinite table rows and resets them when sorting", async () => {
@@ -376,5 +515,68 @@ describe("Lattice table component", () => {
         Accept: "application/json",
       },
     });
+  });
+
+  it("loads lazy table data after the component mounts", async () => {
+    const fetch = vi.fn<typeof globalThis.fetch>(async () =>
+      Response.json({
+        data: [{ id: 1, name: "Ada" }],
+        pagination: {
+          currentPage: 1,
+          hasMore: false,
+          mode: "none",
+          total: 1,
+          from: 1,
+          to: 1,
+        },
+        state: {
+          filters: {},
+          page: 1,
+          perPage: 25,
+          sorts: [],
+        },
+      }),
+    );
+
+    vi.stubGlobal("fetch", fetch);
+
+    const node = {
+      id: "workbench.users.none",
+      props: {
+        columns: [
+          {
+            key: "name",
+            label: "Name",
+          },
+        ],
+        data: [],
+        endpoint: "/lattice/tables/workbench.users.none",
+        lazy: true,
+        pagination: {
+          mode: "none",
+        },
+        state: {
+          filters: {},
+          page: 1,
+          perPage: 25,
+          sorts: [],
+        },
+      },
+      type: "table",
+    } satisfies LatticeNode<"table">;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    expect(screen.getByText("Loading rows...")).toBeVisible();
+
+    await screen.findByRole("cell", { name: "Ada" });
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith("/lattice/tables/workbench.users.none?page=1&per_page=25", {
+      headers: {
+        Accept: "application/json",
+      },
+    });
+    expect(screen.getByText("Showing 1-1 of 1")).toBeVisible();
   });
 });

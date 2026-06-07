@@ -27,6 +27,18 @@ class Table extends InteractiveComponent
             ->props($registered->props);
     }
 
+    /**
+     * @param  class-string<TableDefinition>  $table
+     */
+    public static function lazy(string $table): static
+    {
+        $registered = app(TableRegistry::class)->lazyComponent($table);
+
+        return (new static)
+            ->id($registered->id)
+            ->props($registered->props);
+    }
+
     public function endpoint(string $endpoint): static
     {
         return $this->prop('endpoint', $endpoint);
@@ -41,6 +53,15 @@ class Table extends InteractiveComponent
             fn (Column $column): array => $column->toArray(),
             $columns,
         ));
+    }
+
+    public function layout(string $layout): static
+    {
+        if ($layout === 'table') {
+            return $this;
+        }
+
+        return $this->prop('layout', $layout);
     }
 
     public function result(TableResult $result, TableQuery $query): static

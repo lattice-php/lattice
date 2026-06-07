@@ -1,7 +1,12 @@
+import { router } from "@inertiajs/react";
+
 export type LatticeActionEffect =
   | {
       message?: string;
       type: "toast";
+    }
+  | {
+      type: "reloadPage";
     }
   | {
       component?: string;
@@ -20,6 +25,7 @@ const eventNames = {
   closeModal: "lattice:close-modal",
   openModal: "lattice:open-modal",
   reloadComponent: "lattice:reload-component",
+  reloadPage: "lattice:reload-page",
   toast: "lattice:toast",
 } satisfies Record<LatticeActionEffect["type"], string>;
 
@@ -29,6 +35,10 @@ export function dispatchActionEffects(effects: LatticeActionEffect[]): void {
   }
 
   for (const effect of effects) {
+    if (effect.type === "reloadPage") {
+      router.reload();
+    }
+
     window.dispatchEvent(new CustomEvent(eventNames[effect.type], { detail: effect }));
   }
 }
@@ -48,6 +58,7 @@ export function isActionEffect(effect: unknown): effect is LatticeActionEffect {
 
   return (
     effect.type === "toast" ||
+    effect.type === "reloadPage" ||
     effect.type === "reloadComponent" ||
     effect.type === "openModal" ||
     effect.type === "closeModal"

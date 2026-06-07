@@ -23,7 +23,7 @@ final class WorkbenchHomePage extends Page
         return 'Lattice Workbench';
     }
 
-    public function content(PageSchema $schema): PageSchema
+    public function render(PageSchema $schema): PageSchema
     {
         return $schema->components([
             Stack::make('workbench-page')

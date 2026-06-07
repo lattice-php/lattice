@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Tables;
 
+use Bambamboole\Lattice\Components\Component;
 use Bambamboole\Lattice\Tables\Columns\Column;
 
 abstract class TableDefinition
@@ -28,6 +29,20 @@ abstract class TableDefinition
         $type = $this->pagination();
 
         return $type instanceof PaginationType ? $type : PaginationType::from($type);
+    }
+
+    public function layout(): string
+    {
+        return 'table';
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     * @return array<int, Component>
+     */
+    public function actions(array $row): array
+    {
+        return [];
     }
 
     abstract public function query(TableQuery $query): TableResult;

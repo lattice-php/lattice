@@ -15,10 +15,12 @@ final readonly class TableResult implements JsonSerializable
     /**
      * @param  array<int, array<string, mixed>>  $data
      * @param  array<string, mixed>  $pagination
+     * @param  array<int, array<string, mixed>>  $rows
      */
     private function __construct(
         private array $data,
         private array $pagination = [],
+        private array $rows = [],
     ) {}
 
     /**
@@ -106,28 +108,47 @@ final readonly class TableResult implements JsonSerializable
      */
     public function pagination(array $pagination): self
     {
-        return new self($this->data, $pagination);
+        return new self($this->data, $pagination, $this->rows);
     }
 
     /**
-     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, state: array<string, mixed>}
+     * @param  callable(array<string, mixed>, int): array<string, mixed>  $callback
+     */
+    public function rows(callable $callback): self
+    {
+        $rows = collect($this->data)
+            ->map(fn (array $row, int $index): array => $callback($row, $index))
+            ->filter(fn (array $row): bool => $row !== [])
+            ->values()
+            ->all();
+
+        return new self(
+            $this->data,
+            $this->pagination,
+            $rows,
+        );
+    }
+
+    /**
+     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, rows: array<int, array<string, mixed>>, state: array<string, mixed>}
      */
     public function toArray(?TableQuery $query = null): array
     {
-        return [
+        return array_filter([
             'data' => $this->data,
             'pagination' => $this->pagination,
+            'rows' => $this->rows,
             'state' => $query?->toArray() ?? [
                 'filters' => [],
                 'sorts' => [],
                 'page' => 1,
                 'perPage' => 25,
             ],
-        ];
+        ], fn (mixed $value, string $key): bool => $key !== 'rows' || $value !== [], ARRAY_FILTER_USE_BOTH);
     }
 
     /**
-     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, state: array<string, mixed>}
+     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, rows: array<int, array<string, mixed>>, state: array<string, mixed>}
      */
     public function jsonSerialize(): array
     {

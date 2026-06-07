@@ -67,6 +67,31 @@ it('filters workbench users in the table', function (): void {
         ->assertNoSmoke();
 });
 
+it('showcases pagination types in lazily loaded tabs', function (): void {
+    seedWorkbenchUsers();
+
+    visit('/tables')
+        ->assertSee('Pagination modes')
+        ->assertSee('No pagination')
+        ->assertSee('Maya Chen')
+        ->assertDontSee('Simple pagination')
+        ->assertDontSee('Table pagination')
+        ->assertDontSee('Infinite pagination')
+        ->click('Simple')
+        ->assertSee('Simple pagination')
+        ->assertSee('Previous')
+        ->assertSee('Next')
+        ->click('Table')
+        ->assertSee('Table pagination')
+        ->assertSee('Showing 1-25 of 30')
+        ->assertSee('Previous')
+        ->assertSee('Next')
+        ->click('Infinite')
+        ->assertSee('Infinite pagination')
+        ->assertSee('Load more')
+        ->assertNoSmoke();
+});
+
 function seedWorkbenchUsers(): void
 {
     User::query()->delete();

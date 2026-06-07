@@ -7,6 +7,8 @@ namespace Bambamboole\Lattice;
 use Bambamboole\Lattice\Actions\ActionRegistry;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Tables\TableRegistry;
+use Illuminate\Routing\Route;
+use Illuminate\Routing\Router;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -27,6 +29,10 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(FormRegistry::class);
         $this->app->singleton(TableRegistry::class);
         $this->app->singleton(ActionRegistry::class);
+
+        if (! Router::hasMacro('latticePage')) {
+            Router::macro('latticePage', fn (string $uri, string $page): Route => Lattice::page($uri, $page));
+        }
     }
 
     public function packageBooted(): void
