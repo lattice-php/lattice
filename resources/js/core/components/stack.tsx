@@ -1,9 +1,9 @@
 import { getStringProp } from "@/lattice/core/props";
-import type { LatticeRendererComponent } from "@/lattice/core/types";
+import type { RendererComponent } from "@/lattice/core/types";
 import { cn } from "@/lib/utils";
 
 declare module "@/lattice/core/types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     stack: {
       align?: string;
       direction?: string;
@@ -40,7 +40,7 @@ const stackWidths: Record<string, string> = {
   sm: "mx-auto w-full max-w-md",
 };
 
-const StackComponent: LatticeRendererComponent<"stack"> = ({ children, node }) => {
+const StackComponent: RendererComponent<"stack"> = ({ children, node }) => {
   const align = getStringProp(node.props, "align", "stretch");
   const direction = getStringProp(node.props, "direction", "column");
   const gap = getStringProp(node.props, "gap", "md");

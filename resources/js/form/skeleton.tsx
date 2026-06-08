@@ -1,6 +1,6 @@
-import type { LatticeRendererComponent } from "@/lattice/core/types";
+import type { RendererComponent } from "@/lattice/core/types";
 
-export const FormSkeletonComponent: LatticeRendererComponent<"form"> = ({ node }) => {
+export const FormSkeletonComponent: RendererComponent<"form"> = ({ node }) => {
   const fieldCount = Math.max(
     1,
     Math.min(

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { IconRenderer, IconRendererProvider } from "./icon-renderer";
-import type { LatticeIconRenderer } from "./icon-renderer";
+import type { IconRendererFunction } from "./icon-renderer";
 
 describe("Lattice icon renderer", () => {
   afterEach(() => {
@@ -34,8 +34,10 @@ describe("Lattice icon renderer", () => {
   });
 
   it("stacks custom renderers before parent renderers", () => {
-    const fallbackRenderer = vi.fn<LatticeIconRenderer>(() => <span data-testid="fallback-icon" />);
-    const customRenderer = vi.fn<LatticeIconRenderer>(() => null);
+    const fallbackRenderer = vi.fn<IconRendererFunction>(() => (
+      <span data-testid="fallback-icon" />
+    ));
+    const customRenderer = vi.fn<IconRendererFunction>(() => null);
 
     render(
       <IconRendererProvider renderer={fallbackRenderer}>
@@ -57,8 +59,10 @@ describe("Lattice icon renderer", () => {
   });
 
   it("can replace parent renderers", () => {
-    const fallbackRenderer = vi.fn<LatticeIconRenderer>(() => <span data-testid="fallback-icon" />);
-    const customRenderer = vi.fn<LatticeIconRenderer>(() => <span data-testid="custom-icon" />);
+    const fallbackRenderer = vi.fn<IconRendererFunction>(() => (
+      <span data-testid="fallback-icon" />
+    ));
+    const customRenderer = vi.fn<IconRendererFunction>(() => <span data-testid="custom-icon" />);
 
     render(
       <IconRendererProvider renderer={fallbackRenderer}>

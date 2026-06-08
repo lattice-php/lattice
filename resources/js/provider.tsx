@@ -1,13 +1,13 @@
 import { createContext, useContext, useMemo } from "react";
 import type { ReactNode } from "react";
-import type { LatticeComponentRegistry } from "./core/registry";
+import type { ComponentRegistry } from "./core/registry";
 import { latticeRegistry } from "./registry";
 
-type LatticeContextValue = {
-  registry: LatticeComponentRegistry;
+type ContextValue = {
+  registry: ComponentRegistry;
 };
 
-const LatticeContext = createContext<LatticeContextValue>({
+const LatticeContext = createContext<ContextValue>({
   registry: latticeRegistry,
 });
 
@@ -16,13 +16,13 @@ export function LatticeProvider({
   registry = latticeRegistry,
 }: {
   children: ReactNode;
-  registry?: LatticeComponentRegistry;
+  registry?: ComponentRegistry;
 }) {
   const value = useMemo(() => ({ registry }), [registry]);
 
   return <LatticeContext.Provider value={value}>{children}</LatticeContext.Provider>;
 }
 
-export function useLatticeRegistry(): LatticeComponentRegistry {
+export function useLatticeRegistry(): ComponentRegistry {
   return useContext(LatticeContext).registry;
 }

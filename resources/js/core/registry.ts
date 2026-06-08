@@ -1,63 +1,61 @@
 import { lazy } from "react";
 import type { LazyExoticComponent } from "react";
-import type { LatticeRendererComponent, LatticeRendererComponentModule } from "./types";
+import type { RendererComponent, RendererComponentModule } from "./types";
 
-export type LatticeEagerComponentRegistration = {
-  component: LatticeRendererComponent;
+export type EagerComponentRegistration = {
+  component: RendererComponent;
   mode: "eager";
 };
 
-export type LatticeLazyComponentRegistration = {
-  component: LazyExoticComponent<LatticeRendererComponent>;
-  fallback?: LatticeRendererComponent;
-  load: () => Promise<LatticeRendererComponentModule>;
+export type LazyComponentRegistration = {
+  component: LazyExoticComponent<RendererComponent>;
+  fallback?: RendererComponent;
+  load: () => Promise<RendererComponentModule>;
   mode: "lazy";
 };
 
-export type LatticeComponentRegistration =
-  | LatticeEagerComponentRegistration
-  | LatticeLazyComponentRegistration;
+export type ComponentRegistration = EagerComponentRegistration | LazyComponentRegistration;
 
-export type LatticeComponentRegistry = Record<string, LatticeComponentRegistration>;
+export type ComponentRegistry = Record<string, ComponentRegistration>;
 
-export type LatticePlugin = {
-  components: LatticeComponentRegistry;
+export type Plugin = {
+  components: ComponentRegistry;
   name: string;
 };
 
-export type LatticeLazyComponentOptions<TType extends string> = {
-  fallback?: LatticeRendererComponent<TType>;
+export type LazyComponentOptions<TType extends string> = {
+  fallback?: RendererComponent<TType>;
 };
 
 export function eagerComponent<TType extends string>(
-  component: LatticeRendererComponent<TType>,
-): LatticeEagerComponentRegistration {
+  component: RendererComponent<TType>,
+): EagerComponentRegistration {
   return {
-    component: component as LatticeRendererComponent,
+    component: component as RendererComponent,
     mode: "eager",
   };
 }
 
 export function lazyComponent<TType extends string>(
-  load: () => Promise<LatticeRendererComponentModule<TType>>,
-  options: LatticeLazyComponentOptions<TType> = {},
-): LatticeLazyComponentRegistration {
-  const erasedLoader = load as unknown as () => Promise<LatticeRendererComponentModule>;
+  load: () => Promise<RendererComponentModule<TType>>,
+  options: LazyComponentOptions<TType> = {},
+): LazyComponentRegistration {
+  const erasedLoader = load as unknown as () => Promise<RendererComponentModule>;
 
   return {
     component: lazy(erasedLoader),
-    fallback: options.fallback as LatticeRendererComponent | undefined,
+    fallback: options.fallback as RendererComponent | undefined,
     load: erasedLoader,
     mode: "lazy",
   };
 }
 
-export function createLatticePlugin(plugin: LatticePlugin): LatticePlugin {
+export function createLatticePlugin(plugin: Plugin): Plugin {
   return plugin;
 }
 
-export function createLatticeRegistry(...plugins: LatticePlugin[]): LatticeComponentRegistry {
-  return plugins.reduce<LatticeComponentRegistry>(
+export function createLatticeRegistry(...plugins: Plugin[]): ComponentRegistry {
+  return plugins.reduce<ComponentRegistry>(
     (registry, plugin) => ({
       ...registry,
       ...plugin.components,
@@ -67,9 +65,9 @@ export function createLatticeRegistry(...plugins: LatticePlugin[]): LatticeCompo
 }
 
 export function extendLatticeRegistry(
-  registry: LatticeComponentRegistry,
-  ...plugins: LatticePlugin[]
-): LatticeComponentRegistry {
+  registry: ComponentRegistry,
+  ...plugins: Plugin[]
+): ComponentRegistry {
   return {
     ...registry,
     ...createLatticeRegistry(...plugins),

@@ -1,8 +1,8 @@
 import { getStringProp } from "@/lattice/core/props";
-import type { LatticeRendererComponent } from "@/lattice/core/types";
+import type { RendererComponent } from "@/lattice/core/types";
 
 declare module "@/lattice/core/types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     card: {
       body?: string;
       title?: string;
@@ -10,7 +10,7 @@ declare module "@/lattice/core/types" {
   }
 }
 
-const CardComponent: LatticeRendererComponent<"card"> = ({ children, node }) => (
+const CardComponent: RendererComponent<"card"> = ({ children, node }) => (
   <article
     data-lattice-component={node.id}
     className="grid min-h-44 gap-4 rounded-lt border border-lt-border bg-lt-surface p-6 text-lt-surface-fg shadow-xs"

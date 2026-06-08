@@ -6,14 +6,14 @@ import {
   eagerComponent,
   LatticeProvider,
 } from "@/lattice";
-import type { LatticePagePayload, LatticeRendererComponent } from "@/lattice";
+import type { PagePayload, RendererComponent } from "@/lattice";
 import LatticePage from "./page";
 
 vi.mock("@inertiajs/react", () => ({
   Head: ({ title }: { title?: string }) => <title>{title}</title>,
 }));
 
-function payload(lattice: Partial<LatticePagePayload> = {}): LatticePagePayload {
+function payload(lattice: Partial<PagePayload> = {}): PagePayload {
   return {
     breadcrumbs: [],
     components: [],
@@ -66,7 +66,7 @@ describe("Lattice page", () => {
   });
 
   it("uses a provided registry for app and package extensions", () => {
-    const CustomComponent: LatticeRendererComponent<"custom.message"> = ({ node }) => (
+    const CustomComponent: RendererComponent<"custom.message"> = ({ node }) => (
       <div>{String(node.props?.message ?? "")}</div>
     );
     const registry = createLatticeRegistry(

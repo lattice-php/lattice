@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { LatticeNode } from "@/lattice/core/types";
+import type { Node } from "@/lattice/core/types";
 import CardComponent from "./card";
 import { TabsComponent } from "./tabs";
 
@@ -13,7 +13,7 @@ describe("Lattice component theming", () => {
         title: "Title",
       },
       type: "card",
-    } satisfies LatticeNode<"card">;
+    } satisfies Node<"card">;
 
     const { container } = render(<CardComponent node={card}>{null}</CardComponent>);
 
@@ -40,7 +40,7 @@ describe("Lattice component theming", () => {
       ],
       props: {},
       type: "tabs",
-    } satisfies LatticeNode<"tabs">;
+    } satisfies Node<"tabs">;
 
     const { getByRole } = render(<TabsComponent node={tabs}>{null}</TabsComponent>);
 

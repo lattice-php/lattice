@@ -1,11 +1,11 @@
 import TextLink from "@/components/text-link";
 import { getOptionalNumberProp, getStringProp } from "@/lattice/core/props";
-import type { LatticeRendererComponent } from "@/lattice/core/types";
+import type { RendererComponent } from "@/lattice/core/types";
 
 type LinkMethod = "delete" | "get" | "patch" | "post" | "put";
 
 declare module "@/lattice/core/types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     link: {
       href?: string;
       label?: string;
@@ -23,7 +23,7 @@ function getLinkMethod(method: string): LinkMethod {
   return "get";
 }
 
-const LinkComponent: LatticeRendererComponent<"link"> = ({ node }) => (
+const LinkComponent: RendererComponent<"link"> = ({ node }) => (
   <TextLink
     href={getStringProp(node.props, "href", "#")}
     method={getLinkMethod(getStringProp(node.props, "method", "get"))}

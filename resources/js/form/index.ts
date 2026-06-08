@@ -1,8 +1,5 @@
 import { createLatticePlugin, lazyComponent } from "@/lattice/core/registry";
-import type {
-  LatticeRendererComponent,
-  LatticeRendererComponentModule,
-} from "@/lattice/core/types";
+import type { RendererComponent, RendererComponentModule } from "@/lattice/core/types";
 import { FormSkeletonComponent } from "./skeleton";
 
 type FormComponentName =
@@ -18,12 +15,12 @@ const loadFormComponents = () => import("./components/form-components");
 
 function loadFormComponent<TType extends string>(
   name: FormComponentName,
-): () => Promise<LatticeRendererComponentModule<TType>> {
+): () => Promise<RendererComponentModule<TType>> {
   return async () => {
     const components = await loadFormComponents();
 
     return {
-      default: components[name] as LatticeRendererComponent<TType>,
+      default: components[name] as RendererComponent<TType>,
     };
   };
 }

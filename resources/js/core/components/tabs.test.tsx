@@ -3,7 +3,7 @@ import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createLatticeRegistry, eagerComponent } from "@/lattice/core/registry";
 import { LatticeRenderer } from "@/lattice/core/renderer";
-import type { LatticeRendererComponent } from "@/lattice/core/types";
+import type { RendererComponent } from "@/lattice/core/types";
 import TabComponent, { TabsComponent } from "./tabs";
 
 vi.mock("@inertiajs/react", () => ({
@@ -12,9 +12,7 @@ vi.mock("@inertiajs/react", () => ({
   },
 }));
 
-const TextProbe: LatticeRendererComponent<"text"> = ({ node }) => (
-  <span>{String(node.props?.text)}</span>
-);
+const TextProbe: RendererComponent<"text"> = ({ node }) => <span>{String(node.props?.text)}</span>;
 
 describe("Lattice tabs component", () => {
   beforeEach(() => {

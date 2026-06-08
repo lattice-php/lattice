@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { createLatticeRegistry, eagerComponent, lazyComponent } from "./registry";
 import { LatticeRenderer } from "./renderer";
-import type { LatticeRendererComponent, LatticeRendererComponentModule } from "./types";
+import type { RendererComponent, RendererComponentModule } from "./types";
 
-const TestComponent: LatticeRendererComponent<"test.component"> = ({ children, node }) => (
+const TestComponent: RendererComponent<"test.component"> = ({ children, node }) => (
   <section data-testid={node.id}>{children}</section>
 );
 
@@ -55,14 +55,14 @@ describe("LatticeRenderer", () => {
   });
 
   it("renders a lazy component fallback while the chunk is loading", () => {
-    const LazyFallback: LatticeRendererComponent<"test.lazy"> = ({ node }) => (
+    const LazyFallback: RendererComponent<"test.lazy"> = ({ node }) => (
       <div data-testid={`${node.id}-fallback`} />
     );
 
     const registry = createLatticeRegistry({
       components: {
         "test.lazy": lazyComponent(
-          () => new Promise<LatticeRendererComponentModule<"test.lazy">>(() => {}),
+          () => new Promise<RendererComponentModule<"test.lazy">>(() => {}),
           {
             fallback: LazyFallback,
           },

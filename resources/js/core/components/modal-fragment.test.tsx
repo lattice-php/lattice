@@ -2,14 +2,12 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createLatticeRegistry, eagerComponent } from "@/lattice/core/registry";
 import { LatticeRenderer } from "@/lattice/core/renderer";
-import type { LatticeRendererComponent } from "@/lattice/core/types";
+import type { RendererComponent } from "@/lattice/core/types";
 import FragmentComponent from "./fragment";
 import ModalComponent from "./modal";
 import TextComponent from "./text";
 
-const TextProbe: LatticeRendererComponent<"text"> = ({ node }) => (
-  <span>{String(node.props?.text)}</span>
-);
+const TextProbe: RendererComponent<"text"> = ({ node }) => <span>{String(node.props?.text)}</span>;
 
 describe("Lattice modal and fragment components", () => {
   afterEach(() => {

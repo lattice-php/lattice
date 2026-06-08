@@ -1,9 +1,9 @@
 import { createContext, Suspense, useContext, useMemo } from "react";
 import type { ReactNode } from "react";
-import type { LatticeComponentRegistry } from "./registry";
-import type { LatticeNode, LatticeUnknownComponent } from "./types";
+import type { ComponentRegistry } from "./registry";
+import type { Node, UnknownComponent } from "./types";
 
-function MissingComponent({ node }: { node: LatticeNode }) {
+function MissingComponent({ node }: { node: Node }) {
   if (!import.meta.env.DEV) {
     return null;
   }
@@ -13,15 +13,15 @@ function MissingComponent({ node }: { node: LatticeNode }) {
   );
 }
 
-type LatticeRendererContextValue = {
+type RendererContextValue = {
   fallback: ReactNode;
-  missingComponent: LatticeUnknownComponent;
-  registry: LatticeComponentRegistry;
+  missingComponent: UnknownComponent;
+  registry: ComponentRegistry;
 };
 
-const LatticeRendererContext = createContext<LatticeRendererContextValue | null>(null);
+const LatticeRendererContext = createContext<RendererContextValue | null>(null);
 
-export function useLatticeRendererContext(): LatticeRendererContextValue {
+export function useLatticeRendererContext(): RendererContextValue {
   const context = useContext(LatticeRendererContext);
 
   if (!context) {
@@ -38,9 +38,9 @@ export function LatticeRenderer({
   registry,
 }: {
   fallback?: ReactNode;
-  missingComponent?: LatticeUnknownComponent;
-  nodes: LatticeNode[];
-  registry: LatticeComponentRegistry;
+  missingComponent?: UnknownComponent;
+  nodes: Node[];
+  registry: ComponentRegistry;
 }) {
   const context = useMemo(
     () => ({
@@ -73,9 +73,9 @@ function LatticeNodeRenderer({
   registry,
 }: {
   fallback: ReactNode;
-  missingComponent: LatticeUnknownComponent;
-  node: LatticeNode;
-  registry: LatticeComponentRegistry;
+  missingComponent: UnknownComponent;
+  node: Node;
+  registry: ComponentRegistry;
 }) {
   const registration = registry[node.type];
 

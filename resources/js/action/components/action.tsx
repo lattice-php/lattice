@@ -3,57 +3,55 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { getStringProp } from "@/lattice/core/props";
-import type { LatticeNodeProps, LatticeRendererComponent } from "@/lattice/core/types";
+import type { NodeProps, RendererComponent } from "@/lattice/core/types";
 import { IconRenderer } from "@/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, isActionEffect } from "../effects";
-import type { LatticeActionEffect } from "../effects";
+import type { ActionEffect } from "../effects";
 
-type LatticeActionMethod = "delete" | "get" | "patch" | "post" | "put";
-type LatticeActionVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
+type ActionMethod = "delete" | "get" | "patch" | "post" | "put";
+type ActionVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
 
-type LatticeActionConfirmation = {
+type ActionConfirmation = {
   cancelLabel?: string;
   confirmLabel?: string;
   description?: string;
   title?: string;
 };
 
-type LatticeActionResponse = {
+type ActionResponse = {
   data?: Record<string, unknown>;
-  effects?: LatticeActionEffect[];
+  effects?: ActionEffect[];
   ok?: boolean;
 };
 
-type LatticeActionData = {
+type ActionData = {
   _lattice?: string;
 };
 
 declare module "@/lattice/core/types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     action: {
-      confirmation?: LatticeActionConfirmation;
-      effects?: LatticeActionEffect[];
+      confirmation?: ActionConfirmation;
+      effects?: ActionEffect[];
       endpoint?: string;
       icon?: string;
       label?: string;
       ref?: string;
-      method?: LatticeActionMethod;
-      variant?: LatticeActionVariant;
+      method?: ActionMethod;
+      variant?: ActionVariant;
     };
   }
 }
 
-const actionMethods = ["delete", "get", "patch", "post", "put"] satisfies LatticeActionMethod[];
+const actionMethods = ["delete", "get", "patch", "post", "put"] satisfies ActionMethod[];
 
-function getActionMethod(props: LatticeNodeProps | undefined): LatticeActionMethod {
+function getActionMethod(props: NodeProps | undefined): ActionMethod {
   const method = getStringProp(props, "method", "post");
 
-  return actionMethods.includes(method as LatticeActionMethod)
-    ? (method as LatticeActionMethod)
-    : "post";
+  return actionMethods.includes(method as ActionMethod) ? (method as ActionMethod) : "post";
 }
 
-function getActionEffects(effects: unknown): LatticeActionEffect[] {
+function getActionEffects(effects: unknown): ActionEffect[] {
   return Array.isArray(effects) ? effects.filter(isActionEffect) : [];
 }
 
@@ -69,7 +67,7 @@ function endpointWithRef(endpoint: string, componentRef: string): string {
   return `${url.pathname}${url.search}`;
 }
 
-function getConfirmation(props: LatticeNodeProps | undefined): LatticeActionConfirmation | null {
+function getConfirmation(props: NodeProps | undefined): ActionConfirmation | null {
   const confirmation = props?.confirmation;
 
   if (typeof confirmation !== "object" || confirmation === null || Array.isArray(confirmation)) {
@@ -79,13 +77,13 @@ function getConfirmation(props: LatticeNodeProps | undefined): LatticeActionConf
   return confirmation;
 }
 
-const ActionComponent: LatticeRendererComponent<"action"> = ({ node }) => {
+const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const endpoint = getStringProp(node.props, "endpoint");
   const icon = getStringProp(node.props, "icon");
   const label = getStringProp(node.props, "label", "Run action");
   const componentRef = getStringProp(node.props, "ref");
   const method = getActionMethod(node.props);
-  const http = useHttp<LatticeActionData, LatticeActionResponse>({});
+  const http = useHttp<ActionData, ActionResponse>({});
   const [isConfirming, setIsConfirming] = useState(false);
   const confirmation = getConfirmation(node.props);
 

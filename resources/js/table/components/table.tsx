@@ -1,4 +1,4 @@
-import type { LatticeNode, LatticeRendererComponent } from "@/lattice/core/types";
+import type { Node, RendererComponent } from "@/lattice/core/types";
 import { ArrowDown, ArrowUp, Check, ChevronsUpDown, Copy, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ActionComponent from "@/lattice/action/components/action";
@@ -27,7 +27,7 @@ type TableColumn = {
 type TableRow = Record<string, unknown>;
 
 type TableRowMeta = {
-  actions?: LatticeNode[];
+  actions?: Node[];
   key?: string;
 };
 
@@ -68,7 +68,7 @@ type ReloadComponentEvent = CustomEvent<{
 }>;
 
 declare module "@/lattice/core/types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     table: {
       columns?: TableColumn[];
       data?: TableRow[];
@@ -343,14 +343,14 @@ function getRowMeta(rowMetadata: TableRowMeta[], row: TableRow, index: number): 
   return rowMetadata.find((metadata) => metadata.key === rowKey) ?? {};
 }
 
-function TableActionNode({ node }: { node: LatticeNode }) {
+function TableActionNode({ node }: { node: Node }) {
   if (node.type === "action") {
-    return <ActionComponent node={node as LatticeNode<"action">}>{null}</ActionComponent>;
+    return <ActionComponent node={node as Node<"action">}>{null}</ActionComponent>;
   }
 
   if (node.type === "action.group") {
     return (
-      <ActionGroupComponent node={node as LatticeNode<"action.group">}>
+      <ActionGroupComponent node={node as Node<"action.group">}>
         {node.children?.map((childNode, index) => (
           <TableActionNode
             key={childNode.key ?? childNode.id ?? `${childNode.type}-${index}`}
@@ -364,7 +364,7 @@ function TableActionNode({ node }: { node: LatticeNode }) {
   return null;
 }
 
-const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
+const TableComponent: RendererComponent<"table"> = ({ node }) => {
   const columns = getColumns(node.props?.columns);
   const interactiveColumns = useMemo(() => flattenColumns(columns), [columns]);
   const endpoint = typeof node.props?.endpoint === "string" ? node.props.endpoint : null;

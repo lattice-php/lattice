@@ -1,6 +1,6 @@
-export type LatticeFormMethod = "delete" | "get" | "patch" | "post" | "put";
+export type FormMethod = "delete" | "get" | "patch" | "post" | "put";
 
-export type LatticeFormLabelAction = {
+export type FormLabelAction = {
   href: string;
   label: string;
   tabIndex?: number;

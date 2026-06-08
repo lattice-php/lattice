@@ -5,10 +5,10 @@ import {
   eagerComponent,
   lazyComponent,
 } from "./registry";
-import type { LatticeRendererComponent } from "./types";
+import type { RendererComponent } from "./types";
 
-const EagerComponent: LatticeRendererComponent<"test.eager"> = () => null;
-const FallbackComponent: LatticeRendererComponent<"test.eager"> = () => null;
+const EagerComponent: RendererComponent<"test.eager"> = () => null;
+const FallbackComponent: RendererComponent<"test.eager"> = () => null;
 
 describe("lattice registry", () => {
   it("registers eager components without a loader", () => {

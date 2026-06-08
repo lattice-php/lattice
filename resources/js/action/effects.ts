@@ -1,6 +1,6 @@
 import { router } from "@inertiajs/react";
 
-export type LatticeActionEffect =
+export type ActionEffect =
   | {
       message?: string;
       type: "toast";
@@ -28,9 +28,9 @@ const eventNames = {
   reloadComponent: "lattice:reload-component",
   reloadPage: "lattice:reload-page",
   toast: "lattice:toast",
-} satisfies Record<LatticeActionEffect["type"], string>;
+} satisfies Record<ActionEffect["type"], string>;
 
-export function dispatchActionEffects(effects: LatticeActionEffect[]): void {
+export function dispatchActionEffects(effects: ActionEffect[]): void {
   if (typeof window === "undefined") {
     return;
   }
@@ -52,7 +52,7 @@ export function dispatchActionError(error: unknown): void {
   window.dispatchEvent(new CustomEvent("lattice:action-error", { detail: { error } }));
 }
 
-export function isActionEffect(effect: unknown): effect is LatticeActionEffect {
+export function isActionEffect(effect: unknown): effect is ActionEffect {
   if (typeof effect !== "object" || effect === null || !("type" in effect)) {
     return false;
   }

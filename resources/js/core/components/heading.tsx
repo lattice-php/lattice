@@ -1,9 +1,9 @@
 import { getNumberProp, getStringProp } from "@/lattice/core/props";
-import type { LatticeRendererComponent } from "@/lattice/core/types";
+import type { RendererComponent } from "@/lattice/core/types";
 import { cn } from "@/lib/utils";
 
 declare module "@/lattice/core/types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     heading: {
       level?: number;
       text?: string;
@@ -11,7 +11,7 @@ declare module "@/lattice/core/types" {
   }
 }
 
-const HeadingComponent: LatticeRendererComponent<"heading"> = ({ node }) => {
+const HeadingComponent: RendererComponent<"heading"> = ({ node }) => {
   const text = getStringProp(node.props, "text");
   const level = Math.min(Math.max(getNumberProp(node.props, "level", 1), 1), 6);
   const className = cn(

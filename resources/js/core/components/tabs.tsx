@@ -2,7 +2,7 @@ import { router } from "@inertiajs/react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { getStringProp } from "@/lattice/core/props";
-import type { LatticeNode, LatticeRendererComponent } from "@/lattice/core/types";
+import type { Node, RendererComponent } from "@/lattice/core/types";
 import { cn } from "@/lib/utils";
 
 type TabsContextValue = {
@@ -33,7 +33,7 @@ type TabItem = {
   value: string;
 };
 
-function getTabs(node: LatticeNode): TabItem[] {
+function getTabs(node: Node): TabItem[] {
   return (node.children ?? [])
     .filter((child) => child.type === "tab")
     .map((child) => ({
@@ -44,7 +44,7 @@ function getTabs(node: LatticeNode): TabItem[] {
     .filter((tab) => tab.value !== "");
 }
 
-function getConfirmationProp(props: LatticeNode["props"]): TabItem["confirm"] {
+function getConfirmationProp(props: Node["props"]): TabItem["confirm"] {
   const confirm = props?.confirm;
 
   if (!confirm || typeof confirm !== "object" || Array.isArray(confirm)) {
@@ -94,7 +94,7 @@ function queryUrl(queryKey: string, value: string): string {
 }
 
 declare module "@/lattice/core/types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     tab: {
       confirm?: {
         redirectUrl?: string;
@@ -112,7 +112,7 @@ declare module "@/lattice/core/types" {
   }
 }
 
-export const TabsComponent: LatticeRendererComponent<"tabs"> = ({ children, node }) => {
+export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => {
   const tabs = useMemo(() => getTabs(node), [node]);
   const firstValue = tabs[0]?.value ?? "";
   const queryKey = getStringProp(node.props, "queryKey", "tabs");
@@ -182,7 +182,7 @@ export const TabsComponent: LatticeRendererComponent<"tabs"> = ({ children, node
   );
 };
 
-const TabComponent: LatticeRendererComponent<"tab"> = ({ children, node }) => {
+const TabComponent: RendererComponent<"tab"> = ({ children, node }) => {
   const { activeValue } = useTabsContext();
   const value = getStringProp(node.props, "value");
   const isActive = activeValue === value;

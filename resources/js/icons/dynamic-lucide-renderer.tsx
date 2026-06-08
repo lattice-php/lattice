@@ -1,12 +1,12 @@
 import { DynamicIcon, iconNames } from "lucide-react/dynamic";
 import { cn } from "@/lib/utils";
-import type { LatticeIconRendererProps } from "./icon-renderer";
+import type { IconRendererProps } from "./icon-renderer";
 
 type LucideIconName = (typeof iconNames)[number];
 
 const lucideIconNames = new Set<string>(iconNames);
 
-export function renderDynamicLucideIcon({ className, icon }: LatticeIconRendererProps) {
+export function renderDynamicLucideIcon({ className, icon }: IconRendererProps) {
   if (!lucideIconNames.has(icon)) {
     return null;
   }

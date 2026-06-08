@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { getStringProp } from "@/lattice/core/props";
 import { LatticeRenderer, useLatticeRendererContext } from "@/lattice/core/renderer";
-import type { LatticeNode, LatticeRendererComponent } from "@/lattice/core/types";
+import type { Node, RendererComponent } from "@/lattice/core/types";
 
 type FragmentResponse = {
-  components?: LatticeNode[];
+  components?: Node[];
 };
 
 type ReloadComponentEvent = CustomEvent<{
@@ -12,7 +12,7 @@ type ReloadComponentEvent = CustomEvent<{
 }>;
 
 declare module "@/lattice/core/types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     fragment: {
       endpoint?: string;
       ref?: string;
@@ -33,18 +33,18 @@ function endpointWithRef(endpoint: string, componentRef: string): string {
   return `${url.pathname}${url.search}`;
 }
 
-function getComponents(value: unknown): LatticeNode[] {
+function getComponents(value: unknown): Node[] {
   if (!Array.isArray(value)) {
     return [];
   }
 
   return value.filter(
-    (node): node is LatticeNode =>
+    (node): node is Node =>
       typeof node === "object" && node !== null && "type" in node && typeof node.type === "string",
   );
 }
 
-const FragmentComponent: LatticeRendererComponent<"fragment"> = ({ node }) => {
+const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
   const endpoint = getStringProp(node.props, "endpoint");
   const isLazy = node.props?.lazy === true;
   const componentRef = getStringProp(node.props, "ref");

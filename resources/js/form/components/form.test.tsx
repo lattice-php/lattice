@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
-import type { LatticeNode } from "@/lattice/core/types";
+import type { Node } from "@/lattice/core/types";
 import {
   CheckboxComponent,
   FormComponent,
@@ -48,7 +48,7 @@ describe("Lattice form schema components", () => {
         method: "patch",
       },
       type: "form",
-    } satisfies LatticeNode<"form">;
+    } satisfies Node<"form">;
 
     render(<FormComponent node={formNode}>{null}</FormComponent>);
 
@@ -73,7 +73,7 @@ describe("Lattice form schema components", () => {
         submitLabel: "Log in",
       },
       type: "form",
-    } satisfies LatticeNode<"form">;
+    } satisfies Node<"form">;
 
     const emailNode = {
       props: {
@@ -87,7 +87,7 @@ describe("Lattice form schema components", () => {
         value: "taylor@example.com",
       },
       type: "form.text-input",
-    } satisfies LatticeNode<"form.text-input">;
+    } satisfies Node<"form.text-input">;
 
     const passwordNode = {
       props: {
@@ -109,7 +109,7 @@ describe("Lattice form schema components", () => {
         required: true,
       },
       type: "form.password-input",
-    } satisfies LatticeNode<"form.password-input">;
+    } satisfies Node<"form.password-input">;
 
     const rememberNode = {
       props: {
@@ -117,7 +117,7 @@ describe("Lattice form schema components", () => {
         name: "remember",
       },
       type: "form.checkbox",
-    } satisfies LatticeNode<"form.checkbox">;
+    } satisfies Node<"form.checkbox">;
 
     const tokenNode = {
       props: {
@@ -125,14 +125,14 @@ describe("Lattice form schema components", () => {
         value: "reset-token",
       },
       type: "form.hidden-input",
-    } satisfies LatticeNode<"form.hidden-input">;
+    } satisfies Node<"form.hidden-input">;
 
     const submitNode = {
       props: {
         label: "Log in",
       },
       type: "form.submit-button",
-    } satisfies LatticeNode<"form.submit-button">;
+    } satisfies Node<"form.submit-button">;
 
     render(
       <FormComponent node={formNode}>

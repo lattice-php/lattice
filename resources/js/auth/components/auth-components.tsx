@@ -8,12 +8,12 @@ import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Spinner } from "@/components/ui/spinner";
 import { getStringProp } from "@/lattice/core/props";
-import type { LatticeRendererComponent } from "@/lattice/core/types";
+import type { RendererComponent } from "@/lattice/core/types";
 
 const OTP_MAX_LENGTH = 6;
 
 declare module "@/lattice/core/types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     "auth.passkey-verify": {
       label?: string;
       loadingLabel?: string;
@@ -27,9 +27,7 @@ declare module "@/lattice/core/types" {
   }
 }
 
-export const PasskeyVerifyComponent: LatticeRendererComponent<"auth.passkey-verify"> = ({
-  node,
-}) => (
+export const PasskeyVerifyComponent: RendererComponent<"auth.passkey-verify"> = ({ node }) => (
   <div className="mx-auto w-full max-w-md">
     <PasskeyVerify
       label={getStringProp(node.props, "label")}
@@ -49,7 +47,7 @@ export const PasskeyVerifyComponent: LatticeRendererComponent<"auth.passkey-veri
   </div>
 );
 
-export const TwoFactorChallengeFormComponent: LatticeRendererComponent<
+export const TwoFactorChallengeFormComponent: RendererComponent<
   "auth.two-factor-challenge-form"
 > = ({ node }) => {
   const [showRecoveryInput, setShowRecoveryInput] = useState(false);

@@ -1,80 +1,80 @@
-import type { ComponentType, ReactNode } from "react";
+import type { ComponentType as ReactComponentType, ReactNode } from "react";
 
-export type LatticeNodeProps = Record<string, unknown>;
+export type NodeProps = Record<string, unknown>;
 
-export interface LatticeComponentProps {
-  [component: string]: LatticeNodeProps;
+export interface ComponentProps {
+  [component: string]: NodeProps;
 }
 
-export type LatticeComponentType = keyof LatticeComponentProps & string;
+export type ComponentType = keyof ComponentProps & string;
 
-export type LatticePropsFor<TType extends string> = TType extends LatticeComponentType
-  ? LatticeComponentProps[TType] & LatticeNodeProps
-  : LatticeNodeProps;
+export type PropsFor<TType extends string> = TType extends ComponentType
+  ? ComponentProps[TType] & NodeProps
+  : NodeProps;
 
-export type LatticeNode<TType extends string = string> = {
-  children?: LatticeNode[];
+export type Node<TType extends string = string> = {
+  children?: Node[];
   id?: string;
   key?: string;
-  props?: LatticePropsFor<TType>;
+  props?: PropsFor<TType>;
   type: TType;
 };
 
-export type LatticePagePayload = {
-  breadcrumbs: LatticePageBreadcrumb[];
-  components: LatticeNode[];
-  container: LatticePageContainer;
-  layout: LatticePageLayout;
-  menus: Record<string, LatticeMenuPayload | undefined>;
+export type PagePayload = {
+  breadcrumbs: PageBreadcrumb[];
+  components: Node[];
+  container: PageContainer;
+  layout: PageLayout;
+  menus: Record<string, MenuPayload | undefined>;
   title: string | null;
 };
 
-export type LatticePageBreadcrumb = {
+export type PageBreadcrumb = {
   href: string;
   title: string;
 };
 
-export type LatticeHttpMethod = "get" | "post" | "put" | "patch" | "delete" | (string & {});
+export type HttpMethod = "get" | "post" | "put" | "patch" | "delete" | (string & {});
 
-export type LatticeMenuItem = {
+export type MenuItem = {
   active: boolean;
   href: string;
   icon: string | null;
   key: string;
   label: string;
-  method: LatticeHttpMethod;
+  method: HttpMethod;
 };
 
-export type LatticeMenuGroup = {
-  items: LatticeMenuItem[];
+export type MenuGroup = {
+  items: MenuItem[];
   label: string | null;
 };
 
-export type LatticeMenuPayload = {
-  groups: LatticeMenuGroup[];
+export type MenuPayload = {
+  groups: MenuGroup[];
 };
 
-export type LatticeKnownPageContainer = "centered" | "default";
+export type KnownPageContainer = "centered" | "default";
 
-export type LatticePageContainer = LatticeKnownPageContainer | (string & {});
+export type PageContainer = KnownPageContainer | (string & {});
 
-export type LatticeKnownPageLayout = "app" | "auth" | "none" | "settings";
+export type KnownPageLayout = "app" | "auth" | "none" | "settings";
 
-export type LatticePageLayout = LatticeKnownPageLayout | (string & {});
+export type PageLayout = KnownPageLayout | (string & {});
 
-export type LatticeRendererComponentProps<TType extends string = string> = {
+export type RendererComponentProps<TType extends string = string> = {
   children: ReactNode;
-  node: LatticeNode<TType>;
+  node: Node<TType>;
 };
 
-export type LatticeRendererComponent<TType extends string = string> = ComponentType<
-  LatticeRendererComponentProps<TType>
+export type RendererComponent<TType extends string = string> = ReactComponentType<
+  RendererComponentProps<TType>
 >;
 
-export type LatticeRendererComponentModule<TType extends string = string> = {
-  default: LatticeRendererComponent<TType>;
+export type RendererComponentModule<TType extends string = string> = {
+  default: RendererComponent<TType>;
 };
 
-export type LatticeUnknownComponent = ComponentType<{
-  node: LatticeNode;
+export type UnknownComponent = ReactComponentType<{
+  node: Node;
 }>;

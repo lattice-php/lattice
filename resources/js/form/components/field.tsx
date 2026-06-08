@@ -1,7 +1,7 @@
 import InputError from "@/components/input-error";
 import TextLink from "@/components/text-link";
 import { Label } from "@/components/ui/label";
-import type { LatticeFormLabelAction } from "./types";
+import type { FormLabelAction } from "./types";
 
 export function FormFieldFrame({
   children,
@@ -13,7 +13,7 @@ export function FormFieldFrame({
   children: React.ReactNode;
   error?: string;
   label: string;
-  labelAction?: LatticeFormLabelAction;
+  labelAction?: FormLabelAction;
   name: string;
 }) {
   return (

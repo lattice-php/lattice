@@ -1,11 +1,11 @@
 import { Head } from "@inertiajs/react";
 import { LatticeRenderer } from "@/lattice/core/renderer";
 import { useLatticeRegistry } from "@/lattice/provider";
-import type { LatticePagePayload } from "@/types/lattice";
+import type { PagePayload } from "@/types/lattice";
 import { cn } from "@/lib/utils";
 
 type Props = {
-  lattice: LatticePagePayload;
+  lattice: PagePayload;
 };
 
 export default function LatticePage({ lattice }: Props) {

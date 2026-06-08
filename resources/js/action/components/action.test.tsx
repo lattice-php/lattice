@@ -1,9 +1,9 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { LatticeNode } from "@/lattice/core/types";
+import type { Node } from "@/lattice/core/types";
 import { IconRendererProvider } from "@/lattice/icons";
-import type { LatticeIconRenderer } from "@/lattice/icons";
+import type { IconRendererFunction } from "@/lattice/icons";
 import ActionComponent from "./action";
 
 const http = vi.hoisted(() => ({
@@ -46,7 +46,7 @@ describe("Lattice action component", () => {
         method: "post",
       },
       type: "action",
-    } satisfies LatticeNode<"action">;
+    } satisfies Node<"action">;
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 
@@ -66,7 +66,7 @@ describe("Lattice action component", () => {
         variant: "secondary",
       },
       type: "action",
-    } satisfies LatticeNode<"action">;
+    } satisfies Node<"action">;
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 
@@ -87,7 +87,7 @@ describe("Lattice action component", () => {
         method: "patch",
       },
       type: "action",
-    } satisfies LatticeNode<"action">;
+    } satisfies Node<"action">;
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 
@@ -113,7 +113,7 @@ describe("Lattice action component", () => {
         method: "get",
       },
       type: "action",
-    } satisfies LatticeNode<"action">;
+    } satisfies Node<"action">;
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 
@@ -123,7 +123,7 @@ describe("Lattice action component", () => {
   });
 
   it("renders configured icons through the icon renderer", () => {
-    const iconRenderer = vi.fn<LatticeIconRenderer>(({ icon }) => (
+    const iconRenderer = vi.fn<IconRendererFunction>(({ icon }) => (
       <span data-testid="action-icon">{icon}</span>
     ));
 
@@ -135,7 +135,7 @@ describe("Lattice action component", () => {
         method: "post",
       },
       type: "action",
-    } satisfies LatticeNode<"action">;
+    } satisfies Node<"action">;
 
     render(
       <IconRendererProvider mode="replace" renderer={iconRenderer}>
@@ -168,7 +168,7 @@ describe("Lattice action component", () => {
         variant: "destructive",
       },
       type: "action",
-    } satisfies LatticeNode<"action">;
+    } satisfies Node<"action">;
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 
@@ -230,7 +230,7 @@ describe("Lattice action component", () => {
         variant: "secondary",
       },
       type: "action",
-    } satisfies LatticeNode<"action">;
+    } satisfies Node<"action">;
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 
@@ -276,7 +276,7 @@ describe("Lattice action component", () => {
         method: "delete",
       },
       type: "action",
-    } satisfies LatticeNode<"action">;
+    } satisfies Node<"action">;
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 

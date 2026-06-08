@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import type { LatticeNode } from "@/lattice/core/types";
+import type { Node } from "@/lattice/core/types";
 import { ChoiceComponent } from "./form-components";
 
 describe("Lattice form choice component", () => {
@@ -19,7 +19,7 @@ describe("Lattice form choice component", () => {
         value: "system",
       },
       type: "form.choice",
-    } satisfies LatticeNode<"form.choice">;
+    } satisfies Node<"form.choice">;
 
     window.addEventListener("lattice:appearance-change", handleChange);
 

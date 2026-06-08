@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { LatticeNode } from "@/lattice/core/types";
+import type { Node } from "@/lattice/core/types";
 import TableComponent from "./table";
 
 describe("Lattice table component", () => {
@@ -64,7 +64,7 @@ describe("Lattice table component", () => {
         },
       },
       type: "table",
-    } satisfies LatticeNode<"table">;
+    } satisfies Node<"table">;
 
     render(<TableComponent node={node}>{null}</TableComponent>);
 
@@ -172,7 +172,7 @@ describe("Lattice table component", () => {
         },
       },
       type: "table",
-    } satisfies LatticeNode<"table">;
+    } satisfies Node<"table">;
 
     const { container } = render(<TableComponent node={node}>{null}</TableComponent>);
 
@@ -232,7 +232,7 @@ describe("Lattice table component", () => {
         },
       },
       type: "table",
-    } satisfies LatticeNode<"table">;
+    } satisfies Node<"table">;
 
     render(<TableComponent node={node}>{null}</TableComponent>);
 
@@ -302,7 +302,7 @@ describe("Lattice table component", () => {
         },
       },
       type: "table",
-    } satisfies LatticeNode<"table">;
+    } satisfies Node<"table">;
 
     render(<TableComponent node={node}>{null}</TableComponent>);
 
@@ -362,7 +362,7 @@ describe("Lattice table component", () => {
         },
       },
       type: "table",
-    } satisfies LatticeNode<"table">;
+    } satisfies Node<"table">;
 
     render(<TableComponent node={node}>{null}</TableComponent>);
 
@@ -454,7 +454,7 @@ describe("Lattice table component", () => {
         },
       },
       type: "table",
-    } satisfies LatticeNode<"table">;
+    } satisfies Node<"table">;
 
     render(<TableComponent node={node}>{null}</TableComponent>);
 
@@ -509,7 +509,7 @@ describe("Lattice table component", () => {
         },
       },
       type: "table",
-    } satisfies LatticeNode<"table">;
+    } satisfies Node<"table">;
 
     render(<TableComponent node={node}>{null}</TableComponent>);
 
@@ -575,7 +575,7 @@ describe("Lattice table component", () => {
         },
       },
       type: "table",
-    } satisfies LatticeNode<"table">;
+    } satisfies Node<"table">;
 
     render(<TableComponent node={node}>{null}</TableComponent>);
 
@@ -639,7 +639,7 @@ describe("Lattice table component", () => {
         },
       },
       type: "table",
-    } satisfies LatticeNode<"table">;
+    } satisfies Node<"table">;
 
     render(<TableComponent node={node}>{null}</TableComponent>);
 

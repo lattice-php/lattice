@@ -1,11 +1,11 @@
 import { createContext, useContext } from "react";
 
-type LatticeFormContextValue = {
+type FormContextValue = {
   errors: Record<string, string | undefined>;
   processing: boolean;
 };
 
-const LatticeFormContext = createContext<LatticeFormContextValue>({
+const LatticeFormContext = createContext<FormContextValue>({
   errors: {},
   processing: false,
 });
@@ -15,7 +15,7 @@ export function LatticeFormProvider({
   value,
 }: {
   children: React.ReactNode;
-  value: LatticeFormContextValue;
+  value: FormContextValue;
 }) {
   return <LatticeFormContext.Provider value={value}>{children}</LatticeFormContext.Provider>;
 }

@@ -9,10 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@/lattice/core/props";
-import type { LatticeNodeProps, LatticeRendererComponent } from "@/lattice/core/types";
+import type { NodeProps, RendererComponent } from "@/lattice/core/types";
 import { LatticeFormProvider, useLatticeForm } from "./context";
 import { FormFieldFrame } from "./field";
-import type { LatticeFormLabelAction, LatticeFormMethod } from "./types";
+import type { FormLabelAction, FormMethod } from "./types";
 
 type ChoiceOption = {
   label: string;
@@ -26,12 +26,12 @@ type PasswordConfirmation = {
 };
 
 declare module "@/lattice/core/types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     form: {
       action?: string;
       errorBag?: string;
       ref?: string;
-      method?: LatticeFormMethod;
+      method?: FormMethod;
       resetOnError?: boolean | string[];
       resetOnSuccess?: boolean | string[];
       status?: string;
@@ -61,7 +61,7 @@ declare module "@/lattice/core/types" {
       autoFocus?: boolean;
       confirmation?: PasswordConfirmation;
       label?: string;
-      labelAction?: LatticeFormLabelAction;
+      labelAction?: FormLabelAction;
       name?: string;
       passwordRules?: string;
       placeholder?: string;
@@ -87,7 +87,7 @@ declare module "@/lattice/core/types" {
   }
 }
 
-function getChoiceOptions(props: LatticeNodeProps | undefined): ChoiceOption[] {
+function getChoiceOptions(props: NodeProps | undefined): ChoiceOption[] {
   const value = props?.options;
 
   if (!Array.isArray(value)) {
@@ -103,9 +103,7 @@ function getChoiceOptions(props: LatticeNodeProps | undefined): ChoiceOption[] {
   );
 }
 
-function getPasswordConfirmation(
-  props: LatticeNodeProps | undefined,
-): PasswordConfirmation | undefined {
+function getPasswordConfirmation(props: NodeProps | undefined): PasswordConfirmation | undefined {
   const value = props?.confirmation;
 
   if (typeof value !== "object" || value === null) {
@@ -122,7 +120,7 @@ function getPasswordConfirmation(
   };
 }
 
-export const FormComponent: LatticeRendererComponent<"form"> = ({ children, node }) => {
+export const FormComponent: RendererComponent<"form"> = ({ children, node }) => {
   const props = node.props ?? {};
   const action = props.action ?? "#";
   const errorBag = props.errorBag;
@@ -178,7 +176,7 @@ export const FormComponent: LatticeRendererComponent<"form"> = ({ children, node
   );
 };
 
-export const TextInputComponent: LatticeRendererComponent<"form.text-input"> = ({ node }) => {
+export const TextInputComponent: RendererComponent<"form.text-input"> = ({ node }) => {
   const { errors } = useLatticeForm();
   const name = getStringProp(node.props, "name");
 
@@ -200,9 +198,7 @@ export const TextInputComponent: LatticeRendererComponent<"form.text-input"> = (
   );
 };
 
-export const PasswordInputComponent: LatticeRendererComponent<"form.password-input"> = ({
-  node,
-}) => {
+export const PasswordInputComponent: RendererComponent<"form.password-input"> = ({ node }) => {
   const { errors } = useLatticeForm();
   const name = getStringProp(node.props, "name");
   const confirmation = getPasswordConfirmation(node.props);
@@ -250,7 +246,7 @@ export const PasswordInputComponent: LatticeRendererComponent<"form.password-inp
   );
 };
 
-export const HiddenInputComponent: LatticeRendererComponent<"form.hidden-input"> = ({ node }) => (
+export const HiddenInputComponent: RendererComponent<"form.hidden-input"> = ({ node }) => (
   <input
     defaultValue={getStringProp(node.props, "value")}
     name={getStringProp(node.props, "name")}
@@ -258,7 +254,7 @@ export const HiddenInputComponent: LatticeRendererComponent<"form.hidden-input">
   />
 );
 
-export const CheckboxComponent: LatticeRendererComponent<"form.checkbox"> = ({ node }) => {
+export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) => {
   const name = getStringProp(node.props, "name");
 
   return (
@@ -274,7 +270,7 @@ export const CheckboxComponent: LatticeRendererComponent<"form.checkbox"> = ({ n
   );
 };
 
-export const ChoiceComponent: LatticeRendererComponent<"form.choice"> = ({ node }) => {
+export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
   const { errors } = useLatticeForm();
   const name = getStringProp(node.props, "name");
   const options = useMemo(() => getChoiceOptions(node.props), [node.props]);
@@ -341,7 +337,7 @@ export const ChoiceComponent: LatticeRendererComponent<"form.choice"> = ({ node 
   );
 };
 
-export const SubmitButtonComponent: LatticeRendererComponent<"form.submit-button"> = ({ node }) => {
+export const SubmitButtonComponent: RendererComponent<"form.submit-button"> = ({ node }) => {
   const { processing } = useLatticeForm();
 
   return (

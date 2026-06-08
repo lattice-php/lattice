@@ -3,17 +3,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { getStringProp } from "@/lattice/core/props";
-import type { LatticeRendererComponent } from "@/lattice/core/types";
+import type { RendererComponent } from "@/lattice/core/types";
 
 declare module "@/lattice/core/types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     "action.group": {
       label?: string;
     };
   }
 }
 
-const ActionGroupComponent: LatticeRendererComponent<"action.group"> = ({ children, node }) => {
+const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, node }) => {
   const label = getStringProp(node.props, "label", "Actions");
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<{ right: number; top: number } | null>(null);

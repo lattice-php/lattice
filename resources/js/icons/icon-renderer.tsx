@@ -2,20 +2,20 @@ import { createContext, useContext, useMemo } from "react";
 import type { ReactNode } from "react";
 import { renderBundledIcon, renderMissingIcon } from "./default-icons";
 
-export type LatticeIconRendererProps = {
+export type IconRendererProps = {
   className?: string;
   icon: string;
 };
 
-export type LatticeIconRenderer = (props: LatticeIconRendererProps) => ReactNode;
+export type IconRendererFunction = (props: IconRendererProps) => ReactNode;
 
 type IconRendererProviderProps = {
   children: ReactNode;
   mode?: "replace" | "stack";
-  renderer: LatticeIconRenderer;
+  renderer: IconRendererFunction;
 };
 
-const IconRenderersContext = createContext<LatticeIconRenderer[]>([renderBundledIcon]);
+const IconRenderersContext = createContext<IconRendererFunction[]>([renderBundledIcon]);
 const loggedMissingIcons = new Set<string>();
 
 export function IconRendererProvider({
@@ -34,7 +34,7 @@ export function IconRendererProvider({
   );
 }
 
-export function IconRenderer({ className, icon }: LatticeIconRendererProps) {
+export function IconRenderer({ className, icon }: IconRendererProps) {
   const renderers = useContext(IconRenderersContext);
 
   for (const renderer of renderers) {

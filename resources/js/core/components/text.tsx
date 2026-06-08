@@ -1,9 +1,9 @@
 import { getStringProp } from "@/lattice/core/props";
-import type { LatticeRendererComponent } from "@/lattice/core/types";
+import type { RendererComponent } from "@/lattice/core/types";
 import { cn } from "@/lib/utils";
 
 declare module "@/lattice/core/types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     text: {
       align?: string;
       text?: string;
@@ -16,7 +16,7 @@ const textAlignments: Record<string, string> = {
   left: "text-left",
 };
 
-const TextComponent: LatticeRendererComponent<"text"> = ({ node }) => {
+const TextComponent: RendererComponent<"text"> = ({ node }) => {
   const align = getStringProp(node.props, "align", "left");
 
   return (

@@ -13,25 +13,25 @@ export {
 } from "./core/registry";
 export { LatticeRenderer } from "./core/renderer";
 export type {
-  LatticeComponentProps,
-  LatticeComponentType,
-  LatticeHttpMethod,
-  LatticeKnownPageContainer,
-  LatticeKnownPageLayout,
-  LatticeMenuGroup,
-  LatticeMenuItem,
-  LatticeMenuPayload,
-  LatticeNode,
-  LatticeNodeProps,
-  LatticePageContainer,
-  LatticePageBreadcrumb,
-  LatticePageLayout,
-  LatticePagePayload,
-  LatticeRendererComponent,
-  LatticeRendererComponentModule,
-  LatticeRendererComponentProps,
-  LatticeUnknownComponent,
+  ComponentProps,
+  ComponentType,
+  HttpMethod,
+  KnownPageContainer,
+  KnownPageLayout,
+  MenuGroup,
+  MenuItem,
+  MenuPayload,
+  Node,
+  NodeProps,
+  PageContainer,
+  PageBreadcrumb,
+  PageLayout,
+  PagePayload,
+  RendererComponent,
+  RendererComponentModule,
+  RendererComponentProps,
+  UnknownComponent,
 } from "./core/types";
-export type { LatticeActionEffect } from "./action/effects";
-export type { LatticeAppearance, ToastMessage, ToastType } from "./events/event-bridge";
-export type { LatticeIconRenderer, LatticeIconRendererProps } from "./icons";
+export type { ActionEffect } from "./action/effects";
+export type { Appearance, ToastMessage, ToastType } from "./events/event-bridge";
+export type { IconRendererFunction, IconRendererProps } from "./icons";

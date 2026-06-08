@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { LatticeNode } from "@/lattice/core/types";
+import type { Node } from "@/lattice/core/types";
 import ActionGroupComponent from "./action-group";
 
 describe("Lattice action group component", () => {
@@ -11,7 +11,7 @@ describe("Lattice action group component", () => {
         label: "Manage member",
       },
       type: "action.group",
-    } satisfies LatticeNode<"action.group">;
+    } satisfies Node<"action.group">;
 
     render(
       <ActionGroupComponent node={node}>

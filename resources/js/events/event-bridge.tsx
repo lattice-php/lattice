@@ -5,7 +5,7 @@ export const toastTypes = ["success", "info", "warning", "error"] as const;
 export const appearances = ["light", "dark", "system"] as const;
 
 export type ToastType = (typeof toastTypes)[number];
-export type LatticeAppearance = (typeof appearances)[number];
+export type Appearance = (typeof appearances)[number];
 
 export type ToastMessage = {
   message: string;
@@ -13,16 +13,16 @@ export type ToastMessage = {
 };
 
 type EventBridgeProps = {
-  onAppearanceChange?: (appearance: LatticeAppearance) => void;
+  onAppearanceChange?: (appearance: Appearance) => void;
   onToast?: (toast: ToastMessage) => void;
 };
 
-type LatticeToastEvent = CustomEvent<{
+type ToastEvent = CustomEvent<{
   message?: unknown;
   variant?: unknown;
 }>;
 
-type LatticeAppearanceEvent = CustomEvent<{
+type AppearanceEvent = CustomEvent<{
   value?: unknown;
 }>;
 
@@ -36,7 +36,7 @@ function isToastType(value: unknown): value is ToastType {
   return toastTypes.some((type) => type === value);
 }
 
-function isAppearance(value: unknown): value is LatticeAppearance {
+function isAppearance(value: unknown): value is Appearance {
   return appearances.some((appearance) => appearance === value);
 }
 
@@ -58,7 +58,7 @@ function normalizeFlashToast(value: unknown): ToastMessage | null {
 }
 
 function normalizeLatticeToast(event: Event): ToastMessage | null {
-  const detail = (event as LatticeToastEvent).detail;
+  const detail = (event as ToastEvent).detail;
   const message = detail?.message;
 
   if (typeof message !== "string" || message === "") {
@@ -112,7 +112,7 @@ export function EventBridge({ onAppearanceChange, onToast }: EventBridgeProps) {
     }
 
     const listener = (event: Event): void => {
-      const value = (event as LatticeAppearanceEvent).detail?.value;
+      const value = (event as AppearanceEvent).detail?.value;
 
       if (isAppearance(value)) {
         onAppearanceChange(value);

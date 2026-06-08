@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { LatticeNode } from "@/lattice/core/types";
+import type { Node } from "@/lattice/core/types";
 import StackComponent from "./stack";
 
 describe("Lattice stack component", () => {
@@ -13,7 +13,7 @@ describe("Lattice stack component", () => {
         width: "sm",
       },
       type: "stack",
-    } satisfies LatticeNode<"stack">;
+    } satisfies Node<"stack">;
 
     render(<StackComponent node={node}>Content</StackComponent>);
 
@@ -34,7 +34,7 @@ describe("Lattice stack component", () => {
         gap: "xs",
       },
       type: "stack",
-    } satisfies LatticeNode<"stack">;
+    } satisfies Node<"stack">;
 
     render(<StackComponent node={node}>Content</StackComponent>);
 

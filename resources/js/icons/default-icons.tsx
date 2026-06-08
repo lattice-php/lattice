@@ -18,7 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { LatticeIconRendererProps } from "./icon-renderer";
+import type { IconRendererProps } from "./icon-renderer";
 
 const bundledIcons = {
   "arrow-down": ArrowDown,
@@ -42,7 +42,7 @@ const bundledIcons = {
   x: X,
 };
 
-export function renderBundledIcon({ className, icon }: LatticeIconRendererProps) {
+export function renderBundledIcon({ className, icon }: IconRendererProps) {
   const Icon = bundledIcons[icon as keyof typeof bundledIcons];
 
   if (!Icon) {
@@ -52,7 +52,7 @@ export function renderBundledIcon({ className, icon }: LatticeIconRendererProps)
   return <Icon aria-hidden="true" className={cn("size-4", className)} />;
 }
 
-export function renderMissingIcon({ className }: LatticeIconRendererProps) {
+export function renderMissingIcon({ className }: IconRendererProps) {
   return (
     <CircleHelp
       aria-hidden="true"

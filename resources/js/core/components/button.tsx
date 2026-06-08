@@ -1,12 +1,12 @@
 import { Link } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import { getStringProp } from "@/lattice/core/props";
-import type { LatticeRendererComponent } from "@/lattice/core/types";
+import type { RendererComponent } from "@/lattice/core/types";
 
 type ButtonVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
 
 declare module "@/lattice/core/types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     button: {
       href?: string;
       label?: string;
@@ -30,7 +30,7 @@ function getButtonVariant(variant: string): ButtonVariant {
   return "default";
 }
 
-const ButtonComponent: LatticeRendererComponent<"button"> = ({ node }) => {
+const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
   const href = getStringProp(node.props, "href");
   const label = getStringProp(node.props, "label", "Action");
   const variant = getButtonVariant(getStringProp(node.props, "variant", "default"));
