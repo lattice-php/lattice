@@ -19,7 +19,7 @@ export default function LatticePage({ lattice }: Props) {
       <Head title={lattice.title ?? undefined} />
 
       {lattice.container === "centered" ? (
-        <main className="min-h-svh bg-background text-foreground">
+        <main className="min-h-svh bg-lt-bg text-lt-fg">
           <div
             data-testid="lattice-centered-container"
             className="mx-auto flex min-h-svh w-full max-w-6xl flex-col justify-center px-6 py-12 sm:px-8 lg:px-10"

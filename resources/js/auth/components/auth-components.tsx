@@ -85,15 +85,15 @@ export const TwoFactorChallengeFormComponent: LatticeRendererComponent<
       method="post"
       resetOnError
       resetOnSuccess={!showRecoveryInput}
-      className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-lg border bg-card p-6 shadow-xs"
+      className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-lt border border-lt-border bg-lt-surface p-6 shadow-xs"
     >
       {({ errors, processing, clearErrors }) => (
         <div className="grid gap-6">
           <div className="grid gap-2 text-center">
-            <h2 className="text-2xl font-semibold tracking-normal text-balance text-foreground">
+            <h2 className="text-2xl font-semibold tracking-normal text-balance text-lt-fg">
               {content.title}
             </h2>
-            <p className="text-base leading-7 text-muted-foreground">{content.description}</p>
+            <p className="text-base leading-7 text-lt-muted-fg">{content.description}</p>
           </div>
 
           {showRecoveryInput ? (
@@ -133,11 +133,11 @@ export const TwoFactorChallengeFormComponent: LatticeRendererComponent<
             Continue
           </Button>
 
-          <div className="text-center text-sm text-muted-foreground">
+          <div className="text-center text-sm text-lt-muted-fg">
             <span>or you can </span>
             <button
               type="button"
-              className="cursor-pointer text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
+              className="cursor-pointer text-lt-fg underline decoration-lt-border underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-lt-border"
               onClick={() => toggleRecoveryMode(clearErrors)}
             >
               {content.toggleText}

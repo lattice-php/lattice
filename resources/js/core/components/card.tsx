@@ -13,13 +13,13 @@ declare module "@/lattice/core/types" {
 const CardComponent: LatticeRendererComponent<"card"> = ({ children, node }) => (
   <article
     data-lattice-component={node.id}
-    className="grid min-h-44 gap-4 rounded-lg border bg-card p-6 text-card-foreground shadow-xs"
+    className="grid min-h-44 gap-4 rounded-lt border border-lt-border bg-lt-surface p-6 text-lt-surface-fg shadow-xs"
   >
     <div className="grid content-start gap-2">
       <h2 className="text-lg font-semibold tracking-normal">
         {getStringProp(node.props, "title")}
       </h2>
-      <p className="text-sm leading-6 text-muted-foreground">{getStringProp(node.props, "body")}</p>
+      <p className="text-sm leading-6 text-lt-muted-fg">{getStringProp(node.props, "body")}</p>
     </div>
     {children}
   </article>

@@ -15,7 +15,7 @@ const HeadingComponent: LatticeRendererComponent<"heading"> = ({ node }) => {
   const text = getStringProp(node.props, "text");
   const level = Math.min(Math.max(getNumberProp(node.props, "level", 1), 1), 6);
   const className = cn(
-    "max-w-3xl font-semibold tracking-normal text-balance text-foreground",
+    "max-w-3xl font-semibold tracking-normal text-balance text-lt-fg",
     level === 1 && "text-4xl leading-tight sm:text-5xl",
     level === 2 && "text-2xl",
     level > 2 && "text-lg",

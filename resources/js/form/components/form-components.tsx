@@ -147,7 +147,7 @@ export const FormComponent: LatticeRendererComponent<"form"> = ({ children, node
           ? ({ _lattice: componentRef } satisfies Record<string, FormDataConvertible>)
           : {}),
       })}
-      className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-lg border bg-card p-6 shadow-xs"
+      className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-lt border border-lt-border bg-lt-surface p-6 shadow-xs"
     >
       {({ errors, processing }) => (
         <LatticeFormProvider
@@ -311,7 +311,7 @@ export const ChoiceComponent: LatticeRendererComponent<"form.choice"> = ({ node 
       <input name={name} type="hidden" value={selectedValue} />
       <div
         aria-label={getStringProp(node.props, "label")}
-        className="inline-flex w-fit max-w-full gap-1 overflow-x-auto rounded-lg bg-muted p-1"
+        className="inline-flex w-fit max-w-full gap-1 overflow-x-auto rounded-lt bg-lt-muted p-1"
         role="radiogroup"
       >
         {options.map((option) => {
@@ -321,10 +321,10 @@ export const ChoiceComponent: LatticeRendererComponent<"form.choice"> = ({ node 
             <button
               aria-checked={isSelected}
               className={cn(
-                "whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                "whitespace-nowrap rounded-lt-sm px-3 py-1.5 text-sm font-medium transition-colors",
                 isSelected
-                  ? "bg-background text-foreground shadow-xs"
-                  : "text-muted-foreground hover:bg-background/60 hover:text-foreground",
+                  ? "bg-lt-bg text-lt-fg shadow-xs"
+                  : "text-lt-muted-fg hover:bg-lt-bg/60 hover:text-lt-fg",
               )}
               key={option.value}
               onClick={() => selectOption(option.value)}

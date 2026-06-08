@@ -83,7 +83,7 @@ const ActionGroupComponent: LatticeRendererComponent<"action.group"> = ({ childr
           <div
             ref={menuRef}
             aria-label={label}
-            className="fixed z-50 grid min-w-40 gap-1 rounded-md border bg-popover p-1 text-popover-foreground shadow-md [&>button]:w-full [&>button]:justify-start"
+            className="fixed z-50 grid min-w-40 gap-1 rounded-lt-sm border border-lt-border bg-lt-popover p-1 text-lt-popover-fg shadow-md [&>button]:w-full [&>button]:justify-start"
             role="menu"
             style={position}
           >
@@ -100,7 +100,7 @@ const ActionGroupComponent: LatticeRendererComponent<"action.group"> = ({ childr
         aria-label={label}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="size-8 text-muted-foreground shadow-none hover:text-foreground"
+        className="size-8 text-lt-muted-fg shadow-none hover:text-lt-fg"
         onClick={toggle}
         size="icon"
         type="button"

@@ -151,7 +151,7 @@ const ActionComponent: LatticeRendererComponent<"action"> = ({ node }) => {
           <div
             aria-labelledby={`${node.id ?? "lattice-action"}-confirmation-title`}
             aria-modal="true"
-            className="w-full max-w-md rounded-lg border bg-background p-6 shadow-lg"
+            className="w-full max-w-md rounded-lt border border-lt-border bg-lt-bg p-6 shadow-lg"
             role="dialog"
           >
             <div className="grid gap-2">
@@ -163,7 +163,7 @@ const ActionComponent: LatticeRendererComponent<"action"> = ({ node }) => {
               </h2>
 
               {confirmation.description && (
-                <p className="text-sm text-muted-foreground">{confirmation.description}</p>
+                <p className="text-sm text-lt-muted-fg">{confirmation.description}</p>
               )}
             </div>
 

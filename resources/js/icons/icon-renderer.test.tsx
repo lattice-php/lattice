@@ -10,9 +10,9 @@ describe("Lattice icon renderer", () => {
   });
 
   it("renders bundled default icons without a custom renderer", () => {
-    const { container } = render(<IconRenderer className="text-primary" icon="edit" />);
+    const { container } = render(<IconRenderer className="text-lt-primary" icon="edit" />);
 
-    expect(container.querySelector("svg")).toHaveClass("size-4", "text-primary");
+    expect(container.querySelector("svg")).toHaveClass("size-4", "text-lt-primary");
   });
 
   it("renders a missing icon fallback for unknown icons", () => {

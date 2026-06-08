@@ -521,9 +521,12 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
   }, [isInfinite, loadMore, pagination.hasMore, processing]);
 
   return (
-    <div data-lattice-component={node.id} className="overflow-hidden rounded-md border">
+    <div
+      data-lattice-component={node.id}
+      className="overflow-hidden rounded-lt-sm border border-lt-border"
+    >
       {interactiveColumns.some((column) => column.filter?.enabled) && (
-        <div className="flex flex-wrap items-end gap-3 border-b p-4">
+        <div className="flex flex-wrap items-end gap-3 border-b border-lt-border p-4">
           {interactiveColumns
             .filter((column) => column.filter?.enabled)
             .map((column) => (
@@ -531,7 +534,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
                 <span>{`Filter ${column.label}`}</span>
                 <input
                   aria-label={`Filter ${column.label}`}
-                  className="h-9 rounded-md border bg-background px-3 text-sm font-normal"
+                  className="h-9 rounded-lt-sm border border-lt-input bg-lt-bg px-3 text-sm font-normal"
                   value={filters[column.key] ?? ""}
                   onChange={(event) =>
                     setFilters((currentFilters) => ({
@@ -544,7 +547,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
             ))}
           <button
             type="button"
-            className="h-9 rounded-md border px-3 text-sm font-medium disabled:opacity-50"
+            className="h-9 rounded-lt-sm border border-lt-border px-3 text-sm font-medium disabled:opacity-50"
             disabled={processing}
             onClick={applyFilters}
           >
@@ -553,8 +556,8 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
         </div>
       )}
       {state.sorts.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 border-b px-4 py-3 text-sm">
-          <span className="font-medium text-muted-foreground">Sorted by</span>
+        <div className="flex flex-wrap items-center gap-2 border-b border-lt-border px-4 py-3 text-sm">
+          <span className="font-medium text-lt-muted-fg">Sorted by</span>
           {state.sorts.map((sort, index) => {
             const column = getSortColumn(columns, sort);
             const label = column?.label ?? sort.key;
@@ -563,12 +566,12 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
             return (
               <span
                 key={sort.key}
-                className="inline-flex items-center gap-1.5 rounded-md border bg-background px-2 py-1"
+                className="inline-flex items-center gap-1.5 rounded-lt-sm border border-lt-border bg-lt-bg px-2 py-1"
               >
                 <span>{`${index + 1}. ${label} ${directionLabel}`}</span>
                 <button
                   type="button"
-                  className="inline-flex size-5 items-center justify-center rounded hover:bg-muted disabled:opacity-50"
+                  className="inline-flex size-5 items-center justify-center rounded hover:bg-lt-muted disabled:opacity-50"
                   disabled={processing}
                   aria-label={`Clear ${label} sort`}
                   data-test={`clear-${sort.key}-sort`}
@@ -582,7 +585,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
         </div>
       )}
       <div className="w-full text-sm" role="table">
-        <div className="border-b bg-muted/50" role="rowgroup">
+        <div className="border-b border-lt-border bg-lt-muted/50" role="rowgroup">
           <div
             className="hidden min-w-full md:grid md:grid-cols-[var(--lattice-table-columns)]"
             role="row"
@@ -599,7 +602,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
             ))}
             {hasActions && (
               <div
-                className="px-4 py-3 text-right align-middle font-medium text-muted-foreground"
+                className="px-4 py-3 text-right align-middle font-medium text-lt-muted-fg"
                 role="columnheader"
               >
                 Actions
@@ -609,7 +612,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
         </div>
         <div role="rowgroup">
           {!hasLoaded ? (
-            <div className="p-4 text-muted-foreground" role="row">
+            <div className="p-4 text-lt-muted-fg" role="row">
               <div role="cell">Loading rows...</div>
             </div>
           ) : (
@@ -620,7 +623,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
               return (
                 <div
                   key={metadata.key ?? getRowKey(row, index)}
-                  className="grid grid-cols-1 border-b last:border-b-0 md:grid-cols-[var(--lattice-table-columns)]"
+                  className="grid grid-cols-1 border-b border-lt-border last:border-b-0 md:grid-cols-[var(--lattice-table-columns)]"
                   role="row"
                   style={{ "--lattice-table-columns": gridTemplateColumns } as never}
                 >
@@ -628,7 +631,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
                     <div key={column.key} className="grid gap-1 p-4 align-middle" role="cell">
                       <span
                         aria-hidden="true"
-                        className="text-xs font-medium text-muted-foreground md:hidden"
+                        className="text-xs font-medium text-lt-muted-fg md:hidden"
                       >
                         {column.label}
                       </span>
@@ -655,7 +658,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
         </div>
       </div>
       {hasLoaded && (
-        <div className="flex items-center justify-between gap-3 border-t p-4 text-sm">
+        <div className="flex items-center justify-between gap-3 border-t border-lt-border p-4 text-sm">
           <span>
             {pagination.total === undefined
               ? `Page ${currentPage}`
@@ -666,21 +669,21 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
               {pagination.hasMore ? (
                 <button
                   type="button"
-                  className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+                  className="h-9 rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
                   disabled={processing}
                   onClick={loadMore}
                 >
                   {processing ? "Loading..." : "Load more"}
                 </button>
               ) : (
-                <span className="text-muted-foreground">All rows loaded</span>
+                <span className="text-lt-muted-fg">All rows loaded</span>
               )}
             </div>
           ) : isSimple ? (
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+                className="h-9 rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
                 disabled={processing || currentPage <= 1}
                 onClick={() => page(currentPage - 1)}
               >
@@ -688,7 +691,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
               </button>
               <button
                 type="button"
-                className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+                className="h-9 rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
                 disabled={processing || !hasNextPage}
                 onClick={() => page(currentPage + 1)}
               >
@@ -699,7 +702,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+                className="h-9 rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
                 disabled={processing || currentPage <= 1}
                 onClick={() => page(currentPage - 1)}
               >
@@ -709,7 +712,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
                 <button
                   key={pageNumber}
                   type="button"
-                  className="inline-flex size-9 items-center justify-center rounded-md border font-medium disabled:opacity-50"
+                  className="inline-flex size-9 items-center justify-center rounded-lt-sm border border-lt-border font-medium disabled:opacity-50"
                   disabled={processing || pageNumber === currentPage}
                   aria-current={pageNumber === currentPage ? "page" : undefined}
                   aria-label={`Page ${pageNumber}`}
@@ -720,7 +723,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
               ))}
               <button
                 type="button"
-                className="h-9 rounded-md border px-3 font-medium disabled:opacity-50"
+                className="h-9 rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
                 disabled={processing || !hasNextPage}
                 onClick={() => page(currentPage + 1)}
               >
@@ -750,7 +753,7 @@ function ColumnHeader({
   return (
     <div
       aria-sort={getColumnAriaSort(columnSort)}
-      className="px-4 py-3 text-left align-middle font-medium text-muted-foreground"
+      className="px-4 py-3 text-left align-middle font-medium text-lt-muted-fg"
       role="columnheader"
     >
       {column.sortable ? (
@@ -827,7 +830,7 @@ function TextCell({ column, row, value }: { column: TableColumn; row: TableRow; 
       <span>{content}</span>
       <button
         type="button"
-        className="inline-flex items-center gap-1 rounded border px-2 py-1 text-xs"
+        className="inline-flex items-center gap-1 rounded border border-lt-border px-2 py-1 text-xs"
         aria-label={`${copied ? "Copied" : "Copy"} ${column.label}`}
         onClick={handleCopy}
       >

@@ -65,7 +65,7 @@ const ModalComponent: LatticeRendererComponent<"modal"> = ({ children, node }) =
         aria-describedby={description ? descriptionId : undefined}
         aria-labelledby={titleId}
         aria-modal="true"
-        className="max-h-[min(680px,calc(100vh-2rem))] w-full max-w-lg overflow-y-auto rounded-lg border bg-background p-6 shadow-lg"
+        className="max-h-[min(680px,calc(100vh-2rem))] w-full max-w-lg overflow-y-auto rounded-lt border border-lt-border bg-lt-bg p-6 shadow-lg"
         role="dialog"
       >
         <div className="flex items-start justify-between gap-4">
@@ -75,7 +75,7 @@ const ModalComponent: LatticeRendererComponent<"modal"> = ({ children, node }) =
             </h2>
 
             {description && (
-              <p className="text-sm text-muted-foreground" id={descriptionId}>
+              <p className="text-sm text-lt-muted-fg" id={descriptionId}>
                 {description}
               </p>
             )}

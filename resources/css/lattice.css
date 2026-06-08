@@ -1,0 +1,77 @@
+:root,
+[data-theme="light"] {
+  --lt-bg: var(--background, oklch(1 0 0));
+  --lt-fg: var(--foreground, oklch(0.145 0 0));
+  --lt-surface: var(--card, oklch(1 0 0));
+  --lt-surface-fg: var(--card-foreground, oklch(0.145 0 0));
+  --lt-popover: var(--popover, oklch(1 0 0));
+  --lt-popover-fg: var(--popover-foreground, oklch(0.145 0 0));
+  --lt-primary: var(--primary, oklch(0.205 0 0));
+  --lt-primary-fg: var(--primary-foreground, oklch(0.985 0 0));
+  --lt-secondary: var(--secondary, oklch(0.97 0 0));
+  --lt-secondary-fg: var(--secondary-foreground, oklch(0.205 0 0));
+  --lt-muted: var(--muted, oklch(0.97 0 0));
+  --lt-muted-fg: var(--muted-foreground, oklch(0.556 0 0));
+  --lt-accent: var(--accent, oklch(0.97 0 0));
+  --lt-accent-fg: var(--accent-foreground, oklch(0.205 0 0));
+  --lt-danger: var(--destructive, oklch(0.577 0.245 27.325));
+  --lt-danger-fg: var(--destructive-foreground, oklch(0.985 0 0));
+  --lt-border: var(--border, oklch(0.922 0 0));
+  --lt-input: var(--input, oklch(0.922 0 0));
+  --lt-ring: var(--ring, oklch(0.87 0 0));
+  --lt-radius: var(--radius, 0.625rem);
+  --lt-radius-sm: calc(var(--lt-radius) - 2px);
+  --lt-radius-xs: calc(var(--lt-radius) - 4px);
+
+  color-scheme: light;
+}
+
+[data-theme="dark"],
+.dark {
+  --lt-bg: var(--background, oklch(0.145 0 0));
+  --lt-fg: var(--foreground, oklch(0.985 0 0));
+  --lt-surface: var(--card, oklch(0.145 0 0));
+  --lt-surface-fg: var(--card-foreground, oklch(0.985 0 0));
+  --lt-popover: var(--popover, oklch(0.145 0 0));
+  --lt-popover-fg: var(--popover-foreground, oklch(0.985 0 0));
+  --lt-primary: var(--primary, oklch(0.985 0 0));
+  --lt-primary-fg: var(--primary-foreground, oklch(0.205 0 0));
+  --lt-secondary: var(--secondary, oklch(0.269 0 0));
+  --lt-secondary-fg: var(--secondary-foreground, oklch(0.985 0 0));
+  --lt-muted: var(--muted, oklch(0.269 0 0));
+  --lt-muted-fg: var(--muted-foreground, oklch(0.708 0 0));
+  --lt-accent: var(--accent, oklch(0.269 0 0));
+  --lt-accent-fg: var(--accent-foreground, oklch(0.985 0 0));
+  --lt-danger: var(--destructive, oklch(0.396 0.141 25.723));
+  --lt-danger-fg: var(--destructive-foreground, oklch(0.985 0 0));
+  --lt-border: var(--border, oklch(0.269 0 0));
+  --lt-input: var(--input, oklch(0.269 0 0));
+  --lt-ring: var(--ring, oklch(0.439 0 0));
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-lt-bg: var(--lt-bg);
+  --color-lt-fg: var(--lt-fg);
+  --color-lt-surface: var(--lt-surface);
+  --color-lt-surface-fg: var(--lt-surface-fg);
+  --color-lt-popover: var(--lt-popover);
+  --color-lt-popover-fg: var(--lt-popover-fg);
+  --color-lt-primary: var(--lt-primary);
+  --color-lt-primary-fg: var(--lt-primary-fg);
+  --color-lt-secondary: var(--lt-secondary);
+  --color-lt-secondary-fg: var(--lt-secondary-fg);
+  --color-lt-muted: var(--lt-muted);
+  --color-lt-muted-fg: var(--lt-muted-fg);
+  --color-lt-accent: var(--lt-accent);
+  --color-lt-accent-fg: var(--lt-accent-fg);
+  --color-lt-danger: var(--lt-danger);
+  --color-lt-danger-fg: var(--lt-danger-fg);
+  --color-lt-border: var(--lt-border);
+  --color-lt-input: var(--lt-input);
+  --color-lt-ring: var(--lt-ring);
+  --radius-lt: var(--lt-radius);
+  --radius-lt-sm: var(--lt-radius-sm);
+  --radius-lt-xs: var(--lt-radius-xs);
+}

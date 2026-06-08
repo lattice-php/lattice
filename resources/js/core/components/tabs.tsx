@@ -148,7 +148,7 @@ export const TabsComponent: LatticeRendererComponent<"tabs"> = ({ children, node
       <div className="grid gap-6" data-lattice-tabs={node.key ?? node.id}>
         <div
           aria-label={getStringProp(node.props, "label", "Tabs")}
-          className="inline-flex w-fit max-w-full gap-1 overflow-x-auto rounded-lg bg-muted p-1"
+          className="inline-flex w-fit max-w-full gap-1 overflow-x-auto rounded-lt bg-lt-muted p-1"
           role="tablist"
         >
           {tabs.map((tab) => {
@@ -159,10 +159,10 @@ export const TabsComponent: LatticeRendererComponent<"tabs"> = ({ children, node
                 aria-controls={`${tab.value}-panel`}
                 aria-selected={isActive}
                 className={cn(
-                  "whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                  "whitespace-nowrap rounded-lt-sm px-3 py-1.5 text-sm font-medium transition-colors",
                   isActive
-                    ? "bg-background text-foreground shadow-xs"
-                    : "text-muted-foreground hover:bg-background/60 hover:text-foreground",
+                    ? "bg-lt-bg text-lt-fg shadow-xs"
+                    : "text-lt-muted-fg hover:bg-lt-bg/60 hover:text-lt-fg",
                 )}
                 id={`${tab.value}-tab`}
                 key={tab.value}

@@ -56,7 +56,7 @@ export function renderMissingIcon({ className }: LatticeIconRendererProps) {
   return (
     <CircleHelp
       aria-hidden="true"
-      className={cn("size-4 text-muted-foreground", className)}
+      className={cn("size-4 text-lt-muted-fg", className)}
       data-lattice-missing-icon=""
     />
   );

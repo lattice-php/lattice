@@ -22,7 +22,7 @@ const TextComponent: LatticeRendererComponent<"text"> = ({ node }) => {
   return (
     <p
       className={cn(
-        "max-w-2xl text-base leading-7 text-muted-foreground",
+        "max-w-2xl text-base leading-7 text-lt-muted-fg",
         textAlignments[align] ?? textAlignments.left,
       )}
     >
