@@ -108,6 +108,7 @@ describe("Lattice modal and fragment components", () => {
             id: "settings.two-factor-setup",
             props: {
               endpoint: "/lattice/fragments/settings.two-factor-setup",
+              ref: "sealed-reference",
               lazy: true,
             },
             type: "fragment",
@@ -121,11 +122,14 @@ describe("Lattice modal and fragment components", () => {
       expect(screen.getByText("Loaded fragment body")).toBeVisible();
     });
 
-    expect(fetch).toHaveBeenCalledWith("/lattice/fragments/settings.two-factor-setup", {
-      headers: {
-        Accept: "application/json",
+    expect(fetch).toHaveBeenCalledWith(
+      "/lattice/fragments/settings.two-factor-setup?_lattice=sealed-reference",
+      {
+        headers: {
+          Accept: "application/json",
+        },
       },
-    });
+    );
   });
 
   it("reloads a loaded fragment when its component receives a reload effect", async () => {

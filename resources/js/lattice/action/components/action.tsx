@@ -24,21 +24,19 @@ type LatticeActionResponse = {
   ok?: boolean;
 };
 
-type LatticeContextValue = boolean | number | string | null | undefined;
-type LatticeComponentContext = Record<string, LatticeContextValue>;
 type LatticeActionData = {
-  context?: LatticeComponentContext;
+  _lattice?: string;
 };
 
 declare module "@/lattice/core/types" {
   interface LatticeComponentProps {
     action: {
       confirmation?: LatticeActionConfirmation;
-      context?: LatticeComponentContext;
       effects?: LatticeActionEffect[];
       endpoint?: string;
       icon?: string;
       label?: string;
+      ref?: string;
       method?: LatticeActionMethod;
       variant?: LatticeActionVariant;
     };
@@ -59,30 +57,14 @@ function getActionEffects(effects: unknown): LatticeActionEffect[] {
   return Array.isArray(effects) ? effects.filter(isActionEffect) : [];
 }
 
-function getContext(props: LatticeNodeProps | undefined): LatticeComponentContext {
-  const context = props?.context;
-
-  if (typeof context !== "object" || context === null || Array.isArray(context)) {
-    return {};
-  }
-
-  return context as LatticeComponentContext;
-}
-
-function hasContext(context: LatticeComponentContext): boolean {
-  return Object.keys(context).length > 0;
-}
-
-function endpointWithContext(endpoint: string, context: LatticeComponentContext): string {
-  if (!hasContext(context)) {
+function endpointWithRef(endpoint: string, componentRef: string): string {
+  if (!componentRef) {
     return endpoint;
   }
 
   const url = new URL(endpoint, window.location.origin);
 
-  Object.entries(context)
-    .filter(([, value]) => value !== null && value !== undefined)
-    .forEach(([key, value]) => url.searchParams.set(`context[${key}]`, String(value)));
+  url.searchParams.set("_lattice", componentRef);
 
   return `${url.pathname}${url.search}`;
 }
@@ -98,10 +80,10 @@ function getConfirmation(props: LatticeNodeProps | undefined): LatticeActionConf
 }
 
 const ActionComponent: LatticeRendererComponent<"action"> = ({ node }) => {
-  const context = getContext(node.props);
   const endpoint = getStringProp(node.props, "endpoint");
   const icon = getStringProp(node.props, "icon");
   const label = getStringProp(node.props, "label", "Run action");
+  const componentRef = getStringProp(node.props, "ref");
   const method = getActionMethod(node.props);
   const http = useHttp<LatticeActionData, LatticeActionResponse>({});
   const [isConfirming, setIsConfirming] = useState(false);
@@ -114,7 +96,7 @@ const ActionComponent: LatticeRendererComponent<"action"> = ({ node }) => {
 
     try {
       if (method === "get") {
-        router.visit(endpointWithContext(endpoint, context));
+        router.visit(endpointWithRef(endpoint, componentRef));
         setIsConfirming(false);
 
         return;
@@ -122,7 +104,7 @@ const ActionComponent: LatticeRendererComponent<"action"> = ({ node }) => {
 
       http.transform((data) => ({
         ...data,
-        ...(hasContext(context) ? { context } : {}),
+        ...(componentRef ? { _lattice: componentRef } : {}),
       }));
 
       const response = await http[method](endpoint);

@@ -39,14 +39,12 @@ vi.mock("@inertiajs/react", () => ({
 }));
 
 describe("Lattice form schema components", () => {
-  it("transforms submitted data with component context", () => {
+  it("transforms submitted data with the sealed component reference", () => {
     const formNode = {
       id: "team-form",
       props: {
         action: "/lattice/forms/teams.update",
-        context: {
-          team: "lattice-core",
-        },
+        ref: "sealed-reference",
         method: "patch",
       },
       type: "form",
@@ -59,9 +57,7 @@ describe("Lattice form schema components", () => {
       "data-transformed",
       JSON.stringify({
         name: "Updated team",
-        context: {
-          team: "lattice-core",
-        },
+        _lattice: "sealed-reference",
       }),
     );
   });

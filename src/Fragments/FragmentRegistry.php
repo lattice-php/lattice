@@ -45,10 +45,12 @@ class FragmentRegistry
     /**
      * @return array{components: array<int, array<string, mixed>>}
      */
-    public function response(string $key): array
+    public function response(string $key, ?FragmentDefinition $definition = null): array
     {
+        $definition ??= $this->resolve($key);
+
         return [
-            'components' => $this->resolve($key)
+            'components' => $definition
                 ->schema(PageSchema::make())
                 ->toArray(),
         ];

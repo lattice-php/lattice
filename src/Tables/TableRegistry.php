@@ -71,9 +71,9 @@ class TableRegistry
     /**
      * @return array<string, mixed>
      */
-    public function response(string $key, Request $request): array
+    public function response(string $key, Request $request, ?TableDefinition $definition = null): array
     {
-        $definition = $this->resolve($key);
+        $definition ??= $this->resolve($key);
         $columns = $definition->columns();
         $query = TableQuery::fromRequest($request, $columns, $key, $definition->perPage());
 

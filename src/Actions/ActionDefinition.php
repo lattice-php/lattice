@@ -12,4 +12,9 @@ abstract class ActionDefinition
     abstract public function definition(Action $action): Action;
 
     abstract public function handle(Request $request): ActionResult;
+
+    public function authorize(Request $request): bool
+    {
+        return true;
+    }
 }

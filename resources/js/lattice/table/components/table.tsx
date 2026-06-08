@@ -55,8 +55,6 @@ type TablePagination = {
   to?: number | null;
 };
 
-type LatticeComponentContext = Record<string, unknown>;
-
 type TableResponse = {
   data?: TableRow[];
   pagination?: TablePagination;
@@ -73,9 +71,9 @@ declare module "@/lattice/core/types" {
   interface LatticeComponentProps {
     table: {
       columns?: TableColumn[];
-      context?: LatticeComponentContext;
       data?: TableRow[];
       endpoint?: string;
+      ref?: string;
       lazy?: boolean;
       layout?: string;
       pagination?: Record<string, unknown>;
@@ -127,14 +125,6 @@ function getPagination(value: unknown): TablePagination {
   }
 
   return value as TablePagination;
-}
-
-function getContext(value: unknown): LatticeComponentContext {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    return {};
-  }
-
-  return value as LatticeComponentContext;
 }
 
 function flattenColumns(columns: TableColumn[]): TableColumn[] {
@@ -275,13 +265,13 @@ function SortIndicator({ sort }: { sort: TableSort | undefined }) {
 function buildEndpoint(
   endpoint: string,
   state: TableState,
-  context: LatticeComponentContext,
+  componentRef: string,
 ): string {
   const url = new URL(endpoint, window.location.origin);
 
-  Object.entries(context)
-    .filter(([, value]) => value !== null && value !== undefined)
-    .forEach(([key, value]) => url.searchParams.set(`context[${key}]`, String(value)));
+  if (componentRef) {
+    url.searchParams.set("_lattice", componentRef);
+  }
 
   Object.entries(state.filters)
     .filter(([, value]) => value !== "")
@@ -382,7 +372,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
   const columns = getColumns(node.props?.columns);
   const interactiveColumns = useMemo(() => flattenColumns(columns), [columns]);
   const endpoint = typeof node.props?.endpoint === "string" ? node.props.endpoint : null;
-  const context = useMemo(() => getContext(node.props?.context), [node.props?.context]);
+  const componentRef = typeof node.props?.ref === "string" ? node.props.ref : "";
   const isLazy = node.props?.lazy === true;
   const initialState = useMemo(() => getState(node.props?.state), [node.props?.state]);
   const [rows, setRows] = useState(() => getRows(node.props?.data));
@@ -413,7 +403,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
       setProcessing(true);
 
       try {
-        const response = await fetch(buildEndpoint(endpoint, nextState, context), {
+        const response = await fetch(buildEndpoint(endpoint, nextState, componentRef), {
           headers: {
             Accept: "application/json",
           },
@@ -435,7 +425,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
         setProcessing(false);
       }
     },
-    [context, endpoint],
+    [endpoint, componentRef],
   );
 
   function sort(column: TableColumn): void {

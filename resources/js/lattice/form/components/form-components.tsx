@@ -25,14 +25,12 @@ type PasswordConfirmation = {
   placeholder?: string;
 };
 
-type LatticeComponentContext = Record<string, FormDataConvertible>;
-
 declare module "@/lattice/core/types" {
   interface LatticeComponentProps {
     form: {
       action?: string;
-      context?: LatticeComponentContext;
       errorBag?: string;
+      ref?: string;
       method?: LatticeFormMethod;
       resetOnError?: boolean | string[];
       resetOnSuccess?: boolean | string[];
@@ -124,21 +122,11 @@ function getPasswordConfirmation(
   };
 }
 
-function getContext(props: LatticeNodeProps | undefined): LatticeComponentContext {
-  const context = props?.context;
-
-  if (typeof context !== "object" || context === null || Array.isArray(context)) {
-    return {};
-  }
-
-  return context as LatticeComponentContext;
-}
-
 export const FormComponent: LatticeRendererComponent<"form"> = ({ children, node }) => {
   const props = node.props ?? {};
   const action = props.action ?? "#";
-  const context = getContext(props);
   const errorBag = props.errorBag;
+  const componentRef = getStringProp(props, "ref");
   const method = props.method ?? "post";
   const resetOnError = props.resetOnError ?? false;
   const resetOnSuccess = props.resetOnSuccess ?? [];
@@ -155,7 +143,7 @@ export const FormComponent: LatticeRendererComponent<"form"> = ({ children, node
       resetOnSuccess={resetOnSuccess}
       transform={(data) => ({
         ...data,
-        ...(Object.keys(context).length > 0 ? { context } : {}),
+        ...(componentRef ? ({ _lattice: componentRef } satisfies Record<string, FormDataConvertible>) : {}),
       })}
       className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-lg border bg-card p-6 shadow-xs"
     >

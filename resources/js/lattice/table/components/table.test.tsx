@@ -265,7 +265,7 @@ describe("Lattice table component", () => {
     });
   });
 
-  it("sends component context with table state requests", async () => {
+  it("sends component refs with table state requests", async () => {
     const fetch = vi.fn<typeof globalThis.fetch>(async () =>
       Response.json({
         data: [],
@@ -291,11 +291,9 @@ describe("Lattice table component", () => {
             sortable: true,
           },
         ],
-        context: {
-          team: "lattice-core",
-        },
         data: [],
         endpoint: "/lattice/tables/teams.members",
+        ref: "sealed-reference",
         state: {
           filters: {},
           page: 1,
@@ -312,7 +310,7 @@ describe("Lattice table component", () => {
 
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
-        "/lattice/tables/teams.members?context%5Bteam%5D=lattice-core&sort=name&page=1&per_page=25",
+        "/lattice/tables/teams.members?_lattice=sealed-reference&sort=name&page=1&per_page=25",
         {
           headers: {
             Accept: "application/json",

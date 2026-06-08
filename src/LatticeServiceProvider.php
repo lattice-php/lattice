@@ -10,6 +10,7 @@ use Bambamboole\Lattice\Discovery\DefinitionDiscovery;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Fragments\FragmentRegistry;
+use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 use Bambamboole\Lattice\Sidebar\SidebarItem;
 use Bambamboole\Lattice\Sidebar\SidebarRegistry;
 use Bambamboole\Lattice\Tables\TableRegistry;
@@ -39,6 +40,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(ActionRegistry::class);
         $this->app->singleton(SidebarRegistry::class);
         $this->app->singleton(DefinitionDiscovery::class);
+        $this->app->singleton(ComponentReferenceSigner::class);
         $this->app->singleton(LatticeRegistry::class);
 
         if (! Router::hasMacro('latticePage')) {

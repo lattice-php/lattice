@@ -37,6 +37,11 @@ abstract class TableDefinition
         return 'table';
     }
 
+    public function authorize(Request $request): bool
+    {
+        return true;
+    }
+
     /**
      * @param  array<string, mixed>  $row
      * @return array<int, Component>

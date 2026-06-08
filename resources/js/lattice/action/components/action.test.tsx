@@ -75,16 +75,14 @@ describe("Lattice action component", () => {
     expect(http.post).not.toHaveBeenCalled();
   });
 
-  it("sends action context with requests", async () => {
+  it("sends action refs with requests", async () => {
     http.patch.mockResolvedValue({ ok: true });
 
     const node = {
       props: {
-        context: {
-          team: "lattice-core",
-        },
         endpoint: "/lattice/actions/teams.sync",
         label: "Sync",
+        ref: "sealed-reference",
         method: "patch",
       },
       type: "action",
@@ -101,20 +99,16 @@ describe("Lattice action component", () => {
     const transform = http.transform.mock.calls[0]?.[0];
 
     expect(transform?.({})).toEqual({
-      context: {
-        team: "lattice-core",
-      },
+      _lattice: "sealed-reference",
     });
   });
 
-  it("appends action context to get endpoints", () => {
+  it("appends action refs to get endpoints", () => {
     const node = {
       props: {
-        context: {
-          team: "lattice-core",
-        },
         endpoint: "/settings/teams",
         label: "Teams",
+        ref: "sealed-reference",
         method: "get",
       },
       type: "action",
@@ -124,9 +118,7 @@ describe("Lattice action component", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Teams" }));
 
-    expect(router.visit).toHaveBeenCalledWith(
-      "/settings/teams?context%5Bteam%5D=lattice-core",
-    );
+    expect(router.visit).toHaveBeenCalledWith("/settings/teams?_lattice=sealed-reference");
   });
 
   it("renders configured icons through the icon renderer", () => {

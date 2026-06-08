@@ -39,6 +39,10 @@ use Bambamboole\Lattice\Tables\PaginationType;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableQuery;
 use Bambamboole\Lattice\Tables\TableResult;
+use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredPanelFragment;
+use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredPingAction;
+use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
+use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
@@ -58,6 +62,30 @@ use function Pest\Laravel\postJson;
 use function Pest\Laravel\withoutVite;
 use function Pest\Laravel\withSession;
 
+/**
+ * @param  array<string, mixed>  $component
+ */
+function componentRef(array $component): string
+{
+    $props = $component['props'] ?? [];
+    $ref = is_array($props) ? ($props['ref'] ?? null) : null;
+
+    if (! is_string($ref)) {
+        throw new RuntimeException('Lattice component ref is missing.');
+    }
+
+    expect($ref)->not->toBe('');
+
+    return $ref;
+}
+
+function latticeUrl(string $url, string $ref): string
+{
+    $separator = str_contains($url, '?') ? '&' : '?';
+
+    return $url.$separator.'_lattice='.rawurlencode($ref);
+}
+
 test('lattice component factories stay open for extension', function () {
     $badgeClass = (new class extends Badge {})::class;
     $badge = $badgeClass::make('Extended badge', 'extended-badge');
@@ -69,6 +97,55 @@ test('lattice component factories stay open for extension', function () {
 test('lattice facade resolves the registry and exposes the sidebar registry', function () {
     expect(Lattice::getFacadeRoot())->toBe(app(LatticeRegistry::class))
         ->and(Lattice::sidebar())->toBe(app(SidebarRegistry::class));
+});
+
+test('lattice can discover attributed definitions from a path and namespace', function () {
+    Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Bambamboole\\Lattice\\Tests\\Fixtures\\Discovery');
+
+    $form = Form::use(DiscoveredProfileForm::class)->toArray();
+    $table = Table::use(DiscoveredUsersTable::class)->toArray();
+    $action = ActionComponent::use(DiscoveredPingAction::class)->toArray();
+    $fragment = FragmentComponent::lazy(DiscoveredPanelFragment::class)->toArray();
+
+    expect($form)
+        ->toMatchArray([
+            'type' => 'form',
+            'id' => 'fixtures.profile',
+            'props' => [
+                'action' => '/lattice/forms/fixtures.profile',
+                'errorBag' => 'fixtures_profile',
+                'method' => 'patch',
+                'ref' => componentRef($form),
+            ],
+        ])
+        ->and($table)
+        ->toMatchArray([
+            'type' => 'table',
+            'id' => 'fixtures.users',
+        ])
+        ->and($table['props']['endpoint'])->toBe('/lattice/tables/fixtures.users')
+        ->and($table['props']['ref'])->toBe(componentRef($table))
+        ->and($action)
+        ->toMatchArray([
+            'type' => 'action',
+            'id' => 'fixtures.ping',
+            'props' => [
+                'endpoint' => '/lattice/actions/fixtures.ping',
+                'label' => 'Ping',
+                'method' => 'post',
+                'ref' => componentRef($action),
+            ],
+        ])
+        ->and($fragment)
+        ->toMatchArray([
+            'type' => 'fragment',
+            'id' => 'fixtures.panel',
+            'props' => [
+                'endpoint' => '/lattice/fragments/fixtures.panel',
+                'lazy' => true,
+                'ref' => componentRef($fragment),
+            ],
+        ]);
 });
 
 test('interactive components keep their serialized ids', function () {
@@ -84,27 +161,30 @@ test('interactive components keep their serialized ids', function () {
         ]);
 });
 
-test('interactive components serialize request context', function () {
-    expect(Form::make('demo-form')->context(['team' => 'lattice-core'])->toArray())
+test('interactive components seal request context for endpoints', function () {
+    $form = Form::make('demo-form')
+        ->action('/lattice/forms/demo-form')
+        ->context(['team' => 'lattice-core'])
+        ->toArray();
+    $table = Table::make('demo-table')
+        ->endpoint('/lattice/tables/demo-table')
+        ->context(['team' => 'lattice-core'])
+        ->toArray();
+
+    expect($form)
         ->toMatchArray([
             'type' => 'form',
             'id' => 'demo-form',
-            'props' => [
-                'context' => [
-                    'team' => 'lattice-core',
-                ],
-            ],
         ])
-        ->and(Table::make('demo-table')->context(['team' => 'lattice-core'])->toArray())
+        ->and($form['props'])->toHaveKey('ref')
+        ->and($form['props'])->not->toHaveKey('context')
+        ->and($table)
         ->toMatchArray([
             'type' => 'table',
             'id' => 'demo-table',
-            'props' => [
-                'context' => [
-                    'team' => 'lattice-core',
-                ],
-            ],
-        ]);
+        ])
+        ->and($table['props'])->toHaveKey('ref')
+        ->and($table['props'])->not->toHaveKey('context');
 });
 
 test('forms serialize schema children like pages', function () {
@@ -223,7 +303,9 @@ test('registered forms serialize their configured endpoint and isolated error ba
 
     Lattice::forms([WorkbenchProfileForm::class]);
 
-    expect(Form::use(WorkbenchProfileForm::class)->toArray())
+    $form = Form::use(WorkbenchProfileForm::class)->toArray();
+
+    expect($form)
         ->toMatchArray([
             'type' => 'form',
             'id' => 'settings.profile',
@@ -231,6 +313,7 @@ test('registered forms serialize their configured endpoint and isolated error ba
                 'action' => '/custom/forms/settings.profile',
                 'errorBag' => 'settings_profile',
                 'method' => 'patch',
+                'ref' => componentRef($form),
                 'submitButton' => false,
             ],
             'children' => [
@@ -247,16 +330,34 @@ test('registered forms serialize their configured endpoint and isolated error ba
 test('registered forms can be submitted through the package endpoint', function () {
     Lattice::forms([WorkbenchProfileForm::class]);
 
+    $ref = componentRef(Form::use(WorkbenchProfileForm::class)
+        ->context(['team' => 'lattice-core'])
+        ->toArray());
+
     patch('/lattice/forms/settings.profile', [
         'name' => 'Taylor',
+        '_lattice' => $ref,
         'context' => [
-            'team' => 'lattice-core',
+            'team' => 'tampered-team',
         ],
     ])
         ->assertRedirect('/submitted');
 
     expect(session('handled-form'))->toBe('Taylor');
     expect(session('handled-form-team'))->toBe('lattice-core');
+});
+
+test('registered form endpoints require a valid component reference', function () {
+    Lattice::forms([WorkbenchProfileForm::class]);
+
+    patch('/lattice/forms/settings.profile', ['name' => 'Taylor'])
+        ->assertForbidden();
+
+    patch('/lattice/forms/settings.profile', [
+        'name' => 'Taylor',
+        '_lattice' => 'tampered',
+    ])
+        ->assertForbidden();
 });
 
 test('registered forms receive the current request while serializing definitions', function () {
@@ -275,12 +376,15 @@ test('registered tables serialize their configured endpoint columns state and in
 
     Lattice::tables([WorkbenchUsersTable::class]);
 
-    expect(Table::use(WorkbenchUsersTable::class)->toArray())
+    $table = Table::use(WorkbenchUsersTable::class)->toArray();
+
+    expect($table)
         ->toMatchArray([
             'type' => 'table',
             'id' => 'workbench.users',
             'props' => [
                 'endpoint' => '/custom/tables/workbench.users',
+                'ref' => componentRef($table),
                 'columns' => [
                     [
                         'key' => 'name',
@@ -331,13 +435,16 @@ test('registered tables can serialize lazily without running their query', funct
 
     Lattice::tables([WorkbenchLazyUsersTable::class]);
 
-    expect(Table::lazy(WorkbenchLazyUsersTable::class)->toArray())
+    $table = Table::lazy(WorkbenchLazyUsersTable::class)->toArray();
+
+    expect($table)
         ->toMatchArray([
             'type' => 'table',
             'id' => 'workbench.lazy-users',
             'props' => [
                 'endpoint' => '/custom/tables/workbench.lazy-users',
                 'lazy' => true,
+                'ref' => componentRef($table),
                 'columns' => [
                     [
                         'key' => 'name',
@@ -411,7 +518,9 @@ test('registered tables serialize grid layout stack columns and row actions', fu
 test('registered tables parse spatie style filters sorts and pagination through the endpoint', function () {
     Lattice::tables([WorkbenchUsersTable::class]);
 
-    getJson('/lattice/tables/workbench.users?filter[status]=active&filter[name]=tay&sort=-name,email&page=2&per_page=50')
+    $ref = componentRef(Table::use(WorkbenchUsersTable::class)->toArray());
+
+    getJson(latticeUrl('/lattice/tables/workbench.users?filter[status]=active&filter[name]=tay&sort=-name,email&page=2&per_page=50', $ref))
         ->assertOk()
         ->assertJsonPath('data.0.name', 'Taylor')
         ->assertJsonPath('data.0.status', 'active')
@@ -428,13 +537,33 @@ test('registered tables parse spatie style filters sorts and pagination through 
 test('registered tables reject filters and sorts that are not allowed by columns', function () {
     Lattice::tables([WorkbenchUsersTable::class]);
 
-    getJson('/lattice/tables/workbench.users?filter[password]=secret')
+    $ref = componentRef(Table::use(WorkbenchUsersTable::class)->toArray());
+
+    getJson(latticeUrl('/lattice/tables/workbench.users?filter[password]=secret', $ref))
         ->assertUnprocessable()
         ->assertJsonPath('message', 'Filter [password] is not allowed for table [workbench.users].');
 
-    getJson('/lattice/tables/workbench.users?sort=password')
+    getJson(latticeUrl('/lattice/tables/workbench.users?sort=password', $ref))
         ->assertUnprocessable()
         ->assertJsonPath('message', 'Sort [password] is not allowed for table [workbench.users].');
+});
+
+test('registered table endpoints require a valid component reference and use trusted context', function () {
+    Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Bambamboole\\Lattice\\Tests\\Fixtures\\Discovery');
+
+    $ref = componentRef(Table::use(DiscoveredUsersTable::class)
+        ->context(['team' => 'trusted-team'])
+        ->toArray());
+
+    getJson('/lattice/tables/fixtures.users')
+        ->assertForbidden();
+
+    getJson('/lattice/tables/fixtures.users?_lattice=tampered')
+        ->assertForbidden();
+
+    getJson(latticeUrl('/lattice/tables/fixtures.users?context[team]=tampered-team', $ref))
+        ->assertOk()
+        ->assertJsonPath('data.0.name', 'trusted-team');
 });
 
 test('text columns serialize display modifiers', function () {
@@ -496,6 +625,7 @@ test('eloquent tables can use infinite pagination metadata', function () {
     Lattice::tables([WorkbenchInfiniteUsersTable::class]);
 
     $table = Table::use(WorkbenchInfiniteUsersTable::class)->toArray();
+    $ref = componentRef($table);
 
     expect($table['props']['pagination'])
         ->toMatchArray([
@@ -508,7 +638,7 @@ test('eloquent tables can use infinite pagination metadata', function () {
             'to' => 2,
         ]);
 
-    getJson('/lattice/tables/workbench.infinite-users?per_page=2')
+    getJson(latticeUrl('/lattice/tables/workbench.infinite-users?per_page=2', $ref))
         ->assertOk()
         ->assertJsonCount(2, 'data')
         ->assertJsonPath('pagination.mode', 'infinite')
@@ -518,7 +648,7 @@ test('eloquent tables can use infinite pagination metadata', function () {
         ->assertJsonPath('state.page', 1)
         ->assertJsonPath('state.perPage', 2);
 
-    getJson('/lattice/tables/workbench.infinite-users?per_page=2&page=2')
+    getJson(latticeUrl('/lattice/tables/workbench.infinite-users?per_page=2&page=2', $ref))
         ->assertOk()
         ->assertJsonCount(1, 'data')
         ->assertJsonPath('pagination.mode', 'infinite')
@@ -539,7 +669,9 @@ test('eloquent tables use table pagination with totals by default', function () 
 
     Lattice::tables([WorkbenchDefaultUsersTable::class]);
 
-    getJson('/lattice/tables/workbench.default-users?per_page=2')
+    $ref = componentRef(Table::use(WorkbenchDefaultUsersTable::class)->toArray());
+
+    getJson(latticeUrl('/lattice/tables/workbench.default-users?per_page=2', $ref))
         ->assertOk()
         ->assertJsonCount(2, 'data')
         ->assertJsonPath('pagination.mode', 'table')
@@ -561,7 +693,9 @@ test('eloquent tables can use simple pagination without totals', function () {
 
     Lattice::tables([WorkbenchSimpleUsersTable::class]);
 
-    getJson('/lattice/tables/workbench.simple-users?per_page=2')
+    $ref = componentRef(Table::use(WorkbenchSimpleUsersTable::class)->toArray());
+
+    getJson(latticeUrl('/lattice/tables/workbench.simple-users?per_page=2', $ref))
         ->assertOk()
         ->assertJsonCount(2, 'data')
         ->assertJsonPath('pagination.mode', 'simple')
@@ -582,7 +716,9 @@ test('eloquent tables can disable pagination for small datasets', function () {
 
     Lattice::tables([WorkbenchSmallUsersTable::class]);
 
-    getJson('/lattice/tables/workbench.small-users?per_page=1')
+    $ref = componentRef(Table::use(WorkbenchSmallUsersTable::class)->toArray());
+
+    getJson(latticeUrl('/lattice/tables/workbench.small-users?per_page=1', $ref))
         ->assertOk()
         ->assertJsonCount(3, 'data')
         ->assertJsonPath('pagination.mode', 'none')
@@ -595,7 +731,9 @@ test('registered actions serialize their configured endpoint method label and ef
 
     Lattice::actions([WorkbenchPingAction::class]);
 
-    expect(ActionComponent::use(WorkbenchPingAction::class)->toArray())
+    $action = ActionComponent::use(WorkbenchPingAction::class)->toArray();
+
+    expect($action)
         ->toMatchArray([
             'type' => 'action',
             'id' => 'workbench.ping',
@@ -603,6 +741,7 @@ test('registered actions serialize their configured endpoint method label and ef
                 'endpoint' => '/custom/actions/workbench.ping',
                 'label' => 'Ping',
                 'method' => 'post',
+                'ref' => componentRef($action),
                 'variant' => 'secondary',
                 'effects' => [
                     [
@@ -619,7 +758,7 @@ test('registered actions serialize their configured endpoint method label and ef
 });
 
 test('action groups serialize grouped child actions', function () {
-    expect(ActionGroup::make('workbench.user-actions')
+    $group = ActionGroup::make('workbench.user-actions')
         ->label('Manage user')
         ->actions([
             ActionComponent::make('workbench.users.promote')
@@ -632,7 +771,9 @@ test('action groups serialize grouped child actions', function () {
                 ->method('delete')
                 ->variant('destructive'),
         ])
-        ->toArray())
+        ->toArray();
+
+    expect($group)
         ->toMatchArray([
             'type' => 'action.group',
             'id' => 'workbench.user-actions',
@@ -647,6 +788,7 @@ test('action groups serialize grouped child actions', function () {
                         'endpoint' => '/lattice/actions/workbench.users.promote',
                         'label' => 'Promote',
                         'method' => 'patch',
+                        'ref' => componentRef($group['children'][0]),
                     ],
                 ],
                 [
@@ -656,6 +798,7 @@ test('action groups serialize grouped child actions', function () {
                         'endpoint' => '/lattice/actions/workbench.users.remove',
                         'label' => 'Remove',
                         'method' => 'delete',
+                        'ref' => componentRef($group['children'][1]),
                         'variant' => 'destructive',
                     ],
                 ],
@@ -666,14 +809,38 @@ test('action groups serialize grouped child actions', function () {
 test('registered actions can be handled through the package endpoint', function () {
     Lattice::actions([WorkbenchPingAction::class]);
 
-    postJson('/lattice/actions/workbench.ping', ['name' => 'Taylor'])
+    $ref = componentRef(ActionComponent::use(WorkbenchPingAction::class)
+        ->context(['team' => 'trusted-team'])
+        ->toArray());
+
+    postJson('/lattice/actions/workbench.ping', [
+        'name' => 'Taylor',
+        '_lattice' => $ref,
+        'context' => [
+            'team' => 'tampered-team',
+        ],
+    ])
         ->assertOk()
         ->assertJsonPath('ok', true)
         ->assertJsonPath('data.handled', 'Taylor')
+        ->assertJsonPath('data.team', 'trusted-team')
         ->assertJsonPath('effects.0.type', 'toast')
         ->assertJsonPath('effects.0.message', 'Action handled.')
         ->assertJsonPath('effects.1.type', 'reloadComponent')
         ->assertJsonPath('effects.1.component', 'workbench.users');
+});
+
+test('registered action endpoints require a valid component reference', function () {
+    Lattice::actions([WorkbenchPingAction::class]);
+
+    postJson('/lattice/actions/workbench.ping', ['name' => 'Taylor'])
+        ->assertForbidden();
+
+    postJson('/lattice/actions/workbench.ping', [
+        'name' => 'Taylor',
+        '_lattice' => 'tampered',
+    ])
+        ->assertForbidden();
 });
 
 test('actions can serialize confirmation modal configuration', function () {
@@ -734,17 +901,27 @@ test('modals serialize composable children for action driven dialogs', function 
 test('registered fragments serialize lazy endpoints and return component schemas', function () {
     Lattice::fragments([WorkbenchTwoFactorSetupFragment::class]);
 
-    expect(FragmentComponent::lazy(WorkbenchTwoFactorSetupFragment::class)->toArray())
+    $fragment = FragmentComponent::lazy(WorkbenchTwoFactorSetupFragment::class)->toArray();
+    $ref = componentRef($fragment);
+
+    expect($fragment)
         ->toMatchArray([
             'type' => 'fragment',
             'id' => 'workbench.two-factor-setup',
             'props' => [
                 'endpoint' => '/lattice/fragments/workbench.two-factor-setup',
                 'lazy' => true,
+                'ref' => $ref,
             ],
         ]);
 
     getJson('/lattice/fragments/workbench.two-factor-setup')
+        ->assertForbidden();
+
+    getJson('/lattice/fragments/workbench.two-factor-setup?_lattice=tampered')
+        ->assertForbidden();
+
+    getJson(latticeUrl('/lattice/fragments/workbench.two-factor-setup', $ref))
         ->assertOk()
         ->assertJsonPath('components.0.type', 'text')
         ->assertJsonPath('components.0.props.text', 'Authenticator setup loaded.');
@@ -1067,6 +1244,36 @@ test('pages serialize layout and container metadata', function () {
         ->toMatchArray([
             'layout' => 'settings',
             'container' => 'default',
+        ]);
+});
+
+test('pages serialize breadcrumb metadata', function () {
+    $page = new class extends Page
+    {
+        public function breadcrumbs(): array
+        {
+            return [
+                [
+                    'title' => 'Dashboard',
+                    'href' => '/demo/dashboard',
+                ],
+            ];
+        }
+
+        public function render(PageSchema $schema): PageSchema
+        {
+            return $schema->component(Text::make('Dashboard'));
+        }
+    };
+
+    expect($page->toArray($page->render(PageSchema::make())))
+        ->toMatchArray([
+            'breadcrumbs' => [
+                [
+                    'title' => 'Dashboard',
+                    'href' => '/demo/dashboard',
+                ],
+            ],
         ]);
 });
 
@@ -1515,6 +1722,7 @@ class WorkbenchPingAction extends ActionDefinition
     {
         return ActionResult::success([
             'handled' => $request->string('name')->toString(),
+            'team' => data_get($request->input('context', []), 'team'),
         ])
             ->toast('Action handled.')
             ->reloadComponent('workbench.users');

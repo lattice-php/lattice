@@ -2,6 +2,8 @@
 
 namespace Bambamboole\Lattice\Components\Core;
 
+use Bambamboole\Lattice\Security\ComponentReferenceSigner;
+
 abstract class InteractiveComponent extends Component
 {
     protected string $id;
@@ -27,9 +29,37 @@ abstract class InteractiveComponent extends Component
     #[\Override]
     public function toArray(): array
     {
-        return [
+        $props = $this->props;
+        $context = is_array($props['context'] ?? null) ? $props['context'] : [];
+
+        unset($props['context']);
+
+        if ($this->hasEndpoint($props)) {
+            $props['ref'] = app(ComponentReferenceSigner::class)->seal($this->type(), $this->id, $context);
+        }
+
+        $data = [
             ...parent::toArray(),
             'id' => $this->id,
         ];
+
+        if ($props === []) {
+            unset($data['props']);
+
+            return $data;
+        }
+
+        return [
+            ...$data,
+            'props' => $props,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $props
+     */
+    private function hasEndpoint(array $props): bool
+    {
+        return is_string($props['endpoint'] ?? null) || is_string($props['action'] ?? null);
     }
 }

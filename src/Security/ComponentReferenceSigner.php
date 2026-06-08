@@ -1,0 +1,125 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Bambamboole\Lattice\Security;
+
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Contracts\Encryption\StringEncrypter;
+use Illuminate\Http\Request;
+use JsonException;
+
+final class ComponentReferenceSigner
+{
+    public function __construct(private readonly StringEncrypter $encrypter) {}
+
+    /**
+     * @param  array<string, mixed>  $context
+     */
+    public function seal(string $type, string $key, array $context): string
+    {
+        $request = app(Request::class);
+        $sessionHash = $request->hasSession()
+            ? hash('sha256', $request->session()->getId())
+            : null;
+
+        $payload = [
+            'type' => $type,
+            'key' => $key,
+            'context' => $context,
+            'user_id' => $request->user()?->getAuthIdentifier(),
+            'session' => $sessionHash,
+            'expires_at' => now()->addMinutes($this->lifetime())->timestamp,
+        ];
+
+        return $this->encrypter->encryptString(json_encode($payload, JSON_THROW_ON_ERROR));
+    }
+
+    public function mergeTrustedContext(Request $request, string $type, string $key): Request
+    {
+        $request->merge([
+            'context' => $this->trustedContext($request, $type, $key),
+        ]);
+
+        return $request;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function trustedContext(Request $request, string $type, string $key): array
+    {
+        $payload = $this->payload($request);
+
+        if (($payload['type'] ?? null) !== $type || ($payload['key'] ?? null) !== $key) {
+            abort(403);
+        }
+
+        if (! is_int($payload['expires_at'] ?? null) || $payload['expires_at'] < now()->timestamp) {
+            abort(403);
+        }
+
+        $this->validateUser($request, $payload['user_id'] ?? null);
+        $this->validateSession($request, $payload['session'] ?? null);
+
+        return is_array($payload['context'] ?? null) ? $payload['context'] : [];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function payload(Request $request): array
+    {
+        $token = $this->token($request);
+
+        if ($token === '') {
+            abort(403);
+        }
+
+        try {
+            $payload = json_decode($this->encrypter->decryptString($token), true, flags: JSON_THROW_ON_ERROR);
+        } catch (DecryptException|JsonException) {
+            abort(403);
+        }
+
+        if (! is_array($payload)) {
+            abort(403);
+        }
+
+        return $payload;
+    }
+
+    private function token(Request $request): string
+    {
+        $token = $request->input('_lattice', $request->header('X-Lattice-Ref', ''));
+
+        return is_string($token) ? $token : '';
+    }
+
+    private function validateUser(Request $request, mixed $userId): void
+    {
+        if ($userId === null) {
+            return;
+        }
+
+        if ((string) $userId !== (string) $request->user()?->getAuthIdentifier()) {
+            abort(403);
+        }
+    }
+
+    private function validateSession(Request $request, mixed $sessionHash): void
+    {
+        if (! is_string($sessionHash)) {
+            return;
+        }
+
+        if (! $request->hasSession() || ! hash_equals($sessionHash, hash('sha256', $request->session()->getId()))) {
+            abort(403);
+        }
+    }
+
+    private function lifetime(): int
+    {
+        return max(1, (int) config('lattice.security.ref_lifetime', 30));
+    }
+}

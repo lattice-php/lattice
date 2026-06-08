@@ -15,6 +15,11 @@ abstract class FormDefinition
 
     abstract public function handle(Request $request): Response|Responsable;
 
+    public function authorize(Request $request): bool
+    {
+        return true;
+    }
+
     protected function context(Request $request, string $key, mixed $default = null): mixed
     {
         return data_get($request->input('context', []), $key, $default);

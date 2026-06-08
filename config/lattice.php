@@ -7,6 +7,10 @@ return [
         base_path('app') => 'App',
     ],
 
+    'security' => [
+        'ref_lifetime' => 30,
+    ],
+
     'forms' => [
         'endpoint' => 'lattice/forms/{form}',
         'middleware' => ['web'],

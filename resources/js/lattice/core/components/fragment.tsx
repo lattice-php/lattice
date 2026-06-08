@@ -15,9 +15,22 @@ declare module "@/lattice/core/types" {
   interface LatticeComponentProps {
     fragment: {
       endpoint?: string;
+      ref?: string;
       lazy?: boolean;
     };
   }
+}
+
+function endpointWithRef(endpoint: string, componentRef: string): string {
+  if (!componentRef) {
+    return endpoint;
+  }
+
+  const url = new URL(endpoint, window.location.origin);
+
+  url.searchParams.set("_lattice", componentRef);
+
+  return `${url.pathname}${url.search}`;
 }
 
 function getComponents(value: unknown): LatticeNode[] {
@@ -37,6 +50,7 @@ function getComponents(value: unknown): LatticeNode[] {
 const FragmentComponent: LatticeRendererComponent<"fragment"> = ({ node }) => {
   const endpoint = getStringProp(node.props, "endpoint");
   const isLazy = node.props?.lazy === true;
+  const componentRef = getStringProp(node.props, "ref");
   const [components, setComponents] = useState(() => node.children ?? []);
   const [hasLoaded, setHasLoaded] = useState(!isLazy);
   const [processing, setProcessing] = useState(isLazy && endpoint !== "");
@@ -50,7 +64,7 @@ const FragmentComponent: LatticeRendererComponent<"fragment"> = ({ node }) => {
     setProcessing(true);
 
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch(endpointWithRef(endpoint, componentRef), {
         headers: {
           Accept: "application/json",
         },
@@ -62,7 +76,7 @@ const FragmentComponent: LatticeRendererComponent<"fragment"> = ({ node }) => {
     } finally {
       setProcessing(false);
     }
-  }, [endpoint]);
+  }, [endpoint, componentRef]);
 
   useEffect(() => {
     if (!isLazy || hasLoaded) {
