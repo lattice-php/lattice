@@ -1,7 +1,8 @@
 <?php
 
-namespace Bambamboole\Lattice\Components;
+namespace Bambamboole\Lattice\Components\Table;
 
+use Bambamboole\Lattice\Components\Core\InteractiveComponent;
 use Bambamboole\Lattice\Tables\Columns\Column;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableQuery;

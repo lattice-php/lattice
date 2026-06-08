@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Components;
+namespace Bambamboole\Lattice\Components\Core;
 
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Date;

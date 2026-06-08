@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Tables;
 
 use Bambamboole\Lattice\Attributes\Table;
-use Bambamboole\Lattice\Components\Table as TableComponent;
+use Bambamboole\Lattice\Components\Table\Table as TableComponent;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use InvalidArgumentException;

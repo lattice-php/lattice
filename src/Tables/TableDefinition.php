@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Tables;
 
-use Bambamboole\Lattice\Components\Component;
+use Bambamboole\Lattice\Components\Core\Component;
 use Bambamboole\Lattice\Tables\Columns\Column;
 
 abstract class TableDefinition

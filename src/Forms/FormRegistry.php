@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Forms;
 
 use Bambamboole\Lattice\Attributes\Form;
-use Bambamboole\Lattice\Components\Form as FormComponent;
+use Bambamboole\Lattice\Components\Form\Form as FormComponent;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
 use ReflectionClass;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Actions;
 
-use Bambamboole\Lattice\Components\Action;
+use Bambamboole\Lattice\Components\Core\Action;
 use Illuminate\Http\Request;
 
 abstract class ActionDefinition

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Fragments;
 
 use Bambamboole\Lattice\Attributes\Fragment;
-use Bambamboole\Lattice\Components\Fragment as FragmentComponent;
+use Bambamboole\Lattice\Components\Core\Fragment as FragmentComponent;
 use Bambamboole\Lattice\PageSchema;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;

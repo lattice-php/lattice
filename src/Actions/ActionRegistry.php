@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Actions;
 
 use Bambamboole\Lattice\Attributes\Action;
-use Bambamboole\Lattice\Components\Action as ActionComponent;
+use Bambamboole\Lattice\Components\Core\Action as ActionComponent;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
 use ReflectionClass;

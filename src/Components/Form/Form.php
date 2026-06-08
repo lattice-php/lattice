@@ -1,7 +1,9 @@
 <?php
 
-namespace Bambamboole\Lattice\Components;
+namespace Bambamboole\Lattice\Components\Form;
 
+use Bambamboole\Lattice\Components\Core\Component;
+use Bambamboole\Lattice\Components\Core\InteractiveComponent;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
 

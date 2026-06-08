@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
-use Bambamboole\Lattice\Components\Badge;
-use Bambamboole\Lattice\Components\Heading;
-use Bambamboole\Lattice\Components\Stack;
-use Bambamboole\Lattice\Components\Tab;
-use Bambamboole\Lattice\Components\Table;
-use Bambamboole\Lattice\Components\Tabs;
-use Bambamboole\Lattice\Components\Text;
+use Bambamboole\Lattice\Components\Core\Badge;
+use Bambamboole\Lattice\Components\Core\Heading;
+use Bambamboole\Lattice\Components\Core\Stack;
+use Bambamboole\Lattice\Components\Core\Tab;
+use Bambamboole\Lattice\Components\Core\Tabs;
+use Bambamboole\Lattice\Components\Core\Text;
+use Bambamboole\Lattice\Components\Table\Table;
 use Bambamboole\Lattice\Enums\Gap;
 use Bambamboole\Lattice\Page;
 use Bambamboole\Lattice\PageSchema;

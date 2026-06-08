@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Components;
+namespace Bambamboole\Lattice\Components\Core;
 
 use Bambamboole\Lattice\Enums\Align;
 use Bambamboole\Lattice\Enums\Gap;

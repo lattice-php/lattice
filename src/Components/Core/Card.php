@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Components;
+namespace Bambamboole\Lattice\Components\Core;
 
 class Card extends Component
 {

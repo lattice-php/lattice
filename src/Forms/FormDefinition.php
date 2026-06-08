@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Forms;
 
-use Bambamboole\Lattice\Components\Form;
+use Bambamboole\Lattice\Components\Form\Form;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;

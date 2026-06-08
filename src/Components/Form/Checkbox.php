@@ -1,8 +1,8 @@
 <?php
 
-namespace Bambamboole\Lattice\Components\Forms;
+namespace Bambamboole\Lattice\Components\Form;
 
-use Bambamboole\Lattice\Components\Component;
+use Bambamboole\Lattice\Components\Core\Component;
 
 class Checkbox extends Component
 {

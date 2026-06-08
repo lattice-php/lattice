@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Components;
+namespace Bambamboole\Lattice\Components\Core;
 
 use BackedEnum;
 use Bambamboole\Lattice\Actions\ActionDefinition;
