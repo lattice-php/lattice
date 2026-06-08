@@ -4,6 +4,7 @@ import { getOptionalNumberProp, getStringProp } from "@lattice/core/props";
 import type { NodeProps, RendererComponent } from "@lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
+import { useResolvedNode } from "../resolved-nodes";
 import { useDependentField } from "../use-dependent-field";
 import { useFormValue, useSetFormValue } from "../values";
 
@@ -44,10 +45,11 @@ declare module "@lattice/core/types" {
 export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
   const { clearErrors, errors, precognitive, validate } = useFormContext();
   const { hidden, required, readonly, disabled } = useDependentField(node);
+  const resolvedNode = useResolvedNode(node);
   const name = getStringProp(node.props, "name");
   const setValue = useSetFormValue();
   const storedValue = useFormValue(name);
-  const options = useMemo(() => getChoiceOptions(node.props), [node.props]);
+  const options = useMemo(() => getChoiceOptions(resolvedNode.props), [resolvedNode.props]);
   const fallbackValue = options[0]?.value ?? "";
   const value =
     storedValue !== undefined
