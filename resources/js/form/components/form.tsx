@@ -5,7 +5,9 @@ import type { Node, NodeProps, RendererComponent } from "@lattice/core/types";
 import { useEffect } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "./context";
+import { ResolvedNodesProvider } from "./resolved-nodes";
 import type { FormMethod } from "./types";
+import { useFormResolver } from "./use-form-resolver";
 import { FormValuesProvider } from "./values";
 
 declare module "@lattice/core/types" {
@@ -97,6 +99,34 @@ function FormResetListener({
   return null;
 }
 
+function FormBody({
+  action,
+  children,
+  componentRef,
+  nodes,
+  shouldRenderSubmitButton,
+  submitLabel,
+}: {
+  action: string;
+  children: React.ReactNode;
+  componentRef: string;
+  nodes: Node[] | undefined;
+  shouldRenderSubmitButton: boolean;
+  submitLabel: string;
+}) {
+  const resolvedNodes = useFormResolver(action, componentRef, nodes);
+
+  return (
+    <ResolvedNodesProvider nodes={resolvedNodes}>
+      <div className="grid gap-6">
+        {children}
+
+        {shouldRenderSubmitButton && <FormSubmitButton label={submitLabel} />}
+      </div>
+    </ResolvedNodesProvider>
+  );
+}
+
 export const FormComponent: RendererComponent<"form"> = ({ children, node }) => {
   const props = node.props ?? {};
   const action = props.action ?? "#";
@@ -165,11 +195,15 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
           )}
 
           <FormValuesProvider initial={initialValues}>
-            <div className="grid gap-6">
+            <FormBody
+              action={action}
+              componentRef={componentRef}
+              nodes={node.children}
+              shouldRenderSubmitButton={shouldRenderSubmitButton}
+              submitLabel={submitLabel}
+            >
               {children}
-
-              {shouldRenderSubmitButton && <FormSubmitButton label={submitLabel} />}
-            </div>
+            </FormBody>
           </FormValuesProvider>
         </FormProvider>
       )}
