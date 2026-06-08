@@ -1,9 +1,38 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { IconRenderer, IconRendererProvider } from "./icon-renderer";
 import type { LatticeIconRenderer } from "./icon-renderer";
 
 describe("Lattice icon renderer", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllEnvs();
+  });
+
+  it("renders bundled default icons without a custom renderer", () => {
+    const { container } = render(<IconRenderer className="text-primary" icon="edit" />);
+
+    expect(container.querySelector("svg")).toHaveClass("size-4", "text-primary");
+  });
+
+  it("renders a missing icon fallback for unknown icons", () => {
+    vi.stubEnv("DEV", true);
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    const { container } = render(
+      <>
+        <IconRenderer icon="custom.spark-fallback" />
+        <IconRenderer icon="custom.spark-fallback" />
+      </>,
+    );
+
+    expect(container.querySelectorAll("[data-lattice-missing-icon]")).toHaveLength(2);
+    expect(log).toHaveBeenCalledOnce();
+    expect(log).toHaveBeenCalledWith(
+      '[Lattice] Missing icon renderer for "custom.spark-fallback".',
+    );
+  });
+
   it("stacks custom renderers before parent renderers", () => {
     const fallbackRenderer = vi.fn<LatticeIconRenderer>(() => <span data-testid="fallback-icon" />);
     const customRenderer = vi.fn<LatticeIconRenderer>(() => null);

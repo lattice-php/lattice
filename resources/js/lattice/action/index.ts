@@ -1,8 +1,11 @@
-import { createLatticePlugin, lazyComponent } from "@/lattice/core/registry";
+import { createLatticePlugin, eagerComponent } from "@/lattice/core/registry";
+import ActionComponent from "./components/action";
+import ActionGroupComponent from "./components/action-group";
 
 export const actionComponents = createLatticePlugin({
   components: {
-    action: lazyComponent(() => import("./components/action")),
+    action: eagerComponent(ActionComponent),
+    "action.group": eagerComponent(ActionGroupComponent),
   },
   name: "lattice/action",
 });

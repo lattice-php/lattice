@@ -8,6 +8,7 @@ use Bambamboole\Lattice\Actions\Effect;
 use Bambamboole\Lattice\Attributes\Action;
 use Bambamboole\Lattice\Attributes\Fragment;
 use Bambamboole\Lattice\Components\Core\Action as ActionComponent;
+use Bambamboole\Lattice\Components\Core\ActionGroup;
 use Bambamboole\Lattice\Components\Core\Badge;
 use Bambamboole\Lattice\Components\Core\Fragment as FragmentComponent;
 use Bambamboole\Lattice\Components\Core\Link;
@@ -611,6 +612,51 @@ test('registered actions serialize their configured endpoint method label and ef
                     [
                         'type' => 'reloadComponent',
                         'component' => 'workbench.users',
+                    ],
+                ],
+            ],
+        ]);
+});
+
+test('action groups serialize grouped child actions', function () {
+    expect(ActionGroup::make('workbench.user-actions')
+        ->label('Manage user')
+        ->actions([
+            ActionComponent::make('workbench.users.promote')
+                ->endpoint('/lattice/actions/workbench.users.promote')
+                ->label('Promote')
+                ->method('patch'),
+            ActionComponent::make('workbench.users.remove')
+                ->endpoint('/lattice/actions/workbench.users.remove')
+                ->label('Remove')
+                ->method('delete')
+                ->variant('destructive'),
+        ])
+        ->toArray())
+        ->toMatchArray([
+            'type' => 'action.group',
+            'id' => 'workbench.user-actions',
+            'props' => [
+                'label' => 'Manage user',
+            ],
+            'children' => [
+                [
+                    'type' => 'action',
+                    'id' => 'workbench.users.promote',
+                    'props' => [
+                        'endpoint' => '/lattice/actions/workbench.users.promote',
+                        'label' => 'Promote',
+                        'method' => 'patch',
+                    ],
+                ],
+                [
+                    'type' => 'action',
+                    'id' => 'workbench.users.remove',
+                    'props' => [
+                        'endpoint' => '/lattice/actions/workbench.users.remove',
+                        'label' => 'Remove',
+                        'method' => 'delete',
+                        'variant' => 'destructive',
                     ],
                 ],
             ],

@@ -126,6 +126,12 @@ describe("Lattice table component", () => {
         data: [
           {
             id: 1,
+            name: "Ada",
+            email: "ada@example.com",
+            status: "Owner",
+          },
+          {
+            id: 2,
             name: "Taylor",
             email: "taylor@example.com",
             status: "Active",
@@ -134,17 +140,26 @@ describe("Lattice table component", () => {
         layout: "grid",
         rows: [
           {
-            key: "1",
+            key: "2",
             actions: [
               {
-                id: "workbench.ping",
+                children: [
+                  {
+                    id: "workbench.ping",
+                    props: {
+                      endpoint: "/lattice/actions/workbench.ping",
+                      label: "Ping",
+                      method: "post",
+                      variant: "secondary",
+                    },
+                    type: "action",
+                  },
+                ],
+                id: "workbench.user-actions",
                 props: {
-                  endpoint: "/lattice/actions/workbench.ping",
-                  label: "Ping",
-                  method: "post",
-                  variant: "secondary",
+                  label: "Manage user",
                 },
-                type: "action",
+                type: "action.group",
               },
             ],
           },
@@ -163,8 +178,13 @@ describe("Lattice table component", () => {
 
     expect(container.querySelector("td")).not.toBeInTheDocument();
     expect(screen.getByRole("table")).toBeVisible();
+    expect(screen.getByRole("cell", { name: /Ada/ })).toHaveTextContent("ada@example.com");
     expect(screen.getByRole("cell", { name: /Taylor/ })).toHaveTextContent("taylor@example.com");
     expect(screen.getByRole("cell", { name: "Active" })).toBeVisible();
+    expect(await screen.findByRole("button", { name: "Manage user" })).toBeVisible();
+
+    fireEvent.click(screen.getByRole("button", { name: "Manage user" }));
+
     expect(await screen.findByRole("button", { name: "Ping" })).toBeVisible();
   });
 

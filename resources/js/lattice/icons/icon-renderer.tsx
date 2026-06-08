@@ -1,9 +1,6 @@
-import { DynamicIcon, iconNames } from "lucide-react/dynamic";
 import { createContext, useContext, useMemo } from "react";
 import type { ReactNode } from "react";
-import { cn } from "@/lib/utils";
-
-type LucideIconName = (typeof iconNames)[number];
+import { renderBundledIcon, renderMissingIcon } from "./default-icons";
 
 export type LatticeIconRendererProps = {
   className?: string;
@@ -18,8 +15,8 @@ type IconRendererProviderProps = {
   renderer: LatticeIconRenderer;
 };
 
-const lucideIconNames = new Set<string>(iconNames);
-const IconRenderersContext = createContext<LatticeIconRenderer[]>([renderLucideIcon]);
+const IconRenderersContext = createContext<LatticeIconRenderer[]>([renderBundledIcon]);
+const loggedMissingIcons = new Set<string>();
 
 export function IconRendererProvider({
   children,
@@ -48,20 +45,16 @@ export function IconRenderer({ className, icon }: LatticeIconRendererProps) {
     }
   }
 
-  return null;
+  logMissingIcon(icon);
+
+  return renderMissingIcon({ className, icon });
 }
 
-function renderLucideIcon({ className, icon }: LatticeIconRendererProps) {
-  if (!lucideIconNames.has(icon)) {
-    return null;
+function logMissingIcon(icon: string): void {
+  if (!import.meta.env.DEV || loggedMissingIcons.has(icon)) {
+    return;
   }
 
-  return (
-    <DynamicIcon
-      aria-hidden="true"
-      className={cn("size-4", className)}
-      fallback={() => null}
-      name={icon as LucideIconName}
-    />
-  );
+  loggedMissingIcons.add(icon);
+  console.log(`[Lattice] Missing icon renderer for "${icon}".`);
 }

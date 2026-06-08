@@ -7,6 +7,8 @@ import { latticeRegistry } from "./index";
 
 describe("lattice component registry", () => {
   it("keeps visual primitives eager to avoid suspense flicker", () => {
+    expect(latticeRegistry.action?.mode).toBe("eager");
+    expect(latticeRegistry["action.group"]?.mode).toBe("eager");
     expect(latticeRegistry.badge?.mode).toBe("eager");
     expect(latticeRegistry.card?.mode).toBe("eager");
     expect(latticeRegistry.grid?.mode).toBe("eager");
@@ -15,7 +17,7 @@ describe("lattice component registry", () => {
     expect(latticeRegistry.tabs?.mode).toBe("eager");
   });
 
-  it("keeps interactive primitives in lazy chunks", () => {
+  it("keeps larger interactive primitives in lazy chunks", () => {
     const form = latticeRegistry.form;
 
     expect(form).toMatchObject({
@@ -23,7 +25,6 @@ describe("lattice component registry", () => {
       fallback: expect.any(Function),
     });
 
-    expect(latticeRegistry.action?.mode).toBe("lazy");
     expect(latticeRegistry["auth.passkey-verify"]?.mode).toBe("lazy");
     expect(latticeRegistry["auth.two-factor-challenge-form"]?.mode).toBe("lazy");
     expect(latticeRegistry["form.checkbox"]?.mode).toBe("lazy");

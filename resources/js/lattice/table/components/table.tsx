@@ -1,6 +1,8 @@
 import type { LatticeNode, LatticeRendererComponent } from "@/lattice/core/types";
 import { ArrowDown, ArrowUp, Check, ChevronsUpDown, Copy, X } from "lucide-react";
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import ActionComponent from "@/lattice/action/components/action";
+import ActionGroupComponent from "@/lattice/action/components/action-group";
 
 type TableColumn = {
   columns?: TableColumn[];
@@ -66,8 +68,6 @@ type ReloadComponentEvent = CustomEvent<{
   component?: string;
   type?: string;
 }>;
-
-const TableActionComponent = lazy(() => import("@/lattice/action/components/action"));
 
 declare module "@/lattice/core/types" {
   interface LatticeComponentProps {
@@ -272,7 +272,11 @@ function SortIndicator({ sort }: { sort: TableSort | undefined }) {
   return <ChevronsUpDown aria-hidden="true" className="size-3.5 opacity-50" />;
 }
 
-function buildEndpoint(endpoint: string, state: TableState, context: LatticeComponentContext): string {
+function buildEndpoint(
+  endpoint: string,
+  state: TableState,
+  context: LatticeComponentContext,
+): string {
   const url = new URL(endpoint, window.location.origin);
 
   Object.entries(context)
@@ -350,7 +354,28 @@ function getColumnGridTemplate(columns: TableColumn[], hasActions: boolean): str
 function getRowMeta(rowMetadata: TableRowMeta[], row: TableRow, index: number): TableRowMeta {
   const rowKey = getRowKey(row, index);
 
-  return rowMetadata.find((metadata) => metadata.key === rowKey) ?? rowMetadata[index] ?? {};
+  return rowMetadata.find((metadata) => metadata.key === rowKey) ?? {};
+}
+
+function TableActionNode({ node }: { node: LatticeNode }) {
+  if (node.type === "action") {
+    return <ActionComponent node={node as LatticeNode<"action">}>{null}</ActionComponent>;
+  }
+
+  if (node.type === "action.group") {
+    return (
+      <ActionGroupComponent node={node as LatticeNode<"action.group">}>
+        {node.children?.map((childNode, index) => (
+          <TableActionNode
+            key={childNode.key ?? childNode.id ?? `${childNode.type}-${index}`}
+            node={childNode}
+          />
+        )) ?? null}
+      </ActionGroupComponent>
+    );
+  }
+
+  return null;
 }
 
 const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
@@ -630,13 +655,10 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
                       role="cell"
                     >
                       {actions.map((action, actionIndex) => (
-                        <Suspense fallback={null} key={action.key ?? action.id ?? actionIndex}>
-                          {action.type === "action" ? (
-                            <TableActionComponent node={action as LatticeNode<"action">}>
-                              {null}
-                            </TableActionComponent>
-                          ) : null}
-                        </Suspense>
+                        <TableActionNode
+                          key={action.key ?? action.id ?? actionIndex}
+                          node={action}
+                        />
                       ))}
                     </div>
                   )}
