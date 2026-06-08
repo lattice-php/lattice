@@ -34,7 +34,7 @@ abstract class FormDefinition extends Definition
         $input = $request->all();
 
         foreach ($fields as $field) {
-            if ($field->hasResolvedValue()) {
+            if ($this->usesServerValue($field, $data)) {
                 $input[$field->name()] = $field->resolvedValue();
             }
         }
@@ -42,14 +42,22 @@ abstract class FormDefinition extends Definition
         $validated = $this->validator($input, $this->ruleSet($fields, $data, $request), $request)->validate();
 
         foreach ($fields as $field) {
+            $name = $field->name();
+
             if (! $field->isVisible($data)) {
-                unset($validated[$field->name()]);
+                unset($validated[$name]);
 
                 continue;
             }
 
-            if ($field->hasResolvedValue()) {
-                $validated[$field->name()] = $field->resolvedValue();
+            if ($this->usesServerValue($field, $data)) {
+                $validated[$name] = $field->resolvedValue();
+
+                continue;
+            }
+
+            if ($field->isReadonly($data) || $field->isDisabled($data)) {
+                unset($validated[$name]);
             }
         }
 
@@ -113,6 +121,19 @@ abstract class FormDefinition extends Definition
             })
             ->filter(fn (array $rules): bool => $rules !== [])
             ->all();
+    }
+
+    /**
+     * A field's value is authoritative server-side when it is computed (imperative value
+     * closure) or when it is locked (readonly/disabled) and carries a declarative value.
+     */
+    private function usesServerValue(Field $field, FormData $data): bool
+    {
+        if ($field->hasResolvedValue()) {
+            return true;
+        }
+
+        return ($field->isReadonly($data) || $field->isDisabled($data)) && $field->hasValue();
     }
 
     /**

@@ -57,3 +57,38 @@ it('uses the server-computed value, not the submitted one', function (): void {
 
     expect($validated['total'])->toBe(12.0);
 });
+
+function lockedDefinition(): FormDefinition
+{
+    return new class extends FormDefinition
+    {
+        public function definition(Form $form, Request $request): Form
+        {
+            return $form->schema([
+                TextInput::make('display', 'Display')->readonly()->rules(['string']),
+                TextInput::make('locked', 'Locked')->readonly()->value('server')->rules(['string']),
+                TextInput::make('off', 'Off')->disabled()->rules(['string']),
+                TextInput::make('name', 'Name')->rules(['required', 'string']),
+            ]);
+        }
+
+        public function handle(Request $request): Response
+        {
+            return new Response('ok');
+        }
+    };
+}
+
+it('drops readonly and disabled values that have no field value', function (): void {
+    $validated = lockedDefinition()->validate(Request::create('/', 'POST', [
+        'display' => 'hacked',
+        'locked' => 'tampered',
+        'off' => 'hacked',
+        'name' => 'Ada',
+    ]));
+
+    expect($validated)->not->toHaveKey('display')
+        ->and($validated)->not->toHaveKey('off')
+        ->and($validated['locked'])->toBe('server')
+        ->and($validated['name'])->toBe('Ada');
+});

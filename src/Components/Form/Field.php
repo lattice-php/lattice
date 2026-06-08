@@ -217,6 +217,21 @@ abstract class Field extends Component
         return ($this->props['required'] ?? false) || $this->anyMatch($this->requiredConditions, $data);
     }
 
+    public function isReadonly(FormData $data): bool
+    {
+        return ($this->props['readonly'] ?? false) || $this->anyMatch($this->readonlyConditions, $data);
+    }
+
+    public function isDisabled(FormData $data): bool
+    {
+        return ($this->props['disabled'] ?? false) || $this->anyMatch($this->disabledConditions, $data);
+    }
+
+    public function hasValue(): bool
+    {
+        return array_key_exists('value', $this->props);
+    }
+
     /**
      * @param  array<int, Condition>  $conditions
      */
