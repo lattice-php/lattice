@@ -21,14 +21,12 @@ export function FormFieldFrame({
   return (
     <div className="grid gap-2">
       <div className="flex min-h-5 items-center">
-        <Label htmlFor={name}>
-          {label}
-          {required && (
-            <span aria-hidden="true" className="ml-0.5 text-lt-danger">
-              *
-            </span>
-          )}
-        </Label>
+        <Label htmlFor={name}>{label}</Label>
+        {required && (
+          <span aria-hidden="true" className="ml-0.5 text-lt-danger">
+            *
+          </span>
+        )}
         {labelAction && (
           <TextLink
             href={labelAction.href}
