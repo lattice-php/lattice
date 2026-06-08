@@ -14,11 +14,6 @@ class TextInput extends Field
         return $this->prop('placeholder', $placeholder);
     }
 
-    public function value(string $value): static
-    {
-        return $this->prop('value', $value);
-    }
-
     public function autoFocus(bool $autoFocus = true): static
     {
         return $this->prop('autoFocus', $autoFocus);

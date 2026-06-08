@@ -42,6 +42,12 @@ abstract class Field extends Component
      */
     protected array $dependencies = [];
 
+    protected ?Closure $valueResolver = null;
+
+    protected bool $resolving = false;
+
+    protected bool $hasResolvedValue = false;
+
     public static function make(string $name, string $label): static
     {
         return (new static)->props([
@@ -144,6 +150,53 @@ abstract class Field extends Component
         return $this->prop('disabled', $disabled);
     }
 
+    public function value(mixed $value): static
+    {
+        if ($value instanceof Closure) {
+            $this->valueResolver = $value;
+
+            return $this;
+        }
+
+        $this->prop('value', $value);
+
+        if ($this->resolving) {
+            $this->hasResolvedValue = true;
+        }
+
+        return $this;
+    }
+
+    public function isComputed(): bool
+    {
+        return $this->dependencies !== [] || $this->valueResolver !== null;
+    }
+
+    public function applyResolution(FormData $data, Request $request): void
+    {
+        $this->resolving = true;
+
+        foreach ($this->dependencies as $dependency) {
+            ($dependency['callback'])($this, $data, $request);
+        }
+
+        if ($this->valueResolver !== null) {
+            $this->value(($this->valueResolver)($data, $request));
+        }
+
+        $this->resolving = false;
+    }
+
+    public function hasResolvedValue(): bool
+    {
+        return $this->hasResolvedValue;
+    }
+
+    public function resolvedValue(): mixed
+    {
+        return $this->props['value'] ?? null;
+    }
+
     public function isVisible(FormData $data): bool
     {
         if ($this->props['hidden'] ?? false) {
@@ -210,6 +263,32 @@ abstract class Field extends Component
 
         if ($conditions !== []) {
             $data['props'] = [...$data['props'], 'conditions' => $conditions];
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 260)]
+    protected function serialiseDependencies(array $data): array
+    {
+        $keys = [];
+
+        foreach ($this->dependencies as $dependency) {
+            foreach ($dependency['attributes'] as $attribute) {
+                $keys[$attribute] = true;
+            }
+        }
+
+        if ($keys !== []) {
+            $data['props'] = [...$data['props'], 'dependsOnKeys' => array_keys($keys)];
+        }
+
+        if ($this->valueResolver !== null) {
+            $data['props'] = [...$data['props'], 'dependsOnAny' => true];
         }
 
         return $data;

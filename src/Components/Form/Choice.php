@@ -15,11 +15,6 @@ class Choice extends Field
         ];
     }
 
-    public function value(string $value): static
-    {
-        return $this->prop('value', $value);
-    }
-
     public function event(string $event): static
     {
         return $this->prop('event', $event);
