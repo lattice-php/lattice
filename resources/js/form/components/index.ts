@@ -1,7 +1,10 @@
 export { CheckboxComponent } from "./fields/checkbox";
 export { ChoiceComponent } from "./fields/choice";
+export { DateInputComponent } from "./fields/date-input";
 export { FormComponent } from "./form";
 export { HiddenInputComponent } from "./fields/hidden-input";
+export { NumberInputComponent } from "./fields/number-input";
 export { PasswordInputComponent } from "./fields/password-input";
 export { SubmitButtonComponent } from "./fields/submit-button";
+export { TextareaComponent } from "./fields/textarea";
 export { TextInputComponent } from "./fields/text-input";

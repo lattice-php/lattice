@@ -29,3 +29,14 @@ it('computes the total from qty and unit price via a round-trip', function (): v
         ->wait(1)
         ->assertValue('total', '12');
 });
+
+it('renders textarea, number, slider, and date fields', function (): void {
+    visit('/dependent-demo')
+        ->assertSee('Bio')
+        ->assertSee('Level')
+        ->assertSee('Due date')
+        ->fill('bio', 'Hello world')
+        ->fill('due', '2026-06-08')
+        ->assertValue('bio', 'Hello world')
+        ->assertValue('due', '2026-06-08');
+});
