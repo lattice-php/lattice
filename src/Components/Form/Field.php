@@ -260,6 +260,15 @@ abstract class Field extends Component
     }
 
     /**
+     * Transform the validated value before it reaches handle(). Override per field
+     * (e.g. decode a JSON document). Defaults to returning the value unchanged.
+     */
+    public function castValue(mixed $value): mixed
+    {
+        return $value;
+    }
+
+    /**
      * @param  array<int, Condition>  $conditions
      */
     private function anyMatch(array $conditions, FormData $data): bool

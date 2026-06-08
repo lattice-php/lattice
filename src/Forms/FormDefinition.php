@@ -69,6 +69,14 @@ abstract class FormDefinition extends Definition
             }
         }
 
+        foreach ($fields as $field) {
+            $name = $field->name();
+
+            if (array_key_exists($name, $validated)) {
+                $validated[$name] = $field->castValue($validated[$name]);
+            }
+        }
+
         return $validated;
     }
 
