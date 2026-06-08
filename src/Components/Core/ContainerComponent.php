@@ -40,6 +40,24 @@ abstract class ContainerComponent extends Component
     }
 
     /**
+     * @return array<int, Component>
+     */
+    public function descendants(): array
+    {
+        $result = [];
+
+        foreach ($this->children as $child) {
+            $result[] = $child;
+
+            if ($child instanceof ContainerComponent) {
+                $result = [...$result, ...$child->descendants()];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */

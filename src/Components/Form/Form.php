@@ -9,6 +9,7 @@ use Bambamboole\Lattice\Components\Core\IsInteractive;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Collection;
 
 class Form extends ContainerComponent
 {
@@ -73,6 +74,16 @@ class Form extends ContainerComponent
     public function schema(array $components): static
     {
         return $this->children($components);
+    }
+
+    /**
+     * @return Collection<int, Field>
+     */
+    public function fields(): Collection
+    {
+        return collect($this->descendants())
+            ->filter(fn (Component $component): bool => $component instanceof Field)
+            ->values();
     }
 
     /**
