@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import type { ReactNode } from "react";
+import { describe, expect, it, vi } from "vitest";
 import type { LatticeNode } from "@/lattice/core/types";
 import {
   CheckboxComponent,
@@ -10,7 +11,61 @@ import {
   TextInputComponent,
 } from "./index";
 
+vi.mock("@inertiajs/react", () => ({
+  Form: ({
+    children,
+    errorBag: _errorBag,
+    resetOnError: _resetOnError,
+    resetOnSuccess: _resetOnSuccess,
+    transform,
+    ...props
+  }: {
+    children: (state: { errors: Record<string, string>; processing: boolean }) => ReactNode;
+    errorBag?: string;
+    resetOnError?: boolean | string[];
+    resetOnSuccess?: boolean | string[];
+    transform?: (data: Record<string, unknown>) => Record<string, unknown>;
+  }) => (
+    <form
+      {...props}
+      data-transformed={JSON.stringify(transform?.({ name: "Updated team" }) ?? null)}
+    >
+      {children({ errors: {}, processing: false })}
+    </form>
+  ),
+  Link: ({ children, ...props }: { children: ReactNode; href: string }) => (
+    <a {...props}>{children}</a>
+  ),
+}));
+
 describe("Lattice form schema components", () => {
+  it("transforms submitted data with component context", () => {
+    const formNode = {
+      id: "team-form",
+      props: {
+        action: "/lattice/forms/teams.update",
+        context: {
+          team: "lattice-core",
+        },
+        method: "patch",
+      },
+      type: "form",
+    } satisfies LatticeNode<"form">;
+
+    render(<FormComponent node={formNode}>{null}</FormComponent>);
+
+    expect(document.querySelector("form")).toHaveAttribute("action", "/lattice/forms/teams.update");
+    expect(document.querySelector("form")).toHaveAttribute(
+      "data-transformed",
+      JSON.stringify({
+        name: "Updated team",
+        context: {
+          team: "lattice-core",
+        },
+      }),
+    );
+  });
+
   it("renders fields from child schema components", () => {
     const formNode = {
       id: "login-form",

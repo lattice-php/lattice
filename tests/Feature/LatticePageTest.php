@@ -83,6 +83,29 @@ test('interactive components keep their serialized ids', function () {
         ]);
 });
 
+test('interactive components serialize request context', function () {
+    expect(Form::make('demo-form')->context(['team' => 'lattice-core'])->toArray())
+        ->toMatchArray([
+            'type' => 'form',
+            'id' => 'demo-form',
+            'props' => [
+                'context' => [
+                    'team' => 'lattice-core',
+                ],
+            ],
+        ])
+        ->and(Table::make('demo-table')->context(['team' => 'lattice-core'])->toArray())
+        ->toMatchArray([
+            'type' => 'table',
+            'id' => 'demo-table',
+            'props' => [
+                'context' => [
+                    'team' => 'lattice-core',
+                ],
+            ],
+        ]);
+});
+
 test('forms serialize schema children like pages', function () {
     expect(Form::make('profile-form')->schema([
         Text::make('Profile details'),
@@ -223,10 +246,27 @@ test('registered forms serialize their configured endpoint and isolated error ba
 test('registered forms can be submitted through the package endpoint', function () {
     Lattice::forms([WorkbenchProfileForm::class]);
 
-    patch('/lattice/forms/settings.profile', ['name' => 'Taylor'])
+    patch('/lattice/forms/settings.profile', [
+        'name' => 'Taylor',
+        'context' => [
+            'team' => 'lattice-core',
+        ],
+    ])
         ->assertRedirect('/submitted');
 
     expect(session('handled-form'))->toBe('Taylor');
+    expect(session('handled-form-team'))->toBe('lattice-core');
+});
+
+test('registered forms receive the current request while serializing definitions', function () {
+    Lattice::forms([WorkbenchRequestAwareForm::class]);
+
+    Route::get('request-aware-form', fn () => response()->json(Form::use(WorkbenchRequestAwareForm::class)->toArray()))
+        ->middleware('web');
+
+    getJson('/request-aware-form?label=Request aware')
+        ->assertOk()
+        ->assertJsonPath('children.0.props.text', 'Request aware');
 });
 
 test('registered tables serialize their configured endpoint columns state and initial data', function () {
@@ -1050,7 +1090,7 @@ test('workbench user seeder creates sample table data idempotently', function ()
 #[Bambamboole\Lattice\Attributes\Form('settings.profile')]
 class WorkbenchProfileForm extends FormDefinition
 {
-    public function definition(Form $form): Form
+    public function definition(Form $form, Request $request): Form
     {
         return $form
             ->method('patch')
@@ -1063,8 +1103,25 @@ class WorkbenchProfileForm extends FormDefinition
     public function handle(Request $request): Response
     {
         $request->session()->put('handled-form', $request->string('name')->toString());
+        $request->session()->put('handled-form-team', $this->context($request, 'team'));
 
         return redirect('/submitted');
+    }
+}
+
+#[Bambamboole\Lattice\Attributes\Form('workbench.request-aware')]
+class WorkbenchRequestAwareForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form->schema([
+            Text::make($request->string('label', 'Fallback label')->toString()),
+        ]);
+    }
+
+    public function handle(Request $request): Response
+    {
+        return response()->noContent();
     }
 }
 

@@ -7,6 +7,7 @@ namespace Bambamboole\Lattice\Forms;
 use Bambamboole\Lattice\Attributes\Form;
 use Bambamboole\Lattice\Components\Form\Form as FormComponent;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Http\Request;
 use InvalidArgumentException;
 use ReflectionClass;
 
@@ -37,7 +38,7 @@ class FormRegistry
         $key = $this->registeredKeyFor($form);
 
         return $this->make($form)
-            ->definition(FormComponent::make($key))
+            ->definition(FormComponent::make($key), $this->container->make(Request::class))
             ->action($this->actionFor($key))
             ->prop('errorBag', $this->errorBagFor($key));
     }

@@ -6,6 +6,7 @@ namespace Bambamboole\Lattice\Tables;
 
 use Bambamboole\Lattice\Components\Core\Component;
 use Bambamboole\Lattice\Tables\Columns\Column;
+use Illuminate\Http\Request;
 
 abstract class TableDefinition
 {
@@ -46,4 +47,9 @@ abstract class TableDefinition
     }
 
     abstract public function query(TableQuery $query): TableResult;
+
+    protected function context(Request $request, string $key, mixed $default = null): mixed
+    {
+        return data_get($request->input('context', []), $key, $default);
+    }
 }

@@ -245,6 +245,63 @@ describe("Lattice table component", () => {
     });
   });
 
+  it("sends component context with table state requests", async () => {
+    const fetch = vi.fn<typeof globalThis.fetch>(async () =>
+      Response.json({
+        data: [],
+        pagination: {},
+        state: {
+          filters: {},
+          page: 1,
+          perPage: 25,
+          sorts: [{ key: "name", direction: "asc" }],
+        },
+      }),
+    );
+
+    vi.stubGlobal("fetch", fetch);
+
+    const node = {
+      id: "teams.members",
+      props: {
+        columns: [
+          {
+            key: "name",
+            label: "Name",
+            sortable: true,
+          },
+        ],
+        context: {
+          team: "lattice-core",
+        },
+        data: [],
+        endpoint: "/lattice/tables/teams.members",
+        state: {
+          filters: {},
+          page: 1,
+          perPage: 25,
+          sorts: [],
+        },
+      },
+      type: "table",
+    } satisfies LatticeNode<"table">;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    fireEvent.click(screen.getByRole("button", { name: "Sort Name" }));
+
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith(
+        "/lattice/tables/teams.members?context%5Bteam%5D=lattice-core&sort=name&page=1&per_page=25",
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        },
+      );
+    });
+  });
+
   it("reloads itself when a matching reload component event is dispatched", async () => {
     const fetch = vi.fn<typeof globalThis.fetch>(async () =>
       Response.json({

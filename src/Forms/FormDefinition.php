@@ -11,7 +11,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class FormDefinition
 {
-    abstract public function definition(Form $form): Form;
+    abstract public function definition(Form $form, Request $request): Form;
 
     abstract public function handle(Request $request): Response|Responsable;
+
+    protected function context(Request $request, string $key, mixed $default = null): mixed
+    {
+        return data_get($request->input('context', []), $key, $default);
+    }
 }

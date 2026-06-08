@@ -1,4 +1,5 @@
 import { Form as InertiaForm } from "@inertiajs/react";
+import type { FormDataConvertible } from "@inertiajs/core";
 import { useEffect, useMemo, useState } from "react";
 import PasswordInput from "@/components/password-input";
 import { Button } from "@/components/ui/button";
@@ -24,10 +25,13 @@ type PasswordConfirmation = {
   placeholder?: string;
 };
 
+type LatticeComponentContext = Record<string, FormDataConvertible>;
+
 declare module "@/lattice/core/types" {
   interface LatticeComponentProps {
     form: {
       action?: string;
+      context?: LatticeComponentContext;
       errorBag?: string;
       method?: LatticeFormMethod;
       resetOnError?: boolean | string[];
@@ -120,9 +124,20 @@ function getPasswordConfirmation(
   };
 }
 
+function getContext(props: LatticeNodeProps | undefined): LatticeComponentContext {
+  const context = props?.context;
+
+  if (typeof context !== "object" || context === null || Array.isArray(context)) {
+    return {};
+  }
+
+  return context as LatticeComponentContext;
+}
+
 export const FormComponent: LatticeRendererComponent<"form"> = ({ children, node }) => {
   const props = node.props ?? {};
   const action = props.action ?? "#";
+  const context = getContext(props);
   const errorBag = props.errorBag;
   const method = props.method ?? "post";
   const resetOnError = props.resetOnError ?? false;
@@ -138,6 +153,10 @@ export const FormComponent: LatticeRendererComponent<"form"> = ({ children, node
       method={method}
       resetOnError={resetOnError}
       resetOnSuccess={resetOnSuccess}
+      transform={(data) => ({
+        ...data,
+        ...(Object.keys(context).length > 0 ? { context } : {}),
+      })}
       className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-lg border bg-card p-6 shadow-xs"
     >
       {({ errors, processing }) => (

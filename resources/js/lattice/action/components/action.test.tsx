@@ -7,11 +7,12 @@ import type { LatticeIconRenderer } from "@/lattice/icons";
 import ActionComponent from "./action";
 
 const http = vi.hoisted(() => ({
-  delete: vi.fn<(url: string) => Promise<unknown>>(),
-  patch: vi.fn<(url: string) => Promise<unknown>>(),
-  post: vi.fn<(url: string) => Promise<unknown>>(),
+  delete: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
+  patch: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
+  post: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
   processing: false,
-  put: vi.fn<(url: string) => Promise<unknown>>(),
+  put: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
+  transform: vi.fn<(callback: (data: Record<string, unknown>) => Record<string, unknown>) => void>(),
 }));
 
 vi.mock("@inertiajs/react", () => ({
@@ -28,6 +29,7 @@ describe("Lattice action component", () => {
     http.patch.mockReset();
     http.post.mockReset();
     http.put.mockReset();
+    http.transform.mockReset();
     http.processing = false;
     vi.mocked(router.reload).mockReset();
     vi.mocked(router.visit).mockReset();
@@ -71,6 +73,60 @@ describe("Lattice action component", () => {
 
     expect(router.visit).toHaveBeenCalledWith("/settings/teams/acme");
     expect(http.post).not.toHaveBeenCalled();
+  });
+
+  it("sends action context with requests", async () => {
+    http.patch.mockResolvedValue({ ok: true });
+
+    const node = {
+      props: {
+        context: {
+          team: "lattice-core",
+        },
+        endpoint: "/lattice/actions/teams.sync",
+        label: "Sync",
+        method: "patch",
+      },
+      type: "action",
+    } satisfies LatticeNode<"action">;
+
+    render(<ActionComponent node={node}>{null}</ActionComponent>);
+
+    fireEvent.click(screen.getByRole("button", { name: "Sync" }));
+
+    await waitFor(() => {
+      expect(http.patch).toHaveBeenCalledWith("/lattice/actions/teams.sync");
+    });
+
+    const transform = http.transform.mock.calls[0]?.[0];
+
+    expect(transform?.({})).toEqual({
+      context: {
+        team: "lattice-core",
+      },
+    });
+  });
+
+  it("appends action context to get endpoints", () => {
+    const node = {
+      props: {
+        context: {
+          team: "lattice-core",
+        },
+        endpoint: "/settings/teams",
+        label: "Teams",
+        method: "get",
+      },
+      type: "action",
+    } satisfies LatticeNode<"action">;
+
+    render(<ActionComponent node={node}>{null}</ActionComponent>);
+
+    fireEvent.click(screen.getByRole("button", { name: "Teams" }));
+
+    expect(router.visit).toHaveBeenCalledWith(
+      "/settings/teams?context%5Bteam%5D=lattice-core",
+    );
   });
 
   it("renders configured icons through the icon renderer", () => {

@@ -14,6 +14,14 @@ abstract class InteractiveComponent extends Component
     }
 
     /**
+     * @param  array<string, mixed>  $context
+     */
+    public function context(array $context): static
+    {
+        return $this->prop('context', $context);
+    }
+
+    /**
      * @return array<string, mixed>
      */
     #[\Override]
