@@ -10,7 +10,7 @@ it('shows product validation messages in the form flow', function (): void {
         ->fill('Price', 'invalid')
         ->wait(1)
         ->assertNoSmoke()
-        ->assertSee('The price field must be a number.');
+        ->assertSee('The Price field must be a number.');
 
     expect(Product::query()->count())->toBe(0);
 });
@@ -23,7 +23,7 @@ it('disables the submit button while precognition errors are active', function (
         ->wait(1)
         ->assertButtonDisabled('Create product')
         ->assertSee('Fix these fields to continue:')
-        ->assertSee('The price field must be a number.')
+        ->assertSee('The Price field must be a number.')
         ->fill('Price', '49.99')
         ->wait(1)
         ->assertButtonEnabled('Create product');
@@ -34,7 +34,7 @@ it('surfaces server validation errors after submitting an empty form', function 
         ->assertSee('Create Product')
         ->click('Create product')
         ->wait(1)
-        ->assertSee('The name field is required.')
+        ->assertSee('The Name field is required.')
         ->assertButtonDisabled('Create product');
 
     expect(Product::query()->count())->toBe(0);

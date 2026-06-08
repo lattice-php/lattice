@@ -39,7 +39,15 @@ abstract class FormDefinition extends Definition
             }
         }
 
-        $validated = $this->validator($input, $this->ruleSet($fields, $data, $request), $request)->validate();
+        $validator = $this->validator(
+            $input,
+            $this->ruleSet($fields, $data, $request),
+            $this->messageSet($fields, $data),
+            $this->attributeSet($fields, $data),
+            $request,
+        );
+
+        $validated = $validator->validate();
 
         foreach ($fields as $field) {
             $name = $field->name();
@@ -124,6 +132,43 @@ abstract class FormDefinition extends Definition
     }
 
     /**
+     * Custom validation messages keyed as "{field}.{rule}", collected from visible fields.
+     *
+     * @param  Collection<int, Field>  $fields
+     * @return array<string, string>
+     */
+    private function messageSet(Collection $fields, FormData $data): array
+    {
+        $messages = [];
+
+        foreach ($fields as $field) {
+            if (! $field->isVisible($data)) {
+                continue;
+            }
+
+            foreach ($field->messages() as $rule => $message) {
+                $messages["{$field->name()}.{$rule}"] = $message;
+            }
+        }
+
+        return $messages;
+    }
+
+    /**
+     * Field labels used as human-friendly validation attribute names.
+     *
+     * @param  Collection<int, Field>  $fields
+     * @return array<string, string>
+     */
+    private function attributeSet(Collection $fields, FormData $data): array
+    {
+        return $fields
+            ->filter(fn (Field $field): bool => $field->isVisible($data) && $field->label() !== null)
+            ->mapWithKeys(fn (Field $field): array => [$field->name() => (string) $field->label()])
+            ->all();
+    }
+
+    /**
      * A field's value is authoritative server-side when it is computed (imperative value
      * closure) or when it is locked (readonly/disabled) and carries a declarative value.
      */
@@ -139,10 +184,12 @@ abstract class FormDefinition extends Definition
     /**
      * @param  array<string, mixed>  $input
      * @param  array<string, array<int, mixed>>  $rules
+     * @param  array<string, string>  $messages
+     * @param  array<string, string>  $attributes
      */
-    protected function validator(array $input, array $rules, Request $request): Validator
+    protected function validator(array $input, array $rules, array $messages, array $attributes, Request $request): Validator
     {
-        $validator = app(ValidationFactory::class)->make($input, $rules);
+        $validator = app(ValidationFactory::class)->make($input, $rules, $messages, $attributes);
 
         if ($request->isPrecognitive()) {
             $validator->setRules(

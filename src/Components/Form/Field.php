@@ -48,6 +48,11 @@ abstract class Field extends Component
 
     protected bool $hasResolvedValue = false;
 
+    /**
+     * @var array<string, string>
+     */
+    protected array $messages = [];
+
     public static function make(string $name, string $label): static
     {
         return (new static)->props([
@@ -59,6 +64,28 @@ abstract class Field extends Component
     public function name(): string
     {
         return (string) ($this->props['name'] ?? '');
+    }
+
+    public function label(): ?string
+    {
+        $label = $this->props['label'] ?? null;
+
+        return is_string($label) ? $label : null;
+    }
+
+    public function message(string $rule, string $message): static
+    {
+        $this->messages[$rule] = $message;
+
+        return $this;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return $this->messages;
     }
 
     /**
