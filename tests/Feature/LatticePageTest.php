@@ -673,11 +673,13 @@ test('registered tables reject filters and sorts that are not allowed by columns
 
     getJson(latticeUrl('/lattice/tables/workbench.users?filter[password]=secret', $ref))
         ->assertUnprocessable()
-        ->assertJsonPath('message', 'Filter [password] is not allowed for table [workbench.users].');
+        ->assertJsonPath('message', 'Filter [password] is not allowed for table [workbench.users].')
+        ->assertJsonPath('errors.filter.0', 'Filter [password] is not allowed for table [workbench.users].');
 
     getJson(latticeUrl('/lattice/tables/workbench.users?sort=password', $ref))
         ->assertUnprocessable()
-        ->assertJsonPath('message', 'Sort [password] is not allowed for table [workbench.users].');
+        ->assertJsonPath('message', 'Sort [password] is not allowed for table [workbench.users].')
+        ->assertJsonPath('errors.sort.0', 'Sort [password] is not allowed for table [workbench.users].');
 });
 
 test('registered table endpoints require a valid component reference and use trusted context', function () {

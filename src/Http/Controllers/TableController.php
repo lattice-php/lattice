@@ -29,6 +29,7 @@ class TableController
         } catch (InvalidTableQuery $exception) {
             return response()->json([
                 'message' => $exception->getMessage(),
+                'errors' => $exception->errors,
             ], 422);
         }
     }

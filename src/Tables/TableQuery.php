@@ -150,7 +150,7 @@ final readonly class TableQuery
 
         foreach (array_keys($filters) as $filter) {
             if (! $allowed->has($filter)) {
-                throw new InvalidTableQuery("Filter [{$filter}] is not allowed for table [{$table}].");
+                throw InvalidTableQuery::filter($filter, $table);
             }
         }
     }
@@ -167,7 +167,7 @@ final readonly class TableQuery
 
         foreach ($sorts as $sort) {
             if (! $allowed->has($sort->key)) {
-                throw new InvalidTableQuery("Sort [{$sort->key}] is not allowed for table [{$table}].");
+                throw InvalidTableQuery::sort($sort->key, $table);
             }
         }
     }
