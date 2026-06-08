@@ -39,7 +39,16 @@ abstract class FormDefinition extends Definition
 
         return $this->definition(Form::make('form'), $request)
             ->fields()
-            ->mapWithKeys(fn (Field $field): array => [$field->name() => $field->resolveRules($data, $request)])
+            ->filter(fn (Field $field): bool => $field->isVisible($data))
+            ->mapWithKeys(function (Field $field) use ($data, $request): array {
+                $rules = $field->resolveRules($data, $request);
+
+                if ($field->isRequired($data) && ! in_array('required', $rules, true)) {
+                    array_unshift($rules, 'required');
+                }
+
+                return [$field->name() => $rules];
+            })
             ->filter(fn (array $rules): bool => $rules !== [])
             ->all();
     }
