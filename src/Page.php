@@ -77,7 +77,7 @@ abstract class Page
     }
 
     /**
-     * @return array{title: string|null, layout: string, container: string, breadcrumbs: array<int, array{title: string, href: string}>, sidebar: array{groups: array<int, array{label: string|null, items: array<int, array{active: bool, href: string, icon: string|null, key: string, label: string}>}>}, components: array<int, array<string, mixed>>}
+     * @return array{title: string|null, layout: string, container: string, breadcrumbs: array<int, array{title: string, href: string}>, menus: array<string, array{groups: array<int, array{label: string|null, items: array<int, array{active: bool, href: string, icon: string|null, key: string, label: string, method: string}>}>}>, components: array<int, array<string, mixed>>}
      */
     public function toArray(PageSchema $schema, ?Request $request = null): array
     {
@@ -86,9 +86,9 @@ abstract class Page
             'layout' => $this->serializePageMetadata($this->layout()),
             'container' => $this->serializePageMetadata($this->container()),
             'breadcrumbs' => $this->breadcrumbs(),
-            'sidebar' => $request instanceof Request
-                ? Lattice::sidebar()->toArray($request)
-                : ['groups' => []],
+            'menus' => $request instanceof Request
+                ? Lattice::menus()->toArray($request)
+                : [],
             'components' => $schema->toArray(),
         ];
     }

@@ -19,7 +19,7 @@ function payload(lattice: Partial<LatticePagePayload> = {}): LatticePagePayload 
     components: [],
     container: "default",
     layout: "none",
-    sidebar: { groups: [] },
+    menus: {},
     title: "Lattice",
     ...lattice,
   };

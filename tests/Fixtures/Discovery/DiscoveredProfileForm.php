@@ -6,6 +6,7 @@ namespace Bambamboole\Lattice\Tests\Fixtures\Discovery;
 
 use Bambamboole\Lattice\Attributes\Form;
 use Bambamboole\Lattice\Components\Form\Form as FormComponent;
+use Bambamboole\Lattice\Enums\HttpMethod;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class DiscoveredProfileForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent
     {
-        return $form->method('patch');
+        return $form->method(HttpMethod::Patch);
     }
 
     public function handle(Request $request): Response|Responsable

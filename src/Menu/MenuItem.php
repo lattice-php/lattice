@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Sidebar;
+namespace Bambamboole\Lattice\Menu;
 
 use BackedEnum;
+use Bambamboole\Lattice\Enums\HttpMethod;
 use Closure;
 
-final class SidebarItem
+class MenuItem
 {
     private ?string $group = null;
 
@@ -15,13 +16,22 @@ final class SidebarItem
 
     private ?string $icon = null;
 
+    private ?string $key;
+
     private ?string $label = null;
+
+    private string $method = 'get';
 
     private int $sort = 0;
 
-    public static function make(): static
+    public function __construct(?string $key = null)
     {
-        return new self;
+        $this->key = $key;
+    }
+
+    public static function make(?string $key = null): static
+    {
+        return new static($key);
     }
 
     /**
@@ -49,15 +59,16 @@ final class SidebarItem
     }
 
     /**
-     * @param  array{group?: string|null, href?: string|null, icon?: string|null, label?: string|null, sort?: int}  $data
+     * @param  array{group?: string|null, href?: string|null, icon?: string|null, key?: string|null, label?: string|null, method?: string|null, sort?: int}  $data
      */
     public static function fromArray(array $data): static
     {
-        return static::make()
+        return static::make($data['key'] ?? null)
             ->group($data['group'] ?? null)
             ->href($data['href'] ?? null)
             ->icon($data['icon'] ?? null)
             ->label($data['label'] ?? null)
+            ->method($data['method'] ?? HttpMethod::Get)
             ->sort($data['sort'] ?? 0);
     }
 
@@ -82,9 +93,23 @@ final class SidebarItem
         return $this;
     }
 
+    public function key(?string $key): static
+    {
+        $this->key = $key;
+
+        return $this;
+    }
+
     public function label(?string $label): static
     {
         $this->label = $label;
+
+        return $this;
+    }
+
+    public function method(BackedEnum|string $method): static
+    {
+        $this->method = $method instanceof BackedEnum ? (string) $method->value : strtolower($method);
 
         return $this;
     }
@@ -96,8 +121,43 @@ final class SidebarItem
         return $this;
     }
 
+    public function getGroup(): ?string
+    {
+        return $this->group;
+    }
+
+    public function getHref(): ?string
+    {
+        return $this->href;
+    }
+
+    public function getIcon(): ?string
+    {
+        return $this->icon;
+    }
+
+    public function getKey(): ?string
+    {
+        return $this->key;
+    }
+
+    public function getLabel(): ?string
+    {
+        return $this->label;
+    }
+
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    public function getSort(): int
+    {
+        return $this->sort;
+    }
+
     /**
-     * @return array{group: string|null, href: string|null, icon: string|null, label: string|null, sort: int}
+     * @return array{group: string|null, href: string|null, icon: string|null, key: string|null, label: string|null, method: string, sort: int}
      */
     public function toArray(): array
     {
@@ -105,7 +165,9 @@ final class SidebarItem
             'group' => $this->group,
             'href' => $this->href,
             'icon' => $this->icon,
+            'key' => $this->key,
             'label' => $this->label,
+            'method' => $this->method,
             'sort' => $this->sort,
         ];
     }

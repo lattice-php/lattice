@@ -2,7 +2,7 @@ export { latticeRegistry } from "./registry";
 export { dispatchActionEffects, dispatchActionError, isActionEffect } from "./action/effects";
 export { EventBridge } from "./events/event-bridge";
 export { IconRenderer, IconRendererProvider } from "./icons";
-export { LatticeSidebar } from "./sidebar";
+export { useMenu } from "./menu";
 export { LatticeProvider, useLatticeRegistry } from "./provider";
 export {
   createLatticePlugin,
@@ -15,17 +15,18 @@ export { LatticeRenderer } from "./core/renderer";
 export type {
   LatticeComponentProps,
   LatticeComponentType,
+  LatticeHttpMethod,
   LatticeKnownPageContainer,
   LatticeKnownPageLayout,
+  LatticeMenuGroup,
+  LatticeMenuItem,
+  LatticeMenuPayload,
   LatticeNode,
   LatticeNodeProps,
   LatticePageContainer,
   LatticePageBreadcrumb,
   LatticePageLayout,
   LatticePagePayload,
-  LatticeSidebarGroup,
-  LatticeSidebarItem,
-  LatticeSidebarPayload,
   LatticeRendererComponent,
   LatticeRendererComponentModule,
   LatticeRendererComponentProps,

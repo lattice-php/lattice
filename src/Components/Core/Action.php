@@ -36,9 +36,9 @@ class Action extends InteractiveComponent
         return $this->prop('label', $label);
     }
 
-    public function method(string $method): static
+    public function method(BackedEnum|string $method): static
     {
-        return $this->prop('method', $method);
+        return $this->prop('method', $method instanceof BackedEnum ? (string) $method->value : $method);
     }
 
     public function variant(string $variant): static

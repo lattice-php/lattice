@@ -2,6 +2,8 @@
 
 namespace Bambamboole\Lattice\Components\Core;
 
+use BackedEnum;
+
 class Link extends Component
 {
     public static function make(string $label, ?string $key = null): static
@@ -14,9 +16,9 @@ class Link extends Component
         return $this->prop('href', $href);
     }
 
-    public function method(string $method): static
+    public function method(BackedEnum|string $method): static
     {
-        return $this->prop('method', $method);
+        return $this->prop('method', $method instanceof BackedEnum ? (string) $method->value : $method);
     }
 
     public function tabIndex(int $tabIndex): static

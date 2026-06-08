@@ -1,1 +1,0 @@
-export { LatticeSidebar } from "./sidebar";

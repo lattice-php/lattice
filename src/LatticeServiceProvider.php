@@ -10,9 +10,9 @@ use Bambamboole\Lattice\Discovery\DefinitionDiscovery;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Fragments\FragmentRegistry;
+use Bambamboole\Lattice\Menu\MenuItem;
+use Bambamboole\Lattice\Menu\MenuRegistry;
 use Bambamboole\Lattice\Security\ComponentReferenceSigner;
-use Bambamboole\Lattice\Sidebar\SidebarItem;
-use Bambamboole\Lattice\Sidebar\SidebarRegistry;
 use Bambamboole\Lattice\Tables\TableRegistry;
 use Closure;
 use Illuminate\Http\RedirectResponse;
@@ -40,7 +40,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(TableRegistry::class);
         $this->app->singleton(FragmentRegistry::class);
         $this->app->singleton(ActionRegistry::class);
-        $this->app->singleton(SidebarRegistry::class);
+        $this->app->singleton(MenuRegistry::class);
         $this->app->singleton(DefinitionDiscovery::class);
         $this->app->singleton(ComponentReferenceSigner::class);
         $this->app->singleton(LatticeRegistry::class);
@@ -49,14 +49,29 @@ final class LatticeServiceProvider extends PackageServiceProvider
             Router::macro('latticePage', fn (string $uri, string $page): Route => Lattice::page($uri, $page));
         }
 
-        if (! Route::hasMacro('sidebar')) {
-            Route::macro('sidebar', function (Closure|string|null $label = null, BackedEnum|string|null $icon = null): Route {
+        if (! Route::hasMacro('menu')) {
+            Route::macro('menu', function (BackedEnum|string $location, Closure|string|null $label = null, BackedEnum|string|null $icon = null): Route {
+                $menus = $this->getAction('lattice.menus');
+
+                if (! is_array($menus)) {
+                    $menus = [];
+                }
+
+                $locationKey = $location instanceof BackedEnum ? (string) $location->value : $location;
+                $menus[$locationKey] = MenuItem::configure($label, $icon)->toArray();
+
                 $this->setAction([
                     ...$this->getAction(),
-                    'lattice.sidebar' => SidebarItem::configure($label, $icon)->toArray(),
+                    'lattice.menus' => $menus,
                 ]);
 
                 return $this;
+            });
+        }
+
+        if (! Route::hasMacro('sidebar')) {
+            Route::macro('sidebar', function (Closure|string|null $label = null, BackedEnum|string|null $icon = null): Route {
+                return $this->menu('sidebar', $label, $icon);
             });
         }
 

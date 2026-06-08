@@ -12,7 +12,7 @@ use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Fragments\FragmentDefinition;
 use Bambamboole\Lattice\Fragments\FragmentRegistry;
-use Bambamboole\Lattice\Sidebar\SidebarRegistry;
+use Bambamboole\Lattice\Menu\MenuRegistry;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableRegistry;
 use Illuminate\Routing\Route;
@@ -25,8 +25,8 @@ class LatticeRegistry
         private readonly DefinitionDiscovery $discovery,
         private readonly FormRegistry $forms,
         private readonly FragmentRegistry $fragments,
+        private readonly MenuRegistry $menus,
         private readonly Router $router,
-        private readonly SidebarRegistry $sidebar,
         private readonly TableRegistry $tables,
     ) {}
 
@@ -62,9 +62,9 @@ class LatticeRegistry
         $this->actions->register($actions);
     }
 
-    public function sidebar(): SidebarRegistry
+    public function menus(): MenuRegistry
     {
-        return $this->sidebar;
+        return $this->menus;
     }
 
     public function discover(string $path, string $namespace): void

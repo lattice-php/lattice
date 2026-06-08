@@ -24,6 +24,7 @@ use Bambamboole\Lattice\Components\Table\Table;
 use Bambamboole\Lattice\Concerns\CreatesToastMessages;
 use Bambamboole\Lattice\Enums\Align;
 use Bambamboole\Lattice\Enums\Gap;
+use Bambamboole\Lattice\Enums\HttpMethod;
 use Bambamboole\Lattice\Enums\LucideIcon;
 use Bambamboole\Lattice\Enums\ToastType;
 use Bambamboole\Lattice\Enums\Width;
@@ -31,9 +32,10 @@ use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Fragments\FragmentDefinition;
 use Bambamboole\Lattice\LatticeRegistry;
+use Bambamboole\Lattice\Menu\MenuItem;
+use Bambamboole\Lattice\Menu\MenuRegistry;
 use Bambamboole\Lattice\Page;
 use Bambamboole\Lattice\PageSchema;
-use Bambamboole\Lattice\Sidebar\SidebarRegistry;
 use Bambamboole\Lattice\Tables\Columns\StackColumn;
 use Bambamboole\Lattice\Tables\Columns\TextColumn;
 use Bambamboole\Lattice\Tables\EloquentTableDefinition;
@@ -67,6 +69,12 @@ use function Pest\Laravel\postJson;
 use function Pest\Laravel\withoutVite;
 use function Pest\Laravel\withSession;
 
+enum WorkbenchMenuLocation: string
+{
+    case Sidebar = 'sidebar';
+    case UserMenu = 'user-menu';
+}
+
 /**
  * @param  array<string, mixed>  $component
  */
@@ -99,9 +107,9 @@ test('lattice component factories stay open for extension', function () {
         ->and((new ReflectionClass(Badge::class))->isFinal())->toBeFalse();
 });
 
-test('lattice facade resolves the registry and exposes the sidebar registry', function () {
+test('lattice facade resolves the registry and exposes the menu registry', function () {
     expect(Lattice::getFacadeRoot())->toBe(app(LatticeRegistry::class))
-        ->and(Lattice::sidebar())->toBe(app(SidebarRegistry::class));
+        ->and(Lattice::menus())->toBe(app(MenuRegistry::class));
 });
 
 test('lattice can discover attributed definitions from a path and namespace', function () {
@@ -1222,11 +1230,11 @@ test('pages can authorize requests before rendering', function () {
         );
 });
 
-test('page sidebar items are serialized and filtered through page authorization', function () {
+test('page menu items are serialized by location and filtered through page authorization', function () {
     Route::latticePage('sidebar-visible', WorkbenchAuthorizedPage::class)
         ->middleware('web')
         ->name('sidebar.visible')
-        ->sidebar(fn ($item) => $item
+        ->menu(WorkbenchMenuLocation::Sidebar, fn ($item) => $item
             ->label('Visible page')
             ->icon(LucideIcon::Settings)
             ->group('Account')
@@ -1240,7 +1248,22 @@ test('page sidebar items are serialized and filtered through page authorization'
     Route::latticePage('sidebar-hidden', WorkbenchDeniedSidebarPage::class)
         ->middleware('web')
         ->name('sidebar.hidden')
-        ->sidebar('Hidden page', LucideIcon::EyeOff);
+        ->menu(WorkbenchMenuLocation::Sidebar, 'Hidden page', LucideIcon::EyeOff);
+
+    Route::latticePage('user-menu-settings', WorkbenchAuthorizedPage::class)
+        ->middleware('web')
+        ->name('user-menu.settings')
+        ->menu(WorkbenchMenuLocation::UserMenu, 'Settings', LucideIcon::Settings);
+
+    Lattice::menus()->add(
+        WorkbenchMenuLocation::UserMenu,
+        MenuItem::make('logout')
+            ->label('Log out')
+            ->icon(LucideIcon::LogOut)
+            ->href('/logout')
+            ->method(HttpMethod::Post)
+            ->sort(100),
+    );
 
     withoutVite();
 
@@ -1248,17 +1271,27 @@ test('page sidebar items are serialized and filtered through page authorization'
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page')
-            ->where('lattice.sidebar.groups.0.label', null)
-            ->where('lattice.sidebar.groups.0.items.0.label', 'Dashboard')
-            ->where('lattice.sidebar.groups.0.items.0.href', '/sidebar-dashboard')
-            ->where('lattice.sidebar.groups.0.items.0.icon', 'layout-dashboard')
-            ->where('lattice.sidebar.groups.0.items.0.active', false)
-            ->where('lattice.sidebar.groups.1.label', 'Account')
-            ->where('lattice.sidebar.groups.1.items.0.label', 'Visible page')
-            ->where('lattice.sidebar.groups.1.items.0.href', '/sidebar-visible')
-            ->where('lattice.sidebar.groups.1.items.0.icon', 'settings')
-            ->where('lattice.sidebar.groups.1.items.0.active', true)
-            ->missing('lattice.sidebar.groups.1.items.1')
+            ->where('lattice.menus.sidebar.groups.0.label', null)
+            ->where('lattice.menus.sidebar.groups.0.items.0.label', 'Dashboard')
+            ->where('lattice.menus.sidebar.groups.0.items.0.href', '/sidebar-dashboard')
+            ->where('lattice.menus.sidebar.groups.0.items.0.icon', 'layout-dashboard')
+            ->where('lattice.menus.sidebar.groups.0.items.0.method', 'get')
+            ->where('lattice.menus.sidebar.groups.0.items.0.active', false)
+            ->where('lattice.menus.sidebar.groups.1.label', 'Account')
+            ->where('lattice.menus.sidebar.groups.1.items.0.label', 'Visible page')
+            ->where('lattice.menus.sidebar.groups.1.items.0.href', '/sidebar-visible')
+            ->where('lattice.menus.sidebar.groups.1.items.0.icon', 'settings')
+            ->where('lattice.menus.sidebar.groups.1.items.0.method', 'get')
+            ->where('lattice.menus.sidebar.groups.1.items.0.active', true)
+            ->missing('lattice.menus.sidebar.groups.1.items.1')
+            ->where('lattice.menus.user-menu.groups.0.items.0.label', 'Settings')
+            ->where('lattice.menus.user-menu.groups.0.items.0.href', '/user-menu-settings')
+            ->where('lattice.menus.user-menu.groups.0.items.0.icon', 'settings')
+            ->where('lattice.menus.user-menu.groups.0.items.0.method', 'get')
+            ->where('lattice.menus.user-menu.groups.0.items.1.label', 'Log out')
+            ->where('lattice.menus.user-menu.groups.0.items.1.href', '/logout')
+            ->where('lattice.menus.user-menu.groups.0.items.1.icon', 'log-out')
+            ->where('lattice.menus.user-menu.groups.0.items.1.method', 'post')
         );
 });
 

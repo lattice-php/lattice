@@ -2,6 +2,7 @@
 
 namespace Bambamboole\Lattice\Components\Form;
 
+use BackedEnum;
 use Bambamboole\Lattice\Components\Core\Component;
 use Bambamboole\Lattice\Components\Core\InteractiveComponent;
 use Bambamboole\Lattice\Forms\FormDefinition;
@@ -32,9 +33,9 @@ class Form extends InteractiveComponent
         return $this->prop('action', $action);
     }
 
-    public function method(string $method): static
+    public function method(BackedEnum|string $method): static
     {
-        return $this->prop('method', $method);
+        return $this->prop('method', $method instanceof BackedEnum ? (string) $method->value : $method);
     }
 
     public function submitLabel(string $submitLabel): static

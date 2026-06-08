@@ -1,12 +1,13 @@
 export type {
   LatticeNode,
   LatticeNodeProps,
+  LatticeHttpMethod,
+  LatticeMenuGroup,
+  LatticeMenuItem,
+  LatticeMenuPayload,
   LatticePageContainer,
   LatticePageBreadcrumb,
   LatticePageLayout,
   LatticePagePayload,
   LatticeRendererComponent,
-  LatticeSidebarGroup,
-  LatticeSidebarItem,
-  LatticeSidebarPayload,
 } from "@/lattice";

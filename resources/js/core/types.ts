@@ -25,7 +25,7 @@ export type LatticePagePayload = {
   components: LatticeNode[];
   container: LatticePageContainer;
   layout: LatticePageLayout;
-  sidebar: LatticeSidebarPayload;
+  menus: Record<string, LatticeMenuPayload | undefined>;
   title: string | null;
 };
 
@@ -34,21 +34,24 @@ export type LatticePageBreadcrumb = {
   title: string;
 };
 
-export type LatticeSidebarItem = {
+export type LatticeHttpMethod = "get" | "post" | "put" | "patch" | "delete" | (string & {});
+
+export type LatticeMenuItem = {
   active: boolean;
   href: string;
   icon: string | null;
   key: string;
   label: string;
+  method: LatticeHttpMethod;
 };
 
-export type LatticeSidebarGroup = {
-  items: LatticeSidebarItem[];
+export type LatticeMenuGroup = {
+  items: LatticeMenuItem[];
   label: string | null;
 };
 
-export type LatticeSidebarPayload = {
-  groups: LatticeSidebarGroup[];
+export type LatticeMenuPayload = {
+  groups: LatticeMenuGroup[];
 };
 
 export type LatticeKnownPageContainer = "centered" | "default";
