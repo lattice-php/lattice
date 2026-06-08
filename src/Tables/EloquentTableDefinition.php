@@ -7,6 +7,7 @@ namespace Bambamboole\Lattice\Tables;
 use Bambamboole\Lattice\Tables\Columns\Column;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
  * @template TModel of Model
@@ -80,6 +81,21 @@ abstract class EloquentTableDefinition extends TableDefinition
         }
 
         return $builder;
+    }
+
+    /**
+     * @param  array<int, mixed>  $keys
+     * @return Collection<int, mixed>
+     */
+    public function resolveSelection(array $keys): Collection
+    {
+        if ($keys === []) {
+            return new Collection;
+        }
+
+        return $this->builder(TableQuery::empty($this->columns(), '', $this->perPage()))
+            ->whereKey($keys)
+            ->get();
     }
 
     /**

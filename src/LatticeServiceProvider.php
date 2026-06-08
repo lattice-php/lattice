@@ -6,6 +6,7 @@ namespace Bambamboole\Lattice;
 
 use BackedEnum;
 use Bambamboole\Lattice\Actions\ActionRegistry;
+use Bambamboole\Lattice\Actions\BulkActionRegistry;
 use Bambamboole\Lattice\Discovery\DefinitionDiscovery;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\FormRegistry;
@@ -40,6 +41,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(TableRegistry::class);
         $this->app->singleton(FragmentRegistry::class);
         $this->app->singleton(ActionRegistry::class);
+        $this->app->singleton(BulkActionRegistry::class);
         $this->app->singleton(MenuRegistry::class);
         $this->app->singleton(DefinitionDiscovery::class);
         $this->app->singleton(ComponentReferenceSigner::class);
@@ -107,6 +109,12 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         if (is_array($actions) && $actions !== []) {
             Lattice::actions($actions);
+        }
+
+        $bulkActions = config('lattice.bulk-actions.registered', []);
+
+        if (is_array($bulkActions) && $bulkActions !== []) {
+            Lattice::bulkActions($bulkActions);
         }
 
         $discoveryPaths = config('lattice.discover', []);

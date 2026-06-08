@@ -6,12 +6,15 @@ use Bambamboole\Lattice\Components\Core\Action;
 use Bambamboole\Lattice\Components\Form\Form;
 use Bambamboole\Lattice\Components\Form\TextInput;
 use Bambamboole\Lattice\Facades\Lattice;
+use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 use Inertia\Testing\AssertableInertia;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Actions\ArchiveProductAction;
+use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 use Workbench\App\Seeders\WorkbenchProductSeeder;
+use Workbench\App\Tables\ProductsTable;
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\patch;
@@ -347,4 +350,60 @@ test('the product archive row action authorizes per row', function () {
 
     patch('/lattice/actions/workbench.products.archive', ['_lattice' => $ref])
         ->assertForbidden();
+});
+
+test('bulk actions resolve the selection through the table and archive only those rows', function () {
+    Lattice::tables([ProductsTable::class]);
+    Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
+
+    $a = Product::factory()->create(['status' => 'active']);
+    $b = Product::factory()->create(['status' => 'active']);
+    $c = Product::factory()->create(['status' => 'active']);
+
+    $ref = app(ComponentReferenceSigner::class)->seal(
+        'bulkAction',
+        'workbench.products.archive-selected',
+        ['table' => 'workbench.products'],
+    );
+
+    patch('/lattice/bulk-actions/workbench.products.archive-selected', [
+        '_lattice' => $ref,
+        'selected' => [$a->getKey(), $b->getKey()],
+    ])
+        ->assertOk()
+        ->assertJsonPath('data.archived', 2);
+
+    expect($a->fresh()->status)->toBe('archived')
+        ->and($b->fresh()->status)->toBe('archived')
+        ->and($c->fresh()->status)->toBe('active');
+});
+
+test('bulk actions ignore selected ids that are not in the table result', function () {
+    Lattice::tables([ProductsTable::class]);
+    Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
+
+    $a = Product::factory()->create(['status' => 'active']);
+
+    $ref = app(ComponentReferenceSigner::class)->seal(
+        'bulkAction',
+        'workbench.products.archive-selected',
+        ['table' => 'workbench.products'],
+    );
+
+    patch('/lattice/bulk-actions/workbench.products.archive-selected', [
+        '_lattice' => $ref,
+        'selected' => [$a->getKey(), 999999],
+    ])
+        ->assertOk()
+        ->assertJsonPath('data.archived', 1);
+
+    expect($a->fresh()->status)->toBe('archived');
+});
+
+test('bulk action endpoints require a valid component reference', function () {
+    Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
+
+    patch('/lattice/bulk-actions/workbench.products.archive-selected', [
+        'selected' => [1],
+    ])->assertForbidden();
 });

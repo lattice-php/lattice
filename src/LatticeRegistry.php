@@ -7,6 +7,8 @@ namespace Bambamboole\Lattice;
 use BadMethodCallException;
 use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionRegistry;
+use Bambamboole\Lattice\Actions\BulkActionDefinition;
+use Bambamboole\Lattice\Actions\BulkActionRegistry;
 use Bambamboole\Lattice\Discovery\DefinitionDiscovery;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
@@ -22,6 +24,7 @@ class LatticeRegistry
 {
     public function __construct(
         private readonly ActionRegistry $actions,
+        private readonly BulkActionRegistry $bulkActions,
         private readonly DefinitionDiscovery $discovery,
         private readonly FormRegistry $forms,
         private readonly FragmentRegistry $fragments,
@@ -60,6 +63,14 @@ class LatticeRegistry
     public function actions(string|array $actions): void
     {
         $this->actions->register($actions);
+    }
+
+    /**
+     * @param  class-string<BulkActionDefinition>|array<int, class-string<BulkActionDefinition>>  $bulkActions
+     */
+    public function bulkActions(string|array $bulkActions): void
+    {
+        $this->bulkActions->register($bulkActions);
     }
 
     public function menus(): MenuRegistry

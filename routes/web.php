@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Bambamboole\Lattice\Http\Controllers\ActionController;
+use Bambamboole\Lattice\Http\Controllers\BulkActionController;
 use Bambamboole\Lattice\Http\Controllers\FormController;
 use Bambamboole\Lattice\Http\Controllers\FragmentController;
 use Bambamboole\Lattice\Http\Controllers\TableController;
@@ -27,3 +28,8 @@ Route::middleware(config('lattice.actions.middleware', ['web']))
     ->match(['post', 'put', 'patch', 'delete'], config('lattice.actions.endpoint', 'lattice/actions/{action}'), ActionController::class)
     ->where('action', '.*')
     ->name('lattice.actions.handle');
+
+Route::middleware(config('lattice.bulk-actions.middleware', ['web']))
+    ->match(['post', 'put', 'patch', 'delete'], config('lattice.bulk-actions.endpoint', 'lattice/bulk-actions/{bulkAction}'), BulkActionController::class)
+    ->where('bulkAction', '.*')
+    ->name('lattice.bulk-actions.handle');

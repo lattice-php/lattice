@@ -34,4 +34,10 @@ return [
         'middleware' => ['web'],
         'registered' => [],
     ],
+
+    'bulk-actions' => [
+        'endpoint' => 'lattice/bulk-actions/{bulkAction}',
+        'middleware' => ['web'],
+        'registered' => [],
+    ],
 ];

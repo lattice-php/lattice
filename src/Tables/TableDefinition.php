@@ -7,6 +7,7 @@ namespace Bambamboole\Lattice\Tables;
 use Bambamboole\Lattice\Components\Core\Component;
 use Bambamboole\Lattice\Definition;
 use Bambamboole\Lattice\Tables\Columns\Column;
+use Illuminate\Support\Collection;
 
 abstract class TableDefinition extends Definition
 {
@@ -47,4 +48,13 @@ abstract class TableDefinition extends Definition
     }
 
     abstract public function query(TableQuery $query): TableResult;
+
+    /**
+     * @param  array<int, mixed>  $keys
+     * @return Collection<int, mixed>
+     */
+    public function resolveSelection(array $keys): Collection
+    {
+        return new Collection;
+    }
 }

@@ -14,6 +14,7 @@ use Laravel\Boost\Install\SkillComposer;
 use Laravel\Boost\Support\Config;
 use Laravel\Roster\Roster;
 use Workbench\App\Actions\ArchiveProductAction;
+use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Forms\DependentDemoForm;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Support\BoostConfig;
@@ -46,6 +47,10 @@ class WorkbenchServiceProvider extends ServiceProvider
 
         Lattice::actions([
             ArchiveProductAction::class,
+        ]);
+
+        Lattice::bulkActions([
+            ArchiveSelectedProductsAction::class,
         ]);
 
         Lattice::forms([
