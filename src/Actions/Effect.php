@@ -41,6 +41,16 @@ final readonly class Effect implements JsonSerializable
         return new self('reloadPage');
     }
 
+    public static function redirect(string $url): self
+    {
+        return new self('redirect', ['url' => $url]);
+    }
+
+    public static function download(string $url): self
+    {
+        return new self('download', ['url' => $url]);
+    }
+
     public static function openModal(string $modal): self
     {
         return new self('openModal', ['modal' => $modal]);
@@ -50,6 +60,13 @@ final readonly class Effect implements JsonSerializable
     {
         return new self('closeModal', array_filter([
             'modal' => $modal,
+        ], fn (mixed $value): bool => $value !== null));
+    }
+
+    public static function resetForm(?string $form = null): self
+    {
+        return new self('resetForm', array_filter([
+            'form' => $form,
         ], fn (mixed $value): bool => $value !== null));
     }
 

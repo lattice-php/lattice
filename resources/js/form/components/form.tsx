@@ -2,6 +2,7 @@ import type { FormDataConvertible } from "@inertiajs/core";
 import { Form as InertiaForm } from "@inertiajs/react";
 import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/core/props";
 import type { Node, NodeProps, RendererComponent } from "@lattice/core/types";
+import { useEffect } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "./context";
 import type { FormMethod } from "./types";
@@ -53,6 +54,30 @@ function collectFieldLabels(
   return labels;
 }
 
+function FormResetListener({
+  componentId,
+  reset,
+}: {
+  componentId?: string;
+  reset: (...fields: string[]) => void;
+}) {
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<{ form?: string }>).detail;
+
+      if (!detail?.form || detail.form === componentId) {
+        reset();
+      }
+    };
+
+    window.addEventListener("lattice:reset-form", handler);
+
+    return () => window.removeEventListener("lattice:reset-form", handler);
+  }, [componentId, reset]);
+
+  return null;
+}
+
 export const FormComponent: RendererComponent<"form"> = ({ children, node }) => {
   const props = node.props ?? {};
   const action = props.action ?? "#";
@@ -85,7 +110,17 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
       })}
       className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-lt border border-lt-border bg-lt-surface p-6 shadow-xs"
     >
-      {({ clearErrors, errors, invalid, processing, touch, validate, validating, valid }) => (
+      {({
+        clearErrors,
+        errors,
+        invalid,
+        processing,
+        reset,
+        touch,
+        validate,
+        validating,
+        valid,
+      }) => (
         <FormProvider
           value={{
             clearErrors: (field) => clearErrors(field),
@@ -101,6 +136,8 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
             valid: (field) => valid(field),
           }}
         >
+          <FormResetListener componentId={node.id} reset={reset} />
+
           {props.status && (
             <div className="text-center text-sm font-medium text-green-600 dark:text-green-400">
               {props.status}

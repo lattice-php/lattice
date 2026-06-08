@@ -46,6 +46,21 @@ final readonly class ActionResult implements JsonSerializable
         return $this->effect(Effect::reloadComponent($component));
     }
 
+    public function reloadPage(): self
+    {
+        return $this->effect(Effect::reloadPage());
+    }
+
+    public function redirect(string $url): self
+    {
+        return $this->effect(Effect::redirect($url));
+    }
+
+    public function download(string $url): self
+    {
+        return $this->effect(Effect::download($url));
+    }
+
     public function openModal(string $modal): self
     {
         return $this->effect(Effect::openModal($modal));
@@ -54,6 +69,11 @@ final readonly class ActionResult implements JsonSerializable
     public function closeModal(?string $modal = null): self
     {
         return $this->effect(Effect::closeModal($modal));
+    }
+
+    public function resetForm(?string $form = null): self
+    {
+        return $this->effect(Effect::resetForm($form));
     }
 
     /**

@@ -1024,6 +1024,23 @@ test('registered action endpoints require a valid component reference', function
         ->assertForbidden();
 });
 
+test('action results expose the full effect vocabulary', function () {
+    $result = ActionResult::success()
+        ->reloadPage()
+        ->redirect('/dashboard')
+        ->download('/exports/report.csv')
+        ->resetForm('teams.create');
+
+    expect($result->toArray()['effects'])->toBe([
+        ['type' => 'reloadPage'],
+        ['type' => 'redirect', 'url' => '/dashboard'],
+        ['type' => 'download', 'url' => '/exports/report.csv'],
+        ['type' => 'resetForm', 'form' => 'teams.create'],
+    ])
+        ->and(Effect::resetForm()->toArray())->toBe(['type' => 'resetForm'])
+        ->and(Effect::reloadPage()->toArray())->toBe(['type' => 'reloadPage']);
+});
+
 test('interaction endpoints return 404 for unknown component ids', function () {
     $signer = app(ComponentReferenceSigner::class);
     $refs = [

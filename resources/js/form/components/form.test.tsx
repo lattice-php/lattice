@@ -14,6 +14,7 @@ import {
 
 const formSlotState = vi.hoisted(() => ({
   clearErrors: vi.fn<(field: string) => void>(),
+  reset: vi.fn<(...fields: string[]) => void>(),
   touch: vi.fn<(field: string) => void>(),
   validate: vi.fn<(field: string) => void>(),
 }));
@@ -33,6 +34,7 @@ vi.mock("@inertiajs/react", () => ({
       errors: Record<string, string>;
       invalid: (field: string) => boolean;
       processing: boolean;
+      reset: (...fields: string[]) => void;
       touch: (field: string) => void;
       validate: (field: string) => void;
       validating: boolean;
@@ -54,6 +56,7 @@ vi.mock("@inertiajs/react", () => ({
         errors: {},
         invalid: () => false,
         processing: false,
+        reset: formSlotState.reset,
         touch: formSlotState.touch,
         validate: formSlotState.validate,
         validating: false,
@@ -69,6 +72,7 @@ vi.mock("@inertiajs/react", () => ({
 describe("Lattice form schema components", () => {
   beforeEach(() => {
     formSlotState.clearErrors.mockClear();
+    formSlotState.reset.mockClear();
     formSlotState.touch.mockClear();
     formSlotState.validate.mockClear();
   });
@@ -311,5 +315,23 @@ describe("Lattice form schema components", () => {
     });
 
     expect(formSlotState.validate).toHaveBeenCalledWith("name");
+  });
+
+  it("resets when a matching reset-form effect is dispatched", () => {
+    const formNode = {
+      id: "teams.create",
+      props: { action: "/lattice/forms/teams.create", method: "post" },
+      type: "form",
+    } satisfies Node<"form">;
+
+    render(<FormComponent node={formNode}>{null}</FormComponent>);
+
+    window.dispatchEvent(new CustomEvent("lattice:reset-form", { detail: { form: "other.form" } }));
+    expect(formSlotState.reset).not.toHaveBeenCalled();
+
+    window.dispatchEvent(
+      new CustomEvent("lattice:reset-form", { detail: { form: "teams.create" } }),
+    );
+    expect(formSlotState.reset).toHaveBeenCalledOnce();
   });
 });
