@@ -19,42 +19,25 @@ class ProductForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent
     {
+        $product = $this->product($request);
+
         return $form
             ->precognitive(2650)
             ->schema([
                 TextInput::make('name', 'Name')
-                    ->required(),
+                    ->rules(['required', 'string', 'max:255']),
                 TextInput::make('sku', 'SKU')
-                    ->required(),
+                    ->rules(['required', 'string', 'max:255', Rule::unique(Product::class, 'sku')->ignore($product)]),
                 TextInput::make('price', 'Price')
-                    ->required(),
+                    ->rules(['required', 'numeric', 'min:0']),
                 Choice::make('status', 'Status')
                     ->options([
                         Choice::option('Draft', 'draft'),
                         Choice::option('Active', 'active'),
                         Choice::option('Archived', 'archived'),
-                    ]),
+                    ])
+                    ->rules(['required', 'string', Rule::in(['draft', 'active', 'archived'])]),
             ]);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function rules(Request $request): array
-    {
-        $product = $this->product($request);
-
-        return [
-            'name' => ['required', 'string', 'max:255'],
-            'sku' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique(Product::class, 'sku')->ignore($product),
-            ],
-            'price' => ['required', 'numeric', 'min:0'],
-            'status' => ['required', 'string', Rule::in(['draft', 'active', 'archived'])],
-        ];
     }
 
     public function handle(Request $request): Response
