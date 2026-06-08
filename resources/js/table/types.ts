@@ -66,6 +66,7 @@ export type ReloadComponentEvent = CustomEvent<{
 declare module "@lattice/core/types" {
   interface ComponentProps {
     table: {
+      bulkActions?: Array<Record<string, unknown>>;
       columns?: TableColumn[];
       data?: TableRow[];
       endpoint?: string;

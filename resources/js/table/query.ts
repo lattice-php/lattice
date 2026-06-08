@@ -80,13 +80,21 @@ export function getVisiblePages(currentPage: number, lastPage: number): number[]
   return Array.from({ length: 5 }, (_, index) => start + index);
 }
 
-export function getColumnGridTemplate(columns: TableColumn[], hasActions: boolean): string {
+export function getColumnGridTemplate(
+  columns: TableColumn[],
+  hasActions: boolean,
+  hasSelection = false,
+): string {
   const tracks: string[] = columns.map((column) =>
     column.type === "stack" ? "minmax(16rem, 2fr)" : "minmax(9rem, 1fr)",
   );
 
   if (hasActions) {
     tracks.push("max-content");
+  }
+
+  if (hasSelection) {
+    tracks.unshift("max-content");
   }
 
   return tracks.join(" ");

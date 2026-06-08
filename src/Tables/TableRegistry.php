@@ -6,6 +6,7 @@ namespace Bambamboole\Lattice\Tables;
 
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
 use Bambamboole\Lattice\Attributes\Table;
+use Bambamboole\Lattice\Components\Core\Action as ActionComponent;
 use Bambamboole\Lattice\Components\Table\Table as TableComponent;
 use Bambamboole\Lattice\DefinitionRegistry;
 use Illuminate\Http\Request;
@@ -30,6 +31,7 @@ class TableRegistry extends DefinitionRegistry
             ->endpoint($this->endpointFor($key))
             ->columns($columns)
             ->layout($definition->layout())
+            ->bulkActions($this->bulkActions($definition, $key))
             ->result($result, $query);
     }
 
@@ -49,6 +51,7 @@ class TableRegistry extends DefinitionRegistry
             ->endpoint($this->endpointFor($key))
             ->columns($columns)
             ->layout($definition->layout())
+            ->bulkActions($this->bulkActions($definition, $key))
             ->result($result, $query)
             ->prop('lazy', true);
     }
@@ -63,6 +66,17 @@ class TableRegistry extends DefinitionRegistry
         $query = TableQuery::fromRequest($request, $columns, $key, $definition->perPage());
 
         return $this->decorateResult($definition, $definition->query($query))->toArray($query);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function bulkActions(TableDefinition $definition, string $key): array
+    {
+        return array_map(
+            fn (ActionComponent $action): array => $action->context(['table' => $key])->toArray(),
+            $definition->bulkActions(),
+        );
     }
 
     /**

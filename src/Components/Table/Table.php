@@ -68,6 +68,18 @@ class Table extends Component
         return $this->prop('layout', $layout);
     }
 
+    /**
+     * @param  array<int, array<string, mixed>>  $actions
+     */
+    public function bulkActions(array $actions): static
+    {
+        if ($actions === []) {
+            return $this;
+        }
+
+        return $this->prop('bulkActions', $actions);
+    }
+
     public function result(TableResult $result, TableQuery $query): static
     {
         return $this->props($result->toArray($query));

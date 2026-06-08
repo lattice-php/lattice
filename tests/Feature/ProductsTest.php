@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Bambamboole\Lattice\Components\Core\Action;
 use Bambamboole\Lattice\Components\Form\Form;
 use Bambamboole\Lattice\Components\Form\TextInput;
+use Bambamboole\Lattice\Components\Table\Table;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 use Inertia\Testing\AssertableInertia;
@@ -406,4 +407,17 @@ test('bulk action endpoints require a valid component reference', function () {
     patch('/lattice/bulk-actions/workbench.products.archive-selected', [
         'selected' => [1],
     ])->assertForbidden();
+});
+
+test('the products table serializes bulk actions bound to the table', function () {
+    Lattice::tables([ProductsTable::class]);
+    Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
+
+    $bulkActions = data_get(Table::use(ProductsTable::class)->toArray(), 'props.bulkActions');
+
+    expect($bulkActions)->toBeArray()->toHaveCount(1)
+        ->and($bulkActions[0]['id'])->toBe('workbench.products.archive-selected')
+        ->and($bulkActions[0]['props']['endpoint'])
+        ->toBe('/lattice/bulk-actions/workbench.products.archive-selected')
+        ->and($bulkActions[0]['props']['ref'])->toBeString();
 });

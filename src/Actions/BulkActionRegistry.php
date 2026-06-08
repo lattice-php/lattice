@@ -6,6 +6,7 @@ namespace Bambamboole\Lattice\Actions;
 
 use Bambamboole\Lattice\Attributes\BulkAction;
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
+use Bambamboole\Lattice\Components\Core\Action as ActionComponent;
 use Bambamboole\Lattice\DefinitionRegistry;
 
 /**
@@ -13,6 +14,18 @@ use Bambamboole\Lattice\DefinitionRegistry;
  */
 class BulkActionRegistry extends DefinitionRegistry
 {
+    /**
+     * @param  class-string<BulkActionDefinition>  $bulkAction
+     */
+    public function component(string $bulkAction): ActionComponent
+    {
+        $key = $this->registeredKeyFor($bulkAction);
+
+        return $this->make($bulkAction)
+            ->definition(ActionComponent::make($key))
+            ->endpoint($this->endpointFor($key));
+    }
+
     /**
      * @return class-string<BulkActionDefinition>
      */

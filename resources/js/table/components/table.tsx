@@ -1,7 +1,10 @@
 import type { RendererComponent } from "@lattice/core/types";
+import { getBulkActions } from "../bulk";
 import { getRowKey, getRowMeta } from "../payload";
 import { getColumnGridTemplate, getVisiblePages } from "../query";
 import { useTable } from "../use-table";
+import { useTableSelection } from "../use-table-selection";
+import { BulkBar } from "./bulk-bar";
 import { ColumnHeader } from "./column-header";
 import { FilterBar } from "./filter-bar";
 import { TablePagination } from "./pagination";
@@ -29,13 +32,22 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
     loadMore,
   } = useTable(node);
 
+  const bulkActions = getBulkActions(node.props?.bulkActions);
+  const hasBulkActions = bulkActions.length > 0;
+  const rowEntries = rows.map((row, index) => {
+    const metadata = getRowMeta(rowMetadata, row, index);
+
+    return { row, metadata, key: metadata.key ?? getRowKey(row, index) };
+  });
+  const selection = useTableSelection(rowEntries.map((entry) => entry.key));
+
   const currentPage = pagination.currentPage ?? state.page;
   const lastPage = pagination.lastPage ?? currentPage;
   const mode = pagination.mode ?? "table";
   const visiblePages = getVisiblePages(currentPage, lastPage);
   const hasNextPage = pagination.hasMore ?? currentPage < lastPage;
   const hasActions = rowMetadata.some((metadata) => (metadata.actions?.length ?? 0) > 0);
-  const gridTemplateColumns = getColumnGridTemplate(columns, hasActions);
+  const gridTemplateColumns = getColumnGridTemplate(columns, hasActions, hasBulkActions);
   const filterableColumns = interactiveColumns.filter((column) => column.filter?.enabled);
 
   return (
@@ -43,6 +55,13 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
       data-lattice-component={node.id}
       className="overflow-hidden rounded-lt-sm border border-lt-border"
     >
+      {hasBulkActions && selection.selectedKeys.length > 0 && (
+        <BulkBar
+          actions={bulkActions}
+          selectedKeys={selection.selectedKeys}
+          onCompleted={selection.clear}
+        />
+      )}
       {filterableColumns.length > 0 && (
         <FilterBar
           columns={filterableColumns}
@@ -62,6 +81,16 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
             role="row"
             style={{ "--lattice-table-columns": gridTemplateColumns } as never}
           >
+            {hasBulkActions && (
+              <div className="flex items-center px-4 py-3" role="columnheader">
+                <input
+                  type="checkbox"
+                  aria-label="Select all rows"
+                  checked={selection.allSelected}
+                  onChange={selection.toggleAll}
+                />
+              </div>
+            )}
             {columns.map((column) => (
               <ColumnHeader
                 column={column}
@@ -87,17 +116,26 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
               <div role="cell">Loading rows...</div>
             </div>
           ) : (
-            rows.map((row, index) => {
-              const metadata = getRowMeta(rowMetadata, row, index);
+            rowEntries.map(({ row, metadata, key }) => {
               const actions = metadata.actions ?? [];
 
               return (
                 <div
-                  key={metadata.key ?? getRowKey(row, index)}
+                  key={key}
                   className="grid grid-cols-1 border-b border-lt-border last:border-b-0 md:grid-cols-[var(--lattice-table-columns)]"
                   role="row"
                   style={{ "--lattice-table-columns": gridTemplateColumns } as never}
                 >
+                  {hasBulkActions && (
+                    <div className="flex items-center p-4" role="cell">
+                      <input
+                        type="checkbox"
+                        aria-label={`Select row ${key}`}
+                        checked={selection.selected.has(key)}
+                        onChange={() => selection.toggle(key)}
+                      />
+                    </div>
+                  )}
                   {columns.map((column) => (
                     <div key={column.key} className="grid gap-1 p-4 align-middle" role="cell">
                       <span

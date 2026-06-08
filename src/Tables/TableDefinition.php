@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Tables;
 
+use Bambamboole\Lattice\Components\Core\Action;
 use Bambamboole\Lattice\Components\Core\Component;
 use Bambamboole\Lattice\Definition;
 use Bambamboole\Lattice\Tables\Columns\Column;
@@ -43,6 +44,14 @@ abstract class TableDefinition extends Definition
      * @return array<int, Component>
      */
     public function actions(array $row): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array<int, Action>
+     */
+    public function bulkActions(): array
     {
         return [];
     }
