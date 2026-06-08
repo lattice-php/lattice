@@ -5,14 +5,19 @@ declare(strict_types=1);
 namespace Workbench\App\Providers;
 
 use Bambamboole\Lattice\Facades\Lattice;
+use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Support\ServiceProvider;
+use Inertia\Middleware as InertiaMiddleware;
 use Laravel\Boost\Install\GuidelineComposer;
 use Laravel\Boost\Install\SkillComposer;
 use Laravel\Boost\Support\Config;
 use Laravel\Roster\Roster;
+use Workbench\App\Forms\ProductForm;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
+use Workbench\App\Tables\ProductsTable;
 use Workbench\App\Tables\UsersInfiniteTable;
 use Workbench\App\Tables\UsersNoneTable;
 use Workbench\App\Tables\UsersSimpleTable;
@@ -29,9 +34,20 @@ class WorkbenchServiceProvider extends ServiceProvider
         $this->readBoostConfigFromPackageRoot();
     }
 
-    public function boot(): void
+    public function boot(Kernel $kernel): void
     {
+        if ($kernel instanceof HttpKernel) {
+            $kernel->appendMiddlewareToGroup('web', InertiaMiddleware::class);
+        }
+
+        $this->loadMigrationsFrom(package_path('workbench/database/migrations'));
+
+        Lattice::forms([
+            ProductForm::class,
+        ]);
+
         Lattice::tables([
+            ProductsTable::class,
             UsersTable::class,
             UsersNoneTable::class,
             UsersSimpleTable::class,

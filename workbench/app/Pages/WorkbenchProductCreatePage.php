@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Workbench\App\Pages;
+
+use Bambamboole\Lattice\Components\Core\Heading;
+use Bambamboole\Lattice\Components\Core\Stack;
+use Bambamboole\Lattice\Components\Form\Form;
+use Bambamboole\Lattice\Enums\Gap;
+use Bambamboole\Lattice\Enums\HttpMethod;
+use Bambamboole\Lattice\Page;
+use Bambamboole\Lattice\PageSchema;
+use Workbench\App\Forms\ProductForm;
+
+class WorkbenchProductCreatePage extends Page
+{
+    public function title(): string
+    {
+        return 'Create Product';
+    }
+
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->components([
+            Stack::make('product-create-page')
+                ->gap(Gap::Large)
+                ->children([
+                    Heading::make('Create Product'),
+                    Form::use(ProductForm::class)
+                        ->method(HttpMethod::Post)
+                        ->submitLabel('Create product'),
+                ]),
+        ]);
+    }
+}

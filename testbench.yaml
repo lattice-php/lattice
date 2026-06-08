@@ -20,3 +20,6 @@ workbench:
     - db:seed:
         --class: Workbench\App\Seeders\WorkbenchUserSeeder
         --force: true
+    - db:seed:
+        --class: Workbench\App\Seeders\WorkbenchProductSeeder
+        --force: true

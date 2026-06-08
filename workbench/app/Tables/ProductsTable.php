@@ -1,0 +1,61 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Workbench\App\Tables;
+
+use Bambamboole\Lattice\Attributes\Table;
+use Bambamboole\Lattice\Components\Core\Component;
+use Bambamboole\Lattice\Components\Core\Link;
+use Bambamboole\Lattice\Tables\Columns\TextColumn;
+use Bambamboole\Lattice\Tables\EloquentTableDefinition;
+use Bambamboole\Lattice\Tables\TableQuery;
+use Illuminate\Database\Eloquent\Builder;
+use Workbench\App\Models\Product;
+
+/**
+ * @extends EloquentTableDefinition<Product>
+ */
+#[Table('workbench.products')]
+class ProductsTable extends EloquentTableDefinition
+{
+    /**
+     * @return array<int, TextColumn>
+     */
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->label('Name')->sortable()->filterable(),
+            TextColumn::make('sku')->label('SKU')->sortable()->filterable(),
+            TextColumn::make('price')->label('Price')->sortable(),
+            TextColumn::make('status')->label('Status')->sortable()->filterableExact(),
+            TextColumn::make('updated_at')->label('Updated at')->sortable()->date('Y-m-d H:i:s'),
+        ];
+    }
+
+    /**
+     * @return Builder<Product>
+     */
+    public function builder(TableQuery $query): Builder
+    {
+        $builder = Product::query()->select(['id', 'name', 'sku', 'price', 'status', 'updated_at']);
+
+        if ($query->sorts() === []) {
+            $builder->latest('id');
+        }
+
+        return $builder;
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     * @return array<int, Component>
+     */
+    public function actions(array $row): array
+    {
+        return [
+            Link::make('Edit')
+                ->href('/products/'.$row['id'].'/edit'),
+        ];
+    }
+}

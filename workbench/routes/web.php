@@ -5,6 +5,9 @@ declare(strict_types=1);
 use Bambamboole\Lattice\Enums\LucideIcon;
 use Illuminate\Support\Facades\Route;
 use Workbench\App\Pages\WorkbenchHomePage;
+use Workbench\App\Pages\WorkbenchProductCreatePage;
+use Workbench\App\Pages\WorkbenchProductEditPage;
+use Workbench\App\Pages\WorkbenchProductsPage;
 use Workbench\App\Pages\WorkbenchTablesPage;
 
 Route::latticePage('/', WorkbenchHomePage::class)
@@ -14,6 +17,17 @@ Route::latticePage('/', WorkbenchHomePage::class)
 Route::latticePage('/tables', WorkbenchTablesPage::class)
     ->name('tables')
     ->sidebar('Tables', LucideIcon::Table);
+
+Route::latticePage('/products', WorkbenchProductsPage::class)
+    ->name('products.index')
+    ->sidebar('Products', LucideIcon::Package);
+
+Route::latticePage('/products/create', WorkbenchProductCreatePage::class)
+    ->name('products.create');
+
+Route::latticePage('/products/{product}/edit', WorkbenchProductEditPage::class)
+    ->name('products.edit');
+
 Route::get('/dashboard', fn (): string => 'Dashboard')->name('dashboard');
 Route::get('/login', fn (): string => 'Login')->name('login');
 Route::post('/login', fn () => redirect()->route('home'))->name('login.store');

@@ -39,6 +39,7 @@ abstract class TestCase extends BaseTestCase
             dirname(__DIR__).'/resources/js/pages',
             dirname(__DIR__).'/workbench/resources/js/Pages',
         ]);
+        $app['config']->set('inertia.testing.ensure_pages_exist', false);
     }
 
     /** @return array<int, class-string> */
@@ -49,5 +50,10 @@ abstract class TestCase extends BaseTestCase
             LatticeServiceProvider::class,
             WorkbenchServiceProvider::class,
         ];
+    }
+
+    protected function defineDatabaseMigrations(): void
+    {
+        $this->loadMigrationsFrom(dirname(__DIR__).'/workbench/database/migrations');
     }
 }
