@@ -46,7 +46,7 @@ declare module "@lattice/core/types" {
 }
 
 export const PasswordInputComponent: RendererComponent<"form.password-input"> = ({ node }) => {
-  const { errors } = useFormContext();
+  const { clearErrors, errors, precognitive, validate } = useFormContext();
   const name = getStringProp(node.props, "name");
   const confirmation = getPasswordConfirmation(node.props);
   const confirmationName = confirmation?.name ?? `${name}_confirmation`;
@@ -65,9 +65,9 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
           autoFocus={getBooleanProp(node.props, "autoFocus")}
           id={name}
           name={name}
+          onChange={precognitive ? () => validate(name) : () => clearErrors(name)}
           placeholder={getStringProp(node.props, "placeholder")}
           passwordrules={passwordRules}
-          required={getBooleanProp(node.props, "required")}
           tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
         />
       </FormFieldFrame>
@@ -82,9 +82,11 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
             autoComplete="new-password"
             id={confirmationName}
             name={confirmationName}
+            onChange={
+              precognitive ? () => validate(confirmationName) : () => clearErrors(confirmationName)
+            }
             placeholder={confirmation.placeholder ?? confirmation.label ?? "Confirm password"}
             passwordrules={passwordRules}
-            required={getBooleanProp(node.props, "required")}
             tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
           />
         </FormFieldFrame>

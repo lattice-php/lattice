@@ -2,7 +2,7 @@ import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/c
 import type { RendererComponent } from "@lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { Input } from "../base/input";
-import { useFormContext } from "../context";
+import { useFormContext, useFormFieldValue } from "../context";
 
 declare module "@lattice/core/types" {
   interface ComponentProps {
@@ -22,20 +22,27 @@ declare module "@lattice/core/types" {
 }
 
 export const TextInputComponent: RendererComponent<"form.text-input"> = ({ node }) => {
-  const { errors } = useFormContext();
+  const { clearErrors, errors, precognitive, validate } = useFormContext();
   const name = getStringProp(node.props, "name");
+  const stateValue = useFormFieldValue(name);
+  const value =
+    typeof node.props?.value === "string"
+      ? node.props.value
+      : typeof stateValue === "string" || typeof stateValue === "number"
+        ? String(stateValue)
+        : undefined;
 
   return (
     <FormFieldFrame error={errors[name]} label={getStringProp(node.props, "label")} name={name}>
       <Input
         autoComplete={getStringProp(node.props, "autoComplete")}
         autoFocus={getBooleanProp(node.props, "autoFocus")}
-        defaultValue={getStringProp(node.props, "value") || undefined}
+        defaultValue={value}
         id={name}
         name={name}
+        onChange={precognitive ? () => validate(name) : () => clearErrors(name)}
         placeholder={getStringProp(node.props, "placeholder")}
         readOnly={getBooleanProp(node.props, "readOnly")}
-        required={getBooleanProp(node.props, "required")}
         tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
         type={getStringProp(node.props, "type", "text")}
       />

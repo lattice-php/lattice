@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@lattice/lib/utils";
 import { getOptionalNumberProp, getStringProp } from "@lattice/core/props";
 import type { NodeProps, RendererComponent } from "@lattice/core/types";
 import { FormFieldFrame } from "../base/field";
-import { useFormContext } from "../context";
+import { useFormContext, useFormFieldValue } from "../context";
 
 type ChoiceOption = {
   label: string;
@@ -40,17 +40,45 @@ declare module "@lattice/core/types" {
 }
 
 export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
-  const { errors } = useFormContext();
+  const { clearErrors, errors, precognitive, validate } = useFormContext();
   const name = getStringProp(node.props, "name");
   const options = useMemo(() => getChoiceOptions(node.props), [node.props]);
   const fallbackValue = options[0]?.value ?? "";
-  const value = getStringProp(node.props, "value", fallbackValue);
+  const stateValue = useFormFieldValue(name);
+  const value =
+    typeof node.props?.value === "string"
+      ? node.props.value
+      : typeof stateValue === "string" || typeof stateValue === "number"
+        ? String(stateValue)
+        : fallbackValue;
   const event = getStringProp(node.props, "event");
   const [selectedValue, setSelectedValue] = useState(value);
+  const hasMounted = useRef(false);
+  const validateRef = useRef(validate);
+  const clearErrorsRef = useRef(clearErrors);
 
   useEffect(() => {
     setSelectedValue(value);
   }, [value]);
+
+  useEffect(() => {
+    validateRef.current = validate;
+    clearErrorsRef.current = clearErrors;
+  }, [clearErrors, validate]);
+
+  useEffect(() => {
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+
+      return;
+    }
+
+    if (precognitive) {
+      validateRef.current(name);
+    } else {
+      clearErrorsRef.current(name);
+    }
+  }, [name, precognitive, selectedValue]);
 
   function selectOption(nextValue: string): void {
     setSelectedValue(nextValue);

@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Http\Controllers;
 
+use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
 class FormController
@@ -20,10 +23,46 @@ class FormController
     public function __invoke(Request $request, string $form): Response|Responsable
     {
         $request = $this->references->mergeTrustedContext($request, 'form', $form);
+
+        if ($request->isAttemptingPrecognition()) {
+            $request->attributes->set('precognitive', true);
+        }
+
         $definition = $this->forms->resolve($form);
 
         abort_unless($definition->authorize($request), 403);
 
+        if ($request->isPrecognitive()) {
+            return $this->validatePrecognitive($request, $definition);
+        }
+
         return $definition->handle($request);
+    }
+
+    private function validatePrecognitive(Request $request, FormDefinition $definition): Response
+    {
+        try {
+            $definition->validate($request);
+        } catch (ValidationException $exception) {
+            return $this->precognitiveResponse(new JsonResponse([
+                'message' => $exception->getMessage(),
+                'errors' => $exception->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY));
+        }
+
+        return $this->precognitiveResponse(new Response('', Response::HTTP_NO_CONTENT, [
+            'Precognition-Success' => 'true',
+        ]));
+    }
+
+    private function precognitiveResponse(Response $response): Response
+    {
+        $response->headers->set('Precognition', 'true');
+        $response->headers->set('Vary', trim(implode(', ', array_filter([
+            $response->headers->get('Vary'),
+            'Precognition',
+        ]))));
+
+        return $response;
     }
 }

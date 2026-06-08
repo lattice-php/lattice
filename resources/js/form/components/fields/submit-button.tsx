@@ -1,8 +1,6 @@
-import { Button } from "@lattice/core/components/button";
-import { Spinner } from "@lattice/core/components/spinner";
 import { getStringProp } from "@lattice/core/props";
 import type { RendererComponent } from "@lattice/core/types";
-import { useFormContext } from "../context";
+import { FormSubmitButton } from "../base/submit-button";
 
 declare module "@lattice/core/types" {
   interface ComponentProps {
@@ -14,17 +12,10 @@ declare module "@lattice/core/types" {
 }
 
 export const SubmitButtonComponent: RendererComponent<"form.submit-button"> = ({ node }) => {
-  const { processing } = useFormContext();
-
   return (
-    <Button
-      disabled={processing}
-      type="submit"
-      className="mt-4 w-full"
+    <FormSubmitButton
+      label={getStringProp(node.props, "label", "Submit")}
       variant={node.props?.variant ?? "default"}
-    >
-      {processing && <Spinner />}
-      {getStringProp(node.props, "label", "Submit")}
-    </Button>
+    />
   );
 };

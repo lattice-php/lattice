@@ -1,15 +1,22 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice/core/types";
 import {
   CheckboxComponent,
+  ChoiceComponent,
   FormComponent,
   HiddenInputComponent,
   PasswordInputComponent,
   SubmitButtonComponent,
   TextInputComponent,
 } from "./index";
+
+const formSlotState = vi.hoisted(() => ({
+  clearErrors: vi.fn<(field: string) => void>(),
+  touch: vi.fn<(field: string) => void>(),
+  validate: vi.fn<(field: string) => void>(),
+}));
 
 vi.mock("@inertiajs/react", () => ({
   Form: ({
@@ -18,19 +25,40 @@ vi.mock("@inertiajs/react", () => ({
     resetOnError: _resetOnError,
     resetOnSuccess: _resetOnSuccess,
     transform,
+    validationTimeout,
     ...props
   }: {
-    children: (state: { errors: Record<string, string>; processing: boolean }) => ReactNode;
+    children: (state: {
+      clearErrors: (field: string) => void;
+      errors: Record<string, string>;
+      invalid: (field: string) => boolean;
+      processing: boolean;
+      touch: (field: string) => void;
+      validate: (field: string) => void;
+      validating: boolean;
+      valid: (field: string) => boolean;
+    }) => ReactNode;
     errorBag?: string;
     resetOnError?: boolean | string[];
     resetOnSuccess?: boolean | string[];
     transform?: (data: Record<string, unknown>) => Record<string, unknown>;
+    validationTimeout?: number;
   }) => (
     <form
       {...props}
       data-transformed={JSON.stringify(transform?.({ name: "Updated team" }) ?? null)}
+      data-validation-timeout={validationTimeout}
     >
-      {children({ errors: {}, processing: false })}
+      {children({
+        clearErrors: formSlotState.clearErrors,
+        errors: {},
+        invalid: () => false,
+        processing: false,
+        touch: formSlotState.touch,
+        validate: formSlotState.validate,
+        validating: false,
+        valid: () => false,
+      })}
     </form>
   ),
   Link: ({ children, ...props }: { children: ReactNode; href: string }) => (
@@ -39,6 +67,12 @@ vi.mock("@inertiajs/react", () => ({
 }));
 
 describe("Lattice form schema components", () => {
+  beforeEach(() => {
+    formSlotState.clearErrors.mockClear();
+    formSlotState.touch.mockClear();
+    formSlotState.validate.mockClear();
+  });
+
   it("transforms submitted data with the sealed component reference", () => {
     const formNode = {
       id: "team-form",
@@ -115,6 +149,7 @@ describe("Lattice form schema components", () => {
       props: {
         label: "Remember me",
         name: "remember",
+        required: true,
       },
       type: "form.checkbox",
     } satisfies Node<"form.checkbox">;
@@ -148,23 +183,133 @@ describe("Lattice form schema components", () => {
     expect(screen.getByRole("textbox", { name: "Email address" })).toHaveValue(
       "taylor@example.com",
     );
+    expect(screen.getByRole("textbox", { name: "Email address" })).not.toHaveAttribute("required");
     expect(screen.getByRole("textbox", { name: "Email address" })).toHaveAttribute("readonly");
     expect(document.querySelector('input[type="hidden"][name="token"]')).toHaveValue("reset-token");
     expect(screen.getByLabelText("Password")).toHaveAttribute("name", "password");
+    expect(screen.getByLabelText("Password")).not.toHaveAttribute("required");
     expect(screen.getByLabelText("Confirm password")).toHaveAttribute(
       "name",
       "password_confirmation",
     );
+    expect(screen.getByLabelText("Confirm password")).not.toHaveAttribute("required");
     expect(screen.getByLabelText("Confirm password")).toHaveAttribute(
       "passwordrules",
       "minlength:8",
     );
     expect(screen.getByRole("checkbox", { name: "Remember me" })).toBeVisible();
+    expect(screen.getByRole("checkbox", { name: "Remember me" })).not.toHaveAttribute("required");
     expect(screen.getByRole("link", { name: "Forgot your password?" })).toHaveAttribute(
       "href",
       "/forgot-password",
     );
     expect(screen.getByRole("button", { name: "Log in" })).toHaveAttribute("type", "submit");
     expect(screen.queryByRole("button", { name: "Submit" })).not.toBeInTheDocument();
+  });
+
+  it("uses form state as field defaults", () => {
+    const formNode = {
+      id: "product-form",
+      props: {
+        action: "/lattice/forms/workbench.products.form",
+        method: "patch",
+        state: {
+          name: "Desk Lamp",
+          status: "active",
+          featured: true,
+        },
+      },
+      type: "form",
+    } satisfies Node<"form">;
+
+    const nameNode = {
+      props: {
+        label: "Name",
+        name: "name",
+      },
+      type: "form.text-input",
+    } satisfies Node<"form.text-input">;
+
+    const statusNode = {
+      props: {
+        label: "Status",
+        name: "status",
+        options: [
+          { label: "Draft", value: "draft" },
+          { label: "Active", value: "active" },
+        ],
+      },
+      type: "form.choice",
+    } satisfies Node<"form.choice">;
+
+    const featuredNode = {
+      props: {
+        label: "Featured",
+        name: "featured",
+      },
+      type: "form.checkbox",
+    } satisfies Node<"form.checkbox">;
+
+    render(
+      <FormComponent node={formNode}>
+        <TextInputComponent node={nameNode}>{null}</TextInputComponent>
+        <ChoiceComponent node={statusNode}>{null}</ChoiceComponent>
+        <CheckboxComponent node={featuredNode}>{null}</CheckboxComponent>
+      </FormComponent>,
+    );
+
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("Desk Lamp");
+    expect(screen.getByRole("radio", { name: "Active" })).toHaveAttribute("aria-checked", "true");
+    expect(screen.getByRole("checkbox", { name: "Featured" })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
+  });
+
+  it("passes precognitive validation delay to the inertia form", () => {
+    const formNode = {
+      id: "product-form",
+      props: {
+        action: "/lattice/forms/workbench.products.form",
+        precognitive: true,
+        validationTimeout: 650,
+      },
+      type: "form",
+    } satisfies Node<"form">;
+
+    render(<FormComponent node={formNode}>{null}</FormComponent>);
+
+    expect(document.querySelector("form")).toHaveAttribute("data-validation-timeout", "650");
+  });
+
+  it("validates text inputs on change when precognition is enabled", () => {
+    const formNode = {
+      id: "product-form",
+      props: {
+        action: "/lattice/forms/workbench.products.form",
+        precognitive: true,
+      },
+      type: "form",
+    } satisfies Node<"form">;
+
+    const nameNode = {
+      props: {
+        label: "Name",
+        name: "name",
+      },
+      type: "form.text-input",
+    } satisfies Node<"form.text-input">;
+
+    render(
+      <FormComponent node={formNode}>
+        <TextInputComponent node={nameNode}>{null}</TextInputComponent>
+      </FormComponent>,
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Desk Lamp" },
+    });
+
+    expect(formSlotState.validate).toHaveBeenCalledWith("name");
   });
 });

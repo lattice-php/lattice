@@ -8,6 +8,7 @@ use Bambamboole\Lattice\Components\Core\ContainerComponent;
 use Bambamboole\Lattice\Components\Core\IsInteractive;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
+use Illuminate\Contracts\Support\Arrayable;
 
 class Form extends ContainerComponent
 {
@@ -44,6 +45,21 @@ class Form extends ContainerComponent
     public function submitLabel(string $submitLabel): static
     {
         return $this->prop('submitLabel', $submitLabel);
+    }
+
+    /**
+     * @param  Arrayable<array-key, mixed>|array<string, mixed>  $state
+     */
+    public function fill(Arrayable|array $state): static
+    {
+        return $this->prop('state', $state instanceof Arrayable ? $state->toArray() : $state);
+    }
+
+    public function precognitive(int $delay = 1500): static
+    {
+        return $this
+            ->prop('precognitive', true)
+            ->prop('validationTimeout', $delay);
     }
 
     public function withoutSubmitButton(): static
