@@ -25,7 +25,7 @@ export type PagePayload = {
   breadcrumbs: PageBreadcrumb[];
   components: Node[];
   container: PageContainer;
-  layout: PageLayout;
+  layout: string;
   menus: Record<string, MenuPayload | undefined>;
   title: string | null;
 };
@@ -56,10 +56,6 @@ export type MenuPayload = {
 export type KnownPageContainer = "centered" | "default";
 
 export type PageContainer = KnownPageContainer | (string & {});
-
-export type KnownPageLayout = "app" | "auth" | "none" | "settings";
-
-export type PageLayout = KnownPageLayout | (string & {});
 
 export type RendererComponentProps<TType extends string = string> = {
   children: ReactNode;

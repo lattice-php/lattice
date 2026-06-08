@@ -6,7 +6,6 @@ export type {
   NodeProps,
   PageContainer,
   PageBreadcrumb,
-  PageLayout,
   PagePayload,
   RendererComponent,
 } from "@/lattice";

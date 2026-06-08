@@ -1308,7 +1308,7 @@ test('pages serialize layout and container metadata', function () {
     {
         public function layout(): string
         {
-            return 'settings';
+            return 'custom';
         }
 
         public function container(): string
@@ -1329,7 +1329,7 @@ test('pages serialize layout and container metadata', function () {
         ])
         ->and($configuredPage->toArray($configuredPage->render(PageSchema::make())))
         ->toMatchArray([
-            'layout' => 'settings',
+            'layout' => 'custom',
             'container' => 'default',
         ]);
 });
