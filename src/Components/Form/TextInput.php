@@ -14,16 +14,6 @@ class TextInput extends Field
         return $this->prop('placeholder', $placeholder);
     }
 
-    public function required(bool $required = true): static
-    {
-        return $this->prop('required', $required);
-    }
-
-    public function readOnly(bool $readOnly = true): static
-    {
-        return $this->prop('readOnly', $readOnly);
-    }
-
     public function value(string $value): static
     {
         return $this->prop('value', $value);
