@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Bambamboole\Lattice\Enums\LucideIcon;
 use Illuminate\Support\Facades\Route;
+use Workbench\App\Pages\WorkbenchDependentDemoPage;
 use Workbench\App\Pages\WorkbenchHomePage;
 use Workbench\App\Pages\WorkbenchProductCreatePage;
 use Workbench\App\Pages\WorkbenchProductEditPage;
@@ -27,6 +28,9 @@ Route::latticePage('/products/create', WorkbenchProductCreatePage::class)
 
 Route::latticePage('/products/{product}/edit', WorkbenchProductEditPage::class)
     ->name('products.edit');
+
+Route::latticePage('/dependent-demo', WorkbenchDependentDemoPage::class)
+    ->name('dependent.demo');
 
 Route::get('/dashboard', fn (): string => 'Dashboard')->name('dashboard');
 Route::get('/login', fn (): string => 'Login')->name('login');

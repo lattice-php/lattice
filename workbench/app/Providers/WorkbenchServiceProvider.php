@@ -13,6 +13,7 @@ use Laravel\Boost\Install\GuidelineComposer;
 use Laravel\Boost\Install\SkillComposer;
 use Laravel\Boost\Support\Config;
 use Laravel\Roster\Roster;
+use Workbench\App\Forms\DependentDemoForm;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
@@ -43,6 +44,7 @@ class WorkbenchServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(package_path('workbench/database/migrations'));
 
         Lattice::forms([
+            DependentDemoForm::class,
             ProductForm::class,
         ]);
 
