@@ -24,7 +24,25 @@ export type LatticePagePayload = {
   components: LatticeNode[];
   container: LatticePageContainer;
   layout: LatticePageLayout;
+  sidebar: LatticeSidebarPayload;
   title: string | null;
+};
+
+export type LatticeSidebarItem = {
+  active: boolean;
+  href: string;
+  icon: string | null;
+  key: string;
+  label: string;
+};
+
+export type LatticeSidebarGroup = {
+  items: LatticeSidebarItem[];
+  label: string | null;
+};
+
+export type LatticeSidebarPayload = {
+  groups: LatticeSidebarGroup[];
 };
 
 export type LatticeKnownPageContainer = "centered" | "default";

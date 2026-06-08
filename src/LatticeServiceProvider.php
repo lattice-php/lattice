@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice;
 
+use BackedEnum;
 use Bambamboole\Lattice\Actions\ActionRegistry;
+use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Fragments\FragmentRegistry;
+use Bambamboole\Lattice\Sidebar\SidebarItem;
+use Bambamboole\Lattice\Sidebar\SidebarRegistry;
 use Bambamboole\Lattice\Tables\TableRegistry;
+use Closure;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Spatie\LaravelPackageTools\Package;
@@ -31,9 +36,22 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(TableRegistry::class);
         $this->app->singleton(FragmentRegistry::class);
         $this->app->singleton(ActionRegistry::class);
+        $this->app->singleton(SidebarRegistry::class);
+        $this->app->singleton(LatticeRegistry::class);
 
         if (! Router::hasMacro('latticePage')) {
             Router::macro('latticePage', fn (string $uri, string $page): Route => Lattice::page($uri, $page));
+        }
+
+        if (! Route::hasMacro('sidebar')) {
+            Route::macro('sidebar', function (Closure|string|null $label = null, BackedEnum|string|null $icon = null): Route {
+                $this->setAction([
+                    ...$this->getAction(),
+                    'lattice.sidebar' => SidebarItem::configure($label, $icon)->toArray(),
+                ]);
+
+                return $this;
+            });
         }
     }
 

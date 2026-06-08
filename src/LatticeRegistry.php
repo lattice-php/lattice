@@ -11,49 +11,64 @@ use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Fragments\FragmentDefinition;
 use Bambamboole\Lattice\Fragments\FragmentRegistry;
+use Bambamboole\Lattice\Sidebar\SidebarRegistry;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableRegistry;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 
-class Lattice
+class LatticeRegistry
 {
+    public function __construct(
+        private readonly ActionRegistry $actions,
+        private readonly FormRegistry $forms,
+        private readonly FragmentRegistry $fragments,
+        private readonly Router $router,
+        private readonly SidebarRegistry $sidebar,
+        private readonly TableRegistry $tables,
+    ) {}
+
     /**
      * @param  class-string<FormDefinition>|array<int, class-string<FormDefinition>>  $forms
      */
-    public static function forms(string|array $forms): void
+    public function forms(string|array $forms): void
     {
-        app(FormRegistry::class)->register($forms);
+        $this->forms->register($forms);
     }
 
     /**
      * @param  class-string<TableDefinition>|array<int, class-string<TableDefinition>>  $tables
      */
-    public static function tables(string|array $tables): void
+    public function tables(string|array $tables): void
     {
-        app(TableRegistry::class)->register($tables);
+        $this->tables->register($tables);
     }
 
     /**
      * @param  class-string<FragmentDefinition>|array<int, class-string<FragmentDefinition>>  $fragments
      */
-    public static function fragments(string|array $fragments): void
+    public function fragments(string|array $fragments): void
     {
-        app(FragmentRegistry::class)->register($fragments);
+        $this->fragments->register($fragments);
     }
 
     /**
      * @param  class-string<ActionDefinition>|array<int, class-string<ActionDefinition>>  $actions
      */
-    public static function actions(string|array $actions): void
+    public function actions(string|array $actions): void
     {
-        app(ActionRegistry::class)->register($actions);
+        $this->actions->register($actions);
+    }
+
+    public function sidebar(): SidebarRegistry
+    {
+        return $this->sidebar;
     }
 
     /**
      * @param  class-string<Page>  $page
      */
-    public static function page(string $uri, string $page): Route
+    public function page(string $uri, string $page): Route
     {
         if (! method_exists($page, 'render')) {
             throw new BadMethodCallException(sprintf(
@@ -62,6 +77,6 @@ class Lattice
             ));
         }
 
-        return app(Router::class)->get($uri, [$page, 'render']);
+        return $this->router->get($uri, [$page, 'render']);
     }
 }

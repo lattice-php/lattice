@@ -22,12 +22,15 @@ use Bambamboole\Lattice\Components\Tabs;
 use Bambamboole\Lattice\Components\Text;
 use Bambamboole\Lattice\Enums\Align;
 use Bambamboole\Lattice\Enums\Gap;
+use Bambamboole\Lattice\Enums\LucideIcon;
 use Bambamboole\Lattice\Enums\Width;
+use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Fragments\FragmentDefinition;
-use Bambamboole\Lattice\Lattice;
+use Bambamboole\Lattice\LatticeRegistry;
 use Bambamboole\Lattice\Page;
 use Bambamboole\Lattice\PageSchema;
+use Bambamboole\Lattice\Sidebar\SidebarRegistry;
 use Bambamboole\Lattice\Tables\Columns\StackColumn;
 use Bambamboole\Lattice\Tables\Columns\TextColumn;
 use Bambamboole\Lattice\Tables\EloquentTableDefinition;
@@ -60,6 +63,11 @@ test('lattice component factories stay open for extension', function () {
 
     expect($badge)->toBeInstanceOf($badgeClass)
         ->and((new ReflectionClass(Badge::class))->isFinal())->toBeFalse();
+});
+
+test('lattice facade resolves the registry and exposes the sidebar registry', function () {
+    expect(Lattice::getFacadeRoot())->toBe(app(LatticeRegistry::class))
+        ->and(Lattice::sidebar())->toBe(app(SidebarRegistry::class));
 });
 
 test('interactive components keep their serialized ids', function () {
@@ -897,6 +905,46 @@ test('pages can authorize requests before rendering', function () {
         );
 });
 
+test('page sidebar items are serialized and filtered through page authorization', function () {
+    Route::latticePage('sidebar-visible', WorkbenchAuthorizedPage::class)
+        ->middleware('web')
+        ->name('sidebar.visible')
+        ->sidebar(fn ($item) => $item
+            ->label('Visible page')
+            ->icon(LucideIcon::Settings)
+            ->group('Account')
+            ->sort(20));
+
+    Route::latticePage('sidebar-dashboard', WorkbenchInjectedPage::class)
+        ->middleware('web')
+        ->name('sidebar.dashboard')
+        ->sidebar('Dashboard', LucideIcon::LayoutDashboard);
+
+    Route::latticePage('sidebar-hidden', WorkbenchDeniedSidebarPage::class)
+        ->middleware('web')
+        ->name('sidebar.hidden')
+        ->sidebar('Hidden page', LucideIcon::EyeOff);
+
+    withoutVite();
+
+    get('/sidebar-visible?allow=yes')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('lattice/page')
+            ->where('lattice.sidebar.groups.0.label', null)
+            ->where('lattice.sidebar.groups.0.items.0.label', 'Dashboard')
+            ->where('lattice.sidebar.groups.0.items.0.href', '/sidebar-dashboard')
+            ->where('lattice.sidebar.groups.0.items.0.icon', 'layout-dashboard')
+            ->where('lattice.sidebar.groups.0.items.0.active', false)
+            ->where('lattice.sidebar.groups.1.label', 'Account')
+            ->where('lattice.sidebar.groups.1.items.0.label', 'Visible page')
+            ->where('lattice.sidebar.groups.1.items.0.href', '/sidebar-visible')
+            ->where('lattice.sidebar.groups.1.items.0.icon', 'settings')
+            ->where('lattice.sidebar.groups.1.items.0.active', true)
+            ->missing('lattice.sidebar.groups.1.items.1')
+        );
+});
+
 test('pages serialize layout and container metadata', function () {
     $defaultPage = new class extends Page
     {
@@ -1320,6 +1368,19 @@ final class WorkbenchAuthorizedPage extends Page
     public function render(PageSchema $schema): PageSchema
     {
         return $schema->component(Text::make('Authorized page'));
+    }
+}
+
+final class WorkbenchDeniedSidebarPage extends Page
+{
+    public function authorize(Request $request): bool
+    {
+        return false;
+    }
+
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Hidden page'));
     }
 }
 

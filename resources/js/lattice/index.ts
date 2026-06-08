@@ -1,6 +1,7 @@
 export { latticeRegistry } from "./registry";
 export { dispatchActionEffects, dispatchActionError, isActionEffect } from "./action/effects";
 export { IconRenderer, IconRendererProvider } from "./icons";
+export { LatticeSidebar } from "./sidebar";
 export {
   createLatticePlugin,
   createLatticeRegistry,
@@ -19,6 +20,9 @@ export type {
   LatticePageContainer,
   LatticePageLayout,
   LatticePagePayload,
+  LatticeSidebarGroup,
+  LatticeSidebarItem,
+  LatticeSidebarPayload,
   LatticeRendererComponent,
   LatticeRendererComponentModule,
   LatticeRendererComponentProps,

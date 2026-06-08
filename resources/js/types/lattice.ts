@@ -5,4 +5,7 @@ export type {
   LatticePageLayout,
   LatticePagePayload,
   LatticeRendererComponent,
+  LatticeSidebarGroup,
+  LatticeSidebarItem,
+  LatticeSidebarPayload,
 } from "@/lattice";

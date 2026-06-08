@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Providers;
 
-use Bambamboole\Lattice\Lattice;
+use Bambamboole\Lattice\Facades\Lattice;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Boost\Install\GuidelineComposer;
 use Laravel\Boost\Install\SkillComposer;

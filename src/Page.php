@@ -6,6 +6,7 @@ use BackedEnum;
 use BadMethodCallException;
 use Bambamboole\Lattice\Enums\PageContainer;
 use Bambamboole\Lattice\Enums\PageLayout;
+use Bambamboole\Lattice\Facades\Lattice;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -68,14 +69,17 @@ abstract class Page
     }
 
     /**
-     * @return array{title: string|null, layout: string, container: string, components: array<int, array<string, mixed>>}
+     * @return array{title: string|null, layout: string, container: string, sidebar: array{groups: array<int, array{label: string|null, items: array<int, array{active: bool, href: string, icon: string|null, key: string, label: string}>}>}, components: array<int, array<string, mixed>>}
      */
-    public function toArray(PageSchema $schema): array
+    public function toArray(PageSchema $schema, ?Request $request = null): array
     {
         return [
             'title' => $this->title(),
             'layout' => $this->serializePageMetadata($this->layout()),
             'container' => $this->serializePageMetadata($this->container()),
+            'sidebar' => $request instanceof Request
+                ? Lattice::sidebar()->toArray($request)
+                : ['groups' => []],
             'components' => $schema->toArray(),
         ];
     }
@@ -83,7 +87,7 @@ abstract class Page
     private function response(PageSchema $schema): Response
     {
         return Inertia::render($this->component(), [
-            'lattice' => $this->toArray($schema),
+            'lattice' => $this->toArray($schema, app(Request::class)),
         ]);
     }
 
