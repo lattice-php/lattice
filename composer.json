@@ -12,10 +12,11 @@
     ],
     "require": {
         "php": "^8.3",
-        "inertiajs/inertia-laravel": "^3.0",
         "illuminate/http": "^11.0 || ^12.0 || ^13.0",
         "illuminate/support": "^11.0 || ^12.0 || ^13.0",
-        "spatie/laravel-package-tools": "^1.16 || ^2.0"
+        "inertiajs/inertia-laravel": "^3.0",
+        "spatie/laravel-package-tools": "^1.16 || ^2.0",
+        "spatie/php-attribute-reader": "^1.1"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.7",

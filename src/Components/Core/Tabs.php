@@ -2,10 +2,11 @@
 
 namespace Bambamboole\Lattice\Components\Core;
 
+use Bambamboole\Lattice\Attributes\SerializationHook;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Date;
 
-class Tabs extends Component
+class Tabs extends ContainerComponent
 {
     public static function make(?string $key = null): static
     {
@@ -22,35 +23,52 @@ class Tabs extends Component
         return $this->prop('queryKey', $key);
     }
 
+    protected function type(): string
+    {
+        return 'tabs';
+    }
+
     /**
+     * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    public function toArray(): array
+    #[SerializationHook(priority: 200)]
+    protected function serialiseProps(array $data): array
     {
-        $children = $this->renderableChildren();
         $activeValue = $this->activeValue();
 
         $this->ensureActiveTabIsConfirmed($activeValue);
 
-        return array_filter([
-            'type' => $this->type(),
-            'key' => $this->key,
+        return [
+            ...$data,
             'props' => [
                 ...$this->props,
                 'activeValue' => $activeValue,
             ],
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 300)]
+    protected function serialiseChildren(array $data): array
+    {
+        $props = $data['props'] ?? [];
+        $activeValue = is_array($props) && is_string($props['activeValue'] ?? null)
+            ? $props['activeValue']
+            : $this->activeValue();
+
+        return [
+            ...$data,
             'children' => array_map(
                 fn (Component $child): array => $child instanceof Tab
                     ? $child->toArrayForTabs($activeValue)
                     : $child->toArray(),
-                $children,
+                $this->renderableChildren(),
             ),
-        ], fn (mixed $value): bool => $value !== null && $value !== []);
-    }
-
-    protected function type(): string
-    {
-        return 'tabs';
+        ];
     }
 
     private function activeValue(): string
@@ -126,16 +144,5 @@ class Tabs extends Component
         $timeout = $tab->confirmationTimeout() ?? (int) config('auth.password_timeout', 10800);
 
         return Date::now()->unix() - $confirmedAt <= $timeout;
-    }
-
-    /**
-     * @return array<int, Component>
-     */
-    private function renderableChildren(): array
-    {
-        return array_values(array_filter(
-            $this->children,
-            fn (Component $child): bool => $child->shouldRender(),
-        ));
     }
 }

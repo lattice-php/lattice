@@ -2,7 +2,7 @@
 
 namespace Bambamboole\Lattice\Components\Core;
 
-class Grid extends Component
+class Grid extends ContainerComponent
 {
     public static function make(?string $key = null): static
     {

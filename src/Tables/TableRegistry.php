@@ -9,7 +9,7 @@ use Bambamboole\Lattice\Components\Table\Table as TableComponent;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
-use ReflectionClass;
+use Spatie\Attributes\Attributes;
 
 class TableRegistry
 {
@@ -120,13 +120,13 @@ class TableRegistry
             throw new InvalidArgumentException("Lattice table [{$table}] must extend [".TableDefinition::class.'].');
         }
 
-        $attribute = (new ReflectionClass($table))->getAttributes(Table::class)[0] ?? null;
+        $attribute = Attributes::get($table, Table::class);
 
-        if ($attribute === null) {
+        if (! $attribute instanceof Table) {
             throw new InvalidArgumentException("Lattice table [{$table}] is missing the [Table] attribute.");
         }
 
-        return $attribute->newInstance()->key;
+        return $attribute->key;
     }
 
     /**

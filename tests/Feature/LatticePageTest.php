@@ -7,10 +7,16 @@ use Bambamboole\Lattice\Actions\ActionResult;
 use Bambamboole\Lattice\Actions\Effect;
 use Bambamboole\Lattice\Attributes\Action;
 use Bambamboole\Lattice\Attributes\Fragment;
+use Bambamboole\Lattice\Attributes\SerializationHook;
 use Bambamboole\Lattice\Components\Core\Action as ActionComponent;
 use Bambamboole\Lattice\Components\Core\ActionGroup;
 use Bambamboole\Lattice\Components\Core\Badge;
+use Bambamboole\Lattice\Components\Core\Button;
+use Bambamboole\Lattice\Components\Core\Card;
+use Bambamboole\Lattice\Components\Core\Component;
 use Bambamboole\Lattice\Components\Core\Fragment as FragmentComponent;
+use Bambamboole\Lattice\Components\Core\Grid;
+use Bambamboole\Lattice\Components\Core\Heading;
 use Bambamboole\Lattice\Components\Core\Link;
 use Bambamboole\Lattice\Components\Core\Modal;
 use Bambamboole\Lattice\Components\Core\Stack;
@@ -97,6 +103,11 @@ function latticeUrl(string $url, string $ref): string
     $separator = str_contains($url, '?') ? '&' : '?';
 
     return $url.$separator.'_lattice='.rawurlencode($ref);
+}
+
+function exposesChildrenApi(object $component): bool
+{
+    return method_exists($component, 'children');
 }
 
 test('lattice component factories stay open for extension', function () {
@@ -216,6 +227,111 @@ test('forms serialize schema children like pages', function () {
                 ],
             ],
         ]);
+});
+
+test('only container components expose children', function () {
+    $containerComponents = [
+        Card::make('Card', 'Description'),
+        Grid::make(),
+        Stack::make(),
+        FragmentComponent::make('fragment'),
+        Modal::make('modal'),
+        Form::make('profile-form'),
+        ActionGroup::make('row-actions'),
+        Tab::make('profile', 'Profile'),
+        Tabs::make(),
+    ];
+
+    $leafComponents = [
+        Badge::make('Badge'),
+        Button::make('Button'),
+        Heading::make('Heading'),
+        Link::make('Link'),
+        Text::make('Text'),
+        ActionComponent::make('action'),
+        Table::make('users'),
+        Choice::make('appearance', 'Appearance'),
+    ];
+
+    foreach ($containerComponents as $component) {
+        expect(exposesChildrenApi($component))->toBeTrue();
+    }
+
+    foreach ($leafComponents as $component) {
+        expect(exposesChildrenApi($component))->toBeFalse();
+    }
+});
+
+test('components serialize through prioritized hook attributes without child-specific base hooks', function () {
+    $component = new class extends Component
+    {
+        protected function type(): string
+        {
+            return 'hooked';
+        }
+
+        /**
+         * @param  array<string, mixed>  $data
+         * @return array<string, mixed>
+         */
+        #[SerializationHook(priority: 500)]
+        protected function serialiseCustomData(array $data): array
+        {
+            return [
+                ...$data,
+                'empty' => [],
+                'custom' => 'value',
+            ];
+        }
+    };
+
+    expect($component->toArray())
+        ->toBe([
+            'type' => 'hooked',
+            'custom' => 'value',
+        ])
+        ->and(method_exists(Component::class, 'serializedChildren'))
+        ->toBeFalse()
+        ->and((new ReflectionClass(Component::class))->hasProperty('serialisationHooks'))
+        ->toBeFalse();
+});
+
+test('private serialization hooks are ignored', function () {
+    $component = new class extends Component
+    {
+        protected function type(): string
+        {
+            return 'private-hooked';
+        }
+
+        /**
+         * @param  array<string, mixed>  $data
+         * @return array<string, mixed>
+         */
+        public function privateDataForTest(array $data): array
+        {
+            return $this->serialisePrivateData($data);
+        }
+
+        /**
+         * @param  array<string, mixed>  $data
+         * @return array<string, mixed>
+         */
+        #[SerializationHook(priority: 500)]
+        private function serialisePrivateData(array $data): array
+        {
+            return [
+                ...$data,
+                'private' => 'value',
+            ];
+        }
+    };
+
+    expect($component->toArray())->toBe([
+        'type' => 'private-hooked',
+    ])->and($component->privateDataForTest([]))->toBe([
+        'private' => 'value',
+    ]);
 });
 
 test('forms can disable their default submit button', function () {

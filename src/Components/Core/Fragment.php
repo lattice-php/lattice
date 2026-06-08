@@ -5,8 +5,10 @@ namespace Bambamboole\Lattice\Components\Core;
 use Bambamboole\Lattice\Fragments\FragmentDefinition;
 use Bambamboole\Lattice\Fragments\FragmentRegistry;
 
-class Fragment extends InteractiveComponent
+class Fragment extends ContainerComponent
 {
+    use IsInteractive;
+
     public static function make(string $id): static
     {
         return (new static)->id($id);

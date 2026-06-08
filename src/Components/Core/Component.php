@@ -2,7 +2,12 @@
 
 namespace Bambamboole\Lattice\Components\Core;
 
+use Bambamboole\Lattice\Attributes\SerializationHook;
+use Illuminate\Support\Collection;
 use JsonSerializable;
+use ReflectionMethod;
+use Spatie\Attributes\Attributes;
+use Spatie\Attributes\AttributeTarget;
 
 /**
  * @phpstan-consistent-constructor
@@ -13,11 +18,6 @@ abstract class Component implements JsonSerializable
      * @var array<string, mixed>
      */
     protected array $props = [];
-
-    /**
-     * @var array<int, Component>
-     */
-    protected array $children = [];
 
     protected bool $shouldRender = true;
 
@@ -65,44 +65,15 @@ abstract class Component implements JsonSerializable
     }
 
     /**
-     * @param  array<int, Component>  $children
-     */
-    public function children(array $children): static
-    {
-        $this->children = $children;
-
-        return $this;
-    }
-
-    public function child(Component $child): static
-    {
-        $this->children[] = $child;
-
-        return $this;
-    }
-
-    /**
      * @return array<string, mixed>
      */
     public function toArray(): array
     {
-        $data = [
-            'type' => $this->type(),
-            'key' => $this->key,
-            'props' => $this->props,
-            'children' => array_map(
-                fn (Component $child): array => $child->toArray(),
-                array_values(array_filter(
-                    $this->children,
-                    fn (Component $child): bool => $child->shouldRender(),
-                )),
-            ),
-        ];
-
-        return array_filter(
-            $data,
-            fn (mixed $value): bool => $value !== null && $value !== [],
-        );
+        return $this->serializationHooks()
+            ->reduce(
+                fn (array $data, string $hook): array => $this->{$hook}($data),
+                [],
+            );
     }
 
     /**
@@ -111,5 +82,57 @@ abstract class Component implements JsonSerializable
     public function jsonSerialize(): array
     {
         return $this->toArray();
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 100)]
+    protected function serialiseBase(array $data): array
+    {
+        return [
+            ...$data,
+            'type' => $this->type(),
+            'key' => $this->key,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 200)]
+    protected function serialiseProps(array $data): array
+    {
+        return [
+            ...$data,
+            'props' => $this->props,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 10000)]
+    protected function filterEmptyValues(array $data): array
+    {
+        return array_filter(
+            $data,
+            fn (mixed $value): bool => $value !== null && $value !== [],
+        );
+    }
+
+    /**
+     * @return Collection<int, string>
+     */
+    private function serializationHooks(): Collection
+    {
+        return collect(Attributes::find($this, SerializationHook::class))
+            ->filter(fn (AttributeTarget $target) => $target->attribute instanceof SerializationHook && $target->target instanceof ReflectionMethod)
+            ->filter(fn (AttributeTarget $target) => ! $target->target->isPrivate())
+            ->sortBy(fn (AttributeTarget $target): array => [$target->attribute->priority, $target->name])
+            ->map(fn (AttributeTarget $target): string => $target->name);
     }
 }

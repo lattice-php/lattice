@@ -2,15 +2,18 @@
 
 namespace Bambamboole\Lattice\Components\Table;
 
-use Bambamboole\Lattice\Components\Core\InteractiveComponent;
+use Bambamboole\Lattice\Components\Core\Component;
+use Bambamboole\Lattice\Components\Core\IsInteractive;
 use Bambamboole\Lattice\Tables\Columns\Column;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableQuery;
 use Bambamboole\Lattice\Tables\TableRegistry;
 use Bambamboole\Lattice\Tables\TableResult;
 
-class Table extends InteractiveComponent
+class Table extends Component
 {
+    use IsInteractive;
+
     public static function make(string $id): static
     {
         return (new static)->id($id);

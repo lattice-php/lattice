@@ -2,9 +2,10 @@
 
 namespace Bambamboole\Lattice\Components\Core;
 
+use Bambamboole\Lattice\Attributes\SerializationHook;
 use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 
-abstract class InteractiveComponent extends Component
+trait IsInteractive
 {
     protected string $id;
 
@@ -24,10 +25,24 @@ abstract class InteractiveComponent extends Component
     }
 
     /**
+     * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    #[\Override]
-    public function toArray(): array
+    #[SerializationHook(priority: 150)]
+    protected function serialiseInteractiveId(array $data): array
+    {
+        return [
+            ...$data,
+            'id' => $this->id,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 200)]
+    protected function serialiseProps(array $data): array
     {
         $props = $this->props;
         $context = is_array($props['context'] ?? null) ? $props['context'] : [];
@@ -36,17 +51,6 @@ abstract class InteractiveComponent extends Component
 
         if ($this->hasEndpoint($props)) {
             $props['ref'] = app(ComponentReferenceSigner::class)->seal($this->type(), $this->id, $context);
-        }
-
-        $data = [
-            ...parent::toArray(),
-            'id' => $this->id,
-        ];
-
-        if ($props === []) {
-            unset($data['props']);
-
-            return $data;
         }
 
         return [

@@ -7,8 +7,10 @@ use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionRegistry;
 use Bambamboole\Lattice\Actions\Effect;
 
-class Action extends InteractiveComponent
+class Action extends Component
 {
+    use IsInteractive;
+
     public static function make(string $id): static
     {
         return (new static)->id($id);

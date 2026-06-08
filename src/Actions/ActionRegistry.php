@@ -8,7 +8,7 @@ use Bambamboole\Lattice\Attributes\Action;
 use Bambamboole\Lattice\Components\Core\Action as ActionComponent;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
-use ReflectionClass;
+use Spatie\Attributes\Attributes;
 
 class ActionRegistry
 {
@@ -81,13 +81,13 @@ class ActionRegistry
             throw new InvalidArgumentException("Lattice action [{$action}] must extend [".ActionDefinition::class.'].');
         }
 
-        $attribute = (new ReflectionClass($action))->getAttributes(Action::class)[0] ?? null;
+        $attribute = Attributes::get($action, Action::class);
 
-        if ($attribute === null) {
+        if (! $attribute instanceof Action) {
             throw new InvalidArgumentException("Lattice action [{$action}] is missing the [Action] attribute.");
         }
 
-        return $attribute->newInstance()->key;
+        return $attribute->key;
     }
 
     /**

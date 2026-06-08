@@ -2,7 +2,7 @@
 
 namespace Bambamboole\Lattice\Components\Core;
 
-class Tab extends Component
+class Tab extends ContainerComponent
 {
     public static function make(string $value, string $label, ?string $key = null): static
     {

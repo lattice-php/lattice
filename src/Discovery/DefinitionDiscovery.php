@@ -15,6 +15,7 @@ use Bambamboole\Lattice\Tables\TableDefinition;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
+use Spatie\Attributes\Attributes;
 use SplFileInfo;
 
 final class DefinitionDiscovery
@@ -61,19 +62,19 @@ final class DefinitionDiscovery
                 continue;
             }
 
-            if ($this->hasDefinitionAttribute($reflection, Form::class) && is_subclass_of($class, FormDefinition::class)) {
+            if ($this->hasDefinitionAttribute($class, Form::class) && is_subclass_of($class, FormDefinition::class)) {
                 $definitions['forms'][] = $class;
             }
 
-            if ($this->hasDefinitionAttribute($reflection, Table::class) && is_subclass_of($class, TableDefinition::class)) {
+            if ($this->hasDefinitionAttribute($class, Table::class) && is_subclass_of($class, TableDefinition::class)) {
                 $definitions['tables'][] = $class;
             }
 
-            if ($this->hasDefinitionAttribute($reflection, Action::class) && is_subclass_of($class, ActionDefinition::class)) {
+            if ($this->hasDefinitionAttribute($class, Action::class) && is_subclass_of($class, ActionDefinition::class)) {
                 $definitions['actions'][] = $class;
             }
 
-            if ($this->hasDefinitionAttribute($reflection, Fragment::class) && is_subclass_of($class, FragmentDefinition::class)) {
+            if ($this->hasDefinitionAttribute($class, Fragment::class) && is_subclass_of($class, FragmentDefinition::class)) {
                 $definitions['fragments'][] = $class;
             }
         }
@@ -82,12 +83,12 @@ final class DefinitionDiscovery
     }
 
     /**
+     * @param  class-string  $class
      * @param  class-string  $attribute
-     * @param  ReflectionClass<object>  $reflection
      */
-    private function hasDefinitionAttribute(ReflectionClass $reflection, string $attribute): bool
+    private function hasDefinitionAttribute(string $class, string $attribute): bool
     {
-        return $reflection->getAttributes($attribute) !== [];
+        return Attributes::has($class, $attribute);
     }
 
     private function classForFile(SplFileInfo $file, string $basePath, string $namespace): string

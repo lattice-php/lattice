@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@/lattice/core/types";
-import CardComponent from "./card";
+import CardComponent, { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
 import { TabsComponent } from "./tabs";
 
 describe("Lattice component theming", () => {
@@ -9,7 +9,7 @@ describe("Lattice component theming", () => {
     const card = {
       id: "settings.card",
       props: {
-        body: "Body",
+        description: "Description",
         title: "Title",
       },
       type: "card",
@@ -50,5 +50,21 @@ describe("Lattice component theming", () => {
       "text-lt-fg",
       "rounded-lt-sm",
     );
+  });
+
+  it("exports composable card primitives with lt token utilities", () => {
+    const { getByText } = render(
+      <Card>
+        <CardHeader>
+          <CardTitle>Recovery codes</CardTitle>
+          <CardDescription>Keep these somewhere safe.</CardDescription>
+        </CardHeader>
+        <CardContent>Codes</CardContent>
+      </Card>,
+    );
+
+    expect(getByText("Recovery codes")).toHaveClass("font-semibold");
+    expect(getByText("Keep these somewhere safe.")).toHaveClass("text-lt-muted-fg");
+    expect(getByText("Codes")).toHaveClass("px-6");
   });
 });

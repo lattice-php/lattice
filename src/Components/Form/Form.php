@@ -4,12 +4,15 @@ namespace Bambamboole\Lattice\Components\Form;
 
 use BackedEnum;
 use Bambamboole\Lattice\Components\Core\Component;
-use Bambamboole\Lattice\Components\Core\InteractiveComponent;
+use Bambamboole\Lattice\Components\Core\ContainerComponent;
+use Bambamboole\Lattice\Components\Core\IsInteractive;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
 
-class Form extends InteractiveComponent
+class Form extends ContainerComponent
 {
+    use IsInteractive;
+
     public static function make(string $id): static
     {
         return (new static)->id($id);

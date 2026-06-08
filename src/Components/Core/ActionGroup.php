@@ -2,8 +2,10 @@
 
 namespace Bambamboole\Lattice\Components\Core;
 
-class ActionGroup extends InteractiveComponent
+class ActionGroup extends ContainerComponent
 {
+    use IsInteractive;
+
     public static function make(string $id): static
     {
         return (new static)->id($id);

@@ -9,7 +9,7 @@ use Bambamboole\Lattice\Components\Core\Fragment as FragmentComponent;
 use Bambamboole\Lattice\PageSchema;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
-use ReflectionClass;
+use Spatie\Attributes\Attributes;
 
 class FragmentRegistry
 {
@@ -96,13 +96,13 @@ class FragmentRegistry
             throw new InvalidArgumentException("Lattice fragment [{$fragment}] must extend [".FragmentDefinition::class.'].');
         }
 
-        $attribute = (new ReflectionClass($fragment))->getAttributes(Fragment::class)[0] ?? null;
+        $attribute = Attributes::get($fragment, Fragment::class);
 
-        if ($attribute === null) {
+        if (! $attribute instanceof Fragment) {
             throw new InvalidArgumentException("Lattice fragment [{$fragment}] is missing the [Fragment] attribute.");
         }
 
-        return $attribute->newInstance()->key;
+        return $attribute->key;
     }
 
     /**

@@ -2,8 +2,10 @@
 
 namespace Bambamboole\Lattice\Components\Core;
 
-class Modal extends InteractiveComponent
+class Modal extends ContainerComponent
 {
+    use IsInteractive;
+
     public static function make(string $id): static
     {
         return (new static)->id($id);

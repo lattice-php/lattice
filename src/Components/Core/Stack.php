@@ -6,7 +6,7 @@ use Bambamboole\Lattice\Enums\Align;
 use Bambamboole\Lattice\Enums\Gap;
 use Bambamboole\Lattice\Enums\Width;
 
-class Stack extends Component
+class Stack extends ContainerComponent
 {
     public static function make(?string $key = null): static
     {

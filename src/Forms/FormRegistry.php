@@ -9,7 +9,7 @@ use Bambamboole\Lattice\Components\Form\Form as FormComponent;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
-use ReflectionClass;
+use Spatie\Attributes\Attributes;
 
 class FormRegistry
 {
@@ -88,13 +88,13 @@ class FormRegistry
             throw new InvalidArgumentException("Lattice form [{$form}] must extend [".FormDefinition::class.'].');
         }
 
-        $attribute = (new ReflectionClass($form))->getAttributes(Form::class)[0] ?? null;
+        $attribute = Attributes::get($form, Form::class);
 
-        if ($attribute === null) {
+        if (! $attribute instanceof Form) {
             throw new InvalidArgumentException("Lattice form [{$form}] is missing the [Form] attribute.");
         }
 
-        return $attribute->newInstance()->key;
+        return $attribute->key;
     }
 
     /**
