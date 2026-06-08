@@ -18,6 +18,7 @@
         "spatie/laravel-package-tools": "^1.16 || ^2.0"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^3.7",
         "larastan/larastan": "^3.0",
         "laravel/boost": "^2.4",
         "laravel/pint": "^1.16",
