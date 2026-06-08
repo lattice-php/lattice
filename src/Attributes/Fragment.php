@@ -7,7 +7,4 @@ namespace Bambamboole\Lattice\Attributes;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class Fragment
-{
-    public function __construct(public readonly string $key) {}
-}
+class Fragment extends ComponentAttribute {}

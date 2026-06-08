@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Http\Controllers;
 
+use Bambamboole\Lattice\Concerns\InteractsWithLatticeComponents;
 use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 use Bambamboole\Lattice\Tables\InvalidTableQuery;
 use Bambamboole\Lattice\Tables\TableRegistry;
@@ -12,6 +13,8 @@ use Illuminate\Http\Request;
 
 class TableController
 {
+    use InteractsWithLatticeComponents;
+
     public function __construct(
         private readonly TableRegistry $tables,
         private readonly ComponentReferenceSigner $references,
@@ -19,10 +22,7 @@ class TableController
 
     public function __invoke(Request $request, string $table): JsonResponse
     {
-        $request = $this->references->mergeTrustedContext($request, 'table', $table);
-        $definition = $this->tables->resolve($table);
-
-        abort_unless($definition->authorize($request), 403);
+        [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->tables, 'table', $table);
 
         try {
             return response()->json($this->tables->response($table, $request, $definition));

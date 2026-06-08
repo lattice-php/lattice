@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Tables;
 
 use Bambamboole\Lattice\Components\Core\Component;
+use Bambamboole\Lattice\Definition;
 use Bambamboole\Lattice\Tables\Columns\Column;
-use Illuminate\Http\Request;
 
-abstract class TableDefinition
+abstract class TableDefinition extends Definition
 {
     /**
      * @return array<int, Column>
@@ -37,11 +37,6 @@ abstract class TableDefinition
         return 'table';
     }
 
-    public function authorize(Request $request): bool
-    {
-        return true;
-    }
-
     /**
      * @param  array<string, mixed>  $row
      * @return array<int, Component>
@@ -52,9 +47,4 @@ abstract class TableDefinition
     }
 
     abstract public function query(TableQuery $query): TableResult;
-
-    protected function context(Request $request, string $key, mixed $default = null): mixed
-    {
-        return data_get($request->input('context', []), $key, $default);
-    }
 }

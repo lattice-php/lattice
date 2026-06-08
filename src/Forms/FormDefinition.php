@@ -6,24 +6,20 @@ namespace Bambamboole\Lattice\Forms;
 
 use Bambamboole\Lattice\Components\Form\Form;
 use Bambamboole\Lattice\Concerns\CreatesToastMessages;
+use Bambamboole\Lattice\Definition;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class FormDefinition
+abstract class FormDefinition extends Definition
 {
     use CreatesToastMessages;
 
     abstract public function definition(Form $form, Request $request): Form;
 
     abstract public function handle(Request $request): Response|Responsable;
-
-    public function authorize(Request $request): bool
-    {
-        return true;
-    }
 
     /**
      * @return array<string, mixed>
@@ -73,10 +69,5 @@ abstract class FormDefinition
         }
 
         return $validator;
-    }
-
-    protected function context(Request $request, string $key, mixed $default = null): mixed
-    {
-        return data_get($request->input('context', []), $key, $default);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Http\Controllers;
 
+use Bambamboole\Lattice\Concerns\InteractsWithLatticeComponents;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Security\ComponentReferenceSigner;
@@ -15,6 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class FormController
 {
+    use InteractsWithLatticeComponents;
+
     public function __construct(
         private readonly FormRegistry $forms,
         private readonly ComponentReferenceSigner $references,
@@ -22,15 +25,11 @@ class FormController
 
     public function __invoke(Request $request, string $form): Response|Responsable
     {
-        $request = $this->references->mergeTrustedContext($request, 'form', $form);
-
         if ($request->isAttemptingPrecognition()) {
             $request->attributes->set('precognitive', true);
         }
 
-        $definition = $this->forms->resolve($form);
-
-        abort_unless($definition->authorize($request), 403);
+        [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->forms, 'form', $form);
 
         if ($request->isPrecognitive()) {
             return $this->validatePrecognitive($request, $definition);

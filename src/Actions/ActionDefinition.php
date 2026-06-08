@@ -5,16 +5,12 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Actions;
 
 use Bambamboole\Lattice\Components\Core\Action;
+use Bambamboole\Lattice\Definition;
 use Illuminate\Http\Request;
 
-abstract class ActionDefinition
+abstract class ActionDefinition extends Definition
 {
     abstract public function definition(Action $action): Action;
 
     abstract public function handle(Request $request): ActionResult;
-
-    public function authorize(Request $request): bool
-    {
-        return true;
-    }
 }

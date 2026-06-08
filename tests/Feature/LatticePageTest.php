@@ -6,8 +6,10 @@ use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionResult;
 use Bambamboole\Lattice\Actions\Effect;
 use Bambamboole\Lattice\Attributes\Action;
+use Bambamboole\Lattice\Attributes\Form as FormAttribute;
 use Bambamboole\Lattice\Attributes\Fragment;
 use Bambamboole\Lattice\Attributes\SerializationHook;
+use Bambamboole\Lattice\Attributes\Table as TableAttribute;
 use Bambamboole\Lattice\Components\Core\Action as ActionComponent;
 use Bambamboole\Lattice\Components\Core\ActionGroup;
 use Bambamboole\Lattice\Components\Core\Badge;
@@ -42,6 +44,7 @@ use Bambamboole\Lattice\Menu\MenuItem;
 use Bambamboole\Lattice\Menu\MenuRegistry;
 use Bambamboole\Lattice\Page;
 use Bambamboole\Lattice\PageSchema;
+use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 use Bambamboole\Lattice\Tables\Columns\StackColumn;
 use Bambamboole\Lattice\Tables\Columns\TextColumn;
 use Bambamboole\Lattice\Tables\EloquentTableDefinition;
@@ -1021,6 +1024,49 @@ test('registered action endpoints require a valid component reference', function
         ->assertForbidden();
 });
 
+test('interaction endpoints return 404 for unknown component ids', function () {
+    $signer = app(ComponentReferenceSigner::class);
+    $refs = [
+        'action' => $signer->seal('action', 'workbench.missing', []),
+        'form' => $signer->seal('form', 'workbench.missing', []),
+        'table' => $signer->seal('table', 'workbench.missing', []),
+        'fragment' => $signer->seal('fragment', 'workbench.missing', []),
+    ];
+
+    postJson('/lattice/actions/workbench.missing', ['_lattice' => $refs['action']])
+        ->assertNotFound();
+    patch('/lattice/forms/workbench.missing', ['_lattice' => $refs['form']])
+        ->assertNotFound();
+    getJson(latticeUrl('/lattice/tables/workbench.missing', $refs['table']))
+        ->assertNotFound();
+    getJson(latticeUrl('/lattice/fragments/workbench.missing', $refs['fragment']))
+        ->assertNotFound();
+});
+
+test('interaction endpoints re-run authorization for every interaction', function () {
+    Lattice::actions([WorkbenchDeniedAction::class]);
+    Lattice::forms([WorkbenchDeniedForm::class]);
+    Lattice::tables([WorkbenchDeniedTable::class]);
+    Lattice::fragments([WorkbenchDeniedFragment::class]);
+
+    $signer = app(ComponentReferenceSigner::class);
+    $refs = [
+        'action' => $signer->seal('action', 'workbench.denied', []),
+        'form' => $signer->seal('form', 'workbench.denied', []),
+        'table' => $signer->seal('table', 'workbench.denied', []),
+        'fragment' => $signer->seal('fragment', 'workbench.denied', []),
+    ];
+
+    postJson('/lattice/actions/workbench.denied', ['_lattice' => $refs['action']])
+        ->assertForbidden();
+    patch('/lattice/forms/workbench.denied', ['_lattice' => $refs['form']])
+        ->assertForbidden();
+    getJson(latticeUrl('/lattice/tables/workbench.denied', $refs['table']))
+        ->assertForbidden();
+    getJson(latticeUrl('/lattice/fragments/workbench.denied', $refs['fragment']))
+        ->assertForbidden();
+});
+
 test('actions can serialize confirmation modal configuration', function () {
     expect(ActionComponent::make('delete-account')
         ->label('Delete account')
@@ -1543,7 +1589,7 @@ test('workbench user seeder creates sample table data idempotently', function ()
         ->and(User::query()->whereColumn('updated_at', '<', 'created_at')->doesntExist())->toBeTrue();
 });
 
-#[Bambamboole\Lattice\Attributes\Form('settings.profile')]
+#[FormAttribute('settings.profile')]
 class WorkbenchProfileForm extends FormDefinition
 {
     public function definition(Form $form, Request $request): Form
@@ -1565,7 +1611,7 @@ class WorkbenchProfileForm extends FormDefinition
     }
 }
 
-#[Bambamboole\Lattice\Attributes\Form('workbench.request-aware')]
+#[FormAttribute('workbench.request-aware')]
 class WorkbenchRequestAwareForm extends FormDefinition
 {
     public function definition(Form $form, Request $request): Form
@@ -1581,7 +1627,7 @@ class WorkbenchRequestAwareForm extends FormDefinition
     }
 }
 
-#[Bambamboole\Lattice\Attributes\Table('workbench.users')]
+#[TableAttribute('workbench.users')]
 class WorkbenchUsersTable extends TableDefinition
 {
     public function columns(): array
@@ -1618,7 +1664,7 @@ class WorkbenchUsersTable extends TableDefinition
     }
 }
 
-#[Bambamboole\Lattice\Attributes\Table('workbench.lazy-users')]
+#[TableAttribute('workbench.lazy-users')]
 class WorkbenchLazyUsersTable extends TableDefinition
 {
     public function columns(): array
@@ -1639,7 +1685,7 @@ class WorkbenchLazyUsersTable extends TableDefinition
  *
  * @phpstan-extends EloquentTableDefinition<User>
  */
-#[Bambamboole\Lattice\Attributes\Table('workbench.infinite-users')]
+#[TableAttribute('workbench.infinite-users')]
 class WorkbenchInfiniteUsersTable extends EloquentTableDefinition
 {
     public function pagination(): PaginationType
@@ -1674,7 +1720,7 @@ class WorkbenchInfiniteUsersTable extends EloquentTableDefinition
  *
  * @phpstan-extends EloquentTableDefinition<User>
  */
-#[Bambamboole\Lattice\Attributes\Table('workbench.default-users')]
+#[TableAttribute('workbench.default-users')]
 class WorkbenchDefaultUsersTable extends EloquentTableDefinition
 {
     public function perPage(): int
@@ -1703,7 +1749,7 @@ class WorkbenchDefaultUsersTable extends EloquentTableDefinition
  *
  * @phpstan-extends EloquentTableDefinition<User>
  */
-#[Bambamboole\Lattice\Attributes\Table('workbench.simple-users')]
+#[TableAttribute('workbench.simple-users')]
 class WorkbenchSimpleUsersTable extends EloquentTableDefinition
 {
     public function pagination(): PaginationType
@@ -1737,7 +1783,7 @@ class WorkbenchSimpleUsersTable extends EloquentTableDefinition
  *
  * @phpstan-extends EloquentTableDefinition<User>
  */
-#[Bambamboole\Lattice\Attributes\Table('workbench.small-users')]
+#[TableAttribute('workbench.small-users')]
 class WorkbenchSmallUsersTable extends EloquentTableDefinition
 {
     public function pagination(): PaginationType
@@ -1761,7 +1807,7 @@ class WorkbenchSmallUsersTable extends EloquentTableDefinition
     }
 }
 
-#[Bambamboole\Lattice\Attributes\Table('workbench.stacked-users')]
+#[TableAttribute('workbench.stacked-users')]
 class WorkbenchStackedUsersTable extends TableDefinition
 {
     public function layout(): string
@@ -1939,5 +1985,76 @@ final class WorkbenchToastFactory
     public static function flashToast(ToastType $type, string $message): ResponseFactory
     {
         return (new self)->toast($type, $message);
+    }
+}
+
+#[Action('workbench.denied')]
+final class WorkbenchDeniedAction extends ActionDefinition
+{
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Denied');
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        return ActionResult::success();
+    }
+
+    public function authorize(Request $request): bool
+    {
+        return false;
+    }
+}
+
+#[FormAttribute('workbench.denied')]
+final class WorkbenchDeniedForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form;
+    }
+
+    public function handle(Request $request): Response
+    {
+        return new Response;
+    }
+
+    public function authorize(Request $request): bool
+    {
+        return false;
+    }
+}
+
+#[TableAttribute('workbench.denied')]
+final class WorkbenchDeniedTable extends TableDefinition
+{
+    public function columns(): array
+    {
+        return [TextColumn::make('name')];
+    }
+
+    public function query(TableQuery $query): TableResult
+    {
+        return TableResult::make([]);
+    }
+
+    public function authorize(Request $request): bool
+    {
+        return false;
+    }
+}
+
+#[Fragment('workbench.denied')]
+final class WorkbenchDeniedFragment extends FragmentDefinition
+{
+    public function schema(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Denied fragment'));
+    }
+
+    public function authorize(Request $request): bool
+    {
+        return false;
     }
 }

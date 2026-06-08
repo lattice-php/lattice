@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Http\Controllers;
 
 use Bambamboole\Lattice\Actions\ActionRegistry;
+use Bambamboole\Lattice\Concerns\InteractsWithLatticeComponents;
 use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ActionController
 {
+    use InteractsWithLatticeComponents;
+
     public function __construct(
         private readonly ActionRegistry $actions,
         private readonly ComponentReferenceSigner $references,
@@ -18,10 +21,7 @@ class ActionController
 
     public function __invoke(Request $request, string $action): JsonResponse
     {
-        $request = $this->references->mergeTrustedContext($request, 'action', $action);
-        $definition = $this->actions->resolve($action);
-
-        abort_unless($definition->authorize($request), 403);
+        [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->actions, 'action', $action);
 
         return response()->json(
             $definition->handle($request)->toArray(),

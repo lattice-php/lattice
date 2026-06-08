@@ -4,32 +4,17 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Fragments;
 
+use Bambamboole\Lattice\Attributes\ComponentAttribute;
 use Bambamboole\Lattice\Attributes\Fragment;
 use Bambamboole\Lattice\Components\Core\Fragment as FragmentComponent;
+use Bambamboole\Lattice\DefinitionRegistry;
 use Bambamboole\Lattice\PageSchema;
-use Illuminate\Contracts\Container\Container;
-use InvalidArgumentException;
-use Spatie\Attributes\Attributes;
 
-class FragmentRegistry
+/**
+ * @extends DefinitionRegistry<FragmentDefinition>
+ */
+class FragmentRegistry extends DefinitionRegistry
 {
-    /**
-     * @var array<string, class-string<FragmentDefinition>>
-     */
-    private array $fragments = [];
-
-    public function __construct(private readonly Container $container) {}
-
-    /**
-     * @param  class-string<FragmentDefinition>|array<int, class-string<FragmentDefinition>>  $fragments
-     */
-    public function register(string|array $fragments): void
-    {
-        foreach ((array) $fragments as $fragment) {
-            $this->fragments[$this->keyFor($fragment)] = $fragment;
-        }
-    }
-
     /**
      * @param  class-string<FragmentDefinition>  $fragment
      */
@@ -56,60 +41,29 @@ class FragmentRegistry
         ];
     }
 
-    public function resolve(string $key): FragmentDefinition
+    /**
+     * @return class-string<FragmentDefinition>
+     */
+    protected function definitionClass(): string
     {
-        if (! array_key_exists($key, $this->fragments)) {
-            throw new InvalidArgumentException("Lattice fragment [{$key}] is not registered.");
-        }
-
-        return $this->make($this->fragments[$key]);
-    }
-
-    public function endpointFor(string $key): string
-    {
-        $endpoint = (string) config('lattice.fragments.endpoint', 'lattice/fragments/{fragment}');
-        $path = str_replace('{fragment}', rawurlencode($key), ltrim($endpoint, '/'));
-
-        return '/'.$path;
+        return FragmentDefinition::class;
     }
 
     /**
-     * @param  class-string<FragmentDefinition>  $fragment
+     * @return class-string<ComponentAttribute>
      */
-    private function registeredKeyFor(string $fragment): string
+    protected function attributeClass(): string
     {
-        $key = $this->keyFor($fragment);
-
-        if (($this->fragments[$key] ?? null) !== $fragment) {
-            throw new InvalidArgumentException("Lattice fragment [{$fragment}] is not registered.");
-        }
-
-        return $key;
+        return Fragment::class;
     }
 
-    /**
-     * @param  class-string<FragmentDefinition>  $fragment
-     */
-    private function keyFor(string $fragment): string
+    protected function name(): string
     {
-        if (! is_subclass_of($fragment, FragmentDefinition::class)) {
-            throw new InvalidArgumentException("Lattice fragment [{$fragment}] must extend [".FragmentDefinition::class.'].');
-        }
-
-        $attribute = Attributes::get($fragment, Fragment::class);
-
-        if (! $attribute instanceof Fragment) {
-            throw new InvalidArgumentException("Lattice fragment [{$fragment}] is missing the [Fragment] attribute.");
-        }
-
-        return $attribute->key;
+        return 'fragment';
     }
 
-    /**
-     * @param  class-string<FragmentDefinition>  $fragment
-     */
-    private function make(string $fragment): FragmentDefinition
+    protected function group(): string
     {
-        return $this->container->make($fragment);
+        return 'fragments';
     }
 }

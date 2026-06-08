@@ -7,7 +7,4 @@ namespace Bambamboole\Lattice\Attributes;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class Form
-{
-    public function __construct(public readonly string $key) {}
-}
+class Form extends ComponentAttribute {}
