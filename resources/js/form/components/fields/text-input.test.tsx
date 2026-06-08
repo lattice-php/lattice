@@ -1,0 +1,47 @@
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+import type { Node } from "@lattice/core/types";
+import { FormValuesProvider } from "../values";
+import { TextInputComponent } from "./text-input";
+
+function renderField(node: Node<"form.text-input">, initial: Record<string, unknown> = {}) {
+  return render(
+    <FormValuesProvider initial={initial}>
+      <TextInputComponent node={node}>{null}</TextInputComponent>
+    </FormValuesProvider>,
+  );
+}
+
+describe("TextInputComponent conditions", () => {
+  it("hides when its visible condition fails", () => {
+    renderField(
+      {
+        type: "form.text-input",
+        props: {
+          name: "company",
+          label: "Company",
+          conditions: { visible: [{ field: "type", operator: "=", value: "business" }] },
+        },
+      },
+      { type: "personal" },
+    );
+
+    expect(screen.queryByRole("textbox", { name: "Company" })).not.toBeInTheDocument();
+  });
+
+  it("shows when its visible condition matches", () => {
+    renderField(
+      {
+        type: "form.text-input",
+        props: {
+          name: "company",
+          label: "Company",
+          conditions: { visible: [{ field: "type", operator: "=", value: "business" }] },
+        },
+      },
+      { type: "business" },
+    );
+
+    expect(screen.getByRole("textbox", { name: "Company" })).toBeVisible();
+  });
+});

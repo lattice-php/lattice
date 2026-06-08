@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "./context";
 import type { FormMethod } from "./types";
+import { FormValuesProvider } from "./values";
 
 declare module "@lattice/core/types" {
   interface ComponentProps {
@@ -54,6 +55,24 @@ function collectFieldLabels(
   return labels;
 }
 
+function collectFieldValues(
+  nodes: Node[] | undefined,
+  values: Record<string, unknown> = {},
+): Record<string, unknown> {
+  for (const child of nodes ?? []) {
+    const name = getStringProp(child.props, "name");
+    const value = child.props?.value;
+
+    if (name && value !== undefined) {
+      values[name] = value;
+    }
+
+    collectFieldValues(child.children, values);
+  }
+
+  return values;
+}
+
 function FormResetListener({
   componentId,
   reset,
@@ -88,6 +107,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   const resetOnError = props.resetOnError ?? false;
   const resetOnSuccess = props.resetOnSuccess ?? [];
   const state = getFormState(node.props);
+  const initialValues = { ...collectFieldValues(node.children), ...state };
   const fieldLabels = collectFieldLabels(node.children);
   const shouldRenderSubmitButton = getBooleanProp(props, "submitButton", true);
   const submitLabel = props.submitLabel ?? "Submit";
@@ -144,11 +164,13 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
             </div>
           )}
 
-          <div className="grid gap-6">
-            {children}
+          <FormValuesProvider initial={initialValues}>
+            <div className="grid gap-6">
+              {children}
 
-            {shouldRenderSubmitButton && <FormSubmitButton label={submitLabel} />}
-          </div>
+              {shouldRenderSubmitButton && <FormSubmitButton label={submitLabel} />}
+            </div>
+          </FormValuesProvider>
         </FormProvider>
       )}
     </InertiaForm>
