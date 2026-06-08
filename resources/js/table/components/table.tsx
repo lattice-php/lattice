@@ -1,8 +1,10 @@
 import type { Node, RendererComponent } from "@lattice/core/types";
 import { ArrowDown, ArrowUp, Check, ChevronsUpDown, Copy, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { copyToClipboard } from "@lattice/clipboard";
 import ActionComponent from "@lattice/action/components/action";
 import ActionGroupComponent from "@lattice/action/components/action-group";
+import LinkComponent from "@lattice/core/components/link";
 
 type TableColumn = {
   columns?: TableColumn[];
@@ -222,14 +224,6 @@ function resolveLink(column: TableColumn, row: TableRow, value: unknown): string
   });
 }
 
-function copyText(value: string): void {
-  if (!navigator.clipboard) {
-    return;
-  }
-
-  void navigator.clipboard.writeText(value);
-}
-
 function getColumnSort(state: TableState, column: TableColumn): TableSort | undefined {
   return state.sorts.find((currentSort) => currentSort.key === column.key);
 }
@@ -359,6 +353,10 @@ function TableActionNode({ node }: { node: Node }) {
         )) ?? null}
       </ActionGroupComponent>
     );
+  }
+
+  if (node.type === "link") {
+    return <LinkComponent node={node as Node<"link">}>{null}</LinkComponent>;
   }
 
   return null;
@@ -817,7 +815,7 @@ function TextCell({ column, row, value }: { column: TableColumn; row: TableRow; 
   }, [copied]);
 
   function handleCopy(): void {
-    copyText(text);
+    void copyToClipboard(text);
     setCopied(true);
   }
 

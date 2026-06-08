@@ -154,6 +154,13 @@ describe("Lattice table component", () => {
                     },
                     type: "action",
                   },
+                  {
+                    props: {
+                      href: "/products/2/edit",
+                      label: "Edit",
+                    },
+                    type: "link",
+                  },
                 ],
                 id: "workbench.user-actions",
                 props: {
@@ -186,6 +193,7 @@ describe("Lattice table component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Manage user" }));
 
     expect(await screen.findByRole("button", { name: "Ping" })).toBeVisible();
+    expect(screen.getByRole("link", { name: "Edit" })).toHaveAttribute("href", "/products/2/edit");
   });
 
   it("adds and clears individual sorts through the table endpoint", async () => {
