@@ -179,7 +179,6 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
             invalid: (field) => invalid(field),
             precognitive,
             processing,
-            state,
             touch: (field) => touch(field),
             validate: (field) => validate(field),
             validating,
