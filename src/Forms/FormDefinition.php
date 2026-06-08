@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Forms;
 
+use Bambamboole\Lattice\Components\Form\Field;
 use Bambamboole\Lattice\Components\Form\Form;
 use Bambamboole\Lattice\Concerns\CreatesToastMessages;
 use Bambamboole\Lattice\Definition;
@@ -24,33 +25,23 @@ abstract class FormDefinition extends Definition
     /**
      * @return array<string, mixed>
      */
-    public function rules(Request $request): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function messages(Request $request): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function attributes(Request $request): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
     public function validate(Request $request): array
     {
         return $this->validator($request)->validate();
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    protected function rules(Request $request): array
+    {
+        $data = FormData::fromRequest($request);
+
+        return $this->definition(Form::make('form'), $request)
+            ->fields()
+            ->mapWithKeys(fn (Field $field): array => [$field->name() => $field->resolveRules($data, $request)])
+            ->filter(fn (array $rules): bool => $rules !== [])
+            ->all();
     }
 
     protected function validator(Request $request): Validator
@@ -58,8 +49,6 @@ abstract class FormDefinition extends Definition
         $validator = app(ValidationFactory::class)->make(
             $request->all(),
             $this->rules($request),
-            $this->messages($request),
-            $this->attributes($request),
         );
 
         if ($request->isPrecognitive()) {
