@@ -1,7 +1,10 @@
 export { registry } from "./registry";
 export { dispatchActionEffects, dispatchActionError, isActionEffect } from "./action/effects";
+export { initializeTheme, useAppearance } from "./appearance";
+export { copyToClipboard, useClipboard } from "./clipboard";
 export { EventBridge } from "./events/event-bridge";
 export { IconRenderer, IconRendererProvider } from "./icons";
+export { createLayoutResolver, createPageResolver, pageComponentName } from "./inertia";
 export { useMenu } from "./menu";
 export { Provider, useRegistry } from "./provider";
 export {
@@ -31,5 +34,7 @@ export type {
 } from "./core/types";
 export type { Method } from "@inertiajs/core";
 export type { ActionEffect } from "./action/effects";
+export type { ResolvedAppearance, UseAppearanceReturn } from "./appearance";
+export type { CopiedValue, CopyFn, UseClipboardReturn } from "./clipboard";
 export type { Appearance, ToastMessage, ToastType } from "./events/event-bridge";
 export type { IconRendererFunction, IconRendererProps } from "./icons";
