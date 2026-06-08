@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
+use Bambamboole\Lattice\Components\Core\Action;
 use Bambamboole\Lattice\Components\Form\Form;
 use Bambamboole\Lattice\Components\Form\TextInput;
 use Bambamboole\Lattice\Facades\Lattice;
 use Inertia\Testing\AssertableInertia;
 use Symfony\Component\HttpFoundation\Response;
+use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 use Workbench\App\Seeders\WorkbenchProductSeeder;
@@ -306,4 +308,43 @@ test('the product seeder creates sample product data idempotently', function () 
         ->and(Product::query()->where('sku', 'workbench-product-001')->exists())->toBeTrue()
         ->and(Product::query()->where('sku', 'workbench-product-100')->exists())->toBeTrue()
         ->and(Product::query()->whereNotIn('status', ['draft', 'active', 'archived'])->exists())->toBeFalse();
+});
+
+test('the product archive row action is pinned to its sealed product', function () {
+    Lattice::actions([ArchiveProductAction::class]);
+
+    $target = Product::factory()->create(['status' => 'active']);
+    $other = Product::factory()->create(['status' => 'active']);
+
+    $ref = productComponentRef(
+        Action::use(ArchiveProductAction::class)
+            ->context(['product_id' => $target->getKey()])
+            ->toArray(),
+    );
+
+    patch('/lattice/actions/workbench.products.archive', [
+        '_lattice' => $ref,
+        'context' => ['product_id' => $other->getKey()],
+        'product_id' => $other->getKey(),
+    ])
+        ->assertOk()
+        ->assertJsonPath('data.id', $target->getKey());
+
+    expect($target->fresh()->status)->toBe('archived')
+        ->and($other->fresh()->status)->toBe('active');
+});
+
+test('the product archive row action authorizes per row', function () {
+    Lattice::actions([ArchiveProductAction::class]);
+
+    $archived = Product::factory()->create(['status' => 'archived']);
+
+    $ref = productComponentRef(
+        Action::use(ArchiveProductAction::class)
+            ->context(['product_id' => $archived->getKey()])
+            ->toArray(),
+    );
+
+    patch('/lattice/actions/workbench.products.archive', ['_lattice' => $ref])
+        ->assertForbidden();
 });

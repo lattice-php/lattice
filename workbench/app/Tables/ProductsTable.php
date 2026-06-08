@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Workbench\App\Tables;
 
 use Bambamboole\Lattice\Attributes\Table;
+use Bambamboole\Lattice\Components\Core\Action;
 use Bambamboole\Lattice\Components\Core\Component;
 use Bambamboole\Lattice\Components\Core\Link;
 use Bambamboole\Lattice\Tables\Columns\TextColumn;
 use Bambamboole\Lattice\Tables\EloquentTableDefinition;
 use Bambamboole\Lattice\Tables\TableQuery;
 use Illuminate\Database\Eloquent\Builder;
+use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Models\Product;
 
 /**
@@ -56,6 +58,8 @@ class ProductsTable extends EloquentTableDefinition
         return [
             Link::make('Edit')
                 ->href('/products/'.$row['id'].'/edit'),
+            Action::use(ArchiveProductAction::class)
+                ->context(['product_id' => $row['id']]),
         ];
     }
 }
