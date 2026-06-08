@@ -1,10 +1,10 @@
-import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@/lattice/core/props";
-import type { RendererComponent } from "@/lattice/core/types";
+import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/core/props";
+import type { RendererComponent } from "@lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { Input } from "../base/input";
-import { useLatticeForm } from "../context";
+import { useFormContext } from "../context";
 
-declare module "@/lattice/core/types" {
+declare module "@lattice/core/types" {
   interface ComponentProps {
     "form.text-input": {
       autoComplete?: string;
@@ -22,7 +22,7 @@ declare module "@/lattice/core/types" {
 }
 
 export const TextInputComponent: RendererComponent<"form.text-input"> = ({ node }) => {
-  const { errors } = useLatticeForm();
+  const { errors } = useFormContext();
   const name = getStringProp(node.props, "name");
 
   return (

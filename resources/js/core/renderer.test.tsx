@@ -1,14 +1,14 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createRegistry, eagerComponent, lazyComponent } from "@/lattice";
-import { LatticeRenderer } from "@/lattice";
+import { createRegistry, eagerComponent, lazyComponent } from "@lattice";
+import { Renderer } from "@lattice";
 import type { RendererComponent, RendererComponentModule } from "./types";
 
 const TestComponent: RendererComponent<"test.component"> = ({ children, node }) => (
   <section data-testid={node.id}>{children}</section>
 );
 
-describe("LatticeRenderer", () => {
+describe("Renderer", () => {
   it("renders registered components recursively", () => {
     const registry = createRegistry({
       components: {
@@ -18,7 +18,7 @@ describe("LatticeRenderer", () => {
     });
 
     render(
-      <LatticeRenderer
+      <Renderer
         nodes={[
           {
             children: [
@@ -40,7 +40,7 @@ describe("LatticeRenderer", () => {
 
   it("renders the configured missing component fallback", () => {
     render(
-      <LatticeRenderer
+      <Renderer
         missingComponent={({ node }) => <span>Missing {node.type}</span>}
         nodes={[
           {
@@ -72,7 +72,7 @@ describe("LatticeRenderer", () => {
     });
 
     render(
-      <LatticeRenderer
+      <Renderer
         nodes={[
           {
             id: "lazy-node",

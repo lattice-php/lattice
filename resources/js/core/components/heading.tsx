@@ -1,8 +1,8 @@
-import { getNumberProp, getStringProp } from "@/lattice/core/props";
-import type { RendererComponent } from "@/lattice/core/types";
-import { cn } from "@/lib/utils";
+import { getNumberProp, getStringProp } from "@lattice/core/props";
+import type { RendererComponent } from "@lattice/core/types";
+import { cn } from "@lattice/lib/utils";
 
-declare module "@/lattice/core/types" {
+declare module "@lattice/core/types" {
   interface ComponentProps {
     heading: {
       level?: number;

@@ -1,11 +1,11 @@
 import { router, useHttp } from "@inertiajs/react";
 import type { Method } from "@inertiajs/core";
 import { useState } from "react";
-import { Button } from "@/lattice/core/components/button";
-import { Spinner } from "@/lattice/core/components/spinner";
-import { getStringProp } from "@/lattice/core/props";
-import type { NodeProps, RendererComponent } from "@/lattice/core/types";
-import { IconRenderer } from "@/lattice/icons";
+import { Button } from "@lattice/core/components/button";
+import { Spinner } from "@lattice/core/components/spinner";
+import { getStringProp } from "@lattice/core/props";
+import type { NodeProps, RendererComponent } from "@lattice/core/types";
+import { IconRenderer } from "@lattice/icons";
 import { dispatchActionEffects, dispatchActionError, isActionEffect } from "../effects";
 import type { ActionEffect } from "../effects";
 
@@ -28,7 +28,7 @@ type ActionData = {
   _lattice?: string;
 };
 
-declare module "@/lattice/core/types" {
+declare module "@lattice/core/types" {
   interface ComponentProps {
     action: {
       confirmation?: ActionConfirmation;

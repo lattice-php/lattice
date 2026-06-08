@@ -1,9 +1,9 @@
-import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@/lattice/core/props";
-import type { RendererComponent } from "@/lattice/core/types";
+import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/core/props";
+import type { RendererComponent } from "@lattice/core/types";
 import { Checkbox } from "../base/checkbox";
 import { Label } from "../base/label";
 
-declare module "@/lattice/core/types" {
+declare module "@lattice/core/types" {
   interface ComponentProps {
     "form.checkbox": {
       label?: string;

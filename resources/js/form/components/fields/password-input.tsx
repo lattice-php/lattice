@@ -1,8 +1,8 @@
-import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@/lattice/core/props";
-import type { NodeProps, RendererComponent } from "@/lattice/core/types";
+import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/core/props";
+import type { NodeProps, RendererComponent } from "@lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import PasswordInput from "../base/password-input";
-import { useLatticeForm } from "../context";
+import { useFormContext } from "../context";
 import type { FormLabelAction } from "../types";
 
 type PasswordConfirmation = {
@@ -28,7 +28,7 @@ function getPasswordConfirmation(props: NodeProps | undefined): PasswordConfirma
   };
 }
 
-declare module "@/lattice/core/types" {
+declare module "@lattice/core/types" {
   interface ComponentProps {
     "form.password-input": {
       autoComplete?: string;
@@ -46,7 +46,7 @@ declare module "@/lattice/core/types" {
 }
 
 export const PasswordInputComponent: RendererComponent<"form.password-input"> = ({ node }) => {
-  const { errors } = useLatticeForm();
+  const { errors } = useFormContext();
   const name = getStringProp(node.props, "name");
   const confirmation = getPasswordConfirmation(node.props);
   const confirmationName = confirmation?.name ?? `${name}_confirmation`;

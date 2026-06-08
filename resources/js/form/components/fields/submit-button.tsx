@@ -1,10 +1,10 @@
-import { Button } from "@/lattice/core/components/button";
-import { Spinner } from "@/lattice/core/components/spinner";
-import { getStringProp } from "@/lattice/core/props";
-import type { RendererComponent } from "@/lattice/core/types";
-import { useLatticeForm } from "../context";
+import { Button } from "@lattice/core/components/button";
+import { Spinner } from "@lattice/core/components/spinner";
+import { getStringProp } from "@lattice/core/props";
+import type { RendererComponent } from "@lattice/core/types";
+import { useFormContext } from "../context";
 
-declare module "@/lattice/core/types" {
+declare module "@lattice/core/types" {
   interface ComponentProps {
     "form.submit-button": {
       label?: string;
@@ -14,7 +14,7 @@ declare module "@/lattice/core/types" {
 }
 
 export const SubmitButtonComponent: RendererComponent<"form.submit-button"> = ({ node }) => {
-  const { processing } = useLatticeForm();
+  const { processing } = useFormContext();
 
   return (
     <Button

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@/lattice/core/types";
+import type { Node } from "@lattice/core/types";
 import TextComponent from "./text";
 
 describe("Lattice text component", () => {

@@ -1,18 +1,16 @@
 import { Head } from "@inertiajs/react";
-import { LatticeRenderer } from "@/lattice/core/renderer";
-import { useRegistry } from "@/lattice/provider";
-import type { PagePayload } from "@/types/lattice";
-import { cn } from "@/lib/utils";
+import { Renderer } from "@lattice/core/renderer";
+import { useRegistry } from "@lattice/provider";
+import type { PagePayload } from "@lattice";
+import { cn } from "@lattice/lib/utils";
 
 type Props = {
   lattice: PagePayload;
 };
 
-export default function LatticePage({ lattice }: Props) {
+export default function Page({ lattice }: Props) {
   const registry = useRegistry();
-  const content = (
-    <LatticeRenderer fallback={null} nodes={lattice.components} registry={registry} />
-  );
+  const content = <Renderer fallback={null} nodes={lattice.components} registry={registry} />;
 
   return (
     <>

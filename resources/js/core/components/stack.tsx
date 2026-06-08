@@ -1,8 +1,8 @@
-import { getStringProp } from "@/lattice/core/props";
-import type { RendererComponent } from "@/lattice/core/types";
-import { cn } from "@/lib/utils";
+import { getStringProp } from "@lattice/core/props";
+import type { RendererComponent } from "@lattice/core/types";
+import { cn } from "@lattice/lib/utils";
 
-declare module "@/lattice/core/types" {
+declare module "@lattice/core/types" {
   interface ComponentProps {
     stack: {
       align?: string;

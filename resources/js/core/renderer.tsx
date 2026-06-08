@@ -8,9 +8,7 @@ function MissingComponent({ node }: { node: Node }) {
     return null;
   }
 
-  return (
-    <div data-lattice-missing-component={node.type}>Missing Lattice component: {node.type}</div>
-  );
+  return <div data-lattice-missing-component={node.type}>Missing component: {node.type}</div>;
 }
 
 type RendererContextValue = {
@@ -19,19 +17,19 @@ type RendererContextValue = {
   registry: ComponentRegistry;
 };
 
-const LatticeRendererContext = createContext<RendererContextValue | null>(null);
+const RendererContext = createContext<RendererContextValue | null>(null);
 
-export function useLatticeRendererContext(): RendererContextValue {
-  const context = useContext(LatticeRendererContext);
+export function useRendererContext(): RendererContextValue {
+  const context = useContext(RendererContext);
 
   if (!context) {
-    throw new Error("Lattice renderer context is not available.");
+    throw new Error("Renderer context is not available.");
   }
 
   return context;
 }
 
-export function LatticeRenderer({
+export function Renderer({
   fallback = null,
   missingComponent: UnknownComponent = MissingComponent,
   nodes,
@@ -52,9 +50,9 @@ export function LatticeRenderer({
   );
 
   return (
-    <LatticeRendererContext.Provider value={context}>
+    <RendererContext.Provider value={context}>
       {nodes.map((node, index) => (
-        <LatticeNodeRenderer
+        <NodeRenderer
           fallback={fallback}
           key={node.key ?? node.id ?? `${node.type}-${index}`}
           missingComponent={UnknownComponent}
@@ -62,11 +60,11 @@ export function LatticeRenderer({
           registry={registry}
         />
       ))}
-    </LatticeRendererContext.Provider>
+    </RendererContext.Provider>
   );
 }
 
-function LatticeNodeRenderer({
+function NodeRenderer({
   fallback,
   missingComponent: UnknownComponent,
   node,
@@ -85,7 +83,7 @@ function LatticeNodeRenderer({
 
   const Component = registration.component;
   const children = node.children?.length ? (
-    <LatticeRenderer
+    <Renderer
       fallback={fallback}
       missingComponent={UnknownComponent}
       nodes={node.children}

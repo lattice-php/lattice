@@ -8,5 +8,5 @@ export type {
   PageBreadcrumb,
   PagePayload,
   RendererComponent,
-} from "@/lattice";
+} from "@lattice";
 export type { Method } from "@inertiajs/core";

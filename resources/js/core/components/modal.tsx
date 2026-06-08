@@ -1,14 +1,14 @@
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Button } from "@/lattice/core/components/button";
-import { getStringProp } from "@/lattice/core/props";
-import type { RendererComponent } from "@/lattice/core/types";
+import { Button } from "@lattice/core/components/button";
+import { getStringProp } from "@lattice/core/props";
+import type { RendererComponent } from "@lattice/core/types";
 
 type ModalEvent = CustomEvent<{
   modal?: string;
 }>;
 
-declare module "@/lattice/core/types" {
+declare module "@lattice/core/types" {
   interface ComponentProps {
     modal: {
       closeLabel?: string;

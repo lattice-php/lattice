@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createPlugin, createRegistry, eagerComponent, lazyComponent } from "@/lattice";
+import { createPlugin, createRegistry, eagerComponent, lazyComponent } from "@lattice";
 import type { RendererComponent } from "./types";
 
 const EagerComponent: RendererComponent<"test.eager"> = () => null;

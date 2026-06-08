@@ -1,8 +1,8 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent } from "@/lattice/core/registry";
-import { LatticeRenderer } from "@/lattice/core/renderer";
-import type { RendererComponent } from "@/lattice/core/types";
+import { createRegistry, eagerComponent } from "@lattice/core/registry";
+import { Renderer } from "@lattice/core/renderer";
+import type { RendererComponent } from "@lattice/core/types";
 import FragmentComponent from "./fragment";
 import ModalComponent from "./modal";
 import TextComponent from "./text";
@@ -24,7 +24,7 @@ describe("Lattice modal and fragment components", () => {
     });
 
     render(
-      <LatticeRenderer
+      <Renderer
         nodes={[
           {
             children: [
@@ -100,7 +100,7 @@ describe("Lattice modal and fragment components", () => {
     });
 
     render(
-      <LatticeRenderer
+      <Renderer
         nodes={[
           {
             id: "settings.two-factor-setup",
@@ -174,7 +174,7 @@ describe("Lattice modal and fragment components", () => {
     });
 
     render(
-      <LatticeRenderer
+      <Renderer
         nodes={[
           {
             id: "settings.two-factor-setup",

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
-import type { Node } from "@/lattice/core/types";
+import type { Node } from "@lattice/core/types";
 import {
   CheckboxComponent,
   FormComponent,

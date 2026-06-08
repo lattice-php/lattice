@@ -7,11 +7,11 @@ type ContextValue = {
   registry: ComponentRegistry;
 };
 
-const LatticeContext = createContext<ContextValue>({
+const RegistryContext = createContext<ContextValue>({
   registry: defaultRegistry,
 });
 
-export function LatticeProvider({
+export function Provider({
   children,
   registry = defaultRegistry,
 }: {
@@ -20,9 +20,9 @@ export function LatticeProvider({
 }) {
   const value = useMemo(() => ({ registry }), [registry]);
 
-  return <LatticeContext.Provider value={value}>{children}</LatticeContext.Provider>;
+  return <RegistryContext.Provider value={value}>{children}</RegistryContext.Provider>;
 }
 
 export function useRegistry(): ComponentRegistry {
-  return useContext(LatticeContext).registry;
+  return useContext(RegistryContext).registry;
 }

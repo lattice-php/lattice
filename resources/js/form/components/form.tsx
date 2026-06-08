@@ -1,13 +1,13 @@
 import type { FormDataConvertible } from "@inertiajs/core";
 import { Form as InertiaForm } from "@inertiajs/react";
-import { Button } from "@/lattice/core/components/button";
-import { Spinner } from "@/lattice/core/components/spinner";
-import { getBooleanProp, getStringProp } from "@/lattice/core/props";
-import type { RendererComponent } from "@/lattice/core/types";
-import { LatticeFormProvider } from "./context";
+import { Button } from "@lattice/core/components/button";
+import { Spinner } from "@lattice/core/components/spinner";
+import { getBooleanProp, getStringProp } from "@lattice/core/props";
+import type { RendererComponent } from "@lattice/core/types";
+import { FormProvider } from "./context";
 import type { FormMethod } from "./types";
 
-declare module "@/lattice/core/types" {
+declare module "@lattice/core/types" {
   interface ComponentProps {
     form: {
       action?: string;
@@ -51,7 +51,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
       className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-lt border border-lt-border bg-lt-surface p-6 shadow-xs"
     >
       {({ errors, processing }) => (
-        <LatticeFormProvider
+        <FormProvider
           value={{
             errors: errors as Record<string, string | undefined>,
             processing,
@@ -73,7 +73,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
               </Button>
             )}
           </div>
-        </LatticeFormProvider>
+        </FormProvider>
       )}
     </InertiaForm>
   );

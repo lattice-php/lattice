@@ -1,9 +1,9 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Node } from "@/lattice/core/types";
-import { IconRendererProvider } from "@/lattice/icons";
-import type { IconRendererFunction } from "@/lattice/icons";
+import type { Node } from "@lattice/core/types";
+import { IconRendererProvider } from "@lattice/icons";
+import type { IconRendererFunction } from "@lattice/icons";
 import ActionComponent from "./action";
 
 const http = vi.hoisted(() => ({

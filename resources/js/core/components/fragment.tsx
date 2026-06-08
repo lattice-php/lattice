@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { getStringProp } from "@/lattice/core/props";
-import { LatticeRenderer, useLatticeRendererContext } from "@/lattice/core/renderer";
-import type { Node, RendererComponent } from "@/lattice/core/types";
+import { getStringProp } from "@lattice/core/props";
+import { Renderer, useRendererContext } from "@lattice/core/renderer";
+import type { Node, RendererComponent } from "@lattice/core/types";
 
 type FragmentResponse = {
   components?: Node[];
@@ -11,7 +11,7 @@ type ReloadComponentEvent = CustomEvent<{
   component?: string;
 }>;
 
-declare module "@/lattice/core/types" {
+declare module "@lattice/core/types" {
   interface ComponentProps {
     fragment: {
       endpoint?: string;
@@ -51,7 +51,7 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
   const [components, setComponents] = useState(() => node.children ?? []);
   const [hasLoaded, setHasLoaded] = useState(!isLazy);
   const [processing, setProcessing] = useState(isLazy && endpoint !== "");
-  const { fallback, missingComponent, registry } = useLatticeRendererContext();
+  const { fallback, missingComponent, registry } = useRendererContext();
 
   const load = useCallback(async (): Promise<void> => {
     if (!endpoint) {
@@ -104,7 +104,7 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
       {processing && components.length === 0 ? (
         <div className="h-16 animate-pulse rounded-lt-sm bg-lt-muted" />
       ) : (
-        <LatticeRenderer
+        <Renderer
           fallback={fallback}
           missingComponent={missingComponent}
           nodes={components}

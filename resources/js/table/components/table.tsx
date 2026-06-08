@@ -1,8 +1,8 @@
-import type { Node, RendererComponent } from "@/lattice/core/types";
+import type { Node, RendererComponent } from "@lattice/core/types";
 import { ArrowDown, ArrowUp, Check, ChevronsUpDown, Copy, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import ActionComponent from "@/lattice/action/components/action";
-import ActionGroupComponent from "@/lattice/action/components/action-group";
+import ActionComponent from "@lattice/action/components/action";
+import ActionGroupComponent from "@lattice/action/components/action-group";
 
 type TableColumn = {
   columns?: TableColumn[];
@@ -67,7 +67,7 @@ type ReloadComponentEvent = CustomEvent<{
   type?: string;
 }>;
 
-declare module "@/lattice/core/types" {
+declare module "@lattice/core/types" {
   interface ComponentProps {
     table: {
       columns?: TableColumn[];

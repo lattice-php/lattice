@@ -5,21 +5,21 @@ type FormContextValue = {
   processing: boolean;
 };
 
-const LatticeFormContext = createContext<FormContextValue>({
+const FormContext = createContext<FormContextValue>({
   errors: {},
   processing: false,
 });
 
-export function LatticeFormProvider({
+export function FormProvider({
   children,
   value,
 }: {
   children: React.ReactNode;
   value: FormContextValue;
 }) {
-  return <LatticeFormContext.Provider value={value}>{children}</LatticeFormContext.Provider>;
+  return <FormContext.Provider value={value}>{children}</FormContext.Provider>;
 }
 
-export function useLatticeForm() {
-  return useContext(LatticeFormContext);
+export function useFormContext() {
+  return useContext(FormContext);
 }

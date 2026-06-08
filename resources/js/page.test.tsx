@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { createPlugin, createRegistry, eagerComponent, LatticeProvider } from "@/lattice";
-import type { PagePayload, RendererComponent } from "@/lattice";
-import LatticePage from "./page";
+import { createPlugin, createRegistry, eagerComponent, Provider } from "@lattice";
+import type { PagePayload, RendererComponent } from "@lattice";
+import Page from "./page";
 
 vi.mock("@inertiajs/react", () => ({
   Head: ({ title }: { title?: string }) => <title>{title}</title>,
@@ -20,10 +20,10 @@ function payload(lattice: Partial<PagePayload> = {}): PagePayload {
   };
 }
 
-describe("Lattice page", () => {
+describe("Page", () => {
   it("renders package components with the default registry", () => {
     render(
-      <LatticePage
+      <Page
         lattice={payload({
           components: [
             {
@@ -42,7 +42,7 @@ describe("Lattice page", () => {
 
   it("renders the default container for app shell pages", () => {
     render(
-      <LatticePage
+      <Page
         lattice={payload({
           components: [
             {
@@ -74,8 +74,8 @@ describe("Lattice page", () => {
     );
 
     render(
-      <LatticeProvider registry={registry}>
-        <LatticePage
+      <Provider registry={registry}>
+        <Page
           lattice={payload({
             components: [
               {
@@ -85,7 +85,7 @@ describe("Lattice page", () => {
             ],
           })}
         />
-      </LatticeProvider>,
+      </Provider>,
     );
 
     expect(screen.getByText("Custom registry component")).toBeVisible();

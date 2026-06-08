@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { cn } from "@/lib/utils";
-import { getOptionalNumberProp, getStringProp } from "@/lattice/core/props";
-import type { NodeProps, RendererComponent } from "@/lattice/core/types";
+import { cn } from "@lattice/lib/utils";
+import { getOptionalNumberProp, getStringProp } from "@lattice/core/props";
+import type { NodeProps, RendererComponent } from "@lattice/core/types";
 import { FormFieldFrame } from "../base/field";
-import { useLatticeForm } from "../context";
+import { useFormContext } from "../context";
 
 type ChoiceOption = {
   label: string;
@@ -26,7 +26,7 @@ function getChoiceOptions(props: NodeProps | undefined): ChoiceOption[] {
   );
 }
 
-declare module "@/lattice/core/types" {
+declare module "@lattice/core/types" {
   interface ComponentProps {
     "form.choice": {
       event?: string;
@@ -40,7 +40,7 @@ declare module "@/lattice/core/types" {
 }
 
 export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
-  const { errors } = useLatticeForm();
+  const { errors } = useFormContext();
   const name = getStringProp(node.props, "name");
   const options = useMemo(() => getChoiceOptions(node.props), [node.props]);
   const fallbackValue = options[0]?.value ?? "";

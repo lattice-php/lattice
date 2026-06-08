@@ -3,7 +3,7 @@ export { dispatchActionEffects, dispatchActionError, isActionEffect } from "./ac
 export { EventBridge } from "./events/event-bridge";
 export { IconRenderer, IconRendererProvider } from "./icons";
 export { useMenu } from "./menu";
-export { LatticeProvider, useRegistry } from "./provider";
+export { Provider, useRegistry } from "./provider";
 export {
   createPlugin,
   createRegistry,
@@ -11,7 +11,7 @@ export {
   extendRegistry,
   lazyComponent,
 } from "./core/registry";
-export { LatticeRenderer } from "./core/renderer";
+export { Renderer } from "./core/renderer";
 export type {
   ComponentProps,
   ComponentType,

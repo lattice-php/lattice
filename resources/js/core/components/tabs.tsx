@@ -1,9 +1,9 @@
 import { router } from "@inertiajs/react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { getStringProp } from "@/lattice/core/props";
-import type { Node, RendererComponent } from "@/lattice/core/types";
-import { cn } from "@/lib/utils";
+import { getStringProp } from "@lattice/core/props";
+import type { Node, RendererComponent } from "@lattice/core/types";
+import { cn } from "@lattice/lib/utils";
 
 type TabsContextValue = {
   activeValue: string;
@@ -93,7 +93,7 @@ function queryUrl(queryKey: string, value: string): string {
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
-declare module "@/lattice/core/types" {
+declare module "@lattice/core/types" {
   interface ComponentProps {
     tab: {
       confirm?: {
