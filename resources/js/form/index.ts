@@ -1,4 +1,4 @@
-import { createLatticePlugin, lazyComponent } from "@/lattice/core/registry";
+import { createPlugin, lazyComponent } from "@/lattice/core/registry";
 import type { RendererComponent, RendererComponentModule } from "@/lattice/core/types";
 import { FormSkeletonComponent } from "./skeleton";
 
@@ -25,7 +25,7 @@ function loadFormComponent<TType extends string>(
   };
 }
 
-export const formComponents = createLatticePlugin({
+export const formComponents = createPlugin({
   components: {
     form: lazyComponent(loadFormComponent("FormComponent"), {
       fallback: FormSkeletonComponent,

@@ -50,11 +50,11 @@ export function lazyComponent<TType extends string>(
   };
 }
 
-export function createLatticePlugin(plugin: Plugin): Plugin {
+export function createPlugin(plugin: Plugin): Plugin {
   return plugin;
 }
 
-export function createLatticeRegistry(...plugins: Plugin[]): ComponentRegistry {
+export function createRegistry(...plugins: Plugin[]): ComponentRegistry {
   return plugins.reduce<ComponentRegistry>(
     (registry, plugin) => ({
       ...registry,
@@ -64,12 +64,12 @@ export function createLatticeRegistry(...plugins: Plugin[]): ComponentRegistry {
   );
 }
 
-export function extendLatticeRegistry(
+export function extendRegistry(
   registry: ComponentRegistry,
   ...plugins: Plugin[]
 ): ComponentRegistry {
   return {
     ...registry,
-    ...createLatticeRegistry(...plugins),
+    ...createRegistry(...plugins),
   };
 }

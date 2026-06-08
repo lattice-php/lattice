@@ -18,7 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { IconRendererProps } from "./icon-renderer";
+import type { IconRendererProps } from "@/lattice";
 
 const bundledIcons = {
   "arrow-down": ArrowDown,

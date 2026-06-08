@@ -1,4 +1,4 @@
-import { createLatticePlugin, lazyComponent } from "@/lattice/core/registry";
+import { createPlugin, lazyComponent } from "@/lattice/core/registry";
 import type { RendererComponent, RendererComponentModule } from "@/lattice/core/types";
 
 type AuthComponentName = "PasskeyVerifyComponent" | "TwoFactorChallengeFormComponent";
@@ -17,7 +17,7 @@ function loadAuthComponent<TType extends string>(
   };
 }
 
-export const authComponents = createLatticePlugin({
+export const authComponents = createPlugin({
   components: {
     "auth.passkey-verify": lazyComponent(loadAuthComponent("PasskeyVerifyComponent")),
     "auth.two-factor-challenge-form": lazyComponent(

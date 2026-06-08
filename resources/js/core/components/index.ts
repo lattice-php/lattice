@@ -1,4 +1,4 @@
-import { createLatticePlugin, eagerComponent } from "@/lattice/core/registry";
+import { createPlugin, eagerComponent } from "@/lattice/core/registry";
 import BadgeComponent from "./badge";
 import ButtonComponent from "./button";
 import CardComponent from "./card";
@@ -11,7 +11,7 @@ import StackComponent from "./stack";
 import TabComponent, { TabsComponent } from "./tabs";
 import TextComponent from "./text";
 
-export const coreComponents = createLatticePlugin({
+export const coreComponents = createPlugin({
   components: {
     badge: eagerComponent(BadgeComponent),
     button: eagerComponent(ButtonComponent),

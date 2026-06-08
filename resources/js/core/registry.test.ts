@@ -1,10 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  createLatticePlugin,
-  createLatticeRegistry,
-  eagerComponent,
-  lazyComponent,
-} from "./registry";
+import { createPlugin, createRegistry, eagerComponent, lazyComponent } from "@/lattice";
 import type { RendererComponent } from "./types";
 
 const EagerComponent: RendererComponent<"test.eager"> = () => null;
@@ -48,20 +43,20 @@ describe("lattice registry", () => {
   });
 
   it("merges plugins into a registry", () => {
-    const firstPlugin = createLatticePlugin({
+    const firstPlugin = createPlugin({
       components: {
         first: eagerComponent(EagerComponent),
       },
       name: "first",
     });
-    const secondPlugin = createLatticePlugin({
+    const secondPlugin = createPlugin({
       components: {
         second: eagerComponent(EagerComponent),
       },
       name: "second",
     });
 
-    expect(createLatticeRegistry(firstPlugin, secondPlugin)).toHaveProperty("first");
-    expect(createLatticeRegistry(firstPlugin, secondPlugin)).toHaveProperty("second");
+    expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("first");
+    expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("second");
   });
 });

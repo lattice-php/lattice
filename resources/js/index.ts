@@ -1,14 +1,14 @@
-export { latticeRegistry } from "./registry";
+export { registry } from "./registry";
 export { dispatchActionEffects, dispatchActionError, isActionEffect } from "./action/effects";
 export { EventBridge } from "./events/event-bridge";
 export { IconRenderer, IconRendererProvider } from "./icons";
 export { useMenu } from "./menu";
-export { LatticeProvider, useLatticeRegistry } from "./provider";
+export { LatticeProvider, useRegistry } from "./provider";
 export {
-  createLatticePlugin,
-  createLatticeRegistry,
+  createPlugin,
+  createRegistry,
   eagerComponent,
-  extendLatticeRegistry,
+  extendRegistry,
   lazyComponent,
 } from "./core/registry";
 export { LatticeRenderer } from "./core/renderer";

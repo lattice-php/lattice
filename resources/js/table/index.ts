@@ -1,6 +1,6 @@
-import { createLatticePlugin, lazyComponent } from "@/lattice/core/registry";
+import { createPlugin, lazyComponent } from "@/lattice/core/registry";
 
-export const tableComponents = createLatticePlugin({
+export const tableComponents = createPlugin({
   components: {
     table: lazyComponent(() => import("./components/table")),
   },

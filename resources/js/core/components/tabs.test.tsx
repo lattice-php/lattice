@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createLatticeRegistry, eagerComponent } from "@/lattice/core/registry";
+import { createRegistry, eagerComponent } from "@/lattice/core/registry";
 import { LatticeRenderer } from "@/lattice/core/renderer";
 import type { RendererComponent } from "@/lattice/core/types";
 import TabComponent, { TabsComponent } from "./tabs";
@@ -21,7 +21,7 @@ describe("Lattice tabs component", () => {
   });
 
   it("switches panels on the client without navigation", () => {
-    const registry = createLatticeRegistry({
+    const registry = createRegistry({
       components: {
         tab: eagerComponent(TabComponent),
         tabs: eagerComponent(TabsComponent),
@@ -91,7 +91,7 @@ describe("Lattice tabs component", () => {
   it("uses the configured query key for the initial active tab and url updates", () => {
     window.history.replaceState({}, "", "/settings?settings-tab=security");
 
-    const registry = createLatticeRegistry({
+    const registry = createRegistry({
       components: {
         tab: eagerComponent(TabComponent),
         tabs: eagerComponent(TabsComponent),
@@ -156,7 +156,7 @@ describe("Lattice tabs component", () => {
   });
 
   it("visits the query url when switching to a confirmed tab", () => {
-    const registry = createLatticeRegistry({
+    const registry = createRegistry({
       components: {
         tab: eagerComponent(TabComponent),
         tabs: eagerComponent(TabsComponent),
@@ -217,7 +217,7 @@ describe("Lattice tabs component", () => {
   });
 
   it("only renders inactive panel children after the tab is opened", () => {
-    const registry = createLatticeRegistry({
+    const registry = createRegistry({
       components: {
         tab: eagerComponent(TabComponent),
         tabs: eagerComponent(TabsComponent),

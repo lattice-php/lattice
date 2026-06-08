@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { EventBridge } from "./event-bridge";
+import { EventBridge } from "@/lattice";
 
 type FlashListener = (
   event: CustomEvent<{

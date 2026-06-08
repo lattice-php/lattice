@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createLatticeRegistry, eagerComponent } from "@/lattice/core/registry";
+import { createRegistry, eagerComponent } from "@/lattice/core/registry";
 import { LatticeRenderer } from "@/lattice/core/renderer";
 import type { RendererComponent } from "@/lattice/core/types";
 import FragmentComponent from "./fragment";
@@ -15,7 +15,7 @@ describe("Lattice modal and fragment components", () => {
   });
 
   it("opens and closes modal content from lattice events", () => {
-    const registry = createLatticeRegistry({
+    const registry = createRegistry({
       components: {
         modal: eagerComponent(ModalComponent),
         text: eagerComponent(TextComponent),
@@ -91,7 +91,7 @@ describe("Lattice modal and fragment components", () => {
 
     vi.stubGlobal("fetch", fetch);
 
-    const registry = createLatticeRegistry({
+    const registry = createRegistry({
       components: {
         fragment: eagerComponent(FragmentComponent),
         text: eagerComponent(TextProbe),
@@ -165,7 +165,7 @@ describe("Lattice modal and fragment components", () => {
 
     vi.stubGlobal("fetch", fetch);
 
-    const registry = createLatticeRegistry({
+    const registry = createRegistry({
       components: {
         fragment: eagerComponent(FragmentComponent),
         text: eagerComponent(TextProbe),

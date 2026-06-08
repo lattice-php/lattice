@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createLatticeRegistry, eagerComponent, lazyComponent } from "./registry";
-import { LatticeRenderer } from "./renderer";
+import { createRegistry, eagerComponent, lazyComponent } from "@/lattice";
+import { LatticeRenderer } from "@/lattice";
 import type { RendererComponent, RendererComponentModule } from "./types";
 
 const TestComponent: RendererComponent<"test.component"> = ({ children, node }) => (
@@ -10,7 +10,7 @@ const TestComponent: RendererComponent<"test.component"> = ({ children, node }) 
 
 describe("LatticeRenderer", () => {
   it("renders registered components recursively", () => {
-    const registry = createLatticeRegistry({
+    const registry = createRegistry({
       components: {
         "test.component": eagerComponent(TestComponent),
       },
@@ -59,7 +59,7 @@ describe("LatticeRenderer", () => {
       <div data-testid={`${node.id}-fallback`} />
     );
 
-    const registry = createLatticeRegistry({
+    const registry = createRegistry({
       components: {
         "test.lazy": lazyComponent(
           () => new Promise<RendererComponentModule<"test.lazy">>(() => {}),
