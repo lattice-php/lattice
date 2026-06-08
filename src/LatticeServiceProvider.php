@@ -15,8 +15,10 @@ use Bambamboole\Lattice\Sidebar\SidebarItem;
 use Bambamboole\Lattice\Sidebar\SidebarRegistry;
 use Bambamboole\Lattice\Tables\TableRegistry;
 use Closure;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
+use Inertia\ResponseFactory;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -56,6 +58,13 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
                 return $this;
             });
+        }
+
+        if (! ResponseFactory::hasMacro('toRoute')) {
+            ResponseFactory::macro(
+                'toRoute',
+                fn (BackedEnum|string $route, array|BackedEnum|string|int|null $parameters = [], int $status = 302, array $headers = []): RedirectResponse => to_route($route, $parameters, $status, $headers),
+            );
         }
     }
 

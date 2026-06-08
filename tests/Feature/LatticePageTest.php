@@ -21,9 +21,11 @@ use Bambamboole\Lattice\Components\Form\Choice;
 use Bambamboole\Lattice\Components\Form\Form;
 use Bambamboole\Lattice\Components\Form\PasswordInput;
 use Bambamboole\Lattice\Components\Table\Table;
+use Bambamboole\Lattice\Concerns\CreatesToastMessages;
 use Bambamboole\Lattice\Enums\Align;
 use Bambamboole\Lattice\Enums\Gap;
 use Bambamboole\Lattice\Enums\LucideIcon;
+use Bambamboole\Lattice\Enums\ToastType;
 use Bambamboole\Lattice\Enums\Width;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\FormDefinition;
@@ -43,10 +45,13 @@ use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredPanelFragment;
 use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredPingAction;
 use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
 use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
+use Bambamboole\Lattice\Toasts\ToastMessage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Inertia\ResponseFactory;
+use Inertia\Support\SessionKey;
 use Inertia\Testing\AssertableInertia;
 use Orchestra\Testbench\Factories\UserFactory;
 use Symfony\Component\HttpFoundation\Response;
@@ -747,6 +752,7 @@ test('registered actions serialize their configured endpoint method label and ef
                     [
                         'type' => 'toast',
                         'message' => 'Ready.',
+                        'variant' => 'success',
                     ],
                     [
                         'type' => 'reloadComponent',
@@ -826,8 +832,56 @@ test('registered actions can be handled through the package endpoint', function 
         ->assertJsonPath('data.team', 'trusted-team')
         ->assertJsonPath('effects.0.type', 'toast')
         ->assertJsonPath('effects.0.message', 'Action handled.')
+        ->assertJsonPath('effects.0.variant', 'info')
         ->assertJsonPath('effects.1.type', 'reloadComponent')
         ->assertJsonPath('effects.1.component', 'workbench.users');
+});
+
+test('toast messages serialize for flash data and action effects', function () {
+    Route::get('toast-target', fn () => 'ok')->name('toast.target');
+
+    $response = WorkbenchToastFactory::flashToast(ToastType::Warning, 'Review the settings.')
+        ->toRoute('toast.target');
+    $flashedToast = session()->get(SessionKey::FLASH_DATA, [])['toast'] ?? null;
+
+    expect($response->getTargetUrl())
+        ->toBe(route('toast.target'))
+        ->and($flashedToast)
+        ->toBeInstanceOf(ToastMessage::class);
+
+    assert($flashedToast instanceof ToastMessage);
+
+    expect($flashedToast->toArray())
+        ->toBe([
+            'type' => 'warning',
+            'message' => 'Review the settings.',
+        ])
+        ->and(Effect::toast(ToastType::Warning, 'Review the settings.')->toArray())
+        ->toBe([
+            'type' => 'toast',
+            'variant' => 'warning',
+            'message' => 'Review the settings.',
+        ])
+        ->and(ActionResult::success()->toast('Saved.')->toArray())
+        ->toMatchArray([
+            'effects' => [
+                [
+                    'type' => 'toast',
+                    'variant' => 'success',
+                    'message' => 'Saved.',
+                ],
+            ],
+        ])
+        ->and(ActionResult::success()->toast(ToastType::Warning, 'Review the settings.')->toArray())
+        ->toMatchArray([
+            'effects' => [
+                [
+                    'type' => 'toast',
+                    'variant' => 'warning',
+                    'message' => 'Review the settings.',
+                ],
+            ],
+        ]);
 });
 
 test('registered action endpoints require a valid component reference', function () {
@@ -1724,7 +1778,17 @@ class WorkbenchPingAction extends ActionDefinition
             'handled' => $request->string('name')->toString(),
             'team' => data_get($request->input('context', []), 'team'),
         ])
-            ->toast('Action handled.')
+            ->toast(ToastType::Info, 'Action handled.')
             ->reloadComponent('workbench.users');
+    }
+}
+
+final class WorkbenchToastFactory
+{
+    use CreatesToastMessages;
+
+    public static function flashToast(ToastType $type, string $message): ResponseFactory
+    {
+        return (new self)->toast($type, $message);
     }
 }

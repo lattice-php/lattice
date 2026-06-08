@@ -4,6 +4,7 @@ export type LatticeActionEffect =
   | {
       message?: string;
       type: "toast";
+      variant?: "success" | "info" | "warning" | "error";
     }
   | {
       type: "reloadPage";

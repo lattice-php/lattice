@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Actions;
 
+use Bambamboole\Lattice\Enums\ToastType;
+use Bambamboole\Lattice\Toasts\ToastMessage;
 use JsonSerializable;
 
 final readonly class Effect implements JsonSerializable
@@ -16,9 +18,17 @@ final readonly class Effect implements JsonSerializable
         private array $payload = [],
     ) {}
 
-    public static function toast(string $message): self
+    public static function toast(string|ToastMessage|ToastType $message, ToastType|string|null $type = null): self
     {
-        return new self('toast', ['message' => $message]);
+        $toast = match (true) {
+            $message instanceof ToastMessage => $message,
+            $message instanceof ToastType && is_string($type) => ToastMessage::make($message, $type),
+            is_string($message) && $type instanceof ToastType => ToastMessage::make($type, $message),
+            is_string($message) => ToastMessage::make(ToastType::Success, $message),
+            default => throw new \InvalidArgumentException('A toast message string is required.'),
+        };
+
+        return new self('toast', $toast->toEffectPayload());
     }
 
     public static function reloadComponent(string $component): self
