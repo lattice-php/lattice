@@ -20,7 +20,9 @@ export function FormValuesProvider({
   const [values, setValues] = useState<Record<string, unknown>>(initial);
 
   const setValue = useCallback((name: string, value: unknown) => {
-    setValues((current) => ({ ...current, [name]: value }));
+    setValues((current) =>
+      Object.is(current[name], value) ? current : { ...current, [name]: value },
+    );
   }, []);
 
   const contextValue = useMemo(() => ({ values, setValue }), [values, setValue]);
