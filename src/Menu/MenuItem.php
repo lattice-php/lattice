@@ -8,6 +8,9 @@ use BackedEnum;
 use Bambamboole\Lattice\Enums\HttpMethod;
 use Closure;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class MenuItem
 {
     private ?string $group = null;
