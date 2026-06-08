@@ -8,10 +8,13 @@ use Bambamboole\Lattice\Actions\BulkActionRegistry;
 use Bambamboole\Lattice\Concerns\InteractsWithLatticeComponents;
 use Bambamboole\Lattice\Exceptions\UnknownLatticeComponent;
 use Bambamboole\Lattice\Security\ComponentReferenceSigner;
+use Bambamboole\Lattice\Tables\InvalidTableQuery;
 use Bambamboole\Lattice\Tables\TableDefinition;
+use Bambamboole\Lattice\Tables\TableQuery;
 use Bambamboole\Lattice\Tables\TableRegistry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class BulkActionController
 {
@@ -27,21 +30,48 @@ class BulkActionController
     {
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->bulkActions, 'bulkAction', $bulkAction);
 
-        $table = $this->resolveTable($request);
+        $tableKey = $this->trustedTableKey($request);
+        $table = $this->resolveTable($tableKey);
 
         abort_unless($table->authorize($request), 403);
 
-        $records = $table->resolveSelection($this->selectedKeys($request));
+        try {
+            $records = $this->resolveRecords($request, $table, $tableKey);
+        } catch (InvalidTableQuery $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+                'errors' => $exception->errors,
+            ], 422);
+        }
 
         return response()->json($definition->handle($records, $request)->toArray());
     }
 
-    private function resolveTable(Request $request): TableDefinition
+    /**
+     * @return Collection<int, mixed>
+     */
+    private function resolveRecords(Request $request, TableDefinition $table, string $tableKey): Collection
+    {
+        if ($request->boolean('allMatching')) {
+            return $table->resolveMatching(
+                TableQuery::fromRequest($request, $table->columns(), $tableKey, $table->perPage()),
+            );
+        }
+
+        return $table->resolveSelection($this->selectedKeys($request));
+    }
+
+    private function trustedTableKey(Request $request): string
     {
         $key = data_get($request->input('context', []), 'table');
 
         abort_unless(is_string($key), 422);
 
+        return $key;
+    }
+
+    private function resolveTable(string $key): TableDefinition
+    {
         try {
             return $this->tables->resolve($key);
         } catch (UnknownLatticeComponent) {

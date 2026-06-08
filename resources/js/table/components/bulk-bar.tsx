@@ -18,6 +18,7 @@ type BulkResponse = {
 
 type BulkData = {
   _lattice?: string;
+  allMatching?: boolean;
   selected?: string[];
 };
 
@@ -28,10 +29,20 @@ function getEffects(value: unknown): ActionEffect[] {
 export function BulkBar({
   actions,
   selectedKeys,
+  allMatching,
+  total,
+  query,
+  canSelectAllMatching,
+  onSelectAllMatching,
   onCompleted,
 }: {
   actions: BulkAction[];
   selectedKeys: string[];
+  allMatching: boolean;
+  total?: number;
+  query: Record<string, unknown>;
+  canSelectAllMatching: boolean;
+  onSelectAllMatching: () => void;
   onCompleted: () => void;
 }) {
   const http = useHttp<BulkData, BulkResponse>({});
@@ -41,7 +52,7 @@ export function BulkBar({
     try {
       http.transform((data) => ({
         ...data,
-        selected: selectedKeys,
+        ...(allMatching ? { allMatching: true, ...query } : { selected: selectedKeys }),
         ...(action.ref ? { _lattice: action.ref } : {}),
       }));
 
@@ -65,9 +76,22 @@ export function BulkBar({
     void submit(action);
   }
 
+  const count = allMatching ? (total ?? selectedKeys.length) : selectedKeys.length;
+
   return (
     <div className="flex flex-wrap items-center gap-3 border-b border-lt-border bg-lt-muted/50 p-4 text-sm">
-      <span className="font-medium">{`${selectedKeys.length} selected`}</span>
+      <span className="font-medium">
+        {allMatching ? `All ${count} selected` : `${count} selected`}
+      </span>
+      {canSelectAllMatching && (
+        <button
+          type="button"
+          className="font-medium text-lt-primary underline underline-offset-2"
+          onClick={onSelectAllMatching}
+        >
+          {`Select all ${total} matching`}
+        </button>
+      )}
       <div className="flex flex-wrap items-center gap-2">
         {actions.map((action) => (
           <Button

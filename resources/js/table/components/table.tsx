@@ -1,7 +1,7 @@
 import type { RendererComponent } from "@lattice/core/types";
 import { getBulkActions } from "../bulk";
 import { getRowKey, getRowMeta } from "../payload";
-import { getColumnGridTemplate, getVisiblePages } from "../query";
+import { getColumnGridTemplate, getQueryParams, getVisiblePages } from "../query";
 import { useTable } from "../use-table";
 import { useTableSelection } from "../use-table-selection";
 import { BulkBar } from "./bulk-bar";
@@ -55,10 +55,20 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
       data-lattice-component={node.id}
       className="overflow-hidden rounded-lt-sm border border-lt-border"
     >
-      {hasBulkActions && selection.selectedKeys.length > 0 && (
+      {hasBulkActions && selection.active && (
         <BulkBar
           actions={bulkActions}
           selectedKeys={selection.selectedKeys}
+          allMatching={selection.allMatching}
+          total={pagination.total}
+          query={getQueryParams(state)}
+          canSelectAllMatching={
+            selection.allVisibleSelected &&
+            !selection.allMatching &&
+            pagination.total !== undefined &&
+            pagination.total > selection.selectedKeys.length
+          }
+          onSelectAllMatching={selection.selectAllMatching}
           onCompleted={selection.clear}
         />
       )}
@@ -131,7 +141,7 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
                       <input
                         type="checkbox"
                         aria-label={`Select row ${key}`}
-                        checked={selection.selected.has(key)}
+                        checked={selection.isSelected(key)}
                         onChange={() => selection.toggle(key)}
                       />
                     </div>

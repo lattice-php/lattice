@@ -47,6 +47,25 @@ export function buildEndpoint(endpoint: string, state: TableState, componentRef:
   return `${url.pathname}${url.search}`;
 }
 
+export function getQueryParams(state: TableState): Record<string, unknown> {
+  const params: Record<string, unknown> = {};
+  const filters = Object.fromEntries(
+    Object.entries(state.filters).filter(([, value]) => value !== ""),
+  );
+
+  if (Object.keys(filters).length > 0) {
+    params.filter = filters;
+  }
+
+  if (state.sorts.length > 0) {
+    params.sort = state.sorts
+      .map((sort) => (sort.direction === "desc" ? `-${sort.key}` : sort.key))
+      .join(",");
+  }
+
+  return params;
+}
+
 export function getSortDirectionLabel(direction: string): string {
   return direction === "desc" ? "descending" : "ascending";
 }

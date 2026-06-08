@@ -33,8 +33,8 @@ final readonly class TableQuery
      */
     public static function fromRequest(Request $request, array $columns, string $table, int $defaultPerPage = 25): self
     {
-        $filters = self::parseFilters($request->query('filter', []));
-        $sorts = self::parseSorts($request->query('sort'));
+        $filters = self::parseFilters($request->input('filter', []));
+        $sorts = self::parseSorts($request->input('sort'));
 
         self::validateFilters($filters, $columns, $table);
         self::validateSorts($sorts, $columns, $table);

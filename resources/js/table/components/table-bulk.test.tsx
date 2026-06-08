@@ -76,4 +76,31 @@ describe("table bulk actions", () => {
 
     expect(screen.getByText("2 selected")).toBeVisible();
   });
+
+  it("dispatches all matching rows with the current filter", async () => {
+    const matchingNode = {
+      ...node,
+      props: {
+        ...node.props,
+        state: { filters: { status: "active" }, sorts: [], page: 1, perPage: 25 },
+        pagination: { total: 50, currentPage: 1, lastPage: 2, mode: "table" },
+      },
+    } satisfies Node<"table">;
+
+    render(<TableComponent node={matchingNode}>{null}</TableComponent>);
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "Select all rows" }));
+    fireEvent.click(screen.getByRole("button", { name: "Select all 50 matching" }));
+
+    expect(screen.getByText("All 50 selected")).toBeVisible();
+
+    fireEvent.click(screen.getByRole("button", { name: "Archive selected" }));
+
+    await waitFor(() => expect(http.patch).toHaveBeenCalled());
+    expect(http.transformer({})).toEqual({
+      allMatching: true,
+      filter: { status: "active" },
+      _lattice: "sealed-ref",
+    });
+  });
 });

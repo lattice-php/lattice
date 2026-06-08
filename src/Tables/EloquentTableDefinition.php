@@ -99,6 +99,14 @@ abstract class EloquentTableDefinition extends TableDefinition
     }
 
     /**
+     * @return Collection<int, mixed>
+     */
+    public function resolveMatching(TableQuery $query): Collection
+    {
+        return $this->applyQuery($this->builder($query), $query)->get();
+    }
+
+    /**
      * @param  Builder<TModel>  $builder
      */
     private function applyExactFilter(Builder $builder, string $key, mixed $value): void

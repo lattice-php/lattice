@@ -421,3 +421,47 @@ test('the products table serializes bulk actions bound to the table', function (
         ->toBe('/lattice/bulk-actions/workbench.products.archive-selected')
         ->and($bulkActions[0]['props']['ref'])->toBeString();
 });
+
+test('bulk actions can target every row matching the current filter', function () {
+    Lattice::tables([ProductsTable::class]);
+    Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
+
+    Product::factory()->count(3)->create(['status' => 'active']);
+    $draft = Product::factory()->create(['status' => 'draft']);
+
+    $ref = app(ComponentReferenceSigner::class)->seal(
+        'bulkAction',
+        'workbench.products.archive-selected',
+        ['table' => 'workbench.products'],
+    );
+
+    patch('/lattice/bulk-actions/workbench.products.archive-selected', [
+        '_lattice' => $ref,
+        'allMatching' => true,
+        'filter' => ['status' => 'active'],
+    ])
+        ->assertOk()
+        ->assertJsonPath('data.archived', 3);
+
+    expect(Product::query()->where('status', 'archived')->count())->toBe(3)
+        ->and($draft->fresh()->status)->toBe('draft');
+});
+
+test('bulk all-matching validates the filter against the table columns', function () {
+    Lattice::tables([ProductsTable::class]);
+    Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
+
+    $ref = app(ComponentReferenceSigner::class)->seal(
+        'bulkAction',
+        'workbench.products.archive-selected',
+        ['table' => 'workbench.products'],
+    );
+
+    patch('/lattice/bulk-actions/workbench.products.archive-selected', [
+        '_lattice' => $ref,
+        'allMatching' => true,
+        'filter' => ['id' => '1'],
+    ])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.filter.0', 'Filter [id] is not allowed for table [workbench.products].');
+});

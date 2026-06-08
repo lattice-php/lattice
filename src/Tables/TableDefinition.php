@@ -66,4 +66,12 @@ abstract class TableDefinition extends Definition
     {
         return new Collection;
     }
+
+    /**
+     * @return Collection<int, mixed>
+     */
+    public function resolveMatching(TableQuery $query): Collection
+    {
+        return new Collection;
+    }
 }
