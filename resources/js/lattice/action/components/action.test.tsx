@@ -17,6 +17,7 @@ const http = vi.hoisted(() => ({
 vi.mock("@inertiajs/react", () => ({
   router: {
     reload: vi.fn<() => void>(),
+    visit: vi.fn<(url: string) => void>(),
   },
   useHttp: () => http,
 }));
@@ -29,6 +30,7 @@ describe("Lattice action component", () => {
     http.put.mockReset();
     http.processing = false;
     vi.mocked(router.reload).mockReset();
+    vi.mocked(router.visit).mockReset();
   });
 
   it("submits the configured action endpoint", async () => {
@@ -50,6 +52,25 @@ describe("Lattice action component", () => {
     await waitFor(() => {
       expect(http.post).toHaveBeenCalledWith("/lattice/actions/send-test-email");
     });
+  });
+
+  it("visits get action endpoints through inertia", () => {
+    const node = {
+      props: {
+        endpoint: "/settings/teams/acme",
+        label: "Edit",
+        method: "get",
+        variant: "secondary",
+      },
+      type: "action",
+    } satisfies LatticeNode<"action">;
+
+    render(<ActionComponent node={node}>{null}</ActionComponent>);
+
+    fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+
+    expect(router.visit).toHaveBeenCalledWith("/settings/teams/acme");
+    expect(http.post).not.toHaveBeenCalled();
   });
 
   it("renders configured icons through the icon renderer", () => {

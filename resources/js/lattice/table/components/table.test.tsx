@@ -80,6 +80,7 @@ describe("Lattice table component", () => {
     expect(screen.getByRole("textbox", { name: "Filter Name" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Apply filters" })).toBeVisible();
     expect(screen.getByRole("columnheader", { name: "Status" })).toBeVisible();
+    expect(screen.getByRole("columnheader", { name: "Status" })).toHaveClass("px-4", "py-3");
 
     expect(screen.getByRole("cell", { name: "Taylor" })).toBeVisible();
     expect(screen.getByRole("cell", { name: "Active" })).toBeVisible();

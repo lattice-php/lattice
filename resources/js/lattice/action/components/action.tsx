@@ -1,4 +1,4 @@
-import { useHttp } from "@inertiajs/react";
+import { router, useHttp } from "@inertiajs/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -8,7 +8,7 @@ import { IconRenderer } from "@/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, isActionEffect } from "../effects";
 import type { LatticeActionEffect } from "../effects";
 
-type LatticeActionMethod = "delete" | "patch" | "post" | "put";
+type LatticeActionMethod = "delete" | "get" | "patch" | "post" | "put";
 type LatticeActionVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
 
 type LatticeActionConfirmation = {
@@ -38,7 +38,7 @@ declare module "@/lattice/core/types" {
   }
 }
 
-const actionMethods = ["delete", "patch", "post", "put"] satisfies LatticeActionMethod[];
+const actionMethods = ["delete", "get", "patch", "post", "put"] satisfies LatticeActionMethod[];
 
 function getActionMethod(props: LatticeNodeProps | undefined): LatticeActionMethod {
   const method = getStringProp(props, "method", "post");
@@ -77,6 +77,13 @@ const ActionComponent: LatticeRendererComponent<"action"> = ({ node }) => {
     }
 
     try {
+      if (method === "get") {
+        router.visit(endpoint);
+        setIsConfirming(false);
+
+        return;
+      }
+
       const response = await http[method](endpoint);
       const responseEffects = getActionEffects(response.effects);
 

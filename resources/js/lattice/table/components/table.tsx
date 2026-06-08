@@ -572,7 +572,7 @@ const TableComponent: LatticeRendererComponent<"table"> = ({ node }) => {
             ))}
             {hasActions && (
               <div
-                className="h-10 px-4 text-right align-middle font-medium text-muted-foreground"
+                className="px-4 py-3 text-right align-middle font-medium text-muted-foreground"
                 role="columnheader"
               >
                 Actions
@@ -726,7 +726,7 @@ function ColumnHeader({
   return (
     <div
       aria-sort={getColumnAriaSort(columnSort)}
-      className="h-10 px-4 text-left align-middle font-medium text-muted-foreground"
+      className="px-4 py-3 text-left align-middle font-medium text-muted-foreground"
       role="columnheader"
     >
       {column.sortable ? (
