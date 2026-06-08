@@ -7,6 +7,7 @@ namespace Bambamboole\Lattice;
 use BadMethodCallException;
 use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionRegistry;
+use Bambamboole\Lattice\Discovery\DefinitionDiscovery;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Fragments\FragmentDefinition;
@@ -21,6 +22,7 @@ class LatticeRegistry
 {
     public function __construct(
         private readonly ActionRegistry $actions,
+        private readonly DefinitionDiscovery $discovery,
         private readonly FormRegistry $forms,
         private readonly FragmentRegistry $fragments,
         private readonly Router $router,
@@ -63,6 +65,27 @@ class LatticeRegistry
     public function sidebar(): SidebarRegistry
     {
         return $this->sidebar;
+    }
+
+    public function discover(string $path, string $namespace): void
+    {
+        $definitions = $this->discovery->discover($path, $namespace);
+
+        if ($definitions['forms'] !== []) {
+            $this->forms($definitions['forms']);
+        }
+
+        if ($definitions['tables'] !== []) {
+            $this->tables($definitions['tables']);
+        }
+
+        if ($definitions['actions'] !== []) {
+            $this->actions($definitions['actions']);
+        }
+
+        if ($definitions['fragments'] !== []) {
+            $this->fragments($definitions['fragments']);
+        }
     }
 
     /**

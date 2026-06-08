@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 return [
+    'discover' => [
+        base_path('app') => 'App',
+    ],
+
     'forms' => [
         'endpoint' => 'lattice/forms/{form}',
         'middleware' => ['web'],

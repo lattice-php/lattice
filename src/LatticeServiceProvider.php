@@ -6,6 +6,7 @@ namespace Bambamboole\Lattice;
 
 use BackedEnum;
 use Bambamboole\Lattice\Actions\ActionRegistry;
+use Bambamboole\Lattice\Discovery\DefinitionDiscovery;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Fragments\FragmentRegistry;
@@ -37,6 +38,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(FragmentRegistry::class);
         $this->app->singleton(ActionRegistry::class);
         $this->app->singleton(SidebarRegistry::class);
+        $this->app->singleton(DefinitionDiscovery::class);
         $this->app->singleton(LatticeRegistry::class);
 
         if (! Router::hasMacro('latticePage')) {
@@ -79,6 +81,23 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         if (is_array($actions) && $actions !== []) {
             Lattice::actions($actions);
+        }
+
+        $discoveryPaths = config('lattice.discover', []);
+
+        if (! is_array($discoveryPaths)) {
+            return;
+        }
+
+        foreach ($discoveryPaths as $path => $namespace) {
+            if (is_array($namespace)) {
+                $path = $namespace['path'] ?? null;
+                $namespace = $namespace['namespace'] ?? null;
+            }
+
+            if (is_string($path) && is_string($namespace)) {
+                Lattice::discover($path, $namespace);
+            }
         }
     }
 }
