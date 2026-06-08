@@ -40,3 +40,10 @@ it('renders textarea, number, slider, and date fields', function (): void {
         ->assertValue('bio', 'Hello world')
         ->assertValue('due', '2026-06-08');
 });
+
+it('renders the rich text editor with a toolbar', function (): void {
+    visit('/dependent-demo')
+        ->assertSee('Article')
+        ->assertPresent('[aria-label="Bold"]')
+        ->assertPresent('input[type="hidden"][name="article"]');
+});

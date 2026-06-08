@@ -9,6 +9,7 @@ use Bambamboole\Lattice\Components\Form\Choice;
 use Bambamboole\Lattice\Components\Form\DateInput;
 use Bambamboole\Lattice\Components\Form\Form as FormComponent;
 use Bambamboole\Lattice\Components\Form\NumberInput;
+use Bambamboole\Lattice\Components\Form\RichEditor;
 use Bambamboole\Lattice\Components\Form\Textarea;
 use Bambamboole\Lattice\Components\Form\TextInput;
 use Bambamboole\Lattice\Forms\FormData;
@@ -40,6 +41,7 @@ class DependentDemoForm extends FormDefinition
                 NumberInput::make('level', 'Level')->slider()->min(0)->max(10),
                 DateInput::make('due', 'Due date'),
                 Textarea::make('bio', 'Bio')->rows(4)->rules(['nullable', 'string', 'max:500']),
+                RichEditor::make('article', 'Article'),
             ]);
     }
 
