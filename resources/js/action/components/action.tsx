@@ -1,4 +1,5 @@
 import { router, useHttp } from "@inertiajs/react";
+import type { Method } from "@inertiajs/core";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -8,7 +9,6 @@ import { IconRenderer } from "@/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, isActionEffect } from "../effects";
 import type { ActionEffect } from "../effects";
 
-type ActionMethod = "delete" | "get" | "patch" | "post" | "put";
 type ActionVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
 
 type ActionConfirmation = {
@@ -37,18 +37,18 @@ declare module "@/lattice/core/types" {
       icon?: string;
       label?: string;
       ref?: string;
-      method?: ActionMethod;
+      method?: Method;
       variant?: ActionVariant;
     };
   }
 }
 
-const actionMethods = ["delete", "get", "patch", "post", "put"] satisfies ActionMethod[];
+const actionMethods = ["delete", "get", "patch", "post", "put"] satisfies Method[];
 
-function getActionMethod(props: NodeProps | undefined): ActionMethod {
+function getActionMethod(props: NodeProps | undefined): Method {
   const method = getStringProp(props, "method", "post");
 
-  return actionMethods.includes(method as ActionMethod) ? (method as ActionMethod) : "post";
+  return actionMethods.includes(method as Method) ? (method as Method) : "post";
 }
 
 function getActionEffects(effects: unknown): ActionEffect[] {

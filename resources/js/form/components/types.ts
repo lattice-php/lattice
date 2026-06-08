@@ -1,4 +1,6 @@
-export type FormMethod = "delete" | "get" | "patch" | "post" | "put";
+import type { Method } from "@inertiajs/core";
+
+export type FormMethod = Method;
 
 export type FormLabelAction = {
   href: string;

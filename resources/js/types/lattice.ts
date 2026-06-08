@@ -1,13 +1,13 @@
 export type {
-  Node,
-  NodeProps,
-  HttpMethod,
   MenuGroup,
   MenuItem,
   MenuPayload,
+  Node,
+  NodeProps,
   PageContainer,
   PageBreadcrumb,
   PageLayout,
   PagePayload,
   RendererComponent,
 } from "@/lattice";
+export type { Method } from "@inertiajs/core";

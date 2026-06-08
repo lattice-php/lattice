@@ -1,3 +1,4 @@
+import type { Method } from "@inertiajs/core";
 import type { ComponentType as ReactComponentType, ReactNode } from "react";
 
 export type NodeProps = Record<string, unknown>;
@@ -34,15 +35,13 @@ export type PageBreadcrumb = {
   title: string;
 };
 
-export type HttpMethod = "get" | "post" | "put" | "patch" | "delete" | (string & {});
-
 export type MenuItem = {
   active: boolean;
   href: string;
   icon: string | null;
   key: string;
   label: string;
-  method: HttpMethod;
+  method: Method;
 };
 
 export type MenuGroup = {

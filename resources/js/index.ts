@@ -15,7 +15,6 @@ export { LatticeRenderer } from "./core/renderer";
 export type {
   ComponentProps,
   ComponentType,
-  HttpMethod,
   KnownPageContainer,
   KnownPageLayout,
   MenuGroup,
@@ -32,6 +31,7 @@ export type {
   RendererComponentProps,
   UnknownComponent,
 } from "./core/types";
+export type { Method } from "@inertiajs/core";
 export type { ActionEffect } from "./action/effects";
 export type { Appearance, ToastMessage, ToastType } from "./events/event-bridge";
 export type { IconRendererFunction, IconRendererProps } from "./icons";
