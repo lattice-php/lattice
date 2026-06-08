@@ -31,6 +31,10 @@ class FormController
 
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->forms, 'form', $form);
 
+        if ($request->boolean('_resolve')) {
+            return new JsonResponse($definition->resolveFields($request));
+        }
+
         if ($request->isPrecognitive()) {
             return $this->validatePrecognitive($request, $definition);
         }

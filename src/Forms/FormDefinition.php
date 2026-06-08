@@ -31,6 +31,31 @@ abstract class FormDefinition extends Definition
     }
 
     /**
+     * @return array{fields: array<string, mixed>, values: array<string, mixed>}
+     */
+    public function resolveFields(Request $request): array
+    {
+        $data = FormData::fromRequest($request);
+        $fields = [];
+        $values = [];
+
+        foreach ($this->definition(Form::make('form'), $request)->fields() as $field) {
+            if (! $field->isComputed()) {
+                continue;
+            }
+
+            $field->applyResolution($data, $request);
+            $fields[$field->name()] = $field->toArray();
+
+            if ($field->hasResolvedValue()) {
+                $values[$field->name()] = $field->resolvedValue();
+            }
+        }
+
+        return ['fields' => $fields, 'values' => $values];
+    }
+
+    /**
      * @return array<string, array<int, mixed>>
      */
     protected function rules(Request $request): array
