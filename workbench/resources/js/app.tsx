@@ -2,15 +2,10 @@ import "../css/app.css";
 import { createInertiaApp } from "@inertiajs/react";
 import type { ComponentType } from "react";
 import { createRoot } from "react-dom/client";
+import LatticePage from "../../../resources/js/page";
 
-type PageModule = { default: ComponentType<Record<string, unknown>> };
+type PageModule = { default: ComponentType<any> };
 
-const packagePages = import.meta.glob<PageModule>(
-  ["../../../resources/js/pages/**/*.tsx", "!../../../resources/js/pages/**/*.test.tsx"],
-  {
-    eager: true,
-  },
-);
 const workbenchPages = import.meta.glob<PageModule>("./Pages/**/*.tsx", {
   eager: true,
 });
@@ -18,10 +13,11 @@ const workbenchPages = import.meta.glob<PageModule>("./Pages/**/*.tsx", {
 createInertiaApp({
   strictMode: true,
   resolve: (name: string): PageModule => {
-    return (
-      workbenchPages[`./Pages/${name}.tsx`] ??
-      packagePages[`../../../resources/js/pages/${name}.tsx`]
-    );
+    if (name === "lattice/page") {
+      return { default: LatticePage };
+    }
+
+    return workbenchPages[`./Pages/${name}.tsx`];
   },
   setup({ el, App, props }) {
     if (!el) {

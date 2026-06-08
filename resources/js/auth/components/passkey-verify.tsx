@@ -2,7 +2,7 @@ import type { UrlMethodPair } from "@inertiajs/core";
 import { router } from "@inertiajs/react";
 import { usePasskeyVerify } from "@laravel/passkeys/react";
 import { KeyRound } from "lucide-react";
-import InputError from "@/lattice/form/components/input-error";
+import InputError from "@/lattice/form/components/base/input-error";
 import { Button } from "@/lattice/core/components/button";
 import { Separator } from "@/lattice/auth/components/separator";
 import { Spinner } from "@/lattice/core/components/spinner";

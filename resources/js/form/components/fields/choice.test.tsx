@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import type { Node } from "@/lattice/core/types";
-import { ChoiceComponent } from "./form-components";
+import type { Node } from "resources/js/core/types";
+import { ChoiceComponent } from "./choice";
 
 describe("Lattice form choice component", () => {
   it("renders choices and dispatches change events", () => {

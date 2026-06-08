@@ -11,7 +11,7 @@ type FormComponentName =
   | "SubmitButtonComponent"
   | "TextInputComponent";
 
-const loadFormComponents = () => import("./components/form-components");
+const loadFormComponents = () => import("./components");
 
 function loadFormComponent<TType extends string>(
   name: FormComponentName,
