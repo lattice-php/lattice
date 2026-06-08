@@ -3,7 +3,9 @@ import { cn } from "@lattice/lib/utils";
 import { getOptionalNumberProp, getStringProp } from "@lattice/core/props";
 import type { NodeProps, RendererComponent } from "@lattice/core/types";
 import { FormFieldFrame } from "../base/field";
-import { useFormContext, useFormFieldValue } from "../context";
+import { useFormContext } from "../context";
+import { useDependentField } from "../use-dependent-field";
+import { useFormValue, useSetFormValue } from "../values";
 
 type ChoiceOption = {
   label: string;
@@ -41,15 +43,17 @@ declare module "@lattice/core/types" {
 
 export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
   const { clearErrors, errors, precognitive, validate } = useFormContext();
+  const { hidden, required, readonly, disabled } = useDependentField(node);
   const name = getStringProp(node.props, "name");
+  const setValue = useSetFormValue();
+  const storedValue = useFormValue(name);
   const options = useMemo(() => getChoiceOptions(node.props), [node.props]);
   const fallbackValue = options[0]?.value ?? "";
-  const stateValue = useFormFieldValue(name);
   const value =
-    typeof node.props?.value === "string"
-      ? node.props.value
-      : typeof stateValue === "string" || typeof stateValue === "number"
-        ? String(stateValue)
+    storedValue !== undefined
+      ? String(storedValue)
+      : typeof node.props?.value === "string"
+        ? node.props.value
         : fallbackValue;
   const event = getStringProp(node.props, "event");
   const [selectedValue, setSelectedValue] = useState(value);
@@ -60,6 +64,10 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
   useEffect(() => {
     setSelectedValue(value);
   }, [value]);
+
+  useEffect(() => {
+    setValue(name, selectedValue);
+  }, [name, selectedValue, setValue]);
 
   useEffect(() => {
     validateRef.current = validate;
@@ -95,12 +103,19 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
     }
   }
 
-  if (options.length === 0) {
+  if (hidden || options.length === 0) {
     return null;
   }
 
+  const locked = readonly || disabled;
+
   return (
-    <FormFieldFrame error={errors[name]} label={getStringProp(node.props, "label")} name={name}>
+    <FormFieldFrame
+      error={errors[name]}
+      label={getStringProp(node.props, "label")}
+      name={name}
+      required={required}
+    >
       <input name={name} type="hidden" value={selectedValue} />
       <div
         aria-label={getStringProp(node.props, "label")}
@@ -118,7 +133,9 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
                 isSelected
                   ? "bg-lt-bg text-lt-fg shadow-xs"
                   : "text-lt-muted-fg hover:bg-lt-bg/60 hover:text-lt-fg",
+                locked && "cursor-not-allowed opacity-60",
               )}
+              disabled={locked}
               key={option.value}
               onClick={() => selectOption(option.value)}
               role="radio"
