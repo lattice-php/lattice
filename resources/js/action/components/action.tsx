@@ -1,8 +1,8 @@
 import { router, useHttp } from "@inertiajs/react";
 import type { Method } from "@inertiajs/core";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/lattice/core/components/button";
+import { Spinner } from "@/lattice/core/components/spinner";
 import { getStringProp } from "@/lattice/core/props";
 import type { NodeProps, RendererComponent } from "@/lattice/core/types";
 import { IconRenderer } from "@/lattice/icons";

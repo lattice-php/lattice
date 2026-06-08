@@ -1,5 +1,7 @@
 import type { Method } from "@inertiajs/core";
-import TextLink from "@/components/text-link";
+import { Link } from "@inertiajs/react";
+import type { ComponentProps } from "react";
+import { cn } from "@/lib/utils";
 import { getOptionalNumberProp, getStringProp } from "@/lattice/core/props";
 import type { RendererComponent } from "@/lattice/core/types";
 
@@ -12,6 +14,20 @@ declare module "@/lattice/core/types" {
       tabIndex?: number;
     };
   }
+}
+
+function TextLink({ className = "", children, ...props }: ComponentProps<typeof Link>) {
+  return (
+    <Link
+      className={cn(
+        "text-lt-fg underline decoration-lt-border underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-lt-border",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </Link>
+  );
 }
 
 function getLinkMethod(method: string): Method {
@@ -33,3 +49,4 @@ const LinkComponent: RendererComponent<"link"> = ({ node }) => (
 );
 
 export default LinkComponent;
+export { TextLink };

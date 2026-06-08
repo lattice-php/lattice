@@ -1,12 +1,12 @@
 import { Form as InertiaForm } from "@inertiajs/react";
 import type { FormDataConvertible } from "@inertiajs/core";
 import { useEffect, useMemo, useState } from "react";
-import PasswordInput from "@/components/password-input";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Spinner } from "@/components/ui/spinner";
+import PasswordInput from "@/lattice/form/components/password-input";
+import { Button } from "@/lattice/core/components/button";
+import { Checkbox } from "@/lattice/form/components/checkbox";
+import { Input } from "@/lattice/form/components/input";
+import { Label } from "@/lattice/form/components/label";
+import { Spinner } from "@/lattice/core/components/spinner";
 import { cn } from "@/lib/utils";
 import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@/lattice/core/props";
 import type { NodeProps, RendererComponent } from "@/lattice/core/types";

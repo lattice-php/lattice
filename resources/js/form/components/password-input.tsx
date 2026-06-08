@@ -1,7 +1,7 @@
 import { Eye, EyeOff } from "lucide-react";
 import type { ComponentProps, Ref } from "react";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/lattice/form/components/input";
 import { cn } from "@/lib/utils";
 
 type PasswordInputProps = Omit<ComponentProps<"input">, "type"> & {

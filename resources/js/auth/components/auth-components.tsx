@@ -1,12 +1,12 @@
 import { Form as InertiaForm } from "@inertiajs/react";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useMemo, useState } from "react";
-import InputError from "@/components/input-error";
-import PasskeyVerify from "@/components/passkey-verify";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { Spinner } from "@/components/ui/spinner";
+import InputError from "@/lattice/form/components/input-error";
+import PasskeyVerify from "@/lattice/auth/components/passkey-verify";
+import { Button } from "@/lattice/core/components/button";
+import { Input } from "@/lattice/form/components/input";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/lattice/auth/components/input-otp";
+import { Spinner } from "@/lattice/core/components/spinner";
 import { getStringProp } from "@/lattice/core/props";
 import type { RendererComponent } from "@/lattice/core/types";
 

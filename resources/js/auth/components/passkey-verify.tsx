@@ -2,10 +2,10 @@ import type { UrlMethodPair } from "@inertiajs/core";
 import { router } from "@inertiajs/react";
 import { usePasskeyVerify } from "@laravel/passkeys/react";
 import { KeyRound } from "lucide-react";
-import InputError from "@/components/input-error";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Spinner } from "@/components/ui/spinner";
+import InputError from "@/lattice/form/components/input-error";
+import { Button } from "@/lattice/core/components/button";
+import { Separator } from "@/lattice/auth/components/separator";
+import { Spinner } from "@/lattice/core/components/spinner";
 
 type Props = {
   routes?: {

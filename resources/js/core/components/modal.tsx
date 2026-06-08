@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/lattice/core/components/button";
 import { getStringProp } from "@/lattice/core/props";
 import type { RendererComponent } from "@/lattice/core/types";
 
