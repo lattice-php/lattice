@@ -8,19 +8,13 @@ use Illuminate\Http\Request;
 
 function makeField(string $name = 'price', string $label = 'Price'): Field
 {
-    return new class($name, $label) extends Field
+    return (new class extends Field
     {
-        public function __construct(string $name, string $label)
-        {
-            parent::__construct();
-            $this->props(['name' => $name, 'label' => $label]);
-        }
-
         protected function type(): string
         {
             return 'form.test-field';
         }
-    };
+    })->props(['name' => $name, 'label' => $label]);
 }
 
 it('exposes its name and serializes name/label', function (): void {
