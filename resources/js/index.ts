@@ -3,6 +3,7 @@ export { dispatchActionEffects, dispatchActionError, isActionEffect } from "./ac
 export { EventBridge } from "./events/event-bridge";
 export { IconRenderer, IconRendererProvider } from "./icons";
 export { LatticeSidebar } from "./sidebar";
+export { LatticeProvider, useLatticeRegistry } from "./provider";
 export {
   createLatticePlugin,
   createLatticeRegistry,
@@ -19,6 +20,7 @@ export type {
   LatticeNode,
   LatticeNodeProps,
   LatticePageContainer,
+  LatticePageBreadcrumb,
   LatticePageLayout,
   LatticePagePayload,
   LatticeSidebarGroup,

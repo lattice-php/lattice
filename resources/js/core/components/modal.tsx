@@ -81,7 +81,12 @@ const ModalComponent: LatticeRendererComponent<"modal"> = ({ children, node }) =
             )}
           </div>
 
-          <Button aria-label={closeLabel} onClick={() => setIsOpen(false)} size="icon" variant="ghost">
+          <Button
+            aria-label={closeLabel}
+            onClick={() => setIsOpen(false)}
+            size="icon"
+            variant="ghost"
+          >
             <X aria-hidden="true" className="size-4" />
           </Button>
         </div>

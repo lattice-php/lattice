@@ -12,7 +12,8 @@ const http = vi.hoisted(() => ({
   post: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
   processing: false,
   put: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  transform: vi.fn<(callback: (data: Record<string, unknown>) => Record<string, unknown>) => void>(),
+  transform:
+    vi.fn<(callback: (data: Record<string, unknown>) => Record<string, unknown>) => void>(),
 }));
 
 vi.mock("@inertiajs/react", () => ({

@@ -5,9 +5,12 @@ import { createRoot } from "react-dom/client";
 
 type PageModule = { default: ComponentType<Record<string, unknown>> };
 
-const packagePages = import.meta.glob<PageModule>("../../../resources/js/pages/**/*.tsx", {
-  eager: true,
-});
+const packagePages = import.meta.glob<PageModule>(
+  ["../../../resources/js/pages/**/*.tsx", "!../../../resources/js/pages/**/*.test.tsx"],
+  {
+    eager: true,
+  },
+);
 const workbenchPages = import.meta.glob<PageModule>("./Pages/**/*.tsx", {
   eager: true,
 });

@@ -143,7 +143,9 @@ export const FormComponent: LatticeRendererComponent<"form"> = ({ children, node
       resetOnSuccess={resetOnSuccess}
       transform={(data) => ({
         ...data,
-        ...(componentRef ? ({ _lattice: componentRef } satisfies Record<string, FormDataConvertible>) : {}),
+        ...(componentRef
+          ? ({ _lattice: componentRef } satisfies Record<string, FormDataConvertible>)
+          : {}),
       })}
       className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-lg border bg-card p-6 shadow-xs"
     >

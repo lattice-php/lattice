@@ -21,11 +21,17 @@ export type LatticeNode<TType extends string = string> = {
 };
 
 export type LatticePagePayload = {
+  breadcrumbs: LatticePageBreadcrumb[];
   components: LatticeNode[];
   container: LatticePageContainer;
   layout: LatticePageLayout;
   sidebar: LatticeSidebarPayload;
   title: string | null;
+};
+
+export type LatticePageBreadcrumb = {
+  href: string;
+  title: string;
 };
 
 export type LatticeSidebarItem = {

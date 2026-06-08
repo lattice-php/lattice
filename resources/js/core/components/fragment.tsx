@@ -40,10 +40,7 @@ function getComponents(value: unknown): LatticeNode[] {
 
   return value.filter(
     (node): node is LatticeNode =>
-      typeof node === "object" &&
-      node !== null &&
-      "type" in node &&
-      typeof node.type === "string",
+      typeof node === "object" && node !== null && "type" in node && typeof node.type === "string",
   );
 }
 

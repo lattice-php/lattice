@@ -26,10 +26,7 @@ describe("Lattice form choice component", () => {
     render(<ChoiceComponent node={node}>{null}</ChoiceComponent>);
 
     expect(screen.getByLabelText("Appearance")).toBeVisible();
-    expect(screen.getByRole("radio", { name: "System" })).toHaveAttribute(
-      "aria-checked",
-      "true",
-    );
+    expect(screen.getByRole("radio", { name: "System" })).toHaveAttribute("aria-checked", "true");
 
     fireEvent.click(screen.getByRole("radio", { name: "Dark" }));
 

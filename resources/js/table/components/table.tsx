@@ -262,11 +262,7 @@ function SortIndicator({ sort }: { sort: TableSort | undefined }) {
   return <ChevronsUpDown aria-hidden="true" className="size-3.5 opacity-50" />;
 }
 
-function buildEndpoint(
-  endpoint: string,
-  state: TableState,
-  componentRef: string,
-): string {
+function buildEndpoint(endpoint: string, state: TableState, componentRef: string): string {
   const url = new URL(endpoint, window.location.origin);
 
   if (componentRef) {

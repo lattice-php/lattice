@@ -2,6 +2,7 @@ export type {
   LatticeNode,
   LatticeNodeProps,
   LatticePageContainer,
+  LatticePageBreadcrumb,
   LatticePageLayout,
   LatticePagePayload,
   LatticeRendererComponent,

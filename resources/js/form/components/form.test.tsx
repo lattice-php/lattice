@@ -155,7 +155,10 @@ describe("Lattice form schema components", () => {
       "name",
       "password_confirmation",
     );
-    expect(screen.getByLabelText("Confirm password")).toHaveAttribute("passwordrules", "minlength:8");
+    expect(screen.getByLabelText("Confirm password")).toHaveAttribute(
+      "passwordrules",
+      "minlength:8",
+    );
     expect(screen.getByRole("checkbox", { name: "Remember me" })).toBeVisible();
     expect(screen.getByRole("link", { name: "Forgot your password?" })).toHaveAttribute(
       "href",
