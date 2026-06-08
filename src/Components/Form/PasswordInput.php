@@ -2,18 +2,8 @@
 
 namespace Bambamboole\Lattice\Components\Form;
 
-use Bambamboole\Lattice\Components\Core\Component;
-
-class PasswordInput extends Component
+class PasswordInput extends Field
 {
-    public static function make(string $name, string $label): static
-    {
-        return (new static)->props([
-            'label' => $label,
-            'name' => $name,
-        ]);
-    }
-
     public function placeholder(string $placeholder): static
     {
         return $this->prop('placeholder', $placeholder);

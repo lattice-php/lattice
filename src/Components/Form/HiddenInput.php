@@ -2,9 +2,7 @@
 
 namespace Bambamboole\Lattice\Components\Form;
 
-use Bambamboole\Lattice\Components\Core\Component;
-
-class HiddenInput extends Component
+class HiddenInput extends Field
 {
     public static function make(string $name, string $value): static
     {

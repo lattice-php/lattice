@@ -2,18 +2,8 @@
 
 namespace Bambamboole\Lattice\Components\Form;
 
-use Bambamboole\Lattice\Components\Core\Component;
-
-class Choice extends Component
+class Choice extends Field
 {
-    public static function make(string $name, string $label): static
-    {
-        return (new static)->props([
-            'label' => $label,
-            'name' => $name,
-        ]);
-    }
-
     /**
      * @return array{label: string, value: string}
      */

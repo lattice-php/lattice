@@ -2,18 +2,8 @@
 
 namespace Bambamboole\Lattice\Components\Form;
 
-use Bambamboole\Lattice\Components\Core\Component;
-
-class TextInput extends Component
+class TextInput extends Field
 {
-    public static function make(string $name, string $label): static
-    {
-        return (new static)->props([
-            'label' => $label,
-            'name' => $name,
-        ]);
-    }
-
     public function email(): static
     {
         return $this->prop('type', 'email');

@@ -2,18 +2,8 @@
 
 namespace Bambamboole\Lattice\Components\Form;
 
-use Bambamboole\Lattice\Components\Core\Component;
-
-class Checkbox extends Component
+class Checkbox extends Field
 {
-    public static function make(string $name, string $label): static
-    {
-        return (new static)->props([
-            'label' => $label,
-            'name' => $name,
-        ]);
-    }
-
     public function required(bool $required = true): static
     {
         return $this->prop('required', $required);
