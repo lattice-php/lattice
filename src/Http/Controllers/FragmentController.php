@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Http\Controllers;
 
-use Bambamboole\Lattice\Contracts\SignsComponentReferences;
 use Bambamboole\Lattice\Core\Concerns\InteractsWithLatticeComponents;
+use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
 use Bambamboole\Lattice\Fragments\FragmentRegistry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

@@ -3,7 +3,7 @@
 namespace Bambamboole\Lattice\Core\Components;
 
 use Bambamboole\Lattice\Attributes\SerializationHook;
-use Bambamboole\Lattice\Contracts\SignsComponentReferences;
+use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
 
 trait IsInteractive
 {

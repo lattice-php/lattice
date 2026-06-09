@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Http\Controllers;
 
 use Bambamboole\Lattice\Actions\BulkActionRegistry;
-use Bambamboole\Lattice\Contracts\SignsComponentReferences;
 use Bambamboole\Lattice\Core\Concerns\InteractsWithLatticeComponents;
+use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
 use Bambamboole\Lattice\Exceptions\UnknownLatticeComponent;
 use Bambamboole\Lattice\Tables\InvalidTableQuery;
 use Bambamboole\Lattice\Tables\TableDefinition;

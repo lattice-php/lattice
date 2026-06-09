@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Security;
+namespace Bambamboole\Lattice\Core\Services;
 
-use Bambamboole\Lattice\Contracts\SignsComponentReferences;
+use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Encryption\StringEncrypter;
 use Illuminate\Http\Request;

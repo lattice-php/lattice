@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Bambamboole\Lattice\Actions\Components\Action;
 use Bambamboole\Lattice\Actions\Components\BulkAction;
+use Bambamboole\Lattice\Core\Services\ComponentReferenceSigner;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\Components\Form;
 use Bambamboole\Lattice\Forms\Components\TextInput;
-use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 use Bambamboole\Lattice\Tables\Components\Table;
 use Bambamboole\Lattice\Tables\InvalidTableQuery;
 use Bambamboole\Lattice\Tables\TableQuery;
