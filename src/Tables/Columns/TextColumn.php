@@ -11,6 +11,8 @@ class TextColumn extends Column
      */
     protected ?array $date = null;
 
+    protected bool $boolean = false;
+
     protected bool $copyable = false;
 
     /**
@@ -23,6 +25,27 @@ class TextColumn extends Column
         $this->date = ['format' => $format];
 
         return $this;
+    }
+
+    public function boolean(bool $boolean = true): static
+    {
+        $this->boolean = $boolean;
+
+        return $this;
+    }
+
+    #[\Override]
+    protected function defaultFilterType(): string
+    {
+        if ($this->date !== null) {
+            return 'date';
+        }
+
+        if ($this->boolean) {
+            return 'boolean';
+        }
+
+        return 'partial';
     }
 
     public function copyable(bool $copyable = true): static
