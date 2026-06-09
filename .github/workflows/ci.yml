@@ -109,3 +109,11 @@ jobs:
 
       - name: Pest (browser)
         run: composer test:browser
+
+      - name: Upload browser screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-screenshots
+          path: tests/Browser/Screenshots
+          if-no-files-found: ignore
