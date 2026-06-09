@@ -5,6 +5,7 @@ import { getColumnGridTemplate, getQueryParams, getVisiblePages } from "../query
 import { useTable } from "../use-table";
 import { useTableSelection } from "../use-table-selection";
 import { BulkBar } from "./bulk-bar";
+import { ColumnFilterControl } from "./column-filter-control";
 import { ColumnHeader } from "./column-header";
 import { FilterStackBar } from "./filter-stack-bar";
 import { TablePagination } from "./pagination";
@@ -21,6 +22,7 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
     state,
     filters,
     addFilter,
+    updateFilter,
     removeFilter,
     processing,
     hasLoaded,
@@ -46,6 +48,8 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
   const visiblePages = getVisiblePages(currentPage, lastPage);
   const hasNextPage = pagination.hasMore ?? currentPage < lastPage;
   const hasActions = rowMetadata.some((metadata) => (metadata.actions?.length ?? 0) > 0);
+  const hasFilters = columns.some((column) => column.filter?.enabled);
+  const filterEntries = filters.map((clause, index) => ({ clause, index }));
   const gridTemplateColumns = getColumnGridTemplate(columns, hasActions, hasBulkActions);
 
   return (
@@ -105,7 +109,6 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
                 processing={processing}
                 sort={sort}
                 state={state}
-                onAddFilter={addFilter}
               />
             ))}
             {hasActions && (
@@ -117,6 +120,30 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
               </div>
             )}
           </div>
+          {hasFilters && (
+            <div
+              className="hidden min-w-full border-t border-lt-border md:grid md:grid-cols-[var(--lattice-table-columns)]"
+              role="row"
+              style={{ "--lattice-table-columns": gridTemplateColumns } as never}
+            >
+              {hasBulkActions && <div className="px-4 py-2" role="cell" />}
+              {columns.map((column) => (
+                <div key={column.key} className="px-4 py-2" role="cell">
+                  {column.filter?.enabled && (
+                    <ColumnFilterControl
+                      column={column}
+                      clauses={filterEntries.filter((entry) => entry.clause.field === column.key)}
+                      processing={processing}
+                      onAdd={addFilter}
+                      onUpdate={updateFilter}
+                      onRemove={removeFilter}
+                    />
+                  )}
+                </div>
+              ))}
+              {hasActions && <div className="px-4 py-2" role="cell" />}
+            </div>
+          )}
         </div>
         <div role="rowgroup">
           {!hasLoaded ? (

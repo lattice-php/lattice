@@ -97,6 +97,17 @@ export function useTable(node: Node<"table">) {
     });
   }
 
+  function updateFilter(index: number, clause: FilterClause): void {
+    const next = filters.map((current, position) => (position === index ? clause : current));
+
+    setFilters(next);
+    void load({
+      ...state,
+      filters: next,
+      page: 1,
+    });
+  }
+
   function removeFilter(index: number): void {
     const next = filters.filter((_, current) => current !== index);
 
@@ -189,6 +200,7 @@ export function useTable(node: Node<"table">) {
     state,
     filters,
     addFilter,
+    updateFilter,
     removeFilter,
     processing,
     hasLoaded,

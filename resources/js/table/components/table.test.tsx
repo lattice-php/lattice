@@ -749,4 +749,57 @@ describe("Lattice table component", () => {
       ),
     );
   });
+
+  it("adds a clause with a chosen operator from the column filter popover", async () => {
+    const fetch = vi.fn<typeof globalThis.fetch>(async () =>
+      Response.json({
+        data: [],
+        pagination: {},
+        state: { filters: [], page: 1, perPage: 25, sorts: [] },
+      }),
+    );
+
+    vi.stubGlobal("fetch", fetch);
+
+    const node = {
+      id: "workbench.products",
+      props: {
+        columns: [
+          {
+            key: "name",
+            label: "Name",
+            filter: {
+              enabled: true,
+              type: "text",
+              operators: ["contains", "equals", "not_equals"],
+              defaultOperator: "contains",
+            },
+          },
+        ],
+        data: [],
+        endpoint: "/lattice/tables/workbench.products",
+        state: { filters: [], page: 1, perPage: 25, sorts: [] },
+      },
+      type: "table",
+    } satisfies Node<"table">;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    fireEvent.click(screen.getByRole("button", { name: "Name filters" }));
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Name operator" }), {
+      target: { value: "not_equals" },
+    });
+
+    const valueInput = screen.getByRole("textbox", { name: "Name filter value" });
+    fireEvent.change(valueInput, { target: { value: "bar" } });
+    fireEvent.keyDown(valueInput, { key: "Enter" });
+
+    await waitFor(() =>
+      expect(fetch).toHaveBeenLastCalledWith(
+        "/lattice/tables/workbench.products?filter=name%3Anot_equals%3Abar&page=1&per_page=25",
+        { headers: { Accept: "application/json" } },
+      ),
+    );
+  });
 });
