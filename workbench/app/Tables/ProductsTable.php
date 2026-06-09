@@ -31,7 +31,7 @@ class ProductsTable extends EloquentTableDefinition
         return [
             TextColumn::make('name')->label('Name')->sortable()->filterable(),
             TextColumn::make('sku')->label('SKU')->sortable()->filterable(),
-            TextColumn::make('price')->label('Price')->sortable(),
+            TextColumn::make('price')->label('Price')->sortable()->numeric()->filterable(),
             TextColumn::make('status')->label('Status')->sortable()->filterableExact(),
             TextColumn::make('featured')->label('Featured')->sortable()->boolean()->filterable(),
             TextColumn::make('updated_at')->label('Updated at')->sortable()->date('Y-m-d H:i:s')->filterable(),

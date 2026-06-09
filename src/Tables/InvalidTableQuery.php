@@ -29,4 +29,11 @@ class InvalidTableQuery extends RuntimeException
 
         return new self($message, ['sort' => [$message]]);
     }
+
+    public static function operator(string $operator, string $field, string $table): self
+    {
+        $message = "Operator [{$operator}] is not allowed for filter [{$field}] on table [{$table}].";
+
+        return new self($message, ['filter' => [$message]]);
+    }
 }

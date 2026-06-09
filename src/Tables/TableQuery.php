@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 final readonly class TableQuery
 {
     /**
-     * @param  array<string, mixed>  $filters
+     * @param  array<int, FilterClause>  $filters
      * @param  array<int, TableSort>  $sorts
      */
     private function __construct(
@@ -33,7 +33,7 @@ final readonly class TableQuery
      */
     public static function fromRequest(Request $request, array $columns, string $table, int $defaultPerPage = 25): self
     {
-        $filters = self::parseFilters($request->input('filter', []));
+        $filters = self::parseFilters($request->input('filter'));
         $sorts = self::parseSorts($request->input('sort'));
 
         self::validateFilters($filters, $columns, $table);
@@ -48,16 +48,11 @@ final readonly class TableQuery
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<int, FilterClause>
      */
     public function filters(): array
     {
         return $this->filters;
-    }
-
-    public function filter(string $key, mixed $default = null): mixed
-    {
-        return $this->filters[$key] ?? $default;
     }
 
     /**
@@ -79,12 +74,15 @@ final readonly class TableQuery
     }
 
     /**
-     * @return array{filters: array<string, mixed>, sorts: array<int, array{key: string, direction: string}>, page: int, perPage: int}
+     * @return array{filters: array<int, array{field: string, operator: string, value: string}>, sorts: array<int, array{key: string, direction: string}>, page: int, perPage: int}
      */
     public function toArray(): array
     {
         return [
-            'filters' => $this->filters,
+            'filters' => array_map(
+                fn (FilterClause $clause): array => $clause->toArray(),
+                $this->filters,
+            ),
             'sorts' => array_map(
                 fn (TableSort $sort): array => $sort->toArray(),
                 $this->sorts,
@@ -95,18 +93,18 @@ final readonly class TableQuery
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<int, FilterClause>
      */
-    private static function parseFilters(mixed $filters): array
+    private static function parseFilters(mixed $filter): array
     {
-        if (! is_array($filters)) {
+        if (! is_string($filter) || $filter === '') {
             return [];
         }
 
-        return collect($filters)
-            ->mapWithKeys(fn (mixed $value, string|int $key): array => [
-                (string) $key => self::normalizeFilterValue($value),
-            ])
+        return collect(explode(',', $filter))
+            ->map(fn (string $clause): FilterClause => FilterClause::fromString($clause))
+            ->filter(fn (FilterClause $clause): bool => $clause->isComplete())
+            ->values()
             ->all();
     }
 
@@ -126,31 +124,23 @@ final readonly class TableQuery
             ->all();
     }
 
-    private static function normalizeFilterValue(mixed $value): mixed
-    {
-        if (! is_string($value) || ! str_contains($value, ',')) {
-            return $value;
-        }
-
-        return array_values(array_filter(
-            explode(',', $value),
-            fn (string $part): bool => $part !== '',
-        ));
-    }
-
     /**
-     * @param  array<string, mixed>  $filters
+     * @param  array<int, FilterClause>  $filters
      * @param  array<int, Column>  $columns
      */
     private static function validateFilters(array $filters, array $columns, string $table): void
     {
-        $allowed = collect($columns)
-            ->filter(fn (Column $column): bool => $column->isFilterable())
-            ->mapWithKeys(fn (Column $column): array => [$column->key => true]);
+        $byKey = collect($columns)->keyBy(fn (Column $column): string => $column->key);
 
-        foreach (array_keys($filters) as $filter) {
-            if (! $allowed->has($filter)) {
-                throw InvalidTableQuery::filter($filter, $table);
+        foreach ($filters as $filter) {
+            $column = $byKey->get($filter->field);
+
+            if (! $column instanceof Column || ! $column->isFilterable()) {
+                throw InvalidTableQuery::filter($filter->field, $table);
+            }
+
+            if (! in_array($filter->operator, $column->filterOperators(), true)) {
+                throw InvalidTableQuery::operator($filter->operator, $filter->field, $table);
             }
         }
     }

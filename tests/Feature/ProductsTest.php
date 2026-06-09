@@ -8,6 +8,7 @@ use Bambamboole\Lattice\Components\Form\TextInput;
 use Bambamboole\Lattice\Components\Table\Table;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Security\ComponentReferenceSigner;
+use Bambamboole\Lattice\Tables\InvalidTableQuery;
 use Bambamboole\Lattice\Tables\TableQuery;
 use Illuminate\Http\Request;
 use Inertia\Testing\AssertableInertia;
@@ -440,7 +441,7 @@ test('bulk actions can target every row matching the current filter', function (
     patch('/lattice/bulk-actions/workbench.products.archive-selected', [
         '_lattice' => $ref,
         'allMatching' => true,
-        'filter' => ['status' => 'active'],
+        'filter' => 'status:equals:active',
     ])
         ->assertOk()
         ->assertJsonPath('data.archived', 3);
@@ -462,27 +463,37 @@ test('bulk all-matching validates the filter against the table columns', functio
     patch('/lattice/bulk-actions/workbench.products.archive-selected', [
         '_lattice' => $ref,
         'allMatching' => true,
-        'filter' => ['id' => '1'],
+        'filter' => 'id:equals:1',
     ])
         ->assertUnprocessable()
         ->assertJsonPath('errors.filter.0', 'Filter [id] is not allowed for table [workbench.products].');
 });
 
-test('the products table applies date and boolean column filters', function () {
-    $featured = Product::factory()->create(['featured' => true, 'updated_at' => '2026-06-01 10:00:00']);
-    Product::factory()->create(['featured' => false, 'updated_at' => '2026-06-02 10:00:00']);
+test('the products table applies date, boolean, and number clause filters', function () {
+    $featured = Product::factory()->create(['featured' => true, 'price' => '120.00', 'updated_at' => '2026-06-01 10:00:00']);
+    Product::factory()->create(['featured' => false, 'price' => '20.00', 'updated_at' => '2026-06-02 10:00:00']);
 
     $table = new ProductsTable;
     $columns = $table->columns();
 
-    $byBoolean = $table->resolveMatching(
-        TableQuery::fromRequest(Request::create('/', 'GET', ['filter' => ['featured' => 'true']]), $columns, 'workbench.products'),
+    $resolve = fn (string $filter) => $table->resolveMatching(
+        TableQuery::fromRequest(Request::create('/', 'GET', ['filter' => $filter]), $columns, 'workbench.products'),
     );
 
-    $byDate = $table->resolveMatching(
-        TableQuery::fromRequest(Request::create('/', 'GET', ['filter' => ['updated_at' => '2026-06-01']]), $columns, 'workbench.products'),
-    );
+    expect($resolve('featured:equals:true')->pluck('id')->all())->toBe([$featured->getKey()])
+        ->and($resolve('updated_at:before:2026-06-02')->pluck('id')->all())->toBe([$featured->getKey()])
+        ->and($resolve('price:gte:100')->pluck('id')->all())->toBe([$featured->getKey()]);
+});
 
-    expect($byBoolean->pluck('id')->all())->toBe([$featured->getKey()])
-        ->and($byDate->pluck('id')->all())->toBe([$featured->getKey()]);
+test('the products table rejects a filter operator not allowed for the column', function () {
+    $columns = (new ProductsTable)->columns();
+
+    expect(fn () => TableQuery::fromRequest(
+        Request::create('/', 'GET', ['filter' => 'featured:contains:x']),
+        $columns,
+        'workbench.products',
+    ))->toThrow(
+        InvalidTableQuery::class,
+        'Operator [contains] is not allowed for filter [featured] on table [workbench.products].',
+    );
 });

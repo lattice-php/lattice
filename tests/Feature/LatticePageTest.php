@@ -525,7 +525,9 @@ test('registered tables serialize their configured endpoint columns state and in
                         'sortable' => true,
                         'filter' => [
                             'enabled' => true,
-                            'type' => 'partial',
+                            'type' => 'text',
+                            'operators' => ['contains', 'equals', 'not_equals'],
+                            'defaultOperator' => 'contains',
                         ],
                     ],
                     [
@@ -534,7 +536,9 @@ test('registered tables serialize their configured endpoint columns state and in
                         'type' => 'text',
                         'filter' => [
                             'enabled' => true,
-                            'type' => 'exact',
+                            'type' => 'text',
+                            'operators' => ['contains', 'equals', 'not_equals'],
+                            'defaultOperator' => 'equals',
                         ],
                     ],
                     [
@@ -547,7 +551,7 @@ test('registered tables serialize their configured endpoint columns state and in
                 'data' => [
                     [
                         'name' => 'Taylor',
-                        'status' => null,
+                        'filters' => [],
                         'sorts' => [],
                     ],
                 ],
@@ -647,21 +651,22 @@ test('registered tables serialize grid layout stack columns and row actions', fu
         ]);
 });
 
-test('registered tables parse spatie style filters sorts and pagination through the endpoint', function () {
+test('registered tables parse clause filters sorts and pagination through the endpoint', function () {
     Lattice::tables([WorkbenchUsersTable::class]);
 
     $ref = componentRef(Table::use(WorkbenchUsersTable::class)->toArray());
 
-    getJson(latticeUrl('/lattice/tables/workbench.users?filter[status]=active&filter[name]=tay&sort=-name,email&page=2&per_page=50', $ref))
+    getJson(latticeUrl('/lattice/tables/workbench.users?filter=name:contains:tay,status:equals:active&sort=-name,email&page=2&per_page=50', $ref))
         ->assertOk()
         ->assertJsonPath('data.0.name', 'Taylor')
-        ->assertJsonPath('data.0.status', 'active')
+        ->assertJsonPath('data.0.filters.0', ['field' => 'name', 'operator' => 'contains', 'value' => 'tay'])
+        ->assertJsonPath('data.0.filters.1', ['field' => 'status', 'operator' => 'equals', 'value' => 'active'])
         ->assertJsonPath('data.0.sorts.0.key', 'name')
         ->assertJsonPath('data.0.sorts.0.direction', 'desc')
         ->assertJsonPath('data.0.sorts.1.key', 'email')
         ->assertJsonPath('data.0.sorts.1.direction', 'asc')
-        ->assertJsonPath('state.filters.status', 'active')
-        ->assertJsonPath('state.filters.name', 'tay')
+        ->assertJsonPath('state.filters.0.field', 'name')
+        ->assertJsonPath('state.filters.1.field', 'status')
         ->assertJsonPath('state.page', 2)
         ->assertJsonPath('state.perPage', 50);
 });
@@ -671,7 +676,7 @@ test('registered tables reject filters and sorts that are not allowed by columns
 
     $ref = componentRef(Table::use(WorkbenchUsersTable::class)->toArray());
 
-    getJson(latticeUrl('/lattice/tables/workbench.users?filter[password]=secret', $ref))
+    getJson(latticeUrl('/lattice/tables/workbench.users?filter=password:contains:secret', $ref))
         ->assertUnprocessable()
         ->assertJsonPath('message', 'Filter [password] is not allowed for table [workbench.users].')
         ->assertJsonPath('errors.filter.0', 'Filter [password] is not allowed for table [workbench.users].');
@@ -1670,7 +1675,10 @@ class WorkbenchUsersTable extends TableDefinition
         return TableResult::make([
             [
                 'name' => 'Taylor',
-                'status' => $query->filter('status'),
+                'filters' => array_map(
+                    fn ($filter): array => $filter->toArray(),
+                    $query->filters(),
+                ),
                 'sorts' => array_map(
                     fn ($sort): array => [
                         'key' => $sort->key,

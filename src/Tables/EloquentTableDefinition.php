@@ -60,19 +60,12 @@ abstract class EloquentTableDefinition extends TableDefinition
     {
         $columns = collect($this->columns())->keyBy(fn (Column $column): string => $column->key);
 
-        foreach ($query->filters() as $key => $value) {
-            $column = $columns->get($key);
+        foreach ($query->filters() as $clause) {
+            $column = $columns->get($clause->field);
 
-            if (! $column instanceof Column || $value === null || $value === '') {
-                continue;
+            if ($column instanceof Column) {
+                $this->applyFilterClause($builder, $column, $clause);
             }
-
-            match ($column->filterType()) {
-                'exact' => $this->applyExactFilter($builder, $key, $value),
-                'date' => $this->applyDateFilter($builder, $key, $value),
-                'boolean' => $this->applyBooleanFilter($builder, $key, $value),
-                default => $this->applyPartialFilter($builder, $key, $value),
-            };
         }
 
         foreach ($query->sorts() as $sort) {
@@ -108,44 +101,49 @@ abstract class EloquentTableDefinition extends TableDefinition
     /**
      * @param  Builder<TModel>  $builder
      */
-    private function applyExactFilter(Builder $builder, string $key, mixed $value): void
+    private function applyFilterClause(Builder $builder, Column $column, FilterClause $clause): void
     {
-        if (is_array($value)) {
-            $builder->whereIn($key, $value);
+        $field = $clause->field;
+        $value = $clause->value;
+        $isDate = $column->filterControlType() === 'date';
+
+        match ($clause->operator) {
+            'contains' => $builder->where($field, 'like', '%'.str_replace(['%', '_'], ['\\%', '\\_'], $value).'%'),
+            'equals' => $this->applyEquals($builder, $column, $field, $value),
+            'not_equals' => $isDate ? $builder->whereDate($field, '!=', $value) : $builder->where($field, '!=', $value),
+            'gt' => $isDate ? $builder->whereDate($field, '>', $value) : $builder->where($field, '>', $value),
+            'gte' => $isDate ? $builder->whereDate($field, '>=', $value) : $builder->where($field, '>=', $value),
+            'lt' => $isDate ? $builder->whereDate($field, '<', $value) : $builder->where($field, '<', $value),
+            'lte' => $isDate ? $builder->whereDate($field, '<=', $value) : $builder->where($field, '<=', $value),
+            'before' => $builder->whereDate($field, '<', $value),
+            'after' => $builder->whereDate($field, '>', $value),
+            default => null,
+        };
+    }
+
+    /**
+     * @param  Builder<TModel>  $builder
+     */
+    private function applyEquals(Builder $builder, Column $column, string $field, string $value): void
+    {
+        $type = $column->filterControlType();
+
+        if ($type === 'date') {
+            $builder->whereDate($field, '=', $value);
 
             return;
         }
 
-        $builder->where($key, $value);
-    }
+        if ($type === 'boolean') {
+            $boolean = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
 
-    /**
-     * @param  Builder<TModel>  $builder
-     */
-    private function applyPartialFilter(Builder $builder, string $key, mixed $value): void
-    {
-        $builder->where($key, 'like', '%'.str_replace(['%', '_'], ['\\%', '\\_'], (string) $value).'%');
-    }
+            if ($boolean !== null) {
+                $builder->where($field, $boolean);
+            }
 
-    /**
-     * @param  Builder<TModel>  $builder
-     */
-    private function applyDateFilter(Builder $builder, string $key, mixed $value): void
-    {
-        $builder->whereDate($key, (string) $value);
-    }
-
-    /**
-     * @param  Builder<TModel>  $builder
-     */
-    private function applyBooleanFilter(Builder $builder, string $key, mixed $value): void
-    {
-        $boolean = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-
-        if ($boolean === null) {
             return;
         }
 
-        $builder->where($key, $boolean);
+        $builder->where($field, $value);
     }
 }

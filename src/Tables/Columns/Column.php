@@ -17,7 +17,7 @@ class Column implements JsonSerializable
 
     protected bool $filterable = false;
 
-    protected ?string $filterStrategy = null;
+    protected ?string $defaultOperator = null;
 
     public function __construct(public readonly string $key)
     {
@@ -53,7 +53,7 @@ class Column implements JsonSerializable
     public function filterableExact(): static
     {
         $this->filterable = true;
-        $this->filterStrategy = 'exact';
+        $this->defaultOperator = 'equals';
 
         return $this;
     }
@@ -68,18 +68,27 @@ class Column implements JsonSerializable
         return $this->filterable;
     }
 
-    public function filterType(): ?string
+    public function filterControlType(): string
     {
-        if (! $this->filterable) {
-            return null;
-        }
-
-        return $this->filterStrategy ?? $this->defaultFilterType();
+        return 'text';
     }
 
-    protected function defaultFilterType(): string
+    /**
+     * @return array<int, string>
+     */
+    public function filterOperators(): array
     {
-        return 'partial';
+        return match ($this->filterControlType()) {
+            'number' => ['equals', 'not_equals', 'gt', 'gte', 'lt', 'lte'],
+            'date' => ['equals', 'before', 'after'],
+            'boolean' => ['equals'],
+            default => ['contains', 'equals', 'not_equals'],
+        };
+    }
+
+    public function defaultFilterOperator(): string
+    {
+        return $this->defaultOperator ?? ($this->filterControlType() === 'text' ? 'contains' : 'equals');
     }
 
     /**
@@ -93,7 +102,9 @@ class Column implements JsonSerializable
             'sortable' => $this->sortable ?: null,
             'filter' => $this->isFilterable() ? [
                 'enabled' => true,
-                'type' => $this->filterType(),
+                'type' => $this->filterControlType(),
+                'operators' => $this->filterOperators(),
+                'defaultOperator' => $this->defaultFilterOperator(),
             ] : null,
         ], fn (mixed $value): bool => $value !== null);
     }

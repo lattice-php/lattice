@@ -13,6 +13,8 @@ class TextColumn extends Column
 
     protected bool $boolean = false;
 
+    protected bool $numeric = false;
+
     protected bool $copyable = false;
 
     /**
@@ -34,8 +36,15 @@ class TextColumn extends Column
         return $this;
     }
 
+    public function numeric(bool $numeric = true): static
+    {
+        $this->numeric = $numeric;
+
+        return $this;
+    }
+
     #[\Override]
-    protected function defaultFilterType(): string
+    public function filterControlType(): string
     {
         if ($this->date !== null) {
             return 'date';
@@ -45,7 +54,11 @@ class TextColumn extends Column
             return 'boolean';
         }
 
-        return 'partial';
+        if ($this->numeric) {
+            return 'number';
+        }
+
+        return 'text';
     }
 
     public function copyable(bool $copyable = true): static
