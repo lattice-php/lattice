@@ -36,6 +36,7 @@ class WorkbenchProductEditPage extends Page
                             'sku' => $product->sku,
                             'price' => $product->price,
                             'status' => $product->status,
+                            'related_products' => $product->relatedProducts()->pluck('products.id')->all(),
                         ])
                         ->context([
                             'product_id' => $product->getKey(),

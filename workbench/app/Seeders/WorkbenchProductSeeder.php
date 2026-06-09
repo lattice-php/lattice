@@ -17,6 +17,20 @@ class WorkbenchProductSeeder extends Seeder
             ['sku'],
             ['name', 'price', 'status', 'featured', 'created_at', 'updated_at'],
         );
+
+        $this->seedRelations();
+    }
+
+    private function seedRelations(): void
+    {
+        $ids = Product::query()->orderBy('id')->pluck('id')->all();
+
+        foreach (array_slice($ids, 0, 20, true) as $index => $id) {
+            Product::query()->find($id)?->relatedProducts()->sync(array_values(array_filter([
+                $ids[$index + 1] ?? null,
+                $ids[$index + 2] ?? null,
+            ])));
+        }
     }
 
     /**

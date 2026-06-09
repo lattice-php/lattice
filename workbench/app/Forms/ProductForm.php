@@ -9,6 +9,7 @@ use Bambamboole\Lattice\Components\Core\Card;
 use Bambamboole\Lattice\Components\Core\Grid;
 use Bambamboole\Lattice\Components\Form\Choice;
 use Bambamboole\Lattice\Components\Form\Form as FormComponent;
+use Bambamboole\Lattice\Components\Form\Select;
 use Bambamboole\Lattice\Components\Form\TextInput;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Illuminate\Http\Request;
@@ -42,6 +43,23 @@ class ProductForm extends FormDefinition
                             Choice::option('Archived', 'archived'),
                         ])
                         ->rules(['required', 'string', Rule::in(['draft', 'active', 'archived'])]),
+                    Select::make('related_products', 'Related products')
+                        ->multiple()
+                        ->placeholder('Search products…')
+                        ->searchable(fn (string $query) => Product::query()
+                            ->where('name', 'like', "%{$query}%")
+                            ->when($product, fn ($builder) => $builder->whereKeyNot($product->getKey()))
+                            ->orderBy('name')
+                            ->limit(10)
+                            ->get()
+                            ->map(fn (Product $related) => Select::option($related->name, (string) $related->getKey()))
+                            ->all())
+                        ->resolveSelectedUsing(fn (array $values) => Product::query()
+                            ->whereIn('id', $values)
+                            ->get()
+                            ->map(fn (Product $related) => Select::option($related->name, (string) $related->getKey()))
+                            ->all())
+                        ->rules(['nullable', 'array']),
                 ]),
             ]);
     }
@@ -51,13 +69,18 @@ class ProductForm extends FormDefinition
         $product = $this->product($request);
         $validated = $this->validate($request);
 
-        if (! $product instanceof Product) {
-            Product::query()->create($validated);
+        $relatedIds = $validated['related_products'] ?? [];
+        unset($validated['related_products']);
 
-            return redirect('/products');
+        if (! $product instanceof Product) {
+            $product = Product::query()->create($validated);
+        } else {
+            $product->update($validated);
         }
 
-        $product->update($validated);
+        $product->relatedProducts()->sync(
+            Product::query()->whereIn('id', $relatedIds)->pluck('id')->all(),
+        );
 
         return redirect('/products');
     }
