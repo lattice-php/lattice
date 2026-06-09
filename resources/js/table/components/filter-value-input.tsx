@@ -1,6 +1,6 @@
 import { Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import type { FilterControlType } from "../types";
+import type { ControlType } from "@lattice/generated/enums";
 
 const baseClass =
   "h-9 w-full rounded-lt-sm border border-lt-input bg-lt-bg px-2 text-sm font-normal";
@@ -15,7 +15,7 @@ export function FilterValueInput({
   onCommit,
   onClear,
 }: {
-  type: FilterControlType;
+  type: ControlType;
   label: string;
   value: string;
   processing: boolean;

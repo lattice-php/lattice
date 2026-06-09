@@ -1,6 +1,7 @@
 import { Filter, Plus, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import type { ControlType, Operator } from "@lattice/generated/enums";
 import { operatorLabel } from "../query";
 import type { FilterClause, TableColumn } from "../types";
 import { FilterValueInput } from "./filter-value-input";
@@ -173,8 +174,8 @@ function FilterClauseList({
 }: {
   column: TableColumn;
   clauses: ColumnClause[];
-  operators: string[];
-  defaultOperator: string;
+  operators: Operator[];
+  defaultOperator: Operator;
   processing: boolean;
   onAdd: (clause: FilterClause) => void;
   onUpdate: (index: number, clause: FilterClause) => void;
@@ -247,11 +248,11 @@ function FilterClauseRow({
   onRemove,
 }: {
   column: TableColumn;
-  type: "text" | "number" | "date" | "boolean";
-  operators: string[];
+  type: ControlType;
+  operators: Operator[];
   clause: FilterClause;
   processing: boolean;
-  onOperator: (operator: string) => void;
+  onOperator: (operator: Operator) => void;
   onValue: (value: string) => void;
   onRemove: () => void;
 }) {
@@ -264,7 +265,7 @@ function FilterClauseRow({
             className="h-9 flex-1 rounded-lt-sm border border-lt-input bg-lt-bg px-2 text-sm font-normal"
             disabled={processing}
             value={clause.operator}
-            onChange={(event) => onOperator(event.target.value)}
+            onChange={(event) => onOperator(event.target.value as Operator)}
           >
             {operators.map((operator) => (
               <option key={operator} value={operator}>

@@ -1,5 +1,4 @@
-import type { Node } from "@lattice/lattice/core/types";
-import type { PaginationType } from "@lattice/lattice/generated/enums";
+import type { ControlType, Operator, PaginationType } from "@lattice/lattice/generated/enums";
 
 export type TableColumn = {
   columns?: TableColumn[];
@@ -9,9 +8,9 @@ export type TableColumn = {
   sortable?: boolean;
   filter?: {
     enabled?: boolean;
-    type?: FilterControlType;
-    operators?: string[];
-    defaultOperator?: string;
+    type?: ControlType;
+    operators?: Operator[];
+    defaultOperator?: Operator;
   };
   date?: {
     format?: string | null;
@@ -30,11 +29,9 @@ export type TableSort = {
   direction: string;
 };
 
-export type FilterControlType = "text" | "number" | "date" | "boolean";
-
 export type FilterClause = {
   field: string;
-  operator: string;
+  operator: Operator;
   value: string;
 };
 

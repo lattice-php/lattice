@@ -13,6 +13,8 @@ use Bambamboole\Lattice\Core\Enums\PageLayout;
 use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use Bambamboole\Lattice\Core\Enums\Width;
 use Bambamboole\Lattice\Forms\Enums\Op;
+use Bambamboole\Lattice\Tables\Enums\ControlType;
+use Bambamboole\Lattice\Tables\Enums\Operator;
 use Bambamboole\Lattice\Tables\Enums\PaginationType;
 use Spatie\LaravelTypeScriptTransformer\TypeScriptTransformerApplicationServiceProvider;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfigFactory;
@@ -35,6 +37,8 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 ToastVariant::class,
                 HttpMethod::class,
                 PaginationType::class,
+                ControlType::class,
+                Operator::class,
                 Op::class,
                 EffectType::class,
             ]))
