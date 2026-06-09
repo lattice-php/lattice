@@ -17,6 +17,7 @@ use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Forms\DependentDemoForm;
 use Workbench\App\Forms\ProductForm;
+use Workbench\App\Forms\ShowcaseForm;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
@@ -56,6 +57,7 @@ class WorkbenchServiceProvider extends ServiceProvider
         Lattice::forms([
             DependentDemoForm::class,
             ProductForm::class,
+            ShowcaseForm::class,
         ]);
 
         Lattice::tables([

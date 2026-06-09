@@ -9,6 +9,7 @@ use Workbench\App\Pages\WorkbenchHomePage;
 use Workbench\App\Pages\WorkbenchProductCreatePage;
 use Workbench\App\Pages\WorkbenchProductEditPage;
 use Workbench\App\Pages\WorkbenchProductsPage;
+use Workbench\App\Pages\WorkbenchShowcasePage;
 use Workbench\App\Pages\WorkbenchTablesPage;
 
 Route::latticePage('/', WorkbenchHomePage::class)
@@ -31,6 +32,10 @@ Route::latticePage('/products/{product}/edit', WorkbenchProductEditPage::class)
 
 Route::latticePage('/dependent-demo', WorkbenchDependentDemoPage::class)
     ->name('dependent.demo');
+
+Route::latticePage('/showcase', WorkbenchShowcasePage::class)
+    ->name('showcase')
+    ->sidebar('Form Showcase', LucideIcon::FormInput);
 
 Route::get('/dashboard', fn (): string => 'Dashboard')->name('dashboard');
 Route::get('/login', fn (): string => 'Login')->name('login');
