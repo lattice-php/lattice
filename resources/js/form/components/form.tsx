@@ -172,7 +172,9 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
       }) => (
         <FormProvider
           value={{
+            action,
             clearErrors: (field) => clearErrors(field),
+            componentRef,
             errors: errors as Record<string, string | undefined>,
             fieldLabels,
             invalid: (field) => invalid(field),

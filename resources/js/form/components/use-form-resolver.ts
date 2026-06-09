@@ -23,7 +23,7 @@ function collectWatch(nodes: Node[] | undefined, keys: Set<string>, state: { any
   }
 }
 
-function xsrfToken(): string {
+export function xsrfToken(): string {
   const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
 
   return match ? decodeURIComponent(match[1]) : "";

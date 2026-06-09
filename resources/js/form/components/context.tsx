@@ -1,7 +1,9 @@
 import { createContext, useContext } from "react";
 
 type FormContextValue = {
+  action: string;
   clearErrors: (field: string) => void;
+  componentRef: string;
   errors: Record<string, string | undefined>;
   fieldLabels: Record<string, string>;
   invalid: (field: string) => boolean;
@@ -14,7 +16,9 @@ type FormContextValue = {
 };
 
 const FormContext = createContext<FormContextValue>({
+  action: "#",
   clearErrors: () => {},
+  componentRef: "",
   errors: {},
   fieldLabels: {},
   invalid: () => false,

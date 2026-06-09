@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Workbench\App\Models\Product;
+
 it('renders the form showcase with every field type', function (): void {
     visit('/showcase')
         ->assertSee('Form Showcase')
@@ -36,6 +38,34 @@ it('inserts a table and a details block into the rich editor', function (): void
         ->assertPresent('.lattice-prose [data-type="details"]')
         ->click('[aria-label="Insert table"]')
         ->assertPresent('.lattice-prose table')
+        ->assertNoJavaScriptErrors();
+});
+
+it('selects a static option from the select field', function (): void {
+    $page = visit('/showcase');
+
+    $page->assertSee('Pick a country')
+        ->click('Pick a country')
+        ->assertSee('France')
+        ->click('Germany')
+        ->assertNoJavaScriptErrors()
+        ->assertPresent('input[type="hidden"][name="country"][value="de"]');
+});
+
+it('searches and selects entities in a multiple select', function (): void {
+    Product::factory()->create(['name' => 'Walnut Desk']);
+    Product::factory()->create(['name' => 'Steel Lamp']);
+
+    $page = visit('/showcase');
+
+    $page->assertSee('Search products…')
+        ->click('Search products…')
+        ->fill('input[aria-label="Search options"]', 'walnut')
+        ->assertSee('Walnut Desk')
+        ->assertDontSee('Steel Lamp')
+        ->click('Walnut Desk')
+        ->assertPresent('button[aria-label="Remove Walnut Desk"]')
+        ->assertPresent('input[type="hidden"][name="related_products[]"]')
         ->assertNoJavaScriptErrors();
 });
 

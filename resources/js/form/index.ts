@@ -10,6 +10,7 @@ type FormComponentName =
   | "HiddenInputComponent"
   | "NumberInputComponent"
   | "PasswordInputComponent"
+  | "SelectComponent"
   | "SubmitButtonComponent"
   | "TextareaComponent"
   | "TextInputComponent";
@@ -46,6 +47,7 @@ export const formComponents = createPlugin({
 
       return { default: RichEditorComponent };
     }),
+    "form.select": lazyComponent(loadFormComponent("SelectComponent")),
     "form.submit-button": lazyComponent(loadFormComponent("SubmitButtonComponent")),
     "form.textarea": lazyComponent(loadFormComponent("TextareaComponent")),
     "form.text-input": lazyComponent(loadFormComponent("TextInputComponent")),
