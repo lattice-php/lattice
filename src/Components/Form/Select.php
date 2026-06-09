@@ -45,7 +45,7 @@ class Select extends Field
      * current form data and request) and returns the matching options. The option
      * value is the entity identifier and is fully controlled by the resolver.
      *
-     * @param  Closure(string, FormData, Request): (array<int, array{label: string, value: string}>|Collection<int, array{label: string, value: string}>)  $resolver
+     * @param  Closure(string, FormData, Request): (array<int, array{label: string, value: string|int}>|Collection<int, array{label: string, value: string|int}>)  $resolver
      */
     public function searchable(Closure $resolver): static
     {

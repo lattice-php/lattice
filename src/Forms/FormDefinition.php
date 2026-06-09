@@ -6,6 +6,7 @@ namespace Bambamboole\Lattice\Forms;
 
 use Bambamboole\Lattice\Components\Form\Field;
 use Bambamboole\Lattice\Components\Form\Form;
+use Bambamboole\Lattice\Components\Form\Select;
 use Bambamboole\Lattice\Concerns\CreatesToastMessages;
 use Bambamboole\Lattice\Definition;
 use Illuminate\Contracts\Support\Responsable;
@@ -76,6 +77,28 @@ abstract class FormDefinition extends Definition
         }
 
         return $validated;
+    }
+
+    /**
+     * Resolve the searchable options for a single field. The field's own resolver
+     * owns the query, so this never touches an arbitrary model.
+     *
+     * @return array{options: array<int, array{label: string, value: string}>}
+     */
+    public function searchOptions(Request $request): array
+    {
+        $name = $request->string('_search')->toString();
+        $query = $request->string('q')->toString();
+        $data = FormData::fromRequest($request);
+
+        $field = $this->definition(Form::make('form'), $request)
+            ->fields()
+            ->first(fn (Field $field): bool => $field->name() === $name);
+
+        abort_if($field === null, Response::HTTP_NOT_FOUND);
+        abort_unless($field instanceof Select && $field->isSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        return ['options' => $field->resolveSearch($query, $data, $request)];
     }
 
     /**

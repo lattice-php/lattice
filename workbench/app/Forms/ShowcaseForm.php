@@ -15,6 +15,7 @@ use Bambamboole\Lattice\Components\Form\HiddenInput;
 use Bambamboole\Lattice\Components\Form\NumberInput;
 use Bambamboole\Lattice\Components\Form\PasswordInput;
 use Bambamboole\Lattice\Components\Form\RichEditor;
+use Bambamboole\Lattice\Components\Form\Select;
 use Bambamboole\Lattice\Components\Form\Textarea;
 use Bambamboole\Lattice\Components\Form\TextInput;
 use Bambamboole\Lattice\Forms\FormData;
@@ -22,6 +23,7 @@ use Bambamboole\Lattice\Forms\FormDefinition;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
+use Workbench\App\Models\Product;
 
 #[Form('workbench.showcase.form')]
 class ShowcaseForm extends FormDefinition
@@ -99,6 +101,29 @@ class ShowcaseForm extends FormDefinition
                                 $data->float('quantity') * $data->float('unit_price'),
                             ),
                         ),
+                ]),
+
+                Card::make('Selection', 'Static and searchable selects.')->children([
+                    Select::make('country', 'Country')
+                        ->placeholder('Pick a country')
+                        ->options([
+                            Select::option('Germany', 'de'),
+                            Select::option('France', 'fr'),
+                            Select::option('Spain', 'es'),
+                            Select::option('Italy', 'it'),
+                        ])
+                        ->rules(['nullable', 'string']),
+                    Select::make('related_products', 'Related products')
+                        ->multiple()
+                        ->placeholder('Search products…')
+                        ->searchable(fn (string $query) => Product::query()
+                            ->where('name', 'like', "%{$query}%")
+                            ->orderBy('name')
+                            ->limit(10)
+                            ->get()
+                            ->map(fn (Product $product) => Select::option($product->name, (string) $product->id))
+                            ->all())
+                        ->rules(['nullable', 'array']),
                 ]),
 
                 Card::make('Article')->children([

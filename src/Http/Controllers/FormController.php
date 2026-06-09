@@ -31,6 +31,10 @@ class FormController
 
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->forms, 'form', $form);
 
+        if ($request->filled('_search')) {
+            return new JsonResponse($definition->searchOptions($request));
+        }
+
         if ($request->boolean('_resolve')) {
             return new JsonResponse($definition->resolveFields($request));
         }
