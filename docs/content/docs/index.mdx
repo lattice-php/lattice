@@ -1,0 +1,38 @@
+---
+title: Lattice
+description: Server-driven React components for Laravel and Inertia.
+template: splash
+prev: false
+next: false
+hero:
+  title: Server-driven React UIs for Laravel.
+  tagline: Describe pages, forms, and tables in PHP. Lattice serializes them to typed React components and renders them through Inertia — no client-side route or API wiring.
+  actions:
+    - text: Get Started
+      link: /getting-started/installation/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/bambamboole/lattice
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+
+## What it provides
+
+<CardGrid>
+  <Card title="Pages" icon="document">
+    Compose pages from server-side component trees that serialize to typed React nodes and render through Inertia.
+  </Card>
+  <Card title="Forms" icon="pencil">
+    Field definitions, server-side validation, rich content, and conditional fields that react to other inputs.
+  </Card>
+  <Card title="Tables" icon="list-format">
+    Eloquent-backed tables with columns, sorting, filtering, pagination, and row actions.
+  </Card>
+  <Card title="Actions" icon="rocket">
+    Row actions and bulk actions that run on the server and dispatch effects — toasts, redirects, and refreshes — back to the client.
+  </Card>
+</CardGrid>

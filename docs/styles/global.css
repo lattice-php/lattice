@@ -1,0 +1,60 @@
+@layer base, starlight, theme, components, utilities;
+
+@import "@astrojs/starlight-tailwind";
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@theme {
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+:root {
+  --sl-font: Inter, ui-sans-serif, system-ui, sans-serif;
+  --sl-font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+
+  --sl-color-accent-low: #1e1b4b;
+  --sl-color-accent: #6366f1;
+  --sl-color-accent-high: #c7d2fe;
+}
+
+:root[data-theme="light"] {
+  --sl-color-accent-low: #e0e7ff;
+  --sl-color-accent: #4f46e5;
+  --sl-color-accent-high: #312e81;
+}
+
+@media (min-width: 50rem) {
+  header > .header {
+    grid-template-columns: 1fr minmax(0, 22rem) 1fr;
+  }
+
+  header > .header > div:nth-child(2) {
+    justify-content: center;
+  }
+
+  header > .header > .right-group {
+    justify-self: end;
+  }
+}
+
+@media (min-width: 72rem) {
+  .main-pane {
+    width: var(--sl-content-width);
+    margin-inline: auto;
+  }
+
+  .right-sidebar-container {
+    width: var(--sl-sidebar-width);
+  }
+}
+
+.sl-markdown-content table:not(:where(.not-content *)) {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.sl-markdown-content :is(th, td):not(:where(.not-content *)) {
+  overflow-wrap: anywhere;
+}
