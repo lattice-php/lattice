@@ -15,30 +15,32 @@ class WorkbenchProductSeeder extends Seeder
         Product::query()->upsert(
             $this->products(),
             ['sku'],
-            ['name', 'price', 'status', 'created_at', 'updated_at'],
+            ['name', 'price', 'status', 'featured', 'created_at', 'updated_at'],
         );
     }
 
     /**
-     * @return array<int, array{name: string, sku: string, price: string, status: string, created_at: string, updated_at: string}>
+     * @return array<int, array{name: string, sku: string, price: string, status: string, featured: bool, created_at: string, updated_at: string}>
      */
     private function products(): array
     {
         $faker = fake();
         $faker->seed(20260608);
         $statuses = ['draft', 'active', 'archived'];
+        $createdAt = CarbonImmutable::now()->subYear();
 
         return array_map(
-            function (int $number) use ($faker, $statuses): array {
-                $createdAt = CarbonImmutable::parse('2025-02-01 10:00:00')->addHours($number);
-
+            function (int $number) use ($faker, $statuses, $createdAt): array {
                 return [
                     'name' => str($faker->words(3, true))->title()->toString(),
                     'sku' => sprintf('workbench-product-%03d', $number),
                     'price' => number_format($faker->randomFloat(2, 9, 999), 2, '.', ''),
                     'status' => $statuses[($number - 1) % count($statuses)],
+                    'featured' => $faker->boolean(),
                     'created_at' => $createdAt->toDateTimeString(),
-                    'updated_at' => $createdAt->addMinutes($number)->toDateTimeString(),
+                    'updated_at' => CarbonImmutable::parse(
+                        $faker->dateTimeBetween($createdAt, 'now'),
+                    )->toDateTimeString(),
                 ];
             },
             range(1, 100),
