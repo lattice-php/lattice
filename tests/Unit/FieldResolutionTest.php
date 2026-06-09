@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Components\Form\Choice;
-use Bambamboole\Lattice\Components\Form\TextInput;
+use Bambamboole\Lattice\Forms\Components\Choice;
+use Bambamboole\Lattice\Forms\Components\TextInput;
 use Bambamboole\Lattice\Forms\FormData;
 use Illuminate\Http\Request;
 

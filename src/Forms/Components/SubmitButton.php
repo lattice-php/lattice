@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Components\Form;
+namespace Bambamboole\Lattice\Forms\Components;
 
 use Bambamboole\Lattice\Components\Core\Component;
 

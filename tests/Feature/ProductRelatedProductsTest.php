@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Components\Form\Form;
 use Bambamboole\Lattice\Facades\Lattice;
+use Bambamboole\Lattice\Forms\Components\Form;
 use Inertia\Testing\AssertableInertia;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;

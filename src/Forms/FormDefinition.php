@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Forms;
 
-use Bambamboole\Lattice\Components\Form\Field;
-use Bambamboole\Lattice\Components\Form\Form;
-use Bambamboole\Lattice\Components\Form\Select;
 use Bambamboole\Lattice\Concerns\CreatesToastMessages;
 use Bambamboole\Lattice\Contracts\ProvidesForm;
 use Bambamboole\Lattice\Definition;
+use Bambamboole\Lattice\Forms\Components\Field;
+use Bambamboole\Lattice\Forms\Components\Form;
+use Bambamboole\Lattice\Forms\Components\Select;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Http\Request;

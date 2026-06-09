@@ -7,8 +7,8 @@ namespace Bambamboole\Lattice\Tables;
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
 use Bambamboole\Lattice\Attributes\Table;
 use Bambamboole\Lattice\Components\Core\Action as ActionComponent;
-use Bambamboole\Lattice\Components\Table\Table as TableComponent;
 use Bambamboole\Lattice\DefinitionRegistry;
+use Bambamboole\Lattice\Tables\Components\Table as TableComponent;
 use Illuminate\Http\Request;
 
 /**

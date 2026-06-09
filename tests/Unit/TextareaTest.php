@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Components\Form\Textarea;
+use Bambamboole\Lattice\Forms\Components\Textarea;
 
 it('serializes a textarea', function (): void {
     $node = Textarea::make('bio', 'Bio')->rows(4)->placeholder('Tell us about yourself')->toArray();

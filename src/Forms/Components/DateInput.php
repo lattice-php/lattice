@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Components\Form;
+namespace Bambamboole\Lattice\Forms\Components;
 
 class DateInput extends Field
 {

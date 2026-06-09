@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Components\Form\Choice;
-use Bambamboole\Lattice\Components\Form\Form;
-use Bambamboole\Lattice\Components\Form\TextInput;
+use Bambamboole\Lattice\Forms\Components\Choice;
+use Bambamboole\Lattice\Forms\Components\Form;
+use Bambamboole\Lattice\Forms\Components\TextInput;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Components\Form\NumberInput;
+use Bambamboole\Lattice\Forms\Components\NumberInput;
 
 it('serializes a number input', function (): void {
     $node = NumberInput::make('qty', 'Qty')->min(0)->max(100)->step(1)->toArray();

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Components\Table;
+namespace Bambamboole\Lattice\Tables\Components;
 
 use Bambamboole\Lattice\Components\Core\Component;
 use Bambamboole\Lattice\Components\Core\IsInteractive;

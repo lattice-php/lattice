@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Components\Form\Form;
-use Bambamboole\Lattice\Components\Form\Select;
+use Bambamboole\Lattice\Forms\Components\Form;
+use Bambamboole\Lattice\Forms\Components\Select;
 
 /**
  * @return array<int, array{label: string, value: string}>

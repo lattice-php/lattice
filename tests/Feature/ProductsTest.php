@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 use Bambamboole\Lattice\Components\Core\Action;
 use Bambamboole\Lattice\Components\Core\BulkAction;
-use Bambamboole\Lattice\Components\Form\Form;
-use Bambamboole\Lattice\Components\Form\TextInput;
-use Bambamboole\Lattice\Components\Table\Table;
 use Bambamboole\Lattice\Facades\Lattice;
+use Bambamboole\Lattice\Forms\Components\Form;
+use Bambamboole\Lattice\Forms\Components\TextInput;
 use Bambamboole\Lattice\Security\ComponentReferenceSigner;
+use Bambamboole\Lattice\Tables\Components\Table;
 use Bambamboole\Lattice\Tables\InvalidTableQuery;
 use Bambamboole\Lattice\Tables\TableQuery;
 use Illuminate\Http\Request;

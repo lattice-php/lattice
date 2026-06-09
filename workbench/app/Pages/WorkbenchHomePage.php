@@ -10,10 +10,10 @@ use Bambamboole\Lattice\Components\Core\Grid;
 use Bambamboole\Lattice\Components\Core\Heading;
 use Bambamboole\Lattice\Components\Core\Stack;
 use Bambamboole\Lattice\Components\Core\Text;
-use Bambamboole\Lattice\Components\Table\Table;
 use Bambamboole\Lattice\Enums\Gap;
 use Bambamboole\Lattice\Page;
 use Bambamboole\Lattice\PageSchema;
+use Bambamboole\Lattice\Tables\Components\Table;
 use Workbench\App\Tables\UsersTable;
 
 final class WorkbenchHomePage extends Page

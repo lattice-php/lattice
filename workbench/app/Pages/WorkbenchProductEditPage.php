@@ -6,9 +6,9 @@ namespace Workbench\App\Pages;
 
 use Bambamboole\Lattice\Components\Core\Heading;
 use Bambamboole\Lattice\Components\Core\Stack;
-use Bambamboole\Lattice\Components\Form\Form;
 use Bambamboole\Lattice\Enums\Gap;
 use Bambamboole\Lattice\Enums\HttpMethod;
+use Bambamboole\Lattice\Forms\Components\Form;
 use Bambamboole\Lattice\Page;
 use Bambamboole\Lattice\PageSchema;
 use Workbench\App\Forms\ProductForm;

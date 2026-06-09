@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Components\Form\Select;
+use Bambamboole\Lattice\Forms\Components\Select;
 use Bambamboole\Lattice\Forms\FormData;
 use Illuminate\Http\Request;
 

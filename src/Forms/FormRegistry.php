@@ -6,8 +6,8 @@ namespace Bambamboole\Lattice\Forms;
 
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
 use Bambamboole\Lattice\Attributes\Form;
-use Bambamboole\Lattice\Components\Form\Form as FormComponent;
 use Bambamboole\Lattice\DefinitionRegistry;
+use Bambamboole\Lattice\Forms\Components\Form as FormComponent;
 use Illuminate\Http\Request;
 
 /**

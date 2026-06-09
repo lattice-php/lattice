@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Components\Form\Form;
-use Bambamboole\Lattice\Components\Form\RichEditor;
+use Bambamboole\Lattice\Forms\Components\Form;
+use Bambamboole\Lattice\Forms\Components\RichEditor;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\RichContent;
 use Illuminate\Http\Request;
