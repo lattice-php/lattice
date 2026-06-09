@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Tables\Columns;
 
+use Bambamboole\Lattice\Tables\Enums\ControlType;
+use Bambamboole\Lattice\Tables\Enums\Operator;
 use JsonSerializable;
 
 /**
@@ -17,7 +19,7 @@ class Column implements JsonSerializable
 
     protected bool $filterable = false;
 
-    protected ?string $defaultOperator = null;
+    protected ?Operator $defaultOperator = null;
 
     public function __construct(public readonly string $key)
     {
@@ -53,7 +55,7 @@ class Column implements JsonSerializable
     public function filterableExact(): static
     {
         $this->filterable = true;
-        $this->defaultOperator = 'equals';
+        $this->defaultOperator = Operator::Equals;
 
         return $this;
     }
@@ -68,27 +70,22 @@ class Column implements JsonSerializable
         return $this->filterable;
     }
 
-    public function filterControlType(): string
+    public function controlType(): ControlType
     {
-        return 'text';
+        return ControlType::Text;
     }
 
     /**
-     * @return array<int, string>
+     * @return array<int, Operator>
      */
     public function filterOperators(): array
     {
-        return match ($this->filterControlType()) {
-            'number' => ['equals', 'not_equals', 'gt', 'gte', 'lt', 'lte'],
-            'date' => ['equals', 'before', 'after'],
-            'boolean' => ['equals'],
-            default => ['contains', 'equals', 'not_equals'],
-        };
+        return $this->controlType()->operators();
     }
 
-    public function defaultFilterOperator(): string
+    public function defaultFilterOperator(): Operator
     {
-        return $this->defaultOperator ?? ($this->filterControlType() === 'text' ? 'contains' : 'equals');
+        return $this->defaultOperator ?? $this->controlType()->defaultOperator();
     }
 
     /**
@@ -102,9 +99,9 @@ class Column implements JsonSerializable
             'sortable' => $this->sortable ?: null,
             'filter' => $this->isFilterable() ? [
                 'enabled' => true,
-                'type' => $this->filterControlType(),
-                'operators' => $this->filterOperators(),
-                'defaultOperator' => $this->defaultFilterOperator(),
+                'type' => $this->controlType()->value,
+                'operators' => array_map(fn (Operator $operator): string => $operator->value, $this->filterOperators()),
+                'defaultOperator' => $this->defaultFilterOperator()->value,
             ] : null,
         ], fn (mixed $value): bool => $value !== null);
     }

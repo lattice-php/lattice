@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Tables\Columns;
 
+use Bambamboole\Lattice\Tables\Enums\ControlType;
+
 class TextColumn extends Column
 {
     /**
@@ -44,21 +46,21 @@ class TextColumn extends Column
     }
 
     #[\Override]
-    public function filterControlType(): string
+    public function controlType(): ControlType
     {
         if ($this->date !== null) {
-            return 'date';
+            return ControlType::Date;
         }
 
         if ($this->boolean) {
-            return 'boolean';
+            return ControlType::Boolean;
         }
 
         if ($this->numeric) {
-            return 'number';
+            return ControlType::Number;
         }
 
-        return 'text';
+        return ControlType::Text;
     }
 
     public function copyable(bool $copyable = true): static
