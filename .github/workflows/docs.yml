@@ -5,6 +5,11 @@ on:
     branches: [main]
     paths:
       - "docs/**"
+      - "public/**"
+      - "astro.config.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - ".npmrc"
       - ".github/workflows/docs.yml"
   workflow_dispatch:
 
@@ -25,7 +30,6 @@ jobs:
       - uses: actions/configure-pages@v5
       - uses: withastro/action@v6
         with:
-          path: docs
           node-version: 24
 
   deploy:

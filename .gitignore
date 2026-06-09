@@ -9,9 +9,8 @@
 /workbench/database/*.sqlite
 /tests/Browser/Screenshots
 /tests/Browser/FailureScreenshots
-/docs/node_modules
-/docs/dist
-/docs/.astro
+/dist
+/.astro
 .phpstorm.meta.php
 _ide_helper.php
 

@@ -7,6 +7,7 @@ const viteCacheSuffix = process.argv.includes("build") ? "build" : "dev";
 
 export default defineConfig({
   site,
+  srcDir: "./docs",
   devToolbar: {
     enabled: false,
   },
@@ -15,21 +16,21 @@ export default defineConfig({
       title: "Lattice",
       description: "Server-driven React components for Laravel and Inertia.",
       logo: {
-        light: "./src/assets/logo.svg",
-        dark: "./src/assets/logo-dark.svg",
+        light: "./docs/assets/logo.svg",
+        dark: "./docs/assets/logo-dark.svg",
         replacesTitle: true,
       },
       social: [
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/bambamboole/lattice",
+          href: "https://github.com/lattice-php/lattice",
         },
       ],
       editLink: {
-        baseUrl: "https://github.com/bambamboole/lattice/edit/main/docs/",
+        baseUrl: "https://github.com/lattice-php/lattice/edit/main/",
       },
-      customCss: ["./src/styles/global.css"],
+      customCss: ["./docs/styles/global.css"],
       sidebar: [
         {
           label: "Getting Started",
