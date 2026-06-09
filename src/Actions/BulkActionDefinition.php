@@ -6,7 +6,7 @@ namespace Bambamboole\Lattice\Actions;
 
 use Bambamboole\Lattice\Contracts\ProvidesBulkAction;
 use Bambamboole\Lattice\Core\Components\Action;
-use Bambamboole\Lattice\Definition;
+use Bambamboole\Lattice\Core\Definition;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 

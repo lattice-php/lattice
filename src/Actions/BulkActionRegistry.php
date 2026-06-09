@@ -7,7 +7,7 @@ namespace Bambamboole\Lattice\Actions;
 use Bambamboole\Lattice\Attributes\BulkAction;
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
 use Bambamboole\Lattice\Core\Components\Action as ActionComponent;
-use Bambamboole\Lattice\DefinitionRegistry;
+use Bambamboole\Lattice\Core\DefinitionRegistry;
 
 /**
  * @extends DefinitionRegistry<BulkActionDefinition>

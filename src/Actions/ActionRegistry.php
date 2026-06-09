@@ -7,7 +7,7 @@ namespace Bambamboole\Lattice\Actions;
 use Bambamboole\Lattice\Attributes\Action;
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
 use Bambamboole\Lattice\Core\Components\Action as ActionComponent;
-use Bambamboole\Lattice\DefinitionRegistry;
+use Bambamboole\Lattice\Core\DefinitionRegistry;
 
 /**
  * @extends DefinitionRegistry<ActionDefinition>

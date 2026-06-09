@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Menu;
 
 use BackedEnum;
-use Bambamboole\Lattice\Enums\HttpMethod;
+use Bambamboole\Lattice\Core\HttpMethod;
 use Closure;
 
 /**

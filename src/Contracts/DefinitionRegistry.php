@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Contracts;
 
-use Bambamboole\Lattice\Definition;
+use Bambamboole\Lattice\Core\Definition;
 
 /**
  * @template TDefinition of Definition

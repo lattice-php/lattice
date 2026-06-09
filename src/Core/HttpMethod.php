@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Enums;
+namespace Bambamboole\Lattice\Core;
 
 enum HttpMethod: string
 {

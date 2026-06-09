@@ -8,8 +8,8 @@ use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionResult;
 use Bambamboole\Lattice\Attributes\Action;
 use Bambamboole\Lattice\Core\Components\Action as ActionComponent;
-use Bambamboole\Lattice\Enums\HttpMethod;
-use Bambamboole\Lattice\Enums\ToastType;
+use Bambamboole\Lattice\Core\HttpMethod;
+use Bambamboole\Lattice\Toasts\ToastType;
 use Illuminate\Http\Request;
 use Workbench\App\Models\Product;
 

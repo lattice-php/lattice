@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Enums;
+namespace Bambamboole\Lattice\Pages;
 
 enum PageContainer: string
 {

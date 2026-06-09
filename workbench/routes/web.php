@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Enums\LucideIcon;
+use Bambamboole\Lattice\Core\LucideIcon;
 use Illuminate\Support\Facades\Route;
 use Workbench\App\Pages\WorkbenchDependentDemoPage;
 use Workbench\App\Pages\WorkbenchHomePage;

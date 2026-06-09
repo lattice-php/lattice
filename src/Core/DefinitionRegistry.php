@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice;
+namespace Bambamboole\Lattice\Core;
 
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
 use Bambamboole\Lattice\Contracts\DefinitionRegistry as DefinitionRegistryContract;

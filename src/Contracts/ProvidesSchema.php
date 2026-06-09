@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Contracts;
 
-use Bambamboole\Lattice\PageSchema;
+use Bambamboole\Lattice\Pages\PageSchema;
 
 interface ProvidesSchema
 {

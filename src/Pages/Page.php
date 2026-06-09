@@ -1,12 +1,12 @@
 <?php
 
-namespace Bambamboole\Lattice;
+namespace Bambamboole\Lattice\Pages;
 
 use BackedEnum;
 use BadMethodCallException;
 use Bambamboole\Lattice\Contracts\PageContract;
-use Bambamboole\Lattice\Enums\PageContainer;
-use Bambamboole\Lattice\Enums\PageLayout;
+use Bambamboole\Lattice\Pages\PageContainer;
+use Bambamboole\Lattice\Pages\PageLayout;
 use Bambamboole\Lattice\Facades\Lattice;
 use Illuminate\Http\Request;
 use Inertia\Inertia;

@@ -6,11 +6,11 @@ namespace Workbench\App\Pages;
 
 use Bambamboole\Lattice\Core\Components\Heading;
 use Bambamboole\Lattice\Core\Components\Stack;
-use Bambamboole\Lattice\Enums\Gap;
-use Bambamboole\Lattice\Enums\HttpMethod;
+use Bambamboole\Lattice\Core\Gap;
+use Bambamboole\Lattice\Core\HttpMethod;
 use Bambamboole\Lattice\Forms\Components\Form;
-use Bambamboole\Lattice\Page;
-use Bambamboole\Lattice\PageSchema;
+use Bambamboole\Lattice\Pages\Page;
+use Bambamboole\Lattice\Pages\PageSchema;
 use Workbench\App\Forms\ShowcaseForm;
 
 class WorkbenchShowcasePage extends Page

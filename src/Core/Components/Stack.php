@@ -2,9 +2,9 @@
 
 namespace Bambamboole\Lattice\Core\Components;
 
-use Bambamboole\Lattice\Enums\Align;
-use Bambamboole\Lattice\Enums\Gap;
-use Bambamboole\Lattice\Enums\Width;
+use Bambamboole\Lattice\Core\Align;
+use Bambamboole\Lattice\Core\Gap;
+use Bambamboole\Lattice\Core\Width;
 
 class Stack extends ContainerComponent
 {

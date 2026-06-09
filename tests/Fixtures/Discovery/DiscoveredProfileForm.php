@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Tests\Fixtures\Discovery;
 
 use Bambamboole\Lattice\Attributes\Form;
-use Bambamboole\Lattice\Enums\HttpMethod;
+use Bambamboole\Lattice\Core\HttpMethod;
 use Bambamboole\Lattice\Forms\Components\Form as FormComponent;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Illuminate\Contracts\Support\Responsable;
