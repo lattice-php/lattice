@@ -37,7 +37,7 @@ final class ActionRegistry extends DefinitionRegistry
     /**
      * @return class-string<ComponentAttribute>
      */
-    protected function attributeClass(): string
+    public function attributeClass(): string
     {
         return Action::class;
     }
@@ -47,7 +47,7 @@ final class ActionRegistry extends DefinitionRegistry
         return 'action';
     }
 
-    protected function group(): string
+    public function group(): string
     {
         return 'actions';
     }

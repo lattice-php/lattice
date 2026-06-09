@@ -91,35 +91,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        $forms = config('lattice.forms.registered', []);
-
-        if (is_array($forms) && $forms !== []) {
-            Lattice::forms($forms);
-        }
-
-        $tables = config('lattice.tables.registered', []);
-
-        if (is_array($tables) && $tables !== []) {
-            Lattice::tables($tables);
-        }
-
-        $fragments = config('lattice.fragments.registered', []);
-
-        if (is_array($fragments) && $fragments !== []) {
-            Lattice::fragments($fragments);
-        }
-
-        $actions = config('lattice.actions.registered', []);
-
-        if (is_array($actions) && $actions !== []) {
-            Lattice::actions($actions);
-        }
-
-        $bulkActions = config('lattice.bulk-actions.registered', []);
-
-        if (is_array($bulkActions) && $bulkActions !== []) {
-            Lattice::bulkActions($bulkActions);
-        }
+        Lattice::registerConfiguredDefinitions();
 
         $discoveryPaths = config('lattice.discover', []);
 

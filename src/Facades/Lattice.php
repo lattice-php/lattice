@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static void fragments(class-string<\Bambamboole\Lattice\Fragments\FragmentDefinition>|array<int, class-string<\Bambamboole\Lattice\Fragments\FragmentDefinition>> $fragments)
  * @method static void actions(class-string<\Bambamboole\Lattice\Actions\ActionDefinition>|array<int, class-string<\Bambamboole\Lattice\Actions\ActionDefinition>> $actions)
  * @method static void bulkActions(class-string<\Bambamboole\Lattice\Actions\BulkActionDefinition>|array<int, class-string<\Bambamboole\Lattice\Actions\BulkActionDefinition>> $bulkActions)
+ * @method static void registerConfiguredDefinitions()
  * @method static void discover(string $path, string $namespace)
  * @method static MenuRegistry menus()
  * @method static \Illuminate\Routing\Route page(string $uri, string $page)

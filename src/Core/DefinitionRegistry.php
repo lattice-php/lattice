@@ -23,6 +23,8 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
      */
     protected array $definitions = [];
 
+    private ?string $endpointTemplate = null;
+
     public function __construct(protected readonly Container $container) {}
 
     /**
@@ -32,6 +34,18 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
     {
         foreach ((array) $definitions as $definition) {
             $this->definitions[$this->keyFor($definition)] = $definition;
+        }
+    }
+
+    /**
+     * @param  array<int, class-string>  $definitions
+     */
+    public function registerDiscovered(array $definitions): void
+    {
+        foreach ($definitions as $definition) {
+            if (is_subclass_of($definition, $this->definitionClass())) {
+                $this->register($definition);
+            }
         }
     }
 
@@ -49,11 +63,11 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
 
     public function endpointFor(string $key): string
     {
-        $endpoint = (string) config(
+        $this->endpointTemplate ??= (string) config(
             "lattice.{$this->group()}.endpoint",
             "lattice/{$this->group()}/{{$this->name()}}",
         );
-        $path = str_replace('{'.$this->name().'}', rawurlencode($key), ltrim($endpoint, '/'));
+        $path = str_replace('{'.$this->name().'}', rawurlencode($key), ltrim($this->endpointTemplate, '/'));
 
         return '/'.$path;
     }
@@ -108,9 +122,9 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
     /**
      * @return class-string<ComponentAttribute>
      */
-    abstract protected function attributeClass(): string;
+    abstract public function attributeClass(): string;
 
     abstract protected function name(): string;
 
-    abstract protected function group(): string;
+    abstract public function group(): string;
 }

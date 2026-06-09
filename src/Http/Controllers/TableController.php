@@ -6,7 +6,6 @@ namespace Bambamboole\Lattice\Http\Controllers;
 
 use Bambamboole\Lattice\Core\Concerns\InteractsWithLatticeComponents;
 use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
-use Bambamboole\Lattice\Tables\InvalidTableQuery;
 use Bambamboole\Lattice\Tables\TableRegistry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,13 +23,6 @@ final class TableController
     {
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->tables, 'table', $table);
 
-        try {
-            return response()->json($this->tables->response($table, $request, $definition));
-        } catch (InvalidTableQuery $exception) {
-            return response()->json([
-                'message' => $exception->getMessage(),
-                'errors' => $exception->errors,
-            ], 422);
-        }
+        return response()->json($this->tables->response($table, $request, $definition));
     }
 }

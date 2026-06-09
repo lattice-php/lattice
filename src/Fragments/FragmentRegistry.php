@@ -52,7 +52,7 @@ final class FragmentRegistry extends DefinitionRegistry
     /**
      * @return class-string<ComponentAttribute>
      */
-    protected function attributeClass(): string
+    public function attributeClass(): string
     {
         return Fragment::class;
     }
@@ -62,7 +62,7 @@ final class FragmentRegistry extends DefinitionRegistry
         return 'fragment';
     }
 
-    protected function group(): string
+    public function group(): string
     {
         return 'fragments';
     }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Tables;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use RuntimeException;
 
 class InvalidTableQuery extends RuntimeException
@@ -14,6 +16,14 @@ class InvalidTableQuery extends RuntimeException
     public function __construct(string $message, public readonly array $errors = [])
     {
         parent::__construct($message);
+    }
+
+    public function render(Request $request): JsonResponse
+    {
+        return response()->json([
+            'message' => $this->getMessage(),
+            'errors' => $this->errors,
+        ], 422);
     }
 
     public static function filter(string $filter, string $table): self
