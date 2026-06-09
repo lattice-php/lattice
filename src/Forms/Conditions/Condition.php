@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Forms\Conditions;
 
+use Bambamboole\Lattice\Forms\Enums\Op;
 use Bambamboole\Lattice\Forms\FormData;
 use JsonSerializable;
 

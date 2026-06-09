@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Workbench\App\Providers;
 
-use Bambamboole\Lattice\Actions\EffectType;
-use Bambamboole\Lattice\Core\Align;
-use Bambamboole\Lattice\Core\Gap;
-use Bambamboole\Lattice\Core\HttpMethod;
-use Bambamboole\Lattice\Core\Width;
-use Bambamboole\Lattice\Forms\Conditions\Op;
-use Bambamboole\Lattice\Pages\PageContainer;
-use Bambamboole\Lattice\Pages\PageLayout;
-use Bambamboole\Lattice\Tables\PaginationType;
-use Bambamboole\Lattice\Toasts\ToastType;
+use Bambamboole\Lattice\Actions\Enums\EffectType;
+use Bambamboole\Lattice\Core\Enums\Align;
+use Bambamboole\Lattice\Core\Enums\Gap;
+use Bambamboole\Lattice\Core\Enums\HttpMethod;
+use Bambamboole\Lattice\Core\Enums\Width;
+use Bambamboole\Lattice\Forms\Enums\Op;
+use Bambamboole\Lattice\Pages\Enums\PageContainer;
+use Bambamboole\Lattice\Pages\Enums\PageLayout;
+use Bambamboole\Lattice\Tables\Enums\PaginationType;
+use Bambamboole\Lattice\Toasts\Enums\ToastType;
 use Spatie\LaravelTypeScriptTransformer\TypeScriptTransformerApplicationServiceProvider;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfigFactory;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;

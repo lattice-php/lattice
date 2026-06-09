@@ -7,7 +7,7 @@ namespace Workbench\App\Pages;
 use Bambamboole\Lattice\Core\Components\Button;
 use Bambamboole\Lattice\Core\Components\Heading;
 use Bambamboole\Lattice\Core\Components\Stack;
-use Bambamboole\Lattice\Core\Gap;
+use Bambamboole\Lattice\Core\Enums\Gap;
 use Bambamboole\Lattice\Pages\Page;
 use Bambamboole\Lattice\Pages\PageSchema;
 use Bambamboole\Lattice\Tables\Components\Table;

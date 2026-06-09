@@ -6,7 +6,7 @@ use Bambamboole\Lattice\Attributes\SerializationHook;
 use Bambamboole\Lattice\Core\Components\Component;
 use Bambamboole\Lattice\Forms\Conditions\Condition;
 use Bambamboole\Lattice\Forms\Conditions\ConditionSet;
-use Bambamboole\Lattice\Forms\Conditions\Op;
+use Bambamboole\Lattice\Forms\Enums\Op;
 use Bambamboole\Lattice\Forms\FormData;
 use Closure;
 use Illuminate\Http\Request;

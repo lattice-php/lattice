@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Toasts;
 
+use Bambamboole\Lattice\Toasts\Enums\ToastType;
 use JsonSerializable;
 
 final readonly class ToastMessage implements JsonSerializable

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Tables;
 
+use Bambamboole\Lattice\Tables\Enums\PaginationType;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Support\Arrayable;

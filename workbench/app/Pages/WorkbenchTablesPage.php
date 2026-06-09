@@ -10,7 +10,7 @@ use Bambamboole\Lattice\Core\Components\Stack;
 use Bambamboole\Lattice\Core\Components\Tab;
 use Bambamboole\Lattice\Core\Components\Tabs;
 use Bambamboole\Lattice\Core\Components\Text;
-use Bambamboole\Lattice\Core\Gap;
+use Bambamboole\Lattice\Core\Enums\Gap;
 use Bambamboole\Lattice\Pages\Page;
 use Bambamboole\Lattice\Pages\PageSchema;
 use Bambamboole\Lattice\Tables\Components\Table;

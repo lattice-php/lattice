@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Bambamboole\Lattice\Actions\Components\Action;
-use Bambamboole\Lattice\Core\LucideIcon;
+use Bambamboole\Lattice\Core\Enums\LucideIcon;
 
 test('actions serialize lucide icon enum values', function () {
     expect(Action::make('send-message')

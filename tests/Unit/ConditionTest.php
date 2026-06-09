@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Bambamboole\Lattice\Forms\Conditions\Condition;
-use Bambamboole\Lattice\Forms\Conditions\Op;
+use Bambamboole\Lattice\Forms\Enums\Op;
 use Bambamboole\Lattice\Forms\FormData;
 
 it('matches against form data', function (): void {

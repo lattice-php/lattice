@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Core;
+namespace Bambamboole\Lattice\Core\Enums;
 
 enum Width: string
 {

@@ -9,6 +9,7 @@ use Bambamboole\Lattice\Contracts\ProvidesTable;
 use Bambamboole\Lattice\Core\Components\Component;
 use Bambamboole\Lattice\Core\Definition;
 use Bambamboole\Lattice\Tables\Columns\Column;
+use Bambamboole\Lattice\Tables\Enums\PaginationType;
 use Illuminate\Support\Collection;
 
 abstract class TableDefinition extends Definition implements ProvidesTable

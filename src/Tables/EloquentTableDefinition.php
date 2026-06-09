@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Tables;
 
 use Bambamboole\Lattice\Tables\Columns\Column;
+use Bambamboole\Lattice\Tables\Enums\PaginationType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;

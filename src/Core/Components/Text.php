@@ -2,7 +2,7 @@
 
 namespace Bambamboole\Lattice\Core\Components;
 
-use Bambamboole\Lattice\Core\Align;
+use Bambamboole\Lattice\Core\Enums\Align;
 
 class Text extends Component
 {
