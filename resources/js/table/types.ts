@@ -68,11 +68,6 @@ export type TableResponse = {
   state?: Partial<TableState>;
 };
 
-export type ReloadComponentEvent = CustomEvent<{
-  component?: string;
-  type?: string;
-}>;
-
 declare module "@lattice/core/types" {
   interface ComponentProps {
     table: {

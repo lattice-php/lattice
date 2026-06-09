@@ -1,6 +1,7 @@
 import { router, useHttp } from "@inertiajs/react";
 import type { Method } from "@inertiajs/core";
 import { useState } from "react";
+import { endpointWithRef, withRefBody } from "@lattice/core/component-ref";
 import { Button } from "@lattice/core/components/button";
 import { ConfirmDialog } from "@lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice/core/components/spinner";
@@ -52,18 +53,6 @@ function getActionMethod(props: NodeProps | undefined): Method {
   return actionMethods.includes(method as Method) ? (method as Method) : "post";
 }
 
-function endpointWithRef(endpoint: string, componentRef: string): string {
-  if (!componentRef) {
-    return endpoint;
-  }
-
-  const url = new URL(endpoint, window.location.origin);
-
-  url.searchParams.set("_lattice", componentRef);
-
-  return `${url.pathname}${url.search}`;
-}
-
 function getConfirmation(props: NodeProps | undefined): ActionConfirmation | null {
   const confirmation = props?.confirmation;
 
@@ -97,10 +86,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
         return;
       }
 
-      http.transform((data) => ({
-        ...data,
-        ...(componentRef ? { _lattice: componentRef } : {}),
-      }));
+      http.transform((data) => withRefBody(data, componentRef));
 
       const response = await http[method](endpoint);
       const responseEffects = getActionEffects(response.effects);

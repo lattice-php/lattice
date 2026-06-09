@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@lattice/core/components/button";
 import { getStringProp } from "@lattice/core/props";
 import type { RendererComponent } from "@lattice/core/types";
+import { LATTICE_EVENT } from "@lattice/events/event-names";
 
 type ModalEvent = CustomEvent<{
   modal?: string;
@@ -46,12 +47,12 @@ const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {
       }
     }
 
-    window.addEventListener("lattice:open-modal", open);
-    window.addEventListener("lattice:close-modal", close);
+    window.addEventListener(LATTICE_EVENT.openModal, open);
+    window.addEventListener(LATTICE_EVENT.closeModal, close);
 
     return () => {
-      window.removeEventListener("lattice:open-modal", open);
-      window.removeEventListener("lattice:close-modal", close);
+      window.removeEventListener(LATTICE_EVENT.openModal, open);
+      window.removeEventListener(LATTICE_EVENT.closeModal, close);
     };
   }, [node.id]);
 

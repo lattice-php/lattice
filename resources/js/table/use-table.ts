@@ -1,15 +1,9 @@
 import type { Node } from "@lattice/core/types";
+import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice/events/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getColumns, getPagination, getRowMetadata, getRows, getState } from "./payload";
 import { buildEndpoint, nextSort } from "./query";
-import type {
-  FilterClause,
-  ReloadComponentEvent,
-  TableColumn,
-  TableResponse,
-  TableSort,
-  TableState,
-} from "./types";
+import type { FilterClause, TableColumn, TableResponse, TableSort, TableState } from "./types";
 
 export function useTable(node: Node<"table">) {
   const columns = getColumns(node.props?.columns);
@@ -151,9 +145,9 @@ export function useTable(node: Node<"table">) {
       void load(state);
     }
 
-    window.addEventListener("lattice:reload-component", reload);
+    window.addEventListener(LATTICE_EVENT.reloadComponent, reload);
 
-    return () => window.removeEventListener("lattice:reload-component", reload);
+    return () => window.removeEventListener(LATTICE_EVENT.reloadComponent, reload);
   }, [load, node.id, state]);
 
   useEffect(() => {

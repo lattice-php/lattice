@@ -20,7 +20,15 @@ export {
   lazyComponent,
 } from "./core/registry";
 export { Renderer } from "./core/renderer";
+export {
+  LATTICE_REF_PARAM,
+  endpointWithRef,
+  withRefBody,
+  withRefParam,
+} from "./core/component-ref";
+export { LATTICE_EVENT } from "./events/event-names";
 export type { ButtonVariant } from "./core/components/button";
+export type { ReloadComponentEvent } from "./events/event-names";
 export type {
   ComponentProps,
   ComponentType,

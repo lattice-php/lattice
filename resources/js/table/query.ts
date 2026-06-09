@@ -1,3 +1,4 @@
+import { withRefParam } from "@lattice/core/component-ref";
 import { flattenColumns } from "./payload";
 import type { TableColumn, TableSort, TableState } from "./types";
 
@@ -26,9 +27,7 @@ export function getColumnAriaSort(
 export function buildEndpoint(endpoint: string, state: TableState, componentRef: string): string {
   const url = new URL(endpoint, window.location.origin);
 
-  if (componentRef) {
-    url.searchParams.set("_lattice", componentRef);
-  }
+  withRefParam(url, componentRef);
 
   if (state.filters.length > 0) {
     url.searchParams.set("filter", serializeFilters(state));

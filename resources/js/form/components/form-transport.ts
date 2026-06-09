@@ -4,6 +4,8 @@
  * URL building, CSRF header, and request shape live here in one place.
  */
 
+import { LATTICE_REF_PARAM } from "@lattice/core/component-ref";
+
 export const FORM_DEBOUNCE_MS = 250;
 
 export function xsrfToken(): string {
@@ -13,7 +15,9 @@ export function xsrfToken(): string {
 }
 
 export function formActionUrl(action: string, componentRef: string): string {
-  return componentRef ? `${action}?_lattice=${encodeURIComponent(componentRef)}` : action;
+  return componentRef
+    ? `${action}?${LATTICE_REF_PARAM}=${encodeURIComponent(componentRef)}`
+    : action;
 }
 
 export function postFormAction<T>(

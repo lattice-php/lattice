@@ -1,15 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
+import { endpointWithRef } from "@lattice/core/component-ref";
 import { getStringProp } from "@lattice/core/props";
 import { Renderer, useRendererContext } from "@lattice/core/renderer";
 import type { Node, RendererComponent } from "@lattice/core/types";
+import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice/events/event-names";
 
 type FragmentResponse = {
   components?: Node[];
 };
-
-type ReloadComponentEvent = CustomEvent<{
-  component?: string;
-}>;
 
 declare module "@lattice/core/types" {
   interface ComponentProps {
@@ -19,18 +17,6 @@ declare module "@lattice/core/types" {
       lazy?: boolean;
     };
   }
-}
-
-function endpointWithRef(endpoint: string, componentRef: string): string {
-  if (!componentRef) {
-    return endpoint;
-  }
-
-  const url = new URL(endpoint, window.location.origin);
-
-  url.searchParams.set("_lattice", componentRef);
-
-  return `${url.pathname}${url.search}`;
 }
 
 function getComponents(value: unknown): Node[] {
@@ -94,9 +80,9 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
       void load();
     }
 
-    window.addEventListener("lattice:reload-component", reload);
+    window.addEventListener(LATTICE_EVENT.reloadComponent, reload);
 
-    return () => window.removeEventListener("lattice:reload-component", reload);
+    return () => window.removeEventListener(LATTICE_EVENT.reloadComponent, reload);
   }, [load, node.id]);
 
   return (

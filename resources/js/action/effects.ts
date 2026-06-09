@@ -1,5 +1,6 @@
 import { router } from "@inertiajs/react";
 import type { EffectType, ToastType } from "@lattice/generated/enums";
+import { LATTICE_EVENT } from "@lattice/events/event-names";
 
 export type ActionEffect =
   | {
@@ -36,14 +37,14 @@ export type ActionEffect =
     };
 
 const eventNames = {
-  closeModal: "lattice:close-modal",
-  download: "lattice:download",
-  openModal: "lattice:open-modal",
-  redirect: "lattice:redirect",
-  reloadComponent: "lattice:reload-component",
-  reloadPage: "lattice:reload-page",
-  resetForm: "lattice:reset-form",
-  toast: "lattice:toast",
+  toast: LATTICE_EVENT.toast,
+  reloadComponent: LATTICE_EVENT.reloadComponent,
+  reloadPage: LATTICE_EVENT.reloadPage,
+  redirect: LATTICE_EVENT.redirect,
+  download: LATTICE_EVENT.download,
+  openModal: LATTICE_EVENT.openModal,
+  closeModal: LATTICE_EVENT.closeModal,
+  resetForm: LATTICE_EVENT.resetForm,
 } satisfies Record<EffectType, string>;
 
 function triggerDownload(url: string): void {
@@ -82,7 +83,7 @@ export function dispatchActionError(error: unknown): void {
     return;
   }
 
-  window.dispatchEvent(new CustomEvent("lattice:action-error", { detail: { error } }));
+  window.dispatchEvent(new CustomEvent(LATTICE_EVENT.actionError, { detail: { error } }));
 }
 
 export function getActionEffects(effects: unknown): ActionEffect[] {

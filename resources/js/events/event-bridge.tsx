@@ -1,5 +1,6 @@
 import { router } from "@inertiajs/react";
 import { useEffect } from "react";
+import { LATTICE_EVENT } from "./event-names";
 
 export const toastTypes = ["success", "info", "warning", "error"] as const;
 export const appearances = ["light", "dark", "system"] as const;
@@ -99,10 +100,10 @@ export function EventBridge({ onAppearanceChange, onToast }: EventBridgeProps) {
       }
     };
 
-    window.addEventListener("lattice:toast", listener);
+    window.addEventListener(LATTICE_EVENT.toast, listener);
 
     return () => {
-      window.removeEventListener("lattice:toast", listener);
+      window.removeEventListener(LATTICE_EVENT.toast, listener);
     };
   }, [onToast]);
 
@@ -119,10 +120,10 @@ export function EventBridge({ onAppearanceChange, onToast }: EventBridgeProps) {
       }
     };
 
-    window.addEventListener("lattice:appearance-change", listener);
+    window.addEventListener(LATTICE_EVENT.appearanceChange, listener);
 
     return () => {
-      window.removeEventListener("lattice:appearance-change", listener);
+      window.removeEventListener(LATTICE_EVENT.appearanceChange, listener);
     };
   }, [onAppearanceChange]);
 

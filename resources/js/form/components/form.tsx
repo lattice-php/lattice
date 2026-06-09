@@ -1,6 +1,7 @@
-import type { FormDataConvertible } from "@inertiajs/core";
 import { Form as InertiaForm } from "@inertiajs/react";
+import { withRefBody } from "@lattice/core/component-ref";
 import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/core/props";
+import { LATTICE_EVENT } from "@lattice/events/event-names";
 import type { Node, NodeProps, RendererComponent } from "@lattice/core/types";
 import { useEffect, useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
@@ -83,9 +84,9 @@ function FormResetListener({
       }
     };
 
-    window.addEventListener("lattice:reset-form", handler);
+    window.addEventListener(LATTICE_EVENT.resetForm, handler);
 
-    return () => window.removeEventListener("lattice:reset-form", handler);
+    return () => window.removeEventListener(LATTICE_EVENT.resetForm, handler);
   }, [componentId, reset]);
 
   return null;
@@ -151,12 +152,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
       resetOnError={resetOnError}
       resetOnSuccess={resetOnSuccess}
       validationTimeout={precognitive ? validationTimeout : undefined}
-      transform={(data) => ({
-        ...data,
-        ...(componentRef
-          ? ({ _lattice: componentRef } satisfies Record<string, FormDataConvertible>)
-          : {}),
-      })}
+      transform={(data) => withRefBody(data, componentRef)}
       className="mx-auto flex w-full max-w-2xl flex-col gap-6"
     >
       {({
