@@ -11,7 +11,6 @@ export function FilterValueInput({
   value,
   processing,
   withSearchIcon = false,
-  autoFocus = false,
   ariaLabel,
   onCommit,
   onClear,
@@ -21,7 +20,6 @@ export function FilterValueInput({
   value: string;
   processing: boolean;
   withSearchIcon?: boolean;
-  autoFocus?: boolean;
   ariaLabel?: string;
   onCommit: (value: string) => void;
   onClear?: () => void;
@@ -76,7 +74,6 @@ export function FilterValueInput({
       <input
         type={type === "number" ? "number" : "text"}
         aria-label={inputLabel}
-        autoFocus={autoFocus}
         className={`${baseClass} ${withSearchIcon ? "pl-8" : ""} ${onClear ? "pr-8" : ""}`}
         disabled={processing}
         value={draft}

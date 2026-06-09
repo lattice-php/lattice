@@ -3,7 +3,7 @@ import { useState } from "react";
 import {
   dispatchActionEffects,
   dispatchActionError,
-  isActionEffect,
+  getActionEffects,
 } from "@lattice/action/effects";
 import type { ActionEffect } from "@lattice/action/effects";
 import { Button } from "@lattice/core/components/button";
@@ -21,10 +21,6 @@ type BulkData = {
   allMatching?: boolean;
   selected?: string[];
 };
-
-function getEffects(value: unknown): ActionEffect[] {
-  return Array.isArray(value) ? value.filter(isActionEffect) : [];
-}
 
 export function BulkBar({
   actions,
@@ -58,7 +54,7 @@ export function BulkBar({
 
       const response = await http[action.method](action.endpoint);
 
-      dispatchActionEffects(getEffects(response.effects));
+      dispatchActionEffects(getActionEffects(response.effects));
       setConfirming(null);
       onCompleted();
     } catch (error) {

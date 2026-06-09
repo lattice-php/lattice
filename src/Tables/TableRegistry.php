@@ -115,10 +115,14 @@ class TableRegistry extends DefinitionRegistry
                 $definition->actions($row),
             );
 
-            return array_filter([
+            if ($actions === []) {
+                return [];
+            }
+
+            return [
                 'key' => (string) ($row['id'] ?? $row['uuid'] ?? $row['key'] ?? $index),
                 'actions' => $actions,
-            ], fn (mixed $value, string $key): bool => $key === 'actions' ? $value !== [] : $actions !== [], ARRAY_FILTER_USE_BOTH);
+            ];
         });
     }
 }

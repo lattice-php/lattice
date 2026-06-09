@@ -84,6 +84,10 @@ export function dispatchActionError(error: unknown): void {
   window.dispatchEvent(new CustomEvent("lattice:action-error", { detail: { error } }));
 }
 
+export function getActionEffects(effects: unknown): ActionEffect[] {
+  return Array.isArray(effects) ? effects.filter(isActionEffect) : [];
+}
+
 export function isActionEffect(effect: unknown): effect is ActionEffect {
   if (typeof effect !== "object" || effect === null || !("type" in effect)) {
     return false;

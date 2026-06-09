@@ -130,11 +130,11 @@ final readonly class TableResult implements JsonSerializable
     }
 
     /**
-     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, rows: array<int, array<string, mixed>>, state: array<string, mixed>}
+     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, rows?: array<int, array<string, mixed>>, state: array<string, mixed>}
      */
     public function toArray(?TableQuery $query = null): array
     {
-        return array_filter([
+        $payload = [
             'data' => $this->data,
             'pagination' => $this->pagination,
             'rows' => $this->rows,
@@ -144,11 +144,17 @@ final readonly class TableResult implements JsonSerializable
                 'page' => 1,
                 'perPage' => 25,
             ],
-        ], fn (mixed $value, string $key): bool => $key !== 'rows' || $value !== [], ARRAY_FILTER_USE_BOTH);
+        ];
+
+        if ($this->rows === []) {
+            unset($payload['rows']);
+        }
+
+        return $payload;
     }
 
     /**
-     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, rows: array<int, array<string, mixed>>, state: array<string, mixed>}
+     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, rows?: array<int, array<string, mixed>>, state: array<string, mixed>}
      */
     public function jsonSerialize(): array
     {

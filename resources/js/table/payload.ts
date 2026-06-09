@@ -7,7 +7,7 @@ import type {
   TableState,
 } from "./types";
 
-export function getFilters(value: unknown): FilterClause[] {
+function getFilters(value: unknown): FilterClause[] {
   if (!Array.isArray(value)) {
     return [];
   }
@@ -49,13 +49,7 @@ export function getRows(value: unknown): TableRow[] {
 }
 
 export function getRowMetadata(value: unknown): TableRowMeta[] {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-
-  return value.filter(
-    (row): row is TableRowMeta => typeof row === "object" && row !== null && !Array.isArray(row),
-  );
+  return getRows(value) as TableRowMeta[];
 }
 
 export function getPagination(value: unknown): TablePagination {

@@ -6,7 +6,7 @@ import { Spinner } from "@lattice/core/components/spinner";
 import { getStringProp } from "@lattice/core/props";
 import type { NodeProps, RendererComponent } from "@lattice/core/types";
 import { IconRenderer } from "@lattice/icons";
-import { dispatchActionEffects, dispatchActionError, isActionEffect } from "../effects";
+import { dispatchActionEffects, dispatchActionError, getActionEffects } from "../effects";
 import type { ActionEffect } from "../effects";
 
 type ActionVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
@@ -49,10 +49,6 @@ function getActionMethod(props: NodeProps | undefined): Method {
   const method = getStringProp(props, "method", "post");
 
   return actionMethods.includes(method as Method) ? (method as Method) : "post";
-}
-
-function getActionEffects(effects: unknown): ActionEffect[] {
-  return Array.isArray(effects) ? effects.filter(isActionEffect) : [];
 }
 
 function endpointWithRef(endpoint: string, componentRef: string): string {

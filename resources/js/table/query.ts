@@ -35,10 +35,7 @@ export function buildEndpoint(endpoint: string, state: TableState, componentRef:
   }
 
   if (state.sorts.length > 0) {
-    url.searchParams.set(
-      "sort",
-      state.sorts.map((sort) => (sort.direction === "desc" ? `-${sort.key}` : sort.key)).join(","),
-    );
+    url.searchParams.set("sort", serializeSorts(state));
   }
 
   url.searchParams.set("page", String(state.page));
@@ -55,9 +52,7 @@ export function getQueryParams(state: TableState): Record<string, unknown> {
   }
 
   if (state.sorts.length > 0) {
-    params.sort = state.sorts
-      .map((sort) => (sort.direction === "desc" ? `-${sort.key}` : sort.key))
-      .join(",");
+    params.sort = serializeSorts(state);
   }
 
   return params;
@@ -66,6 +61,12 @@ export function getQueryParams(state: TableState): Record<string, unknown> {
 function serializeFilters(state: TableState): string {
   return state.filters
     .map((clause) => `${clause.field}:${clause.operator}:${encodeURIComponent(clause.value)}`)
+    .join(",");
+}
+
+function serializeSorts(state: TableState): string {
+  return state.sorts
+    .map((sort) => (sort.direction === "desc" ? `-${sort.key}` : sort.key))
     .join(",");
 }
 
@@ -121,7 +122,7 @@ export function getVisiblePages(currentPage: number, lastPage: number): number[]
 export function getColumnGridTemplate(
   columns: TableColumn[],
   hasActions: boolean,
-  hasSelection = false,
+  hasSelection: boolean,
 ): string {
   const tracks: string[] = columns.map((column) =>
     column.type === "stack" ? "minmax(16rem, 2fr)" : "minmax(9rem, 1fr)",

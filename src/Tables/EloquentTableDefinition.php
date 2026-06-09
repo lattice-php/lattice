@@ -107,14 +107,24 @@ abstract class EloquentTableDefinition extends TableDefinition
         $value = $clause->value;
         $isDate = $column->filterControlType() === 'date';
 
+        $compare = function (string $operator) use ($builder, $field, $value, $isDate): void {
+            if ($isDate) {
+                $builder->whereDate($field, $operator, $value);
+
+                return;
+            }
+
+            $builder->where($field, $operator, $value);
+        };
+
         match ($clause->operator) {
             'contains' => $builder->where($field, 'like', '%'.str_replace(['%', '_'], ['\\%', '\\_'], $value).'%'),
             'equals' => $this->applyEquals($builder, $column, $field, $value),
-            'not_equals' => $isDate ? $builder->whereDate($field, '!=', $value) : $builder->where($field, '!=', $value),
-            'gt' => $isDate ? $builder->whereDate($field, '>', $value) : $builder->where($field, '>', $value),
-            'gte' => $isDate ? $builder->whereDate($field, '>=', $value) : $builder->where($field, '>=', $value),
-            'lt' => $isDate ? $builder->whereDate($field, '<', $value) : $builder->where($field, '<', $value),
-            'lte' => $isDate ? $builder->whereDate($field, '<=', $value) : $builder->where($field, '<=', $value),
+            'not_equals' => $compare('!='),
+            'gt' => $compare('>'),
+            'gte' => $compare('>='),
+            'lt' => $compare('<'),
+            'lte' => $compare('<='),
             'before' => $builder->whereDate($field, '<', $value),
             'after' => $builder->whereDate($field, '>', $value),
             default => null,

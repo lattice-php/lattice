@@ -1,13 +1,6 @@
 import type { Node } from "@lattice/core/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  flattenColumns,
-  getColumns,
-  getPagination,
-  getRowMetadata,
-  getRows,
-  getState,
-} from "./payload";
+import { getColumns, getPagination, getRowMetadata, getRows, getState } from "./payload";
 import { buildEndpoint, nextSort } from "./query";
 import type {
   FilterClause,
@@ -20,7 +13,6 @@ import type {
 
 export function useTable(node: Node<"table">) {
   const columns = getColumns(node.props?.columns);
-  const interactiveColumns = useMemo(() => flattenColumns(columns), [columns]);
   const endpoint = typeof node.props?.endpoint === "string" ? node.props.endpoint : null;
   const componentRef = typeof node.props?.ref === "string" ? node.props.ref : "";
   const isLazy = node.props?.lazy === true;
@@ -193,7 +185,6 @@ export function useTable(node: Node<"table">) {
 
   return {
     columns,
-    interactiveColumns,
     rows,
     rowMetadata,
     pagination,
