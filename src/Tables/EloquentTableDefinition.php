@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Tables;
 
 use Bambamboole\Lattice\Tables\Columns\Column;
+use Bambamboole\Lattice\Tables\Enums\Operator;
 use Bambamboole\Lattice\Tables\Enums\PaginationType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -65,7 +66,12 @@ abstract class EloquentTableDefinition extends TableDefinition
             $column = $columns->get($clause->field);
 
             if ($column instanceof Column) {
-                $this->applyFilterClause($builder, $column, $clause);
+                Operator::from($clause->operator)->apply(
+                    $builder,
+                    $column->controlType(),
+                    $clause->field,
+                    $clause->value,
+                );
             }
         }
 
@@ -97,64 +103,5 @@ abstract class EloquentTableDefinition extends TableDefinition
     public function resolveMatching(TableQuery $query): Collection
     {
         return $this->applyQuery($this->builder($query), $query)->get();
-    }
-
-    /**
-     * @param  Builder<TModel>  $builder
-     */
-    private function applyFilterClause(Builder $builder, Column $column, FilterClause $clause): void
-    {
-        $field = $clause->field;
-        $value = $clause->value;
-        $isDate = $column->filterControlType() === 'date';
-
-        $compare = function (string $operator) use ($builder, $field, $value, $isDate): void {
-            if ($isDate) {
-                $builder->whereDate($field, $operator, $value);
-
-                return;
-            }
-
-            $builder->where($field, $operator, $value);
-        };
-
-        match ($clause->operator) {
-            'contains' => $builder->where($field, 'like', '%'.str_replace(['%', '_'], ['\\%', '\\_'], $value).'%'),
-            'equals' => $this->applyEquals($builder, $column, $field, $value),
-            'not_equals' => $compare('!='),
-            'gt' => $compare('>'),
-            'gte' => $compare('>='),
-            'lt' => $compare('<'),
-            'lte' => $compare('<='),
-            'before' => $builder->whereDate($field, '<', $value),
-            'after' => $builder->whereDate($field, '>', $value),
-            default => null,
-        };
-    }
-
-    /**
-     * @param  Builder<TModel>  $builder
-     */
-    private function applyEquals(Builder $builder, Column $column, string $field, string $value): void
-    {
-        $type = $column->filterControlType();
-
-        if ($type === 'date') {
-            $builder->whereDate($field, '=', $value);
-
-            return;
-        }
-
-        if ($type === 'boolean') {
-            $boolean = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-
-            if ($boolean !== null) {
-                $builder->where($field, $boolean);
-            }
-
-            return;
-        }
-
-        $builder->where($field, $value);
     }
 }

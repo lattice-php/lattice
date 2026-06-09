@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Tables;
 
 use Bambamboole\Lattice\Tables\Columns\Column;
+use Bambamboole\Lattice\Tables\Enums\Operator;
 use Illuminate\Http\Request;
 
 final readonly class TableQuery
@@ -139,7 +140,9 @@ final readonly class TableQuery
                 throw InvalidTableQuery::filter($filter->field, $table);
             }
 
-            if (! in_array($filter->operator, $column->filterOperators(), true)) {
+            $operator = Operator::tryFrom($filter->operator);
+
+            if ($operator === null || ! in_array($operator, $column->filterOperators(), true)) {
                 throw InvalidTableQuery::operator($filter->operator, $filter->field, $table);
             }
         }
