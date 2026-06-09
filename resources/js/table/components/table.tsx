@@ -1,6 +1,6 @@
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { getBulkActions } from "../bulk";
-import { getRowKey, getRowMeta } from "../payload";
+import { getRowActions, getRowKey } from "../payload";
 import { getColumnGridTemplate, getQueryParams, getVisiblePages } from "../query";
 import { useTable } from "../use-table";
 import { useTableSelection } from "../use-table-selection";
@@ -17,7 +17,6 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
   const {
     columns,
     rows,
-    rowMetadata,
     pagination,
     state,
     filters,
@@ -35,11 +34,11 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
 
   const bulkActions = getBulkActions(node.props?.bulkActions);
   const hasBulkActions = bulkActions.length > 0;
-  const rowEntries = rows.map((row, index) => {
-    const metadata = getRowMeta(rowMetadata, row, index);
-
-    return { row, metadata, key: metadata.key ?? getRowKey(row, index) };
-  });
+  const rowEntries = rows.map((row, index) => ({
+    row,
+    actions: getRowActions(row),
+    key: getRowKey(row, index),
+  }));
   const selection = useTableSelection(rowEntries.map((entry) => entry.key));
 
   const currentPage = pagination.currentPage ?? state.page;
@@ -47,7 +46,7 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
   const mode = pagination.mode ?? "table";
   const visiblePages = getVisiblePages(currentPage, lastPage);
   const hasNextPage = pagination.hasMore ?? currentPage < lastPage;
-  const hasActions = rowMetadata.some((metadata) => (metadata.actions?.length ?? 0) > 0);
+  const hasActions = rowEntries.some((entry) => entry.actions.length > 0);
   const striped = node.props?.striped === true;
   const hasFilters = columns.some((column) => column.filter?.enabled);
   const filterEntries = filters.map((clause, index) => ({ clause, index }));
@@ -152,9 +151,7 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
               <div role="cell">Loading rows...</div>
             </div>
           ) : (
-            rowEntries.map(({ row, metadata, key }) => {
-              const actions = metadata.actions ?? [];
-
+            rowEntries.map(({ row, actions, key }) => {
               return (
                 <div
                   key={key}

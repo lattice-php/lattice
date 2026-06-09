@@ -49,7 +49,7 @@ final class TableRegistry extends DefinitionRegistry
         $key = $this->registeredKeyFor($table);
         $definition = $this->make($table);
         $columns = $definition->columns();
-        $query = TableQuery::empty($columns, $key, $definition->perPage());
+        $query = TableQuery::empty($definition->perPage());
 
         $component = TableComponent::make($key)
             ->endpoint($this->endpointFor($key))
@@ -113,20 +113,17 @@ final class TableRegistry extends DefinitionRegistry
 
     private function decorateResult(TableDefinition $definition, TableResult $result): TableResult
     {
-        return $result->rows(function (array $row, int $index) use ($definition): array {
+        return $result->decorateRows(function (array $row) use ($definition): array {
             $actions = array_map(
                 fn ($action): array => $action->toArray(),
                 $definition->actions($row),
             );
 
             if ($actions === []) {
-                return [];
+                return $row;
             }
 
-            return [
-                'key' => (string) ($row['id'] ?? $row['uuid'] ?? $row['key'] ?? $index),
-                'actions' => $actions,
-            ];
+            return [...$row, 'actions' => $actions];
         });
     }
 }

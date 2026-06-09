@@ -92,7 +92,7 @@ abstract class EloquentTableDefinition extends TableDefinition
             return new Collection;
         }
 
-        return $this->builder(TableQuery::empty($this->columns(), '', $this->perPage()))
+        return $this->builder(TableQuery::empty($this->perPage()))
             ->whereKey($keys)
             ->get();
     }

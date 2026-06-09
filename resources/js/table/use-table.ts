@@ -2,7 +2,7 @@ import { withRefHeader } from "@lattice/lattice/core/component-ref";
 import type { Node } from "@lattice/lattice/core/types";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice/lattice/events/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { getColumns, getPagination, getRowMetadata, getRows, getState } from "./payload";
+import { getColumns, getPagination, getRows, getState } from "./payload";
 import { buildEndpoint, nextSort } from "./query";
 import type { FilterClause, TableColumn, TableResponse, TableSort, TableState } from "./types";
 
@@ -13,7 +13,6 @@ export function useTable(node: Node<"table">) {
   const isLazy = node.props?.lazy === true;
   const initialState = useMemo(() => getState(node.props?.state), [node.props?.state]);
   const [rows, setRows] = useState(() => getRows(node.props?.data));
-  const [rowMetadata, setRowMetadata] = useState(() => getRowMetadata(node.props?.rows));
   const [pagination, setPagination] = useState(() => getPagination(node.props?.pagination));
   const [state, setState] = useState(initialState);
   const [filters, setFilters] = useState(initialState.filters);
@@ -41,12 +40,8 @@ export function useTable(node: Node<"table">) {
         const result = (await response.json()) as TableResponse;
         const resultState = getState(result.state);
         const resultRows = getRows(result.data);
-        const resultRowMetadata = getRowMetadata(result.rows);
 
         setRows((currentRows) => (append ? [...currentRows, ...resultRows] : resultRows));
-        setRowMetadata((currentRowMetadata) =>
-          append ? [...currentRowMetadata, ...resultRowMetadata] : resultRowMetadata,
-        );
         setPagination(getPagination(result.pagination));
         setState(resultState);
         setFilters(resultState.filters);
@@ -182,7 +177,6 @@ export function useTable(node: Node<"table">) {
   return {
     columns,
     rows,
-    rowMetadata,
     pagination,
     state,
     filters,

@@ -25,11 +25,6 @@ export type TableColumn = {
 
 export type TableRow = Record<string, unknown>;
 
-export type TableRowMeta = {
-  actions?: Node[];
-  key?: string;
-};
-
 export type TableSort = {
   key: string;
   direction: string;
@@ -65,7 +60,6 @@ export type TablePagination = {
 export type TableResponse = {
   data?: TableRow[];
   pagination?: TablePagination;
-  rows?: TableRowMeta[];
   state?: Partial<TableState>;
 };
 
@@ -81,7 +75,6 @@ declare module "@lattice/lattice/core/types" {
       layout?: string;
       striped?: boolean;
       pagination?: Record<string, unknown>;
-      rows?: TableRowMeta[];
       state?: Record<string, unknown>;
     };
   }

@@ -658,12 +658,11 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                 'type' => 'text',
             ],
         ])
-        ->and($table['props']['rows'][0]['key'])->toBe('1')
-        ->and($table['props']['rows'][0]['actions'][0])->toMatchArray([
+        ->and($table['props']['data'][0]['actions'][0])->toMatchArray([
             'type' => 'action',
             'id' => 'workbench.ping',
         ])
-        ->and($table['props']['rows'][0]['actions'][0]['props'])
+        ->and($table['props']['data'][0]['actions'][0]['props'])
         ->toMatchArray([
             'label' => 'Ping',
             'method' => 'post',
