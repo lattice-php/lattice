@@ -21,19 +21,10 @@ final class TableRegistry extends DefinitionRegistry
      */
     public function component(string $table): TableComponent
     {
-        $key = $this->registeredKeyFor($table);
-        $definition = $this->make($table);
-        $columns = $definition->columns();
-        $query = TableQuery::empty($columns, $key, $definition->perPage());
-        $result = $this->decorateResult($definition, $definition->query($query));
-
-        return TableComponent::make($key)
-            ->endpoint($this->endpointFor($key))
-            ->columns($columns)
-            ->layout($definition->layout())
-            ->striped($definition->striped())
-            ->bulkActions($this->bulkActions($definition, $key))
-            ->result($result, $query);
+        return $this->buildComponent(
+            $table,
+            fn (TableDefinition $definition, TableQuery $query): TableResult => $this->decorateResult($definition, $definition->query($query)),
+        );
     }
 
     /**
@@ -41,21 +32,34 @@ final class TableRegistry extends DefinitionRegistry
      */
     public function lazyComponent(string $table): TableComponent
     {
+        return $this->buildComponent(
+            $table,
+            fn (TableDefinition $definition, TableQuery $query): TableResult => TableResult::make([])
+                ->pagination(['mode' => $definition->paginationType()->value]),
+            lazy: true,
+        );
+    }
+
+    /**
+     * @param  class-string<TableDefinition>  $table
+     * @param  callable(TableDefinition, TableQuery): TableResult  $result
+     */
+    private function buildComponent(string $table, callable $result, bool $lazy = false): TableComponent
+    {
         $key = $this->registeredKeyFor($table);
         $definition = $this->make($table);
         $columns = $definition->columns();
         $query = TableQuery::empty($columns, $key, $definition->perPage());
-        $result = TableResult::make([])
-            ->pagination(['mode' => $definition->paginationType()->value]);
 
-        return TableComponent::make($key)
+        $component = TableComponent::make($key)
             ->endpoint($this->endpointFor($key))
             ->columns($columns)
             ->layout($definition->layout())
             ->striped($definition->striped())
             ->bulkActions($this->bulkActions($definition, $key))
-            ->result($result, $query)
-            ->prop('lazy', true);
+            ->result($result($definition, $query), $query);
+
+        return $lazy ? $component->prop('lazy', true) : $component;
     }
 
     /**
@@ -92,7 +96,7 @@ final class TableRegistry extends DefinitionRegistry
     /**
      * @return class-string<ComponentAttribute>
      */
-    protected function attributeClass(): string
+    public function attributeClass(): string
     {
         return Table::class;
     }
@@ -102,7 +106,7 @@ final class TableRegistry extends DefinitionRegistry
         return 'table';
     }
 
-    protected function group(): string
+    public function group(): string
     {
         return 'tables';
     }

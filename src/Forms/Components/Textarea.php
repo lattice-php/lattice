@@ -2,26 +2,19 @@
 
 namespace Bambamboole\Lattice\Forms\Components;
 
+use Bambamboole\Lattice\Core\Concerns\HasAutoFocus;
+use Bambamboole\Lattice\Core\Concerns\HasPlaceholder;
+use Bambamboole\Lattice\Core\Concerns\HasTabIndex;
+
 class Textarea extends Field
 {
-    public function placeholder(string $placeholder): static
-    {
-        return $this->prop('placeholder', $placeholder);
-    }
+    use HasAutoFocus;
+    use HasPlaceholder;
+    use HasTabIndex;
 
     public function rows(int $rows): static
     {
         return $this->prop('rows', $rows);
-    }
-
-    public function autoFocus(bool $autoFocus = true): static
-    {
-        return $this->prop('autoFocus', $autoFocus);
-    }
-
-    public function tabIndex(int $tabIndex): static
-    {
-        return $this->prop('tabIndex', $tabIndex);
     }
 
     protected function type(): string

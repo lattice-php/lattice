@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Menu;
 
 use BackedEnum;
-use Bambamboole\Lattice\Contracts\Authorizable;
+use Bambamboole\Lattice\Core\Contracts\Authorizable;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Exceptions\UrlGenerationException;

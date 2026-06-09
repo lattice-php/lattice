@@ -2,8 +2,14 @@
 
 namespace Bambamboole\Lattice\Forms\Components;
 
+use Bambamboole\Lattice\Core\Concerns\HasAutoFocus;
+use Bambamboole\Lattice\Core\Concerns\HasTabIndex;
+
 class DateInput extends Field
 {
+    use HasAutoFocus;
+    use HasTabIndex;
+
     public function min(string $min): static
     {
         return $this->prop('min', $min);
@@ -12,16 +18,6 @@ class DateInput extends Field
     public function max(string $max): static
     {
         return $this->prop('max', $max);
-    }
-
-    public function autoFocus(bool $autoFocus = true): static
-    {
-        return $this->prop('autoFocus', $autoFocus);
-    }
-
-    public function tabIndex(int $tabIndex): static
-    {
-        return $this->prop('tabIndex', $tabIndex);
     }
 
     protected function type(): string

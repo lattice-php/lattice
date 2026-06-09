@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Actions;
 
 use Bambamboole\Lattice\Actions\Components\Action;
-use Bambamboole\Lattice\Contracts\ProvidesBulkAction;
+use Bambamboole\Lattice\Actions\Contracts\ProvidesBulkAction;
 use Bambamboole\Lattice\Core\Definition;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;

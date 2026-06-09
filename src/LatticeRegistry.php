@@ -8,12 +8,13 @@ use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionRegistry;
 use Bambamboole\Lattice\Actions\BulkActionDefinition;
 use Bambamboole\Lattice\Actions\BulkActionRegistry;
-use Bambamboole\Lattice\Contracts\DiscoversDefinitions;
-use Bambamboole\Lattice\Contracts\PageContract;
+use Bambamboole\Lattice\Core\Contracts\DiscoversDefinitions;
+use Bambamboole\Lattice\Core\DefinitionRegistry;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Fragments\FragmentDefinition;
 use Bambamboole\Lattice\Fragments\FragmentRegistry;
+use Bambamboole\Lattice\Http\PageContract;
 use Bambamboole\Lattice\Menu\MenuRegistry;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableRegistry;
@@ -79,25 +80,40 @@ final class LatticeRegistry
         return $this->menus;
     }
 
+    public function registerConfiguredDefinitions(): void
+    {
+        foreach ($this->discoverableRegistries() as $group => $registry) {
+            $configured = config("lattice.{$group}.registered", []);
+
+            if (is_array($configured) && $configured !== []) {
+                $registry->register($configured);
+            }
+        }
+    }
+
     public function discover(string $path, string $namespace): void
     {
-        $definitions = $this->discovery->discover($path, $namespace);
+        $registries = $this->discoverableRegistries();
+        $definitions = $this->discovery->discover($path, $namespace, array_values($registries));
 
-        if ($definitions['forms'] !== []) {
-            $this->forms($definitions['forms']);
+        foreach ($definitions as $group => $classes) {
+            if ($classes !== []) {
+                $registries[$group]->registerDiscovered($classes);
+            }
         }
+    }
 
-        if ($definitions['tables'] !== []) {
-            $this->tables($definitions['tables']);
-        }
+    /**
+     * @return array<string, DefinitionRegistry<*>>
+     */
+    private function discoverableRegistries(): array
+    {
+        $registries = [$this->forms, $this->tables, $this->actions, $this->fragments, $this->bulkActions];
 
-        if ($definitions['actions'] !== []) {
-            $this->actions($definitions['actions']);
-        }
-
-        if ($definitions['fragments'] !== []) {
-            $this->fragments($definitions['fragments']);
-        }
+        return array_combine(
+            array_map(static fn (DefinitionRegistry $registry): string => $registry->group(), $registries),
+            $registries,
+        );
     }
 
     /**

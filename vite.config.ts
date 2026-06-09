@@ -5,15 +5,21 @@ import laravel from "laravel-vite-plugin";
 import path from "node:path";
 import { defineConfig } from "vitest/config";
 
+const isVitest = process.env.VITEST !== undefined;
+
 export default defineConfig({
   plugins: [
-    laravel({
-      input: ["workbench/resources/css/app.css", "workbench/resources/js/app.tsx"],
-      publicDirectory: "vendor/orchestra/testbench-core/laravel/public",
-      buildDirectory: "build",
-      refresh: ["workbench/resources/**", "workbench/routes/**", "resources/js/**"],
-    }),
-    inertia(),
+    ...(isVitest
+      ? []
+      : [
+          laravel({
+            input: ["workbench/resources/css/app.css", "workbench/resources/js/app.tsx"],
+            publicDirectory: "vendor/orchestra/testbench-core/laravel/public",
+            buildDirectory: "build",
+            refresh: ["workbench/resources/**", "workbench/routes/**", "resources/js/**"],
+          }),
+          inertia(),
+        ]),
     react(),
     tailwindcss(),
   ],

@@ -1,0 +1,41 @@
+* text=auto eol=lf
+
+*.blade.php diff=html
+*.css diff=css
+*.html diff=html
+*.md diff=markdown
+*.php diff=php
+
+# Keep the Composer distribution lean
+/.agents export-ignore
+/.ai export-ignore
+/.github export-ignore
+/.idea export-ignore
+/docs export-ignore
+/public export-ignore
+/tests export-ignore
+/workbench export-ignore
+/node_modules export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.npmrc export-ignore
+/.oxfmtrc.json export-ignore
+/.oxlintrc.json export-ignore
+/.phpstorm.meta.php export-ignore
+/.release-please-manifest.json export-ignore
+/AGENTS.md export-ignore
+/CHANGELOG.md export-ignore
+/CLAUDE.md export-ignore
+/_ide_helper.php export-ignore
+/artisan export-ignore
+/astro.config.mjs export-ignore
+/boost.json export-ignore
+/package-lock.json export-ignore
+/phpstan.neon.dist export-ignore
+/phpunit.xml.dist export-ignore
+/pint.json export-ignore
+/rector.php export-ignore
+/release-please-config.json export-ignore
+/testbench.yaml export-ignore
+/tsconfig.json export-ignore
+/vite.config.ts export-ignore

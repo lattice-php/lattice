@@ -13,7 +13,7 @@ class Text extends Component
 
     public function align(Align|string $align): static
     {
-        return $this->prop('align', $align instanceof Align ? $align->value : $align);
+        return $this->prop('align', $this->enumValue($align));
     }
 
     protected function type(): string

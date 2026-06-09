@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Core\Concerns;
 
 use BackedEnum;
-use Bambamboole\Lattice\Contracts\HasLabel;
+use Bambamboole\Lattice\Core\Contracts\HasLabel;
 use Illuminate\Support\Str;
 use UnitEnum;
 

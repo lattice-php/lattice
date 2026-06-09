@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Http\Controllers;
 
 use Bambamboole\Lattice\Actions\BulkActionRegistry;
-use Bambamboole\Lattice\Contracts\SignsComponentReferences;
 use Bambamboole\Lattice\Core\Concerns\InteractsWithLatticeComponents;
-use Bambamboole\Lattice\Exceptions\UnknownLatticeComponent;
-use Bambamboole\Lattice\Tables\InvalidTableQuery;
+use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
+use Bambamboole\Lattice\Core\Exceptions\UnknownLatticeComponent;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableQuery;
 use Bambamboole\Lattice\Tables\TableRegistry;
@@ -35,14 +34,7 @@ final class BulkActionController
 
         abort_unless($table->authorize($request), 403);
 
-        try {
-            $records = $this->resolveRecords($request, $table, $tableKey);
-        } catch (InvalidTableQuery $exception) {
-            return response()->json([
-                'message' => $exception->getMessage(),
-                'errors' => $exception->errors,
-            ], 422);
-        }
+        $records = $this->resolveRecords($request, $table, $tableKey);
 
         return response()->json($definition->handle($records, $request)->toArray());
     }

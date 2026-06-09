@@ -2,14 +2,12 @@
 
 namespace Bambamboole\Lattice\Forms\Components;
 
+use Bambamboole\Lattice\Core\Concerns\HasPlaceholder;
 use Bambamboole\Lattice\Forms\RichContent;
 
 class RichEditor extends Field
 {
-    public function placeholder(string $placeholder): static
-    {
-        return $this->prop('placeholder', $placeholder);
-    }
+    use HasPlaceholder;
 
     public function castValue(mixed $value): mixed
     {

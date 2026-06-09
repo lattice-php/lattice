@@ -44,7 +44,7 @@ final class FormRegistry extends DefinitionRegistry
     /**
      * @return class-string<ComponentAttribute>
      */
-    protected function attributeClass(): string
+    public function attributeClass(): string
     {
         return Form::class;
     }
@@ -54,7 +54,7 @@ final class FormRegistry extends DefinitionRegistry
         return 'form';
     }
 
-    protected function group(): string
+    public function group(): string
     {
         return 'forms';
     }

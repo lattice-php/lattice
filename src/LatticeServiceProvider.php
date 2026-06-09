@@ -7,15 +7,15 @@ namespace Bambamboole\Lattice;
 use BackedEnum;
 use Bambamboole\Lattice\Actions\ActionRegistry;
 use Bambamboole\Lattice\Actions\BulkActionRegistry;
-use Bambamboole\Lattice\Contracts\DiscoversDefinitions;
-use Bambamboole\Lattice\Contracts\SignsComponentReferences;
-use Bambamboole\Lattice\Discovery\DefinitionDiscovery;
+use Bambamboole\Lattice\Core\Contracts\DiscoversDefinitions;
+use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
+use Bambamboole\Lattice\Core\Services\ComponentReferenceSigner;
+use Bambamboole\Lattice\Core\Services\DefinitionDiscovery;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Fragments\FragmentRegistry;
 use Bambamboole\Lattice\Menu\MenuItem;
 use Bambamboole\Lattice\Menu\MenuRegistry;
-use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 use Bambamboole\Lattice\Tables\TableRegistry;
 use Closure;
 use Illuminate\Http\RedirectResponse;
@@ -91,35 +91,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        $forms = config('lattice.forms.registered', []);
-
-        if (is_array($forms) && $forms !== []) {
-            Lattice::forms($forms);
-        }
-
-        $tables = config('lattice.tables.registered', []);
-
-        if (is_array($tables) && $tables !== []) {
-            Lattice::tables($tables);
-        }
-
-        $fragments = config('lattice.fragments.registered', []);
-
-        if (is_array($fragments) && $fragments !== []) {
-            Lattice::fragments($fragments);
-        }
-
-        $actions = config('lattice.actions.registered', []);
-
-        if (is_array($actions) && $actions !== []) {
-            Lattice::actions($actions);
-        }
-
-        $bulkActions = config('lattice.bulk-actions.registered', []);
-
-        if (is_array($bulkActions) && $bulkActions !== []) {
-            Lattice::bulkActions($bulkActions);
-        }
+        Lattice::registerConfiguredDefinitions();
 
         $discoveryPaths = config('lattice.discover', []);
 

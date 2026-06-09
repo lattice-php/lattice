@@ -6,9 +6,9 @@ namespace Bambamboole\Lattice\Fragments;
 
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
 use Bambamboole\Lattice\Attributes\Fragment;
-use Bambamboole\Lattice\Core\Components\Fragment as FragmentComponent;
 use Bambamboole\Lattice\Core\DefinitionRegistry;
-use Bambamboole\Lattice\Pages\PageSchema;
+use Bambamboole\Lattice\Core\PageSchema;
+use Bambamboole\Lattice\Fragments\Components\Fragment as FragmentComponent;
 
 /**
  * @extends DefinitionRegistry<FragmentDefinition>
@@ -52,7 +52,7 @@ final class FragmentRegistry extends DefinitionRegistry
     /**
      * @return class-string<ComponentAttribute>
      */
-    protected function attributeClass(): string
+    public function attributeClass(): string
     {
         return Fragment::class;
     }
@@ -62,7 +62,7 @@ final class FragmentRegistry extends DefinitionRegistry
         return 'fragment';
     }
 
-    protected function group(): string
+    public function group(): string
     {
         return 'fragments';
     }

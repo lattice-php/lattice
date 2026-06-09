@@ -9,7 +9,7 @@ use Bambamboole\Lattice\Actions\BulkActionDefinition;
 use Bambamboole\Lattice\Actions\Components\Action;
 use Bambamboole\Lattice\Attributes\BulkAction;
 use Bambamboole\Lattice\Core\Enums\HttpMethod;
-use Bambamboole\Lattice\Toasts\Enums\ToastType;
+use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Workbench\App\Models\Product;
@@ -37,7 +37,7 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
         });
 
         return ActionResult::success(['archived' => $records->count()])
-            ->toast(ToastType::Success, "Archived {$records->count()} products.")
+            ->toast(ToastVariant::Success, "Archived {$records->count()} products.")
             ->reloadComponent('workbench.products');
     }
 }

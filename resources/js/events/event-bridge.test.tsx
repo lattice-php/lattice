@@ -26,7 +26,7 @@ describe("EventBridge", () => {
   });
 
   it("passes inertia flash toast messages to the host renderer", () => {
-    const onToast = vi.fn<(toast: { message: string; type: string }) => void>();
+    const onToast = vi.fn<(toast: { message: string; variant: string }) => void>();
 
     render(<EventBridge onToast={onToast} />);
 
@@ -38,7 +38,7 @@ describe("EventBridge", () => {
           flash: {
             toast: {
               message: "Profile saved.",
-              type: "info",
+              variant: "info",
             },
           },
         },
@@ -47,12 +47,12 @@ describe("EventBridge", () => {
 
     expect(onToast).toHaveBeenCalledWith({
       message: "Profile saved.",
-      type: "info",
+      variant: "info",
     });
   });
 
   it("passes lattice toast events to the host renderer", () => {
-    const onToast = vi.fn<(toast: { message: string; type: string }) => void>();
+    const onToast = vi.fn<(toast: { message: string; variant: string }) => void>();
 
     render(<EventBridge onToast={onToast} />);
 
@@ -68,7 +68,7 @@ describe("EventBridge", () => {
 
     expect(onToast).toHaveBeenCalledWith({
       message: "Action handled.",
-      type: "warning",
+      variant: "warning",
     });
   });
 
@@ -89,7 +89,9 @@ describe("EventBridge", () => {
   });
 
   it("does not reload the whole page for component reload events", () => {
-    render(<EventBridge onToast={vi.fn<(toast: { message: string; type: string }) => void>()} />);
+    render(
+      <EventBridge onToast={vi.fn<(toast: { message: string; variant: string }) => void>()} />,
+    );
 
     window.dispatchEvent(
       new CustomEvent("lattice:reload-component", {

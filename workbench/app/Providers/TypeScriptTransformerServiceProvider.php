@@ -8,12 +8,12 @@ use Bambamboole\Lattice\Actions\Enums\EffectType;
 use Bambamboole\Lattice\Core\Enums\Align;
 use Bambamboole\Lattice\Core\Enums\Gap;
 use Bambamboole\Lattice\Core\Enums\HttpMethod;
+use Bambamboole\Lattice\Core\Enums\PageContainer;
+use Bambamboole\Lattice\Core\Enums\PageLayout;
+use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use Bambamboole\Lattice\Core\Enums\Width;
 use Bambamboole\Lattice\Forms\Enums\Op;
-use Bambamboole\Lattice\Pages\Enums\PageContainer;
-use Bambamboole\Lattice\Pages\Enums\PageLayout;
 use Bambamboole\Lattice\Tables\Enums\PaginationType;
-use Bambamboole\Lattice\Toasts\Enums\ToastType;
 use Spatie\LaravelTypeScriptTransformer\TypeScriptTransformerApplicationServiceProvider;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfigFactory;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
@@ -32,7 +32,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 Width::class,
                 PageLayout::class,
                 PageContainer::class,
-                ToastType::class,
+                ToastVariant::class,
                 HttpMethod::class,
                 PaginationType::class,
                 Op::class,

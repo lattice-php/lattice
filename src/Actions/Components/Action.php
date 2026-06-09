@@ -5,12 +5,14 @@ namespace Bambamboole\Lattice\Actions\Components;
 use BackedEnum;
 use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionRegistry;
-use Bambamboole\Lattice\Contracts\Effect;
+use Bambamboole\Lattice\Actions\Contracts\Effect;
 use Bambamboole\Lattice\Core\Components\Component;
 use Bambamboole\Lattice\Core\Components\IsInteractive;
+use Bambamboole\Lattice\Core\Concerns\HasVariant;
 
 class Action extends Component
 {
+    use HasVariant;
     use IsInteractive;
 
     public static function make(string $id): static
@@ -42,17 +44,12 @@ class Action extends Component
 
     public function method(BackedEnum|string $method): static
     {
-        return $this->prop('method', $method instanceof BackedEnum ? (string) $method->value : $method);
-    }
-
-    public function variant(string $variant): static
-    {
-        return $this->prop('variant', $variant);
+        return $this->prop('method', $this->enumValue($method));
     }
 
     public function icon(BackedEnum|string $icon): static
     {
-        return $this->prop('icon', $icon instanceof BackedEnum ? (string) $icon->value : $icon);
+        return $this->prop('icon', $this->enumValue($icon));
     }
 
     public function confirm(

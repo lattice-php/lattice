@@ -3,6 +3,7 @@
 namespace Bambamboole\Lattice\Forms\Components;
 
 use Bambamboole\Lattice\Core\Concerns\HasOptions;
+use Bambamboole\Lattice\Core\Concerns\HasPlaceholder;
 use Bambamboole\Lattice\Forms\FormData;
 use Closure;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use Illuminate\Support\Collection;
 class Select extends Field
 {
     use HasOptions;
+    use HasPlaceholder;
 
     private ?Closure $searchResolver = null;
 
@@ -19,11 +21,6 @@ class Select extends Field
     public function multiple(bool $multiple = true): static
     {
         return $this->prop('multiple', $multiple);
-    }
-
-    public function placeholder(string $placeholder): static
-    {
-        return $this->prop('placeholder', $placeholder);
     }
 
     /**

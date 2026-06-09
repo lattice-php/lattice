@@ -37,7 +37,7 @@ final class BulkActionRegistry extends DefinitionRegistry
     /**
      * @return class-string<ComponentAttribute>
      */
-    protected function attributeClass(): string
+    public function attributeClass(): string
     {
         return BulkAction::class;
     }
@@ -47,7 +47,7 @@ final class BulkActionRegistry extends DefinitionRegistry
         return 'bulkAction';
     }
 
-    protected function group(): string
+    public function group(): string
     {
         return 'bulk-actions';
     }

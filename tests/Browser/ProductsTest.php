@@ -97,6 +97,8 @@ it('creates and edits products through the form flow', function (): void {
         ->assertSee('Edit Product')
         ->assertValue('Name', 'Desk Lamp')
         ->fill('Name', 'Updated Lamp')
+        ->wait(1)
+        ->assertButtonEnabled('Save product')
         ->click('Save product')
         ->assertSee('Products')
         ->assertSee('Updated Lamp')

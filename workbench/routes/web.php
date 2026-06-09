@@ -4,36 +4,36 @@ declare(strict_types=1);
 
 use Bambamboole\Lattice\Core\Enums\LucideIcon;
 use Illuminate\Support\Facades\Route;
-use Workbench\App\Pages\WorkbenchDependentDemoPage;
-use Workbench\App\Pages\WorkbenchHomePage;
-use Workbench\App\Pages\WorkbenchProductCreatePage;
-use Workbench\App\Pages\WorkbenchProductEditPage;
-use Workbench\App\Pages\WorkbenchProductsPage;
-use Workbench\App\Pages\WorkbenchShowcasePage;
-use Workbench\App\Pages\WorkbenchTablesPage;
+use Workbench\App\Pages\DependentDemoPage;
+use Workbench\App\Pages\HomePage;
+use Workbench\App\Pages\ProductCreatePage;
+use Workbench\App\Pages\ProductEditPage;
+use Workbench\App\Pages\ProductsPage;
+use Workbench\App\Pages\ShowcasePage;
+use Workbench\App\Pages\TablesPage;
 
-Route::latticePage('/', WorkbenchHomePage::class)
+Route::latticePage('/', HomePage::class)
     ->name('home')
     ->sidebar('Home', LucideIcon::House);
 
-Route::latticePage('/tables', WorkbenchTablesPage::class)
+Route::latticePage('/tables', TablesPage::class)
     ->name('tables')
     ->sidebar('Tables', LucideIcon::Table);
 
-Route::latticePage('/products', WorkbenchProductsPage::class)
+Route::latticePage('/products', ProductsPage::class)
     ->name('products.index')
     ->sidebar('Products', LucideIcon::Package);
 
-Route::latticePage('/products/create', WorkbenchProductCreatePage::class)
+Route::latticePage('/products/create', ProductCreatePage::class)
     ->name('products.create');
 
-Route::latticePage('/products/{product}/edit', WorkbenchProductEditPage::class)
+Route::latticePage('/products/{product}/edit', ProductEditPage::class)
     ->name('products.edit');
 
-Route::latticePage('/dependent-demo', WorkbenchDependentDemoPage::class)
+Route::latticePage('/dependent-demo', DependentDemoPage::class)
     ->name('dependent.demo');
 
-Route::latticePage('/showcase', WorkbenchShowcasePage::class)
+Route::latticePage('/showcase', ShowcasePage::class)
     ->name('showcase')
     ->sidebar('Form Showcase', LucideIcon::FormInput);
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Actions;
 
+use Bambamboole\Lattice\Actions\Contracts\Effect as EffectContract;
 use Bambamboole\Lattice\Actions\Enums\EffectType;
-use Bambamboole\Lattice\Contracts\Effect as EffectContract;
-use Bambamboole\Lattice\Toasts\Enums\ToastType;
-use Bambamboole\Lattice\Toasts\ToastMessage;
+use Bambamboole\Lattice\Core\Enums\ToastVariant;
+use Bambamboole\Lattice\Core\Values\ToastMessage;
 
 final readonly class Effect implements EffectContract
 {
@@ -19,17 +19,17 @@ final readonly class Effect implements EffectContract
         private array $payload = [],
     ) {}
 
-    public static function toast(string|ToastMessage|ToastType $message, ToastType|string|null $type = null): self
+    public static function toast(string|ToastMessage|ToastVariant $message, ToastVariant|string|null $variant = null): self
     {
         $toast = match (true) {
             $message instanceof ToastMessage => $message,
-            $message instanceof ToastType && is_string($type) => ToastMessage::make($message, $type),
-            is_string($message) && $type instanceof ToastType => ToastMessage::make($type, $message),
-            is_string($message) => ToastMessage::make(ToastType::Success, $message),
+            $message instanceof ToastVariant && is_string($variant) => ToastMessage::make($message, $variant),
+            is_string($message) && $variant instanceof ToastVariant => ToastMessage::make($variant, $message),
+            is_string($message) => ToastMessage::make(ToastVariant::Success, $message),
             default => throw new \InvalidArgumentException('A toast message string is required.'),
         };
 
-        return new self(EffectType::Toast, $toast->toEffectPayload());
+        return new self(EffectType::Toast, $toast->toArray());
     }
 
     public static function reloadComponent(string $component): self

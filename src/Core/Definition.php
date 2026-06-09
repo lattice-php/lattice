@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Core;
 
-use Bambamboole\Lattice\Contracts\Authorizable;
+use Bambamboole\Lattice\Core\Contracts\Authorizable;
 use Illuminate\Http\Request;
 
 abstract class Definition implements Authorizable

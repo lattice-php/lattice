@@ -3,11 +3,12 @@
 namespace Bambamboole\Lattice\Core\Components;
 
 use Bambamboole\Lattice\Attributes\SerializationHook;
-use Bambamboole\Lattice\Contracts\SignsComponentReferences;
+use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
+use LogicException;
 
 trait IsInteractive
 {
-    protected string $id;
+    protected ?string $id = null;
 
     public function id(string $id): static
     {
@@ -50,6 +51,13 @@ trait IsInteractive
         unset($props['context']);
 
         if ($this->hasEndpoint($props)) {
+            if ($this->id === null) {
+                throw new LogicException(sprintf(
+                    'Interactive component [%s] must be given an id() before it can be serialised with an endpoint.',
+                    $this->type(),
+                ));
+            }
+
             $props['ref'] = app(SignsComponentReferences::class)->seal($this->type(), $this->id, $context);
         }
 

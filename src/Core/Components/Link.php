@@ -3,9 +3,12 @@
 namespace Bambamboole\Lattice\Core\Components;
 
 use BackedEnum;
+use Bambamboole\Lattice\Core\Concerns\HasTabIndex;
 
 class Link extends Component
 {
+    use HasTabIndex;
+
     public static function make(string $label, ?string $key = null): static
     {
         return (new static($key))->prop('label', $label);
@@ -18,12 +21,7 @@ class Link extends Component
 
     public function method(BackedEnum|string $method): static
     {
-        return $this->prop('method', $method instanceof BackedEnum ? (string) $method->value : $method);
-    }
-
-    public function tabIndex(int $tabIndex): static
-    {
-        return $this->prop('tabIndex', $tabIndex);
+        return $this->prop('method', $this->enumValue($method));
     }
 
     protected function type(): string

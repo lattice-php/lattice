@@ -45,5 +45,5 @@ export type { Method } from "@inertiajs/core";
 export type { ActionEffect } from "./action/effects";
 export type { ResolvedAppearance, UseAppearanceReturn } from "./appearance";
 export type { CopiedValue, CopyFn, UseClipboardReturn } from "./clipboard";
-export type { Appearance, ToastMessage, ToastType } from "./events/event-bridge";
+export type { Appearance, ToastMessage, ToastVariant } from "./events/event-bridge";
 export type { IconRendererFunction, IconRendererProps } from "./icons";

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionResult;
+use Bambamboole\Lattice\Actions\BulkActionRegistry;
 use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Actions\Components\ActionGroup;
 use Bambamboole\Lattice\Actions\Effect;
@@ -16,7 +17,6 @@ use Bambamboole\Lattice\Core\Components\Badge;
 use Bambamboole\Lattice\Core\Components\Button;
 use Bambamboole\Lattice\Core\Components\Card;
 use Bambamboole\Lattice\Core\Components\Component;
-use Bambamboole\Lattice\Core\Components\Fragment as FragmentComponent;
 use Bambamboole\Lattice\Core\Components\Grid;
 use Bambamboole\Lattice\Core\Components\Heading;
 use Bambamboole\Lattice\Core\Components\Link;
@@ -31,19 +31,22 @@ use Bambamboole\Lattice\Core\Enums\Align;
 use Bambamboole\Lattice\Core\Enums\Gap;
 use Bambamboole\Lattice\Core\Enums\HttpMethod;
 use Bambamboole\Lattice\Core\Enums\LucideIcon;
+use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use Bambamboole\Lattice\Core\Enums\Width;
+use Bambamboole\Lattice\Core\PageSchema;
+use Bambamboole\Lattice\Core\Services\ComponentReferenceSigner;
+use Bambamboole\Lattice\Core\Values\ToastMessage;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\Components\Choice;
 use Bambamboole\Lattice\Forms\Components\Form;
 use Bambamboole\Lattice\Forms\Components\PasswordInput;
 use Bambamboole\Lattice\Forms\FormDefinition;
+use Bambamboole\Lattice\Fragments\Components\Fragment as FragmentComponent;
 use Bambamboole\Lattice\Fragments\FragmentDefinition;
+use Bambamboole\Lattice\Http\Page;
 use Bambamboole\Lattice\LatticeRegistry;
 use Bambamboole\Lattice\Menu\MenuItem;
 use Bambamboole\Lattice\Menu\MenuRegistry;
-use Bambamboole\Lattice\Pages\Page;
-use Bambamboole\Lattice\Pages\PageSchema;
-use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 use Bambamboole\Lattice\Tables\Columns\StackColumn;
 use Bambamboole\Lattice\Tables\Columns\TextColumn;
 use Bambamboole\Lattice\Tables\Components\Table;
@@ -52,12 +55,11 @@ use Bambamboole\Lattice\Tables\Enums\PaginationType;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableQuery;
 use Bambamboole\Lattice\Tables\TableResult;
+use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredArchiveBulkAction;
 use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredPanelFragment;
 use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredPingAction;
 use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
 use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
-use Bambamboole\Lattice\Toasts\Enums\ToastType;
-use Bambamboole\Lattice\Toasts\ToastMessage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\JsonResponse;
@@ -69,9 +71,9 @@ use Inertia\Support\SessionKey;
 use Inertia\Testing\AssertableInertia;
 use Orchestra\Testbench\Factories\UserFactory;
 use Symfony\Component\HttpFoundation\Response;
-use Workbench\App\Pages\WorkbenchHomePage;
-use Workbench\App\Pages\WorkbenchTablesPage;
-use Workbench\App\Seeders\WorkbenchUserSeeder;
+use Workbench\App\Pages\HomePage;
+use Workbench\App\Pages\TablesPage;
+use Workbench\App\Seeders\UserSeeder;
 use Workbench\App\Tables\UsersTable as WorkbenchAppUsersTable;
 
 use function Pest\Laravel\get;
@@ -185,6 +187,13 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'ref' => componentRef($fragment),
             ],
         ]);
+});
+
+test('lattice discovers attributed bulk action definitions', function () {
+    Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Bambamboole\\Lattice\\Tests\\Fixtures\\Discovery');
+
+    expect(app(BulkActionRegistry::class)->resolve('fixtures.archive'))
+        ->toBeInstanceOf(DiscoveredArchiveBulkAction::class);
 });
 
 test('interactive components keep their serialized ids', function () {
@@ -983,7 +992,7 @@ test('registered actions can be handled through the package endpoint', function 
 test('toast messages serialize for flash data and action effects', function () {
     Route::get('toast-target', fn () => 'ok')->name('toast.target');
 
-    $response = WorkbenchToastFactory::flashToast(ToastType::Warning, 'Review the settings.')
+    $response = WorkbenchToastFactory::flashToast(ToastVariant::Warning, 'Review the settings.')
         ->toRoute('toast.target');
     $flashedToast = session()->get(SessionKey::FLASH_DATA, [])['toast'] ?? null;
 
@@ -996,10 +1005,10 @@ test('toast messages serialize for flash data and action effects', function () {
 
     expect($flashedToast->toArray())
         ->toBe([
-            'type' => 'warning',
+            'variant' => 'warning',
             'message' => 'Review the settings.',
         ])
-        ->and(Effect::toast(ToastType::Warning, 'Review the settings.')->toArray())
+        ->and(Effect::toast(ToastVariant::Warning, 'Review the settings.')->toArray())
         ->toBe([
             'type' => 'toast',
             'variant' => 'warning',
@@ -1015,7 +1024,7 @@ test('toast messages serialize for flash data and action effects', function () {
                 ],
             ],
         ])
-        ->and(ActionResult::success()->toast(ToastType::Warning, 'Review the settings.')->toArray())
+        ->and(ActionResult::success()->toast(ToastVariant::Warning, 'Review the settings.')->toArray())
         ->toMatchArray([
             'effects' => [
                 [
@@ -1380,11 +1389,11 @@ test('confirmed active tabs serialize their children after password confirmation
 });
 
 test('the workbench home route uses a workbench-owned page directly', function () {
-    expect(Route::getRoutes()->getByName('home')?->getActionName())->toBe(WorkbenchHomePage::class.'@render');
+    expect(Route::getRoutes()->getByName('home')?->getActionName())->toBe(HomePage::class.'@render');
 });
 
 test('the workbench tables route uses lazy pagination tab tables', function () {
-    expect(Route::getRoutes()->getByName('tables')?->getActionName())->toBe(WorkbenchTablesPage::class.'@render');
+    expect(Route::getRoutes()->getByName('tables')?->getActionName())->toBe(TablesPage::class.'@render');
 });
 
 test('pages use laravel controller resolution for constructor dependencies render dependencies and route arguments', function () {
@@ -1610,8 +1619,8 @@ test('workbench tables page serializes lazy tables for each pagination type', fu
 });
 
 test('workbench user seeder creates sample table data idempotently', function () {
-    app(WorkbenchUserSeeder::class)->run();
-    app(WorkbenchUserSeeder::class)->run();
+    app(UserSeeder::class)->run();
+    app(UserSeeder::class)->run();
 
     expect(User::query()->count())->toBe(1000)
         ->and(User::query()->where('email', 'ada@example.com')->value('name'))->toBe('Ada Lovelace')
@@ -2008,7 +2017,7 @@ class WorkbenchPingAction extends ActionDefinition
             'handled' => $request->string('name')->toString(),
             'team' => data_get($request->input('context', []), 'team'),
         ])
-            ->toast(ToastType::Info, 'Action handled.')
+            ->toast(ToastVariant::Info, 'Action handled.')
             ->reloadComponent('workbench.users');
     }
 }
@@ -2017,9 +2026,9 @@ final class WorkbenchToastFactory
 {
     use CreatesToastMessages;
 
-    public static function flashToast(ToastType $type, string $message): ResponseFactory
+    public static function flashToast(ToastVariant $variant, string $message): ResponseFactory
     {
-        return (new self)->toast($type, $message);
+        return (new self)->toast($variant, $message);
     }
 }
 

@@ -9,7 +9,7 @@ use Bambamboole\Lattice\Actions\ActionResult;
 use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Attributes\Action;
 use Bambamboole\Lattice\Core\Enums\HttpMethod;
-use Bambamboole\Lattice\Toasts\Enums\ToastType;
+use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use Illuminate\Http\Request;
 use Workbench\App\Models\Product;
 
@@ -36,7 +36,7 @@ class ArchiveProductAction extends ActionDefinition
         $product->update(['status' => 'archived']);
 
         return ActionResult::success(['id' => $product->getKey()])
-            ->toast(ToastType::Success, 'Product archived.')
+            ->toast(ToastVariant::Success, 'Product archived.')
             ->reloadComponent('workbench.products');
     }
 
