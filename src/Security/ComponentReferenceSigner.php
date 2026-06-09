@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Security;
 
+use Bambamboole\Lattice\Contracts\SignsComponentReferences;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Encryption\StringEncrypter;
 use Illuminate\Http\Request;
 use JsonException;
 
-final class ComponentReferenceSigner
+final class ComponentReferenceSigner implements SignsComponentReferences
 {
     public function __construct(private readonly StringEncrypter $encrypter) {}
 

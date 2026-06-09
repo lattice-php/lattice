@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Http\Controllers;
 
 use Bambamboole\Lattice\Concerns\InteractsWithLatticeComponents;
+use Bambamboole\Lattice\Contracts\SignsComponentReferences;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
-use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,7 +20,7 @@ class FormController
 
     public function __construct(
         private readonly FormRegistry $forms,
-        private readonly ComponentReferenceSigner $references,
+        private readonly SignsComponentReferences $references,
     ) {}
 
     public function __invoke(Request $request, string $form): Response|Responsable

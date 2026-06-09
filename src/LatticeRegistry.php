@@ -8,8 +8,8 @@ use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionRegistry;
 use Bambamboole\Lattice\Actions\BulkActionDefinition;
 use Bambamboole\Lattice\Actions\BulkActionRegistry;
+use Bambamboole\Lattice\Contracts\DiscoversDefinitions;
 use Bambamboole\Lattice\Contracts\PageContract;
-use Bambamboole\Lattice\Discovery\DefinitionDiscovery;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Fragments\FragmentDefinition;
@@ -26,7 +26,7 @@ class LatticeRegistry
     public function __construct(
         private readonly ActionRegistry $actions,
         private readonly BulkActionRegistry $bulkActions,
-        private readonly DefinitionDiscovery $discovery,
+        private readonly DiscoversDefinitions $discovery,
         private readonly FormRegistry $forms,
         private readonly FragmentRegistry $fragments,
         private readonly MenuRegistry $menus,

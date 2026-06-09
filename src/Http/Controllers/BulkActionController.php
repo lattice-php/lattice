@@ -6,8 +6,8 @@ namespace Bambamboole\Lattice\Http\Controllers;
 
 use Bambamboole\Lattice\Actions\BulkActionRegistry;
 use Bambamboole\Lattice\Concerns\InteractsWithLatticeComponents;
+use Bambamboole\Lattice\Contracts\SignsComponentReferences;
 use Bambamboole\Lattice\Exceptions\UnknownLatticeComponent;
-use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 use Bambamboole\Lattice\Tables\InvalidTableQuery;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableQuery;
@@ -23,7 +23,7 @@ class BulkActionController
     public function __construct(
         private readonly BulkActionRegistry $bulkActions,
         private readonly TableRegistry $tables,
-        private readonly ComponentReferenceSigner $references,
+        private readonly SignsComponentReferences $references,
     ) {}
 
     public function __invoke(Request $request, string $bulkAction): JsonResponse

@@ -7,6 +7,8 @@ namespace Bambamboole\Lattice;
 use BackedEnum;
 use Bambamboole\Lattice\Actions\ActionRegistry;
 use Bambamboole\Lattice\Actions\BulkActionRegistry;
+use Bambamboole\Lattice\Contracts\DiscoversDefinitions;
+use Bambamboole\Lattice\Contracts\SignsComponentReferences;
 use Bambamboole\Lattice\Discovery\DefinitionDiscovery;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\FormRegistry;
@@ -44,7 +46,9 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(BulkActionRegistry::class);
         $this->app->singleton(MenuRegistry::class);
         $this->app->singleton(DefinitionDiscovery::class);
+        $this->app->alias(DefinitionDiscovery::class, DiscoversDefinitions::class);
         $this->app->singleton(ComponentReferenceSigner::class);
+        $this->app->alias(ComponentReferenceSigner::class, SignsComponentReferences::class);
         $this->app->singleton(LatticeRegistry::class);
 
         if (! Router::hasMacro('latticePage')) {

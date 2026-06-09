@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Concerns;
 
+use Bambamboole\Lattice\Contracts\DefinitionRegistry;
+use Bambamboole\Lattice\Contracts\SignsComponentReferences;
 use Bambamboole\Lattice\Definition;
-use Bambamboole\Lattice\DefinitionRegistry;
 use Bambamboole\Lattice\Exceptions\UnknownLatticeComponent;
-use Bambamboole\Lattice\Security\ComponentReferenceSigner;
 use Illuminate\Http\Request;
 
 trait InteractsWithLatticeComponents
@@ -20,7 +20,7 @@ trait InteractsWithLatticeComponents
      */
     protected function authorizeComponent(
         Request $request,
-        ComponentReferenceSigner $references,
+        SignsComponentReferences $references,
         DefinitionRegistry $registry,
         string $type,
         string $key,

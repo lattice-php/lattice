@@ -9,6 +9,7 @@ use Bambamboole\Lattice\Attributes\Action;
 use Bambamboole\Lattice\Attributes\Form;
 use Bambamboole\Lattice\Attributes\Fragment;
 use Bambamboole\Lattice\Attributes\Table;
+use Bambamboole\Lattice\Contracts\DiscoversDefinitions;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Fragments\FragmentDefinition;
 use Bambamboole\Lattice\Tables\TableDefinition;
@@ -18,7 +19,7 @@ use ReflectionClass;
 use Spatie\Attributes\Attributes;
 use SplFileInfo;
 
-final class DefinitionDiscovery
+final class DefinitionDiscovery implements DiscoversDefinitions
 {
     /**
      * @return array{forms: array<int, class-string<FormDefinition>>, tables: array<int, class-string<TableDefinition>>, actions: array<int, class-string<ActionDefinition>>, fragments: array<int, class-string<FragmentDefinition>>}

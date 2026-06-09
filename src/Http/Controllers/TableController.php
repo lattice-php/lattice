@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Http\Controllers;
 
 use Bambamboole\Lattice\Concerns\InteractsWithLatticeComponents;
-use Bambamboole\Lattice\Security\ComponentReferenceSigner;
+use Bambamboole\Lattice\Contracts\SignsComponentReferences;
 use Bambamboole\Lattice\Tables\InvalidTableQuery;
 use Bambamboole\Lattice\Tables\TableRegistry;
 use Illuminate\Http\JsonResponse;
@@ -17,7 +17,7 @@ class TableController
 
     public function __construct(
         private readonly TableRegistry $tables,
-        private readonly ComponentReferenceSigner $references,
+        private readonly SignsComponentReferences $references,
     ) {}
 
     public function __invoke(Request $request, string $table): JsonResponse

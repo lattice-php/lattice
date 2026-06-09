@@ -3,7 +3,7 @@
 namespace Bambamboole\Lattice\Components\Core;
 
 use Bambamboole\Lattice\Attributes\SerializationHook;
-use Bambamboole\Lattice\Security\ComponentReferenceSigner;
+use Bambamboole\Lattice\Contracts\SignsComponentReferences;
 
 trait IsInteractive
 {
@@ -50,7 +50,7 @@ trait IsInteractive
         unset($props['context']);
 
         if ($this->hasEndpoint($props)) {
-            $props['ref'] = app(ComponentReferenceSigner::class)->seal($this->type(), $this->id, $context);
+            $props['ref'] = app(SignsComponentReferences::class)->seal($this->type(), $this->id, $context);
         }
 
         return [

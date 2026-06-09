@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice;
 
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
+use Bambamboole\Lattice\Contracts\DefinitionRegistry as DefinitionRegistryContract;
 use Bambamboole\Lattice\Exceptions\UnknownLatticeComponent;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
@@ -12,8 +13,10 @@ use Spatie\Attributes\Attributes;
 
 /**
  * @template TDefinition of Definition
+ *
+ * @implements DefinitionRegistryContract<TDefinition>
  */
-abstract class DefinitionRegistry
+abstract class DefinitionRegistry implements DefinitionRegistryContract
 {
     /**
      * @var array<string, class-string<TDefinition>>
