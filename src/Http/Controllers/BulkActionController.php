@@ -16,7 +16,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-class BulkActionController
+final class BulkActionController
 {
     use InteractsWithLatticeComponents;
 

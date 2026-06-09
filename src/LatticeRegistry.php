@@ -21,7 +21,7 @@ use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use InvalidArgumentException;
 
-class LatticeRegistry
+final class LatticeRegistry
 {
     public function __construct(
         private readonly ActionRegistry $actions,

@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 /**
  * @extends DefinitionRegistry<FormDefinition>
  */
-class FormRegistry extends DefinitionRegistry
+final class FormRegistry extends DefinitionRegistry
 {
     /**
      * @param  class-string<FormDefinition>  $form

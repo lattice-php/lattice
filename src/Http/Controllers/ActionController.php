@@ -10,7 +10,7 @@ use Bambamboole\Lattice\Contracts\SignsComponentReferences;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ActionController
+final class ActionController
 {
     use InteractsWithLatticeComponents;
 

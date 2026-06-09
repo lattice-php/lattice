@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 /**
  * @extends DefinitionRegistry<TableDefinition>
  */
-class TableRegistry extends DefinitionRegistry
+final class TableRegistry extends DefinitionRegistry
 {
     /**
      * @param  class-string<TableDefinition>  $table

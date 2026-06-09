@@ -12,7 +12,7 @@ use Illuminate\Routing\Exceptions\UrlGenerationException;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 
-class MenuRegistry
+final class MenuRegistry
 {
     /**
      * @var array<string, array<int, MenuItem>>

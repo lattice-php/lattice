@@ -11,7 +11,7 @@ use Bambamboole\Lattice\Tables\TableRegistry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class TableController
+final class TableController
 {
     use InteractsWithLatticeComponents;
 

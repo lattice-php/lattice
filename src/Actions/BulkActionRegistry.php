@@ -12,7 +12,7 @@ use Bambamboole\Lattice\DefinitionRegistry;
 /**
  * @extends DefinitionRegistry<BulkActionDefinition>
  */
-class BulkActionRegistry extends DefinitionRegistry
+final class BulkActionRegistry extends DefinitionRegistry
 {
     /**
      * @param  class-string<BulkActionDefinition>  $bulkAction

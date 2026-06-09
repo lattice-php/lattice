@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Facade;
  *
  * @see LatticeRegistry
  */
-class Lattice extends Facade
+final class Lattice extends Facade
 {
     protected static function getFacadeAccessor(): string
     {

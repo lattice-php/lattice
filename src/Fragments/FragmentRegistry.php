@@ -13,7 +13,7 @@ use Bambamboole\Lattice\PageSchema;
 /**
  * @extends DefinitionRegistry<FragmentDefinition>
  */
-class FragmentRegistry extends DefinitionRegistry
+final class FragmentRegistry extends DefinitionRegistry
 {
     /**
      * @param  class-string<FragmentDefinition>  $fragment

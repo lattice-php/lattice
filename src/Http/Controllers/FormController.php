@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
-class FormController
+final class FormController
 {
     use InteractsWithLatticeComponents;
 
