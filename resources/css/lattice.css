@@ -183,6 +183,42 @@
   margin: 1rem 0;
 }
 
+.lattice-prose :where(table) {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.75rem 0;
+  table-layout: fixed;
+  overflow: hidden;
+}
+
+.lattice-prose :where(th, td) {
+  border: 1px solid var(--lt-border);
+  padding: 0.375rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.lattice-prose :where(th) {
+  background: var(--lt-muted);
+  font-weight: 600;
+}
+
+.lattice-prose :where(.selectedCell) {
+  background: var(--lt-accent);
+}
+
+.lattice-prose :where(details) {
+  border: 1px solid var(--lt-border);
+  border-radius: var(--lt-radius-sm);
+  padding: 0.5rem 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.lattice-prose :where(summary) {
+  cursor: pointer;
+  font-weight: 600;
+}
+
 .lattice-prose :where(:first-child) {
   margin-top: 0;
 }

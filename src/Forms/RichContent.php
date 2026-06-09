@@ -8,6 +8,13 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 use Tiptap\Editor;
 use Tiptap\Extensions\StarterKit;
+use Tiptap\Nodes\Details;
+use Tiptap\Nodes\DetailsContent;
+use Tiptap\Nodes\DetailsSummary;
+use Tiptap\Nodes\Table;
+use Tiptap\Nodes\TableCell;
+use Tiptap\Nodes\TableHeader;
+use Tiptap\Nodes\TableRow;
 
 /**
  * Renders a TipTap JSON document to safe HTML (or text) for display.
@@ -62,7 +69,16 @@ final class RichContent
 
     private function editor(): Editor
     {
-        return (new Editor(['extensions' => [new StarterKit]]))->setContent($this->document);
+        return (new Editor(['extensions' => [
+            new StarterKit,
+            new Table,
+            new TableRow,
+            new TableHeader,
+            new TableCell,
+            new Details,
+            new DetailsSummary,
+            new DetailsContent,
+        ]]))->setContent($this->document);
     }
 
     private function isEmpty(): bool
@@ -74,7 +90,16 @@ final class RichContent
     {
         $config = (new HtmlSanitizerConfig)
             ->allowSafeElements()
-            ->allowLinkSchemes(['https', 'http', 'mailto']);
+            ->allowLinkSchemes(['https', 'http', 'mailto'])
+            ->allowElement('table')
+            ->allowElement('thead')
+            ->allowElement('tbody')
+            ->allowElement('tfoot')
+            ->allowElement('tr')
+            ->allowElement('th', ['colspan', 'rowspan'])
+            ->allowElement('td', ['colspan', 'rowspan'])
+            ->allowElement('details', ['open'])
+            ->allowElement('summary');
 
         return (new HtmlSanitizer($config))->sanitize($html);
     }

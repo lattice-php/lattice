@@ -1,9 +1,13 @@
+import { Details, DetailsContent, DetailsSummary } from "@tiptap/extension-details";
 import { Link } from "@tiptap/extension-link";
+import { TableKit } from "@tiptap/extension-table";
 import { type Editor, EditorContent, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import {
   Bold,
+  ChevronRight,
   Code,
+  Columns3,
   Heading1,
   Heading2,
   Heading3,
@@ -13,9 +17,13 @@ import {
   ListOrdered,
   Minus,
   Quote,
+  Rows3,
+  Smile,
   Strikethrough,
+  Table as TableIcon,
+  Trash2,
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@lattice/lib/utils";
 import { getStringProp } from "@lattice/core/props";
 import type { RendererComponent } from "@lattice/core/types";
@@ -46,23 +54,79 @@ type ToolbarItem =
       icon: typeof Bold;
       label: string;
       isActive: (editor: Editor) => boolean;
+      isDisabled?: (editor: Editor) => boolean;
       run: (editor: Editor) => void;
     };
 
 const toolbar: ToolbarItem[] = [
-  { icon: Bold, label: "Bold", isActive: (e) => e.isActive("bold"), run: (e) => e.chain().focus().toggleBold().run() },
-  { icon: Italic, label: "Italic", isActive: (e) => e.isActive("italic"), run: (e) => e.chain().focus().toggleItalic().run() },
-  { icon: Strikethrough, label: "Strikethrough", isActive: (e) => e.isActive("strike"), run: (e) => e.chain().focus().toggleStrike().run() },
+  {
+    icon: Bold,
+    label: "Bold",
+    isActive: (e) => e.isActive("bold"),
+    run: (e) => e.chain().focus().toggleBold().run(),
+  },
+  {
+    icon: Italic,
+    label: "Italic",
+    isActive: (e) => e.isActive("italic"),
+    run: (e) => e.chain().focus().toggleItalic().run(),
+  },
+  {
+    icon: Strikethrough,
+    label: "Strikethrough",
+    isActive: (e) => e.isActive("strike"),
+    run: (e) => e.chain().focus().toggleStrike().run(),
+  },
   "separator",
-  { icon: Heading1, label: "Heading 1", isActive: (e) => e.isActive("heading", { level: 1 }), run: (e) => e.chain().focus().toggleHeading({ level: 1 }).run() },
-  { icon: Heading2, label: "Heading 2", isActive: (e) => e.isActive("heading", { level: 2 }), run: (e) => e.chain().focus().toggleHeading({ level: 2 }).run() },
-  { icon: Heading3, label: "Heading 3", isActive: (e) => e.isActive("heading", { level: 3 }), run: (e) => e.chain().focus().toggleHeading({ level: 3 }).run() },
+  {
+    icon: Heading1,
+    label: "Heading 1",
+    isActive: (e) => e.isActive("heading", { level: 1 }),
+    run: (e) => e.chain().focus().toggleHeading({ level: 1 }).run(),
+  },
+  {
+    icon: Heading2,
+    label: "Heading 2",
+    isActive: (e) => e.isActive("heading", { level: 2 }),
+    run: (e) => e.chain().focus().toggleHeading({ level: 2 }).run(),
+  },
+  {
+    icon: Heading3,
+    label: "Heading 3",
+    isActive: (e) => e.isActive("heading", { level: 3 }),
+    run: (e) => e.chain().focus().toggleHeading({ level: 3 }).run(),
+  },
   "separator",
-  { icon: List, label: "Bullet list", isActive: (e) => e.isActive("bulletList"), run: (e) => e.chain().focus().toggleBulletList().run() },
-  { icon: ListOrdered, label: "Ordered list", isActive: (e) => e.isActive("orderedList"), run: (e) => e.chain().focus().toggleOrderedList().run() },
-  { icon: Quote, label: "Blockquote", isActive: (e) => e.isActive("blockquote"), run: (e) => e.chain().focus().toggleBlockquote().run() },
-  { icon: Code, label: "Code block", isActive: (e) => e.isActive("codeBlock"), run: (e) => e.chain().focus().toggleCodeBlock().run() },
-  { icon: Minus, label: "Horizontal rule", isActive: () => false, run: (e) => e.chain().focus().setHorizontalRule().run() },
+  {
+    icon: List,
+    label: "Bullet list",
+    isActive: (e) => e.isActive("bulletList"),
+    run: (e) => e.chain().focus().toggleBulletList().run(),
+  },
+  {
+    icon: ListOrdered,
+    label: "Ordered list",
+    isActive: (e) => e.isActive("orderedList"),
+    run: (e) => e.chain().focus().toggleOrderedList().run(),
+  },
+  {
+    icon: Quote,
+    label: "Blockquote",
+    isActive: (e) => e.isActive("blockquote"),
+    run: (e) => e.chain().focus().toggleBlockquote().run(),
+  },
+  {
+    icon: Code,
+    label: "Code block",
+    isActive: (e) => e.isActive("codeBlock"),
+    run: (e) => e.chain().focus().toggleCodeBlock().run(),
+  },
+  {
+    icon: Minus,
+    label: "Horizontal rule",
+    isActive: () => false,
+    run: (e) => e.chain().focus().setHorizontalRule().run(),
+  },
   "separator",
   {
     icon: LinkIcon,
@@ -79,7 +143,103 @@ const toolbar: ToolbarItem[] = [
       }
     },
   },
+  "separator",
+  {
+    icon: TableIcon,
+    label: "Insert table",
+    isActive: (e) => e.isActive("table"),
+    run: (e) => e.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
+  },
+  {
+    icon: Columns3,
+    label: "Add column",
+    isActive: () => false,
+    isDisabled: (e) => !e.can().addColumnAfter(),
+    run: (e) => e.chain().focus().addColumnAfter().run(),
+  },
+  {
+    icon: Rows3,
+    label: "Add row",
+    isActive: () => false,
+    isDisabled: (e) => !e.can().addRowAfter(),
+    run: (e) => e.chain().focus().addRowAfter().run(),
+  },
+  {
+    icon: Trash2,
+    label: "Delete table",
+    isActive: () => false,
+    isDisabled: (e) => !e.can().deleteTable(),
+    run: (e) => e.chain().focus().deleteTable().run(),
+  },
+  {
+    icon: ChevronRight,
+    label: "Details",
+    isActive: (e) => e.isActive("details"),
+    run: (e) => {
+      if (e.isActive("details")) {
+        e.chain().focus().unsetDetails().run();
+        return;
+      }
+      e.chain().focus().setDetails().run();
+    },
+  },
 ];
+
+const emojis = [
+  "😀",
+  "😅",
+  "😂",
+  "🥳",
+  "😎",
+  "🤔",
+  "👍",
+  "🙏",
+  "🔥",
+  "🎉",
+  "🚀",
+  "💡",
+  "✅",
+  "❌",
+  "⭐",
+  "❤️",
+];
+
+function EmojiPicker({ editor }: { editor: Editor }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        aria-label="Insert emoji"
+        className="inline-flex size-7 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg [&_svg]:size-4"
+        onClick={() => setOpen((value) => !value)}
+        onMouseDown={(event) => event.preventDefault()}
+        title="Insert emoji"
+        type="button"
+      >
+        <Smile />
+      </button>
+      {open && (
+        <div className="absolute z-10 mt-1 grid grid-cols-8 gap-0.5 rounded-lt-sm border border-lt-border bg-lt-bg p-1 shadow-md">
+          {emojis.map((emoji) => (
+            <button
+              className="inline-flex size-7 items-center justify-center rounded-lt-sm text-base hover:bg-lt-accent"
+              key={emoji}
+              onClick={() => {
+                editor.chain().focus().insertContent(emoji).run();
+                setOpen(false);
+              }}
+              onMouseDown={(event) => event.preventDefault()}
+              type="button"
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function Toolbar({ editor }: { editor: Editor }) {
   return (
@@ -93,9 +253,10 @@ function Toolbar({ editor }: { editor: Editor }) {
             aria-label={item.label}
             aria-pressed={item.isActive(editor)}
             className={cn(
-              "inline-flex size-7 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg [&_svg]:size-4",
+              "inline-flex size-7 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4",
               item.isActive(editor) && "bg-lt-accent text-lt-accent-fg",
             )}
+            disabled={item.isDisabled?.(editor) ?? false}
             key={item.label}
             onClick={() => item.run(editor)}
             // Keep focus in the editor so toolbar clicks don't blur it (which would
@@ -108,6 +269,8 @@ function Toolbar({ editor }: { editor: Editor }) {
           </button>
         ),
       )}
+      <span className="mx-1 h-5 w-px bg-lt-border" />
+      <EmojiPicker editor={editor} />
     </div>
   );
 }
@@ -122,10 +285,17 @@ export const RichEditorComponent: RendererComponent<"form.rich-editor"> = ({ nod
   const initialContent =
     typeof storedValue === "object" && storedValue !== null
       ? (storedValue as object)
-      : (node.props?.value as object | undefined) ?? "";
+      : ((node.props?.value as object | undefined) ?? "");
 
   const editor = useEditor({
-    extensions: [StarterKit, Link.configure({ openOnClick: false })],
+    extensions: [
+      StarterKit,
+      Link.configure({ openOnClick: false }),
+      TableKit.configure({ table: { resizable: false } }),
+      Details,
+      DetailsSummary,
+      DetailsContent,
+    ],
     content: initialContent,
     editable: !locked,
     immediatelyRender: false,

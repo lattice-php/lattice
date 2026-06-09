@@ -50,6 +50,90 @@ it('strips nodes that are not in the schema', function (): void {
         ->and(RichContent::make($doc)->toHtml())->not->toContain('onload');
 });
 
+it('renders a table to sanitized html', function (): void {
+    $doc = [
+        'type' => 'doc',
+        'content' => [
+            [
+                'type' => 'table',
+                'content' => [
+                    [
+                        'type' => 'tableRow',
+                        'content' => [
+                            ['type' => 'tableHeader', 'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => 'Name']]]]],
+                            ['type' => 'tableHeader', 'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => 'Age']]]]],
+                        ],
+                    ],
+                    [
+                        'type' => 'tableRow',
+                        'content' => [
+                            ['type' => 'tableCell', 'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => 'Ada']]]]],
+                            ['type' => 'tableCell', 'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => '36']]]]],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ];
+
+    $html = RichContent::make($doc)->toHtml();
+
+    expect($html)->toContain('<table>')
+        ->and($html)->toContain('<th')
+        ->and($html)->toContain('Ada');
+});
+
+it('renders a details block to sanitized html', function (): void {
+    $doc = [
+        'type' => 'doc',
+        'content' => [
+            [
+                'type' => 'details',
+                'content' => [
+                    ['type' => 'detailsSummary', 'content' => [['type' => 'text', 'text' => 'More']]],
+                    ['type' => 'detailsContent', 'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => 'Hidden']]]]],
+                ],
+            ],
+        ],
+    ];
+
+    $html = RichContent::make($doc)->toHtml();
+
+    expect($html)->toContain('<details')
+        ->and($html)->toContain('<summary>More</summary>')
+        ->and($html)->toContain('Hidden');
+});
+
+it('preserves tables and details through toArray', function (): void {
+    $doc = [
+        'type' => 'doc',
+        'content' => [
+            [
+                'type' => 'table',
+                'content' => [
+                    [
+                        'type' => 'tableRow',
+                        'content' => [
+                            ['type' => 'tableCell', 'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => 'cell']]]]],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'type' => 'details',
+                'content' => [
+                    ['type' => 'detailsSummary', 'content' => [['type' => 'text', 'text' => 'Summary']]],
+                    ['type' => 'detailsContent', 'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => 'Body']]]]],
+                ],
+            ],
+        ],
+    ];
+
+    $types = array_column(RichContent::make($doc)->toArray()['content'], 'type');
+
+    expect($types)->toBe(['table', 'details']);
+});
+
 it('decodes the submitted json document during validation', function (): void {
     $definition = new class extends FormDefinition
     {
