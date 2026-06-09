@@ -26,8 +26,11 @@ describe("evaluateConditions", () => {
 
   it("supports operator and in forms", () => {
     expect(
-      evaluateConditions({ visible: [{ field: "age", operator: ">=", value: 18 }] }, { age: "18" }, {})
-        .hidden,
+      evaluateConditions(
+        { visible: [{ field: "age", operator: ">=", value: 18 }] },
+        { age: "18" },
+        {},
+      ).hidden,
     ).toBe(false);
     expect(
       evaluateConditions(

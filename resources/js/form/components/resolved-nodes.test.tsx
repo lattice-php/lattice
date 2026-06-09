@@ -13,7 +13,9 @@ describe("ResolvedNodes", () => {
     const original = { type: "form.text-input", props: { name: "total", value: "0" } } as Node;
     render(
       <ResolvedNodesProvider
-        nodes={{ total: { type: "form.text-input", props: { name: "total", value: "12" } } as Node }}
+        nodes={{
+          total: { type: "form.text-input", props: { name: "total", value: "12" } } as Node,
+        }}
       >
         <Probe node={original} />
       </ResolvedNodesProvider>,
