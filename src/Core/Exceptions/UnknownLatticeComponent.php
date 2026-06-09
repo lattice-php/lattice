@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Exceptions;
+namespace Bambamboole\Lattice\Core\Exceptions;
 
 use InvalidArgumentException;
 

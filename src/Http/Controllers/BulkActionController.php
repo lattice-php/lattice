@@ -7,7 +7,7 @@ namespace Bambamboole\Lattice\Http\Controllers;
 use Bambamboole\Lattice\Actions\BulkActionRegistry;
 use Bambamboole\Lattice\Core\Concerns\InteractsWithLatticeComponents;
 use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
-use Bambamboole\Lattice\Exceptions\UnknownLatticeComponent;
+use Bambamboole\Lattice\Core\Exceptions\UnknownLatticeComponent;
 use Bambamboole\Lattice\Tables\InvalidTableQuery;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableQuery;

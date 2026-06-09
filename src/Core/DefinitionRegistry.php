@@ -6,7 +6,7 @@ namespace Bambamboole\Lattice\Core;
 
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
 use Bambamboole\Lattice\Contracts\DefinitionRegistry as DefinitionRegistryContract;
-use Bambamboole\Lattice\Exceptions\UnknownLatticeComponent;
+use Bambamboole\Lattice\Core\Exceptions\UnknownLatticeComponent;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
 use Spatie\Attributes\Attributes;
