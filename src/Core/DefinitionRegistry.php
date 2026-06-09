@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Core;
 
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
-use Bambamboole\Lattice\Contracts\DefinitionRegistry as DefinitionRegistryContract;
+use Bambamboole\Lattice\Core\Contracts\DefinitionRegistry as DefinitionRegistryContract;
 use Bambamboole\Lattice\Core\Exceptions\UnknownLatticeComponent;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Discovery;
 
-use Bambamboole\Lattice\Contracts\DiscoversDefinitions;
+use Bambamboole\Lattice\Core\Contracts\DiscoversDefinitions;
 use Bambamboole\Lattice\Core\DefinitionRegistry;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

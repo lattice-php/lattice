@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Contracts;
+namespace Bambamboole\Lattice\Fragments\Contracts;
 
 use Bambamboole\Lattice\Core\PageSchema;
 

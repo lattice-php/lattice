@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Actions;
 
-use Bambamboole\Lattice\Contracts\Effect as EffectContract;
+use Bambamboole\Lattice\Actions\Contracts\Effect as EffectContract;
 use Bambamboole\Lattice\Core\Enums\ToastType;
 use Bambamboole\Lattice\Core\Values\ToastMessage;
 use JsonSerializable;

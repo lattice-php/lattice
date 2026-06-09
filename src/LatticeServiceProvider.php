@@ -7,7 +7,7 @@ namespace Bambamboole\Lattice;
 use BackedEnum;
 use Bambamboole\Lattice\Actions\ActionRegistry;
 use Bambamboole\Lattice\Actions\BulkActionRegistry;
-use Bambamboole\Lattice\Contracts\DiscoversDefinitions;
+use Bambamboole\Lattice\Core\Contracts\DiscoversDefinitions;
 use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
 use Bambamboole\Lattice\Core\Services\ComponentReferenceSigner;
 use Bambamboole\Lattice\Discovery\DefinitionDiscovery;

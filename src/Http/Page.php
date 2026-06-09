@@ -4,7 +4,6 @@ namespace Bambamboole\Lattice\Http;
 
 use BackedEnum;
 use BadMethodCallException;
-use Bambamboole\Lattice\Contracts\PageContract;
 use Bambamboole\Lattice\Core\Enums\PageContainer;
 use Bambamboole\Lattice\Core\Enums\PageLayout;
 use Bambamboole\Lattice\Core\PageSchema;

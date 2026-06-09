@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Contracts\HasLabel;
+use Bambamboole\Lattice\Core\Contracts\HasLabel;
 use Bambamboole\Lattice\Forms\Components\Choice;
 
 enum PlainStatus: string

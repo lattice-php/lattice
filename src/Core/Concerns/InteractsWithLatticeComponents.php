@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Core\Concerns;
 
-use Bambamboole\Lattice\Contracts\DefinitionRegistry;
+use Bambamboole\Lattice\Core\Contracts\DefinitionRegistry;
 use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
 use Bambamboole\Lattice\Core\Definition;
 use Bambamboole\Lattice\Core\Exceptions\UnknownLatticeComponent;
