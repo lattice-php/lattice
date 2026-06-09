@@ -120,14 +120,12 @@ describe("Lattice modal and fragment components", () => {
       expect(screen.getByText("Loaded fragment body")).toBeVisible();
     });
 
-    expect(fetch).toHaveBeenCalledWith(
-      "/lattice/fragments/settings.two-factor-setup?_lattice=sealed-reference",
-      {
-        headers: {
-          Accept: "application/json",
-        },
+    expect(fetch).toHaveBeenCalledWith("/lattice/fragments/settings.two-factor-setup", {
+      headers: {
+        Accept: "application/json",
+        "X-Lattice-Ref": "sealed-reference",
       },
-    );
+    });
   });
 
   it("reloads a loaded fragment when its component receives a reload effect", async () => {

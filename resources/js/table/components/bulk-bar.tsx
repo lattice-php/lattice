@@ -6,7 +6,7 @@ import {
   getActionEffects,
 } from "@lattice/action/effects";
 import type { ActionEffect } from "@lattice/action/effects";
-import { withRefBody } from "@lattice/core/component-ref";
+import { withRefHeader } from "@lattice/core/component-ref";
 import { Button } from "@lattice/core/components/button";
 import { ConfirmDialog } from "@lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice/core/components/spinner";
@@ -19,7 +19,6 @@ type BulkResponse = {
 };
 
 type BulkData = {
-  _lattice?: string;
   allMatching?: boolean;
   selected?: string[];
 };
@@ -48,17 +47,14 @@ export function BulkBar({
 
   async function submit(action: BulkAction): Promise<void> {
     try {
-      http.transform((data) =>
-        withRefBody(
-          {
-            ...data,
-            ...(allMatching ? { allMatching: true, ...query } : { selected: selectedKeys }),
-          },
-          action.ref ?? "",
-        ),
-      );
+      http.transform((data) => ({
+        ...data,
+        ...(allMatching ? { allMatching: true, ...query } : { selected: selectedKeys }),
+      }));
 
-      const response = await http[action.method](action.endpoint);
+      const response = await http[action.method](action.endpoint, {
+        headers: withRefHeader(action.ref ?? ""),
+      });
 
       dispatchActionEffects(getActionEffects(response.effects));
       setConfirming(null);

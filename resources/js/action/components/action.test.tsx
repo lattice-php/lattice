@@ -53,7 +53,7 @@ describe("Lattice action component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Send test email" }));
 
     await waitFor(() => {
-      expect(http.post).toHaveBeenCalledWith("/lattice/actions/send-test-email");
+      expect(http.post).toHaveBeenCalledWith("/lattice/actions/send-test-email", { headers: {} });
     });
   });
 
@@ -72,7 +72,7 @@ describe("Lattice action component", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Edit" }));
 
-    expect(router.visit).toHaveBeenCalledWith("/settings/teams/acme");
+    expect(router.visit).toHaveBeenCalledWith("/settings/teams/acme", { headers: {} });
     expect(http.post).not.toHaveBeenCalled();
   });
 
@@ -94,13 +94,9 @@ describe("Lattice action component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Sync" }));
 
     await waitFor(() => {
-      expect(http.patch).toHaveBeenCalledWith("/lattice/actions/teams.sync");
-    });
-
-    const transform = http.transform.mock.calls[0]?.[0];
-
-    expect(transform?.({})).toEqual({
-      _lattice: "sealed-reference",
+      expect(http.patch).toHaveBeenCalledWith("/lattice/actions/teams.sync", {
+        headers: { "X-Lattice-Ref": "sealed-reference" },
+      });
     });
   });
 
@@ -119,7 +115,9 @@ describe("Lattice action component", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Teams" }));
 
-    expect(router.visit).toHaveBeenCalledWith("/settings/teams?_lattice=sealed-reference");
+    expect(router.visit).toHaveBeenCalledWith("/settings/teams", {
+      headers: { "X-Lattice-Ref": "sealed-reference" },
+    });
   });
 
   it("renders configured icons through the icon renderer", () => {
@@ -192,7 +190,7 @@ describe("Lattice action component", () => {
     );
 
     await waitFor(() => {
-      expect(http.delete).toHaveBeenCalledWith("/lattice/actions/delete-account");
+      expect(http.delete).toHaveBeenCalledWith("/lattice/actions/delete-account", { headers: {} });
     });
   });
 

@@ -1,5 +1,5 @@
 import { Form as InertiaForm } from "@inertiajs/react";
-import { withRefBody } from "@lattice/core/component-ref";
+import { withRefHeader } from "@lattice/core/component-ref";
 import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/core/props";
 import { LATTICE_EVENT } from "@lattice/events/event-names";
 import type { Node, NodeProps, RendererComponent } from "@lattice/core/types";
@@ -152,7 +152,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
       resetOnError={resetOnError}
       resetOnSuccess={resetOnSuccess}
       validationTimeout={precognitive ? validationTimeout : undefined}
-      transform={(data) => withRefBody(data, componentRef)}
+      headers={withRefHeader(componentRef)}
       className="mx-auto flex w-full max-w-2xl flex-col gap-6"
     >
       {({

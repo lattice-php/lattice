@@ -64,9 +64,10 @@ describe("table bulk actions", () => {
     await waitFor(() =>
       expect(http.patch).toHaveBeenCalledWith(
         "/lattice/bulk-actions/workbench.products.archive-selected",
+        { headers: { "X-Lattice-Ref": "sealed-ref" } },
       ),
     );
-    expect(http.transformer({})).toEqual({ selected: ["1"], _lattice: "sealed-ref" });
+    expect(http.transformer({})).toEqual({ selected: ["1"] });
   });
 
   it("selects every row from the header checkbox", () => {
@@ -105,7 +106,6 @@ describe("table bulk actions", () => {
     expect(http.transformer({})).toEqual({
       allMatching: true,
       filter: "status:equals:active",
-      _lattice: "sealed-ref",
     });
   });
 });

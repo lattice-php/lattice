@@ -41,6 +41,16 @@ function productComponentRef(array $component): string
     return $ref;
 }
 
+/**
+ * @param  array<string, mixed>  $component
+ * @param  array<string, string>  $extra
+ * @return array<string, string>
+ */
+function productHeaders(array $component, array $extra = []): array
+{
+    return ['X-Lattice-Ref' => productComponentRef($component), ...$extra];
+}
+
 test('forms serialize initial state for bound edit values', function () {
     $form = Form::make('product-form')
         ->fill([
@@ -105,12 +115,11 @@ test('the product form creates products', function () {
     $form = Form::use(ProductForm::class)->toArray();
 
     post('/lattice/forms/workbench.products.form', [
-        '_lattice' => productComponentRef($form),
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
         'price' => '49.99',
         'status' => 'active',
-    ])
+    ], productHeaders($form))
         ->assertRedirect('/products');
 
     $product = Product::query()->where('sku', 'LAMP-001')->first();
@@ -166,13 +175,12 @@ test('the product form updates the trusted product from sealed context', functio
         ->toArray();
 
     patch('/lattice/forms/workbench.products.form', [
-        '_lattice' => productComponentRef($form),
         'product_id' => $tamperedProduct->getKey(),
         'name' => 'Updated Lamp',
         'sku' => 'LAMP-002',
         'price' => '59.99',
         'status' => 'active',
-    ])
+    ], productHeaders($form))
         ->assertRedirect('/products');
 
     $trustedProduct->refresh();
@@ -192,12 +200,11 @@ test('the product form validates required fields', function () {
     $form = Form::use(ProductForm::class)->toArray();
 
     post('/lattice/forms/workbench.products.form', [
-        '_lattice' => productComponentRef($form),
         'name' => '',
         'sku' => '',
         'price' => 'invalid',
         'status' => 'retired',
-    ])
+    ], productHeaders($form))
         ->assertSessionHasErrors([
             'name',
             'sku',
@@ -213,16 +220,15 @@ test('the product form returns precognitive validation errors without creating p
     $form = Form::use(ProductForm::class)->toArray();
 
     post('/lattice/forms/workbench.products.form', [
-        '_lattice' => productComponentRef($form),
         'name' => '',
         'sku' => '',
         'price' => 'invalid',
         'status' => 'retired',
-    ], [
+    ], productHeaders($form, [
         'Accept' => 'application/json',
         'Precognition' => 'true',
         'Precognition-Validate-Only' => 'name,price',
-    ])
+    ]))
         ->assertHeader('Precognition', 'true')
         ->assertJsonValidationErrors(['name', 'price'])
         ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -236,15 +242,14 @@ test('the product form accepts valid precognitive validation without creating pr
     $form = Form::use(ProductForm::class)->toArray();
 
     post('/lattice/forms/workbench.products.form', [
-        '_lattice' => productComponentRef($form),
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
         'price' => '49.99',
         'status' => 'active',
-    ], [
+    ], productHeaders($form, [
         'Accept' => 'application/json',
         'Precognition' => 'true',
-    ])
+    ]))
         ->assertHeader('Precognition', 'true')
         ->assertHeader('Precognition-Success', 'true')
         ->assertNoContent();
@@ -273,31 +278,29 @@ test('the product form validates edit uniqueness from sealed context during prec
         ->toArray();
 
     patch('/lattice/forms/workbench.products.form', [
-        '_lattice' => productComponentRef($form),
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
         'price' => '49.99',
         'status' => 'active',
-    ], [
+    ], productHeaders($form, [
         'Accept' => 'application/json',
         'Precognition' => 'true',
         'Precognition-Validate-Only' => 'sku',
-    ])
+    ]))
         ->assertHeader('Precognition', 'true')
         ->assertHeader('Precognition-Success', 'true')
         ->assertNoContent();
 
     patch('/lattice/forms/workbench.products.form', [
-        '_lattice' => productComponentRef($form),
         'name' => 'Desk Lamp',
         'sku' => 'SHELF-001',
         'price' => '49.99',
         'status' => 'active',
-    ], [
+    ], productHeaders($form, [
         'Accept' => 'application/json',
         'Precognition' => 'true',
         'Precognition-Validate-Only' => 'sku',
-    ])
+    ]))
         ->assertHeader('Precognition', 'true')
         ->assertJsonValidationErrors(['sku'])
         ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -331,10 +334,9 @@ test('the product archive row action is pinned to its sealed product', function 
     );
 
     patch('/lattice/actions/workbench.products.archive', [
-        '_lattice' => $ref,
         'context' => ['product_id' => $other->getKey()],
         'product_id' => $other->getKey(),
-    ])
+    ], ['X-Lattice-Ref' => $ref])
         ->assertOk()
         ->assertJsonPath('data.id', $target->getKey());
 
@@ -353,7 +355,7 @@ test('the product archive row action authorizes per row', function () {
             ->toArray(),
     );
 
-    patch('/lattice/actions/workbench.products.archive', ['_lattice' => $ref])
+    patch('/lattice/actions/workbench.products.archive', [], ['X-Lattice-Ref' => $ref])
         ->assertForbidden();
 });
 
@@ -372,9 +374,8 @@ test('bulk actions resolve the selection through the table and archive only thos
     );
 
     patch('/lattice/bulk-actions/workbench.products.archive-selected', [
-        '_lattice' => $ref,
         'selected' => [$a->getKey(), $b->getKey()],
-    ])
+    ], ['X-Lattice-Ref' => $ref])
         ->assertOk()
         ->assertJsonPath('data.archived', 2);
 
@@ -396,9 +397,8 @@ test('bulk actions ignore selected ids that are not in the table result', functi
     );
 
     patch('/lattice/bulk-actions/workbench.products.archive-selected', [
-        '_lattice' => $ref,
         'selected' => [$a->getKey(), 999999],
-    ])
+    ], ['X-Lattice-Ref' => $ref])
         ->assertOk()
         ->assertJsonPath('data.archived', 1);
 
@@ -427,9 +427,8 @@ test('bulk actions execute through their serialized component reference', functi
     );
 
     patch('/lattice/bulk-actions/workbench.products.archive-selected', [
-        '_lattice' => $ref,
         'selected' => [$product->getKey()],
-    ])
+    ], ['X-Lattice-Ref' => $ref])
         ->assertOk()
         ->assertJsonPath('data.archived', 1);
 
@@ -469,10 +468,9 @@ test('bulk actions can target every row matching the current filter', function (
     );
 
     patch('/lattice/bulk-actions/workbench.products.archive-selected', [
-        '_lattice' => $ref,
         'allMatching' => true,
         'filter' => 'status:equals:active',
-    ])
+    ], ['X-Lattice-Ref' => $ref])
         ->assertOk()
         ->assertJsonPath('data.archived', 3);
 
@@ -491,10 +489,9 @@ test('bulk all-matching validates the filter against the table columns', functio
     );
 
     patch('/lattice/bulk-actions/workbench.products.archive-selected', [
-        '_lattice' => $ref,
         'allMatching' => true,
         'filter' => 'id:equals:1',
-    ])
+    ], ['X-Lattice-Ref' => $ref])
         ->assertUnprocessable()
         ->assertJsonPath('errors.filter.0', 'Filter [id] is not allowed for table [workbench.products].');
 });

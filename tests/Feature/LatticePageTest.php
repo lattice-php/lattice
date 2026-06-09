@@ -60,8 +60,10 @@ use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
 use Bambamboole\Lattice\Toasts\ToastMessage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Testing\TestResponse;
 use Inertia\ResponseFactory;
 use Inertia\Support\SessionKey;
 use Inertia\Testing\AssertableInertia;
@@ -102,11 +104,20 @@ function componentRef(array $component): string
     return $ref;
 }
 
-function latticeUrl(string $url, string $ref): string
+/**
+ * @return array<string, string>
+ */
+function latticeHeaders(string $ref): array
 {
-    $separator = str_contains($url, '?') ? '&' : '?';
+    return ['X-Lattice-Ref' => $ref];
+}
 
-    return $url.$separator.'_lattice='.rawurlencode($ref);
+/**
+ * @return TestResponse<JsonResponse>
+ */
+function latticeGet(string $url, string $ref): TestResponse
+{
+    return getJson($url, latticeHeaders($ref));
 }
 
 function exposesChildrenApi(object $component): bool
@@ -469,11 +480,10 @@ test('registered forms can be submitted through the package endpoint', function 
 
     patch('/lattice/forms/settings.profile', [
         'name' => 'Taylor',
-        '_lattice' => $ref,
         'context' => [
             'team' => 'tampered-team',
         ],
-    ])
+    ], latticeHeaders($ref))
         ->assertRedirect('/submitted');
 
     expect(session('handled-form'))->toBe('Taylor');
@@ -488,8 +498,7 @@ test('registered form endpoints require a valid component reference', function (
 
     patch('/lattice/forms/settings.profile', [
         'name' => 'Taylor',
-        '_lattice' => 'tampered',
-    ])
+    ], latticeHeaders('tampered'))
         ->assertForbidden();
 });
 
@@ -657,7 +666,7 @@ test('registered tables parse clause filters sorts and pagination through the en
 
     $ref = componentRef(Table::use(WorkbenchUsersTable::class)->toArray());
 
-    getJson(latticeUrl('/lattice/tables/workbench.users?filter=name:contains:tay,status:equals:active&sort=-name,email&page=2&per_page=50', $ref))
+    latticeGet('/lattice/tables/workbench.users?filter=name:contains:tay,status:equals:active&sort=-name,email&page=2&per_page=50', $ref)
         ->assertOk()
         ->assertJsonPath('data.0.name', 'Taylor')
         ->assertJsonPath('data.0.filters.0', ['field' => 'name', 'operator' => 'contains', 'value' => 'tay'])
@@ -677,12 +686,12 @@ test('registered tables reject filters and sorts that are not allowed by columns
 
     $ref = componentRef(Table::use(WorkbenchUsersTable::class)->toArray());
 
-    getJson(latticeUrl('/lattice/tables/workbench.users?filter=password:contains:secret', $ref))
+    latticeGet('/lattice/tables/workbench.users?filter=password:contains:secret', $ref)
         ->assertUnprocessable()
         ->assertJsonPath('message', 'Filter [password] is not allowed for table [workbench.users].')
         ->assertJsonPath('errors.filter.0', 'Filter [password] is not allowed for table [workbench.users].');
 
-    getJson(latticeUrl('/lattice/tables/workbench.users?sort=password', $ref))
+    latticeGet('/lattice/tables/workbench.users?sort=password', $ref)
         ->assertUnprocessable()
         ->assertJsonPath('message', 'Sort [password] is not allowed for table [workbench.users].')
         ->assertJsonPath('errors.sort.0', 'Sort [password] is not allowed for table [workbench.users].');
@@ -698,10 +707,10 @@ test('registered table endpoints require a valid component reference and use tru
     getJson('/lattice/tables/fixtures.users')
         ->assertForbidden();
 
-    getJson('/lattice/tables/fixtures.users?_lattice=tampered')
+    getJson('/lattice/tables/fixtures.users', latticeHeaders('tampered'))
         ->assertForbidden();
 
-    getJson(latticeUrl('/lattice/tables/fixtures.users?context[team]=tampered-team', $ref))
+    latticeGet('/lattice/tables/fixtures.users?context[team]=tampered-team', $ref)
         ->assertOk()
         ->assertJsonPath('data.0.name', 'trusted-team');
 });
@@ -778,7 +787,7 @@ test('eloquent tables can use infinite pagination metadata', function () {
             'to' => 2,
         ]);
 
-    getJson(latticeUrl('/lattice/tables/workbench.infinite-users?per_page=2', $ref))
+    latticeGet('/lattice/tables/workbench.infinite-users?per_page=2', $ref)
         ->assertOk()
         ->assertJsonCount(2, 'data')
         ->assertJsonPath('pagination.mode', 'infinite')
@@ -788,7 +797,7 @@ test('eloquent tables can use infinite pagination metadata', function () {
         ->assertJsonPath('state.page', 1)
         ->assertJsonPath('state.perPage', 2);
 
-    getJson(latticeUrl('/lattice/tables/workbench.infinite-users?per_page=2&page=2', $ref))
+    latticeGet('/lattice/tables/workbench.infinite-users?per_page=2&page=2', $ref)
         ->assertOk()
         ->assertJsonCount(1, 'data')
         ->assertJsonPath('pagination.mode', 'infinite')
@@ -811,7 +820,7 @@ test('eloquent tables use table pagination with totals by default', function () 
 
     $ref = componentRef(Table::use(WorkbenchDefaultUsersTable::class)->toArray());
 
-    getJson(latticeUrl('/lattice/tables/workbench.default-users?per_page=2', $ref))
+    latticeGet('/lattice/tables/workbench.default-users?per_page=2', $ref)
         ->assertOk()
         ->assertJsonCount(2, 'data')
         ->assertJsonPath('pagination.mode', 'table')
@@ -835,7 +844,7 @@ test('eloquent tables can use simple pagination without totals', function () {
 
     $ref = componentRef(Table::use(WorkbenchSimpleUsersTable::class)->toArray());
 
-    getJson(latticeUrl('/lattice/tables/workbench.simple-users?per_page=2', $ref))
+    latticeGet('/lattice/tables/workbench.simple-users?per_page=2', $ref)
         ->assertOk()
         ->assertJsonCount(2, 'data')
         ->assertJsonPath('pagination.mode', 'simple')
@@ -858,7 +867,7 @@ test('eloquent tables can disable pagination for small datasets', function () {
 
     $ref = componentRef(Table::use(WorkbenchSmallUsersTable::class)->toArray());
 
-    getJson(latticeUrl('/lattice/tables/workbench.small-users?per_page=1', $ref))
+    latticeGet('/lattice/tables/workbench.small-users?per_page=1', $ref)
         ->assertOk()
         ->assertJsonCount(3, 'data')
         ->assertJsonPath('pagination.mode', 'none')
@@ -956,11 +965,10 @@ test('registered actions can be handled through the package endpoint', function 
 
     postJson('/lattice/actions/workbench.ping', [
         'name' => 'Taylor',
-        '_lattice' => $ref,
         'context' => [
             'team' => 'tampered-team',
         ],
-    ])
+    ], latticeHeaders($ref))
         ->assertOk()
         ->assertJsonPath('ok', true)
         ->assertJsonPath('data.handled', 'Taylor')
@@ -1027,8 +1035,7 @@ test('registered action endpoints require a valid component reference', function
 
     postJson('/lattice/actions/workbench.ping', [
         'name' => 'Taylor',
-        '_lattice' => 'tampered',
-    ])
+    ], latticeHeaders('tampered'))
         ->assertForbidden();
 });
 
@@ -1058,13 +1065,13 @@ test('interaction endpoints return 404 for unknown component ids', function () {
         'fragment' => $signer->seal('fragment', 'workbench.missing', []),
     ];
 
-    postJson('/lattice/actions/workbench.missing', ['_lattice' => $refs['action']])
+    postJson('/lattice/actions/workbench.missing', [], latticeHeaders($refs['action']))
         ->assertNotFound();
-    patch('/lattice/forms/workbench.missing', ['_lattice' => $refs['form']])
+    patch('/lattice/forms/workbench.missing', [], latticeHeaders($refs['form']))
         ->assertNotFound();
-    getJson(latticeUrl('/lattice/tables/workbench.missing', $refs['table']))
+    latticeGet('/lattice/tables/workbench.missing', $refs['table'])
         ->assertNotFound();
-    getJson(latticeUrl('/lattice/fragments/workbench.missing', $refs['fragment']))
+    latticeGet('/lattice/fragments/workbench.missing', $refs['fragment'])
         ->assertNotFound();
 });
 
@@ -1082,13 +1089,13 @@ test('interaction endpoints re-run authorization for every interaction', functio
         'fragment' => $signer->seal('fragment', 'workbench.denied', []),
     ];
 
-    postJson('/lattice/actions/workbench.denied', ['_lattice' => $refs['action']])
+    postJson('/lattice/actions/workbench.denied', [], latticeHeaders($refs['action']))
         ->assertForbidden();
-    patch('/lattice/forms/workbench.denied', ['_lattice' => $refs['form']])
+    patch('/lattice/forms/workbench.denied', [], latticeHeaders($refs['form']))
         ->assertForbidden();
-    getJson(latticeUrl('/lattice/tables/workbench.denied', $refs['table']))
+    latticeGet('/lattice/tables/workbench.denied', $refs['table'])
         ->assertForbidden();
-    getJson(latticeUrl('/lattice/fragments/workbench.denied', $refs['fragment']))
+    latticeGet('/lattice/fragments/workbench.denied', $refs['fragment'])
         ->assertForbidden();
 });
 
@@ -1167,10 +1174,10 @@ test('registered fragments serialize lazy endpoints and return component schemas
     getJson('/lattice/fragments/workbench.two-factor-setup')
         ->assertForbidden();
 
-    getJson('/lattice/fragments/workbench.two-factor-setup?_lattice=tampered')
+    getJson('/lattice/fragments/workbench.two-factor-setup', latticeHeaders('tampered'))
         ->assertForbidden();
 
-    getJson(latticeUrl('/lattice/fragments/workbench.two-factor-setup', $ref))
+    latticeGet('/lattice/fragments/workbench.two-factor-setup', $ref)
         ->assertOk()
         ->assertJsonPath('components.0.type', 'text')
         ->assertJsonPath('components.0.props.text', 'Authenticator setup loaded.');

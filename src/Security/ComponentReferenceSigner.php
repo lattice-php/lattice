@@ -92,9 +92,7 @@ final class ComponentReferenceSigner implements SignsComponentReferences
 
     private function token(Request $request): string
     {
-        $token = $request->input('_lattice', $request->header('X-Lattice-Ref', ''));
-
-        return is_string($token) ? $token : '';
+        return $request->header('X-Lattice-Ref', '');
     }
 
     private function validateUser(Request $request, mixed $userId): void

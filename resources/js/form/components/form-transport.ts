@@ -1,10 +1,10 @@
 /**
  * Shared client transport for the lattice form endpoint. Every form sub-action
  * (validation resolve, option search) POSTs to the same signed form URL, so the
- * URL building, CSRF header, and request shape live here in one place.
+ * CSRF header, component-ref header, and request shape live here in one place.
  */
 
-import { LATTICE_REF_PARAM } from "@lattice/core/component-ref";
+import { withRefHeader } from "@lattice/core/component-ref";
 
 export const FORM_DEBOUNCE_MS = 250;
 
@@ -14,19 +14,13 @@ export function xsrfToken(): string {
   return match ? decodeURIComponent(match[1]) : "";
 }
 
-export function formActionUrl(action: string, componentRef: string): string {
-  return componentRef
-    ? `${action}?${LATTICE_REF_PARAM}=${encodeURIComponent(componentRef)}`
-    : action;
-}
-
 export function postFormAction<T>(
   action: string,
   componentRef: string,
   body: Record<string, unknown>,
   signal: AbortSignal,
 ): Promise<T | null> {
-  return fetch(formActionUrl(action, componentRef), {
+  return fetch(action, {
     method: "POST",
     credentials: "same-origin",
     signal,
@@ -35,6 +29,7 @@ export function postFormAction<T>(
       Accept: "application/json",
       "X-Requested-With": "XMLHttpRequest",
       "X-XSRF-TOKEN": xsrfToken(),
+      ...withRefHeader(componentRef),
     },
     body: JSON.stringify(body),
   }).then((response) => (response.ok ? (response.json() as Promise<T>) : null));

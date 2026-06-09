@@ -1,3 +1,4 @@
+import { withRefHeader } from "@lattice/core/component-ref";
 import type { Node } from "@lattice/core/types";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice/events/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -31,9 +32,10 @@ export function useTable(node: Node<"table">) {
       setProcessing(true);
 
       try {
-        const response = await fetch(buildEndpoint(endpoint, nextState, componentRef), {
+        const response = await fetch(buildEndpoint(endpoint, nextState), {
           headers: {
             Accept: "application/json",
+            ...withRefHeader(componentRef),
           },
         });
         const result = (await response.json()) as TableResponse;

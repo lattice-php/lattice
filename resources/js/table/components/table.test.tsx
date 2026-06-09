@@ -319,10 +319,11 @@ describe("Lattice table component", () => {
 
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
-        "/lattice/tables/teams.members?_lattice=sealed-reference&sort=name&page=1&per_page=25",
+        "/lattice/tables/teams.members?sort=name&page=1&per_page=25",
         {
           headers: {
             Accept: "application/json",
+            "X-Lattice-Ref": "sealed-reference",
           },
         },
       );

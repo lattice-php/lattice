@@ -74,10 +74,9 @@ it('searches options through the form endpoint with a signed reference', functio
     $ref = Form::use(ShowcaseForm::class)->toArray()['props']['ref'];
 
     post('/lattice/forms/workbench.showcase.form', [
-        '_lattice' => $ref,
         '_search' => 'related_products',
         'q' => 'walnut',
-    ])
+    ], ['X-Lattice-Ref' => $ref])
         ->assertOk()
         ->assertExactJson([
             'options' => [

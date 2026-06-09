@@ -1,7 +1,7 @@
 import { router, useHttp } from "@inertiajs/react";
 import type { Method } from "@inertiajs/core";
 import { useState } from "react";
-import { endpointWithRef, withRefBody } from "@lattice/core/component-ref";
+import { withRefHeader } from "@lattice/core/component-ref";
 import { Button } from "@lattice/core/components/button";
 import { ConfirmDialog } from "@lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice/core/components/spinner";
@@ -26,9 +26,7 @@ type ActionResponse = {
   ok?: boolean;
 };
 
-type ActionData = {
-  _lattice?: string;
-};
+type ActionData = Record<string, never>;
 
 declare module "@lattice/core/types" {
   interface ComponentProps {
@@ -80,15 +78,13 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
 
     try {
       if (method === "get") {
-        router.visit(endpointWithRef(endpoint, componentRef));
+        router.visit(endpoint, { headers: withRefHeader(componentRef) });
         setIsConfirming(false);
 
         return;
       }
 
-      http.transform((data) => withRefBody(data, componentRef));
-
-      const response = await http[method](endpoint);
+      const response = await http[method](endpoint, { headers: withRefHeader(componentRef) });
       const responseEffects = getActionEffects(response.effects);
 
       dispatchActionEffects(

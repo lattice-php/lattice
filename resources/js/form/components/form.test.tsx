@@ -25,7 +25,7 @@ vi.mock("@inertiajs/react", () => ({
     errorBag: _errorBag,
     resetOnError: _resetOnError,
     resetOnSuccess: _resetOnSuccess,
-    transform,
+    headers,
     validationTimeout,
     ...props
   }: {
@@ -43,12 +43,12 @@ vi.mock("@inertiajs/react", () => ({
     errorBag?: string;
     resetOnError?: boolean | string[];
     resetOnSuccess?: boolean | string[];
-    transform?: (data: Record<string, unknown>) => Record<string, unknown>;
+    headers?: Record<string, string>;
     validationTimeout?: number;
   }) => (
     <form
       {...props}
-      data-transformed={JSON.stringify(transform?.({ name: "Updated team" }) ?? null)}
+      data-headers={JSON.stringify(headers ?? null)}
       data-validation-timeout={validationTimeout}
     >
       {children({
@@ -77,7 +77,7 @@ describe("Lattice form schema components", () => {
     formSlotState.validate.mockClear();
   });
 
-  it("transforms submitted data with the sealed component reference", () => {
+  it("sends the sealed component reference as a header", () => {
     const formNode = {
       id: "team-form",
       props: {
@@ -92,11 +92,8 @@ describe("Lattice form schema components", () => {
 
     expect(document.querySelector("form")).toHaveAttribute("action", "/lattice/forms/teams.update");
     expect(document.querySelector("form")).toHaveAttribute(
-      "data-transformed",
-      JSON.stringify({
-        name: "Updated team",
-        _lattice: "sealed-reference",
-      }),
+      "data-headers",
+      JSON.stringify({ "X-Lattice-Ref": "sealed-reference" }),
     );
   });
 

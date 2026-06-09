@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { endpointWithRef } from "@lattice/core/component-ref";
+import { withRefHeader } from "@lattice/core/component-ref";
 import { getStringProp } from "@lattice/core/props";
 import { Renderer, useRendererContext } from "@lattice/core/renderer";
 import type { Node, RendererComponent } from "@lattice/core/types";
@@ -47,9 +47,10 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
     setProcessing(true);
 
     try {
-      const response = await fetch(endpointWithRef(endpoint, componentRef), {
+      const response = await fetch(endpoint, {
         headers: {
           Accept: "application/json",
+          ...withRefHeader(componentRef),
         },
       });
       const result = (await response.json()) as FragmentResponse;
