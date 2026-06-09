@@ -8,6 +8,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "oxlint resources/js workbench/resources/js",
     "lint:fix": "oxlint resources/js workbench/resources/js --fix",
+    "lint:github": "oxlint resources/js workbench/resources/js --format=github",
     "format": "oxfmt --write \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\"",
     "format:check": "oxfmt --check \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\"",
     "docs:dev": "astro dev",

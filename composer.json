@@ -10,6 +10,18 @@
         "react",
         "server-driven-ui"
     ],
+    "homepage": "https://latticephp.com",
+    "support": {
+        "issues": "https://github.com/lattice-php/lattice/issues",
+        "source": "https://github.com/lattice-php/lattice",
+        "docs": "https://latticephp.com"
+    },
+    "authors": [
+        {
+            "name": "Manuel Christlieb",
+            "email": "manuel@christlieb.eu"
+        }
+    ],
     "require": {
         "php": "^8.3",
         "illuminate/http": "^11.0 || ^12.0 || ^13.0",
@@ -44,25 +56,20 @@
         }
     },
     "scripts": {
-        "test": [
-            "@analyse",
-            "./vendor/bin/pest",
-            "npm run typecheck",
-            "npm run test"
-        ],
-        "test:browser": "./vendor/bin/pest tests/Browser",
-        "test:lint": "./vendor/bin/pint --test",
-        "lint": "./vendor/bin/pint",
         "analyse": "./vendor/bin/phpstan analyse",
-        "types": "@php vendor/bin/testbench typescript:transform",
+        "lint": "./vendor/bin/pint",
+        "test:lint": "./vendor/bin/pint --test",
         "rector": "./vendor/bin/rector process",
         "rector:test": "./vendor/bin/rector process --dry-run",
+        "types": "@php vendor/bin/testbench typescript:transform",
         "fix": [
-            "npm run lint:fix",
-            "npm run format",
             "@rector",
-            "@lint"
+            "@lint",
+            "npm run lint:fix",
+            "npm run format"
         ],
+        "test": "./vendor/bin/pest --testsuite Unit,Feature",
+        "test:browser": "./vendor/bin/pest --testsuite Browser",
         "post-autoload-dump": [
             "@clear",
             "@prepare"
@@ -90,6 +97,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
