@@ -751,6 +751,25 @@ describe("Lattice table component", () => {
     );
   });
 
+  it("stripes rows when the table is striped", () => {
+    const node = {
+      id: "workbench.products",
+      props: {
+        columns: [{ key: "name", label: "Name" }],
+        data: [{ name: "Taylor" }],
+        striped: true,
+        state: { filters: [], page: 1, perPage: 25, sorts: [] },
+      },
+      type: "table",
+    } satisfies Node<"table">;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    expect(screen.getByRole("cell", { name: "Taylor" }).closest('[role="row"]')).toHaveClass(
+      "odd:bg-lt-muted/30",
+    );
+  });
+
   it("adds a clause with a chosen operator from the column filter popover", async () => {
     const fetch = vi.fn<typeof globalThis.fetch>(async () =>
       Response.json({

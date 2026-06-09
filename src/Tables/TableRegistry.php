@@ -31,6 +31,7 @@ class TableRegistry extends DefinitionRegistry
             ->endpoint($this->endpointFor($key))
             ->columns($columns)
             ->layout($definition->layout())
+            ->striped($definition->striped())
             ->bulkActions($this->bulkActions($definition, $key))
             ->result($result, $query);
     }
@@ -51,6 +52,7 @@ class TableRegistry extends DefinitionRegistry
             ->endpoint($this->endpointFor($key))
             ->columns($columns)
             ->layout($definition->layout())
+            ->striped($definition->striped())
             ->bulkActions($this->bulkActions($definition, $key))
             ->result($result, $query)
             ->prop('lazy', true);

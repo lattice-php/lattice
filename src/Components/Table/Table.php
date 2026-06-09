@@ -80,6 +80,15 @@ class Table extends Component
         return $this->prop('bulkActions', $actions);
     }
 
+    public function striped(bool $striped): static
+    {
+        if (! $striped) {
+            return $this;
+        }
+
+        return $this->prop('striped', true);
+    }
+
     public function result(TableResult $result, TableQuery $query): static
     {
         return $this->props($result->toArray($query));

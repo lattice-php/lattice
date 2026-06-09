@@ -83,6 +83,7 @@ declare module "@lattice/core/types" {
       ref?: string;
       lazy?: boolean;
       layout?: string;
+      striped?: boolean;
       pagination?: Record<string, unknown>;
       rows?: TableRowMeta[];
       state?: Record<string, unknown>;

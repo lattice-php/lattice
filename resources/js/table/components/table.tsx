@@ -48,6 +48,7 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
   const visiblePages = getVisiblePages(currentPage, lastPage);
   const hasNextPage = pagination.hasMore ?? currentPage < lastPage;
   const hasActions = rowMetadata.some((metadata) => (metadata.actions?.length ?? 0) > 0);
+  const striped = node.props?.striped === true;
   const hasFilters = columns.some((column) => column.filter?.enabled);
   const filterEntries = filters.map((clause, index) => ({ clause, index }));
   const gridTemplateColumns = getColumnGridTemplate(columns, hasActions, hasBulkActions);
@@ -157,7 +158,9 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
               return (
                 <div
                   key={key}
-                  className="grid grid-cols-1 border-b border-lt-border last:border-b-0 md:grid-cols-[var(--lattice-table-columns)]"
+                  className={`grid grid-cols-1 border-b border-lt-border last:border-b-0 md:grid-cols-[var(--lattice-table-columns)] ${
+                    striped ? "odd:bg-lt-muted/30" : ""
+                  }`}
                   role="row"
                   style={{ "--lattice-table-columns": gridTemplateColumns } as never}
                 >

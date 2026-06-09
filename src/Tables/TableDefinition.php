@@ -39,6 +39,11 @@ abstract class TableDefinition extends Definition
         return 'table';
     }
 
+    public function striped(): bool
+    {
+        return false;
+    }
+
     /**
      * @param  array<string, mixed>  $row
      * @return array<int, Component>

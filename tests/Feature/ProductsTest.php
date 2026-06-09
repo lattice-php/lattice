@@ -436,6 +436,12 @@ test('bulk actions execute through their serialized component reference', functi
     expect($product->fresh()->status)->toBe('archived');
 });
 
+test('the products table is serialized as striped', function () {
+    Lattice::tables([ProductsTable::class]);
+
+    expect(data_get(Table::use(ProductsTable::class)->toArray(), 'props.striped'))->toBeTrue();
+});
+
 test('the products table serializes bulk actions bound to the table', function () {
     Lattice::tables([ProductsTable::class]);
     Lattice::bulkActions([ArchiveSelectedProductsAction::class]);

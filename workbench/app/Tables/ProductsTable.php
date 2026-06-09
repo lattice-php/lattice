@@ -38,6 +38,11 @@ class ProductsTable extends EloquentTableDefinition
         ];
     }
 
+    public function striped(): bool
+    {
+        return true;
+    }
+
     /**
      * @return Builder<Product>
      */
