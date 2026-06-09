@@ -86,7 +86,7 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
       {state.sorts.length > 0 && (
         <SortBar columns={columns} state={state} processing={processing} onClear={clearSort} />
       )}
-      <div className="w-full text-sm" role="table">
+      <div className="w-max min-w-full text-sm" role="table">
         <div className="border-b border-lt-border bg-lt-muted/50" role="rowgroup">
           <div
             className="hidden min-w-full md:grid md:grid-cols-[var(--lattice-table-columns)]"
