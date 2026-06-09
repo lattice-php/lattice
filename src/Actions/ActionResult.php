@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Actions;
 
+use Bambamboole\Lattice\Contracts\Effect as EffectContract;
 use Bambamboole\Lattice\Enums\ToastType;
 use Bambamboole\Lattice\Toasts\ToastMessage;
 use JsonSerializable;
@@ -12,7 +13,7 @@ final readonly class ActionResult implements JsonSerializable
 {
     /**
      * @param  array<string, mixed>  $data
-     * @param  array<int, Effect>  $effects
+     * @param  array<int, EffectContract>  $effects
      */
     private function __construct(
         private bool $ok,
@@ -28,7 +29,7 @@ final readonly class ActionResult implements JsonSerializable
         return new self(true, $data);
     }
 
-    public function effect(Effect $effect): self
+    public function effect(EffectContract $effect): self
     {
         return new self($this->ok, $this->data, [
             ...$this->effects,
@@ -85,7 +86,7 @@ final readonly class ActionResult implements JsonSerializable
             'ok' => $this->ok,
             'data' => $this->data,
             'effects' => array_map(
-                fn (Effect $effect): array => $effect->toArray(),
+                fn (EffectContract $effect): array => $effect->toArray(),
                 $this->effects,
             ),
         ];

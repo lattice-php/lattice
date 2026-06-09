@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Actions;
 
+use Bambamboole\Lattice\Contracts\Effect as EffectContract;
 use Bambamboole\Lattice\Enums\ToastType;
 use Bambamboole\Lattice\Toasts\ToastMessage;
-use JsonSerializable;
 
-final readonly class Effect implements JsonSerializable
+final readonly class Effect implements EffectContract
 {
     /**
      * @param  array<string, mixed>  $payload

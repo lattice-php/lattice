@@ -5,7 +5,7 @@ namespace Bambamboole\Lattice\Components\Core;
 use BackedEnum;
 use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionRegistry;
-use Bambamboole\Lattice\Actions\Effect;
+use Bambamboole\Lattice\Contracts\Effect;
 
 class Action extends Component
 {
