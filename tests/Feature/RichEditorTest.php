@@ -104,6 +104,28 @@ it('renders a details block to sanitized html', function (): void {
         ->and($html)->toContain('Hidden');
 });
 
+it('renders underline, highlight and text alignment', function (): void {
+    $doc = [
+        'type' => 'doc',
+        'content' => [
+            [
+                'type' => 'paragraph',
+                'attrs' => ['textAlign' => 'center'],
+                'content' => [
+                    ['type' => 'text', 'text' => 'under', 'marks' => [['type' => 'underline']]],
+                    ['type' => 'text', 'text' => 'mark', 'marks' => [['type' => 'highlight']]],
+                ],
+            ],
+        ],
+    ];
+
+    $html = RichContent::make($doc)->toHtml();
+
+    expect($html)->toContain('<u>under</u>')
+        ->and($html)->toContain('<mark>mark</mark>')
+        ->and($html)->toContain('text-align: center');
+});
+
 it('preserves tables and details through toArray', function (): void {
     $doc = [
         'type' => 'doc',

@@ -1,9 +1,15 @@
 import { Details, DetailsContent, DetailsSummary } from "@tiptap/extension-details";
+import { Highlight } from "@tiptap/extension-highlight";
 import { Link } from "@tiptap/extension-link";
 import { TableKit } from "@tiptap/extension-table";
+import { TextAlign } from "@tiptap/extension-text-align";
 import { type Editor, EditorContent, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import {
+  AlignCenter,
+  AlignJustify,
+  AlignLeft,
+  AlignRight,
   Bold,
   ChevronRight,
   Code,
@@ -11,6 +17,7 @@ import {
   Heading1,
   Heading2,
   Heading3,
+  Highlighter,
   Italic,
   Link as LinkIcon,
   List,
@@ -22,6 +29,7 @@ import {
   Strikethrough,
   Table as TableIcon,
   Trash2,
+  Underline as UnderlineIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@lattice/lib/utils";
@@ -77,6 +85,18 @@ const toolbar: ToolbarItem[] = [
     isActive: (e) => e.isActive("strike"),
     run: (e) => e.chain().focus().toggleStrike().run(),
   },
+  {
+    icon: UnderlineIcon,
+    label: "Underline",
+    isActive: (e) => e.isActive("underline"),
+    run: (e) => e.chain().focus().toggleUnderline().run(),
+  },
+  {
+    icon: Highlighter,
+    label: "Highlight",
+    isActive: (e) => e.isActive("highlight"),
+    run: (e) => e.chain().focus().toggleHighlight().run(),
+  },
   "separator",
   {
     icon: Heading1,
@@ -126,6 +146,31 @@ const toolbar: ToolbarItem[] = [
     label: "Horizontal rule",
     isActive: () => false,
     run: (e) => e.chain().focus().setHorizontalRule().run(),
+  },
+  "separator",
+  {
+    icon: AlignLeft,
+    label: "Align left",
+    isActive: (e) => e.isActive({ textAlign: "left" }),
+    run: (e) => e.chain().focus().setTextAlign("left").run(),
+  },
+  {
+    icon: AlignCenter,
+    label: "Align center",
+    isActive: (e) => e.isActive({ textAlign: "center" }),
+    run: (e) => e.chain().focus().setTextAlign("center").run(),
+  },
+  {
+    icon: AlignRight,
+    label: "Align right",
+    isActive: (e) => e.isActive({ textAlign: "right" }),
+    run: (e) => e.chain().focus().setTextAlign("right").run(),
+  },
+  {
+    icon: AlignJustify,
+    label: "Justify",
+    isActive: (e) => e.isActive({ textAlign: "justify" }),
+    run: (e) => e.chain().focus().setTextAlign("justify").run(),
   },
   "separator",
   {
@@ -290,6 +335,8 @@ export const RichEditorComponent: RendererComponent<"form.rich-editor"> = ({ nod
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Highlight,
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
       Link.configure({ openOnClick: false }),
       TableKit.configure({ table: { resizable: false } }),
       Details,

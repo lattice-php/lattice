@@ -8,6 +8,9 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 use Tiptap\Editor;
 use Tiptap\Extensions\StarterKit;
+use Tiptap\Extensions\TextAlign;
+use Tiptap\Marks\Highlight;
+use Tiptap\Marks\Underline;
 use Tiptap\Nodes\Details;
 use Tiptap\Nodes\DetailsContent;
 use Tiptap\Nodes\DetailsSummary;
@@ -71,6 +74,9 @@ final class RichContent
     {
         return (new Editor(['extensions' => [
             new StarterKit,
+            new Underline,
+            new Highlight,
+            new TextAlign(['types' => ['heading', 'paragraph']]),
             new Table,
             new TableRow,
             new TableHeader,
@@ -99,7 +105,8 @@ final class RichContent
             ->allowElement('th', ['colspan', 'rowspan'])
             ->allowElement('td', ['colspan', 'rowspan'])
             ->allowElement('details', ['open'])
-            ->allowElement('summary');
+            ->allowElement('summary')
+            ->allowAttribute('style', ['p', 'h1', 'h2', 'h3']);
 
         return (new HtmlSanitizer($config))->sanitize($html);
     }

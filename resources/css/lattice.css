@@ -147,6 +147,18 @@
   text-decoration: line-through;
 }
 
+.lattice-prose :where(u) {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.lattice-prose :where(mark) {
+  background: var(--lt-warning, #fef08a);
+  color: inherit;
+  border-radius: var(--lt-radius-sm);
+  padding: 0.05em 0.15em;
+}
+
 .lattice-prose :where(a) {
   color: var(--lt-primary);
   text-decoration: underline;
