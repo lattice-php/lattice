@@ -14,7 +14,7 @@
     "docs:dev": "astro dev",
     "docs:build": "astro build",
     "docs:preview": "astro preview",
-    "docs:check": "astro check"
+    "docs:check": "astro check --tsconfig ./tsconfig.docs.json"
   },
   "dependencies": {
     "@inertiajs/react": "^3.0.0",
