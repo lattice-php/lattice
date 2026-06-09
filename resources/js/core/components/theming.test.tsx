@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice/core/types";
+import type { Node } from "@bambamboole/lattice/core/types";
 import CardComponent, { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
 import { TabsComponent } from "./tabs";
 

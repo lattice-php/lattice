@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createRegistry, eagerComponent, lazyComponent } from "@lattice";
-import { Renderer } from "@lattice";
+import { createRegistry, eagerComponent, lazyComponent } from "@bambamboole/lattice";
+import { Renderer } from "@bambamboole/lattice";
 import type { RendererComponent, RendererComponentModule } from "./types";
 
 const TestComponent: RendererComponent<"test.component"> = ({ children, node }) => (

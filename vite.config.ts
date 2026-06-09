@@ -25,7 +25,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@lattice": path.resolve(__dirname, "resources/js"),
+      "@bambamboole/lattice": path.resolve(__dirname, "resources/js"),
     },
   },
   test: {

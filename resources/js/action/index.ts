@@ -1,4 +1,4 @@
-import { createPlugin, eagerComponent } from "@lattice/core/registry";
+import { createPlugin, eagerComponent } from "@bambamboole/lattice/core/registry";
 import ActionComponent from "./components/action";
 import ActionGroupComponent from "./components/action-group";
 

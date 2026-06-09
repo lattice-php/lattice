@@ -17,8 +17,8 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { cn } from "@lattice/lib/utils";
-import type { IconRendererProps } from "@lattice";
+import { cn } from "@bambamboole/lattice/lib/utils";
+import type { IconRendererProps } from "@bambamboole/lattice";
 
 const bundledIcons = {
   "arrow-down": ArrowDown,

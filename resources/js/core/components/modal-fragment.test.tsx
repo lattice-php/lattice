@@ -1,8 +1,8 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice/core/registry";
-import { Renderer } from "@lattice/core/renderer";
-import type { RendererComponent } from "@lattice/core/types";
+import { createRegistry, eagerComponent } from "@bambamboole/lattice/core/registry";
+import { Renderer } from "@bambamboole/lattice/core/renderer";
+import type { RendererComponent } from "@bambamboole/lattice/core/types";
 import FragmentComponent from "./fragment";
 import ModalComponent from "./modal";
 import TextComponent from "./text";

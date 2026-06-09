@@ -1,11 +1,11 @@
 import { MoreHorizontal } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Button } from "@lattice/core/components/button";
-import { getStringProp } from "@lattice/core/props";
-import type { RendererComponent } from "@lattice/core/types";
+import { Button } from "@bambamboole/lattice/core/components/button";
+import { getStringProp } from "@bambamboole/lattice/core/props";
+import type { RendererComponent } from "@bambamboole/lattice/core/types";
 
-declare module "@lattice/core/types" {
+declare module "@bambamboole/lattice/core/types" {
   interface ComponentProps {
     "action.group": {
       label?: string;

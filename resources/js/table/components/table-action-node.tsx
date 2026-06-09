@@ -1,7 +1,7 @@
-import type { Node } from "@lattice/core/types";
-import ActionComponent from "@lattice/action/components/action";
-import ActionGroupComponent from "@lattice/action/components/action-group";
-import LinkComponent from "@lattice/core/components/link";
+import type { Node } from "@bambamboole/lattice/core/types";
+import ActionComponent from "@bambamboole/lattice/action/components/action";
+import ActionGroupComponent from "@bambamboole/lattice/action/components/action-group";
+import LinkComponent from "@bambamboole/lattice/core/components/link";
 
 export function TableActionNode({ node }: { node: Node }) {
   if (node.type === "action") {

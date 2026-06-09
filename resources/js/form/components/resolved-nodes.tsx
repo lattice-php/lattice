@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
-import { getStringProp } from "@lattice/core/props";
-import type { Node } from "@lattice/core/types";
+import { getStringProp } from "@bambamboole/lattice/core/props";
+import type { Node } from "@bambamboole/lattice/core/types";
 
 const ResolvedNodesContext = createContext<Record<string, Node>>({});
 

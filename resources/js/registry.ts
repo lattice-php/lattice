@@ -1,4 +1,4 @@
-import { createRegistry } from "@lattice/core/registry";
+import { createRegistry } from "@bambamboole/lattice/core/registry";
 import { actionComponents } from "./action";
 import { coreComponents } from "./core/components";
 import { formComponents } from "./form";

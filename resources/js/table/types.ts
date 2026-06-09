@@ -1,4 +1,4 @@
-import type { Node } from "@lattice/core/types";
+import type { Node } from "@bambamboole/lattice/core/types";
 
 export type TableColumn = {
   columns?: TableColumn[];
@@ -68,7 +68,7 @@ export type TableResponse = {
   state?: Partial<TableState>;
 };
 
-declare module "@lattice/core/types" {
+declare module "@bambamboole/lattice/core/types" {
   interface ComponentProps {
     table: {
       bulkActions?: Array<Record<string, unknown>>;

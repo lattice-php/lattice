@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { getBooleanProp } from "@lattice/core/props";
-import type { Node } from "@lattice/core/types";
+import { getBooleanProp } from "@bambamboole/lattice/core/props";
+import type { Node } from "@bambamboole/lattice/core/types";
 import { FORM_DEBOUNCE_MS, postFormAction } from "./form-transport";
 import { useFormValues, useSetFormValue } from "./values";
 

@@ -1,10 +1,14 @@
-import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/core/props";
-import type { RendererComponent } from "@lattice/core/types";
+import {
+  getBooleanProp,
+  getOptionalNumberProp,
+  getStringProp,
+} from "@bambamboole/lattice/core/props";
+import type { RendererComponent } from "@bambamboole/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { Input } from "../base/input";
 import { useControlledField } from "../use-controlled-field";
 
-declare module "@lattice/core/types" {
+declare module "@bambamboole/lattice/core/types" {
   interface ComponentProps {
     "form.date-input": {
       autoFocus?: boolean;

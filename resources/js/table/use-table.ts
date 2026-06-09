@@ -1,6 +1,6 @@
-import { withRefHeader } from "@lattice/core/component-ref";
-import type { Node } from "@lattice/core/types";
-import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice/events/event-names";
+import { withRefHeader } from "@bambamboole/lattice/core/component-ref";
+import type { Node } from "@bambamboole/lattice/core/types";
+import { LATTICE_EVENT, type ReloadComponentEvent } from "@bambamboole/lattice/events/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getColumns, getPagination, getRowMetadata, getRows, getState } from "./payload";
 import { buildEndpoint, nextSort } from "./query";

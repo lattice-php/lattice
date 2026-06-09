@@ -11,8 +11,8 @@
     "noEmit": true,
     "noImplicitAny": true,
     "paths": {
-      "@lattice": ["./resources/js/index.ts"],
-      "@lattice/*": ["./resources/js/*"]
+      "@bambamboole/lattice": ["./resources/js/index.ts"],
+      "@bambamboole/lattice/*": ["./resources/js/*"]
     },
     "skipLibCheck": true,
     "strict": true,

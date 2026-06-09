@@ -1,5 +1,5 @@
-import { Button } from "@lattice/core/components/button";
-import { Spinner } from "@lattice/core/components/spinner";
+import { Button } from "@bambamboole/lattice/core/components/button";
+import { Spinner } from "@bambamboole/lattice/core/components/spinner";
 import { useFormContext } from "../context";
 
 type SubmitButtonVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";

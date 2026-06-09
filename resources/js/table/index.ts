@@ -1,4 +1,4 @@
-import { createPlugin, lazyComponent } from "@lattice/core/registry";
+import { createPlugin, lazyComponent } from "@bambamboole/lattice/core/registry";
 
 export const tableComponents = createPlugin({
   components: {

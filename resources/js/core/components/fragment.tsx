@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
-import { withRefHeader } from "@lattice/core/component-ref";
-import { getStringProp } from "@lattice/core/props";
-import { Renderer, useRendererContext } from "@lattice/core/renderer";
-import type { Node, RendererComponent } from "@lattice/core/types";
-import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice/events/event-names";
+import { withRefHeader } from "@bambamboole/lattice/core/component-ref";
+import { getStringProp } from "@bambamboole/lattice/core/props";
+import { Renderer, useRendererContext } from "@bambamboole/lattice/core/renderer";
+import type { Node, RendererComponent } from "@bambamboole/lattice/core/types";
+import { LATTICE_EVENT, type ReloadComponentEvent } from "@bambamboole/lattice/events/event-names";
 
 type FragmentResponse = {
   components?: Node[];
 };
 
-declare module "@lattice/core/types" {
+declare module "@bambamboole/lattice/core/types" {
   interface ComponentProps {
     fragment: {
       endpoint?: string;

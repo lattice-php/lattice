@@ -1,6 +1,6 @@
-import InputError from "@lattice/form/components/base/input-error";
-import { TextLink } from "@lattice/core/components/link";
-import { Label } from "@lattice/form/components/base/label";
+import InputError from "@bambamboole/lattice/form/components/base/input-error";
+import { TextLink } from "@bambamboole/lattice/core/components/link";
+import { Label } from "@bambamboole/lattice/form/components/base/label";
 import type { FormLabelAction } from "../types";
 
 export function FormFieldFrame({

@@ -1,8 +1,8 @@
-import { getStringProp } from "@lattice/core/props";
-import type { RendererComponent } from "@lattice/core/types";
-import { cn } from "@lattice/lib/utils";
+import { getStringProp } from "@bambamboole/lattice/core/props";
+import type { RendererComponent } from "@bambamboole/lattice/core/types";
+import { cn } from "@bambamboole/lattice/lib/utils";
 
-declare module "@lattice/core/types" {
+declare module "@bambamboole/lattice/core/types" {
   interface ComponentProps {
     text: {
       align?: string;

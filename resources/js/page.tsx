@@ -1,8 +1,8 @@
 import { Head } from "@inertiajs/react";
-import { Renderer } from "@lattice/core/renderer";
-import { useRegistry } from "@lattice/provider";
-import type { PagePayload } from "@lattice";
-import { cn } from "@lattice/lib/utils";
+import { Renderer } from "@bambamboole/lattice/core/renderer";
+import { useRegistry } from "@bambamboole/lattice/provider";
+import type { PagePayload } from "@bambamboole/lattice";
+import { cn } from "@bambamboole/lattice/lib/utils";
 
 type Props = {
   lattice: PagePayload;

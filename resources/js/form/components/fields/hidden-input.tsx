@@ -1,7 +1,7 @@
-import { getStringProp } from "@lattice/core/props";
-import type { RendererComponent } from "@lattice/core/types";
+import { getStringProp } from "@bambamboole/lattice/core/props";
+import type { RendererComponent } from "@bambamboole/lattice/core/types";
 
-declare module "@lattice/core/types" {
+declare module "@bambamboole/lattice/core/types" {
   interface ComponentProps {
     "form.hidden-input": {
       name?: string;

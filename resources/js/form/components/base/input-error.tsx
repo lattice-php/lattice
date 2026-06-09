@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from "react";
-import { cn } from "@lattice/lib/utils";
+import { cn } from "@bambamboole/lattice/lib/utils";
 
 export default function InputError({
   message,
