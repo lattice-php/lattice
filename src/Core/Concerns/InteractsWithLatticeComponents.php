@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Concerns;
+namespace Bambamboole\Lattice\Core\Concerns;
 
 use Bambamboole\Lattice\Contracts\DefinitionRegistry;
 use Bambamboole\Lattice\Contracts\SignsComponentReferences;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Http\Controllers;
 
-use Bambamboole\Lattice\Concerns\InteractsWithLatticeComponents;
 use Bambamboole\Lattice\Contracts\SignsComponentReferences;
+use Bambamboole\Lattice\Core\Concerns\InteractsWithLatticeComponents;
 use Bambamboole\Lattice\Tables\InvalidTableQuery;
 use Bambamboole\Lattice\Tables\TableRegistry;
 use Illuminate\Http\JsonResponse;

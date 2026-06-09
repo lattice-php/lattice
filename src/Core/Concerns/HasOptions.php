@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Components\Concerns;
+namespace Bambamboole\Lattice\Core\Concerns;
 
 use BackedEnum;
 use Bambamboole\Lattice\Contracts\HasLabel;

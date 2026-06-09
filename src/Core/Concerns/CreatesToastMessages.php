@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Concerns;
+namespace Bambamboole\Lattice\Core\Concerns;
 
 use Bambamboole\Lattice\Enums\ToastType;
 use Bambamboole\Lattice\Toasts\ToastMessage;

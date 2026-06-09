@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Forms;
 
-use Bambamboole\Lattice\Concerns\CreatesToastMessages;
 use Bambamboole\Lattice\Contracts\ProvidesForm;
+use Bambamboole\Lattice\Core\Concerns\CreatesToastMessages;
 use Bambamboole\Lattice\Definition;
 use Bambamboole\Lattice\Forms\Components\Field;
 use Bambamboole\Lattice\Forms\Components\Form;
