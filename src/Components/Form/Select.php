@@ -2,6 +2,7 @@
 
 namespace Bambamboole\Lattice\Components\Form;
 
+use Bambamboole\Lattice\Components\Form\Concerns\HasOptions;
 use Bambamboole\Lattice\Forms\FormData;
 use Closure;
 use Illuminate\Http\Request;
@@ -9,28 +10,11 @@ use Illuminate\Support\Collection;
 
 class Select extends Field
 {
+    use HasOptions;
+
     private ?Closure $searchResolver = null;
 
     private ?Closure $selectedResolver = null;
-
-    /**
-     * @return array{label: string, value: string}
-     */
-    public static function option(string $label, string $value): array
-    {
-        return [
-            'label' => $label,
-            'value' => $value,
-        ];
-    }
-
-    /**
-     * @param  array<int, array{label: string, value: string}>  $options
-     */
-    public function options(array $options): static
-    {
-        return $this->prop('options', $options);
-    }
 
     public function multiple(bool $multiple = true): static
     {

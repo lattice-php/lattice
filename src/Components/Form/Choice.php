@@ -2,30 +2,15 @@
 
 namespace Bambamboole\Lattice\Components\Form;
 
+use Bambamboole\Lattice\Components\Form\Concerns\HasOptions;
+
 class Choice extends Field
 {
-    /**
-     * @return array{label: string, value: string}
-     */
-    public static function option(string $label, string $value): array
-    {
-        return [
-            'label' => $label,
-            'value' => $value,
-        ];
-    }
+    use HasOptions;
 
     public function event(string $event): static
     {
         return $this->prop('event', $event);
-    }
-
-    /**
-     * @param  array<int, array{label: string, value: string}>  $options
-     */
-    public function options(array $options): static
-    {
-        return $this->prop('options', $options);
     }
 
     protected function type(): string
