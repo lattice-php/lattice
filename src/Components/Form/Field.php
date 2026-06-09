@@ -286,6 +286,12 @@ abstract class Field extends Component
     }
 
     /**
+     * React to the form's filled value for this field during serialization. Override
+     * per field (e.g. a Select resolving labels for stored ids). Defaults to a no-op.
+     */
+    public function prefill(mixed $value): void {}
+
+    /**
      * @param  array<int, Condition>  $conditions
      */
     private function anyMatch(array $conditions, FormData $data): bool

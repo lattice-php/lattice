@@ -11,6 +11,8 @@ class Select extends Field
 {
     private ?Closure $searchResolver = null;
 
+    private ?Closure $selectedResolver = null;
+
     /**
      * @return array{label: string, value: string}
      */
@@ -60,6 +62,20 @@ class Select extends Field
     }
 
     /**
+     * Resolve the currently selected value(s) to options for display on edit forms.
+     * The resolver always receives an array of values (one entry for a single select),
+     * so a `whereIn` query works for both single and multiple selects.
+     *
+     * @param  Closure(array<int, string>): (array<int, array{label: string, value: string|int}>|Collection<int, array{label: string, value: string|int}>)  $resolver
+     */
+    public function resolveSelectedUsing(Closure $resolver): static
+    {
+        $this->selectedResolver = $resolver;
+
+        return $this;
+    }
+
+    /**
      * @return array<int, array{label: string, value: string}>
      */
     public function resolveSearch(string $query, FormData $data, Request $request): array
@@ -68,8 +84,45 @@ class Select extends Field
             return [];
         }
 
-        $options = ($this->searchResolver)($query, $data, $request);
+        return $this->normalizeOptions(($this->searchResolver)($query, $data, $request));
+    }
 
+    public function prefill(mixed $value): void
+    {
+        if ($this->selectedResolver === null) {
+            return;
+        }
+
+        $values = array_values(array_filter(
+            array_map(static fn (mixed $item): string => (string) $item, is_array($value) ? $value : [$value]),
+            static fn (string $item): bool => $item !== '',
+        ));
+
+        if ($values === []) {
+            return;
+        }
+
+        $resolved = $this->normalizeOptions(($this->selectedResolver)($values));
+        $existing = is_array($this->props['options'] ?? null) ? $this->props['options'] : [];
+
+        $merged = [...$existing];
+        $seen = array_column($existing, 'value');
+
+        foreach ($resolved as $option) {
+            if (! in_array($option['value'], $seen, true)) {
+                $merged[] = $option;
+            }
+        }
+
+        $this->prop('options', $merged);
+    }
+
+    /**
+     * @param  array<int, array{label: string, value: string|int}>|Collection<int, array{label: string, value: string|int}>  $options
+     * @return array<int, array{label: string, value: string}>
+     */
+    private function normalizeOptions(array|Collection $options): array
+    {
         if ($options instanceof Collection) {
             $options = $options->all();
         }

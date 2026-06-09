@@ -123,6 +123,11 @@ class ShowcaseForm extends FormDefinition
                             ->get()
                             ->map(fn (Product $product) => Select::option($product->name, (string) $product->id))
                             ->all())
+                        ->resolveSelectedUsing(fn (array $values) => Product::query()
+                            ->whereIn('id', $values)
+                            ->get()
+                            ->map(fn (Product $product) => Select::option($product->name, (string) $product->id))
+                            ->all())
                         ->rules(['nullable', 'array']),
                 ]),
 

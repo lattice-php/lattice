@@ -3,6 +3,7 @@
 namespace Bambamboole\Lattice\Components\Form;
 
 use BackedEnum;
+use Bambamboole\Lattice\Attributes\SerializationHook;
 use Bambamboole\Lattice\Components\Core\Component;
 use Bambamboole\Lattice\Components\Core\ContainerComponent;
 use Bambamboole\Lattice\Components\Core\IsInteractive;
@@ -109,6 +110,31 @@ class Form extends ContainerComponent
         }
 
         return $this->prop('status', $status);
+    }
+
+    /**
+     * Distribute the filled state to fields before children are serialized, so a
+     * field can react to its stored value (e.g. a Select resolving labels for ids).
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 250)]
+    protected function prefillFields(array $data): array
+    {
+        $state = $this->props['state'] ?? null;
+
+        if (! is_array($state)) {
+            return $data;
+        }
+
+        foreach ($this->descendants() as $component) {
+            if ($component instanceof Field && array_key_exists($component->name(), $state)) {
+                $component->prefill($state[$component->name()]);
+            }
+        }
+
+        return $data;
     }
 
     protected function type(): string
