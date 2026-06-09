@@ -10,7 +10,7 @@ use Bambamboole\Lattice\Actions\BulkActionRegistry;
 use Bambamboole\Lattice\Core\Contracts\DiscoversDefinitions;
 use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
 use Bambamboole\Lattice\Core\Services\ComponentReferenceSigner;
-use Bambamboole\Lattice\Discovery\DefinitionDiscovery;
+use Bambamboole\Lattice\Core\Services\DefinitionDiscovery;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Bambamboole\Lattice\Fragments\FragmentRegistry;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Discovery;
+namespace Bambamboole\Lattice\Core\Services;
 
 use Bambamboole\Lattice\Core\Contracts\DiscoversDefinitions;
 use Bambamboole\Lattice\Core\DefinitionRegistry;
