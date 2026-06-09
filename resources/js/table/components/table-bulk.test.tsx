@@ -26,7 +26,6 @@ const node = {
       { id: 1, name: "Lamp" },
       { id: 2, name: "Shelf" },
     ],
-    rows: [{ key: "1" }, { key: "2" }],
     endpoint: "/lattice/tables/workbench.products",
     bulkActions: [
       {

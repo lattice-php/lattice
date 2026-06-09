@@ -136,12 +136,6 @@ describe("Lattice table component", () => {
             name: "Taylor",
             email: "taylor@example.com",
             status: "Active",
-          },
-        ],
-        layout: "grid",
-        rows: [
-          {
-            key: "2",
             actions: [
               {
                 children: [
@@ -172,6 +166,7 @@ describe("Lattice table component", () => {
             ],
           },
         ],
+        layout: "grid",
         state: {
           filters: [],
           page: 1,
@@ -337,7 +332,6 @@ describe("Lattice table component", () => {
         pagination: {
           mode: "none",
         },
-        rows: [],
         state: {
           filters: [],
           page: 1,
@@ -363,7 +357,6 @@ describe("Lattice table component", () => {
         pagination: {
           mode: "none",
         },
-        rows: [],
         state: {
           filters: [],
           page: 1,

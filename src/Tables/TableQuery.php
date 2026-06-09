@@ -21,12 +21,9 @@ final readonly class TableQuery
         private int $perPage,
     ) {}
 
-    /**
-     * @param  array<int, Column>  $columns
-     */
-    public static function empty(array $columns, string $table, int $defaultPerPage = 25): self
+    public static function empty(int $defaultPerPage = 25): self
     {
-        return self::fromRequest(Request::create('/'), $columns, $table, $defaultPerPage);
+        return new self([], [], 1, max(1, min(100, $defaultPerPage)));
     }
 
     /**
