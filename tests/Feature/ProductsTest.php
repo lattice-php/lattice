@@ -18,7 +18,7 @@ use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
-use Workbench\App\Seeders\WorkbenchProductSeeder;
+use Workbench\App\Seeders\ProductSeeder;
 use Workbench\App\Tables\ProductsTable;
 
 use function Pest\Laravel\get;
@@ -312,8 +312,8 @@ test('the product form validates edit uniqueness from sealed context during prec
 });
 
 test('the product seeder creates sample product data idempotently', function () {
-    app(WorkbenchProductSeeder::class)->run();
-    app(WorkbenchProductSeeder::class)->run();
+    app(ProductSeeder::class)->run();
+    app(ProductSeeder::class)->run();
 
     expect(Product::query()->count())->toBe(100)
         ->and(Product::query()->where('sku', 'workbench-product-001')->exists())->toBeTrue()

@@ -16,7 +16,7 @@ use Bambamboole\Lattice\Http\Page;
 use Bambamboole\Lattice\Tables\Components\Table;
 use Workbench\App\Tables\UsersTable;
 
-final class WorkbenchHomePage extends Page
+final class HomePage extends Page
 {
     public function title(): string
     {

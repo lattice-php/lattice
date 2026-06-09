@@ -8,7 +8,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Seeder;
 use Workbench\App\Models\Product;
 
-class WorkbenchProductSeeder extends Seeder
+class ProductSeeder extends Seeder
 {
     public function run(): void
     {

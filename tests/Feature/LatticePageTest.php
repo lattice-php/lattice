@@ -71,9 +71,9 @@ use Inertia\Support\SessionKey;
 use Inertia\Testing\AssertableInertia;
 use Orchestra\Testbench\Factories\UserFactory;
 use Symfony\Component\HttpFoundation\Response;
-use Workbench\App\Pages\WorkbenchHomePage;
-use Workbench\App\Pages\WorkbenchTablesPage;
-use Workbench\App\Seeders\WorkbenchUserSeeder;
+use Workbench\App\Pages\HomePage;
+use Workbench\App\Pages\TablesPage;
+use Workbench\App\Seeders\UserSeeder;
 use Workbench\App\Tables\UsersTable as WorkbenchAppUsersTable;
 
 use function Pest\Laravel\get;
@@ -1389,11 +1389,11 @@ test('confirmed active tabs serialize their children after password confirmation
 });
 
 test('the workbench home route uses a workbench-owned page directly', function () {
-    expect(Route::getRoutes()->getByName('home')?->getActionName())->toBe(WorkbenchHomePage::class.'@render');
+    expect(Route::getRoutes()->getByName('home')?->getActionName())->toBe(HomePage::class.'@render');
 });
 
 test('the workbench tables route uses lazy pagination tab tables', function () {
-    expect(Route::getRoutes()->getByName('tables')?->getActionName())->toBe(WorkbenchTablesPage::class.'@render');
+    expect(Route::getRoutes()->getByName('tables')?->getActionName())->toBe(TablesPage::class.'@render');
 });
 
 test('pages use laravel controller resolution for constructor dependencies render dependencies and route arguments', function () {
@@ -1619,8 +1619,8 @@ test('workbench tables page serializes lazy tables for each pagination type', fu
 });
 
 test('workbench user seeder creates sample table data idempotently', function () {
-    app(WorkbenchUserSeeder::class)->run();
-    app(WorkbenchUserSeeder::class)->run();
+    app(UserSeeder::class)->run();
+    app(UserSeeder::class)->run();
 
     expect(User::query()->count())->toBe(1000)
         ->and(User::query()->where('email', 'ada@example.com')->value('name'))->toBe('Ada Lovelace')

@@ -13,7 +13,7 @@ use Bambamboole\Lattice\Http\Page;
 use Bambamboole\Lattice\Tables\Components\Table;
 use Workbench\App\Tables\ProductsTable;
 
-class WorkbenchProductsPage extends Page
+class ProductsPage extends Page
 {
     public function title(): string
     {

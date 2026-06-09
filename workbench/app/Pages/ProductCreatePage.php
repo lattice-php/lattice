@@ -11,24 +11,25 @@ use Bambamboole\Lattice\Core\Enums\HttpMethod;
 use Bambamboole\Lattice\Core\PageSchema;
 use Bambamboole\Lattice\Forms\Components\Form;
 use Bambamboole\Lattice\Http\Page;
-use Workbench\App\Forms\ShowcaseForm;
+use Workbench\App\Forms\ProductForm;
 
-class WorkbenchShowcasePage extends Page
+class ProductCreatePage extends Page
 {
     public function title(): string
     {
-        return 'Form Showcase';
+        return 'Create Product';
     }
 
     public function render(PageSchema $schema): PageSchema
     {
         return $schema->components([
-            Stack::make('showcase-page')
+            Stack::make('product-create-page')
                 ->gap(Gap::Large)
                 ->children([
-                    Heading::make('Form Showcase'),
-                    Form::use(ShowcaseForm::class)
-                        ->method(HttpMethod::Post),
+                    Heading::make('Create Product'),
+                    Form::use(ProductForm::class)
+                        ->method(HttpMethod::Post)
+                        ->submitLabel('Create product'),
                 ]),
         ]);
     }

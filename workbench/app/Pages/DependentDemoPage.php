@@ -13,7 +13,7 @@ use Bambamboole\Lattice\Forms\Components\Form;
 use Bambamboole\Lattice\Http\Page;
 use Workbench\App\Forms\DependentDemoForm;
 
-class WorkbenchDependentDemoPage extends Page
+class DependentDemoPage extends Page
 {
     public function title(): string
     {

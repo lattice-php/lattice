@@ -19,7 +19,7 @@ use Workbench\App\Tables\UsersNoneTable;
 use Workbench\App\Tables\UsersSimpleTable;
 use Workbench\App\Tables\UsersTablePaginationTable;
 
-final class WorkbenchTablesPage extends Page
+final class TablesPage extends Page
 {
     public function title(): string
     {

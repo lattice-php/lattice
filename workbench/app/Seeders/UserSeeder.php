@@ -9,7 +9,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Hash;
 
-class WorkbenchUserSeeder extends Seeder
+class UserSeeder extends Seeder
 {
     public function run(): void
     {

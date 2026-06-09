@@ -14,7 +14,7 @@ use Bambamboole\Lattice\Http\Page;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 
-class WorkbenchProductEditPage extends Page
+class ProductEditPage extends Page
 {
     public function title(): string
     {
