@@ -17,10 +17,19 @@ arch('actions do not depend on forms or tables')
         'Bambamboole\Lattice\Tables',
     ]);
 
+arch('fragments do not depend on forms, tables or actions')
+    ->expect('Bambamboole\Lattice\Fragments')
+    ->not->toUse([
+        'Bambamboole\Lattice\Forms',
+        'Bambamboole\Lattice\Tables',
+        'Bambamboole\Lattice\Actions',
+    ]);
+
 arch('core does not depend on the feature domains')
     ->expect('Bambamboole\Lattice\Core')
     ->not->toUse([
         'Bambamboole\Lattice\Actions',
         'Bambamboole\Lattice\Forms',
         'Bambamboole\Lattice\Tables',
+        'Bambamboole\Lattice\Fragments',
     ]);

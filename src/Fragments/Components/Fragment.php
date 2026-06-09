@@ -1,7 +1,9 @@
 <?php
 
-namespace Bambamboole\Lattice\Core\Components;
+namespace Bambamboole\Lattice\Fragments\Components;
 
+use Bambamboole\Lattice\Core\Components\ContainerComponent;
+use Bambamboole\Lattice\Core\Components\IsInteractive;
 use Bambamboole\Lattice\Fragments\FragmentDefinition;
 use Bambamboole\Lattice\Fragments\FragmentRegistry;
 
