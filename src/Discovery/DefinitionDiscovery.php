@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Discovery;
 
 use Bambamboole\Lattice\Actions\ActionDefinition;
+use Bambamboole\Lattice\Actions\BulkActionDefinition;
 use Bambamboole\Lattice\Attributes\Action;
+use Bambamboole\Lattice\Attributes\BulkAction;
 use Bambamboole\Lattice\Attributes\Form;
 use Bambamboole\Lattice\Attributes\Fragment;
 use Bambamboole\Lattice\Attributes\Table;
@@ -22,7 +24,7 @@ use SplFileInfo;
 final class DefinitionDiscovery implements DiscoversDefinitions
 {
     /**
-     * @return array{forms: array<int, class-string<FormDefinition>>, tables: array<int, class-string<TableDefinition>>, actions: array<int, class-string<ActionDefinition>>, fragments: array<int, class-string<FragmentDefinition>>}
+     * @return array{forms: array<int, class-string<FormDefinition>>, tables: array<int, class-string<TableDefinition>>, actions: array<int, class-string<ActionDefinition>>, fragments: array<int, class-string<FragmentDefinition>>, bulkActions: array<int, class-string<BulkActionDefinition>>}
      */
     public function discover(string $path, string $namespace): array
     {
@@ -34,6 +36,7 @@ final class DefinitionDiscovery implements DiscoversDefinitions
                 'tables' => [],
                 'actions' => [],
                 'fragments' => [],
+                'bulkActions' => [],
             ];
         }
 
@@ -42,6 +45,7 @@ final class DefinitionDiscovery implements DiscoversDefinitions
             'tables' => [],
             'actions' => [],
             'fragments' => [],
+            'bulkActions' => [],
         ];
 
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($basePath));
@@ -77,6 +81,10 @@ final class DefinitionDiscovery implements DiscoversDefinitions
 
             if ($this->hasDefinitionAttribute($class, Fragment::class) && is_subclass_of($class, FragmentDefinition::class)) {
                 $definitions['fragments'][] = $class;
+            }
+
+            if ($this->hasDefinitionAttribute($class, BulkAction::class) && is_subclass_of($class, BulkActionDefinition::class)) {
+                $definitions['bulkActions'][] = $class;
             }
         }
 

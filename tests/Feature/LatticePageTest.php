@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionResult;
+use Bambamboole\Lattice\Actions\BulkActionRegistry;
 use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Actions\Components\ActionGroup;
 use Bambamboole\Lattice\Actions\Effect;
@@ -30,11 +31,11 @@ use Bambamboole\Lattice\Core\Enums\Align;
 use Bambamboole\Lattice\Core\Enums\Gap;
 use Bambamboole\Lattice\Core\Enums\HttpMethod;
 use Bambamboole\Lattice\Core\Enums\LucideIcon;
+use Bambamboole\Lattice\Core\Enums\ToastType;
 use Bambamboole\Lattice\Core\Enums\Width;
 use Bambamboole\Lattice\Core\PageSchema;
 use Bambamboole\Lattice\Core\Services\ComponentReferenceSigner;
-use Bambamboole\Lattice\Core\Toasts\Enums\ToastType;
-use Bambamboole\Lattice\Core\Toasts\ToastMessage;
+use Bambamboole\Lattice\Core\Values\ToastMessage;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\Components\Choice;
 use Bambamboole\Lattice\Forms\Components\Form;
@@ -54,6 +55,7 @@ use Bambamboole\Lattice\Tables\Enums\PaginationType;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableQuery;
 use Bambamboole\Lattice\Tables\TableResult;
+use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredArchiveBulkAction;
 use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredPanelFragment;
 use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredPingAction;
 use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
@@ -185,6 +187,13 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'ref' => componentRef($fragment),
             ],
         ]);
+});
+
+test('lattice discovers attributed bulk action definitions', function () {
+    Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Bambamboole\\Lattice\\Tests\\Fixtures\\Discovery');
+
+    expect(app(BulkActionRegistry::class)->resolve('fixtures.archive'))
+        ->toBeInstanceOf(DiscoveredArchiveBulkAction::class);
 });
 
 test('interactive components keep their serialized ids', function () {

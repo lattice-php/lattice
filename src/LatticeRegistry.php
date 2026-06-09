@@ -98,6 +98,10 @@ final class LatticeRegistry
         if ($definitions['fragments'] !== []) {
             $this->fragments($definitions['fragments']);
         }
+
+        if ($definitions['bulkActions'] !== []) {
+            $this->bulkActions($definitions['bulkActions']);
+        }
     }
 
     /**
