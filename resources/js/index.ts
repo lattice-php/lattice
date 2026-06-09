@@ -1,5 +1,10 @@
 export { registry } from "./registry";
-export { dispatchActionEffects, dispatchActionError, isActionEffect } from "./action/effects";
+export {
+  dispatchActionEffects,
+  dispatchActionError,
+  getActionEffects,
+  isActionEffect,
+} from "./action/effects";
 export { initializeTheme, useAppearance } from "./appearance";
 export { copyToClipboard, useClipboard } from "./clipboard";
 export { EventBridge } from "./events/event-bridge";
@@ -15,6 +20,7 @@ export {
   lazyComponent,
 } from "./core/registry";
 export { Renderer } from "./core/renderer";
+export type { ButtonVariant } from "./core/components/button";
 export type {
   ComponentProps,
   ComponentType,
