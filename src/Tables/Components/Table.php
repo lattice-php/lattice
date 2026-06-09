@@ -2,8 +2,8 @@
 
 namespace Bambamboole\Lattice\Tables\Components;
 
-use Bambamboole\Lattice\Components\Core\Component;
-use Bambamboole\Lattice\Components\Core\IsInteractive;
+use Bambamboole\Lattice\Core\Components\Component;
+use Bambamboole\Lattice\Core\Components\IsInteractive;
 use Bambamboole\Lattice\Tables\Columns\Column;
 use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableQuery;

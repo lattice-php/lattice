@@ -4,9 +4,9 @@ namespace Bambamboole\Lattice\Forms\Components;
 
 use BackedEnum;
 use Bambamboole\Lattice\Attributes\SerializationHook;
-use Bambamboole\Lattice\Components\Core\Component;
-use Bambamboole\Lattice\Components\Core\ContainerComponent;
-use Bambamboole\Lattice\Components\Core\IsInteractive;
+use Bambamboole\Lattice\Core\Components\Component;
+use Bambamboole\Lattice\Core\Components\ContainerComponent;
+use Bambamboole\Lattice\Core\Components\IsInteractive;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
 use Illuminate\Contracts\Support\Arrayable;

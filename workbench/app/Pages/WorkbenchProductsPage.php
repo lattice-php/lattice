@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
-use Bambamboole\Lattice\Components\Core\Button;
-use Bambamboole\Lattice\Components\Core\Heading;
-use Bambamboole\Lattice\Components\Core\Stack;
+use Bambamboole\Lattice\Core\Components\Button;
+use Bambamboole\Lattice\Core\Components\Heading;
+use Bambamboole\Lattice\Core\Components\Stack;
 use Bambamboole\Lattice\Enums\Gap;
 use Bambamboole\Lattice\Page;
 use Bambamboole\Lattice\PageSchema;

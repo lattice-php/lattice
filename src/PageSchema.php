@@ -2,7 +2,7 @@
 
 namespace Bambamboole\Lattice;
 
-use Bambamboole\Lattice\Components\Core\Component;
+use Bambamboole\Lattice\Core\Components\Component;
 
 final class PageSchema
 {

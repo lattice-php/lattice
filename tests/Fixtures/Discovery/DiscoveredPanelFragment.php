@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Tests\Fixtures\Discovery;
 
 use Bambamboole\Lattice\Attributes\Fragment;
-use Bambamboole\Lattice\Components\Core\Text;
+use Bambamboole\Lattice\Core\Components\Text;
 use Bambamboole\Lattice\Fragments\FragmentDefinition;
 use Bambamboole\Lattice\PageSchema;
 

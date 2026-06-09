@@ -3,7 +3,7 @@
 namespace Bambamboole\Lattice\Forms\Components;
 
 use Bambamboole\Lattice\Attributes\SerializationHook;
-use Bambamboole\Lattice\Components\Core\Component;
+use Bambamboole\Lattice\Core\Components\Component;
 use Bambamboole\Lattice\Forms\Conditions\Condition;
 use Bambamboole\Lattice\Forms\Conditions\ConditionSet;
 use Bambamboole\Lattice\Forms\Conditions\Op;

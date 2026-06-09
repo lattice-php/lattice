@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Workbench\App\Tables;
 
 use Bambamboole\Lattice\Attributes\Table;
-use Bambamboole\Lattice\Components\Core\Action;
-use Bambamboole\Lattice\Components\Core\BulkAction;
-use Bambamboole\Lattice\Components\Core\Component;
-use Bambamboole\Lattice\Components\Core\Link;
+use Bambamboole\Lattice\Core\Components\Action;
+use Bambamboole\Lattice\Core\Components\BulkAction;
+use Bambamboole\Lattice\Core\Components\Component;
+use Bambamboole\Lattice\Core\Components\Link;
 use Bambamboole\Lattice\Tables\Columns\TextColumn;
 use Bambamboole\Lattice\Tables\EloquentTableDefinition;
 use Bambamboole\Lattice\Tables\TableQuery;

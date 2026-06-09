@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Components\Core;
+namespace Bambamboole\Lattice\Core\Components;
 
 use Bambamboole\Lattice\Fragments\FragmentDefinition;
 use Bambamboole\Lattice\Fragments\FragmentRegistry;

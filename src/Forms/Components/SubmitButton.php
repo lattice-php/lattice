@@ -2,7 +2,7 @@
 
 namespace Bambamboole\Lattice\Forms\Components;
 
-use Bambamboole\Lattice\Components\Core\Component;
+use Bambamboole\Lattice\Core\Components\Component;
 
 class SubmitButton extends Component
 {

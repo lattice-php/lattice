@@ -7,7 +7,7 @@ namespace Workbench\App\Actions;
 use Bambamboole\Lattice\Actions\ActionResult;
 use Bambamboole\Lattice\Actions\BulkActionDefinition;
 use Bambamboole\Lattice\Attributes\BulkAction;
-use Bambamboole\Lattice\Components\Core\Action;
+use Bambamboole\Lattice\Core\Components\Action;
 use Bambamboole\Lattice\Enums\HttpMethod;
 use Bambamboole\Lattice\Enums\ToastType;
 use Illuminate\Http\Request;

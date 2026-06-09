@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Tables;
 
-use Bambamboole\Lattice\Components\Core\Action;
-use Bambamboole\Lattice\Components\Core\Component;
 use Bambamboole\Lattice\Contracts\ProvidesTable;
+use Bambamboole\Lattice\Core\Components\Action;
+use Bambamboole\Lattice\Core\Components\Component;
 use Bambamboole\Lattice\Definition;
 use Bambamboole\Lattice\Tables\Columns\Column;
 use Illuminate\Support\Collection;

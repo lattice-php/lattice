@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Components\Core\Stack;
+use Bambamboole\Lattice\Core\Components\Stack;
 use Bambamboole\Lattice\Forms\Components\Choice;
 use Bambamboole\Lattice\Forms\Components\Form;
 use Bambamboole\Lattice\Forms\Components\TextInput;

@@ -6,7 +6,7 @@ namespace Bambamboole\Lattice\Fragments;
 
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
 use Bambamboole\Lattice\Attributes\Fragment;
-use Bambamboole\Lattice\Components\Core\Fragment as FragmentComponent;
+use Bambamboole\Lattice\Core\Components\Fragment as FragmentComponent;
 use Bambamboole\Lattice\DefinitionRegistry;
 use Bambamboole\Lattice\PageSchema;
 

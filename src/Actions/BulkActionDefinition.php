@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Actions;
 
-use Bambamboole\Lattice\Components\Core\Action;
 use Bambamboole\Lattice\Contracts\ProvidesBulkAction;
+use Bambamboole\Lattice\Core\Components\Action;
 use Bambamboole\Lattice\Definition;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;

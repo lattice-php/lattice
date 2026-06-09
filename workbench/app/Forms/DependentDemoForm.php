@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Workbench\App\Forms;
 
 use Bambamboole\Lattice\Attributes\Form;
-use Bambamboole\Lattice\Components\Core\Card;
-use Bambamboole\Lattice\Components\Core\Grid;
+use Bambamboole\Lattice\Core\Components\Card;
+use Bambamboole\Lattice\Core\Components\Grid;
 use Bambamboole\Lattice\Forms\Components\Choice;
 use Bambamboole\Lattice\Forms\Components\DateInput;
 use Bambamboole\Lattice\Forms\Components\Form as FormComponent;

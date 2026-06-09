@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
-use Bambamboole\Lattice\Components\Core\Heading;
-use Bambamboole\Lattice\Components\Core\Stack;
+use Bambamboole\Lattice\Core\Components\Heading;
+use Bambamboole\Lattice\Core\Components\Stack;
 use Bambamboole\Lattice\Enums\Gap;
 use Bambamboole\Lattice\Enums\HttpMethod;
 use Bambamboole\Lattice\Forms\Components\Form;

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Components\Core\Action;
-use Bambamboole\Lattice\Components\Core\BulkAction;
+use Bambamboole\Lattice\Core\Components\Action;
+use Bambamboole\Lattice\Core\Components\BulkAction;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Forms\Components\Form;
 use Bambamboole\Lattice\Forms\Components\TextInput;
