@@ -1,4 +1,4 @@
-import type { RendererComponent } from "@bambamboole/lattice/core/types";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 
 export const FormSkeletonComponent: RendererComponent<"form"> = ({ node }) => {
   const fieldCount = Math.max(

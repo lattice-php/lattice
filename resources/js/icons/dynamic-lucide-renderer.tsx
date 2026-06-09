@@ -1,6 +1,6 @@
 import { DynamicIcon, iconNames } from "lucide-react/dynamic";
-import { cn } from "@bambamboole/lattice/lib/utils";
-import type { IconRendererProps } from "@bambamboole/lattice";
+import { cn } from "@lattice/lattice/lib/utils";
+import type { IconRendererProps } from "@lattice/lattice";
 
 type LucideIconName = (typeof iconNames)[number];
 

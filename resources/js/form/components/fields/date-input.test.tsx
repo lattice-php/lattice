@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@bambamboole/lattice/core/types";
+import type { Node } from "@lattice/lattice/core/types";
 import { FormValuesProvider } from "../values";
 import { DateInputComponent } from "./date-input";
 

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { Node } from "@bambamboole/lattice/core/types";
+import type { Node } from "@lattice/lattice/core/types";
 import TableComponent from "./table";
 
 describe("Lattice table component", () => {

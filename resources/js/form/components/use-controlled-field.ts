@@ -1,5 +1,5 @@
-import { getStringProp } from "@bambamboole/lattice/core/props";
-import type { Node } from "@bambamboole/lattice/core/types";
+import { getStringProp } from "@lattice/lattice/core/props";
+import type { Node } from "@lattice/lattice/core/types";
 import type { FieldState } from "./conditions";
 import { useFormContext } from "./context";
 import { useDependentField } from "./use-dependent-field";

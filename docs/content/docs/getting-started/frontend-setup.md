@@ -3,7 +3,7 @@ title: Frontend Setup
 description: Wire the Lattice React renderer into your Inertia entrypoint.
 ---
 
-Lattice serializes pages to typed component trees on the server. The browser needs the Lattice React renderer to turn those trees into rendered UI. The renderer ships as TypeScript source inside the Composer package (`vendor/bambamboole/lattice/resources/js`), and your own Vite build compiles it. This page wires it in once.
+Lattice serializes pages to typed component trees on the server. The browser needs the Lattice React renderer to turn those trees into rendered UI. The renderer ships as TypeScript source inside the Composer package (`vendor/lattice/lattice/resources/js`), and your own Vite build compiles it. This page wires it in once.
 
 There are four steps: install the JavaScript dependencies, alias the package, import the stylesheet, and register the page component.
 
@@ -32,7 +32,7 @@ Lattice targets React 19, Inertia v3, Tailwind 4, and Tiptap 3. If you already s
 
 ## Alias the package
 
-Point `@bambamboole/lattice` at the renderer source in your Vite config. Keep your existing plugins; only the `resolve.alias` block is new:
+Point `@lattice/lattice` at the renderer source in your Vite config. Keep your existing plugins; only the `resolve.alias` block is new:
 
 ```ts
 // vite.config.ts
@@ -50,9 +50,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@bambamboole/lattice": path.resolve(
+      "@lattice/lattice": path.resolve(
         __dirname,
-        "vendor/bambamboole/lattice/resources/js",
+        "vendor/lattice/lattice/resources/js",
       ),
     },
   },
@@ -65,8 +65,8 @@ Mirror the alias in `tsconfig.json` so your editor and `tsc` resolve the same im
 {
   "compilerOptions": {
     "paths": {
-      "@bambamboole/lattice": ["./vendor/bambamboole/lattice/resources/js/index.ts"],
-      "@bambamboole/lattice/*": ["./vendor/bambamboole/lattice/resources/js/*"]
+      "@lattice/lattice": ["./vendor/lattice/lattice/resources/js/index.ts"],
+      "@lattice/lattice/*": ["./vendor/lattice/lattice/resources/js/*"]
     }
   }
 }
@@ -80,7 +80,7 @@ Import Lattice's stylesheet from your main CSS entry, after Tailwind. It defines
 /* resources/css/app.css */
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "../../vendor/bambamboole/lattice/resources/css/lattice.css";
+@import "../../vendor/lattice/lattice/resources/css/lattice.css";
 ```
 
 The component tokens (`--lt-*`) fall back to sensible defaults, so the UI is styled out of the box. They also read from shadcn-style variables (`--background`, `--primary`, …) when you define them, which lets Lattice inherit an existing theme.
@@ -94,7 +94,7 @@ Every Lattice route resolves to the same Inertia page component, `lattice/page`,
 import "../css/app.css";
 import { createInertiaApp } from "@inertiajs/react";
 import { createRoot } from "react-dom/client";
-import LatticePage from "@bambamboole/lattice/page";
+import LatticePage from "@lattice/lattice/page";
 
 createInertiaApp({
   resolve: (name) => {
@@ -120,7 +120,7 @@ That single `resolve` branch is all an application needs for every page Lattice 
 The renderer resolves component types from a registry. Lattice exports the pieces you need to extend or replace it:
 
 ```ts
-import { Provider, Renderer, registry, createRegistry, extendRegistry } from "@bambamboole/lattice";
+import { Provider, Renderer, registry, createRegistry, extendRegistry } from "@lattice/lattice";
 ```
 
 Wrap your tree in `Provider` with a custom registry to register your own component types, or use `extendRegistry` to add to the defaults. Building custom components is covered in the Advanced section.

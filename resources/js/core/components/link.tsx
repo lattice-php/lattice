@@ -1,11 +1,11 @@
 import type { Method } from "@inertiajs/core";
 import { Link } from "@inertiajs/react";
 import type { ComponentProps } from "react";
-import { cn } from "@bambamboole/lattice/lib/utils";
-import { getOptionalNumberProp, getStringProp } from "@bambamboole/lattice/core/props";
-import type { RendererComponent } from "@bambamboole/lattice/core/types";
+import { cn } from "@lattice/lattice/lib/utils";
+import { getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 
-declare module "@bambamboole/lattice/core/types" {
+declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
     link: {
       href?: string;

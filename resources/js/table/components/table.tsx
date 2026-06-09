@@ -1,4 +1,4 @@
-import type { RendererComponent } from "@bambamboole/lattice/core/types";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 import { getBulkActions } from "../bulk";
 import { getRowKey, getRowMeta } from "../payload";
 import { getColumnGridTemplate, getQueryParams, getVisiblePages } from "../query";

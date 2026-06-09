@@ -27,7 +27,7 @@ There is no separate npm package. Because both halves arrive from one `composer 
 ## Install the package
 
 ```bash
-composer require bambamboole/lattice
+composer require lattice/lattice
 ```
 
 The service provider is registered automatically through Laravel package discovery, so there is nothing to add to `bootstrap/providers.php`.

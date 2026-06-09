@@ -1,9 +1,9 @@
 import * as React from "react";
-import { cn } from "@bambamboole/lattice/lib/utils";
-import { getStringProp } from "@bambamboole/lattice/core/props";
-import type { RendererComponent } from "@bambamboole/lattice/core/types";
+import { cn } from "@lattice/lattice/lib/utils";
+import { getStringProp } from "@lattice/lattice/core/props";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 
-declare module "@bambamboole/lattice/core/types" {
+declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
     card: {
       description?: string;

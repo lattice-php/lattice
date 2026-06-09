@@ -4,7 +4,7 @@
  * CSRF header, component-ref header, and request shape live here in one place.
  */
 
-import { withRefHeader } from "@bambamboole/lattice/core/component-ref";
+import { withRefHeader } from "@lattice/lattice/core/component-ref";
 
 export const FORM_DEBOUNCE_MS = 250;
 

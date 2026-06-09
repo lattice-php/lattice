@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { IconRenderer, IconRendererProvider } from "@bambamboole/lattice";
-import type { IconRendererFunction } from "@bambamboole/lattice";
+import { IconRenderer, IconRendererProvider } from "@lattice/lattice";
+import type { IconRendererFunction } from "@lattice/lattice";
 
 describe("Lattice icon renderer", () => {
   afterEach(() => {

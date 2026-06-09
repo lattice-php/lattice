@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import { getOptionalNumberProp, getStringProp } from "@bambamboole/lattice/core/props";
-import type { RendererComponent } from "@bambamboole/lattice/core/types";
+import { getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 import { Checkbox } from "../base/checkbox";
 import { Label } from "../base/label";
 import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";
 import { useFormValue, useSetFormValue } from "../values";
 
-declare module "@bambamboole/lattice/core/types" {
+declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
     "form.checkbox": {
       checked?: boolean;

@@ -1,5 +1,5 @@
-import type { Option } from "@bambamboole/lattice/core/props";
-import { cn } from "@bambamboole/lattice/lib/utils";
+import type { Option } from "@lattice/lattice/core/props";
+import { cn } from "@lattice/lattice/lib/utils";
 
 /**
  * Presentational segmented pill group. Used by the form choice field (bound to a

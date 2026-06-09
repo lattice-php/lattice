@@ -2,9 +2,9 @@ import { Link } from "@inertiajs/react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { cn } from "@bambamboole/lattice/lib/utils";
-import { getStringProp } from "@bambamboole/lattice/core/props";
-import type { RendererComponent } from "@bambamboole/lattice/core/types";
+import { cn } from "@lattice/lattice/lib/utils";
+import { getStringProp } from "@lattice/lattice/core/props";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 
 export type ButtonVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
 
@@ -57,7 +57,7 @@ function Button({
   );
 }
 
-declare module "@bambamboole/lattice/core/types" {
+declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
     button: {
       href?: string;

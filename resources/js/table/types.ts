@@ -1,4 +1,5 @@
-import type { Node } from "@bambamboole/lattice/core/types";
+import type { Node } from "@lattice/lattice/core/types";
+import type { PaginationType } from "@lattice/lattice/generated/enums";
 
 export type TableColumn = {
   columns?: TableColumn[];
@@ -53,7 +54,7 @@ export type TablePagination = {
   currentPage?: number;
   hasMore?: boolean;
   lastPage?: number;
-  mode?: "infinite" | "none" | "simple" | "table";
+  mode?: PaginationType;
   nextPage?: number | null;
   perPage?: number;
   total?: number;
@@ -68,7 +69,7 @@ export type TableResponse = {
   state?: Partial<TableState>;
 };
 
-declare module "@bambamboole/lattice/core/types" {
+declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
     table: {
       bulkActions?: Array<Record<string, unknown>>;

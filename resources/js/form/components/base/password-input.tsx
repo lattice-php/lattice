@@ -1,8 +1,8 @@
 import { Eye, EyeOff } from "lucide-react";
 import type { ComponentProps, Ref } from "react";
 import { useState } from "react";
-import { Input } from "@bambamboole/lattice/form/components/base/input";
-import { cn } from "@bambamboole/lattice/lib/utils";
+import { Input } from "@lattice/lattice/form/components/base/input";
+import { cn } from "@lattice/lattice/lib/utils";
 
 type PasswordInputProps = Omit<ComponentProps<"input">, "type"> & {
   passwordrules?: string;

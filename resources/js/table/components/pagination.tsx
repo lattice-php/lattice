@@ -1,4 +1,5 @@
 import type { RefObject } from "react";
+import type { PaginationType } from "@lattice/lattice/generated/enums";
 import type { TablePagination as TablePaginationData } from "../types";
 
 export function TablePagination({
@@ -15,7 +16,7 @@ export function TablePagination({
   pagination: TablePaginationData;
   currentPage: number;
   processing: boolean;
-  mode: "infinite" | "none" | "simple" | "table";
+  mode: PaginationType;
   hasNextPage: boolean;
   visiblePages: number[];
   infiniteLoaderRef: RefObject<HTMLDivElement | null>;

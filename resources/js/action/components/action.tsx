@@ -1,13 +1,13 @@
 import { router, useHttp } from "@inertiajs/react";
 import type { Method } from "@inertiajs/core";
 import { useState } from "react";
-import { withRefHeader } from "@bambamboole/lattice/core/component-ref";
-import { Button } from "@bambamboole/lattice/core/components/button";
-import { ConfirmDialog } from "@bambamboole/lattice/core/components/confirm-dialog";
-import { Spinner } from "@bambamboole/lattice/core/components/spinner";
-import { getStringProp } from "@bambamboole/lattice/core/props";
-import type { NodeProps, RendererComponent } from "@bambamboole/lattice/core/types";
-import { IconRenderer } from "@bambamboole/lattice/icons";
+import { withRefHeader } from "@lattice/lattice/core/component-ref";
+import { Button } from "@lattice/lattice/core/components/button";
+import { ConfirmDialog } from "@lattice/lattice/core/components/confirm-dialog";
+import { Spinner } from "@lattice/lattice/core/components/spinner";
+import { getStringProp } from "@lattice/lattice/core/props";
+import type { NodeProps, RendererComponent } from "@lattice/lattice/core/types";
+import { IconRenderer } from "@lattice/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, getActionEffects } from "../effects";
 import type { ActionEffect } from "../effects";
 
@@ -28,7 +28,7 @@ type ActionResponse = {
 
 type ActionData = Record<string, never>;
 
-declare module "@bambamboole/lattice/core/types" {
+declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
     action: {
       confirmation?: ActionConfirmation;

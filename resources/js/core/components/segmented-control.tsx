@@ -4,11 +4,11 @@ import {
   getOptionalNumberProp,
   getOptions,
   getStringProp,
-} from "@bambamboole/lattice/core/props";
-import type { RendererComponent } from "@bambamboole/lattice/core/types";
+} from "@lattice/lattice/core/props";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 import { SegmentedPills } from "./segmented-pills";
 
-declare module "@bambamboole/lattice/core/types" {
+declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
     "segmented-control": {
       emits?: string;
