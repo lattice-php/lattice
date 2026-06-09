@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Tables;
 
 use Bambamboole\Lattice\Tables\Columns\Column;
+use Bambamboole\Lattice\Tables\Columns\Filterable;
+use Bambamboole\Lattice\Tables\Columns\Sortable;
 use Bambamboole\Lattice\Tables\Enums\Operator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 final readonly class TableQuery
 {
@@ -33,9 +36,10 @@ final readonly class TableQuery
     {
         $filters = self::parseFilters($request->input('filter'));
         $sorts = self::parseSorts($request->input('sort'));
+        $index = collect($columns)->keyBy(fn (Column $column): string => $column->key);
 
-        self::validateFilters($filters, $columns, $table);
-        self::validateSorts($sorts, $columns, $table);
+        self::validateFilters($filters, $index, $table);
+        self::validateSorts($sorts, $index, $table);
 
         return new self(
             $filters,
@@ -124,16 +128,14 @@ final readonly class TableQuery
 
     /**
      * @param  array<int, FilterClause>  $filters
-     * @param  array<int, Column>  $columns
+     * @param  Collection<string, Column>  $index
      */
-    private static function validateFilters(array $filters, array $columns, string $table): void
+    private static function validateFilters(array $filters, Collection $index, string $table): void
     {
-        $byKey = collect($columns)->keyBy(fn (Column $column): string => $column->key);
-
         foreach ($filters as $filter) {
-            $column = $byKey->get($filter->field);
+            $column = $index->get($filter->field);
 
-            if (! $column instanceof Column || ! $column->isFilterable()) {
+            if (! $column instanceof Filterable || ! $column->isFilterable()) {
                 throw InvalidTableQuery::filter($filter->field, $table);
             }
 
@@ -147,16 +149,14 @@ final readonly class TableQuery
 
     /**
      * @param  array<int, TableSort>  $sorts
-     * @param  array<int, Column>  $columns
+     * @param  Collection<string, Column>  $index
      */
-    private static function validateSorts(array $sorts, array $columns, string $table): void
+    private static function validateSorts(array $sorts, Collection $index, string $table): void
     {
-        $allowed = collect($columns)
-            ->filter(fn (Column $column): bool => $column->isSortable())
-            ->mapWithKeys(fn (Column $column): array => [$column->key => true]);
-
         foreach ($sorts as $sort) {
-            if (! $allowed->has($sort->key)) {
+            $column = $index->get($sort->key);
+
+            if (! $column instanceof Sortable || ! $column->isSortable()) {
                 throw InvalidTableQuery::sort($sort->key, $table);
             }
         }
