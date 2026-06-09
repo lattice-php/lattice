@@ -21,10 +21,25 @@ export type FieldState = {
   disabled: boolean;
 };
 
+const BOOLEAN_TRUE_VALUES = new Set(["1", "true", "on", "yes"]);
+
+// Mirrors PHP filter_var(FILTER_VALIDATE_BOOLEAN) so conditions evaluate
+// identically on the server and the client.
+function toBoolean(value: unknown): boolean {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (typeof value === "number") {
+    return value === 1;
+  }
+
+  return BOOLEAN_TRUE_VALUES.has(String(value).toLowerCase());
+}
+
 function equals(actual: unknown, expected: unknown): boolean {
   if (typeof expected === "boolean") {
-    const truthy = actual === true || actual === "1" || actual === "true" || actual === "on";
-    return truthy === expected;
+    return toBoolean(actual) === expected;
   }
   return String(actual ?? "") === String(expected ?? "");
 }
@@ -63,10 +78,7 @@ function allMatch(conditions: Condition[], values: Record<string, unknown>): boo
   );
 }
 
-function anyMatch(
-  conditions: Condition[] | undefined,
-  values: Record<string, unknown>,
-): boolean {
+function anyMatch(conditions: Condition[] | undefined, values: Record<string, unknown>): boolean {
   return Boolean(
     conditions?.some((condition) =>
       evaluateOp(condition.operator, values[condition.field], condition.value),
