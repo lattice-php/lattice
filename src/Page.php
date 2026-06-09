@@ -4,6 +4,7 @@ namespace Bambamboole\Lattice;
 
 use BackedEnum;
 use BadMethodCallException;
+use Bambamboole\Lattice\Contracts\PageContract;
 use Bambamboole\Lattice\Enums\PageContainer;
 use Bambamboole\Lattice\Enums\PageLayout;
 use Bambamboole\Lattice\Facades\Lattice;
@@ -12,7 +13,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use UnexpectedValueException;
 
-abstract class Page
+abstract class Page implements PageContract
 {
     public function title(): ?string
     {

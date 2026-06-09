@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice;
 
+use Bambamboole\Lattice\Contracts\Authorizable;
 use Illuminate\Http\Request;
 
-abstract class Definition
+abstract class Definition implements Authorizable
 {
     public function authorize(Request $request): bool
     {

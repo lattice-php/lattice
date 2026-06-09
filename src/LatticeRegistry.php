@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice;
 
-use BadMethodCallException;
 use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionRegistry;
 use Bambamboole\Lattice\Actions\BulkActionDefinition;
 use Bambamboole\Lattice\Actions\BulkActionRegistry;
+use Bambamboole\Lattice\Contracts\PageContract;
 use Bambamboole\Lattice\Discovery\DefinitionDiscovery;
 use Bambamboole\Lattice\Forms\FormDefinition;
 use Bambamboole\Lattice\Forms\FormRegistry;
@@ -19,6 +19,7 @@ use Bambamboole\Lattice\Tables\TableDefinition;
 use Bambamboole\Lattice\Tables\TableRegistry;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
+use InvalidArgumentException;
 
 class LatticeRegistry
 {
@@ -100,14 +101,15 @@ class LatticeRegistry
     }
 
     /**
-     * @param  class-string<Page>  $page
+     * @param  class-string  $page
      */
     public function page(string $uri, string $page): Route
     {
-        if (! method_exists($page, 'render')) {
-            throw new BadMethodCallException(sprintf(
-                'Method %s::render does not exist.',
+        if (! is_a($page, PageContract::class, true)) {
+            throw new InvalidArgumentException(sprintf(
+                'Lattice page [%s] must implement [%s].',
                 $page,
+                PageContract::class,
             ));
         }
 

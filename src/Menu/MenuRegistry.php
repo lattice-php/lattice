@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Menu;
 
 use BackedEnum;
-use Bambamboole\Lattice\Page;
+use Bambamboole\Lattice\Contracts\Authorizable;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Exceptions\UrlGenerationException;
@@ -126,7 +126,7 @@ class MenuRegistry
     {
         $page = $route->getControllerClass();
 
-        if (is_string($page) && is_subclass_of($page, Page::class) && ! $this->container->make($page)->authorize($request)) {
+        if (is_string($page) && is_a($page, Authorizable::class, true) && ! $this->container->make($page)->authorize($request)) {
             return null;
         }
 
