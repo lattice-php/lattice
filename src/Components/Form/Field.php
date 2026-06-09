@@ -13,9 +13,12 @@ use Illuminate\Http\Request;
 abstract class Field extends Component
 {
     /**
-     * @var array<int, mixed>|Closure
+     * Validation rules. Each entry is a rule (string/object) or a Closure that
+     * returns additional rules. Rules accumulate across calls.
+     *
+     * @var array<int, mixed>
      */
-    protected array|Closure $rules = [];
+    protected array $rules = [];
 
     /**
      * @var array<int, Condition>
@@ -89,11 +92,17 @@ abstract class Field extends Component
     }
 
     /**
+     * Add validation rules. An array is merged onto the existing rules; a Closure
+     * (receiving FormData and Request) is resolved to additional rules at validation
+     * time. Calls accumulate.
+     *
      * @param  array<int, mixed>|Closure(FormData, Request): array<int, mixed>  $rules
      */
     public function rules(array|Closure $rules): static
     {
-        $this->rules = $rules;
+        $this->rules = $rules instanceof Closure
+            ? [...$this->rules, $rules]
+            : [...$this->rules, ...$rules];
 
         return $this;
     }
@@ -103,11 +112,19 @@ abstract class Field extends Component
      */
     public function resolveRules(FormData $data, Request $request): array
     {
-        $rules = $this->rules instanceof Closure
-            ? ($this->rules)($data, $request)
-            : $this->rules;
+        $resolved = [];
 
-        return array_values($rules);
+        foreach ($this->rules as $rule) {
+            if ($rule instanceof Closure) {
+                $resolved = [...$resolved, ...$rule($data, $request)];
+
+                continue;
+            }
+
+            $resolved[] = $rule;
+        }
+
+        return array_values($resolved);
     }
 
     /**

@@ -41,3 +41,13 @@ it('resolves closure rules with form data', function (): void {
         ->and($field->resolveRules(FormData::make(['type' => 'guest']), Request::create('/')))
         ->toBe(['nullable']);
 });
+
+it('merges rules across calls, including closures', function (): void {
+    $field = makeField()
+        ->rules(['required'])
+        ->rules(fn () => ['string'])
+        ->rules(['max:10']);
+
+    expect($field->resolveRules(FormData::make([]), Request::create('/')))
+        ->toBe(['required', 'string', 'max:10']);
+});
