@@ -74,9 +74,10 @@ describe("Lattice table component", () => {
     expect(
       screen.getByRole("button", { name: "Sort Name" }).closest('[role="columnheader"]'),
     ).toHaveAttribute("aria-sort", "ascending");
-    expect(screen.getByText("Sorted by")).toBeVisible();
-    expect(screen.getByText("1. Name ascending")).toBeVisible();
-    expect(screen.getByText("2. Email descending")).toBeVisible();
+    expect(screen.getByText("1. Name")).toBeVisible();
+    expect(screen.getByText("2. Email")).toBeVisible();
+    expect(screen.getByRole("img", { name: "ascending" })).toBeVisible();
+    expect(screen.getByRole("img", { name: "descending" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Clear Name sort" })).toBeVisible();
     expect(screen.getByRole("textbox", { name: "Filter Name" })).toBeVisible();
     expect(screen.getByRole("columnheader", { name: "Status" })).toBeVisible();
@@ -257,7 +258,7 @@ describe("Lattice table component", () => {
       );
     });
 
-    await screen.findByText("2. Email ascending");
+    await screen.findByText("2. Email");
 
     fireEvent.click(screen.getByRole("button", { name: "Clear Email sort" }));
 

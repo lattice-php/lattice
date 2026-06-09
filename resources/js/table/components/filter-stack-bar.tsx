@@ -17,14 +17,14 @@ export function FilterStackBar({
   const labels = new Map(flattenColumns(columns).map((column) => [column.key, column.label]));
 
   return (
-    <div className="flex flex-wrap items-center gap-2 border-b border-lt-border px-4 py-3 text-sm">
+    <div className="flex flex-wrap items-center gap-4 border-b border-lt-border px-4 py-2.5 text-sm">
       {filters.map((clause, index) => {
         const label = labels.get(clause.field) ?? clause.field;
 
         return (
           <span
             key={`${clause.field}-${clause.operator}-${index}`}
-            className="inline-flex items-center gap-2 rounded-lt-sm border border-lt-border bg-lt-bg px-3 py-1.5"
+            className="inline-flex items-center gap-1.5"
           >
             <span>
               {`${label} ${operatorLabel(clause.operator)}: `}
@@ -32,7 +32,7 @@ export function FilterStackBar({
             </span>
             <button
               type="button"
-              className="inline-flex size-5 items-center justify-center rounded hover:bg-lt-muted disabled:opacity-50"
+              className="inline-flex size-5 items-center justify-center rounded text-lt-muted-fg hover:bg-lt-muted disabled:opacity-50"
               disabled={processing}
               aria-label={`Remove ${label} filter`}
               onClick={() => onRemove(index)}
