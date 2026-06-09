@@ -131,7 +131,7 @@ export const RichEditorComponent: RendererComponent<"form.rich-editor"> = ({ nod
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: "tiptap min-h-32 px-3 py-2 outline-none [&_:first-child]:mt-0",
+        class: "lattice-prose min-h-32 px-3 py-2 outline-none",
       },
     },
     onUpdate: ({ editor: instance }) => {

@@ -75,3 +75,118 @@
   --radius-lt-sm: var(--lt-radius-sm);
   --radius-lt-xs: var(--lt-radius-xs);
 }
+
+/*
+ * Rich text content styling. Applied to the rich editor and reusable for rendered
+ * output (wrap stored HTML in `.lattice-prose`). Restores the element styles that
+ * Tailwind's preflight resets, using the theme tokens so it adapts to dark mode.
+ * `:where()` keeps specificity low so consumers can override freely.
+ */
+.lattice-prose :where(h1) {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  margin: 1rem 0 0.5rem;
+}
+
+.lattice-prose :where(h2) {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  margin: 1rem 0 0.5rem;
+}
+
+.lattice-prose :where(h3) {
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+  margin: 0.75rem 0 0.5rem;
+}
+
+.lattice-prose :where(p) {
+  margin: 0.5rem 0;
+}
+
+.lattice-prose :where(ul) {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.lattice-prose :where(ol) {
+  list-style: decimal;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.lattice-prose :where(li) {
+  margin: 0.25rem 0;
+}
+
+.lattice-prose :where(li p) {
+  margin: 0;
+}
+
+.lattice-prose :where(blockquote) {
+  border-left: 3px solid var(--lt-border);
+  padding-left: 1rem;
+  margin: 0.75rem 0;
+  color: var(--lt-muted-fg);
+  font-style: italic;
+}
+
+.lattice-prose :where(strong) {
+  font-weight: 700;
+}
+
+.lattice-prose :where(em) {
+  font-style: italic;
+}
+
+.lattice-prose :where(s) {
+  text-decoration: line-through;
+}
+
+.lattice-prose :where(a) {
+  color: var(--lt-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.lattice-prose :where(code) {
+  background: var(--lt-muted);
+  border-radius: var(--lt-radius-sm);
+  padding: 0.125rem 0.25rem;
+  font-family: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  font-size: 0.875em;
+}
+
+.lattice-prose :where(pre) {
+  background: var(--lt-muted);
+  border-radius: var(--lt-radius-sm);
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+  overflow-x: auto;
+  font-family: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  font-size: 0.875rem;
+}
+
+.lattice-prose :where(pre code) {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+}
+
+.lattice-prose :where(hr) {
+  border: none;
+  border-top: 1px solid var(--lt-border);
+  margin: 1rem 0;
+}
+
+.lattice-prose :where(:first-child) {
+  margin-top: 0;
+}
+
+.lattice-prose :where(:last-child) {
+  margin-bottom: 0;
+}

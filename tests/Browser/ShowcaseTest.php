@@ -20,6 +20,7 @@ it('renders the form showcase with every field type', function (): void {
         ->assertSee('Article')
         ->assertSee('Subscribe to the newsletter')
         ->assertPresent('[aria-label="Bold"]')
+        ->assertPresent('.lattice-prose')
         ->assertPresent('input[type="hidden"][name="source"]');
 });
 
