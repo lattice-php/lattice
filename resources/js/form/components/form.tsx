@@ -2,7 +2,7 @@ import type { FormDataConvertible } from "@inertiajs/core";
 import { Form as InertiaForm } from "@inertiajs/react";
 import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/core/props";
 import type { Node, NodeProps, RendererComponent } from "@lattice/core/types";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "./context";
 import { ResolvedNodesProvider } from "./resolved-nodes";
@@ -39,40 +39,32 @@ function getFormState(props: NodeProps | undefined): Record<string, unknown> {
   return state as Record<string, unknown>;
 }
 
-function collectFieldLabels(
+type CollectedFields = {
+  labels: Record<string, string>;
+  values: Record<string, unknown>;
+};
+
+function collectFields(
   nodes: Node[] | undefined,
-  labels: Record<string, string> = {},
-): Record<string, string> {
+  collected: CollectedFields = { labels: {}, values: {} },
+): CollectedFields {
   for (const child of nodes ?? []) {
     const name = getStringProp(child.props, "name");
-    const label = getStringProp(child.props, "label");
 
-    if (name && label) {
-      labels[name] = label;
+    if (name) {
+      const label = getStringProp(child.props, "label");
+      if (label) {
+        collected.labels[name] = label;
+      }
+      if (child.props?.value !== undefined) {
+        collected.values[name] = child.props.value;
+      }
     }
 
-    collectFieldLabels(child.children, labels);
+    collectFields(child.children, collected);
   }
 
-  return labels;
-}
-
-function collectFieldValues(
-  nodes: Node[] | undefined,
-  values: Record<string, unknown> = {},
-): Record<string, unknown> {
-  for (const child of nodes ?? []) {
-    const name = getStringProp(child.props, "name");
-    const value = child.props?.value;
-
-    if (name && value !== undefined) {
-      values[name] = value;
-    }
-
-    collectFieldValues(child.children, values);
-  }
-
-  return values;
+  return collected;
 }
 
 function FormResetListener({
@@ -137,8 +129,11 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   const resetOnError = props.resetOnError ?? false;
   const resetOnSuccess = props.resetOnSuccess ?? [];
   const state = getFormState(node.props);
-  const initialValues = { ...collectFieldValues(node.children), ...state };
-  const fieldLabels = collectFieldLabels(node.children);
+  const { labels: fieldLabels, values: fieldValues } = useMemo(
+    () => collectFields(node.children),
+    [node.children],
+  );
+  const initialValues = { ...fieldValues, ...state };
   const shouldRenderSubmitButton = getBooleanProp(props, "submitButton", true);
   const submitLabel = props.submitLabel ?? "Submit";
   const validationTimeout = getOptionalNumberProp(props, "validationTimeout");

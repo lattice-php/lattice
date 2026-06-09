@@ -2,9 +2,7 @@ import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/c
 import type { RendererComponent } from "@lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { Input } from "../base/input";
-import { useFormContext } from "../context";
-import { useDependentField } from "../use-dependent-field";
-import { useFormValue, useSetFormValue } from "../values";
+import { useControlledField } from "../use-controlled-field";
 
 declare module "@lattice/core/types" {
   interface ComponentProps {
@@ -27,16 +25,8 @@ declare module "@lattice/core/types" {
 }
 
 export const TextInputComponent: RendererComponent<"form.text-input"> = ({ node }) => {
-  const { clearErrors, errors, precognitive, validate } = useFormContext();
-  const { hidden, required, readonly, disabled } = useDependentField(node);
-  const name = getStringProp(node.props, "name");
-  const setValue = useSetFormValue();
-  const storedValue = useFormValue(name);
-  const currentValue = storedValue !== undefined ? storedValue : node.props?.value;
-  const value =
-    typeof currentValue === "string" || typeof currentValue === "number"
-      ? String(currentValue)
-      : "";
+  const { name, value, error, hidden, required, readonly, disabled, commit } =
+    useControlledField(node);
 
   if (hidden) {
     return null;
@@ -44,7 +34,7 @@ export const TextInputComponent: RendererComponent<"form.text-input"> = ({ node 
 
   return (
     <FormFieldFrame
-      error={errors[name]}
+      error={error}
       label={getStringProp(node.props, "label")}
       name={name}
       required={required}
@@ -55,14 +45,7 @@ export const TextInputComponent: RendererComponent<"form.text-input"> = ({ node 
         disabled={disabled}
         id={name}
         name={name}
-        onChange={(event) => {
-          setValue(name, event.target.value);
-          if (precognitive) {
-            validate(name);
-          } else {
-            clearErrors(name);
-          }
-        }}
+        onChange={(event) => commit(event.target.value)}
         placeholder={getStringProp(node.props, "placeholder")}
         readOnly={readonly}
         tabIndex={getOptionalNumberProp(node.props, "tabIndex")}

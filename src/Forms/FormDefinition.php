@@ -66,11 +66,9 @@ abstract class FormDefinition extends Definition
 
             if ($field->isReadonly($data) || $field->isDisabled($data)) {
                 unset($validated[$name]);
-            }
-        }
 
-        foreach ($fields as $field) {
-            $name = $field->name();
+                continue;
+            }
 
             if (array_key_exists($name, $validated)) {
                 $validated[$name] = $field->castValue($validated[$name]);
