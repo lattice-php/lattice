@@ -89,7 +89,9 @@ describe("EventBridge", () => {
   });
 
   it("does not reload the whole page for component reload events", () => {
-    render(<EventBridge onToast={vi.fn<(toast: { message: string; variant: string }) => void>()} />);
+    render(
+      <EventBridge onToast={vi.fn<(toast: { message: string; variant: string }) => void>()} />,
+    );
 
     window.dispatchEvent(
       new CustomEvent("lattice:reload-component", {
