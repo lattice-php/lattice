@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core\Toasts\Enums;
+namespace Bambamboole\Lattice\Core\Enums;
 
 enum ToastType: string
 {

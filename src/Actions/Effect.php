@@ -6,8 +6,8 @@ namespace Bambamboole\Lattice\Actions;
 
 use Bambamboole\Lattice\Actions\Enums\EffectType;
 use Bambamboole\Lattice\Contracts\Effect as EffectContract;
-use Bambamboole\Lattice\Core\Toasts\Enums\ToastType;
-use Bambamboole\Lattice\Core\Toasts\ToastMessage;
+use Bambamboole\Lattice\Core\Enums\ToastType;
+use Bambamboole\Lattice\Core\Values\ToastMessage;
 
 final readonly class Effect implements EffectContract
 {
@@ -29,7 +29,10 @@ final readonly class Effect implements EffectContract
             default => throw new \InvalidArgumentException('A toast message string is required.'),
         };
 
-        return new self(EffectType::Toast, $toast->toEffectPayload());
+        return new self(EffectType::Toast, [
+            'variant' => $toast->type->value,
+            'message' => $toast->message,
+        ]);
     }
 
     public static function reloadComponent(string $component): self

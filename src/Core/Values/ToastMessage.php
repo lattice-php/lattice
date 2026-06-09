@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core\Toasts;
+namespace Bambamboole\Lattice\Core\Values;
 
-use Bambamboole\Lattice\Core\Toasts\Enums\ToastType;
+use Bambamboole\Lattice\Core\Enums\ToastType;
 use JsonSerializable;
 
 final readonly class ToastMessage implements JsonSerializable
@@ -26,17 +26,6 @@ final readonly class ToastMessage implements JsonSerializable
     {
         return [
             'type' => $this->type->value,
-            'message' => $this->message,
-        ];
-    }
-
-    /**
-     * @return array{variant: string, message: string}
-     */
-    public function toEffectPayload(): array
-    {
-        return [
-            'variant' => $this->type->value,
             'message' => $this->message,
         ];
     }

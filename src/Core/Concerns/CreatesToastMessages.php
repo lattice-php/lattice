@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Core\Concerns;
 
-use Bambamboole\Lattice\Core\Toasts\Enums\ToastType;
-use Bambamboole\Lattice\Core\Toasts\ToastMessage;
+use Bambamboole\Lattice\Core\Enums\ToastType;
+use Bambamboole\Lattice\Core\Values\ToastMessage;
 use Inertia\Inertia;
 use Inertia\ResponseFactory;
 

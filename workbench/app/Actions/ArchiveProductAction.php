@@ -9,7 +9,7 @@ use Bambamboole\Lattice\Actions\ActionResult;
 use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Attributes\Action;
 use Bambamboole\Lattice\Core\Enums\HttpMethod;
-use Bambamboole\Lattice\Core\Toasts\Enums\ToastType;
+use Bambamboole\Lattice\Core\Enums\ToastType;
 use Illuminate\Http\Request;
 use Workbench\App\Models\Product;
 
