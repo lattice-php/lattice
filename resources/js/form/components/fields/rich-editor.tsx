@@ -98,6 +98,9 @@ function Toolbar({ editor }: { editor: Editor }) {
             )}
             key={item.label}
             onClick={() => item.run(editor)}
+            // Keep focus in the editor so toolbar clicks don't blur it (which would
+            // otherwise trigger a precognition request).
+            onMouseDown={(event) => event.preventDefault()}
             title={item.label}
             type="button"
           >
@@ -133,10 +136,11 @@ export const RichEditorComponent: RendererComponent<"form.rich-editor"> = ({ nod
     },
     onUpdate: ({ editor: instance }) => {
       setValue(name, instance.isEmpty ? null : instance.getJSON());
+      clearErrors(name);
+    },
+    onBlur: () => {
       if (precognitive) {
         validate(name);
-      } else {
-        clearErrors(name);
       }
     },
   });

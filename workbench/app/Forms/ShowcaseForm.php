@@ -83,7 +83,12 @@ class ShowcaseForm extends FormDefinition
                 NumberInput::make('unit_price', 'Unit price')->min(0)->step(0.01),
                 TextInput::make('total', 'Total')
                     ->readonly()
-                    ->value(fn (FormData $data) => $data->float('quantity') * $data->float('unit_price')),
+                    ->dependsOn(
+                        ['quantity', 'unit_price'],
+                        fn (TextInput $field, FormData $data) => $field->value(
+                            $data->float('quantity') * $data->float('unit_price'),
+                        ),
+                    ),
 
                 Heading::make('Rich content', 2),
                 RichEditor::make('article', 'Article'),
