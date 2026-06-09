@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Tables\Columns;
 
+use Bambamboole\Lattice\Tables\Columns\Concerns\IsFilterable;
+use Bambamboole\Lattice\Tables\Columns\Concerns\IsSortable;
 use Bambamboole\Lattice\Tables\Enums\ControlType;
 
-class TextColumn extends Column
+class TextColumn extends Column implements Filterable, Sortable
 {
+    use IsFilterable;
+    use IsSortable;
+
     /**
      * @var array{format: string|null}|null
      */
@@ -45,7 +50,6 @@ class TextColumn extends Column
         return $this;
     }
 
-    #[\Override]
     public function controlType(): ControlType
     {
         if ($this->date !== null) {
@@ -88,6 +92,8 @@ class TextColumn extends Column
     {
         return array_filter([
             ...parent::toArray(),
+            ...$this->sortableToArray(),
+            ...$this->filterToArray(),
             'type' => 'text',
             'date' => $this->date,
             'copyable' => $this->copyable ?: null,

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Tables;
 
 use Bambamboole\Lattice\Tables\Columns\Column;
+use Bambamboole\Lattice\Tables\Columns\Filterable;
 use Bambamboole\Lattice\Tables\Enums\Operator;
 use Bambamboole\Lattice\Tables\Enums\PaginationType;
 use Illuminate\Database\Eloquent\Builder;
@@ -65,7 +66,7 @@ abstract class EloquentTableDefinition extends TableDefinition
         foreach ($query->filters() as $clause) {
             $column = $columns->get($clause->field);
 
-            if ($column instanceof Column) {
+            if ($column instanceof Filterable) {
                 Operator::from($clause->operator)->apply(
                     $builder,
                     $column->controlType(),
