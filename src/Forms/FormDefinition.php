@@ -8,6 +8,7 @@ use Bambamboole\Lattice\Components\Form\Field;
 use Bambamboole\Lattice\Components\Form\Form;
 use Bambamboole\Lattice\Components\Form\Select;
 use Bambamboole\Lattice\Concerns\CreatesToastMessages;
+use Bambamboole\Lattice\Contracts\ProvidesForm;
 use Bambamboole\Lattice\Definition;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
@@ -16,7 +17,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Validation\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class FormDefinition extends Definition
+abstract class FormDefinition extends Definition implements ProvidesForm
 {
     use CreatesToastMessages;
 

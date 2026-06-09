@@ -6,11 +6,12 @@ namespace Bambamboole\Lattice\Tables;
 
 use Bambamboole\Lattice\Components\Core\Action;
 use Bambamboole\Lattice\Components\Core\Component;
+use Bambamboole\Lattice\Contracts\ProvidesTable;
 use Bambamboole\Lattice\Definition;
 use Bambamboole\Lattice\Tables\Columns\Column;
 use Illuminate\Support\Collection;
 
-abstract class TableDefinition extends Definition
+abstract class TableDefinition extends Definition implements ProvidesTable
 {
     /**
      * @return array<int, Column>

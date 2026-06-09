@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Actions;
 
 use Bambamboole\Lattice\Components\Core\Action;
+use Bambamboole\Lattice\Contracts\ProvidesBulkAction;
 use Bambamboole\Lattice\Definition;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-abstract class BulkActionDefinition extends Definition
+abstract class BulkActionDefinition extends Definition implements ProvidesBulkAction
 {
     abstract public function definition(Action $action): Action;
 
