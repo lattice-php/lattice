@@ -78,7 +78,6 @@ describe("Lattice table component", () => {
     expect(screen.getByText("2. Email descending")).toBeVisible();
     expect(screen.getByRole("button", { name: "Clear Name sort" })).toBeVisible();
     expect(screen.getByRole("textbox", { name: "Filter Name" })).toBeVisible();
-    expect(screen.getByRole("button", { name: "Apply filters" })).toBeVisible();
     expect(screen.getByRole("columnheader", { name: "Status" })).toBeVisible();
     expect(screen.getByRole("columnheader", { name: "Status" })).toHaveClass("px-4", "py-3");
 
@@ -662,5 +661,64 @@ describe("Lattice table component", () => {
       },
     });
     expect(screen.getByText("Showing 1-1 of 1")).toBeVisible();
+  });
+
+  it("applies per-column header filters by type", async () => {
+    const fetch = vi.fn<typeof globalThis.fetch>(async () =>
+      Response.json({
+        data: [],
+        pagination: {},
+        state: { filters: {}, page: 1, perPage: 25, sorts: [] },
+      }),
+    );
+
+    vi.stubGlobal("fetch", fetch);
+
+    const node = {
+      id: "workbench.products",
+      props: {
+        columns: [
+          { key: "name", label: "Name", filter: { enabled: true, type: "partial" } },
+          { key: "featured", label: "Featured", filter: { enabled: true, type: "boolean" } },
+          { key: "updated_at", label: "Updated", filter: { enabled: true, type: "date" } },
+        ],
+        data: [],
+        endpoint: "/lattice/tables/workbench.products",
+        state: { filters: {}, page: 1, perPage: 25, sorts: [] },
+      },
+      type: "table",
+    } satisfies Node<"table">;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Filter Featured" }), {
+      target: { value: "true" },
+    });
+    await waitFor(() =>
+      expect(fetch).toHaveBeenLastCalledWith(
+        "/lattice/tables/workbench.products?filter%5Bfeatured%5D=true&page=1&per_page=25",
+        { headers: { Accept: "application/json" } },
+      ),
+    );
+
+    fireEvent.change(screen.getByLabelText("Filter Updated"), {
+      target: { value: "2026-06-01" },
+    });
+    await waitFor(() =>
+      expect(fetch).toHaveBeenLastCalledWith(
+        "/lattice/tables/workbench.products?filter%5Bupdated_at%5D=2026-06-01&page=1&per_page=25",
+        { headers: { Accept: "application/json" } },
+      ),
+    );
+
+    const nameFilter = screen.getByRole("textbox", { name: "Filter Name" });
+    fireEvent.change(nameFilter, { target: { value: "Lamp" } });
+    fireEvent.keyDown(nameFilter, { key: "Enter" });
+    await waitFor(() =>
+      expect(fetch).toHaveBeenLastCalledWith(
+        "/lattice/tables/workbench.products?filter%5Bname%5D=Lamp&page=1&per_page=25",
+        { headers: { Accept: "application/json" } },
+      ),
+    );
   });
 });

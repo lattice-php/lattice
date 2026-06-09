@@ -85,10 +85,17 @@ export function useTable(node: Node<"table">) {
     });
   }
 
-  function applyFilters(): void {
+  function setFilter(key: string, value: string): void {
+    setFilters((current) => ({ ...current, [key]: value }));
+  }
+
+  function applyFilter(key: string, value: string): void {
+    const next = { ...filters, [key]: value };
+
+    setFilters(next);
     void load({
       ...state,
-      filters,
+      filters: next,
       page: 1,
     });
   }
@@ -173,13 +180,13 @@ export function useTable(node: Node<"table">) {
     pagination,
     state,
     filters,
-    setFilters,
+    setFilter,
+    applyFilter,
     processing,
     hasLoaded,
     infiniteLoaderRef,
     sort,
     clearSort,
-    applyFilters,
     goToPage,
     loadMore,
   };

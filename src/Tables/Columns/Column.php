@@ -53,6 +53,16 @@ class Column implements JsonSerializable
         return $this->filterable('exact');
     }
 
+    public function filterableDate(): static
+    {
+        return $this->filterable('date');
+    }
+
+    public function filterableBoolean(): static
+    {
+        return $this->filterable('boolean');
+    }
+
     public function isSortable(): bool
     {
         return $this->sortable;

@@ -33,7 +33,8 @@ class ProductsTable extends EloquentTableDefinition
             TextColumn::make('sku')->label('SKU')->sortable()->filterable(),
             TextColumn::make('price')->label('Price')->sortable(),
             TextColumn::make('status')->label('Status')->sortable()->filterableExact(),
-            TextColumn::make('updated_at')->label('Updated at')->sortable()->date('Y-m-d H:i:s'),
+            TextColumn::make('featured')->label('Featured')->sortable()->filterableBoolean(),
+            TextColumn::make('updated_at')->label('Updated at')->sortable()->date('Y-m-d H:i:s')->filterableDate(),
         ];
     }
 
@@ -42,7 +43,7 @@ class ProductsTable extends EloquentTableDefinition
      */
     public function builder(TableQuery $query): Builder
     {
-        $builder = Product::query()->select(['id', 'name', 'sku', 'price', 'status', 'updated_at']);
+        $builder = Product::query()->select(['id', 'name', 'sku', 'price', 'status', 'featured', 'updated_at']);
 
         if ($query->sorts() === []) {
             $builder->latest('id');

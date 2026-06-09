@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('sku')->unique();
             $table->decimal('price', 10, 2);
             $table->string('status')->index();
+            $table->boolean('featured')->default(false);
             $table->timestamps();
         });
     }

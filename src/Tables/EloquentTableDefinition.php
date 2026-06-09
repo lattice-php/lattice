@@ -67,13 +67,12 @@ abstract class EloquentTableDefinition extends TableDefinition
                 continue;
             }
 
-            if ($column->filterType() === 'exact') {
-                $this->applyExactFilter($builder, $key, $value);
-
-                continue;
-            }
-
-            $builder->where($key, 'like', '%'.str_replace(['%', '_'], ['\\%', '\\_'], (string) $value).'%');
+            match ($column->filterType()) {
+                'exact' => $this->applyExactFilter($builder, $key, $value),
+                'date' => $this->applyDateFilter($builder, $key, $value),
+                'boolean' => $this->applyBooleanFilter($builder, $key, $value),
+                default => $this->applyPartialFilter($builder, $key, $value),
+            };
         }
 
         foreach ($query->sorts() as $sort) {
@@ -118,5 +117,35 @@ abstract class EloquentTableDefinition extends TableDefinition
         }
 
         $builder->where($key, $value);
+    }
+
+    /**
+     * @param  Builder<TModel>  $builder
+     */
+    private function applyPartialFilter(Builder $builder, string $key, mixed $value): void
+    {
+        $builder->where($key, 'like', '%'.str_replace(['%', '_'], ['\\%', '\\_'], (string) $value).'%');
+    }
+
+    /**
+     * @param  Builder<TModel>  $builder
+     */
+    private function applyDateFilter(Builder $builder, string $key, mixed $value): void
+    {
+        $builder->whereDate($key, (string) $value);
+    }
+
+    /**
+     * @param  Builder<TModel>  $builder
+     */
+    private function applyBooleanFilter(Builder $builder, string $key, mixed $value): void
+    {
+        $boolean = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+
+        if ($boolean === null) {
+            return;
+        }
+
+        $builder->where($key, $boolean);
     }
 }

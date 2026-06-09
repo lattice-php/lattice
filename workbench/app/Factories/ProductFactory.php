@@ -24,6 +24,7 @@ class ProductFactory extends Factory
             'sku' => fake()->unique()->bothify('PRD-####'),
             'price' => fake()->randomFloat(2, 10, 250),
             'status' => fake()->randomElement(['draft', 'active', 'archived']),
+            'featured' => fake()->boolean(),
         ];
     }
 }

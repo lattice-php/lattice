@@ -8,6 +8,8 @@ use Bambamboole\Lattice\Components\Form\TextInput;
 use Bambamboole\Lattice\Components\Table\Table;
 use Bambamboole\Lattice\Facades\Lattice;
 use Bambamboole\Lattice\Security\ComponentReferenceSigner;
+use Bambamboole\Lattice\Tables\TableQuery;
+use Illuminate\Http\Request;
 use Inertia\Testing\AssertableInertia;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Actions\ArchiveProductAction;
@@ -464,4 +466,23 @@ test('bulk all-matching validates the filter against the table columns', functio
     ])
         ->assertUnprocessable()
         ->assertJsonPath('errors.filter.0', 'Filter [id] is not allowed for table [workbench.products].');
+});
+
+test('the products table applies date and boolean column filters', function () {
+    $featured = Product::factory()->create(['featured' => true, 'updated_at' => '2026-06-01 10:00:00']);
+    Product::factory()->create(['featured' => false, 'updated_at' => '2026-06-02 10:00:00']);
+
+    $table = new ProductsTable;
+    $columns = $table->columns();
+
+    $byBoolean = $table->resolveMatching(
+        TableQuery::fromRequest(Request::create('/', 'GET', ['filter' => ['featured' => 'true']]), $columns, 'workbench.products'),
+    );
+
+    $byDate = $table->resolveMatching(
+        TableQuery::fromRequest(Request::create('/', 'GET', ['filter' => ['updated_at' => '2026-06-01']]), $columns, 'workbench.products'),
+    );
+
+    expect($byBoolean->pluck('id')->all())->toBe([$featured->getKey()])
+        ->and($byDate->pluck('id')->all())->toBe([$featured->getKey()]);
 });

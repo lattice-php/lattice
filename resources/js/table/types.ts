@@ -8,7 +8,7 @@ export type TableColumn = {
   sortable?: boolean;
   filter?: {
     enabled?: boolean;
-    type?: string;
+    type?: "partial" | "exact" | "date" | "boolean";
   };
   date?: {
     format?: string | null;

@@ -6,7 +6,6 @@ import { useTable } from "../use-table";
 import { useTableSelection } from "../use-table-selection";
 import { BulkBar } from "./bulk-bar";
 import { ColumnHeader } from "./column-header";
-import { FilterBar } from "./filter-bar";
 import { TablePagination } from "./pagination";
 import { SortBar } from "./sort-bar";
 import { TableActionNode } from "./table-action-node";
@@ -15,19 +14,18 @@ import { ColumnCell } from "./table-cell";
 const TableComponent: RendererComponent<"table"> = ({ node }) => {
   const {
     columns,
-    interactiveColumns,
     rows,
     rowMetadata,
     pagination,
     state,
     filters,
-    setFilters,
+    setFilter,
+    applyFilter,
     processing,
     hasLoaded,
     infiniteLoaderRef,
     sort,
     clearSort,
-    applyFilters,
     goToPage,
     loadMore,
   } = useTable(node);
@@ -48,7 +46,6 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
   const hasNextPage = pagination.hasMore ?? currentPage < lastPage;
   const hasActions = rowMetadata.some((metadata) => (metadata.actions?.length ?? 0) > 0);
   const gridTemplateColumns = getColumnGridTemplate(columns, hasActions, hasBulkActions);
-  const filterableColumns = interactiveColumns.filter((column) => column.filter?.enabled);
 
   return (
     <div
@@ -70,15 +67,6 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
           }
           onSelectAllMatching={selection.selectAllMatching}
           onCompleted={selection.clear}
-        />
-      )}
-      {filterableColumns.length > 0 && (
-        <FilterBar
-          columns={filterableColumns}
-          filters={filters}
-          setFilters={setFilters}
-          processing={processing}
-          onApply={applyFilters}
         />
       )}
       {state.sorts.length > 0 && (
@@ -108,6 +96,9 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
                 processing={processing}
                 sort={sort}
                 state={state}
+                filterValue={filters[column.key] ?? ""}
+                onFilterChange={(value) => setFilter(column.key, value)}
+                onFilterApply={(value) => applyFilter(column.key, value)}
               />
             ))}
             {hasActions && (

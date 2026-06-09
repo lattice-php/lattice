@@ -13,6 +13,7 @@ use Workbench\App\Factories\ProductFactory;
  * @property string $sku
  * @property string $price
  * @property string $status
+ * @property bool $featured
  */
 class Product extends Model
 {
@@ -27,6 +28,7 @@ class Product extends Model
         'sku',
         'price',
         'status',
+        'featured',
     ];
 
     /**
@@ -36,6 +38,7 @@ class Product extends Model
     {
         return [
             'price' => 'decimal:2',
+            'featured' => 'boolean',
         ];
     }
 
