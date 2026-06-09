@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Core\Enums;
 
-enum ToastType: string
+enum ToastVariant: string
 {
     case Success = 'success';
     case Info = 'info';

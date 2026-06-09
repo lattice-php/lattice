@@ -31,7 +31,7 @@ use Bambamboole\Lattice\Core\Enums\Align;
 use Bambamboole\Lattice\Core\Enums\Gap;
 use Bambamboole\Lattice\Core\Enums\HttpMethod;
 use Bambamboole\Lattice\Core\Enums\LucideIcon;
-use Bambamboole\Lattice\Core\Enums\ToastType;
+use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use Bambamboole\Lattice\Core\Enums\Width;
 use Bambamboole\Lattice\Core\PageSchema;
 use Bambamboole\Lattice\Core\Services\ComponentReferenceSigner;
@@ -992,7 +992,7 @@ test('registered actions can be handled through the package endpoint', function 
 test('toast messages serialize for flash data and action effects', function () {
     Route::get('toast-target', fn () => 'ok')->name('toast.target');
 
-    $response = WorkbenchToastFactory::flashToast(ToastType::Warning, 'Review the settings.')
+    $response = WorkbenchToastFactory::flashToast(ToastVariant::Warning, 'Review the settings.')
         ->toRoute('toast.target');
     $flashedToast = session()->get(SessionKey::FLASH_DATA, [])['toast'] ?? null;
 
@@ -1005,10 +1005,10 @@ test('toast messages serialize for flash data and action effects', function () {
 
     expect($flashedToast->toArray())
         ->toBe([
-            'type' => 'warning',
+            'variant' => 'warning',
             'message' => 'Review the settings.',
         ])
-        ->and(Effect::toast(ToastType::Warning, 'Review the settings.')->toArray())
+        ->and(Effect::toast(ToastVariant::Warning, 'Review the settings.')->toArray())
         ->toBe([
             'type' => 'toast',
             'variant' => 'warning',
@@ -1024,7 +1024,7 @@ test('toast messages serialize for flash data and action effects', function () {
                 ],
             ],
         ])
-        ->and(ActionResult::success()->toast(ToastType::Warning, 'Review the settings.')->toArray())
+        ->and(ActionResult::success()->toast(ToastVariant::Warning, 'Review the settings.')->toArray())
         ->toMatchArray([
             'effects' => [
                 [
@@ -2017,7 +2017,7 @@ class WorkbenchPingAction extends ActionDefinition
             'handled' => $request->string('name')->toString(),
             'team' => data_get($request->input('context', []), 'team'),
         ])
-            ->toast(ToastType::Info, 'Action handled.')
+            ->toast(ToastVariant::Info, 'Action handled.')
             ->reloadComponent('workbench.users');
     }
 }
@@ -2026,9 +2026,9 @@ final class WorkbenchToastFactory
 {
     use CreatesToastMessages;
 
-    public static function flashToast(ToastType $type, string $message): ResponseFactory
+    public static function flashToast(ToastVariant $variant, string $message): ResponseFactory
     {
-        return (new self)->toast($type, $message);
+        return (new self)->toast($variant, $message);
     }
 }
 

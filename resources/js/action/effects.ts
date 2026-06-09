@@ -1,12 +1,12 @@
 import { router } from "@inertiajs/react";
-import type { EffectType, ToastType } from "@lattice/generated/enums";
+import type { EffectType, ToastVariant } from "@lattice/generated/enums";
 import { LATTICE_EVENT } from "@lattice/events/event-names";
 
 export type ActionEffect =
   | {
       message?: string;
       type: "toast";
-      variant?: ToastType;
+      variant?: ToastVariant;
     }
   | {
       type: "reloadPage";

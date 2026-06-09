@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Actions;
 
 use Bambamboole\Lattice\Actions\Contracts\Effect as EffectContract;
-use Bambamboole\Lattice\Core\Enums\ToastType;
+use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use Bambamboole\Lattice\Core\Values\ToastMessage;
 use JsonSerializable;
 
@@ -37,9 +37,9 @@ final readonly class ActionResult implements JsonSerializable
         ]);
     }
 
-    public function toast(string|ToastMessage|ToastType $message, ToastType|string|null $type = null): self
+    public function toast(string|ToastMessage|ToastVariant $message, ToastVariant|string|null $variant = null): self
     {
-        return $this->effect(Effect::toast($message, $type));
+        return $this->effect(Effect::toast($message, $variant));
     }
 
     public function reloadComponent(string $component): self

@@ -10,7 +10,7 @@ use Bambamboole\Lattice\Core\Enums\Gap;
 use Bambamboole\Lattice\Core\Enums\HttpMethod;
 use Bambamboole\Lattice\Core\Enums\PageContainer;
 use Bambamboole\Lattice\Core\Enums\PageLayout;
-use Bambamboole\Lattice\Core\Enums\ToastType;
+use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use Bambamboole\Lattice\Core\Enums\Width;
 use Bambamboole\Lattice\Forms\Enums\Op;
 use Bambamboole\Lattice\Tables\Enums\PaginationType;
@@ -32,7 +32,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 Width::class,
                 PageLayout::class,
                 PageContainer::class,
-                ToastType::class,
+                ToastVariant::class,
                 HttpMethod::class,
                 PaginationType::class,
                 Op::class,

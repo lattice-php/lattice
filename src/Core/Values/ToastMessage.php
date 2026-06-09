@@ -4,34 +4,34 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Core\Values;
 
-use Bambamboole\Lattice\Core\Enums\ToastType;
+use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use JsonSerializable;
 
 final readonly class ToastMessage implements JsonSerializable
 {
     private function __construct(
-        public ToastType $type,
+        public ToastVariant $variant,
         public string $message,
     ) {}
 
-    public static function make(ToastType $type, string $message): self
+    public static function make(ToastVariant $variant, string $message): self
     {
-        return new self($type, $message);
+        return new self($variant, $message);
     }
 
     /**
-     * @return array{type: string, message: string}
+     * @return array{variant: string, message: string}
      */
     public function toArray(): array
     {
         return [
-            'type' => $this->type->value,
+            'variant' => $this->variant->value,
             'message' => $this->message,
         ];
     }
 
     /**
-     * @return array{type: string, message: string}
+     * @return array{variant: string, message: string}
      */
     public function jsonSerialize(): array
     {

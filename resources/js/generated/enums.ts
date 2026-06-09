@@ -6,5 +6,5 @@ export type Op = '=' | '!=' | '>' | '<' | '>=' | '<=' | 'in' | 'not_in';
 export type PageContainer = 'centered' | 'default';
 export type PageLayout = 'app' | 'auth' | 'none';
 export type PaginationType = 'none' | 'simple' | 'table' | 'infinite';
-export type ToastType = 'success' | 'info' | 'warning' | 'error';
+export type ToastVariant = 'success' | 'info' | 'warning' | 'error';
 export type Width = 'full' | 'sm' | 'md' | 'lg';

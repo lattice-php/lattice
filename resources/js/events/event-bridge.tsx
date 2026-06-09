@@ -2,15 +2,15 @@ import { router } from "@inertiajs/react";
 import { useEffect } from "react";
 import { LATTICE_EVENT } from "./event-names";
 
-export const toastTypes = ["success", "info", "warning", "error"] as const;
+export const toastVariants = ["success", "info", "warning", "error"] as const;
 export const appearances = ["light", "dark", "system"] as const;
 
-export type ToastType = (typeof toastTypes)[number];
+export type ToastVariant = (typeof toastVariants)[number];
 export type Appearance = (typeof appearances)[number];
 
 export type ToastMessage = {
   message: string;
-  type: ToastType;
+  variant: ToastVariant;
 };
 
 type EventBridgeProps = {
@@ -33,8 +33,8 @@ type InertiaFlashEvent = CustomEvent<{
   };
 }>;
 
-function isToastType(value: unknown): value is ToastType {
-  return toastTypes.some((type) => type === value);
+function isToastVariant(value: unknown): value is ToastVariant {
+  return toastVariants.some((variant) => variant === value);
 }
 
 function isAppearance(value: unknown): value is Appearance {
@@ -48,13 +48,13 @@ function normalizeFlashToast(value: unknown): ToastMessage | null {
 
   const candidate = value as Partial<ToastMessage>;
 
-  if (typeof candidate.message !== "string" || !isToastType(candidate.type)) {
+  if (typeof candidate.message !== "string" || !isToastVariant(candidate.variant)) {
     return null;
   }
 
   return {
     message: candidate.message,
-    type: candidate.type,
+    variant: candidate.variant,
   };
 }
 
@@ -68,7 +68,7 @@ function normalizeLatticeToast(event: Event): ToastMessage | null {
 
   return {
     message,
-    type: isToastType(detail.variant) ? detail.variant : "success",
+    variant: isToastVariant(detail.variant) ? detail.variant : "success",
   };
 }
 
