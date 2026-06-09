@@ -8,9 +8,9 @@ use Bambamboole\Lattice\Core\Components\Heading;
 use Bambamboole\Lattice\Core\Components\Stack;
 use Bambamboole\Lattice\Core\Enums\Gap;
 use Bambamboole\Lattice\Core\Enums\HttpMethod;
+use Bambamboole\Lattice\Core\PageSchema;
 use Bambamboole\Lattice\Forms\Components\Form;
-use Bambamboole\Lattice\Pages\Page;
-use Bambamboole\Lattice\Pages\PageSchema;
+use Bambamboole\Lattice\Http\Page;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 

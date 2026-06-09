@@ -1,13 +1,14 @@
 <?php
 
-namespace Bambamboole\Lattice\Pages;
+namespace Bambamboole\Lattice\Http;
 
 use BackedEnum;
 use BadMethodCallException;
 use Bambamboole\Lattice\Contracts\PageContract;
+use Bambamboole\Lattice\Core\Enums\PageContainer;
+use Bambamboole\Lattice\Core\Enums\PageLayout;
+use Bambamboole\Lattice\Core\PageSchema;
 use Bambamboole\Lattice\Facades\Lattice;
-use Bambamboole\Lattice\Pages\Enums\PageContainer;
-use Bambamboole\Lattice\Pages\Enums\PageLayout;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;

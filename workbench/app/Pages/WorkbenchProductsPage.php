@@ -8,8 +8,8 @@ use Bambamboole\Lattice\Core\Components\Button;
 use Bambamboole\Lattice\Core\Components\Heading;
 use Bambamboole\Lattice\Core\Components\Stack;
 use Bambamboole\Lattice\Core\Enums\Gap;
-use Bambamboole\Lattice\Pages\Page;
-use Bambamboole\Lattice\Pages\PageSchema;
+use Bambamboole\Lattice\Core\PageSchema;
+use Bambamboole\Lattice\Http\Page;
 use Bambamboole\Lattice\Tables\Components\Table;
 use Workbench\App\Tables\ProductsTable;
 

@@ -6,7 +6,7 @@ namespace Bambamboole\Lattice\Fragments;
 
 use Bambamboole\Lattice\Contracts\ProvidesSchema;
 use Bambamboole\Lattice\Core\Definition;
-use Bambamboole\Lattice\Pages\PageSchema;
+use Bambamboole\Lattice\Core\PageSchema;
 
 abstract class FragmentDefinition extends Definition implements ProvidesSchema
 {

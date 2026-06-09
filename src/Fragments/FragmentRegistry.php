@@ -7,8 +7,8 @@ namespace Bambamboole\Lattice\Fragments;
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
 use Bambamboole\Lattice\Attributes\Fragment;
 use Bambamboole\Lattice\Core\DefinitionRegistry;
+use Bambamboole\Lattice\Core\PageSchema;
 use Bambamboole\Lattice\Fragments\Components\Fragment as FragmentComponent;
-use Bambamboole\Lattice\Pages\PageSchema;
 
 /**
  * @extends DefinitionRegistry<FragmentDefinition>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Pages\Enums;
+namespace Bambamboole\Lattice\Core\Enums;
 
 enum PageLayout: string
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Pages;
+namespace Bambamboole\Lattice\Core;
 
 use Bambamboole\Lattice\Core\Components\Component;
 
