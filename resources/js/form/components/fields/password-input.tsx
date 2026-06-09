@@ -2,9 +2,9 @@ import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/c
 import type { NodeProps, RendererComponent } from "@lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import PasswordInput from "../base/password-input";
-import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";
-import { useSetFormValue } from "../values";
+import { useFieldCommit } from "../use-field-commit";
+import { useFormContext } from "../context";
 import type { FormLabelAction } from "../types";
 
 type PasswordConfirmation = {
@@ -52,9 +52,9 @@ declare module "@lattice/core/types" {
 }
 
 export const PasswordInputComponent: RendererComponent<"form.password-input"> = ({ node }) => {
-  const { clearErrors, errors, precognitive, validate } = useFormContext();
+  const { errors } = useFormContext();
   const { hidden, required, readonly, disabled } = useDependentField(node);
-  const setValue = useSetFormValue();
+  const { commit } = useFieldCommit();
   const name = getStringProp(node.props, "name");
   const confirmation = getPasswordConfirmation(node.props);
   const confirmationName = confirmation?.name ?? `${name}_confirmation`;
@@ -67,12 +67,7 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
   const onChange =
     (field: string) =>
     (event: React.ChangeEvent<HTMLInputElement>): void => {
-      setValue(field, event.target.value);
-      if (precognitive) {
-        validate(field);
-      } else {
-        clearErrors(field);
-      }
+      commit(field, event.target.value);
     };
 
   return (

@@ -2,18 +2,17 @@ import { Check, ChevronsUpDown, Loader2, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@lattice/lib/utils";
 import { getBooleanProp, getStringProp } from "@lattice/core/props";
-import type { NodeProps, RendererComponent } from "@lattice/core/types";
+import type { RendererComponent } from "@lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
+import { FORM_DEBOUNCE_MS, postFormAction } from "../form-transport";
+import { type Option, getOptions } from "../options";
 import { useResolvedNode } from "../resolved-nodes";
 import { useDependentField } from "../use-dependent-field";
-import { xsrfToken } from "../use-form-resolver";
-import { useFormValue, useSetFormValue } from "../values";
+import { useFieldCommit } from "../use-field-commit";
+import { useFormValue } from "../values";
 
-type SelectOption = {
-  label: string;
-  value: string;
-};
+type SelectOption = Option;
 
 declare module "@lattice/core/types" {
   interface ComponentProps {
@@ -34,27 +33,7 @@ declare module "@lattice/core/types" {
   }
 }
 
-function getOptions(props: NodeProps | undefined): SelectOption[] {
-  const value = props?.options;
-
-  if (!Array.isArray(value)) {
-    return [];
-  }
-
-  return value.filter(
-    (option): option is SelectOption =>
-      typeof option === "object" &&
-      option !== null &&
-      typeof option.label === "string" &&
-      typeof option.value === "string",
-  );
-}
-
-function toValues(
-  stored: unknown,
-  fallback: string | string[] | undefined,
-  multiple: boolean,
-): string[] {
+function toValues(stored: unknown, fallback: string | string[] | undefined): string[] {
   const source = stored ?? fallback;
 
   if (Array.isArray(source)) {
@@ -65,12 +44,13 @@ function toValues(
     return [];
   }
 
-  return multiple ? [String(source)] : [String(source)];
+  return [String(source)];
 }
 
 export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
-  const { action, clearErrors, componentRef, errors, precognitive, validate } = useFormContext();
+  const { action, componentRef, errors } = useFormContext();
   const { hidden, required, readonly, disabled } = useDependentField(node);
+  const { change, blur } = useFieldCommit();
   const resolvedNode = useResolvedNode(node);
   const name = getStringProp(node.props, "name");
   const placeholder = getStringProp(node.props, "placeholder") || "Select…";
@@ -78,11 +58,10 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
   const searchable = getBooleanProp(node.props, "searchable");
   const staticOptions = useMemo(() => getOptions(resolvedNode.props), [resolvedNode.props]);
 
-  const setValue = useSetFormValue();
   const storedValue = useFormValue(name);
   const selected = useMemo(
-    () => toValues(storedValue, node.props?.value, multiple),
-    [storedValue, node.props?.value, multiple],
+    () => toValues(storedValue, node.props?.value),
+    [storedValue, node.props?.value],
   );
 
   const [open, setOpen] = useState(false);
@@ -91,11 +70,14 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
   const [loading, setLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const labels = useRef(new Map<string, string>());
-  for (const option of [...staticOptions, ...results]) {
-    labels.current.set(option.value, option.label);
-  }
-  const labelFor = (value: string) => labels.current.get(value) ?? value;
+  const labels = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const option of [...staticOptions, ...results]) {
+      map.set(option.value, option.label);
+    }
+    return map;
+  }, [staticOptions, results]);
+  const labelFor = (value: string) => labels.get(value) ?? value;
 
   const locked = readonly || disabled;
 
@@ -111,34 +93,22 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
       return;
     }
 
-    const endpoint = componentRef
-      ? `${action}?_lattice=${encodeURIComponent(componentRef)}`
-      : action;
     const controller = new AbortController();
     setLoading(true);
 
     const timer = window.setTimeout(() => {
-      void fetch(endpoint, {
-        method: "POST",
-        credentials: "same-origin",
-        signal: controller.signal,
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-          "X-XSRF-TOKEN": xsrfToken(),
-        },
-        body: JSON.stringify({ _search: name, q: query }),
-      })
-        .then((response) =>
-          response.ok ? (response.json() as Promise<{ options?: SelectOption[] }>) : null,
-        )
+      void postFormAction<{ options?: SelectOption[] }>(
+        action,
+        componentRef,
+        { _search: name, q: query },
+        controller.signal,
+      )
         .then((response) => {
           setResults(response?.options ?? []);
           setLoading(false);
         })
         .catch(() => {});
-    }, 250);
+    }, FORM_DEBOUNCE_MS);
 
     return () => {
       window.clearTimeout(timer);
@@ -164,22 +134,16 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
   }, [open]);
 
   function commit(next: string[]): void {
-    setValue(name, multiple ? next : (next[0] ?? ""));
-    clearErrors(name);
+    change(name, multiple ? next : (next[0] ?? ""));
   }
 
   function close(): void {
     setOpen(false);
     setQuery("");
-
-    if (precognitive) {
-      validate(name);
-    }
+    blur(name);
   }
 
   function pick(option: SelectOption): void {
-    labels.current.set(option.value, option.label);
-
     if (multiple) {
       const next = selected.includes(option.value)
         ? selected.filter((value) => value !== option.value)
@@ -201,11 +165,11 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
     return null;
   }
 
-  const visibleOptions = searchable
-    ? query.trim() === ""
+  const visibleOptions = !searchable
+    ? staticOptions.filter((option) => option.label.toLowerCase().includes(query.toLowerCase()))
+    : query.trim() === ""
       ? staticOptions
-      : results
-    : staticOptions.filter((option) => option.label.toLowerCase().includes(query.toLowerCase()));
+      : results;
 
   return (
     <FormFieldFrame

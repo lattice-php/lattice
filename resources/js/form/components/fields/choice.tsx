@@ -1,33 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { cn } from "@lattice/lib/utils";
 import { getOptionalNumberProp, getStringProp } from "@lattice/core/props";
-import type { NodeProps, RendererComponent } from "@lattice/core/types";
+import type { RendererComponent } from "@lattice/core/types";
 import { FormFieldFrame } from "../base/field";
-import { useFormContext } from "../context";
+import { type Option, getOptions } from "../options";
+import { useControlledField } from "../use-controlled-field";
 import { useResolvedNode } from "../resolved-nodes";
-import { useDependentField } from "../use-dependent-field";
 import { useFormValue, useSetFormValue } from "../values";
-
-type ChoiceOption = {
-  label: string;
-  value: string;
-};
-
-function getChoiceOptions(props: NodeProps | undefined): ChoiceOption[] {
-  const value = props?.options;
-
-  if (!Array.isArray(value)) {
-    return [];
-  }
-
-  return value.filter(
-    (option): option is ChoiceOption =>
-      typeof option === "object" &&
-      option !== null &&
-      typeof option.label === "string" &&
-      typeof option.value === "string",
-  );
-}
 
 declare module "@lattice/core/types" {
   interface ComponentProps {
@@ -35,7 +14,7 @@ declare module "@lattice/core/types" {
       event?: string;
       label?: string;
       name?: string;
-      options?: ChoiceOption[];
+      options?: Option[];
       tabIndex?: number;
       value?: string;
     };
@@ -43,67 +22,23 @@ declare module "@lattice/core/types" {
 }
 
 export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
-  const { clearErrors, errors, precognitive, validate } = useFormContext();
-  const { hidden, required, readonly, disabled } = useDependentField(node);
   const resolvedNode = useResolvedNode(node);
-  const name = getStringProp(node.props, "name");
-  const setValue = useSetFormValue();
+  const { name, value, error, hidden, required, readonly, disabled, commit } =
+    useControlledField(node);
   const storedValue = useFormValue(name);
-  const options = useMemo(() => getChoiceOptions(resolvedNode.props), [resolvedNode.props]);
+  const setValue = useSetFormValue();
+  const options = useMemo(() => getOptions(resolvedNode.props), [resolvedNode.props]);
   const fallbackValue = options[0]?.value ?? "";
-  const value =
-    storedValue !== undefined
-      ? String(storedValue)
-      : typeof node.props?.value === "string"
-        ? node.props.value
-        : fallbackValue;
+  const selected = value || fallbackValue;
   const event = getStringProp(node.props, "event");
-  const [selectedValue, setSelectedValue] = useState(value);
-  const hasMounted = useRef(false);
-  const validateRef = useRef(validate);
-  const clearErrorsRef = useRef(clearErrors);
 
+  // Seed the store with the default selection so dependent fields and the
+  // submitted payload reflect it before the user interacts.
   useEffect(() => {
-    setSelectedValue(value);
-  }, [value]);
-
-  useEffect(() => {
-    setValue(name, selectedValue);
-  }, [name, selectedValue, setValue]);
-
-  useEffect(() => {
-    validateRef.current = validate;
-    clearErrorsRef.current = clearErrors;
-  }, [clearErrors, validate]);
-
-  useEffect(() => {
-    if (!hasMounted.current) {
-      hasMounted.current = true;
-
-      return;
+    if (storedValue === undefined && selected) {
+      setValue(name, selected);
     }
-
-    if (precognitive) {
-      validateRef.current(name);
-    } else {
-      clearErrorsRef.current(name);
-    }
-  }, [name, precognitive, selectedValue]);
-
-  function selectOption(nextValue: string): void {
-    setSelectedValue(nextValue);
-
-    if (event) {
-      window.dispatchEvent(
-        new CustomEvent(event, {
-          detail: {
-            name,
-            value: nextValue,
-          },
-        }),
-      );
-    }
-  }
+  }, [name, storedValue, selected, setValue]);
 
   if (hidden || options.length === 0) {
     return null;
@@ -111,21 +46,29 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
 
   const locked = readonly || disabled;
 
+  function selectOption(next: string): void {
+    commit(next);
+
+    if (event) {
+      window.dispatchEvent(new CustomEvent(event, { detail: { name, value: next } }));
+    }
+  }
+
   return (
     <FormFieldFrame
-      error={errors[name]}
+      error={error}
       label={getStringProp(node.props, "label")}
       name={name}
       required={required}
     >
-      <input name={name} type="hidden" value={selectedValue} />
+      <input name={name} type="hidden" value={selected} />
       <div
         aria-label={getStringProp(node.props, "label")}
         className="inline-flex w-fit max-w-full gap-1 overflow-x-auto rounded-lt bg-lt-muted p-1"
         role="radiogroup"
       >
         {options.map((option) => {
-          const isSelected = selectedValue === option.value;
+          const isSelected = selected === option.value;
 
           return (
             <button

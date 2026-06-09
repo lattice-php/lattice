@@ -38,7 +38,8 @@ import type { RendererComponent } from "@lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";
-import { useFormValue, useSetFormValue } from "../values";
+import { useFieldCommit } from "../use-field-commit";
+import { useFormValue } from "../values";
 
 declare module "@lattice/core/types" {
   interface ComponentProps {
@@ -321,10 +322,10 @@ function Toolbar({ editor }: { editor: Editor }) {
 }
 
 export const RichEditorComponent: RendererComponent<"form.rich-editor"> = ({ node }) => {
-  const { clearErrors, errors, precognitive, validate } = useFormContext();
+  const { errors } = useFormContext();
   const { hidden, required, readonly, disabled } = useDependentField(node);
+  const { change, blur } = useFieldCommit();
   const name = getStringProp(node.props, "name");
-  const setValue = useSetFormValue();
   const storedValue = useFormValue(name);
   const locked = readonly || disabled;
   const initialContent =
@@ -352,13 +353,10 @@ export const RichEditorComponent: RendererComponent<"form.rich-editor"> = ({ nod
       },
     },
     onUpdate: ({ editor: instance }) => {
-      setValue(name, instance.isEmpty ? null : instance.getJSON());
-      clearErrors(name);
+      change(name, instance.isEmpty ? null : instance.getJSON());
     },
     onBlur: () => {
-      if (precognitive) {
-        validate(name);
-      }
+      blur(name);
     },
   });
 

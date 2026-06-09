@@ -3,7 +3,8 @@ import type { Node } from "@lattice/core/types";
 import type { FieldState } from "./conditions";
 import { useFormContext } from "./context";
 import { useDependentField } from "./use-dependent-field";
-import { useFormValue, useSetFormValue } from "./values";
+import { useFieldCommit } from "./use-field-commit";
+import { useFormValue } from "./values";
 
 type ControlledField = FieldState & {
   name: string;
@@ -19,10 +20,9 @@ type ControlledField = FieldState & {
  * that writes to the store and triggers precognition validation / error clearing.
  */
 export function useControlledField(node: Node): ControlledField {
-  const { clearErrors, errors, precognitive, validate } = useFormContext();
+  const { errors } = useFormContext();
   const state = useDependentField(node);
   const name = getStringProp(node.props, "name");
-  const setValue = useSetFormValue();
   const storedValue = useFormValue(name);
   const currentValue = storedValue !== undefined ? storedValue : node.props?.value;
   const value =
@@ -30,14 +30,8 @@ export function useControlledField(node: Node): ControlledField {
       ? String(currentValue)
       : "";
 
-  const commit = (next: unknown): void => {
-    setValue(name, next);
-    if (precognitive) {
-      validate(name);
-    } else {
-      clearErrors(name);
-    }
-  };
+  const { commit: commitField } = useFieldCommit();
+  const commit = (next: unknown): void => commitField(name, next);
 
   return { ...state, name, value, error: errors[name], commit };
 }

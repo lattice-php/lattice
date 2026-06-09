@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { getBooleanProp } from "@lattice/core/props";
 import type { Node } from "@lattice/core/types";
+import { FORM_DEBOUNCE_MS, postFormAction } from "./form-transport";
 import { useFormValues, useSetFormValue } from "./values";
 
 type ResolveResponse = {
@@ -21,12 +22,6 @@ function collectWatch(nodes: Node[] | undefined, keys: Set<string>, state: { any
     }
     collectWatch(child.children, keys, state);
   }
-}
-
-export function xsrfToken(): string {
-  const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
-
-  return match ? decodeURIComponent(match[1]) : "";
 }
 
 export function useFormResolver(
@@ -54,25 +49,15 @@ export function useFormResolver(
       return;
     }
 
-    const endpoint = componentRef
-      ? `${action}?_lattice=${encodeURIComponent(componentRef)}`
-      : action;
     const controller = new AbortController();
 
     const timer = window.setTimeout(() => {
-      void fetch(endpoint, {
-        method: "POST",
-        credentials: "same-origin",
-        signal: controller.signal,
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-          "X-XSRF-TOKEN": xsrfToken(),
-        },
-        body: JSON.stringify({ _resolve: true, ...values }),
-      })
-        .then((response) => (response.ok ? (response.json() as Promise<ResolveResponse>) : null))
+      void postFormAction<ResolveResponse>(
+        action,
+        componentRef,
+        { _resolve: true, ...values },
+        controller.signal,
+      )
         .then((response) => {
           if (!response) {
             return;
@@ -85,7 +70,7 @@ export function useFormResolver(
           }
         })
         .catch(() => {});
-    }, 250);
+    }, FORM_DEBOUNCE_MS);
 
     return () => {
       window.clearTimeout(timer);
