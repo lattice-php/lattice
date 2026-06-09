@@ -14,7 +14,7 @@ final readonly class Effect implements EffectContract
      * @param  array<string, mixed>  $payload
      */
     private function __construct(
-        private string $type,
+        private EffectType $type,
         private array $payload = [],
     ) {}
 
@@ -28,44 +28,44 @@ final readonly class Effect implements EffectContract
             default => throw new \InvalidArgumentException('A toast message string is required.'),
         };
 
-        return new self('toast', $toast->toEffectPayload());
+        return new self(EffectType::Toast, $toast->toEffectPayload());
     }
 
     public static function reloadComponent(string $component): self
     {
-        return new self('reloadComponent', ['component' => $component]);
+        return new self(EffectType::ReloadComponent, ['component' => $component]);
     }
 
     public static function reloadPage(): self
     {
-        return new self('reloadPage');
+        return new self(EffectType::ReloadPage);
     }
 
     public static function redirect(string $url): self
     {
-        return new self('redirect', ['url' => $url]);
+        return new self(EffectType::Redirect, ['url' => $url]);
     }
 
     public static function download(string $url): self
     {
-        return new self('download', ['url' => $url]);
+        return new self(EffectType::Download, ['url' => $url]);
     }
 
     public static function openModal(string $modal): self
     {
-        return new self('openModal', ['modal' => $modal]);
+        return new self(EffectType::OpenModal, ['modal' => $modal]);
     }
 
     public static function closeModal(?string $modal = null): self
     {
-        return new self('closeModal', array_filter([
+        return new self(EffectType::CloseModal, array_filter([
             'modal' => $modal,
         ], fn (mixed $value): bool => $value !== null));
     }
 
     public static function resetForm(?string $form = null): self
     {
-        return new self('resetForm', array_filter([
+        return new self(EffectType::ResetForm, array_filter([
             'form' => $form,
         ], fn (mixed $value): bool => $value !== null));
     }
@@ -76,7 +76,7 @@ final readonly class Effect implements EffectContract
     public function toArray(): array
     {
         return [
-            'type' => $this->type,
+            'type' => $this->type->value,
             ...$this->payload,
         ];
     }

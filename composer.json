@@ -54,6 +54,7 @@
         "test:lint": "./vendor/bin/pint --test",
         "lint": "./vendor/bin/pint",
         "analyse": "./vendor/bin/phpstan analyse",
+        "types": "@php vendor/bin/testbench typescript:transform",
         "rector": "./vendor/bin/rector process",
         "rector:test": "./vendor/bin/rector process --dry-run",
         "fix": [

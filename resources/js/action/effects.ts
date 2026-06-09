@@ -1,10 +1,11 @@
 import { router } from "@inertiajs/react";
+import type { EffectType, ToastType } from "@lattice/generated/enums";
 
 export type ActionEffect =
   | {
       message?: string;
       type: "toast";
-      variant?: "success" | "info" | "warning" | "error";
+      variant?: ToastType;
     }
   | {
       type: "reloadPage";
@@ -43,7 +44,7 @@ const eventNames = {
   reloadPage: "lattice:reload-page",
   resetForm: "lattice:reset-form",
   toast: "lattice:toast",
-} satisfies Record<ActionEffect["type"], string>;
+} satisfies Record<EffectType, string>;
 
 function triggerDownload(url: string): void {
   const link = document.createElement("a");
@@ -89,18 +90,11 @@ export function getActionEffects(effects: unknown): ActionEffect[] {
 }
 
 export function isActionEffect(effect: unknown): effect is ActionEffect {
-  if (typeof effect !== "object" || effect === null || !("type" in effect)) {
-    return false;
-  }
-
   return (
-    effect.type === "toast" ||
-    effect.type === "reloadPage" ||
-    effect.type === "reloadComponent" ||
-    effect.type === "redirect" ||
-    effect.type === "download" ||
-    effect.type === "openModal" ||
-    effect.type === "closeModal" ||
-    effect.type === "resetForm"
+    typeof effect === "object" &&
+    effect !== null &&
+    "type" in effect &&
+    typeof effect.type === "string" &&
+    Object.hasOwn(eventNames, effect.type)
   );
 }

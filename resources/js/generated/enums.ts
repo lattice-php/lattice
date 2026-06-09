@@ -1,0 +1,10 @@
+export type Align = 'center' | 'left' | 'start' | 'stretch';
+export type EffectType = 'toast' | 'reloadComponent' | 'reloadPage' | 'redirect' | 'download' | 'openModal' | 'closeModal' | 'resetForm';
+export type Gap = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
+export type Op = '=' | '!=' | '>' | '<' | '>=' | '<=' | 'in' | 'not_in';
+export type PageContainer = 'centered' | 'default';
+export type PageLayout = 'app' | 'auth' | 'none';
+export type PaginationType = 'none' | 'simple' | 'table' | 'infinite';
+export type ToastType = 'success' | 'info' | 'warning' | 'error';
+export type Width = 'full' | 'sm' | 'md' | 'lg';
