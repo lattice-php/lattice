@@ -29,6 +29,14 @@ final readonly class ActionResult implements JsonSerializable
         return new self(true, $data);
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public static function failure(array $data = []): self
+    {
+        return new self(false, $data);
+    }
+
     public function effect(EffectContract $effect): self
     {
         return new self($this->ok, $this->data, [

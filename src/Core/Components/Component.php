@@ -3,7 +3,6 @@
 namespace Bambamboole\Lattice\Core\Components;
 
 use Bambamboole\Lattice\Attributes\SerializationHook;
-use Illuminate\Support\Collection;
 use JsonSerializable;
 use ReflectionMethod;
 use Spatie\Attributes\Attributes;
@@ -14,6 +13,11 @@ use Spatie\Attributes\AttributeTarget;
  */
 abstract class Component implements JsonSerializable
 {
+    /**
+     * @var array<class-string, list<string>>
+     */
+    private static array $serializationHookCache = [];
+
     /**
      * @var array<string, mixed>
      */
@@ -69,11 +73,11 @@ abstract class Component implements JsonSerializable
      */
     public function toArray(): array
     {
-        return $this->serializationHooks()
-            ->reduce(
-                fn (array $data, string $hook): array => $this->{$hook}($data),
-                [],
-            );
+        return array_reduce(
+            $this->serializationHooks(),
+            fn (array $data, string $hook): array => $this->{$hook}($data),
+            [],
+        );
     }
 
     /**
@@ -125,14 +129,16 @@ abstract class Component implements JsonSerializable
     }
 
     /**
-     * @return Collection<int, string>
+     * @return list<string>
      */
-    private function serializationHooks(): Collection
+    private function serializationHooks(): array
     {
-        return collect(Attributes::find($this, SerializationHook::class))
+        return self::$serializationHookCache[static::class] ??= collect(Attributes::find($this, SerializationHook::class))
             ->filter(fn (AttributeTarget $target) => $target->attribute instanceof SerializationHook && $target->target instanceof ReflectionMethod)
             ->filter(fn (AttributeTarget $target) => ! $target->target->isPrivate())
             ->sortBy(fn (AttributeTarget $target): array => [$target->attribute->priority, $target->name])
-            ->map(fn (AttributeTarget $target): string => $target->name);
+            ->map(fn (AttributeTarget $target): string => $target->name)
+            ->values()
+            ->all();
     }
 }
