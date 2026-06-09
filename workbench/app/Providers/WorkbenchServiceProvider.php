@@ -35,7 +35,35 @@ class WorkbenchServiceProvider extends ServiceProvider
     #[\Override]
     public function register(): void
     {
+        $this->useWorkbenchDatabase();
         $this->readBoostConfigFromPackageRoot();
+    }
+
+    /**
+     * Persist the served workbench's data in workbench/database/workbench.sqlite so
+     * it can be inspected directly (e.g. opened in an IDE). Tests keep their own
+     * throwaway database configured in the test case.
+     */
+    private function useWorkbenchDatabase(): void
+    {
+        if ($this->app->runningUnitTests()) {
+            return;
+        }
+
+        $database = package_path('workbench/database/workbench.sqlite');
+
+        if (! is_dir(dirname($database))) {
+            mkdir(dirname($database), 0755, true);
+        }
+
+        if (! file_exists($database)) {
+            touch($database);
+        }
+
+        config([
+            'database.default' => 'sqlite',
+            'database.connections.sqlite.database' => $database,
+        ]);
     }
 
     public function boot(Kernel $kernel): void
