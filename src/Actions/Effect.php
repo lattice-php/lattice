@@ -6,8 +6,8 @@ namespace Bambamboole\Lattice\Actions;
 
 use Bambamboole\Lattice\Actions\Enums\EffectType;
 use Bambamboole\Lattice\Contracts\Effect as EffectContract;
-use Bambamboole\Lattice\Toasts\Enums\ToastType;
-use Bambamboole\Lattice\Toasts\ToastMessage;
+use Bambamboole\Lattice\Core\Toasts\Enums\ToastType;
+use Bambamboole\Lattice\Core\Toasts\ToastMessage;
 
 final readonly class Effect implements EffectContract
 {
