@@ -2,7 +2,7 @@
 
 namespace Bambamboole\Lattice\Components\Form;
 
-use Bambamboole\Lattice\Components\Form\Concerns\HasOptions;
+use Bambamboole\Lattice\Components\Concerns\HasOptions;
 use Bambamboole\Lattice\Forms\FormData;
 use Closure;
 use Illuminate\Http\Request;

@@ -2,7 +2,7 @@
 
 namespace Bambamboole\Lattice\Components\Form;
 
-use Bambamboole\Lattice\Components\Form\Concerns\HasOptions;
+use Bambamboole\Lattice\Components\Concerns\HasOptions;
 
 class Choice extends Field
 {
