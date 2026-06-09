@@ -1,102 +1,104 @@
-import { X } from "lucide-react";
-import type { TableColumn } from "../types";
+import { useState } from "react";
+import { operatorLabel } from "../query";
+import type { FilterClause, TableColumn } from "../types";
 
-const controlClass =
-  "h-8 w-full rounded-lt-sm border border-lt-input bg-lt-bg px-2 text-xs font-normal data-[active=true]:border-lt-primary";
-
-function ClearButton({
-  label,
-  disabled,
-  onClick,
-}: {
-  label: string;
-  disabled: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      aria-label={`Clear ${label} filter`}
-      className="inline-flex size-6 shrink-0 items-center justify-center rounded hover:bg-lt-muted disabled:opacity-50"
-      disabled={disabled}
-      onClick={onClick}
-    >
-      <X aria-hidden="true" className="size-3" />
-    </button>
-  );
-}
+const controlClass = "h-8 rounded-lt-sm border border-lt-input bg-lt-bg px-2 text-xs font-normal";
 
 export function ColumnFilter({
   column,
-  value,
   processing,
-  onChange,
-  onApply,
+  onAdd,
 }: {
   column: TableColumn;
-  value: string;
   processing: boolean;
-  onChange: (value: string) => void;
-  onApply: (value: string) => void;
+  onAdd: (clause: FilterClause) => void;
 }) {
-  const type = column.filter?.type ?? "partial";
-  const active = value !== "";
+  const filter = column.filter;
+  const operators = filter?.operators ?? [];
+  const [operator, setOperator] = useState(filter?.defaultOperator ?? operators[0] ?? "equals");
+  const [value, setValue] = useState("");
 
-  if (type === "boolean") {
+  if (!filter) {
+    return null;
+  }
+
+  function add(nextValue: string): void {
+    if (nextValue === "") {
+      return;
+    }
+
+    onAdd({ field: column.key, operator, value: nextValue });
+    setValue("");
+  }
+
+  const operatorSelect =
+    operators.length > 1 ? (
+      <select
+        aria-label={`${column.label} operator`}
+        className={controlClass}
+        disabled={processing}
+        value={operator}
+        onChange={(event) => setOperator(event.target.value)}
+      >
+        {operators.map((option) => (
+          <option key={option} value={option}>
+            {operatorLabel(option)}
+          </option>
+        ))}
+      </select>
+    ) : null;
+
+  if (filter.type === "boolean") {
     return (
       <select
         aria-label={`Filter ${column.label}`}
-        className={controlClass}
-        data-active={active}
+        className={`${controlClass} w-full`}
         disabled={processing}
-        value={value}
-        onChange={(event) => onApply(event.target.value)}
+        value=""
+        onChange={(event) => add(event.target.value)}
       >
-        <option value="">All</option>
+        <option value="">Filter…</option>
         <option value="true">True</option>
         <option value="false">False</option>
       </select>
     );
   }
 
-  if (type === "date") {
+  if (filter.type === "date") {
     return (
       <div className="flex items-center gap-1">
+        {operatorSelect}
         <input
           type="date"
           aria-label={`Filter ${column.label}`}
-          className={controlClass}
-          data-active={active}
+          className={`${controlClass} w-full`}
           disabled={processing}
           value={value}
-          onChange={(event) => onApply(event.target.value)}
+          onChange={(event) => {
+            setValue(event.target.value);
+            add(event.target.value);
+          }}
         />
-        {active && (
-          <ClearButton label={column.label} disabled={processing} onClick={() => onApply("")} />
-        )}
       </div>
     );
   }
 
   return (
     <div className="flex items-center gap-1">
+      {operatorSelect}
       <input
-        type="text"
+        type={filter.type === "number" ? "number" : "text"}
         aria-label={`Filter ${column.label}`}
-        className={controlClass}
-        data-active={active}
+        className={`${controlClass} w-full`}
         disabled={processing}
         value={value}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) => setValue(event.target.value)}
         onKeyDown={(event) => {
           if (event.key === "Enter") {
-            onApply(value);
+            add(value);
           }
         }}
       />
-      {active && (
-        <ClearButton label={column.label} disabled={processing} onClick={() => onApply("")} />
-      )}
     </div>
   );
 }

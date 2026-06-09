@@ -1,4 +1,26 @@
-import type { TableColumn, TablePagination, TableRow, TableRowMeta, TableState } from "./types";
+import type {
+  FilterClause,
+  TableColumn,
+  TablePagination,
+  TableRow,
+  TableRowMeta,
+  TableState,
+} from "./types";
+
+export function getFilters(value: unknown): FilterClause[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter(
+    (clause): clause is FilterClause =>
+      typeof clause === "object" &&
+      clause !== null &&
+      typeof clause.field === "string" &&
+      typeof clause.operator === "string" &&
+      typeof clause.value === "string",
+  );
+}
 
 export function getColumns(value: unknown): TableColumn[] {
   if (!Array.isArray(value)) {
@@ -51,7 +73,7 @@ export function flattenColumns(columns: TableColumn[]): TableColumn[] {
 export function getState(value: unknown): TableState {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return {
-      filters: {},
+      filters: [],
       sorts: [],
       page: 1,
       perPage: 25,
@@ -61,12 +83,7 @@ export function getState(value: unknown): TableState {
   const state = value as Partial<TableState>;
 
   return {
-    filters:
-      typeof state.filters === "object" && state.filters !== null && !Array.isArray(state.filters)
-        ? Object.fromEntries(
-            Object.entries(state.filters).map(([key, filter]) => [key, String(filter ?? "")]),
-          )
-        : {},
+    filters: getFilters(state.filters),
     sorts: Array.isArray(state.sorts) ? state.sorts : [],
     page: typeof state.page === "number" ? state.page : 1,
     perPage: typeof state.perPage === "number" ? state.perPage : 25,

@@ -19,7 +19,9 @@ describe("Lattice table component", () => {
             sortable: true,
             filter: {
               enabled: true,
-              type: "partial",
+              type: "text",
+              operators: ["contains", "equals", "not_equals"],
+              defaultOperator: "contains",
             },
           },
           {
@@ -54,7 +56,7 @@ describe("Lattice table component", () => {
         ],
         endpoint: "/lattice/tables/workbench.users",
         state: {
-          filters: {},
+          filters: [],
           page: 1,
           perPage: 25,
           sorts: [
@@ -69,10 +71,9 @@ describe("Lattice table component", () => {
     render(<TableComponent node={node}>{null}</TableComponent>);
 
     expect(screen.getByRole("button", { name: "Sort Name" })).toBeVisible();
-    expect(screen.getByRole("columnheader", { name: "Sort Name" })).toHaveAttribute(
-      "aria-sort",
-      "ascending",
-    );
+    expect(
+      screen.getByRole("button", { name: "Sort Name" }).closest('[role="columnheader"]'),
+    ).toHaveAttribute("aria-sort", "ascending");
     expect(screen.getByText("Sorted by")).toBeVisible();
     expect(screen.getByText("1. Name ascending")).toBeVisible();
     expect(screen.getByText("2. Email descending")).toBeVisible();
@@ -171,7 +172,7 @@ describe("Lattice table component", () => {
           },
         ],
         state: {
-          filters: {},
+          filters: [],
           page: 1,
           perPage: 25,
           sorts: [],
@@ -201,7 +202,7 @@ describe("Lattice table component", () => {
         data: [],
         pagination: {},
         state: {
-          filters: {},
+          filters: [],
           page: 1,
           perPage: 25,
           sorts: [
@@ -232,7 +233,7 @@ describe("Lattice table component", () => {
         data: [],
         endpoint: "/lattice/tables/workbench.users",
         state: {
-          filters: {},
+          filters: [],
           page: 1,
           perPage: 25,
           sorts: [{ key: "name", direction: "asc" }],
@@ -278,7 +279,7 @@ describe("Lattice table component", () => {
         data: [],
         pagination: {},
         state: {
-          filters: {},
+          filters: [],
           page: 1,
           perPage: 25,
           sorts: [{ key: "name", direction: "asc" }],
@@ -302,7 +303,7 @@ describe("Lattice table component", () => {
         endpoint: "/lattice/tables/teams.members",
         ref: "sealed-reference",
         state: {
-          filters: {},
+          filters: [],
           page: 1,
           perPage: 25,
           sorts: [],
@@ -336,7 +337,7 @@ describe("Lattice table component", () => {
         },
         rows: [],
         state: {
-          filters: {},
+          filters: [],
           page: 1,
           perPage: 25,
           sorts: [],
@@ -362,7 +363,7 @@ describe("Lattice table component", () => {
         },
         rows: [],
         state: {
-          filters: {},
+          filters: [],
           page: 1,
           perPage: 25,
           sorts: [],
@@ -406,7 +407,7 @@ describe("Lattice table component", () => {
             perPage: 1,
           },
           state: {
-            filters: {},
+            filters: [],
             page: 2,
             perPage: 1,
             sorts: [],
@@ -424,7 +425,7 @@ describe("Lattice table component", () => {
             perPage: 1,
           },
           state: {
-            filters: {},
+            filters: [],
             page: 1,
             perPage: 1,
             sorts: [{ key: "name", direction: "asc" }],
@@ -454,7 +455,7 @@ describe("Lattice table component", () => {
           perPage: 1,
         },
         state: {
-          filters: {},
+          filters: [],
           page: 1,
           perPage: 1,
           sorts: [],
@@ -509,7 +510,7 @@ describe("Lattice table component", () => {
           total: 1,
         },
         state: {
-          filters: {},
+          filters: [],
           page: 1,
           perPage: 25,
           sorts: [],
@@ -542,7 +543,7 @@ describe("Lattice table component", () => {
           total: 4,
         },
         state: {
-          filters: {},
+          filters: [],
           page: 3,
           perPage: 1,
           sorts: [],
@@ -575,7 +576,7 @@ describe("Lattice table component", () => {
           total: 4,
         },
         state: {
-          filters: {},
+          filters: [],
           page: 2,
           perPage: 1,
           sorts: [],
@@ -613,7 +614,7 @@ describe("Lattice table component", () => {
           to: 1,
         },
         state: {
-          filters: {},
+          filters: [],
           page: 1,
           perPage: 25,
           sorts: [],
@@ -639,7 +640,7 @@ describe("Lattice table component", () => {
           mode: "none",
         },
         state: {
-          filters: {},
+          filters: [],
           page: 1,
           perPage: 25,
           sorts: [],
@@ -668,7 +669,7 @@ describe("Lattice table component", () => {
       Response.json({
         data: [],
         pagination: {},
-        state: { filters: {}, page: 1, perPage: 25, sorts: [] },
+        state: { filters: [], page: 1, perPage: 25, sorts: [] },
       }),
     );
 
@@ -678,13 +679,40 @@ describe("Lattice table component", () => {
       id: "workbench.products",
       props: {
         columns: [
-          { key: "name", label: "Name", filter: { enabled: true, type: "partial" } },
-          { key: "featured", label: "Featured", filter: { enabled: true, type: "boolean" } },
-          { key: "updated_at", label: "Updated", filter: { enabled: true, type: "date" } },
+          {
+            key: "name",
+            label: "Name",
+            filter: {
+              enabled: true,
+              type: "text",
+              operators: ["contains", "equals", "not_equals"],
+              defaultOperator: "contains",
+            },
+          },
+          {
+            key: "featured",
+            label: "Featured",
+            filter: {
+              enabled: true,
+              type: "boolean",
+              operators: ["equals"],
+              defaultOperator: "equals",
+            },
+          },
+          {
+            key: "updated_at",
+            label: "Updated",
+            filter: {
+              enabled: true,
+              type: "date",
+              operators: ["equals", "before", "after"],
+              defaultOperator: "equals",
+            },
+          },
         ],
         data: [],
         endpoint: "/lattice/tables/workbench.products",
-        state: { filters: {}, page: 1, perPage: 25, sorts: [] },
+        state: { filters: [], page: 1, perPage: 25, sorts: [] },
       },
       type: "table",
     } satisfies Node<"table">;
@@ -696,7 +724,7 @@ describe("Lattice table component", () => {
     });
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
-        "/lattice/tables/workbench.products?filter%5Bfeatured%5D=true&page=1&per_page=25",
+        "/lattice/tables/workbench.products?filter=featured%3Aequals%3Atrue&page=1&per_page=25",
         { headers: { Accept: "application/json" } },
       ),
     );
@@ -706,7 +734,7 @@ describe("Lattice table component", () => {
     });
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
-        "/lattice/tables/workbench.products?filter%5Bupdated_at%5D=2026-06-01&page=1&per_page=25",
+        "/lattice/tables/workbench.products?filter=updated_at%3Aequals%3A2026-06-01&page=1&per_page=25",
         { headers: { Accept: "application/json" } },
       ),
     );
@@ -716,7 +744,7 @@ describe("Lattice table component", () => {
     fireEvent.keyDown(nameFilter, { key: "Enter" });
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
-        "/lattice/tables/workbench.products?filter%5Bname%5D=Lamp&page=1&per_page=25",
+        "/lattice/tables/workbench.products?filter=name%3Acontains%3ALamp&page=1&per_page=25",
         { headers: { Accept: "application/json" } },
       ),
     );

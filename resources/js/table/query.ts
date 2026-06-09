@@ -30,9 +30,9 @@ export function buildEndpoint(endpoint: string, state: TableState, componentRef:
     url.searchParams.set("_lattice", componentRef);
   }
 
-  Object.entries(state.filters)
-    .filter(([, value]) => value !== "")
-    .forEach(([key, value]) => url.searchParams.set(`filter[${key}]`, value));
+  if (state.filters.length > 0) {
+    url.searchParams.set("filter", serializeFilters(state));
+  }
 
   if (state.sorts.length > 0) {
     url.searchParams.set(
@@ -49,12 +49,9 @@ export function buildEndpoint(endpoint: string, state: TableState, componentRef:
 
 export function getQueryParams(state: TableState): Record<string, unknown> {
   const params: Record<string, unknown> = {};
-  const filters = Object.fromEntries(
-    Object.entries(state.filters).filter(([, value]) => value !== ""),
-  );
 
-  if (Object.keys(filters).length > 0) {
-    params.filter = filters;
+  if (state.filters.length > 0) {
+    params.filter = serializeFilters(state);
   }
 
   if (state.sorts.length > 0) {
@@ -64,6 +61,28 @@ export function getQueryParams(state: TableState): Record<string, unknown> {
   }
 
   return params;
+}
+
+function serializeFilters(state: TableState): string {
+  return state.filters
+    .map((clause) => `${clause.field}:${clause.operator}:${encodeURIComponent(clause.value)}`)
+    .join(",");
+}
+
+const operatorLabels: Record<string, string> = {
+  contains: "contains",
+  equals: "equals",
+  not_equals: "not equals",
+  gt: ">",
+  gte: "≥",
+  lt: "<",
+  lte: "≤",
+  before: "before",
+  after: "after",
+};
+
+export function operatorLabel(operator: string): string {
+  return operatorLabels[operator] ?? operator;
 }
 
 export function getSortDirectionLabel(direction: string): string {

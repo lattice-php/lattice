@@ -82,7 +82,12 @@ describe("table bulk actions", () => {
       ...node,
       props: {
         ...node.props,
-        state: { filters: { status: "active" }, sorts: [], page: 1, perPage: 25 },
+        state: {
+          filters: [{ field: "status", operator: "equals", value: "active" }],
+          sorts: [],
+          page: 1,
+          perPage: 25,
+        },
         pagination: { total: 50, currentPage: 1, lastPage: 2, mode: "table" },
       },
     } satisfies Node<"table">;
@@ -99,7 +104,7 @@ describe("table bulk actions", () => {
     await waitFor(() => expect(http.patch).toHaveBeenCalled());
     expect(http.transformer({})).toEqual({
       allMatching: true,
-      filter: { status: "active" },
+      filter: "status:equals:active",
       _lattice: "sealed-ref",
     });
   });

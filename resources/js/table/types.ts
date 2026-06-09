@@ -8,7 +8,9 @@ export type TableColumn = {
   sortable?: boolean;
   filter?: {
     enabled?: boolean;
-    type?: "partial" | "exact" | "date" | "boolean";
+    type?: FilterControlType;
+    operators?: string[];
+    defaultOperator?: string;
   };
   date?: {
     format?: string | null;
@@ -32,8 +34,16 @@ export type TableSort = {
   direction: string;
 };
 
+export type FilterControlType = "text" | "number" | "date" | "boolean";
+
+export type FilterClause = {
+  field: string;
+  operator: string;
+  value: string;
+};
+
 export type TableState = {
-  filters: Record<string, string>;
+  filters: FilterClause[];
   sorts: TableSort[];
   page: number;
   perPage: number;

@@ -10,6 +10,7 @@ import {
 } from "./payload";
 import { buildEndpoint, nextSort } from "./query";
 import type {
+  FilterClause,
   ReloadComponentEvent,
   TableColumn,
   TableResponse,
@@ -85,12 +86,19 @@ export function useTable(node: Node<"table">) {
     });
   }
 
-  function setFilter(key: string, value: string): void {
-    setFilters((current) => ({ ...current, [key]: value }));
+  function addFilter(clause: FilterClause): void {
+    const next = [...filters, clause];
+
+    setFilters(next);
+    void load({
+      ...state,
+      filters: next,
+      page: 1,
+    });
   }
 
-  function applyFilter(key: string, value: string): void {
-    const next = { ...filters, [key]: value };
+  function removeFilter(index: number): void {
+    const next = filters.filter((_, current) => current !== index);
 
     setFilters(next);
     void load({
@@ -180,8 +188,8 @@ export function useTable(node: Node<"table">) {
     pagination,
     state,
     filters,
-    setFilter,
-    applyFilter,
+    addFilter,
+    removeFilter,
     processing,
     hasLoaded,
     infiniteLoaderRef,

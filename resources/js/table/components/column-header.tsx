@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
 import { getColumnAriaSort, getColumnSort } from "../query";
-import type { TableColumn, TableSort, TableState } from "../types";
+import type { FilterClause, TableColumn, TableSort, TableState } from "../types";
 import { ColumnFilter } from "./column-filter";
 
 function SortIndicator({ sort }: { sort: TableSort | undefined }) {
@@ -20,17 +20,13 @@ export function ColumnHeader({
   processing,
   sort,
   state,
-  filterValue,
-  onFilterChange,
-  onFilterApply,
+  onAddFilter,
 }: {
   column: TableColumn;
   processing: boolean;
   sort: (column: TableColumn) => void;
   state: TableState;
-  filterValue: string;
-  onFilterChange: (value: string) => void;
-  onFilterApply: (value: string) => void;
+  onAddFilter: (clause: FilterClause) => void;
 }) {
   const columnSort = getColumnSort(state, column);
 
@@ -55,13 +51,7 @@ export function ColumnHeader({
       )}
 
       {column.filter?.enabled && (
-        <ColumnFilter
-          column={column}
-          value={filterValue}
-          processing={processing}
-          onChange={onFilterChange}
-          onApply={onFilterApply}
-        />
+        <ColumnFilter column={column} processing={processing} onAdd={onAddFilter} />
       )}
     </div>
   );

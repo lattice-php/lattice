@@ -6,6 +6,7 @@ import { useTable } from "../use-table";
 import { useTableSelection } from "../use-table-selection";
 import { BulkBar } from "./bulk-bar";
 import { ColumnHeader } from "./column-header";
+import { FilterStackBar } from "./filter-stack-bar";
 import { TablePagination } from "./pagination";
 import { SortBar } from "./sort-bar";
 import { TableActionNode } from "./table-action-node";
@@ -19,8 +20,8 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
     pagination,
     state,
     filters,
-    setFilter,
-    applyFilter,
+    addFilter,
+    removeFilter,
     processing,
     hasLoaded,
     infiniteLoaderRef,
@@ -69,6 +70,14 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
           onCompleted={selection.clear}
         />
       )}
+      {filters.length > 0 && (
+        <FilterStackBar
+          filters={filters}
+          columns={columns}
+          processing={processing}
+          onRemove={removeFilter}
+        />
+      )}
       {state.sorts.length > 0 && (
         <SortBar columns={columns} state={state} processing={processing} onClear={clearSort} />
       )}
@@ -96,9 +105,7 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
                 processing={processing}
                 sort={sort}
                 state={state}
-                filterValue={filters[column.key] ?? ""}
-                onFilterChange={(value) => setFilter(column.key, value)}
-                onFilterApply={(value) => applyFilter(column.key, value)}
+                onAddFilter={addFilter}
               />
             ))}
             {hasActions && (
