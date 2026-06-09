@@ -56,7 +56,7 @@ const TableComponent: RendererComponent<"table"> = ({ node }) => {
   return (
     <div
       data-lattice-component={node.id}
-      className="overflow-hidden rounded-lt-sm border border-lt-border"
+      className="overflow-x-auto rounded-lt-sm border border-lt-border"
     >
       {hasBulkActions && selection.active && (
         <BulkBar
