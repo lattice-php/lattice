@@ -1,9 +1,8 @@
 import { useEffect, useMemo } from "react";
-import { cn } from "@lattice/lib/utils";
-import { getOptionalNumberProp, getStringProp } from "@lattice/core/props";
+import { type Option, getOptionalNumberProp, getOptions, getStringProp } from "@lattice/core/props";
 import type { RendererComponent } from "@lattice/core/types";
+import { SegmentedPills } from "@lattice/core/components/segmented-pills";
 import { FormFieldFrame } from "../base/field";
-import { type Option, getOptions } from "../options";
 import { useControlledField } from "../use-controlled-field";
 import { useResolvedNode } from "../resolved-nodes";
 import { useFormValue, useSetFormValue } from "../values";
@@ -11,7 +10,6 @@ import { useFormValue, useSetFormValue } from "../values";
 declare module "@lattice/core/types" {
   interface ComponentProps {
     "form.choice": {
-      event?: string;
       label?: string;
       name?: string;
       options?: Option[];
@@ -30,7 +28,6 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
   const options = useMemo(() => getOptions(resolvedNode.props), [resolvedNode.props]);
   const fallbackValue = options[0]?.value ?? "";
   const selected = value || fallbackValue;
-  const event = getStringProp(node.props, "event");
 
   // Seed the store with the default selection so dependent fields and the
   // submitted payload reflect it before the user interacts.
@@ -44,16 +41,6 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
     return null;
   }
 
-  const locked = readonly || disabled;
-
-  function selectOption(next: string): void {
-    commit(next);
-
-    if (event) {
-      window.dispatchEvent(new CustomEvent(event, { detail: { name, value: next } }));
-    }
-  }
-
   return (
     <FormFieldFrame
       error={error}
@@ -62,36 +49,14 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
       required={required}
     >
       <input name={name} type="hidden" value={selected} />
-      <div
-        aria-label={getStringProp(node.props, "label")}
-        className="inline-flex w-fit max-w-full gap-1 overflow-x-auto rounded-lt bg-lt-muted p-1"
-        role="radiogroup"
-      >
-        {options.map((option) => {
-          const isSelected = selected === option.value;
-
-          return (
-            <button
-              aria-checked={isSelected}
-              className={cn(
-                "whitespace-nowrap rounded-lt-sm px-3 py-1.5 text-sm font-medium transition-colors",
-                isSelected
-                  ? "bg-lt-bg text-lt-fg shadow-xs"
-                  : "text-lt-muted-fg hover:bg-lt-bg/60 hover:text-lt-fg",
-                locked && "cursor-not-allowed opacity-60",
-              )}
-              disabled={locked}
-              key={option.value}
-              onClick={() => selectOption(option.value)}
-              role="radio"
-              tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
-              type="button"
-            >
-              {option.label}
-            </button>
-          );
-        })}
-      </div>
+      <SegmentedPills
+        ariaLabel={getStringProp(node.props, "label")}
+        disabled={readonly || disabled}
+        onSelect={commit}
+        options={options}
+        tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
+        value={selected}
+      />
     </FormFieldFrame>
   );
 };

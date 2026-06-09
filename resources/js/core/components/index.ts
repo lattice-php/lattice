@@ -7,6 +7,7 @@ import GridComponent from "./grid";
 import HeadingComponent from "./heading";
 import LinkComponent from "./link";
 import ModalComponent from "./modal";
+import SegmentedControlComponent from "./segmented-control";
 import StackComponent from "./stack";
 import TabComponent, { TabsComponent } from "./tabs";
 import TextComponent from "./text";
@@ -21,6 +22,7 @@ export const coreComponents = createPlugin({
     heading: eagerComponent(HeadingComponent),
     link: eagerComponent(LinkComponent),
     modal: eagerComponent(ModalComponent),
+    "segmented-control": eagerComponent(SegmentedControlComponent),
     stack: eagerComponent(StackComponent),
     tab: eagerComponent(TabComponent),
     tabs: eagerComponent(TabsComponent),

@@ -21,6 +21,7 @@ use Bambamboole\Lattice\Components\Core\Grid;
 use Bambamboole\Lattice\Components\Core\Heading;
 use Bambamboole\Lattice\Components\Core\Link;
 use Bambamboole\Lattice\Components\Core\Modal;
+use Bambamboole\Lattice\Components\Core\SegmentedControl;
 use Bambamboole\Lattice\Components\Core\Stack;
 use Bambamboole\Lattice\Components\Core\Tab;
 use Bambamboole\Lattice\Components\Core\Tabs;
@@ -395,23 +396,23 @@ test('components can opt out of rendering with when', function () {
         ->and($pageData['components'][1]['children'][0]['props']['text'])->toBe('Visible child');
 });
 
-test('form choices serialize options value and change events', function () {
-    expect(Choice::make('appearance', 'Appearance')
+test('segmented control serializes options value and emit event', function () {
+    expect(SegmentedControl::make('appearance', 'Appearance')
         ->value('system')
-        ->event('lattice:appearance-change')
+        ->emits('lattice:appearance-change')
         ->options([
-            Choice::option('Light', 'light'),
-            Choice::option('Dark', 'dark'),
-            Choice::option('System', 'system'),
+            SegmentedControl::option('Light', 'light'),
+            SegmentedControl::option('Dark', 'dark'),
+            SegmentedControl::option('System', 'system'),
         ])
         ->toArray())
         ->toMatchArray([
-            'type' => 'form.choice',
+            'type' => 'segmented-control',
             'props' => [
                 'label' => 'Appearance',
                 'name' => 'appearance',
                 'value' => 'system',
-                'event' => 'lattice:appearance-change',
+                'emits' => 'lattice:appearance-change',
                 'options' => [
                     [
                         'label' => 'Light',

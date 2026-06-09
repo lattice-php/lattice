@@ -1,12 +1,11 @@
 import { Check, ChevronsUpDown, Loader2, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@lattice/lib/utils";
-import { getBooleanProp, getStringProp } from "@lattice/core/props";
+import { type Option, getBooleanProp, getOptions, getStringProp } from "@lattice/core/props";
 import type { RendererComponent } from "@lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { FORM_DEBOUNCE_MS, postFormAction } from "../form-transport";
-import { type Option, getOptions } from "../options";
 import { useResolvedNode } from "../resolved-nodes";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
