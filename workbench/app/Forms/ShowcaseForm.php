@@ -40,7 +40,7 @@ class ShowcaseForm extends FormDefinition
                         TextInput::make('email', 'Email')
                             ->email()
                             ->placeholder('ada@example.com')
-                            ->rules(['required', 'email']),
+                            ->rules(['required']),
                     ]),
                     PasswordInput::make('password', 'Password')
                         ->needsConfirmation()
