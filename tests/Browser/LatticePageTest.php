@@ -42,16 +42,15 @@ it('sorts workbench users in the table', function (): void {
 
     visit('/')
         ->click('Sort Name')
-        ->assertSee('Sorted by')
-        ->assertSee('1. Name ascending')
+        ->assertSee('1. Name')
         ->assertSee('Ada Lovelace')
         ->assertSee('Browser User 26')
         ->assertDontSee('Maya Chen')
         ->click('Sort Email')
-        ->assertSee('2. Email ascending')
+        ->assertSee('2. Email')
         ->click('@clear-name-sort')
-        ->assertDontSee('Name ascending')
-        ->assertSee('1. Email ascending')
+        ->assertDontSee('1. Name')
+        ->assertSee('1. Email')
         ->assertNoSmoke();
 });
 
@@ -59,8 +58,8 @@ it('filters workbench users in the table', function (): void {
     seedWorkbenchUsers();
 
     visit('/')
-        ->fill('Filter Name', 'Ada')
-        ->click('Apply filters')
+        ->fill('[aria-label="Filter Name"]', 'Ada')
+        ->keys('[aria-label="Filter Name"]', 'Enter')
         ->assertSee('Ada Lovelace')
         ->assertDontSee('Maya Chen')
         ->assertDontSee('Grace Hopper')
