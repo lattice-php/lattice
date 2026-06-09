@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionResult;
+use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
+use Bambamboole\Lattice\Actions\Components\ActionGroup;
 use Bambamboole\Lattice\Actions\Effect;
 use Bambamboole\Lattice\Attributes\Action;
 use Bambamboole\Lattice\Attributes\Form as FormAttribute;
@@ -11,8 +13,6 @@ use Bambamboole\Lattice\Attributes\Fragment;
 use Bambamboole\Lattice\Attributes\SerializationHook;
 use Bambamboole\Lattice\Attributes\Table as TableAttribute;
 use Bambamboole\Lattice\Core\Align;
-use Bambamboole\Lattice\Core\Components\Action as ActionComponent;
-use Bambamboole\Lattice\Core\Components\ActionGroup;
 use Bambamboole\Lattice\Core\Components\Badge;
 use Bambamboole\Lattice\Core\Components\Button;
 use Bambamboole\Lattice\Core\Components\Card;

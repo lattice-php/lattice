@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Workbench\App\Tables;
 
+use Bambamboole\Lattice\Actions\Components\Action;
+use Bambamboole\Lattice\Actions\Components\BulkAction;
 use Bambamboole\Lattice\Attributes\Table;
-use Bambamboole\Lattice\Core\Components\Action;
-use Bambamboole\Lattice\Core\Components\BulkAction;
 use Bambamboole\Lattice\Core\Components\Component;
 use Bambamboole\Lattice\Core\Components\Link;
 use Bambamboole\Lattice\Tables\Columns\TextColumn;

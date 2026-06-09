@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Core\Components\Action;
+use Bambamboole\Lattice\Actions\Components\Action;
 use Bambamboole\Lattice\Core\LucideIcon;
 
 test('actions serialize lucide icon enum values', function () {

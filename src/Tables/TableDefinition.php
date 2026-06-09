@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Tables;
 
+use Bambamboole\Lattice\Actions\Components\Action;
 use Bambamboole\Lattice\Contracts\ProvidesTable;
-use Bambamboole\Lattice\Core\Components\Action;
 use Bambamboole\Lattice\Core\Components\Component;
 use Bambamboole\Lattice\Core\Definition;
 use Bambamboole\Lattice\Tables\Columns\Column;

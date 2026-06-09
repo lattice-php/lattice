@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Tables;
 
+use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
 use Bambamboole\Lattice\Attributes\Table;
-use Bambamboole\Lattice\Core\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Core\DefinitionRegistry;
 use Bambamboole\Lattice\Tables\Components\Table as TableComponent;
 use Illuminate\Http\Request;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core\Components;
+namespace Bambamboole\Lattice\Actions\Components;
 
 use Bambamboole\Lattice\Actions\BulkActionDefinition;
 use Bambamboole\Lattice\Actions\BulkActionRegistry;

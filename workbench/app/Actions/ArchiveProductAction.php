@@ -6,8 +6,8 @@ namespace Workbench\App\Actions;
 
 use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionResult;
+use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Attributes\Action;
-use Bambamboole\Lattice\Core\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Core\HttpMethod;
 use Bambamboole\Lattice\Toasts\ToastType;
 use Illuminate\Http\Request;

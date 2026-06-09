@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Actions;
 
+use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Attributes\Action;
 use Bambamboole\Lattice\Attributes\ComponentAttribute;
-use Bambamboole\Lattice\Core\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Core\DefinitionRegistry;
 
 /**

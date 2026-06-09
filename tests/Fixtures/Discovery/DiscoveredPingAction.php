@@ -6,8 +6,8 @@ namespace Bambamboole\Lattice\Tests\Fixtures\Discovery;
 
 use Bambamboole\Lattice\Actions\ActionDefinition;
 use Bambamboole\Lattice\Actions\ActionResult;
+use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
 use Bambamboole\Lattice\Attributes\Action;
-use Bambamboole\Lattice\Core\Components\Action as ActionComponent;
 use Illuminate\Http\Request;
 
 #[Action('fixtures.ping')]
