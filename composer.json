@@ -29,7 +29,8 @@
         "pestphp/pest": "^4.0",
         "pestphp/pest-plugin-browser": "^4.3",
         "pestphp/pest-plugin-laravel": "^4.0",
-        "rector/rector": "^2.4"
+        "rector/rector": "^2.4",
+        "spatie/laravel-typescript-transformer": "^3.2"
     },
     "autoload": {
         "psr-4": {
