@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Contracts;
+namespace Bambamboole\Lattice\Actions\Contracts;
 
 use Bambamboole\Lattice\Actions\ActionResult;
 use Bambamboole\Lattice\Actions\Components\Action;

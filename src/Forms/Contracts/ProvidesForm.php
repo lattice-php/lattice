@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Contracts;
+namespace Bambamboole\Lattice\Forms\Contracts;
 
 use Bambamboole\Lattice\Forms\Components\Form;
 use Illuminate\Contracts\Support\Responsable;

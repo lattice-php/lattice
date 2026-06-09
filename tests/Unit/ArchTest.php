@@ -33,3 +33,12 @@ arch('core does not depend on the feature domains')
         'Bambamboole\Lattice\Tables',
         'Bambamboole\Lattice\Fragments',
     ]);
+
+arch('shared contracts do not depend on the feature domains')
+    ->expect('Bambamboole\Lattice\Contracts')
+    ->not->toUse([
+        'Bambamboole\Lattice\Actions',
+        'Bambamboole\Lattice\Forms',
+        'Bambamboole\Lattice\Tables',
+        'Bambamboole\Lattice\Fragments',
+    ]);
