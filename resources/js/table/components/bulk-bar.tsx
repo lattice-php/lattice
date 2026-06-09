@@ -7,6 +7,7 @@ import {
 } from "@lattice/action/effects";
 import type { ActionEffect } from "@lattice/action/effects";
 import { Button } from "@lattice/core/components/button";
+import { ConfirmDialog } from "@lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice/core/components/spinner";
 import type { BulkAction } from "../bulk";
 
@@ -104,41 +105,16 @@ export function BulkBar({
       </div>
 
       {confirming?.confirmation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div
-            aria-modal="true"
-            className="w-full max-w-md rounded-lt border border-lt-border bg-lt-bg p-6 shadow-lg"
-            role="dialog"
-          >
-            <div className="grid gap-2">
-              <h2 className="text-lg font-semibold leading-none tracking-tight">
-                {confirming.confirmation.title ?? confirming.label}
-              </h2>
-              {confirming.confirmation.description && (
-                <p className="text-sm text-lt-muted-fg">{confirming.confirmation.description}</p>
-              )}
-            </div>
-            <div className="mt-6 flex justify-end gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                disabled={http.processing}
-                onClick={() => setConfirming(null)}
-              >
-                {confirming.confirmation.cancelLabel ?? "Cancel"}
-              </Button>
-              <Button
-                type="button"
-                variant={confirming.variant}
-                disabled={http.processing}
-                onClick={() => void submit(confirming)}
-              >
-                {http.processing && <Spinner />}
-                {confirming.confirmation.confirmLabel ?? confirming.label}
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          title={confirming.confirmation.title ?? confirming.label}
+          description={confirming.confirmation.description}
+          confirmLabel={confirming.confirmation.confirmLabel ?? confirming.label}
+          cancelLabel={confirming.confirmation.cancelLabel ?? "Cancel"}
+          confirmVariant={confirming.variant}
+          processing={http.processing}
+          onConfirm={() => void submit(confirming)}
+          onCancel={() => setConfirming(null)}
+        />
       )}
     </div>
   );

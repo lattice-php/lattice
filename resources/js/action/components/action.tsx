@@ -2,6 +2,7 @@ import { router, useHttp } from "@inertiajs/react";
 import type { Method } from "@inertiajs/core";
 import { useState } from "react";
 import { Button } from "@lattice/core/components/button";
+import { ConfirmDialog } from "@lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice/core/components/spinner";
 import { getStringProp } from "@lattice/core/props";
 import type { NodeProps, RendererComponent } from "@lattice/core/types";
@@ -141,47 +142,17 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
       </Button>
 
       {isConfirming && confirmation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div
-            aria-labelledby={`${node.id ?? "lattice-action"}-confirmation-title`}
-            aria-modal="true"
-            className="w-full max-w-md rounded-lt border border-lt-border bg-lt-bg p-6 shadow-lg"
-            role="dialog"
-          >
-            <div className="grid gap-2">
-              <h2
-                className="text-lg font-semibold leading-none tracking-tight"
-                id={`${node.id ?? "lattice-action"}-confirmation-title`}
-              >
-                {confirmationTitle}
-              </h2>
-
-              {confirmation.description && (
-                <p className="text-sm text-lt-muted-fg">{confirmation.description}</p>
-              )}
-            </div>
-
-            <div className="mt-6 flex justify-end gap-2">
-              <Button
-                disabled={http.processing}
-                onClick={() => setIsConfirming(false)}
-                type="button"
-                variant="outline"
-              >
-                {confirmationCancelLabel}
-              </Button>
-              <Button
-                disabled={http.processing || !endpoint}
-                onClick={() => void submit()}
-                type="button"
-                variant={node.props?.variant ?? "default"}
-              >
-                {http.processing && <Spinner />}
-                {confirmationConfirmLabel}
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          title={confirmationTitle}
+          description={confirmation.description}
+          confirmLabel={confirmationConfirmLabel}
+          cancelLabel={confirmationCancelLabel}
+          confirmVariant={node.props?.variant ?? "default"}
+          processing={http.processing}
+          confirmDisabled={!endpoint}
+          onConfirm={() => void submit()}
+          onCancel={() => setIsConfirming(false)}
+        />
       )}
     </>
   );
