@@ -41,6 +41,7 @@
 @media (min-width: 72rem) {
   .main-pane {
     width: var(--sl-content-width);
+    margin-inline: auto;
   }
 
   .right-sidebar-container {
