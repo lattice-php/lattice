@@ -2,16 +2,15 @@
 
 namespace Bambamboole\Lattice\Core\Components;
 
+use Bambamboole\Lattice\Core\Concerns\HasVariant;
+
 class Button extends Component
 {
+    use HasVariant;
+
     public static function make(string $label, ?string $key = null): static
     {
         return (new static($key))->prop('label', $label);
-    }
-
-    public function variant(string $variant): static
-    {
-        return $this->prop('variant', $variant);
     }
 
     public function href(string $href): static

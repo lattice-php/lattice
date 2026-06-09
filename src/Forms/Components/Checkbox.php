@@ -2,17 +2,11 @@
 
 namespace Bambamboole\Lattice\Forms\Components;
 
+use Bambamboole\Lattice\Core\Concerns\HasTabIndex;
+
 class Checkbox extends Field
 {
-    public function required(bool $required = true): static
-    {
-        return $this->prop('required', $required);
-    }
-
-    public function tabIndex(int $tabIndex): static
-    {
-        return $this->prop('tabIndex', $tabIndex);
-    }
+    use HasTabIndex;
 
     protected function type(): string
     {

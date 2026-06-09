@@ -2,6 +2,7 @@
 
 namespace Bambamboole\Lattice\Core\Components;
 
+use BackedEnum;
 use Bambamboole\Lattice\Attributes\SerializationHook;
 use JsonSerializable;
 use ReflectionMethod;
@@ -54,6 +55,11 @@ abstract class Component implements JsonSerializable
         $this->props[$name] = $value;
 
         return $this;
+    }
+
+    protected function enumValue(BackedEnum|string|null $value): ?string
+    {
+        return $value instanceof BackedEnum ? (string) $value->value : $value;
     }
 
     public function when(bool $condition): static

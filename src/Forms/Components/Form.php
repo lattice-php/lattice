@@ -41,7 +41,7 @@ class Form extends ContainerComponent
 
     public function method(BackedEnum|string $method): static
     {
-        return $this->prop('method', $method instanceof BackedEnum ? (string) $method->value : $method);
+        return $this->prop('method', $this->enumValue($method));
     }
 
     public function submitLabel(string $submitLabel): static
