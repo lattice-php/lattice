@@ -110,10 +110,14 @@ function FormBody({
 
   return (
     <ResolvedNodesProvider nodes={resolvedNodes}>
-      <div className="grid gap-6">
+      <div className="flex flex-col gap-6">
         {children}
 
-        {shouldRenderSubmitButton && <FormSubmitButton label={submitLabel} />}
+        {shouldRenderSubmitButton && (
+          <div className="flex justify-end rounded-lt border border-lt-border bg-lt-surface px-6 py-4 shadow-xs">
+            <FormSubmitButton label={submitLabel} />
+          </div>
+        )}
       </div>
     </ResolvedNodesProvider>
   );
@@ -153,7 +157,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
           ? ({ _lattice: componentRef } satisfies Record<string, FormDataConvertible>)
           : {}),
       })}
-      className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-lt border border-lt-border bg-lt-surface p-6 shadow-xs"
+      className="mx-auto flex w-full max-w-2xl flex-col gap-6"
     >
       {({
         clearErrors,

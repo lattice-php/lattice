@@ -65,15 +65,22 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-const CardComponent: RendererComponent<"card"> = ({ children, node }) => (
-  <Card data-lattice-component={node.id}>
-    <CardHeader>
-      <CardTitle>{getStringProp(node.props, "title")}</CardTitle>
-      <CardDescription>{getStringProp(node.props, "description")}</CardDescription>
-    </CardHeader>
-    {children && <CardContent>{children}</CardContent>}
-  </Card>
-);
+const CardComponent: RendererComponent<"card"> = ({ children, node }) => {
+  const title = getStringProp(node.props, "title");
+  const description = getStringProp(node.props, "description");
+
+  return (
+    <Card data-lattice-component={node.id}>
+      {(title || description) && (
+        <CardHeader>
+          {title && <CardTitle>{title}</CardTitle>}
+          {description && <CardDescription>{description}</CardDescription>}
+        </CardHeader>
+      )}
+      {children && <CardContent className="flex flex-col gap-6">{children}</CardContent>}
+    </Card>
+  );
+};
 
 export default CardComponent;
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle };

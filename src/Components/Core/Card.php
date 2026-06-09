@@ -4,7 +4,7 @@ namespace Bambamboole\Lattice\Components\Core;
 
 class Card extends ContainerComponent
 {
-    public static function make(string $title, string $description, ?string $key = null): static
+    public static function make(?string $title = null, ?string $description = null, ?string $key = null): static
     {
         return (new static($key))->props([
             'title' => $title,

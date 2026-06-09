@@ -19,8 +19,8 @@ export function FormSubmitButton({
   const hasErrors = invalidFields.length > 0;
 
   return (
-    <span className="group relative mt-4 flex w-full flex-col">
-      <Button className="w-full" disabled={processing || hasErrors} type="submit" variant={variant}>
+    <span className="group relative inline-flex flex-col">
+      <Button disabled={processing || hasErrors} type="submit" variant={variant}>
         {processing && <Spinner />}
         {label}
       </Button>

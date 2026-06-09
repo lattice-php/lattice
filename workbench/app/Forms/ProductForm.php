@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Workbench\App\Forms;
 
 use Bambamboole\Lattice\Attributes\Form;
+use Bambamboole\Lattice\Components\Core\Card;
+use Bambamboole\Lattice\Components\Core\Grid;
 use Bambamboole\Lattice\Components\Form\Choice;
 use Bambamboole\Lattice\Components\Form\Form as FormComponent;
 use Bambamboole\Lattice\Components\Form\TextInput;
@@ -24,19 +26,23 @@ class ProductForm extends FormDefinition
         return $form
             ->precognitive(2650)
             ->schema([
-                TextInput::make('name', 'Name')
-                    ->rules(['required', 'string', 'max:255']),
-                TextInput::make('sku', 'SKU')
-                    ->rules(['required', 'string', 'max:255', Rule::unique(Product::class, 'sku')->ignore($product)]),
-                TextInput::make('price', 'Price')
-                    ->rules(['required', 'numeric', 'min:0']),
-                Choice::make('status', 'Status')
-                    ->options([
-                        Choice::option('Draft', 'draft'),
-                        Choice::option('Active', 'active'),
-                        Choice::option('Archived', 'archived'),
-                    ])
-                    ->rules(['required', 'string', Rule::in(['draft', 'active', 'archived'])]),
+                Card::make('Product details')->children([
+                    TextInput::make('name', 'Name')
+                        ->rules(['required', 'string', 'max:255']),
+                    Grid::make()->columns(2)->children([
+                        TextInput::make('sku', 'SKU')
+                            ->rules(['required', 'string', 'max:255', Rule::unique(Product::class, 'sku')->ignore($product)]),
+                        TextInput::make('price', 'Price')
+                            ->rules(['required', 'numeric', 'min:0']),
+                    ]),
+                    Choice::make('status', 'Status')
+                        ->options([
+                            Choice::option('Draft', 'draft'),
+                            Choice::option('Active', 'active'),
+                            Choice::option('Archived', 'archived'),
+                        ])
+                        ->rules(['required', 'string', Rule::in(['draft', 'active', 'archived'])]),
+                ]),
             ]);
     }
 
