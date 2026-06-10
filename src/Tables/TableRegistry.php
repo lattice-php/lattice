@@ -59,7 +59,11 @@ final class TableRegistry extends DefinitionRegistry
             ->bulkActions($this->bulkActions($definition, $key))
             ->result($result($definition, $query), $query);
 
-        return $lazy ? $component->prop('lazy', true) : $component;
+        if ($lazy) {
+            $component->lazy = true;
+        }
+
+        return $component;
     }
 
     public function response(string $key, Request $request, ?TableDefinition $definition = null): TableResult
