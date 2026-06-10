@@ -25,11 +25,7 @@ class Action extends Component
      */
     public static function use(string $action): static
     {
-        $registered = app(ActionRegistry::class)->component($action);
-
-        return (new static)
-            ->id($registered->id)
-            ->props($registered->props);
+        return clone app(ActionRegistry::class)->component($action);
     }
 
     public function endpoint(string $endpoint): static

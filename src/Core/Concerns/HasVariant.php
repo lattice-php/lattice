@@ -6,8 +6,12 @@ namespace Lattice\Lattice\Core\Concerns;
 
 trait HasVariant
 {
+    public ?string $variant = null;
+
     public function variant(string $variant): static
     {
-        return $this->prop('variant', $variant);
+        $this->variant = $variant;
+
+        return $this;
     }
 }

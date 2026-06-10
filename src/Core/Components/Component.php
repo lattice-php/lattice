@@ -116,6 +116,10 @@ abstract class Component implements JsonSerializable
     }
 
     /**
+     * Merge the legacy props bag with the public typed properties (including
+     * inherited and trait properties), omitting null and empty-array values so
+     * unset props stay absent from the wire. Backed enums serialize to their value.
+     *
      * @return array<string, mixed>
      */
     protected function wireProps(): array
@@ -133,7 +137,7 @@ abstract class Component implements JsonSerializable
 
             $value = $property->getValue($this);
 
-            if ($value === null) {
+            if ($value === null || $value === []) {
                 continue;
             }
 

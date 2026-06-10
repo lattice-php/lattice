@@ -6,8 +6,12 @@ namespace Lattice\Lattice\Core\Concerns;
 
 trait HasTabIndex
 {
+    public ?int $tabIndex = null;
+
     public function tabIndex(int $tabIndex): static
     {
-        return $this->prop('tabIndex', $tabIndex);
+        $this->tabIndex = $tabIndex;
+
+        return $this;
     }
 }

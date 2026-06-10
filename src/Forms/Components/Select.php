@@ -89,7 +89,7 @@ class Select extends Field
         }
 
         $resolved = $this->normalizeOptions(($this->selectedResolver)($values));
-        $existing = is_array($this->props['options'] ?? null) ? $this->props['options'] : [];
+        $existing = $this->options;
 
         $merged = [...$existing];
         $seen = array_column($existing, 'value');
@@ -100,7 +100,7 @@ class Select extends Field
             }
         }
 
-        $this->prop('options', $merged);
+        $this->options = $merged;
     }
 
     /**

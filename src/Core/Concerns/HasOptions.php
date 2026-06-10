@@ -12,6 +12,11 @@ use UnitEnum;
 trait HasOptions
 {
     /**
+     * @var array<int, array{label: string, value: string}>
+     */
+    public array $options = [];
+
+    /**
      * @return array{label: string, value: string}
      */
     public static function option(string $label, string $value): array
@@ -27,7 +32,9 @@ trait HasOptions
      */
     public function options(array $options): static
     {
-        return $this->prop('options', $options);
+        $this->options = $options;
+
+        return $this;
     }
 
     /**
