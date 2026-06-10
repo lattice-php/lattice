@@ -1,0 +1,29 @@
+name: packagist
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Notify Packagist
+    runs-on: ubuntu-latest
+    steps:
+      # Requires the PACKAGIST_USERNAME and PACKAGIST_TOKEN repository secrets.
+      # The package must already be submitted once at https://packagist.org/packages/submit.
+      - name: Trigger Packagist update
+        run: |
+          curl -sf -X POST \
+            -H 'content-type: application/json' \
+            "https://packagist.org/api/update-package?username=${PACKAGIST_USERNAME}&apiToken=${PACKAGIST_TOKEN}" \
+            -d '{"repository":{"url":"https://github.com/lattice-php/lattice"}}'
+        env:
+          PACKAGIST_USERNAME: ${{ secrets.PACKAGIST_USERNAME }}
+          PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
