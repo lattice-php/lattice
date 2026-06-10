@@ -77,7 +77,7 @@ Mirror it in `tsconfig.json` so your editor and `tsc` resolve the same imports:
 
 ## Import the stylesheet and register the renderer
 
-Import the stylesheet from the source and register the page component exactly as in [Frontend Setup](/getting-started/frontend-setup/), but resolve everything through the alias:
+Import the stylesheet from the source and register the page component exactly as in [Installation](/introduction/installation/), but resolve everything through the alias:
 
 ```css
 /* resources/css/app.css */

@@ -1,9 +1,9 @@
 ---
-title: Quickstart
+title: Getting Started
 description: Build your first server-driven page with Lattice and route it.
 ---
 
-This guide builds a single page from PHP, registers a route for it, and adds it to the sidebar. It assumes you have completed [Installation](/getting-started/installation/) and [Frontend Setup](/getting-started/frontend-setup/).
+This guide builds a single page from PHP, registers a route for it, and adds it to the sidebar. It assumes you have completed [Installation](/introduction/installation/).
 
 ## Define a page
 
@@ -67,5 +67,5 @@ Visit `/dashboard` and the page renders through Inertia — no Inertia page comp
 
 ## Where to go next
 
-- [Forms](/getting-started/installation/) and [Tables](/getting-started/installation/) reference (coming next) for data entry and listings.
-- [Configuration](/getting-started/configuration/) to register definitions and tune discovery.
+- [Forms](/forms/overview/) and [Tables](/tables/overview/) for data entry and listings.
+- [Configuration](/introduction/configuration/) to register definitions and tune discovery.
