@@ -1,8 +1,9 @@
 import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
-import { FormSubmitButton, type SubmitButtonVariant } from "../base/submit-button";
+import type { ButtonVariant } from "@lattice/lattice/types/generated";
+import { FormSubmitButton } from "../base/submit-button";
 
-const variants: SubmitButtonVariant[] = [
+const variants: ButtonVariant[] = [
   "default",
   "destructive",
   "ghost",
@@ -11,10 +12,8 @@ const variants: SubmitButtonVariant[] = [
   "secondary",
 ];
 
-function asVariant(value: unknown): SubmitButtonVariant {
-  return variants.includes(value as SubmitButtonVariant)
-    ? (value as SubmitButtonVariant)
-    : "default";
+function asVariant(value: unknown): ButtonVariant {
+  return variants.includes(value as ButtonVariant) ? (value as ButtonVariant) : "default";
 }
 
 export const SubmitButtonComponent: RendererComponent<"form.submit-button"> = ({ node }) => {

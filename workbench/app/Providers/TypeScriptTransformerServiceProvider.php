@@ -22,6 +22,7 @@ use Lattice\Lattice\Core\Components\Tab;
 use Lattice\Lattice\Core\Components\Tabs;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\Align;
+use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\PageContainer;
@@ -113,6 +114,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
         $config
             ->transformer(new LatticeEnumTransformer([
                 Align::class,
+                ButtonVariant::class,
                 Gap::class,
                 Width::class,
                 PageLayout::class,

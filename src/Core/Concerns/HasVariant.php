@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Concerns;
 
+use Lattice\Lattice\Core\Enums\ButtonVariant;
+
 trait HasVariant
 {
-    public ?string $variant = null;
+    public ?ButtonVariant $variant = null;
 
-    public function variant(string $variant): static
+    public function variant(ButtonVariant|string $variant): static
     {
-        $this->variant = $variant;
+        $this->variant = $variant instanceof ButtonVariant ? $variant : ButtonVariant::from($variant);
 
         return $this;
     }
