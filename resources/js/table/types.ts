@@ -1,4 +1,11 @@
-import type { ControlType, Operator, PaginationType } from "@lattice/lattice/generated/enums";
+import type {
+  ControlType,
+  Operator,
+  PaginationType,
+  TableSort,
+} from "@lattice/lattice/generated/types";
+
+export type { TableSort };
 
 export type TableColumn = {
   columns?: TableColumn[];
@@ -23,11 +30,6 @@ export type TableColumn = {
 };
 
 export type TableRow = Record<string, unknown>;
-
-export type TableSort = {
-  key: string;
-  direction: string;
-};
 
 export type FilterClause = {
   field: string;

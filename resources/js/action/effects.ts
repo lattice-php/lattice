@@ -1,5 +1,5 @@
 import { router } from "@inertiajs/react";
-import type { EffectType, ToastVariant } from "@lattice/lattice/generated/enums";
+import type { EffectType, ToastVariant } from "@lattice/lattice/generated/types";
 import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
 
 export type ActionEffect =

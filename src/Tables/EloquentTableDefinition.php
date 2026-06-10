@@ -77,7 +77,7 @@ abstract class EloquentTableDefinition extends TableDefinition
         }
 
         foreach ($query->sorts() as $sort) {
-            $builder->orderBy($sort->key, $sort->direction);
+            $builder->orderBy($sort->key, $sort->direction->value);
         }
 
         return $builder;

@@ -1,5 +1,5 @@
 import type { RefObject } from "react";
-import type { PaginationType } from "@lattice/lattice/generated/enums";
+import type { PaginationType } from "@lattice/lattice/generated/types";
 import type { TablePagination as TablePaginationData } from "../types";
 
 export function TablePagination({

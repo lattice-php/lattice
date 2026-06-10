@@ -1,4 +1,4 @@
-import type { Node } from "@lattice/core/types";
+import type { Node } from "@lattice/lattice/core/types";
 import type { FilterClause, TableColumn, TablePagination, TableRow, TableState } from "./types";
 
 function getFilters(value: unknown): FilterClause[] {

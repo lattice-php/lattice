@@ -16,10 +16,13 @@ use Bambamboole\Lattice\Forms\Enums\Op;
 use Bambamboole\Lattice\Tables\Enums\ControlType;
 use Bambamboole\Lattice\Tables\Enums\Operator;
 use Bambamboole\Lattice\Tables\Enums\PaginationType;
+use Bambamboole\Lattice\Tables\Enums\SortDirection;
+use Bambamboole\Lattice\Tables\TableSort;
 use Spatie\LaravelTypeScriptTransformer\TypeScriptTransformerApplicationServiceProvider;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfigFactory;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 use Workbench\App\Support\LatticeEnumTransformer;
+use Workbench\App\Support\LatticeValueObjectTransformer;
 
 final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerApplicationServiceProvider
 {
@@ -39,11 +42,15 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 PaginationType::class,
                 ControlType::class,
                 Operator::class,
+                SortDirection::class,
                 Op::class,
                 EffectType::class,
             ]))
+            ->transformer(new LatticeValueObjectTransformer([
+                TableSort::class,
+            ]))
             ->transformDirectories($packageRoot.'/src')
             ->outputDirectory($packageRoot.'/resources/js/generated')
-            ->writer(new FlatModuleWriter('enums.ts'));
+            ->writer(new FlatModuleWriter('types.ts'));
     }
 }

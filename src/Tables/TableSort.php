@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Tables;
 
+use Bambamboole\Lattice\Tables\Enums\SortDirection;
+
 final readonly class TableSort
 {
-    public function __construct(public string $key, public string $direction) {}
+    public function __construct(public string $key, public SortDirection $direction) {}
 
     public static function fromString(string $sort): self
     {
         if (str_starts_with($sort, '-')) {
-            return new self(substr($sort, 1), 'desc');
+            return new self(substr($sort, 1), SortDirection::Desc);
         }
 
-        return new self($sort, 'asc');
+        return new self($sort, SortDirection::Asc);
     }
 
     /**
@@ -24,7 +26,7 @@ final readonly class TableSort
     {
         return [
             'key' => $this->key,
-            'direction' => $this->direction,
+            'direction' => $this->direction->value,
         ];
     }
 }

@@ -1,7 +1,7 @@
 import { Filter, Plus, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { ControlType, Operator } from "@lattice/generated/enums";
+import type { ControlType, Operator } from "@lattice/lattice/generated/types";
 import { operatorLabel } from "../query";
 import type { FilterClause, TableColumn } from "../types";
 import { FilterValueInput } from "./filter-value-input";
