@@ -1,8 +1,31 @@
 export type Align = 'center' | 'left' | 'start' | 'stretch';
+export type ColumnData = {
+readonly key: string,
+readonly label: string,
+readonly type: ColumnType,
+readonly sortable: boolean | null,
+readonly filter: ColumnFilter | null,
+readonly date: {
+format: string | null,
+} | null,
+readonly copyable: boolean | null,
+readonly link: {
+href: string | null,
+external: boolean,
+} | null,
+readonly columns: ColumnData[] | null,
+};
+export type ColumnFilter = {
+readonly enabled: boolean,
+readonly type: FilterType,
+readonly operators: FilterOperator[],
+readonly defaultOperator: FilterOperator,
+};
+export type ColumnType = 'text' | 'stack';
 export type ConditionOperator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'starts_with' | 'ends_with' | 'in' | 'not_in' | 'empty' | 'filled';
-export type ControlType = 'text' | 'number' | 'date' | 'boolean';
 export type EffectType = 'toast' | 'reloadComponent' | 'reloadPage' | 'redirect' | 'download' | 'openModal' | 'closeModal' | 'resetForm';
 export type FilterOperator = 'contains' | 'starts_with' | 'ends_with' | 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'before' | 'after' | 'empty' | 'filled';
+export type FilterType = 'text' | 'number' | 'date' | 'boolean';
 export type Gap = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 export type PageContainer = 'centered' | 'default';

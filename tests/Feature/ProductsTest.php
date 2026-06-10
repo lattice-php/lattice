@@ -503,7 +503,7 @@ test('the products table applies date, boolean, and number clause filters', func
     $table = new ProductsTable;
     $columns = $table->columns();
 
-    $resolve = fn (string $filter) => $table->resolveMatching(
+    $resolve = fn (string $filter) => $table->source()->resolveMatching(
         TableQuery::fromRequest(Request::create('/', 'GET', ['filter' => $filter]), $columns, 'workbench.products'),
     );
 
@@ -520,7 +520,7 @@ test('the products table applies text, starts/ends-with, and presence filters', 
     $table = new ProductsTable;
     $columns = $table->columns();
 
-    $resolve = fn (string $filter) => $table->resolveMatching(
+    $resolve = fn (string $filter) => $table->source()->resolveMatching(
         TableQuery::fromRequest(Request::create('/', 'GET', ['filter' => $filter]), $columns, 'workbench.products'),
     );
 

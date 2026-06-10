@@ -13,8 +13,11 @@ use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Forms\Enums\ConditionOperator;
-use Lattice\Lattice\Tables\Enums\ControlType;
+use Lattice\Lattice\Tables\Columns\ColumnData;
+use Lattice\Lattice\Tables\Columns\ColumnFilter;
+use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Tables\Enums\FilterOperator;
+use Lattice\Lattice\Tables\Enums\FilterType;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\Enums\SortDirection;
 use Lattice\Lattice\Tables\TableSort;
@@ -40,13 +43,16 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 ToastVariant::class,
                 HttpMethod::class,
                 PaginationType::class,
-                ControlType::class,
+                ColumnType::class,
+                FilterType::class,
                 FilterOperator::class,
                 SortDirection::class,
                 ConditionOperator::class,
                 EffectType::class,
             ]))
             ->transformer(new LatticeValueObjectTransformer([
+                ColumnData::class,
+                ColumnFilter::class,
                 TableSort::class,
             ]))
             ->transformDirectories($packageRoot.'/src')

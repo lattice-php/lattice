@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
+use Lattice\Lattice\Tables\Enums\ColumnType;
+
 class StackColumn extends Column
 {
     /**
@@ -21,19 +23,19 @@ class StackColumn extends Column
         return $this;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     #[\Override]
-    public function toArray(): array
+    public function toData(): ColumnData
     {
-        return array_filter([
-            ...parent::toArray(),
-            'type' => 'stack',
-            'columns' => array_map(
-                fn (Column $column): array => $column->toArray(),
+        return new ColumnData(
+            key: $this->key,
+            label: $this->label,
+            type: ColumnType::Stack,
+            sortable: $this->sortableValue(),
+            filter: $this->filterValue(),
+            columns: array_map(
+                fn (Column $column): ColumnData => $column->toData(),
                 $this->columns,
             ),
-        ], fn (mixed $value): bool => $value !== null && $value !== []);
+        );
     }
 }

@@ -7,7 +7,7 @@ namespace Lattice\Lattice\Tables\Enums;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-enum ControlType: string
+enum FilterType: string
 {
     case Text = 'text';
     case Number = 'number';

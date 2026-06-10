@@ -44,13 +44,15 @@ final class BulkActionController
      */
     private function resolveRecords(Request $request, TableDefinition $table, string $tableKey): Collection
     {
+        $source = $table->source();
+
         if ($request->boolean('allMatching')) {
-            return $table->resolveMatching(
+            return $source->resolveMatching(
                 TableQuery::fromRequest($request, $table->columns(), $tableKey, $table->perPage()),
             );
         }
 
-        return $table->resolveSelection($this->selectedKeys($request));
+        return $source->resolveSelection($this->selectedKeys($request));
     }
 
     private function trustedTableKey(Request $request): string

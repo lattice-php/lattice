@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tests\Fixtures\Discovery;
 
 use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Tables\CallbackTableSource;
 use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
@@ -20,13 +22,13 @@ class DiscoveredUsersTable extends TableDefinition
         ];
     }
 
-    public function query(TableQuery $query): TableResult
+    public function source(): TableSource
     {
-        return TableResult::make([
+        return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([
             [
                 'id' => 1,
                 'name' => $this->context(request(), 'team'),
             ],
-        ]);
+        ]));
     }
 }

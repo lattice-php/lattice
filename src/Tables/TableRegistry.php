@@ -23,7 +23,7 @@ final class TableRegistry extends DefinitionRegistry
     {
         return $this->buildComponent(
             $table,
-            fn (TableDefinition $definition, TableQuery $query): TableResult => $this->decorateResult($definition, $definition->query($query)),
+            fn (TableDefinition $definition, TableQuery $query): TableResult => $this->decorateResult($definition, $definition->source()->query($query)),
         );
     }
 
@@ -71,7 +71,7 @@ final class TableRegistry extends DefinitionRegistry
         $columns = $definition->columns();
         $query = TableQuery::fromRequest($request, $columns, $key, $definition->perPage());
 
-        return $this->decorateResult($definition, $definition->query($query))->toArray($query);
+        return $this->decorateResult($definition, $definition->source()->query($query))->toArray($query);
     }
 
     /**

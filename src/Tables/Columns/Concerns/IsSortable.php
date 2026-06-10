@@ -19,12 +19,4 @@ trait IsSortable
     {
         return $this->sortable;
     }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function sortableToArray(): array
-    {
-        return ['sortable' => $this->sortable ?: null];
-    }
 }

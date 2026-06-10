@@ -1,33 +1,18 @@
 import type {
-  ControlType,
+  ColumnData,
+  ColumnFilter,
+  ColumnType,
   FilterOperator,
   PaginationType,
   TableSort,
 } from "@lattice/lattice/generated/types";
 
-export type { TableSort };
+export type { ColumnData, ColumnFilter, ColumnType, TableSort };
 
-export type TableColumn = {
-  columns?: TableColumn[];
-  key: string;
-  label: string;
-  type?: "stack" | "text";
-  sortable?: boolean;
-  filter?: {
-    enabled?: boolean;
-    type?: ControlType;
-    operators?: FilterOperator[];
-    defaultOperator?: FilterOperator;
+export type TableColumn = Pick<ColumnData, "key" | "label"> &
+  Partial<Omit<ColumnData, "key" | "label" | "columns">> & {
+    columns?: TableColumn[];
   };
-  date?: {
-    format?: string | null;
-  };
-  copyable?: boolean;
-  link?: {
-    href?: string | null;
-    external?: boolean;
-  };
-};
 
 export type TableRow = Record<string, unknown>;
 
