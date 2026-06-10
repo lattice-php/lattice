@@ -10,6 +10,8 @@ class ActionGroup extends ContainerComponent
 {
     use IsInteractive;
 
+    public ?string $label = null;
+
     public static function make(string $id): static
     {
         return (new static)->id($id);
@@ -17,7 +19,9 @@ class ActionGroup extends ContainerComponent
 
     public function label(string $label): static
     {
-        return $this->prop('label', $label);
+        $this->label = $label;
+
+        return $this;
     }
 
     /**
