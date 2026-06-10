@@ -1,10 +1,10 @@
 [
     {
-        "type": "form.text-input",
         "props": {
-            "name": "name",
             "label": "Team name",
+            "name": "name",
             "value": "Acme Inc"
-        }
+        },
+        "type": "form.text-input"
     }
 ]

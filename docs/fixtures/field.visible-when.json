@@ -1,9 +1,8 @@
 [
     {
-        "type": "form.choice",
         "props": {
-            "name": "type",
             "label": "Account type",
+            "name": "type",
             "options": [
                 {
                     "label": "Business",
@@ -14,13 +13,11 @@
                     "value": "individual"
                 }
             ]
-        }
+        },
+        "type": "form.choice"
     },
     {
-        "type": "form.text-input",
         "props": {
-            "name": "vat",
-            "label": "VAT ID",
             "conditions": {
                 "visible": [
                     {
@@ -29,7 +26,10 @@
                         "value": "business"
                     }
                 ]
-            }
-        }
+            },
+            "label": "VAT ID",
+            "name": "vat"
+        },
+        "type": "form.text-input"
     }
 ]

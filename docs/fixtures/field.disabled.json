@@ -1,11 +1,11 @@
 [
     {
-        "type": "form.text-input",
         "props": {
-            "name": "name",
+            "disabled": true,
             "label": "Team name",
-            "value": "Acme Inc",
-            "disabled": true
-        }
+            "name": "name",
+            "value": "Acme Inc"
+        },
+        "type": "form.text-input"
     }
 ]

@@ -1,9 +1,8 @@
 [
     {
-        "type": "form.choice",
         "props": {
-            "name": "country",
             "label": "Country",
+            "name": "country",
             "options": [
                 {
                     "label": "Germany",
@@ -18,13 +17,11 @@
                     "value": "US"
                 }
             ]
-        }
+        },
+        "type": "form.choice"
     },
     {
-        "type": "form.text-input",
         "props": {
-            "name": "vat",
-            "label": "VAT ID",
             "conditions": {
                 "required": [
                     {
@@ -33,7 +30,10 @@
                         "value": "DE"
                     }
                 ]
-            }
-        }
+            },
+            "label": "VAT ID",
+            "name": "vat"
+        },
+        "type": "form.text-input"
     }
 ]
