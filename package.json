@@ -1,9 +1,92 @@
 {
-  "private": true,
+  "name": "@lattice-php/lattice",
+  "version": "0.0.0",
+  "description": "Server-driven React components for Laravel and Inertia.",
+  "license": "MIT",
+  "author": "Manuel Christlieb <manuel@christlieb.eu>",
   "type": "module",
+  "homepage": "https://latticephp.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lattice-php/lattice.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lattice-php/lattice/issues"
+  },
+  "keywords": [
+    "laravel",
+    "inertia",
+    "react",
+    "server-driven-ui"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./css": "./dist/lattice.css",
+    "./action": {
+      "types": "./dist/action/index.d.ts",
+      "import": "./dist/action/index.js"
+    },
+    "./appearance": {
+      "types": "./dist/appearance/index.d.ts",
+      "import": "./dist/appearance/index.js"
+    },
+    "./clipboard": {
+      "types": "./dist/clipboard/index.d.ts",
+      "import": "./dist/clipboard/index.js"
+    },
+    "./core/components": {
+      "types": "./dist/core/components/index.d.ts",
+      "import": "./dist/core/components/index.js"
+    },
+    "./form": {
+      "types": "./dist/form/index.d.ts",
+      "import": "./dist/form/index.js"
+    },
+    "./form/components": {
+      "types": "./dist/form/components/index.d.ts",
+      "import": "./dist/form/components/index.js"
+    },
+    "./icons": {
+      "types": "./dist/icons/index.d.ts",
+      "import": "./dist/icons/index.js"
+    },
+    "./menu": {
+      "types": "./dist/menu/index.d.ts",
+      "import": "./dist/menu/index.js"
+    },
+    "./table": {
+      "types": "./dist/table/index.d.ts",
+      "import": "./dist/table/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:lib": "vite build --mode lib",
+    "prepack": "npm run build:lib",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint resources/js workbench/resources/js",
@@ -16,8 +99,6 @@
     "docs:preview": "astro preview"
   },
   "dependencies": {
-    "@inertiajs/react": "^3.0.0",
-    "@inertiajs/vite": "^3.0.0",
     "@radix-ui/react-checkbox": "^1.1.4",
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-slot": "^1.2.3",
@@ -32,14 +113,18 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.17.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "tailwind-merge": "^3.0.1",
-    "tw-animate-css": "^1.4.0"
+    "tailwind-merge": "^3.0.1"
+  },
+  "peerDependencies": {
+    "@inertiajs/react": "^3.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@astrojs/starlight": "^0.40.0",
     "@astrojs/starlight-tailwind": "^5.0.0",
+    "@inertiajs/react": "^3.0.0",
+    "@inertiajs/vite": "^3.0.0",
     "@tailwindcss/vite": "^4.1.11",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -54,9 +139,13 @@
     "oxfmt": "^0.54.0",
     "oxlint": "^1.68.0",
     "playwright": "^1.60.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "tailwindcss": "^4.0.0",
+    "tw-animate-css": "^1.4.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.0",
+    "vite-plugin-dts": "^4.5.4",
     "vitest": "^4.1.8"
   }
 }
