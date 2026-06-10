@@ -22,10 +22,10 @@ class DependentDemoPage extends Page
 
     public function render(PageSchema $schema): PageSchema
     {
-        return $schema->components([
+        return $schema->schema([
             Stack::make('dependent-demo-page')
                 ->gap(Gap::Large)
-                ->children([
+                ->schema([
                     Heading::make('Dependent Demo'),
                     Form::use(DependentDemoForm::class)
                         ->method(HttpMethod::Post)

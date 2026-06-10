@@ -4,6 +4,10 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
+/* Lattice component preview: design tokens + scan the renderer source for utilities. */
+@import "../../resources/css/lattice.css";
+@source "../../resources/js";
+
 @theme {
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;

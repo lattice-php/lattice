@@ -25,7 +25,7 @@ class ActionGroup extends ContainerComponent
      */
     public function actions(array $actions): static
     {
-        return $this->children($actions);
+        return $this->schema($actions);
     }
 
     protected function type(): string

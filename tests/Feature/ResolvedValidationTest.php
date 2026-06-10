@@ -20,8 +20,8 @@ function resolvedDefinition(): FormDefinition
                 TextInput::make('mode', 'Mode'),
                 TextInput::make('secret', 'Secret')
                     ->dependsOn('mode', fn (TextInput $f, FormData $d) => $d->get('mode') === 'reveal'
-                        ? $f->show()->rules(['required', 'string'])
-                        : $f->hide()),
+                        ? $f->visible()->rules(['required', 'string'])
+                        : $f->hidden()),
                 TextInput::make('qty', 'Qty'),
                 TextInput::make('price', 'Price'),
                 TextInput::make('total', 'Total')
@@ -65,8 +65,8 @@ function lockedDefinition(): FormDefinition
         public function definition(Form $form, Request $request): Form
         {
             return $form->schema([
-                TextInput::make('display', 'Display')->readonly()->rules(['string']),
-                TextInput::make('locked', 'Locked')->readonly()->value('server')->rules(['string']),
+                TextInput::make('display', 'Display')->readOnly()->rules(['string']),
+                TextInput::make('locked', 'Locked')->readOnly()->value('server')->rules(['string']),
                 TextInput::make('off', 'Off')->disabled()->rules(['string']),
                 TextInput::make('name', 'Name')->rules(['required', 'string']),
             ]);

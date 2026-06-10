@@ -34,7 +34,7 @@ type TabItem = {
 };
 
 function getTabs(node: Node): TabItem[] {
-  return (node.children ?? [])
+  return (node.schema ?? [])
     .filter((child) => child.type === "tab")
     .map((child) => ({
       confirm: getConfirmationProp(child.props),

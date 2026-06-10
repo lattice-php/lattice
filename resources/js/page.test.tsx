@@ -11,7 +11,7 @@ vi.mock("@inertiajs/react", () => ({
 function payload(lattice: Partial<PagePayload> = {}): PagePayload {
   return {
     breadcrumbs: [],
-    components: [],
+    schema: [],
     container: "default",
     layout: "none",
     menus: {},
@@ -25,7 +25,7 @@ describe("Page", () => {
     render(
       <Page
         lattice={payload({
-          components: [
+          schema: [
             {
               props: { text: "Package rendered" },
               type: "text",
@@ -44,7 +44,7 @@ describe("Page", () => {
     render(
       <Page
         lattice={payload({
-          components: [
+          schema: [
             {
               props: { text: "Inside the app shell" },
               type: "text",
@@ -77,7 +77,7 @@ describe("Page", () => {
       <Provider registry={registry}>
         <Page
           lattice={payload({
-            components: [
+            schema: [
               {
                 props: { message: "Custom registry component" },
                 type: "custom.message",

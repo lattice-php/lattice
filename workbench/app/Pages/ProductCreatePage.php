@@ -22,10 +22,10 @@ class ProductCreatePage extends Page
 
     public function render(PageSchema $schema): PageSchema
     {
-        return $schema->components([
+        return $schema->schema([
             Stack::make('product-create-page')
                 ->gap(Gap::Large)
-                ->children([
+                ->schema([
                     Heading::make('Create Product'),
                     Form::use(ProductForm::class)
                         ->method(HttpMethod::Post)

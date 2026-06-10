@@ -105,7 +105,7 @@ test('the product edit page binds related product ids into form state', function
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page', false)
-            ->where('lattice.components.0.children.1.props.state.related_products', [$related->getKey()])
+            ->where('lattice.schema.0.schema.1.props.state.related_products', [$related->getKey()])
         );
 });
 

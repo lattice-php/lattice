@@ -103,9 +103,9 @@ test('the product index page lists products and links to creation', function () 
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page', false)
             ->where('lattice.title', 'Products')
-            ->where('lattice.components.0.children.0.children.1.props.href', '/products/create')
-            ->where('lattice.components.0.children.1.id', 'workbench.products')
-            ->where('lattice.components.0.children.1.props.data.0.name', 'Desk Lamp')
+            ->where('lattice.schema.0.schema.0.schema.1.props.href', '/products/create')
+            ->where('lattice.schema.0.schema.1.id', 'workbench.products')
+            ->where('lattice.schema.0.schema.1.props.data.0.name', 'Desk Lamp')
         );
 });
 
@@ -145,12 +145,12 @@ test('the product edit page binds existing product state', function () {
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page', false)
             ->where('lattice.title', 'Edit Product')
-            ->where('lattice.components.0.children.1.props.method', 'patch')
-            ->where('lattice.components.0.children.1.props.submitLabel', 'Save product')
-            ->where('lattice.components.0.children.1.props.state.name', 'Desk Lamp')
-            ->where('lattice.components.0.children.1.props.state.sku', 'LAMP-001')
-            ->where('lattice.components.0.children.1.props.state.price', '49.99')
-            ->where('lattice.components.0.children.1.props.state.status', 'draft')
+            ->where('lattice.schema.0.schema.1.props.method', 'patch')
+            ->where('lattice.schema.0.schema.1.props.submitLabel', 'Save product')
+            ->where('lattice.schema.0.schema.1.props.state.name', 'Desk Lamp')
+            ->where('lattice.schema.0.schema.1.props.state.sku', 'LAMP-001')
+            ->where('lattice.schema.0.schema.1.props.state.price', '49.99')
+            ->where('lattice.schema.0.schema.1.props.state.status', 'draft')
         );
 });
 

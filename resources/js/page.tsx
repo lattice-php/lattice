@@ -10,7 +10,7 @@ type Props = {
 
 export default function Page({ lattice }: Props) {
   const registry = useRegistry();
-  const content = <Renderer fallback={null} nodes={lattice.components} registry={registry} />;
+  const content = <Renderer fallback={null} nodes={lattice.schema} registry={registry} />;
 
   return (
     <>

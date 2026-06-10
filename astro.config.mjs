@@ -1,5 +1,7 @@
+import path from "node:path";
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 
 const site = process.env.SITE_URL || "https://latticephp.com";
@@ -13,6 +15,7 @@ export default defineConfig({
     enabled: false,
   },
   integrations: [
+    react(),
     starlight({
       title: "Lattice",
       description: "Server-driven React components for Laravel and Inertia.",
@@ -53,7 +56,13 @@ export default defineConfig({
         },
         {
           label: "Forms",
-          items: [{ label: "Overview", link: "/forms/overview/" }],
+          items: [
+            { label: "Overview", link: "/forms/overview/" },
+            {
+              label: "Fields",
+              items: [{ label: "Text input", link: "/forms/fields/text-input/" }],
+            },
+          ],
         },
         {
           label: "Tables",
@@ -75,5 +84,12 @@ export default defineConfig({
   vite: {
     cacheDir: `node_modules/.vite-${viteCacheSuffix}`,
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        "@lattice/lattice": path.resolve("./resources/js"),
+        "@components": path.resolve("./docs/components"),
+      },
+      dedupe: ["react", "react-dom"],
+    },
   },
 });

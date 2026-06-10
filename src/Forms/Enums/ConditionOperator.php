@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Enums;
 
+use InvalidArgumentException;
+
 enum ConditionOperator: string
 {
     case Equals = 'eq';
@@ -20,6 +22,26 @@ enum ConditionOperator: string
     case Empty = 'empty';
     case Filled = 'filled';
 
+    /**
+     * Resolve an operator from an enum value (`gt`) or a human comparison (`>`).
+     */
+    public static function fromHuman(string $operator): self
+    {
+        return match ($operator) {
+            '=', '==' => self::Equals,
+            '!=', '<>' => self::NotEquals,
+            '>' => self::GreaterThan,
+            '>=' => self::GreaterThanOrEqual,
+            '<' => self::LessThan,
+            '<=' => self::LessThanOrEqual,
+            default => self::tryFrom($operator) ?? throw new InvalidArgumentException(sprintf(
+                'Unknown condition operator [%s]. Use a comparison such as ">", ">=", "!=", or one of: %s.',
+                $operator,
+                implode(', ', array_map(static fn (self $case): string => $case->value, self::cases())),
+            )),
+        };
+    }
+
     public function evaluate(mixed $actual, mixed $expected): bool
     {
         return match ($this) {
@@ -34,8 +56,8 @@ enum ConditionOperator: string
             self::EndsWith => str_ends_with((string) $actual, (string) $expected),
             self::In => $this->isIn($actual, $expected),
             self::NotIn => ! $this->isIn($actual, $expected),
-            self::Empty => $this->isBlank($actual),
-            self::Filled => ! $this->isBlank($actual),
+            self::Empty => blank($actual),
+            self::Filled => filled($actual),
         };
     }
 
@@ -58,10 +80,5 @@ enum ConditionOperator: string
         $needles = array_map(static fn (mixed $v): string => (string) $v, (array) $expected);
 
         return in_array((string) $actual, $needles, true);
-    }
-
-    private function isBlank(mixed $value): bool
-    {
-        return $value === null || (string) $value === '';
     }
 }

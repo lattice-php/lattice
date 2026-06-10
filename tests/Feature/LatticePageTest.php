@@ -125,9 +125,9 @@ function latticeGet(string $url, string $ref): TestResponse
     return getJson($url, latticeHeaders($ref));
 }
 
-function exposesChildrenApi(object $component): bool
+function exposesSchemaApi(object $component): bool
 {
-    return method_exists($component, 'children');
+    return method_exists($component, 'schema');
 }
 
 test('lattice component factories stay open for extension', function () {
@@ -245,7 +245,7 @@ test('forms serialize schema children like pages', function () {
         ->toMatchArray([
             'type' => 'form',
             'id' => 'profile-form',
-            'children' => [
+            'schema' => [
                 [
                     'type' => 'text',
                     'props' => [
@@ -256,7 +256,7 @@ test('forms serialize schema children like pages', function () {
         ]);
 });
 
-test('only container components expose children', function () {
+test('only container components expose a schema', function () {
     $containerComponents = [
         Card::make('Card', 'Description'),
         Grid::make(),
@@ -281,11 +281,11 @@ test('only container components expose children', function () {
     ];
 
     foreach ($containerComponents as $component) {
-        expect(exposesChildrenApi($component))->toBeTrue();
+        expect(exposesSchemaApi($component))->toBeTrue();
     }
 
     foreach ($leafComponents as $component) {
-        expect(exposesChildrenApi($component))->toBeFalse();
+        expect(exposesSchemaApi($component))->toBeFalse();
     }
 });
 
@@ -399,10 +399,10 @@ test('components can opt out of rendering with when', function () {
     {
         public function render(PageSchema $schema): PageSchema
         {
-            return $schema->components([
+            return $schema->schema([
                 Text::make('Visible root'),
                 Text::make('Hidden root')->when(false),
-                Stack::make('nested')->children([
+                Stack::make('nested')->schema([
                     Text::make('Visible child'),
                     Text::make('Hidden child')->when(false),
                 ]),
@@ -412,11 +412,11 @@ test('components can opt out of rendering with when', function () {
 
     $pageData = $page->toArray($page->render(PageSchema::make()));
 
-    expect($pageData['components'])
+    expect($pageData['schema'])
         ->toHaveCount(2)
-        ->and($pageData['components'][0]['props']['text'])->toBe('Visible root')
-        ->and($pageData['components'][1]['children'])->toHaveCount(1)
-        ->and($pageData['components'][1]['children'][0]['props']['text'])->toBe('Visible child');
+        ->and($pageData['schema'][0]['props']['text'])->toBe('Visible root')
+        ->and($pageData['schema'][1]['schema'])->toHaveCount(1)
+        ->and($pageData['schema'][1]['schema'][0]['props']['text'])->toBe('Visible child');
 });
 
 test('segmented control serializes options value and emit event', function () {
@@ -472,7 +472,7 @@ test('registered forms serialize their configured endpoint and isolated error ba
                 'ref' => componentRef($form),
                 'submitButton' => false,
             ],
-            'children' => [
+            'schema' => [
                 [
                     'type' => 'text',
                     'props' => [
@@ -522,7 +522,7 @@ test('registered forms receive the current request while serializing definitions
 
     getJson('/request-aware-form?label=Request aware')
         ->assertOk()
-        ->assertJsonPath('children.0.props.text', 'Request aware');
+        ->assertJsonPath('schema.0.props.text', 'Request aware');
 });
 
 test('registered tables serialize their configured endpoint columns state and initial data', function () {
@@ -941,7 +941,7 @@ test('action groups serialize grouped child actions', function () {
             'props' => [
                 'label' => 'Manage user',
             ],
-            'children' => [
+            'schema' => [
                 [
                     'type' => 'action',
                     'id' => 'workbench.users.promote',
@@ -949,7 +949,7 @@ test('action groups serialize grouped child actions', function () {
                         'endpoint' => '/lattice/actions/workbench.users.promote',
                         'label' => 'Promote',
                         'method' => 'patch',
-                        'ref' => componentRef($group['children'][0]),
+                        'ref' => componentRef($group['schema'][0]),
                     ],
                 ],
                 [
@@ -959,7 +959,7 @@ test('action groups serialize grouped child actions', function () {
                         'endpoint' => '/lattice/actions/workbench.users.remove',
                         'label' => 'Remove',
                         'method' => 'delete',
-                        'ref' => componentRef($group['children'][1]),
+                        'ref' => componentRef($group['schema'][1]),
                         'variant' => 'destructive',
                     ],
                 ],
@@ -1143,7 +1143,7 @@ test('modals serialize composable children for action driven dialogs', function 
     expect(Modal::make('settings.two-factor-setup')
         ->title('Set up two-factor authentication')
         ->description('Scan the QR code with your authenticator app.')
-        ->children([
+        ->schema([
             Text::make('Recovery codes will appear here.'),
         ])
         ->toArray())
@@ -1154,7 +1154,7 @@ test('modals serialize composable children for action driven dialogs', function 
                 'title' => 'Set up two-factor authentication',
                 'description' => 'Scan the QR code with your authenticator app.',
             ],
-            'children' => [
+            'schema' => [
                 [
                     'type' => 'text',
                     'props' => [
@@ -1190,12 +1190,12 @@ test('registered fragments serialize lazy endpoints and return component schemas
 
     latticeGet('/lattice/fragments/workbench.two-factor-setup', $ref)
         ->assertOk()
-        ->assertJsonPath('components.0.type', 'text')
-        ->assertJsonPath('components.0.props.text', 'Authenticator setup loaded.');
+        ->assertJsonPath('schema.0.type', 'text')
+        ->assertJsonPath('schema.0.props.text', 'Authenticator setup loaded.');
 });
 
 test('links and horizontal stacks serialize as separate composable primitives', function () {
-    expect(Stack::make('prompt')->direction('row')->gap(Gap::ExtraSmall)->children([
+    expect(Stack::make('prompt')->direction('row')->gap(Gap::ExtraSmall)->schema([
         Text::make('Need access?'),
         Link::make('Register')->href('/register'),
     ])->toArray())
@@ -1206,7 +1206,7 @@ test('links and horizontal stacks serialize as separate composable primitives', 
                 'direction' => 'row',
                 'gap' => 'xs',
             ],
-            'children' => [
+            'schema' => [
                 [
                     'type' => 'text',
                     'props' => [
@@ -1244,11 +1244,11 @@ test('layout enums serialize to their backed string values', function () {
 test('tabs serialize tab panels as composable children', function () {
     expect(Tabs::make('settings-tabs')
         ->defaultValue('security')
-        ->children([
-            Tab::make('profile', 'Profile')->children([
+        ->schema([
+            Tab::make('profile', 'Profile')->schema([
                 Text::make('Profile form'),
             ]),
-            Tab::make('security', 'Security')->children([
+            Tab::make('security', 'Security')->schema([
                 Form::make('password-form'),
             ]),
         ])
@@ -1261,14 +1261,14 @@ test('tabs serialize tab panels as composable children', function () {
                 'defaultValue' => 'security',
                 'queryKey' => 'tabs',
             ],
-            'children' => [
+            'schema' => [
                 [
                     'type' => 'tab',
                     'props' => [
                         'label' => 'Profile',
                         'value' => 'profile',
                     ],
-                    'children' => [
+                    'schema' => [
                         [
                             'type' => 'text',
                             'props' => [
@@ -1283,7 +1283,7 @@ test('tabs serialize tab panels as composable children', function () {
                         'label' => 'Security',
                         'value' => 'security',
                     ],
-                    'children' => [
+                    'schema' => [
                         [
                             'type' => 'form',
                             'id' => 'password-form',
@@ -1311,15 +1311,15 @@ test('tabs can customize their query string key', function () {
 test('tabs ignore hidden tab children when resolving their active value', function () {
     $tabs = Tabs::make('settings-tabs')
         ->defaultValue('security')
-        ->children([
+        ->schema([
             Tab::make('profile', 'Profile'),
             Tab::make('security', 'Security')->when(false),
         ])
         ->toArray();
 
     expect($tabs['props']['activeValue'])->toBe('profile')
-        ->and($tabs['children'])->toHaveCount(1)
-        ->and($tabs['children'][0]['props']['value'])->toBe('profile');
+        ->and($tabs['schema'])->toHaveCount(1)
+        ->and($tabs['schema'][0]['props']['value'])->toBe('profile');
 });
 
 test('tabs hydrate their active value from the request query string', function () {
@@ -1331,21 +1331,21 @@ test('tabs hydrate their active value from the request query string', function (
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page')
-            ->where('lattice.components.0.props.defaultValue', 'profile')
-            ->where('lattice.components.0.props.activeValue', 'security')
+            ->where('lattice.schema.0.props.defaultValue', 'profile')
+            ->where('lattice.schema.0.props.activeValue', 'security')
         );
 });
 
 test('confirmed inactive tabs serialize only their tab metadata', function () {
     $tabs = Tabs::make('settings-tabs')
         ->defaultValue('profile')
-        ->children([
-            Tab::make('profile', 'Profile')->children([
+        ->schema([
+            Tab::make('profile', 'Profile')->schema([
                 Text::make('Profile form'),
             ]),
             Tab::make('security', 'Security')
                 ->confirm()
-                ->children([
+                ->schema([
                     Text::make('Security form'),
                 ]),
         ])
@@ -1354,13 +1354,13 @@ test('confirmed inactive tabs serialize only their tab metadata', function () {
     expect($tabs['props']['activeValue'])->toBe('profile')
         ->and($tabs['props']['defaultValue'])->toBe('profile')
         ->and($tabs['props']['queryKey'])->toBe('tabs')
-        ->and($tabs['children'][0]['props']['value'])->toBe('profile')
-        ->and($tabs['children'][1]['props']['value'])->toBe('security')
-        ->and($tabs['children'][1]['props']['confirm'])->toMatchArray([
+        ->and($tabs['schema'][0]['props']['value'])->toBe('profile')
+        ->and($tabs['schema'][1]['props']['value'])->toBe('security')
+        ->and($tabs['schema'][1]['props']['confirm'])->toMatchArray([
             'required' => true,
             'redirectUrl' => '/user/confirm-password',
         ])
-        ->and($tabs['children'][1])->not->toHaveKey('children');
+        ->and($tabs['schema'][1])->not->toHaveKey('schema');
 });
 
 test('confirmed active tabs redirect to password confirmation when the password is not confirmed', function () {
@@ -1385,8 +1385,8 @@ test('confirmed active tabs serialize their children after password confirmation
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page')
-            ->where('lattice.components.0.props.activeValue', 'security')
-            ->where('lattice.components.0.children.1.children.0.props.text', 'Security form')
+            ->where('lattice.schema.0.props.activeValue', 'security')
+            ->where('lattice.schema.0.schema.1.schema.0.props.text', 'Security form')
         );
 });
 
@@ -1413,7 +1413,7 @@ test('pages use laravel controller resolution for constructor dependencies rende
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page')
-            ->where('lattice.components.0.props.text', 'Injected Route Bound User details details')
+            ->where('lattice.schema.0.props.text', 'Injected Route Bound User details details')
         );
 });
 
@@ -1431,7 +1431,7 @@ test('pages can authorize requests before rendering', function () {
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page')
-            ->where('lattice.components.0.props.text', 'Authorized page')
+            ->where('lattice.schema.0.props.text', 'Authorized page')
         );
 });
 
@@ -1579,17 +1579,17 @@ test('workbench pages serialize package component trees for inertia', function (
             ->where('lattice.title', 'Lattice Workbench')
             ->where('lattice.layout', 'none')
             ->where('lattice.container', 'centered')
-            ->where('lattice.components.0.type', 'stack')
-            ->where('lattice.components.0.key', 'workbench-page')
-            ->where('lattice.components.0.children.0.type', 'stack')
-            ->where('lattice.components.0.children.0.key', 'workbench-hero')
-            ->where('lattice.components.0.children.0.children.0.type', 'badge')
-            ->where('lattice.components.0.children.0.children.0.props.label', 'Lattice Package')
-            ->where('lattice.components.0.children.0.children.1.type', 'heading')
-            ->where('lattice.components.0.children.0.children.1.props.text', 'Workbench page')
-            ->where('lattice.components.0.children.1.type', 'grid')
-            ->where('lattice.components.0.children.1.children.0.type', 'card')
-            ->where('lattice.components.0.children.1.children.0.props.title', 'Components'));
+            ->where('lattice.schema.0.type', 'stack')
+            ->where('lattice.schema.0.key', 'workbench-page')
+            ->where('lattice.schema.0.schema.0.type', 'stack')
+            ->where('lattice.schema.0.schema.0.key', 'workbench-hero')
+            ->where('lattice.schema.0.schema.0.schema.0.type', 'badge')
+            ->where('lattice.schema.0.schema.0.schema.0.props.label', 'Lattice Package')
+            ->where('lattice.schema.0.schema.0.schema.1.type', 'heading')
+            ->where('lattice.schema.0.schema.0.schema.1.props.text', 'Workbench page')
+            ->where('lattice.schema.0.schema.1.type', 'grid')
+            ->where('lattice.schema.0.schema.1.schema.0.type', 'card')
+            ->where('lattice.schema.0.schema.1.schema.0.props.title', 'Components'));
 });
 
 test('workbench tables page serializes lazy tables for each pagination type', function () {
@@ -1600,24 +1600,24 @@ test('workbench tables page serializes lazy tables for each pagination type', fu
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page')
             ->where('lattice.title', 'Lattice Tables')
-            ->where('lattice.components.0.type', 'stack')
-            ->where('lattice.components.0.key', 'tables-page')
-            ->where('lattice.components.0.children.1.type', 'tabs')
-            ->where('lattice.components.0.children.1.props.defaultValue', 'none')
-            ->where('lattice.components.0.children.1.children.0.props.value', 'none')
-            ->where('lattice.components.0.children.1.children.0.children.1.id', 'workbench.users.none')
-            ->where('lattice.components.0.children.1.children.0.children.1.props.lazy', true)
-            ->where('lattice.components.0.children.1.children.0.children.1.props.data', [])
-            ->where('lattice.components.0.children.1.children.0.children.1.props.pagination.mode', 'none')
-            ->where('lattice.components.0.children.1.children.1.props.value', 'simple')
-            ->where('lattice.components.0.children.1.children.1.children.1.id', 'workbench.users.simple')
-            ->where('lattice.components.0.children.1.children.1.children.1.props.pagination.mode', 'simple')
-            ->where('lattice.components.0.children.1.children.2.props.value', 'table')
-            ->where('lattice.components.0.children.1.children.2.children.1.id', 'workbench.users.table')
-            ->where('lattice.components.0.children.1.children.2.children.1.props.pagination.mode', 'table')
-            ->where('lattice.components.0.children.1.children.3.props.value', 'infinite')
-            ->where('lattice.components.0.children.1.children.3.children.1.id', 'workbench.users.infinite')
-            ->where('lattice.components.0.children.1.children.3.children.1.props.pagination.mode', 'infinite'));
+            ->where('lattice.schema.0.type', 'stack')
+            ->where('lattice.schema.0.key', 'tables-page')
+            ->where('lattice.schema.0.schema.1.type', 'tabs')
+            ->where('lattice.schema.0.schema.1.props.defaultValue', 'none')
+            ->where('lattice.schema.0.schema.1.schema.0.props.value', 'none')
+            ->where('lattice.schema.0.schema.1.schema.0.schema.1.id', 'workbench.users.none')
+            ->where('lattice.schema.0.schema.1.schema.0.schema.1.props.lazy', true)
+            ->where('lattice.schema.0.schema.1.schema.0.schema.1.props.data', [])
+            ->where('lattice.schema.0.schema.1.schema.0.schema.1.props.pagination.mode', 'none')
+            ->where('lattice.schema.0.schema.1.schema.1.props.value', 'simple')
+            ->where('lattice.schema.0.schema.1.schema.1.schema.1.id', 'workbench.users.simple')
+            ->where('lattice.schema.0.schema.1.schema.1.schema.1.props.pagination.mode', 'simple')
+            ->where('lattice.schema.0.schema.1.schema.2.props.value', 'table')
+            ->where('lattice.schema.0.schema.1.schema.2.schema.1.id', 'workbench.users.table')
+            ->where('lattice.schema.0.schema.1.schema.2.schema.1.props.pagination.mode', 'table')
+            ->where('lattice.schema.0.schema.1.schema.3.props.value', 'infinite')
+            ->where('lattice.schema.0.schema.1.schema.3.schema.1.id', 'workbench.users.infinite')
+            ->where('lattice.schema.0.schema.1.schema.3.schema.1.props.pagination.mode', 'infinite'));
 });
 
 test('workbench user seeder creates sample table data idempotently', function () {
@@ -1908,11 +1908,11 @@ final class WorkbenchTabsPage extends Page
         return $schema->component(
             Tabs::make('settings-tabs')
                 ->defaultValue('profile')
-                ->children([
-                    Tab::make('profile', 'Profile')->children([
+                ->schema([
+                    Tab::make('profile', 'Profile')->schema([
                         Text::make('Profile form'),
                     ]),
-                    Tab::make('security', 'Security')->children([
+                    Tab::make('security', 'Security')->schema([
                         Text::make('Security form'),
                     ]),
                 ]),
@@ -1927,13 +1927,13 @@ final class WorkbenchConfirmedTabsPage extends Page
         return $schema->component(
             Tabs::make('settings-tabs')
                 ->defaultValue('profile')
-                ->children([
-                    Tab::make('profile', 'Profile')->children([
+                ->schema([
+                    Tab::make('profile', 'Profile')->schema([
                         Text::make('Profile form'),
                     ]),
                     Tab::make('security', 'Security')
                         ->confirm()
-                        ->children([
+                        ->schema([
                             Text::make('Security form'),
                         ]),
                 ]),

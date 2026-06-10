@@ -34,9 +34,9 @@ describe("Lattice tabs component", () => {
       <Renderer
         nodes={[
           {
-            children: [
+            schema: [
               {
-                children: [
+                schema: [
                   {
                     props: {
                       text: "Profile form",
@@ -51,7 +51,7 @@ describe("Lattice tabs component", () => {
                 type: "tab",
               },
               {
-                children: [
+                schema: [
                   {
                     props: {
                       text: "Security form",
@@ -104,9 +104,9 @@ describe("Lattice tabs component", () => {
       <Renderer
         nodes={[
           {
-            children: [
+            schema: [
               {
-                children: [
+                schema: [
                   {
                     props: {
                       text: "Profile form",
@@ -121,7 +121,7 @@ describe("Lattice tabs component", () => {
                 type: "tab",
               },
               {
-                children: [
+                schema: [
                   {
                     props: {
                       text: "Security form",
@@ -169,9 +169,9 @@ describe("Lattice tabs component", () => {
       <Renderer
         nodes={[
           {
-            children: [
+            schema: [
               {
-                children: [
+                schema: [
                   {
                     props: {
                       text: "Profile form",
@@ -230,9 +230,9 @@ describe("Lattice tabs component", () => {
       <Renderer
         nodes={[
           {
-            children: [
+            schema: [
               {
-                children: [
+                schema: [
                   {
                     props: {
                       text: "Loaded immediately",
@@ -247,7 +247,7 @@ describe("Lattice tabs component", () => {
                 type: "tab",
               },
               {
-                children: [
+                schema: [
                   {
                     props: {
                       text: "Loaded after opening",

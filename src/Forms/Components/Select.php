@@ -37,6 +37,9 @@ class Select extends Field
         return $this->prop('searchable', true);
     }
 
+    /**
+     * @internal
+     */
     public function isSearchable(): bool
     {
         return $this->searchResolver !== null;
@@ -57,6 +60,8 @@ class Select extends Field
     }
 
     /**
+     * @internal
+     *
      * @return array<int, array{label: string, value: string}>
      */
     public function resolveSearch(string $query, FormData $data, Request $request): array

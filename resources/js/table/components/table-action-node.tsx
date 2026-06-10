@@ -11,7 +11,7 @@ export function TableActionNode({ node }: { node: Node }) {
   if (node.type === "action.group") {
     return (
       <ActionGroupComponent node={node as Node<"action.group">}>
-        {node.children?.map((childNode, index) => (
+        {node.schema?.map((childNode, index) => (
           <TableActionNode
             key={childNode.key ?? childNode.id ?? `${childNode.type}-${index}`}
             node={childNode}

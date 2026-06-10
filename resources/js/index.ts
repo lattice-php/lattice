@@ -39,6 +39,7 @@ export type {
   RendererComponent,
   RendererComponentModule,
   RendererComponentProps,
+  Schema,
   UnknownComponent,
 } from "./core/types";
 export type { Method } from "@inertiajs/core";

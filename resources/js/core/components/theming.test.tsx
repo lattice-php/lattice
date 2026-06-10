@@ -28,7 +28,7 @@ describe("Lattice component theming", () => {
   it("renders package controls with lt token utilities", () => {
     const tabs = {
       id: "settings.tabs",
-      children: [
+      schema: [
         {
           id: "settings.profile",
           props: {

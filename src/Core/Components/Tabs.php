@@ -53,7 +53,7 @@ class Tabs extends ContainerComponent
      * @return array<string, mixed>
      */
     #[SerializationHook(priority: 300)]
-    protected function serialiseChildren(array $data): array
+    protected function serialiseSchema(array $data): array
     {
         $props = $data['props'] ?? [];
         $activeValue = is_array($props) && is_string($props['activeValue'] ?? null)
@@ -62,7 +62,7 @@ class Tabs extends ContainerComponent
 
         return [
             ...$data,
-            'children' => array_map(
+            'schema' => array_map(
                 fn (Component $child): array => $child instanceof Tab
                     ? $child->toArrayForTabs($activeValue)
                     : $child->toArray(),

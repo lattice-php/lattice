@@ -121,6 +121,7 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@astrojs/react": "^5.0.7",
     "@astrojs/starlight": "^0.40.0",
     "@astrojs/starlight-tailwind": "^5.0.0",
     "@inertiajs/react": "^3.0.0",

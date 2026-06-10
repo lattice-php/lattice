@@ -31,6 +31,19 @@ it('resolves a value closure during resolution', function (): void {
         ->and($field->toArray()['props']['value'])->toBe(12.0);
 });
 
+it('marks a value set inside a dependsOn closure as resolved', function (): void {
+    $field = TextInput::make('total', 'Total')
+        ->dependsOn(
+            ['qty', 'price'],
+            fn (TextInput $f, FormData $d) => $f->value($d->float('qty') * $d->float('price')),
+        );
+
+    $field->applyResolution(FormData::make(['qty' => '4', 'price' => '5']), Request::create('/'));
+
+    expect($field->hasResolvedValue())->toBeTrue()
+        ->and($field->resolvedValue())->toBe(20.0);
+});
+
 it('runs dependsOn closures during resolution', function (): void {
     $field = Choice::make('state', 'State')
         ->dependsOn('country', fn (Choice $f, FormData $d) => $f->options([

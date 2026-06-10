@@ -34,8 +34,8 @@ class ShowcaseForm extends FormDefinition
             ->precognitive(500)
             ->submitLabel('Submit showcase')
             ->schema([
-                Card::make('Profile', 'Your basic account information.')->children([
-                    Grid::make()->columns(2)->children([
+                Card::make('Profile', 'Your basic account information.')->schema([
+                    Grid::make()->columns(2)->schema([
                         TextInput::make('name', 'Full name')
                             ->placeholder('Ada Lovelace')
                             ->rules(['required', 'string', 'max:255']),
@@ -53,8 +53,8 @@ class ShowcaseForm extends FormDefinition
                         ->rules(['nullable', 'string', 'max:1000']),
                 ]),
 
-                Card::make('Details')->children([
-                    Grid::make()->columns(2)->children([
+                Card::make('Details')->schema([
+                    Grid::make()->columns(2)->schema([
                         NumberInput::make('age', 'Age')
                             ->min(0)
                             ->max(120)
@@ -76,7 +76,7 @@ class ShowcaseForm extends FormDefinition
                         ->rules(['required', Rule::in(['free', 'pro', 'enterprise'])]),
                 ]),
 
-                Card::make('Conditional fields', 'The company field appears for business accounts.')->children([
+                Card::make('Conditional fields', 'The company field appears for business accounts.')->schema([
                     Choice::make('account_type', 'Account type')
                         ->options([
                             Choice::option('Personal', 'personal'),
@@ -88,13 +88,13 @@ class ShowcaseForm extends FormDefinition
                         ->rules(['string', 'max:255']),
                 ]),
 
-                Card::make('Order total', 'The total is computed on the server.')->children([
-                    Grid::make()->columns(2)->children([
+                Card::make('Order total', 'The total is computed on the server.')->schema([
+                    Grid::make()->columns(2)->schema([
                         NumberInput::make('quantity', 'Quantity')->min(1),
                         NumberInput::make('unit_price', 'Unit price')->min(0)->step(0.01),
                     ]),
                     TextInput::make('total', 'Total')
-                        ->readonly()
+                        ->readOnly()
                         ->dependsOn(
                             ['quantity', 'unit_price'],
                             fn (TextInput $field, FormData $data) => $field->value(
@@ -103,7 +103,7 @@ class ShowcaseForm extends FormDefinition
                         ),
                 ]),
 
-                Card::make('Selection', 'Static and searchable selects.')->children([
+                Card::make('Selection', 'Static and searchable selects.')->schema([
                     Select::make('country', 'Country')
                         ->placeholder('Pick a country')
                         ->options([
@@ -131,17 +131,17 @@ class ShowcaseForm extends FormDefinition
                         ->rules(['nullable', 'array']),
                 ]),
 
-                Card::make('Article')->children([
+                Card::make('Article')->schema([
                     RichEditor::make('article', 'Article'),
                 ]),
 
-                Card::make('Consent')->children([
+                Card::make('Consent')->schema([
                     Checkbox::make('newsletter', 'Subscribe to the newsletter'),
                     Checkbox::make('terms', 'I accept the terms and conditions')
                         ->rules(['accepted']),
                 ]),
 
-                HiddenInput::make('source', 'workbench-showcase'),
+                HiddenInput::make('source')->value('workbench-showcase'),
             ]);
     }
 

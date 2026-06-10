@@ -25,20 +25,20 @@ final class HomePage extends Page
 
     public function render(PageSchema $schema): PageSchema
     {
-        return $schema->components([
+        return $schema->schema([
             Stack::make('workbench-page')
                 ->gap(Gap::ExtraLarge)
-                ->children([
+                ->schema([
                     Stack::make('workbench-hero')
                         ->gap(Gap::Large)
-                        ->children([
+                        ->schema([
                             Badge::make('Lattice Package'),
                             Heading::make('Workbench page'),
                             Text::make('Package primitives render through a host application page.'),
                         ]),
                     Grid::make('workbench-capabilities')
                         ->columns(2)
-                        ->children([
+                        ->schema([
                             Card::make('Components', 'Server-side component trees serialize to typed React nodes.'),
                             Card::make('Renderer', 'The package renderer resolves registered component types.'),
                         ]),

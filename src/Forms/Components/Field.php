@@ -45,12 +45,15 @@ abstract class Field extends Component
      */
     protected array $messages = [];
 
-    public static function make(string $name, string $label): static
+    public static function make(string $name, ?string $label = null): static
     {
-        return (new static)->props([
-            'label' => $label,
-            'name' => $name,
-        ]);
+        $props = ['name' => $name];
+
+        if ($label !== null) {
+            $props['label'] = $label;
+        }
+
+        return (new static)->props($props);
     }
 
     public function name(): string
@@ -58,7 +61,15 @@ abstract class Field extends Component
         return (string) ($this->props['name'] ?? '');
     }
 
-    public function label(): ?string
+    public function label(string $label): static
+    {
+        return $this->prop('label', $label);
+    }
+
+    /**
+     * @internal
+     */
+    public function getLabel(): ?string
     {
         $label = $this->props['label'] ?? null;
 
@@ -73,6 +84,8 @@ abstract class Field extends Component
     }
 
     /**
+     * @internal
+     *
      * @return array<string, string>
      */
     public function messages(): array
@@ -97,6 +110,8 @@ abstract class Field extends Component
     }
 
     /**
+     * @internal
+     *
      * @return array<int, mixed>
      */
     public function resolveRules(FormData $data, Request $request): array
@@ -127,28 +142,33 @@ abstract class Field extends Component
             return $this;
         }
 
-        return $this->addCondition('visible', (string) $attributes, $operatorOrValue, $value, func_num_args());
+        return $this->addCondition('visible', (string) $attributes, $operatorOrValue, $value);
+    }
+
+    public function visibleWhen(string $field, mixed $operatorOrValue = null, mixed $value = null): static
+    {
+        return $this->addCondition('visible', $field, $operatorOrValue, $value);
     }
 
     public function requiredWhen(string $field, mixed $operatorOrValue = null, mixed $value = null): static
     {
-        return $this->addCondition('required', $field, $operatorOrValue, $value, func_num_args());
+        return $this->addCondition('required', $field, $operatorOrValue, $value);
     }
 
-    public function readonlyWhen(string $field, mixed $operatorOrValue = null, mixed $value = null): static
+    public function readOnlyWhen(string $field, mixed $operatorOrValue = null, mixed $value = null): static
     {
-        return $this->addCondition('readonly', $field, $operatorOrValue, $value, func_num_args());
+        return $this->addCondition('readonly', $field, $operatorOrValue, $value);
     }
 
     public function disabledWhen(string $field, mixed $operatorOrValue = null, mixed $value = null): static
     {
-        return $this->addCondition('disabled', $field, $operatorOrValue, $value, func_num_args());
+        return $this->addCondition('disabled', $field, $operatorOrValue, $value);
     }
 
-    private function addCondition(string $group, string $field, mixed $operatorOrValue, mixed $value, int $argCount): static
+    private function addCondition(string $group, string $field, mixed $operatorOrValue, mixed $value): static
     {
         ($this->conditions[$group] ??= new ConditionSet)
-            ->add($this->makeCondition($field, $operatorOrValue, $value, $argCount));
+            ->add($this->makeCondition($field, $operatorOrValue, $value));
 
         return $this;
     }
@@ -158,14 +178,9 @@ abstract class Field extends Component
         return $this->prop('hidden', $hidden);
     }
 
-    public function show(): static
+    public function visible(bool $visible = true): static
     {
-        return $this->hidden(false);
-    }
-
-    public function hide(): static
-    {
-        return $this->hidden(true);
+        return $this->prop('hidden', ! $visible);
     }
 
     public function required(bool $required = true): static
@@ -173,9 +188,9 @@ abstract class Field extends Component
         return $this->prop('required', $required);
     }
 
-    public function readonly(bool $readonly = true): static
+    public function readOnly(bool $readOnly = true): static
     {
-        return $this->prop('readonly', $readonly);
+        return $this->prop('readonly', $readOnly);
     }
 
     public function disabled(bool $disabled = true): static
@@ -200,11 +215,17 @@ abstract class Field extends Component
         return $this;
     }
 
+    /**
+     * @internal
+     */
     public function isComputed(): bool
     {
         return $this->dependencies !== [] || $this->valueResolver !== null;
     }
 
+    /**
+     * @internal
+     */
     public function applyResolution(FormData $data, Request $request): void
     {
         $this->resolving = true;
@@ -220,16 +241,25 @@ abstract class Field extends Component
         $this->resolving = false;
     }
 
+    /**
+     * @internal
+     */
     public function hasResolvedValue(): bool
     {
         return $this->hasResolvedValue;
     }
 
+    /**
+     * @internal
+     */
     public function resolvedValue(): mixed
     {
         return $this->props['value'] ?? null;
     }
 
+    /**
+     * @internal
+     */
     public function isVisible(FormData $data): bool
     {
         if ($this->props['hidden'] ?? false) {
@@ -239,21 +269,38 @@ abstract class Field extends Component
         return ($this->conditions['visible'] ?? null)?->allMatch($data) ?? true;
     }
 
+    /**
+     * @internal
+     */
     public function isRequired(FormData $data): bool
     {
-        return ($this->props['required'] ?? false) || (($this->conditions['required'] ?? null)?->anyMatches($data) ?? false);
+        return $this->conditionState('required', $data);
     }
 
-    public function isReadonly(FormData $data): bool
+    /**
+     * @internal
+     */
+    public function isReadOnly(FormData $data): bool
     {
-        return ($this->props['readonly'] ?? false) || (($this->conditions['readonly'] ?? null)?->anyMatches($data) ?? false);
+        return $this->conditionState('readonly', $data);
     }
 
+    /**
+     * @internal
+     */
     public function isDisabled(FormData $data): bool
     {
-        return ($this->props['disabled'] ?? false) || (($this->conditions['disabled'] ?? null)?->anyMatches($data) ?? false);
+        return $this->conditionState('disabled', $data);
     }
 
+    private function conditionState(string $group, FormData $data): bool
+    {
+        return ($this->props[$group] ?? false) || (($this->conditions[$group] ?? null)?->anyMatches($data) ?? false);
+    }
+
+    /**
+     * @internal
+     */
     public function hasValue(): bool
     {
         return array_key_exists('value', $this->props);
@@ -274,15 +321,17 @@ abstract class Field extends Component
      */
     public function prefill(mixed $value): void {}
 
-    private function makeCondition(string $field, mixed $operatorOrValue, mixed $value, int $argCount): Condition
+    private function makeCondition(string $field, mixed $operatorOrValue, mixed $value): Condition
     {
-        if ($argCount >= 3) {
-            $operator = $operatorOrValue instanceof ConditionOperator ? $operatorOrValue : ConditionOperator::from((string) $operatorOrValue);
-
-            return new Condition($field, $operator, $value);
+        if ($value === null && ! $operatorOrValue instanceof ConditionOperator) {
+            return new Condition($field, is_array($operatorOrValue) ? ConditionOperator::In : ConditionOperator::Equals, $operatorOrValue);
         }
 
-        return new Condition($field, is_array($operatorOrValue) ? ConditionOperator::In : ConditionOperator::Equals, $operatorOrValue);
+        $operator = $operatorOrValue instanceof ConditionOperator
+            ? $operatorOrValue
+            : ConditionOperator::fromHuman((string) $operatorOrValue);
+
+        return new Condition($field, $operator, $value);
     }
 
     /**
@@ -294,8 +343,8 @@ abstract class Field extends Component
     {
         $conditions = [];
 
-        foreach (['visible', 'required', 'readonly', 'disabled'] as $group) {
-            $serialised = ($this->conditions[$group] ?? null)?->jsonSerialize() ?? [];
+        foreach ($this->conditions as $group => $set) {
+            $serialised = $set->jsonSerialize();
 
             if ($serialised !== []) {
                 $conditions[$group] = $serialised;

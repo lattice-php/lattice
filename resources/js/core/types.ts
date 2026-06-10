@@ -14,19 +14,22 @@ export type PropsFor<TType extends string> = TType extends ComponentType
   : NodeProps;
 
 export type Node<TType extends string = string> = {
-  children?: Node[];
   id?: string;
   key?: string;
   props?: PropsFor<TType>;
+  schema?: Schema;
   type: TType;
 };
 
+/** An ordered list of component nodes — the content of a page, form, or container. */
+export type Schema = Node[];
+
 export type PagePayload = {
   breadcrumbs: PageBreadcrumb[];
-  components: Node[];
   container: PageContainer;
   layout: string;
   menus: Record<string, MenuPayload | undefined>;
+  schema: Schema;
   title: string | null;
 };
 

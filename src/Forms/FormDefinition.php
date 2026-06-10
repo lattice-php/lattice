@@ -34,39 +34,70 @@ abstract class FormDefinition extends Definition implements ProvidesForm
         $fields = $this->resolvedFields($request, $data);
 
         $input = $request->all();
+        $rules = [];
+        $messages = [];
+        $attributes = [];
 
-        foreach ($fields as $field) {
-            if ($this->usesServerValue($field, $data)) {
-                $input[$field->name()] = $field->resolvedValue();
-            }
-        }
-
-        $validator = $this->validator(
-            $input,
-            $this->ruleSet($fields, $data, $request),
-            $this->messageSet($fields, $data),
-            $this->attributeSet($fields, $data),
-            $request,
-        );
-
-        $validated = $validator->validate();
+        /** @var array<int, array{field: Field, name: string, visible: bool, serverValue: bool, locked: bool}> $plan */
+        $plan = [];
 
         foreach ($fields as $field) {
             $name = $field->name();
+            $visible = $field->isVisible($data);
+            $locked = $field->isReadOnly($data) || $field->isDisabled($data);
+            $serverValue = $field->hasResolvedValue() || ($locked && $field->hasValue());
 
-            if (! $field->isVisible($data)) {
+            $plan[] = [
+                'field' => $field,
+                'name' => $name,
+                'visible' => $visible,
+                'serverValue' => $serverValue,
+                'locked' => $locked,
+            ];
+
+            if ($serverValue) {
+                $input[$name] = $field->resolvedValue();
+            }
+
+            if (! $visible) {
+                continue;
+            }
+
+            $fieldRules = $field->resolveRules($data, $request);
+
+            if ($field->isRequired($data) && ! in_array('required', $fieldRules, true)) {
+                array_unshift($fieldRules, 'required');
+            }
+
+            if ($fieldRules !== []) {
+                $rules[$name] = $fieldRules;
+            }
+
+            foreach ($field->messages() as $rule => $message) {
+                $messages["{$name}.{$rule}"] = $message;
+            }
+
+            if (($label = $field->getLabel()) !== null) {
+                $attributes[$name] = $label;
+            }
+        }
+
+        $validated = $this->validator($input, $rules, $messages, $attributes, $request)->validate();
+
+        foreach ($plan as ['field' => $field, 'name' => $name, 'visible' => $visible, 'serverValue' => $serverValue, 'locked' => $locked]) {
+            if (! $visible) {
                 unset($validated[$name]);
 
                 continue;
             }
 
-            if ($this->usesServerValue($field, $data)) {
+            if ($serverValue) {
                 $validated[$name] = $field->resolvedValue();
 
                 continue;
             }
 
-            if ($field->isReadonly($data) || $field->isDisabled($data)) {
+            if ($locked) {
                 unset($validated[$name]);
 
                 continue;
@@ -92,7 +123,7 @@ abstract class FormDefinition extends Definition implements ProvidesForm
         $query = $request->string('q')->toString();
         $data = FormData::fromRequest($request);
 
-        $field = $this->definition(Form::make('form'), $request)
+        $field = $this->buildForm($request)
             ->fields()
             ->first(fn (Field $field): bool => $field->name() === $name);
 
@@ -111,7 +142,7 @@ abstract class FormDefinition extends Definition implements ProvidesForm
         $fields = [];
         $values = [];
 
-        foreach ($this->definition(Form::make('form'), $request)->fields() as $field) {
+        foreach ($this->buildForm($request)->fields() as $field) {
             if (! $field->isComputed()) {
                 continue;
             }
@@ -135,80 +166,17 @@ abstract class FormDefinition extends Definition implements ProvidesForm
      */
     protected function resolvedFields(Request $request, FormData $data): Collection
     {
-        return $this->definition(Form::make('form'), $request)
+        return $this->buildForm($request)
             ->fields()
             ->each(fn (Field $field) => $field->applyResolution($data, $request));
     }
 
     /**
-     * @param  Collection<int, Field>  $fields
-     * @return array<string, array<int, mixed>>
+     * Build this form's component tree for the current request.
      */
-    private function ruleSet(Collection $fields, FormData $data, Request $request): array
+    protected function buildForm(Request $request): Form
     {
-        return $fields
-            ->filter(fn (Field $field): bool => $field->isVisible($data))
-            ->mapWithKeys(function (Field $field) use ($data, $request): array {
-                $rules = $field->resolveRules($data, $request);
-
-                if ($field->isRequired($data) && ! in_array('required', $rules, true)) {
-                    array_unshift($rules, 'required');
-                }
-
-                return [$field->name() => $rules];
-            })
-            ->filter(fn (array $rules): bool => $rules !== [])
-            ->all();
-    }
-
-    /**
-     * Custom validation messages keyed as "{field}.{rule}", collected from visible fields.
-     *
-     * @param  Collection<int, Field>  $fields
-     * @return array<string, string>
-     */
-    private function messageSet(Collection $fields, FormData $data): array
-    {
-        $messages = [];
-
-        foreach ($fields as $field) {
-            if (! $field->isVisible($data)) {
-                continue;
-            }
-
-            foreach ($field->messages() as $rule => $message) {
-                $messages["{$field->name()}.{$rule}"] = $message;
-            }
-        }
-
-        return $messages;
-    }
-
-    /**
-     * Field labels used as human-friendly validation attribute names.
-     *
-     * @param  Collection<int, Field>  $fields
-     * @return array<string, string>
-     */
-    private function attributeSet(Collection $fields, FormData $data): array
-    {
-        return $fields
-            ->filter(fn (Field $field): bool => $field->isVisible($data) && $field->label() !== null)
-            ->mapWithKeys(fn (Field $field): array => [$field->name() => (string) $field->label()])
-            ->all();
-    }
-
-    /**
-     * A field's value is authoritative server-side when it is computed (imperative value
-     * closure) or when it is locked (readonly/disabled) and carries a declarative value.
-     */
-    private function usesServerValue(Field $field, FormData $data): bool
-    {
-        if ($field->hasResolvedValue()) {
-            return true;
-        }
-
-        return ($field->isReadonly($data) || $field->isDisabled($data)) && $field->hasValue();
+        return $this->definition(Form::make('form'), $request);
     }
 
     /**
