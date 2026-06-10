@@ -80,6 +80,12 @@ jobs:
       - name: Pest
         run: composer test
 
+      - name: Generated TypeScript types are up to date
+        run: |
+          composer types
+          git add --intent-to-add resources/js/types/generated.ts
+          git diff --exit-code resources/js/types/generated.ts
+
       - name: Docs fixtures are up to date
         run: |
           git add --intent-to-add docs/fixtures
