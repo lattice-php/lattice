@@ -1,8 +1,8 @@
 import { Form as InertiaForm } from "@inertiajs/react";
-import { withRefHeader } from "@lattice/core/component-ref";
-import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/core/props";
-import { LATTICE_EVENT } from "@lattice/events/event-names";
-import type { Node, NodeProps, RendererComponent } from "@lattice/core/types";
+import { withRefHeader } from "@lattice/lattice/core/component-ref";
+import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
+import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
+import type { Node, NodeProps, RendererComponent } from "@lattice/lattice/core/types";
 import { useEffect, useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "./context";
@@ -11,7 +11,7 @@ import type { FormMethod } from "./types";
 import { useFormResolver } from "./use-form-resolver";
 import { FormValuesProvider } from "./values";
 
-declare module "@lattice/core/types" {
+declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
     form: {
       action?: string;

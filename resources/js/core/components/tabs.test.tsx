@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice/core/registry";
-import { Renderer } from "@lattice/core/renderer";
-import type { RendererComponent } from "@lattice/core/types";
+import { createRegistry, eagerComponent } from "@lattice/lattice/core/registry";
+import { Renderer } from "@lattice/lattice/core/renderer";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 import TabComponent, { TabsComponent } from "./tabs";
 
 vi.mock("@inertiajs/react", () => ({

@@ -1,8 +1,13 @@
 import { Check, ChevronsUpDown, Loader2, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { cn } from "@lattice/lib/utils";
-import { type Option, getBooleanProp, getOptions, getStringProp } from "@lattice/core/props";
-import type { RendererComponent } from "@lattice/core/types";
+import { cn } from "@lattice/lattice/lib/utils";
+import {
+  type Option,
+  getBooleanProp,
+  getOptions,
+  getStringProp,
+} from "@lattice/lattice/core/props";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { FORM_DEBOUNCE_MS, postFormAction } from "../form-transport";
@@ -13,7 +18,7 @@ import { useFormValue } from "../values";
 
 type SelectOption = Option;
 
-declare module "@lattice/core/types" {
+declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
     "form.select": {
       conditions?: unknown;

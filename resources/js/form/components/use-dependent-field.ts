@@ -1,5 +1,5 @@
-import { getBooleanProp } from "@lattice/core/props";
-import type { Node } from "@lattice/core/types";
+import { getBooleanProp } from "@lattice/lattice/core/props";
+import type { Node } from "@lattice/lattice/core/types";
 import { type FieldConditions, type FieldState, evaluateConditions } from "./conditions";
 import { useFormValues } from "./values";
 

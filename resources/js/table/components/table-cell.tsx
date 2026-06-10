@@ -1,4 +1,4 @@
-import { copyToClipboard } from "@lattice/clipboard";
+import { copyToClipboard } from "@lattice/lattice/clipboard";
 import { Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { formatCell, resolveLink } from "../format";

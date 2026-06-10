@@ -1,8 +1,8 @@
-import { getStringProp } from "@lattice/core/props";
-import type { RendererComponent } from "@lattice/core/types";
+import { getStringProp } from "@lattice/lattice/core/props";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 import { FormSubmitButton } from "../base/submit-button";
 
-declare module "@lattice/core/types" {
+declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
     "form.submit-button": {
       label?: string;

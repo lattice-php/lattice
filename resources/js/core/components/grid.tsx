@@ -1,8 +1,8 @@
-import { getNumberProp } from "@lattice/core/props";
-import type { RendererComponent } from "@lattice/core/types";
-import { cn } from "@lattice/lib/utils";
+import { getNumberProp } from "@lattice/lattice/core/props";
+import type { RendererComponent } from "@lattice/lattice/core/types";
+import { cn } from "@lattice/lattice/lib/utils";
 
-declare module "@lattice/core/types" {
+declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
     grid: {
       columns?: number;

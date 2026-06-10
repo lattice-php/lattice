@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice/core/types";
+import type { Node } from "@lattice/lattice/core/types";
 import ActionGroupComponent from "./action-group";
 
 describe("Lattice action group component", () => {

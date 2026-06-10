@@ -1,5 +1,5 @@
-import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/core/props";
-import type { NodeProps, RendererComponent } from "@lattice/core/types";
+import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
+import type { NodeProps, RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import PasswordInput from "../base/password-input";
 import { useDependentField } from "../use-dependent-field";
@@ -30,7 +30,7 @@ function getPasswordConfirmation(props: NodeProps | undefined): PasswordConfirma
   };
 }
 
-declare module "@lattice/core/types" {
+declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
     "form.password-input": {
       autoComplete?: string;

@@ -11,8 +11,8 @@
     "noEmit": true,
     "noImplicitAny": true,
     "paths": {
-      "@lattice": ["./resources/js/index.ts"],
-      "@lattice/*": ["./resources/js/*"]
+      "@lattice/lattice": ["./resources/js/index.ts"],
+      "@lattice/lattice/*": ["./resources/js/*"]
     },
     "skipLibCheck": true,
     "strict": true,

@@ -1,5 +1,5 @@
-import { createPlugin, lazyComponent } from "@lattice/core/registry";
-import type { RendererComponent, RendererComponentModule } from "@lattice/core/types";
+import { createPlugin, lazyComponent } from "@lattice/lattice/core/registry";
+import type { RendererComponent, RendererComponentModule } from "@lattice/lattice/core/types";
 import { FormSkeletonComponent } from "./skeleton";
 
 type FormComponentName =

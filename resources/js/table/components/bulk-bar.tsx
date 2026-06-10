@@ -4,12 +4,12 @@ import {
   dispatchActionEffects,
   dispatchActionError,
   getActionEffects,
-} from "@lattice/action/effects";
-import type { ActionEffect } from "@lattice/action/effects";
-import { withRefHeader } from "@lattice/core/component-ref";
-import { Button } from "@lattice/core/components/button";
-import { ConfirmDialog } from "@lattice/core/components/confirm-dialog";
-import { Spinner } from "@lattice/core/components/spinner";
+} from "@lattice/lattice/action/effects";
+import type { ActionEffect } from "@lattice/lattice/action/effects";
+import { withRefHeader } from "@lattice/lattice/core/component-ref";
+import { Button } from "@lattice/lattice/core/components/button";
+import { ConfirmDialog } from "@lattice/lattice/core/components/confirm-dialog";
+import { Spinner } from "@lattice/lattice/core/components/spinner";
 import type { BulkAction } from "../bulk";
 
 type BulkResponse = {

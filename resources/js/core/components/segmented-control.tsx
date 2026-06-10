@@ -1,9 +1,14 @@
 import { useState } from "react";
-import { type Option, getOptionalNumberProp, getOptions, getStringProp } from "@lattice/core/props";
-import type { RendererComponent } from "@lattice/core/types";
+import {
+  type Option,
+  getOptionalNumberProp,
+  getOptions,
+  getStringProp,
+} from "@lattice/lattice/core/props";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 import { SegmentedPills } from "./segmented-pills";
 
-declare module "@lattice/core/types" {
+declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
     "segmented-control": {
       emits?: string;

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { createPlugin, createRegistry, eagerComponent, Provider } from "@lattice";
-import type { PagePayload, RendererComponent } from "@lattice";
+import { createPlugin, createRegistry, eagerComponent, Provider } from "@lattice/lattice";
+import type { PagePayload, RendererComponent } from "@lattice/lattice";
 import Page from "./page";
 
 vi.mock("@inertiajs/react", () => ({

@@ -1,5 +1,5 @@
 import { usePage } from "@inertiajs/react";
-import type { MenuPayload, PagePayload } from "@lattice/core/types";
+import type { MenuPayload, PagePayload } from "@lattice/lattice/core/types";
 
 export function useMenu(location: string): MenuPayload | null {
   const page = usePage();

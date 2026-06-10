@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "bambamboole/lattice",
+    "name": "lattice/lattice",
     "description": "Server-driven React components for Laravel and Inertia.",
     "type": "library",
     "license": "MIT",
