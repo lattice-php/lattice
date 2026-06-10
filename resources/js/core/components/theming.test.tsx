@@ -38,7 +38,10 @@ describe("Lattice component theming", () => {
           type: "tab",
         },
       ],
-      props: {},
+      props: {
+        activeValue: "",
+        queryKey: "tabs",
+      },
       type: "tabs",
     } satisfies Node<"tabs">;
 

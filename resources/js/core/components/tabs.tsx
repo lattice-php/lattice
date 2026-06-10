@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { getStringProp } from "@lattice/lattice/core/props";
 import type { Node, RendererComponent } from "@lattice/lattice/core/types";
 import { cn } from "@lattice/lattice/lib/utils";
+import type { Tab, Tabs } from "@lattice/lattice/generated/types";
 
 type TabsContextValue = {
   activeValue: string;
@@ -95,20 +96,8 @@ function queryUrl(queryKey: string, value: string): string {
 
 declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
-    tab: {
-      confirm?: {
-        redirectUrl?: string;
-        required?: boolean;
-        timeout?: number;
-      };
-      label?: string;
-      value?: string;
-    };
-    tabs: {
-      activeValue?: string;
-      defaultValue?: string;
-      queryKey?: string;
-    };
+    tab: Tab;
+    tabs: Tabs;
   }
 }
 
