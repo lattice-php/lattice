@@ -62,3 +62,73 @@
 .sl-markdown-content :is(th, td):not(:where(.not-content *)) {
   overflow-wrap: anywhere;
 }
+
+.lattice-tree {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--sl-font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+}
+
+.lattice-tree__item {
+  list-style: none;
+}
+
+.lattice-tree__row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.lattice-tree__row:disabled {
+  cursor: default;
+}
+
+.lattice-tree__caret {
+  width: 1ch;
+  color: var(--sl-color-gray-3);
+}
+
+.lattice-tree__type {
+  color: var(--sl-color-accent-high);
+  font-weight: 600;
+}
+
+.lattice-tree__body {
+  margin-left: 1.4ch;
+  border-left: 1px solid var(--sl-color-gray-5);
+  padding-left: 1ch;
+}
+
+.lattice-tree__props,
+.lattice-tree__children {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lattice-tree__prop {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.lattice-tree__key {
+  color: var(--sl-color-text-accent);
+}
+
+.lattice-tree__sep {
+  color: var(--sl-color-gray-3);
+}
+
+.lattice-tree__value {
+  color: var(--sl-color-text);
+  overflow-wrap: anywhere;
+}

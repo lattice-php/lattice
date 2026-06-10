@@ -73,6 +73,11 @@ jobs:
       - name: Pest
         run: composer test
 
+      - name: Docs fixtures are up to date
+        run: |
+          git add --intent-to-add docs/fixtures
+          git diff --exit-code docs/fixtures
+
   browser:
     name: Browser (Pest)
     runs-on: ubuntu-latest

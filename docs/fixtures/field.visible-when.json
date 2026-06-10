@@ -1,0 +1,35 @@
+[
+    {
+        "props": {
+            "label": "Account type",
+            "name": "type",
+            "options": [
+                {
+                    "label": "Business",
+                    "value": "business"
+                },
+                {
+                    "label": "Individual",
+                    "value": "individual"
+                }
+            ]
+        },
+        "type": "form.choice"
+    },
+    {
+        "props": {
+            "conditions": {
+                "visible": [
+                    {
+                        "field": "type",
+                        "operator": "eq",
+                        "value": "business"
+                    }
+                ]
+            },
+            "label": "VAT ID",
+            "name": "vat"
+        },
+        "type": "form.text-input"
+    }
+]

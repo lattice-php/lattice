@@ -1,0 +1,11 @@
+[
+    {
+        "props": {
+            "label": "Team name",
+            "name": "name",
+            "placeholder": "My team",
+            "required": true
+        },
+        "type": "form.text-input"
+    }
+]

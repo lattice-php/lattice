@@ -1,0 +1,11 @@
+[
+    {
+        "props": {
+            "label": "Email address",
+            "name": "email",
+            "placeholder": "you@example.com",
+            "type": "email"
+        },
+        "type": "form.text-input"
+    }
+]

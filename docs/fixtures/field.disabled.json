@@ -1,0 +1,11 @@
+[
+    {
+        "props": {
+            "disabled": true,
+            "label": "Team name",
+            "name": "name",
+            "value": "Acme Inc"
+        },
+        "type": "form.text-input"
+    }
+]

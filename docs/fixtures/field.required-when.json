@@ -1,0 +1,39 @@
+[
+    {
+        "props": {
+            "label": "Country",
+            "name": "country",
+            "options": [
+                {
+                    "label": "Germany",
+                    "value": "DE"
+                },
+                {
+                    "label": "Austria",
+                    "value": "AT"
+                },
+                {
+                    "label": "United States",
+                    "value": "US"
+                }
+            ]
+        },
+        "type": "form.choice"
+    },
+    {
+        "props": {
+            "conditions": {
+                "required": [
+                    {
+                        "field": "country",
+                        "operator": "eq",
+                        "value": "DE"
+                    }
+                ]
+            },
+            "label": "VAT ID",
+            "name": "vat"
+        },
+        "type": "form.text-input"
+    }
+]

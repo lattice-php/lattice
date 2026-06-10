@@ -60,8 +60,13 @@ export default defineConfig({
             { label: "Overview", link: "/forms/overview/" },
             {
               label: "Fields",
-              items: [{ label: "Text input", link: "/forms/fields/text-input/" }],
+              items: [
+                { label: "Overview", link: "/forms/fields/overview/" },
+                { label: "Text input", link: "/forms/fields/text-input/" },
+              ],
             },
+            { label: "Validation", link: "/forms/validation/" },
+            { label: "Conditional fields", link: "/forms/conditional-fields/" },
           ],
         },
         {

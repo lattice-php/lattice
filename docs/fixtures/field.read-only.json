@@ -1,0 +1,11 @@
+[
+    {
+        "props": {
+            "label": "Slug",
+            "name": "slug",
+            "readonly": true,
+            "value": "acme-inc"
+        },
+        "type": "form.text-input"
+    }
+]
