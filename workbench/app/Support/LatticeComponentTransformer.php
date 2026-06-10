@@ -31,6 +31,25 @@ final class LatticeComponentTransformer extends ClassTransformer
         return in_array($phpClassNode->getName(), $this->allowed, true);
     }
 
+    /**
+     * Sort by name so the generated output is deterministic across PHP versions:
+     * ReflectionClass::getProperties() reports inherited and trait properties in a
+     * different order on 8.4 vs 8.5.
+     *
+     * @return array<PhpPropertyNode>
+     */
+    protected function getProperties(PhpClassNode $phpClassNode): array
+    {
+        $properties = parent::getProperties($phpClassNode);
+
+        usort(
+            $properties,
+            fn (PhpPropertyNode $a, PhpPropertyNode $b): int => $a->getName() <=> $b->getName(),
+        );
+
+        return $properties;
+    }
+
     protected function isPropertyOptional(
         PhpPropertyNode $phpPropertyNode,
         PhpClassNode $phpClassNode,
