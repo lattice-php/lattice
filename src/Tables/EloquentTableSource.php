@@ -20,7 +20,7 @@ use Lattice\Lattice\Tables\Enums\PaginationType;
  *
  * @template TModel of Model
  */
-final readonly class EloquentTableAdapter implements TableSource
+final readonly class EloquentTableSource implements TableSource
 {
     /**
      * @param  Closure(TableQuery): Builder<TModel>  $builder  produces a fresh base query per request
@@ -89,7 +89,7 @@ final readonly class EloquentTableAdapter implements TableSource
             if ($column instanceof Filterable) {
                 FilterOperator::from($clause->operator)->apply(
                     $builder,
-                    $column->controlType(),
+                    $column->filterType(),
                     $clause->field,
                     $clause->value,
                 );

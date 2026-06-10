@@ -1,5 +1,5 @@
 import type {
-  ControlType,
+  FilterType,
   FilterOperator,
   PaginationType,
   TableSort,
@@ -15,7 +15,7 @@ export type TableColumn = {
   sortable?: boolean;
   filter?: {
     enabled?: boolean;
-    type?: ControlType;
+    type?: FilterType;
     operators?: FilterOperator[];
     defaultOperator?: FilterOperator;
   };

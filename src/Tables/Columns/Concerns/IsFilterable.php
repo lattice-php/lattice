@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns\Concerns;
 
-use Lattice\Lattice\Tables\Enums\ControlType;
 use Lattice\Lattice\Tables\Enums\FilterOperator;
+use Lattice\Lattice\Tables\Enums\FilterType;
 
 trait IsFilterable
 {
@@ -13,17 +13,10 @@ trait IsFilterable
 
     protected ?FilterOperator $defaultOperator = null;
 
-    public function filterable(): static
+    public function filterable(?FilterOperator $default = null): static
     {
         $this->filterable = true;
-
-        return $this;
-    }
-
-    public function filterableExact(): static
-    {
-        $this->filterable = true;
-        $this->defaultOperator = FilterOperator::Equals;
+        $this->defaultOperator = $default;
 
         return $this;
     }
@@ -33,9 +26,9 @@ trait IsFilterable
         return $this->filterable;
     }
 
-    public function controlType(): ControlType
+    public function filterType(): FilterType
     {
-        return ControlType::Text;
+        return FilterType::Text;
     }
 
     /**
@@ -43,12 +36,12 @@ trait IsFilterable
      */
     public function filterOperators(): array
     {
-        return $this->controlType()->operators();
+        return $this->filterType()->operators();
     }
 
     public function defaultFilterOperator(): FilterOperator
     {
-        return $this->defaultOperator ?? $this->controlType()->defaultOperator();
+        return $this->defaultOperator ?? $this->filterType()->defaultOperator();
     }
 
     /**
@@ -63,7 +56,7 @@ trait IsFilterable
         return [
             'filter' => [
                 'enabled' => true,
-                'type' => $this->controlType()->value,
+                'type' => $this->filterType()->value,
                 'operators' => array_map(fn (FilterOperator $operator): string => $operator->value, $this->filterOperators()),
                 'defaultOperator' => $this->defaultFilterOperator()->value,
             ],

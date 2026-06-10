@@ -8,11 +8,10 @@ use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Definition;
 use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Contracts\ProvidesTable;
 use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 
-abstract class TableDefinition extends Definition implements ProvidesTable
+abstract class TableDefinition extends Definition
 {
     /**
      * @return array<int, Column>

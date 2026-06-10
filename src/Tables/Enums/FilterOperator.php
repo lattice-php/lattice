@@ -24,16 +24,16 @@ enum FilterOperator: string
     case Filled = 'filled';
 
     /**
-     * @return array<int, ControlType>
+     * @return array<int, FilterType>
      */
     public function appliesTo(): array
     {
         return match ($this) {
-            self::Contains, self::StartsWith, self::EndsWith => [ControlType::Text],
-            self::Equals, self::Empty, self::Filled => [ControlType::Text, ControlType::Number, ControlType::Date, ControlType::Boolean],
-            self::NotEquals => [ControlType::Text, ControlType::Number],
-            self::GreaterThan, self::GreaterThanOrEqual, self::LessThan, self::LessThanOrEqual => [ControlType::Number],
-            self::Before, self::After => [ControlType::Date],
+            self::Contains, self::StartsWith, self::EndsWith => [FilterType::Text],
+            self::Equals, self::Empty, self::Filled => [FilterType::Text, FilterType::Number, FilterType::Date, FilterType::Boolean],
+            self::NotEquals => [FilterType::Text, FilterType::Number],
+            self::GreaterThan, self::GreaterThanOrEqual, self::LessThan, self::LessThanOrEqual => [FilterType::Number],
+            self::Before, self::After => [FilterType::Date],
         };
     }
 
@@ -47,18 +47,18 @@ enum FilterOperator: string
      *
      * @param  Builder<TModel>  $builder
      */
-    public function apply(Builder $builder, ControlType $controlType, string $field, string $value): void
+    public function apply(Builder $builder, FilterType $filterType, string $field, string $value): void
     {
         match ($this) {
             self::Contains => $builder->where($field, 'like', '%'.$this->escapeLike($value).'%'),
             self::StartsWith => $builder->where($field, 'like', $this->escapeLike($value).'%'),
             self::EndsWith => $builder->where($field, 'like', '%'.$this->escapeLike($value)),
-            self::Equals => $controlType->applyEquals($builder, $field, $value),
-            self::NotEquals => $this->compare($builder, $controlType, $field, '!=', $value),
-            self::GreaterThan => $this->compare($builder, $controlType, $field, '>', $value),
-            self::GreaterThanOrEqual => $this->compare($builder, $controlType, $field, '>=', $value),
-            self::LessThan => $this->compare($builder, $controlType, $field, '<', $value),
-            self::LessThanOrEqual => $this->compare($builder, $controlType, $field, '<=', $value),
+            self::Equals => $filterType->applyEquals($builder, $field, $value),
+            self::NotEquals => $this->compare($builder, $filterType, $field, '!=', $value),
+            self::GreaterThan => $this->compare($builder, $filterType, $field, '>', $value),
+            self::GreaterThanOrEqual => $this->compare($builder, $filterType, $field, '>=', $value),
+            self::LessThan => $this->compare($builder, $filterType, $field, '<', $value),
+            self::LessThanOrEqual => $this->compare($builder, $filterType, $field, '<=', $value),
             self::Before => $builder->whereDate($field, '<', $value),
             self::After => $builder->whereDate($field, '>', $value),
             self::Empty => $builder->where(function (Builder $query) use ($field): void {
@@ -78,9 +78,9 @@ enum FilterOperator: string
      *
      * @param  Builder<TModel>  $builder
      */
-    private function compare(Builder $builder, ControlType $controlType, string $field, string $sqlOperator, string $value): void
+    private function compare(Builder $builder, FilterType $filterType, string $field, string $sqlOperator, string $value): void
     {
-        if ($controlType === ControlType::Date) {
+        if ($filterType === FilterType::Date) {
             $builder->whereDate($field, $sqlOperator, $value);
 
             return;

@@ -62,6 +62,7 @@ use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
+use Lattice\Lattice\Tables\Enums\FilterOperator;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
@@ -1681,7 +1682,7 @@ class WorkbenchUsersTable extends TableDefinition
                 ->filterable(),
             TextColumn::make('status')
                 ->label('Status')
-                ->filterableExact(),
+                ->filterable(FilterOperator::Equals),
             TextColumn::make('email')
                 ->label('Email')
                 ->sortable(),

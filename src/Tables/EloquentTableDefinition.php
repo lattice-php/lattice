@@ -20,7 +20,7 @@ abstract class EloquentTableDefinition extends TableDefinition
 
     public function source(): TableSource
     {
-        return new EloquentTableAdapter(
+        return new EloquentTableSource(
             fn (TableQuery $query): Builder => $this->builder($query),
             $this->columns(),
             $this->paginationType(),

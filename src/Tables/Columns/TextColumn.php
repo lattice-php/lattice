@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Tables\Columns;
 
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
-use Lattice\Lattice\Tables\Enums\ControlType;
+use Lattice\Lattice\Tables\Enums\FilterType;
 
 class TextColumn extends Column implements Filterable, Sortable
 {
@@ -50,21 +50,21 @@ class TextColumn extends Column implements Filterable, Sortable
         return $this;
     }
 
-    public function controlType(): ControlType
+    public function filterType(): FilterType
     {
         if ($this->date !== null) {
-            return ControlType::Date;
+            return FilterType::Date;
         }
 
         if ($this->boolean) {
-            return ControlType::Boolean;
+            return FilterType::Boolean;
         }
 
         if ($this->numeric) {
-            return ControlType::Number;
+            return FilterType::Number;
         }
 
-        return ControlType::Text;
+        return FilterType::Text;
     }
 
     public function copyable(bool $copyable = true): static

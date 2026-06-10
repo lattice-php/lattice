@@ -13,8 +13,8 @@ use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Forms\Enums\ConditionOperator;
-use Lattice\Lattice\Tables\Enums\ControlType;
 use Lattice\Lattice\Tables\Enums\FilterOperator;
+use Lattice\Lattice\Tables\Enums\FilterType;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\Enums\SortDirection;
 use Lattice\Lattice\Tables\TableSort;
@@ -40,7 +40,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 ToastVariant::class,
                 HttpMethod::class,
                 PaginationType::class,
-                ControlType::class,
+                FilterType::class,
                 FilterOperator::class,
                 SortDirection::class,
                 ConditionOperator::class,

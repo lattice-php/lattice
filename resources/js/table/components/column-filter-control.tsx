@@ -1,7 +1,7 @@
 import { Filter, Plus, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { ControlType, FilterOperator } from "@lattice/lattice/generated/types";
+import type { FilterType, FilterOperator } from "@lattice/lattice/generated/types";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
 import type { FilterClause, TableColumn } from "../types";
 import { FilterValueInput } from "./filter-value-input";
@@ -256,7 +256,7 @@ function FilterClauseRow({
   onRemove,
 }: {
   column: TableColumn;
-  type: ControlType;
+  type: FilterType;
   operators: FilterOperator[];
   clause: FilterClause;
   processing: boolean;
