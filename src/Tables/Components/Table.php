@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Lattice\Lattice\Tables\Components;
 
 use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableRegistry;
@@ -14,6 +18,33 @@ use Lattice\Lattice\Tables\TableResult;
 class Table extends Component
 {
     use IsInteractive;
+
+    public ?string $endpoint = null;
+
+    /**
+     * @var array<int, ColumnData>
+     */
+    public array $columns = [];
+
+    public ?string $layout = null;
+
+    /**
+     * @var array<int, Action>
+     */
+    public array $bulkActions = [];
+
+    public ?bool $striped = null;
+
+    public ?bool $lazy = null;
+
+    /**
+     * The serialized {data, pagination, state} result, projected into props
+     * verbatim so empty data/pagination stay on the wire — typed reflection
+     * would otherwise skip them.
+     *
+     * @var array<string, mixed>|null
+     */
+    protected ?array $result = null;
 
     public static function make(string $id): static
     {
@@ -25,11 +56,10 @@ class Table extends Component
      */
     public static function use(string $table): static
     {
+        /** @var static $registered */
         $registered = app(TableRegistry::class)->component($table);
 
-        return (new static)
-            ->id($registered->id)
-            ->props($registered->props);
+        return clone $registered;
     }
 
     /**
@@ -37,16 +67,17 @@ class Table extends Component
      */
     public static function lazy(string $table): static
     {
+        /** @var static $registered */
         $registered = app(TableRegistry::class)->lazyComponent($table);
 
-        return (new static)
-            ->id($registered->id)
-            ->props($registered->props);
+        return clone $registered;
     }
 
     public function endpoint(string $endpoint): static
     {
-        return $this->prop('endpoint', $endpoint);
+        $this->endpoint = $endpoint;
+
+        return $this;
     }
 
     /**
@@ -54,7 +85,9 @@ class Table extends Component
      */
     public function columns(array $columns): static
     {
-        return $this->prop('columns', $columns);
+        $this->columns = array_map(fn (Column $column): ColumnData => $column->toData(), $columns);
+
+        return $this;
     }
 
     public function layout(string $layout): static
@@ -63,7 +96,9 @@ class Table extends Component
             return $this;
         }
 
-        return $this->prop('layout', $layout);
+        $this->layout = $layout;
+
+        return $this;
     }
 
     /**
@@ -75,7 +110,9 @@ class Table extends Component
             return $this;
         }
 
-        return $this->prop('bulkActions', $actions);
+        $this->bulkActions = $actions;
+
+        return $this;
     }
 
     public function striped(bool $striped): static
@@ -84,16 +121,38 @@ class Table extends Component
             return $this;
         }
 
-        return $this->prop('striped', true);
+        $this->striped = true;
+
+        return $this;
     }
 
     public function result(TableResult $result, TableQuery $query): static
     {
-        return $this->props($result->forQuery($query)->jsonSerialize());
+        $this->result = $result->forQuery($query)->jsonSerialize();
+
+        return $this;
     }
 
     protected function type(): string
     {
         return 'table';
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 250)]
+    protected function projectResult(array $data): array
+    {
+        if ($this->result === null) {
+            return $data;
+        }
+
+        $props = is_array($data['props'] ?? null) ? $data['props'] : [];
+
+        $data['props'] = [...$props, ...$this->result];
+
+        return $data;
     }
 }

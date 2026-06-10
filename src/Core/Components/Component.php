@@ -5,8 +5,8 @@ namespace Lattice\Lattice\Core\Components;
 use BackedEnum;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\SerializationHook;
+use ReflectionClass;
 use ReflectionMethod;
-use ReflectionObject;
 use ReflectionProperty;
 use Spatie\Attributes\Attributes;
 use Spatie\Attributes\AttributeTarget;
@@ -22,9 +22,9 @@ abstract class Component implements JsonSerializable
     private static array $serializationHookCache = [];
 
     /**
-     * @var array<string, mixed>
+     * @var array<class-string, list<ReflectionProperty>>
      */
-    protected array $props = [];
+    private static array $wirePropertyCache = [];
 
     protected bool $shouldRender = true;
 
@@ -35,26 +35,6 @@ abstract class Component implements JsonSerializable
     public function key(string $key): static
     {
         $this->key = $key;
-
-        return $this;
-    }
-
-    /**
-     * @param  array<string, mixed>  $props
-     */
-    public function props(array $props): static
-    {
-        $this->props = [
-            ...$this->props,
-            ...$props,
-        ];
-
-        return $this;
-    }
-
-    public function prop(string $name, mixed $value): static
-    {
-        $this->props[$name] = $value;
 
         return $this;
     }
@@ -116,21 +96,17 @@ abstract class Component implements JsonSerializable
     }
 
     /**
-     * Merge the legacy props bag with the public typed properties (including
-     * inherited and trait properties), omitting null and empty-array values so
-     * unset props stay absent from the wire. Backed enums serialize to their value.
+     * Reflects the public typed properties (including inherited and trait
+     * properties), omitting null and empty-array values so unset props stay
+     * absent from the wire. Backed enums serialize to their value.
      *
      * @return array<string, mixed>
      */
     protected function wireProps(): array
     {
-        $props = $this->props;
+        $props = [];
 
-        foreach ((new ReflectionObject($this))->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
-            if ($property->isStatic()) {
-                continue;
-            }
-
+        foreach (self::wireProperties(static::class) as $property) {
             if (! $property->isInitialized($this)) {
                 continue;
             }
@@ -145,6 +121,18 @@ abstract class Component implements JsonSerializable
         }
 
         return $props;
+    }
+
+    /**
+     * @param  class-string  $class
+     * @return list<ReflectionProperty>
+     */
+    private static function wireProperties(string $class): array
+    {
+        return self::$wirePropertyCache[$class] ??= array_values(array_filter(
+            (new ReflectionClass($class))->getProperties(ReflectionProperty::IS_PUBLIC),
+            static fn (ReflectionProperty $property): bool => ! $property->isStatic(),
+        ));
     }
 
     /**

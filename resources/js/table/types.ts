@@ -1,9 +1,11 @@
 import type {
+  ActionNode,
   ColumnData,
   ColumnFilter,
   ColumnType,
   FilterOperator,
   PaginationType,
+  Table,
   TableSort,
 } from "@lattice/lattice/generated/types";
 
@@ -46,17 +48,11 @@ export type TableResponse = {
 
 declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
-    table: {
-      bulkActions?: Array<Record<string, unknown>>;
-      columns?: TableColumn[];
+    table: Omit<Table, "bulkActions"> & {
+      bulkActions?: ActionNode[];
       data?: TableRow[];
-      endpoint?: string;
-      ref?: string;
-      lazy?: boolean;
-      layout?: string;
-      striped?: boolean;
-      pagination?: Record<string, unknown>;
-      state?: Record<string, unknown>;
+      pagination?: TablePagination;
+      state?: Partial<TableState>;
     };
   }
 }

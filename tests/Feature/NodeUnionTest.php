@@ -18,6 +18,7 @@ use Lattice\Lattice\Core\Components\Tab;
 use Lattice\Lattice\Core\Components\Tabs;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Fragments\Components\Fragment;
+use Lattice\Lattice\Tables\Components\Table;
 
 function nodeWireType(string $class): string
 {
@@ -68,6 +69,10 @@ it('keeps the Fragment wire type present in the generated FragmentNode union', f
     expect(unionBlock('FragmentNode'))->toContain('"'.nodeWireType(Fragment::class).'"');
 });
 
+it('keeps the Table wire type present in the generated TableNode union', function (): void {
+    expect(unionBlock('TableNode'))->toContain('"'.nodeWireType(Table::class).'"');
+});
+
 it('exposes the shared Node union composed of every domain union', function (): void {
     $node = unionBlock('Node');
 
@@ -75,5 +80,6 @@ it('exposes the shared Node union composed of every domain union', function (): 
         ->toContain('FormNode')
         ->toContain('CoreNode')
         ->toContain('ActionNode')
-        ->toContain('FragmentNode');
+        ->toContain('FragmentNode')
+        ->toContain('TableNode');
 });

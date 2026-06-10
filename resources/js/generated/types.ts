@@ -426,7 +426,7 @@ export type Modal = {
   ref?: string | null;
   title?: string | null;
 };
-export type Node = FormNode | CoreNode | ActionNode | FragmentNode;
+export type Node = FormNode | CoreNode | ActionNode | FragmentNode | TableNode;
 export type NodeType = Node["type"];
 export type NumberInput = {
   autoFocus?: boolean | null;
@@ -566,6 +566,21 @@ export type Tab = {
   } | null;
   label: string;
   value: string;
+};
+export type Table = {
+  bulkActions?: Action[];
+  columns?: ColumnData[];
+  endpoint?: string | null;
+  layout?: string | null;
+  lazy?: boolean | null;
+  ref?: string | null;
+  striped?: boolean | null;
+};
+export type TableNode = {
+  type: "table";
+  key?: string;
+  id?: string;
+  props: Table;
 };
 export type TableSort = {
   readonly key: string;
