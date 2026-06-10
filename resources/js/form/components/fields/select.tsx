@@ -1,17 +1,13 @@
 import { Check, ChevronsUpDown, Loader2, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@lattice/lattice/lib/utils";
-import {
-  type Option,
-  getBooleanProp,
-  getOptions,
-  getStringProp,
-} from "@lattice/lattice/core/props";
+import { type Option, getOptions } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { FORM_DEBOUNCE_MS, postFormAction } from "../form-transport";
 import { useResolvedNode } from "../resolved-nodes";
+import type { Select } from "../types";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
 import { useFormValue } from "../values";
@@ -20,20 +16,7 @@ type SelectOption = Option;
 
 declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
-    "form.select": {
-      conditions?: unknown;
-      disabled?: boolean;
-      hidden?: boolean;
-      label?: string;
-      multiple?: boolean;
-      name?: string;
-      options?: SelectOption[];
-      placeholder?: string;
-      readonly?: boolean;
-      required?: boolean;
-      searchable?: boolean;
-      value?: string | string[];
-    };
+    "form.select": Select;
   }
 }
 
@@ -52,21 +35,19 @@ function toValues(stored: unknown, fallback: string | string[] | undefined): str
 }
 
 export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
+  const props = node.props ?? ({} as Select);
   const { action, componentRef, errors } = useFormContext();
   const { hidden, required, readonly, disabled } = useDependentField(node);
   const { change, blur } = useFieldCommit();
   const resolvedNode = useResolvedNode(node);
-  const name = getStringProp(node.props, "name");
-  const placeholder = getStringProp(node.props, "placeholder") || "Select…";
-  const multiple = getBooleanProp(node.props, "multiple");
-  const searchable = getBooleanProp(node.props, "searchable");
+  const name = props.name ?? "";
+  const placeholder = props.placeholder || "Select…";
+  const multiple = props.multiple ?? false;
+  const searchable = props.searchable ?? false;
   const staticOptions = useMemo(() => getOptions(resolvedNode.props), [resolvedNode.props]);
 
   const storedValue = useFormValue(name);
-  const selected = useMemo(
-    () => toValues(storedValue, node.props?.value),
-    [storedValue, node.props?.value],
-  );
+  const selected = useMemo(() => toValues(storedValue, props.value), [storedValue, props.value]);
 
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -176,12 +157,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
       : results;
 
   return (
-    <FormFieldFrame
-      error={errors[name]}
-      label={getStringProp(node.props, "label")}
-      name={name}
-      required={required}
-    >
+    <FormFieldFrame error={errors[name]} label={props.label ?? ""} name={name} required={required}>
       {multiple ? (
         selected.map((value) => (
           <input key={value} name={`${name}[]`} type="hidden" value={value} />

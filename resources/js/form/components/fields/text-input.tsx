@@ -1,30 +1,17 @@
-import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { Input } from "../base/input";
+import type { TextInput } from "../types";
 import { useControlledField } from "../use-controlled-field";
 
 declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
-    "form.text-input": {
-      autoComplete?: string;
-      autoFocus?: boolean;
-      conditions?: unknown;
-      disabled?: boolean;
-      hidden?: boolean;
-      label?: string;
-      name?: string;
-      placeholder?: string;
-      readonly?: boolean;
-      required?: boolean;
-      tabIndex?: number;
-      type?: "email" | "text";
-      value?: string;
-    };
+    "form.text-input": TextInput;
   }
 }
 
 export const TextInputComponent: RendererComponent<"form.text-input"> = ({ node }) => {
+  const props = node.props ?? ({} as TextInput);
   const { name, value, error, hidden, required, readonly, disabled, commit } =
     useControlledField(node);
 
@@ -33,23 +20,18 @@ export const TextInputComponent: RendererComponent<"form.text-input"> = ({ node 
   }
 
   return (
-    <FormFieldFrame
-      error={error}
-      label={getStringProp(node.props, "label")}
-      name={name}
-      required={required}
-    >
+    <FormFieldFrame error={error} label={props.label ?? ""} name={name} required={required}>
       <Input
-        autoComplete={getStringProp(node.props, "autoComplete")}
-        autoFocus={getBooleanProp(node.props, "autoFocus")}
+        autoComplete={props.autoComplete ?? ""}
+        autoFocus={props.autoFocus ?? false}
         disabled={disabled}
         id={name}
         name={name}
         onChange={(event) => commit(event.target.value)}
-        placeholder={getStringProp(node.props, "placeholder")}
+        placeholder={props.placeholder ?? ""}
         readOnly={readonly}
-        tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
-        type={getStringProp(node.props, "type", "text")}
+        tabIndex={props.tabIndex ?? undefined}
+        type={props.type ?? "text"}
         value={value}
       />
     </FormFieldFrame>

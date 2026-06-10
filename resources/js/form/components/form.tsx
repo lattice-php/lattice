@@ -1,32 +1,19 @@
 import { Form as InertiaForm } from "@inertiajs/react";
 import { withRefHeader } from "@lattice/lattice/core/component-ref";
-import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
+import { getStringProp } from "@lattice/lattice/core/props";
 import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
 import type { Node, NodeProps, RendererComponent } from "@lattice/lattice/core/types";
 import { useEffect, useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "./context";
 import { ResolvedNodesProvider } from "./resolved-nodes";
-import type { FormMethod } from "./types";
+import type { Form, FormMethod } from "./types";
 import { useFormResolver } from "./use-form-resolver";
 import { FormValuesProvider } from "./values";
 
 declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
-    form: {
-      action?: string;
-      errorBag?: string;
-      ref?: string;
-      method?: FormMethod;
-      precognitive?: boolean;
-      resetOnError?: boolean | string[];
-      resetOnSuccess?: boolean | string[];
-      state?: Record<string, unknown>;
-      status?: string;
-      submitButton?: boolean;
-      submitLabel?: string;
-      validationTimeout?: number;
-    };
+    form: Form & { method?: FormMethod; ref?: string };
   }
 }
 
@@ -130,7 +117,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   const errorBag = props.errorBag;
   const componentRef = getStringProp(props, "ref");
   const method = props.method ?? "post";
-  const precognitive = getBooleanProp(props, "precognitive");
+  const precognitive = props.precognitive ?? false;
   const resetOnError = props.resetOnError ?? false;
   const resetOnSuccess = props.resetOnSuccess ?? [];
   const state = getFormState(node.props);
@@ -139,9 +126,9 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
     [node.schema],
   );
   const initialValues = { ...fieldValues, ...state };
-  const shouldRenderSubmitButton = getBooleanProp(props, "submitButton", true);
+  const shouldRenderSubmitButton = props.submitButton ?? true;
   const submitLabel = props.submitLabel ?? "Submit";
-  const validationTimeout = getOptionalNumberProp(props, "validationTimeout");
+  const validationTimeout = props.validationTimeout ?? undefined;
 
   return (
     <InertiaForm
