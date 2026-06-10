@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@lattice/lattice/core/components/button";
 import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
+import type { Modal } from "@lattice/lattice/generated/types";
 import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
 
 type ModalEvent = CustomEvent<{
@@ -11,12 +12,7 @@ type ModalEvent = CustomEvent<{
 
 declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
-    modal: {
-      closeLabel?: string;
-      description?: string;
-      open?: boolean;
-      title?: string;
-    };
+    modal: Modal;
   }
 }
 

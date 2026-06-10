@@ -8,14 +8,23 @@ class Button extends Component
 {
     use HasVariant;
 
+    public string $label = '';
+
+    public ?string $href = null;
+
     public static function make(string $label, ?string $key = null): static
     {
-        return (new static($key))->prop('label', $label);
+        $button = new static($key);
+        $button->label = $label;
+
+        return $button;
     }
 
     public function href(string $href): static
     {
-        return $this->prop('href', $href);
+        $this->href = $href;
+
+        return $this;
     }
 
     protected function type(): string

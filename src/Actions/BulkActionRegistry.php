@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Actions;
 
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Lattice\Actions\Components\BulkAction as BulkActionComponent;
 use Lattice\Lattice\Attributes\BulkAction;
 use Lattice\Lattice\Attributes\ComponentAttribute;
 use Lattice\Lattice\Core\DefinitionRegistry;
@@ -22,7 +23,7 @@ final class BulkActionRegistry extends DefinitionRegistry
         $key = $this->registeredKeyFor($bulkAction);
 
         return $this->make($bulkAction)
-            ->definition(ActionComponent::make($key))
+            ->definition(BulkActionComponent::make($key))
             ->endpoint($this->endpointFor($key));
     }
 

@@ -1,282 +1,631 @@
-export type Align = 'center' | 'left' | 'start' | 'stretch';
+export type Action = {
+  confirmation?: {
+    title: string;
+    description?: string;
+    confirmLabel?: string;
+    cancelLabel?: string;
+  } | null;
+  effects?: Effect[];
+  endpoint?: string | null;
+  icon?: string | null;
+  label?: string | null;
+  method?: HttpMethod | null;
+  ref?: string | null;
+  variant?: string | null;
+};
+export type ActionGroup = {
+  label?: string | null;
+  ref?: string | null;
+};
+export type ActionNode =
+  | {
+      type: "action";
+      key?: string;
+      id?: string;
+      props: Action;
+    }
+  | {
+      type: "action.group";
+      key?: string;
+      id?: string;
+      props: ActionGroup;
+      schema?: Node[];
+    }
+  | {
+      type: "bulkAction";
+      key?: string;
+      id?: string;
+      props: BulkAction;
+    };
+export type Align = "center" | "left" | "start" | "stretch";
+export type Badge = {
+  label: string;
+};
+export type BulkAction = {
+  confirmation?: {
+    title: string;
+    description?: string;
+    confirmLabel?: string;
+    cancelLabel?: string;
+  } | null;
+  effects?: Effect[];
+  endpoint?: string | null;
+  icon?: string | null;
+  label?: string | null;
+  method?: HttpMethod | null;
+  ref?: string | null;
+  variant?: string | null;
+};
+export type Button = {
+  href?: string | null;
+  label: string;
+  variant?: string | null;
+};
+export type Card = {
+  description?: string | null;
+  title?: string | null;
+};
 export type Checkbox = {
-conditions?: Record<string, {
-field: string,
-operator: string,
-value: any,
-}[]> | null,
-dependsOnAny?: boolean | null,
-dependsOnKeys?: string[] | null,
-disabled?: boolean | null,
-hidden?: boolean | null,
-label?: string | null,
-name: string,
-readonly?: boolean | null,
-required?: boolean | null,
-tabIndex?: number | null,
-value?: any,
+  conditions?: Record<
+    string,
+    {
+      field: string;
+      operator: string;
+      value: any;
+    }[]
+  > | null;
+  dependsOnAny?: boolean | null;
+  dependsOnKeys?: string[] | null;
+  disabled?: boolean | null;
+  hidden?: boolean | null;
+  label?: string | null;
+  name: string;
+  readonly?: boolean | null;
+  required?: boolean | null;
+  tabIndex?: number | null;
+  value?: any;
 };
 export type Choice = {
-conditions?: Record<string, {
-field: string,
-operator: string,
-value: any,
-}[]> | null,
-dependsOnAny?: boolean | null,
-dependsOnKeys?: string[] | null,
-disabled?: boolean | null,
-hidden?: boolean | null,
-label?: string | null,
-name: string,
-options?: {
-label: string,
-value: string,
-}[],
-readonly?: boolean | null,
-required?: boolean | null,
-value?: any,
+  conditions?: Record<
+    string,
+    {
+      field: string;
+      operator: string;
+      value: any;
+    }[]
+  > | null;
+  dependsOnAny?: boolean | null;
+  dependsOnKeys?: string[] | null;
+  disabled?: boolean | null;
+  hidden?: boolean | null;
+  label?: string | null;
+  name: string;
+  options?: {
+    label: string;
+    value: string;
+  }[];
+  readonly?: boolean | null;
+  required?: boolean | null;
+  value?: any;
 };
 export type ColumnData = {
-readonly key: string,
-readonly label: string,
-readonly type: ColumnType,
-readonly sortable: boolean | null,
-readonly filter: ColumnFilter | null,
-readonly date: {
-format: string | null,
-} | null,
-readonly copyable: boolean | null,
-readonly link: {
-href: string | null,
-external: boolean,
-} | null,
-readonly columns: ColumnData[] | null,
+  readonly key: string;
+  readonly label: string;
+  readonly type: ColumnType;
+  readonly sortable: boolean | null;
+  readonly filter: ColumnFilter | null;
+  readonly date: {
+    format: string | null;
+  } | null;
+  readonly copyable: boolean | null;
+  readonly link: {
+    href: string | null;
+    external: boolean;
+  } | null;
+  readonly columns: ColumnData[] | null;
 };
 export type ColumnFilter = {
-readonly enabled: boolean,
-readonly type: FilterType,
-readonly operators: FilterOperator[],
-readonly defaultOperator: FilterOperator,
+  readonly enabled: boolean;
+  readonly type: FilterType;
+  readonly operators: FilterOperator[];
+  readonly defaultOperator: FilterOperator;
 };
-export type ColumnType = 'text' | 'stack';
-export type ConditionOperator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'starts_with' | 'ends_with' | 'in' | 'not_in' | 'empty' | 'filled';
+export type ColumnType = "text" | "stack";
+export type ConditionOperator =
+  | "eq"
+  | "neq"
+  | "gt"
+  | "gte"
+  | "lt"
+  | "lte"
+  | "contains"
+  | "starts_with"
+  | "ends_with"
+  | "in"
+  | "not_in"
+  | "empty"
+  | "filled";
+export type CoreNode =
+  | {
+      type: "badge";
+      key?: string;
+      props: Badge;
+    }
+  | {
+      type: "button";
+      key?: string;
+      props: Button;
+    }
+  | {
+      type: "card";
+      key?: string;
+      props: Card;
+      schema?: Node[];
+    }
+  | {
+      type: "grid";
+      key?: string;
+      props: Grid;
+      schema?: Node[];
+    }
+  | {
+      type: "heading";
+      key?: string;
+      props: Heading;
+    }
+  | {
+      type: "link";
+      key?: string;
+      props: Link;
+    }
+  | {
+      type: "text";
+      key?: string;
+      props: Text;
+    }
+  | {
+      type: "stack";
+      key?: string;
+      props: Stack;
+      schema?: Node[];
+    }
+  | {
+      type: "segmented-control";
+      key?: string;
+      props: SegmentedControl;
+    }
+  | {
+      type: "modal";
+      key?: string;
+      id?: string;
+      props: Modal;
+      schema?: Node[];
+    }
+  | {
+      type: "tab";
+      key?: string;
+      props: Tab;
+      schema?: Node[];
+    }
+  | {
+      type: "tabs";
+      key?: string;
+      props: Tabs;
+      schema?: Node[];
+    };
 export type DateInput = {
-autoFocus?: boolean | null,
-conditions?: Record<string, {
-field: string,
-operator: string,
-value: any,
-}[]> | null,
-dependsOnAny?: boolean | null,
-dependsOnKeys?: string[] | null,
-disabled?: boolean | null,
-hidden?: boolean | null,
-label?: string | null,
-max?: string | null,
-min?: string | null,
-name: string,
-readonly?: boolean | null,
-required?: boolean | null,
-tabIndex?: number | null,
-value?: any,
+  autoFocus?: boolean | null;
+  conditions?: Record<
+    string,
+    {
+      field: string;
+      operator: string;
+      value: any;
+    }[]
+  > | null;
+  dependsOnAny?: boolean | null;
+  dependsOnKeys?: string[] | null;
+  disabled?: boolean | null;
+  hidden?: boolean | null;
+  label?: string | null;
+  max?: string | null;
+  min?: string | null;
+  name: string;
+  readonly?: boolean | null;
+  required?: boolean | null;
+  tabIndex?: number | null;
+  value?: any;
 };
-export type EffectType = 'toast' | 'reloadComponent' | 'reloadPage' | 'redirect' | 'download' | 'openModal' | 'closeModal' | 'resetForm';
-export type FilterOperator = 'contains' | 'starts_with' | 'ends_with' | 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'before' | 'after' | 'empty' | 'filled';
-export type FilterType = 'text' | 'number' | 'date' | 'boolean';
+export type Effect =
+  | {
+      type: "toast";
+      message?: string;
+      variant?: ToastVariant;
+    }
+  | {
+      type: "reloadComponent";
+      component?: string;
+    }
+  | {
+      type: "reloadPage";
+    }
+  | {
+      type: "redirect";
+      url?: string;
+    }
+  | {
+      type: "download";
+      url?: string;
+    }
+  | {
+      type: "openModal";
+      modal?: string;
+    }
+  | {
+      type: "closeModal";
+      modal?: string;
+    }
+  | {
+      type: "resetForm";
+      form?: string;
+    };
+export type EffectType =
+  | "toast"
+  | "reloadComponent"
+  | "reloadPage"
+  | "redirect"
+  | "download"
+  | "openModal"
+  | "closeModal"
+  | "resetForm";
+export type FilterOperator =
+  | "contains"
+  | "starts_with"
+  | "ends_with"
+  | "eq"
+  | "neq"
+  | "gt"
+  | "gte"
+  | "lt"
+  | "lte"
+  | "before"
+  | "after"
+  | "empty"
+  | "filled";
+export type FilterType = "text" | "number" | "date" | "boolean";
 export type Form = {
-action?: string | null,
-errorBag?: string | null,
-method?: HttpMethod | null,
-precognitive?: boolean | null,
-ref?: string | null,
-resetOnError?: string[] | boolean | null,
-resetOnSuccess?: string[] | boolean | null,
-state?: Record<string, any>,
-status?: string | null,
-submitButton?: boolean | null,
-submitLabel?: string | null,
-validationTimeout?: number | null,
+  action?: string | null;
+  errorBag?: string | null;
+  method?: HttpMethod | null;
+  precognitive?: boolean | null;
+  ref?: string | null;
+  resetOnError?: string[] | boolean | null;
+  resetOnSuccess?: string[] | boolean | null;
+  state?: Record<string, any>;
+  status?: string | null;
+  submitButton?: boolean | null;
+  submitLabel?: string | null;
+  validationTimeout?: number | null;
 };
-export type FormFieldNode = 
-  | { type: "form.text-input"; key?: string; props: TextInput }
-  | { type: "form.textarea"; key?: string; props: Textarea }
-  | { type: "form.select"; key?: string; props: Select }
-  | { type: "form.choice"; key?: string; props: Choice }
-  | { type: "form.checkbox"; key?: string; props: Checkbox }
-  | { type: "form.date-input"; key?: string; props: DateInput }
-  | { type: "form.number-input"; key?: string; props: NumberInput }
-  | { type: "form.password-input"; key?: string; props: PasswordInput }
-  | { type: "form.hidden-input"; key?: string; props: HiddenInput }
-  | { type: "form.rich-editor"; key?: string; props: RichEditor }
-  | { type: "form.submit-button"; key?: string; props: SubmitButton };
-export type FormNode = 
+export type FormFieldNode =
+  | {
+      type: "form.text-input";
+      key?: string;
+      props: TextInput;
+    }
+  | {
+      type: "form.textarea";
+      key?: string;
+      props: Textarea;
+    }
+  | {
+      type: "form.select";
+      key?: string;
+      props: Select;
+    }
+  | {
+      type: "form.choice";
+      key?: string;
+      props: Choice;
+    }
+  | {
+      type: "form.checkbox";
+      key?: string;
+      props: Checkbox;
+    }
+  | {
+      type: "form.date-input";
+      key?: string;
+      props: DateInput;
+    }
+  | {
+      type: "form.number-input";
+      key?: string;
+      props: NumberInput;
+    }
+  | {
+      type: "form.password-input";
+      key?: string;
+      props: PasswordInput;
+    }
+  | {
+      type: "form.hidden-input";
+      key?: string;
+      props: HiddenInput;
+    }
+  | {
+      type: "form.rich-editor";
+      key?: string;
+      props: RichEditor;
+    }
+  | {
+      type: "form.submit-button";
+      key?: string;
+      props: SubmitButton;
+    };
+export type FormNode =
   | FormFieldNode
-  | { type: "form"; key?: string; id?: string; props: Form; schema?: FormFieldNode[] };
+  | {
+      type: "form";
+      key?: string;
+      id?: string;
+      props: Form;
+      schema?: Node[];
+    };
 export type FormNodeType = FormNode["type"];
-export type Gap = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type Fragment = {
+  endpoint?: string | null;
+  lazy?: boolean | null;
+  ref?: string | null;
+};
+export type FragmentNode = {
+  type: "fragment";
+  key?: string;
+  id?: string;
+  props: Fragment;
+  schema?: Node[];
+};
+export type Gap = "xs" | "sm" | "md" | "lg" | "xl";
+export type Grid = {
+  columns?: number | null;
+};
+export type Heading = {
+  level: number;
+  text: string;
+};
 export type HiddenInput = {
-conditions?: Record<string, {
-field: string,
-operator: string,
-value: any,
-}[]> | null,
-dependsOnAny?: boolean | null,
-dependsOnKeys?: string[] | null,
-disabled?: boolean | null,
-hidden?: boolean | null,
-label?: string | null,
-name: string,
-readonly?: boolean | null,
-required?: boolean | null,
-value?: any,
+  conditions?: Record<
+    string,
+    {
+      field: string;
+      operator: string;
+      value: any;
+    }[]
+  > | null;
+  dependsOnAny?: boolean | null;
+  dependsOnKeys?: string[] | null;
+  disabled?: boolean | null;
+  hidden?: boolean | null;
+  label?: string | null;
+  name: string;
+  readonly?: boolean | null;
+  required?: boolean | null;
+  value?: any;
 };
-export type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
+export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
+export type Link = {
+  href?: string | null;
+  label: string;
+  method?: HttpMethod | null;
+  tabIndex?: number | null;
+};
+export type Modal = {
+  closeLabel?: string | null;
+  description?: string | null;
+  open?: boolean | null;
+  ref?: string | null;
+  title?: string | null;
+};
+export type Node = FormNode | CoreNode | ActionNode | FragmentNode;
+export type NodeType = Node["type"];
 export type NumberInput = {
-autoFocus?: boolean | null,
-conditions?: Record<string, {
-field: string,
-operator: string,
-value: any,
-}[]> | null,
-dependsOnAny?: boolean | null,
-dependsOnKeys?: string[] | null,
-disabled?: boolean | null,
-hidden?: boolean | null,
-label?: string | null,
-max?: number | null,
-min?: number | null,
-name: string,
-placeholder?: string | null,
-readonly?: boolean | null,
-required?: boolean | null,
-slider?: boolean | null,
-step?: number | null,
-tabIndex?: number | null,
-value?: any,
+  autoFocus?: boolean | null;
+  conditions?: Record<
+    string,
+    {
+      field: string;
+      operator: string;
+      value: any;
+    }[]
+  > | null;
+  dependsOnAny?: boolean | null;
+  dependsOnKeys?: string[] | null;
+  disabled?: boolean | null;
+  hidden?: boolean | null;
+  label?: string | null;
+  max?: number | null;
+  min?: number | null;
+  name: string;
+  placeholder?: string | null;
+  readonly?: boolean | null;
+  required?: boolean | null;
+  slider?: boolean | null;
+  step?: number | null;
+  tabIndex?: number | null;
+  value?: any;
 };
-export type PageContainer = 'centered' | 'default';
-export type PageLayout = 'app' | 'auth' | 'none';
-export type PaginationType = 'none' | 'simple' | 'table' | 'infinite';
+export type PageContainer = "centered" | "default";
+export type PageLayout = "app" | "auth" | "none";
+export type PaginationType = "none" | "simple" | "table" | "infinite";
 export type PasswordInput = {
-autoComplete?: string | null,
-autoFocus?: boolean | null,
-conditions?: Record<string, {
-field: string,
-operator: string,
-value: any,
-}[]> | null,
-confirmation?: {
-label: string,
-name: string,
-placeholder: string,
-} | null,
-dependsOnAny?: boolean | null,
-dependsOnKeys?: string[] | null,
-disabled?: boolean | null,
-hidden?: boolean | null,
-label?: string | null,
-labelAction?: {
-href: string,
-label: string,
-tabIndex?: number,
-} | null,
-name: string,
-passwordRules?: string | null,
-placeholder?: string | null,
-readonly?: boolean | null,
-required?: boolean | null,
-tabIndex?: number | null,
-value?: any,
+  autoComplete?: string | null;
+  autoFocus?: boolean | null;
+  conditions?: Record<
+    string,
+    {
+      field: string;
+      operator: string;
+      value: any;
+    }[]
+  > | null;
+  confirmation?: {
+    label: string;
+    name: string;
+    placeholder: string;
+  } | null;
+  dependsOnAny?: boolean | null;
+  dependsOnKeys?: string[] | null;
+  disabled?: boolean | null;
+  hidden?: boolean | null;
+  label?: string | null;
+  labelAction?: {
+    href: string;
+    label: string;
+    tabIndex?: number;
+  } | null;
+  name: string;
+  passwordRules?: string | null;
+  placeholder?: string | null;
+  readonly?: boolean | null;
+  required?: boolean | null;
+  tabIndex?: number | null;
+  value?: any;
 };
 export type RichEditor = {
-conditions?: Record<string, {
-field: string,
-operator: string,
-value: any,
-}[]> | null,
-dependsOnAny?: boolean | null,
-dependsOnKeys?: string[] | null,
-disabled?: boolean | null,
-hidden?: boolean | null,
-label?: string | null,
-name: string,
-placeholder?: string | null,
-readonly?: boolean | null,
-required?: boolean | null,
-value?: any,
+  conditions?: Record<
+    string,
+    {
+      field: string;
+      operator: string;
+      value: any;
+    }[]
+  > | null;
+  dependsOnAny?: boolean | null;
+  dependsOnKeys?: string[] | null;
+  disabled?: boolean | null;
+  hidden?: boolean | null;
+  label?: string | null;
+  name: string;
+  placeholder?: string | null;
+  readonly?: boolean | null;
+  required?: boolean | null;
+  value?: any;
+};
+export type SegmentedControl = {
+  emits?: string | null;
+  label?: string | null;
+  name: string;
+  options?: {
+    label: string;
+    value: string;
+  }[];
+  value?: string | null;
 };
 export type Select = {
-conditions?: Record<string, {
-field: string,
-operator: string,
-value: any,
-}[]> | null,
-dependsOnAny?: boolean | null,
-dependsOnKeys?: string[] | null,
-disabled?: boolean | null,
-hidden?: boolean | null,
-label?: string | null,
-multiple?: boolean | null,
-name: string,
-options?: {
-label: string,
-value: string,
-}[],
-placeholder?: string | null,
-readonly?: boolean | null,
-required?: boolean | null,
-searchable?: boolean | null,
-value?: any,
+  conditions?: Record<
+    string,
+    {
+      field: string;
+      operator: string;
+      value: any;
+    }[]
+  > | null;
+  dependsOnAny?: boolean | null;
+  dependsOnKeys?: string[] | null;
+  disabled?: boolean | null;
+  hidden?: boolean | null;
+  label?: string | null;
+  multiple?: boolean | null;
+  name: string;
+  options?: {
+    label: string;
+    value: string;
+  }[];
+  placeholder?: string | null;
+  readonly?: boolean | null;
+  required?: boolean | null;
+  searchable?: boolean | null;
+  value?: any;
 };
-export type SortDirection = 'asc' | 'desc';
+export type SortDirection = "asc" | "desc";
+export type Stack = {
+  align?: Align | null;
+  direction?: string | null;
+  gap?: Gap | null;
+  width?: Width | null;
+};
 export type SubmitButton = {
-label?: string | null,
-variant?: string | null,
+  label?: string | null;
+  variant?: string | null;
+};
+export type Tab = {
+  confirm?: {
+    required: boolean;
+    redirectUrl: string;
+    timeout?: number;
+  } | null;
+  label: string;
+  value: string;
 };
 export type TableSort = {
-readonly key: string,
-readonly direction: SortDirection,
+  readonly key: string;
+  readonly direction: SortDirection;
+};
+export type Tabs = {
+  activeValue: string;
+  defaultValue?: string | null;
+  queryKey: string;
+};
+export type Text = {
+  align?: Align | null;
+  text: string;
 };
 export type TextInput = {
-autoComplete?: string | null,
-autoFocus?: boolean | null,
-conditions?: Record<string, {
-field: string,
-operator: string,
-value: any,
-}[]> | null,
-dependsOnAny?: boolean | null,
-dependsOnKeys?: string[] | null,
-disabled?: boolean | null,
-hidden?: boolean | null,
-label?: string | null,
-name: string,
-placeholder?: string | null,
-readonly?: boolean | null,
-required?: boolean | null,
-tabIndex?: number | null,
-type?: string | null,
-value?: any,
+  autoComplete?: string | null;
+  autoFocus?: boolean | null;
+  conditions?: Record<
+    string,
+    {
+      field: string;
+      operator: string;
+      value: any;
+    }[]
+  > | null;
+  dependsOnAny?: boolean | null;
+  dependsOnKeys?: string[] | null;
+  disabled?: boolean | null;
+  hidden?: boolean | null;
+  label?: string | null;
+  name: string;
+  placeholder?: string | null;
+  readonly?: boolean | null;
+  required?: boolean | null;
+  tabIndex?: number | null;
+  type?: string | null;
+  value?: any;
 };
 export type Textarea = {
-autoFocus?: boolean | null,
-conditions?: Record<string, {
-field: string,
-operator: string,
-value: any,
-}[]> | null,
-dependsOnAny?: boolean | null,
-dependsOnKeys?: string[] | null,
-disabled?: boolean | null,
-hidden?: boolean | null,
-label?: string | null,
-name: string,
-placeholder?: string | null,
-readonly?: boolean | null,
-required?: boolean | null,
-rows?: number | null,
-tabIndex?: number | null,
-value?: any,
+  autoFocus?: boolean | null;
+  conditions?: Record<
+    string,
+    {
+      field: string;
+      operator: string;
+      value: any;
+    }[]
+  > | null;
+  dependsOnAny?: boolean | null;
+  dependsOnKeys?: string[] | null;
+  disabled?: boolean | null;
+  hidden?: boolean | null;
+  label?: string | null;
+  name: string;
+  placeholder?: string | null;
+  readonly?: boolean | null;
+  required?: boolean | null;
+  rows?: number | null;
+  tabIndex?: number | null;
+  value?: any;
 };
-export type ToastVariant = 'success' | 'info' | 'warning' | 'error';
-export type Width = 'full' | 'sm' | 'md' | 'lg';
+export type ToastVariant = "success" | "info" | "warning" | "error";
+export type Width = "full" | "sm" | "md" | "lg";

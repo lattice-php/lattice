@@ -23,9 +23,12 @@ final class FragmentRegistry extends DefinitionRegistry
     {
         $key = $this->registeredKeyFor($fragment);
 
-        return FragmentComponent::make($key)
-            ->endpoint($this->endpointFor($key))
-            ->prop('lazy', true);
+        $component = FragmentComponent::make($key)
+            ->endpoint($this->endpointFor($key));
+
+        $component->lazy = true;
+
+        return $component;
     }
 
     /**
