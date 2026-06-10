@@ -9,11 +9,30 @@ use Lattice\Lattice\Actions\Contracts\Effect;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\HasVariant;
+use Lattice\Lattice\Core\Enums\HttpMethod;
 
 class Action extends Component
 {
     use HasVariant;
     use IsInteractive;
+
+    public ?string $endpoint = null;
+
+    public ?string $label = null;
+
+    public ?HttpMethod $method = null;
+
+    public ?string $icon = null;
+
+    /**
+     * @var array{title: string, description?: string, confirmLabel?: string, cancelLabel?: string}|null
+     */
+    public ?array $confirmation = null;
+
+    /**
+     * @var array<int, Effect>
+     */
+    public array $effects = [];
 
     public static function make(string $id): static
     {
@@ -25,37 +44,40 @@ class Action extends Component
      */
     public static function use(string $action): static
     {
+        /** @var static $registered */
         $registered = app(ActionRegistry::class)->component($action);
 
-        $component = (new static)
-            ->id($registered->id)
-            ->props($registered->props);
-
-        if ($registered->variant !== null) {
-            $component->variant($registered->variant);
-        }
-
-        return $component;
+        return clone $registered;
     }
 
     public function endpoint(string $endpoint): static
     {
-        return $this->prop('endpoint', $endpoint);
+        $this->endpoint = $endpoint;
+
+        return $this;
     }
 
     public function label(string $label): static
     {
-        return $this->prop('label', $label);
+        $this->label = $label;
+
+        return $this;
     }
 
     public function method(BackedEnum|string $method): static
     {
-        return $this->prop('method', $this->enumValue($method));
+        $this->method = $method instanceof HttpMethod
+            ? $method
+            : HttpMethod::from($method instanceof BackedEnum ? (string) $method->value : $method);
+
+        return $this;
     }
 
     public function icon(BackedEnum|string $icon): static
     {
-        return $this->prop('icon', $this->enumValue($icon));
+        $this->icon = $this->enumValue($icon);
+
+        return $this;
     }
 
     public function confirm(
@@ -64,12 +86,14 @@ class Action extends Component
         ?string $confirmLabel = null,
         ?string $cancelLabel = null,
     ): static {
-        return $this->prop('confirmation', array_filter([
+        $this->confirmation = array_filter([
             'title' => $title,
             'description' => $description,
             'confirmLabel' => $confirmLabel,
             'cancelLabel' => $cancelLabel,
-        ], fn (mixed $value): bool => $value !== null));
+        ], fn (mixed $value): bool => $value !== null);
+
+        return $this;
     }
 
     /**
@@ -77,7 +101,9 @@ class Action extends Component
      */
     public function effects(array $effects): static
     {
-        return $this->prop('effects', $effects);
+        $this->effects = $effects;
+
+        return $this;
     }
 
     protected function type(): string

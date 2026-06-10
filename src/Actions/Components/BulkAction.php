@@ -14,11 +14,10 @@ class BulkAction extends Action
      */
     public static function use(string $action): static
     {
+        /** @var static $registered */
         $registered = app(BulkActionRegistry::class)->component($action);
 
-        return (new static)
-            ->id($registered->id)
-            ->props($registered->props);
+        return clone $registered;
     }
 
     #[\Override]
