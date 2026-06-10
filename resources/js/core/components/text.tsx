@@ -1,13 +1,11 @@
 import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { cn } from "@lattice/lattice/lib/utils";
+import type { Text } from "@lattice/lattice/generated/types";
 
 declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
-    text: {
-      align?: string;
-      text?: string;
-    };
+    text: Text;
   }
 }
 
