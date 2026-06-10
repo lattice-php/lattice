@@ -44,6 +44,7 @@ use Lattice\Lattice\Forms\Enums\ConditionOperator;
 use Lattice\Lattice\Fragments\Components\Fragment;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Columns\ColumnFilter;
+use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Tables\Enums\FilterOperator;
 use Lattice\Lattice\Tables\Enums\FilterType;
@@ -111,6 +112,10 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
             Fragment::class => ['type' => 'fragment', 'container' => true, 'interactive' => true],
         ];
 
+        $tableComponents = [
+            Table::class => ['type' => 'table', 'interactive' => true],
+        ];
+
         $optional = fn (string $name): TypeScriptProperty => new TypeScriptProperty($name, new TypeScriptString, isOptional: true);
         $effect = fn (string $type, array $payload = []): TypeScriptObject => new TypeScriptObject([
             new TypeScriptProperty('type', new TypeScriptLiteral($type)),
@@ -159,6 +164,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 ...array_keys($coreComponents),
                 ...array_keys($actionComponents),
                 ...array_keys($fragmentComponents),
+                ...array_keys($tableComponents),
             ]))
             ->provider(new LatticeNodesProvider(
                 $formFields,
@@ -166,6 +172,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 $coreComponents,
                 $actionComponents,
                 $fragmentComponents,
+                $tableComponents,
                 'form',
                 Effect::class,
                 $effectType,
