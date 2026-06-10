@@ -6,6 +6,8 @@ use BackedEnum;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\SerializationHook;
 use ReflectionMethod;
+use ReflectionObject;
+use ReflectionProperty;
 use Spatie\Attributes\Attributes;
 use Spatie\Attributes\AttributeTarget;
 
@@ -111,6 +113,34 @@ abstract class Component implements JsonSerializable
             ...$data,
             'props' => $this->props,
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function wireProps(): array
+    {
+        $props = $this->props;
+
+        foreach ((new ReflectionObject($this))->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+            if ($property->isStatic()) {
+                continue;
+            }
+
+            if (! $property->isInitialized($this)) {
+                continue;
+            }
+
+            $value = $property->getValue($this);
+
+            if ($value === null) {
+                continue;
+            }
+
+            $props[$property->getName()] = $value instanceof BackedEnum ? $value->value : $value;
+        }
+
+        return $props;
     }
 
     /**
