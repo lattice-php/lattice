@@ -1,5 +1,22 @@
 [
     {
+        "type": "form.choice",
+        "props": {
+            "name": "type",
+            "label": "Account type",
+            "options": [
+                {
+                    "label": "Business",
+                    "value": "business"
+                },
+                {
+                    "label": "Individual",
+                    "value": "individual"
+                }
+            ]
+        }
+    },
+    {
         "type": "form.text-input",
         "props": {
             "name": "vat",

@@ -14,24 +14,37 @@ Each method names the field to watch, an optional operator, and the value to com
 
 ## Visible when
 
-`->visibleWhen()` hides the field until the condition matches.
+`->visibleWhen()` hides the field until the condition matches. Switch the account type below to
+**Individual** and the VAT ID field disappears.
 
 <ComponentExample
-  php={`TextInput::make('vat', 'VAT ID')
+  php={`Choice::make('type', 'Account type')->options([
+    Choice::option('Business', 'business'),
+    Choice::option('Individual', 'individual'),
+]);
+
+TextInput::make('vat', 'VAT ID')
     ->visibleWhen('type', 'business')`}
   fixture="field.visible-when"
-  values={{ vat: "" }}
+  values={{ type: "business", vat: "" }}
 />
 
 ## Required when
 
-`->requiredWhen()` makes the field required only while the condition matches.
+`->requiredWhen()` makes the field required only while the condition matches. With **Germany**
+selected the VAT ID is required; pick another country and it becomes optional.
 
 <ComponentExample
-  php={`TextInput::make('vat', 'VAT ID')
+  php={`Choice::make('country', 'Country')->options([
+    Choice::option('Germany', 'DE'),
+    Choice::option('Austria', 'AT'),
+    Choice::option('United States', 'US'),
+]);
+
+TextInput::make('vat', 'VAT ID')
     ->requiredWhen('country', 'DE')`}
   fixture="field.required-when"
-  values={{ vat: "" }}
+  values={{ country: "DE", vat: "" }}
 />
 
 ## Read-only and disabled when

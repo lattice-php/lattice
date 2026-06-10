@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Lattice\Lattice\Forms\Components\Choice;
 use Lattice\Lattice\Forms\Components\TextInput;
 
 it('serializes a text input', function (): void {
@@ -67,10 +68,19 @@ describe('docs fixtures', function (): void {
 
     it('dumps the conditional field examples', function (): void {
         dumpFixture('field.visible-when', [
+            Choice::make('type', 'Account type')->options([
+                Choice::option('Business', 'business'),
+                Choice::option('Individual', 'individual'),
+            ]),
             TextInput::make('vat', 'VAT ID')->visibleWhen('type', 'business'),
         ]);
 
         dumpFixture('field.required-when', [
+            Choice::make('country', 'Country')->options([
+                Choice::option('Germany', 'DE'),
+                Choice::option('Austria', 'AT'),
+                Choice::option('United States', 'US'),
+            ]),
             TextInput::make('vat', 'VAT ID')->requiredWhen('country', 'DE'),
         ]);
 

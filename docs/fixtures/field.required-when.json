@@ -1,5 +1,26 @@
 [
     {
+        "type": "form.choice",
+        "props": {
+            "name": "country",
+            "label": "Country",
+            "options": [
+                {
+                    "label": "Germany",
+                    "value": "DE"
+                },
+                {
+                    "label": "Austria",
+                    "value": "AT"
+                },
+                {
+                    "label": "United States",
+                    "value": "US"
+                }
+            ]
+        }
+    },
+    {
         "type": "form.text-input",
         "props": {
             "name": "vat",
