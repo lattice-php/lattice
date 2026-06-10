@@ -1,6 +1,20 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice/lattice/core/types";
+import type { ColumnData } from "@lattice/lattice/generated/types";
+
+function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
+  return {
+    type: "text",
+    sortable: null,
+    filter: null,
+    date: null,
+    copyable: null,
+    link: null,
+    columns: null,
+    ...partial,
+  };
+}
 
 const http = vi.hoisted(() => ({
   processing: false,
@@ -21,7 +35,7 @@ const { default: TableComponent } = await import("./table");
 const node = {
   id: "workbench.products",
   props: {
-    columns: [{ key: "name", label: "Name" }],
+    columns: [col({ key: "name", label: "Name" })],
     data: [
       { id: 1, name: "Lamp" },
       { id: 2, name: "Shelf" },

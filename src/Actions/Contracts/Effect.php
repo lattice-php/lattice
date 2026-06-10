@@ -6,10 +6,4 @@ namespace Lattice\Lattice\Actions\Contracts;
 
 use JsonSerializable;
 
-interface Effect extends JsonSerializable
-{
-    /**
-     * @return array<string, mixed>
-     */
-    public function toArray(): array;
-}
+interface Effect extends JsonSerializable {}

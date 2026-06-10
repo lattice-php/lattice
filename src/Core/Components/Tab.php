@@ -49,18 +49,13 @@ class Tab extends ContainerComponent
         return is_int($timeout) ? $timeout : null;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function toArrayForTabs(string $activeValue): array
+    public function withoutHiddenChildren(string $activeValue): static
     {
-        $data = $this->toArray();
-
         if ($this->requiresConfirmation() && $this->value() !== $activeValue) {
-            unset($data['schema']);
+            return (clone $this)->schema([]);
         }
 
-        return $data;
+        return $this;
     }
 
     protected function type(): string

@@ -2,6 +2,7 @@
 
 namespace Lattice\Lattice\Tables\Components;
 
+use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Tables\Columns\Column;
@@ -53,10 +54,7 @@ class Table extends Component
      */
     public function columns(array $columns): static
     {
-        return $this->prop('columns', array_map(
-            fn (Column $column): array => $column->toArray(),
-            $columns,
-        ));
+        return $this->prop('columns', $columns);
     }
 
     public function layout(string $layout): static
@@ -69,7 +67,7 @@ class Table extends Component
     }
 
     /**
-     * @param  array<int, array<string, mixed>>  $actions
+     * @param  array<int, Action>  $actions
      */
     public function bulkActions(array $actions): static
     {
@@ -91,7 +89,7 @@ class Table extends Component
 
     public function result(TableResult $result, TableQuery $query): static
     {
-        return $this->props($result->toArray($query));
+        return $this->props($result->forQuery($query)->jsonSerialize());
     }
 
     protected function type(): string

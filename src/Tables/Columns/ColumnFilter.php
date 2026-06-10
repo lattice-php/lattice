@@ -9,8 +9,8 @@ use Lattice\Lattice\Tables\Enums\FilterOperator;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
 /**
- * The wire shape of a column's filter capability. Built by Column::toArray()
- * from a Filterable column and generated to TypeScript.
+ * The wire shape of a column's filter capability. Built by a Filterable column
+ * and generated to TypeScript.
  */
 final readonly class ColumnFilter implements JsonSerializable
 {
@@ -27,7 +27,7 @@ final readonly class ColumnFilter implements JsonSerializable
     /**
      * @return array<string, mixed>
      */
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
             'enabled' => $this->enabled,
@@ -35,13 +35,5 @@ final readonly class ColumnFilter implements JsonSerializable
             'operators' => array_map(fn (FilterOperator $operator): string => $operator->value, $this->operators),
             'defaultOperator' => $this->defaultOperator->value,
         ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
-    {
-        return $this->toArray();
     }
 }

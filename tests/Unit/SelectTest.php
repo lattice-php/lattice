@@ -12,9 +12,9 @@ it('serializes static options without search flags', function (): void {
         Select::option('Pro', 'pro'),
     ]);
 
-    $props = $field->toArray()['props'];
+    $props = wire($field)['props'];
 
-    expect($field->toArray()['type'])->toBe('form.select')
+    expect(wire($field)['type'])->toBe('form.select')
         ->and($props['options'])->toBe([
             ['label' => 'Free', 'value' => 'free'],
             ['label' => 'Pro', 'value' => 'pro'],
@@ -29,7 +29,7 @@ it('serializes the multiple and searchable flags but never the resolver', functi
         ->multiple()
         ->searchable(fn (string $query) => []);
 
-    $props = $field->toArray()['props'];
+    $props = wire($field)['props'];
 
     expect($props['multiple'])->toBeTrue()
         ->and($props['searchable'])->toBeTrue()

@@ -22,19 +22,11 @@ final readonly class ToastMessage implements JsonSerializable
     /**
      * @return array{variant: string, message: string}
      */
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
             'variant' => $this->variant->value,
             'message' => $this->message,
         ];
-    }
-
-    /**
-     * @return array{variant: string, message: string}
-     */
-    public function jsonSerialize(): array
-    {
-        return $this->toArray();
     }
 }

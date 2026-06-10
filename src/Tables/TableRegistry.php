@@ -62,25 +62,22 @@ final class TableRegistry extends DefinitionRegistry
         return $lazy ? $component->prop('lazy', true) : $component;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function response(string $key, Request $request, ?TableDefinition $definition = null): array
+    public function response(string $key, Request $request, ?TableDefinition $definition = null): TableResult
     {
         $definition ??= $this->resolve($key);
         $columns = $definition->columns();
         $query = TableQuery::fromRequest($request, $columns, $key, $definition->perPage());
 
-        return $this->decorateResult($definition, $definition->source()->query($query))->toArray($query);
+        return $this->decorateResult($definition, $definition->source()->query($query))->forQuery($query);
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<int, ActionComponent>
      */
     private function bulkActions(TableDefinition $definition, string $key): array
     {
         return array_map(
-            fn (ActionComponent $action): array => $action->context(['table' => $key])->toArray(),
+            fn (ActionComponent $action): ActionComponent => $action->context(['table' => $key]),
             $definition->bulkActions(),
         );
     }
@@ -114,10 +111,7 @@ final class TableRegistry extends DefinitionRegistry
     private function decorateResult(TableDefinition $definition, TableResult $result): TableResult
     {
         return $result->decorateRows(function (array $row) use ($definition): array {
-            $actions = array_map(
-                fn ($action): array => $action->toArray(),
-                $definition->actions($row),
-            );
+            $actions = $definition->actions($row);
 
             if ($actions === []) {
                 return $row;

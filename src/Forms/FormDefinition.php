@@ -148,7 +148,7 @@ abstract class FormDefinition extends Definition implements ProvidesForm
             }
 
             $field->applyResolution($data, $request);
-            $fields[$field->name()] = $field->toArray();
+            $fields[$field->name()] = $field;
 
             if ($field->hasResolvedValue()) {
                 $values[$field->name()] = $field->resolvedValue();

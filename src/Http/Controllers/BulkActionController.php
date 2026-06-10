@@ -36,7 +36,7 @@ final class BulkActionController
 
         $records = $this->resolveRecords($request, $table, $tableKey);
 
-        return response()->json($definition->handle($records, $request)->toArray());
+        return response()->json($definition->handle($records, $request));
     }
 
     /**

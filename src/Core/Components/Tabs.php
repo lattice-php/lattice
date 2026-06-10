@@ -63,9 +63,9 @@ class Tabs extends ContainerComponent
         return [
             ...$data,
             'schema' => array_map(
-                fn (Component $child): array => $child instanceof Tab
-                    ? $child->toArrayForTabs($activeValue)
-                    : $child->toArray(),
+                fn (Component $child): Component => $child instanceof Tab
+                    ? $child->withoutHiddenChildren($activeValue)
+                    : $child,
                 $this->renderableChildren(),
             ),
         ];

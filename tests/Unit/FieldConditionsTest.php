@@ -6,10 +6,9 @@ use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 
 it('serializes declarative conditions into props', function (): void {
-    $props = TextInput::make('company', 'Company')
+    $props = wire(TextInput::make('company', 'Company')
         ->dependsOn('type', 'business')
-        ->requiredWhen('type', 'business')
-        ->toArray()['props'];
+        ->requiredWhen('type', 'business'))['props'];
 
     expect($props['conditions']['visible'])->toBe([
         ['field' => 'type', 'operator' => 'eq', 'value' => 'business'],
@@ -19,10 +18,9 @@ it('serializes declarative conditions into props', function (): void {
 });
 
 it('supports the operator form and array in', function (): void {
-    $props = TextInput::make('x', 'X')
+    $props = wire(TextInput::make('x', 'X')
         ->dependsOn('age', 'gte', 18)
-        ->disabledWhen('plan', 'in', ['free', 'trial'])
-        ->toArray()['props'];
+        ->disabledWhen('plan', 'in', ['free', 'trial']))['props'];
 
     expect($props['conditions']['visible'][0])->toBe(['field' => 'age', 'operator' => 'gte', 'value' => 18])
         ->and($props['conditions']['disabled'][0])->toBe(['field' => 'plan', 'operator' => 'in', 'value' => ['free', 'trial']]);
@@ -42,5 +40,5 @@ it('evaluates visibility and required against data', function (): void {
 it('treats array value as an in condition', function (): void {
     $field = TextInput::make('x', 'X')->dependsOn('plan', ['free', 'trial']);
 
-    expect($field->toArray()['props']['conditions']['visible'][0]['operator'])->toBe('in');
+    expect(wire($field)['props']['conditions']['visible'][0]['operator'])->toBe('in');
 });

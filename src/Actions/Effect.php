@@ -29,7 +29,7 @@ final readonly class Effect implements EffectContract
             default => throw new \InvalidArgumentException('A toast message string is required.'),
         };
 
-        return new self(EffectType::Toast, $toast->toArray());
+        return new self(EffectType::Toast, $toast->jsonSerialize());
     }
 
     public static function reloadComponent(string $component): self
@@ -74,19 +74,11 @@ final readonly class Effect implements EffectContract
     /**
      * @return array<string, mixed>
      */
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
             'type' => $this->type->value,
             ...$this->payload,
         ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
-    {
-        return $this->toArray();
     }
 }

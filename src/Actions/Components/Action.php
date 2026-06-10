@@ -71,10 +71,7 @@ class Action extends Component
      */
     public function effects(array $effects): static
     {
-        return $this->prop('effects', array_map(
-            fn (Effect $effect): array => $effect->toArray(),
-            $effects,
-        ));
+        return $this->prop('effects', $effects);
     }
 
     protected function type(): string

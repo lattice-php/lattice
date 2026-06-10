@@ -21,7 +21,7 @@ it('exposes its name and serializes name/label', function (): void {
     $field = makeField();
 
     expect($field->name())->toBe('price')
-        ->and($field->toArray()['props'])->toMatchArray(['name' => 'price', 'label' => 'Price']);
+        ->and(wire($field)['props'])->toMatchArray(['name' => 'price', 'label' => 'Price']);
 });
 
 it('resolves array rules', function (): void {

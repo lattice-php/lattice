@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables;
 
+use JsonSerializable;
 use Lattice\Lattice\Tables\Enums\FilterOperator;
 
-final readonly class FilterClause
+final readonly class FilterClause implements JsonSerializable
 {
     public function __construct(
         public string $field,
@@ -41,7 +42,7 @@ final readonly class FilterClause
     /**
      * @return array{field: string, operator: string, value: string}
      */
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
             'field' => $this->field,
