@@ -2,7 +2,7 @@ import { Filter, Plus, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { ControlType, FilterOperator } from "@lattice/lattice/generated/types";
-import { operatorLabel } from "../query";
+import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
 import type { FilterClause, TableColumn } from "../types";
 import { FilterValueInput } from "./filter-value-input";
 
@@ -210,7 +210,15 @@ function FilterClauseList({
           operators={operators}
           clause={{ field: column.key, operator: draftOperator, value: "" }}
           processing={processing}
-          onOperator={setDraftOperator}
+          onOperator={(operator) => {
+            if (VALUELESS_FILTER_OPERATORS.has(operator)) {
+              onAdd({ field: column.key, operator, value: "" });
+              setDraftOperator(defaultOperator);
+              setAdding(false);
+              return;
+            }
+            setDraftOperator(operator);
+          }}
           onValue={(value) => {
             if (value !== "") {
               onAdd({ field: column.key, operator: draftOperator, value });
@@ -256,6 +264,8 @@ function FilterClauseRow({
   onValue: (value: string) => void;
   onRemove: () => void;
 }) {
+  const valueless = VALUELESS_FILTER_OPERATORS.has(clause.operator);
+
   return (
     <div className="grid gap-2">
       <div className="flex items-center gap-2">
@@ -286,15 +296,17 @@ function FilterClauseRow({
           <Trash2 aria-hidden="true" className="size-4" />
         </button>
       </div>
-      <FilterValueInput
-        type={type}
-        label={column.label}
-        ariaLabel={`${column.label} filter value`}
-        value={clause.value}
-        processing={processing}
-        onCommit={onValue}
-        onClear={() => onValue("")}
-      />
+      {!valueless && (
+        <FilterValueInput
+          type={type}
+          label={column.label}
+          ariaLabel={`${column.label} filter value`}
+          value={clause.value}
+          processing={processing}
+          onCommit={onValue}
+          onClear={() => onValue("")}
+        />
+      )}
     </div>
   );
 }

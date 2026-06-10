@@ -512,6 +512,24 @@ test('the products table applies date, boolean, and number clause filters', func
         ->and($resolve('price:gte:100')->pluck('id')->all())->toBe([$featured->getKey()]);
 });
 
+test('the products table applies text, starts/ends-with, and presence filters', function () {
+    $widget = Product::factory()->create(['name' => 'Widget']);
+    $gizmo = Product::factory()->create(['name' => 'Gizmo']);
+    $blank = Product::factory()->create(['name' => '']);
+
+    $table = new ProductsTable;
+    $columns = $table->columns();
+
+    $resolve = fn (string $filter) => $table->resolveMatching(
+        TableQuery::fromRequest(Request::create('/', 'GET', ['filter' => $filter]), $columns, 'workbench.products'),
+    );
+
+    expect($resolve('name:starts_with:Wid')->pluck('id')->all())->toBe([$widget->getKey()])
+        ->and($resolve('name:ends_with:zmo')->pluck('id')->all())->toBe([$gizmo->getKey()])
+        ->and($resolve('name:empty:')->pluck('id')->all())->toBe([$blank->getKey()])
+        ->and($resolve('name:filled:')->pluck('id')->sort()->values()->all())->toBe([$widget->getKey(), $gizmo->getKey()]);
+});
+
 test('the products table rejects a filter operator not allowed for the column', function () {
     $columns = (new ProductsTable)->columns();
 

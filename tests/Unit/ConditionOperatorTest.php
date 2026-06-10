@@ -16,4 +16,13 @@ it('evaluates operators', function (mixed $actual, ConditionOperator $op, mixed 
     'lt numeric' => ['17', ConditionOperator::LessThan, 18, true],
     'in' => ['free', ConditionOperator::In, ['free', 'trial'], true],
     'not in' => ['pro', ConditionOperator::NotIn, ['free', 'trial'], true],
+    'contains' => ['hello world', ConditionOperator::Contains, 'world', true],
+    'contains miss' => ['hello', ConditionOperator::Contains, 'world', false],
+    'starts with' => ['business', ConditionOperator::StartsWith, 'bus', true],
+    'ends with' => ['business', ConditionOperator::EndsWith, 'ness', true],
+    'empty on null' => [null, ConditionOperator::Empty, null, true],
+    'empty on blank string' => ['', ConditionOperator::Empty, null, true],
+    'empty on value' => ['x', ConditionOperator::Empty, null, false],
+    'filled on value' => ['x', ConditionOperator::Filled, null, true],
+    'filled on blank string' => ['', ConditionOperator::Filled, null, false],
 ]);
