@@ -8,6 +8,7 @@ const viteCacheSuffix = process.argv.includes("build") ? "build" : "dev";
 export default defineConfig({
   site,
   srcDir: "./docs",
+  outDir: "./dist-docs",
   devToolbar: {
     enabled: false,
   },
@@ -40,6 +41,12 @@ export default defineConfig({
             { label: "Quickstart", link: "/getting-started/quickstart/" },
             { label: "Configuration", link: "/getting-started/configuration/" },
             { label: "Frontend Setup", link: "/getting-started/frontend-setup/" },
+          ],
+        },
+        {
+          label: "Contributing",
+          items: [
+            { label: "Local Development", link: "/contributing/local-development/" },
           ],
         },
       ],
