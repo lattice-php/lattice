@@ -1,14 +1,27 @@
 ---
 import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
 import LatticePreview from "@components/LatticePreview.tsx";
+import NodeTree from "@components/NodeTree.tsx";
 
 interface Props {
   php: string;
-  nodes: unknown[];
+  fixture: string;
   values?: Record<string, unknown>;
 }
 
-const { php, nodes, values = {} } = Astro.props;
+const { php, fixture, values = {} } = Astro.props;
+
+const fixtures = import.meta.glob<{ default: unknown[] }>("../fixtures/*.json", {
+  eager: true,
+});
+
+const entry = fixtures[`../fixtures/${fixture}.json`];
+
+if (!entry) {
+  throw new Error(`Unknown fixture "${fixture}". Did a test dump it to docs/fixtures/?`);
+}
+
+const nodes = entry.default;
 ---
 
 <Tabs>
@@ -18,6 +31,11 @@ const { php, nodes, values = {} } = Astro.props;
   <TabItem label="Preview">
     <div class="lattice-preview not-content">
       <LatticePreview client:only="react" nodes={nodes} values={values} />
+    </div>
+  </TabItem>
+  <TabItem label="Tree">
+    <div class="lattice-preview not-content">
+      <NodeTree client:load nodes={nodes} />
     </div>
   </TabItem>
 </Tabs>

@@ -11,17 +11,7 @@ The text input collects a single line of text. Create one with `TextInput::make(
   php={`TextInput::make('name', 'Team name')
     ->placeholder('My team')
     ->required()`}
-  nodes={[
-    {
-      type: "form.text-input",
-      props: {
-        name: "name",
-        label: "Team name",
-        placeholder: "My team",
-        required: true,
-      },
-    },
-  ]}
+  fixture="text-input.required"
   values={{ name: "" }}
 />
 
@@ -33,16 +23,6 @@ Call `->email()` to set the HTML input type to `email` and apply email validatio
   php={`TextInput::make('email', 'Email address')
     ->email()
     ->placeholder('you@example.com')`}
-  nodes={[
-    {
-      type: "form.text-input",
-      props: {
-        name: "email",
-        label: "Email address",
-        type: "email",
-        placeholder: "you@example.com",
-      },
-    },
-  ]}
+  fixture="text-input.email"
   values={{ email: "" }}
 />
