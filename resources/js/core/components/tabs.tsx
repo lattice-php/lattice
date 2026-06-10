@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import { getStringProp } from "@lattice/lattice/core/props";
 import type { Node, RendererComponent } from "@lattice/lattice/core/types";
 import { cn } from "@lattice/lattice/lib/utils";
-import type { Tab, Tabs } from "@lattice/lattice/generated/types";
 
 type TabsContextValue = {
   activeValue: string;
@@ -92,13 +91,6 @@ function queryUrl(queryKey: string, value: string): string {
   url.searchParams.set(queryKey, value);
 
   return `${url.pathname}${url.search}${url.hash}`;
-}
-
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    tab: Tab;
-    tabs: Tabs;
-  }
 }
 
 export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => {

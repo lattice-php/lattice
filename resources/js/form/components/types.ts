@@ -16,7 +16,7 @@ export type {
   SubmitButton,
   Textarea,
   TextInput,
-} from "@lattice/lattice/generated/types";
+} from "@lattice/lattice/types/generated";
 
 export type FormMethod = Method;
 

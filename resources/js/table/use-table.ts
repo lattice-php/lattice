@@ -1,12 +1,18 @@
 import { withRefHeader } from "@lattice/lattice/core/component-ref";
-import type { Node } from "@lattice/lattice/core/types";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice/lattice/events/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getColumns, getPagination, getRows, getState } from "./payload";
 import { buildEndpoint, nextSort } from "./query";
-import type { FilterClause, TableColumn, TableResponse, TableSort, TableState } from "./types";
+import type {
+  FilterClause,
+  TableColumn,
+  TableNode,
+  TableResponse,
+  TableSort,
+  TableState,
+} from "./types";
 
-export function useTable(node: Node<"table">) {
+export function useTable(node: TableNode) {
   const columns = getColumns(node.props?.columns);
   const endpoint = typeof node.props?.endpoint === "string" ? node.props.endpoint : null;
   const componentRef = typeof node.props?.ref === "string" ? node.props.ref : "";

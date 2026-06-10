@@ -4,12 +4,6 @@ import { Input } from "../base/input";
 import type { TextInput } from "../types";
 import { useControlledField } from "../use-controlled-field";
 
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    "form.text-input": TextInput;
-  }
-}
-
 export const TextInputComponent: RendererComponent<"form.text-input"> = ({ node }) => {
   const props = node.props ?? ({} as TextInput);
   const { name, value, error, hidden, required, readonly, disabled, commit } =

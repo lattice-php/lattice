@@ -3,18 +3,11 @@ import { useEffect, useState } from "react";
 import { Button } from "@lattice/lattice/core/components/button";
 import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
-import type { Modal } from "@lattice/lattice/generated/types";
 import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
 
 type ModalEvent = CustomEvent<{
   modal?: string;
 }>;
-
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    modal: Modal;
-  }
-}
 
 function matchesModal(event: Event, modal: string): boolean {
   const target = (event as ModalEvent).detail?.modal;

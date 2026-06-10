@@ -7,7 +7,7 @@ import type {
   PaginationType,
   Table,
   TableSort,
-} from "@lattice/lattice/generated/types";
+} from "@lattice/lattice/types/generated";
 
 export type { ColumnData, ColumnFilter, ColumnType, TableSort };
 
@@ -46,13 +46,20 @@ export type TableResponse = {
   state?: Partial<TableState>;
 };
 
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    table: Omit<Table, "bulkActions"> & {
-      bulkActions?: ActionNode[];
-      data?: TableRow[];
-      pagination?: TablePagination;
-      state?: Partial<TableState>;
-    };
-  }
-}
+/**
+ * The table node as it reaches the client: the generated wire props plus the
+ * rows, pagination, and state the server hydrates onto it for the initial render.
+ */
+export type TableNodeProps = Omit<Table, "bulkActions"> & {
+  bulkActions?: ActionNode[];
+  data?: TableRow[];
+  pagination?: TablePagination;
+  state?: Partial<TableState>;
+};
+
+export type TableNode = {
+  type: "table";
+  id?: string;
+  key?: string;
+  props?: TableNodeProps;
+};

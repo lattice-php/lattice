@@ -1,26 +1,11 @@
 import { useEffect } from "react";
-import { getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
+import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { Checkbox } from "../base/checkbox";
 import { Label } from "../base/label";
 import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";
 import { useFormValue, useSetFormValue } from "../values";
-
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    "form.checkbox": {
-      checked?: boolean;
-      conditions?: unknown;
-      disabled?: boolean;
-      hidden?: boolean;
-      label?: string;
-      name?: string;
-      required?: boolean;
-      tabIndex?: number;
-    };
-  }
-}
 
 function isTruthy(value: unknown): boolean {
   return value === true || value === "true" || value === "1" || value === 1;
@@ -32,13 +17,14 @@ export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) 
   const name = getStringProp(node.props, "name");
   const setValue = useSetFormValue();
   const storedValue = useFormValue(name);
-  const checked = storedValue !== undefined ? isTruthy(storedValue) : Boolean(node.props?.checked);
+  const defaultChecked = getBooleanProp(node.props, "checked");
+  const checked = storedValue !== undefined ? isTruthy(storedValue) : defaultChecked;
 
   useEffect(() => {
     if (storedValue === undefined) {
-      setValue(name, Boolean(node.props?.checked));
+      setValue(name, defaultChecked);
     }
-  }, [name, node.props?.checked, setValue, storedValue]);
+  }, [name, defaultChecked, setValue, storedValue]);
 
   if (hidden) {
     return null;

@@ -1,4 +1,5 @@
-import type { RendererComponent } from "@lattice/lattice/core/types";
+import type { ReactNode } from "react";
+import type { TableNode } from "../types";
 import { getBulkActions } from "../bulk";
 import { getRowActions, getRowKey } from "../payload";
 import { getColumnGridTemplate, getQueryParams, getVisiblePages } from "../query";
@@ -13,7 +14,7 @@ import { SortBar } from "./sort-bar";
 import { TableActionNode } from "./table-action-node";
 import { ColumnCell } from "./table-cell";
 
-const TableComponent: RendererComponent<"table"> = ({ node }) => {
+const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => {
   const {
     columns,
     rows,

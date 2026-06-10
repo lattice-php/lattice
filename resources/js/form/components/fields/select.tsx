@@ -14,12 +14,6 @@ import { useFormValue } from "../values";
 
 type SelectOption = Option;
 
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    "form.select": Select;
-  }
-}
-
 function toValues(stored: unknown, fallback: string | string[] | undefined): string[] {
   const source = stored ?? fallback;
 

@@ -7,7 +7,7 @@ import { ConfirmDialog } from "@lattice/lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice/lattice/core/components/spinner";
 import { getStringProp } from "@lattice/lattice/core/props";
 import type { NodeProps, RendererComponent } from "@lattice/lattice/core/types";
-import type { Action } from "@lattice/lattice/generated/types";
+import type { Action } from "@lattice/lattice/types/generated";
 import { IconRenderer } from "@lattice/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, getActionEffects } from "../effects";
 import type { ActionEffect } from "../effects";
@@ -23,12 +23,6 @@ type ActionResponse = {
 };
 
 type ActionData = Record<string, never>;
-
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    action: Action;
-  }
-}
 
 const actionMethods = ["delete", "get", "patch", "post", "put"] satisfies Method[];
 

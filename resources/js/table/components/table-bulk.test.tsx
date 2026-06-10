@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { Node } from "@lattice/lattice/core/types";
-import type { ColumnData } from "@lattice/lattice/generated/types";
+import type { TableNode } from "../types";
+import type { ColumnData } from "@lattice/lattice/types/generated";
 
 function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
   return {
@@ -56,7 +56,7 @@ const node = {
     ],
   },
   type: "table",
-} satisfies Node<"table">;
+} satisfies TableNode;
 
 describe("table bulk actions", () => {
   afterEach(() => {
@@ -104,7 +104,7 @@ describe("table bulk actions", () => {
         },
         pagination: { total: 50, currentPage: 1, lastPage: 2, mode: "table" },
       },
-    } satisfies Node<"table">;
+    } satisfies TableNode;
 
     render(<TableComponent node={matchingNode}>{null}</TableComponent>);
 

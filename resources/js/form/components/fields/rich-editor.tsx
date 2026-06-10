@@ -41,22 +41,6 @@ import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
 import { useFormValue } from "../values";
 
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    "form.rich-editor": {
-      conditions?: unknown;
-      disabled?: boolean;
-      hidden?: boolean;
-      label?: string;
-      name?: string;
-      placeholder?: string;
-      readonly?: boolean;
-      required?: boolean;
-      value?: unknown;
-    };
-  }
-}
-
 type ToolbarItem =
   | "separator"
   | {

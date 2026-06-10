@@ -2,7 +2,13 @@ import { Button } from "@lattice/lattice/core/components/button";
 import { Spinner } from "@lattice/lattice/core/components/spinner";
 import { useFormContext } from "../context";
 
-type SubmitButtonVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
+export type SubmitButtonVariant =
+  | "default"
+  | "destructive"
+  | "ghost"
+  | "link"
+  | "outline"
+  | "secondary";
 
 export function FormSubmitButton({
   label,

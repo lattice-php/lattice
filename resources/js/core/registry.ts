@@ -31,7 +31,7 @@ export function eagerComponent<TType extends string>(
   component: RendererComponent<TType>,
 ): EagerComponentRegistration {
   return {
-    component: component as RendererComponent,
+    component: component as unknown as RendererComponent,
     mode: "eager",
   };
 }

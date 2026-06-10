@@ -1,13 +1,6 @@
 import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { cn } from "@lattice/lattice/lib/utils";
-import type { Stack } from "@lattice/lattice/generated/types";
-
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    stack: Stack;
-  }
-}
 
 const gridAlignments: Record<string, string> = {
   center: "justify-items-center text-center",

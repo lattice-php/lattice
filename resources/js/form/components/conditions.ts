@@ -1,4 +1,4 @@
-import type { ConditionOperator } from "@lattice/lattice/generated/types";
+import type { ConditionOperator } from "@lattice/lattice/types/generated";
 
 export type Condition = { field: string; operator: ConditionOperator; value: unknown };
 

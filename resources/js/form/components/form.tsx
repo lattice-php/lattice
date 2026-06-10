@@ -7,15 +7,8 @@ import { useEffect, useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "./context";
 import { ResolvedNodesProvider } from "./resolved-nodes";
-import type { Form } from "./types";
 import { useFormResolver } from "./use-form-resolver";
 import { FormValuesProvider } from "./values";
-
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    form: Form;
-  }
-}
 
 function getFormState(props: NodeProps | undefined): Record<string, unknown> {
   const state = props?.state;

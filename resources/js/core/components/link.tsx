@@ -4,13 +4,6 @@ import type { ComponentProps } from "react";
 import { cn } from "@lattice/lattice/lib/utils";
 import { getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
-import type { Link as LinkProps } from "@lattice/lattice/generated/types";
-
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    link: LinkProps;
-  }
-}
 
 function TextLink({ className = "", children, ...props }: ComponentProps<typeof Link>) {
   return (

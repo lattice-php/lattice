@@ -5,7 +5,6 @@ import * as React from "react";
 import { cn } from "@lattice/lattice/lib/utils";
 import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
-import type { Button as ButtonProps } from "@lattice/lattice/generated/types";
 
 export type ButtonVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
 
@@ -56,12 +55,6 @@ function Button({
       {...props}
     />
   );
-}
-
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    button: ButtonProps;
-  }
 }
 
 function getButtonVariant(variant: string): ButtonVariant {

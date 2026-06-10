@@ -4,25 +4,6 @@ import { FormFieldFrame } from "../base/field";
 import { Textarea } from "../base/textarea";
 import { useControlledField } from "../use-controlled-field";
 
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    "form.textarea": {
-      autoFocus?: boolean;
-      conditions?: unknown;
-      disabled?: boolean;
-      hidden?: boolean;
-      label?: string;
-      name?: string;
-      placeholder?: string;
-      readonly?: boolean;
-      required?: boolean;
-      rows?: number;
-      tabIndex?: number;
-      value?: string;
-    };
-  }
-}
-
 export const TextareaComponent: RendererComponent<"form.textarea"> = ({ node }) => {
   const { name, value, error, hidden, required, readonly, disabled, commit } =
     useControlledField(node);
