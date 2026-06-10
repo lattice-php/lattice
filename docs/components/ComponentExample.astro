@@ -1,0 +1,32 @@
+---
+import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
+import LatticePreview from "@components/LatticePreview.tsx";
+
+interface Props {
+  php: string;
+  nodes: unknown[];
+  values?: Record<string, unknown>;
+}
+
+const { php, nodes, values = {} } = Astro.props;
+---
+
+<Tabs>
+  <TabItem label="PHP">
+    <Code code={php} lang="php" />
+  </TabItem>
+  <TabItem label="Preview">
+    <div class="lattice-preview not-content">
+      <LatticePreview client:only="react" nodes={nodes} values={values} />
+    </div>
+  </TabItem>
+</Tabs>
+
+<style>
+  .lattice-preview {
+    padding: 1.5rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg);
+  }
+</style>
