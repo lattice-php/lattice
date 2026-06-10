@@ -1,0 +1,21 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":dependencyDashboard", ":semanticCommits", "schedule:weekly"],
+  "timezone": "Europe/Berlin",
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 5,
+  "separateMinorPatch": true,
+  "packageRules": [
+    {
+      "description": "Patch + digest updates: one PR, auto-merged once CI is green (dev and prod)",
+      "matchUpdateTypes": ["patch", "digest"],
+      "groupName": "patch updates",
+      "automerge": true
+    },
+    {
+      "description": "Minor updates: one PR you merge manually (dev and prod)",
+      "matchUpdateTypes": ["minor"],
+      "groupName": "minor updates"
+    }
+  ]
+}
