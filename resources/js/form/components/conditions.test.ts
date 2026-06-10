@@ -41,6 +41,23 @@ describe("evaluateConditions", () => {
     ).toBe(true);
   });
 
+  it("supports text and presence operators", () => {
+    const shows = (operator: Condition["operator"], value: unknown, fieldValue: unknown) =>
+      !evaluateConditions(
+        { visible: [{ field: "name", operator, value }] },
+        { name: fieldValue },
+        {},
+      ).hidden;
+
+    expect(shows("contains", "ell", "hello")).toBe(true);
+    expect(shows("starts_with", "he", "hello")).toBe(true);
+    expect(shows("ends_with", "lo", "hello")).toBe(true);
+    expect(shows("empty", null, "")).toBe(true);
+    expect(shows("empty", null, "x")).toBe(false);
+    expect(shows("filled", null, "x")).toBe(true);
+    expect(shows("filled", null, "")).toBe(false);
+  });
+
   it("honors static flags", () => {
     expect(evaluateConditions(undefined, {}, { hidden: true }).hidden).toBe(true);
   });

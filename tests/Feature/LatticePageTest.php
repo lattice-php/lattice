@@ -545,7 +545,7 @@ test('registered tables serialize their configured endpoint columns state and in
                         'filter' => [
                             'enabled' => true,
                             'type' => 'text',
-                            'operators' => ['contains', 'eq', 'neq'],
+                            'operators' => ['contains', 'starts_with', 'ends_with', 'eq', 'neq', 'empty', 'filled'],
                             'defaultOperator' => 'contains',
                         ],
                     ],
@@ -556,7 +556,7 @@ test('registered tables serialize their configured endpoint columns state and in
                         'filter' => [
                             'enabled' => true,
                             'type' => 'text',
-                            'operators' => ['contains', 'eq', 'neq'],
+                            'operators' => ['contains', 'starts_with', 'ends_with', 'eq', 'neq', 'empty', 'filled'],
                             'defaultOperator' => 'eq',
                         ],
                     ],

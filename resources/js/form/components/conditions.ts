@@ -46,9 +46,13 @@ function equals(actual: unknown, expected: unknown): boolean {
   return String(actual ?? "") === String(expected ?? "");
 }
 
-function contains(actual: unknown, expected: unknown): boolean {
+function isIn(actual: unknown, expected: unknown): boolean {
   const needles = (Array.isArray(expected) ? expected : [expected]).map((value) => String(value));
   return needles.includes(String(actual ?? ""));
+}
+
+function isBlank(value: unknown): boolean {
+  return value == null || String(value) === "";
 }
 
 // Unknown operators from untrusted payloads fail open (the condition matches).
@@ -72,10 +76,20 @@ function evaluateOp(operator: ConditionOperator, actual: unknown, expected: unkn
       return Number(actual) >= Number(expected);
     case "lte":
       return Number(actual) <= Number(expected);
+    case "contains":
+      return String(actual ?? "").includes(String(expected ?? ""));
+    case "starts_with":
+      return String(actual ?? "").startsWith(String(expected ?? ""));
+    case "ends_with":
+      return String(actual ?? "").endsWith(String(expected ?? ""));
     case "in":
-      return contains(actual, expected);
+      return isIn(actual, expected);
     case "not_in":
-      return !contains(actual, expected);
+      return !isIn(actual, expected);
+    case "empty":
+      return isBlank(actual);
+    case "filled":
+      return !isBlank(actual);
     default:
       return evaluateUnknownOperator(operator);
   }

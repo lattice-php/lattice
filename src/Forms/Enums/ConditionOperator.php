@@ -12,8 +12,13 @@ enum ConditionOperator: string
     case GreaterThanOrEqual = 'gte';
     case LessThan = 'lt';
     case LessThanOrEqual = 'lte';
+    case Contains = 'contains';
+    case StartsWith = 'starts_with';
+    case EndsWith = 'ends_with';
     case In = 'in';
     case NotIn = 'not_in';
+    case Empty = 'empty';
+    case Filled = 'filled';
 
     public function evaluate(mixed $actual, mixed $expected): bool
     {
@@ -24,8 +29,13 @@ enum ConditionOperator: string
             self::LessThan => $this->compareNumeric($actual, $expected) < 0,
             self::GreaterThanOrEqual => $this->compareNumeric($actual, $expected) >= 0,
             self::LessThanOrEqual => $this->compareNumeric($actual, $expected) <= 0,
-            self::In => $this->contains($actual, $expected),
-            self::NotIn => ! $this->contains($actual, $expected),
+            self::Contains => str_contains((string) $actual, (string) $expected),
+            self::StartsWith => str_starts_with((string) $actual, (string) $expected),
+            self::EndsWith => str_ends_with((string) $actual, (string) $expected),
+            self::In => $this->isIn($actual, $expected),
+            self::NotIn => ! $this->isIn($actual, $expected),
+            self::Empty => $this->isBlank($actual),
+            self::Filled => ! $this->isBlank($actual),
         };
     }
 
@@ -43,10 +53,15 @@ enum ConditionOperator: string
         return (string) $actual === (string) $expected;
     }
 
-    private function contains(mixed $actual, mixed $expected): bool
+    private function isIn(mixed $actual, mixed $expected): bool
     {
         $needles = array_map(static fn (mixed $v): string => (string) $v, (array) $expected);
 
         return in_array((string) $actual, $needles, true);
+    }
+
+    private function isBlank(mixed $value): bool
+    {
+        return $value === null || (string) $value === '';
     }
 }

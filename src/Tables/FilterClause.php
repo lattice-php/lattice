@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables;
 
+use Lattice\Lattice\Tables\Enums\FilterOperator;
+
 final readonly class FilterClause
 {
     public function __construct(
@@ -25,7 +27,15 @@ final readonly class FilterClause
 
     public function isComplete(): bool
     {
-        return $this->field !== '' && $this->operator !== '' && $this->value !== '';
+        if ($this->field === '' || $this->operator === '') {
+            return false;
+        }
+
+        if (FilterOperator::tryFrom($this->operator)?->requiresValue() === false) {
+            return true;
+        }
+
+        return $this->value !== '';
     }
 
     /**
