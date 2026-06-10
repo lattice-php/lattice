@@ -8,13 +8,11 @@ use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 
 it('serializes dependsOn keys and the any-change marker', function (): void {
-    $optionsProps = Choice::make('state', 'State')
-        ->dependsOn('country', fn (Choice $f, FormData $d) => $f)
-        ->toArray()['props'];
+    $optionsProps = wire(Choice::make('state', 'State')
+        ->dependsOn('country', fn (Choice $f, FormData $d) => $f))['props'];
 
-    $valueProps = TextInput::make('total', 'Total')
-        ->value(fn (FormData $d) => $d->float('qty'))
-        ->toArray()['props'];
+    $valueProps = wire(TextInput::make('total', 'Total')
+        ->value(fn (FormData $d) => $d->float('qty')))['props'];
 
     expect($optionsProps['dependsOnKeys'])->toBe(['country'])
         ->and($valueProps['dependsOnAny'])->toBeTrue();
@@ -28,7 +26,7 @@ it('resolves a value closure during resolution', function (): void {
 
     expect($field->hasResolvedValue())->toBeTrue()
         ->and($field->resolvedValue())->toBe(12.0)
-        ->and($field->toArray()['props']['value'])->toBe(12.0);
+        ->and(wire($field)['props']['value'])->toEqual(12.0);
 });
 
 it('marks a value set inside a dependsOn closure as resolved', function (): void {
@@ -52,5 +50,5 @@ it('runs dependsOn closures during resolution', function (): void {
 
     $field->applyResolution(FormData::make(['country' => 'germany']), Request::create('/'));
 
-    expect($field->toArray()['props']['options'])->toBe([['label' => 'Germany', 'value' => 'germany']]);
+    expect(wire($field)['props']['options'])->toBe([['label' => 'Germany', 'value' => 'germany']]);
 });

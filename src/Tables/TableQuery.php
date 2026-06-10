@@ -7,12 +7,13 @@ namespace Lattice\Lattice\Tables;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use JsonSerializable;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Filterable;
 use Lattice\Lattice\Tables\Columns\Sortable;
 use Lattice\Lattice\Tables\Enums\FilterOperator;
 
-final readonly class TableQuery
+final readonly class TableQuery implements JsonSerializable
 {
     /**
      * @param  array<int, FilterClause>  $filters
@@ -77,19 +78,13 @@ final readonly class TableQuery
     }
 
     /**
-     * @return array{filters: array<int, array{field: string, operator: string, value: string}>, sorts: array<int, array{key: string, direction: string}>, page: int, perPage: int}
+     * @return array{filters: array<int, FilterClause>, sorts: array<int, TableSort>, page: int, perPage: int}
      */
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
-            'filters' => array_map(
-                fn (FilterClause $clause): array => $clause->toArray(),
-                $this->filters,
-            ),
-            'sorts' => array_map(
-                fn (TableSort $sort): array => $sort->toArray(),
-                $this->sorts,
-            ),
+            'filters' => $this->filters,
+            'sorts' => $this->sorts,
             'page' => $this->page,
             'perPage' => $this->perPage,
         ];

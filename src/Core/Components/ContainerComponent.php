@@ -59,10 +59,7 @@ abstract class ContainerComponent extends Component
     {
         return [
             ...$data,
-            'schema' => array_map(
-                fn (Component $child): array => $child->toArray(),
-                $this->renderableChildren(),
-            ),
+            'schema' => $this->renderableChildren(),
         ];
     }
 }

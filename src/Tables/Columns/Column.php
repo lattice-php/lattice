@@ -32,14 +32,6 @@ abstract class Column implements JsonSerializable
 
     abstract public function toData(): ColumnData;
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function toArray(): array
-    {
-        return $this->toData()->toArray();
-    }
-
     protected function sortableValue(): ?bool
     {
         return $this instanceof Sortable && $this->isSortable() ? true : null;
@@ -59,11 +51,8 @@ abstract class Column implements JsonSerializable
         );
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): ColumnData
     {
-        return $this->toArray();
+        return $this->toData();
     }
 }

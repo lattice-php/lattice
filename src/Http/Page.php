@@ -90,8 +90,21 @@ abstract class Page implements PageContract
             'menus' => $request instanceof Request
                 ? Lattice::menus()->toArray($request)
                 : [],
-            'schema' => $schema->toArray(),
+            'schema' => $this->serializeSchema($schema),
         ];
+    }
+
+    /**
+     * Realize the component tree to its wire array eagerly, inside the request
+     * lifecycle, so serialization side effects (such as a Tabs confirmation
+     * redirect) fire before the response view is rendered rather than during
+     * the final json_encode.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function serializeSchema(PageSchema $schema): array
+    {
+        return json_decode(json_encode($schema->renderable(), JSON_THROW_ON_ERROR), true);
     }
 
     private function response(PageSchema $schema): Response

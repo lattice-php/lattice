@@ -71,7 +71,7 @@ it('searches options through the form endpoint with a signed reference', functio
     Product::factory()->create(['name' => 'Walnut Desk']);
     Product::factory()->create(['name' => 'Steel Lamp']);
 
-    $ref = Form::use(ShowcaseForm::class)->toArray()['props']['ref'];
+    $ref = wire(Form::use(ShowcaseForm::class))['props']['ref'];
 
     post('/lattice/forms/workbench.showcase.form', [
         '_search' => 'related_products',

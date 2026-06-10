@@ -24,7 +24,7 @@ final class ActionController
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->actions, 'action', $action);
 
         return response()->json(
-            $definition->handle($request)->toArray(),
+            $definition->handle($request),
         );
     }
 }

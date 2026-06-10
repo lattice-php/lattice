@@ -1,7 +1,21 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice/lattice/core/types";
+import type { ColumnData } from "@lattice/lattice/generated/types";
 import TableComponent from "./table";
+
+function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
+  return {
+    type: "text",
+    sortable: null,
+    filter: null,
+    date: null,
+    copyable: null,
+    link: null,
+    columns: null,
+    ...partial,
+  };
+}
 
 describe("Lattice table component", () => {
   afterEach(() => {
@@ -13,7 +27,7 @@ describe("Lattice table component", () => {
       id: "workbench.users",
       props: {
         columns: [
-          {
+          col({
             key: "name",
             label: "Name",
             sortable: true,
@@ -23,19 +37,19 @@ describe("Lattice table component", () => {
               operators: ["contains", "eq", "neq"],
               defaultOperator: "contains",
             },
-          },
-          {
+          }),
+          col({
             key: "status",
             label: "Status",
-          },
-          {
+          }),
+          col({
             key: "created_at",
             label: "Created",
             date: {
               format: "Y-m-d H:i",
             },
-          },
-          {
+          }),
+          col({
             key: "email",
             label: "Email",
             sortable: true,
@@ -44,7 +58,7 @@ describe("Lattice table component", () => {
               href: "mailto:{value}",
               external: false,
             },
-          },
+          }),
         ],
         data: [
           {
@@ -100,29 +114,29 @@ describe("Lattice table component", () => {
       id: "workbench.stacked-users",
       props: {
         columns: [
-          {
+          col({
             key: "identity",
             label: "Identity",
             type: "stack",
             columns: [
-              {
+              col({
                 key: "name",
                 label: "Name",
                 type: "text",
                 sortable: true,
-              },
-              {
+              }),
+              col({
                 key: "email",
                 label: "Email",
                 type: "text",
-              },
+              }),
             ],
-          },
-          {
+          }),
+          col({
             key: "status",
             label: "Status",
             type: "text",
-          },
+          }),
         ],
         data: [
           {
@@ -215,16 +229,16 @@ describe("Lattice table component", () => {
       id: "workbench.users",
       props: {
         columns: [
-          {
+          col({
             key: "name",
             label: "Name",
             sortable: true,
-          },
-          {
+          }),
+          col({
             key: "email",
             label: "Email",
             sortable: true,
-          },
+          }),
         ],
         data: [],
         endpoint: "/lattice/tables/workbench.users",
@@ -289,11 +303,11 @@ describe("Lattice table component", () => {
       id: "teams.members",
       props: {
         columns: [
-          {
+          col({
             key: "name",
             label: "Name",
             sortable: true,
-          },
+          }),
         ],
         data: [],
         endpoint: "/lattice/tables/teams.members",
@@ -347,10 +361,10 @@ describe("Lattice table component", () => {
       id: "settings.passkeys",
       props: {
         columns: [
-          {
+          col({
             key: "name",
             label: "Name",
-          },
+          }),
         ],
         data: [{ id: 1, name: "Taylor" }],
         endpoint: "/lattice/tables/settings.passkeys",
@@ -434,11 +448,11 @@ describe("Lattice table component", () => {
       id: "workbench.users",
       props: {
         columns: [
-          {
+          col({
             key: "name",
             label: "Name",
             sortable: true,
-          },
+          }),
         ],
         data: [{ id: 1, name: "Taylor" }],
         endpoint: "/lattice/tables/workbench.users",
@@ -494,10 +508,10 @@ describe("Lattice table component", () => {
       id: "workbench.small-users",
       props: {
         columns: [
-          {
+          col({
             key: "name",
             label: "Name",
-          },
+          }),
         ],
         data: [{ id: 1, name: "Taylor" }],
         pagination: {
@@ -552,10 +566,10 @@ describe("Lattice table component", () => {
       id: "workbench.users",
       props: {
         columns: [
-          {
+          col({
             key: "name",
             label: "Name",
-          },
+          }),
         ],
         data: [{ id: 2, name: "Ada" }],
         endpoint: "/lattice/tables/workbench.users",
@@ -623,10 +637,10 @@ describe("Lattice table component", () => {
       id: "workbench.users.none",
       props: {
         columns: [
-          {
+          col({
             key: "name",
             label: "Name",
-          },
+          }),
         ],
         data: [],
         endpoint: "/lattice/tables/workbench.users.none",
@@ -674,7 +688,7 @@ describe("Lattice table component", () => {
       id: "workbench.products",
       props: {
         columns: [
-          {
+          col({
             key: "name",
             label: "Name",
             filter: {
@@ -683,8 +697,8 @@ describe("Lattice table component", () => {
               operators: ["contains", "eq", "neq"],
               defaultOperator: "contains",
             },
-          },
-          {
+          }),
+          col({
             key: "featured",
             label: "Featured",
             filter: {
@@ -693,8 +707,8 @@ describe("Lattice table component", () => {
               operators: ["eq"],
               defaultOperator: "eq",
             },
-          },
-          {
+          }),
+          col({
             key: "updated_at",
             label: "Updated",
             filter: {
@@ -703,7 +717,7 @@ describe("Lattice table component", () => {
               operators: ["eq", "before", "after"],
               defaultOperator: "eq",
             },
-          },
+          }),
         ],
         data: [],
         endpoint: "/lattice/tables/workbench.products",
@@ -749,7 +763,7 @@ describe("Lattice table component", () => {
     const node = {
       id: "workbench.products",
       props: {
-        columns: [{ key: "name", label: "Name" }],
+        columns: [col({ key: "name", label: "Name" })],
         data: [{ name: "Taylor" }],
         striped: true,
         state: { filters: [], page: 1, perPage: 25, sorts: [] },
@@ -779,7 +793,7 @@ describe("Lattice table component", () => {
       id: "workbench.products",
       props: {
         columns: [
-          {
+          col({
             key: "name",
             label: "Name",
             filter: {
@@ -788,7 +802,7 @@ describe("Lattice table component", () => {
               operators: ["contains", "eq", "neq"],
               defaultOperator: "contains",
             },
-          },
+          }),
         ],
         data: [],
         endpoint: "/lattice/tables/workbench.products",

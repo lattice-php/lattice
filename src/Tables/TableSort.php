@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables;
 
+use JsonSerializable;
 use Lattice\Lattice\Tables\Enums\SortDirection;
 
-final readonly class TableSort
+final readonly class TableSort implements JsonSerializable
 {
     public function __construct(public string $key, public SortDirection $direction) {}
 
@@ -22,7 +23,7 @@ final readonly class TableSort
     /**
      * @return array{key: string, direction: string}
      */
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
             'key' => $this->key,

@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Fragments;
 
 use Lattice\Lattice\Attributes\ComponentAttribute;
 use Lattice\Lattice\Attributes\Fragment;
+use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
@@ -28,7 +29,7 @@ final class FragmentRegistry extends DefinitionRegistry
     }
 
     /**
-     * @return array{schema: array<int, array<string, mixed>>}
+     * @return array{schema: array<int, Component>}
      */
     public function response(string $key, ?FragmentDefinition $definition = null): array
     {
@@ -37,7 +38,7 @@ final class FragmentRegistry extends DefinitionRegistry
         return [
             'schema' => $definition
                 ->schema(PageSchema::make())
-                ->toArray(),
+                ->renderable(),
         ];
     }
 

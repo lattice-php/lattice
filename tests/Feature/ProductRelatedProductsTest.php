@@ -19,7 +19,7 @@ test('the product form syncs related products on create', function () {
     $alpha = Product::factory()->create(['name' => 'Alpha']);
     $beta = Product::factory()->create(['name' => 'Beta']);
 
-    $form = Form::use(ProductForm::class)->toArray();
+    $form = wire(Form::use(ProductForm::class));
 
     post('/lattice/forms/workbench.products.form', [
         'name' => 'Gadget',
@@ -51,9 +51,8 @@ test('the product form replaces related products on update', function () {
 
     $product->relatedProducts()->sync([$alpha->getKey(), $beta->getKey()]);
 
-    $form = Form::use(ProductForm::class)
-        ->context(['product_id' => $product->getKey()])
-        ->toArray();
+    $form = wire(Form::use(ProductForm::class)
+        ->context(['product_id' => $product->getKey()]));
 
     patch('/lattice/forms/workbench.products.form', [
         'name' => 'Desk Lamp',
@@ -73,7 +72,7 @@ test('the product form ignores related ids that do not exist', function () {
 
     $alpha = Product::factory()->create(['name' => 'Alpha']);
 
-    $form = Form::use(ProductForm::class)->toArray();
+    $form = wire(Form::use(ProductForm::class));
 
     post('/lattice/forms/workbench.products.form', [
         'name' => 'Gadget',
@@ -114,9 +113,8 @@ test('the product form resolves related product labels for prefilled ids', funct
 
     $related = Product::factory()->create(['name' => 'Walnut Desk']);
 
-    $form = Form::use(ProductForm::class)
-        ->fill(['related_products' => [$related->getKey()]])
-        ->toArray();
+    $form = wire(Form::use(ProductForm::class)
+        ->fill(['related_products' => [$related->getKey()]]));
 
     expect(json_encode($form))
         ->toContain('{"label":"Walnut Desk","value":"'.$related->getKey().'"}');

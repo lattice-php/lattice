@@ -86,25 +86,14 @@ final readonly class ActionResult implements JsonSerializable
     }
 
     /**
-     * @return array{ok: bool, data: array<string, mixed>, effects: array<int, array<string, mixed>>}
+     * @return array{ok: bool, data: array<string, mixed>, effects: array<int, EffectContract>}
      */
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
             'ok' => $this->ok,
             'data' => $this->data,
-            'effects' => array_map(
-                fn (EffectContract $effect): array => $effect->toArray(),
-                $this->effects,
-            ),
+            'effects' => $this->effects,
         ];
-    }
-
-    /**
-     * @return array{ok: bool, data: array<string, mixed>, effects: array<int, array<string, mixed>>}
-     */
-    public function jsonSerialize(): array
-    {
-        return $this->toArray();
     }
 }

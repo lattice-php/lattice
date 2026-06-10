@@ -34,16 +34,13 @@ final class PageSchema
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<int, Component>
      */
-    public function toArray(): array
+    public function renderable(): array
     {
-        return array_map(
-            fn (Component $component): array => $component->toArray(),
-            array_values(array_filter(
-                $this->components,
-                fn (Component $component): bool => $component->shouldRender(),
-            )),
-        );
+        return array_values(array_filter(
+            $this->components,
+            fn (Component $component): bool => $component->shouldRender(),
+        ));
     }
 }

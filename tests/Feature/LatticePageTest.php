@@ -146,10 +146,10 @@ test('lattice facade resolves the registry and exposes the menu registry', funct
 test('lattice can discover attributed definitions from a path and namespace', function () {
     Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery');
 
-    $form = Form::use(DiscoveredProfileForm::class)->toArray();
-    $table = Table::use(DiscoveredUsersTable::class)->toArray();
-    $action = ActionComponent::use(DiscoveredPingAction::class)->toArray();
-    $fragment = FragmentComponent::lazy(DiscoveredPanelFragment::class)->toArray();
+    $form = wire(Form::use(DiscoveredProfileForm::class));
+    $table = wire(Table::use(DiscoveredUsersTable::class));
+    $action = wire(ActionComponent::use(DiscoveredPingAction::class));
+    $fragment = wire(FragmentComponent::lazy(DiscoveredPanelFragment::class));
 
     expect($form)
         ->toMatchArray([
@@ -200,12 +200,12 @@ test('lattice discovers attributed bulk action definitions', function () {
 });
 
 test('interactive components keep their serialized ids', function () {
-    expect(Form::make('demo-form')->toArray())
+    expect(wire(Form::make('demo-form')))
         ->toMatchArray([
             'type' => 'form',
             'id' => 'demo-form',
         ])
-        ->and(Table::make('demo-table')->toArray())
+        ->and(wire(Table::make('demo-table')))
         ->toMatchArray([
             'type' => 'table',
             'id' => 'demo-table',
@@ -213,14 +213,12 @@ test('interactive components keep their serialized ids', function () {
 });
 
 test('interactive components seal request context for endpoints', function () {
-    $form = Form::make('demo-form')
+    $form = wire(Form::make('demo-form')
         ->action('/lattice/forms/demo-form')
-        ->context(['team' => 'lattice-core'])
-        ->toArray();
-    $table = Table::make('demo-table')
+        ->context(['team' => 'lattice-core']));
+    $table = wire(Table::make('demo-table')
         ->endpoint('/lattice/tables/demo-table')
-        ->context(['team' => 'lattice-core'])
-        ->toArray();
+        ->context(['team' => 'lattice-core']));
 
     expect($form)
         ->toMatchArray([
@@ -239,9 +237,9 @@ test('interactive components seal request context for endpoints', function () {
 });
 
 test('forms serialize schema children like pages', function () {
-    expect(Form::make('profile-form')->schema([
+    expect(wire(Form::make('profile-form')->schema([
         Text::make('Profile details'),
-    ])->toArray())
+    ])))
         ->toMatchArray([
             'type' => 'form',
             'id' => 'profile-form',
@@ -312,7 +310,7 @@ test('components serialize through prioritized hook attributes without child-spe
         }
     };
 
-    expect($component->toArray())
+    expect(wire($component))
         ->toBe([
             'type' => 'hooked',
             'custom' => 'value',
@@ -354,7 +352,7 @@ test('private serialization hooks are ignored', function () {
         }
     };
 
-    expect($component->toArray())->toBe([
+    expect(wire($component))->toBe([
         'type' => 'private-hooked',
     ])->and($component->privateDataForTest([]))->toBe([
         'private' => 'value',
@@ -362,7 +360,7 @@ test('private serialization hooks are ignored', function () {
 });
 
 test('forms can disable their default submit button', function () {
-    expect(Form::make('profile-form')->withoutSubmitButton()->toArray())
+    expect(wire(Form::make('profile-form')->withoutSubmitButton()))
         ->toMatchArray([
             'type' => 'form',
             'id' => 'profile-form',
@@ -373,11 +371,10 @@ test('forms can disable their default submit button', function () {
 });
 
 test('password inputs can request automatic confirmation fields', function () {
-    expect(PasswordInput::make('password', 'Password')
+    expect(wire(PasswordInput::make('password', 'Password')
         ->required()
         ->passwordRules('minlength:8')
-        ->needsConfirmation()
-        ->toArray())
+        ->needsConfirmation()))
         ->toMatchArray([
             'type' => 'form.password-input',
             'props' => [
@@ -410,7 +407,7 @@ test('components can opt out of rendering with when', function () {
         }
     };
 
-    $pageData = $page->toArray($page->render(PageSchema::make()));
+    $pageData = wire($page->toArray($page->render(PageSchema::make())));
 
     expect($pageData['schema'])
         ->toHaveCount(2)
@@ -420,15 +417,14 @@ test('components can opt out of rendering with when', function () {
 });
 
 test('segmented control serializes options value and emit event', function () {
-    expect(SegmentedControl::make('appearance', 'Appearance')
+    expect(wire(SegmentedControl::make('appearance', 'Appearance')
         ->value('system')
         ->emits('lattice:appearance-change')
         ->options([
             SegmentedControl::option('Light', 'light'),
             SegmentedControl::option('Dark', 'dark'),
             SegmentedControl::option('System', 'system'),
-        ])
-        ->toArray())
+        ])))
         ->toMatchArray([
             'type' => 'segmented-control',
             'props' => [
@@ -459,7 +455,7 @@ test('registered forms serialize their configured endpoint and isolated error ba
 
     Lattice::forms([WorkbenchProfileForm::class]);
 
-    $form = Form::use(WorkbenchProfileForm::class)->toArray();
+    $form = wire(Form::use(WorkbenchProfileForm::class));
 
     expect($form)
         ->toMatchArray([
@@ -486,9 +482,8 @@ test('registered forms serialize their configured endpoint and isolated error ba
 test('registered forms can be submitted through the package endpoint', function () {
     Lattice::forms([WorkbenchProfileForm::class]);
 
-    $ref = componentRef(Form::use(WorkbenchProfileForm::class)
-        ->context(['team' => 'lattice-core'])
-        ->toArray());
+    $ref = componentRef(wire(Form::use(WorkbenchProfileForm::class)
+        ->context(['team' => 'lattice-core'])));
 
     patch('/lattice/forms/settings.profile', [
         'name' => 'Taylor',
@@ -517,7 +512,7 @@ test('registered form endpoints require a valid component reference', function (
 test('registered forms receive the current request while serializing definitions', function () {
     Lattice::forms([WorkbenchRequestAwareForm::class]);
 
-    Route::get('request-aware-form', fn () => response()->json(Form::use(WorkbenchRequestAwareForm::class)->toArray()))
+    Route::get('request-aware-form', fn () => response()->json(wire(Form::use(WorkbenchRequestAwareForm::class))))
         ->middleware('web');
 
     getJson('/request-aware-form?label=Request aware')
@@ -530,7 +525,7 @@ test('registered tables serialize their configured endpoint columns state and in
 
     Lattice::tables([WorkbenchUsersTable::class]);
 
-    $table = Table::use(WorkbenchUsersTable::class)->toArray();
+    $table = wire(Table::use(WorkbenchUsersTable::class));
 
     expect($table)
         ->toMatchArray([
@@ -551,23 +546,37 @@ test('registered tables serialize their configured endpoint columns state and in
                             'operators' => ['contains', 'starts_with', 'ends_with', 'eq', 'neq', 'empty', 'filled'],
                             'defaultOperator' => 'contains',
                         ],
+                        'date' => null,
+                        'copyable' => null,
+                        'link' => null,
+                        'columns' => null,
                     ],
                     [
                         'key' => 'status',
                         'label' => 'Status',
                         'type' => 'text',
+                        'sortable' => null,
                         'filter' => [
                             'enabled' => true,
                             'type' => 'text',
                             'operators' => ['contains', 'starts_with', 'ends_with', 'eq', 'neq', 'empty', 'filled'],
                             'defaultOperator' => 'eq',
                         ],
+                        'date' => null,
+                        'copyable' => null,
+                        'link' => null,
+                        'columns' => null,
                     ],
                     [
                         'key' => 'email',
                         'label' => 'Email',
                         'type' => 'text',
                         'sortable' => true,
+                        'filter' => null,
+                        'date' => null,
+                        'copyable' => null,
+                        'link' => null,
+                        'columns' => null,
                     ],
                 ],
                 'data' => [
@@ -593,7 +602,7 @@ test('registered tables can serialize lazily without running their query', funct
 
     Lattice::tables([WorkbenchLazyUsersTable::class]);
 
-    $table = Table::lazy(WorkbenchLazyUsersTable::class)->toArray();
+    $table = wire(Table::lazy(WorkbenchLazyUsersTable::class));
 
     expect($table)
         ->toMatchArray([
@@ -608,6 +617,12 @@ test('registered tables can serialize lazily without running their query', funct
                         'key' => 'name',
                         'label' => 'Name',
                         'type' => 'text',
+                        'sortable' => null,
+                        'filter' => null,
+                        'date' => null,
+                        'copyable' => null,
+                        'link' => null,
+                        'columns' => null,
                     ],
                 ],
                 'data' => [],
@@ -628,7 +643,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
     Lattice::actions([WorkbenchPingAction::class]);
     Lattice::tables([WorkbenchStackedUsersTable::class]);
 
-    $table = Table::use(WorkbenchStackedUsersTable::class)->toArray();
+    $table = wire(Table::use(WorkbenchStackedUsersTable::class));
 
     expect($table)
         ->toMatchArray([
@@ -641,17 +656,33 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                 'key' => 'identity',
                 'label' => 'Identity',
                 'type' => 'stack',
+                'sortable' => null,
+                'filter' => null,
+                'date' => null,
+                'copyable' => null,
+                'link' => null,
                 'columns' => [
                     [
                         'key' => 'name',
                         'label' => 'Name',
                         'type' => 'text',
                         'sortable' => true,
+                        'filter' => null,
+                        'date' => null,
+                        'copyable' => null,
+                        'link' => null,
+                        'columns' => null,
                     ],
                     [
                         'key' => 'email',
                         'label' => 'Email',
                         'type' => 'text',
+                        'sortable' => null,
+                        'filter' => null,
+                        'date' => null,
+                        'copyable' => null,
+                        'link' => null,
+                        'columns' => null,
                     ],
                 ],
             ],
@@ -659,6 +690,12 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                 'key' => 'status',
                 'label' => 'Status',
                 'type' => 'text',
+                'sortable' => null,
+                'filter' => null,
+                'date' => null,
+                'copyable' => null,
+                'link' => null,
+                'columns' => null,
             ],
         ])
         ->and($table['props']['data'][0]['actions'][0])->toMatchArray([
@@ -675,7 +712,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
 test('registered tables parse clause filters sorts and pagination through the endpoint', function () {
     Lattice::tables([WorkbenchUsersTable::class]);
 
-    $ref = componentRef(Table::use(WorkbenchUsersTable::class)->toArray());
+    $ref = componentRef(wire(Table::use(WorkbenchUsersTable::class)));
 
     latticeGet('/lattice/tables/workbench.users?filter=name:contains:tay,status:eq:active&sort=-name,email&page=2&per_page=50', $ref)
         ->assertOk()
@@ -695,7 +732,7 @@ test('registered tables parse clause filters sorts and pagination through the en
 test('registered tables reject filters and sorts that are not allowed by columns', function () {
     Lattice::tables([WorkbenchUsersTable::class]);
 
-    $ref = componentRef(Table::use(WorkbenchUsersTable::class)->toArray());
+    $ref = componentRef(wire(Table::use(WorkbenchUsersTable::class)));
 
     latticeGet('/lattice/tables/workbench.users?filter=password:contains:secret', $ref)
         ->assertUnprocessable()
@@ -711,9 +748,8 @@ test('registered tables reject filters and sorts that are not allowed by columns
 test('registered table endpoints require a valid component reference and use trusted context', function () {
     Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery');
 
-    $ref = componentRef(Table::use(DiscoveredUsersTable::class)
-        ->context(['team' => 'trusted-team'])
-        ->toArray());
+    $ref = componentRef(wire(Table::use(DiscoveredUsersTable::class)
+        ->context(['team' => 'trusted-team'])));
 
     getJson('/lattice/tables/fixtures.users')
         ->assertForbidden();
@@ -727,12 +763,11 @@ test('registered table endpoints require a valid component reference and use tru
 });
 
 test('text columns serialize display modifiers', function () {
-    expect(TextColumn::make('published_at')
+    expect(wire(TextColumn::make('published_at')
         ->label('Published')
         ->date('Y-m-d')
         ->copyable()
-        ->link('/posts/{id}')
-        ->toArray())
+        ->link('/posts/{id}')))
         ->toMatchArray([
             'key' => 'published_at',
             'label' => 'Published',
@@ -751,7 +786,7 @@ test('text columns serialize display modifiers', function () {
 test('workbench users table exposes timestamp columns for each row', function () {
     Lattice::tables([WorkbenchAppUsersTable::class]);
 
-    $columns = Table::use(WorkbenchAppUsersTable::class)->toArray()['props']['columns'];
+    $columns = wire(Table::use(WorkbenchAppUsersTable::class))['props']['columns'];
 
     expect(array_column($columns, 'key'))->toBe(['name', 'email', 'created_at', 'updated_at'])
         ->and($columns[2])->toMatchArray([
@@ -784,7 +819,7 @@ test('eloquent tables can use infinite pagination metadata', function () {
 
     Lattice::tables([WorkbenchInfiniteUsersTable::class]);
 
-    $table = Table::use(WorkbenchInfiniteUsersTable::class)->toArray();
+    $table = wire(Table::use(WorkbenchInfiniteUsersTable::class));
     $ref = componentRef($table);
 
     expect($table['props']['pagination'])
@@ -829,7 +864,7 @@ test('eloquent tables use table pagination with totals by default', function () 
 
     Lattice::tables([WorkbenchDefaultUsersTable::class]);
 
-    $ref = componentRef(Table::use(WorkbenchDefaultUsersTable::class)->toArray());
+    $ref = componentRef(wire(Table::use(WorkbenchDefaultUsersTable::class)));
 
     latticeGet('/lattice/tables/workbench.default-users?per_page=2', $ref)
         ->assertOk()
@@ -853,7 +888,7 @@ test('eloquent tables can use simple pagination without totals', function () {
 
     Lattice::tables([WorkbenchSimpleUsersTable::class]);
 
-    $ref = componentRef(Table::use(WorkbenchSimpleUsersTable::class)->toArray());
+    $ref = componentRef(wire(Table::use(WorkbenchSimpleUsersTable::class)));
 
     latticeGet('/lattice/tables/workbench.simple-users?per_page=2', $ref)
         ->assertOk()
@@ -876,7 +911,7 @@ test('eloquent tables can disable pagination for small datasets', function () {
 
     Lattice::tables([WorkbenchSmallUsersTable::class]);
 
-    $ref = componentRef(Table::use(WorkbenchSmallUsersTable::class)->toArray());
+    $ref = componentRef(wire(Table::use(WorkbenchSmallUsersTable::class)));
 
     latticeGet('/lattice/tables/workbench.small-users?per_page=1', $ref)
         ->assertOk()
@@ -891,7 +926,7 @@ test('registered actions serialize their configured endpoint method label and ef
 
     Lattice::actions([WorkbenchPingAction::class]);
 
-    $action = ActionComponent::use(WorkbenchPingAction::class)->toArray();
+    $action = wire(ActionComponent::use(WorkbenchPingAction::class));
 
     expect($action)
         ->toMatchArray([
@@ -919,7 +954,7 @@ test('registered actions serialize their configured endpoint method label and ef
 });
 
 test('action groups serialize grouped child actions', function () {
-    $group = ActionGroup::make('workbench.user-actions')
+    $group = wire(ActionGroup::make('workbench.user-actions')
         ->label('Manage user')
         ->actions([
             ActionComponent::make('workbench.users.promote')
@@ -931,8 +966,7 @@ test('action groups serialize grouped child actions', function () {
                 ->label('Remove')
                 ->method('delete')
                 ->variant('destructive'),
-        ])
-        ->toArray();
+        ]));
 
     expect($group)
         ->toMatchArray([
@@ -970,9 +1004,8 @@ test('action groups serialize grouped child actions', function () {
 test('registered actions can be handled through the package endpoint', function () {
     Lattice::actions([WorkbenchPingAction::class]);
 
-    $ref = componentRef(ActionComponent::use(WorkbenchPingAction::class)
-        ->context(['team' => 'trusted-team'])
-        ->toArray());
+    $ref = componentRef(wire(ActionComponent::use(WorkbenchPingAction::class)
+        ->context(['team' => 'trusted-team'])));
 
     postJson('/lattice/actions/workbench.ping', [
         'name' => 'Taylor',
@@ -1005,18 +1038,18 @@ test('toast messages serialize for flash data and action effects', function () {
 
     assert($flashedToast instanceof ToastMessage);
 
-    expect($flashedToast->toArray())
+    expect(wire($flashedToast))
         ->toBe([
             'variant' => 'warning',
             'message' => 'Review the settings.',
         ])
-        ->and(Effect::toast(ToastVariant::Warning, 'Review the settings.')->toArray())
+        ->and(wire(Effect::toast(ToastVariant::Warning, 'Review the settings.')))
         ->toBe([
             'type' => 'toast',
             'variant' => 'warning',
             'message' => 'Review the settings.',
         ])
-        ->and(ActionResult::success()->toast('Saved.')->toArray())
+        ->and(wire(ActionResult::success()->toast('Saved.')))
         ->toMatchArray([
             'effects' => [
                 [
@@ -1026,7 +1059,7 @@ test('toast messages serialize for flash data and action effects', function () {
                 ],
             ],
         ])
-        ->and(ActionResult::success()->toast(ToastVariant::Warning, 'Review the settings.')->toArray())
+        ->and(wire(ActionResult::success()->toast(ToastVariant::Warning, 'Review the settings.')))
         ->toMatchArray([
             'effects' => [
                 [
@@ -1057,14 +1090,14 @@ test('action results expose the full effect vocabulary', function () {
         ->download('/exports/report.csv')
         ->resetForm('teams.create');
 
-    expect($result->toArray()['effects'])->toBe([
+    expect(wire($result)['effects'])->toBe([
         ['type' => 'reloadPage'],
         ['type' => 'redirect', 'url' => '/dashboard'],
         ['type' => 'download', 'url' => '/exports/report.csv'],
         ['type' => 'resetForm', 'form' => 'teams.create'],
     ])
-        ->and(Effect::resetForm()->toArray())->toBe(['type' => 'resetForm'])
-        ->and(Effect::reloadPage()->toArray())->toBe(['type' => 'reloadPage']);
+        ->and(wire(Effect::resetForm()))->toBe(['type' => 'resetForm'])
+        ->and(wire(Effect::reloadPage()))->toBe(['type' => 'reloadPage']);
 });
 
 test('interaction endpoints return 404 for unknown component ids', function () {
@@ -1111,7 +1144,7 @@ test('interaction endpoints re-run authorization for every interaction', functio
 });
 
 test('actions can serialize confirmation modal configuration', function () {
-    expect(ActionComponent::make('delete-account')
+    expect(wire(ActionComponent::make('delete-account')
         ->label('Delete account')
         ->method('delete')
         ->variant('destructive')
@@ -1120,8 +1153,7 @@ test('actions can serialize confirmation modal configuration', function () {
             description: 'This cannot be undone.',
             confirmLabel: 'Delete account',
             cancelLabel: 'Keep account',
-        )
-        ->toArray())
+        )))
         ->toMatchArray([
             'type' => 'action',
             'id' => 'delete-account',
@@ -1140,13 +1172,12 @@ test('actions can serialize confirmation modal configuration', function () {
 });
 
 test('modals serialize composable children for action driven dialogs', function () {
-    expect(Modal::make('settings.two-factor-setup')
+    expect(wire(Modal::make('settings.two-factor-setup')
         ->title('Set up two-factor authentication')
         ->description('Scan the QR code with your authenticator app.')
         ->schema([
             Text::make('Recovery codes will appear here.'),
-        ])
-        ->toArray())
+        ])))
         ->toMatchArray([
             'type' => 'modal',
             'id' => 'settings.two-factor-setup',
@@ -1168,7 +1199,7 @@ test('modals serialize composable children for action driven dialogs', function 
 test('registered fragments serialize lazy endpoints and return component schemas', function () {
     Lattice::fragments([WorkbenchTwoFactorSetupFragment::class]);
 
-    $fragment = FragmentComponent::lazy(WorkbenchTwoFactorSetupFragment::class)->toArray();
+    $fragment = wire(FragmentComponent::lazy(WorkbenchTwoFactorSetupFragment::class));
     $ref = componentRef($fragment);
 
     expect($fragment)
@@ -1195,10 +1226,10 @@ test('registered fragments serialize lazy endpoints and return component schemas
 });
 
 test('links and horizontal stacks serialize as separate composable primitives', function () {
-    expect(Stack::make('prompt')->direction('row')->gap(Gap::ExtraSmall)->schema([
+    expect(wire(Stack::make('prompt')->direction('row')->gap(Gap::ExtraSmall)->schema([
         Text::make('Need access?'),
         Link::make('Register')->href('/register'),
-    ])->toArray())
+    ])))
         ->toMatchArray([
             'type' => 'stack',
             'key' => 'prompt',
@@ -1225,11 +1256,10 @@ test('links and horizontal stacks serialize as separate composable primitives', 
 });
 
 test('layout enums serialize to their backed string values', function () {
-    expect(Stack::make('layout')
+    expect(wire(Stack::make('layout')
         ->align(Align::Center)
         ->gap(Gap::Large)
-        ->width(Width::Small)
-        ->toArray())
+        ->width(Width::Small)))
         ->toMatchArray([
             'props' => [
                 'align' => 'center',
@@ -1237,12 +1267,12 @@ test('layout enums serialize to their backed string values', function () {
                 'width' => 'sm',
             ],
         ])
-        ->and(Text::make('Centered')->align(Align::Center)->toArray()['props']['align'])
+        ->and(wire(Text::make('Centered')->align(Align::Center))['props']['align'])
         ->toBe('center');
 });
 
 test('tabs serialize tab panels as composable children', function () {
-    expect(Tabs::make('settings-tabs')
+    expect(wire(Tabs::make('settings-tabs')
         ->defaultValue('security')
         ->schema([
             Tab::make('profile', 'Profile')->schema([
@@ -1251,8 +1281,7 @@ test('tabs serialize tab panels as composable children', function () {
             Tab::make('security', 'Security')->schema([
                 Form::make('password-form'),
             ]),
-        ])
-        ->toArray())
+        ])))
         ->toMatchArray([
             'type' => 'tabs',
             'key' => 'settings-tabs',
@@ -1295,9 +1324,8 @@ test('tabs serialize tab panels as composable children', function () {
 });
 
 test('tabs can customize their query string key', function () {
-    expect(Tabs::make('settings-tabs')
-        ->queryKey('settings-tab')
-        ->toArray())
+    expect(wire(Tabs::make('settings-tabs')
+        ->queryKey('settings-tab')))
         ->toMatchArray([
             'type' => 'tabs',
             'key' => 'settings-tabs',
@@ -1309,13 +1337,12 @@ test('tabs can customize their query string key', function () {
 });
 
 test('tabs ignore hidden tab children when resolving their active value', function () {
-    $tabs = Tabs::make('settings-tabs')
+    $tabs = wire(Tabs::make('settings-tabs')
         ->defaultValue('security')
         ->schema([
             Tab::make('profile', 'Profile'),
             Tab::make('security', 'Security')->when(false),
-        ])
-        ->toArray();
+        ]));
 
     expect($tabs['props']['activeValue'])->toBe('profile')
         ->and($tabs['schema'])->toHaveCount(1)
@@ -1337,7 +1364,7 @@ test('tabs hydrate their active value from the request query string', function (
 });
 
 test('confirmed inactive tabs serialize only their tab metadata', function () {
-    $tabs = Tabs::make('settings-tabs')
+    $tabs = wire(Tabs::make('settings-tabs')
         ->defaultValue('profile')
         ->schema([
             Tab::make('profile', 'Profile')->schema([
@@ -1348,8 +1375,7 @@ test('confirmed inactive tabs serialize only their tab metadata', function () {
                 ->schema([
                     Text::make('Security form'),
                 ]),
-        ])
-        ->toArray();
+        ]));
 
     expect($tabs['props']['activeValue'])->toBe('profile')
         ->and($tabs['props']['defaultValue'])->toBe('profile')
@@ -1695,7 +1721,7 @@ class WorkbenchUsersTable extends TableDefinition
             [
                 'name' => 'Taylor',
                 'filters' => array_map(
-                    fn ($filter): array => $filter->toArray(),
+                    fn ($filter): array => wire($filter),
                     $query->filters(),
                 ),
                 'sorts' => array_map(

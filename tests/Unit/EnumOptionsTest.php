@@ -23,7 +23,7 @@ enum LabelledStatus: string implements HasLabel
 }
 
 it('builds options from an enum class using humanised names by default', function (): void {
-    $options = Choice::make('status', 'Status')->enum(PlainStatus::class)->toArray()['props']['options'];
+    $options = wire(Choice::make('status', 'Status')->enum(PlainStatus::class))['props']['options'];
 
     expect($options)->toBe([
         ['label' => 'Draft', 'value' => 'draft'],
@@ -38,7 +38,7 @@ it('uses the HasLabel contract for labels and supports translations', function (
     ], 'de');
     app()->setLocale('de');
 
-    $options = Choice::make('status', 'Status')->enum(LabelledStatus::class)->toArray()['props']['options'];
+    $options = wire(Choice::make('status', 'Status')->enum(LabelledStatus::class))['props']['options'];
 
     expect($options)->toBe([
         ['label' => 'Aktiv', 'value' => 'active'],
@@ -47,9 +47,8 @@ it('uses the HasLabel contract for labels and supports translations', function (
 });
 
 it('builds options from a subset of enum cases', function (): void {
-    $options = Choice::make('status', 'Status')
-        ->enum([PlainStatus::Draft])
-        ->toArray()['props']['options'];
+    $options = wire(Choice::make('status', 'Status')
+        ->enum([PlainStatus::Draft]))['props']['options'];
 
     expect($options)->toBe([
         ['label' => 'Draft', 'value' => 'draft'],

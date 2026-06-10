@@ -9,8 +9,9 @@ use Lattice\Lattice\Tables\Enums\ColumnType;
 
 /**
  * The wire shape of a table column. Built by each Column's toData() and
- * generated to TypeScript. Fields not applicable to a column type stay null
- * and are stripped from the payload.
+ * generated to TypeScript. Every field is always present; fields not
+ * applicable to a column type are null, so the generated type matches the
+ * payload exactly.
  */
 final readonly class ColumnData implements JsonSerializable
 {
@@ -34,28 +35,18 @@ final readonly class ColumnData implements JsonSerializable
     /**
      * @return array<string, mixed>
      */
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
-        return array_filter([
+        return [
             'key' => $this->key,
             'label' => $this->label,
-            'sortable' => $this->sortable,
-            'filter' => $this->filter?->toArray(),
             'type' => $this->type->value,
+            'sortable' => $this->sortable,
+            'filter' => $this->filter,
             'date' => $this->date,
             'copyable' => $this->copyable,
             'link' => $this->link,
-            'columns' => $this->columns === null
-                ? null
-                : array_map(fn (self $column): array => $column->toArray(), $this->columns),
-        ], fn (mixed $value): bool => $value !== null && $value !== []);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
-    {
-        return $this->toArray();
+            'columns' => $this->columns,
+        ];
     }
 }

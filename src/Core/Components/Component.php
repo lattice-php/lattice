@@ -77,21 +77,13 @@ abstract class Component implements JsonSerializable
     /**
      * @return array<string, mixed>
      */
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return array_reduce(
             $this->serializationHooks(),
             fn (array $data, string $hook): array => $this->{$hook}($data),
             [],
         );
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
-    {
-        return $this->toArray();
     }
 
     /**

@@ -20,6 +20,7 @@ final readonly class TableResult implements JsonSerializable
     private function __construct(
         private array $data,
         private array $pagination = [],
+        private ?TableQuery $query = null,
     ) {}
 
     /**
@@ -98,7 +99,12 @@ final readonly class TableResult implements JsonSerializable
      */
     public function pagination(array $pagination): self
     {
-        return new self($this->data, $pagination);
+        return new self($this->data, $pagination, $this->query);
+    }
+
+    public function forQuery(TableQuery $query): self
+    {
+        return new self($this->data, $this->pagination, $query);
     }
 
     /**
@@ -112,27 +118,20 @@ final readonly class TableResult implements JsonSerializable
         return new self(
             array_map($callback, $this->data, array_keys($this->data)),
             $this->pagination,
+            $this->query,
         );
     }
 
     /**
-     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, state: array<string, mixed>}
+     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, state: TableQuery}
      */
-    public function toArray(?TableQuery $query = null): array
+    public function jsonSerialize(): array
     {
         return [
             'data' => $this->data,
             'pagination' => $this->pagination,
-            'state' => ($query ?? TableQuery::empty())->toArray(),
+            'state' => $this->query ?? TableQuery::empty(),
         ];
-    }
-
-    /**
-     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, state: array<string, mixed>}
-     */
-    public function jsonSerialize(): array
-    {
-        return $this->toArray();
     }
 
     /**

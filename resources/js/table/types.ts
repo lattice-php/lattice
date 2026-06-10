@@ -9,10 +9,7 @@ import type {
 
 export type { ColumnData, ColumnFilter, ColumnType, TableSort };
 
-export type TableColumn = Pick<ColumnData, "key" | "label"> &
-  Partial<Omit<ColumnData, "key" | "label" | "columns">> & {
-    columns?: TableColumn[];
-  };
+export type TableColumn = ColumnData;
 
 export type TableRow = Record<string, unknown>;
 

@@ -52,15 +52,14 @@ function productHeaders(array $component, array $extra = []): array
 }
 
 test('forms serialize initial state for bound edit values', function () {
-    $form = Form::make('product-form')
+    $form = wire(Form::make('product-form')
         ->fill([
             'name' => 'Desk Lamp',
             'sku' => 'LAMP-001',
         ])
         ->schema([
             TextInput::make('name', 'Name'),
-        ])
-        ->toArray();
+        ]));
 
     expect($form)
         ->toMatchArray([
@@ -76,9 +75,8 @@ test('forms serialize initial state for bound edit values', function () {
 });
 
 test('forms can enable precognitive validation with a delay', function () {
-    $form = Form::make('product-form')
-        ->precognitive(650)
-        ->toArray();
+    $form = wire(Form::make('product-form')
+        ->precognitive(650));
 
     expect($form)
         ->toMatchArray([
@@ -112,7 +110,7 @@ test('the product index page lists products and links to creation', function () 
 test('the product form creates products', function () {
     Lattice::forms([ProductForm::class]);
 
-    $form = Form::use(ProductForm::class)->toArray();
+    $form = wire(Form::use(ProductForm::class));
 
     post('/lattice/forms/workbench.products.form', [
         'name' => 'Desk Lamp',
@@ -170,9 +168,8 @@ test('the product form updates the trusted product from sealed context', functio
         'status' => 'active',
     ]);
 
-    $form = Form::use(ProductForm::class)
-        ->context(['product_id' => $trustedProduct->getKey()])
-        ->toArray();
+    $form = wire(Form::use(ProductForm::class)
+        ->context(['product_id' => $trustedProduct->getKey()]));
 
     patch('/lattice/forms/workbench.products.form', [
         'product_id' => $tamperedProduct->getKey(),
@@ -197,7 +194,7 @@ test('the product form updates the trusted product from sealed context', functio
 test('the product form validates required fields', function () {
     Lattice::forms([ProductForm::class]);
 
-    $form = Form::use(ProductForm::class)->toArray();
+    $form = wire(Form::use(ProductForm::class));
 
     post('/lattice/forms/workbench.products.form', [
         'name' => '',
@@ -217,7 +214,7 @@ test('the product form validates required fields', function () {
 test('the product form returns precognitive validation errors without creating products', function () {
     Lattice::forms([ProductForm::class]);
 
-    $form = Form::use(ProductForm::class)->toArray();
+    $form = wire(Form::use(ProductForm::class));
 
     post('/lattice/forms/workbench.products.form', [
         'name' => '',
@@ -239,7 +236,7 @@ test('the product form returns precognitive validation errors without creating p
 test('the product form accepts valid precognitive validation without creating products', function () {
     Lattice::forms([ProductForm::class]);
 
-    $form = Form::use(ProductForm::class)->toArray();
+    $form = wire(Form::use(ProductForm::class));
 
     post('/lattice/forms/workbench.products.form', [
         'name' => 'Desk Lamp',
@@ -273,9 +270,8 @@ test('the product form validates edit uniqueness from sealed context during prec
         'status' => 'active',
     ]);
 
-    $form = Form::use(ProductForm::class)
-        ->context(['product_id' => $trustedProduct->getKey()])
-        ->toArray();
+    $form = wire(Form::use(ProductForm::class)
+        ->context(['product_id' => $trustedProduct->getKey()]));
 
     patch('/lattice/forms/workbench.products.form', [
         'name' => 'Desk Lamp',
@@ -328,9 +324,8 @@ test('the product archive row action is pinned to its sealed product', function 
     $other = Product::factory()->create(['status' => 'active']);
 
     $ref = productComponentRef(
-        Action::use(ArchiveProductAction::class)
-            ->context(['product_id' => $target->getKey()])
-            ->toArray(),
+        wire(Action::use(ArchiveProductAction::class)
+            ->context(['product_id' => $target->getKey()])),
     );
 
     patch('/lattice/actions/workbench.products.archive', [
@@ -350,9 +345,8 @@ test('the product archive row action authorizes per row', function () {
     $archived = Product::factory()->create(['status' => 'archived']);
 
     $ref = productComponentRef(
-        Action::use(ArchiveProductAction::class)
-            ->context(['product_id' => $archived->getKey()])
-            ->toArray(),
+        wire(Action::use(ArchiveProductAction::class)
+            ->context(['product_id' => $archived->getKey()])),
     );
 
     patch('/lattice/actions/workbench.products.archive', [], ['X-Lattice-Ref' => $ref])
@@ -420,9 +414,8 @@ test('bulk actions execute through their serialized component reference', functi
     $product = Product::factory()->create(['status' => 'active']);
 
     $ref = data_get(
-        BulkAction::use(ArchiveSelectedProductsAction::class)
-            ->context(['table' => 'workbench.products'])
-            ->toArray(),
+        wire(BulkAction::use(ArchiveSelectedProductsAction::class)
+            ->context(['table' => 'workbench.products'])),
         'props.ref',
     );
 
@@ -438,14 +431,14 @@ test('bulk actions execute through their serialized component reference', functi
 test('the products table is serialized as striped', function () {
     Lattice::tables([ProductsTable::class]);
 
-    expect(data_get(Table::use(ProductsTable::class)->toArray(), 'props.striped'))->toBeTrue();
+    expect(data_get(wire(Table::use(ProductsTable::class)), 'props.striped'))->toBeTrue();
 });
 
 test('the products table serializes bulk actions bound to the table', function () {
     Lattice::tables([ProductsTable::class]);
     Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
 
-    $bulkActions = data_get(Table::use(ProductsTable::class)->toArray(), 'props.bulkActions');
+    $bulkActions = data_get(wire(Table::use(ProductsTable::class)), 'props.bulkActions');
 
     expect($bulkActions)->toBeArray()->toHaveCount(1)
         ->and($bulkActions[0]['id'])->toBe('workbench.products.archive-selected')

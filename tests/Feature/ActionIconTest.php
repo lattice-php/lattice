@@ -6,10 +6,9 @@ use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Core\Enums\LucideIcon;
 
 test('actions serialize lucide icon enum values', function () {
-    expect(Action::make('send-message')
+    expect(wire(Action::make('send-message')
         ->label('Send')
-        ->icon(LucideIcon::Send)
-        ->toArray())
+        ->icon(LucideIcon::Send)))
         ->toMatchArray([
             'type' => 'action',
             'id' => 'send-message',
@@ -21,10 +20,9 @@ test('actions serialize lucide icon enum values', function () {
 });
 
 test('actions serialize arbitrary backed enum icon values', function () {
-    expect(Action::make('custom-action')
+    expect(wire(Action::make('custom-action')
         ->label('Custom')
-        ->icon(WorkbenchCustomActionIcon::Spark)
-        ->toArray()['props']['icon'])
+        ->icon(WorkbenchCustomActionIcon::Spark))['props']['icon'])
         ->toBe('custom.spark');
 });
 

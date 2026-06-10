@@ -10,7 +10,7 @@ use Lattice\Lattice\Forms\Components\Select;
  */
 function prefilledOptions(Form $form): array
 {
-    return $form->toArray()['schema'][0]['props']['options'] ?? [];
+    return wire($form)['schema'][0]['props']['options'] ?? [];
 }
 
 it('resolves the label for a single filled id', function (): void {
@@ -61,7 +61,7 @@ it('passes a single value to the resolver as a one-element array', function (): 
                 }),
         ]);
 
-    $form->toArray();
+    wire($form);
 
     expect($received)->toBe(['7']);
 });
@@ -91,7 +91,7 @@ it('does not resolve when there is no filled value', function (): void {
                 }),
         ]);
 
-    $form->toArray();
+    wire($form);
 
     expect($resolved)->toBeFalse();
 });
