@@ -16,6 +16,8 @@ class Form extends ContainerComponent
 {
     use IsInteractive;
 
+    public const DEFAULT_VALIDATION_DEBOUNCE_MS = 1500;
+
     public static function make(string $id): static
     {
         return (new static)->id($id);
@@ -57,11 +59,11 @@ class Form extends ContainerComponent
         return $this->prop('state', $state instanceof Arrayable ? $state->toArray() : $state);
     }
 
-    public function precognitive(int $delay = 1500): static
+    public function precognitive(int $debounceMs = self::DEFAULT_VALIDATION_DEBOUNCE_MS): static
     {
         return $this
             ->prop('precognitive', true)
-            ->prop('validationTimeout', $delay);
+            ->prop('validationTimeout', $debounceMs);
     }
 
     public function withoutSubmitButton(): static

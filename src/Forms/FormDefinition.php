@@ -92,7 +92,7 @@ abstract class FormDefinition extends Definition implements ProvidesForm
         $query = $request->string('q')->toString();
         $data = FormData::fromRequest($request);
 
-        $field = $this->definition(Form::make('form'), $request)
+        $field = $this->buildForm($request)
             ->fields()
             ->first(fn (Field $field): bool => $field->name() === $name);
 
@@ -111,7 +111,7 @@ abstract class FormDefinition extends Definition implements ProvidesForm
         $fields = [];
         $values = [];
 
-        foreach ($this->definition(Form::make('form'), $request)->fields() as $field) {
+        foreach ($this->buildForm($request)->fields() as $field) {
             if (! $field->isComputed()) {
                 continue;
             }
@@ -135,9 +135,17 @@ abstract class FormDefinition extends Definition implements ProvidesForm
      */
     protected function resolvedFields(Request $request, FormData $data): Collection
     {
-        return $this->definition(Form::make('form'), $request)
+        return $this->buildForm($request)
             ->fields()
             ->each(fn (Field $field) => $field->applyResolution($data, $request));
+    }
+
+    /**
+     * Build this form's component tree for the current request.
+     */
+    protected function buildForm(Request $request): Form
+    {
+        return $this->definition(Form::make('form'), $request);
     }
 
     /**

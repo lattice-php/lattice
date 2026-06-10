@@ -20,8 +20,8 @@ function resolvedDefinition(): FormDefinition
                 TextInput::make('mode', 'Mode'),
                 TextInput::make('secret', 'Secret')
                     ->dependsOn('mode', fn (TextInput $f, FormData $d) => $d->get('mode') === 'reveal'
-                        ? $f->show()->rules(['required', 'string'])
-                        : $f->hide()),
+                        ? $f->visible()->rules(['required', 'string'])
+                        : $f->hidden()),
                 TextInput::make('qty', 'Qty'),
                 TextInput::make('price', 'Price'),
                 TextInput::make('total', 'Total')
