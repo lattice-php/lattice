@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Tables\Columns;
 
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
+use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
 class TextColumn extends Column implements Filterable, Sortable
@@ -84,18 +85,18 @@ class TextColumn extends Column implements Filterable, Sortable
         return $this;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     #[\Override]
-    public function toArray(): array
+    public function toData(): ColumnData
     {
-        return array_filter([
-            ...parent::toArray(),
-            'type' => 'text',
-            'date' => $this->date,
-            'copyable' => $this->copyable ?: null,
-            'link' => $this->link,
-        ], fn (mixed $value): bool => $value !== null);
+        return new ColumnData(
+            key: $this->key,
+            label: $this->label,
+            type: ColumnType::Text,
+            sortable: $this->sortableValue(),
+            filter: $this->filterValue(),
+            date: $this->date,
+            copyable: $this->copyable ?: null,
+            link: $this->link,
+        );
     }
 }
