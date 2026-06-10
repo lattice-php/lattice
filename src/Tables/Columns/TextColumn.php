@@ -4,8 +4,15 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Tables\Columns;
 
-class TextColumn extends Column
+use Bambamboole\Lattice\Tables\Columns\Concerns\IsFilterable;
+use Bambamboole\Lattice\Tables\Columns\Concerns\IsSortable;
+use Bambamboole\Lattice\Tables\Enums\ControlType;
+
+class TextColumn extends Column implements Filterable, Sortable
 {
+    use IsFilterable;
+    use IsSortable;
+
     /**
      * @var array{format: string|null}|null
      */
@@ -43,22 +50,21 @@ class TextColumn extends Column
         return $this;
     }
 
-    #[\Override]
-    public function filterControlType(): string
+    public function controlType(): ControlType
     {
         if ($this->date !== null) {
-            return 'date';
+            return ControlType::Date;
         }
 
         if ($this->boolean) {
-            return 'boolean';
+            return ControlType::Boolean;
         }
 
         if ($this->numeric) {
-            return 'number';
+            return ControlType::Number;
         }
 
-        return 'text';
+        return ControlType::Text;
     }
 
     public function copyable(bool $copyable = true): static
@@ -86,6 +92,8 @@ class TextColumn extends Column
     {
         return array_filter([
             ...parent::toArray(),
+            ...$this->sortableToArray(),
+            ...$this->filterToArray(),
             'type' => 'text',
             'date' => $this->date,
             'copyable' => $this->copyable ?: null,

@@ -27,6 +27,8 @@ use Tiptap\Nodes\TableRow;
  */
 final class RichContent
 {
+    private ?Editor $editor = null;
+
     /**
      * @param  array<string, mixed>|string|null  $document
      */
@@ -72,7 +74,7 @@ final class RichContent
 
     private function editor(): Editor
     {
-        return (new Editor(['extensions' => [
+        return $this->editor ??= (new Editor(['extensions' => [
             new StarterKit,
             new Underline,
             new Highlight,

@@ -12,12 +12,17 @@ use Bambamboole\Lattice\Core\Enums\PageContainer;
 use Bambamboole\Lattice\Core\Enums\PageLayout;
 use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use Bambamboole\Lattice\Core\Enums\Width;
-use Bambamboole\Lattice\Forms\Enums\Op;
+use Bambamboole\Lattice\Forms\Enums\ConditionOperator;
+use Bambamboole\Lattice\Tables\Enums\ControlType;
+use Bambamboole\Lattice\Tables\Enums\FilterOperator;
 use Bambamboole\Lattice\Tables\Enums\PaginationType;
+use Bambamboole\Lattice\Tables\Enums\SortDirection;
+use Bambamboole\Lattice\Tables\TableSort;
 use Spatie\LaravelTypeScriptTransformer\TypeScriptTransformerApplicationServiceProvider;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfigFactory;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 use Workbench\App\Support\LatticeEnumTransformer;
+use Workbench\App\Support\LatticeValueObjectTransformer;
 
 final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerApplicationServiceProvider
 {
@@ -35,11 +40,17 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 ToastVariant::class,
                 HttpMethod::class,
                 PaginationType::class,
-                Op::class,
+                ControlType::class,
+                FilterOperator::class,
+                SortDirection::class,
+                ConditionOperator::class,
                 EffectType::class,
+            ]))
+            ->transformer(new LatticeValueObjectTransformer([
+                TableSort::class,
             ]))
             ->transformDirectories($packageRoot.'/src')
             ->outputDirectory($packageRoot.'/resources/js/generated')
-            ->writer(new FlatModuleWriter('enums.ts'));
+            ->writer(new FlatModuleWriter('types.ts'));
     }
 }

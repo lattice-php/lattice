@@ -15,7 +15,7 @@ const rows = JSON.parse(
 describe("condition boolean coercion", () => {
   it.each(rows)("$actual == $expected -> $result", ({ actual, expected, result }) => {
     const state = evaluateConditions(
-      { visible: [{ field: "field", operator: "=", value: expected }] },
+      { visible: [{ field: "field", operator: "eq", value: expected }] },
       { field: actual },
       {},
     );

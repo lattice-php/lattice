@@ -20,7 +20,7 @@ describe("Lattice table component", () => {
             filter: {
               enabled: true,
               type: "text",
-              operators: ["contains", "equals", "not_equals"],
+              operators: ["contains", "eq", "neq"],
               defaultOperator: "contains",
             },
           },
@@ -136,12 +136,6 @@ describe("Lattice table component", () => {
             name: "Taylor",
             email: "taylor@example.com",
             status: "Active",
-          },
-        ],
-        layout: "grid",
-        rows: [
-          {
-            key: "2",
             actions: [
               {
                 children: [
@@ -172,6 +166,7 @@ describe("Lattice table component", () => {
             ],
           },
         ],
+        layout: "grid",
         state: {
           filters: [],
           page: 1,
@@ -337,7 +332,6 @@ describe("Lattice table component", () => {
         pagination: {
           mode: "none",
         },
-        rows: [],
         state: {
           filters: [],
           page: 1,
@@ -363,7 +357,6 @@ describe("Lattice table component", () => {
         pagination: {
           mode: "none",
         },
-        rows: [],
         state: {
           filters: [],
           page: 1,
@@ -687,7 +680,7 @@ describe("Lattice table component", () => {
             filter: {
               enabled: true,
               type: "text",
-              operators: ["contains", "equals", "not_equals"],
+              operators: ["contains", "eq", "neq"],
               defaultOperator: "contains",
             },
           },
@@ -697,8 +690,8 @@ describe("Lattice table component", () => {
             filter: {
               enabled: true,
               type: "boolean",
-              operators: ["equals"],
-              defaultOperator: "equals",
+              operators: ["eq"],
+              defaultOperator: "eq",
             },
           },
           {
@@ -707,8 +700,8 @@ describe("Lattice table component", () => {
             filter: {
               enabled: true,
               type: "date",
-              operators: ["equals", "before", "after"],
-              defaultOperator: "equals",
+              operators: ["eq", "before", "after"],
+              defaultOperator: "eq",
             },
           },
         ],
@@ -726,7 +719,7 @@ describe("Lattice table component", () => {
     });
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
-        "/lattice/tables/workbench.products?filter=featured%3Aequals%3Atrue&page=1&per_page=25",
+        "/lattice/tables/workbench.products?filter=featured%3Aeq%3Atrue&page=1&per_page=25",
         { headers: { Accept: "application/json" } },
       ),
     );
@@ -736,7 +729,7 @@ describe("Lattice table component", () => {
     });
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
-        "/lattice/tables/workbench.products?filter=updated_at%3Aequals%3A2026-06-01&page=1&per_page=25",
+        "/lattice/tables/workbench.products?filter=updated_at%3Aeq%3A2026-06-01&page=1&per_page=25",
         { headers: { Accept: "application/json" } },
       ),
     );
@@ -792,7 +785,7 @@ describe("Lattice table component", () => {
             filter: {
               enabled: true,
               type: "text",
-              operators: ["contains", "equals", "not_equals"],
+              operators: ["contains", "eq", "neq"],
               defaultOperator: "contains",
             },
           },
@@ -809,7 +802,7 @@ describe("Lattice table component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Name filters" }));
 
     fireEvent.change(screen.getByRole("combobox", { name: "Name operator" }), {
-      target: { value: "not_equals" },
+      target: { value: "neq" },
     });
 
     const valueInput = screen.getByRole("textbox", { name: "Name filter value" });
@@ -818,7 +811,7 @@ describe("Lattice table component", () => {
 
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
-        "/lattice/tables/workbench.products?filter=name%3Anot_equals%3Abar&page=1&per_page=25",
+        "/lattice/tables/workbench.products?filter=name%3Aneq%3Abar&page=1&per_page=25",
         { headers: { Accept: "application/json" } },
       ),
     );

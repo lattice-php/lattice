@@ -16,12 +16,10 @@ final readonly class TableResult implements JsonSerializable
     /**
      * @param  array<int, array<string, mixed>>  $data
      * @param  array<string, mixed>  $pagination
-     * @param  array<int, array<string, mixed>>  $rows
      */
     private function __construct(
         private array $data,
         private array $pagination = [],
-        private array $rows = [],
     ) {}
 
     /**
@@ -38,10 +36,7 @@ final readonly class TableResult implements JsonSerializable
     public static function fromPaginator(LengthAwarePaginator $paginator): self
     {
         return new self(
-            collect($paginator->items())
-                ->map(fn (mixed $item): array => self::serializeRow($item))
-                ->values()
-                ->all(),
+            self::serializeRows($paginator->items()),
             [
                 'mode' => PaginationType::Table->value,
                 'currentPage' => $paginator->currentPage(),
@@ -64,10 +59,7 @@ final readonly class TableResult implements JsonSerializable
         PaginationType $type = PaginationType::Infinite,
     ): self {
         return new self(
-            collect($paginator->items())
-                ->map(fn (mixed $item): array => self::serializeRow($item))
-                ->values()
-                ->all(),
+            self::serializeRows($paginator->items()),
             [
                 'mode' => $type->value,
                 'currentPage' => $paginator->currentPage(),
@@ -85,10 +77,7 @@ final readonly class TableResult implements JsonSerializable
      */
     public static function fromItems(iterable $items, PaginationType $type = PaginationType::None): self
     {
-        $rows = Collection::make($items)
-            ->map(fn (mixed $item): array => self::serializeRow($item))
-            ->values()
-            ->all();
+        $rows = self::serializeRows($items);
         $total = count($rows);
 
         return new self(
@@ -109,36 +98,31 @@ final readonly class TableResult implements JsonSerializable
      */
     public function pagination(array $pagination): self
     {
-        return new self($this->data, $pagination, $this->rows);
+        return new self($this->data, $pagination);
     }
 
     /**
+     * Maps each row through the callback, letting callers attach per-row
+     * metadata (such as actions) to the row itself.
+     *
      * @param  callable(array<string, mixed>, int): array<string, mixed>  $callback
      */
-    public function rows(callable $callback): self
+    public function decorateRows(callable $callback): self
     {
-        $rows = collect($this->data)
-            ->map(fn (array $row, int $index): array => $callback($row, $index))
-            ->filter(fn (array $row): bool => $row !== [])
-            ->values()
-            ->all();
-
         return new self(
-            $this->data,
+            array_map($callback, $this->data, array_keys($this->data)),
             $this->pagination,
-            $rows,
         );
     }
 
     /**
-     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, rows?: array<int, array<string, mixed>>, state: array<string, mixed>}
+     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, state: array<string, mixed>}
      */
     public function toArray(?TableQuery $query = null): array
     {
-        $payload = [
+        return [
             'data' => $this->data,
             'pagination' => $this->pagination,
-            'rows' => $this->rows,
             'state' => $query?->toArray() ?? [
                 'filters' => [],
                 'sorts' => [],
@@ -146,20 +130,26 @@ final readonly class TableResult implements JsonSerializable
                 'perPage' => 25,
             ],
         ];
-
-        if ($this->rows === []) {
-            unset($payload['rows']);
-        }
-
-        return $payload;
     }
 
     /**
-     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, rows?: array<int, array<string, mixed>>, state: array<string, mixed>}
+     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, state: array<string, mixed>}
      */
     public function jsonSerialize(): array
     {
         return $this->toArray();
+    }
+
+    /**
+     * @param  iterable<int, mixed>  $items
+     * @return array<int, array<string, mixed>>
+     */
+    private static function serializeRows(iterable $items): array
+    {
+        return Collection::make($items)
+            ->map(fn (mixed $item): array => self::serializeRow($item))
+            ->values()
+            ->all();
     }
 
     /**

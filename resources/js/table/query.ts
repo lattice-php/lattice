@@ -68,8 +68,8 @@ function serializeSorts(state: TableState): string {
 
 const operatorLabels: Record<string, string> = {
   contains: "contains",
-  equals: "equals",
-  not_equals: "not equals",
+  eq: "equals",
+  neq: "not equals",
   gt: ">",
   gte: "≥",
   lt: "<",

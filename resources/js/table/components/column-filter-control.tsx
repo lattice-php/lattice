@@ -1,6 +1,7 @@
 import { Filter, Plus, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import type { ControlType, FilterOperator } from "@lattice/lattice/generated/types";
 import { operatorLabel } from "../query";
 import type { FilterClause, TableColumn } from "../types";
 import { FilterValueInput } from "./filter-value-input";
@@ -72,7 +73,7 @@ export function ColumnFilterControl({
 
   const type = filter.type ?? "text";
   const operators = filter.operators ?? [];
-  const defaultOperator = filter.defaultOperator ?? operators[0] ?? "equals";
+  const defaultOperator = filter.defaultOperator ?? operators[0] ?? "eq";
   const primary = clauses.find((entry) => entry.clause.operator === defaultOperator) ?? clauses[0];
 
   function commitPrimary(value: string): void {
@@ -173,8 +174,8 @@ function FilterClauseList({
 }: {
   column: TableColumn;
   clauses: ColumnClause[];
-  operators: string[];
-  defaultOperator: string;
+  operators: FilterOperator[];
+  defaultOperator: FilterOperator;
   processing: boolean;
   onAdd: (clause: FilterClause) => void;
   onUpdate: (index: number, clause: FilterClause) => void;
@@ -247,11 +248,11 @@ function FilterClauseRow({
   onRemove,
 }: {
   column: TableColumn;
-  type: "text" | "number" | "date" | "boolean";
-  operators: string[];
+  type: ControlType;
+  operators: FilterOperator[];
   clause: FilterClause;
   processing: boolean;
-  onOperator: (operator: string) => void;
+  onOperator: (operator: FilterOperator) => void;
   onValue: (value: string) => void;
   onRemove: () => void;
 }) {
@@ -264,7 +265,7 @@ function FilterClauseRow({
             className="h-9 flex-1 rounded-lt-sm border border-lt-input bg-lt-bg px-2 text-sm font-normal"
             disabled={processing}
             value={clause.operator}
-            onChange={(event) => onOperator(event.target.value)}
+            onChange={(event) => onOperator(event.target.value as FilterOperator)}
           >
             {operators.map((operator) => (
               <option key={operator} value={operator}>

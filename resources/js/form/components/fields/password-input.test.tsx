@@ -20,7 +20,7 @@ describe("PasswordInputComponent conditions", () => {
         props: {
           name: "password",
           label: "Password",
-          conditions: { visible: [{ field: "mode", operator: "=", value: "reset" }] },
+          conditions: { visible: [{ field: "mode", operator: "eq", value: "reset" }] },
         },
       },
       { mode: "login" },
@@ -36,7 +36,7 @@ describe("PasswordInputComponent conditions", () => {
         props: {
           name: "password",
           label: "Password",
-          conditions: { visible: [{ field: "mode", operator: "=", value: "reset" }] },
+          conditions: { visible: [{ field: "mode", operator: "eq", value: "reset" }] },
         },
       },
       { mode: "reset" },

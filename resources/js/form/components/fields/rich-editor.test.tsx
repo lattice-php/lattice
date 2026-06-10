@@ -20,7 +20,7 @@ describe("RichEditorComponent", () => {
         props: {
           name: "body",
           label: "Body",
-          conditions: { visible: [{ field: "mode", operator: "=", value: "edit" }] },
+          conditions: { visible: [{ field: "mode", operator: "eq", value: "edit" }] },
         },
       },
       { mode: "view" },

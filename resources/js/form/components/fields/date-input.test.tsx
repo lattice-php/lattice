@@ -31,7 +31,7 @@ describe("DateInputComponent", () => {
         props: {
           name: "due",
           label: "Due",
-          conditions: { visible: [{ field: "scheduled", operator: "=", value: "1" }] },
+          conditions: { visible: [{ field: "scheduled", operator: "eq", value: "1" }] },
         },
       },
       { scheduled: "0" },

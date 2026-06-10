@@ -1,11 +1,5 @@
-import type {
-  FilterClause,
-  TableColumn,
-  TablePagination,
-  TableRow,
-  TableRowMeta,
-  TableState,
-} from "./types";
+import type { Node } from "@lattice/lattice/core/types";
+import type { FilterClause, TableColumn, TablePagination, TableRow, TableState } from "./types";
 
 function getFilters(value: unknown): FilterClause[] {
   if (!Array.isArray(value)) {
@@ -48,10 +42,6 @@ export function getRows(value: unknown): TableRow[] {
   );
 }
 
-export function getRowMetadata(value: unknown): TableRowMeta[] {
-  return getRows(value) as TableRowMeta[];
-}
-
 export function getPagination(value: unknown): TablePagination {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return {};
@@ -90,12 +80,6 @@ export function getRowKey(row: TableRow, index: number): string {
   return String(key);
 }
 
-export function getRowMeta(
-  rowMetadata: TableRowMeta[],
-  row: TableRow,
-  index: number,
-): TableRowMeta {
-  const rowKey = getRowKey(row, index);
-
-  return rowMetadata.find((metadata) => metadata.key === rowKey) ?? {};
+export function getRowActions(row: TableRow): Node[] {
+  return Array.isArray(row.actions) ? (row.actions as Node[]) : [];
 }

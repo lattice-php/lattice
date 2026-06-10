@@ -469,7 +469,7 @@ test('bulk actions can target every row matching the current filter', function (
 
     patch('/lattice/bulk-actions/workbench.products.archive-selected', [
         'allMatching' => true,
-        'filter' => 'status:equals:active',
+        'filter' => 'status:eq:active',
     ], ['X-Lattice-Ref' => $ref])
         ->assertOk()
         ->assertJsonPath('data.archived', 3);
@@ -490,7 +490,7 @@ test('bulk all-matching validates the filter against the table columns', functio
 
     patch('/lattice/bulk-actions/workbench.products.archive-selected', [
         'allMatching' => true,
-        'filter' => 'id:equals:1',
+        'filter' => 'id:eq:1',
     ], ['X-Lattice-Ref' => $ref])
         ->assertUnprocessable()
         ->assertJsonPath('errors.filter.0', 'Filter [id] is not allowed for table [workbench.products].');
@@ -507,7 +507,7 @@ test('the products table applies date, boolean, and number clause filters', func
         TableQuery::fromRequest(Request::create('/', 'GET', ['filter' => $filter]), $columns, 'workbench.products'),
     );
 
-    expect($resolve('featured:equals:true')->pluck('id')->all())->toBe([$featured->getKey()])
+    expect($resolve('featured:eq:true')->pluck('id')->all())->toBe([$featured->getKey()])
         ->and($resolve('updated_at:before:2026-06-02')->pluck('id')->all())->toBe([$featured->getKey()])
         ->and($resolve('price:gte:100')->pluck('id')->all())->toBe([$featured->getKey()]);
 });

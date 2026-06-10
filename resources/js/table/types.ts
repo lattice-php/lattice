@@ -1,5 +1,11 @@
-import type { Node } from "@lattice/lattice/core/types";
-import type { PaginationType } from "@lattice/lattice/generated/enums";
+import type {
+  ControlType,
+  FilterOperator,
+  PaginationType,
+  TableSort,
+} from "@lattice/lattice/generated/types";
+
+export type { TableSort };
 
 export type TableColumn = {
   columns?: TableColumn[];
@@ -9,9 +15,9 @@ export type TableColumn = {
   sortable?: boolean;
   filter?: {
     enabled?: boolean;
-    type?: FilterControlType;
-    operators?: string[];
-    defaultOperator?: string;
+    type?: ControlType;
+    operators?: FilterOperator[];
+    defaultOperator?: FilterOperator;
   };
   date?: {
     format?: string | null;
@@ -25,21 +31,9 @@ export type TableColumn = {
 
 export type TableRow = Record<string, unknown>;
 
-export type TableRowMeta = {
-  actions?: Node[];
-  key?: string;
-};
-
-export type TableSort = {
-  key: string;
-  direction: string;
-};
-
-export type FilterControlType = "text" | "number" | "date" | "boolean";
-
 export type FilterClause = {
   field: string;
-  operator: string;
+  operator: FilterOperator;
   value: string;
 };
 
@@ -65,7 +59,6 @@ export type TablePagination = {
 export type TableResponse = {
   data?: TableRow[];
   pagination?: TablePagination;
-  rows?: TableRowMeta[];
   state?: Partial<TableState>;
 };
 
@@ -81,7 +74,6 @@ declare module "@lattice/lattice/core/types" {
       layout?: string;
       striped?: boolean;
       pagination?: Record<string, unknown>;
-      rows?: TableRowMeta[];
       state?: Record<string, unknown>;
     };
   }

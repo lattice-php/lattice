@@ -4,7 +4,7 @@ import { evaluateConditions } from "./conditions";
 describe("evaluateConditions", () => {
   it("hides when a visible condition fails", () => {
     const result = evaluateConditions(
-      { visible: [{ field: "type", operator: "=", value: "business" }] },
+      { visible: [{ field: "type", operator: "eq", value: "business" }] },
       { type: "personal" },
       {},
     );
@@ -14,8 +14,8 @@ describe("evaluateConditions", () => {
   it("shows and requires when conditions match", () => {
     const result = evaluateConditions(
       {
-        visible: [{ field: "type", operator: "=", value: "business" }],
-        required: [{ field: "type", operator: "=", value: "business" }],
+        visible: [{ field: "type", operator: "eq", value: "business" }],
+        required: [{ field: "type", operator: "eq", value: "business" }],
       },
       { type: "business" },
       {},
@@ -27,7 +27,7 @@ describe("evaluateConditions", () => {
   it("supports operator and in forms", () => {
     expect(
       evaluateConditions(
-        { visible: [{ field: "age", operator: ">=", value: 18 }] },
+        { visible: [{ field: "age", operator: "gte", value: 18 }] },
         { age: "18" },
         {},
       ).hidden,

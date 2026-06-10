@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Forms\Enums;
 
-enum Op: string
+enum ConditionOperator: string
 {
-    case Equals = '=';
-    case NotEquals = '!=';
-    case GreaterThan = '>';
-    case LessThan = '<';
-    case GreaterThanOrEqual = '>=';
-    case LessThanOrEqual = '<=';
+    case Equals = 'eq';
+    case NotEquals = 'neq';
+    case GreaterThan = 'gt';
+    case GreaterThanOrEqual = 'gte';
+    case LessThan = 'lt';
+    case LessThanOrEqual = 'lte';
     case In = 'in';
     case NotIn = 'not_in';
 
@@ -20,13 +20,18 @@ enum Op: string
         return match ($this) {
             self::Equals => $this->equals($actual, $expected),
             self::NotEquals => ! $this->equals($actual, $expected),
-            self::GreaterThan => (float) $actual > (float) $expected,
-            self::LessThan => (float) $actual < (float) $expected,
-            self::GreaterThanOrEqual => (float) $actual >= (float) $expected,
-            self::LessThanOrEqual => (float) $actual <= (float) $expected,
+            self::GreaterThan => $this->compareNumeric($actual, $expected) > 0,
+            self::LessThan => $this->compareNumeric($actual, $expected) < 0,
+            self::GreaterThanOrEqual => $this->compareNumeric($actual, $expected) >= 0,
+            self::LessThanOrEqual => $this->compareNumeric($actual, $expected) <= 0,
             self::In => $this->contains($actual, $expected),
             self::NotIn => ! $this->contains($actual, $expected),
         };
+    }
+
+    private function compareNumeric(mixed $actual, mixed $expected): int
+    {
+        return (float) $actual <=> (float) $expected;
     }
 
     private function equals(mixed $actual, mixed $expected): bool
