@@ -111,7 +111,7 @@ abstract class Component implements JsonSerializable
     {
         return [
             ...$data,
-            'props' => $this->props,
+            'props' => $this->wireProps(),
         ];
     }
 
