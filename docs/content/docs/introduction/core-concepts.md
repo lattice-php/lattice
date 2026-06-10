@@ -44,7 +44,7 @@ Forms are field definitions in PHP — `TextInput`, `Select`, `Checkbox`, `DateI
 
 ### Tables
 
-Tables are Eloquent-backed listings. You declare columns, and Lattice handles sorting, filtering, and pagination against the database, fetching rows from the table's endpoint. Rows and selections can carry actions.
+Tables are listings backed by a data source. You declare columns, and Lattice handles sorting, filtering, and pagination, fetching rows from the table's endpoint. Lattice ships an Eloquent source out of the box; back a table with anything else — an array, a search index, an API — by implementing the data-source interface. Rows and selections can carry actions.
 
 [Learn more →](/tables/overview/)
 
