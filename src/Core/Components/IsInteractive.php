@@ -13,6 +13,12 @@ trait IsInteractive
     /** @var array<string, mixed> */
     protected array $context = [];
 
+    /**
+     * Populated during serialization for interactive components with an endpoint;
+     * declared here so the wire prop is generated to TypeScript.
+     */
+    public ?string $ref = null;
+
     public function id(string $id): static
     {
         $this->id = $id;

@@ -85,7 +85,7 @@ export type FilterOperator = 'contains' | 'starts_with' | 'ends_with' | 'eq' | '
 export type FilterType = 'text' | 'number' | 'date' | 'boolean';
 export type Form = {
 action?: string | null,
-method?: string | null,
+method?: HttpMethod | null,
 submitLabel?: string | null,
 precognitive?: boolean | null,
 validationTimeout?: number | null,
@@ -95,6 +95,7 @@ resetOnError?: string[] | boolean | null,
 status?: string | null,
 errorBag?: string | null,
 state?: Record<string, any>,
+ref?: string | null,
 };
 export type FormFieldNode = 
   | { type: "form.text-input"; key?: string; props: TextInput }

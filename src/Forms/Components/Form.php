@@ -9,6 +9,7 @@ use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 
@@ -20,7 +21,7 @@ class Form extends ContainerComponent
 
     public ?string $action = null;
 
-    public ?string $method = null;
+    public ?HttpMethod $method = null;
 
     public ?string $submitLabel = null;
 
@@ -74,7 +75,9 @@ class Form extends ContainerComponent
 
     public function method(BackedEnum|string $method): static
     {
-        $this->method = $this->enumValue($method);
+        $this->method = $method instanceof HttpMethod
+            ? $method
+            : HttpMethod::from($method instanceof BackedEnum ? (string) $method->value : $method);
 
         return $this;
     }

@@ -7,13 +7,13 @@ import { useEffect, useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "./context";
 import { ResolvedNodesProvider } from "./resolved-nodes";
-import type { Form, FormMethod } from "./types";
+import type { Form } from "./types";
 import { useFormResolver } from "./use-form-resolver";
 import { FormValuesProvider } from "./values";
 
 declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
-    form: Form & { method?: FormMethod; ref?: string };
+    form: Form;
   }
 }
 
@@ -115,7 +115,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   const props = node.props ?? {};
   const action = props.action ?? "#";
   const errorBag = props.errorBag;
-  const componentRef = getStringProp(props, "ref");
+  const componentRef = props.ref ?? "";
   const method = props.method ?? "post";
   const precognitive = props.precognitive ?? false;
   const resetOnError = props.resetOnError ?? false;
