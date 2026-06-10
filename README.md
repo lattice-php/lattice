@@ -7,6 +7,7 @@
 
 <p align="center">
   <a href="https://packagist.org/packages/lattice-php/lattice"><img alt="Latest version on Packagist" src="https://img.shields.io/packagist/v/lattice-php/lattice.svg?style=flat-square"></a>
+  <a href="https://www.npmjs.com/package/@lattice-php/lattice"><img alt="Latest version on npm" src="https://img.shields.io/npm/v/@lattice-php/lattice.svg?style=flat-square"></a>
   <a href="https://github.com/lattice-php/lattice/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/lattice-php/lattice/ci.yml?branch=main&label=CI&style=flat-square"></a>
   <a href="https://packagist.org/packages/lattice-php/lattice"><img alt="Total downloads" src="https://img.shields.io/packagist/dt/lattice-php/lattice.svg?style=flat-square"></a>
   <a href="https://packagist.org/packages/lattice-php/lattice"><img alt="License" src="https://img.shields.io/packagist/l/lattice-php/lattice.svg?style=flat-square"></a>
@@ -19,6 +20,15 @@
 ---
 
 Lattice lets you describe your interface — pages, forms, tables, actions, and menus — in PHP on the server and render it with real React components on the client over Inertia. You keep building the way you already do in Laravel, while your users get a polished React front end, with no hand-wired API and no UI contract duplicated across two languages.
+
+## Installation
+
+```bash
+composer require lattice-php/lattice
+npm install @lattice-php/lattice
+```
+
+See [Installation](https://latticephp.com/getting-started/installation/) and [Frontend Setup](https://latticephp.com/getting-started/frontend-setup/) for the full setup.
 
 ## Documentation
 
