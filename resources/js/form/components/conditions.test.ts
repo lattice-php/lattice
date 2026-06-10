@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { evaluateConditions } from "./conditions";
+import { evaluateConditions, type Condition } from "./conditions";
 
 describe("evaluateConditions", () => {
   it("hides when a visible condition fails", () => {
@@ -43,5 +43,15 @@ describe("evaluateConditions", () => {
 
   it("honors static flags", () => {
     expect(evaluateConditions(undefined, {}, { hidden: true }).hidden).toBe(true);
+  });
+
+  it("treats an unknown operator as matching so malformed payloads fail open", () => {
+    const operator = "unsupported" as unknown as Condition["operator"];
+    const result = evaluateConditions(
+      { visible: [{ field: "type", operator, value: "x" }] },
+      { type: "anything" },
+      {},
+    );
+    expect(result.hidden).toBe(false);
   });
 });

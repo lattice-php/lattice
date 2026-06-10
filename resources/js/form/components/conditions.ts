@@ -1,4 +1,6 @@
-export type Condition = { field: string; operator: string; value: unknown };
+import type { ConditionOperator } from "@lattice/lattice/generated/types";
+
+export type Condition = { field: string; operator: ConditionOperator; value: unknown };
 
 export type FieldConditions = {
   visible?: Condition[];
@@ -49,7 +51,14 @@ function contains(actual: unknown, expected: unknown): boolean {
   return needles.includes(String(actual ?? ""));
 }
 
-function evaluateOp(operator: string, actual: unknown, expected: unknown): boolean {
+// Unknown operators from untrusted payloads fail open (the condition matches).
+// The `never` parameter makes a ConditionOperator added without a case above a
+// compile error rather than a silent fall-through.
+function evaluateUnknownOperator(_operator: never): boolean {
+  return true;
+}
+
+function evaluateOp(operator: ConditionOperator, actual: unknown, expected: unknown): boolean {
   switch (operator) {
     case "eq":
       return equals(actual, expected);
@@ -68,7 +77,7 @@ function evaluateOp(operator: string, actual: unknown, expected: unknown): boole
     case "not_in":
       return !contains(actual, expected);
     default:
-      return true;
+      return evaluateUnknownOperator(operator);
   }
 }
 
