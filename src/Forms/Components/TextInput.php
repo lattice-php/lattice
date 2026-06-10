@@ -14,11 +14,13 @@ class TextInput extends Field
     use HasPlaceholder;
     use HasTabIndex;
 
+    public ?string $type = null;
+
     public function email(): static
     {
-        return $this
-            ->prop('type', 'email')
-            ->rules(['email:rfc,filter']);
+        $this->type = 'email';
+
+        return $this->rules(['email:rfc,filter']);
     }
 
     protected function type(): string
