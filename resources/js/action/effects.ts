@@ -1,40 +1,8 @@
 import { router } from "@inertiajs/react";
-import type { EffectType, ToastVariant } from "@lattice/lattice/generated/types";
+import type { Effect, EffectType } from "@lattice/lattice/generated/types";
 import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
 
-export type ActionEffect =
-  | {
-      message?: string;
-      type: "toast";
-      variant?: ToastVariant;
-    }
-  | {
-      type: "reloadPage";
-    }
-  | {
-      component?: string;
-      type: "reloadComponent";
-    }
-  | {
-      type: "redirect";
-      url?: string;
-    }
-  | {
-      type: "download";
-      url?: string;
-    }
-  | {
-      modal?: string;
-      type: "openModal";
-    }
-  | {
-      modal?: string;
-      type: "closeModal";
-    }
-  | {
-      form?: string;
-      type: "resetForm";
-    };
+export type ActionEffect = Effect;
 
 const eventNames = {
   toast: LATTICE_EVENT.toast,

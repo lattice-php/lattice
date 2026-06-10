@@ -4,12 +4,11 @@ import { createPortal } from "react-dom";
 import { Button } from "@lattice/lattice/core/components/button";
 import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
+import type { ActionGroup } from "@lattice/lattice/generated/types";
 
 declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
-    "action.group": {
-      label?: string;
-    };
+    "action.group": ActionGroup;
   }
 }
 

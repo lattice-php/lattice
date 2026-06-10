@@ -1,24 +1,20 @@
 import { router, useHttp } from "@inertiajs/react";
 import type { Method } from "@inertiajs/core";
-import { useState } from "react";
+import { useState, type ComponentProps as ReactComponentProps } from "react";
 import { withRefHeader } from "@lattice/lattice/core/component-ref";
 import { Button } from "@lattice/lattice/core/components/button";
 import { ConfirmDialog } from "@lattice/lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice/lattice/core/components/spinner";
 import { getStringProp } from "@lattice/lattice/core/props";
 import type { NodeProps, RendererComponent } from "@lattice/lattice/core/types";
+import type { Action } from "@lattice/lattice/generated/types";
 import { IconRenderer } from "@lattice/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, getActionEffects } from "../effects";
 import type { ActionEffect } from "../effects";
 
-type ActionVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
+type ActionConfirmation = NonNullable<Action["confirmation"]>;
 
-type ActionConfirmation = {
-  cancelLabel?: string;
-  confirmLabel?: string;
-  description?: string;
-  title?: string;
-};
+type ButtonVariant = ReactComponentProps<typeof Button>["variant"];
 
 type ActionResponse = {
   data?: Record<string, unknown>;
@@ -30,16 +26,7 @@ type ActionData = Record<string, never>;
 
 declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
-    action: {
-      confirmation?: ActionConfirmation;
-      effects?: ActionEffect[];
-      endpoint?: string;
-      icon?: string;
-      label?: string;
-      ref?: string;
-      method?: Method;
-      variant?: ActionVariant;
-    };
+    action: Action;
   }
 }
 
@@ -58,7 +45,7 @@ function getConfirmation(props: NodeProps | undefined): ActionConfirmation | nul
     return null;
   }
 
-  return confirmation;
+  return confirmation as ActionConfirmation;
 }
 
 const ActionComponent: RendererComponent<"action"> = ({ node }) => {
@@ -70,6 +57,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const http = useHttp<ActionData, ActionResponse>({});
   const [isConfirming, setIsConfirming] = useState(false);
   const confirmation = getConfirmation(node.props);
+  const variant = (node.props?.variant ?? "default") as ButtonVariant;
 
   const submit = async (): Promise<void> => {
     if (!endpoint) {
@@ -117,7 +105,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
         disabled={http.processing || !endpoint}
         onClick={requestSubmit}
         type="button"
-        variant={node.props?.variant ?? "default"}
+        variant={variant}
       >
         {http.processing ? <Spinner /> : icon && <IconRenderer className="size-4" icon={icon} />}
         {label}
@@ -129,7 +117,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
           description={confirmation.description}
           confirmLabel={confirmationConfirmLabel}
           cancelLabel={confirmationCancelLabel}
-          confirmVariant={node.props?.variant ?? "default"}
+          confirmVariant={variant}
           processing={http.processing}
           confirmDisabled={!endpoint}
           onConfirm={() => void submit()}
