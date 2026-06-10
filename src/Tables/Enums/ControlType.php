@@ -15,19 +15,19 @@ enum ControlType: string
     case Boolean = 'boolean';
 
     /**
-     * @return array<int, Operator>
+     * @return array<int, FilterOperator>
      */
     public function operators(): array
     {
         return array_values(array_filter(
-            Operator::cases(),
-            fn (Operator $operator): bool => in_array($this, $operator->appliesTo(), true),
+            FilterOperator::cases(),
+            fn (FilterOperator $operator): bool => in_array($this, $operator->appliesTo(), true),
         ));
     }
 
-    public function defaultOperator(): Operator
+    public function defaultOperator(): FilterOperator
     {
-        return $this === self::Text ? Operator::Contains : Operator::Equals;
+        return $this === self::Text ? FilterOperator::Contains : FilterOperator::Equals;
     }
 
     /**

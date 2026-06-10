@@ -12,9 +12,9 @@ use Bambamboole\Lattice\Core\Enums\PageContainer;
 use Bambamboole\Lattice\Core\Enums\PageLayout;
 use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use Bambamboole\Lattice\Core\Enums\Width;
-use Bambamboole\Lattice\Forms\Enums\Op;
+use Bambamboole\Lattice\Forms\Enums\ConditionOperator;
 use Bambamboole\Lattice\Tables\Enums\ControlType;
-use Bambamboole\Lattice\Tables\Enums\Operator;
+use Bambamboole\Lattice\Tables\Enums\FilterOperator;
 use Bambamboole\Lattice\Tables\Enums\PaginationType;
 use Bambamboole\Lattice\Tables\Enums\SortDirection;
 use Bambamboole\Lattice\Tables\TableSort;
@@ -41,9 +41,9 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 HttpMethod::class,
                 PaginationType::class,
                 ControlType::class,
-                Operator::class,
+                FilterOperator::class,
                 SortDirection::class,
-                Op::class,
+                ConditionOperator::class,
                 EffectType::class,
             ]))
             ->transformer(new LatticeValueObjectTransformer([

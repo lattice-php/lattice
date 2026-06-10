@@ -20,7 +20,7 @@ describe("TextInputComponent conditions", () => {
         props: {
           name: "company",
           label: "Company",
-          conditions: { visible: [{ field: "type", operator: "=", value: "business" }] },
+          conditions: { visible: [{ field: "type", operator: "eq", value: "business" }] },
         },
       },
       { type: "personal" },
@@ -36,7 +36,7 @@ describe("TextInputComponent conditions", () => {
         props: {
           name: "company",
           label: "Company",
-          conditions: { visible: [{ field: "type", operator: "=", value: "business" }] },
+          conditions: { visible: [{ field: "type", operator: "eq", value: "business" }] },
         },
       },
       { type: "business" },

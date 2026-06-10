@@ -545,7 +545,7 @@ test('registered tables serialize their configured endpoint columns state and in
                         'filter' => [
                             'enabled' => true,
                             'type' => 'text',
-                            'operators' => ['contains', 'equals', 'not_equals'],
+                            'operators' => ['contains', 'eq', 'neq'],
                             'defaultOperator' => 'contains',
                         ],
                     ],
@@ -556,8 +556,8 @@ test('registered tables serialize their configured endpoint columns state and in
                         'filter' => [
                             'enabled' => true,
                             'type' => 'text',
-                            'operators' => ['contains', 'equals', 'not_equals'],
-                            'defaultOperator' => 'equals',
+                            'operators' => ['contains', 'eq', 'neq'],
+                            'defaultOperator' => 'eq',
                         ],
                     ],
                     [
@@ -674,11 +674,11 @@ test('registered tables parse clause filters sorts and pagination through the en
 
     $ref = componentRef(Table::use(WorkbenchUsersTable::class)->toArray());
 
-    latticeGet('/lattice/tables/workbench.users?filter=name:contains:tay,status:equals:active&sort=-name,email&page=2&per_page=50', $ref)
+    latticeGet('/lattice/tables/workbench.users?filter=name:contains:tay,status:eq:active&sort=-name,email&page=2&per_page=50', $ref)
         ->assertOk()
         ->assertJsonPath('data.0.name', 'Taylor')
         ->assertJsonPath('data.0.filters.0', ['field' => 'name', 'operator' => 'contains', 'value' => 'tay'])
-        ->assertJsonPath('data.0.filters.1', ['field' => 'status', 'operator' => 'equals', 'value' => 'active'])
+        ->assertJsonPath('data.0.filters.1', ['field' => 'status', 'operator' => 'eq', 'value' => 'active'])
         ->assertJsonPath('data.0.sorts.0.key', 'name')
         ->assertJsonPath('data.0.sorts.0.direction', 'desc')
         ->assertJsonPath('data.0.sorts.1.key', 'email')

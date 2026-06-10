@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Tables\Columns\Concerns;
 
 use Bambamboole\Lattice\Tables\Enums\ControlType;
-use Bambamboole\Lattice\Tables\Enums\Operator;
+use Bambamboole\Lattice\Tables\Enums\FilterOperator;
 
 trait IsFilterable
 {
     protected bool $filterable = false;
 
-    protected ?Operator $defaultOperator = null;
+    protected ?FilterOperator $defaultOperator = null;
 
     public function filterable(): static
     {
@@ -23,7 +23,7 @@ trait IsFilterable
     public function filterableExact(): static
     {
         $this->filterable = true;
-        $this->defaultOperator = Operator::Equals;
+        $this->defaultOperator = FilterOperator::Equals;
 
         return $this;
     }
@@ -39,14 +39,14 @@ trait IsFilterable
     }
 
     /**
-     * @return array<int, Operator>
+     * @return array<int, FilterOperator>
      */
     public function filterOperators(): array
     {
         return $this->controlType()->operators();
     }
 
-    public function defaultFilterOperator(): Operator
+    public function defaultFilterOperator(): FilterOperator
     {
         return $this->defaultOperator ?? $this->controlType()->defaultOperator();
     }
@@ -64,7 +64,7 @@ trait IsFilterable
             'filter' => [
                 'enabled' => true,
                 'type' => $this->controlType()->value,
-                'operators' => array_map(fn (Operator $operator): string => $operator->value, $this->filterOperators()),
+                'operators' => array_map(fn (FilterOperator $operator): string => $operator->value, $this->filterOperators()),
                 'defaultOperator' => $this->defaultFilterOperator()->value,
             ],
         ];

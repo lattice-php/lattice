@@ -7,11 +7,11 @@ namespace Bambamboole\Lattice\Tables\Enums;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-enum Operator: string
+enum FilterOperator: string
 {
     case Contains = 'contains';
-    case Equals = 'equals';
-    case NotEquals = 'not_equals';
+    case Equals = 'eq';
+    case NotEquals = 'neq';
     case GreaterThan = 'gt';
     case GreaterThanOrEqual = 'gte';
     case LessThan = 'lt';

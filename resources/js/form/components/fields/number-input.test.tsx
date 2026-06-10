@@ -44,7 +44,7 @@ describe("NumberInputComponent", () => {
         props: {
           name: "qty",
           label: "Qty",
-          conditions: { visible: [{ field: "type", operator: "=", value: "order" }] },
+          conditions: { visible: [{ field: "type", operator: "eq", value: "order" }] },
         },
       },
       { type: "quote" },

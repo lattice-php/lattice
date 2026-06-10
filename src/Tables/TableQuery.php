@@ -7,7 +7,7 @@ namespace Bambamboole\Lattice\Tables;
 use Bambamboole\Lattice\Tables\Columns\Column;
 use Bambamboole\Lattice\Tables\Columns\Filterable;
 use Bambamboole\Lattice\Tables\Columns\Sortable;
-use Bambamboole\Lattice\Tables\Enums\Operator;
+use Bambamboole\Lattice\Tables\Enums\FilterOperator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -139,7 +139,7 @@ final readonly class TableQuery
                 throw InvalidTableQuery::filter($filter->field, $table);
             }
 
-            $operator = Operator::tryFrom($filter->operator);
+            $operator = FilterOperator::tryFrom($filter->operator);
 
             if ($operator === null || ! in_array($operator, $column->filterOperators(), true)) {
                 throw InvalidTableQuery::operator($filter->operator, $filter->field, $table);

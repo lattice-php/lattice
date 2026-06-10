@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Bambamboole\Lattice\Forms\Enums;
 
-enum Op: string
+enum ConditionOperator: string
 {
-    case Equals = '=';
-    case NotEquals = '!=';
-    case GreaterThan = '>';
-    case LessThan = '<';
-    case GreaterThanOrEqual = '>=';
-    case LessThanOrEqual = '<=';
+    case Equals = 'eq';
+    case NotEquals = 'neq';
+    case GreaterThan = 'gt';
+    case GreaterThanOrEqual = 'gte';
+    case LessThan = 'lt';
+    case LessThanOrEqual = 'lte';
     case In = 'in';
     case NotIn = 'not_in';
 

@@ -12,19 +12,19 @@ it('serializes declarative conditions into props', function (): void {
         ->toArray()['props'];
 
     expect($props['conditions']['visible'])->toBe([
-        ['field' => 'type', 'operator' => '=', 'value' => 'business'],
+        ['field' => 'type', 'operator' => 'eq', 'value' => 'business'],
     ])->and($props['conditions']['required'])->toBe([
-        ['field' => 'type', 'operator' => '=', 'value' => 'business'],
+        ['field' => 'type', 'operator' => 'eq', 'value' => 'business'],
     ]);
 });
 
 it('supports the operator form and array in', function (): void {
     $props = TextInput::make('x', 'X')
-        ->dependsOn('age', '>=', 18)
+        ->dependsOn('age', 'gte', 18)
         ->disabledWhen('plan', 'in', ['free', 'trial'])
         ->toArray()['props'];
 
-    expect($props['conditions']['visible'][0])->toBe(['field' => 'age', 'operator' => '>=', 'value' => 18])
+    expect($props['conditions']['visible'][0])->toBe(['field' => 'age', 'operator' => 'gte', 'value' => 18])
         ->and($props['conditions']['disabled'][0])->toBe(['field' => 'plan', 'operator' => 'in', 'value' => ['free', 'trial']]);
 });
 

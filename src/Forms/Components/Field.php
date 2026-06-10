@@ -6,7 +6,7 @@ use Bambamboole\Lattice\Attributes\SerializationHook;
 use Bambamboole\Lattice\Core\Components\Component;
 use Bambamboole\Lattice\Forms\Conditions\Condition;
 use Bambamboole\Lattice\Forms\Conditions\ConditionSet;
-use Bambamboole\Lattice\Forms\Enums\Op;
+use Bambamboole\Lattice\Forms\Enums\ConditionOperator;
 use Bambamboole\Lattice\Forms\FormData;
 use Closure;
 use Illuminate\Http\Request;
@@ -277,12 +277,12 @@ abstract class Field extends Component
     private function makeCondition(string $field, mixed $operatorOrValue, mixed $value, int $argCount): Condition
     {
         if ($argCount >= 3) {
-            $operator = $operatorOrValue instanceof Op ? $operatorOrValue : Op::from((string) $operatorOrValue);
+            $operator = $operatorOrValue instanceof ConditionOperator ? $operatorOrValue : ConditionOperator::from((string) $operatorOrValue);
 
             return new Condition($field, $operator, $value);
         }
 
-        return new Condition($field, is_array($operatorOrValue) ? Op::In : Op::Equals, $operatorOrValue);
+        return new Condition($field, is_array($operatorOrValue) ? ConditionOperator::In : ConditionOperator::Equals, $operatorOrValue);
     }
 
     /**

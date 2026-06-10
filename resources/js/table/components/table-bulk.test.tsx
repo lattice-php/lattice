@@ -83,7 +83,7 @@ describe("table bulk actions", () => {
       props: {
         ...node.props,
         state: {
-          filters: [{ field: "status", operator: "equals", value: "active" }],
+          filters: [{ field: "status", operator: "eq", value: "active" }],
           sorts: [],
           page: 1,
           perPage: 25,
@@ -104,7 +104,7 @@ describe("table bulk actions", () => {
     await waitFor(() => expect(http.patch).toHaveBeenCalled());
     expect(http.transformer({})).toEqual({
       allMatching: true,
-      filter: "status:equals:active",
+      filter: "status:eq:active",
     });
   });
 });

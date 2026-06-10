@@ -51,17 +51,17 @@ function contains(actual: unknown, expected: unknown): boolean {
 
 function evaluateOp(operator: string, actual: unknown, expected: unknown): boolean {
   switch (operator) {
-    case "=":
+    case "eq":
       return equals(actual, expected);
-    case "!=":
+    case "neq":
       return !equals(actual, expected);
-    case ">":
+    case "gt":
       return Number(actual) > Number(expected);
-    case "<":
+    case "lt":
       return Number(actual) < Number(expected);
-    case ">=":
+    case "gte":
       return Number(actual) >= Number(expected);
-    case "<=":
+    case "lte":
       return Number(actual) <= Number(expected);
     case "in":
       return contains(actual, expected);

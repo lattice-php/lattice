@@ -9,7 +9,7 @@ const node = {
   props: {
     name: "bio",
     label: "Bio",
-    conditions: { visible: [{ field: "mode", operator: "=", value: "edit" }] },
+    conditions: { visible: [{ field: "mode", operator: "eq", value: "edit" }] },
   },
 } as Node<"form.textarea">;
 

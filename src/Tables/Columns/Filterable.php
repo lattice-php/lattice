@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bambamboole\Lattice\Tables\Columns;
 
 use Bambamboole\Lattice\Tables\Enums\ControlType;
-use Bambamboole\Lattice\Tables\Enums\Operator;
+use Bambamboole\Lattice\Tables\Enums\FilterOperator;
 
 interface Filterable
 {
@@ -14,11 +14,11 @@ interface Filterable
     public function controlType(): ControlType;
 
     /**
-     * @return array<int, Operator>
+     * @return array<int, FilterOperator>
      */
     public function filterOperators(): array;
 
-    public function defaultFilterOperator(): Operator;
+    public function defaultFilterOperator(): FilterOperator;
 
     /**
      * @return array<string, mixed>

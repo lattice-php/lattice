@@ -1,6 +1,6 @@
 import type {
   ControlType,
-  Operator,
+  FilterOperator,
   PaginationType,
   TableSort,
 } from "@lattice/lattice/generated/types";
@@ -16,8 +16,8 @@ export type TableColumn = {
   filter?: {
     enabled?: boolean;
     type?: ControlType;
-    operators?: Operator[];
-    defaultOperator?: Operator;
+    operators?: FilterOperator[];
+    defaultOperator?: FilterOperator;
   };
   date?: {
     format?: string | null;
@@ -33,7 +33,7 @@ export type TableRow = Record<string, unknown>;
 
 export type FilterClause = {
   field: string;
-  operator: Operator;
+  operator: FilterOperator;
   value: string;
 };
 
