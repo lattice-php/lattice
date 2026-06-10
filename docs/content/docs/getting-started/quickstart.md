@@ -7,21 +7,21 @@ This guide builds a single page from PHP, registers a route for it, and adds it 
 
 ## Define a page
 
-A page extends `Lattice\Lattice\Page`. It returns a `title()` and builds its UI in `render()` by populating the `PageSchema` with components.
+A page extends `Lattice\Lattice\Http\Page`. It returns a `title()` and builds its UI in `render()` by populating the `PageSchema` with components.
 
 ```php
 <?php
 
 namespace App\Pages;
 
-use Lattice\Lattice\Components\Core\Card;
-use Lattice\Lattice\Components\Core\Grid;
-use Lattice\Lattice\Components\Core\Heading;
-use Lattice\Lattice\Components\Core\Stack;
-use Lattice\Lattice\Components\Core\Text;
-use Lattice\Lattice\Enums\Gap;
-use Lattice\Lattice\Page;
-use Lattice\Lattice\PageSchema;
+use Lattice\Lattice\Core\Components\Card;
+use Lattice\Lattice\Core\Components\Grid;
+use Lattice\Lattice\Core\Components\Heading;
+use Lattice\Lattice\Core\Components\Stack;
+use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Core\Enums\Gap;
+use Lattice\Lattice\Http\Page;
+use Lattice\Lattice\Core\PageSchema;
 
 final class DashboardPage extends Page
 {
@@ -56,7 +56,7 @@ Lattice registers a `latticePage` route macro. Point a URI at your page class, a
 
 ```php
 use App\Pages\DashboardPage;
-use Lattice\Lattice\Enums\LucideIcon;
+use Lattice\Lattice\Core\Enums\LucideIcon;
 use Illuminate\Support\Facades\Route;
 
 Route::latticePage('/dashboard', DashboardPage::class)
