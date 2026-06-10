@@ -9,7 +9,7 @@ enum WirePropsProbeStatus: string
     case Active = 'active';
 }
 
-it('collects public typed properties over the legacy props bag, skipping nulls', function (): void {
+it('collects public typed properties, skipping nulls and builder-only state', function (): void {
     $component = new class extends Component
     {
         public string $label = 'Hi';
@@ -28,14 +28,11 @@ it('collects public typed properties over the legacy props bag, skipping nulls',
         /** @return array<string, mixed> */
         public function exposeWireProps(): array
         {
-            $this->prop('legacy', true);
-
             return $this->wireProps();
         }
     };
 
     expect($component->exposeWireProps())->toBe([
-        'legacy' => true,
         'label' => 'Hi',
         'status' => 'active',
     ]);
