@@ -15,6 +15,11 @@ The text input collects a single line of text. Create one with `TextInput::make(
   values={{ name: "" }}
 />
 
+## Placeholder
+
+`->placeholder()` sets the muted hint shown while the field is empty. It is not a value — an empty
+field still submits as empty.
+
 ## Email
 
 Call `->email()` to set the HTML input type to `email` and apply email validation:
@@ -26,3 +31,35 @@ Call `->email()` to set the HTML input type to `email` and apply email validatio
   fixture="text-input.email"
   values={{ email: "" }}
 />
+
+## Autocomplete
+
+`->autoComplete()` sets the HTML `autocomplete` attribute so the browser can offer saved values.
+Pass any valid token, such as `organization`, `username`, or `off`.
+
+```php
+TextInput::make('company', 'Company')->autoComplete('organization');
+```
+
+## Autofocus
+
+`->autoFocus()` focuses the field when the form mounts. Use it on the first field only.
+
+```php
+TextInput::make('name', 'Team name')->autoFocus();
+```
+
+## Tab index
+
+`->tabIndex()` overrides the keyboard tab order. Most forms should rely on the natural document
+order instead.
+
+```php
+TextInput::make('name', 'Team name')->tabIndex(1);
+```
+
+## Common options
+
+`TextInput` shares label, default value, required, disabled, read-only, and visibility options with
+every field — see [Fields](/forms/fields/overview/). For validation and conditional behavior, see
+[Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).

@@ -1,0 +1,93 @@
+---
+title: Conditional fields
+description: Show, require, or disable fields based on other fields, and compute values from the form data.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+Fields can react to the rest of the form. A condition compares another field's value and toggles this
+field's visibility, required, read-only, or disabled state. Conditions are evaluated on the client as
+the user types, and the same rules are re-checked on the server, so they cannot be bypassed.
+
+Each method names the field to watch, an optional operator, and the value to compare against. Open the
+**Tree** tab on the examples below to see the `conditions` that are serialized to the client.
+
+## Visible when
+
+`->visibleWhen()` hides the field until the condition matches.
+
+<ComponentExample
+  php={`TextInput::make('vat', 'VAT ID')
+    ->visibleWhen('type', 'business')`}
+  fixture="field.visible-when"
+  values={{ vat: "" }}
+/>
+
+## Required when
+
+`->requiredWhen()` makes the field required only while the condition matches.
+
+<ComponentExample
+  php={`TextInput::make('vat', 'VAT ID')
+    ->requiredWhen('country', 'DE')`}
+  fixture="field.required-when"
+  values={{ vat: "" }}
+/>
+
+## Read-only and disabled when
+
+`->readOnlyWhen()` and `->disabledWhen()` toggle the read-only and disabled states the same way.
+
+```php
+TextInput::make('coupon', 'Coupon')
+    ->readOnlyWhen('plan', 'enterprise');
+
+TextInput::make('coupon', 'Coupon')
+    ->disabledWhen('billing', 'invoice');
+```
+
+## Operators
+
+With two arguments, the condition checks equality. Pass an array to match any of several values, or
+pass an operator as the middle argument for other comparisons.
+
+```php
+TextInput::make('vat', 'VAT ID')
+    ->visibleWhen('country', ['DE', 'AT', 'CH']);
+
+NumberInput::make('guardian', 'Guardian name')
+    ->requiredWhen('age', '<', 18);
+```
+
+The operator accepts a comparison string or a `ConditionOperator` case:
+
+| Comparison        | Operator                            |
+| ----------------- | ----------------------------------- |
+| `=`, `==`         | `ConditionOperator::Equals`         |
+| `!=`, `<>`        | `ConditionOperator::NotEquals`      |
+| `>`, `>=`         | `GreaterThan`, `GreaterThanOrEqual` |
+| `<`, `<=`         | `LessThan`, `LessThanOrEqual`       |
+| `contains`        | `ConditionOperator::Contains`       |
+| `in`, `not_in`    | `In`, `NotIn`                       |
+| `empty`, `filled` | `Empty`, `Filled`                   |
+
+## Computed values
+
+A field's value can be derived from the form data instead of typed. Pass a closure to `->value()` to
+compute it from the current `FormData`. The closure runs on the server whenever the inputs change.
+
+```php
+TextInput::make('total', 'Total')
+    ->value(fn (FormData $data) => $data->float('qty') * $data->float('price'));
+```
+
+When the computation also needs to change other parts of the field, use `->dependsOn()` to name the
+fields to watch and receive the field itself in the closure.
+
+```php
+TextInput::make('total', 'Total')
+    ->dependsOn(
+        ['qty', 'price'],
+        fn (TextInput $field, FormData $data) => $field->value($data->float('qty') * $data->float('price')),
+    );
+```

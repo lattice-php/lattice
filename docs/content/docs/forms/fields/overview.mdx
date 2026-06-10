@@ -1,0 +1,90 @@
+---
+title: Fields
+description: The common options shared by every form field — label, default value, required, disabled, read-only, and visibility.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+Fields are the building blocks of a form. Lattice ships `TextInput`, `Textarea`, `Select`,
+`Choice`, `Checkbox`, `DateInput`, `NumberInput`, `PasswordInput`, and `RichEditor`, and you can
+add your own. Each field type has its own page for the options unique to it; this page covers the
+options every field shares.
+
+For validation and conditional behavior — which also apply to every field — see
+[Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).
+
+The options below extend the base `Field` class, so they work the same on every field. The examples
+use `TextInput`, but the methods are identical everywhere.
+
+## Label
+
+`make()` takes the field name and an optional label. Pass the label as the second argument, or
+set it later with `->label()`. Omit it and the field renders without a visible label.
+
+```php
+TextInput::make('name', 'Team name');
+
+TextInput::make('name')->label('Team name');
+```
+
+## Default value
+
+`->value()` seeds the field with a starting value. On a form bound to a record, the record's
+value wins; otherwise this default is used.
+
+<ComponentExample
+  php={`TextInput::make('name', 'Team name')
+    ->value('Acme Inc')`}
+  fixture="field.default-value"
+  values={{ name: "Acme Inc" }}
+/>
+
+## Required
+
+`->required()` marks the field as required, adding the indicator and a `required` validation rule.
+
+<ComponentExample
+  php={`TextInput::make('name', 'Team name')
+    ->required()`}
+  fixture="field.required"
+  values={{ name: "" }}
+/>
+
+## Disabled
+
+`->disabled()` renders the field non-interactive. A disabled field is not submitted with the form.
+
+<ComponentExample
+  php={`TextInput::make('name', 'Team name')
+    ->value('Acme Inc')
+    ->disabled()`}
+  fixture="field.disabled"
+  values={{ name: "Acme Inc" }}
+/>
+
+## Read-only
+
+`->readOnly()` shows the value but prevents editing. Unlike `disabled`, a read-only field is still
+submitted.
+
+<ComponentExample
+  php={`TextInput::make('slug', 'Slug')
+    ->value('acme-inc')
+    ->readOnly()`}
+  fixture="field.read-only"
+  values={{ slug: "acme-inc" }}
+/>
+
+## Hidden and visible
+
+`->hidden()` removes the field from the rendered form; `->visible()` is the inverse and reads more
+naturally when toggling on a condition. Both accept a boolean.
+
+```php
+TextInput::make('internal_note', 'Internal note')->hidden();
+
+TextInput::make('internal_note', 'Internal note')->visible($user->isAdmin());
+```
+
+To show or hide a field based on another field's value, see
+[Conditional fields](/forms/conditional-fields/).
