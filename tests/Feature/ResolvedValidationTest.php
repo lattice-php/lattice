@@ -65,8 +65,8 @@ function lockedDefinition(): FormDefinition
         public function definition(Form $form, Request $request): Form
         {
             return $form->schema([
-                TextInput::make('display', 'Display')->readonly()->rules(['string']),
-                TextInput::make('locked', 'Locked')->readonly()->value('server')->rules(['string']),
+                TextInput::make('display', 'Display')->readOnly()->rules(['string']),
+                TextInput::make('locked', 'Locked')->readOnly()->value('server')->rules(['string']),
                 TextInput::make('off', 'Off')->disabled()->rules(['string']),
                 TextInput::make('name', 'Name')->rules(['required', 'string']),
             ]);

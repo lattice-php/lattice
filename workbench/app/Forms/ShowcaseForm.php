@@ -94,7 +94,7 @@ class ShowcaseForm extends FormDefinition
                         NumberInput::make('unit_price', 'Unit price')->min(0)->step(0.01),
                     ]),
                     TextInput::make('total', 'Total')
-                        ->readonly()
+                        ->readOnly()
                         ->dependsOn(
                             ['quantity', 'unit_price'],
                             fn (TextInput $field, FormData $data) => $field->value(
@@ -141,7 +141,7 @@ class ShowcaseForm extends FormDefinition
                         ->rules(['accepted']),
                 ]),
 
-                HiddenInput::make('source', 'workbench-showcase'),
+                HiddenInput::make('source')->value('workbench-showcase'),
             ]);
     }
 

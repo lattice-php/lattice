@@ -66,7 +66,7 @@ abstract class FormDefinition extends Definition implements ProvidesForm
                 continue;
             }
 
-            if ($field->isReadonly($data) || $field->isDisabled($data)) {
+            if ($field->isReadOnly($data) || $field->isDisabled($data)) {
                 unset($validated[$name]);
 
                 continue;
@@ -193,8 +193,8 @@ abstract class FormDefinition extends Definition implements ProvidesForm
     private function attributeSet(Collection $fields, FormData $data): array
     {
         return $fields
-            ->filter(fn (Field $field): bool => $field->isVisible($data) && $field->label() !== null)
-            ->mapWithKeys(fn (Field $field): array => [$field->name() => (string) $field->label()])
+            ->filter(fn (Field $field): bool => $field->isVisible($data) && $field->getLabel() !== null)
+            ->mapWithKeys(fn (Field $field): array => [$field->name() => (string) $field->getLabel()])
             ->all();
     }
 
@@ -208,7 +208,7 @@ abstract class FormDefinition extends Definition implements ProvidesForm
             return true;
         }
 
-        return ($field->isReadonly($data) || $field->isDisabled($data)) && $field->hasValue();
+        return ($field->isReadOnly($data) || $field->isDisabled($data)) && $field->hasValue();
     }
 
     /**

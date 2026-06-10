@@ -43,7 +43,7 @@ class DependentDemoForm extends FormDefinition
                         NumberInput::make('unit_price', 'Unit price')->min(0)->step(0.01),
                     ]),
                     TextInput::make('total', 'Total')
-                        ->readonly()
+                        ->readOnly()
                         ->value(fn (FormData $data) => $data->float('qty') * $data->float('unit_price')),
                     NumberInput::make('level', 'Level')->slider()->min(0)->max(10),
                     DateInput::make('due', 'Due date'),
