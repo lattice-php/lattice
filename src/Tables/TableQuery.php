@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables;
 
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Tables\Columns\Column;
@@ -99,15 +100,11 @@ final readonly class TableQuery
      */
     private static function parseFilters(mixed $filter): array
     {
-        if (! is_string($filter) || $filter === '') {
-            return [];
-        }
-
-        return collect(explode(',', $filter))
-            ->map(fn (string $clause): FilterClause => FilterClause::fromString($clause))
-            ->filter(fn (FilterClause $clause): bool => $clause->isComplete())
-            ->values()
-            ->all();
+        return self::parseList(
+            $filter,
+            fn (string $clause): FilterClause => FilterClause::fromString($clause),
+            fn (FilterClause $clause): bool => $clause->isComplete(),
+        );
     }
 
     /**
@@ -115,13 +112,31 @@ final readonly class TableQuery
      */
     private static function parseSorts(mixed $sort): array
     {
-        if (! is_string($sort) || $sort === '') {
+        return self::parseList(
+            $sort,
+            fn (string $value): TableSort => TableSort::fromString($value),
+            fn (TableSort $sort): bool => $sort->key !== '',
+        );
+    }
+
+    /**
+     * Splits a comma-separated request value into mapped, kept items.
+     *
+     * @template TItem
+     *
+     * @param  Closure(string): TItem  $map
+     * @param  Closure(TItem): bool  $keep
+     * @return array<int, TItem>
+     */
+    private static function parseList(mixed $raw, Closure $map, Closure $keep): array
+    {
+        if (! is_string($raw) || $raw === '') {
             return [];
         }
 
-        return collect(explode(',', $sort))
-            ->filter(fn (string $value): bool => $value !== '')
-            ->map(fn (string $value): TableSort => TableSort::fromString($value))
+        return collect(explode(',', $raw))
+            ->map($map)
+            ->filter($keep)
             ->values()
             ->all();
     }

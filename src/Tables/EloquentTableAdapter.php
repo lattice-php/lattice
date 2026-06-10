@@ -36,33 +36,20 @@ final readonly class EloquentTableAdapter implements TableSource
     {
         $builder = $this->applyQuery(($this->builder)($query), $query);
 
-        if ($this->pagination === PaginationType::None) {
-            return TableResult::fromItems($builder->get(), PaginationType::None);
-        }
-
-        if ($this->pagination === PaginationType::Infinite) {
-            return TableResult::fromSimplePaginator($builder->simplePaginate(
-                perPage: $query->perPage(),
-                page: $query->page(),
-            ));
-        }
-
-        if ($this->pagination === PaginationType::Simple) {
-            return TableResult::fromSimplePaginator(
-                $builder->simplePaginate(
-                    perPage: $query->perPage(),
-                    page: $query->page(),
-                ),
-                PaginationType::Simple,
-            );
-        }
-
-        return TableResult::fromPaginator(
-            $builder->paginate(
-                perPage: $query->perPage(),
-                page: $query->page(),
+        return match ($this->pagination) {
+            PaginationType::None => TableResult::fromItems($builder->get(), PaginationType::None),
+            PaginationType::Infinite => TableResult::fromSimplePaginator(
+                $builder->simplePaginate(perPage: $query->perPage(), page: $query->page()),
+                PaginationType::Infinite,
             ),
-        );
+            PaginationType::Simple => TableResult::fromSimplePaginator(
+                $builder->simplePaginate(perPage: $query->perPage(), page: $query->page()),
+                PaginationType::Simple,
+            ),
+            PaginationType::Table => TableResult::fromPaginator(
+                $builder->paginate(perPage: $query->perPage(), page: $query->page()),
+            ),
+        };
     }
 
     /**

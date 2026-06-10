@@ -123,12 +123,7 @@ final readonly class TableResult implements JsonSerializable
         return [
             'data' => $this->data,
             'pagination' => $this->pagination,
-            'state' => $query?->toArray() ?? [
-                'filters' => [],
-                'sorts' => [],
-                'page' => 1,
-                'perPage' => 25,
-            ],
+            'state' => ($query ?? TableQuery::empty())->toArray(),
         ];
     }
 
