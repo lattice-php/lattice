@@ -22,6 +22,9 @@ jobs:
       - id: release
         uses: googleapis/release-please-action@v5
         with:
+          # A PAT (not the default GITHUB_TOKEN) so the PRs release-please opens
+          # trigger CI — GitHub suppresses workflow runs for GITHUB_TOKEN events.
+          token: ${{ secrets.RELEASE_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
