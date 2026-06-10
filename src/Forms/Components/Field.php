@@ -36,6 +36,8 @@ abstract class Field extends Component
 
     protected ?Closure $valueResolver = null;
 
+    protected bool $resolving = false;
+
     protected bool $hasResolvedValue = false;
 
     /**
@@ -204,7 +206,13 @@ abstract class Field extends Component
             return $this;
         }
 
-        return $this->prop('value', $value);
+        $this->prop('value', $value);
+
+        if ($this->resolving) {
+            $this->hasResolvedValue = true;
+        }
+
+        return $this;
     }
 
     /**
@@ -220,14 +228,17 @@ abstract class Field extends Component
      */
     public function applyResolution(FormData $data, Request $request): void
     {
+        $this->resolving = true;
+
         foreach ($this->dependencies as $dependency) {
             ($dependency['callback'])($this, $data, $request);
         }
 
         if ($this->valueResolver !== null) {
-            $this->prop('value', ($this->valueResolver)($data, $request));
-            $this->hasResolvedValue = true;
+            $this->value(($this->valueResolver)($data, $request));
         }
+
+        $this->resolving = false;
     }
 
     /**
