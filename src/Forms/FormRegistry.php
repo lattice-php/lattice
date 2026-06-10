@@ -25,7 +25,7 @@ final class FormRegistry extends DefinitionRegistry
         return $this->make($form)
             ->definition(FormComponent::make($key), $this->container->make(Request::class))
             ->action($this->endpointFor($key))
-            ->prop('errorBag', $this->errorBagFor($key));
+            ->errorBag($this->errorBagFor($key));
     }
 
     public function errorBagFor(string $id): string
