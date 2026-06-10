@@ -29,6 +29,10 @@ return [
         'registered' => [],
     ],
 
+    'layouts' => [
+        'registered' => [],
+    ],
+
     'actions' => [
         'endpoint' => 'lattice/actions/{action}',
         'middleware' => ['web'],

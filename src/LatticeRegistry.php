@@ -18,6 +18,8 @@ use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Http\PageContract;
+use Lattice\Lattice\Layouts\LayoutDefinition;
+use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Menu\MenuRegistry;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
@@ -30,6 +32,7 @@ final class LatticeRegistry
         private readonly DiscoversDefinitions $discovery,
         private readonly FormRegistry $forms,
         private readonly FragmentRegistry $fragments,
+        private readonly LayoutRegistry $layouts,
         private readonly MenuRegistry $menus,
         private readonly Router $router,
         private readonly TableRegistry $tables,
@@ -75,6 +78,19 @@ final class LatticeRegistry
         $this->bulkActions->register($bulkActions);
     }
 
+    /**
+     * @param  class-string<LayoutDefinition>|array<int, class-string<LayoutDefinition>>  $layouts
+     */
+    public function layouts(string|array $layouts): void
+    {
+        $this->layouts->register($layouts);
+    }
+
+    public function layoutRegistry(): LayoutRegistry
+    {
+        return $this->layouts;
+    }
+
     public function menus(): MenuRegistry
     {
         return $this->menus;
@@ -108,7 +124,7 @@ final class LatticeRegistry
      */
     private function discoverableRegistries(): array
     {
-        $registries = [$this->forms, $this->tables, $this->actions, $this->fragments, $this->bulkActions];
+        $registries = [$this->forms, $this->tables, $this->actions, $this->fragments, $this->bulkActions, $this->layouts];
 
         return array_combine(
             array_map(static fn (DefinitionRegistry $registry): string => $registry->group(), $registries),

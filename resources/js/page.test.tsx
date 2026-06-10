@@ -13,7 +13,7 @@ function payload(lattice: Partial<PagePayload> = {}): PagePayload {
     breadcrumbs: [],
     schema: [],
     container: "default",
-    layout: "none",
+    layout: null,
     menus: {},
     title: "Lattice",
     ...lattice,
@@ -50,7 +50,7 @@ describe("Page", () => {
               type: "text",
             },
           ],
-          layout: "app",
+          layout: { key: "app", schema: [] },
         })}
       />,
     );

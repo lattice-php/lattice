@@ -10,6 +10,7 @@ export { copyToClipboard, useClipboard } from "./clipboard";
 export { EventBridge } from "./events/event-bridge";
 export { IconRenderer, IconRendererProvider } from "./icons";
 export { createLayoutResolver, createPageResolver, pageComponentName } from "./inertia";
+export { layoutComponents, OutletContext, SchemaLayout } from "./layout";
 export { useMenu } from "./menu";
 export { Provider, useRegistry } from "./provider";
 export {
@@ -28,6 +29,7 @@ export type {
   ComponentProps,
   ComponentType,
   KnownPageContainer,
+  LayoutPayload,
   MenuGroup,
   MenuItem,
   MenuPayload,

@@ -19,6 +19,7 @@ use Lattice\Lattice\Core\Services\DefinitionDiscovery;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentRegistry;
+use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Menu\MenuItem;
 use Lattice\Lattice\Menu\MenuRegistry;
 use Lattice\Lattice\Tables\TableRegistry;
@@ -42,6 +43,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(FormRegistry::class);
         $this->app->singleton(TableRegistry::class);
         $this->app->singleton(FragmentRegistry::class);
+        $this->app->singleton(LayoutRegistry::class);
         $this->app->singleton(ActionRegistry::class);
         $this->app->singleton(BulkActionRegistry::class);
         $this->app->singleton(MenuRegistry::class);

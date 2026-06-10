@@ -24,10 +24,16 @@ export type Node<TType extends string = string> = {
 /** An ordered list of component nodes — the content of a page, form, or container. */
 export type Schema = Node[];
 
+/** A server-composed layout shell: its key plus a schema containing one Outlet. */
+export type LayoutPayload = {
+  key: string;
+  schema: Schema;
+};
+
 export type PagePayload = {
   breadcrumbs: PageBreadcrumb[];
   container: PageContainer;
-  layout: string;
+  layout: LayoutPayload | null;
   menus: Record<string, MenuPayload | undefined>;
   schema: Schema;
   title: string | null;

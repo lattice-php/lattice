@@ -1,8 +1,9 @@
 import "../css/app.css";
 import { createInertiaApp } from "@inertiajs/react";
+import { createLayoutResolver, Provider, registry } from "@lattice/lattice";
 import type { ComponentType } from "react";
 import { createRoot } from "react-dom/client";
-import LatticePage from "../../../resources/js/page";
+import LatticePage from "@lattice/lattice/page";
 
 type PageModule = { default: ComponentType<any> };
 
@@ -19,11 +20,16 @@ createInertiaApp({
 
     return workbenchPages[`./Pages/${name}.tsx`];
   },
+  layout: createLayoutResolver(),
   setup({ el, App, props }) {
     if (!el) {
       return;
     }
 
-    createRoot(el).render(<App {...props} />);
+    createRoot(el).render(
+      <Provider registry={registry}>
+        <App {...props} />
+      </Provider>,
+    );
   },
 });

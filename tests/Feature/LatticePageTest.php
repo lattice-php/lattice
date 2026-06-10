@@ -1537,11 +1537,6 @@ test('pages serialize layout and container metadata', function () {
 
     $configuredPage = new class extends Page
     {
-        public function layout(): string
-        {
-            return 'custom';
-        }
-
         public function container(): string
         {
             return 'default';
@@ -1555,12 +1550,12 @@ test('pages serialize layout and container metadata', function () {
 
     expect($defaultPage->toArray($defaultPage->render(PageSchema::make())))
         ->toMatchArray([
-            'layout' => 'none',
+            'layout' => null,
             'container' => 'centered',
         ])
         ->and($configuredPage->toArray($configuredPage->render(PageSchema::make())))
         ->toMatchArray([
-            'layout' => 'custom',
+            'layout' => null,
             'container' => 'default',
         ]);
 });
@@ -1603,8 +1598,10 @@ test('workbench pages serialize package component trees for inertia', function (
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page')
             ->where('lattice.title', 'Lattice Workbench')
-            ->where('lattice.layout', 'none')
-            ->where('lattice.container', 'centered')
+            ->where('lattice.layout.key', 'app')
+            ->where('lattice.layout.schema.0.type', 'stack')
+            ->where('lattice.layout.schema.0.schema.1.schema.0.type', 'outlet')
+            ->where('lattice.container', 'default')
             ->where('lattice.schema.0.type', 'stack')
             ->where('lattice.schema.0.key', 'workbench-page')
             ->where('lattice.schema.0.schema.0.type', 'stack')

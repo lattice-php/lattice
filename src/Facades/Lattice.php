@@ -12,6 +12,8 @@ use Lattice\Lattice\Menu\MenuRegistry;
  * @method static void forms(class-string<\Lattice\Lattice\Forms\FormDefinition>|array<int, class-string<\Lattice\Lattice\Forms\FormDefinition>> $forms)
  * @method static void tables(class-string<\Lattice\Lattice\Tables\TableDefinition>|array<int, class-string<\Lattice\Lattice\Tables\TableDefinition>> $tables)
  * @method static void fragments(class-string<\Lattice\Lattice\Fragments\FragmentDefinition>|array<int, class-string<\Lattice\Lattice\Fragments\FragmentDefinition>> $fragments)
+ * @method static void layouts(class-string<\Lattice\Lattice\Layouts\LayoutDefinition>|array<int, class-string<\Lattice\Lattice\Layouts\LayoutDefinition>> $layouts)
+ * @method static \Lattice\Lattice\Layouts\LayoutRegistry layoutRegistry()
  * @method static void actions(class-string<\Lattice\Lattice\Actions\ActionDefinition>|array<int, class-string<\Lattice\Lattice\Actions\ActionDefinition>> $actions)
  * @method static void bulkActions(class-string<\Lattice\Lattice\Actions\BulkActionDefinition>|array<int, class-string<\Lattice\Lattice\Actions\BulkActionDefinition>> $bulkActions)
  * @method static void registerConfiguredDefinitions()

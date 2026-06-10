@@ -2,6 +2,7 @@ import type { Page as InertiaPage } from "@inertiajs/core";
 import type { ResolvedComponent } from "@inertiajs/react";
 import { describe, expect, it, vi } from "vitest";
 import { createLayoutResolver, createPageResolver } from "./inertia";
+import { SchemaLayout } from "./layout";
 import Page from "./page";
 import type { PagePayload } from "./core/types";
 
@@ -25,7 +26,7 @@ function payload(lattice: Partial<PagePayload> = {}): PagePayload {
     breadcrumbs: [],
     schema: [],
     container: "default",
-    layout: "none",
+    layout: null,
     menus: {},
     title: "Lattice",
     ...lattice,
@@ -57,56 +58,41 @@ describe("createPageResolver", () => {
 });
 
 describe("createLayoutResolver", () => {
-  it("maps app lattice pages to the configured app layout with breadcrumbs", () => {
-    const app = Symbol("app");
-    const auth = Symbol("auth");
-    const resolver = createLayoutResolver({ layouts: { app, auth } });
-    const breadcrumbs = [{ href: "/dashboard", title: "Dashboard" }];
+  it("renders lattice pages with a layout through the schema layout", () => {
+    const resolver = createLayoutResolver();
 
     expect(
       resolver(
         "lattice/page",
         pageWithLattice(
           payload({
-            breadcrumbs,
-            layout: "app",
+            layout: { key: "app", schema: [] },
           }),
         ),
       ),
-    ).toEqual([app, { breadcrumbs }]);
+    ).toBe(SchemaLayout);
   });
 
-  it("maps auth lattice pages to the configured auth layout", () => {
-    const app = Symbol("app");
-    const auth = Symbol("auth");
-    const resolver = createLayoutResolver({ layouts: { app, auth } });
+  it("renders layout-less lattice pages standalone", () => {
+    const resolver = createLayoutResolver();
 
-    expect(
-      resolver(
-        "lattice/page",
-        pageWithLattice(
-          payload({
-            layout: "auth",
-          }),
-        ),
-      ),
-    ).toBe(auth);
+    expect(resolver("lattice/page", pageWithLattice(payload()))).toBeNull();
   });
 
   it("delegates non-lattice pages to the default layout resolver", () => {
     const defaultLayout = vi.fn<(name: string, page: InertiaPage) => string>(
       () => "default-layout",
     );
-    const resolver = createLayoutResolver({
-      defaultLayout,
-      layouts: {
-        app: "app-layout",
-        auth: "auth-layout",
-      },
-    });
+    const resolver = createLayoutResolver({ defaultLayout });
     const page = pageWithLattice(payload());
 
     expect(resolver("auth/login", page)).toBe("default-layout");
     expect(defaultLayout).toHaveBeenCalledWith("auth/login", page);
+  });
+
+  it("returns null for non-lattice pages without a default resolver", () => {
+    const resolver = createLayoutResolver();
+
+    expect(resolver("auth/login", pageWithLattice(payload()))).toBeNull();
   });
 });
