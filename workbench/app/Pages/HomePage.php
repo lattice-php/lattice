@@ -11,6 +11,8 @@ use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\Gap;
+use Lattice\Lattice\Core\Enums\PageContainer;
+use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Tables\Components\Table;
@@ -21,6 +23,16 @@ final class HomePage extends Page
     public function title(): string
     {
         return 'Lattice Workbench';
+    }
+
+    public function layout(): PageLayout
+    {
+        return PageLayout::App;
+    }
+
+    public function container(): PageContainer
+    {
+        return PageContainer::Default;
     }
 
     public function render(PageSchema $schema): PageSchema

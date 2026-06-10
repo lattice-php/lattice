@@ -78,19 +78,41 @@ abstract class Page implements PageContract
     }
 
     /**
-     * @return array{title: string|null, layout: string, container: string, breadcrumbs: array<int, array{title: string, href: string}>, menus: array<string, array{groups: array<int, array{label: string|null, items: array<int, array{active: bool, href: string, icon: string|null, key: string, label: string, method: string}>}>}>, schema: array<int, array<string, mixed>>}
+     * @return array{title: string|null, layout: array{key: string, schema: array<int, array<string, mixed>>}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, menus: array<string, array{groups: array<int, array{label: string|null, items: array<int, array{active: bool, href: string, icon: string|null, key: string, label: string, method: string}>}>}>, schema: array<int, array<string, mixed>>}
      */
-    public function toArray(PageSchema $schema, ?Request $request = null): array
+    public function toArray(PageSchema $schema, Request $request): array
     {
         return [
             'title' => $this->title(),
-            'layout' => $this->serializePageMetadata($this->layout()),
+            'layout' => $this->resolveLayout($request),
             'container' => $this->serializePageMetadata($this->container()),
             'breadcrumbs' => $this->breadcrumbs(),
-            'menus' => $request instanceof Request
-                ? Lattice::menus()->toArray($request)
-                : [],
+            'menus' => Lattice::menus()->toArray($request),
             'schema' => $this->serializeSchema($schema),
+        ];
+    }
+
+    /**
+     * Resolve the page's layout to its wire shape: the layout key plus its
+     * realized schema (a component tree containing an Outlet that marks where
+     * this page's content renders). Returns null when the page opts out of a
+     * layout (rendered standalone, e.g. centered auth screens).
+     *
+     * @return array{key: string, schema: array<int, array<string, mixed>>}|null
+     */
+    private function resolveLayout(Request $request): ?array
+    {
+        $key = $this->serializePageMetadata($this->layout());
+
+        if ($key === '' || $key === PageLayout::None->value) {
+            return null;
+        }
+
+        $rendered = Lattice::layoutRegistry()->render($key, $request);
+
+        return [
+            'key' => $rendered['key'],
+            'schema' => json_decode(json_encode($rendered['schema'], JSON_THROW_ON_ERROR), true),
         ];
     }
 

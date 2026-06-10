@@ -1,5 +1,6 @@
 import type { Page as InertiaPage } from "@inertiajs/core";
 import type { ResolvedComponent } from "@inertiajs/react";
+import { SchemaLayout } from "./layout";
 import Page from "./page";
 import type { PagePayload } from "./core/types";
 
@@ -11,14 +12,8 @@ export type ResolvedPage =
   | { default: ResolvedComponent };
 export type PageModules = Record<string, () => Promise<ResolvedComponent>>;
 
-export type Layouts = {
-  app: unknown;
-  auth: unknown;
-};
-
 export type CreateLayoutResolverOptions = {
   defaultLayout?: (name: string, page: InertiaPage) => unknown;
-  layouts: Layouts;
 };
 
 export function createPageResolver(pages: PageModules) {
@@ -37,22 +32,14 @@ export function createPageResolver(pages: PageModules) {
   };
 }
 
-export function createLayoutResolver({ defaultLayout, layouts }: CreateLayoutResolverOptions) {
+export function createLayoutResolver({ defaultLayout }: CreateLayoutResolverOptions = {}) {
   return (name: string, page: InertiaPage): unknown => {
     if (name === pageComponentName) {
       const lattice = page.props.lattice as PagePayload | undefined;
 
-      if (lattice?.layout === "app") {
-        return [layouts.app, { breadcrumbs: lattice.breadcrumbs }];
-      }
-
-      if (lattice?.layout === "auth") {
-        return layouts.auth;
-      }
-
-      return null;
+      return lattice?.layout ? SchemaLayout : null;
     }
 
-    return defaultLayout?.(name, page) ?? layouts.app;
+    return defaultLayout?.(name, page) ?? null;
   };
 }

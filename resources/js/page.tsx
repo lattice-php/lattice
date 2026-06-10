@@ -29,7 +29,7 @@ export default function Page({ lattice }: Props) {
         <div
           data-testid="lattice-default-container"
           className={cn("w-full", {
-            "px-4 py-6": lattice.layout === "app",
+            "px-4 py-6": lattice.layout !== null,
           })}
         >
           {content}

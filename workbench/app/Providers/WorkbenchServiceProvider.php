@@ -18,6 +18,7 @@ use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Forms\DependentDemoForm;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Forms\ShowcaseForm;
+use Workbench\App\Layouts\AppLayout;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
@@ -95,6 +96,10 @@ class WorkbenchServiceProvider extends ServiceProvider
             UsersSimpleTable::class,
             UsersTablePaginationTable::class,
             UsersInfiniteTable::class,
+        ]);
+
+        Lattice::layouts([
+            AppLayout::class,
         ]);
 
         $this->pointBoostAtPackageRoot();
