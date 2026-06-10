@@ -80,16 +80,14 @@ abstract class Page implements PageContract
     /**
      * @return array{title: string|null, layout: array{key: string, schema: array<int, array<string, mixed>>}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, menus: array<string, array{groups: array<int, array{label: string|null, items: array<int, array{active: bool, href: string, icon: string|null, key: string, label: string, method: string}>}>}>, schema: array<int, array<string, mixed>>}
      */
-    public function toArray(PageSchema $schema, ?Request $request = null): array
+    public function toArray(PageSchema $schema, Request $request): array
     {
         return [
             'title' => $this->title(),
             'layout' => $this->resolveLayout($request),
             'container' => $this->serializePageMetadata($this->container()),
             'breadcrumbs' => $this->breadcrumbs(),
-            'menus' => $request instanceof Request
-                ? Lattice::menus()->toArray($request)
-                : [],
+            'menus' => Lattice::menus()->toArray($request),
             'schema' => $this->serializeSchema($schema),
         ];
     }
@@ -102,7 +100,7 @@ abstract class Page implements PageContract
      *
      * @return array{key: string, schema: array<int, array<string, mixed>>}|null
      */
-    private function resolveLayout(?Request $request): ?array
+    private function resolveLayout(Request $request): ?array
     {
         $key = $this->serializePageMetadata($this->layout());
 
@@ -110,7 +108,7 @@ abstract class Page implements PageContract
             return null;
         }
 
-        $rendered = Lattice::layoutRegistry()->render($key, $request ?? app(Request::class));
+        $rendered = Lattice::layoutRegistry()->render($key, $request);
 
         return [
             'key' => $rendered['key'],

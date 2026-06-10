@@ -407,7 +407,7 @@ test('components can opt out of rendering with when', function () {
         }
     };
 
-    $pageData = wire($page->toArray($page->render(PageSchema::make())));
+    $pageData = wire($page->toArray($page->render(PageSchema::make()), new Request));
 
     expect($pageData['schema'])
         ->toHaveCount(2)
@@ -1548,12 +1548,12 @@ test('pages serialize layout and container metadata', function () {
         }
     };
 
-    expect($defaultPage->toArray($defaultPage->render(PageSchema::make())))
+    expect($defaultPage->toArray($defaultPage->render(PageSchema::make()), new Request))
         ->toMatchArray([
             'layout' => null,
             'container' => 'centered',
         ])
-        ->and($configuredPage->toArray($configuredPage->render(PageSchema::make())))
+        ->and($configuredPage->toArray($configuredPage->render(PageSchema::make()), new Request))
         ->toMatchArray([
             'layout' => null,
             'container' => 'default',
@@ -1579,7 +1579,7 @@ test('pages serialize breadcrumb metadata', function () {
         }
     };
 
-    expect($page->toArray($page->render(PageSchema::make())))
+    expect($page->toArray($page->render(PageSchema::make()), new Request))
         ->toMatchArray([
             'breadcrumbs' => [
                 [
