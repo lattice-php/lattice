@@ -8,19 +8,29 @@ use Lattice\Lattice\Attributes\SerializationHook;
 
 class Tabs extends ContainerComponent
 {
+    public ?string $defaultValue = null;
+
+    public string $queryKey = 'tabs';
+
+    public string $activeValue;
+
     public static function make(?string $key = null): static
     {
-        return (new static($key))->queryKey('tabs');
+        return new static($key);
     }
 
     public function defaultValue(string $value): static
     {
-        return $this->prop('defaultValue', $value);
+        $this->defaultValue = $value;
+
+        return $this;
     }
 
     public function queryKey(string $key): static
     {
-        return $this->prop('queryKey', $key);
+        $this->queryKey = $key;
+
+        return $this;
     }
 
     protected function type(): string
@@ -32,20 +42,14 @@ class Tabs extends ContainerComponent
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    #[SerializationHook(priority: 200)]
-    protected function serialiseProps(array $data): array
+    #[SerializationHook(priority: 190)]
+    protected function projectActiveValue(array $data): array
     {
-        $activeValue = $this->activeValue();
+        $this->activeValue = $this->resolveActiveValue();
 
-        $this->ensureActiveTabIsConfirmed($activeValue);
+        $this->ensureActiveTabIsConfirmed($this->activeValue);
 
-        return [
-            ...$data,
-            'props' => [
-                ...$this->props,
-                'activeValue' => $activeValue,
-            ],
-        ];
+        return $data;
     }
 
     /**
@@ -55,23 +59,18 @@ class Tabs extends ContainerComponent
     #[SerializationHook(priority: 300)]
     protected function serialiseSchema(array $data): array
     {
-        $props = $data['props'] ?? [];
-        $activeValue = is_array($props) && is_string($props['activeValue'] ?? null)
-            ? $props['activeValue']
-            : $this->activeValue();
-
         return [
             ...$data,
             'schema' => array_map(
                 fn (Component $child): Component => $child instanceof Tab
-                    ? $child->withoutHiddenChildren($activeValue)
+                    ? $child->withoutHiddenChildren($this->activeValue)
                     : $child,
                 $this->renderableChildren(),
             ),
         ];
     }
 
-    private function activeValue(): string
+    private function resolveActiveValue(): string
     {
         $values = $this->tabValues();
         $queryValue = request()->query($this->queryKeyName());
@@ -86,10 +85,8 @@ class Tabs extends ContainerComponent
             return $pathValue;
         }
 
-        $defaultValue = $this->props['defaultValue'] ?? null;
-
-        if (is_string($defaultValue) && in_array($defaultValue, $values, true)) {
-            return $defaultValue;
+        if ($this->defaultValue !== null && in_array($this->defaultValue, $values, true)) {
+            return $this->defaultValue;
         }
 
         return $values[0] ?? '';
@@ -97,9 +94,7 @@ class Tabs extends ContainerComponent
 
     private function queryKeyName(): string
     {
-        $queryKey = $this->props['queryKey'] ?? 'tabs';
-
-        return is_string($queryKey) && $queryKey !== '' ? $queryKey : 'tabs';
+        return $this->queryKey !== '' ? $this->queryKey : 'tabs';
     }
 
     /**

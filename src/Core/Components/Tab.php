@@ -4,47 +4,60 @@ namespace Lattice\Lattice\Core\Components;
 
 class Tab extends ContainerComponent
 {
+    public string $label = '';
+
+    public string $value = '';
+
+    /**
+     * @var array{required: bool, redirectUrl: string, timeout?: int}|null
+     */
+    public ?array $confirm = null;
+
     public static function make(string $value, string $label, ?string $key = null): static
     {
-        return (new static($key))->props([
-            'label' => $label,
-            'value' => $value,
-        ]);
+        $tab = new static($key);
+        $tab->label = $label;
+        $tab->value = $value;
+
+        return $tab;
     }
 
     public function confirm(?string $redirectUrl = null, ?int $timeout = null): static
     {
-        return $this->prop('confirm', array_filter([
+        $confirm = [
             'required' => true,
             'redirectUrl' => $redirectUrl ?? '/user/confirm-password',
-            'timeout' => $timeout,
-        ], fn (mixed $value): bool => $value !== null));
+        ];
+
+        if ($timeout !== null) {
+            $confirm['timeout'] = $timeout;
+        }
+
+        $this->confirm = $confirm;
+
+        return $this;
     }
 
     public function value(): string
     {
-        return (string) ($this->props['value'] ?? '');
+        return $this->value;
     }
 
     public function requiresConfirmation(): bool
     {
-        $confirm = $this->props['confirm'] ?? null;
-
-        return is_array($confirm) && ($confirm['required'] ?? false) === true;
+        return is_array($this->confirm) && $this->confirm['required'] === true;
     }
 
     public function confirmationRedirectUrl(): string
     {
-        $confirm = $this->props['confirm'] ?? null;
-        $redirectUrl = is_array($confirm) ? ($confirm['redirectUrl'] ?? null) : null;
+        $redirectUrl = $this->confirm['redirectUrl'] ?? null;
 
         return is_string($redirectUrl) && $redirectUrl !== '' ? $redirectUrl : '/user/confirm-password';
     }
 
     public function confirmationTimeout(): ?int
     {
-        $confirm = $this->props['confirm'] ?? null;
-        $timeout = is_array($confirm) ? ($confirm['timeout'] ?? null) : null;
+        $timeout = $this->confirm['timeout'] ?? null;
 
         return is_int($timeout) ? $timeout : null;
     }

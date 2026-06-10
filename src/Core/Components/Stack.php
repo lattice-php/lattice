@@ -8,6 +8,14 @@ use Lattice\Lattice\Core\Enums\Width;
 
 class Stack extends ContainerComponent
 {
+    public ?Gap $gap = null;
+
+    public ?Align $align = null;
+
+    public ?Width $width = null;
+
+    public ?string $direction = null;
+
     public static function make(?string $key = null): static
     {
         return new static($key);
@@ -15,22 +23,30 @@ class Stack extends ContainerComponent
 
     public function gap(Gap|string $gap): static
     {
-        return $this->prop('gap', $this->enumValue($gap));
+        $this->gap = $gap instanceof Gap ? $gap : Gap::from($gap);
+
+        return $this;
     }
 
     public function align(Align|string $align): static
     {
-        return $this->prop('align', $this->enumValue($align));
+        $this->align = $align instanceof Align ? $align : Align::from($align);
+
+        return $this;
     }
 
     public function width(Width|string $width): static
     {
-        return $this->prop('width', $this->enumValue($width));
+        $this->width = $width instanceof Width ? $width : Width::from($width);
+
+        return $this;
     }
 
     public function direction(string $direction): static
     {
-        return $this->prop('direction', $direction);
+        $this->direction = $direction;
+
+        return $this;
     }
 
     protected function type(): string

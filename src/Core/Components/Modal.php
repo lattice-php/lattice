@@ -6,6 +6,14 @@ class Modal extends ContainerComponent
 {
     use IsInteractive;
 
+    public ?string $title = null;
+
+    public ?string $description = null;
+
+    public ?string $closeLabel = null;
+
+    public ?bool $open = null;
+
     public static function make(string $id): static
     {
         return (new static)->id($id);
@@ -13,22 +21,30 @@ class Modal extends ContainerComponent
 
     public function title(string $title): static
     {
-        return $this->prop('title', $title);
+        $this->title = $title;
+
+        return $this;
     }
 
     public function description(string $description): static
     {
-        return $this->prop('description', $description);
+        $this->description = $description;
+
+        return $this;
     }
 
     public function closeLabel(string $label): static
     {
-        return $this->prop('closeLabel', $label);
+        $this->closeLabel = $label;
+
+        return $this;
     }
 
     public function open(bool $open = true): static
     {
-        return $this->prop('open', $open);
+        $this->open = $open;
+
+        return $this;
     }
 
     protected function type(): string
