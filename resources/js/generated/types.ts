@@ -96,6 +96,22 @@ status?: string | null,
 errorBag?: string | null,
 state?: Record<string, any>,
 };
+export type FormFieldNode = 
+  | { type: "form.text-input"; key?: string; props: TextInput }
+  | { type: "form.textarea"; key?: string; props: Textarea }
+  | { type: "form.select"; key?: string; props: Select }
+  | { type: "form.choice"; key?: string; props: Choice }
+  | { type: "form.checkbox"; key?: string; props: Checkbox }
+  | { type: "form.date-input"; key?: string; props: DateInput }
+  | { type: "form.number-input"; key?: string; props: NumberInput }
+  | { type: "form.password-input"; key?: string; props: PasswordInput }
+  | { type: "form.hidden-input"; key?: string; props: HiddenInput }
+  | { type: "form.rich-editor"; key?: string; props: RichEditor }
+  | { type: "form.submit-button"; key?: string; props: SubmitButton };
+export type FormNode = 
+  | FormFieldNode
+  | { type: "form"; key?: string; id?: string; props: Form; schema?: FormFieldNode[] };
+export type FormNodeType = FormNode["type"];
 export type Gap = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type HiddenInput = {
 name: string,

@@ -38,6 +38,7 @@ use Spatie\TypeScriptTransformer\TypeScriptTransformerConfigFactory;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 use Workbench\App\Support\LatticeComponentTransformer;
 use Workbench\App\Support\LatticeEnumTransformer;
+use Workbench\App\Support\LatticeFormNodesProvider;
 use Workbench\App\Support\LatticeValueObjectTransformer;
 
 final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerApplicationServiceProvider
@@ -82,6 +83,23 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 SubmitButton::class,
                 Form::class,
             ]))
+            ->provider(new LatticeFormNodesProvider(
+                [
+                    TextInput::class => 'form.text-input',
+                    Textarea::class => 'form.textarea',
+                    Select::class => 'form.select',
+                    Choice::class => 'form.choice',
+                    Checkbox::class => 'form.checkbox',
+                    DateInput::class => 'form.date-input',
+                    NumberInput::class => 'form.number-input',
+                    PasswordInput::class => 'form.password-input',
+                    HiddenInput::class => 'form.hidden-input',
+                    RichEditor::class => 'form.rich-editor',
+                    SubmitButton::class => 'form.submit-button',
+                ],
+                Form::class,
+                'form',
+            ))
             ->transformDirectories($packageRoot.'/src')
             ->outputDirectory($packageRoot.'/resources/js/generated')
             ->writer(new FlatModuleWriter('types.ts'));
