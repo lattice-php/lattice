@@ -28,33 +28,33 @@ final class TablesPage extends Page
 
     public function render(PageSchema $schema): PageSchema
     {
-        return $schema->components([
+        return $schema->schema([
             Stack::make('tables-page')
                 ->gap(Gap::ExtraLarge)
-                ->children([
+                ->schema([
                     Stack::make('tables-hero')
                         ->gap(Gap::Large)
-                        ->children([
+                        ->schema([
                             Badge::make('Tables'),
                             Heading::make('Pagination modes'),
                             Text::make('Each tab mounts its table on first open.'),
                         ]),
                     Tabs::make('pagination-mode-tabs')
                         ->defaultValue('none')
-                        ->children([
-                            Tab::make('none', 'None')->children([
+                        ->schema([
+                            Tab::make('none', 'None')->schema([
                                 Heading::make('No pagination', 2),
                                 Table::lazy(UsersNoneTable::class),
                             ]),
-                            Tab::make('simple', 'Simple')->children([
+                            Tab::make('simple', 'Simple')->schema([
                                 Heading::make('Simple pagination', 2),
                                 Table::lazy(UsersSimpleTable::class),
                             ]),
-                            Tab::make('table', 'Table')->children([
+                            Tab::make('table', 'Table')->schema([
                                 Heading::make('Table pagination', 2),
                                 Table::lazy(UsersTablePaginationTable::class),
                             ]),
-                            Tab::make('infinite', 'Infinite')->children([
+                            Tab::make('infinite', 'Infinite')->schema([
                                 Heading::make('Infinite pagination', 2),
                                 Table::lazy(UsersInfiniteTable::class),
                             ]),

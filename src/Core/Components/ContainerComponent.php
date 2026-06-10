@@ -12,18 +12,11 @@ abstract class ContainerComponent extends Component
     protected array $children = [];
 
     /**
-     * @param  array<int, Component>  $children
+     * @param  array<int, Component>  $components
      */
-    public function children(array $children): static
+    public function schema(array $components): static
     {
-        $this->children = $children;
-
-        return $this;
-    }
-
-    public function child(Component $child): static
-    {
-        $this->children[] = $child;
+        $this->children = $components;
 
         return $this;
     }

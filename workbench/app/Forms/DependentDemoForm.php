@@ -27,7 +27,7 @@ class DependentDemoForm extends FormDefinition
         return $form
             ->precognitive(300)
             ->schema([
-                Card::make('Account')->children([
+                Card::make('Account')->schema([
                     Choice::make('type', 'Type')->options([
                         Choice::option('Personal', 'personal'),
                         Choice::option('Business', 'business'),
@@ -37,8 +37,8 @@ class DependentDemoForm extends FormDefinition
                         ->requiredWhen('type', 'business')
                         ->rules(['string', 'max:255']),
                 ]),
-                Card::make('Order')->children([
-                    Grid::make()->columns(2)->children([
+                Card::make('Order')->schema([
+                    Grid::make()->columns(2)->schema([
                         NumberInput::make('qty', 'Qty')->min(0),
                         NumberInput::make('unit_price', 'Unit price')->min(0)->step(0.01),
                     ]),
@@ -48,7 +48,7 @@ class DependentDemoForm extends FormDefinition
                     NumberInput::make('level', 'Level')->slider()->min(0)->max(10),
                     DateInput::make('due', 'Due date'),
                 ]),
-                Card::make('Content')->children([
+                Card::make('Content')->schema([
                     Textarea::make('bio', 'Bio')->rows(4)->rules(['nullable', 'string', 'max:500']),
                     RichEditor::make('article', 'Article'),
                 ]),

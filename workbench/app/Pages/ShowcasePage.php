@@ -22,10 +22,10 @@ class ShowcasePage extends Page
 
     public function render(PageSchema $schema): PageSchema
     {
-        return $schema->components([
+        return $schema->schema([
             Stack::make('showcase-page')
                 ->gap(Gap::Large)
-                ->children([
+                ->schema([
                     Heading::make('Form Showcase'),
                     Form::use(ShowcaseForm::class)
                         ->method(HttpMethod::Post),

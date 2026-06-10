@@ -22,14 +22,14 @@ class ProductsPage extends Page
 
     public function render(PageSchema $schema): PageSchema
     {
-        return $schema->components([
+        return $schema->schema([
             Stack::make('products-page')
                 ->gap(Gap::Large)
-                ->children([
+                ->schema([
                     Stack::make('products-header')
                         ->direction('row')
                         ->align('center')
-                        ->children([
+                        ->schema([
                             Heading::make('Products'),
                             Button::make('Create product')
                                 ->href('/products/create'),

@@ -125,9 +125,9 @@ function latticeGet(string $url, string $ref): TestResponse
     return getJson($url, latticeHeaders($ref));
 }
 
-function exposesChildrenApi(object $component): bool
+function exposesSchemaApi(object $component): bool
 {
-    return method_exists($component, 'children');
+    return method_exists($component, 'schema');
 }
 
 test('lattice component factories stay open for extension', function () {
@@ -256,7 +256,7 @@ test('forms serialize schema children like pages', function () {
         ]);
 });
 
-test('only container components expose children', function () {
+test('only container components expose a schema', function () {
     $containerComponents = [
         Card::make('Card', 'Description'),
         Grid::make(),
@@ -281,11 +281,11 @@ test('only container components expose children', function () {
     ];
 
     foreach ($containerComponents as $component) {
-        expect(exposesChildrenApi($component))->toBeTrue();
+        expect(exposesSchemaApi($component))->toBeTrue();
     }
 
     foreach ($leafComponents as $component) {
-        expect(exposesChildrenApi($component))->toBeFalse();
+        expect(exposesSchemaApi($component))->toBeFalse();
     }
 });
 
@@ -399,10 +399,10 @@ test('components can opt out of rendering with when', function () {
     {
         public function render(PageSchema $schema): PageSchema
         {
-            return $schema->components([
+            return $schema->schema([
                 Text::make('Visible root'),
                 Text::make('Hidden root')->when(false),
-                Stack::make('nested')->children([
+                Stack::make('nested')->schema([
                     Text::make('Visible child'),
                     Text::make('Hidden child')->when(false),
                 ]),
@@ -1143,7 +1143,7 @@ test('modals serialize composable children for action driven dialogs', function 
     expect(Modal::make('settings.two-factor-setup')
         ->title('Set up two-factor authentication')
         ->description('Scan the QR code with your authenticator app.')
-        ->children([
+        ->schema([
             Text::make('Recovery codes will appear here.'),
         ])
         ->toArray())
@@ -1195,7 +1195,7 @@ test('registered fragments serialize lazy endpoints and return component schemas
 });
 
 test('links and horizontal stacks serialize as separate composable primitives', function () {
-    expect(Stack::make('prompt')->direction('row')->gap(Gap::ExtraSmall)->children([
+    expect(Stack::make('prompt')->direction('row')->gap(Gap::ExtraSmall)->schema([
         Text::make('Need access?'),
         Link::make('Register')->href('/register'),
     ])->toArray())
@@ -1244,11 +1244,11 @@ test('layout enums serialize to their backed string values', function () {
 test('tabs serialize tab panels as composable children', function () {
     expect(Tabs::make('settings-tabs')
         ->defaultValue('security')
-        ->children([
-            Tab::make('profile', 'Profile')->children([
+        ->schema([
+            Tab::make('profile', 'Profile')->schema([
                 Text::make('Profile form'),
             ]),
-            Tab::make('security', 'Security')->children([
+            Tab::make('security', 'Security')->schema([
                 Form::make('password-form'),
             ]),
         ])
@@ -1311,7 +1311,7 @@ test('tabs can customize their query string key', function () {
 test('tabs ignore hidden tab children when resolving their active value', function () {
     $tabs = Tabs::make('settings-tabs')
         ->defaultValue('security')
-        ->children([
+        ->schema([
             Tab::make('profile', 'Profile'),
             Tab::make('security', 'Security')->when(false),
         ])
@@ -1339,13 +1339,13 @@ test('tabs hydrate their active value from the request query string', function (
 test('confirmed inactive tabs serialize only their tab metadata', function () {
     $tabs = Tabs::make('settings-tabs')
         ->defaultValue('profile')
-        ->children([
-            Tab::make('profile', 'Profile')->children([
+        ->schema([
+            Tab::make('profile', 'Profile')->schema([
                 Text::make('Profile form'),
             ]),
             Tab::make('security', 'Security')
                 ->confirm()
-                ->children([
+                ->schema([
                     Text::make('Security form'),
                 ]),
         ])
@@ -1908,11 +1908,11 @@ final class WorkbenchTabsPage extends Page
         return $schema->component(
             Tabs::make('settings-tabs')
                 ->defaultValue('profile')
-                ->children([
-                    Tab::make('profile', 'Profile')->children([
+                ->schema([
+                    Tab::make('profile', 'Profile')->schema([
                         Text::make('Profile form'),
                     ]),
-                    Tab::make('security', 'Security')->children([
+                    Tab::make('security', 'Security')->schema([
                         Text::make('Security form'),
                     ]),
                 ]),
@@ -1927,13 +1927,13 @@ final class WorkbenchConfirmedTabsPage extends Page
         return $schema->component(
             Tabs::make('settings-tabs')
                 ->defaultValue('profile')
-                ->children([
-                    Tab::make('profile', 'Profile')->children([
+                ->schema([
+                    Tab::make('profile', 'Profile')->schema([
                         Text::make('Profile form'),
                     ]),
                     Tab::make('security', 'Security')
                         ->confirm()
-                        ->children([
+                        ->schema([
                             Text::make('Security form'),
                         ]),
                 ]),

@@ -33,7 +33,7 @@ class Form extends ContainerComponent
         return (new static)
             ->id($registered->id)
             ->props($registered->props)
-            ->children($registered->children);
+            ->schema($registered->children);
     }
 
     public function action(string $action): static
@@ -69,14 +69,6 @@ class Form extends ContainerComponent
     public function withoutSubmitButton(): static
     {
         return $this->prop('submitButton', false);
-    }
-
-    /**
-     * @param  array<int, Component>  $components
-     */
-    public function schema(array $components): static
-    {
-        return $this->children($components);
     }
 
     /**

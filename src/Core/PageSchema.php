@@ -19,7 +19,7 @@ final class PageSchema
     /**
      * @param  array<int, Component>  $components
      */
-    public function components(array $components): static
+    public function schema(array $components): static
     {
         $this->components = $components;
 

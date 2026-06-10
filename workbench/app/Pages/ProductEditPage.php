@@ -23,10 +23,10 @@ class ProductEditPage extends Page
 
     public function render(PageSchema $schema, Product $product): PageSchema
     {
-        return $schema->components([
+        return $schema->schema([
             Stack::make('product-edit-page')
                 ->gap(Gap::Large)
-                ->children([
+                ->schema([
                     Heading::make('Edit Product'),
                     Form::use(ProductForm::class)
                         ->method(HttpMethod::Patch)

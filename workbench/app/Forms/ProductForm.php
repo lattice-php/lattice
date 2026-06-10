@@ -27,10 +27,10 @@ class ProductForm extends FormDefinition
         return $form
             ->precognitive(2650)
             ->schema([
-                Card::make('Product details')->children([
+                Card::make('Product details')->schema([
                     TextInput::make('name', 'Name')
                         ->rules(['required', 'string', 'max:255']),
-                    Grid::make()->columns(2)->children([
+                    Grid::make()->columns(2)->schema([
                         TextInput::make('sku', 'SKU')
                             ->rules(['required', 'string', 'max:255', Rule::unique(Product::class, 'sku')->ignore($product)]),
                         TextInput::make('price', 'Price')

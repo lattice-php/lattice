@@ -10,7 +10,7 @@ use Lattice\Lattice\Forms\Components\TextInput;
 it('flattens fields including nested containers', function (): void {
     $form = Form::make('demo')->schema([
         TextInput::make('name', 'Name'),
-        Stack::make('group')->children([
+        Stack::make('group')->schema([
             TextInput::make('sku', 'SKU'),
             Choice::make('status', 'Status'),
         ]),
