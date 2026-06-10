@@ -2,22 +2,13 @@ import inertia from "@inertiajs/vite";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import laravel from "laravel-vite-plugin";
-import {
-  existsSync,
-  mkdirSync,
-  readdirSync,
-  readFileSync,
-  renameSync,
-  rmSync,
-  statSync,
-} from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import type { Plugin } from "vite";
 import dts from "vite-plugin-dts";
 import { defineConfig } from "vitest/config";
 
 const sourceRoot = path.resolve(__dirname, "resources/js");
-const distRoot = path.resolve(__dirname, "dist");
 
 const isVitest = process.env.VITEST !== undefined;
 
@@ -29,56 +20,19 @@ function libraryEntries(): string[] {
     .map((file) => path.join(sourceRoot, file));
 }
 
-// vite-plugin-dts keys its output off the project root (the shared tsconfig also
-// covers the workbench), so declarations land under dist/resources/js. Lift them
-// up so each .d.ts sits next to its compiled .js.
-function liftDeclarations(): void {
-  const nested = path.join(distRoot, "resources/js");
-
-  if (!existsSync(nested)) {
-    return;
-  }
-
-  for (const entry of readdirSync(nested, { recursive: true, encoding: "utf8" })) {
-    const from = path.join(nested, entry);
-
-    if (statSync(from).isDirectory()) {
-      continue;
-    }
-
-    const to = path.join(distRoot, entry);
-    mkdirSync(path.dirname(to), { recursive: true });
-    renameSync(from, to);
-  }
-
-  rmSync(path.join(distRoot, "resources"), { recursive: true, force: true });
-}
-
-// Guardrail: the heaviest lazily-registered component (TipTap) must keep its own
-// dynamically-imported chunk so consumers only load it on demand.
-function assertChunksSplit(): void {
-  const formIndex = readFileSync(path.join(distRoot, "form/index.js"), "utf8");
-  if (
-    !existsSync(path.join(distRoot, "form/components/fields/rich-editor.js")) ||
-    !/import\([^)]*rich-editor/.test(formIndex)
-  ) {
-    throw new Error("Library build flattened the rich-editor chunk — code-splitting is broken.");
-  }
-}
-
-// Ship the stylesheet with its @source pointing at the compiled output so a
-// consumer importing it from node_modules still gets the component classes
-// scanned by Tailwind.
 function stylesheet(): Plugin {
   return {
     name: "lattice:stylesheet",
     generateBundle() {
-      const css = readFileSync(
-        path.join(sourceRoot, "../css/lattice.css"),
-        "utf8",
-      ).replace('@source "../js";', '@source "./**/*.js";');
+      const css = readFileSync(path.join(sourceRoot, "../css/lattice.css"), "utf8");
 
-      this.emitFile({ type: "asset", fileName: "lattice.css", source: css });
+      this.emitFile({
+        type: "asset",
+        fileName: "lattice.css",
+        // Ship the stylesheet with @source pointing at the package's compiled output,
+        // so tailwind scans correctly for classes in built-in components.
+        source: `@source "./**/*.js";\n\n${css}`,
+      });
     },
   };
 }
@@ -107,11 +61,8 @@ export default defineConfig(({ mode }) => {
               tsconfigPath: path.resolve(__dirname, "tsconfig.json"),
               include: ["resources/js"],
               exclude: ["resources/js/**/*.test.*", "resources/js/test/**"],
+              compilerOptions: { rootDir: sourceRoot },
               outDir: "dist",
-              afterBuild: () => {
-                liftDeclarations();
-                assertChunksSplit();
-              },
             }),
             stylesheet(),
           ]

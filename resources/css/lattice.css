@@ -1,10 +1,3 @@
-/*
- * Register Lattice's component sources with Tailwind. Consumers import this
- * stylesheet from the Composer-installed package, so the path resolves into
- * vendor and Tailwind generates the utilities the components use.
- */
-@source "../js";
-
 :root,
 [data-theme="light"] {
   --lt-bg: var(--background, oklch(1 0 0));
