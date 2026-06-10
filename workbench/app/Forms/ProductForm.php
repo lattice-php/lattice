@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Workbench\App\Forms;
 
-use Bambamboole\Lattice\Attributes\Form;
-use Bambamboole\Lattice\Core\Components\Card;
-use Bambamboole\Lattice\Core\Components\Grid;
-use Bambamboole\Lattice\Forms\Components\Choice;
-use Bambamboole\Lattice\Forms\Components\Form as FormComponent;
-use Bambamboole\Lattice\Forms\Components\Select;
-use Bambamboole\Lattice\Forms\Components\TextInput;
-use Bambamboole\Lattice\Forms\FormDefinition;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Core\Components\Card;
+use Lattice\Lattice\Core\Components\Grid;
+use Lattice\Lattice\Forms\Components\Choice;
+use Lattice\Lattice\Forms\Components\Form as FormComponent;
+use Lattice\Lattice\Forms\Components\Select;
+use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Models\Product;
 

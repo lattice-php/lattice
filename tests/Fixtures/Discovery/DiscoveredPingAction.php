@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tests\Fixtures\Discovery;
+namespace Lattice\Lattice\Tests\Fixtures\Discovery;
 
-use Bambamboole\Lattice\Actions\ActionDefinition;
-use Bambamboole\Lattice\Actions\ActionResult;
-use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
-use Bambamboole\Lattice\Attributes\Action;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Actions\ActionDefinition;
+use Lattice\Lattice\Actions\ActionResult;
+use Lattice\Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Lattice\Attributes\Action;
 
 #[Action('fixtures.ping')]
 class DiscoveredPingAction extends ActionDefinition

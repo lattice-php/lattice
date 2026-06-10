@@ -1,16 +1,16 @@
 <?php
 
-namespace Bambamboole\Lattice\Http;
+namespace Lattice\Lattice\Http;
 
 use BackedEnum;
 use BadMethodCallException;
-use Bambamboole\Lattice\Core\Enums\PageContainer;
-use Bambamboole\Lattice\Core\Enums\PageLayout;
-use Bambamboole\Lattice\Core\PageSchema;
-use Bambamboole\Lattice\Facades\Lattice;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Lattice\Lattice\Core\Enums\PageContainer;
+use Lattice\Lattice\Core\Enums\PageLayout;
+use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Facades\Lattice;
 use UnexpectedValueException;
 
 abstract class Page implements PageContract

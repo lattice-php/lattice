@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Core\Components;
+namespace Lattice\Lattice\Core\Components;
 
 class Grid extends ContainerComponent
 {

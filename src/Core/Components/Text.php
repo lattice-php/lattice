@@ -1,8 +1,8 @@
 <?php
 
-namespace Bambamboole\Lattice\Core\Components;
+namespace Lattice\Lattice\Core\Components;
 
-use Bambamboole\Lattice\Core\Enums\Align;
+use Lattice\Lattice\Core\Enums\Align;
 
 class Text extends Component
 {

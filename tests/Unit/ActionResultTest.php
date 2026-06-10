@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Actions\ActionResult;
+use Lattice\Lattice\Actions\ActionResult;
 
 it('marks a successful result as ok', function (): void {
     expect(ActionResult::success(['id' => 1])->toArray())

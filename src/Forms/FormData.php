@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Forms;
+namespace Lattice\Lattice\Forms;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;

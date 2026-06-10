@@ -1,10 +1,10 @@
 <?php
 
-namespace Bambamboole\Lattice\Core\Components;
+namespace Lattice\Lattice\Core\Components;
 
-use Bambamboole\Lattice\Attributes\SerializationHook;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Date;
+use Lattice\Lattice\Attributes\SerializationHook;
 
 class Tabs extends ContainerComponent
 {

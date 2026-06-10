@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Attributes;
+namespace Lattice\Lattice\Attributes;
 
 abstract class ComponentAttribute
 {

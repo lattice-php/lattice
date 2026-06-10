@@ -1,8 +1,8 @@
 <?php
 
-namespace Bambamboole\Lattice\Forms\Components;
+namespace Lattice\Lattice\Forms\Components;
 
-use Bambamboole\Lattice\Core\Concerns\HasTabIndex;
+use Lattice\Lattice\Core\Concerns\HasTabIndex;
 
 class Checkbox extends Field
 {

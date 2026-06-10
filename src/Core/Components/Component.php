@@ -1,10 +1,10 @@
 <?php
 
-namespace Bambamboole\Lattice\Core\Components;
+namespace Lattice\Lattice\Core\Components;
 
 use BackedEnum;
-use Bambamboole\Lattice\Attributes\SerializationHook;
 use JsonSerializable;
+use Lattice\Lattice\Attributes\SerializationHook;
 use ReflectionMethod;
 use Spatie\Attributes\Attributes;
 use Spatie\Attributes\AttributeTarget;

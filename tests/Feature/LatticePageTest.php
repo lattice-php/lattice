@@ -2,64 +2,6 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Actions\ActionDefinition;
-use Bambamboole\Lattice\Actions\ActionResult;
-use Bambamboole\Lattice\Actions\BulkActionRegistry;
-use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
-use Bambamboole\Lattice\Actions\Components\ActionGroup;
-use Bambamboole\Lattice\Actions\Effect;
-use Bambamboole\Lattice\Attributes\Action;
-use Bambamboole\Lattice\Attributes\Form as FormAttribute;
-use Bambamboole\Lattice\Attributes\Fragment;
-use Bambamboole\Lattice\Attributes\SerializationHook;
-use Bambamboole\Lattice\Attributes\Table as TableAttribute;
-use Bambamboole\Lattice\Core\Components\Badge;
-use Bambamboole\Lattice\Core\Components\Button;
-use Bambamboole\Lattice\Core\Components\Card;
-use Bambamboole\Lattice\Core\Components\Component;
-use Bambamboole\Lattice\Core\Components\Grid;
-use Bambamboole\Lattice\Core\Components\Heading;
-use Bambamboole\Lattice\Core\Components\Link;
-use Bambamboole\Lattice\Core\Components\Modal;
-use Bambamboole\Lattice\Core\Components\SegmentedControl;
-use Bambamboole\Lattice\Core\Components\Stack;
-use Bambamboole\Lattice\Core\Components\Tab;
-use Bambamboole\Lattice\Core\Components\Tabs;
-use Bambamboole\Lattice\Core\Components\Text;
-use Bambamboole\Lattice\Core\Concerns\CreatesToastMessages;
-use Bambamboole\Lattice\Core\Enums\Align;
-use Bambamboole\Lattice\Core\Enums\Gap;
-use Bambamboole\Lattice\Core\Enums\HttpMethod;
-use Bambamboole\Lattice\Core\Enums\LucideIcon;
-use Bambamboole\Lattice\Core\Enums\ToastVariant;
-use Bambamboole\Lattice\Core\Enums\Width;
-use Bambamboole\Lattice\Core\PageSchema;
-use Bambamboole\Lattice\Core\Services\ComponentReferenceSigner;
-use Bambamboole\Lattice\Core\Values\ToastMessage;
-use Bambamboole\Lattice\Facades\Lattice;
-use Bambamboole\Lattice\Forms\Components\Choice;
-use Bambamboole\Lattice\Forms\Components\Form;
-use Bambamboole\Lattice\Forms\Components\PasswordInput;
-use Bambamboole\Lattice\Forms\FormDefinition;
-use Bambamboole\Lattice\Fragments\Components\Fragment as FragmentComponent;
-use Bambamboole\Lattice\Fragments\FragmentDefinition;
-use Bambamboole\Lattice\Http\Page;
-use Bambamboole\Lattice\LatticeRegistry;
-use Bambamboole\Lattice\Menu\MenuItem;
-use Bambamboole\Lattice\Menu\MenuRegistry;
-use Bambamboole\Lattice\Tables\Columns\StackColumn;
-use Bambamboole\Lattice\Tables\Columns\TextColumn;
-use Bambamboole\Lattice\Tables\Components\Table;
-use Bambamboole\Lattice\Tables\EloquentTableDefinition;
-use Bambamboole\Lattice\Tables\Enums\PaginationType;
-use Bambamboole\Lattice\Tables\TableDefinition;
-use Bambamboole\Lattice\Tables\TableQuery;
-use Bambamboole\Lattice\Tables\TableResult;
-use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredArchiveBulkAction;
-use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredPanelFragment;
-use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredPingAction;
-use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
-use Bambamboole\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\JsonResponse;
@@ -69,6 +11,64 @@ use Illuminate\Testing\TestResponse;
 use Inertia\ResponseFactory;
 use Inertia\Support\SessionKey;
 use Inertia\Testing\AssertableInertia;
+use Lattice\Lattice\Actions\ActionDefinition;
+use Lattice\Lattice\Actions\ActionResult;
+use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Lattice\Actions\Components\ActionGroup;
+use Lattice\Lattice\Actions\Effect;
+use Lattice\Lattice\Attributes\Action;
+use Lattice\Lattice\Attributes\Form as FormAttribute;
+use Lattice\Lattice\Attributes\Fragment;
+use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Attributes\Table as TableAttribute;
+use Lattice\Lattice\Core\Components\Badge;
+use Lattice\Lattice\Core\Components\Button;
+use Lattice\Lattice\Core\Components\Card;
+use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Components\Grid;
+use Lattice\Lattice\Core\Components\Heading;
+use Lattice\Lattice\Core\Components\Link;
+use Lattice\Lattice\Core\Components\Modal;
+use Lattice\Lattice\Core\Components\SegmentedControl;
+use Lattice\Lattice\Core\Components\Stack;
+use Lattice\Lattice\Core\Components\Tab;
+use Lattice\Lattice\Core\Components\Tabs;
+use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Core\Concerns\CreatesToastMessages;
+use Lattice\Lattice\Core\Enums\Align;
+use Lattice\Lattice\Core\Enums\Gap;
+use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Core\Enums\LucideIcon;
+use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Width;
+use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
+use Lattice\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Forms\Components\Choice;
+use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\PasswordInput;
+use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
+use Lattice\Lattice\Fragments\FragmentDefinition;
+use Lattice\Lattice\Http\Page;
+use Lattice\Lattice\LatticeRegistry;
+use Lattice\Lattice\Menu\MenuItem;
+use Lattice\Lattice\Menu\MenuRegistry;
+use Lattice\Lattice\Tables\Columns\StackColumn;
+use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Lattice\Tables\Components\Table;
+use Lattice\Lattice\Tables\EloquentTableDefinition;
+use Lattice\Lattice\Tables\Enums\PaginationType;
+use Lattice\Lattice\Tables\TableDefinition;
+use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Lattice\Tables\TableResult;
+use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredArchiveBulkAction;
+use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredPanelFragment;
+use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredPingAction;
+use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
+use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
 use Orchestra\Testbench\Factories\UserFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Pages\HomePage;
@@ -141,7 +141,7 @@ test('lattice facade resolves the registry and exposes the menu registry', funct
 });
 
 test('lattice can discover attributed definitions from a path and namespace', function () {
-    Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Bambamboole\\Lattice\\Tests\\Fixtures\\Discovery');
+    Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery');
 
     $form = Form::use(DiscoveredProfileForm::class)->toArray();
     $table = Table::use(DiscoveredUsersTable::class)->toArray();
@@ -190,7 +190,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
 });
 
 test('lattice discovers attributed bulk action definitions', function () {
-    Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Bambamboole\\Lattice\\Tests\\Fixtures\\Discovery');
+    Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery');
 
     expect(app(BulkActionRegistry::class)->resolve('fixtures.archive'))
         ->toBeInstanceOf(DiscoveredArchiveBulkAction::class);
@@ -706,7 +706,7 @@ test('registered tables reject filters and sorts that are not allowed by columns
 });
 
 test('registered table endpoints require a valid component reference and use trusted context', function () {
-    Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Bambamboole\\Lattice\\Tests\\Fixtures\\Discovery');
+    Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery');
 
     $ref = componentRef(Table::use(DiscoveredUsersTable::class)
         ->context(['team' => 'trusted-team'])

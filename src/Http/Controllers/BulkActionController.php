@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Http\Controllers;
+namespace Lattice\Lattice\Http\Controllers;
 
-use Bambamboole\Lattice\Actions\BulkActionRegistry;
-use Bambamboole\Lattice\Core\Concerns\InteractsWithLatticeComponents;
-use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
-use Bambamboole\Lattice\Core\Exceptions\UnknownLatticeComponent;
-use Bambamboole\Lattice\Tables\TableDefinition;
-use Bambamboole\Lattice\Tables\TableQuery;
-use Bambamboole\Lattice\Tables\TableRegistry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Core\Concerns\InteractsWithLatticeComponents;
+use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Core\Exceptions\UnknownLatticeComponent;
+use Lattice\Lattice\Tables\TableDefinition;
+use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Lattice\Tables\TableRegistry;
 
 final class BulkActionController
 {

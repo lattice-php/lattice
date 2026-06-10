@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core;
+namespace Lattice\Lattice\Core;
 
-use Bambamboole\Lattice\Core\Contracts\Authorizable;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Contracts\Authorizable;
 
 abstract class Definition implements Authorizable
 {

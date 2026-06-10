@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Forms\Components\Form;
-use Bambamboole\Lattice\Forms\Components\RichEditor;
-use Bambamboole\Lattice\Forms\FormDefinition;
-use Bambamboole\Lattice\Forms\RichContent;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\RichEditor;
+use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Forms\RichContent;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

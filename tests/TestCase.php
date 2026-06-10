@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tests;
+namespace Lattice\Lattice\Tests;
 
-use Bambamboole\Lattice\LatticeServiceProvider;
 use Inertia\ServiceProvider as InertiaServiceProvider;
+use Lattice\Lattice\LatticeServiceProvider;
 use Orchestra\Testbench\Concerns\WithLaravelMigrations;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as BaseTestCase;

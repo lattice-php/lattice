@@ -1,9 +1,9 @@
 <?php
 
-namespace Bambamboole\Lattice\Core\Components;
+namespace Lattice\Lattice\Core\Components;
 
-use Bambamboole\Lattice\Attributes\SerializationHook;
-use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use LogicException;
 
 trait IsInteractive

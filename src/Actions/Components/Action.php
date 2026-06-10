@@ -1,14 +1,14 @@
 <?php
 
-namespace Bambamboole\Lattice\Actions\Components;
+namespace Lattice\Lattice\Actions\Components;
 
 use BackedEnum;
-use Bambamboole\Lattice\Actions\ActionDefinition;
-use Bambamboole\Lattice\Actions\ActionRegistry;
-use Bambamboole\Lattice\Actions\Contracts\Effect;
-use Bambamboole\Lattice\Core\Components\Component;
-use Bambamboole\Lattice\Core\Components\IsInteractive;
-use Bambamboole\Lattice\Core\Concerns\HasVariant;
+use Lattice\Lattice\Actions\ActionDefinition;
+use Lattice\Lattice\Actions\ActionRegistry;
+use Lattice\Lattice\Actions\Contracts\Effect;
+use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Core\Concerns\HasVariant;
 
 class Action extends Component
 {

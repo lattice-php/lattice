@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core\Concerns;
+namespace Lattice\Lattice\Core\Concerns;
 
 use BackedEnum;
-use Bambamboole\Lattice\Core\Contracts\HasLabel;
 use Illuminate\Support\Str;
+use Lattice\Lattice\Core\Contracts\HasLabel;
 use UnitEnum;
 
 trait HasOptions

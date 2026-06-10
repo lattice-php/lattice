@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Actions;
+namespace Lattice\Lattice\Actions;
 
-use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
-use Bambamboole\Lattice\Attributes\BulkAction;
-use Bambamboole\Lattice\Attributes\ComponentAttribute;
-use Bambamboole\Lattice\Core\DefinitionRegistry;
+use Lattice\Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Lattice\Attributes\BulkAction;
+use Lattice\Lattice\Attributes\ComponentAttribute;
+use Lattice\Lattice\Core\DefinitionRegistry;
 
 /**
  * @extends DefinitionRegistry<BulkActionDefinition>

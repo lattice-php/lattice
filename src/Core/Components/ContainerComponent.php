@@ -1,8 +1,8 @@
 <?php
 
-namespace Bambamboole\Lattice\Core\Components;
+namespace Lattice\Lattice\Core\Components;
 
-use Bambamboole\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Attributes\SerializationHook;
 
 abstract class ContainerComponent extends Component
 {

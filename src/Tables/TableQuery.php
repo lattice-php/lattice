@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tables;
+namespace Lattice\Lattice\Tables;
 
-use Bambamboole\Lattice\Tables\Columns\Column;
-use Bambamboole\Lattice\Tables\Columns\Filterable;
-use Bambamboole\Lattice\Tables\Columns\Sortable;
-use Bambamboole\Lattice\Tables\Enums\FilterOperator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Columns\Filterable;
+use Lattice\Lattice\Tables\Columns\Sortable;
+use Lattice\Lattice\Tables\Enums\FilterOperator;
 
 final readonly class TableQuery
 {

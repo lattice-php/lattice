@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Forms\Components\TextInput;
-use Bambamboole\Lattice\Forms\FormData;
+use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Forms\FormData;
 
 it('serializes declarative conditions into props', function (): void {
     $props = TextInput::make('company', 'Company')

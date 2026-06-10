@@ -1,13 +1,13 @@
 <?php
 
-namespace Bambamboole\Lattice\Forms\Components;
+namespace Lattice\Lattice\Forms\Components;
 
-use Bambamboole\Lattice\Core\Concerns\HasOptions;
-use Bambamboole\Lattice\Core\Concerns\HasPlaceholder;
-use Bambamboole\Lattice\Forms\FormData;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Core\Concerns\HasOptions;
+use Lattice\Lattice\Core\Concerns\HasPlaceholder;
+use Lattice\Lattice\Forms\FormData;
 
 class Select extends Field
 {

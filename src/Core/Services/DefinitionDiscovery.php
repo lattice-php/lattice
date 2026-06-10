@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core\Services;
+namespace Lattice\Lattice\Core\Services;
 
-use Bambamboole\Lattice\Core\Contracts\DiscoversDefinitions;
-use Bambamboole\Lattice\Core\DefinitionRegistry;
+use Lattice\Lattice\Core\Contracts\DiscoversDefinitions;
+use Lattice\Lattice\Core\DefinitionRegistry;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;

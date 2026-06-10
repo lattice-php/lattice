@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Forms\Enums;
+namespace Lattice\Lattice\Forms\Enums;
 
 enum ConditionOperator: string
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Bambamboole\Lattice\Core;
+namespace Lattice\Lattice\Core;
 
-use Bambamboole\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Components\Component;
 
 final class PageSchema
 {

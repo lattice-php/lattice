@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Workbench\App\Tables;
 
-use Bambamboole\Lattice\Actions\Components\Action;
-use Bambamboole\Lattice\Actions\Components\BulkAction;
-use Bambamboole\Lattice\Attributes\Table;
-use Bambamboole\Lattice\Core\Components\Component;
-use Bambamboole\Lattice\Core\Components\Link;
-use Bambamboole\Lattice\Tables\Columns\TextColumn;
-use Bambamboole\Lattice\Tables\EloquentTableDefinition;
-use Bambamboole\Lattice\Tables\TableQuery;
 use Illuminate\Database\Eloquent\Builder;
+use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Actions\Components\BulkAction;
+use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Components\Link;
+use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Lattice\Tables\EloquentTableDefinition;
+use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Models\Product;

@@ -1,7 +1,7 @@
 laravel: '@testbench'
 
 providers:
-  - Bambamboole\Lattice\LatticeServiceProvider
+  - Lattice\Lattice\LatticeServiceProvider
   - Inertia\ServiceProvider
   - Workbench\App\Providers\WorkbenchServiceProvider
   - Workbench\App\Providers\TypeScriptTransformerServiceProvider

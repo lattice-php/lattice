@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Actions\Contracts;
+namespace Lattice\Lattice\Actions\Contracts;
 
 use JsonSerializable;
 

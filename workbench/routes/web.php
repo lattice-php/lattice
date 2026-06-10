@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Core\Enums\LucideIcon;
 use Illuminate\Support\Facades\Route;
+use Lattice\Lattice\Core\Enums\LucideIcon;
 use Workbench\App\Pages\DependentDemoPage;
 use Workbench\App\Pages\HomePage;
 use Workbench\App\Pages\ProductCreatePage;

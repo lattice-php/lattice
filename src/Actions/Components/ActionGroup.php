@@ -1,10 +1,10 @@
 <?php
 
-namespace Bambamboole\Lattice\Actions\Components;
+namespace Lattice\Lattice\Actions\Components;
 
-use Bambamboole\Lattice\Core\Components\Component;
-use Bambamboole\Lattice\Core\Components\ContainerComponent;
-use Bambamboole\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Components\ContainerComponent;
+use Lattice\Lattice\Core\Components\IsInteractive;
 
 class ActionGroup extends ContainerComponent
 {

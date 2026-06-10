@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tests\Fixtures\Discovery;
+namespace Lattice\Lattice\Tests\Fixtures\Discovery;
 
-use Bambamboole\Lattice\Actions\ActionResult;
-use Bambamboole\Lattice\Actions\BulkActionDefinition;
-use Bambamboole\Lattice\Actions\Components\Action;
-use Bambamboole\Lattice\Attributes\BulkAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Actions\ActionResult;
+use Lattice\Lattice\Actions\BulkActionDefinition;
+use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Attributes\BulkAction;
 
 #[BulkAction('fixtures.archive')]
 class DiscoveredArchiveBulkAction extends BulkActionDefinition

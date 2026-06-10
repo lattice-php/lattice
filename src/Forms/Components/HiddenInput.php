@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Forms\Components;
+namespace Lattice\Lattice\Forms\Components;
 
 class HiddenInput extends Field
 {

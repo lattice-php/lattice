@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Actions;
+namespace Lattice\Lattice\Actions;
 
-use Bambamboole\Lattice\Actions\Contracts\Effect as EffectContract;
-use Bambamboole\Lattice\Actions\Enums\EffectType;
-use Bambamboole\Lattice\Core\Enums\ToastVariant;
-use Bambamboole\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Actions\Contracts\Effect as EffectContract;
+use Lattice\Lattice\Actions\Enums\EffectType;
+use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Values\ToastMessage;
 
 final readonly class Effect implements EffectContract
 {

@@ -3,33 +3,33 @@
 declare(strict_types=1);
 
 arch('forms do not depend on tables')
-    ->expect('Bambamboole\Lattice\Forms')
-    ->not->toUse('Bambamboole\Lattice\Tables');
+    ->expect('Lattice\Lattice\Forms')
+    ->not->toUse('Lattice\Lattice\Tables');
 
 arch('tables do not depend on forms')
-    ->expect('Bambamboole\Lattice\Tables')
-    ->not->toUse('Bambamboole\Lattice\Forms');
+    ->expect('Lattice\Lattice\Tables')
+    ->not->toUse('Lattice\Lattice\Forms');
 
 arch('actions do not depend on forms or tables')
-    ->expect('Bambamboole\Lattice\Actions')
+    ->expect('Lattice\Lattice\Actions')
     ->not->toUse([
-        'Bambamboole\Lattice\Forms',
-        'Bambamboole\Lattice\Tables',
+        'Lattice\Lattice\Forms',
+        'Lattice\Lattice\Tables',
     ]);
 
 arch('fragments do not depend on forms, tables or actions')
-    ->expect('Bambamboole\Lattice\Fragments')
+    ->expect('Lattice\Lattice\Fragments')
     ->not->toUse([
-        'Bambamboole\Lattice\Forms',
-        'Bambamboole\Lattice\Tables',
-        'Bambamboole\Lattice\Actions',
+        'Lattice\Lattice\Forms',
+        'Lattice\Lattice\Tables',
+        'Lattice\Lattice\Actions',
     ]);
 
 arch('core does not depend on the feature domains')
-    ->expect('Bambamboole\Lattice\Core')
+    ->expect('Lattice\Lattice\Core')
     ->not->toUse([
-        'Bambamboole\Lattice\Actions',
-        'Bambamboole\Lattice\Forms',
-        'Bambamboole\Lattice\Tables',
-        'Bambamboole\Lattice\Fragments',
+        'Lattice\Lattice\Actions',
+        'Lattice\Lattice\Forms',
+        'Lattice\Lattice\Tables',
+        'Lattice\Lattice\Fragments',
     ]);

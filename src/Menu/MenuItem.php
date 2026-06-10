@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Menu;
+namespace Lattice\Lattice\Menu;
 
 use BackedEnum;
-use Bambamboole\Lattice\Core\Enums\HttpMethod;
 use Closure;
+use Lattice\Lattice\Core\Enums\HttpMethod;
 
 /**
  * @phpstan-consistent-constructor

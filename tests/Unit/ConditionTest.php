@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Forms\Conditions\Condition;
-use Bambamboole\Lattice\Forms\Enums\ConditionOperator;
-use Bambamboole\Lattice\Forms\FormData;
+use Lattice\Lattice\Forms\Conditions\Condition;
+use Lattice\Lattice\Forms\Enums\ConditionOperator;
+use Lattice\Lattice\Forms\FormData;
 
 it('matches against form data', function (): void {
     $condition = new Condition('type', ConditionOperator::Equals, 'business');

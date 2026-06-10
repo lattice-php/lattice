@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Workbench\App\Tables;
 
-use Bambamboole\Lattice\Tables\Columns\TextColumn;
-use Bambamboole\Lattice\Tables\EloquentTableDefinition;
-use Bambamboole\Lattice\Tables\TableQuery;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
+use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Lattice\Tables\EloquentTableDefinition;
+use Lattice\Lattice\Tables\TableQuery;
 
 /**
  * @extends EloquentTableDefinition<User>

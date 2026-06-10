@@ -1,10 +1,10 @@
 <?php
 
-namespace Bambamboole\Lattice\Forms\Components;
+namespace Lattice\Lattice\Forms\Components;
 
-use Bambamboole\Lattice\Core\Concerns\HasAutoFocus;
-use Bambamboole\Lattice\Core\Concerns\HasPlaceholder;
-use Bambamboole\Lattice\Core\Concerns\HasTabIndex;
+use Lattice\Lattice\Core\Concerns\HasAutoFocus;
+use Lattice\Lattice\Core\Concerns\HasPlaceholder;
+use Lattice\Lattice\Core\Concerns\HasTabIndex;
 
 class Textarea extends Field
 {

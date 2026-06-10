@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Forms\Components\Field;
-use Bambamboole\Lattice\Forms\FormData;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Forms\Components\Field;
+use Lattice\Lattice\Forms\FormData;
 
 function makeField(string $name = 'price', string $label = 'Price'): Field
 {

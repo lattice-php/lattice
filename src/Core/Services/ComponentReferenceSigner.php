@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core\Services;
+namespace Lattice\Lattice\Core\Services;
 
-use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Encryption\StringEncrypter;
 use Illuminate\Http\Request;
 use JsonException;
+use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 
 final class ComponentReferenceSigner implements SignsComponentReferences
 {

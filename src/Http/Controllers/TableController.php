@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Http\Controllers;
+namespace Lattice\Lattice\Http\Controllers;
 
-use Bambamboole\Lattice\Core\Concerns\InteractsWithLatticeComponents;
-use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
-use Bambamboole\Lattice\Tables\TableRegistry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Concerns\InteractsWithLatticeComponents;
+use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Tables\TableRegistry;
 
 final class TableController
 {

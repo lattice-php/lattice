@@ -1,14 +1,14 @@
 <?php
 
-namespace Bambamboole\Lattice\Tables\Components;
+namespace Lattice\Lattice\Tables\Components;
 
-use Bambamboole\Lattice\Core\Components\Component;
-use Bambamboole\Lattice\Core\Components\IsInteractive;
-use Bambamboole\Lattice\Tables\Columns\Column;
-use Bambamboole\Lattice\Tables\TableDefinition;
-use Bambamboole\Lattice\Tables\TableQuery;
-use Bambamboole\Lattice\Tables\TableRegistry;
-use Bambamboole\Lattice\Tables\TableResult;
+use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\TableDefinition;
+use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Lattice\Tables\TableRegistry;
+use Lattice\Lattice\Tables\TableResult;
 
 class Table extends Component
 {

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Forms;
+namespace Lattice\Lattice\Forms;
 
-use Bambamboole\Lattice\Attributes\ComponentAttribute;
-use Bambamboole\Lattice\Attributes\Form;
-use Bambamboole\Lattice\Core\DefinitionRegistry;
-use Bambamboole\Lattice\Forms\Components\Form as FormComponent;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Attributes\ComponentAttribute;
+use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Core\DefinitionRegistry;
+use Lattice\Lattice\Forms\Components\Form as FormComponent;
 
 /**
  * @extends DefinitionRegistry<FormDefinition>

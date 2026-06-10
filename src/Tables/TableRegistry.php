@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tables;
+namespace Lattice\Lattice\Tables;
 
-use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
-use Bambamboole\Lattice\Attributes\ComponentAttribute;
-use Bambamboole\Lattice\Attributes\Table;
-use Bambamboole\Lattice\Core\DefinitionRegistry;
-use Bambamboole\Lattice\Tables\Components\Table as TableComponent;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Lattice\Attributes\ComponentAttribute;
+use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Core\DefinitionRegistry;
+use Lattice\Lattice\Tables\Components\Table as TableComponent;
 
 /**
  * @extends DefinitionRegistry<TableDefinition>

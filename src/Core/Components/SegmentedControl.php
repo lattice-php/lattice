@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core\Components;
+namespace Lattice\Lattice\Core\Components;
 
-use Bambamboole\Lattice\Core\Concerns\HasOptions;
+use Lattice\Lattice\Core\Concerns\HasOptions;
 
 /**
  * A standalone segmented control (single-select pills) that lives outside a form

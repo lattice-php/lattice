@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice;
+namespace Lattice\Lattice;
 
 use BackedEnum;
-use Bambamboole\Lattice\Actions\ActionRegistry;
-use Bambamboole\Lattice\Actions\BulkActionRegistry;
-use Bambamboole\Lattice\Core\Contracts\DiscoversDefinitions;
-use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
-use Bambamboole\Lattice\Core\Services\ComponentReferenceSigner;
-use Bambamboole\Lattice\Core\Services\DefinitionDiscovery;
-use Bambamboole\Lattice\Facades\Lattice;
-use Bambamboole\Lattice\Forms\FormRegistry;
-use Bambamboole\Lattice\Fragments\FragmentRegistry;
-use Bambamboole\Lattice\Menu\MenuItem;
-use Bambamboole\Lattice\Menu\MenuRegistry;
-use Bambamboole\Lattice\Tables\TableRegistry;
 use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Inertia\ResponseFactory;
+use Lattice\Lattice\Actions\ActionRegistry;
+use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Core\Contracts\DiscoversDefinitions;
+use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
+use Lattice\Lattice\Core\Services\DefinitionDiscovery;
+use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Forms\FormRegistry;
+use Lattice\Lattice\Fragments\FragmentRegistry;
+use Lattice\Lattice\Menu\MenuItem;
+use Lattice\Lattice\Menu\MenuRegistry;
+use Lattice\Lattice\Tables\TableRegistry;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 

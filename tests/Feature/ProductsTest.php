@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Actions\Components\Action;
-use Bambamboole\Lattice\Actions\Components\BulkAction;
-use Bambamboole\Lattice\Core\Services\ComponentReferenceSigner;
-use Bambamboole\Lattice\Facades\Lattice;
-use Bambamboole\Lattice\Forms\Components\Form;
-use Bambamboole\Lattice\Forms\Components\TextInput;
-use Bambamboole\Lattice\Tables\Components\Table;
-use Bambamboole\Lattice\Tables\InvalidTableQuery;
-use Bambamboole\Lattice\Tables\TableQuery;
 use Illuminate\Http\Request;
 use Inertia\Testing\AssertableInertia;
+use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Actions\Components\BulkAction;
+use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
+use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Tables\Components\Table;
+use Lattice\Lattice\Tables\InvalidTableQuery;
+use Lattice\Lattice\Tables\TableQuery;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;

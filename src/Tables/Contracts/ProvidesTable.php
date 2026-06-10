@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tables\Contracts;
+namespace Lattice\Lattice\Tables\Contracts;
 
-use Bambamboole\Lattice\Tables\Columns\Column;
-use Bambamboole\Lattice\Tables\TableQuery;
-use Bambamboole\Lattice\Tables\TableResult;
+use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Lattice\Tables\TableResult;
 
 interface ProvidesTable
 {

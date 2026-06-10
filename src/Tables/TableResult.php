@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tables;
+namespace Lattice\Lattice\Tables;
 
-use Bambamboole\Lattice\Tables\Enums\PaginationType;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use JsonSerializable;
+use Lattice\Lattice\Tables\Enums\PaginationType;
 
 final readonly class TableResult implements JsonSerializable
 {

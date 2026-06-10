@@ -6,10 +6,10 @@
 </p>
 
 <p align="center">
-  <a href="https://packagist.org/packages/lattice/lattice"><img alt="Latest version on Packagist" src="https://img.shields.io/packagist/v/lattice/lattice.svg?style=flat-square"></a>
+  <a href="https://packagist.org/packages/lattice-php/lattice"><img alt="Latest version on Packagist" src="https://img.shields.io/packagist/v/lattice-php/lattice.svg?style=flat-square"></a>
   <a href="https://github.com/lattice-php/lattice/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/lattice-php/lattice/ci.yml?branch=main&label=CI&style=flat-square"></a>
-  <a href="https://packagist.org/packages/lattice/lattice"><img alt="Total downloads" src="https://img.shields.io/packagist/dt/lattice/lattice.svg?style=flat-square"></a>
-  <a href="https://packagist.org/packages/lattice/lattice"><img alt="License" src="https://img.shields.io/packagist/l/lattice/lattice.svg?style=flat-square"></a>
+  <a href="https://packagist.org/packages/lattice-php/lattice"><img alt="Total downloads" src="https://img.shields.io/packagist/dt/lattice-php/lattice.svg?style=flat-square"></a>
+  <a href="https://packagist.org/packages/lattice-php/lattice"><img alt="License" src="https://img.shields.io/packagist/l/lattice-php/lattice.svg?style=flat-square"></a>
 </p>
 
 <p align="center">

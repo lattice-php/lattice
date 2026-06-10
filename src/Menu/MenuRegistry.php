@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Menu;
+namespace Lattice\Lattice\Menu;
 
 use BackedEnum;
-use Bambamboole\Lattice\Core\Contracts\Authorizable;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Exceptions\UrlGenerationException;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
+use Lattice\Lattice\Core\Contracts\Authorizable;
 
 final class MenuRegistry
 {

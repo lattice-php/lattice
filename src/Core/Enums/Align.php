@@ -1,6 +1,6 @@
 <?php
 
-namespace Bambamboole\Lattice\Core\Enums;
+namespace Lattice\Lattice\Core\Enums;
 
 enum Align: string
 {

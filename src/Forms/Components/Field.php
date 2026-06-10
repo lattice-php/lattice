@@ -1,15 +1,15 @@
 <?php
 
-namespace Bambamboole\Lattice\Forms\Components;
+namespace Lattice\Lattice\Forms\Components;
 
-use Bambamboole\Lattice\Attributes\SerializationHook;
-use Bambamboole\Lattice\Core\Components\Component;
-use Bambamboole\Lattice\Forms\Conditions\Condition;
-use Bambamboole\Lattice\Forms\Conditions\ConditionSet;
-use Bambamboole\Lattice\Forms\Enums\ConditionOperator;
-use Bambamboole\Lattice\Forms\FormData;
 use Closure;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Forms\Conditions\Condition;
+use Lattice\Lattice\Forms\Conditions\ConditionSet;
+use Lattice\Lattice\Forms\Enums\ConditionOperator;
+use Lattice\Lattice\Forms\FormData;
 
 abstract class Field extends Component
 {

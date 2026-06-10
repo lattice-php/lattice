@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Forms\Components\Choice;
-use Bambamboole\Lattice\Forms\Components\TextInput;
-use Bambamboole\Lattice\Forms\FormData;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Forms\Components\Choice;
+use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Forms\FormData;
 
 it('serializes dependsOn keys and the any-change marker', function (): void {
     $optionsProps = Choice::make('state', 'State')
