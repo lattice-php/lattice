@@ -16,8 +16,7 @@ In the consuming app's `composer.json`, add a path repository and require the de
   "repositories": [
     {
       "type": "path",
-      "url": "../lattice-package",
-      "options": { "symlink": true }
+      "url": "../lattice-package"
     }
   ],
   "require": {
@@ -37,12 +36,25 @@ Composer symlinks your checkout into `vendor/lattice-php/lattice`, so PHP change
 The published npm package declares these for you, but when you consume the source through an alias your app's `node_modules` must provide them itself:
 
 ```bash
-npm install @inertiajs/react react react-dom \
-  lucide-react class-variance-authority clsx tailwind-merge \
-  @radix-ui/react-checkbox @radix-ui/react-label @radix-ui/react-slot \
-  @tiptap/react @tiptap/pm @tiptap/starter-kit \
-  @tiptap/extension-details @tiptap/extension-highlight @tiptap/extension-link \
-  @tiptap/extension-table @tiptap/extension-text-align
+npm install \
+  @inertiajs/react \
+  react \
+  react-dom \
+  lucide-react \
+  class-variance-authority \
+  clsx \
+  tailwind-merge \
+  @radix-ui/react-checkbox \
+  @radix-ui/react-label \
+  @radix-ui/react-slot \
+  @tiptap/react \
+  @tiptap/pm \
+  @tiptap/starter-kit \
+  @tiptap/extension-details \
+  @tiptap/extension-highlight \
+  @tiptap/extension-link \
+  @tiptap/extension-table \
+  @tiptap/extension-text-align
 npm install -D tailwindcss @tailwindcss/vite tw-animate-css
 ```
 
