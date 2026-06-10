@@ -11,6 +11,10 @@ class Fragment extends ContainerComponent
 {
     use IsInteractive;
 
+    public ?string $endpoint = null;
+
+    public ?bool $lazy = null;
+
     public static function make(string $id): static
     {
         return (new static)->id($id);
@@ -26,7 +30,9 @@ class Fragment extends ContainerComponent
 
     public function endpoint(string $endpoint): static
     {
-        return $this->prop('endpoint', $endpoint);
+        $this->endpoint = $endpoint;
+
+        return $this;
     }
 
     protected function type(): string
