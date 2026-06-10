@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Workbench\App\Tables;
 
-use Bambamboole\Lattice\Attributes\Table as TableAttribute;
-use Bambamboole\Lattice\Tables\Enums\PaginationType;
-use Bambamboole\Lattice\Tables\TableQuery;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
+use Lattice\Lattice\Attributes\Table as TableAttribute;
+use Lattice\Lattice\Tables\Enums\PaginationType;
+use Lattice\Lattice\Tables\TableQuery;
 
 #[TableAttribute('workbench.users.none')]
 final class UsersNoneTable extends BaseUsersTable

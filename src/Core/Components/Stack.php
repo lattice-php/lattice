@@ -1,10 +1,10 @@
 <?php
 
-namespace Bambamboole\Lattice\Core\Components;
+namespace Lattice\Lattice\Core\Components;
 
-use Bambamboole\Lattice\Core\Enums\Align;
-use Bambamboole\Lattice\Core\Enums\Gap;
-use Bambamboole\Lattice\Core\Enums\Width;
+use Lattice\Lattice\Core\Enums\Align;
+use Lattice\Lattice\Core\Enums\Gap;
+use Lattice\Lattice\Core\Enums\Width;
 
 class Stack extends ContainerComponent
 {

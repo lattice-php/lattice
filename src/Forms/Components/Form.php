@@ -1,16 +1,16 @@
 <?php
 
-namespace Bambamboole\Lattice\Forms\Components;
+namespace Lattice\Lattice\Forms\Components;
 
 use BackedEnum;
-use Bambamboole\Lattice\Attributes\SerializationHook;
-use Bambamboole\Lattice\Core\Components\Component;
-use Bambamboole\Lattice\Core\Components\ContainerComponent;
-use Bambamboole\Lattice\Core\Components\IsInteractive;
-use Bambamboole\Lattice\Forms\FormDefinition;
-use Bambamboole\Lattice\Forms\FormRegistry;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Components\ContainerComponent;
+use Lattice\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Forms\FormRegistry;
 
 class Form extends ContainerComponent
 {

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tables;
+namespace Lattice\Lattice\Tables;
 
-use Bambamboole\Lattice\Actions\Components\Action;
-use Bambamboole\Lattice\Core\Components\Component;
-use Bambamboole\Lattice\Core\Definition;
-use Bambamboole\Lattice\Tables\Columns\Column;
-use Bambamboole\Lattice\Tables\Contracts\ProvidesTable;
-use Bambamboole\Lattice\Tables\Enums\PaginationType;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Definition;
+use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Contracts\ProvidesTable;
+use Lattice\Lattice\Tables\Enums\PaginationType;
 
 abstract class TableDefinition extends Definition implements ProvidesTable
 {

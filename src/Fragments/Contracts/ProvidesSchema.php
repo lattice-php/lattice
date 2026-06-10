@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Fragments\Contracts;
+namespace Lattice\Lattice\Fragments\Contracts;
 
-use Bambamboole\Lattice\Core\PageSchema;
+use Lattice\Lattice\Core\PageSchema;
 
 interface ProvidesSchema
 {

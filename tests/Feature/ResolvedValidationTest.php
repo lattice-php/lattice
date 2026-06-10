@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Forms\Components\Form;
-use Bambamboole\Lattice\Forms\Components\TextInput;
-use Bambamboole\Lattice\Forms\FormData;
-use Bambamboole\Lattice\Forms\FormDefinition;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
 function resolvedDefinition(): FormDefinition

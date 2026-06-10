@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Actions;
+namespace Lattice\Lattice\Actions;
 
-use Bambamboole\Lattice\Actions\Components\Action;
-use Bambamboole\Lattice\Actions\Contracts\ProvidesBulkAction;
-use Bambamboole\Lattice\Core\Definition;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Actions\Contracts\ProvidesBulkAction;
+use Lattice\Lattice\Core\Definition;
 
 abstract class BulkActionDefinition extends Definition implements ProvidesBulkAction
 {

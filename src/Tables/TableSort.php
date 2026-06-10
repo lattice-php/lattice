@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tables;
+namespace Lattice\Lattice\Tables;
 
-use Bambamboole\Lattice\Tables\Enums\SortDirection;
+use Lattice\Lattice\Tables\Enums\SortDirection;
 
 final readonly class TableSort
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Bambamboole\Lattice\Core\Components;
+namespace Lattice\Lattice\Core\Components;
 
-use Bambamboole\Lattice\Core\Concerns\HasVariant;
+use Lattice\Lattice\Core\Concerns\HasVariant;
 
 class Button extends Component
 {

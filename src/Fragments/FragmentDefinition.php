@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Fragments;
+namespace Lattice\Lattice\Fragments;
 
-use Bambamboole\Lattice\Core\Definition;
-use Bambamboole\Lattice\Core\PageSchema;
-use Bambamboole\Lattice\Fragments\Contracts\ProvidesSchema;
+use Lattice\Lattice\Core\Definition;
+use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Fragments\Contracts\ProvidesSchema;
 
 abstract class FragmentDefinition extends Definition implements ProvidesSchema
 {

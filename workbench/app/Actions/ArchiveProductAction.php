@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Workbench\App\Actions;
 
-use Bambamboole\Lattice\Actions\ActionDefinition;
-use Bambamboole\Lattice\Actions\ActionResult;
-use Bambamboole\Lattice\Actions\Components\Action as ActionComponent;
-use Bambamboole\Lattice\Attributes\Action;
-use Bambamboole\Lattice\Core\Enums\HttpMethod;
-use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Actions\ActionDefinition;
+use Lattice\Lattice\Actions\ActionResult;
+use Lattice\Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Lattice\Attributes\Action;
+use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Core\Enums\ToastVariant;
 use Workbench\App\Models\Product;
 
 #[Action('workbench.products.archive')]

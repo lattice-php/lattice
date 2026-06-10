@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
-use Bambamboole\Lattice\Core\Components\Badge;
-use Bambamboole\Lattice\Core\Components\Card;
-use Bambamboole\Lattice\Core\Components\Grid;
-use Bambamboole\Lattice\Core\Components\Heading;
-use Bambamboole\Lattice\Core\Components\Stack;
-use Bambamboole\Lattice\Core\Components\Text;
-use Bambamboole\Lattice\Core\Enums\Gap;
-use Bambamboole\Lattice\Core\PageSchema;
-use Bambamboole\Lattice\Http\Page;
-use Bambamboole\Lattice\Tables\Components\Table;
+use Lattice\Lattice\Core\Components\Badge;
+use Lattice\Lattice\Core\Components\Card;
+use Lattice\Lattice\Core\Components\Grid;
+use Lattice\Lattice\Core\Components\Heading;
+use Lattice\Lattice\Core\Components\Stack;
+use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Core\Enums\Gap;
+use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Http\Page;
+use Lattice\Lattice\Tables\Components\Table;
 use Workbench\App\Tables\UsersTable;
 
 final class HomePage extends Page

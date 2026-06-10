@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core\Concerns;
+namespace Lattice\Lattice\Core\Concerns;
 
 trait HasAutoComplete
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tests\Fixtures\Discovery;
+namespace Lattice\Lattice\Tests\Fixtures\Discovery;
 
-use Bambamboole\Lattice\Attributes\Fragment;
-use Bambamboole\Lattice\Core\Components\Text;
-use Bambamboole\Lattice\Core\PageSchema;
-use Bambamboole\Lattice\Fragments\FragmentDefinition;
+use Lattice\Lattice\Attributes\Fragment;
+use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Fragments\FragmentDefinition;
 
 #[Fragment('fixtures.panel')]
 class DiscoveredPanelFragment extends FragmentDefinition

@@ -1,11 +1,11 @@
 <?php
 
-namespace Bambamboole\Lattice\Fragments\Components;
+namespace Lattice\Lattice\Fragments\Components;
 
-use Bambamboole\Lattice\Core\Components\ContainerComponent;
-use Bambamboole\Lattice\Core\Components\IsInteractive;
-use Bambamboole\Lattice\Fragments\FragmentDefinition;
-use Bambamboole\Lattice\Fragments\FragmentRegistry;
+use Lattice\Lattice\Core\Components\ContainerComponent;
+use Lattice\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Fragments\FragmentDefinition;
+use Lattice\Lattice\Fragments\FragmentRegistry;
 
 class Fragment extends ContainerComponent
 {

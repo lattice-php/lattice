@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "lattice/lattice",
+    "name": "lattice-php/lattice",
     "description": "Server-driven React components for Laravel and Inertia.",
     "type": "library",
     "license": "MIT",
@@ -46,12 +46,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Bambamboole\\Lattice\\": "src/"
+            "Lattice\\Lattice\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Bambamboole\\Lattice\\Tests\\": "tests/",
+            "Lattice\\Lattice\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -86,7 +86,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Bambamboole\\Lattice\\LatticeServiceProvider"
+                "Lattice\\Lattice\\LatticeServiceProvider"
             ]
         }
     },

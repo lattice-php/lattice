@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Forms;
+namespace Lattice\Lattice\Forms;
 
-use Bambamboole\Lattice\Core\Concerns\CreatesToastMessages;
-use Bambamboole\Lattice\Core\Definition;
-use Bambamboole\Lattice\Forms\Components\Field;
-use Bambamboole\Lattice\Forms\Components\Form;
-use Bambamboole\Lattice\Forms\Components\Select;
-use Bambamboole\Lattice\Forms\Contracts\ProvidesForm;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Validator;
+use Lattice\Lattice\Core\Concerns\CreatesToastMessages;
+use Lattice\Lattice\Core\Definition;
+use Lattice\Lattice\Forms\Components\Field;
+use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\Select;
+use Lattice\Lattice\Forms\Contracts\ProvidesForm;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class FormDefinition extends Definition implements ProvidesForm

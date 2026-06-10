@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Forms\Conditions;
+namespace Lattice\Lattice\Forms\Conditions;
 
-use Bambamboole\Lattice\Forms\FormData;
 use JsonSerializable;
+use Lattice\Lattice\Forms\FormData;
 
 final class ConditionSet implements JsonSerializable
 {

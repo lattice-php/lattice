@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Forms\Components\Select;
-use Bambamboole\Lattice\Forms\FormData;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Forms\Components\Select;
+use Lattice\Lattice\Forms\FormData;
 
 it('serializes static options without search flags', function (): void {
     $field = Select::make('plan', 'Plan')->options([

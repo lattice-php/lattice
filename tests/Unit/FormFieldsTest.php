@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Core\Components\Stack;
-use Bambamboole\Lattice\Forms\Components\Choice;
-use Bambamboole\Lattice\Forms\Components\Form;
-use Bambamboole\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Core\Components\Stack;
+use Lattice\Lattice\Forms\Components\Choice;
+use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\TextInput;
 
 it('flattens fields including nested containers', function (): void {
     $form = Form::make('demo')->schema([

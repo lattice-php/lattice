@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Workbench\App\Actions;
 
-use Bambamboole\Lattice\Actions\ActionResult;
-use Bambamboole\Lattice\Actions\BulkActionDefinition;
-use Bambamboole\Lattice\Actions\Components\Action;
-use Bambamboole\Lattice\Attributes\BulkAction;
-use Bambamboole\Lattice\Core\Enums\HttpMethod;
-use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Actions\ActionResult;
+use Lattice\Lattice\Actions\BulkActionDefinition;
+use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Attributes\BulkAction;
+use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Core\Enums\ToastVariant;
 use Workbench\App\Models\Product;
 
 #[BulkAction('workbench.products.archive-selected')]

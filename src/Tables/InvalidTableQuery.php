@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tables;
+namespace Lattice\Lattice\Tables;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

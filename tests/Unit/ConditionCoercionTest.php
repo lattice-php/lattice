@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Forms\Enums\ConditionOperator;
+use Lattice\Lattice\Forms\Enums\ConditionOperator;
 
 it('coerces condition booleans identically to the client', function (mixed $actual, bool $expected, bool $result): void {
     expect(ConditionOperator::Equals->evaluate($actual, $expected))->toBe($result);

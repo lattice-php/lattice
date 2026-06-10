@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core\Contracts;
+namespace Lattice\Lattice\Core\Contracts;
 
-use Bambamboole\Lattice\Core\DefinitionRegistry;
+use Lattice\Lattice\Core\DefinitionRegistry;
 
 interface DiscoversDefinitions
 {

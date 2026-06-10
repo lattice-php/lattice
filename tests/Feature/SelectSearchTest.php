@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Facades\Lattice;
-use Bambamboole\Lattice\Forms\Components\Form;
-use Bambamboole\Lattice\Forms\Components\Select;
-use Bambamboole\Lattice\Forms\Components\TextInput;
-use Bambamboole\Lattice\Forms\FormDefinition;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\Select;
+use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Http\Controllers;
+namespace Lattice\Lattice\Http\Controllers;
 
-use Bambamboole\Lattice\Core\Concerns\InteractsWithLatticeComponents;
-use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
-use Bambamboole\Lattice\Forms\FormDefinition;
-use Bambamboole\Lattice\Forms\FormRegistry;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Lattice\Lattice\Core\Concerns\InteractsWithLatticeComponents;
+use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Forms\FormRegistry;
 use Symfony\Component\HttpFoundation\Response;
 
 final class FormController

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tables;
+namespace Lattice\Lattice\Tables;
 
-use Bambamboole\Lattice\Tables\Columns\Column;
-use Bambamboole\Lattice\Tables\Columns\Filterable;
-use Bambamboole\Lattice\Tables\Enums\FilterOperator;
-use Bambamboole\Lattice\Tables\Enums\PaginationType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Columns\Filterable;
+use Lattice\Lattice\Tables\Enums\FilterOperator;
+use Lattice\Lattice\Tables\Enums\PaginationType;
 
 /**
  * @template TModel of Model

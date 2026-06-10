@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Workbench\App\Providers;
 
-use Bambamboole\Lattice\Facades\Lattice;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Support\ServiceProvider;
@@ -13,6 +12,7 @@ use Laravel\Boost\Install\GuidelineComposer;
 use Laravel\Boost\Install\SkillComposer;
 use Laravel\Boost\Support\Config;
 use Laravel\Roster\Roster;
+use Lattice\Lattice\Facades\Lattice;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Forms\DependentDemoForm;

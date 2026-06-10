@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tests\Fixtures\Discovery;
+namespace Lattice\Lattice\Tests\Fixtures\Discovery;
 
-use Bambamboole\Lattice\Attributes\Form;
-use Bambamboole\Lattice\Core\Enums\HttpMethod;
-use Bambamboole\Lattice\Forms\Components\Form as FormComponent;
-use Bambamboole\Lattice\Forms\FormDefinition;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Forms\Components\Form as FormComponent;
+use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
 #[Form('fixtures.profile')]

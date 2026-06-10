@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core\Values;
+namespace Lattice\Lattice\Core\Values;
 
-use Bambamboole\Lattice\Core\Enums\ToastVariant;
 use JsonSerializable;
+use Lattice\Lattice\Core\Enums\ToastVariant;
 
 final readonly class ToastMessage implements JsonSerializable
 {

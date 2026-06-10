@@ -40,7 +40,7 @@ The same `registered` array exists for `tables`, `fragments`, `actions`, and `bu
 You can also register at runtime through the `Lattice` facade — useful from a service provider:
 
 ```php
-use Bambamboole\Lattice\Facades\Lattice;
+use Lattice\Lattice\Facades\Lattice;
 
 Lattice::forms([\App\Forms\ContactForm::class]);
 Lattice::tables([\App\Tables\UsersTable::class]);

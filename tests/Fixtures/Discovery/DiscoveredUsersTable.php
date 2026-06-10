@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tests\Fixtures\Discovery;
+namespace Lattice\Lattice\Tests\Fixtures\Discovery;
 
-use Bambamboole\Lattice\Attributes\Table;
-use Bambamboole\Lattice\Tables\Columns\TextColumn;
-use Bambamboole\Lattice\Tables\TableDefinition;
-use Bambamboole\Lattice\Tables\TableQuery;
-use Bambamboole\Lattice\Tables\TableResult;
+use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Lattice\Tables\TableDefinition;
+use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Lattice\Tables\TableResult;
 
 #[Table('fixtures.users')]
 class DiscoveredUsersTable extends TableDefinition

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tables\Enums;
+namespace Lattice\Lattice\Tables\Enums;
 
 enum PaginationType: string
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core\Concerns;
+namespace Lattice\Lattice\Core\Concerns;
 
-use Bambamboole\Lattice\Core\Enums\ToastVariant;
-use Bambamboole\Lattice\Core\Values\ToastMessage;
 use Inertia\Inertia;
 use Inertia\ResponseFactory;
+use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Values\ToastMessage;
 
 trait CreatesToastMessages
 {

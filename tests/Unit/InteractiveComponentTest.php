@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Core\Components\Component;
-use Bambamboole\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Components\IsInteractive;
 
 function makeInteractiveComponent(): Component
 {

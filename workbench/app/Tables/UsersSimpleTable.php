@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Workbench\App\Tables;
 
-use Bambamboole\Lattice\Attributes\Table as TableAttribute;
-use Bambamboole\Lattice\Tables\Enums\PaginationType;
+use Lattice\Lattice\Attributes\Table as TableAttribute;
+use Lattice\Lattice\Tables\Enums\PaginationType;
 
 #[TableAttribute('workbench.users.simple')]
 final class UsersSimpleTable extends BaseUsersTable

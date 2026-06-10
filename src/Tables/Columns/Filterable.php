@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tables\Columns;
+namespace Lattice\Lattice\Tables\Columns;
 
-use Bambamboole\Lattice\Tables\Enums\ControlType;
-use Bambamboole\Lattice\Tables\Enums\FilterOperator;
+use Lattice\Lattice\Tables\Enums\ControlType;
+use Lattice\Lattice\Tables\Enums\FilterOperator;
 
 interface Filterable
 {

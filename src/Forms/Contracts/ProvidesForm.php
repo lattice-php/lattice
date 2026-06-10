@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Forms\Contracts;
+namespace Lattice\Lattice\Forms\Contracts;
 
-use Bambamboole\Lattice\Forms\Components\Form;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Forms\Components\Form;
 use Symfony\Component\HttpFoundation\Response;
 
 interface ProvidesForm

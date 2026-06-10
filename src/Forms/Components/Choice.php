@@ -1,8 +1,8 @@
 <?php
 
-namespace Bambamboole\Lattice\Forms\Components;
+namespace Lattice\Lattice\Forms\Components;
 
-use Bambamboole\Lattice\Core\Concerns\HasOptions;
+use Lattice\Lattice\Core\Concerns\HasOptions;
 
 class Choice extends Field
 {

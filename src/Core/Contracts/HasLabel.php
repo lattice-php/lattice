@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core\Contracts;
+namespace Lattice\Lattice\Core\Contracts;
 
 interface HasLabel
 {

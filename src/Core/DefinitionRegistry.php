@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core;
+namespace Lattice\Lattice\Core;
 
-use Bambamboole\Lattice\Attributes\ComponentAttribute;
-use Bambamboole\Lattice\Core\Contracts\DefinitionRegistry as DefinitionRegistryContract;
-use Bambamboole\Lattice\Core\Exceptions\UnknownLatticeComponent;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
+use Lattice\Lattice\Attributes\ComponentAttribute;
+use Lattice\Lattice\Core\Contracts\DefinitionRegistry as DefinitionRegistryContract;
+use Lattice\Lattice\Core\Exceptions\UnknownLatticeComponent;
 use Spatie\Attributes\Attributes;
 
 /**

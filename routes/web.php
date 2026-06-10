@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Http\Controllers\ActionController;
-use Bambamboole\Lattice\Http\Controllers\BulkActionController;
-use Bambamboole\Lattice\Http\Controllers\FormController;
-use Bambamboole\Lattice\Http\Controllers\FragmentController;
-use Bambamboole\Lattice\Http\Controllers\TableController;
 use Illuminate\Support\Facades\Route;
+use Lattice\Lattice\Http\Controllers\ActionController;
+use Lattice\Lattice\Http\Controllers\BulkActionController;
+use Lattice\Lattice\Http\Controllers\FormController;
+use Lattice\Lattice\Http\Controllers\FragmentController;
+use Lattice\Lattice\Http\Controllers\TableController;
 
 Route::middleware(config('lattice.forms.middleware', ['web']))
     ->match(['post', 'put', 'patch', 'delete'], config('lattice.forms.endpoint', 'lattice/forms/{form}'), FormController::class)

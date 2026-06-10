@@ -1,9 +1,9 @@
 <?php
 
-namespace Bambamboole\Lattice\Core\Components;
+namespace Lattice\Lattice\Core\Components;
 
 use BackedEnum;
-use Bambamboole\Lattice\Core\Concerns\HasTabIndex;
+use Lattice\Lattice\Core\Concerns\HasTabIndex;
 
 class Link extends Component
 {

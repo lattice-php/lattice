@@ -3,7 +3,7 @@ title: Frontend Setup
 description: Wire the Lattice React renderer into your Inertia entrypoint.
 ---
 
-Lattice serializes pages to typed component trees on the server. The browser needs the Lattice React renderer to turn those trees into rendered UI. The renderer ships as TypeScript source inside the Composer package (`vendor/lattice/lattice/resources/js`), and your own Vite build compiles it. This page wires it in once.
+Lattice serializes pages to typed component trees on the server. The browser needs the Lattice React renderer to turn those trees into rendered UI. The renderer ships as TypeScript source inside the Composer package (`vendor/lattice-php/lattice/resources/js`), and your own Vite build compiles it. This page wires it in once.
 
 There are four steps: install the JavaScript dependencies, alias the package, import the stylesheet, and register the page component.
 
@@ -52,7 +52,7 @@ export default defineConfig({
     alias: {
       "@lattice/lattice": path.resolve(
         __dirname,
-        "vendor/lattice/lattice/resources/js",
+        "vendor/lattice-php/lattice/resources/js",
       ),
     },
   },
@@ -65,8 +65,8 @@ Mirror the alias in `tsconfig.json` so your editor and `tsc` resolve the same im
 {
   "compilerOptions": {
     "paths": {
-      "@lattice/lattice": ["./vendor/lattice/lattice/resources/js/index.ts"],
-      "@lattice/lattice/*": ["./vendor/lattice/lattice/resources/js/*"]
+      "@lattice/lattice": ["./vendor/lattice-php/lattice/resources/js/index.ts"],
+      "@lattice/lattice/*": ["./vendor/lattice-php/lattice/resources/js/*"]
     }
   }
 }
@@ -80,7 +80,7 @@ Import Lattice's stylesheet from your main CSS entry, after Tailwind. It defines
 /* resources/css/app.css */
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "../../vendor/lattice/lattice/resources/css/lattice.css";
+@import "../../vendor/lattice-php/lattice/resources/css/lattice.css";
 ```
 
 The component tokens (`--lt-*`) fall back to sensible defaults, so the UI is styled out of the box. They also read from shadcn-style variables (`--background`, `--primary`, …) when you define them, which lets Lattice inherit an existing theme.

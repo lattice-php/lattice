@@ -1,9 +1,9 @@
 <?php
 
-namespace Bambamboole\Lattice\Forms\Components;
+namespace Lattice\Lattice\Forms\Components;
 
-use Bambamboole\Lattice\Core\Components\Component;
-use Bambamboole\Lattice\Core\Concerns\HasVariant;
+use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Concerns\HasVariant;
 
 class SubmitButton extends Component
 {

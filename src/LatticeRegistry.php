@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice;
+namespace Lattice\Lattice;
 
-use Bambamboole\Lattice\Actions\ActionDefinition;
-use Bambamboole\Lattice\Actions\ActionRegistry;
-use Bambamboole\Lattice\Actions\BulkActionDefinition;
-use Bambamboole\Lattice\Actions\BulkActionRegistry;
-use Bambamboole\Lattice\Core\Contracts\DiscoversDefinitions;
-use Bambamboole\Lattice\Core\DefinitionRegistry;
-use Bambamboole\Lattice\Forms\FormDefinition;
-use Bambamboole\Lattice\Forms\FormRegistry;
-use Bambamboole\Lattice\Fragments\FragmentDefinition;
-use Bambamboole\Lattice\Fragments\FragmentRegistry;
-use Bambamboole\Lattice\Http\PageContract;
-use Bambamboole\Lattice\Menu\MenuRegistry;
-use Bambamboole\Lattice\Tables\TableDefinition;
-use Bambamboole\Lattice\Tables\TableRegistry;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use InvalidArgumentException;
+use Lattice\Lattice\Actions\ActionDefinition;
+use Lattice\Lattice\Actions\ActionRegistry;
+use Lattice\Lattice\Actions\BulkActionDefinition;
+use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Core\Contracts\DiscoversDefinitions;
+use Lattice\Lattice\Core\DefinitionRegistry;
+use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Forms\FormRegistry;
+use Lattice\Lattice\Fragments\FragmentDefinition;
+use Lattice\Lattice\Fragments\FragmentRegistry;
+use Lattice\Lattice\Http\PageContract;
+use Lattice\Lattice\Menu\MenuRegistry;
+use Lattice\Lattice\Tables\TableDefinition;
+use Lattice\Lattice\Tables\TableRegistry;
 
 final class LatticeRegistry
 {

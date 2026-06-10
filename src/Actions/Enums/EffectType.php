@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Actions\Enums;
+namespace Lattice\Lattice\Actions\Enums;
 
 enum EffectType: string
 {

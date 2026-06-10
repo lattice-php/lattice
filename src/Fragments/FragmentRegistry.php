@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Fragments;
+namespace Lattice\Lattice\Fragments;
 
-use Bambamboole\Lattice\Attributes\ComponentAttribute;
-use Bambamboole\Lattice\Attributes\Fragment;
-use Bambamboole\Lattice\Core\DefinitionRegistry;
-use Bambamboole\Lattice\Core\PageSchema;
-use Bambamboole\Lattice\Fragments\Components\Fragment as FragmentComponent;
+use Lattice\Lattice\Attributes\ComponentAttribute;
+use Lattice\Lattice\Attributes\Fragment;
+use Lattice\Lattice\Core\DefinitionRegistry;
+use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
 
 /**
  * @extends DefinitionRegistry<FragmentDefinition>

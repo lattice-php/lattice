@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
-use Bambamboole\Lattice\Core\Components\Heading;
-use Bambamboole\Lattice\Core\Components\Stack;
-use Bambamboole\Lattice\Core\Enums\Gap;
-use Bambamboole\Lattice\Core\Enums\HttpMethod;
-use Bambamboole\Lattice\Core\PageSchema;
-use Bambamboole\Lattice\Forms\Components\Form;
-use Bambamboole\Lattice\Http\Page;
+use Lattice\Lattice\Core\Components\Heading;
+use Lattice\Lattice\Core\Components\Stack;
+use Lattice\Lattice\Core\Enums\Gap;
+use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Http\Page;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 

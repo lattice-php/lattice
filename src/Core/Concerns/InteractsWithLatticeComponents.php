@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Core\Concerns;
+namespace Lattice\Lattice\Core\Concerns;
 
-use Bambamboole\Lattice\Core\Contracts\DefinitionRegistry;
-use Bambamboole\Lattice\Core\Contracts\SignsComponentReferences;
-use Bambamboole\Lattice\Core\Definition;
-use Bambamboole\Lattice\Core\Exceptions\UnknownLatticeComponent;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Contracts\DefinitionRegistry;
+use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Core\Definition;
+use Lattice\Lattice\Core\Exceptions\UnknownLatticeComponent;
 
 trait InteractsWithLatticeComponents
 {

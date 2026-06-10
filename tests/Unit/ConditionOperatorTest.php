@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Forms\Enums\ConditionOperator;
+use Lattice\Lattice\Forms\Enums\ConditionOperator;
 
 it('evaluates operators', function (mixed $actual, ConditionOperator $op, mixed $expected, bool $result): void {
     expect($op->evaluate($actual, $expected))->toBe($result);

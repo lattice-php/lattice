@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Tables\Columns;
+namespace Lattice\Lattice\Tables\Columns;
 
 use JsonSerializable;
 

@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Facades;
+namespace Lattice\Lattice\Facades;
 
-use Bambamboole\Lattice\LatticeRegistry;
-use Bambamboole\Lattice\Menu\MenuRegistry;
 use Illuminate\Support\Facades\Facade;
+use Lattice\Lattice\LatticeRegistry;
+use Lattice\Lattice\Menu\MenuRegistry;
 
 /**
- * @method static void forms(class-string<\Bambamboole\Lattice\Forms\FormDefinition>|array<int, class-string<\Bambamboole\Lattice\Forms\FormDefinition>> $forms)
- * @method static void tables(class-string<\Bambamboole\Lattice\Tables\TableDefinition>|array<int, class-string<\Bambamboole\Lattice\Tables\TableDefinition>> $tables)
- * @method static void fragments(class-string<\Bambamboole\Lattice\Fragments\FragmentDefinition>|array<int, class-string<\Bambamboole\Lattice\Fragments\FragmentDefinition>> $fragments)
- * @method static void actions(class-string<\Bambamboole\Lattice\Actions\ActionDefinition>|array<int, class-string<\Bambamboole\Lattice\Actions\ActionDefinition>> $actions)
- * @method static void bulkActions(class-string<\Bambamboole\Lattice\Actions\BulkActionDefinition>|array<int, class-string<\Bambamboole\Lattice\Actions\BulkActionDefinition>> $bulkActions)
+ * @method static void forms(class-string<\Lattice\Lattice\Forms\FormDefinition>|array<int, class-string<\Lattice\Lattice\Forms\FormDefinition>> $forms)
+ * @method static void tables(class-string<\Lattice\Lattice\Tables\TableDefinition>|array<int, class-string<\Lattice\Lattice\Tables\TableDefinition>> $tables)
+ * @method static void fragments(class-string<\Lattice\Lattice\Fragments\FragmentDefinition>|array<int, class-string<\Lattice\Lattice\Fragments\FragmentDefinition>> $fragments)
+ * @method static void actions(class-string<\Lattice\Lattice\Actions\ActionDefinition>|array<int, class-string<\Lattice\Lattice\Actions\ActionDefinition>> $actions)
+ * @method static void bulkActions(class-string<\Lattice\Lattice\Actions\BulkActionDefinition>|array<int, class-string<\Lattice\Lattice\Actions\BulkActionDefinition>> $bulkActions)
  * @method static void registerConfiguredDefinitions()
  * @method static void discover(string $path, string $namespace)
  * @method static MenuRegistry menus()

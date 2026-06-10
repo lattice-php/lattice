@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Actions\Contracts;
+namespace Lattice\Lattice\Actions\Contracts;
 
-use Bambamboole\Lattice\Actions\ActionResult;
-use Bambamboole\Lattice\Actions\Components\Action;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Actions\ActionResult;
+use Lattice\Lattice\Actions\Components\Action;
 
 interface ProvidesAction
 {

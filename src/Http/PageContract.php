@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Http;
+namespace Lattice\Lattice\Http;
 
-use Bambamboole\Lattice\Core\Contracts\Authorizable;
 use Inertia\Response;
+use Lattice\Lattice\Core\Contracts\Authorizable;
 
 interface PageContract extends Authorizable
 {

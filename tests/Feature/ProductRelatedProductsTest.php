@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Facades\Lattice;
-use Bambamboole\Lattice\Forms\Components\Form;
 use Inertia\Testing\AssertableInertia;
+use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 

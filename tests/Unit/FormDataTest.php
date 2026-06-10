@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bambamboole\Lattice\Forms\FormData;
+use Lattice\Lattice\Forms\FormData;
 
 it('reads typed values with defaults', function (): void {
     $data = FormData::make([

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Bambamboole\Lattice\Actions;
+namespace Lattice\Lattice\Actions;
 
-use Bambamboole\Lattice\Actions\Components\Action;
-use Bambamboole\Lattice\Actions\Contracts\ProvidesAction;
-use Bambamboole\Lattice\Core\Definition;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Actions\Contracts\ProvidesAction;
+use Lattice\Lattice\Core\Definition;
 
 abstract class ActionDefinition extends Definition implements ProvidesAction
 {
