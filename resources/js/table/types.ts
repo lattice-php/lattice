@@ -1,11 +1,11 @@
 import type {
-  FilterType,
+  ColumnFilter,
   FilterOperator,
   PaginationType,
   TableSort,
 } from "@lattice/lattice/generated/types";
 
-export type { TableSort };
+export type { ColumnFilter, TableSort };
 
 export type TableColumn = {
   columns?: TableColumn[];
@@ -13,12 +13,7 @@ export type TableColumn = {
   label: string;
   type?: "stack" | "text";
   sortable?: boolean;
-  filter?: {
-    enabled?: boolean;
-    type?: FilterType;
-    operators?: FilterOperator[];
-    defaultOperator?: FilterOperator;
-  };
+  filter?: ColumnFilter;
   date?: {
     format?: string | null;
   };

@@ -19,9 +19,4 @@ interface Filterable
     public function filterOperators(): array;
 
     public function defaultFilterOperator(): FilterOperator;
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function filterToArray(): array;
 }

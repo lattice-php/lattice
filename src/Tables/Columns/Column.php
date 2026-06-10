@@ -35,10 +35,25 @@ abstract class Column implements JsonSerializable
      */
     public function toArray(): array
     {
-        return [
+        $data = [
             'key' => $this->key,
             'label' => $this->label,
         ];
+
+        if ($this instanceof Sortable && $this->isSortable()) {
+            $data['sortable'] = true;
+        }
+
+        if ($this instanceof Filterable && $this->isFilterable()) {
+            $data['filter'] = (new ColumnFilter(
+                enabled: true,
+                type: $this->filterType(),
+                operators: $this->filterOperators(),
+                defaultOperator: $this->defaultFilterOperator(),
+            ))->toArray();
+        }
+
+        return $data;
     }
 
     /**

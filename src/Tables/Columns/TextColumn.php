@@ -92,8 +92,6 @@ class TextColumn extends Column implements Filterable, Sortable
     {
         return array_filter([
             ...parent::toArray(),
-            ...$this->sortableToArray(),
-            ...$this->filterToArray(),
             'type' => 'text',
             'date' => $this->date,
             'copyable' => $this->copyable ?: null,

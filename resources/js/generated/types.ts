@@ -1,4 +1,10 @@
 export type Align = 'center' | 'left' | 'start' | 'stretch';
+export type ColumnFilter = {
+readonly enabled: boolean,
+readonly type: FilterType,
+readonly operators: FilterOperator[],
+readonly defaultOperator: FilterOperator,
+};
 export type ConditionOperator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'starts_with' | 'ends_with' | 'in' | 'not_in' | 'empty' | 'filled';
 export type EffectType = 'toast' | 'reloadComponent' | 'reloadPage' | 'redirect' | 'download' | 'openModal' | 'closeModal' | 'resetForm';
 export type FilterOperator = 'contains' | 'starts_with' | 'ends_with' | 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'before' | 'after' | 'empty' | 'filled';
