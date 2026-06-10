@@ -28,6 +28,18 @@ abstract class Field extends Component
     public ?bool $disabled = null;
 
     /**
+     * @var array<string, array<int, array{field: string, operator: string, value: mixed}>>|null
+     */
+    public ?array $conditions = null;
+
+    /**
+     * @var array<int, string>|null
+     */
+    public ?array $dependsOnKeys = null;
+
+    public ?bool $dependsOnAny = null;
+
+    /**
      * Validation rules. Each entry is a rule (string/object) or a Closure that
      * returns additional rules. Rules accumulate across calls.
      *
@@ -373,8 +385,8 @@ abstract class Field extends Component
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    #[SerializationHook(priority: 250)]
-    protected function serialiseConditions(array $data): array
+    #[SerializationHook(priority: 190)]
+    protected function projectComputedProps(array $data): array
     {
         $conditions = [];
 
@@ -386,20 +398,8 @@ abstract class Field extends Component
             }
         }
 
-        if ($conditions !== []) {
-            $data['props'] = [...$data['props'], 'conditions' => $conditions];
-        }
+        $this->conditions = $conditions === [] ? null : $conditions;
 
-        return $data;
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
-     */
-    #[SerializationHook(priority: 260)]
-    protected function serialiseDependencies(array $data): array
-    {
         $keys = [];
 
         foreach ($this->dependencies as $dependency) {
@@ -408,13 +408,8 @@ abstract class Field extends Component
             }
         }
 
-        if ($keys !== []) {
-            $data['props'] = [...$data['props'], 'dependsOnKeys' => array_keys($keys)];
-        }
-
-        if ($this->valueResolver !== null) {
-            $data['props'] = [...$data['props'], 'dependsOnAny' => true];
-        }
+        $this->dependsOnKeys = $keys === [] ? null : array_keys($keys);
+        $this->dependsOnAny = $this->valueResolver !== null ? true : null;
 
         return $data;
     }
