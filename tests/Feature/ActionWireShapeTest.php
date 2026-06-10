@@ -113,6 +113,7 @@ it('carries typed props through BulkAction::use from the registry', function ():
         'endpoint' => '/lattice/bulk-actions/workbench.products.archive-selected',
         'label' => 'Archive selected',
         'method' => 'patch',
+        'variant' => 'destructive',
     ]);
     expect($payload['props']['ref'])->toBeString();
 });
