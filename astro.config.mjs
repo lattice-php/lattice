@@ -34,14 +34,34 @@ export default defineConfig({
       customCss: ["./docs/styles/global.css"],
       sidebar: [
         {
-          label: "Getting Started",
+          label: "Introduction",
           items: [
-            { label: "Introduction", link: "/" },
-            { label: "Installation", link: "/getting-started/installation/" },
-            { label: "Quickstart", link: "/getting-started/quickstart/" },
-            { label: "Configuration", link: "/getting-started/configuration/" },
-            { label: "Frontend Setup", link: "/getting-started/frontend-setup/" },
+            { label: "What is Lattice?", link: "/introduction/what-is-lattice/" },
+            { label: "Core Concepts", link: "/introduction/core-concepts/" },
+            { label: "Installation", link: "/introduction/installation/" },
+            { label: "Getting Started", link: "/introduction/getting-started/" },
+            { label: "Configuration", link: "/introduction/configuration/" },
           ],
+        },
+        {
+          label: "Core",
+          items: [
+            { label: "Pages", link: "/core/pages/" },
+            { label: "Components", link: "/core/components/" },
+            { label: "Navigation", link: "/core/navigation/" },
+          ],
+        },
+        {
+          label: "Forms",
+          items: [{ label: "Overview", link: "/forms/overview/" }],
+        },
+        {
+          label: "Tables",
+          items: [{ label: "Overview", link: "/tables/overview/" }],
+        },
+        {
+          label: "Actions",
+          items: [{ label: "Overview", link: "/actions/overview/" }],
         },
         {
           label: "Contributing",

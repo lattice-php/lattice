@@ -1,13 +1,50 @@
 ---
-title: Frontend Setup
-description: Wire the Lattice React renderer into your Inertia entrypoint.
+title: Installation
+description: Install the Lattice Composer package and wire its React renderer into a Laravel + Inertia application.
 ---
 
-Lattice serializes pages to typed component trees on the server. The browser needs the Lattice React renderer — published as `@lattice-php/lattice` — to turn those trees into rendered UI. This page wires it in once.
+Lattice adds a server-driven UI layer to a Laravel application running [Inertia](https://inertiajs.com/) with the React adapter. Installing it has two halves: the Composer package on the backend and the React renderer on the frontend.
 
-There are three steps: install the package, import its stylesheet, and register the page component.
+## Requirements
 
-## Install the package
+| Requirement | Version |
+| --- | --- |
+| PHP | 8.4+ |
+| Laravel | 11, 12, or 13 |
+| Inertia (Laravel + React) | v3 |
+| React | 19 |
+| Tailwind CSS | 4 |
+
+## How Lattice is delivered
+
+Lattice ships as two coordinated packages:
+
+- **`lattice-php/lattice`** on Composer — the PHP layer that describes pages, forms, tables, actions, and menus and serializes them to typed component trees.
+- **`@lattice-php/lattice`** on npm — the React renderer that turns those trees into rendered UI in the browser.
+
+Both packages are cut from the same release, so a given Composer version always has a matching npm version — the renderer can't drift from the server that serialized the page.
+
+## Backend: install the package
+
+```bash
+composer require lattice-php/lattice
+```
+
+The service provider is registered automatically through Laravel package discovery, so there is nothing to add to `bootstrap/providers.php`.
+
+Publish `config/lattice.php` to customize discovery paths, endpoints, and middleware:
+
+```bash
+php artisan vendor:publish --tag="lattice-config"
+```
+
+See [Configuration](/introduction/configuration/) for what each option controls.
+
+## Frontend: wire in the renderer
+
+The browser needs the Lattice React renderer to turn the server's component trees into rendered UI. Install it, import its stylesheet, and register the page component.
+
+### Install the package
 
 ```bash
 npm install @lattice-php/lattice
@@ -23,7 +60,7 @@ npm install -D tailwindcss @tailwindcss/vite tw-animate-css
 Lattice targets React 19, Inertia v3, Tailwind 4, and TipTap 3. The npm package version always matches the `lattice-php/lattice` Composer version you installed — they ship from the same release.
 :::
 
-## Import the stylesheet
+### Import the stylesheet
 
 Import Lattice's stylesheet from your main CSS entry, after Tailwind. It defines the theme tokens the components use and registers the package's compiled output with Tailwind automatically, so no extra `@source` line is needed:
 
@@ -36,7 +73,7 @@ Import Lattice's stylesheet from your main CSS entry, after Tailwind. It defines
 
 The component tokens (`--lt-*`) fall back to sensible defaults, so the UI is styled out of the box. They also read from shadcn-style variables (`--background`, `--primary`, …) when you define them, which lets Lattice inherit an existing theme.
 
-## Register the renderer
+### Register the renderer
 
 Every Lattice route resolves to the same Inertia page component, `lattice/page`, which the package provides. In your Inertia entrypoint, resolve that name to Lattice's page component and fall back to your own pages for anything else:
 
@@ -66,7 +103,7 @@ createInertiaApp({
 
 That single `resolve` branch is all an application needs for every page Lattice routes.
 
-## Customizing the registry
+### Customizing the registry
 
 The renderer resolves component types from a registry. Lattice exports the pieces you need to extend or replace it:
 
@@ -74,9 +111,13 @@ The renderer resolves component types from a registry. Lattice exports the piece
 import { Provider, Renderer, registry, createRegistry, extendRegistry } from "@lattice-php/lattice";
 ```
 
-Wrap your tree in `Provider` with a custom registry to register your own component types, or use `extendRegistry` to add to the defaults. Heavy built-ins (forms, tables, the rich editor) are registered lazily and code-split, so you only ship what a page actually renders. Building custom components is covered in the Advanced section.
+Wrap your tree in `Provider` with a custom registry to register your own component types, or use `extendRegistry` to add to the defaults. Heavy built-ins (forms, tables, the rich editor) are registered lazily and code-split, so you only ship what a page actually renders.
+
+## Next steps
+
+- [Getting Started](/introduction/getting-started/) — build and route your first page.
+- [Configuration](/introduction/configuration/) — discovery, endpoints, and middleware.
 
 :::note
 Working on Lattice itself, or against an unreleased change? See [Local Development](/contributing/local-development/) for consuming the package directly from a Composer path checkout instead of npm.
 :::
-</content>
