@@ -18,9 +18,15 @@ class Select extends Field
 
     private ?Closure $selectedResolver = null;
 
+    public ?bool $multiple = null;
+
+    public ?bool $searchable = null;
+
     public function multiple(bool $multiple = true): static
     {
-        return $this->prop('multiple', $multiple);
+        $this->multiple = $multiple;
+
+        return $this;
     }
 
     /**
@@ -33,8 +39,9 @@ class Select extends Field
     public function searchable(Closure $resolver): static
     {
         $this->searchResolver = $resolver;
+        $this->searchable = true;
 
-        return $this->prop('searchable', true);
+        return $this;
     }
 
     /**
