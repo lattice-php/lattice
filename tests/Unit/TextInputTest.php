@@ -44,4 +44,36 @@ describe('docs fixtures', function (): void {
 
         expect('docs/fixtures/text-input.email.json')->toBeReadableFile();
     });
+
+    it('dumps the common field option examples', function (): void {
+        dumpFixture('field.required', [
+            TextInput::make('name', 'Team name')->required(),
+        ]);
+
+        dumpFixture('field.default-value', [
+            TextInput::make('name', 'Team name')->value('Acme Inc'),
+        ]);
+
+        dumpFixture('field.disabled', [
+            TextInput::make('name', 'Team name')->value('Acme Inc')->disabled(),
+        ]);
+
+        dumpFixture('field.read-only', [
+            TextInput::make('slug', 'Slug')->value('acme-inc')->readOnly(),
+        ]);
+
+        expect('docs/fixtures/field.required.json')->toBeReadableFile();
+    });
+
+    it('dumps the conditional field examples', function (): void {
+        dumpFixture('field.visible-when', [
+            TextInput::make('vat', 'VAT ID')->visibleWhen('type', 'business'),
+        ]);
+
+        dumpFixture('field.required-when', [
+            TextInput::make('vat', 'VAT ID')->requiredWhen('country', 'DE'),
+        ]);
+
+        expect('docs/fixtures/field.required-when.json')->toBeReadableFile();
+    });
 });

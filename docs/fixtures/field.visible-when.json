@@ -1,0 +1,18 @@
+[
+    {
+        "type": "form.text-input",
+        "props": {
+            "name": "vat",
+            "label": "VAT ID",
+            "conditions": {
+                "visible": [
+                    {
+                        "field": "type",
+                        "operator": "eq",
+                        "value": "business"
+                    }
+                ]
+            }
+        }
+    }
+]

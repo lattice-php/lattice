@@ -1,0 +1,18 @@
+[
+    {
+        "type": "form.text-input",
+        "props": {
+            "name": "vat",
+            "label": "VAT ID",
+            "conditions": {
+                "required": [
+                    {
+                        "field": "country",
+                        "operator": "eq",
+                        "value": "DE"
+                    }
+                ]
+            }
+        }
+    }
+]
