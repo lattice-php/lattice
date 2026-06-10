@@ -32,7 +32,7 @@ class PasswordInput extends Field
     {
         return $this->prop('confirmation', [
             'label' => $label ?? 'Confirm password',
-            'name' => $this->props['name'].'_confirmation',
+            'name' => $this->name.'_confirmation',
             'placeholder' => $placeholder ?? $label ?? 'Confirm password',
         ]);
     }
