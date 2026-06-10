@@ -62,7 +62,7 @@ function collectFields(
       }
     }
 
-    collectFields(child.children, collected);
+    collectFields(child.schema, collected);
   }
 
   return collected;
@@ -135,8 +135,8 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   const resetOnSuccess = props.resetOnSuccess ?? [];
   const state = getFormState(node.props);
   const { labels: fieldLabels, values: fieldValues } = useMemo(
-    () => collectFields(node.children),
-    [node.children],
+    () => collectFields(node.schema),
+    [node.schema],
   );
   const initialValues = { ...fieldValues, ...state };
   const shouldRenderSubmitButton = getBooleanProp(props, "submitButton", true);
@@ -194,7 +194,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
             <FormBody
               action={action}
               componentRef={componentRef}
-              nodes={node.children}
+              nodes={node.schema}
               shouldRenderSubmitButton={shouldRenderSubmitButton}
               submitLabel={submitLabel}
             >

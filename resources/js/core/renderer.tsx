@@ -82,11 +82,11 @@ function NodeRenderer({
   }
 
   const Component = registration.component;
-  const children = node.children?.length ? (
+  const children = node.schema?.length ? (
     <Renderer
       fallback={fallback}
       missingComponent={UnknownComponent}
-      nodes={node.children}
+      nodes={node.schema}
       registry={registry}
     />
   ) : null;

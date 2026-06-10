@@ -23,7 +23,7 @@ function pageWithLattice(lattice: PagePayload): InertiaPage {
 function payload(lattice: Partial<PagePayload> = {}): PagePayload {
   return {
     breadcrumbs: [],
-    components: [],
+    schema: [],
     container: "default",
     layout: "none",
     menus: {},

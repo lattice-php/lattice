@@ -20,7 +20,7 @@ function collectWatch(nodes: Node[] | undefined, keys: Set<string>, state: { any
     if (getBooleanProp(child.props, "dependsOnAny")) {
       state.any = true;
     }
-    collectWatch(child.children, keys, state);
+    collectWatch(child.schema, keys, state);
   }
 }
 

@@ -21,7 +21,7 @@ describe("Renderer", () => {
       <Renderer
         nodes={[
           {
-            children: [
+            schema: [
               {
                 id: "child",
                 type: "test.component",

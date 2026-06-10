@@ -55,11 +55,11 @@ abstract class ContainerComponent extends Component
      * @return array<string, mixed>
      */
     #[SerializationHook(priority: 300)]
-    protected function serialiseChildren(array $data): array
+    protected function serialiseSchema(array $data): array
     {
         return [
             ...$data,
-            'children' => array_map(
+            'schema' => array_map(
                 fn (Component $child): array => $child->toArray(),
                 $this->renderableChildren(),
             ),

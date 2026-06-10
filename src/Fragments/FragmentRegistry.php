@@ -28,14 +28,14 @@ final class FragmentRegistry extends DefinitionRegistry
     }
 
     /**
-     * @return array{components: array<int, array<string, mixed>>}
+     * @return array{schema: array<int, array<string, mixed>>}
      */
     public function response(string $key, ?FragmentDefinition $definition = null): array
     {
         $definition ??= $this->resolve($key);
 
         return [
-            'components' => $definition
+            'schema' => $definition
                 ->schema(PageSchema::make())
                 ->toArray(),
         ];

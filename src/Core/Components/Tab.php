@@ -57,7 +57,7 @@ class Tab extends ContainerComponent
         $data = $this->toArray();
 
         if ($this->requiresConfirmation() && $this->value() !== $activeValue) {
-            unset($data['children']);
+            unset($data['schema']);
         }
 
         return $data;

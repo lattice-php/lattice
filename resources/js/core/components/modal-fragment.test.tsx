@@ -27,7 +27,7 @@ describe("Lattice modal and fragment components", () => {
       <Renderer
         nodes={[
           {
-            children: [
+            schema: [
               {
                 props: {
                   text: "Authenticator setup",
@@ -72,7 +72,7 @@ describe("Lattice modal and fragment components", () => {
     fetch.mockResolvedValue(
       new Response(
         JSON.stringify({
-          components: [
+          schema: [
             {
               props: {
                 text: "Loaded fragment body",
@@ -135,7 +135,7 @@ describe("Lattice modal and fragment components", () => {
       .mockResolvedValueOnce(
         new Response(
           JSON.stringify({
-            components: [
+            schema: [
               {
                 props: {
                   text: "Initial fragment body",
@@ -149,7 +149,7 @@ describe("Lattice modal and fragment components", () => {
       .mockResolvedValueOnce(
         new Response(
           JSON.stringify({
-            components: [
+            schema: [
               {
                 props: {
                   text: "Reloaded fragment body",

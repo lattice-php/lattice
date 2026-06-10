@@ -138,7 +138,7 @@ describe("Lattice table component", () => {
             status: "Active",
             actions: [
               {
-                children: [
+                schema: [
                   {
                     id: "workbench.ping",
                     props: {

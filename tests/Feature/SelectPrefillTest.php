@@ -10,7 +10,7 @@ use Lattice\Lattice\Forms\Components\Select;
  */
 function prefilledOptions(Form $form): array
 {
-    return $form->toArray()['children'][0]['props']['options'] ?? [];
+    return $form->toArray()['schema'][0]['props']['options'] ?? [];
 }
 
 it('resolves the label for a single filled id', function (): void {
