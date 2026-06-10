@@ -15,17 +15,31 @@ class SegmentedControl extends Component
 {
     use HasOptions;
 
+    public string $name = '';
+
+    public ?string $label = null;
+
+    public ?string $value = null;
+
+    public ?string $emits = null;
+
     public static function make(string $name, ?string $label = null, ?string $key = null): static
     {
-        return (new static($key))->props([
-            'name' => $name,
-            'label' => $label,
-        ]);
+        $control = new static($key);
+        $control->name = $name;
+
+        if ($label !== null) {
+            $control->label = $label;
+        }
+
+        return $control;
     }
 
     public function value(string $value): static
     {
-        return $this->prop('value', $value);
+        $this->value = $value;
+
+        return $this;
     }
 
     /**
@@ -33,7 +47,9 @@ class SegmentedControl extends Component
      */
     public function emits(string $event): static
     {
-        return $this->prop('emits', $event);
+        $this->emits = $event;
+
+        return $this;
     }
 
     protected function type(): string
