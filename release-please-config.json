@@ -12,6 +12,10 @@
     { "type": "docs", "section": "Documentation" }
   ],
   "packages": {
-    ".": {}
+    ".": {
+      "extra-files": [
+        { "type": "json", "path": "package.json", "jsonpath": "$.version" }
+      ]
+    }
   }
 }

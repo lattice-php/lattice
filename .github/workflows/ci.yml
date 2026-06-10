@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   js:
-    name: JS (lint, format, typecheck, vitest)
+    name: JS (lint, format, typecheck, vitest, build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -33,6 +33,8 @@ jobs:
       - run: npm run typecheck
 
       - run: npm test
+
+      - run: npm run build:lib
 
   php:
     name: PHP (pint, phpstan, pest)
