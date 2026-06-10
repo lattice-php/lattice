@@ -4,6 +4,8 @@ namespace Lattice\Lattice\Core\Components;
 
 class Grid extends ContainerComponent
 {
+    public ?int $columns = null;
+
     public static function make(?string $key = null): static
     {
         return new static($key);
@@ -11,7 +13,9 @@ class Grid extends ContainerComponent
 
     public function columns(int $columns): static
     {
-        return $this->prop('columns', $columns);
+        $this->columns = $columns;
+
+        return $this;
     }
 
     protected function type(): string

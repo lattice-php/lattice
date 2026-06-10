@@ -6,14 +6,23 @@ use Lattice\Lattice\Core\Enums\Align;
 
 class Text extends Component
 {
+    public string $text = '';
+
+    public ?Align $align = null;
+
     public static function make(string $text, ?string $key = null): static
     {
-        return (new static($key))->prop('text', $text);
+        $component = new static($key);
+        $component->text = $text;
+
+        return $component;
     }
 
     public function align(Align|string $align): static
     {
-        return $this->prop('align', $this->enumValue($align));
+        $this->align = $align instanceof Align ? $align : Align::from($align);
+
+        return $this;
     }
 
     protected function type(): string
