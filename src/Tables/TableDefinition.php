@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables;
 
-use Illuminate\Support\Collection;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Definition;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Contracts\ProvidesTable;
+use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 
 abstract class TableDefinition extends Definition implements ProvidesTable
@@ -63,22 +63,5 @@ abstract class TableDefinition extends Definition implements ProvidesTable
         return [];
     }
 
-    abstract public function query(TableQuery $query): TableResult;
-
-    /**
-     * @param  array<int, mixed>  $keys
-     * @return Collection<int, mixed>
-     */
-    public function resolveSelection(array $keys): Collection
-    {
-        return new Collection;
-    }
-
-    /**
-     * @return Collection<int, mixed>
-     */
-    public function resolveMatching(TableQuery $query): Collection
-    {
-        return new Collection;
-    }
+    abstract public function source(): TableSource;
 }

@@ -56,9 +56,11 @@ use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\LatticeRegistry;
 use Lattice\Lattice\Menu\MenuItem;
 use Lattice\Lattice\Menu\MenuRegistry;
+use Lattice\Lattice\Tables\CallbackTableSource;
 use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
+use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\TableDefinition;
@@ -1686,9 +1688,9 @@ class WorkbenchUsersTable extends TableDefinition
         ];
     }
 
-    public function query(TableQuery $query): TableResult
+    public function source(): TableSource
     {
-        return TableResult::make([
+        return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([
             [
                 'name' => 'Taylor',
                 'filters' => array_map(
@@ -1703,7 +1705,7 @@ class WorkbenchUsersTable extends TableDefinition
                     $query->sorts(),
                 ),
             ],
-        ]);
+        ]));
     }
 }
 
@@ -1717,9 +1719,11 @@ class WorkbenchLazyUsersTable extends TableDefinition
         ];
     }
 
-    public function query(TableQuery $query): TableResult
+    public function source(): TableSource
     {
-        throw new RuntimeException('Lazy table query should not run during serialization.');
+        return new CallbackTableSource(function (TableQuery $query): TableResult {
+            throw new RuntimeException('Lazy table query should not run during serialization.');
+        });
     }
 }
 
@@ -1883,16 +1887,16 @@ class WorkbenchStackedUsersTable extends TableDefinition
         ];
     }
 
-    public function query(TableQuery $query): TableResult
+    public function source(): TableSource
     {
-        return TableResult::make([
+        return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([
             [
                 'id' => 1,
                 'name' => 'Taylor',
                 'email' => 'taylor@example.com',
                 'status' => 'Active',
             ],
-        ]);
+        ]));
     }
 }
 
@@ -2077,9 +2081,9 @@ final class WorkbenchDeniedTable extends TableDefinition
         return [TextColumn::make('name')];
     }
 
-    public function query(TableQuery $query): TableResult
+    public function source(): TableSource
     {
-        return TableResult::make([]);
+        return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([]));
     }
 
     public function authorize(Request $request): bool
