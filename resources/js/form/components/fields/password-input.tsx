@@ -1,11 +1,10 @@
-import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
 import type { NodeProps, RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import PasswordInput from "../base/password-input";
+import type { PasswordInput as PasswordInputProps } from "../types";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
 import { useFormContext } from "../context";
-import type { FormLabelAction } from "../types";
 
 type PasswordConfirmation = {
   label?: string;
@@ -32,33 +31,19 @@ function getPasswordConfirmation(props: NodeProps | undefined): PasswordConfirma
 
 declare module "@lattice/lattice/core/types" {
   interface ComponentProps {
-    "form.password-input": {
-      autoComplete?: string;
-      autoFocus?: boolean;
-      conditions?: unknown;
-      confirmation?: PasswordConfirmation;
-      disabled?: boolean;
-      hidden?: boolean;
-      label?: string;
-      labelAction?: FormLabelAction;
-      name?: string;
-      passwordRules?: string;
-      placeholder?: string;
-      readonly?: boolean;
-      required?: boolean;
-      tabIndex?: number;
-    };
+    "form.password-input": PasswordInputProps;
   }
 }
 
 export const PasswordInputComponent: RendererComponent<"form.password-input"> = ({ node }) => {
+  const props = node.props ?? ({} as PasswordInputProps);
   const { errors } = useFormContext();
   const { hidden, required, readonly, disabled } = useDependentField(node);
   const { commit } = useFieldCommit();
-  const name = getStringProp(node.props, "name");
+  const name = props.name ?? "";
   const confirmation = getPasswordConfirmation(node.props);
   const confirmationName = confirmation?.name ?? `${name}_confirmation`;
-  const passwordRules = getStringProp(node.props, "passwordRules") || undefined;
+  const passwordRules = (props.passwordRules ?? "") || undefined;
 
   if (hidden) {
     return null;
@@ -74,22 +59,22 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
     <div className="grid gap-6">
       <FormFieldFrame
         error={errors[name]}
-        label={getStringProp(node.props, "label")}
-        labelAction={node.props?.labelAction}
+        label={props.label ?? ""}
+        labelAction={props.labelAction ?? undefined}
         name={name}
         required={required}
       >
         <PasswordInput
-          autoComplete={getStringProp(node.props, "autoComplete")}
-          autoFocus={getBooleanProp(node.props, "autoFocus")}
+          autoComplete={props.autoComplete ?? ""}
+          autoFocus={props.autoFocus ?? false}
           disabled={disabled}
           id={name}
           name={name}
           onChange={onChange(name)}
-          placeholder={getStringProp(node.props, "placeholder")}
+          placeholder={props.placeholder ?? ""}
           passwordrules={passwordRules}
           readOnly={readonly}
-          tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
+          tabIndex={props.tabIndex ?? undefined}
         />
       </FormFieldFrame>
 
@@ -109,7 +94,7 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
             placeholder={confirmation.placeholder ?? confirmation.label ?? "Confirm password"}
             passwordrules={passwordRules}
             readOnly={readonly}
-            tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
+            tabIndex={props.tabIndex ?? undefined}
           />
         </FormFieldFrame>
       )}

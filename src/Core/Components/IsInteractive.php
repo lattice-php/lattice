@@ -10,6 +10,15 @@ trait IsInteractive
 {
     protected ?string $id = null;
 
+    /** @var array<string, mixed> */
+    protected array $context = [];
+
+    /**
+     * Populated during serialization for interactive components with an endpoint;
+     * declared here so the wire prop is generated to TypeScript.
+     */
+    public ?string $ref = null;
+
     public function id(string $id): static
     {
         $this->id = $id;
@@ -22,7 +31,9 @@ trait IsInteractive
      */
     public function context(array $context): static
     {
-        return $this->prop('context', $context);
+        $this->context = $context;
+
+        return $this;
     }
 
     /**
@@ -45,10 +56,7 @@ trait IsInteractive
     #[SerializationHook(priority: 200)]
     protected function serialiseProps(array $data): array
     {
-        $props = $this->props;
-        $context = is_array($props['context'] ?? null) ? $props['context'] : [];
-
-        unset($props['context']);
+        $props = $this->wireProps();
 
         if ($this->hasEndpoint($props)) {
             if ($this->id === null) {
@@ -58,7 +66,7 @@ trait IsInteractive
                 ));
             }
 
-            $props['ref'] = app(SignsComponentReferences::class)->seal($this->type(), $this->id, $context);
+            $props['ref'] = app(SignsComponentReferences::class)->seal($this->type(), $this->id, $this->context);
         }
 
         return [

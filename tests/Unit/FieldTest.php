@@ -14,7 +14,7 @@ function makeField(string $name = 'price', string $label = 'Price'): Field
         {
             return 'form.test-field';
         }
-    })->props(['name' => $name, 'label' => $label]);
+    })::make($name, $label);
 }
 
 it('exposes its name and serializes name/label', function (): void {

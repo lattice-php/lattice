@@ -12,6 +12,18 @@ use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Lattice\Lattice\Core\Enums\Width;
+use Lattice\Lattice\Forms\Components\Checkbox;
+use Lattice\Lattice\Forms\Components\Choice;
+use Lattice\Lattice\Forms\Components\DateInput;
+use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\HiddenInput;
+use Lattice\Lattice\Forms\Components\NumberInput;
+use Lattice\Lattice\Forms\Components\PasswordInput;
+use Lattice\Lattice\Forms\Components\RichEditor;
+use Lattice\Lattice\Forms\Components\Select;
+use Lattice\Lattice\Forms\Components\SubmitButton;
+use Lattice\Lattice\Forms\Components\Textarea;
+use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\Enums\ConditionOperator;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Columns\ColumnFilter;
@@ -24,7 +36,9 @@ use Lattice\Lattice\Tables\TableSort;
 use Spatie\LaravelTypeScriptTransformer\TypeScriptTransformerApplicationServiceProvider;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfigFactory;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
+use Workbench\App\Support\LatticeComponentTransformer;
 use Workbench\App\Support\LatticeEnumTransformer;
+use Workbench\App\Support\LatticeFormNodesProvider;
 use Workbench\App\Support\LatticeValueObjectTransformer;
 
 final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerApplicationServiceProvider
@@ -55,6 +69,37 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 ColumnFilter::class,
                 TableSort::class,
             ]))
+            ->transformer(new LatticeComponentTransformer([
+                TextInput::class,
+                Textarea::class,
+                Select::class,
+                Choice::class,
+                Checkbox::class,
+                DateInput::class,
+                NumberInput::class,
+                PasswordInput::class,
+                HiddenInput::class,
+                RichEditor::class,
+                SubmitButton::class,
+                Form::class,
+            ]))
+            ->provider(new LatticeFormNodesProvider(
+                [
+                    TextInput::class => 'form.text-input',
+                    Textarea::class => 'form.textarea',
+                    Select::class => 'form.select',
+                    Choice::class => 'form.choice',
+                    Checkbox::class => 'form.checkbox',
+                    DateInput::class => 'form.date-input',
+                    NumberInput::class => 'form.number-input',
+                    PasswordInput::class => 'form.password-input',
+                    HiddenInput::class => 'form.hidden-input',
+                    RichEditor::class => 'form.rich-editor',
+                    SubmitButton::class => 'form.submit-button',
+                ],
+                Form::class,
+                'form',
+            ))
             ->transformDirectories($packageRoot.'/src')
             ->outputDirectory($packageRoot.'/resources/js/generated')
             ->writer(new FlatModuleWriter('types.ts'));

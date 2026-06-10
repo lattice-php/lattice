@@ -9,9 +9,14 @@ class SubmitButton extends Component
 {
     use HasVariant;
 
+    public ?string $label = null;
+
     public static function make(string $label): static
     {
-        return (new static)->prop('label', $label);
+        $button = new static;
+        $button->label = $label;
+
+        return $button;
     }
 
     protected function type(): string

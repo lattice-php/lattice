@@ -6,8 +6,12 @@ namespace Lattice\Lattice\Core\Concerns;
 
 trait HasPlaceholder
 {
+    public ?string $placeholder = null;
+
     public function placeholder(string $placeholder): static
     {
-        return $this->prop('placeholder', $placeholder);
+        $this->placeholder = $placeholder;
+
+        return $this;
     }
 }

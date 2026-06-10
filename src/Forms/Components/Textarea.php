@@ -12,9 +12,13 @@ class Textarea extends Field
     use HasPlaceholder;
     use HasTabIndex;
 
+    public ?int $rows = null;
+
     public function rows(int $rows): static
     {
-        return $this->prop('rows', $rows);
+        $this->rows = $rows;
+
+        return $this;
     }
 
     protected function type(): string

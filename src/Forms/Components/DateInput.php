@@ -10,14 +10,22 @@ class DateInput extends Field
     use HasAutoFocus;
     use HasTabIndex;
 
+    public ?string $min = null;
+
+    public ?string $max = null;
+
     public function min(string $min): static
     {
-        return $this->prop('min', $min);
+        $this->min = $min;
+
+        return $this;
     }
 
     public function max(string $max): static
     {
-        return $this->prop('max', $max);
+        $this->max = $max;
+
+        return $this;
     }
 
     protected function type(): string

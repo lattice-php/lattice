@@ -14,27 +14,45 @@ class PasswordInput extends Field
     use HasPlaceholder;
     use HasTabIndex;
 
+    public ?string $passwordRules = null;
+
+    /**
+     * @var array{href: string, label: string, tabIndex?: int}|null
+     */
+    public ?array $labelAction = null;
+
+    /**
+     * @var array{label: string, name: string, placeholder: string}|null
+     */
+    public ?array $confirmation = null;
+
     public function labelAction(string $label, string $href, ?int $tabIndex = null): static
     {
-        return $this->prop('labelAction', array_filter([
+        $this->labelAction = array_filter([
             'href' => $href,
             'label' => $label,
             'tabIndex' => $tabIndex,
-        ], fn (mixed $value): bool => $value !== null));
+        ], fn (mixed $value): bool => $value !== null);
+
+        return $this;
     }
 
     public function passwordRules(string $passwordRules): static
     {
-        return $this->prop('passwordRules', $passwordRules);
+        $this->passwordRules = $passwordRules;
+
+        return $this;
     }
 
     public function needsConfirmation(?string $label = null, ?string $placeholder = null): static
     {
-        return $this->prop('confirmation', [
+        $this->confirmation = [
             'label' => $label ?? 'Confirm password',
-            'name' => $this->props['name'].'_confirmation',
+            'name' => $this->name.'_confirmation',
             'placeholder' => $placeholder ?? $label ?? 'Confirm password',
-        ]);
+        ];
+
+        return $this;
     }
 
     protected function type(): string

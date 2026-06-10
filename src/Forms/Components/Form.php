@@ -9,6 +9,7 @@ use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 
@@ -17,6 +18,37 @@ class Form extends ContainerComponent
     use IsInteractive;
 
     public const DEFAULT_VALIDATION_DEBOUNCE_MS = 1500;
+
+    public ?string $action = null;
+
+    public ?HttpMethod $method = null;
+
+    public ?string $submitLabel = null;
+
+    public ?bool $precognitive = null;
+
+    public ?int $validationTimeout = null;
+
+    public ?bool $submitButton = null;
+
+    /**
+     * @var array<int, string>|bool|null
+     */
+    public array|bool|null $resetOnSuccess = null;
+
+    /**
+     * @var array<int, string>|bool|null
+     */
+    public array|bool|null $resetOnError = null;
+
+    public ?string $status = null;
+
+    public ?string $errorBag = null;
+
+    /**
+     * @var array<string, mixed>
+     */
+    public array $state = [];
 
     public static function make(string $id): static
     {
@@ -28,27 +60,33 @@ class Form extends ContainerComponent
      */
     public static function use(string $form): static
     {
+        /** @var static $registered */
         $registered = app(FormRegistry::class)->component($form);
 
-        return (new static)
-            ->id($registered->id)
-            ->props($registered->props)
-            ->schema($registered->children);
+        return clone $registered;
     }
 
     public function action(string $action): static
     {
-        return $this->prop('action', $action);
+        $this->action = $action;
+
+        return $this;
     }
 
     public function method(BackedEnum|string $method): static
     {
-        return $this->prop('method', $this->enumValue($method));
+        $this->method = $method instanceof HttpMethod
+            ? $method
+            : HttpMethod::from($method instanceof BackedEnum ? (string) $method->value : $method);
+
+        return $this;
     }
 
     public function submitLabel(string $submitLabel): static
     {
-        return $this->prop('submitLabel', $submitLabel);
+        $this->submitLabel = $submitLabel;
+
+        return $this;
     }
 
     /**
@@ -56,19 +94,34 @@ class Form extends ContainerComponent
      */
     public function fill(Arrayable|array $state): static
     {
-        return $this->prop('state', $state instanceof Arrayable ? $state->toArray() : $state);
+        $this->state = $state instanceof Arrayable ? $state->toArray() : $state;
+
+        return $this;
     }
 
     public function precognitive(int $debounceMs = self::DEFAULT_VALIDATION_DEBOUNCE_MS): static
     {
-        return $this
-            ->prop('precognitive', true)
-            ->prop('validationTimeout', $debounceMs);
+        $this->precognitive = true;
+        $this->validationTimeout = $debounceMs;
+
+        return $this;
     }
 
     public function withoutSubmitButton(): static
     {
-        return $this->prop('submitButton', false);
+        $this->submitButton = false;
+
+        return $this;
+    }
+
+    /**
+     * @internal
+     */
+    public function errorBag(string $errorBag): static
+    {
+        $this->errorBag = $errorBag;
+
+        return $this;
     }
 
     /**
@@ -86,7 +139,9 @@ class Form extends ContainerComponent
      */
     public function resetOnSuccess(array|bool $fields = true): static
     {
-        return $this->prop('resetOnSuccess', $fields);
+        $this->resetOnSuccess = $fields;
+
+        return $this;
     }
 
     /**
@@ -94,7 +149,9 @@ class Form extends ContainerComponent
      */
     public function resetOnError(array|bool $fields = true): static
     {
-        return $this->prop('resetOnError', $fields);
+        $this->resetOnError = $fields;
+
+        return $this;
     }
 
     public function status(?string $status): static
@@ -103,7 +160,9 @@ class Form extends ContainerComponent
             return $this;
         }
 
-        return $this->prop('status', $status);
+        $this->status = $status;
+
+        return $this;
     }
 
     /**
@@ -116,15 +175,9 @@ class Form extends ContainerComponent
     #[SerializationHook(priority: 250)]
     protected function prefillFields(array $data): array
     {
-        $state = $this->props['state'] ?? null;
-
-        if (! is_array($state)) {
-            return $data;
-        }
-
         foreach ($this->descendants() as $component) {
-            if ($component instanceof Field && array_key_exists($component->name(), $state)) {
-                $component->prefill($state[$component->name()]);
+            if ($component instanceof Field && array_key_exists($component->name(), $this->state)) {
+                $component->prefill($this->state[$component->name()]);
             }
         }
 

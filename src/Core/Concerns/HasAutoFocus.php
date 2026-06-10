@@ -6,8 +6,12 @@ namespace Lattice\Lattice\Core\Concerns;
 
 trait HasAutoFocus
 {
+    public ?bool $autoFocus = null;
+
     public function autoFocus(bool $autoFocus = true): static
     {
-        return $this->prop('autoFocus', $autoFocus);
+        $this->autoFocus = $autoFocus;
+
+        return $this;
     }
 }

@@ -6,6 +6,8 @@ use BackedEnum;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\SerializationHook;
 use ReflectionMethod;
+use ReflectionObject;
+use ReflectionProperty;
 use Spatie\Attributes\Attributes;
 use Spatie\Attributes\AttributeTarget;
 
@@ -109,8 +111,40 @@ abstract class Component implements JsonSerializable
     {
         return [
             ...$data,
-            'props' => $this->props,
+            'props' => $this->wireProps(),
         ];
+    }
+
+    /**
+     * Merge the legacy props bag with the public typed properties (including
+     * inherited and trait properties), omitting null and empty-array values so
+     * unset props stay absent from the wire. Backed enums serialize to their value.
+     *
+     * @return array<string, mixed>
+     */
+    protected function wireProps(): array
+    {
+        $props = $this->props;
+
+        foreach ((new ReflectionObject($this))->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+            if ($property->isStatic()) {
+                continue;
+            }
+
+            if (! $property->isInitialized($this)) {
+                continue;
+            }
+
+            $value = $property->getValue($this);
+
+            if ($value === null || $value === []) {
+                continue;
+            }
+
+            $props[$property->getName()] = $value instanceof BackedEnum ? $value->value : $value;
+        }
+
+        return $props;
     }
 
     /**

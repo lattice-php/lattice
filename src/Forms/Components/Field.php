@@ -13,6 +13,32 @@ use Lattice\Lattice\Forms\FormData;
 
 abstract class Field extends Component
 {
+    public string $name = '';
+
+    public ?string $label = null;
+
+    public mixed $value = null;
+
+    public ?bool $hidden = null;
+
+    public ?bool $required = null;
+
+    public ?bool $readonly = null;
+
+    public ?bool $disabled = null;
+
+    /**
+     * @var array<string, array<int, array{field: string, operator: string, value: mixed}>>|null
+     */
+    public ?array $conditions = null;
+
+    /**
+     * @var array<int, string>|null
+     */
+    public ?array $dependsOnKeys = null;
+
+    public ?bool $dependsOnAny = null;
+
     /**
      * Validation rules. Each entry is a rule (string/object) or a Closure that
      * returns additional rules. Rules accumulate across calls.
@@ -27,7 +53,7 @@ abstract class Field extends Component
      *
      * @var array<string, ConditionSet>
      */
-    protected array $conditions = [];
+    protected array $conditionSets = [];
 
     /**
      * @var array<int, array{attributes: array<int, string>, callback: Closure}>
@@ -40,6 +66,8 @@ abstract class Field extends Component
 
     protected bool $hasResolvedValue = false;
 
+    protected bool $valueWasSet = false;
+
     /**
      * @var array<string, string>
      */
@@ -47,23 +75,26 @@ abstract class Field extends Component
 
     public static function make(string $name, ?string $label = null): static
     {
-        $props = ['name' => $name];
+        $field = new static;
+        $field->name = $name;
 
         if ($label !== null) {
-            $props['label'] = $label;
+            $field->label = $label;
         }
 
-        return (new static)->props($props);
+        return $field;
     }
 
     public function name(): string
     {
-        return (string) ($this->props['name'] ?? '');
+        return $this->name;
     }
 
     public function label(string $label): static
     {
-        return $this->prop('label', $label);
+        $this->label = $label;
+
+        return $this;
     }
 
     /**
@@ -71,9 +102,7 @@ abstract class Field extends Component
      */
     public function getLabel(): ?string
     {
-        $label = $this->props['label'] ?? null;
-
-        return is_string($label) ? $label : null;
+        return $this->label;
     }
 
     public function message(string $rule, string $message): static
@@ -167,7 +196,7 @@ abstract class Field extends Component
 
     private function addCondition(string $group, string $field, mixed $operatorOrValue, mixed $value): static
     {
-        ($this->conditions[$group] ??= new ConditionSet)
+        ($this->conditionSets[$group] ??= new ConditionSet)
             ->add($this->makeCondition($field, $operatorOrValue, $value));
 
         return $this;
@@ -175,27 +204,37 @@ abstract class Field extends Component
 
     public function hidden(bool $hidden = true): static
     {
-        return $this->prop('hidden', $hidden);
+        $this->hidden = $hidden;
+
+        return $this;
     }
 
     public function visible(bool $visible = true): static
     {
-        return $this->prop('hidden', ! $visible);
+        $this->hidden = ! $visible;
+
+        return $this;
     }
 
     public function required(bool $required = true): static
     {
-        return $this->prop('required', $required);
+        $this->required = $required;
+
+        return $this;
     }
 
     public function readOnly(bool $readOnly = true): static
     {
-        return $this->prop('readonly', $readOnly);
+        $this->readonly = $readOnly;
+
+        return $this;
     }
 
     public function disabled(bool $disabled = true): static
     {
-        return $this->prop('disabled', $disabled);
+        $this->disabled = $disabled;
+
+        return $this;
     }
 
     public function value(mixed $value): static
@@ -206,7 +245,8 @@ abstract class Field extends Component
             return $this;
         }
 
-        $this->prop('value', $value);
+        $this->value = $value;
+        $this->valueWasSet = true;
 
         if ($this->resolving) {
             $this->hasResolvedValue = true;
@@ -254,7 +294,7 @@ abstract class Field extends Component
      */
     public function resolvedValue(): mixed
     {
-        return $this->props['value'] ?? null;
+        return $this->value;
     }
 
     /**
@@ -262,11 +302,11 @@ abstract class Field extends Component
      */
     public function isVisible(FormData $data): bool
     {
-        if ($this->props['hidden'] ?? false) {
+        if ($this->hidden === true) {
             return false;
         }
 
-        return ($this->conditions['visible'] ?? null)?->allMatch($data) ?? true;
+        return ($this->conditionSets['visible'] ?? null)?->allMatch($data) ?? true;
     }
 
     /**
@@ -295,7 +335,14 @@ abstract class Field extends Component
 
     private function conditionState(string $group, FormData $data): bool
     {
-        return ($this->props[$group] ?? false) || (($this->conditions[$group] ?? null)?->anyMatches($data) ?? false);
+        $flag = match ($group) {
+            'required' => $this->required,
+            'readonly' => $this->readonly,
+            'disabled' => $this->disabled,
+            default => null,
+        };
+
+        return ($flag === true) || (($this->conditionSets[$group] ?? null)?->anyMatches($data) ?? false);
     }
 
     /**
@@ -303,7 +350,7 @@ abstract class Field extends Component
      */
     public function hasValue(): bool
     {
-        return array_key_exists('value', $this->props);
+        return $this->valueWasSet;
     }
 
     /**
@@ -338,12 +385,12 @@ abstract class Field extends Component
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    #[SerializationHook(priority: 250)]
-    protected function serialiseConditions(array $data): array
+    #[SerializationHook(priority: 190)]
+    protected function projectComputedProps(array $data): array
     {
         $conditions = [];
 
-        foreach ($this->conditions as $group => $set) {
+        foreach ($this->conditionSets as $group => $set) {
             $serialised = $set->jsonSerialize();
 
             if ($serialised !== []) {
@@ -351,20 +398,8 @@ abstract class Field extends Component
             }
         }
 
-        if ($conditions !== []) {
-            $data['props'] = [...$data['props'], 'conditions' => $conditions];
-        }
+        $this->conditions = $conditions === [] ? null : $conditions;
 
-        return $data;
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
-     */
-    #[SerializationHook(priority: 260)]
-    protected function serialiseDependencies(array $data): array
-    {
         $keys = [];
 
         foreach ($this->dependencies as $dependency) {
@@ -373,13 +408,8 @@ abstract class Field extends Component
             }
         }
 
-        if ($keys !== []) {
-            $data['props'] = [...$data['props'], 'dependsOnKeys' => array_keys($keys)];
-        }
-
-        if ($this->valueResolver !== null) {
-            $data['props'] = [...$data['props'], 'dependsOnAny' => true];
-        }
+        $this->dependsOnKeys = $keys === [] ? null : array_keys($keys);
+        $this->dependsOnAny = $this->valueResolver !== null ? true : null;
 
         return $data;
     }
