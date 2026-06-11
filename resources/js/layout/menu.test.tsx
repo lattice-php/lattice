@@ -32,11 +32,11 @@ const registry = createRegistry({
   name: "test/menu",
 });
 
-function renderMenu(node: Node<"menu">) {
+function renderMenu(node: Node) {
   return render(<Renderer nodes={[node]} registry={registry} />);
 }
 
-const menu: Node<"menu"> = {
+const menu: Node = {
   id: "main",
   type: "menu",
   schema: [

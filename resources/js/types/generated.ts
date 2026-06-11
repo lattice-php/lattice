@@ -414,11 +414,36 @@ export type HiddenInput = {
   value?: any;
 };
 export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
+export type LayoutNode =
+  | {
+      type: "outlet";
+      key?: string;
+      props: Outlet;
+    }
+  | {
+      type: "menu";
+      key?: string;
+      props: Menu;
+      schema?: Node[];
+    }
+  | {
+      type: "menu-item";
+      key?: string;
+      props: MenuItem;
+      schema?: Node[];
+    };
 export type Link = {
   href?: string | null;
   label: string;
   method?: HttpMethod | null;
   tabIndex?: number | null;
+};
+export type Menu = object;
+export type MenuItem = {
+  href?: string | null;
+  icon?: string | null;
+  label: string;
+  method?: HttpMethod | null;
 };
 export type Modal = {
   closeLabel?: string | null;
@@ -427,7 +452,7 @@ export type Modal = {
   ref?: string | null;
   title?: string | null;
 };
-export type Node = FormNode | CoreNode | ActionNode | FragmentNode | TableNode;
+export type Node = FormNode | CoreNode | ActionNode | FragmentNode | TableNode | LayoutNode;
 export type NodeType = Node["type"];
 export type NumberInput = {
   autoFocus?: boolean | null;
@@ -455,6 +480,7 @@ export type NumberInput = {
   tabIndex?: number | null;
   value?: any;
 };
+export type Outlet = object;
 export type PageContainer = "centered" | "default";
 export type PageLayout = "app" | "auth" | "none";
 export type PaginationType = "none" | "simple" | "table" | "infinite";

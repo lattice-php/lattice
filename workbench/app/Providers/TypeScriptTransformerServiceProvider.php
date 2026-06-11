@@ -43,6 +43,9 @@ use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\Enums\ConditionOperator;
 use Lattice\Lattice\Fragments\Components\Fragment;
+use Lattice\Lattice\Layouts\Components\Menu;
+use Lattice\Lattice\Layouts\Components\MenuItem;
+use Lattice\Lattice\Layouts\Components\Outlet;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Columns\ColumnFilter;
 use Lattice\Lattice\Tables\Components\Table;
@@ -111,6 +114,12 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
             Table::class => ['type' => 'table', 'interactive' => true],
         ];
 
+        $layoutComponents = [
+            Outlet::class => ['type' => 'outlet'],
+            Menu::class => ['type' => 'menu', 'container' => true],
+            MenuItem::class => ['type' => 'menu-item', 'container' => true],
+        ];
+
         $config
             ->transformer(new LatticeEnumTransformer([
                 Align::class,
@@ -141,6 +150,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 ...array_keys($actionComponents),
                 ...array_keys($fragmentComponents),
                 ...array_keys($tableComponents),
+                ...array_keys($layoutComponents),
             ]))
             ->provider(new LatticeNodesProvider(
                 $formFields,
@@ -149,6 +159,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 $actionComponents,
                 $fragmentComponents,
                 $tableComponents,
+                $layoutComponents,
                 'form',
                 Effect::class,
                 LatticeEffectType::build(),
