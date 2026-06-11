@@ -4,23 +4,8 @@ declare(strict_types=1);
 
 namespace Workbench\App\Providers;
 
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Actions\Components\ActionGroup;
-use Lattice\Lattice\Actions\Components\BulkAction;
 use Lattice\Lattice\Actions\Contracts\Effect;
 use Lattice\Lattice\Actions\Enums\EffectType;
-use Lattice\Lattice\Core\Components\Badge;
-use Lattice\Lattice\Core\Components\Button;
-use Lattice\Lattice\Core\Components\Card;
-use Lattice\Lattice\Core\Components\Grid;
-use Lattice\Lattice\Core\Components\Heading;
-use Lattice\Lattice\Core\Components\Link;
-use Lattice\Lattice\Core\Components\Modal;
-use Lattice\Lattice\Core\Components\SegmentedControl;
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Components\Tab;
-use Lattice\Lattice\Core\Components\Tabs;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
@@ -30,22 +15,9 @@ use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Lattice\Lattice\Core\Enums\Width;
-use Lattice\Lattice\Forms\Components\Checkbox;
-use Lattice\Lattice\Forms\Components\Choice;
-use Lattice\Lattice\Forms\Components\DateInput;
 use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\HiddenInput;
-use Lattice\Lattice\Forms\Components\NumberInput;
-use Lattice\Lattice\Forms\Components\PasswordInput;
-use Lattice\Lattice\Forms\Components\RichEditor;
-use Lattice\Lattice\Forms\Components\Select;
-use Lattice\Lattice\Forms\Components\SubmitButton;
-use Lattice\Lattice\Forms\Components\Textarea;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Fragments\Components\Fragment;
-use Lattice\Lattice\Layouts\Components\Menu;
-use Lattice\Lattice\Layouts\Components\MenuItem;
-use Lattice\Lattice\Layouts\Components\Outlet;
+use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
+use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Support\TypeScript\LatticeComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\LatticeEffectType;
 use Lattice\Lattice\Support\TypeScript\LatticeEnumTransformer;
@@ -55,7 +27,6 @@ use Lattice\Lattice\Support\TypeScript\LatticeValueObjectTransformer;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Columns\ColumnFilter;
-use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Tables\Enums\FilterType;
 use Lattice\Lattice\Tables\Enums\PaginationType;
@@ -68,58 +39,37 @@ use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 
 final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerApplicationServiceProvider
 {
+    private const FORM_FIELD_ORDER = [
+        'form.text-input', 'form.textarea', 'form.select', 'form.choice', 'form.checkbox',
+        'form.date-input', 'form.number-input', 'form.password-input', 'form.hidden-input',
+        'form.rich-editor', 'form.submit-button',
+    ];
+
+    private const CORE_ORDER = [
+        'badge', 'button', 'card', 'grid', 'heading', 'link', 'text', 'stack',
+        'segmented-control', 'modal', 'tab', 'tabs',
+    ];
+
+    private const ACTION_ORDER = ['action', 'action.group', 'bulkAction'];
+
+    private const FRAGMENT_ORDER = ['fragment'];
+
+    private const TABLE_ORDER = ['table'];
+
+    private const LAYOUT_ORDER = ['outlet', 'menu', 'menu-item'];
+
     protected function configure(TypeScriptTransformerConfigFactory $config): void
     {
         $packageRoot = dirname(__DIR__, 3);
 
-        $formFields = [
-            TextInput::class => 'form.text-input',
-            Textarea::class => 'form.textarea',
-            Select::class => 'form.select',
-            Choice::class => 'form.choice',
-            Checkbox::class => 'form.checkbox',
-            DateInput::class => 'form.date-input',
-            NumberInput::class => 'form.number-input',
-            PasswordInput::class => 'form.password-input',
-            HiddenInput::class => 'form.hidden-input',
-            RichEditor::class => 'form.rich-editor',
-            SubmitButton::class => 'form.submit-button',
-        ];
+        $discovered = (new ComponentDiscovery)->discover($packageRoot.'/src', 'Lattice\\Lattice');
 
-        $coreComponents = [
-            Badge::class => ['type' => 'badge'],
-            Button::class => ['type' => 'button'],
-            Card::class => ['type' => 'card', 'container' => true],
-            Grid::class => ['type' => 'grid', 'container' => true],
-            Heading::class => ['type' => 'heading'],
-            Link::class => ['type' => 'link'],
-            Text::class => ['type' => 'text'],
-            Stack::class => ['type' => 'stack', 'container' => true],
-            SegmentedControl::class => ['type' => 'segmented-control'],
-            Modal::class => ['type' => 'modal', 'container' => true, 'interactive' => true],
-            Tab::class => ['type' => 'tab', 'container' => true],
-            Tabs::class => ['type' => 'tabs', 'container' => true],
-        ];
-
-        $actionComponents = [
-            Action::class => ['type' => 'action', 'interactive' => true],
-            ActionGroup::class => ['type' => 'action.group', 'container' => true, 'interactive' => true],
-            BulkAction::class => ['type' => 'bulkAction', 'interactive' => true],
-        ];
-
-        $fragmentComponents = [
-            Fragment::class => ['type' => 'fragment', 'container' => true, 'interactive' => true],
-        ];
-
-        $tableComponents = [
-            Table::class => ['type' => 'table', 'interactive' => true],
-        ];
-
-        $layoutComponents = [
-            Outlet::class => ['type' => 'outlet'],
-            Menu::class => ['type' => 'menu', 'container' => true],
-            MenuItem::class => ['type' => 'menu-item', 'container' => true],
-        ];
+        $formFields = $this->buildFormFields($discovered);
+        $coreComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Core\\Components\\', self::CORE_ORDER);
+        $actionComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Actions\\Components\\', self::ACTION_ORDER);
+        $fragmentComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Fragments\\Components\\', self::FRAGMENT_ORDER);
+        $tableComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Tables\\Components\\', self::TABLE_ORDER);
+        $layoutComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Layouts\\Components\\', self::LAYOUT_ORDER);
 
         $config
             ->transformer(new LatticeHttpMethodTransformer)
@@ -170,5 +120,79 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
             ->outputDirectory($packageRoot.'/resources/js/types')
             ->writer(new FlatModuleWriter('generated.ts'))
             ->formatter(new OxfmtFormatter);
+    }
+
+    /**
+     * Build the form-fields map (class => type) from discovered components
+     * in the Forms\Components namespace, excluding Form itself.
+     *
+     * @param  list<DiscoveredComponent>  $discovered
+     * @return array<class-string, string>
+     */
+    private function buildFormFields(array $discovered): array
+    {
+        $prefix = 'Lattice\\Lattice\\Forms\\Components\\';
+        $order = self::FORM_FIELD_ORDER;
+
+        $fields = array_filter(
+            $discovered,
+            fn (DiscoveredComponent $dc): bool => str_starts_with($dc->class, $prefix)
+                && $dc->class !== Form::class,
+        );
+
+        usort($fields, function (DiscoveredComponent $a, DiscoveredComponent $b) use ($order): int {
+            $posA = array_search($a->type, $order, true);
+            $posB = array_search($b->type, $order, true);
+
+            return ($posA === false ? PHP_INT_MAX : $posA)
+                <=> ($posB === false ? PHP_INT_MAX : $posB);
+        });
+
+        return array_column(
+            array_map(fn (DiscoveredComponent $dc): array => [$dc->class, $dc->type], $fields),
+            1,
+            0,
+        );
+    }
+
+    /**
+     * Build a component-spec map (class => ['type' => ..., ...]) for a namespace bucket.
+     *
+     * @param  list<DiscoveredComponent>  $discovered
+     * @param  list<string>  $order
+     * @return array<class-string, array{type: string, container?: bool, interactive?: bool}>
+     */
+    private function buildBucket(array $discovered, string $prefix, array $order): array
+    {
+        $components = array_filter(
+            $discovered,
+            fn (DiscoveredComponent $dc): bool => str_starts_with($dc->class, $prefix),
+        );
+
+        usort($components, function (DiscoveredComponent $a, DiscoveredComponent $b) use ($order): int {
+            $posA = array_search($a->type, $order, true);
+            $posB = array_search($b->type, $order, true);
+
+            return ($posA === false ? PHP_INT_MAX : $posA)
+                <=> ($posB === false ? PHP_INT_MAX : $posB);
+        });
+
+        $result = [];
+
+        foreach ($components as $dc) {
+            $spec = ['type' => $dc->type];
+
+            if ($dc->container) {
+                $spec['container'] = true;
+            }
+
+            if ($dc->interactive) {
+                $spec['interactive'] = true;
+            }
+
+            $result[$dc->class] = $spec;
+        }
+
+        return $result;
     }
 }
