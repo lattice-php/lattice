@@ -49,8 +49,8 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
             aria-expanded={!isCollapsed}
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             className={cn(
-              "flex items-center rounded-md p-2 text-lt-fg transition-colors hover:bg-lt-muted",
-              isCollapsed ? "justify-center" : "justify-end",
+              "inline-flex items-center rounded-md p-2 text-lt-fg transition-colors hover:bg-lt-muted",
+              isCollapsed ? "self-center" : "self-end",
             )}
             onClick={toggle}
             type="button"

@@ -51,14 +51,15 @@ export function ColumnFilterControl({
   }
 
   return (
-    <div className="flex items-center gap-1">
-      <div className="flex-1">
+    <div className="flex min-w-0 max-w-44 items-stretch">
+      <div className="min-w-0 flex-1">
         <FilterValueInput
           type={type}
           label={column.label}
           value={primary?.clause.value ?? ""}
           processing={processing}
           withSearchIcon={type === "text" || type === "number"}
+          grouped
           onCommit={commitPrimary}
           onClear={primary ? () => onRemove(primary.index) : undefined}
         />
@@ -68,7 +69,7 @@ export function ColumnFilterControl({
           <button
             type="button"
             aria-label={`${column.label} filters`}
-            className="relative inline-flex size-9 items-center justify-center rounded-lt-sm border border-lt-border disabled:opacity-50 data-[state=open]:border-lt-primary"
+            className="relative -ml-px inline-flex size-9 shrink-0 items-center justify-center rounded-r-lt-sm border border-lt-input disabled:opacity-50 data-[state=open]:z-10 data-[state=open]:border-lt-primary"
             disabled={processing}
           >
             <Filter aria-hidden="true" className="size-4" />
