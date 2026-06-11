@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use function Pest\Laravel\artisan;
+
 it('keeps the committed generated.ts in sync with the transformer', function () {
     $path = dirname(__DIR__, 3).'/resources/js/types/generated.ts';
 
@@ -9,7 +11,7 @@ it('keeps the committed generated.ts in sync with the transformer', function () 
 
     $before = file_get_contents($path);
 
-    $this->artisan('typescript:transform')->assertSuccessful();
+    artisan('typescript:transform')->assertSuccessful();
 
     $after = file_get_contents($path);
 
