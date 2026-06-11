@@ -70,7 +70,7 @@ const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
   }
 
   return (
-    <Button type={node.props.buttonType ?? "button"} variant={variant} size="lg">
+    <Button type={node.props.buttonType} variant={variant} size="lg">
       {label}
     </Button>
   );

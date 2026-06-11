@@ -15,7 +15,7 @@ class Button extends Component
 
     public ?string $href = null;
 
-    public ?ButtonType $buttonType = null;
+    public ButtonType $buttonType = ButtonType::Button;
 
     public static function make(string $label, ?string $key = null): static
     {

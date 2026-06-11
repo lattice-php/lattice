@@ -59,7 +59,7 @@ export type BulkAction = {
   variant: ButtonVariant | null;
 };
 export type Button = {
-  buttonType: ButtonType | null;
+  buttonType: ButtonType;
   href: string | null;
   label: string;
   variant: ButtonVariant | null;

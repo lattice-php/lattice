@@ -5,13 +5,13 @@ declare(strict_types=1);
 use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Enums\ButtonType;
 
-it('serializes a plain button without a button type', function (): void {
+it('defaults a plain button to the button type', function (): void {
     $node = wire(Button::make('Save'));
 
     expect($node['type'])->toBe('button')
         ->and($node['props'])->toMatchArray([
             'label' => 'Save',
-            'buttonType' => null,
+            'buttonType' => 'button',
         ]);
 });
 
