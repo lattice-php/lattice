@@ -105,6 +105,20 @@ it('collects a reason in a modal form before rejecting a product', function (): 
     expect(Product::query()->where('sku', 'LAMP-001')->value('status'))->toBe('archived');
 });
 
+it('searches products inside an action form modal', function (): void {
+    Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-001', 'status' => 'active']);
+    Product::factory()->create(['name' => 'Walnut Desk', 'sku' => 'DESK-001', 'status' => 'active']);
+
+    visit('/products')
+        ->assertSee('Desk Lamp')
+        ->click('Reject')
+        ->assertSee('Reject product?')
+        ->click('Search products…')
+        ->fill('input[aria-label="Search options"]', 'Walnut')
+        ->assertSee('Walnut Desk')
+        ->assertNoSmoke();
+});
+
 it('creates and edits products through the form flow', function (): void {
     visit('/products')
         ->assertSee('Products')

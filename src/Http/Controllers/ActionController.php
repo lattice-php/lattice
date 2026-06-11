@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Core\Concerns\InteractsWithLatticeComponents;
@@ -26,6 +27,14 @@ final class ActionController
         $this->markPrecognitive($request);
 
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->actions, 'action', $action);
+
+        if ($request->filled('_search')) {
+            return new JsonResponse($definition->searchOptions($request));
+        }
+
+        if ($request->boolean('_resolve')) {
+            return new JsonResponse($definition->resolveFields($request));
+        }
 
         if ($request->isPrecognitive()) {
             return $this->validatePrecognitive($request, fn () => $definition->validate($request));
