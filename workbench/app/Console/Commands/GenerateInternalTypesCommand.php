@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use Lattice\Lattice\Actions\Contracts\Effect;
 use Lattice\Lattice\Actions\Effects\CloseModalEffect;
 use Lattice\Lattice\Actions\Effects\DownloadEffect;
+use Lattice\Lattice\Actions\Effects\Effect as EffectValue;
 use Lattice\Lattice\Actions\Effects\OpenModalEffect;
 use Lattice\Lattice\Actions\Effects\RedirectEffect;
 use Lattice\Lattice\Actions\Effects\ReloadComponentEffect;
@@ -51,21 +52,20 @@ final class GenerateInternalTypesCommand extends Command
     protected $description = "Regenerate Lattice's built-in TypeScript types (resources/js/types/generated.ts)";
 
     /**
-     * Effect value objects keyed by class-string, valued by wire type, ordered
-     * alphabetically by wire type to match the generated unions. Drives both the
-     * ValueObjectTransformer allow-list and the generated `Effect` union.
+     * Effect value objects driving both the ValueObjectTransformer allow-list
+     * and the generated `Effect` union; each VO carries its own wire type.
      *
-     * @var array<class-string, string>
+     * @var array<int, class-string<EffectValue>>
      */
-    private const EFFECT_TYPES = [
-        CloseModalEffect::class => 'closeModal',
-        DownloadEffect::class => 'download',
-        OpenModalEffect::class => 'openModal',
-        RedirectEffect::class => 'redirect',
-        ReloadComponentEffect::class => 'reloadComponent',
-        ReloadPageEffect::class => 'reloadPage',
-        ResetFormEffect::class => 'resetForm',
-        ToastEffect::class => 'toast',
+    private const EFFECTS = [
+        CloseModalEffect::class,
+        DownloadEffect::class,
+        OpenModalEffect::class,
+        RedirectEffect::class,
+        ReloadComponentEffect::class,
+        ReloadPageEffect::class,
+        ResetFormEffect::class,
+        ToastEffect::class,
     ];
 
     public function handle(TypeScriptGenerator $generator): int
@@ -107,7 +107,7 @@ final class GenerateInternalTypesCommand extends Command
                     ColumnFilter::class,
                     FilterClause::class,
                     TableSort::class,
-                    ...array_keys(self::EFFECT_TYPES),
+                    ...self::EFFECTS,
                 ]),
                 new ComponentTransformer([
                     ...array_keys($formFields),
@@ -130,7 +130,7 @@ final class GenerateInternalTypesCommand extends Command
                     $layoutComponents,
                     'form',
                     Effect::class,
-                    self::EFFECT_TYPES,
+                    self::EFFECTS,
                 ),
             ],
             new FlatModuleWriter('generated.ts'),

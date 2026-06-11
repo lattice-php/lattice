@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
+use Lattice\Lattice\Actions\Effects\Effect;
 use Spatie\TypeScriptTransformer\References\ClassStringReference;
 use Spatie\TypeScriptTransformer\References\CustomReference;
 use Spatie\TypeScriptTransformer\References\Reference;
@@ -42,7 +43,7 @@ final class NodesProvider implements TransformedProvider
      * @param  array<class-string, ComponentSpec>  $tableComponents
      * @param  array<class-string, ComponentSpec>  $layoutComponents
      * @param  class-string|null  $effectContract
-     * @param  array<class-string, string>  $effects  Effect value objects keyed by class-string, valued by wire type.
+     * @param  array<int, class-string<Effect>>  $effects  Effect value objects, each carrying its own wire type.
      */
     public function __construct(
         private readonly array $formFields,
@@ -90,8 +91,10 @@ final class NodesProvider implements TransformedProvider
     {
         $members = [];
 
-        foreach ($this->effects as $class => $type) {
-            $members[] = new TypeScriptIntersection([
+        foreach ($this->effects as $class) {
+            $type = $class::TYPE->value;
+
+            $members[$type] = new TypeScriptIntersection([
                 new TypeScriptObject([
                     new TypeScriptProperty('type', new TypeScriptLiteral($type)),
                 ]),
@@ -99,7 +102,9 @@ final class NodesProvider implements TransformedProvider
             ]);
         }
 
-        return new TypeScriptUnion($members);
+        ksort($members);
+
+        return new TypeScriptUnion(array_values($members));
     }
 
     private function formFieldUnion(): TypeScriptUnion
