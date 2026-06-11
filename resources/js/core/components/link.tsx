@@ -1,8 +1,6 @@
-import type { Method } from "@inertiajs/core";
 import { Link } from "@inertiajs/react";
 import type { ComponentProps } from "react";
 import { cn } from "@lattice/lattice/lib/utils";
-import { getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 
 function TextLink({ className = "", children, ...props }: ComponentProps<typeof Link>) {
@@ -19,21 +17,13 @@ function TextLink({ className = "", children, ...props }: ComponentProps<typeof 
   );
 }
 
-function getLinkMethod(method: string): Method {
-  if (method === "delete" || method === "patch" || method === "post" || method === "put") {
-    return method;
-  }
-
-  return "get";
-}
-
 const LinkComponent: RendererComponent<"link"> = ({ node }) => (
   <TextLink
-    href={getStringProp(node.props, "href", "#")}
-    method={getLinkMethod(getStringProp(node.props, "method", "get"))}
-    tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
+    href={node.props.href ?? "#"}
+    method={node.props.method ?? "get"}
+    tabIndex={node.props.tabIndex ?? undefined}
   >
-    {getStringProp(node.props, "label", "Link")}
+    {node.props.label}
   </TextLink>
 );
 

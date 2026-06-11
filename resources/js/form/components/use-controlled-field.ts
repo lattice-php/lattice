@@ -1,6 +1,6 @@
-import { getStringProp } from "@lattice/lattice/core/props";
 import type { Node } from "@lattice/lattice/core/types";
 import type { FieldState } from "./conditions";
+import { fieldProps } from "./field-props";
 import { useFormContext } from "./context";
 import { useDependentField } from "./use-dependent-field";
 import { useFieldCommit } from "./use-field-commit";
@@ -22,9 +22,10 @@ type ControlledField = FieldState & {
 export function useControlledField(node: Node): ControlledField {
   const { errors } = useFormContext();
   const state = useDependentField(node);
-  const name = getStringProp(node.props, "name");
+  const props = fieldProps(node);
+  const name = props.name ?? "";
   const storedValue = useFormValue(name);
-  const currentValue = storedValue !== undefined ? storedValue : node.props?.value;
+  const currentValue = storedValue !== undefined ? storedValue : props.value;
   const value =
     typeof currentValue === "string" || typeof currentValue === "number"
       ? String(currentValue)

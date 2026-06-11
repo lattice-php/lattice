@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { Checkbox } from "../base/checkbox";
 import { Label } from "../base/label";
@@ -14,10 +13,10 @@ function isTruthy(value: unknown): boolean {
 export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) => {
   const { clearErrors, precognitive, validate } = useFormContext();
   const { hidden, readonly, disabled } = useDependentField(node);
-  const name = getStringProp(node.props, "name");
+  const name = node.props.name;
   const setValue = useSetFormValue();
   const storedValue = useFormValue(name);
-  const defaultChecked = getBooleanProp(node.props, "checked");
+  const defaultChecked = false;
   const checked = storedValue !== undefined ? isTruthy(storedValue) : defaultChecked;
 
   useEffect(() => {
@@ -46,9 +45,9 @@ export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) 
             clearErrors(name);
           }
         }}
-        tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
+        tabIndex={node.props.tabIndex ?? undefined}
       />
-      <Label htmlFor={name}>{getStringProp(node.props, "label")}</Label>
+      <Label htmlFor={name}>{node.props.label}</Label>
     </div>
   );
 };

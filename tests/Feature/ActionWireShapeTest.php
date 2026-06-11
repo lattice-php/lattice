@@ -58,13 +58,13 @@ it('accepts arbitrary string icons and method strings', function (): void {
     expect($payload['props']['method'])->toBe('delete');
 });
 
-it('drops null confirmation entries and omits empty effects', function (): void {
+it('drops null confirmation entries and includes empty effects', function (): void {
     $action = Action::make('simple')->confirm('Sure?');
 
     $payload = json_decode(json_encode($action), true);
 
     expect($payload['props']['confirmation'])->toBe(['title' => 'Sure?']);
-    expect($payload['props'])->not->toHaveKey('effects');
+    expect($payload['props']['effects'])->toBe([]);
 });
 
 it('serializes the action group wire shape', function (): void {
@@ -77,7 +77,7 @@ it('serializes the action group wire shape', function (): void {
     expect($payload['type'])->toBe('action.group');
     expect($payload['id'])->toBe('row-actions');
     expect($payload['props'])->toMatchArray(['label' => 'Actions']);
-    expect($payload['props'])->not->toHaveKey('ref');
+    expect($payload['props']['ref'])->toBeNull();
     expect($payload['schema'])->toHaveCount(1);
     expect($payload['schema'][0]['type'])->toBe('action');
 });

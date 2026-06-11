@@ -1,8 +1,8 @@
 import { router } from "@inertiajs/react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { getStringProp } from "@lattice/lattice/core/props";
 import type { Node, RendererComponent } from "@lattice/lattice/core/types";
+import type { Tab } from "@lattice/lattice/types/generated";
 import { cn } from "@lattice/lattice/lib/utils";
 
 type TabsContextValue = {
@@ -36,26 +36,16 @@ type TabItem = {
 function getTabs(node: Node): TabItem[] {
   return (node.schema ?? [])
     .filter((child) => child.type === "tab")
-    .map((child) => ({
-      confirm: getConfirmationProp(child.props),
-      label: getStringProp(child.props, "label"),
-      value: getStringProp(child.props, "value"),
-    }))
+    .map((child) => {
+      const props = child.props as unknown as Tab;
+
+      return {
+        confirm: props.confirm ? { required: props.confirm.required } : undefined,
+        label: props.label,
+        value: props.value,
+      };
+    })
     .filter((tab) => tab.value !== "");
-}
-
-function getConfirmationProp(props: Node["props"]): TabItem["confirm"] {
-  const confirm = props?.confirm;
-
-  if (!confirm || typeof confirm !== "object" || Array.isArray(confirm)) {
-    return undefined;
-  }
-
-  const confirmation = confirm as Record<string, unknown>;
-
-  return {
-    required: confirmation.required === true,
-  };
 }
 
 function queryValue(queryKey: string, tabs: Array<{ value: string }>): string | null {
@@ -96,9 +86,9 @@ function queryUrl(queryKey: string, value: string): string {
 export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => {
   const tabs = useMemo(() => getTabs(node), [node]);
   const firstValue = tabs[0]?.value ?? "";
-  const queryKey = getStringProp(node.props, "queryKey", "tabs");
-  const serverActiveValue = getStringProp(node.props, "activeValue", "");
-  const defaultValue = getStringProp(node.props, "defaultValue", firstValue);
+  const queryKey = node.props.queryKey;
+  const serverActiveValue = node.props.activeValue;
+  const defaultValue = node.props.defaultValue ?? firstValue;
   const [activeValue, setActiveTabValue] = useState(
     () => serverActiveValue || (queryValue(queryKey, tabs) ?? defaultValue) || firstValue,
   );
@@ -128,7 +118,7 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
     <TabsContext.Provider value={{ activeValue, setActiveValue: selectTabValue }}>
       <div className="grid gap-6" data-lattice-tabs={node.key ?? node.id}>
         <div
-          aria-label={getStringProp(node.props, "label", "Tabs")}
+          aria-label="Tabs"
           className="inline-flex w-fit max-w-full gap-1 overflow-x-auto rounded-lt bg-lt-muted p-1"
           role="tablist"
         >
@@ -165,7 +155,7 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
 
 const TabComponent: RendererComponent<"tab"> = ({ children, node }) => {
   const { activeValue } = useTabsContext();
-  const value = getStringProp(node.props, "value");
+  const value = node.props.value;
   const isActive = activeValue === value;
   const [hasOpened, setHasOpened] = useState(isActive);
 

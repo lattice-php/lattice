@@ -1,7 +1,6 @@
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@lattice/lattice/core/components/button";
-import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
 
@@ -16,10 +15,10 @@ function matchesModal(event: Event, modal: string): boolean {
 }
 
 const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {
-  const title = getStringProp(node.props, "title", "Dialog");
-  const description = getStringProp(node.props, "description");
-  const closeLabel = getStringProp(node.props, "closeLabel", "Close");
-  const [isOpen, setIsOpen] = useState(node.props?.open === true);
+  const title = node.props.title ?? "Dialog";
+  const description = node.props.description;
+  const closeLabel = node.props.closeLabel ?? "Close";
+  const [isOpen, setIsOpen] = useState(node.props.open === true);
   const titleId = `${node.id ?? node.key ?? "lattice-modal"}-title`;
   const descriptionId = `${node.id ?? node.key ?? "lattice-modal"}-description`;
 

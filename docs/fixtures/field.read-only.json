@@ -1,9 +1,20 @@
 [
     {
         "props": {
+            "autoComplete": null,
+            "autoFocus": null,
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
             "label": "Slug",
             "name": "slug",
+            "placeholder": null,
             "readonly": true,
+            "required": null,
+            "tabIndex": null,
+            "type": null,
             "value": "acme-inc"
         },
         "type": "form.text-input"

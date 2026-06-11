@@ -20,7 +20,6 @@ use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Http\PageContract;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
-use Lattice\Lattice\Menu\MenuRegistry;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
 
@@ -33,7 +32,6 @@ final class LatticeRegistry
         private readonly FormRegistry $forms,
         private readonly FragmentRegistry $fragments,
         private readonly LayoutRegistry $layouts,
-        private readonly MenuRegistry $menus,
         private readonly Router $router,
         private readonly TableRegistry $tables,
     ) {}
@@ -89,11 +87,6 @@ final class LatticeRegistry
     public function layoutRegistry(): LayoutRegistry
     {
         return $this->layouts;
-    }
-
-    public function menus(): MenuRegistry
-    {
-        return $this->menus;
     }
 
     public function registerConfiguredDefinitions(): void

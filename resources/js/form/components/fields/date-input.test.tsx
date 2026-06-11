@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice/lattice/core/types";
+import { fakeNode } from "@lattice/lattice/test-support";
 import { FormValuesProvider } from "../values";
 import { DateInputComponent } from "./date-input";
 
@@ -14,10 +15,9 @@ function renderField(node: Node<"form.date-input">, initial: Record<string, unkn
 
 describe("DateInputComponent", () => {
   it("renders a date input seeded from the store", () => {
-    renderField(
-      { type: "form.date-input", props: { name: "due", label: "Due" } },
-      { due: "2026-06-08" },
-    );
+    renderField(fakeNode({ type: "form.date-input", props: { name: "due", label: "Due" } }), {
+      due: "2026-06-08",
+    });
 
     const input = screen.getByLabelText("Due");
     expect(input).toHaveAttribute("type", "date");
@@ -26,14 +26,14 @@ describe("DateInputComponent", () => {
 
   it("hides when its visible condition fails", () => {
     renderField(
-      {
+      fakeNode({
         type: "form.date-input",
         props: {
           name: "due",
           label: "Due",
           conditions: { visible: [{ field: "scheduled", operator: "eq", value: "1" }] },
         },
-      },
+      }),
       { scheduled: "0" },
     );
 

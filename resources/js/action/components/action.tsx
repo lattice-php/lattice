@@ -2,17 +2,13 @@ import { router, useHttp } from "@inertiajs/react";
 import type { Method } from "@inertiajs/core";
 import { useState } from "react";
 import { withRefHeader } from "@lattice/lattice/core/component-ref";
-import { asButtonVariant, Button } from "@lattice/lattice/core/components/button";
+import { Button } from "@lattice/lattice/core/components/button";
 import { ConfirmDialog } from "@lattice/lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice/lattice/core/components/spinner";
-import { getStringProp } from "@lattice/lattice/core/props";
-import type { NodeProps, RendererComponent } from "@lattice/lattice/core/types";
-import type { Action } from "@lattice/lattice/types/generated";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 import { IconRenderer } from "@lattice/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, getActionEffects } from "../effects";
 import type { ActionEffect } from "../effects";
-
-type ActionConfirmation = NonNullable<Action["confirmation"]>;
 
 type ActionResponse = {
   data?: Record<string, unknown>;
@@ -22,34 +18,16 @@ type ActionResponse = {
 
 type ActionData = Record<string, never>;
 
-const actionMethods = ["delete", "get", "patch", "post", "put"] satisfies Method[];
-
-function getActionMethod(props: NodeProps | undefined): Method {
-  const method = getStringProp(props, "method", "post");
-
-  return actionMethods.includes(method as Method) ? (method as Method) : "post";
-}
-
-function getConfirmation(props: NodeProps | undefined): ActionConfirmation | null {
-  const confirmation = props?.confirmation;
-
-  if (typeof confirmation !== "object" || confirmation === null || Array.isArray(confirmation)) {
-    return null;
-  }
-
-  return confirmation as ActionConfirmation;
-}
-
 const ActionComponent: RendererComponent<"action"> = ({ node }) => {
-  const endpoint = getStringProp(node.props, "endpoint");
-  const icon = getStringProp(node.props, "icon");
-  const label = getStringProp(node.props, "label", "Run action");
-  const componentRef = getStringProp(node.props, "ref");
-  const method = getActionMethod(node.props);
+  const endpoint = node.props.endpoint ?? "";
+  const icon = node.props.icon;
+  const label = node.props.label ?? "Run action";
+  const componentRef = node.props.ref ?? "";
+  const method: Method = node.props.method ?? "post";
   const http = useHttp<ActionData, ActionResponse>({});
   const [isConfirming, setIsConfirming] = useState(false);
-  const confirmation = getConfirmation(node.props);
-  const variant = asButtonVariant(node.props?.variant);
+  const confirmation = node.props.confirmation;
+  const variant = node.props.variant ?? "default";
 
   const submit = async (): Promise<void> => {
     if (!endpoint) {
@@ -68,7 +46,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
       const responseEffects = getActionEffects(response.effects);
 
       dispatchActionEffects(
-        responseEffects.length > 0 ? responseEffects : getActionEffects(node.props?.effects),
+        responseEffects.length > 0 ? responseEffects : getActionEffects(node.props.effects),
       );
       setIsConfirming(false);
     } catch (error) {

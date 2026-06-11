@@ -50,7 +50,7 @@ export type TableResponse = {
  * The table node as it reaches the client: the generated wire props plus the
  * rows, pagination, and state the server hydrates onto it for the initial render.
  */
-export type TableNodeProps = Omit<Table, "bulkActions"> & {
+export type TableNodeProps = Partial<Omit<Table, "bulkActions">> & {
   bulkActions?: ActionNode[];
   data?: TableRow[];
   pagination?: TablePagination;

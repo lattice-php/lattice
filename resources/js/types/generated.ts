@@ -1,21 +1,21 @@
 export type Action = {
-  confirmation?: {
+  confirmation: {
     title: string;
     description?: string;
     confirmLabel?: string;
     cancelLabel?: string;
   } | null;
-  effects?: Effect[];
-  endpoint?: string | null;
-  icon?: string | null;
-  label?: string | null;
-  method?: HttpMethod | null;
-  ref?: string | null;
-  variant?: ButtonVariant | null;
+  effects: Effect[];
+  endpoint: string | null;
+  icon: string | null;
+  label: string | null;
+  method: HttpMethod | null;
+  ref: string | null;
+  variant: ButtonVariant | null;
 };
 export type ActionGroup = {
-  label?: string | null;
-  ref?: string | null;
+  label: string | null;
+  ref: string | null;
 };
 export type ActionNode =
   | {
@@ -42,32 +42,32 @@ export type Badge = {
   label: string;
 };
 export type BulkAction = {
-  confirmation?: {
+  confirmation: {
     title: string;
     description?: string;
     confirmLabel?: string;
     cancelLabel?: string;
   } | null;
-  effects?: Effect[];
-  endpoint?: string | null;
-  icon?: string | null;
-  label?: string | null;
-  method?: HttpMethod | null;
-  ref?: string | null;
-  variant?: ButtonVariant | null;
+  effects: Effect[];
+  endpoint: string | null;
+  icon: string | null;
+  label: string | null;
+  method: HttpMethod | null;
+  ref: string | null;
+  variant: ButtonVariant | null;
 };
 export type Button = {
-  href?: string | null;
+  href: string | null;
   label: string;
-  variant?: ButtonVariant | null;
+  variant: ButtonVariant | null;
 };
 export type ButtonVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
 export type Card = {
-  description?: string | null;
-  title?: string | null;
+  description: string | null;
+  title: string | null;
 };
 export type Checkbox = {
-  conditions?: Record<
+  conditions: Record<
     string,
     {
       field: string;
@@ -75,19 +75,19 @@ export type Checkbox = {
       value: any;
     }[]
   > | null;
-  dependsOnAny?: boolean | null;
-  dependsOnKeys?: string[] | null;
-  disabled?: boolean | null;
-  hidden?: boolean | null;
-  label?: string | null;
+  dependsOnAny: boolean | null;
+  dependsOnKeys: string[] | null;
+  disabled: boolean | null;
+  hidden: boolean | null;
+  label: string | null;
   name: string;
-  readonly?: boolean | null;
-  required?: boolean | null;
-  tabIndex?: number | null;
-  value?: any;
+  readonly: boolean | null;
+  required: boolean | null;
+  tabIndex: number | null;
+  value: any;
 };
 export type Choice = {
-  conditions?: Record<
+  conditions: Record<
     string,
     {
       field: string;
@@ -95,19 +95,19 @@ export type Choice = {
       value: any;
     }[]
   > | null;
-  dependsOnAny?: boolean | null;
-  dependsOnKeys?: string[] | null;
-  disabled?: boolean | null;
-  hidden?: boolean | null;
-  label?: string | null;
+  dependsOnAny: boolean | null;
+  dependsOnKeys: string[] | null;
+  disabled: boolean | null;
+  hidden: boolean | null;
+  label: string | null;
   name: string;
-  options?: {
+  options: {
     label: string;
     value: string;
   }[];
-  readonly?: boolean | null;
-  required?: boolean | null;
-  value?: any;
+  readonly: boolean | null;
+  required: boolean | null;
+  value: any;
 };
 export type ColumnData = {
   readonly key: string;
@@ -215,8 +215,8 @@ export type CoreNode =
       schema?: Node[];
     };
 export type DateInput = {
-  autoFocus?: boolean | null;
-  conditions?: Record<
+  autoFocus: boolean | null;
+  conditions: Record<
     string,
     {
       field: string;
@@ -224,18 +224,18 @@ export type DateInput = {
       value: any;
     }[]
   > | null;
-  dependsOnAny?: boolean | null;
-  dependsOnKeys?: string[] | null;
-  disabled?: boolean | null;
-  hidden?: boolean | null;
-  label?: string | null;
-  max?: string | null;
-  min?: string | null;
+  dependsOnAny: boolean | null;
+  dependsOnKeys: string[] | null;
+  disabled: boolean | null;
+  hidden: boolean | null;
+  label: string | null;
+  max: string | null;
+  min: string | null;
   name: string;
-  readonly?: boolean | null;
-  required?: boolean | null;
-  tabIndex?: number | null;
-  value?: any;
+  readonly: boolean | null;
+  required: boolean | null;
+  tabIndex: number | null;
+  value: any;
 };
 export type Effect =
   | {
@@ -295,18 +295,18 @@ export type FilterOperator =
   | "filled";
 export type FilterType = "text" | "number" | "date" | "boolean";
 export type Form = {
-  action?: string | null;
-  errorBag?: string | null;
-  method?: HttpMethod | null;
-  precognitive?: boolean | null;
-  ref?: string | null;
-  resetOnError?: string[] | boolean | null;
-  resetOnSuccess?: string[] | boolean | null;
-  state?: Record<string, any>;
-  status?: string | null;
-  submitButton?: boolean | null;
-  submitLabel?: string | null;
-  validationTimeout?: number | null;
+  action: string | null;
+  errorBag: string | null;
+  method: HttpMethod | null;
+  precognitive: boolean | null;
+  ref: string | null;
+  resetOnError: string[] | boolean | null;
+  resetOnSuccess: string[] | boolean | null;
+  state: Record<string, any>;
+  status: string | null;
+  submitButton: boolean | null;
+  submitLabel: string | null;
+  validationTimeout: number | null;
 };
 export type FormFieldNode =
   | {
@@ -375,9 +375,9 @@ export type FormNode =
     };
 export type FormNodeType = FormNode["type"];
 export type Fragment = {
-  endpoint?: string | null;
-  lazy?: boolean | null;
-  ref?: string | null;
+  endpoint: string | null;
+  lazy: boolean | null;
+  ref: string | null;
 };
 export type FragmentNode = {
   type: "fragment";
@@ -388,14 +388,14 @@ export type FragmentNode = {
 };
 export type Gap = "xs" | "sm" | "md" | "lg" | "xl";
 export type Grid = {
-  columns?: number | null;
+  columns: number | null;
 };
 export type Heading = {
   level: number;
   text: string;
 };
 export type HiddenInput = {
-  conditions?: Record<
+  conditions: Record<
     string,
     {
       field: string;
@@ -403,35 +403,60 @@ export type HiddenInput = {
       value: any;
     }[]
   > | null;
-  dependsOnAny?: boolean | null;
-  dependsOnKeys?: string[] | null;
-  disabled?: boolean | null;
-  hidden?: boolean | null;
-  label?: string | null;
+  dependsOnAny: boolean | null;
+  dependsOnKeys: string[] | null;
+  disabled: boolean | null;
+  hidden: boolean | null;
+  label: string | null;
   name: string;
-  readonly?: boolean | null;
-  required?: boolean | null;
-  value?: any;
+  readonly: boolean | null;
+  required: boolean | null;
+  value: any;
 };
-export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
+export type HttpMethod = import("@inertiajs/core").Method;
+export type LayoutNode =
+  | {
+      type: "outlet";
+      key?: string;
+      props: Outlet;
+    }
+  | {
+      type: "menu";
+      key?: string;
+      props: Menu;
+      schema?: Node[];
+    }
+  | {
+      type: "menu-item";
+      key?: string;
+      props: MenuItem;
+      schema?: Node[];
+    };
 export type Link = {
-  href?: string | null;
+  href: string | null;
   label: string;
-  method?: HttpMethod | null;
-  tabIndex?: number | null;
+  method: HttpMethod | null;
+  tabIndex: number | null;
+};
+export type Menu = object;
+export type MenuItem = {
+  href: string | null;
+  icon: string | null;
+  label: string;
+  method: HttpMethod | null;
 };
 export type Modal = {
-  closeLabel?: string | null;
-  description?: string | null;
-  open?: boolean | null;
-  ref?: string | null;
-  title?: string | null;
+  closeLabel: string | null;
+  description: string | null;
+  open: boolean | null;
+  ref: string | null;
+  title: string | null;
 };
-export type Node = FormNode | CoreNode | ActionNode | FragmentNode | TableNode;
+export type Node = FormNode | CoreNode | ActionNode | FragmentNode | TableNode | LayoutNode;
 export type NodeType = Node["type"];
 export type NumberInput = {
-  autoFocus?: boolean | null;
-  conditions?: Record<
+  autoFocus: boolean | null;
+  conditions: Record<
     string,
     {
       field: string;
@@ -439,29 +464,30 @@ export type NumberInput = {
       value: any;
     }[]
   > | null;
-  dependsOnAny?: boolean | null;
-  dependsOnKeys?: string[] | null;
-  disabled?: boolean | null;
-  hidden?: boolean | null;
-  label?: string | null;
-  max?: number | null;
-  min?: number | null;
+  dependsOnAny: boolean | null;
+  dependsOnKeys: string[] | null;
+  disabled: boolean | null;
+  hidden: boolean | null;
+  label: string | null;
+  max: number | null;
+  min: number | null;
   name: string;
-  placeholder?: string | null;
-  readonly?: boolean | null;
-  required?: boolean | null;
-  slider?: boolean | null;
-  step?: number | null;
-  tabIndex?: number | null;
-  value?: any;
+  placeholder: string | null;
+  readonly: boolean | null;
+  required: boolean | null;
+  slider: boolean | null;
+  step: number | null;
+  tabIndex: number | null;
+  value: any;
 };
+export type Outlet = object;
 export type PageContainer = "centered" | "default";
 export type PageLayout = "app" | "auth" | "none";
 export type PaginationType = "none" | "simple" | "table" | "infinite";
 export type PasswordInput = {
-  autoComplete?: string | null;
-  autoFocus?: boolean | null;
-  conditions?: Record<
+  autoComplete: string | null;
+  autoFocus: boolean | null;
+  conditions: Record<
     string,
     {
       field: string;
@@ -469,31 +495,31 @@ export type PasswordInput = {
       value: any;
     }[]
   > | null;
-  confirmation?: {
+  confirmation: {
     label: string;
     name: string;
     placeholder: string;
   } | null;
-  dependsOnAny?: boolean | null;
-  dependsOnKeys?: string[] | null;
-  disabled?: boolean | null;
-  hidden?: boolean | null;
-  label?: string | null;
-  labelAction?: {
+  dependsOnAny: boolean | null;
+  dependsOnKeys: string[] | null;
+  disabled: boolean | null;
+  hidden: boolean | null;
+  label: string | null;
+  labelAction: {
     href: string;
     label: string;
     tabIndex?: number;
   } | null;
   name: string;
-  passwordRules?: string | null;
-  placeholder?: string | null;
-  readonly?: boolean | null;
-  required?: boolean | null;
-  tabIndex?: number | null;
-  value?: any;
+  passwordRules: string | null;
+  placeholder: string | null;
+  readonly: boolean | null;
+  required: boolean | null;
+  tabIndex: number | null;
+  value: any;
 };
 export type RichEditor = {
-  conditions?: Record<
+  conditions: Record<
     string,
     {
       field: string;
@@ -501,29 +527,29 @@ export type RichEditor = {
       value: any;
     }[]
   > | null;
-  dependsOnAny?: boolean | null;
-  dependsOnKeys?: string[] | null;
-  disabled?: boolean | null;
-  hidden?: boolean | null;
-  label?: string | null;
+  dependsOnAny: boolean | null;
+  dependsOnKeys: string[] | null;
+  disabled: boolean | null;
+  hidden: boolean | null;
+  label: string | null;
   name: string;
-  placeholder?: string | null;
-  readonly?: boolean | null;
-  required?: boolean | null;
-  value?: any;
+  placeholder: string | null;
+  readonly: boolean | null;
+  required: boolean | null;
+  value: any;
 };
 export type SegmentedControl = {
-  emits?: string | null;
-  label?: string | null;
+  emits: string | null;
+  label: string | null;
   name: string;
-  options?: {
+  options: {
     label: string;
     value: string;
   }[];
-  value?: string | null;
+  value: string | null;
 };
 export type Select = {
-  conditions?: Record<
+  conditions: Record<
     string,
     {
       field: string;
@@ -531,36 +557,36 @@ export type Select = {
       value: any;
     }[]
   > | null;
-  dependsOnAny?: boolean | null;
-  dependsOnKeys?: string[] | null;
-  disabled?: boolean | null;
-  hidden?: boolean | null;
-  label?: string | null;
-  multiple?: boolean | null;
+  dependsOnAny: boolean | null;
+  dependsOnKeys: string[] | null;
+  disabled: boolean | null;
+  hidden: boolean | null;
+  label: string | null;
+  multiple: boolean | null;
   name: string;
-  options?: {
+  options: {
     label: string;
     value: string;
   }[];
-  placeholder?: string | null;
-  readonly?: boolean | null;
-  required?: boolean | null;
-  searchable?: boolean | null;
-  value?: any;
+  placeholder: string | null;
+  readonly: boolean | null;
+  required: boolean | null;
+  searchable: boolean | null;
+  value: any;
 };
 export type SortDirection = "asc" | "desc";
 export type Stack = {
-  align?: Align | null;
-  direction?: string | null;
-  gap?: Gap | null;
-  width?: Width | null;
+  align: Align | null;
+  direction: string | null;
+  gap: Gap | null;
+  width: Width | null;
 };
 export type SubmitButton = {
-  label?: string | null;
-  variant?: ButtonVariant | null;
+  label: string | null;
+  variant: ButtonVariant | null;
 };
 export type Tab = {
-  confirm?: {
+  confirm: {
     required: boolean;
     redirectUrl: string;
     timeout?: number;
@@ -569,13 +595,13 @@ export type Tab = {
   value: string;
 };
 export type Table = {
-  bulkActions?: Action[];
-  columns?: ColumnData[];
-  endpoint?: string | null;
-  layout?: string | null;
-  lazy?: boolean | null;
-  ref?: string | null;
-  striped?: boolean | null;
+  bulkActions: Action[];
+  columns: ColumnData[];
+  endpoint: string | null;
+  layout: string | null;
+  lazy: boolean | null;
+  ref: string | null;
+  striped: boolean | null;
 };
 export type TableNode = {
   type: "table";
@@ -589,17 +615,17 @@ export type TableSort = {
 };
 export type Tabs = {
   activeValue: string;
-  defaultValue?: string | null;
+  defaultValue: string | null;
   queryKey: string;
 };
 export type Text = {
-  align?: Align | null;
+  align: Align | null;
   text: string;
 };
 export type TextInput = {
-  autoComplete?: string | null;
-  autoFocus?: boolean | null;
-  conditions?: Record<
+  autoComplete: string | null;
+  autoFocus: boolean | null;
+  conditions: Record<
     string,
     {
       field: string;
@@ -607,22 +633,22 @@ export type TextInput = {
       value: any;
     }[]
   > | null;
-  dependsOnAny?: boolean | null;
-  dependsOnKeys?: string[] | null;
-  disabled?: boolean | null;
-  hidden?: boolean | null;
-  label?: string | null;
+  dependsOnAny: boolean | null;
+  dependsOnKeys: string[] | null;
+  disabled: boolean | null;
+  hidden: boolean | null;
+  label: string | null;
   name: string;
-  placeholder?: string | null;
-  readonly?: boolean | null;
-  required?: boolean | null;
-  tabIndex?: number | null;
-  type?: string | null;
-  value?: any;
+  placeholder: string | null;
+  readonly: boolean | null;
+  required: boolean | null;
+  tabIndex: number | null;
+  type: string | null;
+  value: any;
 };
 export type Textarea = {
-  autoFocus?: boolean | null;
-  conditions?: Record<
+  autoFocus: boolean | null;
+  conditions: Record<
     string,
     {
       field: string;
@@ -630,18 +656,18 @@ export type Textarea = {
       value: any;
     }[]
   > | null;
-  dependsOnAny?: boolean | null;
-  dependsOnKeys?: string[] | null;
-  disabled?: boolean | null;
-  hidden?: boolean | null;
-  label?: string | null;
+  dependsOnAny: boolean | null;
+  dependsOnKeys: string[] | null;
+  disabled: boolean | null;
+  hidden: boolean | null;
+  label: string | null;
   name: string;
-  placeholder?: string | null;
-  readonly?: boolean | null;
-  required?: boolean | null;
-  rows?: number | null;
-  tabIndex?: number | null;
-  value?: any;
+  placeholder: string | null;
+  readonly: boolean | null;
+  required: boolean | null;
+  rows: number | null;
+  tabIndex: number | null;
+  value: any;
 };
 export type ToastVariant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "sm" | "md" | "lg";

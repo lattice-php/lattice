@@ -39,6 +39,7 @@ final class LatticeNodesProvider implements TransformedProvider
      * @param  array<class-string, ComponentSpec>  $actionComponents
      * @param  array<class-string, ComponentSpec>  $fragmentComponents
      * @param  array<class-string, ComponentSpec>  $tableComponents
+     * @param  array<class-string, ComponentSpec>  $layoutComponents
      * @param  class-string|null  $effectContract
      */
     public function __construct(
@@ -48,6 +49,7 @@ final class LatticeNodesProvider implements TransformedProvider
         private readonly array $actionComponents,
         private readonly array $fragmentComponents,
         private readonly array $tableComponents,
+        private readonly array $layoutComponents,
         private readonly string $formType = 'form',
         private readonly ?string $effectContract = null,
         private readonly ?TypeScriptNode $effectType = null,
@@ -66,6 +68,7 @@ final class LatticeNodesProvider implements TransformedProvider
             $this->alias('ActionNode', $this->componentsUnion($this->actionComponents)),
             $this->alias('FragmentNode', $this->componentsUnion($this->fragmentComponents)),
             $this->alias('TableNode', $this->componentsUnion($this->tableComponents)),
+            $this->alias('LayoutNode', $this->componentsUnion($this->layoutComponents)),
             $this->alias('Node', $this->nodeUnion()),
             $this->alias('NodeType', $this->typeAccess('Node')),
         ];
@@ -123,7 +126,7 @@ final class LatticeNodesProvider implements TransformedProvider
     {
         return new TypeScriptUnion(array_map(
             fn (string $name): TypeScriptReference => new TypeScriptReference($this->selfReference($name)),
-            ['FormNode', 'CoreNode', 'ActionNode', 'FragmentNode', 'TableNode'],
+            ['FormNode', 'CoreNode', 'ActionNode', 'FragmentNode', 'TableNode', 'LayoutNode'],
         ));
     }
 

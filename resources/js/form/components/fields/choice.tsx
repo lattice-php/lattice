@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { getOptionalNumberProp, getOptions, getStringProp } from "@lattice/lattice/core/props";
-import type { RendererComponent } from "@lattice/lattice/core/types";
+import type { Option, RendererComponent } from "@lattice/lattice/core/types";
 import { SegmentedPills } from "@lattice/lattice/core/components/segmented-pills";
 import { FormFieldFrame } from "../base/field";
 import { useControlledField } from "../use-controlled-field";
@@ -13,7 +12,10 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
     useControlledField(node);
   const storedValue = useFormValue(name);
   const setValue = useSetFormValue();
-  const options = useMemo(() => getOptions(resolvedNode.props), [resolvedNode.props]);
+  const options = useMemo(
+    () => (resolvedNode.props as { options?: Option[] }).options ?? [],
+    [resolvedNode.props],
+  );
   const fallbackValue = options[0]?.value ?? "";
   const selected = value || fallbackValue;
 
@@ -30,19 +32,13 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
   }
 
   return (
-    <FormFieldFrame
-      error={error}
-      label={getStringProp(node.props, "label")}
-      name={name}
-      required={required}
-    >
+    <FormFieldFrame error={error} label={node.props.label ?? ""} name={name} required={required}>
       <input name={name} type="hidden" value={selected} />
       <SegmentedPills
-        ariaLabel={getStringProp(node.props, "label")}
+        ariaLabel={node.props.label ?? undefined}
         disabled={readonly || disabled}
         onSelect={commit}
         options={options}
-        tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
         value={selected}
       />
     </FormFieldFrame>

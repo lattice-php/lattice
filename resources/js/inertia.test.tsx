@@ -27,7 +27,6 @@ function payload(lattice: Partial<PagePayload> = {}): PagePayload {
     schema: [],
     container: "default",
     layout: null,
-    menus: {},
     title: "Lattice",
     ...lattice,
   };

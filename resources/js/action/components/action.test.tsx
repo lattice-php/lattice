@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Node } from "@lattice/lattice/core/types";
+import { fakeNode } from "@lattice/lattice/test-support";
 import { IconRendererProvider } from "@lattice/lattice/icons";
 import type { IconRendererFunction } from "@lattice/lattice/icons";
 import ActionComponent from "./action";
@@ -39,14 +39,14 @@ describe("Lattice action component", () => {
   it("submits the configured action endpoint", async () => {
     http.post.mockResolvedValue({ ok: true });
 
-    const node = {
+    const node = fakeNode({
       props: {
         endpoint: "/lattice/actions/send-test-email",
         label: "Send test email",
         method: "post",
       },
       type: "action",
-    } satisfies Node<"action">;
+    });
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 
@@ -58,7 +58,7 @@ describe("Lattice action component", () => {
   });
 
   it("visits get action endpoints through inertia", () => {
-    const node = {
+    const node = fakeNode({
       props: {
         endpoint: "/settings/teams/acme",
         label: "Edit",
@@ -66,7 +66,7 @@ describe("Lattice action component", () => {
         variant: "secondary",
       },
       type: "action",
-    } satisfies Node<"action">;
+    });
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 
@@ -79,7 +79,7 @@ describe("Lattice action component", () => {
   it("sends action refs with requests", async () => {
     http.patch.mockResolvedValue({ ok: true });
 
-    const node = {
+    const node = fakeNode({
       props: {
         endpoint: "/lattice/actions/teams.sync",
         label: "Sync",
@@ -87,7 +87,7 @@ describe("Lattice action component", () => {
         method: "patch",
       },
       type: "action",
-    } satisfies Node<"action">;
+    });
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 
@@ -101,7 +101,7 @@ describe("Lattice action component", () => {
   });
 
   it("appends action refs to get endpoints", () => {
-    const node = {
+    const node = fakeNode({
       props: {
         endpoint: "/settings/teams",
         label: "Teams",
@@ -109,7 +109,7 @@ describe("Lattice action component", () => {
         method: "get",
       },
       type: "action",
-    } satisfies Node<"action">;
+    });
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 
@@ -125,7 +125,7 @@ describe("Lattice action component", () => {
       <span data-testid="action-icon">{icon}</span>
     ));
 
-    const node = {
+    const node = fakeNode({
       props: {
         endpoint: "/lattice/actions/send-test-email",
         icon: "custom.spark",
@@ -133,7 +133,7 @@ describe("Lattice action component", () => {
         method: "post",
       },
       type: "action",
-    } satisfies Node<"action">;
+    });
 
     render(
       <IconRendererProvider mode="replace" renderer={iconRenderer}>
@@ -152,7 +152,7 @@ describe("Lattice action component", () => {
   it("opens a confirmation modal before submitting destructive actions", async () => {
     http.delete.mockResolvedValue({ ok: true });
 
-    const node = {
+    const node = fakeNode({
       props: {
         confirmation: {
           cancelLabel: "Keep account",
@@ -166,7 +166,7 @@ describe("Lattice action component", () => {
         variant: "destructive",
       },
       type: "action",
-    } satisfies Node<"action">;
+    });
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 
@@ -220,7 +220,7 @@ describe("Lattice action component", () => {
     window.addEventListener("lattice:reload-component", reloadListener);
     window.addEventListener("lattice:reload-page", reloadPageListener);
 
-    const node = {
+    const node = fakeNode({
       props: {
         endpoint: "/lattice/actions/update-profile",
         label: "Save",
@@ -228,7 +228,7 @@ describe("Lattice action component", () => {
         variant: "secondary",
       },
       type: "action",
-    } satisfies Node<"action">;
+    });
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 
@@ -267,14 +267,14 @@ describe("Lattice action component", () => {
 
     window.addEventListener("lattice:action-error", errorListener);
 
-    const node = {
+    const node = fakeNode({
       props: {
         endpoint: "/lattice/actions/delete-account",
         label: "Delete account",
         method: "delete",
       },
       type: "action",
-    } satisfies Node<"action">;
+    });
 
     render(<ActionComponent node={node}>{null}</ActionComponent>);
 

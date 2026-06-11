@@ -1,8 +1,20 @@
 [
     {
         "props": {
+            "autoComplete": null,
+            "autoFocus": null,
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
             "label": "Team name",
             "name": "name",
+            "placeholder": null,
+            "readonly": null,
+            "required": null,
+            "tabIndex": null,
+            "type": null,
             "value": "Acme Inc"
         },
         "type": "form.text-input"

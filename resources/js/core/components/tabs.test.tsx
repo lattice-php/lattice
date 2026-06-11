@@ -68,6 +68,7 @@ describe("Lattice tabs component", () => {
             ],
             props: {
               defaultValue: "profile",
+              queryKey: "tabs",
             },
             type: "tabs",
           },

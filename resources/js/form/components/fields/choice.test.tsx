@@ -1,12 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice/lattice/core/types";
+import { fakeNode } from "@lattice/lattice/test-support";
 import { FormValuesProvider } from "../values";
 import { ChoiceComponent } from "./choice";
 
 describe("Lattice form choice component", () => {
   it("renders choices and selects on click", () => {
-    const node = {
+    const node = fakeNode({
       props: {
         label: "Plan",
         name: "plan",
@@ -17,7 +17,7 @@ describe("Lattice form choice component", () => {
         value: "free",
       },
       type: "form.choice",
-    } satisfies Node<"form.choice">;
+    });
 
     render(
       <FormValuesProvider initial={{}}>

@@ -38,8 +38,6 @@ use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Concerns\CreatesToastMessages;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Gap;
-use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\LucideIcon;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
@@ -54,8 +52,6 @@ use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\LatticeRegistry;
-use Lattice\Lattice\Menu\MenuItem;
-use Lattice\Lattice\Menu\MenuRegistry;
 use Lattice\Lattice\Tables\CallbackTableSource;
 use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
@@ -85,12 +81,6 @@ use function Pest\Laravel\patch;
 use function Pest\Laravel\postJson;
 use function Pest\Laravel\withoutVite;
 use function Pest\Laravel\withSession;
-
-enum WorkbenchMenuLocation: string
-{
-    case Sidebar = 'sidebar';
-    case UserMenu = 'user-menu';
-}
 
 /**
  * @param  array<string, mixed>  $component
@@ -138,9 +128,8 @@ test('lattice component factories stay open for extension', function () {
         ->and((new ReflectionClass(Badge::class))->isFinal())->toBeFalse();
 });
 
-test('lattice facade resolves the registry and exposes the menu registry', function () {
-    expect(Lattice::getFacadeRoot())->toBe(app(LatticeRegistry::class))
-        ->and(Lattice::menus())->toBe(app(MenuRegistry::class));
+test('lattice facade resolves the registry', function () {
+    expect(Lattice::getFacadeRoot())->toBe(app(LatticeRegistry::class));
 });
 
 test('lattice can discover attributed definitions from a path and namespace', function () {
@@ -160,6 +149,14 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'errorBag' => 'fixtures_profile',
                 'method' => 'patch',
                 'ref' => componentRef($form),
+                'submitLabel' => null,
+                'precognitive' => null,
+                'validationTimeout' => null,
+                'submitButton' => null,
+                'resetOnSuccess' => null,
+                'resetOnError' => null,
+                'status' => null,
+                'state' => [],
             ],
         ])
         ->and($table)
@@ -178,6 +175,10 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'label' => 'Ping',
                 'method' => 'post',
                 'ref' => componentRef($action),
+                'icon' => null,
+                'confirmation' => null,
+                'effects' => [],
+                'variant' => null,
             ],
         ])
         ->and($fragment)
@@ -248,6 +249,7 @@ test('forms serialize schema children like pages', function () {
                     'type' => 'text',
                     'props' => [
                         'text' => 'Profile details',
+                        'align' => null,
                     ],
                 ],
             ],
@@ -313,6 +315,7 @@ test('components serialize through prioritized hook attributes without child-spe
     expect(wire($component))
         ->toBe([
             'type' => 'hooked',
+            'props' => [],
             'custom' => 'value',
         ])
         ->and(method_exists(Component::class, 'serializedChildren'))
@@ -354,6 +357,7 @@ test('private serialization hooks are ignored', function () {
 
     expect(wire($component))->toBe([
         'type' => 'private-hooked',
+        'props' => [],
     ])->and($component->privateDataForTest([]))->toBe([
         'private' => 'value',
     ]);
@@ -366,6 +370,17 @@ test('forms can disable their default submit button', function () {
             'id' => 'profile-form',
             'props' => [
                 'submitButton' => false,
+                'action' => null,
+                'method' => null,
+                'submitLabel' => null,
+                'precognitive' => null,
+                'validationTimeout' => null,
+                'resetOnSuccess' => null,
+                'resetOnError' => null,
+                'status' => null,
+                'errorBag' => null,
+                'state' => [],
+                'ref' => null,
             ],
         ]);
 });
@@ -387,6 +402,18 @@ test('password inputs can request automatic confirmation fields', function () {
                 'name' => 'password',
                 'passwordRules' => 'minlength:8',
                 'required' => true,
+                'labelAction' => null,
+                'value' => null,
+                'hidden' => null,
+                'readonly' => null,
+                'disabled' => null,
+                'conditions' => null,
+                'dependsOnKeys' => null,
+                'dependsOnAny' => null,
+                'autoComplete' => null,
+                'autoFocus' => null,
+                'placeholder' => null,
+                'tabIndex' => null,
             ],
         ]);
 });
@@ -467,12 +494,20 @@ test('registered forms serialize their configured endpoint and isolated error ba
                 'method' => 'patch',
                 'ref' => componentRef($form),
                 'submitButton' => false,
+                'submitLabel' => null,
+                'precognitive' => null,
+                'validationTimeout' => null,
+                'resetOnSuccess' => null,
+                'resetOnError' => null,
+                'status' => null,
+                'state' => [],
             ],
             'schema' => [
                 [
                     'type' => 'text',
                     'props' => [
                         'text' => 'Profile details',
+                        'align' => null,
                     ],
                 ],
             ],
@@ -534,6 +569,10 @@ test('registered tables serialize their configured endpoint columns state and in
             'props' => [
                 'endpoint' => '/custom/tables/workbench.users',
                 'ref' => componentRef($table),
+                'layout' => null,
+                'bulkActions' => [],
+                'striped' => null,
+                'lazy' => null,
                 'columns' => [
                     [
                         'key' => 'name',
@@ -612,6 +651,9 @@ test('registered tables can serialize lazily without running their query', funct
                 'endpoint' => '/custom/tables/workbench.lazy-users',
                 'lazy' => true,
                 'ref' => componentRef($table),
+                'layout' => null,
+                'bulkActions' => [],
+                'striped' => null,
                 'columns' => [
                     [
                         'key' => 'name',
@@ -938,6 +980,8 @@ test('registered actions serialize their configured endpoint method label and ef
                 'method' => 'post',
                 'ref' => componentRef($action),
                 'variant' => 'secondary',
+                'icon' => null,
+                'confirmation' => null,
                 'effects' => [
                     [
                         'type' => 'toast',
@@ -974,6 +1018,7 @@ test('action groups serialize grouped child actions', function () {
             'id' => 'workbench.user-actions',
             'props' => [
                 'label' => 'Manage user',
+                'ref' => null,
             ],
             'schema' => [
                 [
@@ -983,6 +1028,10 @@ test('action groups serialize grouped child actions', function () {
                         'endpoint' => '/lattice/actions/workbench.users.promote',
                         'label' => 'Promote',
                         'method' => 'patch',
+                        'icon' => null,
+                        'confirmation' => null,
+                        'effects' => [],
+                        'variant' => null,
                         'ref' => componentRef($group['schema'][0]),
                     ],
                 ],
@@ -993,8 +1042,11 @@ test('action groups serialize grouped child actions', function () {
                         'endpoint' => '/lattice/actions/workbench.users.remove',
                         'label' => 'Remove',
                         'method' => 'delete',
-                        'ref' => componentRef($group['schema'][1]),
+                        'icon' => null,
+                        'confirmation' => null,
+                        'effects' => [],
                         'variant' => 'destructive',
+                        'ref' => componentRef($group['schema'][1]),
                     ],
                 ],
             ],
@@ -1158,15 +1210,19 @@ test('actions can serialize confirmation modal configuration', function () {
             'type' => 'action',
             'id' => 'delete-account',
             'props' => [
+                'endpoint' => null,
                 'label' => 'Delete account',
                 'method' => 'delete',
-                'variant' => 'destructive',
+                'icon' => null,
                 'confirmation' => [
                     'title' => 'Delete account?',
                     'description' => 'This cannot be undone.',
                     'confirmLabel' => 'Delete account',
                     'cancelLabel' => 'Keep account',
                 ],
+                'effects' => [],
+                'variant' => 'destructive',
+                'ref' => null,
             ],
         ]);
 });
@@ -1184,12 +1240,16 @@ test('modals serialize composable children for action driven dialogs', function 
             'props' => [
                 'title' => 'Set up two-factor authentication',
                 'description' => 'Scan the QR code with your authenticator app.',
+                'closeLabel' => null,
+                'open' => null,
+                'ref' => null,
             ],
             'schema' => [
                 [
                     'type' => 'text',
                     'props' => [
                         'text' => 'Recovery codes will appear here.',
+                        'align' => null,
                     ],
                 ],
             ],
@@ -1236,12 +1296,15 @@ test('links and horizontal stacks serialize as separate composable primitives', 
             'props' => [
                 'direction' => 'row',
                 'gap' => 'xs',
+                'align' => null,
+                'width' => null,
             ],
             'schema' => [
                 [
                     'type' => 'text',
                     'props' => [
                         'text' => 'Need access?',
+                        'align' => null,
                     ],
                 ],
                 [
@@ -1249,6 +1312,8 @@ test('links and horizontal stacks serialize as separate composable primitives', 
                     'props' => [
                         'href' => '/register',
                         'label' => 'Register',
+                        'method' => null,
+                        'tabIndex' => null,
                     ],
                 ],
             ],
@@ -1265,6 +1330,7 @@ test('layout enums serialize to their backed string values', function () {
                 'align' => 'center',
                 'gap' => 'lg',
                 'width' => 'sm',
+                'direction' => null,
             ],
         ])
         ->and(wire(Text::make('Centered')->align(Align::Center))['props']['align'])
@@ -1296,12 +1362,14 @@ test('tabs serialize tab panels as composable children', function () {
                     'props' => [
                         'label' => 'Profile',
                         'value' => 'profile',
+                        'confirm' => null,
                     ],
                     'schema' => [
                         [
                             'type' => 'text',
                             'props' => [
                                 'text' => 'Profile form',
+                                'align' => null,
                             ],
                         ],
                     ],
@@ -1311,11 +1379,26 @@ test('tabs serialize tab panels as composable children', function () {
                     'props' => [
                         'label' => 'Security',
                         'value' => 'security',
+                        'confirm' => null,
                     ],
                     'schema' => [
                         [
                             'type' => 'form',
                             'id' => 'password-form',
+                            'props' => [
+                                'action' => null,
+                                'method' => null,
+                                'submitLabel' => null,
+                                'precognitive' => null,
+                                'validationTimeout' => null,
+                                'submitButton' => null,
+                                'resetOnSuccess' => null,
+                                'resetOnError' => null,
+                                'status' => null,
+                                'errorBag' => null,
+                                'state' => [],
+                                'ref' => null,
+                            ],
                         ],
                     ],
                 ],
@@ -1332,6 +1415,7 @@ test('tabs can customize their query string key', function () {
             'props' => [
                 'activeValue' => '',
                 'queryKey' => 'settings-tab',
+                'defaultValue' => null,
             ],
         ]);
 });
@@ -1458,71 +1542,6 @@ test('pages can authorize requests before rendering', function () {
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page')
             ->where('lattice.schema.0.props.text', 'Authorized page')
-        );
-});
-
-test('page menu items are serialized by location and filtered through page authorization', function () {
-    Route::latticePage('sidebar-visible', WorkbenchAuthorizedPage::class)
-        ->middleware('web')
-        ->name('sidebar.visible')
-        ->menu(WorkbenchMenuLocation::Sidebar, fn ($item) => $item
-            ->label('Visible page')
-            ->icon(LucideIcon::Settings)
-            ->group('Account')
-            ->sort(20));
-
-    Route::latticePage('sidebar-dashboard', WorkbenchInjectedPage::class)
-        ->middleware('web')
-        ->name('sidebar.dashboard')
-        ->sidebar('Dashboard', LucideIcon::LayoutDashboard);
-
-    Route::latticePage('sidebar-hidden', WorkbenchDeniedSidebarPage::class)
-        ->middleware('web')
-        ->name('sidebar.hidden')
-        ->menu(WorkbenchMenuLocation::Sidebar, 'Hidden page', LucideIcon::EyeOff);
-
-    Route::latticePage('user-menu-settings', WorkbenchAuthorizedPage::class)
-        ->middleware('web')
-        ->name('user-menu.settings')
-        ->menu(WorkbenchMenuLocation::UserMenu, 'Settings', LucideIcon::Settings);
-
-    Lattice::menus()->add(
-        WorkbenchMenuLocation::UserMenu,
-        MenuItem::make('logout')
-            ->label('Log out')
-            ->icon(LucideIcon::LogOut)
-            ->href('/logout')
-            ->method(HttpMethod::Post)
-            ->sort(100),
-    );
-
-    withoutVite();
-
-    get('/sidebar-visible?allow=yes')
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('lattice/page')
-            ->where('lattice.menus.sidebar.groups.0.label', null)
-            ->where('lattice.menus.sidebar.groups.0.items.0.label', 'Dashboard')
-            ->where('lattice.menus.sidebar.groups.0.items.0.href', '/sidebar-dashboard')
-            ->where('lattice.menus.sidebar.groups.0.items.0.icon', 'layout-dashboard')
-            ->where('lattice.menus.sidebar.groups.0.items.0.method', 'get')
-            ->where('lattice.menus.sidebar.groups.0.items.0.active', false)
-            ->where('lattice.menus.sidebar.groups.1.label', 'Account')
-            ->where('lattice.menus.sidebar.groups.1.items.0.label', 'Visible page')
-            ->where('lattice.menus.sidebar.groups.1.items.0.href', '/sidebar-visible')
-            ->where('lattice.menus.sidebar.groups.1.items.0.icon', 'settings')
-            ->where('lattice.menus.sidebar.groups.1.items.0.method', 'get')
-            ->where('lattice.menus.sidebar.groups.1.items.0.active', true)
-            ->missing('lattice.menus.sidebar.groups.1.items.1')
-            ->where('lattice.menus.user-menu.groups.0.items.0.label', 'Settings')
-            ->where('lattice.menus.user-menu.groups.0.items.0.href', '/user-menu-settings')
-            ->where('lattice.menus.user-menu.groups.0.items.0.icon', 'settings')
-            ->where('lattice.menus.user-menu.groups.0.items.0.method', 'get')
-            ->where('lattice.menus.user-menu.groups.0.items.1.label', 'Log out')
-            ->where('lattice.menus.user-menu.groups.0.items.1.href', '/logout')
-            ->where('lattice.menus.user-menu.groups.0.items.1.icon', 'log-out')
-            ->where('lattice.menus.user-menu.groups.0.items.1.method', 'post')
         );
 });
 
@@ -1998,19 +2017,6 @@ final class WorkbenchAuthorizedPage extends Page
     public function render(PageSchema $schema): PageSchema
     {
         return $schema->component(Text::make('Authorized page'));
-    }
-}
-
-final class WorkbenchDeniedSidebarPage extends Page
-{
-    public function authorize(Request $request): bool
-    {
-        return false;
-    }
-
-    public function render(PageSchema $schema): PageSchema
-    {
-        return $schema->component(Text::make('Hidden page'));
     }
 }
 

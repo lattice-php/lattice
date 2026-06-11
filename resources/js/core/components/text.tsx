@@ -1,4 +1,3 @@
-import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { cn } from "@lattice/lattice/lib/utils";
 
@@ -8,7 +7,7 @@ const textAlignments: Record<string, string> = {
 };
 
 const TextComponent: RendererComponent<"text"> = ({ node }) => {
-  const align = getStringProp(node.props, "align", "left");
+  const align = node.props.align ?? "left";
 
   return (
     <p
@@ -17,7 +16,7 @@ const TextComponent: RendererComponent<"text"> = ({ node }) => {
         textAlignments[align] ?? textAlignments.left,
       )}
     >
-      {getStringProp(node.props, "text")}
+      {node.props.text}
     </p>
   );
 };
