@@ -64,3 +64,37 @@ export function parseSuffixMap(css: string): SuffixMap {
   }
   return map;
 }
+
+export function resolveTokens(classNames: string[], suffixMap: SuffixMap): string[] {
+  const found = new Set<string>();
+  for (const raw of classNames) {
+    for (const className of raw.split(/\s+/)) {
+      if (!className) {
+        continue;
+      }
+      const withoutVariant = className.slice(className.lastIndexOf(":") + 1);
+      const withoutOpacity = withoutVariant.replace(/\/[\d.]+$/, "");
+      const match = withoutOpacity.match(/(?:^|-)(lt(?:-[a-z]+)*)$/);
+      if (match && suffixMap[match[1]]) {
+        found.add(suffixMap[match[1]]);
+      }
+    }
+  }
+  return [...found];
+}
+
+const LABEL_WORDS: Record<string, string> = {
+  fg: "foreground",
+  bg: "background",
+  sm: "small",
+  xs: "extra-small",
+};
+
+export function tokenLabel(name: string): string {
+  const words = name
+    .replace(/^--lt-/, "")
+    .split("-")
+    .map((word) => LABEL_WORDS[word] ?? word);
+  const label = words.join(" ");
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}

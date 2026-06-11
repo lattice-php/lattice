@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseTokens, parseSuffixMap } from "./tokens";
+import { parseTokens, parseSuffixMap, resolveTokens, tokenLabel } from "./tokens";
 
 const SAMPLE_CSS = `
 :root,
@@ -64,5 +64,38 @@ describe("parseSuffixMap", () => {
       lt: "--lt-radius",
       "lt-sm": "--lt-radius-sm",
     });
+  });
+});
+
+const SUFFIX_MAP = {
+  "lt-primary": "--lt-primary",
+  "lt-primary-fg": "--lt-primary-fg",
+  "lt-ring": "--lt-ring",
+  "lt-danger": "--lt-danger",
+  "lt-sm": "--lt-radius-sm",
+};
+
+describe("resolveTokens", () => {
+  it("resolves utilities through variants and opacity modifiers", () => {
+    const classes = [
+      "inline-flex bg-lt-primary text-lt-primary-fg hover:bg-lt-primary/90 rounded-lt-sm",
+      "focus-visible:ring-lt-ring/50 aria-invalid:border-lt-danger",
+      "md:text-sm gap-2 ring-[3px]",
+    ];
+    expect(resolveTokens(classes, SUFFIX_MAP).sort()).toEqual(
+      ["--lt-danger", "--lt-primary", "--lt-primary-fg", "--lt-radius-sm", "--lt-ring"].sort(),
+    );
+  });
+
+  it("returns nothing when no lattice utilities are present", () => {
+    expect(resolveTokens(["flex h-9 px-3 shadow-xs"], SUFFIX_MAP)).toEqual([]);
+  });
+});
+
+describe("tokenLabel", () => {
+  it("derives a human label, expanding known abbreviations", () => {
+    expect(tokenLabel("--lt-primary-fg")).toBe("Primary foreground");
+    expect(tokenLabel("--lt-bg")).toBe("Background");
+    expect(tokenLabel("--lt-radius-sm")).toBe("Radius small");
   });
 });
