@@ -133,17 +133,19 @@ export type ColumnFilter = {
 };
 export type ColumnType = "text" | "stack";
 export type ConditionOperator =
+  | "contains"
+  | "starts_with"
+  | "ends_with"
   | "eq"
   | "neq"
   | "gt"
   | "gte"
   | "lt"
   | "lte"
-  | "contains"
-  | "starts_with"
-  | "ends_with"
   | "in"
   | "not_in"
+  | "before"
+  | "after"
   | "empty"
   | "filled";
 export type CoreNode =
@@ -294,6 +296,8 @@ export type FilterOperator =
   | "gte"
   | "lt"
   | "lte"
+  | "in"
+  | "not_in"
   | "before"
   | "after"
   | "empty"

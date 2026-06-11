@@ -8,17 +8,19 @@ use InvalidArgumentException;
 
 enum ConditionOperator: string
 {
+    case Contains = 'contains';
+    case StartsWith = 'starts_with';
+    case EndsWith = 'ends_with';
     case Equals = 'eq';
     case NotEquals = 'neq';
     case GreaterThan = 'gt';
     case GreaterThanOrEqual = 'gte';
     case LessThan = 'lt';
     case LessThanOrEqual = 'lte';
-    case Contains = 'contains';
-    case StartsWith = 'starts_with';
-    case EndsWith = 'ends_with';
     case In = 'in';
     case NotIn = 'not_in';
+    case Before = 'before';
+    case After = 'after';
     case Empty = 'empty';
     case Filled = 'filled';
 
@@ -45,17 +47,19 @@ enum ConditionOperator: string
     public function evaluate(mixed $actual, mixed $expected): bool
     {
         return match ($this) {
-            self::Equals => $this->equals($actual, $expected),
-            self::NotEquals => ! $this->equals($actual, $expected),
-            self::GreaterThan => $this->compareNumeric($actual, $expected) > 0,
-            self::LessThan => $this->compareNumeric($actual, $expected) < 0,
-            self::GreaterThanOrEqual => $this->compareNumeric($actual, $expected) >= 0,
-            self::LessThanOrEqual => $this->compareNumeric($actual, $expected) <= 0,
             self::Contains => str_contains((string) $actual, (string) $expected),
             self::StartsWith => str_starts_with((string) $actual, (string) $expected),
             self::EndsWith => str_ends_with((string) $actual, (string) $expected),
+            self::Equals => $this->equals($actual, $expected),
+            self::NotEquals => ! $this->equals($actual, $expected),
+            self::GreaterThan => $this->compareNumeric($actual, $expected) > 0,
+            self::GreaterThanOrEqual => $this->compareNumeric($actual, $expected) >= 0,
+            self::LessThan => $this->compareNumeric($actual, $expected) < 0,
+            self::LessThanOrEqual => $this->compareNumeric($actual, $expected) <= 0,
             self::In => $this->isIn($actual, $expected),
             self::NotIn => ! $this->isIn($actual, $expected),
+            self::Before => $this->compareDates($actual, $expected) === -1,
+            self::After => $this->compareDates($actual, $expected) === 1,
             self::Empty => blank($actual),
             self::Filled => filled($actual),
         };
@@ -64,6 +68,22 @@ enum ConditionOperator: string
     private function compareNumeric(mixed $actual, mixed $expected): int
     {
         return (float) $actual <=> (float) $expected;
+    }
+
+    /**
+     * Compare two date-ish values, or null when either cannot be parsed (so a
+     * Before/After against an unparseable value never matches).
+     */
+    private function compareDates(mixed $actual, mixed $expected): ?int
+    {
+        $left = strtotime((string) $actual);
+        $right = strtotime((string) $expected);
+
+        if ($left === false || $right === false) {
+            return null;
+        }
+
+        return $left <=> $right;
     }
 
     private function equals(mixed $actual, mixed $expected): bool

@@ -55,6 +55,19 @@ function isBlank(value: unknown): boolean {
   return value == null || String(value) === "";
 }
 
+// Compare two date-ish values, or null when either cannot be parsed (so a
+// before/after against an unparseable value never matches). Mirrors PHP strtotime.
+function compareDates(actual: unknown, expected: unknown): number | null {
+  const left = Date.parse(String(actual));
+  const right = Date.parse(String(expected));
+
+  if (Number.isNaN(left) || Number.isNaN(right)) {
+    return null;
+  }
+
+  return left === right ? 0 : left < right ? -1 : 1;
+}
+
 // Unknown operators from untrusted payloads fail open (the condition matches).
 // The `never` parameter makes a ConditionOperator added without a case above a
 // compile error rather than a silent fall-through.
@@ -86,6 +99,10 @@ function evaluateOp(operator: ConditionOperator, actual: unknown, expected: unkn
       return isIn(actual, expected);
     case "not_in":
       return !isIn(actual, expected);
+    case "before":
+      return compareDates(actual, expected) === -1;
+    case "after":
+      return compareDates(actual, expected) === 1;
     case "empty":
       return isBlank(actual);
     case "filled":

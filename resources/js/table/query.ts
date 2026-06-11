@@ -76,6 +76,8 @@ const operatorLabels: Record<string, string> = {
   gte: "≥",
   lt: "<",
   lte: "≤",
+  in: "in",
+  not_in: "not in",
   before: "before",
   after: "after",
   empty: "is empty",

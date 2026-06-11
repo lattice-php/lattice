@@ -18,12 +18,18 @@ enum FilterOperator: string
     case GreaterThanOrEqual = 'gte';
     case LessThan = 'lt';
     case LessThanOrEqual = 'lte';
+    case In = 'in';
+    case NotIn = 'not_in';
     case Before = 'before';
     case After = 'after';
     case Empty = 'empty';
     case Filled = 'filled';
 
     /**
+     * The column types this operator can be offered on. Empty means the operator
+     * is not surfaced through a column's default operator set yet (In/NotIn need
+     * a multi-value control, tracked under the dedicated-filters work).
+     *
      * @return array<int, FilterType>
      */
     public function appliesTo(): array
@@ -34,6 +40,7 @@ enum FilterOperator: string
             self::NotEquals => [FilterType::Text, FilterType::Number],
             self::GreaterThan, self::GreaterThanOrEqual, self::LessThan, self::LessThanOrEqual => [FilterType::Number],
             self::Before, self::After => [FilterType::Date],
+            self::In, self::NotIn => [],
         };
     }
 
@@ -59,6 +66,8 @@ enum FilterOperator: string
             self::GreaterThanOrEqual => $this->compare($builder, $filterType, $field, '>=', $value),
             self::LessThan => $this->compare($builder, $filterType, $field, '<', $value),
             self::LessThanOrEqual => $this->compare($builder, $filterType, $field, '<=', $value),
+            self::In => $builder->whereIn($field, $this->splitList($value)),
+            self::NotIn => $builder->whereNotIn($field, $this->splitList($value)),
             self::Before => $builder->whereDate($field, '<', $value),
             self::After => $builder->whereDate($field, '>', $value),
             self::Empty => $builder->where(function (Builder $query) use ($field): void {
@@ -71,6 +80,19 @@ enum FilterOperator: string
     private function escapeLike(string $value): string
     {
         return str_replace(['%', '_'], ['\\%', '\\_'], $value);
+    }
+
+    /**
+     * Split a comma-separated value into a trimmed, non-empty list for In/NotIn.
+     *
+     * @return array<int, string>
+     */
+    private function splitList(string $value): array
+    {
+        return array_values(array_filter(
+            array_map('trim', explode(',', $value)),
+            static fn (string $item): bool => $item !== '',
+        ));
     }
 
     /**
