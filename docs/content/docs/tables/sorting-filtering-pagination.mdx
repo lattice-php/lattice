@@ -1,0 +1,93 @@
+---
+title: Sorting, filtering & pagination
+description: Make columns sortable and filterable, choose filter operators per value type, and pick a pagination mode.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+Sorting, filtering, and pagination are handled for you once a column opts in. The table sends the
+current sort and filters to its endpoint, and the [data source](/tables/overview/#data-sources)
+applies them.
+
+<ComponentExample
+  php={`TextColumn::make('name')->sortable()->filterable();
+TextColumn::make('price')->numeric()->sortable()->filterable();
+TextColumn::make('updated_at')->date('Y-m-d')->sortable();`}
+  fixture="table.overview"
+/>
+
+## Sorting
+
+`->sortable()` adds the sort control to a column header. Clicking it cycles ascending, descending, and
+off, and the source applies an `orderBy` on the column key. Several columns can be sortable at once.
+
+```php
+TextColumn::make('name')->sortable();
+```
+
+Sorting is keyed by the column key, so a sortable column must map to a real database column. Set a
+default order in the [builder](/tables/eloquent-tables/#the-builder) for when the user hasn't chosen
+one.
+
+## Filtering
+
+`->filterable()` adds a filter for the column. The available operators come from the column's **filter
+type**, which is inferred from its display modifiers:
+
+| Column                       | Filter type | Operators                                                      |
+| ---------------------------- | ----------- | -------------------------------------------------------------- |
+| `TextColumn` (default)       | `Text`      | contains, starts_with, ends_with, =, ≠, empty, filled          |
+| `TextColumn->numeric()`      | `Number`    | =, ≠, &gt;, ≥, &lt;, ≤, empty, filled                          |
+| `TextColumn->date()`         | `Date`      | =, before, after, empty, filled                                |
+| `TextColumn->boolean()`      | `Boolean`   | =, empty, filled                                               |
+
+```php
+TextColumn::make('name')->filterable();              // text filter
+TextColumn::make('price')->numeric()->filterable();  // number filter
+TextColumn::make('created_at')->date()->filterable(); // date filter
+```
+
+### Filter types and operators
+
+Operators are the shared `Op` enum (`Lattice\Lattice\Core\Enums\Op`) — the same vocabulary used by
+[form conditions](/forms/conditional-fields/#operators). Each `FilterType` offers a sensible default
+set and a default operator (text defaults to `contains`, the rest to `=`).
+
+Narrow the offered operators, or change the default, by passing arguments to `->filterable()`:
+
+```php
+use Lattice\Lattice\Core\Enums\Op;
+
+// Only allow exact / negated matches, defaulting to "equals":
+TextColumn::make('sku')->filterable(Op::Equals, [Op::Equals, Op::NotEquals]);
+```
+
+A column's filter capability serializes as a `ColumnFilter` (`{ enabled, type, operators,
+defaultOperator }`) so the React filter control knows which inputs and operators to render. Open the
+**Tree** tab on the example above to see it.
+
+## Pagination
+
+Override `pagination()` to choose how rows are paged, and `perPage()` for the page size. The mode is a
+`PaginationType`:
+
+| Mode                     | Behavior                                              |
+| ------------------------ | ---------------------------------------------------- |
+| `PaginationType::Table`  | Full pager with page numbers and total (the default). |
+| `PaginationType::Simple` | Previous / next only — cheaper, no total count.       |
+| `PaginationType::Infinite` | Loads the next page as the user scrolls.            |
+| `PaginationType::None`   | Returns every row, no pagination.                     |
+
+```php
+use Lattice\Lattice\Tables\Enums\PaginationType;
+
+public function pagination(): PaginationType
+{
+    return PaginationType::Simple;
+}
+
+public function perPage(): int
+{
+    return 50;
+}
+```

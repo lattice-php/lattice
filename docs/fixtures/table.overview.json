@@ -1,0 +1,126 @@
+[
+    {
+        "id": "products",
+        "props": {
+            "bulkActions": [],
+            "columns": [
+                {
+                    "columns": null,
+                    "copyable": null,
+                    "date": null,
+                    "filter": {
+                        "defaultOperator": "contains",
+                        "enabled": true,
+                        "operators": [
+                            "contains",
+                            "starts_with",
+                            "ends_with",
+                            "eq",
+                            "neq",
+                            "empty",
+                            "filled"
+                        ],
+                        "type": "text"
+                    },
+                    "key": "name",
+                    "label": "Name",
+                    "link": null,
+                    "props": null,
+                    "sortable": true,
+                    "type": "text"
+                },
+                {
+                    "columns": null,
+                    "copyable": null,
+                    "date": null,
+                    "filter": {
+                        "defaultOperator": "eq",
+                        "enabled": true,
+                        "operators": [
+                            "eq",
+                            "neq",
+                            "gt",
+                            "gte",
+                            "lt",
+                            "lte",
+                            "empty",
+                            "filled"
+                        ],
+                        "type": "number"
+                    },
+                    "key": "price",
+                    "label": "Price",
+                    "link": null,
+                    "props": null,
+                    "sortable": true,
+                    "type": "text"
+                },
+                {
+                    "columns": null,
+                    "copyable": null,
+                    "date": null,
+                    "filter": null,
+                    "key": "featured",
+                    "label": "Featured",
+                    "link": null,
+                    "props": null,
+                    "sortable": null,
+                    "type": "text"
+                },
+                {
+                    "columns": null,
+                    "copyable": null,
+                    "date": {
+                        "format": "Y-m-d"
+                    },
+                    "filter": null,
+                    "key": "updated_at",
+                    "label": "Updated",
+                    "link": null,
+                    "props": null,
+                    "sortable": true,
+                    "type": "text"
+                }
+            ],
+            "data": [
+                {
+                    "featured": true,
+                    "name": "Desk Lamp",
+                    "price": "49.00",
+                    "updated_at": "2026-05-30 09:15:00"
+                },
+                {
+                    "featured": false,
+                    "name": "Office Chair",
+                    "price": "189.00",
+                    "updated_at": "2026-06-02 14:40:00"
+                },
+                {
+                    "featured": true,
+                    "name": "Monitor Stand",
+                    "price": "75.50",
+                    "updated_at": "2026-06-08 08:05:00"
+                }
+            ],
+            "endpoint": null,
+            "layout": null,
+            "lazy": null,
+            "pagination": {
+                "from": 1,
+                "hasMore": false,
+                "mode": "none",
+                "nextPage": null,
+                "to": 3,
+                "total": 3
+            },
+            "state": {
+                "filters": [],
+                "page": 1,
+                "perPage": 25,
+                "sorts": []
+            },
+            "striped": true
+        },
+        "type": "table"
+    }
+]

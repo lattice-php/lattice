@@ -1,0 +1,80 @@
+---
+title: Eloquent tables
+description: The database-backed table source — define a base query with builder() and let Lattice apply filters, sorts, and pagination.
+---
+
+Most tables are backed by an Eloquent model. Extend `EloquentTableDefinition` and implement
+`builder()` instead of `source()` — Lattice wires up an `EloquentTableSource` from your builder,
+columns, and pagination mode.
+
+```php
+use Illuminate\Database\Eloquent\Builder;
+use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Lattice\Tables\EloquentTableDefinition;
+use Lattice\Lattice\Tables\TableQuery;
+
+/**
+ * @extends EloquentTableDefinition<Product>
+ */
+#[Table('app.products')]
+class ProductsTable extends EloquentTableDefinition
+{
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->sortable()->filterable(),
+            TextColumn::make('price')->numeric()->sortable()->filterable(),
+        ];
+    }
+
+    public function builder(TableQuery $query): Builder
+    {
+        return Product::query()->select(['id', 'name', 'price']);
+    }
+}
+```
+
+## The builder
+
+`builder()` returns the **base query** — the rows the table draws from before the request's filters
+and sorts are applied. Lattice applies those for you (see below), so the builder only needs your own
+scoping: a `select()`, eager loads, tenant constraints, a default order.
+
+```php
+public function builder(TableQuery $query): Builder
+{
+    $builder = Product::query()
+        ->where('team_id', $this->team->id)
+        ->select(['id', 'name', 'price', 'status']);
+
+    if ($query->sorts() === []) {
+        $builder->latest('id');
+    }
+
+    return $builder;
+}
+```
+
+The `TableQuery` is passed in so the builder can react to the current request — the example applies a
+default order only when the user hasn't chosen a sort.
+
+## How filters and sorts are applied
+
+`EloquentTableSource` reads the request's filters and sorts from the `TableQuery` and applies them to
+your builder automatically, driven by the columns' capabilities:
+
+- A **filter** is applied only for a column that is [`filterable()`](/tables/sorting-filtering-pagination/#filtering),
+  using the column's [`FilterType`](/tables/sorting-filtering-pagination/#filter-types) to build the right `where`.
+- A **sort** becomes an `orderBy` on the column key.
+
+Because both map to the column **key**, a filterable or sortable column key must be a real database
+column (or an aliased select). For anything computed, keep the column display-only or back the table
+with a custom [source](/tables/overview/#data-sources).
+
+## Selecting bulk-action rows
+
+When a table has [bulk actions](/tables/actions/#bulk-actions), the source also resolves the selected
+rows. `EloquentTableSource` handles this from your builder: `resolveMatching()` re-runs the filtered
+query for "select all matching", and `resolveSelection()` loads an explicit set of keys with
+`whereKey()`. You don't write anything extra — defining the bulk actions is enough.

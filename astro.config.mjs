@@ -81,7 +81,13 @@ export default defineConfig({
         },
         {
           label: "Tables",
-          items: [{ label: "Overview", link: "/tables/overview/" }],
+          items: [
+            { label: "Overview", link: "/tables/overview/" },
+            { label: "Eloquent tables", link: "/tables/eloquent-tables/" },
+            { label: "Columns", link: "/tables/columns/" },
+            { label: "Sorting, filtering & pagination", link: "/tables/sorting-filtering-pagination/" },
+            { label: "Actions", link: "/tables/actions/" },
+          ],
         },
         {
           label: "Actions",

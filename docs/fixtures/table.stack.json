@@ -1,0 +1,90 @@
+[
+    {
+        "id": "users",
+        "props": {
+            "bulkActions": [],
+            "columns": [
+                {
+                    "columns": [
+                        {
+                            "columns": null,
+                            "copyable": null,
+                            "date": null,
+                            "filter": null,
+                            "key": "name",
+                            "label": "Name",
+                            "link": null,
+                            "props": null,
+                            "sortable": true,
+                            "type": "text"
+                        },
+                        {
+                            "columns": null,
+                            "copyable": true,
+                            "date": null,
+                            "filter": null,
+                            "key": "email",
+                            "label": "Email",
+                            "link": null,
+                            "props": null,
+                            "sortable": null,
+                            "type": "text"
+                        }
+                    ],
+                    "copyable": null,
+                    "date": null,
+                    "filter": null,
+                    "key": "identity",
+                    "label": "User",
+                    "link": null,
+                    "props": null,
+                    "sortable": null,
+                    "type": "stack"
+                },
+                {
+                    "columns": null,
+                    "copyable": null,
+                    "date": null,
+                    "filter": null,
+                    "key": "role",
+                    "label": "Role",
+                    "link": null,
+                    "props": null,
+                    "sortable": null,
+                    "type": "text"
+                }
+            ],
+            "data": [
+                {
+                    "email": "ada@example.com",
+                    "name": "Ada Lovelace",
+                    "role": "Admin"
+                },
+                {
+                    "email": "alan@example.com",
+                    "name": "Alan Turing",
+                    "role": "Editor"
+                }
+            ],
+            "endpoint": null,
+            "layout": null,
+            "lazy": null,
+            "pagination": {
+                "from": 1,
+                "hasMore": false,
+                "mode": "none",
+                "nextPage": null,
+                "to": 2,
+                "total": 2
+            },
+            "state": {
+                "filters": [],
+                "page": 1,
+                "perPage": 25,
+                "sorts": []
+            },
+            "striped": null
+        },
+        "type": "table"
+    }
+]
