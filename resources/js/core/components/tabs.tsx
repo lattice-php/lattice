@@ -87,7 +87,7 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
   const tabs = useMemo(() => getTabs(node), [node]);
   const firstValue = tabs[0]?.value ?? "";
   const queryKey = node.props.queryKey;
-  const orientation = node.props.orientation ?? "horizontal";
+  const orientation = node.props.orientation;
   const isVertical = orientation === "vertical";
   const serverActiveValue = node.props.activeValue;
   const defaultValue = node.props.defaultValue ?? firstValue;

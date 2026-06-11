@@ -39,7 +39,12 @@ function renderTabs(tabsProps: Record<string, unknown>) {
             tab("Details", "details"),
             tab("History", "history"),
           ],
-          props: { defaultValue: "overview", queryKey: "tabs", ...tabsProps },
+          props: {
+            defaultValue: "overview",
+            orientation: "horizontal",
+            queryKey: "tabs",
+            ...tabsProps,
+          },
           type: "tabs",
         },
       ]}
