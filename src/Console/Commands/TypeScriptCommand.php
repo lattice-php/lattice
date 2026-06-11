@@ -24,12 +24,7 @@ final class TypeScriptCommand extends Command
 
         $writer->write($discovered, $output, $module);
 
-        $count = count(array_filter(
-            $discovered,
-            static fn (DiscoveredComponent $c): bool => $c->category !== 'column',
-        ));
-
-        $this->components->info(sprintf('Generated %d component type(s) → %s', $count, $output));
+        $this->components->info(sprintf('Generated %d type(s) → %s', count($discovered), $output));
 
         return self::SUCCESS;
     }

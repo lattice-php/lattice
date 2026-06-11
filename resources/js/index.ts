@@ -54,6 +54,7 @@ export type {
   ColumnPlugin,
   ColumnRegistry,
 } from "./table/column-registry";
+export type { ColumnProps, ColumnPropsOf } from "./table/types";
 export type { Method } from "@inertiajs/core";
 export type { ActionEffect } from "./action/effects";
 export type { ResolvedAppearance, UseAppearanceReturn } from "./appearance";

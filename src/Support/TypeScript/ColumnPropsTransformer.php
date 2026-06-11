@@ -7,22 +7,24 @@ namespace Lattice\Lattice\Support\TypeScript;
 use ReflectionClass;
 use ReflectionProperty;
 
-final class PropsTypeGenerator
+final class ColumnPropsTransformer
 {
     use MapsPhpTypeToTypeScript;
 
     /**
-     * Returns a TypeScript object-type literal for the public properties of a class.
+     * Returns a TypeScript object-type literal for the OWN public properties of
+     * a column subclass (inherited properties like `key` are excluded).
      *
-     * @param  class-string  $class
+     * @param  class-string  $columnClass
      */
-    public function forClass(string $class): string
+    public function forClass(string $columnClass): string
     {
-        $reflection = new ReflectionClass($class);
+        $reflection = new ReflectionClass($columnClass);
 
         $properties = array_values(array_filter(
             $reflection->getProperties(ReflectionProperty::IS_PUBLIC),
-            static fn (ReflectionProperty $p): bool => ! $p->isStatic(),
+            static fn (ReflectionProperty $p): bool => ! $p->isStatic()
+                && $p->getDeclaringClass()->getName() === $columnClass,
         ));
 
         usort(
