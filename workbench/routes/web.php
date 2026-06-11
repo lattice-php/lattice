@@ -10,12 +10,16 @@ use Workbench\App\Pages\ProductEditPage;
 use Workbench\App\Pages\ProductsPage;
 use Workbench\App\Pages\ShowcasePage;
 use Workbench\App\Pages\TablesPage;
+use Workbench\App\Pages\TabsPage;
 
 Route::latticePage('/', HomePage::class)
     ->name('home');
 
 Route::latticePage('/tables', TablesPage::class)
     ->name('tables');
+
+Route::latticePage('/tabs', TabsPage::class)
+    ->name('tabs');
 
 Route::latticePage('/products', ProductsPage::class)
     ->name('products.index');
