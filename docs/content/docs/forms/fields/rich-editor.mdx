@@ -1,0 +1,42 @@
+---
+title: Rich editor
+description: A formatted-text editor that stores a structured document, not raw HTML.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+The rich editor lets the user write formatted text — headings, lists, links, tables, and more. It
+stores a structured TipTap document rather than raw HTML, which keeps the stored value safe to render.
+Create one with `RichEditor::make()`.
+
+<ComponentExample
+  php={`RichEditor::make('article', 'Article')
+    ->placeholder('Write your article…')`}
+  fixture="rich-editor.basic"
+  values={{ article: "" }}
+/>
+
+## Stored value
+
+The field submits a JSON document. Before it reaches `handle()`, Lattice decodes and validates it
+against the editor's schema (unknown nodes are stripped), so you receive a clean document array you
+can store as-is and render later by wrapping it in `RichContent`:
+
+```php
+use Lattice\Lattice\Forms\RichContent;
+
+$html = RichContent::make($document)->toHtml();
+```
+
+`toHtml()` validates the document against the editor's schema (unknown nodes are stripped) and
+sanitizes the output, so it is safe to render directly. `toText()` returns a plain-text version.
+
+## Placeholder
+
+`->placeholder()` sets the muted hint shown while the editor is empty.
+
+## Common options
+
+`RichEditor` shares label, default value, required, disabled, read-only, and visibility options with
+every field — see [Fields](/forms/fields/overview/). For validation and conditional behavior, see
+[Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).

@@ -1,0 +1,21 @@
+[
+    {
+        "props": {
+            "autoFocus": null,
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
+            "label": "Birthday",
+            "max": "2026-01-01",
+            "min": null,
+            "name": "birthday",
+            "readonly": null,
+            "required": null,
+            "tabIndex": null,
+            "value": null
+        },
+        "type": "form.date-input"
+    }
+]

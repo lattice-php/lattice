@@ -1,0 +1,90 @@
+---
+title: Select
+description: A dropdown for choosing one or several options, with optional server-side search.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+The select lets the user pick from a list of options. Create one with `Select::make()` and pass the
+options with `->options()`. Each option is a label/value pair built with `Select::option()`.
+
+<ComponentExample
+  php={`Select::make('country', 'Country')
+    ->placeholder('Pick a country')
+    ->options([
+        Select::option('Germany', 'de'),
+        Select::option('France', 'fr'),
+        Select::option('Spain', 'es'),
+        Select::option('Italy', 'it'),
+    ])`}
+  fixture="select.basic"
+  values={{ country: "" }}
+/>
+
+## Placeholder
+
+`->placeholder()` sets the text shown before a value is chosen. It is not selectable as a value.
+
+## Options from an enum
+
+`->enum()` builds the options from a backed enum. Pass the enum class for every case, or an array of
+cases for a subset. Labels come from the enum's `HasLabel` contract when it implements one, otherwise
+the case name is humanized.
+
+```php
+Select::make('status', 'Status')->enum(OrderStatus::class);
+```
+
+## Multiple
+
+`->multiple()` lets the user choose more than one option. The field submits an array of values.
+
+<ComponentExample
+  php={`Select::make('languages', 'Languages')
+    ->multiple()
+    ->placeholder('Choose languages')
+    ->options([
+        Select::option('PHP', 'php'),
+        Select::option('JavaScript', 'js'),
+        Select::option('Go', 'go'),
+        Select::option('Rust', 'rust'),
+    ])`}
+  fixture="select.multiple"
+  values={{ languages: [] }}
+/>
+
+## Searchable
+
+`->searchable()` turns the select into a server-driven search. The closure receives the query string
+(plus the current `FormData` and `Request`) and returns the matching options. The option value is the
+entity identifier and is fully controlled by the resolver, so it scales to large datasets without
+shipping every option to the client.
+
+```php
+Select::make('author_id', 'Author')
+    ->searchable(fn (string $query) => User::query()
+        ->where('name', 'like', "%{$query}%")
+        ->limit(10)
+        ->get()
+        ->map(fn (User $user) => Select::option($user->name, (string) $user->id))
+        ->all());
+```
+
+On an edit form the stored value needs a label to display. `->resolveSelectedUsing()` receives the
+current value(s) — always as an array — and returns their options:
+
+```php
+Select::make('author_id', 'Author')
+    ->searchable(/* … */)
+    ->resolveSelectedUsing(fn (array $values) => User::query()
+        ->whereIn('id', $values)
+        ->get()
+        ->map(fn (User $user) => Select::option($user->name, (string) $user->id))
+        ->all());
+```
+
+## Common options
+
+`Select` shares label, default value, required, disabled, read-only, and visibility options with
+every field — see [Fields](/forms/fields/overview/). For validation and conditional behavior, see
+[Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).

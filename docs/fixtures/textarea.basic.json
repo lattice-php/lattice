@@ -1,0 +1,21 @@
+[
+    {
+        "props": {
+            "autoFocus": null,
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
+            "label": "Bio",
+            "name": "bio",
+            "placeholder": "Tell us about yourself",
+            "readonly": null,
+            "required": null,
+            "rows": 4,
+            "tabIndex": null,
+            "value": null
+        },
+        "type": "form.textarea"
+    }
+]

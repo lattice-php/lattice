@@ -1,0 +1,33 @@
+---
+title: Date input
+description: A date picker with optional minimum and maximum bounds.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+The date input collects a calendar date. Create one with `DateInput::make()`.
+
+<ComponentExample
+  php={`DateInput::make('birthday', 'Birthday')
+    ->max('2026-01-01')`}
+  fixture="date-input.basic"
+  values={{ birthday: "" }}
+/>
+
+## Minimum and maximum
+
+`->min()` and `->max()` bound the selectable range. Pass an ISO `Y-m-d` date string. They constrain
+the picker in the browser; pair them with `date` validation rules to enforce the range on the server.
+
+```php
+DateInput::make('starts_at', 'Start date')
+    ->min('2026-01-01')
+    ->max('2026-12-31')
+    ->rules(['date', 'after_or_equal:2026-01-01']);
+```
+
+## Common options
+
+`DateInput` shares label, default value, required, disabled, read-only, and visibility options with
+every field — see [Fields](/forms/fields/overview/). For validation and conditional behavior, see
+[Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).

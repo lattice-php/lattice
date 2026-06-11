@@ -15,3 +15,13 @@ it('serializes a date input', function (): void {
             'max' => '2026-12-31',
         ]);
 });
+
+describe('docs fixtures', function (): void {
+    it('dumps the date input example', function (): void {
+        dumpFixture('date-input.basic', [
+            DateInput::make('birthday', 'Birthday')->max('2026-01-01'),
+        ]);
+
+        expect('docs/fixtures/date-input.basic.json')->toBeReadableFile();
+    });
+});

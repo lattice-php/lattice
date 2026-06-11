@@ -1,0 +1,24 @@
+[
+    {
+        "props": {
+            "autoFocus": null,
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
+            "label": "Satisfaction",
+            "max": 10,
+            "min": 0,
+            "name": "satisfaction",
+            "placeholder": null,
+            "readonly": null,
+            "required": null,
+            "slider": true,
+            "step": null,
+            "tabIndex": null,
+            "value": null
+        },
+        "type": "form.number-input"
+    }
+]

@@ -1,0 +1,38 @@
+[
+    {
+        "props": {
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
+            "label": "Country",
+            "multiple": null,
+            "name": "country",
+            "options": [
+                {
+                    "label": "Germany",
+                    "value": "de"
+                },
+                {
+                    "label": "France",
+                    "value": "fr"
+                },
+                {
+                    "label": "Spain",
+                    "value": "es"
+                },
+                {
+                    "label": "Italy",
+                    "value": "it"
+                }
+            ],
+            "placeholder": "Pick a country",
+            "readonly": null,
+            "required": null,
+            "searchable": null,
+            "value": null
+        },
+        "type": "form.select"
+    }
+]

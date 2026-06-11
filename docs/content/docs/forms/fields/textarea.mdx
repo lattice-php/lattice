@@ -1,0 +1,45 @@
+---
+title: Textarea
+description: A multi-line text field for longer free-form input.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+The textarea collects multi-line text. Create one with `Textarea::make()`, passing the field name
+and its label.
+
+<ComponentExample
+  php={`Textarea::make('bio', 'Bio')
+    ->rows(4)
+    ->placeholder('Tell us about yourself')`}
+  fixture="textarea.basic"
+  values={{ bio: "" }}
+/>
+
+## Rows
+
+`->rows()` sets the visible height of the field in text rows. It is a starting height only — the
+field still grows as the user types past it.
+
+```php
+Textarea::make('bio', 'Bio')->rows(4);
+```
+
+## Placeholder
+
+`->placeholder()` sets the muted hint shown while the field is empty. It is not a value — an empty
+field still submits as empty.
+
+## Autofocus
+
+`->autoFocus()` focuses the field when the form mounts. Use it on the first field only.
+
+```php
+Textarea::make('bio', 'Bio')->autoFocus();
+```
+
+## Common options
+
+`Textarea` shares label, default value, required, disabled, read-only, and visibility options with
+every field — see [Fields](/forms/fields/overview/). For validation and conditional behavior, see
+[Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).

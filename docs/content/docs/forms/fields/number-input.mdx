@@ -1,0 +1,49 @@
+---
+title: Number input
+description: A numeric field with optional min, max, and step, or a slider variant.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+The number input collects a numeric value. Create one with `NumberInput::make()`.
+
+<ComponentExample
+  php={`NumberInput::make('age', 'Age')
+    ->min(0)
+    ->max(120)`}
+  fixture="number-input.basic"
+  values={{ age: "" }}
+/>
+
+## Min, max, and step
+
+`->min()` and `->max()` bound the value; `->step()` sets the increment used by the spinner controls
+and accepts decimals for fractional values such as prices. These constrain the browser control; add
+matching validation rules to enforce them on the server.
+
+```php
+NumberInput::make('unit_price', 'Unit price')
+    ->min(0)
+    ->step(0.01)
+    ->rules(['numeric', 'min:0']);
+```
+
+## Slider
+
+`->slider()` renders the field as a range slider instead of a spinner. Pair it with `->min()` and
+`->max()` so the track has defined bounds.
+
+<ComponentExample
+  php={`NumberInput::make('satisfaction', 'Satisfaction')
+    ->slider()
+    ->min(0)
+    ->max(10)`}
+  fixture="number-input.slider"
+  values={{ satisfaction: 5 }}
+/>
+
+## Common options
+
+`NumberInput` shares label, default value, required, disabled, read-only, and visibility options with
+every field — see [Fields](/forms/fields/overview/). For validation and conditional behavior, see
+[Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).

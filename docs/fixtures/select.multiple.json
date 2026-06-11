@@ -1,0 +1,38 @@
+[
+    {
+        "props": {
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
+            "label": "Languages",
+            "multiple": true,
+            "name": "languages",
+            "options": [
+                {
+                    "label": "PHP",
+                    "value": "php"
+                },
+                {
+                    "label": "JavaScript",
+                    "value": "js"
+                },
+                {
+                    "label": "Go",
+                    "value": "go"
+                },
+                {
+                    "label": "Rust",
+                    "value": "rust"
+                }
+            ],
+            "placeholder": "Choose languages",
+            "readonly": null,
+            "required": null,
+            "searchable": null,
+            "value": null
+        },
+        "type": "form.select"
+    }
+]

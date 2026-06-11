@@ -15,3 +15,13 @@ it('serializes a textarea', function (): void {
             'placeholder' => 'Tell us about yourself',
         ]);
 });
+
+describe('docs fixtures', function (): void {
+    it('dumps the textarea example', function (): void {
+        dumpFixture('textarea.basic', [
+            Textarea::make('bio', 'Bio')->rows(4)->placeholder('Tell us about yourself'),
+        ]);
+
+        expect('docs/fixtures/textarea.basic.json')->toBeReadableFile();
+    });
+});
