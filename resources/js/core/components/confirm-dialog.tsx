@@ -1,4 +1,4 @@
-import { useId } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
 import type { ButtonVariant } from "@lattice/lattice/types/generated";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
@@ -24,37 +24,55 @@ export function ConfirmDialog({
   onConfirm: () => void;
   onCancel: () => void;
 }) {
-  const titleId = useId();
+  const blockWhileProcessing = (event: Event): void => {
+    if (processing) {
+      event.preventDefault();
+    }
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div
-        aria-labelledby={titleId}
-        aria-modal="true"
-        className="w-full max-w-md rounded-lt border border-lt-border bg-lt-bg p-6 shadow-lg"
-        role="dialog"
-      >
-        <div className="grid gap-2">
-          <h2 className="text-lg font-semibold leading-none tracking-tight" id={titleId}>
-            {title}
-          </h2>
-          {description && <p className="text-sm text-lt-muted-fg">{description}</p>}
-        </div>
-        <div className="mt-6 flex justify-end gap-2">
-          <Button type="button" variant="outline" disabled={processing} onClick={onCancel}>
-            {cancelLabel}
-          </Button>
-          <Button
-            type="button"
-            variant={confirmVariant}
-            disabled={processing || confirmDisabled}
-            onClick={onConfirm}
-          >
-            {processing && <Spinner />}
-            {confirmLabel}
-          </Button>
-        </div>
-      </div>
-    </div>
+    <Dialog.Root
+      open
+      onOpenChange={(open) => {
+        if (!open) {
+          onCancel();
+        }
+      }}
+    >
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50" />
+        <Dialog.Content
+          {...(description ? {} : { "aria-describedby": undefined })}
+          className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lt border border-lt-border bg-lt-bg p-6 shadow-lg"
+          onEscapeKeyDown={blockWhileProcessing}
+          onInteractOutside={blockWhileProcessing}
+        >
+          <div className="grid gap-2">
+            <Dialog.Title className="text-lg font-semibold leading-none tracking-tight">
+              {title}
+            </Dialog.Title>
+            {description && (
+              <Dialog.Description className="text-sm text-lt-muted-fg">
+                {description}
+              </Dialog.Description>
+            )}
+          </div>
+          <div className="mt-6 flex justify-end gap-2">
+            <Button type="button" variant="outline" disabled={processing} onClick={onCancel}>
+              {cancelLabel}
+            </Button>
+            <Button
+              type="button"
+              variant={confirmVariant}
+              disabled={processing || confirmDisabled}
+              onClick={onConfirm}
+            >
+              {processing && <Spinner />}
+              {confirmLabel}
+            </Button>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

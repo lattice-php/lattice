@@ -1,6 +1,6 @@
+import * as Popover from "@radix-ui/react-popover";
 import { Filter, Plus, Trash2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useState } from "react";
 import type { FilterType, Op } from "@lattice/lattice/types/generated";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
 import type { FilterClause, TableColumn } from "../types";
@@ -24,48 +24,6 @@ export function ColumnFilterControl({
   onRemove: (index: number) => void;
 }) {
   const filter = column.filter;
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
-  const panelRef = useRef<HTMLDivElement | null>(null);
-  const [open, setOpen] = useState(false);
-  const [position, setPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
-
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    function close(event: MouseEvent): void {
-      const target = event.target as Node;
-
-      if (buttonRef.current?.contains(target) || panelRef.current?.contains(target)) {
-        return;
-      }
-
-      setOpen(false);
-    }
-
-    function handleKey(event: KeyboardEvent): void {
-      if (event.key === "Escape") {
-        setOpen(false);
-      }
-    }
-
-    function dismiss(): void {
-      setOpen(false);
-    }
-
-    document.addEventListener("mousedown", close);
-    document.addEventListener("keydown", handleKey);
-    window.addEventListener("scroll", dismiss, true);
-    window.addEventListener("resize", dismiss);
-
-    return () => {
-      document.removeEventListener("mousedown", close);
-      document.removeEventListener("keydown", handleKey);
-      window.removeEventListener("scroll", dismiss, true);
-      window.removeEventListener("resize", dismiss);
-    };
-  }, [open]);
 
   if (!filter) {
     return null;
@@ -92,22 +50,6 @@ export function ColumnFilterControl({
     }
   }
 
-  function toggle(): void {
-    if (open) {
-      setOpen(false);
-
-      return;
-    }
-
-    const rect = buttonRef.current?.getBoundingClientRect();
-
-    if (rect) {
-      setPosition({ top: rect.bottom + 4, left: rect.left });
-    }
-
-    setOpen(true);
-  }
-
   return (
     <div className="flex items-center gap-1">
       <div className="flex-1">
@@ -121,29 +63,28 @@ export function ColumnFilterControl({
           onClear={primary ? () => onRemove(primary.index) : undefined}
         />
       </div>
-      <button
-        ref={buttonRef}
-        type="button"
-        aria-label={`${column.label} filters`}
-        className="relative inline-flex size-9 items-center justify-center rounded-lt-sm border border-lt-border disabled:opacity-50 data-[open=true]:border-lt-primary"
-        data-open={open}
-        disabled={processing}
-        onClick={toggle}
-      >
-        <Filter aria-hidden="true" className="size-4" />
-        {clauses.length > 0 && (
-          <span className="absolute -right-1.5 -top-1.5 inline-flex size-4 items-center justify-center rounded-full bg-lt-primary text-[10px] font-medium text-lt-primary-fg">
-            {clauses.length}
-          </span>
-        )}
-      </button>
+      <Popover.Root>
+        <Popover.Trigger asChild>
+          <button
+            type="button"
+            aria-label={`${column.label} filters`}
+            className="relative inline-flex size-9 items-center justify-center rounded-lt-sm border border-lt-border disabled:opacity-50 data-[state=open]:border-lt-primary"
+            disabled={processing}
+          >
+            <Filter aria-hidden="true" className="size-4" />
+            {clauses.length > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 inline-flex size-4 items-center justify-center rounded-full bg-lt-primary text-[10px] font-medium text-lt-primary-fg">
+                {clauses.length}
+              </span>
+            )}
+          </button>
+        </Popover.Trigger>
 
-      {open &&
-        createPortal(
-          <div
-            ref={panelRef}
-            className="fixed z-50 w-80 rounded-lt border border-lt-border bg-lt-bg p-4 shadow-lg"
-            style={{ top: position.top, left: position.left }}
+        <Popover.Portal>
+          <Popover.Content
+            align="start"
+            className="z-50 w-80 rounded-lt border border-lt-border bg-lt-bg p-4 shadow-lg"
+            sideOffset={4}
           >
             <FilterClauseList
               column={column}
@@ -155,9 +96,9 @@ export function ColumnFilterControl({
               onUpdate={onUpdate}
               onRemove={onRemove}
             />
-          </div>,
-          document.body,
-        )}
+          </Popover.Content>
+        </Popover.Portal>
+      </Popover.Root>
     </div>
   );
 }

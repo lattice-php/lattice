@@ -4,7 +4,7 @@ import { fakeNode } from "@lattice/lattice/test-support";
 import ActionGroupComponent from "./action-group";
 
 describe("Lattice action group component", () => {
-  it("opens a menu of grouped actions", () => {
+  it("opens a panel of grouped actions", () => {
     const node = fakeNode({
       id: "teams.members.2.actions",
       props: {
@@ -20,17 +20,16 @@ describe("Lattice action group component", () => {
       </ActionGroupComponent>,
     );
 
-    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Make admin" })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Manage member" }));
 
-    expect(screen.getByRole("menu", { name: "Manage member" })).toBeVisible();
-    expect(screen.getByRole("menu", { name: "Manage member" })).toHaveClass("fixed");
+    expect(screen.getByRole("dialog", { name: "Manage member" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Make admin" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Remove" })).toBeVisible();
 
     fireEvent.click(screen.getByRole("button", { name: "Manage member" }));
 
-    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Make admin" })).not.toBeInTheDocument();
   });
 });
