@@ -407,6 +407,12 @@ export type LayoutNode =
       type: "outlet";
       key?: string;
       props: Outlet;
+    }
+  | {
+      type: "sidebar";
+      key?: string;
+      props: Sidebar;
+      schema?: Node[];
     };
 export type Link = {
   href: string | null;
@@ -580,6 +586,7 @@ export type Select = {
   searchable: boolean | null;
   value: any;
 };
+export type Sidebar = object;
 export type SortDirection = "asc" | "desc";
 export type Stack = {
   align: Align | null;
@@ -681,4 +688,4 @@ export type ToastEffect = {
   readonly message: string;
 };
 export type ToastVariant = "success" | "info" | "warning" | "error";
-export type Width = "full" | "sm" | "md" | "lg";
+export type Width = "full" | "sm" | "md" | "lg" | "fill";

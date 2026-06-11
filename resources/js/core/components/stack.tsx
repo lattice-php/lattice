@@ -22,6 +22,7 @@ const stackGaps: Record<string, string> = {
 };
 
 const stackWidths: Record<string, string> = {
+  fill: "min-w-0 flex-1",
   full: "w-full",
   lg: "mx-auto w-full max-w-4xl",
   md: "mx-auto w-full max-w-2xl",
