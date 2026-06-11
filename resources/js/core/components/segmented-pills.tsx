@@ -8,6 +8,7 @@ import { cn } from "@lattice/lattice/lib/utils";
 export function SegmentedPills({
   ariaLabel,
   disabled = false,
+  name,
   onSelect,
   options,
   tabIndex,
@@ -15,6 +16,7 @@ export function SegmentedPills({
 }: {
   ariaLabel?: string;
   disabled?: boolean;
+  name?: string;
   onSelect: (value: string) => void;
   options: Option[];
   tabIndex?: number;
@@ -32,6 +34,7 @@ export function SegmentedPills({
         return (
           <button
             aria-checked={isSelected}
+            data-test={`${name ?? "segment"}-${option.value}`}
             className={cn(
               "whitespace-nowrap rounded-lt-sm px-3 py-1.5 text-sm font-medium transition-colors",
               isSelected

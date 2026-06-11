@@ -60,6 +60,7 @@ export function ColumnFilterControl({
           processing={processing}
           withSearchIcon={type === "text" || type === "number"}
           grouped
+          testId={`filter-${column.key}-value`}
           onCommit={commitPrimary}
           onClear={primary ? () => onRemove(primary.index) : undefined}
         />
@@ -69,6 +70,7 @@ export function ColumnFilterControl({
           <button
             type="button"
             aria-label={`${column.label} filters`}
+            data-test={`filter-${column.key}`}
             className="relative -ml-px inline-flex size-9 shrink-0 items-center justify-center rounded-r-lt-sm border border-lt-input disabled:opacity-50 data-[state=open]:z-10 data-[state=open]:border-lt-primary"
             disabled={processing}
           >
@@ -175,6 +177,7 @@ function FilterClauseList({
       <div className="border-t border-lt-border pt-3">
         <button
           type="button"
+          data-test={`filter-${column.key}-add`}
           className="inline-flex w-full items-center justify-center gap-2 rounded-lt-sm bg-lt-muted px-3 py-2 text-sm font-medium hover:bg-lt-muted/70 disabled:opacity-50"
           disabled={processing}
           onClick={() => setAdding(true)}
@@ -214,6 +217,7 @@ function FilterClauseRow({
         {operators.length > 1 ? (
           <select
             aria-label={`${column.label} operator`}
+            data-test={`filter-${column.key}-operator`}
             className="h-9 flex-1 rounded-lt-sm border border-lt-input bg-lt-bg px-2 text-sm font-normal"
             disabled={processing}
             value={clause.operator}
@@ -231,6 +235,7 @@ function FilterClauseRow({
         <button
           type="button"
           aria-label={`Remove ${column.label} filter`}
+          data-test={`filter-${column.key}-remove`}
           className="inline-flex size-9 items-center justify-center rounded-lt-sm border border-lt-border hover:bg-lt-muted disabled:opacity-50"
           disabled={processing}
           onClick={onRemove}

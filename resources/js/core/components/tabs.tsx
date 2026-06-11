@@ -178,6 +178,7 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
               <button
                 aria-controls={`${tab.value}-panel`}
                 aria-selected={isActive}
+                data-test={`tab-${tab.value}`}
                 className={cn(
                   "whitespace-nowrap rounded-lt-sm px-3 py-1.5 text-sm font-medium transition-colors",
                   isActive

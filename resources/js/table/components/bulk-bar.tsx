@@ -78,6 +78,7 @@ export function BulkBar({
       {canSelectAllMatching && (
         <button
           type="button"
+          data-test="bulk-select-all-matching"
           className="font-medium text-lt-primary underline underline-offset-2"
           onClick={onSelectAllMatching}
         >
@@ -89,6 +90,7 @@ export function BulkBar({
           <Button
             key={action.id}
             type="button"
+            data-test={`bulk-action-${action.id}`}
             variant={action.variant}
             disabled={http.processing}
             onClick={() => run(action)}

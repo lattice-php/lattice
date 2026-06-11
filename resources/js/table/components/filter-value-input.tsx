@@ -13,6 +13,7 @@ export function FilterValueInput({
   withSearchIcon = false,
   grouped = false,
   ariaLabel,
+  testId,
   onCommit,
   onClear,
 }: {
@@ -23,6 +24,7 @@ export function FilterValueInput({
   withSearchIcon?: boolean;
   grouped?: boolean;
   ariaLabel?: string;
+  testId?: string;
   onCommit: (value: string) => void;
   onClear?: () => void;
 }) {
@@ -38,6 +40,7 @@ export function FilterValueInput({
     return (
       <select
         aria-label={inputLabel}
+        data-test={testId}
         className={`${baseClass} ${groupedClass}`}
         disabled={processing}
         value={value}
@@ -55,6 +58,7 @@ export function FilterValueInput({
       <input
         type="date"
         aria-label={inputLabel}
+        data-test={testId}
         className={`${baseClass} ${groupedClass}`}
         disabled={processing}
         value={draft}
@@ -77,6 +81,7 @@ export function FilterValueInput({
       <input
         type={type === "number" ? "number" : "text"}
         aria-label={inputLabel}
+        data-test={testId}
         className={`${baseClass} ${groupedClass} ${withSearchIcon ? "pl-8" : ""} ${onClear ? "pr-8" : ""}`}
         disabled={processing}
         value={draft}
@@ -96,6 +101,7 @@ export function FilterValueInput({
         <button
           type="button"
           aria-label={`Clear ${label} filter`}
+          data-test={testId ? `${testId}-clear` : undefined}
           className="absolute right-1 inline-flex size-6 items-center justify-center rounded hover:bg-lt-muted disabled:opacity-50"
           disabled={processing}
           onClick={onClear}

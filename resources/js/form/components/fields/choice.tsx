@@ -29,6 +29,7 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
       <SegmentedPills
         ariaLabel={node.props.label ?? undefined}
         disabled={readonly || disabled}
+        name={name}
         onSelect={commit}
         options={options}
         value={selected}

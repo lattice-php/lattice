@@ -23,6 +23,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
   const label = node.props.label;
   const href = node.props.href ?? "";
   const currentPath = usePage().url.split("?")[0];
+  const slug = label.toLowerCase().replace(/\s+/g, "-");
 
   const content = (
     <>
@@ -44,14 +45,18 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
 
     if (collapsed) {
       return (
-        <FlyoutGroup icon={icon} label={label}>
+        <FlyoutGroup icon={icon} label={label} testId={`menu-${slug}`}>
           {children}
         </FlyoutGroup>
       );
     }
 
     return (
-      <CollapsibleItem content={content} defaultOpen={schemaContainsPath(node.schema, currentPath)}>
+      <CollapsibleItem
+        content={content}
+        defaultOpen={schemaContainsPath(node.schema, currentPath)}
+        testId={`menu-${slug}`}
+      >
         {children}
       </CollapsibleItem>
     );
@@ -64,6 +69,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
       <Link
         aria-current={active ? "page" : undefined}
         className={cn(rowClass, collapsed && "justify-center", active && "bg-lt-muted font-medium")}
+        data-test={`menu-${slug}`}
         href={href}
         method={node.props.method ?? "get"}
         title={collapsed ? label : undefined}
@@ -78,10 +84,12 @@ function CollapsibleItem({
   children,
   content,
   defaultOpen,
+  testId,
 }: {
   children: ReactNode;
   content: ReactNode;
   defaultOpen: boolean;
+  testId: string;
 }) {
   const [open, setOpen] = useState(defaultOpen);
 
@@ -90,6 +98,7 @@ function CollapsibleItem({
       <button
         aria-expanded={open}
         className={cn(rowClass, "w-full")}
+        data-test={testId}
         onClick={() => setOpen((value) => !value)}
         type="button"
       >
@@ -108,10 +117,12 @@ function FlyoutGroup({
   children,
   icon,
   label,
+  testId,
 }: {
   children: ReactNode;
   icon?: string | null;
   label: string;
+  testId: string;
 }) {
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ left: 0, top: 0 });
@@ -136,6 +147,7 @@ function FlyoutGroup({
         aria-expanded={open}
         aria-label={label}
         className={cn(rowClass, "w-full justify-center")}
+        data-test={testId}
         onClick={toggle}
         ref={triggerRef}
         title={label}
@@ -149,6 +161,7 @@ function FlyoutGroup({
               <button
                 aria-label="Close menu"
                 className="fixed inset-0 z-40 cursor-default"
+                data-test={`${testId}-close`}
                 onClick={() => setOpen(false)}
                 type="button"
               />

@@ -29,6 +29,7 @@ export function FilterStackBar({
             </span>
             <button
               type="button"
+              data-test={`filter-chip-${clause.field}-remove`}
               className="inline-flex size-5 items-center justify-center rounded text-lt-muted-fg hover:bg-lt-muted disabled:opacity-50"
               disabled={processing}
               aria-label={`Remove ${label} filter`}
