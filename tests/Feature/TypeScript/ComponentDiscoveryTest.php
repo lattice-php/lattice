@@ -6,10 +6,7 @@ use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 
 it('discovers attributed components under a path with type, flags and category', function () {
-    $discovered = (new ComponentDiscovery)->discover(
-        __DIR__.'/../../Fixtures/TypeScript',
-        'Lattice\\Lattice\\Tests\\Fixtures\\TypeScript',
-    );
+    $discovered = (new ComponentDiscovery)->discover(__DIR__.'/../../Fixtures/TypeScript');
 
     $byType = collect($discovered)->keyBy->type;
 
@@ -27,10 +24,7 @@ it('discovers attributed components under a path with type, flags and category',
 });
 
 it('excludes classes without the Component attribute from discovery', function () {
-    $discovered = (new ComponentDiscovery)->discover(
-        __DIR__.'/../../Fixtures/TypeScript',
-        'Lattice\\Lattice\\Tests\\Fixtures\\TypeScript',
-    );
+    $discovered = (new ComponentDiscovery)->discover(__DIR__.'/../../Fixtures/TypeScript');
 
     $types = collect($discovered)->pluck('type')->all();
 
@@ -41,10 +35,7 @@ it('excludes classes without the Component attribute from discovery', function (
 });
 
 it('returns an empty array when the path does not exist', function () {
-    $discovered = (new ComponentDiscovery)->discover(
-        __DIR__.'/../../Fixtures/TypeScript/does-not-exist',
-        'Lattice\\Lattice\\Tests\\Fixtures\\TypeScript',
-    );
+    $discovered = (new ComponentDiscovery)->discover(__DIR__.'/../../Fixtures/TypeScript/does-not-exist');
 
     expect($discovered)->toBe([]);
 });

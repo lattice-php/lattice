@@ -46,11 +46,10 @@ final class TypeScriptCommand extends Command
             // Support both "path => namespace" and ["path" => ..., "namespace" => ...] config forms.
             if (is_array($namespace)) {
                 $path = $namespace['path'] ?? null;
-                $namespace = $namespace['namespace'] ?? null;
             }
 
-            if (is_string($path) && is_string($namespace)) {
-                $discovered = [...$discovered, ...$discovery->discover($path, $namespace)];
+            if (is_string($path)) {
+                $discovered = [...$discovered, ...$discovery->discover($path)];
             }
         }
 

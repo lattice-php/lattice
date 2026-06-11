@@ -8,7 +8,7 @@ use Workbench\App\Providers\TypeScriptTransformerServiceProvider;
 it('covers every discovered built-in component type in exactly one ORDER list', function () {
     $packageRoot = dirname(__DIR__, 3);
 
-    $discovered = (new ComponentDiscovery)->discover($packageRoot.'/src', 'Lattice\\Lattice');
+    $discovered = (new ComponentDiscovery)->discover($packageRoot.'/src');
 
     $discoveredTypes = array_map(fn ($dc) => $dc->type, $discovered);
     $knownTypes = TypeScriptTransformerServiceProvider::knownOrderedTypes();

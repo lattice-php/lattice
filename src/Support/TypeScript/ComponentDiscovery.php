@@ -9,39 +9,30 @@ use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Tables\Columns\Column;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use ReflectionClass;
-use SplFileInfo;
+use Spatie\StructureDiscoverer\Discover;
 
 final class ComponentDiscovery
 {
     /**
      * @return list<DiscoveredComponent>
      */
-    public function discover(string $path, string $namespace): array
+    public function discover(string $path): array
     {
-        $basePath = realpath($path);
-
-        if ($basePath === false || ! is_dir($basePath)) {
+        if (! is_dir($path)) {
             return [];
         }
 
         $discovered = [];
 
-        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($basePath));
+        // Construct Discover directly instead of Discover::in(): the container binding
+        // injects a cache driver, and the cache entry is keyed only by directory. The
+        // Spatie typescript-transformer discovers the same directory in the same process,
+        // so a cached call here poisons its results during `lattice:typescript`.
+        /** @var list<class-string> $classes */
+        $classes = (new Discover(directories: [$path]))->classes()->get();
 
-        foreach ($files as $file) {
-            if (! $file instanceof SplFileInfo || $file->getExtension() !== 'php') {
-                continue;
-            }
-
-            $class = $this->classForFile($file, $basePath, $namespace);
-
-            if (! class_exists($class)) {
-                continue;
-            }
-
+        foreach ($classes as $class) {
             $reflection = new ReflectionClass($class);
 
             if ($reflection->isAbstract()) {
@@ -54,11 +45,9 @@ final class ComponentDiscovery
                 continue;
             }
 
-            $attribute = $attributes[0]->newInstance();
-
             $discovered[] = new DiscoveredComponent(
                 class: $class,
-                type: $attribute->type,
+                type: $attributes[0]->newInstance()->type,
                 container: is_subclass_of($class, ContainerComponent::class),
                 interactive: in_array(IsInteractive::class, class_uses_recursive($class), true),
                 category: $this->categoryFor($class),
@@ -79,14 +68,5 @@ final class ComponentDiscovery
             is_subclass_of($class, Column::class) => 'column',
             default => 'component',
         };
-    }
-
-    private function classForFile(SplFileInfo $file, string $basePath, string $namespace): string
-    {
-        $relativePath = substr($file->getPathname(), strlen($basePath) + 1);
-        $relativeClass = substr($relativePath, 0, -4);
-        $relativeClass = str_replace(DIRECTORY_SEPARATOR, '\\', $relativeClass);
-
-        return trim($namespace, '\\').'\\'.$relativeClass;
     }
 }

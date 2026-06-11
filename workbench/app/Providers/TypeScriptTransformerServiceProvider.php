@@ -93,7 +93,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
     {
         $packageRoot = dirname(__DIR__, 3);
 
-        $discovered = (new ComponentDiscovery)->discover($packageRoot.'/src', 'Lattice\\Lattice');
+        $discovered = (new ComponentDiscovery)->discover($packageRoot.'/src');
 
         $formFields = $this->buildFormFields($discovered);
         $coreComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Core\\Components\\', self::CORE_ORDER);
