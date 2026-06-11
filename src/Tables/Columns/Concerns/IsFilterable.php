@@ -13,10 +13,19 @@ trait IsFilterable
 
     protected ?FilterOperator $defaultOperator = null;
 
-    public function filterable(?FilterOperator $default = null): static
+    /**
+     * @var array<int, FilterOperator>|null
+     */
+    protected ?array $operators = null;
+
+    /**
+     * @param  array<int, FilterOperator>  $operators  narrows the offered operators; defaults to the value type's full set
+     */
+    public function filterable(?FilterOperator $default = null, array $operators = []): static
     {
         $this->filterable = true;
         $this->defaultOperator = $default;
+        $this->operators = $operators === [] ? null : array_values($operators);
 
         return $this;
     }
@@ -34,9 +43,9 @@ trait IsFilterable
     /**
      * @return array<int, FilterOperator>
      */
-    public function filterOperators(): array
+    public function availableOperators(): array
     {
-        return $this->filterType()->operators();
+        return $this->operators ?? $this->filterType()->operators();
     }
 
     public function defaultFilterOperator(): FilterOperator

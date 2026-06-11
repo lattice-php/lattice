@@ -46,7 +46,7 @@ abstract class Column implements JsonSerializable
         return new ColumnFilter(
             enabled: true,
             type: $this->filterType(),
-            operators: $this->filterOperators(),
+            operators: $this->availableOperators(),
             defaultOperator: $this->defaultFilterOperator(),
         );
     }

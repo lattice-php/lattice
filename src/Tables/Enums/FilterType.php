@@ -15,14 +15,46 @@ enum FilterType: string
     case Boolean = 'boolean';
 
     /**
+     * The operators offered by default for this value type. A column may narrow
+     * this set via Filterable::availableOperators().
+     *
      * @return array<int, FilterOperator>
      */
     public function operators(): array
     {
-        return array_values(array_filter(
-            FilterOperator::cases(),
-            fn (FilterOperator $operator): bool => in_array($this, $operator->appliesTo(), true),
-        ));
+        return match ($this) {
+            self::Text => [
+                FilterOperator::Contains,
+                FilterOperator::StartsWith,
+                FilterOperator::EndsWith,
+                FilterOperator::Equals,
+                FilterOperator::NotEquals,
+                FilterOperator::Empty,
+                FilterOperator::Filled,
+            ],
+            self::Number => [
+                FilterOperator::Equals,
+                FilterOperator::NotEquals,
+                FilterOperator::GreaterThan,
+                FilterOperator::GreaterThanOrEqual,
+                FilterOperator::LessThan,
+                FilterOperator::LessThanOrEqual,
+                FilterOperator::Empty,
+                FilterOperator::Filled,
+            ],
+            self::Date => [
+                FilterOperator::Equals,
+                FilterOperator::Before,
+                FilterOperator::After,
+                FilterOperator::Empty,
+                FilterOperator::Filled,
+            ],
+            self::Boolean => [
+                FilterOperator::Equals,
+                FilterOperator::Empty,
+                FilterOperator::Filled,
+            ],
+        };
     }
 
     public function defaultOperator(): FilterOperator

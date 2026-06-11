@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
+use Lattice\Lattice\Tables\Enums\FilterOperator;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableRegistry;
 use Lattice\Lattice\Tables\TableResult;
@@ -42,6 +43,35 @@ it('serializes the table component wire shape', function (): void {
         'perPage' => 25,
     ]);
     expect($payload['props']['bulkActions'])->toBe([]);
+});
+
+it('defaults a column to its value type operator set', function (): void {
+    $column = TextColumn::make('name')->filterable();
+
+    expect($column->availableOperators())
+        ->toBe([
+            FilterOperator::Contains,
+            FilterOperator::StartsWith,
+            FilterOperator::EndsWith,
+            FilterOperator::Equals,
+            FilterOperator::NotEquals,
+            FilterOperator::Empty,
+            FilterOperator::Filled,
+        ]);
+});
+
+it('narrows the offered operators when a column restricts them', function (): void {
+    $column = TextColumn::make('name')->filterable(
+        FilterOperator::Equals,
+        [FilterOperator::Equals, FilterOperator::Contains],
+    );
+
+    expect($column->availableOperators())->toBe([FilterOperator::Equals, FilterOperator::Contains]);
+
+    $filter = json_decode(json_encode($column), true)['filter'];
+
+    expect($filter['operators'])->toBe(['eq', 'contains'])
+        ->and($filter['defaultOperator'])->toBe('eq');
 });
 
 it('keeps empty data present on a lazy table (wire trap)', function (): void {

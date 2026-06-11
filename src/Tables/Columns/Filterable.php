@@ -16,7 +16,7 @@ interface Filterable
     /**
      * @return array<int, FilterOperator>
      */
-    public function filterOperators(): array;
+    public function availableOperators(): array;
 
     public function defaultFilterOperator(): FilterOperator;
 }
