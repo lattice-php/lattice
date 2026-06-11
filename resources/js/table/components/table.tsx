@@ -113,6 +113,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                 <input
                   type="checkbox"
                   aria-label="Select all rows"
+                  data-test="select-all"
                   checked={selection.allSelected}
                   onChange={selection.toggleAll}
                 />
@@ -182,6 +183,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                       <input
                         type="checkbox"
                         aria-label={`Select row ${key}`}
+                        data-test={`select-row-${key}`}
                         checked={selection.isSelected(key)}
                         onChange={() => selection.toggle(key)}
                       />

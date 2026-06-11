@@ -17,7 +17,6 @@ it('requires the company field for business on submit', function (): void {
         ->click('Business')
         ->assertSee('Company')
         ->click('Save')
-        ->wait(1)
         ->assertSee('The Company field is required.');
 });
 
@@ -26,7 +25,6 @@ it('computes the total from qty and unit price via a round-trip', function (): v
         ->assertSee('Total')
         ->fill('qty', '3')
         ->fill('unit_price', '4')
-        ->wait(1)
         ->assertValue('total', '12');
 });
 

@@ -1,0 +1,101 @@
+<?php
+
+declare(strict_types=1);
+
+use Workbench\App\Models\Product;
+
+it('renders the custom status-badge column cell', function (): void {
+    Product::factory()->create(['name' => 'Badge Product', 'sku' => 'BADGE-1', 'status' => 'active']);
+
+    visit('/products')
+        ->assertSee('Badge Product')
+        ->assertPresent('[data-testid="status-badge"]')
+        ->assertSee('active')
+        ->assertNoSmoke();
+});
+
+it('archives a product via the row action with confirmation', function (): void {
+    $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
+
+    visit('/products')
+        ->assertSee('Desk Lamp')
+        ->click('@action-archive')
+        ->assertSee('Archive product?')
+        ->click('@confirm-accept')
+        ->assertSee('archived')
+        ->assertNoSmoke();
+
+    expect($product->fresh()->status)->toBe('archived');
+});
+
+it('cancels the archive confirmation without changing the product', function (): void {
+    $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
+
+    visit('/products')
+        ->click('@action-archive')
+        ->assertSee('Archive product?')
+        ->click('@confirm-cancel')
+        ->assertNoSmoke();
+
+    expect($product->fresh()->status)->toBe('active');
+});
+
+it('rejects a product through a modal form', function (): void {
+    $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
+
+    visit('/products')
+        ->click('@action-reject')
+        ->assertSee('Reject product?')
+        ->click('@action-form-submit')
+        ->assertSee('The Reason field is required.')
+        ->fill('Reason', 'Counterfeit listing')
+        ->click('@action-form-submit')
+        ->assertNoSmoke();
+
+    expect($product->fresh()->status)->toBe('archived');
+});
+
+it('archives selected products in bulk', function (): void {
+    Product::factory()->count(3)->create(['status' => 'active']);
+
+    visit('/products')
+        ->click('@select-all')
+        ->click('@bulk-action-archive-selected')
+        ->assertNoSmoke();
+
+    expect(Product::query()->where('status', 'archived')->count())->toBe(3);
+});
+
+it('edits a product in a prefilled modal form', function (): void {
+    Product::factory()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'price' => '49.99',
+        'status' => 'active',
+    ]);
+
+    visit('/products')
+        ->assertSee('Desk Lamp')
+        ->click('@action-quick-edit')
+        ->assertSee('Edit product')
+        ->assertValue('#name', 'Desk Lamp')
+        ->fill('#name', 'Renamed Lamp')
+        ->click('@action-form-submit')
+        ->assertNoSmoke();
+
+    expect(Product::query()->where('sku', 'LAMP-001')->value('name'))->toBe('Renamed Lamp');
+});
+
+it('searches products inside the reject modal form', function (): void {
+    Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-001', 'status' => 'active']);
+    Product::factory()->create(['name' => 'Walnut Desk', 'sku' => 'DESK-001', 'status' => 'active']);
+
+    visit('/products')
+        ->assertSee('Desk Lamp')
+        ->click('@action-reject')
+        ->assertSee('Reject product?')
+        ->click('Search products…')
+        ->fill('input[aria-label="Search options"]', 'Walnut')
+        ->assertSee('Walnut Desk')
+        ->assertNoSmoke();
+});

@@ -259,11 +259,17 @@ function ActionFormBody({
         </ResolvedNodesProvider>
 
         <div className="flex justify-end gap-3">
-          <Button disabled={processing} onClick={onClose} type="button" variant="ghost">
+          <Button
+            data-test="action-form-cancel"
+            disabled={processing}
+            onClick={onClose}
+            type="button"
+            variant="ghost"
+          >
             {cancelLabel}
           </Button>
 
-          <Button disabled={processing} type="submit">
+          <Button data-test="action-form-submit" disabled={processing} type="submit">
             {processing && <Spinner />}
             {submitLabel}
           </Button>

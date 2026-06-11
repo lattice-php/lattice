@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 use Workbench\App\Models\Product;
 
-it('shows product validation messages in the form flow', function (): void {
+it('shows precognitive validation messages in the form', function (): void {
     visit('/products/create')
         ->assertSee('Create Product')
         ->fill('Price', 'invalid')
-        ->wait(1)
-        ->assertNoSmoke()
-        ->assertSee('The Price field must be a number.');
+        ->assertSee('The Price field must be a number.')
+        ->assertNoSmoke();
 
     expect(Product::query()->count())->toBe(0);
 });
@@ -20,12 +19,9 @@ it('disables the submit button while precognition errors are active', function (
         ->assertSee('Create Product')
         ->assertButtonEnabled('Create product')
         ->fill('Price', 'invalid')
-        ->wait(1)
-        ->assertButtonDisabled('Create product')
         ->assertSee('Fix these fields to continue:')
-        ->assertSee('The Price field must be a number.')
+        ->assertButtonDisabled('Create product')
         ->fill('Price', '49.99')
-        ->wait(1)
         ->assertButtonEnabled('Create product');
 });
 
@@ -33,7 +29,6 @@ it('surfaces server validation errors after submitting an empty form', function 
     visit('/products/create')
         ->assertSee('Create Product')
         ->click('Create product')
-        ->wait(1)
         ->assertSee('The Name field is required.')
         ->assertButtonDisabled('Create product');
 
@@ -81,68 +76,7 @@ it('attaches related products via search when creating', function (): void {
     expect($product->relatedProducts->pluck('name')->all())->toBe(['Walnut Desk']);
 });
 
-it('collects a reason in a modal form before rejecting a product', function (): void {
-    Product::factory()->create([
-        'name' => 'Desk Lamp',
-        'sku' => 'LAMP-001',
-        'price' => '49.99',
-        'status' => 'active',
-    ]);
-
-    visit('/products')
-        ->assertSee('Desk Lamp')
-        ->click('Reject')
-        ->assertSee('Reject product?')
-        ->click('Submit rejection')
-        ->wait(1)
-        ->assertSee('The Reason field is required.')
-        ->fill('Reason', 'Counterfeit listing')
-        ->wait(1)
-        ->click('Submit rejection')
-        ->wait(1)
-        ->assertNoSmoke();
-
-    expect(Product::query()->where('sku', 'LAMP-001')->value('status'))->toBe('archived');
-});
-
-it('edits a product in a prefilled modal form', function (): void {
-    Product::factory()->create([
-        'name' => 'Desk Lamp',
-        'sku' => 'LAMP-001',
-        'price' => '49.99',
-        'status' => 'active',
-    ]);
-
-    visit('/products')
-        ->assertSee('Desk Lamp')
-        ->click('Quick edit')
-        ->assertSee('Edit product')
-        ->wait(1)
-        ->assertValue('#name', 'Desk Lamp')
-        ->fill('#name', 'Renamed Lamp')
-        ->wait(1)
-        ->click('Save changes')
-        ->wait(1)
-        ->assertNoSmoke();
-
-    expect(Product::query()->where('sku', 'LAMP-001')->value('name'))->toBe('Renamed Lamp');
-});
-
-it('searches products inside an action form modal', function (): void {
-    Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-001', 'status' => 'active']);
-    Product::factory()->create(['name' => 'Walnut Desk', 'sku' => 'DESK-001', 'status' => 'active']);
-
-    visit('/products')
-        ->assertSee('Desk Lamp')
-        ->click('Reject')
-        ->assertSee('Reject product?')
-        ->click('Search products…')
-        ->fill('input[aria-label="Search options"]', 'Walnut')
-        ->assertSee('Walnut Desk')
-        ->assertNoSmoke();
-});
-
-it('creates and edits products through the form flow', function (): void {
+it('creates and edits a product through the form flow', function (): void {
     visit('/products')
         ->assertSee('Products')
         ->click('Create product')
@@ -158,7 +92,6 @@ it('creates and edits products through the form flow', function (): void {
         ->assertSee('Edit Product')
         ->assertValue('Name', 'Desk Lamp')
         ->fill('Name', 'Updated Lamp')
-        ->wait(1)
         ->assertButtonEnabled('Save product')
         ->click('Save product')
         ->assertSee('Products')
