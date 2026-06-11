@@ -6,11 +6,9 @@ namespace Lattice\Lattice\Core\Services;
 
 use Lattice\Lattice\Core\Contracts\DiscoversDefinitions;
 use Lattice\Lattice\Core\DefinitionRegistry;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use ReflectionClass;
 use Spatie\Attributes\Attributes;
-use SplFileInfo;
+use Spatie\StructureDiscoverer\Discover;
 
 final class DefinitionDiscovery implements DiscoversDefinitions
 {
@@ -26,25 +24,17 @@ final class DefinitionDiscovery implements DiscoversDefinitions
             $definitions[$registry->group()] = [];
         }
 
-        $basePath = realpath($path);
-
-        if ($basePath === false || ! is_dir($basePath)) {
+        if (! is_dir($path)) {
             return $definitions;
         }
 
-        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($basePath));
+        // Construct Discover directly instead of Discover::in(): the container binding
+        // injects a cache driver whose entry is keyed only by directory, which collides
+        // with the typescript-transformer discovering the same directory in-process.
+        /** @var list<class-string> $classes */
+        $classes = (new Discover(directories: [$path]))->classes()->get();
 
-        foreach ($files as $file) {
-            if (! $file instanceof SplFileInfo || $file->getExtension() !== 'php') {
-                continue;
-            }
-
-            $class = $this->classForFile($file, $basePath, $namespace);
-
-            if (! class_exists($class)) {
-                continue;
-            }
-
+        foreach ($classes as $class) {
             if ((new ReflectionClass($class))->isAbstract()) {
                 continue;
             }
@@ -57,14 +47,5 @@ final class DefinitionDiscovery implements DiscoversDefinitions
         }
 
         return $definitions;
-    }
-
-    private function classForFile(SplFileInfo $file, string $basePath, string $namespace): string
-    {
-        $relativePath = substr($file->getPathname(), strlen($basePath) + 1);
-        $relativeClass = substr($relativePath, 0, -4);
-        $relativeClass = str_replace(DIRECTORY_SEPARATOR, '\\', $relativeClass);
-
-        return trim($namespace, '\\').'\\'.$relativeClass;
     }
 }
