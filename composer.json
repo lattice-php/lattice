@@ -45,6 +45,9 @@
         "rector/rector": "^2.4",
         "spatie/laravel-typescript-transformer": "^3.2"
     },
+    "suggest": {
+        "spatie/typescript-transformer": "Required to run `php artisan lattice:typescript` and generate TypeScript types for your custom components"
+    },
     "autoload": {
         "psr-4": {
             "Lattice\\Lattice\\": "src/"
@@ -62,7 +65,7 @@
         "test:lint": "./vendor/bin/pint --test",
         "rector": "./vendor/bin/rector process",
         "rector:test": "./vendor/bin/rector process --dry-run",
-        "types": "@php vendor/bin/testbench typescript:transform",
+        "types": "@php vendor/bin/testbench lattice:internal-types",
         "fix": [
             "@rector",
             "@lint",

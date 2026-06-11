@@ -17,9 +17,12 @@ final class ComponentTransformer extends ClassTransformer
 {
     /**
      * @param  array<int, class-string>  $allowed
+     * @param  array<int, class-string>  $ownPropertiesOnly  classes that emit only their own declared properties (e.g. columns, to drop the inherited `key`)
      */
-    public function __construct(private readonly array $allowed)
-    {
+    public function __construct(
+        private readonly array $allowed,
+        private readonly array $ownPropertiesOnly = [],
+    ) {
         parent::__construct();
     }
 
@@ -38,6 +41,13 @@ final class ComponentTransformer extends ClassTransformer
     protected function getProperties(PhpClassNode $phpClassNode): array
     {
         $properties = parent::getProperties($phpClassNode);
+
+        if (in_array($phpClassNode->getName(), $this->ownPropertiesOnly, true)) {
+            $properties = array_filter(
+                $properties,
+                fn (PhpPropertyNode $p): bool => $p->getDeclaringClass()->getName() === $phpClassNode->getName(),
+            );
+        }
 
         usort(
             $properties,

@@ -4,7 +4,6 @@ providers:
   - Lattice\Lattice\LatticeServiceProvider
   - Inertia\ServiceProvider
   - Workbench\App\Providers\WorkbenchServiceProvider
-  - Workbench\App\Providers\TypeScriptTransformerServiceProvider
 
 workbench:
   start: '/'

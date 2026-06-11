@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Workbench\App\Providers;
+namespace Workbench\App\Console\Commands;
 
+use Illuminate\Console\Command;
 use Lattice\Lattice\Actions\Contracts\Effect;
 use Lattice\Lattice\Actions\Enums\EffectType;
 use Lattice\Lattice\Core\Enums\Align;
@@ -24,6 +25,7 @@ use Lattice\Lattice\Support\TypeScript\EnumTransformer;
 use Lattice\Lattice\Support\TypeScript\HttpMethodTransformer;
 use Lattice\Lattice\Support\TypeScript\NodesProvider;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
+use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\ValueObjectTransformer;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Columns\ColumnFilter;
@@ -33,17 +35,20 @@ use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\Enums\SortDirection;
 use Lattice\Lattice\Tables\FilterClause;
 use Lattice\Lattice\Tables\TableSort;
-use Spatie\LaravelTypeScriptTransformer\TypeScriptTransformerApplicationServiceProvider;
-use Spatie\TypeScriptTransformer\TypeScriptTransformerConfigFactory;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 
-final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerApplicationServiceProvider
+final class GenerateInternalTypesCommand extends Command
 {
-    protected function configure(TypeScriptTransformerConfigFactory $config): void
-    {
-        $packageRoot = dirname(__DIR__, 3);
+    protected $signature = 'lattice:internal-types';
 
-        $discovered = (new ComponentDiscovery)->discover($packageRoot.'/src');
+    protected $description = "Regenerate Lattice's built-in TypeScript types (resources/js/types/generated.ts)";
+
+    public function handle(TypeScriptGenerator $generator): int
+    {
+        $packageRoot = dirname(__DIR__, 4);
+        $src = $packageRoot.'/src';
+
+        $discovered = (new ComponentDiscovery)->discover($src);
 
         $formFields = $this->buildFormFields($discovered);
         $coreComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Core\\Components\\');
@@ -52,61 +57,67 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
         $tableComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Tables\\Components\\');
         $layoutComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Layouts\\Components\\');
 
-        $config
-            ->transformer(new HttpMethodTransformer)
-            ->transformer(new EnumTransformer([
-                Align::class,
-                ButtonVariant::class,
-                Gap::class,
-                Width::class,
-                PageLayout::class,
-                PageContainer::class,
-                Orientation::class,
-                ToastVariant::class,
-                PaginationType::class,
-                ColumnType::class,
-                FilterType::class,
-                Op::class,
-                SortDirection::class,
-                EffectType::class,
-            ]))
-            ->transformer(new ValueObjectTransformer([
-                ColumnData::class,
-                ColumnFilter::class,
-                FilterClause::class,
-                TableSort::class,
-            ]))
-            ->transformer(new ComponentTransformer([
-                ...array_keys($formFields),
-                Form::class,
-                ...array_keys($coreComponents),
-                ...array_keys($actionComponents),
-                ...array_keys($fragmentComponents),
-                ...array_keys($tableComponents),
-                ...array_keys($layoutComponents),
-            ]))
-            ->provider(new NodesProvider(
-                $formFields,
-                Form::class,
-                $coreComponents,
-                $actionComponents,
-                $fragmentComponents,
-                $tableComponents,
-                $layoutComponents,
-                'form',
-                Effect::class,
-                TypeScriptEffectType::build(),
-            ))
-            ->transformDirectories($packageRoot.'/src')
-            ->outputDirectory($packageRoot.'/resources/js/types')
-            ->writer(new FlatModuleWriter('generated.ts'))
-            ->formatter(new OxfmtFormatter);
+        $generator->generate(
+            [$src],
+            [
+                new HttpMethodTransformer,
+                new EnumTransformer([
+                    Align::class,
+                    ButtonVariant::class,
+                    Gap::class,
+                    Width::class,
+                    PageLayout::class,
+                    PageContainer::class,
+                    Orientation::class,
+                    ToastVariant::class,
+                    PaginationType::class,
+                    ColumnType::class,
+                    FilterType::class,
+                    Op::class,
+                    SortDirection::class,
+                    EffectType::class,
+                ]),
+                new ValueObjectTransformer([
+                    ColumnData::class,
+                    ColumnFilter::class,
+                    FilterClause::class,
+                    TableSort::class,
+                ]),
+                new ComponentTransformer([
+                    ...array_keys($formFields),
+                    Form::class,
+                    ...array_keys($coreComponents),
+                    ...array_keys($actionComponents),
+                    ...array_keys($fragmentComponents),
+                    ...array_keys($tableComponents),
+                    ...array_keys($layoutComponents),
+                ]),
+            ],
+            [
+                new NodesProvider(
+                    $formFields,
+                    Form::class,
+                    $coreComponents,
+                    $actionComponents,
+                    $fragmentComponents,
+                    $tableComponents,
+                    $layoutComponents,
+                    'form',
+                    Effect::class,
+                    TypeScriptEffectType::build(),
+                ),
+            ],
+            new FlatModuleWriter('generated.ts'),
+            $packageRoot.'/resources/js/types',
+            new OxfmtFormatter,
+        );
+
+        $this->components->info('Regenerated built-in TypeScript types.');
+
+        return self::SUCCESS;
     }
 
     /**
-     * Build the form-fields map (class => type) from discovered components
-     * in the Forms\Components namespace, excluding Form itself.
-     *
      * @param  list<DiscoveredComponent>  $discovered
      * @return array<class-string, string>
      */
@@ -130,9 +141,6 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
     }
 
     /**
-     * Build a component-spec map (class => ['type' => ..., ...]) for a namespace bucket,
-     * sorted by wire type so the generated union output is deterministic.
-     *
      * @param  list<DiscoveredComponent>  $discovered
      * @return array<class-string, array{type: string, container?: bool, interactive?: bool}>
      */

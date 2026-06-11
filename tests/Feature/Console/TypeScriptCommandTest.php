@@ -25,10 +25,9 @@ it('writes an augmentation file for app components, not built-ins', function () 
         ->toContain('interface ComponentProps')
         ->toContain('"sample.field"')
         ->toContain('"sample.widget"')
-        ->toContain('name')
         ->toContain('"sample.field": {')
-        ->toContain('name: string;')
-        ->toContain('label: string | null;');
+        ->toContain('name: string')
+        ->toContain('label: string | null');
 
     expect(is_string($contents) && str_contains($contents, '"badge"'))->toBeFalse();
 

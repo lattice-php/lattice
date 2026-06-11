@@ -9,8 +9,6 @@ use Lattice\Lattice\LatticeServiceProvider;
 use Orchestra\Testbench\Concerns\WithLaravelMigrations;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use Spatie\LaravelTypeScriptTransformer\TypeScriptTransformerServiceProvider as SpatieTypeScriptTransformerServiceProvider;
-use Workbench\App\Providers\TypeScriptTransformerServiceProvider;
 use Workbench\App\Providers\WorkbenchServiceProvider;
 
 abstract class TestCase extends BaseTestCase
@@ -51,8 +49,6 @@ abstract class TestCase extends BaseTestCase
             InertiaServiceProvider::class,
             LatticeServiceProvider::class,
             WorkbenchServiceProvider::class,
-            SpatieTypeScriptTransformerServiceProvider::class,
-            TypeScriptTransformerServiceProvider::class,
         ];
     }
 

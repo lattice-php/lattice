@@ -3,21 +3,10 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\File;
-use Lattice\Lattice\Support\TypeScript\PropsTypeGenerator;
-use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleColumn;
 
 use function Pest\Laravel\artisan;
 
-it('generates a TS type for own public properties only, excluding inherited ones', function () {
-    $generator = new PropsTypeGenerator;
-
-    $type = $generator->forClass(SampleColumn::class, true);
-
-    expect($type)->toContain('max')->toContain('number');
-    expect(str_contains($type, 'key'))->toBeFalse();
-});
-
-it('writes a ColumnProps augmentation for column-category components', function () {
+it('writes a ColumnProps augmentation with own column properties only', function () {
     $output = base_path('resources/js/lattice/generated-column.d.ts');
 
     config()->set('lattice.typescript.output', $output);
@@ -28,17 +17,18 @@ it('writes a ColumnProps augmentation for column-category components', function 
 
     artisan('lattice:typescript')->assertSuccessful();
 
-    $contents = file_get_contents($output);
+    $contents = (string) file_get_contents($output);
 
     expect($contents)
-        ->toBeString()
         ->toContain('declare module "@lattice-php/lattice"')
         ->toContain('interface ComponentProps')
         ->toContain('"sample.field"')
         ->toContain('"sample.widget"')
         ->toContain('interface ColumnProps')
         ->toContain('"column.rating"')
-        ->toContain('max: number;');
+        ->toContain('max: number');
+
+    expect(str_contains($contents, 'key:'))->toBeFalse();
 
     File::delete($output);
 });

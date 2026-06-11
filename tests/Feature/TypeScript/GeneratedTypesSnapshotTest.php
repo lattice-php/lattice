@@ -11,7 +11,7 @@ it('keeps the committed generated.ts in sync with the transformer', function () 
 
     $before = file_get_contents($path);
 
-    artisan('typescript:transform')->assertSuccessful();
+    artisan('lattice:internal-types')->assertSuccessful();
 
     $after = file_get_contents($path);
 
