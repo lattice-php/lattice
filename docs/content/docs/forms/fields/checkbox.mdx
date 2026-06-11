@@ -1,0 +1,31 @@
+---
+title: Checkbox
+description: A single on/off toggle for boolean input.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+The checkbox captures a single boolean. The label sits next to the box and describes what checking it
+means. Create one with `Checkbox::make()`.
+
+<ComponentExample
+  php={`Checkbox::make('newsletter', 'Subscribe to the newsletter')`}
+  fixture="checkbox.basic"
+  values={{ newsletter: false }}
+/>
+
+## Requiring consent
+
+A checkbox is often used for a terms-of-service agreement that must be ticked. Use Laravel's
+`accepted` rule rather than `required`, which only checks that the field is present:
+
+```php
+Checkbox::make('terms', 'I accept the terms and conditions')
+    ->rules(['accepted']);
+```
+
+## Common options
+
+`Checkbox` shares label, default value, required, disabled, read-only, and visibility options with
+every field — see [Fields](/forms/fields/overview/). For validation and conditional behavior, see
+[Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).

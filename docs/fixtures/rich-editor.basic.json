@@ -1,0 +1,18 @@
+[
+    {
+        "props": {
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
+            "label": "Article",
+            "name": "article",
+            "placeholder": "Write your article\u2026",
+            "readonly": null,
+            "required": null,
+            "value": null
+        },
+        "type": "form.rich-editor"
+    }
+]

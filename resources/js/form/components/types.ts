@@ -13,7 +13,6 @@ export type {
   PasswordInput,
   RichEditor,
   Select,
-  SubmitButton,
   Textarea,
   TextInput,
 } from "@lattice/lattice/types/generated";

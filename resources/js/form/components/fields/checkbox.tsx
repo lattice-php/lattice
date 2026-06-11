@@ -25,6 +25,7 @@ export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) 
   return (
     <div className="flex items-center space-x-3">
       <Checkbox
+        autoFocus={node.props.autoFocus ?? undefined}
         checked={checked}
         disabled={readonly || disabled}
         id={name}

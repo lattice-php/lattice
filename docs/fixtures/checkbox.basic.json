@@ -1,0 +1,19 @@
+[
+    {
+        "props": {
+            "autoFocus": null,
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
+            "label": "Subscribe to the newsletter",
+            "name": "newsletter",
+            "readonly": null,
+            "required": null,
+            "tabIndex": null,
+            "value": null
+        },
+        "type": "form.checkbox"
+    }
+]

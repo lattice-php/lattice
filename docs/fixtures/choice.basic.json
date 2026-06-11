@@ -1,0 +1,33 @@
+[
+    {
+        "props": {
+            "autoFocus": null,
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
+            "label": "Plan",
+            "name": "plan",
+            "options": [
+                {
+                    "label": "Free",
+                    "value": "free"
+                },
+                {
+                    "label": "Pro",
+                    "value": "pro"
+                },
+                {
+                    "label": "Enterprise",
+                    "value": "enterprise"
+                }
+            ],
+            "readonly": null,
+            "required": null,
+            "tabIndex": null,
+            "value": null
+        },
+        "type": "form.choice"
+    }
+]

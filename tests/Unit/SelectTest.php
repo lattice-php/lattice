@@ -67,3 +67,39 @@ it('returns no options when the field is not searchable', function (): void {
 
     expect($field->resolveSearch('x', FormData::make([]), Request::create('/')))->toBe([]);
 });
+
+it('serializes the shared focus options', function (): void {
+    $node = wire(Select::make('country', 'Country')->autoFocus()->tabIndex(1));
+
+    expect($node['props'])->toMatchArray(['autoFocus' => true, 'tabIndex' => 1]);
+});
+
+describe('docs fixtures', function (): void {
+    it('dumps the select examples', function (): void {
+        dumpFixture('select.basic', [
+            Select::make('country', 'Country')
+                ->placeholder('Pick a country')
+                ->options([
+                    Select::option('Germany', 'de'),
+                    Select::option('France', 'fr'),
+                    Select::option('Spain', 'es'),
+                    Select::option('Italy', 'it'),
+                ]),
+        ]);
+
+        dumpFixture('select.multiple', [
+            Select::make('languages', 'Languages')
+                ->multiple()
+                ->placeholder('Choose languages')
+                ->options([
+                    Select::option('PHP', 'php'),
+                    Select::option('JavaScript', 'js'),
+                    Select::option('Go', 'go'),
+                    Select::option('Rust', 'rust'),
+                ]),
+        ]);
+
+        expect('docs/fixtures/select.basic.json')->toBeReadableFile()
+            ->and('docs/fixtures/select.multiple.json')->toBeReadableFile();
+    });
+});

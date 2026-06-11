@@ -1,0 +1,25 @@
+---
+title: Hidden input
+description: A field that carries a value with the form without rendering a visible control.
+---
+
+The hidden input submits a value with the form without showing anything to the user. Use it to carry
+a fixed value — a source tag, a tenant id, a redirect target — through the request. Create one with
+`HiddenInput::make()` and set the value with `->value()`.
+
+```php
+HiddenInput::make('source')->value('marketing-site');
+```
+
+Because it renders no control, a hidden input has no live preview. It still serializes into the form
+schema and submits like any other field.
+
+:::caution
+A hidden input is part of the request payload, so a user can read and change its value. Never trust
+it for authorization or anything security-sensitive — validate it on the server like any other input.
+:::
+
+## Common options
+
+`HiddenInput` shares the base field options — see [Fields](/forms/fields/overview/). It is most
+often paired with `->value()`. For validation, see [Validation](/forms/validation/).
