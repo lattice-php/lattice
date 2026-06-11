@@ -15,6 +15,7 @@ use Laravel\Roster\Roster;
 use Lattice\Lattice\Facades\Lattice;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
+use Workbench\App\Actions\EditProductAction;
 use Workbench\App\Actions\RejectProductAction;
 use Workbench\App\Actions\RejectSelectedProductsAction;
 use Workbench\App\Console\Commands\GenerateInternalTypesCommand;
@@ -81,6 +82,7 @@ class WorkbenchServiceProvider extends ServiceProvider
 
         Lattice::actions([
             ArchiveProductAction::class,
+            EditProductAction::class,
             RejectProductAction::class,
         ]);
 

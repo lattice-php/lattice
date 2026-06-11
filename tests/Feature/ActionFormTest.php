@@ -6,15 +6,70 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Lattice\Actions\FormActionDefinition;
 use Lattice\Lattice\Attributes\Action;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 
 use function Pest\Laravel\postJson;
+
+it('marks a form-action component as lazy without inlining the schema', function (): void {
+    Lattice::actions([EditActionFixture::class]);
+
+    $payload = wire(ActionComponent::use(EditActionFixture::class));
+
+    expect($payload['props']['lazyForm'])->toBeTrue()
+        ->and($payload['props']['form'])->toBeNull();
+});
+
+it('returns a prefilled schema for a lazy form action', function (): void {
+    Lattice::actions([EditActionFixture::class]);
+    $ref = componentRef(wire(ActionComponent::use(EditActionFixture::class)->context(['current_title' => 'Existing'])));
+
+    postJson('/lattice/actions/test.edit', ['_form' => true], latticeHeaders($ref))
+        ->assertOk()
+        ->assertJsonPath('type', 'form')
+        ->assertJsonPath('props.state.title', 'Existing');
+});
+
+it('validates submitted values against a lazy form schema', function (): void {
+    Lattice::actions([EditActionFixture::class]);
+    $ref = componentRef(wire(ActionComponent::use(EditActionFixture::class)->context(['current_title' => 'Existing'])));
+
+    postJson('/lattice/actions/test.edit', ['title' => ''], latticeHeaders($ref))
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('title');
+
+    postJson('/lattice/actions/test.edit', ['title' => 'Renamed'], latticeHeaders($ref))
+        ->assertOk()
+        ->assertJsonPath('data.title', 'Renamed');
+});
+
+#[Action('test.edit')]
+class EditActionFixture extends FormActionDefinition
+{
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Edit')->method(HttpMethod::Patch);
+    }
+
+    public function formSchema(FormComponent $form, Request $request): FormComponent
+    {
+        return $form
+            ->schema([TextInput::make('title', 'Title')->required()])
+            ->fill(['title' => $this->context($request, 'current_title')]);
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        return ActionResult::success($this->validate($request));
+    }
+}
 
 it('validates the embedded form and hands the data to handle', function (): void {
     Lattice::actions([RejectActionFixture::class]);

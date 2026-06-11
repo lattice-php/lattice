@@ -37,14 +37,6 @@ abstract class FormDefinition extends Definition implements ProvidesForm
      */
     protected function formFields(Request $request): Collection
     {
-        return $this->buildForm($request)->fields();
-    }
-
-    /**
-     * Build this form's component tree for the current request.
-     */
-    protected function buildForm(Request $request): Form
-    {
-        return $this->definition(Form::make('form'), $request);
+        return $this->definition(Form::make('form'), $request)->fields();
     }
 }

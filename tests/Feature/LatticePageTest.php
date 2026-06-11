@@ -156,6 +156,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'confirmation' => null,
                 'effects' => [],
                 'form' => null,
+                'lazyForm' => null,
                 'variant' => null,
             ],
         ])
@@ -969,6 +970,7 @@ test('registered actions serialize their configured endpoint method label and ef
                 'icon' => null,
                 'confirmation' => null,
                 'form' => null,
+                'lazyForm' => null,
                 'effects' => [
                     [
                         'type' => 'toast',
@@ -1019,6 +1021,7 @@ test('action groups serialize grouped child actions', function () {
                         'confirmation' => null,
                         'effects' => [],
                         'form' => null,
+                        'lazyForm' => null,
                         'variant' => null,
                         'ref' => componentRef($group['schema'][0]),
                     ],
@@ -1034,6 +1037,7 @@ test('action groups serialize grouped child actions', function () {
                         'confirmation' => null,
                         'effects' => [],
                         'form' => null,
+                        'lazyForm' => null,
                         'variant' => 'destructive',
                         'ref' => componentRef($group['schema'][1]),
                     ],
@@ -1211,6 +1215,7 @@ test('actions can serialize confirmation modal configuration', function () {
                 ],
                 'effects' => [],
                 'form' => null,
+                'lazyForm' => null,
                 'variant' => 'destructive',
                 'ref' => null,
             ],

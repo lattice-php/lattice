@@ -1,6 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { withRefHeader } from "@lattice/lattice/core/component-ref";
 import { Button } from "@lattice/lattice/core/components/button";
 import { Spinner } from "@lattice/lattice/core/components/spinner";
@@ -24,13 +24,63 @@ type ActionFormProps = {
   endpoint: string;
   /** Extra payload merged into every request, e.g. a bulk action's selection. */
   extraData?: Record<string, unknown>;
-  formNode: Node;
+  /** The form to render; null while a lazy schema is still being fetched. */
+  formNode: Node | null;
   method: string;
   onClose: () => void;
   onSuccess: (response: ActionResponse) => void;
   submitLabel: string;
   title: string;
 };
+
+function jsonHeaders(componentRef: string, extra?: Record<string, string>): Record<string, string> {
+  return {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest",
+    "X-XSRF-TOKEN": xsrfToken(),
+    ...withRefHeader(componentRef),
+    ...extra,
+  };
+}
+
+/**
+ * Fetch a lazily-served form schema from the action endpoint while `enabled`,
+ * so it can be prefilled per record. Returns null until it arrives.
+ */
+export function useLazyActionForm(
+  endpoint: string,
+  method: string,
+  componentRef: string,
+  enabled: boolean,
+): Node | null {
+  const [node, setNode] = useState<Node | null>(null);
+
+  useEffect(() => {
+    if (!enabled) {
+      setNode(null);
+
+      return;
+    }
+
+    const controller = new AbortController();
+
+    void fetch(endpoint, {
+      body: JSON.stringify({ _form: true }),
+      credentials: "same-origin",
+      headers: jsonHeaders(componentRef),
+      method: method.toUpperCase(),
+      signal: controller.signal,
+    })
+      .then((response) => (response.ok ? (response.json() as Promise<Node>) : null))
+      .then((fetched) => setNode(fetched))
+      .catch(() => {});
+
+    return () => controller.abort();
+  }, [enabled, endpoint, method, componentRef]);
+
+  return node;
+}
 
 function firstErrors(errors: Record<string, string[] | string> | undefined): FieldErrors {
   const result: FieldErrors = {};
@@ -40,6 +90,16 @@ function firstErrors(errors: Record<string, string[] | string> | undefined): Fie
   }
 
   return result;
+}
+
+function ActionFormSkeleton() {
+  return (
+    <div className="space-y-4" data-lattice-action-form-loading>
+      <div className="h-4 w-24 animate-pulse rounded bg-lt-muted" />
+      <div className="h-10 w-full animate-pulse rounded bg-lt-muted" />
+      <div className="h-10 w-full animate-pulse rounded bg-lt-muted" />
+    </div>
+  );
 }
 
 type CollectedFields = {
@@ -83,6 +143,7 @@ function ActionFormBody({
   submitLabel,
 }: Omit<ActionFormProps, "description" | "title"> & {
   fieldLabels: Record<string, string>;
+  formNode: Node;
   precognitive: boolean;
 }) {
   const { fallback, missingComponent, registry } = useRendererContext();
@@ -105,14 +166,7 @@ function ActionFormBody({
         // fetch only upper-cases the standardized methods, leaving PATCH/DELETE as
         // given; some servers reject a lower-case method line, so normalize it.
         method: method.toUpperCase(),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-          "X-XSRF-TOKEN": xsrfToken(),
-          ...withRefHeader(componentRef),
-          ...extraHeaders,
-        },
+        headers: jsonHeaders(componentRef, extraHeaders),
       }),
     [componentRef, endpoint, method],
   );
@@ -219,13 +273,29 @@ function ActionFormBody({
   );
 }
 
-export function ActionForm({ description, formNode, onClose, title, ...rest }: ActionFormProps) {
+function ActionFormContent({
+  formNode,
+  ...rest
+}: Omit<ActionFormProps, "description" | "title"> & { formNode: Node }) {
   const precognitive = Boolean(formNode.props?.precognitive);
   const { labels: fieldLabels, values: initialValues } = useMemo(
     () => collectFields(formNode),
     [formNode],
   );
 
+  return (
+    <FormValuesProvider initial={initialValues}>
+      <ActionFormBody
+        fieldLabels={fieldLabels}
+        formNode={formNode}
+        precognitive={precognitive}
+        {...rest}
+      />
+    </FormValuesProvider>
+  );
+}
+
+export function ActionForm({ description, formNode, onClose, title, ...rest }: ActionFormProps) {
   return (
     <Dialog.Root
       open
@@ -262,15 +332,11 @@ export function ActionForm({ description, formNode, onClose, title, ...rest }: A
           </div>
 
           <div className="mt-6">
-            <FormValuesProvider initial={initialValues}>
-              <ActionFormBody
-                fieldLabels={fieldLabels}
-                formNode={formNode}
-                onClose={onClose}
-                precognitive={precognitive}
-                {...rest}
-              />
-            </FormValuesProvider>
+            {formNode ? (
+              <ActionFormContent formNode={formNode} onClose={onClose} {...rest} />
+            ) : (
+              <ActionFormSkeleton />
+            )}
           </div>
         </Dialog.Content>
       </Dialog.Portal>

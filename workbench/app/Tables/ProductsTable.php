@@ -17,6 +17,7 @@ use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
+use Workbench\App\Actions\EditProductAction;
 use Workbench\App\Actions\RejectProductAction;
 use Workbench\App\Actions\RejectSelectedProductsAction;
 use Workbench\App\Models\Product;
@@ -71,6 +72,8 @@ class ProductsTable extends EloquentTableDefinition
         return [
             Link::make('Edit')
                 ->href('/products/'.$row['id'].'/edit'),
+            Action::use(EditProductAction::class)
+                ->context(['product_id' => $row['id']]),
             Action::use(ArchiveProductAction::class)
                 ->context(['product_id' => $row['id']]),
             Action::use(RejectProductAction::class)

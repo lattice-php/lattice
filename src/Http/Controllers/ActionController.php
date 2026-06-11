@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Core\Concerns\InteractsWithLatticeComponents;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Http\Controllers\Concerns\HandlesFormSubRequests;
 use Lattice\Lattice\Http\Controllers\Concerns\HandlesPrecognition;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ActionController
 {
+    use HandlesFormSubRequests;
     use HandlesPrecognition;
     use InteractsWithLatticeComponents;
 
@@ -28,12 +29,8 @@ final class ActionController
 
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->actions, 'action', $action);
 
-        if ($request->filled('_search')) {
-            return new JsonResponse($definition->searchOptions($request));
-        }
-
-        if ($request->boolean('_resolve')) {
-            return new JsonResponse($definition->resolveFields($request));
+        if (($response = $this->formSubRequest($request, $definition)) !== null) {
+            return $response;
         }
 
         if ($request->isPrecognitive()) {

@@ -9,7 +9,7 @@ import type { Node, RendererComponent } from "@lattice/lattice/core/types";
 import { IconRenderer } from "@lattice/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, getActionEffects } from "../effects";
 import type { ActionResponse } from "../effects";
-import { ActionForm } from "./action-form";
+import { ActionForm, useLazyActionForm } from "./action-form";
 
 const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const endpoint = node.props.endpoint ?? "";
@@ -24,7 +24,11 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const variant = node.props.variant ?? "default";
   // The wire carries the embedded form as a full node; the generated prop type
   // reflects Form's props, so read it through the Node lens the renderer uses.
-  const form = node.props.form as unknown as Node | null;
+  const inlineForm = node.props.form as unknown as Node | null;
+  const lazyForm = node.props.lazyForm === true;
+  const hasForm = Boolean(inlineForm) || lazyForm;
+  const lazyNode = useLazyActionForm(endpoint, method, componentRef, isFilling && lazyForm);
+  const formNode = lazyForm ? lazyNode : inlineForm;
 
   const submit = async (): Promise<void> => {
     if (!endpoint) {
@@ -52,7 +56,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   };
 
   const requestSubmit = (): void => {
-    if (form) {
+    if (hasForm) {
       setIsFilling(true);
 
       return;
@@ -98,13 +102,13 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
         />
       )}
 
-      {isFilling && form && (
+      {isFilling && hasForm && (
         <ActionForm
           cancelLabel={confirmationCancelLabel}
           componentRef={componentRef}
           description={confirmation?.description}
           endpoint={endpoint}
-          formNode={form}
+          formNode={formNode}
           method={method}
           onClose={() => setIsFilling(false)}
           onSuccess={(response) => {
