@@ -38,6 +38,7 @@ export function ColumnHeader({
           type="button"
           aria-label={`Sort ${column.label}`}
           className="flex w-full items-center gap-1.5 font-medium"
+          data-test={`sort-${column.key}`}
           disabled={processing}
           onClick={() => sort(column)}
         >
