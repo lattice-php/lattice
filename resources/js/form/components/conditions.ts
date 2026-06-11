@@ -27,7 +27,7 @@ const BOOLEAN_TRUE_VALUES = new Set(["1", "true", "on", "yes"]);
 
 // Mirrors PHP filter_var(FILTER_VALIDATE_BOOLEAN) so conditions evaluate
 // identically on the server and the client.
-function toBoolean(value: unknown): boolean {
+export function toBoolean(value: unknown): boolean {
   if (typeof value === "boolean") {
     return value;
   }
