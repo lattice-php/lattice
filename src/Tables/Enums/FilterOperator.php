@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Enums;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-
 enum FilterOperator: string
 {
     case Contains = 'contains';
@@ -47,67 +44,5 @@ enum FilterOperator: string
     public function requiresValue(): bool
     {
         return ! in_array($this, [self::Empty, self::Filled], true);
-    }
-
-    /**
-     * @template TModel of Model
-     *
-     * @param  Builder<TModel>  $builder
-     */
-    public function apply(Builder $builder, FilterType $filterType, string $field, string $value): void
-    {
-        match ($this) {
-            self::Contains => $builder->where($field, 'like', '%'.$this->escapeLike($value).'%'),
-            self::StartsWith => $builder->where($field, 'like', $this->escapeLike($value).'%'),
-            self::EndsWith => $builder->where($field, 'like', '%'.$this->escapeLike($value)),
-            self::Equals => $filterType->applyEquals($builder, $field, $value),
-            self::NotEquals => $this->compare($builder, $filterType, $field, '!=', $value),
-            self::GreaterThan => $this->compare($builder, $filterType, $field, '>', $value),
-            self::GreaterThanOrEqual => $this->compare($builder, $filterType, $field, '>=', $value),
-            self::LessThan => $this->compare($builder, $filterType, $field, '<', $value),
-            self::LessThanOrEqual => $this->compare($builder, $filterType, $field, '<=', $value),
-            self::In => $builder->whereIn($field, $this->splitList($value)),
-            self::NotIn => $builder->whereNotIn($field, $this->splitList($value)),
-            self::Before => $builder->whereDate($field, '<', $value),
-            self::After => $builder->whereDate($field, '>', $value),
-            self::Empty => $builder->where(function (Builder $query) use ($field): void {
-                $query->whereNull($field)->orWhere($field, '');
-            }),
-            self::Filled => $builder->whereNotNull($field)->where($field, '!=', ''),
-        };
-    }
-
-    private function escapeLike(string $value): string
-    {
-        return str_replace(['%', '_'], ['\\%', '\\_'], $value);
-    }
-
-    /**
-     * Split a comma-separated value into a trimmed, non-empty list for In/NotIn.
-     *
-     * @return array<int, string>
-     */
-    private function splitList(string $value): array
-    {
-        return array_values(array_filter(
-            array_map('trim', explode(',', $value)),
-            static fn (string $item): bool => $item !== '',
-        ));
-    }
-
-    /**
-     * @template TModel of Model
-     *
-     * @param  Builder<TModel>  $builder
-     */
-    private function compare(Builder $builder, FilterType $filterType, string $field, string $sqlOperator, string $value): void
-    {
-        if ($filterType === FilterType::Date) {
-            $builder->whereDate($field, $sqlOperator, $value);
-
-            return;
-        }
-
-        $builder->where($field, $sqlOperator, $value);
     }
 }

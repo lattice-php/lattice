@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Tables\Enums\FilterOperator;
 use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Lattice\Tables\FilterApplier;
 use Workbench\App\Models\Product;
 
 it('builds a whereIn clause for the in operator', function (): void {
     $query = Product::query();
 
-    FilterOperator::In->apply($query, FilterType::Text, 'status', 'active, archived ,');
+    (new FilterApplier)->apply(FilterOperator::In, $query, FilterType::Text, 'status', 'active, archived ,');
 
     expect($query->toSql())->toContain('in (?, ?)')
         ->and($query->getBindings())->toBe(['active', 'archived']);
@@ -18,7 +19,7 @@ it('builds a whereIn clause for the in operator', function (): void {
 it('builds a whereNotIn clause for the not_in operator', function (): void {
     $query = Product::query();
 
-    FilterOperator::NotIn->apply($query, FilterType::Text, 'status', 'active,archived');
+    (new FilterApplier)->apply(FilterOperator::NotIn, $query, FilterType::Text, 'status', 'active,archived');
 
     expect($query->toSql())->toContain('not in (?, ?)')
         ->and($query->getBindings())->toBe(['active', 'archived']);

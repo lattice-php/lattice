@@ -30,6 +30,7 @@ final readonly class EloquentTableSource implements TableSource
         private Closure $builder,
         private array $columns,
         private PaginationType $pagination,
+        private FilterApplier $filterApplier = new FilterApplier,
     ) {}
 
     public function query(TableQuery $query): TableResult
@@ -87,7 +88,8 @@ final readonly class EloquentTableSource implements TableSource
             $column = $columns->get($clause->field);
 
             if ($column instanceof Filterable) {
-                FilterOperator::from($clause->operator)->apply(
+                $this->filterApplier->apply(
+                    FilterOperator::from($clause->operator),
                     $builder,
                     $column->filterType(),
                     $clause->field,
