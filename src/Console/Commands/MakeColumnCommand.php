@@ -45,7 +45,7 @@ final class MakeColumnCommand extends Command
 
         $this->refreshTypes();
 
-        $this->components->info('Column '.$name.' scaffolded successfully.');
+        $this->components->info("Column [$name] created with type [$type].");
 
         return self::SUCCESS;
     }

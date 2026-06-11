@@ -43,6 +43,8 @@ final class MakeComponentCommand extends Command
 
         $this->refreshTypes();
 
+        $this->components->info("Component [$name] created with type [$type].");
+
         return self::SUCCESS;
     }
 }

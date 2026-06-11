@@ -43,6 +43,8 @@ final class MakeFieldCommand extends Command
 
         $this->refreshTypes();
 
+        $this->components->info("Field [$name] created with type [$type].");
+
         return self::SUCCESS;
     }
 }
