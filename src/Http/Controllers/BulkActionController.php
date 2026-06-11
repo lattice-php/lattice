@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Actions\BulkActionRegistry;
 use Lattice\Lattice\Core\Concerns\InteractsWithLatticeComponents;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Core\Exceptions\UnknownLatticeComponent;
+use Lattice\Lattice\Http\Controllers\Concerns\HandlesFormSubRequests;
 use Lattice\Lattice\Http\Controllers\Concerns\HandlesPrecognition;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class BulkActionController
 {
+    use HandlesFormSubRequests;
     use HandlesPrecognition;
     use InteractsWithLatticeComponents;
 
@@ -34,16 +35,8 @@ final class BulkActionController
 
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->bulkActions, 'bulkAction', $bulkAction);
 
-        if ($request->boolean('_form')) {
-            return new JsonResponse($definition->resolveFormSchema($request));
-        }
-
-        if ($request->filled('_search')) {
-            return new JsonResponse($definition->searchOptions($request));
-        }
-
-        if ($request->boolean('_resolve')) {
-            return new JsonResponse($definition->resolveFields($request));
+        if (($response = $this->formSubRequest($request, $definition)) !== null) {
+            return $response;
         }
 
         if ($request->isPrecognitive()) {
