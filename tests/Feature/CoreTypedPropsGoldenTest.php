@@ -29,7 +29,7 @@ test('GOLDEN stack serializes enums direction and key wire-identically', functio
                 'direction' => 'row',
             ],
             'schema' => [
-                ['type' => 'text', 'props' => ['text' => 'Body']],
+                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null]],
             ],
         ]);
 });
@@ -38,7 +38,12 @@ test('GOLDEN stack accepts raw string enum values', function () {
     expect(wire(Stack::make()->align('center')))
         ->toEqual([
             'type' => 'stack',
-            'props' => ['align' => 'center'],
+            'props' => [
+                'align' => 'center',
+                'gap' => null,
+                'width' => null,
+                'direction' => null,
+            ],
         ]);
 });
 
@@ -80,18 +85,26 @@ test('GOLDEN modal serializes id title description and children', function () {
                 'description' => 'Desc',
                 'closeLabel' => 'Close',
                 'open' => true,
+                'ref' => null,
             ],
             'schema' => [
-                ['type' => 'text', 'props' => ['text' => 'Body']],
+                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null]],
             ],
         ]);
 });
 
-test('GOLDEN modal without optional props omits them', function () {
+test('GOLDEN modal without optional props includes them as null', function () {
     expect(wire(Modal::make('bare.modal')))
         ->toEqual([
             'type' => 'modal',
             'id' => 'bare.modal',
+            'props' => [
+                'title' => null,
+                'description' => null,
+                'closeLabel' => null,
+                'open' => false,
+                'ref' => null,
+            ],
         ]);
 });
 
@@ -113,13 +126,13 @@ test('GOLDEN tabs serialize defaultValue queryKey and computed activeValue', fun
             'schema' => [
                 [
                     'type' => 'tab',
-                    'props' => ['label' => 'Profile', 'value' => 'profile'],
-                    'schema' => [['type' => 'text', 'props' => ['text' => 'Profile form']]],
+                    'props' => ['label' => 'Profile', 'value' => 'profile', 'confirm' => null],
+                    'schema' => [['type' => 'text', 'props' => ['text' => 'Profile form', 'align' => null]]],
                 ],
                 [
                     'type' => 'tab',
-                    'props' => ['label' => 'Security', 'value' => 'security'],
-                    'schema' => [['type' => 'text', 'props' => ['text' => 'Security form']]],
+                    'props' => ['label' => 'Security', 'value' => 'security', 'confirm' => null],
+                    'schema' => [['type' => 'text', 'props' => ['text' => 'Security form', 'align' => null]]],
                 ],
             ],
         ]);
@@ -133,6 +146,7 @@ test('GOLDEN tabs with custom queryKey and no defaultValue keep empty activeValu
             'props' => [
                 'queryKey' => 'settings-tab',
                 'activeValue' => '',
+                'defaultValue' => null,
             ],
         ]);
 });

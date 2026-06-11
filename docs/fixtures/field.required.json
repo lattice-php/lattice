@@ -1,9 +1,21 @@
 [
     {
         "props": {
+            "autoComplete": null,
+            "autoFocus": null,
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
             "label": "Team name",
             "name": "name",
-            "required": true
+            "placeholder": null,
+            "readonly": null,
+            "required": true,
+            "tabIndex": null,
+            "type": null,
+            "value": null
         },
         "type": "form.text-input"
     }

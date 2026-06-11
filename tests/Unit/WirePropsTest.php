@@ -9,7 +9,7 @@ enum WirePropsProbeStatus: string
     case Active = 'active';
 }
 
-it('collects public typed properties, skipping nulls and builder-only state', function (): void {
+it('collects public typed properties including nulls, skipping builder-only state', function (): void {
     $component = new class extends Component
     {
         public string $label = 'Hi';
@@ -34,11 +34,12 @@ it('collects public typed properties, skipping nulls and builder-only state', fu
 
     expect($component->exposeWireProps())->toBe([
         'label' => 'Hi',
+        'variant' => null,
         'status' => 'active',
     ]);
 });
 
-it('skips empty-array public properties', function (): void {
+it('includes empty-array public properties', function (): void {
     $component = new class extends Component
     {
         /** @var array<int, string> */
@@ -56,5 +57,6 @@ it('skips empty-array public properties', function (): void {
         }
     };
 
-    expect($component->exposeWireProps())->not->toHaveKey('tags');
+    expect($component->exposeWireProps())->toHaveKey('tags')
+        ->and($component->exposeWireProps()['tags'])->toBe([]);
 });

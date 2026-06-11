@@ -65,12 +65,10 @@ test('forms serialize initial state for bound edit values', function () {
         ->toMatchArray([
             'type' => 'form',
             'id' => 'product-form',
-            'props' => [
-                'state' => [
-                    'name' => 'Desk Lamp',
-                    'sku' => 'LAMP-001',
-                ],
-            ],
+        ])
+        ->and($form['props']['state'])->toBe([
+            'name' => 'Desk Lamp',
+            'sku' => 'LAMP-001',
         ]);
 });
 
@@ -78,13 +76,8 @@ test('forms can enable precognitive validation with a delay', function () {
     $form = wire(Form::make('product-form')
         ->precognitive(650));
 
-    expect($form)
-        ->toMatchArray([
-            'props' => [
-                'precognitive' => true,
-                'validationTimeout' => 650,
-            ],
-        ]);
+    expect($form['props']['precognitive'])->toBeTrue()
+        ->and($form['props']['validationTimeout'])->toBe(650);
 });
 
 test('the product index page lists products and links to creation', function () {

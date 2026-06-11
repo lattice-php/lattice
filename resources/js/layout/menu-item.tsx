@@ -1,6 +1,5 @@
 import type { Method } from "@inertiajs/core";
 import { Link, usePage } from "@inertiajs/react";
-import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { IconRenderer } from "@lattice/lattice/icons";
 import { cn } from "@lattice/lattice/lib/utils";
@@ -14,10 +13,10 @@ function getLinkMethod(method: string): Method {
 }
 
 const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) => {
-  const label = getStringProp(node.props, "label", "");
-  const href = getStringProp(node.props, "href", "");
-  const icon = getStringProp(node.props, "icon", "");
-  const method = getLinkMethod(getStringProp(node.props, "method", "get"));
+  const label = node.props.label;
+  const href = node.props.href ?? "";
+  const icon = node.props.icon;
+  const method = getLinkMethod(node.props.method ?? "get");
   const currentPath = usePage().url.split("?")[0];
   const active = href !== "" && currentPath === href;
 

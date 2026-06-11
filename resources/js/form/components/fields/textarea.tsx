@@ -1,4 +1,3 @@
-import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { Textarea } from "../base/textarea";
@@ -13,22 +12,17 @@ export const TextareaComponent: RendererComponent<"form.textarea"> = ({ node }) 
   }
 
   return (
-    <FormFieldFrame
-      error={error}
-      label={getStringProp(node.props, "label")}
-      name={name}
-      required={required}
-    >
+    <FormFieldFrame error={error} label={node.props.label ?? ""} name={name} required={required}>
       <Textarea
-        autoFocus={getBooleanProp(node.props, "autoFocus")}
+        autoFocus={node.props.autoFocus ?? false}
         disabled={disabled}
         id={name}
         name={name}
         onChange={(event) => commit(event.target.value)}
-        placeholder={getStringProp(node.props, "placeholder")}
+        placeholder={node.props.placeholder ?? ""}
         readOnly={readonly}
-        rows={getOptionalNumberProp(node.props, "rows")}
-        tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
+        rows={node.props.rows ?? undefined}
+        tabIndex={node.props.tabIndex ?? undefined}
         value={value}
       />
     </FormFieldFrame>

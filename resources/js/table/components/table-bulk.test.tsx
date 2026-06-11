@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TableNode } from "../types";
 import type { ColumnData } from "@lattice/lattice/types/generated";
+import { fakeNode } from "@lattice/lattice/test-support";
 
 function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
   return {
@@ -42,7 +43,7 @@ const node = {
     ],
     endpoint: "/lattice/tables/workbench.products",
     bulkActions: [
-      {
+      fakeNode({
         type: "action",
         id: "workbench.products.archive-selected",
         props: {
@@ -52,7 +53,7 @@ const node = {
           ref: "sealed-ref",
           variant: "destructive",
         },
-      },
+      }),
     ],
   },
   type: "table",

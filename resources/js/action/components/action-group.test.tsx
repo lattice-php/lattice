@@ -1,17 +1,17 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice/lattice/core/types";
+import { fakeNode } from "@lattice/lattice/test-support";
 import ActionGroupComponent from "./action-group";
 
 describe("Lattice action group component", () => {
   it("opens a menu of grouped actions", () => {
-    const node = {
+    const node = fakeNode({
       id: "teams.members.2.actions",
       props: {
         label: "Manage member",
       },
       type: "action.group",
-    } satisfies Node<"action.group">;
+    });
 
     render(
       <ActionGroupComponent node={node}>

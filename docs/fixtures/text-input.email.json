@@ -1,10 +1,21 @@
 [
     {
         "props": {
+            "autoComplete": null,
+            "autoFocus": null,
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
             "label": "Email address",
             "name": "email",
             "placeholder": "you@example.com",
-            "type": "email"
+            "readonly": null,
+            "required": null,
+            "tabIndex": null,
+            "type": "email",
+            "value": null
         },
         "type": "form.text-input"
     }

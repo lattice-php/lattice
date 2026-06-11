@@ -149,6 +149,14 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'errorBag' => 'fixtures_profile',
                 'method' => 'patch',
                 'ref' => componentRef($form),
+                'submitLabel' => null,
+                'precognitive' => null,
+                'validationTimeout' => null,
+                'submitButton' => null,
+                'resetOnSuccess' => null,
+                'resetOnError' => null,
+                'status' => null,
+                'state' => [],
             ],
         ])
         ->and($table)
@@ -167,6 +175,10 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'label' => 'Ping',
                 'method' => 'post',
                 'ref' => componentRef($action),
+                'icon' => null,
+                'confirmation' => null,
+                'effects' => [],
+                'variant' => null,
             ],
         ])
         ->and($fragment)
@@ -237,6 +249,7 @@ test('forms serialize schema children like pages', function () {
                     'type' => 'text',
                     'props' => [
                         'text' => 'Profile details',
+                        'align' => null,
                     ],
                 ],
             ],
@@ -302,6 +315,7 @@ test('components serialize through prioritized hook attributes without child-spe
     expect(wire($component))
         ->toBe([
             'type' => 'hooked',
+            'props' => [],
             'custom' => 'value',
         ])
         ->and(method_exists(Component::class, 'serializedChildren'))
@@ -343,6 +357,7 @@ test('private serialization hooks are ignored', function () {
 
     expect(wire($component))->toBe([
         'type' => 'private-hooked',
+        'props' => [],
     ])->and($component->privateDataForTest([]))->toBe([
         'private' => 'value',
     ]);
@@ -355,6 +370,17 @@ test('forms can disable their default submit button', function () {
             'id' => 'profile-form',
             'props' => [
                 'submitButton' => false,
+                'action' => null,
+                'method' => null,
+                'submitLabel' => null,
+                'precognitive' => null,
+                'validationTimeout' => null,
+                'resetOnSuccess' => null,
+                'resetOnError' => null,
+                'status' => null,
+                'errorBag' => null,
+                'state' => [],
+                'ref' => null,
             ],
         ]);
 });
@@ -376,6 +402,18 @@ test('password inputs can request automatic confirmation fields', function () {
                 'name' => 'password',
                 'passwordRules' => 'minlength:8',
                 'required' => true,
+                'labelAction' => null,
+                'value' => null,
+                'hidden' => null,
+                'readonly' => null,
+                'disabled' => null,
+                'conditions' => null,
+                'dependsOnKeys' => null,
+                'dependsOnAny' => null,
+                'autoComplete' => null,
+                'autoFocus' => null,
+                'placeholder' => null,
+                'tabIndex' => null,
             ],
         ]);
 });
@@ -456,12 +494,20 @@ test('registered forms serialize their configured endpoint and isolated error ba
                 'method' => 'patch',
                 'ref' => componentRef($form),
                 'submitButton' => false,
+                'submitLabel' => null,
+                'precognitive' => null,
+                'validationTimeout' => null,
+                'resetOnSuccess' => null,
+                'resetOnError' => null,
+                'status' => null,
+                'state' => [],
             ],
             'schema' => [
                 [
                     'type' => 'text',
                     'props' => [
                         'text' => 'Profile details',
+                        'align' => null,
                     ],
                 ],
             ],
@@ -523,6 +569,10 @@ test('registered tables serialize their configured endpoint columns state and in
             'props' => [
                 'endpoint' => '/custom/tables/workbench.users',
                 'ref' => componentRef($table),
+                'layout' => null,
+                'bulkActions' => [],
+                'striped' => null,
+                'lazy' => null,
                 'columns' => [
                     [
                         'key' => 'name',
@@ -601,6 +651,9 @@ test('registered tables can serialize lazily without running their query', funct
                 'endpoint' => '/custom/tables/workbench.lazy-users',
                 'lazy' => true,
                 'ref' => componentRef($table),
+                'layout' => null,
+                'bulkActions' => [],
+                'striped' => null,
                 'columns' => [
                     [
                         'key' => 'name',
@@ -927,6 +980,8 @@ test('registered actions serialize their configured endpoint method label and ef
                 'method' => 'post',
                 'ref' => componentRef($action),
                 'variant' => 'secondary',
+                'icon' => null,
+                'confirmation' => null,
                 'effects' => [
                     [
                         'type' => 'toast',
@@ -963,6 +1018,7 @@ test('action groups serialize grouped child actions', function () {
             'id' => 'workbench.user-actions',
             'props' => [
                 'label' => 'Manage user',
+                'ref' => null,
             ],
             'schema' => [
                 [
@@ -972,6 +1028,10 @@ test('action groups serialize grouped child actions', function () {
                         'endpoint' => '/lattice/actions/workbench.users.promote',
                         'label' => 'Promote',
                         'method' => 'patch',
+                        'icon' => null,
+                        'confirmation' => null,
+                        'effects' => [],
+                        'variant' => null,
                         'ref' => componentRef($group['schema'][0]),
                     ],
                 ],
@@ -982,8 +1042,11 @@ test('action groups serialize grouped child actions', function () {
                         'endpoint' => '/lattice/actions/workbench.users.remove',
                         'label' => 'Remove',
                         'method' => 'delete',
-                        'ref' => componentRef($group['schema'][1]),
+                        'icon' => null,
+                        'confirmation' => null,
+                        'effects' => [],
                         'variant' => 'destructive',
+                        'ref' => componentRef($group['schema'][1]),
                     ],
                 ],
             ],
@@ -1147,15 +1210,19 @@ test('actions can serialize confirmation modal configuration', function () {
             'type' => 'action',
             'id' => 'delete-account',
             'props' => [
+                'endpoint' => null,
                 'label' => 'Delete account',
                 'method' => 'delete',
-                'variant' => 'destructive',
+                'icon' => null,
                 'confirmation' => [
                     'title' => 'Delete account?',
                     'description' => 'This cannot be undone.',
                     'confirmLabel' => 'Delete account',
                     'cancelLabel' => 'Keep account',
                 ],
+                'effects' => [],
+                'variant' => 'destructive',
+                'ref' => null,
             ],
         ]);
 });
@@ -1173,12 +1240,16 @@ test('modals serialize composable children for action driven dialogs', function 
             'props' => [
                 'title' => 'Set up two-factor authentication',
                 'description' => 'Scan the QR code with your authenticator app.',
+                'closeLabel' => null,
+                'open' => null,
+                'ref' => null,
             ],
             'schema' => [
                 [
                     'type' => 'text',
                     'props' => [
                         'text' => 'Recovery codes will appear here.',
+                        'align' => null,
                     ],
                 ],
             ],
@@ -1225,12 +1296,15 @@ test('links and horizontal stacks serialize as separate composable primitives', 
             'props' => [
                 'direction' => 'row',
                 'gap' => 'xs',
+                'align' => null,
+                'width' => null,
             ],
             'schema' => [
                 [
                     'type' => 'text',
                     'props' => [
                         'text' => 'Need access?',
+                        'align' => null,
                     ],
                 ],
                 [
@@ -1238,6 +1312,8 @@ test('links and horizontal stacks serialize as separate composable primitives', 
                     'props' => [
                         'href' => '/register',
                         'label' => 'Register',
+                        'method' => null,
+                        'tabIndex' => null,
                     ],
                 ],
             ],
@@ -1254,6 +1330,7 @@ test('layout enums serialize to their backed string values', function () {
                 'align' => 'center',
                 'gap' => 'lg',
                 'width' => 'sm',
+                'direction' => null,
             ],
         ])
         ->and(wire(Text::make('Centered')->align(Align::Center))['props']['align'])
@@ -1285,12 +1362,14 @@ test('tabs serialize tab panels as composable children', function () {
                     'props' => [
                         'label' => 'Profile',
                         'value' => 'profile',
+                        'confirm' => null,
                     ],
                     'schema' => [
                         [
                             'type' => 'text',
                             'props' => [
                                 'text' => 'Profile form',
+                                'align' => null,
                             ],
                         ],
                     ],
@@ -1300,11 +1379,26 @@ test('tabs serialize tab panels as composable children', function () {
                     'props' => [
                         'label' => 'Security',
                         'value' => 'security',
+                        'confirm' => null,
                     ],
                     'schema' => [
                         [
                             'type' => 'form',
                             'id' => 'password-form',
+                            'props' => [
+                                'action' => null,
+                                'method' => null,
+                                'submitLabel' => null,
+                                'precognitive' => null,
+                                'validationTimeout' => null,
+                                'submitButton' => null,
+                                'resetOnSuccess' => null,
+                                'resetOnError' => null,
+                                'status' => null,
+                                'errorBag' => null,
+                                'state' => [],
+                                'ref' => null,
+                            ],
                         ],
                     ],
                 ],
@@ -1321,6 +1415,7 @@ test('tabs can customize their query string key', function () {
             'props' => [
                 'activeValue' => '',
                 'queryKey' => 'settings-tab',
+                'defaultValue' => null,
             ],
         ]);
 });

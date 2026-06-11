@@ -1,13 +1,11 @@
 import { Check, ChevronsUpDown, Loader2, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@lattice/lattice/lib/utils";
-import { type Option, getOptions } from "@lattice/lattice/core/props";
-import type { RendererComponent } from "@lattice/lattice/core/types";
+import type { Option, RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { FORM_DEBOUNCE_MS, postFormAction } from "../form-transport";
 import { useResolvedNode } from "../resolved-nodes";
-import type { Select } from "../types";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
 import { useFormValue } from "../values";
@@ -29,16 +27,19 @@ function toValues(stored: unknown, fallback: string | string[] | undefined): str
 }
 
 export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
-  const props = node.props ?? ({} as Select);
+  const props = node.props;
   const { action, componentRef, errors } = useFormContext();
   const { hidden, required, readonly, disabled } = useDependentField(node);
   const { change, blur } = useFieldCommit();
   const resolvedNode = useResolvedNode(node);
-  const name = props.name ?? "";
+  const name = props.name;
   const placeholder = props.placeholder || "Select…";
   const multiple = props.multiple ?? false;
   const searchable = props.searchable ?? false;
-  const staticOptions = useMemo(() => getOptions(resolvedNode.props), [resolvedNode.props]);
+  const staticOptions = useMemo(
+    () => (resolvedNode.props as { options?: Option[] }).options ?? [],
+    [resolvedNode.props],
+  );
 
   const storedValue = useFormValue(name);
   const selected = useMemo(() => toValues(storedValue, props.value), [storedValue, props.value]);

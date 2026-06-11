@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Node } from "@lattice/lattice/core/types";
+import { fakeNode } from "@lattice/lattice/test-support";
 import {
   CheckboxComponent,
   ChoiceComponent,
@@ -78,7 +78,7 @@ describe("Lattice form schema components", () => {
   });
 
   it("sends the sealed component reference as a header", () => {
-    const formNode = {
+    const formNode = fakeNode({
       id: "team-form",
       props: {
         action: "/lattice/forms/teams.update",
@@ -86,7 +86,7 @@ describe("Lattice form schema components", () => {
         method: "patch",
       },
       type: "form",
-    } satisfies Node<"form">;
+    });
 
     render(<FormComponent node={formNode}>{null}</FormComponent>);
 
@@ -98,7 +98,7 @@ describe("Lattice form schema components", () => {
   });
 
   it("renders fields from child schema components", () => {
-    const formNode = {
+    const formNode = fakeNode({
       id: "login-form",
       props: {
         action: "/login",
@@ -108,9 +108,9 @@ describe("Lattice form schema components", () => {
         submitLabel: "Log in",
       },
       type: "form",
-    } satisfies Node<"form">;
+    });
 
-    const emailNode = {
+    const emailNode = fakeNode({
       props: {
         autoComplete: "email",
         autoFocus: true,
@@ -122,9 +122,9 @@ describe("Lattice form schema components", () => {
         value: "taylor@example.com",
       },
       type: "form.text-input",
-    } satisfies Node<"form.text-input">;
+    });
 
-    const passwordNode = {
+    const passwordNode = fakeNode({
       props: {
         autoComplete: "current-password",
         autoFocus: true,
@@ -144,31 +144,31 @@ describe("Lattice form schema components", () => {
         required: true,
       },
       type: "form.password-input",
-    } satisfies Node<"form.password-input">;
+    });
 
-    const rememberNode = {
+    const rememberNode = fakeNode({
       props: {
         label: "Remember me",
         name: "remember",
         required: true,
       },
       type: "form.checkbox",
-    } satisfies Node<"form.checkbox">;
+    });
 
-    const tokenNode = {
+    const tokenNode = fakeNode({
       props: {
         name: "token",
         value: "reset-token",
       },
       type: "form.hidden-input",
-    } satisfies Node<"form.hidden-input">;
+    });
 
-    const submitNode = {
+    const submitNode = fakeNode({
       props: {
         label: "Log in",
       },
       type: "form.submit-button",
-    } satisfies Node<"form.submit-button">;
+    });
 
     render(
       <FormComponent node={formNode}>
@@ -209,7 +209,7 @@ describe("Lattice form schema components", () => {
   });
 
   it("uses form state as field defaults", () => {
-    const formNode = {
+    const formNode = fakeNode({
       id: "product-form",
       props: {
         action: "/lattice/forms/workbench.products.form",
@@ -221,17 +221,17 @@ describe("Lattice form schema components", () => {
         },
       },
       type: "form",
-    } satisfies Node<"form">;
+    });
 
-    const nameNode = {
+    const nameNode = fakeNode({
       props: {
         label: "Name",
         name: "name",
       },
       type: "form.text-input",
-    } satisfies Node<"form.text-input">;
+    });
 
-    const statusNode = {
+    const statusNode = fakeNode({
       props: {
         label: "Status",
         name: "status",
@@ -241,15 +241,15 @@ describe("Lattice form schema components", () => {
         ],
       },
       type: "form.choice",
-    } satisfies Node<"form.choice">;
+    });
 
-    const featuredNode = {
+    const featuredNode = fakeNode({
       props: {
         label: "Featured",
         name: "featured",
       },
       type: "form.checkbox",
-    } satisfies Node<"form.checkbox">;
+    });
 
     render(
       <FormComponent node={formNode}>
@@ -268,7 +268,7 @@ describe("Lattice form schema components", () => {
   });
 
   it("passes precognitive validation delay to the inertia form", () => {
-    const formNode = {
+    const formNode = fakeNode({
       id: "product-form",
       props: {
         action: "/lattice/forms/workbench.products.form",
@@ -276,7 +276,7 @@ describe("Lattice form schema components", () => {
         validationTimeout: 650,
       },
       type: "form",
-    } satisfies Node<"form">;
+    });
 
     render(<FormComponent node={formNode}>{null}</FormComponent>);
 
@@ -284,22 +284,22 @@ describe("Lattice form schema components", () => {
   });
 
   it("validates text inputs on change when precognition is enabled", () => {
-    const formNode = {
+    const formNode = fakeNode({
       id: "product-form",
       props: {
         action: "/lattice/forms/workbench.products.form",
         precognitive: true,
       },
       type: "form",
-    } satisfies Node<"form">;
+    });
 
-    const nameNode = {
+    const nameNode = fakeNode({
       props: {
         label: "Name",
         name: "name",
       },
       type: "form.text-input",
-    } satisfies Node<"form.text-input">;
+    });
 
     render(
       <FormComponent node={formNode}>
@@ -315,11 +315,11 @@ describe("Lattice form schema components", () => {
   });
 
   it("resets when a matching reset-form effect is dispatched", () => {
-    const formNode = {
+    const formNode = fakeNode({
       id: "teams.create",
       props: { action: "/lattice/forms/teams.create", method: "post" },
       type: "form",
-    } satisfies Node<"form">;
+    });
 
     render(<FormComponent node={formNode}>{null}</FormComponent>);
 

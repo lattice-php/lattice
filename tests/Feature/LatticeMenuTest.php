@@ -67,11 +67,11 @@ test('a menu item serializes its icon and method', function () {
         ]);
 });
 
-test('a menu item omits unset optional props from the wire', function () {
+test('a menu item includes unset optional props as null on the wire', function () {
     $wire = wire(MenuItem::make('Home')->href('/'));
 
-    expect($wire['props'])->not->toHaveKey('method')
-        ->and($wire['props'])->not->toHaveKey('icon');
+    expect($wire['props']['method'])->toBeNull()
+        ->and($wire['props']['icon'])->toBeNull();
 });
 
 test('fromPage resolves the href and a default label from the page route', function () {

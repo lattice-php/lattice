@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice/lattice/core/types";
+import { fakeNode } from "@lattice/lattice/test-support";
 import { FormValuesProvider } from "../values";
 import { PasswordInputComponent } from "./password-input";
 
@@ -15,14 +16,14 @@ function renderField(node: Node<"form.password-input">, initial: Record<string, 
 describe("PasswordInputComponent conditions", () => {
   it("hides when its visible condition fails", () => {
     renderField(
-      {
+      fakeNode({
         type: "form.password-input",
         props: {
           name: "password",
           label: "Password",
           conditions: { visible: [{ field: "mode", operator: "eq", value: "reset" }] },
         },
-      },
+      }),
       { mode: "login" },
     );
 
@@ -31,14 +32,14 @@ describe("PasswordInputComponent conditions", () => {
 
   it("shows when its visible condition matches", () => {
     renderField(
-      {
+      fakeNode({
         type: "form.password-input",
         props: {
           name: "password",
           label: "Password",
           conditions: { visible: [{ field: "mode", operator: "eq", value: "reset" }] },
         },
-      },
+      }),
       { mode: "reset" },
     );
 

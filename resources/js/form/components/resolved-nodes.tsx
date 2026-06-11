@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
-import { getStringProp } from "@lattice/lattice/core/props";
 import type { Node } from "@lattice/lattice/core/types";
+import { fieldProps } from "./field-props";
 
 const ResolvedNodesContext = createContext<Record<string, Node>>({});
 
@@ -16,7 +16,7 @@ export function ResolvedNodesProvider({
 
 export function useResolvedNode(node: Node): Node {
   const nodes = useContext(ResolvedNodesContext);
-  const name = getStringProp(node.props, "name");
+  const name = fieldProps(node).name ?? "";
 
   return name && nodes[name] ? nodes[name] : node;
 }

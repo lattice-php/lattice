@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { getBooleanProp } from "@lattice/lattice/core/props";
 import type { Node } from "@lattice/lattice/core/types";
+import { fieldProps } from "./field-props";
 import { FORM_DEBOUNCE_MS, postFormAction } from "./form-transport";
 import { useFormValues, useSetFormValue } from "./values";
 
@@ -11,13 +11,13 @@ type ResolveResponse = {
 
 function collectWatch(nodes: Node[] | undefined, keys: Set<string>, state: { any: boolean }): void {
   for (const child of nodes ?? []) {
-    const dependsOnKeys = child.props?.dependsOnKeys;
-    if (Array.isArray(dependsOnKeys)) {
-      for (const key of dependsOnKeys) {
+    const props = fieldProps(child);
+    if (Array.isArray(props.dependsOnKeys)) {
+      for (const key of props.dependsOnKeys) {
         keys.add(String(key));
       }
     }
-    if (getBooleanProp(child.props, "dependsOnAny")) {
+    if (props.dependsOnAny) {
       state.any = true;
     }
     collectWatch(child.schema, keys, state);

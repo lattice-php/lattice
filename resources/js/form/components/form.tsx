@@ -1,24 +1,14 @@
 import { Form as InertiaForm } from "@inertiajs/react";
 import { withRefHeader } from "@lattice/lattice/core/component-ref";
-import { getStringProp } from "@lattice/lattice/core/props";
 import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
-import type { Node, NodeProps, RendererComponent } from "@lattice/lattice/core/types";
+import type { Node, RendererComponent } from "@lattice/lattice/core/types";
 import { useEffect, useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "./context";
+import { fieldProps } from "./field-props";
 import { ResolvedNodesProvider } from "./resolved-nodes";
 import { useFormResolver } from "./use-form-resolver";
 import { FormValuesProvider } from "./values";
-
-function getFormState(props: NodeProps | undefined): Record<string, unknown> {
-  const state = props?.state;
-
-  if (typeof state !== "object" || state === null || Array.isArray(state)) {
-    return {};
-  }
-
-  return state as Record<string, unknown>;
-}
 
 type CollectedFields = {
   labels: Record<string, string>;
@@ -30,15 +20,14 @@ function collectFields(
   collected: CollectedFields = { labels: {}, values: {} },
 ): CollectedFields {
   for (const child of nodes ?? []) {
-    const name = getStringProp(child.props, "name");
+    const props = fieldProps(child);
 
-    if (name) {
-      const label = getStringProp(child.props, "label");
-      if (label) {
-        collected.labels[name] = label;
+    if (props.name) {
+      if (props.label) {
+        collected.labels[props.name] = props.label;
       }
-      if (child.props?.value !== undefined) {
-        collected.values[name] = child.props.value;
+      if (props.value !== undefined) {
+        collected.values[props.name] = props.value;
       }
     }
 
@@ -105,7 +94,7 @@ function FormBody({
 }
 
 export const FormComponent: RendererComponent<"form"> = ({ children, node }) => {
-  const props = node.props ?? {};
+  const props = node.props;
   const action = props.action ?? "#";
   const errorBag = props.errorBag;
   const componentRef = props.ref ?? "";
@@ -113,7 +102,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   const precognitive = props.precognitive ?? false;
   const resetOnError = props.resetOnError ?? false;
   const resetOnSuccess = props.resetOnSuccess ?? [];
-  const state = getFormState(node.props);
+  const state = props.state;
   const { labels: fieldLabels, values: fieldValues } = useMemo(
     () => collectFields(node.schema),
     [node.schema],
