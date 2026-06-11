@@ -6,7 +6,6 @@ namespace Workbench\App\Layouts;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\Layout;
-use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\LucideIcon;
 use Lattice\Lattice\Core\Enums\Width;
@@ -33,8 +32,7 @@ final class AppLayout extends LayoutDefinition
             Stack::make('app-shell')
                 ->direction('row')
                 ->schema([
-                    Sidebar::make('app-sidebar')->items([
-                        Heading::make('Lattice', 2),
+                    Sidebar::make('app-sidebar')->collapsible()->items([
                         Menu::make('sidebar')->items([
                             MenuItem::fromPage(HomePage::class)->label('Home')->icon(LucideIcon::House),
                             MenuItem::make('Forms')->icon(LucideIcon::FormInput)->children([

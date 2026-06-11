@@ -1,10 +1,12 @@
 import { Link, usePage } from "@inertiajs/react";
 import { ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import { createPortal } from "react-dom";
 import type { RendererComponent, Schema } from "@lattice/lattice/core/types";
 import { IconRenderer } from "@lattice/lattice/icons";
 import { cn } from "@lattice/lattice/lib/utils";
+import { SidebarCollapsedContext, useSidebarCollapsed } from "./context";
 
 const rowClass =
   "flex items-center gap-2 rounded-md px-3 py-2 text-sm text-lt-fg transition-colors hover:bg-lt-muted";
@@ -16,25 +18,35 @@ function schemaContainsPath(schema: Schema | undefined, path: string): boolean {
 }
 
 const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) => {
+  const collapsed = useSidebarCollapsed();
   const icon = node.props.icon;
+  const label = node.props.label;
   const href = node.props.href ?? "";
   const currentPath = usePage().url.split("?")[0];
 
   const content = (
     <>
       {icon ? <IconRenderer className="size-4 shrink-0" icon={icon} /> : null}
-      <span>{node.props.label}</span>
+      <span className={cn(collapsed && "sr-only")}>{label}</span>
     </>
   );
 
   if (href === "") {
     if (!children) {
-      return (
+      return collapsed ? null : (
         <li>
           <span className="flex items-center gap-2 px-3 py-2 text-xs font-semibold tracking-wide text-lt-muted-fg uppercase">
             {content}
           </span>
         </li>
+      );
+    }
+
+    if (collapsed) {
+      return (
+        <FlyoutGroup icon={icon} label={label}>
+          {children}
+        </FlyoutGroup>
       );
     }
 
@@ -51,9 +63,10 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
     <li>
       <Link
         aria-current={active ? "page" : undefined}
-        className={cn(rowClass, active && "bg-lt-muted font-medium")}
+        className={cn(rowClass, collapsed && "justify-center", active && "bg-lt-muted font-medium")}
         href={href}
         method={node.props.method ?? "get"}
+        title={collapsed ? label : undefined}
       >
         {content}
       </Link>
@@ -87,6 +100,73 @@ function CollapsibleItem({
         />
       </button>
       {open ? <ul className="mt-1 flex flex-col gap-1 pl-3">{children}</ul> : null}
+    </li>
+  );
+}
+
+function FlyoutGroup({
+  children,
+  icon,
+  label,
+}: {
+  children: ReactNode;
+  icon?: string | null;
+  label: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [position, setPosition] = useState({ left: 0, top: 0 });
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const url = usePage().url;
+
+  useEffect(() => setOpen(false), [url]);
+
+  function toggle(): void {
+    const rect = triggerRef.current?.getBoundingClientRect();
+
+    if (rect) {
+      setPosition({ left: rect.right + 4, top: rect.top });
+    }
+
+    setOpen((value) => !value);
+  }
+
+  return (
+    <li>
+      <button
+        aria-expanded={open}
+        aria-label={label}
+        className={cn(rowClass, "w-full justify-center")}
+        onClick={toggle}
+        ref={triggerRef}
+        title={label}
+        type="button"
+      >
+        {icon ? <IconRenderer className="size-4 shrink-0" icon={icon} /> : <span>{label}</span>}
+      </button>
+      {open
+        ? createPortal(
+            <>
+              <button
+                aria-label="Close menu"
+                className="fixed inset-0 z-40 cursor-default"
+                onClick={() => setOpen(false)}
+                type="button"
+              />
+              <SidebarCollapsedContext.Provider value={false}>
+                <ul
+                  className="fixed z-50 min-w-48 rounded-md border border-lt-border bg-lt-popover p-1 text-lt-popover-fg shadow-lg"
+                  style={{ left: position.left, top: position.top }}
+                >
+                  <li className="px-3 py-1.5 text-xs font-semibold tracking-wide text-lt-muted-fg uppercase">
+                    {label}
+                  </li>
+                  {children}
+                </ul>
+              </SidebarCollapsedContext.Provider>
+            </>,
+            document.body,
+          )
+        : null}
     </li>
   );
 }

@@ -586,7 +586,10 @@ export type Select = {
   searchable: boolean | null;
   value: any;
 };
-export type Sidebar = object;
+export type Sidebar = {
+  collapsible: boolean;
+  rememberState: boolean;
+};
 export type SortDirection = "asc" | "desc";
 export type Stack = {
   align: Align | null;
