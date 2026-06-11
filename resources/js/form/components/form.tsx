@@ -5,7 +5,7 @@ import type { Node, RendererComponent } from "@lattice/lattice/core/types";
 import { useEffect, useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "./context";
-import { fieldProps } from "./field-props";
+import { walkFields } from "./field-props";
 import { ResolvedNodesProvider } from "./resolved-nodes";
 import { useFormResolver } from "./use-form-resolver";
 import { FormValuesProvider } from "./values";
@@ -15,24 +15,20 @@ type CollectedFields = {
   values: Record<string, unknown>;
 };
 
-function collectFields(
-  nodes: Node[] | undefined,
-  collected: CollectedFields = { labels: {}, values: {} },
-): CollectedFields {
-  for (const child of nodes ?? []) {
-    const props = fieldProps(child);
+function collectFields(nodes: Node[] | undefined): CollectedFields {
+  const collected: CollectedFields = { labels: {}, values: {} };
 
-    if (props.name) {
-      if (props.label) {
-        collected.labels[props.name] = props.label;
-      }
-      if (props.value !== undefined) {
-        collected.values[props.name] = props.value;
-      }
+  walkFields(nodes, (props) => {
+    if (!props.name) {
+      return;
     }
-
-    collectFields(child.schema, collected);
-  }
+    if (props.label) {
+      collected.labels[props.name] = props.label;
+    }
+    if (props.value !== undefined) {
+      collected.values[props.name] = props.value;
+    }
+  });
 
   return collected;
 }

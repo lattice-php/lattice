@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Node } from "@lattice/lattice/core/types";
-import { fieldProps } from "./field-props";
+import { walkFields } from "./field-props";
 import { FORM_DEBOUNCE_MS, postFormAction } from "./form-transport";
 import { useFormValues, useSetFormValue } from "./values";
 
@@ -8,21 +8,6 @@ type ResolveResponse = {
   fields?: Record<string, Node>;
   values?: Record<string, unknown>;
 };
-
-function collectWatch(nodes: Node[] | undefined, keys: Set<string>, state: { any: boolean }): void {
-  for (const child of nodes ?? []) {
-    const props = fieldProps(child);
-    if (Array.isArray(props.dependsOnKeys)) {
-      for (const key of props.dependsOnKeys) {
-        keys.add(String(key));
-      }
-    }
-    if (props.dependsOnAny) {
-      state.any = true;
-    }
-    collectWatch(child.schema, keys, state);
-  }
-}
 
 export function useFormResolver(
   action: string,
@@ -35,9 +20,18 @@ export function useFormResolver(
 
   const watch = useMemo(() => {
     const keys = new Set<string>();
-    const state = { any: false };
-    collectWatch(nodes, keys, state);
-    return { keys: [...keys], any: state.any };
+    let any = false;
+    walkFields(nodes, (props) => {
+      if (Array.isArray(props.dependsOnKeys)) {
+        for (const key of props.dependsOnKeys) {
+          keys.add(String(key));
+        }
+      }
+      if (props.dependsOnAny) {
+        any = true;
+      }
+    });
+    return { keys: [...keys], any };
   }, [nodes]);
 
   const watched = watch.any
