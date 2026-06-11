@@ -22,7 +22,7 @@ it('writes an augmentation file for app components, not built-ins', function () 
     expect($contents)
         ->toBeString()
         ->toContain('declare module "@lattice-php/lattice"')
-        ->toContain('interface LatticeComponentProps')
+        ->toContain('interface ComponentProps')
         ->toContain('"sample.field"')
         ->toContain('"sample.widget"')
         ->toContain('name')
@@ -49,7 +49,7 @@ it('produces a valid augmentation file even when discover config is empty', func
     expect($contents)
         ->toBeString()
         ->toContain('declare module "@lattice-php/lattice"')
-        ->toContain('interface LatticeComponentProps {')
+        ->toContain('interface ComponentProps {')
         ->toContain('export {};');
 
     File::delete($output);

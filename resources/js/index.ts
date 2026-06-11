@@ -25,8 +25,8 @@ export { LATTICE_EVENT } from "./events/event-names";
 export type { ButtonVariant } from "./core/components/button";
 export type { ReloadComponentEvent } from "./events/event-names";
 export type {
+  ComponentProps,
   KnownPageContainer,
-  LatticeComponentProps,
   LayoutPayload,
   Node,
   NodeOfType,

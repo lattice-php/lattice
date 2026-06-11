@@ -1,5 +1,5 @@
 export type {
-  LatticeComponentProps,
+  ComponentProps,
   Node,
   NodeProps,
   PageContainer,

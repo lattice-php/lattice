@@ -35,7 +35,7 @@ export type LooseNode<TType extends string = string> = {
  * Built-in components resolve through the generated `WireNode` union below, so
  * this interface starts empty. Types listed in neither fall back to a loose bag.
  */
-export interface LatticeComponentProps {}
+export interface ComponentProps {}
 
 // Resolves a built-in node's props from the generated WireNode union; `never` when the type is not a built-in.
 type BuiltInPropsOf<TType extends string> = [Extract<WireNode, { type: TType }>] extends [never]
@@ -46,10 +46,10 @@ type BuiltInPropsOf<TType extends string> = [Extract<WireNode, { type: TType }>]
 
 /**
  * Resolves a wire `type` to its props: consumer augmentations
- * (`LatticeComponentProps`) first, then generated built-ins, then a loose bag.
+ * (`ComponentProps`) first, then generated built-ins, then a loose bag.
  */
-export type PropsOf<TType extends string> = TType extends keyof LatticeComponentProps
-  ? LatticeComponentProps[TType]
+export type PropsOf<TType extends string> = TType extends keyof ComponentProps
+  ? ComponentProps[TType]
   : [BuiltInPropsOf<TType>] extends [never]
     ? NodeProps
     : BuiltInPropsOf<TType>;

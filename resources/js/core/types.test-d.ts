@@ -5,11 +5,11 @@ const _okBadge: Node<"badge"> = { type: "badge", props: { label: "x" } };
 // @ts-expect-error label must be a string, not a number
 const _badBadge: Node<"badge"> = { type: "badge", props: { label: 1 } };
 
-// 2. Consumer augmentation: extend LatticeComponentProps so "custom.thing" gains strong props.
+// 2. Consumer augmentation: extend ComponentProps so "custom.thing" gains strong props.
 //    The declare module is scoped to this module file (which has top-level imports), so it
 //    does not pollute the project's global type space.
 declare module "./types" {
-  interface LatticeComponentProps {
+  interface ComponentProps {
     "custom.thing": { foo: number };
   }
 }
