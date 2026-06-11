@@ -23,3 +23,18 @@ export type FieldProps = {
 export function fieldProps(node: Node): FieldProps {
   return node.props as FieldProps;
 }
+
+/**
+ * Pre-order walk over every node in a form schema, read through the FieldProps
+ * lens. The single traversal shared by the label/value collector and the
+ * dependency-watch collector.
+ */
+export function walkFields(
+  nodes: Node[] | undefined,
+  visit: (props: FieldProps, node: Node) => void,
+): void {
+  for (const child of nodes ?? []) {
+    visit(fieldProps(child), child);
+    walkFields(child.schema, visit);
+  }
+}

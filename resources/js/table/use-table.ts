@@ -13,7 +13,7 @@ import type {
 } from "./types";
 
 export function useTable(node: TableNode) {
-  const columns = getColumns(node.props?.columns);
+  const columns = useMemo(() => getColumns(node.props?.columns), [node.props?.columns]);
   const endpoint = typeof node.props?.endpoint === "string" ? node.props.endpoint : null;
   const componentRef = typeof node.props?.ref === "string" ? node.props.ref : "";
   const isLazy = node.props?.lazy === true;
@@ -21,7 +21,6 @@ export function useTable(node: TableNode) {
   const [rows, setRows] = useState(() => getRows(node.props?.data));
   const [pagination, setPagination] = useState(() => getPagination(node.props?.pagination));
   const [state, setState] = useState(initialState);
-  const [filters, setFilters] = useState(initialState.filters);
   const [processing, setProcessing] = useState(isLazy);
   const [hasLoaded, setHasLoaded] = useState(!isLazy);
   const infiniteLoaderRef = useRef<HTMLDivElement | null>(null);
@@ -50,7 +49,6 @@ export function useTable(node: TableNode) {
         setRows((currentRows) => (append ? [...currentRows, ...resultRows] : resultRows));
         setPagination(getPagination(result.pagination));
         setState(resultState);
-        setFilters(resultState.filters);
         setHasLoaded(true);
       } finally {
         setProcessing(false);
@@ -75,37 +73,23 @@ export function useTable(node: TableNode) {
     });
   }
 
-  function addFilter(clause: FilterClause): void {
-    const next = [...filters, clause];
+  function applyFilters(next: FilterClause[]): void {
+    const nextState = { ...state, filters: next, page: 1 };
 
-    setFilters(next);
-    void load({
-      ...state,
-      filters: next,
-      page: 1,
-    });
+    setState(nextState);
+    void load(nextState);
+  }
+
+  function addFilter(clause: FilterClause): void {
+    applyFilters([...state.filters, clause]);
   }
 
   function updateFilter(index: number, clause: FilterClause): void {
-    const next = filters.map((current, position) => (position === index ? clause : current));
-
-    setFilters(next);
-    void load({
-      ...state,
-      filters: next,
-      page: 1,
-    });
+    applyFilters(state.filters.map((current, position) => (position === index ? clause : current)));
   }
 
   function removeFilter(index: number): void {
-    const next = filters.filter((_, current) => current !== index);
-
-    setFilters(next);
-    void load({
-      ...state,
-      filters: next,
-      page: 1,
-    });
+    applyFilters(state.filters.filter((_, current) => current !== index));
   }
 
   function goToPage(page: number): void {
@@ -185,7 +169,7 @@ export function useTable(node: TableNode) {
     rows,
     pagination,
     state,
-    filters,
+    filters: state.filters,
     addFilter,
     updateFilter,
     removeFilter,

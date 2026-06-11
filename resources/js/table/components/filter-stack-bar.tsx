@@ -1,25 +1,22 @@
 import { X } from "lucide-react";
-import { flattenColumns } from "../payload";
 import { operatorLabel } from "../query";
 import type { FilterClause, TableColumn } from "../types";
 
 export function FilterStackBar({
   filters,
-  columns,
+  columnsByKey,
   processing,
   onRemove,
 }: {
   filters: FilterClause[];
-  columns: TableColumn[];
+  columnsByKey: Map<string, TableColumn>;
   processing: boolean;
   onRemove: (index: number) => void;
 }) {
-  const labels = new Map(flattenColumns(columns).map((column) => [column.key, column.label]));
-
   return (
     <div className="flex flex-wrap items-center gap-4 border-b border-lt-border px-4 py-2.5 text-sm">
       {filters.map((clause, index) => {
-        const label = labels.get(clause.field) ?? clause.field;
+        const label = columnsByKey.get(clause.field)?.label ?? clause.field;
 
         return (
           <span

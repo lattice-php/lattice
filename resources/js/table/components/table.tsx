@@ -1,7 +1,7 @@
-import type { ReactNode } from "react";
+import { type ReactNode, useMemo } from "react";
 import type { TableNode } from "../types";
 import { getBulkActions } from "../bulk";
-import { getRowActions, getRowKey } from "../payload";
+import { flattenColumns, getRowActions, getRowKey } from "../payload";
 import { getColumnGridTemplate, getQueryParams, getVisiblePages } from "../query";
 import { useTable } from "../use-table";
 import { useTableSelection } from "../use-table-selection";
@@ -33,15 +33,22 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     loadMore,
   } = useTable(node);
 
-  const bulkActions = getBulkActions(node.props?.bulkActions);
+  const bulkActions = useMemo(
+    () => getBulkActions(node.props?.bulkActions),
+    [node.props?.bulkActions],
+  );
   const hasBulkActions = bulkActions.length > 0;
-  const rowEntries = rows.map((row, index) => ({
-    row,
-    actions: getRowActions(row),
-    key: getRowKey(row, index),
-  }));
+  const rowEntries = useMemo(
+    () =>
+      rows.map((row, index) => ({ row, actions: getRowActions(row), key: getRowKey(row, index) })),
+    [rows],
+  );
   const selection = useTableSelection(rowEntries.map((entry) => entry.key));
 
+  const columnsByKey = useMemo(
+    () => new Map(flattenColumns(columns).map((column) => [column.key, column])),
+    [columns],
+  );
   const currentPage = pagination.currentPage ?? state.page;
   const lastPage = pagination.lastPage ?? currentPage;
   const mode = pagination.mode ?? "table";
@@ -51,7 +58,10 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   const striped = node.props?.striped === true;
   const hasFilters = columns.some((column) => column.filter?.enabled);
   const filterEntries = filters.map((clause, index) => ({ clause, index }));
-  const gridTemplateColumns = getColumnGridTemplate(columns, hasActions, hasBulkActions);
+  const gridTemplateColumns = useMemo(
+    () => getColumnGridTemplate(columns, hasActions, hasBulkActions),
+    [columns, hasActions, hasBulkActions],
+  );
 
   return (
     <div
@@ -78,13 +88,18 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
       {filters.length > 0 && (
         <FilterStackBar
           filters={filters}
-          columns={columns}
+          columnsByKey={columnsByKey}
           processing={processing}
           onRemove={removeFilter}
         />
       )}
       {state.sorts.length > 0 && (
-        <SortBar columns={columns} state={state} processing={processing} onClear={clearSort} />
+        <SortBar
+          columnsByKey={columnsByKey}
+          state={state}
+          processing={processing}
+          onClear={clearSort}
+        />
       )}
       <div className="w-max min-w-full text-sm" role="table">
         <div className="border-b border-lt-border bg-lt-muted/50" role="rowgroup">
