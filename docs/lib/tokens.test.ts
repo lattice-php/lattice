@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseTokens, parseSuffixMap, resolveTokens, tokenLabel } from "./tokens";
+import { parseTokens, parseSuffixMap, resolveTokens, tokenLabel, collectClassNames } from "./tokens";
 
 const SAMPLE_CSS = `
 :root,
@@ -97,5 +97,15 @@ describe("tokenLabel", () => {
     expect(tokenLabel("--lt-primary-fg")).toBe("Primary foreground");
     expect(tokenLabel("--lt-bg")).toBe("Background");
     expect(tokenLabel("--lt-radius-sm")).toBe("Radius small");
+  });
+});
+
+describe("collectClassNames", () => {
+  it("collects the class attribute from every descendant element", () => {
+    const root = document.createElement("div");
+    root.innerHTML =
+      '<button class="bg-lt-primary"><span class="text-lt-primary-fg">x</span></button>' +
+      "<input>";
+    expect(collectClassNames(root)).toEqual(["bg-lt-primary", "text-lt-primary-fg"]);
   });
 });

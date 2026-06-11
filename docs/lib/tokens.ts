@@ -98,3 +98,14 @@ export function tokenLabel(name: string): string {
   const label = words.join(" ");
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
+
+export function collectClassNames(root: ParentNode): string[] {
+  const classNames: string[] = [];
+  for (const element of root.querySelectorAll("*")) {
+    const value = element.getAttribute("class");
+    if (value) {
+      classNames.push(value);
+    }
+  }
+  return classNames;
+}
