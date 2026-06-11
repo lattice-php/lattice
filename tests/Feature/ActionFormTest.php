@@ -9,7 +9,10 @@ use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\Action;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\Textarea;
+use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Forms\FormData;
 
 use function Pest\Laravel\postJson;
 
@@ -48,6 +51,48 @@ it('validates the embedded form precognitively without running handle', function
     postJson('/lattice/actions/test.reject', ['reason' => 'ok'], $precognition)
         ->assertNoContent();
 });
+
+it('resolves searchable options for an embedded select', function (): void {
+    Lattice::actions([AssignActionFixture::class]);
+    $ref = componentRef(wire(ActionComponent::use(AssignActionFixture::class)));
+
+    postJson('/lattice/actions/test.assign', ['_search' => 'owner', 'q' => 'taylor'], latticeHeaders($ref))
+        ->assertOk()
+        ->assertJsonPath('options.0.label', 'Match: taylor')
+        ->assertJsonPath('options.0.value', '7');
+});
+
+it('resolves computed fields for an embedded form', function (): void {
+    Lattice::actions([AssignActionFixture::class]);
+    $ref = componentRef(wire(ActionComponent::use(AssignActionFixture::class)));
+
+    postJson('/lattice/actions/test.assign', ['_resolve' => true, 'qty' => '5'], latticeHeaders($ref))
+        ->assertOk()
+        ->assertJsonPath('values.total', 7.5);
+});
+
+#[Action('test.assign')]
+class AssignActionFixture extends ActionDefinition
+{
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action
+            ->label('Assign')
+            ->method(HttpMethod::Post)
+            ->form([
+                Select::make('owner', 'Owner')->searchable(
+                    fn (string $query): array => [['label' => "Match: {$query}", 'value' => '7']],
+                ),
+                TextInput::make('qty', 'Qty'),
+                TextInput::make('total', 'Total')->value(fn (FormData $data): float => $data->float('qty') * 1.5),
+            ]);
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        return ActionResult::success($this->validate($request));
+    }
+}
 
 #[Action('test.reject')]
 class RejectActionFixture extends ActionDefinition

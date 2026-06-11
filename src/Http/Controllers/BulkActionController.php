@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Actions\BulkActionRegistry;
@@ -32,6 +33,14 @@ final class BulkActionController
         $this->markPrecognitive($request);
 
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->bulkActions, 'bulkAction', $bulkAction);
+
+        if ($request->filled('_search')) {
+            return new JsonResponse($definition->searchOptions($request));
+        }
+
+        if ($request->boolean('_resolve')) {
+            return new JsonResponse($definition->resolveFields($request));
+        }
 
         if ($request->isPrecognitive()) {
             return $this->validatePrecognitive($request, fn () => $definition->validate($request));

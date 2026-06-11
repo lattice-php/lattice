@@ -12,6 +12,7 @@ use Lattice\Lattice\Attributes\Action;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Workbench\App\Models\Product;
 
@@ -27,6 +28,16 @@ class RejectProductAction extends ActionDefinition
             ->confirm('Reject product?', 'Tell the seller why this product is rejected.', 'Submit rejection')
             ->form([
                 Textarea::make('reason', 'Reason')->required()->rules(['string', 'max:255']),
+                Select::make('replacement', 'Suggested replacement')
+                    ->placeholder('Search products…')
+                    ->searchable(fn (string $query): array => Product::query()
+                        ->where('name', 'like', "%{$query}%")
+                        ->orderBy('name')
+                        ->limit(10)
+                        ->get()
+                        ->map(fn (Product $product): array => Select::option($product->name, (string) $product->getKey()))
+                        ->all())
+                    ->rules(['nullable']),
             ]);
     }
 

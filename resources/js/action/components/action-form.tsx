@@ -9,6 +9,8 @@ import type { Node } from "@lattice/lattice/core/types";
 import { FormProvider } from "@lattice/lattice/form/components/context";
 import { walkFields } from "@lattice/lattice/form/components/field-props";
 import { FORM_DEBOUNCE_MS, xsrfToken } from "@lattice/lattice/form/components/form-transport";
+import { ResolvedNodesProvider } from "@lattice/lattice/form/components/resolved-nodes";
+import { useFormResolver } from "@lattice/lattice/form/components/use-form-resolver";
 import { FormValuesProvider, useFormValues } from "@lattice/lattice/form/components/values";
 import { dispatchActionError } from "../effects";
 import type { ActionResponse } from "../effects";
@@ -89,6 +91,7 @@ function ActionFormBody({
   valuesRef.current = values;
   const extraDataRef = useRef(extraData);
   extraDataRef.current = extraData;
+  const resolvedNodes = useFormResolver(endpoint, componentRef, formNode.schema);
 
   const [errors, setErrors] = useState<FieldErrors>({});
   const [processing, setProcessing] = useState(false);
@@ -192,12 +195,14 @@ function ActionFormBody({
           submit();
         }}
       >
-        <Renderer
-          fallback={fallback}
-          missingComponent={missingComponent}
-          nodes={formNode.schema ?? []}
-          registry={registry}
-        />
+        <ResolvedNodesProvider nodes={resolvedNodes}>
+          <Renderer
+            fallback={fallback}
+            missingComponent={missingComponent}
+            nodes={formNode.schema ?? []}
+            registry={registry}
+          />
+        </ResolvedNodesProvider>
 
         <div className="flex justify-end gap-3">
           <Button disabled={processing} onClick={onClose} type="button" variant="ghost">
