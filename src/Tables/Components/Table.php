@@ -92,11 +92,7 @@ class Table extends Component
 
     public function layout(string $layout): static
     {
-        if ($layout === 'table') {
-            return $this;
-        }
-
-        $this->layout = $layout;
+        $this->layout = $layout === 'table' ? null : $layout;
 
         return $this;
     }
@@ -106,10 +102,6 @@ class Table extends Component
      */
     public function bulkActions(array $actions): static
     {
-        if ($actions === []) {
-            return $this;
-        }
-
         $this->bulkActions = $actions;
 
         return $this;
@@ -117,11 +109,7 @@ class Table extends Component
 
     public function striped(bool $striped): static
     {
-        if (! $striped) {
-            return $this;
-        }
-
-        $this->striped = true;
+        $this->striped = $striped ?: null;
 
         return $this;
     }
