@@ -25,6 +25,7 @@ use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Lattice\Core\Enums\Orientation;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\Enums\ToastVariant;
@@ -129,6 +130,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 Width::class,
                 PageLayout::class,
                 PageContainer::class,
+                Orientation::class,
                 ToastVariant::class,
                 PaginationType::class,
                 ColumnType::class,

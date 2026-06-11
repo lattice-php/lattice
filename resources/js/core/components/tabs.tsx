@@ -1,6 +1,6 @@
 import { router } from "@inertiajs/react";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import type { ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import type { KeyboardEvent, ReactNode } from "react";
 import type { Node, RendererComponent } from "@lattice/lattice/core/types";
 import type { Tab } from "@lattice/lattice/types/generated";
 import { cn } from "@lattice/lattice/lib/utils";
@@ -87,8 +87,11 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
   const tabs = useMemo(() => getTabs(node), [node]);
   const firstValue = tabs[0]?.value ?? "";
   const queryKey = node.props.queryKey;
+  const orientation = node.props.orientation ?? "horizontal";
+  const isVertical = orientation === "vertical";
   const serverActiveValue = node.props.activeValue;
   const defaultValue = node.props.defaultValue ?? firstValue;
+  const tablistRef = useRef<HTMLDivElement>(null);
   const [activeValue, setActiveTabValue] = useState(
     () => serverActiveValue || (queryValue(queryKey, tabs) ?? defaultValue) || firstValue,
   );
@@ -114,12 +117,58 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
     }
   }
 
+  function onTablistKeyDown(event: KeyboardEvent<HTMLButtonElement>): void {
+    const nextKey = isVertical ? "ArrowDown" : "ArrowRight";
+    const prevKey = isVertical ? "ArrowUp" : "ArrowLeft";
+
+    if (
+      event.key !== nextKey &&
+      event.key !== prevKey &&
+      event.key !== "Home" &&
+      event.key !== "End"
+    ) {
+      return;
+    }
+
+    const buttons = Array.from(
+      tablistRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]') ?? [],
+    );
+
+    if (buttons.length === 0) {
+      return;
+    }
+
+    event.preventDefault();
+    const current = buttons.indexOf(document.activeElement as HTMLButtonElement);
+
+    let index: number;
+    if (event.key === "Home") {
+      index = 0;
+    } else if (event.key === "End") {
+      index = buttons.length - 1;
+    } else {
+      const delta = event.key === nextKey ? 1 : -1;
+      const base = current < 0 ? 0 : current;
+      index = (base + delta + buttons.length) % buttons.length;
+    }
+
+    buttons[index]?.focus();
+  }
+
   return (
     <TabsContext.Provider value={{ activeValue, setActiveValue: selectTabValue }}>
-      <div className="grid gap-6" data-lattice-tabs={node.key ?? node.id}>
+      <div
+        className={cn("gap-6", isVertical ? "flex" : "grid")}
+        data-lattice-tabs={node.key ?? node.id}
+      >
         <div
           aria-label="Tabs"
-          className="inline-flex w-fit max-w-full gap-1 overflow-x-auto rounded-lt bg-lt-muted p-1"
+          aria-orientation={orientation}
+          className={cn(
+            "gap-1 rounded-lt bg-lt-muted p-1",
+            isVertical ? "flex flex-col" : "inline-flex w-fit max-w-full overflow-x-auto",
+          )}
+          ref={tablistRef}
           role="tablist"
         >
           {tabs.map((tab) => {
@@ -134,11 +183,14 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
                   isActive
                     ? "bg-lt-bg text-lt-fg shadow-xs"
                     : "text-lt-muted-fg hover:bg-lt-bg/60 hover:text-lt-fg",
+                  isVertical && "text-left",
                 )}
                 id={`${tab.value}-tab`}
                 key={tab.value}
                 onClick={() => selectTab(tab)}
+                onKeyDown={onTablistKeyDown}
                 role="tab"
+                tabIndex={isActive ? 0 : -1}
                 type="button"
               >
                 {tab.label}
@@ -147,7 +199,7 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
           })}
         </div>
 
-        <div className="min-w-0">{children}</div>
+        <div className={cn("min-w-0", isVertical && "flex-1")}>{children}</div>
       </div>
     </TabsContext.Provider>
   );
