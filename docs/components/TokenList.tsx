@@ -11,7 +11,11 @@ type Props = {
   suffixMap: SuffixMap;
 };
 
-const alignRight = { textAlign: "right" as const };
+const cellStyle = {
+  fontSize: "0.85rem",
+  padding: "0.5rem 1rem",
+  textAlign: "left" as const,
+};
 
 export default function TokenList({ nodes, values = {}, tokens, suffixMap }: Props) {
   const previewRef = useRef<HTMLDivElement>(null);
@@ -59,18 +63,18 @@ export default function TokenList({ nodes, values = {}, tokens, suffixMap }: Pro
         <table>
           <thead>
             <tr>
-              <th style={alignRight}>Token</th>
-              <th style={alignRight}>Light</th>
-              <th style={alignRight}>Dark</th>
+              <th style={cellStyle}>Token</th>
+              <th style={cellStyle}>Light</th>
+              <th style={cellStyle}>Dark</th>
             </tr>
           </thead>
           <tbody>
             {used.map((token) => (
               <tr key={token.name}>
-                <td style={alignRight}>
+                <td style={cellStyle}>
                   <code>{token.name}</code>
                 </td>
-                <td style={alignRight}>
+                <td style={cellStyle}>
                   <span
                     style={{
                       background: token.light,
@@ -85,7 +89,7 @@ export default function TokenList({ nodes, values = {}, tokens, suffixMap }: Pro
                   />
                   <code>{token.light}</code>
                 </td>
-                <td style={alignRight}>
+                <td style={cellStyle}>
                   <span
                     style={{
                       background: token.dark,
