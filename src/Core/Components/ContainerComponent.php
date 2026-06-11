@@ -3,9 +3,12 @@
 namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 
 abstract class ContainerComponent extends Component
 {
+    use FiltersRenderableComponents;
+
     /**
      * @var array<int, Component>
      */
@@ -26,10 +29,7 @@ abstract class ContainerComponent extends Component
      */
     protected function renderableChildren(): array
     {
-        return array_values(array_filter(
-            $this->children,
-            fn (Component $child): bool => $child->shouldRender(),
-        ));
+        return $this->renderableComponents($this->children);
     }
 
     /**

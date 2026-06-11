@@ -3,9 +3,12 @@
 namespace Lattice\Lattice\Core;
 
 use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 
 final class PageSchema
 {
+    use FiltersRenderableComponents;
+
     /**
      * @var array<int, Component>
      */
@@ -38,9 +41,6 @@ final class PageSchema
      */
     public function renderable(): array
     {
-        return array_values(array_filter(
-            $this->components,
-            fn (Component $component): bool => $component->shouldRender(),
-        ));
+        return $this->renderableComponents($this->components);
     }
 }
