@@ -27,12 +27,6 @@ describe("dispatchActionEffects", () => {
     expect(router.visit).toHaveBeenCalledWith("/dashboard");
   });
 
-  it("ignores a redirect effect without a url", () => {
-    dispatchActionEffects([{ type: "redirect" }]);
-
-    expect(router.visit).not.toHaveBeenCalled();
-  });
-
   it("triggers a browser download for a download effect", () => {
     const hrefs: string[] = [];
     const click = vi

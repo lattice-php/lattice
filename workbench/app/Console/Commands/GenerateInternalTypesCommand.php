@@ -6,6 +6,14 @@ namespace Workbench\App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Lattice\Lattice\Actions\Contracts\Effect;
+use Lattice\Lattice\Actions\Effects\CloseModalEffect;
+use Lattice\Lattice\Actions\Effects\DownloadEffect;
+use Lattice\Lattice\Actions\Effects\OpenModalEffect;
+use Lattice\Lattice\Actions\Effects\RedirectEffect;
+use Lattice\Lattice\Actions\Effects\ReloadComponentEffect;
+use Lattice\Lattice\Actions\Effects\ReloadPageEffect;
+use Lattice\Lattice\Actions\Effects\ResetFormEffect;
+use Lattice\Lattice\Actions\Effects\ToastEffect;
 use Lattice\Lattice\Actions\Enums\EffectType;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
@@ -31,7 +39,6 @@ use Lattice\Lattice\Tables\Enums\SortDirection;
 use Lattice\Lattice\Tables\FilterClause;
 use Lattice\Lattice\Tables\TableSort;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
-use Workbench\App\Support\TypeScript\EffectType as TypeScriptEffectType;
 use Workbench\App\Support\TypeScript\EnumTransformer;
 use Workbench\App\Support\TypeScript\HttpMethodTransformer;
 use Workbench\App\Support\TypeScript\NodesProvider;
@@ -42,6 +49,24 @@ final class GenerateInternalTypesCommand extends Command
     protected $signature = 'lattice:internal-types';
 
     protected $description = "Regenerate Lattice's built-in TypeScript types (resources/js/types/generated.ts)";
+
+    /**
+     * Effect value objects keyed by class-string, valued by wire type, ordered
+     * alphabetically by wire type to match the generated unions. Drives both the
+     * ValueObjectTransformer allow-list and the generated `Effect` union.
+     *
+     * @var array<class-string, string>
+     */
+    private const EFFECT_TYPES = [
+        CloseModalEffect::class => 'closeModal',
+        DownloadEffect::class => 'download',
+        OpenModalEffect::class => 'openModal',
+        RedirectEffect::class => 'redirect',
+        ReloadComponentEffect::class => 'reloadComponent',
+        ReloadPageEffect::class => 'reloadPage',
+        ResetFormEffect::class => 'resetForm',
+        ToastEffect::class => 'toast',
+    ];
 
     public function handle(TypeScriptGenerator $generator): int
     {
@@ -82,6 +107,7 @@ final class GenerateInternalTypesCommand extends Command
                     ColumnFilter::class,
                     FilterClause::class,
                     TableSort::class,
+                    ...array_keys(self::EFFECT_TYPES),
                 ]),
                 new ComponentTransformer([
                     ...array_keys($formFields),
@@ -104,7 +130,7 @@ final class GenerateInternalTypesCommand extends Command
                     $layoutComponents,
                     'form',
                     Effect::class,
-                    TypeScriptEffectType::build(),
+                    self::EFFECT_TYPES,
                 ),
             ],
             new FlatModuleWriter('generated.ts'),

@@ -4,22 +4,20 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Actions;
 
-use Lattice\Lattice\Actions\Contracts\Effect as EffectContract;
-use Lattice\Lattice\Actions\Enums\EffectType;
+use Lattice\Lattice\Actions\Effects\CloseModalEffect;
+use Lattice\Lattice\Actions\Effects\DownloadEffect;
+use Lattice\Lattice\Actions\Effects\OpenModalEffect;
+use Lattice\Lattice\Actions\Effects\RedirectEffect;
+use Lattice\Lattice\Actions\Effects\ReloadComponentEffect;
+use Lattice\Lattice\Actions\Effects\ReloadPageEffect;
+use Lattice\Lattice\Actions\Effects\ResetFormEffect;
+use Lattice\Lattice\Actions\Effects\ToastEffect;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Lattice\Lattice\Core\Values\ToastMessage;
 
-final readonly class Effect implements EffectContract
+final class Effect
 {
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    private function __construct(
-        private EffectType $type,
-        private array $payload = [],
-    ) {}
-
-    public static function toast(string|ToastMessage|ToastVariant $message, ToastVariant|string|null $variant = null): self
+    public static function toast(string|ToastMessage|ToastVariant $message, ToastVariant|string|null $variant = null): ToastEffect
     {
         $toast = match (true) {
             $message instanceof ToastMessage => $message,
@@ -29,56 +27,41 @@ final readonly class Effect implements EffectContract
             default => throw new \InvalidArgumentException('A toast message string is required.'),
         };
 
-        return new self(EffectType::Toast, $toast->jsonSerialize());
+        return new ToastEffect($toast->variant, $toast->message);
     }
 
-    public static function reloadComponent(string $component): self
+    public static function reloadComponent(string $component): ReloadComponentEffect
     {
-        return new self(EffectType::ReloadComponent, ['component' => $component]);
+        return new ReloadComponentEffect($component);
     }
 
-    public static function reloadPage(): self
+    public static function reloadPage(): ReloadPageEffect
     {
-        return new self(EffectType::ReloadPage);
+        return new ReloadPageEffect;
     }
 
-    public static function redirect(string $url): self
+    public static function redirect(string $url): RedirectEffect
     {
-        return new self(EffectType::Redirect, ['url' => $url]);
+        return new RedirectEffect($url);
     }
 
-    public static function download(string $url): self
+    public static function download(string $url): DownloadEffect
     {
-        return new self(EffectType::Download, ['url' => $url]);
+        return new DownloadEffect($url);
     }
 
-    public static function openModal(string $modal): self
+    public static function openModal(string $modal): OpenModalEffect
     {
-        return new self(EffectType::OpenModal, ['modal' => $modal]);
+        return new OpenModalEffect($modal);
     }
 
-    public static function closeModal(?string $modal = null): self
+    public static function closeModal(?string $modal = null): CloseModalEffect
     {
-        return new self(EffectType::CloseModal, array_filter([
-            'modal' => $modal,
-        ], fn (mixed $value): bool => $value !== null));
+        return new CloseModalEffect($modal);
     }
 
-    public static function resetForm(?string $form = null): self
+    public static function resetForm(?string $form = null): ResetFormEffect
     {
-        return new self(EffectType::ResetForm, array_filter([
-            'form' => $form,
-        ], fn (mixed $value): bool => $value !== null));
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'type' => $this->type->value,
-            ...$this->payload,
-        ];
+        return new ResetFormEffect($form);
     }
 }

@@ -109,6 +109,9 @@ export type Choice = {
   required: boolean | null;
   value: any;
 };
+export type CloseModalEffect = {
+  readonly modal?: string | null;
+};
 export type ColumnData = {
   readonly key: string;
   readonly label: string;
@@ -224,39 +227,34 @@ export type DateInput = {
   tabIndex: number | null;
   value: any;
 };
+export type DownloadEffect = {
+  readonly url: string;
+};
 export type Effect =
-  | {
-      type: "toast";
-      message?: string;
-      variant?: ToastVariant;
-    }
-  | {
-      type: "reloadComponent";
-      component?: string;
-    }
-  | {
-      type: "reloadPage";
-    }
-  | {
-      type: "redirect";
-      url?: string;
-    }
-  | {
-      type: "download";
-      url?: string;
-    }
-  | {
-      type: "openModal";
-      modal?: string;
-    }
-  | {
+  | ({
       type: "closeModal";
-      modal?: string;
-    }
-  | {
+    } & CloseModalEffect)
+  | ({
+      type: "download";
+    } & DownloadEffect)
+  | ({
+      type: "openModal";
+    } & OpenModalEffect)
+  | ({
+      type: "redirect";
+    } & RedirectEffect)
+  | ({
+      type: "reloadComponent";
+    } & ReloadComponentEffect)
+  | ({
+      type: "reloadPage";
+    } & ReloadPageEffect)
+  | ({
       type: "resetForm";
-      form?: string;
-    };
+    } & ResetFormEffect)
+  | ({
+      type: "toast";
+    } & ToastEffect);
 export type EffectType =
   | "toast"
   | "reloadComponent"
@@ -474,6 +472,9 @@ export type Op =
   | "after"
   | "empty"
   | "filled";
+export type OpenModalEffect = {
+  readonly modal: string;
+};
 export type Orientation = "horizontal" | "vertical";
 export type Outlet = object;
 export type PageContainer = "centered" | "default";
@@ -512,6 +513,16 @@ export type PasswordInput = {
   required: boolean | null;
   tabIndex: number | null;
   value: any;
+};
+export type RedirectEffect = {
+  readonly url: string;
+};
+export type ReloadComponentEffect = {
+  readonly component: string;
+};
+export type ReloadPageEffect = object;
+export type ResetFormEffect = {
+  readonly form?: string | null;
 };
 export type RichEditor = {
   conditions: Record<
@@ -664,6 +675,10 @@ export type Textarea = {
   rows: number | null;
   tabIndex: number | null;
   value: any;
+};
+export type ToastEffect = {
+  readonly variant: ToastVariant;
+  readonly message: string;
 };
 export type ToastVariant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "sm" | "md" | "lg";

@@ -40,11 +40,11 @@ export function dispatchActionEffects(effects: ActionEffect[]): void {
       router.reload();
     }
 
-    if (effect.type === "redirect" && typeof effect.url === "string") {
+    if (effect.type === "redirect") {
       router.visit(effect.url);
     }
 
-    if (effect.type === "download" && typeof effect.url === "string") {
+    if (effect.type === "download") {
       triggerDownload(effect.url);
     }
 
