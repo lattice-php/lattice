@@ -39,56 +39,6 @@ use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 
 final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerApplicationServiceProvider
 {
-    /**
-     * Pin the member order of the generated TypeScript `Node` union so output stays
-     * deterministic. Every built-in component in the matching namespace bucket MUST
-     * appear in exactly one of these lists. The guard test in
-     * tests/Feature/TypeScript/ComponentOrderingTest.php enforces this constraint.
-     */
-    private const FORM_FIELD_ORDER = [
-        'form.text-input', 'form.textarea', 'form.select', 'form.choice', 'form.checkbox',
-        'form.date-input', 'form.number-input', 'form.password-input', 'form.hidden-input',
-        'form.rich-editor', 'form.submit-button',
-    ];
-
-    /** @see self::FORM_FIELD_ORDER */
-    private const CORE_ORDER = [
-        'badge', 'button', 'card', 'grid', 'heading', 'link', 'text', 'stack',
-        'segmented-control', 'modal', 'tab', 'tabs',
-    ];
-
-    /** @see self::FORM_FIELD_ORDER */
-    private const ACTION_ORDER = ['action', 'action.group', 'bulkAction'];
-
-    /** @see self::FORM_FIELD_ORDER */
-    private const FRAGMENT_ORDER = ['fragment'];
-
-    /** @see self::FORM_FIELD_ORDER */
-    private const TABLE_ORDER = ['table'];
-
-    /** @see self::FORM_FIELD_ORDER */
-    private const LAYOUT_ORDER = ['outlet', 'menu', 'menu-item'];
-
-    /**
-     * All built-in component types that are tracked by an ORDER constant, plus the
-     * Form container type that is wired separately. Used by the ordering guard test
-     * to assert that every discovered built-in type is accounted for.
-     *
-     * @return list<string>
-     */
-    public static function knownOrderedTypes(): array
-    {
-        return [
-            ...self::FORM_FIELD_ORDER,
-            'form',
-            ...self::CORE_ORDER,
-            ...self::ACTION_ORDER,
-            ...self::FRAGMENT_ORDER,
-            ...self::TABLE_ORDER,
-            ...self::LAYOUT_ORDER,
-        ];
-    }
-
     protected function configure(TypeScriptTransformerConfigFactory $config): void
     {
         $packageRoot = dirname(__DIR__, 3);
@@ -96,11 +46,11 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
         $discovered = (new ComponentDiscovery)->discover($packageRoot.'/src');
 
         $formFields = $this->buildFormFields($discovered);
-        $coreComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Core\\Components\\', self::CORE_ORDER);
-        $actionComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Actions\\Components\\', self::ACTION_ORDER);
-        $fragmentComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Fragments\\Components\\', self::FRAGMENT_ORDER);
-        $tableComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Tables\\Components\\', self::TABLE_ORDER);
-        $layoutComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Layouts\\Components\\', self::LAYOUT_ORDER);
+        $coreComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Core\\Components\\');
+        $actionComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Actions\\Components\\');
+        $fragmentComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Fragments\\Components\\');
+        $tableComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Tables\\Components\\');
+        $layoutComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Layouts\\Components\\');
 
         $config
             ->transformer(new HttpMethodTransformer)
@@ -170,7 +120,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 && $dc->class !== Form::class,
         );
 
-        usort($fields, $this->orderComparator(self::FORM_FIELD_ORDER));
+        usort($fields, fn (DiscoveredComponent $a, DiscoveredComponent $b): int => $a->type <=> $b->type);
 
         return array_column(
             array_map(fn (DiscoveredComponent $dc): array => [$dc->class, $dc->type], $fields),
@@ -180,20 +130,20 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
     }
 
     /**
-     * Build a component-spec map (class => ['type' => ..., ...]) for a namespace bucket.
+     * Build a component-spec map (class => ['type' => ..., ...]) for a namespace bucket,
+     * sorted by wire type so the generated union output is deterministic.
      *
      * @param  list<DiscoveredComponent>  $discovered
-     * @param  list<string>  $order
      * @return array<class-string, array{type: string, container?: bool, interactive?: bool}>
      */
-    private function buildBucket(array $discovered, string $prefix, array $order): array
+    private function buildBucket(array $discovered, string $prefix): array
     {
         $components = array_filter(
             $discovered,
             fn (DiscoveredComponent $dc): bool => str_starts_with($dc->class, $prefix),
         );
 
-        usort($components, $this->orderComparator($order));
+        usort($components, fn (DiscoveredComponent $a, DiscoveredComponent $b): int => $a->type <=> $b->type);
 
         $result = [];
 
@@ -212,23 +162,5 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
         }
 
         return $result;
-    }
-
-    /**
-     * Returns a usort comparator that sorts DiscoveredComponents by their position
-     * in the given ordered list, placing unrecognised types last.
-     *
-     * @param  list<string>  $order
-     * @return callable(DiscoveredComponent, DiscoveredComponent): int
-     */
-    private function orderComparator(array $order): callable
-    {
-        return function (DiscoveredComponent $a, DiscoveredComponent $b) use ($order): int {
-            $posA = array_search($a->type, $order, true);
-            $posB = array_search($b->type, $order, true);
-
-            return ($posA === false ? PHP_INT_MAX : $posA)
-                <=> ($posB === false ? PHP_INT_MAX : $posB);
-        };
     }
 }

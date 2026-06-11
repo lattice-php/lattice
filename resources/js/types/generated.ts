@@ -167,14 +167,10 @@ export type CoreNode =
       props: Link;
     }
   | {
-      type: "text";
+      type: "modal";
       key?: string;
-      props: Text;
-    }
-  | {
-      type: "stack";
-      key?: string;
-      props: Stack;
+      id?: string;
+      props: Modal;
       schema?: Node[];
     }
   | {
@@ -183,10 +179,9 @@ export type CoreNode =
       props: SegmentedControl;
     }
   | {
-      type: "modal";
+      type: "stack";
       key?: string;
-      id?: string;
-      props: Modal;
+      props: Stack;
       schema?: Node[];
     }
   | {
@@ -200,6 +195,11 @@ export type CoreNode =
       key?: string;
       props: Tabs;
       schema?: Node[];
+    }
+  | {
+      type: "text";
+      key?: string;
+      props: Text;
     };
 export type DateInput = {
   autoFocus: boolean | null;
@@ -288,19 +288,9 @@ export type Form = {
 };
 export type FormFieldNode =
   | {
-      type: "form.text-input";
+      type: "form.checkbox";
       key?: string;
-      props: TextInput;
-    }
-  | {
-      type: "form.textarea";
-      key?: string;
-      props: Textarea;
-    }
-  | {
-      type: "form.select";
-      key?: string;
-      props: Select;
+      props: Checkbox;
     }
   | {
       type: "form.choice";
@@ -308,14 +298,14 @@ export type FormFieldNode =
       props: Choice;
     }
   | {
-      type: "form.checkbox";
-      key?: string;
-      props: Checkbox;
-    }
-  | {
       type: "form.date-input";
       key?: string;
       props: DateInput;
+    }
+  | {
+      type: "form.hidden-input";
+      key?: string;
+      props: HiddenInput;
     }
   | {
       type: "form.number-input";
@@ -328,19 +318,29 @@ export type FormFieldNode =
       props: PasswordInput;
     }
   | {
-      type: "form.hidden-input";
-      key?: string;
-      props: HiddenInput;
-    }
-  | {
       type: "form.rich-editor";
       key?: string;
       props: RichEditor;
     }
   | {
+      type: "form.select";
+      key?: string;
+      props: Select;
+    }
+  | {
       type: "form.submit-button";
       key?: string;
       props: SubmitButton;
+    }
+  | {
+      type: "form.text-input";
+      key?: string;
+      props: TextInput;
+    }
+  | {
+      type: "form.textarea";
+      key?: string;
+      props: Textarea;
     };
 export type FormNode =
   | FormFieldNode
@@ -394,11 +394,6 @@ export type HiddenInput = {
 export type HttpMethod = import("@inertiajs/core").Method;
 export type LayoutNode =
   | {
-      type: "outlet";
-      key?: string;
-      props: Outlet;
-    }
-  | {
       type: "menu";
       key?: string;
       props: Menu;
@@ -409,6 +404,11 @@ export type LayoutNode =
       key?: string;
       props: MenuItem;
       schema?: Node[];
+    }
+  | {
+      type: "outlet";
+      key?: string;
+      props: Outlet;
     };
 export type Link = {
   href: string | null;
