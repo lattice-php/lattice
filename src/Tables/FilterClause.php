@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables;
 
 use JsonSerializable;
-use Lattice\Lattice\Tables\Enums\FilterOperator;
+use Lattice\Lattice\Core\Enums\Op;
 
 final readonly class FilterClause implements JsonSerializable
 {
@@ -32,7 +32,7 @@ final readonly class FilterClause implements JsonSerializable
             return false;
         }
 
-        if (FilterOperator::tryFrom($this->operator)?->requiresValue() === false) {
+        if (Op::tryFrom($this->operator)?->requiresValue() === false) {
             return true;
         }
 

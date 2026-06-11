@@ -24,6 +24,7 @@ use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\Enums\ToastVariant;
@@ -40,7 +41,6 @@ use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\SubmitButton;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\Enums\ConditionOperator;
 use Lattice\Lattice\Fragments\Components\Fragment;
 use Lattice\Lattice\Layouts\Components\Menu;
 use Lattice\Lattice\Layouts\Components\MenuItem;
@@ -49,7 +49,6 @@ use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Columns\ColumnFilter;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\Enums\ColumnType;
-use Lattice\Lattice\Tables\Enums\FilterOperator;
 use Lattice\Lattice\Tables\Enums\FilterType;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\Enums\SortDirection;
@@ -134,9 +133,8 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 PaginationType::class,
                 ColumnType::class,
                 FilterType::class,
-                FilterOperator::class,
+                Op::class,
                 SortDirection::class,
-                ConditionOperator::class,
                 EffectType::class,
             ]))
             ->transformer(new LatticeValueObjectTransformer([

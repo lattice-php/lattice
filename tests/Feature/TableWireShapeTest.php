@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
-use Lattice\Lattice\Tables\Enums\FilterOperator;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableRegistry;
 use Lattice\Lattice\Tables\TableResult;
@@ -50,23 +50,23 @@ it('defaults a column to its value type operator set', function (): void {
 
     expect($column->availableOperators())
         ->toBe([
-            FilterOperator::Contains,
-            FilterOperator::StartsWith,
-            FilterOperator::EndsWith,
-            FilterOperator::Equals,
-            FilterOperator::NotEquals,
-            FilterOperator::Empty,
-            FilterOperator::Filled,
+            Op::Contains,
+            Op::StartsWith,
+            Op::EndsWith,
+            Op::Equals,
+            Op::NotEquals,
+            Op::Empty,
+            Op::Filled,
         ]);
 });
 
 it('narrows the offered operators when a column restricts them', function (): void {
     $column = TextColumn::make('name')->filterable(
-        FilterOperator::Equals,
-        [FilterOperator::Equals, FilterOperator::Contains],
+        Op::Equals,
+        [Op::Equals, Op::Contains],
     );
 
-    expect($column->availableOperators())->toBe([FilterOperator::Equals, FilterOperator::Contains]);
+    expect($column->availableOperators())->toBe([Op::Equals, Op::Contains]);
 
     $filter = json_decode(json_encode($column), true)['filter'];
 

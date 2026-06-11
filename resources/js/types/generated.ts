@@ -128,26 +128,10 @@ export type ColumnData = {
 export type ColumnFilter = {
   readonly enabled: boolean;
   readonly type: FilterType;
-  readonly operators: FilterOperator[];
-  readonly defaultOperator: FilterOperator;
+  readonly operators: Op[];
+  readonly defaultOperator: Op;
 };
 export type ColumnType = "text" | "stack";
-export type ConditionOperator =
-  | "contains"
-  | "starts_with"
-  | "ends_with"
-  | "eq"
-  | "neq"
-  | "gt"
-  | "gte"
-  | "lt"
-  | "lte"
-  | "in"
-  | "not_in"
-  | "before"
-  | "after"
-  | "empty"
-  | "filled";
 export type CoreNode =
   | {
       type: "badge";
@@ -286,22 +270,6 @@ export type FilterClause = {
   readonly operator: string;
   readonly value: string;
 };
-export type FilterOperator =
-  | "contains"
-  | "starts_with"
-  | "ends_with"
-  | "eq"
-  | "neq"
-  | "gt"
-  | "gte"
-  | "lt"
-  | "lte"
-  | "in"
-  | "not_in"
-  | "before"
-  | "after"
-  | "empty"
-  | "filled";
 export type FilterType = "text" | "number" | "date" | "boolean";
 export type Form = {
   action: string | null;
@@ -489,6 +457,22 @@ export type NumberInput = {
   tabIndex: number | null;
   value: any;
 };
+export type Op =
+  | "contains"
+  | "starts_with"
+  | "ends_with"
+  | "eq"
+  | "neq"
+  | "gt"
+  | "gte"
+  | "lt"
+  | "lte"
+  | "in"
+  | "not_in"
+  | "before"
+  | "after"
+  | "empty"
+  | "filled";
 export type Outlet = object;
 export type PageContainer = "centered" | "default";
 export type PageLayout = "app" | "auth" | "none";

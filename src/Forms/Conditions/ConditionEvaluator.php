@@ -4,34 +4,34 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Conditions;
 
-use Lattice\Lattice\Forms\Enums\ConditionOperator;
+use Lattice\Lattice\Core\Enums\Op;
 
 /**
- * Evaluates a ConditionOperator against a pair of values in memory. The
- * server-side counterpart to evaluateOp() in conditions.ts — the two must stay
- * in agreement. Extracted from ConditionOperator so the operator enum is pure
- * vocabulary (mirrors FilterApplier on the Tables side, #127).
+ * Evaluates an Op against a pair of values in memory. The server-side
+ * counterpart to evaluateOp() in conditions.ts — the two must stay in agreement.
+ * Keeping this behavior out of the Op enum (mirrors FilterApplier on the Tables
+ * side) lets the shared operator vocabulary stay pure.
  */
 final class ConditionEvaluator
 {
-    public function evaluate(ConditionOperator $operator, mixed $actual, mixed $expected): bool
+    public function evaluate(Op $operator, mixed $actual, mixed $expected): bool
     {
         return match ($operator) {
-            ConditionOperator::Contains => str_contains((string) $actual, (string) $expected),
-            ConditionOperator::StartsWith => str_starts_with((string) $actual, (string) $expected),
-            ConditionOperator::EndsWith => str_ends_with((string) $actual, (string) $expected),
-            ConditionOperator::Equals => $this->equals($actual, $expected),
-            ConditionOperator::NotEquals => ! $this->equals($actual, $expected),
-            ConditionOperator::GreaterThan => $this->compareNumeric($actual, $expected) > 0,
-            ConditionOperator::GreaterThanOrEqual => $this->compareNumeric($actual, $expected) >= 0,
-            ConditionOperator::LessThan => $this->compareNumeric($actual, $expected) < 0,
-            ConditionOperator::LessThanOrEqual => $this->compareNumeric($actual, $expected) <= 0,
-            ConditionOperator::In => $this->isIn($actual, $expected),
-            ConditionOperator::NotIn => ! $this->isIn($actual, $expected),
-            ConditionOperator::Before => $this->compareDates($actual, $expected) === -1,
-            ConditionOperator::After => $this->compareDates($actual, $expected) === 1,
-            ConditionOperator::Empty => blank($actual),
-            ConditionOperator::Filled => filled($actual),
+            Op::Contains => str_contains((string) $actual, (string) $expected),
+            Op::StartsWith => str_starts_with((string) $actual, (string) $expected),
+            Op::EndsWith => str_ends_with((string) $actual, (string) $expected),
+            Op::Equals => $this->equals($actual, $expected),
+            Op::NotEquals => ! $this->equals($actual, $expected),
+            Op::GreaterThan => $this->compareNumeric($actual, $expected) > 0,
+            Op::GreaterThanOrEqual => $this->compareNumeric($actual, $expected) >= 0,
+            Op::LessThan => $this->compareNumeric($actual, $expected) < 0,
+            Op::LessThanOrEqual => $this->compareNumeric($actual, $expected) <= 0,
+            Op::In => $this->isIn($actual, $expected),
+            Op::NotIn => ! $this->isIn($actual, $expected),
+            Op::Before => $this->compareDates($actual, $expected) === -1,
+            Op::After => $this->compareDates($actual, $expected) === 1,
+            Op::Empty => blank($actual),
+            Op::Filled => filled($actual),
         };
     }
 

@@ -8,10 +8,10 @@ use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Filterable;
 use Lattice\Lattice\Tables\Contracts\TableSource;
-use Lattice\Lattice\Tables\Enums\FilterOperator;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 
 /**
@@ -89,7 +89,7 @@ final readonly class EloquentTableSource implements TableSource
 
             if ($column instanceof Filterable) {
                 $this->filterApplier->apply(
-                    FilterOperator::from($clause->operator),
+                    Op::from($clause->operator),
                     $builder,
                     $column->filterType(),
                     $clause->field,

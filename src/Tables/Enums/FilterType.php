@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Tables\Enums;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Lattice\Lattice\Core\Enums\Op;
 
 enum FilterType: string
 {
@@ -18,48 +19,48 @@ enum FilterType: string
      * The operators offered by default for this value type. A column may narrow
      * this set via Filterable::availableOperators().
      *
-     * @return array<int, FilterOperator>
+     * @return array<int, Op>
      */
     public function operators(): array
     {
         return match ($this) {
             self::Text => [
-                FilterOperator::Contains,
-                FilterOperator::StartsWith,
-                FilterOperator::EndsWith,
-                FilterOperator::Equals,
-                FilterOperator::NotEquals,
-                FilterOperator::Empty,
-                FilterOperator::Filled,
+                Op::Contains,
+                Op::StartsWith,
+                Op::EndsWith,
+                Op::Equals,
+                Op::NotEquals,
+                Op::Empty,
+                Op::Filled,
             ],
             self::Number => [
-                FilterOperator::Equals,
-                FilterOperator::NotEquals,
-                FilterOperator::GreaterThan,
-                FilterOperator::GreaterThanOrEqual,
-                FilterOperator::LessThan,
-                FilterOperator::LessThanOrEqual,
-                FilterOperator::Empty,
-                FilterOperator::Filled,
+                Op::Equals,
+                Op::NotEquals,
+                Op::GreaterThan,
+                Op::GreaterThanOrEqual,
+                Op::LessThan,
+                Op::LessThanOrEqual,
+                Op::Empty,
+                Op::Filled,
             ],
             self::Date => [
-                FilterOperator::Equals,
-                FilterOperator::Before,
-                FilterOperator::After,
-                FilterOperator::Empty,
-                FilterOperator::Filled,
+                Op::Equals,
+                Op::Before,
+                Op::After,
+                Op::Empty,
+                Op::Filled,
             ],
             self::Boolean => [
-                FilterOperator::Equals,
-                FilterOperator::Empty,
-                FilterOperator::Filled,
+                Op::Equals,
+                Op::Empty,
+                Op::Filled,
             ],
         };
     }
 
-    public function defaultOperator(): FilterOperator
+    public function defaultOperator(): Op
     {
-        return $this === self::Text ? FilterOperator::Contains : FilterOperator::Equals;
+        return $this === self::Text ? Op::Contains : Op::Equals;
     }
 
     /**

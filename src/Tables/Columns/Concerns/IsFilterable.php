@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns\Concerns;
 
-use Lattice\Lattice\Tables\Enums\FilterOperator;
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
 trait IsFilterable
 {
     protected bool $filterable = false;
 
-    protected ?FilterOperator $defaultOperator = null;
+    protected ?Op $defaultOperator = null;
 
     /**
-     * @var array<int, FilterOperator>|null
+     * @var array<int, Op>|null
      */
     protected ?array $operators = null;
 
     /**
-     * @param  array<int, FilterOperator>  $operators  narrows the offered operators; defaults to the value type's full set
+     * @param  array<int, Op>  $operators  narrows the offered operators; defaults to the value type's full set
      */
-    public function filterable(?FilterOperator $default = null, array $operators = []): static
+    public function filterable(?Op $default = null, array $operators = []): static
     {
         $this->filterable = true;
         $this->defaultOperator = $default;
@@ -41,14 +41,14 @@ trait IsFilterable
     }
 
     /**
-     * @return array<int, FilterOperator>
+     * @return array<int, Op>
      */
     public function availableOperators(): array
     {
         return $this->operators ?? $this->filterType()->operators();
     }
 
-    public function defaultFilterOperator(): FilterOperator
+    public function defaultFilterOperator(): Op
     {
         return $this->defaultOperator ?? $this->filterType()->defaultOperator();
     }

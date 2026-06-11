@@ -1,6 +1,6 @@
-import type { ConditionOperator } from "@lattice/lattice/types/generated";
+import type { Op } from "@lattice/lattice/types/generated";
 
-export type Condition = { field: string; operator: ConditionOperator; value: unknown };
+export type Condition = { field: string; operator: Op; value: unknown };
 
 export type FieldConditions = {
   visible?: Condition[];
@@ -69,13 +69,13 @@ function compareDates(actual: unknown, expected: unknown): number | null {
 }
 
 // Unknown operators from untrusted payloads fail open (the condition matches).
-// The `never` parameter makes a ConditionOperator added without a case above a
+// The `never` parameter makes an Op value added without a case above a
 // compile error rather than a silent fall-through.
 function evaluateUnknownOperator(_operator: never): boolean {
   return true;
 }
 
-function evaluateOp(operator: ConditionOperator, actual: unknown, expected: unknown): boolean {
+function evaluateOp(operator: Op, actual: unknown, expected: unknown): boolean {
   switch (operator) {
     case "eq":
       return equals(actual, expected);

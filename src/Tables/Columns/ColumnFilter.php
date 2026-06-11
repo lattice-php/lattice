@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Columns;
 
 use JsonSerializable;
-use Lattice\Lattice\Tables\Enums\FilterOperator;
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
 /**
@@ -15,13 +15,13 @@ use Lattice\Lattice\Tables\Enums\FilterType;
 final readonly class ColumnFilter implements JsonSerializable
 {
     /**
-     * @param  array<int, FilterOperator>  $operators
+     * @param  array<int, Op>  $operators
      */
     public function __construct(
         public bool $enabled,
         public FilterType $type,
         public array $operators,
-        public FilterOperator $defaultOperator,
+        public Op $defaultOperator,
     ) {}
 
     /**
@@ -32,7 +32,7 @@ final readonly class ColumnFilter implements JsonSerializable
         return [
             'enabled' => $this->enabled,
             'type' => $this->type->value,
-            'operators' => array_map(fn (FilterOperator $operator): string => $operator->value, $this->operators),
+            'operators' => array_map(fn (Op $operator): string => $operator->value, $this->operators),
             'defaultOperator' => $this->defaultOperator->value,
         ];
     }

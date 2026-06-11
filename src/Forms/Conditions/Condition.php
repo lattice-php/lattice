@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Forms\Conditions;
 
 use JsonSerializable;
-use Lattice\Lattice\Forms\Enums\ConditionOperator;
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Forms\FormData;
 
 final class Condition implements JsonSerializable
 {
     public function __construct(
         public readonly string $field,
-        public readonly ConditionOperator $operator,
+        public readonly Op $operator,
         public readonly mixed $value,
     ) {}
 

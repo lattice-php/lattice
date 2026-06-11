@@ -6,15 +6,13 @@ namespace Lattice\Lattice\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lattice\Lattice\Tables\Enums\FilterOperator;
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
 /**
- * Spike (#127): the query-building behavior lifted out of FilterOperator. With
- * apply() living here, FilterOperator no longer depends on Eloquent and is pure
- * vocabulary + metadata — the precondition for merging it with the Eloquent-free
- * ConditionOperator into one shared `Op` enum. ConditionOperator::evaluate() is
- * the symmetric in-memory counterpart that would move to a ConditionEvaluator.
+ * Builds the SQL for a table filter operator. The Tables-side counterpart to
+ * ConditionEvaluator (in-memory). Keeping this behavior out of the Op enum is
+ * what lets the shared operator vocabulary stay dependency-free.
  */
 final class FilterApplier
 {
@@ -23,26 +21,26 @@ final class FilterApplier
      *
      * @param  Builder<TModel>  $builder
      */
-    public function apply(FilterOperator $operator, Builder $builder, FilterType $filterType, string $field, string $value): void
+    public function apply(Op $operator, Builder $builder, FilterType $filterType, string $field, string $value): void
     {
         match ($operator) {
-            FilterOperator::Contains => $builder->where($field, 'like', '%'.$this->escapeLike($value).'%'),
-            FilterOperator::StartsWith => $builder->where($field, 'like', $this->escapeLike($value).'%'),
-            FilterOperator::EndsWith => $builder->where($field, 'like', '%'.$this->escapeLike($value)),
-            FilterOperator::Equals => $filterType->applyEquals($builder, $field, $value),
-            FilterOperator::NotEquals => $this->compare($builder, $filterType, $field, '!=', $value),
-            FilterOperator::GreaterThan => $this->compare($builder, $filterType, $field, '>', $value),
-            FilterOperator::GreaterThanOrEqual => $this->compare($builder, $filterType, $field, '>=', $value),
-            FilterOperator::LessThan => $this->compare($builder, $filterType, $field, '<', $value),
-            FilterOperator::LessThanOrEqual => $this->compare($builder, $filterType, $field, '<=', $value),
-            FilterOperator::In => $builder->whereIn($field, $this->splitList($value)),
-            FilterOperator::NotIn => $builder->whereNotIn($field, $this->splitList($value)),
-            FilterOperator::Before => $builder->whereDate($field, '<', $value),
-            FilterOperator::After => $builder->whereDate($field, '>', $value),
-            FilterOperator::Empty => $builder->where(function (Builder $query) use ($field): void {
+            Op::Contains => $builder->where($field, 'like', '%'.$this->escapeLike($value).'%'),
+            Op::StartsWith => $builder->where($field, 'like', $this->escapeLike($value).'%'),
+            Op::EndsWith => $builder->where($field, 'like', '%'.$this->escapeLike($value)),
+            Op::Equals => $filterType->applyEquals($builder, $field, $value),
+            Op::NotEquals => $this->compare($builder, $filterType, $field, '!=', $value),
+            Op::GreaterThan => $this->compare($builder, $filterType, $field, '>', $value),
+            Op::GreaterThanOrEqual => $this->compare($builder, $filterType, $field, '>=', $value),
+            Op::LessThan => $this->compare($builder, $filterType, $field, '<', $value),
+            Op::LessThanOrEqual => $this->compare($builder, $filterType, $field, '<=', $value),
+            Op::In => $builder->whereIn($field, $this->splitList($value)),
+            Op::NotIn => $builder->whereNotIn($field, $this->splitList($value)),
+            Op::Before => $builder->whereDate($field, '<', $value),
+            Op::After => $builder->whereDate($field, '>', $value),
+            Op::Empty => $builder->where(function (Builder $query) use ($field): void {
                 $query->whereNull($field)->orWhere($field, '');
             }),
-            FilterOperator::Filled => $builder->whereNotNull($field)->where($field, '!=', ''),
+            Op::Filled => $builder->whereNotNull($field)->where($field, '!=', ''),
         };
     }
 

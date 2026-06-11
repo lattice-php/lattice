@@ -4,7 +4,7 @@ import type {
   ColumnFilter,
   ColumnType,
   FilterClause as WireFilterClause,
-  FilterOperator,
+  Op,
   PaginationType,
   Table,
   TableSort,
@@ -18,11 +18,11 @@ export type TableRow = Record<string, unknown>;
 
 /**
  * The wire types `operator` as a free string (validated server-side); on the
- * client a clause always carries a known FilterOperator, built from a column's
+ * client a clause always carries a known Op, built from a column's
  * allowed operators.
  */
 export type FilterClause = Omit<WireFilterClause, "operator"> & {
-  operator: FilterOperator;
+  operator: Op;
 };
 
 export type TableState = {

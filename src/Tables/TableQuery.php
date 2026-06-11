@@ -8,10 +8,10 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use JsonSerializable;
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Filterable;
 use Lattice\Lattice\Tables\Columns\Sortable;
-use Lattice\Lattice\Tables\Enums\FilterOperator;
 
 final readonly class TableQuery implements JsonSerializable
 {
@@ -149,7 +149,7 @@ final readonly class TableQuery implements JsonSerializable
                 throw InvalidTableQuery::filter($filter->field, $table);
             }
 
-            $operator = FilterOperator::tryFrom($filter->operator);
+            $operator = Op::tryFrom($filter->operator);
 
             if ($operator === null || ! in_array($operator, $column->availableOperators(), true)) {
                 throw InvalidTableQuery::operator($filter->operator, $filter->field, $table);
