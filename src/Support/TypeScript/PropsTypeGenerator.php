@@ -14,15 +14,19 @@ final class PropsTypeGenerator
     /**
      * Returns a TypeScript object-type literal for the public properties of a class.
      *
+     * When $ownPropertiesOnly is true, inherited properties (e.g. a column's `key`)
+     * are excluded and only properties declared on $class itself are emitted.
+     *
      * @param  class-string  $class
      */
-    public function forClass(string $class): string
+    public function forClass(string $class, bool $ownPropertiesOnly = false): string
     {
         $reflection = new ReflectionClass($class);
 
         $properties = array_values(array_filter(
             $reflection->getProperties(ReflectionProperty::IS_PUBLIC),
-            static fn (ReflectionProperty $p): bool => ! $p->isStatic(),
+            static fn (ReflectionProperty $p): bool => ! $p->isStatic()
+                && (! $ownPropertiesOnly || $p->getDeclaringClass()->getName() === $class),
         ));
 
         usort(

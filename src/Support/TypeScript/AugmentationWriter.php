@@ -10,7 +10,6 @@ final class AugmentationWriter
 {
     public function __construct(
         private readonly PropsTypeGenerator $propsTypeGenerator,
-        private readonly ColumnPropsTransformer $columnPropsTransformer,
     ) {}
 
     /**
@@ -38,33 +37,13 @@ final class AugmentationWriter
             fn (DiscoveredComponent $a, DiscoveredComponent $b): int => $a->type <=> $b->type,
         );
 
-        $componentLines = [];
-        foreach ($componentEntries as $component) {
-            $propsType = $this->propsTypeGenerator->forClass($component->class);
-            $indented = $this->indent($propsType, 4);
-            $componentLines[] = sprintf('    "%s": %s;', $component->type, $indented);
-        }
+        $componentLines = $this->entryLines($componentEntries);
+        $columnLines = $this->entryLines($columnEntries, true);
 
-        $columnLines = [];
-        foreach ($columnEntries as $column) {
-            $propsType = $this->columnPropsTransformer->forClass($column->class);
-            $indented = $this->indent($propsType, 4);
-            $columnLines[] = sprintf('    "%s": %s;', $column->type, $indented);
-        }
-
-        $componentBody = $componentLines === [] ? '' : "\n".implode("\n", $componentLines)."\n  ";
-        $columnBody = $columnLines === [] ? '' : "\n".implode("\n", $columnLines)."\n  ";
-
-        $interfaceLines = [
-            '  interface ComponentProps {',
-            '  '.$componentBody,
-            '  }',
-        ];
+        $interfaceLines = $this->renderInterface('ComponentProps', $componentLines);
 
         if ($columnLines !== []) {
-            $interfaceLines[] = '  interface ColumnProps {';
-            $interfaceLines[] = '  '.$columnBody;
-            $interfaceLines[] = '  }';
+            $interfaceLines = [...$interfaceLines, ...$this->renderInterface('ColumnProps', $columnLines)];
         }
 
         $content = implode("\n", [
@@ -79,6 +58,34 @@ final class AugmentationWriter
 
         File::ensureDirectoryExists(dirname($output));
         File::put($output, $content);
+    }
+
+    /**
+     * @param  list<DiscoveredComponent>  $entries
+     * @return list<string>
+     */
+    private function entryLines(array $entries, bool $ownPropertiesOnly = false): array
+    {
+        return array_map(function (DiscoveredComponent $entry) use ($ownPropertiesOnly): string {
+            $propsType = $this->propsTypeGenerator->forClass($entry->class, $ownPropertiesOnly);
+
+            return sprintf('    "%s": %s;', $entry->type, $this->indent($propsType, 4));
+        }, $entries);
+    }
+
+    /**
+     * @param  list<string>  $lines
+     * @return list<string>
+     */
+    private function renderInterface(string $name, array $lines): array
+    {
+        $body = $lines === [] ? '' : "\n".implode("\n", $lines)."\n  ";
+
+        return [
+            sprintf('  interface %s {', $name),
+            '  '.$body,
+            '  }',
+        ];
     }
 
     /** Indent every line except the first by $spaces, preserving blank lines. */

@@ -3,15 +3,15 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\File;
-use Lattice\Lattice\Support\TypeScript\ColumnPropsTransformer;
+use Lattice\Lattice\Support\TypeScript\PropsTypeGenerator;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleColumn;
 
 use function Pest\Laravel\artisan;
 
 it('generates a TS type for own public properties only, excluding inherited ones', function () {
-    $transformer = new ColumnPropsTransformer;
+    $generator = new PropsTypeGenerator;
 
-    $type = $transformer->forClass(SampleColumn::class);
+    $type = $generator->forClass(SampleColumn::class, true);
 
     expect($type)->toContain('max')->toContain('number');
     expect(str_contains($type, 'key'))->toBeFalse();
