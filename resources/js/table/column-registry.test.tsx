@@ -36,7 +36,10 @@ describe("column registry", () => {
           <tbody>
             <tr>
               <td>
-                <ColumnCell column={col({ key: "a", label: "A", type: "column.upper" })} row={{ a: "hi" }} />
+                <ColumnCell
+                  column={col({ key: "a", label: "A", type: "column.upper" })}
+                  row={{ a: "hi" }}
+                />
               </td>
             </tr>
           </tbody>
@@ -54,7 +57,10 @@ describe("column registry", () => {
           <tbody>
             <tr>
               <td>
-                <ColumnCell column={col({ key: "b", label: "B", type: "text" })} row={{ b: "plain" }} />
+                <ColumnCell
+                  column={col({ key: "b", label: "B", type: "text" })}
+                  row={{ b: "plain" }}
+                />
               </td>
             </tr>
           </tbody>
