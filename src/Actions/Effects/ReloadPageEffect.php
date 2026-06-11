@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Actions\Effects;
 
 use Lattice\Lattice\Actions\Enums\EffectType;
+use Lattice\Lattice\Attributes;
 
-final readonly class ReloadPageEffect extends Effect
-{
-    public const EffectType TYPE = EffectType::ReloadPage;
-}
+#[Attributes\Effect(EffectType::ReloadPage)]
+final readonly class ReloadPageEffect extends Effect {}

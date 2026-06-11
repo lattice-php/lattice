@@ -6,16 +6,8 @@ namespace Workbench\App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Lattice\Lattice\Actions\Contracts\Effect;
-use Lattice\Lattice\Actions\Effects\CloseModalEffect;
-use Lattice\Lattice\Actions\Effects\DownloadEffect;
-use Lattice\Lattice\Actions\Effects\Effect as EffectValue;
-use Lattice\Lattice\Actions\Effects\OpenModalEffect;
-use Lattice\Lattice\Actions\Effects\RedirectEffect;
-use Lattice\Lattice\Actions\Effects\ReloadComponentEffect;
-use Lattice\Lattice\Actions\Effects\ReloadPageEffect;
-use Lattice\Lattice\Actions\Effects\ResetFormEffect;
-use Lattice\Lattice\Actions\Effects\ToastEffect;
 use Lattice\Lattice\Actions\Enums\EffectType;
+use Lattice\Lattice\Attributes\Effect as EffectAttribute;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
@@ -39,6 +31,8 @@ use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\Enums\SortDirection;
 use Lattice\Lattice\Tables\FilterClause;
 use Lattice\Lattice\Tables\TableSort;
+use Spatie\Attributes\Attributes;
+use Spatie\StructureDiscoverer\Discover;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 use Workbench\App\Support\TypeScript\EnumTransformer;
 use Workbench\App\Support\TypeScript\HttpMethodTransformer;
@@ -51,27 +45,12 @@ final class GenerateInternalTypesCommand extends Command
 
     protected $description = "Regenerate Lattice's built-in TypeScript types (resources/js/types/generated.ts)";
 
-    /**
-     * Effect value objects driving both the ValueObjectTransformer allow-list
-     * and the generated `Effect` union; each VO carries its own wire type.
-     *
-     * @var array<int, class-string<EffectValue>>
-     */
-    private const EFFECTS = [
-        CloseModalEffect::class,
-        DownloadEffect::class,
-        OpenModalEffect::class,
-        RedirectEffect::class,
-        ReloadComponentEffect::class,
-        ReloadPageEffect::class,
-        ResetFormEffect::class,
-        ToastEffect::class,
-    ];
-
     public function handle(TypeScriptGenerator $generator): int
     {
         $packageRoot = dirname(__DIR__, 4);
         $src = $packageRoot.'/src';
+
+        $effects = $this->discoverEffects($src.'/Actions/Effects');
 
         $discovered = (new ComponentDiscovery)->discover($src);
 
@@ -107,7 +86,7 @@ final class GenerateInternalTypesCommand extends Command
                     ColumnFilter::class,
                     FilterClause::class,
                     TableSort::class,
-                    ...self::EFFECTS,
+                    ...array_keys($effects),
                 ]),
                 new ComponentTransformer([
                     ...array_keys($formFields),
@@ -130,7 +109,7 @@ final class GenerateInternalTypesCommand extends Command
                     $layoutComponents,
                     'form',
                     Effect::class,
-                    self::EFFECTS,
+                    $effects,
                 ),
             ],
             new FlatModuleWriter('generated.ts'),
@@ -141,6 +120,32 @@ final class GenerateInternalTypesCommand extends Command
         $this->components->info('Regenerated built-in TypeScript types.');
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Effect value objects keyed by class-string, valued by the wire type from
+     * their #[Effect] attribute. Drives the allow-list and the generated union.
+     *
+     * @return array<class-string, string>
+     */
+    private function discoverEffects(string $path): array
+    {
+        /** @var list<class-string> $classes */
+        $classes = (new Discover(directories: [$path]))->classes()->get();
+
+        $effects = [];
+
+        foreach ($classes as $class) {
+            $effect = Attributes::get($class, EffectAttribute::class);
+
+            if ($effect === null) {
+                continue;
+            }
+
+            $effects[$class] = $effect->type->value;
+        }
+
+        return $effects;
     }
 
     /**
