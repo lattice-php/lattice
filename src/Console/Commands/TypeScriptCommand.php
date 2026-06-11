@@ -1,0 +1,64 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Lattice\Lattice\Console\Commands;
+
+use Illuminate\Console\Command;
+use Lattice\Lattice\Support\TypeScript\AugmentationWriter;
+use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
+use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
+
+final class TypeScriptCommand extends Command
+{
+    protected $signature = 'lattice:typescript';
+
+    protected $description = "Generate TypeScript types for the app's custom Lattice components";
+
+    public function handle(ComponentDiscovery $discovery, AugmentationWriter $writer): int
+    {
+        $discovered = $this->discoverAll($discovery);
+
+        $output = config('lattice.typescript.output');
+        $module = config('lattice.typescript.module', '@lattice-php/lattice');
+
+        $writer->write($discovered, $output, $module);
+
+        $count = count(array_filter(
+            $discovered,
+            static fn (DiscoveredComponent $c): bool => $c->category !== 'column',
+        ));
+
+        $this->components->info(sprintf('Generated %d component type(s) → %s', $count, $output));
+
+        return self::SUCCESS;
+    }
+
+    /**
+     * @return list<DiscoveredComponent>
+     */
+    private function discoverAll(ComponentDiscovery $discovery): array
+    {
+        $discoveryPaths = config('lattice.discover', []);
+
+        if (! is_array($discoveryPaths)) {
+            return [];
+        }
+
+        $discovered = [];
+
+        foreach ($discoveryPaths as $path => $namespace) {
+            // Support both "path => namespace" and ["path" => ..., "namespace" => ...] config forms.
+            if (is_array($namespace)) {
+                $path = $namespace['path'] ?? null;
+                $namespace = $namespace['namespace'] ?? null;
+            }
+
+            if (is_string($path) && is_string($namespace)) {
+                $discovered = [...$discovered, ...$discovery->discover($path, $namespace)];
+            }
+        }
+
+        return $discovered;
+    }
+}
