@@ -72,17 +72,36 @@ NumberInput::make('guardian', 'Guardian name')
     ->requiredWhen('age', '<', 18);
 ```
 
-The operator accepts a comparison string or a `ConditionOperator` case:
+The operator accepts a comparison string or an `Op` case (`Lattice\Lattice\Core\Enums\Op`):
 
-| Comparison        | Operator                            |
-| ----------------- | ----------------------------------- |
-| `=`, `==`         | `ConditionOperator::Equals`         |
-| `!=`, `<>`        | `ConditionOperator::NotEquals`      |
-| `>`, `>=`         | `GreaterThan`, `GreaterThanOrEqual` |
-| `<`, `<=`         | `LessThan`, `LessThanOrEqual`       |
-| `contains`        | `ConditionOperator::Contains`       |
-| `in`, `not_in`    | `In`, `NotIn`                       |
-| `empty`, `filled` | `Empty`, `Filled`                   |
+| Condition  | String                              | `Op` case                                     |
+| ---------- | ----------------------------------- | --------------------------------------------- |
+| equal      | `=`, `==`                           | `Op::Equals`                                  |
+| not equal  | `!=`, `<>`                          | `Op::NotEquals`                               |
+| greater    | `>`, `>=`                           | `Op::GreaterThan`, `Op::GreaterThanOrEqual`   |
+| less       | `<`, `<=`                           | `Op::LessThan`, `Op::LessThanOrEqual`         |
+| substring  | `contains`, `starts_with`, `ends_with` | `Op::Contains`, `Op::StartsWith`, `Op::EndsWith` |
+| membership | `in`, `not_in`                      | `Op::In`, `Op::NotIn`                         |
+| presence   | `empty`, `filled`                   | `Op::Empty`, `Op::Filled`                     |
+| dates      | `before`, `after`                   | `Op::Before`, `Op::After`                     |
+
+## Server and client agreement
+
+Conditions are evaluated twice: on the client as the user types, and again on the server so they
+cannot be bypassed. For that to be safe, both sides must coerce values identically. The contract is:
+
+- **Equality against a boolean** coerces the value the way PHP's `filter_var(…, FILTER_VALIDATE_BOOLEAN)`
+  does — `1`, `true`, `on`, and `yes` are true, anything else is false. Against a non-boolean, values
+  compare as strings.
+- **Numeric comparisons** (`>`, `>=`, `<`, `<=`) coerce both sides to numbers, so use them on numeric
+  fields.
+- **`contains` / `starts_with` / `ends_with`** compare as strings.
+- **`empty` / `filled`** treat `null` and the empty string as empty.
+- **`before` / `after`** parse both sides as dates; a value that cannot be parsed never matches.
+
+A shared truth-table fixture (`tests/Fixtures/condition-operator-parity.json`) is run by both a PHP
+test and a TypeScript test, so the server (`ConditionEvaluator`) and client (`evaluateOp`) evaluators
+cannot drift apart.
 
 ## Computed values
 
