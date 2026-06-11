@@ -14,6 +14,45 @@ vi.mock("@inertiajs/react", () => ({
 
 const TextProbe: RendererComponent<"text"> = ({ node }) => <span>{String(node.props?.text)}</span>;
 
+function renderTabs(tabsProps: Record<string, unknown>) {
+  const registry = createRegistry({
+    components: {
+      tab: eagerComponent(TabComponent),
+      tabs: eagerComponent(TabsComponent),
+      text: eagerComponent(TextProbe),
+    },
+    name: "test/tabs",
+  });
+
+  const tab = (label: string, value: string) => ({
+    schema: [{ props: { text: `${label} panel` }, type: "text" }],
+    props: { label, value },
+    type: "tab",
+  });
+
+  return render(
+    <Renderer
+      nodes={[
+        {
+          schema: [
+            tab("Overview", "overview"),
+            tab("Details", "details"),
+            tab("History", "history"),
+          ],
+          props: {
+            defaultValue: "overview",
+            orientation: "horizontal",
+            queryKey: "tabs",
+            ...tabsProps,
+          },
+          type: "tabs",
+        },
+      ]}
+      registry={registry}
+    />,
+  );
+}
+
 describe("Lattice tabs component", () => {
   beforeEach(() => {
     vi.mocked(router.visit).mockClear();
@@ -279,5 +318,55 @@ describe("Lattice tabs component", () => {
     fireEvent.click(screen.getByRole("tab", { name: "Later" }));
 
     expect(screen.getByText("Loaded after opening")).toBeVisible();
+  });
+
+  it("roves focus across tabs with arrow, home and end keys", () => {
+    renderTabs({});
+    const tablist = screen.getByRole("tablist");
+    const overview = screen.getByRole("tab", { name: "Overview" });
+    const details = screen.getByRole("tab", { name: "Details" });
+    const history = screen.getByRole("tab", { name: "History" });
+
+    expect(tablist).toHaveAttribute("aria-orientation", "horizontal");
+    expect(overview).toHaveAttribute("tabindex", "0");
+    expect(details).toHaveAttribute("tabindex", "-1");
+
+    overview.focus();
+    fireEvent.keyDown(overview, { key: "ArrowRight" });
+    expect(details).toHaveFocus();
+
+    fireEvent.keyDown(details, { key: "ArrowRight" });
+    expect(history).toHaveFocus();
+
+    fireEvent.keyDown(history, { key: "ArrowRight" });
+    expect(overview).toHaveFocus();
+
+    fireEvent.keyDown(overview, { key: "End" });
+    expect(history).toHaveFocus();
+
+    fireEvent.keyDown(history, { key: "Home" });
+    expect(overview).toHaveFocus();
+
+    fireEvent.keyDown(overview, { key: "ArrowLeft" });
+    expect(history).toHaveFocus();
+  });
+
+  it("lays out vertical tabs and roves focus with up and down arrows", () => {
+    renderTabs({ orientation: "vertical" });
+    const tablist = screen.getByRole("tablist");
+    const overview = screen.getByRole("tab", { name: "Overview" });
+    const details = screen.getByRole("tab", { name: "Details" });
+
+    expect(tablist).toHaveAttribute("aria-orientation", "vertical");
+
+    overview.focus();
+    fireEvent.keyDown(overview, { key: "ArrowDown" });
+    expect(details).toHaveFocus();
+
+    fireEvent.keyDown(details, { key: "ArrowUp" });
+    expect(overview).toHaveFocus();
+
+    fireEvent.keyDown(overview, { key: "ArrowRight" });
+    expect(overview).toHaveFocus();
   });
 });

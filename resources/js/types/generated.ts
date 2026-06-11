@@ -473,6 +473,7 @@ export type Op =
   | "after"
   | "empty"
   | "filled";
+export type Orientation = "horizontal" | "vertical";
 export type Outlet = object;
 export type PageContainer = "centered" | "default";
 export type PageLayout = "app" | "auth" | "none";
@@ -609,6 +610,7 @@ export type TableSort = {
 export type Tabs = {
   activeValue: string;
   defaultValue: string | null;
+  orientation: Orientation;
   queryKey: string;
 };
 export type Text = {

@@ -5,12 +5,15 @@ namespace Lattice\Lattice\Core\Components;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Date;
 use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Core\Enums\Orientation;
 
 class Tabs extends ContainerComponent
 {
     public ?string $defaultValue = null;
 
     public string $queryKey = 'tabs';
+
+    public Orientation $orientation = Orientation::Horizontal;
 
     public string $activeValue;
 
@@ -29,6 +32,13 @@ class Tabs extends ContainerComponent
     public function queryKey(string $key): static
     {
         $this->queryKey = $key;
+
+        return $this;
+    }
+
+    public function orientation(Orientation $orientation): static
+    {
+        $this->orientation = $orientation;
 
         return $this;
     }

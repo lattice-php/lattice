@@ -10,6 +10,7 @@ use Lattice\Lattice\Core\Components\Tabs;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Gap;
+use Lattice\Lattice\Core\Enums\Orientation;
 use Lattice\Lattice\Core\Enums\Width;
 
 test('GOLDEN stack serializes enums direction and key wire-identically', function () {
@@ -107,6 +108,7 @@ test('GOLDEN tabs serialize defaultValue queryKey and computed activeValue', fun
             'key' => 'settings-tabs',
             'props' => [
                 'queryKey' => 'tabs',
+                'orientation' => 'horizontal',
                 'defaultValue' => 'security',
                 'activeValue' => 'security',
             ],
@@ -132,10 +134,16 @@ test('GOLDEN tabs with custom queryKey and no defaultValue keep empty activeValu
             'key' => 'settings-tabs',
             'props' => [
                 'queryKey' => 'settings-tab',
+                'orientation' => 'horizontal',
                 'activeValue' => '',
                 'defaultValue' => null,
             ],
         ]);
+});
+
+test('GOLDEN tabs serialize a vertical orientation', function () {
+    expect(wire(Tabs::make('settings-tabs')->orientation(Orientation::Vertical))['props']['orientation'])
+        ->toBe('vertical');
 });
 
 test('GOLDEN confirmed inactive tab serializes confirm metadata and drops its children', function () {

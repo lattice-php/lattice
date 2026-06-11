@@ -1357,6 +1357,7 @@ test('tabs serialize tab panels as composable children', function () {
                 'activeValue' => 'security',
                 'defaultValue' => 'security',
                 'queryKey' => 'tabs',
+                'orientation' => 'horizontal',
             ],
             'schema' => [
                 [
@@ -1417,6 +1418,7 @@ test('tabs can customize their query string key', function () {
             'props' => [
                 'activeValue' => '',
                 'queryKey' => 'settings-tab',
+                'orientation' => 'horizontal',
                 'defaultValue' => null,
             ],
         ]);
