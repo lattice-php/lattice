@@ -98,14 +98,6 @@ class MenuItem extends ContainerComponent
     }
 
     /**
-     * @param  array<int, Component>  $items
-     */
-    public function items(array $items): static
-    {
-        return $this->schema($items);
-    }
-
-    /**
      * @param  array<int, Component>  $children
      */
     public function children(array $children): static

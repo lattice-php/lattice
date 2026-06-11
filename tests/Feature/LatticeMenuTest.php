@@ -21,7 +21,7 @@ final class MenuProductsPage extends Page
 test('a menu serializes its items as a menu node tree', function () {
     $menu = Menu::make('main')->items([
         MenuItem::make('Home')->href('/'),
-        MenuItem::make('Account')->items([
+        MenuItem::make('Account')->children([
             MenuItem::make('Profile')->href('/profile'),
         ]),
     ]);
