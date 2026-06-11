@@ -7,6 +7,7 @@ namespace Workbench\App\Pages;
 use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
+use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page;
@@ -28,7 +29,7 @@ class ProductsPage extends Page
                 ->schema([
                     Stack::make('products-header')
                         ->direction('row')
-                        ->align('center')
+                        ->align(Align::Center)
                         ->schema([
                             Heading::make('Products'),
                             Button::make('Create product')

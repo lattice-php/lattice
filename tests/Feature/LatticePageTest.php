@@ -37,7 +37,9 @@ use Lattice\Lattice\Core\Components\Tabs;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Concerns\CreatesToastMessages;
 use Lattice\Lattice\Core\Enums\Align;
+use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
+use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
@@ -1004,12 +1006,12 @@ test('action groups serialize grouped child actions', function () {
             ActionComponent::make('workbench.users.promote')
                 ->endpoint('/lattice/actions/workbench.users.promote')
                 ->label('Promote')
-                ->method('patch'),
+                ->method(HttpMethod::Patch),
             ActionComponent::make('workbench.users.remove')
                 ->endpoint('/lattice/actions/workbench.users.remove')
                 ->label('Remove')
-                ->method('delete')
-                ->variant('destructive'),
+                ->method(HttpMethod::Delete)
+                ->variant(ButtonVariant::Destructive),
         ]));
 
     expect($group)
@@ -1198,8 +1200,8 @@ test('interaction endpoints re-run authorization for every interaction', functio
 test('actions can serialize confirmation modal configuration', function () {
     expect(wire(ActionComponent::make('delete-account')
         ->label('Delete account')
-        ->method('delete')
-        ->variant('destructive')
+        ->method(HttpMethod::Delete)
+        ->variant(ButtonVariant::Destructive)
         ->confirm(
             title: 'Delete account?',
             description: 'This cannot be undone.',
@@ -1680,7 +1682,7 @@ class WorkbenchProfileForm extends FormDefinition
     public function definition(Form $form, Request $request): Form
     {
         return $form
-            ->method('patch')
+            ->method(HttpMethod::Patch)
             ->schema([
                 Text::make('Profile details'),
             ])
@@ -2036,8 +2038,8 @@ class WorkbenchPingAction extends ActionDefinition
     {
         return $action
             ->label('Ping')
-            ->method('post')
-            ->variant('secondary')
+            ->method(HttpMethod::Post)
+            ->variant(ButtonVariant::Secondary)
             ->effects([
                 Effect::toast('Ready.'),
                 Effect::reloadComponent('workbench.users'),

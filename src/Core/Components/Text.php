@@ -18,9 +18,9 @@ class Text extends Component
         return $component;
     }
 
-    public function align(Align|string $align): static
+    public function align(Align $align): static
     {
-        $this->align = $align instanceof Align ? $align : Align::from($align);
+        $this->align = $align;
 
         return $this;
     }

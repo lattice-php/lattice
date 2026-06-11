@@ -9,6 +9,7 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\Action;
+use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Workbench\App\Models\Product;
@@ -21,7 +22,7 @@ class ArchiveProductAction extends ActionDefinition
         return $action
             ->label('Archive')
             ->method(HttpMethod::Patch)
-            ->variant('destructive')
+            ->variant(ButtonVariant::Destructive)
             ->confirm('Archive product?', 'This hides the product from the catalogue.');
     }
 

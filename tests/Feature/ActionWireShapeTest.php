@@ -6,6 +6,7 @@ use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Actions\Components\ActionGroup;
 use Lattice\Lattice\Actions\Components\BulkAction;
 use Lattice\Lattice\Actions\Effect;
+use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\LucideIcon;
 use Lattice\Lattice\Facades\Lattice;
@@ -18,7 +19,7 @@ it('serializes the action wire shape', function (): void {
         ->label('Archive')
         ->method(HttpMethod::Patch)
         ->icon(LucideIcon::Send)
-        ->variant('destructive')
+        ->variant(ButtonVariant::Destructive)
         ->confirm('Archive product?', 'This hides the product.', 'Archive', 'Keep')
         ->effects([Effect::reloadComponent('table'), Effect::reloadPage()]);
 
@@ -47,10 +48,10 @@ it('serializes the action wire shape', function (): void {
     expect($payload['props'])->not->toHaveKey('context');
 });
 
-it('accepts arbitrary string icons and method strings', function (): void {
+it('accepts arbitrary string icons', function (): void {
     $action = Action::make('custom')
         ->icon('custom.spark')
-        ->method('delete');
+        ->method(HttpMethod::Delete);
 
     $payload = json_decode(json_encode($action), true);
 
