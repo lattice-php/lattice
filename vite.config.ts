@@ -107,7 +107,7 @@ export default defineConfig(({ mode }) => {
       : {}),
     test: {
       environment: "jsdom",
-      include: ["resources/js/**/*.test.{ts,tsx}"],
+      include: ["resources/js/**/*.test.{ts,tsx}", "docs/**/*.test.{ts,tsx}"],
       setupFiles: ["resources/js/test/setup.ts"],
     },
   };

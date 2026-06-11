@@ -19,6 +19,7 @@
   --lt-border: var(--border, oklch(0.922 0 0));
   --lt-input: var(--input, oklch(0.922 0 0));
   --lt-ring: var(--ring, oklch(0.87 0 0));
+  --lt-warning: var(--warning, oklch(0.852 0.156 91));
   --lt-radius: var(--radius, 0.625rem);
   --lt-radius-sm: calc(var(--lt-radius) - 2px);
   --lt-radius-xs: calc(var(--lt-radius) - 4px);
@@ -47,6 +48,7 @@
   --lt-border: var(--border, oklch(0.269 0 0));
   --lt-input: var(--input, oklch(0.269 0 0));
   --lt-ring: var(--ring, oklch(0.439 0 0));
+  --lt-warning: var(--warning, oklch(0.68 0.14 75));
 
   color-scheme: dark;
 }
@@ -71,6 +73,7 @@
   --color-lt-border: var(--lt-border);
   --color-lt-input: var(--lt-input);
   --color-lt-ring: var(--lt-ring);
+  --color-lt-warning: var(--lt-warning);
   --radius-lt: var(--lt-radius);
   --radius-lt-sm: var(--lt-radius-sm);
   --radius-lt-xs: var(--lt-radius-xs);

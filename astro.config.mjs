@@ -52,6 +52,7 @@ export default defineConfig({
             { label: "Pages", link: "/core/pages/" },
             { label: "Components", link: "/core/components/" },
             { label: "Navigation", link: "/core/navigation/" },
+            { label: "Theming", link: "/core/theming/" },
           ],
         },
         {
@@ -93,6 +94,7 @@ export default defineConfig({
       alias: {
         "@lattice/lattice": path.resolve("./resources/js"),
         "@components": path.resolve("./docs/components"),
+        "@lib": path.resolve("./docs/lib"),
       },
       dedupe: ["react", "react-dom"],
     },

@@ -7,7 +7,7 @@ type Props = {
   values?: Record<string, unknown>;
 };
 
-export default function LatticePreview({ nodes, values = {} }: Props) {
+export default function Preview({ nodes, values = {} }: Props) {
   return (
     <FormValuesProvider initial={values}>
       <Renderer nodes={nodes} registry={registry} />
