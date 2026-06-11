@@ -19,8 +19,8 @@ it('serializes static options without search flags', function (): void {
             ['label' => 'Free', 'value' => 'free'],
             ['label' => 'Pro', 'value' => 'pro'],
         ])
-        ->and($props)->not->toHaveKey('searchable')
-        ->and($props)->not->toHaveKey('multiple')
+        ->and($props['searchable'])->toBeNull()
+        ->and($props['multiple'])->toBeNull()
         ->and($field->isSearchable())->toBeFalse();
 });
 

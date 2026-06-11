@@ -1,6 +1,11 @@
 [
     {
         "props": {
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
             "label": "Account type",
             "name": "type",
             "options": [
@@ -12,12 +17,17 @@
                     "label": "Individual",
                     "value": "individual"
                 }
-            ]
+            ],
+            "readonly": null,
+            "required": null,
+            "value": null
         },
         "type": "form.choice"
     },
     {
         "props": {
+            "autoComplete": null,
+            "autoFocus": null,
             "conditions": {
                 "visible": [
                     {
@@ -27,8 +37,18 @@
                     }
                 ]
             },
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
             "label": "VAT ID",
-            "name": "vat"
+            "name": "vat",
+            "placeholder": null,
+            "readonly": null,
+            "required": null,
+            "tabIndex": null,
+            "type": null,
+            "value": null
         },
         "type": "form.text-input"
     }

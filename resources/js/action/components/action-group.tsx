@@ -2,11 +2,10 @@ import { MoreHorizontal } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@lattice/lattice/core/components/button";
-import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 
 const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, node }) => {
-  const label = getStringProp(node.props, "label", "Actions");
+  const label = node.props.label ?? "Actions";
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<{ right: number; top: number } | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);

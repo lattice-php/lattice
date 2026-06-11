@@ -26,7 +26,7 @@ it('serializes the table component wire shape', function (): void {
     expect($payload['type'])->toBe('table');
     expect($payload['props']['endpoint'])->toBe('/tables/demo');
     expect($payload['props']['striped'])->toBeTrue();
-    expect($payload['props'])->not->toHaveKey('layout');
+    expect($payload['props']['layout'])->toBeNull();
     expect($payload['props']['columns'][0])->toMatchArray([
         'key' => 'name',
         'label' => 'Name',
@@ -41,7 +41,7 @@ it('serializes the table component wire shape', function (): void {
         'page' => 1,
         'perPage' => 25,
     ]);
-    expect($payload['props'])->not->toHaveKey('bulkActions');
+    expect($payload['props']['bulkActions'])->toBe([]);
 });
 
 it('keeps empty data present on a lazy table (wire trap)', function (): void {

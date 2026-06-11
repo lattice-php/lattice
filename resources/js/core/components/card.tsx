@@ -1,6 +1,5 @@
 import * as React from "react";
 import { cn } from "@lattice/lattice/lib/utils";
-import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 
 function Card({ className, ...props }: React.ComponentProps<"article">) {
@@ -57,8 +56,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 const CardComponent: RendererComponent<"card"> = ({ children, node }) => {
-  const title = getStringProp(node.props, "title");
-  const description = getStringProp(node.props, "description");
+  const { title, description } = node.props;
 
   return (
     <Card data-lattice-component={node.id}>

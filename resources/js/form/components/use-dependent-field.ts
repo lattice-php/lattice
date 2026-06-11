@@ -1,16 +1,16 @@
-import { getBooleanProp } from "@lattice/lattice/core/props";
 import type { Node } from "@lattice/lattice/core/types";
-import { type FieldConditions, type FieldState, evaluateConditions } from "./conditions";
+import { type FieldState, evaluateConditions } from "./conditions";
+import { fieldProps } from "./field-props";
 import { useFormValues } from "./values";
 
 export function useDependentField(node: Node): FieldState {
   const values = useFormValues();
-  const conditions = node.props?.conditions as FieldConditions | undefined;
+  const props = fieldProps(node);
 
-  return evaluateConditions(conditions, values, {
-    hidden: getBooleanProp(node.props, "hidden"),
-    required: getBooleanProp(node.props, "required"),
-    readonly: getBooleanProp(node.props, "readonly"),
-    disabled: getBooleanProp(node.props, "disabled"),
+  return evaluateConditions(props.conditions ?? undefined, values, {
+    hidden: props.hidden ?? false,
+    required: props.required ?? false,
+    readonly: props.readonly ?? false,
+    disabled: props.disabled ?? false,
   });
 }

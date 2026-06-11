@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { withRefHeader } from "@lattice/lattice/core/component-ref";
-import { getStringProp } from "@lattice/lattice/core/props";
 import { Renderer, useRendererContext } from "@lattice/lattice/core/renderer";
 import type { Node, RendererComponent, Schema } from "@lattice/lattice/core/types";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice/lattice/events/event-names";
@@ -21,9 +20,9 @@ function getComponents(value: unknown): Node[] {
 }
 
 const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
-  const endpoint = getStringProp(node.props, "endpoint");
-  const isLazy = node.props?.lazy === true;
-  const componentRef = getStringProp(node.props, "ref");
+  const endpoint = node.props.endpoint ?? "";
+  const isLazy = node.props.lazy === true;
+  const componentRef = node.props.ref ?? "";
   const [components, setComponents] = useState(() => node.schema ?? []);
   const [hasLoaded, setHasLoaded] = useState(!isLazy);
   const [processing, setProcessing] = useState(isLazy && endpoint !== "");

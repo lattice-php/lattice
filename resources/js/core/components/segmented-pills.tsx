@@ -1,4 +1,4 @@
-import type { Option } from "@lattice/lattice/core/props";
+import type { Option } from "@lattice/lattice/core/types";
 import { cn } from "@lattice/lattice/lib/utils";
 
 /**

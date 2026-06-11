@@ -1,4 +1,3 @@
-import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { Input } from "../base/input";
@@ -13,22 +12,17 @@ export const DateInputComponent: RendererComponent<"form.date-input"> = ({ node 
   }
 
   return (
-    <FormFieldFrame
-      error={error}
-      label={getStringProp(node.props, "label")}
-      name={name}
-      required={required}
-    >
+    <FormFieldFrame error={error} label={node.props.label ?? ""} name={name} required={required}>
       <Input
-        autoFocus={getBooleanProp(node.props, "autoFocus")}
+        autoFocus={node.props.autoFocus ?? false}
         disabled={disabled}
         id={name}
-        max={getStringProp(node.props, "max") || undefined}
-        min={getStringProp(node.props, "min") || undefined}
+        max={node.props.max || undefined}
+        min={node.props.min || undefined}
         name={name}
         onChange={(event) => commit(event.target.value)}
         readOnly={readonly}
-        tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
+        tabIndex={node.props.tabIndex ?? undefined}
         type="date"
         value={value}
       />

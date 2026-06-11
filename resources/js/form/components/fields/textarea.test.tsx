@@ -1,17 +1,17 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice/lattice/core/types";
+import { fakeNode } from "@lattice/lattice/test-support";
 import { FormValuesProvider } from "../values";
 import { TextareaComponent } from "./textarea";
 
-const node = {
+const node = fakeNode({
   type: "form.textarea",
   props: {
     name: "bio",
     label: "Bio",
     conditions: { visible: [{ field: "mode", operator: "eq", value: "edit" }] },
   },
-} as Node<"form.textarea">;
+});
 
 function renderField(initial: Record<string, unknown>) {
   return render(

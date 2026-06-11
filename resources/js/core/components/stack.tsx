@@ -1,4 +1,3 @@
-import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { cn } from "@lattice/lattice/lib/utils";
 
@@ -30,10 +29,10 @@ const stackWidths: Record<string, string> = {
 };
 
 const StackComponent: RendererComponent<"stack"> = ({ children, node }) => {
-  const align = getStringProp(node.props, "align", "stretch");
-  const direction = getStringProp(node.props, "direction", "column");
-  const gap = getStringProp(node.props, "gap", "md");
-  const width = getStringProp(node.props, "width", "full");
+  const align = node.props.align ?? "stretch";
+  const direction = node.props.direction ?? "column";
+  const gap = node.props.gap ?? "md";
+  const width = node.props.width ?? "full";
 
   if (direction === "row") {
     return (

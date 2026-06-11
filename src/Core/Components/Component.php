@@ -97,8 +97,9 @@ abstract class Component implements JsonSerializable
 
     /**
      * Reflects the public typed properties (including inherited and trait
-     * properties), omitting null and empty-array values so unset props stay
-     * absent from the wire. Backed enums serialize to their value.
+     * properties) into the full wire shape: every initialized prop is emitted,
+     * keeping null and empty-array values so the payload mirrors the generated
+     * type one-to-one. Backed enums serialize to their value.
      *
      * @return array<string, mixed>
      */
@@ -112,10 +113,6 @@ abstract class Component implements JsonSerializable
             }
 
             $value = $property->getValue($this);
-
-            if ($value === null || $value === []) {
-                continue;
-            }
 
             $props[$property->getName()] = $value instanceof BackedEnum ? $value->value : $value;
         }
@@ -144,7 +141,8 @@ abstract class Component implements JsonSerializable
     {
         return array_filter(
             $data,
-            fn (mixed $value): bool => $value !== null && $value !== [],
+            fn (mixed $value, string $key): bool => $key === 'props' || ($value !== null && $value !== []),
+            ARRAY_FILTER_USE_BOTH,
         );
     }
 

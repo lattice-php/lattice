@@ -33,7 +33,6 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@lattice/lattice/lib/utils";
-import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
@@ -309,13 +308,13 @@ export const RichEditorComponent: RendererComponent<"form.rich-editor"> = ({ nod
   const { errors } = useFormContext();
   const { hidden, required, readonly, disabled } = useDependentField(node);
   const { change, blur } = useFieldCommit();
-  const name = getStringProp(node.props, "name");
+  const name = node.props.name;
   const storedValue = useFormValue(name);
   const locked = readonly || disabled;
   const initialContent =
     typeof storedValue === "object" && storedValue !== null
       ? (storedValue as object)
-      : ((node.props?.value as object | undefined) ?? "");
+      : ((node.props.value as object | undefined) ?? "");
 
   const editor = useEditor({
     extensions: [
@@ -355,12 +354,7 @@ export const RichEditorComponent: RendererComponent<"form.rich-editor"> = ({ nod
   const submittedValue = storedValue ? JSON.stringify(storedValue) : "";
 
   return (
-    <FormFieldFrame
-      error={errors[name]}
-      label={getStringProp(node.props, "label")}
-      name={name}
-      required={required}
-    >
+    <FormFieldFrame error={errors[name]} label={node.props.label ?? ""} name={name} required={required}>
       <div
         className={cn(
           "overflow-hidden rounded-lt-sm border border-lt-input bg-transparent shadow-xs focus-within:border-lt-ring focus-within:ring-[3px] focus-within:ring-lt-ring/50",

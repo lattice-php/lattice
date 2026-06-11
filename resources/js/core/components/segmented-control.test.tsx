@@ -1,12 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import type { Node } from "@lattice/lattice/core/types";
+import { fakeNode } from "@lattice/lattice/test-support";
 import SegmentedControlComponent from "./segmented-control";
 
 describe("SegmentedControl", () => {
   it("emits a window event with the selected value on change", () => {
     const handleChange = vi.fn<(event: Event) => void>();
-    const node = {
+    const node = fakeNode({
       props: {
         emits: "lattice:appearance-change",
         label: "Appearance",
@@ -19,7 +19,7 @@ describe("SegmentedControl", () => {
         value: "system",
       },
       type: "segmented-control",
-    } satisfies Node<"segmented-control">;
+    });
 
     window.addEventListener("lattice:appearance-change", handleChange);
 

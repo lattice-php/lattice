@@ -1,19 +1,19 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice/lattice/core/types";
+import { fakeNode } from "@lattice/lattice/test-support";
 import CardComponent, { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
 import { TabsComponent } from "./tabs";
 
 describe("Lattice component theming", () => {
   it("renders package surfaces with lt token utilities", () => {
-    const card = {
+    const card = fakeNode({
       id: "settings.card",
       props: {
         description: "Description",
         title: "Title",
       },
       type: "card",
-    } satisfies Node<"card">;
+    });
 
     const { container } = render(<CardComponent node={card}>{null}</CardComponent>);
 
@@ -26,24 +26,24 @@ describe("Lattice component theming", () => {
   });
 
   it("renders package controls with lt token utilities", () => {
-    const tabs = {
+    const tabs = fakeNode({
       id: "settings.tabs",
       schema: [
-        {
+        fakeNode({
           id: "settings.profile",
           props: {
             label: "Profile",
             value: "profile",
           },
           type: "tab",
-        },
+        }),
       ],
       props: {
         activeValue: "",
         queryKey: "tabs",
       },
       type: "tabs",
-    } satisfies Node<"tabs">;
+    });
 
     const { getByRole } = render(<TabsComponent node={tabs}>{null}</TabsComponent>);
 

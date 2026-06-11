@@ -1,6 +1,11 @@
 [
     {
         "props": {
+            "conditions": null,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
             "label": "Country",
             "name": "country",
             "options": [
@@ -16,12 +21,17 @@
                     "label": "United States",
                     "value": "US"
                 }
-            ]
+            ],
+            "readonly": null,
+            "required": null,
+            "value": null
         },
         "type": "form.choice"
     },
     {
         "props": {
+            "autoComplete": null,
+            "autoFocus": null,
             "conditions": {
                 "required": [
                     {
@@ -31,8 +41,18 @@
                     }
                 ]
             },
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "hidden": null,
             "label": "VAT ID",
-            "name": "vat"
+            "name": "vat",
+            "placeholder": null,
+            "readonly": null,
+            "required": null,
+            "tabIndex": null,
+            "type": null,
+            "value": null
         },
         "type": "form.text-input"
     }

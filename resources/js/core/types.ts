@@ -7,8 +7,14 @@ import type {
 
 export type { KnownPageContainer, NodeType, WireNode };
 
-/** Loose props bag, read through the typed getters in `core/props`. */
+/** Loose props bag for nodes whose `type` is not a generated built-in. */
 export type NodeProps = Record<string, unknown>;
+
+/** A `{ label, value }` pair used by the choice, select and segmented controls. */
+export type Option = {
+  label: string;
+  value: string;
+};
 
 /**
  * A node whose `type` is not one of the generated built-ins. This is the escape
@@ -22,7 +28,7 @@ export type LooseNode<TType extends string = string> = {
   type: TType;
 };
 
-type PropsOf<TType extends string> = [Extract<WireNode, { type: TType }>] extends [never]
+export type PropsOf<TType extends string> = [Extract<WireNode, { type: TType }>] extends [never]
   ? NodeProps
   : Extract<WireNode, { type: TType }> extends { props: infer TProps }
     ? TProps
@@ -31,15 +37,15 @@ type PropsOf<TType extends string> = [Extract<WireNode, { type: TType }>] extend
 /**
  * Resolves a wire `type` string to its node shape: built-ins narrow to their
  * generated props, unknown types fall back to a loose props bag so custom
- * components still type-check. `props` is optional throughout to mirror the
- * sparse wire shape (empty props are dropped before serialization).
+ * components still type-check. Built-in `props` is always present — the wire
+ * serializes the full prop object, so reads need no optional chaining.
  */
 export type NodeOfType<TType extends string = string> = string extends TType
   ? LooseNode
   : {
       id?: string;
       key?: string;
-      props?: PropsOf<TType>;
+      props: PropsOf<TType>;
       schema?: Schema;
       type: TType;
     };

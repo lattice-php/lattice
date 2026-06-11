@@ -15,6 +15,12 @@ test('actions serialize lucide icon enum values', function () {
             'props' => [
                 'label' => 'Send',
                 'icon' => 'send',
+                'endpoint' => null,
+                'method' => null,
+                'confirmation' => null,
+                'effects' => [],
+                'variant' => null,
+                'ref' => null,
             ],
         ]);
 });

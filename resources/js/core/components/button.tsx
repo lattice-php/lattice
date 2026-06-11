@@ -3,27 +3,10 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { cn } from "@lattice/lattice/lib/utils";
-import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import type { ButtonVariant } from "@lattice/lattice/types/generated";
 
 export type { ButtonVariant };
-
-/** The generated ButtonVariant values as a runtime list — the single source the variant guards validate against. */
-export const BUTTON_VARIANTS = [
-  "default",
-  "destructive",
-  "ghost",
-  "link",
-  "outline",
-  "secondary",
-] as const satisfies readonly ButtonVariant[];
-
-export function asButtonVariant(value: unknown): ButtonVariant {
-  return (BUTTON_VARIANTS as readonly string[]).includes(value as string)
-    ? (value as ButtonVariant)
-    : "default";
-}
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lt-sm text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 outline-none focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[3px] aria-invalid:ring-lt-danger/20 dark:aria-invalid:ring-lt-danger/40 aria-invalid:border-lt-danger",
@@ -75,9 +58,8 @@ function Button({
 }
 
 const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
-  const href = getStringProp(node.props, "href");
-  const label = getStringProp(node.props, "label", "Action");
-  const variant = asButtonVariant(node.props?.variant);
+  const { href, label } = node.props;
+  const variant = node.props.variant ?? "default";
 
   if (href) {
     return (

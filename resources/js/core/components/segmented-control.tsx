@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { getOptionalNumberProp, getOptions, getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { SegmentedPills } from "./segmented-pills";
 
 const SegmentedControlComponent: RendererComponent<"segmented-control"> = ({ node }) => {
-  const options = getOptions(node.props);
-  const name = getStringProp(node.props, "name");
-  const emits = getStringProp(node.props, "emits");
-  const [value, setValue] = useState(getStringProp(node.props, "value") || options[0]?.value || "");
+  const { options, name, emits } = node.props;
+  const [value, setValue] = useState(node.props.value || options[0]?.value || "");
 
   if (options.length === 0) {
     return null;
@@ -23,10 +20,9 @@ const SegmentedControlComponent: RendererComponent<"segmented-control"> = ({ nod
 
   return (
     <SegmentedPills
-      ariaLabel={getStringProp(node.props, "label")}
+      ariaLabel={node.props.label ?? undefined}
       onSelect={select}
       options={options}
-      tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
       value={value}
     />
   );

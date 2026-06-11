@@ -1,4 +1,3 @@
-import { getBooleanProp, getOptionalNumberProp, getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { Input } from "../base/input";
@@ -15,25 +14,20 @@ export const NumberInputComponent: RendererComponent<"form.number-input"> = ({ n
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => commit(event.target.value);
 
   return (
-    <FormFieldFrame
-      error={error}
-      label={getStringProp(node.props, "label")}
-      name={name}
-      required={required}
-    >
-      {getBooleanProp(node.props, "slider") ? (
+    <FormFieldFrame error={error} label={node.props.label ?? ""} name={name} required={required}>
+      {node.props.slider ? (
         <div className="flex items-center gap-3">
           <input
-            aria-label={getStringProp(node.props, "label")}
+            aria-label={node.props.label ?? ""}
             className="h-2 w-full cursor-pointer appearance-none rounded-lt-sm bg-lt-muted accent-lt-primary disabled:cursor-not-allowed disabled:opacity-50"
             disabled={disabled || readonly}
             id={name}
-            max={getOptionalNumberProp(node.props, "max")}
-            min={getOptionalNumberProp(node.props, "min")}
+            max={node.props.max ?? undefined}
+            min={node.props.min ?? undefined}
             name={name}
             onChange={onChange}
-            step={getOptionalNumberProp(node.props, "step")}
-            tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
+            step={node.props.step ?? undefined}
+            tabIndex={node.props.tabIndex ?? undefined}
             type="range"
             value={value}
           />
@@ -43,17 +37,17 @@ export const NumberInputComponent: RendererComponent<"form.number-input"> = ({ n
         </div>
       ) : (
         <Input
-          autoFocus={getBooleanProp(node.props, "autoFocus")}
+          autoFocus={node.props.autoFocus ?? false}
           disabled={disabled}
           id={name}
-          max={getOptionalNumberProp(node.props, "max")}
-          min={getOptionalNumberProp(node.props, "min")}
+          max={node.props.max ?? undefined}
+          min={node.props.min ?? undefined}
           name={name}
           onChange={onChange}
-          placeholder={getStringProp(node.props, "placeholder")}
+          placeholder={node.props.placeholder ?? ""}
           readOnly={readonly}
-          step={getOptionalNumberProp(node.props, "step")}
-          tabIndex={getOptionalNumberProp(node.props, "tabIndex")}
+          step={node.props.step ?? undefined}
+          tabIndex={node.props.tabIndex ?? undefined}
           type="number"
           value={value}
         />

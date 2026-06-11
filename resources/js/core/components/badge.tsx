@@ -2,7 +2,6 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { cn } from "@lattice/lattice/lib/utils";
-import { getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 
 const badgeVariants = cva(
@@ -39,7 +38,7 @@ function Badge({
 
 const BadgeComponent: RendererComponent<"badge"> = ({ node }) => (
   <Badge variant="secondary" className="w-fit px-3 py-1">
-    {getStringProp(node.props, "label")}
+    {node.props.label}
   </Badge>
 );
 

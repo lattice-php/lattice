@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice/lattice/core/types";
+import { fakeNode } from "@lattice/lattice/test-support";
 import StackComponent from "./stack";
 
 describe("Lattice stack component", () => {
   it("applies server-defined alignment, gap, and width props", () => {
-    const node = {
+    const node = fakeNode({
       id: "login-page",
       props: {
         align: "center",
@@ -13,7 +13,7 @@ describe("Lattice stack component", () => {
         width: "sm",
       },
       type: "stack",
-    } satisfies Node<"stack">;
+    });
 
     render(<StackComponent node={node}>Content</StackComponent>);
 
@@ -26,7 +26,7 @@ describe("Lattice stack component", () => {
   });
 
   it("can lay children out horizontally", () => {
-    const node = {
+    const node = fakeNode({
       id: "login-prompt",
       props: {
         align: "center",
@@ -34,7 +34,7 @@ describe("Lattice stack component", () => {
         gap: "xs",
       },
       type: "stack",
-    } satisfies Node<"stack">;
+    });
 
     render(<StackComponent node={node}>Content</StackComponent>);
 

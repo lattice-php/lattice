@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice/lattice/core/types";
+import { fakeNode } from "@lattice/lattice/test-support";
 import { FormValuesProvider } from "../values";
 import { RichEditorComponent } from "./rich-editor";
 
@@ -15,14 +16,14 @@ function renderField(node: Node<"form.rich-editor">, initial: Record<string, unk
 describe("RichEditorComponent", () => {
   it("hides when its visible condition fails", () => {
     renderField(
-      {
+      fakeNode({
         type: "form.rich-editor",
         props: {
           name: "body",
           label: "Body",
           conditions: { visible: [{ field: "mode", operator: "eq", value: "edit" }] },
         },
-      },
+      }),
       { mode: "view" },
     );
 
@@ -30,7 +31,7 @@ describe("RichEditorComponent", () => {
   });
 
   it("renders the toolbar and a hidden input for submission", async () => {
-    renderField({ type: "form.rich-editor", props: { name: "body", label: "Body" } });
+    renderField(fakeNode({ type: "form.rich-editor", props: { name: "body", label: "Body" } }));
 
     expect(await screen.findByLabelText("Bold")).toBeInTheDocument();
     expect(document.querySelector('input[type="hidden"][name="body"]')).toBeInTheDocument();
