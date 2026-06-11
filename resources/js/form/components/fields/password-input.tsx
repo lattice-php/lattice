@@ -1,41 +1,17 @@
-import type { NodeProps, RendererComponent } from "@lattice/lattice/core/types";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import PasswordInput from "../base/password-input";
-import type { PasswordInput as PasswordInputProps } from "../types";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
 import { useFormContext } from "../context";
 
-type PasswordConfirmation = {
-  label?: string;
-  name?: string;
-  placeholder?: string;
-};
-
-function getPasswordConfirmation(props: NodeProps | undefined): PasswordConfirmation | undefined {
-  const value = props?.confirmation;
-
-  if (typeof value !== "object" || value === null) {
-    return undefined;
-  }
-
-  const confirmation = value as Record<string, unknown>;
-
-  return {
-    label: typeof confirmation.label === "string" ? confirmation.label : undefined,
-    name: typeof confirmation.name === "string" ? confirmation.name : undefined,
-    placeholder:
-      typeof confirmation.placeholder === "string" ? confirmation.placeholder : undefined,
-  };
-}
-
 export const PasswordInputComponent: RendererComponent<"form.password-input"> = ({ node }) => {
-  const props = node.props ?? ({} as PasswordInputProps);
+  const props = node.props;
   const { errors } = useFormContext();
   const { hidden, required, readonly, disabled } = useDependentField(node);
   const { commit } = useFieldCommit();
   const name = props.name ?? "";
-  const confirmation = getPasswordConfirmation(node.props);
+  const confirmation = props.confirmation;
   const confirmationName = confirmation?.name ?? `${name}_confirmation`;
   const passwordRules = (props.passwordRules ?? "") || undefined;
 

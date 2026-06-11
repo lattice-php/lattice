@@ -1,11 +1,10 @@
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { Input } from "../base/input";
-import type { TextInput } from "../types";
 import { useControlledField } from "../use-controlled-field";
 
 export const TextInputComponent: RendererComponent<"form.text-input"> = ({ node }) => {
-  const props = node.props ?? ({} as TextInput);
+  const props = node.props;
   const { name, value, error, hidden, required, readonly, disabled, commit } =
     useControlledField(node);
 
