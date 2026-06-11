@@ -91,7 +91,12 @@ export default defineConfig({
         },
         {
           label: "Actions",
-          items: [{ label: "Overview", link: "/actions/overview/" }],
+          items: [
+            { label: "Overview", link: "/actions/overview/" },
+            { label: "Effects & results", link: "/actions/effects/" },
+            { label: "Confirmation & forms", link: "/actions/confirmation-and-forms/" },
+            { label: "Bulk actions", link: "/actions/bulk-actions/" },
+          ],
         },
         {
           label: "Extending",
