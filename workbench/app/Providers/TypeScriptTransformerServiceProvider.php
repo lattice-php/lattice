@@ -17,14 +17,14 @@ use Lattice\Lattice\Core\Enums\ToastVariant;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
+use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
-use Lattice\Lattice\Support\TypeScript\LatticeComponentTransformer;
-use Lattice\Lattice\Support\TypeScript\LatticeEffectType;
-use Lattice\Lattice\Support\TypeScript\LatticeEnumTransformer;
-use Lattice\Lattice\Support\TypeScript\LatticeHttpMethodTransformer;
-use Lattice\Lattice\Support\TypeScript\LatticeNodesProvider;
-use Lattice\Lattice\Support\TypeScript\LatticeValueObjectTransformer;
+use Lattice\Lattice\Support\TypeScript\EffectType as TypeScriptEffectType;
+use Lattice\Lattice\Support\TypeScript\EnumTransformer;
+use Lattice\Lattice\Support\TypeScript\HttpMethodTransformer;
+use Lattice\Lattice\Support\TypeScript\NodesProvider;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
+use Lattice\Lattice\Support\TypeScript\ValueObjectTransformer;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Columns\ColumnFilter;
 use Lattice\Lattice\Tables\Enums\ColumnType;
@@ -103,8 +103,8 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
         $layoutComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Layouts\\Components\\', self::LAYOUT_ORDER);
 
         $config
-            ->transformer(new LatticeHttpMethodTransformer)
-            ->transformer(new LatticeEnumTransformer([
+            ->transformer(new HttpMethodTransformer)
+            ->transformer(new EnumTransformer([
                 Align::class,
                 ButtonVariant::class,
                 Gap::class,
@@ -120,13 +120,13 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 SortDirection::class,
                 EffectType::class,
             ]))
-            ->transformer(new LatticeValueObjectTransformer([
+            ->transformer(new ValueObjectTransformer([
                 ColumnData::class,
                 ColumnFilter::class,
                 FilterClause::class,
                 TableSort::class,
             ]))
-            ->transformer(new LatticeComponentTransformer([
+            ->transformer(new ComponentTransformer([
                 ...array_keys($formFields),
                 Form::class,
                 ...array_keys($coreComponents),
@@ -135,7 +135,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 ...array_keys($tableComponents),
                 ...array_keys($layoutComponents),
             ]))
-            ->provider(new LatticeNodesProvider(
+            ->provider(new NodesProvider(
                 $formFields,
                 Form::class,
                 $coreComponents,
@@ -145,7 +145,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 $layoutComponents,
                 'form',
                 Effect::class,
-                LatticeEffectType::build(),
+                TypeScriptEffectType::build(),
             ))
             ->transformDirectories($packageRoot.'/src')
             ->outputDirectory($packageRoot.'/resources/js/types')

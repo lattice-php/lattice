@@ -8,13 +8,13 @@ use Spatie\TypeScriptTransformer\Data\TransformationContext;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
 use Spatie\TypeScriptTransformer\Transformed\Transformed;
 use Spatie\TypeScriptTransformer\Transformed\Untransformable;
-use Spatie\TypeScriptTransformer\Transformers\EnumTransformer;
+use Spatie\TypeScriptTransformer\Transformers\EnumTransformer as BaseEnumTransformer;
 
 /**
  * Emits TypeScript unions only for an explicit allow-list of backed enums,
  * so unrelated or oversized enums (e.g. LucideIcon) are never generated.
  */
-final class LatticeEnumTransformer extends EnumTransformer
+final class EnumTransformer extends BaseEnumTransformer
 {
     /**
      * @param  array<int, class-string>  $allowed

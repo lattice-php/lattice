@@ -11,7 +11,7 @@ use Spatie\TypeScriptTransformer\Transformers\ClassTransformer;
  * Emits TypeScript object types only for an explicit allow-list of value
  * objects, so unrelated classes under src/ are never generated.
  */
-final class LatticeValueObjectTransformer extends ClassTransformer
+final class ValueObjectTransformer extends ClassTransformer
 {
     /**
      * @param  array<int, class-string>  $allowed

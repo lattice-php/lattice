@@ -22,7 +22,7 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptRaw;
  * an inline `import(...)` type so the generated module stays self-contained and
  * the reference is type-only by construction.
  */
-final class LatticeHttpMethodTransformer implements Transformer
+final class HttpMethodTransformer implements Transformer
 {
     public function transform(PhpClassNode $phpClassNode, TransformationContext $context): Transformed|Untransformable
     {

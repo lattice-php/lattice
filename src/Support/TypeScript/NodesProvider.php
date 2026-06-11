@@ -28,7 +28,7 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptUnion;
  *
  * @phpstan-type ComponentSpec array{type: string, container?: bool, interactive?: bool}
  */
-final class LatticeNodesProvider implements TransformedProvider
+final class NodesProvider implements TransformedProvider
 {
     private const REFERENCE_KEY = 'lattice-nodes';
 

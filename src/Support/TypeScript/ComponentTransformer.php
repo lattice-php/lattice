@@ -13,7 +13,7 @@ use Spatie\TypeScriptTransformer\Transformers\ClassTransformer;
  * prop is a required key; nullable PHP types surface as `T | null`, mirroring
  * the full wire shape that wireProps() now serializes.
  */
-final class LatticeComponentTransformer extends ClassTransformer
+final class ComponentTransformer extends ClassTransformer
 {
     /**
      * @param  array<int, class-string>  $allowed

@@ -24,7 +24,7 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptUnion;
  * value objects, the union is mirrored here. The `EffectType` enum it
  * discriminates on is still generated from the matching PHP enum.
  */
-final class LatticeEffectType
+final class EffectType
 {
     public static function build(): TypeScriptNode
     {
