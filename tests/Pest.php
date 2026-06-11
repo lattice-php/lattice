@@ -2,11 +2,37 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lattice\Lattice\Tests\TestCase;
+use Orchestra\Testbench\Factories\UserFactory;
 
 uses(TestCase::class)->in(__DIR__);
 uses(RefreshDatabase::class)->in(__DIR__);
+
+/**
+ * Seed a deterministic set of workbench users for browser table tests: four
+ * named users plus 26 generated ones, enough to exercise pagination and
+ * infinite scroll.
+ */
+function seedWorkbenchUsers(): void
+{
+    User::query()->delete();
+
+    foreach (['Maya Chen', 'Ada Lovelace', 'Grace Hopper', 'Katherine Johnson'] as $name) {
+        UserFactory::new()->create([
+            'name' => $name,
+            'email' => strtolower(explode(' ', $name)[0]).'@example.com',
+        ]);
+    }
+
+    foreach (range(1, 26) as $number) {
+        UserFactory::new()->create([
+            'name' => "Browser User {$number}",
+            'email' => "browser-user-{$number}@example.com",
+        ]);
+    }
+}
 
 /**
  * Serialize a wire object (or array of them) the way the HTTP response does,

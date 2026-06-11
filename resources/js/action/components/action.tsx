@@ -79,6 +79,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
     <>
       <Button
         data-lattice-component={node.id}
+        data-test={`action-${label.toLowerCase().replace(/\s+/g, "-")}`}
         disabled={http.processing || !endpoint}
         onClick={requestSubmit}
         type="button"

@@ -101,7 +101,7 @@ export function BulkBar({
           <Button
             key={action.id}
             type="button"
-            data-test={`bulk-action-${action.id}`}
+            data-test={`bulk-action-${action.label.toLowerCase().replace(/\s+/g, "-")}`}
             variant={action.variant}
             disabled={http.processing}
             onClick={() => run(action)}
