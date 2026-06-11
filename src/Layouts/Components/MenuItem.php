@@ -105,6 +105,14 @@ class MenuItem extends ContainerComponent
         return $this->schema($items);
     }
 
+    /**
+     * @param  array<int, Component>  $children
+     */
+    public function children(array $children): static
+    {
+        return $this->schema($children);
+    }
+
     protected function type(): string
     {
         return 'menu-item';

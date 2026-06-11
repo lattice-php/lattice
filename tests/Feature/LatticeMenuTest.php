@@ -39,6 +39,20 @@ test('a menu serializes its items as a menu node tree', function () {
         ]);
 });
 
+test('a menu item nests children that pipe to its schema', function () {
+    $wire = wire(
+        MenuItem::make('Account')->children([
+            MenuItem::make('Profile')->href('/profile'),
+        ]),
+    );
+
+    expect($wire['schema'][0]['type'])->toBe('menu-item')
+        ->and($wire['schema'][0]['props'])->toMatchArray([
+            'label' => 'Profile',
+            'href' => '/profile',
+        ]);
+});
+
 test('a menu item serializes its icon and method', function () {
     $wire = wire(
         MenuItem::make('Log out')->href('/logout')->icon('log-out')->method(HttpMethod::Post),
