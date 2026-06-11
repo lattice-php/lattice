@@ -8,19 +8,18 @@ use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\Contracts\Effect;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasVariant;
-use Lattice\Lattice\Core\Enums\HttpMethod;
 
 class Action extends Component
 {
+    use HasHttpMethod;
     use HasVariant;
     use IsInteractive;
 
     public ?string $endpoint = null;
 
     public ?string $label = null;
-
-    public ?HttpMethod $method = null;
 
     public ?string $icon = null;
 
@@ -60,15 +59,6 @@ class Action extends Component
     public function label(string $label): static
     {
         $this->label = $label;
-
-        return $this;
-    }
-
-    public function method(BackedEnum|string $method): static
-    {
-        $this->method = $method instanceof HttpMethod
-            ? $method
-            : HttpMethod::from($method instanceof BackedEnum ? (string) $method->value : $method);
 
         return $this;
     }

@@ -2,19 +2,17 @@
 
 namespace Lattice\Lattice\Core\Components;
 
-use BackedEnum;
+use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
-use Lattice\Lattice\Core\Enums\HttpMethod;
 
 class Link extends Component
 {
+    use HasHttpMethod;
     use HasTabIndex;
 
     public string $label = '';
 
     public ?string $href = null;
-
-    public ?HttpMethod $method = null;
 
     public static function make(string $label, ?string $key = null): static
     {
@@ -27,15 +25,6 @@ class Link extends Component
     public function href(string $href): static
     {
         $this->href = $href;
-
-        return $this;
-    }
-
-    public function method(BackedEnum|string $method): static
-    {
-        $this->method = $method instanceof HttpMethod
-            ? $method
-            : HttpMethod::from($method instanceof BackedEnum ? (string) $method->value : $method);
 
         return $this;
     }
