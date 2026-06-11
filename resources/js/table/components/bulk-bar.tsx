@@ -1,5 +1,6 @@
 import { useHttp } from "@inertiajs/react";
 import { useState } from "react";
+import { ActionForm } from "@lattice/lattice/action/components/action-form";
 import {
   dispatchActionEffects,
   dispatchActionError,
@@ -38,6 +39,10 @@ export function BulkBar({
 }) {
   const http = useHttp<BulkData, ActionResponse>({});
   const [confirming, setConfirming] = useState<BulkAction | null>(null);
+  const [filling, setFilling] = useState<BulkAction | null>(null);
+
+  const selectionPayload = (): Record<string, unknown> =>
+    allMatching ? { allMatching: true, ...query } : { selected: selectedKeys };
 
   async function submit(action: BulkAction): Promise<void> {
     try {
@@ -59,6 +64,12 @@ export function BulkBar({
   }
 
   function run(action: BulkAction): void {
+    if (action.form) {
+      setFilling(action);
+
+      return;
+    }
+
     if (action.confirmation) {
       setConfirming(action);
 
@@ -109,6 +120,26 @@ export function BulkBar({
           processing={http.processing}
           onConfirm={() => void submit(confirming)}
           onCancel={() => setConfirming(null)}
+        />
+      )}
+
+      {filling?.form && (
+        <ActionForm
+          cancelLabel={filling.confirmation?.cancelLabel ?? "Cancel"}
+          componentRef={filling.ref}
+          description={filling.confirmation?.description}
+          endpoint={filling.endpoint}
+          extraData={selectionPayload()}
+          formNode={filling.form}
+          method={filling.method}
+          onClose={() => setFilling(null)}
+          onSuccess={(response) => {
+            dispatchActionEffects(getActionEffects(response.effects));
+            setFilling(null);
+            onCompleted();
+          }}
+          submitLabel={filling.confirmation?.confirmLabel ?? filling.label}
+          title={filling.confirmation?.title ?? filling.label}
         />
       )}
     </div>

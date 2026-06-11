@@ -20,6 +20,33 @@ function wire(mixed $value): array
 }
 
 /**
+ * Extract the signed ref from a serialized interactive component.
+ *
+ * @param  array<string, mixed>  $component
+ */
+function componentRef(array $component): string
+{
+    $props = $component['props'] ?? [];
+    $ref = is_array($props) ? ($props['ref'] ?? null) : null;
+
+    if (! is_string($ref)) {
+        throw new RuntimeException('Lattice component ref is missing.');
+    }
+
+    expect($ref)->not->toBe('');
+
+    return $ref;
+}
+
+/**
+ * @return array<string, string>
+ */
+function latticeHeaders(string $ref): array
+{
+    return ['X-Lattice-Ref' => $ref];
+}
+
+/**
  * Dump an array of nodes to docs/fixtures/<key>.json so the docs site can render
  * a real, test-generated example instead of hand-maintained JSON.
  *

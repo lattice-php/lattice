@@ -5,10 +5,11 @@ import { withRefHeader } from "@lattice/lattice/core/component-ref";
 import { Button } from "@lattice/lattice/core/components/button";
 import { ConfirmDialog } from "@lattice/lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice/lattice/core/components/spinner";
-import type { RendererComponent } from "@lattice/lattice/core/types";
+import type { Node, RendererComponent } from "@lattice/lattice/core/types";
 import { IconRenderer } from "@lattice/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, getActionEffects } from "../effects";
 import type { ActionResponse } from "../effects";
+import { ActionForm } from "./action-form";
 
 const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const endpoint = node.props.endpoint ?? "";
@@ -18,8 +19,12 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const method: Method = node.props.method ?? "post";
   const http = useHttp<Record<string, never>, ActionResponse>({});
   const [isConfirming, setIsConfirming] = useState(false);
+  const [isFilling, setIsFilling] = useState(false);
   const confirmation = node.props.confirmation;
   const variant = node.props.variant ?? "default";
+  // The wire carries the embedded form as a full node; the generated prop type
+  // reflects Form's props, so read it through the Node lens the renderer uses.
+  const form = node.props.form as unknown as Node | null;
 
   const submit = async (): Promise<void> => {
     if (!endpoint) {
@@ -47,6 +52,12 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   };
 
   const requestSubmit = (): void => {
+    if (form) {
+      setIsFilling(true);
+
+      return;
+    }
+
     if (confirmation) {
       setIsConfirming(true);
 
@@ -84,6 +95,28 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
           confirmDisabled={!endpoint}
           onConfirm={() => void submit()}
           onCancel={() => setIsConfirming(false)}
+        />
+      )}
+
+      {isFilling && form && (
+        <ActionForm
+          cancelLabel={confirmationCancelLabel}
+          componentRef={componentRef}
+          description={confirmation?.description}
+          endpoint={endpoint}
+          formNode={form}
+          method={method}
+          onClose={() => setIsFilling(false)}
+          onSuccess={(response) => {
+            const responseEffects = getActionEffects(response.effects);
+
+            dispatchActionEffects(
+              responseEffects.length > 0 ? responseEffects : getActionEffects(node.props.effects),
+            );
+            setIsFilling(false);
+          }}
+          submitLabel={confirmationConfirmLabel}
+          title={confirmationTitle}
         />
       )}
     </>

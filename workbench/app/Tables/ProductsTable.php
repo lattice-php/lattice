@@ -17,6 +17,8 @@ use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
+use Workbench\App\Actions\RejectProductAction;
+use Workbench\App\Actions\RejectSelectedProductsAction;
 use Workbench\App\Models\Product;
 use Workbench\App\Tables\Columns\StatusBadgeColumn;
 
@@ -71,6 +73,8 @@ class ProductsTable extends EloquentTableDefinition
                 ->href('/products/'.$row['id'].'/edit'),
             Action::use(ArchiveProductAction::class)
                 ->context(['product_id' => $row['id']]),
+            Action::use(RejectProductAction::class)
+                ->context(['product_id' => $row['id']]),
         ];
     }
 
@@ -81,6 +85,7 @@ class ProductsTable extends EloquentTableDefinition
     {
         return [
             BulkAction::use(ArchiveSelectedProductsAction::class),
+            BulkAction::use(RejectSelectedProductsAction::class),
         ];
     }
 }

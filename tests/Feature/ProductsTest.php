@@ -16,6 +16,7 @@ use Lattice\Lattice\Tables\TableQuery;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
+use Workbench\App\Actions\RejectSelectedProductsAction;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 use Workbench\App\Seeders\ProductSeeder;
@@ -429,15 +430,17 @@ test('the products table is serialized as striped', function () {
 
 test('the products table serializes bulk actions bound to the table', function () {
     Lattice::tables([ProductsTable::class]);
-    Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
+    Lattice::bulkActions([ArchiveSelectedProductsAction::class, RejectSelectedProductsAction::class]);
 
     $bulkActions = data_get(wire(Table::use(ProductsTable::class)), 'props.bulkActions');
 
-    expect($bulkActions)->toBeArray()->toHaveCount(1)
+    expect($bulkActions)->toBeArray()->toHaveCount(2)
         ->and($bulkActions[0]['id'])->toBe('workbench.products.archive-selected')
         ->and($bulkActions[0]['props']['endpoint'])
         ->toBe('/lattice/bulk-actions/workbench.products.archive-selected')
-        ->and($bulkActions[0]['props']['ref'])->toBeString();
+        ->and($bulkActions[0]['props']['ref'])->toBeString()
+        ->and($bulkActions[1]['id'])->toBe('workbench.products.reject-selected')
+        ->and($bulkActions[1]['props']['form']['schema'][0]['props']['name'])->toBe('reason');
 });
 
 test('bulk actions can target every row matching the current filter', function () {
@@ -527,4 +530,68 @@ test('the products table rejects a filter operator not allowed for the column', 
         InvalidTableQuery::class,
         'Operator [contains] is not allowed for filter [featured] on table [workbench.products].',
     );
+});
+
+test('bulk form actions validate the submitted reason before archiving', function () {
+    Lattice::tables([ProductsTable::class]);
+    Lattice::bulkActions([RejectSelectedProductsAction::class]);
+
+    $product = Product::factory()->create(['status' => 'active']);
+
+    $ref = app(ComponentReferenceSigner::class)->seal(
+        'bulkAction',
+        'workbench.products.reject-selected',
+        ['table' => 'workbench.products'],
+    );
+
+    $headers = ['Accept' => 'application/json', 'X-Lattice-Ref' => $ref];
+
+    patch('/lattice/bulk-actions/workbench.products.reject-selected', [
+        'selected' => [$product->getKey()],
+    ], $headers)
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('reason');
+
+    expect($product->fresh()->status)->toBe('active');
+
+    patch('/lattice/bulk-actions/workbench.products.reject-selected', [
+        'reason' => 'Counterfeit',
+        'selected' => [$product->getKey()],
+    ], $headers)
+        ->assertOk()
+        ->assertJsonPath('data.archived', 1)
+        ->assertJsonPath('data.reason', 'Counterfeit');
+
+    expect($product->fresh()->status)->toBe('archived');
+});
+
+test('bulk form actions validate precognitively without archiving', function () {
+    Lattice::tables([ProductsTable::class]);
+    Lattice::bulkActions([RejectSelectedProductsAction::class]);
+
+    $product = Product::factory()->create(['status' => 'active']);
+
+    $ref = app(ComponentReferenceSigner::class)->seal(
+        'bulkAction',
+        'workbench.products.reject-selected',
+        ['table' => 'workbench.products'],
+    );
+
+    $precognition = [
+        'X-Lattice-Ref' => $ref,
+        'Precognition' => 'true',
+        'Precognition-Validate-Only' => 'reason',
+    ];
+
+    patch('/lattice/bulk-actions/workbench.products.reject-selected', [
+        'reason' => '',
+        'selected' => [$product->getKey()],
+    ], $precognition)->assertStatus(422)->assertJsonValidationErrors('reason');
+
+    patch('/lattice/bulk-actions/workbench.products.reject-selected', [
+        'reason' => 'Counterfeit',
+        'selected' => [$product->getKey()],
+    ], $precognition)->assertNoContent();
+
+    expect($product->fresh()->status)->toBe('active');
 });
