@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Workbench\App\Support;
+namespace Lattice\Lattice\Support\TypeScript;
 
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Spatie\TypeScriptTransformer\References\ClassStringReference;

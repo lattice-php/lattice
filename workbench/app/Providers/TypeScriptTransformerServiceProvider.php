@@ -46,6 +46,13 @@ use Lattice\Lattice\Fragments\Components\Fragment;
 use Lattice\Lattice\Layouts\Components\Menu;
 use Lattice\Lattice\Layouts\Components\MenuItem;
 use Lattice\Lattice\Layouts\Components\Outlet;
+use Lattice\Lattice\Support\TypeScript\LatticeComponentTransformer;
+use Lattice\Lattice\Support\TypeScript\LatticeEffectType;
+use Lattice\Lattice\Support\TypeScript\LatticeEnumTransformer;
+use Lattice\Lattice\Support\TypeScript\LatticeHttpMethodTransformer;
+use Lattice\Lattice\Support\TypeScript\LatticeNodesProvider;
+use Lattice\Lattice\Support\TypeScript\LatticeValueObjectTransformer;
+use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Columns\ColumnFilter;
 use Lattice\Lattice\Tables\Components\Table;
@@ -58,13 +65,6 @@ use Lattice\Lattice\Tables\TableSort;
 use Spatie\LaravelTypeScriptTransformer\TypeScriptTransformerApplicationServiceProvider;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfigFactory;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
-use Workbench\App\Support\LatticeComponentTransformer;
-use Workbench\App\Support\LatticeEffectType;
-use Workbench\App\Support\LatticeEnumTransformer;
-use Workbench\App\Support\LatticeHttpMethodTransformer;
-use Workbench\App\Support\LatticeNodesProvider;
-use Workbench\App\Support\LatticeValueObjectTransformer;
-use Workbench\App\Support\OxfmtFormatter;
 
 final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerApplicationServiceProvider
 {
