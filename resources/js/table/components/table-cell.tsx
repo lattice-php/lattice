@@ -69,6 +69,7 @@ function TextCell({ column, row, value }: { column: TableColumn; row: TableRow; 
       <span>{content}</span>
       <button
         type="button"
+        data-test={`copy-${column.key}`}
         className="inline-flex items-center gap-1 rounded border border-lt-border px-2 py-1 text-xs"
         aria-label={`${copied ? "Copied" : "Copy"} ${column.label}`}
         onClick={handleCopy}

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import type { FilterType } from "@lattice/lattice/types/generated";
 
 const baseClass =
-  "h-9 w-full rounded-lt-sm border border-lt-input bg-lt-bg px-2 text-sm font-normal";
+  "h-9 w-full min-w-0 rounded-lt-sm border border-lt-input bg-lt-bg px-2 text-sm font-normal";
 
 export function FilterValueInput({
   type,
@@ -11,7 +11,9 @@ export function FilterValueInput({
   value,
   processing,
   withSearchIcon = false,
+  grouped = false,
   ariaLabel,
+  testId,
   onCommit,
   onClear,
 }: {
@@ -20,12 +22,15 @@ export function FilterValueInput({
   value: string;
   processing: boolean;
   withSearchIcon?: boolean;
+  grouped?: boolean;
   ariaLabel?: string;
+  testId?: string;
   onCommit: (value: string) => void;
   onClear?: () => void;
 }) {
   const [draft, setDraft] = useState(value);
   const inputLabel = ariaLabel ?? `Filter ${label}`;
+  const groupedClass = grouped ? "rounded-r-none" : "";
 
   useEffect(() => {
     setDraft(value);
@@ -35,7 +40,8 @@ export function FilterValueInput({
     return (
       <select
         aria-label={inputLabel}
-        className={baseClass}
+        data-test={testId}
+        className={`${baseClass} ${groupedClass}`}
         disabled={processing}
         value={value}
         onChange={(event) => onCommit(event.target.value)}
@@ -52,7 +58,8 @@ export function FilterValueInput({
       <input
         type="date"
         aria-label={inputLabel}
-        className={baseClass}
+        data-test={testId}
+        className={`${baseClass} ${groupedClass}`}
         disabled={processing}
         value={draft}
         onChange={(event) => {
@@ -64,7 +71,7 @@ export function FilterValueInput({
   }
 
   return (
-    <div className="relative flex items-center">
+    <div className="relative flex w-full min-w-0 items-center">
       {withSearchIcon && (
         <Search
           aria-hidden="true"
@@ -74,7 +81,8 @@ export function FilterValueInput({
       <input
         type={type === "number" ? "number" : "text"}
         aria-label={inputLabel}
-        className={`${baseClass} ${withSearchIcon ? "pl-8" : ""} ${onClear ? "pr-8" : ""}`}
+        data-test={testId}
+        className={`${baseClass} ${groupedClass} ${withSearchIcon ? "pl-8" : ""} ${onClear ? "pr-8" : ""}`}
         disabled={processing}
         value={draft}
         onChange={(event) => setDraft(event.target.value)}
@@ -93,6 +101,7 @@ export function FilterValueInput({
         <button
           type="button"
           aria-label={`Clear ${label} filter`}
+          data-test={testId ? `${testId}-clear` : undefined}
           className="absolute right-1 inline-flex size-6 items-center justify-center rounded hover:bg-lt-muted disabled:opacity-50"
           disabled={processing}
           onClick={onClear}

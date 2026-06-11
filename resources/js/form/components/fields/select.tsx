@@ -154,6 +154,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
                 {!locked && (
                   <button
                     aria-label={`Remove ${labelFor(value)}`}
+                    data-test={`select-${name}-remove-${value}`}
                     className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-3"
                     onClick={() => remove(value)}
                     type="button"
@@ -179,6 +180,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
           <Popover.Trigger asChild>
             <button
               aria-haspopup="listbox"
+              data-test={`select-${name}`}
               className={cn(
                 "flex min-h-9 w-full items-center justify-between gap-2 rounded-lt-sm border border-lt-input bg-transparent px-3 py-1.5 text-left text-sm shadow-xs transition-colors focus:border-lt-ring focus:outline-none focus:ring-[3px] focus:ring-lt-ring/50",
                 locked && "cursor-not-allowed opacity-60",
@@ -204,6 +206,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
               <div className="flex items-center gap-2 border-b border-lt-border px-3 py-2">
                 <input
                   aria-label="Search options"
+                  data-test={`select-${name}-search`}
                   className="w-full bg-transparent text-sm outline-none placeholder:text-lt-muted-fg"
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder={searchable ? "Search…" : "Filter…"}
@@ -221,6 +224,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
                     return (
                       <button
                         aria-selected={isSelected}
+                        data-test={`select-${name}-option-${option.value}`}
                         className={cn(
                           "flex w-full items-center justify-between gap-2 rounded-lt-sm px-3 py-1.5 text-left text-sm transition-colors hover:bg-lt-accent hover:text-lt-accent-fg",
                           isSelected && "bg-lt-accent/60",

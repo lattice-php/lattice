@@ -1,8 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice/lattice/core/registry";
 import { Renderer } from "@lattice/lattice/core/renderer";
 import type { Node } from "@lattice/lattice/core/types";
+import { SidebarCollapsedContext } from "./context";
 import MenuComponent from "./menu";
 import MenuItemComponent from "./menu-item";
 
@@ -73,15 +74,65 @@ describe("Menu", () => {
     expect(screen.getByRole("link", { name: "Home" })).not.toHaveAttribute("aria-current");
   });
 
-  it("renders an item without an href as a plain label", () => {
+  it("renders a non-link item with children as a collapsed toggle", () => {
     renderMenu(menu);
 
-    expect(screen.getByText("Account")).toBeVisible();
+    const toggle = screen.getByRole("button", { name: "Account" });
+
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByRole("link", { name: "Account" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Profile" })).not.toBeInTheDocument();
   });
 
-  it("renders nested children of an item", () => {
+  it("expands the submenu when the toggle is clicked", () => {
     renderMenu(menu);
+
+    fireEvent.click(screen.getByRole("button", { name: "Account" }));
+
+    expect(screen.getByRole("button", { name: "Account" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+    expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", "/profile");
+  });
+
+  it("opens a group that contains the active route by default", () => {
+    renderMenu({
+      id: "main",
+      type: "menu",
+      schema: [
+        {
+          id: "i-catalog",
+          props: { label: "Catalog" },
+          schema: [
+            {
+              id: "i-products",
+              props: { href: "/products", label: "Products" },
+              type: "menu-item",
+            },
+          ],
+          type: "menu-item",
+        },
+      ],
+    });
+
+    expect(screen.getByRole("button", { name: "Catalog" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+    expect(screen.getByRole("link", { name: "Products" })).toHaveAttribute("href", "/products");
+  });
+
+  it("opens a group's submenu as a flyout when the sidebar is collapsed", () => {
+    render(
+      <SidebarCollapsedContext.Provider value={true}>
+        <Renderer nodes={[menu]} registry={registry} />
+      </SidebarCollapsedContext.Provider>,
+    );
+
+    expect(screen.queryByRole("link", { name: "Profile" })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Account" }));
 
     expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", "/profile");
   });

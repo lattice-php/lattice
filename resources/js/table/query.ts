@@ -124,15 +124,19 @@ export function getColumnGridTemplate(
   hasSelection: boolean,
 ): string {
   const tracks: string[] = columns.map((column) =>
-    column.type === "stack" ? "minmax(16rem, 2fr)" : "minmax(9rem, 1fr)",
+    column.type === "stack" ? "minmax(13rem, 2fr)" : "minmax(7rem, 1fr)",
   );
 
+  // Selection and action tracks use fixed widths, not max-content: the header,
+  // filter, and body rows are independent grids, so a content-sized track would
+  // resolve to a different width in each one, changing the free space left for
+  // the 1fr columns and drifting them out of alignment across rows.
   if (hasActions) {
-    tracks.push("max-content");
+    tracks.push("10rem");
   }
 
   if (hasSelection) {
-    tracks.unshift("max-content");
+    tracks.unshift("3rem");
   }
 
   return tracks.join(" ");

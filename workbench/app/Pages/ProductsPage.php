@@ -10,11 +10,10 @@ use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Tables\Components\Table;
 use Workbench\App\Tables\ProductsTable;
 
-class ProductsPage extends Page
+class ProductsPage extends WorkbenchPage
 {
     public function title(): string
     {

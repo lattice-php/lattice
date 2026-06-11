@@ -41,12 +41,12 @@ it('sorts workbench users in the table', function (): void {
     seedWorkbenchUsers();
 
     visit('/')
-        ->click('Sort Name')
+        ->click('@sort-name')
         ->assertSee('1. Name')
         ->assertSee('Ada Lovelace')
         ->assertSee('Browser User 26')
         ->assertDontSee('Maya Chen')
-        ->click('Sort Email')
+        ->click('@sort-email')
         ->assertSee('2. Email')
         ->click('@clear-name-sort')
         ->assertDontSee('1. Name')

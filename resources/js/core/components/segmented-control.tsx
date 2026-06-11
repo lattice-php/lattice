@@ -21,6 +21,7 @@ const SegmentedControlComponent: RendererComponent<"segmented-control"> = ({ nod
   return (
     <SegmentedPills
       ariaLabel={node.props.label ?? undefined}
+      name={name}
       onSelect={select}
       options={options}
       value={value}

@@ -101,7 +101,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
           onClear={clearSort}
         />
       )}
-      <div className="w-max min-w-full text-sm" role="table">
+      <div className="min-w-full text-sm" role="table">
         <div className="border-b border-lt-border bg-lt-muted/50" role="rowgroup">
           <div
             className="hidden min-w-full md:grid md:grid-cols-[var(--lattice-table-columns)]"
@@ -132,7 +132,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                 className="px-4 py-3 text-right align-middle font-medium text-lt-muted-fg"
                 role="columnheader"
               >
-                Actions
+                <span className="sr-only">Actions</span>
               </div>
             )}
           </div>
@@ -144,7 +144,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             >
               {hasBulkActions && <div className="px-4 py-2" role="cell" />}
               {columns.map((column) => (
-                <div key={column.key} className="px-4 py-2" role="cell">
+                <div key={column.key} className="min-w-0 px-2 py-2" role="cell">
                   {column.filter?.enabled && (
                     <ColumnFilterControl
                       column={column}
@@ -188,14 +188,20 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                     </div>
                   )}
                   {columns.map((column) => (
-                    <div key={column.key} className="grid gap-1 p-4 align-middle" role="cell">
+                    <div
+                      key={column.key}
+                      className="grid min-w-0 gap-1 p-4 align-middle"
+                      role="cell"
+                    >
                       <span
                         aria-hidden="true"
                         className="text-xs font-medium text-lt-muted-fg md:hidden"
                       >
                         {column.label}
                       </span>
-                      <ColumnCell column={column} row={row} />
+                      <div className="min-w-0 truncate">
+                        <ColumnCell column={column} row={row} />
+                      </div>
                     </div>
                   ))}
                   {actions.length > 0 && (
