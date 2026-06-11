@@ -78,7 +78,7 @@ abstract class Page implements PageContract
     }
 
     /**
-     * @return array{title: string|null, layout: array{key: string, schema: array<int, array<string, mixed>>}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, menus: array<string, array{groups: array<int, array{label: string|null, items: array<int, array{active: bool, href: string, icon: string|null, key: string, label: string, method: string}>}>}>, schema: array<int, array<string, mixed>>}
+     * @return array{title: string|null, layout: array{key: string, schema: array<int, array<string, mixed>>}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, schema: array<int, array<string, mixed>>}
      */
     public function toArray(PageSchema $schema, Request $request): array
     {
@@ -87,7 +87,6 @@ abstract class Page implements PageContract
             'layout' => $this->resolveLayout($request),
             'container' => $this->serializePageMetadata($this->container()),
             'breadcrumbs' => $this->breadcrumbs(),
-            'menus' => Lattice::menus()->toArray($request),
             'schema' => $this->serializeSchema($schema),
         ];
     }

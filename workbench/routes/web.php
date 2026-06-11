@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Lattice\Lattice\Core\Enums\LucideIcon;
 use Workbench\App\Pages\DependentDemoPage;
 use Workbench\App\Pages\HomePage;
 use Workbench\App\Pages\ProductCreatePage;
@@ -13,16 +12,13 @@ use Workbench\App\Pages\ShowcasePage;
 use Workbench\App\Pages\TablesPage;
 
 Route::latticePage('/', HomePage::class)
-    ->name('home')
-    ->sidebar('Home', LucideIcon::House);
+    ->name('home');
 
 Route::latticePage('/tables', TablesPage::class)
-    ->name('tables')
-    ->sidebar('Tables', LucideIcon::Table);
+    ->name('tables');
 
 Route::latticePage('/products', ProductsPage::class)
-    ->name('products.index')
-    ->sidebar('Products', LucideIcon::Package);
+    ->name('products.index');
 
 Route::latticePage('/products/create', ProductCreatePage::class)
     ->name('products.create');
@@ -34,8 +30,7 @@ Route::latticePage('/dependent-demo', DependentDemoPage::class)
     ->name('dependent.demo');
 
 Route::latticePage('/showcase', ShowcasePage::class)
-    ->name('showcase')
-    ->sidebar('Form Showcase', LucideIcon::FormInput);
+    ->name('showcase');
 
 Route::get('/dashboard', fn (): string => 'Dashboard')->name('dashboard');
 Route::get('/login', fn (): string => 'Login')->name('login');

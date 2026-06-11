@@ -1,4 +1,3 @@
-import type { Method } from "@inertiajs/core";
 import type { ComponentType as ReactComponentType, ReactNode } from "react";
 import type {
   Node as WireNode,
@@ -60,7 +59,6 @@ export type PagePayload = {
   breadcrumbs: PageBreadcrumb[];
   container: PageContainer;
   layout: LayoutPayload | null;
-  menus: Record<string, MenuPayload | undefined>;
   schema: Schema;
   title: string | null;
 };
@@ -68,24 +66,6 @@ export type PagePayload = {
 export type PageBreadcrumb = {
   href: string;
   title: string;
-};
-
-export type MenuItem = {
-  active: boolean;
-  href: string;
-  icon: string | null;
-  key: string;
-  label: string;
-  method: Method;
-};
-
-export type MenuGroup = {
-  items: MenuItem[];
-  label: string | null;
-};
-
-export type MenuPayload = {
-  groups: MenuGroup[];
 };
 
 export type PageContainer = KnownPageContainer | (string & {});

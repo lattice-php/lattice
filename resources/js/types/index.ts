@@ -1,7 +1,4 @@
 export type {
-  MenuGroup,
-  MenuItem,
-  MenuPayload,
   Node,
   NodeProps,
   PageContainer,

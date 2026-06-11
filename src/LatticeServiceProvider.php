@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice;
 
 use BackedEnum;
-use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
@@ -20,8 +19,6 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Layouts\LayoutRegistry;
-use Lattice\Lattice\Menu\MenuItem;
-use Lattice\Lattice\Menu\MenuRegistry;
 use Lattice\Lattice\Tables\TableRegistry;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -46,7 +43,6 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(LayoutRegistry::class);
         $this->app->singleton(ActionRegistry::class);
         $this->app->singleton(BulkActionRegistry::class);
-        $this->app->singleton(MenuRegistry::class);
         $this->app->singleton(DefinitionDiscovery::class);
         $this->app->alias(DefinitionDiscovery::class, DiscoversDefinitions::class);
         $this->app->singleton(ComponentReferenceSigner::class);
@@ -55,32 +51,6 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         if (! Router::hasMacro('latticePage')) {
             Router::macro('latticePage', fn (string $uri, string $page): Route => Lattice::page($uri, $page));
-        }
-
-        if (! Route::hasMacro('menu')) {
-            Route::macro('menu', function (BackedEnum|string $location, Closure|string|null $label = null, BackedEnum|string|null $icon = null): Route {
-                $menus = $this->getAction('lattice.menus');
-
-                if (! is_array($menus)) {
-                    $menus = [];
-                }
-
-                $locationKey = $location instanceof BackedEnum ? (string) $location->value : $location;
-                $menus[$locationKey] = MenuItem::configure($label, $icon)->toArray();
-
-                $this->setAction([
-                    ...$this->getAction(),
-                    'lattice.menus' => $menus,
-                ]);
-
-                return $this;
-            });
-        }
-
-        if (! Route::hasMacro('sidebar')) {
-            Route::macro('sidebar', function (Closure|string|null $label = null, BackedEnum|string|null $icon = null): Route {
-                return $this->menu('sidebar', $label, $icon);
-            });
         }
 
         if (! ResponseFactory::hasMacro('toRoute')) {

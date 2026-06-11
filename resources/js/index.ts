@@ -11,7 +11,6 @@ export { EventBridge } from "./events/event-bridge";
 export { IconRenderer, IconRendererProvider } from "./icons";
 export { createLayoutResolver, createPageResolver, pageComponentName } from "./inertia";
 export { layoutComponents, OutletContext, SchemaLayout } from "./layout";
-export { useMenu } from "./menu";
 export { Provider, useRegistry } from "./provider";
 export {
   createPlugin,
@@ -28,9 +27,6 @@ export type { ReloadComponentEvent } from "./events/event-names";
 export type {
   KnownPageContainer,
   LayoutPayload,
-  MenuGroup,
-  MenuItem,
-  MenuPayload,
   Node,
   NodeOfType,
   NodeProps,

@@ -38,8 +38,6 @@ use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Concerns\CreatesToastMessages;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Gap;
-use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\LucideIcon;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
@@ -54,8 +52,6 @@ use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\LatticeRegistry;
-use Lattice\Lattice\Menu\MenuItem;
-use Lattice\Lattice\Menu\MenuRegistry;
 use Lattice\Lattice\Tables\CallbackTableSource;
 use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
@@ -85,12 +81,6 @@ use function Pest\Laravel\patch;
 use function Pest\Laravel\postJson;
 use function Pest\Laravel\withoutVite;
 use function Pest\Laravel\withSession;
-
-enum WorkbenchMenuLocation: string
-{
-    case Sidebar = 'sidebar';
-    case UserMenu = 'user-menu';
-}
 
 /**
  * @param  array<string, mixed>  $component
@@ -138,9 +128,8 @@ test('lattice component factories stay open for extension', function () {
         ->and((new ReflectionClass(Badge::class))->isFinal())->toBeFalse();
 });
 
-test('lattice facade resolves the registry and exposes the menu registry', function () {
-    expect(Lattice::getFacadeRoot())->toBe(app(LatticeRegistry::class))
-        ->and(Lattice::menus())->toBe(app(MenuRegistry::class));
+test('lattice facade resolves the registry', function () {
+    expect(Lattice::getFacadeRoot())->toBe(app(LatticeRegistry::class));
 });
 
 test('lattice can discover attributed definitions from a path and namespace', function () {
@@ -1461,71 +1450,6 @@ test('pages can authorize requests before rendering', function () {
         );
 });
 
-test('page menu items are serialized by location and filtered through page authorization', function () {
-    Route::latticePage('sidebar-visible', WorkbenchAuthorizedPage::class)
-        ->middleware('web')
-        ->name('sidebar.visible')
-        ->menu(WorkbenchMenuLocation::Sidebar, fn ($item) => $item
-            ->label('Visible page')
-            ->icon(LucideIcon::Settings)
-            ->group('Account')
-            ->sort(20));
-
-    Route::latticePage('sidebar-dashboard', WorkbenchInjectedPage::class)
-        ->middleware('web')
-        ->name('sidebar.dashboard')
-        ->sidebar('Dashboard', LucideIcon::LayoutDashboard);
-
-    Route::latticePage('sidebar-hidden', WorkbenchDeniedSidebarPage::class)
-        ->middleware('web')
-        ->name('sidebar.hidden')
-        ->menu(WorkbenchMenuLocation::Sidebar, 'Hidden page', LucideIcon::EyeOff);
-
-    Route::latticePage('user-menu-settings', WorkbenchAuthorizedPage::class)
-        ->middleware('web')
-        ->name('user-menu.settings')
-        ->menu(WorkbenchMenuLocation::UserMenu, 'Settings', LucideIcon::Settings);
-
-    Lattice::menus()->add(
-        WorkbenchMenuLocation::UserMenu,
-        MenuItem::make('logout')
-            ->label('Log out')
-            ->icon(LucideIcon::LogOut)
-            ->href('/logout')
-            ->method(HttpMethod::Post)
-            ->sort(100),
-    );
-
-    withoutVite();
-
-    get('/sidebar-visible?allow=yes')
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('lattice/page')
-            ->where('lattice.menus.sidebar.groups.0.label', null)
-            ->where('lattice.menus.sidebar.groups.0.items.0.label', 'Dashboard')
-            ->where('lattice.menus.sidebar.groups.0.items.0.href', '/sidebar-dashboard')
-            ->where('lattice.menus.sidebar.groups.0.items.0.icon', 'layout-dashboard')
-            ->where('lattice.menus.sidebar.groups.0.items.0.method', 'get')
-            ->where('lattice.menus.sidebar.groups.0.items.0.active', false)
-            ->where('lattice.menus.sidebar.groups.1.label', 'Account')
-            ->where('lattice.menus.sidebar.groups.1.items.0.label', 'Visible page')
-            ->where('lattice.menus.sidebar.groups.1.items.0.href', '/sidebar-visible')
-            ->where('lattice.menus.sidebar.groups.1.items.0.icon', 'settings')
-            ->where('lattice.menus.sidebar.groups.1.items.0.method', 'get')
-            ->where('lattice.menus.sidebar.groups.1.items.0.active', true)
-            ->missing('lattice.menus.sidebar.groups.1.items.1')
-            ->where('lattice.menus.user-menu.groups.0.items.0.label', 'Settings')
-            ->where('lattice.menus.user-menu.groups.0.items.0.href', '/user-menu-settings')
-            ->where('lattice.menus.user-menu.groups.0.items.0.icon', 'settings')
-            ->where('lattice.menus.user-menu.groups.0.items.0.method', 'get')
-            ->where('lattice.menus.user-menu.groups.0.items.1.label', 'Log out')
-            ->where('lattice.menus.user-menu.groups.0.items.1.href', '/logout')
-            ->where('lattice.menus.user-menu.groups.0.items.1.icon', 'log-out')
-            ->where('lattice.menus.user-menu.groups.0.items.1.method', 'post')
-        );
-});
-
 test('pages serialize layout and container metadata', function () {
     $defaultPage = new class extends Page
     {
@@ -1998,19 +1922,6 @@ final class WorkbenchAuthorizedPage extends Page
     public function render(PageSchema $schema): PageSchema
     {
         return $schema->component(Text::make('Authorized page'));
-    }
-}
-
-final class WorkbenchDeniedSidebarPage extends Page
-{
-    public function authorize(Request $request): bool
-    {
-        return false;
-    }
-
-    public function render(PageSchema $schema): PageSchema
-    {
-        return $schema->component(Text::make('Hidden page'));
     }
 }
 
