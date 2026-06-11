@@ -40,28 +40,31 @@ function firstErrors(errors: Record<string, string[] | string> | undefined): Fie
   return result;
 }
 
-function collectInitialValues(formNode: Node): Record<string, unknown> {
+type CollectedFields = {
+  labels: Record<string, string>;
+  values: Record<string, unknown>;
+};
+
+function collectFields(formNode: Node): CollectedFields {
+  const labels: Record<string, string> = {};
   const values: Record<string, unknown> = {};
 
   walkFields(formNode.schema, (props) => {
-    if (props.name && props.value !== undefined) {
+    if (!props.name) {
+      return;
+    }
+    if (props.label) {
+      labels[props.name] = props.label;
+    }
+    if (props.value !== undefined) {
       values[props.name] = props.value;
     }
   });
 
-  return { ...values, ...(formNode.props?.state as Record<string, unknown> | undefined) };
-}
-
-function collectLabels(formNode: Node): Record<string, string> {
-  const labels: Record<string, string> = {};
-
-  walkFields(formNode.schema, (props) => {
-    if (props.name && props.label) {
-      labels[props.name] = props.label;
-    }
-  });
-
-  return labels;
+  return {
+    labels,
+    values: { ...values, ...(formNode.props?.state as Record<string, unknown> | undefined) },
+  };
 }
 
 function ActionFormBody({
@@ -82,33 +85,33 @@ function ActionFormBody({
 }) {
   const { fallback, missingComponent, registry } = useRendererContext();
   const values = useFormValues();
-  // fetch only upper-cases the standardized methods, leaving PATCH/DELETE as
-  // given; some servers reject a lower-case method line, so normalize it here.
-  const httpMethod = method.toUpperCase();
   const valuesRef = useRef(values);
   valuesRef.current = values;
   const extraDataRef = useRef(extraData);
   extraDataRef.current = extraData;
 
-  const requestBody = useCallback(
-    () => JSON.stringify({ ...valuesRef.current, ...extraDataRef.current }),
-    [],
-  );
-
   const [errors, setErrors] = useState<FieldErrors>({});
   const [processing, setProcessing] = useState(false);
   const timer = useRef<number | undefined>(undefined);
 
-  const headers = useCallback(
-    (extra: Record<string, string> = {}): Record<string, string> => ({
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-Requested-With": "XMLHttpRequest",
-      "X-XSRF-TOKEN": xsrfToken(),
-      ...withRefHeader(componentRef),
-      ...extra,
-    }),
-    [componentRef],
+  const request = useCallback(
+    (extraHeaders?: Record<string, string>): Promise<Response> =>
+      fetch(endpoint, {
+        body: JSON.stringify({ ...valuesRef.current, ...extraDataRef.current }),
+        credentials: "same-origin",
+        // fetch only upper-cases the standardized methods, leaving PATCH/DELETE as
+        // given; some servers reject a lower-case method line, so normalize it.
+        method: method.toUpperCase(),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-XSRF-TOKEN": xsrfToken(),
+          ...withRefHeader(componentRef),
+          ...extraHeaders,
+        },
+      }),
+    [componentRef, endpoint, method],
   );
 
   const clearErrors = useCallback((field: string) => {
@@ -125,12 +128,7 @@ function ActionFormBody({
 
       window.clearTimeout(timer.current);
       timer.current = window.setTimeout(() => {
-        void fetch(endpoint, {
-          body: requestBody(),
-          credentials: "same-origin",
-          headers: headers({ Precognition: "true", "Precognition-Validate-Only": field }),
-          method: httpMethod,
-        })
+        void request({ Precognition: "true", "Precognition-Validate-Only": field })
           .then(async (response) => {
             if (response.status === 422) {
               const body = (await response.json()) as { errors?: Record<string, string[]> };
@@ -144,18 +142,13 @@ function ActionFormBody({
           .catch(() => {});
       }, FORM_DEBOUNCE_MS);
     },
-    [clearErrors, endpoint, headers, httpMethod, precognitive, requestBody],
+    [clearErrors, precognitive, request],
   );
 
   const submit = useCallback(() => {
     setProcessing(true);
 
-    void fetch(endpoint, {
-      body: requestBody(),
-      credentials: "same-origin",
-      headers: headers(),
-      method: httpMethod,
-    })
+    void request()
       .then(async (response) => {
         if (response.status === 422) {
           const body = (await response.json()) as { errors?: Record<string, string[]> };
@@ -174,7 +167,7 @@ function ActionFormBody({
       })
       .catch((error: unknown) => dispatchActionError(error))
       .finally(() => setProcessing(false));
-  }, [endpoint, headers, httpMethod, onSuccess, requestBody]);
+  }, [onSuccess, request]);
 
   const context = useMemo(
     () => ({
@@ -223,8 +216,10 @@ function ActionFormBody({
 
 export function ActionForm({ description, formNode, onClose, title, ...rest }: ActionFormProps) {
   const precognitive = Boolean(formNode.props?.precognitive);
-  const fieldLabels = useMemo(() => collectLabels(formNode), [formNode]);
-  const initialValues = useMemo(() => collectInitialValues(formNode), [formNode]);
+  const { labels: fieldLabels, values: initialValues } = useMemo(
+    () => collectFields(formNode),
+    [formNode],
+  );
 
   return (
     <Dialog.Root
