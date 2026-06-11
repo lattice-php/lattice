@@ -5,18 +5,12 @@ import {
   dispatchActionError,
   getActionEffects,
 } from "@lattice/lattice/action/effects";
-import type { ActionEffect } from "@lattice/lattice/action/effects";
+import type { ActionResponse } from "@lattice/lattice/action/effects";
 import { withRefHeader } from "@lattice/lattice/core/component-ref";
 import { Button } from "@lattice/lattice/core/components/button";
 import { ConfirmDialog } from "@lattice/lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice/lattice/core/components/spinner";
 import type { BulkAction } from "../bulk";
-
-type BulkResponse = {
-  data?: Record<string, unknown>;
-  effects?: ActionEffect[];
-  ok?: boolean;
-};
 
 type BulkData = {
   allMatching?: boolean;
@@ -42,7 +36,7 @@ export function BulkBar({
   onSelectAllMatching: () => void;
   onCompleted: () => void;
 }) {
-  const http = useHttp<BulkData, BulkResponse>({});
+  const http = useHttp<BulkData, ActionResponse>({});
   const [confirming, setConfirming] = useState<BulkAction | null>(null);
 
   async function submit(action: BulkAction): Promise<void> {

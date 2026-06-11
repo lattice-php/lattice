@@ -4,6 +4,13 @@ import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
 
 export type ActionEffect = Effect;
 
+/** The JSON shape returned by an action / bulk-action endpoint. */
+export type ActionResponse = {
+  data?: Record<string, unknown>;
+  effects?: ActionEffect[];
+  ok?: boolean;
+};
+
 const eventNames = {
   toast: LATTICE_EVENT.toast,
   reloadComponent: LATTICE_EVENT.reloadComponent,

@@ -8,13 +8,7 @@ import { Spinner } from "@lattice/lattice/core/components/spinner";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { IconRenderer } from "@lattice/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, getActionEffects } from "../effects";
-import type { ActionEffect } from "../effects";
-
-type ActionResponse = {
-  data?: Record<string, unknown>;
-  effects?: ActionEffect[];
-  ok?: boolean;
-};
+import type { ActionResponse } from "../effects";
 
 const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const endpoint = node.props.endpoint ?? "";
