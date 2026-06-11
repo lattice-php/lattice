@@ -1,0 +1,16 @@
+---
+title: Theming
+description: The CSS custom properties Lattice exposes, their defaults, and how to override them.
+---
+
+import TokenReference from "@components/TokenReference.astro";
+
+Lattice renders with a small set of semantic design tokens — CSS custom properties prefixed
+with `--lt-`. Every token resolves through a host variable with a built-in fallback, so you can
+theme Lattice by defining the host variables (the same names shadcn/ui uses) on `:root` and
+`.dark`. For example, set `--primary` and Lattice's `--lt-primary` follows.
+
+Tokens are global and shared across components. The **Style** tab on each component example shows
+which of these tokens that component uses.
+
+<TokenReference />

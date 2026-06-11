@@ -52,6 +52,7 @@ export default defineConfig({
             { label: "Pages", link: "/core/pages/" },
             { label: "Components", link: "/core/components/" },
             { label: "Navigation", link: "/core/navigation/" },
+            { label: "Theming", link: "/core/theming/" },
           ],
         },
         {

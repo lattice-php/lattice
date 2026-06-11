@@ -1,0 +1,59 @@
+---
+import { tokenLabel } from "@lib/tokens.ts";
+import { tokenRegistry } from "@lib/latticeTokens.ts";
+
+const groups = [
+  { title: "Colors", tokens: tokenRegistry.filter((t) => t.category === "color") },
+  { title: "Radius", tokens: tokenRegistry.filter((t) => t.category === "radius") },
+];
+---
+
+{
+  groups.map((group) => (
+    <section>
+      <h3>{group.title}</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Host variable</th>
+            <th>Light</th>
+            <th>Dark</th>
+          </tr>
+        </thead>
+        <tbody>
+          {group.tokens.map((token) => (
+            <tr>
+              <td>
+                <code>{token.name}</code>
+                <br />
+                <small>{tokenLabel(token.name)}</small>
+              </td>
+              <td>{token.hostVar ? <code>{token.hostVar}</code> : <span>—</span>}</td>
+              <td>
+                <span class="swatch" style={`background:${token.light}`} />
+                <code>{token.light}</code>
+              </td>
+              <td>
+                <span class="swatch" style={`background:${token.dark}`} />
+                <code>{token.dark}</code>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  ))
+}
+
+<style>
+  .swatch {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.25rem;
+  }
+</style>
