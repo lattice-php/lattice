@@ -16,7 +16,7 @@ export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) 
   const name = node.props.name;
   const setValue = useSetFormValue();
   const storedValue = useFormValue(name);
-  const defaultChecked = false;
+  const defaultChecked = isTruthy(node.props.value);
   const checked = storedValue !== undefined ? isTruthy(storedValue) : defaultChecked;
 
   useEffect(() => {
