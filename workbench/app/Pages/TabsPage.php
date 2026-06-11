@@ -12,9 +12,8 @@ use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\Orientation;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Http\Page;
 
-final class TabsPage extends Page
+final class TabsPage extends WorkbenchPage
 {
     public function title(): string
     {

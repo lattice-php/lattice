@@ -12,14 +12,13 @@ use Lattice\Lattice\Core\Components\Tabs;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Tables\Components\Table;
 use Workbench\App\Tables\UsersInfiniteTable;
 use Workbench\App\Tables\UsersNoneTable;
 use Workbench\App\Tables\UsersSimpleTable;
 use Workbench\App\Tables\UsersTablePaginationTable;
 
-final class TablesPage extends Page
+final class TablesPage extends WorkbenchPage
 {
     public function title(): string
     {

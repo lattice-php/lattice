@@ -10,11 +10,10 @@ use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Http\Page;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 
-class ProductEditPage extends Page
+class ProductEditPage extends WorkbenchPage
 {
     public function title(): string
     {
