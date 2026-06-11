@@ -6,7 +6,7 @@ import { useDependentField } from "./use-dependent-field";
 import { useFieldCommit } from "./use-field-commit";
 import { useFormValue } from "./values";
 
-type ControlledField = FieldState & {
+export type ControlledField = FieldState & {
   name: string;
   value: string;
   error?: string;
