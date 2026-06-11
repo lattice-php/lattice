@@ -1,8 +1,12 @@
 import type { Method } from "@inertiajs/core";
 import type { ComponentType as ReactComponentType, ReactNode } from "react";
-import type { Node as WireNode, NodeType } from "@lattice/lattice/types/generated";
+import type {
+  Node as WireNode,
+  NodeType,
+  PageContainer as KnownPageContainer,
+} from "@lattice/lattice/types/generated";
 
-export type { NodeType, WireNode };
+export type { KnownPageContainer, NodeType, WireNode };
 
 /** Loose props bag, read through the typed getters in `core/props`. */
 export type NodeProps = Record<string, unknown>;
@@ -83,8 +87,6 @@ export type MenuGroup = {
 export type MenuPayload = {
   groups: MenuGroup[];
 };
-
-export type KnownPageContainer = "centered" | "default";
 
 export type PageContainer = KnownPageContainer | (string & {});
 
