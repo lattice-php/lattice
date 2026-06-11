@@ -279,6 +279,11 @@ export type EffectType =
   | "openModal"
   | "closeModal"
   | "resetForm";
+export type FilterClause = {
+  readonly field: string;
+  readonly operator: string;
+  readonly value: string;
+};
 export type FilterOperator =
   | "contains"
   | "starts_with"

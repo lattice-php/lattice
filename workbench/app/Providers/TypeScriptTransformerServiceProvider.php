@@ -53,6 +53,7 @@ use Lattice\Lattice\Tables\Enums\FilterOperator;
 use Lattice\Lattice\Tables\Enums\FilterType;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\Enums\SortDirection;
+use Lattice\Lattice\Tables\FilterClause;
 use Lattice\Lattice\Tables\TableSort;
 use Spatie\LaravelTypeScriptTransformer\TypeScriptTransformerApplicationServiceProvider;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfigFactory;
@@ -141,6 +142,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
             ->transformer(new LatticeValueObjectTransformer([
                 ColumnData::class,
                 ColumnFilter::class,
+                FilterClause::class,
                 TableSort::class,
             ]))
             ->transformer(new LatticeComponentTransformer([
