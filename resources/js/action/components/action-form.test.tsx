@@ -46,6 +46,22 @@ function rejectAction(precognitive = false): Node {
   } as unknown as Node;
 }
 
+function lazyAction(): Node {
+  return {
+    id: "test.edit",
+    type: "action",
+    props: {
+      confirmation: { confirmLabel: "Submit", title: "Edit item?" },
+      endpoint: "/lattice/actions/test.edit",
+      form: null,
+      label: "Edit",
+      lazyForm: true,
+      method: "post",
+      ref: "sealed-ref",
+    },
+  } as unknown as Node;
+}
+
 function renderAction(node: Node) {
   return render(
     <Renderer nodes={[node]} registry={createRegistry(actionComponents, formComponents)} />,
@@ -102,6 +118,37 @@ describe("action form modal", () => {
     fireEvent.click(await screen.findByRole("button", { name: "Submit" }));
 
     expect(await screen.findByText("The Reason field is required.")).toBeVisible();
+  });
+
+  it("lazily fetches the schema when the action declares a lazy form", async () => {
+    const formNode = {
+      id: "test.edit-form",
+      props: {},
+      schema: [{ key: "title", props: { label: "Title", name: "title" }, type: "form.text-input" }],
+      type: "form",
+    };
+    const fetchMock = vi.fn<FetchMock>().mockImplementation((_url, init) => {
+      const body = JSON.parse(String(init.body)) as Record<string, unknown>;
+      const payload = body._form ? formNode : { effects: [], ok: true };
+
+      return Promise.resolve({
+        json: async () => payload,
+        ok: true,
+        status: 200,
+      } as unknown as Response);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderAction(lazyAction());
+
+    fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+
+    expect(await screen.findByRole("textbox", { name: "Title" })).toBeVisible();
+    expect(
+      fetchMock.mock.calls.some(
+        ([, init]) => (JSON.parse(String((init as RequestInit).body)) as { _form?: boolean })._form,
+      ),
+    ).toBe(true);
   });
 
   it("validates precognitively as the user types", async () => {

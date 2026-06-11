@@ -34,6 +34,10 @@ final class BulkActionController
 
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->bulkActions, 'bulkAction', $bulkAction);
 
+        if ($request->boolean('_form')) {
+            return new JsonResponse($definition->resolveFormSchema($request));
+        }
+
         if ($request->filled('_search')) {
             return new JsonResponse($definition->searchOptions($request));
         }

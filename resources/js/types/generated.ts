@@ -10,6 +10,7 @@ export type Action = {
   form: Form | null;
   icon: string | null;
   label: string | null;
+  lazyForm: boolean | null;
   method: HttpMethod | null;
   ref: string | null;
   variant: ButtonVariant | null;
@@ -54,6 +55,7 @@ export type BulkAction = {
   form: Form | null;
   icon: string | null;
   label: string | null;
+  lazyForm: boolean | null;
   method: HttpMethod | null;
   ref: string | null;
   variant: ButtonVariant | null;

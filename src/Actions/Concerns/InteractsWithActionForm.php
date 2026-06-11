@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Forms\Components\Field;
+use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Concerns\ResolvesFormFields;
 use Lattice\Lattice\Forms\FieldValidator;
 
@@ -32,10 +33,20 @@ trait InteractsWithActionForm
     }
 
     /**
+     * The form rendered for this action's modal. Static by default (the schema
+     * declared via Action::form); FormActionDefinition overrides this to build a
+     * request-aware, prefilled schema on demand.
+     */
+    public function resolveFormSchema(Request $request): ?Form
+    {
+        return $this->definition(Action::make('action'))->form;
+    }
+
+    /**
      * @return Collection<int, Field>
      */
     protected function formFields(Request $request): Collection
     {
-        return $this->definition(Action::make('action'))->form?->fields() ?? collect();
+        return $this->resolveFormSchema($request)?->fields() ?? collect();
     }
 }

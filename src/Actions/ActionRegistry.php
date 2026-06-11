@@ -21,9 +21,16 @@ final class ActionRegistry extends DefinitionRegistry
     {
         $key = $this->registeredKeyFor($action);
 
-        return $this->make($action)
-            ->definition(ActionComponent::make($key))
+        $definition = $this->make($action);
+
+        $component = $definition->definition(ActionComponent::make($key))
             ->endpoint($this->endpointFor($key));
+
+        if ($definition instanceof FormActionDefinition) {
+            $component->lazyForm();
+        }
+
+        return $component;
     }
 
     /**

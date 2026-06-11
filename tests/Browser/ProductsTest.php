@@ -105,6 +105,29 @@ it('collects a reason in a modal form before rejecting a product', function (): 
     expect(Product::query()->where('sku', 'LAMP-001')->value('status'))->toBe('archived');
 });
 
+it('edits a product in a prefilled modal form', function (): void {
+    Product::factory()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'price' => '49.99',
+        'status' => 'active',
+    ]);
+
+    visit('/products')
+        ->assertSee('Desk Lamp')
+        ->click('Quick edit')
+        ->assertSee('Edit product')
+        ->wait(1)
+        ->assertValue('#name', 'Desk Lamp')
+        ->fill('#name', 'Renamed Lamp')
+        ->wait(1)
+        ->click('Save changes')
+        ->wait(1)
+        ->assertNoSmoke();
+
+    expect(Product::query()->where('sku', 'LAMP-001')->value('name'))->toBe('Renamed Lamp');
+});
+
 it('searches products inside an action form modal', function (): void {
     Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-001', 'status' => 'active']);
     Product::factory()->create(['name' => 'Walnut Desk', 'sku' => 'DESK-001', 'status' => 'active']);

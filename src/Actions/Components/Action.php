@@ -39,6 +39,8 @@ class Action extends Component
 
     public ?Form $form = null;
 
+    public ?bool $lazyForm = null;
+
     public static function make(string $id): static
     {
         return (new static)->id($id);
@@ -115,5 +117,30 @@ class Action extends Component
             ->precognitive();
 
         return $this;
+    }
+
+    /**
+     * Defer the form schema: ship a flag instead of the schema and let the client
+     * fetch it (prefilled, per record) from the action endpoint when the modal opens.
+     */
+    public function lazyForm(): static
+    {
+        $this->lazyForm = true;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[Attributes\SerializationHook(priority: 250)]
+    protected function stripLazyFormSchema(array $data): array
+    {
+        if ($this->lazyForm === true) {
+            $data['props']['form'] = null;
+        }
+
+        return $data;
     }
 }
