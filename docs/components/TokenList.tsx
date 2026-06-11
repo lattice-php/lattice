@@ -12,9 +12,10 @@ type Props = {
 };
 
 const cellStyle = {
-  fontSize: "0.85rem",
-  padding: "0.5rem 1rem",
+  fontSize: "0.75rem",
+  padding: "0.4rem 0.75rem",
   textAlign: "left" as const,
+  whiteSpace: "nowrap" as const,
 };
 
 export default function TokenList({ nodes, values = {}, tokens, suffixMap }: Props) {
