@@ -11,6 +11,7 @@ use Illuminate\Routing\Router;
 use Inertia\ResponseFactory;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Console\Commands\MakeComponentCommand;
 use Lattice\Lattice\Console\Commands\MakeFieldCommand;
 use Lattice\Lattice\Console\Commands\TypeScriptCommand;
 use Lattice\Lattice\Core\Contracts\DiscoversDefinitions;
@@ -35,7 +36,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
             ->name(self::$name)
             ->hasConfigFile()
             ->hasRoute('web')
-            ->hasConsoleCommands([TypeScriptCommand::class, MakeFieldCommand::class]);
+            ->hasConsoleCommands([TypeScriptCommand::class, MakeFieldCommand::class, MakeComponentCommand::class]);
     }
 
     public function packageRegistered(): void

@@ -1,0 +1,20 @@
+<?php
+
+namespace {{ namespace }};
+
+use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Core\Components\Component;
+
+#[Attributes\Component('{{ type }}')]
+class {{ class }} extends Component
+{
+    public string $label = '';
+
+    public static function make(string $label, ?string $key = null): static
+    {
+        $component = new static($key);
+        $component->label = $label;
+
+        return $component;
+    }
+}
