@@ -28,7 +28,7 @@ final readonly class TableQuery implements JsonSerializable
 
     public static function empty(int $defaultPerPage = 25): self
     {
-        return new self([], [], 1, max(1, min(100, $defaultPerPage)));
+        return new self([], [], 1, self::clampPerPage($defaultPerPage));
     }
 
     /**
@@ -38,7 +38,7 @@ final readonly class TableQuery implements JsonSerializable
     {
         $filters = self::parseFilters($request->input('filter'));
         $sorts = self::parseSorts($request->input('sort'));
-        $index = collect($columns)->keyBy(fn (Column $column): string => $column->key);
+        $index = Column::index($columns);
 
         self::validateFilters($filters, $index, $table);
         self::validateSorts($sorts, $index, $table);
@@ -47,8 +47,13 @@ final readonly class TableQuery implements JsonSerializable
             $filters,
             $sorts,
             max(1, $request->integer('page', 1)),
-            max(1, min(100, $request->integer('per_page', $defaultPerPage))),
+            self::clampPerPage($request->integer('per_page', $defaultPerPage)),
         );
+    }
+
+    private static function clampPerPage(int $perPage): int
+    {
+        return max(1, min(100, $perPage));
     }
 
     /**

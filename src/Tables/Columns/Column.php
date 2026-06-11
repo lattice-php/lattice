@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
+use Illuminate\Support\Collection;
 use JsonSerializable;
 
 /**
@@ -21,6 +22,15 @@ abstract class Column implements JsonSerializable
     public static function make(string $key): static
     {
         return new static($key);
+    }
+
+    /**
+     * @param  array<int, Column>  $columns
+     * @return Collection<string, Column>
+     */
+    public static function index(array $columns): Collection
+    {
+        return collect($columns)->keyBy(fn (Column $column): string => $column->key);
     }
 
     public function label(string $label): static

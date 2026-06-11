@@ -302,11 +302,7 @@ abstract class Field extends Component
      */
     public function isVisible(FormData $data): bool
     {
-        if ($this->hidden === true) {
-            return false;
-        }
-
-        return ($this->conditionSets['visible'] ?? null)?->allMatch($data) ?? true;
+        return $this->hidden !== true && $this->allConditionsMatch('visible', $data);
     }
 
     /**
@@ -314,7 +310,7 @@ abstract class Field extends Component
      */
     public function isRequired(FormData $data): bool
     {
-        return $this->conditionState('required', $data);
+        return $this->required === true || $this->anyConditionMatches('required', $data);
     }
 
     /**
@@ -322,7 +318,7 @@ abstract class Field extends Component
      */
     public function isReadOnly(FormData $data): bool
     {
-        return $this->conditionState('readonly', $data);
+        return $this->readonly === true || $this->anyConditionMatches('readonly', $data);
     }
 
     /**
@@ -330,19 +326,25 @@ abstract class Field extends Component
      */
     public function isDisabled(FormData $data): bool
     {
-        return $this->conditionState('disabled', $data);
+        return $this->disabled === true || $this->anyConditionMatches('disabled', $data);
     }
 
-    private function conditionState(string $group, FormData $data): bool
+    /**
+     * Visibility shows the field only when every condition in the group holds, so
+     * an empty group defaults to visible.
+     */
+    private function allConditionsMatch(string $group, FormData $data): bool
     {
-        $flag = match ($group) {
-            'required' => $this->required,
-            'readonly' => $this->readonly,
-            'disabled' => $this->disabled,
-            default => null,
-        };
+        return ($this->conditionSets[$group] ?? null)?->allMatch($data) ?? true;
+    }
 
-        return ($flag === true) || (($this->conditionSets[$group] ?? null)?->anyMatches($data) ?? false);
+    /**
+     * Required/readonly/disabled apply when any condition in the group holds, so
+     * an empty group defaults to off.
+     */
+    private function anyConditionMatches(string $group, FormData $data): bool
+    {
+        return ($this->conditionSets[$group] ?? null)?->anyMatches($data) ?? false;
     }
 
     /**
