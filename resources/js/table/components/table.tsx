@@ -132,7 +132,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                 className="px-4 py-3 text-right align-middle font-medium text-lt-muted-fg"
                 role="columnheader"
               >
-                Actions
+                <span className="sr-only">Actions</span>
               </div>
             )}
           </div>

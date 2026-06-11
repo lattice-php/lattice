@@ -36,11 +36,12 @@ export function ColumnHeader({
       {column.sortable ? (
         <button
           type="button"
+          aria-label={`Sort ${column.label}`}
           className="flex w-full items-center gap-1.5 font-medium"
           disabled={processing}
           onClick={() => sort(column)}
         >
-          <span className="min-w-0 flex-1 truncate text-left">{`Sort ${column.label}`}</span>
+          <span className="min-w-0 flex-1 truncate text-left">{column.label}</span>
           <SortIndicator sort={columnSort} />
         </button>
       ) : (
