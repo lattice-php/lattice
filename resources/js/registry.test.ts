@@ -27,7 +27,6 @@ describe("lattice component registry", () => {
     expect(registry["form.checkbox"]?.mode).toBe("lazy");
     expect(registry["form.hidden-input"]?.mode).toBe("lazy");
     expect(registry["form.password-input"]?.mode).toBe("lazy");
-    expect(registry["form.submit-button"]?.mode).toBe("lazy");
     expect(registry["form.text-input"]?.mode).toBe("lazy");
     expect(registry.table?.mode).toBe("lazy");
   });

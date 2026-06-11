@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import ButtonComponent from "@lattice/lattice/core/components/button";
 import { fakeNode } from "@lattice/lattice/test-support";
 import {
   CheckboxComponent,
@@ -8,7 +9,6 @@ import {
   FormComponent,
   HiddenInputComponent,
   PasswordInputComponent,
-  SubmitButtonComponent,
   TextInputComponent,
 } from "./index";
 
@@ -165,9 +165,10 @@ describe("Lattice form schema components", () => {
 
     const submitNode = fakeNode({
       props: {
+        buttonType: "submit",
         label: "Log in",
       },
-      type: "form.submit-button",
+      type: "button",
     });
 
     render(
@@ -176,7 +177,7 @@ describe("Lattice form schema components", () => {
         <TextInputComponent node={emailNode}>{null}</TextInputComponent>
         <PasswordInputComponent node={passwordNode}>{null}</PasswordInputComponent>
         <CheckboxComponent node={rememberNode}>{null}</CheckboxComponent>
-        <SubmitButtonComponent node={submitNode}>{null}</SubmitButtonComponent>
+        <ButtonComponent node={submitNode}>{null}</ButtonComponent>
       </FormComponent>,
     );
 

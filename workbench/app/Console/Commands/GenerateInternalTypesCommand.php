@@ -9,6 +9,7 @@ use Lattice\Lattice\Actions\Contracts\Effect;
 use Lattice\Lattice\Actions\Enums\EffectType;
 use Lattice\Lattice\Attributes\Effect as EffectAttribute;
 use Lattice\Lattice\Core\Enums\Align;
+use Lattice\Lattice\Core\Enums\ButtonType;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\Op;
@@ -67,6 +68,7 @@ final class GenerateInternalTypesCommand extends Command
                 new HttpMethodTransformer,
                 new EnumTransformer([
                     Align::class,
+                    ButtonType::class,
                     ButtonVariant::class,
                     Gap::class,
                     Width::class,

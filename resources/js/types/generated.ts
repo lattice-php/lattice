@@ -59,10 +59,12 @@ export type BulkAction = {
   variant: ButtonVariant | null;
 };
 export type Button = {
+  buttonType: ButtonType | null;
   href: string | null;
   label: string;
   variant: ButtonVariant | null;
 };
+export type ButtonType = "button" | "submit" | "reset";
 export type ButtonVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
 export type Card = {
   description: string | null;
@@ -326,11 +328,6 @@ export type FormFieldNode =
       type: "form.select";
       key?: string;
       props: Select;
-    }
-  | {
-      type: "form.submit-button";
-      key?: string;
-      props: SubmitButton;
     }
   | {
       type: "form.text-input";
@@ -598,10 +595,6 @@ export type Stack = {
   direction: string | null;
   gap: Gap | null;
   width: Width | null;
-};
-export type SubmitButton = {
-  label: string | null;
-  variant: ButtonVariant | null;
 };
 export type Tab = {
   confirm: {

@@ -4,6 +4,7 @@ namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Concerns\HasVariant;
+use Lattice\Lattice\Core\Enums\ButtonType;
 
 #[Attributes\Component('button')]
 class Button extends Component
@@ -13,6 +14,8 @@ class Button extends Component
     public string $label = '';
 
     public ?string $href = null;
+
+    public ?ButtonType $buttonType = null;
 
     public static function make(string $label, ?string $key = null): static
     {
@@ -27,5 +30,17 @@ class Button extends Component
         $this->href = $href;
 
         return $this;
+    }
+
+    public function buttonType(ButtonType $buttonType): static
+    {
+        $this->buttonType = $buttonType;
+
+        return $this;
+    }
+
+    public function submit(): static
+    {
+        return $this->buttonType(ButtonType::Submit);
     }
 }
