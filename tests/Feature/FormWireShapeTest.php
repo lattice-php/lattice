@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\TextInput;
 
 it('serializes the form container wire shape', function (): void {
     $form = Form::make('demo')
         ->action('/demo')
-        ->method('post')
+        ->method(HttpMethod::Post)
         ->submitLabel('Save')
         ->status('Saved')
         ->precognitive()

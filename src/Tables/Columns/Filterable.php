@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
-use Lattice\Lattice\Tables\Enums\FilterOperator;
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
 interface Filterable
@@ -14,9 +14,9 @@ interface Filterable
     public function filterType(): FilterType;
 
     /**
-     * @return array<int, FilterOperator>
+     * @return array<int, Op>
      */
-    public function filterOperators(): array;
+    public function availableOperators(): array;
 
-    public function defaultFilterOperator(): FilterOperator;
+    public function defaultFilterOperator(): Op;
 }

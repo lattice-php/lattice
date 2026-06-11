@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
-use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Http\PageContract;
 
 /**
@@ -19,13 +19,13 @@ use Lattice\Lattice\Http\PageContract;
  */
 class MenuItem extends ContainerComponent
 {
+    use HasHttpMethod;
+
     public string $label = '';
 
     public ?string $href = null;
 
     public ?string $icon = null;
-
-    public ?HttpMethod $method = null;
 
     public static function make(string $label, ?string $key = null): static
     {
@@ -84,15 +84,6 @@ class MenuItem extends ContainerComponent
     public function label(string $label): static
     {
         $this->label = $label;
-
-        return $this;
-    }
-
-    public function method(BackedEnum|string $method): static
-    {
-        $this->method = $method instanceof HttpMethod
-            ? $method
-            : HttpMethod::from($method instanceof BackedEnum ? (string) $method->value : $method);
 
         return $this;
     }

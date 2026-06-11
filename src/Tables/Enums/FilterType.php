@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Tables\Enums;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Lattice\Lattice\Core\Enums\Op;
 
 enum FilterType: string
 {
@@ -15,19 +16,51 @@ enum FilterType: string
     case Boolean = 'boolean';
 
     /**
-     * @return array<int, FilterOperator>
+     * The operators offered by default for this value type. A column may narrow
+     * this set via Filterable::availableOperators().
+     *
+     * @return array<int, Op>
      */
     public function operators(): array
     {
-        return array_values(array_filter(
-            FilterOperator::cases(),
-            fn (FilterOperator $operator): bool => in_array($this, $operator->appliesTo(), true),
-        ));
+        return match ($this) {
+            self::Text => [
+                Op::Contains,
+                Op::StartsWith,
+                Op::EndsWith,
+                Op::Equals,
+                Op::NotEquals,
+                Op::Empty,
+                Op::Filled,
+            ],
+            self::Number => [
+                Op::Equals,
+                Op::NotEquals,
+                Op::GreaterThan,
+                Op::GreaterThanOrEqual,
+                Op::LessThan,
+                Op::LessThanOrEqual,
+                Op::Empty,
+                Op::Filled,
+            ],
+            self::Date => [
+                Op::Equals,
+                Op::Before,
+                Op::After,
+                Op::Empty,
+                Op::Filled,
+            ],
+            self::Boolean => [
+                Op::Equals,
+                Op::Empty,
+                Op::Filled,
+            ],
+        };
     }
 
-    public function defaultOperator(): FilterOperator
+    public function defaultOperator(): Op
     {
-        return $this === self::Text ? FilterOperator::Contains : FilterOperator::Equals;
+        return $this === self::Text ? Op::Contains : Op::Equals;
     }
 
     /**

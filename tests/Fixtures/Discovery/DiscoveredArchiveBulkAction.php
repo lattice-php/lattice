@@ -10,13 +10,14 @@ use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\BulkAction;
+use Lattice\Lattice\Core\Enums\HttpMethod;
 
 #[BulkAction('fixtures.archive')]
 class DiscoveredArchiveBulkAction extends BulkActionDefinition
 {
     public function definition(Action $action): Action
     {
-        return $action->label('Archive')->method('patch');
+        return $action->label('Archive')->method(HttpMethod::Patch);
     }
 
     /**

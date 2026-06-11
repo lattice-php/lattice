@@ -2,26 +2,24 @@
 
 namespace Lattice\Lattice\Forms\Components;
 
-use BackedEnum;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
-use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 
 class Form extends ContainerComponent
 {
+    use HasHttpMethod;
     use IsInteractive;
 
     public const DEFAULT_VALIDATION_DEBOUNCE_MS = 1500;
 
     public ?string $action = null;
-
-    public ?HttpMethod $method = null;
 
     public ?string $submitLabel = null;
 
@@ -69,15 +67,6 @@ class Form extends ContainerComponent
     public function action(string $action): static
     {
         $this->action = $action;
-
-        return $this;
-    }
-
-    public function method(BackedEnum|string $method): static
-    {
-        $this->method = $method instanceof HttpMethod
-            ? $method
-            : HttpMethod::from($method instanceof BackedEnum ? (string) $method->value : $method);
 
         return $this;
     }

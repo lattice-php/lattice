@@ -21,23 +21,23 @@ class Stack extends ContainerComponent
         return new static($key);
     }
 
-    public function gap(Gap|string $gap): static
+    public function gap(Gap $gap): static
     {
-        $this->gap = $gap instanceof Gap ? $gap : Gap::from($gap);
+        $this->gap = $gap;
 
         return $this;
     }
 
-    public function align(Align|string $align): static
+    public function align(Align $align): static
     {
-        $this->align = $align instanceof Align ? $align : Align::from($align);
+        $this->align = $align;
 
         return $this;
     }
 
-    public function width(Width|string $width): static
+    public function width(Width $width): static
     {
-        $this->width = $width instanceof Width ? $width : Width::from($width);
+        $this->width = $width;
 
         return $this;
     }

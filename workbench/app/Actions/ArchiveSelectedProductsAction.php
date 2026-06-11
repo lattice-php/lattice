@@ -10,6 +10,7 @@ use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\BulkAction;
+use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Workbench\App\Models\Product;
@@ -22,7 +23,7 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
         return $action
             ->label('Archive selected')
             ->method(HttpMethod::Patch)
-            ->variant('destructive');
+            ->variant(ButtonVariant::Destructive);
     }
 
     /**

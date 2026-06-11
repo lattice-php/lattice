@@ -1,6 +1,6 @@
-import type { ConditionOperator } from "@lattice/lattice/types/generated";
+import type { Op } from "@lattice/lattice/types/generated";
 
-export type Condition = { field: string; operator: ConditionOperator; value: unknown };
+export type Condition = { field: string; operator: Op; value: unknown };
 
 export type FieldConditions = {
   visible?: Condition[];
@@ -27,7 +27,7 @@ const BOOLEAN_TRUE_VALUES = new Set(["1", "true", "on", "yes"]);
 
 // Mirrors PHP filter_var(FILTER_VALIDATE_BOOLEAN) so conditions evaluate
 // identically on the server and the client.
-function toBoolean(value: unknown): boolean {
+export function toBoolean(value: unknown): boolean {
   if (typeof value === "boolean") {
     return value;
   }
@@ -55,14 +55,27 @@ function isBlank(value: unknown): boolean {
   return value == null || String(value) === "";
 }
 
+// Compare two date-ish values, or null when either cannot be parsed (so a
+// before/after against an unparseable value never matches). Mirrors PHP strtotime.
+function compareDates(actual: unknown, expected: unknown): number | null {
+  const left = Date.parse(String(actual));
+  const right = Date.parse(String(expected));
+
+  if (Number.isNaN(left) || Number.isNaN(right)) {
+    return null;
+  }
+
+  return left === right ? 0 : left < right ? -1 : 1;
+}
+
 // Unknown operators from untrusted payloads fail open (the condition matches).
-// The `never` parameter makes a ConditionOperator added without a case above a
+// The `never` parameter makes an Op value added without a case above a
 // compile error rather than a silent fall-through.
 function evaluateUnknownOperator(_operator: never): boolean {
   return true;
 }
 
-function evaluateOp(operator: ConditionOperator, actual: unknown, expected: unknown): boolean {
+function evaluateOp(operator: Op, actual: unknown, expected: unknown): boolean {
   switch (operator) {
     case "eq":
       return equals(actual, expected);
@@ -86,6 +99,10 @@ function evaluateOp(operator: ConditionOperator, actual: unknown, expected: unkn
       return isIn(actual, expected);
     case "not_in":
       return !isIn(actual, expected);
+    case "before":
+      return compareDates(actual, expected) === -1;
+    case "after":
+      return compareDates(actual, expected) === 1;
     case "empty":
       return isBlank(actual);
     case "filled":

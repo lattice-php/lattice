@@ -50,14 +50,11 @@ trait IsInteractive
     }
 
     /**
-     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */
-    #[SerializationHook(priority: 200)]
-    protected function serialiseProps(array $data): array
+    protected function decorateProps(array $props): array
     {
-        $props = $this->wireProps();
-
         if ($this->hasEndpoint($props)) {
             if ($this->id === null) {
                 throw new LogicException(sprintf(
@@ -69,10 +66,7 @@ trait IsInteractive
             $props['ref'] = app(SignsComponentReferences::class)->seal($this->type(), $this->id, $this->context);
         }
 
-        return [
-            ...$data,
-            'props' => $props,
-        ];
+        return $props;
     }
 
     /**

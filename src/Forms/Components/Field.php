@@ -6,9 +6,9 @@ use Closure;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Forms\Conditions\Condition;
 use Lattice\Lattice\Forms\Conditions\ConditionSet;
-use Lattice\Lattice\Forms\Enums\ConditionOperator;
 use Lattice\Lattice\Forms\FormData;
 
 abstract class Field extends Component
@@ -370,13 +370,13 @@ abstract class Field extends Component
 
     private function makeCondition(string $field, mixed $operatorOrValue, mixed $value): Condition
     {
-        if ($value === null && ! $operatorOrValue instanceof ConditionOperator) {
-            return new Condition($field, is_array($operatorOrValue) ? ConditionOperator::In : ConditionOperator::Equals, $operatorOrValue);
+        if ($value === null && ! $operatorOrValue instanceof Op) {
+            return new Condition($field, is_array($operatorOrValue) ? Op::In : Op::Equals, $operatorOrValue);
         }
 
-        $operator = $operatorOrValue instanceof ConditionOperator
+        $operator = $operatorOrValue instanceof Op
             ? $operatorOrValue
-            : ConditionOperator::fromHuman((string) $operatorOrValue);
+            : Op::fromHuman((string) $operatorOrValue);
 
         return new Condition($field, $operator, $value);
     }

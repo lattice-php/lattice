@@ -2,13 +2,10 @@ import { useEffect } from "react";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { Checkbox } from "../base/checkbox";
 import { Label } from "../base/label";
+import { toBoolean } from "../conditions";
 import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";
 import { useFormValue, useSetFormValue } from "../values";
-
-function isTruthy(value: unknown): boolean {
-  return value === true || value === "true" || value === "1" || value === 1;
-}
 
 export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) => {
   const { clearErrors, precognitive, validate } = useFormContext();
@@ -16,8 +13,8 @@ export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) 
   const name = node.props.name;
   const setValue = useSetFormValue();
   const storedValue = useFormValue(name);
-  const defaultChecked = isTruthy(node.props.value);
-  const checked = storedValue !== undefined ? isTruthy(storedValue) : defaultChecked;
+  const defaultChecked = toBoolean(node.props.value);
+  const checked = storedValue !== undefined ? toBoolean(storedValue) : defaultChecked;
 
   useEffect(() => {
     if (storedValue === undefined) {

@@ -34,19 +34,6 @@ test('GOLDEN stack serializes enums direction and key wire-identically', functio
         ]);
 });
 
-test('GOLDEN stack accepts raw string enum values', function () {
-    expect(wire(Stack::make()->align('center')))
-        ->toEqual([
-            'type' => 'stack',
-            'props' => [
-                'align' => 'center',
-                'gap' => null,
-                'width' => null,
-                'direction' => null,
-            ],
-        ]);
-});
-
 test('GOLDEN segmented control serializes name label value emits options', function () {
     expect(wire(SegmentedControl::make('appearance', 'Appearance')
         ->value('system')

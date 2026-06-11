@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
@@ -42,6 +43,35 @@ it('serializes the table component wire shape', function (): void {
         'perPage' => 25,
     ]);
     expect($payload['props']['bulkActions'])->toBe([]);
+});
+
+it('defaults a column to its value type operator set', function (): void {
+    $column = TextColumn::make('name')->filterable();
+
+    expect($column->availableOperators())
+        ->toBe([
+            Op::Contains,
+            Op::StartsWith,
+            Op::EndsWith,
+            Op::Equals,
+            Op::NotEquals,
+            Op::Empty,
+            Op::Filled,
+        ]);
+});
+
+it('narrows the offered operators when a column restricts them', function (): void {
+    $column = TextColumn::make('name')->filterable(
+        Op::Equals,
+        [Op::Equals, Op::Contains],
+    );
+
+    expect($column->availableOperators())->toBe([Op::Equals, Op::Contains]);
+
+    $filter = json_decode(json_encode($column), true)['filter'];
+
+    expect($filter['operators'])->toBe(['eq', 'contains'])
+        ->and($filter['defaultOperator'])->toBe('eq');
 });
 
 it('keeps empty data present on a lazy table (wire trap)', function (): void {

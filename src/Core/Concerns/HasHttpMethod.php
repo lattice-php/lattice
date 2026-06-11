@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Lattice\Lattice\Core\Concerns;
+
+use Lattice\Lattice\Core\Enums\HttpMethod;
+
+trait HasHttpMethod
+{
+    public ?HttpMethod $method = null;
+
+    public function method(HttpMethod $method): static
+    {
+        $this->method = $method;
+
+        return $this;
+    }
+}

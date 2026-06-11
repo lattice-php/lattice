@@ -10,9 +10,9 @@ use Lattice\Lattice\Actions\Components\BulkAction;
 use Lattice\Lattice\Attributes\Table;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
-use Lattice\Lattice\Tables\Enums\FilterOperator;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
@@ -33,7 +33,7 @@ class ProductsTable extends EloquentTableDefinition
             TextColumn::make('name')->label('Name')->sortable()->filterable(),
             TextColumn::make('sku')->label('SKU')->sortable()->filterable(),
             TextColumn::make('price')->label('Price')->sortable()->numeric()->filterable(),
-            TextColumn::make('status')->label('Status')->sortable()->filterable(FilterOperator::Equals),
+            TextColumn::make('status')->label('Status')->sortable()->filterable(Op::Equals),
             TextColumn::make('featured')->label('Featured')->sortable()->boolean()->filterable(),
             TextColumn::make('updated_at')->label('Updated at')->sortable()->date('Y-m-d H:i:s')->filterable(),
         ];

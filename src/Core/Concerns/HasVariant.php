@@ -10,9 +10,9 @@ trait HasVariant
 {
     public ?ButtonVariant $variant = null;
 
-    public function variant(ButtonVariant|string $variant): static
+    public function variant(ButtonVariant $variant): static
     {
-        $this->variant = $variant instanceof ButtonVariant ? $variant : ButtonVariant::from($variant);
+        $this->variant = $variant;
 
         return $this;
     }

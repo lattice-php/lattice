@@ -58,6 +58,21 @@ describe("evaluateConditions", () => {
     expect(shows("filled", null, "")).toBe(false);
   });
 
+  it("supports before and after date operators", () => {
+    const shows = (operator: Condition["operator"], value: unknown, fieldValue: unknown) =>
+      !evaluateConditions(
+        { visible: [{ field: "starts_on", operator, value }] },
+        { starts_on: fieldValue },
+        {},
+      ).hidden;
+
+    expect(shows("before", "2024-06-01", "2024-01-01")).toBe(true);
+    expect(shows("before", "2024-01-01", "2024-06-01")).toBe(false);
+    expect(shows("after", "2024-01-01", "2024-06-01")).toBe(true);
+    expect(shows("after", "2024-06-01", "2024-01-01")).toBe(false);
+    expect(shows("before", "2024-06-01", "not-a-date")).toBe(false);
+  });
+
   it("honors static flags", () => {
     expect(evaluateConditions(undefined, {}, { hidden: true }).hidden).toBe(true);
   });
