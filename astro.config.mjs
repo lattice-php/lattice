@@ -93,6 +93,7 @@ export default defineConfig({
       alias: {
         "@lattice/lattice": path.resolve("./resources/js"),
         "@components": path.resolve("./docs/components"),
+        "@lib": path.resolve("./docs/lib"),
       },
       dedupe: ["react", "react-dom"],
     },
