@@ -1,0 +1,92 @@
+---
+title: Components
+description: The server-side visual vocabulary — layout, display, and interactive builders that serialize to React.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+Components are the building blocks a page renders. Each is a PHP builder that serializes to a typed
+node (`type` plus `props`) the renderer maps to a React component. They compose into a tree:
+containers take a `->schema([...])` of children.
+
+<ComponentExample
+  php={`Card::make('Team settings', 'Manage how your team appears.')->schema([
+    Stack::make()->gap(Gap::Small)->schema([
+        Heading::make('Members', 2),
+        Text::make('Three people have access to this team.'),
+        Badge::make('3 active'),
+    ]),
+    Button::make('Invite member'),
+]);`}
+  fixture="components.card"
+/>
+
+## Layout
+
+Layout components arrange their children. They are containers — pass children to `->schema()`.
+
+- **`Stack`** stacks children vertically with a `->gap()` (`Gap::ExtraSmall`…`ExtraLarge`), and
+  optional `->align()` and `->width()`.
+- **`Grid`** lays children out in columns via `->columns(n)`.
+- **`Card`** wraps children in a bordered panel with an optional title and description —
+  `Card::make('Title', 'Description')`.
+
+<ComponentExample
+  php={`Grid::make()->columns(3)->schema([
+    Badge::make('First'),
+    Badge::make('Second'),
+    Badge::make('Third'),
+]);`}
+  fixture="components.grid"
+/>
+
+## Display
+
+- **`Heading::make($text, $level)`** — a heading; `$level` is 1–6.
+- **`Text::make($text)`** — a paragraph, with optional `->align(Align::Center)`.
+- **`Badge::make($label)`** — a small status pill.
+
+```php
+Heading::make('Billing', 2);
+Text::make('Invoices are sent on the first of each month.')->align(Align::Center);
+Badge::make('Trialing');
+```
+
+## Interactive
+
+- **`Button::make($label)`** — a button. Set `->variant(ButtonVariant::…)`, give it an `->href()` to
+  render as a link, or `->submit()` to act as a form's submit control (see [Forms](/forms/overview/#the-submit-button)).
+- **`Link::make($label)->href($url)`** — a navigational link.
+- **`SegmentedControl::make($name)`** — a segmented option control that emits an event on change.
+- **`ActionGroup`** — groups several [actions](/actions/overview/) behind one trigger.
+
+```php
+Button::make('Save')->variant(ButtonVariant::Default);
+Link::make('Documentation')->href('https://latticephp.com');
+```
+
+## Tabs and modals
+
+- **`Tabs`** + **`Tab`** render a tab strip. `Tabs::make()->defaultValue('overview')->schema([...])`
+  holds `Tab::make('overview', 'Overview')->schema([...])` children; `->orientation()` switches between
+  horizontal and vertical. A tab's content can render lazily on first open.
+- **`Modal::make($id)->title('…')->schema([...])`** is a dialog opened and closed by
+  [action effects](/actions/effects/) (`openModal`/`closeModal`).
+
+```php
+Tabs::make()->defaultValue('details')->schema([
+    Tab::make('details', 'Details')->schema([/* … */]),
+    Tab::make('history', 'History')->schema([/* … */]),
+]);
+```
+
+## Fragments
+
+A `Fragment` renders a piece of UI resolved on its own, so it can be reloaded independently of the
+page — see [Fragments](/core/fragments/).
+
+## Custom components
+
+Register your own components to extend the renderer. See
+[Extending → Custom fields](/extending/custom-fields/) and
+[Registry and types](/extending/registry-and-types/).

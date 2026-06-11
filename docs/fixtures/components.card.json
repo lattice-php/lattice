@@ -1,0 +1,51 @@
+[
+    {
+        "props": {
+            "description": "Manage how your team appears.",
+            "title": "Team settings"
+        },
+        "schema": [
+            {
+                "props": {
+                    "align": null,
+                    "direction": null,
+                    "gap": "sm",
+                    "width": null
+                },
+                "schema": [
+                    {
+                        "props": {
+                            "level": 2,
+                            "text": "Members"
+                        },
+                        "type": "heading"
+                    },
+                    {
+                        "props": {
+                            "align": null,
+                            "text": "Three people have access to this team."
+                        },
+                        "type": "text"
+                    },
+                    {
+                        "props": {
+                            "label": "3 active"
+                        },
+                        "type": "badge"
+                    }
+                ],
+                "type": "stack"
+            },
+            {
+                "props": {
+                    "buttonType": "button",
+                    "href": null,
+                    "label": "Invite member",
+                    "variant": "default"
+                },
+                "type": "button"
+            }
+        ],
+        "type": "card"
+    }
+]
