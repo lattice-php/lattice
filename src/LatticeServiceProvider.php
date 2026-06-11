@@ -65,6 +65,11 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        $this->publishes([
+            __DIR__.'/../stubs/lattice/plugin.ts' => resource_path('js/lattice/plugin.ts'),
+            __DIR__.'/../stubs/lattice/columns.ts' => resource_path('js/lattice/columns.ts'),
+        ], 'lattice-js');
+
         Lattice::registerConfiguredDefinitions();
 
         $discoveryPaths = config('lattice.discover', []);
