@@ -13,7 +13,7 @@ use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 
-#[Attributes\Component('form', container: true, interactive: true)]
+#[Attributes\Component('form')]
 class Form extends ContainerComponent
 {
     use HasHttpMethod;

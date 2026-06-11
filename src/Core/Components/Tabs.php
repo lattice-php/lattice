@@ -8,7 +8,7 @@ use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Enums\Orientation;
 
-#[Attributes\Component('tabs', container: true)]
+#[Attributes\Component('tabs')]
 class Tabs extends ContainerComponent
 {
     public ?string $defaultValue = null;

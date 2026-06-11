@@ -4,7 +4,7 @@ namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes;
 
-#[Attributes\Component('tab', container: true)]
+#[Attributes\Component('tab')]
 class Tab extends ContainerComponent
 {
     public string $label = '';

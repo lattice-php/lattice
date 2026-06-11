@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support\TypeScript;
 
 use Lattice\Lattice\Attributes\Component as ComponentAttribute;
+use Lattice\Lattice\Core\Components\ContainerComponent;
+use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Tables\Columns\Column;
 use RecursiveDirectoryIterator;
@@ -57,8 +59,8 @@ final class ComponentDiscovery
             $discovered[] = new DiscoveredComponent(
                 class: $class,
                 type: $attribute->type,
-                container: $attribute->container,
-                interactive: $attribute->interactive,
+                container: is_subclass_of($class, ContainerComponent::class),
+                interactive: in_array(IsInteractive::class, class_uses_recursive($class), true),
                 category: $this->categoryFor($class),
             );
         }

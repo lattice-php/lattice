@@ -7,7 +7,7 @@ use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
 
-#[Attributes\Component('action.group', container: true, interactive: true)]
+#[Attributes\Component('action.group')]
 class ActionGroup extends ContainerComponent
 {
     use IsInteractive;

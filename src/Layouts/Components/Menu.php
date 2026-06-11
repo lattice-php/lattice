@@ -11,7 +11,7 @@ use Lattice\Lattice\Core\Components\ContainerComponent;
 /**
  * A navigation menu composed of MenuItems, rendered inside a layout schema.
  */
-#[Attributes\Component('menu', container: true)]
+#[Attributes\Component('menu')]
 class Menu extends ContainerComponent
 {
     public static function make(?string $key = null): static

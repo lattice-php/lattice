@@ -12,7 +12,7 @@ use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasVariant;
 
-#[Attributes\Component('action', interactive: true)]
+#[Attributes\Component('action')]
 class Action extends Component
 {
     use HasHttpMethod;

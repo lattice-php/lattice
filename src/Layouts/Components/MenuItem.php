@@ -18,7 +18,7 @@ use Lattice\Lattice\Http\PageContract;
  * A single menu entry. Renders an Inertia link when it has an href, otherwise a
  * plain label that can act as a section header for its nested children.
  */
-#[Attributes\Component('menu-item', container: true)]
+#[Attributes\Component('menu-item')]
 class MenuItem extends ContainerComponent
 {
     use HasHttpMethod;

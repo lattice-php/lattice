@@ -4,7 +4,7 @@ namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes;
 
-#[Attributes\Component('card', container: true)]
+#[Attributes\Component('card')]
 class Card extends ContainerComponent
 {
     public ?string $title = null;

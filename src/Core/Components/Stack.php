@@ -7,7 +7,7 @@ use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\Width;
 
-#[Attributes\Component('stack', container: true)]
+#[Attributes\Component('stack')]
 class Stack extends ContainerComponent
 {
     public ?Gap $gap = null;

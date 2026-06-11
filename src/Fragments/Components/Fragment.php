@@ -8,7 +8,7 @@ use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 
-#[Attributes\Component('fragment', container: true, interactive: true)]
+#[Attributes\Component('fragment')]
 class Fragment extends ContainerComponent
 {
     use IsInteractive;

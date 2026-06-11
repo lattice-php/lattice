@@ -4,7 +4,7 @@ namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes;
 
-#[Attributes\Component('grid', container: true)]
+#[Attributes\Component('grid')]
 class Grid extends ContainerComponent
 {
     public ?int $columns = null;

@@ -16,7 +16,7 @@ use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableRegistry;
 use Lattice\Lattice\Tables\TableResult;
 
-#[Attributes\Component('table', interactive: true)]
+#[Attributes\Component('table')]
 class Table extends Component
 {
     use IsInteractive;

@@ -4,7 +4,7 @@ namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes;
 
-#[Attributes\Component('modal', container: true, interactive: true)]
+#[Attributes\Component('modal')]
 class Modal extends ContainerComponent
 {
     use IsInteractive;

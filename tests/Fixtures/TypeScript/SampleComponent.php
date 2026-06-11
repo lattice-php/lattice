@@ -3,7 +3,7 @@
 namespace Lattice\Lattice\Tests\Fixtures\TypeScript;
 
 use Lattice\Lattice\Attributes\Component;
-use Lattice\Lattice\Core\Components\Component as BaseComponent;
+use Lattice\Lattice\Core\Components\ContainerComponent;
 
-#[Component('sample.widget', container: true)]
-class SampleComponent extends BaseComponent {}
+#[Component('sample.widget')]
+class SampleComponent extends ContainerComponent {}
