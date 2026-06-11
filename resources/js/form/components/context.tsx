@@ -6,13 +6,9 @@ type FormContextValue = {
   componentRef: string;
   errors: Record<string, string | undefined>;
   fieldLabels: Record<string, string>;
-  invalid: (field: string) => boolean;
   precognitive: boolean;
   processing: boolean;
-  touch: (field: string) => void;
   validate: (field: string) => void;
-  validating: boolean;
-  valid: (field: string) => boolean;
 };
 
 const FormContext = createContext<FormContextValue>({
@@ -21,13 +17,9 @@ const FormContext = createContext<FormContextValue>({
   componentRef: "",
   errors: {},
   fieldLabels: {},
-  invalid: () => false,
   precognitive: false,
   processing: false,
-  touch: () => {},
   validate: () => {},
-  validating: false,
-  valid: () => false,
 });
 
 export function FormProvider({

@@ -8,15 +8,7 @@ import { Spinner } from "@lattice/lattice/core/components/spinner";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { IconRenderer } from "@lattice/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, getActionEffects } from "../effects";
-import type { ActionEffect } from "../effects";
-
-type ActionResponse = {
-  data?: Record<string, unknown>;
-  effects?: ActionEffect[];
-  ok?: boolean;
-};
-
-type ActionData = Record<string, never>;
+import type { ActionResponse } from "../effects";
 
 const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const endpoint = node.props.endpoint ?? "";
@@ -24,7 +16,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const label = node.props.label ?? "Run action";
   const componentRef = node.props.ref ?? "";
   const method: Method = node.props.method ?? "post";
-  const http = useHttp<ActionData, ActionResponse>({});
+  const http = useHttp<Record<string, never>, ActionResponse>({});
   const [isConfirming, setIsConfirming] = useState(false);
   const confirmation = node.props.confirmation;
   const variant = node.props.variant ?? "default";

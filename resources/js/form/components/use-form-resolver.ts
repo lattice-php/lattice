@@ -34,9 +34,10 @@ export function useFormResolver(
     return { keys: [...keys], any };
   }, [nodes]);
 
-  const watched = watch.any
-    ? JSON.stringify(values)
-    : JSON.stringify(watch.keys.map((key) => values[key]));
+  // In "any" mode the values store keeps a stable reference until something
+  // actually changes (Object.is in setValue), so its identity is the change
+  // signal — no need to serialize every value. Otherwise hash the watched keys.
+  const watchSignature = watch.any ? values : JSON.stringify(watch.keys.map((key) => values[key]));
 
   useEffect(() => {
     if (watch.keys.length === 0 && !watch.any) {
@@ -71,7 +72,7 @@ export function useFormResolver(
       controller.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watched, action, componentRef, watch.keys.length, watch.any, setValue]);
+  }, [watchSignature, action, componentRef, watch.keys.length, watch.any, setValue]);
 
   return resolved;
 }

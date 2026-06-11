@@ -1,12 +1,5 @@
 import type { Method } from "@inertiajs/core";
-import type { ActionNode, ButtonVariant } from "@lattice/lattice/types/generated";
-
-export type BulkActionConfirmation = {
-  cancelLabel?: string;
-  confirmLabel?: string;
-  description?: string;
-  title?: string;
-};
+import type { Action, ActionNode, ButtonVariant } from "@lattice/lattice/types/generated";
 
 export type BulkAction = {
   id: string;
@@ -15,7 +8,7 @@ export type BulkAction = {
   endpoint: string;
   ref: string;
   variant: ButtonVariant;
-  confirmation: BulkActionConfirmation | null;
+  confirmation: Action["confirmation"];
 };
 
 export function getBulkActions(actions: ActionNode[] | undefined): BulkAction[] {

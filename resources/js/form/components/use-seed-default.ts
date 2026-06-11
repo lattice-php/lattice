@@ -2,9 +2,8 @@ import { useEffect } from "react";
 import { useFormValue, useSetFormValue } from "./values";
 
 /**
- * Seed the form store with a field's default value when nothing is stored yet,
- * so dependent fields and the submitted payload reflect it before the user
- * interacts. Pass undefined as the value to skip seeding.
+ * Seed a field's default into the store so dependent fields and the submitted
+ * payload reflect it before the user interacts. Pass undefined to skip.
  */
 export function useSeedDefault(name: string, value: unknown): void {
   const stored = useFormValue(name);

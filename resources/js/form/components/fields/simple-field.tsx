@@ -3,12 +3,7 @@ import type { Node } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { type ControlledField, useControlledField } from "../use-controlled-field";
 
-/**
- * The shared shell for store-controlled single-input fields: wires the field
- * through useControlledField, renders nothing while conditions hide it, and
- * wraps the control in the standard labelled frame. The control is supplied as
- * a render prop, receiving the resolved field state.
- */
+/** The shared shell for single-input fields; the control is a render prop receiving the resolved field state. */
 export function SimpleField({
   node,
   label,

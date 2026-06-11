@@ -29,6 +29,10 @@ export function useRendererContext(): RendererContextValue {
   return context;
 }
 
+function nodeKey(node: Node, index: number): string {
+  return node.key ?? node.id ?? `${node.type}-${index}`;
+}
+
 export function Renderer({
   fallback = null,
   missingComponent: UnknownComponent = MissingComponent,
@@ -52,29 +56,14 @@ export function Renderer({
   return (
     <RendererContext.Provider value={context}>
       {nodes.map((node, index) => (
-        <NodeRenderer
-          fallback={fallback}
-          key={node.key ?? node.id ?? `${node.type}-${index}`}
-          missingComponent={UnknownComponent}
-          node={node}
-          registry={registry}
-        />
+        <NodeRenderer key={nodeKey(node, index)} node={node} />
       ))}
     </RendererContext.Provider>
   );
 }
 
-function NodeRenderer({
-  fallback,
-  missingComponent: UnknownComponent,
-  node,
-  registry,
-}: {
-  fallback: ReactNode;
-  missingComponent: UnknownComponent;
-  node: Node;
-  registry: ComponentRegistry;
-}) {
+function NodeRenderer({ node }: { node: Node }) {
+  const { fallback, missingComponent: UnknownComponent, registry } = useRendererContext();
   const registration = registry[node.type];
 
   if (!registration) {
@@ -82,14 +71,9 @@ function NodeRenderer({
   }
 
   const Component = registration.component;
-  const children = node.schema?.length ? (
-    <Renderer
-      fallback={fallback}
-      missingComponent={UnknownComponent}
-      nodes={node.schema}
-      registry={registry}
-    />
-  ) : null;
+  const children = node.schema?.length
+    ? node.schema.map((child, index) => <NodeRenderer key={nodeKey(child, index)} node={child} />)
+    : null;
 
   const renderedComponent = <Component node={node}>{children}</Component>;
 
