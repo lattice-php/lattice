@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import type { Option } from "@lattice/lattice/core/types";
 import { cn } from "@lattice/lattice/lib/utils";
 
@@ -7,6 +8,7 @@ import { cn } from "@lattice/lattice/lib/utils";
  */
 export function SegmentedPills({
   ariaLabel,
+  autoFocus = false,
   disabled = false,
   name,
   onSelect,
@@ -15,6 +17,7 @@ export function SegmentedPills({
   value,
 }: {
   ariaLabel?: string;
+  autoFocus?: boolean;
   disabled?: boolean;
   name?: string;
   onSelect: (value: string) => void;
@@ -22,10 +25,26 @@ export function SegmentedPills({
   tabIndex?: number;
   value: string;
 }) {
+  const groupRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!autoFocus) {
+      return;
+    }
+
+    const group = groupRef.current;
+    const target =
+      group?.querySelector<HTMLButtonElement>('button[aria-checked="true"]') ??
+      group?.querySelector<HTMLButtonElement>("button");
+
+    target?.focus();
+  }, [autoFocus]);
+
   return (
     <div
       aria-label={ariaLabel}
       className="inline-flex w-fit max-w-full gap-1 overflow-x-auto rounded-lt bg-lt-muted p-1"
+      ref={groupRef}
       role="radiogroup"
     >
       {options.map((option) => {

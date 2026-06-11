@@ -68,6 +68,12 @@ it('returns no options when the field is not searchable', function (): void {
     expect($field->resolveSearch('x', FormData::make([]), Request::create('/')))->toBe([]);
 });
 
+it('serializes the shared focus options', function (): void {
+    $node = wire(Select::make('country', 'Country')->autoFocus()->tabIndex(1));
+
+    expect($node['props'])->toMatchArray(['autoFocus' => true, 'tabIndex' => 1]);
+});
+
 describe('docs fixtures', function (): void {
     it('dumps the select examples', function (): void {
         dumpFixture('select.basic', [

@@ -71,6 +71,7 @@ export type Card = {
   title: string | null;
 };
 export type Checkbox = {
+  autoFocus: boolean | null;
   conditions: Record<
     string,
     {
@@ -91,6 +92,7 @@ export type Checkbox = {
   value: any;
 };
 export type Choice = {
+  autoFocus: boolean | null;
   conditions: Record<
     string,
     {
@@ -111,6 +113,7 @@ export type Choice = {
   }[];
   readonly: boolean | null;
   required: boolean | null;
+  tabIndex: number | null;
   value: any;
 };
 export type CloseModalEffect = {
@@ -560,6 +563,7 @@ export type SegmentedControl = {
   value: string | null;
 };
 export type Select = {
+  autoFocus: boolean | null;
   conditions: Record<
     string,
     {
@@ -583,6 +587,7 @@ export type Select = {
   readonly: boolean | null;
   required: boolean | null;
   searchable: boolean | null;
+  tabIndex: number | null;
   value: any;
 };
 export type Sidebar = {

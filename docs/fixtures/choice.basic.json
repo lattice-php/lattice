@@ -1,6 +1,7 @@
 [
     {
         "props": {
+            "autoFocus": null,
             "conditions": null,
             "dependsOnAny": null,
             "dependsOnKeys": null,
@@ -24,6 +25,7 @@
             ],
             "readonly": null,
             "required": null,
+            "tabIndex": null,
             "value": null
         },
         "type": "form.choice"

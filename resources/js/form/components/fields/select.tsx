@@ -180,6 +180,8 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
           <Popover.Trigger asChild>
             <button
               aria-haspopup="listbox"
+              autoFocus={props.autoFocus ?? undefined}
+              tabIndex={props.tabIndex ?? undefined}
               data-test={`select-${name}`}
               className={cn(
                 "flex min-h-9 w-full items-center justify-between gap-2 rounded-lt-sm border border-lt-input bg-transparent px-3 py-1.5 text-left text-sm shadow-xs transition-colors focus:border-lt-ring focus:outline-none focus:ring-[3px] focus:ring-lt-ring/50",

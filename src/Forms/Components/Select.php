@@ -6,15 +6,19 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Attributes\Component;
+use Lattice\Lattice\Core\Concerns\HasAutoFocus;
 use Lattice\Lattice\Core\Concerns\HasOptions;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
+use Lattice\Lattice\Core\Concerns\HasTabIndex;
 use Lattice\Lattice\Forms\FormData;
 
 #[Component('form.select')]
 class Select extends Field
 {
+    use HasAutoFocus;
     use HasOptions;
     use HasPlaceholder;
+    use HasTabIndex;
 
     private ?Closure $searchResolver = null;
 

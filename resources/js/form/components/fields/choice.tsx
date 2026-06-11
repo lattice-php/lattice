@@ -28,10 +28,12 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
       <input name={name} type="hidden" value={selected} />
       <SegmentedPills
         ariaLabel={node.props.label ?? undefined}
+        autoFocus={node.props.autoFocus ?? undefined}
         disabled={readonly || disabled}
         name={name}
         onSelect={commit}
         options={options}
+        tabIndex={node.props.tabIndex ?? undefined}
         value={selected}
       />
     </FormFieldFrame>
