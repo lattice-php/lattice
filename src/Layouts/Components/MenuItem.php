@@ -71,6 +71,10 @@ class MenuItem extends ContainerComponent
 
     public function href(string $href): static
     {
+        if ($this->children !== []) {
+            throw new InvalidArgumentException('A menu item with children cannot be a link; only non-link items can hold a collapsible submenu.');
+        }
+
         $this->href = $href;
 
         return $this;
@@ -95,6 +99,10 @@ class MenuItem extends ContainerComponent
      */
     public function children(array $children): static
     {
+        if ($this->href !== null) {
+            throw new InvalidArgumentException('A link menu item cannot have children; only non-link items can hold a collapsible submenu.');
+        }
+
         return $this->schema($children);
     }
 

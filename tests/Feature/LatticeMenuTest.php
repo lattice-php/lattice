@@ -110,3 +110,15 @@ test('fromPage rejects a page without a registered route', function () {
     expect(fn () => MenuItem::fromPage(MenuProductsPage::class))
         ->toThrow(InvalidArgumentException::class);
 });
+
+test('a link menu item cannot be given children', function () {
+    expect(fn () => MenuItem::make('Account')->href('/account')->children([
+        MenuItem::make('Profile')->href('/profile'),
+    ]))->toThrow(InvalidArgumentException::class);
+});
+
+test('a menu item with children cannot become a link', function () {
+    expect(fn () => MenuItem::make('Account')->children([
+        MenuItem::make('Profile')->href('/profile'),
+    ])->href('/account'))->toThrow(InvalidArgumentException::class);
+});
