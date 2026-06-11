@@ -2,6 +2,8 @@
 import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
 import LatticePreview from "@components/LatticePreview.tsx";
 import NodeTree from "@components/NodeTree.tsx";
+import TokenList from "@components/TokenList.tsx";
+import { suffixMap, tokenRegistry } from "@lib/latticeTokens.ts";
 
 interface Props {
   php: string;
@@ -36,6 +38,17 @@ const nodes = entry.default;
   <TabItem label="Tree">
     <div class="lattice-preview not-content">
       <NodeTree client:load nodes={nodes} />
+    </div>
+  </TabItem>
+  <TabItem label="Style">
+    <div class="lattice-preview not-content">
+      <TokenList
+        client:only="react"
+        nodes={nodes}
+        values={values}
+        tokens={tokenRegistry}
+        suffixMap={suffixMap}
+      />
     </div>
   </TabItem>
 </Tabs>
