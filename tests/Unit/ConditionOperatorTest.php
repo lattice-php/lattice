@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
+use Lattice\Lattice\Forms\Conditions\ConditionEvaluator;
 use Lattice\Lattice\Forms\Enums\ConditionOperator;
 
 it('evaluates operators', function (mixed $actual, ConditionOperator $op, mixed $expected, bool $result): void {
-    expect($op->evaluate($actual, $expected))->toBe($result);
+    expect((new ConditionEvaluator)->evaluate($op, $actual, $expected))->toBe($result);
 })->with([
     'equals string' => ['business', ConditionOperator::Equals, 'business', true],
     'equals mismatch' => ['personal', ConditionOperator::Equals, 'business', false],

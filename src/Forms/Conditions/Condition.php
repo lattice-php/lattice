@@ -18,7 +18,7 @@ final class Condition implements JsonSerializable
 
     public function matches(FormData $data): bool
     {
-        return $this->operator->evaluate($data->get($this->field), $this->value);
+        return (new ConditionEvaluator)->evaluate($this->operator, $data->get($this->field), $this->value);
     }
 
     /**
