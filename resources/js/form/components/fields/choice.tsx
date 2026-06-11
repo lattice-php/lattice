@@ -1,17 +1,15 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import type { Option, RendererComponent } from "@lattice/lattice/core/types";
 import { SegmentedPills } from "@lattice/lattice/core/components/segmented-pills";
 import { FormFieldFrame } from "../base/field";
 import { useControlledField } from "../use-controlled-field";
 import { useResolvedNode } from "../resolved-nodes";
-import { useFormValue, useSetFormValue } from "../values";
+import { useSeedDefault } from "../use-seed-default";
 
 export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
   const resolvedNode = useResolvedNode(node);
   const { name, value, error, hidden, required, readonly, disabled, commit } =
     useControlledField(node);
-  const storedValue = useFormValue(name);
-  const setValue = useSetFormValue();
   const options = useMemo(
     () => (resolvedNode.props as { options?: Option[] }).options ?? [],
     [resolvedNode.props],
@@ -19,13 +17,7 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
   const fallbackValue = options[0]?.value ?? "";
   const selected = value || fallbackValue;
 
-  // Seed the store with the default selection so dependent fields and the
-  // submitted payload reflect it before the user interacts.
-  useEffect(() => {
-    if (storedValue === undefined && selected) {
-      setValue(name, selected);
-    }
-  }, [name, storedValue, selected, setValue]);
+  useSeedDefault(name, selected || undefined);
 
   if (hidden || options.length === 0) {
     return null;

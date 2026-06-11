@@ -1,10 +1,10 @@
-import { useEffect } from "react";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { Checkbox } from "../base/checkbox";
 import { Label } from "../base/label";
 import { toBoolean } from "../conditions";
 import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";
+import { useSeedDefault } from "../use-seed-default";
 import { useFormValue, useSetFormValue } from "../values";
 
 export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) => {
@@ -16,11 +16,7 @@ export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) 
   const defaultChecked = toBoolean(node.props.value);
   const checked = storedValue !== undefined ? toBoolean(storedValue) : defaultChecked;
 
-  useEffect(() => {
-    if (storedValue === undefined) {
-      setValue(name, defaultChecked);
-    }
-  }, [name, defaultChecked, setValue, storedValue]);
+  useSeedDefault(name, defaultChecked);
 
   if (hidden) {
     return null;
