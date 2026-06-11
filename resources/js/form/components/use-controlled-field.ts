@@ -13,12 +13,7 @@ export type ControlledField = FieldState & {
   commit: (value: unknown) => void;
 };
 
-/**
- * Shared wiring for store-controlled, condition-aware fields: derives the current
- * string value (store, falling back to the node's value prop), the field state
- * (hidden/required/readonly/disabled), the current error, and a `commit` callback
- * that writes to the store and triggers precognition validation / error clearing.
- */
+/** Shared wiring read by every store-controlled, condition-aware field. */
 export function useControlledField(node: Node): ControlledField {
   const { errors } = useFormContext();
   const state = useDependentField(node);

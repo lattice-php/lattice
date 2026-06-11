@@ -79,7 +79,6 @@ const operatorLabels: Record<string, string> = {
   filled: "is not empty",
 };
 
-// Operators that filter on presence alone and carry no value input.
 export const VALUELESS_FILTER_OPERATORS = new Set<string>(["empty", "filled"]);
 
 export function operatorLabel(operator: string): string {

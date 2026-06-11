@@ -34,10 +34,9 @@ export function useFormResolver(
     return { keys: [...keys], any };
   }, [nodes]);
 
-  // In "any" mode the resolve fires on any value change, and the values store
-  // keeps a stable reference until something actually changes (Object.is short-
-  // circuit in setValue), so the object identity is the change signal — no need
-  // to serialize every value each keystroke. Otherwise hash only the watched keys.
+  // In "any" mode the values store keeps a stable reference until something
+  // actually changes (Object.is in setValue), so its identity is the change
+  // signal — no need to serialize every value. Otherwise hash the watched keys.
   const watchSignature = watch.any ? values : JSON.stringify(watch.keys.map((key) => values[key]));
 
   useEffect(() => {

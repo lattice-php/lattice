@@ -55,8 +55,7 @@ function isBlank(value: unknown): boolean {
   return value == null || String(value) === "";
 }
 
-// Compare two date-ish values, or null when either cannot be parsed (so a
-// before/after against an unparseable value never matches). Mirrors PHP strtotime.
+// Null when either value can't be parsed, so before/after never matches a bad date. Mirrors PHP strtotime.
 function compareDates(actual: unknown, expected: unknown): number | null {
   const left = Date.parse(String(actual));
   const right = Date.parse(String(expected));
