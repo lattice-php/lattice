@@ -2,10 +2,12 @@
 
 namespace Lattice\Lattice\Forms\Components;
 
+use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Concerns\HasAutoFocus;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
 
+#[Component('form.number-input')]
 class NumberInput extends Field
 {
     use HasAutoFocus;
@@ -46,10 +48,5 @@ class NumberInput extends Field
         $this->slider = $slider;
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'form.number-input';
     }
 }

@@ -2,11 +2,13 @@
 
 namespace Lattice\Lattice\Forms\Components;
 
+use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Concerns\HasAutoComplete;
 use Lattice\Lattice\Core\Concerns\HasAutoFocus;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
 
+#[Component('form.text-input')]
 class TextInput extends Field
 {
     use HasAutoComplete;
@@ -21,10 +23,5 @@ class TextInput extends Field
         $this->type = 'email';
 
         return $this->rules(['email:rfc,filter']);
-    }
-
-    protected function type(): string
-    {
-        return 'form.text-input';
     }
 }

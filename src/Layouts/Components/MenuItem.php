@@ -8,6 +8,7 @@ use BackedEnum;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
@@ -17,6 +18,7 @@ use Lattice\Lattice\Http\PageContract;
  * A single menu entry. Renders an Inertia link when it has an href, otherwise a
  * plain label that can act as a section header for its nested children.
  */
+#[Attributes\Component('menu-item', container: true)]
 class MenuItem extends ContainerComponent
 {
     use HasHttpMethod;
@@ -94,11 +96,6 @@ class MenuItem extends ContainerComponent
     public function children(array $children): static
     {
         return $this->schema($children);
-    }
-
-    protected function type(): string
-    {
-        return 'menu-item';
     }
 
     /**

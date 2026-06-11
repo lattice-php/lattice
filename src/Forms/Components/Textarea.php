@@ -2,10 +2,12 @@
 
 namespace Lattice\Lattice\Forms\Components;
 
+use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Concerns\HasAutoFocus;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
 
+#[Component('form.textarea')]
 class Textarea extends Field
 {
     use HasAutoFocus;
@@ -19,10 +21,5 @@ class Textarea extends Field
         $this->rows = $rows;
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'form.textarea';
     }
 }

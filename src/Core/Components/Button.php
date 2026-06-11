@@ -2,8 +2,10 @@
 
 namespace Lattice\Lattice\Core\Components;
 
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Concerns\HasVariant;
 
+#[Attributes\Component('button')]
 class Button extends Component
 {
     use HasVariant;
@@ -25,10 +27,5 @@ class Button extends Component
         $this->href = $href;
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'button';
     }
 }

@@ -2,10 +2,7 @@
 
 namespace Lattice\Lattice\Forms\Components;
 
-class HiddenInput extends Field
-{
-    protected function type(): string
-    {
-        return 'form.hidden-input';
-    }
-}
+use Lattice\Lattice\Attributes\Component;
+
+#[Component('form.hidden-input')]
+class HiddenInput extends Field {}

@@ -2,6 +2,9 @@
 
 namespace Lattice\Lattice\Core\Components;
 
+use Lattice\Lattice\Attributes;
+
+#[Attributes\Component('heading')]
 class Heading extends Component
 {
     public string $text = '';
@@ -15,10 +18,5 @@ class Heading extends Component
         $heading->level = $level;
 
         return $heading;
-    }
-
-    protected function type(): string
-    {
-        return 'heading';
     }
 }

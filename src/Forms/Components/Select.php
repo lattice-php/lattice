@@ -5,10 +5,12 @@ namespace Lattice\Lattice\Forms\Components;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Concerns\HasOptions;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Forms\FormData;
 
+#[Component('form.select')]
 class Select extends Field
 {
     use HasOptions;
@@ -127,10 +129,5 @@ class Select extends Field
             ],
             $options,
         ));
-    }
-
-    protected function type(): string
-    {
-        return 'form.select';
     }
 }

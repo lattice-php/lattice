@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Components;
 
 use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
@@ -15,6 +16,7 @@ use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableRegistry;
 use Lattice\Lattice\Tables\TableResult;
 
+#[Attributes\Component('table', interactive: true)]
 class Table extends Component
 {
     use IsInteractive;
@@ -119,11 +121,6 @@ class Table extends Component
         $this->result = $result->forQuery($query)->jsonSerialize();
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'table';
     }
 
     /**
