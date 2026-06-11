@@ -39,7 +39,7 @@ class MenuItem extends ContainerComponent
      * Build a menu item that links to a Lattice page, resolving the href from
      * the page's registered route and defaulting the label to the page name.
      *
-     * @param  class-string<PageContract>  $page
+     * @param  class-string  $page
      * @param  array<string, mixed>  $parameters
      */
     public static function fromPage(string $page, array $parameters = []): static
@@ -63,7 +63,7 @@ class MenuItem extends ContainerComponent
             ));
         }
 
-        return static::make(static::defaultLabel($page))
+        return static::make(self::defaultLabel($page))
             ->href(app('url')->toRoute($route, $parameters, false));
     }
 
