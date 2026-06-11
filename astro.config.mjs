@@ -109,6 +109,13 @@ export default defineConfig({
           ],
         },
         {
+          label: "Advanced",
+          items: [
+            { label: "Authorization", link: "/advanced/authorization/" },
+            { label: "Security", link: "/advanced/security/" },
+          ],
+        },
+        {
           label: "Contributing",
           items: [
             { label: "Local Development", link: "/contributing/local-development/" },
