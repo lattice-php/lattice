@@ -7,6 +7,7 @@ export type Action = {
   } | null;
   effects: Effect[];
   endpoint: string | null;
+  form: Form | null;
   icon: string | null;
   label: string | null;
   method: HttpMethod | null;
@@ -50,6 +51,7 @@ export type BulkAction = {
   } | null;
   effects: Effect[];
   endpoint: string | null;
+  form: Form | null;
   icon: string | null;
   label: string | null;
   method: HttpMethod | null;

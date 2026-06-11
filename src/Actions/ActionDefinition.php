@@ -6,11 +6,14 @@ namespace Lattice\Lattice\Actions;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Actions\Concerns\ValidatesActionForm;
 use Lattice\Lattice\Actions\Contracts\ProvidesAction;
 use Lattice\Lattice\Core\Definition;
 
 abstract class ActionDefinition extends Definition implements ProvidesAction
 {
+    use ValidatesActionForm;
+
     abstract public function definition(Action $action): Action;
 
     abstract public function handle(Request $request): ActionResult;

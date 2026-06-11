@@ -81,6 +81,30 @@ it('attaches related products via search when creating', function (): void {
     expect($product->relatedProducts->pluck('name')->all())->toBe(['Walnut Desk']);
 });
 
+it('collects a reason in a modal form before rejecting a product', function (): void {
+    Product::factory()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'price' => '49.99',
+        'status' => 'active',
+    ]);
+
+    visit('/products')
+        ->assertSee('Desk Lamp')
+        ->click('Reject')
+        ->assertSee('Reject product?')
+        ->click('Submit rejection')
+        ->wait(1)
+        ->assertSee('The Reason field is required.')
+        ->fill('Reason', 'Counterfeit listing')
+        ->wait(1)
+        ->click('Submit rejection')
+        ->wait(1)
+        ->assertNoSmoke();
+
+    expect(Product::query()->where('sku', 'LAMP-001')->value('status'))->toBe('archived');
+});
+
 it('creates and edits products through the form flow', function (): void {
     visit('/products')
         ->assertSee('Products')

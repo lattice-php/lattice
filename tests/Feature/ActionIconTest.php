@@ -19,6 +19,7 @@ test('actions serialize lucide icon enum values', function () {
                 'method' => null,
                 'confirmation' => null,
                 'effects' => [],
+                'form' => null,
                 'variant' => null,
                 'ref' => null,
             ],

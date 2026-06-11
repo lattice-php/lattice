@@ -10,12 +10,9 @@ arch('tables do not depend on forms')
     ->expect('Lattice\Lattice\Tables')
     ->not->toUse('Lattice\Lattice\Forms');
 
-arch('actions do not depend on forms or tables')
+arch('actions do not depend on tables')
     ->expect('Lattice\Lattice\Actions')
-    ->not->toUse([
-        'Lattice\Lattice\Forms',
-        'Lattice\Lattice\Tables',
-    ]);
+    ->not->toUse('Lattice\Lattice\Tables');
 
 arch('fragments do not depend on forms, tables or actions')
     ->expect('Lattice\Lattice\Fragments')

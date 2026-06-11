@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Actions\BulkActionRegistry;
 use Lattice\Lattice\Core\Concerns\InteractsWithLatticeComponents;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Core\Exceptions\UnknownLatticeComponent;
+use Lattice\Lattice\Http\Controllers\Concerns\HandlesPrecognition;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableRegistry;
+use Symfony\Component\HttpFoundation\Response;
 
 final class BulkActionController
 {
+    use HandlesPrecognition;
     use InteractsWithLatticeComponents;
 
     public function __construct(
@@ -25,9 +27,15 @@ final class BulkActionController
         private readonly SignsComponentReferences $references,
     ) {}
 
-    public function __invoke(Request $request, string $bulkAction): JsonResponse
+    public function __invoke(Request $request, string $bulkAction): Response
     {
+        $this->markPrecognitive($request);
+
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->bulkActions, 'bulkAction', $bulkAction);
+
+        if ($request->isPrecognitive()) {
+            return $this->validatePrecognitive($request, fn () => $definition->validate($request));
+        }
 
         $tableKey = $this->trustedTableKey($request);
         $table = $this->resolveTable($tableKey);

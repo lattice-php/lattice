@@ -85,31 +85,6 @@ use function Pest\Laravel\withoutVite;
 use function Pest\Laravel\withSession;
 
 /**
- * @param  array<string, mixed>  $component
- */
-function componentRef(array $component): string
-{
-    $props = $component['props'] ?? [];
-    $ref = is_array($props) ? ($props['ref'] ?? null) : null;
-
-    if (! is_string($ref)) {
-        throw new RuntimeException('Lattice component ref is missing.');
-    }
-
-    expect($ref)->not->toBe('');
-
-    return $ref;
-}
-
-/**
- * @return array<string, string>
- */
-function latticeHeaders(string $ref): array
-{
-    return ['X-Lattice-Ref' => $ref];
-}
-
-/**
  * @return TestResponse<JsonResponse>
  */
 function latticeGet(string $url, string $ref): TestResponse
@@ -180,6 +155,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'icon' => null,
                 'confirmation' => null,
                 'effects' => [],
+                'form' => null,
                 'variant' => null,
             ],
         ])
@@ -992,6 +968,7 @@ test('registered actions serialize their configured endpoint method label and ef
                 'variant' => 'secondary',
                 'icon' => null,
                 'confirmation' => null,
+                'form' => null,
                 'effects' => [
                     [
                         'type' => 'toast',
@@ -1041,6 +1018,7 @@ test('action groups serialize grouped child actions', function () {
                         'icon' => null,
                         'confirmation' => null,
                         'effects' => [],
+                        'form' => null,
                         'variant' => null,
                         'ref' => componentRef($group['schema'][0]),
                     ],
@@ -1055,6 +1033,7 @@ test('action groups serialize grouped child actions', function () {
                         'icon' => null,
                         'confirmation' => null,
                         'effects' => [],
+                        'form' => null,
                         'variant' => 'destructive',
                         'ref' => componentRef($group['schema'][1]),
                     ],
@@ -1231,6 +1210,7 @@ test('actions can serialize confirmation modal configuration', function () {
                     'cancelLabel' => 'Keep account',
                 ],
                 'effects' => [],
+                'form' => null,
                 'variant' => 'destructive',
                 'ref' => null,
             ],

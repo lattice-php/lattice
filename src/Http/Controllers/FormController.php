@@ -7,15 +7,15 @@ namespace Lattice\Lattice\Http\Controllers;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 use Lattice\Lattice\Core\Concerns\InteractsWithLatticeComponents;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
+use Lattice\Lattice\Http\Controllers\Concerns\HandlesPrecognition;
 use Symfony\Component\HttpFoundation\Response;
 
 final class FormController
 {
+    use HandlesPrecognition;
     use InteractsWithLatticeComponents;
 
     public function __construct(
@@ -25,9 +25,7 @@ final class FormController
 
     public function __invoke(Request $request, string $form): Response|Responsable
     {
-        if ($request->isAttemptingPrecognition()) {
-            $request->attributes->set('precognitive', true);
-        }
+        $this->markPrecognitive($request);
 
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->forms, 'form', $form);
 
@@ -40,36 +38,9 @@ final class FormController
         }
 
         if ($request->isPrecognitive()) {
-            return $this->validatePrecognitive($request, $definition);
+            return $this->validatePrecognitive($request, fn () => $definition->validate($request));
         }
 
         return $definition->handle($request);
-    }
-
-    private function validatePrecognitive(Request $request, FormDefinition $definition): Response
-    {
-        try {
-            $definition->validate($request);
-        } catch (ValidationException $exception) {
-            return $this->precognitiveResponse(new JsonResponse([
-                'message' => $exception->getMessage(),
-                'errors' => $exception->errors(),
-            ], Response::HTTP_UNPROCESSABLE_ENTITY));
-        }
-
-        return $this->precognitiveResponse(new Response('', Response::HTTP_NO_CONTENT, [
-            'Precognition-Success' => 'true',
-        ]));
-    }
-
-    private function precognitiveResponse(Response $response): Response
-    {
-        $response->headers->set('Precognition', 'true');
-        $response->headers->set('Vary', trim(implode(', ', array_filter([
-            $response->headers->get('Vary'),
-            'Precognition',
-        ]))));
-
-        return $response;
     }
 }

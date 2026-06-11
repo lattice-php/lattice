@@ -11,6 +11,8 @@ use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasVariant;
+use Lattice\Lattice\Forms\Components\Field;
+use Lattice\Lattice\Forms\Components\Form;
 
 #[Attributes\Component('action')]
 class Action extends Component
@@ -34,6 +36,8 @@ class Action extends Component
      * @var array<int, Effect>
      */
     public array $effects = [];
+
+    public ?Form $form = null;
 
     public static function make(string $id): static
     {
@@ -94,6 +98,21 @@ class Action extends Component
     public function effects(array $effects): static
     {
         $this->effects = $effects;
+
+        return $this;
+    }
+
+    /**
+     * Attach a form schema rendered in a modal before the action runs. The
+     * collected values are posted to the action endpoint and validated server-side.
+     *
+     * @param  array<int, Field>  $fields
+     */
+    public function form(array $fields): static
+    {
+        $this->form = Form::make(($this->id ?? 'action').'-form')
+            ->schema($fields)
+            ->precognitive();
 
         return $this;
     }

@@ -10,6 +10,7 @@ use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\LucideIcon;
 use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Forms\Components\Textarea;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
 
@@ -57,6 +58,29 @@ it('accepts arbitrary string icons', function (): void {
 
     expect($payload['props']['icon'])->toBe('custom.spark');
     expect($payload['props']['method'])->toBe('delete');
+});
+
+it('serializes an embedded form schema', function (): void {
+    $action = Action::make('reject')
+        ->label('Reject')
+        ->form([
+            Textarea::make('reason', 'Reason')->required(),
+        ]);
+
+    $payload = json_decode(json_encode($action), true);
+
+    expect($payload['props']['form']['type'])->toBe('form');
+    expect($payload['props']['form']['schema'])->toHaveCount(1);
+    expect($payload['props']['form']['schema'][0]['type'])->toBe('form.textarea');
+    expect($payload['props']['form']['schema'][0]['props']['name'])->toBe('reason');
+});
+
+it('serializes a null form when none is attached', function (): void {
+    $action = Action::make('plain')->label('Plain');
+
+    $payload = json_decode(json_encode($action), true);
+
+    expect($payload['props']['form'])->toBeNull();
 });
 
 it('drops null confirmation entries and includes empty effects', function (): void {

@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Forms;
 
 use Illuminate\Contracts\Support\Responsable;
-use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Validation\Validator;
 use Lattice\Lattice\Core\Concerns\CreatesToastMessages;
 use Lattice\Lattice\Core\Definition;
 use Lattice\Lattice\Forms\Components\Field;
@@ -30,85 +27,10 @@ abstract class FormDefinition extends Definition implements ProvidesForm
      */
     public function validate(Request $request): array
     {
-        $data = FormData::fromRequest($request);
-        $fields = $this->resolvedFields($request, $data);
-
-        $input = $request->all();
-        $rules = [];
-        $messages = [];
-        $attributes = [];
-
-        /** @var array<int, array{field: Field, name: string, visible: bool, serverValue: bool, locked: bool}> $plan */
-        $plan = [];
-
-        foreach ($fields as $field) {
-            $name = $field->name();
-            $visible = $field->isVisible($data);
-            $locked = $field->isReadOnly($data) || $field->isDisabled($data);
-            $serverValue = $field->hasResolvedValue() || ($locked && $field->hasValue());
-
-            $plan[] = [
-                'field' => $field,
-                'name' => $name,
-                'visible' => $visible,
-                'serverValue' => $serverValue,
-                'locked' => $locked,
-            ];
-
-            if ($serverValue) {
-                $input[$name] = $field->resolvedValue();
-            }
-
-            if (! $visible) {
-                continue;
-            }
-
-            $fieldRules = $field->resolveRules($data, $request);
-
-            if ($field->isRequired($data) && ! in_array('required', $fieldRules, true)) {
-                array_unshift($fieldRules, 'required');
-            }
-
-            if ($fieldRules !== []) {
-                $rules[$name] = $fieldRules;
-            }
-
-            foreach ($field->messages() as $rule => $message) {
-                $messages["{$name}.{$rule}"] = $message;
-            }
-
-            if (($label = $field->getLabel()) !== null) {
-                $attributes[$name] = $label;
-            }
-        }
-
-        $validated = $this->validator($input, $rules, $messages, $attributes, $request)->validate();
-
-        foreach ($plan as ['field' => $field, 'name' => $name, 'visible' => $visible, 'serverValue' => $serverValue, 'locked' => $locked]) {
-            if (! $visible) {
-                unset($validated[$name]);
-
-                continue;
-            }
-
-            if ($serverValue) {
-                $validated[$name] = $field->resolvedValue();
-
-                continue;
-            }
-
-            if ($locked) {
-                unset($validated[$name]);
-
-                continue;
-            }
-
-            if (array_key_exists($name, $validated)) {
-                $validated[$name] = $field->castValue($validated[$name]);
-            }
-        }
-
-        return $validated;
+        return app(FieldValidator::class)->validate(
+            $this->buildForm($request)->fields(),
+            $request,
+        );
     }
 
     /**
@@ -159,42 +81,10 @@ abstract class FormDefinition extends Definition implements ProvidesForm
     }
 
     /**
-     * Build the form and run each field's resolution pass (dependsOn closures, value resolvers)
-     * so visibility, rules, and computed values reflect the current request data.
-     *
-     * @return Collection<int, Field>
-     */
-    protected function resolvedFields(Request $request, FormData $data): Collection
-    {
-        return $this->buildForm($request)
-            ->fields()
-            ->each(fn (Field $field) => $field->applyResolution($data, $request));
-    }
-
-    /**
      * Build this form's component tree for the current request.
      */
     protected function buildForm(Request $request): Form
     {
         return $this->definition(Form::make('form'), $request);
-    }
-
-    /**
-     * @param  array<string, mixed>  $input
-     * @param  array<string, array<int, mixed>>  $rules
-     * @param  array<string, string>  $messages
-     * @param  array<string, string>  $attributes
-     */
-    protected function validator(array $input, array $rules, array $messages, array $attributes, Request $request): Validator
-    {
-        $validator = app(ValidationFactory::class)->make($input, $rules, $messages, $attributes);
-
-        if ($request->isPrecognitive()) {
-            $validator->setRules(
-                $request->filterPrecognitiveRules($validator->getRulesWithoutPlaceholders()),
-            );
-        }
-
-        return $validator;
     }
 }
