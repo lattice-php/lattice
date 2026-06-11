@@ -4,7 +4,9 @@ namespace Lattice\Lattice\Core\Components;
 
 use BackedEnum;
 use JsonSerializable;
+use Lattice\Lattice\Attributes\Component as ComponentAttribute;
 use Lattice\Lattice\Attributes\SerializationHook;
+use LogicException;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -22,6 +24,11 @@ abstract class Component implements JsonSerializable
     private static array $serializationHookCache = [];
 
     /**
+     * @var array<class-string, string>
+     */
+    private static array $typeCache = [];
+
+    /**
      * @var array<class-string, list<ReflectionProperty>>
      */
     private static array $wirePropertyCache = [];
@@ -30,7 +37,27 @@ abstract class Component implements JsonSerializable
 
     public function __construct(protected ?string $key = null) {}
 
-    abstract protected function type(): string;
+    protected function type(): string
+    {
+        return self::$typeCache[static::class] ??= self::resolveType(static::class);
+    }
+
+    /**
+     * @param  class-string  $class
+     */
+    private static function resolveType(string $class): string
+    {
+        $attributes = (new ReflectionClass($class))->getAttributes(ComponentAttribute::class);
+
+        if ($attributes === []) {
+            throw new LogicException(sprintf(
+                'Component [%s] is missing the #[Component] attribute that declares its wire type.',
+                $class,
+            ));
+        }
+
+        return $attributes[0]->newInstance()->type;
+    }
 
     public function key(string $key): static
     {
