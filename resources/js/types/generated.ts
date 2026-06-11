@@ -413,7 +413,7 @@ export type HiddenInput = {
   required: boolean | null;
   value: any;
 };
-export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
+export type HttpMethod = import("@inertiajs/core").Method;
 export type LayoutNode =
   | {
       type: "outlet";

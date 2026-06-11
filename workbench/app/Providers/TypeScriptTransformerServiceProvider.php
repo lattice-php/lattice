@@ -24,7 +24,6 @@ use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
-use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\Enums\ToastVariant;
@@ -61,6 +60,7 @@ use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 use Workbench\App\Support\LatticeComponentTransformer;
 use Workbench\App\Support\LatticeEffectType;
 use Workbench\App\Support\LatticeEnumTransformer;
+use Workbench\App\Support\LatticeHttpMethodTransformer;
 use Workbench\App\Support\LatticeNodesProvider;
 use Workbench\App\Support\LatticeValueObjectTransformer;
 use Workbench\App\Support\OxfmtFormatter;
@@ -121,6 +121,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
         ];
 
         $config
+            ->transformer(new LatticeHttpMethodTransformer)
             ->transformer(new LatticeEnumTransformer([
                 Align::class,
                 ButtonVariant::class,
@@ -129,7 +130,6 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 PageLayout::class,
                 PageContainer::class,
                 ToastVariant::class,
-                HttpMethod::class,
                 PaginationType::class,
                 ColumnType::class,
                 FilterType::class,
