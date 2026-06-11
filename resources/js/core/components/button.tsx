@@ -9,6 +9,22 @@ import type { ButtonVariant } from "@lattice/lattice/types/generated";
 
 export type { ButtonVariant };
 
+/** The generated ButtonVariant values as a runtime list — the single source the variant guards validate against. */
+export const BUTTON_VARIANTS = [
+  "default",
+  "destructive",
+  "ghost",
+  "link",
+  "outline",
+  "secondary",
+] as const satisfies readonly ButtonVariant[];
+
+export function asButtonVariant(value: unknown): ButtonVariant {
+  return (BUTTON_VARIANTS as readonly string[]).includes(value as string)
+    ? (value as ButtonVariant)
+    : "default";
+}
+
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lt-sm text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 outline-none focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[3px] aria-invalid:ring-lt-danger/20 dark:aria-invalid:ring-lt-danger/40 aria-invalid:border-lt-danger",
   {
@@ -58,25 +74,10 @@ function Button({
   );
 }
 
-function getButtonVariant(variant: string): ButtonVariant {
-  if (
-    variant === "default" ||
-    variant === "destructive" ||
-    variant === "outline" ||
-    variant === "secondary" ||
-    variant === "ghost" ||
-    variant === "link"
-  ) {
-    return variant;
-  }
-
-  return "default";
-}
-
 const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
   const href = getStringProp(node.props, "href");
   const label = getStringProp(node.props, "label", "Action");
-  const variant = getButtonVariant(getStringProp(node.props, "variant", "default"));
+  const variant = asButtonVariant(node.props?.variant);
 
   if (href) {
     return (

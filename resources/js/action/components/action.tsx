@@ -1,8 +1,8 @@
 import { router, useHttp } from "@inertiajs/react";
 import type { Method } from "@inertiajs/core";
-import { useState, type ComponentProps as ReactComponentProps } from "react";
+import { useState } from "react";
 import { withRefHeader } from "@lattice/lattice/core/component-ref";
-import { Button } from "@lattice/lattice/core/components/button";
+import { asButtonVariant, Button } from "@lattice/lattice/core/components/button";
 import { ConfirmDialog } from "@lattice/lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice/lattice/core/components/spinner";
 import { getStringProp } from "@lattice/lattice/core/props";
@@ -13,8 +13,6 @@ import { dispatchActionEffects, dispatchActionError, getActionEffects } from "..
 import type { ActionEffect } from "../effects";
 
 type ActionConfirmation = NonNullable<Action["confirmation"]>;
-
-type ButtonVariant = ReactComponentProps<typeof Button>["variant"];
 
 type ActionResponse = {
   data?: Record<string, unknown>;
@@ -51,7 +49,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const http = useHttp<ActionData, ActionResponse>({});
   const [isConfirming, setIsConfirming] = useState(false);
   const confirmation = getConfirmation(node.props);
-  const variant = (node.props?.variant ?? "default") as ButtonVariant;
+  const variant = asButtonVariant(node.props?.variant);
 
   const submit = async (): Promise<void> => {
     if (!endpoint) {

@@ -1,12 +1,6 @@
 import type { Method } from "@inertiajs/core";
-
-export type BulkActionVariant =
-  | "default"
-  | "destructive"
-  | "ghost"
-  | "link"
-  | "outline"
-  | "secondary";
+import { asButtonVariant } from "@lattice/lattice/core/components/button";
+import type { ButtonVariant } from "@lattice/lattice/types/generated";
 
 export type BulkActionConfirmation = {
   cancelLabel?: string;
@@ -21,7 +15,7 @@ export type BulkAction = {
   method: Method;
   endpoint: string;
   ref: string;
-  variant: BulkActionVariant;
+  variant: ButtonVariant;
   confirmation: BulkActionConfirmation | null;
 };
 
@@ -33,10 +27,6 @@ function asString(value: unknown, fallback = ""): string {
 
 function asMethod(value: unknown): Method {
   return methods.includes(value as Method) ? (value as Method) : "post";
-}
-
-function asVariant(value: unknown): BulkActionVariant {
-  return typeof value === "string" ? (value as BulkActionVariant) : "default";
 }
 
 function asConfirmation(value: unknown): BulkActionConfirmation | null {
@@ -75,7 +65,7 @@ export function getBulkActions(value: unknown): BulkAction[] {
         method: asMethod(props.method),
         endpoint,
         ref: asString(props.ref),
-        variant: asVariant(props.variant),
+        variant: asButtonVariant(props.variant),
         confirmation: asConfirmation(props.confirmation),
       },
     ];
