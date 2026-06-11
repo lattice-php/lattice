@@ -11,8 +11,6 @@ import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
 import { useFormValue } from "../values";
 
-type SelectOption = Option;
-
 function toValues(stored: unknown, fallback: string | string[] | undefined): string[] {
   const source = stored ?? fallback;
 
@@ -47,7 +45,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
 
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<SelectOption[]>([]);
+  const [results, setResults] = useState<Option[]>([]);
   const [loading, setLoading] = useState(false);
 
   const labels = useMemo(() => {
@@ -77,7 +75,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
     setLoading(true);
 
     const timer = window.setTimeout(() => {
-      void postFormAction<{ options?: SelectOption[] }>(
+      void postFormAction<{ options?: Option[] }>(
         action,
         componentRef,
         { _search: name, q: query },
@@ -106,7 +104,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
     blur(name);
   }
 
-  function pick(option: SelectOption): void {
+  function pick(option: Option): void {
     if (multiple) {
       const next = selected.includes(option.value)
         ? selected.filter((value) => value !== option.value)

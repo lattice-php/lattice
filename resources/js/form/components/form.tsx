@@ -120,17 +120,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
       headers={withRefHeader(componentRef)}
       className="mx-auto flex w-full max-w-2xl flex-col gap-6"
     >
-      {({
-        clearErrors,
-        errors,
-        invalid,
-        processing,
-        reset,
-        touch,
-        validate,
-        validating,
-        valid,
-      }) => (
+      {({ clearErrors, errors, processing, reset, validate }) => (
         <FormProvider
           value={{
             action,
@@ -138,13 +128,9 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
             componentRef,
             errors: errors as Record<string, string | undefined>,
             fieldLabels,
-            invalid: (field) => invalid(field),
             precognitive,
             processing,
-            touch: (field) => touch(field),
             validate: (field) => validate(field),
-            validating,
-            valid: (field) => valid(field),
           }}
         >
           <FormResetListener componentId={node.id} reset={reset} />

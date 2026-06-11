@@ -16,15 +16,13 @@ type ActionResponse = {
   ok?: boolean;
 };
 
-type ActionData = Record<string, never>;
-
 const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const endpoint = node.props.endpoint ?? "";
   const icon = node.props.icon;
   const label = node.props.label ?? "Run action";
   const componentRef = node.props.ref ?? "";
   const method: Method = node.props.method ?? "post";
-  const http = useHttp<ActionData, ActionResponse>({});
+  const http = useHttp<Record<string, never>, ActionResponse>({});
   const [isConfirming, setIsConfirming] = useState(false);
   const confirmation = node.props.confirmation;
   const variant = node.props.variant ?? "default";
