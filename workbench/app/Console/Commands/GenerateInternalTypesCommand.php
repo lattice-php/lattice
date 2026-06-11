@@ -20,13 +20,8 @@ use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
-use Lattice\Lattice\Support\TypeScript\EffectType as TypeScriptEffectType;
-use Lattice\Lattice\Support\TypeScript\EnumTransformer;
-use Lattice\Lattice\Support\TypeScript\HttpMethodTransformer;
-use Lattice\Lattice\Support\TypeScript\NodesProvider;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
-use Lattice\Lattice\Support\TypeScript\ValueObjectTransformer;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Columns\ColumnFilter;
 use Lattice\Lattice\Tables\Enums\ColumnType;
@@ -36,6 +31,11 @@ use Lattice\Lattice\Tables\Enums\SortDirection;
 use Lattice\Lattice\Tables\FilterClause;
 use Lattice\Lattice\Tables\TableSort;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
+use Workbench\App\Support\TypeScript\EffectType as TypeScriptEffectType;
+use Workbench\App\Support\TypeScript\EnumTransformer;
+use Workbench\App\Support\TypeScript\HttpMethodTransformer;
+use Workbench\App\Support\TypeScript\NodesProvider;
+use Workbench\App\Support\TypeScript\ValueObjectTransformer;
 
 final class GenerateInternalTypesCommand extends Command
 {
