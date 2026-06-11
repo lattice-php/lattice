@@ -26,6 +26,7 @@ export type { ButtonVariant } from "./core/components/button";
 export type { ReloadComponentEvent } from "./events/event-names";
 export type {
   KnownPageContainer,
+  LatticeComponentProps,
   LayoutPayload,
   Node,
   NodeOfType,
@@ -34,6 +35,7 @@ export type {
   PageContainer,
   PageBreadcrumb,
   PagePayload,
+  PropsOf,
   RendererComponent,
   RendererComponentModule,
   RendererComponentProps,

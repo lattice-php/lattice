@@ -15,7 +15,8 @@ const isVitest = process.env.VITEST !== undefined;
 function libraryEntries(): string[] {
   return readdirSync(sourceRoot, { recursive: true, encoding: "utf8" })
     .filter((file) => /\.(ts|tsx)$/.test(file))
-    .filter((file) => !/\.(test|d)\.(ts|tsx)$/.test(file))
+    // Exclude declaration files and type-level test files — *.test.ts, *.test-d.ts, *.d.ts — from the published bundle.
+    .filter((file) => !/\.(test(-d)?|d)\.(ts|tsx)$/.test(file))
     .filter((file) => !file.startsWith("test/"))
     .map((file) => path.join(sourceRoot, file));
 }
@@ -60,7 +61,8 @@ export default defineConfig(({ mode }) => {
             dts({
               tsconfigPath: path.resolve(__dirname, "tsconfig.json"),
               include: ["resources/js"],
-              exclude: ["resources/js/**/*.test.*", "resources/js/test/**"],
+              // Exclude test files and declaration sources from .d.ts generation.
+              exclude: ["resources/js/**/*.test.*", "resources/js/**/*.test-d.*", "resources/js/test/**"],
               compilerOptions: { rootDir: sourceRoot },
               outDir: "dist",
             }),
