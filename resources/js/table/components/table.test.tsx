@@ -13,6 +13,7 @@ function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): 
     copyable: null,
     link: null,
     columns: null,
+    props: null,
     ...partial,
   };
 }

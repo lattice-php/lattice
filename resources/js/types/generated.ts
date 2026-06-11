@@ -112,7 +112,7 @@ export type Choice = {
 export type ColumnData = {
   readonly key: string;
   readonly label: string;
-  readonly type: ColumnType;
+  readonly type: ColumnType | string;
   readonly sortable: boolean | null;
   readonly filter: ColumnFilter | null;
   readonly date: {
@@ -124,6 +124,7 @@ export type ColumnData = {
     external: boolean;
   } | null;
   readonly columns: ColumnData[] | null;
+  readonly props: Record<string, any> | null;
 };
 export type ColumnFilter = {
   readonly enabled: boolean;
