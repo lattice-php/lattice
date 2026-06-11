@@ -1,5 +1,4 @@
 ---
-import { tokenLabel } from "@lib/tokens.ts";
 import { tokenRegistry } from "@lib/latticeTokens.ts";
 
 const groups = [
@@ -26,8 +25,6 @@ const groups = [
             <tr>
               <td>
                 <code>{token.name}</code>
-                <br />
-                <small>{tokenLabel(token.name)}</small>
               </td>
               <td>{token.hostVar ? <code>{token.hostVar}</code> : <span>—</span>}</td>
               <td>
@@ -47,6 +44,11 @@ const groups = [
 }
 
 <style>
+  th,
+  td {
+    text-align: right;
+  }
+
   .swatch {
     display: inline-block;
     width: 1rem;

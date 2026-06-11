@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Node } from "@lattice/lattice/core/types";
-import { collectClassNames, resolveTokens, tokenLabel } from "@lib/tokens";
+import { collectClassNames, resolveTokens } from "@lib/tokens";
 import type { SuffixMap, ThemeToken } from "@lib/tokens";
 import LatticePreview from "./LatticePreview.tsx";
 
@@ -10,6 +10,8 @@ type Props = {
   tokens: ThemeToken[];
   suffixMap: SuffixMap;
 };
+
+const alignRight = { textAlign: "right" as const };
 
 export default function TokenList({ nodes, values = {}, tokens, suffixMap }: Props) {
   const previewRef = useRef<HTMLDivElement>(null);
@@ -57,20 +59,18 @@ export default function TokenList({ nodes, values = {}, tokens, suffixMap }: Pro
         <table>
           <thead>
             <tr>
-              <th>Token</th>
-              <th>Light</th>
-              <th>Dark</th>
+              <th style={alignRight}>Token</th>
+              <th style={alignRight}>Light</th>
+              <th style={alignRight}>Dark</th>
             </tr>
           </thead>
           <tbody>
             {used.map((token) => (
               <tr key={token.name}>
-                <td>
+                <td style={alignRight}>
                   <code>{token.name}</code>
-                  <br />
-                  <small>{tokenLabel(token.name)}</small>
                 </td>
-                <td>
+                <td style={alignRight}>
                   <span
                     style={{
                       background: token.light,
@@ -85,7 +85,7 @@ export default function TokenList({ nodes, values = {}, tokens, suffixMap }: Pro
                   />
                   <code>{token.light}</code>
                 </td>
-                <td>
+                <td style={alignRight}>
                   <span
                     style={{
                       background: token.dark,
