@@ -11,6 +11,8 @@ use Illuminate\Routing\Router;
 use Inertia\ResponseFactory;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Console\Commands\DiscoverCacheCommand;
+use Lattice\Lattice\Console\Commands\DiscoverClearCommand;
 use Lattice\Lattice\Console\Commands\MakeColumnCommand;
 use Lattice\Lattice\Console\Commands\MakeComponentCommand;
 use Lattice\Lattice\Console\Commands\MakeFieldCommand;
@@ -37,7 +39,14 @@ final class LatticeServiceProvider extends PackageServiceProvider
             ->name(self::$name)
             ->hasConfigFile()
             ->hasRoute('web')
-            ->hasConsoleCommands([TypeScriptCommand::class, MakeFieldCommand::class, MakeComponentCommand::class, MakeColumnCommand::class]);
+            ->hasConsoleCommands([
+                TypeScriptCommand::class,
+                MakeFieldCommand::class,
+                MakeComponentCommand::class,
+                MakeColumnCommand::class,
+                DiscoverCacheCommand::class,
+                DiscoverClearCommand::class,
+            ]);
     }
 
     public function packageRegistered(): void
@@ -75,23 +84,16 @@ final class LatticeServiceProvider extends PackageServiceProvider
             ], 'lattice-js');
         }
 
+        $this->optimizes(
+            optimize: 'lattice:discover-cache',
+            clear: 'lattice:discover-clear',
+            key: 'lattice',
+        );
+
         Lattice::registerConfiguredDefinitions();
 
-        $discoveryPaths = config('lattice.discover', []);
-
-        if (! is_array($discoveryPaths)) {
-            return;
-        }
-
-        foreach ($discoveryPaths as $path => $namespace) {
-            if (is_array($namespace)) {
-                $path = $namespace['path'] ?? null;
-                $namespace = $namespace['namespace'] ?? null;
-            }
-
-            if (is_string($path) && is_string($namespace)) {
-                Lattice::discover($path, $namespace);
-            }
+        foreach (DefinitionDiscovery::configuredPaths() as $path => $namespace) {
+            Lattice::discover($path, $namespace);
         }
     }
 }
