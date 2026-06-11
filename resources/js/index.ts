@@ -26,15 +26,15 @@ export { LATTICE_EVENT } from "./events/event-names";
 export type { ButtonVariant } from "./core/components/button";
 export type { ReloadComponentEvent } from "./events/event-names";
 export type {
-  ComponentProps,
-  ComponentType,
   KnownPageContainer,
   LayoutPayload,
   MenuGroup,
   MenuItem,
   MenuPayload,
   Node,
+  NodeOfType,
   NodeProps,
+  NodeType,
   PageContainer,
   PageBreadcrumb,
   PagePayload,
@@ -43,6 +43,7 @@ export type {
   RendererComponentProps,
   Schema,
   UnknownComponent,
+  WireNode,
 } from "./core/types";
 export type { Method } from "@inertiajs/core";
 export type { ActionEffect } from "./action/effects";

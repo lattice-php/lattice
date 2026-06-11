@@ -22,6 +22,7 @@ use Lattice\Lattice\Core\Components\Tab;
 use Lattice\Lattice\Core\Components\Tabs;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\Align;
+use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\PageContainer;
@@ -52,16 +53,10 @@ use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\Enums\SortDirection;
 use Lattice\Lattice\Tables\TableSort;
 use Spatie\LaravelTypeScriptTransformer\TypeScriptTransformerApplicationServiceProvider;
-use Spatie\TypeScriptTransformer\References\ClassStringReference;
-use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptLiteral;
-use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptObject;
-use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptProperty;
-use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptReference;
-use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptString;
-use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptUnion;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfigFactory;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 use Workbench\App\Support\LatticeComponentTransformer;
+use Workbench\App\Support\LatticeEffectType;
 use Workbench\App\Support\LatticeEnumTransformer;
 use Workbench\App\Support\LatticeNodesProvider;
 use Workbench\App\Support\LatticeValueObjectTransformer;
@@ -116,29 +111,10 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
             Table::class => ['type' => 'table', 'interactive' => true],
         ];
 
-        $optional = fn (string $name): TypeScriptProperty => new TypeScriptProperty($name, new TypeScriptString, isOptional: true);
-        $effect = fn (string $type, array $payload = []): TypeScriptObject => new TypeScriptObject([
-            new TypeScriptProperty('type', new TypeScriptLiteral($type)),
-            ...$payload,
-        ]);
-
-        $effectType = new TypeScriptUnion([
-            $effect('toast', [
-                $optional('message'),
-                new TypeScriptProperty('variant', new TypeScriptReference(new ClassStringReference(ToastVariant::class)), isOptional: true),
-            ]),
-            $effect('reloadComponent', [$optional('component')]),
-            $effect('reloadPage'),
-            $effect('redirect', [$optional('url')]),
-            $effect('download', [$optional('url')]),
-            $effect('openModal', [$optional('modal')]),
-            $effect('closeModal', [$optional('modal')]),
-            $effect('resetForm', [$optional('form')]),
-        ]);
-
         $config
             ->transformer(new LatticeEnumTransformer([
                 Align::class,
+                ButtonVariant::class,
                 Gap::class,
                 Width::class,
                 PageLayout::class,
@@ -175,11 +151,11 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
                 $tableComponents,
                 'form',
                 Effect::class,
-                $effectType,
+                LatticeEffectType::build(),
             ))
             ->transformDirectories($packageRoot.'/src')
-            ->outputDirectory($packageRoot.'/resources/js/generated')
-            ->writer(new FlatModuleWriter('types.ts'))
+            ->outputDirectory($packageRoot.'/resources/js/types')
+            ->writer(new FlatModuleWriter('generated.ts'))
             ->formatter(new OxfmtFormatter);
     }
 }

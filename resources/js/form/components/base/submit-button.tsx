@@ -1,15 +1,14 @@
 import { Button } from "@lattice/lattice/core/components/button";
 import { Spinner } from "@lattice/lattice/core/components/spinner";
+import type { ButtonVariant } from "@lattice/lattice/types/generated";
 import { useFormContext } from "../context";
-
-type SubmitButtonVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
 
 export function FormSubmitButton({
   label,
   variant = "default",
 }: {
   label: string;
-  variant?: SubmitButtonVariant;
+  variant?: ButtonVariant;
 }) {
   const { errors, fieldLabels, processing } = useFormContext();
 

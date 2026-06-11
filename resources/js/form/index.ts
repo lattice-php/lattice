@@ -24,7 +24,7 @@ function loadFormComponent<TType extends string>(
     const components = await loadFormComponents();
 
     return {
-      default: components[name] as RendererComponent<TType>,
+      default: components[name] as unknown as RendererComponent<TType>,
     };
   };
 }

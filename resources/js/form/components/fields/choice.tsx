@@ -1,28 +1,11 @@
 import { useEffect, useMemo } from "react";
-import {
-  type Option,
-  getOptionalNumberProp,
-  getOptions,
-  getStringProp,
-} from "@lattice/lattice/core/props";
+import { getOptionalNumberProp, getOptions, getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { SegmentedPills } from "@lattice/lattice/core/components/segmented-pills";
 import { FormFieldFrame } from "../base/field";
 import { useControlledField } from "../use-controlled-field";
 import { useResolvedNode } from "../resolved-nodes";
 import { useFormValue, useSetFormValue } from "../values";
-
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    "form.choice": {
-      label?: string;
-      name?: string;
-      options?: Option[];
-      tabIndex?: number;
-      value?: string;
-    };
-  }
-}
 
 export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
   const resolvedNode = useResolvedNode(node);

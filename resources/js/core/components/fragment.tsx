@@ -3,18 +3,11 @@ import { withRefHeader } from "@lattice/lattice/core/component-ref";
 import { getStringProp } from "@lattice/lattice/core/props";
 import { Renderer, useRendererContext } from "@lattice/lattice/core/renderer";
 import type { Node, RendererComponent, Schema } from "@lattice/lattice/core/types";
-import type { Fragment } from "@lattice/lattice/generated/types";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice/lattice/events/event-names";
 
 type FragmentResponse = {
   schema?: Schema;
 };
-
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    fragment: Fragment;
-  }
-}
 
 function getComponents(value: unknown): Node[] {
   if (!Array.isArray(value)) {

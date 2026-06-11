@@ -4,28 +4,6 @@ import { FormFieldFrame } from "../base/field";
 import { Input } from "../base/input";
 import { useControlledField } from "../use-controlled-field";
 
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    "form.number-input": {
-      autoFocus?: boolean;
-      conditions?: unknown;
-      disabled?: boolean;
-      hidden?: boolean;
-      label?: string;
-      max?: number;
-      min?: number;
-      name?: string;
-      placeholder?: string;
-      readonly?: boolean;
-      required?: boolean;
-      slider?: boolean;
-      step?: number;
-      tabIndex?: number;
-      value?: string;
-    };
-  }
-}
-
 export const NumberInputComponent: RendererComponent<"form.number-input"> = ({ node }) => {
   const { name, value, error, hidden, required, readonly, disabled, commit } =
     useControlledField(node);

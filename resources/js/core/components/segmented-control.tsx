@@ -1,14 +1,7 @@
 import { useState } from "react";
 import { getOptionalNumberProp, getOptions, getStringProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
-import type { SegmentedControl } from "@lattice/lattice/generated/types";
 import { SegmentedPills } from "./segmented-pills";
-
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    "segmented-control": SegmentedControl;
-  }
-}
 
 const SegmentedControlComponent: RendererComponent<"segmented-control"> = ({ node }) => {
   const options = getOptions(node.props);

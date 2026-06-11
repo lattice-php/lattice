@@ -1,4 +1,5 @@
-import { type ComponentProps, useId } from "react";
+import { useId } from "react";
+import type { ButtonVariant } from "@lattice/lattice/types/generated";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 
@@ -17,7 +18,7 @@ export function ConfirmDialog({
   description?: string;
   confirmLabel: string;
   cancelLabel?: string;
-  confirmVariant?: ComponentProps<typeof Button>["variant"];
+  confirmVariant?: ButtonVariant;
   processing?: boolean;
   confirmDisabled?: boolean;
   onConfirm: () => void;

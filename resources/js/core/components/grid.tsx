@@ -1,13 +1,6 @@
 import { getNumberProp } from "@lattice/lattice/core/props";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { cn } from "@lattice/lattice/lib/utils";
-import type { Grid } from "@lattice/lattice/generated/types";
-
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    grid: Grid;
-  }
-}
 
 const GridComponent: RendererComponent<"grid"> = ({ children, node }) => {
   const columns = Math.min(Math.max(getNumberProp(node.props, "columns", 1), 1), 4);

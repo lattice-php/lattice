@@ -11,7 +11,7 @@ export type Action = {
   label?: string | null;
   method?: HttpMethod | null;
   ref?: string | null;
-  variant?: string | null;
+  variant?: ButtonVariant | null;
 };
 export type ActionGroup = {
   label?: string | null;
@@ -54,13 +54,14 @@ export type BulkAction = {
   label?: string | null;
   method?: HttpMethod | null;
   ref?: string | null;
-  variant?: string | null;
+  variant?: ButtonVariant | null;
 };
 export type Button = {
   href?: string | null;
   label: string;
-  variant?: string | null;
+  variant?: ButtonVariant | null;
 };
+export type ButtonVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
 export type Card = {
   description?: string | null;
   title?: string | null;
@@ -556,7 +557,7 @@ export type Stack = {
 };
 export type SubmitButton = {
   label?: string | null;
-  variant?: string | null;
+  variant?: ButtonVariant | null;
 };
 export type Tab = {
   confirm?: {

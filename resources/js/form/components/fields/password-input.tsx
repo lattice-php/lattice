@@ -29,12 +29,6 @@ function getPasswordConfirmation(props: NodeProps | undefined): PasswordConfirma
   };
 }
 
-declare module "@lattice/lattice/core/types" {
-  interface ComponentProps {
-    "form.password-input": PasswordInputProps;
-  }
-}
-
 export const PasswordInputComponent: RendererComponent<"form.password-input"> = ({ node }) => {
   const props = node.props ?? ({} as PasswordInputProps);
   const { errors } = useFormContext();
