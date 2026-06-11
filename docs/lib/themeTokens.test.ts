@@ -3,11 +3,11 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { parseSuffixMap, parseTokens } from "./tokens";
 
-const latticeCss = readFileSync(resolve(process.cwd(), "resources/css/lattice.css"), "utf8");
-const tokenRegistry = parseTokens(latticeCss);
-const suffixMap = parseSuffixMap(latticeCss);
+const css = readFileSync(resolve(process.cwd(), "resources/css/lattice.css"), "utf8");
+const tokenRegistry = parseTokens(css);
+const suffixMap = parseSuffixMap(css);
 
-describe("lattice.css tokens", () => {
+describe("theme tokens", () => {
   it("parses every lt token from the real stylesheet", () => {
     expect(tokenRegistry.find((t) => t.name === "--lt-primary")).toBeDefined();
     expect(tokenRegistry.find((t) => t.name === "--lt-radius-sm")?.category).toBe("radius");

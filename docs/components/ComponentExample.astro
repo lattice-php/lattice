@@ -1,9 +1,9 @@
 ---
 import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
-import LatticePreview from "@components/LatticePreview.tsx";
+import Preview from "@components/Preview.tsx";
 import NodeTree from "@components/NodeTree.tsx";
 import TokenList from "@components/TokenList.tsx";
-import { suffixMap, tokenRegistry } from "@lib/latticeTokens.ts";
+import { suffixMap, tokenRegistry } from "@lib/themeTokens.ts";
 
 interface Props {
   php: string;
@@ -31,17 +31,17 @@ const nodes = entry.default;
     <Code code={php} lang="php" />
   </TabItem>
   <TabItem label="Preview">
-    <div class="lattice-preview not-content">
-      <LatticePreview client:only="react" nodes={nodes} values={values} />
+    <div class="example-preview not-content">
+      <Preview client:only="react" nodes={nodes} values={values} />
     </div>
   </TabItem>
   <TabItem label="Tree">
-    <div class="lattice-preview not-content">
+    <div class="example-preview not-content">
       <NodeTree client:load nodes={nodes} />
     </div>
   </TabItem>
   <TabItem label="Style">
-    <div class="lattice-preview not-content">
+    <div class="example-preview not-content">
       <TokenList
         client:only="react"
         nodes={nodes}
@@ -54,7 +54,7 @@ const nodes = entry.default;
 </Tabs>
 
 <style>
-  .lattice-preview {
+  .example-preview {
     padding: 1.5rem;
     border: 1px solid var(--sl-color-gray-5);
     border-radius: 0.5rem;

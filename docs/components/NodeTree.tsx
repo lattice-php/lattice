@@ -44,34 +44,34 @@ function TreeNode({ node }: { node: Node }) {
   const [open, setOpen] = useState(true);
 
   return (
-    <li className="lattice-tree__item">
+    <li className="node-tree__item">
       <button
         type="button"
-        className="lattice-tree__row"
+        className="node-tree__row"
         aria-expanded={expandable ? open : undefined}
         disabled={!expandable}
         onClick={() => setOpen((value) => !value)}
       >
-        <span className="lattice-tree__caret">{expandable ? (open ? "▾" : "▸") : "·"}</span>
-        <span className="lattice-tree__type">{node.type}</span>
+        <span className="node-tree__caret">{expandable ? (open ? "▾" : "▸") : "·"}</span>
+        <span className="node-tree__type">{node.type}</span>
       </button>
 
       {open && expandable ? (
-        <div className="lattice-tree__body">
+        <div className="node-tree__body">
           {props.length > 0 ? (
-            <ul className="lattice-tree__props">
+            <ul className="node-tree__props">
               {props.map(([key, value]) => (
-                <li key={key} className="lattice-tree__prop">
-                  <span className="lattice-tree__key">{key}</span>
-                  <span className="lattice-tree__sep">:</span>
-                  <span className="lattice-tree__value">{JSON.stringify(value)}</span>
+                <li key={key} className="node-tree__prop">
+                  <span className="node-tree__key">{key}</span>
+                  <span className="node-tree__sep">:</span>
+                  <span className="node-tree__value">{JSON.stringify(value)}</span>
                 </li>
               ))}
             </ul>
           ) : null}
 
           {children.length > 0 ? (
-            <ul className="lattice-tree__children">
+            <ul className="node-tree__children">
               {children.map((child, index) => (
                 <TreeNode key={child.key ?? child.id ?? index} node={child} />
               ))}
@@ -85,7 +85,7 @@ function TreeNode({ node }: { node: Node }) {
 
 export default function NodeTree({ nodes }: Props) {
   return (
-    <ul className="lattice-tree">
+    <ul className="node-tree">
       {nodes.map((node, index) => (
         <TreeNode key={node.key ?? node.id ?? index} node={node} />
       ))}

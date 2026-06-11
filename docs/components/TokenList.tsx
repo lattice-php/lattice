@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Node } from "@lattice/lattice/core/types";
 import { collectClassNames, resolveTokens } from "@lib/tokens";
 import type { SuffixMap, ThemeToken } from "@lib/tokens";
-import LatticePreview from "./LatticePreview.tsx";
+import Preview from "./Preview.tsx";
 
 type Props = {
   nodes: Node[];
@@ -55,10 +55,10 @@ export default function TokenList({ nodes, values = {}, tokens, suffixMap }: Pro
   return (
     <>
       <div ref={previewRef} style={{ display: "none" }} aria-hidden="true">
-        <LatticePreview nodes={nodes} values={values} />
+        <Preview nodes={nodes} values={values} />
       </div>
       {used.length === 0 ? (
-        <p>No Lattice tokens detected for this example.</p>
+        <p>No tokens detected for this example.</p>
       ) : (
         <table>
           <thead>

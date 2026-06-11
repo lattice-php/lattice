@@ -87,7 +87,7 @@ describe("resolveTokens", () => {
     );
   });
 
-  it("returns nothing when no lattice utilities are present", () => {
+  it("returns nothing when no token utilities are present", () => {
     expect(resolveTokens(["flex h-9 px-3 shadow-xs"], SUFFIX_MAP)).toEqual([]);
   });
 });
