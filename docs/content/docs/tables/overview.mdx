@@ -1,0 +1,127 @@
+---
+title: Tables
+description: Listings with columns, sorting, filtering, pagination, and row and bulk actions, backed by a pluggable data source.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+A table is a listing backed by a **data source**. You declare columns in PHP; Lattice renders the
+React table and handles sorting, filtering, and pagination, fetching rows from the table's endpoint.
+An Eloquent-backed source ships out of the box, and you can back a table with anything else by
+implementing the source interface.
+
+<ComponentExample
+  php={`class ProductsTable extends EloquentTableDefinition
+{
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->sortable()->filterable(),
+            TextColumn::make('price')->numeric()->sortable()->filterable(),
+            TextColumn::make('featured')->boolean(),
+            TextColumn::make('updated_at')->date('Y-m-d')->sortable(),
+        ];
+    }
+
+    public function builder(TableQuery $query): Builder
+    {
+        return Product::query();
+    }
+}`}
+  fixture="table.overview"
+/>
+
+## Defining a table
+
+Extend `TableDefinition` (or, for a database-backed table, `EloquentTableDefinition`) and declare the
+columns. The `#[Table]` attribute gives the table a stable id so it can be discovered and addressed by
+its own endpoint.
+
+```php
+use Illuminate\Database\Eloquent\Builder;
+use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Lattice\Tables\EloquentTableDefinition;
+use Lattice\Lattice\Tables\TableQuery;
+
+#[Table('app.products')]
+class ProductsTable extends EloquentTableDefinition
+{
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->sortable()->filterable(),
+            TextColumn::make('price')->numeric()->sortable(),
+        ];
+    }
+
+    public function builder(TableQuery $query): Builder
+    {
+        return Product::query();
+    }
+}
+```
+
+`TableDefinition` exposes a handful of hooks beyond `columns()`:
+
+| Method            | Purpose                                                              |
+| ----------------- | ------------------------------------------------------------------- |
+| `columns()`       | The columns to render — see [Columns](/tables/columns/).            |
+| `source()`        | The [data source](#data-sources). `EloquentTableDefinition` builds one for you. |
+| `perPage()`       | Rows per page (default `25`).                                        |
+| `pagination()`    | The [pagination mode](/tables/sorting-filtering-pagination/#pagination). |
+| `striped()`       | Alternate row shading.                                               |
+| `actions($row)`   | Per-row [actions](/tables/actions/).                                 |
+| `bulkActions()`   | [Bulk actions](/tables/actions/#bulk-actions) for selected rows.    |
+
+## Data sources
+
+A table's rows come from a `TableSource`. The interface has three methods — one to fetch a page, and
+two that resolve rows for bulk actions:
+
+```php
+interface TableSource
+{
+    public function query(TableQuery $query): TableResult;
+    public function resolveMatching(TableQuery $query): Collection;
+    public function resolveSelection(array $keys): Collection;
+}
+```
+
+- `TableQuery` is the read model of the current request — its filters, sorts, page, and page size.
+- `TableResult` wraps the rows and pagination metadata. Build one from a paginator
+  (`TableResult::fromPaginator()`, `fromSimplePaginator()`) or a plain collection
+  (`TableResult::fromItems()`).
+
+Most tables use the built-in [Eloquent source](/tables/eloquent-tables/). For an in-memory list, an
+API, or a search index, implement `TableSource` yourself or use `CallbackTableSource`, which takes the
+three methods as closures:
+
+```php
+public function source(): TableSource
+{
+    return new CallbackTableSource(
+        fn (TableQuery $query) => TableResult::fromItems($this->rows($query)),
+    );
+}
+```
+
+## Rendering a table
+
+Render a table on a page with `Table::use()`, passing the definition class:
+
+```php
+use Lattice\Lattice\Tables\Components\Table;
+
+Table::use(ProductsTable::class);
+```
+
+`Table::lazy()` renders the same table but defers the first data load until the component mounts —
+useful inside a tab or a section that isn't visible on page load.
+
+## Next steps
+
+- [Eloquent tables](/tables/eloquent-tables/) — the database-backed source and `builder()`.
+- [Columns](/tables/columns/) — `TextColumn`, `StackColumn`, and their display options.
+- [Sorting, filtering & pagination](/tables/sorting-filtering-pagination/) — making columns sortable and filterable, and choosing a pagination mode.
+- [Actions](/tables/actions/) — row and bulk actions.

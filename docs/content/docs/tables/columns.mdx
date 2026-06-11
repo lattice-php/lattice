@@ -1,0 +1,66 @@
+---
+title: Columns
+description: TextColumn and StackColumn — labels, value formatting, and the sortable and filterable capabilities.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+Columns declare what each row shows. Create one with `Column::make()`, passing the **key** — the row
+field it reads. The label defaults to the humanized key; override it with `->label()`.
+
+```php
+TextColumn::make('name');            // header "Name", reads $row['name']
+TextColumn::make('name')->label('Full name');
+```
+
+## Text column
+
+`TextColumn` renders a value as text and carries display modifiers for common value types.
+
+<ComponentExample
+  php={`TextColumn::make('name')->sortable()->filterable();
+TextColumn::make('price')->numeric()->sortable()->filterable();
+TextColumn::make('featured')->boolean();
+TextColumn::make('updated_at')->date('Y-m-d')->sortable();`}
+  fixture="table.overview"
+/>
+
+- `->numeric()` right-aligns and formats the value as a number.
+- `->boolean()` renders a check or cross instead of the raw value.
+- `->date()` formats a date value; pass a format string such as `->date('Y-m-d H:i')`.
+- `->copyable()` adds a click-to-copy affordance to the cell.
+- `->link('/products/{value}')` renders the value as a link; `{value}` is substituted with the cell
+  value. Pass `external: true` for an outbound link.
+
+```php
+TextColumn::make('email')
+    ->link('mailto:{value}')
+    ->copyable();
+```
+
+## Stack column
+
+`StackColumn` groups several columns into one cell, stacking them vertically — useful for showing a
+name and email together, or a title with a subtitle. Pass the child columns to `->columns()`.
+
+<ComponentExample
+  php={`StackColumn::make('identity')->label('User')->columns([
+    TextColumn::make('name')->sortable(),
+    TextColumn::make('email')->copyable(),
+]);
+
+TextColumn::make('role');`}
+  fixture="table.stack"
+/>
+
+## Sortable and filterable
+
+`->sortable()` and `->filterable()` are **capabilities** a column opts into, not display options. They
+add the sort control to the header and the filter affordance, and tell the
+[Eloquent source](/tables/eloquent-tables/#how-filters-and-sorts-are-applied) to apply the request's
+sort and filter for that column. They are covered in detail under
+[Sorting, filtering & pagination](/tables/sorting-filtering-pagination/).
+
+```php
+TextColumn::make('name')->sortable()->filterable();
+```

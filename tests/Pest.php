@@ -88,8 +88,25 @@ function dumpFixture(string $key, array $nodes): void
 
     file_put_contents(
         dirname(__DIR__).'/docs/fixtures/'.$key.'.json',
-        json_encode(sortFixtureKeys($normalized), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)."\n",
+        json_encode(sortFixtureKeys(stripFixtureRefs($normalized)), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)."\n",
     );
+}
+
+/**
+ * Drop the signed `ref` an interactive component (Form, Table, …) seals into its
+ * props. The ref is encrypted with a random IV and a time-based expiry, so it
+ * differs every run; a committed fixture must stay stable, and the static docs
+ * preview never calls an endpoint, so the ref is unused there.
+ */
+function stripFixtureRefs(mixed $value): mixed
+{
+    if (! is_array($value)) {
+        return $value;
+    }
+
+    unset($value['ref']);
+
+    return array_map('stripFixtureRefs', $value);
 }
 
 function sortFixtureKeys(mixed $value): mixed

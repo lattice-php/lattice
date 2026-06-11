@@ -51,6 +51,7 @@ export default defineConfig({
           items: [
             { label: "Pages", link: "/core/pages/" },
             { label: "Components", link: "/core/components/" },
+            { label: "Fragments", link: "/core/fragments/" },
             { label: "Navigation", link: "/core/navigation/" },
             { label: "Theming", link: "/core/theming/" },
           ],
@@ -81,11 +82,22 @@ export default defineConfig({
         },
         {
           label: "Tables",
-          items: [{ label: "Overview", link: "/tables/overview/" }],
+          items: [
+            { label: "Overview", link: "/tables/overview/" },
+            { label: "Eloquent tables", link: "/tables/eloquent-tables/" },
+            { label: "Columns", link: "/tables/columns/" },
+            { label: "Sorting, filtering & pagination", link: "/tables/sorting-filtering-pagination/" },
+            { label: "Actions", link: "/tables/actions/" },
+          ],
         },
         {
           label: "Actions",
-          items: [{ label: "Overview", link: "/actions/overview/" }],
+          items: [
+            { label: "Overview", link: "/actions/overview/" },
+            { label: "Effects & results", link: "/actions/effects/" },
+            { label: "Confirmation & forms", link: "/actions/confirmation-and-forms/" },
+            { label: "Bulk actions", link: "/actions/bulk-actions/" },
+          ],
         },
         {
           label: "Extending",
@@ -94,6 +106,13 @@ export default defineConfig({
             { label: "Custom fields", link: "/extending/custom-fields/" },
             { label: "Custom columns", link: "/extending/custom-columns/" },
             { label: "Registry and types", link: "/extending/registry-and-types/" },
+          ],
+        },
+        {
+          label: "Advanced",
+          items: [
+            { label: "Authorization", link: "/advanced/authorization/" },
+            { label: "Security", link: "/advanced/security/" },
           ],
         },
         {

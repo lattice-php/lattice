@@ -1,0 +1,28 @@
+[
+    {
+        "props": {
+            "columns": 3
+        },
+        "schema": [
+            {
+                "props": {
+                    "label": "First"
+                },
+                "type": "badge"
+            },
+            {
+                "props": {
+                    "label": "Second"
+                },
+                "type": "badge"
+            },
+            {
+                "props": {
+                    "label": "Third"
+                },
+                "type": "badge"
+            }
+        ],
+        "type": "grid"
+    }
+]
