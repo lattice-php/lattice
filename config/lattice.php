@@ -44,4 +44,9 @@ return [
         'middleware' => ['web'],
         'registered' => [],
     ],
+
+    'typescript' => [
+        'output' => resource_path('js/lattice/generated.d.ts'),
+        'module' => '@lattice-php/lattice',
+    ],
 ];

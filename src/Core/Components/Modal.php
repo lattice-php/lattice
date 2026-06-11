@@ -2,6 +2,9 @@
 
 namespace Lattice\Lattice\Core\Components;
 
+use Lattice\Lattice\Attributes;
+
+#[Attributes\Component('modal')]
 class Modal extends ContainerComponent
 {
     use IsInteractive;
@@ -45,10 +48,5 @@ class Modal extends ContainerComponent
         $this->open = $open;
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'modal';
     }
 }

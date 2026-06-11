@@ -11,12 +11,14 @@ use Lattice\Lattice\Attributes\Table;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Models\Product;
+use Workbench\App\Tables\Columns\StatusBadgeColumn;
 
 /**
  * @extends EloquentTableDefinition<Product>
@@ -25,7 +27,7 @@ use Workbench\App\Models\Product;
 class ProductsTable extends EloquentTableDefinition
 {
     /**
-     * @return array<int, TextColumn>
+     * @return array<int, Column>
      */
     public function columns(): array
     {
@@ -33,7 +35,7 @@ class ProductsTable extends EloquentTableDefinition
             TextColumn::make('name')->label('Name')->sortable()->filterable(),
             TextColumn::make('sku')->label('SKU')->sortable()->filterable(),
             TextColumn::make('price')->label('Price')->sortable()->numeric()->filterable(),
-            TextColumn::make('status')->label('Status')->sortable()->filterable(Op::Equals),
+            StatusBadgeColumn::make('status')->label('Status')->filterable(Op::Equals)->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
             TextColumn::make('featured')->label('Featured')->sortable()->boolean()->filterable(),
             TextColumn::make('updated_at')->label('Updated at')->sortable()->date('Y-m-d H:i:s')->filterable(),
         ];

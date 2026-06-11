@@ -4,6 +4,7 @@ namespace Lattice\Lattice\Forms\Components;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
@@ -12,6 +13,7 @@ use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 
+#[Attributes\Component('form')]
 class Form extends ContainerComponent
 {
     use HasHttpMethod;
@@ -171,10 +173,5 @@ class Form extends ContainerComponent
         }
 
         return $data;
-    }
-
-    protected function type(): string
-    {
-        return 'form';
     }
 }

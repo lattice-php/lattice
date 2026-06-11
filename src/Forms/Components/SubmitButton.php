@@ -2,9 +2,11 @@
 
 namespace Lattice\Lattice\Forms\Components;
 
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Concerns\HasVariant;
 
+#[Attributes\Component('form.submit-button')]
 class SubmitButton extends Component
 {
     use HasVariant;
@@ -17,10 +19,5 @@ class SubmitButton extends Component
         $button->label = $label;
 
         return $button;
-    }
-
-    protected function type(): string
-    {
-        return 'form.submit-button';
     }
 }

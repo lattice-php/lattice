@@ -1,0 +1,34 @@
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Support\Facades\File;
+
+use function Pest\Laravel\artisan;
+
+it('writes a ColumnProps augmentation with own column properties only', function () {
+    $output = base_path('resources/js/lattice/generated-column.d.ts');
+
+    config()->set('lattice.typescript.output', $output);
+    config()->set('lattice.typescript.module', '@lattice-php/lattice');
+    config()->set('lattice.discover', [
+        dirname(__DIR__, 2).'/Fixtures/TypeScript' => 'Lattice\\Lattice\\Tests\\Fixtures\\TypeScript',
+    ]);
+
+    artisan('lattice:typescript')->assertSuccessful();
+
+    $contents = (string) file_get_contents($output);
+
+    expect($contents)
+        ->toContain('declare module "@lattice-php/lattice"')
+        ->toContain('interface ComponentProps')
+        ->toContain('"sample.field"')
+        ->toContain('"sample.widget"')
+        ->toContain('interface ColumnProps')
+        ->toContain('"column.rating"')
+        ->toContain('max: number');
+
+    expect(str_contains($contents, 'key:'))->toBeFalse();
+
+    File::delete($output);
+});

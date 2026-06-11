@@ -79,6 +79,15 @@ export default defineConfig({
           items: [{ label: "Overview", link: "/actions/overview/" }],
         },
         {
+          label: "Extending",
+          items: [
+            { label: "Overview", link: "/extending/overview/" },
+            { label: "Custom fields", link: "/extending/custom-fields/" },
+            { label: "Custom columns", link: "/extending/custom-columns/" },
+            { label: "Registry and types", link: "/extending/registry-and-types/" },
+          ],
+        },
+        {
           label: "Contributing",
           items: [
             { label: "Local Development", link: "/contributing/local-development/" },

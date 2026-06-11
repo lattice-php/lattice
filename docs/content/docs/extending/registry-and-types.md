@@ -1,0 +1,225 @@
+---
+title: Registry and types
+description: The React registry API and the TypeScript augmentation system for custom Lattice components.
+---
+
+## The JS scaffold
+
+Before registering custom components or columns, publish the two scaffold files:
+
+```bash
+php artisan vendor:publish --tag=lattice-js
+```
+
+This writes:
+
+- `resources/js/lattice/plugin.ts` — node registry plugin for custom fields and components.
+- `resources/js/lattice/columns.ts` — column-cell registry plugin for custom column cells.
+
+The generators (`lattice:field`, `lattice:component`, `lattice:column`) append entries to the appropriate file automatically. You only need to publish once.
+
+## Node registry API
+
+The node registry maps type strings to `RendererComponent` functions. Imports come from `@lattice-php/lattice`.
+
+### createPlugin
+
+Creates a named plugin object that bundles one or more component registrations:
+
+```ts
+import { createPlugin } from "@lattice-php/lattice";
+import { ColorPickerComponent } from "./fields/color-picker";
+import { RatingComponent } from "./components/rating";
+
+export const appPlugin = createPlugin({
+  name: "app",
+  components: {
+    "form.color-picker": ColorPickerComponent,
+    "rating": RatingComponent,
+  },
+});
+```
+
+### extendRegistry
+
+Merges a plugin into an existing registry, returning a new registry without mutating the original:
+
+```ts
+import { extendRegistry, registry } from "@lattice-php/lattice";
+import { appPlugin } from "./lattice/plugin";
+
+const appRegistry = extendRegistry(registry, appPlugin);
+```
+
+`registry` is Lattice's built-in registry. Pass `appRegistry` to `Provider`.
+
+### createRegistry
+
+Creates a registry from scratch (no built-ins). Only use this if you want to replace the entire built-in component set:
+
+```ts
+import { createRegistry } from "@lattice-php/lattice";
+
+const minimalRegistry = createRegistry(appPlugin);
+```
+
+### eagerComponent / lazyComponent
+
+Components can be registered eagerly (imported at module load time) or lazily (code-split on first render):
+
+```ts
+import { createPlugin, lazyComponent } from "@lattice-php/lattice";
+
+export const appPlugin = createPlugin({
+  name: "app",
+  components: {
+    // Eager — bundled with the entry point.
+    "rating": RatingComponent,
+    // Lazy — splits into a separate chunk loaded on demand.
+    "form.color-picker": lazyComponent(() =>
+      import("./fields/color-picker").then((m) => m.ColorPickerComponent)
+    ),
+  },
+});
+```
+
+### Provider and useRegistry
+
+`Provider` supplies the registry (and optionally the column registry) to every Lattice component below it in the tree:
+
+```tsx
+import { Provider } from "@lattice-php/lattice";
+
+createRoot(el).render(
+  <Provider registry={appRegistry} columns={columns}>
+    <App {...props} />
+  </Provider>,
+);
+```
+
+`useRegistry` returns the current registry for custom renderers that need to look up child nodes:
+
+```ts
+import { useRegistry } from "@lattice-php/lattice";
+
+const registry = useRegistry();
+```
+
+## Column-cell registry API
+
+The column-cell registry maps type strings to `ColumnCellComponent` functions.
+
+### createColumnPlugin
+
+Creates a named plugin for column cell renderers:
+
+```ts
+import { createColumnPlugin } from "@lattice-php/lattice";
+import { StatusBadgeCell } from "./columns/status-badge";
+
+export const appColumns = createColumnPlugin({
+  name: "app",
+  columns: {
+    "column.status-badge": StatusBadgeCell,
+  },
+});
+```
+
+### createColumnRegistry
+
+Builds the registry object that `Provider` consumes:
+
+```ts
+import { createColumnRegistry } from "@lattice-php/lattice";
+import { appColumns } from "./lattice/columns";
+
+const columns = createColumnRegistry(appColumns);
+```
+
+### extendColumnRegistry
+
+Merges additional plugins into an existing column registry:
+
+```ts
+import { extendColumnRegistry } from "@lattice-php/lattice";
+
+const extended = extendColumnRegistry(columns, extraPlugin);
+```
+
+### useColumnRegistry
+
+Returns the current column registry from inside any component rendered by Lattice:
+
+```ts
+import { useColumnRegistry } from "@lattice-php/lattice";
+
+const columnRegistry = useColumnRegistry();
+```
+
+## TypeScript augmentation
+
+### The ComponentProps and ColumnProps interfaces
+
+`@lattice-php/lattice` exports two augmentable interfaces:
+
+- `ComponentProps` — maps a type string to its props shape for fields and UI components.
+- `ColumnProps` — maps a type string to its props shape for column cells.
+
+Both interfaces use TypeScript's declaration merging. You can augment them manually or let `lattice:typescript` do it.
+
+### php artisan lattice:typescript
+
+Run this command whenever your PHP classes gain or lose public properties:
+
+```bash
+php artisan lattice:typescript
+```
+
+It scans the class namespaces listed under `discover` in `config/lattice.php`:
+
+```php
+// config/lattice.php
+'discover' => [
+    base_path('app') => 'App',
+],
+```
+
+And writes an augmentation file to the path configured under `typescript.output` (default: `resources/js/lattice/generated.d.ts`):
+
+```ts
+// This file is generated by `php artisan lattice:typescript`. Do not edit.
+declare module "@lattice-php/lattice" {
+  interface ComponentProps {
+    "form.color-picker": {
+      swatches: string | null;
+    };
+  }
+  interface ColumnProps {
+    "column.status-badge": {
+      colorMap: Record<string, string> | null;
+    };
+  }
+}
+
+export {};
+```
+
+Without this file, `node.props` and `column.props` fall back to `Record<string, unknown>`. The renderers still work — types are just not narrowed.
+
+### Augmenting manually
+
+If you prefer not to run the generator, augment the interfaces directly in any `.d.ts` file included in your `tsconfig.json`:
+
+```ts
+import "@lattice-php/lattice";
+
+declare module "@lattice-php/lattice" {
+  interface ComponentProps {
+    "form.color-picker": {
+      swatches: string | null;
+    };
+  }
+}
+```
+
+The interface names are `ComponentProps` and `ColumnProps` — there is no `Lattice` prefix.

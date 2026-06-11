@@ -1,10 +1,18 @@
 import { copyToClipboard } from "@lattice/lattice/clipboard";
 import { Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useColumnRegistry } from "../../provider";
 import { formatCell, resolveLink } from "../format";
 import type { TableColumn, TableRow } from "../types";
 
 export function ColumnCell({ column, row }: { column: TableColumn; row: TableRow }) {
+  const columnRegistry = useColumnRegistry();
+  const customRenderer = columnRegistry[column.type];
+
+  if (customRenderer) {
+    return customRenderer({ column, row, value: row[column.key] });
+  }
+
   if (column.type === "stack") {
     return (
       <div className="grid gap-1">

@@ -2,9 +2,11 @@
 
 namespace Lattice\Lattice\Forms\Components;
 
+use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Forms\RichContent;
 
+#[Component('form.rich-editor')]
 class RichEditor extends Field
 {
     use HasPlaceholder;
@@ -22,10 +24,5 @@ class RichEditor extends Field
         }
 
         return RichContent::make($decoded)->toArray();
-    }
-
-    protected function type(): string
-    {
-        return 'form.rich-editor';
     }
 }

@@ -2,6 +2,9 @@
 
 namespace Lattice\Lattice\Core\Components;
 
+use Lattice\Lattice\Attributes;
+
+#[Attributes\Component('grid')]
 class Grid extends ContainerComponent
 {
     public ?int $columns = null;
@@ -16,10 +19,5 @@ class Grid extends ContainerComponent
         $this->columns = $columns;
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'grid';
     }
 }

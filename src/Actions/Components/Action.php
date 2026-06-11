@@ -6,11 +6,13 @@ use BackedEnum;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\Contracts\Effect;
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasVariant;
 
+#[Attributes\Component('action')]
 class Action extends Component
 {
     use HasHttpMethod;
@@ -94,10 +96,5 @@ class Action extends Component
         $this->effects = $effects;
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'action';
     }
 }

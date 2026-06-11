@@ -4,9 +4,11 @@ namespace Lattice\Lattice\Core\Components;
 
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Date;
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Enums\Orientation;
 
+#[Attributes\Component('tabs')]
 class Tabs extends ContainerComponent
 {
     public ?string $defaultValue = null;
@@ -41,11 +43,6 @@ class Tabs extends ContainerComponent
         $this->orientation = $orientation;
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'tabs';
     }
 
     /**

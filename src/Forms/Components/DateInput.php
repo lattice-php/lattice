@@ -2,9 +2,11 @@
 
 namespace Lattice\Lattice\Forms\Components;
 
+use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Concerns\HasAutoFocus;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
 
+#[Component('form.date-input')]
 class DateInput extends Field
 {
     use HasAutoFocus;
@@ -26,10 +28,5 @@ class DateInput extends Field
         $this->max = $max;
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'form.date-input';
     }
 }

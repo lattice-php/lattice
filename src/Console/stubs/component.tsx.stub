@@ -1,0 +1,6 @@
+import type { RendererComponent } from "@lattice-php/lattice";
+
+export const {{ class }}Component: RendererComponent<"{{ type }}"> = ({ node, children }) => {
+  // Render the {{ type }} component. Child nodes (if any) are in `children`.
+  return <div data-lattice-component={node.id}>{children}</div>;
+};

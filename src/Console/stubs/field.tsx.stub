@@ -1,0 +1,6 @@
+import type { RendererComponent } from "@lattice-php/lattice";
+
+export const {{ class }}Component: RendererComponent<"{{ type }}"> = ({ node }) => {
+  // Render the {{ type }} field. Field state is available on node.props.
+  return <div data-lattice-field={String(node.props.name ?? "")} />;
+};

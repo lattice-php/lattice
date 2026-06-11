@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Workbench\App\Support;
+namespace Workbench\App\Support\TypeScript;
 
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
 use Spatie\TypeScriptTransformer\Transformers\ClassTransformer;
@@ -11,7 +11,7 @@ use Spatie\TypeScriptTransformer\Transformers\ClassTransformer;
  * Emits TypeScript object types only for an explicit allow-list of value
  * objects, so unrelated classes under src/ are never generated.
  */
-final class LatticeValueObjectTransformer extends ClassTransformer
+final class ValueObjectTransformer extends ClassTransformer
 {
     /**
      * @param  array<int, class-string>  $allowed

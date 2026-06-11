@@ -2,6 +2,9 @@
 
 namespace Lattice\Lattice\Core\Components;
 
+use Lattice\Lattice\Attributes;
+
+#[Attributes\Component('badge')]
 class Badge extends Component
 {
     public string $label = '';
@@ -12,10 +15,5 @@ class Badge extends Component
         $badge->label = $label;
 
         return $badge;
-    }
-
-    protected function type(): string
-    {
-        return 'badge';
     }
 }

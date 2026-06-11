@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Workbench\App\Support;
+namespace Workbench\App\Support\TypeScript;
 
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Spatie\TypeScriptTransformer\Data\TransformationContext;
@@ -22,7 +22,7 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptRaw;
  * an inline `import(...)` type so the generated module stays self-contained and
  * the reference is type-only by construction.
  */
-final class LatticeHttpMethodTransformer implements Transformer
+final class HttpMethodTransformer implements Transformer
 {
     public function transform(PhpClassNode $phpClassNode, TransformationContext $context): Transformed|Untransformable
     {

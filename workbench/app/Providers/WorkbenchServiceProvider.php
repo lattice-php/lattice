@@ -15,6 +15,7 @@ use Laravel\Roster\Roster;
 use Lattice\Lattice\Facades\Lattice;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
+use Workbench\App\Console\Commands\GenerateInternalTypesCommand;
 use Workbench\App\Forms\DependentDemoForm;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Forms\ShowcaseForm;
@@ -36,6 +37,7 @@ class WorkbenchServiceProvider extends ServiceProvider
     #[\Override]
     public function register(): void
     {
+        $this->commands([GenerateInternalTypesCommand::class]);
         $this->useWorkbenchDatabase();
         $this->readBoostConfigFromPackageRoot();
     }

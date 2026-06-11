@@ -69,3 +69,4 @@ Visit `/dashboard` and the page renders through Inertia — no Inertia page comp
 
 - [Forms](/forms/overview/) and [Tables](/tables/overview/) for data entry and listings.
 - [Configuration](/introduction/configuration/) to register definitions and tune discovery.
+- [Extending Lattice](/extending/overview/) to add custom fields, components, and columns.

@@ -2,8 +2,10 @@
 
 namespace Lattice\Lattice\Core\Components;
 
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Enums\Align;
 
+#[Attributes\Component('text')]
 class Text extends Component
 {
     public string $text = '';
@@ -23,10 +25,5 @@ class Text extends Component
         $this->align = $align;
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'text';
     }
 }

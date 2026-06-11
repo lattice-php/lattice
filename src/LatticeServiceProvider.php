@@ -11,6 +11,12 @@ use Illuminate\Routing\Router;
 use Inertia\ResponseFactory;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Console\Commands\DiscoverCacheCommand;
+use Lattice\Lattice\Console\Commands\DiscoverClearCommand;
+use Lattice\Lattice\Console\Commands\MakeColumnCommand;
+use Lattice\Lattice\Console\Commands\MakeComponentCommand;
+use Lattice\Lattice\Console\Commands\MakeFieldCommand;
+use Lattice\Lattice\Console\Commands\TypeScriptCommand;
 use Lattice\Lattice\Core\Contracts\DiscoversDefinitions;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
@@ -32,7 +38,15 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $package
             ->name(self::$name)
             ->hasConfigFile()
-            ->hasRoute('web');
+            ->hasRoute('web')
+            ->hasConsoleCommands([
+                TypeScriptCommand::class,
+                MakeFieldCommand::class,
+                MakeComponentCommand::class,
+                MakeColumnCommand::class,
+                DiscoverCacheCommand::class,
+                DiscoverClearCommand::class,
+            ]);
     }
 
     public function packageRegistered(): void
@@ -63,23 +77,23 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        Lattice::registerConfiguredDefinitions();
-
-        $discoveryPaths = config('lattice.discover', []);
-
-        if (! is_array($discoveryPaths)) {
-            return;
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../stubs/lattice/plugin.ts' => resource_path('js/lattice/plugin.ts'),
+                __DIR__.'/../stubs/lattice/columns.ts' => resource_path('js/lattice/columns.ts'),
+            ], 'lattice-js');
         }
 
-        foreach ($discoveryPaths as $path => $namespace) {
-            if (is_array($namespace)) {
-                $path = $namespace['path'] ?? null;
-                $namespace = $namespace['namespace'] ?? null;
-            }
+        $this->optimizes(
+            optimize: 'lattice:discover-cache',
+            clear: 'lattice:discover-clear',
+            key: 'lattice',
+        );
 
-            if (is_string($path) && is_string($namespace)) {
-                Lattice::discover($path, $namespace);
-            }
+        Lattice::registerConfiguredDefinitions();
+
+        foreach (DefinitionDiscovery::configuredPaths() as $path => $namespace) {
+            Lattice::discover($path, $namespace);
         }
     }
 }

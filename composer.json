@@ -29,6 +29,7 @@
         "inertiajs/inertia-laravel": "^3.0",
         "spatie/laravel-package-tools": "^1.16 || ^2.0",
         "spatie/php-attribute-reader": "^1.1",
+        "spatie/php-structure-discoverer": "^2.4",
         "symfony/html-sanitizer": "^8.1",
         "ueberdosis/tiptap-php": "^2.1"
     },
@@ -43,6 +44,9 @@
         "pestphp/pest-plugin-laravel": "^4.0",
         "rector/rector": "^2.4",
         "spatie/laravel-typescript-transformer": "^3.2"
+    },
+    "suggest": {
+        "spatie/typescript-transformer": "Required to run `php artisan lattice:typescript` and generate TypeScript types for your custom components"
     },
     "autoload": {
         "psr-4": {
@@ -61,12 +65,13 @@
         "test:lint": "./vendor/bin/pint --test",
         "rector": "./vendor/bin/rector process",
         "rector:test": "./vendor/bin/rector process --dry-run",
-        "types": "@php vendor/bin/testbench typescript:transform",
+        "types": "@php vendor/bin/testbench lattice:internal-types",
         "fix": [
             "@rector",
             "@lint",
             "npm run lint:fix",
-            "npm run format"
+            "npm run format",
+            "@types"
         ],
         "test": "./vendor/bin/pest --testsuite Unit,Feature",
         "test:browser": "./vendor/bin/pest --testsuite Browser",

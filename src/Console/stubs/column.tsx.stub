@@ -1,0 +1,5 @@
+import type { ColumnCellComponent } from "@lattice-php/lattice";
+
+export const {{ class }}Cell: ColumnCellComponent = ({ value }) => {
+  return <span>{String(value ?? "")}</span>;
+};

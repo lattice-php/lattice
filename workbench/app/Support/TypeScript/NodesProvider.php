@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Workbench\App\Support;
+namespace Workbench\App\Support\TypeScript;
 
 use Spatie\TypeScriptTransformer\References\ClassStringReference;
 use Spatie\TypeScriptTransformer\References\CustomReference;
@@ -28,7 +28,7 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptUnion;
  *
  * @phpstan-type ComponentSpec array{type: string, container?: bool, interactive?: bool}
  */
-final class LatticeNodesProvider implements TransformedProvider
+final class NodesProvider implements TransformedProvider
 {
     private const REFERENCE_KEY = 'lattice-nodes';
 

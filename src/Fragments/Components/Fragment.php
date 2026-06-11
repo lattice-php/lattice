@@ -2,11 +2,13 @@
 
 namespace Lattice\Lattice\Fragments\Components;
 
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 
+#[Attributes\Component('fragment')]
 class Fragment extends ContainerComponent
 {
     use IsInteractive;
@@ -33,10 +35,5 @@ class Fragment extends ContainerComponent
         $this->endpoint = $endpoint;
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'fragment';
     }
 }

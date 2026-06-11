@@ -2,6 +2,9 @@
 
 namespace Lattice\Lattice\Core\Components;
 
+use Lattice\Lattice\Attributes;
+
+#[Attributes\Component('card')]
 class Card extends ContainerComponent
 {
     public ?string $title = null;
@@ -21,10 +24,5 @@ class Card extends ContainerComponent
         }
 
         return $card;
-    }
-
-    protected function type(): string
-    {
-        return 'card';
     }
 }

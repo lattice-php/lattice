@@ -6,7 +6,9 @@ namespace Lattice\Lattice\Actions\Components;
 
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Attributes;
 
+#[Attributes\Component('bulkAction')]
 class BulkAction extends Action
 {
     /**
@@ -18,11 +20,5 @@ class BulkAction extends Action
         $registered = app(BulkActionRegistry::class)->component($action);
 
         return clone $registered;
-    }
-
-    #[\Override]
-    protected function type(): string
-    {
-        return 'bulkAction';
     }
 }

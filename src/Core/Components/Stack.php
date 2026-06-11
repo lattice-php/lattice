@@ -2,10 +2,12 @@
 
 namespace Lattice\Lattice\Core\Components;
 
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\Width;
 
+#[Attributes\Component('stack')]
 class Stack extends ContainerComponent
 {
     public ?Gap $gap = null;
@@ -47,10 +49,5 @@ class Stack extends ContainerComponent
         $this->direction = $direction;
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'stack';
     }
 }

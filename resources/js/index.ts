@@ -11,7 +11,7 @@ export { EventBridge } from "./events/event-bridge";
 export { IconRenderer, IconRendererProvider } from "./icons";
 export { createLayoutResolver, createPageResolver, pageComponentName } from "./inertia";
 export { layoutComponents, OutletContext, SchemaLayout } from "./layout";
-export { Provider, useRegistry } from "./provider";
+export { Provider, useColumnRegistry, useRegistry } from "./provider";
 export {
   createPlugin,
   createRegistry,
@@ -25,6 +25,7 @@ export { LATTICE_EVENT } from "./events/event-names";
 export type { ButtonVariant } from "./core/components/button";
 export type { ReloadComponentEvent } from "./events/event-names";
 export type {
+  ComponentProps,
   KnownPageContainer,
   LayoutPayload,
   Node,
@@ -34,6 +35,7 @@ export type {
   PageContainer,
   PageBreadcrumb,
   PagePayload,
+  PropsOf,
   RendererComponent,
   RendererComponentModule,
   RendererComponentProps,
@@ -41,6 +43,18 @@ export type {
   UnknownComponent,
   WireNode,
 } from "./core/types";
+export {
+  createColumnPlugin,
+  createColumnRegistry,
+  extendColumnRegistry,
+} from "./table/column-registry";
+export type {
+  ColumnCellArgs,
+  ColumnCellComponent,
+  ColumnPlugin,
+  ColumnRegistry,
+} from "./table/column-registry";
+export type { ColumnProps, ColumnPropsOf } from "./table/types";
 export type { Method } from "@inertiajs/core";
 export type { ActionEffect } from "./action/effects";
 export type { ResolvedAppearance, UseAppearanceReturn } from "./appearance";

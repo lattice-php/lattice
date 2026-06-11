@@ -2,6 +2,9 @@
 
 namespace Lattice\Lattice\Core\Components;
 
+use Lattice\Lattice\Attributes;
+
+#[Attributes\Component('tab')]
 class Tab extends ContainerComponent
 {
     public string $label = '';
@@ -69,10 +72,5 @@ class Tab extends ContainerComponent
         }
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'tab';
     }
 }

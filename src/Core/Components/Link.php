@@ -2,9 +2,11 @@
 
 namespace Lattice\Lattice\Core\Components;
 
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
 
+#[Attributes\Component('link')]
 class Link extends Component
 {
     use HasHttpMethod;
@@ -27,10 +29,5 @@ class Link extends Component
         $this->href = $href;
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'link';
     }
 }

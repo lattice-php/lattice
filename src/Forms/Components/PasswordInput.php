@@ -2,11 +2,13 @@
 
 namespace Lattice\Lattice\Forms\Components;
 
+use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Concerns\HasAutoComplete;
 use Lattice\Lattice\Core\Concerns\HasAutoFocus;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
 
+#[Component('form.password-input')]
 class PasswordInput extends Field
 {
     use HasAutoComplete;
@@ -53,10 +55,5 @@ class PasswordInput extends Field
         ];
 
         return $this;
-    }
-
-    protected function type(): string
-    {
-        return 'form.password-input';
     }
 }

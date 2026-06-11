@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Workbench\App\Support;
+namespace Workbench\App\Support\TypeScript;
 
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Spatie\TypeScriptTransformer\References\ClassStringReference;
@@ -24,7 +24,7 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptUnion;
  * value objects, the union is mirrored here. The `EffectType` enum it
  * discriminates on is still generated from the matching PHP enum.
  */
-final class LatticeEffectType
+final class EffectType
 {
     public static function build(): TypeScriptNode
     {
