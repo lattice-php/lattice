@@ -77,6 +77,30 @@
   --radius-lt: var(--lt-radius);
   --radius-lt-sm: var(--lt-radius-sm);
   --radius-lt-xs: var(--lt-radius-xs);
+  --animate-lt-toast-in: lt-toast-in 160ms ease-out;
+  --animate-lt-toast-out: lt-toast-out 120ms ease-in;
+}
+
+@keyframes lt-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes lt-toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
 }
 
 /*

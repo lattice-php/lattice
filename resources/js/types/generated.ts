@@ -667,6 +667,10 @@ export type Textarea = {
 export type ToastEffect = {
   readonly variant: ToastVariant;
   readonly message: string;
+  readonly duration?: number | null;
+  readonly persistent: boolean;
+  readonly dismissible: boolean;
+  readonly action?: Node;
 };
 export type ToastVariant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "sm" | "md" | "lg" | "fill";

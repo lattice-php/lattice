@@ -12,6 +12,7 @@ export { IconRenderer, IconRendererProvider } from "./icons";
 export { createLayoutResolver, createPageResolver, pageComponentName } from "./inertia";
 export { layoutComponents, OutletContext, SchemaLayout } from "./layout";
 export { Provider, useColumnRegistry, useRegistry } from "./provider";
+export { Toaster } from "./toast";
 export {
   createPlugin,
   createRegistry,

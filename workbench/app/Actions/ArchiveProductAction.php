@@ -12,6 +12,7 @@ use Lattice\Lattice\Attributes\Action;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Values\ToastMessage;
 use Workbench\App\Models\Product;
 
 #[Action('workbench.products.archive')]
@@ -37,7 +38,11 @@ class ArchiveProductAction extends ActionDefinition
         $product->update(['status' => 'archived']);
 
         return ActionResult::success(['id' => $product->getKey()])
-            ->toast(ToastVariant::Success, 'Product archived.')
+            ->toast(
+                ToastMessage::make(ToastVariant::Success, 'Product archived.')
+                    ->link('View products', '/products')
+                    ->persistent(),
+            )
             ->reloadComponent('workbench.products');
     }
 

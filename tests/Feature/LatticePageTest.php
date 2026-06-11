@@ -976,6 +976,8 @@ test('registered actions serialize their configured endpoint method label and ef
                         'type' => 'toast',
                         'message' => 'Ready.',
                         'variant' => 'success',
+                        'persistent' => false,
+                        'dismissible' => true,
                     ],
                     [
                         'type' => 'reloadComponent',
@@ -1087,12 +1089,16 @@ test('toast messages serialize for flash data and action effects', function () {
         ->toBe([
             'variant' => 'warning',
             'message' => 'Review the settings.',
+            'persistent' => false,
+            'dismissible' => true,
         ])
         ->and(wire(Effect::toast(ToastVariant::Warning, 'Review the settings.')))
         ->toBe([
             'type' => 'toast',
             'variant' => 'warning',
             'message' => 'Review the settings.',
+            'persistent' => false,
+            'dismissible' => true,
         ])
         ->and(wire(ActionResult::success()->toast('Saved.')))
         ->toMatchArray([
@@ -1101,6 +1107,8 @@ test('toast messages serialize for flash data and action effects', function () {
                     'type' => 'toast',
                     'variant' => 'success',
                     'message' => 'Saved.',
+                    'persistent' => false,
+                    'dismissible' => true,
                 ],
             ],
         ])
@@ -1111,9 +1119,42 @@ test('toast messages serialize for flash data and action effects', function () {
                     'type' => 'toast',
                     'variant' => 'warning',
                     'message' => 'Review the settings.',
+                    'persistent' => false,
+                    'dismissible' => true,
                 ],
             ],
         ]);
+});
+
+test('a toast serializes its lifetime, dismissibility and link', function () {
+    $wire = wire(Effect::toast(
+        ToastMessage::make(ToastVariant::Success, 'Saved.')
+            ->duration(8000)
+            ->dismissible(false)
+            ->link('Undo', '/undo', HttpMethod::Patch),
+    ));
+
+    expect($wire['type'])->toBe('toast')
+        ->and($wire['duration'])->toBe(8000)
+        ->and($wire['persistent'])->toBeFalse()
+        ->and($wire['dismissible'])->toBeFalse()
+        ->and($wire['action']['type'])->toBe('link')
+        ->and($wire['action']['props']['label'])->toBe('Undo')
+        ->and($wire['action']['props']['href'])->toBe('/undo')
+        ->and($wire['action']['props']['method'])->toBe('patch');
+});
+
+test('a toast can carry an action component', function () {
+    $wire = wire(Effect::toast(
+        ToastMessage::make(ToastVariant::Info, 'Done.')
+            ->persistent()
+            ->action(ActionComponent::make('demo.toast-action')->endpoint('/x')->label('Open')),
+    ));
+
+    expect($wire['persistent'])->toBeTrue()
+        ->and($wire['action']['type'])->toBe('action')
+        ->and($wire['action']['props']['label'])->toBe('Open')
+        ->and($wire['action']['props']['endpoint'])->toBe('/x');
 });
 
 test('registered action endpoints require a valid component reference', function () {

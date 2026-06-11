@@ -27,7 +27,14 @@ final class Effect
             default => throw new \InvalidArgumentException('A toast message string is required.'),
         };
 
-        return new ToastEffect($toast->variant, $toast->message);
+        return new ToastEffect(
+            $toast->variant,
+            $toast->message,
+            $toast->duration,
+            $toast->persistent,
+            $toast->dismissible,
+            $toast->action,
+        );
     }
 
     public static function reloadComponent(string $component): ReloadComponentEffect
