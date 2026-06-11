@@ -12,6 +12,7 @@ use Spatie\TypeScriptTransformer\TransformedProviders\TransformedProvider;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptAlias;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptArray;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIndexedAccess;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIntersection;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptLiteral;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptNode;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptObject;
@@ -41,6 +42,7 @@ final class NodesProvider implements TransformedProvider
      * @param  array<class-string, ComponentSpec>  $tableComponents
      * @param  array<class-string, ComponentSpec>  $layoutComponents
      * @param  class-string|null  $effectContract
+     * @param  array<class-string, string>  $effects  Effect value objects keyed by class-string, valued by wire type.
      */
     public function __construct(
         private readonly array $formFields,
@@ -52,7 +54,7 @@ final class NodesProvider implements TransformedProvider
         private readonly array $layoutComponents,
         private readonly string $formType = 'form',
         private readonly ?string $effectContract = null,
-        private readonly ?TypeScriptNode $effectType = null,
+        private readonly array $effects = [],
     ) {}
 
     /**
@@ -73,15 +75,33 @@ final class NodesProvider implements TransformedProvider
             $this->alias('NodeType', $this->typeAccess('Node')),
         ];
 
-        if ($this->effectContract !== null && $this->effectType !== null) {
+        if ($this->effectContract !== null && $this->effects !== []) {
             $transformed[] = new Transformed(
-                new TypeScriptAlias('Effect', $this->effectType),
+                new TypeScriptAlias('Effect', $this->effectUnion()),
                 new ClassStringReference($this->effectContract),
                 [],
             );
         }
 
         return $transformed;
+    }
+
+    private function effectUnion(): TypeScriptUnion
+    {
+        $members = [];
+
+        foreach ($this->effects as $class => $type) {
+            $members[$type] = new TypeScriptIntersection([
+                new TypeScriptObject([
+                    new TypeScriptProperty('type', new TypeScriptLiteral($type)),
+                ]),
+                new TypeScriptReference(new ClassStringReference($class)),
+            ]);
+        }
+
+        ksort($members);
+
+        return new TypeScriptUnion(array_values($members));
     }
 
     private function formFieldUnion(): TypeScriptUnion
