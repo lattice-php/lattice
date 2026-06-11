@@ -1,12 +1,7 @@
-import { flattenColumns } from "./payload";
 import type { TableColumn, TableSort, TableState } from "./types";
 
 export function getColumnSort(state: TableState, column: TableColumn): TableSort | undefined {
   return state.sorts.find((currentSort) => currentSort.key === column.key);
-}
-
-export function getSortColumn(columns: TableColumn[], sort: TableSort): TableColumn | undefined {
-  return flattenColumns(columns).find((column) => column.key === sort.key);
 }
 
 export function getColumnAriaSort(

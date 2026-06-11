@@ -1,14 +1,14 @@
 import { ArrowDown, ArrowUp, X } from "lucide-react";
-import { getSortColumn, getSortDirectionLabel } from "../query";
+import { getSortDirectionLabel } from "../query";
 import type { TableColumn, TableSort, TableState } from "../types";
 
 export function SortBar({
-  columns,
+  columnsByKey,
   state,
   processing,
   onClear,
 }: {
-  columns: TableColumn[];
+  columnsByKey: Map<string, TableColumn>;
   state: TableState;
   processing: boolean;
   onClear: (sort: TableSort) => void;
@@ -16,7 +16,7 @@ export function SortBar({
   return (
     <div className="flex flex-wrap items-center gap-4 border-b border-lt-border px-4 py-2.5 text-sm">
       {state.sorts.map((sort, index) => {
-        const column = getSortColumn(columns, sort);
+        const column = columnsByKey.get(sort.key);
         const label = column?.label ?? sort.key;
         const Chevron = sort.direction === "desc" ? ArrowDown : ArrowUp;
 

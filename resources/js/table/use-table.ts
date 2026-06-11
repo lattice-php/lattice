@@ -13,7 +13,7 @@ import type {
 } from "./types";
 
 export function useTable(node: TableNode) {
-  const columns = getColumns(node.props?.columns);
+  const columns = useMemo(() => getColumns(node.props?.columns), [node.props?.columns]);
   const endpoint = typeof node.props?.endpoint === "string" ? node.props.endpoint : null;
   const componentRef = typeof node.props?.ref === "string" ? node.props.ref : "";
   const isLazy = node.props?.lazy === true;
