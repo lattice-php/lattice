@@ -3,6 +3,7 @@ import type { RendererComponent, RendererComponentModule } from "@lattice/lattic
 import { FormSkeletonComponent } from "./skeleton";
 
 type FormComponentName =
+  | "BuilderComponent"
   | "CheckboxComponent"
   | "ChoiceComponent"
   | "DateInputComponent"
@@ -34,6 +35,7 @@ export const formComponents = createPlugin({
     form: lazyComponent(loadFormComponent("FormComponent"), {
       fallback: FormSkeletonComponent,
     }),
+    "form.builder": lazyComponent(loadFormComponent("BuilderComponent")),
     "form.checkbox": lazyComponent(loadFormComponent("CheckboxComponent")),
     "form.choice": lazyComponent(loadFormComponent("ChoiceComponent")),
     "form.date-input": lazyComponent(loadFormComponent("DateInputComponent")),
