@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Workbench\App\Pages;
 
 use Lattice\Lattice\Core\Components\Badge;
+use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Components\Grid;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Tables\Components\Table;
@@ -40,6 +42,19 @@ final class HomePage extends WorkbenchPage
                         ->schema([
                             Card::make('Components', 'Server-side component trees serialize to typed React nodes.'),
                             Card::make('Renderer', 'The package renderer resolves registered component types.'),
+                        ]),
+                    Heading::make('Button variants', 2),
+                    Stack::make('workbench-buttons')
+                        ->direction('row')
+                        ->gap(Gap::Small)
+                        ->schema([
+                            Button::make('Default')->variant(ButtonVariant::Default),
+                            Button::make('Secondary')->variant(ButtonVariant::Secondary),
+                            Button::make('Success')->variant(ButtonVariant::Success),
+                            Button::make('Info')->variant(ButtonVariant::Info),
+                            Button::make('Destructive')->variant(ButtonVariant::Destructive),
+                            Button::make('Outline')->variant(ButtonVariant::Outline),
+                            Button::make('Ghost')->variant(ButtonVariant::Ghost),
                         ]),
                     Heading::make('Workbench users', 2),
                     Table::use(UsersTable::class),

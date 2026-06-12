@@ -20,6 +20,10 @@
   --lt-input: var(--input, oklch(0.922 0 0));
   --lt-ring: var(--ring, oklch(0.87 0 0));
   --lt-warning: var(--warning, oklch(0.852 0.156 91));
+  --lt-success: var(--success, oklch(0.596 0.145 163));
+  --lt-success-fg: var(--success-foreground, oklch(0.985 0 0));
+  --lt-info: var(--info, oklch(0.588 0.158 241));
+  --lt-info-fg: var(--info-foreground, oklch(0.985 0 0));
   --lt-radius: var(--radius, 0.625rem);
   --lt-radius-sm: calc(var(--lt-radius) - 2px);
   --lt-radius-xs: calc(var(--lt-radius) - 4px);
@@ -49,6 +53,10 @@
   --lt-input: var(--input, oklch(0.269 0 0));
   --lt-ring: var(--ring, oklch(0.439 0 0));
   --lt-warning: var(--warning, oklch(0.68 0.14 75));
+  --lt-success: var(--success, oklch(0.696 0.17 162));
+  --lt-success-fg: var(--success-foreground, oklch(0.205 0 0));
+  --lt-info: var(--info, oklch(0.685 0.15 238));
+  --lt-info-fg: var(--info-foreground, oklch(0.205 0 0));
 
   color-scheme: dark;
 }
@@ -74,9 +82,37 @@
   --color-lt-input: var(--lt-input);
   --color-lt-ring: var(--lt-ring);
   --color-lt-warning: var(--lt-warning);
+  --color-lt-success: var(--lt-success);
+  --color-lt-success-fg: var(--lt-success-fg);
+  --color-lt-info: var(--lt-info);
+  --color-lt-info-fg: var(--lt-info-fg);
   --radius-lt: var(--lt-radius);
   --radius-lt-sm: var(--lt-radius-sm);
   --radius-lt-xs: var(--lt-radius-xs);
+  --animate-lt-toast-in: lt-toast-in 160ms ease-out;
+  --animate-lt-toast-out: lt-toast-out 120ms ease-in;
+}
+
+@keyframes lt-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes lt-toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
 }
 
 /*

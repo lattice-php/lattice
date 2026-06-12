@@ -104,6 +104,7 @@
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-popover": "^1.1.16",
     "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-toast": "^1.2.16",
     "@tiptap/extension-details": "^3.26.0",
     "@tiptap/extension-highlight": "^3.26.0",
     "@tiptap/extension-link": "^3.26.0",

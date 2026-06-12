@@ -182,6 +182,11 @@ final class NodesProvider implements TransformedProvider
         );
     }
 
+    public static function nodeReference(): CustomReference
+    {
+        return new CustomReference(self::REFERENCE_KEY, 'Node');
+    }
+
     private function selfReference(string $name): CustomReference
     {
         return new CustomReference(self::REFERENCE_KEY, $name);

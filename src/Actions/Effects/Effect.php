@@ -16,10 +16,7 @@ abstract readonly class Effect implements EffectContract
      */
     public function jsonSerialize(): array
     {
-        return array_filter(
-            ['type' => $this->type(), ...get_object_vars($this)],
-            fn (mixed $value): bool => $value !== null,
-        );
+        return ['type' => $this->type(), ...get_object_vars($this)];
     }
 
     private function type(): string

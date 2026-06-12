@@ -42,7 +42,7 @@ function FormResetListener({
 }) {
   useEffect(() => {
     const handler = (event: Event) => {
-      const detail = (event as CustomEvent<{ form?: string }>).detail;
+      const detail = (event as CustomEvent<{ form: string | null }>).detail;
 
       if (!detail?.form || detail.form === componentId) {
         reset();

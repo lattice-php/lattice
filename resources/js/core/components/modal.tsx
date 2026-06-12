@@ -6,13 +6,13 @@ import type { RendererComponent } from "@lattice/lattice/core/types";
 import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
 
 type ModalEvent = CustomEvent<{
-  modal?: string;
+  modal: string | null;
 }>;
 
 function matchesModal(event: Event, modal: string): boolean {
   const target = (event as ModalEvent).detail?.modal;
 
-  return target === undefined || target === modal;
+  return target == null || target === modal;
 }
 
 const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {

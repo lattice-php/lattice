@@ -57,7 +57,15 @@ export type Button = {
   variant: ButtonVariant | null;
 };
 export type ButtonType = "button" | "submit" | "reset";
-export type ButtonVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
+export type ButtonVariant =
+  | "default"
+  | "destructive"
+  | "ghost"
+  | "info"
+  | "link"
+  | "outline"
+  | "secondary"
+  | "success";
 export type Card = {
   description: string | null;
   title: string | null;
@@ -102,7 +110,7 @@ export type Choice = {
   value: unknown;
 };
 export type CloseModalEffect = {
-  readonly modal?: string | null;
+  readonly modal: string | null;
 };
 export type ColumnData = {
   readonly key: string;
@@ -414,7 +422,7 @@ export type Link = {
   method: HttpMethod | null;
   tabIndex: number | null;
 };
-export type Menu = object;
+export type Menu = Record<string, never>;
 export type MenuItem = {
   href: string | null;
   icon: string | null;
@@ -478,7 +486,7 @@ export type Option = {
   readonly value: string;
 };
 export type Orientation = "horizontal" | "vertical";
-export type Outlet = object;
+export type Outlet = Record<string, never>;
 export type PageContainer = "centered" | "default";
 export type PageLayout = "app" | "auth" | "none";
 export type PaginationType = "none" | "simple" | "table" | "infinite";
@@ -522,7 +530,7 @@ export type ReloadComponentEffect = {
 };
 export type ReloadPageEffect = object;
 export type ResetFormEffect = {
-  readonly form?: string | null;
+  readonly form: string | null;
 };
 export type RichEditor = {
   conditions: {
@@ -665,8 +673,15 @@ export type Textarea = {
   value: unknown;
 };
 export type ToastEffect = {
-  readonly variant: ToastVariant;
-  readonly message: string;
+  readonly toast: ToastMessage;
+};
+export type ToastMessage = {
+  duration: number | null;
+  persistent: boolean;
+  dismissible: boolean;
+  action: Node | null;
+  variant: ToastVariant;
+  message: string;
 };
 export type ToastVariant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "sm" | "md" | "lg" | "fill";

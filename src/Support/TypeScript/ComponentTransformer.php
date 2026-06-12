@@ -6,11 +6,18 @@ namespace Lattice\Lattice\Support\TypeScript;
 
 use ReflectionClass;
 use Roave\BetterReflection\Reflection\ReflectionClass as RoaveReflectionClass;
+use Spatie\TypeScriptTransformer\Data\TransformationContext;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpPropertyNode;
 use Spatie\TypeScriptTransformer\Transformers\ClassPropertyProcessors\ClassPropertyProcessor;
 use Spatie\TypeScriptTransformer\Transformers\ClassTransformer;
 use Spatie\TypeScriptTransformer\TypeResolvers\Data\ParsedClass;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptGeneric;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIdentifier;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptNever;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptNode;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptObject;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptString;
 
 /**
  * Emits TypeScript prop types for an explicit allow-list of components. Every
@@ -33,6 +40,29 @@ final class ComponentTransformer extends ClassTransformer
     protected function shouldTransform(PhpClassNode $phpClassNode): bool
     {
         return in_array($phpClassNode->getName(), $this->allowed, true);
+    }
+
+    /**
+     * Emit `Record<string, never>` rather than `object` for a propless component
+     * (e.g. Menu, Outlet). `object` has no index signature, so it would not be
+     * assignable to the renderer's loose `props` bag and the wire node could not
+     * flow into the renderer; `Record<string, never>` keeps that path open.
+     */
+    protected function getTypeScriptNode(
+        PhpClassNode $phpClassNode,
+        TransformationContext $context,
+        ?ParsedClass $parsedClass = null,
+    ): TypeScriptNode {
+        $node = parent::getTypeScriptNode($phpClassNode, $context, $parsedClass);
+
+        if ($node instanceof TypeScriptObject && $node->properties === []) {
+            return new TypeScriptGeneric(
+                new TypeScriptIdentifier('Record'),
+                [new TypeScriptString, new TypeScriptNever],
+            );
+        }
+
+        return $node;
     }
 
     /**
