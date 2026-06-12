@@ -25,7 +25,7 @@ use Spatie\TypeScriptTransformer\Visitor\VisitorOperation;
  */
 final class ColumnPropsToRecordClassPropertyProcessor implements ClassPropertyProcessor
 {
-    private Visitor $visitor;
+    private readonly Visitor $visitor;
 
     public function __construct()
     {
