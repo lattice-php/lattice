@@ -186,6 +186,19 @@ abstract class Field extends Component
     }
 
     /**
+     * Extra validation rule keys this field contributes beyond its own name
+     * (e.g. a Repeater's `items.*.child` per-row rules). Merged by FieldValidator.
+     *
+     * @internal
+     *
+     * @return array<string, array<int, mixed>>
+     */
+    public function nestedRules(FormData $data, Request $request): array
+    {
+        return [];
+    }
+
+    /**
      * @param  string|array<int, string>  $attributes
      */
     public function dependsOn(string|array $attributes, mixed $operatorOrValue = null, mixed $value = null): static

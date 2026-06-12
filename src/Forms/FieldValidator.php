@@ -70,6 +70,10 @@ final class FieldValidator
                 $rules[$name] = $fieldRules;
             }
 
+            foreach ($field->nestedRules($data, $request) as $ruleKey => $ruleSet) {
+                $rules[$ruleKey] = $ruleSet;
+            }
+
             foreach ($field->messages() as $rule => $message) {
                 $messages["{$name}.{$rule}"] = $message;
             }
