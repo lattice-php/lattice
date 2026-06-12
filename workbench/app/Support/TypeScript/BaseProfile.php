@@ -46,6 +46,7 @@ final class BaseProfile implements TypeScriptProfile
         $marked = (new MarkedTypeDiscovery)->discover($src);
 
         $discovered = (new ComponentDiscovery)->discover($src);
+        $columnProps = $this->buildColumnProps($discovered);
 
         $formFields = $this->buildFormFields($discovered);
         $domainNodes = $this->buildDomainNodes($discovered);
@@ -58,6 +59,7 @@ final class BaseProfile implements TypeScriptProfile
                 new ValueObjectTransformer([
                     ...$marked['valueObjects'],
                     ...array_keys($effects),
+                    ...array_values($columnProps),
                 ]),
                 new ComponentTransformer([
                     ...array_keys($formFields),
@@ -73,6 +75,7 @@ final class BaseProfile implements TypeScriptProfile
                     'form',
                     Effect::class,
                     $effects,
+                    $columnProps,
                 ),
             ],
             new FlatModuleWriter('generated.ts'),
@@ -106,6 +109,30 @@ final class BaseProfile implements TypeScriptProfile
         }
 
         return $effects;
+    }
+
+    /**
+     * Built-in column props VOs keyed by wire column type.
+     *
+     * @param  list<DiscoveredComponent>  $discovered
+     * @return array<string, class-string>
+     */
+    private function buildColumnProps(array $discovered): array
+    {
+        $columns = array_filter(
+            $discovered,
+            fn (DiscoveredComponent $dc): bool => $dc->category === 'column' && $dc->propsClass !== null,
+        );
+
+        $map = [];
+
+        foreach ($columns as $dc) {
+            $map[$dc->type] = $dc->propsClass;
+        }
+
+        ksort($map);
+
+        return $map;
     }
 
     /**

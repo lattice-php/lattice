@@ -38,6 +38,9 @@ export type Align = "center" | "left" | "start" | "stretch";
 export type Badge = {
   label: string;
 };
+export type BadgeColumnProps = {
+  readonly colors: Record<string | number, string> | null;
+};
 export type BulkAction = {
   confirmation: Confirmation | null;
   effects: Effect[];
@@ -120,14 +123,6 @@ export type ColumnData = {
   readonly type: ColumnType | string;
   readonly sortable: boolean | null;
   readonly filter: ColumnFilter | null;
-  readonly date: {
-    format: string | null;
-  } | null;
-  readonly copyable: boolean | null;
-  readonly link: {
-    href: string | null;
-    external: boolean;
-  } | null;
   readonly columns: ColumnData[] | null;
   readonly props: Record<string, unknown> | null;
 };
@@ -136,6 +131,12 @@ export type ColumnFilter = {
   readonly type: FilterType;
   readonly operators: Op[];
   readonly defaultOperator: Op;
+};
+export type ColumnPropsMap = {
+  badge: BadgeColumnProps;
+  icon: IconColumnProps;
+  image: ImageColumnProps;
+  text: TextColumnProps;
 };
 export type ColumnType = "text" | "stack" | "badge" | "icon" | "image";
 export type Condition = {
@@ -402,6 +403,15 @@ export type HiddenInput = {
   value: unknown;
 };
 export type HttpMethod = import("@inertiajs/core").Method;
+export type IconColumnProps = {
+  readonly icon: string | null;
+  readonly icons: Record<string | number, string> | null;
+  readonly colors: Record<string | number, string> | null;
+};
+export type ImageColumnProps = {
+  readonly circular: boolean | null;
+  readonly size: number | null;
+};
 export type LayoutNode =
   | {
       type: "menu";
@@ -650,6 +660,16 @@ export type Tabs = {
 export type Text = {
   align: Align | null;
   text: string;
+};
+export type TextColumnProps = {
+  readonly date: {
+    format: string | null;
+  } | null;
+  readonly copyable: boolean | null;
+  readonly link: {
+    href: string | null;
+    external: boolean;
+  } | null;
 };
 export type TextInput = {
   autoComplete: string | null;

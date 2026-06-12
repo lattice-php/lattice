@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
+use Lattice\Lattice\Support\TypeScript\ColumnPropsToRecordClassPropertyProcessor;
 use Lattice\Lattice\Support\TypeScript\MixedToUnknownClassPropertyProcessor;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
 use Spatie\TypeScriptTransformer\Transformers\ClassPropertyProcessors\ClassPropertyProcessor;
@@ -37,6 +38,7 @@ final class ValueObjectTransformer extends ClassTransformer
             ...parent::classPropertyProcessors(),
             new MixedToUnknownClassPropertyProcessor,
             new ComponentToNodeClassPropertyProcessor,
+            new ColumnPropsToRecordClassPropertyProcessor,
         ];
     }
 }

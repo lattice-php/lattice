@@ -47,6 +47,8 @@ final class NodesProvider implements TransformedProvider
         private readonly string $formType = 'form',
         private readonly ?string $effectContract = null,
         private readonly array $effects = [],
+        /** @param  array<string, class-string>  $columnProps  wire column type => props VO class-string */
+        private readonly array $columnProps = [],
     ) {}
 
     /**
@@ -75,7 +77,27 @@ final class NodesProvider implements TransformedProvider
             );
         }
 
+        if ($this->columnProps !== []) {
+            $transformed[] = $this->alias('ColumnPropsMap', $this->columnPropsMap());
+        }
+
         return $transformed;
+    }
+
+    private function columnPropsMap(): TypeScriptObject
+    {
+        $properties = [];
+
+        foreach ($this->columnProps as $type => $class) {
+            $properties[$type] = new TypeScriptProperty(
+                $type,
+                new TypeScriptReference(new ClassStringReference($class)),
+            );
+        }
+
+        ksort($properties);
+
+        return new TypeScriptObject(array_values($properties));
     }
 
     private function effectUnion(): TypeScriptUnion
