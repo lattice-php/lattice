@@ -7,6 +7,7 @@ namespace Workbench\App\Support\TypeScript;
 use Lattice\Lattice\Actions\Contracts\Effect;
 use Lattice\Lattice\Attributes\Effect as EffectAttribute;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Support\Discovery\ClassWalker;
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
@@ -14,7 +15,6 @@ use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Spatie\Attributes\Attributes;
-use Spatie\StructureDiscoverer\Discover;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 
 /**
@@ -91,8 +91,7 @@ final class BaseProfile implements TypeScriptProfile
      */
     private function discoverEffects(string $path): array
     {
-        /** @var list<class-string> $classes */
-        $classes = (new Discover(directories: [$path]))->classes()->get();
+        $classes = ClassWalker::classes($path);
 
         $effects = [];
 

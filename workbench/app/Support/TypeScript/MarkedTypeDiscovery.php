@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Workbench\App\Support\TypeScript;
 
 use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Lattice\Support\Discovery\ClassWalker;
 use ReflectionClass;
-use Spatie\StructureDiscoverer\Discover;
 
 /**
  * Discovers #[TypeScript]-marked enums and value objects under a path — the
@@ -26,10 +26,8 @@ final class MarkedTypeDiscovery
         }
 
         // Unfiltered get() so enums come through (->classes() drops them); the
-        // #[TypeScript] check is the real filter. Construct Discover directly
-        // (not ::in()) to dodge the cache collision noted in ComponentDiscovery.
-        /** @var list<class-string> $classes */
-        $classes = (new Discover(directories: [$path]))->get();
+        // #[TypeScript] check is the real filter.
+        $classes = ClassWalker::all($path);
 
         $enums = [];
         $valueObjects = [];

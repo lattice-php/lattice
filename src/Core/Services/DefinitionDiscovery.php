@@ -6,11 +6,11 @@ namespace Lattice\Lattice\Core\Services;
 
 use Lattice\Lattice\Core\Contracts\DiscoversDefinitions;
 use Lattice\Lattice\Core\DefinitionRegistry;
+use Lattice\Lattice\Support\Discovery\ClassWalker;
 use ReflectionClass;
 use Spatie\Attributes\Attributes;
 use Spatie\StructureDiscoverer\Cache\DiscoverCacheDriver;
 use Spatie\StructureDiscoverer\Cache\LaravelDiscoverCacheDriver;
-use Spatie\StructureDiscoverer\Discover;
 use Spatie\StructureDiscoverer\Support\DiscoverCacheDriverFactory;
 use Throwable;
 
@@ -120,13 +120,7 @@ final class DefinitionDiscovery implements DiscoversDefinitions
      */
     private function freshClasses(string $path): array
     {
-        // Construct Discover directly instead of Discover::in(): the container binding
-        // injects a cache driver whose entry is keyed only by directory, which collides
-        // with the typescript-transformer discovering the same directory in-process.
-        /** @var list<class-string> $classes */
-        $classes = (new Discover(directories: [$path]))->classes()->get();
-
-        return $classes;
+        return ClassWalker::classes($path);
     }
 
     private function cacheDriver(): DiscoverCacheDriver
