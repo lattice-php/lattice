@@ -8,13 +8,25 @@ beforeAll(() => {
 });
 afterAll(() => configure({ testIdAttribute: prev }));
 
+const { renderCounts } = vi.hoisted(() => ({ renderCounts: new Map<string, number>() }));
+
 vi.mock("@lattice/lattice/core/renderer", async () => {
   const { useFieldScope } = await import("../field-scope");
   return {
     RenderNode: ({ node }: { node: { props: { name: string } } }) => {
       const scope = useFieldScope();
+      const key = scope ? scope.scopedName(node.props.name) : "no-scope";
+      renderCounts.set(key, (renderCounts.get(key) ?? 0) + 1);
       return (
-        <span data-test="child">{scope ? scope.scopedName(node.props.name) : "no-scope"}</span>
+        <>
+          <span data-test="child">{key}</span>
+          <button
+            aria-label={`commit ${key}`}
+            data-test={`commit-${key}`}
+            type="button"
+            onClick={() => scope?.setValue(node.props.name, "x")}
+          />
+        </>
       );
     },
   };
@@ -99,4 +111,17 @@ it("can remove an unknown-block row", () => {
   expect(screen.getByText(/Unknown block/i)).toBeInTheDocument();
   fireEvent.click(screen.getByTestId("repeater-items-remove-0"));
   expect(screen.queryByText(/Unknown block/i)).not.toBeInTheDocument();
+});
+
+it("does not re-render sibling rows when one row changes", () => {
+  wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
+    items: [
+      { type: "product", qty: "1" },
+      { type: "product", qty: "2" },
+    ],
+  });
+  renderCounts.clear();
+  fireEvent.click(screen.getByTestId("commit-items[0][qty]"));
+  expect(renderCounts.get("items[0][qty]") ?? 0).toBeGreaterThanOrEqual(1);
+  expect(renderCounts.get("items[1][qty]") ?? 0).toBe(0);
 });

@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { Node, RendererComponent } from "@lattice/lattice/core/types";
 import { Icon } from "@lattice/lattice/icons";
 import { FormFieldFrame } from "../base/field";
@@ -46,47 +47,48 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
         {rows.map((row, index) => {
           const block = blockFor(row.type);
 
-          if (!block) {
-            return (
-              <div
-                key={index}
-                data-test={`repeater-${name}-row-${index}`}
-                className="flex items-center justify-between rounded-lt border border-dashed border-lt-border p-4 text-sm text-lt-muted-fg"
-              >
-                <span>Unknown block: {String(row.type)}</span>
-                {!atMin && (
-                  <button
-                    type="button"
-                    aria-label="Remove"
-                    data-test={`repeater-${name}-remove-${index}`}
-                    className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-sm"
-                    onClick={() => onRemove(index)}
-                  >
-                    <Icon name="trash-2" />
-                  </button>
-                )}
-              </div>
-            );
-          }
-
           return (
-            <RowItem
-              key={index}
-              base={name}
-              index={index}
-              row={row}
-              template={block.schema ?? EMPTY_TEMPLATE}
-              heading={block.label}
-              reorderable={props.reorderable ?? false}
-              isFirst={index === 0}
-              isLast={index === rows.length - 1}
-              removable={!atMin}
-              onField={onField}
-              onRemove={onRemove}
-              onMove={onMove}
-            >
-              <input name={`${name}[${index}][type]`} type="hidden" value={block.type} />
-            </RowItem>
+            <Fragment key={index}>
+              <input
+                type="hidden"
+                name={`${name}[${index}][type]`}
+                value={String(row.type ?? "")}
+              />
+              {block ? (
+                <RowItem
+                  base={name}
+                  index={index}
+                  row={row}
+                  template={block.schema ?? EMPTY_TEMPLATE}
+                  heading={block.label}
+                  reorderable={props.reorderable ?? false}
+                  isFirst={index === 0}
+                  isLast={index === rows.length - 1}
+                  removable={!atMin}
+                  onField={onField}
+                  onRemove={onRemove}
+                  onMove={onMove}
+                />
+              ) : (
+                <div
+                  data-test={`repeater-${name}-row-${index}`}
+                  className="flex items-center justify-between rounded-lt border border-dashed border-lt-border p-4 text-sm text-lt-muted-fg"
+                >
+                  <span>Unknown block: {String(row.type)}</span>
+                  {!atMin && (
+                    <button
+                      type="button"
+                      aria-label="Remove"
+                      data-test={`repeater-${name}-remove-${index}`}
+                      className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-sm"
+                      onClick={() => onRemove(index)}
+                    >
+                      <Icon name="trash-2" />
+                    </button>
+                  )}
+                </div>
+              )}
+            </Fragment>
           );
         })}
 
