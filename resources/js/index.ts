@@ -52,4 +52,10 @@ export type { ActionEffect } from "./action/effects";
 export type { ResolvedAppearance, UseAppearanceReturn } from "./appearance";
 export type { CopiedValue, CopyFn, UseClipboardReturn } from "./clipboard";
 export type { Appearance, ToastMessage, ToastVariant } from "./events/event-bridge";
-export type { IconRendererFunction, IconRendererProps, SpriteValue } from "./icons";
+export type {
+  IconName,
+  IconRendererFunction,
+  IconRendererProps,
+  KnownIcons,
+  SpriteValue,
+} from "./icons";

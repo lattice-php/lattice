@@ -1,5 +1,5 @@
 import inertia from "@inertiajs/vite";
-import { svgSprite } from "@lattice-php/vite-svg-sprite";
+import { svgSprite, writePhpEnum } from "@lattice-php/vite-svg-sprite";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import laravel from "laravel-vite-plugin";
@@ -12,6 +12,24 @@ import { defineConfig } from "vitest/config";
 const sourceRoot = path.resolve(__dirname, "resources/js");
 
 const isVitest = process.env.VITEST !== undefined;
+
+// The lucide icons Lattice's built-in components rely on. The sprite plugin
+// idempotently vendors these into resources/icons (committed) at build time, so
+// consumers can point at vendor/lattice-php/lattice/resources/icons without
+// installing lucide-static. Keep sorted and grouped by origin.
+const latticeIcons = [
+  // Server-driven defaults (names components emit / consumers commonly use)
+  "arrow-down", "arrow-up", "check", "chevrons-up-down", "copy", "external-link",
+  "eye-off", "layout-dashboard", "link", "more-horizontal", "pencil", "pencil-line",
+  "send", "settings", "trash-2", "x",
+  // Internal chrome
+  "chevron-down", "chevron-right", "circle-alert", "circle-check", "circle-help", "circle-x",
+  "eye", "filter", "info", "loader-2", "minus", "panel-left", "plus", "search",
+  // Rich-editor toolbar
+  "align-center", "align-justify", "align-left", "align-right", "bold", "code",
+  "columns-3", "heading-1", "heading-2", "heading-3", "highlighter", "italic",
+  "list", "list-ordered", "quote", "rows-3", "smile", "strikethrough", "table", "underline",
+];
 
 function libraryEntries(): string[] {
   return readdirSync(sourceRoot, { recursive: true, encoding: "utf8" })
@@ -48,8 +66,32 @@ export default defineConfig(({ mode }) => {
       ...(isVitest || isLibrary
         ? []
         : [
-            // Lattice's own icons + the workbench's custom icons compile into one sprite.
-            svgSprite({ iconDirs: ["resources/icons", "workbench/resources/icons"] }),
+            // Lattice's lucide icons (vendored into resources/icons) + the
+            // workbench's custom icons compile into one sprite.
+            svgSprite({
+              include: [
+                { from: "lucide-static/icons", names: latticeIcons, outDir: "resources/icons" },
+              ],
+              iconDirs: ["workbench/resources/icons"],
+              // Generate an importable IconName union + augment <Icon name>.
+              dts: {
+                file: "workbench/resources/js/sprite-icons.ts",
+                augmentModule: "@lattice/lattice",
+                augmentInterface: "KnownIcons",
+              },
+            }),
+            // Ship a backed PHP enum of Lattice's own icons (scoped to its set,
+            // not the workbench's extras) so consumers pick them type-safely.
+            {
+              name: "lattice:icon-enum",
+              buildStart() {
+                writePhpEnum([...latticeIcons].sort(), {
+                  file: "src/Core/Enums/Icon.php",
+                  namespace: "Lattice\\Lattice\\Core\\Enums",
+                  enum: "Icon",
+                });
+              },
+            },
             laravel({
               input: ["workbench/resources/css/app.css", "workbench/resources/js/app.tsx"],
               publicDirectory: "vendor/orchestra/testbench-core/laravel/public",

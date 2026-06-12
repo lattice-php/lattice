@@ -2,6 +2,13 @@ import { createContext, useContext } from "react";
 import type { ReactNode } from "react";
 import { cn } from "../lib/utils";
 
+// Augmentable registry of icon names. The sprite plugin can generate a
+// `declare module "@lattice-php/lattice" { interface KnownIcons { … } }` block
+// from the built sprite, which turns `IconName` into the real set for
+// autocomplete. Unaugmented it falls back to `string`, so any name still works.
+export interface KnownIcons {}
+export type IconName = keyof KnownIcons | (string & {});
+
 export type SpriteValue = {
   /** The sprite URL. Empty when the sprite is inlined into the document (dev). */
   href: string;
@@ -42,7 +49,7 @@ export function Icon({
   className,
   name,
   ...props
-}: { name: string } & React.ComponentProps<"svg">) {
+}: { name: IconName } & React.ComponentProps<"svg">) {
   const { href, ids } = useSprite();
 
   if (import.meta.env.DEV && ids && !ids.includes(name) && !warnedIcons.has(name)) {
