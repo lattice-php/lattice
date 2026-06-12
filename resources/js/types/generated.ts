@@ -11,7 +11,7 @@ export type Action = {
   variant: ButtonVariant | null;
 };
 export type ActionGroup = {
-  label: string | null;
+  label: string;
   ref: string | null;
 };
 export type ActionNode =
@@ -300,6 +300,7 @@ export type Form = {
   status: string | null;
   submitButton: boolean | null;
   submitLabel: string | null;
+  validationSummaryLabel: string;
   validationTimeout: number | null;
 };
 export type FormFieldNode =
@@ -440,7 +441,7 @@ export type MenuItem = {
   method: HttpMethod | null;
 };
 export type Modal = {
-  closeLabel: string | null;
+  closeLabel: string;
   description: string | null;
   open: boolean | null;
   ref: string | null;
@@ -589,6 +590,7 @@ export type Select = {
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
+  emptyLabel: string;
   helperText: string | null;
   hidden: boolean | null;
   label: string | null;
@@ -598,6 +600,7 @@ export type Select = {
   placeholder: string | null;
   readOnly: boolean | null;
   required: boolean | null;
+  searchPlaceholder: string;
   searchable: boolean | null;
   tabIndex: number | null;
   value: unknown;
@@ -623,8 +626,10 @@ export type Tab = {
   value: string;
 };
 export type Table = {
+  actionsLabel: string;
   bulkActions: Action[];
   columns: ColumnData[];
+  emptyLabel: string;
   endpoint: string | null;
   layout: string | null;
   lazy: boolean | null;

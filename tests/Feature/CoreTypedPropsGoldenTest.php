@@ -89,7 +89,7 @@ test('GOLDEN modal without optional props includes them as null', function () {
             'props' => [
                 'title' => null,
                 'description' => null,
-                'closeLabel' => null,
+                'closeLabel' => 'Close',
                 'open' => false,
                 'ref' => null,
             ],

@@ -45,6 +45,16 @@ abstract class TableDefinition extends Definition
         return false;
     }
 
+    public function actionsLabel(): string
+    {
+        return 'Actions';
+    }
+
+    public function emptyLabel(): string
+    {
+        return 'No results';
+    }
+
     /**
      * @param  array<string, mixed>  $row
      * @return array<int, Component>

@@ -120,7 +120,9 @@ See [Validation](/forms/validation/) for the full rule surface.
 ## The submit button
 
 The form renders its submit button for you, labelled by `->submitLabel()`. It is form-aware: it
-disables while submitting and while there are validation errors, and shows a spinner. To take over
+disables while submitting and while there are validation errors, and shows a spinner — the heading of
+that error summary is set with `->validationSummaryLabel()` (default "Fix these fields to continue:").
+To take over
 placement — render the button somewhere other than the form footer — call `->withoutSubmitButton()`
 and place a [`Button`](/core/components/) with `->submit()` in the schema yourself:
 

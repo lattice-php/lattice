@@ -127,6 +127,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'method' => 'patch',
                 'ref' => componentRef($form),
                 'submitLabel' => null,
+                'validationSummaryLabel' => 'Fix these fields to continue:',
                 'precognitive' => null,
                 'validationTimeout' => null,
                 'submitButton' => null,
@@ -352,6 +353,7 @@ test('forms can disable their default submit button', function () {
                 'action' => null,
                 'method' => null,
                 'submitLabel' => null,
+                'validationSummaryLabel' => 'Fix these fields to continue:',
                 'precognitive' => null,
                 'validationTimeout' => null,
                 'resetOnSuccess' => null,
@@ -475,6 +477,7 @@ test('registered forms serialize their configured endpoint and isolated error ba
                 'ref' => componentRef($form),
                 'submitButton' => false,
                 'submitLabel' => null,
+                'validationSummaryLabel' => 'Fix these fields to continue:',
                 'precognitive' => null,
                 'validationTimeout' => null,
                 'resetOnSuccess' => null,
@@ -553,6 +556,8 @@ test('registered tables serialize their configured endpoint columns state and in
                 'bulkActions' => [],
                 'striped' => null,
                 'lazy' => null,
+                'actionsLabel' => 'Actions',
+                'emptyLabel' => 'No results',
                 'columns' => [
                     [
                         'key' => 'name',
@@ -637,6 +642,8 @@ test('registered tables can serialize lazily without running their query', funct
                 'layout' => null,
                 'bulkActions' => [],
                 'striped' => null,
+                'actionsLabel' => 'Actions',
+                'emptyLabel' => 'No results',
                 'columns' => [
                     [
                         'key' => 'name',
@@ -1295,7 +1302,7 @@ test('modals serialize composable children for action driven dialogs', function 
             'props' => [
                 'title' => 'Set up two-factor authentication',
                 'description' => 'Scan the QR code with your authenticator app.',
-                'closeLabel' => null,
+                'closeLabel' => 'Close',
                 'open' => null,
                 'ref' => null,
             ],
@@ -1445,6 +1452,7 @@ test('tabs serialize tab panels as composable children', function () {
                                 'action' => null,
                                 'method' => null,
                                 'submitLabel' => null,
+                                'validationSummaryLabel' => 'Fix these fields to continue:',
                                 'precognitive' => null,
                                 'validationTimeout' => null,
                                 'submitButton' => null,

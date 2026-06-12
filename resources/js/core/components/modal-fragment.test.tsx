@@ -37,6 +37,7 @@ describe("Lattice modal and fragment components", () => {
             ],
             id: "settings.two-factor-setup",
             props: {
+              closeLabel: "Close",
               title: "Set up two-factor authentication",
             },
             type: "modal",

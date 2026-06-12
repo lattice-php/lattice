@@ -6,6 +6,7 @@
             "dependsOnAny": null,
             "dependsOnKeys": null,
             "disabled": null,
+            "emptyLabel": "No options",
             "helperText": null,
             "hidden": null,
             "label": "Languages",
@@ -32,6 +33,7 @@
             "placeholder": "Choose languages",
             "readOnly": null,
             "required": null,
+            "searchPlaceholder": "Search\u2026",
             "searchable": null,
             "tabIndex": null,
             "value": null

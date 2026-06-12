@@ -18,7 +18,7 @@ function matchesModal(event: Event, modal: string): boolean {
 const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {
   const title = node.props.title ?? "Dialog";
   const description = node.props.description;
-  const closeLabel = node.props.closeLabel ?? "Close";
+  const closeLabel = node.props.closeLabel;
   const [isOpen, setIsOpen] = useState(node.props.open === true);
 
   useEffect(() => {

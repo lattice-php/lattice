@@ -13,7 +13,7 @@ class Modal extends ContainerComponent
 
     public ?string $description = null;
 
-    public ?string $closeLabel = null;
+    public string $closeLabel = 'Close';
 
     public ?bool $open = null;
 

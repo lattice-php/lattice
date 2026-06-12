@@ -25,6 +25,8 @@ class Form extends ContainerComponent
 
     public ?string $submitLabel = null;
 
+    public string $validationSummaryLabel = 'Fix these fields to continue:';
+
     public ?bool $precognitive = null;
 
     public ?int $validationTimeout = null;
@@ -76,6 +78,13 @@ class Form extends ContainerComponent
     public function submitLabel(string $submitLabel): static
     {
         $this->submitLabel = $submitLabel;
+
+        return $this;
+    }
+
+    public function validationSummaryLabel(string $label): static
+    {
+        $this->validationSummaryLabel = $label;
 
         return $this;
     }

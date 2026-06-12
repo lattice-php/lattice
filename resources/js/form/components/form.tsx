@@ -64,6 +64,7 @@ function FormBody({
   nodes,
   shouldRenderSubmitButton,
   submitLabel,
+  summaryLabel,
 }: {
   action: string;
   children: React.ReactNode;
@@ -71,6 +72,7 @@ function FormBody({
   nodes: Node[] | undefined;
   shouldRenderSubmitButton: boolean;
   submitLabel: string;
+  summaryLabel: string;
 }) {
   const resolvedNodes = useFormResolver(action, componentRef, nodes);
 
@@ -81,7 +83,7 @@ function FormBody({
 
         {shouldRenderSubmitButton && (
           <div className="flex justify-end rounded-lt border border-lt-border bg-lt-surface px-6 py-4 shadow-xs">
-            <FormSubmitButton label={submitLabel} />
+            <FormSubmitButton label={submitLabel} summaryLabel={summaryLabel} />
           </div>
         )}
       </div>
@@ -106,6 +108,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   const initialValues = { ...fieldValues, ...state };
   const shouldRenderSubmitButton = props.submitButton ?? true;
   const submitLabel = props.submitLabel ?? "Submit";
+  const summaryLabel = props.validationSummaryLabel;
   const validationTimeout = props.validationTimeout ?? undefined;
 
   return (
@@ -148,6 +151,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
               nodes={node.schema}
               shouldRenderSubmitButton={shouldRenderSubmitButton}
               submitLabel={submitLabel}
+              summaryLabel={summaryLabel}
             >
               {children}
             </FormBody>

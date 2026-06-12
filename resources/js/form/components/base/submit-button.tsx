@@ -5,9 +5,11 @@ import { useFormContext } from "../context";
 
 export function FormSubmitButton({
   label,
+  summaryLabel,
   variant = "default",
 }: {
   label: string;
+  summaryLabel: string;
   variant?: ButtonVariant;
 }) {
   const { errors, fieldLabels, processing } = useFormContext();
@@ -29,7 +31,7 @@ export function FormSubmitButton({
           className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 w-max max-w-xs -translate-x-1/2 rounded-lt border border-lt-border bg-lt-surface p-3 text-left text-sm opacity-0 shadow-md transition-opacity group-hover:opacity-100"
           role="tooltip"
         >
-          <p className="mb-1 font-medium text-lt-fg">Fix these fields to continue:</p>
+          <p className="mb-1 font-medium text-lt-fg">{summaryLabel}</p>
           <ul className="space-y-1">
             {invalidFields.map((field) => (
               <li className="text-lt-muted-fg" key={field.label}>
