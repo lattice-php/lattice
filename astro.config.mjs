@@ -54,6 +54,7 @@ export default defineConfig({
             { label: "Fragments", link: "/core/fragments/" },
             { label: "Toasts", link: "/core/toasts/" },
             { label: "Navigation", link: "/core/navigation/" },
+            { label: "Icons", link: "/core/icons/" },
             { label: "Theming", link: "/core/theming/" },
           ],
         },

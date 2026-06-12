@@ -1,16 +1,16 @@
+/// <reference types="@lattice-php/vite-svg-sprite/client" />
 import "../css/app.css";
 import { createInertiaApp } from "@inertiajs/react";
 import {
   createLayoutResolver,
   createPageResolver,
   extendRegistry,
-  IconRendererProvider,
   Provider,
   registry,
 } from "@lattice/lattice";
 import { createRoot } from "react-dom/client";
+import sprite from "virtual:svg-sprite";
 import { appColumns } from "./lattice/columns";
-import { appIcons } from "./lattice/icons";
 
 const appRegistry = extendRegistry(registry, appColumns);
 
@@ -24,10 +24,8 @@ createInertiaApp({
     }
 
     createRoot(el).render(
-      <Provider registry={appRegistry}>
-        <IconRendererProvider renderer={appIcons}>
-          <App {...props} />
-        </IconRendererProvider>
+      <Provider registry={appRegistry} sprite={sprite}>
+        <App {...props} />
       </Provider>,
     );
   },

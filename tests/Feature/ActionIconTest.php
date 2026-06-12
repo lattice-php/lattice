@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Core\Enums\LucideIcon;
+use Lattice\Lattice\Core\Enums\Icon;
 
 test('actions serialize lucide icon enum values', function () {
     expect(wire(Action::make('send-message')
         ->label('Send')
-        ->icon(LucideIcon::Send)))
+        ->icon(Icon::Send)))
         ->toMatchArray([
             'type' => 'action',
             'id' => 'send-message',

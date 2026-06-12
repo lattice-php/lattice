@@ -1,6 +1,6 @@
 import { copyToClipboard } from "@lattice/lattice/clipboard";
+import { Icon } from "@lattice/lattice/icons";
 import type { TextColumnProps } from "@lattice/lattice/types/generated";
-import { Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { formatCell, resolveLink } from "../../format";
 import type { TableColumn, TableRow } from "../../types";
@@ -61,9 +61,9 @@ export function TextCell({
         onClick={handleCopy}
       >
         {copied ? (
-          <Check aria-hidden="true" className="size-3" />
+          <Icon name="check" className="size-3" />
         ) : (
-          <Copy aria-hidden="true" className="size-3" />
+          <Icon name="copy" className="size-3" />
         )}
         {copied ? "Copied" : "Copy"}
       </button>
