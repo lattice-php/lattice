@@ -34,26 +34,27 @@ final class AugmentProfile implements TypeScriptProfile
             $discovered = [...$discovered, ...$this->discovery->discover($path)];
         }
 
-        $components = [];
-        $columns = [];
+        $entries = [];
 
         foreach ($discovered as $component) {
-            $components[$component->class] = [$component->type, $component->category];
+            if ($component->category === 'column' && $component->propsClass !== null) {
+                $entries[$component->propsClass] = [$component->type, 'column'];
 
-            if ($component->category === 'column') {
-                $columns[] = $component->class;
+                continue;
             }
+
+            $entries[$component->class] = [$component->type, $component->category];
         }
 
         $generator->generate(
             $roots,
-            [new ComponentTransformer(array_keys($components), $columns)],
+            [new ComponentTransformer(array_keys($entries))],
             [],
-            new AugmentationWriter($components, $module, basename($output)),
+            new AugmentationWriter($entries, $module, basename($output)),
             dirname($output),
             new OxfmtFormatter,
         );
 
-        return sprintf('Generated %d type(s) → %s', count($components), $output);
+        return sprintf('Generated %d type(s) → %s', count($entries), $output);
     }
 }
