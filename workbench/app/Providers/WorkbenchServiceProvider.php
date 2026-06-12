@@ -60,8 +60,15 @@ class WorkbenchServiceProvider extends ServiceProvider
             'i18next.output' => 'nested',
         ]);
 
-        $this->callAfterResolving('translation.loader', function ($loader): void {
-            $loader->addPath(package_path('workbench/lang'));
+        // laravel-i18next dumps missing keys (saveMissing) to lang_path(). In the
+        // workbench that resolves to the read-only Testbench skeleton inside vendor,
+        // so point it at the writable workbench/lang instead — dev dumps then land
+        // in the repo. Keep the skeleton readable for framework messages.
+        $skeletonLangPath = $this->app->langPath();
+        $this->app->useLangPath(package_path('workbench/lang'));
+
+        $this->callAfterResolving('translation.loader', function ($loader) use ($skeletonLangPath): void {
+            $loader->addPath($skeletonLangPath);
         });
     }
 
@@ -89,6 +96,9 @@ class WorkbenchServiceProvider extends ServiceProvider
         config([
             'database.default' => 'sqlite',
             'database.connections.sqlite.database' => $database,
+            // Lock-capable, table-free cache so laravel-i18next's saveMissing dump
+            // (Cache::lock) works without a cache_locks table in the served app.
+            'cache.default' => 'array',
         ]);
     }
 

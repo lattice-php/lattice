@@ -17,7 +17,8 @@ import { LanguageSwitcher } from "./lattice/language-switcher";
 const appRegistry = extendRegistry(registry, appColumns);
 
 // Load Lattice's chrome translations from the bambamboole/laravel-i18next backend.
-void enableBackend();
+// saveMissing dumps any missing keys into workbench/lang during development.
+void enableBackend({ saveMissing: true });
 
 createInertiaApp({
   strictMode: true,
