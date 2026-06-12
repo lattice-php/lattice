@@ -78,7 +78,7 @@ export function ColumnFilterControl({
           >
             <Icon name="filter" aria-hidden="true" className="size-lt-icon-md" />
             {clauses.length > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 inline-flex size-4 items-center justify-center rounded-full bg-lt-primary text-[10px] font-medium text-lt-primary-fg">
+              <span className="absolute -right-1.5 -top-1.5 inline-flex size-4 items-center justify-center rounded-full bg-lt-primary text-xs font-medium text-lt-primary-fg">
                 {clauses.length}
               </span>
             )}
