@@ -23,7 +23,7 @@ abstract class Field extends Component
 
     public ?bool $required = null;
 
-    public ?bool $readonly = null;
+    public ?bool $readOnly = null;
 
     public ?bool $disabled = null;
 
@@ -48,7 +48,7 @@ abstract class Field extends Component
     protected array $rules = [];
 
     /**
-     * Conditional state rules keyed by intent (visible/required/readonly/disabled).
+     * Conditional state rules keyed by intent (visible/required/readOnly/disabled).
      * Sets are created lazily as conditions are added.
      *
      * @var array<string, ConditionSet>
@@ -186,7 +186,7 @@ abstract class Field extends Component
 
     public function readOnlyWhen(string $field, mixed $operatorOrValue = null, mixed $value = null): static
     {
-        return $this->addCondition('readonly', $field, $operatorOrValue, $value);
+        return $this->addCondition('readOnly', $field, $operatorOrValue, $value);
     }
 
     public function disabledWhen(string $field, mixed $operatorOrValue = null, mixed $value = null): static
@@ -225,7 +225,7 @@ abstract class Field extends Component
 
     public function readOnly(bool $readOnly = true): static
     {
-        $this->readonly = $readOnly;
+        $this->readOnly = $readOnly;
 
         return $this;
     }
@@ -318,7 +318,7 @@ abstract class Field extends Component
      */
     public function isReadOnly(FormData $data): bool
     {
-        return $this->readonly === true || $this->anyConditionMatches('readonly', $data);
+        return $this->readOnly === true || $this->anyConditionMatches('readOnly', $data);
     }
 
     /**
@@ -339,7 +339,7 @@ abstract class Field extends Component
     }
 
     /**
-     * Required/readonly/disabled apply when any condition in the group holds, so
+     * Required/readOnly/disabled apply when any condition in the group holds, so
      * an empty group defaults to off.
      */
     private function anyConditionMatches(string $group, FormData $data): bool

@@ -7,7 +7,7 @@ export const TextInputComponent: RendererComponent<"form.text-input"> = ({ node 
 
   return (
     <SimpleField node={node} label={props.label ?? ""}>
-      {({ name, value, readonly, disabled, commit }) => (
+      {({ name, value, readOnly, disabled, commit }) => (
         <Input
           autoComplete={props.autoComplete ?? ""}
           autoFocus={props.autoFocus ?? false}
@@ -16,7 +16,7 @@ export const TextInputComponent: RendererComponent<"form.text-input"> = ({ node 
           name={name}
           onChange={(event) => commit(event.target.value)}
           placeholder={props.placeholder ?? ""}
-          readOnly={readonly}
+          readOnly={readOnly}
           tabIndex={props.tabIndex ?? undefined}
           type={props.type ?? "text"}
           value={value}

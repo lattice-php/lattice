@@ -10,7 +10,7 @@ export function useDependentField(node: Node): FieldState {
   return evaluateConditions(props.conditions ?? undefined, values, {
     hidden: props.hidden ?? false,
     required: props.required ?? false,
-    readonly: props.readonly ?? false,
+    readOnly: props.readOnly ?? false,
     disabled: props.disabled ?? false,
   });
 }

@@ -11,7 +11,7 @@
             "label": "Team name",
             "name": "name",
             "placeholder": null,
-            "readonly": null,
+            "readOnly": null,
             "required": true,
             "tabIndex": null,
             "type": null,

@@ -29,7 +29,7 @@
                 }
             ],
             "placeholder": "Choose languages",
-            "readonly": null,
+            "readOnly": null,
             "required": null,
             "searchable": null,
             "tabIndex": null,

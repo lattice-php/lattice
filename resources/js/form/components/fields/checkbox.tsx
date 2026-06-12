@@ -9,7 +9,7 @@ import { useFormValue, useSetFormValue } from "../values";
 
 export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) => {
   const { clearErrors, precognitive, validate } = useFormContext();
-  const { hidden, readonly, disabled } = useDependentField(node);
+  const { hidden, readOnly, disabled } = useDependentField(node);
   const name = node.props.name;
   const setValue = useSetFormValue();
   const storedValue = useFormValue(name);
@@ -27,7 +27,7 @@ export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) 
       <Checkbox
         autoFocus={node.props.autoFocus ?? undefined}
         checked={checked}
-        disabled={readonly || disabled}
+        disabled={readOnly || disabled}
         id={name}
         name={name}
         onCheckedChange={(next) => {

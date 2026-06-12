@@ -7,7 +7,7 @@ export const DateInputComponent: RendererComponent<"form.date-input"> = ({ node 
 
   return (
     <SimpleField node={node} label={props.label ?? ""}>
-      {({ name, value, readonly, disabled, commit }) => (
+      {({ name, value, readOnly, disabled, commit }) => (
         <Input
           autoFocus={props.autoFocus ?? false}
           disabled={disabled}
@@ -16,7 +16,7 @@ export const DateInputComponent: RendererComponent<"form.date-input"> = ({ node 
           min={props.min || undefined}
           name={name}
           onChange={(event) => commit(event.target.value)}
-          readOnly={readonly}
+          readOnly={readOnly}
           tabIndex={props.tabIndex ?? undefined}
           type="date"
           value={value}

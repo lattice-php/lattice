@@ -15,7 +15,7 @@ export type FieldProps = {
   hidden?: boolean | null;
   label?: string | null;
   name?: string;
-  readonly?: boolean | null;
+  readOnly?: boolean | null;
   required?: boolean | null;
   value?: unknown;
 };

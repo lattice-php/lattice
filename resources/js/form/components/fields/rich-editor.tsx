@@ -308,11 +308,11 @@ function Toolbar({ editor }: { editor: Editor }) {
 
 export const RichEditorComponent: RendererComponent<"form.rich-editor"> = ({ node }) => {
   const { errors } = useFormContext();
-  const { hidden, required, readonly, disabled } = useDependentField(node);
+  const { hidden, required, readOnly, disabled } = useDependentField(node);
   const { change, blur } = useFieldCommit();
   const name = node.props.name;
   const storedValue = useFormValue(name);
-  const locked = readonly || disabled;
+  const locked = readOnly || disabled;
   const initialContent =
     typeof storedValue === "object" && storedValue !== null
       ? (storedValue as object)

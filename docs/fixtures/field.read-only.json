@@ -11,7 +11,7 @@
             "label": "Slug",
             "name": "slug",
             "placeholder": null,
-            "readonly": true,
+            "readOnly": true,
             "required": null,
             "tabIndex": null,
             "type": null,
