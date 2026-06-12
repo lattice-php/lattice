@@ -14,7 +14,7 @@ export function FilterStackBar({
   processing: boolean;
   onRemove: (index: number) => void;
 }) {
-  const { t } = useT();
+  const { t } = useT("lattice");
 
   return (
     <div className="flex flex-wrap items-center gap-4 border-b border-lt-border px-4 py-2.5 text-sm">

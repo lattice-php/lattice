@@ -29,20 +29,23 @@ i18n.use(initReactI18next).init({
 });
 
 /**
- * Translation hook bound to Lattice's instance. Defaults to the single `lattice`
- * namespace (nested keys like `editor.bold`), which is collision-safe with the
- * host app's own namespaces; pass another namespace to read from it instead.
- * Call sites supply the English inline: `t("editor.bold", "Bold")`.
+ * Translation hook bound to Lattice's instance. The namespace is explicit: the
+ * renderer's chrome passes `"lattice"`, while a consumer passes their own
+ * namespace — another package's (`"billing"`) or the app's (`"translation"`) —
+ * to read from it instead. The backend serves any namespace from the same
+ * `/locales/{{lng}}/{{ns}}.json` route. Call sites supply the English inline:
+ * `t("editor.bold", "Bold")`.
  */
-export function useT(namespace: string = NAMESPACE) {
+export function useT(namespace: string) {
   return useTranslation(namespace, { i18n });
 }
 
-/** Translate a chrome key with an inline fallback outside of a component. */
+/** Translate a key in the given namespace with an inline fallback, outside of a component. */
 export function translate(
+  namespace: string,
   key: string,
   defaultValue: string,
   options?: Record<string, unknown>,
 ): string {
-  return i18n.t(key, defaultValue, options);
+  return i18n.t(key, defaultValue, { ns: namespace, ...options });
 }

@@ -125,7 +125,7 @@ function FlyoutGroup({
   label: string;
   testId: string;
 }) {
-  const { t } = useT();
+  const { t } = useT("lattice");
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ left: 0, top: 0 });
   const triggerRef = useRef<HTMLButtonElement>(null);

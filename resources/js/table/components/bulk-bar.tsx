@@ -81,7 +81,7 @@ export function BulkBar({
   }
 
   const count = allMatching ? (total ?? selectedKeys.length) : selectedKeys.length;
-  const { t } = useT();
+  const { t } = useT("lattice");
 
   return (
     <div className="flex flex-wrap items-center gap-3 border-b border-lt-border bg-lt-muted/50 p-4 text-sm">

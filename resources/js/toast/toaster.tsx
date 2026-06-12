@@ -66,7 +66,7 @@ function normalize(detail: unknown): ToastMessage | null {
 }
 
 export function Toaster({ duration = 4000 }: { duration?: number }) {
-  const { t } = useT();
+  const { t } = useT("lattice");
   const registry = useRegistry();
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 

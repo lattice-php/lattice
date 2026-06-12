@@ -29,7 +29,7 @@ export function FilterValueInput({
   onCommit: (value: string) => void;
   onClear?: () => void;
 }) {
-  const { t } = useT();
+  const { t } = useT("lattice");
   const [draft, setDraft] = useState(value);
   const inputLabel = ariaLabel ?? t("filter.filterBy", "Filter {{label}}", { label });
   const groupedClass = grouped ? "rounded-r-none" : "";

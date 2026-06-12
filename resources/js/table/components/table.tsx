@@ -16,7 +16,7 @@ import { TableActionNode } from "./table-action-node";
 import { ColumnCell } from "./table-cell";
 
 const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => {
-  const { t } = useT();
+  const { t } = useT("lattice");
   const {
     columns,
     rows,

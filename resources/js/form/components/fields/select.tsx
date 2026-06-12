@@ -27,7 +27,7 @@ function toValues(stored: unknown, fallback: unknown): string[] {
 }
 
 export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
-  const { t } = useT();
+  const { t } = useT("lattice");
   const props = node.props;
   const { action, componentRef, errors } = useFormContext();
   const { hidden, required, readOnly, disabled } = useDependentField(node);

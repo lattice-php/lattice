@@ -235,7 +235,7 @@ const emojis = [
 ];
 
 function EmojiPicker({ editor }: { editor: Editor }) {
-  const { t } = useT();
+  const { t } = useT("lattice");
   const [open, setOpen] = useState(false);
 
   return (
@@ -274,7 +274,7 @@ function EmojiPicker({ editor }: { editor: Editor }) {
 }
 
 function Toolbar({ editor }: { editor: Editor }) {
-  const { t } = useT();
+  const { t } = useT("lattice");
 
   return (
     <div className="flex flex-wrap items-center gap-0.5 border-b border-lt-border p-1">

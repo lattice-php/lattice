@@ -85,7 +85,7 @@ function queryUrl(queryKey: string, value: string): string {
 }
 
 export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => {
-  const { t } = useT();
+  const { t } = useT("lattice");
   const tabs = useMemo(() => getTabs(node), [node]);
   const firstValue = tabs[0]?.value ?? "";
   const queryKey = node.props.queryKey;

@@ -303,7 +303,7 @@ function ActionFormContent({
 }
 
 export function ActionForm({ description, formNode, onClose, title, ...rest }: ActionFormProps) {
-  const { t } = useT();
+  const { t } = useT("lattice");
 
   return (
     <Dialog.Root

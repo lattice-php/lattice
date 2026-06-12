@@ -24,7 +24,7 @@ export function TablePagination({
   onPage: (page: number) => void;
   onLoadMore: () => void;
 }) {
-  const { t } = useT();
+  const { t } = useT("lattice");
 
   return (
     <div className="flex items-center justify-between gap-3 border-t border-lt-border p-4 text-sm">

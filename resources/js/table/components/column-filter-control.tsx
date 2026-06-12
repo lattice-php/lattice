@@ -24,7 +24,7 @@ export function ColumnFilterControl({
   onUpdate: (index: number, clause: FilterClause) => void;
   onRemove: (index: number) => void;
 }) {
-  const { t } = useT();
+  const { t } = useT("lattice");
   const filter = column.filter;
 
   if (!filter) {
@@ -127,7 +127,7 @@ function FilterClauseList({
   onUpdate: (index: number, clause: FilterClause) => void;
   onRemove: (index: number) => void;
 }) {
-  const { t } = useT();
+  const { t } = useT("lattice");
   const type = column.filter?.type ?? "text";
   const [draftOperator, setDraftOperator] = useState(defaultOperator);
   const [adding, setAdding] = useState(clauses.length === 0);
@@ -212,7 +212,7 @@ function FilterClauseRow({
   onValue: (value: string) => void;
   onRemove: () => void;
 }) {
-  const { t } = useT();
+  const { t } = useT("lattice");
   const valueless = VALUELESS_FILTER_OPERATORS.has(clause.operator);
 
   return (

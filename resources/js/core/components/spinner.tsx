@@ -4,7 +4,7 @@ import { cn } from "@lattice/lattice/lib/utils";
 import { useT } from "@lattice/lattice/i18n";
 
 function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
-  const { t } = useT();
+  const { t } = useT("lattice");
 
   return (
     <Loader2Icon
