@@ -43,7 +43,7 @@ class ImageColumn extends Column
             type: ColumnType::Image,
             props: new ImageColumnProps(
                 circular: $this->circular ? true : null,
-                size: $this->size !== null ? (string) $this->size : null,
+                size: $this->size,
             ),
         );
     }
