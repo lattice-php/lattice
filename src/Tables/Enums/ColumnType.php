@@ -11,4 +11,7 @@ enum ColumnType: string
 {
     case Text = 'text';
     case Stack = 'stack';
+    case Badge = 'badge';
+    case Icon = 'icon';
+    case Image = 'image';
 }

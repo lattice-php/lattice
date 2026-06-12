@@ -1,0 +1,115 @@
+[
+    {
+        "id": "members",
+        "props": {
+            "bulkActions": [],
+            "columns": [
+                {
+                    "columns": null,
+                    "copyable": null,
+                    "date": null,
+                    "filter": null,
+                    "key": "avatar",
+                    "label": "",
+                    "link": null,
+                    "props": {
+                        "circular": true,
+                        "size": 32
+                    },
+                    "sortable": null,
+                    "type": "image"
+                },
+                {
+                    "columns": null,
+                    "copyable": null,
+                    "date": null,
+                    "filter": null,
+                    "key": "name",
+                    "label": "Name",
+                    "link": null,
+                    "props": null,
+                    "sortable": null,
+                    "type": "text"
+                },
+                {
+                    "columns": null,
+                    "copyable": null,
+                    "date": null,
+                    "filter": null,
+                    "key": "status",
+                    "label": "Status",
+                    "link": null,
+                    "props": {
+                        "colors": {
+                            "active": "green",
+                            "archived": "gray",
+                            "invited": "yellow"
+                        }
+                    },
+                    "sortable": null,
+                    "type": "badge"
+                },
+                {
+                    "columns": null,
+                    "copyable": null,
+                    "date": null,
+                    "filter": null,
+                    "key": "verified",
+                    "label": "Verified",
+                    "link": null,
+                    "props": {
+                        "colors": [
+                            "gray",
+                            "green"
+                        ],
+                        "icons": [
+                            "minus",
+                            "check"
+                        ]
+                    },
+                    "sortable": null,
+                    "type": "icon"
+                }
+            ],
+            "data": [
+                {
+                    "avatar": "https://i.pravatar.cc/64?img=1",
+                    "name": "Ada Lovelace",
+                    "status": "active",
+                    "verified": "1"
+                },
+                {
+                    "avatar": "https://i.pravatar.cc/64?img=2",
+                    "name": "Alan Turing",
+                    "status": "invited",
+                    "verified": "0"
+                },
+                {
+                    "avatar": "https://i.pravatar.cc/64?img=3",
+                    "name": "Grace Hopper",
+                    "status": "archived",
+                    "verified": "1"
+                }
+            ],
+            "endpoint": null,
+            "layout": null,
+            "lazy": null,
+            "pagination": {
+                "from": 1,
+                "hasMore": false,
+                "mode": "none",
+                "nextPage": null,
+                "to": 3,
+                "total": 3
+            },
+            "state": {
+                "filters": [],
+                "page": 1,
+                "perPage": 25,
+                "sorts": []
+            },
+            "striped": null
+        },
+        "type": "table"
+    }
+]
