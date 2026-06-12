@@ -42,10 +42,31 @@ The flashed toast is delivered with the next Inertia response and shown once.
 
 ## Building a message directly
 
-Both paths wrap a `ToastMessage` value object. Build one explicitly when you need to pass it around:
+Both paths wrap a `ToastMessage` value object. Build one explicitly to set a lifetime, control
+dismissal, or attach an action, then pass it to `->toast()` (or `Effect::toast()`):
 
 ```php
 use Lattice\Lattice\Core\Values\ToastMessage;
 
-ToastMessage::make(ToastVariant::Warning, 'Your trial ends tomorrow.');
+return ActionResult::success()->toast(
+    ToastMessage::make(ToastVariant::Success, 'Product archived.')
+        ->duration(8000)                       // auto-dismiss after 8s (default 4000ms)
+        ->link('View products', '/products'),  // a link rendered in the toast
+);
 ```
+
+The builder options:
+
+| Method                            | Effect                                                                 |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| `->duration($ms)`                 | Auto-dismiss after `$ms` milliseconds (default 4000).                  |
+| `->persistent()`                  | Never auto-dismiss; the toast stays until it is closed.                |
+| `->dismissible(false)`            | Hide the close button.                                                 |
+| `->link($label, $href, $method)`  | Render a link in the toast (`$method` defaults to `HttpMethod::Get`).  |
+| `->action($component)`            | Render an action instead of a link — e.g. an [`Action`](/actions/overview/) that opens a confirm dialog or [modal form](/actions/confirmation-and-forms/). |
+
+## Rendering
+
+Toasts render through the `<Toaster>` the Lattice `Provider` mounts by default, anchored bottom
+center and dismissing each after its duration. Pass `toaster={false}` to the `Provider` to opt out
+and mount your own.

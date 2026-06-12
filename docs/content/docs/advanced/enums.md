@@ -26,7 +26,7 @@ client type can't drift. The string value is what ends up on the wire.
 
 | Enum            | Cases (value)                                                                         |
 | --------------- | ------------------------------------------------------------------------------------- |
-| `ButtonVariant` | `Default` (default), `Destructive` (destructive), `Ghost` (ghost), `Link` (link), `Outline` (outline), `Secondary` (secondary) |
+| `ButtonVariant` | `Default` (default), `Destructive` (destructive), `Ghost` (ghost), `Info` (info), `Link` (link), `Outline` (outline), `Secondary` (secondary), `Success` (success) |
 | `ButtonType`    | `Button` (button), `Submit` (submit), `Reset` (reset)                                 |
 | `HttpMethod`    | `Get` (get), `Post` (post), `Put` (put), `Patch` (patch), `Delete` (delete)           |
 | `ToastVariant`  | `Success` (success), `Info` (info), `Warning` (warning), `Error` (error)              |
