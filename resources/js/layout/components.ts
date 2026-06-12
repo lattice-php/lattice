@@ -1,4 +1,5 @@
 import { createPlugin, eagerComponent } from "@lattice/lattice/core/registry";
+import BreadcrumbsComponent from "./breadcrumbs";
 import DropdownComponent from "./dropdown";
 import MenuComponent from "./menu";
 import MenuItemComponent from "./menu-item";
@@ -8,6 +9,7 @@ import UserMenuComponent from "./user-menu";
 
 export const layoutComponents = createPlugin({
   components: {
+    breadcrumbs: eagerComponent(BreadcrumbsComponent),
     dropdown: eagerComponent(DropdownComponent),
     menu: eagerComponent(MenuComponent),
     "menu-item": eagerComponent(MenuItemComponent),
