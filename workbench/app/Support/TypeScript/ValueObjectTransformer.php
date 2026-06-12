@@ -4,11 +4,18 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
-use Lattice\Lattice\Support\TypeScript\ColumnPropsToRecordClassPropertyProcessor;
+use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Support\TypeScript\MarkerRewriteClassPropertyProcessor;
 use Lattice\Lattice\Support\TypeScript\MixedToUnknownClassPropertyProcessor;
+use Lattice\Lattice\Tables\Columns\ColumnProps;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
 use Spatie\TypeScriptTransformer\Transformers\ClassPropertyProcessors\ClassPropertyProcessor;
 use Spatie\TypeScriptTransformer\Transformers\ClassTransformer;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptGeneric;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIdentifier;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptReference;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptString;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptUnknown;
 
 /**
  * Emits TypeScript object types only for an explicit allow-list of value
@@ -37,8 +44,17 @@ final class ValueObjectTransformer extends ClassTransformer
         return [
             ...parent::classPropertyProcessors(),
             new MixedToUnknownClassPropertyProcessor,
-            new ComponentToNodeClassPropertyProcessor,
-            new ColumnPropsToRecordClassPropertyProcessor,
+            new MarkerRewriteClassPropertyProcessor(
+                Component::class,
+                fn (): TypeScriptReference => new TypeScriptReference(NodesProvider::nodeReference()),
+            ),
+            new MarkerRewriteClassPropertyProcessor(
+                ColumnProps::class,
+                fn (): TypeScriptGeneric => new TypeScriptGeneric(
+                    new TypeScriptIdentifier('Record'),
+                    [new TypeScriptString, new TypeScriptUnknown],
+                ),
+            ),
         ];
     }
 }

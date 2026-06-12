@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext } from "react";
 import type { ReactNode } from "react";
 import type { ComponentRegistry, Registry } from "./core/registry";
 import { registry as defaultRegistry } from "./registry";
@@ -16,10 +16,8 @@ export function Provider({
   registry?: Registry;
   toaster?: boolean;
 }) {
-  const value = useMemo(() => registry, [registry]);
-
   return (
-    <RegistryContext.Provider value={value}>
+    <RegistryContext.Provider value={registry}>
       {children}
       {toaster ? <Toaster /> : null}
     </RegistryContext.Provider>

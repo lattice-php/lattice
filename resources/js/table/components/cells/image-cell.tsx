@@ -1,4 +1,5 @@
 import { cn } from "@lattice/lattice/lib/utils";
+import type { ImageColumnProps } from "@lattice/lattice/types/generated";
 import type { TableColumn } from "../../types";
 
 export function ImageCell({ column, value }: { column: TableColumn; value: unknown }) {
@@ -8,8 +9,8 @@ export function ImageCell({ column, value }: { column: TableColumn; value: unkno
     return null;
   }
 
-  const circular = column.props?.circular === true;
-  const size = typeof column.props?.size === "number" ? column.props.size : 32;
+  const props = column.props as ImageColumnProps | null;
+  const size = props?.size ?? 32;
 
   return (
     <img
@@ -17,7 +18,7 @@ export function ImageCell({ column, value }: { column: TableColumn; value: unkno
       src={url}
       width={size}
       height={size}
-      className={cn("object-cover", circular ? "rounded-full" : "rounded-lt-sm")}
+      className={cn("object-cover", props?.circular ? "rounded-full" : "rounded-lt-sm")}
       style={{ width: size, height: size }}
     />
   );

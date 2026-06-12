@@ -1,4 +1,5 @@
 import { copyToClipboard } from "@lattice/lattice/clipboard";
+import type { TextColumnProps } from "@lattice/lattice/types/generated";
 import { Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { formatCell, resolveLink } from "../../format";
@@ -13,8 +14,7 @@ export function TextCell({
   row: TableRow;
   value: unknown;
 }) {
-  const link = column.props?.link as { href: string | null; external: boolean } | undefined;
-  const copyable = column.props?.copyable === true;
+  const props = column.props as TextColumnProps | null;
   const text = formatCell(value, column);
   const [copied, setCopied] = useState(false);
   const href = resolveLink(column, row, value);
@@ -22,8 +22,8 @@ export function TextCell({
     <a
       className="underline underline-offset-2"
       href={href}
-      rel={link?.external ? "noreferrer" : undefined}
-      target={link?.external ? "_blank" : undefined}
+      rel={props?.link?.external ? "noreferrer" : undefined}
+      target={props?.link?.external ? "_blank" : undefined}
     >
       {text}
     </a>
@@ -46,7 +46,7 @@ export function TextCell({
     setCopied(true);
   }
 
-  if (!copyable) {
+  if (!props?.copyable) {
     return content;
   }
 
