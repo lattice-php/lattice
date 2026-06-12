@@ -8,10 +8,8 @@ use Illuminate\Support\Facades\File;
 use Lattice\Lattice\Core\Services\DefinitionDiscovery;
 
 /**
- * The default profile: discovers an app's own #[Component] classes across the
- * configured discover roots and writes a module augmentation extending the open
- * ComponentProps / ColumnProps interfaces the `@lattice-php/lattice` module
- * exposes, layered on top of the package's built-in types.
+ * Default profile: discovers an app's own #[Component] classes and writes a
+ * module augmentation extending the package's published types.
  */
 final class AugmentProfile implements TypeScriptProfile
 {

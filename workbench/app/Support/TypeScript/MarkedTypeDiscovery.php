@@ -9,16 +9,13 @@ use ReflectionClass;
 use Spatie\StructureDiscoverer\Discover;
 
 /**
- * Discovers the classes marked with #[TypeScript] under a path and splits them
- * into backed enums and value objects — the allow-lists that drive the enum and
- * value-object transformers for the built-in types. Keeping this in the
- * workbench keeps the maintainer-only build code out of the shipped package.
+ * Discovers #[TypeScript]-marked enums and value objects under a path — the
+ * allow-lists for the built-in enum and value-object transformers.
  */
 final class MarkedTypeDiscovery
 {
     /**
-     * Each list is sorted by class-string so the generated output stays
-     * deterministic regardless of filesystem discovery order.
+     * Lists sorted by class-string to keep generated output deterministic.
      *
      * @return array{enums: list<class-string>, valueObjects: list<class-string>}
      */
@@ -28,11 +25,9 @@ final class MarkedTypeDiscovery
             return ['enums' => [], 'valueObjects' => []];
         }
 
-        // No type filter: ->classes() would exclude enums. The unfiltered get()
-        // returns both classes and enums as class-strings; the #[TypeScript]
-        // check below is the real allow-list. Construct Discover directly
-        // instead of Discover::in() — see ComponentDiscovery for why the cached
-        // variant poisons the typescript-transformer's own discovery.
+        // Unfiltered get() so enums come through (->classes() drops them); the
+        // #[TypeScript] check is the real filter. Construct Discover directly
+        // (not ::in()) to dodge the cache collision noted in ComponentDiscovery.
         /** @var list<class-string> $classes */
         $classes = (new Discover(directories: [$path]))->get();
 

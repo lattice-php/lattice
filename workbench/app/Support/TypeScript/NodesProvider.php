@@ -36,7 +36,7 @@ final class NodesProvider implements TransformedProvider
     /**
      * @param  array<class-string, string>  $formFields  Form field components keyed by class-string, valued by wire type.
      * @param  class-string  $formClass
-     * @param  array<string, array<class-string, ComponentSpec>>  $domainNodes  Ordered map of generated node-alias name (e.g. 'CoreNode') to its components. Emission and Node-union order follow this map's order.
+     * @param  array<string, array<class-string, ComponentSpec>>  $domainNodes  Node-alias name (e.g. 'CoreNode') to its components, in emission order.
      * @param  class-string|null  $effectContract
      * @param  array<class-string, string>  $effects  Effect value objects keyed by class-string, valued by wire type.
      */

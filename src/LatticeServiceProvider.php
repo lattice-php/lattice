@@ -65,8 +65,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->alias(ComponentReferenceSigner::class, SignsComponentReferences::class);
         $this->app->singleton(LatticeRegistry::class);
 
-        // Default TypeScript role: a consumer app augments the package's published
-        // types. The workbench rebinds this to its BaseProfile to regenerate them.
+        // Default role; the workbench rebinds this to BaseProfile.
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
 
         if (! Router::hasMacro('latticePage')) {

@@ -59,9 +59,8 @@ final class ComponentDiscovery
     }
 
     /**
-     * The namespace segment immediately before `\Components\` — every discovered
-     * component lives under `…\{Domain}\Components\…`, so this groups it into its
-     * Node union (Core, Actions, Fragments, Tables, Layouts, Forms).
+     * The namespace segment before `\Components\`, grouping the component into its
+     * Node union.
      *
      * @param  class-string  $class
      */

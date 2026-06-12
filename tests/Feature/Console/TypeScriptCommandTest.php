@@ -8,8 +8,7 @@ use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 
 use function Pest\Laravel\artisan;
 
-// The workbench binds the BaseProfile by default; these tests exercise the
-// shipped augmentation behaviour, so restore the default AugmentProfile.
+// Restore the default profile; the workbench binds BaseProfile.
 beforeEach(function () {
     app()->bind(TypeScriptProfile::class, AugmentProfile::class);
 });

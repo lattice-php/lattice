@@ -19,19 +19,15 @@ use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 
 /**
  * The package's own dev profile: regenerates the built-in TypeScript module
- * (resources/js/types/generated.ts) — enums, value objects, effects and the
- * discriminated Node unions — from the package src/. Bound as the default
- * TypeScriptProfile in the workbench so `php artisan lattice:typescript`
- * regenerates the base types every other project then augments. Kept in the
- * workbench so this maintainer-only build code never ships.
+ * (generated.ts) from src/. Bound in the workbench so lattice:typescript rebuilds
+ * the base types every consumer app then augments. Workbench-only, so this
+ * build code never ships.
  */
 final class BaseProfile implements TypeScriptProfile
 {
     /**
-     * The component domains, in output order, mapped to their generated node-alias
-     * name. This is the one declared, ordered piece of static config: discovery
-     * supplies the components, but the emission order and the (singular) node names
-     * are meaningful and not derivable from the (plural) namespace segments.
+     * Component domains in output order, mapped to their node-alias name. The
+     * order and (singular) names are meaningful, so they stay declared here.
      */
     private const DOMAIN_NODES = [
         'Core' => 'CoreNode',

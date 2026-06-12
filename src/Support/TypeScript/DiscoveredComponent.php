@@ -9,7 +9,7 @@ final readonly class DiscoveredComponent
     /**
      * @param  class-string  $class
      * @param  'component'|'field'|'column'  $category
-     * @param  string  $domain  The namespace segment before `\Components\` (e.g. 'Core', 'Forms'), grouping the component into its Node union.
+     * @param  string  $domain  Namespace segment before `\Components\` (e.g. 'Core'), grouping it into its Node union.
      */
     public function __construct(
         public string $class,

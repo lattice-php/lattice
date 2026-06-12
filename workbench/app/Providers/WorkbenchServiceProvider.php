@@ -41,8 +41,7 @@ class WorkbenchServiceProvider extends ServiceProvider
     #[\Override]
     public function register(): void
     {
-        // Rebind the package's default (AugmentProfile) so `lattice:typescript`
-        // regenerates Lattice's own built-in types when run in this dev environment.
+        // Rebind so lattice:typescript regenerates the package's own built-in types.
         $this->app->bind(TypeScriptProfile::class, BaseProfile::class);
         $this->useWorkbenchDatabase();
         $this->readBoostConfigFromPackageRoot();

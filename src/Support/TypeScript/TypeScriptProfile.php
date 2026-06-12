@@ -5,16 +5,11 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support\TypeScript;
 
 /**
- * A TypeScript generation role. The `lattice:typescript` command resolves one
- * from the container and runs it: a consumer app gets the default AugmentProfile
- * (extending the package's published types), while the package's own dev
- * environment binds the BaseProfile (regenerating those base types).
+ * A TypeScript generation role resolved by lattice:typescript: AugmentProfile in
+ * a consumer app, BaseProfile in the package's own workbench.
  */
 interface TypeScriptProfile
 {
-    /**
-     * Assemble and run a generation pass, returning a human-readable summary
-     * line for the command to print.
-     */
+    /** Run a generation pass and return a summary line for the command to print. */
     public function run(TypeScriptGenerator $generator): string;
 }

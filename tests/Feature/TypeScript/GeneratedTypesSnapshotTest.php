@@ -11,7 +11,6 @@ it('keeps the committed generated.ts in sync with the transformer', function () 
 
     $before = file_get_contents($path);
 
-    // In the workbench, lattice:typescript regenerates the built-in types (BaseProfile).
     artisan('lattice:typescript')->assertSuccessful();
 
     $after = file_get_contents($path);
