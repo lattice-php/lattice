@@ -186,6 +186,39 @@ abstract class Field extends Component
     }
 
     /**
+     * The field's resolved rules with a leading `required` when the field is
+     * required and doesn't already declare one. Shared by FieldValidator and by
+     * fields that build rules for nested children (e.g. Repeater rows).
+     *
+     * @internal
+     *
+     * @return array<int, mixed>
+     */
+    public function resolvedRulesWithRequired(FormData $data, Request $request): array
+    {
+        $rules = $this->resolveRules($data, $request);
+
+        if ($this->isRequired($data) && ! in_array('required', $rules, true)) {
+            array_unshift($rules, 'required');
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Extra validation rule keys this field contributes beyond its own name
+     * (e.g. a Repeater's `items.*.child` per-row rules). Merged by FieldValidator.
+     *
+     * @internal
+     *
+     * @return array<string, array<int, mixed>>
+     */
+    public function nestedRules(FormData $data, Request $request): array
+    {
+        return [];
+    }
+
+    /**
      * @param  string|array<int, string>  $attributes
      */
     public function dependsOn(string|array $attributes, mixed $operatorOrValue = null, mixed $value = null): static

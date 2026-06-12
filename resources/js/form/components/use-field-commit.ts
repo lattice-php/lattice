@@ -1,3 +1,4 @@
+import { useFieldScope } from "./field-scope";
 import { useFormContext } from "./context";
 import { useSetFormValue } from "./values";
 
@@ -14,27 +15,41 @@ export type FieldCommit = {
  * The shared field-mutation contract every form field uses to write its value
  * and drive precognition. Fields that validate on change call `commit`; fields
  * that validate on blur/close (rich editor, select) call `change` then `blur`.
+ *
+ * When called inside a `FieldScopeProvider`, writes go through the scope's
+ * `setValue` and error paths use the scoped dot-key; outside a scope the
+ * behavior is identical to before.
  */
 export function useFieldCommit(): FieldCommit {
   const { clearErrors, precognitive, validate } = useFormContext();
-  const setValue = useSetFormValue();
+  const setGlobal = useSetFormValue();
+  const scope = useFieldScope();
+
+  const write = (name: string, value: unknown): void => {
+    if (scope) {
+      scope.setValue(name, value);
+    } else {
+      setGlobal(name, value);
+    }
+  };
+  const errorPath = (name: string): string => (scope ? scope.errorKey(name) : name);
 
   return {
     commit(name, value) {
-      setValue(name, value);
+      write(name, value);
       if (precognitive) {
-        validate(name);
+        validate(errorPath(name));
       } else {
-        clearErrors(name);
+        clearErrors(errorPath(name));
       }
     },
     change(name, value) {
-      setValue(name, value);
-      clearErrors(name);
+      write(name, value);
+      clearErrors(errorPath(name));
     },
     blur(name) {
       if (precognitive) {
-        validate(name);
+        validate(errorPath(name));
       }
     },
   };

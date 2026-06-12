@@ -342,6 +342,11 @@ export type FormFieldNode =
       props: PasswordInput;
     }
   | {
+      type: "form.repeater";
+      key?: string;
+      props: Repeater;
+    }
+  | {
       type: "form.rich-editor";
       key?: string;
       props: RichEditor;
@@ -564,6 +569,30 @@ export type ReloadComponentEffect = {
   readonly component: string;
 };
 export type ReloadPageEffect = object;
+export type Repeater = {
+  addLabel: string | null;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
+  defaultItems: number;
+  dependsOnAny: boolean | null;
+  dependsOnKeys: string[] | null;
+  disabled: boolean | null;
+  helperText: string | null;
+  hidden: boolean | null;
+  itemLabel: string | null;
+  label: string | null;
+  maxItems: number | null;
+  minItems: number | null;
+  name: string;
+  readOnly: boolean | null;
+  reorderable: boolean;
+  required: boolean | null;
+  value: unknown;
+};
 export type ResetFormEffect = {
   readonly form: string | null;
 };

@@ -19,10 +19,17 @@ export function FormValuesProvider({
 }) {
   const [values, setValues] = useState<Record<string, unknown>>(initial);
 
+  // A function `value` is applied as an updater against the field's previous
+  // value, letting callers mutate without capturing the current value in a closure.
   const setValue = useCallback((name: string, value: unknown) => {
-    setValues((current) =>
-      Object.is(current[name], value) ? current : { ...current, [name]: value },
-    );
+    setValues((current) => {
+      const next =
+        typeof value === "function"
+          ? (value as (previous: unknown) => unknown)(current[name])
+          : value;
+
+      return Object.is(current[name], next) ? current : { ...current, [name]: next };
+    });
   }, []);
 
   const contextValue = useMemo(() => ({ values, setValue }), [values, setValue]);

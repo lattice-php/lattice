@@ -1,0 +1,93 @@
+---
+title: Repeater
+description: A repeatable nested schema — rows of fields that submit as an array of row objects.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+The repeater renders a repeatable group of fields. Each row is its own copy of the schema, and the
+field submits an array of row objects — one object per row, keyed by the child field names. Create one
+with `Repeater::make()` and define the row template with `->schema()`.
+
+<ComponentExample
+  php={`Repeater::make('items', 'Line items')
+    ->schema([
+        TextInput::make('name', 'Name')->required(),
+        TextInput::make('qty', 'Qty')->rules(['numeric']),
+    ])
+    ->minItems(1)
+    ->maxItems(5)
+    ->reorderable()
+    ->addLabel('Add line')
+    ->defaultItems(1)`}
+  fixture="repeater.basic"
+  values={{ items: [] }}
+/>
+
+## Schema
+
+`->schema()` takes the array of fields that make up a single row. Each child is a normal field, so it
+keeps its own label, placeholder, default value, and rules. The example above submits as:
+
+```php
+['items' => [['name' => 'Widget', 'qty' => '3'], ['name' => 'Gadget', 'qty' => '1']]]
+```
+
+## Row counts
+
+`->minItems()` and `->maxItems()` bound how many rows the form accepts; both are enforced as
+array-level validation rules. `->defaultItems()` sets how many empty rows a fresh form starts with
+(default `1`).
+
+```php
+Repeater::make('items', 'Line items')
+    ->schema([TextInput::make('name', 'Name')])
+    ->minItems(1)
+    ->maxItems(5)
+    ->defaultItems(2);
+```
+
+## Reordering
+
+Rows are reorderable by default through up/down controls. Pass `->reorderable(false)` to fix the
+order.
+
+```php
+Repeater::make('items', 'Line items')
+    ->schema([TextInput::make('name', 'Name')])
+    ->reorderable(false);
+```
+
+## Labels
+
+`->addLabel()` sets the text on the button that appends a row (default "Add"). `->itemLabel()` sets a
+per-row heading shown above each row's fields.
+
+```php
+Repeater::make('items', 'Line items')
+    ->schema([TextInput::make('name', 'Name')])
+    ->addLabel('Add line')
+    ->itemLabel('Line');
+```
+
+## Validation
+
+Each child field's rules apply to every row through the `items.*.field` wildcard, so a child marked
+`->required()` is required in each row and an error points at the offending row. The array-level
+`minItems`/`maxItems` rules validate the number of rows independently of the per-row rules. See
+[Validation](/forms/validation/) for how field rules are resolved.
+
+## Not yet supported (v1)
+
+These are follow-ups, not part of the first release:
+
+- Nested repeaters (a repeater inside a repeater row).
+- Row-scoped conditions — `visibleWhen`/`requiredWhen` evaluated against sibling fields inside the
+  same row.
+- Relationship auto-save (persisting rows straight to a related model).
+
+## Common options
+
+`Repeater` shares label, required, disabled, read-only, and visibility options with every field — see
+[Fields](/forms/fields/overview/). For validation and conditional behavior, see
+[Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).

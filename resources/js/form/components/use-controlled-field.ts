@@ -1,6 +1,7 @@
 import type { Node } from "@lattice/lattice/core/types";
 import type { FieldState } from "./conditions";
 import { fieldProps } from "./field-props";
+import { useFieldScope } from "./field-scope";
 import { useFormContext } from "./context";
 import { useDependentField } from "./use-dependent-field";
 import { useFieldCommit } from "./use-field-commit";
@@ -16,18 +17,24 @@ export type ControlledField = FieldState & {
 /** Shared wiring read by every store-controlled, condition-aware field. */
 export function useControlledField(node: Node): ControlledField {
   const { errors } = useFormContext();
+  const scope = useFieldScope();
   const state = useDependentField(node);
   const props = fieldProps(node);
-  const name = props.name ?? "";
-  const storedValue = useFormValue(name);
+  const localName = props.name ?? "";
+
+  const globalValue = useFormValue(localName);
+  const storedValue = scope ? scope.getValue(localName) : globalValue;
   const currentValue = storedValue !== undefined ? storedValue : props.value;
   const value =
     typeof currentValue === "string" || typeof currentValue === "number"
       ? String(currentValue)
       : "";
 
-  const { commit: commitField } = useFieldCommit();
-  const commit = (next: unknown): void => commitField(name, next);
+  const domName = scope ? scope.scopedName(localName) : localName;
+  const errorKey = scope ? scope.errorKey(localName) : localName;
 
-  return { ...state, name, value, error: errors[name], commit };
+  const { commit: commitField } = useFieldCommit();
+  const commit = (next: unknown): void => commitField(localName, next);
+
+  return { ...state, name: domName, value, error: errors[errorKey], commit };
 }

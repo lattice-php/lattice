@@ -77,6 +77,7 @@ export default defineConfig({
                 { label: "Password input", link: "/forms/fields/password-input/" },
                 { label: "Hidden input", link: "/forms/fields/hidden-input/" },
                 { label: "Rich editor", link: "/forms/fields/rich-editor/" },
+                { label: "Repeater", link: "/forms/fields/repeater/" },
               ],
             },
             { label: "Validation", link: "/forms/validation/" },

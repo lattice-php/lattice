@@ -1,0 +1,68 @@
+[
+    {
+        "props": {
+            "addLabel": "Add line",
+            "conditions": null,
+            "defaultItems": 1,
+            "dependsOnAny": null,
+            "dependsOnKeys": null,
+            "disabled": null,
+            "helperText": null,
+            "hidden": null,
+            "itemLabel": null,
+            "label": "Line items",
+            "maxItems": 5,
+            "minItems": 1,
+            "name": "items",
+            "readOnly": null,
+            "reorderable": true,
+            "required": null,
+            "value": null
+        },
+        "schema": [
+            {
+                "props": {
+                    "autoComplete": null,
+                    "autoFocus": null,
+                    "conditions": null,
+                    "dependsOnAny": null,
+                    "dependsOnKeys": null,
+                    "disabled": null,
+                    "helperText": null,
+                    "hidden": null,
+                    "label": "Name",
+                    "name": "name",
+                    "placeholder": null,
+                    "readOnly": null,
+                    "required": true,
+                    "tabIndex": null,
+                    "type": null,
+                    "value": null
+                },
+                "type": "form.text-input"
+            },
+            {
+                "props": {
+                    "autoComplete": null,
+                    "autoFocus": null,
+                    "conditions": null,
+                    "dependsOnAny": null,
+                    "dependsOnKeys": null,
+                    "disabled": null,
+                    "helperText": null,
+                    "hidden": null,
+                    "label": "Qty",
+                    "name": "qty",
+                    "placeholder": null,
+                    "readOnly": null,
+                    "required": null,
+                    "tabIndex": null,
+                    "type": null,
+                    "value": null
+                },
+                "type": "form.text-input"
+            }
+        ],
+        "type": "form.repeater"
+    }
+]

@@ -8,6 +8,7 @@ use Workbench\App\Pages\HomePage;
 use Workbench\App\Pages\ProductCreatePage;
 use Workbench\App\Pages\ProductEditPage;
 use Workbench\App\Pages\ProductsPage;
+use Workbench\App\Pages\RepeaterDemoPage;
 use Workbench\App\Pages\ShowcasePage;
 use Workbench\App\Pages\TablesPage;
 use Workbench\App\Pages\TabsPage;
@@ -32,6 +33,9 @@ Route::latticePage('/products/{product}/edit', ProductEditPage::class)
 
 Route::latticePage('/dependent-demo', DependentDemoPage::class)
     ->name('dependent.demo');
+
+Route::latticePage('/repeater', RepeaterDemoPage::class)
+    ->name('repeater');
 
 Route::latticePage('/showcase', ShowcasePage::class)
     ->name('showcase');
