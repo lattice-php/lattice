@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * German translations for Lattice's built-in UI chrome, served to react-i18next
- * through bambamboole/laravel-i18next at /locales/de/lattice.json. Mirrors the
- * keys bundled in resources/js/i18n/locales/en.ts.
- */
 return [
     'editor' => [
         'bold' => 'Fett',

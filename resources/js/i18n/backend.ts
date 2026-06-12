@@ -31,9 +31,9 @@ export type I18nConfig = {
 
 /**
  * Apply the i18n config shared from the backend. When `enabled`, wires the HTTP
- * backend with the backend-provided endpoints; otherwise the renderer keeps its
- * inline English defaults. Call once at startup, e.g. from the Inertia setup
- * with the initial page's `lattice.i18n` prop.
+ * backend; otherwise the renderer keeps its inline English defaults. Call once
+ * at startup, e.g. from the Inertia setup with the initial page's `lattice.i18n`
+ * prop.
  */
 export async function configureI18n(config: I18nConfig | undefined): Promise<void> {
   if (!config?.enabled) {
@@ -48,10 +48,10 @@ export async function configureI18n(config: I18nConfig | undefined): Promise<voi
 }
 
 /**
- * Load the `lattice` namespace from a backend such as
- * bambamboole/laravel-i18next, overriding the inline English defaults. Call once
- * at app startup, before the first render. Importing this module is the opt-in:
- * apps that never call it don't bundle the HTTP backend.
+ * Load translations from a backend such as bambamboole/laravel-i18next,
+ * overriding the renderer's inline English defaults. Call once at app startup,
+ * before the first render. Importing this module is the opt-in: apps that never
+ * call it don't bundle the HTTP backend.
  */
 export async function enableBackend(options: BackendOptions = {}): Promise<void> {
   const {

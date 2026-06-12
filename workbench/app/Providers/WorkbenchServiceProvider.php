@@ -49,9 +49,9 @@ class WorkbenchServiceProvider extends ServiceProvider
     }
 
     /**
-     * Serve Lattice's built-in `lattice` namespace from workbench/lang via
-     * laravel-i18next, so the React chrome can load translated strings. Namespaced
-     * + nested output matches the frontend's `lattice` namespace and key paths.
+     * Serve Lattice's built-in `lattice` namespace from the package's lang/ dir
+     * via laravel-i18next, so the React chrome can load translated strings.
+     * Namespaced + nested output matches the frontend's namespace and key paths.
      */
     private function serveLatticeTranslations(): void
     {

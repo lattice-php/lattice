@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * English translations for Lattice's built-in UI chrome. Served to react-i18next
- * through bambamboole/laravel-i18next; mirrors the inline defaults in the
- * components and the structure of lang/de/lattice.php.
- */
 return [
     'editor' => [
         'bold' => 'Bold',

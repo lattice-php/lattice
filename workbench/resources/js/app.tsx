@@ -25,7 +25,6 @@ createInertiaApp({
       return;
     }
 
-    // Configure i18n from the backend's once-shared lattice.i18n props.
     const shared = props.initialPage.props as { lattice?: { i18n?: I18nConfig } };
     void configureI18n(shared.lattice?.i18n);
 
