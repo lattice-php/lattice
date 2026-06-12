@@ -11,6 +11,7 @@ export default defineConfig({
   site,
   srcDir: "./docs",
   outDir: "./dist-docs",
+  publicDir: "./docs/public",
   devToolbar: {
     enabled: false,
   },
@@ -118,6 +119,7 @@ export default defineConfig({
           items: [
             { label: "Authorization", link: "/advanced/authorization/" },
             { label: "Security", link: "/advanced/security/" },
+            { label: "Bundle size", link: "/advanced/bundle-size/" },
             { label: "Enums reference", link: "/advanced/enums/" },
           ],
         },

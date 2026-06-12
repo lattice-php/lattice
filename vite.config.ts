@@ -5,6 +5,7 @@ import react from "@vitejs/plugin-react";
 import laravel from "laravel-vite-plugin";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
+import Sonda from "sonda/vite";
 import type { Plugin } from "vite";
 import dts from "vite-plugin-dts";
 import { defineConfig } from "vitest/config";
@@ -59,6 +60,10 @@ function stylesheet(): Plugin {
 
 export default defineConfig(({ mode }) => {
   const isLibrary = mode === "lib";
+  // Sonda analyses the real app bundle (the workbench build). Gated behind an
+  // env flag so it only runs for `npm run analyze` / the docs build, writing an
+  // interactive report + JSON the bundle-size docs page reads at build time.
+  const isSonda = !isLibrary && process.env.SONDA === "1";
 
   return {
     publicDir: isLibrary ? false : undefined,
@@ -114,6 +119,18 @@ export default defineConfig(({ mode }) => {
             stylesheet(),
           ]
         : [tailwindcss()]),
+      ...(isSonda
+        ? [
+            Sonda({
+              format: ["html", "json"],
+              filename: "bundle-report",
+              outputDir: path.resolve(__dirname, "docs/generated"),
+              gzip: true,
+              deep: true,
+              open: false,
+            }),
+          ]
+        : []),
     ],
     resolve: {
       alias: {
@@ -150,7 +167,9 @@ export default defineConfig(({ mode }) => {
             },
           },
         }
-      : {}),
+      : isSonda
+        ? { build: { sourcemap: true } }
+        : {}),
     test: {
       environment: "jsdom",
       include: ["resources/js/**/*.test.{ts,tsx}", "docs/**/*.test.{ts,tsx}"],

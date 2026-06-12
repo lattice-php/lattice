@@ -12,6 +12,9 @@ node_modules
 /dist
 /dist-docs
 /.astro
+/.sonda
+/docs/generated
+/docs/public/bundle-report.html
 .phpstorm.meta.php
 _ide_helper.php
 /resources/js/types/typescript-transformer-manifest.json
