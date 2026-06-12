@@ -29,11 +29,21 @@ const stackWidths: Record<string, string> = {
   sm: "mx-auto w-full max-w-md",
 };
 
+const justifyClasses: Record<string, string> = {
+  around: "justify-around",
+  between: "justify-between",
+  center: "justify-center",
+  end: "justify-end",
+  evenly: "justify-evenly",
+  start: "justify-start",
+};
+
 const StackComponent: RendererComponent<"stack"> = ({ children, node }) => {
   const align = node.props.align ?? "stretch";
   const direction = node.props.direction ?? "column";
   const gap = node.props.gap ?? "md";
   const width = node.props.width ?? "full";
+  const justify = node.props.justify as string | undefined;
 
   if (direction === "row") {
     return (
@@ -42,6 +52,24 @@ const StackComponent: RendererComponent<"stack"> = ({ children, node }) => {
         className={cn(
           "flex flex-wrap",
           flexAlignments[align] ?? flexAlignments.stretch,
+          stackGaps[gap] ?? stackGaps.md,
+          stackWidths[width] ?? stackWidths.full,
+          justify ? justifyClasses[justify] : null,
+        )}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  if (justify) {
+    return (
+      <div
+        data-lattice-component={node.id}
+        className={cn(
+          "flex flex-col",
+          flexAlignments[align] ?? flexAlignments.stretch,
+          justifyClasses[justify],
           stackGaps[gap] ?? stackGaps.md,
           stackWidths[width] ?? stackWidths.full,
         )}
