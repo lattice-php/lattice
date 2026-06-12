@@ -60,11 +60,7 @@ final class FieldValidator
                 continue;
             }
 
-            $fieldRules = $field->resolveRules($data, $request);
-
-            if ($field->isRequired($data) && ! in_array('required', $fieldRules, true)) {
-                array_unshift($fieldRules, 'required');
-            }
+            $fieldRules = $field->resolvedRulesWithRequired($data, $request);
 
             if ($fieldRules !== []) {
                 $rules[$name] = $fieldRules;

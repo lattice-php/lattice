@@ -25,7 +25,7 @@ export function FieldScopeProvider({
   const value = useMemo<FieldScopeValue>(
     () => ({
       getValue: (name) => row[name],
-      setValue: (name, next) => onChange(name, next),
+      setValue: onChange,
       scopedName: (name) => `${base}[${index}][${name}]`,
       errorKey: (name) => `${base}.${index}.${name}`,
     }),

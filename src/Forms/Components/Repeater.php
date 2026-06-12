@@ -115,11 +115,7 @@ class Repeater extends Field
         $rules = [];
 
         foreach ($this->childFields() as $child) {
-            $childRules = $child->resolveRules($data, $request);
-
-            if ($child->isRequired($data) && ! in_array('required', $childRules, true)) {
-                array_unshift($childRules, 'required');
-            }
+            $childRules = $child->resolvedRulesWithRequired($data, $request);
 
             if ($childRules !== []) {
                 $rules["{$this->name}.*.{$child->name()}"] = $childRules;

@@ -1,13 +1,37 @@
 import { Icon } from "@lattice/lattice/icons";
+import type { ReactNode } from "react";
 import type { Node, RendererComponent } from "@lattice/lattice/core/types";
 import { RenderNode } from "@lattice/lattice/core/renderer";
-import { useMemo } from "react";
 import { FormFieldFrame } from "../base/field";
 import { FieldScopeProvider } from "../field-scope";
 import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";
 import { useFormValue, useSetFormValue } from "../values";
 import { addRow, moveRow, removeRow, seedRows, type RepeaterRow } from "./repeater-rows";
+
+function RowButton({
+  label,
+  testId,
+  onClick,
+  children,
+}: {
+  label: string;
+  testId: string;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      data-test={testId}
+      className="text-lt-muted-fg hover:text-lt-fg"
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
 
 export const RepeaterComponent: RendererComponent<"form.repeater"> = ({ node }) => {
   const props = node.props;
@@ -16,10 +40,7 @@ export const RepeaterComponent: RendererComponent<"form.repeater"> = ({ node }) 
   const { hidden, required } = useDependentField(node);
   const setValue = useSetFormValue();
   const stored = useFormValue(name);
-  const rows = useMemo<RepeaterRow[]>(
-    () => seedRows(stored, props.defaultItems ?? 1),
-    [stored, props.defaultItems],
-  );
+  const rows = seedRows(stored, props.defaultItems ?? 1);
   const template: Node[] = node.schema ?? [];
   const atMax = props.maxItems != null && rows.length >= props.maxItems;
   const atMin = props.minItems != null && rows.length <= props.minItems;
@@ -51,37 +72,31 @@ export const RepeaterComponent: RendererComponent<"form.repeater"> = ({ node }) 
               </span>
               <div className="flex items-center gap-1 [&_svg]:size-lt-icon-sm">
                 {props.reorderable && index > 0 && (
-                  <button
-                    type="button"
-                    aria-label="Move up"
-                    data-test={`repeater-${name}-up-${index}`}
-                    className="text-lt-muted-fg hover:text-lt-fg"
+                  <RowButton
+                    label="Move up"
+                    testId={`repeater-${name}-up-${index}`}
                     onClick={() => writeRows(moveRow(rows, index, index - 1))}
                   >
                     <Icon name="arrow-up" />
-                  </button>
+                  </RowButton>
                 )}
                 {props.reorderable && index < rows.length - 1 && (
-                  <button
-                    type="button"
-                    aria-label="Move down"
-                    data-test={`repeater-${name}-down-${index}`}
-                    className="text-lt-muted-fg hover:text-lt-fg"
+                  <RowButton
+                    label="Move down"
+                    testId={`repeater-${name}-down-${index}`}
                     onClick={() => writeRows(moveRow(rows, index, index + 1))}
                   >
                     <Icon name="arrow-down" />
-                  </button>
+                  </RowButton>
                 )}
                 {!atMin && (
-                  <button
-                    type="button"
-                    aria-label="Remove"
-                    data-test={`repeater-${name}-remove-${index}`}
-                    className="text-lt-muted-fg hover:text-lt-fg"
+                  <RowButton
+                    label="Remove"
+                    testId={`repeater-${name}-remove-${index}`}
                     onClick={() => writeRows(removeRow(rows, index))}
                   >
                     <Icon name="trash-2" />
-                  </button>
+                  </RowButton>
                 )}
               </div>
             </div>
@@ -96,7 +111,7 @@ export const RepeaterComponent: RendererComponent<"form.repeater"> = ({ node }) 
             >
               <div className="flex flex-col gap-4">
                 {template.map((child) => (
-                  <RenderNode key={child.id} node={child} />
+                  <RenderNode key={child.key ?? child.id} node={child} />
                 ))}
               </div>
             </FieldScopeProvider>
