@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Columns;
 
 use BackedEnum;
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
+#[Attributes\Column(type: 'icon', props: IconColumnProps::class)]
 class IconColumn extends Column
 {
     protected ?string $icon = null;
@@ -64,17 +66,15 @@ class IconColumn extends Column
     #[\Override]
     public function toData(): ColumnData
     {
-        $props = array_filter([
-            'icon' => $this->icon,
-            'icons' => $this->icons === [] ? null : $this->icons,
-            'colors' => $this->colors === [] ? null : $this->colors,
-        ], static fn (mixed $value): bool => $value !== null);
-
         return new ColumnData(
             key: $this->key,
             label: $this->label,
             type: ColumnType::Icon,
-            props: $props === [] ? null : $props,
+            props: new IconColumnProps(
+                icon: $this->icon,
+                icons: $this->icons === [] ? null : $this->icons,
+                colors: $this->colors === [] ? null : $this->colors,
+            ),
         );
     }
 }

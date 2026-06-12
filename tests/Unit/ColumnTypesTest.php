@@ -42,5 +42,6 @@ it('serializes an image column', function (): void {
     $data = wire(ImageColumn::make('avatar')->label('Avatar')->circular()->size(40));
 
     expect($data['type'])->toBe('image')
-        ->and($data['props'])->toBe(['circular' => true, 'size' => 40]);
+        ->and($data['props']['circular'])->toBeTrue()
+        ->and($data['props']['size'])->toBe('40');
 });

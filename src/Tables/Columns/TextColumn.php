@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
+#[Attributes\Column(type: 'text', props: TextColumnProps::class)]
 class TextColumn extends Column implements Filterable, Sortable
 {
     use IsFilterable;
@@ -94,9 +96,11 @@ class TextColumn extends Column implements Filterable, Sortable
             type: ColumnType::Text,
             sortable: $this->sortableValue(),
             filter: $this->filterValue(),
-            date: $this->date,
-            copyable: $this->copyable ?: null,
-            link: $this->link,
+            props: new TextColumnProps(
+                date: $this->date,
+                copyable: $this->copyable ?: null,
+                link: $this->link,
+            ),
         );
     }
 }
