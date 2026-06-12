@@ -409,7 +409,7 @@ export type IconColumnProps = {
   readonly colors: Record<string | number, string> | null;
 };
 export type ImageColumnProps = {
-  readonly circular: boolean | null;
+  readonly circular: boolean;
   readonly size: number | null;
 };
 export type LayoutNode =
@@ -665,7 +665,7 @@ export type TextColumnProps = {
   readonly date: {
     format: string | null;
   } | null;
-  readonly copyable: boolean | null;
+  readonly copyable: boolean;
   readonly link: {
     href: string | null;
     external: boolean;

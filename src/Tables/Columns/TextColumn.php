@@ -98,7 +98,7 @@ class TextColumn extends Column implements Filterable, Sortable
             filter: $this->filterValue(),
             props: new TextColumnProps(
                 date: $this->date,
-                copyable: $this->copyable ?: null,
+                copyable: $this->copyable,
                 link: $this->link,
             ),
         );

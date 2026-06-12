@@ -566,7 +566,7 @@ test('registered tables serialize their configured endpoint columns state and in
                             'defaultOperator' => 'contains',
                         ],
                         'columns' => null,
-                        'props' => ['date' => null, 'copyable' => null, 'link' => null],
+                        'props' => ['date' => null, 'copyable' => false, 'link' => null],
                     ],
                     [
                         'key' => 'status',
@@ -580,7 +580,7 @@ test('registered tables serialize their configured endpoint columns state and in
                             'defaultOperator' => 'eq',
                         ],
                         'columns' => null,
-                        'props' => ['date' => null, 'copyable' => null, 'link' => null],
+                        'props' => ['date' => null, 'copyable' => false, 'link' => null],
                     ],
                     [
                         'key' => 'email',
@@ -589,7 +589,7 @@ test('registered tables serialize their configured endpoint columns state and in
                         'sortable' => true,
                         'filter' => null,
                         'columns' => null,
-                        'props' => ['date' => null, 'copyable' => null, 'link' => null],
+                        'props' => ['date' => null, 'copyable' => false, 'link' => null],
                     ],
                 ],
                 'data' => [
@@ -636,7 +636,7 @@ test('registered tables can serialize lazily without running their query', funct
                         'sortable' => null,
                         'filter' => null,
                         'columns' => null,
-                        'props' => ['date' => null, 'copyable' => null, 'link' => null],
+                        'props' => ['date' => null, 'copyable' => false, 'link' => null],
                     ],
                 ],
                 'data' => [],
@@ -680,7 +680,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                         'sortable' => true,
                         'filter' => null,
                         'columns' => null,
-                        'props' => ['date' => null, 'copyable' => null, 'link' => null],
+                        'props' => ['date' => null, 'copyable' => false, 'link' => null],
                     ],
                     [
                         'key' => 'email',
@@ -689,7 +689,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                         'sortable' => null,
                         'filter' => null,
                         'columns' => null,
-                        'props' => ['date' => null, 'copyable' => null, 'link' => null],
+                        'props' => ['date' => null, 'copyable' => false, 'link' => null],
                     ],
                 ],
                 'props' => null,
@@ -701,7 +701,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                 'sortable' => null,
                 'filter' => null,
                 'columns' => null,
-                'props' => ['date' => null, 'copyable' => null, 'link' => null],
+                'props' => ['date' => null, 'copyable' => false, 'link' => null],
             ],
         ])
         ->and($table['props']['data'][0]['actions'][0])->toMatchArray([
@@ -796,13 +796,13 @@ test('workbench users table exposes timestamp columns for each row', function ()
             'key' => 'created_at',
             'label' => 'Created at',
             'sortable' => true,
-            'props' => ['date' => ['format' => 'Y-m-d H:i:s'], 'copyable' => null, 'link' => null],
+            'props' => ['date' => ['format' => 'Y-m-d H:i:s'], 'copyable' => false, 'link' => null],
         ])
         ->and($columns[3])->toMatchArray([
             'key' => 'updated_at',
             'label' => 'Updated at',
             'sortable' => true,
-            'props' => ['date' => ['format' => 'Y-m-d H:i:s'], 'copyable' => null, 'link' => null],
+            'props' => ['date' => ['format' => 'Y-m-d H:i:s'], 'copyable' => false, 'link' => null],
         ]);
 });
 

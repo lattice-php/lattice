@@ -42,7 +42,7 @@ class ImageColumn extends Column
             label: $this->label,
             type: ColumnType::Image,
             props: new ImageColumnProps(
-                circular: $this->circular ? true : null,
+                circular: $this->circular,
                 size: $this->size,
             ),
         );

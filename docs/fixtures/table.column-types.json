@@ -22,7 +22,7 @@
                     "key": "name",
                     "label": "Name",
                     "props": {
-                        "copyable": null,
+                        "copyable": false,
                         "date": null,
                         "link": null
                     },

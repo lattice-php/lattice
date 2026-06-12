@@ -12,7 +12,7 @@ final readonly class TextColumnProps implements ColumnProps
      */
     public function __construct(
         public ?array $date = null,
-        public ?bool $copyable = null,
+        public bool $copyable = false,
         public ?array $link = null,
     ) {}
 }

@@ -23,7 +23,7 @@
                     "key": "name",
                     "label": "Name",
                     "props": {
-                        "copyable": null,
+                        "copyable": false,
                         "date": null,
                         "link": null
                     },
@@ -50,7 +50,7 @@
                     "key": "price",
                     "label": "Price",
                     "props": {
-                        "copyable": null,
+                        "copyable": false,
                         "date": null,
                         "link": null
                     },
@@ -63,7 +63,7 @@
                     "key": "featured",
                     "label": "Featured",
                     "props": {
-                        "copyable": null,
+                        "copyable": false,
                         "date": null,
                         "link": null
                     },
@@ -76,7 +76,7 @@
                     "key": "updated_at",
                     "label": "Updated",
                     "props": {
-                        "copyable": null,
+                        "copyable": false,
                         "date": {
                             "format": "Y-m-d"
                         },

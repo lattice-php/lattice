@@ -12,7 +12,7 @@
                             "key": "name",
                             "label": "Name",
                             "props": {
-                                "copyable": null,
+                                "copyable": false,
                                 "date": null,
                                 "link": null
                             },
@@ -46,7 +46,7 @@
                     "key": "role",
                     "label": "Role",
                     "props": {
-                        "copyable": null,
+                        "copyable": false,
                         "date": null,
                         "link": null
                     },

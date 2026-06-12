@@ -14,7 +14,7 @@ it('props VOs implement the ColumnProps contract and serialize full shape', func
     $text = new TextColumnProps;
     expect(json_decode(json_encode($text), true))->toBe([
         'date' => null,
-        'copyable' => null,
+        'copyable' => false,
         'link' => null,
     ]);
 });
