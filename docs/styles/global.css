@@ -17,15 +17,15 @@
   --sl-font: Inter, ui-sans-serif, system-ui, sans-serif;
   --sl-font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
 
-  --sl-color-accent-low: #1e1b4b;
-  --sl-color-accent: #6366f1;
-  --sl-color-accent-high: #c7d2fe;
+  --sl-color-accent-low: #04302c;
+  --sl-color-accent: #14b8a6;
+  --sl-color-accent-high: #99f6e4;
 }
 
 :root[data-theme="light"] {
-  --sl-color-accent-low: #e0e7ff;
-  --sl-color-accent: #4f46e5;
-  --sl-color-accent-high: #312e81;
+  --sl-color-accent-low: #ccfbf1;
+  --sl-color-accent: #0d9488;
+  --sl-color-accent-high: #0a3d38;
 }
 
 @media (min-width: 50rem) {
