@@ -9,6 +9,7 @@ use function Orchestra\Testbench\package_path;
 use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
+use function Pest\Laravel\withoutVite;
 
 afterEach(function () {
     File::deleteDirectory(package_path('lang/zz'));
@@ -16,6 +17,8 @@ afterEach(function () {
 });
 
 it('shares the i18n config to the frontend', function () {
+    withoutVite();
+
     get('/')->assertInertia(fn (AssertableInertia $page) => $page
         ->where('lattice.i18n.enabled', true)
         ->where('lattice.i18n.saveMissing', true)
