@@ -358,6 +358,7 @@ export const RichEditorComponent: RendererComponent<"form.rich-editor"> = ({ nod
   return (
     <FormFieldFrame
       error={errors[name]}
+      helperText={node.props.helperText ?? undefined}
       label={node.props.label ?? ""}
       name={name}
       required={required}

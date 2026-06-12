@@ -6,6 +6,7 @@ import type { FormLabelAction } from "../types";
 export function FormFieldFrame({
   children,
   error,
+  helperText,
   label,
   labelAction,
   name,
@@ -13,6 +14,7 @@ export function FormFieldFrame({
 }: {
   children: React.ReactNode;
   error?: string;
+  helperText?: string;
   label: string;
   labelAction?: FormLabelAction;
   name: string;
@@ -39,6 +41,8 @@ export function FormFieldFrame({
       </div>
 
       {children}
+
+      {helperText && <p className="text-sm text-lt-muted-fg">{helperText}</p>}
 
       <InputError message={error} />
     </div>

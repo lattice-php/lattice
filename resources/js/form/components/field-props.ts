@@ -12,6 +12,7 @@ export type FieldProps = {
   dependsOnAny?: boolean | null;
   dependsOnKeys?: string[] | null;
   disabled?: boolean | null;
+  helperText?: string | null;
   hidden?: boolean | null;
   label?: string | null;
   name?: string;

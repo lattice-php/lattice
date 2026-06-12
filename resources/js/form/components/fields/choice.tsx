@@ -24,7 +24,13 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
   }
 
   return (
-    <FormFieldFrame error={error} label={node.props.label ?? ""} name={name} required={required}>
+    <FormFieldFrame
+      error={error}
+      helperText={node.props.helperText ?? undefined}
+      label={node.props.label ?? ""}
+      name={name}
+      required={required}
+    >
       <input name={name} type="hidden" value={selected} />
       <SegmentedPills
         ariaLabel={node.props.label ?? undefined}

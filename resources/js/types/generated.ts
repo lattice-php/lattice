@@ -81,6 +81,7 @@ export type Checkbox = {
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
+  helperText: string | null;
   hidden: boolean | null;
   label: string | null;
   name: string;
@@ -100,6 +101,7 @@ export type Choice = {
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
+  helperText: string | null;
   hidden: boolean | null;
   label: string | null;
   name: string;
@@ -226,6 +228,7 @@ export type DateInput = {
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
+  helperText: string | null;
   hidden: boolean | null;
   label: string | null;
   max: string | null;
@@ -384,6 +387,7 @@ export type HiddenInput = {
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
+  helperText: string | null;
   hidden: boolean | null;
   label: string | null;
   name: string;
@@ -449,6 +453,7 @@ export type NumberInput = {
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
+  helperText: string | null;
   hidden: boolean | null;
   label: string | null;
   max: number | null;
@@ -507,6 +512,7 @@ export type PasswordInput = {
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
+  helperText: string | null;
   hidden: boolean | null;
   label: string | null;
   labelAction: {
@@ -542,6 +548,7 @@ export type RichEditor = {
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
+  helperText: string | null;
   hidden: boolean | null;
   label: string | null;
   name: string;
@@ -568,6 +575,7 @@ export type Select = {
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
+  helperText: string | null;
   hidden: boolean | null;
   label: string | null;
   multiple: boolean | null;
@@ -641,6 +649,7 @@ export type TextInput = {
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
+  helperText: string | null;
   hidden: boolean | null;
   label: string | null;
   name: string;
@@ -662,6 +671,7 @@ export type Textarea = {
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
+  helperText: string | null;
   hidden: boolean | null;
   label: string | null;
   name: string;
