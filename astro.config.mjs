@@ -52,6 +52,7 @@ export default defineConfig({
             { label: "Pages", link: "/core/pages/" },
             { label: "Components", link: "/core/components/" },
             { label: "Fragments", link: "/core/fragments/" },
+            { label: "Toasts", link: "/core/toasts/" },
             { label: "Navigation", link: "/core/navigation/" },
             { label: "Theming", link: "/core/theming/" },
           ],
@@ -113,6 +114,7 @@ export default defineConfig({
           items: [
             { label: "Authorization", link: "/advanced/authorization/" },
             { label: "Security", link: "/advanced/security/" },
+            { label: "Enums reference", link: "/advanced/enums/" },
           ],
         },
         {
