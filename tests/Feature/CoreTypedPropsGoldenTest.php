@@ -28,6 +28,7 @@ test('GOLDEN stack serializes enums direction and key wire-identically', functio
                 'align' => 'center',
                 'width' => 'sm',
                 'direction' => 'row',
+                'justify' => null,
             ],
             'schema' => [
                 ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null]],
