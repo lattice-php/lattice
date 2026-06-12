@@ -21,6 +21,7 @@ use Workbench\App\Actions\RejectProductAction;
 use Workbench\App\Actions\RejectSelectedProductsAction;
 use Workbench\App\Forms\DependentDemoForm;
 use Workbench\App\Forms\ProductForm;
+use Workbench\App\Forms\RepeaterDemoForm;
 use Workbench\App\Forms\ShowcaseForm;
 use Workbench\App\Layouts\AppLayout;
 use Workbench\App\Support\BoostConfig;
@@ -123,6 +124,7 @@ class WorkbenchServiceProvider extends ServiceProvider
         Lattice::forms([
             DependentDemoForm::class,
             ProductForm::class,
+            RepeaterDemoForm::class,
             ShowcaseForm::class,
         ]);
 
