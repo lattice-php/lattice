@@ -6,11 +6,13 @@ use Closure;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
+use Lattice\Lattice\Forms\Components\Concerns\HandlesRowSchemas;
 use Lattice\Lattice\Forms\FormData;
 
 #[Component('form.repeater')]
 class Repeater extends Field
 {
+    use HandlesRowSchemas;
     use HasChildSchema;
 
     public ?int $minItems = null;
@@ -104,48 +106,24 @@ class Repeater extends Field
     }
 
     /**
-     * Per-row rules: each child field's rules applied to every row via the
-     * `<name>.*.<child>` wildcard. Never emits the bare `<name>` key (that would
-     * overwrite resolveRules()'s array-level rules in FieldValidator).
-     *
-     * @return array<string, array<int, mixed>>
+     * @param  array<string, mixed>  $row
+     * @return array<int, Field>
      */
-    public function nestedRules(FormData $data, Request $request): array
+    protected function rowFields(array $row): array
     {
-        $rules = [];
-
-        foreach ($this->childFields() as $child) {
-            $childRules = $child->resolvedRulesWithRequired($data, $request);
-
-            if ($childRules !== []) {
-                $rules["{$this->name}.*.{$child->name()}"] = $childRules;
-            }
-        }
-
-        return $rules;
+        return $this->childFields();
     }
 
-    /**
-     * Normalise the validated value to a re-indexed list of rows, each row's
-     * cells cast through the matching child field's castValue().
-     */
+    public function nestedRules(FormData $data, Request $request): array
+    {
+        $rows = $data->get($this->name);
+        $rows = is_array($rows) ? $rows : [];
+
+        return $this->rowRules($this->name, $rows, $data, $request);
+    }
+
     public function castValue(mixed $value): mixed
     {
-        if (! is_array($value)) {
-            return [];
-        }
-
-        $children = $this->childFields();
-
-        return array_values(array_map(function ($row) use ($children): array {
-            $cast = [];
-
-            foreach ($children as $child) {
-                $name = $child->name();
-                $cast[$name] = $child->castValue(is_array($row) ? ($row[$name] ?? null) : null);
-            }
-
-            return $cast;
-        }, $value));
+        return $this->castRows($value);
     }
 }
