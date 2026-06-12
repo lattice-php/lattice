@@ -7,7 +7,7 @@ import MenuItemComponent from "./menu-item";
 import UserMenuComponent from "./user-menu";
 
 vi.mock("@inertiajs/react", () => ({
-  usePage: vi.fn(() => ({ url: "/" })),
+  usePage: vi.fn<() => { url: string }>(() => ({ url: "/" })),
   Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>
   ),

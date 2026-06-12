@@ -7,7 +7,7 @@ import DropdownComponent from "./dropdown";
 import MenuItemComponent from "./menu-item";
 
 vi.mock("@inertiajs/react", () => ({
-  usePage: vi.fn(() => ({ url: "/" })),
+  usePage: vi.fn<() => { url: string }>(() => ({ url: "/" })),
   Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>
   ),

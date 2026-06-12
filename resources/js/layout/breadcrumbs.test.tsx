@@ -5,7 +5,12 @@ import { Renderer } from "@lattice/lattice/core/renderer";
 import type { Node } from "@lattice/lattice/core/types";
 import BreadcrumbsComponent from "./breadcrumbs";
 
-const usePage = vi.fn();
+const usePage = vi.fn<
+  () => {
+    props: { lattice: { breadcrumbs: Array<{ href: string; title: string }> } };
+    url: string;
+  }
+>();
 
 vi.mock("@inertiajs/react", () => ({
   usePage: () => usePage(),
