@@ -28,6 +28,12 @@
   --lt-radius-sm: calc(var(--lt-radius) - 2px);
   --lt-radius-xs: calc(var(--lt-radius) - 4px);
 
+  --lt-icon-xs: 0.75rem;
+  --lt-icon-sm: 0.875rem;
+  --lt-icon-md: 1rem;
+  --lt-icon-lg: 1.25rem;
+  --lt-icon-xl: 1.5rem;
+
   color-scheme: light;
 }
 
@@ -89,6 +95,11 @@
   --radius-lt: var(--lt-radius);
   --radius-lt-sm: var(--lt-radius-sm);
   --radius-lt-xs: var(--lt-radius-xs);
+  --spacing-lt-icon-xs: var(--lt-icon-xs);
+  --spacing-lt-icon-sm: var(--lt-icon-sm);
+  --spacing-lt-icon-md: var(--lt-icon-md);
+  --spacing-lt-icon-lg: var(--lt-icon-lg);
+  --spacing-lt-icon-xl: var(--lt-icon-xl);
   --animate-lt-toast-in: lt-toast-in 160ms ease-out;
   --animate-lt-toast-out: lt-toast-out 120ms ease-in;
 }

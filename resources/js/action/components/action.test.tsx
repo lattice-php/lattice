@@ -142,7 +142,7 @@ describe("Lattice action component", () => {
     );
 
     expect(iconRenderer).toHaveBeenCalledWith({
-      className: "size-4",
+      className: "size-lt-icon-md",
       icon: "custom.spark",
     });
     expect(screen.getByTestId("action-icon")).toHaveTextContent("custom.spark");

@@ -31,9 +31,9 @@ export default function PasswordInput({ className, ref, ...props }: PasswordInpu
         tabIndex={-1}
       >
         {showPassword ? (
-          <Icon name="eye-off" className="size-4" />
+          <Icon name="eye-off" className="size-lt-icon-md" />
         ) : (
-          <Icon name="eye" className="size-4" />
+          <Icon name="eye" className="size-lt-icon-md" />
         )}
       </button>
     </div>

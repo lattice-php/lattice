@@ -56,7 +56,7 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
             onClick={toggle}
             type="button"
           >
-            <Icon name="panel-left" aria-hidden="true" className="size-4 shrink-0" />
+            <Icon name="panel-left" aria-hidden="true" className="size-lt-icon-md shrink-0" />
           </button>
         ) : null}
         {children}

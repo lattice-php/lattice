@@ -71,7 +71,10 @@ const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
               >
                 <Icon
                   name="chevron-down"
-                  className={cn("size-4 transition-transform", isCollapsed && "-rotate-90")}
+                  className={cn(
+                    "size-lt-icon-md transition-transform",
+                    isCollapsed && "-rotate-90",
+                  )}
                 />
               </button>
             )}

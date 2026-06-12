@@ -216,7 +216,7 @@ function EmojiPicker({ editor }: { editor: Editor }) {
       <button
         aria-label="Insert emoji"
         data-test="editor-emoji"
-        className="inline-flex size-7 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg [&_svg]:size-4"
+        className="inline-flex size-7 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg [&_svg]:size-lt-icon-md"
         onClick={() => setOpen((value) => !value)}
         onMouseDown={(event) => event.preventDefault()}
         title="Insert emoji"
@@ -259,7 +259,7 @@ function Toolbar({ editor }: { editor: Editor }) {
             aria-pressed={item.isActive(editor)}
             data-test={`editor-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
             className={cn(
-              "inline-flex size-7 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4",
+              "inline-flex size-7 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-lt-icon-md",
               item.isActive(editor) && "bg-lt-accent text-lt-accent-fg",
             )}
             disabled={item.isDisabled?.(editor) ?? false}

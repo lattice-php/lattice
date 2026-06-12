@@ -76,7 +76,7 @@ export function FilterValueInput({
         <Icon
           name="search"
           aria-hidden="true"
-          className="pointer-events-none absolute left-2 size-4 text-lt-muted-fg"
+          className="pointer-events-none absolute left-2 size-lt-icon-md text-lt-muted-fg"
         />
       )}
       <input
@@ -107,7 +107,7 @@ export function FilterValueInput({
           disabled={processing}
           onClick={onClear}
         >
-          <Icon name="x" aria-hidden="true" className="size-3.5" />
+          <Icon name="x" aria-hidden="true" className="size-lt-icon-sm" />
         </button>
       )}
     </div>

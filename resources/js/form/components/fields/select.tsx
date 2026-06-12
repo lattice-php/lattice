@@ -161,7 +161,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
                   <button
                     aria-label={`Remove ${labelFor(value)}`}
                     data-test={`select-${name}-remove-${value}`}
-                    className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-3"
+                    className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-xs"
                     onClick={() => remove(value)}
                     type="button"
                   >
@@ -201,7 +201,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
               ) : (
                 <span className="text-lt-muted-fg">{placeholder}</span>
               )}
-              <Icon name="chevrons-up-down" className="size-4 shrink-0 text-lt-muted-fg" />
+              <Icon name="chevrons-up-down" className="size-lt-icon-md shrink-0 text-lt-muted-fg" />
             </button>
           </Popover.Trigger>
 
@@ -221,7 +221,10 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
                   value={query}
                 />
                 {loading && (
-                  <Icon name="loader-2" className="size-4 shrink-0 animate-spin text-lt-muted-fg" />
+                  <Icon
+                    name="loader-2"
+                    className="size-lt-icon-md shrink-0 animate-spin text-lt-muted-fg"
+                  />
                 )}
               </div>
               <div className="max-h-60 overflow-y-auto p-1" role="listbox">
@@ -245,7 +248,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
                         type="button"
                       >
                         {option.label}
-                        {isSelected && <Icon name="check" className="size-4 shrink-0" />}
+                        {isSelected && <Icon name="check" className="size-lt-icon-md shrink-0" />}
                       </button>
                     );
                   })

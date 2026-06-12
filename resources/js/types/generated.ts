@@ -117,6 +117,7 @@ export type Choice = {
 export type CloseModalEffect = {
   readonly modal: string | null;
 };
+export type Color = "muted" | "primary" | "success" | "info" | "warning" | "danger";
 export type ColumnData = {
   readonly key: string;
   readonly label: string;
@@ -177,6 +178,11 @@ export type CoreNode =
       type: "heading";
       key?: string;
       props: Heading;
+    }
+  | {
+      type: "icon";
+      key?: string;
+      props: Icon;
     }
   | {
       type: "link";
@@ -404,6 +410,12 @@ export type HiddenInput = {
   value: unknown;
 };
 export type HttpMethod = import("@inertiajs/core").Method;
+export type Icon = {
+  class: string | null;
+  color: Color | null;
+  name: string;
+  size: Size;
+};
 export type IconColumnProps = {
   readonly icon: string | null;
   readonly icons: Record<string | number, string> | null;
@@ -619,6 +631,7 @@ export type Sidebar = {
   collapsible: boolean;
   rememberState: boolean;
 };
+export type Size = "xs" | "sm" | "md" | "lg" | "xl";
 export type SortDirection = "asc" | "desc";
 export type Stack = {
   align: Align | null;

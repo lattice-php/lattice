@@ -5,6 +5,7 @@ import CardComponent from "./card";
 import FragmentComponent from "./fragment";
 import GridComponent from "./grid";
 import HeadingComponent from "./heading";
+import IconComponent from "./icon";
 import LinkComponent from "./link";
 import ModalComponent from "./modal";
 import SectionComponent from "./section";
@@ -21,6 +22,7 @@ export const coreComponents = createPlugin({
     fragment: eagerComponent(FragmentComponent),
     grid: eagerComponent(GridComponent),
     heading: eagerComponent(HeadingComponent),
+    icon: eagerComponent(IconComponent),
     link: eagerComponent(LinkComponent),
     modal: eagerComponent(ModalComponent),
     section: eagerComponent(SectionComponent),

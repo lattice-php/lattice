@@ -28,7 +28,7 @@ export function SortBar({
               role="img"
               aria-hidden={false}
               aria-label={getSortDirectionLabel(sort.direction)}
-              className="size-3.5 text-lt-muted-fg"
+              className="size-lt-icon-sm text-lt-muted-fg"
             />
             <button
               type="button"
@@ -38,7 +38,7 @@ export function SortBar({
               data-test={`clear-${sort.key}-sort`}
               onClick={() => onClear(sort)}
             >
-              <Icon name="x" className="size-3.5" />
+              <Icon name="x" className="size-lt-icon-sm" />
             </button>
           </span>
         );

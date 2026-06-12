@@ -332,7 +332,7 @@ export function ActionForm({ description, formNode, onClose, title, ...rest }: A
 
             <Dialog.Close asChild>
               <Button aria-label="Close" size="icon" variant="ghost">
-                <Icon name="x" aria-hidden="true" className="size-4" />
+                <Icon name="x" aria-hidden="true" className="size-lt-icon-md" />
               </Button>
             </Dialog.Close>
           </div>
