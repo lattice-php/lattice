@@ -19,7 +19,7 @@
                     "value": "individual"
                 }
             ],
-            "readonly": null,
+            "readOnly": null,
             "required": null,
             "tabIndex": null,
             "value": null
@@ -46,7 +46,7 @@
             "label": "VAT ID",
             "name": "vat",
             "placeholder": null,
-            "readonly": null,
+            "readOnly": null,
             "required": null,
             "tabIndex": null,
             "type": null,

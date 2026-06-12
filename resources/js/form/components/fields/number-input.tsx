@@ -7,7 +7,7 @@ export const NumberInputComponent: RendererComponent<"form.number-input"> = ({ n
 
   return (
     <SimpleField node={node} label={props.label ?? ""}>
-      {({ name, value, readonly, disabled, commit }) => {
+      {({ name, value, readOnly, disabled, commit }) => {
         const onChange = (event: React.ChangeEvent<HTMLInputElement>): void =>
           commit(event.target.value);
 
@@ -16,7 +16,7 @@ export const NumberInputComponent: RendererComponent<"form.number-input"> = ({ n
             <input
               aria-label={props.label ?? ""}
               className="h-2 w-full cursor-pointer appearance-none rounded-lt-sm bg-lt-muted accent-lt-primary disabled:cursor-not-allowed disabled:opacity-50"
-              disabled={disabled || readonly}
+              disabled={disabled || readOnly}
               id={name}
               max={props.max ?? undefined}
               min={props.min ?? undefined}
@@ -41,7 +41,7 @@ export const NumberInputComponent: RendererComponent<"form.number-input"> = ({ n
             name={name}
             onChange={onChange}
             placeholder={props.placeholder ?? ""}
-            readOnly={readonly}
+            readOnly={readOnly}
             step={props.step ?? undefined}
             tabIndex={props.tabIndex ?? undefined}
             type="number"

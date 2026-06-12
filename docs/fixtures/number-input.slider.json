@@ -12,7 +12,7 @@
             "min": 0,
             "name": "satisfaction",
             "placeholder": null,
-            "readonly": null,
+            "readOnly": null,
             "required": null,
             "slider": true,
             "step": null,

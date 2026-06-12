@@ -9,7 +9,7 @@
             "label": "Article",
             "name": "article",
             "placeholder": "Write your article\u2026",
-            "readonly": null,
+            "readOnly": null,
             "required": null,
             "value": null
         },

@@ -23,7 +23,7 @@
                     "value": "enterprise"
                 }
             ],
-            "readonly": null,
+            "readOnly": null,
             "required": null,
             "tabIndex": null,
             "value": null

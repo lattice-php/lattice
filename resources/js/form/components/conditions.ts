@@ -5,21 +5,21 @@ export type Condition = { field: string; operator: Op; value: unknown };
 export type FieldConditions = {
   visible?: Condition[];
   required?: Condition[];
-  readonly?: Condition[];
+  readOnly?: Condition[];
   disabled?: Condition[];
 };
 
 export type FieldFlags = {
   hidden?: boolean;
   required?: boolean;
-  readonly?: boolean;
+  readOnly?: boolean;
   disabled?: boolean;
 };
 
 export type FieldState = {
   hidden: boolean;
   required: boolean;
-  readonly: boolean;
+  readOnly: boolean;
   disabled: boolean;
 };
 
@@ -135,7 +135,7 @@ export function evaluateConditions(
   return {
     hidden: Boolean(flags.hidden) || !visible,
     required: Boolean(flags.required) || anyMatch(conditions?.required, values),
-    readonly: Boolean(flags.readonly) || anyMatch(conditions?.readonly, values),
+    readOnly: Boolean(flags.readOnly) || anyMatch(conditions?.readOnly, values),
     disabled: Boolean(flags.disabled) || anyMatch(conditions?.disabled, values),
   };
 }

@@ -8,7 +8,7 @@ import { useSeedDefault } from "../use-seed-default";
 
 export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
   const resolvedNode = useResolvedNode(node);
-  const { name, value, error, hidden, required, readonly, disabled, commit } =
+  const { name, value, error, hidden, required, readOnly, disabled, commit } =
     useControlledField(node);
   const options = useMemo(
     () => (resolvedNode.props as { options?: Option[] }).options ?? [],
@@ -29,7 +29,7 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
       <SegmentedPills
         ariaLabel={node.props.label ?? undefined}
         autoFocus={node.props.autoFocus ?? undefined}
-        disabled={readonly || disabled}
+        disabled={readOnly || disabled}
         name={name}
         onSelect={commit}
         options={options}

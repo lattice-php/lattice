@@ -28,7 +28,7 @@ function toValues(stored: unknown, fallback: string | string[] | undefined): str
 export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
   const props = node.props;
   const { action, componentRef, errors } = useFormContext();
-  const { hidden, required, readonly, disabled } = useDependentField(node);
+  const { hidden, required, readOnly, disabled } = useDependentField(node);
   const { change, blur } = useFieldCommit();
   const resolvedNode = useResolvedNode(node);
   const name = props.name;
@@ -57,7 +57,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
   }, [staticOptions, results]);
   const labelFor = (value: string) => labels.get(value) ?? value;
 
-  const locked = readonly || disabled;
+  const locked = readOnly || disabled;
 
   useEffect(() => {
     if (!searchable) {

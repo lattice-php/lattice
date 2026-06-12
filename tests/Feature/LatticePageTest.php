@@ -384,7 +384,7 @@ test('password inputs can request automatic confirmation fields', function () {
                 'labelAction' => null,
                 'value' => null,
                 'hidden' => null,
-                'readonly' => null,
+                'readOnly' => null,
                 'disabled' => null,
                 'conditions' => null,
                 'dependsOnKeys' => null,

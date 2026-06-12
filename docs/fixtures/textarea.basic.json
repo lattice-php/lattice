@@ -10,7 +10,7 @@
             "label": "Bio",
             "name": "bio",
             "placeholder": "Tell us about yourself",
-            "readonly": null,
+            "readOnly": null,
             "required": null,
             "rows": 4,
             "tabIndex": null,

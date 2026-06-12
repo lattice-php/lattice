@@ -88,7 +88,7 @@ export type Checkbox = {
   hidden: boolean | null;
   label: string | null;
   name: string;
-  readonly: boolean | null;
+  readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
   value: any;
@@ -113,7 +113,7 @@ export type Choice = {
     label: string;
     value: string;
   }[];
-  readonly: boolean | null;
+  readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
   value: any;
@@ -231,7 +231,7 @@ export type DateInput = {
   max: string | null;
   min: string | null;
   name: string;
-  readonly: boolean | null;
+  readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
   value: any;
@@ -389,7 +389,7 @@ export type HiddenInput = {
   hidden: boolean | null;
   label: string | null;
   name: string;
-  readonly: boolean | null;
+  readOnly: boolean | null;
   required: boolean | null;
   value: any;
 };
@@ -459,7 +459,7 @@ export type NumberInput = {
   min: number | null;
   name: string;
   placeholder: string | null;
-  readonly: boolean | null;
+  readOnly: boolean | null;
   required: boolean | null;
   slider: boolean | null;
   step: number | null;
@@ -519,7 +519,7 @@ export type PasswordInput = {
   name: string;
   passwordRules: string | null;
   placeholder: string | null;
-  readonly: boolean | null;
+  readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
   value: any;
@@ -550,7 +550,7 @@ export type RichEditor = {
   label: string | null;
   name: string;
   placeholder: string | null;
-  readonly: boolean | null;
+  readOnly: boolean | null;
   required: boolean | null;
   value: any;
 };
@@ -586,7 +586,7 @@ export type Select = {
     value: string;
   }[];
   placeholder: string | null;
-  readonly: boolean | null;
+  readOnly: boolean | null;
   required: boolean | null;
   searchable: boolean | null;
   tabIndex: number | null;
@@ -659,7 +659,7 @@ export type TextInput = {
   label: string | null;
   name: string;
   placeholder: string | null;
-  readonly: boolean | null;
+  readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
   type: string | null;
@@ -682,7 +682,7 @@ export type Textarea = {
   label: string | null;
   name: string;
   placeholder: string | null;
-  readonly: boolean | null;
+  readOnly: boolean | null;
   required: boolean | null;
   rows: number | null;
   tabIndex: number | null;

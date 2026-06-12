@@ -8,7 +8,7 @@ import { useFormContext } from "../context";
 export const PasswordInputComponent: RendererComponent<"form.password-input"> = ({ node }) => {
   const props = node.props;
   const { errors } = useFormContext();
-  const { hidden, required, readonly, disabled } = useDependentField(node);
+  const { hidden, required, readOnly, disabled } = useDependentField(node);
   const { commit } = useFieldCommit();
   const name = props.name ?? "";
   const confirmation = props.confirmation;
@@ -43,7 +43,7 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
           onChange={onChange(name)}
           placeholder={props.placeholder ?? ""}
           passwordrules={passwordRules}
-          readOnly={readonly}
+          readOnly={readOnly}
           tabIndex={props.tabIndex ?? undefined}
         />
       </FormFieldFrame>
@@ -63,7 +63,7 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
             onChange={onChange(confirmationName)}
             placeholder={confirmation.placeholder ?? confirmation.label ?? "Confirm password"}
             passwordrules={passwordRules}
-            readOnly={readonly}
+            readOnly={readOnly}
             tabIndex={props.tabIndex ?? undefined}
           />
         </FormFieldFrame>

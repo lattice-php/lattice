@@ -117,7 +117,7 @@ describe("Lattice form schema components", () => {
         label: "Email address",
         name: "email",
         placeholder: "email@example.com",
-        readonly: true,
+        readOnly: true,
         required: true,
         value: "taylor@example.com",
       },

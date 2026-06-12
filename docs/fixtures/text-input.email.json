@@ -11,7 +11,7 @@
             "label": "Email address",
             "name": "email",
             "placeholder": "you@example.com",
-            "readonly": null,
+            "readOnly": null,
             "required": null,
             "tabIndex": null,
             "type": "email",
