@@ -60,15 +60,18 @@ class WorkbenchServiceProvider extends ServiceProvider
             'i18next.output' => 'nested',
         ]);
 
-        // laravel-i18next dumps missing keys (saveMissing) to lang_path(). In the
-        // workbench that resolves to the read-only Testbench skeleton inside vendor,
-        // so point it at the writable workbench/lang instead — dev dumps then land
-        // in the repo. Keep the skeleton readable for framework messages.
+        // The `lattice` namespace holds the package's own chrome translations, so
+        // point lang_path() at the package's lang/ dir: laravel-i18next reads the
+        // `lattice` group from there and, in local dev, dumps missing keys
+        // (saveMissing) back into the package — not into the workbench or the
+        // read-only Testbench skeleton inside vendor. Keep the skeleton (and any
+        // workbench-specific translations) readable as additional paths.
         $skeletonLangPath = $this->app->langPath();
-        $this->app->useLangPath(package_path('workbench/lang'));
+        $this->app->useLangPath(package_path('lang'));
 
         $this->callAfterResolving('translation.loader', function ($loader) use ($skeletonLangPath): void {
             $loader->addPath($skeletonLangPath);
+            $loader->addPath(package_path('workbench/lang'));
         });
     }
 
