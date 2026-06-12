@@ -1,12 +1,10 @@
 import { Link, usePage } from "@inertiajs/react";
 import { Fragment } from "react";
-import type { RendererComponent } from "@lattice/lattice/core/types";
-
-type Crumb = { href: string; title: string };
+import type { PagePayload, RendererComponent } from "@lattice/lattice/core/types";
 
 const BreadcrumbsComponent: RendererComponent<"breadcrumbs"> = ({ node }) => {
   const page = usePage();
-  const crumbs = (page.props.lattice as { breadcrumbs?: Crumb[] } | undefined)?.breadcrumbs ?? [];
+  const crumbs = (page.props.lattice as PagePayload | undefined)?.breadcrumbs ?? [];
 
   if (crumbs.length === 0) {
     return null;
