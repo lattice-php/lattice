@@ -8,17 +8,13 @@ import {
   Provider,
   registry,
 } from "@lattice/lattice";
-import { enableBackend } from "@lattice/lattice/i18n";
+import { configureI18n, type I18nConfig } from "@lattice/lattice/i18n";
 import { createRoot } from "react-dom/client";
 import { appColumns } from "./lattice/columns";
 import { appIcons } from "./lattice/icons";
 import { LanguageSwitcher } from "./lattice/language-switcher";
 
 const appRegistry = extendRegistry(registry, appColumns);
-
-// Load Lattice's chrome translations from the bambamboole/laravel-i18next backend.
-// saveMissing dumps any missing keys into workbench/lang during development.
-void enableBackend({ saveMissing: true });
 
 createInertiaApp({
   strictMode: true,
@@ -28,6 +24,10 @@ createInertiaApp({
     if (!el) {
       return;
     }
+
+    // Configure i18n from the backend's once-shared lattice.i18n props.
+    const shared = props.initialPage.props as { lattice?: { i18n?: I18nConfig } };
+    void configureI18n(shared.lattice?.i18n);
 
     createRoot(el).render(
       <Provider registry={appRegistry}>

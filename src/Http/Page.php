@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Http;
 use BackedEnum;
 use BadMethodCallException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lattice\Lattice\Core\Enums\PageContainer;
@@ -78,7 +79,7 @@ abstract class Page implements PageContract
     }
 
     /**
-     * @return array{title: string|null, layout: array{key: string, schema: array<int, array<string, mixed>>}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, schema: array<int, array<string, mixed>>}
+     * @return array{title: string|null, layout: array{key: string, schema: array<int, array<string, mixed>>}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, schema: array<int, array<string, mixed>>, i18n: array<string, mixed>}
      */
     public function toArray(PageSchema $schema, Request $request): array
     {
@@ -88,6 +89,7 @@ abstract class Page implements PageContract
             'container' => $this->serializePageMetadata($this->container()),
             'breadcrumbs' => $this->breadcrumbs(),
             'schema' => $this->serializeSchema($schema),
+            'i18n' => $this->i18nConfig(),
         ];
     }
 
@@ -126,6 +128,38 @@ abstract class Page implements PageContract
     private function serializeSchema(PageSchema $schema): array
     {
         return json_decode(json_encode($schema->renderable(), JSON_THROW_ON_ERROR), true);
+    }
+
+    /**
+     * Frontend i18n config for the `lattice` namespace. The load/add paths are
+     * read from laravel-i18next's own registered routes (so prefix and namespace
+     * settings come straight from its config — never mirrored here), with the
+     * Laravel route params translated to i18next-http-backend placeholders. The
+     * renderer falls back to its inline English defaults when no backend serves a
+     * locale; saveMissing is on outside production for translator dumps.
+     *
+     * @return array{enabled: bool, saveMissing: bool, loadPath?: string, addPath?: string}
+     */
+    private function i18nConfig(): array
+    {
+        $template = static fn (?\Illuminate\Routing\Route $route): ?string => $route === null
+            ? null
+            : '/'.str_replace(['{locale}', '{namespace}'], ['{{lng}}', '{{ns}}'], $route->uri());
+
+        $config = [
+            'enabled' => true,
+            'saveMissing' => ! app()->isProduction(),
+        ];
+
+        if (($loadPath = $template(Route::getRoutes()->getByName('i18next.fetch'))) !== null) {
+            $config['loadPath'] = $loadPath;
+        }
+
+        if (($addPath = $template(Route::getRoutes()->getByName('i18next.store'))) !== null) {
+            $config['addPath'] = $addPath;
+        }
+
+        return $config;
     }
 
     private function response(PageSchema $schema): Response

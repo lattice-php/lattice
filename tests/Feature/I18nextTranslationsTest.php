@@ -3,14 +3,33 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\File;
+use Inertia\Testing\AssertableInertia;
 
 use function Orchestra\Testbench\package_path;
+use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
 
 afterEach(function () {
     File::deleteDirectory(package_path('lang/zz'));
     File::delete(package_path('lang/zz.json'));
+});
+
+it('shares the i18n config to the frontend', function () {
+    get('/')->assertInertia(fn (AssertableInertia $page) => $page
+        ->where('lattice.i18n.enabled', true)
+        ->where('lattice.i18n.saveMissing', true)
+        ->where('lattice.i18n.loadPath', '/locales/{{lng}}/{{ns}}.json')
+        ->where('lattice.i18n.addPath', '/locales/add/{{lng}}/{{ns}}'),
+    );
+});
+
+it('serves the bundled English lattice namespace from the package lang dir', function () {
+    getJson('/locales/en/lattice.json')
+        ->assertOk()
+        ->assertJsonPath('editor.bold', 'Bold')
+        ->assertJsonPath('pagination.next', 'Next')
+        ->assertJsonPath('operators.eq', 'equals');
 });
 
 it('serves the lattice namespace from the package lang dir as nested i18next JSON', function () {
