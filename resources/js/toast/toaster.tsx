@@ -3,7 +3,6 @@ import { CircleAlert, CircleCheck, CircleX, Info, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Renderer } from "@lattice/lattice/core/renderer";
-import type { Node } from "@lattice/lattice/core/types";
 import type { ToastMessage, ToastVariant } from "@lattice/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
 import { cn } from "@lattice/lattice/lib/utils";
@@ -11,13 +10,7 @@ import { useRegistry } from "@lattice/lattice/provider";
 
 const variants = ["success", "info", "warning", "error"] as const satisfies readonly ToastVariant[];
 
-// `action` is re-typed from the wire `Node` to the renderer's `Node`: the
-// generated `ToastMessage.action` describes the wire shape, but the Toaster
-// hands it to the `Renderer`, which works with the loose render-side node.
-type ToastItem = Omit<ToastMessage, "action"> & {
-  action: Node | null;
-  id: number;
-};
+type ToastItem = ToastMessage & { id: number };
 
 const variantStyles: Record<ToastVariant, { accent: string; icon: ReactNode }> = {
   success: {
@@ -44,7 +37,7 @@ function isVariant(value: unknown): value is ToastVariant {
 
 let nextId = 0;
 
-function normalize(detail: unknown): Omit<ToastItem, "id"> | null {
+function normalize(detail: unknown): ToastMessage | null {
   if (typeof detail !== "object" || detail === null) {
     return null;
   }
@@ -62,7 +55,7 @@ function normalize(detail: unknown): Omit<ToastItem, "id"> | null {
   }
 
   return {
-    action: (toast.action as Node | null) ?? null,
+    action: (toast.action as ToastMessage["action"]) ?? null,
     dismissible: toast.dismissible !== false,
     duration: typeof toast.duration === "number" ? toast.duration : null,
     message: toast.message,

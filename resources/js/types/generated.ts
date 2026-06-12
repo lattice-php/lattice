@@ -422,7 +422,7 @@ export type Link = {
   method: HttpMethod | null;
   tabIndex: number | null;
 };
-export type Menu = object;
+export type Menu = Record<string, never>;
 export type MenuItem = {
   href: string | null;
   icon: string | null;
@@ -486,7 +486,7 @@ export type Option = {
   readonly value: string;
 };
 export type Orientation = "horizontal" | "vertical";
-export type Outlet = object;
+export type Outlet = Record<string, never>;
 export type PageContainer = "centered" | "default";
 export type PageLayout = "app" | "auth" | "none";
 export type PaginationType = "none" | "simple" | "table" | "infinite";
