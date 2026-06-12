@@ -86,7 +86,7 @@ class Repeater extends Field
 
     /**
      * The repeater value is always an array; array-level rules live here so they
-     * are not clobbered by the nested per-row rules (which use `items.*.x` keys).
+     * are not clobbered by the nested per-row rules (which use per-index keys).
      *
      * @return array<int, mixed>
      */
