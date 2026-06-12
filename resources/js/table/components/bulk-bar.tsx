@@ -11,6 +11,7 @@ import { withRefHeader } from "@lattice/lattice/core/component-ref";
 import { Button } from "@lattice/lattice/core/components/button";
 import { ConfirmDialog } from "@lattice/lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice/lattice/core/components/spinner";
+import { useT } from "@lattice/lattice/i18n";
 import type { BulkAction } from "../bulk";
 
 type BulkData = {
@@ -80,11 +81,12 @@ export function BulkBar({
   }
 
   const count = allMatching ? (total ?? selectedKeys.length) : selectedKeys.length;
+  const { t } = useT();
 
   return (
     <div className="flex flex-wrap items-center gap-3 border-b border-lt-border bg-lt-muted/50 p-4 text-sm">
       <span className="font-medium">
-        {allMatching ? `All ${count} selected` : `${count} selected`}
+        {allMatching ? t("bulk.allSelected", { count }) : t("bulk.selected", { count })}
       </span>
       {canSelectAllMatching && (
         <button
@@ -93,7 +95,7 @@ export function BulkBar({
           className="font-medium text-lt-primary underline underline-offset-2"
           onClick={onSelectAllMatching}
         >
-          {`Select all ${total} matching`}
+          {t("bulk.selectAllMatching", { total })}
         </button>
       )}
       <div className="flex flex-wrap items-center gap-2">

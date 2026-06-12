@@ -30,9 +30,13 @@ i18n.use(initReactI18next).init({
   react: { useSuspense: false },
 });
 
-/** Translation hook bound to the built-in chrome namespace and instance. */
-export function useT() {
-  return useTranslation(NAMESPACE, { i18n });
+/**
+ * Translation hook bound to Lattice's instance. Defaults to the single `lattice`
+ * namespace (nested keys like `editor.bold`), which is collision-safe with the
+ * host app's own namespaces; pass another namespace to read from it instead.
+ */
+export function useT(namespace: string = NAMESPACE) {
+  return useTranslation(namespace, { i18n });
 }
 
 /** Translate a chrome key outside of a component (helpers, maps). */

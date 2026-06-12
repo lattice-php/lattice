@@ -52,6 +52,7 @@ export default {
     operator: "{{label}} operator",
     remove: "Remove {{label}} filter",
     value: "{{label}} filter value",
+    add: "Add filter",
   },
   operators: {
     contains: "contains",
@@ -77,6 +78,10 @@ export default {
     allLoaded: "All rows loaded",
     page: "Page {{page}}",
     showing: "Showing {{from}}-{{to}} of {{total}}",
+    loadMore: "Load more",
+    loading: "Loading...",
+    previous: "Previous",
+    next: "Next",
   },
   bulk: {
     selected: "{{count}} selected",

@@ -1,3 +1,4 @@
+import { translate } from "@lattice/lattice/i18n";
 import type { TableColumn, TableSort, TableState } from "./types";
 
 export function getColumnSort(state: TableState, column: TableColumn): TableSort | undefined {
@@ -82,7 +83,9 @@ const operatorLabels: Record<string, string> = {
 export const VALUELESS_FILTER_OPERATORS = new Set<string>(["empty", "filled"]);
 
 export function operatorLabel(operator: string): string {
-  return operatorLabels[operator] ?? operator;
+  return translate(`operators.${operator}`, {
+    defaultValue: operatorLabels[operator] ?? operator,
+  });
 }
 
 export function getSortDirectionLabel(direction: string): string {

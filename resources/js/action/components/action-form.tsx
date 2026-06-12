@@ -12,6 +12,7 @@ import { FORM_DEBOUNCE_MS, xsrfToken } from "@lattice/lattice/form/components/fo
 import { ResolvedNodesProvider } from "@lattice/lattice/form/components/resolved-nodes";
 import { useFormResolver } from "@lattice/lattice/form/components/use-form-resolver";
 import { FormValuesProvider, useFormValues } from "@lattice/lattice/form/components/values";
+import { useT } from "@lattice/lattice/i18n";
 import { dispatchActionError } from "../effects";
 import type { ActionResponse } from "../effects";
 
@@ -302,6 +303,8 @@ function ActionFormContent({
 }
 
 export function ActionForm({ description, formNode, onClose, title, ...rest }: ActionFormProps) {
+  const { t } = useT();
+
   return (
     <Dialog.Root
       open
@@ -331,7 +334,7 @@ export function ActionForm({ description, formNode, onClose, title, ...rest }: A
             </div>
 
             <Dialog.Close asChild>
-              <Button aria-label="Close" size="icon" variant="ghost">
+              <Button aria-label={t("a11y.close")} size="icon" variant="ghost">
                 <X aria-hidden="true" className="size-4" />
               </Button>
             </Dialog.Close>

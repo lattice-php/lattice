@@ -1,5 +1,6 @@
 import { Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useT } from "@lattice/lattice/i18n";
 import type { FilterType } from "@lattice/lattice/types/generated";
 
 const baseClass =
@@ -28,8 +29,9 @@ export function FilterValueInput({
   onCommit: (value: string) => void;
   onClear?: () => void;
 }) {
+  const { t } = useT();
   const [draft, setDraft] = useState(value);
-  const inputLabel = ariaLabel ?? `Filter ${label}`;
+  const inputLabel = ariaLabel ?? t("filter.filterBy", { label });
   const groupedClass = grouped ? "rounded-r-none" : "";
 
   useEffect(() => {
@@ -46,9 +48,9 @@ export function FilterValueInput({
         value={value}
         onChange={(event) => onCommit(event.target.value)}
       >
-        <option value="">All</option>
-        <option value="true">True</option>
-        <option value="false">False</option>
+        <option value="">{t("filter.all")}</option>
+        <option value="true">{t("filter.true")}</option>
+        <option value="false">{t("filter.false")}</option>
       </select>
     );
   }
@@ -100,7 +102,7 @@ export function FilterValueInput({
       {onClear && draft !== "" && (
         <button
           type="button"
-          aria-label={`Clear ${label} filter`}
+          aria-label={t("filter.clear", { label })}
           data-test={testId ? `${testId}-clear` : undefined}
           className="absolute right-1 inline-flex size-6 items-center justify-center rounded hover:bg-lt-muted disabled:opacity-50"
           disabled={processing}

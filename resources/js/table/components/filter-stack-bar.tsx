@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import { useT } from "@lattice/lattice/i18n";
 import { operatorLabel } from "../query";
 import type { FilterClause, TableColumn } from "../types";
 
@@ -13,6 +14,8 @@ export function FilterStackBar({
   processing: boolean;
   onRemove: (index: number) => void;
 }) {
+  const { t } = useT();
+
   return (
     <div className="flex flex-wrap items-center gap-4 border-b border-lt-border px-4 py-2.5 text-sm">
       {filters.map((clause, index) => {
@@ -32,7 +35,7 @@ export function FilterStackBar({
               data-test={`filter-chip-${clause.field}-remove`}
               className="inline-flex size-5 items-center justify-center rounded text-lt-muted-fg hover:bg-lt-muted disabled:opacity-50"
               disabled={processing}
-              aria-label={`Remove ${label} filter`}
+              aria-label={t("filter.remove", { label })}
               onClick={() => onRemove(index)}
             >
               <X aria-hidden="true" className="size-3.5" />

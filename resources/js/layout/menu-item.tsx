@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import type { RendererComponent, Schema } from "@lattice/lattice/core/types";
 import { IconRenderer } from "@lattice/lattice/icons";
 import { cn } from "@lattice/lattice/lib/utils";
+import { useT } from "@lattice/lattice/i18n";
 import { SidebarCollapsedContext, useSidebarCollapsed } from "./context";
 
 const rowClass =
@@ -124,6 +125,7 @@ function FlyoutGroup({
   label: string;
   testId: string;
 }) {
+  const { t } = useT();
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ left: 0, top: 0 });
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -159,7 +161,7 @@ function FlyoutGroup({
         ? createPortal(
             <>
               <button
-                aria-label="Close menu"
+                aria-label={t("a11y.closeMenu")}
                 className="fixed inset-0 z-40 cursor-default"
                 data-test={`${testId}-close`}
                 onClick={() => setOpen(false)}
