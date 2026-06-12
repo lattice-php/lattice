@@ -36,22 +36,14 @@ final class NodesProvider implements TransformedProvider
     /**
      * @param  array<class-string, string>  $formFields  Form field components keyed by class-string, valued by wire type.
      * @param  class-string  $formClass
-     * @param  array<class-string, ComponentSpec>  $coreComponents
-     * @param  array<class-string, ComponentSpec>  $actionComponents
-     * @param  array<class-string, ComponentSpec>  $fragmentComponents
-     * @param  array<class-string, ComponentSpec>  $tableComponents
-     * @param  array<class-string, ComponentSpec>  $layoutComponents
+     * @param  array<string, array<class-string, ComponentSpec>>  $domainNodes  Ordered map of generated node-alias name (e.g. 'CoreNode') to its components. Emission and Node-union order follow this map's order.
      * @param  class-string|null  $effectContract
      * @param  array<class-string, string>  $effects  Effect value objects keyed by class-string, valued by wire type.
      */
     public function __construct(
         private readonly array $formFields,
         private readonly string $formClass,
-        private readonly array $coreComponents,
-        private readonly array $actionComponents,
-        private readonly array $fragmentComponents,
-        private readonly array $tableComponents,
-        private readonly array $layoutComponents,
+        private readonly array $domainNodes,
         private readonly string $formType = 'form',
         private readonly ?string $effectContract = null,
         private readonly array $effects = [],
@@ -66,14 +58,14 @@ final class NodesProvider implements TransformedProvider
             $this->alias('FormFieldNode', $this->formFieldUnion()),
             $this->alias('FormNode', $this->formNodeUnion()),
             $this->alias('FormNodeType', $this->typeAccess('FormNode')),
-            $this->alias('CoreNode', $this->componentsUnion($this->coreComponents)),
-            $this->alias('ActionNode', $this->componentsUnion($this->actionComponents)),
-            $this->alias('FragmentNode', $this->componentsUnion($this->fragmentComponents)),
-            $this->alias('TableNode', $this->componentsUnion($this->tableComponents)),
-            $this->alias('LayoutNode', $this->componentsUnion($this->layoutComponents)),
-            $this->alias('Node', $this->nodeUnion()),
-            $this->alias('NodeType', $this->typeAccess('Node')),
         ];
+
+        foreach ($this->domainNodes as $nodeName => $components) {
+            $transformed[] = $this->alias($nodeName, $this->componentsUnion($components));
+        }
+
+        $transformed[] = $this->alias('Node', $this->nodeUnion());
+        $transformed[] = $this->alias('NodeType', $this->typeAccess('Node'));
 
         if ($this->effectContract !== null && $this->effects !== []) {
             $transformed[] = new Transformed(
@@ -146,7 +138,7 @@ final class NodesProvider implements TransformedProvider
     {
         return new TypeScriptUnion(array_map(
             fn (string $name): TypeScriptReference => new TypeScriptReference($this->selfReference($name)),
-            ['FormNode', 'CoreNode', 'ActionNode', 'FragmentNode', 'TableNode', 'LayoutNode'],
+            ['FormNode', ...array_keys($this->domainNodes)],
         ));
     }
 

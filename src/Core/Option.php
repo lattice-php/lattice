@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core;
 
 use JsonSerializable;
+use Lattice\Lattice\Attributes\TypeScript;
 
 /**
  * A `{ label, value }` pair backing every option-driven control (choice, select,
  * segmented control). Generated to TypeScript so the client shares one `Option`
  * type rather than re-declaring the shape per field.
  */
+#[TypeScript]
 final readonly class Option implements JsonSerializable
 {
     public function __construct(

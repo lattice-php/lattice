@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Columns;
 
 use JsonSerializable;
+use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
@@ -12,6 +13,7 @@ use Lattice\Lattice\Tables\Enums\FilterType;
  * The wire shape of a column's filter capability. Built by a Filterable column
  * and generated to TypeScript.
  */
+#[TypeScript]
 final readonly class ColumnFilter implements JsonSerializable
 {
     /**

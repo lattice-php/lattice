@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core\Enums;
 
 use InvalidArgumentException;
+use Lattice\Lattice\Attributes\TypeScript;
 
 /**
  * The shared comparison vocabulary used by both form conditions and table
@@ -12,6 +13,7 @@ use InvalidArgumentException;
  * and FilterApplier (SQL); per-field/column availability is owned by the field
  * and column.
  */
+#[TypeScript]
 enum Op: string
 {
     case Contains = 'contains';

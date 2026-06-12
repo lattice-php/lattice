@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Columns;
 
 use JsonSerializable;
+use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
 /**
@@ -13,6 +14,7 @@ use Lattice\Lattice\Tables\Enums\ColumnType;
  * applicable to a column type are null, so the generated type matches the
  * payload exactly.
  */
+#[TypeScript]
 final readonly class ColumnData implements JsonSerializable
 {
     /**

@@ -5,47 +5,39 @@ declare(strict_types=1);
 namespace Workbench\App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Lattice\Lattice\Actions\Confirmation;
 use Lattice\Lattice\Actions\Contracts\Effect;
-use Lattice\Lattice\Actions\Enums\EffectType;
 use Lattice\Lattice\Attributes\Effect as EffectAttribute;
-use Lattice\Lattice\Core\Enums\Align;
-use Lattice\Lattice\Core\Enums\ButtonType;
-use Lattice\Lattice\Core\Enums\ButtonVariant;
-use Lattice\Lattice\Core\Enums\Gap;
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Core\Enums\Orientation;
-use Lattice\Lattice\Core\Enums\PageContainer;
-use Lattice\Lattice\Core\Enums\PageLayout;
-use Lattice\Lattice\Core\Enums\ToastVariant;
-use Lattice\Lattice\Core\Enums\Width;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Core\Values\ToastMessage;
 use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Conditions\Condition;
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
-use Lattice\Lattice\Tables\Columns\ColumnData;
-use Lattice\Lattice\Tables\Columns\ColumnFilter;
-use Lattice\Lattice\Tables\Enums\ColumnType;
-use Lattice\Lattice\Tables\Enums\FilterType;
-use Lattice\Lattice\Tables\Enums\PaginationType;
-use Lattice\Lattice\Tables\Enums\SortDirection;
-use Lattice\Lattice\Tables\FilterClause;
-use Lattice\Lattice\Tables\TableSort;
 use Spatie\Attributes\Attributes;
 use Spatie\StructureDiscoverer\Discover;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 use Workbench\App\Support\TypeScript\EnumTransformer;
 use Workbench\App\Support\TypeScript\HttpMethodTransformer;
+use Workbench\App\Support\TypeScript\MarkedTypeDiscovery;
 use Workbench\App\Support\TypeScript\NodesProvider;
 use Workbench\App\Support\TypeScript\ValueObjectTransformer;
 
 final class GenerateInternalTypesCommand extends Command
 {
+    /**
+     * The component domains, in output order, mapped to their generated node-alias
+     * name. This is the one declared, ordered piece of static config: discovery
+     * supplies the components, but the emission order and the (singular) node names
+     * are meaningful and not derivable from the (plural) namespace segments.
+     */
+    private const DOMAIN_NODES = [
+        'Core' => 'CoreNode',
+        'Actions' => 'ActionNode',
+        'Fragments' => 'FragmentNode',
+        'Tables' => 'TableNode',
+        'Layouts' => 'LayoutNode',
+    ];
+
     protected $signature = 'lattice:internal-types';
 
     protected $description = "Regenerate Lattice's built-in TypeScript types (resources/js/types/generated.ts)";
@@ -56,67 +48,33 @@ final class GenerateInternalTypesCommand extends Command
         $src = $packageRoot.'/src';
 
         $effects = $this->discoverEffects($src.'/Actions/Effects');
+        $marked = (new MarkedTypeDiscovery)->discover($src);
 
         $discovered = (new ComponentDiscovery)->discover($src);
 
         $formFields = $this->buildFormFields($discovered);
-        $coreComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Core\\Components\\');
-        $actionComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Actions\\Components\\');
-        $fragmentComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Fragments\\Components\\');
-        $tableComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Tables\\Components\\');
-        $layoutComponents = $this->buildBucket($discovered, 'Lattice\\Lattice\\Layouts\\Components\\');
+        $domainNodes = $this->buildDomainNodes($discovered);
 
         $generator->generate(
             [$src],
             [
                 new HttpMethodTransformer,
-                new EnumTransformer([
-                    Align::class,
-                    ButtonType::class,
-                    ButtonVariant::class,
-                    Gap::class,
-                    Width::class,
-                    PageLayout::class,
-                    PageContainer::class,
-                    Orientation::class,
-                    ToastVariant::class,
-                    PaginationType::class,
-                    ColumnType::class,
-                    FilterType::class,
-                    Op::class,
-                    SortDirection::class,
-                    EffectType::class,
-                ]),
+                new EnumTransformer($marked['enums']),
                 new ValueObjectTransformer([
-                    Condition::class,
-                    Confirmation::class,
-                    Option::class,
-                    ColumnData::class,
-                    ColumnFilter::class,
-                    FilterClause::class,
-                    TableSort::class,
-                    ToastMessage::class,
+                    ...$marked['valueObjects'],
                     ...array_keys($effects),
                 ]),
                 new ComponentTransformer([
                     ...array_keys($formFields),
                     Form::class,
-                    ...array_keys($coreComponents),
-                    ...array_keys($actionComponents),
-                    ...array_keys($fragmentComponents),
-                    ...array_keys($tableComponents),
-                    ...array_keys($layoutComponents),
+                    ...$this->componentClasses($domainNodes),
                 ]),
             ],
             [
                 new NodesProvider(
                     $formFields,
                     Form::class,
-                    $coreComponents,
-                    $actionComponents,
-                    $fragmentComponents,
-                    $tableComponents,
-                    $layoutComponents,
+                    $domainNodes,
                     'form',
                     Effect::class,
                     $effects,
@@ -164,12 +122,9 @@ final class GenerateInternalTypesCommand extends Command
      */
     private function buildFormFields(array $discovered): array
     {
-        $prefix = 'Lattice\\Lattice\\Forms\\Components\\';
-
         $fields = array_filter(
             $discovered,
-            fn (DiscoveredComponent $dc): bool => str_starts_with($dc->class, $prefix)
-                && $dc->class !== Form::class,
+            fn (DiscoveredComponent $dc): bool => $dc->domain === 'Forms' && $dc->class !== Form::class,
         );
 
         usort($fields, fn (DiscoveredComponent $a, DiscoveredComponent $b): int => $a->type <=> $b->type);
@@ -182,14 +137,31 @@ final class GenerateInternalTypesCommand extends Command
     }
 
     /**
+     * The components for each domain, keyed by node-alias name in DOMAIN_NODES order.
+     *
+     * @param  list<DiscoveredComponent>  $discovered
+     * @return array<string, array<class-string, array{type: string, container?: bool, interactive?: bool}>>
+     */
+    private function buildDomainNodes(array $discovered): array
+    {
+        $domainNodes = [];
+
+        foreach (self::DOMAIN_NODES as $domain => $nodeName) {
+            $domainNodes[$nodeName] = $this->buildBucket($discovered, $domain);
+        }
+
+        return $domainNodes;
+    }
+
+    /**
      * @param  list<DiscoveredComponent>  $discovered
      * @return array<class-string, array{type: string, container?: bool, interactive?: bool}>
      */
-    private function buildBucket(array $discovered, string $prefix): array
+    private function buildBucket(array $discovered, string $domain): array
     {
         $components = array_filter(
             $discovered,
-            fn (DiscoveredComponent $dc): bool => str_starts_with($dc->class, $prefix),
+            fn (DiscoveredComponent $dc): bool => $dc->domain === $domain,
         );
 
         usort($components, fn (DiscoveredComponent $a, DiscoveredComponent $b): int => $a->type <=> $b->type);
@@ -211,5 +183,22 @@ final class GenerateInternalTypesCommand extends Command
         }
 
         return $result;
+    }
+
+    /**
+     * Flatten the per-domain component class-strings into one allow-list.
+     *
+     * @param  array<string, array<class-string, array{type: string, container?: bool, interactive?: bool}>>  $domainNodes
+     * @return list<class-string>
+     */
+    private function componentClasses(array $domainNodes): array
+    {
+        $classes = [];
+
+        foreach ($domainNodes as $components) {
+            $classes = [...$classes, ...array_keys($components)];
+        }
+
+        return $classes;
     }
 }

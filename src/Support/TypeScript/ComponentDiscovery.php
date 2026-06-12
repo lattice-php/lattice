@@ -51,10 +51,26 @@ final class ComponentDiscovery
                 container: is_subclass_of($class, ContainerComponent::class),
                 interactive: in_array(IsInteractive::class, class_uses_recursive($class), true),
                 category: $this->categoryFor($class),
+                domain: $this->domainFor($class),
             );
         }
 
         return $discovered;
+    }
+
+    /**
+     * The namespace segment immediately before `\Components\` — every discovered
+     * component lives under `…\{Domain}\Components\…`, so this groups it into its
+     * Node union (Core, Actions, Fragments, Tables, Layouts, Forms).
+     *
+     * @param  class-string  $class
+     */
+    private function domainFor(string $class): string
+    {
+        $parts = explode('\\', $class);
+        $index = array_search('Components', $parts, true);
+
+        return $index !== false && $index > 0 ? $parts[$index - 1] : '';
     }
 
     /**

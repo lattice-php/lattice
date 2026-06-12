@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Actions\Enums;
 
+use Lattice\Lattice\Attributes\TypeScript;
+
+#[TypeScript]
 enum EffectType: string
 {
     case Toast = 'toast';

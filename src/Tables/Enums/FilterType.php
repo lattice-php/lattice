@@ -6,8 +6,10 @@ namespace Lattice\Lattice\Tables\Enums;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\Op;
 
+#[TypeScript]
 enum FilterType: string
 {
     case Text = 'text';

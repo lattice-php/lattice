@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Enums;
 
+use Lattice\Lattice\Attributes\TypeScript;
+
+#[TypeScript]
 enum ButtonVariant: string
 {
     case Default = 'default';
