@@ -39,6 +39,7 @@ final class NodesProvider implements TransformedProvider
      * @param  array<string, array<class-string, ComponentSpec>>  $domainNodes  Node-alias name (e.g. 'CoreNode') to its components, in emission order.
      * @param  class-string|null  $effectContract
      * @param  array<class-string, string>  $effects  Effect value objects keyed by class-string, valued by wire type.
+     * @param  array<string, class-string>  $columnProps  wire column type => props VO class-string
      */
     public function __construct(
         private readonly array $formFields,
@@ -47,7 +48,6 @@ final class NodesProvider implements TransformedProvider
         private readonly string $formType = 'form',
         private readonly ?string $effectContract = null,
         private readonly array $effects = [],
-        /** @param  array<string, class-string>  $columnProps  wire column type => props VO class-string */
         private readonly array $columnProps = [],
     ) {}
 

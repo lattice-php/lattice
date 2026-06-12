@@ -130,8 +130,6 @@ final class BaseProfile implements TypeScriptProfile
             $map[$dc->type] = $dc->propsClass;
         }
 
-        ksort($map);
-
         return $map;
     }
 

@@ -23,9 +23,9 @@ use Spatie\TypeScriptTransformer\Visitor\VisitorOperation;
  * `Record<string, unknown>`. The marker has no generated type; precise per-type
  * props are resolved on the client via `ColumnPropsOf`.
  */
-final readonly class ColumnPropsToRecordClassPropertyProcessor implements ClassPropertyProcessor
+final class ColumnPropsToRecordClassPropertyProcessor implements ClassPropertyProcessor
 {
-    private readonly Visitor $visitor;
+    private Visitor $visitor;
 
     public function __construct()
     {
