@@ -55,6 +55,7 @@ export default defineConfig({
             { label: "Toasts", link: "/core/toasts/" },
             { label: "Navigation", link: "/core/navigation/" },
             { label: "Theming", link: "/core/theming/" },
+            { label: "Internationalization", link: "/core/i18n/" },
           ],
         },
         {
