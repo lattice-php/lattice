@@ -7,7 +7,7 @@ namespace Workbench\App\Layouts;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\Layout;
 use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Enums\LucideIcon;
+use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Layouts\Components\Menu;
@@ -34,18 +34,18 @@ final class AppLayout extends LayoutDefinition
                 ->schema([
                     Sidebar::make('app-sidebar')->collapsible()->items([
                         Menu::make('sidebar')->items([
-                            MenuItem::fromPage(HomePage::class)->label('Home')->icon(LucideIcon::House),
-                            MenuItem::make('Forms')->icon(LucideIcon::FormInput)->children([
+                            MenuItem::fromPage(HomePage::class)->label('Home')->icon('house'),
+                            MenuItem::make('Forms')->icon('form-input')->children([
                                 MenuItem::fromPage(ShowcasePage::class)->label('Showcase'),
                                 MenuItem::fromPage(DependentDemoPage::class)->label('Dependent Fields'),
                                 MenuItem::fromPage(ProductCreatePage::class)->label('Create Product'),
                             ]),
-                            MenuItem::make('Tables')->icon(LucideIcon::Table)->children([
+                            MenuItem::make('Tables')->icon(Icon::Table)->children([
                                 MenuItem::fromPage(ProductsPage::class)->label('Products'),
                                 MenuItem::fromPage(TablesPage::class)->label('Pagination Modes'),
                             ]),
-                            // A fully custom icon: workbench/resources/icons/spark.svg, referenced
-                            // by name and merged into the same sprite as Lattice's built-ins.
+                            // A fully custom icon (workbench/resources/icons/spark.svg) the
+                            // workbench adds to its own folder and references by name.
                             MenuItem::fromPage(TabsPage::class)->label('Tabs')->icon('spark'),
                         ]),
                     ]),

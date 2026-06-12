@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\LucideIcon;
+use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Tables\Columns\BadgeColumn;
 use Lattice\Lattice\Tables\Columns\IconColumn;
 use Lattice\Lattice\Tables\Columns\ImageColumn;
@@ -67,7 +67,7 @@ describe('docs fixtures', function (): void {
                     BadgeColumn::make('status')->label('Status')
                         ->colors(['active' => 'green', 'invited' => 'yellow', 'archived' => 'gray']),
                     IconColumn::make('verified')->label('Verified')
-                        ->icons(['1' => LucideIcon::Check, '0' => LucideIcon::Minus])
+                        ->icons(['1' => Icon::Check, '0' => Icon::Minus])
                         ->colors(['1' => 'green', '0' => 'gray']),
                 ])
                 ->result(

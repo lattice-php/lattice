@@ -56,11 +56,11 @@ Lattice registers a `latticePage` route macro. Point a URI at your page class, a
 
 ```php
 use App\Pages\DashboardPage;
-use Lattice\Lattice\Core\Enums\LucideIcon;
+use Lattice\Lattice\Core\Enums\Icon;
 use Illuminate\Support\Facades\Route;
 
 Route::latticePage('/dashboard', DashboardPage::class)
-    ->sidebar('Dashboard', LucideIcon::House);
+    ->sidebar('Dashboard', Icon::LayoutDashboard);
 ```
 
 Visit `/dashboard` and the page renders through Inertia — no Inertia page component or controller to write by hand.

@@ -12,7 +12,7 @@ use Spatie\TypeScriptTransformer\Transformers\EnumTransformer as BaseEnumTransfo
 
 /**
  * Emits TypeScript unions only for an explicit allow-list of backed enums,
- * so unrelated or oversized enums (e.g. LucideIcon) are never generated.
+ * so unrelated or oversized enums are never generated.
  */
 final class EnumTransformer extends BaseEnumTransformer
 {

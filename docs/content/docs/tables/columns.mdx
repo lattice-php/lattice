@@ -65,7 +65,7 @@ BadgeColumn::make('status')->colors([
     'active' => 'green', 'invited' => 'yellow', 'archived' => 'gray',
 ]);
 IconColumn::make('verified')
-    ->icons(['1' => LucideIcon::Check, '0' => LucideIcon::Minus])
+    ->icons(['1' => Icon::Check, '0' => Icon::Minus])
     ->colors(['1' => 'green', '0' => 'gray']);`}
   fixture="table.column-types"
 />
@@ -73,8 +73,8 @@ IconColumn::make('verified')
 - **`BadgeColumn`** renders the value as a pill. `->colors([value => color])` maps values to a colour
   name — `gray`, `red`, `green`, `yellow`, `blue`, `purple`, or `orange` (unmapped values fall back to
   gray). It is sortable and filterable like a text column.
-- **`IconColumn`** shows an icon. `->icon(LucideIcon::Star)` shows the same icon for every row;
-  `->icons([value => LucideIcon])` picks an icon per value. Add `->colors([value => color])` to tint
+- **`IconColumn`** shows an icon. `->icon('star')` shows the same icon for every row;
+  `->icons([value => Icon])` picks an icon per value. Add `->colors([value => color])` to tint
   them.
 - **`ImageColumn`** renders the cell value as an image URL. `->circular()` makes it a round avatar and
   `->size(40)` sets the pixel size.
