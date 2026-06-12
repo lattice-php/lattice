@@ -5,7 +5,9 @@ on:
     branches: [main]
     paths:
       - "docs/**"
-      - "public/**"
+      - "resources/**"
+      - "workbench/resources/**"
+      - "vite.config.ts"
       - "astro.config.mjs"
       - "package.json"
       - "package-lock.json"
@@ -27,11 +29,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+
+      # The docs build runs the workbench app build (via `npm run analyze`) to
+      # generate the Sonda bundle report, which needs the Testbench skeleton that
+      # `composer install` creates.
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: none
+          tools: composer:v2
+
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
+
+      - name: Resolve composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-8.4-${{ hashFiles('**/composer.json') }}
+          restore-keys: composer-${{ runner.os }}-8.4-
+
+      - run: composer install --prefer-dist --no-progress --no-interaction
+
       - run: npm ci
+
       - name: Build the docs site
         run: npm run docs:build
       - uses: actions/configure-pages@v6
