@@ -89,6 +89,7 @@
     "prepack": "npm run build:lib",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "docs:typecheck": "tsc --noEmit -p docs/tsconfig.json",
     "lint": "oxlint resources/js workbench/resources/js",
     "lint:fix": "oxlint resources/js workbench/resources/js --fix",
     "lint:github": "oxlint resources/js workbench/resources/js --format=github",

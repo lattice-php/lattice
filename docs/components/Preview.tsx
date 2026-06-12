@@ -10,7 +10,7 @@ type Props = {
 export default function Preview({ nodes, values = {} }: Props) {
   return (
     <FormValuesProvider initial={values}>
-      <Renderer nodes={nodes} registry={registry} />
+      <Renderer nodes={nodes} registry={registry.components} />
     </FormValuesProvider>
   );
 }
