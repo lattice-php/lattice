@@ -46,7 +46,7 @@ const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50" />
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-lt-overlay" />
         <Dialog.Content
           {...(description ? {} : { "aria-describedby": undefined })}
           className="fixed left-1/2 top-1/2 z-50 max-h-[min(680px,calc(100vh-2rem))] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-lt border border-lt-border bg-lt-bg p-6 shadow-lg"

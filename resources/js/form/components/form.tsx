@@ -139,7 +139,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
           <FormResetListener componentId={node.id} reset={reset} />
 
           {props.status && (
-            <div className="text-center text-sm font-medium text-green-600 dark:text-green-400">
+            <div className="text-center text-sm font-medium text-lt-success">
               {props.status}
             </div>
           )}
