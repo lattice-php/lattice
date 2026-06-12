@@ -130,20 +130,20 @@ abstract class Page implements PageContract
     }
 
     /**
-     * Backend-only i18n signals for the renderer. The load/add paths are
-     * hardcoded in the frontend (laravel-i18next's namespaced routes, which never
-     * vary), and the namespace is chosen per call, so only what the frontend
-     * can't know travels here: i18n is always on (the renderer falls back to its
-     * inline English when no backend serves a locale), and missing keys are
-     * dumped outside production for translator workflows.
+     * Backend-only i18n signals for the renderer, mirrored from laravel-i18next's
+     * own config so it stays the single source of truth. The load/add paths are
+     * hardcoded in the frontend (its namespaced routes, which never vary) and the
+     * namespace is chosen per call, so only these travel here: whether its routes
+     * serve translations at all (otherwise the renderer keeps its inline English),
+     * and whether missing keys are reported back for dumping.
      *
      * @return array{enabled: bool, saveMissing: bool}
      */
     private function i18nConfig(): array
     {
         return [
-            'enabled' => true,
-            'saveMissing' => ! app()->isProduction(),
+            'enabled' => (bool) config('i18next.routes.enabled', false),
+            'saveMissing' => (bool) config('i18next.save_missing.enabled', false),
         ];
     }
 
