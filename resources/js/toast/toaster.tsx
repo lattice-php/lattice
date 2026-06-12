@@ -4,21 +4,19 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Renderer } from "@lattice/lattice/core/renderer";
 import type { Node } from "@lattice/lattice/core/types";
-import type { ToastVariant } from "@lattice/lattice/types/generated";
+import type { ToastMessage, ToastVariant } from "@lattice/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
 import { cn } from "@lattice/lattice/lib/utils";
 import { useRegistry } from "@lattice/lattice/provider";
 
 const variants = ["success", "info", "warning", "error"] as const satisfies readonly ToastVariant[];
 
-type ToastItem = {
+// `action` is re-typed from the wire `Node` to the renderer's `Node`: the
+// generated `ToastMessage.action` describes the wire shape, but the Toaster
+// hands it to the `Renderer`, which works with the loose render-side node.
+type ToastItem = Omit<ToastMessage, "action"> & {
   action: Node | null;
-  dismissible: boolean;
-  duration: number | null;
   id: number;
-  message: string;
-  persistent: boolean;
-  variant: ToastVariant;
 };
 
 const variantStyles: Record<ToastVariant, { accent: string; icon: ReactNode }> = {
