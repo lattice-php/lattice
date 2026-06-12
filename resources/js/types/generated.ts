@@ -41,6 +41,29 @@ export type Badge = {
 export type BadgeColumnProps = {
   readonly colors: Record<string | number, string> | null;
 };
+export type Builder = {
+  addLabel: string | null;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
+  defaultItems: number;
+  dependsOnAny: boolean | null;
+  dependsOnKeys: string[] | null;
+  disabled: boolean | null;
+  helperText: string | null;
+  hidden: boolean | null;
+  label: string | null;
+  maxItems: number | null;
+  minItems: number | null;
+  name: string;
+  readOnly: boolean | null;
+  reorderable: boolean;
+  required: boolean | null;
+  value: unknown;
+};
 export type BulkAction = {
   confirmation: Confirmation | null;
   effects: Effect[];
@@ -311,6 +334,11 @@ export type Form = {
   validationTimeout: number | null;
 };
 export type FormFieldNode =
+  | {
+      type: "form.builder";
+      key?: string;
+      props: Builder;
+    }
   | {
       type: "form.checkbox";
       key?: string;
