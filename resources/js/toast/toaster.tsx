@@ -6,6 +6,7 @@ import { Renderer } from "@lattice/lattice/core/renderer";
 import type { ToastMessage, ToastVariant } from "@lattice/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
 import { cn } from "@lattice/lattice/lib/utils";
+import { useT } from "@lattice/lattice/i18n";
 import { useRegistry } from "@lattice/lattice/provider";
 
 const variants = ["success", "info", "warning", "error"] as const satisfies readonly ToastVariant[];
@@ -65,6 +66,7 @@ function normalize(detail: unknown): ToastMessage | null {
 }
 
 export function Toaster({ duration = 4000 }: { duration?: number }) {
+  const { t } = useT("lattice");
   const registry = useRegistry();
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
@@ -118,7 +120,7 @@ export function Toaster({ duration = 4000 }: { duration?: number }) {
           </div>
           {toast.dismissible ? (
             <Toast.Close
-              aria-label="Dismiss"
+              aria-label={t("a11y.dismiss", "Dismiss")}
               className="shrink-0 rounded-md p-1 text-lt-muted-fg transition-colors hover:bg-lt-muted hover:text-lt-fg"
               data-test="toast-dismiss"
             >

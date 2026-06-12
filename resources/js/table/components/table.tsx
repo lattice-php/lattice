@@ -1,4 +1,5 @@
 import { type ReactNode, useMemo } from "react";
+import { useT } from "@lattice/lattice/i18n";
 import type { TableNode } from "../types";
 import { getBulkActions } from "../bulk";
 import { flattenColumns, getRowActions, getRowKey } from "../payload";
@@ -15,6 +16,7 @@ import { TableActionNode } from "./table-action-node";
 import { ColumnCell } from "./table-cell";
 
 const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => {
+  const { t } = useT("lattice");
   const {
     columns,
     rows,
@@ -112,7 +114,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
               <div className="flex items-center px-4 py-3" role="columnheader">
                 <input
                   type="checkbox"
-                  aria-label="Select all rows"
+                  aria-label={t("a11y.selectAllRows", "Select all rows")}
                   data-test="select-all"
                   checked={selection.allSelected}
                   onChange={selection.toggleAll}
@@ -165,7 +167,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
         <div role="rowgroup">
           {!hasLoaded ? (
             <div className="p-4 text-lt-muted-fg" role="row">
-              <div role="cell">Loading rows...</div>
+              <div role="cell">{t("table.loading", "Loading rows...")}</div>
             </div>
           ) : rowEntries.length === 0 ? (
             <div className="p-8 text-center text-lt-muted-fg" role="row">
@@ -186,7 +188,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                     <div className="flex items-center p-4" role="cell">
                       <input
                         type="checkbox"
-                        aria-label={`Select row ${key}`}
+                        aria-label={t("a11y.selectRow", "Select row {{key}}", { key })}
                         data-test={`select-row-${key}`}
                         checked={selection.isSelected(key)}
                         onChange={() => selection.toggle(key)}

@@ -2,6 +2,7 @@ import { Icon } from "@lattice/lattice/icons";
 import * as Popover from "@radix-ui/react-popover";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@lattice/lattice/lib/utils";
+import { useT } from "@lattice/lattice/i18n";
 import type { Option, RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
@@ -26,6 +27,7 @@ function toValues(stored: unknown, fallback: unknown): string[] {
 }
 
 export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
+  const { t } = useT("lattice");
   const props = node.props;
   const { action, componentRef, errors } = useFormContext();
   const { hidden, required, readOnly, disabled } = useDependentField(node);
@@ -159,7 +161,9 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
                 {labelFor(value)}
                 {!locked && (
                   <button
-                    aria-label={`Remove ${labelFor(value)}`}
+                    aria-label={t("a11y.removeOption", "Remove {{label}}", {
+                      label: labelFor(value),
+                    })}
                     data-test={`select-${name}-remove-${value}`}
                     className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-xs"
                     onClick={() => remove(value)}
@@ -213,7 +217,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
             >
               <div className="flex items-center gap-2 border-b border-lt-border px-3 py-2">
                 <input
-                  aria-label="Search options"
+                  aria-label={t("a11y.searchOptions", "Search options")}
                   data-test={`select-${name}-search`}
                   className="w-full bg-transparent text-sm outline-none placeholder:text-lt-muted-fg"
                   onChange={(event) => setQuery(event.target.value)}

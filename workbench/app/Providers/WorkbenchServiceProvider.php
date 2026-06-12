@@ -45,6 +45,30 @@ class WorkbenchServiceProvider extends ServiceProvider
         $this->app->bind(TypeScriptProfile::class, BaseProfile::class);
         $this->useWorkbenchDatabase();
         $this->readBoostConfigFromPackageRoot();
+        $this->serveLatticeTranslations();
+    }
+
+    /**
+     * Serve Lattice's built-in `lattice` namespace from the package's lang/ dir
+     * via laravel-i18next, so the React chrome can load translated strings.
+     * Namespaced + nested output matches the frontend's namespace and key paths.
+     */
+    private function serveLatticeTranslations(): void
+    {
+        config([
+            'i18next.namespaces' => true,
+            'i18next.output' => 'nested',
+        ]);
+
+        // Point lang_path() at the package's lang/ dir so saveMissing dumps land in
+        // the package, not the workbench or the read-only Testbench skeleton in vendor.
+        $skeletonLangPath = $this->app->langPath();
+        $this->app->useLangPath(package_path('lang'));
+
+        $this->callAfterResolving('translation.loader', function ($loader) use ($skeletonLangPath): void {
+            $loader->addPath($skeletonLangPath);
+            $loader->addPath(package_path('workbench/lang'));
+        });
     }
 
     /**
@@ -71,6 +95,9 @@ class WorkbenchServiceProvider extends ServiceProvider
         config([
             'database.default' => 'sqlite',
             'database.connections.sqlite.database' => $database,
+            // Lock-capable, table-free cache so laravel-i18next's saveMissing dump
+            // (Cache::lock) works without a cache_locks table in the served app.
+            'cache.default' => 'array',
         ]);
     }
 

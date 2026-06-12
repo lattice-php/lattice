@@ -4,6 +4,7 @@ import type { KeyboardEvent, ReactNode } from "react";
 import type { Node, RendererComponent } from "@lattice/lattice/core/types";
 import type { Tab } from "@lattice/lattice/types/generated";
 import { cn } from "@lattice/lattice/lib/utils";
+import { useT } from "@lattice/lattice/i18n";
 
 type TabsContextValue = {
   activeValue: string;
@@ -84,6 +85,7 @@ function queryUrl(queryKey: string, value: string): string {
 }
 
 export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => {
+  const { t } = useT("lattice");
   const tabs = useMemo(() => getTabs(node), [node]);
   const firstValue = tabs[0]?.value ?? "";
   const queryKey = node.props.queryKey;
@@ -162,7 +164,7 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
         data-lattice-tabs={node.key ?? node.id}
       >
         <div
-          aria-label="Tabs"
+          aria-label={t("a11y.tabs", "Tabs")}
           aria-orientation={orientation}
           className={cn(
             "gap-1 rounded-lt bg-lt-muted p-1",

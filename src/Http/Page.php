@@ -78,7 +78,7 @@ abstract class Page implements PageContract
     }
 
     /**
-     * @return array{title: string|null, layout: array{key: string, schema: array<int, array<string, mixed>>}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, schema: array<int, array<string, mixed>>}
+     * @return array{title: string|null, layout: array{key: string, schema: array<int, array<string, mixed>>}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, schema: array<int, array<string, mixed>>, i18n: array{enabled: bool, saveMissing: bool}}
      */
     public function toArray(PageSchema $schema, Request $request): array
     {
@@ -88,6 +88,7 @@ abstract class Page implements PageContract
             'container' => $this->serializePageMetadata($this->container()),
             'breadcrumbs' => $this->breadcrumbs(),
             'schema' => $this->serializeSchema($schema),
+            'i18n' => $this->i18nConfig(),
         ];
     }
 
@@ -126,6 +127,21 @@ abstract class Page implements PageContract
     private function serializeSchema(PageSchema $schema): array
     {
         return json_decode(json_encode($schema->renderable(), JSON_THROW_ON_ERROR), true);
+    }
+
+    /**
+     * i18n signals for the renderer, mirrored from laravel-i18next's config so it
+     * stays the single source of truth. The frontend hardcodes the routes, so only
+     * these travel: whether translations are served and whether missing keys are dumped.
+     *
+     * @return array{enabled: bool, saveMissing: bool}
+     */
+    private function i18nConfig(): array
+    {
+        return [
+            'enabled' => (bool) config('i18next.routes.enabled', false),
+            'saveMissing' => (bool) config('i18next.save_missing.enabled', false),
+        ];
     }
 
     private function response(PageSchema $schema): Response

@@ -56,6 +56,7 @@ export default defineConfig({
             { label: "Navigation", link: "/core/navigation/" },
             { label: "Icons", link: "/core/icons/" },
             { label: "Theming", link: "/core/theming/" },
+            { label: "Internationalization", link: "/core/i18n/" },
           ],
         },
         {

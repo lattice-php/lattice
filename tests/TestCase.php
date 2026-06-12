@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tests;
 
+use Bambamboole\LaravelI18Next\I18NextServiceProvider;
 use Inertia\ServiceProvider as InertiaServiceProvider;
 use Lattice\Lattice\LatticeServiceProvider;
 use Orchestra\Testbench\Concerns\WithLaravelMigrations;
@@ -48,6 +49,7 @@ abstract class TestCase extends BaseTestCase
         return [
             InertiaServiceProvider::class,
             LatticeServiceProvider::class,
+            I18NextServiceProvider::class,
             WorkbenchServiceProvider::class,
         ];
     }

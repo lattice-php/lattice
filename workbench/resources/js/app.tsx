@@ -8,9 +8,11 @@ import {
   Provider,
   registry,
 } from "@lattice/lattice";
+import { configureI18n, type I18nConfig } from "@lattice/lattice/i18n";
 import { createRoot } from "react-dom/client";
 import sprite from "virtual:svg-sprite";
 import { appColumns } from "./lattice/columns";
+import { LanguageSwitcher } from "./lattice/language-switcher";
 
 const appRegistry = extendRegistry(registry, appColumns);
 
@@ -23,9 +25,13 @@ createInertiaApp({
       return;
     }
 
+    const shared = props.initialPage.props as { lattice?: { i18n?: I18nConfig } };
+    void configureI18n(shared.lattice?.i18n);
+
     createRoot(el).render(
       <Provider registry={appRegistry} sprite={sprite}>
         <App {...props} />
+        <LanguageSwitcher />
       </Provider>,
     );
   },

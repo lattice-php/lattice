@@ -1,4 +1,5 @@
 import type { RefObject } from "react";
+import { useT } from "@lattice/lattice/i18n";
 import type { PaginationType } from "@lattice/lattice/types/generated";
 import type { TablePagination as TablePaginationData } from "../types";
 
@@ -23,12 +24,18 @@ export function TablePagination({
   onPage: (page: number) => void;
   onLoadMore: () => void;
 }) {
+  const { t } = useT("lattice");
+
   return (
     <div className="flex items-center justify-between gap-3 border-t border-lt-border p-4 text-sm">
       <span>
         {pagination.total === undefined
-          ? `Page ${currentPage}`
-          : `Showing ${pagination.from ?? 0}-${pagination.to ?? 0} of ${pagination.total}`}
+          ? t("pagination.page", "Page {{page}}", { page: currentPage })
+          : t("pagination.showing", "Showing {{from}}-{{to}} of {{total}}", {
+              from: pagination.from ?? 0,
+              to: pagination.to ?? 0,
+              total: pagination.total,
+            })}
       </span>
       {mode === "infinite" ? (
         <div ref={infiniteLoaderRef} className="flex items-center gap-2">
@@ -40,10 +47,12 @@ export function TablePagination({
               disabled={processing}
               onClick={onLoadMore}
             >
-              {processing ? "Loading..." : "Load more"}
+              {processing
+                ? t("pagination.loading", "Loading...")
+                : t("pagination.loadMore", "Load more")}
             </button>
           ) : (
-            <span className="text-lt-muted-fg">All rows loaded</span>
+            <span className="text-lt-muted-fg">{t("pagination.allLoaded", "All rows loaded")}</span>
           )}
         </div>
       ) : mode === "simple" ? (
@@ -55,7 +64,7 @@ export function TablePagination({
             disabled={processing || currentPage <= 1}
             onClick={() => onPage(currentPage - 1)}
           >
-            Previous
+            {t("pagination.previous", "Previous")}
           </button>
           <button
             type="button"
@@ -64,7 +73,7 @@ export function TablePagination({
             disabled={processing || !hasNextPage}
             onClick={() => onPage(currentPage + 1)}
           >
-            Next
+            {t("pagination.next", "Next")}
           </button>
         </div>
       ) : mode === "table" ? (
@@ -76,7 +85,7 @@ export function TablePagination({
             disabled={processing || currentPage <= 1}
             onClick={() => onPage(currentPage - 1)}
           >
-            Previous
+            {t("pagination.previous", "Previous")}
           </button>
           {visiblePages.map((pageNumber) => (
             <button
@@ -86,7 +95,7 @@ export function TablePagination({
               className="inline-flex size-9 items-center justify-center rounded-lt-sm border border-lt-border font-medium disabled:opacity-50"
               disabled={processing || pageNumber === currentPage}
               aria-current={pageNumber === currentPage ? "page" : undefined}
-              aria-label={`Page ${pageNumber}`}
+              aria-label={t("pagination.page", "Page {{page}}", { page: pageNumber })}
               onClick={() => onPage(pageNumber)}
             >
               {pageNumber}
@@ -99,7 +108,7 @@ export function TablePagination({
             disabled={processing || !hasNextPage}
             onClick={() => onPage(currentPage + 1)}
           >
-            Next
+            {t("pagination.next", "Next")}
           </button>
         </div>
       ) : null}
