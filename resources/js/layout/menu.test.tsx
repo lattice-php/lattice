@@ -13,13 +13,15 @@ vi.mock("@inertiajs/react", () => ({
     children,
     href,
     method,
+    as,
     ...rest
   }: {
     children: React.ReactNode;
     href: string;
     method?: string;
+    as?: string;
   }) => (
-    <a data-method={method} href={href} {...rest}>
+    <a data-method={method} data-as={as} href={href} {...rest}>
       {children}
     </a>
   ),
@@ -135,5 +137,23 @@ describe("Menu", () => {
     fireEvent.click(screen.getByRole("button", { name: "Account" }));
 
     expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", "/profile");
+  });
+
+  it("renders a non-get item as an actionable button link", () => {
+    renderMenu({
+      id: "main",
+      type: "menu",
+      schema: [
+        {
+          id: "i-logout",
+          props: { href: "/logout", label: "Log out", method: "post" },
+          type: "menu-item",
+        },
+      ],
+    });
+
+    const link = screen.getByRole("link", { name: "Log out" });
+    expect(link).toHaveAttribute("data-method", "post");
+    expect(link).toHaveAttribute("data-as", "button");
   });
 });

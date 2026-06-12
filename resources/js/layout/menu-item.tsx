@@ -63,15 +63,17 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
   }
 
   const active = currentPath === href;
+  const method = node.props.method ?? "get";
 
   return (
     <li>
       <Link
         aria-current={active ? "page" : undefined}
+        as={method === "get" ? undefined : "button"}
         className={cn(rowClass, collapsed && "justify-center", active && "bg-lt-muted font-medium")}
         data-test={`menu-${slug}`}
         href={href}
-        method={node.props.method ?? "get"}
+        method={method}
         title={collapsed ? label : undefined}
       >
         {content}
