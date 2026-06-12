@@ -91,3 +91,12 @@ it("renders an unknown-block placeholder", () => {
   wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, { items: [{ type: "video" }] });
   expect(screen.getByText(/Unknown block/i)).toBeInTheDocument();
 });
+
+it("can remove an unknown-block row", () => {
+  wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
+    items: [{ type: "video" }, { type: "text", content: "keep" }],
+  });
+  expect(screen.getByText(/Unknown block/i)).toBeInTheDocument();
+  fireEvent.click(screen.getByTestId("repeater-items-remove-0"));
+  expect(screen.queryByText(/Unknown block/i)).not.toBeInTheDocument();
+});

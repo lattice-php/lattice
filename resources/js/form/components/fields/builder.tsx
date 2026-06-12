@@ -1,4 +1,5 @@
 import type { Node, RendererComponent } from "@lattice/lattice/core/types";
+import { Icon } from "@lattice/lattice/icons";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";
@@ -47,9 +48,20 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
               <div
                 key={index}
                 data-test={`repeater-${name}-row-${index}`}
-                className="rounded-lt border border-dashed border-lt-border p-4 text-sm text-lt-muted-fg"
+                className="flex items-center justify-between rounded-lt border border-dashed border-lt-border p-4 text-sm text-lt-muted-fg"
               >
-                Unknown block: {String(row.type)}
+                <span>Unknown block: {String(row.type)}</span>
+                {!atMin && (
+                  <button
+                    type="button"
+                    aria-label="Remove"
+                    data-test={`repeater-${name}-remove-${index}`}
+                    className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-sm"
+                    onClick={() => onRemove(index)}
+                  >
+                    <Icon name="trash-2" />
+                  </button>
+                )}
               </div>
             );
           }
