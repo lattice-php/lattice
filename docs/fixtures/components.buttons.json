@@ -1,0 +1,76 @@
+[
+    {
+        "props": {
+            "align": null,
+            "direction": "row",
+            "gap": "sm",
+            "width": null
+        },
+        "schema": [
+            {
+                "props": {
+                    "buttonType": "button",
+                    "href": null,
+                    "label": "Default",
+                    "variant": "default"
+                },
+                "type": "button"
+            },
+            {
+                "props": {
+                    "buttonType": "button",
+                    "href": null,
+                    "label": "Secondary",
+                    "variant": "secondary"
+                },
+                "type": "button"
+            },
+            {
+                "props": {
+                    "buttonType": "button",
+                    "href": null,
+                    "label": "Success",
+                    "variant": "success"
+                },
+                "type": "button"
+            },
+            {
+                "props": {
+                    "buttonType": "button",
+                    "href": null,
+                    "label": "Info",
+                    "variant": "info"
+                },
+                "type": "button"
+            },
+            {
+                "props": {
+                    "buttonType": "button",
+                    "href": null,
+                    "label": "Destructive",
+                    "variant": "destructive"
+                },
+                "type": "button"
+            },
+            {
+                "props": {
+                    "buttonType": "button",
+                    "href": null,
+                    "label": "Outline",
+                    "variant": "outline"
+                },
+                "type": "button"
+            },
+            {
+                "props": {
+                    "buttonType": "button",
+                    "href": null,
+                    "label": "Ghost",
+                    "variant": "ghost"
+                },
+                "type": "button"
+            }
+        ],
+        "type": "stack"
+    }
+]

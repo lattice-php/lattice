@@ -54,4 +54,20 @@ describe('docs fixtures', function (): void {
 
         expect('docs/fixtures/components.section.json')->toBeReadableFile();
     });
+
+    it('dumps the button variants example', function (): void {
+        dumpFixture('components.buttons', [
+            Stack::make()->direction('row')->gap(Gap::Small)->schema([
+                Button::make('Default')->variant(ButtonVariant::Default),
+                Button::make('Secondary')->variant(ButtonVariant::Secondary),
+                Button::make('Success')->variant(ButtonVariant::Success),
+                Button::make('Info')->variant(ButtonVariant::Info),
+                Button::make('Destructive')->variant(ButtonVariant::Destructive),
+                Button::make('Outline')->variant(ButtonVariant::Outline),
+                Button::make('Ghost')->variant(ButtonVariant::Ghost),
+            ]),
+        ]);
+
+        expect('docs/fixtures/components.buttons.json')->toBeReadableFile();
+    });
 });

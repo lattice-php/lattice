@@ -4,6 +4,8 @@ description: The server-side visual vocabulary — layout, display, and interact
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
 
 Components are the building blocks a page renders. Each is a PHP builder that serializes to a typed
 node (`type` plus `props`) the renderer maps to a React component. They compose into a tree:
@@ -26,7 +28,7 @@ containers take a `->schema([...])` of children.
 Layout components arrange their children. They are containers — pass children to `->schema()`.
 
 - **`Stack`** stacks children vertically with a `->gap()` (`Gap::ExtraSmall`…`ExtraLarge`), and
-  optional `->align()` and `->width()`.
+  optional `->align()` and `->width()`. Pass `->direction('row')` to lay children out horizontally.
 - **`Grid`** lays children out in columns via `->columns(n)`.
 - **`Card`** wraps children in a bordered panel with an optional title and description —
   `Card::make('Title', 'Description')`.
@@ -75,8 +77,10 @@ Badge::make('Trialing');
 
 ## Interactive
 
-- **`Button::make($label)`** — a button. Set `->variant(ButtonVariant::…)`, give it an `->href()` to
-  render as a link, or `->submit()` to act as a form's submit control (see [Forms](/forms/overview/#the-submit-button)).
+- **`Button::make($label)`** — a button. Give it an `->href()` to render as a link, or `->submit()` to
+  act as a form's submit control (see [Forms](/forms/overview/#the-submit-button)). Style it with
+  `->variant()`: `Default`, `Secondary`, `Success`, `Info`, `Destructive`, `Outline`, `Ghost`, or
+  `Link` (see [`ButtonVariant`](/advanced/enums/)).
 - **`Link::make($label)->href($url)`** — a navigational link.
 - **`SegmentedControl::make($name)`** — a segmented option control that emits an event on change.
 - **`ActionGroup`** — groups several [actions](/actions/overview/) behind one trigger.
@@ -86,20 +90,48 @@ Button::make('Save')->variant(ButtonVariant::Default);
 Link::make('Documentation')->href('https://latticephp.com');
 ```
 
+<ComponentExample
+  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+    Button::make('Default')->variant(ButtonVariant::Default),
+    Button::make('Secondary')->variant(ButtonVariant::Secondary),
+    Button::make('Success')->variant(ButtonVariant::Success),
+    Button::make('Info')->variant(ButtonVariant::Info),
+    Button::make('Destructive')->variant(ButtonVariant::Destructive),
+    Button::make('Outline')->variant(ButtonVariant::Outline),
+    Button::make('Ghost')->variant(ButtonVariant::Ghost),
+]);`}
+  fixture="components.buttons"
+/>
+
 ## Tabs and modals
 
 - **`Tabs`** + **`Tab`** render a tab strip. `Tabs::make()->defaultValue('overview')->schema([...])`
-  holds `Tab::make('overview', 'Overview')->schema([...])` children; `->orientation()` switches between
-  horizontal and vertical. A tab's content can render lazily on first open.
+  holds `Tab::make('value', 'Label')->schema([...])` children. `->orientation(Orientation::Vertical)`
+  moves the strip to the side, and the active tab is kept in the URL query string — `->queryKey('tab')`
+  sets the parameter name. A tab's content renders lazily on first open.
 - **`Modal::make($id)->title('…')->schema([...])`** is a dialog opened and closed by
-  [action effects](/actions/effects/) (`openModal`/`closeModal`).
+  [action effects](/actions/effects/) (`openModal`/`closeModal`). Add a `->description()`, relabel its
+  close button with `->closeLabel()`, or start it open with `->open()`.
 
 ```php
-Tabs::make()->defaultValue('details')->schema([
+Tabs::make()->defaultValue('details')->queryKey('tab')->schema([
     Tab::make('details', 'Details')->schema([/* … */]),
     Tab::make('history', 'History')->schema([/* … */]),
 ]);
 ```
+
+<Warning title="Password-confirmed tabs">
+  `Tab::make('billing', 'Billing')->confirm()` gates a tab behind Laravel's password confirmation.
+  Until the user confirms (redirected to `/user/confirm-password` by default — pass your own URL and an
+  optional `timeout`), the tab's children are stripped from the response, so protected content never
+  reaches the client. Reach for it on sensitive panels.
+</Warning>
+
+<Info>
+  Modals are normally driven from the server: an [action](/actions/overview/) returns an
+  `openModal` / `closeModal` [effect](/actions/effects/). `->open()` is only for a modal that should
+  render already open.
+</Info>
 
 ## Fragments
 
