@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
+use Lattice\Lattice\Support\TypeScript\MixedToUnknownClassPropertyProcessor;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
+use Spatie\TypeScriptTransformer\Transformers\ClassPropertyProcessors\ClassPropertyProcessor;
 use Spatie\TypeScriptTransformer\Transformers\ClassTransformer;
 
 /**
@@ -24,5 +26,16 @@ final class ValueObjectTransformer extends ClassTransformer
     protected function shouldTransform(PhpClassNode $phpClassNode): bool
     {
         return in_array($phpClassNode->getName(), $this->allowed, true);
+    }
+
+    /**
+     * @return array<ClassPropertyProcessor>
+     */
+    protected function classPropertyProcessors(): array
+    {
+        return [
+            ...parent::classPropertyProcessors(),
+            new MixedToUnknownClassPropertyProcessor,
+        ];
     }
 }

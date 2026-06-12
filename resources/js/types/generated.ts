@@ -1,10 +1,5 @@
 export type Action = {
-  confirmation: {
-    title: string;
-    description?: string;
-    confirmLabel?: string;
-    cancelLabel?: string;
-  } | null;
+  confirmation: Confirmation | null;
   effects: Effect[];
   endpoint: string | null;
   form: Form | null;
@@ -44,12 +39,7 @@ export type Badge = {
   label: string;
 };
 export type BulkAction = {
-  confirmation: {
-    title: string;
-    description?: string;
-    confirmLabel?: string;
-    cancelLabel?: string;
-  } | null;
+  confirmation: Confirmation | null;
   effects: Effect[];
   endpoint: string | null;
   form: Form | null;
@@ -74,14 +64,12 @@ export type Card = {
 };
 export type Checkbox = {
   autoFocus: boolean | null;
-  conditions: Record<
-    string,
-    {
-      field: string;
-      operator: string;
-      value: any;
-    }[]
-  > | null;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
@@ -91,32 +79,27 @@ export type Checkbox = {
   readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
-  value: any;
+  value: unknown;
 };
 export type Choice = {
   autoFocus: boolean | null;
-  conditions: Record<
-    string,
-    {
-      field: string;
-      operator: string;
-      value: any;
-    }[]
-  > | null;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
   hidden: boolean | null;
   label: string | null;
   name: string;
-  options: {
-    label: string;
-    value: string;
-  }[];
+  options: Option[];
   readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
-  value: any;
+  value: unknown;
 };
 export type CloseModalEffect = {
   readonly modal?: string | null;
@@ -136,7 +119,7 @@ export type ColumnData = {
     external: boolean;
   } | null;
   readonly columns: ColumnData[] | null;
-  readonly props: Record<string, any> | null;
+  readonly props: Record<string, unknown> | null;
 };
 export type ColumnFilter = {
   readonly enabled: boolean;
@@ -145,6 +128,17 @@ export type ColumnFilter = {
   readonly defaultOperator: Op;
 };
 export type ColumnType = "text" | "stack";
+export type Condition = {
+  readonly field: string;
+  readonly operator: Op;
+  readonly value: unknown;
+};
+export type Confirmation = {
+  readonly title: string;
+  readonly description: string | null;
+  readonly confirmLabel: string | null;
+  readonly cancelLabel: string | null;
+};
 export type CoreNode =
   | {
       type: "badge";
@@ -215,14 +209,12 @@ export type CoreNode =
     };
 export type DateInput = {
   autoFocus: boolean | null;
-  conditions: Record<
-    string,
-    {
-      field: string;
-      operator: string;
-      value: any;
-    }[]
-  > | null;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
@@ -234,7 +226,7 @@ export type DateInput = {
   readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
-  value: any;
+  value: unknown;
 };
 export type DownloadEffect = {
   readonly url: string;
@@ -287,7 +279,7 @@ export type Form = {
   ref: string | null;
   resetOnError: string[] | boolean | null;
   resetOnSuccess: string[] | boolean | null;
-  state: Record<string, any>;
+  state: Record<string, unknown>;
   status: string | null;
   submitButton: boolean | null;
   submitLabel: string | null;
@@ -375,14 +367,12 @@ export type Heading = {
   text: string;
 };
 export type HiddenInput = {
-  conditions: Record<
-    string,
-    {
-      field: string;
-      operator: string;
-      value: any;
-    }[]
-  > | null;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
@@ -391,7 +381,7 @@ export type HiddenInput = {
   name: string;
   readOnly: boolean | null;
   required: boolean | null;
-  value: any;
+  value: unknown;
 };
 export type HttpMethod = import("@inertiajs/core").Method;
 export type LayoutNode =
@@ -442,14 +432,12 @@ export type Node = FormNode | CoreNode | ActionNode | FragmentNode | TableNode |
 export type NodeType = Node["type"];
 export type NumberInput = {
   autoFocus: boolean | null;
-  conditions: Record<
-    string,
-    {
-      field: string;
-      operator: string;
-      value: any;
-    }[]
-  > | null;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
@@ -464,7 +452,7 @@ export type NumberInput = {
   slider: boolean | null;
   step: number | null;
   tabIndex: number | null;
-  value: any;
+  value: unknown;
 };
 export type Op =
   | "contains"
@@ -485,6 +473,10 @@ export type Op =
 export type OpenModalEffect = {
   readonly modal: string;
 };
+export type Option = {
+  readonly label: string;
+  readonly value: string;
+};
 export type Orientation = "horizontal" | "vertical";
 export type Outlet = object;
 export type PageContainer = "centered" | "default";
@@ -493,14 +485,12 @@ export type PaginationType = "none" | "simple" | "table" | "infinite";
 export type PasswordInput = {
   autoComplete: string | null;
   autoFocus: boolean | null;
-  conditions: Record<
-    string,
-    {
-      field: string;
-      operator: string;
-      value: any;
-    }[]
-  > | null;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
   confirmation: {
     label: string;
     name: string;
@@ -522,7 +512,7 @@ export type PasswordInput = {
   readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
-  value: any;
+  value: unknown;
 };
 export type RedirectEffect = {
   readonly url: string;
@@ -535,14 +525,12 @@ export type ResetFormEffect = {
   readonly form?: string | null;
 };
 export type RichEditor = {
-  conditions: Record<
-    string,
-    {
-      field: string;
-      operator: string;
-      value: any;
-    }[]
-  > | null;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
@@ -552,28 +540,23 @@ export type RichEditor = {
   placeholder: string | null;
   readOnly: boolean | null;
   required: boolean | null;
-  value: any;
+  value: unknown;
 };
 export type SegmentedControl = {
   emits: string | null;
   label: string | null;
   name: string;
-  options: {
-    label: string;
-    value: string;
-  }[];
+  options: Option[];
   value: string | null;
 };
 export type Select = {
   autoFocus: boolean | null;
-  conditions: Record<
-    string,
-    {
-      field: string;
-      operator: string;
-      value: any;
-    }[]
-  > | null;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
@@ -581,16 +564,13 @@ export type Select = {
   label: string | null;
   multiple: boolean | null;
   name: string;
-  options: {
-    label: string;
-    value: string;
-  }[];
+  options: Option[];
   placeholder: string | null;
   readOnly: boolean | null;
   required: boolean | null;
   searchable: boolean | null;
   tabIndex: number | null;
-  value: any;
+  value: unknown;
 };
 export type Sidebar = {
   collapsible: boolean;
@@ -644,14 +624,12 @@ export type Text = {
 export type TextInput = {
   autoComplete: string | null;
   autoFocus: boolean | null;
-  conditions: Record<
-    string,
-    {
-      field: string;
-      operator: string;
-      value: any;
-    }[]
-  > | null;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
@@ -663,18 +641,16 @@ export type TextInput = {
   required: boolean | null;
   tabIndex: number | null;
   type: string | null;
-  value: any;
+  value: unknown;
 };
 export type Textarea = {
   autoFocus: boolean | null;
-  conditions: Record<
-    string,
-    {
-      field: string;
-      operator: string;
-      value: any;
-    }[]
-  > | null;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
   dependsOnAny: boolean | null;
   dependsOnKeys: string[] | null;
   disabled: boolean | null;
@@ -686,7 +662,7 @@ export type Textarea = {
   required: boolean | null;
   rows: number | null;
   tabIndex: number | null;
-  value: any;
+  value: unknown;
 };
 export type ToastEffect = {
   readonly variant: ToastVariant;

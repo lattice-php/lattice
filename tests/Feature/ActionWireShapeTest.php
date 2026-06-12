@@ -83,12 +83,17 @@ it('serializes a null form when none is attached', function (): void {
     expect($payload['props']['form'])->toBeNull();
 });
 
-it('drops null confirmation entries and includes empty effects', function (): void {
+it('serializes the full confirmation shape and includes empty effects', function (): void {
     $action = Action::make('simple')->confirm('Sure?');
 
     $payload = json_decode(json_encode($action), true);
 
-    expect($payload['props']['confirmation'])->toBe(['title' => 'Sure?']);
+    expect($payload['props']['confirmation'])->toBe([
+        'title' => 'Sure?',
+        'description' => null,
+        'confirmLabel' => null,
+        'cancelLabel' => null,
+    ]);
     expect($payload['props']['effects'])->toBe([]);
 });
 
@@ -122,6 +127,8 @@ it('carries typed props through Action::use from the registry', function (): voi
         'confirmation' => [
             'title' => 'Archive product?',
             'description' => 'This hides the product from the catalogue.',
+            'confirmLabel' => null,
+            'cancelLabel' => null,
         ],
     ]);
     expect($payload['props']['ref'])->toBeString();

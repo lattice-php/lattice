@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Actions\Components;
 use BackedEnum;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
+use Lattice\Lattice\Actions\Confirmation;
 use Lattice\Lattice\Actions\Contracts\Effect;
 use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Components\Component;
@@ -28,9 +29,10 @@ class Action extends Component
     public ?string $icon = null;
 
     /**
-     * @var array{title: string, description?: string, confirmLabel?: string, cancelLabel?: string}|null
+     * The confirmation dialog shown before the action runs, or `null` until
+     * {@see confirm()} sets one.
      */
-    public ?array $confirmation = null;
+    public ?Confirmation $confirmation = null;
 
     /**
      * @var array<int, Effect>
@@ -84,12 +86,7 @@ class Action extends Component
         ?string $confirmLabel = null,
         ?string $cancelLabel = null,
     ): static {
-        $this->confirmation = array_filter([
-            'title' => $title,
-            'description' => $description,
-            'confirmLabel' => $confirmLabel,
-            'cancelLabel' => $cancelLabel,
-        ], fn (mixed $value): bool => $value !== null);
+        $this->confirmation = new Confirmation($title, $description, $confirmLabel, $cancelLabel);
 
         return $this;
     }

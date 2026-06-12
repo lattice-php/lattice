@@ -2,6 +2,7 @@ import type { ComponentType as ReactComponentType, ReactNode } from "react";
 import type {
   Node as WireNode,
   NodeType,
+  Option,
   PageContainer as KnownPageContainer,
 } from "@lattice/lattice/types/generated";
 
@@ -11,10 +12,7 @@ export type { KnownPageContainer, NodeType, WireNode };
 export type NodeProps = Record<string, unknown>;
 
 /** A `{ label, value }` pair used by the choice, select and segmented controls. */
-export type Option = {
-  label: string;
-  value: string;
-};
+export type { Option };
 
 /**
  * A node whose `type` is not one of the generated built-ins. This is the escape

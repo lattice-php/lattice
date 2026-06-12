@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Forms\Concerns;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\FormData;
@@ -29,7 +30,7 @@ trait ResolvesFormFields
      * Resolve the searchable options for a single field. The field's own resolver
      * owns the query, so this never touches an arbitrary model.
      *
-     * @return array{options: array<int, array{label: string, value: string}>}
+     * @return array{options: list<Option>}
      */
     public function searchOptions(Request $request): array
     {

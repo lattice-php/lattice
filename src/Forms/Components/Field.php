@@ -28,7 +28,12 @@ abstract class Field extends Component
     public ?bool $disabled = null;
 
     /**
-     * @var array<string, array<int, array{field: string, operator: string, value: mixed}>>|null
+     * @var array{
+     *     visible?: list<Condition>,
+     *     required?: list<Condition>,
+     *     readOnly?: list<Condition>,
+     *     disabled?: list<Condition>,
+     * }|null
      */
     public ?array $conditions = null;
 
@@ -384,21 +389,29 @@ abstract class Field extends Component
     }
 
     /**
+     * The conditions declared for one intent (visible/required/readOnly/disabled),
+     * as the value objects that serialize to the field's `conditions` wire shape.
+     *
+     * @return list<Condition>
+     */
+    private function conditionsFor(string $intent): array
+    {
+        return ($this->conditionSets[$intent] ?? null)?->all() ?? [];
+    }
+
+    /**
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
     #[SerializationHook(priority: 190)]
     protected function projectComputedProps(array $data): array
     {
-        $conditions = [];
-
-        foreach ($this->conditionSets as $group => $set) {
-            $serialised = $set->jsonSerialize();
-
-            if ($serialised !== []) {
-                $conditions[$group] = $serialised;
-            }
-        }
+        $conditions = array_filter([
+            'visible' => $this->conditionsFor('visible'),
+            'required' => $this->conditionsFor('required'),
+            'readOnly' => $this->conditionsFor('readOnly'),
+            'disabled' => $this->conditionsFor('disabled'),
+        ], static fn (array $set): bool => $set !== []);
 
         $this->conditions = $conditions === [] ? null : $conditions;
 

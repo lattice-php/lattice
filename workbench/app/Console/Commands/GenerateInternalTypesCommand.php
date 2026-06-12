@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Workbench\App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Lattice\Lattice\Actions\Confirmation;
 use Lattice\Lattice\Actions\Contracts\Effect;
 use Lattice\Lattice\Actions\Enums\EffectType;
 use Lattice\Lattice\Attributes\Effect as EffectAttribute;
@@ -18,7 +19,9 @@ use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Lattice\Lattice\Core\Enums\Width;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Conditions\Condition;
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
@@ -84,6 +87,9 @@ final class GenerateInternalTypesCommand extends Command
                     EffectType::class,
                 ]),
                 new ValueObjectTransformer([
+                    Condition::class,
+                    Confirmation::class,
+                    Option::class,
                     ColumnData::class,
                     ColumnFilter::class,
                     FilterClause::class,

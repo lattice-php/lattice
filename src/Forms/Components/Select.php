@@ -10,6 +10,7 @@ use Lattice\Lattice\Core\Concerns\HasAutoFocus;
 use Lattice\Lattice\Core\Concerns\HasOptions;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\FormData;
 
 #[Component('form.select')]
@@ -40,7 +41,7 @@ class Select extends Field
      * current form data and request) and returns the matching options. The option
      * value is the entity identifier and is fully controlled by the resolver.
      *
-     * @param  Closure(string, FormData, Request): (array<int, array{label: string, value: string|int}>|Collection<int, array{label: string, value: string|int}>)  $resolver
+     * @param  Closure(string, FormData, Request): (array<int, Option|array{label: string, value: string|int}>|Collection<int, Option|array{label: string, value: string|int}>)  $resolver
      */
     public function searchable(Closure $resolver): static
     {
@@ -63,7 +64,7 @@ class Select extends Field
      * The resolver always receives an array of values (one entry for a single select),
      * so a `whereIn` query works for both single and multiple selects.
      *
-     * @param  Closure(array<int, string>): (array<int, array{label: string, value: string|int}>|Collection<int, array{label: string, value: string|int}>)  $resolver
+     * @param  Closure(array<int, string>): (array<int, Option|array{label: string, value: string|int}>|Collection<int, Option|array{label: string, value: string|int}>)  $resolver
      */
     public function resolveSelectedUsing(Closure $resolver): static
     {
@@ -75,7 +76,7 @@ class Select extends Field
     /**
      * @internal
      *
-     * @return array<int, array{label: string, value: string}>
+     * @return list<Option>
      */
     public function resolveSearch(string $query, FormData $data, Request $request): array
     {
@@ -105,10 +106,10 @@ class Select extends Field
         $existing = $this->options;
 
         $merged = [...$existing];
-        $seen = array_column($existing, 'value');
+        $seen = array_map(static fn (Option $option): string => $option->value, $existing);
 
         foreach ($resolved as $option) {
-            if (! in_array($option['value'], $seen, true)) {
+            if (! in_array($option->value, $seen, true)) {
                 $merged[] = $option;
             }
         }
@@ -117,8 +118,8 @@ class Select extends Field
     }
 
     /**
-     * @param  array<int, array{label: string, value: string|int}>|Collection<int, array{label: string, value: string|int}>  $options
-     * @return array<int, array{label: string, value: string}>
+     * @param  array<int, Option|array{label: string, value: string|int}>|Collection<int, Option|array{label: string, value: string|int}>  $options
+     * @return list<Option>
      */
     private function normalizeOptions(array|Collection $options): array
     {
@@ -127,10 +128,9 @@ class Select extends Field
         }
 
         return array_values(array_map(
-            static fn (array $option): array => [
-                'label' => (string) $option['label'],
-                'value' => (string) $option['value'],
-            ],
+            static fn (Option|array $option): Option => $option instanceof Option
+                ? $option
+                : new Option((string) $option['label'], (string) $option['value']),
             $options,
         ));
     }

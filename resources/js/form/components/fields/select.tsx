@@ -11,7 +11,7 @@ import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
 import { useFormValue } from "../values";
 
-function toValues(stored: unknown, fallback: string | string[] | undefined): string[] {
+function toValues(stored: unknown, fallback: unknown): string[] {
   const source = stored ?? fallback;
 
   if (Array.isArray(source)) {

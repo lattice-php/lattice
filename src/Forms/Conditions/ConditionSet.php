@@ -10,13 +10,21 @@ use Lattice\Lattice\Forms\FormData;
 final class ConditionSet implements JsonSerializable
 {
     /**
-     * @var array<int, Condition>
+     * @var list<Condition>
      */
     private array $conditions = [];
 
     public function add(Condition $condition): void
     {
         $this->conditions[] = $condition;
+    }
+
+    /**
+     * @return list<Condition>
+     */
+    public function all(): array
+    {
+        return $this->conditions;
     }
 
     public function anyMatches(FormData $data): bool
