@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
+use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleColumnProps;
 
 it('discovers attributed components under a path with type, flags and category', function () {
     $discovered = (new ComponentDiscovery)->discover(__DIR__.'/../../Fixtures/TypeScript');
@@ -48,4 +49,15 @@ it('derives the domain from the namespace segment before Components', function (
     assert($card instanceof DiscoveredComponent);
 
     expect($card->domain)->toBe('Core');
+});
+
+it('discovers columns via attribute inheritance and captures the props class', function () {
+    $discovered = (new ComponentDiscovery)->discover(__DIR__.'/../../Fixtures/TypeScript');
+
+    $column = collect($discovered)->keyBy->type->get('column.rating');
+
+    assert($column instanceof DiscoveredComponent);
+
+    expect($column->category)->toBe('column')
+        ->and($column->propsClass)->toBe(SampleColumnProps::class);
 });

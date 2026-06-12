@@ -2,11 +2,11 @@
 
 namespace Lattice\Lattice\Tests\Fixtures\TypeScript;
 
-use Lattice\Lattice\Attributes\Component;
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 
-#[Component('column.rating')]
+#[Attributes\Column(type: 'column.rating', props: SampleColumnProps::class)]
 class SampleColumn extends Column
 {
     public int $max = 5;
@@ -17,7 +17,7 @@ class SampleColumn extends Column
             key: $this->key,
             label: $this->label,
             type: 'column.rating',
-            props: ['max' => $this->max],
+            props: new SampleColumnProps($this->max),
         );
     }
 }
