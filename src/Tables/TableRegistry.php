@@ -56,6 +56,8 @@ final class TableRegistry extends DefinitionRegistry
             ->columns($columns)
             ->layout($definition->layout())
             ->striped($definition->striped())
+            ->actionsLabel($definition->actionsLabel())
+            ->emptyLabel($definition->emptyLabel())
             ->bulkActions($this->bulkActions($definition, $key))
             ->result($result($definition, $query), $query);
 

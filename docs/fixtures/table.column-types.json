@@ -2,6 +2,7 @@
     {
         "id": "members",
         "props": {
+            "actionsLabel": "Actions",
             "bulkActions": [],
             "columns": [
                 {
@@ -91,6 +92,7 @@
                     "verified": "1"
                 }
             ],
+            "emptyLabel": "No results",
             "endpoint": null,
             "layout": null,
             "lazy": null,

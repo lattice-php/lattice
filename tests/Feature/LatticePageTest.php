@@ -553,6 +553,8 @@ test('registered tables serialize their configured endpoint columns state and in
                 'bulkActions' => [],
                 'striped' => null,
                 'lazy' => null,
+                'actionsLabel' => 'Actions',
+                'emptyLabel' => 'No results',
                 'columns' => [
                     [
                         'key' => 'name',
@@ -637,6 +639,8 @@ test('registered tables can serialize lazily without running their query', funct
                 'layout' => null,
                 'bulkActions' => [],
                 'striped' => null,
+                'actionsLabel' => 'Actions',
+                'emptyLabel' => 'No results',
                 'columns' => [
                     [
                         'key' => 'name',
@@ -1295,7 +1299,7 @@ test('modals serialize composable children for action driven dialogs', function 
             'props' => [
                 'title' => 'Set up two-factor authentication',
                 'description' => 'Scan the QR code with your authenticator app.',
-                'closeLabel' => null,
+                'closeLabel' => 'Close',
                 'open' => null,
                 'ref' => null,
             ],

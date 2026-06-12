@@ -29,9 +29,18 @@ class Select extends Field
 
     public ?bool $searchable = null;
 
+    public string $emptyLabel = 'No options';
+
     public function multiple(bool $multiple = true): static
     {
         $this->multiple = $multiple;
+
+        return $this;
+    }
+
+    public function emptyLabel(string $label): static
+    {
+        $this->emptyLabel = $label;
 
         return $this;
     }

@@ -224,7 +224,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
               </div>
               <div className="max-h-60 overflow-y-auto p-1" role="listbox">
                 {visibleOptions.length === 0 ? (
-                  <p className="px-3 py-2 text-sm text-lt-muted-fg">No options</p>
+                  <p className="px-3 py-2 text-sm text-lt-muted-fg">{props.emptyLabel}</p>
                 ) : (
                   visibleOptions.map((option) => {
                     const isSelected = selected.includes(option.value);

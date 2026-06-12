@@ -39,6 +39,10 @@ class Table extends Component
 
     public ?bool $lazy = null;
 
+    public string $actionsLabel = 'Actions';
+
+    public string $emptyLabel = 'No results';
+
     /**
      * The serialized {data, pagination, state} result, projected into props
      * verbatim so empty data/pagination stay on the wire — typed reflection
@@ -95,6 +99,20 @@ class Table extends Component
     public function layout(string $layout): static
     {
         $this->layout = $layout === 'table' ? null : $layout;
+
+        return $this;
+    }
+
+    public function actionsLabel(string $label): static
+    {
+        $this->actionsLabel = $label;
+
+        return $this;
+    }
+
+    public function emptyLabel(string $label): static
+    {
+        $this->emptyLabel = $label;
 
         return $this;
     }

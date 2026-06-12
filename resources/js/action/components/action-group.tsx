@@ -4,7 +4,7 @@ import { Button } from "@lattice/lattice/core/components/button";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 
 const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, node }) => {
-  const label = node.props.label ?? "Actions";
+  const label = node.props.label;
 
   return (
     <div className="inline-flex" data-lattice-component={node.id}>

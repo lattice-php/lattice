@@ -133,7 +133,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                 className="px-4 py-3 text-right align-middle font-medium text-lt-muted-fg"
                 role="columnheader"
               >
-                <span className="sr-only">Actions</span>
+                <span className="sr-only">{node.props?.actionsLabel}</span>
               </div>
             )}
           </div>
@@ -166,6 +166,10 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
           {!hasLoaded ? (
             <div className="p-4 text-lt-muted-fg" role="row">
               <div role="cell">Loading rows...</div>
+            </div>
+          ) : rowEntries.length === 0 ? (
+            <div className="p-8 text-center text-lt-muted-fg" role="row">
+              <div role="cell">{node.props?.emptyLabel}</div>
             </div>
           ) : (
             rowEntries.map(({ row, actions, key }) => {

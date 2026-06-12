@@ -12,7 +12,7 @@ class ActionGroup extends ContainerComponent
 {
     use IsInteractive;
 
-    public ?string $label = null;
+    public string $label = 'Actions';
 
     public static function make(string $id): static
     {
