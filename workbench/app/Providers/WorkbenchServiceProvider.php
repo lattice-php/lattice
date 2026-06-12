@@ -45,6 +45,24 @@ class WorkbenchServiceProvider extends ServiceProvider
         $this->app->bind(TypeScriptProfile::class, BaseProfile::class);
         $this->useWorkbenchDatabase();
         $this->readBoostConfigFromPackageRoot();
+        $this->serveLatticeTranslations();
+    }
+
+    /**
+     * Serve Lattice's built-in `lattice` namespace from workbench/lang via
+     * laravel-i18next, so the React chrome can load translated strings. Namespaced
+     * + nested output matches the frontend's `lattice` namespace and key paths.
+     */
+    private function serveLatticeTranslations(): void
+    {
+        config([
+            'i18next.namespaces' => true,
+            'i18next.output' => 'nested',
+        ]);
+
+        $this->callAfterResolving('translation.loader', function ($loader): void {
+            $loader->addPath(package_path('workbench/lang'));
+        });
     }
 
     /**

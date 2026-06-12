@@ -12,6 +12,7 @@ import { enableBackend } from "@lattice/lattice/i18n";
 import { createRoot } from "react-dom/client";
 import { appColumns } from "./lattice/columns";
 import { appIcons } from "./lattice/icons";
+import { LanguageSwitcher } from "./lattice/language-switcher";
 
 const appRegistry = extendRegistry(registry, appColumns);
 
@@ -31,6 +32,7 @@ createInertiaApp({
       <Provider registry={appRegistry}>
         <IconRendererProvider renderer={appIcons}>
           <App {...props} />
+          <LanguageSwitcher />
         </IconRendererProvider>
       </Provider>,
     );

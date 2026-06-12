@@ -1,0 +1,94 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * German translations for Lattice's built-in UI chrome, served to react-i18next
+ * through bambamboole/laravel-i18next at /locales/de/lattice.json. Mirrors the
+ * keys bundled in resources/js/i18n/locales/en.ts.
+ */
+return [
+    'editor' => [
+        'bold' => 'Fett',
+        'italic' => 'Kursiv',
+        'strikethrough' => 'Durchgestrichen',
+        'underline' => 'Unterstrichen',
+        'highlight' => 'Hervorheben',
+        'heading-1' => 'Überschrift 1',
+        'heading-2' => 'Überschrift 2',
+        'heading-3' => 'Überschrift 3',
+        'bullet-list' => 'Aufzählung',
+        'ordered-list' => 'Nummerierte Liste',
+        'blockquote' => 'Zitat',
+        'code-block' => 'Codeblock',
+        'horizontal-rule' => 'Trennlinie',
+        'align-left' => 'Linksbündig',
+        'align-center' => 'Zentriert',
+        'align-right' => 'Rechtsbündig',
+        'justify' => 'Blocksatz',
+        'link' => 'Link',
+        'insert-table' => 'Tabelle einfügen',
+        'add-column' => 'Spalte hinzufügen',
+        'add-row' => 'Zeile hinzufügen',
+        'delete-table' => 'Tabelle löschen',
+        'details' => 'Details',
+        'insert-emoji' => 'Emoji einfügen',
+    ],
+    'a11y' => [
+        'searchOptions' => 'Optionen durchsuchen',
+        'removeOption' => ':label entfernen',
+        'tabs' => 'Tabs',
+        'loading' => 'Lädt',
+        'closeMenu' => 'Menü schließen',
+        'dismiss' => 'Schließen',
+        'close' => 'Schließen',
+        'selectAllRows' => 'Alle Zeilen auswählen',
+        'selectRow' => 'Zeile :key auswählen',
+    ],
+    'filter' => [
+        'all' => 'Alle',
+        'true' => 'Ja',
+        'false' => 'Nein',
+        'filterBy' => ':label filtern',
+        'clear' => ':label-Filter löschen',
+        'columnFilters' => ':label-Filter',
+        'operator' => ':label-Operator',
+        'remove' => ':label-Filter entfernen',
+        'value' => ':label-Filterwert',
+        'add' => 'Filter hinzufügen',
+    ],
+    'operators' => [
+        'contains' => 'enthält',
+        'starts_with' => 'beginnt mit',
+        'ends_with' => 'endet mit',
+        'eq' => 'ist gleich',
+        'neq' => 'ist ungleich',
+        'gt' => '>',
+        'gte' => '≥',
+        'lt' => '<',
+        'lte' => '≤',
+        'in' => 'in',
+        'not_in' => 'nicht in',
+        'before' => 'vor',
+        'after' => 'nach',
+        'empty' => 'ist leer',
+        'filled' => 'ist nicht leer',
+    ],
+    'table' => [
+        'loading' => 'Zeilen werden geladen...',
+    ],
+    'pagination' => [
+        'allLoaded' => 'Alle Zeilen geladen',
+        'page' => 'Seite :page',
+        'showing' => 'Zeige :from–:to von :total',
+        'loadMore' => 'Mehr laden',
+        'loading' => 'Lädt...',
+        'previous' => 'Zurück',
+        'next' => 'Weiter',
+    ],
+    'bulk' => [
+        'selected' => ':count ausgewählt',
+        'allSelected' => 'Alle :count ausgewählt',
+        'selectAllMatching' => 'Alle :total passenden auswählen',
+    ],
+];
