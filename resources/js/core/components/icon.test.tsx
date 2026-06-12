@@ -5,7 +5,12 @@ import { fakeNode } from "@lattice/lattice/test-support";
 import type { Color, Size } from "@lattice/lattice/types/generated";
 import IconComponent from "./icon";
 
-function renderIcon(props: { name: string; size: Size; color: Color | null; class: string | null }) {
+function renderIcon(props: {
+  name: string;
+  size: Size;
+  color: Color | null;
+  class: string | null;
+}) {
   return render(
     <SpriteProvider sprite={{ href: "", ids: [props.name] }}>
       <IconComponent node={fakeNode({ type: "icon", props })}>{null}</IconComponent>
