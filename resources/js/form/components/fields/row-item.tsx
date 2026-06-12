@@ -43,6 +43,7 @@ export type RowItemProps = {
   onField: (index: number, field: string, value: unknown) => void;
   onRemove: (index: number) => void;
   onMove: (index: number, delta: number) => void;
+  children?: ReactNode;
 };
 
 // Memoised so editing one row doesn't re-render its siblings. Its props are kept
@@ -61,6 +62,7 @@ export const RowItem = memo(function RowItem({
   onField,
   onRemove,
   onMove,
+  children,
 }: RowItemProps) {
   return (
     <div
@@ -106,6 +108,7 @@ export const RowItem = memo(function RowItem({
         row={row}
         onChange={(field, value) => onField(index, field, value)}
       >
+        {children}
         <div className="flex flex-col gap-4">
           {template.map((child) => (
             <RenderNode key={child.key ?? child.id} node={child} />

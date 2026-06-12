@@ -25,7 +25,10 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
   const atMin = props.minItems != null && rows.length <= props.minItems;
 
   const blockFor = (type: unknown): Block | undefined => blocks.find((b) => b.type === type);
-  const options: BlockOption[] = blocks.map((b) => ({ type: b.type, label: b.label }));
+  const options: BlockOption[] = blocks.map((b) => ({
+    type: b.type,
+    label: b.label,
+  }));
 
   if (hidden) {
     return null;
@@ -81,7 +84,9 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
               onField={onField}
               onRemove={onRemove}
               onMove={onMove}
-            />
+            >
+              <input name={`${name}[${index}][type]`} type="hidden" value={block.type} />
+            </RowItem>
           );
         })}
 
