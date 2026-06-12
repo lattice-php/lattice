@@ -5,8 +5,10 @@ export function formatCell(value: unknown, column?: TableColumn): string {
     return "";
   }
 
-  if (column?.date) {
-    return formatDate(value, column.date.format ?? null);
+  const date = column?.props?.date as { format: string | null } | undefined;
+
+  if (date) {
+    return formatDate(value, date.format ?? null);
   }
 
   if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
@@ -47,11 +49,13 @@ function formatDate(value: unknown, format: string | null): string {
 }
 
 export function resolveLink(column: TableColumn, row: TableRow, value: unknown): string | null {
-  if (!column.link) {
+  const link = column.props?.link as { href: string | null; external: boolean } | undefined;
+
+  if (!link) {
     return null;
   }
 
-  const href = column.link.href ?? String(value ?? "");
+  const href = link.href ?? String(value ?? "");
 
   if (href === "") {
     return null;

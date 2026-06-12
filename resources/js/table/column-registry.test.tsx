@@ -179,4 +179,13 @@ describe("column registry", () => {
     expect(img).toHaveAttribute("src", "https://example.com/a.png");
     expect(img.className).toContain("rounded-full");
   });
+
+  it("renders a copyable text cell from props", () => {
+    renderCell(col({ key: "token", label: "Token", type: "text", props: { copyable: true } }), {
+      token: "abc",
+    });
+
+    expect(screen.getByText("abc")).toBeVisible();
+    expect(screen.getByRole("button", { name: /Copy Token/ })).toBeVisible();
+  });
 });

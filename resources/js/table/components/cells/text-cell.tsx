@@ -13,6 +13,8 @@ export function TextCell({
   row: TableRow;
   value: unknown;
 }) {
+  const link = column.props?.link as { href: string | null; external: boolean } | undefined;
+  const copyable = column.props?.copyable === true;
   const text = formatCell(value, column);
   const [copied, setCopied] = useState(false);
   const href = resolveLink(column, row, value);
@@ -20,8 +22,8 @@ export function TextCell({
     <a
       className="underline underline-offset-2"
       href={href}
-      rel={column.link?.external ? "noreferrer" : undefined}
-      target={column.link?.external ? "_blank" : undefined}
+      rel={link?.external ? "noreferrer" : undefined}
+      target={link?.external ? "_blank" : undefined}
     >
       {text}
     </a>
@@ -44,7 +46,7 @@ export function TextCell({
     setCopied(true);
   }
 
-  if (!column.copyable) {
+  if (!copyable) {
     return content;
   }
 

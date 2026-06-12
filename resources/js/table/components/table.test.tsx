@@ -9,9 +9,6 @@ function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): 
     type: "text",
     sortable: null,
     filter: null,
-    date: null,
-    copyable: null,
-    link: null,
     columns: null,
     props: null,
     ...partial,
@@ -46,18 +43,22 @@ describe("Lattice table component", () => {
           col({
             key: "created_at",
             label: "Created",
-            date: {
-              format: "Y-m-d H:i",
+            props: {
+              date: {
+                format: "Y-m-d H:i",
+              },
             },
           }),
           col({
             key: "email",
             label: "Email",
             sortable: true,
-            copyable: true,
-            link: {
-              href: "mailto:{value}",
-              external: false,
+            props: {
+              copyable: true,
+              link: {
+                href: "mailto:{value}",
+                external: false,
+              },
             },
           }),
         ],
