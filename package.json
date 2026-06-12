@@ -55,6 +55,10 @@
       "types": "./dist/form/components/index.d.ts",
       "import": "./dist/form/components/index.js"
     },
+    "./i18n": {
+      "types": "./dist/i18n/index.d.ts",
+      "import": "./dist/i18n/index.js"
+    },
     "./icons": {
       "types": "./dist/icons/index.d.ts",
       "import": "./dist/icons/index.js"
@@ -115,7 +119,10 @@
     "@tiptap/starter-kit": "^3.26.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "i18next": "^26.3.1",
+    "i18next-http-backend": "^4.0.0",
     "lucide-react": "^1.17.0",
+    "react-i18next": "^17.0.8",
     "tailwind-merge": "^3.0.1"
   },
   "peerDependencies": {

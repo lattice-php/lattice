@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@lattice/lattice/lib/utils";
+import { useT } from "@lattice/lattice/i18n";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
@@ -234,17 +235,18 @@ const emojis = [
 ];
 
 function EmojiPicker({ editor }: { editor: Editor }) {
+  const { t } = useT();
   const [open, setOpen] = useState(false);
 
   return (
     <div className="relative">
       <button
-        aria-label="Insert emoji"
+        aria-label={t("editor.insert-emoji")}
         data-test="editor-emoji"
         className="inline-flex size-7 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg [&_svg]:size-4"
         onClick={() => setOpen((value) => !value)}
         onMouseDown={(event) => event.preventDefault()}
-        title="Insert emoji"
+        title={t("editor.insert-emoji")}
         type="button"
       >
         <Smile />
@@ -272,34 +274,41 @@ function EmojiPicker({ editor }: { editor: Editor }) {
 }
 
 function Toolbar({ editor }: { editor: Editor }) {
+  const { t } = useT();
+
   return (
     <div className="flex flex-wrap items-center gap-0.5 border-b border-lt-border p-1">
-      {toolbar.map((item, index) =>
-        item === "separator" ? (
+      {toolbar.map((item, index) => {
+        if (item === "separator") {
           // eslint-disable-next-line react/no-array-index-key
-          <span key={`sep-${index}`} className="mx-1 h-5 w-px bg-lt-border" />
-        ) : (
+          return <span key={`sep-${index}`} className="mx-1 h-5 w-px bg-lt-border" />;
+        }
+
+        const key = item.label.toLowerCase().replace(/\s+/g, "-");
+        const label = t(`editor.${key}`);
+
+        return (
           <button
-            aria-label={item.label}
+            aria-label={label}
             aria-pressed={item.isActive(editor)}
-            data-test={`editor-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
+            data-test={`editor-${key}`}
             className={cn(
               "inline-flex size-7 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4",
               item.isActive(editor) && "bg-lt-accent text-lt-accent-fg",
             )}
             disabled={item.isDisabled?.(editor) ?? false}
             key={item.label}
-            onClick={() => item.run(editor)}
             // Keep focus in the editor so toolbar clicks don't blur it (which would
             // otherwise trigger a precognition request).
+            onClick={() => item.run(editor)}
             onMouseDown={(event) => event.preventDefault()}
-            title={item.label}
+            title={label}
             type="button"
           >
             <item.icon />
           </button>
-        ),
-      )}
+        );
+      })}
       <span className="mx-1 h-5 w-px bg-lt-border" />
       <EmojiPicker editor={editor} />
     </div>

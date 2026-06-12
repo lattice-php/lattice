@@ -8,11 +8,15 @@ import {
   Provider,
   registry,
 } from "@lattice/lattice";
+import { enableBackend } from "@lattice/lattice/i18n";
 import { createRoot } from "react-dom/client";
 import { appColumns } from "./lattice/columns";
 import { appIcons } from "./lattice/icons";
 
 const appRegistry = extendRegistry(registry, appColumns);
+
+// Load Lattice's chrome translations from the bambamboole/laravel-i18next backend.
+void enableBackend();
 
 createInertiaApp({
   strictMode: true,
