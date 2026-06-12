@@ -3,11 +3,7 @@ import { useState } from "react";
 
 const LANGUAGES = ["en", "de"] as const;
 
-/**
- * Demo control: switches the Lattice chrome language. Picking `de` makes
- * react-i18next fetch /locales/de/lattice.json from the laravel-i18next backend,
- * so the toolbar, pagination and a11y labels render in German.
- */
+/** Demo control: switches the Lattice chrome language. */
 export function LanguageSwitcher() {
   const [language, setLanguage] = useState(i18n.language);
 

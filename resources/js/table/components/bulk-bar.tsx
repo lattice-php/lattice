@@ -38,6 +38,7 @@ export function BulkBar({
   onSelectAllMatching: () => void;
   onCompleted: () => void;
 }) {
+  const { t } = useT("lattice");
   const http = useHttp<BulkData, ActionResponse>({});
   const [confirming, setConfirming] = useState<BulkAction | null>(null);
   const [filling, setFilling] = useState<BulkAction | null>(null);
@@ -81,7 +82,6 @@ export function BulkBar({
   }
 
   const count = allMatching ? (total ?? selectedKeys.length) : selectedKeys.length;
-  const { t } = useT("lattice");
 
   return (
     <div className="flex flex-wrap items-center gap-3 border-b border-lt-border bg-lt-muted/50 p-4 text-sm">

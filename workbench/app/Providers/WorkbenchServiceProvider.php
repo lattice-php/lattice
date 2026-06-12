@@ -60,12 +60,8 @@ class WorkbenchServiceProvider extends ServiceProvider
             'i18next.output' => 'nested',
         ]);
 
-        // The `lattice` namespace holds the package's own chrome translations, so
-        // point lang_path() at the package's lang/ dir: laravel-i18next reads the
-        // `lattice` group from there and, in local dev, dumps missing keys
-        // (saveMissing) back into the package — not into the workbench or the
-        // read-only Testbench skeleton inside vendor. Keep the skeleton (and any
-        // workbench-specific translations) readable as additional paths.
+        // Point lang_path() at the package's lang/ dir so saveMissing dumps land in
+        // the package, not the workbench or the read-only Testbench skeleton in vendor.
         $skeletonLangPath = $this->app->langPath();
         $this->app->useLangPath(package_path('lang'));
 

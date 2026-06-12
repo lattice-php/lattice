@@ -130,12 +130,9 @@ abstract class Page implements PageContract
     }
 
     /**
-     * Backend-only i18n signals for the renderer, mirrored from laravel-i18next's
-     * own config so it stays the single source of truth. The load/add paths are
-     * hardcoded in the frontend (its namespaced routes, which never vary) and the
-     * namespace is chosen per call, so only these travel here: whether its routes
-     * serve translations at all (otherwise the renderer keeps its inline English),
-     * and whether missing keys are reported back for dumping.
+     * i18n signals for the renderer, mirrored from laravel-i18next's config so it
+     * stays the single source of truth. The frontend hardcodes the routes, so only
+     * these travel: whether translations are served and whether missing keys are dumped.
      *
      * @return array{enabled: bool, saveMissing: bool}
      */

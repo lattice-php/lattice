@@ -1,12 +1,7 @@
 import HttpBackend from "i18next-http-backend";
-import { i18n } from "./instance";
+import { ensureI18n, i18n } from "./instance";
 
-/**
- * laravel-i18next's default routes (with `namespaces` enabled), in
- * i18next-http-backend placeholder form. `{{ns}}` is filled per request, so a
- * single pair of paths serves every namespace; an app behind a custom route
- * prefix can override them via {@link BackendOptions}.
- */
+/** laravel-i18next's namespaced routes; an app behind a custom prefix overrides them via {@link BackendOptions}. */
 const DEFAULT_LOAD_PATH = "/locales/{{lng}}/{{ns}}.json";
 const DEFAULT_ADD_PATH = "/locales/add/{{lng}}/{{ns}}";
 
@@ -23,35 +18,26 @@ export type BackendOptions = {
 
 /** The i18n settings the backend shares to the frontend (Inertia `lattice.i18n`). */
 export type I18nConfig = {
-  enabled?: boolean;
-  loadPath?: string;
-  addPath?: string;
-  saveMissing?: boolean;
+  enabled: boolean;
+  saveMissing: boolean;
 };
 
-/**
- * Apply the i18n config shared from the backend. When `enabled`, wires the HTTP
- * backend; otherwise the renderer keeps its inline English defaults. Call once
- * at startup, e.g. from the Inertia setup with the initial page's `lattice.i18n`
- * prop.
- */
+/** Apply the i18n config shared from the backend; wires the HTTP backend only when `enabled`. */
 export async function configureI18n(config: I18nConfig | undefined): Promise<void> {
   if (!config?.enabled) {
+    await ensureI18n();
+
     return;
   }
 
-  await enableBackend({
-    loadPath: config.loadPath,
-    addPath: config.addPath,
-    saveMissing: config.saveMissing,
-  });
+  await enableBackend({ saveMissing: config.saveMissing });
 }
 
 /**
  * Load translations from a backend such as bambamboole/laravel-i18next,
- * overriding the renderer's inline English defaults. Call once at app startup,
- * before the first render. Importing this module is the opt-in: apps that never
- * call it don't bundle the HTTP backend.
+ * overriding the renderer's inline English defaults. Call before the first
+ * render. Importing this module is the opt-in: apps that never call it don't
+ * bundle the HTTP backend.
  */
 export async function enableBackend(options: BackendOptions = {}): Promise<void> {
   const {
@@ -63,10 +49,10 @@ export async function enableBackend(options: BackendOptions = {}): Promise<void>
 
   i18n.use(HttpBackend);
 
-  await i18n.init({
-    ...i18n.options,
+  await ensureI18n((base) => ({
+    ...base,
     partialBundledLanguages: true,
     saveMissing,
     backend: { loadPath, addPath, customHeaders, withCredentials: true },
-  });
+  }));
 }

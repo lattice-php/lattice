@@ -1,4 +1,4 @@
-import i18next from "i18next";
+import i18next, { type InitOptions } from "i18next";
 import { initReactI18next, useTranslation } from "react-i18next";
 
 const NAMESPACE = "lattice";
@@ -11,32 +11,37 @@ function detectLanguage(): string {
   return "en";
 }
 
-/**
- * Lattice's own i18next instance, isolated from the host app's. The renderer's
- * chrome carries its English text inline via each `t(key, "Default")` call, so it
- * works with zero config; `enableBackend()` loads overrides from a backend
- * without ever touching the app's own translations.
- */
-export const i18n = i18next.createInstance();
+/** Lattice's own i18next instance, isolated from the host app's. */
+export const i18n = i18next.createInstance().use(initReactI18next);
 
-i18n.use(initReactI18next).init({
-  lng: detectLanguage(),
-  fallbackLng: "en",
-  ns: [NAMESPACE],
-  defaultNS: NAMESPACE,
-  interpolation: { escapeValue: false },
-  react: { useSuspense: false },
-});
+let initialization: Promise<unknown> | undefined;
 
 /**
- * Translation hook bound to Lattice's instance. The namespace is explicit: the
- * renderer's chrome passes `"lattice"`, while a consumer passes their own
- * namespace — another package's (`"billing"`) or the app's (`"translation"`) —
- * to read from it instead. The backend serves any namespace from the same
- * `/locales/{{lng}}/{{ns}}.json` route. Call sites supply the English inline:
- * `t("editor.bold", "Bold")`.
+ * Initialize the instance exactly once. The first caller wins — a rendered
+ * component (inline English, zero config) or `enableBackend()`, which registers
+ * its backend first because i18next can only wire a backend during `init`.
  */
+export function ensureI18n(extend?: (base: InitOptions) => InitOptions): Promise<unknown> {
+  if (!initialization) {
+    const base: InitOptions = {
+      lng: detectLanguage(),
+      fallbackLng: "en",
+      ns: [NAMESPACE],
+      defaultNS: NAMESPACE,
+      interpolation: { escapeValue: false },
+      react: { useSuspense: false },
+    };
+
+    initialization = i18n.init(extend ? extend(base) : base);
+  }
+
+  return initialization;
+}
+
+/** Translation hook bound to Lattice's instance. The chrome passes `"lattice"`; consumers pass their own namespace. */
 export function useT(namespace: string) {
+  ensureI18n();
+
   return useTranslation(namespace, { i18n });
 }
 
@@ -47,5 +52,7 @@ export function translate(
   defaultValue: string,
   options?: Record<string, unknown>,
 ): string {
+  ensureI18n();
+
   return i18n.t(key, defaultValue, { ns: namespace, ...options });
 }
