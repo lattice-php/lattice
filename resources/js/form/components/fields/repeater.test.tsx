@@ -11,15 +11,29 @@ afterAll(() => {
   configure({ testIdAttribute: prevTestIdAttribute });
 });
 
+// Per-scoped-key render counter, shared with the mock factory below.
+const { renderCounts } = vi.hoisted(() => ({ renderCounts: new Map<string, number>() }));
+
 // Mock the child-node renderer so the test doesn't need the full registry.
-// The stub reads the FieldScope to prove each row scopes its children.
+// The stub reads the FieldScope to prove each row scopes its children, counts
+// its own renders, and exposes a button that commits a value into its row.
 vi.mock("@lattice/lattice/core/renderer", async () => {
   const { useFieldScope } = await import("../field-scope");
   return {
     RenderNode: ({ node }: { node: { props: { name: string } } }) => {
       const scope = useFieldScope();
+      const key = scope ? scope.scopedName(node.props.name) : "no-scope";
+      renderCounts.set(key, (renderCounts.get(key) ?? 0) + 1);
       return (
-        <span data-test="child">{scope ? scope.scopedName(node.props.name) : "no-scope"}</span>
+        <>
+          <span data-test="child">{key}</span>
+          <button
+            aria-label={`commit ${key}`}
+            data-test={`commit-${key}`}
+            type="button"
+            onClick={() => scope?.setValue(node.props.name, "x")}
+          />
+        </>
       );
     },
   };
@@ -97,4 +111,16 @@ it("shows the array-level error for the repeater field", () => {
     { items: "Must have at least 1 item" },
   );
   expect(screen.getByText("Must have at least 1 item")).toBeInTheDocument();
+});
+
+it("does not re-render sibling rows when one row changes", () => {
+  wrap(<RepeaterComponent node={repeaterNode}>{null}</RepeaterComponent>, {
+    items: [{ name: "a" }, { name: "b" }],
+  });
+
+  renderCounts.clear();
+  fireEvent.click(screen.getByTestId("commit-items[0][name]"));
+
+  expect(renderCounts.get("items[0][name]") ?? 0).toBeGreaterThanOrEqual(1);
+  expect(renderCounts.get("items[1][name]") ?? 0).toBe(0);
 });
