@@ -44,14 +44,18 @@ const repeaterNode = {
   schema: [{ id: "c", type: "form.text-input", props: { name: "name", label: "Name" } }],
 } as never;
 
-function wrap(ui: React.ReactNode, initial: Record<string, unknown> = {}) {
+function wrap(
+  ui: React.ReactNode,
+  initial: Record<string, unknown> = {},
+  errors: Record<string, string> = {},
+) {
   return render(
     <FormProvider
       value={{
         action: "#",
         clearErrors: () => {},
         componentRef: "",
-        errors: {},
+        errors,
         fieldLabels: {},
         precognitive: false,
         processing: false,
@@ -84,4 +88,13 @@ it("removes a row", () => {
   expect(screen.getAllByTestId("child")).toHaveLength(2);
   fireEvent.click(screen.getByTestId("repeater-items-remove-0"));
   expect(screen.getAllByTestId("child")).toHaveLength(1);
+});
+
+it("shows the array-level error for the repeater field", () => {
+  wrap(
+    <RepeaterComponent node={repeaterNode}>{null}</RepeaterComponent>,
+    {},
+    { items: "Must have at least 1 item" },
+  );
+  expect(screen.getByText("Must have at least 1 item")).toBeInTheDocument();
 });

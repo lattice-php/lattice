@@ -4,6 +4,7 @@ import { RenderNode } from "@lattice/lattice/core/renderer";
 import { useMemo } from "react";
 import { FormFieldFrame } from "../base/field";
 import { FieldScopeProvider } from "../field-scope";
+import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";
 import { useFormValue, useSetFormValue } from "../values";
 import { addRow, moveRow, removeRow, seedRows, type RepeaterRow } from "./repeater-rows";
@@ -11,6 +12,7 @@ import { addRow, moveRow, removeRow, seedRows, type RepeaterRow } from "./repeat
 export const RepeaterComponent: RendererComponent<"form.repeater"> = ({ node }) => {
   const props = node.props;
   const name = props.name;
+  const { errors } = useFormContext();
   const { hidden, required } = useDependentField(node);
   const setValue = useSetFormValue();
   const stored = useFormValue(name);
@@ -30,7 +32,7 @@ export const RepeaterComponent: RendererComponent<"form.repeater"> = ({ node }) 
 
   return (
     <FormFieldFrame
-      error={undefined}
+      error={errors[name]}
       helperText={props.helperText ?? undefined}
       label={props.label ?? ""}
       name={name}
