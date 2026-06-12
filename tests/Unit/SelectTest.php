@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\FormData;
 
@@ -46,9 +47,9 @@ it('runs the search resolver and normalizes options to strings', function (): vo
 
     $options = $field->resolveSearch('ja', FormData::make([]), Request::create('/'));
 
-    expect($options)->toBe([
-        ['label' => 'Jane Doe', 'value' => '5'],
-        ['label' => 'Janet Roe', 'value' => '9'],
+    expect($options)->toEqual([
+        new Option('Jane Doe', '5'),
+        new Option('Janet Roe', '9'),
     ]);
 });
 
@@ -59,7 +60,7 @@ it('passes the query to the resolver', function (): void {
         ]);
 
     expect($field->resolveSearch('berlin', FormData::make([]), Request::create('/')))
-        ->toBe([['label' => 'BERLIN', 'value' => 'berlin']]);
+        ->toEqual([new Option('BERLIN', 'berlin')]);
 });
 
 it('returns no options when the field is not searchable', function (): void {

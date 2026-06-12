@@ -92,7 +92,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
       {isConfirming && confirmation && (
         <ConfirmDialog
           title={confirmationTitle}
-          description={confirmation.description}
+          description={confirmation.description ?? undefined}
           confirmLabel={confirmationConfirmLabel}
           cancelLabel={confirmationCancelLabel}
           confirmVariant={variant}
@@ -107,7 +107,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
         <ActionForm
           cancelLabel={confirmationCancelLabel}
           componentRef={componentRef}
-          description={confirmation?.description}
+          description={confirmation?.description ?? undefined}
           endpoint={endpoint}
           formNode={formNode}
           method={method}

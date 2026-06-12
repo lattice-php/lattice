@@ -115,7 +115,7 @@ export function BulkBar({
       {confirming?.confirmation && (
         <ConfirmDialog
           title={confirming.confirmation.title ?? confirming.label}
-          description={confirming.confirmation.description}
+          description={confirming.confirmation.description ?? undefined}
           confirmLabel={confirming.confirmation.confirmLabel ?? confirming.label}
           cancelLabel={confirming.confirmation.cancelLabel ?? "Cancel"}
           confirmVariant={confirming.variant}
@@ -129,7 +129,7 @@ export function BulkBar({
         <ActionForm
           cancelLabel={filling.confirmation?.cancelLabel ?? "Cancel"}
           componentRef={filling.ref}
-          description={filling.confirmation?.description}
+          description={filling.confirmation?.description ?? undefined}
           endpoint={filling.endpoint}
           extraData={selectionPayload()}
           formNode={filling.form}

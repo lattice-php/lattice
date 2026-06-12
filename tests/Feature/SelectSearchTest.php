@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\Select;
@@ -45,10 +46,10 @@ it('resolves options for a searchable field', function (): void {
         Request::create('/', 'POST', ['_search' => 'author_id', 'q' => 'jane']),
     );
 
-    expect($result)->toBe([
+    expect($result)->toEqual([
         'options' => [
-            ['label' => 'Match: jane', 'value' => '1'],
-            ['label' => 'Other', 'value' => '2'],
+            new Option('Match: jane', '1'),
+            new Option('Other', '2'),
         ],
     ]);
 });

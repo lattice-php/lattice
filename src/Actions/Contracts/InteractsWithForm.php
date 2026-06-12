@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Actions\Contracts;
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Form;
 
 /**
@@ -22,7 +23,7 @@ interface InteractsWithForm
     public function resolveFormSchema(Request $request): ?Form;
 
     /**
-     * @return array{options: array<int, array{label: string, value: string}>}
+     * @return array{options: list<Option>}
      */
     public function searchOptions(Request $request): array;
 

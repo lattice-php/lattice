@@ -1,6 +1,6 @@
-import type { Op } from "@lattice/lattice/types/generated";
+import type { Condition, Op } from "@lattice/lattice/types/generated";
 
-export type Condition = { field: string; operator: Op; value: unknown };
+export type { Condition };
 
 export type FieldConditions = {
   visible?: Condition[];

@@ -12,6 +12,7 @@ use Lattice\Lattice\Attributes\Action;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Workbench\App\Models\Product;
@@ -35,7 +36,7 @@ class RejectProductAction extends ActionDefinition
                         ->orderBy('name')
                         ->limit(10)
                         ->get()
-                        ->map(fn (Product $product): array => Select::option($product->name, (string) $product->getKey()))
+                        ->map(fn (Product $product): Option => Select::option($product->name, (string) $product->getKey()))
                         ->all())
                     ->rules(['nullable']),
             ]);

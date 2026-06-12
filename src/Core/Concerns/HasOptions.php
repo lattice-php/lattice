@@ -7,32 +7,35 @@ namespace Lattice\Lattice\Core\Concerns;
 use BackedEnum;
 use Illuminate\Support\Str;
 use Lattice\Lattice\Core\Contracts\HasLabel;
+use Lattice\Lattice\Core\Option;
 use UnitEnum;
 
 trait HasOptions
 {
     /**
-     * @var array<int, array{label: string, value: string}>
+     * @var list<Option>
      */
     public array $options = [];
 
-    /**
-     * @return array{label: string, value: string}
-     */
-    public static function option(string $label, string $value): array
+    public static function option(string $label, string $value): Option
     {
-        return [
-            'label' => $label,
-            'value' => $value,
-        ];
+        return new Option($label, $value);
     }
 
     /**
-     * @param  array<int, array{label: string, value: string}>  $options
+     * Accepts {@see Option} instances or raw `{label, value}` arrays, normalizing
+     * both to the value objects the wire shape is generated from.
+     *
+     * @param  array<int, Option|array{label: string, value: string}>  $options
      */
     public function options(array $options): static
     {
-        $this->options = $options;
+        $this->options = array_values(array_map(
+            static fn (Option|array $option): Option => $option instanceof Option
+                ? $option
+                : new Option((string) $option['label'], (string) $option['value']),
+            $options,
+        ));
 
         return $this;
     }
@@ -50,7 +53,7 @@ trait HasOptions
         $cases = is_string($enum) ? $enum::cases() : $enum;
 
         return $this->options(array_map(
-            static fn (UnitEnum $case): array => self::option(
+            static fn (UnitEnum $case): Option => self::option(
                 $case instanceof HasLabel ? $case->getLabel() : Str::headline($case->name),
                 $case instanceof BackedEnum ? (string) $case->value : $case->name,
             ),
