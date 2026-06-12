@@ -3,8 +3,10 @@
 namespace Lattice\Lattice\Forms\Components;
 
 use Closure;
+use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
+use Lattice\Lattice\Forms\FormData;
 
 #[Component('form.repeater')]
 class Repeater extends Field
@@ -78,5 +80,76 @@ class Repeater extends Field
             $this->children,
             static fn ($child): bool => $child instanceof Field,
         ));
+    }
+
+    /**
+     * The repeater value is always an array; array-level rules live here so they
+     * are not clobbered by the nested per-row rules (which use `items.*.x` keys).
+     *
+     * @return array<int, mixed>
+     */
+    public function resolveRules(FormData $data, Request $request): array
+    {
+        $rules = ['array'];
+
+        if ($this->minItems !== null) {
+            $rules[] = "min:{$this->minItems}";
+        }
+
+        if ($this->maxItems !== null) {
+            $rules[] = "max:{$this->maxItems}";
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Per-row rules: each child field's rules applied to every row via the
+     * `<name>.*.<child>` wildcard. Never emits the bare `<name>` key (that would
+     * overwrite resolveRules()'s array-level rules in FieldValidator).
+     *
+     * @return array<string, array<int, mixed>>
+     */
+    public function nestedRules(FormData $data, Request $request): array
+    {
+        $rules = [];
+
+        foreach ($this->childFields() as $child) {
+            $childRules = $child->resolveRules($data, $request);
+
+            if ($child->isRequired($data) && ! in_array('required', $childRules, true)) {
+                array_unshift($childRules, 'required');
+            }
+
+            if ($childRules !== []) {
+                $rules["{$this->name}.*.{$child->name()}"] = $childRules;
+            }
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Normalise the validated value to a re-indexed list of rows, each row's
+     * cells cast through the matching child field's castValue().
+     */
+    public function castValue(mixed $value): mixed
+    {
+        if (! is_array($value)) {
+            return [];
+        }
+
+        $children = $this->childFields();
+
+        return array_values(array_map(function ($row) use ($children): array {
+            $cast = [];
+
+            foreach ($children as $child) {
+                $name = $child->name();
+                $cast[$name] = $child->castValue(is_array($row) ? ($row[$name] ?? null) : null);
+            }
+
+            return $cast;
+        }, $value));
     }
 }
