@@ -35,7 +35,7 @@ export function FilterStackBar({
               data-test={`filter-chip-${clause.field}-remove`}
               className="inline-flex size-5 items-center justify-center rounded text-lt-muted-fg hover:bg-lt-muted disabled:opacity-50"
               disabled={processing}
-              aria-label={t("filter.remove", { label })}
+              aria-label={t("filter.remove", "Remove {{label}} filter", { label })}
               onClick={() => onRemove(index)}
             >
               <X aria-hidden="true" className="size-3.5" />

@@ -83,9 +83,7 @@ const operatorLabels: Record<string, string> = {
 export const VALUELESS_FILTER_OPERATORS = new Set<string>(["empty", "filled"]);
 
 export function operatorLabel(operator: string): string {
-  return translate(`operators.${operator}`, {
-    defaultValue: operatorLabels[operator] ?? operator,
-  });
+  return translate(`operators.${operator}`, operatorLabels[operator] ?? operator);
 }
 
 export function getSortDirectionLabel(direction: string): string {

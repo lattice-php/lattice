@@ -334,7 +334,7 @@ export function ActionForm({ description, formNode, onClose, title, ...rest }: A
             </div>
 
             <Dialog.Close asChild>
-              <Button aria-label={t("a11y.close")} size="icon" variant="ghost">
+              <Button aria-label={t("a11y.close", "Close")} size="icon" variant="ghost">
                 <X aria-hidden="true" className="size-4" />
               </Button>
             </Dialog.Close>

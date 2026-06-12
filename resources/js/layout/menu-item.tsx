@@ -161,7 +161,7 @@ function FlyoutGroup({
         ? createPortal(
             <>
               <button
-                aria-label={t("a11y.closeMenu")}
+                aria-label={t("a11y.closeMenu", "Close menu")}
                 className="fixed inset-0 z-40 cursor-default"
                 data-test={`${testId}-close`}
                 onClick={() => setOpen(false)}

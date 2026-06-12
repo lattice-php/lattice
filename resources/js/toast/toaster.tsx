@@ -120,7 +120,7 @@ export function Toaster({ duration = 4000 }: { duration?: number }) {
           </div>
           {toast.dismissible ? (
             <Toast.Close
-              aria-label={t("a11y.dismiss")}
+              aria-label={t("a11y.dismiss", "Dismiss")}
               className="shrink-0 rounded-md p-1 text-lt-muted-fg transition-colors hover:bg-lt-muted hover:text-lt-fg"
               data-test="toast-dismiss"
             >

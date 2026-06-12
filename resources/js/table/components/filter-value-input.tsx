@@ -31,7 +31,7 @@ export function FilterValueInput({
 }) {
   const { t } = useT();
   const [draft, setDraft] = useState(value);
-  const inputLabel = ariaLabel ?? t("filter.filterBy", { label });
+  const inputLabel = ariaLabel ?? t("filter.filterBy", "Filter {{label}}", { label });
   const groupedClass = grouped ? "rounded-r-none" : "";
 
   useEffect(() => {
@@ -48,9 +48,9 @@ export function FilterValueInput({
         value={value}
         onChange={(event) => onCommit(event.target.value)}
       >
-        <option value="">{t("filter.all")}</option>
-        <option value="true">{t("filter.true")}</option>
-        <option value="false">{t("filter.false")}</option>
+        <option value="">{t("filter.all", "All")}</option>
+        <option value="true">{t("filter.true", "True")}</option>
+        <option value="false">{t("filter.false", "False")}</option>
       </select>
     );
   }
@@ -102,7 +102,7 @@ export function FilterValueInput({
       {onClear && draft !== "" && (
         <button
           type="button"
-          aria-label={t("filter.clear", { label })}
+          aria-label={t("filter.clear", "Clear {{label}} filter", { label })}
           data-test={testId ? `${testId}-clear` : undefined}
           className="absolute right-1 inline-flex size-6 items-center justify-center rounded hover:bg-lt-muted disabled:opacity-50"
           disabled={processing}

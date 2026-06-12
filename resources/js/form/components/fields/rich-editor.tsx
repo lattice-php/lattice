@@ -241,12 +241,12 @@ function EmojiPicker({ editor }: { editor: Editor }) {
   return (
     <div className="relative">
       <button
-        aria-label={t("editor.insert-emoji")}
+        aria-label={t("editor.insert-emoji", "Insert emoji")}
         data-test="editor-emoji"
         className="inline-flex size-7 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg [&_svg]:size-4"
         onClick={() => setOpen((value) => !value)}
         onMouseDown={(event) => event.preventDefault()}
-        title={t("editor.insert-emoji")}
+        title={t("editor.insert-emoji", "Insert emoji")}
         type="button"
       >
         <Smile />
@@ -285,7 +285,7 @@ function Toolbar({ editor }: { editor: Editor }) {
         }
 
         const key = item.label.toLowerCase().replace(/\s+/g, "-");
-        const label = t(`editor.${key}`);
+        const label = t(`editor.${key}`, item.label);
 
         return (
           <button

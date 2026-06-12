@@ -164,7 +164,7 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
         data-lattice-tabs={node.key ?? node.id}
       >
         <div
-          aria-label={t("a11y.tabs")}
+          aria-label={t("a11y.tabs", "Tabs")}
           aria-orientation={orientation}
           className={cn(
             "gap-1 rounded-lt bg-lt-muted p-1",
