@@ -61,9 +61,9 @@ export function TextCell({
         onClick={handleCopy}
       >
         {copied ? (
-          <Icon name="check" className="size-3" />
+          <Icon name="check" className="size-lt-icon-xs" />
         ) : (
-          <Icon name="copy" className="size-3" />
+          <Icon name="copy" className="size-lt-icon-xs" />
         )}
         {copied ? "Copied" : "Copy"}
       </button>

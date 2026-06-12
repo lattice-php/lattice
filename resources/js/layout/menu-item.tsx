@@ -26,7 +26,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
 
   const content = (
     <>
-      {icon ? <IconRenderer className="size-4 shrink-0" icon={icon} /> : null}
+      {icon ? <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} /> : null}
       <span className={cn(collapsed && "sr-only")}>{label}</span>
     </>
   );
@@ -104,7 +104,10 @@ function CollapsibleItem({
         {content}
         <Icon
           name="chevron-right"
-          className={cn("ml-auto size-4 shrink-0 transition-transform", open && "rotate-90")}
+          className={cn(
+            "ml-auto size-lt-icon-md shrink-0 transition-transform",
+            open && "rotate-90",
+          )}
         />
       </button>
       {open ? <ul className="mt-1 flex flex-col gap-1 pl-3">{children}</ul> : null}
@@ -152,7 +155,11 @@ function FlyoutGroup({
         title={label}
         type="button"
       >
-        {icon ? <IconRenderer className="size-4 shrink-0" icon={icon} /> : <span>{label}</span>}
+        {icon ? (
+          <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} />
+        ) : (
+          <span>{label}</span>
+        )}
       </button>
       {open
         ? createPortal(

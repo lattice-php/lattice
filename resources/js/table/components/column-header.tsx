@@ -4,15 +4,19 @@ import type { TableColumn, TableSort, TableState } from "../types";
 
 function SortIndicator({ sort }: { sort: TableSort | undefined }) {
   if (sort?.direction === "asc") {
-    return <Icon name="arrow-up" aria-hidden="true" className="size-3.5 shrink-0" />;
+    return <Icon name="arrow-up" aria-hidden="true" className="size-lt-icon-sm shrink-0" />;
   }
 
   if (sort?.direction === "desc") {
-    return <Icon name="arrow-down" aria-hidden="true" className="size-3.5 shrink-0" />;
+    return <Icon name="arrow-down" aria-hidden="true" className="size-lt-icon-sm shrink-0" />;
   }
 
   return (
-    <Icon name="chevrons-up-down" aria-hidden="true" className="size-3.5 shrink-0 opacity-50" />
+    <Icon
+      name="chevrons-up-down"
+      aria-hidden="true"
+      className="size-lt-icon-sm shrink-0 opacity-50"
+    />
   );
 }
 

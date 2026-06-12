@@ -17,7 +17,7 @@ const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, nod
             type="button"
             variant="ghost"
           >
-            <Icon name="more-horizontal" aria-hidden="true" className="size-4" />
+            <Icon name="more-horizontal" aria-hidden="true" className="size-lt-icon-md" />
           </Button>
         </Popover.Trigger>
 

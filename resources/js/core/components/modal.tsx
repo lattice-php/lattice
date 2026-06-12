@@ -66,7 +66,7 @@ const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {
 
             <Dialog.Close asChild>
               <Button aria-label={closeLabel} size="icon" variant="ghost">
-                <Icon name="x" aria-hidden="true" className="size-4" />
+                <Icon name="x" aria-hidden="true" className="size-lt-icon-md" />
               </Button>
             </Dialog.Close>
           </div>

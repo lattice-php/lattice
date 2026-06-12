@@ -5,7 +5,7 @@ import { cn } from "@lattice/lattice/lib/utils";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-lt-sm border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[3px] aria-invalid:ring-lt-danger/20 dark:aria-invalid:ring-lt-danger/40 aria-invalid:border-lt-danger transition-[color,box-shadow] overflow-hidden",
+  "inline-flex items-center justify-center rounded-lt-sm border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-lt-icon-xs gap-1 [&>svg]:pointer-events-none focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[3px] aria-invalid:ring-lt-danger/20 dark:aria-invalid:ring-lt-danger/40 aria-invalid:border-lt-danger transition-[color,box-shadow] overflow-hidden",
   {
     variants: {
       variant: {

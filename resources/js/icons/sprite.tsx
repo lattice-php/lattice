@@ -58,7 +58,7 @@ export function Icon({
   }
 
   return (
-    <svg aria-hidden="true" {...props} className={cn("size-4", className)}>
+    <svg aria-hidden="true" {...props} className={cn("size-lt-icon-md", className)}>
       <use href={`${href}#${name}`} />
     </svg>
   );

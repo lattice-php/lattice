@@ -35,7 +35,7 @@ export function FilterStackBar({
               aria-label={`Remove ${label} filter`}
               onClick={() => onRemove(index)}
             >
-              <Icon name="x" aria-hidden="true" className="size-3.5" />
+              <Icon name="x" aria-hidden="true" className="size-lt-icon-sm" />
             </button>
           </span>
         );

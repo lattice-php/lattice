@@ -15,19 +15,19 @@ type ToastItem = ToastMessage & { id: number };
 const variantStyles: Record<ToastVariant, { accent: string; icon: ReactNode }> = {
   success: {
     accent: "border-l-lt-success",
-    icon: <Icon name="circle-check" className="size-5 shrink-0 text-lt-success" />,
+    icon: <Icon name="circle-check" className="size-lt-icon-lg shrink-0 text-lt-success" />,
   },
   info: {
     accent: "border-l-lt-info",
-    icon: <Icon name="info" className="size-5 shrink-0 text-lt-info" />,
+    icon: <Icon name="info" className="size-lt-icon-lg shrink-0 text-lt-info" />,
   },
   warning: {
     accent: "border-l-lt-warning",
-    icon: <Icon name="circle-alert" className="size-5 shrink-0 text-lt-warning" />,
+    icon: <Icon name="circle-alert" className="size-lt-icon-lg shrink-0 text-lt-warning" />,
   },
   error: {
     accent: "border-l-lt-danger",
-    icon: <Icon name="circle-x" className="size-5 shrink-0 text-lt-danger" />,
+    icon: <Icon name="circle-x" className="size-lt-icon-lg shrink-0 text-lt-danger" />,
   },
 };
 
@@ -122,7 +122,7 @@ export function Toaster({ duration = 4000 }: { duration?: number }) {
               className="shrink-0 rounded-md p-1 text-lt-muted-fg transition-colors hover:bg-lt-muted hover:text-lt-fg"
               data-test="toast-dismiss"
             >
-              <Icon name="x" className="size-4" />
+              <Icon name="x" className="size-lt-icon-md" />
             </Toast.Close>
           ) : null}
         </Toast.Root>

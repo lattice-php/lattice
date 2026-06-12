@@ -18,7 +18,7 @@ export function IconCell({ column, value }: { column: TableColumn; value: unknow
       aria-label={String(value)}
       className={cn("lt-cell-icon", color && `lt-cell-tone-${color}`)}
     >
-      <IconRenderer className="size-4" icon={icon} />
+      <IconRenderer className="size-lt-icon-md" icon={icon} />
     </span>
   );
 }

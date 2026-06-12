@@ -17,7 +17,7 @@ describe("Lattice icon renderer", () => {
     );
 
     const svg = container.querySelector("svg");
-    expect(svg).toHaveClass("size-4", "text-lt-primary");
+    expect(svg).toHaveClass("size-lt-icon-md", "text-lt-primary");
     expect(svg?.querySelector("use")?.getAttribute("href")).toBe("/build/sprite.svg#edit");
   });
 

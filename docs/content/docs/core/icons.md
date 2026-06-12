@@ -85,6 +85,26 @@ Action::make('app.send')->icon(Icon::Send);
 `Lattice\Lattice\Core\Enums\Icon` covers Lattice's own icon set. For your full set (Lattice's plus your
 own), generate an enum — see below.
 
+## As a component
+
+`Icon` is also a component, so a standalone icon can go anywhere in a schema. It renders through the
+same renderer as `->icon()`, with structured `size`/`color` plus a raw `class` escape hatch:
+
+```php
+use Lattice\Lattice\Core\Components\Icon;
+use Lattice\Lattice\Core\Enums\Color;
+use Lattice\Lattice\Core\Enums\Size;
+
+Stack::make()->schema([
+    Icon::make('house'),                                       // size defaults to Md
+    Icon::make('circle-check')->size(Size::Lg)->color(Color::Success),
+    Icon::make('spark')->class('opacity-70'),
+]);
+```
+
+`size` defaults to `Size::Md`; `color` is optional and inherits `currentColor` when unset. Sizes resolve
+to themeable tokens (`--lt-icon-xs` … `--lt-icon-xl`).
+
 ## Type-safe icon names
 
 The plugin can generate a type module and/or a PHP enum from the built sprite, so icon names stay

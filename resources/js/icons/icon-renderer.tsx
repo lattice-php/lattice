@@ -63,7 +63,7 @@ function MissingIcon({ className }: { className?: string }) {
   return (
     <svg
       aria-hidden="true"
-      className={cn("size-4 text-lt-muted-fg", className)}
+      className={cn("size-lt-icon-md text-lt-muted-fg", className)}
       data-lattice-missing-icon=""
       fill="none"
       stroke="currentColor"
