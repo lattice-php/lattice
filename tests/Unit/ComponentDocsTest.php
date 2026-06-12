@@ -7,6 +7,7 @@ use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Components\Grid;
 use Lattice\Lattice\Core\Components\Heading;
+use Lattice\Lattice\Core\Components\Section;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
@@ -38,5 +39,19 @@ describe('docs fixtures', function (): void {
         ]);
 
         expect('docs/fixtures/components.grid.json')->toBeReadableFile();
+    });
+
+    it('dumps the section example', function (): void {
+        dumpFixture('components.section', [
+            Section::make('Members', 'People with access to this team.')
+                ->collapsible()
+                ->headerActions([Button::make('Invite member')->variant(ButtonVariant::Outline)])
+                ->schema([
+                    Text::make('Three people have access to this team.'),
+                    Badge::make('3 active'),
+                ]),
+        ]);
+
+        expect('docs/fixtures/components.section.json')->toBeReadableFile();
     });
 });

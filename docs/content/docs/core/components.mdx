@@ -30,6 +30,8 @@ Layout components arrange their children. They are containers — pass children 
 - **`Grid`** lays children out in columns via `->columns(n)`.
 - **`Card`** wraps children in a bordered panel with an optional title and description —
   `Card::make('Title', 'Description')`.
+- **`Section`** is a titled panel like `Card`, but it can collapse and carry actions in its header —
+  see [below](#section).
 
 <ComponentExample
   php={`Grid::make()->columns(3)->schema([
@@ -38,6 +40,25 @@ Layout components arrange their children. They are containers — pass children 
     Badge::make('Third'),
 ]);`}
   fixture="components.grid"
+/>
+
+### Section
+
+`Section::make('Title', 'Description')` groups content under a heading. Call `->collapsible()` to let
+it fold (pass `collapsed: true` to start folded; `rememberState: false` to not persist the state), and
+`->headerActions([...])` to place buttons or actions in the header.
+
+<ComponentExample
+  php={`Section::make('Members', 'People with access to this team.')
+    ->collapsible()
+    ->headerActions([
+        Button::make('Invite member')->variant(ButtonVariant::Outline),
+    ])
+    ->schema([
+        Text::make('Three people have access to this team.'),
+        Badge::make('3 active'),
+    ]);`}
+  fixture="components.section"
 />
 
 ## Display
