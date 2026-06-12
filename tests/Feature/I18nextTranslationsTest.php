@@ -19,8 +19,8 @@ it('shares the i18n config to the frontend', function () {
     get('/')->assertInertia(fn (AssertableInertia $page) => $page
         ->where('lattice.i18n.enabled', true)
         ->where('lattice.i18n.saveMissing', true)
-        ->where('lattice.i18n.loadPath', '/locales/{{lng}}/{{ns}}.json')
-        ->where('lattice.i18n.addPath', '/locales/add/{{lng}}/{{ns}}'),
+        ->missing('lattice.i18n.loadPath')
+        ->missing('lattice.i18n.addPath'),
     );
 });
 

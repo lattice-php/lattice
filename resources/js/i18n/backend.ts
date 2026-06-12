@@ -1,6 +1,15 @@
 import HttpBackend from "i18next-http-backend";
 import { i18n } from "./instance";
 
+/**
+ * laravel-i18next's default routes (with `namespaces` enabled), in
+ * i18next-http-backend placeholder form. `{{ns}}` is filled per request, so a
+ * single pair of paths serves every namespace; an app behind a custom route
+ * prefix can override them via {@link BackendOptions}.
+ */
+const DEFAULT_LOAD_PATH = "/locales/{{lng}}/{{ns}}.json";
+const DEFAULT_ADD_PATH = "/locales/add/{{lng}}/{{ns}}";
+
 export type BackendOptions = {
   /** i18next-http-backend load path. Defaults to laravel-i18next's namespaced route. */
   loadPath?: string;
@@ -46,8 +55,8 @@ export async function configureI18n(config: I18nConfig | undefined): Promise<voi
  */
 export async function enableBackend(options: BackendOptions = {}): Promise<void> {
   const {
-    loadPath = "/locales/{{lng}}/{{ns}}.json",
-    addPath = "/locales/add/{{lng}}/{{ns}}",
+    loadPath = DEFAULT_LOAD_PATH,
+    addPath = DEFAULT_ADD_PATH,
     saveMissing = false,
     customHeaders,
   } = options;
