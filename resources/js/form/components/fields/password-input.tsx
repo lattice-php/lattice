@@ -29,6 +29,7 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
     <div className="grid gap-6">
       <FormFieldFrame
         error={errors[name]}
+        helperText={props.helperText ?? undefined}
         label={props.label ?? ""}
         labelAction={props.labelAction ?? undefined}
         name={name}

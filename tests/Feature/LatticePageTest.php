@@ -378,6 +378,7 @@ test('password inputs can request automatic confirmation fields', function () {
                     'placeholder' => 'Confirm password',
                 ],
                 'label' => 'Password',
+                'helperText' => null,
                 'name' => 'password',
                 'passwordRules' => 'minlength:8',
                 'required' => true,

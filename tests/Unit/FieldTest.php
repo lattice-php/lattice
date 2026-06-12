@@ -51,3 +51,15 @@ it('merges rules across calls, including closures', function (): void {
     expect($field->resolveRules(FormData::make([]), Request::create('/')))
         ->toBe(['required', 'string', 'max:10']);
 });
+
+it('serializes helper text', function (): void {
+    $field = makeField()->helperText('Shown to buyers.');
+
+    expect(wire($field)['props']['helperText'])->toBe('Shown to buyers.');
+});
+
+it('aliases hint to helper text', function (): void {
+    $field = makeField()->hint('Quick tip.');
+
+    expect(wire($field)['props']['helperText'])->toBe('Quick tip.');
+});

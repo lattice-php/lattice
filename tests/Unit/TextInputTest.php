@@ -63,6 +63,10 @@ describe('docs fixtures', function (): void {
             TextInput::make('slug', 'Slug')->value('acme-inc')->readOnly(),
         ]);
 
+        dumpFixture('field.helper-text', [
+            TextInput::make('slug', 'Slug')->helperText('Used in the public URL for your team.'),
+        ]);
+
         expect('docs/fixtures/field.required.json')->toBeReadableFile();
     });
 

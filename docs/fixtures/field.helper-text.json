@@ -6,17 +6,17 @@
             "conditions": null,
             "dependsOnAny": null,
             "dependsOnKeys": null,
-            "disabled": true,
-            "helperText": null,
+            "disabled": null,
+            "helperText": "Used in the public URL for your team.",
             "hidden": null,
-            "label": "Team name",
-            "name": "name",
+            "label": "Slug",
+            "name": "slug",
             "placeholder": null,
             "readOnly": null,
             "required": null,
             "tabIndex": null,
             "type": null,
-            "value": "Acme Inc"
+            "value": null
         },
         "type": "form.text-input"
     }

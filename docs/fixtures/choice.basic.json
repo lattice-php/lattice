@@ -6,6 +6,7 @@
             "dependsOnAny": null,
             "dependsOnKeys": null,
             "disabled": null,
+            "helperText": null,
             "hidden": null,
             "label": "Plan",
             "name": "plan",

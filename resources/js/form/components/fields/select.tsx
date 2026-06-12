@@ -133,7 +133,13 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
       : results;
 
   return (
-    <FormFieldFrame error={errors[name]} label={props.label ?? ""} name={name} required={required}>
+    <FormFieldFrame
+      error={errors[name]}
+      helperText={props.helperText ?? undefined}
+      label={props.label ?? ""}
+      name={name}
+      required={required}
+    >
       {multiple ? (
         selected.map((value) => (
           <input key={value} name={`${name}[]`} type="hidden" value={value} />

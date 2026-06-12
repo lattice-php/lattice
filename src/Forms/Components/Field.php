@@ -17,6 +17,8 @@ abstract class Field extends Component
 
     public ?string $label = null;
 
+    public ?string $helperText = null;
+
     public mixed $value = null;
 
     public ?bool $hidden = null;
@@ -100,6 +102,24 @@ abstract class Field extends Component
         $this->label = $label;
 
         return $this;
+    }
+
+    /**
+     * Descriptive text shown beneath the field.
+     */
+    public function helperText(string $helperText): static
+    {
+        $this->helperText = $helperText;
+
+        return $this;
+    }
+
+    /**
+     * Alias of helperText().
+     */
+    public function hint(string $hint): static
+    {
+        return $this->helperText($hint);
     }
 
     /**

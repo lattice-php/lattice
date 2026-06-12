@@ -45,4 +45,15 @@ describe("TextInputComponent conditions", () => {
 
     expect(screen.getByRole("textbox", { name: "Company" })).toBeVisible();
   });
+
+  it("renders helper text beneath the field", () => {
+    renderField(
+      fakeNode({
+        type: "form.text-input",
+        props: { name: "price", label: "Price", helperText: "Shown to buyers." },
+      }),
+    );
+
+    expect(screen.getByText("Shown to buyers.")).toBeVisible();
+  });
 });

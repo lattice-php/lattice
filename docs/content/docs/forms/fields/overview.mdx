@@ -46,6 +46,18 @@ value wins; otherwise this default is used.
   values={{ name: "Acme Inc" }}
 />
 
+## Helper text
+
+`->helperText()` adds a line of descriptive text beneath the field; `->hint()` is an alias that reads
+more naturally for short tips. It renders muted, below the input and above any validation message.
+
+<ComponentExample
+  php={`TextInput::make('slug', 'Slug')
+    ->helperText('Used in the public URL for your team.')`}
+  fixture="field.helper-text"
+  values={{ slug: "" }}
+/>
+
 ## Required
 
 `->required()` marks the field as required, adding the indicator and a `required` validation rule.

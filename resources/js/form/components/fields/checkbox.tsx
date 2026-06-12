@@ -23,25 +23,30 @@ export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) 
   }
 
   return (
-    <div className="flex items-center space-x-3">
-      <Checkbox
-        autoFocus={node.props.autoFocus ?? undefined}
-        checked={checked}
-        disabled={readOnly || disabled}
-        id={name}
-        name={name}
-        onCheckedChange={(next) => {
-          const value = next === true;
-          setValue(name, value);
-          if (precognitive) {
-            window.requestAnimationFrame(() => validate(name));
-          } else {
-            clearErrors(name);
-          }
-        }}
-        tabIndex={node.props.tabIndex ?? undefined}
-      />
-      <Label htmlFor={name}>{node.props.label}</Label>
+    <div>
+      <div className="flex items-center space-x-3">
+        <Checkbox
+          autoFocus={node.props.autoFocus ?? undefined}
+          checked={checked}
+          disabled={readOnly || disabled}
+          id={name}
+          name={name}
+          onCheckedChange={(next) => {
+            const value = next === true;
+            setValue(name, value);
+            if (precognitive) {
+              window.requestAnimationFrame(() => validate(name));
+            } else {
+              clearErrors(name);
+            }
+          }}
+          tabIndex={node.props.tabIndex ?? undefined}
+        />
+        <Label htmlFor={name}>{node.props.label}</Label>
+      </div>
+      {node.props.helperText && (
+        <p className="mt-1 pl-7 text-sm text-lt-muted-fg">{node.props.helperText}</p>
+      )}
     </div>
   );
 };
