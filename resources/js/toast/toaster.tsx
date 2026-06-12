@@ -22,11 +22,23 @@ type ToastItem = {
   variant: ToastVariant;
 };
 
-const variantIcon: Record<ToastVariant, ReactNode> = {
-  success: <CircleCheck className="size-5 shrink-0 text-emerald-500" />,
-  info: <Info className="size-5 shrink-0 text-sky-500" />,
-  warning: <CircleAlert className="size-5 shrink-0 text-amber-500" />,
-  error: <CircleX className="size-5 shrink-0 text-lt-danger" />,
+const variantStyles: Record<ToastVariant, { accent: string; icon: ReactNode }> = {
+  success: {
+    accent: "border-l-lt-success",
+    icon: <CircleCheck className="size-5 shrink-0 text-lt-success" />,
+  },
+  info: {
+    accent: "border-l-lt-info",
+    icon: <Info className="size-5 shrink-0 text-lt-info" />,
+  },
+  warning: {
+    accent: "border-l-lt-warning",
+    icon: <CircleAlert className="size-5 shrink-0 text-lt-warning" />,
+  },
+  error: {
+    accent: "border-l-lt-danger",
+    icon: <CircleX className="size-5 shrink-0 text-lt-danger" />,
+  },
 };
 
 function isVariant(value: unknown): value is ToastVariant {
@@ -86,7 +98,8 @@ export function Toaster({ duration = 4000 }: { duration?: number }) {
         <Toast.Root
           key={toast.id}
           className={cn(
-            "flex items-start gap-3 rounded-lt border border-lt-border bg-lt-popover p-4 text-lt-popover-fg shadow-lg",
+            "flex items-start gap-3 rounded-lt border border-l-4 border-lt-border bg-lt-popover p-4 text-lt-popover-fg shadow-lg",
+            variantStyles[toast.variant].accent,
             "data-[state=open]:animate-lt-toast-in data-[state=closed]:animate-lt-toast-out",
             "data-[swipe=move]:translate-y-[var(--radix-toast-swipe-move-y)] data-[swipe=cancel]:translate-y-0 data-[swipe=cancel]:transition-transform",
           )}
@@ -98,7 +111,7 @@ export function Toaster({ duration = 4000 }: { duration?: number }) {
             }
           }}
         >
-          {variantIcon[toast.variant]}
+          {variantStyles[toast.variant].icon}
           <div className="flex min-w-0 flex-1 flex-col gap-2">
             <Toast.Title className="text-sm text-lt-fg">{toast.message}</Toast.Title>
             {toast.action ? (

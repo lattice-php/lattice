@@ -57,7 +57,15 @@ export type Button = {
   variant: ButtonVariant | null;
 };
 export type ButtonType = "button" | "submit" | "reset";
-export type ButtonVariant = "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
+export type ButtonVariant =
+  | "default"
+  | "destructive"
+  | "ghost"
+  | "info"
+  | "link"
+  | "outline"
+  | "secondary"
+  | "success";
 export type Card = {
   description: string | null;
   title: string | null;
