@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Workbench\App\Tables\Columns;
 
-use Lattice\Lattice\Attributes\Component;
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Filterable;
 
-#[Component('column.status-badge')]
+#[Attributes\Column(type: 'column.status-badge', props: StatusBadgeColumnProps::class)]
 class StatusBadgeColumn extends Column implements Filterable
 {
     use IsFilterable;
