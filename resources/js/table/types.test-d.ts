@@ -22,3 +22,10 @@ void _loose;
 
 // Silence unused import warning
 type _ColumnProps = ColumnProps;
+
+// 3. Built-in column type resolves from the generated map.
+const _builtin: ColumnPropsOf<"badge"> = { colors: { active: "green" } };
+// @ts-expect-error colors must be a record of strings, not a number
+const _builtinBad: ColumnPropsOf<"badge"> = { colors: 1 };
+void _builtin;
+void _builtinBad;

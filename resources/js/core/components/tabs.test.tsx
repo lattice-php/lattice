@@ -15,7 +15,7 @@ vi.mock("@inertiajs/react", () => ({
 const TextProbe: RendererComponent<"text"> = ({ node }) => <span>{String(node.props?.text)}</span>;
 
 function renderTabs(tabsProps: Record<string, unknown>) {
-  const registry = createRegistry({
+  const { components: registry } = createRegistry({
     components: {
       tab: eagerComponent(TabComponent),
       tabs: eagerComponent(TabsComponent),
@@ -60,7 +60,7 @@ describe("Lattice tabs component", () => {
   });
 
   it("switches panels on the client without navigation", () => {
-    const registry = createRegistry({
+    const { components: registry } = createRegistry({
       components: {
         tab: eagerComponent(TabComponent),
         tabs: eagerComponent(TabsComponent),
@@ -131,7 +131,7 @@ describe("Lattice tabs component", () => {
   it("uses the configured query key for the initial active tab and url updates", () => {
     window.history.replaceState({}, "", "/settings?settings-tab=security");
 
-    const registry = createRegistry({
+    const { components: registry } = createRegistry({
       components: {
         tab: eagerComponent(TabComponent),
         tabs: eagerComponent(TabsComponent),
@@ -196,7 +196,7 @@ describe("Lattice tabs component", () => {
   });
 
   it("visits the query url when switching to a confirmed tab", () => {
-    const registry = createRegistry({
+    const { components: registry } = createRegistry({
       components: {
         tab: eagerComponent(TabComponent),
         tabs: eagerComponent(TabsComponent),
@@ -257,7 +257,7 @@ describe("Lattice tabs component", () => {
   });
 
   it("only renders inactive panel children after the tab is opened", () => {
-    const registry = createRegistry({
+    const { components: registry } = createRegistry({
       components: {
         tab: eagerComponent(TabComponent),
         tabs: eagerComponent(TabsComponent),

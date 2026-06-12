@@ -1,0 +1,24 @@
+name: lattice-package
+icon: null
+processes:
+  Serve:
+    command: php artisan serve
+    working_dir: null
+    auto_start: true
+    auto_restart: true
+    restart_when_changed: []
+    env: {}
+  npm:dev:
+    command: npm run dev
+    working_dir: null
+    auto_start: true
+    auto_restart: true
+    restart_when_changed: []
+    env: {}
+  Docs dev:
+    command: npm run docs:dev
+    working_dir: null
+    auto_start: true
+    auto_restart: true
+    restart_when_changed: []
+    env: {}

@@ -1,17 +1,17 @@
 import { IconRenderer } from "@lattice/lattice/icons";
 import { cn } from "@lattice/lattice/lib/utils";
+import type { IconColumnProps } from "@lattice/lattice/types/generated";
 import type { TableColumn } from "../../types";
-import { columnMap } from "./column-map";
 
 export function IconCell({ column, value }: { column: TableColumn; value: unknown }) {
-  const icon =
-    columnMap(column, "icons")[String(value)] ?? (column.props?.icon as string | undefined);
+  const props = column.props as IconColumnProps | null;
+  const icon = props?.icons?.[String(value)] ?? props?.icon ?? undefined;
 
   if (!icon) {
     return null;
   }
 
-  const color = columnMap(column, "colors")[String(value)];
+  const color = props?.colors?.[String(value)];
 
   return (
     <span

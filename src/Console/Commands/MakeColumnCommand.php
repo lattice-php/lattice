@@ -29,6 +29,12 @@ final class MakeColumnCommand extends Command
         );
 
         $this->writeStub(
+            'column-props.php.stub',
+            app_path('Tables/Columns/'.$name.'Props.php'),
+            ['namespace' => 'App\\Tables\\Columns', 'class' => $name],
+        );
+
+        $this->writeStub(
             'column.tsx.stub',
             resource_path('js/lattice/columns/'.$kebab.'.tsx'),
             ['class' => $name, 'type' => $type],

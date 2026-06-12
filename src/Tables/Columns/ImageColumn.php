@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
+use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
+#[Attributes\Column(type: 'image', props: ImageColumnProps::class)]
 class ImageColumn extends Column
 {
     protected bool $circular = false;
@@ -35,16 +37,14 @@ class ImageColumn extends Column
     #[\Override]
     public function toData(): ColumnData
     {
-        $props = array_filter([
-            'circular' => $this->circular ? true : null,
-            'size' => $this->size,
-        ], static fn (mixed $value): bool => $value !== null);
-
         return new ColumnData(
             key: $this->key,
             label: $this->label,
             type: ColumnType::Image,
-            props: $props === [] ? null : $props,
+            props: new ImageColumnProps(
+                circular: $this->circular,
+                size: $this->size,
+            ),
         );
     }
 }

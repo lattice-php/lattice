@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { ColumnData } from "@lattice/lattice/types/generated";
 import { Provider } from "../provider";
-import { createColumnPlugin, createColumnRegistry } from "./column-registry";
+import { createPlugin, createRegistry } from "../core/registry";
 import { ColumnCell } from "./components/table-cell";
 
 function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
@@ -10,9 +10,6 @@ function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): 
     type: "text",
     sortable: null,
     filter: null,
-    date: null,
-    copyable: null,
-    link: null,
     columns: null,
     props: null,
     ...partial,
@@ -21,8 +18,8 @@ function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): 
 
 describe("column registry", () => {
   it("dispatches a registered custom cell renderer", () => {
-    const columns = createColumnRegistry(
-      createColumnPlugin({
+    const registry = createRegistry(
+      createPlugin({
         name: "test",
         columns: {
           "column.upper": ({ value }) => <span>{String(value).toUpperCase()}</span>,
@@ -31,7 +28,7 @@ describe("column registry", () => {
     );
 
     render(
-      <Provider columns={columns}>
+      <Provider registry={registry}>
         <table>
           <tbody>
             <tr>
@@ -102,8 +99,8 @@ describe("column registry", () => {
   });
 
   it("custom renderer takes precedence over built-in stack", () => {
-    const columns = createColumnRegistry(
-      createColumnPlugin({
+    const registry = createRegistry(
+      createPlugin({
         name: "test",
         columns: {
           stack: () => <span>custom-stack</span>,
@@ -112,7 +109,7 @@ describe("column registry", () => {
     );
 
     render(
-      <Provider columns={columns}>
+      <Provider registry={registry}>
         <table>
           <tbody>
             <tr>
@@ -133,7 +130,7 @@ describe("column registry", () => {
 
   function renderCell(column: ColumnData, row: Record<string, unknown>) {
     return render(
-      <Provider columns={createColumnRegistry()}>
+      <Provider registry={createRegistry()}>
         <table>
           <tbody>
             <tr>
@@ -181,5 +178,14 @@ describe("column registry", () => {
     const img = screen.getByRole("img", { name: "Avatar" });
     expect(img).toHaveAttribute("src", "https://example.com/a.png");
     expect(img.className).toContain("rounded-full");
+  });
+
+  it("renders a copyable text cell from props", () => {
+    renderCell(col({ key: "token", label: "Token", type: "text", props: { copyable: true } }), {
+      token: "abc",
+    });
+
+    expect(screen.getByText("abc")).toBeVisible();
+    expect(screen.getByRole("button", { name: /Copy Token/ })).toBeVisible();
   });
 });

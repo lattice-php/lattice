@@ -1,37 +1,23 @@
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext } from "react";
 import type { ReactNode } from "react";
-import type { ComponentRegistry } from "./core/registry";
+import type { ComponentRegistry, Registry } from "./core/registry";
 import { registry as defaultRegistry } from "./registry";
 import type { ColumnRegistry } from "./table/column-registry";
 import { Toaster } from "./toast";
 
-type ContextValue = {
-  columns: ColumnRegistry;
-  registry: ComponentRegistry;
-};
-
-const defaultColumns: ColumnRegistry = {};
-
-const RegistryContext = createContext<ContextValue>({
-  columns: defaultColumns,
-  registry: defaultRegistry,
-});
+const RegistryContext = createContext<Registry>(defaultRegistry);
 
 export function Provider({
   children,
-  columns = defaultColumns,
   registry = defaultRegistry,
   toaster = true,
 }: {
   children: ReactNode;
-  columns?: ColumnRegistry;
-  registry?: ComponentRegistry;
+  registry?: Registry;
   toaster?: boolean;
 }) {
-  const value = useMemo(() => ({ columns, registry }), [columns, registry]);
-
   return (
-    <RegistryContext.Provider value={value}>
+    <RegistryContext.Provider value={registry}>
       {children}
       {toaster ? <Toaster /> : null}
     </RegistryContext.Provider>
@@ -39,7 +25,7 @@ export function Provider({
 }
 
 export function useRegistry(): ComponentRegistry {
-  return useContext(RegistryContext).registry;
+  return useContext(RegistryContext).components;
 }
 
 export function useColumnRegistry(): ColumnRegistry {

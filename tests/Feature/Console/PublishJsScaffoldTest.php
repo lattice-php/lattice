@@ -15,7 +15,7 @@ it('publishes the JS scaffold under resources/js/lattice', function () {
     expect(File::exists(resource_path('js/lattice/plugin.ts')))->toBeTrue()
         ->and(File::exists(resource_path('js/lattice/columns.ts')))->toBeTrue()
         ->and(File::get(resource_path('js/lattice/plugin.ts')))->toContain('createPlugin')
-        ->and(File::get(resource_path('js/lattice/columns.ts')))->toContain('createColumnPlugin');
+        ->and(File::get(resource_path('js/lattice/columns.ts')))->toContain('createPlugin');
 
     // cleanup so the testbench skeleton / worktree is not left dirty
     File::delete(resource_path('js/lattice/plugin.ts'));

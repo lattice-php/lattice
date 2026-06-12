@@ -7,12 +7,9 @@
             "columns": [
                 {
                     "columns": null,
-                    "copyable": null,
-                    "date": null,
                     "filter": null,
                     "key": "avatar",
                     "label": "",
-                    "link": null,
                     "props": {
                         "circular": true,
                         "size": 32
@@ -22,24 +19,22 @@
                 },
                 {
                     "columns": null,
-                    "copyable": null,
-                    "date": null,
                     "filter": null,
                     "key": "name",
                     "label": "Name",
-                    "link": null,
-                    "props": null,
+                    "props": {
+                        "copyable": false,
+                        "date": null,
+                        "link": null
+                    },
                     "sortable": null,
                     "type": "text"
                 },
                 {
                     "columns": null,
-                    "copyable": null,
-                    "date": null,
                     "filter": null,
                     "key": "status",
                     "label": "Status",
-                    "link": null,
                     "props": {
                         "colors": {
                             "active": "green",
@@ -52,17 +47,15 @@
                 },
                 {
                     "columns": null,
-                    "copyable": null,
-                    "date": null,
                     "filter": null,
                     "key": "verified",
                     "label": "Verified",
-                    "link": null,
                     "props": {
                         "colors": [
                             "gray",
                             "green"
                         ],
+                        "icon": null,
                         "icons": [
                             "minus",
                             "check"

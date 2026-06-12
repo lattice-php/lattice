@@ -25,7 +25,7 @@ vi.mock("@inertiajs/react", () => ({
   ),
 }));
 
-const registry = createRegistry({
+const { components: registry } = createRegistry({
   components: {
     menu: eagerComponent(MenuComponent),
     "menu-item": eagerComponent(MenuItemComponent),

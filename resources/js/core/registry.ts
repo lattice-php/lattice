@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import type { LazyExoticComponent } from "react";
 import type { RendererComponent, RendererComponentModule } from "./types";
+import type { ColumnRegistry } from "../table/column-registry";
 
 export type EagerComponentRegistration = {
   component: RendererComponent;
@@ -19,8 +20,14 @@ export type ComponentRegistration = EagerComponentRegistration | LazyComponentRe
 export type ComponentRegistry = Record<string, ComponentRegistration>;
 
 export type Plugin = {
-  components: ComponentRegistry;
   name: string;
+  components?: ComponentRegistry;
+  columns?: ColumnRegistry;
+};
+
+export type Registry = {
+  components: ComponentRegistry;
+  columns: ColumnRegistry;
 };
 
 export type LazyComponentOptions<TType extends string> = {
@@ -54,22 +61,21 @@ export function createPlugin(plugin: Plugin): Plugin {
   return plugin;
 }
 
-export function createRegistry(...plugins: Plugin[]): ComponentRegistry {
-  return plugins.reduce<ComponentRegistry>(
+export function createRegistry(...plugins: Plugin[]): Registry {
+  return plugins.reduce<Registry>(
     (registry, plugin) => ({
-      ...registry,
-      ...plugin.components,
+      components: { ...registry.components, ...plugin.components },
+      columns: { ...registry.columns, ...plugin.columns },
     }),
-    {},
+    { components: {}, columns: {} },
   );
 }
 
-export function extendRegistry(
-  registry: ComponentRegistry,
-  ...plugins: Plugin[]
-): ComponentRegistry {
+export function extendRegistry(registry: Registry, ...plugins: Plugin[]): Registry {
+  const merged = createRegistry(...plugins);
+
   return {
-    ...registry,
-    ...createRegistry(...plugins),
+    components: { ...registry.components, ...merged.components },
+    columns: { ...registry.columns, ...merged.columns },
   };
 }

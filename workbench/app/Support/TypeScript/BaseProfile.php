@@ -7,6 +7,7 @@ namespace Workbench\App\Support\TypeScript;
 use Lattice\Lattice\Actions\Contracts\Effect;
 use Lattice\Lattice\Attributes\Effect as EffectAttribute;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Support\Discovery\ClassWalker;
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
@@ -14,7 +15,6 @@ use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Spatie\Attributes\Attributes;
-use Spatie\StructureDiscoverer\Discover;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 
 /**
@@ -46,6 +46,7 @@ final class BaseProfile implements TypeScriptProfile
         $marked = (new MarkedTypeDiscovery)->discover($src);
 
         $discovered = (new ComponentDiscovery)->discover($src);
+        $columnProps = $this->buildColumnProps($discovered);
 
         $formFields = $this->buildFormFields($discovered);
         $domainNodes = $this->buildDomainNodes($discovered);
@@ -58,6 +59,7 @@ final class BaseProfile implements TypeScriptProfile
                 new ValueObjectTransformer([
                     ...$marked['valueObjects'],
                     ...array_keys($effects),
+                    ...array_values($columnProps),
                 ]),
                 new ComponentTransformer([
                     ...array_keys($formFields),
@@ -73,6 +75,7 @@ final class BaseProfile implements TypeScriptProfile
                     'form',
                     Effect::class,
                     $effects,
+                    $columnProps,
                 ),
             ],
             new FlatModuleWriter('generated.ts'),
@@ -91,8 +94,7 @@ final class BaseProfile implements TypeScriptProfile
      */
     private function discoverEffects(string $path): array
     {
-        /** @var list<class-string> $classes */
-        $classes = (new Discover(directories: [$path]))->classes()->get();
+        $classes = ClassWalker::classes($path);
 
         $effects = [];
 
@@ -107,6 +109,28 @@ final class BaseProfile implements TypeScriptProfile
         }
 
         return $effects;
+    }
+
+    /**
+     * Built-in column props VOs keyed by wire column type.
+     *
+     * @param  list<DiscoveredComponent>  $discovered
+     * @return array<string, class-string>
+     */
+    private function buildColumnProps(array $discovered): array
+    {
+        $columns = array_filter(
+            $discovered,
+            fn (DiscoveredComponent $dc): bool => $dc->category === 'column' && $dc->propsClass !== null,
+        );
+
+        $map = [];
+
+        foreach ($columns as $dc) {
+            $map[$dc->type] = $dc->propsClass;
+        }
+
+        return $map;
     }
 
     /**

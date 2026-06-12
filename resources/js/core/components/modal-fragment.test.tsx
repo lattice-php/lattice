@@ -15,7 +15,7 @@ describe("Lattice modal and fragment components", () => {
   });
 
   it("opens and closes modal content from lattice events", () => {
-    const registry = createRegistry({
+    const { components: registry } = createRegistry({
       components: {
         modal: eagerComponent(ModalComponent),
         text: eagerComponent(TextComponent),
@@ -92,7 +92,7 @@ describe("Lattice modal and fragment components", () => {
 
     vi.stubGlobal("fetch", fetch);
 
-    const registry = createRegistry({
+    const { components: registry } = createRegistry({
       components: {
         fragment: eagerComponent(FragmentComponent),
         text: eagerComponent(TextProbe),
@@ -164,7 +164,7 @@ describe("Lattice modal and fragment components", () => {
 
     vi.stubGlobal("fetch", fetch);
 
-    const registry = createRegistry({
+    const { components: registry } = createRegistry({
       components: {
         fragment: eagerComponent(FragmentComponent),
         text: eagerComponent(TextProbe),

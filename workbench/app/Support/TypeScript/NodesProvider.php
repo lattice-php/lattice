@@ -39,6 +39,7 @@ final class NodesProvider implements TransformedProvider
      * @param  array<string, array<class-string, ComponentSpec>>  $domainNodes  Node-alias name (e.g. 'CoreNode') to its components, in emission order.
      * @param  class-string|null  $effectContract
      * @param  array<class-string, string>  $effects  Effect value objects keyed by class-string, valued by wire type.
+     * @param  array<string, class-string>  $columnProps  wire column type => props VO class-string
      */
     public function __construct(
         private readonly array $formFields,
@@ -47,6 +48,7 @@ final class NodesProvider implements TransformedProvider
         private readonly string $formType = 'form',
         private readonly ?string $effectContract = null,
         private readonly array $effects = [],
+        private readonly array $columnProps = [],
     ) {}
 
     /**
@@ -75,7 +77,27 @@ final class NodesProvider implements TransformedProvider
             );
         }
 
+        if ($this->columnProps !== []) {
+            $transformed[] = $this->alias('ColumnPropsMap', $this->columnPropsMap());
+        }
+
         return $transformed;
+    }
+
+    private function columnPropsMap(): TypeScriptObject
+    {
+        $properties = [];
+
+        foreach ($this->columnProps as $type => $class) {
+            $properties[$type] = new TypeScriptProperty(
+                $type,
+                new TypeScriptReference(new ClassStringReference($class)),
+            );
+        }
+
+        ksort($properties);
+
+        return new TypeScriptObject(array_values($properties));
     }
 
     private function effectUnion(): TypeScriptUnion

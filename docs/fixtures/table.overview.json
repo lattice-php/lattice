@@ -7,8 +7,6 @@
             "columns": [
                 {
                     "columns": null,
-                    "copyable": null,
-                    "date": null,
                     "filter": {
                         "defaultOperator": "contains",
                         "enabled": true,
@@ -25,15 +23,16 @@
                     },
                     "key": "name",
                     "label": "Name",
-                    "link": null,
-                    "props": null,
+                    "props": {
+                        "copyable": false,
+                        "date": null,
+                        "link": null
+                    },
                     "sortable": true,
                     "type": "text"
                 },
                 {
                     "columns": null,
-                    "copyable": null,
-                    "date": null,
                     "filter": {
                         "defaultOperator": "eq",
                         "enabled": true,
@@ -51,34 +50,39 @@
                     },
                     "key": "price",
                     "label": "Price",
-                    "link": null,
-                    "props": null,
+                    "props": {
+                        "copyable": false,
+                        "date": null,
+                        "link": null
+                    },
                     "sortable": true,
                     "type": "text"
                 },
                 {
                     "columns": null,
-                    "copyable": null,
-                    "date": null,
                     "filter": null,
                     "key": "featured",
                     "label": "Featured",
-                    "link": null,
-                    "props": null,
+                    "props": {
+                        "copyable": false,
+                        "date": null,
+                        "link": null
+                    },
                     "sortable": null,
                     "type": "text"
                 },
                 {
                     "columns": null,
-                    "copyable": null,
-                    "date": {
-                        "format": "Y-m-d"
-                    },
                     "filter": null,
                     "key": "updated_at",
                     "label": "Updated",
-                    "link": null,
-                    "props": null,
+                    "props": {
+                        "copyable": false,
+                        "date": {
+                            "format": "Y-m-d"
+                        },
+                        "link": null
+                    },
                     "sortable": true,
                     "type": "text"
                 }

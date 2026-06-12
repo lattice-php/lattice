@@ -20,6 +20,7 @@ export {
   extendRegistry,
   lazyComponent,
 } from "./core/registry";
+export type { Plugin, Registry } from "./core/registry";
 export { Renderer } from "./core/renderer";
 export { LATTICE_REF_HEADER, withRefHeader } from "./core/component-ref";
 export { LATTICE_EVENT } from "./events/event-names";
@@ -44,17 +45,7 @@ export type {
   UnknownComponent,
   WireNode,
 } from "./core/types";
-export {
-  createColumnPlugin,
-  createColumnRegistry,
-  extendColumnRegistry,
-} from "./table/column-registry";
-export type {
-  ColumnCellArgs,
-  ColumnCellComponent,
-  ColumnPlugin,
-  ColumnRegistry,
-} from "./table/column-registry";
+export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "./table/column-registry";
 export type { ColumnProps, ColumnPropsOf } from "./table/types";
 export type { Method } from "@inertiajs/core";
 export type { ActionEffect } from "./action/effects";

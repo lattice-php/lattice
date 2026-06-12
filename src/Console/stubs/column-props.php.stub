@@ -1,0 +1,12 @@
+<?php
+
+namespace {{ namespace }};
+
+use Lattice\Lattice\Tables\Columns\ColumnProps;
+
+final readonly class {{ class }}Props implements ColumnProps
+{
+    public function __construct(
+        // Add typed, nullable props here; they become the column's TypeScript props.
+    ) {}
+}

@@ -2,6 +2,7 @@ import type {
   ActionNode,
   ColumnData,
   ColumnFilter,
+  ColumnPropsMap,
   ColumnType,
   FilterClause as WireFilterClause,
   Op,
@@ -75,10 +76,17 @@ export type TableNode = {
  */
 export interface ColumnProps {}
 
+// Resolves a built-in column's props from the generated map; `never` when not built-in.
+type BuiltInColumnPropsOf<TType extends string> = TType extends keyof ColumnPropsMap
+  ? ColumnPropsMap[TType]
+  : never;
+
 /**
- * Resolves a column `type` to its props: consumer augmentations
- * (`ColumnProps`) first, then a loose bag for unaugmented types.
+ * Resolves a column `type` to its props: consumer augmentations (`ColumnProps`)
+ * first, then the generated built-ins, then a loose bag.
  */
 export type ColumnPropsOf<TType extends string> = TType extends keyof ColumnProps
   ? ColumnProps[TType]
-  : Record<string, unknown> | undefined;
+  : [BuiltInColumnPropsOf<TType>] extends [never]
+    ? Record<string, unknown> | undefined
+    : BuiltInColumnPropsOf<TType>;
