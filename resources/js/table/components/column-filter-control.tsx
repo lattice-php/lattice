@@ -1,5 +1,5 @@
+import { Icon } from "@lattice/lattice/icons";
 import * as Popover from "@radix-ui/react-popover";
-import { Filter, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useT } from "@lattice/lattice/i18n";
 import type { FilterType, Op } from "@lattice/lattice/types/generated";
@@ -76,7 +76,7 @@ export function ColumnFilterControl({
             className="relative -ml-px inline-flex size-9 shrink-0 items-center justify-center rounded-r-lt-sm border border-lt-input disabled:opacity-50 data-[state=open]:z-10 data-[state=open]:border-lt-primary"
             disabled={processing}
           >
-            <Filter aria-hidden="true" className="size-4" />
+            <Icon name="filter" aria-hidden="true" className="size-lt-icon-md" />
             {clauses.length > 0 && (
               <span className="absolute -right-1.5 -top-1.5 inline-flex size-4 items-center justify-center rounded-full bg-lt-primary text-[10px] font-medium text-lt-primary-fg">
                 {clauses.length}
@@ -185,7 +185,7 @@ function FilterClauseList({
           disabled={processing}
           onClick={() => setAdding(true)}
         >
-          <Plus aria-hidden="true" className="size-4" />
+          <Icon name="plus" aria-hidden="true" className="size-lt-icon-md" />
           {t("filter.add", "Add filter")}
         </button>
       </div>
@@ -244,7 +244,7 @@ function FilterClauseRow({
           disabled={processing}
           onClick={onRemove}
         >
-          <Trash2 aria-hidden="true" className="size-4" />
+          <Icon name="trash-2" aria-hidden="true" className="size-lt-icon-md" />
         </button>
       </div>
       {!valueless && (

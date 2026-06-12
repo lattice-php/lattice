@@ -1,5 +1,5 @@
+import { Icon } from "@lattice/lattice/icons";
 import * as Popover from "@radix-ui/react-popover";
-import { Check, ChevronsUpDown, Loader2, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@lattice/lattice/lib/utils";
 import { useT } from "@lattice/lattice/i18n";
@@ -165,11 +165,11 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
                       label: labelFor(value),
                     })}
                     data-test={`select-${name}-remove-${value}`}
-                    className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-3"
+                    className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-xs"
                     onClick={() => remove(value)}
                     type="button"
                   >
-                    <X />
+                    <Icon name="x" />
                   </button>
                 )}
               </span>
@@ -205,7 +205,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
               ) : (
                 <span className="text-lt-muted-fg">{placeholder}</span>
               )}
-              <ChevronsUpDown className="size-4 shrink-0 text-lt-muted-fg" />
+              <Icon name="chevrons-up-down" className="size-lt-icon-md shrink-0 text-lt-muted-fg" />
             </button>
           </Popover.Trigger>
 
@@ -224,7 +224,12 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
                   placeholder={props.searchPlaceholder}
                   value={query}
                 />
-                {loading && <Loader2 className="size-4 shrink-0 animate-spin text-lt-muted-fg" />}
+                {loading && (
+                  <Icon
+                    name="loader-2"
+                    className="size-lt-icon-md shrink-0 animate-spin text-lt-muted-fg"
+                  />
+                )}
               </div>
               <div className="max-h-60 overflow-y-auto p-1" role="listbox">
                 {visibleOptions.length === 0 ? (
@@ -247,7 +252,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
                         type="button"
                       >
                         {option.label}
-                        {isSelected && <Check className="size-4 shrink-0" />}
+                        {isSelected && <Icon name="check" className="size-lt-icon-md shrink-0" />}
                       </button>
                     );
                   })

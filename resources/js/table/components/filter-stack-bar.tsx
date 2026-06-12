@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { Icon } from "@lattice/lattice/icons";
 import { useT } from "@lattice/lattice/i18n";
 import { operatorLabel } from "../query";
 import type { FilterClause, TableColumn } from "../types";
@@ -38,7 +38,7 @@ export function FilterStackBar({
               aria-label={t("filter.remove", "Remove {{label}} filter", { label })}
               onClick={() => onRemove(index)}
             >
-              <X aria-hidden="true" className="size-3.5" />
+              <Icon name="x" aria-hidden="true" className="size-lt-icon-sm" />
             </button>
           </span>
         );

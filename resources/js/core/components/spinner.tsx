@@ -1,5 +1,4 @@
-import { Loader2Icon } from "lucide-react";
-
+import { Icon } from "@lattice/lattice/icons";
 import { cn } from "@lattice/lattice/lib/utils";
 import { useT } from "@lattice/lattice/i18n";
 
@@ -7,10 +6,12 @@ function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
   const { t } = useT("lattice");
 
   return (
-    <Loader2Icon
+    <Icon
+      name="loader-2"
       role="status"
       aria-label={t("a11y.loading", "Loading")}
-      className={cn("size-4 animate-spin", className)}
+      aria-hidden={false}
+      className={cn("animate-spin", className)}
       {...props}
     />
   );

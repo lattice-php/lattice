@@ -1,5 +1,5 @@
+import { Icon } from "@lattice/lattice/icons";
 import * as Dialog from "@radix-ui/react-dialog";
-import { X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { withRefHeader } from "@lattice/lattice/core/component-ref";
 import { Button } from "@lattice/lattice/core/components/button";
@@ -335,7 +335,7 @@ export function ActionForm({ description, formNode, onClose, title, ...rest }: A
 
             <Dialog.Close asChild>
               <Button aria-label={t("a11y.close", "Close")} size="icon" variant="ghost">
-                <X aria-hidden="true" className="size-4" />
+                <Icon name="x" aria-hidden="true" className="size-lt-icon-md" />
               </Button>
             </Dialog.Close>
           </div>

@@ -1,5 +1,5 @@
+import { Icon } from "@lattice/lattice/icons";
 import * as Dialog from "@radix-ui/react-dialog";
-import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@lattice/lattice/core/components/button";
 import type { RendererComponent } from "@lattice/lattice/core/types";
@@ -66,7 +66,7 @@ const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {
 
             <Dialog.Close asChild>
               <Button aria-label={closeLabel} size="icon" variant="ghost">
-                <X aria-hidden="true" className="size-4" />
+                <Icon name="x" aria-hidden="true" className="size-lt-icon-md" />
               </Button>
             </Dialog.Close>
           </div>

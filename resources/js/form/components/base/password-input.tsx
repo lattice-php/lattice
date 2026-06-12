@@ -1,4 +1,4 @@
-import { Eye, EyeOff } from "lucide-react";
+import { Icon } from "@lattice/lattice/icons";
 import type { ComponentProps, Ref } from "react";
 import { useState } from "react";
 import { Input } from "@lattice/lattice/form/components/base/input";
@@ -30,7 +30,11 @@ export default function PasswordInput({ className, ref, ...props }: PasswordInpu
         aria-label={showPassword ? "Hide password" : "Show password"}
         tabIndex={-1}
       >
-        {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+        {showPassword ? (
+          <Icon name="eye-off" className="size-lt-icon-md" />
+        ) : (
+          <Icon name="eye" className="size-lt-icon-md" />
+        )}
       </button>
     </div>
   );

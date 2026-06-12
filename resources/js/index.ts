@@ -8,7 +8,7 @@ export {
 export { initializeTheme, useAppearance } from "./appearance";
 export { copyToClipboard, useClipboard } from "./clipboard";
 export { EventBridge } from "./events/event-bridge";
-export { IconRenderer, IconRendererProvider } from "./icons";
+export { Icon, IconRenderer, IconRendererProvider, SpriteProvider } from "./icons";
 export { createLayoutResolver, createPageResolver, pageComponentName } from "./inertia";
 export { layoutComponents, OutletContext, SchemaLayout } from "./layout";
 export { Provider, useColumnRegistry, useRegistry } from "./provider";
@@ -52,4 +52,10 @@ export type { ActionEffect } from "./action/effects";
 export type { ResolvedAppearance, UseAppearanceReturn } from "./appearance";
 export type { CopiedValue, CopyFn, UseClipboardReturn } from "./clipboard";
 export type { Appearance, ToastMessage, ToastVariant } from "./events/event-bridge";
-export type { IconRendererFunction, IconRendererProps } from "./icons";
+export type {
+  IconName,
+  IconRendererFunction,
+  IconRendererProps,
+  KnownIcons,
+  SpriteValue,
+} from "./icons";

@@ -85,7 +85,11 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
         type="button"
         variant={variant}
       >
-        {http.processing ? <Spinner /> : icon && <IconRenderer className="size-4" icon={icon} />}
+        {http.processing ? (
+          <Spinner />
+        ) : (
+          icon && <IconRenderer className="size-lt-icon-md" icon={icon} />
+        )}
         {label}
       </Button>
 

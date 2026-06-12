@@ -1,4 +1,4 @@
-import { Search, X } from "lucide-react";
+import { Icon } from "@lattice/lattice/icons";
 import { useEffect, useState } from "react";
 import { useT } from "@lattice/lattice/i18n";
 import type { FilterType } from "@lattice/lattice/types/generated";
@@ -75,9 +75,10 @@ export function FilterValueInput({
   return (
     <div className="relative flex w-full min-w-0 items-center">
       {withSearchIcon && (
-        <Search
+        <Icon
+          name="search"
           aria-hidden="true"
-          className="pointer-events-none absolute left-2 size-4 text-lt-muted-fg"
+          className="pointer-events-none absolute left-2 size-lt-icon-md text-lt-muted-fg"
         />
       )}
       <input
@@ -108,7 +109,7 @@ export function FilterValueInput({
           disabled={processing}
           onClick={onClear}
         >
-          <X aria-hidden="true" className="size-3.5" />
+          <Icon name="x" aria-hidden="true" className="size-lt-icon-sm" />
         </button>
       )}
     </div>

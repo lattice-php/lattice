@@ -1,5 +1,5 @@
-import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { Icon } from "@lattice/lattice/icons";
 import { Renderer, useRendererContext } from "@lattice/lattice/core/renderer";
 import type { Node, RendererComponent } from "@lattice/lattice/core/types";
 import { cn } from "@lattice/lattice/lib/utils";
@@ -69,9 +69,12 @@ const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
                 onClick={toggle}
                 type="button"
               >
-                <ChevronDown
-                  aria-hidden="true"
-                  className={cn("size-4 transition-transform", isCollapsed && "-rotate-90")}
+                <Icon
+                  name="chevron-down"
+                  className={cn(
+                    "size-lt-icon-md transition-transform",
+                    isCollapsed && "-rotate-90",
+                  )}
                 />
               </button>
             )}

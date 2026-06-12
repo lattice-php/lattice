@@ -32,8 +32,8 @@ final class AppLayout extends LayoutDefinition
             Stack::make('app-shell')->direction('row')->schema([
                 Sidebar::make('app-sidebar')->collapsible()->items([
                     Menu::make('sidebar')->items([
-                        MenuItem::fromPage(HomePage::class)->icon(LucideIcon::House),
-                        MenuItem::make('Tables')->icon(LucideIcon::Table)->children([
+                        MenuItem::fromPage(HomePage::class)->icon('house'),
+                        MenuItem::make('Tables')->icon(Icon::Table)->children([
                             MenuItem::fromPage(ProductsPage::class)->label('Products'),
                         ]),
                     ]),
@@ -82,7 +82,7 @@ The sidebar's links are `Menu` and `MenuItem` components:
   so the URL stays in sync with the page. Override the label with `->label()`.
 
 ```php
-MenuItem::fromPage(ProductsPage::class)->label('Products')->icon(LucideIcon::Table);
+MenuItem::fromPage(ProductsPage::class)->label('Products')->icon(Icon::Table);
 ```
 
 Because menu items reference pages by class, navigation can't drift out of sync with the pages it

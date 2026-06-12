@@ -1,10 +1,9 @@
 import { Link, usePage } from "@inertiajs/react";
-import { ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import type { RendererComponent, Schema } from "@lattice/lattice/core/types";
-import { IconRenderer } from "@lattice/lattice/icons";
+import { Icon, IconRenderer } from "@lattice/lattice/icons";
 import { cn } from "@lattice/lattice/lib/utils";
 import { useT } from "@lattice/lattice/i18n";
 import { SidebarCollapsedContext, useSidebarCollapsed } from "./context";
@@ -28,7 +27,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
 
   const content = (
     <>
-      {icon ? <IconRenderer className="size-4 shrink-0" icon={icon} /> : null}
+      {icon ? <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} /> : null}
       <span className={cn(collapsed && "sr-only")}>{label}</span>
     </>
   );
@@ -104,9 +103,12 @@ function CollapsibleItem({
         type="button"
       >
         {content}
-        <ChevronRight
-          aria-hidden="true"
-          className={cn("ml-auto size-4 shrink-0 transition-transform", open && "rotate-90")}
+        <Icon
+          name="chevron-right"
+          className={cn(
+            "ml-auto size-lt-icon-md shrink-0 transition-transform",
+            open && "rotate-90",
+          )}
         />
       </button>
       {open ? <ul className="mt-1 flex flex-col gap-1 pl-3">{children}</ul> : null}
@@ -155,7 +157,11 @@ function FlyoutGroup({
         title={label}
         type="button"
       >
-        {icon ? <IconRenderer className="size-4 shrink-0" icon={icon} /> : <span>{label}</span>}
+        {icon ? (
+          <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} />
+        ) : (
+          <span>{label}</span>
+        )}
       </button>
       {open
         ? createPortal(

@@ -1,5 +1,5 @@
+import { Icon } from "@lattice/lattice/icons";
 import * as Popover from "@radix-ui/react-popover";
-import { MoreHorizontal } from "lucide-react";
 import { Button } from "@lattice/lattice/core/components/button";
 import type { RendererComponent } from "@lattice/lattice/core/types";
 
@@ -17,7 +17,7 @@ const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, nod
             type="button"
             variant="ghost"
           >
-            <MoreHorizontal aria-hidden="true" className="size-4" />
+            <Icon name="more-horizontal" aria-hidden="true" className="size-lt-icon-md" />
           </Button>
         </Popover.Trigger>
 

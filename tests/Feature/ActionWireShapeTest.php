@@ -8,7 +8,7 @@ use Lattice\Lattice\Actions\Components\BulkAction;
 use Lattice\Lattice\Actions\Effect;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\LucideIcon;
+use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Workbench\App\Actions\ArchiveProductAction;
@@ -19,7 +19,7 @@ it('serializes the action wire shape', function (): void {
         ->endpoint('/lattice/actions/archive')
         ->label('Archive')
         ->method(HttpMethod::Patch)
-        ->icon(LucideIcon::Send)
+        ->icon(Icon::Send)
         ->variant(ButtonVariant::Destructive)
         ->confirm('Archive product?', 'This hides the product.', 'Archive', 'Keep')
         ->effects([Effect::reloadComponent('table'), Effect::reloadPage()]);
