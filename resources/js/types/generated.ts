@@ -300,6 +300,7 @@ export type Form = {
   status: string | null;
   submitButton: boolean | null;
   submitLabel: string | null;
+  validationSummaryLabel: string;
   validationTimeout: number | null;
 };
 export type FormFieldNode =
@@ -599,6 +600,7 @@ export type Select = {
   placeholder: string | null;
   readOnly: boolean | null;
   required: boolean | null;
+  searchPlaceholder: string;
   searchable: boolean | null;
   tabIndex: number | null;
   value: unknown;

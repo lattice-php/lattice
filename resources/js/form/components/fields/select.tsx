@@ -217,7 +217,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
                   data-test={`select-${name}-search`}
                   className="w-full bg-transparent text-sm outline-none placeholder:text-lt-muted-fg"
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder={searchable ? "Search…" : "Filter…"}
+                  placeholder={props.searchPlaceholder}
                   value={query}
                 />
                 {loading && <Loader2 className="size-4 shrink-0 animate-spin text-lt-muted-fg" />}

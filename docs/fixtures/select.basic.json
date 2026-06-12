@@ -33,6 +33,7 @@
             "placeholder": "Pick a country",
             "readOnly": null,
             "required": null,
+            "searchPlaceholder": "Search\u2026",
             "searchable": null,
             "tabIndex": null,
             "value": null

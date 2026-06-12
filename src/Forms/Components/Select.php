@@ -31,6 +31,8 @@ class Select extends Field
 
     public string $emptyLabel = 'No options';
 
+    public string $searchPlaceholder = 'Search…';
+
     public function multiple(bool $multiple = true): static
     {
         $this->multiple = $multiple;
@@ -41,6 +43,13 @@ class Select extends Field
     public function emptyLabel(string $label): static
     {
         $this->emptyLabel = $label;
+
+        return $this;
+    }
+
+    public function searchPlaceholder(string $placeholder): static
+    {
+        $this->searchPlaceholder = $placeholder;
 
         return $this;
     }
