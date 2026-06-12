@@ -1,3 +1,4 @@
+import { Icon } from "@lattice/lattice/icons";
 import { Details, DetailsContent, DetailsSummary } from "@tiptap/extension-details";
 import { Highlight } from "@tiptap/extension-highlight";
 import { Link } from "@tiptap/extension-link";
@@ -5,32 +6,6 @@ import { TableKit } from "@tiptap/extension-table";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { type Editor, EditorContent, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
-import {
-  AlignCenter,
-  AlignJustify,
-  AlignLeft,
-  AlignRight,
-  Bold,
-  ChevronRight,
-  Code,
-  Columns3,
-  Heading1,
-  Heading2,
-  Heading3,
-  Highlighter,
-  Italic,
-  Link as LinkIcon,
-  List,
-  ListOrdered,
-  Minus,
-  Quote,
-  Rows3,
-  Smile,
-  Strikethrough,
-  Table as TableIcon,
-  Trash2,
-  Underline as UnderlineIcon,
-} from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@lattice/lattice/lib/utils";
 import type { RendererComponent } from "@lattice/lattice/core/types";
@@ -43,7 +18,7 @@ import { useFormValue } from "../values";
 type ToolbarItem =
   | "separator"
   | {
-      icon: typeof Bold;
+      icon: string;
       label: string;
       isActive: (editor: Editor) => boolean;
       isDisabled?: (editor: Editor) => boolean;
@@ -52,113 +27,113 @@ type ToolbarItem =
 
 const toolbar: ToolbarItem[] = [
   {
-    icon: Bold,
+    icon: "bold",
     label: "Bold",
     isActive: (e) => e.isActive("bold"),
     run: (e) => e.chain().focus().toggleBold().run(),
   },
   {
-    icon: Italic,
+    icon: "italic",
     label: "Italic",
     isActive: (e) => e.isActive("italic"),
     run: (e) => e.chain().focus().toggleItalic().run(),
   },
   {
-    icon: Strikethrough,
+    icon: "strikethrough",
     label: "Strikethrough",
     isActive: (e) => e.isActive("strike"),
     run: (e) => e.chain().focus().toggleStrike().run(),
   },
   {
-    icon: UnderlineIcon,
+    icon: "underline",
     label: "Underline",
     isActive: (e) => e.isActive("underline"),
     run: (e) => e.chain().focus().toggleUnderline().run(),
   },
   {
-    icon: Highlighter,
+    icon: "highlighter",
     label: "Highlight",
     isActive: (e) => e.isActive("highlight"),
     run: (e) => e.chain().focus().toggleHighlight().run(),
   },
   "separator",
   {
-    icon: Heading1,
+    icon: "heading-1",
     label: "Heading 1",
     isActive: (e) => e.isActive("heading", { level: 1 }),
     run: (e) => e.chain().focus().toggleHeading({ level: 1 }).run(),
   },
   {
-    icon: Heading2,
+    icon: "heading-2",
     label: "Heading 2",
     isActive: (e) => e.isActive("heading", { level: 2 }),
     run: (e) => e.chain().focus().toggleHeading({ level: 2 }).run(),
   },
   {
-    icon: Heading3,
+    icon: "heading-3",
     label: "Heading 3",
     isActive: (e) => e.isActive("heading", { level: 3 }),
     run: (e) => e.chain().focus().toggleHeading({ level: 3 }).run(),
   },
   "separator",
   {
-    icon: List,
+    icon: "list",
     label: "Bullet list",
     isActive: (e) => e.isActive("bulletList"),
     run: (e) => e.chain().focus().toggleBulletList().run(),
   },
   {
-    icon: ListOrdered,
+    icon: "list-ordered",
     label: "Ordered list",
     isActive: (e) => e.isActive("orderedList"),
     run: (e) => e.chain().focus().toggleOrderedList().run(),
   },
   {
-    icon: Quote,
+    icon: "quote",
     label: "Blockquote",
     isActive: (e) => e.isActive("blockquote"),
     run: (e) => e.chain().focus().toggleBlockquote().run(),
   },
   {
-    icon: Code,
+    icon: "code",
     label: "Code block",
     isActive: (e) => e.isActive("codeBlock"),
     run: (e) => e.chain().focus().toggleCodeBlock().run(),
   },
   {
-    icon: Minus,
+    icon: "minus",
     label: "Horizontal rule",
     isActive: () => false,
     run: (e) => e.chain().focus().setHorizontalRule().run(),
   },
   "separator",
   {
-    icon: AlignLeft,
+    icon: "align-left",
     label: "Align left",
     isActive: (e) => e.isActive({ textAlign: "left" }),
     run: (e) => e.chain().focus().setTextAlign("left").run(),
   },
   {
-    icon: AlignCenter,
+    icon: "align-center",
     label: "Align center",
     isActive: (e) => e.isActive({ textAlign: "center" }),
     run: (e) => e.chain().focus().setTextAlign("center").run(),
   },
   {
-    icon: AlignRight,
+    icon: "align-right",
     label: "Align right",
     isActive: (e) => e.isActive({ textAlign: "right" }),
     run: (e) => e.chain().focus().setTextAlign("right").run(),
   },
   {
-    icon: AlignJustify,
+    icon: "align-justify",
     label: "Justify",
     isActive: (e) => e.isActive({ textAlign: "justify" }),
     run: (e) => e.chain().focus().setTextAlign("justify").run(),
   },
   "separator",
   {
-    icon: LinkIcon,
+    icon: "link",
     label: "Link",
     isActive: (e) => e.isActive("link"),
     run: (e) => {
@@ -174,34 +149,34 @@ const toolbar: ToolbarItem[] = [
   },
   "separator",
   {
-    icon: TableIcon,
+    icon: "table",
     label: "Insert table",
     isActive: (e) => e.isActive("table"),
     run: (e) => e.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
   },
   {
-    icon: Columns3,
+    icon: "columns-3",
     label: "Add column",
     isActive: () => false,
     isDisabled: (e) => !e.can().addColumnAfter(),
     run: (e) => e.chain().focus().addColumnAfter().run(),
   },
   {
-    icon: Rows3,
+    icon: "rows-3",
     label: "Add row",
     isActive: () => false,
     isDisabled: (e) => !e.can().addRowAfter(),
     run: (e) => e.chain().focus().addRowAfter().run(),
   },
   {
-    icon: Trash2,
+    icon: "trash-2",
     label: "Delete table",
     isActive: () => false,
     isDisabled: (e) => !e.can().deleteTable(),
     run: (e) => e.chain().focus().deleteTable().run(),
   },
   {
-    icon: ChevronRight,
+    icon: "chevron-right",
     label: "Details",
     isActive: (e) => e.isActive("details"),
     run: (e) => {
@@ -247,7 +222,7 @@ function EmojiPicker({ editor }: { editor: Editor }) {
         title="Insert emoji"
         type="button"
       >
-        <Smile />
+        <Icon name="smile" />
       </button>
       {open && (
         <div className="absolute z-10 mt-1 grid grid-cols-8 gap-0.5 rounded-lt-sm border border-lt-border bg-lt-bg p-1 shadow-md">
@@ -296,7 +271,7 @@ function Toolbar({ editor }: { editor: Editor }) {
             title={item.label}
             type="button"
           >
-            <item.icon />
+            <Icon name={item.icon} />
           </button>
         ),
       )}

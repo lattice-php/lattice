@@ -44,7 +44,9 @@ final class AppLayout extends LayoutDefinition
                                 MenuItem::fromPage(ProductsPage::class)->label('Products'),
                                 MenuItem::fromPage(TablesPage::class)->label('Pagination Modes'),
                             ]),
-                            MenuItem::fromPage(TabsPage::class)->label('Tabs')->icon(LucideIcon::PanelsTopLeft),
+                            // A fully custom icon: workbench/resources/icons/spark.svg, referenced
+                            // by name and merged into the same sprite as Lattice's built-ins.
+                            MenuItem::fromPage(TabsPage::class)->label('Tabs')->icon('spark'),
                         ]),
                     ]),
                     Stack::make('app-main')

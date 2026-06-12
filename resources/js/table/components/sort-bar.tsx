@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, X } from "lucide-react";
+import { Icon } from "@lattice/lattice/icons";
 import { getSortDirectionLabel } from "../query";
 import type { TableColumn, TableSort, TableState } from "../types";
 
@@ -18,13 +18,15 @@ export function SortBar({
       {state.sorts.map((sort, index) => {
         const column = columnsByKey.get(sort.key);
         const label = column?.label ?? sort.key;
-        const Chevron = sort.direction === "desc" ? ArrowDown : ArrowUp;
+        const arrow = sort.direction === "desc" ? "arrow-down" : "arrow-up";
 
         return (
           <span key={sort.key} className="inline-flex items-center gap-1.5">
             <span className="font-medium">{`${index + 1}. ${label}`}</span>
-            <Chevron
+            <Icon
+              name={arrow}
               role="img"
+              aria-hidden={false}
               aria-label={getSortDirectionLabel(sort.direction)}
               className="size-3.5 text-lt-muted-fg"
             />
@@ -36,7 +38,7 @@ export function SortBar({
               data-test={`clear-${sort.key}-sort`}
               onClick={() => onClear(sort)}
             >
-              <X aria-hidden="true" className="size-3.5" />
+              <Icon name="x" className="size-3.5" />
             </button>
           </span>
         );

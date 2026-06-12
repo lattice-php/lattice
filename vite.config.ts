@@ -1,4 +1,5 @@
 import inertia from "@inertiajs/vite";
+import { svgSprite } from "@lattice-php/vite-svg-sprite";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import laravel from "laravel-vite-plugin";
@@ -47,6 +48,8 @@ export default defineConfig(({ mode }) => {
       ...(isVitest || isLibrary
         ? []
         : [
+            // Lattice's own icons + the workbench's custom icons compile into one sprite.
+            svgSprite({ iconDirs: ["resources/icons", "workbench/resources/icons"] }),
             laravel({
               input: ["workbench/resources/css/app.css", "workbench/resources/js/app.tsx"],
               publicDirectory: "vendor/orchestra/testbench-core/laravel/public",
@@ -93,7 +96,6 @@ export default defineConfig(({ mode }) => {
                 /^@inertiajs\//,
                 /^@radix-ui\//,
                 /^@tiptap\//,
-                /^lucide-react($|\/)/,
                 /^clsx($|\/)/,
                 /^class-variance-authority($|\/)/,
                 /^tailwind-merge($|\/)/,

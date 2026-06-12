@@ -1,10 +1,9 @@
 import { Link, usePage } from "@inertiajs/react";
-import { ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import type { RendererComponent, Schema } from "@lattice/lattice/core/types";
-import { IconRenderer } from "@lattice/lattice/icons";
+import { Icon, IconRenderer } from "@lattice/lattice/icons";
 import { cn } from "@lattice/lattice/lib/utils";
 import { SidebarCollapsedContext, useSidebarCollapsed } from "./context";
 
@@ -103,8 +102,8 @@ function CollapsibleItem({
         type="button"
       >
         {content}
-        <ChevronRight
-          aria-hidden="true"
+        <Icon
+          name="chevron-right"
           className={cn("ml-auto size-4 shrink-0 transition-transform", open && "rotate-90")}
         />
       </button>

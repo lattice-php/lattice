@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo } from "react";
 import type { ReactNode } from "react";
-import { renderBundledIcon, renderMissingIcon } from "./default-icons";
+import { cn } from "../lib/utils";
+import { Icon, useSprite } from "./sprite";
 
 export type IconRendererProps = {
   className?: string;
@@ -15,7 +16,7 @@ type IconRendererProviderProps = {
   renderer: IconRendererFunction;
 };
 
-const IconRenderersContext = createContext<IconRendererFunction[]>([renderBundledIcon]);
+const IconRenderersContext = createContext<IconRendererFunction[]>([]);
 const loggedMissingIcons = new Set<string>();
 
 export function IconRendererProvider({
@@ -36,7 +37,9 @@ export function IconRendererProvider({
 
 export function IconRenderer({ className, icon }: IconRendererProps) {
   const renderers = useContext(IconRenderersContext);
+  const { ids } = useSprite();
 
+  // Custom renderers (the override stack) take precedence over the sprite.
   for (const renderer of renderers) {
     const rendered = renderer({ className, icon });
 
@@ -45,9 +48,35 @@ export function IconRenderer({ className, icon }: IconRendererProps) {
     }
   }
 
-  logMissingIcon(icon);
+  // When the sprite is wired and the icon is genuinely absent, show a visible
+  // marker. When `ids` is unknown (not yet wired), optimistically emit the
+  // sprite reference rather than crying wolf.
+  if (ids && !ids.includes(icon)) {
+    logMissingIcon(icon);
+    return <MissingIcon className={className} />;
+  }
 
-  return renderMissingIcon({ className, icon });
+  return <Icon className={className} name={icon} />;
+}
+
+function MissingIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={cn("size-4 text-lt-muted-fg", className)}
+      data-lattice-missing-icon=""
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+      <path d="M12 17h.01" />
+    </svg>
+  );
 }
 
 function logMissingIcon(icon: string): void {

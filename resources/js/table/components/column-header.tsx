@@ -1,17 +1,19 @@
-import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
+import { Icon } from "@lattice/lattice/icons";
 import { getColumnAriaSort, getColumnSort } from "../query";
 import type { TableColumn, TableSort, TableState } from "../types";
 
 function SortIndicator({ sort }: { sort: TableSort | undefined }) {
   if (sort?.direction === "asc") {
-    return <ArrowUp aria-hidden="true" className="size-3.5 shrink-0" />;
+    return <Icon name="arrow-up" aria-hidden="true" className="size-3.5 shrink-0" />;
   }
 
   if (sort?.direction === "desc") {
-    return <ArrowDown aria-hidden="true" className="size-3.5 shrink-0" />;
+    return <Icon name="arrow-down" aria-hidden="true" className="size-3.5 shrink-0" />;
   }
 
-  return <ChevronsUpDown aria-hidden="true" className="size-3.5 shrink-0 opacity-50" />;
+  return (
+    <Icon name="chevrons-up-down" aria-hidden="true" className="size-3.5 shrink-0 opacity-50" />
+  );
 }
 
 export function ColumnHeader({
