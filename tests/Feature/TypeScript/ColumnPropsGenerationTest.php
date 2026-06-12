@@ -3,8 +3,16 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\File;
+use Lattice\Lattice\Support\TypeScript\AugmentProfile;
+use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 
 use function Pest\Laravel\artisan;
+
+// The workbench binds the BaseProfile by default; this test exercises the
+// shipped augmentation behaviour, so restore the default AugmentProfile.
+beforeEach(function () {
+    app()->bind(TypeScriptProfile::class, AugmentProfile::class);
+});
 
 it('writes a ColumnProps augmentation with own column properties only', function () {
     $output = base_path('resources/js/lattice/generated-column.d.ts');

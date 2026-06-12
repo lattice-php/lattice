@@ -25,6 +25,8 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Layouts\LayoutRegistry;
+use Lattice\Lattice\Support\TypeScript\AugmentProfile;
+use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Tables\TableRegistry;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -62,6 +64,10 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(ComponentReferenceSigner::class);
         $this->app->alias(ComponentReferenceSigner::class, SignsComponentReferences::class);
         $this->app->singleton(LatticeRegistry::class);
+
+        // Default TypeScript role: a consumer app augments the package's published
+        // types. The workbench rebinds this to its BaseProfile to regenerate them.
+        $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
 
         if (! Router::hasMacro('latticePage')) {
             Router::macro('latticePage', fn (string $uri, string $page): Route => Lattice::page($uri, $page));

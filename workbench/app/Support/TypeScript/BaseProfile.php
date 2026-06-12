@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Workbench\App\Console\Commands;
+namespace Workbench\App\Support\TypeScript;
 
-use Illuminate\Console\Command;
 use Lattice\Lattice\Actions\Contracts\Effect;
 use Lattice\Lattice\Attributes\Effect as EffectAttribute;
 use Lattice\Lattice\Forms\Components\Form;
@@ -13,16 +12,20 @@ use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
+use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Spatie\Attributes\Attributes;
 use Spatie\StructureDiscoverer\Discover;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
-use Workbench\App\Support\TypeScript\EnumTransformer;
-use Workbench\App\Support\TypeScript\HttpMethodTransformer;
-use Workbench\App\Support\TypeScript\MarkedTypeDiscovery;
-use Workbench\App\Support\TypeScript\NodesProvider;
-use Workbench\App\Support\TypeScript\ValueObjectTransformer;
 
-final class GenerateInternalTypesCommand extends Command
+/**
+ * The package's own dev profile: regenerates the built-in TypeScript module
+ * (resources/js/types/generated.ts) — enums, value objects, effects and the
+ * discriminated Node unions — from the package src/. Bound as the default
+ * TypeScriptProfile in the workbench so `php artisan lattice:typescript`
+ * regenerates the base types every other project then augments. Kept in the
+ * workbench so this maintainer-only build code never ships.
+ */
+final class BaseProfile implements TypeScriptProfile
 {
     /**
      * The component domains, in output order, mapped to their generated node-alias
@@ -38,11 +41,7 @@ final class GenerateInternalTypesCommand extends Command
         'Layouts' => 'LayoutNode',
     ];
 
-    protected $signature = 'lattice:internal-types';
-
-    protected $description = "Regenerate Lattice's built-in TypeScript types (resources/js/types/generated.ts)";
-
-    public function handle(TypeScriptGenerator $generator): int
+    public function run(TypeScriptGenerator $generator): string
     {
         $packageRoot = dirname(__DIR__, 4);
         $src = $packageRoot.'/src';
@@ -85,9 +84,7 @@ final class GenerateInternalTypesCommand extends Command
             new OxfmtFormatter,
         );
 
-        $this->components->info('Regenerated built-in TypeScript types.');
-
-        return self::SUCCESS;
+        return 'Regenerated built-in TypeScript types.';
     }
 
     /**

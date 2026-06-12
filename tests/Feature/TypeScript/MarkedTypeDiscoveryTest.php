@@ -12,15 +12,11 @@ use Workbench\App\Support\TypeScript\MarkedTypeDiscovery;
 it('splits #[TypeScript]-marked classes into enums and value objects', function () {
     $result = (new MarkedTypeDiscovery)->discover(dirname(__DIR__, 3).'/src');
 
-    expect($result['enums'])
-        ->toContain(Align::class)
-        ->toContain(EffectType::class)
-        ->not->toContain(Option::class);
+    expect($result['enums'])->toContain(Align::class)->toContain(EffectType::class);
+    expect($result['enums'])->not->toContain(Option::class);
 
-    expect($result['valueObjects'])
-        ->toContain(Option::class)
-        ->toContain(ToastMessage::class)
-        ->not->toContain(Align::class);
+    expect($result['valueObjects'])->toContain(Option::class)->toContain(ToastMessage::class);
+    expect($result['valueObjects'])->not->toContain(Align::class);
 });
 
 it('excludes classes without the #[TypeScript] attribute', function () {
