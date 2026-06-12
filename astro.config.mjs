@@ -44,6 +44,7 @@ export default defineConfig({
             { label: "Installation", link: "/introduction/installation/" },
             { label: "Getting Started", link: "/introduction/getting-started/" },
             { label: "Configuration", link: "/introduction/configuration/" },
+            { label: "Development with AI", link: "/introduction/development-with-ai/" },
           ],
         },
         {
