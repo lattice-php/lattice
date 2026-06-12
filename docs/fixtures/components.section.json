@@ -1,0 +1,38 @@
+[
+    {
+        "props": {
+            "collapsed": false,
+            "collapsible": true,
+            "description": "People with access to this team.",
+            "headerActions": [
+                {
+                    "props": {
+                        "buttonType": "button",
+                        "href": null,
+                        "label": "Invite member",
+                        "variant": "outline"
+                    },
+                    "type": "button"
+                }
+            ],
+            "rememberState": true,
+            "title": "Members"
+        },
+        "schema": [
+            {
+                "props": {
+                    "align": null,
+                    "text": "Three people have access to this team."
+                },
+                "type": "text"
+            },
+            {
+                "props": {
+                    "label": "3 active"
+                },
+                "type": "badge"
+            }
+        ],
+        "type": "section"
+    }
+]

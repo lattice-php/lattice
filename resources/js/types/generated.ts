@@ -190,6 +190,12 @@ export type CoreNode =
       schema?: Node[];
     }
   | {
+      type: "section";
+      key?: string;
+      props: Section;
+      schema?: Node[];
+    }
+  | {
       type: "segmented-control";
       key?: string;
       props: SegmentedControl;
@@ -556,6 +562,14 @@ export type RichEditor = {
   readOnly: boolean | null;
   required: boolean | null;
   value: unknown;
+};
+export type Section = {
+  collapsed: boolean;
+  collapsible: boolean;
+  description: string | null;
+  headerActions: undefined[];
+  rememberState: boolean;
+  title: string | null;
 };
 export type SegmentedControl = {
   emits: string | null;
