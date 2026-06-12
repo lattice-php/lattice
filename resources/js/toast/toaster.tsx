@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Renderer } from "@lattice/lattice/core/renderer";
 import type { Node } from "@lattice/lattice/core/types";
+import type { ToastVariant } from "@lattice/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
 import { cn } from "@lattice/lattice/lib/utils";
 import { useRegistry } from "@lattice/lattice/provider";
 
-const variants = ["success", "info", "warning", "error"] as const;
-
-type ToastVariant = (typeof variants)[number];
+const variants = ["success", "info", "warning", "error"] as const satisfies readonly ToastVariant[];
 
 type ToastItem = {
   action?: Node;
@@ -59,7 +58,7 @@ function normalize(detail: unknown): Omit<ToastItem, "id"> | null {
   }
 
   return {
-    action: (data.action as Node | undefined) ?? undefined,
+    action: data.action as Node | undefined,
     dismissible: data.dismissible !== false,
     duration: typeof data.duration === "number" ? data.duration : null,
     message: data.message,
