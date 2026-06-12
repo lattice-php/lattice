@@ -36,6 +36,7 @@ final class ValueObjectTransformer extends ClassTransformer
         return [
             ...parent::classPropertyProcessors(),
             new MixedToUnknownClassPropertyProcessor,
+            new ComponentToNodeClassPropertyProcessor,
         ];
     }
 }
