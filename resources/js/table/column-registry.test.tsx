@@ -130,4 +130,56 @@ describe("column registry", () => {
 
     expect(screen.getByText("custom-stack")).toBeVisible();
   });
+
+  function renderCell(column: ColumnData, row: Record<string, unknown>) {
+    return render(
+      <Provider columns={createColumnRegistry()}>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <ColumnCell column={column} row={row} />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </Provider>,
+    );
+  }
+
+  it("renders a badge cell with its mapped colour", () => {
+    renderCell(
+      col({
+        key: "status",
+        label: "Status",
+        type: "badge",
+        props: { colors: { active: "green" } },
+      }),
+      { status: "active" },
+    );
+
+    const badge = screen.getByText("active");
+    expect(badge).toBeVisible();
+    expect(badge.className).toContain("lt-cell-tone-green");
+  });
+
+  it("renders an icon cell from the value map", () => {
+    renderCell(
+      col({ key: "verified", label: "Verified", type: "icon", props: { icons: { "1": "check" } } }),
+      { verified: "1" },
+    );
+
+    expect(screen.getByLabelText("1")).toBeVisible();
+  });
+
+  it("renders an image cell as a circular avatar", () => {
+    renderCell(
+      col({ key: "avatar", label: "Avatar", type: "image", props: { circular: true, size: 40 } }),
+      { avatar: "https://example.com/a.png" },
+    );
+
+    const img = screen.getByRole("img", { name: "Avatar" });
+    expect(img).toHaveAttribute("src", "https://example.com/a.png");
+    expect(img.className).toContain("rounded-full");
+  });
 });

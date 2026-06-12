@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Enums\LucideIcon;
+use Lattice\Lattice\Tables\Columns\BadgeColumn;
+use Lattice\Lattice\Tables\Columns\IconColumn;
+use Lattice\Lattice\Tables\Columns\ImageColumn;
 use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
@@ -52,5 +56,30 @@ describe('docs fixtures', function (): void {
         ]);
 
         expect('docs/fixtures/table.stack.json')->toBeReadableFile();
+    });
+
+    it('dumps the column types table example', function (): void {
+        dumpFixture('table.column-types', [
+            Table::make('members')
+                ->columns([
+                    ImageColumn::make('avatar')->label('')->circular()->size(32),
+                    TextColumn::make('name')->label('Name'),
+                    BadgeColumn::make('status')->label('Status')
+                        ->colors(['active' => 'green', 'invited' => 'yellow', 'archived' => 'gray']),
+                    IconColumn::make('verified')->label('Verified')
+                        ->icons(['1' => LucideIcon::Check, '0' => LucideIcon::Minus])
+                        ->colors(['1' => 'green', '0' => 'gray']),
+                ])
+                ->result(
+                    TableResult::fromItems(collect([
+                        ['avatar' => 'https://i.pravatar.cc/64?img=1', 'name' => 'Ada Lovelace', 'status' => 'active', 'verified' => '1'],
+                        ['avatar' => 'https://i.pravatar.cc/64?img=2', 'name' => 'Alan Turing', 'status' => 'invited', 'verified' => '0'],
+                        ['avatar' => 'https://i.pravatar.cc/64?img=3', 'name' => 'Grace Hopper', 'status' => 'archived', 'verified' => '1'],
+                    ])),
+                    TableQuery::empty(),
+                ),
+        ]);
+
+        expect('docs/fixtures/table.column-types.json')->toBeReadableFile();
     });
 });

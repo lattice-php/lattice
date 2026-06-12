@@ -116,6 +116,85 @@
 }
 
 /*
+ * Status colours for Badge and Icon table cells. Each tone sets a soft
+ * background and a readable foreground in oklch; the `.dark` block swaps them.
+ * Defined here (not as utility strings in the renderer) so the palette lives
+ * with the theme and can be overridden, and so the cells can pick a tone by
+ * name without Tailwind needing to see every class. Gray follows the muted token.
+ */
+.lt-cell-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: var(--lt-radius-sm);
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  background-color: var(--lt-cell-bg, var(--lt-muted));
+  color: var(--lt-cell-fg, var(--lt-muted-fg));
+}
+
+.lt-cell-icon {
+  display: inline-flex;
+  color: var(--lt-cell-fg, var(--lt-fg));
+}
+
+.lt-cell-tone-gray {
+  --lt-cell-bg: var(--lt-muted);
+  --lt-cell-fg: var(--lt-muted-fg);
+}
+.lt-cell-tone-red {
+  --lt-cell-bg: oklch(0.94 0.03 25);
+  --lt-cell-fg: oklch(0.51 0.19 27);
+}
+.lt-cell-tone-orange {
+  --lt-cell-bg: oklch(0.95 0.04 65);
+  --lt-cell-fg: oklch(0.55 0.14 55);
+}
+.lt-cell-tone-yellow {
+  --lt-cell-bg: oklch(0.96 0.05 100);
+  --lt-cell-fg: oklch(0.52 0.1 85);
+}
+.lt-cell-tone-green {
+  --lt-cell-bg: oklch(0.95 0.05 155);
+  --lt-cell-fg: oklch(0.52 0.13 152);
+}
+.lt-cell-tone-blue {
+  --lt-cell-bg: oklch(0.95 0.03 245);
+  --lt-cell-fg: oklch(0.54 0.17 252);
+}
+.lt-cell-tone-purple {
+  --lt-cell-bg: oklch(0.95 0.03 305);
+  --lt-cell-fg: oklch(0.53 0.19 305);
+}
+
+.dark .lt-cell-tone-red {
+  --lt-cell-bg: oklch(0.29 0.08 27);
+  --lt-cell-fg: oklch(0.83 0.11 27);
+}
+.dark .lt-cell-tone-orange {
+  --lt-cell-bg: oklch(0.3 0.07 65);
+  --lt-cell-fg: oklch(0.84 0.1 65);
+}
+.dark .lt-cell-tone-yellow {
+  --lt-cell-bg: oklch(0.31 0.06 100);
+  --lt-cell-fg: oklch(0.87 0.11 100);
+}
+.dark .lt-cell-tone-green {
+  --lt-cell-bg: oklch(0.3 0.07 155);
+  --lt-cell-fg: oklch(0.85 0.13 155);
+}
+.dark .lt-cell-tone-blue {
+  --lt-cell-bg: oklch(0.3 0.07 245);
+  --lt-cell-fg: oklch(0.84 0.11 250);
+}
+.dark .lt-cell-tone-purple {
+  --lt-cell-bg: oklch(0.3 0.07 305);
+  --lt-cell-fg: oklch(0.85 0.11 305);
+}
+
+/*
  * Rich text content styling. Applied to the rich editor and reusable for rendered
  * output (wrap stored HTML in `.lattice-prose`). Restores the element styles that
  * Tailwind's preflight resets, using the theme tokens so it adapts to dark mode.

@@ -137,7 +137,7 @@ export type ColumnFilter = {
   readonly operators: Op[];
   readonly defaultOperator: Op;
 };
-export type ColumnType = "text" | "stack";
+export type ColumnType = "text" | "stack" | "badge" | "icon" | "image";
 export type Condition = {
   readonly field: string;
   readonly operator: Op;
