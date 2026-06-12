@@ -110,7 +110,7 @@ export type Choice = {
   value: unknown;
 };
 export type CloseModalEffect = {
-  readonly modal?: string | null;
+  readonly modal: string | null;
 };
 export type ColumnData = {
   readonly key: string;
@@ -530,7 +530,7 @@ export type ReloadComponentEffect = {
 };
 export type ReloadPageEffect = object;
 export type ResetFormEffect = {
-  readonly form?: string | null;
+  readonly form: string | null;
 };
 export type RichEditor = {
   conditions: {
@@ -673,12 +673,15 @@ export type Textarea = {
   value: unknown;
 };
 export type ToastEffect = {
-  readonly variant: ToastVariant;
-  readonly message: string;
-  readonly duration?: number | null;
-  readonly persistent: boolean;
-  readonly dismissible: boolean;
-  readonly action?: Node;
+  readonly toast: ToastMessage;
+};
+export type ToastMessage = {
+  duration: number | null;
+  persistent: boolean;
+  dismissible: boolean;
+  action: Node | null;
+  variant: ToastVariant;
+  message: string;
 };
 export type ToastVariant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "sm" | "md" | "lg" | "fill";

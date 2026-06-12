@@ -974,10 +974,14 @@ test('registered actions serialize their configured endpoint method label and ef
                 'effects' => [
                     [
                         'type' => 'toast',
-                        'message' => 'Ready.',
-                        'variant' => 'success',
-                        'persistent' => false,
-                        'dismissible' => true,
+                        'toast' => [
+                            'variant' => 'success',
+                            'message' => 'Ready.',
+                            'duration' => null,
+                            'persistent' => false,
+                            'dismissible' => true,
+                            'action' => null,
+                        ],
                     ],
                     [
                         'type' => 'reloadComponent',
@@ -1065,8 +1069,8 @@ test('registered actions can be handled through the package endpoint', function 
         ->assertJsonPath('data.handled', 'Taylor')
         ->assertJsonPath('data.team', 'trusted-team')
         ->assertJsonPath('effects.0.type', 'toast')
-        ->assertJsonPath('effects.0.message', 'Action handled.')
-        ->assertJsonPath('effects.0.variant', 'info')
+        ->assertJsonPath('effects.0.toast.message', 'Action handled.')
+        ->assertJsonPath('effects.0.toast.variant', 'info')
         ->assertJsonPath('effects.1.type', 'reloadComponent')
         ->assertJsonPath('effects.1.component', 'workbench.users');
 });
@@ -1089,26 +1093,36 @@ test('toast messages serialize for flash data and action effects', function () {
         ->toBe([
             'variant' => 'warning',
             'message' => 'Review the settings.',
+            'duration' => null,
             'persistent' => false,
             'dismissible' => true,
+            'action' => null,
         ])
         ->and(wire(Effect::toast(ToastVariant::Warning, 'Review the settings.')))
         ->toBe([
             'type' => 'toast',
-            'variant' => 'warning',
-            'message' => 'Review the settings.',
-            'persistent' => false,
-            'dismissible' => true,
+            'toast' => [
+                'variant' => 'warning',
+                'message' => 'Review the settings.',
+                'duration' => null,
+                'persistent' => false,
+                'dismissible' => true,
+                'action' => null,
+            ],
         ])
         ->and(wire(ActionResult::success()->toast('Saved.')))
         ->toMatchArray([
             'effects' => [
                 [
                     'type' => 'toast',
-                    'variant' => 'success',
-                    'message' => 'Saved.',
-                    'persistent' => false,
-                    'dismissible' => true,
+                    'toast' => [
+                        'variant' => 'success',
+                        'message' => 'Saved.',
+                        'duration' => null,
+                        'persistent' => false,
+                        'dismissible' => true,
+                        'action' => null,
+                    ],
                 ],
             ],
         ])
@@ -1117,10 +1131,14 @@ test('toast messages serialize for flash data and action effects', function () {
             'effects' => [
                 [
                     'type' => 'toast',
-                    'variant' => 'warning',
-                    'message' => 'Review the settings.',
-                    'persistent' => false,
-                    'dismissible' => true,
+                    'toast' => [
+                        'variant' => 'warning',
+                        'message' => 'Review the settings.',
+                        'duration' => null,
+                        'persistent' => false,
+                        'dismissible' => true,
+                        'action' => null,
+                    ],
                 ],
             ],
         ]);
@@ -1135,13 +1153,13 @@ test('a toast serializes its lifetime, dismissibility and link', function () {
     ));
 
     expect($wire['type'])->toBe('toast')
-        ->and($wire['duration'])->toBe(8000)
-        ->and($wire['persistent'])->toBeFalse()
-        ->and($wire['dismissible'])->toBeFalse()
-        ->and($wire['action']['type'])->toBe('link')
-        ->and($wire['action']['props']['label'])->toBe('Undo')
-        ->and($wire['action']['props']['href'])->toBe('/undo')
-        ->and($wire['action']['props']['method'])->toBe('patch');
+        ->and($wire['toast']['duration'])->toBe(8000)
+        ->and($wire['toast']['persistent'])->toBeFalse()
+        ->and($wire['toast']['dismissible'])->toBeFalse()
+        ->and($wire['toast']['action']['type'])->toBe('link')
+        ->and($wire['toast']['action']['props']['label'])->toBe('Undo')
+        ->and($wire['toast']['action']['props']['href'])->toBe('/undo')
+        ->and($wire['toast']['action']['props']['method'])->toBe('patch');
 });
 
 test('a toast can carry an action component', function () {
@@ -1151,10 +1169,10 @@ test('a toast can carry an action component', function () {
             ->action(ActionComponent::make('demo.toast-action')->endpoint('/x')->label('Open')),
     ));
 
-    expect($wire['persistent'])->toBeTrue()
-        ->and($wire['action']['type'])->toBe('action')
-        ->and($wire['action']['props']['label'])->toBe('Open')
-        ->and($wire['action']['props']['endpoint'])->toBe('/x');
+    expect($wire['toast']['persistent'])->toBeTrue()
+        ->and($wire['toast']['action']['type'])->toBe('action')
+        ->and($wire['toast']['action']['props']['label'])->toBe('Open')
+        ->and($wire['toast']['action']['props']['endpoint'])->toBe('/x');
 });
 
 test('registered action endpoints require a valid component reference', function () {
@@ -1182,7 +1200,7 @@ test('action results expose the full effect vocabulary', function () {
         ['type' => 'download', 'url' => '/exports/report.csv'],
         ['type' => 'resetForm', 'form' => 'teams.create'],
     ])
-        ->and(wire(Effect::resetForm()))->toBe(['type' => 'resetForm'])
+        ->and(wire(Effect::resetForm()))->toBe(['type' => 'resetForm', 'form' => null])
         ->and(wire(Effect::reloadPage()))->toBe(['type' => 'reloadPage']);
 });
 

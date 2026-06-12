@@ -9,6 +9,7 @@ use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\ToastVariant;
+use Spatie\TypeScriptTransformer\Attributes\LiteralTypeScriptType;
 
 /**
  * Builder for a toast notification: a message and variant plus optional lifetime,
@@ -23,6 +24,7 @@ final class ToastMessage implements JsonSerializable
 
     public bool $dismissible = true;
 
+    #[LiteralTypeScriptType('Node | null')]
     public ?Component $action = null;
 
     private function __construct(
@@ -73,13 +75,13 @@ final class ToastMessage implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
+        return [
             'variant' => $this->variant->value,
             'message' => $this->message,
             'duration' => $this->duration,
             'persistent' => $this->persistent,
             'dismissible' => $this->dismissible,
             'action' => $this->action,
-        ], fn (mixed $value): bool => $value !== null);
+        ];
     }
 }

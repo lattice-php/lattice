@@ -12,9 +12,9 @@ import { useRegistry } from "@lattice/lattice/provider";
 const variants = ["success", "info", "warning", "error"] as const satisfies readonly ToastVariant[];
 
 type ToastItem = {
-  action?: Node;
+  action: Node | null;
   dismissible: boolean;
-  duration?: number | null;
+  duration: number | null;
   id: number;
   message: string;
   persistent: boolean;
@@ -51,19 +51,25 @@ function normalize(detail: unknown): Omit<ToastItem, "id"> | null {
     return null;
   }
 
-  const data = detail as Record<string, unknown>;
+  const data = (detail as { toast?: unknown }).toast;
 
-  if (typeof data.message !== "string" || data.message === "") {
+  if (typeof data !== "object" || data === null) {
+    return null;
+  }
+
+  const toast = data as Record<string, unknown>;
+
+  if (typeof toast.message !== "string" || toast.message === "") {
     return null;
   }
 
   return {
-    action: data.action as Node | undefined,
-    dismissible: data.dismissible !== false,
-    duration: typeof data.duration === "number" ? data.duration : null,
-    message: data.message,
-    persistent: data.persistent === true,
-    variant: isVariant(data.variant) ? data.variant : "success",
+    action: (toast.action as Node | null) ?? null,
+    dismissible: toast.dismissible !== false,
+    duration: typeof toast.duration === "number" ? toast.duration : null,
+    message: toast.message,
+    persistent: toast.persistent === true,
+    variant: isVariant(toast.variant) ? toast.variant : "success",
   };
 }
 

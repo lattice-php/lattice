@@ -20,6 +20,7 @@ use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\Option;
+use Lattice\Lattice\Core\Values\ToastMessage;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Conditions\Condition;
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
@@ -94,6 +95,7 @@ final class GenerateInternalTypesCommand extends Command
                     ColumnFilter::class,
                     FilterClause::class,
                     TableSort::class,
+                    ToastMessage::class,
                     ...array_keys($effects),
                 ]),
                 new ComponentTransformer([
