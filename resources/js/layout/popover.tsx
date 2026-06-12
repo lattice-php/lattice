@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@lattice/lattice/lib/utils";
+import { SidebarCollapsedContext } from "./context";
 
 export function Popover({
   align = "start",
@@ -71,7 +72,9 @@ export function Popover({
                   transform: align === "end" ? "translateX(-100%)" : undefined,
                 }}
               >
-                {children}
+                <SidebarCollapsedContext.Provider value={false}>
+                  {children}
+                </SidebarCollapsedContext.Provider>
               </div>
             </>,
             document.body,
