@@ -9,7 +9,7 @@ use function Pest\Laravel\artisan;
 beforeEach(function () {
     File::ensureDirectoryExists(resource_path('js/lattice'));
     File::put(resource_path('js/lattice/columns.ts'),
-        "import { createColumnPlugin } from \"@lattice-php/lattice\";\n\nexport const appColumns = createColumnPlugin({\n  name: \"app\",\n  columns: {},\n});\n");
+        "import { createPlugin } from \"@lattice-php/lattice\";\n\nexport const appColumns = createPlugin({\n  name: \"app\",\n  columns: {},\n});\n");
 });
 
 afterEach(function () {
