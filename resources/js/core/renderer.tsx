@@ -90,3 +90,7 @@ function NodeRenderer({ node }: { node: Node }) {
 
   return renderedComponent;
 }
+
+export function RenderNode({ node }: { node: Node }): ReactNode {
+  return <NodeRenderer node={node} />;
+}

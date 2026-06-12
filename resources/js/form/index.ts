@@ -10,6 +10,7 @@ type FormComponentName =
   | "HiddenInputComponent"
   | "NumberInputComponent"
   | "PasswordInputComponent"
+  | "RepeaterComponent"
   | "SelectComponent"
   | "TextareaComponent"
   | "TextInputComponent";
@@ -39,6 +40,7 @@ export const formComponents = createPlugin({
     "form.hidden-input": lazyComponent(loadFormComponent("HiddenInputComponent")),
     "form.number-input": lazyComponent(loadFormComponent("NumberInputComponent")),
     "form.password-input": lazyComponent(loadFormComponent("PasswordInputComponent")),
+    "form.repeater": lazyComponent(loadFormComponent("RepeaterComponent")),
     // Loaded from its own module so TipTap is split into a separate chunk,
     // only fetched on pages that actually render a rich editor.
     "form.rich-editor": lazyComponent<"form.rich-editor">(async () => {
