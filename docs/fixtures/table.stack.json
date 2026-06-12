@@ -8,48 +8,48 @@
                     "columns": [
                         {
                             "columns": null,
-                            "copyable": null,
-                            "date": null,
                             "filter": null,
                             "key": "name",
                             "label": "Name",
-                            "link": null,
-                            "props": null,
+                            "props": {
+                                "copyable": null,
+                                "date": null,
+                                "link": null
+                            },
                             "sortable": true,
                             "type": "text"
                         },
                         {
                             "columns": null,
-                            "copyable": true,
-                            "date": null,
                             "filter": null,
                             "key": "email",
                             "label": "Email",
-                            "link": null,
-                            "props": null,
+                            "props": {
+                                "copyable": true,
+                                "date": null,
+                                "link": null
+                            },
                             "sortable": null,
                             "type": "text"
                         }
                     ],
-                    "copyable": null,
-                    "date": null,
                     "filter": null,
                     "key": "identity",
                     "label": "User",
-                    "link": null,
                     "props": null,
                     "sortable": null,
                     "type": "stack"
                 },
                 {
                     "columns": null,
-                    "copyable": null,
-                    "date": null,
                     "filter": null,
                     "key": "role",
                     "label": "Role",
-                    "link": null,
-                    "props": null,
+                    "props": {
+                        "copyable": null,
+                        "date": null,
+                        "link": null
+                    },
                     "sortable": null,
                     "type": "text"
                 }
