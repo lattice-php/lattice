@@ -10,6 +10,7 @@ import { FORM_DEBOUNCE_MS, postFormAction } from "../form-transport";
 import { useResolvedNode } from "../resolved-nodes";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
+import { useFieldScope } from "../field-scope";
 import { useFormValue } from "../values";
 
 function toValues(stored: unknown, fallback: unknown): string[] {
@@ -34,6 +35,9 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
   const { change, blur } = useFieldCommit();
   const resolvedNode = useResolvedNode(node);
   const name = props.name;
+  const scope = useFieldScope();
+  const domName = scope ? scope.scopedName(name) : name;
+  const errorKey = scope ? scope.errorKey(name) : name;
   const placeholder = props.placeholder || "Select…";
   const multiple = props.multiple ?? false;
   const searchable = props.searchable ?? false;
@@ -42,7 +46,8 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
     [resolvedNode.props],
   );
 
-  const storedValue = useFormValue(name);
+  const globalValue = useFormValue(name);
+  const storedValue = scope ? scope.getValue(name) : globalValue;
   const selected = useMemo(() => toValues(storedValue, props.value), [storedValue, props.value]);
 
   const [open, setOpen] = useState(false);
@@ -136,7 +141,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
 
   return (
     <FormFieldFrame
-      error={errors[name]}
+      error={errors[errorKey]}
       helperText={props.helperText ?? undefined}
       label={props.label ?? ""}
       name={name}
@@ -144,10 +149,10 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
     >
       {multiple ? (
         selected.map((value) => (
-          <input key={value} name={`${name}[]`} type="hidden" value={value} />
+          <input key={value} name={`${domName}[]`} type="hidden" value={value} />
         ))
       ) : (
-        <input name={name} type="hidden" value={selected[0] ?? ""} />
+        <input name={domName} type="hidden" value={selected[0] ?? ""} />
       )}
 
       <div>
