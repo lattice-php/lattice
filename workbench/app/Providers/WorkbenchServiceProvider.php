@@ -13,12 +13,12 @@ use Laravel\Boost\Install\SkillComposer;
 use Laravel\Boost\Support\Config;
 use Laravel\Roster\Roster;
 use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Actions\EditProductAction;
 use Workbench\App\Actions\RejectProductAction;
 use Workbench\App\Actions\RejectSelectedProductsAction;
-use Workbench\App\Console\Commands\GenerateInternalTypesCommand;
 use Workbench\App\Forms\DependentDemoForm;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Forms\ShowcaseForm;
@@ -26,6 +26,7 @@ use Workbench\App\Layouts\AppLayout;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
+use Workbench\App\Support\TypeScript\BaseProfile;
 use Workbench\App\Tables\ProductsTable;
 use Workbench\App\Tables\UsersInfiniteTable;
 use Workbench\App\Tables\UsersNoneTable;
@@ -40,7 +41,8 @@ class WorkbenchServiceProvider extends ServiceProvider
     #[\Override]
     public function register(): void
     {
-        $this->commands([GenerateInternalTypesCommand::class]);
+        // Rebind so lattice:typescript regenerates the package's own built-in types.
+        $this->app->bind(TypeScriptProfile::class, BaseProfile::class);
         $this->useWorkbenchDatabase();
         $this->readBoostConfigFromPackageRoot();
     }

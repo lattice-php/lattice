@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables;
 
 use JsonSerializable;
+use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\Op;
 
+#[TypeScript]
 final readonly class FilterClause implements JsonSerializable
 {
     public function __construct(

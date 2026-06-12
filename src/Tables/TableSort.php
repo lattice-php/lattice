@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables;
 
 use JsonSerializable;
+use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Tables\Enums\SortDirection;
 
+#[TypeScript]
 final readonly class TableSort implements JsonSerializable
 {
     public function __construct(public string $key, public SortDirection $direction) {}

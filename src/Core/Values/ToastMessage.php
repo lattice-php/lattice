@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core\Values;
 
 use JsonSerializable;
+use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Core\Enums\HttpMethod;
@@ -15,6 +16,7 @@ use Lattice\Lattice\Core\Enums\ToastVariant;
  * a close button, and an action rendered in the toast (a link or a full Action
  * that can open a confirm dialog or modal form).
  */
+#[TypeScript]
 final class ToastMessage implements JsonSerializable
 {
     public ?int $duration = null;

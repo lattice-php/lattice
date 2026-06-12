@@ -6,12 +6,14 @@ namespace Lattice\Lattice\Actions;
 
 use JsonSerializable;
 use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Attributes\TypeScript;
 
 /**
  * The confirmation dialog an action shows before it runs. Built by {@see Action::confirm()}
  * and generated to TypeScript; an action without a confirmation serializes to
  * `null` rather than this object.
  */
+#[TypeScript]
 final readonly class Confirmation implements JsonSerializable
 {
     public function __construct(

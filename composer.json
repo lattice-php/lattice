@@ -65,7 +65,7 @@
         "test:lint": "./vendor/bin/pint --test",
         "rector": "./vendor/bin/rector process",
         "rector:test": "./vendor/bin/rector process --dry-run",
-        "types": "@php vendor/bin/testbench lattice:internal-types",
+        "types": "@php vendor/bin/testbench lattice:typescript",
         "fix": [
             "@rector",
             "@lint",

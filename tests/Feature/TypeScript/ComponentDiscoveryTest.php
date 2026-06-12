@@ -39,3 +39,13 @@ it('returns an empty array when the path does not exist', function () {
 
     expect($discovered)->toBe([]);
 });
+
+it('derives the domain from the namespace segment before Components', function () {
+    $discovered = (new ComponentDiscovery)->discover(dirname(__DIR__, 3).'/src/Core/Components');
+
+    $card = collect($discovered)->keyBy->type->get('card');
+
+    assert($card instanceof DiscoveredComponent);
+
+    expect($card->domain)->toBe('Core');
+});

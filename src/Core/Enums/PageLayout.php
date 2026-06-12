@@ -2,6 +2,9 @@
 
 namespace Lattice\Lattice\Core\Enums;
 
+use Lattice\Lattice\Attributes\TypeScript;
+
+#[TypeScript]
 enum PageLayout: string
 {
     case App = 'app';
