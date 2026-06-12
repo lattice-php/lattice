@@ -6,29 +6,29 @@ import { registry } from "./index";
 
 describe("lattice component registry", () => {
   it("keeps visual primitives eager to avoid suspense flicker", () => {
-    expect(registry.action?.mode).toBe("eager");
-    expect(registry["action.group"]?.mode).toBe("eager");
-    expect(registry.badge?.mode).toBe("eager");
-    expect(registry.card?.mode).toBe("eager");
-    expect(registry.grid?.mode).toBe("eager");
-    expect(registry.link?.mode).toBe("eager");
-    expect(registry.tab?.mode).toBe("eager");
-    expect(registry.tabs?.mode).toBe("eager");
+    expect(registry.components.action?.mode).toBe("eager");
+    expect(registry.components["action.group"]?.mode).toBe("eager");
+    expect(registry.components.badge?.mode).toBe("eager");
+    expect(registry.components.card?.mode).toBe("eager");
+    expect(registry.components.grid?.mode).toBe("eager");
+    expect(registry.components.link?.mode).toBe("eager");
+    expect(registry.components.tab?.mode).toBe("eager");
+    expect(registry.components.tabs?.mode).toBe("eager");
   });
 
   it("keeps larger interactive primitives in lazy chunks", () => {
-    const form = registry.form;
+    const form = registry.components.form;
 
     expect(form).toMatchObject({
       mode: "lazy",
       fallback: expect.any(Function),
     });
 
-    expect(registry["form.checkbox"]?.mode).toBe("lazy");
-    expect(registry["form.hidden-input"]?.mode).toBe("lazy");
-    expect(registry["form.password-input"]?.mode).toBe("lazy");
-    expect(registry["form.text-input"]?.mode).toBe("lazy");
-    expect(registry.table?.mode).toBe("lazy");
+    expect(registry.components["form.checkbox"]?.mode).toBe("lazy");
+    expect(registry.components["form.hidden-input"]?.mode).toBe("lazy");
+    expect(registry.components["form.password-input"]?.mode).toBe("lazy");
+    expect(registry.components["form.text-input"]?.mode).toBe("lazy");
+    expect(registry.components.table?.mode).toBe("lazy");
   });
 
   it("keeps action form and table components in separate registries", () => {

@@ -5,7 +5,7 @@ import { Renderer } from "@lattice/lattice/core/renderer";
 import type { Node } from "@lattice/lattice/core/types";
 import SidebarComponent from "./sidebar";
 
-const registry = createRegistry({
+const { components: registry } = createRegistry({
   components: { sidebar: eagerComponent(SidebarComponent) },
   name: "test/sidebar",
 });

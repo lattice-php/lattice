@@ -56,7 +56,7 @@ describe("lattice registry", () => {
       name: "second",
     });
 
-    expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("first");
-    expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("second");
+    expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("components.first");
+    expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("components.second");
   });
 });

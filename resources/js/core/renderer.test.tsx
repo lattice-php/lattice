@@ -10,7 +10,7 @@ const TestComponent: RendererComponent<"test.component"> = ({ children, node }) 
 
 describe("Renderer", () => {
   it("renders registered components recursively", () => {
-    const registry = createRegistry({
+    const { components } = createRegistry({
       components: {
         "test.component": eagerComponent(TestComponent),
       },
@@ -31,7 +31,7 @@ describe("Renderer", () => {
             type: "test.component",
           },
         ]}
-        registry={registry}
+        registry={components}
       />,
     );
 
@@ -59,7 +59,7 @@ describe("Renderer", () => {
       <div data-testid={`${node.id}-fallback`} />
     );
 
-    const registry = createRegistry({
+    const { components } = createRegistry({
       components: {
         "test.lazy": lazyComponent(
           () => new Promise<RendererComponentModule<"test.lazy">>(() => {}),
@@ -79,7 +79,7 @@ describe("Renderer", () => {
             type: "test.lazy",
           },
         ]}
-        registry={registry}
+        registry={components}
       />,
     );
 

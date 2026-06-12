@@ -64,7 +64,10 @@ function lazyAction(): Node {
 
 function renderAction(node: Node) {
   return render(
-    <Renderer nodes={[node]} registry={createRegistry(actionComponents, formComponents)} />,
+    <Renderer
+      nodes={[node]}
+      registry={createRegistry(actionComponents, formComponents).components}
+    />,
   );
 }
 

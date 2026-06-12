@@ -7,7 +7,7 @@ import ButtonComponent from "./button";
 import SectionComponent from "./section";
 import TextComponent from "./text";
 
-const registry = createRegistry({
+const { components: registry } = createRegistry({
   components: {
     button: eagerComponent(ButtonComponent),
     section: eagerComponent(SectionComponent),
