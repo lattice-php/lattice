@@ -5,7 +5,9 @@ import {
   collectPrefillTargets,
   getPath,
   pathsToClear,
+  pruneOverrides,
   seededOverrides,
+  targetByPath,
 } from "./prefill-targets";
 
 function priceField(): Node {
@@ -31,12 +33,27 @@ function builderNode(): Node {
 }
 
 it("collects a concrete target per row, mapping bare and @ deps", () => {
-  const values = { items: [{ type: "product" }, { type: "product" }] };
+  const values = {
+    items: [
+      { __rowId: "r-a", type: "product" },
+      { __rowId: "r-b", type: "product" },
+    ],
+  };
   const targets = collectPrefillTargets([builderNode()], values);
 
   expect(targets).toEqual([
-    { path: "items.0.price", resetOn: ["items.0.product"], refreshOn: ["customer"] },
-    { path: "items.1.price", resetOn: ["items.1.product"], refreshOn: ["customer"] },
+    {
+      path: "items.0.price",
+      overrideKey: "items.r-a.price",
+      resetOn: ["items.0.product"],
+      refreshOn: ["customer"],
+    },
+    {
+      path: "items.1.price",
+      overrideKey: "items.r-b.price",
+      resetOn: ["items.1.product"],
+      refreshOn: ["customer"],
+    },
   ]);
 });
 
@@ -48,7 +65,7 @@ it("collects a top-level target with form-level deps", () => {
   } as unknown as Node;
 
   expect(collectPrefillTargets([node], {})).toEqual([
-    { path: "total", resetOn: [], refreshOn: ["customer"] },
+    { path: "total", overrideKey: "total", resetOn: [], refreshOn: ["customer"] },
   ]);
 });
 
@@ -74,20 +91,81 @@ it("reads and applies nested row paths", () => {
 });
 
 it("clears targets whose resetOn dependency changed", () => {
-  const targets = [{ path: "items.0.price", resetOn: ["items.0.product"], refreshOn: [] }];
+  const targets = [
+    {
+      path: "items.0.price",
+      overrideKey: "items.r-a.price",
+      resetOn: ["items.0.product"],
+      refreshOn: [],
+    },
+  ];
   const prev = { items: [{ product: "a" }] };
   const next = { items: [{ product: "b" }] };
 
-  expect(pathsToClear(targets, prev, next)).toEqual(["items.0.price"]);
-  expect(pathsToClear(targets, prev, prev)).toEqual([]);
+  expect(pathsToClear(targets, prev, targets, next)).toEqual(["items.r-a.price"]);
+  expect(pathsToClear(targets, prev, targets, prev)).toEqual([]);
+});
+
+it("keeps reset comparisons attached to the same row after reindexing", () => {
+  const previousTargets = [
+    {
+      path: "items.0.price",
+      overrideKey: "items.r-a.price",
+      resetOn: ["items.0.product"],
+      refreshOn: [],
+    },
+    {
+      path: "items.1.price",
+      overrideKey: "items.r-b.price",
+      resetOn: ["items.1.product"],
+      refreshOn: [],
+    },
+  ];
+  const currentTargets = [
+    {
+      path: "items.0.price",
+      overrideKey: "items.r-b.price",
+      resetOn: ["items.0.product"],
+      refreshOn: [],
+    },
+  ];
+
+  expect(
+    pathsToClear(
+      previousTargets,
+      { items: [{ product: "alpha" }, { product: "beta" }] },
+      currentTargets,
+      { items: [{ product: "beta" }] },
+    ),
+  ).toEqual([]);
+
+  expect(
+    pathsToClear(
+      previousTargets,
+      { items: [{ product: "alpha" }, { product: "beta" }] },
+      currentTargets,
+      { items: [{ product: "gamma" }] },
+    ),
+  ).toEqual(["items.r-b.price"]);
 });
 
 it("seeds overrides for targets that already hold a stored value", () => {
   const targets = [
-    { path: "items.0.price", resetOn: [], refreshOn: [] },
-    { path: "items.1.price", resetOn: [], refreshOn: [] },
+    { path: "items.0.price", overrideKey: "items.r-a.price", resetOn: [], refreshOn: [] },
+    { path: "items.1.price", overrideKey: "items.r-b.price", resetOn: [], refreshOn: [] },
   ];
   const values = { items: [{ price: 12 }, {}] };
 
-  expect(seededOverrides(targets, values)).toEqual(["items.0.price"]);
+  expect(seededOverrides(targets, values)).toEqual(["items.r-a.price"]);
+});
+
+it("indexes targets by positional path while pruning by override key", () => {
+  const targets = [
+    { path: "items.0.price", overrideKey: "items.r-b.price", resetOn: [], refreshOn: [] },
+  ];
+
+  expect(targetByPath(targets).get("items.0.price")?.overrideKey).toBe("items.r-b.price");
+  expect(pruneOverrides(new Set(["items.r-b.price", "items.r-z.price"]), targets)).toEqual(
+    new Set(["items.r-b.price"]),
+  );
 });

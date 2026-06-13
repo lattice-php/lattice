@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Node } from "@lattice/lattice/core/types";
 import { walkFields } from "./field-props";
 import { FORM_DEBOUNCE_MS, postFormAction } from "./form-transport";
@@ -7,7 +7,9 @@ import {
   collectPrefillTargets,
   getPath,
   pathsToClear,
+  pruneOverrides,
   seededOverrides,
+  targetByPath,
 } from "./prefill-targets";
 import type { PrefillController } from "./prefill-context";
 import { useFormValues, useSetFormValue } from "./values";
@@ -35,8 +37,9 @@ export function useFormResolver(
   const targets = useMemo(() => collectPrefillTargets(nodes, values), [nodes, values]);
 
   const overrides = useRef<Set<string>>(new Set());
-  const seeded = useRef(false);
+  const seededOverrideKeys = useRef<Set<string>>(new Set());
   const previousValues = useRef<Record<string, unknown>>(values);
+  const previousTargets = useRef(targets);
 
   // Read targets via a ref inside the effect: `targets` changes identity on every
   // value change, but the effect must fire only when `watchSignature` changes
@@ -45,10 +48,19 @@ export function useFormResolver(
   const targetsRef = useRef(targets);
   targetsRef.current = targets;
 
-  if (!seeded.current) {
-    seeded.current = true;
-    overrides.current = new Set(seededOverrides(targets, values));
-  }
+  useLayoutEffect(() => {
+    const freshTargets = targets.filter(
+      (target) => !seededOverrideKeys.current.has(target.overrideKey),
+    );
+
+    for (const overrideKey of seededOverrides(freshTargets, values)) {
+      overrides.current.add(overrideKey);
+    }
+
+    for (const target of freshTargets) {
+      seededOverrideKeys.current.add(target.overrideKey);
+    }
+  }, [targets, values]);
 
   const markUserEdit = useCallback((path: string) => {
     overrides.current.add(path);
@@ -101,21 +113,17 @@ export function useFormResolver(
     // `resetOn` deps unlock a path (a fresh product gives a fresh price); `refreshOn`
     // deps only re-ask the server and never clear an override (a customer change
     // re-prices untouched rows but leaves user-edited ones alone).
-    for (const path of pathsToClear(targetsRef.current, previous, values)) {
-      overrides.current.delete(path);
+    for (const overrideKey of pathsToClear(
+      previousTargets.current,
+      previous,
+      targetsRef.current,
+      values,
+    )) {
+      overrides.current.delete(overrideKey);
     }
+    previousTargets.current = targetsRef.current;
 
-    // Drop overrides whose path no longer maps to a live target so the set can't
-    // grow without bound as rows come and go. NOTE: override paths are positional
-    // (`items.2.price`); removing or reordering a mid-list row reindexes siblings,
-    // so an override can be misattributed to whichever row now holds that index.
-    // Acceptable for v1 (append-mostly editing); a stable-id keying is follow-up.
-    const livePaths = new Set(targetsRef.current.map((target) => target.path));
-    for (const path of overrides.current) {
-      if (!livePaths.has(path)) {
-        overrides.current.delete(path);
-      }
-    }
+    overrides.current = pruneOverrides(overrides.current, targetsRef.current);
 
     const controller = new AbortController();
 
@@ -133,8 +141,11 @@ export function useFormResolver(
           for (const [name, value] of Object.entries(response.values ?? {})) {
             setValue(name, value);
           }
+          const targetsByPath = targetByPath(targetsRef.current);
           for (const [path, value] of Object.entries(response.prefill ?? {})) {
-            if (!overrides.current.has(path)) {
+            const target = targetsByPath.get(path);
+
+            if (target && !overrides.current.has(target.overrideKey)) {
               applyPrefillValue(setValue, path, value);
             }
           }
