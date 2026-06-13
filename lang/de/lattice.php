@@ -39,6 +39,12 @@ return [
         'selectAllRows' => 'Alle Zeilen auswählen',
         'selectRow' => 'Zeile :key auswählen',
     ],
+    'file-upload' => [
+        'dropzone' => 'Dateien hierher ziehen oder zum Auswählen klicken',
+        'remove' => ':name entfernen',
+        'remove-label' => 'Entfernen',
+        'failed' => 'Fehlgeschlagen',
+    ],
     'filter' => [
         'all' => 'Alle',
         'true' => 'Ja',
