@@ -1,5 +1,22 @@
 export type RepeaterRow = Record<string, unknown>;
 
+export const ROW_ID_KEY = "__rowId";
+
+let rowIdCounter = 0;
+
+/** Stamp a stable client-only id on a row (no-op if it already has one). */
+export function withRowId(row: RepeaterRow): RepeaterRow {
+  return row[ROW_ID_KEY] ? row : { ...row, [ROW_ID_KEY]: `r${rowIdCounter++}` };
+}
+
+/** Ensure every row has a stable id; returns the SAME array reference if none were missing. */
+export function ensureRowIds(rows: RepeaterRow[]): RepeaterRow[] {
+  if (rows.every((row) => Boolean(row[ROW_ID_KEY]))) {
+    return rows;
+  }
+  return rows.map(withRowId);
+}
+
 /** Seed the row list from a stored value, falling back to `defaultItems` blank rows. */
 export function seedRows(value: unknown, defaultItems: number): RepeaterRow[] {
   if (Array.isArray(value) && value.length > 0) {
