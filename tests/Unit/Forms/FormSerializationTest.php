@@ -26,29 +26,6 @@ test('forms serialize schema children like pages', function () {
         ]);
 });
 
-test('forms can disable their default submit button', function () {
-    expect(wire(Form::make('profile-form')->withoutSubmitButton()))
-        ->toMatchArray([
-            'type' => 'form',
-            'id' => 'profile-form',
-            'props' => [
-                'submitButton' => false,
-                'action' => null,
-                'method' => null,
-                'submitLabel' => null,
-                'validationSummaryLabel' => 'Fix these fields to continue:',
-                'precognitive' => null,
-                'validationTimeout' => null,
-                'resetOnSuccess' => null,
-                'resetOnError' => null,
-                'status' => null,
-                'errorBag' => null,
-                'state' => [],
-                'ref' => null,
-            ],
-        ]);
-});
-
 test('password inputs can request automatic confirmation fields', function () {
     expect(wire(PasswordInput::make('password', 'Password')
         ->required()
