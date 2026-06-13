@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Console\Commands;
 
 use Illuminate\Console\Command;
-use Lattice\Lattice\Core\Services\DefinitionDiscovery;
+use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 
 final class DiscoverCacheCommand extends Command
 {
@@ -12,15 +12,11 @@ final class DiscoverCacheCommand extends Command
 
     protected $description = 'Cache discovered Lattice definitions for the configured discover paths';
 
-    public function handle(DefinitionDiscovery $discovery): int
+    public function handle(DiscoveryManifest $manifest): int
     {
-        $paths = array_keys(DefinitionDiscovery::configuredPaths());
+        $manifest->cache();
 
-        foreach ($paths as $path) {
-            $discovery->cache($path);
-        }
-
-        $this->components->info(sprintf('Cached definition discovery for %d path(s).', count($paths)));
+        $this->components->info('Cached the Lattice discovery manifest.');
 
         return self::SUCCESS;
     }

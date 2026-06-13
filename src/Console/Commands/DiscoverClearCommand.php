@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Console\Commands;
 
 use Illuminate\Console\Command;
-use Lattice\Lattice\Core\Services\DefinitionDiscovery;
+use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 
 final class DiscoverClearCommand extends Command
 {
@@ -12,15 +12,11 @@ final class DiscoverClearCommand extends Command
 
     protected $description = 'Clear the cached Lattice definition discovery';
 
-    public function handle(DefinitionDiscovery $discovery): int
+    public function handle(DiscoveryManifest $manifest): int
     {
-        $paths = array_keys(DefinitionDiscovery::configuredPaths());
+        $manifest->clear();
 
-        foreach ($paths as $path) {
-            $discovery->forget($path);
-        }
-
-        $this->components->info(sprintf('Cleared definition discovery cache for %d path(s).', count($paths)));
+        $this->components->info('Cleared the Lattice discovery manifest.');
 
         return self::SUCCESS;
     }
