@@ -63,6 +63,11 @@
     },
     "scripts": {
         "analyse": "./vendor/bin/phpstan analyse",
+        "check": [
+            "@test:lint",
+            "@analyse",
+            "@test"
+        ],
         "lint": "./vendor/bin/pint",
         "test:lint": "./vendor/bin/pint --test",
         "rector": "./vendor/bin/rector process",

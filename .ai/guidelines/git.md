@@ -4,3 +4,4 @@
 - Make meaningful commits: one logical change per commit with a conventional-commit subject (`feat:`, `fix:`, `chore:`, `refactor:`, `test:`, `docs:`). Squash throwaway "wip" commits before opening a PR.
 - Keep pull request descriptions compact and concise: what changed and why, in a few lines. No filler.
 - For visual changes, include screenshots or concrete before/after examples in the PR description.
+- Before pushing or opening a PR, run `composer check` (Pint, PHPStan, Pest) — it mirrors the CI PHP job. Never push on red. `composer test` alone is not enough; PHPStan and Pint run in CI too. For frontend changes also run `npm run lint && npm run format && npm run test`. CI additionally verifies that generated TypeScript types (`composer types`) and docs fixtures are up to date.
