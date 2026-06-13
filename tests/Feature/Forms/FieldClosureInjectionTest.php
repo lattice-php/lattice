@@ -50,3 +50,13 @@ it('injects row and form scopes into prefill resolvers by name', function () {
 
     expect($field->resolvePrefillValue($row, $form, Request::create('/')))->toBe('ada@lattice.dev');
 });
+
+it('resolves a typed FormData prefill parameter to the row scope', function () {
+    $field = TextInput::make('label')
+        ->value(fn (FormData $data) => $data->string('first'), editable: true);
+
+    $row = FormData::make(['first' => 'ada']);
+    $form = FormData::make(['first' => 'grace']);
+
+    expect($field->resolvePrefillValue($row, $form, Request::create('/')))->toBe('ada');
+});

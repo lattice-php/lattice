@@ -390,6 +390,7 @@ abstract class Field extends Component
             ->named('get', fn (string $key, mixed $default = null): mixed => $row->get($key, $default))
             ->named('value', $row->get($this->name()))
             ->named('component', $this)
+            ->typed(FormData::class, $row)
             ->typed(Request::class, $request);
 
         return Evaluate::resolve($this->prefillResolver, $context);

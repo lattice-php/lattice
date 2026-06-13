@@ -5,7 +5,8 @@
   Non-closures pass through unchanged.
 - Form-field utilities: `$state` (full `FormData`), `$get($key, $default)` (read any field),
   `$value` (this field's own value), `$component` (the field). Prefill resolvers add `$row`/`$form`
-  (the row scope and the whole-form scope); Select search resolvers add `$search` (the query string).
+  (the row scope and the whole-form scope), and a typed `FormData` parameter resolves to the **row**
+  scope (use the named `$form` for the whole-form scope); Select search resolvers add `$search` (the query string).
   `Request` and any service resolve by type.
 - Add a new closure hook by accepting `Closure|T` and resolving it with
   `Evaluate::resolve($value, $context)` against the moment's `EvaluationContext`
