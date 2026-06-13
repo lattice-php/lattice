@@ -1,5 +1,5 @@
 import { usePage } from "@inertiajs/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@lattice/lattice/lib/utils";
@@ -27,9 +27,46 @@ export function Popover({
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ left: 0, top: 0 });
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const url = usePage().url;
 
   useEffect(() => setOpen(false), [url]);
+
+  // Once open, nudge the menu back inside the viewport. A "right"-placed menu
+  // anchored to a trigger near the bottom (e.g. a sidebar user menu) would
+  // otherwise spill off-screen.
+  useLayoutEffect(() => {
+    const menu = menuRef.current;
+    if (!open || !menu) {
+      return;
+    }
+
+    const rect = menu.getBoundingClientRect();
+    if (rect.width === 0 && rect.height === 0) {
+      return;
+    }
+
+    const margin = 8;
+    let dx = 0;
+    let dy = 0;
+
+    if (rect.right > window.innerWidth - margin) {
+      dx = window.innerWidth - margin - rect.right;
+    }
+    if (rect.left + dx < margin) {
+      dx = margin - rect.left;
+    }
+    if (rect.bottom > window.innerHeight - margin) {
+      dy = window.innerHeight - margin - rect.bottom;
+    }
+    if (rect.top + dy < margin) {
+      dy = margin - rect.top;
+    }
+
+    if (dx !== 0 || dy !== 0) {
+      setPosition((current) => ({ left: current.left + dx, top: current.top + dy }));
+    }
+  }, [open]);
 
   function toggle(): void {
     const rect = triggerRef.current?.getBoundingClientRect();
@@ -77,6 +114,7 @@ export function Popover({
                   "fixed z-50 min-w-56 rounded-md border border-lt-border bg-lt-popover p-1 text-lt-popover-fg shadow-lg",
                   className,
                 )}
+                ref={menuRef}
                 role="menu"
                 style={{
                   left: position.left,
