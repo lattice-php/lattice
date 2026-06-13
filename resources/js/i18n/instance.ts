@@ -1,7 +1,19 @@
 import i18next, { type i18n as I18nInstance, type InitOptions } from "i18next";
-import { initReactI18next, useTranslation } from "react-i18next";
+import { useCallback, useSyncExternalStore } from "react";
 
 const NAMESPACE = "lattice";
+
+type TranslationFunction = (
+  key: string,
+  defaultValue?: string,
+  options?: Record<string, unknown>,
+) => string;
+
+export type TranslationResult = {
+  t: TranslationFunction;
+  i18n: I18nInstance;
+  ready: boolean;
+};
 
 function detectLanguage(): string {
   if (typeof document !== "undefined" && document.documentElement.lang) {
@@ -11,10 +23,35 @@ function detectLanguage(): string {
   return "en";
 }
 
-/** Lattice's own i18next instance, isolated from the host app's. */
-export const i18n: I18nInstance = i18next.createInstance().use(initReactI18next);
+export const i18n: I18nInstance = i18next.createInstance();
 
 let initialization: Promise<unknown> | undefined;
+let revision = 0;
+
+function subscribe(onStoreChange: () => void): () => void {
+  const listener = () => {
+    revision += 1;
+    onStoreChange();
+  };
+
+  i18n.on("initialized", listener);
+  i18n.on("loaded", listener);
+  i18n.on("languageChanged", listener);
+  i18n.store?.on("added", listener);
+  i18n.store?.on("removed", listener);
+
+  return () => {
+    i18n.off("initialized", listener);
+    i18n.off("loaded", listener);
+    i18n.off("languageChanged", listener);
+    i18n.store?.off("added", listener);
+    i18n.store?.off("removed", listener);
+  };
+}
+
+function snapshot(): number {
+  return revision;
+}
 
 /**
  * Initialize the instance exactly once. The first caller wins — a rendered
@@ -29,7 +66,6 @@ export function ensureI18n(extend?: (base: InitOptions) => InitOptions): Promise
       ns: [NAMESPACE],
       defaultNS: NAMESPACE,
       interpolation: { escapeValue: false },
-      react: { useSuspense: false },
     };
 
     initialization = i18n.init(extend ? extend(base) : base);
@@ -38,14 +74,18 @@ export function ensureI18n(extend?: (base: InitOptions) => InitOptions): Promise
   return initialization;
 }
 
-/** Translation hook bound to Lattice's instance. The chrome passes `"lattice"`; consumers pass their own namespace. */
-export function useT(namespace: string) {
+export function useT(namespace: string): TranslationResult {
   ensureI18n();
+  useSyncExternalStore(subscribe, snapshot, snapshot);
 
-  return useTranslation(namespace, { i18n });
+  const t = useCallback<TranslationFunction>(
+    (key, defaultValue = key, options = {}) => translate(namespace, key, defaultValue, options),
+    [namespace],
+  );
+
+  return { t, i18n, ready: i18n.isInitialized };
 }
 
-/** Translate a key in the given namespace with an inline fallback, outside of a component. */
 export function translate(
   namespace: string,
   key: string,
