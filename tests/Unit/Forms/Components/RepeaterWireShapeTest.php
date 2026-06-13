@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Forms\Components\Repeater;
+use Lattice\Lattice\Forms\Components\RowAction;
 use Lattice\Lattice\Forms\Components\TextInput;
 
 it('serialises a repeater with its row-template schema and props', function (): void {
@@ -34,4 +35,24 @@ it('defaults reorderable on and defaultItems to 1', function (): void {
 
     expect($wire['props']['reorderable'])->toBeTrue()
         ->and($wire['props']['defaultItems'])->toBe(1);
+});
+
+it('serialises an empty rowActions array when none are declared', function (): void {
+    $wire = wire(Repeater::make('items')->schema([TextInput::make('name')]));
+
+    expect($wire['props']['rowActions'])->toBe([]);
+});
+
+it('serialises declared rowActions into the field props', function (): void {
+    $wire = wire(
+        Repeater::make('items')
+            ->schema([TextInput::make('name')])
+            ->rowActions([RowAction::duplicate(), RowAction::remove()->label('Delete')]),
+    );
+
+    expect($wire['props']['rowActions'])->toHaveCount(2)
+        ->and($wire['props']['rowActions'][0]['type'])->toBe('duplicate')
+        ->and($wire['props']['rowActions'][1]['type'])->toBe('remove')
+        ->and($wire['props']['rowActions'][1]['label'])->toBe('Delete')
+        ->and($wire['props']['rowActions'][1]['destructive'])->toBeTrue();
 });

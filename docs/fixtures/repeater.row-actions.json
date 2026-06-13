@@ -1,7 +1,7 @@
 [
     {
         "props": {
-            "addLabel": "Add line",
+            "addLabel": null,
             "columnWidth": "md",
             "conditions": null,
             "defaultItems": 1,
@@ -13,8 +13,8 @@
             "itemLabel": null,
             "label": "Line items",
             "layout": "stack",
-            "maxItems": 5,
-            "minItems": 1,
+            "maxItems": null,
+            "minItems": null,
             "name": "items",
             "prefill": null,
             "prefillRefreshOn": null,
@@ -24,7 +24,22 @@
             "required": null,
             "resizableColumns": null,
             "resizeIndicator": false,
-            "rowActions": [],
+            "rowActions": [
+                {
+                    "destructive": false,
+                    "icon": null,
+                    "key": "duplicate",
+                    "label": null,
+                    "type": "duplicate"
+                },
+                {
+                    "destructive": true,
+                    "icon": null,
+                    "key": "remove",
+                    "label": "Delete",
+                    "type": "remove"
+                }
+            ],
             "value": null
         },
         "schema": [
@@ -46,7 +61,7 @@
                     "prefillRefreshOn": null,
                     "prefillResetOn": null,
                     "readOnly": null,
-                    "required": true,
+                    "required": null,
                     "tabIndex": null,
                     "type": null,
                     "value": null

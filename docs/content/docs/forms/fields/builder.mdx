@@ -111,10 +111,17 @@ Builder::make('items', 'Line items')
     ->table();
 ```
 
-Reorder controls (↑↓) sit on the left of each row and the remove action on the right; once a row
-carries more than one action they collapse into a ⋯ menu. Reordering slides each row to its new
-position, and the table scrolls horizontally on narrow screens. The slide animation is skipped when
-the viewer prefers reduced motion.
+Reorder controls (↑↓) sit on the left of each row and the row actions on the right; once a row carries
+more than one action they collapse into a ⋯ menu. Reordering slides each row to its new position, and
+the table scrolls horizontally on narrow screens. The slide animation is skipped when the viewer
+prefers reduced motion.
+
+## Row actions
+
+Like the repeater, the builder takes `->rowActions([RowAction::duplicate(), RowAction::remove()])` to
+declare the per-row menu — the built-in **Duplicate** and **Remove** actions, customisable with
+`->label()`/`->icon()`/`->destructive()`. See [Repeater → Row actions](/forms/fields/repeater/#row-actions)
+for the full rundown.
 
 ## Validation
 

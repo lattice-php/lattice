@@ -27,7 +27,7 @@ it('prefills computed prices, keeps manual edits, and re-prices untouched rows',
         ->assertValue('input[name="items[1][price]"]', '200')
         ->assertValue('input[name="items[2][price]"]', '300')
         ->fill('input[name="items[1][price]"]', '1.00')
-        ->click('@repeater-items-remove-0')
+        ->click('[data-test="repeater-items-row-0"] [data-test="row-action-remove"]')
         ->click('[data-test="select-customer"]')
         ->click('@select-customer-option-initech')
         ->wait(1)

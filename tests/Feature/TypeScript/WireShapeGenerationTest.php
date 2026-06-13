@@ -34,3 +34,23 @@ it('generates the I18nConfig wire shape', function () {
         ->toContain('export type I18nConfig = {')
         ->toMatch('/export type I18nConfig = \{\s*readonly enabled: boolean;\s*readonly saveMissing: boolean;\s*\};/');
 });
+
+it('generates the RowAction wire shape and its type enum', function () {
+    expect(generatedModule())
+        ->toContain('export type RowActionType =')
+        ->toMatch('/export type RowActionType =\s*\|? ?"duplicate"\s*\| "remove";/')
+        ->toContain('export type RowAction = {')
+        ->toMatch('/export type RowAction = \{\s*type: RowActionType;\s*key: string;\s*label: string \| null;\s*icon: string \| null;\s*destructive: boolean;\s*\};/');
+});
+
+it('exposes rowActions on the Repeater and Builder field props', function () {
+    $module = generatedModule();
+
+    expect($module)
+        ->toContain('export type Repeater = {')
+        ->toContain('export type Builder = {')
+        ->toContain('rowActions: RowAction[];');
+
+    // Both Repeater and Builder must carry it.
+    expect(substr_count($module, 'rowActions: RowAction[];'))->toBe(2);
+});

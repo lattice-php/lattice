@@ -41,3 +41,16 @@ it("stamps an id on an appended row", () => {
   act(() => c.append({ a: "3" }));
   expect(c.rows[2][ROW_ID_KEY]).toBeTruthy();
 });
+
+it("duplicates a row in place with a fresh id", () => {
+  let c!: ReturnType<typeof useRowCollection>;
+  harness((latest) => (c = latest));
+  const id0 = c.rows[0][ROW_ID_KEY];
+
+  act(() => c.onDuplicate(0));
+
+  expect(c.rows).toHaveLength(3);
+  expect(c.rows[1].a).toBe("1");
+  expect(c.rows[1][ROW_ID_KEY]).not.toBe(id0);
+  expect(c.rows[2].a).toBe("2");
+});

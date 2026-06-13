@@ -1,5 +1,5 @@
 import { expect, it, vi, beforeAll, afterAll } from "vitest";
-import { configure, getConfig, fireEvent, render, screen } from "@testing-library/react";
+import { configure, getConfig, fireEvent, render, screen, within } from "@testing-library/react";
 
 // The form convention is data-test; scope the RTL testIdAttribute to this file only.
 let prevTestIdAttribute: string;
@@ -100,8 +100,41 @@ it("removes a row", () => {
     items: [{ name: "a" }, { name: "b" }],
   });
   expect(screen.getAllByTestId("child")).toHaveLength(2);
-  fireEvent.click(screen.getByTestId("repeater-items-remove-0"));
+  const firstRow = screen.getByTestId("repeater-items-row-0");
+  fireEvent.click(within(firstRow).getByTestId("row-action-remove"));
   expect(screen.getAllByTestId("child")).toHaveLength(1);
+});
+
+it("renders declared row actions in a kebab and duplicates a row", () => {
+  const node = {
+    id: "r",
+    type: "form.repeater",
+    props: {
+      name: "items",
+      reorderable: true,
+      defaultItems: 1,
+      minItems: 0,
+      maxItems: 3,
+      label: "Line items",
+      rowActions: [
+        { type: "duplicate", key: "duplicate", label: null, icon: null, destructive: false },
+        { type: "remove", key: "remove", label: null, icon: null, destructive: true },
+      ],
+    },
+    schema: [{ id: "c", type: "form.text-input", props: { name: "name", label: "Name" } }],
+  } as never;
+
+  wrap(<RepeaterComponent node={node}>{null}</RepeaterComponent>, {
+    items: [{ name: "a" }],
+  });
+
+  expect(screen.getAllByTestId("child")).toHaveLength(1);
+
+  const firstRow = screen.getByTestId("repeater-items-row-0");
+  fireEvent.click(within(firstRow).getByTestId("row-actions-menu"));
+  fireEvent.click(screen.getByTestId("row-action-duplicate"));
+
+  expect(screen.getAllByTestId("child")).toHaveLength(2);
 });
 
 it("shows the array-level error for the repeater field", () => {

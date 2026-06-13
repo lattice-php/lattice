@@ -20,7 +20,7 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
   const blocks = ((node as unknown as { blocks?: Block[] }).blocks ?? []) as Block[];
   const { errors } = useFormContext();
   const { hidden, required } = useDependentField(node);
-  const { rows, onField, onRemove, onMove, append } = useRowCollection(
+  const { rows, onField, onRemove, onMove, onDuplicate, append } = useRowCollection(
     name,
     props.defaultItems ?? 0,
   );
@@ -80,9 +80,11 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
               rows={tableRows}
               reorderable={props.reorderable ?? false}
               removable={() => !atMin}
+              rowActions={props.rowActions}
               onField={onField}
               onMove={onMove}
               onRemove={onRemove}
+              onDuplicate={onDuplicate}
               registerRow={registerRow}
               resizableColumns={props.resizableColumns === true}
               resizeIndicator={props.resizeIndicator === true}
@@ -111,9 +113,11 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
                     isFirst={index === 0}
                     isLast={index === rows.length - 1}
                     removable={!atMin}
+                    rowActions={props.rowActions}
                     onField={onField}
                     onRemove={onRemove}
                     onMove={onMove}
+                    onDuplicate={onDuplicate}
                   />
                 ) : (
                   <div

@@ -4,9 +4,10 @@ import { DEFAULT_COLUMN_WIDTH, type SizableColumn } from "@lattice-php/lattice/c
 import { useColumnResizing } from "@lattice-php/lattice/core/use-column-resizing";
 import { Icon } from "@lattice-php/lattice/icons";
 import { memo, useMemo } from "react";
-import type { ColumnWidth } from "@lattice-php/lattice/types/generated";
+import type { ColumnWidth, RowAction as WireRowAction } from "@lattice-php/lattice/types/generated";
 import { FieldScopeProvider } from "../field-scope";
 import { TableCellProvider } from "../row-layout-context";
+import { buildRowActions } from "./row-action-menu";
 import { RowActions } from "./row-actions";
 import { RowButton } from "./row-item";
 import type { RepeaterRow } from "./repeater-rows";
@@ -52,9 +53,11 @@ type TableRowItemProps = {
   flipKey: string;
   reorderable: boolean;
   removable: boolean;
+  rowActions: WireRowAction[];
   onField: (index: number, field: string, value: unknown) => void;
   onMove: (index: number, delta: number) => void;
   onRemove: (index: number) => void;
+  onDuplicate: (index: number) => void;
   registerRow?: (key: string, el: HTMLElement | null) => void;
 };
 
@@ -71,9 +74,11 @@ const TableRowItem = memo(function TableRowItem({
   flipKey,
   reorderable,
   removable,
+  rowActions,
   onField,
   onMove,
   onRemove,
+  onDuplicate,
   registerRow,
 }: TableRowItemProps) {
   return (
@@ -134,19 +139,7 @@ const TableRowItem = memo(function TableRowItem({
 
       <div className="flex items-center">
         <RowActions
-          actions={
-            removable
-              ? [
-                  {
-                    key: "remove",
-                    label: "Remove",
-                    icon: "trash-2",
-                    onClick: () => onRemove(index),
-                    destructive: true,
-                  },
-                ]
-              : []
-          }
+          actions={buildRowActions(rowActions, { index, removable, onRemove, onDuplicate })}
         />
       </div>
     </div>
@@ -159,9 +152,11 @@ export function TableRows({
   rows,
   reorderable,
   removable,
+  rowActions,
   onField,
   onMove,
   onRemove,
+  onDuplicate,
   registerRow,
   resizableColumns = false,
   resizeIndicator = false,
@@ -171,9 +166,11 @@ export function TableRows({
   rows: TableRowModel[];
   reorderable: boolean;
   removable: (index: number) => boolean;
+  rowActions: WireRowAction[];
   onField: (index: number, field: string, value: unknown) => void;
   onMove: (index: number, delta: number) => void;
   onRemove: (index: number) => void;
+  onDuplicate: (index: number) => void;
   registerRow?: (key: string, el: HTMLElement | null) => void;
   resizableColumns?: boolean;
   resizeIndicator?: boolean;
@@ -228,9 +225,11 @@ export function TableRows({
             flipKey={row.key}
             reorderable={reorderable}
             removable={removable(row.index)}
+            rowActions={rowActions}
             onField={onField}
             onMove={onMove}
             onRemove={onRemove}
+            onDuplicate={onDuplicate}
             registerRow={registerRow}
           />
         ))}

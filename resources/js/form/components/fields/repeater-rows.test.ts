@@ -1,6 +1,24 @@
 import { expect, it } from "vitest";
-import { addRow, moveRow, removeRow, seedRows } from "./repeater-rows";
+import { addRow, duplicateRow, moveRow, removeRow, seedRows } from "./repeater-rows";
 import { ensureRowIds, ROW_ID_KEY, withRowId } from "./repeater-rows";
+
+it("duplicateRow inserts a fresh copy right after the source, with a new id", () => {
+  const a = withRowId({ name: "first" });
+  const b = withRowId({ name: "second" });
+  const out = duplicateRow([a, b], 0);
+
+  expect(out).toHaveLength(3);
+  expect(out[0]).toBe(a);
+  expect(out[1].name).toBe("first");
+  expect(typeof out[1][ROW_ID_KEY]).toBe("string");
+  expect(out[1][ROW_ID_KEY]).not.toBe(a[ROW_ID_KEY]);
+  expect(out[2]).toBe(b);
+});
+
+it("duplicateRow returns the rows unchanged for an out-of-range index", () => {
+  const rows = [withRowId({ name: "only" })];
+  expect(duplicateRow(rows, 5)).toBe(rows);
+});
 
 it("seeds rows from an existing value", () => {
   expect(seedRows([{ name: "a" }], 3)).toEqual([{ name: "a" }]);

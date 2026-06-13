@@ -34,6 +34,16 @@ export function removeRow(rows: RepeaterRow[], index: number): RepeaterRow[] {
   return rows.filter((_, i) => i !== index);
 }
 
+export function duplicateRow(rows: RepeaterRow[], index: number): RepeaterRow[] {
+  const source = rows[index];
+  if (!source) {
+    return rows;
+  }
+
+  const { [ROW_ID_KEY]: _id, ...copy } = source;
+  return [...rows.slice(0, index + 1), withRowId(copy), ...rows.slice(index + 1)];
+}
+
 export function moveRow(rows: RepeaterRow[], from: number, to: number): RepeaterRow[] {
   const next = [...rows];
   const [moved] = next.splice(from, 1);
