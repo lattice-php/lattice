@@ -1,5 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import type { ButtonVariant } from "@lattice/lattice/types/generated";
+import type { ButtonVariant } from "@lattice-php/lattice/types/generated";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 

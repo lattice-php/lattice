@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TableNode } from "../types";
-import type { ColumnData } from "@lattice/lattice/types/generated";
+import type { ColumnData } from "@lattice-php/lattice/types/generated";
 import TableComponent from "./table";
 
 function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {

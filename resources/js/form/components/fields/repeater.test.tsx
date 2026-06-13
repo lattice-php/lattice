@@ -17,7 +17,7 @@ const { renderCounts } = vi.hoisted(() => ({ renderCounts: new Map<string, numbe
 // Mock the child-node renderer so the test doesn't need the full registry.
 // The stub reads the FieldScope to prove each row scopes its children, counts
 // its own renders, and exposes a button that commits a value into its row.
-vi.mock("@lattice/lattice/core/renderer", async () => {
+vi.mock("@lattice-php/lattice/core/renderer", async () => {
   const { useFieldScope } = await import("../field-scope");
   return {
     RenderNode: ({ node }: { node: { props: { name: string } } }) => {

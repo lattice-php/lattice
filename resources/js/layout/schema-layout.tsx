@@ -1,8 +1,8 @@
 import { usePage } from "@inertiajs/react";
 import type { ReactNode } from "react";
-import { Renderer } from "@lattice/lattice/core/renderer";
-import type { PagePayload } from "@lattice/lattice/core/types";
-import { useRegistry } from "@lattice/lattice/provider";
+import { Renderer } from "@lattice-php/lattice/core/renderer";
+import type { PagePayload } from "@lattice-php/lattice/core/types";
+import { useRegistry } from "@lattice-php/lattice/provider";
 import { OutletContext } from "./context";
 
 /**

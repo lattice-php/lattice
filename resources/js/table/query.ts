@@ -1,4 +1,4 @@
-import { translate } from "@lattice/lattice/i18n";
+import { translate } from "@lattice-php/lattice/i18n";
 import type { TableColumn, TableSort, TableState } from "./types";
 
 export function getColumnSort(state: TableState, column: TableColumn): TableSort | undefined {

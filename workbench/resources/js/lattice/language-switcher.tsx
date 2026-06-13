@@ -1,4 +1,4 @@
-import { i18n } from "@lattice/lattice/i18n";
+import { i18n } from "@lattice-php/lattice/i18n";
 import { useState } from "react";
 
 const LANGUAGES = ["en", "de"] as const;

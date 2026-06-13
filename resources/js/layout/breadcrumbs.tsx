@@ -1,6 +1,6 @@
 import { Link, usePage } from "@inertiajs/react";
 import { Fragment } from "react";
-import type { PagePayload, RendererComponent } from "@lattice/lattice/core/types";
+import type { PagePayload, RendererComponent } from "@lattice-php/lattice/core/types";
 
 const BreadcrumbsComponent: RendererComponent<"breadcrumbs"> = ({ node }) => {
   const page = usePage();

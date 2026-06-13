@@ -1,4 +1,4 @@
-import { Icon } from "@lattice/lattice/icons";
+import { Icon } from "@lattice-php/lattice/icons";
 import { getSortDirectionLabel } from "../query";
 import type { TableColumn, TableSort, TableState } from "../types";
 

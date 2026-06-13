@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { CollapsedContext } from "../core/collapsed-context";
-import { cn } from "@lattice/lattice/lib/utils";
+import { cn } from "@lattice-php/lattice/lib/utils";
 
 function viewportOffset(rect: DOMRect, margin: number): { left: number; top: number } {
   let left = 0;

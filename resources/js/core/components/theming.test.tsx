@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { fakeNode } from "@lattice/lattice/test-support";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import CardComponent, { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
 import { TabsComponent } from "./tabs";
 

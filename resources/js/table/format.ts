@@ -1,4 +1,4 @@
-import type { TextColumnProps } from "@lattice/lattice/types/generated";
+import type { TextColumnProps } from "@lattice-php/lattice/types/generated";
 import type { TableColumn, TableRow } from "./types";
 
 export function formatCell(value: unknown, column?: TableColumn): string {

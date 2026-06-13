@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import type { Node } from "@lattice/lattice/core/types";
+import type { Node } from "@lattice-php/lattice/core/types";
 import {
   applyPrefillValue,
   collectPrefillTargets,

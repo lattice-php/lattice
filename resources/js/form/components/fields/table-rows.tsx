@@ -1,7 +1,7 @@
-import type { Node } from "@lattice/lattice/core/types";
-import { Icon } from "@lattice/lattice/icons";
+import type { Node } from "@lattice-php/lattice/core/types";
+import { Icon } from "@lattice-php/lattice/icons";
 import { memo } from "react";
-import { RenderNode } from "@lattice/lattice/core/renderer";
+import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import { FieldScopeProvider } from "../field-scope";
 import { TableCellProvider } from "../row-layout-context";
 import { RowActions } from "./row-actions";

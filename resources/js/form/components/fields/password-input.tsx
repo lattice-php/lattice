@@ -1,4 +1,4 @@
-import type { RendererComponent } from "@lattice/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import PasswordInput from "../base/password-input";
 import { useDependentField } from "../use-dependent-field";

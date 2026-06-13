@@ -1,4 +1,4 @@
-import { Icon } from "@lattice/lattice";
+import { Icon } from "@lattice-php/lattice";
 import type { IconName } from "./sprite-icons";
 
 // The generated IconName is the actual sprite set — unknown names are rejected.

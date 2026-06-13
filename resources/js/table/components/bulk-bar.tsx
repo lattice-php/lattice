@@ -1,17 +1,17 @@
 import { useHttp } from "@inertiajs/react";
 import { useState } from "react";
-import { ActionForm } from "@lattice/lattice/action/components/action-form";
+import { ActionForm } from "@lattice-php/lattice/action/components/action-form";
 import {
   dispatchActionEffects,
   dispatchActionError,
   getActionEffects,
-} from "@lattice/lattice/action/effects";
-import type { ActionResponse } from "@lattice/lattice/action/effects";
-import { withRefHeader } from "@lattice/lattice/core/component-ref";
-import { Button } from "@lattice/lattice/core/components/button";
-import { ConfirmDialog } from "@lattice/lattice/core/components/confirm-dialog";
-import { Spinner } from "@lattice/lattice/core/components/spinner";
-import { useT } from "@lattice/lattice/i18n";
+} from "@lattice-php/lattice/action/effects";
+import type { ActionResponse } from "@lattice-php/lattice/action/effects";
+import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { Button } from "@lattice-php/lattice/core/components/button";
+import { ConfirmDialog } from "@lattice-php/lattice/core/components/confirm-dialog";
+import { Spinner } from "@lattice-php/lattice/core/components/spinner";
+import { useT } from "@lattice-php/lattice/i18n";
 import type { BulkAction } from "../bulk";
 
 type BulkData = {

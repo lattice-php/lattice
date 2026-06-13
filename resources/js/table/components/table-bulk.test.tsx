@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TableNode } from "../types";
-import type { ColumnData } from "@lattice/lattice/types/generated";
-import { fakeNode } from "@lattice/lattice/test-support";
+import type { ColumnData } from "@lattice-php/lattice/types/generated";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 
 function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
   return {

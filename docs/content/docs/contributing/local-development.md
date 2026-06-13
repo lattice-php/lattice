@@ -79,7 +79,7 @@ import LatticePage from "@lattice-php/lattice/page";
 import { Provider, registry } from "@lattice-php/lattice";
 ```
 
-Do not import from `@lattice/lattice` in application code. That name is an internal source alias used by the package itself.
+Source-linking redirects that same public package name to your local checkout. There is no second internal package name for application code to know about.
 
 ### Alias the renderer source
 
@@ -99,7 +99,6 @@ export default defineConfig({
       ? {
           "@lattice-php/lattice/css": path.resolve(latticeRoot, "resources/css/lattice.css"),
           "@lattice-php/lattice": latticeSource,
-          "@lattice/lattice": latticeSource,
         }
       : {},
     dedupe: ["react", "react-dom", "@inertiajs/react"],

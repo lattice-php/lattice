@@ -1,7 +1,7 @@
 import { Link } from "@inertiajs/react";
 import type { ComponentProps } from "react";
-import { cn } from "@lattice/lattice/lib/utils";
-import type { RendererComponent } from "@lattice/lattice/core/types";
+import { cn } from "@lattice-php/lattice/lib/utils";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
 
 function TextLink({ className = "", children, ...props }: ComponentProps<typeof Link>) {
   return (

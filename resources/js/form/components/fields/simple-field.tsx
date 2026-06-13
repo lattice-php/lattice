@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { Node } from "@lattice/lattice/core/types";
+import type { Node } from "@lattice-php/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { fieldProps } from "../field-props";
 import { type ControlledField, useControlledField } from "../use-controlled-field";

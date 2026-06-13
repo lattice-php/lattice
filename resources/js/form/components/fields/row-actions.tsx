@@ -1,4 +1,4 @@
-import { Icon } from "@lattice/lattice/icons";
+import { Icon } from "@lattice-php/lattice/icons";
 import * as Popover from "@radix-ui/react-popover";
 import { useState } from "react";
 

@@ -1,6 +1,6 @@
-import { Renderer, registry } from "@lattice/lattice";
-import { FormValuesProvider } from "@lattice/lattice/form/components/values";
-import type { Node } from "@lattice/lattice/core/types";
+import { Renderer, registry } from "@lattice-php/lattice";
+import { FormValuesProvider } from "@lattice-php/lattice/form/components/values";
+import type { Node } from "@lattice-php/lattice/core/types";
 
 type Props = {
   nodes: Node[];

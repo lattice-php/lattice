@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice/lattice/core/types";
-import { fakeNode } from "@lattice/lattice/test-support";
+import type { Node } from "@lattice-php/lattice/core/types";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FormValuesProvider } from "../values";
 import { RichEditorComponent } from "./rich-editor";
 

@@ -1,7 +1,7 @@
-import { Icon } from "@lattice/lattice/icons";
+import { Icon } from "@lattice-php/lattice/icons";
 import { useEffect, useState } from "react";
-import { useT } from "@lattice/lattice/i18n";
-import type { FilterType } from "@lattice/lattice/types/generated";
+import { useT } from "@lattice-php/lattice/i18n";
+import type { FilterType } from "@lattice-php/lattice/types/generated";
 
 const baseClass =
   "h-9 w-full min-w-0 rounded-lt-sm border border-lt-input bg-lt-bg px-2 text-sm font-normal";

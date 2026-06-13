@@ -7,8 +7,8 @@ import {
   extendRegistry,
   Provider,
   registry,
-} from "@lattice/lattice";
-import { configureI18n, type I18nConfig } from "@lattice/lattice/i18n";
+} from "@lattice-php/lattice";
+import { configureI18n, type I18nConfig } from "@lattice-php/lattice/i18n";
 import { createRoot } from "react-dom/client";
 import sprite from "virtual:svg-sprite";
 import { appColumns } from "./lattice/columns";

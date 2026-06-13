@@ -10,7 +10,7 @@ afterAll(() => configure({ testIdAttribute: prev }));
 
 const { renderCounts } = vi.hoisted(() => ({ renderCounts: new Map<string, number>() }));
 
-vi.mock("@lattice/lattice/core/renderer", async () => {
+vi.mock("@lattice-php/lattice/core/renderer", async () => {
   const { useFieldScope } = await import("../field-scope");
   return {
     RenderNode: ({ node }: { node: { props: { name: string } } }) => {

@@ -1,4 +1,4 @@
-import type { ColumnCellComponent } from "@lattice/lattice";
+import type { ColumnCellComponent } from "@lattice-php/lattice";
 
 const colorClasses: Record<string, string> = {
   active: "bg-green-100 text-green-800",

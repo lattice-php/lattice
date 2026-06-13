@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice/lattice/core/types";
+import type { Node } from "@lattice-php/lattice/core/types";
 import { ResolvedNodesProvider, useResolvedNode } from "./resolved-nodes";
 
 function Probe({ node }: { node: Node }) {

@@ -1,9 +1,9 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createRegistry, Renderer } from "@lattice/lattice";
-import type { Node } from "@lattice/lattice";
-import { formComponents } from "@lattice/lattice/form";
+import { createRegistry, Renderer } from "@lattice-php/lattice";
+import type { Node } from "@lattice-php/lattice";
+import { formComponents } from "@lattice-php/lattice/form";
 import { actionComponents } from "../index";
 
 vi.mock("@inertiajs/react", () => ({

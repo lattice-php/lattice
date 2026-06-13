@@ -1,9 +1,9 @@
-import { Icon } from "@lattice/lattice/icons";
+import { Icon } from "@lattice-php/lattice/icons";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useState } from "react";
-import { Button } from "@lattice/lattice/core/components/button";
-import type { RendererComponent } from "@lattice/lattice/core/types";
-import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
+import { Button } from "@lattice-php/lattice/core/components/button";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 
 type ModalEvent = CustomEvent<{
   modal: string | null;

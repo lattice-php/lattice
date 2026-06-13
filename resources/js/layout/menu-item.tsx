@@ -1,9 +1,9 @@
 import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import type { ReactNode } from "react";
-import type { RendererComponent, Schema } from "@lattice/lattice/core/types";
-import { Icon, IconRenderer } from "@lattice/lattice/icons";
-import { cn } from "@lattice/lattice/lib/utils";
+import type { RendererComponent, Schema } from "@lattice-php/lattice/core/types";
+import { Icon, IconRenderer } from "@lattice-php/lattice/icons";
+import { cn } from "@lattice-php/lattice/lib/utils";
 import { useSidebarCollapsed } from "./context";
 import { Popover } from "./popover";
 

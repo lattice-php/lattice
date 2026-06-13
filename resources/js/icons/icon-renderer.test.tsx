@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Icon, IconRenderer, IconRendererProvider, SpriteProvider } from "@lattice/lattice";
-import type { IconRendererFunction } from "@lattice/lattice";
+import { Icon, IconRenderer, IconRendererProvider, SpriteProvider } from "@lattice-php/lattice";
+import type { IconRendererFunction } from "@lattice-php/lattice";
 
 describe("Lattice icon renderer", () => {
   afterEach(() => {

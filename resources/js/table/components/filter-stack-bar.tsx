@@ -1,5 +1,5 @@
-import { Icon } from "@lattice/lattice/icons";
-import { useT } from "@lattice/lattice/i18n";
+import { Icon } from "@lattice-php/lattice/icons";
+import { useT } from "@lattice-php/lattice/i18n";
 import { operatorLabel } from "../query";
 import type { FilterClause, TableColumn } from "../types";
 

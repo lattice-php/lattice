@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { Node } from "@lattice/lattice/core/types";
+import type { Node } from "@lattice-php/lattice/core/types";
 import { collectClassNames, resolveTokens } from "@lib/tokens";
 import type { SuffixMap, ThemeToken } from "@lib/tokens";
 import Preview from "./Preview.tsx";

@@ -1,6 +1,6 @@
 import type { RefObject } from "react";
-import { useT } from "@lattice/lattice/i18n";
-import type { PaginationType } from "@lattice/lattice/types/generated";
+import { useT } from "@lattice-php/lattice/i18n";
+import type { PaginationType } from "@lattice-php/lattice/types/generated";
 import type { TablePagination as TablePaginationData } from "../types";
 
 export function TablePagination({

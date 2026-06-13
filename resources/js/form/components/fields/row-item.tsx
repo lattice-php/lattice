@@ -1,8 +1,8 @@
-import { Icon } from "@lattice/lattice/icons";
+import { Icon } from "@lattice-php/lattice/icons";
 import type { ReactNode } from "react";
 import { memo } from "react";
-import type { Node } from "@lattice/lattice/core/types";
-import { RenderNode } from "@lattice/lattice/core/renderer";
+import type { Node } from "@lattice-php/lattice/core/types";
+import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import { FieldScopeProvider } from "../field-scope";
 import type { RepeaterRow } from "./repeater-rows";
 

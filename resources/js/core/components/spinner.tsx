@@ -1,6 +1,6 @@
-import { Icon } from "@lattice/lattice/icons";
-import { cn } from "@lattice/lattice/lib/utils";
-import { useT } from "@lattice/lattice/i18n";
+import { Icon } from "@lattice-php/lattice/icons";
+import { cn } from "@lattice-php/lattice/lib/utils";
+import { useT } from "@lattice-php/lattice/i18n";
 
 function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
   const { t } = useT("lattice");

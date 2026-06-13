@@ -1,5 +1,5 @@
 import { type ReactNode, useMemo } from "react";
-import { useT } from "@lattice/lattice/i18n";
+import { useT } from "@lattice-php/lattice/i18n";
 import type { TableNode } from "../types";
 import { getBulkActions } from "../bulk";
 import { flattenColumns, getRowActions, getRowKey } from "../payload";

@@ -1,7 +1,7 @@
 import { Form as InertiaForm } from "@inertiajs/react";
-import { withRefHeader } from "@lattice/lattice/core/component-ref";
-import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
-import type { Node, RendererComponent } from "@lattice/lattice/core/types";
+import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { useEffect, useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "./context";

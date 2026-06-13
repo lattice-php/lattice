@@ -1,6 +1,6 @@
-import { copyToClipboard } from "@lattice/lattice/clipboard";
-import { Icon } from "@lattice/lattice/icons";
-import type { TextColumnProps } from "@lattice/lattice/types/generated";
+import { copyToClipboard } from "@lattice-php/lattice/clipboard";
+import { Icon } from "@lattice-php/lattice/icons";
+import type { TextColumnProps } from "@lattice-php/lattice/types/generated";
 import { useEffect, useState } from "react";
 import { formatCell, resolveLink } from "../../format";
 import type { TableColumn, TableRow } from "../../types";

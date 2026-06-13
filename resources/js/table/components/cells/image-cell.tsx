@@ -1,5 +1,5 @@
-import { cn } from "@lattice/lattice/lib/utils";
-import type { ImageColumnProps } from "@lattice/lattice/types/generated";
+import { cn } from "@lattice-php/lattice/lib/utils";
+import type { ImageColumnProps } from "@lattice-php/lattice/types/generated";
 import type { TableColumn } from "../../types";
 
 export function ImageCell({ column, value }: { column: TableColumn; value: unknown }) {

@@ -1,4 +1,4 @@
-import { createPlugin, eagerComponent } from "@lattice/lattice/core/registry";
+import { createPlugin, eagerComponent } from "@lattice-php/lattice/core/registry";
 import BreadcrumbsComponent from "./breadcrumbs";
 import DropdownComponent from "./dropdown";
 import MenuComponent from "./menu";

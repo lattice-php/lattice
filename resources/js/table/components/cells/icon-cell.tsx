@@ -1,6 +1,6 @@
-import { IconRenderer } from "@lattice/lattice/icons";
-import { cn } from "@lattice/lattice/lib/utils";
-import type { IconColumnProps } from "@lattice/lattice/types/generated";
+import { IconRenderer } from "@lattice-php/lattice/icons";
+import { cn } from "@lattice-php/lattice/lib/utils";
+import type { IconColumnProps } from "@lattice-php/lattice/types/generated";
 import type { TableColumn } from "../../types";
 
 export function IconCell({ column, value }: { column: TableColumn; value: unknown }) {

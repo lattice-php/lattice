@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Node } from "@lattice/lattice/core/types";
+import type { Node } from "@lattice-php/lattice/core/types";
 
 type Props = {
   nodes: Node[];

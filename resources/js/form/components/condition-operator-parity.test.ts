@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import type { Op } from "@lattice/lattice/types/generated";
+import type { Op } from "@lattice-php/lattice/types/generated";
 import { describe, expect, it } from "vitest";
 import { evaluateConditions } from "./conditions";
 
