@@ -1,5 +1,6 @@
 import { useFieldScope } from "./field-scope";
 import { useFormContext } from "./context";
+import { usePrefillController } from "./prefill-context";
 import { useSetFormValue } from "./values";
 
 export type FieldCommit = {
@@ -24,6 +25,7 @@ export function useFieldCommit(): FieldCommit {
   const { clearErrors, precognitive, validate } = useFormContext();
   const setGlobal = useSetFormValue();
   const scope = useFieldScope();
+  const prefill = usePrefillController();
 
   const write = (name: string, value: unknown): void => {
     if (scope) {
@@ -31,6 +33,7 @@ export function useFieldCommit(): FieldCommit {
     } else {
       setGlobal(name, value);
     }
+    prefill?.markUserEdit(scope ? scope.errorKey(name) : name);
   };
   const errorPath = (name: string): string => (scope ? scope.errorKey(name) : name);
 

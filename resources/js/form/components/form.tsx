@@ -6,6 +6,7 @@ import { useEffect, useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "./context";
 import { walkFields } from "./field-props";
+import { PrefillProvider } from "./prefill-context";
 import { ResolvedNodesProvider } from "./resolved-nodes";
 import { useFormResolver } from "./use-form-resolver";
 import { FormValuesProvider } from "./values";
@@ -74,20 +75,22 @@ function FormBody({
   submitLabel: string;
   summaryLabel: string;
 }) {
-  const resolvedNodes = useFormResolver(action, componentRef, nodes);
+  const { nodes: resolvedNodes, markUserEdit } = useFormResolver(action, componentRef, nodes);
 
   return (
-    <ResolvedNodesProvider nodes={resolvedNodes}>
-      <div className="flex flex-col gap-6">
-        {children}
+    <PrefillProvider value={{ markUserEdit }}>
+      <ResolvedNodesProvider nodes={resolvedNodes}>
+        <div className="flex flex-col gap-6">
+          {children}
 
-        {shouldRenderSubmitButton && (
-          <div className="flex justify-end rounded-lt border border-lt-border bg-lt-surface px-6 py-4 shadow-xs">
-            <FormSubmitButton label={submitLabel} summaryLabel={summaryLabel} />
-          </div>
-        )}
-      </div>
-    </ResolvedNodesProvider>
+          {shouldRenderSubmitButton && (
+            <div className="flex justify-end rounded-lt border border-lt-border bg-lt-surface px-6 py-4 shadow-xs">
+              <FormSubmitButton label={submitLabel} summaryLabel={summaryLabel} />
+            </div>
+          )}
+        </div>
+      </ResolvedNodesProvider>
+    </PrefillProvider>
   );
 }
 

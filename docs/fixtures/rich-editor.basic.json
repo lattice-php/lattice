@@ -10,6 +10,9 @@
             "label": "Article",
             "name": "article",
             "placeholder": "Write your article\u2026",
+            "prefill": null,
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
             "readOnly": null,
             "required": null,
             "value": null

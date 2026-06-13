@@ -16,6 +16,9 @@ export type FieldProps = {
   hidden?: boolean | null;
   label?: string | null;
   name?: string;
+  prefill?: boolean | null;
+  prefillRefreshOn?: string[] | null;
+  prefillResetOn?: string[] | null;
   readOnly?: boolean | null;
   required?: boolean | null;
   value?: unknown;
