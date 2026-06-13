@@ -1,6 +1,5 @@
 import type { RendererComponent } from "@lattice/lattice/core/types";
 import { RenderNode } from "@lattice/lattice/core/renderer";
-import { cn } from "@lattice/lattice/lib/utils";
 import { Popover } from "./popover";
 
 const DropdownComponent: RendererComponent<"dropdown"> = ({ children, node }) => {
@@ -11,11 +10,7 @@ const DropdownComponent: RendererComponent<"dropdown"> = ({ children, node }) =>
       placement={node.props.placement}
       testId={testId}
       trigger={
-        <span
-          className={cn(
-            "flex min-w-0 items-center rounded-md px-2 py-1.5 text-sm hover:bg-lt-muted",
-          )}
-        >
+        <span className="flex min-w-0 items-center rounded-md px-2 py-1.5 text-sm hover:bg-lt-muted">
           {node.props.trigger.map((triggerNode, index) => (
             <RenderNode
               key={triggerNode.key ?? `${triggerNode.type}-${index}`}

@@ -34,7 +34,7 @@ export function getBulkActions(actions: ActionNode[] | undefined): BulkAction[] 
         ref: props.ref ?? "",
         variant: props.variant ?? "default",
         confirmation: props.confirmation,
-        form: (props.form as unknown as Node | null) ?? null,
+        form: props.form,
       },
     ];
   });
