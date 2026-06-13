@@ -27,4 +27,28 @@ describe("Popover", () => {
     fireEvent.click(overlay as Element);
     expect(screen.queryByRole("link", { name: "Item" })).not.toBeInTheDocument();
   });
+
+  it("opens upward for a top placement", () => {
+    render(
+      <Popover trigger={<span>Open</span>} placement="top" testId="pop">
+        <a href="/x">Item</a>
+      </Popover>,
+    );
+
+    fireEvent.click(screen.getByText("Open"));
+
+    expect(screen.getByRole("menu").style.transform).toBe("translate(0, -100%)");
+  });
+
+  it("opens to the side without a transform for a right placement", () => {
+    render(
+      <Popover trigger={<span>Open</span>} placement="right" testId="pop">
+        <a href="/x">Item</a>
+      </Popover>,
+    );
+
+    fireEvent.click(screen.getByText("Open"));
+
+    expect(screen.getByRole("menu").style.transform).toBe("");
+  });
 });
