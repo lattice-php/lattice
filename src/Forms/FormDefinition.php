@@ -11,10 +11,11 @@ use Lattice\Lattice\Core\Definition;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Concerns\ResolvesFormFields;
+use Lattice\Lattice\Forms\Contracts\HandlesUploads;
 use Lattice\Lattice\Forms\Contracts\ProvidesForm;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class FormDefinition extends Definition implements ProvidesForm
+abstract class FormDefinition extends Definition implements HandlesUploads, ProvidesForm
 {
     use CreatesToastMessages;
     use ResolvesFormFields;
