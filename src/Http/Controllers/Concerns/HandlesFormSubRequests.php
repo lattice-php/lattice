@@ -6,7 +6,6 @@ namespace Lattice\Lattice\Http\Controllers\Concerns;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Contracts\InteractsWithForm;
-use Lattice\Lattice\Forms\Contracts\HandlesUploads;
 use Symfony\Component\HttpFoundation\Response;
 
 trait HandlesFormSubRequests
@@ -18,10 +17,6 @@ trait HandlesFormSubRequests
      */
     protected function formSubRequest(Request $request, InteractsWithForm $definition): ?Response
     {
-        if ($request->filled('_upload') && $definition instanceof HandlesUploads) {
-            return new JsonResponse($definition->signUpload($request));
-        }
-
         if ($request->boolean('_form')) {
             return new JsonResponse($definition->resolveFormSchema($request));
         }
