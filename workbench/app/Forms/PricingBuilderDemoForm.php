@@ -58,6 +58,8 @@ class PricingBuilderDemoForm extends FormDefinition
                                     resetOn: ['product'],
                                     refreshOn: ['@customer'],
                                 ),
+                                TextInput::make('discount_note', 'Discount note')
+                                    ->visibleWhen('product', '!=', ''),
                             ]),
                         ])
                         ->minItems(1)
