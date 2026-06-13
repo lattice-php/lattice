@@ -1,145 +1,125 @@
 ---
 name: worktrees
-description: Use when creating, preparing, listing, switching between, or removing git worktrees for this Almanac Laravel application, especially when multiple agents are working in parallel. Covers safe multi-agent branch isolation, dependency setup, per-worktree SQLite databases, Laravel Herd links, Vite/Wayfinder build steps, verification, and cleanup.
+description: Use when creating, preparing, listing, switching between, or removing git worktrees for the Lattice package, especially when multiple agents work in parallel. Covers safe multi-agent branch isolation, the sibling worktree layout, Testbench dependency setup, the required verification gates, and cleanup.
 ---
 
-# Almanac Worktrees
+# Lattice Worktrees
 
-Use a worktree whenever an agent needs to make changes while other agents may be editing the main checkout or another branch. Keep each agent's work isolated and never move, reset, delete, or overwrite another agent's files.
+Lattice is a **package developed with Orchestra Testbench**, not a full Laravel app. There is no
+Herd site, no Wayfinder, no app `.env`/`key:generate`/`migrate` ritual — the `workbench/` skeleton
+and its SQLite database are managed by Testbench. Worktree setup is therefore just dependency
+installation plus the project's verification gates.
 
-## First Checks
+Use a worktree whenever you need to make changes while other agents may be editing the main checkout
+or another branch. Keep each agent's work isolated and never move, reset, delete, or overwrite
+another agent's files.
 
-Run these before creating or removing anything:
+## Layout: siblings of the main checkout
+
+Worktrees live **as siblings of the repo**, directly under its parent directory, named
+`lattice-<slug>`:
+
+```text
+/Users/bambamboole/Projects/lattice/
+  lattice/                      # main checkout (repo root)
+  lattice-<slug>/               # a worktree
+  lattice-<other-slug>/         # another worktree
+```
+
+Do **not** nest worktrees inside the repo (no `.worktrees/`, no `.claude/worktrees/`). Siblings sit
+outside the working tree, so they need no `.gitignore` entry and never pollute `git status`.
+
+## First: take stock of existing worktrees
+
+Before creating anything, list what already exists and clean up if it has grown:
 
 ```bash
+git worktree list
 git status --short
-git worktree list --porcelain
 git branch --show-current
 ```
 
 Rules:
-- Treat every uncommitted change you did not make as another agent's work.
-- Do not clean, stash, reset, checkout, or remove unrelated changes.
-- Pick a unique worktree name and branch name, usually `<agent-or-task>-<short-slug>`.
-- Do not reuse an existing `.worktrees/<name>` path or existing branch unless the user explicitly asks.
-
-## Location
-
-Preferred local layout:
-
-```text
-.worktrees/<name>
-```
-
-Before using `.worktrees/`, verify it is ignored:
-
-```bash
-git check-ignore -q .worktrees
-```
-
-If it is not ignored, do not silently add it during unrelated work. Either ask to add `.worktrees/` to `.gitignore`, or use:
-
-```text
-~/.config/superpowers/worktrees/almanac/<name>
-```
+- **If there are already many worktrees (roughly 5+), do not silently add another.** Tell the user
+  which ones look finished and should be closed first. A worktree is a candidate for closing when
+  its branch is merged or its work is done:
+  ```bash
+  git branch --merged main          # branches already merged — their worktrees can usually go
+  git worktree list --porcelain     # match branches back to worktree paths
+  ```
+- Recommend closing; never remove another agent's worktree yourself. Only the user (or the owning
+  agent) closes work you did not create.
+- Treat every uncommitted change you did not make as another agent's work — do not clean, stash,
+  reset, checkout, or remove it.
+- Pick a unique slug and branch name, usually `<task>-<short-slug>`. Do not reuse an existing
+  `lattice-<slug>` path or existing branch unless the user explicitly asks.
 
 ## Create
 
-Create from a clean base branch or current `HEAD`. Do not assume dirty files in the current checkout should be copied.
+Create from a clean base branch (usually `main`) or current `HEAD`. Run from the repo root so `..`
+resolves to the parent directory:
 
 ```bash
-git fetch --all --prune
-git worktree add .worktrees/<name> -b <branch> <base>
-cd .worktrees/<name>
+git fetch origin --prune
+git worktree add ../lattice-<slug> -b <branch> main
+cd ../lattice-<slug>
 ```
 
 Examples:
 
 ```bash
-git worktree add .worktrees/codex-dav-tests -b feat/dav-tests main
-git worktree add .worktrees/codex-current-fix -b fix/current-fix HEAD
+git worktree add ../lattice-dropdown -b feat/dropdown-collapsible main
+git worktree add ../lattice-current-fix -b fix/current-fix HEAD
 ```
 
-Use an existing branch only when continuing that branch:
+Continue an existing branch only when that is the intent:
 
 ```bash
-git worktree add .worktrees/<name> <branch>
+git worktree add ../lattice-<slug> <branch>
 ```
 
-## Set Up Almanac
+## Set up
 
-Each worktree needs its own ignored dependencies and local SQLite database.
+Each worktree needs its own ignored dependencies. Always install both stacks:
 
 ```bash
 composer install
 npm install
-cp .env.example .env
-php artisan key:generate
-touch database/database.sqlite
-php artisan migrate --force
 ```
 
-Seed only when the task needs demo data or manual UI testing:
-
-```bash
-php artisan db:seed --force
-```
-
-If routes, controllers, or Wayfinder output changed:
-
-```bash
-php artisan wayfinder:generate
-```
-
-## Herd
-
-Almanac is served by Laravel Herd. Do not run `php artisan serve` for this app.
-
-For browser/manual testing from a worktree, link a unique Herd site:
-
-```bash
-herd link almanac-<name> --secure --update-env
-```
-
-Use the resulting `https://almanac-<name>.test` URL. If no browser/manual testing is needed, skip Herd linking and run CLI tests directly.
-
-Cleanup the Herd link when deleting the worktree:
-
-```bash
-herd unlink almanac-<name>
-```
+That is the whole setup. Testbench provisions the `workbench/` skeleton and its SQLite database on
+demand (via `composer post-autoload-dump` and the test bootstrap); there is no app `.env`, key
+generation, or manual `migrate` step to run.
 
 ## Verify
 
-Run the smallest relevant checks while developing. Before reporting work as complete, run the checks that match the touched areas.
-
-Backend/PHP:
+Always run both gates in a new worktree before reporting work — they mirror CI:
 
 ```bash
-vendor/bin/pint --dirty --format agent
-php artisan test --compact
+composer check    # Pint (test), PHPStan, Pest (Arch + Unit + Feature)
+npm run check     # oxlint --fix, oxfmt, tsc, Vitest, build:lib
 ```
 
-Frontend:
+For anything touching rendered UI or browser behavior, also run the browser suite (the strongest
+signal):
 
 ```bash
-npm run lint:check
-npm run types:check
-npm run build
+composer test:browser
 ```
 
-Route/controller changes that frontend calls:
+Never report green without having run the gates that match what you changed. Backend-only change →
+`composer check`. Frontend change → `npm run check`. UI/interaction change → add
+`composer test:browser`.
+
+## Serve
+
+Serve the workbench app with Testbench — **not** Herd, **not** `php artisan serve`:
 
 ```bash
-php artisan wayfinder:generate
+composer serve
 ```
 
-DAV/contact/calendar changes usually need focused tests first:
-
-```bash
-php artisan test --compact tests/Feature/Dav
-php artisan test --compact tests/Feature/ContactsPageTest.php tests/Feature/Calendar
-```
+(`composer serve` runs `workbench:build` then `testbench serve`.)
 
 ## List
 
@@ -156,23 +136,18 @@ Only remove a worktree that belongs to your task and has no needed changes.
 
 ```bash
 cd <repo-root>
-git -C .worktrees/<name> status --short
-git worktree remove .worktrees/<name>
+git -C ../lattice-<slug> status --short
+git worktree remove ../lattice-<slug>
 git worktree prune
 ```
 
-Never use `git worktree remove --force` unless the user explicitly says to discard that worktree's uncommitted changes.
-
-If the worktree used a Herd link:
-
-```bash
-herd unlink almanac-<name>
-```
+Never use `git worktree remove --force` unless the user explicitly says to discard that worktree's
+uncommitted changes.
 
 ## Multi-Agent Safety
 
-- Prefer separate worktrees over sharing one dirty checkout.
+- Prefer separate sibling worktrees over sharing one dirty checkout.
 - Never assume a branch, worktree, or untracked file is disposable.
 - Commit only your logical change set.
-- Keep generated files scoped: Wayfinder output is expected after route/controller changes; avoid unrelated build artifacts.
 - If two agents touch the same files, stop and coordinate instead of overwriting.
+- When worktrees pile up, surface the list and recommend which to close — don't just add more.
