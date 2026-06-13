@@ -5,6 +5,26 @@ import { createPortal } from "react-dom";
 import { CollapsedContext } from "../core/collapsed-context";
 import { cn } from "@lattice/lattice/lib/utils";
 
+function viewportOffset(rect: DOMRect, margin: number): { left: number; top: number } {
+  let left = 0;
+  let top = 0;
+
+  if (rect.right > window.innerWidth - margin) {
+    left = window.innerWidth - margin - rect.right;
+  }
+  if (rect.left + left < margin) {
+    left = margin - rect.left;
+  }
+  if (rect.bottom > window.innerHeight - margin) {
+    top = window.innerHeight - margin - rect.bottom;
+  }
+  if (rect.top + top < margin) {
+    top = margin - rect.top;
+  }
+
+  return { left, top };
+}
+
 export function Popover({
   align = "start",
   children,
@@ -43,25 +63,13 @@ export function Popover({
       return;
     }
 
-    const margin = 8;
-    let dx = 0;
-    let dy = 0;
+    const offset = viewportOffset(rect, 8);
 
-    if (rect.right > window.innerWidth - margin) {
-      dx = window.innerWidth - margin - rect.right;
-    }
-    if (rect.left + dx < margin) {
-      dx = margin - rect.left;
-    }
-    if (rect.bottom > window.innerHeight - margin) {
-      dy = window.innerHeight - margin - rect.bottom;
-    }
-    if (rect.top + dy < margin) {
-      dy = margin - rect.top;
-    }
-
-    if (dx !== 0 || dy !== 0) {
-      setPosition((current) => ({ left: current.left + dx, top: current.top + dy }));
+    if (offset.left !== 0 || offset.top !== 0) {
+      setPosition((current) => ({
+        left: current.left + offset.left,
+        top: current.top + offset.top,
+      }));
     }
   }, [open]);
 
