@@ -96,7 +96,7 @@ class ShowcaseForm extends FormDefinition
                         ->readOnly()
                         ->dependsOn(
                             ['quantity', 'unit_price'],
-                            fn (TextInput $field, FormData $data) => $field->value(
+                            fn ($component, FormData $data) => $component->value(
                                 $data->float('quantity') * $data->float('unit_price'),
                             ),
                         ),

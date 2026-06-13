@@ -392,12 +392,14 @@ abstract class Field extends Component
     {
         $this->resolving = true;
 
+        $context = $this->evaluationContext($data, $request);
+
         foreach ($this->dependencies as $dependency) {
-            ($dependency['callback'])($this, $data, $request);
+            Evaluate::resolve($dependency['callback'], $context);
         }
 
         if ($this->valueResolver !== null) {
-            $this->value(($this->valueResolver)($data, $request));
+            $this->value(Evaluate::resolve($this->valueResolver, $context));
         }
 
         $this->resolving = false;

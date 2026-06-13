@@ -18,9 +18,9 @@ function resolvedDefinition(): FormDefinition
             return $form->schema([
                 TextInput::make('mode', 'Mode'),
                 TextInput::make('secret', 'Secret')
-                    ->dependsOn('mode', fn (TextInput $f, FormData $d) => $d->get('mode') === 'reveal'
-                        ? $f->visible()->rules(['required', 'string'])
-                        : $f->hidden()),
+                    ->dependsOn('mode', fn ($component, FormData $d) => $d->get('mode') === 'reveal'
+                        ? $component->visible()->rules(['required', 'string'])
+                        : $component->hidden()),
                 TextInput::make('qty', 'Qty'),
                 TextInput::make('price', 'Price'),
                 TextInput::make('total', 'Total')

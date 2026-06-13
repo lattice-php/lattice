@@ -22,3 +22,21 @@ it('keeps supporting typed FormData and Request rule closures', function () {
 
     expect($field->resolveRules(FormData::make(['extra' => 'min:3']), Request::create('/')))->toBe(['min:3']);
 });
+
+it('injects named utilities into computed value resolvers', function () {
+    $field = TextInput::make('total')
+        ->value(fn ($get) => $get('qty') * 2);
+
+    $field->applyResolution(FormData::make(['qty' => 5]), Request::create('/'));
+
+    expect($field->resolvedValue())->toBe(10);
+});
+
+it('injects named utilities into dependsOn callbacks', function () {
+    $field = TextInput::make('city')
+        ->dependsOn('country', fn ($component, $get) => $component->value($get('country').'-city'));
+
+    $field->applyResolution(FormData::make(['country' => 'de']), Request::create('/'));
+
+    expect($field->resolvedValue())->toBe('de-city');
+});
