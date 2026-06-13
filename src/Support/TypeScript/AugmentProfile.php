@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support\TypeScript;
 
 use Illuminate\Support\Facades\File;
-use Lattice\Lattice\Core\Services\DefinitionDiscovery;
+use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 
 /**
  * Default profile: discovers an app's own #[Component] classes and writes a
@@ -16,7 +16,7 @@ final class AugmentProfile implements TypeScriptProfile
 
     public function run(TypeScriptGenerator $generator): string
     {
-        $roots = array_keys(DefinitionDiscovery::configuredPaths());
+        $roots = DiscoveryManifest::configuredPaths();
         $output = (string) config('lattice.typescript.output');
         $module = (string) config('lattice.typescript.module', '@lattice-php/lattice');
 

@@ -175,12 +175,12 @@ Run this command whenever your PHP classes gain or lose public properties:
 php artisan lattice:typescript
 ```
 
-It scans the class namespaces listed under `discover` in `config/lattice.php`:
+It scans the paths listed under `discover` in `config/lattice.php`:
 
 ```php
 // config/lattice.php
 'discover' => [
-    base_path('app') => 'App',
+    base_path('app'),
 ],
 ```
 

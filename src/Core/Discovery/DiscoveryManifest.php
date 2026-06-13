@@ -6,7 +6,6 @@ namespace Lattice\Lattice\Core\Discovery;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Filesystem\Filesystem;
-use Lattice\Lattice\Core\Services\DefinitionDiscovery;
 use Lattice\Lattice\Http\PageMetadata;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
 use ReflectionClass;
@@ -86,6 +85,18 @@ final class DiscoveryManifest
         $this->resolved = null;
     }
 
+    /** @return list<string> */
+    public static function configuredPaths(): array
+    {
+        $configured = config('lattice.discover', []);
+
+        if (! is_array($configured)) {
+            return [];
+        }
+
+        return array_values(array_filter($configured, 'is_string'));
+    }
+
     /** @return array<string, mixed> */
     public function build(): array
     {
@@ -95,7 +106,7 @@ final class DiscoveryManifest
             $manifest[$group] = [];
         }
 
-        foreach (array_keys(DefinitionDiscovery::configuredPaths()) as $path) {
+        foreach (self::configuredPaths() as $path) {
             foreach (ClassWalker::classes($path) as $class) {
                 if ((new ReflectionClass($class))->isAbstract()) {
                     continue;

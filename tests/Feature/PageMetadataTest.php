@@ -80,7 +80,7 @@ test('page metadata round-trips through an array descriptor', function () {
 
 test('for() prefers a manifest descriptor and falls back to reflection', function () {
     config(['lattice.discover' => [
-        __DIR__.'/../Fixtures/Discovery' => 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery',
+        __DIR__.'/../Fixtures/Discovery',
     ]]);
 
     $manifest = app(DiscoveryManifest::class);
