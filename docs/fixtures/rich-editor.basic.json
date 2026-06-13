@@ -1,6 +1,7 @@
 [
     {
         "props": {
+            "columnWidth": "md",
             "conditions": null,
             "dependsOnAny": null,
             "dependsOnKeys": null,

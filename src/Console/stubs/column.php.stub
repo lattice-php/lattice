@@ -15,6 +15,7 @@ class {{ class }} extends Column
             key: $this->key,
             label: $this->label,
             type: '{{ type }}',
+            width: $this->resolvedWidth(),
             props: new {{ class }}Props,
         );
     }

@@ -59,6 +59,7 @@ test('password inputs can request automatic confirmation fields', function () {
                 'autoFocus' => null,
                 'placeholder' => null,
                 'tabIndex' => null,
+                'columnWidth' => 'md',
             ],
         ]);
 });

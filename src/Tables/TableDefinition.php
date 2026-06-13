@@ -44,6 +44,11 @@ abstract class TableDefinition extends Definition
         return false;
     }
 
+    public function resizableColumns(): bool
+    {
+        return false;
+    }
+
     public function actionsLabel(): string
     {
         return 'Actions';

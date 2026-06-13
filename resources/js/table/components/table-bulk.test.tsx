@@ -7,6 +7,7 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
   return {
     type: "text",
+    width: "md",
     sortable: null,
     filter: null,
     columns: null,

@@ -69,6 +69,7 @@ class IconColumn extends Column
             key: $this->key,
             label: $this->label,
             type: ColumnType::Icon,
+            width: $this->resolvedWidth(),
             props: new IconColumnProps(
                 icon: $this->icon,
                 icons: $this->icons === [] ? null : $this->icons,

@@ -35,11 +35,15 @@ vi.mock("@lattice-php/lattice/core/renderer", async () => {
 import { FormProvider } from "../context";
 import { FormValuesProvider } from "../values";
 import { RepeaterComponent } from "./repeater";
-import { TableRows } from "./table-rows";
+import { TableRows, type TableColumn } from "./table-rows";
 
-const columns = [
-  { name: "qty", label: "Qty" },
-  { name: "price", label: "Price" },
+const columns: TableColumn[] = [
+  { name: "qty", label: "Qty", columnWidth: "md" },
+  { name: "price", label: "Price", columnWidth: "md" },
+];
+const sizedColumns: TableColumn[] = [
+  { name: "qty", label: "Qty", columnWidth: "xs" },
+  { name: "description", label: "Description", columnWidth: "xl" },
 ];
 const qtyNode = { id: "q", type: "form.text-input", props: { name: "qty" } } as never;
 const priceNode = { id: "p", type: "form.text-input", props: { name: "price" } } as never;
@@ -117,6 +121,60 @@ it("registers each row element for FLIP", () => {
   expect(calls.some(([k, el]) => k === "a" && el !== null)).toBe(true);
 });
 
+it("uses column width hints when building the table grid", () => {
+  render(
+    <TableRows
+      base="items"
+      columns={sizedColumns}
+      rows={[{ key: "a", index: 0, row: {}, template: [qtyNode, priceNode], span: false }]}
+      reorderable={true}
+      removable={() => true}
+      onField={noop}
+      onMove={noop}
+      onRemove={noop}
+    />,
+  );
+
+  expect(screen.getByText("Qty").parentElement).toHaveStyle({
+    gridTemplateColumns: "3rem minmax(4rem, 0.35fr) minmax(16rem, 2fr) 3rem",
+  });
+});
+
+it("does not render column resize handles unless enabled", () => {
+  render(
+    <TableRows
+      base="items"
+      columns={columns}
+      rows={[{ key: "a", index: 0, row: {}, template: [qtyNode, priceNode], span: false }]}
+      reorderable={true}
+      removable={() => true}
+      onField={noop}
+      onMove={noop}
+      onRemove={noop}
+    />,
+  );
+
+  expect(screen.queryByRole("separator", { name: "Resize Qty" })).not.toBeInTheDocument();
+});
+
+it("renders column resize handles when enabled", () => {
+  render(
+    <TableRows
+      base="items"
+      columns={columns}
+      rows={[{ key: "a", index: 0, row: {}, template: [qtyNode, priceNode], span: false }]}
+      reorderable={true}
+      removable={() => true}
+      resizableColumns={true}
+      onField={noop}
+      onMove={noop}
+      onRemove={noop}
+    />,
+  );
+
+  expect(screen.getByRole("separator", { name: "Resize Qty" })).toBeInTheDocument();
+});
+
 function wrap(ui: React.ReactNode, initial: Record<string, unknown> = {}) {
   return render(
     <FormProvider
@@ -147,7 +205,9 @@ const tableNode = {
     minItems: 0,
     maxItems: 5,
   },
-  schema: [{ id: "q", type: "form.text-input", props: { name: "qty", label: "Qty" } }],
+  schema: [
+    { id: "q", type: "form.text-input", props: { name: "qty", label: "Qty", columnWidth: "md" } },
+  ],
 } as never;
 
 it("does not re-render sibling table rows when one row changes", () => {

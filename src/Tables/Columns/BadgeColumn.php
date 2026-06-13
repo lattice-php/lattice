@@ -39,6 +39,7 @@ class BadgeColumn extends Column implements Filterable, Sortable
             key: $this->key,
             label: $this->label,
             type: ColumnType::Badge,
+            width: $this->resolvedWidth(),
             sortable: $this->sortableValue(),
             filter: $this->filterValue(),
             props: new BadgeColumnProps(colors: $this->colors === [] ? null : $this->colors),

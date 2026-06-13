@@ -40,6 +40,7 @@ class ImageColumn extends Column
             key: $this->key,
             label: $this->label,
             type: ColumnType::Image,
+            width: $this->resolvedWidth(),
             props: new ImageColumnProps(
                 circular: $this->circular,
                 size: $this->size,

@@ -38,6 +38,7 @@ test('registered tables serialize their configured endpoint columns state and in
                 'bulkActions' => [],
                 'striped' => null,
                 'lazy' => null,
+                'resizableColumns' => null,
                 'actionsLabel' => 'Actions',
                 'emptyLabel' => 'No results',
                 'columns' => [
@@ -54,6 +55,7 @@ test('registered tables serialize their configured endpoint columns state and in
                         ],
                         'columns' => null,
                         'props' => ['date' => null, 'copyable' => false, 'link' => null],
+                        'width' => 'md',
                     ],
                     [
                         'key' => 'status',
@@ -68,6 +70,7 @@ test('registered tables serialize their configured endpoint columns state and in
                         ],
                         'columns' => null,
                         'props' => ['date' => null, 'copyable' => false, 'link' => null],
+                        'width' => 'md',
                     ],
                     [
                         'key' => 'email',
@@ -77,6 +80,7 @@ test('registered tables serialize their configured endpoint columns state and in
                         'filter' => null,
                         'columns' => null,
                         'props' => ['date' => null, 'copyable' => false, 'link' => null],
+                        'width' => 'md',
                     ],
                 ],
                 'data' => [
@@ -115,6 +119,7 @@ test('registered tables can serialize lazily without running their query', funct
                 'layout' => null,
                 'bulkActions' => [],
                 'striped' => null,
+                'resizableColumns' => null,
                 'actionsLabel' => 'Actions',
                 'emptyLabel' => 'No results',
                 'columns' => [
@@ -126,6 +131,7 @@ test('registered tables can serialize lazily without running their query', funct
                         'filter' => null,
                         'columns' => null,
                         'props' => ['date' => null, 'copyable' => false, 'link' => null],
+                        'width' => 'md',
                     ],
                 ],
                 'data' => [],
@@ -170,6 +176,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                         'filter' => null,
                         'columns' => null,
                         'props' => ['date' => null, 'copyable' => false, 'link' => null],
+                        'width' => 'md',
                     ],
                     [
                         'key' => 'email',
@@ -179,9 +186,11 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                         'filter' => null,
                         'columns' => null,
                         'props' => ['date' => null, 'copyable' => false, 'link' => null],
+                        'width' => 'md',
                     ],
                 ],
                 'props' => null,
+                'width' => 'xl',
             ],
             [
                 'key' => 'status',
@@ -191,6 +200,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                 'filter' => null,
                 'columns' => null,
                 'props' => ['date' => null, 'copyable' => false, 'link' => null],
+                'width' => 'md',
             ],
         ])
         ->and($table['props']['data'][0]['actions'][0])->toMatchArray([

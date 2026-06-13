@@ -2,6 +2,7 @@
     {
         "props": {
             "autoFocus": null,
+            "columnWidth": "md",
             "conditions": null,
             "dependsOnAny": null,
             "dependsOnKeys": null,
@@ -34,6 +35,7 @@
         "props": {
             "autoComplete": null,
             "autoFocus": null,
+            "columnWidth": "md",
             "conditions": {
                 "visible": [
                     {

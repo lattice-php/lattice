@@ -1,14 +1,20 @@
 import type { Node } from "@lattice-php/lattice/core/types";
-import { Icon } from "@lattice-php/lattice/icons";
-import { memo } from "react";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
+import { DEFAULT_COLUMN_WIDTH, type SizableColumn } from "@lattice-php/lattice/core/column-sizing";
+import { useColumnResizing } from "@lattice-php/lattice/core/use-column-resizing";
+import { Icon } from "@lattice-php/lattice/icons";
+import { memo, useMemo } from "react";
+import type { ColumnWidth } from "@lattice-php/lattice/types/generated";
 import { FieldScopeProvider } from "../field-scope";
 import { TableCellProvider } from "../row-layout-context";
 import { RowActions } from "./row-actions";
 import { RowButton } from "./row-item";
 import type { RepeaterRow } from "./repeater-rows";
 
-export type TableColumn = { name: string; label: string };
+const rowControlTrack = "3rem";
+const rowActionTrack = "3rem";
+
+export type TableColumn = { name: string; label: string; columnWidth: ColumnWidth };
 
 export type TableRowModel = {
   key: string;
@@ -20,8 +26,16 @@ export type TableRowModel = {
 
 export function columnsFromSchema(nodes: Node[]): TableColumn[] {
   return nodes.map((node) => {
-    const props = node.props as { name: unknown; label?: unknown };
-    return { name: String(props.name), label: String(props.label ?? props.name) };
+    const props = node.props as {
+      name: unknown;
+      label?: unknown;
+      columnWidth?: ColumnWidth | null;
+    };
+    return {
+      name: String(props.name),
+      label: String(props.label ?? props.name),
+      columnWidth: props.columnWidth ?? DEFAULT_COLUMN_WIDTH,
+    };
   });
 }
 
@@ -149,6 +163,7 @@ export function TableRows({
   onMove,
   onRemove,
   registerRow,
+  resizableColumns = false,
 }: {
   base: string;
   columns: TableColumn[];
@@ -159,19 +174,36 @@ export function TableRows({
   onMove: (index: number, delta: number) => void;
   onRemove: (index: number) => void;
   registerRow?: (key: string, el: HTMLElement | null) => void;
+  resizableColumns?: boolean;
 }) {
-  // For columnar (non-span) rows, template node order must match columns order,
-  // as cells are placed by grid position.
-  const gridTemplateColumns = `auto repeat(${columns.length}, minmax(0, 1fr)) auto`;
+  const sizingColumns = useMemo<SizableColumn[]>(
+    () =>
+      columns.map((column) => ({
+        key: column.name,
+        label: column.label,
+        width: column.columnWidth,
+      })),
+    [columns],
+  );
+  const { getResizeHandleProps, gridTemplateColumns } = useColumnResizing({
+    columns: sizingColumns,
+    enabled: resizableColumns,
+    leadingTracks: [rowControlTrack],
+    trailingTracks: [rowActionTrack],
+  });
 
   return (
     <div className="overflow-x-auto">
       <div className="flex min-w-max flex-col gap-2">
         <div className="grid items-center gap-x-3" style={{ gridTemplateColumns }}>
           <div />
-          {columns.map((column) => (
-            <div key={column.name} className="text-xs font-medium text-lt-muted-fg">
+          {columns.map((column, index) => (
+            <div
+              key={column.name}
+              className="relative min-w-0 pr-3 text-xs font-medium text-lt-muted-fg"
+            >
               {column.label}
+              {resizableColumns && <div {...getResizeHandleProps(sizingColumns[index])} />}
             </div>
           ))}
           <div />

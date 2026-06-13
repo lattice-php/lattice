@@ -5,8 +5,11 @@ import type { ColumnData } from "@lattice-php/lattice/types/generated";
 import TableComponent from "./table";
 
 function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
+  const type = partial.type ?? "text";
+
   return {
-    type: "text",
+    type,
+    width: type === "stack" ? "xl" : "md",
     sortable: null,
     filter: null,
     columns: null,
@@ -109,6 +112,74 @@ describe("Lattice table component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Copy Email" }));
 
     expect(screen.getByRole("button", { name: "Copied Email" })).toBeVisible();
+  });
+
+  it("uses column width hints when building the table grid", () => {
+    const node = {
+      id: "workbench.products",
+      props: {
+        columns: [
+          col({
+            key: "qty",
+            label: "Qty",
+            width: "sm",
+          }),
+          col({
+            key: "description",
+            label: "Description",
+            width: "xl",
+          }),
+        ],
+        data: [],
+        state: {
+          filters: [],
+          page: 1,
+          perPage: 25,
+          sorts: [],
+        },
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    expect(screen.getByRole("columnheader", { name: "Qty" }).parentElement).toHaveStyle(
+      "--lattice-table-columns: minmax(6rem, 0.5fr) minmax(16rem, 2fr)",
+    );
+  });
+
+  it("renders column resize handles only when enabled", () => {
+    const node = {
+      id: "workbench.products",
+      props: {
+        columns: [
+          col({
+            key: "qty",
+            label: "Qty",
+          }),
+        ],
+        data: [],
+        state: {
+          filters: [],
+          page: 1,
+          perPage: 25,
+          sorts: [],
+        },
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    const { rerender } = render(<TableComponent node={node}>{null}</TableComponent>);
+
+    expect(screen.queryByRole("separator", { name: "Resize Qty" })).not.toBeInTheDocument();
+
+    rerender(
+      <TableComponent node={{ ...node, props: { ...node.props, resizableColumns: true } }}>
+        {null}
+      </TableComponent>,
+    );
+
+    expect(screen.getByRole("separator", { name: "Resize Qty" })).toBeInTheDocument();
   });
 
   it("renders grid rows with stack columns and row actions without table cells", async () => {

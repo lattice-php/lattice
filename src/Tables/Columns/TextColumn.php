@@ -93,6 +93,7 @@ class TextColumn extends Column implements Filterable, Sortable
             key: $this->key,
             label: $this->label,
             type: ColumnType::Text,
+            width: $this->resolvedWidth(),
             sortable: $this->sortableValue(),
             filter: $this->filterValue(),
             props: new TextColumnProps(

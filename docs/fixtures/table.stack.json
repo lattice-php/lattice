@@ -18,7 +18,8 @@
                                 "link": null
                             },
                             "sortable": true,
-                            "type": "text"
+                            "type": "text",
+                            "width": "md"
                         },
                         {
                             "columns": null,
@@ -31,7 +32,8 @@
                                 "link": null
                             },
                             "sortable": null,
-                            "type": "text"
+                            "type": "text",
+                            "width": "md"
                         }
                     ],
                     "filter": null,
@@ -39,7 +41,8 @@
                     "label": "User",
                     "props": null,
                     "sortable": null,
-                    "type": "stack"
+                    "type": "stack",
+                    "width": "xl"
                 },
                 {
                     "columns": null,
@@ -52,7 +55,8 @@
                         "link": null
                     },
                     "sortable": null,
-                    "type": "text"
+                    "type": "text",
+                    "width": "md"
                 }
             ],
             "data": [
@@ -79,6 +83,7 @@
                 "to": 2,
                 "total": 2
             },
+            "resizableColumns": null,
             "state": {
                 "filters": [],
                 "page": 1,

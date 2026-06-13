@@ -38,6 +38,8 @@ class Table extends Component
 
     public ?bool $lazy = null;
 
+    public ?bool $resizableColumns = null;
+
     public string $actionsLabel = 'Actions';
 
     public string $emptyLabel = 'No results';
@@ -129,6 +131,13 @@ class Table extends Component
     public function striped(bool $striped): static
     {
         $this->striped = $striped ?: null;
+
+        return $this;
+    }
+
+    public function resizableColumns(bool $resizable = true): static
+    {
+        $this->resizableColumns = $resizable ?: null;
 
         return $this;
     }

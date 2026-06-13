@@ -7,6 +7,7 @@ namespace Workbench\App\Forms;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\Form;
 use Lattice\Lattice\Core\Components\Card;
+use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Forms\Components\Block;
 use Lattice\Lattice\Forms\Components\Builder;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
@@ -26,11 +27,12 @@ class BuilderTableDemoForm extends FormDefinition
                 Card::make('Line items')->schema([
                     Builder::make('items', 'Line items')
                         ->table()
+                        ->resizableColumns()
                         ->blocks([
                             Block::make('product')->label('Product line')->schema([
-                                TextInput::make('product', 'Product')->required(),
-                                TextInput::make('qty', 'Qty')->rules(['numeric']),
-                                TextInput::make('price', 'Price')->rules(['numeric']),
+                                TextInput::make('product', 'Product')->columnWidth(ColumnWidth::Lg)->required(),
+                                TextInput::make('qty', 'Qty')->columnWidth(ColumnWidth::Xs)->rules(['numeric']),
+                                TextInput::make('price', 'Price')->columnWidth(ColumnWidth::Sm)->rules(['numeric']),
                             ]),
                             Block::make('text')->label('Text')->schema([
                                 Textarea::make('content', 'Content')->required(),

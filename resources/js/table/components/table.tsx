@@ -1,9 +1,15 @@
 import { type ReactNode, useMemo } from "react";
 import { useT } from "@lattice-php/lattice/i18n";
+import { useColumnResizing } from "@lattice-php/lattice/core/use-column-resizing";
 import type { TableNode } from "../types";
 import { getBulkActions } from "../bulk";
 import { flattenColumns, getRowActions, getRowKey } from "../payload";
-import { getColumnGridTemplate, getQueryParams, getVisiblePages } from "../query";
+import {
+  getQueryParams,
+  getTableSizingColumns,
+  getTableUtilityTracks,
+  getVisiblePages,
+} from "../query";
 import { useTable } from "../use-table";
 import { useTableSelection } from "../use-table-selection";
 import { BulkBar } from "./bulk-bar";
@@ -60,10 +66,18 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   const striped = node.props?.striped === true;
   const hasFilters = columns.some((column) => column.filter?.enabled);
   const filterEntries = filters.map((clause, index) => ({ clause, index }));
-  const gridTemplateColumns = useMemo(
-    () => getColumnGridTemplate(columns, hasActions, hasBulkActions),
-    [columns, hasActions, hasBulkActions],
+  const sizingColumns = useMemo(() => getTableSizingColumns(columns), [columns]);
+  const utilityTracks = useMemo(
+    () => getTableUtilityTracks(hasActions, hasBulkActions),
+    [hasActions, hasBulkActions],
   );
+  const resizingEnabled = node.props?.resizableColumns === true;
+  const { getResizeHandleProps, gridTemplateColumns } = useColumnResizing({
+    columns: sizingColumns,
+    enabled: resizingEnabled,
+    leadingTracks: utilityTracks.leadingTracks,
+    trailingTracks: utilityTracks.trailingTracks,
+  });
 
   return (
     <div
@@ -121,11 +135,14 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                 />
               </div>
             )}
-            {columns.map((column) => (
+            {columns.map((column, index) => (
               <ColumnHeader
                 column={column}
                 key={column.key}
                 processing={processing}
+                resizeHandleProps={
+                  resizingEnabled ? getResizeHandleProps(sizingColumns[index]) : undefined
+                }
                 sort={sort}
                 state={state}
               />

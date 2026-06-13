@@ -44,6 +44,7 @@ export type BadgeColumnProps = {
 export type Breadcrumbs = Record<string, never>;
 export type Builder = {
   addLabel: string | null;
+  columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
     required?: Condition[];
@@ -67,6 +68,7 @@ export type Builder = {
   readOnly: boolean | null;
   reorderable: boolean;
   required: boolean | null;
+  resizableColumns: boolean | null;
   value: unknown;
 };
 export type BulkAction = {
@@ -103,6 +105,7 @@ export type Card = {
 };
 export type Checkbox = {
   autoFocus: boolean | null;
+  columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
     required?: Condition[];
@@ -126,6 +129,7 @@ export type Checkbox = {
 };
 export type Choice = {
   autoFocus: boolean | null;
+  columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
     required?: Condition[];
@@ -156,6 +160,7 @@ export type ColumnData = {
   readonly key: string;
   readonly label: string;
   readonly type: ColumnType | string;
+  readonly width: ColumnWidth;
   readonly sortable: boolean | null;
   readonly filter: ColumnFilter | null;
   readonly columns: ColumnData[] | null;
@@ -174,6 +179,7 @@ export type ColumnPropsMap = {
   text: TextColumnProps;
 };
 export type ColumnType = "text" | "stack" | "badge" | "icon" | "image";
+export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type Condition = {
   readonly field: string;
   readonly operator: Op;
@@ -271,6 +277,7 @@ export type CoreNode =
     };
 export type DateInput = {
   autoFocus: boolean | null;
+  columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
     required?: Condition[];
@@ -449,6 +456,7 @@ export type Heading = {
 };
 export type Height = "full" | "screen";
 export type HiddenInput = {
+  columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
     required?: Condition[];
@@ -545,6 +553,7 @@ export type Node = FormNode | CoreNode | ActionNode | FragmentNode | TableNode |
 export type NodeType = Node["type"];
 export type NumberInput = {
   autoFocus: boolean | null;
+  columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
     required?: Condition[];
@@ -602,6 +611,7 @@ export type PaginationType = "none" | "simple" | "table" | "infinite";
 export type PasswordInput = {
   autoComplete: string | null;
   autoFocus: boolean | null;
+  columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
     required?: Condition[];
@@ -648,6 +658,7 @@ export type ReloadComponentEffect = {
 export type ReloadPageEffect = object;
 export type Repeater = {
   addLabel: string | null;
+  columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
     required?: Condition[];
@@ -672,12 +683,14 @@ export type Repeater = {
   readOnly: boolean | null;
   reorderable: boolean;
   required: boolean | null;
+  resizableColumns: boolean | null;
   value: unknown;
 };
 export type ResetFormEffect = {
   readonly form: string | null;
 };
 export type RichEditor = {
+  columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
     required?: Condition[];
@@ -717,6 +730,7 @@ export type SegmentedControl = {
 };
 export type Select = {
   autoFocus: boolean | null;
+  columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
     required?: Condition[];
@@ -776,6 +790,7 @@ export type Table = {
   layout: string | null;
   lazy: boolean | null;
   ref: string | null;
+  resizableColumns: boolean | null;
   striped: boolean | null;
 };
 export type TableNode = {
@@ -813,6 +828,7 @@ export type TextColumnProps = {
 export type TextInput = {
   autoComplete: string | null;
   autoFocus: boolean | null;
+  columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
     required?: Condition[];
@@ -838,6 +854,7 @@ export type TextInput = {
 };
 export type Textarea = {
   autoFocus: boolean | null;
+  columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
     required?: Condition[];
