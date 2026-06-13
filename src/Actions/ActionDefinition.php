@@ -9,8 +9,9 @@ use Lattice\Lattice\Actions\Concerns\InteractsWithActionForm;
 use Lattice\Lattice\Actions\Contracts\InteractsWithForm;
 use Lattice\Lattice\Actions\Contracts\ProvidesAction;
 use Lattice\Lattice\Core\Definition;
+use Lattice\Lattice\Forms\Contracts\HandlesUploads;
 
-abstract class ActionDefinition extends Definition implements InteractsWithForm, ProvidesAction
+abstract class ActionDefinition extends Definition implements HandlesUploads, InteractsWithForm, ProvidesAction
 {
     use InteractsWithActionForm;
 
