@@ -41,6 +41,8 @@ const isDarkMode = (appearance: Appearance): boolean => {
   return appearance === "dark" || (appearance === "system" && prefersDark());
 };
 
+const getSystemAppearance = (): ResolvedAppearance => (prefersDark() ? "dark" : "light");
+
 const applyTheme = (appearance: Appearance): void => {
   if (typeof document === "undefined") {
     return;
@@ -68,7 +70,10 @@ const mediaQuery = (): MediaQueryList | null => {
   return window.matchMedia("(prefers-color-scheme: dark)");
 };
 
-const handleSystemThemeChange = (): void => applyTheme(currentAppearance);
+const handleSystemThemeChange = (): void => {
+  applyTheme(currentAppearance);
+  notify();
+};
 
 export function initializeTheme(): void {
   if (typeof window === "undefined") {
@@ -92,8 +97,14 @@ export function useAppearance(): UseAppearanceReturn {
     () => currentAppearance,
     () => "system",
   );
+  const systemAppearance: ResolvedAppearance = useSyncExternalStore(
+    subscribe,
+    getSystemAppearance,
+    () => "light",
+  );
 
-  const resolvedAppearance: ResolvedAppearance = isDarkMode(appearance) ? "dark" : "light";
+  const resolvedAppearance: ResolvedAppearance =
+    appearance === "system" ? systemAppearance : appearance;
 
   const updateAppearance = (mode: Appearance): void => {
     currentAppearance = mode;
