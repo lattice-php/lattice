@@ -4,6 +4,7 @@ description: A dropdown for choosing one or several options, with optional serve
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
 
 The select lets the user pick from a list of options. Create one with `Select::make()` and pass the
 options with `->options()`. Each option is a label/value pair built with `Select::option()`.
@@ -85,6 +86,33 @@ Select::make('author_id', 'Author')
         ->map(fn (User $user) => Select::option($user->name, (string) $user->id))
         ->all());
 ```
+
+## Options from a model
+
+Backing a select with an Eloquent model is the common case, so `->optionsFrom()` takes an
+`OptionSource` and wires both the search and the selected-label resolution from one declaration.
+`EloquentOptions` is the shipped source:
+
+```php
+use Lattice\Lattice\Forms\EloquentOptions;
+
+Select::make('author_id', 'Author')
+    ->optionsFrom(EloquentOptions::make(User::class)->label('name'));
+```
+
+`->label()` and `->value()` pick the display and value columns (value defaults to the key). Add
+`->searchColumns(['name', 'email'])` to match more than the label, `->scope(fn ($query) => $query->where('active', true))`
+to constrain the query, and `->limit(50)` to cap results.
+
+<Info>
+The select itself never imports Eloquent — `EloquentOptions` is an opt-in adapter behind the
+`OptionSource` contract, mirroring how `EloquentTableSource` backs a table. Implement `OptionSource`
+to back a select from an API, a search index, or an array instead.
+</Info>
+
+`optionsFrom` only resolves the *options*. The selected value (e.g. `author_id`) is a normal field
+value, so it is validated and returned in the submitted array like any other — your handler persists
+it. Lattice forms stay decoupled from the model.
 
 ## Common options
 
