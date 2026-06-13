@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 use Lattice\Lattice\Core\Enums\Op;

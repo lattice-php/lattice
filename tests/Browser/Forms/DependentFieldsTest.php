@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 it('toggles the company field instantly based on type', function (): void {

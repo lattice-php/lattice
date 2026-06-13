@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 it('switches horizontal and vertical tabs end to end', function (): void {

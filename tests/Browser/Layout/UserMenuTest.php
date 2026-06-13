@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 it('opens the user menu and reveals its items', function (): void {
