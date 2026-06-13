@@ -40,6 +40,8 @@ class Table extends Component
 
     public ?bool $resizableColumns = null;
 
+    public bool $resizeIndicator = false;
+
     public string $actionsLabel = 'Actions';
 
     public string $emptyLabel = 'No results';
@@ -135,9 +137,10 @@ class Table extends Component
         return $this;
     }
 
-    public function resizableColumns(bool $resizable = true): static
+    public function resizableColumns(bool $resizable = true, bool $showIndicator = false): static
     {
         $this->resizableColumns = $resizable ?: null;
+        $this->resizeIndicator = $resizable && $showIndicator;
 
         return $this;
     }

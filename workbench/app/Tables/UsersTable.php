@@ -42,6 +42,18 @@ class UsersTable extends EloquentTableDefinition
         return 25;
     }
 
+    #[\Override]
+    public function resizableColumns(): bool
+    {
+        return true;
+    }
+
+    #[\Override]
+    public function resizeIndicator(): bool
+    {
+        return true;
+    }
+
     /**
      * @return Builder<User>
      */

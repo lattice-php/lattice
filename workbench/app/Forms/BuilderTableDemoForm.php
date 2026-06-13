@@ -27,7 +27,7 @@ class BuilderTableDemoForm extends FormDefinition
                 Card::make('Line items')->schema([
                     Builder::make('items', 'Line items')
                         ->table()
-                        ->resizableColumns()
+                        ->resizableColumns(showIndicator: true)
                         ->blocks([
                             Block::make('product')->label('Product line')->schema([
                                 TextInput::make('product', 'Product')->columnWidth(ColumnWidth::Lg)->required(),

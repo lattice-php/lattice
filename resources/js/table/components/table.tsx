@@ -76,6 +76,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     columns: sizingColumns,
     enabled: resizingEnabled,
     leadingTracks: utilityTracks.leadingTracks,
+    showIndicator: node.props?.resizeIndicator === true,
     trailingTracks: utilityTracks.trailingTracks,
   });
 

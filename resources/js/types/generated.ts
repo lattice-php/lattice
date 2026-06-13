@@ -69,6 +69,7 @@ export type Builder = {
   reorderable: boolean;
   required: boolean | null;
   resizableColumns: boolean | null;
+  resizeIndicator: boolean;
   value: unknown;
 };
 export type BulkAction = {
@@ -684,6 +685,7 @@ export type Repeater = {
   reorderable: boolean;
   required: boolean | null;
   resizableColumns: boolean | null;
+  resizeIndicator: boolean;
   value: unknown;
 };
 export type ResetFormEffect = {
@@ -791,6 +793,7 @@ export type Table = {
   lazy: boolean | null;
   ref: string | null;
   resizableColumns: boolean | null;
+  resizeIndicator: boolean;
   striped: boolean | null;
 };
 export type TableNode = {

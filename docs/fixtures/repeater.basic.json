@@ -23,6 +23,7 @@
             "reorderable": true,
             "required": null,
             "resizableColumns": null,
+            "resizeIndicator": false,
             "value": null
         },
         "schema": [

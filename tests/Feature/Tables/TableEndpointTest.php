@@ -39,6 +39,7 @@ test('registered tables serialize their configured endpoint columns state and in
                 'striped' => null,
                 'lazy' => null,
                 'resizableColumns' => null,
+                'resizeIndicator' => false,
                 'actionsLabel' => 'Actions',
                 'emptyLabel' => 'No results',
                 'columns' => [
@@ -120,6 +121,7 @@ test('registered tables can serialize lazily without running their query', funct
                 'bulkActions' => [],
                 'striped' => null,
                 'resizableColumns' => null,
+                'resizeIndicator' => false,
                 'actionsLabel' => 'Actions',
                 'emptyLabel' => 'No results',
                 'columns' => [

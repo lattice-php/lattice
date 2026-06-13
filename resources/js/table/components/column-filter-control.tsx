@@ -53,7 +53,7 @@ export function ColumnFilterControl({
   }
 
   return (
-    <div className="flex min-w-0 max-w-44 items-stretch">
+    <div className="flex min-w-0 max-w-80 items-stretch">
       <div className="min-w-0 flex-1">
         <FilterValueInput
           type={type}

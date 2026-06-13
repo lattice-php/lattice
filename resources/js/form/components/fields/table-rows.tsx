@@ -164,6 +164,7 @@ export function TableRows({
   onRemove,
   registerRow,
   resizableColumns = false,
+  resizeIndicator = false,
 }: {
   base: string;
   columns: TableColumn[];
@@ -175,6 +176,7 @@ export function TableRows({
   onRemove: (index: number) => void;
   registerRow?: (key: string, el: HTMLElement | null) => void;
   resizableColumns?: boolean;
+  resizeIndicator?: boolean;
 }) {
   const sizingColumns = useMemo<SizableColumn[]>(
     () =>
@@ -188,7 +190,9 @@ export function TableRows({
   const { getResizeHandleProps, gridTemplateColumns } = useColumnResizing({
     columns: sizingColumns,
     enabled: resizableColumns,
+    columnGapPx: 12,
     leadingTracks: [rowControlTrack],
+    showIndicator: resizeIndicator,
     trailingTracks: [rowActionTrack],
   });
 

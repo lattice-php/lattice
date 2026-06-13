@@ -55,7 +55,7 @@ final class TableRegistry extends DefinitionRegistry
             ->columns($columns)
             ->layout($definition->layout())
             ->striped($definition->striped())
-            ->resizableColumns($definition->resizableColumns())
+            ->resizableColumns($definition->resizableColumns(), $definition->resizeIndicator())
             ->actionsLabel($definition->actionsLabel())
             ->emptyLabel($definition->emptyLabel())
             ->bulkActions($this->bulkActions($definition, $key))

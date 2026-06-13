@@ -20,6 +20,7 @@ use Lattice\Lattice\Layouts\Components\MenuItem;
 use Lattice\Lattice\Layouts\Components\Outlet;
 use Lattice\Lattice\Layouts\Components\Sidebar;
 use Lattice\Lattice\Layouts\LayoutDefinition;
+use Workbench\App\Pages\BuilderTableDemoPage;
 use Workbench\App\Pages\DependentDemoPage;
 use Workbench\App\Pages\HomePage;
 use Workbench\App\Pages\ProductCreatePage;
@@ -47,14 +48,13 @@ final class AppLayout extends LayoutDefinition
                                     MenuItem::make('Forms')->icon('form-input')->children([
                                         MenuItem::fromPage(ShowcasePage::class)->label('Showcase'),
                                         MenuItem::fromPage(DependentDemoPage::class)->label('Dependent Fields'),
+                                        MenuItem::fromPage(BuilderTableDemoPage::class)->label('Builder Table Demo'),
                                         MenuItem::fromPage(ProductCreatePage::class)->label('Create Product'),
                                     ]),
                                     MenuItem::make('Tables')->icon(Icon::Table)->children([
                                         MenuItem::fromPage(ProductsPage::class)->label('Products'),
                                         MenuItem::fromPage(TablesPage::class)->label('Pagination Modes'),
                                     ]),
-                                    // A fully custom icon (workbench/resources/icons/spark.svg) the
-                                    // workbench adds to its own folder and references by name.
                                     MenuItem::fromPage(TabsPage::class)->label('Tabs')->icon('spark'),
                                 ]),
                                 Dropdown::make('user-menu')

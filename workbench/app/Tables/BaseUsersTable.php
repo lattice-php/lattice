@@ -27,6 +27,18 @@ abstract class BaseUsersTable extends EloquentTableDefinition
         ];
     }
 
+    #[\Override]
+    public function resizableColumns(): bool
+    {
+        return true;
+    }
+
+    #[\Override]
+    public function resizeIndicator(): bool
+    {
+        return true;
+    }
+
     /**
      * @return Builder<User>
      */

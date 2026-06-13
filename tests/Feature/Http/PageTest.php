@@ -115,6 +115,8 @@ test('workbench pages serialize package component trees for inertia', function (
             ->where('lattice.title', 'Lattice Workbench')
             ->where('lattice.layout.key', 'app')
             ->where('lattice.layout.schema.0.type', 'stack')
+            ->where('lattice.layout.schema.0.schema.0.schema.0.schema.0.schema.1.schema.2.props.label', 'Builder Table Demo')
+            ->where('lattice.layout.schema.0.schema.0.schema.0.schema.0.schema.1.schema.2.props.href', '/builder-table')
             ->where('lattice.layout.schema.0.schema.1.schema.0.type', 'breadcrumbs')
             ->where('lattice.layout.schema.0.schema.1.schema.1.type', 'outlet')
             ->where('lattice.container', 'default')
@@ -128,7 +130,10 @@ test('workbench pages serialize package component trees for inertia', function (
             ->where('lattice.schema.0.schema.0.schema.1.props.text', 'Workbench page')
             ->where('lattice.schema.0.schema.1.type', 'grid')
             ->where('lattice.schema.0.schema.1.schema.0.type', 'card')
-            ->where('lattice.schema.0.schema.1.schema.0.props.title', 'Components'));
+            ->where('lattice.schema.0.schema.1.schema.0.props.title', 'Components')
+            ->where('lattice.schema.0.schema.5.id', 'workbench.users')
+            ->where('lattice.schema.0.schema.5.props.resizableColumns', true)
+            ->where('lattice.schema.0.schema.5.props.resizeIndicator', true));
 });
 
 test('workbench tables page serializes lazy tables for each pagination type', function () {
@@ -146,16 +151,24 @@ test('workbench tables page serializes lazy tables for each pagination type', fu
             ->where('lattice.schema.0.schema.1.schema.0.props.value', 'none')
             ->where('lattice.schema.0.schema.1.schema.0.schema.1.id', 'workbench.users.none')
             ->where('lattice.schema.0.schema.1.schema.0.schema.1.props.lazy', true)
+            ->where('lattice.schema.0.schema.1.schema.0.schema.1.props.resizableColumns', true)
+            ->where('lattice.schema.0.schema.1.schema.0.schema.1.props.resizeIndicator', true)
             ->where('lattice.schema.0.schema.1.schema.0.schema.1.props.data', [])
             ->where('lattice.schema.0.schema.1.schema.0.schema.1.props.pagination.mode', 'none')
             ->where('lattice.schema.0.schema.1.schema.1.props.value', 'simple')
             ->where('lattice.schema.0.schema.1.schema.1.schema.1.id', 'workbench.users.simple')
+            ->where('lattice.schema.0.schema.1.schema.1.schema.1.props.resizableColumns', true)
+            ->where('lattice.schema.0.schema.1.schema.1.schema.1.props.resizeIndicator', true)
             ->where('lattice.schema.0.schema.1.schema.1.schema.1.props.pagination.mode', 'simple')
             ->where('lattice.schema.0.schema.1.schema.2.props.value', 'table')
             ->where('lattice.schema.0.schema.1.schema.2.schema.1.id', 'workbench.users.table')
+            ->where('lattice.schema.0.schema.1.schema.2.schema.1.props.resizableColumns', true)
+            ->where('lattice.schema.0.schema.1.schema.2.schema.1.props.resizeIndicator', true)
             ->where('lattice.schema.0.schema.1.schema.2.schema.1.props.pagination.mode', 'table')
             ->where('lattice.schema.0.schema.1.schema.3.props.value', 'infinite')
             ->where('lattice.schema.0.schema.1.schema.3.schema.1.id', 'workbench.users.infinite')
+            ->where('lattice.schema.0.schema.1.schema.3.schema.1.props.resizableColumns', true)
+            ->where('lattice.schema.0.schema.1.schema.3.schema.1.props.resizeIndicator', true)
             ->where('lattice.schema.0.schema.1.schema.3.schema.1.props.pagination.mode', 'infinite'));
 });
 
