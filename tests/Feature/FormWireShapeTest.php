@@ -18,7 +18,7 @@ it('serializes the form container wire shape', function (): void {
         ->fill(['email' => 'a@b.c'])
         ->schema([TextInput::make('email')]);
 
-    $payload = json_decode(json_encode($form), true);
+    $payload = wire($form);
 
     expect($payload['type'])->toBe('form');
     expect($payload['id'])->toBe('demo');

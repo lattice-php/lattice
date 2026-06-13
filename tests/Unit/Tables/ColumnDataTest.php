@@ -13,7 +13,7 @@ it('serializes common fields plus a typed props object', function () {
         props: new BadgeColumnProps(colors: ['active' => 'green']),
     );
 
-    expect(json_decode(json_encode($data), true))->toBe([
+    expect(wire($data))->toBe([
         'key' => 'status',
         'label' => 'Status',
         'type' => 'badge',

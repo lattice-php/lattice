@@ -141,14 +141,14 @@ it('asserts against a rendered Inertia page', function (): void {
 
     Route::get('lattice-demo-page', fn () => Inertia::render('lattice/page', [
         'lattice' => [
-            'schema' => json_decode(json_encode([
+            'schema' => wire([
                 Form::make('create')->action('/products')->schema([
                     TextInput::make('email')->value('a@b.c'),
                 ]),
                 Table::make('products')
                     ->columns([TextColumn::make('name')->filterable()])
                     ->result(TableResult::make([]), TableQuery::empty()),
-            ], JSON_THROW_ON_ERROR), true),
+            ]),
         ],
     ]))->middleware('web');
 

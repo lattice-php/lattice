@@ -6,10 +6,10 @@ use Lattice\Lattice\Tables\Columns\TextColumnProps;
 
 it('props VOs implement the ColumnProps contract and serialize full shape', function () {
     $badge = new BadgeColumnProps(colors: ['active' => 'green']);
-    expect(json_decode(json_encode($badge), true))->toBe(['colors' => ['active' => 'green']]);
+    expect(wire($badge))->toBe(['colors' => ['active' => 'green']]);
 
     $text = new TextColumnProps;
-    expect(json_decode(json_encode($text), true))->toBe([
+    expect(wire($text))->toBe([
         'date' => null,
         'copyable' => false,
         'link' => null,

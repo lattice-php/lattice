@@ -7,7 +7,7 @@ use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
 
 it('serialises a builder with its blocks and props', function (): void {
-    $wire = json_decode(json_encode(
+    $wire = wire(
         Builder::make('items', 'Line items')
             ->blocks([
                 Block::make('text')->label('Text')->schema([Textarea::make('content')]),
@@ -16,7 +16,7 @@ it('serialises a builder with its blocks and props', function (): void {
             ->minItems(1)
             ->maxItems(20)
             ->addLabel('Add block')
-    ), true);
+    );
 
     expect($wire['type'])->toBe('form.builder')
         ->and($wire['props']['name'])->toBe('items')

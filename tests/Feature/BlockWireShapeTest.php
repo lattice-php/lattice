@@ -5,9 +5,9 @@ use Lattice\Lattice\Forms\Components\Block;
 use Lattice\Lattice\Forms\Components\TextInput;
 
 it('serialises a block as type + label + schema', function (): void {
-    $wire = json_decode(json_encode(
+    $wire = wire(
         Block::make('product')->label('Product line')->schema([TextInput::make('qty')])
-    ), true);
+    );
 
     expect($wire['type'])->toBe('product')
         ->and($wire['label'])->toBe('Product line')
@@ -17,7 +17,7 @@ it('serialises a block as type + label + schema', function (): void {
 });
 
 it('defaults the label to a title-cased type', function (): void {
-    $wire = json_decode(json_encode(Block::make('product')->schema([])), true);
+    $wire = wire(Block::make('product')->schema([]));
 
     expect($wire['label'])->toBe('Product');
 });
