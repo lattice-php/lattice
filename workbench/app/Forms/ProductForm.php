@@ -12,6 +12,7 @@ use Lattice\Lattice\Forms\Components\Choice;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Forms\EloquentOptions;
 use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Models\Product;
@@ -45,19 +46,14 @@ class ProductForm extends FormDefinition
                     Select::make('related_products', __('workbench.forms.product.fields.related-products'))
                         ->multiple()
                         ->placeholder(__('workbench.common.search-products'))
-                        ->searchable(fn (string $search) => Product::query()
-                            ->where('name', 'like', "%{$search}%")
-                            ->when($product, fn ($builder) => $builder->whereKeyNot($product->getKey()))
-                            ->orderBy('name')
-                            ->limit(10)
-                            ->get()
-                            ->map(fn (Product $related) => Select::option($related->name, (string) $related->getKey()))
-                            ->all())
-                        ->resolveSelectedUsing(fn (array $values) => Product::query()
-                            ->whereIn('id', $values)
-                            ->get()
-                            ->map(fn (Product $related) => Select::option($related->name, (string) $related->getKey()))
-                            ->all())
+                        ->optionsFrom(
+                            EloquentOptions::make(Product::class)
+                                ->label('name')
+                                ->limit(10)
+                                ->scope(fn ($query) => $product
+                                    ? $query->whereKeyNot($product->getKey())
+                                    : $query),
+                        )
                         ->rules(['nullable', 'array']),
                 ]),
             ]);

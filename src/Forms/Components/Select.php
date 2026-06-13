@@ -13,6 +13,7 @@ use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Facades\Evaluate;
+use Lattice\Lattice\Forms\Contracts\OptionSource;
 use Lattice\Lattice\Forms\FormData;
 
 #[Component('form.select')]
@@ -26,6 +27,8 @@ class Select extends Field
     private ?Closure $searchResolver = null;
 
     private ?Closure $selectedResolver = null;
+
+    private ?OptionSource $optionSource = null;
 
     public ?bool $multiple = null;
 
@@ -70,11 +73,24 @@ class Select extends Field
     }
 
     /**
+     * Resolve options (search + selected-label) from an {@see OptionSource} — e.g.
+     * an Eloquent model — instead of inline closures. The source bears any
+     * persistence concern, so the Select stays storage-agnostic.
+     */
+    public function optionsFrom(OptionSource $source): static
+    {
+        $this->optionSource = $source;
+        $this->searchable = true;
+
+        return $this;
+    }
+
+    /**
      * @internal
      */
     public function isSearchable(): bool
     {
-        return $this->searchResolver !== null;
+        return $this->optionSource !== null || $this->searchResolver !== null;
     }
 
     /**
@@ -98,6 +114,10 @@ class Select extends Field
      */
     public function resolveSearch(string $query, FormData $data, Request $request): array
     {
+        if ($this->optionSource !== null) {
+            return $this->normalizeOptions($this->optionSource->search($query));
+        }
+
         if ($this->searchResolver === null) {
             return [];
         }
@@ -109,7 +129,7 @@ class Select extends Field
 
     public function prefill(mixed $value): void
     {
-        if ($this->selectedResolver === null) {
+        if ($this->optionSource === null && $this->selectedResolver === null) {
             return;
         }
 
@@ -122,11 +142,12 @@ class Select extends Field
             return;
         }
 
-        $context = Evaluate::context()
-            ->named('values', $values)
-            ->named('component', $this);
-
-        $resolved = $this->normalizeOptions(Evaluate::resolve($this->selectedResolver, $context));
+        $resolved = $this->optionSource !== null
+            ? $this->normalizeOptions($this->optionSource->selected($values))
+            : $this->normalizeOptions(Evaluate::resolve(
+                $this->selectedResolver,
+                Evaluate::context()->named('values', $values)->named('component', $this),
+            ));
         $existing = $this->options;
 
         $merged = [...$existing];
