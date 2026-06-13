@@ -6,6 +6,13 @@ use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Color;
 use Lattice\Lattice\Core\Enums\Size;
 
+it('omits unset text styling props from the wire payload', function (): void {
+    expect(wire(Text::make('Default copy'))['props'])->toBe([
+        'text' => 'Default copy',
+        'align' => null,
+    ]);
+});
+
 it('serializes text size and color styling', function (): void {
     $data = wire(
         Text::make('Manuel Christlieb')
