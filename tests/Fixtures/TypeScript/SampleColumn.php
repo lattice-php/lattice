@@ -18,6 +18,7 @@ class SampleColumn extends Column
             key: $this->key,
             label: $this->label,
             type: 'column.rating',
+            width: $this->resolvedWidth(),
             props: new SampleColumnProps($this->max),
         );
     }

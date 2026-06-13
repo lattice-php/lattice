@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Tables\Columns;
 
 use Illuminate\Support\Collection;
 use JsonSerializable;
+use Lattice\Lattice\Core\Enums\ColumnWidth;
 
 /**
  * @phpstan-consistent-constructor
@@ -12,6 +13,8 @@ use JsonSerializable;
 abstract class Column implements JsonSerializable
 {
     protected string $label;
+
+    protected ?ColumnWidth $width = null;
 
     public function __construct(public readonly string $key)
     {
@@ -39,7 +42,24 @@ abstract class Column implements JsonSerializable
         return $this;
     }
 
+    public function width(ColumnWidth $width): static
+    {
+        $this->width = $width;
+
+        return $this;
+    }
+
     abstract public function toData(): ColumnData;
+
+    protected function resolvedWidth(): ColumnWidth
+    {
+        return $this->width ?? $this->defaultWidth();
+    }
+
+    protected function defaultWidth(): ColumnWidth
+    {
+        return ColumnWidth::Md;
+    }
 
     protected function sortableValue(): ?bool
     {

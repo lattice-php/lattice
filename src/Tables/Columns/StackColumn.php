@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
+use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
 class StackColumn extends Column
@@ -29,6 +30,7 @@ class StackColumn extends Column
             key: $this->key,
             label: $this->label,
             type: ColumnType::Stack,
+            width: $this->resolvedWidth(),
             sortable: $this->sortableValue(),
             filter: $this->filterValue(),
             columns: array_map(
@@ -36,5 +38,11 @@ class StackColumn extends Column
                 $this->columns,
             ),
         );
+    }
+
+    #[\Override]
+    protected function defaultWidth(): ColumnWidth
+    {
+        return ColumnWidth::Xl;
     }
 }

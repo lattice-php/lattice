@@ -6,7 +6,8 @@ it('renders the table layout with a shared header and round-trips a typed payloa
     $page = visit('/builder-table');
 
     $page->assertSee('Line items')->assertNoSmoke()
-        ->assertSee('Product')->assertSee('Qty')->assertSee('Price');
+        ->assertSee('Product')->assertSee('Qty')->assertSee('Price')
+        ->assertPresent('[aria-label="Resize Qty"]');
 
     $page->click('@builder-add')->click('@builder-add-product')
         ->fill('input[name="items[0][product]"]', 'SKU-9')

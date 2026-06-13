@@ -1,4 +1,5 @@
 import { Icon } from "@lattice-php/lattice/icons";
+import type { HTMLAttributes } from "react";
 import { getColumnAriaSort, getColumnSort } from "../query";
 import type { TableColumn, TableSort, TableState } from "../types";
 
@@ -23,11 +24,13 @@ function SortIndicator({ sort }: { sort: TableSort | undefined }) {
 export function ColumnHeader({
   column,
   processing,
+  resizeHandleProps,
   sort,
   state,
 }: {
   column: TableColumn;
   processing: boolean;
+  resizeHandleProps?: HTMLAttributes<HTMLDivElement>;
   sort: (column: TableColumn) => void;
   state: TableState;
 }) {
@@ -36,7 +39,7 @@ export function ColumnHeader({
   return (
     <div
       aria-sort={getColumnAriaSort(columnSort)}
-      className="min-w-0 px-4 py-3 text-left align-middle font-medium text-lt-muted-fg"
+      className="relative min-w-0 px-4 py-3 pr-5 text-left align-middle font-medium text-lt-muted-fg"
       role="columnheader"
     >
       {column.sortable ? (
@@ -54,6 +57,7 @@ export function ColumnHeader({
       ) : (
         <span className="block truncate">{column.label}</span>
       )}
+      {resizeHandleProps && <div {...resizeHandleProps} />}
     </div>
   );
 }

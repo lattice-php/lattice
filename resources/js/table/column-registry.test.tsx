@@ -6,8 +6,11 @@ import { createPlugin, createRegistry } from "../core/registry";
 import { ColumnCell } from "./components/table-cell";
 
 function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
+  const type = partial.type ?? "text";
+
   return {
-    type: "text",
+    type,
+    width: type === "stack" ? "xl" : "md",
     sortable: null,
     filter: null,
     columns: null,

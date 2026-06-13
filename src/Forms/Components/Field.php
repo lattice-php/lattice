@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Forms\Conditions\Condition;
 use Lattice\Lattice\Forms\Conditions\ConditionSet;
@@ -19,6 +20,8 @@ abstract class Field extends Component
     public ?string $label = null;
 
     public ?string $helperText = null;
+
+    public ColumnWidth $columnWidth = ColumnWidth::Md;
 
     public mixed $value = null;
 
@@ -115,6 +118,13 @@ abstract class Field extends Component
     public function label(string $label): static
     {
         $this->label = $label;
+
+        return $this;
+    }
+
+    public function columnWidth(ColumnWidth $width): static
+    {
+        $this->columnWidth = $width;
 
         return $this;
     }

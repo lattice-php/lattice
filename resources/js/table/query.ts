@@ -1,4 +1,6 @@
 import { translate } from "@lattice-php/lattice/i18n";
+import { DEFAULT_COLUMN_WIDTH } from "@lattice-php/lattice/core/column-sizing";
+import type { ColumnWidth } from "@lattice-php/lattice/types/generated";
 import type { TableColumn, TableSort, TableState } from "./types";
 
 export function getColumnSort(state: TableState, column: TableColumn): TableSort | undefined {
@@ -119,26 +121,22 @@ export function getVisiblePages(currentPage: number, lastPage: number): number[]
   return Array.from({ length: 5 }, (_, index) => start + index);
 }
 
-export function getColumnGridTemplate(
-  columns: TableColumn[],
-  hasActions: boolean,
-  hasSelection: boolean,
-): string {
-  const tracks: string[] = columns.map((column) =>
-    column.type === "stack" ? "minmax(13rem, 2fr)" : "minmax(7rem, 1fr)",
-  );
+export function getTableSizingColumns(columns: TableColumn[]) {
+  return columns.map((column) => ({
+    key: column.key,
+    label: column.label,
+    width: columnWidthOrDefault(column),
+  }));
+}
 
-  // Selection and action tracks use fixed widths, not max-content: the header,
-  // filter, and body rows are independent grids, so a content-sized track would
-  // resolve to a different width in each one, changing the free space left for
-  // the 1fr columns and drifting them out of alignment across rows.
-  if (hasActions) {
-    tracks.push("10rem");
-  }
+function columnWidthOrDefault(column: TableColumn): ColumnWidth {
+  return (column.width ?? (column.type === "stack" ? "xl" : DEFAULT_COLUMN_WIDTH)) as ColumnWidth;
+}
 
-  if (hasSelection) {
-    tracks.unshift("3rem");
-  }
-
-  return tracks.join(" ");
+export function getTableUtilityTracks(hasActions: boolean, hasSelection: boolean) {
+  // Utility tracks are fixed because the independent header/filter/body grids would drift with content-sized tracks.
+  return {
+    leadingTracks: hasSelection ? ["3rem"] : [],
+    trailingTracks: hasActions ? ["10rem"] : [],
+  };
 }

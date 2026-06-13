@@ -3,6 +3,7 @@
         "props": {
             "autoComplete": null,
             "autoFocus": null,
+            "columnWidth": "md",
             "conditions": null,
             "dependsOnAny": null,
             "dependsOnKeys": null,

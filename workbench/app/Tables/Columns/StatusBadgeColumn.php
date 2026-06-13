@@ -36,6 +36,7 @@ class StatusBadgeColumn extends Column implements Filterable
             key: $this->key,
             label: $this->label,
             type: 'column.status-badge',
+            width: $this->resolvedWidth(),
             filter: $this->filterValue(),
             props: new StatusBadgeColumnProps(
                 colorMap: $this->colorMap !== [] ? $this->colorMap : null,

@@ -7,6 +7,7 @@
                     {
                         "props": {
                             "autoFocus": null,
+                            "columnWidth": "md",
                             "conditions": null,
                             "dependsOnAny": null,
                             "dependsOnKeys": null,
@@ -37,6 +38,7 @@
                         "props": {
                             "autoComplete": null,
                             "autoFocus": null,
+                            "columnWidth": "md",
                             "conditions": null,
                             "dependsOnAny": null,
                             "dependsOnKeys": null,
@@ -61,6 +63,7 @@
                         "props": {
                             "autoComplete": null,
                             "autoFocus": null,
+                            "columnWidth": "md",
                             "conditions": null,
                             "dependsOnAny": null,
                             "dependsOnKeys": null,
@@ -85,6 +88,7 @@
                         "props": {
                             "autoComplete": null,
                             "autoFocus": null,
+                            "columnWidth": "md",
                             "conditions": null,
                             "dependsOnAny": null,
                             "dependsOnKeys": null,
@@ -111,6 +115,7 @@
         ],
         "props": {
             "addLabel": "Add block",
+            "columnWidth": "md",
             "conditions": null,
             "defaultItems": 0,
             "dependsOnAny": null,
@@ -129,6 +134,7 @@
             "readOnly": null,
             "reorderable": true,
             "required": null,
+            "resizableColumns": null,
             "value": null
         },
         "type": "form.builder"

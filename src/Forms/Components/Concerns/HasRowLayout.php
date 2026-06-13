@@ -10,9 +10,18 @@ trait HasRowLayout
 {
     public RowLayout $layout = RowLayout::Stack;
 
+    public ?bool $resizableColumns = null;
+
     public function table(): static
     {
         $this->layout = RowLayout::Table;
+
+        return $this;
+    }
+
+    public function resizableColumns(bool $resizable = true): static
+    {
+        $this->resizableColumns = $resizable ?: null;
 
         return $this;
     }

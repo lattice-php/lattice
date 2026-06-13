@@ -15,7 +15,8 @@
                         "size": 32
                     },
                     "sortable": null,
-                    "type": "image"
+                    "type": "image",
+                    "width": "md"
                 },
                 {
                     "columns": null,
@@ -28,7 +29,8 @@
                         "link": null
                     },
                     "sortable": null,
-                    "type": "text"
+                    "type": "text",
+                    "width": "md"
                 },
                 {
                     "columns": null,
@@ -43,7 +45,8 @@
                         }
                     },
                     "sortable": null,
-                    "type": "badge"
+                    "type": "badge",
+                    "width": "md"
                 },
                 {
                     "columns": null,
@@ -62,7 +65,8 @@
                         ]
                     },
                     "sortable": null,
-                    "type": "icon"
+                    "type": "icon",
+                    "width": "md"
                 }
             ],
             "data": [
@@ -97,6 +101,7 @@
                 "to": 3,
                 "total": 3
             },
+            "resizableColumns": null,
             "state": {
                 "filters": [],
                 "page": 1,

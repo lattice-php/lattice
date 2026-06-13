@@ -2,6 +2,7 @@
     {
         "props": {
             "addLabel": "Add line",
+            "columnWidth": "md",
             "conditions": null,
             "defaultItems": 1,
             "dependsOnAny": null,
@@ -21,6 +22,7 @@
             "readOnly": null,
             "reorderable": true,
             "required": null,
+            "resizableColumns": null,
             "value": null
         },
         "schema": [
@@ -28,6 +30,7 @@
                 "props": {
                     "autoComplete": null,
                     "autoFocus": null,
+                    "columnWidth": "md",
                     "conditions": null,
                     "dependsOnAny": null,
                     "dependsOnKeys": null,
@@ -52,6 +55,7 @@
                 "props": {
                     "autoComplete": null,
                     "autoFocus": null,
+                    "columnWidth": "md",
                     "conditions": null,
                     "dependsOnAny": null,
                     "dependsOnKeys": null,

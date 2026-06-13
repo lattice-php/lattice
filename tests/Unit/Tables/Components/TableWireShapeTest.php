@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\Columns\TextColumn;
@@ -14,7 +15,7 @@ it('serializes the table component wire shape', function (): void {
     $table = Table::make('demo')
         ->endpoint('/tables/demo')
         ->columns([
-            TextColumn::make('name')->label('Name')->sortable()->filterable(),
+            TextColumn::make('name')->label('Name')->width(ColumnWidth::Lg)->sortable()->filterable(),
             TextColumn::make('price')->label('Price')->numeric(),
         ])
         ->layout('table')
@@ -31,8 +32,10 @@ it('serializes the table component wire shape', function (): void {
         'key' => 'name',
         'label' => 'Name',
         'type' => 'text',
+        'width' => 'lg',
         'sortable' => true,
     ]);
+    expect($payload['props']['columns'][1]['width'])->toBe('md');
     expect($payload['props']['columns'][0])->toHaveKey('filter');
     expect($payload['props']['data'])->toBe([['name' => 'A'], ['name' => 'B']]);
     expect($payload['props']['state'])->toBe([
