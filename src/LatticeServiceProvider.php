@@ -5,8 +5,6 @@ namespace Lattice\Lattice;
 
 use BackedEnum;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Routing\Route;
-use Illuminate\Routing\Router;
 use Inertia\ResponseFactory;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionRegistry;
@@ -68,10 +66,6 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         // Default role; the workbench rebinds this to BaseProfile.
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
-
-        if (! Router::hasMacro('latticePage')) {
-            Router::macro('latticePage', fn (string $uri, string $page): Route => Lattice::page($uri, $page));
-        }
 
         if (! ResponseFactory::hasMacro('toRoute')) {
             ResponseFactory::macro(

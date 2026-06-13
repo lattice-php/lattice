@@ -3,9 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice;
 
-use Illuminate\Routing\Route;
-use Illuminate\Routing\Router;
-use InvalidArgumentException;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionDefinition;
@@ -17,7 +14,6 @@ use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
-use Lattice\Lattice\Http\PageContract;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Pages\PageRegistry;
@@ -34,7 +30,6 @@ final class LatticeRegistry
         private readonly FragmentRegistry $fragments,
         private readonly LayoutRegistry $layouts,
         private readonly PageRegistry $pages,
-        private readonly Router $router,
         private readonly TableRegistry $tables,
     ) {}
 
@@ -144,21 +139,5 @@ final class LatticeRegistry
             array_map(static fn (DefinitionRegistry $registry): string => $registry->group(), $registries),
             $registries,
         );
-    }
-
-    /**
-     * @param  class-string  $page
-     */
-    public function page(string $uri, string $page): Route
-    {
-        if (! is_a($page, PageContract::class, true)) {
-            throw new InvalidArgumentException(sprintf(
-                'Lattice page [%s] must implement [%s].',
-                $page,
-                PageContract::class,
-            ));
-        }
-
-        return $this->router->get($uri, [$page, 'render']);
     }
 }
