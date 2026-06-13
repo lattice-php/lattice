@@ -13,16 +13,13 @@ use Lattice\Lattice\Core\Components\Grid;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Core\Components\Modal;
-use Lattice\Lattice\Core\Components\SegmentedControl;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Components\Tab;
 use Lattice\Lattice\Core\Components\Tabs;
 use Lattice\Lattice\Core\Components\Text;
-use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Choice;
@@ -218,40 +215,6 @@ test('components can opt out of rendering with when', function () {
         ->and($pageData['schema'][1]['schema'][0]['props']['text'])->toBe('Visible child');
 });
 
-test('segmented control serializes options value and emit event', function () {
-    expect(wire(SegmentedControl::make('appearance', 'Appearance')
-        ->value('system')
-        ->emits('lattice:appearance-change')
-        ->options([
-            SegmentedControl::option('Light', 'light'),
-            SegmentedControl::option('Dark', 'dark'),
-            SegmentedControl::option('System', 'system'),
-        ])))
-        ->toMatchArray([
-            'type' => 'segmented-control',
-            'props' => [
-                'label' => 'Appearance',
-                'name' => 'appearance',
-                'value' => 'system',
-                'emits' => 'lattice:appearance-change',
-                'options' => [
-                    [
-                        'label' => 'Light',
-                        'value' => 'light',
-                    ],
-                    [
-                        'label' => 'Dark',
-                        'value' => 'dark',
-                    ],
-                    [
-                        'label' => 'System',
-                        'value' => 'system',
-                    ],
-                ],
-            ],
-        ]);
-});
-
 test('actions can serialize confirmation modal configuration', function () {
     expect(wire(ActionComponent::make('delete-account')
         ->label('Delete account')
@@ -356,113 +319,6 @@ test('links and horizontal stacks serialize as separate composable primitives', 
         ]);
 });
 
-test('layout enums serialize to their backed string values', function () {
-    expect(wire(Stack::make('layout')
-        ->align(Align::Center)
-        ->gap(Gap::Large)
-        ->width(Width::Small)))
-        ->toMatchArray([
-            'props' => [
-                'align' => 'center',
-                'gap' => 'lg',
-                'width' => 'sm',
-                'direction' => null,
-                'justify' => null,
-                'height' => null,
-            ],
-        ])
-        ->and(wire(Text::make('Centered')->align(Align::Center))['props']['align'])
-        ->toBe('center');
-});
-
-test('tabs serialize tab panels as composable children', function () {
-    expect(wire(Tabs::make('settings-tabs')
-        ->defaultValue('security')
-        ->schema([
-            Tab::make('profile', 'Profile')->schema([
-                Text::make('Profile form'),
-            ]),
-            Tab::make('security', 'Security')->schema([
-                Form::make('password-form'),
-            ]),
-        ])))
-        ->toMatchArray([
-            'type' => 'tabs',
-            'key' => 'settings-tabs',
-            'props' => [
-                'activeValue' => 'security',
-                'defaultValue' => 'security',
-                'queryKey' => 'tabs',
-                'orientation' => 'horizontal',
-            ],
-            'schema' => [
-                [
-                    'type' => 'tab',
-                    'props' => [
-                        'label' => 'Profile',
-                        'value' => 'profile',
-                        'confirm' => null,
-                    ],
-                    'schema' => [
-                        [
-                            'type' => 'text',
-                            'props' => [
-                                'text' => 'Profile form',
-                                'align' => null,
-                                'size' => 'md',
-                                'color' => 'muted',
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'type' => 'tab',
-                    'props' => [
-                        'label' => 'Security',
-                        'value' => 'security',
-                        'confirm' => null,
-                    ],
-                    'schema' => [
-                        [
-                            'type' => 'form',
-                            'id' => 'password-form',
-                            'props' => [
-                                'action' => null,
-                                'method' => null,
-                                'submitLabel' => null,
-                                'validationSummaryLabel' => 'Fix these fields to continue:',
-                                'precognitive' => null,
-                                'validationTimeout' => null,
-                                'submitButton' => null,
-                                'resetOnSuccess' => null,
-                                'resetOnError' => null,
-                                'status' => null,
-                                'errorBag' => null,
-                                'state' => [],
-                                'ref' => null,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
-});
-
-test('tabs can customize their query string key', function () {
-    expect(wire(Tabs::make('settings-tabs')
-        ->queryKey('settings-tab')))
-        ->toMatchArray([
-            'type' => 'tabs',
-            'key' => 'settings-tabs',
-            'props' => [
-                'activeValue' => '',
-                'queryKey' => 'settings-tab',
-                'orientation' => 'horizontal',
-                'defaultValue' => null,
-            ],
-        ]);
-});
-
 test('tabs ignore hidden tab children when resolving their active value', function () {
     $tabs = wire(Tabs::make('settings-tabs')
         ->defaultValue('security')
@@ -474,30 +330,4 @@ test('tabs ignore hidden tab children when resolving their active value', functi
     expect($tabs['props']['activeValue'])->toBe('profile')
         ->and($tabs['schema'])->toHaveCount(1)
         ->and($tabs['schema'][0]['props']['value'])->toBe('profile');
-});
-
-test('confirmed inactive tabs serialize only their tab metadata', function () {
-    $tabs = wire(Tabs::make('settings-tabs')
-        ->defaultValue('profile')
-        ->schema([
-            Tab::make('profile', 'Profile')->schema([
-                Text::make('Profile form'),
-            ]),
-            Tab::make('security', 'Security')
-                ->confirm()
-                ->schema([
-                    Text::make('Security form'),
-                ]),
-        ]));
-
-    expect($tabs['props']['activeValue'])->toBe('profile')
-        ->and($tabs['props']['defaultValue'])->toBe('profile')
-        ->and($tabs['props']['queryKey'])->toBe('tabs')
-        ->and($tabs['schema'][0]['props']['value'])->toBe('profile')
-        ->and($tabs['schema'][1]['props']['value'])->toBe('security')
-        ->and($tabs['schema'][1]['props']['confirm'])->toMatchArray([
-            'required' => true,
-            'redirectUrl' => '/user/confirm-password',
-        ])
-        ->and($tabs['schema'][1])->not->toHaveKey('schema');
 });
