@@ -40,6 +40,7 @@ git branch --show-current
 ```
 
 Rules:
+
 - **If there are already many worktrees (roughly 5+), do not silently add another.** Tell the user
   which ones look finished and should be closed first. A worktree is a candidate for closing when
   its branch is merged or its work is done:

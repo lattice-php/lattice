@@ -1,6 +1,6 @@
 ---
 name: pr-review
-description: Use when reviewing a Lattice pull request, branch diff, or set of staged/working changes for quality — reuse, simplification, efficiency, and altitude cleanups, plus adherence to the project guidelines. Review-only: it surfaces findings and never commits the changes it proposes.
+description: Use when reviewing a Lattice pull request, branch diff, or set of staged/working changes for quality — reuse, simplification, efficiency, and altitude cleanups, plus adherence to the project guidelines. Review-only it surfaces findings and never commits the changes it proposes.
 ---
 
 # Lattice PR Review
