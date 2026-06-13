@@ -93,13 +93,19 @@ const useLocalLattice = process.env.LATTICE_SOURCE === "1";
 
 export default defineConfig({
   plugins: [
-    lattice({ source: useLocalLattice }),
+    lattice({
+      source: useLocalLattice,
+      icons: {
+        dirs: ["resources/icons"],
+      },
+    }),
     // your existing Laravel, Inertia, React, and Tailwind plugins
   ],
 });
 ```
 
 This keeps normal development on the installed npm package, while `LATTICE_SOURCE=1` switches Vite to the checkout under `vendor/lattice-php/lattice`. The helper configures the source aliases, Vite filesystem allow-list, React/Inertia dedupe, and the package-link Vitest dependency inline rule.
+It also registers the SVG sprite plugin with Lattice's built-in icons and any app icon dirs you pass through `icons.dirs`.
 
 If your editor or `tsc` does not follow Vite aliases, mirror the public package name in `tsconfig.json`:
 

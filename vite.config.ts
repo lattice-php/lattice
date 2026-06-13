@@ -111,6 +111,7 @@ export default defineConfig(({ mode }) => {
             dts({
               tsconfigPath: path.resolve(__dirname, "tsconfig.json"),
               include: ["resources/js"],
+              copyDtsFiles: true,
               // Exclude test files and declaration sources from .d.ts generation.
               exclude: ["resources/js/**/*.test.*", "resources/js/**/*.test-d.*", "resources/js/test/**"],
               compilerOptions: { rootDir: sourceRoot },
@@ -154,6 +155,7 @@ export default defineConfig(({ mode }) => {
                 /^react($|\/)/,
                 /^react-dom($|\/)/,
                 /^@inertiajs\//,
+                /^@lattice-php\/vite-svg-sprite($|\/)/,
                 /^@radix-ui\//,
                 /^@tiptap\//,
                 /^clsx($|\/)/,

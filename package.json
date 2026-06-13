@@ -75,6 +75,10 @@
       "types": "./dist/types/index.d.ts",
       "import": "./dist/types/index.js"
     },
+    "./svg-sprite-client": {
+      "types": "./dist/svg-sprite-client.d.ts",
+      "import": "./dist/svg-sprite-client/index.js"
+    },
     "./vite": {
       "types": "./dist/vite.d.ts",
       "import": "./dist/vite.js"
@@ -127,6 +131,7 @@
     "@tiptap/pm": "^3.26.0",
     "@tiptap/react": "^3.26.0",
     "@tiptap/starter-kit": "^3.26.0",
+    "@lattice-php/vite-svg-sprite": "^0.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "i18next": "^26.3.1",
@@ -144,7 +149,6 @@
     "@astrojs/starlight-tailwind": "^5.0.0",
     "@inertiajs/react": "^3.0.0",
     "@inertiajs/vite": "^3.0.0",
-    "@lattice-php/vite-svg-sprite": "^0.2.0",
     "@tailwindcss/vite": "^4.1.11",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",

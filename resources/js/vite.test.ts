@@ -18,7 +18,13 @@ describe("lattice Vite helper", () => {
       test: {
         server: {
           deps: {
-            inline: ["@lattice-php/lattice", /[/\\]lattice[/\\]dist[/\\]/],
+            inline: [
+              "@lattice-php/lattice",
+              /[/\\]lattice[/\\]dist[/\\]/,
+              /[/\\]lattice[/\\]node_modules[/\\]@radix-ui[/\\]/,
+              /[/\\]lattice[/\\]node_modules[/\\]@tiptap[/\\]/,
+              /[/\\]lattice[/\\]node_modules[/\\]react-i18next[/\\]/,
+            ],
           },
         },
       },
