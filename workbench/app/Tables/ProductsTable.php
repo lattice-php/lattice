@@ -34,12 +34,12 @@ class ProductsTable extends EloquentTableDefinition
     public function columns(): array
     {
         return [
-            TextColumn::make('name')->label('Name')->sortable()->filterable(),
-            TextColumn::make('sku')->label('SKU')->sortable()->filterable(),
-            TextColumn::make('price')->label('Price')->sortable()->numeric()->filterable(),
-            StatusBadgeColumn::make('status')->label('Status')->filterable(Op::Equals)->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
-            TextColumn::make('featured')->label('Featured')->sortable()->boolean()->filterable(),
-            TextColumn::make('updated_at')->label('Updated at')->sortable()->date('Y-m-d H:i:s')->filterable(),
+            TextColumn::make('name')->label(__('workbench.tables.columns.name'))->sortable()->filterable(),
+            TextColumn::make('sku')->label(__('workbench.tables.columns.sku'))->sortable()->filterable(),
+            TextColumn::make('price')->label(__('workbench.tables.columns.price'))->sortable()->numeric()->filterable(),
+            StatusBadgeColumn::make('status')->label(__('workbench.tables.columns.status'))->filterable(Op::Equals)->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
+            TextColumn::make('featured')->label(__('workbench.tables.columns.featured'))->sortable()->boolean()->filterable(),
+            TextColumn::make('updated_at')->label(__('workbench.tables.columns.updated-at'))->sortable()->date('Y-m-d H:i:s')->filterable(),
         ];
     }
 
@@ -69,7 +69,7 @@ class ProductsTable extends EloquentTableDefinition
     public function actions(array $row): array
     {
         return [
-            Link::make('Edit')
+            Link::make(__('workbench.tables.products.edit'), 'product-edit')
                 ->href('/products/'.$row['id'].'/edit'),
             Action::use(EditProductAction::class)
                 ->context(['product_id' => $row['id']]),

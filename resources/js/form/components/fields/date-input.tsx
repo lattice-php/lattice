@@ -7,9 +7,10 @@ export const DateInputComponent: RendererComponent<"form.date-input"> = ({ node 
 
   return (
     <SimpleField node={node} label={props.label ?? ""}>
-      {({ name, value, readOnly, disabled, commit }) => (
+      {({ name, testId, value, readOnly, disabled, commit }) => (
         <Input
           autoFocus={props.autoFocus ?? false}
+          data-test={testId}
           disabled={disabled}
           id={name}
           max={props.max || undefined}

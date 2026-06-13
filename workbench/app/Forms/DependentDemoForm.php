@@ -26,30 +26,30 @@ class DependentDemoForm extends FormDefinition
         return $form
             ->precognitive(300)
             ->schema([
-                Card::make('Account')->schema([
-                    Choice::make('type', 'Type')->options([
-                        Choice::option('Personal', 'personal'),
-                        Choice::option('Business', 'business'),
+                Card::make(__('workbench.forms.dependent.account'))->schema([
+                    Choice::make('type', __('workbench.forms.dependent.type'))->options([
+                        Choice::option(__('workbench.forms.dependent.personal'), 'personal'),
+                        Choice::option(__('workbench.forms.dependent.business'), 'business'),
                     ]),
-                    TextInput::make('company', 'Company')
+                    TextInput::make('company', __('workbench.forms.dependent.company'))
                         ->dependsOn('type', 'business')
                         ->requiredWhen('type', 'business')
                         ->rules(['string', 'max:255']),
                 ]),
-                Card::make('Order')->schema([
+                Card::make(__('workbench.forms.dependent.order'))->schema([
                     Grid::make()->columns(2)->schema([
-                        NumberInput::make('qty', 'Qty')->min(0),
-                        NumberInput::make('unit_price', 'Unit price')->min(0)->step(0.01),
+                        NumberInput::make('qty', __('workbench.common.qty'))->min(0),
+                        NumberInput::make('unit_price', __('workbench.common.unit-price'))->min(0)->step(0.01),
                     ]),
-                    TextInput::make('total', 'Total')
+                    TextInput::make('total', __('workbench.forms.dependent.total'))
                         ->readOnly()
                         ->value(fn (FormData $data) => $data->float('qty') * $data->float('unit_price')),
-                    NumberInput::make('level', 'Level')->slider()->min(0)->max(10),
-                    DateInput::make('due', 'Due date'),
+                    NumberInput::make('level', __('workbench.forms.dependent.level'))->slider()->min(0)->max(10),
+                    DateInput::make('due', __('workbench.forms.dependent.due-date')),
                 ]),
-                Card::make('Content')->schema([
-                    Textarea::make('bio', 'Bio')->rows(4)->rules(['nullable', 'string', 'max:500']),
-                    RichEditor::make('article', 'Article'),
+                Card::make(__('workbench.forms.dependent.content'))->schema([
+                    Textarea::make('bio', __('workbench.common.bio'))->rows(4)->rules(['nullable', 'string', 'max:500']),
+                    RichEditor::make('article', __('workbench.common.article')),
                 ]),
             ]);
     }

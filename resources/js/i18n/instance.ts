@@ -94,5 +94,9 @@ export function translate(
 ): string {
   ensureI18n();
 
+  if (!i18n.isInitialized || !i18n.hasLoadedNamespace(namespace)) {
+    return i18n.t(key, defaultValue, { ns: namespace, ...options, saveMissing: false });
+  }
+
   return i18n.t(key, defaultValue, { ns: namespace, ...options });
 }

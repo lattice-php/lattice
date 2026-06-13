@@ -17,7 +17,7 @@ class ShowcasePage extends WorkbenchPage
 {
     public function title(): string
     {
-        return 'Form Showcase';
+        return __('workbench.pages.showcase.title');
     }
 
     public function render(PageSchema $schema): PageSchema
@@ -26,7 +26,7 @@ class ShowcasePage extends WorkbenchPage
             Stack::make('showcase-page')
                 ->gap(Gap::Large)
                 ->schema([
-                    Heading::make('Form Showcase'),
+                    Heading::make(__('workbench.pages.showcase.heading')),
                     Form::use(ShowcaseForm::class)
                         ->method(HttpMethod::Post),
                 ]),

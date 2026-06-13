@@ -11,9 +11,9 @@ it('switches horizontal and vertical tabs end to end', function (): void {
         ->assertSee('Account panel')
         ->assertDontSee('Details panel')
         ->assertDontSee('Security panel')
-        ->click('Details')
+        ->click('@tab-details')
         ->assertSee('Details panel')
-        ->click('Security')
+        ->click('@tab-security')
         ->assertSee('Security panel')
         ->assertNoSmoke();
 });

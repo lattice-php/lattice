@@ -5,6 +5,7 @@ import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
 import { Button } from "@lattice-php/lattice/core/components/button";
 import { ConfirmDialog } from "@lattice-php/lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice-php/lattice/core/components/spinner";
+import { prefixedTestId } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { IconRenderer } from "@lattice-php/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, getActionEffects } from "../effects";
@@ -72,12 +73,13 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const confirmationTitle = confirmation?.title ?? label;
   const confirmationConfirmLabel = confirmation?.confirmLabel ?? label;
   const confirmationCancelLabel = confirmation?.cancelLabel ?? "Cancel";
+  const testId = node.key ?? prefixedTestId("action", node.id);
 
   return (
     <>
       <Button
         data-lattice-component={node.id}
-        data-test={`action-${label.toLowerCase().replace(/\s+/g, "-")}`}
+        data-test={testId}
         disabled={http.processing || !endpoint}
         onClick={requestSubmit}
         type="button"

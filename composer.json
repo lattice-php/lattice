@@ -34,7 +34,7 @@
         "ueberdosis/tiptap-php": "^2.1"
     },
     "require-dev": {
-        "bambamboole/laravel-i18next": "^0.5.0",
+        "bambamboole/laravel-i18next": "^0.6.0",
         "barryvdh/laravel-ide-helper": "^3.7",
         "larastan/larastan": "^3.0",
         "laravel/boost": "^2.4",

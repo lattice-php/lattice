@@ -17,7 +17,7 @@ class RepeaterDemoPage extends WorkbenchPage
 {
     public function title(): string
     {
-        return 'Repeater Demo';
+        return __('workbench.pages.repeater.title');
     }
 
     public function render(PageSchema $schema): PageSchema
@@ -26,10 +26,10 @@ class RepeaterDemoPage extends WorkbenchPage
             Stack::make('repeater-demo-page')
                 ->gap(Gap::Large)
                 ->schema([
-                    Heading::make('Repeater Demo'),
+                    Heading::make(__('workbench.pages.repeater.heading')),
                     Form::use(RepeaterDemoForm::class)
                         ->method(HttpMethod::Post)
-                        ->submitLabel('Save'),
+                        ->submitLabel(__('workbench.pages.repeater.submit')),
                 ]),
         ]);
     }

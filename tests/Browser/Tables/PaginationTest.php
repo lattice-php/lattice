@@ -11,12 +11,12 @@ it('shows pagination modes in lazily loaded tabs', function (): void {
         ->assertDontSee('Simple pagination')
         ->assertDontSee('Table pagination')
         ->assertDontSee('Infinite pagination')
-        ->click('Simple')
+        ->click('@tab-simple')
         ->assertSee('Simple pagination')
-        ->click('Table')
+        ->click('@tab-table')
         ->assertSee('Table pagination')
         ->assertSee('Showing 1-25 of 30')
-        ->click('Infinite')
+        ->click('@tab-infinite')
         ->assertSee('Infinite pagination')
         ->assertSee('Load more')
         ->assertNoSmoke();
@@ -24,7 +24,7 @@ it('shows pagination modes in lazily loaded tabs', function (): void {
 
 it('navigates between pages in table pagination mode', function (): void {
     visit('/tables')
-        ->click('Table')
+        ->click('@tab-table')
         ->assertSee('Showing 1-25 of 30')
         ->click('@pagination-next')
         ->assertSee('Showing 26-30 of 30')
@@ -35,7 +35,7 @@ it('navigates between pages in table pagination mode', function (): void {
 
 it('loads more rows in infinite mode', function (): void {
     visit('/tables')
-        ->click('Infinite')
+        ->click('@tab-infinite')
         ->assertDontSee('Browser User 26')
         ->click('@pagination-load-more')
         ->assertSee('Browser User 26')

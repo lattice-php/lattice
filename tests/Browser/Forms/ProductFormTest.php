@@ -6,7 +6,7 @@ use Workbench\App\Models\Product;
 it('shows precognitive validation messages in the form', function (): void {
     visit('/products/create')
         ->assertSee('Create Product')
-        ->fill('Price', 'invalid')
+        ->fill('@price', 'invalid')
         ->assertSee('The Price field must be a number.')
         ->assertNoSmoke();
 
@@ -16,20 +16,20 @@ it('shows precognitive validation messages in the form', function (): void {
 it('disables the submit button while precognition errors are active', function (): void {
     visit('/products/create')
         ->assertSee('Create Product')
-        ->assertButtonEnabled('Create product')
-        ->fill('Price', 'invalid')
+        ->assertEnabled('@form-submit')
+        ->fill('@price', 'invalid')
         ->assertSee('Fix these fields to continue:')
-        ->assertButtonDisabled('Create product')
-        ->fill('Price', '49.99')
-        ->assertButtonEnabled('Create product');
+        ->assertDisabled('@form-submit')
+        ->fill('@price', '49.99')
+        ->assertEnabled('@form-submit');
 });
 
 it('surfaces server validation errors after submitting an empty form', function (): void {
     visit('/products/create')
         ->assertSee('Create Product')
-        ->click('Create product')
+        ->click('@form-submit')
         ->assertSee('The Name field is required.')
-        ->assertButtonDisabled('Create product');
+        ->assertDisabled('@form-submit');
 
     expect(Product::query()->count())->toBe(0);
 });
@@ -53,20 +53,20 @@ it('shows existing related products on the edit page', function (): void {
 });
 
 it('attaches related products via search when creating', function (): void {
-    Product::factory()->create(['name' => 'Walnut Desk']);
+    $related = Product::factory()->create(['name' => 'Walnut Desk']);
 
     visit('/products/create')
         ->assertSee('Create Product')
-        ->fill('Name', 'Gadget')
-        ->fill('SKU', 'GAD-100')
-        ->fill('Price', '12.00')
-        ->click('Active')
-        ->click('Search products…')
-        ->fill('input[aria-label="Search options"]', 'walnut')
+        ->fill('@name', 'Gadget')
+        ->fill('@sku', 'GAD-100')
+        ->fill('@price', '12.00')
+        ->click('@status-active')
+        ->click('@select-related_products')
+        ->fill('@select-related_products-search', 'walnut')
         ->assertSee('Walnut Desk')
-        ->click('Walnut Desk')
-        ->assertPresent('button[aria-label="Remove Walnut Desk"]')
-        ->click('Create product')
+        ->click("@select-related_products-option-{$related->getKey()}")
+        ->assertPresent("[data-test=\"select-related_products-remove-{$related->getKey()}\"]")
+        ->click('@form-submit')
         ->assertSee('Products')
         ->assertNoSmoke();
 
@@ -78,22 +78,22 @@ it('attaches related products via search when creating', function (): void {
 it('creates and edits a product through the form flow', function (): void {
     visit('/products')
         ->assertSee('Products')
-        ->click('Create product')
+        ->click('@create-product')
         ->assertSee('Create Product')
-        ->fill('Name', 'Desk Lamp')
-        ->fill('SKU', 'LAMP-001')
-        ->fill('Price', '49.99')
-        ->click('Active')
-        ->click('Create product')
+        ->fill('@name', 'Desk Lamp')
+        ->fill('@sku', 'LAMP-001')
+        ->fill('@price', '49.99')
+        ->click('@status-active')
+        ->click('@form-submit')
         ->assertSee('Products')
         ->assertSee('Desk Lamp')
-        ->click('Edit')
+        ->click('@product-edit')
         ->assertSee('Edit Product')
         ->assertValue('Name', 'Desk Lamp')
-        ->fill('Name', 'Updated Lamp')
+        ->fill('@name', 'Updated Lamp')
         ->assertValue('Name', 'Updated Lamp')
-        ->assertButtonEnabled('Save product')
-        ->click('Save product')
+        ->assertEnabled('@form-submit')
+        ->click('@form-submit')
         ->assertSee('Products')
         ->assertSee('Updated Lamp')
         ->assertNoSmoke();

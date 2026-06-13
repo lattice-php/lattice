@@ -17,7 +17,7 @@ class BuilderDemoPage extends WorkbenchPage
 {
     public function title(): string
     {
-        return 'Builder Demo';
+        return __('workbench.pages.builder.title');
     }
 
     public function render(PageSchema $schema): PageSchema
@@ -26,10 +26,10 @@ class BuilderDemoPage extends WorkbenchPage
             Stack::make('builder-demo-page')
                 ->gap(Gap::Large)
                 ->schema([
-                    Heading::make('Builder Demo'),
+                    Heading::make(__('workbench.pages.builder.heading')),
                     Form::use(BuilderDemoForm::class)
                         ->method(HttpMethod::Post)
-                        ->submitLabel('Save'),
+                        ->submitLabel(__('workbench.pages.builder.submit')),
                 ]),
         ]);
     }

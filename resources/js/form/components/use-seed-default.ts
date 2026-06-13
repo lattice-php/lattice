@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useFieldScope } from "./field-scope";
 import { useFormValue, useSetFormValue } from "./values";
 
 /**
@@ -6,12 +7,18 @@ import { useFormValue, useSetFormValue } from "./values";
  * payload reflect it before the user interacts. Pass undefined to skip.
  */
 export function useSeedDefault(name: string, value: unknown): void {
-  const stored = useFormValue(name);
+  const scope = useFieldScope();
+  const globalStored = useFormValue(name);
+  const stored = scope ? scope.getValue(name) : globalStored;
   const setValue = useSetFormValue();
 
   useEffect(() => {
     if (stored === undefined && value !== undefined) {
-      setValue(name, value);
+      if (scope) {
+        scope.setValue(name, value);
+      } else {
+        setValue(name, value);
+      }
     }
-  }, [name, value, stored, setValue]);
+  }, [name, value, stored, setValue, scope]);
 }

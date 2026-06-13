@@ -31,68 +31,68 @@ class ShowcaseForm extends FormDefinition
     {
         return $form
             ->precognitive(500)
-            ->submitLabel('Submit showcase')
+            ->submitLabel(__('workbench.forms.showcase.submit'))
             ->schema([
-                Card::make('Profile', 'Your basic account information.')->schema([
+                Card::make(__('workbench.forms.showcase.profile'), __('workbench.forms.showcase.profile-description'))->schema([
                     Grid::make()->columns(2)->schema([
-                        TextInput::make('name', 'Full name')
-                            ->placeholder('Ada Lovelace')
+                        TextInput::make('name', __('workbench.forms.showcase.full-name'))
+                            ->placeholder(__('workbench.forms.showcase.placeholders.name'))
                             ->rules(['required', 'string', 'max:255']),
-                        TextInput::make('email', 'Email')
+                        TextInput::make('email', __('workbench.common.email'))
                             ->email()
-                            ->placeholder('ada@example.com')
+                            ->placeholder(__('workbench.forms.showcase.placeholders.email'))
                             ->rules(['required']),
                     ]),
-                    PasswordInput::make('password', 'Password')
+                    PasswordInput::make('password', __('workbench.forms.showcase.password'))
                         ->needsConfirmation()
                         ->rules(['required', 'string', 'min:8', 'confirmed']),
-                    Textarea::make('bio', 'Bio')
+                    Textarea::make('bio', __('workbench.common.bio'))
                         ->rows(4)
-                        ->placeholder('Tell us about yourself')
+                        ->placeholder(__('workbench.forms.showcase.your-bio'))
                         ->rules(['nullable', 'string', 'max:1000']),
                 ]),
 
-                Card::make('Details')->schema([
+                Card::make(__('workbench.forms.showcase.details'))->schema([
                     Grid::make()->columns(2)->schema([
-                        NumberInput::make('age', 'Age')
+                        NumberInput::make('age', __('workbench.forms.showcase.age'))
                             ->min(0)
                             ->max(120)
                             ->rules(['nullable', 'integer', 'min:0', 'max:120']),
-                        DateInput::make('birthday', 'Birthday')
+                        DateInput::make('birthday', __('workbench.forms.showcase.birthday'))
                             ->max('2026-01-01')
                             ->rules(['nullable', 'date']),
                     ]),
-                    NumberInput::make('satisfaction', 'Satisfaction')
+                    NumberInput::make('satisfaction', __('workbench.forms.showcase.satisfaction'))
                         ->slider()
                         ->min(0)
                         ->max(10),
-                    Choice::make('plan', 'Plan')
+                    Choice::make('plan', __('workbench.forms.showcase.plan'))
                         ->options([
-                            Choice::option('Free', 'free'),
-                            Choice::option('Pro', 'pro'),
-                            Choice::option('Enterprise', 'enterprise'),
+                            Choice::option(__('workbench.forms.showcase.free'), 'free'),
+                            Choice::option(__('workbench.forms.showcase.pro'), 'pro'),
+                            Choice::option(__('workbench.forms.showcase.enterprise'), 'enterprise'),
                         ])
                         ->rules(['required', Rule::in(['free', 'pro', 'enterprise'])]),
                 ]),
 
-                Card::make('Conditional fields', 'The company field appears for business accounts.')->schema([
-                    Choice::make('account_type', 'Account type')
+                Card::make(__('workbench.forms.showcase.conditional-fields'), __('workbench.forms.showcase.conditional-description'))->schema([
+                    Choice::make('account_type', __('workbench.forms.showcase.account-type'))
                         ->options([
-                            Choice::option('Personal', 'personal'),
-                            Choice::option('Business', 'business'),
+                            Choice::option(__('workbench.forms.showcase.personal'), 'personal'),
+                            Choice::option(__('workbench.forms.showcase.business'), 'business'),
                         ]),
-                    TextInput::make('company', 'Company')
+                    TextInput::make('company', __('workbench.forms.dependent.company'))
                         ->dependsOn('account_type', 'business')
                         ->requiredWhen('account_type', 'business')
                         ->rules(['string', 'max:255']),
                 ]),
 
-                Card::make('Order total', 'The total is computed on the server.')->schema([
+                Card::make(__('workbench.forms.showcase.order-total'), __('workbench.forms.showcase.order-total-description'))->schema([
                     Grid::make()->columns(2)->schema([
-                        NumberInput::make('quantity', 'Quantity')->min(1),
-                        NumberInput::make('unit_price', 'Unit price')->min(0)->step(0.01),
+                        NumberInput::make('quantity', __('workbench.forms.showcase.quantity'))->min(1),
+                        NumberInput::make('unit_price', __('workbench.common.unit-price'))->min(0)->step(0.01),
                     ]),
-                    TextInput::make('total', 'Total')
+                    TextInput::make('total', __('workbench.forms.dependent.total'))
                         ->readOnly()
                         ->dependsOn(
                             ['quantity', 'unit_price'],
@@ -102,19 +102,19 @@ class ShowcaseForm extends FormDefinition
                         ),
                 ]),
 
-                Card::make('Selection', 'Static and searchable selects.')->schema([
-                    Select::make('country', 'Country')
-                        ->placeholder('Pick a country')
+                Card::make(__('workbench.forms.showcase.selection'), __('workbench.forms.showcase.selection-description'))->schema([
+                    Select::make('country', __('workbench.forms.showcase.country'))
+                        ->placeholder(__('workbench.forms.showcase.pick-country'))
                         ->options([
-                            Select::option('Germany', 'de'),
-                            Select::option('France', 'fr'),
-                            Select::option('Spain', 'es'),
-                            Select::option('Italy', 'it'),
+                            Select::option(__('workbench.forms.showcase.germany'), 'de'),
+                            Select::option(__('workbench.forms.showcase.france'), 'fr'),
+                            Select::option(__('workbench.forms.showcase.spain'), 'es'),
+                            Select::option(__('workbench.forms.showcase.italy'), 'it'),
                         ])
                         ->rules(['nullable', 'string']),
-                    Select::make('related_products', 'Related products')
+                    Select::make('related_products', __('workbench.forms.product.fields.related-products'))
                         ->multiple()
-                        ->placeholder('Search products…')
+                        ->placeholder(__('workbench.common.search-products'))
                         ->searchable(fn (string $query) => Product::query()
                             ->where('name', 'like', "%{$query}%")
                             ->orderBy('name')
@@ -130,13 +130,13 @@ class ShowcaseForm extends FormDefinition
                         ->rules(['nullable', 'array']),
                 ]),
 
-                Card::make('Article')->schema([
-                    RichEditor::make('article', 'Article'),
+                Card::make(__('workbench.common.article'))->schema([
+                    RichEditor::make('article', __('workbench.common.article')),
                 ]),
 
-                Card::make('Consent')->schema([
-                    Checkbox::make('newsletter', 'Subscribe to the newsletter'),
-                    Checkbox::make('terms', 'I accept the terms and conditions')
+                Card::make(__('workbench.forms.showcase.consent'))->schema([
+                    Checkbox::make('newsletter', __('workbench.forms.showcase.newsletter')),
+                    Checkbox::make('terms', __('workbench.forms.showcase.terms'))
                         ->rules(['accepted']),
                 ]),
 

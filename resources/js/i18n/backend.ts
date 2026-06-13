@@ -10,6 +10,7 @@ const DEFAULT_LOAD_PATH = "/locales/{{lng}}/{{ns}}.json";
 const DEFAULT_ADD_PATH = "/locales/add/{{lng}}/{{ns}}";
 
 export type BackendOptions = {
+  namespaces?: string[];
   /** i18next-http-backend load path. Defaults to laravel-i18next's namespaced route. */
   loadPath?: string;
   /** Path that receives keys reported by saveMissing. */
@@ -20,15 +21,24 @@ export type BackendOptions = {
   customHeaders?: () => Record<string, string>;
 };
 
+export type ConfigureI18nOptions = {
+  namespaces?: string[];
+};
 /** Apply the i18n config shared from the backend; wires the HTTP backend only when `enabled`. */
-export async function configureI18n(config: I18nConfig | undefined): Promise<void> {
+export async function configureI18n(
+  config: I18nConfig | undefined,
+  options: ConfigureI18nOptions = {},
+): Promise<void> {
   if (!config?.enabled) {
-    await ensureI18n();
+    await ensureI18n((base) => ({
+      ...base,
+      ns: options.namespaces ?? base.ns,
+    }));
 
     return;
   }
 
-  await enableBackend({ saveMissing: config.saveMissing });
+  await enableBackend({ saveMissing: config.saveMissing, namespaces: options.namespaces });
 }
 
 /**
@@ -39,6 +49,7 @@ export async function configureI18n(config: I18nConfig | undefined): Promise<voi
  */
 export async function enableBackend(options: BackendOptions = {}): Promise<void> {
   const {
+    namespaces,
     loadPath = DEFAULT_LOAD_PATH,
     addPath = DEFAULT_ADD_PATH,
     saveMissing = false,
@@ -49,6 +60,7 @@ export async function enableBackend(options: BackendOptions = {}): Promise<void>
 
   await ensureI18n((base) => ({
     ...base,
+    ns: namespaces ?? base.ns,
     partialBundledLanguages: true,
     saveMissing,
     backend: { loadPath, addPath, customHeaders, withCredentials: true },

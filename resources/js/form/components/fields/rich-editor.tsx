@@ -20,6 +20,7 @@ type ToolbarItem =
   | "separator"
   | {
       icon: string;
+      key: string;
       label: string;
       isActive: (editor: Editor) => boolean;
       isDisabled?: (editor: Editor) => boolean;
@@ -29,30 +30,35 @@ type ToolbarItem =
 const toolbar: ToolbarItem[] = [
   {
     icon: "bold",
+    key: "bold",
     label: "Bold",
     isActive: (e) => e.isActive("bold"),
     run: (e) => e.chain().focus().toggleBold().run(),
   },
   {
     icon: "italic",
+    key: "italic",
     label: "Italic",
     isActive: (e) => e.isActive("italic"),
     run: (e) => e.chain().focus().toggleItalic().run(),
   },
   {
     icon: "strikethrough",
+    key: "strikethrough",
     label: "Strikethrough",
     isActive: (e) => e.isActive("strike"),
     run: (e) => e.chain().focus().toggleStrike().run(),
   },
   {
     icon: "underline",
+    key: "underline",
     label: "Underline",
     isActive: (e) => e.isActive("underline"),
     run: (e) => e.chain().focus().toggleUnderline().run(),
   },
   {
     icon: "highlighter",
+    key: "highlight",
     label: "Highlight",
     isActive: (e) => e.isActive("highlight"),
     run: (e) => e.chain().focus().toggleHighlight().run(),
@@ -60,18 +66,21 @@ const toolbar: ToolbarItem[] = [
   "separator",
   {
     icon: "heading-1",
+    key: "heading-1",
     label: "Heading 1",
     isActive: (e) => e.isActive("heading", { level: 1 }),
     run: (e) => e.chain().focus().toggleHeading({ level: 1 }).run(),
   },
   {
     icon: "heading-2",
+    key: "heading-2",
     label: "Heading 2",
     isActive: (e) => e.isActive("heading", { level: 2 }),
     run: (e) => e.chain().focus().toggleHeading({ level: 2 }).run(),
   },
   {
     icon: "heading-3",
+    key: "heading-3",
     label: "Heading 3",
     isActive: (e) => e.isActive("heading", { level: 3 }),
     run: (e) => e.chain().focus().toggleHeading({ level: 3 }).run(),
@@ -79,30 +88,35 @@ const toolbar: ToolbarItem[] = [
   "separator",
   {
     icon: "list",
+    key: "bullet-list",
     label: "Bullet list",
     isActive: (e) => e.isActive("bulletList"),
     run: (e) => e.chain().focus().toggleBulletList().run(),
   },
   {
     icon: "list-ordered",
+    key: "ordered-list",
     label: "Ordered list",
     isActive: (e) => e.isActive("orderedList"),
     run: (e) => e.chain().focus().toggleOrderedList().run(),
   },
   {
     icon: "quote",
+    key: "blockquote",
     label: "Blockquote",
     isActive: (e) => e.isActive("blockquote"),
     run: (e) => e.chain().focus().toggleBlockquote().run(),
   },
   {
     icon: "code",
+    key: "code-block",
     label: "Code block",
     isActive: (e) => e.isActive("codeBlock"),
     run: (e) => e.chain().focus().toggleCodeBlock().run(),
   },
   {
     icon: "minus",
+    key: "horizontal-rule",
     label: "Horizontal rule",
     isActive: () => false,
     run: (e) => e.chain().focus().setHorizontalRule().run(),
@@ -110,24 +124,28 @@ const toolbar: ToolbarItem[] = [
   "separator",
   {
     icon: "align-left",
+    key: "align-left",
     label: "Align left",
     isActive: (e) => e.isActive({ textAlign: "left" }),
     run: (e) => e.chain().focus().setTextAlign("left").run(),
   },
   {
     icon: "align-center",
+    key: "align-center",
     label: "Align center",
     isActive: (e) => e.isActive({ textAlign: "center" }),
     run: (e) => e.chain().focus().setTextAlign("center").run(),
   },
   {
     icon: "align-right",
+    key: "align-right",
     label: "Align right",
     isActive: (e) => e.isActive({ textAlign: "right" }),
     run: (e) => e.chain().focus().setTextAlign("right").run(),
   },
   {
     icon: "align-justify",
+    key: "justify",
     label: "Justify",
     isActive: (e) => e.isActive({ textAlign: "justify" }),
     run: (e) => e.chain().focus().setTextAlign("justify").run(),
@@ -135,6 +153,7 @@ const toolbar: ToolbarItem[] = [
   "separator",
   {
     icon: "link",
+    key: "link",
     label: "Link",
     isActive: (e) => e.isActive("link"),
     run: (e) => {
@@ -151,12 +170,14 @@ const toolbar: ToolbarItem[] = [
   "separator",
   {
     icon: "table",
+    key: "insert-table",
     label: "Insert table",
     isActive: (e) => e.isActive("table"),
     run: (e) => e.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
   },
   {
     icon: "columns-3",
+    key: "add-column",
     label: "Add column",
     isActive: () => false,
     isDisabled: (e) => !e.can().addColumnAfter(),
@@ -164,6 +185,7 @@ const toolbar: ToolbarItem[] = [
   },
   {
     icon: "rows-3",
+    key: "add-row",
     label: "Add row",
     isActive: () => false,
     isDisabled: (e) => !e.can().addRowAfter(),
@@ -171,6 +193,7 @@ const toolbar: ToolbarItem[] = [
   },
   {
     icon: "trash-2",
+    key: "delete-table",
     label: "Delete table",
     isActive: () => false,
     isDisabled: (e) => !e.can().deleteTable(),
@@ -178,6 +201,7 @@ const toolbar: ToolbarItem[] = [
   },
   {
     icon: "chevron-right",
+    key: "details",
     label: "Details",
     isActive: (e) => e.isActive("details"),
     run: (e) => {
@@ -259,20 +283,19 @@ function Toolbar({ editor }: { editor: Editor }) {
           return <span key={`sep-${index}`} className="mx-1 h-5 w-px bg-lt-border" />;
         }
 
-        const key = item.label.toLowerCase().replace(/\s+/g, "-");
-        const label = t(`editor.${key}`, item.label);
+        const label = t(`editor.${item.key}`, item.label);
 
         return (
           <button
             aria-label={label}
             aria-pressed={item.isActive(editor)}
-            data-test={`editor-${key}`}
+            data-test={`editor-${item.key}`}
             className={cn(
               "inline-flex size-7 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-lt-icon-md",
               item.isActive(editor) && "bg-lt-accent text-lt-accent-fg",
             )}
             disabled={item.isDisabled?.(editor) ?? false}
-            key={item.label}
+            key={item.key}
             // Keep focus in the editor so toolbar clicks don't blur it (which would
             // otherwise trigger a precognition request).
             onClick={() => item.run(editor)}
