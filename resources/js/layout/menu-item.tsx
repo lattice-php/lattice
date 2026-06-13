@@ -81,6 +81,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
         as={method === "get" ? undefined : "button"}
         className={cn(
           rowClass,
+          "w-full",
           collapsed && "group relative justify-center",
           active && "bg-lt-muted font-medium",
         )}

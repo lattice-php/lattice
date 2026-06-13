@@ -168,5 +168,6 @@ describe("Menu", () => {
     const link = screen.getByRole("link", { name: "Log out" });
     expect(link).toHaveAttribute("data-method", "post");
     expect(link).toHaveAttribute("data-as", "button");
+    expect(link).toHaveClass("w-full");
   });
 });
