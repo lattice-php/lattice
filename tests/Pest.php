@@ -97,7 +97,7 @@ function latticeHeaders(string $ref): array
  */
 function dumpFixture(string $key, array $nodes): void
 {
-    $normalized = json_decode(json_encode($nodes, JSON_THROW_ON_ERROR), true);
+    $normalized = wire($nodes);
 
     file_put_contents(
         dirname(__DIR__).'/docs/fixtures/'.$key.'.json',

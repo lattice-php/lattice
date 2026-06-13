@@ -103,7 +103,7 @@ test('lattice component factories stay open for extension', function () {
     $badgeClass = (new class extends Badge {})::class;
     $badge = $badgeClass::make('Extended badge', 'extended-badge');
 
-    expect($badge)->toBeInstanceOf($badgeClass)
+    expect($badge::class)->toBe($badgeClass)
         ->and((new ReflectionClass(Badge::class))->isFinal())->toBeFalse();
 });
 

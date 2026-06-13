@@ -23,7 +23,7 @@ it('serializes the action wire shape', function (): void {
         ->confirm('Archive product?', 'This hides the product.', 'Archive', 'Keep')
         ->effects([Effect::reloadComponent('table'), Effect::reloadPage()]);
 
-    $payload = json_decode(json_encode($action), true);
+    $payload = wire($action);
 
     expect($payload['type'])->toBe('action');
     expect($payload['id'])->toBe('archive');
@@ -53,7 +53,7 @@ it('accepts arbitrary string icons', function (): void {
         ->icon('custom.spark')
         ->method(HttpMethod::Delete);
 
-    $payload = json_decode(json_encode($action), true);
+    $payload = wire($action);
 
     expect($payload['props']['icon'])->toBe('custom.spark');
     expect($payload['props']['method'])->toBe('delete');
@@ -66,7 +66,7 @@ it('serializes an embedded form schema', function (): void {
             Textarea::make('reason', 'Reason')->required(),
         ]);
 
-    $payload = json_decode(json_encode($action), true);
+    $payload = wire($action);
 
     expect($payload['props']['form']['type'])->toBe('form');
     expect($payload['props']['form']['schema'])->toHaveCount(1);
@@ -77,7 +77,7 @@ it('serializes an embedded form schema', function (): void {
 it('serializes a null form when none is attached', function (): void {
     $action = Action::make('plain')->label('Plain');
 
-    $payload = json_decode(json_encode($action), true);
+    $payload = wire($action);
 
     expect($payload['props']['form'])->toBeNull();
 });
@@ -85,7 +85,7 @@ it('serializes a null form when none is attached', function (): void {
 it('serializes the full confirmation shape and includes empty effects', function (): void {
     $action = Action::make('simple')->confirm('Sure?');
 
-    $payload = json_decode(json_encode($action), true);
+    $payload = wire($action);
 
     expect($payload['props']['confirmation'])->toBe([
         'title' => 'Sure?',
@@ -101,7 +101,7 @@ it('serializes the action group wire shape', function (): void {
         ->label('Actions')
         ->actions([Action::make('a')->label('A')]);
 
-    $payload = json_decode(json_encode($group), true);
+    $payload = wire($group);
 
     expect($payload['type'])->toBe('action.group');
     expect($payload['id'])->toBe('row-actions');
@@ -114,7 +114,7 @@ it('serializes the action group wire shape', function (): void {
 it('carries typed props through Action::use from the registry', function (): void {
     Lattice::actions([ArchiveProductAction::class]);
 
-    $payload = json_decode(json_encode(Action::use(ArchiveProductAction::class)), true);
+    $payload = wire(Action::use(ArchiveProductAction::class));
 
     expect($payload['type'])->toBe('action');
     expect($payload['id'])->toBe('workbench.products.archive');
@@ -136,7 +136,7 @@ it('carries typed props through Action::use from the registry', function (): voi
 it('carries typed props through BulkAction::use from the registry', function (): void {
     Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
 
-    $payload = json_decode(json_encode(BulkAction::use(ArchiveSelectedProductsAction::class)), true);
+    $payload = wire(BulkAction::use(ArchiveSelectedProductsAction::class));
 
     expect($payload['type'])->toBe('bulkAction');
     expect($payload['id'])->toBe('workbench.products.archive-selected');

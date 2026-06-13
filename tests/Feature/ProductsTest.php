@@ -9,6 +9,7 @@ use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Support\Testing\Assertions\FormAssertions;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\InvalidTableQuery;
 use Lattice\Lattice\Tables\TableQuery;
@@ -52,24 +53,24 @@ function productHeaders(array $component, array $extra = []): array
 }
 
 test('forms serialize initial state for bound edit values', function () {
-    $form = wire(Form::make('product-form')
+    $form = Form::make('product-form')
         ->fill([
             'name' => 'Desk Lamp',
             'sku' => 'LAMP-001',
         ])
         ->schema([
             TextInput::make('name', 'Name'),
-        ]));
-
-    expect($form)
-        ->toMatchArray([
-            'type' => 'form',
-            'id' => 'product-form',
-        ])
-        ->and($form['props']['state'])->toBe([
-            'name' => 'Desk Lamp',
-            'sku' => 'LAMP-001',
         ]);
+
+    $this->assertLatticeComponent($form)
+        ->assertHasForm('product-form')
+        ->form('product-form', fn (FormAssertions $f) => $f
+            ->field('name')->assertInitialValue('Desk Lamp'));
+
+    expect(wire($form)['props']['state'])->toBe([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+    ]);
 });
 
 test('forms can enable precognitive validation with a delay', function () {

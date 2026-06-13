@@ -21,7 +21,7 @@ it('serializes the table component wire shape', function (): void {
         ->striped(true)
         ->result(TableResult::make([['name' => 'A'], ['name' => 'B']]), TableQuery::empty());
 
-    $payload = json_decode(json_encode($table), true);
+    $payload = wire($table);
 
     expect($payload['type'])->toBe('table');
     expect($payload['props']['endpoint'])->toBe('/tables/demo');
@@ -67,7 +67,7 @@ it('narrows the offered operators when a column restricts them', function (): vo
 
     expect($column->availableOperators())->toBe([Op::Equals, Op::Contains]);
 
-    $filter = json_decode(json_encode($column), true)['filter'];
+    $filter = wire($column)['filter'];
 
     expect($filter['operators'])->toBe(['eq', 'contains'])
         ->and($filter['defaultOperator'])->toBe('eq');
@@ -78,7 +78,7 @@ it('keeps empty data present on a lazy table (wire trap)', function (): void {
 
     $table = app(TableRegistry::class)->lazyComponent(ProductsTable::class);
 
-    $payload = json_decode(json_encode($table), true);
+    $payload = wire($table);
 
     expect($payload['type'])->toBe('table');
     expect($payload['props']['lazy'])->toBeTrue();

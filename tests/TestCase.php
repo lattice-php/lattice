@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Tests;
 use Bambamboole\LaravelI18Next\I18NextServiceProvider;
 use Inertia\ServiceProvider as InertiaServiceProvider;
 use Lattice\Lattice\LatticeServiceProvider;
+use Lattice\Lattice\Support\Testing\AssertsLatticeComponents;
 use Orchestra\Testbench\Concerns\WithLaravelMigrations;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as BaseTestCase;
@@ -13,6 +14,7 @@ use Workbench\App\Providers\WorkbenchServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
+    use AssertsLatticeComponents;
     use WithLaravelMigrations;
     use WithWorkbench;
 

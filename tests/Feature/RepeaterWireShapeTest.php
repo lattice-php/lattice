@@ -13,7 +13,7 @@ it('serialises a repeater with its row-template schema and props', function (): 
         ->itemLabel('Line')
         ->defaultItems(2);
 
-    $wire = json_decode(json_encode($repeater), true);
+    $wire = wire($repeater);
 
     expect($wire['type'])->toBe('form.repeater')
         ->and($wire['props']['name'])->toBe('items')
@@ -30,7 +30,7 @@ it('serialises a repeater with its row-template schema and props', function (): 
 });
 
 it('defaults reorderable on and defaultItems to 1', function (): void {
-    $wire = json_decode(json_encode(Repeater::make('items')->schema([TextInput::make('name')])), true);
+    $wire = wire(Repeater::make('items')->schema([TextInput::make('name')]));
 
     expect($wire['props']['reorderable'])->toBeTrue()
         ->and($wire['props']['defaultItems'])->toBe(1);
