@@ -197,18 +197,17 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
               {item.status === "error" && (
                 <span className="text-lt-danger">{t("file-upload.failed", "Failed")}</span>
               )}
-              <button
-                aria-label={t("file-upload.remove", "Remove {{name}}", { name: item.name })}
-                disabled={locked}
-                onClick={() => removeItem(item.id)}
-                type="button"
-              >
-                {t("file-upload.remove-label", "Remove")}
-              </button>
-              {signed && item.key && item.status === "ready" && (
-                <input name={fieldName} type="hidden" value={item.key} />
+              {!item.existing && (
+                <button
+                  aria-label={t("file-upload.remove", "Remove {{name}}", { name: item.name })}
+                  disabled={locked}
+                  onClick={() => removeItem(item.id)}
+                  type="button"
+                >
+                  {t("file-upload.remove-label", "Remove")}
+                </button>
               )}
-              {!signed && item.existing && item.key && (
+              {signed && !item.existing && item.key && item.status === "ready" && (
                 <input name={fieldName} type="hidden" value={item.key} />
               )}
             </li>
