@@ -150,6 +150,14 @@ LATTICE_SOURCE=1 npm run dev
 
 Vite now compiles the linked checkout directly. TypeScript and CSS changes in Lattice update through the consuming app's dev server without a package build.
 
+### Known issue: source-linked tests
+
+Source-linking is intended for browser development and HMR. It is not a reliable way to run the consuming app's Vitest suite against a full Lattice checkout.
+
+The checkout has its own `node_modules`, so React-based dependencies imported from Lattice source can resolve their own copy of React instead of the application's copy. In tests this can show up as React's "Invalid hook call" error. Browser dev and production builds dedupe correctly, but the test runner can still cross that dependency boundary.
+
+For green test verification, switch back to package-linking or the published npm package so the app tests the built package surface rather than the checkout's source tree.
+
 ## Package-link verification
 
 Use package-linking when you want to test the same surface that npm publishes:
