@@ -8,6 +8,8 @@ use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\ComponentAttribute;
 use Lattice\Lattice\Attributes\Table;
 use Lattice\Lattice\Core\DefinitionRegistry;
+use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Components\Table as TableComponent;
 
 /**
@@ -15,6 +17,8 @@ use Lattice\Lattice\Tables\Components\Table as TableComponent;
  */
 final class TableRegistry extends DefinitionRegistry
 {
+    private const ROW_IDENTITY_KEYS = ['id', 'uuid', 'key'];
+
     /**
      * @param  class-string<TableDefinition>  $table
      */
@@ -22,7 +26,7 @@ final class TableRegistry extends DefinitionRegistry
     {
         return $this->buildComponent(
             $table,
-            fn (TableDefinition $definition, TableQuery $query): TableResult => $this->decorateResult($definition, $definition->source()->query($query)),
+            fn (TableDefinition $definition, TableQuery $query): TableResult => $definition->source()->query($query),
         );
     }
 
@@ -59,7 +63,7 @@ final class TableRegistry extends DefinitionRegistry
             ->actionsLabel($definition->actionsLabel())
             ->emptyLabel($definition->emptyLabel())
             ->bulkActions($this->bulkActions($definition, $key))
-            ->result($result($definition, $query), $query);
+            ->result($this->decorateResult($definition, $result($definition, $query), $columns), $query);
 
         if ($lazy) {
             $component->lazy = true;
@@ -74,7 +78,7 @@ final class TableRegistry extends DefinitionRegistry
         $columns = $definition->columns();
         $query = TableQuery::fromRequest($request, $columns, $key, $definition->perPage());
 
-        return $this->decorateResult($definition, $definition->source()->query($query))->forQuery($query);
+        return $this->decorateResult($definition, $definition->source()->query($query), $columns)->forQuery($query);
     }
 
     /**
@@ -114,16 +118,53 @@ final class TableRegistry extends DefinitionRegistry
         return 'tables';
     }
 
-    private function decorateResult(TableDefinition $definition, TableResult $result): TableResult
+    /**
+     * @param  array<int, Column>  $columns
+     */
+    private function decorateResult(TableDefinition $definition, TableResult $result, array $columns): TableResult
     {
-        return $result->decorateRows(function (array $row) use ($definition): array {
+        $rowKeys = $this->rowKeys($columns);
+
+        return $result->decorateRows(function (array $row) use ($definition, $rowKeys): array {
             $actions = $definition->actions($row);
+            $projected = array_intersect_key($row, array_flip($rowKeys));
+
+            unset($projected['actions']);
 
             if ($actions === []) {
-                return $row;
+                return $projected;
             }
 
-            return [...$row, 'actions' => $actions];
+            return [...$projected, 'actions' => $actions];
         });
+    }
+
+    /**
+     * @param  array<int, Column>  $columns
+     * @return array<int, string>
+     */
+    private function rowKeys(array $columns): array
+    {
+        $keys = self::ROW_IDENTITY_KEYS;
+
+        foreach ($columns as $column) {
+            array_push($keys, ...$this->columnKeys($column->toData()));
+        }
+
+        return array_values(array_unique($keys));
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function columnKeys(ColumnData $column): array
+    {
+        $keys = [$column->key];
+
+        foreach ($column->columns ?? [] as $child) {
+            array_push($keys, ...$this->columnKeys($child));
+        }
+
+        return $keys;
     }
 }

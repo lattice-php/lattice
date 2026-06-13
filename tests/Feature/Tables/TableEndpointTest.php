@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\Table as TableAttribute;
+use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\CallbackTableSource;
@@ -10,12 +12,14 @@ use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\Contracts\TableSource;
+use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
 use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
+use Workbench\App\Models\Product;
 use Workbench\App\Tables\UsersTable as WorkbenchAppUsersTable;
 
 use function Pest\Laravel\getJson;
@@ -87,8 +91,6 @@ test('registered tables serialize their configured endpoint columns state and in
                 'data' => [
                     [
                         'name' => 'Taylor',
-                        'filters' => [],
-                        'sorts' => [],
                     ],
                 ],
                 'state' => [
@@ -232,16 +234,23 @@ test('registered tables parse clause filters sorts and pagination through the en
     latticeGet('/lattice/tables/workbench.users?filter=name:contains:tay,status:eq:active&sort=-name,email&page=2&per_page=50', $ref)
         ->assertOk()
         ->assertJsonPath('data.0.name', 'Taylor')
-        ->assertJsonPath('data.0.filters.0', ['field' => 'name', 'operator' => 'contains', 'value' => 'tay'])
-        ->assertJsonPath('data.0.filters.1', ['field' => 'status', 'operator' => 'eq', 'value' => 'active'])
-        ->assertJsonPath('data.0.sorts.0.key', 'name')
-        ->assertJsonPath('data.0.sorts.0.direction', 'desc')
-        ->assertJsonPath('data.0.sorts.1.key', 'email')
-        ->assertJsonPath('data.0.sorts.1.direction', 'asc')
         ->assertJsonPath('state.filters.0.field', 'name')
         ->assertJsonPath('state.filters.1.field', 'status')
         ->assertJsonPath('state.page', 2)
         ->assertJsonPath('state.perPage', 50);
+
+    expect(session('workbench-users-table-query'))->toMatchArray([
+        'filters' => [
+            ['field' => 'name', 'operator' => 'contains', 'value' => 'tay'],
+            ['field' => 'status', 'operator' => 'eq', 'value' => 'active'],
+        ],
+        'sorts' => [
+            ['key' => 'name', 'direction' => 'desc'],
+            ['key' => 'email', 'direction' => 'asc'],
+        ],
+        'page' => 2,
+        'perPage' => 50,
+    ]);
 });
 
 test('registered tables reject filters and sorts that are not allowed by columns', function () {
@@ -275,6 +284,40 @@ test('registered table endpoints require a valid component reference and use tru
     latticeGet('/lattice/tables/fixtures.users?context[team]=tampered-team', $ref)
         ->assertOk()
         ->assertJsonPath('data.0.name', 'trusted-team');
+});
+
+test('registered table responses expose only declared columns row identity and generated actions', function () {
+    Lattice::tables([WorkbenchProjectedProductsTable::class]);
+
+    $product = Product::factory()->create([
+        'name' => 'Projected Product',
+        'sku' => 'PROJECT-001',
+        'price' => '199.00',
+        'status' => 'active',
+        'featured' => true,
+    ]);
+    $related = Product::factory()->create([
+        'sku' => 'PROJECT-RELATED',
+    ]);
+
+    $product->relatedProducts()->attach($related);
+
+    $ref = componentRef(wire(Table::use(WorkbenchProjectedProductsTable::class)));
+    $row = latticeGet('/lattice/tables/workbench.projected-products', $ref)
+        ->assertOk()
+        ->json('data.0');
+
+    expect($row)->toBeArray();
+    assert(is_array($row));
+
+    expect(array_keys($row))->toBe(['id', 'name', 'sku', 'status', 'actions'])
+        ->and($row['id'])->toBe($product->getKey())
+        ->and($row['name'])->toBe('Projected Product')
+        ->and($row['sku'])->toBe('PROJECT-001')
+        ->and($row['status'])->toBe('active')
+        ->and($row['actions'][0]['type'])->toBe('link')
+        ->and($row['actions'][0]['key'])->toBe('edit-product')
+        ->and($row['actions'][0]['props']['href'])->toBe("/products/{$product->getKey()}/edit");
 });
 
 test('text columns serialize display modifiers', function () {
@@ -340,22 +383,15 @@ class WorkbenchUsersTable extends TableDefinition
 
     public function source(): TableSource
     {
-        return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([
-            [
-                'name' => 'Taylor',
-                'filters' => array_map(
-                    fn ($filter): array => wire($filter),
-                    $query->filters,
-                ),
-                'sorts' => array_map(
-                    fn ($sort): array => [
-                        'key' => $sort->key,
-                        'direction' => $sort->direction,
-                    ],
-                    $query->sorts,
-                ),
-            ],
-        ]));
+        return new CallbackTableSource(function (TableQuery $query): TableResult {
+            session()->put('workbench-users-table-query', wire($query));
+
+            return TableResult::make([
+                [
+                    'name' => 'Taylor',
+                ],
+            ]);
+        });
     }
 }
 
@@ -420,5 +456,43 @@ class WorkbenchStackedUsersTable extends TableDefinition
                 'status' => 'Active',
             ],
         ]));
+    }
+}
+
+/**
+ * @extends EloquentTableDefinition<Product>
+ */
+#[TableAttribute('workbench.projected-products')]
+class WorkbenchProjectedProductsTable extends EloquentTableDefinition
+{
+    public function columns(): array
+    {
+        return [
+            StackColumn::make('identity')
+                ->label('Identity')
+                ->columns([
+                    TextColumn::make('name')->label('Name'),
+                    TextColumn::make('sku')->label('SKU'),
+                ]),
+            TextColumn::make('status')->label('Status'),
+        ];
+    }
+
+    /**
+     * @return Builder<Product>
+     */
+    public function builder(TableQuery $query): Builder
+    {
+        return Product::query()
+            ->with('relatedProducts')
+            ->where('sku', 'PROJECT-001');
+    }
+
+    public function actions(array $row): array
+    {
+        return [
+            Link::make('Edit', 'edit-product')
+                ->href("/products/{$row['id']}/edit"),
+        ];
     }
 }
