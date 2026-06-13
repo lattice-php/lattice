@@ -35,6 +35,8 @@ function discoverFixtures(): void
     config(['lattice.discover' => [
         __DIR__.'/../Fixtures/Discovery' => 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery',
     ]]);
+
+    app(DiscoveryManifest::class)->clear();
 }
 
 test('the manifest builds resolved entries for every kind', function () {
@@ -63,4 +65,15 @@ test('the manifest round-trips through the cached file', function () {
         $manifest->clear();
         expect($manifest->isCached())->toBeFalse();
     }
+});
+
+use Lattice\Lattice\Forms\Components\Form as FormComponent;
+
+test('registries resolve discovered definitions from the manifest', function () {
+    discoverFixtures();
+
+    // No explicit Lattice::forms([...]) — resolution comes from the manifest.
+    $form = wire(FormComponent::use(DiscoveredProfileForm::class));
+
+    expect($form)->toMatchArray(['type' => 'form', 'id' => 'fixtures.profile']);
 });

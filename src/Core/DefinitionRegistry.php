@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Lattice\Lattice\Attributes\ComponentAttribute;
 use Lattice\Lattice\Core\Contracts\DefinitionRegistry as DefinitionRegistryContract;
 use Lattice\Lattice\Core\Contracts\Discoverable;
+use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Exceptions\UnknownLatticeComponent;
 use Spatie\Attributes\Attributes;
 
@@ -25,7 +26,23 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract, Discove
 
     private ?string $endpointTemplate = null;
 
-    public function __construct(protected readonly Container $container) {}
+    public function __construct(
+        protected readonly Container $container,
+        protected readonly DiscoveryManifest $manifest,
+    ) {}
+
+    /**
+     * Explicit registrations layered over the discovered manifest entries.
+     *
+     * @return array<string, class-string<TDefinition>>
+     */
+    protected function definitions(): array
+    {
+        /** @var array<string, class-string<TDefinition>> $discovered */
+        $discovered = $this->manifest->forGroup($this->group());
+
+        return array_merge($discovered, $this->definitions);
+    }
 
     /**
      * @param  class-string<TDefinition>|array<int, class-string<TDefinition>>  $definitions
@@ -54,11 +71,13 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract, Discove
      */
     public function resolve(string $key): Definition
     {
-        if (! array_key_exists($key, $this->definitions)) {
+        $definitions = $this->definitions();
+
+        if (! array_key_exists($key, $definitions)) {
             throw new UnknownLatticeComponent($this->name(), $key);
         }
 
-        return $this->make($this->definitions[$key]);
+        return $this->make($definitions[$key]);
     }
 
     public function endpointFor(string $key): string
@@ -79,7 +98,7 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract, Discove
     {
         $key = $this->keyFor($definition);
 
-        if (($this->definitions[$key] ?? null) !== $definition) {
+        if (($this->definitions()[$key] ?? null) !== $definition) {
             throw new InvalidArgumentException("Lattice {$this->name()} [{$definition}] is not registered.");
         }
 
