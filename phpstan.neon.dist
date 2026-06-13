@@ -9,4 +9,4 @@ parameters:
     level: 6
     excludePaths:
         # Pest's arch() DSL is a runtime fluent API PHPStan cannot statically model.
-        - tests/Unit/ArchTest.php
+        - tests/ArchTest.php

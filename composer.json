@@ -74,7 +74,7 @@
             "npm run format",
             "@types"
         ],
-        "test": "./vendor/bin/pest --testsuite Unit,Feature",
+        "test": "./vendor/bin/pest --testsuite Arch,Unit,Feature",
         "test:browser": "./vendor/bin/pest --testsuite Browser",
         "post-autoload-dump": [
             "@clear",
