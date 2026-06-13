@@ -60,9 +60,7 @@ trait ResolvesFormFields
         foreach ($this->formFields($request) as $field) {
             if ($field instanceof ProvidesRowPrefills) {
                 $prefill = [...$prefill, ...$field->rowPrefillValues($data, $request)];
-            }
-
-            if ($field->hasPrefill()) {
+            } elseif ($field->hasPrefill()) {
                 $prefill[$field->name()] = $field->resolvePrefillValue($data, $data, $request);
             }
 

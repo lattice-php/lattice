@@ -11,7 +11,6 @@ type Block = { type: string; label: string; schema: Node[] };
 
 const ROW_COLLECTION_TYPES = new Set(["form.builder", "form.repeater"]);
 
-/** Resolve a declared dependency to a concrete store path. */
 function mapDep(dep: string, base: string | null, index: number): string {
   if (dep.startsWith("@")) {
     return dep.slice(1);
@@ -20,7 +19,7 @@ function mapDep(dep: string, base: string | null, index: number): string {
   return base === null ? dep : `${base}.${index}.${dep}`;
 }
 
-function targetFor(node: Node, base: string | null, index: number): PrefillTarget | null {
+function targetFor(node: Node, base: string | null, index = 0): PrefillTarget | null {
   const props = fieldProps(node);
 
   if (!props.prefill || !props.name) {
@@ -34,7 +33,6 @@ function targetFor(node: Node, base: string | null, index: number): PrefillTarge
   };
 }
 
-/** Concrete prefill targets for the current schema and row values. */
 export function collectPrefillTargets(
   nodes: Node[] | undefined,
   values: Record<string, unknown>,
@@ -68,7 +66,7 @@ export function collectPrefillTargets(
         continue;
       }
 
-      const target = targetFor(node, null, 0);
+      const target = targetFor(node, null);
       if (target) {
         targets.push(target);
       }
@@ -82,7 +80,6 @@ export function collectPrefillTargets(
   return targets;
 }
 
-/** Read a value at a dot path (`items.0.price`) from the flat store. */
 export function getPath(values: Record<string, unknown>, path: string): unknown {
   let current: unknown = values;
 
@@ -96,7 +93,6 @@ export function getPath(values: Record<string, unknown>, path: string): unknown 
   return current;
 }
 
-/** Write a computed value at a dot path via the store's `setValue` (functional for rows). */
 export function applyPrefillValue(
   setValue: (name: string, value: unknown) => void,
   path: string,
@@ -125,7 +121,6 @@ export function applyPrefillValue(
   });
 }
 
-/** Targets whose `resetOn` dependency changed value between two store snapshots. */
 export function pathsToClear(
   targets: PrefillTarget[],
   previous: Record<string, unknown>,
@@ -138,7 +133,7 @@ export function pathsToClear(
     .map((target) => target.path);
 }
 
-/** Targets that already hold a stored value — pre-marked as overridden so a load isn't clobbered. */
+// Seeded as overrides so the first resolve response doesn't clobber values an edit screen loaded.
 export function seededOverrides(
   targets: PrefillTarget[],
   values: Record<string, unknown>,

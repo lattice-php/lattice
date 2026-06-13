@@ -70,9 +70,6 @@ abstract class Field extends Component
 
     protected ?Closure $valueResolver = null;
 
-    /**
-     * Wire flag the client reads to mark this field as an editable-default target.
-     */
     public ?bool $prefill = null;
 
     /**
@@ -319,7 +316,6 @@ abstract class Field extends Component
      * input on validate/submit), or an editable default when `editable: true`
      * (user-owned — applied as a suggestion the client may override).
      *
-     * @param  mixed|Closure(FormData, Request)|Closure(FormData, FormData, Request)  $value
      * @param  array<int, string>  $resetOn  Deps that clear a manual override (bare = row-relative, `@x` = form-level).
      * @param  array<int, string>  $refreshOn  Deps that recompute only when not overridden.
      */

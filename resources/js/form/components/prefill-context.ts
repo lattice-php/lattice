@@ -1,7 +1,6 @@
 import { createContext, useContext } from "react";
 
 export type PrefillController = {
-  /** Mark a field path as user-owned so resolver-supplied values stop overwriting it. */
   markUserEdit: (path: string) => void;
 };
 
