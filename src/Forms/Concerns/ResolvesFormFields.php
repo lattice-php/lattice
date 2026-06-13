@@ -46,7 +46,7 @@ trait ResolvesFormFields
         $scope = $data;
 
         if ($field === null) {
-            [$field, $scope] = $this->rowSearchTarget($fields, $name, $data);
+            [$field, $scope] = $this->rowFieldTarget($fields, $name, $data);
         }
 
         abort_if($field === null, Response::HTTP_NOT_FOUND);
@@ -59,7 +59,7 @@ trait ResolvesFormFields
      * @param  Collection<int, Field>  $fields
      * @return array{0: Field|null, 1: FormData}
      */
-    private function rowSearchTarget(Collection $fields, string $path, FormData $data): array
+    private function rowFieldTarget(Collection $fields, string $path, FormData $data): array
     {
         $segments = explode('.', $path);
 
@@ -101,9 +101,15 @@ trait ResolvesFormFields
     public function signUpload(Request $request): array
     {
         $name = $request->string('_upload')->toString();
+        $data = FormData::fromRequest($request);
+        $fields = $this->formFields($request);
 
-        $field = $this->formFields($request)
+        $field = $fields
             ->first(fn (Field $field): bool => $field->name() === $name);
+
+        if ($field === null) {
+            [$field] = $this->rowFieldTarget($fields, $name, $data);
+        }
 
         abort_if($field === null, Response::HTTP_NOT_FOUND);
         abort_unless($field instanceof FileUpload && $field->usesSignedUpload(), Response::HTTP_UNPROCESSABLE_ENTITY);
