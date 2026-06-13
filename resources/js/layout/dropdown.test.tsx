@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice/lattice/core/registry";
 import { Renderer } from "@lattice/lattice/core/renderer";
 import type { Node } from "@lattice/lattice/core/types";
+import { SidebarCollapsedContext } from "./context";
 import DropdownComponent from "./dropdown";
 import MenuItemComponent from "./menu-item";
 
@@ -36,6 +37,23 @@ describe("Dropdown", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Account" }));
 
+    expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", "/profile");
+  });
+
+  it("collapses to an icon-only trigger that keeps the label reachable", () => {
+    render(
+      <SidebarCollapsedContext.Provider value={true}>
+        <Renderer
+          nodes={[{ ...node, props: { label: "Account", icon: "panel-left" } }]}
+          registry={registry}
+        />
+      </SidebarCollapsedContext.Provider>,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Account" });
+    expect(screen.getByText("Account")).toHaveClass("sr-only");
+
+    fireEvent.click(trigger);
     expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", "/profile");
   });
 });
