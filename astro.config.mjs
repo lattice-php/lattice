@@ -125,6 +125,12 @@ export default defineConfig({
           ],
         },
         {
+          label: "Testing",
+          items: [
+            { label: "Overview", link: "/testing/overview/" },
+          ],
+        },
+        {
           label: "Contributing",
           items: [
             { label: "Local Development", link: "/contributing/local-development/" },
