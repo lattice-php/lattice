@@ -34,7 +34,7 @@ final class TableRegistry extends DefinitionRegistry
         return $this->buildComponent(
             $table,
             fn (TableDefinition $definition, TableQuery $query): TableResult => TableResult::make([])
-                ->pagination(['mode' => $definition->paginationType()->value]),
+                ->pagination(TablePagination::pending($definition->paginationType())),
             lazy: true,
         );
     }

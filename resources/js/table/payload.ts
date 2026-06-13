@@ -42,9 +42,21 @@ export function getRows(value: unknown): TableRow[] {
   );
 }
 
+const EMPTY_PAGINATION: TablePagination = {
+  mode: "none",
+  currentPage: null,
+  lastPage: null,
+  perPage: null,
+  total: null,
+  from: null,
+  to: null,
+  hasMore: false,
+  nextPage: null,
+};
+
 export function getPagination(value: unknown): TablePagination {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    return {};
+    return EMPTY_PAGINATION;
   }
 
   return value as TablePagination;

@@ -97,7 +97,7 @@ test('registered tables serialize their configured endpoint columns state and in
                     'page' => 1,
                     'perPage' => 25,
                 ],
-                'pagination' => [],
+                'pagination' => null,
             ],
         ]);
 });
@@ -145,6 +145,14 @@ test('registered tables can serialize lazily without running their query', funct
                 ],
                 'pagination' => [
                     'mode' => 'table',
+                    'currentPage' => null,
+                    'lastPage' => null,
+                    'perPage' => null,
+                    'total' => null,
+                    'from' => null,
+                    'to' => null,
+                    'hasMore' => false,
+                    'nextPage' => null,
                 ],
             ],
         ]);
@@ -337,14 +345,14 @@ class WorkbenchUsersTable extends TableDefinition
                 'name' => 'Taylor',
                 'filters' => array_map(
                     fn ($filter): array => wire($filter),
-                    $query->filters(),
+                    $query->filters,
                 ),
                 'sorts' => array_map(
                     fn ($sort): array => [
                         'key' => $sort->key,
                         'direction' => $sort->direction,
                     ],
-                    $query->sorts(),
+                    $query->sorts,
                 ),
             ],
         ]));

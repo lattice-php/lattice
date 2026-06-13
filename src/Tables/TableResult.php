@@ -14,11 +14,10 @@ final readonly class TableResult implements JsonSerializable
 {
     /**
      * @param  array<int, array<string, mixed>>  $data
-     * @param  array<string, mixed>  $pagination
      */
     private function __construct(
         private array $data,
-        private array $pagination = [],
+        private ?TablePagination $pagination = null,
         private ?TableQuery $query = null,
     ) {}
 
@@ -37,17 +36,17 @@ final readonly class TableResult implements JsonSerializable
     {
         return new self(
             self::serializeRows($paginator->items()),
-            [
-                'mode' => PaginationType::Table->value,
-                'currentPage' => $paginator->currentPage(),
-                'lastPage' => $paginator->lastPage(),
-                'perPage' => $paginator->perPage(),
-                'total' => $paginator->total(),
-                'from' => $paginator->firstItem(),
-                'to' => $paginator->lastItem(),
-                'hasMore' => $paginator->hasMorePages(),
-                'nextPage' => $paginator->hasMorePages() ? $paginator->currentPage() + 1 : null,
-            ],
+            new TablePagination(
+                mode: PaginationType::Table,
+                currentPage: $paginator->currentPage(),
+                lastPage: $paginator->lastPage(),
+                perPage: $paginator->perPage(),
+                total: $paginator->total(),
+                from: $paginator->firstItem(),
+                to: $paginator->lastItem(),
+                hasMore: $paginator->hasMorePages(),
+                nextPage: $paginator->hasMorePages() ? $paginator->currentPage() + 1 : null,
+            ),
         );
     }
 
@@ -60,15 +59,15 @@ final readonly class TableResult implements JsonSerializable
     ): self {
         return new self(
             self::serializeRows($paginator->items()),
-            [
-                'mode' => $type->value,
-                'currentPage' => $paginator->currentPage(),
-                'perPage' => $paginator->perPage(),
-                'from' => $paginator->firstItem(),
-                'to' => $paginator->lastItem(),
-                'hasMore' => $paginator->hasMorePages(),
-                'nextPage' => $paginator->hasMorePages() ? $paginator->currentPage() + 1 : null,
-            ],
+            new TablePagination(
+                mode: $type,
+                currentPage: $paginator->currentPage(),
+                perPage: $paginator->perPage(),
+                from: $paginator->firstItem(),
+                to: $paginator->lastItem(),
+                hasMore: $paginator->hasMorePages(),
+                nextPage: $paginator->hasMorePages() ? $paginator->currentPage() + 1 : null,
+            ),
         );
     }
 
@@ -82,21 +81,18 @@ final readonly class TableResult implements JsonSerializable
 
         return new self(
             $rows,
-            [
-                'mode' => $type->value,
-                'total' => $total,
-                'from' => $total > 0 ? 1 : 0,
-                'to' => $total,
-                'hasMore' => false,
-                'nextPage' => null,
-            ],
+            new TablePagination(
+                mode: $type,
+                total: $total,
+                from: $total > 0 ? 1 : 0,
+                to: $total,
+                hasMore: false,
+                nextPage: null,
+            ),
         );
     }
 
-    /**
-     * @param  array<string, mixed>  $pagination
-     */
-    public function pagination(array $pagination): self
+    public function pagination(TablePagination $pagination): self
     {
         return new self($this->data, $pagination, $this->query);
     }
@@ -122,7 +118,7 @@ final readonly class TableResult implements JsonSerializable
     }
 
     /**
-     * @return array{data: array<int, array<string, mixed>>, pagination: array<string, mixed>, state: TableQuery}
+     * @return array{data: array<int, array<string, mixed>>, pagination: TablePagination|null, state: TableQuery}
      */
     public function jsonSerialize(): array
     {

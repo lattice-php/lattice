@@ -55,7 +55,7 @@ class ProductsTable extends EloquentTableDefinition
     {
         $builder = Product::query()->select(['id', 'name', 'sku', 'price', 'status', 'featured', 'updated_at']);
 
-        if ($query->sorts() === []) {
+        if ($query->sorts === []) {
             $builder->latest('id');
         }
 

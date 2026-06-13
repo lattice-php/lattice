@@ -46,7 +46,7 @@ abstract class BaseUsersTable extends EloquentTableDefinition
     {
         $builder = User::query()->select(['id', 'name', 'email', 'created_at', 'updated_at']);
 
-        if ($query->sorts() === []) {
+        if ($query->sorts === []) {
             $builder->orderBy('id');
         }
 
