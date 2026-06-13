@@ -30,8 +30,8 @@ class RejectProductAction extends ActionDefinition
                 Textarea::make('reason', 'Reason')->required()->rules(['string', 'max:255']),
                 Select::make('replacement', 'Suggested replacement')
                     ->placeholder('Search products…')
-                    ->searchable(fn (string $query): array => Product::query()
-                        ->where('name', 'like', "%{$query}%")
+                    ->searchable(fn (string $search): array => Product::query()
+                        ->where('name', 'like', "%{$search}%")
                         ->orderBy('name')
                         ->limit(10)
                         ->get()

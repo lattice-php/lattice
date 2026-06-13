@@ -47,7 +47,7 @@ class PricingBuilderDemoForm extends FormDefinition
                             Block::make('product')->label('Product line')->schema([
                                 Select::make('product', 'Product')
                                     ->options($this->productOptions(limit: 20))
-                                    ->searchable(fn (string $query) => $this->productOptions(query: $query, limit: 10))
+                                    ->searchable(fn (string $search) => $this->productOptions(query: $search, limit: 10))
                                     ->resolveSelectedUsing(fn (array $values) => $this->productOptions(values: $values)),
                                 TextInput::make('qty', 'Qty')->rules(['numeric']),
                                 TextInput::make('price', 'Price')->rules(['numeric'])->value(

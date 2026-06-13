@@ -146,7 +146,7 @@ class AssignActionFixture extends ActionDefinition
             ->method(HttpMethod::Post)
             ->form([
                 Select::make('owner', 'Owner')->searchable(
-                    fn (string $query): array => [['label' => "Match: {$query}", 'value' => '7']],
+                    fn (string $search): array => [['label' => "Match: {$search}", 'value' => '7']],
                 ),
                 TextInput::make('qty', 'Qty'),
                 TextInput::make('total', 'Total')->value(fn (FormData $data): float => $data->float('qty') * 1.5),

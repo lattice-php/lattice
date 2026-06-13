@@ -12,6 +12,7 @@ use Lattice\Lattice\Core\Concerns\HasOptions;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
 use Lattice\Lattice\Core\Option;
+use Lattice\Lattice\Facades\Evaluate;
 use Lattice\Lattice\Forms\FormData;
 
 #[Component('form.select')]
@@ -56,11 +57,9 @@ class Select extends Field
     }
 
     /**
-     * Enable server-side search. The resolver receives the query string (and the
-     * current form data and request) and returns the matching options. The option
-     * value is the entity identifier and is fully controlled by the resolver.
-     *
-     * @param  Closure(string, FormData, Request): (array<int, Option|array{label: string, value: string|int}>|Collection<int, Option|array{label: string, value: string|int}>)  $resolver
+     * Enable server-side search. The resolver is evaluated with utility injection:
+     * `$search` (the query string), plus `$state`/`$get`/`$value`/`$component` and any
+     * container-resolved type (e.g. `Request`). It returns the matching options.
      */
     public function searchable(Closure $resolver): static
     {
@@ -103,7 +102,9 @@ class Select extends Field
             return [];
         }
 
-        return $this->normalizeOptions(($this->searchResolver)($query, $data, $request));
+        $context = $this->evaluationContext($data, $request)->named('search', $query);
+
+        return $this->normalizeOptions(Evaluate::resolve($this->searchResolver, $context));
     }
 
     public function prefill(mixed $value): void
@@ -121,7 +122,11 @@ class Select extends Field
             return;
         }
 
-        $resolved = $this->normalizeOptions(($this->selectedResolver)($values));
+        $context = Evaluate::context()
+            ->named('values', $values)
+            ->named('component', $this);
+
+        $resolved = $this->normalizeOptions(Evaluate::resolve($this->selectedResolver, $context));
         $existing = $this->options;
 
         $merged = [...$existing];
