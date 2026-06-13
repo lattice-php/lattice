@@ -28,7 +28,11 @@ final readonly class ActionAssertions
 
     public function assertEndpoint(string $endpoint): self
     {
-        Assert::assertSame($endpoint, $this->node->prop('endpoint'));
+        Assert::assertSame($endpoint, $this->node->prop('endpoint'), sprintf(
+            'Expected action [%s] endpoint to be [%s].',
+            $this->node->id() ?? '*',
+            $endpoint,
+        ));
 
         return $this;
     }
@@ -58,8 +62,15 @@ final readonly class ActionAssertions
     {
         $confirmation = $this->node->prop('confirmation');
 
-        Assert::assertIsArray($confirmation, 'Action has no confirmation dialog.');
-        Assert::assertSame($title, $confirmation['title'] ?? null);
+        Assert::assertIsArray($confirmation, sprintf(
+            'Expected action [%s] to have a confirmation dialog.',
+            $this->node->id() ?? '*',
+        ));
+        Assert::assertSame($title, $confirmation['title'] ?? null, sprintf(
+            'Expected action [%s] confirmation title to be [%s].',
+            $this->node->id() ?? '*',
+            $title,
+        ));
 
         return $this;
     }
