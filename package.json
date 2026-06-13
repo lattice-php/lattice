@@ -75,6 +75,10 @@
       "types": "./dist/types/index.d.ts",
       "import": "./dist/types/index.js"
     },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "import": "./dist/vite.js"
+    },
     "./package.json": "./package.json",
     "./*": {
       "types": "./dist/*.d.ts",

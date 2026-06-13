@@ -150,6 +150,7 @@ export default defineConfig(({ mode }) => {
             },
             rollupOptions: {
               external: [
+                /^node:/,
                 /^react($|\/)/,
                 /^react-dom($|\/)/,
                 /^@inertiajs\//,
@@ -158,6 +159,7 @@ export default defineConfig(({ mode }) => {
                 /^clsx($|\/)/,
                 /^class-variance-authority($|\/)/,
                 /^tailwind-merge($|\/)/,
+                /^vite($|\/)/,
                 /^i18next($|\/)/,
                 /^react-i18next($|\/)/,
                 /^i18next-http-backend($|\/)/,
