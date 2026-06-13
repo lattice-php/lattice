@@ -1,10 +1,17 @@
 import type { Node } from "@lattice/lattice/core/types";
 import { fieldProps } from "./field-props";
+import { buildOverrideKey, rowIdFrom } from "./override-keys";
 
 export type PrefillTarget = {
   path: string;
+  overrideKey: string;
   resetOn: string[];
   refreshOn: string[];
+};
+
+type PrefillSnapshot = {
+  targets: PrefillTarget[];
+  values: Record<string, unknown>;
 };
 
 type Block = { type: string; label: string; schema: Node[] };
@@ -19,15 +26,23 @@ function mapDep(dep: string, base: string | null, index: number): string {
   return base === null ? dep : `${base}.${index}.${dep}`;
 }
 
-function targetFor(node: Node, base: string | null, index = 0): PrefillTarget | null {
+function targetFor(
+  node: Node,
+  base: string | null,
+  index = 0,
+  row: Record<string, unknown> = {},
+): PrefillTarget | null {
   const props = fieldProps(node);
 
   if (!props.prefill || !props.name) {
     return null;
   }
 
+  const rowId = rowIdFrom(row);
+
   return {
     path: base === null ? props.name : `${base}.${index}.${props.name}`,
+    overrideKey: base === null ? props.name : buildOverrideKey(base, rowId, index, props.name),
     resetOn: (props.prefillResetOn ?? []).map((dep) => mapDep(dep, base, index)),
     refreshOn: (props.prefillRefreshOn ?? []).map((dep) => mapDep(dep, base, index)),
   };
@@ -55,7 +70,7 @@ export function collectPrefillTargets(
               : (node.schema ?? []);
 
             for (const child of template) {
-              const target = targetFor(child, name, index);
+              const target = targetFor(child, name, index, row);
               if (target) {
                 targets.push(target);
               }
@@ -121,19 +136,24 @@ export function applyPrefillValue(
   });
 }
 
-export function pathsToClear(
-  targets: PrefillTarget[],
-  previous: Record<string, unknown>,
-  next: Record<string, unknown>,
-): string[] {
-  return targets
-    .filter((target) =>
-      target.resetOn.some((dep) => !Object.is(getPath(previous, dep), getPath(next, dep))),
-    )
-    .map((target) => target.path);
+export function pathsToClear(previous: PrefillSnapshot, next: PrefillSnapshot): string[] {
+  const previousByKey = new Map(
+    previous.targets.map((target) => [target.overrideKey, target] as const),
+  );
+
+  return next.targets
+    .filter((target) => {
+      const previousTarget = previousByKey.get(target.overrideKey);
+
+      return target.resetOn.some((dep, index) => {
+        const previousDep = previousTarget?.resetOn[index] ?? dep;
+
+        return !Object.is(getPath(previous.values, previousDep), getPath(next.values, dep));
+      });
+    })
+    .map((target) => target.overrideKey);
 }
 
-// Seeded as overrides so the first resolve response doesn't clobber values an edit screen loaded.
 export function seededOverrides(
   targets: PrefillTarget[],
   values: Record<string, unknown>,
@@ -144,5 +164,11 @@ export function seededOverrides(
 
       return value !== undefined && value !== null && value !== "";
     })
-    .map((target) => target.path);
+    .map((target) => target.overrideKey);
+}
+
+export function pruneOverrides(overrides: Set<string>, targets: PrefillTarget[]): Set<string> {
+  const liveKeys = new Set(targets.map((target) => target.overrideKey));
+
+  return new Set([...overrides].filter((key) => liveKeys.has(key)));
 }

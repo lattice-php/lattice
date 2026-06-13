@@ -33,7 +33,7 @@ export function useFieldCommit(): FieldCommit {
     } else {
       setGlobal(name, value);
     }
-    prefill?.markUserEdit(scope ? scope.errorKey(name) : name);
+    prefill?.markUserEdit(scope ? scope.overrideKey(name) : name);
   };
   const errorPath = (name: string): string => (scope ? scope.errorKey(name) : name);
 

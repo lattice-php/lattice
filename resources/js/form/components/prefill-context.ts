@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 
 export type PrefillController = {
-  markUserEdit: (path: string) => void;
+  markUserEdit: (overrideKey: string) => void;
 };
 
 const PrefillContext = createContext<PrefillController | null>(null);
