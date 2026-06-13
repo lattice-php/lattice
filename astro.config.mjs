@@ -80,6 +80,7 @@ export default defineConfig({
                 { label: "Hidden input", link: "/forms/fields/hidden-input/" },
                 { label: "Rich editor", link: "/forms/fields/rich-editor/" },
                 { label: "Repeater", link: "/forms/fields/repeater/" },
+                { label: "Builder", link: "/forms/fields/builder/" },
               ],
             },
             { label: "Validation", link: "/forms/validation/" },

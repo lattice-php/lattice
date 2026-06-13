@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Workbench\App\Pages\BuilderDemoPage;
 use Workbench\App\Pages\DependentDemoPage;
 use Workbench\App\Pages\HomePage;
 use Workbench\App\Pages\ProductCreatePage;
@@ -36,6 +37,9 @@ Route::latticePage('/dependent-demo', DependentDemoPage::class)
 
 Route::latticePage('/repeater', RepeaterDemoPage::class)
     ->name('repeater');
+
+Route::latticePage('/builder', BuilderDemoPage::class)
+    ->name('builder');
 
 Route::latticePage('/showcase', ShowcasePage::class)
     ->name('showcase');

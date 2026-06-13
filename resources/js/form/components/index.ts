@@ -1,3 +1,4 @@
+export { BuilderComponent } from "./fields/builder";
 export { CheckboxComponent } from "./fields/checkbox";
 export { ChoiceComponent } from "./fields/choice";
 export { DateInputComponent } from "./fields/date-input";

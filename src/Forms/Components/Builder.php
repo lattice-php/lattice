@@ -2,18 +2,21 @@
 
 namespace Lattice\Lattice\Forms\Components;
 
-use Closure;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\Component;
-use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
+use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Forms\Components\Concerns\HandlesRowSchemas;
 use Lattice\Lattice\Forms\FormData;
 
-#[Component('form.repeater')]
-class Repeater extends Field
+#[Component('form.builder')]
+class Builder extends Field
 {
     use HandlesRowSchemas;
-    use HasChildSchema;
+
+    /**
+     * @var array<int, Block>
+     */
+    protected array $blocks = [];
 
     public ?int $minItems = null;
 
@@ -23,9 +26,17 @@ class Repeater extends Field
 
     public ?string $addLabel = null;
 
-    public ?string $itemLabel = null;
+    public int $defaultItems = 0;
 
-    public int $defaultItems = 1;
+    /**
+     * @param  array<int, Block>  $blocks
+     */
+    public function blocks(array $blocks): static
+    {
+        $this->blocks = $blocks;
+
+        return $this;
+    }
 
     public function minItems(int $min): static
     {
@@ -56,36 +67,7 @@ class Repeater extends Field
     }
 
     /**
-     * Per-row heading. v1 serialises only the string form; the Closure form is
-     * accepted for forward-compatible API parity and resolved in a follow-up.
-     */
-    public function itemLabel(string|Closure $label): static
-    {
-        $this->itemLabel = $label instanceof Closure ? null : $label;
-
-        return $this;
-    }
-
-    public function defaultItems(int $count): static
-    {
-        $this->defaultItems = $count;
-
-        return $this;
-    }
-
-    /**
-     * @return array<int, Field>
-     */
-    public function childFields(): array
-    {
-        return array_values(array_filter(
-            $this->children,
-            static fn ($child): bool => $child instanceof Field,
-        ));
-    }
-
-    /**
-     * The repeater value is always an array; array-level rules live here so they
+     * The builder value is always an array; array-level rules live here so they
      * are not clobbered by the nested per-row rules (which use per-index keys).
      *
      * @return array<int, mixed>
@@ -111,7 +93,15 @@ class Repeater extends Field
      */
     protected function rowFields(array $row): array
     {
-        return $this->childFields();
+        $type = is_string($row['type'] ?? null) ? $row['type'] : null;
+
+        foreach ($this->blocks as $block) {
+            if ($block->type === $type) {
+                return $block->fields();
+            }
+        }
+
+        return [];
     }
 
     public function nestedRules(FormData $data, Request $request): array
@@ -119,11 +109,42 @@ class Repeater extends Field
         $rows = $data->get($this->name);
         $rows = is_array($rows) ? $rows : [];
 
-        return $this->rowRules($this->name, $rows, $data, $request);
+        $rules = $this->rowRules($this->name, $rows, $data, $request);
+
+        $types = array_map(static fn (Block $block): string => $block->type, $this->blocks);
+
+        foreach (array_keys($rows) as $index) {
+            $rules["{$this->name}.{$index}.type"] = ['required', 'in:'.implode(',', $types)];
+        }
+
+        return $rules;
     }
 
     public function castValue(mixed $value): mixed
     {
-        return $this->castRows($value);
+        if (! is_array($value)) {
+            return [];
+        }
+
+        $cast = $this->castRows($value);
+        $rows = array_values($value);
+
+        return array_map(function ($castRow, $original) {
+            if (is_array($original) && isset($original['type'])) {
+                return ['type' => $original['type']] + $castRow;
+            }
+
+            return $castRow;
+        }, $cast, $rows);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 300)]
+    protected function serialiseBlocks(array $data): array
+    {
+        return [...$data, 'blocks' => $this->blocks];
     }
 }

@@ -19,6 +19,7 @@ use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Actions\EditProductAction;
 use Workbench\App\Actions\RejectProductAction;
 use Workbench\App\Actions\RejectSelectedProductsAction;
+use Workbench\App\Forms\BuilderDemoForm;
 use Workbench\App\Forms\DependentDemoForm;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Forms\RepeaterDemoForm;
@@ -122,6 +123,7 @@ class WorkbenchServiceProvider extends ServiceProvider
         ]);
 
         Lattice::forms([
+            BuilderDemoForm::class,
             DependentDemoForm::class,
             ProductForm::class,
             RepeaterDemoForm::class,
