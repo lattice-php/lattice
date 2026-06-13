@@ -66,8 +66,10 @@ final class PageMetadata
             return $own->name;
         }
 
+        $route = $own !== null ? ($own->route ?? '') : '';
+
         $segments = array_filter(
-            explode('/', (string) ($own?->route ?? '')),
+            explode('/', $route),
             static fn (string $segment): bool => $segment !== '' && ! str_starts_with($segment, '{'),
         );
 
