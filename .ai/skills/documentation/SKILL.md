@@ -14,6 +14,9 @@ npm run docs:dev      # local dev server
 npm run docs:build    # production build — MUST pass before you commit (catches broken MDX and imports)
 ```
 
+Both commands run `npm run analyze` first (a Sonda bundle build that writes `docs/public/bundle-report.html`),
+so the first run is slower and leaves that generated report behind — expected, not a change to commit.
+
 Path aliases available in docs files: `@components` → `docs/components`, `@lib` → `docs/lib`,
 `@lattice/lattice` → `resources/js` (the actual package, so previews render real components).
 
