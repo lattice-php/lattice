@@ -32,8 +32,8 @@ final class ProductsPage extends BasePage
 
     public function render(PageSchema $schema): PageSchema
     {
-        return $schema->components([
-            Stack::make('page')->gap(Gap::Large)->children([
+        return $schema->schema([
+            Stack::make('page')->gap(Gap::Large)->schema([
                 Heading::make('Products'),
                 Table::use(ProductsTable::class),
             ]),

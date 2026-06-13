@@ -25,7 +25,7 @@ use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page as BasePage;
 
-#[Page(route: '/dashboard', layout: PageLayout::App, middleware: ['web'])]
+#[Page(route: '/dashboard', layout: PageLayout::None, middleware: ['web'])]
 final class DashboardPage extends BasePage
 {
     public function title(): string
@@ -35,15 +35,15 @@ final class DashboardPage extends BasePage
 
     public function render(PageSchema $schema): PageSchema
     {
-        return $schema->components([
+        return $schema->schema([
             Stack::make('dashboard')
                 ->gap(Gap::Large)
-                ->children([
+                ->schema([
                     Heading::make('Dashboard'),
                     Text::make('Everything below is described in PHP and rendered as React.'),
                     Grid::make('stats')
                         ->columns(2)
-                        ->children([
+                        ->schema([
                             Card::make('Orders', '128 this week.'),
                             Card::make('Revenue', '$4,210 this week.'),
                         ]),

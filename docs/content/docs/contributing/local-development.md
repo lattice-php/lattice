@@ -3,11 +3,46 @@ title: Local Development
 description: Consume Lattice from a local Composer checkout instead of the published packages.
 ---
 
-When you work on Lattice itself — or need to try an unreleased change in a real application — you consume the package straight from a local checkout rather than from Packagist and npm. The PHP side comes from a Composer path repository, and the React renderer is aliased to the package's source (`resources/js`) instead of installed from npm.
+There are two supported local-development loops:
 
-This is the workflow the Testbench app in the repository uses; `workbench/resources/js/app.tsx` and `workbench/resources/css/app.css` are the canonical, working reference.
+- **Workbench development** — the default loop for changing Lattice itself.
+- **External app source-linking** — an integration loop for testing an unreleased checkout inside a real Laravel app with Vite HMR.
 
-## Point Composer at your checkout
+Use package-linking only when you want publish-like verification. It exercises the built `dist` package and therefore requires rebuilding after JavaScript changes.
+
+## Workbench development
+
+The repository ships with an Orchestra Testbench workbench app. This is the default way to develop Lattice because PHP, routes, fixtures, Vite, Tailwind, icons, and the React renderer are already wired together.
+
+Install dependencies once:
+
+```bash
+composer install
+npm install
+```
+
+Serve the workbench:
+
+```bash
+composer serve
+npm run dev
+```
+
+The workbench compiles Lattice directly from `resources/js` and imports the stylesheet directly from `resources/css/lattice.css`, so frontend changes are picked up by Vite without running the package build.
+
+The canonical references are:
+
+- `workbench/resources/js/app.tsx`
+- `workbench/resources/css/app.css`
+- `vite.config.ts`
+
+## External app source-linking
+
+Use this when you need to try local Lattice changes inside an existing Laravel + Inertia React application. The PHP side is linked with Composer, and the React renderer is compiled from source by the consuming app's Vite dev server.
+
+This mode gives you HMR for Lattice's TypeScript and CSS without running `npm run build:lib`.
+
+### Link PHP with Composer
 
 In the consuming app's `composer.json`, add a path repository and require the dev version:
 
@@ -16,91 +51,118 @@ In the consuming app's `composer.json`, add a path repository and require the de
   "repositories": [
     {
       "type": "path",
-      "url": "../lattice-package"
+      "url": "../lattice",
+      "options": {
+        "symlink": true
+      }
     }
-  ],
-  "require": {
-    "lattice-php/lattice": "*@dev"
-  }
+  ]
 }
 ```
 
 ```bash
-composer update lattice-php/lattice
+composer require lattice-php/lattice:"*@dev" -W
 ```
 
-Composer symlinks your checkout into `vendor/lattice-php/lattice`, so PHP changes are picked up immediately.
+Composer symlinks your checkout into `vendor/lattice-php/lattice`, so PHP changes are picked up by the app immediately.
 
-## Install the renderer's JavaScript dependencies
-
-The published npm package declares these for you, but when you consume the source through an alias your app's `node_modules` must provide them itself:
+### Keep the public npm package installed
 
 ```bash
-npm install \
-  @inertiajs/react \
-  react \
-  react-dom \
-  lucide-react \
-  class-variance-authority \
-  clsx \
-  tailwind-merge \
-  @radix-ui/react-checkbox \
-  @radix-ui/react-label \
-  @radix-ui/react-slot \
-  @tiptap/react \
-  @tiptap/pm \
-  @tiptap/starter-kit \
-  @tiptap/extension-details \
-  @tiptap/extension-highlight \
-  @tiptap/extension-link \
-  @tiptap/extension-table \
-  @tiptap/extension-text-align
-npm install -D tailwindcss @tailwindcss/vite tw-animate-css
+npm install @lattice-php/lattice
 ```
 
-## Alias the renderer source
+Keep application imports on the public package name:
 
-Point `@lattice/lattice` at the symlinked source in your Vite config:
+```tsx
+import LatticePage from "@lattice-php/lattice/page";
+import { Provider, registry } from "@lattice-php/lattice";
+```
+
+Do not import from `@lattice/lattice` in application code. That name is an internal source alias used by the package itself.
+
+### Alias the renderer source
+
+Add an opt-in source alias to the consuming app's `vite.config.ts`:
 
 ```ts
-// vite.config.ts
-resolve: {
-  alias: {
-    "@lattice/lattice": path.resolve(
-      __dirname,
-      "vendor/lattice-php/lattice/resources/js",
-    ),
+import path from "node:path";
+import { defineConfig, searchForWorkspaceRoot } from "vite";
+
+const latticeRoot = path.resolve(__dirname, "vendor/lattice-php/lattice");
+const latticeSource = path.resolve(latticeRoot, "resources/js");
+const useLocalLattice = process.env.LATTICE_SOURCE === "1";
+
+export default defineConfig({
+  resolve: {
+    alias: useLocalLattice
+      ? {
+          "@lattice-php/lattice/css": path.resolve(latticeRoot, "resources/css/lattice.css"),
+          "@lattice-php/lattice": latticeSource,
+          "@lattice/lattice": latticeSource,
+        }
+      : {},
+    dedupe: ["react", "react-dom", "@inertiajs/react"],
   },
-},
+  server: useLocalLattice
+    ? {
+        fs: {
+          allow: [searchForWorkspaceRoot(process.cwd()), latticeRoot],
+        },
+      }
+    : undefined,
+});
 ```
 
-Mirror it in `tsconfig.json` so your editor and `tsc` resolve the same imports:
+This keeps normal development on the installed npm package, while `LATTICE_SOURCE=1` switches Vite to the checkout under `vendor/lattice-php/lattice`.
+
+If your editor or `tsc` does not follow Vite aliases, mirror the public package name in `tsconfig.json`:
 
 ```json
 {
   "compilerOptions": {
     "paths": {
-      "@lattice/lattice": ["./vendor/lattice-php/lattice/resources/js/index.ts"],
-      "@lattice/lattice/*": ["./vendor/lattice-php/lattice/resources/js/*"]
+      "@lattice-php/lattice": ["./vendor/lattice-php/lattice/resources/js/index.ts"],
+      "@lattice-php/lattice/*": ["./vendor/lattice-php/lattice/resources/js/*"]
     }
   }
 }
 ```
 
-## Import the stylesheet and register the renderer
+### Scan Lattice source with Tailwind
 
-Import the stylesheet from the source and register the page component exactly as in [Installation](/introduction/installation/), but resolve everything through the alias:
+Keep the regular stylesheet import, then add a Tailwind source path for the linked checkout:
 
 ```css
 /* resources/css/app.css */
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "../../vendor/lattice-php/lattice/resources/css/lattice.css";
+@import "@lattice-php/lattice/css";
+
+@source "../../vendor/lattice-php/lattice/resources/js";
 ```
 
-```tsx
-import LatticePage from "@lattice/lattice/page";
+### Run the app in source mode
+
+```bash
+LATTICE_SOURCE=1 npm run dev
 ```
 
-Since your bundler compiles the package's TypeScript directly, edits to `resources/js` in your checkout are reflected on the next Vite reload.
-</content>
+Vite now compiles the linked checkout directly. TypeScript and CSS changes in Lattice update through the consuming app's dev server without a package build.
+
+## Package-link verification
+
+Use package-linking when you want to test the same surface that npm publishes:
+
+```bash
+npm install @lattice-php/lattice@file:../lattice
+```
+
+This mode reads the package exports and `dist` files. It is closer to a release, but it is not a live source workflow. Run the package build after renderer changes:
+
+```bash
+cd ../lattice
+npm run build:lib
+```
+
+Use source-linking for daily integration work, and package-linking for publish-like checks.

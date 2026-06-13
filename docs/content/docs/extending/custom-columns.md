@@ -132,10 +132,10 @@ After running `lattice:typescript`, `column.props` is narrowed to the generated 
 The generator appended an entry to `resources/js/lattice/columns.ts`:
 
 ```ts
-import { createColumnPlugin } from "@lattice-php/lattice";
+import { createPlugin } from "@lattice-php/lattice";
 import { StatusBadgeCell } from "./columns/status-badge";
 
-export const appColumns = createColumnPlugin({
+export const appColumns = createPlugin({
   name: "app",
   columns: {
     "column.status-badge": StatusBadgeCell,
@@ -145,17 +145,17 @@ export const appColumns = createColumnPlugin({
 
 ## 6. Wire columns in app.tsx
 
-Create the column registry from your plugin and pass it to `Provider`:
+Extend the built-in registry with your column plugin and pass that registry to `Provider`:
 
 ```tsx
 import "../css/app.css";
 import { createInertiaApp } from "@inertiajs/react";
 import { createRoot } from "react-dom/client";
 import LatticePage from "@lattice-php/lattice/page";
-import { createColumnRegistry, Provider, registry } from "@lattice-php/lattice";
+import { extendRegistry, Provider, registry } from "@lattice-php/lattice";
 import { appColumns } from "./lattice/columns";
 
-const columns = createColumnRegistry(appColumns);
+const appRegistry = extendRegistry(registry, appColumns);
 
 createInertiaApp({
   resolve: (name) => {
@@ -166,7 +166,7 @@ createInertiaApp({
   setup({ el, App, props }) {
     if (!el) return;
     createRoot(el).render(
-      <Provider registry={registry} columns={columns}>
+      <Provider registry={appRegistry}>
         <App {...props} />
       </Provider>,
     );
@@ -174,7 +174,7 @@ createInertiaApp({
 });
 ```
 
-If you also have custom fields or components, pass both `registry={appRegistry}` (from `extendRegistry`) and `columns={columns}` to the same `Provider`.
+If you also have custom fields or components, pass all of those plugins to the same `extendRegistry(registry, ...)` call.
 
 ## 7. Generate TypeScript types
 
