@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Components\Icon;
 use Lattice\Lattice\Core\Components\Modal;
 use Lattice\Lattice\Core\Components\SegmentedControl;
 use Lattice\Lattice\Core\Components\Stack;
@@ -8,8 +9,12 @@ use Lattice\Lattice\Core\Components\Tab;
 use Lattice\Lattice\Core\Components\Tabs;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\Align;
+use Lattice\Lattice\Core\Enums\Color;
 use Lattice\Lattice\Core\Enums\Gap;
+use Lattice\Lattice\Core\Enums\Icon as IconName;
+use Lattice\Lattice\Core\Enums\Justify;
 use Lattice\Lattice\Core\Enums\Orientation;
+use Lattice\Lattice\Core\Enums\Size;
 use Lattice\Lattice\Core\Enums\Width;
 
 test('stack serializes enums direction and key wire-identically', function () {
@@ -181,5 +186,63 @@ test('tab confirm keeps a provided timeout and custom redirect', function () {
                     'timeout' => 60,
                 ],
             ],
+        ]);
+});
+
+it('serializes the justify prop', function (): void {
+    $node = wire(Stack::make()->justify(Justify::Between));
+
+    expect($node['props']['justify'])->toBe('between');
+});
+
+it('serializes default text styling props', function (): void {
+    expect(wire(Text::make('Default copy'))['props'])->toBe([
+        'text' => 'Default copy',
+        'align' => null,
+        'size' => 'md',
+        'color' => 'muted',
+    ]);
+});
+
+it('serializes text size and color styling', function (): void {
+    $data = wire(
+        Text::make('Manuel Christlieb')
+            ->align(Align::Center)
+            ->size(Size::Sm)
+            ->color(Color::Default),
+    );
+
+    expect($data['type'])->toBe('text')
+        ->and($data['props'])->toBe([
+            'text' => 'Manuel Christlieb',
+            'align' => 'center',
+            'size' => 'sm',
+            'color' => 'default',
+        ]);
+});
+
+it('serializes an icon with name, size, color and class', function (): void {
+    $data = wire(
+        Icon::make('house')->size(Size::Lg)->color(Color::Danger)->class('opacity-80'),
+    );
+
+    expect($data['type'])->toBe('icon')
+        ->and($data['props'])->toBe([
+            'name' => 'house',
+            'size' => 'lg',
+            'color' => 'danger',
+            'class' => 'opacity-80',
+        ]);
+});
+
+it('resolves a backed enum name and defaults size to md', function (): void {
+    $data = wire(Icon::make(IconName::Send));
+
+    expect($data['type'])->toBe('icon')
+        ->and($data['props'])->toBe([
+            'name' => 'send',
+            'size' => 'md',
+            'color' => null,
+            'class' => null,
         ]);
 });
