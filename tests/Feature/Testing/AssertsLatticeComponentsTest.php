@@ -2,9 +2,13 @@
 
 declare(strict_types=1);
 
+use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Support\Testing\Assertions\ActionAssertions;
 use Lattice\Lattice\Support\Testing\Assertions\FieldAssertions;
 use Lattice\Lattice\Support\Testing\Assertions\FilterAssertions;
 use Lattice\Lattice\Support\Testing\Assertions\FormAssertions;
@@ -84,4 +88,22 @@ it('asserts table filters, columns and operators', function (): void {
                     Op::Contains, Op::StartsWith, Op::EndsWith,
                     Op::Equals, Op::NotEquals, Op::Empty, Op::Filled,
                 ])));
+});
+
+it('asserts action state', function (): void {
+    $action = Action::make('archive')
+        ->endpoint('/lattice/actions/archive')
+        ->label('Archive')
+        ->variant(ButtonVariant::Destructive)
+        ->confirm('Archive product?', 'This hides the product.')
+        ->form([Textarea::make('reason')->label('Reason')]);
+
+    $this->assertLatticeComponent($action)
+        ->action('archive', fn (ActionAssertions $a) => $a
+            ->assertLabel('Archive')
+            ->assertEndpoint('/lattice/actions/archive')
+            ->assertVariant(ButtonVariant::Destructive)
+            ->assertHasConfirmation()
+            ->assertConfirmationTitle('Archive product?')
+            ->assertHasForm());
 });
