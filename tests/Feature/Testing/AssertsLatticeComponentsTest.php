@@ -6,8 +6,15 @@ use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Support\Testing\Assertions\FieldAssertions;
+use Lattice\Lattice\Support\Testing\Assertions\FilterAssertions;
 use Lattice\Lattice\Support\Testing\Assertions\FormAssertions;
+use Lattice\Lattice\Support\Testing\Assertions\TableAssertions;
 use Lattice\Lattice\Support\Testing\AssertsLatticeComponents;
+use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Lattice\Tables\Components\Table;
+use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Lattice\Tables\TableResult;
 use PHPUnit\Framework\AssertionFailedError;
 
 uses(AssertsLatticeComponents::class);
@@ -54,4 +61,27 @@ it('asserts field visibility, conditions and initial value', function (): void {
                 ->assertHiddenWhen(['type' => 'personal'])
                 ->assertHasCondition('visible', 'type', Op::Equals, 'business'))
             ->field('secret', fn (FieldAssertions $f) => $f->assertHidden()));
+});
+
+it('asserts table filters, columns and operators', function (): void {
+    $table = Table::make('products')
+        ->endpoint('/tables/products')
+        ->columns([
+            TextColumn::make('name')->label('Name')->filterable(),
+            TextColumn::make('price')->label('Price'),
+        ])
+        ->result(TableResult::make([]), TableQuery::empty());
+
+    $this->assertLatticeComponent($table)
+        ->table('products', fn (TableAssertions $table) => $table
+            ->assertHasColumn('name')
+            ->assertHasFilter('name')
+            ->assertMissingFilter('price')
+            ->filter('name', fn (FilterAssertions $f) => $f
+                ->assertType(FilterType::Text)
+                ->assertDefaultOperator(Op::Contains)
+                ->assertOperators([
+                    Op::Contains, Op::StartsWith, Op::EndsWith,
+                    Op::Equals, Op::NotEquals, Op::Empty, Op::Filled,
+                ])));
 });
