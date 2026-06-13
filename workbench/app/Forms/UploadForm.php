@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Lattice\Lattice\Attributes\Form;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
@@ -23,8 +24,14 @@ class UploadForm extends FormDefinition
 
     public function handle(Request $request): Response
     {
-        $validated = $this->validate($request);
+        $data = $this->validate($request);
 
-        return redirect('/uploads')->with('upload', $validated);
+        if (($data['avatar'] ?? null) instanceof UploadedFile) {
+            $data['avatar'] = $data['avatar']->store('uploads', 'public');
+        }
+
+        session()->flash('upload', $data);
+
+        return redirect('/uploads');
     }
 }
