@@ -21,6 +21,7 @@ use Workbench\App\Actions\RejectSelectedProductsAction;
 use Workbench\App\Forms\BuilderDemoForm;
 use Workbench\App\Forms\BuilderTableDemoForm;
 use Workbench\App\Forms\DependentDemoForm;
+use Workbench\App\Forms\PricingBuilderDemoForm;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Forms\RepeaterDemoForm;
 use Workbench\App\Forms\ShowcaseForm;
@@ -29,6 +30,7 @@ use Workbench\App\Pages\BuilderDemoPage;
 use Workbench\App\Pages\BuilderTableDemoPage;
 use Workbench\App\Pages\DependentDemoPage;
 use Workbench\App\Pages\HomePage;
+use Workbench\App\Pages\PricingBuilderDemoPage;
 use Workbench\App\Pages\ProductCreatePage;
 use Workbench\App\Pages\ProductEditPage;
 use Workbench\App\Pages\ProductsPage;
@@ -137,6 +139,7 @@ class WorkbenchServiceProvider extends ServiceProvider
             BuilderDemoForm::class,
             BuilderTableDemoForm::class,
             DependentDemoForm::class,
+            PricingBuilderDemoForm::class,
             ProductForm::class,
             RepeaterDemoForm::class,
             ShowcaseForm::class,
@@ -166,6 +169,7 @@ class WorkbenchServiceProvider extends ServiceProvider
             RepeaterDemoPage::class,
             BuilderDemoPage::class,
             BuilderTableDemoPage::class,
+            PricingBuilderDemoPage::class,
             ShowcasePage::class,
         ]);
 
