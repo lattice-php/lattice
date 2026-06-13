@@ -40,6 +40,7 @@ use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
@@ -1589,13 +1590,8 @@ test('pages serialize layout and container metadata', function () {
         }
     };
 
-    $configuredPage = new class extends Page
+    $configuredPage = new #[\Lattice\Lattice\Attributes\Page(container: PageContainer::Default)] class extends Page
     {
-        public function container(): string
-        {
-            return 'default';
-        }
-
         public function render(PageSchema $schema): PageSchema
         {
             return $schema->component(Text::make('Configured page'));
@@ -1603,15 +1599,9 @@ test('pages serialize layout and container metadata', function () {
     };
 
     expect($defaultPage->toArray($defaultPage->render(PageSchema::make()), new Request))
-        ->toMatchArray([
-            'layout' => null,
-            'container' => 'centered',
-        ])
+        ->toMatchArray(['layout' => null, 'container' => 'centered'])
         ->and($configuredPage->toArray($configuredPage->render(PageSchema::make()), new Request))
-        ->toMatchArray([
-            'layout' => null,
-            'container' => 'default',
-        ]);
+        ->toMatchArray(['layout' => null, 'container' => 'default']);
 });
 
 test('pages serialize breadcrumb metadata', function () {

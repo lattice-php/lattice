@@ -8,7 +8,6 @@ use BadMethodCallException;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
@@ -19,16 +18,6 @@ abstract class Page implements PageContract
     public function title(): ?string
     {
         return null;
-    }
-
-    public function layout(): PageLayout|string
-    {
-        return PageLayout::None;
-    }
-
-    public function container(): PageContainer|string
-    {
-        return PageContainer::Centered;
     }
 
     /**
@@ -83,10 +72,12 @@ abstract class Page implements PageContract
      */
     public function toArray(PageSchema $schema, Request $request): array
     {
+        $metadata = PageMetadata::for($this);
+
         return [
             'title' => $this->title(),
-            'layout' => $this->resolveLayout($request),
-            'container' => $this->serializePageMetadata($this->container()),
+            'layout' => $this->resolveLayout($metadata, $request),
+            'container' => $this->serializePageMetadata($metadata->container),
             'breadcrumbs' => $this->breadcrumbs(),
             'schema' => $this->serializeSchema($schema),
             'i18n' => $this->i18nConfig(),
@@ -101,9 +92,9 @@ abstract class Page implements PageContract
      *
      * @return array{key: string, schema: array<int, array<string, mixed>>}|null
      */
-    private function resolveLayout(Request $request): ?array
+    private function resolveLayout(PageMetadata $metadata, Request $request): ?array
     {
-        $key = $this->serializePageMetadata($this->layout());
+        $key = $this->serializePageMetadata($metadata->layout);
 
         if ($key === '' || $key === PageLayout::None->value) {
             return null;
