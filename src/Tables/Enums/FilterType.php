@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Enums;
 
+use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lattice\Lattice\Attributes\TypeScript;
@@ -64,6 +65,15 @@ enum FilterType: string
         return $this === self::Text ? Op::Contains : Op::Equals;
     }
 
+    public function acceptsValue(string $value): bool
+    {
+        return match ($this) {
+            self::Date => self::dateFrom($value) !== null,
+            self::Boolean => self::booleanFrom($value) !== null,
+            default => true,
+        };
+    }
+
     /**
      * @template TModel of Model
      *
@@ -85,10 +95,33 @@ enum FilterType: string
      */
     private function applyBooleanEquals(Builder $builder, string $field, string $value): void
     {
+        $boolean = self::booleanFrom($value);
+
+        if ($boolean === null) {
+            $builder->whereRaw('0 = 1');
+
+            return;
+        }
+
+        $builder->where($field, $boolean);
+    }
+
+    private static function booleanFrom(string $value): ?bool
+    {
         $boolean = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
 
-        if ($boolean !== null) {
-            $builder->where($field, $boolean);
+        return is_bool($boolean) ? $boolean : null;
+    }
+
+    private static function dateFrom(string $value): ?DateTimeImmutable
+    {
+        $date = DateTimeImmutable::createFromFormat('!Y-m-d', $value);
+        $errors = DateTimeImmutable::getLastErrors();
+
+        if ($date === false || ($errors !== false && ($errors['warning_count'] > 0 || $errors['error_count'] > 0))) {
+            return null;
         }
+
+        return $date;
     }
 }

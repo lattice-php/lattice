@@ -15,7 +15,7 @@ final class PageSchema
      */
     private array $components = [];
 
-    public static function make(): static
+    public static function make(): self
     {
         return new self;
     }

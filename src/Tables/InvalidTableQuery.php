@@ -45,4 +45,11 @@ class InvalidTableQuery extends RuntimeException
 
         return new self($message, ['filter' => [$message]]);
     }
+
+    public static function value(string $value, string $field, string $table): self
+    {
+        $message = "Value [{$value}] is not valid for filter [{$field}] on table [{$table}].";
+
+        return new self($message, ['filter' => [$message]]);
+    }
 }

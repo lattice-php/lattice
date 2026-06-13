@@ -134,6 +134,10 @@ final readonly class TableQuery implements JsonSerializable
             if ($operator === null || ! in_array($operator, $column->availableOperators(), true)) {
                 throw InvalidTableQuery::operator($filter->operator, $filter->field, $table);
             }
+
+            if ($operator->requiresValue() && ! $column->filterType()->acceptsValue($filter->value)) {
+                throw InvalidTableQuery::value($filter->value, $filter->field, $table);
+            }
         }
     }
 
