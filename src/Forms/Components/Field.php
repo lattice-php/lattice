@@ -70,6 +70,23 @@ abstract class Field extends Component
 
     protected ?Closure $valueResolver = null;
 
+    /**
+     * Wire flag the client reads to mark this field as an editable-default target.
+     */
+    public ?bool $prefill = null;
+
+    /**
+     * @var array<int, string>|null
+     */
+    public ?array $prefillResetOn = null;
+
+    /**
+     * @var array<int, string>|null
+     */
+    public ?array $prefillRefreshOn = null;
+
+    protected ?Closure $prefillResolver = null;
+
     protected bool $resolving = false;
 
     protected bool $hasResolvedValue = false;
@@ -296,9 +313,28 @@ abstract class Field extends Component
         return $this;
     }
 
-    public function value(mixed $value): static
+    /**
+     * Set the field's value. A non-Closure is a static value. A Closure is a
+     * server resolver: read-only by default (authoritative — overwrites user
+     * input on validate/submit), or an editable default when `editable: true`
+     * (user-owned — applied as a suggestion the client may override).
+     *
+     * @param  mixed|Closure(FormData, Request)|Closure(FormData, FormData, Request)  $value
+     * @param  array<int, string>  $resetOn  Deps that clear a manual override (bare = row-relative, `@x` = form-level).
+     * @param  array<int, string>  $refreshOn  Deps that recompute only when not overridden.
+     */
+    public function value(mixed $value, bool $editable = false, array $resetOn = [], array $refreshOn = []): static
     {
         if ($value instanceof Closure) {
+            if ($editable) {
+                $this->prefillResolver = $value;
+                $this->prefill = true;
+                $this->prefillResetOn = $resetOn === [] ? null : array_values($resetOn);
+                $this->prefillRefreshOn = $refreshOn === [] ? null : array_values($refreshOn);
+
+                return $this;
+            }
+
             $this->valueResolver = $value;
 
             return $this;
@@ -320,6 +356,24 @@ abstract class Field extends Component
     public function isComputed(): bool
     {
         return $this->dependencies !== [] || $this->valueResolver !== null;
+    }
+
+    /**
+     * @internal
+     */
+    public function hasPrefill(): bool
+    {
+        return $this->prefillResolver !== null;
+    }
+
+    /**
+     * @internal
+     */
+    public function resolvePrefillValue(FormData $row, FormData $form, Request $request): mixed
+    {
+        assert($this->prefillResolver !== null);
+
+        return ($this->prefillResolver)($row, $form, $request);
     }
 
     /**

@@ -51,3 +51,28 @@ it('runs dependsOn closures during resolution', function (): void {
 
     expect(wire($field)['props']['options'])->toBe([['label' => 'Germany', 'value' => 'germany']]);
 });
+
+it('stores an editable computed default without making the field server-authoritative', function (): void {
+    $field = TextInput::make('price')->value(
+        fn (FormData $row, FormData $form) => 42.0,
+        editable: true,
+        resetOn: ['product'],
+        refreshOn: ['@customer'],
+    );
+
+    expect($field->hasPrefill())->toBeTrue()
+        ->and($field->isComputed())->toBeFalse()
+        ->and($field->hasResolvedValue())->toBeFalse()
+        ->and($field->resolvePrefillValue(
+            FormData::make(['product' => 7]),
+            FormData::make(['customer' => 'acme']),
+            Request::create('/', 'POST'),
+        ))->toBe(42.0);
+});
+
+it('keeps read-only value(fn) behavior unchanged', function (): void {
+    $field = TextInput::make('total')->value(fn (FormData $data) => 5.0);
+
+    expect($field->isComputed())->toBeTrue()
+        ->and($field->hasPrefill())->toBeFalse();
+});
