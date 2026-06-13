@@ -12,7 +12,12 @@ function priceField(): Node {
   return {
     id: "f1",
     type: "form.text",
-    props: { name: "price", prefill: true, prefillResetOn: ["product"], prefillRefreshOn: ["@customer"] },
+    props: {
+      name: "price",
+      prefill: true,
+      prefillResetOn: ["product"],
+      prefillRefreshOn: ["@customer"],
+    },
   } as unknown as Node;
 }
 
@@ -58,7 +63,8 @@ it("reads and applies nested row paths", () => {
 
   const writes: Array<[string, unknown]> = [];
   const setValue = (name: string, value: unknown) => {
-    const next = typeof value === "function" ? (value as (p: unknown) => unknown)(values[name]) : value;
+    const next =
+      typeof value === "function" ? (value as (p: unknown) => unknown)(values[name]) : value;
     writes.push([name, next]);
   };
   applyPrefillValue(setValue, "items.0.price", 9.5);
