@@ -39,8 +39,10 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
     <SidebarCollapsedContext.Provider value={isCollapsed}>
       <aside
         className={cn(
-          "flex shrink-0 flex-col gap-4 overflow-hidden border-r border-lt-border p-4 transition-[width]",
-          isCollapsed ? "w-16" : "w-64",
+          "flex shrink-0 flex-col gap-4 border-r border-lt-border p-4 transition-[width]",
+          // When collapsed, let item labels fly out past the rail; when
+          // expanded, clip the width transition.
+          isCollapsed ? "w-16 overflow-visible" : "w-64 overflow-hidden",
         )}
         data-lattice-component={node.id}
       >

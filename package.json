@@ -95,6 +95,7 @@
     "prepack": "npm run build:lib",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "check": "npm run lint:fix && npm run format && npm run typecheck && npm run test && npm run build:lib",
     "docs:typecheck": "tsc --noEmit -p docs/tsconfig.json",
     "lint": "oxlint resources/js workbench/resources/js",
     "lint:fix": "oxlint resources/js workbench/resources/js --fix",

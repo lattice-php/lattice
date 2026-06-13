@@ -38,12 +38,18 @@ const justifyClasses: Record<string, string> = {
   start: "justify-start",
 };
 
+const stackHeights: Record<string, string> = {
+  full: "h-full",
+  screen: "min-h-screen",
+};
+
 const StackComponent: RendererComponent<"stack"> = ({ children, node }) => {
   const align = node.props.align ?? "stretch";
   const direction = node.props.direction ?? "column";
   const gap = node.props.gap ?? "md";
   const width = node.props.width ?? "full";
   const justify = node.props.justify;
+  const height = node.props.height;
   const isFlex = direction === "row" || justify != null;
 
   return (
@@ -57,6 +63,7 @@ const StackComponent: RendererComponent<"stack"> = ({ children, node }) => {
         stackGaps[gap] ?? stackGaps.md,
         stackWidths[width] ?? stackWidths.full,
         justify ? justifyClasses[justify] : null,
+        height ? stackHeights[height] : null,
       )}
     >
       {children}

@@ -442,6 +442,7 @@ export type Heading = {
   level: number;
   text: string;
 };
+export type Height = "full" | "screen";
 export type HiddenInput = {
   conditions: {
     visible?: Condition[];
@@ -750,6 +751,7 @@ export type Stack = {
   align: Align | null;
   direction: string | null;
   gap: Gap | null;
+  height: Height | null;
   justify: Justify | null;
   width: Width | null;
 };

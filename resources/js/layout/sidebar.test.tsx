@@ -29,11 +29,11 @@ describe("Sidebar", () => {
   it("collapses to the icon rail when the toggle is clicked", () => {
     renderSidebar({ collapsible: true, rememberState: false });
 
-    expect(screen.getByRole("complementary")).toHaveClass("w-64");
+    expect(screen.getByRole("complementary")).toHaveClass("w-64", "overflow-hidden");
 
     fireEvent.click(screen.getByRole("button", { name: "Collapse sidebar" }));
 
-    expect(screen.getByRole("complementary")).toHaveClass("w-16");
+    expect(screen.getByRole("complementary")).toHaveClass("w-16", "overflow-visible");
     expect(screen.getByRole("button", { name: "Expand sidebar" })).toBeVisible();
   });
 
