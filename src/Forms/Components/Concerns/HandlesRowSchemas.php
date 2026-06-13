@@ -46,6 +46,30 @@ trait HandlesRowSchemas
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    public function rowPrefillValues(FormData $form, Request $request): array
+    {
+        $name = $this->name();
+        $rows = $form->get($name);
+        $rows = is_array($rows) ? $rows : [];
+        $values = [];
+
+        foreach ($rows as $index => $row) {
+            $row = is_array($row) ? $row : [];
+            $scope = FormData::make($row);
+
+            foreach ($this->rowFields($row) as $child) {
+                if ($child->hasPrefill()) {
+                    $values["{$name}.{$index}.{$child->name()}"] = $child->resolvePrefillValue($scope, $form, $request);
+                }
+            }
+        }
+
+        return $values;
+    }
+
+    /**
      * @return array<int, array<string, mixed>>
      */
     protected function castRows(mixed $value): array

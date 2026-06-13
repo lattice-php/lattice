@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Select;
+use Lattice\Lattice\Forms\Contracts\ProvidesRowPrefills;
 use Lattice\Lattice\Forms\FormData;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -47,15 +48,24 @@ trait ResolvesFormFields
     }
 
     /**
-     * @return array{fields: array<string, mixed>, values: array<string, mixed>}
+     * @return array{fields: array<string, mixed>, values: array<string, mixed>, prefill: array<string, mixed>}
      */
     public function resolveFields(Request $request): array
     {
         $data = FormData::fromRequest($request);
         $fields = [];
         $values = [];
+        $prefill = [];
 
         foreach ($this->formFields($request) as $field) {
+            if ($field instanceof ProvidesRowPrefills) {
+                $prefill = [...$prefill, ...$field->rowPrefillValues($data, $request)];
+            }
+
+            if ($field->hasPrefill()) {
+                $prefill[$field->name()] = $field->resolvePrefillValue($data, $data, $request);
+            }
+
             if (! $field->isComputed()) {
                 continue;
             }
@@ -68,6 +78,6 @@ trait ResolvesFormFields
             }
         }
 
-        return ['fields' => $fields, 'values' => $values];
+        return ['fields' => $fields, 'values' => $values, 'prefill' => $prefill];
     }
 }
