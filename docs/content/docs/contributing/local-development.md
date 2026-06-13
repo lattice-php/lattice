@@ -81,39 +81,31 @@ import { Provider, registry } from "@lattice-php/lattice";
 
 Source-linking redirects that same public package name to your local checkout.
 
-### Alias the renderer source
+### Configure Vite
 
-Add an opt-in source alias to the consuming app's `vite.config.ts`:
+Add the Lattice helper to the consuming app's `vite.config.ts`:
 
 ```ts
-import path from "node:path";
-import { defineConfig, searchForWorkspaceRoot } from "vite";
+import { lattice } from "@lattice-php/lattice/vite";
+import { defineConfig } from "vite";
 
-const latticeRoot = path.resolve(__dirname, "vendor/lattice-php/lattice");
-const latticeSource = path.resolve(latticeRoot, "resources/js");
 const useLocalLattice = process.env.LATTICE_SOURCE === "1";
 
 export default defineConfig({
-  resolve: {
-    alias: useLocalLattice
-      ? {
-          "@lattice-php/lattice/css": path.resolve(latticeRoot, "resources/css/lattice.css"),
-          "@lattice-php/lattice": latticeSource,
-        }
-      : {},
-    dedupe: ["react", "react-dom", "@inertiajs/react"],
-  },
-  server: useLocalLattice
-    ? {
-        fs: {
-          allow: [searchForWorkspaceRoot(process.cwd()), latticeRoot],
-        },
-      }
-    : undefined,
+  plugins: [
+    lattice({
+      source: useLocalLattice,
+      icons: {
+        dirs: ["resources/icons"],
+      },
+    }),
+    // your existing Laravel, Inertia, React, and Tailwind plugins
+  ],
 });
 ```
 
-This keeps normal development on the installed npm package, while `LATTICE_SOURCE=1` switches Vite to the checkout under `vendor/lattice-php/lattice`.
+This keeps normal development on the installed npm package, while `LATTICE_SOURCE=1` switches Vite to the checkout under `vendor/lattice-php/lattice`. The helper configures the source aliases, Vite filesystem allow-list, React/Inertia dedupe, and the package-link Vitest dependency inline rule.
+It also registers the SVG sprite plugin with Lattice's built-in icons and any app icon dirs you pass through `icons.dirs`.
 
 If your editor or `tsc` does not follow Vite aliases, mirror the public package name in `tsconfig.json`:
 
@@ -170,6 +162,13 @@ This mode reads the package exports and `dist` files. It is closer to a release,
 ```bash
 cd ../lattice
 npm run build:lib
+```
+
+For a continuously refreshed package-link build:
+
+```bash
+cd ../lattice
+npm run build:lib:watch
 ```
 
 Use source-linking for daily integration work, and package-linking for publish-like checks.

@@ -7,27 +7,24 @@ Lattice renders icons from a single **SVG sprite** built at your app's Vite step
 an icon by **name** (a string that comes from the server), and the sprite resolves it at render time —
 so adding an icon is just dropping an SVG in a folder, with no per-icon imports.
 
-The sprite is produced by [`@lattice-php/vite-svg-sprite`](https://github.com/lattice-php/vite-svg-sprite),
-which merges Lattice's built-in icons with your own into one cached file.
+The sprite is produced by Lattice's Vite helper, which wraps
+[`@lattice-php/vite-svg-sprite`](https://github.com/lattice-php/vite-svg-sprite) and merges Lattice's
+built-in icons with your own into one cached file.
 
 ## Setup
 
-Install the plugin:
-
-```sh
-npm i -D @lattice-php/vite-svg-sprite
-```
-
-Add it to `vite.config.ts`, pointing it at Lattice's icons (shipped in the Composer package) and your
-own folder. Later directories win on name collisions, so `resources/icons` can override a built-in icon.
+Add Lattice's helper to `vite.config.ts`. The helper includes Lattice's icons automatically. Later
+directories win on name collisions, so `resources/icons` can override a built-in icon.
 
 ```ts
-import { svgSprite } from "@lattice-php/vite-svg-sprite";
+import { lattice } from "@lattice-php/lattice/vite";
 
 export default defineConfig({
   plugins: [
-    svgSprite({
-      iconDirs: ["vendor/lattice-php/lattice/resources/icons", "resources/icons"],
+    lattice({
+      icons: {
+        dirs: ["resources/icons"],
+      },
     }),
     laravel({ /* ... */ }),
     // ...
@@ -38,7 +35,7 @@ export default defineConfig({
 Then pass the sprite into Lattice's `Provider`:
 
 ```tsx
-/// <reference types="@lattice-php/vite-svg-sprite/client" />
+/// <reference types="@lattice-php/lattice/svg-sprite-client" />
 import sprite from "virtual:svg-sprite";
 import { Provider, registry } from "@lattice-php/lattice";
 
@@ -110,16 +107,18 @@ to themeable tokens (`--lt-icon-xs` … `--lt-icon-xl`).
 The plugin can generate a type module and/or a PHP enum from the built sprite, so icon names stay
 autocompletable. Both files are committed and regenerated idempotently on each build.
 
-**TypeScript** — `dts` emits an `IconName` union and augments `<Icon name>` so the editor suggests your
-icons:
+**TypeScript** — Lattice emits `resources/js/types/sprite-icons.ts` by default. Override `dts` when you
+want a different generated file:
 
 ```ts
-svgSprite({
-  iconDirs: ["vendor/lattice-php/lattice/resources/icons", "resources/icons"],
-  dts: {
-    file: "resources/js/sprite-icons.ts",
-    augmentModule: "@lattice-php/lattice",
-    augmentInterface: "KnownIcons",
+lattice({
+  icons: {
+    dirs: ["resources/icons"],
+    dts: {
+      file: "resources/js/sprite-icons.ts",
+      augmentModule: "@lattice-php/lattice",
+      augmentInterface: "KnownIcons",
+    },
   },
 });
 ```
@@ -127,9 +126,11 @@ svgSprite({
 **PHP** — `phpEnum` emits a backed enum covering your full sprite:
 
 ```ts
-svgSprite({
-  // ...
-  phpEnum: { file: "app/Support/Icon.php", namespace: "App\\Support", enum: "Icon" },
+lattice({
+  icons: {
+    dirs: ["resources/icons"],
+    phpEnum: { file: "app/Support/Icon.php", namespace: "App\\Support", enum: "Icon" },
+  },
 });
 ```
 

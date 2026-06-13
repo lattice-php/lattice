@@ -1,4 +1,3 @@
-/// <reference types="@lattice-php/vite-svg-sprite/client" />
 import "../css/app.css";
 import { createInertiaApp } from "@inertiajs/react";
 import {

@@ -66,6 +66,54 @@ Keep the Composer and npm package lines aligned. For pre-1.0 releases, install t
 
 The split is intentional: React, React DOM, and Inertia stay as peer dependencies so the application owns its SPA runtime, while Lattice bundles its renderer internals.
 
+### Configure Vite
+
+Add the Lattice helper to your Vite plugins. It registers the SVG sprite used by Lattice icons, includes Lattice's built-in icons, scans any app icon directories you pass, and generates the TypeScript icon-name module Lattice uses for autocomplete:
+
+```ts
+// vite.config.ts
+import inertia from "@inertiajs/vite";
+import { lattice } from "@lattice-php/lattice/vite";
+import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import laravel from "laravel-vite-plugin";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [
+    lattice({
+      icons: {
+        dirs: ["resources/icons"],
+      },
+    }),
+    laravel({
+      input: ["resources/css/app.css", "resources/js/app.tsx"],
+      refresh: true,
+    }),
+    inertia(),
+    react(),
+    tailwindcss(),
+  ],
+});
+```
+
+`icons.dirs` is optional. Use it when your app has custom SVGs in `resources/icons`. The helper emits `resources/js/types/sprite-icons.ts` by default so icon names stay typed on the React side.
+
+To also generate a PHP enum for your full app sprite, add `phpEnum`:
+
+```ts
+lattice({
+  icons: {
+    dirs: ["resources/icons"],
+    phpEnum: {
+      file: "app/Support/Icon.php",
+      namespace: "App\\Support",
+      enum: "Icon",
+    },
+  },
+});
+```
+
 ### Import the stylesheet
 
 Import Lattice's stylesheet from your main CSS entry, after Tailwind. It defines the theme tokens the components use and registers the package's compiled output with Tailwind automatically, so no extra `@source` line is needed:
@@ -79,35 +127,37 @@ Import Lattice's stylesheet from your main CSS entry, after Tailwind. It defines
 
 The component tokens (`--lt-*`) fall back to sensible defaults, so the UI is styled out of the box. They also read from shadcn-style variables (`--background`, `--primary`, …) when you define them, which lets Lattice inherit an existing theme.
 
-### Register the renderer
+### Register the Inertia renderer
 
-Every Lattice route resolves to the same Inertia page component, `lattice/page`, which the package provides. In your Inertia entrypoint, resolve that name to Lattice's page component and fall back to your own pages for anything else:
+Every Lattice route resolves to the same Inertia page component, `lattice/page`, which the package provides. In your Inertia entrypoint, use Lattice's page resolver, import the sprite Vite exposes, and wrap the app in `Provider`:
 
 ```tsx
 // resources/js/app.tsx
+/// <reference types="@lattice-php/lattice/svg-sprite-client" />
 import "../css/app.css";
-import { createInertiaApp } from "@inertiajs/react";
+import { createInertiaApp, type ResolvedComponent } from "@inertiajs/react";
+import { createPageResolver, Provider, registry } from "@lattice-php/lattice";
 import { createRoot } from "react-dom/client";
-import LatticePage from "@lattice-php/lattice/page";
+import sprite from "virtual:svg-sprite";
+
+const pages = import.meta.glob<ResolvedComponent>("./Pages/**/*.tsx");
+const resolve = createPageResolver(pages);
 
 createInertiaApp({
-  resolve: (name) => {
-    if (name === "lattice/page") {
-      return { default: LatticePage };
-    }
-
-    const pages = import.meta.glob("./Pages/**/*.tsx", { eager: true });
-    return pages[`./Pages/${name}.tsx`];
-  },
+  resolve,
   setup({ el, App, props }) {
     if (el) {
-      createRoot(el).render(<App {...props} />);
+      createRoot(el).render(
+        <Provider registry={registry} sprite={sprite}>
+          <App {...props} />
+        </Provider>,
+      );
     }
   },
 });
 ```
 
-That single `resolve` branch is all an application needs for every page Lattice routes.
+Keep your existing Inertia options such as `title`, `progress`, layouts, and SSR setup. The important pieces are `createPageResolver(...)` and the single `Provider` around the app.
 
 ### Customizing the registry
 
@@ -117,7 +167,7 @@ The renderer resolves component types from a registry. Lattice exports the piece
 import { Provider, Renderer, registry, createRegistry, extendRegistry } from "@lattice-php/lattice";
 ```
 
-Wrap your tree in `Provider` with a custom registry to register your own component types, or use `extendRegistry` to add to the defaults. Heavy built-ins (forms, tables, the rich editor) are registered lazily and code-split, so you only ship what a page actually renders.
+Pass a custom registry to the same `Provider` when you register your own component types, or use `extendRegistry` to add to the defaults. Heavy built-ins (forms, tables, the rich editor) are registered lazily and code-split, so you only ship what a page actually renders.
 
 ## Next steps
 
