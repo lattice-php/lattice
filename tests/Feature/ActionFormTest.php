@@ -89,6 +89,17 @@ it('rejects an invalid embedded form with a 422', function (): void {
         ->assertJsonValidationErrors('reason');
 });
 
+it('validates final embedded form submissions before handle is called', function (): void {
+    Lattice::actions([UnvalidatedRejectActionFixture::class]);
+    $ref = componentRef(wire(ActionComponent::use(UnvalidatedRejectActionFixture::class)));
+
+    postJson('/lattice/actions/test.unvalidated-reject', ['reason' => ''], latticeHeaders($ref))
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('reason');
+
+    expect(session('handled-unvalidated-reject'))->toBeNull();
+});
+
 it('validates the embedded form precognitively without running handle', function (): void {
     Lattice::actions([RejectActionFixture::class]);
     $ref = componentRef(wire(ActionComponent::use(RejectActionFixture::class)));
@@ -166,5 +177,26 @@ class RejectActionFixture extends ActionDefinition
         $data = $this->validate($request);
 
         return ActionResult::success(['reason' => $data['reason']]);
+    }
+}
+
+#[Action('test.unvalidated-reject')]
+class UnvalidatedRejectActionFixture extends ActionDefinition
+{
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action
+            ->label('Reject')
+            ->method(HttpMethod::Post)
+            ->form([
+                Textarea::make('reason', 'Reason')->required(),
+            ]);
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        $request->session()->put('handled-unvalidated-reject', true);
+
+        return ActionResult::success(['handled' => true]);
     }
 }

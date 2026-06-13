@@ -40,6 +40,8 @@ final class FormController
             return $this->validatePrecognitive($request, fn () => $definition->validate($request));
         }
 
+        $definition->validate($request);
+
         return $definition->handle($request);
     }
 }
