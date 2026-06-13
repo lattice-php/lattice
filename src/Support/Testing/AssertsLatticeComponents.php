@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\Testing;
 
+use Illuminate\Http\Response;
 use Illuminate\Testing\TestResponse;
 use Inertia\Testing\AssertableInertia;
 use JsonSerializable;
@@ -23,6 +24,9 @@ trait AssertsLatticeComponents
         return new ComponentAssertions(new ComponentNode($wire));
     }
 
+    /**
+     * @param  TestResponse<Response>  $response
+     */
     public function assertLatticePage(TestResponse $response): ComponentAssertions
     {
         $page = AssertableInertia::fromTestResponse($response)->toArray();

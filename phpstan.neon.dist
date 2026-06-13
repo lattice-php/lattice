@@ -1,5 +1,6 @@
 includes:
     - vendor/larastan/larastan/extension.neon
+    - vendor/mrpunyapal/peststan/extension.neon
 
 parameters:
     paths:

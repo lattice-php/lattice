@@ -15,7 +15,6 @@ use Lattice\Lattice\Support\Testing\Assertions\FieldAssertions;
 use Lattice\Lattice\Support\Testing\Assertions\FilterAssertions;
 use Lattice\Lattice\Support\Testing\Assertions\FormAssertions;
 use Lattice\Lattice\Support\Testing\Assertions\TableAssertions;
-use Lattice\Lattice\Support\Testing\AssertsLatticeComponents;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\Enums\FilterType;
@@ -24,8 +23,6 @@ use Lattice\Lattice\Tables\TableResult;
 use PHPUnit\Framework\AssertionFailedError;
 
 use function Pest\Laravel\withoutVite;
-
-uses(AssertsLatticeComponents::class);
 
 it('navigates a built form and asserts page rendering by visibility', function (): void {
     $form = Form::make('create')->action('/products')->schema([

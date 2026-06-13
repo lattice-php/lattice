@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Support\Testing\ComponentNode;
 
+/**
+ * @param  array<string, mixed>  $data
+ */
 function componentNode(array $data): ComponentNode
 {
     return new ComponentNode($data);

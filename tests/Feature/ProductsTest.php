@@ -10,7 +10,6 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Support\Testing\Assertions\FormAssertions;
-use Lattice\Lattice\Support\Testing\AssertsLatticeComponents;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\InvalidTableQuery;
 use Lattice\Lattice\Tables\TableQuery;
@@ -27,8 +26,6 @@ use function Pest\Laravel\get;
 use function Pest\Laravel\patch;
 use function Pest\Laravel\post;
 use function Pest\Laravel\withoutVite;
-
-uses(AssertsLatticeComponents::class);
 
 /**
  * @param  array<string, mixed>  $component
