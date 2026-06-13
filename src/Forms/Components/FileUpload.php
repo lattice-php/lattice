@@ -226,6 +226,8 @@ class FileUpload extends Field
             acceptedTypes: $this->acceptedFileTypes,
             maxSizeKb: $this->maxSize,
             disk: $this->resolveDisk(),
+            signed: $this->signed,
+            tempPrefix: $this->tempPrefix(),
         );
     }
 }

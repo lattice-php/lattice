@@ -88,9 +88,10 @@ it('rejects a multipart image upload that exceeds maxSize', function (): void {
         ->assertSessionHasErrors(['avatar']);
 });
 
-it('accepts a signed key that exists and rejects a tampered one', function (): void {
+it('accepts a signed tmp key that exists and rejects an out-of-prefix key', function (): void {
     Storage::fake('s3');
     Storage::disk('s3')->put('tmp/real.pdf', 'data');
+    Storage::disk('s3')->put('uploads/secret.pdf', 'data');
 
     Lattice::forms([UploadForm::class]);
 

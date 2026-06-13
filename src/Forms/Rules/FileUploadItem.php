@@ -10,10 +10,13 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Validates a single FileUpload item, which is either a freshly uploaded file
- * (multipart `UploadedFile`), a freshly signed temp key, or a retained stored
- * path string. New uploads are checked against the field's type/size config;
- * string references must resolve to an object that exists on the disk.
+ * Validates a single FileUpload item. In multipart mode (`signed=false`) a
+ * submitted value must be a freshly uploaded `UploadedFile`; in signed mode
+ * (`signed=true`) it must be a temp key under the field's temp prefix that
+ * exists on the disk. Anything else (a string in multipart mode, an
+ * `UploadedFile` in signed mode, an out-of-prefix key) is a tamper attempt and
+ * is rejected. Existing files on edit are display-only and are never
+ * resubmitted as field values.
  */
 final readonly class FileUploadItem implements ValidationRule
 {
@@ -25,18 +28,36 @@ final readonly class FileUploadItem implements ValidationRule
         private ?array $acceptedTypes,
         private ?int $maxSizeKb,
         private string $disk,
+        private bool $signed,
+        private string $tempPrefix,
     ) {}
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        if ($value === null || $value === '') {
+            return;
+        }
+
         if ($value instanceof UploadedFile) {
+            if ($this->signed) {
+                $fail('The :attribute is not a valid upload.');
+
+                return;
+            }
+
             $this->validateUpload($value, $fail);
 
             return;
         }
 
-        if (is_string($value) && $value !== '') {
-            $this->validateReference($value, $fail);
+        if (is_string($value)) {
+            if (! $this->signed) {
+                $fail('The :attribute is not a valid file.');
+
+                return;
+            }
+
+            $this->validateSignedKey($value, $fail);
 
             return;
         }
@@ -67,9 +88,15 @@ final readonly class FileUploadItem implements ValidationRule
         }
     }
 
-    private function validateReference(string $value, Closure $fail): void
+    private function validateSignedKey(string $key, Closure $fail): void
     {
-        if (! Storage::disk($this->disk)->exists($value)) {
+        if (! str_starts_with($key, rtrim($this->tempPrefix, '/').'/')) {
+            $fail('The :attribute upload could not be found.');
+
+            return;
+        }
+
+        if (! Storage::disk($this->disk)->exists($key)) {
             $fail('The :attribute upload could not be found.');
         }
     }

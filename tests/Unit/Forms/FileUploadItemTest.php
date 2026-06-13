@@ -12,42 +12,69 @@ function fileRuleFails(FileUploadItem $rule, mixed $value): bool
     return Validator::make(['document' => $value], ['document' => [$rule]])->fails();
 }
 
-it('accepts a valid uploaded file within size and type', function (): void {
-    $rule = new FileUploadItem(image: false, acceptedTypes: ['application/pdf'], maxSizeKb: 100, disk: 's3');
+it('accepts a valid multipart upload within size and type', function (): void {
+    $rule = new FileUploadItem(image: false, acceptedTypes: ['application/pdf'], maxSizeKb: 100, disk: 's3', signed: false, tempPrefix: 'tmp');
 
     expect(fileRuleFails($rule, UploadedFile::fake()->create('a.pdf', 50, 'application/pdf')))->toBeFalse();
 });
 
-it('rejects an uploaded file that is too large', function (): void {
-    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: 10, disk: 's3');
+it('rejects a multipart upload that is too large', function (): void {
+    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: 10, disk: 's3', signed: false, tempPrefix: 'tmp');
 
     expect(fileRuleFails($rule, UploadedFile::fake()->create('big.pdf', 999)))->toBeTrue();
 });
 
-it('rejects a non-image when image is required', function (): void {
-    $rule = new FileUploadItem(image: true, acceptedTypes: null, maxSizeKb: null, disk: 's3');
+it('rejects a multipart non-image when image is required', function (): void {
+    $rule = new FileUploadItem(image: true, acceptedTypes: null, maxSizeKb: null, disk: 's3', signed: false, tempPrefix: 'tmp');
 
     expect(fileRuleFails($rule, UploadedFile::fake()->create('a.pdf', 1, 'application/pdf')))->toBeTrue();
 });
 
-it('accepts an existing signed tmp key that exists on disk', function (): void {
+it('rejects a string value in multipart mode (tamper)', function (): void {
     Storage::fake('s3');
     Storage::disk('s3')->put('tmp/abc.pdf', 'data');
-    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: null, disk: 's3');
+    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: null, disk: 's3', signed: false, tempPrefix: 'tmp');
+
+    expect(fileRuleFails($rule, 'tmp/abc.pdf'))->toBeTrue();
+});
+
+it('accepts a signed tmp key that exists on disk', function (): void {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('tmp/abc.pdf', 'data');
+    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: null, disk: 's3', signed: true, tempPrefix: 'tmp');
 
     expect(fileRuleFails($rule, 'tmp/abc.pdf'))->toBeFalse();
 });
 
-it('rejects a missing signed key', function (): void {
+it('rejects a missing signed tmp key', function (): void {
     Storage::fake('s3');
-    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: null, disk: 's3');
+    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: null, disk: 's3', signed: true, tempPrefix: 'tmp');
 
     expect(fileRuleFails($rule, 'tmp/missing.pdf'))->toBeTrue();
 });
 
-it('rejects a string outside the temp prefix that does not exist', function (): void {
+it('rejects a signed key outside the temp prefix even if it exists (tamper)', function (): void {
     Storage::fake('s3');
-    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: null, disk: 's3');
+    Storage::disk('s3')->put('uploads/secret.pdf', 'data');
+    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: null, disk: 's3', signed: true, tempPrefix: 'tmp');
 
-    expect(fileRuleFails($rule, 'uploads/evil.pdf'))->toBeTrue();
+    expect(fileRuleFails($rule, 'uploads/secret.pdf'))->toBeTrue();
+});
+
+it('rejects an UploadedFile in signed mode (tamper)', function (): void {
+    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: null, disk: 's3', signed: true, tempPrefix: 'tmp');
+
+    expect(fileRuleFails($rule, UploadedFile::fake()->create('a.pdf', 1, 'application/pdf')))->toBeTrue();
+});
+
+it('passes for an empty string', function (): void {
+    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: null, disk: 's3', signed: false, tempPrefix: 'tmp');
+
+    expect(fileRuleFails($rule, ''))->toBeFalse();
+});
+
+it('passes for a null value', function (): void {
+    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: null, disk: 's3', signed: true, tempPrefix: 'tmp');
+
+    expect(fileRuleFails($rule, null))->toBeFalse();
 });
