@@ -74,7 +74,7 @@ test('a menu item includes unset optional props as null on the wire', function (
 });
 
 test('fromPage resolves the href and a default label from the page route', function () {
-    Route::latticePage('/menu-products', MenuProductsPage::class);
+    Route::get('/menu-products', [MenuProductsPage::class, 'render']);
 
     $wire = wire(MenuItem::fromPage(MenuProductsPage::class));
 
@@ -85,7 +85,7 @@ test('fromPage resolves the href and a default label from the page route', funct
 });
 
 test('fromPage substitutes route parameters into the href', function () {
-    Route::latticePage('/menu-products/{product}', MenuProductsPage::class);
+    Route::get('/menu-products/{product}', [MenuProductsPage::class, 'render']);
 
     $wire = wire(MenuItem::fromPage(MenuProductsPage::class, ['product' => 7]));
 
@@ -93,7 +93,7 @@ test('fromPage substitutes route parameters into the href', function () {
 });
 
 test('fromPage label can be overridden fluently', function () {
-    Route::latticePage('/menu-products', MenuProductsPage::class);
+    Route::get('/menu-products', [MenuProductsPage::class, 'render']);
 
     $wire = wire(MenuItem::fromPage(MenuProductsPage::class)->label('Catalog'));
 

@@ -1,51 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Workbench\App\Pages\BuilderDemoPage;
-use Workbench\App\Pages\BuilderTableDemoPage;
-use Workbench\App\Pages\DependentDemoPage;
-use Workbench\App\Pages\HomePage;
-use Workbench\App\Pages\ProductCreatePage;
-use Workbench\App\Pages\ProductEditPage;
-use Workbench\App\Pages\ProductsPage;
-use Workbench\App\Pages\RepeaterDemoPage;
-use Workbench\App\Pages\ShowcasePage;
-use Workbench\App\Pages\TablesPage;
-use Workbench\App\Pages\TabsPage;
-
-Route::latticePage('/', HomePage::class)
-    ->name('home');
-
-Route::latticePage('/tables', TablesPage::class)
-    ->name('tables');
-
-Route::latticePage('/tabs', TabsPage::class)
-    ->name('tabs');
-
-Route::latticePage('/products', ProductsPage::class)
-    ->name('products.index');
-
-Route::latticePage('/products/create', ProductCreatePage::class)
-    ->name('products.create');
-
-Route::latticePage('/products/{product}/edit', ProductEditPage::class)
-    ->name('products.edit');
-
-Route::latticePage('/dependent-demo', DependentDemoPage::class)
-    ->name('dependent.demo');
-
-Route::latticePage('/repeater', RepeaterDemoPage::class)
-    ->name('repeater');
-
-Route::latticePage('/builder', BuilderDemoPage::class)
-    ->name('builder');
-
-Route::latticePage('/builder-table', BuilderTableDemoPage::class)
-    ->name('builder-table');
-
-Route::latticePage('/showcase', ShowcasePage::class)
-    ->name('showcase');
 
 Route::get('/dashboard', fn (): string => 'Dashboard')->name('dashboard');
 Route::get('/login', fn (): string => 'Login')->name('login');

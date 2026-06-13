@@ -26,7 +26,7 @@ The same flow powers interactive pieces: a form submit, a table page change, or 
 
 ### Pages
 
-A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its UI in `render()`. You point a URI at it with the `Route::latticePage()` macro — no Inertia page component or controller to write by hand. A page also carries its layout, container, breadcrumbs, and menus.
+A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its UI in `render()`. You annotate it with `#[Page(route: '…')]`; Lattice discovers the page and registers its route — no Inertia page component or controller to write by hand. A page also carries its layout, container, breadcrumbs, and menus.
 
 [Learn more →](/core/pages/)
 
@@ -56,7 +56,7 @@ Actions run on the server in response to a click — a single row action or a bu
 
 ### Navigation
 
-Menus and the sidebar are defined in PHP — most simply by adding `->sidebar()` to a `latticePage` route — and surfaced to the React shell, so navigation stays in sync with the pages it points at.
+Menus and the sidebar are composed from `Menu` and `Sidebar` layout components in PHP and surfaced to the React shell, so navigation stays in sync with the pages it points at.
 
 [Learn more →](/core/navigation/)
 

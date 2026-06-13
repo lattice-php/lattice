@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
+use Lattice\Lattice\Attributes\Page;
 use Lattice\Lattice\Core\Components\Badge;
 use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\Card;
@@ -16,6 +17,7 @@ use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Tables\Components\Table;
 use Workbench\App\Tables\UsersTable;
 
+#[Page(route: '/')]
 final class HomePage extends WorkbenchPage
 {
     public function title(): string

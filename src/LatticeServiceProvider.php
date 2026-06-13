@@ -5,8 +5,7 @@ namespace Lattice\Lattice;
 
 use BackedEnum;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Routing\Route;
-use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Route;
 use Inertia\ResponseFactory;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionRegistry;
@@ -24,6 +23,7 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Layouts\LayoutRegistry;
+use Lattice\Lattice\Pages\PageRegistry;
 use Lattice\Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Tables\TableRegistry;
@@ -58,6 +58,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(LayoutRegistry::class);
         $this->app->singleton(ActionRegistry::class);
         $this->app->singleton(BulkActionRegistry::class);
+        $this->app->singleton(PageRegistry::class);
         $this->app->singleton(DefinitionDiscovery::class);
         $this->app->alias(DefinitionDiscovery::class, DiscoversDefinitions::class);
         $this->app->singleton(ComponentReferenceSigner::class);
@@ -66,10 +67,6 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         // Default role; the workbench rebinds this to BaseProfile.
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
-
-        if (! Router::hasMacro('latticePage')) {
-            Router::macro('latticePage', fn (string $uri, string $page): Route => Lattice::page($uri, $page));
-        }
 
         if (! ResponseFactory::hasMacro('toRoute')) {
             ResponseFactory::macro(
@@ -99,5 +96,30 @@ final class LatticeServiceProvider extends PackageServiceProvider
         foreach (DefinitionDiscovery::configuredPaths() as $path => $namespace) {
             Lattice::discover($path, $namespace);
         }
+
+        // Deferred so pages registered by any provider's boot() (e.g. an app's
+        // own `Lattice::pages([...])`) are collected before the routes are built.
+        $this->app->booted(fn () => $this->bootPages());
+    }
+
+    /**
+     * Build a route for every discovered and registered page — but only when the
+     * router is not serving a cached route table. With `route:cache` active,
+     * Laravel loads the routes from the cache, so re-scanning the filesystem and
+     * re-registering them here on every request would be redundant work.
+     */
+    public function bootPages(): void
+    {
+        if ($this->app->routesAreCached()) {
+            return;
+        }
+
+        foreach (Lattice::pages()->all() as $page) {
+            Route::get($page->route, [$page->class, 'render'])
+                ->name($page->name)
+                ->middleware($page->middleware);
+        }
+
+        Route::getRoutes()->refreshNameLookups();
     }
 }

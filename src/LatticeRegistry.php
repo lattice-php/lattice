@@ -3,9 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice;
 
-use Illuminate\Routing\Route;
-use Illuminate\Routing\Router;
-use InvalidArgumentException;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionDefinition;
@@ -16,9 +13,9 @@ use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
-use Lattice\Lattice\Http\PageContract;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
+use Lattice\Lattice\Pages\PageRegistry;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
 
@@ -31,7 +28,7 @@ final class LatticeRegistry
         private readonly FormRegistry $forms,
         private readonly FragmentRegistry $fragments,
         private readonly LayoutRegistry $layouts,
-        private readonly Router $router,
+        private readonly PageRegistry $pages,
         private readonly TableRegistry $tables,
     ) {}
 
@@ -83,6 +80,24 @@ final class LatticeRegistry
         $this->layouts->register($layouts);
     }
 
+    /**
+     * @param  class-string|array<int, class-string>  $pages
+     */
+    /**
+     * Register pages and/or return the page registry. Call without arguments to
+     * read every routable page via `Lattice::pages()->all()`.
+     *
+     * @param  class-string|array<int, class-string>  $pages
+     */
+    public function pages(string|array $pages = []): PageRegistry
+    {
+        if ($pages !== []) {
+            $this->pages->register($pages);
+        }
+
+        return $this->pages;
+    }
+
     public function layoutRegistry(): LayoutRegistry
     {
         return $this->layouts;
@@ -102,6 +117,7 @@ final class LatticeRegistry
     public function discover(string $path, string $namespace): void
     {
         $registries = $this->discoverableRegistries();
+
         $definitions = $this->discovery->discover($path, $namespace, array_values($registries));
 
         foreach ($definitions as $group => $classes) {
@@ -122,21 +138,5 @@ final class LatticeRegistry
             array_map(static fn (DefinitionRegistry $registry): string => $registry->group(), $registries),
             $registries,
         );
-    }
-
-    /**
-     * @param  class-string  $page
-     */
-    public function page(string $uri, string $page): Route
-    {
-        if (! is_a($page, PageContract::class, true)) {
-            throw new InvalidArgumentException(sprintf(
-                'Lattice page [%s] must implement [%s].',
-                $page,
-                PageContract::class,
-            ));
-        }
-
-        return $this->router->get($uri, [$page, 'render']);
     }
 }

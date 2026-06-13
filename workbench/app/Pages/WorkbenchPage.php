@@ -3,19 +3,10 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
+use Lattice\Lattice\Attributes\Page;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
-use Lattice\Lattice\Http\Page;
+use Lattice\Lattice\Http\Page as BasePage;
 
-abstract class WorkbenchPage extends Page
-{
-    public function layout(): PageLayout
-    {
-        return PageLayout::App;
-    }
-
-    public function container(): PageContainer
-    {
-        return PageContainer::Default;
-    }
-}
+#[Page(layout: PageLayout::App, container: PageContainer::Default, middleware: ['web'])]
+abstract class WorkbenchPage extends BasePage {}

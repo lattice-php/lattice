@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\Layout;
+use Lattice\Lattice\Attributes\Page as PageAttr;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Components\Text;
-use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\Exceptions\UnknownLatticeComponent;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
@@ -29,13 +29,9 @@ final class WorkbenchAppLayout extends LayoutDefinition
     }
 }
 
+#[PageAttr(layout: 'app')]
 final class WorkbenchLayoutPage extends Page
 {
-    public function layout(): string
-    {
-        return 'app';
-    }
-
     public function render(PageSchema $schema): PageSchema
     {
         return $schema->component(Text::make('Page body'));
@@ -95,11 +91,6 @@ test('a page without a layout serializes a null layout', function () {
 test('the none layout sentinel serializes a null layout', function () {
     $page = new class extends Page
     {
-        public function layout(): PageLayout
-        {
-            return PageLayout::None;
-        }
-
         public function render(PageSchema $schema): PageSchema
         {
             return $schema->component(Text::make('body'));

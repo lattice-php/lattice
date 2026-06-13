@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
+use Lattice\Lattice\Attributes\Page;
 use Lattice\Lattice\Core\Components\Badge;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
@@ -17,6 +18,7 @@ use Workbench\App\Tables\UsersNoneTable;
 use Workbench\App\Tables\UsersSimpleTable;
 use Workbench\App\Tables\UsersTablePaginationTable;
 
+#[Page(route: '/tables')]
 final class TablesPage extends WorkbenchPage
 {
     public function title(): string
