@@ -23,6 +23,7 @@ use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Pages\PageRegistry;
+use Lattice\Lattice\Support\Evaluation\Evaluator;
 use Lattice\Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Tables\TableRegistry;
@@ -62,6 +63,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->alias(ComponentReferenceSigner::class, SignsComponentReferences::class);
         $this->app->singleton(LatticeRegistry::class);
         $this->app->singleton(DiscoveryManifest::class);
+        $this->app->singleton(Evaluator::class);
 
         // Default role; the workbench rebinds this to BaseProfile.
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
