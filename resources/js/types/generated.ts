@@ -34,6 +34,11 @@ export type ActionNode =
       id?: string;
       props: BulkAction;
     };
+export type ActionResult = {
+  readonly ok: boolean;
+  readonly data: Record<string, unknown>;
+  readonly effects: Effect[];
+};
 export type Align = "center" | "left" | "start" | "stretch";
 export type Badge = {
   label: string;
@@ -479,6 +484,10 @@ export type HiddenInput = {
   value: unknown;
 };
 export type HttpMethod = import("@inertiajs/core").Method;
+export type I18nConfig = {
+  readonly enabled: boolean;
+  readonly saveMissing: boolean;
+};
 export type Icon = {
   class: string | null;
   color: Color | null;
@@ -801,6 +810,23 @@ export type TableNode = {
   key?: string;
   id?: string;
   props: Table;
+};
+export type TablePagination = {
+  readonly mode: PaginationType;
+  readonly currentPage: number | null;
+  readonly lastPage: number | null;
+  readonly perPage: number | null;
+  readonly total: number | null;
+  readonly from: number | null;
+  readonly to: number | null;
+  readonly hasMore: boolean;
+  readonly nextPage: number | null;
+};
+export type TableQuery = {
+  readonly filters: FilterClause[];
+  readonly sorts: TableSort[];
+  readonly page: number;
+  readonly perPage: number;
 };
 export type TableSort = {
   readonly key: string;

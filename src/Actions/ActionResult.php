@@ -5,9 +5,11 @@ namespace Lattice\Lattice\Actions;
 
 use JsonSerializable;
 use Lattice\Lattice\Actions\Contracts\Effect as EffectContract;
+use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\ToastVariant;
 use Lattice\Lattice\Core\Values\ToastMessage;
 
+#[TypeScript]
 final readonly class ActionResult implements JsonSerializable
 {
     /**
@@ -15,9 +17,9 @@ final readonly class ActionResult implements JsonSerializable
      * @param  array<int, EffectContract>  $effects
      */
     private function __construct(
-        private bool $ok,
-        private array $data = [],
-        private array $effects = [],
+        public bool $ok,
+        public array $data = [],
+        public array $effects = [],
     ) {}
 
     /**

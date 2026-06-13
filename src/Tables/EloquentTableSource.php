@@ -39,11 +39,11 @@ final readonly class EloquentTableSource implements TableSource
         return match ($this->pagination) {
             PaginationType::None => TableResult::fromItems($builder->get(), PaginationType::None),
             PaginationType::Infinite, PaginationType::Simple => TableResult::fromSimplePaginator(
-                $builder->simplePaginate(perPage: $query->perPage(), page: $query->page()),
+                $builder->simplePaginate(perPage: $query->perPage, page: $query->page),
                 $this->pagination,
             ),
             PaginationType::Table => TableResult::fromPaginator(
-                $builder->paginate(perPage: $query->perPage(), page: $query->page()),
+                $builder->paginate(perPage: $query->perPage, page: $query->page),
             ),
         };
     }
@@ -79,7 +79,7 @@ final readonly class EloquentTableSource implements TableSource
     {
         $columns = Column::index($this->columns);
 
-        foreach ($query->filters() as $clause) {
+        foreach ($query->filters as $clause) {
             $column = $columns->get($clause->field);
 
             if ($column instanceof Filterable) {
@@ -93,7 +93,7 @@ final readonly class EloquentTableSource implements TableSource
             }
         }
 
-        foreach ($query->sorts() as $sort) {
+        foreach ($query->sorts as $sort) {
             $builder->orderBy($sort->key, $sort->direction->value);
         }
 
