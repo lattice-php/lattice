@@ -158,6 +158,10 @@ export default defineConfig(({ mode }) => {
                 /^clsx($|\/)/,
                 /^class-variance-authority($|\/)/,
                 /^tailwind-merge($|\/)/,
+                /^i18next($|\/)/,
+                /^react-i18next($|\/)/,
+                /^i18next-http-backend($|\/)/,
+                /^use-sync-external-store($|\/)/,
               ],
               output: {
                 preserveModules: true,
