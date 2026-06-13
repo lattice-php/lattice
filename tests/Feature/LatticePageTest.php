@@ -232,6 +232,8 @@ test('forms serialize schema children like pages', function () {
                     'props' => [
                         'text' => 'Profile details',
                         'align' => null,
+                        'size' => 'md',
+                        'color' => 'muted',
                     ],
                 ],
             ],
@@ -496,6 +498,8 @@ test('registered forms serialize their configured endpoint and isolated error ba
                     'props' => [
                         'text' => 'Profile details',
                         'align' => null,
+                        'size' => 'md',
+                        'color' => 'muted',
                     ],
                 ],
             ],
@@ -1298,6 +1302,8 @@ test('modals serialize composable children for action driven dialogs', function 
                     'props' => [
                         'text' => 'Recovery codes will appear here.',
                         'align' => null,
+                        'size' => 'md',
+                        'color' => 'muted',
                     ],
                 ],
             ],
@@ -1355,6 +1361,8 @@ test('links and horizontal stacks serialize as separate composable primitives', 
                     'props' => [
                         'text' => 'Need access?',
                         'align' => null,
+                        'size' => 'md',
+                        'color' => 'muted',
                     ],
                 ],
                 [
@@ -1423,6 +1431,8 @@ test('tabs serialize tab panels as composable children', function () {
                             'props' => [
                                 'text' => 'Profile form',
                                 'align' => null,
+                                'size' => 'md',
+                                'color' => 'muted',
                             ],
                         ],
                     ],

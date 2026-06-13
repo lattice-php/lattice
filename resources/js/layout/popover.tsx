@@ -1,9 +1,29 @@
 import { usePage } from "@inertiajs/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { CollapsedContext } from "../core/collapsed-context";
 import { cn } from "@lattice/lattice/lib/utils";
-import { SidebarCollapsedContext } from "./context";
+
+function viewportOffset(rect: DOMRect, margin: number): { left: number; top: number } {
+  let left = 0;
+  let top = 0;
+
+  if (rect.right > window.innerWidth - margin) {
+    left = window.innerWidth - margin - rect.right;
+  }
+  if (rect.left + left < margin) {
+    left = margin - rect.left;
+  }
+  if (rect.bottom > window.innerHeight - margin) {
+    top = window.innerHeight - margin - rect.bottom;
+  }
+  if (rect.top + top < margin) {
+    top = margin - rect.top;
+  }
+
+  return { left, top };
+}
 
 export function Popover({
   align = "start",
@@ -27,9 +47,31 @@ export function Popover({
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ left: 0, top: 0 });
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const url = usePage().url;
 
   useEffect(() => setOpen(false), [url]);
+
+  useLayoutEffect(() => {
+    const menu = menuRef.current;
+    if (!open || !menu) {
+      return;
+    }
+
+    const rect = menu.getBoundingClientRect();
+    if (rect.width === 0 && rect.height === 0) {
+      return;
+    }
+
+    const offset = viewportOffset(rect, 8);
+
+    if (offset.left !== 0 || offset.top !== 0) {
+      setPosition((current) => ({
+        left: current.left + offset.left,
+        top: current.top + offset.top,
+      }));
+    }
+  }, [open]);
 
   function toggle(): void {
     const rect = triggerRef.current?.getBoundingClientRect();
@@ -77,6 +119,7 @@ export function Popover({
                   "fixed z-50 min-w-56 rounded-md border border-lt-border bg-lt-popover p-1 text-lt-popover-fg shadow-lg",
                   className,
                 )}
+                ref={menuRef}
                 role="menu"
                 style={{
                   left: position.left,
@@ -87,9 +130,7 @@ export function Popover({
                       : `translate(${align === "end" ? "-100%" : "0"}, ${placement === "top" ? "-100%" : "0"})`,
                 }}
               >
-                <SidebarCollapsedContext.Provider value={false}>
-                  {children}
-                </SidebarCollapsedContext.Provider>
+                <CollapsedContext.Provider value={false}>{children}</CollapsedContext.Provider>
               </div>
             </>,
             document.body,

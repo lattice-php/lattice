@@ -5,7 +5,7 @@ import { withRefHeader } from "@lattice/lattice/core/component-ref";
 import { Button } from "@lattice/lattice/core/components/button";
 import { ConfirmDialog } from "@lattice/lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice/lattice/core/components/spinner";
-import type { Node, RendererComponent } from "@lattice/lattice/core/types";
+import type { RendererComponent } from "@lattice/lattice/core/types";
 import { IconRenderer } from "@lattice/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, getActionEffects } from "../effects";
 import type { ActionResponse } from "../effects";
@@ -22,9 +22,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const [isFilling, setIsFilling] = useState(false);
   const confirmation = node.props.confirmation;
   const variant = node.props.variant ?? "default";
-  // The wire carries the embedded form as a full node; the generated prop type
-  // reflects Form's props, so read it through the Node lens the renderer uses.
-  const inlineForm = node.props.form as unknown as Node | null;
+  const inlineForm = node.props.form;
   const lazyForm = node.props.lazyForm === true;
   const hasForm = Boolean(inlineForm) || lazyForm;
   const lazyNode = useLazyActionForm(endpoint, method, componentRef, isFilling && lazyForm);

@@ -5,18 +5,20 @@ namespace Workbench\App\Layouts;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\Layout;
+use Lattice\Lattice\Core\Components\RawBlock;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Core\Enums\Justify;
+use Lattice\Lattice\Core\Enums\Placement;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Layouts\Components\Breadcrumbs;
+use Lattice\Lattice\Layouts\Components\Dropdown;
 use Lattice\Lattice\Layouts\Components\Menu;
 use Lattice\Lattice\Layouts\Components\MenuItem;
 use Lattice\Lattice\Layouts\Components\Outlet;
 use Lattice\Lattice\Layouts\Components\Sidebar;
-use Lattice\Lattice\Layouts\Components\UserMenu;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Workbench\App\Pages\DependentDemoPage;
 use Workbench\App\Pages\HomePage;
@@ -55,9 +57,18 @@ final class AppLayout extends LayoutDefinition
                                     // workbench adds to its own folder and references by name.
                                     MenuItem::fromPage(TabsPage::class)->label('Tabs')->icon('spark'),
                                 ]),
-                                UserMenu::make()
-                                    ->name('Workbench User')
-                                    ->email('dev@example.com')
+                                Dropdown::make('user-menu')
+                                    ->placement(Placement::Top)
+                                    ->trigger([
+                                        Stack::make('user-menu-trigger')
+                                            ->direction('row')
+                                            ->schema([
+                                                RawBlock::make('user-menu-avatar')->html('<span class="flex size-8 shrink-0 items-center justify-center rounded-md bg-lt-muted text-xs font-medium text-lt-fg">WU</span>'),
+                                                RawBlock::make('user-menu-identity')
+                                                    ->html('<span class="grid min-w-0 text-left"><span class="truncate text-sm font-medium text-lt-fg">Workbench User</span><span class="truncate text-xs text-lt-muted-fg">dev@example.com</span></span>')
+                                                    ->hideWhenCollapsed(),
+                                            ]),
+                                    ])
                                     ->items([
                                         MenuItem::make('Log out')->href('/logout')->method(HttpMethod::Post),
                                     ]),

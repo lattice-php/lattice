@@ -12,6 +12,7 @@ const sizeClass: Record<Size, string> = {
 };
 
 const colorClass: Record<Color, string> = {
+  default: "text-lt-fg",
   muted: "text-lt-muted-fg",
   primary: "text-lt-primary",
   success: "text-lt-success",

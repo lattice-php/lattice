@@ -1,20 +1,22 @@
 import type { RendererComponent } from "@lattice/lattice/core/types";
-import { Icon, IconRenderer } from "@lattice/lattice/icons";
+import { RenderNode } from "@lattice/lattice/core/renderer";
 import { Popover } from "./popover";
 
 const DropdownComponent: RendererComponent<"dropdown"> = ({ children, node }) => {
-  const icon = node.props.icon;
-  const label = node.props.label;
-  const slug = label.toLowerCase().replace(/\s+/g, "-");
+  const testId = node.key ?? "dropdown";
 
   return (
     <Popover
-      testId={`dropdown-${slug}`}
+      placement={node.props.placement}
+      testId={testId}
       trigger={
-        <span className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-lt-fg hover:bg-lt-muted">
-          {icon ? <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} /> : null}
-          <span>{label}</span>
-          <Icon name="chevron-down" className="ml-auto size-lt-icon-md shrink-0" />
+        <span className="flex min-w-0 items-center rounded-md px-2 py-1.5 text-sm hover:bg-lt-muted">
+          {node.props.trigger.map((triggerNode, index) => (
+            <RenderNode
+              key={triggerNode.key ?? `${triggerNode.type}-${index}`}
+              node={triggerNode}
+            />
+          ))}
         </span>
       }
     >

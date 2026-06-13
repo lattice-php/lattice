@@ -8,6 +8,7 @@ use Lattice\Lattice\Attributes\TypeScript;
 #[TypeScript]
 enum Gap: string
 {
+    case None = 'none';
     case ExtraSmall = 'xs';
     case Small = 'sm';
     case Medium = 'md';

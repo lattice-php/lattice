@@ -3,29 +3,39 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Layouts\Components;
 
-use BackedEnum;
 use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
+use Lattice\Lattice\Core\Enums\Placement;
 
 #[Attributes\Component('dropdown')]
 class Dropdown extends ContainerComponent
 {
-    public string $label = '';
+    /**
+     * @var array<int, Component>
+     */
+    public array $trigger = [];
 
-    public ?string $icon = null;
+    public Placement $placement = Placement::Bottom;
 
-    public static function make(string $label, ?string $key = null): static
+    public static function make(?string $key = null): static
     {
-        $dropdown = new static($key);
-        $dropdown->label = $label;
-
-        return $dropdown;
+        return new static($key);
     }
 
-    public function icon(BackedEnum|string $icon): static
+    /**
+     * @param  array<int, Component>  $components
+     */
+    public function trigger(array $components): static
     {
-        $this->icon = $this->enumValue($icon);
+        $this->trigger = $components;
+
+        return $this;
+    }
+
+    public function placement(Placement $placement): static
+    {
+        $this->placement = $placement;
 
         return $this;
     }
@@ -36,5 +46,17 @@ class Dropdown extends ContainerComponent
     public function items(array $items): static
     {
         return $this->schema($items);
+    }
+
+    /**
+     * @param  array<string, mixed>  $props
+     * @return array<string, mixed>
+     */
+    protected function decorateProps(array $props): array
+    {
+        return [
+            ...parent::decorateProps($props),
+            'trigger' => $this->renderableComponents($this->trigger),
+        ];
     }
 }

@@ -10,7 +10,13 @@ export { copyToClipboard, useClipboard } from "./clipboard";
 export { EventBridge } from "./events/event-bridge";
 export { Icon, IconRenderer, IconRendererProvider, SpriteProvider } from "./icons";
 export { createLayoutResolver, createPageResolver, pageComponentName } from "./inertia";
-export { layoutComponents, OutletContext, SchemaLayout } from "./layout";
+export {
+  layoutComponents,
+  OutletContext,
+  SchemaLayout,
+  SidebarCollapsedContext,
+  useSidebarCollapsed,
+} from "./layout";
 export { Provider, useColumnRegistry, useRegistry } from "./provider";
 export { Toaster } from "./toast";
 export {

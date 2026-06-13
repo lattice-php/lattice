@@ -1,8 +1,8 @@
 import { Icon } from "@lattice/lattice/icons";
 import { useState } from "react";
 import type { RendererComponent } from "@lattice/lattice/core/types";
+import { CollapsedContext } from "../core/collapsed-context";
 import { cn } from "@lattice/lattice/lib/utils";
-import { SidebarCollapsedContext } from "./context";
 
 function readStored(key: string, remember: boolean): boolean {
   if (!remember || typeof window === "undefined") {
@@ -36,12 +36,10 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
   const isCollapsed = collapsible && collapsed;
 
   return (
-    <SidebarCollapsedContext.Provider value={isCollapsed}>
+    <CollapsedContext.Provider value={isCollapsed}>
       <aside
         className={cn(
           "flex shrink-0 flex-col gap-4 border-r border-lt-border p-4 transition-[width]",
-          // When collapsed, let item labels fly out past the rail; when
-          // expanded, clip the width transition.
           isCollapsed ? "w-16 overflow-visible" : "w-64 overflow-hidden",
         )}
         data-lattice-component={node.id}
@@ -63,7 +61,7 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
         ) : null}
         {children}
       </aside>
-    </SidebarCollapsedContext.Provider>
+    </CollapsedContext.Provider>
   );
 };
 

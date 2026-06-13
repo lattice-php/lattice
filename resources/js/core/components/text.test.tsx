@@ -17,4 +17,25 @@ describe("Lattice text component", () => {
     expect(screen.getByText("Don't have an account?")).toBeVisible();
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
+
+  it("renders configured size and color classes", () => {
+    const node = fakeNode({
+      props: {
+        align: "center",
+        color: "default",
+        size: "sm",
+        text: "Manuel Christlieb",
+      },
+      type: "text",
+    });
+
+    render(<TextComponent node={node}>{null}</TextComponent>);
+
+    expect(screen.getByText("Manuel Christlieb")).toHaveClass(
+      "m-0",
+      "text-center",
+      "text-lt-fg",
+      "text-sm",
+    );
+  });
 });

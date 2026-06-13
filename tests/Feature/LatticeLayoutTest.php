@@ -76,7 +76,7 @@ test('a page serializes its layout as key and schema with an outlet', function (
         ->and($payload['layout']['schema'][0]['schema'][1]['type'])->toBe('outlet')
         ->and($payload['schema'][0])->toMatchArray([
             'type' => 'text',
-            'props' => ['text' => 'Page body', 'align' => null],
+            'props' => ['text' => 'Page body', 'align' => null, 'size' => 'md', 'color' => 'muted'],
         ]);
 });
 
