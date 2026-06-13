@@ -40,3 +40,13 @@ it('injects named utilities into dependsOn callbacks', function () {
 
     expect($field->resolvedValue())->toBe('de-city');
 });
+
+it('injects row and form scopes into prefill resolvers by name', function () {
+    $field = TextInput::make('label')
+        ->value(fn ($form, $row) => $row->string('first').'@'.$form->string('domain'), editable: true);
+
+    $row = FormData::make(['first' => 'ada']);
+    $form = FormData::make(['domain' => 'lattice.dev']);
+
+    expect($field->resolvePrefillValue($row, $form, Request::create('/')))->toBe('ada@lattice.dev');
+});
