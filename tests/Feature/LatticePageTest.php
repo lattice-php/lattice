@@ -1333,6 +1333,7 @@ test('links and horizontal stacks serialize as separate composable primitives', 
                 'align' => null,
                 'width' => null,
                 'justify' => null,
+                'height' => null,
             ],
             'schema' => [
                 [
@@ -1367,6 +1368,7 @@ test('layout enums serialize to their backed string values', function () {
                 'width' => 'sm',
                 'direction' => null,
                 'justify' => null,
+                'height' => null,
             ],
         ])
         ->and(wire(Text::make('Centered')->align(Align::Center))['props']['align'])

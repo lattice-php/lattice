@@ -67,4 +67,16 @@ describe("Lattice stack component", () => {
 
     expect(screen.getByText("Content")).toHaveClass("grid");
   });
+
+  it("fills the viewport height when height is set to screen", () => {
+    const node = fakeNode({
+      id: "app-shell",
+      props: { direction: "row", height: "screen" },
+      type: "stack",
+    });
+
+    render(<StackComponent node={node}>Content</StackComponent>);
+
+    expect(screen.getByText("Content")).toHaveClass("min-h-screen");
+  });
 });
