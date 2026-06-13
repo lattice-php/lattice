@@ -348,6 +348,42 @@ export type EffectType =
   | "openModal"
   | "closeModal"
   | "resetForm";
+export type FileUpload = {
+  accept: string | null;
+  columnWidth: ColumnWidth;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
+  dependsOnAny: boolean | null;
+  dependsOnKeys: string[] | null;
+  disabled: boolean | null;
+  files:
+    | {
+        key: string;
+        name: string;
+        url: string | null;
+        size: number | null;
+      }[]
+    | null;
+  helperText: string | null;
+  hidden: boolean | null;
+  image: boolean;
+  label: string | null;
+  maxFiles: number | null;
+  maxSize: number | null;
+  multiple: boolean | null;
+  name: string;
+  prefill: boolean | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
+  readOnly: boolean | null;
+  required: boolean | null;
+  signed: boolean;
+  value: unknown;
+};
 export type FilterClause = {
   readonly field: string;
   readonly operator: string;
@@ -389,6 +425,11 @@ export type FormFieldNode =
       type: "form.date-input";
       key?: string;
       props: DateInput;
+    }
+  | {
+      type: "form.file-upload";
+      key?: string;
+      props: FileUpload;
     }
   | {
       type: "form.hidden-input";
