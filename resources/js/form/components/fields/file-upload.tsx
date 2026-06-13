@@ -7,6 +7,8 @@ import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { xsrfToken } from "../form-transport";
 import { useDependentField } from "../use-dependent-field";
+import { useFieldScope } from "../field-scope";
+import { useFormValues } from "../values";
 
 type Item = {
   id: string;
@@ -33,12 +35,17 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
   const { hidden, required, readOnly, disabled } = useDependentField(node);
   const { action, componentRef, errors } = useFormContext();
   const name = props.name;
+  const scope = useFieldScope();
+  const domName = scope ? scope.scopedName(name) : name;
+  const errorKey = scope ? scope.errorKey(name) : name;
+  const uploadKey = scope ? scope.errorKey(name) : name;
+  const values = useFormValues();
   const inputId = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const locked = readOnly || disabled;
   const signed = props.signed;
   const multiple = props.multiple ?? false;
-  const fieldName = multiple ? `${name}[]` : name;
+  const fieldName = multiple ? `${domName}[]` : domName;
 
   const initial = useMemo<Item[]>(
     () =>
@@ -80,7 +87,12 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
         "X-XSRF-TOKEN": xsrfToken(),
         ...withRefHeader(componentRef),
       },
-      body: JSON.stringify({ _upload: name, filename: file.name, contentType: file.type }),
+      body: JSON.stringify({
+        ...values,
+        _upload: uploadKey,
+        filename: file.name,
+        contentType: file.type,
+      }),
     });
 
     if (!response.ok) {
@@ -165,7 +177,7 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
 
   return (
     <FormFieldFrame
-      error={errors[name]}
+      error={errors[errorKey]}
       helperText={props.helperText ?? undefined}
       label={props.label ?? ""}
       name={name}
