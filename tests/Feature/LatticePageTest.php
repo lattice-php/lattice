@@ -110,7 +110,7 @@ test('lattice facade resolves the registry', function () {
 });
 
 test('lattice can discover attributed definitions from a path and namespace', function () {
-    Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery');
+    discoverFixtures();
 
     $form = wire(Form::use(DiscoveredProfileForm::class));
     $table = wire(Table::use(DiscoveredUsersTable::class));
@@ -174,7 +174,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
 });
 
 test('lattice discovers attributed bulk action definitions', function () {
-    Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery');
+    discoverFixtures();
 
     expect(app(BulkActionRegistry::class)->resolve('fixtures.archive'))
         ->toBeInstanceOf(DiscoveredArchiveBulkAction::class);
@@ -762,7 +762,7 @@ test('registered tables reject filters and sorts that are not allowed by columns
 });
 
 test('registered table endpoints require a valid component reference and use trusted context', function () {
-    Lattice::discover(__DIR__.'/../Fixtures/Discovery', 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery');
+    discoverFixtures();
 
     $ref = componentRef(wire(Table::use(DiscoveredUsersTable::class)
         ->context(['team' => 'trusted-team'])));

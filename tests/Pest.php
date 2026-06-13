@@ -3,11 +3,25 @@ declare(strict_types=1);
 
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Tests\TestCase;
 use Orchestra\Testbench\Factories\UserFactory;
 
 uses(TestCase::class)->in(__DIR__);
 uses(RefreshDatabase::class)->in(__DIR__);
+
+/**
+ * Point discovery at the test fixtures and rebuild the manifest so the
+ * registries resolve the attributed classes under tests/Fixtures/Discovery.
+ */
+function discoverFixtures(): void
+{
+    config(['lattice.discover' => [
+        __DIR__.'/Fixtures/Discovery' => 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery',
+    ]]);
+
+    app(DiscoveryManifest::class)->clear();
+}
 
 /**
  * Seed a deterministic set of workbench users for browser table tests: four

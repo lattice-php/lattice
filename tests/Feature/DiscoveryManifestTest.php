@@ -31,15 +31,6 @@ test('discovery kinds extracts a component key from its attribute', function () 
         ->toBe('fixtures.profile');
 });
 
-function discoverFixtures(): void
-{
-    config(['lattice.discover' => [
-        __DIR__.'/../Fixtures/Discovery' => 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery',
-    ]]);
-
-    app(DiscoveryManifest::class)->clear();
-}
-
 test('the manifest builds resolved entries for every kind', function () {
     discoverFixtures();
 
