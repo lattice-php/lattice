@@ -1,5 +1,5 @@
 import type { Node } from "@lattice-php/lattice/core/types";
-import { fieldTestId } from "@lattice-php/lattice/core/test-id";
+import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import type { FieldState } from "./conditions";
 import { fieldProps } from "./field-props";
 import { useFieldScope } from "./field-scope";
@@ -43,7 +43,7 @@ export function useControlledField(node: Node): ControlledField {
     ...state,
     localName,
     name: domName,
-    testId: fieldTestId(localName),
+    testId: testIdentity(localName),
     value,
     error: errors[errorKey],
     commit,

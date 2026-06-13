@@ -25,11 +25,11 @@ class RejectProductAction extends ActionDefinition
             ->label(__('workbench.actions.reject.label'))
             ->method(HttpMethod::Patch)
             ->variant(ButtonVariant::Destructive)
-            ->confirm(__('workbench.actions.reject.confirmTitle'), __('workbench.actions.reject.confirmDescription'), __('workbench.actions.reject.confirmLabel'))
+            ->confirm(__('workbench.actions.reject.confirm-title'), __('workbench.actions.reject.confirm-description'), __('workbench.actions.reject.confirm-label'))
             ->form([
                 Textarea::make('reason', __('workbench.common.reason'))->required()->rules(['string', 'max:255']),
-                Select::make('replacement', __('workbench.actions.reject.suggestedReplacement'))
-                    ->placeholder(__('workbench.common.searchProducts'))
+                Select::make('replacement', __('workbench.actions.reject.suggested-replacement'))
+                    ->placeholder(__('workbench.common.search-products'))
                     ->searchable(fn (string $query): array => Product::query()
                         ->where('name', 'like', "%{$query}%")
                         ->orderBy('name')

@@ -43,19 +43,19 @@ final class TablesPage extends WorkbenchPage
                         ->defaultValue('none')
                         ->schema([
                             Tab::make('none', __('workbench.pages.tables.none'))->schema([
-                                Heading::make(__('workbench.pages.tables.noneHeading'), 2),
+                                Heading::make(__('workbench.pages.tables.none-heading'), 2),
                                 Table::lazy(UsersNoneTable::class),
                             ]),
                             Tab::make('simple', __('workbench.pages.tables.simple'))->schema([
-                                Heading::make(__('workbench.pages.tables.simpleHeading'), 2),
+                                Heading::make(__('workbench.pages.tables.simple-heading'), 2),
                                 Table::lazy(UsersSimpleTable::class),
                             ]),
                             Tab::make('table', __('workbench.pages.tables.table'))->schema([
-                                Heading::make(__('workbench.pages.tables.tableHeading'), 2),
+                                Heading::make(__('workbench.pages.tables.table-heading'), 2),
                                 Table::lazy(UsersTablePaginationTable::class),
                             ]),
                             Tab::make('infinite', __('workbench.pages.tables.infinite'))->schema([
-                                Heading::make(__('workbench.pages.tables.infiniteHeading'), 2),
+                                Heading::make(__('workbench.pages.tables.infinite-heading'), 2),
                                 Table::lazy(UsersInfiniteTable::class),
                             ]),
                         ]),

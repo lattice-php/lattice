@@ -25,8 +25,8 @@ class UsersTable extends EloquentTableDefinition
         return [
             TextColumn::make('name')->label(__('workbench.tables.columns.name'))->sortable()->filterable(),
             TextColumn::make('email')->label(__('workbench.tables.columns.email'))->sortable()->filterable()->link('mailto:{value}')->copyable(),
-            TextColumn::make('created_at')->label(__('workbench.tables.columns.createdAt'))->sortable()->date('Y-m-d H:i:s'),
-            TextColumn::make('updated_at')->label(__('workbench.tables.columns.updatedAt'))->sortable()->date('Y-m-d H:i:s'),
+            TextColumn::make('created_at')->label(__('workbench.tables.columns.created-at'))->sortable()->date('Y-m-d H:i:s'),
+            TextColumn::make('updated_at')->label(__('workbench.tables.columns.updated-at'))->sortable()->date('Y-m-d H:i:s'),
         ];
     }
 

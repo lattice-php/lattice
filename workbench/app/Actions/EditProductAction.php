@@ -23,7 +23,7 @@ class EditProductAction extends FormActionDefinition
         return $action
             ->label(__('workbench.actions.edit.label'))
             ->method(HttpMethod::Patch)
-            ->confirm(__('workbench.actions.edit.confirmTitle'), __('workbench.actions.edit.confirmDescription'), __('workbench.actions.edit.confirmLabel'));
+            ->confirm(__('workbench.actions.edit.confirm-title'), __('workbench.actions.edit.confirm-description'), __('workbench.actions.edit.confirm-label'));
     }
 
     public function formSchema(Form $form, Request $request): Form
@@ -58,7 +58,7 @@ class EditProductAction extends FormActionDefinition
                 ToastMessage::make(ToastVariant::Success, __('workbench.actions.edit.toast'))
                     ->action(
                         Action::use(RejectProductAction::class)
-                            ->label(__('workbench.actions.edit.rejectProduct'))
+                            ->label(__('workbench.actions.edit.reject-product'))
                             ->context(['product_id' => $product->getKey()]),
                     )
                     ->persistent(),

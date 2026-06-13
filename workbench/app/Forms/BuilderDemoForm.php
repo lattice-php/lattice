@@ -23,19 +23,19 @@ class BuilderDemoForm extends FormDefinition
             ->precognitive(300)
             ->schema([
                 Card::make(__('workbench.forms.builder.card'))->schema([
-                    Builder::make('items', __('workbench.common.lineItems'))
+                    Builder::make('items', __('workbench.common.line-items'))
                         ->blocks([
                             Block::make('text')->label(__('workbench.common.text'))->schema([
                                 Textarea::make('content', __('workbench.common.content'))->required(),
                             ]),
-                            Block::make('product')->label(__('workbench.common.productLine'))->schema([
+                            Block::make('product')->label(__('workbench.common.product-line'))->schema([
                                 TextInput::make('product', __('workbench.common.product'))->required(),
                                 TextInput::make('qty', __('workbench.common.qty'))->rules(['numeric']),
                                 TextInput::make('price', __('workbench.common.price'))->rules(['numeric']),
                             ]),
                         ])
                         ->minItems(1)
-                        ->addLabel(__('workbench.common.addBlock')),
+                        ->addLabel(__('workbench.common.add-block')),
                 ]),
             ]);
     }

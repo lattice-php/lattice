@@ -17,7 +17,7 @@ class ProductCreatePage extends WorkbenchPage
 {
     public function title(): string
     {
-        return __('workbench.pages.productCreate.title');
+        return __('workbench.pages.product-create.title');
     }
 
     public function render(PageSchema $schema): PageSchema
@@ -26,10 +26,10 @@ class ProductCreatePage extends WorkbenchPage
             Stack::make('product-create-page')
                 ->gap(Gap::Large)
                 ->schema([
-                    Heading::make(__('workbench.pages.productCreate.heading')),
+                    Heading::make(__('workbench.pages.product-create.heading')),
                     Form::use(ProductForm::class)
                         ->method(HttpMethod::Post)
-                        ->submitLabel(__('workbench.pages.productCreate.submit')),
+                        ->submitLabel(__('workbench.pages.product-create.submit')),
                 ]),
         ]);
     }

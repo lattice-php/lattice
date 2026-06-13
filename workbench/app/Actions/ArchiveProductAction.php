@@ -24,7 +24,7 @@ class ArchiveProductAction extends ActionDefinition
             ->label(__('workbench.actions.archive.label'))
             ->method(HttpMethod::Patch)
             ->variant(ButtonVariant::Destructive)
-            ->confirm(__('workbench.actions.archive.confirmTitle'), __('workbench.actions.archive.confirmDescription'));
+            ->confirm(__('workbench.actions.archive.confirm-title'), __('workbench.actions.archive.confirm-description'));
     }
 
     public function authorize(Request $request): bool
@@ -40,7 +40,7 @@ class ArchiveProductAction extends ActionDefinition
         return ActionResult::success(['id' => $product->getKey()])
             ->toast(
                 ToastMessage::make(ToastVariant::Success, __('workbench.actions.archive.toast'))
-                    ->action(Link::make(__('workbench.actions.archive.viewProducts'), 'view-products')->href('/products'))
+                    ->action(Link::make(__('workbench.actions.archive.view-products'), 'view-products')->href('/products'))
                     ->persistent(),
             )
             ->reloadComponent('workbench.products');

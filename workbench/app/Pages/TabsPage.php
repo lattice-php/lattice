@@ -32,9 +32,9 @@ final class TabsPage extends WorkbenchPage
                         ->queryKey('h')
                         ->defaultValue('overview')
                         ->schema([
-                            Tab::make('overview', __('workbench.pages.tabs.overview'))->schema([Text::make(__('workbench.pages.tabs.overviewPanel'))]),
-                            Tab::make('details', __('workbench.pages.tabs.details'))->schema([Text::make(__('workbench.pages.tabs.detailsPanel'))]),
-                            Tab::make('history', __('workbench.pages.tabs.history'))->schema([Text::make(__('workbench.pages.tabs.historyPanel'))]),
+                            Tab::make('overview', __('workbench.pages.tabs.overview'))->schema([Text::make(__('workbench.pages.tabs.overview-panel'))]),
+                            Tab::make('details', __('workbench.pages.tabs.details'))->schema([Text::make(__('workbench.pages.tabs.details-panel'))]),
+                            Tab::make('history', __('workbench.pages.tabs.history'))->schema([Text::make(__('workbench.pages.tabs.history-panel'))]),
                         ]),
                     Heading::make(__('workbench.pages.tabs.vertical')),
                     Tabs::make('vertical-tabs')
@@ -42,9 +42,9 @@ final class TabsPage extends WorkbenchPage
                         ->orientation(Orientation::Vertical)
                         ->defaultValue('account')
                         ->schema([
-                            Tab::make('account', __('workbench.pages.tabs.account'))->schema([Text::make(__('workbench.pages.tabs.accountPanel'))]),
-                            Tab::make('security', __('workbench.pages.tabs.security'))->schema([Text::make(__('workbench.pages.tabs.securityPanel'))]),
-                            Tab::make('billing', __('workbench.pages.tabs.billing'))->schema([Text::make(__('workbench.pages.tabs.billingPanel'))]),
+                            Tab::make('account', __('workbench.pages.tabs.account'))->schema([Text::make(__('workbench.pages.tabs.account-panel'))]),
+                            Tab::make('security', __('workbench.pages.tabs.security'))->schema([Text::make(__('workbench.pages.tabs.security-panel'))]),
+                            Tab::make('billing', __('workbench.pages.tabs.billing'))->schema([Text::make(__('workbench.pages.tabs.billing-panel'))]),
                         ]),
                 ]),
         ]);

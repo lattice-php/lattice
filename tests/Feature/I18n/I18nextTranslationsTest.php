@@ -13,6 +13,7 @@ use function Pest\Laravel\withoutVite;
 
 afterEach(function () {
     File::deleteDirectory(package_path('lang/zz'));
+    File::deleteDirectory(package_path('workbench/lang/zz'));
     File::delete(package_path('lang/zz.json'));
 });
 
@@ -47,12 +48,12 @@ it('serves the lattice namespace from the package lang dir as nested i18next JSO
 });
 
 it('serves workbench translations from the workbench lang dir', function () {
-    getJson('/locales/en/workbench.json')
+    getJson('/locales/en/workbench::workbench.json')
         ->assertOk()
         ->assertJsonPath('pages.products.title', 'Products')
         ->assertJsonPath('forms.product.fields.name', 'Name');
 
-    getJson('/locales/de/workbench.json')
+    getJson('/locales/de/workbench::workbench.json')
         ->assertOk()
         ->assertJsonPath('pages.products.title', 'Produkte')
         ->assertJsonPath('forms.product.fields.name', 'Name');
@@ -92,4 +93,16 @@ it('dumps namespace-less keys to a JSON file in the package lang dir', function 
         ->and(str_contains($file, '/vendor/'))->toBeFalse();
 
     expect(json_decode(File::get($file), true))->toBe(['Save changes' => 'i18next-Save changes']);
+});
+
+it('dumps missing workbench keys into the workbench lang dir', function () {
+    postJson('/locales/add/zz/workbench::workbench', ['language.demo' => 'language.demo'])->assertOk();
+
+    $file = package_path('workbench/lang/zz/workbench.php');
+
+    expect($file)->toBeReadableFile()
+        ->and(str_contains($file, '/vendor/'))->toBeFalse()
+        ->and(str_contains($file, '/workbench/lang/'))->toBeTrue();
+
+    expect(require $file)->toBe(['language' => ['demo' => 'i18next-language.demo']]);
 });

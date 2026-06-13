@@ -1,10 +1,11 @@
 import { i18n, useT } from "@lattice-php/lattice/i18n";
 import { useState } from "react";
+import { WORKBENCH_I18N_NAMESPACE } from "./i18n";
 
 const LANGUAGES = ["en", "de"] as const;
 
 export function LanguageSwitcher() {
-  const { t } = useT("workbench");
+  const { t } = useT(WORKBENCH_I18N_NAMESPACE);
   const [language, setLanguage] = useState(i18n.language);
 
   return (

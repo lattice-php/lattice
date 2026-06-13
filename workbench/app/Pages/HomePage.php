@@ -41,10 +41,10 @@ final class HomePage extends WorkbenchPage
                     Grid::make('workbench-capabilities')
                         ->columns(2)
                         ->schema([
-                            Card::make(__('workbench.pages.home.componentsTitle'), __('workbench.pages.home.componentsDescription')),
-                            Card::make(__('workbench.pages.home.rendererTitle'), __('workbench.pages.home.rendererDescription')),
+                            Card::make(__('workbench.pages.home.components-title'), __('workbench.pages.home.components-description')),
+                            Card::make(__('workbench.pages.home.renderer-title'), __('workbench.pages.home.renderer-description')),
                         ]),
-                    Heading::make(__('workbench.pages.home.buttonVariants'), 2),
+                    Heading::make(__('workbench.pages.home.button-variants'), 2),
                     Stack::make('workbench-buttons')
                         ->direction('row')
                         ->gap(Gap::Small)

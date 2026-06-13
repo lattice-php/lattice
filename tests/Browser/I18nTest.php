@@ -49,7 +49,9 @@ it('dumps missing React lattice keys back into the package lang file', function 
             ->assertNoJavaScriptErrors();
 
         expect(waitForLatticeBrowserTestTranslation($file, 'editor.bold'))
-            ->toBe('i18next-editor.bold');
+            ->toBe('i18next-editor.bold')
+            ->and(File::exists(package_path('workbench/lang/en/language.php')))->toBeFalse()
+            ->and(File::exists(package_path('workbench/lang/en/status.php')))->toBeFalse();
     } finally {
         File::put($file, $original);
     }

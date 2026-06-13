@@ -39,13 +39,13 @@ class DependentDemoForm extends FormDefinition
                 Card::make(__('workbench.forms.dependent.order'))->schema([
                     Grid::make()->columns(2)->schema([
                         NumberInput::make('qty', __('workbench.common.qty'))->min(0),
-                        NumberInput::make('unit_price', __('workbench.common.unitPrice'))->min(0)->step(0.01),
+                        NumberInput::make('unit_price', __('workbench.common.unit-price'))->min(0)->step(0.01),
                     ]),
                     TextInput::make('total', __('workbench.forms.dependent.total'))
                         ->readOnly()
                         ->value(fn (FormData $data) => $data->float('qty') * $data->float('unit_price')),
                     NumberInput::make('level', __('workbench.forms.dependent.level'))->slider()->min(0)->max(10),
-                    DateInput::make('due', __('workbench.forms.dependent.dueDate')),
+                    DateInput::make('due', __('workbench.forms.dependent.due-date')),
                 ]),
                 Card::make(__('workbench.forms.dependent.content'))->schema([
                     Textarea::make('bio', __('workbench.common.bio'))->rows(4)->rules(['nullable', 'string', 'max:500']),

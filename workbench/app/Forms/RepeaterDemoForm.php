@@ -21,14 +21,14 @@ class RepeaterDemoForm extends FormDefinition
             ->precognitive(300)
             ->schema([
                 Card::make(__('workbench.forms.repeater.card'))->schema([
-                    Repeater::make('items', __('workbench.common.lineItems'))
+                    Repeater::make('items', __('workbench.common.line-items'))
                         ->schema([
                             TextInput::make('name', __('workbench.common.name'))->required(),
                             TextInput::make('qty', __('workbench.common.qty'))->rules(['numeric']),
                         ])
                         ->minItems(1)
                         ->maxItems(3)
-                        ->addLabel(__('workbench.common.addLine'))
+                        ->addLabel(__('workbench.common.add-line'))
                         ->defaultItems(1),
                 ]),
             ]);

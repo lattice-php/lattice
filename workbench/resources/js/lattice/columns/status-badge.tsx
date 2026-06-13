@@ -1,5 +1,6 @@
 import type { ColumnCellComponent } from "@lattice-php/lattice";
 import { useT } from "@lattice-php/lattice/i18n";
+import { WORKBENCH_I18N_NAMESPACE } from "../i18n";
 
 const colorClasses: Record<string, string> = {
   active: "bg-green-100 text-green-800",
@@ -10,7 +11,7 @@ const colorClasses: Record<string, string> = {
 export const StatusBadgeCell: ColumnCellComponent = ({ value }) => {
   const label = String(value ?? "");
   const classes = colorClasses[label] ?? "bg-gray-100 text-gray-800";
-  const { t } = useT("workbench");
+  const { t } = useT(WORKBENCH_I18N_NAMESPACE);
 
   return (
     <span

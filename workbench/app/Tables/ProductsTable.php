@@ -39,7 +39,7 @@ class ProductsTable extends EloquentTableDefinition
             TextColumn::make('price')->label(__('workbench.tables.columns.price'))->sortable()->numeric()->filterable(),
             StatusBadgeColumn::make('status')->label(__('workbench.tables.columns.status'))->filterable(Op::Equals)->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
             TextColumn::make('featured')->label(__('workbench.tables.columns.featured'))->sortable()->boolean()->filterable(),
-            TextColumn::make('updated_at')->label(__('workbench.tables.columns.updatedAt'))->sortable()->date('Y-m-d H:i:s')->filterable(),
+            TextColumn::make('updated_at')->label(__('workbench.tables.columns.updated-at'))->sortable()->date('Y-m-d H:i:s')->filterable(),
         ];
     }
 

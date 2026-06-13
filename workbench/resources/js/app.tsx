@@ -11,6 +11,7 @@ import { configureI18n, type I18nConfig } from "@lattice-php/lattice/i18n";
 import { createRoot } from "react-dom/client";
 import sprite from "virtual:svg-sprite";
 import { appColumns } from "./lattice/columns";
+import { WORKBENCH_I18N_NAMESPACE } from "./lattice/i18n";
 import { LanguageSwitcher } from "./lattice/language-switcher";
 
 const appRegistry = extendRegistry(registry, appColumns);
@@ -25,13 +26,18 @@ createInertiaApp({
     }
 
     const shared = props.initialPage.props as { lattice?: { i18n?: I18nConfig } };
-    void configureI18n(shared.lattice?.i18n, { namespaces: ["lattice", "workbench"] });
+    const root = createRoot(el);
+    const render = () => {
+      root.render(
+        <Provider registry={appRegistry} sprite={sprite}>
+          <App {...props} />
+          <LanguageSwitcher />
+        </Provider>,
+      );
+    };
 
-    createRoot(el).render(
-      <Provider registry={appRegistry} sprite={sprite}>
-        <App {...props} />
-        <LanguageSwitcher />
-      </Provider>,
-    );
+    void configureI18n(shared.lattice?.i18n, {
+      namespaces: ["lattice", WORKBENCH_I18N_NAMESPACE],
+    }).then(render, render);
   },
 });

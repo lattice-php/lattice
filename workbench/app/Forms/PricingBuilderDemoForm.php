@@ -31,20 +31,20 @@ class PricingBuilderDemoForm extends FormDefinition
         return $form
             ->precognitive(300)
             ->schema([
-                Card::make(__('workbench.forms.pricingBuilder.customer'))->schema([
-                    Select::make('customer', __('workbench.forms.pricingBuilder.customer'))->options([
-                        Select::option(__('workbench.forms.pricingBuilder.acme'), 'acme'),
-                        Select::option(__('workbench.forms.pricingBuilder.globex'), 'globex'),
-                        Select::option(__('workbench.forms.pricingBuilder.initech'), 'initech'),
+                Card::make(__('workbench.forms.pricing-builder.customer'))->schema([
+                    Select::make('customer', __('workbench.forms.pricing-builder.customer'))->options([
+                        Select::option(__('workbench.forms.pricing-builder.acme'), 'acme'),
+                        Select::option(__('workbench.forms.pricing-builder.globex'), 'globex'),
+                        Select::option(__('workbench.forms.pricing-builder.initech'), 'initech'),
                     ]),
                 ]),
-                Card::make(__('workbench.common.lineItems'))->schema([
-                    Builder::make('items', __('workbench.common.lineItems'))
+                Card::make(__('workbench.common.line-items'))->schema([
+                    Builder::make('items', __('workbench.common.line-items'))
                         ->blocks([
                             Block::make('text')->label(__('workbench.common.text'))->schema([
                                 Textarea::make('content', __('workbench.common.content'))->required(),
                             ]),
-                            Block::make('product')->label(__('workbench.common.productLine'))->schema([
+                            Block::make('product')->label(__('workbench.common.product-line'))->schema([
                                 Select::make('product', __('workbench.common.product'))
                                     ->options($this->productOptions(limit: 20))
                                     ->searchable(fn (string $query) => $this->productOptions(query: $query, limit: 10))
@@ -56,12 +56,12 @@ class PricingBuilderDemoForm extends FormDefinition
                                     resetOn: ['product'],
                                     refreshOn: ['@customer'],
                                 ),
-                                TextInput::make('discount_note', __('workbench.forms.pricingBuilder.discountNote'))
+                                TextInput::make('discount_note', __('workbench.forms.pricing-builder.discount-note'))
                                     ->visibleWhen('product', '!=', ''),
                             ]),
                         ])
                         ->minItems(1)
-                        ->addLabel(__('workbench.common.addBlock')),
+                        ->addLabel(__('workbench.common.add-block')),
                 ]),
             ]);
     }

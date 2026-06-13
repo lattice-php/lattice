@@ -1,5 +1,5 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { fieldTestId } from "@lattice-php/lattice/core/test-id";
+import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import { FormFieldFrame } from "../base/field";
 import PasswordInput from "../base/password-input";
 import { useFieldScope } from "../field-scope";
@@ -47,7 +47,7 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
         <PasswordInput
           autoComplete={props.autoComplete ?? ""}
           autoFocus={props.autoFocus ?? false}
-          data-test={fieldTestId(localName)}
+          data-test={testIdentity(localName)}
           disabled={disabled}
           id={name}
           name={name}
@@ -68,7 +68,7 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
         >
           <PasswordInput
             autoComplete="new-password"
-            data-test={fieldTestId(confirmationLocalName)}
+            data-test={testIdentity(confirmationLocalName)}
             disabled={disabled}
             id={confirmationName}
             name={confirmationName}

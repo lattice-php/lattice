@@ -18,7 +18,7 @@ class BuilderTableDemoPage extends WorkbenchPage
 {
     public function title(): string
     {
-        return __('workbench.pages.builderTable.title');
+        return __('workbench.pages.builder-table.title');
     }
 
     public function render(PageSchema $schema): PageSchema
@@ -27,10 +27,10 @@ class BuilderTableDemoPage extends WorkbenchPage
             Stack::make('builder-table-demo-page')
                 ->gap(Gap::Large)
                 ->schema([
-                    Heading::make(__('workbench.pages.builderTable.heading')),
+                    Heading::make(__('workbench.pages.builder-table.heading')),
                     Form::use(BuilderTableDemoForm::class)
                         ->method(HttpMethod::Post)
-                        ->submitLabel(__('workbench.pages.builderTable.submit')),
+                        ->submitLabel(__('workbench.pages.builder-table.submit')),
                 ]),
         ]);
     }

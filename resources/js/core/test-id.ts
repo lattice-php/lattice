@@ -23,14 +23,6 @@ export function prefixedTestId(
   return identity ? `${prefix}-${identity}` : undefined;
 }
 
-export function nodeTestId(node: IdentifiedNode): string | undefined {
-  return nodeIdentity(node);
-}
-
 export function prefixedNodeTestId(prefix: string, node: IdentifiedNode): string | undefined {
   return prefixedTestId(prefix, nodeIdentity(node));
-}
-
-export function fieldTestId(name: string | null | undefined): string | undefined {
-  return testIdentity(name);
 }

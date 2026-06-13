@@ -21,10 +21,10 @@ class RejectSelectedProductsAction extends BulkActionDefinition
     public function definition(Action $action): Action
     {
         return $action
-            ->label(__('workbench.actions.rejectSelected.label'))
+            ->label(__('workbench.actions.reject-selected.label'))
             ->method(HttpMethod::Patch)
             ->variant(ButtonVariant::Destructive)
-            ->confirm(__('workbench.actions.rejectSelected.confirmTitle'), __('workbench.actions.rejectSelected.confirmDescription'), __('workbench.actions.rejectSelected.confirmLabel'))
+            ->confirm(__('workbench.actions.reject-selected.confirm-title'), __('workbench.actions.reject-selected.confirm-description'), __('workbench.actions.reject-selected.confirm-label'))
             ->form([
                 Textarea::make('reason', __('workbench.common.reason'))->required()->rules(['string', 'max:255']),
             ]);
@@ -44,7 +44,7 @@ class RejectSelectedProductsAction extends BulkActionDefinition
         });
 
         return ActionResult::success(['archived' => $records->count(), 'reason' => $data['reason']])
-            ->toast(ToastVariant::Success, __('workbench.actions.rejectSelected.toast', ['count' => $records->count(), 'reason' => $data['reason']]))
+            ->toast(ToastVariant::Success, __('workbench.actions.reject-selected.toast', ['count' => $records->count(), 'reason' => $data['reason']]))
             ->reloadComponent('workbench.products');
     }
 }

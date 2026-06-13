@@ -1,5 +1,5 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { fieldTestId } from "@lattice-php/lattice/core/test-id";
+import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import { Checkbox } from "../base/checkbox";
 import { Label } from "../base/label";
 import { toBoolean } from "../conditions";
@@ -32,7 +32,7 @@ export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) 
         <Checkbox
           autoFocus={node.props.autoFocus ?? undefined}
           checked={checked}
-          data-test={fieldTestId(localName)}
+          data-test={testIdentity(localName)}
           disabled={readOnly || disabled}
           id={name}
           name={name}

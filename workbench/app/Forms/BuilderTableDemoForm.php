@@ -25,11 +25,11 @@ class BuilderTableDemoForm extends FormDefinition
             ->precognitive(300)
             ->schema([
                 Card::make(__('workbench.forms.builder.card'))->schema([
-                    Builder::make('items', __('workbench.common.lineItems'))
+                    Builder::make('items', __('workbench.common.line-items'))
                         ->table()
                         ->resizableColumns(showIndicator: true)
                         ->blocks([
-                            Block::make('product')->label(__('workbench.common.productLine'))->schema([
+                            Block::make('product')->label(__('workbench.common.product-line'))->schema([
                                 TextInput::make('product', __('workbench.common.product'))->columnWidth(ColumnWidth::Lg)->required(),
                                 TextInput::make('qty', __('workbench.common.qty'))->columnWidth(ColumnWidth::Xs)->rules(['numeric']),
                                 TextInput::make('price', __('workbench.common.price'))->columnWidth(ColumnWidth::Sm)->rules(['numeric']),
@@ -39,7 +39,7 @@ class BuilderTableDemoForm extends FormDefinition
                             ]),
                         ])
                         ->minItems(1)
-                        ->addLabel(__('workbench.common.addBlock')),
+                        ->addLabel(__('workbench.common.add-block')),
                 ]),
             ]);
     }

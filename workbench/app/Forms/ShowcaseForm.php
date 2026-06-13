@@ -33,9 +33,9 @@ class ShowcaseForm extends FormDefinition
             ->precognitive(500)
             ->submitLabel(__('workbench.forms.showcase.submit'))
             ->schema([
-                Card::make(__('workbench.forms.showcase.profile'), __('workbench.forms.showcase.profileDescription'))->schema([
+                Card::make(__('workbench.forms.showcase.profile'), __('workbench.forms.showcase.profile-description'))->schema([
                     Grid::make()->columns(2)->schema([
-                        TextInput::make('name', __('workbench.forms.showcase.fullName'))
+                        TextInput::make('name', __('workbench.forms.showcase.full-name'))
                             ->placeholder(__('workbench.forms.showcase.placeholders.name'))
                             ->rules(['required', 'string', 'max:255']),
                         TextInput::make('email', __('workbench.common.email'))
@@ -48,7 +48,7 @@ class ShowcaseForm extends FormDefinition
                         ->rules(['required', 'string', 'min:8', 'confirmed']),
                     Textarea::make('bio', __('workbench.common.bio'))
                         ->rows(4)
-                        ->placeholder(__('workbench.forms.showcase.yourBio'))
+                        ->placeholder(__('workbench.forms.showcase.your-bio'))
                         ->rules(['nullable', 'string', 'max:1000']),
                 ]),
 
@@ -75,8 +75,8 @@ class ShowcaseForm extends FormDefinition
                         ->rules(['required', Rule::in(['free', 'pro', 'enterprise'])]),
                 ]),
 
-                Card::make(__('workbench.forms.showcase.conditionalFields'), __('workbench.forms.showcase.conditionalDescription'))->schema([
-                    Choice::make('account_type', __('workbench.forms.showcase.accountType'))
+                Card::make(__('workbench.forms.showcase.conditional-fields'), __('workbench.forms.showcase.conditional-description'))->schema([
+                    Choice::make('account_type', __('workbench.forms.showcase.account-type'))
                         ->options([
                             Choice::option(__('workbench.forms.showcase.personal'), 'personal'),
                             Choice::option(__('workbench.forms.showcase.business'), 'business'),
@@ -87,10 +87,10 @@ class ShowcaseForm extends FormDefinition
                         ->rules(['string', 'max:255']),
                 ]),
 
-                Card::make(__('workbench.forms.showcase.orderTotal'), __('workbench.forms.showcase.orderTotalDescription'))->schema([
+                Card::make(__('workbench.forms.showcase.order-total'), __('workbench.forms.showcase.order-total-description'))->schema([
                     Grid::make()->columns(2)->schema([
                         NumberInput::make('quantity', __('workbench.forms.showcase.quantity'))->min(1),
-                        NumberInput::make('unit_price', __('workbench.common.unitPrice'))->min(0)->step(0.01),
+                        NumberInput::make('unit_price', __('workbench.common.unit-price'))->min(0)->step(0.01),
                     ]),
                     TextInput::make('total', __('workbench.forms.dependent.total'))
                         ->readOnly()
@@ -102,9 +102,9 @@ class ShowcaseForm extends FormDefinition
                         ),
                 ]),
 
-                Card::make(__('workbench.forms.showcase.selection'), __('workbench.forms.showcase.selectionDescription'))->schema([
+                Card::make(__('workbench.forms.showcase.selection'), __('workbench.forms.showcase.selection-description'))->schema([
                     Select::make('country', __('workbench.forms.showcase.country'))
-                        ->placeholder(__('workbench.forms.showcase.pickCountry'))
+                        ->placeholder(__('workbench.forms.showcase.pick-country'))
                         ->options([
                             Select::option(__('workbench.forms.showcase.germany'), 'de'),
                             Select::option(__('workbench.forms.showcase.france'), 'fr'),
@@ -112,9 +112,9 @@ class ShowcaseForm extends FormDefinition
                             Select::option(__('workbench.forms.showcase.italy'), 'it'),
                         ])
                         ->rules(['nullable', 'string']),
-                    Select::make('related_products', __('workbench.forms.product.fields.relatedProducts'))
+                    Select::make('related_products', __('workbench.forms.product.fields.related-products'))
                         ->multiple()
-                        ->placeholder(__('workbench.common.searchProducts'))
+                        ->placeholder(__('workbench.common.search-products'))
                         ->searchable(fn (string $query) => Product::query()
                             ->where('name', 'like', "%{$query}%")
                             ->orderBy('name')
