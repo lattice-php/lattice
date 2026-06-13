@@ -1,12 +1,11 @@
 import { Link, usePage } from "@inertiajs/react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import type { ReactNode } from "react";
-import { createPortal } from "react-dom";
 import type { RendererComponent, Schema } from "@lattice/lattice/core/types";
 import { Icon, IconRenderer } from "@lattice/lattice/icons";
 import { cn } from "@lattice/lattice/lib/utils";
-import { useT } from "@lattice/lattice/i18n";
-import { SidebarCollapsedContext, useSidebarCollapsed } from "./context";
+import { useSidebarCollapsed } from "./context";
+import { Popover } from "./popover";
 
 const rowClass =
   "flex items-center gap-2 rounded-md px-3 py-2 text-sm text-lt-fg transition-colors hover:bg-lt-muted";
@@ -129,67 +128,29 @@ function FlyoutGroup({
   label: string;
   testId: string;
 }) {
-  const { t } = useT("lattice");
-  const [open, setOpen] = useState(false);
-  const [position, setPosition] = useState({ left: 0, top: 0 });
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const url = usePage().url;
-
-  useEffect(() => setOpen(false), [url]);
-
-  function toggle(): void {
-    const rect = triggerRef.current?.getBoundingClientRect();
-
-    if (rect) {
-      setPosition({ left: rect.right + 4, top: rect.top });
-    }
-
-    setOpen((value) => !value);
-  }
-
   return (
     <li>
-      <button
-        aria-expanded={open}
-        aria-label={label}
-        className={cn(rowClass, "w-full justify-center")}
-        data-test={testId}
-        onClick={toggle}
-        ref={triggerRef}
-        title={label}
-        type="button"
-      >
-        {icon ? (
-          <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} />
-        ) : (
-          <span>{label}</span>
-        )}
-      </button>
-      {open
-        ? createPortal(
-            <>
-              <button
-                aria-label={t("a11y.closeMenu", "Close menu")}
-                className="fixed inset-0 z-40 cursor-default"
-                data-test={`${testId}-close`}
-                onClick={() => setOpen(false)}
-                type="button"
-              />
-              <SidebarCollapsedContext.Provider value={false}>
-                <ul
-                  className="fixed z-50 min-w-48 rounded-md border border-lt-border bg-lt-popover p-1 text-lt-popover-fg shadow-lg"
-                  style={{ left: position.left, top: position.top }}
-                >
-                  <li className="px-3 py-1.5 text-xs font-semibold tracking-wide text-lt-muted-fg uppercase">
-                    {label}
-                  </li>
-                  {children}
-                </ul>
-              </SidebarCollapsedContext.Provider>
-            </>,
-            document.body,
+      <Popover
+        className="min-w-48"
+        placement="right"
+        testId={testId}
+        trigger={
+          icon ? (
+            <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} />
+          ) : (
+            <span>{label}</span>
           )
-        : null}
+        }
+        triggerClassName={cn(rowClass, "justify-center")}
+        triggerLabel={label}
+      >
+        <ul className="flex flex-col gap-1">
+          <li className="px-3 py-1.5 text-xs font-semibold tracking-wide text-lt-muted-fg uppercase">
+            {label}
+          </li>
+          {children}
+        </ul>
+      </Popover>
     </li>
   );
 }

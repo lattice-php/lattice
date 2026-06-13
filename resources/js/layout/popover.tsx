@@ -9,14 +9,20 @@ export function Popover({
   align = "start",
   children,
   className,
+  placement = "bottom",
   testId,
   trigger,
+  triggerClassName,
+  triggerLabel,
 }: {
   align?: "start" | "end";
   children: ReactNode;
   className?: string;
+  placement?: "bottom" | "right";
   testId?: string;
   trigger: ReactNode;
+  triggerClassName?: string;
+  triggerLabel?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ left: 0, top: 0 });
@@ -28,10 +34,11 @@ export function Popover({
   function toggle(): void {
     const rect = triggerRef.current?.getBoundingClientRect();
     if (rect) {
-      setPosition({
-        left: align === "end" ? rect.right : rect.left,
-        top: rect.bottom + 4,
-      });
+      setPosition(
+        placement === "right"
+          ? { left: rect.right + 4, top: rect.top }
+          : { left: align === "end" ? rect.right : rect.left, top: rect.bottom + 4 },
+      );
     }
     setOpen((value) => !value);
   }
@@ -41,10 +48,12 @@ export function Popover({
       <button
         aria-expanded={open}
         aria-haspopup="menu"
-        className="w-full"
+        aria-label={triggerLabel}
+        className={cn("w-full", triggerClassName)}
         data-test={testId}
         onClick={toggle}
         ref={triggerRef}
+        title={triggerLabel}
         type="button"
       >
         {trigger}
@@ -69,7 +78,8 @@ export function Popover({
                 style={{
                   left: position.left,
                   top: position.top,
-                  transform: align === "end" ? "translateX(-100%)" : undefined,
+                  transform:
+                    placement === "bottom" && align === "end" ? "translateX(-100%)" : undefined,
                 }}
               >
                 <SidebarCollapsedContext.Provider value={false}>
