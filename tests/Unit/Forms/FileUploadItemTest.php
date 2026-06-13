@@ -61,6 +61,46 @@ it('rejects a signed key outside the temp prefix even if it exists (tamper)', fu
     expect(fileRuleFails($rule, 'uploads/secret.pdf'))->toBeTrue();
 });
 
+it('rejects a signed key that exceeds the max size', function (): void {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('tmp/big.bin', str_repeat('a', 11 * 1024));
+    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: 10, disk: 's3', signed: true, tempPrefix: 'tmp');
+
+    expect(fileRuleFails($rule, 'tmp/big.bin'))->toBeTrue();
+});
+
+it('accepts a signed key within the max size', function (): void {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('tmp/small.bin', str_repeat('a', 5 * 1024));
+    $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: 10, disk: 's3', signed: true, tempPrefix: 'tmp');
+
+    expect(fileRuleFails($rule, 'tmp/small.bin'))->toBeFalse();
+});
+
+it('rejects a signed non-image when image is required', function (): void {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('tmp/doc.txt', str_repeat('a', 10));
+    $rule = new FileUploadItem(image: true, acceptedTypes: null, maxSizeKb: null, disk: 's3', signed: true, tempPrefix: 'tmp');
+
+    expect(fileRuleFails($rule, 'tmp/doc.txt'))->toBeTrue();
+});
+
+it('accepts a signed image when image is required', function (): void {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('tmp/pic.jpg', str_repeat('a', 10));
+    $rule = new FileUploadItem(image: true, acceptedTypes: null, maxSizeKb: null, disk: 's3', signed: true, tempPrefix: 'tmp');
+
+    expect(fileRuleFails($rule, 'tmp/pic.jpg'))->toBeFalse();
+});
+
+it('rejects a signed key with an unaccepted mime type', function (): void {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('tmp/doc.txt', str_repeat('a', 10));
+    $rule = new FileUploadItem(image: false, acceptedTypes: ['application/pdf'], maxSizeKb: null, disk: 's3', signed: true, tempPrefix: 'tmp');
+
+    expect(fileRuleFails($rule, 'tmp/doc.txt'))->toBeTrue();
+});
+
 it('rejects an UploadedFile in signed mode (tamper)', function (): void {
     $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: null, disk: 's3', signed: true, tempPrefix: 'tmp');
 
