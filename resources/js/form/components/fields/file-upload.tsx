@@ -220,6 +220,7 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
             accept={props.accept ?? undefined}
             aria-label={props.label ?? name}
             className="sr-only"
+            data-test={testIdentity(`${name}-input`)}
             id={inputId}
             multiple={multiple}
             onChange={(event) => {
@@ -234,6 +235,7 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
             accept={props.accept ?? undefined}
             aria-label={props.label ?? name}
             className="sr-only"
+            data-test={testIdentity(`${name}-input`)}
             id={inputId}
             multiple={multiple}
             name={fieldName}
