@@ -27,9 +27,6 @@ final class PageRegistry
     }
 
     /**
-     * Every routable page: discovered (from the manifest) plus explicitly
-     * registered, resolved to its metadata and de-duplicated by class.
-     *
      * @return array<int, PageMetadata>
      */
     public function all(): array

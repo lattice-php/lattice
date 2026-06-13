@@ -15,11 +15,7 @@ use Spatie\Attributes\Attributes;
 
 final class DiscoveryKinds
 {
-    /**
-     * Keyed component groups: group => component attribute class.
-     *
-     * @var array<string, class-string>
-     */
+    /** @var array<string, class-string> */
     public const COMPONENTS = [
         'forms' => Form::class,
         'tables' => Table::class,

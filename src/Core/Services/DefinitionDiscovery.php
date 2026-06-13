@@ -57,7 +57,7 @@ final class DefinitionDiscovery implements DiscoversDefinitions
             return $definitions;
         }
 
-        foreach ($this->classesIn($path) as $class) {
+        foreach (ClassWalker::classes($path) as $class) {
             if ((new ReflectionClass($class))->isAbstract()) {
                 continue;
             }
@@ -70,13 +70,5 @@ final class DefinitionDiscovery implements DiscoversDefinitions
         }
 
         return $definitions;
-    }
-
-    /**
-     * @return list<class-string>
-     */
-    private function classesIn(string $path): array
-    {
-        return ClassWalker::classes($path);
     }
 }
