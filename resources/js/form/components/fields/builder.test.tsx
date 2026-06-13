@@ -113,6 +113,50 @@ it("can remove an unknown-block row", () => {
   expect(screen.queryByText(/Unknown block/i)).not.toBeInTheDocument();
 });
 
+it("renders the table layout: primary columns, spanning non-primary rows", () => {
+  const node = {
+    id: "b",
+    type: "form.builder",
+    props: {
+      name: "items",
+      layout: "table",
+      reorderable: true,
+      defaultItems: 0,
+      addLabel: "Add block",
+      minItems: 0,
+      maxItems: 9,
+    },
+    blocks: [
+      {
+        type: "product",
+        label: "Product",
+        schema: [
+          { id: "p", type: "form.text-input", props: { name: "product", label: "Product" } },
+          { id: "q", type: "form.text-input", props: { name: "qty", label: "Qty" } },
+        ],
+      },
+      {
+        type: "text",
+        label: "Text",
+        schema: [{ id: "c", type: "form.textarea", props: { name: "content", label: "Content" } }],
+      },
+    ],
+  } as never;
+  wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
+    items: [
+      { type: "product", product: "SKU", qty: "2" },
+      { type: "text", content: "note" },
+    ],
+  });
+  expect(screen.getByText("Product")).toBeInTheDocument();
+  expect(screen.getByText("Qty")).toBeInTheDocument();
+  const texts = screen.getAllByTestId("child").map((c) => c.textContent);
+  expect(texts).toContain("items[0][product]");
+  expect(texts).toContain("items[0][qty]");
+  expect(texts).toContain("items[1][content]");
+  expect(screen.getByTestId("table-row-items-1-span")).toBeInTheDocument();
+});
+
 it("does not re-render sibling rows when one row changes", () => {
   wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
     items: [

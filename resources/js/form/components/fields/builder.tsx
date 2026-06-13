@@ -6,10 +6,13 @@ import { useDependentField } from "../use-dependent-field";
 import { BlockAddMenu, type BlockOption } from "./block-add-menu";
 import { ROW_ID_KEY } from "./repeater-rows";
 import { RowItem } from "./row-item";
+import { TableRows } from "./table-rows";
 import { useFlipReorder } from "./use-flip-reorder";
 import { useRowCollection } from "./use-row-collection";
 
 type Block = { type: string; label: string; schema: Node[] };
+
+type FieldProps = { name: string; label?: string };
 
 const EMPTY_TEMPLATE: Node[] = [];
 
@@ -27,6 +30,7 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
   const registerRow = useFlipReorder(orderSignature);
   const atMax = props.maxItems != null && rows.length >= props.maxItems;
   const atMin = props.minItems != null && rows.length <= props.minItems;
+  const isTable = props.layout === "table";
 
   const blockFor = (type: unknown): Block | undefined => blocks.find((b) => b.type === type);
   const options: BlockOption[] = blocks.map((b) => ({
@@ -36,6 +40,66 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
 
   if (hidden) {
     return null;
+  }
+
+  const hiddenTypeInputs = rows.map((row, index) => (
+    <input
+      key={String(row[ROW_ID_KEY] ?? index)}
+      type="hidden"
+      name={`${name}[${index}][type]`}
+      value={String(row.type ?? "")}
+    />
+  ));
+
+  if (isTable) {
+    const primary = blocks[0];
+    const columns = (primary?.schema ?? []).map((field) => {
+      const fieldProps = field.props as FieldProps;
+      return { name: String(fieldProps.name), label: String(fieldProps.label ?? fieldProps.name) };
+    });
+    const tableRows = rows.map((row, index) => {
+      const block = blockFor(row.type);
+      const isPrimary = !!block && !!primary && block.type === primary.type;
+      return {
+        key: String(row[ROW_ID_KEY] ?? index),
+        index,
+        row,
+        template: block?.schema ?? EMPTY_TEMPLATE,
+        span: !isPrimary,
+      };
+    });
+
+    return (
+      <FormFieldFrame
+        error={errors[name]}
+        helperText={props.helperText ?? undefined}
+        label={props.label ?? ""}
+        name={name}
+        required={required}
+      >
+        <div className="flex flex-col gap-3">
+          {hiddenTypeInputs}
+          <TableRows
+            base={name}
+            columns={columns}
+            rows={tableRows}
+            reorderable={props.reorderable ?? false}
+            removable={() => !atMin}
+            onField={onField}
+            onMove={onMove}
+            onRemove={onRemove}
+            registerRow={registerRow}
+          />
+          {!atMax && (
+            <BlockAddMenu
+              addLabel={props.addLabel ?? "Add"}
+              blocks={options}
+              onSelect={(type) => append({ type })}
+            />
+          )}
+        </div>
+      </FormFieldFrame>
+    );
   }
 
   return (
