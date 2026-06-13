@@ -24,6 +24,9 @@
                     "value": "enterprise"
                 }
             ],
+            "prefill": null,
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
             "readOnly": null,
             "required": null,
             "tabIndex": null,

@@ -24,6 +24,9 @@
                     "value": "US"
                 }
             ],
+            "prefill": null,
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
             "readOnly": null,
             "required": null,
             "tabIndex": null,
@@ -52,6 +55,9 @@
             "label": "VAT ID",
             "name": "vat",
             "placeholder": null,
+            "prefill": null,
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
             "readOnly": null,
             "required": null,
             "tabIndex": null,

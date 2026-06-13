@@ -61,6 +61,9 @@ export type Builder = {
   maxItems: number | null;
   minItems: number | null;
   name: string;
+  prefill: boolean | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
   readOnly: boolean | null;
   reorderable: boolean;
   required: boolean | null;
@@ -113,6 +116,9 @@ export type Checkbox = {
   hidden: boolean | null;
   label: string | null;
   name: string;
+  prefill: boolean | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
   readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
@@ -134,6 +140,9 @@ export type Choice = {
   label: string | null;
   name: string;
   options: Option[];
+  prefill: boolean | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
   readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
@@ -272,6 +281,9 @@ export type DateInput = {
   max: string | null;
   min: string | null;
   name: string;
+  prefill: boolean | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
   readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
@@ -444,6 +456,9 @@ export type HiddenInput = {
   hidden: boolean | null;
   label: string | null;
   name: string;
+  prefill: boolean | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
   readOnly: boolean | null;
   required: boolean | null;
   value: unknown;
@@ -546,6 +561,9 @@ export type NumberInput = {
   min: number | null;
   name: string;
   placeholder: string | null;
+  prefill: boolean | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
   readOnly: boolean | null;
   required: boolean | null;
   slider: boolean | null;
@@ -609,6 +627,9 @@ export type PasswordInput = {
   name: string;
   passwordRules: string | null;
   placeholder: string | null;
+  prefill: boolean | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
   readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
@@ -641,6 +662,9 @@ export type Repeater = {
   maxItems: number | null;
   minItems: number | null;
   name: string;
+  prefill: boolean | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
   readOnly: boolean | null;
   reorderable: boolean;
   required: boolean | null;
@@ -664,6 +688,9 @@ export type RichEditor = {
   label: string | null;
   name: string;
   placeholder: string | null;
+  prefill: boolean | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
   readOnly: boolean | null;
   required: boolean | null;
   value: unknown;
@@ -703,6 +730,9 @@ export type Select = {
   name: string;
   options: Option[];
   placeholder: string | null;
+  prefill: boolean | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
   readOnly: boolean | null;
   required: boolean | null;
   searchPlaceholder: string;
@@ -790,6 +820,9 @@ export type TextInput = {
   label: string | null;
   name: string;
   placeholder: string | null;
+  prefill: boolean | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
   readOnly: boolean | null;
   required: boolean | null;
   tabIndex: number | null;
@@ -812,6 +845,9 @@ export type Textarea = {
   label: string | null;
   name: string;
   placeholder: string | null;
+  prefill: boolean | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
   readOnly: boolean | null;
   required: boolean | null;
   rows: number | null;

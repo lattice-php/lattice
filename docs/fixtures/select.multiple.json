@@ -31,6 +31,9 @@
                 }
             ],
             "placeholder": "Choose languages",
+            "prefill": null,
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
             "readOnly": null,
             "required": null,
             "searchPlaceholder": "Search\u2026",
