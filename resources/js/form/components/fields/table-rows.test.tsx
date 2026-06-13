@@ -202,6 +202,8 @@ it("stores table layout column widths under the field base", () => {
       onField={noop}
       onMove={noop}
       onRemove={noop}
+      rowActions={null}
+      onDuplicate={noop}
     />,
   );
 
