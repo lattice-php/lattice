@@ -38,12 +38,20 @@ describe("Lattice stack component", () => {
 
     render(<StackComponent node={node}>Content</StackComponent>);
 
-    expect(screen.getByText("Content")).toHaveClass(
-      "flex",
-      "items-center",
-      "justify-center",
-      "gap-1",
-    );
+    expect(screen.getByText("Content")).toHaveClass("flex", "items-center", "gap-1");
+    expect(screen.getByText("Content")).not.toHaveClass("justify-center");
+  });
+
+  it("can remove spacing between children", () => {
+    const node = fakeNode({
+      id: "compact-copy",
+      props: { gap: "none" },
+      type: "stack",
+    });
+
+    render(<StackComponent node={node}>Content</StackComponent>);
+
+    expect(screen.getByText("Content")).toHaveClass("gap-0");
   });
 
   it("renders a column as flex with justification when justify is set", () => {

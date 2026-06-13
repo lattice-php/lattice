@@ -36,6 +36,8 @@ abstract class Component implements JsonSerializable
 
     protected bool $shouldRender = true;
 
+    protected bool $hideWhenCollapsed = false;
+
     public function __construct(protected ?string $key = null) {}
 
     protected function type(): string
@@ -82,6 +84,13 @@ abstract class Component implements JsonSerializable
     public function shouldRender(): bool
     {
         return $this->shouldRender;
+    }
+
+    public function hideWhenCollapsed(bool $hide = true): static
+    {
+        $this->hideWhenCollapsed = $hide;
+
+        return $this;
     }
 
     /**
@@ -132,6 +141,10 @@ abstract class Component implements JsonSerializable
      */
     protected function decorateProps(array $props): array
     {
+        if ($this->hideWhenCollapsed) {
+            $props['hideWhenCollapsed'] = true;
+        }
+
         return $props;
     }
 

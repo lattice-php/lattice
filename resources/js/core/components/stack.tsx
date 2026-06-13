@@ -8,12 +8,13 @@ const gridAlignments: Record<string, string> = {
 };
 
 const flexAlignments: Record<string, string> = {
-  center: "items-center justify-center text-center",
-  start: "items-center justify-start text-left",
+  center: "items-center text-center",
+  start: "items-center text-left",
   stretch: "items-stretch justify-stretch",
 };
 
 const stackGaps: Record<string, string> = {
+  none: "gap-0",
   xs: "gap-1",
   lg: "gap-6",
   md: "gap-4",

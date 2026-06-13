@@ -98,34 +98,77 @@ MenuItem::make('Log out')->href(route('logout', absolute: false))->icon('log-out
 
 ## Dropdowns
 
-`Dropdown` renders a trigger that reveals its `MenuItem`s in a popover — for grouping actions without
-nesting them in the sidebar tree:
+`Dropdown` renders a composed trigger that reveals its `MenuItem`s in a popover — for grouping actions
+without nesting them in the sidebar tree:
 
 ```php
-use Lattice\Lattice\Core\Enums\Icon;
+use Lattice\Lattice\Core\Components\Icon;
+use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Core\Enums\Placement;
 use Lattice\Lattice\Layouts\Components\Dropdown;
+use Lattice\Lattice\Layouts\Components\MenuItem;
 
-Dropdown::make('Account')->icon(Icon::Settings)->items([
-    MenuItem::fromPage(SettingsPage::class)->label('Settings'),
-    MenuItem::make('Log out')->href(route('logout', absolute: false))->method(HttpMethod::Post),
+Dropdown::make('account-menu')
+    ->placement(Placement::Bottom)
+    ->trigger([
+        Icon::make('settings'),
+        Text::make('Account'),
+    ])
+    ->items([
+        MenuItem::fromPage(SettingsPage::class)->label('Settings'),
+        MenuItem::make('Log out')->href(route('logout', absolute: false))->method(HttpMethod::Post),
+    ]);
+```
+
+## Raw blocks
+
+`RawBlock` renders trusted server HTML. Use it for small layout-specific fragments such as an avatar,
+team glyph, or badge when a dedicated Lattice component would be too specific:
+
+```php
+use Lattice\Lattice\Core\Components\RawBlock;
+
+RawBlock::make('avatar')->blade('components.avatar', [
+    'name' => $user->name,
+    'src' => $user->avatar,
 ]);
 ```
 
-## User menu
-
-`UserMenu` is a dropdown specialised for the signed-in user: it shows an avatar (or the user's
-initials when no image is set) with their name and email, and opens to the items you give it. Configure
-it from the request in your layout:
+Use `->html()` when the markup is already available:
 
 ```php
-use Lattice\Lattice\Layouts\Components\UserMenu;
+RawBlock::make('initials')->html('<span class="avatar">AL</span>');
+```
+
+## User dropdown
+
+Build user menus from the same dropdown shell. The avatar, identity text, and menu placement are all
+server-driven, so there is no dedicated frontend component:
+
+```php
+use Lattice\Lattice\Core\Components\RawBlock;
+use Lattice\Lattice\Core\Components\Stack;
+use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Core\Enums\Placement;
+use Lattice\Lattice\Layouts\Components\Dropdown;
+use Lattice\Lattice\Layouts\Components\MenuItem;
 
 $user = $request->user();
 
-UserMenu::make()
-    ->name($user->name)
-    ->email($user->email)
-    ->avatar($user->avatar)
+Dropdown::make('user-menu')
+    ->placement(Placement::Top)
+    ->trigger([
+        Stack::make('user-menu-trigger')->direction('row')->schema([
+            RawBlock::make('avatar')->blade('components.avatar', [
+                'name' => $user->name,
+                'src' => $user->avatar,
+            ]),
+            Stack::make('user-menu-identity')->schema([
+                Text::make($user->name),
+                Text::make($user->email),
+            ])->hideWhenCollapsed(),
+        ]),
+    ])
     ->items([
         MenuItem::fromPage(SettingsPage::class)->label('Settings'),
         MenuItem::make('Log out')->href(route('logout', absolute: false))->method(HttpMethod::Post),
@@ -155,16 +198,30 @@ giving it a `justify` switches it to a flex column so the space distributes:
 
 ```php
 use Lattice\Lattice\Core\Enums\Justify;
+use Lattice\Lattice\Core\Enums\Placement;
 use Lattice\Lattice\Core\Enums\Width;
+use Lattice\Lattice\Core\Components\RawBlock;
+use Lattice\Lattice\Core\Components\Stack;
+use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Layouts\Components\Dropdown;
+use Lattice\Lattice\Layouts\Components\Menu;
+use Lattice\Lattice\Layouts\Components\MenuItem;
+use Lattice\Lattice\Layouts\Components\Sidebar;
 
 Sidebar::make('app-sidebar')->collapsible()->items([
     Stack::make('sidebar-body')->width(Width::Fill)->justify(Justify::Between)->schema([
         Menu::make('sidebar')->items([
             MenuItem::fromPage(HomePage::class)->icon('house'),
         ]),
-        UserMenu::make()->name($user->name)->email($user->email)->avatar($user->avatar)->items([
-            MenuItem::make('Log out')->href(route('logout', absolute: false))->method(HttpMethod::Post),
-        ]),
+        Dropdown::make('user-menu')
+            ->placement(Placement::Top)
+            ->trigger([
+                RawBlock::make('avatar')->blade('components.avatar', ['name' => $user->name]),
+                Text::make($user->name)->hideWhenCollapsed(),
+            ])
+            ->items([
+                MenuItem::make('Log out')->href(route('logout', absolute: false))->method(HttpMethod::Post),
+            ]),
     ]),
 ]);
 ```

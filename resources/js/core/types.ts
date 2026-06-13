@@ -11,6 +11,10 @@ export type { KnownPageContainer, NodeType, WireNode };
 /** Loose props bag for nodes whose `type` is not a generated built-in. */
 export type NodeProps = Record<string, unknown>;
 
+export type CommonNodeProps = {
+  hideWhenCollapsed?: boolean | null;
+};
+
 /** A `{ label, value }` pair used by the choice, select and segmented controls. */
 export type { Option };
 
@@ -47,10 +51,10 @@ type BuiltInPropsOf<TType extends string> = [Extract<WireNode, { type: TType }>]
  * (`ComponentProps`) first, then generated built-ins, then a loose bag.
  */
 export type PropsOf<TType extends string> = TType extends keyof ComponentProps
-  ? ComponentProps[TType]
+  ? ComponentProps[TType] & CommonNodeProps
   : [BuiltInPropsOf<TType>] extends [never]
-    ? NodeProps
-    : BuiltInPropsOf<TType>;
+    ? NodeProps & CommonNodeProps
+    : BuiltInPropsOf<TType> & CommonNodeProps;
 
 /**
  * Resolves a wire `type` string to its node shape: built-ins narrow to their

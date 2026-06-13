@@ -2,6 +2,7 @@ import { createContext, Suspense, useContext, useMemo } from "react";
 import type { ReactNode } from "react";
 import type { ComponentRegistry } from "./registry";
 import type { Node, UnknownComponent } from "./types";
+import { useCollapsed } from "./collapsed-context";
 
 function MissingComponent({ node }: { node: Node }) {
   if (!import.meta.env.DEV) {
@@ -63,8 +64,13 @@ export function Renderer({
 }
 
 function NodeRenderer({ node }: { node: Node }) {
+  const collapsed = useCollapsed();
   const { fallback, missingComponent: UnknownComponent, registry } = useRendererContext();
   const registration = registry[node.type];
+
+  if (collapsed && node.props?.hideWhenCollapsed === true) {
+    return null;
+  }
 
   if (!registration) {
     return <UnknownComponent node={node} />;

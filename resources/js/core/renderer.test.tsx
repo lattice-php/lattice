@@ -2,10 +2,14 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent, lazyComponent } from "@lattice/lattice";
 import { Renderer } from "@lattice/lattice";
+import { CollapsedContext } from "./collapsed-context";
 import type { RendererComponent, RendererComponentModule } from "./types";
 
 const TestComponent: RendererComponent<"test.component"> = ({ children, node }) => (
-  <section data-testid={node.id}>{children}</section>
+  <section data-testid={node.id}>
+    {node.props?.label as string | undefined}
+    {children}
+  </section>
 );
 
 describe("Renderer", () => {
@@ -52,6 +56,38 @@ describe("Renderer", () => {
     );
 
     expect(screen.getByText("Missing unknown.component")).toBeVisible();
+  });
+
+  it("skips nodes that hide when their sidebar context is collapsed", () => {
+    const { components } = createRegistry({
+      components: {
+        "test.component": eagerComponent(TestComponent),
+      },
+      name: "test",
+    });
+
+    render(
+      <CollapsedContext.Provider value={true}>
+        <Renderer
+          nodes={[
+            {
+              id: "visible",
+              props: { label: "Visible" },
+              type: "test.component",
+            },
+            {
+              id: "hidden",
+              props: { hideWhenCollapsed: true, label: "Hidden" },
+              type: "test.component",
+            },
+          ]}
+          registry={components}
+        />
+      </CollapsedContext.Provider>,
+    );
+
+    expect(screen.getByText("Visible")).toBeVisible();
+    expect(screen.queryByText("Hidden")).not.toBeInTheDocument();
   });
 
   it("renders a lazy component fallback while the chunk is loading", () => {

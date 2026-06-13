@@ -8,6 +8,7 @@ import HeadingComponent from "./heading";
 import IconComponent from "./icon";
 import LinkComponent from "./link";
 import ModalComponent from "./modal";
+import RawBlockComponent from "./raw-block";
 import SectionComponent from "./section";
 import SegmentedControlComponent from "./segmented-control";
 import StackComponent from "./stack";
@@ -25,6 +26,7 @@ export const coreComponents = createPlugin({
     icon: eagerComponent(IconComponent),
     link: eagerComponent(LinkComponent),
     modal: eagerComponent(ModalComponent),
+    "raw-block": eagerComponent(RawBlockComponent),
     section: eagerComponent(SectionComponent),
     "segmented-control": eagerComponent(SegmentedControlComponent),
     stack: eagerComponent(StackComponent),

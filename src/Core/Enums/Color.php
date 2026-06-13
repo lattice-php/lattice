@@ -8,6 +8,7 @@ use Lattice\Lattice\Attributes\TypeScript;
 #[TypeScript]
 enum Color: string
 {
+    case Default = 'default';
     case Muted = 'muted';
     case Primary = 'primary';
     case Success = 'success';

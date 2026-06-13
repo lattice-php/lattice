@@ -2,7 +2,7 @@ export type Action = {
   confirmation: Confirmation | null;
   effects: Effect[];
   endpoint: string | null;
-  form: Form | null;
+  form: Node | null;
   icon: string | null;
   label: string | null;
   lazyForm: boolean | null;
@@ -73,7 +73,7 @@ export type BulkAction = {
   confirmation: Confirmation | null;
   effects: Effect[];
   endpoint: string | null;
-  form: Form | null;
+  form: Node | null;
   icon: string | null;
   label: string | null;
   lazyForm: boolean | null;
@@ -151,7 +151,7 @@ export type Choice = {
 export type CloseModalEffect = {
   readonly modal: string | null;
 };
-export type Color = "muted" | "primary" | "success" | "info" | "warning" | "danger";
+export type Color = "default" | "muted" | "primary" | "success" | "info" | "warning" | "danger";
 export type ColumnData = {
   readonly key: string;
   readonly label: string;
@@ -231,6 +231,11 @@ export type CoreNode =
       schema?: Node[];
     }
   | {
+      type: "raw-block";
+      key?: string;
+      props: RawBlock;
+    }
+  | {
       type: "section";
       key?: string;
       props: Section;
@@ -293,8 +298,8 @@ export type DownloadEffect = {
   readonly url: string;
 };
 export type Dropdown = {
-  icon: string | null;
-  label: string;
+  placement: Placement;
+  trigger: Node[];
 };
 export type Effect =
   | ({
@@ -434,7 +439,7 @@ export type FragmentNode = {
   props: Fragment;
   schema?: Node[];
 };
-export type Gap = "xs" | "sm" | "md" | "lg" | "xl";
+export type Gap = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type Grid = {
   columns: number | null;
 };
@@ -514,12 +519,6 @@ export type LayoutNode =
       type: "sidebar";
       key?: string;
       props: Sidebar;
-      schema?: Node[];
-    }
-  | {
-      type: "user-menu";
-      key?: string;
-      props: UserMenu;
       schema?: Node[];
     };
 export type Link = {
@@ -636,6 +635,10 @@ export type PasswordInput = {
   tabIndex: number | null;
   value: unknown;
 };
+export type Placement = "top" | "bottom" | "right";
+export type RawBlock = {
+  html: string;
+};
 export type RedirectEffect = {
   readonly url: string;
 };
@@ -701,7 +704,7 @@ export type Section = {
   collapsed: boolean;
   collapsible: boolean;
   description: string | null;
-  headerActions: undefined[];
+  headerActions: Node[];
   rememberState: boolean;
   title: string | null;
 };
@@ -766,7 +769,7 @@ export type Tab = {
 };
 export type Table = {
   actionsLabel: string;
-  bulkActions: Action[];
+  bulkActions: Node[];
   columns: ColumnData[];
   emptyLabel: string;
   endpoint: string | null;
@@ -793,6 +796,8 @@ export type Tabs = {
 };
 export type Text = {
   align: Align | null;
+  color: Color | null;
+  size: Size | null;
   text: string;
 };
 export type TextColumnProps = {
@@ -868,9 +873,4 @@ export type ToastMessage = {
   message: string;
 };
 export type ToastVariant = "success" | "info" | "warning" | "error";
-export type UserMenu = {
-  avatar: string | null;
-  email: string | null;
-  name: string;
-};
 export type Width = "full" | "sm" | "md" | "lg" | "fill";

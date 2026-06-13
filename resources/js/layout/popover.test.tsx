@@ -13,10 +13,6 @@ describe("Popover", () => {
       </Popover>,
     );
 
-    // The popover renders into document.body via a portal, so `screen` (which
-    // queries the whole document) finds the portaled content; `data-test` is a
-    // plain attribute so query it with document.querySelector (getByTestId looks
-    // for data-testid, which lattice does not use).
     expect(screen.queryByRole("link", { name: "Item" })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByText("Open"));
