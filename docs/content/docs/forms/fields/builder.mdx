@@ -89,6 +89,33 @@ Builder::make('items', 'Line items')
     ->reorderable(false);
 ```
 
+## Table layout
+
+Rows stack by default — each row is a full block of stacked fields. Call `->table()` to lay rows out
+as a table instead. The columns come from the first block's schema, a shared header of those field
+labels sits above the rows, and each cell renders the input alone (the field's own label moves up into
+the header). A row of any other block type spans the full width below the header rather than fitting
+the columns.
+
+```php
+Builder::make('items', 'Line items')
+    ->blocks([
+        Block::make('product')->label('Product line')->schema([
+            TextInput::make('product', 'Product'),
+            TextInput::make('qty', 'Qty')->rules(['numeric']),
+        ]),
+        Block::make('text')->label('Text')->schema([
+            Textarea::make('content', 'Content'),
+        ]),
+    ])
+    ->table();
+```
+
+Reorder controls (↑↓) sit on the left of each row and the remove action on the right; once a row
+carries more than one action they collapse into a ⋯ menu. Reordering slides each row to its new
+position, and the table scrolls horizontally on narrow screens. The slide animation is skipped when
+the viewer prefers reduced motion.
+
 ## Validation
 
 Each row is validated against the schema of its own block: a child marked `->required()` is required
@@ -103,7 +130,7 @@ These are follow-ups, not part of the first release:
 
 - Built-in image and subtotal blocks.
 - Nested builders (a builder inside a builder row).
-- The table layout modifier and customer-aware price prefill — tracked as separate upcoming work.
+- Customer-aware price prefill — tracked as separate upcoming work.
 
 ## Common options
 
