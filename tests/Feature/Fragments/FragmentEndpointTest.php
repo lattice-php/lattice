@@ -1,0 +1,53 @@
+<?php
+declare(strict_types=1);
+
+use Lattice\Lattice\Attributes\Fragment;
+use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
+use Lattice\Lattice\Fragments\FragmentDefinition;
+
+use function Pest\Laravel\getJson;
+
+test('registered fragments serialize lazy endpoints and return component schemas', function () {
+    Lattice::fragments([WorkbenchTwoFactorSetupFragment::class]);
+
+    $fragment = wire(FragmentComponent::lazy(WorkbenchTwoFactorSetupFragment::class));
+    $ref = componentRef($fragment);
+
+    expect($fragment)
+        ->toMatchArray([
+            'type' => 'fragment',
+            'id' => 'workbench.two-factor-setup',
+            'props' => [
+                'endpoint' => '/lattice/fragments/workbench.two-factor-setup',
+                'lazy' => true,
+                'ref' => $ref,
+            ],
+        ]);
+
+    getJson('/lattice/fragments/workbench.two-factor-setup')
+        ->assertForbidden();
+
+    getJson('/lattice/fragments/workbench.two-factor-setup', latticeHeaders('tampered'))
+        ->assertForbidden();
+
+    latticeGet('/lattice/fragments/workbench.two-factor-setup', $ref)
+        ->assertOk()
+        ->assertJsonPath('schema.0.type', 'text')
+        ->assertJsonPath('schema.0.props.text', 'Authenticator setup loaded.');
+});
+
+// ---------------------------------------------------------------------------
+// Inline fixture class required only by this file
+// ---------------------------------------------------------------------------
+
+#[Fragment('workbench.two-factor-setup')]
+final class WorkbenchTwoFactorSetupFragment extends FragmentDefinition
+{
+    public function schema(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Authenticator setup loaded.'));
+    }
+}

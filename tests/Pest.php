@@ -3,9 +3,13 @@ declare(strict_types=1);
 
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Testing\TestResponse;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Tests\TestCase;
 use Orchestra\Testbench\Factories\UserFactory;
+
+use function Pest\Laravel\getJson;
 
 uses(TestCase::class)->in(__DIR__);
 uses(RefreshDatabase::class)->in(__DIR__);
@@ -59,6 +63,15 @@ function wire(mixed $value): array
 }
 
 /**
+ * Absolute path to a shared fixture under tests/Fixtures, independent of where
+ * the calling test lives.
+ */
+function fixturePath(string $name): string
+{
+    return __DIR__.'/Fixtures/'.$name;
+}
+
+/**
  * Extract the signed ref from a serialized interactive component.
  *
  * @param  array<string, mixed>  $component
@@ -83,6 +96,16 @@ function componentRef(array $component): string
 function latticeHeaders(string $ref): array
 {
     return ['X-Lattice-Ref' => $ref];
+}
+
+/**
+ * Perform a JSON GET request with a Lattice component ref header.
+ *
+ * @return TestResponse<JsonResponse>
+ */
+function latticeGet(string $url, string $ref): TestResponse
+{
+    return getJson($url, latticeHeaders($ref));
 }
 
 /**
