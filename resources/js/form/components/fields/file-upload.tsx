@@ -208,7 +208,12 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
                 </button>
               )}
               {signed && !item.existing && item.key && item.status === "ready" && (
-                <input name={fieldName} type="hidden" value={item.key} />
+                <input
+                  data-test={testIdentity(`${name}-uploaded`)}
+                  name={fieldName}
+                  type="hidden"
+                  value={item.key}
+                />
               )}
             </li>
           ))}
