@@ -59,6 +59,15 @@ function wire(mixed $value): array
 }
 
 /**
+ * Absolute path to a shared fixture under tests/Fixtures, independent of where
+ * the calling test lives.
+ */
+function fixturePath(string $name): string
+{
+    return __DIR__.'/Fixtures/'.$name;
+}
+
+/**
  * Extract the signed ref from a serialized interactive component.
  *
  * @param  array<string, mixed>  $component

@@ -9,7 +9,7 @@ it('evaluates every operator identically to the client', function (string $opera
 
     expect($evaluator->evaluate(Op::from($operator), $actual, $expected))->toBe($result);
 })->with(function (): iterable {
-    $json = (string) file_get_contents(dirname(__DIR__).'/Fixtures/condition-operator-parity.json');
+    $json = (string) file_get_contents(fixturePath('condition-operator-parity.json'));
     $rows = json_decode($json, true, flags: JSON_THROW_ON_ERROR);
 
     if (! is_array($rows)) {
