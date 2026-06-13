@@ -258,6 +258,16 @@ return [
             'title' => 'Lattice Tabs',
             'vertical' => 'Vertical tabs',
         ],
+        'upload-create' => [
+            'heading' => 'Upload files',
+            'submit' => 'Upload',
+            'title' => 'Upload files',
+        ],
+        'uploads' => [
+            'create' => 'Upload files',
+            'heading' => 'Uploads',
+            'title' => 'Uploads',
+        ],
     ],
     'status' => [
         'active' => 'Active',

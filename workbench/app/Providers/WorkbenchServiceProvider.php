@@ -34,6 +34,7 @@ class WorkbenchServiceProvider extends ServiceProvider
         // Rebind so lattice:typescript regenerates the package's own built-in types.
         $this->app->bind(TypeScriptProfile::class, BaseProfile::class);
         $this->useWorkbenchDatabase();
+        $this->useRustFsS3Disk();
         $this->readBoostConfigFromPackageRoot();
         $this->serveLatticeTranslations();
     }
@@ -60,6 +61,27 @@ class WorkbenchServiceProvider extends ServiceProvider
             $loader->addPath(package_path('workbench/lang'));
             $loader->addNamespace('workbench', package_path('workbench/lang'));
         });
+    }
+
+    private function useRustFsS3Disk(): void
+    {
+        if ($this->app->runningUnitTests()) {
+            return;
+        }
+
+        config([
+            'filesystems.disks.s3' => [
+                'driver' => 's3',
+                'key' => getenv('AWS_ACCESS_KEY_ID') ?: 'herd',
+                'secret' => getenv('AWS_SECRET_ACCESS_KEY') ?: 'secretkey',
+                'region' => getenv('AWS_DEFAULT_REGION') ?: 'us-east-1',
+                'bucket' => getenv('AWS_BUCKET') ?: 'herd-bucket',
+                'url' => getenv('AWS_URL') ?: 'https://rustfs.herd.test/herd-bucket',
+                'endpoint' => getenv('AWS_ENDPOINT') ?: 'https://rustfs.herd.test',
+                'use_path_style_endpoint' => filter_var(getenv('AWS_USE_PATH_STYLE_ENDPOINT') ?: 'true', FILTER_VALIDATE_BOOL),
+                'throw' => false,
+            ],
+        ]);
     }
 
     /**

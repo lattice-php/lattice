@@ -39,6 +39,12 @@ return [
         'selectAllRows' => 'Select all rows',
         'selectRow' => 'Select row :key',
     ],
+    'file-upload' => [
+        'dropzone' => 'Drop files here or click to browse',
+        'remove' => 'Remove :name',
+        'remove-label' => 'Remove',
+        'failed' => 'Failed',
+    ],
     'filter' => [
         'all' => 'All',
         'true' => 'True',
