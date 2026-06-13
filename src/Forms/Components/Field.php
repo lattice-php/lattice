@@ -258,6 +258,14 @@ abstract class Field extends Component
             return $this;
         }
 
+        if (is_array($attributes)) {
+            foreach ($attributes as $attribute) {
+                $this->addCondition('visible', $attribute, $operatorOrValue, $value);
+            }
+
+            return $this;
+        }
+
         return $this->addCondition('visible', (string) $attributes, $operatorOrValue, $value);
     }
 

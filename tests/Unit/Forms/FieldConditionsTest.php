@@ -41,3 +41,13 @@ it('treats array value as an in condition', function (): void {
 
     expect(wire($field)['props']['conditions']['visible'][0]['operator'])->toBe('in');
 });
+
+it('serializes array attribute dependencies as separate visible conditions', function (): void {
+    $props = wire(TextInput::make('discount', 'Discount')
+        ->dependsOn(['customer_type', 'region'], 'business'))['props'];
+
+    expect($props['conditions']['visible'])->toBe([
+        ['field' => 'customer_type', 'operator' => 'eq', 'value' => 'business'],
+        ['field' => 'region', 'operator' => 'eq', 'value' => 'business'],
+    ]);
+});
