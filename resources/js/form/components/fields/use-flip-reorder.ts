@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 
 const DURATION_MS = 180;
 
@@ -18,13 +18,13 @@ export function useFlipReorder(
   const previous = useRef(new Map<string, DOMRect>());
 
   // register is the FLIP measurement target; the element must be a zero-overhead positioning wrapper (no padding/margin) for the delta to match the visible row.
-  const register = (key: string, el: HTMLElement | null): void => {
+  const register = useCallback((key: string, el: HTMLElement | null): void => {
     if (el) {
       elements.current.set(key, el);
     } else {
       elements.current.delete(key);
     }
-  };
+  }, []);
 
   useLayoutEffect(() => {
     const handles: number[] = [];

@@ -6,13 +6,11 @@ import { useDependentField } from "../use-dependent-field";
 import { BlockAddMenu, type BlockOption } from "./block-add-menu";
 import { ROW_ID_KEY } from "./repeater-rows";
 import { RowItem } from "./row-item";
-import { TableRows } from "./table-rows";
+import { columnsFromSchema, TableRows } from "./table-rows";
 import { useFlipReorder } from "./use-flip-reorder";
 import { useRowCollection } from "./use-row-collection";
 
 type Block = { type: string; label: string; schema: Node[] };
-
-type FieldProps = { name: string; label?: string };
 
 const EMPTY_TEMPLATE: Node[] = [];
 
@@ -51,56 +49,18 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
     />
   ));
 
-  if (isTable) {
-    const primary = blocks[0];
-    const columns = (primary?.schema ?? []).map((field) => {
-      const fieldProps = field.props as FieldProps;
-      return { name: String(fieldProps.name), label: String(fieldProps.label ?? fieldProps.name) };
-    });
-    const tableRows = rows.map((row, index) => {
-      const block = blockFor(row.type);
-      const isPrimary = !!block && !!primary && block.type === primary.type;
-      return {
-        key: String(row[ROW_ID_KEY] ?? index),
-        index,
-        row,
-        template: block?.schema ?? EMPTY_TEMPLATE,
-        span: !isPrimary,
-      };
-    });
-
-    return (
-      <FormFieldFrame
-        error={errors[name]}
-        helperText={props.helperText ?? undefined}
-        label={props.label ?? ""}
-        name={name}
-        required={required}
-      >
-        <div className="flex flex-col gap-3">
-          {hiddenTypeInputs}
-          <TableRows
-            base={name}
-            columns={columns}
-            rows={tableRows}
-            reorderable={props.reorderable ?? false}
-            removable={() => !atMin}
-            onField={onField}
-            onMove={onMove}
-            onRemove={onRemove}
-            registerRow={registerRow}
-          />
-          {!atMax && (
-            <BlockAddMenu
-              addLabel={props.addLabel ?? "Add"}
-              blocks={options}
-              onSelect={(type) => append({ type })}
-            />
-          )}
-        </div>
-      </FormFieldFrame>
-    );
-  }
+  const primary = blocks[0];
+  const tableRows = rows.map((row, index) => {
+    const block = blockFor(row.type);
+    const isPrimary = !!block && !!primary && block.type === primary.type;
+    return {
+      key: String(row[ROW_ID_KEY] ?? index),
+      index,
+      row,
+      template: block?.schema ?? EMPTY_TEMPLATE,
+      span: !isPrimary,
+    };
+  });
 
   return (
     <FormFieldFrame
@@ -111,54 +71,71 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
       required={required}
     >
       <div className="flex flex-col gap-3">
-        {rows.map((row, index) => {
-          const block = blockFor(row.type);
-          const key = String(row[ROW_ID_KEY] ?? index);
+        {isTable ? (
+          <>
+            {hiddenTypeInputs}
+            <TableRows
+              base={name}
+              columns={columnsFromSchema(primary?.schema ?? [])}
+              rows={tableRows}
+              reorderable={props.reorderable ?? false}
+              removable={() => !atMin}
+              onField={onField}
+              onMove={onMove}
+              onRemove={onRemove}
+              registerRow={registerRow}
+            />
+          </>
+        ) : (
+          rows.map((row, index) => {
+            const block = blockFor(row.type);
+            const key = String(row[ROW_ID_KEY] ?? index);
 
-          return (
-            <div key={key} ref={(el) => registerRow(key, el)} data-flip-key={key}>
-              <input
-                type="hidden"
-                name={`${name}[${index}][type]`}
-                value={String(row.type ?? "")}
-              />
-              {block ? (
-                <RowItem
-                  base={name}
-                  index={index}
-                  row={row}
-                  template={block.schema ?? EMPTY_TEMPLATE}
-                  heading={block.label}
-                  reorderable={props.reorderable ?? false}
-                  isFirst={index === 0}
-                  isLast={index === rows.length - 1}
-                  removable={!atMin}
-                  onField={onField}
-                  onRemove={onRemove}
-                  onMove={onMove}
+            return (
+              <div key={key} ref={(el) => registerRow(key, el)} data-flip-key={key}>
+                <input
+                  type="hidden"
+                  name={`${name}[${index}][type]`}
+                  value={String(row.type ?? "")}
                 />
-              ) : (
-                <div
-                  data-test={`repeater-${name}-row-${index}`}
-                  className="flex items-center justify-between rounded-lt border border-dashed border-lt-border p-4 text-sm text-lt-muted-fg"
-                >
-                  <span>Unknown block: {String(row.type)}</span>
-                  {!atMin && (
-                    <button
-                      type="button"
-                      aria-label="Remove"
-                      data-test={`repeater-${name}-remove-${index}`}
-                      className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-sm"
-                      onClick={() => onRemove(index)}
-                    >
-                      <Icon name="trash-2" />
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          );
-        })}
+                {block ? (
+                  <RowItem
+                    base={name}
+                    index={index}
+                    row={row}
+                    template={block.schema ?? EMPTY_TEMPLATE}
+                    heading={block.label}
+                    reorderable={props.reorderable ?? false}
+                    isFirst={index === 0}
+                    isLast={index === rows.length - 1}
+                    removable={!atMin}
+                    onField={onField}
+                    onRemove={onRemove}
+                    onMove={onMove}
+                  />
+                ) : (
+                  <div
+                    data-test={`repeater-${name}-row-${index}`}
+                    className="flex items-center justify-between rounded-lt border border-dashed border-lt-border p-4 text-sm text-lt-muted-fg"
+                  >
+                    <span>Unknown block: {String(row.type)}</span>
+                    {!atMin && (
+                      <button
+                        type="button"
+                        aria-label="Remove"
+                        data-test={`repeater-${name}-remove-${index}`}
+                        className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-sm"
+                        onClick={() => onRemove(index)}
+                      >
+                        <Icon name="trash-2" />
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
 
         {!atMax && (
           <BlockAddMenu

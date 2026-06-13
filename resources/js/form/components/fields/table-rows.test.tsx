@@ -1,5 +1,5 @@
 import { expect, it, vi, beforeAll, afterAll } from "vitest";
-import { configure, getConfig, render, screen } from "@testing-library/react";
+import { configure, fireEvent, getConfig, render, screen } from "@testing-library/react";
 
 let prev: string;
 beforeAll(() => {
@@ -8,18 +8,33 @@ beforeAll(() => {
 });
 afterAll(() => configure({ testIdAttribute: prev }));
 
+const { renderCounts } = vi.hoisted(() => ({ renderCounts: new Map<string, number>() }));
+
 vi.mock("@lattice/lattice/core/renderer", async () => {
   const { useFieldScope } = await import("../field-scope");
   return {
     RenderNode: ({ node }: { node: { props: { name: string } } }) => {
       const scope = useFieldScope();
+      const key = scope ? scope.scopedName(node.props.name) : "no-scope";
+      renderCounts.set(key, (renderCounts.get(key) ?? 0) + 1);
       return (
-        <span data-test="child">{scope ? scope.scopedName(node.props.name) : "no-scope"}</span>
+        <>
+          <span data-test="child">{key}</span>
+          <button
+            aria-label={`commit ${key}`}
+            data-test={`commit-${key}`}
+            type="button"
+            onClick={() => scope?.setValue(node.props.name, "x")}
+          />
+        </>
       );
     },
   };
 });
 
+import { FormProvider } from "../context";
+import { FormValuesProvider } from "../values";
+import { RepeaterComponent } from "./repeater";
 import { TableRows } from "./table-rows";
 
 const columns = [
@@ -100,4 +115,49 @@ it("registers each row element for FLIP", () => {
     />,
   );
   expect(calls.some(([k, el]) => k === "a" && el !== null)).toBe(true);
+});
+
+function wrap(ui: React.ReactNode, initial: Record<string, unknown> = {}) {
+  return render(
+    <FormProvider
+      value={{
+        action: "#",
+        clearErrors: () => {},
+        componentRef: "",
+        errors: {},
+        fieldLabels: {},
+        precognitive: false,
+        processing: false,
+        validate: () => {},
+      }}
+    >
+      <FormValuesProvider initial={initial}>{ui}</FormValuesProvider>
+    </FormProvider>,
+  );
+}
+
+const tableNode = {
+  id: "r",
+  type: "form.repeater",
+  props: {
+    name: "items",
+    layout: "table",
+    reorderable: true,
+    defaultItems: 0,
+    minItems: 0,
+    maxItems: 5,
+  },
+  schema: [{ id: "q", type: "form.text-input", props: { name: "qty", label: "Qty" } }],
+} as never;
+
+it("does not re-render sibling table rows when one row changes", () => {
+  wrap(<RepeaterComponent node={tableNode}>{null}</RepeaterComponent>, {
+    items: [{ qty: "1" }, { qty: "2" }],
+  });
+
+  renderCounts.clear();
+  fireEvent.click(screen.getByTestId("commit-items[0][qty]"));
+
+  expect(renderCounts.get("items[0][qty]") ?? 0).toBeGreaterThanOrEqual(1);
+  expect(renderCounts.get("items[1][qty]") ?? 0).toBe(0);
 });
