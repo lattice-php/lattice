@@ -17,6 +17,7 @@ export function useFlipReorder(
   const elements = useRef(new Map<string, HTMLElement>());
   const previous = useRef(new Map<string, DOMRect>());
 
+  // register is the FLIP measurement target; the element must be a zero-overhead positioning wrapper (no padding/margin) for the delta to match the visible row.
   const register = (key: string, el: HTMLElement | null): void => {
     if (el) {
       elements.current.set(key, el);
@@ -26,6 +27,7 @@ export function useFlipReorder(
   };
 
   useLayoutEffect(() => {
+    const handles: number[] = [];
     const next = new Map<string, DOMRect>();
     elements.current.forEach((el, key) => {
       el.style.transition = "";
@@ -41,16 +43,24 @@ export function useFlipReorder(
           const dy = before.top - after.top;
           if (dy) {
             el.style.transform = `translateY(${dy}px)`;
-            requestAnimationFrame(() => {
-              el.style.transition = `transform ${DURATION_MS}ms ease-out`;
-              el.style.transform = "";
-            });
+            handles.push(
+              requestAnimationFrame(() => {
+                el.style.transition = `transform ${DURATION_MS}ms ease-out`;
+                el.style.transform = "";
+              }),
+            );
           }
         }
       });
     }
 
     previous.current = next;
+
+    return () => {
+      for (const handle of handles) {
+        cancelAnimationFrame(handle);
+      }
+    };
   }, [orderSignature]);
 
   return register;
