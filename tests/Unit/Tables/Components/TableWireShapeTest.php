@@ -28,6 +28,7 @@ it('serializes the table component wire shape', function (): void {
     expect($payload['props']['endpoint'])->toBe('/tables/demo');
     expect($payload['props']['striped'])->toBeTrue();
     expect($payload['props']['layout'])->toBeNull();
+    expect($payload['props']['resizeIndicator'])->toBeFalse();
     expect($payload['props']['columns'][0])->toMatchArray([
         'key' => 'name',
         'label' => 'Name',
@@ -45,6 +46,13 @@ it('serializes the table component wire shape', function (): void {
         'perPage' => 25,
     ]);
     expect($payload['props']['bulkActions'])->toBe([]);
+});
+
+it('serializes visible resize indicators on table components', function (): void {
+    $payload = wire(Table::make('demo')->resizableColumns(showIndicator: true));
+
+    expect($payload['props']['resizableColumns'])->toBeTrue()
+        ->and($payload['props']['resizeIndicator'])->toBeTrue();
 });
 
 it('defaults a column to its value type operator set', function (): void {

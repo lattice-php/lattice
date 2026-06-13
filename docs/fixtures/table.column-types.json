@@ -102,6 +102,7 @@
                 "total": 3
             },
             "resizableColumns": null,
+            "resizeIndicator": false,
             "state": {
                 "filters": [],
                 "page": 1,

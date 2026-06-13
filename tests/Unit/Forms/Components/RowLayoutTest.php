@@ -40,5 +40,15 @@ it('serializes resizable column opt-in on row table layouts', function (): void 
         TextInput::make('qty'),
     ]));
 
-    expect($wire['props']['resizableColumns'])->toBeTrue();
+    expect($wire['props']['resizableColumns'])->toBeTrue()
+        ->and($wire['props']['resizeIndicator'])->toBeFalse();
+});
+
+it('serializes visible resize indicators on row table layouts', function (): void {
+    $wire = wire(Repeater::make('items')->table()->resizableColumns(showIndicator: true)->schema([
+        TextInput::make('qty'),
+    ]));
+
+    expect($wire['props']['resizableColumns'])->toBeTrue()
+        ->and($wire['props']['resizeIndicator'])->toBeTrue();
 });

@@ -11,8 +11,9 @@ it('expands a collapsed menu group and navigates to a sub-page', function (): vo
         ->assertDontSee('Showcase')
         ->click('@menu-forms')
         ->assertSee('Showcase')
-        ->click('@menu-showcase')
-        ->assertSee('Form Showcase')
+        ->assertSee('Builder Table Demo')
+        ->click('@menu-builder-table-demo')
+        ->assertSee('Line items')
         ->assertNoSmoke();
 });
 

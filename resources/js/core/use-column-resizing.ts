@@ -10,6 +10,7 @@ import {
 
 type DragState = {
   key: string;
+  maxWidth: number;
   startWidth: number;
   startX: number;
 };
@@ -25,14 +26,18 @@ type ResizeHandleProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 export function useColumnResizing({
+  columnGapPx = 0,
   columns,
   enabled,
   leadingTracks = [],
+  showIndicator = false,
   trailingTracks = [],
 }: {
+  columnGapPx?: number;
   columns: SizableColumn[];
   enabled: boolean;
   leadingTracks?: string[];
+  showIndicator?: boolean;
   trailingTracks?: string[];
 }) {
   const [overrides, setOverrides] = useState<Record<string, number | undefined>>({});
@@ -49,10 +54,13 @@ export function useColumnResizing({
     [columns, enabled, leadingTracks, overrides, trailingTracks],
   );
 
-  const setColumnWidth = useCallback((column: SizableColumn, width: number) => {
+  const setColumnWidth = useCallback((column: SizableColumn, width: number, maxWidth?: number) => {
     setOverrides((current) => ({
       ...current,
-      [column.key]: Math.min(maxColumnWidthPx(column), Math.max(minColumnWidthPx(column), width)),
+      [column.key]: Math.min(
+        maxWidth ?? maxColumnWidthPx(column),
+        Math.max(minColumnWidthPx(column), width),
+      ),
     }));
   }, []);
 
@@ -76,8 +84,20 @@ export function useColumnResizing({
       const min = minColumnWidthPx(column);
       const current = currentColumnWidth(column);
       const label = column.label ?? column.key;
+      const indicatorClass = showIndicator ? "after:bg-lt-border" : "after:bg-transparent";
 
-      const resizeBy = (delta: number): void => setColumnWidth(column, current + delta);
+      const maxWidthForHandle = (handle: HTMLDivElement): number =>
+        maxColumnWidthForGrid({
+          column,
+          columnGapPx,
+          columns,
+          grid: handle.parentElement?.parentElement,
+          leadingTracks,
+          trailingTracks,
+        });
+
+      const resizeBy = (handle: HTMLDivElement, delta: number): void =>
+        setColumnWidth(column, current + delta, maxWidthForHandle(handle));
 
       return {
         "aria-label": `Resize ${label}`,
@@ -85,8 +105,7 @@ export function useColumnResizing({
         "aria-valuemax": max,
         "aria-valuemin": min,
         "aria-valuenow": current,
-        className:
-          "absolute inset-y-0 right-0 hidden w-2 cursor-col-resize touch-none items-stretch justify-center md:flex after:my-1 after:w-px after:bg-transparent hover:after:bg-lt-border focus-visible:outline-none focus-visible:after:bg-lt-ring",
+        className: `absolute inset-y-0 right-0 hidden w-2 cursor-col-resize touch-none items-stretch justify-center md:flex after:my-1 after:w-px ${indicatorClass} hover:after:bg-lt-border focus-visible:outline-none focus-visible:after:bg-lt-ring`,
         onDoubleClick: () => resetColumnWidth(column),
         onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => {
           if (!enabled) {
@@ -97,12 +116,12 @@ export function useColumnResizing({
 
           if (event.key === "ArrowLeft") {
             event.preventDefault();
-            resizeBy(-step);
+            resizeBy(event.currentTarget, -step);
           }
 
           if (event.key === "ArrowRight") {
             event.preventDefault();
-            resizeBy(step);
+            resizeBy(event.currentTarget, step);
           }
 
           if (event.key === "Home") {
@@ -112,7 +131,8 @@ export function useColumnResizing({
 
           if (event.key === "End") {
             event.preventDefault();
-            setColumnWidth(column, max);
+            const handleMax = maxWidthForHandle(event.currentTarget);
+            setColumnWidth(column, handleMax, handleMax);
           }
 
           if (event.key === "Enter" || event.key === "Escape") {
@@ -128,6 +148,7 @@ export function useColumnResizing({
           const parentWidth = event.currentTarget.parentElement?.getBoundingClientRect().width ?? 0;
           drag.current = {
             key: column.key,
+            maxWidth: maxWidthForHandle(event.currentTarget),
             startWidth: parentWidth > 0 ? parentWidth : current,
             startX: event.clientX,
           };
@@ -141,7 +162,11 @@ export function useColumnResizing({
             return;
           }
 
-          setColumnWidth(column, active.startWidth + event.clientX - active.startX);
+          setColumnWidth(
+            column,
+            active.startWidth + event.clientX - active.startX,
+            active.maxWidth,
+          );
         },
         onPointerUp: (event: PointerEvent<HTMLDivElement>) => {
           const active = drag.current;
@@ -157,7 +182,17 @@ export function useColumnResizing({
         tabIndex: 0,
       };
     },
-    [currentColumnWidth, enabled, resetColumnWidth, setColumnWidth],
+    [
+      columnGapPx,
+      columns,
+      currentColumnWidth,
+      enabled,
+      leadingTracks,
+      resetColumnWidth,
+      setColumnWidth,
+      showIndicator,
+      trailingTracks,
+    ],
   );
 
   return {
@@ -165,4 +200,67 @@ export function useColumnResizing({
     gridTemplateColumns,
     resetColumnWidth,
   };
+}
+
+function maxColumnWidthForGrid({
+  column,
+  columnGapPx,
+  columns,
+  grid,
+  leadingTracks,
+  trailingTracks,
+}: {
+  column: SizableColumn;
+  columnGapPx: number;
+  columns: SizableColumn[];
+  grid: Element | null | undefined;
+  leadingTracks: string[];
+  trailingTracks: string[];
+}): number {
+  const gridWidth = grid?.getBoundingClientRect().width ?? 0;
+
+  if (gridWidth <= 0) {
+    return maxColumnWidthPx(column);
+  }
+
+  const utilityWidth = [...leadingTracks, ...trailingTracks].reduce(
+    (sum, track) => sum + fixedTrackWidthPx(track),
+    0,
+  );
+  const siblingMinWidth = columns.reduce(
+    (sum, sibling) => (sibling.key === column.key ? sum : sum + minColumnWidthPx(sibling)),
+    0,
+  );
+  const trackCount = columns.length + leadingTracks.length + trailingTracks.length;
+  const gapWidth = Math.max(0, trackCount - 1) * columnGapPx;
+  const available = gridWidth - utilityWidth - siblingMinWidth - gapWidth;
+
+  return Math.min(maxColumnWidthPx(column), Math.max(minColumnWidthPx(column), available));
+}
+
+function fixedTrackWidthPx(track: string): number {
+  const value = track.trim();
+  const px = value.match(/^([0-9.]+)px$/);
+
+  if (px) {
+    return Number.parseFloat(px[1]);
+  }
+
+  const rem = value.match(/^([0-9.]+)rem$/);
+
+  if (rem) {
+    return Number.parseFloat(rem[1]) * rootFontSizePx();
+  }
+
+  return 0;
+}
+
+function rootFontSizePx(): number {
+  if (typeof window === "undefined") {
+    return 16;
+  }
+
+  const parsed = Number.parseFloat(window.getComputedStyle(document.documentElement).fontSize);
+
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 16;
 }

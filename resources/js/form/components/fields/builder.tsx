@@ -85,6 +85,7 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
               onRemove={onRemove}
               registerRow={registerRow}
               resizableColumns={props.resizableColumns === true}
+              resizeIndicator={props.resizeIndicator === true}
             />
           </>
         ) : (

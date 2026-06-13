@@ -49,6 +49,11 @@ abstract class TableDefinition extends Definition
         return false;
     }
 
+    public function resizeIndicator(): bool
+    {
+        return false;
+    }
+
     public function actionsLabel(): string
     {
         return 'Actions';

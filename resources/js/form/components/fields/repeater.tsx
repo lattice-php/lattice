@@ -60,6 +60,7 @@ export const RepeaterComponent: RendererComponent<"form.repeater"> = ({ node }) 
             onRemove={onRemove}
             registerRow={registerRow}
             resizableColumns={props.resizableColumns === true}
+            resizeIndicator={props.resizeIndicator === true}
           />
         ) : (
           rows.map((row, index) => {
