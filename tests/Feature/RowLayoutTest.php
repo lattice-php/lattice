@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Lattice\Lattice\Forms\Components\Builder;
 use Lattice\Lattice\Forms\Components\Repeater;
