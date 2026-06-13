@@ -5,6 +5,7 @@ namespace Lattice\Lattice;
 
 use BackedEnum;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Route;
 use Inertia\ResponseFactory;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionRegistry;
@@ -96,11 +97,13 @@ final class LatticeServiceProvider extends PackageServiceProvider
             Lattice::discover($path, $namespace);
         }
 
-        $this->bootPages();
+        // Deferred so pages registered by any provider's boot() (e.g. an app's
+        // own `Lattice::pages([...])`) are collected before the routes are built.
+        $this->app->booted(fn () => $this->bootPages());
     }
 
     /**
-     * Register page routes from configuration and discovery — but only when the
+     * Build a route for every discovered and registered page — but only when the
      * router is not serving a cached route table. With `route:cache` active,
      * Laravel loads the routes from the cache, so re-scanning the filesystem and
      * re-registering them here on every request would be redundant work.
@@ -111,10 +114,12 @@ final class LatticeServiceProvider extends PackageServiceProvider
             return;
         }
 
-        Lattice::registerConfiguredPages();
-
-        foreach (DefinitionDiscovery::configuredPaths() as $path => $namespace) {
-            Lattice::discoverPages($path, $namespace);
+        foreach (Lattice::pages()->all() as $page) {
+            Route::get($page->route, [$page->class, 'render'])
+                ->name($page->name)
+                ->middleware($page->middleware);
         }
+
+        Route::getRoutes()->refreshNameLookups();
     }
 }

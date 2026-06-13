@@ -25,17 +25,26 @@ final class RegWidgetsPage extends RegBasePage
     }
 }
 
-#[Page(route: '/cache-guard', name: 'cache-guard.page')]
-final class RegCacheGuardPage extends BasePage
-{
-    public function render(PageSchema $schema): PageSchema
-    {
-        return $schema->component(Text::make('Cache guard'));
-    }
-}
+test('Lattice::pages()->all() resolves route metadata for registered pages', function () {
+    $widgets = collect(Lattice::pages([RegWidgetsPage::class])->all())
+        ->firstWhere('class', RegWidgetsPage::class);
 
-test('registering a page binds a named GET route to render', function () {
+    expect($widgets)->not->toBeNull()
+        ->and($widgets->route)->toBe('/widgets')
+        ->and($widgets->name)->toBe('widgets.index')
+        ->and($widgets->middleware)->toContain('web');
+});
+
+test('Lattice::pages()->all() excludes abstract base pages', function () {
+    $classes = collect(Lattice::pages([RegBasePage::class])->all())->pluck('class');
+
+    expect($classes)->not->toContain(RegBasePage::class);
+});
+
+test('the service provider builds a named GET route for each page', function () {
     Lattice::pages([RegWidgetsPage::class]);
+
+    (new LatticeServiceProvider(app()))->bootPages();
 
     $route = Route::getRoutes()->getByName('widgets.index');
 
@@ -45,26 +54,8 @@ test('registering a page binds a named GET route to render', function () {
         ->and($route->gatherMiddleware())->toContain('web');
 });
 
-test('an abstract base page is never registered as a route', function () {
-    Lattice::pages([RegBasePage::class]);
-
-    $names = collect(Route::getRoutes()->getRoutes())->map->getActionName();
-
-    expect($names)->not->toContain(RegBasePage::class.'@render');
-});
-
-test('configured page routes register when the route cache is inactive', function () {
-    config(['lattice.pages.registered' => [RegCacheGuardPage::class]]);
-
-    expect(app()->routesAreCached())->toBeFalse();
-
-    (new LatticeServiceProvider(app()))->bootPages();
-
-    expect(Route::getRoutes()->getByName('cache-guard.page'))->not->toBeNull();
-});
-
-test('page route registration is skipped when the route cache is active', function () {
-    config(['lattice.pages.registered' => [RegCacheGuardPage::class]]);
+test('the service provider skips building routes when the route cache is active', function () {
+    Lattice::pages([RegWidgetsPage::class]);
 
     $cachedApp = new class extends Application
     {
@@ -78,5 +69,5 @@ test('page route registration is skipped when the route cache is active', functi
 
     (new LatticeServiceProvider($cachedApp))->bootPages();
 
-    expect(Route::getRoutes()->getByName('cache-guard.page'))->toBeNull();
+    expect(Route::getRoutes()->getByName('widgets.index'))->toBeNull();
 });

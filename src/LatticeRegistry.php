@@ -83,9 +83,19 @@ final class LatticeRegistry
     /**
      * @param  class-string|array<int, class-string>  $pages
      */
-    public function pages(string|array $pages): void
+    /**
+     * Register pages and/or return the page registry. Call without arguments to
+     * read every routable page via `Lattice::pages()->all()`.
+     *
+     * @param  class-string|array<int, class-string>  $pages
+     */
+    public function pages(string|array $pages = []): PageRegistry
     {
-        $this->pages->register($pages);
+        if ($pages !== []) {
+            $this->pages->register($pages);
+        }
+
+        return $this->pages;
     }
 
     public function layoutRegistry(): LayoutRegistry
@@ -104,15 +114,6 @@ final class LatticeRegistry
         }
     }
 
-    public function registerConfiguredPages(): void
-    {
-        $configured = config('lattice.pages.registered', []);
-
-        if (is_array($configured) && $configured !== []) {
-            $this->pages->register($configured);
-        }
-    }
-
     public function discover(string $path, string $namespace): void
     {
         $registries = $this->discoverableRegistries();
@@ -124,18 +125,6 @@ final class LatticeRegistry
                 $registries[$group]->registerDiscovered($classes);
             }
         }
-    }
-
-    /**
-     * Discover `#[Page]` classes under a path and register their routes. Kept
-     * separate from definition discovery so the service provider can skip it
-     * when the router is serving a cached route table.
-     */
-    public function discoverPages(string $path, string $namespace): void
-    {
-        $discovered = $this->discovery->discover($path, $namespace, [$this->pages]);
-
-        $this->pages->registerDiscovered($discovered[$this->pages->group()] ?? []);
     }
 
     /**

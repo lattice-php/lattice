@@ -12,9 +12,11 @@ use ReflectionClass;
 final class PageMetadata
 {
     /**
+     * @param  class-string  $class
      * @param  array<int, string>  $middleware
      */
     private function __construct(
+        public readonly string $class,
         public readonly ?string $route,
         public readonly string $name,
         public readonly PageLayout|string $layout,
@@ -29,6 +31,7 @@ final class PageMetadata
         $own = self::attributeOn($class);
 
         return new self(
+            class: $class,
             route: $own?->route,
             name: self::resolveName($class, $own),
             layout: self::inherited($class, fn (PageAttribute $a) => $a->layout) ?? PageLayout::None,

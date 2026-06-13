@@ -4,16 +4,27 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Pages;
 
-use Illuminate\Routing\Router;
 use Lattice\Lattice\Attributes\Page as PageAttribute;
 use Lattice\Lattice\Core\Contracts\Discoverable;
+use Lattice\Lattice\Core\Contracts\DiscoversDefinitions;
+use Lattice\Lattice\Core\Services\DefinitionDiscovery;
 use Lattice\Lattice\Http\PageContract;
 use Lattice\Lattice\Http\PageMetadata;
 use ReflectionClass;
 
+/**
+ * Collects page classes from explicit registration, configuration, and
+ * discovery. It does not register routes itself — the service provider reads
+ * `all()` and binds the routes, so the routing happens in one visible place.
+ */
 final class PageRegistry implements Discoverable
 {
-    public function __construct(private readonly Router $router) {}
+    /** @var array<class-string, class-string> */
+    private array $registered = [];
+
+    private bool $sourcesLoaded = false;
+
+    public function __construct(private readonly DiscoversDefinitions $discovery) {}
 
     /**
      * @param  class-string|array<int, class-string>  $pages
@@ -21,7 +32,7 @@ final class PageRegistry implements Discoverable
     public function register(string|array $pages): void
     {
         foreach ((array) $pages as $page) {
-            $this->registerRoute($page);
+            $this->registered[$page] = $page;
         }
     }
 
@@ -30,9 +41,7 @@ final class PageRegistry implements Discoverable
      */
     public function registerDiscovered(array $definitions): void
     {
-        foreach ($definitions as $definition) {
-            $this->registerRoute($definition);
-        }
+        $this->register($definitions);
     }
 
     public function attributeClass(): string
@@ -46,27 +55,50 @@ final class PageRegistry implements Discoverable
     }
 
     /**
-     * @param  class-string  $page
+     * Every routable page — explicitly registered, configured, and discovered
+     * under the configured paths — resolved to its route metadata. Discovery
+     * runs lazily the first time this is called.
+     *
+     * @return array<int, PageMetadata>
      */
-    private function registerRoute(string $page): void
+    public function all(): array
     {
-        if (! is_a($page, PageContract::class, true) || (new ReflectionClass($page))->isAbstract()) {
+        $this->loadSources();
+
+        $pages = [];
+
+        foreach ($this->registered as $page) {
+            if (! is_a($page, PageContract::class, true) || (new ReflectionClass($page))->isAbstract()) {
+                continue;
+            }
+
+            $metadata = PageMetadata::for($page);
+
+            if ($metadata->route !== null) {
+                $pages[] = $metadata;
+            }
+        }
+
+        return $pages;
+    }
+
+    private function loadSources(): void
+    {
+        if ($this->sourcesLoaded) {
             return;
         }
 
-        $metadata = PageMetadata::for($page);
+        $this->sourcesLoaded = true;
 
-        if ($metadata->route === null) {
-            return;
+        $configured = config('lattice.pages.registered', []);
+
+        if (is_array($configured)) {
+            $this->register($configured);
         }
 
-        $route = $this->router->get($metadata->route, [$page, 'render']);
-        $route->name($metadata->name);
-
-        if ($metadata->middleware !== []) {
-            $route->middleware($metadata->middleware);
+        foreach (DefinitionDiscovery::configuredPaths() as $path => $namespace) {
+            $discovered = $this->discovery->discover($path, $namespace, [$this]);
+            $this->register($discovered[$this->group()] ?? []);
         }
-
-        $this->router->getRoutes()->refreshNameLookups();
     }
 }
