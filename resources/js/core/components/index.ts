@@ -1,4 +1,4 @@
-import { createPlugin, eagerComponent } from "@lattice/lattice/core/registry";
+import { createPlugin, eagerComponent } from "@lattice-php/lattice/core/registry";
 import BadgeComponent from "./badge";
 import ButtonComponent from "./button";
 import CardComponent from "./card";

@@ -1,5 +1,5 @@
-import { cn } from "@lattice/lattice/lib/utils";
-import type { BadgeColumnProps } from "@lattice/lattice/types/generated";
+import { cn } from "@lattice-php/lattice/lib/utils";
+import type { BadgeColumnProps } from "@lattice-php/lattice/types/generated";
 import { formatCell } from "../../format";
 import type { TableColumn } from "../../types";
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import type { Option } from "@lattice/lattice/core/types";
-import { cn } from "@lattice/lattice/lib/utils";
+import type { Option } from "@lattice-php/lattice/core/types";
+import { cn } from "@lattice-php/lattice/lib/utils";
 
 /**
  * Presentational segmented pill group. Used by the form choice field (bound to a

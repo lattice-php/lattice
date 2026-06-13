@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createRegistry, eagerComponent, lazyComponent } from "@lattice/lattice";
-import { Renderer } from "@lattice/lattice";
+import { createRegistry, eagerComponent, lazyComponent } from "@lattice-php/lattice";
+import { Renderer } from "@lattice-php/lattice";
 import { CollapsedContext } from "./collapsed-context";
 import type { RendererComponent, RendererComponentModule } from "./types";
 

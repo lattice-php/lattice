@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import type { Node } from "@lattice/lattice/core/types";
+import type { Node } from "@lattice-php/lattice/core/types";
 import { walkFields } from "./field-props";
 import { FORM_DEBOUNCE_MS, postFormAction } from "./form-transport";
 import {

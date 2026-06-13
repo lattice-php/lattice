@@ -1,6 +1,6 @@
-import InputError from "@lattice/lattice/form/components/base/input-error";
-import { TextLink } from "@lattice/lattice/core/components/link";
-import { Label } from "@lattice/lattice/form/components/base/label";
+import InputError from "@lattice-php/lattice/form/components/base/input-error";
+import { TextLink } from "@lattice-php/lattice/core/components/link";
+import { Label } from "@lattice-php/lattice/form/components/base/label";
 import { useInTableCell } from "../row-layout-context";
 import type { FormLabelAction } from "../types";
 

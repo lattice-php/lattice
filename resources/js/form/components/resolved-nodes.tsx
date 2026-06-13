@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { Node } from "@lattice/lattice/core/types";
+import type { Node } from "@lattice-php/lattice/core/types";
 import { fieldProps } from "./field-props";
 
 const ResolvedNodesContext = createContext<Record<string, Node>>({});

@@ -15,7 +15,7 @@ export type {
   Select,
   Textarea,
   TextInput,
-} from "@lattice/lattice/types/generated";
+} from "@lattice-php/lattice/types/generated";
 
 export type FormMethod = Method;
 

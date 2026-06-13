@@ -1,12 +1,12 @@
 import { router, useHttp } from "@inertiajs/react";
 import type { Method } from "@inertiajs/core";
 import { useState } from "react";
-import { withRefHeader } from "@lattice/lattice/core/component-ref";
-import { Button } from "@lattice/lattice/core/components/button";
-import { ConfirmDialog } from "@lattice/lattice/core/components/confirm-dialog";
-import { Spinner } from "@lattice/lattice/core/components/spinner";
-import type { RendererComponent } from "@lattice/lattice/core/types";
-import { IconRenderer } from "@lattice/lattice/icons";
+import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { Button } from "@lattice-php/lattice/core/components/button";
+import { ConfirmDialog } from "@lattice-php/lattice/core/components/confirm-dialog";
+import { Spinner } from "@lattice-php/lattice/core/components/spinner";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { IconRenderer } from "@lattice-php/lattice/icons";
 import { dispatchActionEffects, dispatchActionError, getActionEffects } from "../effects";
 import type { ActionResponse } from "../effects";
 import { ActionForm, useLazyActionForm } from "./action-form";

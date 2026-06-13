@@ -1,9 +1,9 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fakeNode } from "@lattice/lattice/test-support";
-import { IconRendererProvider } from "@lattice/lattice/icons";
-import type { IconRendererFunction } from "@lattice/lattice/icons";
+import { fakeNode } from "@lattice-php/lattice/test-support";
+import { IconRendererProvider } from "@lattice-php/lattice/icons";
+import type { IconRendererFunction } from "@lattice-php/lattice/icons";
 import ActionComponent from "./action";
 
 const http = vi.hoisted(() => ({

@@ -1,8 +1,8 @@
 import { act, render, screen } from "@testing-library/react";
 import { useLayoutEffect } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { Node } from "@lattice/lattice/core/types";
-import { fakeNode } from "@lattice/lattice/test-support";
+import type { Node } from "@lattice-php/lattice/core/types";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FORM_DEBOUNCE_MS } from "./form-transport";
 import { useFormResolver } from "./use-form-resolver";
 import { FormValuesProvider, useFormValues, useSetFormValue } from "./values";

@@ -1,5 +1,5 @@
-import { withRefHeader } from "@lattice/lattice/core/component-ref";
-import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice/lattice/events/event-names";
+import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getColumns, getPagination, getRows, getState } from "./payload";
 import { buildEndpoint, nextSort } from "./query";

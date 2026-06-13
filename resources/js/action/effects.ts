@@ -1,6 +1,6 @@
 import { router } from "@inertiajs/react";
-import type { Effect, EffectType } from "@lattice/lattice/types/generated";
-import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
+import type { Effect, EffectType } from "@lattice-php/lattice/types/generated";
+import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 
 export type ActionEffect = Effect;
 

@@ -81,7 +81,7 @@ export default defineConfig(({ mode }) => {
               // Generate an importable IconName union + augment <Icon name>.
               dts: {
                 file: "workbench/resources/js/sprite-icons.ts",
-                augmentModule: "@lattice/lattice",
+                augmentModule: "@lattice-php/lattice",
                 augmentInterface: "KnownIcons",
               },
             }),
@@ -134,7 +134,7 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: {
-        "@lattice/lattice": sourceRoot,
+        "@lattice-php/lattice": sourceRoot,
       },
     },
     ...(isLibrary

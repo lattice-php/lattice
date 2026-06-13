@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { cn } from "@lattice/lattice/lib/utils";
+import { cn } from "@lattice-php/lattice/lib/utils";
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (

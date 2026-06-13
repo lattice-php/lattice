@@ -1,8 +1,8 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
-import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
-import { Provider } from "@lattice/lattice/provider";
+import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import { Provider } from "@lattice-php/lattice/provider";
 import { Toaster } from "./toaster";
 
 vi.mock("@inertiajs/react", () => ({

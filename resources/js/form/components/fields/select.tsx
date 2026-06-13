@@ -1,9 +1,9 @@
-import { Icon } from "@lattice/lattice/icons";
+import { Icon } from "@lattice-php/lattice/icons";
 import * as Popover from "@radix-ui/react-popover";
 import { useEffect, useMemo, useState } from "react";
-import { cn } from "@lattice/lattice/lib/utils";
-import { useT } from "@lattice/lattice/i18n";
-import type { Option, RendererComponent } from "@lattice/lattice/core/types";
+import { cn } from "@lattice-php/lattice/lib/utils";
+import { useT } from "@lattice-php/lattice/i18n";
+import type { Option, RendererComponent } from "@lattice-php/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { FORM_DEBOUNCE_MS, postFormAction } from "../form-transport";

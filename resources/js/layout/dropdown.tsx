@@ -1,5 +1,5 @@
-import type { RendererComponent } from "@lattice/lattice/core/types";
-import { RenderNode } from "@lattice/lattice/core/renderer";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import { Popover } from "./popover";
 
 const DropdownComponent: RendererComponent<"dropdown"> = ({ children, node }) => {

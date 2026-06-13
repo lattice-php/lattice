@@ -1,10 +1,10 @@
 import { router } from "@inertiajs/react";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
-import type { Node, RendererComponent } from "@lattice/lattice/core/types";
-import type { Tab } from "@lattice/lattice/types/generated";
-import { cn } from "@lattice/lattice/lib/utils";
-import { useT } from "@lattice/lattice/i18n";
+import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
+import type { Tab } from "@lattice-php/lattice/types/generated";
+import { cn } from "@lattice-php/lattice/lib/utils";
+import { useT } from "@lattice-php/lattice/i18n";
 
 type TabsContextValue = {
   activeValue: string;

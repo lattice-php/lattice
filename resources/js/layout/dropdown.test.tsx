@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice/lattice/core/registry";
-import { Renderer } from "@lattice/lattice/core/renderer";
-import type { Node } from "@lattice/lattice/core/types";
-import RawBlockComponent from "@lattice/lattice/core/components/raw-block";
-import TextComponent from "@lattice/lattice/core/components/text";
+import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
+import { Renderer } from "@lattice-php/lattice/core/renderer";
+import type { Node } from "@lattice-php/lattice/core/types";
+import RawBlockComponent from "@lattice-php/lattice/core/components/raw-block";
+import TextComponent from "@lattice-php/lattice/core/components/text";
 import { SidebarCollapsedContext } from "./context";
 import DropdownComponent from "./dropdown";
 import MenuItemComponent from "./menu-item";

@@ -1,4 +1,4 @@
-import { Icon } from "@lattice/lattice/icons";
+import { Icon } from "@lattice-php/lattice/icons";
 import { Details, DetailsContent, DetailsSummary } from "@tiptap/extension-details";
 import { Highlight } from "@tiptap/extension-highlight";
 import { Link } from "@tiptap/extension-link";
@@ -7,9 +7,9 @@ import { TextAlign } from "@tiptap/extension-text-align";
 import { type Editor, EditorContent, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { useEffect, useState } from "react";
-import { cn } from "@lattice/lattice/lib/utils";
-import { useT } from "@lattice/lattice/i18n";
-import type { RendererComponent } from "@lattice/lattice/core/types";
+import { cn } from "@lattice-php/lattice/lib/utils";
+import { useT } from "@lattice-php/lattice/i18n";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";

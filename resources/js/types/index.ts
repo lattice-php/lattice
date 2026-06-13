@@ -7,5 +7,5 @@ export type {
   PagePayload,
   PropsOf,
   RendererComponent,
-} from "@lattice/lattice";
+} from "@lattice-php/lattice";
 export type { Method } from "@inertiajs/core";

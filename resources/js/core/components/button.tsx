@@ -2,9 +2,9 @@ import { Link } from "@inertiajs/react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { cn } from "@lattice/lattice/lib/utils";
-import type { RendererComponent } from "@lattice/lattice/core/types";
-import type { ButtonVariant } from "@lattice/lattice/types/generated";
+import { cn } from "@lattice-php/lattice/lib/utils";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { ButtonVariant } from "@lattice-php/lattice/types/generated";
 
 export type { ButtonVariant };
 

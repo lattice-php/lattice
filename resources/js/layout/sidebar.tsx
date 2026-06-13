@@ -1,8 +1,8 @@
-import { Icon } from "@lattice/lattice/icons";
+import { Icon } from "@lattice-php/lattice/icons";
 import { useState } from "react";
-import type { RendererComponent } from "@lattice/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { CollapsedContext } from "../core/collapsed-context";
-import { cn } from "@lattice/lattice/lib/utils";
+import { cn } from "@lattice-php/lattice/lib/utils";
 
 function readStored(key: string, remember: boolean): boolean {
   if (!remember || typeof window === "undefined") {

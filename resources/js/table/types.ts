@@ -9,7 +9,7 @@ import type {
   PaginationType,
   Table,
   TableSort,
-} from "@lattice/lattice/types/generated";
+} from "@lattice-php/lattice/types/generated";
 
 export type { ColumnData, ColumnFilter, ColumnType, TableSort };
 

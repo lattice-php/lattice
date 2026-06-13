@@ -1,7 +1,7 @@
-import { Icon } from "@lattice/lattice/icons";
+import { Icon } from "@lattice-php/lattice/icons";
 import * as Popover from "@radix-ui/react-popover";
-import { Button } from "@lattice/lattice/core/components/button";
-import type { RendererComponent } from "@lattice/lattice/core/types";
+import { Button } from "@lattice-php/lattice/core/components/button";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
 
 const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, node }) => {
   const label = node.props.label;

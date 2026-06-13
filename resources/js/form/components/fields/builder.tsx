@@ -1,5 +1,5 @@
-import type { Node, RendererComponent } from "@lattice/lattice/core/types";
-import { Icon } from "@lattice/lattice/icons";
+import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
+import { Icon } from "@lattice-php/lattice/icons";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";

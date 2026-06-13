@@ -1,7 +1,7 @@
-import type { RendererComponent } from "@lattice/lattice/core/types";
-import { IconRenderer } from "@lattice/lattice/icons";
-import { cn } from "@lattice/lattice/lib/utils";
-import type { Color, Size } from "@lattice/lattice/types/generated";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { IconRenderer } from "@lattice-php/lattice/icons";
+import { cn } from "@lattice-php/lattice/lib/utils";
+import type { Color, Size } from "@lattice-php/lattice/types/generated";
 
 const sizeClass: Record<Size, string> = {
   xs: "size-lt-icon-xs",

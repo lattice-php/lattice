@@ -1,13 +1,13 @@
-import { Icon } from "@lattice/lattice/icons";
+import { Icon } from "@lattice-php/lattice/icons";
 import * as Toast from "@radix-ui/react-toast";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { Renderer } from "@lattice/lattice/core/renderer";
-import type { ToastMessage, ToastVariant } from "@lattice/lattice/types/generated";
-import { LATTICE_EVENT } from "@lattice/lattice/events/event-names";
-import { cn } from "@lattice/lattice/lib/utils";
-import { useT } from "@lattice/lattice/i18n";
-import { useRegistry } from "@lattice/lattice/provider";
+import { Renderer } from "@lattice-php/lattice/core/renderer";
+import type { ToastMessage, ToastVariant } from "@lattice-php/lattice/types/generated";
+import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import { cn } from "@lattice-php/lattice/lib/utils";
+import { useT } from "@lattice-php/lattice/i18n";
+import { useRegistry } from "@lattice-php/lattice/provider";
 
 const variants = ["success", "info", "warning", "error"] as const satisfies readonly ToastVariant[];
 

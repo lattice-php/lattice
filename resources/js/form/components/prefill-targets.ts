@@ -1,4 +1,4 @@
-import type { Node } from "@lattice/lattice/core/types";
+import type { Node } from "@lattice-php/lattice/core/types";
 import { fieldProps } from "./field-props";
 import { buildOverrideKey, rowIdFrom } from "./override-keys";
 

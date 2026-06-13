@@ -1,8 +1,8 @@
 import { usePage } from "@inertiajs/react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { Provider } from "@lattice/lattice";
-import type { PagePayload } from "@lattice/lattice";
+import { Provider } from "@lattice-php/lattice";
+import type { PagePayload } from "@lattice-php/lattice";
 import SchemaLayout from "./schema-layout";
 
 vi.mock("@inertiajs/react", () => ({

@@ -1,8 +1,8 @@
-import { Icon } from "@lattice/lattice/icons";
+import { Icon } from "@lattice-php/lattice/icons";
 import * as Popover from "@radix-ui/react-popover";
 import { useState } from "react";
-import { useT } from "@lattice/lattice/i18n";
-import type { FilterType, Op } from "@lattice/lattice/types/generated";
+import { useT } from "@lattice-php/lattice/i18n";
+import type { FilterType, Op } from "@lattice-php/lattice/types/generated";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
 import type { FilterClause, TableColumn } from "../types";
 import { FilterValueInput } from "./filter-value-input";

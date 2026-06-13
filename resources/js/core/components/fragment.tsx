@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { withRefHeader } from "@lattice/lattice/core/component-ref";
-import { Renderer, useRendererContext } from "@lattice/lattice/core/renderer";
-import type { Node, RendererComponent, Schema } from "@lattice/lattice/core/types";
-import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice/lattice/events/event-names";
+import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
+import type { Node, RendererComponent, Schema } from "@lattice-php/lattice/core/types";
+import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
 
 type FragmentResponse = {
   schema?: Schema;

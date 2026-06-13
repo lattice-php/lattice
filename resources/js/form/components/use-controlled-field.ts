@@ -1,4 +1,4 @@
-import type { Node } from "@lattice/lattice/core/types";
+import type { Node } from "@lattice-php/lattice/core/types";
 import type { FieldState } from "./conditions";
 import { fieldProps } from "./field-props";
 import { useFieldScope } from "./field-scope";

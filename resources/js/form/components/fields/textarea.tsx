@@ -1,4 +1,4 @@
-import type { RendererComponent } from "@lattice/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { Textarea } from "../base/textarea";
 import { SimpleField } from "./simple-field";
 

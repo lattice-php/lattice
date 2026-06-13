@@ -4,7 +4,7 @@ import type {
   NodeType,
   Option,
   PageContainer as KnownPageContainer,
-} from "@lattice/lattice/types/generated";
+} from "@lattice-php/lattice/types/generated";
 
 export type { KnownPageContainer, NodeType, WireNode };
 

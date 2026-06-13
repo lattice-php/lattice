@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice/lattice/core/registry";
-import { Renderer } from "@lattice/lattice/core/renderer";
-import type { Node } from "@lattice/lattice/core/types";
+import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
+import { Renderer } from "@lattice-php/lattice/core/renderer";
+import type { Node } from "@lattice-php/lattice/core/types";
 import SidebarComponent from "./sidebar";
 
 const { components: registry } = createRegistry({

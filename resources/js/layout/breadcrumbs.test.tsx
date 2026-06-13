@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice/lattice/core/registry";
-import { Renderer } from "@lattice/lattice/core/renderer";
-import type { Node } from "@lattice/lattice/core/types";
+import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
+import { Renderer } from "@lattice-php/lattice/core/renderer";
+import type { Node } from "@lattice-php/lattice/core/types";
 import BreadcrumbsComponent from "./breadcrumbs";
 
 const usePage = vi.fn<

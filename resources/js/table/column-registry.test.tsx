@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { ColumnData } from "@lattice/lattice/types/generated";
+import type { ColumnData } from "@lattice-php/lattice/types/generated";
 import { Provider } from "../provider";
 import { createPlugin, createRegistry } from "../core/registry";
 import { ColumnCell } from "./components/table-cell";

@@ -1,4 +1,4 @@
-import { createPlugin } from "@lattice/lattice";
+import { createPlugin } from "@lattice-php/lattice";
 import { StatusBadgeCell } from "./columns/status-badge";
 
 export const appColumns = createPlugin({

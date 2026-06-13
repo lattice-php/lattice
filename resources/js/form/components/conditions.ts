@@ -1,4 +1,4 @@
-import type { Condition, Op } from "@lattice/lattice/types/generated";
+import type { Condition, Op } from "@lattice-php/lattice/types/generated";
 
 export type { Condition };
 
