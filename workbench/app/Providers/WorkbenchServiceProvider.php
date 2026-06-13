@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Workbench\App\Providers;
@@ -11,43 +12,11 @@ use Laravel\Boost\Install\GuidelineComposer;
 use Laravel\Boost\Install\SkillComposer;
 use Laravel\Boost\Support\Config;
 use Laravel\Roster\Roster;
-use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
-use Workbench\App\Actions\ArchiveProductAction;
-use Workbench\App\Actions\ArchiveSelectedProductsAction;
-use Workbench\App\Actions\EditProductAction;
-use Workbench\App\Actions\RejectProductAction;
-use Workbench\App\Actions\RejectSelectedProductsAction;
-use Workbench\App\Forms\BuilderDemoForm;
-use Workbench\App\Forms\BuilderTableDemoForm;
-use Workbench\App\Forms\DependentDemoForm;
-use Workbench\App\Forms\PricingBuilderDemoForm;
-use Workbench\App\Forms\ProductForm;
-use Workbench\App\Forms\RepeaterDemoForm;
-use Workbench\App\Forms\ShowcaseForm;
-use Workbench\App\Layouts\AppLayout;
-use Workbench\App\Pages\BuilderDemoPage;
-use Workbench\App\Pages\BuilderTableDemoPage;
-use Workbench\App\Pages\DependentDemoPage;
-use Workbench\App\Pages\HomePage;
-use Workbench\App\Pages\PricingBuilderDemoPage;
-use Workbench\App\Pages\ProductCreatePage;
-use Workbench\App\Pages\ProductEditPage;
-use Workbench\App\Pages\ProductsPage;
-use Workbench\App\Pages\RepeaterDemoPage;
-use Workbench\App\Pages\ShowcasePage;
-use Workbench\App\Pages\TablesPage;
-use Workbench\App\Pages\TabsPage;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
 use Workbench\App\Support\TypeScript\BaseProfile;
-use Workbench\App\Tables\ProductsTable;
-use Workbench\App\Tables\UsersInfiniteTable;
-use Workbench\App\Tables\UsersNoneTable;
-use Workbench\App\Tables\UsersSimpleTable;
-use Workbench\App\Tables\UsersTable;
-use Workbench\App\Tables\UsersTablePaginationTable;
 
 use function Orchestra\Testbench\package_path;
 
@@ -56,6 +25,10 @@ class WorkbenchServiceProvider extends ServiceProvider
     #[\Override]
     public function register(): void
     {
+        config(['lattice.discover' => [
+            package_path('workbench/app') => 'Workbench\\App',
+        ]]);
+
         // Rebind so lattice:typescript regenerates the package's own built-in types.
         $this->app->bind(TypeScriptProfile::class, BaseProfile::class);
         $this->useWorkbenchDatabase();
@@ -123,55 +96,6 @@ class WorkbenchServiceProvider extends ServiceProvider
         }
 
         $this->loadMigrationsFrom(package_path('workbench/database/migrations'));
-
-        Lattice::actions([
-            ArchiveProductAction::class,
-            EditProductAction::class,
-            RejectProductAction::class,
-        ]);
-
-        Lattice::bulkActions([
-            ArchiveSelectedProductsAction::class,
-            RejectSelectedProductsAction::class,
-        ]);
-
-        Lattice::forms([
-            BuilderDemoForm::class,
-            BuilderTableDemoForm::class,
-            DependentDemoForm::class,
-            PricingBuilderDemoForm::class,
-            ProductForm::class,
-            RepeaterDemoForm::class,
-            ShowcaseForm::class,
-        ]);
-
-        Lattice::tables([
-            ProductsTable::class,
-            UsersTable::class,
-            UsersNoneTable::class,
-            UsersSimpleTable::class,
-            UsersTablePaginationTable::class,
-            UsersInfiniteTable::class,
-        ]);
-
-        Lattice::layouts([
-            AppLayout::class,
-        ]);
-
-        Lattice::pages([
-            HomePage::class,
-            TablesPage::class,
-            TabsPage::class,
-            ProductsPage::class,
-            ProductCreatePage::class,
-            ProductEditPage::class,
-            DependentDemoPage::class,
-            RepeaterDemoPage::class,
-            BuilderDemoPage::class,
-            BuilderTableDemoPage::class,
-            PricingBuilderDemoPage::class,
-            ShowcasePage::class,
-        ]);
 
         $this->pointBoostAtPackageRoot();
         $this->redirectBoostSkillsToPackageRoot();
