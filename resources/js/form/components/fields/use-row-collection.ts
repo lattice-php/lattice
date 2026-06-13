@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useLayoutEffect } from "react";
 import { useFormValue, useSetFormValue } from "../values";
 import {
   ensureRowIds,
@@ -23,7 +23,7 @@ export function useRowCollection(name: string, defaultItems: number): RowCollect
   const raw: RepeaterRow[] = Array.isArray(stored) ? stored : seedRows(stored, defaultItems);
   const rows = ensureRowIds(raw);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (rows !== raw) {
       setValue(name, rows);
     }
