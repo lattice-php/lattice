@@ -9,6 +9,7 @@ import type { Node } from "@lattice/lattice/core/types";
 import { FormProvider } from "@lattice/lattice/form/components/context";
 import { walkFields } from "@lattice/lattice/form/components/field-props";
 import { FORM_DEBOUNCE_MS, xsrfToken } from "@lattice/lattice/form/components/form-transport";
+import { PrefillProvider } from "@lattice/lattice/form/components/prefill-context";
 import { ResolvedNodesProvider } from "@lattice/lattice/form/components/resolved-nodes";
 import { useFormResolver } from "@lattice/lattice/form/components/use-form-resolver";
 import { FormValuesProvider, useFormValues } from "@lattice/lattice/form/components/values";
@@ -153,7 +154,11 @@ function ActionFormBody({
   valuesRef.current = values;
   const extraDataRef = useRef(extraData);
   extraDataRef.current = extraData;
-  const resolvedNodes = useFormResolver(endpoint, componentRef, formNode.schema);
+  const { nodes: resolvedNodes, markUserEdit } = useFormResolver(
+    endpoint,
+    componentRef,
+    formNode.schema,
+  );
 
   const [errors, setErrors] = useState<FieldErrors>({});
   const [processing, setProcessing] = useState(false);
@@ -250,14 +255,16 @@ function ActionFormBody({
           submit();
         }}
       >
-        <ResolvedNodesProvider nodes={resolvedNodes}>
-          <Renderer
-            fallback={fallback}
-            missingComponent={missingComponent}
-            nodes={formNode.schema ?? []}
-            registry={registry}
-          />
-        </ResolvedNodesProvider>
+        <PrefillProvider value={{ markUserEdit }}>
+          <ResolvedNodesProvider nodes={resolvedNodes}>
+            <Renderer
+              fallback={fallback}
+              missingComponent={missingComponent}
+              nodes={formNode.schema ?? []}
+              registry={registry}
+            />
+          </ResolvedNodesProvider>
+        </PrefillProvider>
 
         <div className="flex justify-end gap-3">
           <Button
