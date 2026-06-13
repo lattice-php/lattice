@@ -29,6 +29,8 @@ class WorkbenchServiceProvider extends ServiceProvider
             package_path('workbench/app'),
         ]]);
 
+        $this->keepLatticeEndpointsPublic();
+
         // Rebind so lattice:typescript regenerates the package's own built-in types.
         $this->app->bind(TypeScriptProfile::class, BaseProfile::class);
         $this->useWorkbenchDatabase();
@@ -100,6 +102,17 @@ class WorkbenchServiceProvider extends ServiceProvider
 
         $this->pointBoostAtPackageRoot();
         $this->redirectBoostSkillsToPackageRoot();
+    }
+
+    private function keepLatticeEndpointsPublic(): void
+    {
+        config([
+            'lattice.forms.middleware' => ['web'],
+            'lattice.tables.middleware' => ['web'],
+            'lattice.fragments.middleware' => ['web'],
+            'lattice.actions.middleware' => ['web'],
+            'lattice.bulk-actions.middleware' => ['web'],
+        ]);
     }
 
     private function readBoostConfigFromPackageRoot(): void
