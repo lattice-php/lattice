@@ -19,8 +19,8 @@ final class Evaluator
      * @param  list<class-string>  $nonAutowirableTypes
      */
     public function __construct(
-        private Container $container,
-        private array $nonAutowirableTypes = [],
+        private readonly Container $container,
+        private readonly array $nonAutowirableTypes = [],
     ) {}
 
     public function context(): EvaluationContext

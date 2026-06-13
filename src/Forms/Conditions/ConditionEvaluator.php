@@ -21,10 +21,10 @@ final class ConditionEvaluator
             Op::EndsWith => str_ends_with((string) $actual, (string) $expected),
             Op::Equals => $this->equals($actual, $expected),
             Op::NotEquals => ! $this->equals($actual, $expected),
-            Op::GreaterThan => $this->compareNumeric($actual, $expected) > 0,
-            Op::GreaterThanOrEqual => $this->compareNumeric($actual, $expected) >= 0,
-            Op::LessThan => $this->compareNumeric($actual, $expected) < 0,
-            Op::LessThanOrEqual => $this->compareNumeric($actual, $expected) <= 0,
+            Op::GreaterThan => $this->compareNumeric($actual, $expected) === 1,
+            Op::GreaterThanOrEqual => in_array($this->compareNumeric($actual, $expected), [0, 1], true),
+            Op::LessThan => $this->compareNumeric($actual, $expected) === -1,
+            Op::LessThanOrEqual => in_array($this->compareNumeric($actual, $expected), [-1, 0], true),
             Op::In => $this->isIn($actual, $expected),
             Op::NotIn => ! $this->isIn($actual, $expected),
             Op::Before => $this->compareDates($actual, $expected) === -1,
@@ -34,9 +34,43 @@ final class ConditionEvaluator
         };
     }
 
-    private function compareNumeric(mixed $actual, mixed $expected): int
+    private function compareNumeric(mixed $actual, mixed $expected): ?int
     {
-        return (float) $actual <=> (float) $expected;
+        $left = $this->numericValue($actual);
+        $right = $this->numericValue($expected);
+
+        if ($left === null || $right === null) {
+            return null;
+        }
+
+        return $left <=> $right;
+    }
+
+    private function numericValue(mixed $value): ?float
+    {
+        if (is_int($value) || is_float($value)) {
+            return (float) $value;
+        }
+
+        if (is_bool($value)) {
+            return $value ? 1.0 : 0.0;
+        }
+
+        if ($value === null) {
+            return 0.0;
+        }
+
+        if (is_string($value)) {
+            $trimmed = trim($value);
+
+            if ($trimmed === '') {
+                return 0.0;
+            }
+
+            return is_numeric($trimmed) ? (float) $trimmed : null;
+        }
+
+        return null;
     }
 
     /**
