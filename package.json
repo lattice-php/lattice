@@ -92,6 +92,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:lib": "vite build --mode lib",
+    "build:lib:watch": "vite build --mode lib --watch",
     "prepack": "npm run build:lib",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",

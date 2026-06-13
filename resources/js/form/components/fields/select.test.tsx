@@ -1,6 +1,6 @@
 import { act, configure, fireEvent, getConfig, render, screen } from "@testing-library/react";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
-import { fakeNode } from "@lattice/lattice/test-support";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FormProvider } from "../context";
 import { FieldScopeProvider } from "../field-scope";
 import { FormValuesProvider } from "../values";

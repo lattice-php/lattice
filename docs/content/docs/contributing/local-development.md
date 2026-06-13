@@ -79,7 +79,7 @@ import LatticePage from "@lattice-php/lattice/page";
 import { Provider, registry } from "@lattice-php/lattice";
 ```
 
-Source-linking redirects that same public package name to your local checkout. There is no second internal package name for application code to know about.
+Source-linking redirects that same public package name to your local checkout.
 
 ### Alias the renderer source
 
