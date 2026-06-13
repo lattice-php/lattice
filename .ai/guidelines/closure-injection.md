@@ -11,9 +11,11 @@
 - Add a new closure hook by accepting `Closure|T` and resolving it with
   `Evaluate::resolve($value, $context)` against the moment's `EvaluationContext`
   (built via `Field::evaluationContext()` for form fields, extended with `->named(...)` as needed).
-- Reference the field by the `$component` utility, not by a typed parameter: a closure that
-  type-hints a concrete field class (e.g. `fn (TextInput $field)`) resolves a FRESH container
-  instance, not the live field. Use `fn ($component)`.
+- Reference the field by the `$component` utility, or type-hint the field's class: a parameter
+  typed as the field's concrete class (e.g. `fn (TextInput $field)`) or any ancestor (e.g.
+  `fn (Field $field)`) resolves to the **live** component. A mismatched or unavailable component
+  type throws — Lattice components are never autowired from the container. `$component` remains the
+  untyped shortcut.
 - Live cross-field reactivity stays in the declarative `*When` condition DSL
   (`visibleWhen`/`requiredWhen`/`disabledWhen`/`readOnlyWhen`). Closures are server-side
   (render / submit / dependent resolve round-trip) and run once per request.

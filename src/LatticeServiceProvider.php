@@ -15,6 +15,7 @@ use Lattice\Lattice\Console\Commands\MakeColumnCommand;
 use Lattice\Lattice\Console\Commands\MakeComponentCommand;
 use Lattice\Lattice\Console\Commands\MakeFieldCommand;
 use Lattice\Lattice\Console\Commands\TypeScriptCommand;
+use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
@@ -63,7 +64,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->alias(ComponentReferenceSigner::class, SignsComponentReferences::class);
         $this->app->singleton(LatticeRegistry::class);
         $this->app->singleton(DiscoveryManifest::class);
-        $this->app->singleton(Evaluator::class);
+        $this->app->singleton(Evaluator::class, fn ($app): Evaluator => new Evaluator($app, [Component::class]));
 
         // Default role; the workbench rebinds this to BaseProfile.
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);

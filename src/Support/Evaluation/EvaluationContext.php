@@ -55,6 +55,24 @@ final class EvaluationContext
     }
 
     /**
+     * The first registered typed utility that is an instance of the given type,
+     * or null. Enables resolving a parameter typed as a supertype to a registered
+     * subtype (DI contravariance).
+     *
+     * @param  class-string  $class
+     */
+    public function assignableTyped(string $class): ?object
+    {
+        foreach ($this->typed as $value) {
+            if ($value instanceof $class) {
+                return $value;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return list<string>
      */
     public function names(): array

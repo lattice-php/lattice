@@ -383,15 +383,9 @@ abstract class Field extends Component
     {
         assert($this->prefillResolver !== null);
 
-        $context = Evaluate::context()
+        $context = $this->evaluationContext($row, $request)
             ->named('row', $row)
-            ->named('form', $form)
-            ->named('state', $row)
-            ->named('get', fn (string $key, mixed $default = null): mixed => $row->get($key, $default))
-            ->named('value', $row->get($this->name()))
-            ->named('component', $this)
-            ->typed(FormData::class, $row)
-            ->typed(Request::class, $request);
+            ->named('form', $form);
 
         return Evaluate::resolve($this->prefillResolver, $context);
     }
@@ -426,6 +420,7 @@ abstract class Field extends Component
             ->named('get', fn (string $key, mixed $default = null): mixed => $data->get($key, $default))
             ->named('value', $data->get($this->name()))
             ->named('component', $this)
+            ->typed(static::class, $this)
             ->typed(FormData::class, $data)
             ->typed(Request::class, $request);
     }

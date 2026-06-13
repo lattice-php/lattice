@@ -2,8 +2,11 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Forms\Components\Field;
+use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Support\Evaluation\UnresolvableEvaluationParameter;
 
 it('injects named utilities into rule closures', function () {
     $field = TextInput::make('email')->rules(fn ($get) => $get('strict') ? ['email'] : []);
@@ -59,4 +62,27 @@ it('resolves a typed FormData prefill parameter to the row scope', function () {
     $form = FormData::make(['first' => 'grace']);
 
     expect($field->resolvePrefillValue($row, $form, Request::create('/')))->toBe('ada');
+});
+
+it('resolves a concrete field-typed parameter to the live component', function () {
+    $field = TextInput::make('total')->value(fn (TextInput $self) => $self->name());
+
+    $field->applyResolution(FormData::make([]), Request::create('/'));
+
+    expect($field->resolvedValue())->toBe('total');
+});
+
+it('resolves an abstract Field-typed parameter to the live component', function () {
+    $field = TextInput::make('total')->value(fn (Field $self) => $self->name());
+
+    $field->applyResolution(FormData::make([]), Request::create('/'));
+
+    expect($field->resolvedValue())->toBe('total');
+});
+
+it('throws instead of autowiring a mismatched component type', function () {
+    $field = TextInput::make('total')->value(fn (Select $other) => $other);
+
+    expect(fn () => $field->applyResolution(FormData::make([]), Request::create('/')))
+        ->toThrow(UnresolvableEvaluationParameter::class);
 });

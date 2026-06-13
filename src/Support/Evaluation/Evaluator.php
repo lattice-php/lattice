@@ -15,7 +15,13 @@ use ReflectionUnionType;
 
 final class Evaluator
 {
-    public function __construct(private Container $container) {}
+    /**
+     * @param  list<class-string>  $nonAutowirableTypes
+     */
+    public function __construct(
+        private Container $container,
+        private array $nonAutowirableTypes = [],
+    ) {}
 
     public function context(): EvaluationContext
     {
@@ -49,6 +55,14 @@ final class Evaluator
                 return $context->getTyped($class);
             }
 
+            if (($assignable = $context->assignableTyped($class)) !== null) {
+                return $assignable;
+            }
+
+            if ($this->isNonAutowirable($class)) {
+                continue;
+            }
+
             if (class_exists($class) || interface_exists($class) || $this->container->bound($class)) {
                 try {
                     return $this->container->make($class);
@@ -66,6 +80,20 @@ final class Evaluator
         }
 
         throw UnresolvableEvaluationParameter::for($parameter, $context);
+    }
+
+    /**
+     * @param  class-string  $class
+     */
+    private function isNonAutowirable(string $class): bool
+    {
+        foreach ($this->nonAutowirableTypes as $base) {
+            if ($class === $base || is_subclass_of($class, $base)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

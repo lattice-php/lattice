@@ -8,7 +8,9 @@ use Lattice\Lattice\Support\Evaluation\EvaluationContext;
 use Lattice\Lattice\Support\Evaluation\Evaluator;
 use Lattice\Lattice\Support\Evaluation\UnresolvableEvaluationParameter;
 
-final class EvaluatorStub
+interface PingableStub {}
+
+final class EvaluatorStub implements PingableStub
 {
     public function __construct(public string $tag = 'container') {}
 
@@ -73,3 +75,24 @@ it('throws for an unresolvable parameter', function () {
 it('throws a domain exception when a typed parameter is an unbound interface', function () {
     $this->evaluator->resolve(fn (UnboundEvaluatorContract $service) => $service, new EvaluationContext);
 })->throws(UnresolvableEvaluationParameter::class);
+
+it('resolves a typed parameter to an assignable context utility (contravariance)', function () {
+    $stub = new EvaluatorStub('assignable');
+    $context = (new EvaluationContext)->typed(EvaluatorStub::class, $stub);
+
+    expect($this->evaluator->resolve(fn (PingableStub $service) => $service, $context))->toBe($stub);
+});
+
+it('does not autowire a non-autowirable base type and throws instead', function () {
+    $evaluator = new Evaluator(new Container, [EvaluatorStub::class]);
+
+    $evaluator->resolve(fn (EvaluatorStub $stub) => $stub, new EvaluationContext);
+})->throws(UnresolvableEvaluationParameter::class);
+
+it('resolves a non-autowirable type when it is provided via the context', function () {
+    $evaluator = new Evaluator(new Container, [EvaluatorStub::class]);
+    $stub = new EvaluatorStub('provided');
+    $context = (new EvaluationContext)->typed(EvaluatorStub::class, $stub);
+
+    expect($evaluator->resolve(fn (EvaluatorStub $stub) => $stub, $context))->toBe($stub);
+});
