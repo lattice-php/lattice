@@ -96,7 +96,7 @@ class ShowcaseForm extends FormDefinition
                         ->readOnly()
                         ->dependsOn(
                             ['quantity', 'unit_price'],
-                            fn (TextInput $field, FormData $data) => $field->value(
+                            fn ($component, FormData $data) => $component->value(
                                 $data->float('quantity') * $data->float('unit_price'),
                             ),
                         ),
@@ -115,8 +115,8 @@ class ShowcaseForm extends FormDefinition
                     Select::make('related_products', __('workbench.forms.product.fields.related-products'))
                         ->multiple()
                         ->placeholder(__('workbench.common.search-products'))
-                        ->searchable(fn (string $query) => Product::query()
-                            ->where('name', 'like', "%{$query}%")
+                        ->searchable(fn (string $search) => Product::query()
+                            ->where('name', 'like', "%{$search}%")
                             ->orderBy('name')
                             ->limit(10)
                             ->get()

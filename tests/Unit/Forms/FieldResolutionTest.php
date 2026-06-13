@@ -8,7 +8,7 @@ use Lattice\Lattice\Forms\FormData;
 
 it('serializes dependsOn keys and the any-change marker', function (): void {
     $optionsProps = wire(Choice::make('state', 'State')
-        ->dependsOn('country', fn (Choice $f, FormData $d) => $f))['props'];
+        ->dependsOn('country', fn ($component, FormData $d) => $component))['props'];
 
     $valueProps = wire(TextInput::make('total', 'Total')
         ->value(fn (FormData $d) => $d->float('qty')))['props'];
@@ -32,7 +32,7 @@ it('marks a value set inside a dependsOn closure as resolved', function (): void
     $field = TextInput::make('total', 'Total')
         ->dependsOn(
             ['qty', 'price'],
-            fn (TextInput $f, FormData $d) => $f->value($d->float('qty') * $d->float('price')),
+            fn ($component, FormData $d) => $component->value($d->float('qty') * $d->float('price')),
         );
 
     $field->applyResolution(FormData::make(['qty' => '4', 'price' => '5']), Request::create('/'));
@@ -43,7 +43,7 @@ it('marks a value set inside a dependsOn closure as resolved', function (): void
 
 it('runs dependsOn closures during resolution', function (): void {
     $field = Choice::make('state', 'State')
-        ->dependsOn('country', fn (Choice $f, FormData $d) => $f->options([
+        ->dependsOn('country', fn ($component, FormData $d) => $component->options([
             Choice::option(ucfirst((string) $d->get('country')), (string) $d->get('country')),
         ]));
 

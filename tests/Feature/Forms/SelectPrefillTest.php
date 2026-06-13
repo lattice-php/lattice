@@ -36,7 +36,7 @@ it('resolves the label for a single filled id', function (): void {
         ->fill(['author_id' => '5'])
         ->schema([
             Select::make('author_id', 'Author')
-                ->searchable(fn (string $query) => [])
+                ->searchable(fn (string $search) => [])
                 ->resolveSelectedUsing(fn (array $values) => collect($values)
                     ->map(fn (string $id) => Select::option("User {$id}", $id))
                     ->all()),
@@ -53,7 +53,7 @@ it('resolves labels for multiple filled ids', function (): void {
         ->schema([
             Select::make('tags', 'Tags')
                 ->multiple()
-                ->searchable(fn (string $query) => [])
+                ->searchable(fn (string $search) => [])
                 ->resolveSelectedUsing(fn (array $values) => collect($values)
                     ->map(fn (string $id) => Select::option("Tag {$id}", $id))
                     ->all()),

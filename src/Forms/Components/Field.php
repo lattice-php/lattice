@@ -9,9 +9,11 @@ use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Lattice\Facades\Evaluate;
 use Lattice\Lattice\Forms\Conditions\Condition;
 use Lattice\Lattice\Forms\Conditions\ConditionSet;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Support\Evaluation\EvaluationContext;
 
 abstract class Field extends Component
 {
@@ -174,10 +176,11 @@ abstract class Field extends Component
 
     /**
      * Add validation rules. An array is merged onto the existing rules; a Closure
-     * (receiving FormData and Request) is resolved to additional rules at validation
-     * time. Calls accumulate.
+     * is resolved to additional rules at validation time via utility injection
+     * (`$state`/`$get`/`$value`/`$component` plus any container-resolved type such
+     * as `Request`). Calls accumulate.
      *
-     * @param  array<int, mixed>|Closure(FormData, Request): array<int, mixed>  $rules
+     * @param  array<int, mixed>|Closure  $rules
      */
     public function rules(array|Closure $rules): static
     {
@@ -195,11 +198,12 @@ abstract class Field extends Component
      */
     public function resolveRules(FormData $data, Request $request): array
     {
+        $context = $this->evaluationContext($data, $request);
         $resolved = [];
 
         foreach ($this->rules as $rule) {
             if ($rule instanceof Closure) {
-                $resolved = [...$resolved, ...$rule($data, $request)];
+                $resolved = [...$resolved, ...Evaluate::resolve($rule, $context)];
 
                 continue;
             }
@@ -379,7 +383,11 @@ abstract class Field extends Component
     {
         assert($this->prefillResolver !== null);
 
-        return ($this->prefillResolver)($row, $form, $request);
+        $context = $this->evaluationContext($row, $request)
+            ->named('row', $row)
+            ->named('form', $form);
+
+        return Evaluate::resolve($this->prefillResolver, $context);
     }
 
     /**
@@ -389,15 +397,32 @@ abstract class Field extends Component
     {
         $this->resolving = true;
 
+        $context = $this->evaluationContext($data, $request);
+
         foreach ($this->dependencies as $dependency) {
-            ($dependency['callback'])($this, $data, $request);
+            Evaluate::resolve($dependency['callback'], $context);
         }
 
         if ($this->valueResolver !== null) {
-            $this->value(($this->valueResolver)($data, $request));
+            $this->value(Evaluate::resolve($this->valueResolver, $context));
         }
 
         $this->resolving = false;
+    }
+
+    /**
+     * @internal
+     */
+    protected function evaluationContext(FormData $data, Request $request): EvaluationContext
+    {
+        return Evaluate::context()
+            ->named('state', $data)
+            ->named('get', fn (string $key, mixed $default = null): mixed => $data->get($key, $default))
+            ->named('value', $data->get($this->name()))
+            ->named('component', $this)
+            ->typed(static::class, $this)
+            ->typed(FormData::class, $data)
+            ->typed(Request::class, $request);
     }
 
     /**
