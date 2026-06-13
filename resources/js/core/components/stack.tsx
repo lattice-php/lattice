@@ -43,50 +43,20 @@ const StackComponent: RendererComponent<"stack"> = ({ children, node }) => {
   const direction = node.props.direction ?? "column";
   const gap = node.props.gap ?? "md";
   const width = node.props.width ?? "full";
-  const justify = node.props.justify as string | undefined;
-
-  if (direction === "row") {
-    return (
-      <div
-        data-lattice-component={node.id}
-        className={cn(
-          "flex flex-wrap",
-          flexAlignments[align] ?? flexAlignments.stretch,
-          stackGaps[gap] ?? stackGaps.md,
-          stackWidths[width] ?? stackWidths.full,
-          justify ? justifyClasses[justify] : null,
-        )}
-      >
-        {children}
-      </div>
-    );
-  }
-
-  if (justify) {
-    return (
-      <div
-        data-lattice-component={node.id}
-        className={cn(
-          "flex flex-col",
-          flexAlignments[align] ?? flexAlignments.stretch,
-          justifyClasses[justify],
-          stackGaps[gap] ?? stackGaps.md,
-          stackWidths[width] ?? stackWidths.full,
-        )}
-      >
-        {children}
-      </div>
-    );
-  }
+  const justify = node.props.justify;
+  const isFlex = direction === "row" || justify != null;
 
   return (
     <div
       data-lattice-component={node.id}
       className={cn(
-        "grid",
-        gridAlignments[align] ?? gridAlignments.stretch,
+        isFlex ? cn("flex", direction === "row" ? "flex-wrap" : "flex-col") : "grid",
+        isFlex
+          ? (flexAlignments[align] ?? flexAlignments.stretch)
+          : (gridAlignments[align] ?? gridAlignments.stretch),
         stackGaps[gap] ?? stackGaps.md,
         stackWidths[width] ?? stackWidths.full,
+        justify ? justifyClasses[justify] : null,
       )}
     >
       {children}
