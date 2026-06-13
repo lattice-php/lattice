@@ -1,7 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { SizableColumn } from "./column-sizing";
 import { useColumnResizing } from "./use-column-resizing";
+
+type ResizeGetter = ReturnType<typeof useColumnResizing>["getResizeHandleProps"];
 
 const columns: SizableColumn[] = [
   {
@@ -41,14 +43,18 @@ function rect(width: number): DOMRect {
 function Harness({
   columnGapPx = 0,
   hookColumns = columns,
-  leadingTracks = [],
+  leadingTracks,
+  onGetter,
   showIndicator = false,
-  trailingTracks = [],
+  storageKey,
+  trailingTracks,
 }: {
   columnGapPx?: number;
   hookColumns?: SizableColumn[];
   leadingTracks?: string[];
+  onGetter?: (getter: ResizeGetter) => void;
   showIndicator?: boolean;
+  storageKey?: string;
   trailingTracks?: string[];
 }) {
   const { gridTemplateColumns, getResizeHandleProps } = useColumnResizing({
@@ -57,8 +63,11 @@ function Harness({
     columnGapPx,
     leadingTracks,
     showIndicator,
+    storageKey,
     trailingTracks,
   });
+
+  onGetter?.(getResizeHandleProps);
 
   return (
     <div data-testid="grid" style={{ gridTemplateColumns }}>
@@ -72,6 +81,10 @@ function Harness({
 }
 
 describe("useColumnResizing", () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+
   it("updates the grid template while dragging a handle", () => {
     render(<Harness />);
 
@@ -139,5 +152,85 @@ describe("useColumnResizing", () => {
     expect(screen.getByRole("separator", { name: "Resize Qty" }).className.split(" ")).toContain(
       "after:bg-lt-border",
     );
+  });
+
+  it("loads stored widths when the column keys match", () => {
+    window.localStorage.setItem(
+      "lattice:table-columns:orders",
+      JSON.stringify({
+        columns: ["qty", "price"],
+        overrides: {
+          qty: 192,
+          price: 256,
+        },
+      }),
+    );
+
+    render(<Harness hookColumns={twoColumns} storageKey="lattice:table-columns:orders" />);
+
+    expect(screen.getByTestId("grid")).toHaveStyle({
+      gridTemplateColumns: "192px 256px",
+    });
+  });
+
+  it("resets stored widths when the column keys do not match", () => {
+    window.localStorage.setItem(
+      "lattice:table-columns:orders",
+      JSON.stringify({
+        columns: ["qty"],
+        overrides: {
+          qty: 192,
+        },
+      }),
+    );
+
+    render(<Harness hookColumns={twoColumns} storageKey="lattice:table-columns:orders" />);
+
+    expect(screen.getByTestId("grid")).toHaveStyle({
+      gridTemplateColumns: "minmax(6rem, 0.5fr) minmax(8rem, 1fr)",
+    });
+    expect(window.localStorage.getItem("lattice:table-columns:orders")).toBeNull();
+  });
+
+  it("stores resized widths with the complete column key list", () => {
+    render(<Harness hookColumns={twoColumns} storageKey="lattice:table-columns:orders" />);
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
+
+    expect(JSON.parse(window.localStorage.getItem("lattice:table-columns:orders") ?? "")).toEqual({
+      columns: ["qty", "price"],
+      overrides: {
+        qty: 208,
+      },
+    });
+  });
+
+  it("removes stored widths when the last override resets", () => {
+    render(<Harness hookColumns={twoColumns} storageKey="lattice:table-columns:orders" />);
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
+    fireEvent.doubleClick(handle);
+
+    expect(window.localStorage.getItem("lattice:table-columns:orders")).toBeNull();
+  });
+
+  it("keeps the handle prop getter stable while dragging", () => {
+    const getters: ResizeGetter[] = [];
+
+    render(<Harness onGetter={(getter) => getters.push(getter)} />);
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
+
+    expect(getters.length).toBeGreaterThan(1);
+    expect(new Set(getters).size).toBe(1);
   });
 });

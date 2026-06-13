@@ -15,6 +15,8 @@ import type { RepeaterRow } from "./repeater-rows";
 
 const rowControlTrack = "3rem";
 const rowActionTrack = "3rem";
+const rowControlTracks = [rowControlTrack];
+const rowActionTracks = [rowActionTrack];
 
 export type TableColumn = { name: string; label: string; columnWidth: ColumnWidth };
 
@@ -191,9 +193,10 @@ export function TableRows({
     columns: sizingColumns,
     enabled: resizableColumns,
     columnGapPx: 12,
-    leadingTracks: [rowControlTrack],
+    leadingTracks: rowControlTracks,
     showIndicator: resizeIndicator,
-    trailingTracks: [rowActionTrack],
+    storageKey: resizableColumns ? `lattice:table-columns:form:${base}` : undefined,
+    trailingTracks: rowActionTracks,
   });
 
   return (

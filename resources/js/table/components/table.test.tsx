@@ -36,6 +36,7 @@ function pagination(overrides: Partial<TablePagination> = {}): TablePagination {
 describe("Lattice table component", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+    window.localStorage.clear();
   });
 
   it("renders columns and rows from server props", () => {
@@ -195,6 +196,49 @@ describe("Lattice table component", () => {
     );
 
     expect(screen.getByRole("separator", { name: "Resize Qty" })).toBeInTheDocument();
+  });
+
+  it("stores resized column widths under the table identity", () => {
+    const node = {
+      id: "workbench.products",
+      props: {
+        columns: [
+          col({
+            key: "qty",
+            label: "Qty",
+          }),
+          col({
+            key: "price",
+            label: "Price",
+          }),
+        ],
+        data: [],
+        resizableColumns: true,
+        state: {
+          filters: [],
+          page: 1,
+          perPage: 25,
+          sorts: [],
+        },
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
+
+    expect(
+      JSON.parse(window.localStorage.getItem("lattice:table-columns:workbench.products") ?? ""),
+    ).toEqual({
+      columns: ["qty", "price"],
+      overrides: {
+        qty: 256,
+      },
+    });
   });
 
   it("renders grid rows with stack columns and row actions without table cells", async () => {
