@@ -107,6 +107,7 @@
             "helperText": null,
             "hidden": null,
             "label": "Line items",
+            "layout": "stack",
             "maxItems": null,
             "minItems": 1,
             "name": "items",
