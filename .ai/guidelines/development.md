@@ -8,6 +8,11 @@
 - The AI tooling overrides for Boost live in `workbench/app/Support/` and are wired in `Workbench\App\Providers\WorkbenchServiceProvider`. They point Boost at the package root instead of the Testbench skeleton.
 - Regenerate `CLAUDE.md` and `AGENTS.md` after editing files in `.ai/guidelines/` with `php artisan boost:update`.
 
+## Frontend Verification
+
+- After any change to TypeScript/TSX files (`resources/js/**`, `workbench/resources/js/**`), always run `npm run check` before finalizing. It fixes lint and formatting (`oxlint --fix`, `oxfmt`), then runs the type check (`tsc`), the Vitest suite, and the library build (`build:lib`).
+- The library build is part of the gate on purpose: it is the artifact consumers receive, and it catches bundling regressions (e.g. dependencies that must stay external) that the type check and tests do not.
+
 ## Comments
 
 - Code must be self-explanatory: reach for clear names, small functions, and types before a comment.
