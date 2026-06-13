@@ -95,5 +95,26 @@ final class LatticeServiceProvider extends PackageServiceProvider
         foreach (DefinitionDiscovery::configuredPaths() as $path => $namespace) {
             Lattice::discover($path, $namespace);
         }
+
+        $this->bootPages();
+    }
+
+    /**
+     * Register page routes from configuration and discovery — but only when the
+     * router is not serving a cached route table. With `route:cache` active,
+     * Laravel loads the routes from the cache, so re-scanning the filesystem and
+     * re-registering them here on every request would be redundant work.
+     */
+    public function bootPages(): void
+    {
+        if ($this->app->routesAreCached()) {
+            return;
+        }
+
+        Lattice::registerConfiguredPages();
+
+        foreach (DefinitionDiscovery::configuredPaths() as $path => $namespace) {
+            Lattice::discoverPages($path, $namespace);
+        }
     }
 }

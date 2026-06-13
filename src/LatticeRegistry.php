@@ -7,7 +7,6 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Core\Contracts\Discoverable;
 use Lattice\Lattice\Core\Contracts\DiscoversDefinitions;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Forms\FormDefinition;
@@ -103,21 +102,20 @@ final class LatticeRegistry
                 $registry->register($configured);
             }
         }
+    }
 
-        $configuredPages = config('lattice.pages.registered', []);
+    public function registerConfiguredPages(): void
+    {
+        $configured = config('lattice.pages.registered', []);
 
-        if (is_array($configuredPages) && $configuredPages !== []) {
-            $this->pages->register($configuredPages);
+        if (is_array($configured) && $configured !== []) {
+            $this->pages->register($configured);
         }
     }
 
     public function discover(string $path, string $namespace): void
     {
-        /** @var array<string, Discoverable> $registries */
-        $registries = array_merge(
-            $this->discoverableRegistries(),
-            ['pages' => $this->pages],
-        );
+        $registries = $this->discoverableRegistries();
 
         $definitions = $this->discovery->discover($path, $namespace, array_values($registries));
 
@@ -126,6 +124,18 @@ final class LatticeRegistry
                 $registries[$group]->registerDiscovered($classes);
             }
         }
+    }
+
+    /**
+     * Discover `#[Page]` classes under a path and register their routes. Kept
+     * separate from definition discovery so the service provider can skip it
+     * when the router is serving a cached route table.
+     */
+    public function discoverPages(string $path, string $namespace): void
+    {
+        $discovered = $this->discovery->discover($path, $namespace, [$this->pages]);
+
+        $this->pages->registerDiscovered($discovered[$this->pages->group()] ?? []);
     }
 
     /**

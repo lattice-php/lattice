@@ -16,7 +16,9 @@ use Lattice\Lattice\LatticeRegistry;
  * @method static void bulkActions(class-string<\Lattice\Lattice\Actions\BulkActionDefinition>|array<int, class-string<\Lattice\Lattice\Actions\BulkActionDefinition>> $bulkActions)
  * @method static void pages(class-string|array<int, class-string> $pages)
  * @method static void registerConfiguredDefinitions()
+ * @method static void registerConfiguredPages()
  * @method static void discover(string $path, string $namespace)
+ * @method static void discoverPages(string $path, string $namespace)
  *
  * @see LatticeRegistry
  */
