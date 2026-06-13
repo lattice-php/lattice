@@ -68,6 +68,8 @@ class PricingBuilderDemoForm extends FormDefinition
 
     public function handle(Request $request): Response
     {
+        // The submitted price is the client value (an editable default is user-owned).
+        // A real form needing trusted pricing would re-derive it from product + customer here.
         $this->validate($request);
 
         return redirect('/builder-pricing');

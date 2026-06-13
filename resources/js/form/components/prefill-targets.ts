@@ -21,12 +21,7 @@ function mapDep(dep: string, base: string | null, index: number): string {
 }
 
 function targetFor(node: Node, base: string | null, index: number): PrefillTarget | null {
-  const props = fieldProps(node) as {
-    name?: string;
-    prefill?: boolean | null;
-    prefillResetOn?: string[] | null;
-    prefillRefreshOn?: string[] | null;
-  };
+  const props = fieldProps(node);
 
   if (!props.prefill || !props.name) {
     return null;
