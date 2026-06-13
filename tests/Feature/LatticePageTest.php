@@ -1470,7 +1470,7 @@ test('tabs ignore hidden tab children when resolving their active value', functi
 });
 
 test('tabs hydrate their active value from the request query string', function () {
-    Route::latticePage('query-tabs', WorkbenchTabsPage::class)->middleware('web')->name('query-tabs.show');
+    Route::get('query-tabs', [WorkbenchTabsPage::class, 'render'])->middleware('web')->name('query-tabs.show');
 
     withoutVite();
 
@@ -1510,7 +1510,7 @@ test('confirmed inactive tabs serialize only their tab metadata', function () {
 });
 
 test('confirmed active tabs redirect to password confirmation when the password is not confirmed', function () {
-    Route::latticePage('confirmed-tabs', WorkbenchConfirmedTabsPage::class)->middleware('web')->name('confirmed-tabs.show');
+    Route::get('confirmed-tabs', [WorkbenchConfirmedTabsPage::class, 'render'])->middleware('web')->name('confirmed-tabs.show');
     config(['session.driver' => 'array']);
 
     get('/confirmed-tabs?tabs=security')
@@ -1520,7 +1520,7 @@ test('confirmed active tabs redirect to password confirmation when the password 
 });
 
 test('confirmed active tabs serialize their children after password confirmation', function () {
-    Route::latticePage('confirmed-tabs', WorkbenchConfirmedTabsPage::class)->middleware('web')->name('confirmed-tabs.show');
+    Route::get('confirmed-tabs', [WorkbenchConfirmedTabsPage::class, 'render'])->middleware('web')->name('confirmed-tabs.show');
 
     withoutVite();
     config(['session.driver' => 'array']);
@@ -1549,7 +1549,7 @@ test('pages use laravel controller resolution for constructor dependencies rende
         'name' => 'Route Bound User',
     ]);
 
-    Route::latticePage('page-injection/{user}/{label}', WorkbenchInjectedPage::class)
+    Route::get('page-injection/{user}/{label}', [WorkbenchInjectedPage::class, 'render'])
         ->middleware('web')
         ->name('page-injection.show');
 
@@ -1564,7 +1564,7 @@ test('pages use laravel controller resolution for constructor dependencies rende
 });
 
 test('pages can authorize requests before rendering', function () {
-    Route::latticePage('authorized-page', WorkbenchAuthorizedPage::class)
+    Route::get('authorized-page', [WorkbenchAuthorizedPage::class, 'render'])
         ->middleware('web')
         ->name('authorized-page.show');
 

@@ -25,6 +25,17 @@ use Workbench\App\Forms\ProductForm;
 use Workbench\App\Forms\RepeaterDemoForm;
 use Workbench\App\Forms\ShowcaseForm;
 use Workbench\App\Layouts\AppLayout;
+use Workbench\App\Pages\BuilderDemoPage;
+use Workbench\App\Pages\BuilderTableDemoPage;
+use Workbench\App\Pages\DependentDemoPage;
+use Workbench\App\Pages\HomePage;
+use Workbench\App\Pages\ProductCreatePage;
+use Workbench\App\Pages\ProductEditPage;
+use Workbench\App\Pages\ProductsPage;
+use Workbench\App\Pages\RepeaterDemoPage;
+use Workbench\App\Pages\ShowcasePage;
+use Workbench\App\Pages\TablesPage;
+use Workbench\App\Pages\TabsPage;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
@@ -142,6 +153,20 @@ class WorkbenchServiceProvider extends ServiceProvider
 
         Lattice::layouts([
             AppLayout::class,
+        ]);
+
+        Lattice::pages([
+            HomePage::class,
+            TablesPage::class,
+            TabsPage::class,
+            ProductsPage::class,
+            ProductCreatePage::class,
+            ProductEditPage::class,
+            DependentDemoPage::class,
+            RepeaterDemoPage::class,
+            BuilderDemoPage::class,
+            BuilderTableDemoPage::class,
+            ShowcasePage::class,
         ]);
 
         $this->pointBoostAtPackageRoot();
