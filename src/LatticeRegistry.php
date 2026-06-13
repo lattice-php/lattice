@@ -7,7 +7,6 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentDefinition;
@@ -79,9 +78,6 @@ final class LatticeRegistry
     }
 
     /**
-     * @param  class-string|array<int, class-string>  $pages
-     */
-    /**
      * Register pages and/or return the page registry. Call without arguments to
      * read every routable page via `Lattice::pages()->all()`.
      *
@@ -99,29 +95,5 @@ final class LatticeRegistry
     public function layoutRegistry(): LayoutRegistry
     {
         return $this->layouts;
-    }
-
-    public function registerConfiguredDefinitions(): void
-    {
-        foreach ($this->discoverableRegistries() as $group => $registry) {
-            $configured = config("lattice.{$group}.registered", []);
-
-            if (is_array($configured) && $configured !== []) {
-                $registry->register($configured);
-            }
-        }
-    }
-
-    /**
-     * @return array<string, DefinitionRegistry<*>>
-     */
-    private function discoverableRegistries(): array
-    {
-        $registries = [$this->forms, $this->tables, $this->actions, $this->fragments, $this->bulkActions, $this->layouts];
-
-        return array_combine(
-            array_map(static fn (DefinitionRegistry $registry): string => $registry->group(), $registries),
-            $registries,
-        );
     }
 }

@@ -7,45 +7,28 @@ After publishing the config with `php artisan vendor:publish --tag="lattice-conf
 
 ## Discovery
 
-Lattice can automatically discover form, table, fragment, and action definitions by scanning a path and mapping it to a namespace:
+Lattice automatically discovers form, table, fragment, action, layout, and page definitions by scanning the configured paths for classes carrying the matching attribute:
 
 ```php
 'discover' => [
-    base_path('app') => 'App',
+    base_path('app'),
 ],
 ```
 
-Each entry maps a filesystem path to its root namespace. You may also use the array form to be explicit:
-
-```php
-'discover' => [
-    ['path' => base_path('app/Lattice'), 'namespace' => 'App\\Lattice'],
-],
-```
+List every path Lattice should scan. Discovery walks the files directly, so no namespace mapping is needed.
 
 ## Registering definitions explicitly
 
-Instead of (or in addition to) discovery, list definition classes under the relevant `registered` key:
-
-```php
-'forms' => [
-    'registered' => [
-        \App\Forms\ContactForm::class,
-    ],
-],
-```
-
-The same `registered` array exists for `tables`, `fragments`, `actions`, and `bulk-actions`.
-
-You can also register at runtime through the `Lattice` facade — useful from a service provider:
+Instead of (or in addition to) discovery, register definition classes at runtime through the `Lattice` facade — useful from a service provider:
 
 ```php
 use Lattice\Lattice\Facades\Lattice;
 
 Lattice::forms([\App\Forms\ContactForm::class]);
 Lattice::tables([\App\Tables\UsersTable::class]);
-Lattice::discover(app_path('Lattice'), 'App\\Lattice');
 ```
+
+The same method exists for `fragments`, `actions`, `bulkActions`, `layouts`, and `pages`.
 
 ## Endpoints and middleware
 

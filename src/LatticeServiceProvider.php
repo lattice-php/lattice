@@ -89,8 +89,6 @@ final class LatticeServiceProvider extends PackageServiceProvider
             key: 'lattice',
         );
 
-        Lattice::registerConfiguredDefinitions();
-
         // Deferred so pages registered by any provider's boot() (e.g. an app's
         // own `Lattice::pages([...])`) are collected before the routes are built.
         $this->app->booted(fn () => $this->bootPages());

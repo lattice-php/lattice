@@ -26,7 +26,7 @@ class WorkbenchServiceProvider extends ServiceProvider
     public function register(): void
     {
         config(['lattice.discover' => [
-            package_path('workbench/app') => 'Workbench\\App',
+            package_path('workbench/app'),
         ]]);
 
         // Rebind so lattice:typescript regenerates the package's own built-in types.

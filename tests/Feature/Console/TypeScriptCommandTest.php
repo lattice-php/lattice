@@ -18,7 +18,7 @@ it('writes an augmentation file for app components, not built-ins', function () 
     config()->set('lattice.typescript.output', $output);
     config()->set('lattice.typescript.module', '@lattice-php/lattice');
     config()->set('lattice.discover', [
-        dirname(__DIR__, 2).'/Fixtures/TypeScript' => 'Lattice\\Lattice\\Tests\\Fixtures\\TypeScript',
+        dirname(__DIR__, 2).'/Fixtures/TypeScript',
     ]);
 
     artisan('lattice:typescript')->assertSuccessful();

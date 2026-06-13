@@ -17,7 +17,7 @@ uses(RefreshDatabase::class)->in(__DIR__);
 function discoverFixtures(): void
 {
     config(['lattice.discover' => [
-        __DIR__.'/Fixtures/Discovery' => 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery',
+        __DIR__.'/Fixtures/Discovery',
     ]]);
 
     app(DiscoveryManifest::class)->clear();
