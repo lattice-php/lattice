@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support\Evaluation;
 
 use Closure;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Container\Container;
 use ReflectionFunction;
 use ReflectionNamedType;
@@ -49,7 +50,10 @@ final class Evaluator
             }
 
             if (class_exists($class) || interface_exists($class) || $this->container->bound($class)) {
-                return $this->container->make($class);
+                try {
+                    return $this->container->make($class);
+                } catch (BindingResolutionException) {
+                }
             }
         }
 

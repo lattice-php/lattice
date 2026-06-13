@@ -18,6 +18,8 @@ final class EvaluatorStub
     }
 }
 
+interface UnboundEvaluatorContract {}
+
 beforeEach(function () {
     $this->evaluator = new Evaluator(new Container);
 });
@@ -66,4 +68,8 @@ it('falls back to null for a nullable parameter', function () {
 
 it('throws for an unresolvable parameter', function () {
     $this->evaluator->resolve(fn (string $missing) => $missing, new EvaluationContext);
+})->throws(UnresolvableEvaluationParameter::class);
+
+it('throws a domain exception when a typed parameter is an unbound interface', function () {
+    $this->evaluator->resolve(fn (UnboundEvaluatorContract $service) => $service, new EvaluationContext);
 })->throws(UnresolvableEvaluationParameter::class);
