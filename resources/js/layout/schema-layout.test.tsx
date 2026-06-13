@@ -7,6 +7,11 @@ import SchemaLayout from "./schema-layout";
 
 vi.mock("@inertiajs/react", () => ({
   usePage: vi.fn<() => unknown>(),
+  router: {
+    on: vi.fn<(event: string, listener: (event: Event) => void) => () => void>(
+      () => () => undefined,
+    ),
+  },
 }));
 
 const mockedUsePage = vi.mocked(usePage);

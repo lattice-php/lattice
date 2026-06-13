@@ -9,6 +9,11 @@ vi.mock("@inertiajs/react", () => ({
   Link: ({ children, href }: { children: ReactNode; href: string }) => (
     <a href={href}>{children}</a>
   ),
+  router: {
+    on: vi.fn<(event: string, listener: (event: Event) => void) => () => void>(
+      () => () => undefined,
+    ),
+  },
 }));
 
 function emit(toast: unknown): void {

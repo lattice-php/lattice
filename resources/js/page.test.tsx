@@ -6,6 +6,11 @@ import Page from "./page";
 
 vi.mock("@inertiajs/react", () => ({
   Head: ({ title }: { title?: string }) => <title>{title}</title>,
+  router: {
+    on: vi.fn<(event: string, listener: (event: Event) => void) => () => void>(
+      () => () => undefined,
+    ),
+  },
 }));
 
 function payload(lattice: Partial<PagePayload> = {}): PagePayload {
