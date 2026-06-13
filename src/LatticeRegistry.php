@@ -11,6 +11,7 @@ use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
+use Lattice\Lattice\Http\PageContract;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Pages\PageRegistry;
@@ -78,22 +79,20 @@ final class LatticeRegistry
     }
 
     /**
-     * Register pages and/or return the page registry. Call without arguments to
-     * read every routable page via `Lattice::pages()->all()`.
-     *
-     * @param  class-string|array<int, class-string>  $pages
+     * @param  class-string<PageContract>|array<int, class-string<PageContract>>  $pages
      */
-    public function pages(string|array $pages = []): PageRegistry
+    public function pages(string|array $pages): void
     {
-        if ($pages !== []) {
-            $this->pages->register($pages);
-        }
-
-        return $this->pages;
+        $this->pages->register($pages);
     }
 
     public function layoutRegistry(): LayoutRegistry
     {
         return $this->layouts;
+    }
+
+    public function pageRegistry(): PageRegistry
+    {
+        return $this->pages;
     }
 }

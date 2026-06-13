@@ -25,8 +25,10 @@ final class RegWidgetsPage extends RegBasePage
     }
 }
 
-test('Lattice::pages()->all() resolves route metadata for registered pages', function () {
-    $widgets = collect(Lattice::pages([RegWidgetsPage::class])->all())
+test('Lattice::pageRegistry()->all() resolves route metadata for registered pages', function () {
+    Lattice::pages([RegWidgetsPage::class]);
+
+    $widgets = collect(Lattice::pageRegistry()->all())
         ->firstWhere('class', RegWidgetsPage::class);
 
     expect($widgets)->not->toBeNull()
@@ -35,8 +37,10 @@ test('Lattice::pages()->all() resolves route metadata for registered pages', fun
         ->and($widgets->middleware)->toContain('web');
 });
 
-test('Lattice::pages()->all() excludes abstract base pages', function () {
-    $classes = collect(Lattice::pages([RegBasePage::class])->all())->pluck('class');
+test('Lattice::pageRegistry()->all() excludes abstract base pages', function () {
+    Lattice::pages([RegBasePage::class]);
+
+    $classes = collect(Lattice::pageRegistry()->all())->pluck('class');
 
     expect($classes)->not->toContain(RegBasePage::class);
 });

@@ -88,7 +88,7 @@ test('registries resolve discovered definitions from the manifest', function () 
 test('discovered pages are available through the page registry', function () {
     discoverFixtures();
 
-    $classes = collect(Lattice::pages()->all())->pluck('class');
+    $classes = collect(Lattice::pageRegistry()->all())->pluck('class');
 
     expect($classes)->toContain(DiscoveredDemoPage::class);
 });
