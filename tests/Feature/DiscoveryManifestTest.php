@@ -10,6 +10,7 @@ use Lattice\Lattice\Attributes\Layout;
 use Lattice\Lattice\Attributes\Table;
 use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
@@ -76,4 +77,12 @@ test('registries resolve discovered definitions from the manifest', function () 
     $form = wire(FormComponent::use(DiscoveredProfileForm::class));
 
     expect($form)->toMatchArray(['type' => 'form', 'id' => 'fixtures.profile']);
+});
+
+test('discovered pages are available through the page registry', function () {
+    discoverFixtures();
+
+    $classes = collect(Lattice::pages()->all())->pluck('class');
+
+    expect($classes)->toContain(DiscoveredDemoPage::class);
 });
