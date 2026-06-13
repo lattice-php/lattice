@@ -9,7 +9,6 @@ import {
   pathsToClear,
   pruneOverrides,
   seededOverrides,
-  targetByPath,
 } from "./prefill-targets";
 import type { PrefillController } from "./prefill-context";
 import { useFormValues, useSetFormValue } from "./values";
@@ -49,10 +48,15 @@ export function useFormResolver(
   targetsRef.current = targets;
 
   useLayoutEffect(() => {
+    const liveOverrideKeys = new Set(targets.map((target) => target.overrideKey));
+    seededOverrideKeys.current = new Set(
+      [...seededOverrideKeys.current].filter((overrideKey) => liveOverrideKeys.has(overrideKey)),
+    );
     const freshTargets = targets.filter(
       (target) => !seededOverrideKeys.current.has(target.overrideKey),
     );
 
+    // Layout ordering seeds loaded values before the first resolve effect can apply prefill.
     for (const overrideKey of seededOverrides(freshTargets, values)) {
       overrides.current.add(overrideKey);
     }
@@ -62,8 +66,8 @@ export function useFormResolver(
     }
   }, [targets, values]);
 
-  const markUserEdit = useCallback((path: string) => {
-    overrides.current.add(path);
+  const markUserEdit = useCallback((overrideKey: string) => {
+    overrides.current.add(overrideKey);
   }, []);
 
   const watch = useMemo(() => {
@@ -114,15 +118,14 @@ export function useFormResolver(
     // deps only re-ask the server and never clear an override (a customer change
     // re-prices untouched rows but leaves user-edited ones alone).
     for (const overrideKey of pathsToClear(
-      previousTargets.current,
-      previous,
-      targetsRef.current,
-      values,
+      { targets: previousTargets.current, values: previous },
+      { targets: targetsRef.current, values },
     )) {
       overrides.current.delete(overrideKey);
     }
     previousTargets.current = targetsRef.current;
 
+    // Override ownership is row-id keyed, so pruning removes departed rows without reindex drift.
     overrides.current = pruneOverrides(overrides.current, targetsRef.current);
 
     const controller = new AbortController();
@@ -141,7 +144,9 @@ export function useFormResolver(
           for (const [name, value] of Object.entries(response.values ?? {})) {
             setValue(name, value);
           }
-          const targetsByPath = targetByPath(targetsRef.current);
+          const targetsByPath = new Map(
+            targetsRef.current.map((target) => [target.path, target] as const),
+          );
           for (const [path, value] of Object.entries(response.prefill ?? {})) {
             const target = targetsByPath.get(path);
 

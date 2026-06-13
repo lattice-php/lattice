@@ -1,12 +1,17 @@
 import type { Node } from "@lattice/lattice/core/types";
 import { fieldProps } from "./field-props";
-import { ROW_ID_KEY } from "./fields/repeater-rows";
+import { buildOverrideKey, rowIdFrom } from "./override-keys";
 
 export type PrefillTarget = {
   path: string;
   overrideKey: string;
   resetOn: string[];
   refreshOn: string[];
+};
+
+type PrefillSnapshot = {
+  targets: PrefillTarget[];
+  values: Record<string, unknown>;
 };
 
 type Block = { type: string; label: string; schema: Node[] };
@@ -33,11 +38,11 @@ function targetFor(
     return null;
   }
 
-  const rowId = typeof row[ROW_ID_KEY] === "string" ? row[ROW_ID_KEY] : String(index);
+  const rowId = rowIdFrom(row);
 
   return {
     path: base === null ? props.name : `${base}.${index}.${props.name}`,
-    overrideKey: base === null ? props.name : `${base}.${rowId}.${props.name}`,
+    overrideKey: base === null ? props.name : buildOverrideKey(base, rowId, index, props.name),
     resetOn: (props.prefillResetOn ?? []).map((dep) => mapDep(dep, base, index)),
     refreshOn: (props.prefillRefreshOn ?? []).map((dep) => mapDep(dep, base, index)),
   };
@@ -131,24 +136,19 @@ export function applyPrefillValue(
   });
 }
 
-export function pathsToClear(
-  previousTargets: PrefillTarget[],
-  previous: Record<string, unknown>,
-  targets: PrefillTarget[],
-  next: Record<string, unknown>,
-): string[] {
+export function pathsToClear(previous: PrefillSnapshot, next: PrefillSnapshot): string[] {
   const previousByKey = new Map(
-    previousTargets.map((target) => [target.overrideKey, target] as const),
+    previous.targets.map((target) => [target.overrideKey, target] as const),
   );
 
-  return targets
+  return next.targets
     .filter((target) => {
       const previousTarget = previousByKey.get(target.overrideKey);
 
       return target.resetOn.some((dep, index) => {
         const previousDep = previousTarget?.resetOn[index] ?? dep;
 
-        return !Object.is(getPath(previous, previousDep), getPath(next, dep));
+        return !Object.is(getPath(previous.values, previousDep), getPath(next.values, dep));
       });
     })
     .map((target) => target.overrideKey);
@@ -171,8 +171,4 @@ export function pruneOverrides(overrides: Set<string>, targets: PrefillTarget[])
   const liveKeys = new Set(targets.map((target) => target.overrideKey));
 
   return new Set([...overrides].filter((key) => liveKeys.has(key)));
-}
-
-export function targetByPath(targets: PrefillTarget[]): Map<string, PrefillTarget> {
-  return new Map(targets.map((target) => [target.path, target]));
 }

@@ -8,6 +8,7 @@ export function useDependentField(node: Node): FieldState {
   const values = useFormValues();
   const scope = useFieldScope();
   const props = fieldProps(node);
+  // Bare condition names resolve to row siblings first; form values remain the fallback.
   const conditionValues = scope ? { ...values, ...scope.row } : values;
 
   return evaluateConditions(props.conditions ?? undefined, conditionValues, {

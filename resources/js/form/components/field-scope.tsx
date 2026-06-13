@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo } from "react";
-import { ROW_ID_KEY } from "./fields/repeater-rows";
+import { buildOverrideKey, rowIdFrom } from "./override-keys";
 
 export type FieldScopeValue = {
   row: Record<string, unknown>;
@@ -27,7 +27,7 @@ export function FieldScopeProvider({
   children: React.ReactNode;
 }) {
   const value = useMemo<FieldScopeValue>(() => {
-    const rowId = typeof row[ROW_ID_KEY] === "string" ? row[ROW_ID_KEY] : null;
+    const rowId = rowIdFrom(row);
 
     return {
       row,
@@ -36,13 +36,14 @@ export function FieldScopeProvider({
       setValue: onChange,
       scopedName: (name) => `${base}[${index}][${name}]`,
       errorKey: (name) => `${base}.${index}.${name}`,
-      overrideKey: (name) => (rowId ? `${base}.${rowId}.${name}` : `${base}.${index}.${name}`),
+      overrideKey: (name) => buildOverrideKey(base, rowId, index, name),
     };
   }, [base, index, row, onChange]);
 
   return <FieldScopeContext.Provider value={value}>{children}</FieldScopeContext.Provider>;
 }
 
+/** Null outside a row so callers can preserve top-level behavior without a wrapper. */
 export function useFieldScope(): FieldScopeValue | null {
   return useContext(FieldScopeContext);
 }
