@@ -23,6 +23,8 @@ use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
 use PHPUnit\Framework\AssertionFailedError;
 
+use function Pest\Laravel\withoutVite;
+
 uses(AssertsLatticeComponents::class);
 
 it('navigates a built form and asserts page rendering by visibility', function (): void {
@@ -111,6 +113,8 @@ it('asserts action state', function (): void {
 });
 
 it('asserts against a rendered Inertia page', function (): void {
+    withoutVite();
+
     Route::get('lattice-demo-page', fn () => Inertia::render('lattice/page', [
         'lattice' => [
             'schema' => json_decode(json_encode([

@@ -25,32 +25,9 @@ trait AssertsLatticeComponents
 
     public function assertLatticePage(TestResponse $response): ComponentAssertions
     {
-        $schema = $this->extractLatticeSchema($response);
+        $page = AssertableInertia::fromTestResponse($response)->toArray();
+        $schema = $page['props']['lattice']['schema'] ?? [];
 
         return new ComponentAssertions(ComponentNode::root(is_array($schema) ? $schema : []));
-    }
-
-    /**
-     * @return array<int, mixed>
-     */
-    private function extractLatticeSchema(TestResponse $response): array
-    {
-        if ($response->headers->has('X-Inertia')) {
-            $page = $response->json();
-
-            return $page['props']['lattice']['schema'] ?? [];
-        }
-
-        if ($response->baseRequest !== null) {
-            $url = $response->baseRequest->getUri();
-            $xhrResponse = $this->get($url, ['X-Inertia' => 'true']);
-            $page = $xhrResponse->json();
-
-            return $page['props']['lattice']['schema'] ?? [];
-        }
-
-        $schema = AssertableInertia::fromTestResponse($response)->toArray()['props']['lattice']['schema'] ?? [];
-
-        return is_array($schema) ? $schema : [];
     }
 }
