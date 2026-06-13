@@ -1,4 +1,4 @@
-import i18next, { type InitOptions } from "i18next";
+import i18next, { type i18n as I18nInstance, type InitOptions } from "i18next";
 import { initReactI18next, useTranslation } from "react-i18next";
 
 const NAMESPACE = "lattice";
@@ -12,7 +12,7 @@ function detectLanguage(): string {
 }
 
 /** Lattice's own i18next instance, isolated from the host app's. */
-export const i18n = i18next.createInstance().use(initReactI18next);
+export const i18n: I18nInstance = i18next.createInstance().use(initReactI18next);
 
 let initialization: Promise<unknown> | undefined;
 
