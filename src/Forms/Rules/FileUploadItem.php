@@ -14,18 +14,17 @@ use Illuminate\Support\Facades\Storage;
  * (multipart `UploadedFile`), a freshly signed temp key, or a retained stored
  * path string. New uploads are checked against the field's type/size config;
  * string references must resolve to an object that exists on the disk.
- *
- * @param  list<string>|null  $acceptedTypes
  */
 final readonly class FileUploadItem implements ValidationRule
 {
+    /**
+     * @param  list<string>|null  $acceptedTypes
+     */
     public function __construct(
         private bool $image,
         private ?array $acceptedTypes,
         private ?int $maxSizeKb,
         private string $disk,
-        private bool $signed,
-        private string $tempPrefix,
     ) {}
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
