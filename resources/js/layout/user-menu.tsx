@@ -18,10 +18,16 @@ const UserMenuComponent: RendererComponent<"user-menu"> = ({ children, node }) =
 
   return (
     <Popover
-      align="end"
+      align="start"
+      placement={collapsed ? "right" : "top"}
       testId="user-menu"
       trigger={
-        <span className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-lt-muted">
+        <span
+          className={cn(
+            "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-lt-muted",
+            collapsed && "justify-center",
+          )}
+        >
           {avatar ? (
             <img alt={name} className="size-8 shrink-0 rounded-md object-cover" src={avatar} />
           ) : (

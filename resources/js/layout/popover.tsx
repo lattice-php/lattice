@@ -18,7 +18,7 @@ export function Popover({
   align?: "start" | "end";
   children: ReactNode;
   className?: string;
-  placement?: "bottom" | "right";
+  placement?: "bottom" | "right" | "top";
   testId?: string;
   trigger: ReactNode;
   triggerClassName?: string;
@@ -37,7 +37,10 @@ export function Popover({
       setPosition(
         placement === "right"
           ? { left: rect.right + 4, top: rect.top }
-          : { left: align === "end" ? rect.right : rect.left, top: rect.bottom + 4 },
+          : {
+              left: align === "end" ? rect.right : rect.left,
+              top: placement === "top" ? rect.top - 4 : rect.bottom + 4,
+            },
       );
     }
     setOpen((value) => !value);
@@ -79,7 +82,9 @@ export function Popover({
                   left: position.left,
                   top: position.top,
                   transform:
-                    placement === "bottom" && align === "end" ? "translateX(-100%)" : undefined,
+                    placement === "right"
+                      ? undefined
+                      : `translate(${align === "end" ? "-100%" : "0"}, ${placement === "top" ? "-100%" : "0"})`,
                 }}
               >
                 <SidebarCollapsedContext.Provider value={false}>

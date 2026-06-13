@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice/lattice/core/registry";
 import { Renderer } from "@lattice/lattice/core/renderer";
 import type { Node } from "@lattice/lattice/core/types";
+import { SidebarCollapsedContext } from "./context";
 import MenuItemComponent from "./menu-item";
 import UserMenuComponent from "./user-menu";
 
@@ -52,5 +53,27 @@ describe("UserMenu", () => {
     fireEvent.click(screen.getByRole("button"));
 
     expect(screen.getByRole("link", { name: "Log out" })).toHaveAttribute("href", "/logout");
+  });
+
+  it("centers the trigger when the sidebar is collapsed", () => {
+    render(
+      <SidebarCollapsedContext.Provider value={true}>
+        <Renderer
+          nodes={[
+            {
+              id: "u1",
+              type: "user-menu",
+              props: { name: "Ada Lovelace" },
+              schema: [
+                { id: "i", props: { href: "/logout", label: "Log out" }, type: "menu-item" },
+              ],
+            },
+          ]}
+          registry={registry}
+        />
+      </SidebarCollapsedContext.Provider>,
+    );
+
+    expect(screen.getByText("AL").parentElement).toHaveClass("justify-center");
   });
 });
