@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Components;
 
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\Rules\FileUploadItem;
@@ -124,6 +126,31 @@ class FileUpload extends Field
     public function tempPrefix(): string
     {
         return (string) config('lattice.files.temp_prefix', 'tmp');
+    }
+
+    /**
+     * @return array{key: string, url: string, headers: array<string, mixed>, method: string}
+     */
+    public function signUpload(Request $request): array
+    {
+        $filename = $request->string('filename')->toString();
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+
+        $key = rtrim($this->tempPrefix(), '/').'/'.Str::uuid()->toString()
+            .($extension !== '' ? '.'.$extension : '');
+
+        $ttl = (int) config('lattice.files.url_ttl', 5);
+
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk($this->resolveDisk());
+        $signed = $disk->temporaryUploadUrl($key, now()->addMinutes($ttl));
+
+        return [
+            'key' => $key,
+            'url' => $signed['url'],
+            'headers' => $signed['headers'],
+            'method' => 'PUT',
+        ];
     }
 
     public function resolveRules(FormData $data, Request $request): array
