@@ -18,7 +18,7 @@ class ProductEditPage extends WorkbenchPage
 {
     public function title(): string
     {
-        return 'Edit Product';
+        return __('workbench.pages.product-edit.title');
     }
 
     public function render(PageSchema $schema, Product $product): PageSchema
@@ -27,10 +27,10 @@ class ProductEditPage extends WorkbenchPage
             Stack::make('product-edit-page')
                 ->gap(Gap::Large)
                 ->schema([
-                    Heading::make('Edit Product'),
+                    Heading::make(__('workbench.pages.product-edit.heading')),
                     Form::use(ProductForm::class)
                         ->method(HttpMethod::Patch)
-                        ->submitLabel('Save product')
+                        ->submitLabel(__('workbench.pages.product-edit.submit'))
                         ->fill([
                             'name' => $product->name,
                             'sku' => $product->sku,

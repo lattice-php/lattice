@@ -9,7 +9,7 @@ it('renders the custom status-badge column cell', function (): void {
     visit('/products')
         ->assertSee('Badge Product')
         ->assertPresent('[data-testid="status-badge"]')
-        ->assertSee('active')
+        ->assertSee('Active')
         ->assertNoSmoke();
 });
 
@@ -21,7 +21,7 @@ it('archives a product via the row action with confirmation', function (): void 
         ->click('@action-archive')
         ->assertSee('Archive product?')
         ->click('@confirm-accept')
-        ->assertSee('archived')
+        ->assertSee('Archived')
         ->assertNoSmoke();
 
     expect($product->fresh()->status)->toBe('archived');
@@ -47,7 +47,7 @@ it('rejects a product through a modal form', function (): void {
         ->assertSee('Reject product?')
         ->click('@action-form-submit')
         ->assertSee('The Reason field is required.')
-        ->fill('Reason', 'Counterfeit listing')
+        ->fill('@reason', 'Counterfeit listing')
         ->click('@action-form-submit')
         ->assertNoSmoke();
 
@@ -75,7 +75,7 @@ it('edits a product in a prefilled modal form', function (): void {
 
     visit('/products')
         ->assertSee('Desk Lamp')
-        ->click('@action-quick-edit')
+        ->click('@action-edit-modal')
         ->assertSee('Edit product')
         ->assertValue('#name', 'Desk Lamp')
         ->fill('#name', 'Renamed Lamp')
@@ -87,14 +87,15 @@ it('edits a product in a prefilled modal form', function (): void {
 
 it('searches products inside the reject modal form', function (): void {
     Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-001', 'status' => 'active']);
-    Product::factory()->create(['name' => 'Walnut Desk', 'sku' => 'DESK-001', 'status' => 'active']);
+    $replacement = Product::factory()->create(['name' => 'Walnut Desk', 'sku' => 'DESK-001', 'status' => 'active']);
 
     visit('/products')
         ->assertSee('Desk Lamp')
         ->click('@action-reject')
         ->assertSee('Reject product?')
-        ->click('Search products…')
-        ->fill('input[aria-label="Search options"]', 'Walnut')
+        ->click('@select-replacement')
+        ->fill('@select-replacement-search', 'Walnut')
         ->assertSee('Walnut Desk')
+        ->assertPresent("[data-test=\"select-replacement-option-{$replacement->getKey()}\"]")
         ->assertNoSmoke();
 });

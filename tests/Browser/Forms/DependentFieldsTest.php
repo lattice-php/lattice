@@ -5,25 +5,25 @@ it('toggles the company field instantly based on type', function (): void {
     visit('/dependent-demo')
         ->assertSee('Dependent Demo')
         ->assertDontSee('Company')
-        ->click('Business')
+        ->click('@type-business')
         ->assertSee('Company')
-        ->click('Personal')
+        ->click('@type-personal')
         ->assertDontSee('Company');
 });
 
 it('requires the company field for business on submit', function (): void {
     visit('/dependent-demo')
-        ->click('Business')
+        ->click('@type-business')
         ->assertSee('Company')
-        ->click('Save')
+        ->click('@form-submit')
         ->assertSee('The Company field is required.');
 });
 
 it('computes the total from qty and unit price via a round-trip', function (): void {
     visit('/dependent-demo')
         ->assertSee('Total')
-        ->fill('qty', '3')
-        ->fill('unit_price', '4')
+        ->fill('@qty', '3')
+        ->fill('@unit_price', '4')
         ->assertValue('total', '12');
 });
 
@@ -32,8 +32,8 @@ it('renders textarea, number, slider, and date fields', function (): void {
         ->assertSee('Bio')
         ->assertSee('Level')
         ->assertSee('Due date')
-        ->fill('bio', 'Hello world')
-        ->fill('due', '2026-06-08')
+        ->fill('@bio', 'Hello world')
+        ->fill('@due', '2026-06-08')
         ->assertValue('bio', 'Hello world')
         ->assertValue('due', '2026-06-08');
 });

@@ -29,7 +29,7 @@ export function TablePagination({
   return (
     <div className="flex items-center justify-between gap-3 border-t border-lt-border p-4 text-sm">
       <span>
-        {pagination.total === undefined
+        {pagination.total == null
           ? t("pagination.page", "Page {{page}}", { page: currentPage })
           : t("pagination.showing", "Showing {{from}}-{{to}} of {{total}}", {
               from: pagination.from ?? 0,

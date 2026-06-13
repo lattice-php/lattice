@@ -1,4 +1,5 @@
 import type { Node } from "@lattice-php/lattice/core/types";
+import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import type { FieldState } from "./conditions";
 import { fieldProps } from "./field-props";
 import { useFieldScope } from "./field-scope";
@@ -8,7 +9,9 @@ import { useFieldCommit } from "./use-field-commit";
 import { useFormValue } from "./values";
 
 export type ControlledField = FieldState & {
+  localName: string;
   name: string;
+  testId?: string;
   value: string;
   error?: string;
   commit: (value: unknown) => void;
@@ -36,5 +39,13 @@ export function useControlledField(node: Node): ControlledField {
   const { commit: commitField } = useFieldCommit();
   const commit = (next: unknown): void => commitField(localName, next);
 
-  return { ...state, name: domName, value, error: errors[errorKey], commit };
+  return {
+    ...state,
+    localName,
+    name: domName,
+    testId: testIdentity(localName),
+    value,
+    error: errors[errorKey],
+    commit,
+  };
 }

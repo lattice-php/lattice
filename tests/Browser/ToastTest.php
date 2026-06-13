@@ -22,7 +22,7 @@ it('renders a link inside a toast', function (): void {
         ->click('@action-archive')
         ->click('@confirm-accept')
         ->assertSee('Product archived.')
-        ->click('View products')
+        ->click('@view-products')
         ->assertSee('Create product')
         ->assertNoSmoke();
 });
@@ -31,13 +31,13 @@ it('opens a modal form from a toast action', function (): void {
     $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
     visit('/products')
-        ->click('@action-quick-edit')
+        ->click('@action-edit-modal')
         ->assertValue('#name', 'Desk Lamp')
         ->click('@action-form-submit')
         ->assertSee('Product updated.')
-        ->click('@action-reject-product')
+        ->click('@action-reject')
         ->assertSee('Reject product?')
-        ->fill('Reason', 'Counterfeit listing')
+        ->fill('@reason', 'Counterfeit listing')
         ->click('@action-form-submit')
         ->assertNoSmoke();
 

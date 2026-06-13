@@ -90,12 +90,12 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
           actions={bulkActions}
           selectedKeys={selection.selectedKeys}
           allMatching={selection.allMatching}
-          total={pagination.total}
+          total={pagination.total ?? undefined}
           query={getQueryParams(state)}
           canSelectAllMatching={
             selection.allVisibleSelected &&
             !selection.allMatching &&
-            pagination.total !== undefined &&
+            pagination.total != null &&
             pagination.total > selection.selectedKeys.length
           }
           onSelectAllMatching={selection.selectAllMatching}

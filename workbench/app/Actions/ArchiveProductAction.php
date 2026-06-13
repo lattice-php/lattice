@@ -8,6 +8,7 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\Action;
+use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\ToastVariant;
@@ -20,10 +21,10 @@ class ArchiveProductAction extends ActionDefinition
     public function definition(ActionComponent $action): ActionComponent
     {
         return $action
-            ->label('Archive')
+            ->label(__('workbench.actions.archive.label'))
             ->method(HttpMethod::Patch)
             ->variant(ButtonVariant::Destructive)
-            ->confirm('Archive product?', 'This hides the product from the catalogue.');
+            ->confirm(__('workbench.actions.archive.confirm-title'), __('workbench.actions.archive.confirm-description'));
     }
 
     public function authorize(Request $request): bool
@@ -38,8 +39,8 @@ class ArchiveProductAction extends ActionDefinition
 
         return ActionResult::success(['id' => $product->getKey()])
             ->toast(
-                ToastMessage::make(ToastVariant::Success, 'Product archived.')
-                    ->link('View products', '/products')
+                ToastMessage::make(ToastVariant::Success, __('workbench.actions.archive.toast'))
+                    ->action(Link::make(__('workbench.actions.archive.view-products'), 'view-products')->href('/products'))
                     ->persistent(),
             )
             ->reloadComponent('workbench.products');

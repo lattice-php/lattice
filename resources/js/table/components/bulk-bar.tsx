@@ -11,6 +11,7 @@ import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
 import { Button } from "@lattice-php/lattice/core/components/button";
 import { ConfirmDialog } from "@lattice-php/lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice-php/lattice/core/components/spinner";
+import { prefixedTestId } from "@lattice-php/lattice/core/test-id";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { BulkAction } from "../bulk";
 
@@ -105,7 +106,7 @@ export function BulkBar({
           <Button
             key={action.id}
             type="button"
-            data-test={`bulk-action-${action.label.toLowerCase().replace(/\s+/g, "-")}`}
+            data-test={prefixedTestId("bulk-action", action.id)}
             variant={action.variant}
             disabled={http.processing}
             onClick={() => run(action)}

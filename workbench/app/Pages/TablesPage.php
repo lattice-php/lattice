@@ -23,7 +23,7 @@ final class TablesPage extends WorkbenchPage
 {
     public function title(): string
     {
-        return 'Lattice Tables';
+        return __('workbench.pages.tables.title');
     }
 
     public function render(PageSchema $schema): PageSchema
@@ -35,27 +35,27 @@ final class TablesPage extends WorkbenchPage
                     Stack::make('tables-hero')
                         ->gap(Gap::Large)
                         ->schema([
-                            Badge::make('Tables'),
-                            Heading::make('Pagination modes'),
-                            Text::make('Each tab mounts its table on first open.'),
+                            Badge::make(__('workbench.pages.tables.badge')),
+                            Heading::make(__('workbench.pages.tables.heading')),
+                            Text::make(__('workbench.pages.tables.description')),
                         ]),
                     Tabs::make('pagination-mode-tabs')
                         ->defaultValue('none')
                         ->schema([
-                            Tab::make('none', 'None')->schema([
-                                Heading::make('No pagination', 2),
+                            Tab::make('none', __('workbench.pages.tables.none'))->schema([
+                                Heading::make(__('workbench.pages.tables.none-heading'), 2),
                                 Table::lazy(UsersNoneTable::class),
                             ]),
-                            Tab::make('simple', 'Simple')->schema([
-                                Heading::make('Simple pagination', 2),
+                            Tab::make('simple', __('workbench.pages.tables.simple'))->schema([
+                                Heading::make(__('workbench.pages.tables.simple-heading'), 2),
                                 Table::lazy(UsersSimpleTable::class),
                             ]),
-                            Tab::make('table', 'Table')->schema([
-                                Heading::make('Table pagination', 2),
+                            Tab::make('table', __('workbench.pages.tables.table'))->schema([
+                                Heading::make(__('workbench.pages.tables.table-heading'), 2),
                                 Table::lazy(UsersTablePaginationTable::class),
                             ]),
-                            Tab::make('infinite', 'Infinite')->schema([
-                                Heading::make('Infinite pagination', 2),
+                            Tab::make('infinite', __('workbench.pages.tables.infinite'))->schema([
+                                Heading::make(__('workbench.pages.tables.infinite-heading'), 2),
                                 Table::lazy(UsersInfiniteTable::class),
                             ]),
                         ]),

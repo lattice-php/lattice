@@ -17,7 +17,7 @@ class DependentDemoPage extends WorkbenchPage
 {
     public function title(): string
     {
-        return 'Dependent Demo';
+        return __('workbench.pages.dependent.title');
     }
 
     public function render(PageSchema $schema): PageSchema
@@ -26,10 +26,10 @@ class DependentDemoPage extends WorkbenchPage
             Stack::make('dependent-demo-page')
                 ->gap(Gap::Large)
                 ->schema([
-                    Heading::make('Dependent Demo'),
+                    Heading::make(__('workbench.pages.dependent.heading')),
                     Form::use(DependentDemoForm::class)
                         ->method(HttpMethod::Post)
-                        ->submitLabel('Save'),
+                        ->submitLabel(__('workbench.pages.dependent.submit')),
                 ]),
         ]);
     }

@@ -76,10 +76,13 @@
             "layout": null,
             "lazy": null,
             "pagination": {
+                "currentPage": null,
                 "from": 1,
                 "hasMore": false,
+                "lastPage": null,
                 "mode": "none",
                 "nextPage": null,
+                "perPage": null,
                 "to": 2,
                 "total": 2
             },

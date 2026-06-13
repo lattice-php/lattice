@@ -22,14 +22,14 @@ class RejectProductAction extends ActionDefinition
     public function definition(ActionComponent $action): ActionComponent
     {
         return $action
-            ->label('Reject')
+            ->label(__('workbench.actions.reject.label'))
             ->method(HttpMethod::Patch)
             ->variant(ButtonVariant::Destructive)
-            ->confirm('Reject product?', 'Tell the seller why this product is rejected.', 'Submit rejection')
+            ->confirm(__('workbench.actions.reject.confirm-title'), __('workbench.actions.reject.confirm-description'), __('workbench.actions.reject.confirm-label'))
             ->form([
-                Textarea::make('reason', 'Reason')->required()->rules(['string', 'max:255']),
-                Select::make('replacement', 'Suggested replacement')
-                    ->placeholder('Search products…')
+                Textarea::make('reason', __('workbench.common.reason'))->required()->rules(['string', 'max:255']),
+                Select::make('replacement', __('workbench.actions.reject.suggested-replacement'))
+                    ->placeholder(__('workbench.common.search-products'))
                     ->searchable(fn (string $search): array => Product::query()
                         ->where('name', 'like', "%{$search}%")
                         ->orderBy('name')
@@ -54,7 +54,7 @@ class RejectProductAction extends ActionDefinition
         $product->update(['status' => 'archived']);
 
         return ActionResult::success(['id' => $product->getKey(), 'reason' => $data['reason']])
-            ->toast(ToastVariant::Success, "Rejected: {$data['reason']}")
+            ->toast(ToastVariant::Success, __('workbench.actions.reject.toast', ['reason' => $data['reason']]))
             ->reloadComponent('workbench.products');
     }
 

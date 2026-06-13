@@ -56,6 +56,7 @@ class WorkbenchServiceProvider extends ServiceProvider
         $this->callAfterResolving('translation.loader', function ($loader) use ($skeletonLangPath): void {
             $loader->addPath($skeletonLangPath);
             $loader->addPath(package_path('workbench/lang'));
+            $loader->addNamespace('workbench', package_path('workbench/lang'));
         });
     }
 

@@ -1,14 +1,11 @@
 import { router } from "@inertiajs/react";
-import type { Effect, EffectType } from "@lattice-php/lattice/types/generated";
+import type { ActionResult, Effect, EffectType } from "@lattice-php/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 
 export type ActionEffect = Effect;
 
-export type ActionResponse = {
-  data?: Record<string, unknown>;
-  effects?: ActionEffect[];
-  ok?: boolean;
-};
+/** The server's action response. Fields are optional: a handler may omit any of them. */
+export type ActionResponse = Partial<ActionResult>;
 
 const eventNames = {
   toast: LATTICE_EVENT.toast,

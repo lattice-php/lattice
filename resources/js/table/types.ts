@@ -6,12 +6,13 @@ import type {
   ColumnType,
   FilterClause as WireFilterClause,
   Op,
-  PaginationType,
   Table,
+  TablePagination,
+  TableQuery,
   TableSort,
 } from "@lattice-php/lattice/types/generated";
 
-export type { ColumnData, ColumnFilter, ColumnType, TableSort };
+export type { ColumnData, ColumnFilter, ColumnType, TablePagination, TableSort };
 
 export type TableColumn = ColumnData;
 
@@ -26,23 +27,12 @@ export type FilterClause = Omit<WireFilterClause, "operator"> & {
   operator: Op;
 };
 
-export type TableState = {
+/**
+ * The wire `TableQuery` state, with `filters` narrowed to the client `FilterClause`
+ * (known `Op` operator) instead of the wire's free-string operator.
+ */
+export type TableState = Omit<TableQuery, "filters"> & {
   filters: FilterClause[];
-  sorts: TableSort[];
-  page: number;
-  perPage: number;
-};
-
-export type TablePagination = {
-  currentPage?: number;
-  hasMore?: boolean;
-  lastPage?: number;
-  mode?: PaginationType;
-  nextPage?: number | null;
-  perPage?: number;
-  total?: number;
-  from?: number | null;
-  to?: number | null;
 };
 
 export type TableResponse = {

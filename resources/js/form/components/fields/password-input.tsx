@@ -1,6 +1,8 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import { FormFieldFrame } from "../base/field";
 import PasswordInput from "../base/password-input";
+import { useFieldScope } from "../field-scope";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
 import { useFormContext } from "../context";
@@ -10,9 +12,16 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
   const { errors } = useFormContext();
   const { hidden, required, readOnly, disabled } = useDependentField(node);
   const { commit } = useFieldCommit();
-  const name = props.name ?? "";
+  const scope = useFieldScope();
+  const localName = props.name ?? "";
+  const name = scope ? scope.scopedName(localName) : localName;
+  const errorKey = scope ? scope.errorKey(localName) : localName;
   const confirmation = props.confirmation;
-  const confirmationName = confirmation?.name ?? `${name}_confirmation`;
+  const confirmationLocalName = confirmation?.name ?? `${localName}_confirmation`;
+  const confirmationName = scope ? scope.scopedName(confirmationLocalName) : confirmationLocalName;
+  const confirmationErrorKey = scope
+    ? scope.errorKey(confirmationLocalName)
+    : confirmationLocalName;
   const passwordRules = (props.passwordRules ?? "") || undefined;
 
   if (hidden) {
@@ -28,7 +37,7 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
   return (
     <div className="grid gap-6">
       <FormFieldFrame
-        error={errors[name]}
+        error={errors[errorKey]}
         helperText={props.helperText ?? undefined}
         label={props.label ?? ""}
         labelAction={props.labelAction ?? undefined}
@@ -38,10 +47,11 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
         <PasswordInput
           autoComplete={props.autoComplete ?? ""}
           autoFocus={props.autoFocus ?? false}
+          data-test={testIdentity(localName)}
           disabled={disabled}
           id={name}
           name={name}
-          onChange={onChange(name)}
+          onChange={onChange(localName)}
           placeholder={props.placeholder ?? ""}
           passwordrules={passwordRules}
           readOnly={readOnly}
@@ -51,17 +61,18 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
 
       {confirmation && (
         <FormFieldFrame
-          error={errors[confirmationName]}
+          error={errors[confirmationErrorKey]}
           label={confirmation.label ?? "Confirm password"}
           name={confirmationName}
           required={required}
         >
           <PasswordInput
             autoComplete="new-password"
+            data-test={testIdentity(confirmationLocalName)}
             disabled={disabled}
             id={confirmationName}
             name={confirmationName}
-            onChange={onChange(confirmationName)}
+            onChange={onChange(confirmationLocalName)}
             placeholder={confirmation.placeholder ?? confirmation.label ?? "Confirm password"}
             passwordrules={passwordRules}
             readOnly={readOnly}

@@ -8,7 +8,7 @@ import { useSeedDefault } from "../use-seed-default";
 
 export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
   const resolvedNode = useResolvedNode(node);
-  const { name, value, error, hidden, required, readOnly, disabled, commit } =
+  const { localName, name, testId, value, error, hidden, required, readOnly, disabled, commit } =
     useControlledField(node);
   const options = useMemo(
     () => (resolvedNode.props as { options?: Option[] }).options ?? [],
@@ -17,7 +17,7 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
   const fallbackValue = options[0]?.value ?? "";
   const selected = value || fallbackValue;
 
-  useSeedDefault(name, selected || undefined);
+  useSeedDefault(localName, selected || undefined);
 
   if (hidden || options.length === 0) {
     return null;
@@ -36,7 +36,7 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
         ariaLabel={node.props.label ?? undefined}
         autoFocus={node.props.autoFocus ?? undefined}
         disabled={readOnly || disabled}
-        name={name}
+        name={testId}
         onSelect={commit}
         options={options}
         tabIndex={node.props.tabIndex ?? undefined}

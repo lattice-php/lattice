@@ -20,7 +20,7 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
     public function definition(Action $action): Action
     {
         return $action
-            ->label('Archive selected')
+            ->label(__('workbench.actions.archive-selected.label'))
             ->method(HttpMethod::Patch)
             ->variant(ButtonVariant::Destructive);
     }
@@ -37,7 +37,7 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
         });
 
         return ActionResult::success(['archived' => $records->count()])
-            ->toast(ToastVariant::Success, "Archived {$records->count()} products.")
+            ->toast(ToastVariant::Success, __('workbench.actions.archive-selected.toast', ['count' => $records->count()]))
             ->reloadComponent('workbench.products');
     }
 }

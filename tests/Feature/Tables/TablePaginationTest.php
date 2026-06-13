@@ -99,7 +99,7 @@ test('eloquent tables can use simple pagination without totals', function () {
         ->assertOk()
         ->assertJsonCount(2, 'data')
         ->assertJsonPath('pagination.mode', 'simple')
-        ->assertJsonMissingPath('pagination.total')
+        ->assertJsonPath('pagination.total', null)
         ->assertJsonPath('pagination.hasMore', true)
         ->assertJsonPath('pagination.nextPage', 2);
 });

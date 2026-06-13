@@ -1,10 +1,11 @@
-import { i18n } from "@lattice-php/lattice/i18n";
+import { i18n, useT } from "@lattice-php/lattice/i18n";
 import { useState } from "react";
+import { WORKBENCH_I18N_NAMESPACE } from "./i18n";
 
 const LANGUAGES = ["en", "de"] as const;
 
-/** Demo control: switches the Lattice chrome language. */
 export function LanguageSwitcher() {
+  const { t } = useT(WORKBENCH_I18N_NAMESPACE);
   const [language, setLanguage] = useState(i18n.language);
 
   return (
@@ -13,6 +14,7 @@ export function LanguageSwitcher() {
         <button
           key={code}
           type="button"
+          aria-label={t(`language.${code}`, code)}
           data-test={`language-${code}`}
           onClick={() => {
             void i18n.changeLanguage(code);
