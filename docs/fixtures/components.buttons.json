@@ -4,6 +4,7 @@
             "align": null,
             "direction": "row",
             "gap": "sm",
+            "justify": null,
             "width": null
         },
         "schema": [

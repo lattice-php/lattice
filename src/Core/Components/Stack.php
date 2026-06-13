@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Core\Components;
 use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Gap;
+use Lattice\Lattice\Core\Enums\Justify;
 use Lattice\Lattice\Core\Enums\Width;
 
 #[Attributes\Component('stack')]
@@ -13,6 +14,8 @@ class Stack extends ContainerComponent
     public ?Gap $gap = null;
 
     public ?Align $align = null;
+
+    public ?Justify $justify = null;
 
     public ?Width $width = null;
 
@@ -40,6 +43,13 @@ class Stack extends ContainerComponent
     public function width(Width $width): static
     {
         $this->width = $width;
+
+        return $this;
+    }
+
+    public function justify(Justify $justify): static
+    {
+        $this->justify = $justify;
 
         return $this;
     }

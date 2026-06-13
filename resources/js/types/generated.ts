@@ -41,6 +41,7 @@ export type Badge = {
 export type BadgeColumnProps = {
   readonly colors: Record<string | number, string> | null;
 };
+export type Breadcrumbs = Record<string, never>;
 export type Builder = {
   addLabel: string | null;
   conditions: {
@@ -278,6 +279,10 @@ export type DateInput = {
 export type DownloadEffect = {
   readonly url: string;
 };
+export type Dropdown = {
+  icon: string | null;
+  label: string;
+};
 export type Effect =
   | ({
       type: "closeModal";
@@ -458,7 +463,19 @@ export type ImageColumnProps = {
   readonly circular: boolean;
   readonly size: number | null;
 };
+export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 export type LayoutNode =
+  | {
+      type: "breadcrumbs";
+      key?: string;
+      props: Breadcrumbs;
+    }
+  | {
+      type: "dropdown";
+      key?: string;
+      props: Dropdown;
+      schema?: Node[];
+    }
   | {
       type: "menu";
       key?: string;
@@ -480,6 +497,12 @@ export type LayoutNode =
       type: "sidebar";
       key?: string;
       props: Sidebar;
+      schema?: Node[];
+    }
+  | {
+      type: "user-menu";
+      key?: string;
+      props: UserMenu;
       schema?: Node[];
     };
 export type Link = {
@@ -694,6 +717,7 @@ export type Stack = {
   align: Align | null;
   direction: string | null;
   gap: Gap | null;
+  justify: Justify | null;
   width: Width | null;
 };
 export type Tab = {
@@ -803,4 +827,9 @@ export type ToastMessage = {
   message: string;
 };
 export type ToastVariant = "success" | "info" | "warning" | "error";
+export type UserMenu = {
+  avatar: string | null;
+  email: string | null;
+  name: string;
+};
 export type Width = "full" | "sm" | "md" | "lg" | "fill";

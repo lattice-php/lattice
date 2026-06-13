@@ -45,4 +45,26 @@ describe("Lattice stack component", () => {
       "gap-1",
     );
   });
+
+  it("renders a column as flex with justification when justify is set", () => {
+    const node = fakeNode({
+      id: "sidebar-body",
+      props: { justify: "between", width: "fill" },
+      type: "stack",
+    });
+
+    render(<StackComponent node={node}>Content</StackComponent>);
+
+    const el = screen.getByText("Content");
+    expect(el).toHaveClass("flex", "flex-col", "justify-between", "flex-1");
+    expect(el).not.toHaveClass("grid");
+  });
+
+  it("still renders a column as a grid when justify is absent", () => {
+    const node = fakeNode({ id: "plain", props: { gap: "md" }, type: "stack" });
+
+    render(<StackComponent node={node}>Content</StackComponent>);
+
+    expect(screen.getByText("Content")).toHaveClass("grid");
+  });
 });

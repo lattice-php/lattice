@@ -1329,6 +1329,7 @@ test('links and horizontal stacks serialize as separate composable primitives', 
                 'gap' => 'xs',
                 'align' => null,
                 'width' => null,
+                'justify' => null,
             ],
             'schema' => [
                 [
@@ -1362,6 +1363,7 @@ test('layout enums serialize to their backed string values', function () {
                 'gap' => 'lg',
                 'width' => 'sm',
                 'direction' => null,
+                'justify' => null,
             ],
         ])
         ->and(wire(Text::make('Centered')->align(Align::Center))['props']['align'])
@@ -1653,7 +1655,8 @@ test('workbench pages serialize package component trees for inertia', function (
             ->where('lattice.title', 'Lattice Workbench')
             ->where('lattice.layout.key', 'app')
             ->where('lattice.layout.schema.0.type', 'stack')
-            ->where('lattice.layout.schema.0.schema.1.schema.0.type', 'outlet')
+            ->where('lattice.layout.schema.0.schema.1.schema.0.type', 'breadcrumbs')
+            ->where('lattice.layout.schema.0.schema.1.schema.1.type', 'outlet')
             ->where('lattice.container', 'default')
             ->where('lattice.schema.0.type', 'stack')
             ->where('lattice.schema.0.key', 'workbench-page')
