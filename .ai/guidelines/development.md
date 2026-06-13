@@ -39,3 +39,14 @@
   interactions, client-side state, navigation, visual toggles, JavaScript behavior, and regressions that only appear in
   the browser.
 - It is acceptable to add stable test attributes when they make browser assertions clearer or less brittle.
+
+## Translation Conventions
+
+- **Kebab-case keys only**: All translation keys use lowercase letters and dashes. Never use underscores or camelCase. Example: `billing.coming-soon`, not `billing.coming_soon`.
+- **Dot notation via nested arrays**: Use nested PHP arrays to create dot-separated keys. Example: `'subscription' => ['heading' => '...']` resolves to `billing.subscription.heading`.
+- **`.title` suffix for notification titles**: When a field has both a title and body text, nest them
+- **`.label` suffix for form labels**: When a field has both a label and helper text, nest them: `'slug' => ['label' => '...', 'help-text' => '...']`. Reference as `__('team.field.slug.label')`.
+- **`.help-text` suffix for helper text**: Use `field-name.help-text` for form helper text. Example: `__('template-designer.margins.help-text')`.
+- **`common.*` prefix for reusable strings**: Shared strings like field labels (`common.field.email`), actions (`common.action.save`), and statuses (`common.field.status`) go in `lang/{locale}/common.php`.
+- **File naming**: Translation files use kebab-case filenames matching the feature. Example: `template-designer.php`, `document-designer.php`.
+- **Both locales**: Always update both `lang/en/` and `lang/de/` when adding or modifying translations.
