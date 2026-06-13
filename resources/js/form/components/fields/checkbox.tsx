@@ -1,22 +1,26 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { fieldTestId } from "@lattice-php/lattice/core/test-id";
 import { Checkbox } from "../base/checkbox";
 import { Label } from "../base/label";
 import { toBoolean } from "../conditions";
-import { useFormContext } from "../context";
+import { useFieldScope } from "../field-scope";
 import { useDependentField } from "../use-dependent-field";
+import { useFieldCommit } from "../use-field-commit";
 import { useSeedDefault } from "../use-seed-default";
-import { useFormValue, useSetFormValue } from "../values";
+import { useFormValue } from "../values";
 
 export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) => {
-  const { clearErrors, precognitive, validate } = useFormContext();
   const { hidden, readOnly, disabled } = useDependentField(node);
-  const name = node.props.name;
-  const setValue = useSetFormValue();
-  const storedValue = useFormValue(name);
+  const localName = node.props.name;
+  const scope = useFieldScope();
+  const name = scope ? scope.scopedName(localName) : localName;
+  const globalValue = useFormValue(localName);
+  const storedValue = scope ? scope.getValue(localName) : globalValue;
+  const { commit } = useFieldCommit();
   const defaultChecked = toBoolean(node.props.value);
   const checked = storedValue !== undefined ? toBoolean(storedValue) : defaultChecked;
 
-  useSeedDefault(name, defaultChecked);
+  useSeedDefault(localName, defaultChecked);
 
   if (hidden) {
     return null;
@@ -28,17 +32,12 @@ export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) 
         <Checkbox
           autoFocus={node.props.autoFocus ?? undefined}
           checked={checked}
+          data-test={fieldTestId(localName)}
           disabled={readOnly || disabled}
           id={name}
           name={name}
           onCheckedChange={(next) => {
-            const value = next === true;
-            setValue(name, value);
-            if (precognitive) {
-              window.requestAnimationFrame(() => validate(name));
-            } else {
-              clearErrors(name);
-            }
+            commit(localName, next === true);
           }}
           tabIndex={node.props.tabIndex ?? undefined}
         />

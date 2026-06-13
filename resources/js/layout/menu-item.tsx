@@ -1,6 +1,7 @@
 import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import type { ReactNode } from "react";
+import { prefixedNodeTestId } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent, Schema } from "@lattice-php/lattice/core/types";
 import { Icon, IconRenderer } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
@@ -22,7 +23,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
   const label = node.props.label;
   const href = node.props.href ?? "";
   const currentPath = usePage().url.split("?")[0];
-  const slug = label.toLowerCase().replace(/\s+/g, "-");
+  const testId = prefixedNodeTestId("menu", node);
 
   const content = (
     <>
@@ -53,7 +54,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
 
     if (collapsed) {
       return (
-        <FlyoutGroup icon={icon} label={label} testId={`menu-${slug}`}>
+        <FlyoutGroup icon={icon} label={label} testId={testId}>
           {children}
         </FlyoutGroup>
       );
@@ -63,7 +64,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
       <CollapsibleItem
         content={content}
         defaultOpen={schemaContainsPath(node.schema, currentPath)}
-        testId={`menu-${slug}`}
+        testId={testId}
       >
         {children}
       </CollapsibleItem>
@@ -85,7 +86,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
           collapsed && "group relative justify-center",
           active && "bg-lt-muted font-medium",
         )}
-        data-test={`menu-${slug}`}
+        data-test={testId}
         href={href}
         method={method}
       >
@@ -104,7 +105,7 @@ function CollapsibleItem({
   children: ReactNode;
   content: ReactNode;
   defaultOpen: boolean;
-  testId: string;
+  testId?: string;
 }) {
   const [open, setOpen] = useState(defaultOpen);
 
@@ -140,7 +141,7 @@ function FlyoutGroup({
   children: ReactNode;
   icon?: string | null;
   label: string;
-  testId: string;
+  testId?: string;
 }) {
   return (
     <li>

@@ -44,18 +44,18 @@ final class AppLayout extends LayoutDefinition
                             ->justify(Justify::Between)
                             ->schema([
                                 Menu::make('sidebar')->items([
-                                    MenuItem::fromPage(HomePage::class)->label(__('workbench.navigation.home'))->icon('house'),
-                                    MenuItem::make(__('workbench.navigation.forms'))->icon('form-input')->children([
-                                        MenuItem::fromPage(ShowcasePage::class)->label(__('workbench.navigation.showcase')),
-                                        MenuItem::fromPage(DependentDemoPage::class)->label(__('workbench.navigation.dependentFields')),
-                                        MenuItem::fromPage(BuilderTableDemoPage::class)->label(__('workbench.navigation.builderTableDemo')),
-                                        MenuItem::fromPage(ProductCreatePage::class)->label(__('workbench.navigation.createProduct')),
+                                    MenuItem::fromPage(HomePage::class)->key('home')->label(__('workbench.navigation.home'))->icon('house'),
+                                    MenuItem::make(__('workbench.navigation.forms'), 'forms')->icon('form-input')->children([
+                                        MenuItem::fromPage(ShowcasePage::class)->key('showcase')->label(__('workbench.navigation.showcase')),
+                                        MenuItem::fromPage(DependentDemoPage::class)->key('dependent-fields')->label(__('workbench.navigation.dependentFields')),
+                                        MenuItem::fromPage(BuilderTableDemoPage::class)->key('builder-table-demo')->label(__('workbench.navigation.builderTableDemo')),
+                                        MenuItem::fromPage(ProductCreatePage::class)->key('create-product')->label(__('workbench.navigation.createProduct')),
                                     ]),
-                                    MenuItem::make(__('workbench.navigation.tables'))->icon(Icon::Table)->children([
-                                        MenuItem::fromPage(ProductsPage::class)->label(__('workbench.navigation.products')),
-                                        MenuItem::fromPage(TablesPage::class)->label(__('workbench.navigation.paginationModes')),
+                                    MenuItem::make(__('workbench.navigation.tables'), 'tables')->icon(Icon::Table)->children([
+                                        MenuItem::fromPage(ProductsPage::class)->key('products')->label(__('workbench.navigation.products')),
+                                        MenuItem::fromPage(TablesPage::class)->key('pagination-modes')->label(__('workbench.navigation.paginationModes')),
                                     ]),
-                                    MenuItem::fromPage(TabsPage::class)->label(__('workbench.navigation.tabs'))->icon('spark'),
+                                    MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs'))->icon('spark'),
                                 ]),
                                 Dropdown::make('user-menu')
                                     ->placement(Placement::Top)
@@ -70,7 +70,7 @@ final class AppLayout extends LayoutDefinition
                                             ]),
                                     ])
                                     ->items([
-                                        MenuItem::make(__('workbench.navigation.logOut'))->href('/logout')->method(HttpMethod::Post),
+                                        MenuItem::make(__('workbench.navigation.logOut'), 'log-out')->href('/logout')->method(HttpMethod::Post),
                                     ]),
                             ]),
                     ]),

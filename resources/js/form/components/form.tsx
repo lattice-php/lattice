@@ -131,6 +131,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
           value={{
             action,
             clearErrors: (field) => clearErrors(field),
+            componentId: node.id,
             componentRef,
             errors: errors as Record<string, string | undefined>,
             fieldLabels,

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Icon } from "@lattice-php/lattice/icons";
 import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
+import { nodeIdentity, prefixedTestId } from "@lattice-php/lattice/core/test-id";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 
@@ -31,7 +32,8 @@ const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
   const rememberState = node.props.rememberState !== false;
   const headerActions = getNodes(node.props.headerActions);
   const { fallback, missingComponent, registry } = useRendererContext();
-  const storageKey = `lattice:section:${node.id ?? "default"}`;
+  const identity = nodeIdentity(node);
+  const storageKey = `lattice:section:${identity ?? "default"}`;
 
   const [collapsed, setCollapsed] = useState(() =>
     readStored(storageKey, collapsible && rememberState, node.props.collapsed === true),
@@ -64,7 +66,7 @@ const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
               <button
                 aria-expanded={!isCollapsed}
                 aria-label={isCollapsed ? "Expand section" : "Collapse section"}
-                data-test={`section-toggle-${node.id ?? "default"}`}
+                data-test={prefixedTestId("section-toggle", identity) ?? "section-toggle-default"}
                 className="mt-0.5 inline-flex shrink-0 items-center rounded-md p-0.5 text-lt-muted-fg transition-colors hover:bg-lt-muted hover:text-lt-fg"
                 onClick={toggle}
                 type="button"

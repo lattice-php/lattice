@@ -3,6 +3,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { nodeTestId } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import type { ButtonVariant } from "@lattice-php/lattice/types/generated";
 
@@ -62,17 +63,18 @@ function Button({
 const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
   const { href, label } = node.props;
   const variant = node.props.variant ?? "default";
+  const testId = nodeTestId(node);
 
   if (href) {
     return (
-      <Button asChild variant={variant} size="lg">
+      <Button asChild data-test={testId} variant={variant} size="lg">
         <Link href={href}>{label}</Link>
       </Button>
     );
   }
 
   return (
-    <Button type={node.props.buttonType} variant={variant} size="lg">
+    <Button data-test={testId} type={node.props.buttonType} variant={variant} size="lg">
       {label}
     </Button>
   );

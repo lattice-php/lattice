@@ -12,7 +12,7 @@ export function FormSubmitButton({
   summaryLabel: string;
   variant?: ButtonVariant;
 }) {
-  const { errors, fieldLabels, processing } = useFormContext();
+  const { componentId, errors, fieldLabels, processing } = useFormContext();
 
   const invalidFields = Object.entries(errors)
     .filter(([, message]) => Boolean(message))
@@ -21,7 +21,13 @@ export function FormSubmitButton({
 
   return (
     <span className="group relative inline-flex flex-col">
-      <Button disabled={processing || hasErrors} type="submit" variant={variant}>
+      <Button
+        data-lattice-form={componentId}
+        data-test="form-submit"
+        disabled={processing || hasErrors}
+        type="submit"
+        variant={variant}
+      >
         {processing && <Spinner />}
         {label}
       </Button>
