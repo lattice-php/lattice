@@ -10,6 +10,7 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Core\Contracts\Discoverable;
 use Lattice\Lattice\Core\Contracts\DiscoversDefinitions;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Forms\FormDefinition;
@@ -19,6 +20,7 @@ use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Http\PageContract;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
+use Lattice\Lattice\Pages\PageRegistry;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
 
@@ -31,6 +33,7 @@ final class LatticeRegistry
         private readonly FormRegistry $forms,
         private readonly FragmentRegistry $fragments,
         private readonly LayoutRegistry $layouts,
+        private readonly PageRegistry $pages,
         private readonly Router $router,
         private readonly TableRegistry $tables,
     ) {}
@@ -83,6 +86,14 @@ final class LatticeRegistry
         $this->layouts->register($layouts);
     }
 
+    /**
+     * @param  class-string|array<int, class-string>  $pages
+     */
+    public function pages(string|array $pages): void
+    {
+        $this->pages->register($pages);
+    }
+
     public function layoutRegistry(): LayoutRegistry
     {
         return $this->layouts;
@@ -97,11 +108,22 @@ final class LatticeRegistry
                 $registry->register($configured);
             }
         }
+
+        $configuredPages = config('lattice.pages.registered', []);
+
+        if (is_array($configuredPages) && $configuredPages !== []) {
+            $this->pages->register($configuredPages);
+        }
     }
 
     public function discover(string $path, string $namespace): void
     {
-        $registries = $this->discoverableRegistries();
+        /** @var array<string, Discoverable> $registries */
+        $registries = array_merge(
+            $this->discoverableRegistries(),
+            ['pages' => $this->pages],
+        );
+
         $definitions = $this->discovery->discover($path, $namespace, array_values($registries));
 
         foreach ($definitions as $group => $classes) {

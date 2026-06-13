@@ -24,6 +24,7 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Layouts\LayoutRegistry;
+use Lattice\Lattice\Pages\PageRegistry;
 use Lattice\Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Tables\TableRegistry;
@@ -58,6 +59,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(LayoutRegistry::class);
         $this->app->singleton(ActionRegistry::class);
         $this->app->singleton(BulkActionRegistry::class);
+        $this->app->singleton(PageRegistry::class);
         $this->app->singleton(DefinitionDiscovery::class);
         $this->app->alias(DefinitionDiscovery::class, DiscoversDefinitions::class);
         $this->app->singleton(ComponentReferenceSigner::class);

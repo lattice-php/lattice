@@ -7,6 +7,7 @@ use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
 use Lattice\Lattice\Attributes\ComponentAttribute;
 use Lattice\Lattice\Core\Contracts\DefinitionRegistry as DefinitionRegistryContract;
+use Lattice\Lattice\Core\Contracts\Discoverable;
 use Lattice\Lattice\Core\Exceptions\UnknownLatticeComponent;
 use Spatie\Attributes\Attributes;
 
@@ -15,7 +16,7 @@ use Spatie\Attributes\Attributes;
  *
  * @implements DefinitionRegistryContract<TDefinition>
  */
-abstract class DefinitionRegistry implements DefinitionRegistryContract
+abstract class DefinitionRegistry implements DefinitionRegistryContract, Discoverable
 {
     /**
      * @var array<string, class-string<TDefinition>>

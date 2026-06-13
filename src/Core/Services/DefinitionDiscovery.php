@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Services;
 
+use Lattice\Lattice\Core\Contracts\Discoverable;
 use Lattice\Lattice\Core\Contracts\DiscoversDefinitions;
-use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
 use ReflectionClass;
 use Spatie\Attributes\Attributes;
@@ -46,7 +46,7 @@ final class DefinitionDiscovery implements DiscoversDefinitions
     }
 
     /**
-     * @param  array<int, DefinitionRegistry<*>>  $registries
+     * @param  array<int, Discoverable>  $registries
      * @return array<string, array<int, class-string>>
      */
     public function discover(string $path, string $namespace, array $registries): array
