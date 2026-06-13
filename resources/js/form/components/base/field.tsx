@@ -26,6 +26,9 @@ export function FormFieldFrame({
   if (bare) {
     return (
       <div className="grid gap-1">
+        <Label htmlFor={name} className="sr-only">
+          {label}
+        </Label>
         {children}
         <InputError message={error} />
       </div>
