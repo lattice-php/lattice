@@ -73,15 +73,7 @@ final readonly class FileUploadItem implements ValidationRule
             return;
         }
 
-        $mime = (string) $file->getMimeType();
-
-        if ($this->image && ! str_starts_with($mime, 'image/')) {
-            $fail('The :attribute must be an image.');
-        }
-
-        if ($this->acceptedTypes !== null && ! $this->mimeAccepted($mime)) {
-            $fail('The :attribute has an unsupported file type.');
-        }
+        $this->validateMime((string) $file->getMimeType(), $fail);
 
         if ($this->maxSizeKb !== null && $file->getSize() > $this->maxSizeKb * 1024) {
             $fail('The :attribute is too large.');
@@ -96,8 +88,33 @@ final readonly class FileUploadItem implements ValidationRule
             return;
         }
 
-        if (! Storage::disk($this->disk)->exists($key)) {
+        $disk = Storage::disk($this->disk);
+
+        if (! $disk->exists($key)) {
             $fail('The :attribute upload could not be found.');
+
+            return;
+        }
+
+        if ($this->maxSizeKb !== null && $disk->size($key) > $this->maxSizeKb * 1024) {
+            $fail('The :attribute is too large.');
+        }
+
+        $mime = (string) $disk->mimeType($key);
+
+        if ($mime !== '') {
+            $this->validateMime($mime, $fail);
+        }
+    }
+
+    private function validateMime(string $mime, Closure $fail): void
+    {
+        if ($this->image && ! str_starts_with($mime, 'image/')) {
+            $fail('The :attribute must be an image.');
+        }
+
+        if ($this->acceptedTypes !== null && ! $this->mimeAccepted($mime)) {
+            $fail('The :attribute has an unsupported file type.');
         }
     }
 
