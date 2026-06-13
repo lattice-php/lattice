@@ -57,6 +57,7 @@ export type Builder = {
   helperText: string | null;
   hidden: boolean | null;
   label: string | null;
+  layout: string;
   maxItems: number | null;
   minItems: number | null;
   name: string;
@@ -636,6 +637,7 @@ export type Repeater = {
   hidden: boolean | null;
   itemLabel: string | null;
   label: string | null;
+  layout: string;
   maxItems: number | null;
   minItems: number | null;
   name: string;
