@@ -7,11 +7,13 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use JsonSerializable;
+use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Filterable;
 use Lattice\Lattice\Tables\Columns\Sortable;
 
+#[TypeScript]
 final readonly class TableQuery implements JsonSerializable
 {
     /**
@@ -19,10 +21,10 @@ final readonly class TableQuery implements JsonSerializable
      * @param  array<int, TableSort>  $sorts
      */
     private function __construct(
-        private array $filters,
-        private array $sorts,
-        private int $page,
-        private int $perPage,
+        public array $filters,
+        public array $sorts,
+        public int $page,
+        public int $perPage,
     ) {}
 
     public static function empty(int $defaultPerPage = 25): self
@@ -53,32 +55,6 @@ final readonly class TableQuery implements JsonSerializable
     private static function clampPerPage(int $perPage): int
     {
         return max(1, min(100, $perPage));
-    }
-
-    /**
-     * @return array<int, FilterClause>
-     */
-    public function filters(): array
-    {
-        return $this->filters;
-    }
-
-    /**
-     * @return array<int, TableSort>
-     */
-    public function sorts(): array
-    {
-        return $this->sorts;
-    }
-
-    public function page(): int
-    {
-        return $this->page;
-    }
-
-    public function perPage(): int
-    {
-        return $this->perPage;
     }
 
     /**

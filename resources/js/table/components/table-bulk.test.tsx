@@ -102,7 +102,17 @@ describe("table bulk actions", () => {
           page: 1,
           perPage: 25,
         },
-        pagination: { total: 50, currentPage: 1, lastPage: 2, mode: "table" },
+        pagination: {
+          mode: "table",
+          currentPage: 1,
+          lastPage: 2,
+          perPage: 25,
+          total: 50,
+          from: 1,
+          to: 50,
+          hasMore: false,
+          nextPage: null,
+        },
       },
     } satisfies TableNode;
 

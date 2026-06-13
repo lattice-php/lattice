@@ -1,5 +1,9 @@
+import type { I18nConfig } from "@lattice-php/lattice/types/generated";
 import HttpBackend from "i18next-http-backend";
 import { ensureI18n, i18n } from "./instance";
+
+/** The i18n settings the backend shares to the frontend (Inertia `lattice.i18n`). */
+export type { I18nConfig };
 
 /** laravel-i18next's namespaced routes; an app behind a custom prefix overrides them via {@link BackendOptions}. */
 const DEFAULT_LOAD_PATH = "/locales/{{lng}}/{{ns}}.json";
@@ -14,12 +18,6 @@ export type BackendOptions = {
   saveMissing?: boolean;
   /** Extra request headers, e.g. the CSRF token for the saveMissing POST. */
   customHeaders?: () => Record<string, string>;
-};
-
-/** The i18n settings the backend shares to the frontend (Inertia `lattice.i18n`). */
-export type I18nConfig = {
-  enabled: boolean;
-  saveMissing: boolean;
 };
 
 /** Apply the i18n config shared from the backend; wires the HTTP backend only when `enabled`. */

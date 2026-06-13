@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { TableNode } from "../types";
+import type { TableNode, TablePagination } from "../types";
 import type { ColumnData } from "@lattice-php/lattice/types/generated";
 import TableComponent from "./table";
 
@@ -15,6 +15,21 @@ function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): 
     columns: null,
     props: null,
     ...partial,
+  };
+}
+
+function pagination(overrides: Partial<TablePagination> = {}): TablePagination {
+  return {
+    mode: "none",
+    currentPage: null,
+    lastPage: null,
+    perPage: null,
+    total: null,
+    from: null,
+    to: null,
+    hasMore: false,
+    nextPage: null,
+    ...overrides,
   };
 }
 
@@ -441,9 +456,7 @@ describe("Lattice table component", () => {
         ],
         data: [{ id: 1, name: "Taylor" }],
         endpoint: "/lattice/tables/settings.passkeys",
-        pagination: {
-          mode: "none",
-        },
+        pagination: pagination(),
         state: {
           filters: [],
           page: 1,
@@ -529,13 +542,13 @@ describe("Lattice table component", () => {
         ],
         data: [{ id: 1, name: "Taylor" }],
         endpoint: "/lattice/tables/workbench.users",
-        pagination: {
-          currentPage: 1,
-          hasMore: true,
+        pagination: pagination({
           mode: "infinite",
-          nextPage: 2,
+          currentPage: 1,
           perPage: 1,
-        },
+          hasMore: true,
+          nextPage: 2,
+        }),
         state: {
           filters: [],
           page: 1,
@@ -587,10 +600,7 @@ describe("Lattice table component", () => {
           }),
         ],
         data: [{ id: 1, name: "Taylor" }],
-        pagination: {
-          mode: "none",
-          total: 1,
-        },
+        pagination: pagination({ total: 1 }),
         state: {
           filters: [],
           page: 1,
@@ -718,9 +728,7 @@ describe("Lattice table component", () => {
         data: [],
         endpoint: "/lattice/tables/workbench.users.none",
         lazy: true,
-        pagination: {
-          mode: "none",
-        },
+        pagination: pagination(),
         state: {
           filters: [],
           page: 1,

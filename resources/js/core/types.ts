@@ -1,5 +1,6 @@
 import type { ComponentType as ReactComponentType, ReactNode } from "react";
 import type {
+  I18nConfig,
   Node as WireNode,
   NodeType,
   Option,
@@ -83,9 +84,17 @@ export type LayoutPayload = {
   schema: Schema;
 };
 
+/**
+ * The page payload the server hydrates onto `lattice` (see PHP `Page::toArray`).
+ * Hand-written rather than generated: its `schema`/`layout.schema` are component
+ * trees serialized eagerly during the request (to fire side effects before the
+ * final encode), so they cannot be derived from a value object as typed `Node[]`.
+ * `i18n` is the generated single source of truth shared with the i18n backend.
+ */
 export type PagePayload = {
   breadcrumbs: PageBreadcrumb[];
   container: PageContainer;
+  i18n: I18nConfig;
   layout: LayoutPayload | null;
   schema: Schema;
   title: string | null;
