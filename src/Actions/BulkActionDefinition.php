@@ -10,9 +10,8 @@ use Lattice\Lattice\Actions\Concerns\InteractsWithActionForm;
 use Lattice\Lattice\Actions\Contracts\InteractsWithForm;
 use Lattice\Lattice\Actions\Contracts\ProvidesBulkAction;
 use Lattice\Lattice\Core\Definition;
-use Lattice\Lattice\Forms\Contracts\HandlesUploads;
 
-abstract class BulkActionDefinition extends Definition implements HandlesUploads, InteractsWithForm, ProvidesBulkAction
+abstract class BulkActionDefinition extends Definition implements InteractsWithForm, ProvidesBulkAction
 {
     use InteractsWithActionForm;
 
