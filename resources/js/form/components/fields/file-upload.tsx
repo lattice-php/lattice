@@ -1,6 +1,7 @@
 import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { useT } from "@lattice-php/lattice/i18n";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
@@ -27,6 +28,7 @@ type SignResponse = {
 };
 
 export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ node }) => {
+  const { t } = useT("lattice");
   const props = node.props;
   const { hidden, required, readOnly, disabled } = useDependentField(node);
   const { action, componentRef, errors } = useFormContext();
@@ -184,7 +186,7 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
           onClick={() => fileInputRef.current?.click()}
           type="button"
         >
-          Drop files here or click to browse
+          {t("file-upload.dropzone", "Drop files here or click to browse")}
         </button>
 
         <ul className="flex flex-col gap-2">
@@ -192,14 +194,16 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
             <li className="flex items-center justify-between gap-3 text-sm" key={item.id}>
               <span data-test={testIdentity(`${name}-item`)}>{item.name}</span>
               {item.status === "uploading" && <span>{item.progress}%</span>}
-              {item.status === "error" && <span className="text-lt-danger">Failed</span>}
+              {item.status === "error" && (
+                <span className="text-lt-danger">{t("file-upload.failed", "Failed")}</span>
+              )}
               <button
-                aria-label={`Remove ${item.name}`}
+                aria-label={t("file-upload.remove", "Remove {{name}}", { name: item.name })}
                 disabled={locked}
                 onClick={() => removeItem(item.id)}
                 type="button"
               >
-                Remove
+                {t("file-upload.remove-label", "Remove")}
               </button>
               {signed && item.key && item.status === "ready" && (
                 <input name={fieldName} type="hidden" value={item.key} />
