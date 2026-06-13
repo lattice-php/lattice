@@ -1,0 +1,275 @@
+<?php
+declare(strict_types=1);
+
+use Inertia\Testing\AssertableInertia;
+use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Support\Testing\Assertions\FormAssertions;
+use Symfony\Component\HttpFoundation\Response;
+use Workbench\App\Forms\ProductForm;
+use Workbench\App\Models\Product;
+
+use function Pest\Laravel\get;
+use function Pest\Laravel\patch;
+use function Pest\Laravel\post;
+use function Pest\Laravel\withoutVite;
+
+/**
+ * @param  array<string, mixed>  $component
+ * @param  array<string, string>  $extra
+ * @return array<string, string>
+ */
+function productHeaders(array $component, array $extra = []): array
+{
+    return ['X-Lattice-Ref' => componentRef($component), ...$extra];
+}
+
+test('forms serialize initial state for bound edit values', function () {
+    $form = Form::make('product-form')
+        ->fill([
+            'name' => 'Desk Lamp',
+            'sku' => 'LAMP-001',
+        ])
+        ->schema([
+            TextInput::make('name', 'Name'),
+        ]);
+
+    $this->assertLatticeComponent($form)
+        ->assertHasForm('product-form')
+        ->form('product-form', fn (FormAssertions $f) => $f
+            ->field('name')->assertInitialValue('Desk Lamp'));
+
+    expect(wire($form)['props']['state'])->toBe([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+    ]);
+});
+
+test('forms can enable precognitive validation with a delay', function () {
+    $form = wire(Form::make('product-form')
+        ->precognitive(650));
+
+    expect($form['props']['precognitive'])->toBeTrue()
+        ->and($form['props']['validationTimeout'])->toBe(650);
+});
+
+test('the product index page lists products and links to creation', function () {
+    Product::factory()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+    ]);
+
+    withoutVite();
+
+    get('/products')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('lattice/page', false)
+            ->where('lattice.title', 'Products')
+            ->where('lattice.schema.0.schema.0.schema.1.props.href', '/products/create')
+            ->where('lattice.schema.0.schema.1.id', 'workbench.products')
+            ->where('lattice.schema.0.schema.1.props.data.0.name', 'Desk Lamp')
+        );
+});
+
+test('the product form creates products', function () {
+    Lattice::forms([ProductForm::class]);
+
+    $form = wire(Form::use(ProductForm::class));
+
+    post('/lattice/forms/workbench.products.form', [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'price' => '49.99',
+        'status' => 'active',
+    ], productHeaders($form))
+        ->assertRedirect('/products');
+
+    $product = Product::query()->where('sku', 'LAMP-001')->first();
+
+    expect($product)->not->toBeNull()
+        ->and($product?->name)->toBe('Desk Lamp')
+        ->and($product?->price)->toBe('49.99')
+        ->and($product?->status)->toBe('active');
+});
+
+test('the product edit page binds existing product state', function () {
+    $product = Product::factory()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'price' => '49.99',
+        'status' => 'draft',
+    ]);
+
+    withoutVite();
+
+    get("/products/{$product->getKey()}/edit")
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('lattice/page', false)
+            ->where('lattice.title', 'Edit Product')
+            ->where('lattice.schema.0.schema.1.props.method', 'patch')
+            ->where('lattice.schema.0.schema.1.props.submitLabel', 'Save product')
+            ->where('lattice.schema.0.schema.1.props.state.name', 'Desk Lamp')
+            ->where('lattice.schema.0.schema.1.props.state.sku', 'LAMP-001')
+            ->where('lattice.schema.0.schema.1.props.state.price', '49.99')
+            ->where('lattice.schema.0.schema.1.props.state.status', 'draft')
+        );
+});
+
+test('the product form updates the trusted product from sealed context', function () {
+    Lattice::forms([ProductForm::class]);
+
+    $trustedProduct = Product::factory()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'price' => '49.99',
+        'status' => 'draft',
+    ]);
+    $tamperedProduct = Product::factory()->create([
+        'name' => 'Shelf',
+        'sku' => 'SHELF-001',
+        'price' => '89.00',
+        'status' => 'active',
+    ]);
+
+    $form = wire(Form::use(ProductForm::class)
+        ->context(['product_id' => $trustedProduct->getKey()]));
+
+    patch('/lattice/forms/workbench.products.form', [
+        'product_id' => $tamperedProduct->getKey(),
+        'name' => 'Updated Lamp',
+        'sku' => 'LAMP-002',
+        'price' => '59.99',
+        'status' => 'active',
+    ], productHeaders($form))
+        ->assertRedirect('/products');
+
+    $trustedProduct->refresh();
+    $tamperedProduct->refresh();
+
+    expect($trustedProduct->name)->toBe('Updated Lamp')
+        ->and($trustedProduct->sku)->toBe('LAMP-002')
+        ->and($trustedProduct->price)->toBe('59.99')
+        ->and($trustedProduct->status)->toBe('active')
+        ->and($tamperedProduct->name)->toBe('Shelf')
+        ->and($tamperedProduct->sku)->toBe('SHELF-001');
+});
+
+test('the product form validates required fields', function () {
+    Lattice::forms([ProductForm::class]);
+
+    $form = wire(Form::use(ProductForm::class));
+
+    post('/lattice/forms/workbench.products.form', [
+        'name' => '',
+        'sku' => '',
+        'price' => 'invalid',
+        'status' => 'retired',
+    ], productHeaders($form))
+        ->assertSessionHasErrors([
+            'name',
+            'sku',
+            'price',
+            'status',
+        ])
+        ->assertStatus(Response::HTTP_FOUND);
+});
+
+test('the product form returns precognitive validation errors without creating products', function () {
+    Lattice::forms([ProductForm::class]);
+
+    $form = wire(Form::use(ProductForm::class));
+
+    post('/lattice/forms/workbench.products.form', [
+        'name' => '',
+        'sku' => '',
+        'price' => 'invalid',
+        'status' => 'retired',
+    ], productHeaders($form, [
+        'Accept' => 'application/json',
+        'Precognition' => 'true',
+        'Precognition-Validate-Only' => 'name,price',
+    ]))
+        ->assertHeader('Precognition', 'true')
+        ->assertJsonValidationErrors(['name', 'price'])
+        ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+    expect(Product::query()->count())->toBe(0);
+});
+
+test('the product form accepts valid precognitive validation without creating products', function () {
+    Lattice::forms([ProductForm::class]);
+
+    $form = wire(Form::use(ProductForm::class));
+
+    post('/lattice/forms/workbench.products.form', [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'price' => '49.99',
+        'status' => 'active',
+    ], productHeaders($form, [
+        'Accept' => 'application/json',
+        'Precognition' => 'true',
+    ]))
+        ->assertHeader('Precognition', 'true')
+        ->assertHeader('Precognition-Success', 'true')
+        ->assertNoContent();
+
+    expect(Product::query()->count())->toBe(0);
+});
+
+test('the product form validates edit uniqueness from sealed context during precognition', function () {
+    Lattice::forms([ProductForm::class]);
+
+    $trustedProduct = Product::factory()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'price' => '49.99',
+        'status' => 'draft',
+    ]);
+    Product::factory()->create([
+        'name' => 'Shelf',
+        'sku' => 'SHELF-001',
+        'price' => '89.00',
+        'status' => 'active',
+    ]);
+
+    $form = wire(Form::use(ProductForm::class)
+        ->context(['product_id' => $trustedProduct->getKey()]));
+
+    patch('/lattice/forms/workbench.products.form', [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'price' => '49.99',
+        'status' => 'active',
+    ], productHeaders($form, [
+        'Accept' => 'application/json',
+        'Precognition' => 'true',
+        'Precognition-Validate-Only' => 'sku',
+    ]))
+        ->assertHeader('Precognition', 'true')
+        ->assertHeader('Precognition-Success', 'true')
+        ->assertNoContent();
+
+    patch('/lattice/forms/workbench.products.form', [
+        'name' => 'Desk Lamp',
+        'sku' => 'SHELF-001',
+        'price' => '49.99',
+        'status' => 'active',
+    ], productHeaders($form, [
+        'Accept' => 'application/json',
+        'Precognition' => 'true',
+        'Precognition-Validate-Only' => 'sku',
+    ]))
+        ->assertHeader('Precognition', 'true')
+        ->assertJsonValidationErrors(['sku'])
+        ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+    $trustedProduct->refresh();
+
+    expect($trustedProduct->sku)->toBe('LAMP-001')
+        ->and($trustedProduct->status)->toBe('draft');
+});
