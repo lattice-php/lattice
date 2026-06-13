@@ -99,18 +99,18 @@ function latticeIconOptions(options: LatticeViteOptions): SvgSpriteOptions | nul
     return null;
   }
 
-  const { appRoot, root } = latticeRoots(options);
+  const { root } = latticeRoots(options);
   const iconOptions = icons === true ? {} : icons;
   const { dirs = [], dts, ...spriteOptions } = iconOptions;
   const defaultTypes = {
-    file: path.resolve(appRoot, "resources/js/types/sprite-icons.ts"),
+    file: "resources/js/types/sprite-icons.ts",
     augmentModule: "@lattice-php/lattice",
     augmentInterface: "KnownIcons",
   };
 
   return {
     ...spriteOptions,
-    iconDirs: [path.resolve(root, "resources/icons"), ...resolveAppPaths(appRoot, dirs)],
+    iconDirs: [path.resolve(root, "resources/icons"), ...dirs],
     ...(dts === false ? {} : { dts: dts ?? defaultTypes }),
   };
 }
@@ -120,8 +120,4 @@ function latticeRoots(options: LatticeViteOptions): LatticeRoots {
   const root = options.root ?? path.resolve(appRoot, "vendor/lattice-php/lattice");
 
   return { appRoot, root };
-}
-
-function resolveAppPaths(appRoot: string, paths: string[]): string[] {
-  return paths.map((item) => (path.isAbsolute(item) ? item : path.resolve(appRoot, item)));
 }
