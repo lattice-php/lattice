@@ -109,7 +109,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
             return;
         }
 
-        foreach (Lattice::pages()->all() as $page) {
+        foreach (Lattice::pageRegistry()->all() as $page) {
             Route::get($page->route, [$page->class, 'render'])
                 ->name($page->name)
                 ->middleware($page->middleware);

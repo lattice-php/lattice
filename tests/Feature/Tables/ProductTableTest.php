@@ -134,3 +134,26 @@ test('the products table rejects a filter operator not allowed for the column', 
         'Operator [contains] is not allowed for filter [featured] on table [workbench.products].',
     );
 });
+
+test('the products table rejects invalid boolean and date filter values', function (string $filter, string $message) {
+    $columns = (new ProductsTable)->columns();
+
+    expect(fn () => TableQuery::fromRequest(
+        Request::create('/', 'GET', ['filter' => $filter]),
+        $columns,
+        'workbench.products',
+    ))->toThrow(InvalidTableQuery::class, $message);
+})->with([
+    'boolean' => [
+        'featured:eq:maybe',
+        'Value [maybe] is not valid for filter [featured] on table [workbench.products].',
+    ],
+    'date equals' => [
+        'updated_at:eq:not-a-date',
+        'Value [not-a-date] is not valid for filter [updated_at] on table [workbench.products].',
+    ],
+    'date before' => [
+        'updated_at:before:2026-99-99',
+        'Value [2026-99-99] is not valid for filter [updated_at] on table [workbench.products].',
+    ],
+]);

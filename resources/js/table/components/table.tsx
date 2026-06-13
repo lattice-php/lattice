@@ -1,6 +1,7 @@
 import { type ReactNode, useMemo } from "react";
 import { useT } from "@lattice-php/lattice/i18n";
 import { useColumnResizing } from "@lattice-php/lattice/core/use-column-resizing";
+import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { TableNode } from "../types";
 import { getBulkActions } from "../bulk";
 import { flattenColumns, getRowActions, getRowKey } from "../payload";
@@ -72,11 +73,16 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     [hasActions, hasBulkActions],
   );
   const resizingEnabled = node.props?.resizableColumns === true;
+  const resizeStorageIdentity = nodeIdentity(node);
   const { getResizeHandleProps, gridTemplateColumns } = useColumnResizing({
     columns: sizingColumns,
     enabled: resizingEnabled,
     leadingTracks: utilityTracks.leadingTracks,
     showIndicator: node.props?.resizeIndicator === true,
+    storageKey:
+      resizingEnabled && resizeStorageIdentity
+        ? `lattice:table-columns:${resizeStorageIdentity}`
+        : undefined,
     trailingTracks: utilityTracks.trailingTracks,
   });
 

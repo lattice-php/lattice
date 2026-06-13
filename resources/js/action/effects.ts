@@ -35,14 +35,17 @@ export function dispatchActionEffects(effects: ActionEffect[]): void {
   for (const effect of effects) {
     if (effect.type === "reloadPage") {
       router.reload();
+      continue;
     }
 
     if (effect.type === "redirect") {
       router.visit(effect.url);
+      continue;
     }
 
     if (effect.type === "download") {
       triggerDownload(effect.url);
+      continue;
     }
 
     window.dispatchEvent(new CustomEvent(eventNames[effect.type], { detail: effect }));

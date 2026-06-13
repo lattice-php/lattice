@@ -51,3 +51,60 @@ it('copies a cell value to the clipboard', function (): void {
         ->assertSee('Copied')
         ->assertNoSmoke();
 });
+
+it('persists resized column widths until the column keys change', function (): void {
+    seedWorkbenchUsers();
+
+    $page = visit('/');
+
+    $page->resize(1280, 800)
+        ->script('() => window.localStorage.clear()');
+
+    $page->assertPresent('[aria-label="Resize Name"]')
+        ->keys('[aria-label="Resize Name"]', 'ArrowRight')
+        ->assertNoJavaScriptErrors();
+
+    expect($page->script(<<<'JS'
+        () => JSON.parse(window.localStorage.getItem('lattice:table-columns:workbench.users'))
+    JS))->toEqual([
+        'columns' => ['name', 'email', 'created_at', 'updated_at'],
+        'overrides' => [
+            'name' => 184,
+        ],
+    ]);
+
+    $page->refresh();
+
+    $page->assertPresent('[aria-label="Resize Name"]');
+
+    expect(workbenchUsersTableColumns($page))->toStartWith('184px ');
+
+    $page->script(<<<'JS'
+        () => window.localStorage.setItem('lattice:table-columns:workbench.users', JSON.stringify({
+            columns: ['name'],
+            overrides: { name: 240 },
+        }))
+    JS);
+
+    $page->refresh();
+
+    $page->assertPresent('[aria-label="Resize Name"]');
+
+    expect($page->script(
+        "() => window.localStorage.getItem('lattice:table-columns:workbench.users')",
+    ))->toBeNull()
+        ->and(workbenchUsersTableColumns($page))->toStartWith('minmax(8rem, 1fr) ');
+
+    $page->assertNoSmoke();
+});
+
+function workbenchUsersTableColumns(mixed $page): string
+{
+    return (string) $page->script(<<<'JS'
+        () => {
+            const row = document.querySelector('[data-lattice-component="workbench.users"] [role="row"][style*="--lattice-table-columns"]');
+
+            return getComputedStyle(row).getPropertyValue('--lattice-table-columns').trim();
+        }
+    JS);
+}

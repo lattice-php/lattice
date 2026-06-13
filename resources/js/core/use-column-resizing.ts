@@ -25,22 +25,35 @@ type ResizeHandleProps = HTMLAttributes<HTMLDivElement> & {
   tabIndex: number;
 };
 
+type StoredColumnWidths = {
+  columns: string[];
+  overrides: Record<string, number>;
+};
+
+const emptyTracks: string[] = [];
+
 export function useColumnResizing({
   columnGapPx = 0,
   columns,
   enabled,
-  leadingTracks = [],
+  leadingTracks = emptyTracks,
   showIndicator = false,
-  trailingTracks = [],
+  storageKey,
+  trailingTracks = emptyTracks,
 }: {
   columnGapPx?: number;
   columns: SizableColumn[];
   enabled: boolean;
   leadingTracks?: string[];
   showIndicator?: boolean;
+  storageKey?: string;
   trailingTracks?: string[];
 }) {
-  const [overrides, setOverrides] = useState<Record<string, number | undefined>>({});
+  const columnKeys = useMemo(() => columns.map((column) => column.key), [columns]);
+  const [overrides, setOverrides] = useState<Record<string, number | undefined>>(() =>
+    readStoredOverrides(storageKey, columns),
+  );
+  const overridesRef = useRef(overrides);
   const drag = useRef<DragState | null>(null);
 
   const gridTemplateColumns = useMemo(
@@ -54,28 +67,45 @@ export function useColumnResizing({
     [columns, enabled, leadingTracks, overrides, trailingTracks],
   );
 
-  const setColumnWidth = useCallback((column: SizableColumn, width: number, maxWidth?: number) => {
-    setOverrides((current) => ({
-      ...current,
-      [column.key]: Math.min(
-        maxWidth ?? maxColumnWidthPx(column),
-        Math.max(minColumnWidthPx(column), width),
-      ),
-    }));
-  }, []);
+  const setColumnWidth = useCallback(
+    (column: SizableColumn, width: number, maxWidth?: number) => {
+      setOverrides((current) => {
+        const next = {
+          ...current,
+          [column.key]: Math.min(
+            maxWidth ?? maxColumnWidthPx(column),
+            Math.max(minColumnWidthPx(column), width),
+          ),
+        };
 
-  const resetColumnWidth = useCallback((column: SizableColumn) => {
-    setOverrides((current) => {
-      const next = { ...current };
-      delete next[column.key];
+        overridesRef.current = next;
+        writeStoredOverrides(storageKey, columnKeys, next);
 
-      return next;
-    });
-  }, []);
+        return next;
+      });
+    },
+    [columnKeys, storageKey],
+  );
+
+  const resetColumnWidth = useCallback(
+    (column: SizableColumn) => {
+      setOverrides((current) => {
+        const next = { ...current };
+        delete next[column.key];
+
+        overridesRef.current = next;
+        writeStoredOverrides(storageKey, columnKeys, next);
+
+        return next;
+      });
+    },
+    [columnKeys, storageKey],
+  );
 
   const currentColumnWidth = useCallback(
-    (column: SizableColumn): number => overrides[column.key] ?? defaultColumnWidthPx(column),
-    [overrides],
+    (column: SizableColumn): number =>
+      overridesRef.current[column.key] ?? defaultColumnWidthPx(column),
+    [],
   );
 
   const getResizeHandleProps = useCallback(
@@ -236,6 +266,135 @@ function maxColumnWidthForGrid({
   const available = gridWidth - utilityWidth - siblingMinWidth - gapWidth;
 
   return Math.min(maxColumnWidthPx(column), Math.max(minColumnWidthPx(column), available));
+}
+
+function readStoredOverrides(
+  storageKey: string | undefined,
+  columns: SizableColumn[],
+): Record<string, number | undefined> {
+  if (!storageKey || typeof window === "undefined") {
+    return {};
+  }
+
+  try {
+    const raw = window.localStorage.getItem(storageKey);
+
+    if (raw === null) {
+      return {};
+    }
+
+    const stored = JSON.parse(raw) as unknown;
+    const columnKeys = columns.map((column) => column.key);
+
+    if (!isStoredColumnWidths(stored) || !sameColumnKeys(stored.columns, columnKeys)) {
+      removeStoredOverrides(storageKey);
+
+      return {};
+    }
+
+    const overrides = sanitizeOverrides(stored.overrides, columns);
+
+    if (Object.keys(overrides).length === 0) {
+      removeStoredOverrides(storageKey);
+    }
+
+    return overrides;
+  } catch {
+    removeStoredOverrides(storageKey);
+
+    return {};
+  }
+}
+
+function writeStoredOverrides(
+  storageKey: string | undefined,
+  columnKeys: string[],
+  overrides: Record<string, number | undefined>,
+): void {
+  if (!storageKey || typeof window === "undefined") {
+    return;
+  }
+
+  const stored: Record<string, number> = {};
+  const knownKeys = new Set(columnKeys);
+
+  for (const [key, value] of Object.entries(overrides)) {
+    if (knownKeys.has(key) && typeof value === "number" && Number.isFinite(value)) {
+      stored[key] = value;
+    }
+  }
+
+  if (Object.keys(stored).length === 0) {
+    removeStoredOverrides(storageKey);
+
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        columns: columnKeys,
+        overrides: stored,
+      }),
+    );
+  } catch {
+    return;
+  }
+}
+
+function removeStoredOverrides(storageKey: string): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.removeItem(storageKey);
+  } catch {
+    return;
+  }
+}
+
+function isStoredColumnWidths(value: unknown): value is StoredColumnWidths {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const record = value as Record<string, unknown>;
+
+  return (
+    Array.isArray(record.columns) &&
+    record.columns.every((column) => typeof column === "string") &&
+    typeof record.overrides === "object" &&
+    record.overrides !== null &&
+    !Array.isArray(record.overrides)
+  );
+}
+
+function sameColumnKeys(stored: string[], current: string[]): boolean {
+  return stored.length === current.length && stored.every((key, index) => key === current[index]);
+}
+
+function sanitizeOverrides(
+  overrides: Record<string, unknown>,
+  columns: SizableColumn[],
+): Record<string, number | undefined> {
+  const next: Record<string, number | undefined> = {};
+
+  for (const column of columns) {
+    const value = overrides[column.key];
+
+    if (typeof value !== "number" || !Number.isFinite(value)) {
+      continue;
+    }
+
+    next[column.key] = Math.min(
+      maxColumnWidthPx(column),
+      Math.max(minColumnWidthPx(column), value),
+    );
+  }
+
+  return next;
 }
 
 function fixedTrackWidthPx(track: string): number {

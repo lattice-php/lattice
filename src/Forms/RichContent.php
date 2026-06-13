@@ -9,6 +9,7 @@ use Tiptap\Editor;
 use Tiptap\Extensions\StarterKit;
 use Tiptap\Extensions\TextAlign;
 use Tiptap\Marks\Highlight;
+use Tiptap\Marks\Link;
 use Tiptap\Marks\Underline;
 use Tiptap\Nodes\Details;
 use Tiptap\Nodes\DetailsContent;
@@ -77,6 +78,7 @@ final class RichContent
             new StarterKit,
             new Underline,
             new Highlight,
+            new Link(['allowedProtocols' => ['https', 'http', 'mailto']]),
             new TextAlign(['types' => ['heading', 'paragraph']]),
             new Table,
             new TableRow,

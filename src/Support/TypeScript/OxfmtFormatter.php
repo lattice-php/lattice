@@ -8,10 +8,9 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 /**
- * Formats the generated TypeScript with the project's own oxfmt binary so the
- * output matches the same style as the hand-written sources. Falls back to a
- * no-op when the binary is absent (e.g. a node-less environment) so generation
- * still produces valid, if unformatted, TypeScript.
+ * Formats generated TypeScript with the host app's oxfmt binary when available,
+ * falling back to the package checkout for local development. Missing binaries
+ * are treated as a no-op so generation still produces valid TypeScript.
  */
 final class OxfmtFormatter implements Formatter
 {
@@ -24,9 +23,9 @@ final class OxfmtFormatter implements Formatter
             return;
         }
 
-        $binary = dirname(__DIR__, 3).'/node_modules/.bin/oxfmt';
+        $binary = $this->resolveBinary();
 
-        if (! is_file($binary)) {
+        if ($binary === null) {
             return;
         }
 
@@ -36,5 +35,19 @@ final class OxfmtFormatter implements Formatter
         if (! $process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
+    }
+
+    private function resolveBinary(): ?string
+    {
+        foreach (array_unique([
+            base_path('node_modules/.bin/oxfmt'),
+            dirname(__DIR__, 3).'/node_modules/.bin/oxfmt',
+        ]) as $binary) {
+            if (is_file($binary)) {
+                return $binary;
+            }
+        }
+
+        return null;
     }
 }

@@ -1,4 +1,4 @@
-import { expect, it, vi, beforeAll, afterAll } from "vitest";
+import { expect, it, vi, beforeAll, afterAll, afterEach } from "vitest";
 import { configure, fireEvent, getConfig, render, screen } from "@testing-library/react";
 
 let prev: string;
@@ -7,6 +7,7 @@ beforeAll(() => {
   configure({ testIdAttribute: "data-test" });
 });
 afterAll(() => configure({ testIdAttribute: prev }));
+afterEach(() => window.localStorage.clear());
 
 const { renderCounts } = vi.hoisted(() => ({ renderCounts: new Map<string, number>() }));
 
@@ -187,6 +188,38 @@ it("renders column resize handles when enabled", () => {
   );
 
   expect(screen.getByRole("separator", { name: "Resize Qty" })).toBeInTheDocument();
+});
+
+it("stores table layout column widths under the field base", () => {
+  render(
+    <TableRows
+      base="items"
+      columns={columns}
+      rows={[{ key: "a", index: 0, row: {}, template: [qtyNode, priceNode], span: false }]}
+      reorderable={true}
+      removable={() => true}
+      resizableColumns={true}
+      onField={noop}
+      onMove={noop}
+      onRemove={noop}
+      rowActions={null}
+      onDuplicate={noop}
+    />,
+  );
+
+  const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+  fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
+  fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
+
+  expect(JSON.parse(window.localStorage.getItem("lattice:table-columns:form:items") ?? "")).toEqual(
+    {
+      columns: ["qty", "price"],
+      overrides: {
+        qty: 256,
+      },
+    },
+  );
 });
 
 function wrap(ui: React.ReactNode, initial: Record<string, unknown> = {}) {

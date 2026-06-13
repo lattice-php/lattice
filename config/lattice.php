@@ -12,27 +12,27 @@ return [
 
     'forms' => [
         'endpoint' => 'lattice/forms/{form}',
-        'middleware' => ['web'],
+        'middleware' => ['web', 'auth'],
     ],
 
     'tables' => [
         'endpoint' => 'lattice/tables/{table}',
-        'middleware' => ['web'],
+        'middleware' => ['web', 'auth'],
     ],
 
     'fragments' => [
         'endpoint' => 'lattice/fragments/{fragment}',
-        'middleware' => ['web'],
+        'middleware' => ['web', 'auth'],
     ],
 
     'actions' => [
         'endpoint' => 'lattice/actions/{action}',
-        'middleware' => ['web'],
+        'middleware' => ['web', 'auth'],
     ],
 
     'bulk-actions' => [
         'endpoint' => 'lattice/bulk-actions/{bulkAction}',
-        'middleware' => ['web'],
+        'middleware' => ['web', 'auth'],
     ],
 
     'typescript' => [
