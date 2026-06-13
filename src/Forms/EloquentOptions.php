@@ -25,13 +25,15 @@ final class EloquentOptions implements OptionSource
 
     private int $limit = 50;
 
+    private ?string $resolvedValueKey = null;
+
     /**
      * @param  class-string<Model>  $model
      */
     private function __construct(
         private readonly string $model,
         private string $labelKey = 'name',
-        private string $valueKey = 'id',
+        private ?string $valueKey = null,
     ) {}
 
     /**
@@ -52,6 +54,7 @@ final class EloquentOptions implements OptionSource
     public function value(string $column): self
     {
         $this->valueKey = $column;
+        $this->resolvedValueKey = null;
 
         return $this;
     }
@@ -109,7 +112,15 @@ final class EloquentOptions implements OptionSource
             return [];
         }
 
-        return $this->toOptions($this->query()->whereIn($this->valueKey, $values)->get());
+        return $this->toOptions($this->query()->whereIn($this->valueColumn(), $values)->get());
+    }
+
+    /**
+     * The value column, defaulting to the model's primary key when not set explicitly.
+     */
+    private function valueColumn(): string
+    {
+        return $this->resolvedValueKey ??= $this->valueKey ?? (new $this->model)->getKeyName();
     }
 
     /**
@@ -139,7 +150,7 @@ final class EloquentOptions implements OptionSource
         return $models
             ->map(fn (Model $model): Option => new Option(
                 (string) $model->getAttribute($this->labelKey),
-                (string) $model->getAttribute($this->valueKey),
+                (string) $model->getAttribute($this->valueColumn()),
             ))
             ->values()
             ->all();

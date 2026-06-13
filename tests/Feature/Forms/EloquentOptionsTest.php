@@ -1,9 +1,24 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Database\Eloquent\Model;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\EloquentOptions;
 use Workbench\App\Models\Product;
+
+/** A model keyed by a non-`id` column (reuses the products table, keyed on its unique sku). */
+final class SkuKeyedProduct extends Model
+{
+    protected $table = 'products';
+
+    protected $primaryKey = 'sku';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
+    protected $guarded = [];
+}
 
 it('searches an eloquent model by its label column', function (): void {
     Product::factory()->create(['name' => 'Alpha Chair']);
@@ -33,6 +48,19 @@ it('resolves selected values to their labels and keys', function (): void {
     expect($options)->toHaveCount(1)
         ->and($options[0]->label)->toBe('Gamma Shelf')
         ->and($options[0]->value)->toBe((string) $product->getKey());
+});
+
+it('defaults the value column to the model key for a non-id primary key', function (): void {
+    Product::factory()->create(['name' => 'Keyed', 'sku' => 'SKU-XYZ']);
+
+    $source = EloquentOptions::make(SkuKeyedProduct::class)->label('name');
+
+    $selected = $source->selected(['SKU-XYZ']);
+    expect($selected)->toHaveCount(1)
+        ->and($selected[0]->label)->toBe('Keyed')
+        ->and($selected[0]->value)->toBe('SKU-XYZ');
+
+    expect($source->search('keyed')[0]->value)->toBe('SKU-XYZ');
 });
 
 it('applies a query scope to both search and selected', function (): void {
