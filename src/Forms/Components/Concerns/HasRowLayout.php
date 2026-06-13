@@ -2,13 +2,15 @@
 
 namespace Lattice\Lattice\Forms\Components\Concerns;
 
+use Lattice\Lattice\Core\Enums\RowLayout;
+
 trait HasRowLayout
 {
-    public string $layout = 'stack';
+    public RowLayout $layout = RowLayout::Stack;
 
     public function table(): static
     {
-        $this->layout = 'table';
+        $this->layout = RowLayout::Table;
 
         return $this;
     }
