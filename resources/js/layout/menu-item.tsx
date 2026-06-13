@@ -27,7 +27,16 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
   const content = (
     <>
       {icon ? <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} /> : null}
-      <span className={cn(collapsed && "sr-only")}>{label}</span>
+      {collapsed ? (
+        <span
+          className="pointer-events-none absolute top-1/2 left-full z-50 ml-2 hidden -translate-y-1/2 rounded-md border border-lt-border bg-lt-popover px-2 py-1 text-sm whitespace-nowrap text-lt-popover-fg shadow-lg group-hover:block"
+          role="tooltip"
+        >
+          {label}
+        </span>
+      ) : (
+        <span>{label}</span>
+      )}
     </>
   );
 
@@ -68,12 +77,16 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
     <li>
       <Link
         aria-current={active ? "page" : undefined}
+        aria-label={collapsed ? label : undefined}
         as={method === "get" ? undefined : "button"}
-        className={cn(rowClass, collapsed && "justify-center", active && "bg-lt-muted font-medium")}
+        className={cn(
+          rowClass,
+          collapsed && "group relative justify-center",
+          active && "bg-lt-muted font-medium",
+        )}
         data-test={`menu-${slug}`}
         href={href}
         method={method}
-        title={collapsed ? label : undefined}
       >
         {content}
       </Link>

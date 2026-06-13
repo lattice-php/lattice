@@ -139,6 +139,19 @@ describe("Menu", () => {
     expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", "/profile");
   });
 
+  it("keeps a collapsed leaf item's label reachable as a hover flyout", () => {
+    render(
+      <SidebarCollapsedContext.Provider value={true}>
+        <Renderer nodes={[menu]} registry={registry} />
+      </SidebarCollapsedContext.Provider>,
+    );
+
+    const link = screen.getByRole("link", { name: "Home" });
+    expect(link).toHaveClass("group", "relative");
+    expect(link).toHaveAttribute("aria-label", "Home");
+    expect(screen.getByText("Home")).toHaveClass("group-hover:block");
+  });
+
   it("renders a non-get item as an actionable button link", () => {
     renderMenu({
       id: "main",
