@@ -95,10 +95,6 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         Lattice::registerConfiguredDefinitions();
 
-        foreach (DefinitionDiscovery::configuredPaths() as $path => $namespace) {
-            Lattice::discover($path, $namespace);
-        }
-
         // Deferred so pages registered by any provider's boot() (e.g. an app's
         // own `Lattice::pages([...])`) are collected before the routes are built.
         $this->app->booted(fn () => $this->bootPages());
