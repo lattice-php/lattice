@@ -50,6 +50,7 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Choice;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\PasswordInput;
+use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
 use Lattice\Lattice\Fragments\FragmentDefinition;
@@ -80,6 +81,7 @@ use Workbench\App\Tables\UsersTable as WorkbenchAppUsersTable;
 use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\patch;
+use function Pest\Laravel\patchJson;
 use function Pest\Laravel\postJson;
 use function Pest\Laravel\withoutVite;
 use function Pest\Laravel\withSession;
@@ -528,6 +530,18 @@ test('registered form endpoints require a valid component reference', function (
         'name' => 'Taylor',
     ], latticeHeaders('tampered'))
         ->assertForbidden();
+});
+
+test('registered form submissions validate before handle is called', function () {
+    Lattice::forms([WorkbenchRequiredProfileForm::class]);
+
+    $ref = componentRef(wire(Form::use(WorkbenchRequiredProfileForm::class)));
+
+    patchJson('/lattice/forms/workbench.required-profile', [], latticeHeaders($ref))
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('name');
+
+    expect(session('handled-required-profile'))->toBeNull();
 });
 
 test('registered forms receive the current request while serializing definitions', function () {
@@ -1724,6 +1738,26 @@ class WorkbenchProfileForm extends FormDefinition
         $request->session()->put('handled-form-team', $this->context($request, 'team'));
 
         return redirect('/submitted');
+    }
+}
+
+#[FormAttribute('workbench.required-profile')]
+class WorkbenchRequiredProfileForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form
+            ->method(HttpMethod::Patch)
+            ->schema([
+                TextInput::make('name', 'Name')->required(),
+            ]);
+    }
+
+    public function handle(Request $request): Response
+    {
+        $request->session()->put('handled-required-profile', true);
+
+        return response()->json(['handled' => true]);
     }
 }
 

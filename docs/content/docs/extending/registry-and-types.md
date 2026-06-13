@@ -27,15 +27,15 @@ The node registry maps type strings to `RendererComponent` functions. Imports co
 Creates a named plugin object that bundles one or more component registrations:
 
 ```ts
-import { createPlugin } from "@lattice-php/lattice";
+import { createPlugin, eagerComponent } from "@lattice-php/lattice";
 import { ColorPickerComponent } from "./fields/color-picker";
 import { RatingComponent } from "./components/rating";
 
 export const appPlugin = createPlugin({
   name: "app",
   components: {
-    "form.color-picker": ColorPickerComponent,
-    "rating": RatingComponent,
+    "form.color-picker": eagerComponent(ColorPickerComponent),
+    "rating": eagerComponent(RatingComponent),
   },
 });
 ```
@@ -68,30 +68,31 @@ const minimalRegistry = createRegistry(appPlugin);
 Components can be registered eagerly (imported at module load time) or lazily (code-split on first render):
 
 ```ts
-import { createPlugin, lazyComponent } from "@lattice-php/lattice";
+import { createPlugin, eagerComponent, lazyComponent } from "@lattice-php/lattice";
+import { RatingComponent } from "./components/rating";
 
 export const appPlugin = createPlugin({
   name: "app",
   components: {
     // Eager — bundled with the entry point.
-    "rating": RatingComponent,
+    "rating": eagerComponent(RatingComponent),
     // Lazy — splits into a separate chunk loaded on demand.
-    "form.color-picker": lazyComponent(() =>
-      import("./fields/color-picker").then((m) => m.ColorPickerComponent)
-    ),
+    "form.color-picker": lazyComponent(async () => ({
+      default: (await import("./fields/color-picker")).ColorPickerComponent,
+    })),
   },
 });
 ```
 
 ### Provider and useRegistry
 
-`Provider` supplies the registry (and optionally the column registry) to every Lattice component below it in the tree:
+`Provider` supplies the registry to every Lattice component below it in the tree:
 
 ```tsx
 import { Provider } from "@lattice-php/lattice";
 
 createRoot(el).render(
-  <Provider registry={appRegistry} columns={columns}>
+  <Provider registry={appRegistry}>
     <App {...props} />
   </Provider>,
 );
@@ -109,15 +110,15 @@ const registry = useRegistry();
 
 The column-cell registry maps type strings to `ColumnCellComponent` functions.
 
-### createColumnPlugin
+### Column plugins
 
-Creates a named plugin for column cell renderers:
+Column cell renderers use the same plugin object as components. Put them under the `columns` key:
 
 ```ts
-import { createColumnPlugin } from "@lattice-php/lattice";
+import { createPlugin } from "@lattice-php/lattice";
 import { StatusBadgeCell } from "./columns/status-badge";
 
-export const appColumns = createColumnPlugin({
+export const appColumns = createPlugin({
   name: "app",
   columns: {
     "column.status-badge": StatusBadgeCell,
@@ -125,25 +126,13 @@ export const appColumns = createColumnPlugin({
 });
 ```
 
-### createColumnRegistry
-
-Builds the registry object that `Provider` consumes:
+Merge column plugins into the same registry you pass to `Provider`:
 
 ```ts
-import { createColumnRegistry } from "@lattice-php/lattice";
+import { extendRegistry, registry } from "@lattice-php/lattice";
 import { appColumns } from "./lattice/columns";
 
-const columns = createColumnRegistry(appColumns);
-```
-
-### extendColumnRegistry
-
-Merges additional plugins into an existing column registry:
-
-```ts
-import { extendColumnRegistry } from "@lattice-php/lattice";
-
-const extended = extendColumnRegistry(columns, extraPlugin);
+const appRegistry = extendRegistry(registry, appColumns);
 ```
 
 ### useColumnRegistry

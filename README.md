@@ -28,7 +28,7 @@ composer require lattice-php/lattice
 npm install @lattice-php/lattice
 ```
 
-See [Installation](https://latticephp.com/getting-started/installation/) and [Frontend Setup](https://latticephp.com/getting-started/frontend-setup/) for the full setup.
+See [Installation](https://latticephp.com/introduction/installation/) for the full setup.
 
 ## Documentation
 

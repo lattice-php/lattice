@@ -36,6 +36,8 @@ final class ActionController
             return $this->validatePrecognitive($request, fn () => $definition->validate($request));
         }
 
+        $definition->validate($request);
+
         return response()->json(
             $definition->handle($request),
         );

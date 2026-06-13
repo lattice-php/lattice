@@ -63,9 +63,9 @@
       "types": "./dist/icons/index.d.ts",
       "import": "./dist/icons/index.js"
     },
-    "./menu": {
-      "types": "./dist/menu/index.d.ts",
-      "import": "./dist/menu/index.js"
+    "./layout": {
+      "types": "./dist/layout/index.d.ts",
+      "import": "./dist/layout/index.js"
     },
     "./table": {
       "types": "./dist/table/index.d.ts",
@@ -126,7 +126,6 @@
     "clsx": "^2.1.1",
     "i18next": "^26.3.1",
     "i18next-http-backend": "^4.0.0",
-    "react-i18next": "^17.0.8",
     "tailwind-merge": "^3.0.1"
   },
   "peerDependencies": {
