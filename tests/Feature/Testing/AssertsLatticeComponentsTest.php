@@ -112,6 +112,33 @@ it('asserts action state', function (): void {
             ->assertHasForm());
 });
 
+it('asserts field required, optional, disabled, enabled and read-only flags', function (): void {
+    $form = Form::make('flags')->schema([
+        TextInput::make('plain')->label('Plain'),
+        TextInput::make('req')->required(),
+        TextInput::make('ro')->readOnly(),
+        TextInput::make('dis')->disabled(),
+    ]);
+
+    $this->assertLatticeComponent($form)
+        ->form('flags', fn (FormAssertions $f) => $f
+            ->field('plain', fn (FieldAssertions $x) => $x->assertOptional()->assertEnabled())
+            ->field('req', fn (FieldAssertions $x) => $x->assertRequired())
+            ->field('ro', fn (FieldAssertions $x) => $x->assertReadOnly())
+            ->field('dis', fn (FieldAssertions $x) => $x->assertDisabled()));
+});
+
+it('asserts table presence and bulk actions', function (): void {
+    $table = Table::make('orders')
+        ->columns([TextColumn::make('ref')->label('Ref')])
+        ->bulkActions([Action::make('archive')->label('Archive')])
+        ->result(TableResult::make([]), TableQuery::empty());
+
+    $this->assertLatticeComponent($table)
+        ->assertHasTable('orders')
+        ->table('orders', fn (TableAssertions $t) => $t->assertHasBulkAction('archive'));
+});
+
 it('asserts against a rendered Inertia page', function (): void {
     withoutVite();
 
