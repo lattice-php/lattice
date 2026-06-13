@@ -1,6 +1,7 @@
 import InputError from "@lattice/lattice/form/components/base/input-error";
 import { TextLink } from "@lattice/lattice/core/components/link";
 import { Label } from "@lattice/lattice/form/components/base/label";
+import { useInTableCell } from "../row-layout-context";
 import type { FormLabelAction } from "../types";
 
 export function FormFieldFrame({
@@ -20,6 +21,20 @@ export function FormFieldFrame({
   name: string;
   required?: boolean;
 }) {
+  const bare = useInTableCell();
+
+  if (bare) {
+    return (
+      <div className="grid gap-1">
+        <Label htmlFor={name} className="sr-only">
+          {label}
+        </Label>
+        {children}
+        <InputError message={error} />
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-2">
       <div className="flex min-h-5 items-center">

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
 use Lattice\Lattice\Forms\Components\Concerns\HandlesRowSchemas;
+use Lattice\Lattice\Forms\Components\Concerns\HasRowLayout;
 use Lattice\Lattice\Forms\FormData;
 
 #[Component('form.repeater')]
@@ -15,6 +16,7 @@ class Repeater extends Field
 {
     use HandlesRowSchemas;
     use HasChildSchema;
+    use HasRowLayout;
 
     public ?int $minItems = null;
 

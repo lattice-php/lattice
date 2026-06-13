@@ -58,6 +58,26 @@ Repeater::make('items', 'Line items')
     ->reorderable(false);
 ```
 
+## Table layout
+
+Rows stack by default — each row is a full block of stacked fields. Call `->table()` to lay rows out
+as a table instead: the schema fields become columns, a shared header of the field labels sits above
+the rows, and each cell renders the input alone (the field's own label moves up into the header).
+
+```php
+Repeater::make('items', 'Line items')
+    ->schema([
+        TextInput::make('name', 'Name'),
+        TextInput::make('qty', 'Qty')->rules(['numeric']),
+    ])
+    ->table();
+```
+
+Reorder controls (↑↓) sit on the left of each row and the remove action on the right; once a row
+carries more than one action they collapse into a ⋯ menu. Reordering slides each row to its new
+position, and the table scrolls horizontally on narrow screens. The slide animation is skipped when
+the viewer prefers reduced motion.
+
 ## Labels
 
 `->addLabel()` sets the text on the button that appends a row (default "Add"). `->itemLabel()` sets a

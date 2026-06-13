@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
 import { addRow, moveRow, removeRow, seedRows } from "./repeater-rows";
+import { ensureRowIds, ROW_ID_KEY, withRowId } from "./repeater-rows";
 
 it("seeds rows from an existing value", () => {
   expect(seedRows([{ name: "a" }], 3)).toEqual([{ name: "a" }]);
@@ -41,4 +42,29 @@ it("does not mutate the input array", () => {
   removeRow(rows, 0);
   moveRow(rows, 0, 1);
   expect(rows).toEqual([{ n: 0 }, { n: 1 }]);
+});
+
+it("stamps a unique stable id via withRowId", () => {
+  const a = withRowId({ name: "x" });
+  const b = withRowId({ name: "y" });
+  expect(typeof a[ROW_ID_KEY]).toBe("string");
+  expect(a[ROW_ID_KEY]).not.toBe(b[ROW_ID_KEY]);
+  expect(a.name).toBe("x");
+});
+
+it("withRowId is a no-op when the row already has an id", () => {
+  const a = withRowId({ name: "x" });
+  expect(withRowId(a)).toBe(a);
+});
+
+it("ensureRowIds adds ids only to rows missing one, preserving existing ids + identity", () => {
+  const withId = withRowId({ name: "keep" });
+  const out = ensureRowIds([withId, { name: "fresh" }]);
+  expect(out[0]).toBe(withId);
+  expect(typeof out[1][ROW_ID_KEY]).toBe("string");
+});
+
+it("ensureRowIds returns the same array reference when all rows already have ids", () => {
+  const rows = [withRowId({}), withRowId({})];
+  expect(ensureRowIds(rows)).toBe(rows);
 });

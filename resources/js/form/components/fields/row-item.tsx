@@ -6,7 +6,7 @@ import { RenderNode } from "@lattice/lattice/core/renderer";
 import { FieldScopeProvider } from "../field-scope";
 import type { RepeaterRow } from "./repeater-rows";
 
-function RowButton({
+export function RowButton({
   label,
   testId,
   onClick,

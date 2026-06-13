@@ -11,6 +11,7 @@
             "hidden": null,
             "itemLabel": null,
             "label": "Line items",
+            "layout": "stack",
             "maxItems": 5,
             "minItems": 1,
             "name": "items",

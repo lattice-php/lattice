@@ -57,6 +57,7 @@ export type Builder = {
   helperText: string | null;
   hidden: boolean | null;
   label: string | null;
+  layout: RowLayout;
   maxItems: number | null;
   minItems: number | null;
   name: string;
@@ -636,6 +637,7 @@ export type Repeater = {
   hidden: boolean | null;
   itemLabel: string | null;
   label: string | null;
+  layout: RowLayout;
   maxItems: number | null;
   minItems: number | null;
   name: string;
@@ -666,6 +668,7 @@ export type RichEditor = {
   required: boolean | null;
   value: unknown;
 };
+export type RowLayout = "stack" | "table";
 export type Section = {
   collapsed: boolean;
   collapsible: boolean;

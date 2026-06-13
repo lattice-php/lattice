@@ -7,12 +7,14 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Forms\Components\Concerns\HandlesRowSchemas;
+use Lattice\Lattice\Forms\Components\Concerns\HasRowLayout;
 use Lattice\Lattice\Forms\FormData;
 
 #[Component('form.builder')]
 class Builder extends Field
 {
     use HandlesRowSchemas;
+    use HasRowLayout;
 
     /**
      * @var array<int, Block>

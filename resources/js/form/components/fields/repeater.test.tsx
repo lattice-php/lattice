@@ -113,6 +113,33 @@ it("shows the array-level error for the repeater field", () => {
   expect(screen.getByText("Must have at least 1 item")).toBeInTheDocument();
 });
 
+it("renders the table layout with a header from the schema", () => {
+  const node = {
+    id: "r",
+    type: "form.repeater",
+    props: {
+      name: "items",
+      layout: "table",
+      reorderable: true,
+      defaultItems: 0,
+      minItems: 0,
+      maxItems: 5,
+      addLabel: "Add",
+    },
+    schema: [
+      { id: "q", type: "form.text-input", props: { name: "qty", label: "Qty" } },
+      { id: "p", type: "form.text-input", props: { name: "price", label: "Price" } },
+    ],
+  } as never;
+  wrap(<RepeaterComponent node={node}>{null}</RepeaterComponent>, {
+    items: [{ qty: "1", price: "2" }],
+  });
+  expect(screen.getByText("Qty")).toBeInTheDocument();
+  expect(screen.getByText("Price")).toBeInTheDocument();
+  const children = screen.getAllByTestId("child").map((c) => c.textContent);
+  expect(children).toEqual(["items[0][qty]", "items[0][price]"]);
+});
+
 it("does not re-render sibling rows when one row changes", () => {
   wrap(<RepeaterComponent node={repeaterNode}>{null}</RepeaterComponent>, {
     items: [{ name: "a" }, { name: "b" }],
