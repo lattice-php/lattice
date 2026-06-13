@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Http\Page as BasePage;
 use Lattice\Lattice\Http\PageMetadata;
+use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
 
 #[Page(layout: PageLayout::App, container: PageContainer::Default)]
 abstract class FixtureBasePage extends BasePage {}
@@ -55,4 +57,44 @@ test('a page without any attribute resolves to defaults', function () {
         ->and($meta->layout)->toBe(PageLayout::None)
         ->and($meta->container)->toBe(PageContainer::Centered)
         ->and($meta->middleware)->toBe([]);
+});
+
+test('page metadata round-trips through an array descriptor', function () {
+    $descriptor = PageMetadata::reflect(FixtureEditPage::class)->toArray();
+
+    expect($descriptor)->toMatchArray([
+        'class' => FixtureEditPage::class,
+        'route' => '/products/{product}/edit',
+        'name' => 'products.edit',
+        'layout' => 'app',
+        'container' => 'default',
+    ]);
+
+    $rebuilt = PageMetadata::fromArray($descriptor);
+
+    expect($rebuilt->class)->toBe(FixtureEditPage::class)
+        ->and($rebuilt->route)->toBe('/products/{product}/edit')
+        ->and($rebuilt->layout)->toBe('app')
+        ->and($rebuilt->container)->toBe('default');
+});
+
+test('for() prefers a manifest descriptor and falls back to reflection', function () {
+    config(['lattice.discover' => [
+        __DIR__.'/../Fixtures/Discovery' => 'Lattice\\Lattice\\Tests\\Fixtures\\Discovery',
+    ]]);
+
+    $manifest = app(DiscoveryManifest::class);
+    $manifest->cache();
+
+    try {
+        // DiscoveredDemoPage is in the cached manifest.
+        $fromManifest = PageMetadata::for(DiscoveredDemoPage::class);
+        expect($fromManifest->name)->toBe('discovered.demo');
+
+        // FixtureEditPage is NOT discovered (it lives in this test file) -> reflection fallback.
+        $fromReflection = PageMetadata::for(FixtureEditPage::class);
+        expect($fromReflection->name)->toBe('products.edit');
+    } finally {
+        $manifest->clear();
+    }
 });

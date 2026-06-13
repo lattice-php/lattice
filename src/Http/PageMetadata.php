@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Http;
 
+use BackedEnum;
 use Lattice\Lattice\Attributes\Page as PageAttribute;
+use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use ReflectionClass;
@@ -28,6 +30,23 @@ final class PageMetadata
     {
         $class = is_object($page) ? $page::class : $page;
 
+        $manifest = app(DiscoveryManifest::class);
+
+        if ($manifest->isCached()) {
+            $descriptor = $manifest->descriptorFor($class);
+
+            if ($descriptor !== null) {
+                return self::fromArray($descriptor);
+            }
+        }
+
+        return self::reflect($class);
+    }
+
+    public static function reflect(Page|string $page): self
+    {
+        $class = is_object($page) ? $page::class : $page;
+
         $own = self::attributeOn($class);
 
         return new self(
@@ -38,6 +57,41 @@ final class PageMetadata
             container: self::inherited($class, fn (PageAttribute $a) => $a->container) ?? PageContainer::Centered,
             middleware: (array) (self::inherited($class, fn (PageAttribute $a) => $a->middleware) ?? []),
         );
+    }
+
+    /**
+     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>, layout: string, container: string}
+     */
+    public function toArray(): array
+    {
+        return [
+            'class' => $this->class,
+            'route' => $this->route,
+            'name' => $this->name,
+            'middleware' => $this->middleware,
+            'layout' => self::serialize($this->layout),
+            'container' => self::serialize($this->container),
+        ];
+    }
+
+    /**
+     * @param  array{class: class-string, route: string|null, name: string, middleware: array<int, string>, layout: string, container: string}  $descriptor
+     */
+    public static function fromArray(array $descriptor): self
+    {
+        return new self(
+            class: $descriptor['class'],
+            route: $descriptor['route'],
+            name: $descriptor['name'],
+            layout: $descriptor['layout'],
+            container: $descriptor['container'],
+            middleware: $descriptor['middleware'],
+        );
+    }
+
+    private static function serialize(PageLayout|PageContainer|string $value): string
+    {
+        return $value instanceof BackedEnum ? (string) $value->value : $value;
     }
 
     private static function attributeOn(string $class): ?PageAttribute
