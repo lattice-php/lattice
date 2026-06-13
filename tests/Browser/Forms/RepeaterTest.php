@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 it('renders the repeater with one default row', function (): void {
