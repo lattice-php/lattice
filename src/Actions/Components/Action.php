@@ -7,7 +7,7 @@ use BackedEnum;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\Confirmation;
-use Lattice\Lattice\Actions\Contracts\Effect;
+use Lattice\Lattice\Actions\Effects\AbstractEffect;
 use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
@@ -36,7 +36,7 @@ class Action extends Component
     public ?Confirmation $confirmation = null;
 
     /**
-     * @var array<int, Effect>
+     * @var array<int, AbstractEffect>
      */
     public array $effects = [];
 
@@ -93,7 +93,7 @@ class Action extends Component
     }
 
     /**
-     * @param  array<int, Effect>  $effects
+     * @param  array<int, AbstractEffect>  $effects
      */
     public function effects(array $effects): static
     {

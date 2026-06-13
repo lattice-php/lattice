@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Actions\Effects;
 
 use InvalidArgumentException;
-use Lattice\Lattice\Actions\Contracts\Effect as EffectContract;
-use Lattice\Lattice\Attributes\Effect as EffectAttribute;
+use JsonSerializable;
+use Lattice\Lattice\Attributes\AsEffect;
 use Spatie\Attributes\Attributes;
 
-abstract readonly class Effect implements EffectContract
+abstract readonly class AbstractEffect implements JsonSerializable
 {
     /**
      * @return array<string, mixed>
@@ -31,11 +31,11 @@ abstract readonly class Effect implements EffectContract
      */
     private static function resolveType(string $class): string
     {
-        $effect = Attributes::get($class, EffectAttribute::class);
+        $effect = Attributes::get($class, AsEffect::class);
 
         if ($effect === null) {
             throw new InvalidArgumentException(sprintf(
-                'Effect [%s] is missing the #[Effect] attribute that declares its wire type.',
+                'Effect [%s] is missing the #[AsEffect] attribute that declares its wire type.',
                 $class,
             ));
         }

@@ -7,8 +7,8 @@ use Lattice\Lattice\Actions\Enums\EffectType;
 use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Values\ToastMessage;
 
-#[Attributes\Effect(EffectType::Toast)]
-final readonly class ToastEffect extends Effect
+#[Attributes\AsEffect(EffectType::Toast)]
+final readonly class ToastEffect extends AbstractEffect
 {
     public function __construct(
         public ToastMessage $toast,

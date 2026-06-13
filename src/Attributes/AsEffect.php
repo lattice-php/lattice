@@ -12,7 +12,7 @@ use Lattice\Lattice\Actions\Enums\EffectType;
  * Discovery shares ClassWalker, but the attribute stays distinct by design.
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-final class Effect
+final class AsEffect
 {
     public function __construct(public readonly EffectType $type) {}
 }
