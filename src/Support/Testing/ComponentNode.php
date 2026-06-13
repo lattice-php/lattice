@@ -208,7 +208,7 @@ final class ComponentNode
         $children = [];
 
         foreach (array_values($schema) as $child) {
-            if (is_array($child) && isset($child['type'])) {
+            if (is_array($child) && isset($child['type']) && array_key_exists('props', $child)) {
                 $children[] = new self($child, $this->childPath($child));
             }
         }

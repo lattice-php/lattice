@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Support\Testing\ComponentNode;
 
-function node(array $data): ComponentNode
+function componentNode(array $data): ComponentNode
 {
     return new ComponentNode($data);
 }
 
 it('reads type, id and props', function (): void {
-    $n = node(['type' => 'form', 'id' => 'create', 'props' => ['action' => '/p'], 'schema' => []]);
+    $n = componentNode(['type' => 'form', 'id' => 'create', 'props' => ['action' => '/p'], 'schema' => []]);
 
     expect($n->type())->toBe('form')
         ->and($n->id())->toBe('create')
@@ -45,7 +45,7 @@ it('descends into embedded form and bulkActions props', function (): void {
 });
 
 it('finds a field by name and lists available field names', function (): void {
-    $form = node(['type' => 'form', 'id' => 'f', 'props' => [], 'schema' => [
+    $form = componentNode(['type' => 'form', 'id' => 'f', 'props' => [], 'schema' => [
         ['type' => 'form.text-input', 'id' => null, 'props' => ['name' => 'email'], 'schema' => []],
         ['type' => 'form.number-input', 'id' => null, 'props' => ['name' => 'price'], 'schema' => []],
     ]]);
@@ -56,7 +56,7 @@ it('finds a field by name and lists available field names', function (): void {
 });
 
 it('matches itself when the root is the target type', function (): void {
-    $form = node(['type' => 'form', 'id' => 'create', 'props' => [], 'schema' => []]);
+    $form = componentNode(['type' => 'form', 'id' => 'create', 'props' => [], 'schema' => []]);
 
     expect($form->firstOfTypeIncludingSelf('form', 'create'))->toBe($form);
 });
