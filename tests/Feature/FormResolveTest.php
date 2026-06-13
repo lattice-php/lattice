@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Forms\Components\Block;
 use Lattice\Lattice\Forms\Components\Builder;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormDefinition;
@@ -89,4 +90,37 @@ it('emits no prefill for an unknown row type', function (): void {
     ]));
 
     expect($result['prefill'])->toBe([]);
+});
+
+it('resolves repeater row prefill values from the fixed schema', function (): void {
+    $definition = new class extends FormDefinition
+    {
+        public function definition(Form $form, Request $request): Form
+        {
+            return $form->schema([
+                Repeater::make('lines', 'Lines')->schema([
+                    TextInput::make('base', 'Base'),
+                    TextInput::make('doubled', 'Doubled')->value(
+                        fn (FormData $row, FormData $f) => $row->float('base') * 2,
+                        editable: true,
+                        resetOn: ['base'],
+                    ),
+                ]),
+            ]);
+        }
+
+        public function handle(Request $request): Response
+        {
+            return new Response('ok');
+        }
+    };
+
+    $result = $definition->resolveFields(Request::create('/', 'POST', [
+        'lines' => [['base' => '5'], ['base' => '8']],
+    ]));
+
+    expect($result['prefill'])->toBe([
+        'lines.0.doubled' => 10.0,
+        'lines.1.doubled' => 16.0,
+    ]);
 });
