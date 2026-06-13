@@ -49,6 +49,7 @@ export function TableRows({
   onField,
   onMove,
   onRemove,
+  registerRow,
 }: {
   base: string;
   columns: TableColumn[];
@@ -58,7 +59,10 @@ export function TableRows({
   onField: (index: number, field: string, value: unknown) => void;
   onMove: (index: number, delta: number) => void;
   onRemove: (index: number) => void;
+  registerRow?: (key: string, el: HTMLElement | null) => void;
 }) {
+  // For columnar (non-span) rows, template node order must match columns order,
+  // as cells are placed by grid position.
   const gridTemplateColumns = `auto repeat(${columns.length}, minmax(0, 1fr)) auto`;
 
   return (
@@ -81,6 +85,7 @@ export function TableRows({
           return (
             <div
               key={row.key}
+              ref={(el) => registerRow?.(row.key, el)}
               data-flip-key={row.key}
               data-test={`table-row-${base}-${row.index}`}
               className="grid items-start gap-x-3"

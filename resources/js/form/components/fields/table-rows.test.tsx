@@ -83,3 +83,21 @@ it("shows a remove action when removable", () => {
   );
   expect(screen.getByTestId("row-action-remove")).toBeInTheDocument();
 });
+
+it("registers each row element for FLIP", () => {
+  const calls: Array<[string, HTMLElement | null]> = [];
+  render(
+    <TableRows
+      base="items"
+      columns={columns}
+      rows={[{ key: "a", index: 0, row: {}, template: [qtyNode], span: false }]}
+      reorderable={true}
+      removable={() => true}
+      onField={noop}
+      onMove={noop}
+      onRemove={noop}
+      registerRow={(k, el) => calls.push([k, el])}
+    />,
+  );
+  expect(calls.some(([k, el]) => k === "a" && el !== null)).toBe(true);
+});
