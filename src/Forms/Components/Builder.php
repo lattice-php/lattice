@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Forms\Components\Concerns\HandlesRowSchemas;
+use Lattice\Lattice\Forms\Components\Concerns\HasRowActions;
 use Lattice\Lattice\Forms\Components\Concerns\HasRowLayout;
 use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
 use Lattice\Lattice\Forms\Contracts\ProvidesRowPrefills;
@@ -16,6 +17,7 @@ use Lattice\Lattice\Forms\FormData;
 class Builder extends Field implements ProvidesRowFields, ProvidesRowPrefills
 {
     use HandlesRowSchemas;
+    use HasRowActions;
     use HasRowLayout;
 
     /**

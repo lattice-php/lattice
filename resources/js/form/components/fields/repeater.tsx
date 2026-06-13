@@ -16,7 +16,7 @@ export const RepeaterComponent: RendererComponent<"form.repeater"> = ({ node }) 
   const name = props.name;
   const { errors } = useFormContext();
   const { hidden, required } = useDependentField(node);
-  const { rows, onField, onRemove, onMove, append } = useRowCollection(
+  const { rows, onField, onRemove, onMove, onDuplicate, append } = useRowCollection(
     name,
     props.defaultItems ?? 1,
   );
@@ -55,9 +55,11 @@ export const RepeaterComponent: RendererComponent<"form.repeater"> = ({ node }) 
             rows={tableRows}
             reorderable={props.reorderable ?? false}
             removable={() => !atMin}
+            rowActions={props.rowActions}
             onField={onField}
             onMove={onMove}
             onRemove={onRemove}
+            onDuplicate={onDuplicate}
             registerRow={registerRow}
             resizableColumns={props.resizableColumns === true}
             resizeIndicator={props.resizeIndicator === true}
@@ -77,9 +79,11 @@ export const RepeaterComponent: RendererComponent<"form.repeater"> = ({ node }) 
                   isFirst={index === 0}
                   isLast={index === rows.length - 1}
                   removable={!atMin}
+                  rowActions={props.rowActions}
                   onField={onField}
                   onRemove={onRemove}
                   onMove={onMove}
+                  onDuplicate={onDuplicate}
                 />
               </div>
             );

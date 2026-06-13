@@ -3,7 +3,11 @@ import type { ReactNode } from "react";
 import { memo } from "react";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
+import { useT } from "@lattice-php/lattice/i18n";
+import type { RowAction as WireRowAction } from "@lattice-php/lattice/types/generated";
 import { FieldScopeProvider } from "../field-scope";
+import { buildRowActions } from "./row-action-menu";
+import { RowActions } from "./row-actions";
 import type { RepeaterRow } from "./repeater-rows";
 
 export function RowButton({
@@ -40,9 +44,11 @@ export type RowItemProps = {
   isFirst: boolean;
   isLast: boolean;
   removable: boolean;
+  rowActions: WireRowAction[] | null;
   onField: (index: number, field: string, value: unknown) => void;
   onRemove: (index: number) => void;
   onMove: (index: number, delta: number) => void;
+  onDuplicate: (index: number) => void;
 };
 
 // Memoised so editing one row doesn't re-render its siblings. Its props are kept
@@ -58,10 +64,14 @@ export const RowItem = memo(function RowItem({
   isFirst,
   isLast,
   removable,
+  rowActions,
   onField,
   onRemove,
   onMove,
+  onDuplicate,
 }: RowItemProps) {
+  const { t } = useT("lattice");
+
   return (
     <div
       data-test={`repeater-${base}-row-${index}`}
@@ -88,15 +98,9 @@ export const RowItem = memo(function RowItem({
               <Icon name="arrow-down" />
             </RowButton>
           )}
-          {removable && (
-            <RowButton
-              label="Remove"
-              testId={`repeater-${base}-remove-${index}`}
-              onClick={() => onRemove(index)}
-            >
-              <Icon name="trash-2" />
-            </RowButton>
-          )}
+          <RowActions
+            actions={buildRowActions(rowActions, { index, removable, onRemove, onDuplicate, t })}
+          />
         </div>
       </div>
 

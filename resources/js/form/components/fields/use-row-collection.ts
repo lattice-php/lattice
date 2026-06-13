@@ -1,6 +1,7 @@
 import { useCallback, useLayoutEffect } from "react";
 import { useFormValue, useSetFormValue } from "../values";
 import {
+  duplicateRow,
   ensureRowIds,
   moveRow,
   removeRow,
@@ -14,6 +15,7 @@ export type RowCollection = {
   onField: (index: number, field: string, value: unknown) => void;
   onRemove: (index: number) => void;
   onMove: (index: number, delta: number) => void;
+  onDuplicate: (index: number) => void;
   append: (row: RepeaterRow) => void;
 };
 
@@ -54,10 +56,14 @@ export function useRowCollection(name: string, defaultItems: number): RowCollect
       mutate((current) => moveRow(current, index, index + delta)),
     [mutate],
   );
+  const onDuplicate = useCallback(
+    (index: number): void => mutate((current) => duplicateRow(current, index)),
+    [mutate],
+  );
   const append = useCallback(
     (row: RepeaterRow): void => mutate((current) => [...current, withRowId(row)]),
     [mutate],
   );
 
-  return { rows, onField, onRemove, onMove, append };
+  return { rows, onField, onRemove, onMove, onDuplicate, append };
 }

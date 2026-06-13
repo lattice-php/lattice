@@ -10,6 +10,20 @@ export type RowAction = {
   destructive?: boolean;
 };
 
+function inlineClass(destructive?: boolean): string {
+  return destructive
+    ? "text-lt-danger hover:text-lt-danger [&_svg]:size-lt-icon-sm"
+    : "text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-sm";
+}
+
+function menuItemClass(destructive?: boolean): string {
+  const base =
+    "flex w-full items-center gap-2 rounded-lt-sm px-3 py-1.5 text-left text-sm [&_svg]:size-lt-icon-sm";
+  return destructive
+    ? `${base} text-lt-danger hover:bg-lt-danger/10`
+    : `${base} hover:bg-lt-accent hover:text-lt-accent-fg`;
+}
+
 export function RowActions({ actions }: { actions: RowAction[] }) {
   const [open, setOpen] = useState(false);
 
@@ -24,7 +38,7 @@ export function RowActions({ actions }: { actions: RowAction[] }) {
         type="button"
         aria-label={action.label}
         data-test={`row-action-${action.key}`}
-        className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-sm"
+        className={inlineClass(action.destructive)}
         onClick={action.onClick}
       >
         <Icon name={action.icon} />
@@ -55,7 +69,7 @@ export function RowActions({ actions }: { actions: RowAction[] }) {
               key={action.key}
               type="button"
               data-test={`row-action-${action.key}`}
-              className="flex w-full items-center gap-2 rounded-lt-sm px-3 py-1.5 text-left text-sm hover:bg-lt-accent hover:text-lt-accent-fg [&_svg]:size-lt-icon-sm"
+              className={menuItemClass(action.destructive)}
               onClick={() => {
                 action.onClick();
                 setOpen(false);

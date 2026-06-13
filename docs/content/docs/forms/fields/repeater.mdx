@@ -73,10 +73,35 @@ Repeater::make('items', 'Line items')
     ->table();
 ```
 
-Reorder controls (↑↓) sit on the left of each row and the remove action on the right; once a row
-carries more than one action they collapse into a ⋯ menu. Reordering slides each row to its new
-position, and the table scrolls horizontally on narrow screens. The slide animation is skipped when
+Reorder controls (↑↓) sit on the left of each row and the [row actions](#row-actions) on the right;
+once a row carries more than one action they collapse into a ⋯ menu. Reordering slides each row to its
+new position, and the table scrolls horizontally on narrow screens. The slide animation is skipped when
 the viewer prefers reduced motion.
+
+## Row actions
+
+Every row carries an action menu. By default it holds just **Remove** (hidden while the row is at
+`minItems`). Pass `->rowActions()` to declare the menu yourself, including the built-in **Duplicate**
+that clones a row in place. A single action renders inline; two or more collapse into a ⋯ menu. The
+same menu renders in both the stacked and table layouts — reorder controls stay separate.
+
+<ComponentExample
+  php={`Repeater::make('items', 'Line items')
+    ->schema([
+        TextInput::make('name', 'Name'),
+        TextInput::make('qty', 'Qty')->rules(['numeric']),
+    ])
+    ->rowActions([
+        RowAction::duplicate(),
+        RowAction::remove()->label('Delete'),
+    ]);`}
+  fixture="repeater.row-actions"
+  values={{ items: [{ name: "Widget", qty: "3" }] }}
+/>
+
+`RowAction::duplicate()` and `RowAction::remove()` are the built-ins; chain `->label()`, `->icon()`, or
+`->destructive()` to customise each. Remove is hidden automatically while the row sits at `minItems`.
+Pass an empty array — `->rowActions([])` — to drop the menu entirely.
 
 ## Labels
 

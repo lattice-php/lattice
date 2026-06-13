@@ -75,6 +75,7 @@ export type Builder = {
   required: boolean | null;
   resizableColumns: boolean | null;
   resizeIndicator: boolean;
+  rowActions: RowAction[] | null;
   value: unknown;
 };
 export type BulkAction = {
@@ -695,6 +696,7 @@ export type Repeater = {
   required: boolean | null;
   resizableColumns: boolean | null;
   resizeIndicator: boolean;
+  rowActions: RowAction[] | null;
   value: unknown;
 };
 export type ResetFormEffect = {
@@ -723,6 +725,14 @@ export type RichEditor = {
   required: boolean | null;
   value: unknown;
 };
+export type RowAction = {
+  type: RowActionType;
+  key: string;
+  label: string | null;
+  icon: string | null;
+  destructive: boolean;
+};
+export type RowActionType = "duplicate" | "remove";
 export type RowLayout = "stack" | "table";
 export type Section = {
   collapsed: boolean;

@@ -1,5 +1,5 @@
 import { expect, it, vi, beforeAll, afterAll } from "vitest";
-import { configure, getConfig, fireEvent, render, screen } from "@testing-library/react";
+import { configure, getConfig, fireEvent, render, screen, within } from "@testing-library/react";
 
 let prev: string;
 beforeAll(() => {
@@ -109,7 +109,8 @@ it("can remove an unknown-block row", () => {
     items: [{ type: "video" }, { type: "text", content: "keep" }],
   });
   expect(screen.getByText(/Unknown block/i)).toBeInTheDocument();
-  fireEvent.click(screen.getByTestId("repeater-items-remove-0"));
+  const firstRow = screen.getByTestId("repeater-items-row-0");
+  fireEvent.click(within(firstRow).getByTestId("row-action-remove"));
   expect(screen.queryByText(/Unknown block/i)).not.toBeInTheDocument();
 });
 

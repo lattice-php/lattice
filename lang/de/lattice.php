@@ -85,4 +85,8 @@ return [
         'allSelected' => 'Alle :count ausgewählt',
         'selectAllMatching' => 'Alle :total passenden auswählen',
     ],
+    'rowActions' => [
+        'duplicate' => 'Duplizieren',
+        'remove' => 'Entfernen',
+    ],
 ];

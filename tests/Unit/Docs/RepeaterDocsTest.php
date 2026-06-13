@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Forms\Components\Repeater;
+use Lattice\Lattice\Forms\Components\RowAction;
 use Lattice\Lattice\Forms\Components\TextInput;
 
 describe('docs fixtures', function (): void {
@@ -20,5 +21,21 @@ describe('docs fixtures', function (): void {
         ]);
 
         expect('docs/fixtures/repeater.basic.json')->toBeReadableFile();
+    });
+
+    it('dumps the repeater row-actions example', function (): void {
+        dumpFixture('repeater.row-actions', [
+            Repeater::make('items', 'Line items')
+                ->schema([
+                    TextInput::make('name', 'Name'),
+                    TextInput::make('qty', 'Qty')->rules(['numeric']),
+                ])
+                ->rowActions([
+                    RowAction::duplicate(),
+                    RowAction::remove()->label('Delete'),
+                ]),
+        ]);
+
+        expect('docs/fixtures/repeater.row-actions.json')->toBeReadableFile();
     });
 });
