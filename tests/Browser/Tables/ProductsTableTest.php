@@ -9,7 +9,7 @@ it('renders the custom status-badge column cell', function (): void {
     visit('/products')
         ->assertSee('Badge Product')
         ->assertPresent('[data-testid="status-badge"]')
-        ->assertSee('active')
+        ->assertSee('Active')
         ->assertNoSmoke();
 });
 
@@ -21,7 +21,7 @@ it('archives a product via the row action with confirmation', function (): void 
         ->click('@action-archive')
         ->assertSee('Archive product?')
         ->click('@confirm-accept')
-        ->assertSee('archived')
+        ->assertSee('Archived')
         ->assertNoSmoke();
 
     expect($product->fresh()->status)->toBe('archived');

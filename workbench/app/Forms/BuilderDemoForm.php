@@ -22,20 +22,20 @@ class BuilderDemoForm extends FormDefinition
         return $form
             ->precognitive(300)
             ->schema([
-                Card::make('Line items')->schema([
-                    Builder::make('items', 'Line items')
+                Card::make(__('workbench.forms.builder.card'))->schema([
+                    Builder::make('items', __('workbench.common.lineItems'))
                         ->blocks([
-                            Block::make('text')->label('Text')->schema([
-                                Textarea::make('content', 'Content')->required(),
+                            Block::make('text')->label(__('workbench.common.text'))->schema([
+                                Textarea::make('content', __('workbench.common.content'))->required(),
                             ]),
-                            Block::make('product')->label('Product line')->schema([
-                                TextInput::make('product', 'Product')->required(),
-                                TextInput::make('qty', 'Qty')->rules(['numeric']),
-                                TextInput::make('price', 'Price')->rules(['numeric']),
+                            Block::make('product')->label(__('workbench.common.productLine'))->schema([
+                                TextInput::make('product', __('workbench.common.product'))->required(),
+                                TextInput::make('qty', __('workbench.common.qty'))->rules(['numeric']),
+                                TextInput::make('price', __('workbench.common.price'))->rules(['numeric']),
                             ]),
                         ])
                         ->minItems(1)
-                        ->addLabel('Add block'),
+                        ->addLabel(__('workbench.common.addBlock')),
                 ]),
             ]);
     }

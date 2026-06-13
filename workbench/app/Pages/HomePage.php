@@ -22,7 +22,7 @@ final class HomePage extends WorkbenchPage
 {
     public function title(): string
     {
-        return 'Lattice Workbench';
+        return __('workbench.pages.home.title');
     }
 
     public function render(PageSchema $schema): PageSchema
@@ -34,30 +34,30 @@ final class HomePage extends WorkbenchPage
                     Stack::make('workbench-hero')
                         ->gap(Gap::Large)
                         ->schema([
-                            Badge::make('Lattice Package'),
-                            Heading::make('Workbench page'),
-                            Text::make('Package primitives render through a host application page.'),
+                            Badge::make(__('workbench.pages.home.badge')),
+                            Heading::make(__('workbench.pages.home.heading')),
+                            Text::make(__('workbench.pages.home.intro')),
                         ]),
                     Grid::make('workbench-capabilities')
                         ->columns(2)
                         ->schema([
-                            Card::make('Components', 'Server-side component trees serialize to typed React nodes.'),
-                            Card::make('Renderer', 'The package renderer resolves registered component types.'),
+                            Card::make(__('workbench.pages.home.componentsTitle'), __('workbench.pages.home.componentsDescription')),
+                            Card::make(__('workbench.pages.home.rendererTitle'), __('workbench.pages.home.rendererDescription')),
                         ]),
-                    Heading::make('Button variants', 2),
+                    Heading::make(__('workbench.pages.home.buttonVariants'), 2),
                     Stack::make('workbench-buttons')
                         ->direction('row')
                         ->gap(Gap::Small)
                         ->schema([
-                            Button::make('Default')->variant(ButtonVariant::Default),
-                            Button::make('Secondary')->variant(ButtonVariant::Secondary),
-                            Button::make('Success')->variant(ButtonVariant::Success),
-                            Button::make('Info')->variant(ButtonVariant::Info),
-                            Button::make('Destructive')->variant(ButtonVariant::Destructive),
-                            Button::make('Outline')->variant(ButtonVariant::Outline),
-                            Button::make('Ghost')->variant(ButtonVariant::Ghost),
+                            Button::make(__('workbench.pages.home.buttons.default'), 'button-default')->variant(ButtonVariant::Default),
+                            Button::make(__('workbench.pages.home.buttons.secondary'), 'button-secondary')->variant(ButtonVariant::Secondary),
+                            Button::make(__('workbench.pages.home.buttons.success'), 'button-success')->variant(ButtonVariant::Success),
+                            Button::make(__('workbench.pages.home.buttons.info'), 'button-info')->variant(ButtonVariant::Info),
+                            Button::make(__('workbench.pages.home.buttons.destructive'), 'button-destructive')->variant(ButtonVariant::Destructive),
+                            Button::make(__('workbench.pages.home.buttons.outline'), 'button-outline')->variant(ButtonVariant::Outline),
+                            Button::make(__('workbench.pages.home.buttons.ghost'), 'button-ghost')->variant(ButtonVariant::Ghost),
                         ]),
-                    Heading::make('Workbench users', 2),
+                    Heading::make(__('workbench.pages.home.users'), 2),
                     Table::use(UsersTable::class),
                 ]),
         ]);

@@ -21,12 +21,12 @@ class RejectSelectedProductsAction extends BulkActionDefinition
     public function definition(Action $action): Action
     {
         return $action
-            ->label('Reject selected')
+            ->label(__('workbench.actions.rejectSelected.label'))
             ->method(HttpMethod::Patch)
             ->variant(ButtonVariant::Destructive)
-            ->confirm('Reject selected products?', 'Tell the sellers why these products are rejected.', 'Submit rejection')
+            ->confirm(__('workbench.actions.rejectSelected.confirmTitle'), __('workbench.actions.rejectSelected.confirmDescription'), __('workbench.actions.rejectSelected.confirmLabel'))
             ->form([
-                Textarea::make('reason', 'Reason')->required()->rules(['string', 'max:255']),
+                Textarea::make('reason', __('workbench.common.reason'))->required()->rules(['string', 'max:255']),
             ]);
     }
 
@@ -44,7 +44,7 @@ class RejectSelectedProductsAction extends BulkActionDefinition
         });
 
         return ActionResult::success(['archived' => $records->count(), 'reason' => $data['reason']])
-            ->toast(ToastVariant::Success, "Rejected {$records->count()} products: {$data['reason']}")
+            ->toast(ToastVariant::Success, __('workbench.actions.rejectSelected.toast', ['count' => $records->count(), 'reason' => $data['reason']]))
             ->reloadComponent('workbench.products');
     }
 }

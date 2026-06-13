@@ -18,7 +18,7 @@ final class TabsPage extends WorkbenchPage
 {
     public function title(): string
     {
-        return 'Lattice Tabs';
+        return __('workbench.pages.tabs.title');
     }
 
     public function render(PageSchema $schema): PageSchema
@@ -27,24 +27,24 @@ final class TabsPage extends WorkbenchPage
             Stack::make('tabs-page')
                 ->gap(Gap::ExtraLarge)
                 ->schema([
-                    Heading::make('Horizontal tabs'),
+                    Heading::make(__('workbench.pages.tabs.horizontal')),
                     Tabs::make('horizontal-tabs')
                         ->queryKey('h')
                         ->defaultValue('overview')
                         ->schema([
-                            Tab::make('overview', 'Overview')->schema([Text::make('Overview panel')]),
-                            Tab::make('details', 'Details')->schema([Text::make('Details panel')]),
-                            Tab::make('history', 'History')->schema([Text::make('History panel')]),
+                            Tab::make('overview', __('workbench.pages.tabs.overview'))->schema([Text::make(__('workbench.pages.tabs.overviewPanel'))]),
+                            Tab::make('details', __('workbench.pages.tabs.details'))->schema([Text::make(__('workbench.pages.tabs.detailsPanel'))]),
+                            Tab::make('history', __('workbench.pages.tabs.history'))->schema([Text::make(__('workbench.pages.tabs.historyPanel'))]),
                         ]),
-                    Heading::make('Vertical tabs'),
+                    Heading::make(__('workbench.pages.tabs.vertical')),
                     Tabs::make('vertical-tabs')
                         ->queryKey('v')
                         ->orientation(Orientation::Vertical)
                         ->defaultValue('account')
                         ->schema([
-                            Tab::make('account', 'Account')->schema([Text::make('Account panel')]),
-                            Tab::make('security', 'Security')->schema([Text::make('Security panel')]),
-                            Tab::make('billing', 'Billing')->schema([Text::make('Billing panel')]),
+                            Tab::make('account', __('workbench.pages.tabs.account'))->schema([Text::make(__('workbench.pages.tabs.accountPanel'))]),
+                            Tab::make('security', __('workbench.pages.tabs.security'))->schema([Text::make(__('workbench.pages.tabs.securityPanel'))]),
+                            Tab::make('billing', __('workbench.pages.tabs.billing'))->schema([Text::make(__('workbench.pages.tabs.billingPanel'))]),
                         ]),
                 ]),
         ]);

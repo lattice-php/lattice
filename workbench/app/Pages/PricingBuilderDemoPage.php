@@ -17,7 +17,7 @@ class PricingBuilderDemoPage extends WorkbenchPage
 {
     public function title(): string
     {
-        return 'Pricing Builder Demo';
+        return __('workbench.pages.pricingBuilder.title');
     }
 
     public function render(PageSchema $schema): PageSchema
@@ -26,10 +26,10 @@ class PricingBuilderDemoPage extends WorkbenchPage
             Stack::make('pricing-builder-demo-page')
                 ->gap(Gap::Large)
                 ->schema([
-                    Heading::make('Pricing Builder Demo'),
+                    Heading::make(__('workbench.pages.pricingBuilder.heading')),
                     Form::use(PricingBuilderDemoForm::class)
                         ->method(HttpMethod::Post)
-                        ->submitLabel('Save'),
+                        ->submitLabel(__('workbench.pages.pricingBuilder.submit')),
                 ]),
         ]);
     }

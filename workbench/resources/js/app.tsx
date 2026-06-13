@@ -25,7 +25,7 @@ createInertiaApp({
     }
 
     const shared = props.initialPage.props as { lattice?: { i18n?: I18nConfig } };
-    void configureI18n(shared.lattice?.i18n);
+    void configureI18n(shared.lattice?.i18n, { namespaces: ["lattice", "workbench"] });
 
     createRoot(el).render(
       <Provider registry={appRegistry} sprite={sprite}>

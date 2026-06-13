@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Inertia\Testing\AssertableInertia;
 
@@ -43,6 +44,31 @@ it('serves the lattice namespace from the package lang dir as nested i18next JSO
         ->assertJsonPath('operators.eq', 'ist gleich')
         ->assertJsonPath('a11y.selectRow', 'Zeile {{key}} auswählen')
         ->assertJsonPath('bulk.selected', '{{count}} ausgewählt');
+});
+
+it('serves workbench translations from the workbench lang dir', function () {
+    getJson('/locales/en/workbench.json')
+        ->assertOk()
+        ->assertJsonPath('pages.products.title', 'Products')
+        ->assertJsonPath('forms.product.fields.name', 'Name');
+
+    getJson('/locales/de/workbench.json')
+        ->assertOk()
+        ->assertJsonPath('pages.products.title', 'Produkte')
+        ->assertJsonPath('forms.product.fields.name', 'Name');
+});
+
+it('keeps workbench translation keys aligned between English and German', function () {
+    $english = require package_path('workbench/lang/en/workbench.php');
+    $german = require package_path('workbench/lang/de/workbench.php');
+
+    expect(array_keys($english))
+        ->not->toBeEmpty()
+        ->and(array_keys($german))
+        ->toBe(array_keys($english));
+
+    expect(array_keys(Arr::dot($german)))
+        ->toBe(array_keys(Arr::dot($english)));
 });
 
 it('dumps missing lattice keys into the package lang dir, never vendor', function () {

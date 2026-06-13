@@ -18,7 +18,7 @@ class ProductsPage extends WorkbenchPage
 {
     public function title(): string
     {
-        return 'Products';
+        return __('workbench.pages.products.title');
     }
 
     public function render(PageSchema $schema): PageSchema
@@ -31,8 +31,8 @@ class ProductsPage extends WorkbenchPage
                         ->direction('row')
                         ->align(Align::Center)
                         ->schema([
-                            Heading::make('Products'),
-                            Button::make('Create product')
+                            Heading::make(__('workbench.pages.products.heading')),
+                            Button::make(__('workbench.pages.products.create'), 'create-product')
                                 ->href('/products/create'),
                         ]),
                     Table::use(ProductsTable::class),

@@ -26,25 +26,25 @@ class ProductForm extends FormDefinition
         return $form
             ->precognitive(2650)
             ->schema([
-                Card::make('Product details')->schema([
-                    TextInput::make('name', 'Name')
+                Card::make(__('workbench.forms.product.card'))->schema([
+                    TextInput::make('name', __('workbench.forms.product.fields.name'))
                         ->rules(['required', 'string', 'max:255']),
                     Grid::make()->columns(2)->schema([
-                        TextInput::make('sku', 'SKU')
+                        TextInput::make('sku', __('workbench.forms.product.fields.sku'))
                             ->rules(['required', 'string', 'max:255', Rule::unique(Product::class, 'sku')->ignore($product)]),
-                        TextInput::make('price', 'Price')
+                        TextInput::make('price', __('workbench.forms.product.fields.price'))
                             ->rules(['required', 'numeric', 'min:0']),
                     ]),
-                    Choice::make('status', 'Status')
+                    Choice::make('status', __('workbench.forms.product.fields.status'))
                         ->options([
-                            Choice::option('Draft', 'draft'),
-                            Choice::option('Active', 'active'),
-                            Choice::option('Archived', 'archived'),
+                            Choice::option(__('workbench.forms.product.status.draft'), 'draft'),
+                            Choice::option(__('workbench.forms.product.status.active'), 'active'),
+                            Choice::option(__('workbench.forms.product.status.archived'), 'archived'),
                         ])
                         ->rules(['required', 'string', Rule::in(['draft', 'active', 'archived'])]),
-                    Select::make('related_products', 'Related products')
+                    Select::make('related_products', __('workbench.forms.product.fields.relatedProducts'))
                         ->multiple()
-                        ->placeholder('Search products…')
+                        ->placeholder(__('workbench.common.searchProducts'))
                         ->searchable(fn (string $query) => Product::query()
                             ->where('name', 'like', "%{$query}%")
                             ->when($product, fn ($builder) => $builder->whereKeyNot($product->getKey()))

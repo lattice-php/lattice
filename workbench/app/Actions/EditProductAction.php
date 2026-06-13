@@ -21,9 +21,9 @@ class EditProductAction extends FormActionDefinition
     public function definition(Action $action): Action
     {
         return $action
-            ->label('Quick edit')
+            ->label(__('workbench.actions.edit.label'))
             ->method(HttpMethod::Patch)
-            ->confirm('Edit product', 'Update the product details.', 'Save changes');
+            ->confirm(__('workbench.actions.edit.confirmTitle'), __('workbench.actions.edit.confirmDescription'), __('workbench.actions.edit.confirmLabel'));
     }
 
     public function formSchema(Form $form, Request $request): Form
@@ -55,10 +55,10 @@ class EditProductAction extends FormActionDefinition
 
         return ActionResult::success(['id' => $product->getKey()])
             ->toast(
-                ToastMessage::make(ToastVariant::Success, 'Product updated.')
+                ToastMessage::make(ToastVariant::Success, __('workbench.actions.edit.toast'))
                     ->action(
                         Action::use(RejectProductAction::class)
-                            ->label('Reject product')
+                            ->label(__('workbench.actions.edit.rejectProduct'))
                             ->context(['product_id' => $product->getKey()]),
                     )
                     ->persistent(),

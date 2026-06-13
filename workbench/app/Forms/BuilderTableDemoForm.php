@@ -24,22 +24,22 @@ class BuilderTableDemoForm extends FormDefinition
         return $form
             ->precognitive(300)
             ->schema([
-                Card::make('Line items')->schema([
-                    Builder::make('items', 'Line items')
+                Card::make(__('workbench.forms.builder.card'))->schema([
+                    Builder::make('items', __('workbench.common.lineItems'))
                         ->table()
                         ->resizableColumns(showIndicator: true)
                         ->blocks([
-                            Block::make('product')->label('Product line')->schema([
-                                TextInput::make('product', 'Product')->columnWidth(ColumnWidth::Lg)->required(),
-                                TextInput::make('qty', 'Qty')->columnWidth(ColumnWidth::Xs)->rules(['numeric']),
-                                TextInput::make('price', 'Price')->columnWidth(ColumnWidth::Sm)->rules(['numeric']),
+                            Block::make('product')->label(__('workbench.common.productLine'))->schema([
+                                TextInput::make('product', __('workbench.common.product'))->columnWidth(ColumnWidth::Lg)->required(),
+                                TextInput::make('qty', __('workbench.common.qty'))->columnWidth(ColumnWidth::Xs)->rules(['numeric']),
+                                TextInput::make('price', __('workbench.common.price'))->columnWidth(ColumnWidth::Sm)->rules(['numeric']),
                             ]),
-                            Block::make('text')->label('Text')->schema([
-                                Textarea::make('content', 'Content')->required(),
+                            Block::make('text')->label(__('workbench.common.text'))->schema([
+                                Textarea::make('content', __('workbench.common.content'))->required(),
                             ]),
                         ])
                         ->minItems(1)
-                        ->addLabel('Add block'),
+                        ->addLabel(__('workbench.common.addBlock')),
                 ]),
             ]);
     }
