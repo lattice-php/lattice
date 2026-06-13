@@ -1,11 +1,12 @@
-import { Fragment } from "react";
 import type { Node, RendererComponent } from "@lattice/lattice/core/types";
 import { Icon } from "@lattice/lattice/icons";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";
 import { BlockAddMenu, type BlockOption } from "./block-add-menu";
+import { ROW_ID_KEY } from "./repeater-rows";
 import { RowItem } from "./row-item";
+import { useFlipReorder } from "./use-flip-reorder";
 import { useRowCollection } from "./use-row-collection";
 
 type Block = { type: string; label: string; schema: Node[] };
@@ -22,6 +23,8 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
     name,
     props.defaultItems ?? 0,
   );
+  const orderSignature = rows.map((r) => String(r[ROW_ID_KEY] ?? "")).join(",");
+  const registerRow = useFlipReorder(orderSignature);
   const atMax = props.maxItems != null && rows.length >= props.maxItems;
   const atMin = props.minItems != null && rows.length <= props.minItems;
 
@@ -46,9 +49,10 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
       <div className="flex flex-col gap-3">
         {rows.map((row, index) => {
           const block = blockFor(row.type);
+          const key = String(row[ROW_ID_KEY] ?? index);
 
           return (
-            <Fragment key={index}>
+            <div key={key} ref={(el) => registerRow(key, el)} data-flip-key={key}>
               <input
                 type="hidden"
                 name={`${name}[${index}][type]`}
@@ -88,7 +92,7 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
                   )}
                 </div>
               )}
-            </Fragment>
+            </div>
           );
         })}
 
