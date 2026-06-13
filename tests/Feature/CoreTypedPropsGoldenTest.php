@@ -31,7 +31,7 @@ test('GOLDEN stack serializes enums direction and key wire-identically', functio
                 'height' => null,
             ],
             'schema' => [
-                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null]],
+                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => 'muted']],
             ],
         ]);
 });
@@ -77,7 +77,7 @@ test('GOLDEN modal serializes id title description and children', function () {
                 'ref' => null,
             ],
             'schema' => [
-                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null]],
+                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => 'muted']],
             ],
         ]);
 });
@@ -117,12 +117,12 @@ test('GOLDEN tabs serialize defaultValue queryKey and computed activeValue', fun
                 [
                     'type' => 'tab',
                     'props' => ['label' => 'Profile', 'value' => 'profile', 'confirm' => null],
-                    'schema' => [['type' => 'text', 'props' => ['text' => 'Profile form', 'align' => null]]],
+                    'schema' => [['type' => 'text', 'props' => ['text' => 'Profile form', 'align' => null, 'size' => 'md', 'color' => 'muted']]],
                 ],
                 [
                     'type' => 'tab',
                     'props' => ['label' => 'Security', 'value' => 'security', 'confirm' => null],
-                    'schema' => [['type' => 'text', 'props' => ['text' => 'Security form', 'align' => null]]],
+                    'schema' => [['type' => 'text', 'props' => ['text' => 'Security form', 'align' => null, 'size' => 'md', 'color' => 'muted']]],
                 ],
             ],
         ]);

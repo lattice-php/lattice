@@ -15,9 +15,9 @@ class Text extends Component
 
     public ?Align $align = null;
 
-    public ?Size $size;
+    public Size $size = Size::Md;
 
-    public ?Color $color;
+    public Color $color = Color::Muted;
 
     public static function make(string $text, ?string $key = null): static
     {

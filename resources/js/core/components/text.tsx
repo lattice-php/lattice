@@ -27,8 +27,6 @@ const textSizes: Record<Size, string> = {
 
 const TextComponent: RendererComponent<"text"> = ({ node }) => {
   const align = node.props.align ?? "left";
-  const color = node.props.color ?? "muted";
-  const size = node.props.size ?? "md";
 
   return (
     <p
@@ -36,8 +34,8 @@ const TextComponent: RendererComponent<"text"> = ({ node }) => {
         "m-0",
         "max-w-2xl",
         textAlignments[align] ?? textAlignments.left,
-        textColors[color] ?? textColors.muted,
-        textSizes[size] ?? textSizes.md,
+        textColors[node.props.color],
+        textSizes[node.props.size],
       )}
     >
       {node.props.text}

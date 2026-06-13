@@ -796,8 +796,8 @@ export type Tabs = {
 };
 export type Text = {
   align: Align | null;
-  color: Color | null;
-  size: Size | null;
+  color: Color;
+  size: Size;
   text: string;
 };
 export type TextColumnProps = {

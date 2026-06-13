@@ -6,10 +6,12 @@ use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Color;
 use Lattice\Lattice\Core\Enums\Size;
 
-it('omits unset text styling props from the wire payload', function (): void {
+it('serializes default text styling props', function (): void {
     expect(wire(Text::make('Default copy'))['props'])->toBe([
         'text' => 'Default copy',
         'align' => null,
+        'size' => 'md',
+        'color' => 'muted',
     ]);
 });
 
