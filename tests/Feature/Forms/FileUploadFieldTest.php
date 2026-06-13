@@ -34,6 +34,27 @@ it('signs an upload through the form endpoint', function (): void {
         ->assertJsonStructure(['key', 'url', 'headers', 'method']);
 });
 
+it('signs an upload for a file field inside a repeater row', function (): void {
+    Storage::fake('s3');
+    Storage::disk('s3')->buildTemporaryUploadUrlsUsing(
+        fn (string $path, $expiration, array $options = []) => ['url' => "https://s3.test/{$path}", 'headers' => []],
+    );
+
+    Lattice::forms([UploadForm::class]);
+
+    $form = wire(Form::use(UploadForm::class));
+
+    post('/lattice/forms/workbench.upload.form', [
+        '_upload' => 'documents.0.file',
+        'filename' => 'invoice.pdf',
+        'documents' => [
+            ['file' => null],
+        ],
+    ], uploadHeaders($form))
+        ->assertOk()
+        ->assertJsonStructure(['key', 'url', 'headers', 'method']);
+});
+
 it('returns 422 when the field does not use signed uploads', function (): void {
     Storage::fake('s3');
 
