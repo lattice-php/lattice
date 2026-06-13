@@ -6,6 +6,7 @@ namespace Workbench\App\Forms;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\Form;
 use Lattice\Lattice\Core\Components\Card;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Block;
 use Lattice\Lattice\Forms\Components\Builder;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
@@ -27,8 +28,6 @@ class PricingBuilderDemoForm extends FormDefinition
 
     public function definition(FormComponent $form, Request $request): FormComponent
     {
-        $products = Product::query()->orderBy('name')->limit(20)->get();
-
         return $form
             ->precognitive(300)
             ->schema([
@@ -46,11 +45,10 @@ class PricingBuilderDemoForm extends FormDefinition
                                 Textarea::make('content', 'Content')->required(),
                             ]),
                             Block::make('product')->label('Product line')->schema([
-                                Select::make('product', 'Product')->options(
-                                    $products
-                                        ->map(fn (Product $product) => Select::option($product->name, (string) $product->getKey()))
-                                        ->all(),
-                                ),
+                                Select::make('product', 'Product')
+                                    ->options($this->productOptions(limit: 20))
+                                    ->searchable(fn (string $query) => $this->productOptions(query: $query, limit: 10))
+                                    ->resolveSelectedUsing(fn (array $values) => $this->productOptions(values: $values)),
                                 TextInput::make('qty', 'Qty')->rules(['numeric']),
                                 TextInput::make('price', 'Price')->rules(['numeric'])->value(
                                     fn (FormData $row, FormData $form) => $this->priceFor($row->get('product'), $form->get('customer')),
@@ -75,6 +73,32 @@ class PricingBuilderDemoForm extends FormDefinition
         $this->validate($request);
 
         return redirect('/builder-pricing');
+    }
+
+    /**
+     * @param  array<int, string>|null  $values
+     * @return array<int, Option>
+     */
+    private function productOptions(?string $query = null, ?array $values = null, ?int $limit = null): array
+    {
+        $builder = Product::query()->orderBy('name');
+
+        if ($query !== null) {
+            $builder->where('name', 'like', "%{$query}%");
+        }
+
+        if ($values !== null) {
+            $builder->whereIn('id', $values);
+        }
+
+        if ($limit !== null) {
+            $builder->limit($limit);
+        }
+
+        return $builder
+            ->get()
+            ->map(fn (Product $product) => Select::option($product->name, (string) $product->getKey()))
+            ->all();
     }
 
     private function priceFor(mixed $productId, mixed $customer): ?float

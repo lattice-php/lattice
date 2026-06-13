@@ -55,3 +55,24 @@ it('evaluates row field visibility against same-row siblings', function (): void
         ->assertNoSmoke()
         ->assertNoJavaScriptErrors();
 });
+
+it('searches products inside a builder row select', function (): void {
+    foreach (range(1, 20) as $number) {
+        Product::factory()->create(['name' => sprintf('Alpha Product %02d', $number), 'price' => 10.00]);
+    }
+
+    Product::factory()->create(['name' => 'Zulu Search Only', 'price' => 400.00]);
+
+    visit('/builder-pricing')
+        ->assertSee('Pricing Builder Demo')
+        ->click('@builder-add')
+        ->click('@builder-add-product')
+        ->click('[data-test="repeater-items-row-0"] [data-test="select-product"]')
+        ->fill('input[aria-label="Search options"]', 'zulu')
+        ->assertSee('Zulu Search Only')
+        ->click('Zulu Search Only')
+        ->wait(1)
+        ->assertValue('input[name="items[0][price]"]', '400')
+        ->assertNoSmoke()
+        ->assertNoJavaScriptErrors();
+});

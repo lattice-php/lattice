@@ -32,9 +32,14 @@ trait HandlesRowSchemas
 
         foreach ($rows as $index => $row) {
             $row = is_array($row) ? $row : [];
+            $scope = $this->rowScope($data, $row);
 
             foreach ($this->rowFields($row) as $child) {
-                $childRules = $child->resolvedRulesWithRequired($data, $request);
+                if (! $child->isVisible($scope)) {
+                    continue;
+                }
+
+                $childRules = $child->resolvedRulesWithRequired($scope, $request);
 
                 if ($childRules !== []) {
                     $rules["{$name}.{$index}.{$child->name()}"] = $childRules;
@@ -43,6 +48,74 @@ trait HandlesRowSchemas
         }
 
         return $rules;
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     */
+    public function rowScope(FormData $form, array $row): FormData
+    {
+        return FormData::make([...$form->all(), ...$row]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     */
+    public function rowField(array $row, string $name): ?Field
+    {
+        foreach ($this->rowFields($row) as $field) {
+            if ($field->name() === $name) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
+    public function prefillRowFields(mixed $rows): void
+    {
+        if (! is_array($rows)) {
+            return;
+        }
+
+        $fields = [];
+        $values = [];
+
+        foreach ($rows as $row) {
+            $row = is_array($row) ? $row : [];
+
+            foreach ($this->rowFields($row) as $field) {
+                $name = $field->name();
+
+                if (! array_key_exists($name, $row)) {
+                    continue;
+                }
+
+                $key = spl_object_id($field);
+                $fields[$key] = $field;
+
+                foreach ($this->filledRowValues($row[$name]) as $value) {
+                    $values[$key][$value] = $value;
+                }
+            }
+        }
+
+        foreach ($values as $key => $fieldValues) {
+            $fields[$key]->prefill(array_values($fieldValues));
+        }
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function filledRowValues(mixed $value): array
+    {
+        $values = is_array($value) ? $value : [$value];
+
+        return array_values(array_filter(
+            array_map(static fn (mixed $item): string => (string) $item, $values),
+            static fn (string $item): bool => $item !== '',
+        ));
     }
 
     /**
