@@ -175,9 +175,7 @@ export default defineConfig(({ mode }) => {
             },
           },
         }
-      : isSonda
-        ? { build: { sourcemap: true } }
-        : {}),
+      : { build: { sourcemap: true,  chunkSizeWarningLimit: 600 } }),
     test: {
       environment: "jsdom",
       include: ["resources/js/**/*.test.{ts,tsx}", "docs/**/*.test.{ts,tsx}"],
