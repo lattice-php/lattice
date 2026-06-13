@@ -20,14 +20,15 @@ function context(overrides: Partial<RowActionContext> = {}): RowActionContext {
     removable: true,
     onRemove: vi.fn<(index: number) => void>(),
     onDuplicate: vi.fn<(index: number) => void>(),
+    t: (_key, fallback) => fallback,
     ...overrides,
   };
 }
 
 describe("buildRowActions", () => {
-  it("defaults to a remove action when nothing is declared and the row is removable", () => {
+  it("defaults to a remove action when undeclared (null) and the row is removable", () => {
     const ctx = context();
-    const actions = buildRowActions([], ctx);
+    const actions = buildRowActions(null, ctx);
 
     expect(actions).toHaveLength(1);
     expect(actions[0].key).toBe("remove");
@@ -35,8 +36,21 @@ describe("buildRowActions", () => {
     expect(ctx.onRemove).toHaveBeenCalledWith(1);
   });
 
-  it("defaults to no actions when nothing is declared and the row is not removable", () => {
-    expect(buildRowActions([], context({ removable: false }))).toEqual([]);
+  it("defaults to no actions when undeclared (null) and the row is not removable", () => {
+    expect(buildRowActions(null, context({ removable: false }))).toEqual([]);
+  });
+
+  it("disables row actions entirely for an explicit empty array", () => {
+    expect(buildRowActions([], context())).toEqual([]);
+  });
+
+  it("resolves built-in labels through the translator", () => {
+    const [action] = buildRowActions(
+      [wireAction({ type: "duplicate" })],
+      context({ t: (key) => `t:${key}` }),
+    );
+
+    expect(action.label).toBe("t:rowActions.duplicate");
   });
 
   it("maps a duplicate action to onDuplicate with client-default label and icon", () => {

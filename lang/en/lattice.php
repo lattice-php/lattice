@@ -85,4 +85,8 @@ return [
         'allSelected' => 'All :count selected',
         'selectAllMatching' => 'Select all :total matching',
     ],
+    'rowActions' => [
+        'duplicate' => 'Duplicate',
+        'remove' => 'Remove',
+    ],
 ];

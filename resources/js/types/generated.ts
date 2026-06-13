@@ -75,7 +75,7 @@ export type Builder = {
   required: boolean | null;
   resizableColumns: boolean | null;
   resizeIndicator: boolean;
-  rowActions: RowAction[];
+  rowActions: RowAction[] | null;
   value: unknown;
 };
 export type BulkAction = {
@@ -696,7 +696,7 @@ export type Repeater = {
   required: boolean | null;
   resizableColumns: boolean | null;
   resizeIndicator: boolean;
-  rowActions: RowAction[];
+  rowActions: RowAction[] | null;
   value: unknown;
 };
 export type ResetFormEffect = {

@@ -1,10 +1,12 @@
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
-import { Icon } from "@lattice-php/lattice/icons";
+import { useT } from "@lattice-php/lattice/i18n";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";
 import { BlockAddMenu, type BlockOption } from "./block-add-menu";
 import { ROW_ID_KEY } from "./repeater-rows";
+import { buildRowActions } from "./row-action-menu";
+import { RowActions } from "./row-actions";
 import { RowItem } from "./row-item";
 import { columnsFromSchema, TableRows } from "./table-rows";
 import { useFlipReorder } from "./use-flip-reorder";
@@ -24,6 +26,7 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
     name,
     props.defaultItems ?? 0,
   );
+  const { t } = useT("lattice");
   const orderSignature = rows.map((r) => String(r[ROW_ID_KEY] ?? "")).join(",");
   const registerRow = useFlipReorder(orderSignature);
   const atMax = props.maxItems != null && rows.length >= props.maxItems;
@@ -125,17 +128,15 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
                     className="flex items-center justify-between rounded-lt border border-dashed border-lt-border p-4 text-sm text-lt-muted-fg"
                   >
                     <span>Unknown block: {String(row.type)}</span>
-                    {!atMin && (
-                      <button
-                        type="button"
-                        aria-label="Remove"
-                        data-test={`repeater-${name}-remove-${index}`}
-                        className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-sm"
-                        onClick={() => onRemove(index)}
-                      >
-                        <Icon name="trash-2" />
-                      </button>
-                    )}
+                    <RowActions
+                      actions={buildRowActions(props.rowActions, {
+                        index,
+                        removable: !atMin,
+                        onRemove,
+                        onDuplicate,
+                        t,
+                      })}
+                    />
                   </div>
                 )}
               </div>

@@ -136,7 +136,7 @@
             "required": null,
             "resizableColumns": null,
             "resizeIndicator": false,
-            "rowActions": [],
+            "rowActions": null,
             "value": null
         },
         "type": "form.builder"

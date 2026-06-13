@@ -37,8 +37,14 @@ it('defaults reorderable on and defaultItems to 1', function (): void {
         ->and($wire['props']['defaultItems'])->toBe(1);
 });
 
-it('serialises an empty rowActions array when none are declared', function (): void {
+it('serialises rowActions as null when none are declared', function (): void {
     $wire = wire(Repeater::make('items')->schema([TextInput::make('name')]));
+
+    expect($wire['props']['rowActions'])->toBeNull();
+});
+
+it('serialises an explicit empty rowActions array to disable the row menu', function (): void {
+    $wire = wire(Repeater::make('items')->schema([TextInput::make('name')])->rowActions([]));
 
     expect($wire['props']['rowActions'])->toBe([]);
 });

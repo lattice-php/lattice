@@ -1,10 +1,12 @@
 import type { RowAction as WireRowAction } from "@lattice-php/lattice/types/generated";
 import type { RowAction } from "./row-actions";
 
-/** Localised display defaults for the built-in row actions; the server sends null. */
-const BUILT_IN: Record<"duplicate" | "remove", { label: string; icon: string }> = {
-  duplicate: { label: "Duplicate", icon: "copy" },
-  remove: { label: "Remove", icon: "trash-2" },
+export type RowActionTranslate = (key: string, fallback: string) => string;
+
+/** Translation key + fallback and icon for each built-in; the server sends null labels. */
+const BUILT_IN: Record<"duplicate" | "remove", { key: string; fallback: string; icon: string }> = {
+  duplicate: { key: "rowActions.duplicate", fallback: "Duplicate", icon: "copy" },
+  remove: { key: "rowActions.remove", fallback: "Remove", icon: "trash-2" },
 };
 
 export type RowActionContext = {
@@ -12,15 +14,20 @@ export type RowActionContext = {
   removable: boolean;
   onRemove: (index: number) => void;
   onDuplicate: (index: number) => void;
+  t: RowActionTranslate;
 };
 
 /**
- * Resolves the declared (or default) wire row actions into the click-wired client
- * actions the kebab renders. An undeclared menu falls back to the built-in remove;
- * remove is dropped while the row sits at its minimum.
+ * Resolves the declared wire row actions into the click-wired client actions the
+ * kebab renders. `null` (undeclared) falls back to the built-in remove; an empty
+ * array disables row actions entirely. Remove is dropped while the row is at its
+ * minimum, and built-in labels resolve through i18n when the server sends none.
  */
-export function buildRowActions(declared: WireRowAction[], ctx: RowActionContext): RowAction[] {
-  const source = declared?.length ? declared : defaultActions(ctx.removable);
+export function buildRowActions(
+  declared: WireRowAction[] | null,
+  ctx: RowActionContext,
+): RowAction[] {
+  const source = declared ?? defaultActions(ctx.removable);
 
   return source
     .map((action) => toClientAction(action, ctx))
@@ -37,10 +44,12 @@ function defaultActions(removable: boolean): WireRowAction[] {
 
 function toClientAction(action: WireRowAction, ctx: RowActionContext): RowAction | null {
   if (action.type === "duplicate") {
+    const builtIn = BUILT_IN.duplicate;
+
     return {
       key: action.key,
-      label: action.label ?? BUILT_IN.duplicate.label,
-      icon: action.icon ?? BUILT_IN.duplicate.icon,
+      label: action.label ?? ctx.t(builtIn.key, builtIn.fallback),
+      icon: action.icon ?? builtIn.icon,
       destructive: action.destructive,
       onClick: () => ctx.onDuplicate(ctx.index),
     };
@@ -51,10 +60,12 @@ function toClientAction(action: WireRowAction, ctx: RowActionContext): RowAction
       return null;
     }
 
+    const builtIn = BUILT_IN.remove;
+
     return {
       key: action.key,
-      label: action.label ?? BUILT_IN.remove.label,
-      icon: action.icon ?? BUILT_IN.remove.icon,
+      label: action.label ?? ctx.t(builtIn.key, builtIn.fallback),
+      icon: action.icon ?? builtIn.icon,
       destructive: action.destructive,
       onClick: () => ctx.onRemove(ctx.index),
     };

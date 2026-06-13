@@ -62,7 +62,7 @@ it("renders the header columns once and a columnar row's scoped cells", () => {
       onField={noop}
       onMove={noop}
       onRemove={noop}
-      rowActions={[]}
+      rowActions={null}
       onDuplicate={noop}
     />,
   );
@@ -83,7 +83,7 @@ it("renders a spanning row in a single full-width cell", () => {
       onField={noop}
       onMove={noop}
       onRemove={noop}
-      rowActions={[]}
+      rowActions={null}
       onDuplicate={noop}
     />,
   );
@@ -102,7 +102,7 @@ it("shows a remove action when removable", () => {
       onField={noop}
       onMove={noop}
       onRemove={noop}
-      rowActions={[]}
+      rowActions={null}
       onDuplicate={noop}
     />,
   );
@@ -121,7 +121,7 @@ it("registers each row element for FLIP", () => {
       onField={noop}
       onMove={noop}
       onRemove={noop}
-      rowActions={[]}
+      rowActions={null}
       onDuplicate={noop}
       registerRow={(k, el) => calls.push([k, el])}
     />,
@@ -140,7 +140,7 @@ it("uses column width hints when building the table grid", () => {
       onField={noop}
       onMove={noop}
       onRemove={noop}
-      rowActions={[]}
+      rowActions={null}
       onDuplicate={noop}
     />,
   );
@@ -161,7 +161,7 @@ it("does not render column resize handles unless enabled", () => {
       onField={noop}
       onMove={noop}
       onRemove={noop}
-      rowActions={[]}
+      rowActions={null}
       onDuplicate={noop}
     />,
   );
@@ -181,7 +181,7 @@ it("renders column resize handles when enabled", () => {
       onField={noop}
       onMove={noop}
       onRemove={noop}
-      rowActions={[]}
+      rowActions={null}
       onDuplicate={noop}
     />,
   );

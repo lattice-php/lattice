@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { memo } from "react";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
+import { useT } from "@lattice-php/lattice/i18n";
 import type { RowAction as WireRowAction } from "@lattice-php/lattice/types/generated";
 import { FieldScopeProvider } from "../field-scope";
 import { buildRowActions } from "./row-action-menu";
@@ -43,7 +44,7 @@ export type RowItemProps = {
   isFirst: boolean;
   isLast: boolean;
   removable: boolean;
-  rowActions: WireRowAction[];
+  rowActions: WireRowAction[] | null;
   onField: (index: number, field: string, value: unknown) => void;
   onRemove: (index: number) => void;
   onMove: (index: number, delta: number) => void;
@@ -69,6 +70,8 @@ export const RowItem = memo(function RowItem({
   onMove,
   onDuplicate,
 }: RowItemProps) {
+  const { t } = useT("lattice");
+
   return (
     <div
       data-test={`repeater-${base}-row-${index}`}
@@ -96,7 +99,7 @@ export const RowItem = memo(function RowItem({
             </RowButton>
           )}
           <RowActions
-            actions={buildRowActions(rowActions, { index, removable, onRemove, onDuplicate })}
+            actions={buildRowActions(rowActions, { index, removable, onRemove, onDuplicate, t })}
           />
         </div>
       </div>

@@ -5,11 +5,7 @@ namespace Lattice\Lattice\Forms\Enums;
 
 use Lattice\Lattice\Attributes\TypeScript;
 
-/**
- * Discriminates a row action's behaviour: the built-in client mutations the row
- * collection already understands. Reordering stays a separate affordance driven
- * by `reorderable`, not a row action.
- */
+// Reordering is a separate affordance (`reorderable`), so there are no move cases here.
 #[TypeScript]
 enum RowActionType: string
 {

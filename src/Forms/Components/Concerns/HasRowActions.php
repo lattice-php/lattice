@@ -8,9 +8,12 @@ use Lattice\Lattice\Forms\Components\RowAction;
 trait HasRowActions
 {
     /**
-     * @var array<int, RowAction>
+     * Null until declared, so the client can tell "undeclared" (use the default
+     * menu) apart from an explicit empty list (no row actions at all).
+     *
+     * @var array<int, RowAction>|null
      */
-    public array $rowActions = [];
+    public ?array $rowActions = null;
 
     /**
      * @param  array<int, RowAction>  $actions

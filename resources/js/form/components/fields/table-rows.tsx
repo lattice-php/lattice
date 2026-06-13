@@ -3,6 +3,7 @@ import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import { DEFAULT_COLUMN_WIDTH, type SizableColumn } from "@lattice-php/lattice/core/column-sizing";
 import { useColumnResizing } from "@lattice-php/lattice/core/use-column-resizing";
 import { Icon } from "@lattice-php/lattice/icons";
+import { useT } from "@lattice-php/lattice/i18n";
 import { memo, useMemo } from "react";
 import type { ColumnWidth, RowAction as WireRowAction } from "@lattice-php/lattice/types/generated";
 import { FieldScopeProvider } from "../field-scope";
@@ -53,7 +54,7 @@ type TableRowItemProps = {
   flipKey: string;
   reorderable: boolean;
   removable: boolean;
-  rowActions: WireRowAction[];
+  rowActions: WireRowAction[] | null;
   onField: (index: number, field: string, value: unknown) => void;
   onMove: (index: number, delta: number) => void;
   onRemove: (index: number) => void;
@@ -81,6 +82,8 @@ const TableRowItem = memo(function TableRowItem({
   onDuplicate,
   registerRow,
 }: TableRowItemProps) {
+  const { t } = useT("lattice");
+
   return (
     <div
       ref={(el) => registerRow?.(flipKey, el)}
@@ -139,7 +142,7 @@ const TableRowItem = memo(function TableRowItem({
 
       <div className="flex items-center">
         <RowActions
-          actions={buildRowActions(rowActions, { index, removable, onRemove, onDuplicate })}
+          actions={buildRowActions(rowActions, { index, removable, onRemove, onDuplicate, t })}
         />
       </div>
     </div>
@@ -166,7 +169,7 @@ export function TableRows({
   rows: TableRowModel[];
   reorderable: boolean;
   removable: (index: number) => boolean;
-  rowActions: WireRowAction[];
+  rowActions: WireRowAction[] | null;
   onField: (index: number, field: string, value: unknown) => void;
   onMove: (index: number, delta: number) => void;
   onRemove: (index: number) => void;

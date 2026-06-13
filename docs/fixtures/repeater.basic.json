@@ -24,7 +24,7 @@
             "required": null,
             "resizableColumns": null,
             "resizeIndicator": false,
-            "rowActions": [],
+            "rowActions": null,
             "value": null
         },
         "schema": [

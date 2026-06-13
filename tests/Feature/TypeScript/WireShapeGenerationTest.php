@@ -49,8 +49,7 @@ it('exposes rowActions on the Repeater and Builder field props', function () {
     expect($module)
         ->toContain('export type Repeater = {')
         ->toContain('export type Builder = {')
-        ->toContain('rowActions: RowAction[];');
+        ->toContain('rowActions: RowAction[] | null;');
 
-    // Both Repeater and Builder must carry it.
-    expect(substr_count($module, 'rowActions: RowAction[];'))->toBe(2);
+    expect(substr_count($module, 'rowActions: RowAction[] | null;'))->toBe(2);
 });
