@@ -79,10 +79,10 @@ class Select extends Field
 
     /**
      * Resolve the currently selected value(s) to options for display on edit forms.
-     * The resolver always receives an array of values (one entry for a single select),
-     * so a `whereIn` query works for both single and multiple selects.
-     *
-     * @param  Closure(array<int, string>): (array<int, Option|array{label: string, value: string|int}>|Collection<int, Option|array{label: string, value: string|int}>)  $resolver
+     * The resolver is evaluated with utility injection: `$values` (the currently-selected
+     * values, always an array so a `whereIn` query works for both single and multiple
+     * selects), plus `$component` and any container-resolved type (e.g. `Request`). It
+     * returns the matching options.
      */
     public function resolveSelectedUsing(Closure $resolver): static
     {

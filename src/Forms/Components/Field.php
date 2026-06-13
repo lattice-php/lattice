@@ -176,10 +176,11 @@ abstract class Field extends Component
 
     /**
      * Add validation rules. An array is merged onto the existing rules; a Closure
-     * (receiving FormData and Request) is resolved to additional rules at validation
-     * time. Calls accumulate.
+     * is resolved to additional rules at validation time via utility injection
+     * (`$state`/`$get`/`$value`/`$component` plus any container-resolved type such
+     * as `Request`). Calls accumulate.
      *
-     * @param  array<int, mixed>|Closure(FormData, Request): array<int, mixed>  $rules
+     * @param  array<int, mixed>|Closure  $rules
      */
     public function rules(array|Closure $rules): static
     {
