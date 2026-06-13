@@ -138,7 +138,7 @@ final class ComponentNode
     {
         $selectors = [];
 
-        foreach ($this->descendants() as $node) {
+        foreach ([$this, ...$this->descendants()] as $node) {
             $type = $node->type();
 
             if ($type === null) {

@@ -8,7 +8,7 @@ use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Support\Testing\ComponentNode;
 use PHPUnit\Framework\Assert;
 
-final readonly class ActionAssertions
+final class ActionAssertions
 {
     public function __construct(
         private readonly ComponentNode $node,

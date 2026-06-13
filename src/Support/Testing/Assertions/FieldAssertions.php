@@ -18,6 +18,12 @@ final class FieldAssertions
         private readonly ?ComponentNode $formNode = null,
     ) {}
 
+    /**
+     * Asserts the field is not force-hidden via ->hidden(). It does NOT evaluate
+     * conditional visibility: a field shown only by ->visibleWhen(...) still passes
+     * here because its default `hidden` flag is null. Use assertVisibleWhen($state)
+     * to evaluate visibility for a given form state.
+     */
     public function assertVisible(): self
     {
         Assert::assertNotSame(true, $this->node->prop('hidden'), sprintf(
@@ -28,6 +34,10 @@ final class FieldAssertions
         return $this;
     }
 
+    /**
+     * Asserts the field is force-hidden via ->hidden(). It does NOT evaluate
+     * conditional visibility; use assertHiddenWhen($state) for that.
+     */
     public function assertHidden(): self
     {
         Assert::assertSame(true, $this->node->prop('hidden'), sprintf(
@@ -39,6 +49,10 @@ final class FieldAssertions
     }
 
     /**
+     * Evaluates this field's own `visible` conditions against the given form
+     * state. It does not account for an ancestor (section/tab) being hidden — a
+     * field visible by its own rule reports visible even inside a hidden section.
+     *
      * @param  array<string, mixed>  $state
      */
     public function assertVisibleWhen(array $state): self
@@ -116,6 +130,11 @@ final class FieldAssertions
         return $this;
     }
 
+    /**
+     * Asserts the value the field is seeded with. A ->fill()ed form's state for
+     * this field wins; otherwise the field's own ->value() is used — matching the
+     * bound-edit runtime precedence.
+     */
     public function assertInitialValue(mixed $expected): self
     {
         Assert::assertSame($expected, $this->initialValue(), sprintf(
