@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 import { dispatchActionEffects, isActionEffect } from "./effects";
 
 const router = vi.hoisted(() => ({
@@ -53,6 +54,31 @@ describe("dispatchActionEffects", () => {
     window.removeEventListener("lattice:reset-form", listener);
 
     expect(events).toEqual([{ type: "resetForm", form: "teams.create" }]);
+  });
+
+  it("does not dispatch events for effects already handled imperatively", () => {
+    const events: string[] = [];
+    const listener = (event: Event) => {
+      events.push(event.type);
+    };
+
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+
+    window.addEventListener(LATTICE_EVENT.reloadPage, listener);
+    window.addEventListener(LATTICE_EVENT.redirect, listener);
+    window.addEventListener(LATTICE_EVENT.download, listener);
+
+    dispatchActionEffects([
+      { type: "reloadPage" },
+      { type: "redirect", url: "/dashboard" },
+      { type: "download", url: "/exports/report.csv" },
+    ]);
+
+    window.removeEventListener(LATTICE_EVENT.reloadPage, listener);
+    window.removeEventListener(LATTICE_EVENT.redirect, listener);
+    window.removeEventListener(LATTICE_EVENT.download, listener);
+
+    expect(events).toEqual([]);
   });
 });
 

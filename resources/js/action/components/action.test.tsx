@@ -194,7 +194,7 @@ describe("Lattice action component", () => {
     });
   });
 
-  it("dispatches successful response effects as lattice events", async () => {
+  it("dispatches event effects and handles page reloads imperatively", async () => {
     http.patch.mockResolvedValue({
       effects: [
         {
@@ -237,8 +237,10 @@ describe("Lattice action component", () => {
     await waitFor(() => {
       expect(toastListener).toHaveBeenCalledTimes(1);
       expect(reloadListener).toHaveBeenCalledTimes(1);
-      expect(reloadPageListener).toHaveBeenCalledTimes(1);
+      expect(router.reload).toHaveBeenCalledTimes(1);
     });
+
+    expect(reloadPageListener).not.toHaveBeenCalled();
 
     const [[toastEvent]] = toastListener.mock.calls as [[CustomEvent]];
     const [[reloadEvent]] = reloadListener.mock.calls as [[CustomEvent]];
