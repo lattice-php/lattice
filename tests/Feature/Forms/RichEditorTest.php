@@ -179,3 +179,53 @@ it('decodes the submitted json document during validation', function (): void {
         ->and($validated['body']['type'])->toBe('doc')
         ->and($validated['body']['content'][0]['type'])->toBe('paragraph');
 });
+
+it('preserves submitted links during validation', function (): void {
+    $definition = new class extends FormDefinition
+    {
+        public function definition(Form $form, Request $request): Form
+        {
+            return $form->schema([
+                RichEditor::make('body', 'Body')->rules(['required']),
+            ]);
+        }
+
+        public function handle(Request $request): Response
+        {
+            return new Response('ok');
+        }
+    };
+
+    $document = [
+        'type' => 'doc',
+        'content' => [
+            [
+                'type' => 'paragraph',
+                'content' => [
+                    [
+                        'type' => 'text',
+                        'text' => 'OpenAI',
+                        'marks' => [
+                            [
+                                'type' => 'link',
+                                'attrs' => ['href' => 'https://openai.com'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ];
+
+    $validated = $definition->validate(Request::create('/', 'POST', [
+        'body' => json_encode($document),
+    ]));
+
+    $html = RichContent::make($validated['body'])->toHtml();
+
+    expect(data_get($validated, 'body.content.0.content.0.marks.0.type'))->toBe('link')
+        ->and(data_get($validated, 'body.content.0.content.0.marks.0.attrs.href'))->toBe('https://openai.com')
+        ->and($html)->toContain('<a ')
+        ->and($html)->toContain('href="https://openai.com"')
+        ->and($html)->toContain('OpenAI</a>');
+});
