@@ -9,19 +9,21 @@ Lattice (`lattice-php/lattice`) is a server-driven UI layer for Laravel apps run
 
 ### Building a page
 
-A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its UI in `render()`. Route it with the `Route::latticePage()` macro — no controller or Inertia page component to write by hand.
+A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its UI in `render()`. Annotate it with `#[Page(route: '…')]`; Lattice discovers the page and registers its route automatically — no controller, route file entry, or Inertia page component to write by hand.
 
 @verbatim
 <code-snippet name="A page and its route" lang="php">
+use Lattice\Lattice\Attributes\Page;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\Gap;
-use Lattice\Lattice\Core\Enums\Icon;
+use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Http\Page;
+use Lattice\Lattice\Http\Page as BasePage;
 use Lattice\Lattice\Tables\Components\Table;
 
-final class ProductsPage extends Page
+#[Page(route: '/products', layout: PageLayout::App, middleware: ['web'])]
+final class ProductsPage extends BasePage
 {
     public function title(): string
     {
@@ -39,9 +41,8 @@ final class ProductsPage extends Page
     }
 }
 
-// routes/web.php
-Route::latticePage('/products', ProductsPage::class)
-    ->sidebar('Products', Icon::LayoutDashboard);
+// Discovered automatically; or register explicitly:
+// Lattice::pages([ProductsPage::class]);
 </code-snippet>
 @endverbatim
 
@@ -53,7 +54,7 @@ Drop a form or a table into the tree with `Form::use(MyForm::class)` and `Table:
 - **Forms** — `FormDefinition` classes with fields + server-side (and live, Precognition) validation. **Reach for the `lattice-forms` skill.**
 - **Tables** — `EloquentTableDefinition` classes with columns, sorting, filtering, pagination, and row/bulk actions. **Reach for the `lattice-tables` skill.**
 - **Actions** — `ActionDefinition` / `BulkActionDefinition` that run on the server and return effects (toast, redirect, refresh, modal) via `ActionResult`. **Reach for the `lattice-actions` skill.**
-- **Navigation** — add `->sidebar('Label', Icon::Name)` to a `latticePage` route.
+- **Navigation** — compose `Menu`/`Sidebar` components inside a layout (there is no route-level sidebar helper).
 
 ### Conventions
 
