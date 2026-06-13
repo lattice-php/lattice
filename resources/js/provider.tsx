@@ -5,7 +5,7 @@ import { SpriteProvider } from "./icons/sprite";
 import type { SpriteValue } from "./icons/sprite";
 import { registry as defaultRegistry } from "./registry";
 import type { ColumnRegistry } from "./table/column-registry";
-import { Toaster } from "./toast";
+import { Toaster, useFlashToasts } from "./toast";
 
 const defaultSprite: SpriteValue = { href: "" };
 
@@ -22,6 +22,8 @@ export function Provider({
   sprite?: SpriteValue;
   toaster?: boolean;
 }) {
+  useFlashToasts();
+
   return (
     <RegistryContext.Provider value={registry}>
       <SpriteProvider sprite={sprite}>

@@ -1,73 +1,29 @@
 import { render } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { EventBridge } from "@lattice-php/lattice";
-
-type FlashListener = (
-  event: CustomEvent<{
-    flash?: {
-      toast?: unknown;
-    };
-  }>,
-) => void;
-
-const router = vi.hoisted(() => ({
-  on: vi.fn<(event: string, listener: FlashListener) => () => void>(() => () => undefined),
-  reload: vi.fn<() => void>(),
-}));
-
-vi.mock("@inertiajs/react", () => ({
-  router,
-}));
+import type { ToastMessage } from "@lattice-php/lattice";
 
 describe("EventBridge", () => {
-  beforeEach(() => {
-    router.on.mockClear();
-    router.reload.mockReset();
-  });
-
-  it("passes inertia flash toast messages to the host renderer", () => {
-    const onToast = vi.fn<(toast: { message: string; variant: string }) => void>();
-
-    render(<EventBridge onToast={onToast} />);
-
-    const [, listener] = router.on.mock.calls[0] as ["flash", FlashListener];
-
-    listener(
-      new CustomEvent("flash", {
-        detail: {
-          flash: {
-            toast: {
-              message: "Profile saved.",
-              variant: "info",
-            },
-          },
-        },
-      }),
-    );
-
-    expect(onToast).toHaveBeenCalledWith({
-      message: "Profile saved.",
-      variant: "info",
-    });
-  });
-
-  it("passes lattice toast events to the host renderer", () => {
-    const onToast = vi.fn<(toast: { message: string; variant: string }) => void>();
+  it("forwards lattice toast events to the host renderer with the full message", () => {
+    const onToast = vi.fn<(toast: ToastMessage) => void>();
 
     render(<EventBridge onToast={onToast} />);
 
     window.dispatchEvent(
       new CustomEvent("lattice:toast", {
         detail: {
-          message: "Action handled.",
           type: "toast",
-          variant: "warning",
+          toast: { message: "Action handled.", variant: "warning" },
         },
       }),
     );
 
     expect(onToast).toHaveBeenCalledWith({
+      action: null,
+      dismissible: true,
+      duration: null,
       message: "Action handled.",
+      persistent: false,
       variant: "warning",
     });
   });
@@ -88,20 +44,17 @@ describe("EventBridge", () => {
     expect(onAppearanceChange).toHaveBeenCalledWith("dark");
   });
 
-  it("does not reload the whole page for component reload events", () => {
-    render(
-      <EventBridge onToast={vi.fn<(toast: { message: string; variant: string }) => void>()} />,
-    );
+  it("ignores toast events without a message", () => {
+    const onToast = vi.fn<(toast: ToastMessage) => void>();
+
+    render(<EventBridge onToast={onToast} />);
 
     window.dispatchEvent(
-      new CustomEvent("lattice:reload-component", {
-        detail: {
-          component: "settings.passkeys",
-          type: "reloadComponent",
-        },
+      new CustomEvent("lattice:toast", {
+        detail: { type: "toast", toast: { variant: "warning" } },
       }),
     );
 
-    expect(router.reload).not.toHaveBeenCalled();
+    expect(onToast).not.toHaveBeenCalled();
   });
 });

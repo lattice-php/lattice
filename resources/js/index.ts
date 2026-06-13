@@ -18,7 +18,7 @@ export {
   useSidebarCollapsed,
 } from "./layout";
 export { Provider, useColumnRegistry, useRegistry } from "./provider";
-export { Toaster } from "./toast";
+export { onToast, showToast, Toaster } from "./toast";
 export {
   createPlugin,
   createRegistry,
@@ -57,7 +57,8 @@ export type { Method } from "@inertiajs/core";
 export type { ActionEffect } from "./action/effects";
 export type { ResolvedAppearance, UseAppearanceReturn } from "./appearance";
 export type { CopiedValue, CopyFn, UseClipboardReturn } from "./clipboard";
-export type { Appearance, ToastMessage, ToastVariant } from "./events/event-bridge";
+export type { Appearance } from "./events/event-bridge";
+export type { ToastMessage, ToastVariant } from "./toast";
 export type {
   IconName,
   IconRendererFunction,

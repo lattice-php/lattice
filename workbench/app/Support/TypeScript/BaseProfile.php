@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
-use Lattice\Lattice\Actions\Contracts\Effect;
-use Lattice\Lattice\Attributes\Effect as EffectAttribute;
+use Lattice\Lattice\Actions\Effects\AbstractEffect;
+use Lattice\Lattice\Attributes\AsEffect as EffectAttribute;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
@@ -72,7 +72,7 @@ final class BaseProfile implements TypeScriptProfile
                     Form::class,
                     $domainNodes,
                     'form',
-                    Effect::class,
+                    AbstractEffect::class,
                     $effects,
                     $columnProps,
                 ),

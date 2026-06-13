@@ -4,12 +4,10 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import type { ToastMessage, ToastVariant } from "@lattice-php/lattice/types/generated";
-import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import { onToast } from "@lattice-php/lattice/toast/toast";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import { useRegistry } from "@lattice-php/lattice/provider";
-
-const variants = ["success", "info", "warning", "error"] as const satisfies readonly ToastVariant[];
 
 type ToastItem = ToastMessage & { id: number };
 
@@ -32,63 +30,24 @@ const variantStyles: Record<ToastVariant, { accent: string; icon: ReactNode }> =
   },
 };
 
-function isVariant(value: unknown): value is ToastVariant {
-  return variants.some((variant) => variant === value);
-}
-
 let nextId = 0;
-
-function normalize(detail: unknown): ToastMessage | null {
-  if (typeof detail !== "object" || detail === null) {
-    return null;
-  }
-
-  const data = (detail as { toast?: unknown }).toast;
-
-  if (typeof data !== "object" || data === null) {
-    return null;
-  }
-
-  const toast = data as Record<string, unknown>;
-
-  if (typeof toast.message !== "string" || toast.message === "") {
-    return null;
-  }
-
-  return {
-    action: (toast.action as ToastMessage["action"]) ?? null,
-    dismissible: toast.dismissible !== false,
-    duration: typeof toast.duration === "number" ? toast.duration : null,
-    message: toast.message,
-    persistent: toast.persistent === true,
-    variant: isVariant(toast.variant) ? toast.variant : "success",
-  };
-}
 
 export function Toaster({ duration = 4000 }: { duration?: number }) {
   const { t } = useT("lattice");
   const registry = useRegistry();
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
-  function push(detail: unknown): void {
-    const item = normalize(detail);
-
-    if (item) {
-      setToasts((current) => [...current, { ...item, id: nextId++ }]);
-    }
-  }
-
   function dismiss(id: number): void {
     setToasts((current) => current.filter((toast) => toast.id !== id));
   }
 
-  useEffect(() => {
-    const listener = (event: Event): void => push((event as CustomEvent).detail);
-
-    window.addEventListener(LATTICE_EVENT.toast, listener);
-
-    return () => window.removeEventListener(LATTICE_EVENT.toast, listener);
-  }, []);
+  useEffect(
+    () =>
+      onToast((toast) => {
+        setToasts((current) => [...current, { ...toast, id: nextId++ }]);
+      }),
+    [],
+  );
 
   return (
     <Toast.Provider duration={duration} swipeDirection="down">
