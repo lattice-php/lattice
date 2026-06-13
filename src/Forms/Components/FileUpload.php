@@ -35,30 +35,12 @@ class FileUpload extends Field
 
     protected ?string $disk = null;
 
-    protected ?string $directory = null;
-
-    protected ?string $visibility = null;
-
     /** @var list<string>|null */
     protected ?array $acceptedFileTypes = null;
 
     public function disk(string $disk): static
     {
         $this->disk = $disk;
-
-        return $this;
-    }
-
-    public function directory(string $directory): static
-    {
-        $this->directory = $directory;
-
-        return $this;
-    }
-
-    public function visibility(string $visibility): static
-    {
-        $this->visibility = $visibility;
 
         return $this;
     }
