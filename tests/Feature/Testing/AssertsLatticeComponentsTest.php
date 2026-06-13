@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Op;
@@ -106,4 +108,26 @@ it('asserts action state', function (): void {
             ->assertHasConfirmation()
             ->assertConfirmationTitle('Archive product?')
             ->assertHasForm());
+});
+
+it('asserts against a rendered Inertia page', function (): void {
+    Route::get('lattice-demo-page', fn () => Inertia::render('lattice/page', [
+        'lattice' => [
+            'schema' => json_decode(json_encode([
+                Form::make('create')->action('/products')->schema([
+                    TextInput::make('email')->value('a@b.c'),
+                ]),
+                Table::make('products')
+                    ->columns([TextColumn::make('name')->filterable()])
+                    ->result(TableResult::make([]), TableQuery::empty()),
+            ], JSON_THROW_ON_ERROR), true),
+        ],
+    ]))->middleware('web');
+
+    $this->assertLatticePage($this->get('lattice-demo-page'))
+        ->assertRendered('form:create')
+        ->assertRendered('table:products')
+        ->table('products', fn (TableAssertions $t) => $t->assertHasFilter('name'))
+        ->form('create', fn (FormAssertions $f) => $f
+            ->field('email')->assertInitialValue('a@b.c'));
 });
