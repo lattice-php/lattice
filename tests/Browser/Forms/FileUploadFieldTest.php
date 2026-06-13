@@ -18,7 +18,11 @@ it('uploads directly to s3 via the signed flow', function (): void {
         $this->markTestSkipped('S3 flysystem adapter not installed');
     }
 
-    if (! @fsockopen('rustfs.herd.test', 443, $errno, $errstr, 1)) {
+    $endpoint = parse_url((string) config('filesystems.disks.s3.endpoint'));
+    $host = $endpoint['host'] ?? 'rustfs.herd.test';
+    $port = $endpoint['port'] ?? (($endpoint['scheme'] ?? 'https') === 'https' ? 443 : 80);
+
+    if (! @fsockopen($host, $port, $errno, $errstr, 1)) {
         $this->markTestSkipped('RustFS not reachable');
     }
 
