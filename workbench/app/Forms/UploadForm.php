@@ -8,6 +8,7 @@ use Illuminate\Http\UploadedFile;
 use Lattice\Lattice\Attributes\Form;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
+use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,6 +20,9 @@ class UploadForm extends FormDefinition
         return $form->schema([
             FileUpload::make('avatar')->image()->maxSize(2048),
             FileUpload::make('document')->disk('s3')->signedUpload(),
+            Repeater::make('documents')->schema([
+                FileUpload::make('file')->disk('s3')->signedUpload(),
+            ]),
         ]);
     }
 
