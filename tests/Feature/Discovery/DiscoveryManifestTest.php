@@ -42,6 +42,19 @@ test('the manifest builds resolved entries for every kind', function () {
         ->toMatchArray(['route' => '/discovered-demo', 'name' => 'discovered.demo', 'middleware' => ['web']]);
 });
 
+test('the manifest indexes page descriptors by class', function () {
+    discoverFixtures();
+
+    $manifest = app(DiscoveryManifest::class);
+    $resolved = $manifest->resolve();
+
+    expect($resolved['pages'])->toHaveKey(DiscoveredDemoPage::class)
+        ->and($resolved['pages'][DiscoveredDemoPage::class])
+        ->toMatchArray(['route' => '/discovered-demo', 'name' => 'discovered.demo', 'middleware' => ['web']])
+        ->and($manifest->descriptorFor(DiscoveredDemoPage::class))
+        ->toMatchArray(['route' => '/discovered-demo', 'name' => 'discovered.demo', 'middleware' => ['web']]);
+});
+
 test('the manifest round-trips through the cached file', function () {
     discoverFixtures();
 
@@ -52,7 +65,9 @@ test('the manifest round-trips through the cached file', function () {
         expect($manifest->isCached())->toBeTrue();
 
         $fresh = new DiscoveryManifest(app(), app('files'));
-        expect($fresh->forGroup('forms'))->toMatchArray(['fixtures.profile' => DiscoveredProfileForm::class]);
+        expect($fresh->forGroup('forms'))->toMatchArray(['fixtures.profile' => DiscoveredProfileForm::class])
+            ->and($fresh->descriptorFor(DiscoveredDemoPage::class))
+            ->toMatchArray(['route' => '/discovered-demo', 'name' => 'discovered.demo', 'middleware' => ['web']]);
     } finally {
         $manifest->clear();
         expect($manifest->isCached())->toBeFalse();

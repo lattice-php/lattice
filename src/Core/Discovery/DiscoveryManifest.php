@@ -36,10 +36,10 @@ final class DiscoveryManifest
     /** @return list<array<string, mixed>> */
     public function pageDescriptors(): array
     {
-        /** @var list<array<string, mixed>> $pages */
+        /** @var array<class-string, array<string, mixed>> $pages */
         $pages = $this->resolve()['pages'] ?? [];
 
-        return $pages;
+        return array_values($pages);
     }
 
     /**
@@ -48,13 +48,10 @@ final class DiscoveryManifest
      */
     public function descriptorFor(string $class): ?array
     {
-        foreach ($this->pageDescriptors() as $descriptor) {
-            if ($descriptor['class'] === $class) {
-                return $descriptor;
-            }
-        }
+        /** @var array<class-string, array<string, mixed>> $pages */
+        $pages = $this->resolve()['pages'] ?? [];
 
-        return null;
+        return $pages[$class] ?? null;
     }
 
     public function isCached(): bool
@@ -122,7 +119,7 @@ final class DiscoveryManifest
                     $metadata = PageMetadata::reflect($class);
 
                     if ($metadata->route !== null) {
-                        $manifest['pages'][] = $metadata->toArray();
+                        $manifest['pages'][$class] = $metadata->toArray();
                     }
                 }
             }
