@@ -11,6 +11,7 @@ use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
+use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 
@@ -177,8 +178,14 @@ class Form extends ContainerComponent
     protected function prefillFields(array $data): array
     {
         foreach ($this->descendants() as $component) {
-            if ($component instanceof Field && array_key_exists($component->name(), $this->state)) {
-                $component->prefill($this->state[$component->name()]);
+            if (! $component instanceof Field || ! array_key_exists($component->name(), $this->state)) {
+                continue;
+            }
+
+            $component->prefill($this->state[$component->name()]);
+
+            if ($component instanceof ProvidesRowFields) {
+                $component->prefillRowFields($this->state[$component->name()]);
             }
         }
 

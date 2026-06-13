@@ -50,3 +50,63 @@ it('casts each row through child field casts', function (): void {
 
     expect($validated['items'])->toBe([['name' => 'A'], ['name' => 'B']]);
 });
+
+it('requires row children from same-row sibling conditions', function (): void {
+    $field = Repeater::make('items')
+        ->schema([
+            TextInput::make('product'),
+            TextInput::make('note')->requiredWhen('product', '!=', ''),
+        ]);
+
+    $request = Request::create('/', 'POST', ['items' => [
+        ['product' => '', 'note' => ''],
+        ['product' => 'SKU-1', 'note' => ''],
+    ]]);
+
+    $errors = null;
+
+    try {
+        (new FieldValidator)->validate([$field], $request);
+    } catch (ValidationException $exception) {
+        $errors = $exception->errors();
+    }
+
+    expect(array_keys($errors ?? []))->toBe(['items.1.note']);
+});
+
+it('lets row values shadow same-named form values for conditions', function (): void {
+    $field = Repeater::make('items')
+        ->schema([
+            TextInput::make('product'),
+            TextInput::make('note')->requiredWhen('product', '!=', ''),
+        ]);
+
+    $request = Request::create('/', 'POST', [
+        'product' => 'GLOBAL-SKU',
+        'items' => [
+            ['product' => '', 'note' => ''],
+        ],
+    ]);
+
+    $validated = (new FieldValidator)->validate([$field], $request);
+
+    expect($validated['items'][0]['product'])->toBe('');
+});
+
+it('skips validation for row children hidden by same-row conditions', function (): void {
+    $field = Repeater::make('items')
+        ->schema([
+            TextInput::make('kind'),
+            TextInput::make('note')
+                ->visibleWhen('kind', 'paid')
+                ->rules(['required']),
+        ]);
+
+    $request = Request::create('/', 'POST', ['items' => [
+        ['kind' => 'free'],
+    ]]);
+
+    $validated = (new FieldValidator)->validate([$field], $request);
+
+    expect($validated['items'][0]['kind'])->toBe('free');
+});

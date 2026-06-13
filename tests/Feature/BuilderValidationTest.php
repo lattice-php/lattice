@@ -61,3 +61,69 @@ it('does not require a text row to satisfy product rules', function (): void {
 
     expect($validated['items'][0]['type'])->toBe('text');
 });
+
+it('requires block children from same-row sibling conditions', function (): void {
+    $field = Builder::make('items')
+        ->blocks([
+            Block::make('product')->schema([
+                TextInput::make('product'),
+                TextInput::make('note')->requiredWhen('product', '!=', ''),
+            ]),
+        ]);
+
+    $request = Request::create('/', 'POST', ['items' => [
+        ['type' => 'product', 'product' => '', 'note' => ''],
+        ['type' => 'product', 'product' => 'SKU-1', 'note' => ''],
+    ]]);
+
+    $errors = null;
+
+    try {
+        (new FieldValidator)->validate([$field], $request);
+    } catch (ValidationException $exception) {
+        $errors = $exception->errors();
+    }
+
+    expect(array_keys($errors ?? []))->toBe(['items.1.note']);
+});
+
+it('lets block row values shadow same-named form values for conditions', function (): void {
+    $field = Builder::make('items')
+        ->blocks([
+            Block::make('product')->schema([
+                TextInput::make('product'),
+                TextInput::make('note')->requiredWhen('product', '!=', ''),
+            ]),
+        ]);
+
+    $request = Request::create('/', 'POST', [
+        'product' => 'GLOBAL-SKU',
+        'items' => [
+            ['type' => 'product', 'product' => '', 'note' => ''],
+        ],
+    ]);
+
+    $validated = (new FieldValidator)->validate([$field], $request);
+
+    expect($validated['items'][0]['type'])->toBe('product');
+});
+
+it('skips validation for block children hidden by same-row conditions', function (): void {
+    $field = Builder::make('items')
+        ->blocks([
+            Block::make('product')->schema([
+                TextInput::make('kind'),
+                TextInput::make('note')
+                    ->visibleWhen('kind', 'paid')
+                    ->rules(['required']),
+            ]),
+        ]);
+
+    $request = Request::create('/', 'POST', ['items' => [
+        ['type' => 'product', 'kind' => 'free'],
+    ]]);
+
+    $validated = (new FieldValidator)->validate([$field], $request);
+
+    expect($validated['items'][0]['type'])->toBe('product');
+});

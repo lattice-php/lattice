@@ -11,7 +11,7 @@ import { useResolvedNode } from "../resolved-nodes";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
 import { useFieldScope } from "../field-scope";
-import { useFormValue } from "../values";
+import { useFormValue, useFormValues } from "../values";
 
 function toValues(stored: unknown, fallback: unknown): string[] {
   const source = stored ?? fallback;
@@ -38,6 +38,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
   const scope = useFieldScope();
   const domName = scope ? scope.scopedName(name) : name;
   const errorKey = scope ? scope.errorKey(name) : name;
+  const searchKey = scope ? scope.errorKey(name) : name;
   const placeholder = props.placeholder || "Select…";
   const multiple = props.multiple ?? false;
   const searchable = props.searchable ?? false;
@@ -47,6 +48,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
   );
 
   const globalValue = useFormValue(name);
+  const values = useFormValues();
   const storedValue = scope ? scope.getValue(name) : globalValue;
   const selected = useMemo(() => toValues(storedValue, props.value), [storedValue, props.value]);
 
@@ -85,7 +87,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
       void postFormAction<{ options?: Option[] }>(
         action,
         componentRef,
-        { _search: name, q: query },
+        { ...values, _search: searchKey, q: query },
         controller.signal,
       )
         .then((response) => {
@@ -99,7 +101,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [query, searchable, action, componentRef, name]);
+  }, [query, searchable, action, componentRef, searchKey, values]);
 
   function commit(next: string[]): void {
     change(name, multiple ? next : (next[0] ?? ""));

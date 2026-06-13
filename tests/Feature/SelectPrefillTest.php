@@ -1,7 +1,10 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Forms\Components\Block;
+use Lattice\Lattice\Forms\Components\Builder;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\Components\Select;
 
 /**
@@ -10,6 +13,22 @@ use Lattice\Lattice\Forms\Components\Select;
 function prefilledOptions(Form $form): array
 {
     return wire($form)['schema'][0]['props']['options'] ?? [];
+}
+
+/**
+ * @return array<int, array{label: string, value: string}>
+ */
+function repeaterPrefilledOptions(Form $form): array
+{
+    return wire($form)['schema'][0]['schema'][0]['props']['options'] ?? [];
+}
+
+/**
+ * @return array<int, array{label: string, value: string}>
+ */
+function builderPrefilledOptions(Form $form): array
+{
+    return wire($form)['schema'][0]['blocks'][0]['schema'][0]['props']['options'] ?? [];
 }
 
 it('resolves the label for a single filled id', function (): void {
@@ -93,4 +112,60 @@ it('does not resolve when there is no filled value', function (): void {
     wire($form);
 
     expect($resolved)->toBeFalse();
+});
+
+it('resolves labels for filled ids inside repeater rows', function (): void {
+    $received = null;
+
+    $form = Form::make('f')
+        ->fill(['items' => [
+            ['product' => '5'],
+            ['product' => '8'],
+        ]])
+        ->schema([
+            Repeater::make('items')->schema([
+                Select::make('product', 'Product')
+                    ->resolveSelectedUsing(function (array $values) use (&$received) {
+                        $received = $values;
+
+                        return collect($values)
+                            ->map(fn (string $id) => Select::option("Product {$id}", $id))
+                            ->all();
+                    }),
+            ]),
+        ]);
+
+    expect(repeaterPrefilledOptions($form))->toBe([
+        ['label' => 'Product 5', 'value' => '5'],
+        ['label' => 'Product 8', 'value' => '8'],
+    ])->and($received)->toBe(['5', '8']);
+});
+
+it('resolves labels for filled ids inside builder rows', function (): void {
+    $received = null;
+
+    $form = Form::make('f')
+        ->fill(['items' => [
+            ['type' => 'product', 'product' => '5'],
+            ['type' => 'product', 'product' => '8'],
+        ]])
+        ->schema([
+            Builder::make('items')->blocks([
+                Block::make('product')->schema([
+                    Select::make('product', 'Product')
+                        ->resolveSelectedUsing(function (array $values) use (&$received) {
+                            $received = $values;
+
+                            return collect($values)
+                                ->map(fn (string $id) => Select::option("Product {$id}", $id))
+                                ->all();
+                        }),
+                ]),
+            ]),
+        ]);
+
+    expect(builderPrefilledOptions($form))->toBe([
+        ['label' => 'Product 5', 'value' => '5'],
+        ['label' => 'Product 8', 'value' => '8'],
+    ])->and($received)->toBe(['5', '8']);
 });
