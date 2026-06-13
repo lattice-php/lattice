@@ -3,13 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Services;
 
-use Lattice\Lattice\Core\Contracts\Discoverable;
-use Lattice\Lattice\Core\Contracts\DiscoversDefinitions;
-use Lattice\Lattice\Support\Discovery\ClassWalker;
-use ReflectionClass;
-use Spatie\Attributes\Attributes;
-
-final class DefinitionDiscovery implements DiscoversDefinitions
+final class DefinitionDiscovery
 {
     /**
      * The configured discover paths, normalised to a [path => namespace] map.
@@ -39,36 +33,5 @@ final class DefinitionDiscovery implements DiscoversDefinitions
         }
 
         return $paths;
-    }
-
-    /**
-     * @param  array<int, Discoverable>  $registries
-     * @return array<string, array<int, class-string>>
-     */
-    public function discover(string $path, string $namespace, array $registries): array
-    {
-        $definitions = [];
-
-        foreach ($registries as $registry) {
-            $definitions[$registry->group()] = [];
-        }
-
-        if (! is_dir($path)) {
-            return $definitions;
-        }
-
-        foreach (ClassWalker::classes($path) as $class) {
-            if ((new ReflectionClass($class))->isAbstract()) {
-                continue;
-            }
-
-            foreach ($registries as $registry) {
-                if (Attributes::has($class, $registry->attributeClass())) {
-                    $definitions[$registry->group()][] = $class;
-                }
-            }
-        }
-
-        return $definitions;
     }
 }

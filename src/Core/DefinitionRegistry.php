@@ -7,7 +7,6 @@ use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
 use Lattice\Lattice\Attributes\ComponentAttribute;
 use Lattice\Lattice\Core\Contracts\DefinitionRegistry as DefinitionRegistryContract;
-use Lattice\Lattice\Core\Contracts\Discoverable;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Exceptions\UnknownLatticeComponent;
 use Spatie\Attributes\Attributes;
@@ -17,7 +16,7 @@ use Spatie\Attributes\Attributes;
  *
  * @implements DefinitionRegistryContract<TDefinition>
  */
-abstract class DefinitionRegistry implements DefinitionRegistryContract, Discoverable
+abstract class DefinitionRegistry implements DefinitionRegistryContract
 {
     /**
      * @var array<string, class-string<TDefinition>>
@@ -51,18 +50,6 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract, Discove
     {
         foreach ((array) $definitions as $definition) {
             $this->definitions[$this->keyFor($definition)] = $definition;
-        }
-    }
-
-    /**
-     * @param  array<int, class-string>  $definitions
-     */
-    public function registerDiscovered(array $definitions): void
-    {
-        foreach ($definitions as $definition) {
-            if (is_subclass_of($definition, $this->definitionClass())) {
-                $this->register($definition);
-            }
         }
     }
 

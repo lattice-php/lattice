@@ -7,7 +7,6 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Core\Contracts\DiscoversDefinitions;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
@@ -24,7 +23,6 @@ final class LatticeRegistry
     public function __construct(
         private readonly ActionRegistry $actions,
         private readonly BulkActionRegistry $bulkActions,
-        private readonly DiscoversDefinitions $discovery,
         private readonly FormRegistry $forms,
         private readonly FragmentRegistry $fragments,
         private readonly LayoutRegistry $layouts,
@@ -110,19 +108,6 @@ final class LatticeRegistry
 
             if (is_array($configured) && $configured !== []) {
                 $registry->register($configured);
-            }
-        }
-    }
-
-    public function discover(string $path, string $namespace): void
-    {
-        $registries = $this->discoverableRegistries();
-
-        $definitions = $this->discovery->discover($path, $namespace, array_values($registries));
-
-        foreach ($definitions as $group => $classes) {
-            if ($classes !== []) {
-                $registries[$group]->registerDiscovered($classes);
             }
         }
     }
