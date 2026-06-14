@@ -34,6 +34,7 @@ return ActionResult::success()
 | `->download($url)`              | Triggers a file download.                                           |
 | `->openModal($id)` / `->closeModal($id)` | Opens or closes a modal by id (`closeModal()` closes the current modal). |
 | `->resetForm($id)`              | Resets a form to its initial values (`resetForm()` resets the current form). |
+| `->localeChange($locale)`       | Persists the frontend locale and dispatches `lattice:locale-change`.     |
 
 ```php
 return ActionResult::success()
@@ -61,6 +62,6 @@ return ActionResult::success()->reloadComponent('app.products');
 ## How effects reach the client
 
 The result serializes to `{ ok, data, effects }`. Each effect carries its `EffectType` (`toast`,
-`reloadComponent`, `reloadPage`, `redirect`, `download`, `openModal`, `closeModal`, `resetForm`) and
-its payload; the client dispatches them in order. The effect types are a shared enum, so the PHP
-helpers and the client dispatcher stay in lockstep.
+`reloadComponent`, `reloadPage`, `redirect`, `download`, `openModal`, `closeModal`, `resetForm`,
+`localeChange`) and its payload; the client dispatches them in order. The effect types are a shared
+enum, so the PHP helpers and the client dispatcher stay in lockstep.

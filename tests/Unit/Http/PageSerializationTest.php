@@ -59,3 +59,16 @@ test('pages serialize breadcrumb metadata', function () {
             ],
         ]);
 });
+
+test('pages do not serialize shared i18n metadata', function () {
+    $page = new class extends Page
+    {
+        public function render(PageSchema $schema): PageSchema
+        {
+            return $schema->component(Text::make('Dashboard'));
+        }
+    };
+
+    expect($page->toArray($page->render(PageSchema::make()), new Request))
+        ->not->toHaveKey('i18n');
+});

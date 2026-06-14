@@ -12,6 +12,7 @@ export type Action = {
 };
 export type ActionGroup = {
   label: string;
+  orientation: Orientation | null;
   ref: string | null;
 };
 export type ActionNode =
@@ -216,6 +217,12 @@ export type CoreNode =
       schema?: Node[];
     }
   | {
+      type: "floating-panel";
+      key?: string;
+      props: FloatingPanel;
+      schema?: Node[];
+    }
+  | {
       type: "grid";
       key?: string;
       props: Grid;
@@ -323,6 +330,9 @@ export type Effect =
       type: "download";
     } & DownloadEffect)
   | ({
+      type: "localeChange";
+    } & LocaleChangeEffect)
+  | ({
       type: "openModal";
     } & OpenModalEffect)
   | ({
@@ -348,7 +358,8 @@ export type EffectType =
   | "download"
   | "openModal"
   | "closeModal"
-  | "resetForm";
+  | "resetForm"
+  | "localeChange";
 export type FileUpload = {
   accept: string | null;
   columnWidth: ColumnWidth;
@@ -392,6 +403,12 @@ export type FilterClause = {
   readonly value: string;
 };
 export type FilterType = "text" | "number" | "date" | "boolean";
+export type FloatingPanel = {
+  label: string | null;
+  offset: number;
+  placement: FloatingPlacement;
+};
+export type FloatingPlacement = "bottom-end" | "bottom-start" | "top-end" | "top-start";
 export type Form = {
   action: string | null;
   errorBag: string | null;
@@ -530,6 +547,7 @@ export type HttpMethod = import("@inertiajs/core").Method;
 export type I18nConfig = {
   readonly enabled: boolean;
   readonly saveMissing: boolean;
+  readonly locales: string[];
 };
 export type Icon = {
   class: string | null;
@@ -587,6 +605,9 @@ export type Link = {
   label: string;
   method: HttpMethod | null;
   tabIndex: number | null;
+};
+export type LocaleChangeEffect = {
+  readonly locale: string;
 };
 export type Menu = Record<string, never>;
 export type MenuItem = {

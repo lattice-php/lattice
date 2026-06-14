@@ -53,7 +53,9 @@ describe("Lattice action component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Send test email" }));
 
     await waitFor(() => {
-      expect(http.post).toHaveBeenCalledWith("/lattice/actions/send-test-email", { headers: {} });
+      expect(http.post).toHaveBeenCalledWith("/lattice/actions/send-test-email", {
+        headers: { "Accept-Language": "en" },
+      });
     });
   });
 
@@ -72,7 +74,9 @@ describe("Lattice action component", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Edit" }));
 
-    expect(router.visit).toHaveBeenCalledWith("/settings/teams/acme", { headers: {} });
+    expect(router.visit).toHaveBeenCalledWith("/settings/teams/acme", {
+      headers: { "Accept-Language": "en" },
+    });
     expect(http.post).not.toHaveBeenCalled();
   });
 
@@ -95,7 +99,7 @@ describe("Lattice action component", () => {
 
     await waitFor(() => {
       expect(http.patch).toHaveBeenCalledWith("/lattice/actions/teams.sync", {
-        headers: { "X-Lattice-Ref": "sealed-reference" },
+        headers: { "Accept-Language": "en", "X-Lattice-Ref": "sealed-reference" },
       });
     });
   });
@@ -116,7 +120,7 @@ describe("Lattice action component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Teams" }));
 
     expect(router.visit).toHaveBeenCalledWith("/settings/teams", {
-      headers: { "X-Lattice-Ref": "sealed-reference" },
+      headers: { "Accept-Language": "en", "X-Lattice-Ref": "sealed-reference" },
     });
   });
 
@@ -190,7 +194,9 @@ describe("Lattice action component", () => {
     );
 
     await waitFor(() => {
-      expect(http.delete).toHaveBeenCalledWith("/lattice/actions/delete-account", { headers: {} });
+      expect(http.delete).toHaveBeenCalledWith("/lattice/actions/delete-account", {
+        headers: { "Accept-Language": "en" },
+      });
     });
   });
 

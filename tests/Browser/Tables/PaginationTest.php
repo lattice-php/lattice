@@ -41,3 +41,34 @@ it('loads more rows in infinite mode', function (): void {
         ->assertSee('Browser User 26')
         ->assertNoSmoke();
 });
+
+it('keeps the sidebar user menu visible on infinite pagination pages', function (): void {
+    $page = visit('/tables');
+
+    $page->resize(1280, 720)
+        ->click('@tab-infinite')
+        ->click('@pagination-load-more')
+        ->assertSee('Browser User 26')
+        ->assertVisible('@user-menu');
+
+    expect($page->script(<<<'JS'
+        () => {
+            const menu = document.querySelector('[data-test="user-menu"]');
+
+            if (!menu) {
+                return false;
+            }
+
+            const rect = menu.getBoundingClientRect();
+
+            return rect.top >= 0
+                && rect.bottom <= window.innerHeight
+                && rect.left >= 0
+                && rect.right <= window.innerWidth;
+        }
+    JS))->toBeTrue();
+
+    $page->click('@user-menu')
+        ->assertSee('Log out')
+        ->assertNoSmoke();
+});

@@ -1,5 +1,5 @@
 import { Form as InertiaForm } from "@inertiajs/react";
-import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { useEffect, useMemo } from "react";
@@ -123,7 +123,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
       resetOnError={resetOnError}
       resetOnSuccess={resetOnSuccess}
       validationTimeout={precognitive ? validationTimeout : undefined}
-      headers={withRefHeader(componentRef)}
+      headers={withHeaders(componentRef)}
       className="mx-auto flex w-full max-w-2xl flex-col gap-6"
     >
       {({ clearErrors, errors, processing, reset, validate }) => (

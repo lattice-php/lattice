@@ -2,6 +2,7 @@ import { createPlugin, eagerComponent } from "@lattice-php/lattice/core/registry
 import BadgeComponent from "./badge";
 import ButtonComponent from "./button";
 import CardComponent from "./card";
+import FloatingPanelComponent from "./floating-panel";
 import FragmentComponent from "./fragment";
 import GridComponent from "./grid";
 import HeadingComponent from "./heading";
@@ -20,6 +21,7 @@ export const coreComponents = createPlugin({
     badge: eagerComponent(BadgeComponent),
     button: eagerComponent(ButtonComponent),
     card: eagerComponent(CardComponent),
+    "floating-panel": eagerComponent(FloatingPanelComponent),
     fragment: eagerComponent(FragmentComponent),
     grid: eagerComponent(GridComponent),
     heading: eagerComponent(HeadingComponent),

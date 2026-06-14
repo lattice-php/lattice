@@ -1,6 +1,7 @@
 import { router } from "@inertiajs/react";
 import type { ActionResult, Effect, EffectType } from "@lattice-php/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import { setLocale } from "@lattice-php/lattice/i18n/locale";
 
 export type ActionEffect = Effect;
 
@@ -16,6 +17,7 @@ const eventNames = {
   openModal: LATTICE_EVENT.openModal,
   closeModal: LATTICE_EVENT.closeModal,
   resetForm: LATTICE_EVENT.resetForm,
+  localeChange: LATTICE_EVENT.localeChange,
 } satisfies Record<EffectType, string>;
 
 function triggerDownload(url: string): void {
@@ -45,6 +47,11 @@ export function dispatchActionEffects(effects: ActionEffect[]): void {
 
     if (effect.type === "download") {
       triggerDownload(effect.url);
+      continue;
+    }
+
+    if (effect.type === "localeChange") {
+      setLocale(effect.locale);
       continue;
     }
 

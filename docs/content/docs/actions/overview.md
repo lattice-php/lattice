@@ -71,6 +71,20 @@ ActionGroup::make('row-actions')->actions([
 ]);
 ```
 
+Render the same group inline when the actions should stay visible:
+
+```php
+use Lattice\Lattice\Core\Enums\Orientation;
+
+ActionGroup::make('locale-switcher')
+    ->label('Language')
+    ->inline(Orientation::Horizontal)
+    ->actions([
+        Action::use(SetLocaleAction::class)->context(['locale' => 'en']),
+        Action::use(SetLocaleAction::class)->context(['locale' => 'de']),
+    ]);
+```
+
 ## The result
 
 `handle()` returns an `ActionResult`. Start from `ActionResult::success()` or

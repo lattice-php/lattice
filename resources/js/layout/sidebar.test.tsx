@@ -22,14 +22,24 @@ describe("Sidebar", () => {
   it("renders a fixed-width aside with no toggle when not collapsible", () => {
     renderSidebar({ collapsible: false, rememberState: false });
 
-    expect(screen.getByRole("complementary")).toHaveClass("w-64", "shrink-0");
+    expect(screen.getByRole("complementary")).toHaveClass(
+      "sticky",
+      "top-0",
+      "h-svh",
+      "w-64",
+      "shrink-0",
+    );
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
   it("collapses to the icon rail when the toggle is clicked", () => {
     renderSidebar({ collapsible: true, rememberState: false });
 
-    expect(screen.getByRole("complementary")).toHaveClass("w-64", "overflow-hidden");
+    expect(screen.getByRole("complementary")).toHaveClass(
+      "w-64",
+      "overflow-x-hidden",
+      "overflow-y-auto",
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Collapse sidebar" }));
 

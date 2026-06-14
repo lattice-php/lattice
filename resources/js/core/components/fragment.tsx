@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
 import type { Node, RendererComponent, Schema } from "@lattice-php/lattice/core/types";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
@@ -37,10 +37,9 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
 
     try {
       const response = await fetch(endpoint, {
-        headers: {
+        headers: withHeaders(componentRef, {
           Accept: "application/json",
-          ...withRefHeader(componentRef),
-        },
+        }),
       });
       const result = (await response.json()) as FragmentResponse;
 

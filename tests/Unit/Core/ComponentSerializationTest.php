@@ -9,6 +9,7 @@ use Lattice\Lattice\Core\Components\Badge;
 use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Components\FloatingPanel;
 use Lattice\Lattice\Core\Components\Grid;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Link;
@@ -18,6 +19,7 @@ use Lattice\Lattice\Core\Components\Tab;
 use Lattice\Lattice\Core\Components\Tabs;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
+use Lattice\Lattice\Core\Enums\FloatingPlacement;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\PageSchema;
@@ -86,6 +88,7 @@ function exposesSchemaApi(object $component): bool
 test('only container components expose a schema', function () {
     $containerComponents = [
         Card::make('Card', 'Description'),
+        FloatingPanel::make('locale-switcher-panel'),
         Grid::make(),
         Stack::make(),
         FragmentComponent::make('fragment'),
@@ -114,6 +117,29 @@ test('only container components expose a schema', function () {
     foreach ($leafComponents as $component) {
         expect(exposesSchemaApi($component))->toBeFalse();
     }
+});
+
+test('floating panels serialize their placement and children', function () {
+    $payload = wire(FloatingPanel::make('locale-switcher-panel')
+        ->label('Language')
+        ->placement(FloatingPlacement::TopEnd)
+        ->offset(24)
+        ->schema([
+            Button::make('English')->key('locale-en'),
+        ]));
+
+    expect($payload)->toMatchArray([
+        'type' => 'floating-panel',
+        'key' => 'locale-switcher-panel',
+        'props' => [
+            'label' => 'Language',
+            'placement' => 'top-end',
+            'offset' => 24,
+        ],
+    ]);
+    expect($payload['schema'])->toHaveCount(1)
+        ->and($payload['schema'][0]['type'])->toBe('button')
+        ->and($payload['schema'][0]['key'])->toBe('locale-en');
 });
 
 test('components serialize through prioritized hook attributes without child-specific base hooks', function () {

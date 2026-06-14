@@ -4,12 +4,18 @@ declare(strict_types=1);
 namespace Workbench\App\Layouts;
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Lattice\Actions\Components\ActionGroup;
 use Lattice\Lattice\Attributes\Layout;
+use Lattice\Lattice\Core\Components\FloatingPanel;
 use Lattice\Lattice\Core\Components\RawBlock;
 use Lattice\Lattice\Core\Components\Stack;
+use Lattice\Lattice\Core\Enums\ButtonVariant;
+use Lattice\Lattice\Core\Enums\FloatingPlacement;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Core\Enums\Justify;
+use Lattice\Lattice\Core\Enums\Orientation;
 use Lattice\Lattice\Core\Enums\Placement;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
@@ -20,6 +26,7 @@ use Lattice\Lattice\Layouts\Components\MenuItem;
 use Lattice\Lattice\Layouts\Components\Outlet;
 use Lattice\Lattice\Layouts\Components\Sidebar;
 use Lattice\Lattice\Layouts\LayoutDefinition;
+use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Pages\BuilderTableDemoPage;
 use Workbench\App\Pages\DependentDemoPage;
 use Workbench\App\Pages\HomePage;
@@ -34,6 +41,8 @@ final class AppLayout extends LayoutDefinition
 {
     public function schema(PageSchema $schema, Request $request): PageSchema
     {
+        $locale = app()->getLocale();
+
         return $schema->schema([
             Stack::make('app-shell')
                 ->direction('row')
@@ -79,6 +88,26 @@ final class AppLayout extends LayoutDefinition
                         ->schema([
                             Breadcrumbs::make(),
                             Outlet::make(),
+                        ]),
+                ]),
+            FloatingPanel::make('locale-switcher-panel')
+                ->label(__('workbench.language.label'))
+                ->placement(FloatingPlacement::TopEnd)
+                ->schema([
+                    ActionGroup::make('locale-switcher')
+                        ->label(__('workbench.language.label'))
+                        ->inline(Orientation::Horizontal)
+                        ->actions([
+                            ActionComponent::use(SetLocaleAction::class)
+                                ->key('locale-en')
+                                ->label(__('workbench.language.en'))
+                                ->variant($locale === 'en' ? ButtonVariant::Secondary : ButtonVariant::Ghost)
+                                ->context(['locale' => 'en']),
+                            ActionComponent::use(SetLocaleAction::class)
+                                ->key('locale-de')
+                                ->label(__('workbench.language.de'))
+                                ->variant($locale === 'de' ? ButtonVariant::Secondary : ButtonVariant::Ghost)
+                                ->context(['locale' => 'de']),
                         ]),
                 ]),
         ]);

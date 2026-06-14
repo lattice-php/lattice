@@ -34,6 +34,8 @@ Layout components arrange their children. They are containers — pass children 
   `Card::make('Title', 'Description')`.
 - **`Section`** is a titled panel like `Card`, but it can collapse and carry actions in its header —
   see [below](#section).
+- **`FloatingPanel`** fixes children to a viewport corner, useful for compact persistent controls
+  such as language or appearance switchers. Set the corner with `->placement(FloatingPlacement::TopEnd)`.
 
 <ComponentExample
   php={`Grid::make()->columns(3)->schema([
@@ -83,7 +85,8 @@ Badge::make('Trialing');
   `Link` (see [`ButtonVariant`](/advanced/enums/)).
 - **`Link::make($label)->href($url)`** — a navigational link.
 - **`SegmentedControl::make($name)`** — a segmented option control that emits an event on change.
-- **`ActionGroup`** — groups several [actions](/actions/overview/) behind one trigger.
+- **`ActionGroup`** — groups several [actions](/actions/overview/) behind one trigger, or inline with
+  `->inline()`.
 
 ```php
 Button::make('Save')->variant(ButtonVariant::Default);

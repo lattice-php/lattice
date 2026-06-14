@@ -1,7 +1,7 @@
 import { router, useHttp } from "@inertiajs/react";
 import type { Method } from "@inertiajs/core";
 import { useState } from "react";
-import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { Button } from "@lattice-php/lattice/core/components/button";
 import { ConfirmDialog } from "@lattice-php/lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice-php/lattice/core/components/spinner";
@@ -36,13 +36,13 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
 
     try {
       if (method === "get") {
-        router.visit(endpoint, { headers: withRefHeader(componentRef) });
+        router.visit(endpoint, { headers: withHeaders(componentRef) });
         setIsConfirming(false);
 
         return;
       }
 
-      const response = await http[method](endpoint, { headers: withRefHeader(componentRef) });
+      const response = await http[method](endpoint, { headers: withHeaders(componentRef) });
       const responseEffects = getActionEffects(response.effects);
 
       dispatchActionEffects(

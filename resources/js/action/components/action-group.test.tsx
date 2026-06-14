@@ -32,4 +32,50 @@ describe("Lattice action group component", () => {
 
     expect(screen.queryByRole("button", { name: "Make admin" })).not.toBeInTheDocument();
   });
+
+  it("renders grouped actions inline when an orientation is configured", () => {
+    const node = fakeNode({
+      id: "locale-switcher",
+      props: {
+        label: "Language",
+        orientation: "horizontal",
+      },
+      type: "action.group",
+    });
+
+    render(
+      <ActionGroupComponent node={node}>
+        <button type="button">English</button>
+        <button type="button">German</button>
+      </ActionGroupComponent>,
+    );
+
+    const group = screen.getByRole("group", { name: "Language" });
+
+    expect(group).toHaveClass("inline-flex");
+    expect(group).toHaveClass("flex-row");
+    expect(screen.queryByRole("button", { name: "Language" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "English" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "German" })).toBeVisible();
+  });
+
+  it("renders inline action groups vertically", () => {
+    const node = fakeNode({
+      id: "locale-switcher",
+      props: {
+        label: "Language",
+        orientation: "vertical",
+      },
+      type: "action.group",
+    });
+
+    render(
+      <ActionGroupComponent node={node}>
+        <button type="button">English</button>
+        <button type="button">German</button>
+      </ActionGroupComponent>,
+    );
+
+    expect(screen.getByRole("group", { name: "Language" })).toHaveClass("flex-col");
+  });
 });

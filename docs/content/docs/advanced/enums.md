@@ -14,6 +14,7 @@ client type can't drift. The string value is what ends up on the wire.
 | Enum             | Cases (value)                                                                 |
 | ---------------- | ----------------------------------------------------------------------------- |
 | `Align`          | `Center` (center), `Left` (left), `Start` (start), `Stretch` (stretch)        |
+| `FloatingPlacement` | `BottomEnd` (bottom-end), `BottomStart` (bottom-start), `TopEnd` (top-end), `TopStart` (top-start) |
 | `Gap`            | `ExtraSmall` (xs), `Small` (sm), `Medium` (md), `Large` (lg), `ExtraLarge` (xl) |
 | `Width`          | `Full` (full), `Small` (sm), `Medium` (md), `Large` (lg), `Fill` (fill)       |
 | `Orientation`    | `Horizontal` (horizontal), `Vertical` (vertical)                              |

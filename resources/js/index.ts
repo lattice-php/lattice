@@ -9,7 +9,12 @@ export { initializeTheme, useAppearance } from "./appearance";
 export { copyToClipboard, useClipboard } from "./clipboard";
 export { EventBridge } from "./events/event-bridge";
 export { Icon, IconRenderer, IconRendererProvider, SpriteProvider } from "./icons";
-export { createLayoutResolver, createPageResolver, pageComponentName } from "./inertia";
+export {
+  createLayoutResolver,
+  createPageResolver,
+  pageComponentName,
+  withVisitHeaders,
+} from "./inertia";
 export {
   layoutComponents,
   OutletContext,
@@ -29,6 +34,7 @@ export {
 export type { Plugin, Registry } from "./core/registry";
 export { Renderer } from "./core/renderer";
 export { LATTICE_REF_HEADER, withRefHeader } from "./core/component-ref";
+export { withHeaders } from "./core/headers";
 export { LATTICE_EVENT } from "./events/event-names";
 export type { ButtonVariant } from "./core/components/button";
 export type { ReloadComponentEvent } from "./events/event-names";

@@ -394,6 +394,7 @@ describe("Lattice table component", () => {
         {
           headers: {
             Accept: "application/json",
+            "Accept-Language": "en",
           },
         },
       );
@@ -409,6 +410,7 @@ describe("Lattice table component", () => {
         {
           headers: {
             Accept: "application/json",
+            "Accept-Language": "en",
           },
         },
       );
@@ -464,6 +466,7 @@ describe("Lattice table component", () => {
         {
           headers: {
             Accept: "application/json",
+            "Accept-Language": "en",
             "X-Lattice-Ref": "sealed-reference",
           },
         },
@@ -527,6 +530,7 @@ describe("Lattice table component", () => {
     expect(fetch).toHaveBeenCalledWith("/lattice/tables/settings.passkeys?page=1&per_page=25", {
       headers: {
         Accept: "application/json",
+        "Accept-Language": "en",
       },
     });
     expect(screen.queryByRole("cell", { name: "Taylor" })).not.toBeInTheDocument();
@@ -613,6 +617,7 @@ describe("Lattice table component", () => {
     expect(fetch).toHaveBeenNthCalledWith(1, "/lattice/tables/workbench.users?page=2&per_page=1", {
       headers: {
         Accept: "application/json",
+        "Accept-Language": "en",
       },
     });
 
@@ -628,6 +633,7 @@ describe("Lattice table component", () => {
       {
         headers: {
           Accept: "application/json",
+          "Accept-Language": "en",
         },
       },
     );
@@ -733,6 +739,7 @@ describe("Lattice table component", () => {
     expect(fetch).toHaveBeenCalledWith("/lattice/tables/workbench.users?page=3&per_page=1", {
       headers: {
         Accept: "application/json",
+        "Accept-Language": "en",
       },
     });
   });
@@ -793,6 +800,7 @@ describe("Lattice table component", () => {
     expect(fetch).toHaveBeenCalledWith("/lattice/tables/workbench.users.none?page=1&per_page=25", {
       headers: {
         Accept: "application/json",
+        "Accept-Language": "en",
       },
     });
     expect(screen.getByText("Showing 1-1 of 1")).toBeVisible();
@@ -859,7 +867,7 @@ describe("Lattice table component", () => {
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
         "/lattice/tables/workbench.products?filter=featured%3Aeq%3Atrue&page=1&per_page=25",
-        { headers: { Accept: "application/json" } },
+        { headers: { Accept: "application/json", "Accept-Language": "en" } },
       ),
     );
 
@@ -869,7 +877,7 @@ describe("Lattice table component", () => {
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
         "/lattice/tables/workbench.products?filter=updated_at%3Aeq%3A2026-06-01&page=1&per_page=25",
-        { headers: { Accept: "application/json" } },
+        { headers: { Accept: "application/json", "Accept-Language": "en" } },
       ),
     );
 
@@ -879,7 +887,7 @@ describe("Lattice table component", () => {
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
         "/lattice/tables/workbench.products?filter=name%3Acontains%3ALamp&page=1&per_page=25",
-        { headers: { Accept: "application/json" } },
+        { headers: { Accept: "application/json", "Accept-Language": "en" } },
       ),
     );
   });
@@ -951,7 +959,7 @@ describe("Lattice table component", () => {
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
         "/lattice/tables/workbench.products?filter=name%3Aneq%3Abar&page=1&per_page=25",
-        { headers: { Accept: "application/json" } },
+        { headers: { Accept: "application/json", "Accept-Language": "en" } },
       ),
     );
   });

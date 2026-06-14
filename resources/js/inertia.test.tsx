@@ -1,10 +1,18 @@
 import type { Page as InertiaPage } from "@inertiajs/core";
 import type { ResolvedComponent } from "@inertiajs/react";
-import { describe, expect, it, vi } from "vitest";
-import { createLayoutResolver, createPageResolver } from "./inertia";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { setLocale } from "./i18n/locale";
+import { createLayoutResolver, createPageResolver, withVisitHeaders } from "./inertia";
 import { SchemaLayout } from "./layout";
 import Page from "./page";
 import type { PagePayload } from "./core/types";
+
+afterEach(() => {
+  localStorage.clear();
+  document.cookie = "locale=;path=/;max-age=0";
+  document.documentElement.lang = "";
+  setLocale("en");
+});
 
 function pageWithLattice(lattice: PagePayload): InertiaPage {
   return {
@@ -26,7 +34,6 @@ function payload(lattice: Partial<PagePayload> = {}): PagePayload {
     breadcrumbs: [],
     schema: [],
     container: "default",
-    i18n: { enabled: false, saveMissing: false },
     layout: null,
     title: "Lattice",
     ...lattice,
@@ -94,5 +101,24 @@ describe("createLayoutResolver", () => {
     const resolver = createLayoutResolver();
 
     expect(resolver("auth/login", pageWithLattice(payload()))).toBeNull();
+  });
+});
+
+describe("withVisitHeaders", () => {
+  it("adds the active locale to Inertia visit defaults without changing other options", () => {
+    setLocale("de");
+
+    expect(
+      withVisitHeaders("/teams", {
+        headers: { Accept: "application/json" },
+        preserveScroll: true,
+      }),
+    ).toEqual({
+      headers: {
+        "Accept-Language": "de",
+        Accept: "application/json",
+      },
+      preserveScroll: true,
+    });
   });
 });

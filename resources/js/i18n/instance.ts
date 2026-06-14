@@ -1,5 +1,7 @@
 import i18next, { type i18n as I18nInstance, type InitOptions } from "i18next";
 import { useCallback, useSyncExternalStore } from "react";
+import { useConfig } from "./config";
+import { currentLocale, subscribeLocale, useLocale } from "./locale";
 
 const NAMESPACE = "lattice";
 
@@ -12,16 +14,11 @@ type TranslationFunction = (
 export type TranslationResult = {
   t: TranslationFunction;
   i18n: I18nInstance;
+  locale: string;
+  locales: readonly string[];
   ready: boolean;
+  setLocale: (locale: string) => void;
 };
-
-function detectLanguage(): string {
-  if (typeof document !== "undefined" && document.documentElement.lang) {
-    return document.documentElement.lang;
-  }
-
-  return "en";
-}
 
 export const i18n: I18nInstance = i18next.createInstance();
 
@@ -61,7 +58,7 @@ function snapshot(): number {
 export function ensureI18n(extend?: (base: InitOptions) => InitOptions): Promise<unknown> {
   if (!initialization) {
     const base: InitOptions = {
-      lng: detectLanguage(),
+      lng: currentLocale(),
       fallbackLng: "en",
       ns: [NAMESPACE],
       defaultNS: NAMESPACE,
@@ -74,16 +71,26 @@ export function ensureI18n(extend?: (base: InitOptions) => InitOptions): Promise
   return initialization;
 }
 
+subscribeLocale((locale) => {
+  void ensureI18n().then(() => {
+    if (i18n.language !== locale) {
+      void i18n.changeLanguage(locale);
+    }
+  });
+});
+
 export function useT(namespace: string): TranslationResult {
   ensureI18n();
   useSyncExternalStore(subscribe, snapshot, snapshot);
+  const { locales } = useConfig();
+  const { locale, setLocale } = useLocale();
 
   const t = useCallback<TranslationFunction>(
     (key, defaultValue = key, options = {}) => translate(namespace, key, defaultValue, options),
     [namespace],
   );
 
-  return { t, i18n, ready: i18n.isInitialized };
+  return { t, i18n, locale, locales, ready: i18n.isInitialized, setLocale };
 }
 
 export function translate(

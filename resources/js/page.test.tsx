@@ -18,7 +18,6 @@ function payload(lattice: Partial<PagePayload> = {}): PagePayload {
     breadcrumbs: [],
     schema: [],
     container: "default",
-    i18n: { enabled: false, saveMissing: false },
     layout: null,
     title: "Lattice",
     ...lattice,

@@ -1,7 +1,7 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { Button } from "@lattice-php/lattice/core/components/button";
 import { Spinner } from "@lattice-php/lattice/core/components/spinner";
 import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
@@ -36,14 +36,13 @@ type ActionFormProps = {
 };
 
 function jsonHeaders(componentRef: string, extra?: Record<string, string>): Record<string, string> {
-  return {
+  return withHeaders(componentRef, {
     Accept: "application/json",
     "Content-Type": "application/json",
     "X-Requested-With": "XMLHttpRequest",
     "X-XSRF-TOKEN": xsrfToken(),
-    ...withRefHeader(componentRef),
     ...extra,
-  };
+  });
 }
 
 /**
