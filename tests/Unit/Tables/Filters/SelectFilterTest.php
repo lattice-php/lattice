@@ -56,3 +56,11 @@ test('a select filter without a value applies no constraint', function () {
 
     expect($builder->toSql())->not->toContain('where');
 });
+
+test('a multiple select filter with no selected values applies no constraint', function () {
+    $builder = Product::query();
+
+    SelectFilter::make('status')->multiple()->apply($builder, []);
+
+    expect($builder->toSql())->not->toContain('where');
+});

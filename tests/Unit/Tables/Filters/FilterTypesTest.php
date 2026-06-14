@@ -2,9 +2,12 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Lattice\Lattice\Tables\Filters\DateRangeFilter;
 use Lattice\Lattice\Tables\Filters\Filter;
+use Lattice\Lattice\Tables\Filters\SelectFilter;
 use Lattice\Lattice\Tables\Filters\TernaryFilter;
+use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Models\Product;
 
 test('ternary filter serializes its wire shape', function () {
@@ -112,4 +115,61 @@ test('a generic filter is a no-op when toggled off', function () {
         ->apply($builder, '0');
 
     expect($builder->toSql())->not->toContain('where');
+});
+
+test('a generic filter without a query applies a boolean constraint on its column', function () {
+    $builder = Product::query();
+
+    Filter::make('featured')->apply($builder, '1');
+
+    expect($builder->toSql())->toContain('"featured" = ?')
+        ->and($builder->getBindings())->toBe([true]);
+});
+
+test('a ternary filter runs the false query branch', function () {
+    $builder = Product::query();
+
+    TernaryFilter::make('verified')
+        ->queries(
+            true: fn (Builder $query) => $query->whereNotNull('verified_at'),
+            false: fn (Builder $query) => $query->whereNull('verified_at'),
+        )
+        ->apply($builder, 'false');
+
+    expect($builder->toSql())->toContain('"verified_at" is null');
+});
+
+test('a ternary filter ignores an unparseable value', function () {
+    $builder = Product::query();
+
+    TernaryFilter::make('featured')->apply($builder, 'garbage');
+
+    expect($builder->toSql())->not->toContain('where');
+});
+
+test('a date range filter ignores a non-array value', function () {
+    $filter = DateRangeFilter::make('created_at');
+    $builder = Product::query();
+
+    $filter->apply($builder, 'not-an-array');
+
+    expect($filter->accepts('not-an-array'))->toBeFalse()
+        ->and($builder->toSql())->not->toContain('where');
+});
+
+test('a filter constrains the column named by attribute()', function () {
+    $builder = Product::query();
+
+    SelectFilter::make('state')->attribute('status')->apply($builder, 'active');
+
+    expect($builder->toSql())->toContain('"status" = ?')
+        ->and($builder->getBindings())->toBe(['active']);
+});
+
+test('table query drops a table-filter value the filter rejects', function () {
+    $request = Request::create('/', 'GET', ['tf' => ['featured' => 'garbage']]);
+
+    $query = TableQuery::fromRequest($request, [], 'demo', 25, [TernaryFilter::make('featured')]);
+
+    expect($query->tableFilters)->toBe([]);
 });
