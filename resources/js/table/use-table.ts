@@ -1,6 +1,7 @@
 import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { isEmptyFilterValue } from "./filter-values";
 import { getColumns, getPagination, getRows, getState } from "./payload";
 import { buildEndpoint, nextSort } from "./query";
 import type {
@@ -205,24 +206,4 @@ export function useTable(node: TableNode) {
     goToPage,
     loadMore,
   };
-}
-
-/**
- * Whether a table-filter value should clear the filter rather than apply it —
- * an empty string, empty list, or an object whose every member is empty.
- */
-function isEmptyFilterValue(value: unknown): boolean {
-  if (value == null || value === "") {
-    return true;
-  }
-
-  if (Array.isArray(value)) {
-    return value.length === 0;
-  }
-
-  if (typeof value === "object") {
-    return Object.values(value).every((member) => member == null || member === "");
-  }
-
-  return false;
 }

@@ -84,7 +84,7 @@ test('a date range filter applies only the provided bound', function () {
 });
 
 test('a generic filter serializes as a toggle', function () {
-    expect(wire(Filter::make('high_value')->label('High value')->toggle()))
+    expect(wire(Filter::make('high_value')->label('High value')))
         ->toBe([
             'key' => 'high_value',
             'label' => 'High value',

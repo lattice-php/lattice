@@ -19,11 +19,6 @@ class Filter extends BaseFilter
 {
     private ?Closure $query = null;
 
-    public function toggle(): static
-    {
-        return $this;
-    }
-
     /**
      * Constrain the query when the toggle is on.
      *

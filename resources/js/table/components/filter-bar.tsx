@@ -1,6 +1,7 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
-import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
+import type { FilterData } from "@lattice-php/lattice/types/generated";
+import { filterOptions, isActiveFilterValue, stringProp } from "../filter-values";
 import { TableFilterControl } from "./filter-controls";
 
 /**
@@ -24,7 +25,7 @@ export function FilterBar({
   onReset: () => void;
 }) {
   const { t } = useT("lattice");
-  const active = filters.filter((filter) => isActive(values[filter.key]));
+  const active = filters.filter((filter) => isActiveFilterValue(values[filter.key]));
 
   return (
     <div className="flex flex-col gap-2 border-b border-lt-border px-4 py-3">
@@ -43,7 +44,7 @@ export function FilterBar({
           </div>
         ))}
       </div>
-      {(active.length > 0 || hasActiveFilters) && (
+      {hasActiveFilters && (
         <div className="flex flex-wrap items-center gap-2 text-sm">
           {active.map((filter) => (
             <span
@@ -83,26 +84,8 @@ export function FilterBar({
   );
 }
 
-function isActive(value: unknown): boolean {
-  if (value == null || value === "") {
-    return false;
-  }
-
-  if (Array.isArray(value)) {
-    return value.length > 0;
-  }
-
-  if (typeof value === "object") {
-    return Object.values(value).some((member) => member != null && member !== "");
-  }
-
-  return true;
-}
-
 function optionLabel(filter: FilterData, value: string): string {
-  const options = Array.isArray(filter.props.options) ? (filter.props.options as Option[]) : [];
-
-  return options.find((option) => option.value === value)?.label ?? value;
+  return filterOptions(filter).find((option) => option.value === value)?.label ?? value;
 }
 
 function displayValue(filter: FilterData, value: unknown): string {
@@ -115,11 +98,9 @@ function displayValue(filter: FilterData, value: unknown): string {
   }
 
   if (filter.type === "ternary") {
-    const trueLabel = typeof filter.props.trueLabel === "string" ? filter.props.trueLabel : "True";
-    const falseLabel =
-      typeof filter.props.falseLabel === "string" ? filter.props.falseLabel : "False";
-
-    return value === "true" ? trueLabel : falseLabel;
+    return value === "true"
+      ? stringProp(filter, "trueLabel", "True")
+      : stringProp(filter, "falseLabel", "False");
   }
 
   if (filter.type === "date-range" && value && typeof value === "object") {

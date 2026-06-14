@@ -1,18 +1,11 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
 import { useState } from "react";
-import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
-
-const fieldClass =
-  "h-9 w-full min-w-0 rounded-lt-sm border border-lt-input bg-lt-bg px-2 text-sm font-normal";
+import type { FilterData } from "@lattice-php/lattice/types/generated";
+import { filterOptions, stringProp } from "../filter-values";
+import { fieldClass } from "./filter-value-input";
 
 export type DateRangeValue = { from?: string; until?: string };
-
-function options(filter: FilterData): Option[] {
-  const value = filter.props.options;
-
-  return Array.isArray(value) ? (value as Option[]) : [];
-}
 
 /**
  * Renders the control for a single dedicated table filter, dispatching on the
@@ -76,10 +69,7 @@ function SelectControl({
   onChange: (value: unknown) => void;
 }) {
   const { t } = useT("lattice");
-  const placeholder =
-    typeof filter.props.placeholder === "string"
-      ? filter.props.placeholder
-      : t("filter.all", "All");
+  const placeholder = stringProp(filter, "placeholder", t("filter.all", "All"));
 
   return (
     <select
@@ -91,7 +81,7 @@ function SelectControl({
       onChange={(event) => onChange(event.target.value)}
     >
       <option value="">{placeholder}</option>
-      {options(filter).map((option) => (
+      {filterOptions(filter).map((option) => (
         <option key={option.value} value={option.value}>
           {option.label}
         </option>
@@ -125,9 +115,7 @@ function MultiSelectControl({
 
   const summary =
     selected.length === 0
-      ? typeof filter.props.placeholder === "string"
-        ? filter.props.placeholder
-        : t("filter.all", "All")
+      ? stringProp(filter, "placeholder", t("filter.all", "All"))
       : t("filter.selectedCount", "{{amount}} selected", { amount: selected.length });
 
   return (
@@ -146,7 +134,7 @@ function MultiSelectControl({
       </button>
       {open && (
         <div className="absolute z-10 mt-1 min-w-full rounded-lt-sm border border-lt-border bg-lt-bg p-1 shadow-md">
-          {options(filter).map((option) => (
+          {filterOptions(filter).map((option) => (
             <label
               key={option.value}
               className="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-lt-muted"
@@ -180,16 +168,9 @@ function TernaryControl({
   onChange: (value: unknown) => void;
 }) {
   const { t } = useT("lattice");
-  const placeholder =
-    typeof filter.props.placeholder === "string"
-      ? filter.props.placeholder
-      : t("filter.all", "All");
-  const trueLabel =
-    typeof filter.props.trueLabel === "string" ? filter.props.trueLabel : t("filter.true", "True");
-  const falseLabel =
-    typeof filter.props.falseLabel === "string"
-      ? filter.props.falseLabel
-      : t("filter.false", "False");
+  const placeholder = stringProp(filter, "placeholder", t("filter.all", "All"));
+  const trueLabel = stringProp(filter, "trueLabel", t("filter.true", "True"));
+  const falseLabel = stringProp(filter, "falseLabel", t("filter.false", "False"));
 
   return (
     <select
