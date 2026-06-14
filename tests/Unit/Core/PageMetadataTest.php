@@ -6,8 +6,8 @@ use Lattice\Lattice\Attributes\Page;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
+use Lattice\Lattice\Core\PageMetadata;
 use Lattice\Lattice\Http\Page as BasePage;
-use Lattice\Lattice\Http\PageMetadata;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
 
 #[Page(layout: PageLayout::App, container: PageContainer::Default)]

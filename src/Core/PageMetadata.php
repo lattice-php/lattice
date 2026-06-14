@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http;
+namespace Lattice\Lattice\Core;
 
 use BackedEnum;
 use Lattice\Lattice\Attributes\Page as PageAttribute;
+use Lattice\Lattice\Core\Contracts\PageContract;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
@@ -26,7 +27,7 @@ final class PageMetadata
         public readonly array $middleware,
     ) {}
 
-    public static function for(Page|string $page): self
+    public static function for(PageContract|string $page): self
     {
         $class = is_object($page) ? $page::class : $page;
 
@@ -43,7 +44,7 @@ final class PageMetadata
         return self::reflect($class);
     }
 
-    public static function reflect(Page|string $page): self
+    public static function reflect(PageContract|string $page): self
     {
         $class = is_object($page) ? $page::class : $page;
 
