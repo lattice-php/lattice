@@ -1,6 +1,10 @@
 import { Icon } from "@lattice-php/lattice/icons";
-import * as Popover from "@radix-ui/react-popover";
 import { useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@lattice-php/lattice/core/components/popover";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { FilterData, FilterType, Op } from "@lattice-php/lattice/types/generated";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
@@ -84,8 +88,8 @@ export function ColumnFilterControl({
           onClear={primary ? () => onRemove(primary.index) : undefined}
         />
       </div>
-      <Popover.Root>
-        <Popover.Trigger asChild>
+      <Popover>
+        <PopoverTrigger asChild>
           <button
             type="button"
             aria-label={t("filter.columnFilters", "{{label}} filters", { label: column.label })}
@@ -100,27 +104,21 @@ export function ColumnFilterControl({
               </span>
             )}
           </button>
-        </Popover.Trigger>
+        </PopoverTrigger>
 
-        <Popover.Portal>
-          <Popover.Content
-            align="start"
-            className="z-50 w-80 rounded-lt border border-lt-border bg-lt-bg p-4 shadow-lg"
-            sideOffset={4}
-          >
-            <FilterClauseList
-              column={column}
-              clauses={clauses}
-              operators={operators}
-              defaultOperator={defaultOperator}
-              processing={processing}
-              onAdd={onAdd}
-              onUpdate={onUpdate}
-              onRemove={onRemove}
-            />
-          </Popover.Content>
-        </Popover.Portal>
-      </Popover.Root>
+        <PopoverContent align="start" className="w-80 p-4">
+          <FilterClauseList
+            column={column}
+            clauses={clauses}
+            operators={operators}
+            defaultOperator={defaultOperator}
+            processing={processing}
+            onAdd={onAdd}
+            onUpdate={onUpdate}
+            onRemove={onRemove}
+          />
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }

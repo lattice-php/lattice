@@ -1,6 +1,6 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
-import { Checkbox } from "../base/checkbox";
+import { Checkbox } from "@lattice-php/lattice/core/components/checkbox";
 import { Label } from "../base/label";
 import { toBoolean } from "../conditions";
 import { useFieldScope } from "../field-scope";

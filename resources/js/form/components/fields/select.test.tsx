@@ -115,3 +115,73 @@ describe("SelectComponent search", () => {
     );
   });
 });
+
+describe("SelectComponent options", () => {
+  function renderStaticSelect(
+    props: Record<string, unknown>,
+    initial: Record<string, unknown> = {},
+  ) {
+    const node = fakeNode({
+      type: "form.select",
+      props: {
+        name: "color",
+        label: "Color",
+        emptyLabel: "No colors",
+        searchPlaceholder: "Search",
+        ...props,
+      },
+    });
+
+    return render(
+      <FormProvider
+        value={{
+          action: "/forms/products",
+          clearErrors: () => {},
+          componentRef: "ref-1",
+          errors: {},
+          fieldLabels: {},
+          precognitive: false,
+          processing: false,
+          validate: () => {},
+        }}
+      >
+        <FormValuesProvider initial={initial}>
+          <SelectComponent node={node}>{null}</SelectComponent>
+        </FormValuesProvider>
+      </FormProvider>,
+    );
+  }
+
+  it("lists static options and selects one", () => {
+    renderStaticSelect({
+      options: [
+        { label: "Red", value: "red" },
+        { label: "Blue", value: "blue" },
+      ],
+    });
+
+    fireEvent.click(screen.getByTestId("select-color"));
+    fireEvent.click(screen.getByTestId("select-color-option-blue"));
+
+    expect(screen.getByTestId("select-color")).toHaveTextContent("Blue");
+  });
+
+  it("shows chips and removes a value in a multiple select", () => {
+    renderStaticSelect(
+      {
+        multiple: true,
+        options: [
+          { label: "Red", value: "red" },
+          { label: "Blue", value: "blue" },
+        ],
+      },
+      { color: ["red"] },
+    );
+
+    expect(screen.getByText("Red")).toBeVisible();
+
+    fireEvent.click(screen.getByTestId("select-color-remove-red"));
+
+    expect(screen.queryByText("Red")).not.toBeInTheDocument();
+  });
+});

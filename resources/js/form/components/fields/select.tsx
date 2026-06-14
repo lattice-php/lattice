@@ -1,6 +1,10 @@
 import { Icon } from "@lattice-php/lattice/icons";
-import * as Popover from "@radix-ui/react-popover";
 import { useEffect, useMemo, useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@lattice-php/lattice/core/components/popover";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { Option, RendererComponent } from "@lattice-php/lattice/core/types";
@@ -184,7 +188,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
           </div>
         )}
 
-        <Popover.Root
+        <Popover
           open={open && !locked}
           onOpenChange={(next) => {
             if (next) {
@@ -194,7 +198,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
             }
           }}
         >
-          <Popover.Trigger asChild>
+          <PopoverTrigger asChild>
             <button
               aria-haspopup="listbox"
               autoFocus={props.autoFocus ?? undefined}
@@ -214,60 +218,57 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
               )}
               <Icon name="chevrons-up-down" className="size-lt-icon-md shrink-0 text-lt-muted-fg" />
             </button>
-          </Popover.Trigger>
+          </PopoverTrigger>
 
-          <Popover.Portal>
-            <Popover.Content
-              align="start"
-              className="z-50 w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-lt-sm border border-lt-border bg-lt-bg shadow-md"
-              sideOffset={4}
-            >
-              <div className="flex items-center gap-2 border-b border-lt-border px-3 py-2">
-                <input
-                  aria-label={t("a11y.searchOptions", "Search options")}
-                  data-test={`select-${name}-search`}
-                  className="w-full bg-transparent text-sm outline-none placeholder:text-lt-muted-fg"
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder={props.searchPlaceholder}
-                  value={query}
+          <PopoverContent
+            align="start"
+            className="w-[var(--radix-popover-trigger-width)] overflow-hidden"
+          >
+            <div className="flex items-center gap-2 border-b border-lt-border px-3 py-2">
+              <input
+                aria-label={t("a11y.searchOptions", "Search options")}
+                data-test={`select-${name}-search`}
+                className="w-full bg-transparent text-sm outline-none placeholder:text-lt-muted-fg"
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder={props.searchPlaceholder}
+                value={query}
+              />
+              {loading && (
+                <Icon
+                  name="loader-2"
+                  className="size-lt-icon-md shrink-0 animate-spin text-lt-muted-fg"
                 />
-                {loading && (
-                  <Icon
-                    name="loader-2"
-                    className="size-lt-icon-md shrink-0 animate-spin text-lt-muted-fg"
-                  />
-                )}
-              </div>
-              <div className="max-h-60 overflow-y-auto p-1" role="listbox">
-                {visibleOptions.length === 0 ? (
-                  <p className="px-3 py-2 text-sm text-lt-muted-fg">{props.emptyLabel}</p>
-                ) : (
-                  visibleOptions.map((option) => {
-                    const isSelected = selected.includes(option.value);
+              )}
+            </div>
+            <div className="max-h-60 overflow-y-auto p-1" role="listbox">
+              {visibleOptions.length === 0 ? (
+                <p className="px-3 py-2 text-sm text-lt-muted-fg">{props.emptyLabel}</p>
+              ) : (
+                visibleOptions.map((option) => {
+                  const isSelected = selected.includes(option.value);
 
-                    return (
-                      <button
-                        aria-selected={isSelected}
-                        data-test={`select-${name}-option-${option.value}`}
-                        className={cn(
-                          "flex w-full items-center justify-between gap-2 rounded-lt-sm px-3 py-1.5 text-left text-sm transition-colors hover:bg-lt-accent hover:text-lt-accent-fg",
-                          isSelected && "bg-lt-accent/60",
-                        )}
-                        key={option.value}
-                        onClick={() => pick(option)}
-                        role="option"
-                        type="button"
-                      >
-                        {option.label}
-                        {isSelected && <Icon name="check" className="size-lt-icon-md shrink-0" />}
-                      </button>
-                    );
-                  })
-                )}
-              </div>
-            </Popover.Content>
-          </Popover.Portal>
-        </Popover.Root>
+                  return (
+                    <button
+                      aria-selected={isSelected}
+                      data-test={`select-${name}-option-${option.value}`}
+                      className={cn(
+                        "flex w-full items-center justify-between gap-2 rounded-lt-sm px-3 py-1.5 text-left text-sm transition-colors hover:bg-lt-accent hover:text-lt-accent-fg",
+                        isSelected && "bg-lt-accent/60",
+                      )}
+                      key={option.value}
+                      onClick={() => pick(option)}
+                      role="option"
+                      type="button"
+                    >
+                      {option.label}
+                      {isSelected && <Icon name="check" className="size-lt-icon-md shrink-0" />}
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
     </FormFieldFrame>
   );

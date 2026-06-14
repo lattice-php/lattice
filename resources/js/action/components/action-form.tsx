@@ -1,8 +1,7 @@
-import { Icon } from "@lattice-php/lattice/icons";
-import * as Dialog from "@radix-ui/react-dialog";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { Button } from "@lattice-php/lattice/core/components/button";
+import { Dialog, DialogContent, DialogHeader } from "@lattice-php/lattice/core/components/dialog";
 import { Spinner } from "@lattice-php/lattice/core/components/spinner";
 import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
 import type { Node } from "@lattice-php/lattice/core/types";
@@ -312,7 +311,7 @@ export function ActionForm({ description, formNode, onClose, title, ...rest }: A
   const { t } = useT("lattice");
 
   return (
-    <Dialog.Root
+    <Dialog
       open
       onOpenChange={(open) => {
         if (!open) {
@@ -320,41 +319,24 @@ export function ActionForm({ description, formNode, onClose, title, ...rest }: A
         }
       }}
     >
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-lt-overlay" />
-        <Dialog.Content
-          {...(description ? {} : { "aria-describedby": undefined })}
-          className="fixed left-1/2 top-1/2 z-50 max-h-[min(680px,calc(100vh-2rem))] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-lt border border-lt-border bg-lt-bg p-6 shadow-lg"
-        >
-          <div className="flex items-start justify-between gap-4">
-            <div className="grid gap-2">
-              <Dialog.Title className="text-lg font-semibold leading-none tracking-tight">
-                {title}
-              </Dialog.Title>
+      <DialogContent
+        {...(description ? {} : { "aria-describedby": undefined })}
+        className="max-h-[min(680px,calc(100vh-2rem))] w-full max-w-lg overflow-y-auto"
+      >
+        <DialogHeader
+          closeLabel={t("a11y.close", "Close")}
+          description={description}
+          title={title}
+        />
 
-              {description && (
-                <Dialog.Description className="text-sm text-lt-muted-fg">
-                  {description}
-                </Dialog.Description>
-              )}
-            </div>
-
-            <Dialog.Close asChild>
-              <Button aria-label={t("a11y.close", "Close")} size="icon" variant="ghost">
-                <Icon name="x" aria-hidden="true" className="size-lt-icon-md" />
-              </Button>
-            </Dialog.Close>
-          </div>
-
-          <div className="mt-6">
-            {formNode ? (
-              <ActionFormContent formNode={formNode} onClose={onClose} {...rest} />
-            ) : (
-              <ActionFormSkeleton />
-            )}
-          </div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        <div className="mt-6">
+          {formNode ? (
+            <ActionFormContent formNode={formNode} onClose={onClose} {...rest} />
+          ) : (
+            <ActionFormSkeleton />
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

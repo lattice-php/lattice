@@ -2,6 +2,7 @@ import { type ReactNode, useMemo } from "react";
 import { useT } from "@lattice-php/lattice/i18n";
 import { useColumnResizing } from "@lattice-php/lattice/core/use-column-resizing";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
+import { Checkbox } from "@lattice-php/lattice/core/components/checkbox";
 import { Icon } from "@lattice-php/lattice/icons";
 import type { TableNode } from "../types";
 import { getBulkActions } from "../bulk";
@@ -166,12 +167,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             >
               {hasBulkActions && (
                 <div className="flex items-center px-4 py-3" role="columnheader">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     aria-label={t("a11y.selectAllRows", "Select all rows")}
                     data-test="select-all"
                     checked={selection.allSelected}
-                    onChange={selection.toggleAll}
+                    onCheckedChange={() => selection.toggleAll()}
                   />
                 </div>
               )}
@@ -244,12 +244,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                   >
                     {hasBulkActions && (
                       <div className="flex items-center p-4" role="cell">
-                        <input
-                          type="checkbox"
+                        <Checkbox
                           aria-label={t("a11y.selectRow", "Select row {{key}}", { key })}
                           data-test={`select-row-${key}`}
                           checked={selection.isSelected(key)}
-                          onChange={() => selection.toggle(key)}
+                          onCheckedChange={() => selection.toggle(key)}
                         />
                       </div>
                     )}

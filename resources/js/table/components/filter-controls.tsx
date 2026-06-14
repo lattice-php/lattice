@@ -1,6 +1,11 @@
 import { Icon } from "@lattice-php/lattice/icons";
-import * as Popover from "@radix-ui/react-popover";
 import { useEffect, useState } from "react";
+import { Checkbox } from "@lattice-php/lattice/core/components/checkbox";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@lattice-php/lattice/core/components/popover";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
 import { filterOptions, stringProp } from "../filter-values";
@@ -158,13 +163,12 @@ function MultiSelectControl({
               key={option.value}
               className="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-lt-muted"
             >
-              <input
-                type="checkbox"
+              <Checkbox
                 aria-label={option.label}
                 data-test={`table-filter-${filter.key}-${option.value}`}
                 checked={selected.includes(option.value)}
                 disabled={processing}
-                onChange={() => toggle(option.value)}
+                onCheckedChange={() => toggle(option.value)}
               />
               <span className="truncate">{option.label}</span>
             </label>
@@ -248,8 +252,8 @@ function SearchableSelectControl({
   }
 
   return (
-    <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Trigger asChild>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
         <button
           type="button"
           aria-label={filter.label}
@@ -260,46 +264,39 @@ function SearchableSelectControl({
           <span className="truncate">{summary}</span>
           <Icon name="chevron-down" aria-hidden="true" className="size-lt-icon-sm shrink-0" />
         </button>
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Content
-          align="start"
-          sideOffset={4}
-          className="z-50 w-60 rounded-lt border border-lt-border bg-lt-bg p-2 shadow-lg"
-        >
-          <input
-            type="text"
-            aria-label={t("filter.search", "Search")}
-            data-test={`table-filter-${filter.key}-search`}
-            className={fieldClass}
-            value={query}
-            disabled={processing}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          <div className="mt-1 max-h-60 overflow-y-auto" role="listbox">
-            {results.map((option) => (
-              <button
-                type="button"
-                key={option.value}
-                data-test={`table-filter-${filter.key}-${option.value}`}
-                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm hover:bg-lt-muted"
-                onClick={() => choose(option.value)}
-              >
-                {multiple && (
-                  <input
-                    type="checkbox"
-                    aria-label={option.label}
-                    readOnly
-                    checked={selected.includes(option.value)}
-                  />
-                )}
-                <span className="truncate">{option.label}</span>
-              </button>
-            ))}
-          </div>
-        </Popover.Content>
-      </Popover.Portal>
-    </Popover.Root>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-60 p-2">
+        <input
+          type="text"
+          aria-label={t("filter.search", "Search")}
+          data-test={`table-filter-${filter.key}-search`}
+          className={fieldClass}
+          value={query}
+          disabled={processing}
+          onChange={(event) => setQuery(event.target.value)}
+        />
+        <div className="mt-1 max-h-60 overflow-y-auto" role="listbox">
+          {results.map((option) => (
+            <button
+              type="button"
+              key={option.value}
+              data-test={`table-filter-${filter.key}-${option.value}`}
+              className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm hover:bg-lt-muted"
+              onClick={() => choose(option.value)}
+            >
+              {multiple && (
+                <Icon
+                  name="check"
+                  aria-hidden="true"
+                  className={`size-lt-icon-sm shrink-0 ${selected.includes(option.value) ? "" : "invisible"}`}
+                />
+              )}
+              <span className="truncate">{option.label}</span>
+            </button>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
 
@@ -395,13 +392,12 @@ function ToggleControl({
 
   return (
     <label className="flex h-9 cursor-pointer items-center gap-2 text-sm">
-      <input
-        type="checkbox"
+      <Checkbox
         aria-label={filter.label}
         data-test={`table-filter-${filter.key}`}
         checked={checked}
         disabled={processing}
-        onChange={(event) => onChange(event.target.checked ? "1" : "")}
+        onCheckedChange={(next) => onChange(next === true ? "1" : "")}
       />
       <span>{filter.label}</span>
     </label>
