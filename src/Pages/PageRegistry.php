@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Pages;
 
+use Lattice\Lattice\Core\Contracts\PageContract;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Http\PageContract;
-use Lattice\Lattice\Http\PageMetadata;
+use Lattice\Lattice\Core\PageMetadata;
 use ReflectionClass;
 
 final class PageRegistry

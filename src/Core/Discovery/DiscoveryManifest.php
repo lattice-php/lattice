@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Core\Discovery;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Filesystem\Filesystem;
-use Lattice\Lattice\Http\PageMetadata;
+use Lattice\Lattice\Core\PageMetadata;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
 use ReflectionClass;
 use Spatie\Attributes\Attributes;

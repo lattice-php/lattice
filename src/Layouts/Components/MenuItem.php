@@ -11,7 +11,7 @@ use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
-use Lattice\Lattice\Http\PageContract;
+use Lattice\Lattice\Core\Contracts\PageContract;
 
 /**
  * A single menu entry. Renders an Inertia link when it has an href, otherwise a

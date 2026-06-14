@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http;
+namespace Lattice\Lattice\Core\Contracts;
 
 use Inertia\Response;
-use Lattice\Lattice\Core\Contracts\Authorizable;
 
 interface PageContract extends Authorizable
 {
