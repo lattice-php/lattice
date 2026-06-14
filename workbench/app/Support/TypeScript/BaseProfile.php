@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
-use Lattice\Lattice\Actions\Effects\AbstractEffect;
-use Lattice\Lattice\Attributes\AsEffect as EffectAttribute;
+use Lattice\Lattice\Effects\Attributes\AsEffect as EffectAttribute;
+use Lattice\Lattice\Effects\Contracts\Effect as AbstractEffect;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
@@ -41,7 +41,7 @@ final class BaseProfile implements TypeScriptProfile
         $packageRoot = dirname(__DIR__, 4);
         $src = $packageRoot.'/src';
 
-        $effects = $this->discoverEffects($src.'/Actions/Effects');
+        $effects = $this->discoverEffects($src.'/Effects/Builtin');
         $marked = (new MarkedTypeDiscovery)->discover($src);
 
         $discovered = (new ComponentDiscovery)->discover($src);
@@ -104,7 +104,7 @@ final class BaseProfile implements TypeScriptProfile
                 continue;
             }
 
-            $effects[$class] = $effect->type->value;
+            $effects[$class] = $effect->wireType();
         }
 
         return $effects;

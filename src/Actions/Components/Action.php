@@ -7,12 +7,12 @@ use BackedEnum;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\Confirmation;
-use Lattice\Lattice\Effects\Contracts\Effect as AbstractEffect;
 use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasVariant;
+use Lattice\Lattice\Effects\Contracts\Effect as AbstractEffect;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
 

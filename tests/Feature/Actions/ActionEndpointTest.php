@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
 use Workbench\App\Actions\SetLocaleAction;
