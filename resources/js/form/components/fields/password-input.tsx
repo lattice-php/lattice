@@ -25,12 +25,6 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
     return null;
   }
 
-  const onChange =
-    (field: string) =>
-    (event: React.ChangeEvent<HTMLInputElement>): void => {
-      commit(field, event.target.value);
-    };
-
   return (
     <div className="grid gap-6">
       <FormFieldFrame
@@ -72,7 +66,9 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
             disabled={field.disabled}
             id={confirmationName}
             name={confirmationName}
-            onChange={onChange(confirmationLocalName)}
+            onChange={(event) => {
+              commit(confirmationLocalName, event.target.value);
+            }}
             placeholder={confirmation.placeholder ?? confirmation.label ?? "Confirm password"}
             passwordrules={passwordRules}
             readOnly={field.readOnly}
