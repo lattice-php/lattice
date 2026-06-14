@@ -6,7 +6,7 @@ description: Make columns sortable and filterable, choose filter operators per v
 import ComponentExample from "@components/ComponentExample.astro";
 
 Sorting, filtering, and pagination are handled for you once a column opts in. The table sends the
-current sort and filters to its endpoint, and the [data source](/tables/overview/#data-sources)
+current sort and filters to its [endpoint](/advanced/security/), and the [data source](/tables/overview/#data-sources)
 applies them.
 
 <ComponentExample
@@ -49,7 +49,7 @@ TextColumn::make('created_at')->date()->filterable(); // date filter
 
 ### Filter types and operators
 
-Operators are the shared `Op` enum (`Lattice\Lattice\Core\Enums\Op`) — the same vocabulary used by
+Operators are the shared [`Op`](/advanced/enums/#operators) enum (`Lattice\Lattice\Core\Enums\Op`) — the same vocabulary used by
 [form conditions](/forms/conditional-fields/#operators). Each `FilterType` offers a sensible default
 set and a default operator (text defaults to `contains`, the rest to `=`).
 

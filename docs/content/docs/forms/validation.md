@@ -65,6 +65,6 @@ TextInput::make('discount_code', 'Discount code')
 ## Live validation
 
 Validation runs live through [Laravel Precognition](https://laravel.com/docs/precognition): as the
-user edits a field, the form sends a precognitive request that runs your rules and returns messages
+user edits a field, the form sends a precognitive request to its [endpoint](/advanced/security/) that runs your rules and returns messages
 without executing the submission. Because it is the exact same server-side ruleset, there is nothing
 to keep in sync — what passes live is what passes on submit.

@@ -12,7 +12,7 @@ drive the UI that follows.
 Extend `ActionDefinition` and implement two methods: `definition()` describes the trigger (label,
 icon, variant, confirmation), and `handle()` runs the work and returns an `ActionResult`. The
 `#[Action]` attribute gives the action a stable id so it can be discovered and addressed by its
-endpoint.
+[endpoint](/advanced/security/).
 
 ```php
 use Illuminate\Http\Request;

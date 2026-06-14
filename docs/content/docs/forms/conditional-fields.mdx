@@ -7,7 +7,7 @@ import ComponentExample from "@components/ComponentExample.astro";
 
 Fields can react to the rest of the form. A condition compares another field's value and toggles this
 field's visibility, required, read-only, or disabled state. Conditions are evaluated on the client as
-the user types, and the same rules are re-checked on the server, so they cannot be bypassed.
+the user types, and the same rules are re-checked on the [server](/advanced/security/), so they cannot be bypassed.
 
 Each method names the field to watch, an optional operator, and the value to compare against. Open the
 **Tree** tab on the examples below to see the `conditions` that are serialized to the client.
@@ -72,7 +72,7 @@ NumberInput::make('guardian', 'Guardian name')
     ->requiredWhen('age', '<', 18);
 ```
 
-The operator accepts a comparison string or an `Op` case (`Lattice\Lattice\Core\Enums\Op`):
+The operator accepts a comparison string or an [`Op`](/advanced/enums/#operators) case (`Lattice\Lattice\Core\Enums\Op`):
 
 | Condition  | String                              | `Op` case                                     |
 | ---------- | ----------------------------------- | --------------------------------------------- |

@@ -27,7 +27,7 @@ public function actions(array $row): array
 ```
 
 - `Link` navigates, like any other link.
-- `Action::use()` references an action class and runs it through the action endpoint. Pass per-row
+- `Action::use()` references an action class and runs it through the [action endpoint](/advanced/security/). Pass per-row
   data with `->context()`; the action reads it back when it handles the request.
 
 The row is a plain array of the serialized row values, so `$row['id']` (and any other selected column)

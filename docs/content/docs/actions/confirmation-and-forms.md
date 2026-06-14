@@ -29,7 +29,7 @@ public function definition(Action $action): Action
 ## Collecting input with a form
 
 `->form()` renders a [form](/forms/overview/) in a modal before the action runs. The collected values
-are posted to the action endpoint and validated server-side, then `handle()` reads them. Use it for
+are posted to the [action endpoint](/advanced/security/) and validated server-side, then `handle()` reads them. Use it for
 "reject with a reason", "assign a category", and the like.
 
 ```php

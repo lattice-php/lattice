@@ -53,12 +53,12 @@ export default defineConfig({
           collapsed: true,
           items: [
             { label: "Pages", link: "/core/pages/" },
+            { label: "Layouts", link: "/core/layouts/" },
             { label: "Components", link: "/core/components/" },
+            { label: "Authorization", link: "/core/authorization/" },
             { label: "Fragments", link: "/core/fragments/" },
-            { label: "Toasts", link: "/core/toasts/" },
             { label: "Navigation", link: "/core/navigation/" },
             { label: "Icons", link: "/core/icons/" },
-            { label: "Theming", link: "/core/theming/" },
             { label: "Internationalization", link: "/core/i18n/" },
           ],
         },
@@ -106,6 +106,7 @@ export default defineConfig({
           items: [
             { label: "Overview", link: "/actions/overview/" },
             { label: "Effects & results", link: "/actions/effects/" },
+            { label: "Toasts", link: "/actions/toasts/" },
             { label: "Confirmation & forms", link: "/actions/confirmation-and-forms/" },
             { label: "Bulk actions", link: "/actions/bulk-actions/" },
           ],
@@ -121,10 +122,16 @@ export default defineConfig({
           ],
         },
         {
+          label: "Theming",
+          collapsed: true,
+          items: [
+            { label: "Overview", link: "/theming/" },
+          ],
+        },
+        {
           label: "Advanced",
           collapsed: true,
           items: [
-            { label: "Authorization", link: "/advanced/authorization/" },
             { label: "Security", link: "/advanced/security/" },
             { label: "Bundle size", link: "/advanced/bundle-size/" },
             { label: "Enums reference", link: "/advanced/enums/" },
