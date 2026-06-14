@@ -224,13 +224,6 @@ return [
             'total' => 'Gesamt',
             'type' => 'Typ',
         ],
-        'pricing-builder' => [
-            'acme' => 'Acme',
-            'customer' => 'Kunde',
-            'discount-note' => 'Rabattnotiz',
-            'globex' => 'Globex (10 % Rabatt)',
-            'initech' => 'Initech (25 % Rabatt)',
-        ],
         'product' => [
             'card' => 'Produktdetails',
             'fields' => [
@@ -355,11 +348,6 @@ return [
             'renderer-title' => 'Renderer',
             'title' => 'Lattice Workbench',
             'users' => 'Workbench-Benutzer',
-        ],
-        'pricing-builder' => [
-            'heading' => 'Pricing-Builder-Demo',
-            'submit' => 'Speichern',
-            'title' => 'Pricing-Builder-Demo',
         ],
         'product-create' => [
             'heading' => 'Produkt erstellen',
