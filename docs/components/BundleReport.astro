@@ -17,22 +17,48 @@ type Report = {
   resources: Resource[];
 };
 
+type Segment = {
+  name: string;
+  uncompressed: number;
+  gzip: number;
+  share: number;
+  color: string;
+};
+
 const reports = import.meta.glob<{ default: Report }>("../generated/bundle-report.json", {
   eager: true,
 });
 
 const report = reports["../generated/bundle-report.json"]?.default ?? null;
 
+const palette = [
+  "#6366f1",
+  "#0ea5e9",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#a855f7",
+  "#ec4899",
+  "#14b8a6",
+  "#f97316",
+  "#84cc16",
+  "#06b6d4",
+  "#eab308",
+];
+const remainderColor = "var(--sl-color-gray-4)";
+const ownName = "Lattice code";
+
 const kb = (bytes: number): string => `${(bytes / 1024).toFixed(1)} KB`;
+const pct = (value: number): string => `${value.toFixed(1)}%`;
 
 function group(name: string): string {
-  if (name.includes("resources/js")) return "Lattice (own code)";
+  if (name.includes("resources/js")) return ownName;
   const at = name.lastIndexOf("node_modules/");
   if (at < 0) return "Application / other";
   const rest = name.slice(at + "node_modules/".length);
   const pkg = rest.startsWith("@") ? rest.split("/").slice(0, 2).join("/") : rest.split("/")[0];
   if (pkg.startsWith("@tiptap") || pkg.startsWith("prosemirror") || pkg === "linkifyjs") {
-    return "TipTap + ProseMirror (rich editor)";
+    return "TipTap + ProseMirror";
   }
   if (pkg.startsWith("@radix-ui") || pkg.startsWith("@floating-ui")) return "Radix UI";
   if (pkg === "react" || pkg === "react-dom" || pkg === "scheduler") return "React / React-DOM";
@@ -42,7 +68,7 @@ function group(name: string): string {
 }
 
 let files: Resource[] = [];
-let contributors: Array<{ name: string; uncompressed: number; gzip: number }> = [];
+let segments: Segment[] = [];
 let totalRaw = 0;
 let totalGz = 0;
 
@@ -61,10 +87,36 @@ if (report) {
     totalRaw += r.uncompressed;
     totalGz += r.gzip ?? 0;
   }
-  contributors = [...agg.entries()]
+
+  const ranked = [...agg.entries()]
     .map(([name, v]) => ({ name, ...v }))
-    .sort((a, b) => b.uncompressed - a.uncompressed)
-    .slice(0, 12);
+    .sort((a, b) => b.gzip - a.gzip);
+  const top = ranked.slice(0, palette.length);
+
+  const own = top.findIndex((c) => c.name === ownName);
+  if (own > 0) {
+    top.unshift(top.splice(own, 1)[0]);
+  }
+
+  segments = top.map((c, i) => ({
+    name: c.name,
+    uncompressed: c.uncompressed,
+    gzip: c.gzip,
+    share: totalGz ? (c.gzip / totalGz) * 100 : 0,
+    color: palette[i],
+  }));
+
+  const restRaw = totalRaw - top.reduce((s, c) => s + c.uncompressed, 0);
+  const restGz = totalGz - top.reduce((s, c) => s + c.gzip, 0);
+  if (restGz > 0) {
+    segments.push({
+      name: "Everything else",
+      uncompressed: restRaw,
+      gzip: restGz,
+      share: totalGz ? (restGz / totalGz) * 100 : 0,
+      color: remainderColor,
+    });
+  }
 }
 
 const generatedAt = report ? new Date(report.metadata.generatedAt).toUTCString() : null;
@@ -81,8 +133,42 @@ const fileLabel = (name: string): string => name.replace(/.*\/assets\//, "").rep
   ) : (
     <div class="bundle-report">
       <p class="bundle-report-total">
-        <strong>{kb(totalRaw)}</strong> of JavaScript total — <strong>{kb(totalGz)} gzipped</strong>.
+        <strong>{kb(totalGz)} gzipped</strong> · {kb(totalRaw)} raw JavaScript
       </p>
+
+      <div class="bundle-bar" role="img" aria-label="Bundle composition by gzipped size">
+        {segments.map((s) => (
+          <span
+            class="bundle-bar-segment"
+            style={`width:${s.share}%;background:${s.color}`}
+            title={`${s.name} — ${kb(s.gzip)} gzipped (${pct(s.share)})`}
+          />
+        ))}
+      </div>
+
+      <table class="bundle-legend">
+        <thead>
+          <tr>
+            <th>Dependency</th>
+            <th style="text-align:right">Raw</th>
+            <th style="text-align:right">Gzip</th>
+            <th style="text-align:right">Share</th>
+          </tr>
+        </thead>
+        <tbody>
+          {segments.map((s) => (
+            <tr class={s.name === ownName ? "bundle-own" : undefined}>
+              <td>
+                <span class="bundle-swatch" style={`background:${s.color}`} />
+                {s.name}
+              </td>
+              <td style="text-align:right">{kb(s.uncompressed)}</td>
+              <td style="text-align:right">{kb(s.gzip)}</td>
+              <td style="text-align:right">{pct(s.share)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
       <h3>Emitted JavaScript files</h3>
       <table>
@@ -106,37 +192,9 @@ const fileLabel = (name: string): string => name.replace(/.*\/assets\//, "").rep
         </tbody>
       </table>
 
-      <h3>What it consists of</h3>
-      <p>Every module in the bundle, attributed to the dependency it came from:</p>
-      <table>
-        <thead>
-          <tr>
-            <th>Dependency</th>
-            <th style="text-align:right">Raw</th>
-            <th style="text-align:right">Gzip</th>
-          </tr>
-        </thead>
-        <tbody>
-          {contributors.map((c) => (
-            <tr>
-              <td>{c.name}</td>
-              <td style="text-align:right">{kb(c.uncompressed)}</td>
-              <td style="text-align:right">{kb(c.gzip)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h3>Interactive treemap</h3>
-      <iframe
-        class="bundle-report-frame"
-        src="/bundle-report.html"
-        title="Sonda bundle report"
-        loading="lazy"
-      />
       <p class="bundle-report-meta">
         <a href="/bundle-report.html" target="_blank" rel="noopener">
-          Open the full report in a new tab ↗
+          Open the full interactive treemap ↗
         </a>{" "}
         · Generated by Sonda {report.metadata.version} on {generatedAt}.
       </p>
@@ -148,12 +206,43 @@ const fileLabel = (name: string): string => name.replace(/.*\/assets\//, "").rep
   .bundle-report-total {
     font-size: var(--sl-text-h4);
   }
-  .bundle-report-frame {
+  .bundle-bar {
+    display: flex;
     width: 100%;
-    height: 720px;
-    border: 1px solid var(--sl-color-gray-5);
+    height: 2.5rem;
+    overflow: hidden;
     border-radius: 0.5rem;
-    background: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-5);
+  }
+  .bundle-bar-segment {
+    height: 100%;
+  }
+  .bundle-bar-segment:not(:last-child) {
+    border-right: 1px solid var(--sl-color-bg);
+  }
+  .bundle-legend {
+    margin-top: 1rem;
+    width: 100%;
+    table-layout: fixed;
+  }
+  .bundle-legend th:first-child,
+  .bundle-legend td:first-child {
+    width: 55%;
+  }
+  .bundle-legend th:not(:first-child),
+  .bundle-legend td:not(:first-child) {
+    width: 15%;
+  }
+  .bundle-own td {
+    font-weight: 600;
+  }
+  .bundle-swatch {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-right: 0.5rem;
+    border-radius: 0.2rem;
+    vertical-align: middle;
   }
   .bundle-report-meta {
     font-size: var(--sl-text-sm);
