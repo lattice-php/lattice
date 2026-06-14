@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useEffectHandlers } from "@lattice-php/lattice/provider";
 import { dispatchEffects } from "./dispatch";
 import type { ActionEffect } from "./dispatch";
@@ -12,9 +12,10 @@ import { mergeEffectHandlers, builtinEffectHandlers } from "./registry";
 export function useEffectDispatcher(): (effects: ActionEffect[]) => void {
   const registered = useEffectHandlers();
 
-  return useCallback(
-    (effects: ActionEffect[]) =>
-      dispatchEffects(effects, mergeEffectHandlers(builtinEffectHandlers, registered)),
+  const handlers = useMemo(
+    () => mergeEffectHandlers(builtinEffectHandlers, registered),
     [registered],
   );
+
+  return useCallback((effects: ActionEffect[]) => dispatchEffects(effects, handlers), [handlers]);
 }
