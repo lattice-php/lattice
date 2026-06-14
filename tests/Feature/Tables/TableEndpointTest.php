@@ -304,7 +304,6 @@ test('registered table responses expose only declared columns row identity and g
     $product = Product::factory()->create([
         'name' => 'Projected Product',
         'sku' => 'PROJECT-001',
-        'price' => '199.00',
         'status' => 'active',
         'featured' => true,
     ]);

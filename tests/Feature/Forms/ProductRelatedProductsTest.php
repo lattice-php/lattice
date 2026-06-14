@@ -23,7 +23,6 @@ test('the product form syncs related products on create', function () {
     post('/lattice/forms/workbench.products.form', [
         'name' => 'Gadget',
         'sku' => 'GAD-001',
-        'price' => '10.00',
         'status' => 'active',
         'related_products' => [$alpha->getKey(), $beta->getKey()],
     ], ['X-Lattice-Ref' => $form['props']['ref']])
@@ -41,7 +40,6 @@ test('the product form replaces related products on update', function () {
     $product = Product::factory()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
-        'price' => '49.99',
         'status' => 'draft',
     ]);
     $alpha = Product::factory()->create(['name' => 'Alpha']);
@@ -56,7 +54,6 @@ test('the product form replaces related products on update', function () {
     patch('/lattice/forms/workbench.products.form', [
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
-        'price' => '49.99',
         'status' => 'draft',
         'related_products' => [$gamma->getKey()],
     ], ['X-Lattice-Ref' => $form['props']['ref']])
@@ -76,7 +73,6 @@ test('the product form ignores related ids that do not exist', function () {
     post('/lattice/forms/workbench.products.form', [
         'name' => 'Gadget',
         'sku' => 'GAD-002',
-        'price' => '10.00',
         'status' => 'active',
         'related_products' => [$alpha->getKey(), 999999],
     ], ['X-Lattice-Ref' => $form['props']['ref']])
@@ -91,7 +87,6 @@ test('the product edit page binds related product ids into form state', function
     $product = Product::factory()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
-        'price' => '49.99',
         'status' => 'draft',
     ]);
     $related = Product::factory()->create(['name' => 'Walnut Desk']);

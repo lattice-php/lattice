@@ -2,6 +2,139 @@
 declare(strict_types=1);
 
 return [
+    'commerce' => [
+        'business-partners' => [
+            'actions' => [
+                'edit' => 'Edit',
+            ],
+            'columns' => [
+                'email' => 'Email',
+                'groups-count' => 'Groups',
+                'name' => 'Name',
+                'shipping-city' => 'Shipping city',
+            ],
+            'fields' => [
+                'add-address' => 'Add address',
+                'address' => [
+                    'city' => 'City',
+                    'country' => 'Country',
+                    'label' => 'Label',
+                    'line1' => 'Address line 1',
+                    'line2' => 'Address line 2',
+                    'postal-code' => 'Postal code',
+                ],
+                'addresses' => 'Addresses',
+                'default-billing-address' => 'Default billing address',
+                'default-shipping-address' => 'Default shipping address',
+                'email' => 'Email',
+                'groups' => 'Groups',
+                'name' => 'Name',
+            ],
+            'form' => [
+                'defaults-card' => 'Default addresses',
+                'details-card' => 'Details',
+                'prices-card' => 'Effective prices',
+            ],
+            'pages' => [
+                'create' => [
+                    'heading' => 'Create business partner',
+                    'submit' => 'Create business partner',
+                    'title' => 'Create business partner',
+                ],
+                'edit' => [
+                    'heading' => 'Edit business partner',
+                    'submit' => 'Save business partner',
+                    'title' => 'Edit business partner',
+                ],
+                'index' => [
+                    'create' => 'Create business partner',
+                    'heading' => 'Business partners',
+                    'title' => 'Business partners',
+                ],
+            ],
+        ],
+        'sales-orders' => [
+            'actions' => [
+                'edit' => 'Edit',
+            ],
+            'columns' => [
+                'business-partner' => 'Business partner',
+                'number' => 'Number',
+                'status' => 'Status',
+                'total' => 'Total',
+            ],
+            'fields' => [
+                'add-line' => 'Add line',
+                'billing-address' => 'Billing address',
+                'business-partner' => 'Business partner',
+                'lines' => 'Line items',
+                'product' => 'Product',
+                'quantity' => 'Quantity',
+                'shipping-address' => 'Shipping address',
+                'status' => 'Status',
+                'unit-price' => 'Unit price',
+            ],
+            'form' => [
+                'addresses-card' => 'Addresses',
+                'details-card' => 'Details',
+                'lines-card' => 'Line items',
+            ],
+            'pages' => [
+                'create' => [
+                    'heading' => 'Create sales order',
+                    'submit' => 'Create sales order',
+                    'title' => 'Create sales order',
+                ],
+                'edit' => [
+                    'heading' => 'Edit sales order',
+                    'submit' => 'Save sales order',
+                    'title' => 'Edit sales order',
+                ],
+                'index' => [
+                    'create' => 'Create sales order',
+                    'heading' => 'Sales orders',
+                    'title' => 'Sales orders',
+                ],
+            ],
+            'status' => [
+                'cancelled' => 'Cancelled',
+                'draft' => 'Draft',
+                'placed' => 'Placed',
+            ],
+        ],
+        'groups' => [
+            'actions' => [
+                'edit' => 'Edit',
+            ],
+            'columns' => [
+                'name' => 'Name',
+                'partners-count' => 'Business partners',
+            ],
+            'fields' => [
+                'name' => 'Name',
+            ],
+            'form' => [
+                'card' => 'Group details',
+            ],
+            'pages' => [
+                'create' => [
+                    'heading' => 'Create Group',
+                    'submit' => 'Create group',
+                    'title' => 'Create Group',
+                ],
+                'edit' => [
+                    'heading' => 'Edit Group',
+                    'submit' => 'Save group',
+                    'title' => 'Edit Group',
+                ],
+                'index' => [
+                    'create' => 'Create group',
+                    'heading' => 'Groups',
+                    'title' => 'Groups',
+                ],
+            ],
+        ],
+    ],
     'actions' => [
         'archive' => [
             'confirm-description' => 'This hides the product from the catalogue.',
@@ -91,21 +224,22 @@ return [
             'total' => 'Total',
             'type' => 'Type',
         ],
-        'pricing-builder' => [
-            'acme' => 'Acme',
-            'customer' => 'Customer',
-            'discount-note' => 'Discount note',
-            'globex' => 'Globex (10% off)',
-            'initech' => 'Initech (25% off)',
-        ],
         'product' => [
             'card' => 'Product details',
             'fields' => [
                 'name' => 'Name',
-                'price' => 'Price',
                 'related-products' => 'Related products',
                 'sku' => 'SKU',
                 'status' => 'Status',
+            ],
+            'sales-prices' => [
+                'add' => 'Add price',
+                'amount' => 'Amount',
+                'card' => 'Sales prices',
+                'default-group' => 'Default',
+                'group' => 'Group',
+                'label' => 'Sales prices',
+                'single-default' => 'Only one default price (without a group) is allowed.',
             ],
             'status' => [
                 'active' => 'Active',
@@ -163,13 +297,17 @@ return [
     ],
     'navigation' => [
         'builder-table-demo' => 'Builder Table Demo',
+        'business-partners' => 'Business partners',
+        'commerce' => 'Commerce',
         'create-product' => 'Create Product',
         'dependent-fields' => 'Dependent Fields',
         'forms' => 'Forms',
+        'groups' => 'Groups',
         'home' => 'Home',
         'log-out' => 'Log out',
         'pagination-modes' => 'Pagination Modes',
         'products' => 'Products',
+        'sales-orders' => 'Sales orders',
         'showcase' => 'Showcase',
         'tables' => 'Tables',
         'tabs' => 'Tabs',
@@ -210,11 +348,6 @@ return [
             'renderer-title' => 'Renderer',
             'title' => 'Lattice Workbench',
             'users' => 'Workbench users',
-        ],
-        'pricing-builder' => [
-            'heading' => 'Pricing Builder Demo',
-            'submit' => 'Save',
-            'title' => 'Pricing Builder Demo',
         ],
         'product-create' => [
             'heading' => 'Create Product',
@@ -295,10 +428,10 @@ return [
     'tables' => [
         'columns' => [
             'created-at' => 'Created at',
+            'default-price' => 'Default price',
             'email' => 'Email',
             'featured' => 'Featured',
             'name' => 'Name',
-            'price' => 'Price',
             'sku' => 'SKU',
             'status' => 'Status',
             'updated-at' => 'Updated at',

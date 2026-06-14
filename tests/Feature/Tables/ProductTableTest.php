@@ -88,9 +88,9 @@ test('bulk all-matching validates the filter against the table columns', functio
         ->assertJsonPath('errors.filter.0', 'Filter [id] is not allowed for table [workbench.products].');
 });
 
-test('the products table applies date, boolean, and number clause filters', function () {
-    $featured = Product::factory()->create(['featured' => true, 'price' => '120.00', 'updated_at' => '2026-06-01 10:00:00']);
-    Product::factory()->create(['featured' => false, 'price' => '20.00', 'updated_at' => '2026-06-02 10:00:00']);
+test('the products table applies date and boolean clause filters', function () {
+    $featured = Product::factory()->create(['featured' => true, 'updated_at' => '2026-06-01 10:00:00']);
+    Product::factory()->create(['featured' => false, 'updated_at' => '2026-06-02 10:00:00']);
 
     $table = new ProductsTable;
     $columns = $table->columns();
@@ -100,8 +100,22 @@ test('the products table applies date, boolean, and number clause filters', func
     );
 
     expect($resolve('featured:eq:true')->pluck('id')->all())->toBe([$featured->getKey()])
-        ->and($resolve('updated_at:before:2026-06-02')->pluck('id')->all())->toBe([$featured->getKey()])
-        ->and($resolve('price:gte:100')->pluck('id')->all())->toBe([$featured->getKey()]);
+        ->and($resolve('updated_at:before:2026-06-02')->pluck('id')->all())->toBe([$featured->getKey()]);
+});
+
+test('the products table high value filter matches by default sales price', function () {
+    $expensive = Product::factory()->withoutDefaultPrice()->create();
+    $expensive->salesPrices()->create(['group_id' => null, 'amount' => '1500.00']);
+    Product::factory()->withoutDefaultPrice()->create()
+        ->salesPrices()->create(['group_id' => null, 'amount' => '50.00']);
+
+    $table = new ProductsTable;
+    $highValue = collect($table->filters())->firstOrFail(fn ($filter) => $filter->key === 'high_value');
+
+    $builder = $table->builder(TableQuery::fromRequest(Request::create('/'), $table->columns(), 'workbench.products'));
+    $highValue->apply($builder, true);
+
+    expect($builder->pluck('products.id')->all())->toBe([$expensive->getKey()]);
 });
 
 test('the products table applies text, starts/ends-with, and presence filters', function () {

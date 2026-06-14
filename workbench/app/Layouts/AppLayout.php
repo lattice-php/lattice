@@ -30,10 +30,13 @@ use Lattice\Lattice\Layouts\Components\Sidebar;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Pages\BuilderTableDemoPage;
+use Workbench\App\Pages\BusinessPartnersPage;
 use Workbench\App\Pages\DependentDemoPage;
+use Workbench\App\Pages\GroupsPage;
 use Workbench\App\Pages\HomePage;
 use Workbench\App\Pages\ProductCreatePage;
 use Workbench\App\Pages\ProductsPage;
+use Workbench\App\Pages\SalesOrdersPage;
 use Workbench\App\Pages\ShowcasePage;
 use Workbench\App\Pages\TablesPage;
 use Workbench\App\Pages\TabsPage;
@@ -76,8 +79,13 @@ final class AppLayout extends LayoutDefinition
                                                 MenuItem::fromPage(BuilderTableDemoPage::class)->key('builder-table-demo')->label(__('workbench.navigation.builder-table-demo')),
                                                 MenuItem::fromPage(ProductCreatePage::class)->key('create-product')->label(__('workbench.navigation.create-product')),
                                             ]),
-                                            MenuItem::make(__('workbench.navigation.tables'), 'tables')->icon(Icon::Table)->children([
+                                            MenuItem::make(__('workbench.navigation.commerce'), 'commerce')->icon('layout-dashboard')->children([
+                                                MenuItem::fromPage(BusinessPartnersPage::class)->key('business-partners')->label(__('workbench.navigation.business-partners')),
+                                                MenuItem::fromPage(GroupsPage::class)->key('groups')->label(__('workbench.navigation.groups')),
                                                 MenuItem::fromPage(ProductsPage::class)->key('products')->label(__('workbench.navigation.products')),
+                                                MenuItem::fromPage(SalesOrdersPage::class)->key('sales-orders')->label(__('workbench.navigation.sales-orders')),
+                                            ]),
+                                            MenuItem::make(__('workbench.navigation.tables'), 'tables')->icon(Icon::Table)->children([
                                                 MenuItem::fromPage(TablesPage::class)->key('pagination-modes')->label(__('workbench.navigation.pagination-modes')),
                                             ]),
                                             MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs'))->icon('spark'),

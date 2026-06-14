@@ -5,18 +5,17 @@ use Workbench\App\Models\Product;
 
 function seedFilterProducts(): void
 {
-    Product::factory()->create([
+    Product::factory()->withoutDefaultPrice()->create([
         'name' => 'Active Featured',
         'status' => 'active',
         'featured' => true,
-        'price' => 1500,
-    ]);
-    Product::factory()->create([
+    ])->salesPrices()->create(['group_id' => null, 'amount' => '1500.00']);
+
+    Product::factory()->withoutDefaultPrice()->create([
         'name' => 'Draft Plain',
         'status' => 'draft',
         'featured' => false,
-        'price' => 50,
-    ]);
+    ])->salesPrices()->create(['group_id' => null, 'amount' => '50.00']);
 }
 
 it('narrows rows with the ternary featured filter and restores them via reset', function (): void {

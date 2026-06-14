@@ -7,15 +7,18 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Workbench\App\Factories\ProductFactory;
 
 /**
  * @property string $name
  * @property string $sku
- * @property string $price
  * @property string $status
  * @property bool $featured
  * @property-read Collection<int, Product> $relatedProducts
+ * @property-read Collection<int, SalesPrice> $salesPrices
+ * @property-read SalesPrice|null $defaultSalesPrice
  */
 class Product extends Model
 {
@@ -28,7 +31,6 @@ class Product extends Model
     protected $fillable = [
         'name',
         'sku',
-        'price',
         'status',
         'featured',
     ];
@@ -39,7 +41,6 @@ class Product extends Model
     protected function casts(): array
     {
         return [
-            'price' => 'decimal:2',
             'featured' => 'boolean',
         ];
     }
@@ -55,6 +56,18 @@ class Product extends Model
             'product_id',
             'related_product_id',
         );
+    }
+
+    /** @return HasMany<SalesPrice, $this> */
+    public function salesPrices(): HasMany
+    {
+        return $this->hasMany(SalesPrice::class);
+    }
+
+    /** @return HasOne<SalesPrice, $this> */
+    public function defaultSalesPrice(): HasOne
+    {
+        return $this->hasOne(SalesPrice::class)->whereNull('group_id');
     }
 
     protected static function newFactory(): ProductFactory

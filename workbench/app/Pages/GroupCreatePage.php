@@ -10,26 +10,26 @@ use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\Form;
-use Workbench\App\Forms\PricingBuilderDemoForm;
+use Workbench\App\Forms\GroupForm;
 
-#[Page(route: '/builder-pricing')]
-class PricingBuilderDemoPage extends WorkbenchPage
+#[Page(route: '/groups/create')]
+class GroupCreatePage extends WorkbenchPage
 {
     public function title(): string
     {
-        return __('workbench.pages.pricing-builder.title');
+        return __('workbench.commerce.groups.pages.create.title');
     }
 
     public function render(PageSchema $schema): PageSchema
     {
         return $schema->schema([
-            Stack::make('pricing-builder-demo-page')
+            Stack::make('group-create-page')
                 ->gap(Gap::Large)
                 ->schema([
-                    Heading::make(__('workbench.pages.pricing-builder.heading')),
-                    Form::use(PricingBuilderDemoForm::class)
+                    Heading::make(__('workbench.commerce.groups.pages.create.heading')),
+                    Form::use(GroupForm::class)
                         ->method(HttpMethod::Post)
-                        ->submitLabel(__('workbench.pages.pricing-builder.submit')),
+                        ->submitLabel(__('workbench.commerce.groups.pages.create.submit')),
                 ]),
         ]);
     }

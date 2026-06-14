@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Seeders;
 
+use Bambamboole\ExtendedFaker\Repository\ProductRepository;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Seeder;
 use Workbench\App\Models\Product;
@@ -14,7 +15,7 @@ class ProductSeeder extends Seeder
         Product::query()->upsert(
             $this->products(),
             ['sku'],
-            ['name', 'price', 'status', 'featured', 'created_at', 'updated_at'],
+            ['name', 'status', 'featured', 'created_at', 'updated_at'],
         );
 
         $this->seedRelations();
@@ -33,7 +34,7 @@ class ProductSeeder extends Seeder
     }
 
     /**
-     * @return array<int, array{name: string, sku: string, price: string, status: string, featured: bool, created_at: string, updated_at: string}>
+     * @return array<int, array{name: string, sku: string, status: string, featured: bool, created_at: string, updated_at: string}>
      */
     private function products(): array
     {
@@ -41,13 +42,13 @@ class ProductSeeder extends Seeder
         $faker->seed(20260608);
         $statuses = ['draft', 'active', 'archived'];
         $createdAt = CarbonImmutable::now()->subYear();
+        $names = (new ProductRepository)->getAllProductNames('en_US');
 
         return array_map(
-            function (int $number) use ($faker, $statuses, $createdAt): array {
+            function (int $number) use ($faker, $statuses, $createdAt, $names): array {
                 return [
-                    'name' => str($faker->words(3, true))->title()->toString(),
+                    'name' => $names[($number - 1) % count($names)],
                     'sku' => sprintf('workbench-product-%03d', $number),
-                    'price' => number_format($faker->randomFloat(2, 9, 999), 2, '.', ''),
                     'status' => $statuses[($number - 1) % count($statuses)],
                     'featured' => $faker->boolean(),
                     'created_at' => $createdAt->toDateTimeString(),

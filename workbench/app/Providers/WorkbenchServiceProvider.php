@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Workbench\App\Providers;
 
+use Bambamboole\ExtendedFaker\ExtendedFaker;
+use Faker\Generator;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Support\ServiceProvider;
@@ -38,6 +40,17 @@ class WorkbenchServiceProvider extends ServiceProvider
         $this->useWorkbenchDatabase();
         $this->readBoostConfigFromPackageRoot();
         $this->serveLatticeTranslations();
+        $this->registerExtendedFaker();
+    }
+
+    /**
+     * Enrich Faker with realistic product data for factories and seeders in dev.
+     */
+    private function registerExtendedFaker(): void
+    {
+        $this->app->resolving(Generator::class, function (Generator $faker): void {
+            ExtendedFaker::extend($faker);
+        });
     }
 
     /**

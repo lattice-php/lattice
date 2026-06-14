@@ -23,6 +23,7 @@ use Workbench\App\Actions\EditProductAction;
 use Workbench\App\Actions\RejectProductAction;
 use Workbench\App\Actions\RejectSelectedProductsAction;
 use Workbench\App\Models\Product;
+use Workbench\App\Models\SalesPrice;
 use Workbench\App\Tables\Columns\StatusBadgeColumn;
 
 /**
@@ -39,7 +40,7 @@ class ProductsTable extends EloquentTableDefinition
         return [
             TextColumn::make('name')->label(__('workbench.tables.columns.name'))->sortable()->filterable(),
             TextColumn::make('sku')->label(__('workbench.tables.columns.sku'))->sortable()->filterable(),
-            TextColumn::make('price')->label(__('workbench.tables.columns.price'))->sortable()->numeric()->filterable(),
+            TextColumn::make('default_price')->label(__('workbench.tables.columns.default-price'))->sortable()->numeric(),
             StatusBadgeColumn::make('status')->label(__('workbench.tables.columns.status'))->filterOptions([
                 'draft' => 'Draft',
                 'active' => 'Active',
@@ -62,7 +63,12 @@ class ProductsTable extends EloquentTableDefinition
                 ->label(__('workbench.tables.columns.updated-at')),
             Filter::make('high_value')
                 ->label('High value')
-                ->query(fn (Builder $query): Builder => $query->where('price', '>', 1000)),
+                ->query(fn (Builder $query): Builder => $query->whereHas(
+                    'salesPrices',
+                    fn (Builder $salesPrices): Builder => $salesPrices
+                        ->whereNull('group_id')
+                        ->where('amount', '>', 1000),
+                )),
         ];
     }
 
@@ -76,7 +82,16 @@ class ProductsTable extends EloquentTableDefinition
      */
     public function builder(TableQuery $query): Builder
     {
-        $builder = Product::query()->select(['id', 'name', 'sku', 'price', 'status', 'featured', 'updated_at']);
+        $builder = Product::query()
+            ->select(['id', 'name', 'sku', 'status', 'featured', 'updated_at'])
+            ->selectSub(
+                SalesPrice::query()
+                    ->select('amount')
+                    ->whereColumn('product_id', 'products.id')
+                    ->whereNull('group_id')
+                    ->limit(1),
+                'default_price',
+            );
 
         if ($query->sorts === []) {
             $builder->latest('id');

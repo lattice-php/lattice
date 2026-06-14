@@ -14,6 +14,7 @@ use Lattice\Lattice\Core\Values\ToastMessage;
 use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
+use Workbench\App\Models\SalesPrice;
 
 #[ActionAttribute('workbench.products.edit-modal')]
 class EditProductAction extends FormActionDefinition
@@ -34,9 +35,17 @@ class EditProductAction extends FormActionDefinition
         return app(ProductForm::class)->definition($form, $request)->fill([
             'name' => $product->name,
             'sku' => $product->sku,
-            'price' => $product->price,
             'status' => $product->status,
             'related_products' => $product->relatedProducts()->pluck('products.id')->all(),
+            'sales_prices' => $product->salesPrices()
+                ->orderByRaw('group_id is null desc')
+                ->orderBy('group_id')
+                ->get()
+                ->map(fn (SalesPrice $salesPrice): array => [
+                    'group_id' => $salesPrice->group_id !== null ? (string) $salesPrice->group_id : '',
+                    'amount' => $salesPrice->amount,
+                ])
+                ->all(),
         ]);
     }
 
@@ -46,12 +55,15 @@ class EditProductAction extends FormActionDefinition
         $product = $this->product($request);
 
         $relatedIds = $data['related_products'] ?? [];
-        unset($data['related_products']);
+        $priceRows = $data['sales_prices'] ?? [];
+        unset($data['related_products'], $data['sales_prices']);
 
         $product->update($data);
         $product->relatedProducts()->sync(
             Product::query()->whereIn('id', $relatedIds)->pluck('id')->all(),
         );
+
+        app(ProductForm::class)->syncSalesPrices($product, $priceRows);
 
         return ActionResult::success(['id' => $product->getKey()])
             ->toast(
