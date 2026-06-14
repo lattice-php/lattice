@@ -1,7 +1,5 @@
-import { Icon } from "@lattice-php/lattice/icons";
-import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useState } from "react";
-import { Button } from "@lattice-php/lattice/core/components/button";
+import { Dialog, DialogContent, DialogHeader } from "@lattice-php/lattice/core/components/dialog";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 
@@ -44,37 +42,15 @@ const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {
   }, [node.id]);
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-lt-overlay" />
-        <Dialog.Content
-          {...(description ? {} : { "aria-describedby": undefined })}
-          className="fixed left-1/2 top-1/2 z-50 max-h-[min(680px,calc(100vh-2rem))] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-lt border border-lt-border bg-lt-bg p-6 shadow-lg"
-        >
-          <div className="flex items-start justify-between gap-4">
-            <div className="grid gap-2">
-              <Dialog.Title className="text-lg font-semibold leading-none tracking-tight">
-                {title}
-              </Dialog.Title>
-
-              {description && (
-                <Dialog.Description className="text-sm text-lt-muted-fg">
-                  {description}
-                </Dialog.Description>
-              )}
-            </div>
-
-            <Dialog.Close asChild>
-              <Button aria-label={closeLabel} size="icon" variant="ghost">
-                <Icon name="x" aria-hidden="true" className="size-lt-icon-md" />
-              </Button>
-            </Dialog.Close>
-          </div>
-
-          <div className="mt-6 space-y-6">{children}</div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent
+        {...(description ? {} : { "aria-describedby": undefined })}
+        className="max-h-[min(680px,calc(100vh-2rem))] w-full max-w-lg overflow-y-auto"
+      >
+        <DialogHeader closeLabel={closeLabel} description={description} title={title} />
+        <div className="mt-6 space-y-6">{children}</div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

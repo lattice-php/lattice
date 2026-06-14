@@ -1,6 +1,10 @@
 import { Icon } from "@lattice-php/lattice/icons";
-import * as Popover from "@radix-ui/react-popover";
 import { useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@lattice-php/lattice/core/components/popover";
 
 export type RowAction = {
   key: string;
@@ -47,8 +51,8 @@ export function RowActions({ actions }: { actions: RowAction[] }) {
   }
 
   return (
-    <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Trigger asChild>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
         <button
           type="button"
           aria-label="Actions"
@@ -57,30 +61,24 @@ export function RowActions({ actions }: { actions: RowAction[] }) {
         >
           <Icon name="more-horizontal" />
         </button>
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Content
-          align="end"
-          sideOffset={4}
-          className="z-50 min-w-[10rem] overflow-hidden rounded-lt-sm border border-lt-border bg-lt-bg p-1 shadow-md"
-        >
-          {actions.map((action) => (
-            <button
-              key={action.key}
-              type="button"
-              data-test={`row-action-${action.key}`}
-              className={menuItemClass(action.destructive)}
-              onClick={() => {
-                action.onClick();
-                setOpen(false);
-              }}
-            >
-              <Icon name={action.icon} />
-              {action.label}
-            </button>
-          ))}
-        </Popover.Content>
-      </Popover.Portal>
-    </Popover.Root>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="min-w-[10rem] overflow-hidden p-1">
+        {actions.map((action) => (
+          <button
+            key={action.key}
+            type="button"
+            data-test={`row-action-${action.key}`}
+            className={menuItemClass(action.destructive)}
+            onClick={() => {
+              action.onClick();
+              setOpen(false);
+            }}
+          >
+            <Icon name={action.icon} />
+            {action.label}
+          </button>
+        ))}
+      </PopoverContent>
+    </Popover>
   );
 }

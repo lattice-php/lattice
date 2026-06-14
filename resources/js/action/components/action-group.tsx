@@ -1,6 +1,10 @@
 import { Icon } from "@lattice-php/lattice/icons";
-import * as Popover from "@radix-ui/react-popover";
 import { Button } from "@lattice-php/lattice/core/components/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@lattice-php/lattice/core/components/popover";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 
@@ -26,8 +30,8 @@ const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, nod
 
   return (
     <div className="inline-flex" data-lattice-component={node.id}>
-      <Popover.Root>
-        <Popover.Trigger asChild>
+      <Popover>
+        <PopoverTrigger asChild>
           <Button
             aria-label={label}
             className="size-8 text-lt-muted-fg shadow-none hover:text-lt-fg"
@@ -37,19 +41,17 @@ const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, nod
           >
             <Icon name="more-horizontal" aria-hidden="true" className="size-lt-icon-md" />
           </Button>
-        </Popover.Trigger>
+        </PopoverTrigger>
 
-        <Popover.Portal>
-          <Popover.Content
-            align="end"
-            aria-label={label}
-            className="z-50 grid min-w-40 gap-1 rounded-lt-sm border border-lt-border bg-lt-popover p-1 text-lt-popover-fg shadow-md [&>button]:w-full [&>button]:justify-start"
-            sideOffset={8}
-          >
-            {children}
-          </Popover.Content>
-        </Popover.Portal>
-      </Popover.Root>
+        <PopoverContent
+          align="end"
+          aria-label={label}
+          className="grid min-w-40 gap-1 p-1 [&>button]:w-full [&>button]:justify-start"
+          sideOffset={8}
+        >
+          {children}
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };

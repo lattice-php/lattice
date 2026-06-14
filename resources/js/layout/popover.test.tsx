@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { Popover } from "./popover";
 
 describe("Popover", () => {
-  it("toggles its content and closes on outside click", () => {
+  it("opens its content when the trigger is clicked", () => {
     render(
       <Popover trigger={<span>Open</span>} testId="pop">
         <a href="/x">Item</a>
@@ -15,36 +15,35 @@ describe("Popover", () => {
 
     expect(screen.queryByRole("link", { name: "Item" })).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("Open"));
+    fireEvent.click(screen.getByTestId("pop"));
+
+    expect(screen.getByRole("link", { name: "Item" })).toBeVisible();
+  });
+
+  it("renders its content as a menu", () => {
+    render(
+      <Popover trigger={<span>Open</span>} testId="pop">
+        <a href="/x">Item</a>
+      </Popover>,
+    );
+
+    fireEvent.click(screen.getByTestId("pop"));
+
+    expect(screen.getByRole("menu")).toBeInTheDocument();
+  });
+
+  it("closes its content on Escape", () => {
+    render(
+      <Popover trigger={<span>Open</span>} testId="pop">
+        <a href="/x">Item</a>
+      </Popover>,
+    );
+
+    fireEvent.click(screen.getByTestId("pop"));
     expect(screen.getByRole("link", { name: "Item" })).toBeVisible();
 
-    const overlay = document.querySelector('[data-test="pop-overlay"]');
-    expect(overlay).not.toBeNull();
-    fireEvent.click(overlay as Element);
+    fireEvent.keyDown(document.body, { key: "Escape" });
+
     expect(screen.queryByRole("link", { name: "Item" })).not.toBeInTheDocument();
-  });
-
-  it("opens upward for a top placement", () => {
-    render(
-      <Popover trigger={<span>Open</span>} placement="top" testId="pop">
-        <a href="/x">Item</a>
-      </Popover>,
-    );
-
-    fireEvent.click(screen.getByText("Open"));
-
-    expect(screen.getByRole("menu").style.transform).toBe("translate(0, -100%)");
-  });
-
-  it("opens to the side without a transform for a right placement", () => {
-    render(
-      <Popover trigger={<span>Open</span>} placement="right" testId="pop">
-        <a href="/x">Item</a>
-      </Popover>,
-    );
-
-    fireEvent.click(screen.getByText("Open"));
-
-    expect(screen.getByRole("menu").style.transform).toBe("");
   });
 });

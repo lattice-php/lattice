@@ -1,6 +1,10 @@
 import { Icon } from "@lattice-php/lattice/icons";
-import * as Popover from "@radix-ui/react-popover";
 import { useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@lattice-php/lattice/core/components/popover";
 
 export type BlockOption = { type: string; label: string };
 
@@ -16,8 +20,8 @@ export function BlockAddMenu({
   const [open, setOpen] = useState(false);
 
   return (
-    <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Trigger asChild>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
         <button
           type="button"
           data-test="builder-add"
@@ -26,29 +30,23 @@ export function BlockAddMenu({
           <Icon name="plus" />
           {addLabel}
         </button>
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Content
-          align="start"
-          sideOffset={4}
-          className="z-50 min-w-[12rem] overflow-hidden rounded-lt-sm border border-lt-border bg-lt-bg p-1 shadow-md"
-        >
-          {blocks.map((block) => (
-            <button
-              key={block.type}
-              type="button"
-              data-test={`builder-add-${block.type}`}
-              className="flex w-full items-center rounded-lt-sm px-3 py-1.5 text-left text-sm hover:bg-lt-accent hover:text-lt-accent-fg"
-              onClick={() => {
-                onSelect(block.type);
-                setOpen(false);
-              }}
-            >
-              {block.label}
-            </button>
-          ))}
-        </Popover.Content>
-      </Popover.Portal>
-    </Popover.Root>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="min-w-[12rem] overflow-hidden p-1">
+        {blocks.map((block) => (
+          <button
+            key={block.type}
+            type="button"
+            data-test={`builder-add-${block.type}`}
+            className="flex w-full items-center rounded-lt-sm px-3 py-1.5 text-left text-sm hover:bg-lt-accent hover:text-lt-accent-fg"
+            onClick={() => {
+              onSelect(block.type);
+              setOpen(false);
+            }}
+          >
+            {block.label}
+          </button>
+        ))}
+      </PopoverContent>
+    </Popover>
   );
 }
