@@ -57,7 +57,7 @@ const StackComponent: RendererComponent<"stack"> = ({ children, node }) => {
     <div
       data-lattice-component={node.id}
       className={cn(
-        isFlex ? cn("flex", direction === "row" ? "flex-wrap" : "flex-col") : "grid",
+        isFlex ? cn("flex", direction === "row" ? "flex-wrap" : "flex-col") : "grid content-start",
         isFlex
           ? (flexAlignments[align] ?? flexAlignments.stretch)
           : (gridAlignments[align] ?? gridAlignments.stretch),
