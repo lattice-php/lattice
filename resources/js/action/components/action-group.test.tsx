@@ -24,7 +24,7 @@ describe("Lattice action group component", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Manage member" }));
 
-    expect(screen.getByRole("dialog", { name: "Manage member" })).toBeVisible();
+    expect(screen.getByRole("menu", { name: "Manage member" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Make admin" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Remove" })).toBeVisible();
 

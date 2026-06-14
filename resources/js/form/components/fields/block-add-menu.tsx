@@ -1,10 +1,10 @@
 import { Icon } from "@lattice-php/lattice/icons";
-import { useState } from "react";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@lattice-php/lattice/core/components/popover";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@lattice-php/lattice/core/components/dropdown-menu";
 
 export type BlockOption = { type: string; label: string };
 
@@ -17,11 +17,9 @@ export function BlockAddMenu({
   blocks: BlockOption[];
   onSelect: (type: string) => void;
 }) {
-  const [open, setOpen] = useState(false);
-
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <button
           type="button"
           data-test="builder-add"
@@ -30,23 +28,18 @@ export function BlockAddMenu({
           <Icon name="plus" />
           {addLabel}
         </button>
-      </PopoverTrigger>
-      <PopoverContent align="start" className="min-w-[12rem] overflow-hidden p-1">
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="min-w-[12rem]">
         {blocks.map((block) => (
-          <button
+          <DropdownMenuItem
             key={block.type}
-            type="button"
             data-test={`builder-add-${block.type}`}
-            className="flex w-full items-center rounded-lt-sm px-3 py-1.5 text-left text-sm hover:bg-lt-accent hover:text-lt-accent-fg"
-            onClick={() => {
-              onSelect(block.type);
-              setOpen(false);
-            }}
+            onClick={() => onSelect(block.type)}
           >
             {block.label}
-          </button>
+          </DropdownMenuItem>
         ))}
-      </PopoverContent>
-    </Popover>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

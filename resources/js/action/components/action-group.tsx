@@ -1,10 +1,10 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { Button } from "@lattice-php/lattice/core/components/button";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@lattice-php/lattice/core/components/popover";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@lattice-php/lattice/core/components/dropdown-menu";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 
@@ -30,8 +30,8 @@ const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, nod
 
   return (
     <div className="inline-flex" data-lattice-component={node.id}>
-      <Popover>
-        <PopoverTrigger asChild>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
           <Button
             aria-label={label}
             className="size-8 text-lt-muted-fg shadow-none hover:text-lt-fg"
@@ -41,17 +41,17 @@ const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, nod
           >
             <Icon name="more-horizontal" aria-hidden="true" className="size-lt-icon-md" />
           </Button>
-        </PopoverTrigger>
+        </DropdownMenuTrigger>
 
-        <PopoverContent
+        <DropdownMenuContent
           align="end"
           aria-label={label}
-          className="grid min-w-40 gap-1 p-1 [&>button]:w-full [&>button]:justify-start"
+          className="[&>button]:w-full [&>button]:justify-start"
           sideOffset={8}
         >
           {children}
-        </PopoverContent>
-      </Popover>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };
