@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Lattice\Lattice\Attributes\Component;
+use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\Rules\FileUploadItem;
 
@@ -29,7 +30,7 @@ class FileUpload extends Field
     /**
      * Existing files surfaced on edit as display descriptors.
      *
-     * @var list<array{key: string, name: string, url: ?string, size: ?int}>|null
+     * @var list<array{key: string, name: string, url: ?string, size: ?int, token: string}>|null
      */
     public ?array $files = null;
 
@@ -177,9 +178,12 @@ class FileUpload extends Field
             return;
         }
 
-        $disk = Storage::disk($this->resolveDisk());
+        $diskName = $this->resolveDisk();
+        $disk = Storage::disk($diskName);
+        $name = $this->name();
+        $signer = app(SignsComponentReferences::class);
 
-        $this->files = array_map(static function (string $path) use ($disk): array {
+        $this->files = array_map(static function (string $path) use ($disk, $diskName, $name, $signer): array {
             try {
                 $url = $disk->url($path);
             } catch (\Throwable) {
@@ -197,8 +201,42 @@ class FileUpload extends Field
                 'name' => basename($path),
                 'url' => $url,
                 'size' => $size,
+                'token' => $signer->seal('file', $name, ['disk' => $diskName, 'path' => $path]),
             ];
         }, $paths);
+    }
+
+    /**
+     * Resolve the existing-file removals submitted for this field into trusted
+     * disk paths. Reads the sealed `{name}__removed[]` tokens, unseals each
+     * (skipping any forged/expired/mismatched token), and returns their paths.
+     *
+     * @return list<string>
+     */
+    public static function removed(Request $request, string $name): array
+    {
+        $tokens = $request->input("{$name}__removed", []);
+
+        if (! is_array($tokens)) {
+            return [];
+        }
+
+        $signer = app(SignsComponentReferences::class);
+        $paths = [];
+
+        foreach ($tokens as $token) {
+            if (! is_string($token)) {
+                continue;
+            }
+
+            $context = $signer->unseal($token, 'file', $name);
+
+            if (is_array($context) && isset($context['path']) && is_string($context['path'])) {
+                $paths[] = $context['path'];
+            }
+        }
+
+        return array_values(array_unique($paths));
     }
 
     private function itemRule(): FileUploadItem

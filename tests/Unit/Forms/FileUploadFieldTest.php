@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\Rules\FileUploadItem;
@@ -90,4 +91,33 @@ it('signs an upload returning key url headers and method', function (): void {
         ->and($result['key'])->toStartWith('tmp/')
         ->and($result['key'])->toEndWith('.pdf')
         ->and($result['url'])->toBe("https://s3.test/{$result['key']}");
+});
+
+it('adds a sealed token to each prefilled file descriptor', function (): void {
+    Storage::fake('public');
+    Storage::disk('public')->put('uploads/a.pdf', 'data');
+
+    $field = FileUpload::make('document');
+    $field->prefill('uploads/a.pdf');
+
+    expect($field->files[0])->toHaveKeys(['key', 'name', 'url', 'size', 'token'])
+        ->and($field->files[0]['token'])->not->toBe('');
+});
+
+it('resolves removed tokens back to trusted paths', function (): void {
+    $signer = app(SignsComponentReferences::class);
+    $token = $signer->seal('file', 'document', ['disk' => 'public', 'path' => 'uploads/a.pdf']);
+    $request = Request::create('/', 'POST', ['document__removed' => [$token]]);
+
+    expect(FileUpload::removed($request, 'document'))->toBe(['uploads/a.pdf']);
+});
+
+it('ignores forged or mismatched removed tokens', function (): void {
+    $signer = app(SignsComponentReferences::class);
+    $wrongField = $signer->seal('file', 'avatar', ['disk' => 'public', 'path' => 'uploads/x.pdf']);
+    $request = Request::create('/', 'POST', [
+        'document__removed' => ['garbage-token', $wrongField],
+    ]);
+
+    expect(FileUpload::removed($request, 'document'))->toBe([]);
 });
