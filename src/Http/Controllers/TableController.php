@@ -22,6 +22,10 @@ final class TableController
     {
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->tables, 'table', $table);
 
+        if ($request->filled('_search')) {
+            return response()->json($this->tables->searchFilterOptions($table, $request, $definition));
+        }
+
         return response()->json($this->tables->response($table, $request, $definition));
     }
 }

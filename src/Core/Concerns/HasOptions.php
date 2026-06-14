@@ -3,9 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Concerns;
 
-use BackedEnum;
-use Illuminate\Support\Str;
-use Lattice\Lattice\Core\Contracts\HasLabel;
 use Lattice\Lattice\Core\Option;
 use UnitEnum;
 
@@ -22,19 +19,14 @@ trait HasOptions
     }
 
     /**
-     * Accepts {@see Option} instances or raw `{label, value}` arrays, normalizing
-     * both to the value objects the wire shape is generated from.
+     * Accepts an enum class-string, an associative `value => label` array, or a
+     * list of {@see Option} instances / `{label, value}` arrays / enum cases.
      *
-     * @param  array<int, Option|array{label: string, value: string}>  $options
+     * @param  class-string<UnitEnum>|array<mixed>  $options
      */
-    public function options(array $options): static
+    public function options(array|string $options): static
     {
-        $this->options = array_values(array_map(
-            static fn (Option|array $option): Option => $option instanceof Option
-                ? $option
-                : new Option((string) $option['label'], (string) $option['value']),
-            $options,
-        ));
+        $this->options = Option::expand($options);
 
         return $this;
     }
@@ -49,14 +41,6 @@ trait HasOptions
      */
     public function enum(string|array $enum): static
     {
-        $cases = is_string($enum) ? $enum::cases() : $enum;
-
-        return $this->options(array_map(
-            static fn (UnitEnum $case): Option => self::option(
-                $case instanceof HasLabel ? $case->getLabel() : Str::headline($case->name),
-                $case instanceof BackedEnum ? (string) $case->value : $case->name,
-            ),
-            $cases,
-        ));
+        return $this->options($enum);
     }
 }

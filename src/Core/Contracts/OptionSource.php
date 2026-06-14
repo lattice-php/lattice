@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Contracts;
+namespace Lattice\Lattice\Core\Contracts;
 
 use Lattice\Lattice\Core\Option;
 

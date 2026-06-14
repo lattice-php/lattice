@@ -6,24 +6,66 @@ namespace Lattice\Lattice\Tables\Filters;
 use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Core\Concerns\HasOptions;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
+use Lattice\Lattice\Core\Contracts\OptionSource;
+use Lattice\Lattice\Core\Option;
+use Lattice\Lattice\Tables\Concerns\ResolvesFilterOptions;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 
 /**
  * A dropdown filter. Single by default ({@see Builder::where}); `multiple()`
- * matches any of the selected values ({@see Builder::whereIn}).
+ * matches any of the selected values ({@see Builder::whereIn}). Options can be a
+ * fixed list ({@see options}) or come from an {@see OptionSource} via {@see optionsFrom}.
  */
 class SelectFilter extends BaseFilter
 {
     use HasOptions;
     use HasPlaceholder;
+    use ResolvesFilterOptions;
 
     public bool $multiple = false;
+
+    public bool $searchable = false;
 
     public function multiple(bool $multiple = true): static
     {
         $this->multiple = $multiple;
 
         return $this;
+    }
+
+    /**
+     * Resolve options from an {@see OptionSource} (e.g. an Eloquent relation)
+     * instead of a fixed list, keeping the filter free of any persistence concern.
+     */
+    public function optionsFrom(OptionSource $source): static
+    {
+        $this->optionSource = $source;
+
+        return $this;
+    }
+
+    /**
+     * Fetch options as the user types instead of shipping the full list up front.
+     * Only meaningful with an {@see optionsFrom} source.
+     */
+    public function searchable(bool $searchable = true): static
+    {
+        $this->searchable = $searchable;
+
+        return $this;
+    }
+
+    public function isSearchable(): bool
+    {
+        return $this->searchable && $this->hasOptionSource();
+    }
+
+    /**
+     * @return list<Option>
+     */
+    public function searchOptions(string $query): array
+    {
+        return $this->searchOptionSource($query);
     }
 
     public function toData(): FilterData
@@ -33,9 +75,9 @@ class SelectFilter extends BaseFilter
             $this->label,
             FilterControl::Select,
             [
-                'options' => $this->options,
+                'options' => $this->resolveOptions($this->options),
                 'multiple' => $this->multiple,
-                'searchable' => false,
+                'searchable' => $this->isSearchable(),
                 'placeholder' => $this->placeholder,
             ],
         );

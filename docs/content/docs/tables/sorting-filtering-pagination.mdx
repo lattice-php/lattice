@@ -64,8 +64,59 @@ TextColumn::make('sku')->filterable(Op::Equals, [Op::Equals, Op::NotEquals]);
 ```
 
 A column's filter capability serializes as a `ColumnFilter` (`{ enabled, type, operators,
-defaultOperator }`) so the React filter control knows which inputs and operators to render. Open the
-**Tree** tab on the example above to see it.
+defaultOperator, control, options, multiple }`) so the React filter control knows which inputs and
+operators to render. Open the **Tree** tab on the example above to see it.
+
+### Filtering by a fixed set of options
+
+When a column holds one of a known set of values (a status, a type), `->filterOptions()` renders a
+**dropdown** in the column header instead of the operator input — the same control used by the
+dedicated [`SelectFilter`](#dedicated-filters). A single selection matches with `=`; pass
+`multiple: true` to match any of the chosen values with `in`.
+
+```php
+use Lattice\Lattice\Tables\Columns\TextColumn;
+
+// associative value => label
+TextColumn::make('status')->filterOptions([
+    'draft' => 'Draft',
+    'active' => 'Active',
+    'archived' => 'Archived',
+]);
+
+// or an enum (labels from the HasLabel contract, else the humanised case name)
+TextColumn::make('status')->filterOptions(Status::class);
+
+// match any of several values:
+TextColumn::make('status')->filterOptions([...], multiple: true);
+```
+
+`filterOptions()` implies `filterable()`, sets the column's filter `control` to `select`, and
+restricts the offered operators to `=` / `≠` (or `in` / `not in` when `multiple`). The selected
+value rides the same column-filter clause as any other operator filter, so the data source applies
+it with no extra wiring.
+
+Options can also come from an `OptionSource` (e.g. an Eloquent relation) instead of a fixed list —
+the same source the [`Select` field](/forms/fields/select/) uses, so forms and tables resolve
+options the same way:
+
+```php
+use Lattice\Lattice\Core\EloquentOptions;
+
+TextColumn::make('author_id')
+    ->label('Author')
+    ->filterOptions(EloquentOptions::make(Author::class)->label('name'));
+
+// fetch options as the user types instead of shipping them all up front:
+TextColumn::make('author_id')
+    ->filterOptions(EloquentOptions::make(Author::class)->label('name'), searchable: true);
+```
+
+<Info>
+This is the per-column counterpart to a dedicated `SelectFilter`: use a column filter when the choice
+belongs to that column's header; use a dedicated filter when it spans the table or needs custom query
+logic.
+</Info>
 
 ## Dedicated filters
 
@@ -111,6 +162,18 @@ public function filters(): array
 
 Active values show as removable chips with a **Reset all** that clears every filter — dedicated and
 column alike.
+
+A `SelectFilter`'s options can come from an `OptionSource` instead of a fixed list, and
+`->searchable()` fetches them as the user types (via a `_search` round-trip to the table endpoint)
+rather than shipping the whole list up front:
+
+```php
+use Lattice\Lattice\Core\EloquentOptions;
+
+SelectFilter::make('author')
+    ->optionsFrom(EloquentOptions::make(Author::class)->label('name'))
+    ->searchable();
+```
 
 ### How values reach the server
 

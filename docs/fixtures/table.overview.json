@@ -8,8 +8,10 @@
                 {
                     "columns": null,
                     "filter": {
+                        "control": null,
                         "defaultOperator": "contains",
                         "enabled": true,
+                        "multiple": false,
                         "operators": [
                             "contains",
                             "starts_with",
@@ -19,6 +21,8 @@
                             "empty",
                             "filled"
                         ],
+                        "options": [],
+                        "searchable": false,
                         "type": "text"
                     },
                     "key": "name",
@@ -35,8 +39,10 @@
                 {
                     "columns": null,
                     "filter": {
+                        "control": null,
                         "defaultOperator": "eq",
                         "enabled": true,
+                        "multiple": false,
                         "operators": [
                             "eq",
                             "neq",
@@ -47,6 +53,8 @@
                             "empty",
                             "filled"
                         ],
+                        "options": [],
+                        "searchable": false,
                         "type": "number"
                     },
                     "key": "price",
