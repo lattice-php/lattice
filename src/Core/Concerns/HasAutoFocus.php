@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Core\Concerns;
 
 trait HasAutoFocus
 {
-    public ?bool $autoFocus = null;
+    public bool $autoFocus = false;
 
     public function autoFocus(bool $autoFocus = true): static
     {

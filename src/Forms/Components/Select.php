@@ -30,9 +30,9 @@ class Select extends Field
 
     private ?OptionSource $optionSource = null;
 
-    public ?bool $multiple = null;
+    public bool $multiple = false;
 
-    public ?bool $searchable = null;
+    public bool $searchable = false;
 
     public string $emptyLabel = 'No options';
 

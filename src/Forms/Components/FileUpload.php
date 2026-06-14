@@ -15,7 +15,7 @@ use Lattice\Lattice\Forms\Rules\FileUploadItem;
 #[Component('form.file-upload')]
 class FileUpload extends Field
 {
-    public ?bool $multiple = null;
+    public bool $multiple = false;
 
     public ?int $maxFiles = null;
 

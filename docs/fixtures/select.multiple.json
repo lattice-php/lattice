@@ -1,15 +1,15 @@
 [
     {
         "props": {
-            "autoFocus": null,
+            "autoFocus": false,
             "columnWidth": "md",
             "conditions": null,
-            "dependsOnAny": null,
+            "dependsOnAny": false,
             "dependsOnKeys": null,
-            "disabled": null,
+            "disabled": false,
             "emptyLabel": "No options",
             "helperText": null,
-            "hidden": null,
+            "hidden": false,
             "label": "Languages",
             "multiple": true,
             "name": "languages",
@@ -32,13 +32,13 @@
                 }
             ],
             "placeholder": "Choose languages",
-            "prefill": null,
+            "prefill": false,
             "prefillRefreshOn": null,
             "prefillResetOn": null,
-            "readOnly": null,
-            "required": null,
+            "readOnly": false,
+            "required": false,
             "searchPlaceholder": "Search\u2026",
-            "searchable": null,
+            "searchable": false,
             "tabIndex": null,
             "value": null
         },

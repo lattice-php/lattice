@@ -1,14 +1,14 @@
 [
     {
         "props": {
-            "autoFocus": null,
+            "autoFocus": false,
             "columnWidth": "md",
             "conditions": null,
-            "dependsOnAny": null,
+            "dependsOnAny": false,
             "dependsOnKeys": null,
-            "disabled": null,
+            "disabled": false,
             "helperText": null,
-            "hidden": null,
+            "hidden": false,
             "label": "Account type",
             "name": "type",
             "options": [
@@ -21,11 +21,11 @@
                     "value": "individual"
                 }
             ],
-            "prefill": null,
+            "prefill": false,
             "prefillRefreshOn": null,
             "prefillResetOn": null,
-            "readOnly": null,
-            "required": null,
+            "readOnly": false,
+            "required": false,
             "tabIndex": null,
             "value": null
         },
@@ -34,7 +34,7 @@
     {
         "props": {
             "autoComplete": null,
-            "autoFocus": null,
+            "autoFocus": false,
             "columnWidth": "md",
             "conditions": {
                 "visible": [
@@ -45,19 +45,19 @@
                     }
                 ]
             },
-            "dependsOnAny": null,
+            "dependsOnAny": false,
             "dependsOnKeys": null,
-            "disabled": null,
+            "disabled": false,
             "helperText": null,
-            "hidden": null,
+            "hidden": false,
             "label": "VAT ID",
             "name": "vat",
             "placeholder": null,
-            "prefill": null,
+            "prefill": false,
             "prefillRefreshOn": null,
             "prefillResetOn": null,
-            "readOnly": null,
-            "required": null,
+            "readOnly": false,
+            "required": false,
             "tabIndex": null,
             "type": null,
             "value": null
