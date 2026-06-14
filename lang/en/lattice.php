@@ -38,6 +38,7 @@ return [
         'close' => 'Close',
         'selectAllRows' => 'Select all rows',
         'selectRow' => 'Select row :key',
+        'resetColumnWidths' => 'Reset column widths',
     ],
     'file-upload' => [
         'dropzone' => 'Drop files here or click to browse',

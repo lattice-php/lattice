@@ -102,6 +102,15 @@ export function useColumnResizing({
     [columnKeys, storageKey],
   );
 
+  const resetColumns = useCallback(() => {
+    setOverrides({});
+    overridesRef.current = {};
+    writeStoredOverrides(storageKey, columnKeys, {});
+  }, [columnKeys, storageKey]);
+
+  const hasOverrides =
+    enabled && Object.values(overrides).some((width) => typeof width === "number");
+
   const currentColumnWidth = useCallback(
     (column: SizableColumn): number =>
       overridesRef.current[column.key] ?? defaultColumnWidthPx(column),
@@ -228,6 +237,8 @@ export function useColumnResizing({
   return {
     getResizeHandleProps,
     gridTemplateColumns,
+    hasOverrides,
+    resetColumns,
     resetColumnWidth,
   };
 }

@@ -38,6 +38,7 @@ return [
         'close' => 'Schließen',
         'selectAllRows' => 'Alle Zeilen auswählen',
         'selectRow' => 'Zeile :key auswählen',
+        'resetColumnWidths' => 'Spaltenbreiten zurücksetzen',
     ],
     'file-upload' => [
         'dropzone' => 'Dateien hierher ziehen oder zum Auswählen klicken',

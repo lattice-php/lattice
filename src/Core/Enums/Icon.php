@@ -47,6 +47,7 @@ enum Icon: string
     case PencilLine = 'pencil-line';
     case Plus = 'plus';
     case Quote = 'quote';
+    case RotateCcw = 'rotate-ccw';
     case Rows3 = 'rows-3';
     case Search = 'search';
     case Send = 'send';
