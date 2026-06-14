@@ -12,7 +12,7 @@ use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasVariant;
-use Lattice\Lattice\Effects\Contracts\Effect as AbstractEffect;
+use Lattice\Lattice\Effects\Contracts\Effect;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
 
@@ -36,7 +36,7 @@ class Action extends Component
     public ?Confirmation $confirmation = null;
 
     /**
-     * @var array<int, AbstractEffect>
+     * @var array<int, Effect>
      */
     public array $effects = [];
 
@@ -93,7 +93,7 @@ class Action extends Component
     }
 
     /**
-     * @param  array<int, AbstractEffect>  $effects
+     * @param  array<int, Effect>  $effects
      */
     public function effects(array $effects): static
     {

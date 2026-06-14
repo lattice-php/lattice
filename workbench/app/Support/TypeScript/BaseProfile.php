@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
-use Lattice\Lattice\Effects\Attributes\AsEffect as EffectAttribute;
-use Lattice\Lattice\Effects\Contracts\Effect as AbstractEffect;
+use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
+use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Effects\EffectRegistry;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
@@ -13,7 +14,6 @@ use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
-use Spatie\Attributes\Attributes;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 
 /**
@@ -41,7 +41,7 @@ final class BaseProfile implements TypeScriptProfile
         $packageRoot = dirname(__DIR__, 4);
         $src = $packageRoot.'/src';
 
-        $effects = $this->discoverEffects($src.'/Effects/Builtin');
+        $effects = $this->discoverEffects();
         $marked = (new MarkedTypeDiscovery)->discover($src);
 
         $discovered = (new ComponentDiscovery)->discover($src);
@@ -72,7 +72,7 @@ final class BaseProfile implements TypeScriptProfile
                     Form::class,
                     $domainNodes,
                     'form',
-                    AbstractEffect::class,
+                    EffectContract::class,
                     $effects,
                     $columnProps,
                 ),
@@ -86,28 +86,21 @@ final class BaseProfile implements TypeScriptProfile
     }
 
     /**
-     * Effect value objects keyed by class-string, valued by the wire type from
-     * their #[Effect] attribute. Drives the allow-list and the generated union.
+     * Effect value objects keyed by wire type, valued by class-string — sourced
+     * from the EffectRegistry (built-ins). Drives the allow-list and the generated
+     * `Effect` union.
      *
      * @return array<class-string, string>
      */
-    private function discoverEffects(string $path): array
+    private function discoverEffects(): array
     {
-        $classes = ClassWalker::classes($path);
+        $registry = new EffectRegistry;
 
-        $effects = [];
-
-        foreach ($classes as $class) {
-            $effect = Attributes::get($class, EffectAttribute::class);
-
-            if ($effect === null) {
-                continue;
-            }
-
-            $effects[$class] = $effect->wireType();
+        foreach (ClassWalker::classes(dirname(__DIR__, 4).'/src/Effects/Builtin') as $effect) {
+            $registry->register($effect);
         }
 
-        return $effects;
+        return array_flip($registry->all());
     }
 
     /**
