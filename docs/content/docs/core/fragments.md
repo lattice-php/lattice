@@ -49,5 +49,5 @@ without touching the rest of the page:
 return ActionResult::success()->reloadComponent('app.two-factor-setup');
 ```
 
-Fragments honor [authorization](/actions/overview/#authorization) like any definition: an unauthorized
-fragment resolves to nothing.
+Fragments honor [authorization](/core/authorization/) like any definition: an unauthorized fragment
+resolves to nothing.
