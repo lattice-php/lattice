@@ -65,6 +65,15 @@ test('a multiple select filter with no selected values applies no constraint', f
     expect($builder->toSql())->not->toContain('where');
 });
 
+test('a select filter accepts an associative value => label array', function () {
+    $props = wire(SelectFilter::make('status')->options(['draft' => 'Draft', 'active' => 'Active']))['props'];
+
+    expect($props['options'])->toBe([
+        ['label' => 'Draft', 'value' => 'draft'],
+        ['label' => 'Active', 'value' => 'active'],
+    ]);
+});
+
 test('a select filter resolves its options from an option source', function () {
     $source = inMemoryOptionSource(['1' => 'Ada', '2' => 'Linus']);
 

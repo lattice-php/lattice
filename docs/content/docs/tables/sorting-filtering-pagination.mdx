@@ -77,11 +77,15 @@ dedicated [`SelectFilter`](#dedicated-filters). A single selection matches with 
 ```php
 use Lattice\Lattice\Tables\Columns\TextColumn;
 
+// associative value => label
 TextColumn::make('status')->filterOptions([
-    ['label' => 'Draft', 'value' => 'draft'],
-    ['label' => 'Active', 'value' => 'active'],
-    ['label' => 'Archived', 'value' => 'archived'],
+    'draft' => 'Draft',
+    'active' => 'Active',
+    'archived' => 'Archived',
 ]);
+
+// or an enum (labels from the HasLabel contract, else the humanised case name)
+TextColumn::make('status')->filterOptions(Status::class);
 
 // match any of several values:
 TextColumn::make('status')->filterOptions([...], multiple: true);

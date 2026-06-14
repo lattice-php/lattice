@@ -47,14 +47,15 @@ trait IsFilterable
     }
 
     /**
-     * Filter this column with a dropdown instead of the operator input. Pass a
-     * fixed list of options or an {@see OptionSource} (e.g. an Eloquent relation).
-     * Single selection matches with `=`; `multiple` matches any with `in`.
-     * `searchable` (only with a source) fetches options as the user types.
+     * Filter this column with a dropdown instead of the operator input. Pass an
+     * enum, an associative `value => label` array, a list of options, or an
+     * {@see OptionSource} (e.g. an Eloquent relation). Single selection matches
+     * with `=`; `multiple` matches any with `in`. `searchable` (only with a
+     * source) fetches options as the user types.
      *
-     * @param  array<int, Option|array{label: string, value: string}>|OptionSource  $options
+     * @param  class-string<\UnitEnum>|array<mixed>|OptionSource  $options
      */
-    public function filterOptions(array|OptionSource $options, bool $multiple = false, bool $searchable = false): static
+    public function filterOptions(array|string|OptionSource $options, bool $multiple = false, bool $searchable = false): static
     {
         $this->filterable = true;
         $this->filterControl = FilterControl::Select;
@@ -66,7 +67,7 @@ trait IsFilterable
             $this->filterSelectOptions = [];
         } else {
             $this->optionSource = null;
-            $this->filterSelectOptions = $this->normalizeFilterOptions($options);
+            $this->filterSelectOptions = Option::expand($options);
         }
 
         return $this;
@@ -132,19 +133,5 @@ trait IsFilterable
         }
 
         return $this->defaultOperator ?? $this->filterType()->defaultOperator();
-    }
-
-    /**
-     * @param  array<int, Option|array{label: string, value: string}>  $options
-     * @return list<Option>
-     */
-    private function normalizeFilterOptions(array $options): array
-    {
-        return array_values(array_map(
-            static fn (Option|array $option): Option => $option instanceof Option
-                ? $option
-                : new Option((string) $option['label'], (string) $option['value']),
-            $options,
-        ));
     }
 }

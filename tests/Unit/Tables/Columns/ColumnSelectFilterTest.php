@@ -4,6 +4,33 @@ declare(strict_types=1);
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 
+enum ColumnFilterStatus: string
+{
+    case Draft = 'draft';
+    case Active = 'active';
+}
+
+test('a column filter accepts an associative value => label array', function () {
+    $filter = wire(TextColumn::make('status')->filterOptions([
+        'draft' => 'Draft',
+        'active' => 'Active',
+    ]))['filter'];
+
+    expect($filter['options'])->toBe([
+        ['label' => 'Draft', 'value' => 'draft'],
+        ['label' => 'Active', 'value' => 'active'],
+    ]);
+});
+
+test('a column filter accepts an enum', function () {
+    $filter = wire(TextColumn::make('status')->filterOptions(ColumnFilterStatus::class))['filter'];
+
+    expect($filter['options'])->toBe([
+        ['label' => 'Draft', 'value' => 'draft'],
+        ['label' => 'Active', 'value' => 'active'],
+    ]);
+});
+
 test('a column with filter options serializes a select control', function () {
     $filter = wire(TextColumn::make('status')->filterOptions([
         ['label' => 'Draft', 'value' => 'draft'],

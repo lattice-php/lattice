@@ -41,9 +41,9 @@ class ProductsTable extends EloquentTableDefinition
             TextColumn::make('sku')->label(__('workbench.tables.columns.sku'))->sortable()->filterable(),
             TextColumn::make('price')->label(__('workbench.tables.columns.price'))->sortable()->numeric()->filterable(),
             StatusBadgeColumn::make('status')->label(__('workbench.tables.columns.status'))->filterOptions([
-                ['label' => 'Draft', 'value' => 'draft'],
-                ['label' => 'Active', 'value' => 'active'],
-                ['label' => 'Archived', 'value' => 'archived'],
+                'draft' => 'Draft',
+                'active' => 'Active',
+                'archived' => 'Archived',
             ])->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
             TextColumn::make('featured')->label(__('workbench.tables.columns.featured'))->sortable()->boolean()->filterable(),
             TextColumn::make('updated_at')->label(__('workbench.tables.columns.updated-at'))->sortable()->date('Y-m-d H:i:s')->filterable(),
