@@ -1,8 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { FormValuesProvider } from "../values";
+import { FormValuesProvider, useFormValue } from "../values";
 import { PasswordInputComponent } from "./password-input";
 
 function renderField(node: Node<"form.password-input">, initial: Record<string, unknown> = {}) {
@@ -11,6 +11,10 @@ function renderField(node: Node<"form.password-input">, initial: Record<string, 
       <PasswordInputComponent node={node}>{null}</PasswordInputComponent>
     </FormValuesProvider>,
   );
+}
+
+function CommittedValue({ name }: { name: string }) {
+  return <output data-test={`value-${name}`}>{String(useFormValue(name) ?? "")}</output>;
 }
 
 describe("PasswordInputComponent conditions", () => {
@@ -59,5 +63,35 @@ describe("PasswordInputComponent conditions", () => {
     );
 
     expect(screen.getByLabelText("Password")).toHaveValue("password");
+  });
+
+  it("commits the confirmation field value", () => {
+    render(
+      <FormValuesProvider initial={{}}>
+        <PasswordInputComponent
+          node={fakeNode({
+            type: "form.password-input",
+            props: {
+              name: "password",
+              label: "Password",
+              confirmation: {
+                name: "password_confirmation",
+                label: "Confirm password",
+                placeholder: "Confirm password",
+              },
+            },
+          })}
+        >
+          {null}
+        </PasswordInputComponent>
+        <CommittedValue name="password_confirmation" />
+      </FormValuesProvider>,
+    );
+
+    fireEvent.change(screen.getByLabelText("Confirm password"), {
+      target: { value: "secret" },
+    });
+
+    expect(screen.getByTestId("value-password_confirmation")).toHaveTextContent("secret");
   });
 });
