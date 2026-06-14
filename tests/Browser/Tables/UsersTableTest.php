@@ -98,6 +98,35 @@ it('persists resized column widths until the column keys change', function (): v
     $page->assertNoSmoke();
 });
 
+it('reveals a reset control once columns are resized and clears them on click', function (): void {
+    seedWorkbenchUsers();
+
+    $page = visit('/');
+    $page->resize(1280, 800)->script('() => window.localStorage.clear()');
+    $page->refresh();
+
+    $page->assertPresent('[aria-label="Resize Name"]')
+        ->assertMissing('@table-reset-columns');
+
+    $page->keys('[aria-label="Resize Name"]', 'ArrowRight')
+        ->assertPresent('@table-reset-columns')
+        ->assertNoJavaScriptErrors();
+
+    expect($page->script(
+        "() => window.localStorage.getItem('lattice:table-columns:workbench.users')",
+    ))->not->toBeNull();
+
+    $page->click('@table-reset-columns')
+        ->assertMissing('@table-reset-columns');
+
+    expect($page->script(
+        "() => window.localStorage.getItem('lattice:table-columns:workbench.users')",
+    ))->toBeNull()
+        ->and(workbenchUsersTableColumns($page))->toStartWith('minmax(8rem, 1fr) ');
+
+    $page->assertNoSmoke();
+});
+
 function workbenchUsersTableColumns(mixed $page): string
 {
     return (string) $page->script(<<<'JS'

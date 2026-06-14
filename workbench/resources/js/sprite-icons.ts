@@ -43,6 +43,7 @@ export const iconNames = [
   "pencil-line",
   "plus",
   "quote",
+  "rotate-ccw",
   "rows-3",
   "search",
   "send",
@@ -102,6 +103,7 @@ declare module "@lattice-php/lattice" {
     "pencil-line": true;
     plus: true;
     quote: true;
+    "rotate-ccw": true;
     "rows-3": true;
     search: true;
     send: true;

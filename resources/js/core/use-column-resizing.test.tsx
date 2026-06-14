@@ -57,20 +57,25 @@ function Harness({
   storageKey?: string;
   trailingTracks?: string[];
 }) {
-  const { gridTemplateColumns, getResizeHandleProps } = useColumnResizing({
-    enabled: true,
-    columns: hookColumns,
-    columnGapPx,
-    leadingTracks,
-    showIndicator,
-    storageKey,
-    trailingTracks,
-  });
+  const { gridTemplateColumns, getResizeHandleProps, hasOverrides, resetColumns } =
+    useColumnResizing({
+      enabled: true,
+      columns: hookColumns,
+      columnGapPx,
+      leadingTracks,
+      showIndicator,
+      storageKey,
+      trailingTracks,
+    });
 
   onGetter?.(getResizeHandleProps);
 
   return (
     <div data-testid="grid" style={{ gridTemplateColumns }}>
+      <span data-testid="has-overrides">{String(hasOverrides)}</span>
+      <button data-testid="reset" onClick={resetColumns} type="button">
+        reset
+      </button>
       {hookColumns.map((column) => (
         <div key={column.key} data-testid={`cell-${column.key}`}>
           <div {...getResizeHandleProps(column)} />
@@ -83,6 +88,26 @@ function Harness({
 describe("useColumnResizing", () => {
   beforeEach(() => {
     window.localStorage.clear();
+  });
+
+  it("exposes hasOverrides and resets every column width", () => {
+    render(<Harness storageKey="cols" />);
+
+    expect(screen.getByTestId("has-overrides")).toHaveTextContent("false");
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+    fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "208px" });
+    expect(screen.getByTestId("has-overrides")).toHaveTextContent("true");
+    expect(window.localStorage.getItem("cols")).not.toBeNull();
+
+    fireEvent.click(screen.getByTestId("reset"));
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "minmax(6rem, 0.5fr)" });
+    expect(screen.getByTestId("has-overrides")).toHaveTextContent("false");
+    expect(window.localStorage.getItem("cols")).toBeNull();
   });
 
   it("updates the grid template while dragging a handle", () => {
