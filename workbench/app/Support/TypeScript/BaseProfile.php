@@ -85,9 +85,14 @@ final class BaseProfile implements TypeScriptProfile
     }
 
     /**
-     * Effect value objects keyed by wire type, valued by class-string — sourced
-     * from the EffectRegistry (built-ins). Drives the allow-list and the generated
-     * `Effect` union.
+     * Effect value objects keyed by class-string, valued by wire type — for the
+     * allow-list and the generated `Effect` union.
+     *
+     * This profile generates the package's OWN built-in types only, so it builds
+     * a fresh registry over src/Effects/Builtin rather than resolving the
+     * container singleton: a consumer app's runtime-registered effects must not
+     * leak into the package's generated.ts. Typed augmentation of consumer
+     * effects is the AugmentProfile's job (deferred — see the effects-domain spec).
      *
      * @return array<class-string, string>
      */
