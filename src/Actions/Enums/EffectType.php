@@ -9,6 +9,7 @@ use Lattice\Lattice\Attributes\TypeScript;
 enum EffectType: string
 {
     case Toast = 'toast';
+    case Callout = 'callout';
     case ReloadComponent = 'reloadComponent';
     case ReloadPage = 'reloadPage';
     case Redirect = 'redirect';

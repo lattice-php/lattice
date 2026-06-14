@@ -4,6 +4,7 @@
  * in action/effects.ts; the rest are framework events with no PHP counterpart.
  */
 export const LATTICE_EVENT = {
+  callout: "lattice:callout",
   toast: "lattice:toast",
   reloadComponent: "lattice:reload-component",
   reloadPage: "lattice:reload-page",

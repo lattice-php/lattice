@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Actions;
 
+use Lattice\Lattice\Actions\Effects\CalloutEffect;
 use Lattice\Lattice\Actions\Effects\CloseModalEffect;
 use Lattice\Lattice\Actions\Effects\DownloadEffect;
 use Lattice\Lattice\Actions\Effects\LocaleChangeEffect;
@@ -13,10 +14,16 @@ use Lattice\Lattice\Actions\Effects\ReloadPageEffect;
 use Lattice\Lattice\Actions\Effects\ResetFormEffect;
 use Lattice\Lattice\Actions\Effects\ToastEffect;
 use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Core\Values\ToastMessage;
 
 final class Effect
 {
+    public static function callout(Callout $callout): CalloutEffect
+    {
+        return new CalloutEffect($callout);
+    }
+
     public static function toast(string|ToastMessage|Variant $message, Variant|string|null $variant = null): ToastEffect
     {
         $toast = match (true) {

@@ -7,6 +7,7 @@ use JsonSerializable;
 use Lattice\Lattice\Actions\Effects\AbstractEffect;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Core\Values\ToastMessage;
 
 #[TypeScript]
@@ -44,6 +45,11 @@ final readonly class ActionResult implements JsonSerializable
             ...$this->effects,
             $effect,
         ]);
+    }
+
+    public function callout(Callout $callout): self
+    {
+        return $this->effect(Effect::callout($callout));
     }
 
     public function toast(string|ToastMessage|Variant $message, Variant|string|null $variant = null): self

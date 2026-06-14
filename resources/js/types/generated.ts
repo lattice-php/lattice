@@ -107,6 +107,16 @@ export type ButtonVariant =
   | "outline"
   | "secondary"
   | "success";
+export type Callout = {
+  title: string | null;
+  dismissible: boolean;
+  action: Node | null;
+  variant: Variant;
+  message: string;
+};
+export type CalloutEffect = {
+  readonly callout: Callout;
+};
 export type Card = {
   description: string | null;
   title: string | null;
@@ -324,6 +334,9 @@ export type Dropdown = {
 };
 export type Effect =
   | ({
+      type: "callout";
+    } & CalloutEffect)
+  | ({
       type: "closeModal";
     } & CloseModalEffect)
   | ({
@@ -352,6 +365,7 @@ export type Effect =
     } & ToastEffect);
 export type EffectType =
   | "toast"
+  | "callout"
   | "reloadComponent"
   | "reloadPage"
   | "redirect"

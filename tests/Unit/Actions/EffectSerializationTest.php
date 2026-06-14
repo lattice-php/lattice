@@ -8,6 +8,7 @@ use Lattice\Lattice\Actions\Effect;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Core\Values\ToastMessage;
 
 test('a toast serializes its lifetime, dismissibility and link', function () {
@@ -58,6 +59,29 @@ test('action results expose the full effect vocabulary', function () {
     ])
         ->and(wire(Effect::resetForm()))->toBe(['type' => 'resetForm', 'form' => null])
         ->and(wire(Effect::reloadPage()))->toBe(['type' => 'reloadPage']);
+});
+
+test('a callout effect serializes its callout payload', function () {
+    $wire = wire(Effect::callout(
+        Callout::make(Variant::Warning, 'Your trial ends in 3 days.')
+            ->title('Trial ending')
+            ->link('Upgrade', '/billing'),
+    ));
+
+    expect($wire['type'])->toBe('callout')
+        ->and($wire['callout']['variant'])->toBe('warning')
+        ->and($wire['callout']['title'])->toBe('Trial ending')
+        ->and($wire['callout']['message'])->toBe('Your trial ends in 3 days.')
+        ->and($wire['callout']['action']['props']['label'])->toBe('Upgrade');
+});
+
+test('action results expose the callout effect', function () {
+    $result = ActionResult::success()->callout(
+        Callout::make(Variant::Info, 'Saved as draft.'),
+    );
+
+    expect(wire($result)['effects'][0]['type'])->toBe('callout')
+        ->and(wire($result)['effects'][0]['callout']['variant'])->toBe('info');
 });
 
 test('action groups serialize grouped child actions', function () {

@@ -9,6 +9,7 @@ export type ActionEffect = Effect;
 export type ActionResponse = Partial<ActionResult>;
 
 const eventNames = {
+  callout: LATTICE_EVENT.callout,
   toast: LATTICE_EVENT.toast,
   reloadComponent: LATTICE_EVENT.reloadComponent,
   reloadPage: LATTICE_EVENT.reloadPage,
