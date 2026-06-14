@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Layouts;
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\Layout;
 use Lattice\Lattice\Core\Components\RawBlock;
 use Lattice\Lattice\Core\Components\Stack;
@@ -20,6 +21,7 @@ use Lattice\Lattice\Layouts\Components\MenuItem;
 use Lattice\Lattice\Layouts\Components\Outlet;
 use Lattice\Lattice\Layouts\Components\Sidebar;
 use Lattice\Lattice\Layouts\LayoutDefinition;
+use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Pages\BuilderTableDemoPage;
 use Workbench\App\Pages\DependentDemoPage;
 use Workbench\App\Pages\HomePage;
@@ -70,6 +72,15 @@ final class AppLayout extends LayoutDefinition
                                             ]),
                                     ])
                                     ->items([
+                                        MenuItem::make(__('workbench.language.label'), 'language'),
+                                        ActionComponent::use(SetLocaleAction::class)
+                                            ->key('locale-en')
+                                            ->label(__('workbench.language.en'))
+                                            ->context(['locale' => 'en']),
+                                        ActionComponent::use(SetLocaleAction::class)
+                                            ->key('locale-de')
+                                            ->label(__('workbench.language.de'))
+                                            ->context(['locale' => 'de']),
                                         MenuItem::make(__('workbench.navigation.log-out'), 'log-out')->href('/logout')->method(HttpMethod::Post),
                                     ]),
                             ]),

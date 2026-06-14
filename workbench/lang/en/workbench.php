@@ -147,6 +147,7 @@ return [
     'language' => [
         'de' => 'German',
         'en' => 'English',
+        'label' => 'Language',
     ],
     'navigation' => [
         'builder-table-demo' => 'Builder Table Demo',

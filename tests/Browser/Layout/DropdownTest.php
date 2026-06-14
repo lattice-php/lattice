@@ -6,6 +6,9 @@ it('opens the composed user dropdown and reveals its items', function (): void {
         ->assertSee('Workbench User')
         ->assertDontSee('Log out')
         ->click('@user-menu')
+        ->assertSee('Language')
+        ->assertSee('English')
+        ->assertSee('German')
         ->assertSee('Log out')
         ->assertNoSmoke();
 });
@@ -15,6 +18,9 @@ it('keeps composed dropdown item labels visible when the sidebar is collapsed', 
         ->click('@sidebar-toggle')
         ->assertPresent('[aria-label="Expand sidebar"]')
         ->click('@user-menu')
+        ->assertSee('Language')
+        ->assertSee('English')
+        ->assertSee('German')
         ->assertSee('Log out')
         ->assertNoSmoke();
 });

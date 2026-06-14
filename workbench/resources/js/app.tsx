@@ -13,7 +13,6 @@ import { createRoot } from "react-dom/client";
 import sprite from "virtual:svg-sprite";
 import { appColumns } from "./lattice/columns";
 import { WORKBENCH_I18N_NAMESPACE } from "./lattice/i18n";
-import { LanguageSwitcher } from "./lattice/language-switcher";
 
 const appRegistry = extendRegistry(registry, appColumns);
 
@@ -35,7 +34,6 @@ createInertiaApp({
         <Provider registry={appRegistry} sprite={sprite}>
           <App {...props} />
           <LocaleReload />
-          <LanguageSwitcher />
         </Provider>,
       );
     };
