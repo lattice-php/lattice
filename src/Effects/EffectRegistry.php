@@ -37,7 +37,7 @@ final class EffectRegistry
 
         $type = $attribute->wireType();
 
-        if (isset($this->effects[$type])) {
+        if (isset($this->effects[$type]) && $this->effects[$type] !== $effect) {
             throw new InvalidArgumentException(sprintf(
                 'Effect wire type [%s] is already registered to [%s].',
                 $type,

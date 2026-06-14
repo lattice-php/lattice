@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Workbench\App\Support\TypeScript;
 
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
-use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Effects\EffectRegistry;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
