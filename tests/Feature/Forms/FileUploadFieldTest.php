@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\UploadForm;
@@ -123,4 +124,32 @@ it('accepts a signed tmp key that exists and rejects an out-of-prefix key', func
 
     post('/lattice/forms/workbench.upload.form', ['document' => 'uploads/secret.pdf'], uploadHeaders($form))
         ->assertSessionHasErrors(['document']);
+});
+
+it('deletes an existing file when its removal token is submitted', function (): void {
+    Storage::fake('public');
+    Storage::disk('public')->put('uploads/old.jpg', 'data');
+    $signer = app(SignsComponentReferences::class);
+    $token = $signer->seal('file', 'avatar', ['disk' => 'public', 'path' => 'uploads/old.jpg']);
+
+    Lattice::forms([UploadForm::class]);
+    $form = wire(Form::use(UploadForm::class));
+
+    post('/lattice/forms/workbench.upload.form', ['avatar__removed' => [$token]], uploadHeaders($form))
+        ->assertRedirect('/uploads');
+
+    Storage::disk('public')->assertMissing('uploads/old.jpg');
+});
+
+it('ignores a forged removal token (no deletion)', function (): void {
+    Storage::fake('public');
+    Storage::disk('public')->put('uploads/keep.jpg', 'data');
+
+    Lattice::forms([UploadForm::class]);
+    $form = wire(Form::use(UploadForm::class));
+
+    post('/lattice/forms/workbench.upload.form', ['avatar__removed' => ['forged']], uploadHeaders($form))
+        ->assertRedirect('/uploads');
+
+    Storage::disk('public')->assertExists('uploads/keep.jpg');
 });

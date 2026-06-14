@@ -5,6 +5,7 @@ namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Lattice\Lattice\Attributes\Form;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
@@ -29,6 +30,10 @@ class UploadForm extends FormDefinition
     public function handle(Request $request): Response
     {
         $data = $this->validate($request);
+
+        foreach (FileUpload::removed($request, 'avatar') as $path) {
+            Storage::disk('public')->delete($path);
+        }
 
         if (($data['avatar'] ?? null) instanceof UploadedFile) {
             $data['avatar'] = $data['avatar']->store('uploads', 'public');
