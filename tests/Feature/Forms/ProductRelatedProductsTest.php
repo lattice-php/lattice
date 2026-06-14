@@ -98,6 +98,7 @@ test('the product edit page binds related product ids into form state', function
     $product->relatedProducts()->sync([$related->getKey()]);
 
     withoutVite();
+    $this->actingAs(workbenchTestUser());
 
     get("/products/{$product->getKey()}/edit")
         ->assertOk()

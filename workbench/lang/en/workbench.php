@@ -38,6 +38,18 @@ return [
             'toast' => 'Rejected :count products: :reason',
         ],
     ],
+    'auth' => [
+        'login' => [
+            'description' => 'Use the seeded account to enter the workbench.',
+            'email' => 'Email',
+            'failed' => 'These credentials do not match the seeded workbench user.',
+            'heading' => 'Lattice Workbench',
+            'password' => 'Password',
+            'seeded-account' => 'workbench@example.com / password',
+            'submit' => 'Sign in',
+            'title' => 'Sign in',
+        ],
+    ],
     'common' => [
         'add-block' => 'Add block',
         'add-line' => 'Add line',

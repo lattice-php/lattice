@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Workbench\App\Models\Product;
 
 it('shows a toast after an action and dismisses it', function (): void {
+    $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
     visit('/products')
@@ -16,6 +17,7 @@ it('shows a toast after an action and dismisses it', function (): void {
 });
 
 it('renders a link inside a toast', function (): void {
+    $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
     visit('/products')
@@ -28,6 +30,7 @@ it('renders a link inside a toast', function (): void {
 });
 
 it('opens a modal form from a toast action', function (): void {
+    $this->actingAs(workbenchTestUser());
     $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
     visit('/products')

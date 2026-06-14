@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 it('renders the repeater with one default row', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/repeater')
         ->assertSee('Repeater Demo')
         ->assertSee('Line items')
@@ -12,6 +13,7 @@ it('renders the repeater with one default row', function (): void {
 });
 
 it('round-trips a nested repeater payload through submit', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/repeater')
         ->assertSee('Repeater Demo')
         ->fill('input[name="items[0][name]"]', 'Widget')
@@ -27,6 +29,7 @@ it('round-trips a nested repeater payload through submit', function (): void {
 });
 
 it('reorders rows and submits successfully', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/repeater')
         ->assertSee('Repeater Demo')
         ->fill('input[name="items[0][name]"]', 'First')
@@ -43,6 +46,7 @@ it('reorders rows and submits successfully', function (): void {
 });
 
 it('surfaces the per-row required validation error on submit', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/repeater')
         ->assertSee('Repeater Demo')
         ->click('Save')

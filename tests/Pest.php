@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
+use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Tests\TestCase;
@@ -51,6 +52,19 @@ function seedWorkbenchUsers(): void
             'email' => "browser-user-{$number}@example.com",
         ]);
     }
+}
+
+/**
+ * @param  array<string, mixed>  $attributes
+ */
+function workbenchTestUser(array $attributes = []): User
+{
+    return UserFactory::new()->create([
+        'name' => 'Authenticated Workbench User',
+        'email' => 'workbench-test-'.Str::random(12).'@example.com',
+        'locale' => 'en',
+        ...$attributes,
+    ]);
 }
 
 /**

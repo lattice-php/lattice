@@ -20,6 +20,7 @@ afterEach(function () {
 
 it('shares the i18n config to the frontend as a once prop', function () {
     withoutVite();
+    $this->actingAs(workbenchTestUser());
 
     $response = get('/');
 
@@ -38,6 +39,7 @@ it('shares the i18n config to the frontend as a once prop', function () {
 
 it('omits the i18n config when the client already has the once prop', function () {
     withoutVite();
+    $this->actingAs(workbenchTestUser());
 
     $response = get('/');
     $page = json_decode(json_encode($response->viewData('page'), JSON_THROW_ON_ERROR), true, flags: JSON_THROW_ON_ERROR);
@@ -89,6 +91,7 @@ it('serves workbench translations from the workbench lang dir', function () {
 
 it('localizes workbench page props and table column labels from the accept language header', function () {
     withoutVite();
+    $this->actingAs(workbenchTestUser(['locale' => 'de']));
 
     get('/products', ['Accept-Language' => 'de'])
         ->assertOk()

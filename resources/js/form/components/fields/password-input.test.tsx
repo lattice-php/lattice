@@ -45,4 +45,19 @@ describe("PasswordInputComponent conditions", () => {
 
     expect(screen.getByLabelText("Password")).toBeVisible();
   });
+
+  it("renders a prefilled password value", () => {
+    renderField(
+      fakeNode({
+        type: "form.password-input",
+        props: {
+          name: "password",
+          label: "Password",
+        },
+      }),
+      { password: "password" },
+    );
+
+    expect(screen.getByLabelText("Password")).toHaveValue("password");
+  });
 });

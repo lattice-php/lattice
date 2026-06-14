@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 it('renders the table layout with a shared header and round-trips a typed payload', function (): void {
+    $this->actingAs(workbenchTestUser());
     $page = visit('/builder-table');
 
     $page->assertSee('Line items')->assertNoSmoke()
@@ -24,6 +25,7 @@ it('renders the table layout with a shared header and round-trips a typed payloa
 });
 
 it('reveals a reset control for custom row-table column widths and clears them on click', function (): void {
+    $this->actingAs(workbenchTestUser());
     $page = visit('/builder-table');
     $page->resize(1280, 800);
 

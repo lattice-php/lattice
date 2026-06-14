@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 it('toggles the company field instantly based on type', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/dependent-demo')
         ->assertSee('Dependent Demo')
         ->assertDontSee('Company')
@@ -12,6 +13,7 @@ it('toggles the company field instantly based on type', function (): void {
 });
 
 it('requires the company field for business on submit', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/dependent-demo')
         ->click('@type-business')
         ->assertSee('Company')
@@ -20,6 +22,7 @@ it('requires the company field for business on submit', function (): void {
 });
 
 it('computes the total from qty and unit price via a round-trip', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/dependent-demo')
         ->assertSee('Total')
         ->fill('@qty', '3')
@@ -28,6 +31,7 @@ it('computes the total from qty and unit price via a round-trip', function (): v
 });
 
 it('renders textarea, number, slider, and date fields', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/dependent-demo')
         ->assertSee('Bio')
         ->assertSee('Level')
@@ -39,6 +43,7 @@ it('renders textarea, number, slider, and date fields', function (): void {
 });
 
 it('renders the rich text editor with a toolbar', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/dependent-demo')
         ->assertSee('Article')
         ->assertPresent('[aria-label="Bold"]')

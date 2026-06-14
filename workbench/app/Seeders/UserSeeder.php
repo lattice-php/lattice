@@ -5,8 +5,8 @@ namespace Workbench\App\Seeders;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Seeder;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Hash;
+use Workbench\App\Models\User;
 
 class UserSeeder extends Seeder
 {
@@ -26,6 +26,7 @@ class UserSeeder extends Seeder
                         'email' => $user['email'],
                         'email_verified_at' => $updatedAt->toDateTimeString(),
                         'password' => $password,
+                        'locale' => $user['locale'] ?? 'en',
                         'created_at' => $createdAt->toDateTimeString(),
                         'updated_at' => $updatedAt->toDateTimeString(),
                     ];
@@ -34,18 +35,19 @@ class UserSeeder extends Seeder
                 array_keys($users),
             ),
             ['email'],
-            ['name', 'email_verified_at', 'password', 'created_at', 'updated_at'],
+            ['name', 'email_verified_at', 'password', 'locale', 'created_at', 'updated_at'],
         );
     }
 
     /**
-     * @return array<int, array{name: string, email: string}>
+     * @return array<int, array{name: string, email: string, locale?: string}>
      */
     private function users(): array
     {
         $faker = fake();
         $faker->seed(1337);
         $users = [
+            ['name' => 'Workbench User', 'email' => 'workbench@example.com', 'locale' => 'en'],
             ['name' => 'Ada Lovelace', 'email' => 'ada@example.com'],
             ['name' => 'Grace Hopper', 'email' => 'grace@example.com'],
             ['name' => 'Katherine Johnson', 'email' => 'katherine@example.com'],

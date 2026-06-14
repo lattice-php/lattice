@@ -62,6 +62,7 @@ test('the product index page lists products and links to creation', function () 
     ]);
 
     withoutVite();
+    $this->actingAs(workbenchTestUser());
 
     get('/products')
         ->assertOk()
@@ -104,6 +105,7 @@ test('the product edit page binds existing product state', function () {
     ]);
 
     withoutVite();
+    $this->actingAs(workbenchTestUser());
 
     get("/products/{$product->getKey()}/edit")
         ->assertOk()

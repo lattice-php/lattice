@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 it('switches horizontal and vertical tabs end to end', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/tabs')
         ->assertSee('Horizontal tabs')
         ->assertSee('Vertical tabs')

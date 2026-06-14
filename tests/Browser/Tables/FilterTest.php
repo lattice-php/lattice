@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Workbench\App\Models\Product;
 
 it('filters by text and clears via the filter chip', function (): void {
+    $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
     visit('/')
@@ -17,6 +18,7 @@ it('filters by text and clears via the filter chip', function (): void {
 });
 
 it('adds a filter through the column popover', function (): void {
+    $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
     visit('/')
@@ -29,6 +31,7 @@ it('adds a filter through the column popover', function (): void {
 });
 
 it('filters products by the boolean featured column', function (): void {
+    $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Featured Item', 'featured' => true]);
     Product::factory()->create(['name' => 'Plain Item', 'featured' => false]);
 

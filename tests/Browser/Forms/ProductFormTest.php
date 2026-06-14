@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Workbench\App\Models\Product;
 
 it('shows precognitive validation messages in the form', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/products/create')
         ->assertSee('Create Product')
         ->fill('@price', 'invalid')
@@ -14,6 +15,7 @@ it('shows precognitive validation messages in the form', function (): void {
 });
 
 it('disables the submit button while precognition errors are active', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/products/create')
         ->assertSee('Create Product')
         ->assertEnabled('@form-submit')
@@ -25,6 +27,7 @@ it('disables the submit button while precognition errors are active', function (
 });
 
 it('surfaces server validation errors after submitting an empty form', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/products/create')
         ->assertSee('Create Product')
         ->click('@form-submit')
@@ -35,6 +38,7 @@ it('surfaces server validation errors after submitting an empty form', function 
 });
 
 it('shows existing related products on the edit page', function (): void {
+    $this->actingAs(workbenchTestUser());
     $product = Product::factory()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
@@ -53,6 +57,7 @@ it('shows existing related products on the edit page', function (): void {
 });
 
 it('attaches related products via search when creating', function (): void {
+    $this->actingAs(workbenchTestUser());
     $related = Product::factory()->create(['name' => 'Walnut Desk']);
 
     visit('/products/create')
@@ -76,6 +81,7 @@ it('attaches related products via search when creating', function (): void {
 });
 
 it('creates and edits a product through the form flow', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/products')
         ->assertSee('Products')
         ->click('@create-product')

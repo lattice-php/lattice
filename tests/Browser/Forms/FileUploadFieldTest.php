@@ -8,6 +8,7 @@ use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Rules\FileUploadItem;
 
 it('uploads a file via multipart and shows it in the dropzone', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/uploads/create')
         ->assertSee('Drop files here or click to browse')
         ->attach('@avatar-input', __DIR__.'/fixtures/avatar.jpg')
@@ -18,6 +19,7 @@ it('uploads a file via multipart and shows it in the dropzone', function (): voi
 });
 
 it('removes an existing file from the edit form', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/uploads/edit')
         ->assertSee('avatar-existing.jpg')
         ->click('@avatar-remove-existing')
@@ -27,6 +29,7 @@ it('removes an existing file from the edit form', function (): void {
 });
 
 it('uploads directly to s3 via the signed flow', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/uploads/create')
         ->assertSee('Drop files here or click to browse')
         ->attach('@document-input', __DIR__.'/fixtures/avatar.jpg')
@@ -36,6 +39,7 @@ it('uploads directly to s3 via the signed flow', function (): void {
 })->group('rustfs');
 
 it('signs, uploads, and validates a key against rustfs end-to-end', function (): void {
+    $this->actingAs(workbenchTestUser());
     $signed = FileUpload::make('document')->disk('s3')->signedUpload()
         ->signUpload(Request::create('/', 'POST', ['filename' => 'invoice.pdf']));
 

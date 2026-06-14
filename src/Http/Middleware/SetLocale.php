@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Http\Middleware;
 
 use Closure;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
@@ -45,6 +46,7 @@ final class SetLocale
     private function preferredLocale(Request $request, array $locales): ?string
     {
         foreach ([
+            $this->userLocale($request),
             $this->cookieLocale($request),
             $this->sessionLocale($request),
         ] as $locale) {
@@ -56,6 +58,19 @@ final class SetLocale
         $preferred = $request->getPreferredLanguage($locales);
 
         return is_string($preferred) && in_array($preferred, $locales, true) ? $preferred : null;
+    }
+
+    private function userLocale(Request $request): ?string
+    {
+        $user = $request->user();
+
+        if (! $user instanceof HasLocalePreference) {
+            return null;
+        }
+
+        $locale = $user->preferredLocale();
+
+        return is_string($locale) ? $locale : null;
     }
 
     private function cookieLocale(Request $request): ?string

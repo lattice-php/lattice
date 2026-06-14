@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 it('opens the composed user dropdown and reveals its items', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/')
         ->assertSee('Workbench User')
         ->assertSee('English')
@@ -13,6 +14,7 @@ it('opens the composed user dropdown and reveals its items', function (): void {
 });
 
 it('keeps the user dropdown usable when the sidebar is collapsed', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/')
         ->click('@sidebar-toggle')
         ->assertPresent('[aria-label="Expand sidebar"]')
@@ -22,6 +24,7 @@ it('keeps the user dropdown usable when the sidebar is collapsed', function (): 
 });
 
 it('renders the workbench locale switcher in a floating panel', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/')
         ->assertPresent('.fixed[aria-label="Language"]')
         ->assertSee('English')
