@@ -9,14 +9,12 @@ use Lattice\Lattice\Actions\Components\BulkAction;
 use Lattice\Lattice\Attributes\Table;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
-use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\Filters\BaseFilter;
 use Lattice\Lattice\Tables\Filters\DateRangeFilter;
 use Lattice\Lattice\Tables\Filters\Filter;
-use Lattice\Lattice\Tables\Filters\SelectFilter;
 use Lattice\Lattice\Tables\Filters\TernaryFilter;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Actions\ArchiveProductAction;
@@ -43,7 +41,11 @@ class ProductsTable extends EloquentTableDefinition
             TextColumn::make('name')->label(__('workbench.tables.columns.name'))->sortable()->filterable(),
             TextColumn::make('sku')->label(__('workbench.tables.columns.sku'))->sortable()->filterable(),
             TextColumn::make('default_price')->label(__('workbench.tables.columns.default-price'))->sortable()->numeric(),
-            StatusBadgeColumn::make('status')->label(__('workbench.tables.columns.status'))->filterable(Op::Equals)->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
+            StatusBadgeColumn::make('status')->label(__('workbench.tables.columns.status'))->filterOptions([
+                'draft' => 'Draft',
+                'active' => 'Active',
+                'archived' => 'Archived',
+            ])->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
             TextColumn::make('featured')->label(__('workbench.tables.columns.featured'))->sortable()->boolean()->filterable(),
             TextColumn::make('updated_at')->label(__('workbench.tables.columns.updated-at'))->sortable()->date('Y-m-d H:i:s')->filterable(),
         ];
@@ -55,14 +57,6 @@ class ProductsTable extends EloquentTableDefinition
     public function filters(): array
     {
         return [
-            SelectFilter::make('status')
-                ->label(__('workbench.tables.columns.status'))
-                ->options([
-                    SelectFilter::option('Draft', 'draft'),
-                    SelectFilter::option('Active', 'active'),
-                    SelectFilter::option('Archived', 'archived'),
-                ])
-                ->multiple(),
             TernaryFilter::make('featured')
                 ->label(__('workbench.tables.columns.featured')),
             DateRangeFilter::make('updated_at')

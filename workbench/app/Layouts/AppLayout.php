@@ -10,8 +10,10 @@ use Lattice\Lattice\Attributes\Layout;
 use Lattice\Lattice\Core\Components\FloatingPanel;
 use Lattice\Lattice\Core\Components\RawBlock;
 use Lattice\Lattice\Core\Components\Stack;
+use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\FloatingPlacement;
+use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Core\Enums\Justify;
@@ -38,6 +40,7 @@ use Workbench\App\Pages\SalesOrdersPage;
 use Workbench\App\Pages\ShowcasePage;
 use Workbench\App\Pages\TablesPage;
 use Workbench\App\Pages\TabsPage;
+use Workbench\App\Support\Logo;
 
 #[Layout('app')]
 final class AppLayout extends LayoutDefinition
@@ -55,25 +58,39 @@ final class AppLayout extends LayoutDefinition
                             ->width(Width::Fill)
                             ->justify(Justify::Between)
                             ->schema([
-                                Menu::make('sidebar')->items([
-                                    MenuItem::fromPage(HomePage::class)->key('home')->label(__('workbench.navigation.home'))->icon('house'),
-                                    MenuItem::make(__('workbench.navigation.forms'), 'forms')->icon('form-input')->children([
-                                        MenuItem::fromPage(ShowcasePage::class)->key('showcase')->label(__('workbench.navigation.showcase')),
-                                        MenuItem::fromPage(DependentDemoPage::class)->key('dependent-fields')->label(__('workbench.navigation.dependent-fields')),
-                                        MenuItem::fromPage(BuilderTableDemoPage::class)->key('builder-table-demo')->label(__('workbench.navigation.builder-table-demo')),
-                                        MenuItem::fromPage(ProductCreatePage::class)->key('create-product')->label(__('workbench.navigation.create-product')),
+                                Stack::make('sidebar-top')
+                                    ->gap(Gap::Large)
+                                    ->schema([
+                                        Stack::make('sidebar-brand')
+                                            ->direction('row')
+                                            ->align(Align::Center)
+                                            ->gap(Gap::Small)
+                                            ->schema([
+                                                RawBlock::make('brand-mark')->html(Logo::mark('size-8 shrink-0')),
+                                                RawBlock::make('brand-name')
+                                                    ->html('<span class="text-lg font-semibold tracking-tight text-lt-fg">Lattice</span>')
+                                                    ->hideWhenCollapsed(),
+                                            ]),
+                                        Menu::make('sidebar')->items([
+                                            MenuItem::fromPage(HomePage::class)->key('home')->label(__('workbench.navigation.home'))->icon('house'),
+                                            MenuItem::make(__('workbench.navigation.forms'), 'forms')->icon('form-input')->children([
+                                                MenuItem::fromPage(ShowcasePage::class)->key('showcase')->label(__('workbench.navigation.showcase')),
+                                                MenuItem::fromPage(DependentDemoPage::class)->key('dependent-fields')->label(__('workbench.navigation.dependent-fields')),
+                                                MenuItem::fromPage(BuilderTableDemoPage::class)->key('builder-table-demo')->label(__('workbench.navigation.builder-table-demo')),
+                                                MenuItem::fromPage(ProductCreatePage::class)->key('create-product')->label(__('workbench.navigation.create-product')),
+                                            ]),
+                                            MenuItem::make(__('workbench.navigation.commerce'), 'commerce')->icon('layout-dashboard')->children([
+                                                MenuItem::fromPage(BusinessPartnersPage::class)->key('business-partners')->label(__('workbench.navigation.business-partners')),
+                                                MenuItem::fromPage(GroupsPage::class)->key('groups')->label(__('workbench.navigation.groups')),
+                                                MenuItem::fromPage(ProductsPage::class)->key('products')->label(__('workbench.navigation.products')),
+                                                MenuItem::fromPage(SalesOrdersPage::class)->key('sales-orders')->label(__('workbench.navigation.sales-orders')),
+                                            ]),
+                                            MenuItem::make(__('workbench.navigation.tables'), 'tables')->icon(Icon::Table)->children([
+                                                MenuItem::fromPage(TablesPage::class)->key('pagination-modes')->label(__('workbench.navigation.pagination-modes')),
+                                            ]),
+                                            MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs'))->icon('spark'),
+                                        ]),
                                     ]),
-                                    MenuItem::make(__('workbench.navigation.commerce'), 'commerce')->icon('layout-dashboard')->children([
-                                        MenuItem::fromPage(BusinessPartnersPage::class)->key('business-partners')->label(__('workbench.navigation.business-partners')),
-                                        MenuItem::fromPage(GroupsPage::class)->key('groups')->label(__('workbench.navigation.groups')),
-                                        MenuItem::fromPage(ProductsPage::class)->key('products')->label(__('workbench.navigation.products')),
-                                        MenuItem::fromPage(SalesOrdersPage::class)->key('sales-orders')->label(__('workbench.navigation.sales-orders')),
-                                    ]),
-                                    MenuItem::make(__('workbench.navigation.tables'), 'tables')->icon(Icon::Table)->children([
-                                        MenuItem::fromPage(TablesPage::class)->key('pagination-modes')->label(__('workbench.navigation.pagination-modes')),
-                                    ]),
-                                    MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs'))->icon('spark'),
-                                ]),
                                 Dropdown::make('user-menu')
                                     ->placement(Placement::Top)
                                     ->trigger([

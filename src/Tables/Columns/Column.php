@@ -77,6 +77,10 @@ abstract class Column implements JsonSerializable
             type: $this->filterType(),
             operators: $this->availableOperators(),
             defaultOperator: $this->defaultFilterOperator(),
+            control: $this->filterControl(),
+            options: $this->filterSelectOptions(),
+            multiple: $this->filterMultiple(),
+            searchable: $this->filterSearchable(),
         );
     }
 

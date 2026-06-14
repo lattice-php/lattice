@@ -1,6 +1,7 @@
 import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { Option } from "@lattice-php/lattice/types/generated";
 import { isEmptyFilterValue } from "./filter-values";
 import { getColumns, getPagination, getRows, getState } from "./payload";
 import { buildEndpoint, nextSort } from "./query";
@@ -114,6 +115,31 @@ export function useTable(node: TableNode) {
     void load(nextState);
   }
 
+  const searchFilterOptions = useCallback(
+    async (filterKey: string, query: string): Promise<Option[]> => {
+      if (!endpoint) {
+        return [];
+      }
+
+      const url = new URL(endpoint, window.location.origin);
+      url.searchParams.set("_search", filterKey);
+      url.searchParams.set("q", query);
+
+      const response = await fetch(`${url.pathname}${url.search}`, {
+        headers: withHeaders(componentRef, { Accept: "application/json" }),
+      });
+
+      if (!response.ok) {
+        return [];
+      }
+
+      const result = (await response.json()) as { options?: Option[] };
+
+      return result.options ?? [];
+    },
+    [endpoint, componentRef],
+  );
+
   function goToPage(page: number): void {
     void load({
       ...state,
@@ -198,6 +224,7 @@ export function useTable(node: TableNode) {
     removeFilter,
     setTableFilter,
     resetFilters,
+    searchFilterOptions,
     processing,
     hasLoaded,
     infiniteLoaderRef,

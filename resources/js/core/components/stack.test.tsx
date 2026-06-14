@@ -73,7 +73,9 @@ describe("Lattice stack component", () => {
 
     render(<StackComponent node={node}>Content</StackComponent>);
 
-    expect(screen.getByText("Content")).toHaveClass("grid");
+    // content-start keeps gap authoritative: rows pack at the top instead of
+    // stretching to fill extra height.
+    expect(screen.getByText("Content")).toHaveClass("grid", "content-start");
   });
 
   it("fills the viewport height when height is set to screen", () => {

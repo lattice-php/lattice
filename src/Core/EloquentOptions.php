@@ -1,14 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms;
+namespace Lattice\Lattice\Core;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Forms\Contracts\OptionSource;
+use Lattice\Lattice\Core\Contracts\OptionSource;
 
 /**
  * An {@see OptionSource} backed by an Eloquent model — the opt-in bridge that

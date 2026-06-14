@@ -3,11 +3,17 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns\Concerns;
 
+use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Lattice\Core\Option;
+use Lattice\Lattice\Tables\Concerns\ResolvesFilterOptions;
+use Lattice\Lattice\Tables\Enums\FilterControl;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
 trait IsFilterable
 {
+    use ResolvesFilterOptions;
+
     protected bool $filterable = false;
 
     protected ?Op $defaultOperator = null;
@@ -17,6 +23,17 @@ trait IsFilterable
      */
     protected ?array $operators = null;
 
+    protected ?FilterControl $filterControl = null;
+
+    /**
+     * @var list<Option>
+     */
+    protected array $filterSelectOptions = [];
+
+    protected bool $filterMultiple = false;
+
+    protected bool $filterSearchable = false;
+
     /**
      * @param  array<int, Op>  $operators  narrows the offered operators; defaults to the value type's full set
      */
@@ -25,6 +42,33 @@ trait IsFilterable
         $this->filterable = true;
         $this->defaultOperator = $default;
         $this->operators = $operators === [] ? null : array_values($operators);
+
+        return $this;
+    }
+
+    /**
+     * Filter this column with a dropdown instead of the operator input. Pass an
+     * enum, an associative `value => label` array, a list of options, or an
+     * {@see OptionSource} (e.g. an Eloquent relation). Single selection matches
+     * with `=`; `multiple` matches any with `in`. `searchable` (only with a
+     * source) fetches options as the user types.
+     *
+     * @param  class-string<\UnitEnum>|array<mixed>|OptionSource  $options
+     */
+    public function filterOptions(array|string|OptionSource $options, bool $multiple = false, bool $searchable = false): static
+    {
+        $this->filterable = true;
+        $this->filterControl = FilterControl::Select;
+        $this->filterMultiple = $multiple;
+        $this->filterSearchable = $searchable;
+
+        if ($options instanceof OptionSource) {
+            $this->optionSource = $options;
+            $this->filterSelectOptions = [];
+        } else {
+            $this->optionSource = null;
+            $this->filterSelectOptions = Option::expand($options);
+        }
 
         return $this;
     }
@@ -39,16 +83,55 @@ trait IsFilterable
         return FilterType::Text;
     }
 
+    public function filterControl(): ?FilterControl
+    {
+        return $this->filterControl;
+    }
+
+    /**
+     * @return list<Option>
+     */
+    public function filterSelectOptions(): array
+    {
+        return $this->resolveOptions($this->filterSelectOptions);
+    }
+
+    public function filterMultiple(): bool
+    {
+        return $this->filterMultiple;
+    }
+
+    public function filterSearchable(): bool
+    {
+        return $this->filterSearchable && $this->hasOptionSource();
+    }
+
+    /**
+     * @return list<Option>
+     */
+    public function searchFilterOptions(string $query): array
+    {
+        return $this->searchOptionSource($query);
+    }
+
     /**
      * @return array<int, Op>
      */
     public function availableOperators(): array
     {
+        if ($this->filterControl === FilterControl::Select) {
+            return $this->filterMultiple ? [Op::In, Op::NotIn] : [Op::Equals, Op::NotEquals];
+        }
+
         return $this->operators ?? $this->filterType()->operators();
     }
 
     public function defaultFilterOperator(): Op
     {
+        if ($this->filterControl === FilterControl::Select) {
+            return $this->filterMultiple ? Op::In : Op::Equals;
+        }
+
         return $this->defaultOperator ?? $this->filterType()->defaultOperator();
     }
 }

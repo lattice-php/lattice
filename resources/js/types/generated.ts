@@ -190,6 +190,10 @@ export type ColumnFilter = {
   readonly type: FilterType;
   readonly operators: Op[];
   readonly defaultOperator: Op;
+  readonly control: FilterControl | null;
+  readonly options: Option[];
+  readonly multiple: boolean;
+  readonly searchable: boolean;
 };
 export type ColumnPropsMap = {
   badge: BadgeColumnProps;

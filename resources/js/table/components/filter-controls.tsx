@@ -1,11 +1,16 @@
 import { Icon } from "@lattice-php/lattice/icons";
+import * as Popover from "@radix-ui/react-popover";
+import { useEffect, useState } from "react";
 import { useT } from "@lattice-php/lattice/i18n";
-import { useState } from "react";
-import type { FilterData } from "@lattice-php/lattice/types/generated";
+import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
 import { filterOptions, stringProp } from "../filter-values";
 import { fieldClass } from "./filter-value-input";
 
+const SEARCH_DEBOUNCE_MS = 250;
+
 export type DateRangeValue = { from?: string; until?: string };
+
+export type FilterOptionSearch = (query: string) => Promise<Option[]>;
 
 /**
  * Renders the control for a single dedicated table filter, dispatching on the
@@ -17,14 +22,28 @@ export function TableFilterControl({
   value,
   processing,
   onChange,
+  onSearch,
 }: {
   filter: FilterData;
   value: unknown;
   processing: boolean;
   onChange: (value: unknown) => void;
+  onSearch?: FilterOptionSearch;
 }) {
   switch (filter.type) {
     case "select":
+      if (filter.props.searchable === true && onSearch) {
+        return (
+          <SearchableSelectControl
+            filter={filter}
+            value={value}
+            processing={processing}
+            onChange={onChange}
+            onSearch={onSearch}
+          />
+        );
+      }
+
       return filter.props.multiple === true ? (
         <MultiSelectControl
           filter={filter}
@@ -153,6 +172,134 @@ function MultiSelectControl({
         </div>
       )}
     </div>
+  );
+}
+
+function SearchableSelectControl({
+  filter,
+  value,
+  processing,
+  onChange,
+  onSearch,
+}: {
+  filter: FilterData;
+  value: unknown;
+  processing: boolean;
+  onChange: (value: unknown) => void;
+  onSearch: FilterOptionSearch;
+}) {
+  const { t } = useT("lattice");
+  const multiple = filter.props.multiple === true;
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<Option[]>(() => filterOptions(filter));
+
+  const selected = multiple
+    ? Array.isArray(value)
+      ? (value as string[])
+      : []
+    : typeof value === "string" && value !== ""
+      ? [value]
+      : [];
+
+  const labels = new Map(
+    [...filterOptions(filter), ...results].map((option) => [option.value, option.label]),
+  );
+  const summary =
+    selected.length === 0
+      ? stringProp(filter, "placeholder", t("filter.all", "All"))
+      : multiple
+        ? t("filter.selectedCount", "{{amount}} selected", { amount: selected.length })
+        : (labels.get(selected[0]) ?? selected[0]);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    let active = true;
+    const timer = window.setTimeout(() => {
+      void onSearch(query).then((options) => {
+        if (active) {
+          setResults(options);
+        }
+      });
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [open, query, onSearch]);
+
+  function choose(optionValue: string): void {
+    if (multiple) {
+      onChange(
+        selected.includes(optionValue)
+          ? selected.filter((item) => item !== optionValue)
+          : [...selected, optionValue],
+      );
+
+      return;
+    }
+
+    onChange(optionValue);
+    setOpen(false);
+  }
+
+  return (
+    <Popover.Root open={open} onOpenChange={setOpen}>
+      <Popover.Trigger asChild>
+        <button
+          type="button"
+          aria-label={filter.label}
+          data-test={`table-filter-${filter.key}`}
+          className={`${fieldClass} flex items-center justify-between gap-2`}
+          disabled={processing}
+        >
+          <span className="truncate">{summary}</span>
+          <Icon name="chevron-down" aria-hidden="true" className="size-lt-icon-sm shrink-0" />
+        </button>
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Content
+          align="start"
+          sideOffset={4}
+          className="z-50 w-60 rounded-lt border border-lt-border bg-lt-bg p-2 shadow-lg"
+        >
+          <input
+            type="text"
+            aria-label={t("filter.search", "Search")}
+            data-test={`table-filter-${filter.key}-search`}
+            className={fieldClass}
+            value={query}
+            disabled={processing}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <div className="mt-1 max-h-60 overflow-y-auto" role="listbox">
+            {results.map((option) => (
+              <button
+                type="button"
+                key={option.value}
+                data-test={`table-filter-${filter.key}-${option.value}`}
+                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm hover:bg-lt-muted"
+                onClick={() => choose(option.value)}
+              >
+                {multiple && (
+                  <input
+                    type="checkbox"
+                    aria-label={option.label}
+                    readOnly
+                    checked={selected.includes(option.value)}
+                  />
+                )}
+                <span className="truncate">{option.label}</span>
+              </button>
+            ))}
+          </div>
+        </Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
   );
 }
 
