@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Actions;
 
 use Lattice\Lattice\Actions\Effects\CloseModalEffect;
 use Lattice\Lattice\Actions\Effects\DownloadEffect;
+use Lattice\Lattice\Actions\Effects\LocaleChangeEffect;
 use Lattice\Lattice\Actions\Effects\OpenModalEffect;
 use Lattice\Lattice\Actions\Effects\RedirectEffect;
 use Lattice\Lattice\Actions\Effects\ReloadComponentEffect;
@@ -62,5 +63,10 @@ final class Effect
     public static function resetForm(?string $form = null): ResetFormEffect
     {
         return new ResetFormEffect($form);
+    }
+
+    public static function localeChange(string $locale): LocaleChangeEffect
+    {
+        return new LocaleChangeEffect($locale);
     }
 }

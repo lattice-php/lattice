@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
+use Inertia\Support\Header;
 use Inertia\Testing\AssertableInertia;
 
 use function Orchestra\Testbench\package_path;
@@ -17,15 +18,42 @@ afterEach(function () {
     File::delete(package_path('lang/zz.json'));
 });
 
-it('shares the i18n config to the frontend', function () {
+it('shares the i18n config to the frontend as a once prop', function () {
     withoutVite();
 
-    get('/')->assertInertia(fn (AssertableInertia $page) => $page
+    $response = get('/');
+
+    $response->assertInertia(fn (AssertableInertia $page) => $page
         ->where('lattice.i18n.enabled', true)
         ->where('lattice.i18n.saveMissing', true)
+        ->where('lattice.i18n.locales', ['en', 'de'])
         ->missing('lattice.i18n.loadPath')
         ->missing('lattice.i18n.addPath'),
     );
+
+    $page = json_decode(json_encode($response->viewData('page'), JSON_THROW_ON_ERROR), true, flags: JSON_THROW_ON_ERROR);
+
+    expect($page['onceProps']['lattice.i18n']['prop'] ?? null)->toBe('lattice.i18n');
+});
+
+it('omits the i18n config when the client already has the once prop', function () {
+    withoutVite();
+
+    $response = get('/');
+    $page = json_decode(json_encode($response->viewData('page'), JSON_THROW_ON_ERROR), true, flags: JSON_THROW_ON_ERROR);
+
+    $response = get('/', [
+        Header::INERTIA => 'true',
+        Header::VERSION => (string) ($page['version'] ?? ''),
+        Header::EXCEPT_ONCE_PROPS => 'lattice.i18n',
+    ]);
+
+    $response
+        ->assertOk()
+        ->assertJsonMissingPath('props.lattice.i18n');
+
+    expect($response->json('onceProps.lattice.i18n.prop'))->toBeNull()
+        ->and($response->json('onceProps')['lattice.i18n']['prop'] ?? null)->toBe('lattice.i18n');
 });
 
 it('serves the bundled English lattice namespace from the package lang dir', function () {
@@ -57,6 +85,21 @@ it('serves workbench translations from the workbench lang dir', function () {
         ->assertOk()
         ->assertJsonPath('pages.products.title', 'Produkte')
         ->assertJsonPath('forms.product.fields.name', 'Name');
+});
+
+it('localizes workbench page props and table column labels from the accept language header', function () {
+    withoutVite();
+
+    get('/products', ['Accept-Language' => 'de'])
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('lattice/page', false)
+            ->where('lattice.title', 'Produkte')
+            ->where('lattice.schema.0.schema.0.schema.0.props.text', 'Produkte')
+            ->where('lattice.schema.0.schema.1.props.columns.2.label', 'Preis')
+            ->where('lattice.schema.0.schema.1.props.columns.4.label', 'Hervorgehoben')
+            ->where('lattice.schema.0.schema.1.props.columns.5.label', 'Aktualisiert am'),
+        );
 });
 
 it('keeps workbench translation keys aligned between English and German', function () {

@@ -86,6 +86,11 @@ final readonly class ActionResult implements JsonSerializable
         return $this->effect(Effect::resetForm($form));
     }
 
+    public function localeChange(string $locale): self
+    {
+        return $this->effect(Effect::localeChange($locale));
+    }
+
     /**
      * @return array{ok: bool, data: array<string, mixed>, effects: array<int, AbstractEffect>}
      */

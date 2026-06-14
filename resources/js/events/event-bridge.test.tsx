@@ -44,6 +44,22 @@ describe("EventBridge", () => {
     expect(onAppearanceChange).toHaveBeenCalledWith("dark");
   });
 
+  it("passes locale change events to the host handler", () => {
+    const onLocaleChange = vi.fn<(locale: string) => void>();
+
+    render(<EventBridge onLocaleChange={onLocaleChange} />);
+
+    window.dispatchEvent(
+      new CustomEvent("lattice:locale-change", {
+        detail: {
+          locale: "de",
+        },
+      }),
+    );
+
+    expect(onLocaleChange).toHaveBeenCalledWith("de");
+  });
+
   it("ignores toast events without a message", () => {
     const onToast = vi.fn<(toast: ToastMessage) => void>();
 

@@ -46,13 +46,15 @@ test('action results expose the full effect vocabulary', function () {
         ->reloadPage()
         ->redirect('/dashboard')
         ->download('/exports/report.csv')
-        ->resetForm('teams.create');
+        ->resetForm('teams.create')
+        ->localeChange('de');
 
     expect(wire($result)['effects'])->toBe([
         ['type' => 'reloadPage'],
         ['type' => 'redirect', 'url' => '/dashboard'],
         ['type' => 'download', 'url' => '/exports/report.csv'],
         ['type' => 'resetForm', 'form' => 'teams.create'],
+        ['type' => 'localeChange', 'locale' => 'de'],
     ])
         ->and(wire(Effect::resetForm()))->toBe(['type' => 'resetForm', 'form' => null])
         ->and(wire(Effect::reloadPage()))->toBe(['type' => 'reloadPage']);

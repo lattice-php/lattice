@@ -124,6 +124,7 @@ describe("Lattice modal and fragment components", () => {
     expect(fetch).toHaveBeenCalledWith("/lattice/fragments/settings.two-factor-setup", {
       headers: {
         Accept: "application/json",
+        "Accept-Language": "en",
         "X-Lattice-Ref": "sealed-reference",
       },
     });

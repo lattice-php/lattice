@@ -16,4 +16,5 @@ enum EffectType: string
     case OpenModal = 'openModal';
     case CloseModal = 'closeModal';
     case ResetForm = 'resetForm';
+    case LocaleChange = 'localeChange';
 }

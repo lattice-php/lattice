@@ -13,6 +13,9 @@ describe("dispatchActionEffects", () => {
   afterEach(() => {
     router.reload.mockReset();
     router.visit.mockReset();
+    localStorage.clear();
+    document.cookie = "locale=;path=/;max-age=0";
+    document.documentElement.lang = "";
     vi.restoreAllMocks();
   });
 
@@ -80,6 +83,23 @@ describe("dispatchActionEffects", () => {
 
     expect(events).toEqual([]);
   });
+
+  it("applies locale change effects through the locale runtime", () => {
+    const locales: string[] = [];
+    const listener = (event: Event) => {
+      locales.push((event as CustomEvent<{ locale: string }>).detail.locale);
+    };
+
+    window.addEventListener(LATTICE_EVENT.localeChange, listener);
+
+    dispatchActionEffects([{ type: "localeChange", locale: "de" } as never]);
+
+    window.removeEventListener(LATTICE_EVENT.localeChange, listener);
+
+    expect(localStorage.getItem("locale")).toBe("de");
+    expect(document.documentElement.lang).toBe("de");
+    expect(locales).toEqual(["de"]);
+  });
 });
 
 describe("isActionEffect", () => {
@@ -93,6 +113,7 @@ describe("isActionEffect", () => {
       "openModal",
       "closeModal",
       "resetForm",
+      "localeChange",
     ]) {
       expect(isActionEffect({ type })).toBe(true);
     }

@@ -9,6 +9,7 @@ export type Appearance = (typeof appearances)[number];
 
 type EventBridgeProps = {
   onAppearanceChange?: (appearance: Appearance) => void;
+  onLocaleChange?: (locale: string) => void;
   onToast?: (toast: ToastMessage) => void;
 };
 
@@ -16,11 +17,15 @@ type AppearanceEvent = CustomEvent<{
   value?: unknown;
 }>;
 
+type LocaleEvent = CustomEvent<{
+  locale?: unknown;
+}>;
+
 function isAppearance(value: unknown): value is Appearance {
   return appearances.some((appearance) => appearance === value);
 }
 
-export function EventBridge({ onAppearanceChange, onToast }: EventBridgeProps) {
+export function EventBridge({ onAppearanceChange, onLocaleChange, onToast }: EventBridgeProps) {
   useEffect(() => {
     if (!onToast) {
       return;
@@ -48,6 +53,26 @@ export function EventBridge({ onAppearanceChange, onToast }: EventBridgeProps) {
       window.removeEventListener(LATTICE_EVENT.appearanceChange, listener);
     };
   }, [onAppearanceChange]);
+
+  useEffect(() => {
+    if (!onLocaleChange) {
+      return;
+    }
+
+    const listener = (event: Event): void => {
+      const locale = (event as LocaleEvent).detail?.locale;
+
+      if (typeof locale === "string" && locale !== "") {
+        onLocaleChange(locale);
+      }
+    };
+
+    window.addEventListener(LATTICE_EVENT.localeChange, listener);
+
+    return () => {
+      window.removeEventListener(LATTICE_EVENT.localeChange, listener);
+    };
+  }, [onLocaleChange]);
 
   return null;
 }

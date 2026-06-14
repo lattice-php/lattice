@@ -4,7 +4,7 @@
  * CSRF header, component-ref header, and request shape live here in one place.
  */
 
-import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { ROW_ID_KEY } from "./fields/repeater-rows";
 
 export const FORM_DEBOUNCE_MS = 250;
@@ -46,13 +46,12 @@ export function postFormAction<T>(
     method: "POST",
     credentials: "same-origin",
     signal,
-    headers: {
+    headers: withHeaders(componentRef, {
       "Content-Type": "application/json",
       Accept: "application/json",
       "X-Requested-With": "XMLHttpRequest",
       "X-XSRF-TOKEN": xsrfToken(),
-      ...withRefHeader(componentRef),
-    },
+    }),
     body: JSON.stringify(scrubFormPayload(body)),
   }).then((response) => (response.ok ? (response.json() as Promise<T>) : null));
 }

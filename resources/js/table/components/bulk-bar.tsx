@@ -7,7 +7,7 @@ import {
   getActionEffects,
 } from "@lattice-php/lattice/action/effects";
 import type { ActionResponse } from "@lattice-php/lattice/action/effects";
-import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { Button } from "@lattice-php/lattice/core/components/button";
 import { ConfirmDialog } from "@lattice-php/lattice/core/components/confirm-dialog";
 import { Spinner } from "@lattice-php/lattice/core/components/spinner";
@@ -55,7 +55,7 @@ export function BulkBar({
       }));
 
       const response = await http[action.method](action.endpoint, {
-        headers: withRefHeader(action.ref ?? ""),
+        headers: withHeaders(action.ref ?? ""),
       });
 
       dispatchActionEffects(getActionEffects(response.effects));

@@ -32,7 +32,7 @@ it('generates the flat TablePagination wire shape', function () {
 it('generates the I18nConfig wire shape', function () {
     expect(generatedModule())
         ->toContain('export type I18nConfig = {')
-        ->toMatch('/export type I18nConfig = \{\s*readonly enabled: boolean;\s*readonly saveMissing: boolean;\s*\};/');
+        ->toMatch('/export type I18nConfig = \{\s*readonly enabled: boolean;\s*readonly saveMissing: boolean;\s*readonly locales: string\[\];\s*\};/');
 });
 
 it('generates the RowAction wire shape and its type enum', function () {

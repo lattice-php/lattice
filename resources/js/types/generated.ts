@@ -323,6 +323,9 @@ export type Effect =
       type: "download";
     } & DownloadEffect)
   | ({
+      type: "localeChange";
+    } & LocaleChangeEffect)
+  | ({
       type: "openModal";
     } & OpenModalEffect)
   | ({
@@ -348,7 +351,8 @@ export type EffectType =
   | "download"
   | "openModal"
   | "closeModal"
-  | "resetForm";
+  | "resetForm"
+  | "localeChange";
 export type FileUpload = {
   accept: string | null;
   columnWidth: ColumnWidth;
@@ -530,6 +534,7 @@ export type HttpMethod = import("@inertiajs/core").Method;
 export type I18nConfig = {
   readonly enabled: boolean;
   readonly saveMissing: boolean;
+  readonly locales: string[];
 };
 export type Icon = {
   class: string | null;
@@ -587,6 +592,9 @@ export type Link = {
   label: string;
   method: HttpMethod | null;
   tabIndex: number | null;
+};
+export type LocaleChangeEffect = {
+  readonly locale: string;
 };
 export type Menu = Record<string, never>;
 export type MenuItem = {

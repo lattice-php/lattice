@@ -1,4 +1,4 @@
-import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getColumns, getPagination, getRows, getState } from "./payload";
@@ -37,10 +37,9 @@ export function useTable(node: TableNode) {
 
       try {
         const response = await fetch(buildEndpoint(endpoint, nextState), {
-          headers: {
+          headers: withHeaders(componentRef, {
             Accept: "application/json",
-            ...withRefHeader(componentRef),
-          },
+          }),
         });
         const result = (await response.json()) as TableResponse;
         const resultState = getState(result.state);

@@ -1,6 +1,8 @@
 import type { I18nConfig } from "@lattice-php/lattice/types/generated";
 import HttpBackend from "i18next-http-backend";
+import { setConfig } from "./config";
 import { ensureI18n, i18n } from "./instance";
+import { localeHeader } from "./locale";
 
 /** The i18n settings the backend shares to the frontend (Inertia `lattice.i18n`). */
 export type { I18nConfig };
@@ -29,6 +31,8 @@ export async function configureI18n(
   config: I18nConfig | undefined,
   options: ConfigureI18nOptions = {},
 ): Promise<void> {
+  setConfig(config);
+
   if (!config?.enabled) {
     await ensureI18n((base) => ({
       ...base,
@@ -56,6 +60,11 @@ export async function enableBackend(options: BackendOptions = {}): Promise<void>
     customHeaders,
   } = options;
 
+  const customHeadersWithLocale = (): Record<string, string> => ({
+    ...localeHeader(),
+    ...customHeaders?.(),
+  });
+
   i18n.use(HttpBackend);
 
   await ensureI18n((base) => ({
@@ -63,6 +72,6 @@ export async function enableBackend(options: BackendOptions = {}): Promise<void>
     ns: namespaces ?? base.ns,
     partialBundledLanguages: true,
     saveMissing,
-    backend: { loadPath, addPath, customHeaders, withCredentials: true },
+    backend: { loadPath, addPath, customHeaders: customHeadersWithLocale, withCredentials: true },
   }));
 }

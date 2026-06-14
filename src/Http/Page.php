@@ -68,7 +68,7 @@ abstract class Page implements PageContract
     }
 
     /**
-     * @return array{title: string|null, layout: array{key: string, schema: array<int, array<string, mixed>>}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, schema: array<int, array<string, mixed>>, i18n: I18nConfig}
+     * @return array{title: string|null, layout: array{key: string, schema: array<int, array<string, mixed>>}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, schema: array<int, array<string, mixed>>}
      */
     public function toArray(PageSchema $schema, Request $request): array
     {
@@ -80,7 +80,6 @@ abstract class Page implements PageContract
             'container' => $this->serializePageMetadata($metadata->container),
             'breadcrumbs' => $this->breadcrumbs(),
             'schema' => $this->serializeSchema($schema),
-            'i18n' => $this->i18nConfig(),
         ];
     }
 
@@ -119,11 +118,6 @@ abstract class Page implements PageContract
     private function serializeSchema(PageSchema $schema): array
     {
         return json_decode(json_encode($schema->renderable(), JSON_THROW_ON_ERROR), true);
-    }
-
-    private function i18nConfig(): I18nConfig
-    {
-        return I18nConfig::fromConfig();
     }
 
     private function response(PageSchema $schema): Response

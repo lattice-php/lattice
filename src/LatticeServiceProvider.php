@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace Lattice\Lattice;
 
 use BackedEnum;
+use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 use Inertia\ResponseFactory;
@@ -22,6 +25,7 @@ use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentRegistry;
+use Lattice\Lattice\Http\Middleware\SetLocale;
 use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Pages\PageRegistry;
 use Lattice\Lattice\Support\Evaluation\Evaluator;
@@ -79,6 +83,14 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        EncryptCookies::except('locale');
+
+        $this->callAfterResolving(Kernel::class, function (Kernel $kernel): void {
+            if ($kernel instanceof HttpKernel) {
+                $kernel->appendMiddlewareToGroup('web', SetLocale::class);
+            }
+        });
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__.'/../stubs/lattice/plugin.ts' => resource_path('js/lattice/plugin.ts'),

@@ -93,7 +93,7 @@ describe("Lattice form schema components", () => {
     expect(document.querySelector("form")).toHaveAttribute("action", "/lattice/forms/teams.update");
     expect(document.querySelector("form")).toHaveAttribute(
       "data-headers",
-      JSON.stringify({ "X-Lattice-Ref": "sealed-reference" }),
+      JSON.stringify({ "Accept-Language": "en", "X-Lattice-Ref": "sealed-reference" }),
     );
   });
 

@@ -16,6 +16,10 @@ return [
         'url_ttl' => 5,
     ],
 
+    'i18n' => [
+        'locales' => ['en'],
+    ],
+
     'forms' => [
         'endpoint' => 'lattice/forms/{form}',
         'middleware' => ['web', 'auth'],

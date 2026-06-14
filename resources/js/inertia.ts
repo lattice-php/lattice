@@ -1,5 +1,6 @@
-import type { Page as InertiaPage } from "@inertiajs/core";
+import type { Page as InertiaPage, VisitOptions } from "@inertiajs/core";
 import type { ResolvedComponent } from "@inertiajs/react";
+import { withHeaders } from "./core/headers";
 import { SchemaLayout } from "./layout";
 import Page from "./page";
 import type { PagePayload } from "./core/types";
@@ -41,5 +42,12 @@ export function createLayoutResolver({ defaultLayout }: CreateLayoutResolverOpti
     }
 
     return defaultLayout?.(name, page) ?? null;
+  };
+}
+
+export function withVisitHeaders(_href: string, options: VisitOptions): VisitOptions {
+  return {
+    ...options,
+    headers: withHeaders("", options.headers),
   };
 }
