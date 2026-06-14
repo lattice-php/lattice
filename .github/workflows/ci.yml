@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -14,7 +15,7 @@ concurrency:
 
 jobs:
   js:
-    name: JS (lint, format, typecheck, vitest, build)
+    name: JS (lint, format, typecheck, type coverage, vitest, build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -32,7 +33,19 @@ jobs:
 
       - run: npm run typecheck
 
-      - run: npm test
+      - run: npm run type-coverage
+
+      - run: npm run test:coverage
+
+      - name: Upload Vitest coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          files: coverage_vitest/lcov.info
+          flags: vitest
+          name: vitest
+          disable_search: true
+          fail_ci_if_error: true
 
       - run: npm run build:lib
 
@@ -42,14 +55,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ["8.4", "8.5"]
+        include:
+          - php-version: "8.4"
+            coverage: pcov
+          - php-version: "8.5"
+            coverage: none
     steps:
       - uses: actions/checkout@v6
 
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          coverage: none
+          coverage: ${{ matrix.coverage }}
           tools: composer:v2
 
       - uses: actions/setup-node@v6
@@ -77,8 +94,24 @@ jobs:
       - name: PHPStan
         run: composer analyse
 
-      - name: Pest
-        run: composer test
+      - name: Pest (parallel)
+        if: ${{ matrix.php-version != '8.4' }}
+        run: composer test:parallel
+
+      - name: Pest with coverage
+        if: ${{ matrix.php-version == '8.4' }}
+        run: composer test:coverage
+
+      - name: Upload Pest coverage to Codecov
+        if: ${{ matrix.php-version == '8.4' }}
+        uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          files: coverage_phpunit/clover.xml
+          flags: pest
+          name: pest
+          disable_search: true
+          fail_ci_if_error: true
 
       - name: Generated TypeScript types are up to date
         run: |
@@ -129,7 +162,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.4"
-          coverage: none
+          coverage: pcov
           tools: composer:v2
 
       - uses: actions/setup-node@v6
@@ -156,8 +189,18 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Pest (browser)
-        run: composer test:browser
+      - name: Pest (browser coverage)
+        run: composer test:browser:coverage
+
+      - name: Upload Pest browser coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          files: coverage_phpunit/browser-clover.xml
+          flags: pest
+          name: pest-browser
+          disable_search: true
+          fail_ci_if_error: true
 
       - name: Upload browser screenshots on failure
         if: failure()

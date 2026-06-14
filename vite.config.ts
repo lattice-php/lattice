@@ -180,6 +180,20 @@ export default defineConfig(({ mode }) => {
       environment: "jsdom",
       include: ["resources/js/**/*.test.{ts,tsx}", "docs/**/*.test.{ts,tsx}"],
       setupFiles: ["resources/js/test/setup.ts"],
+      coverage: {
+        provider: "v8",
+        reportsDirectory: "coverage_vitest",
+        reporter: ["text", "lcov"],
+        include: ["resources/js/**/*.{ts,tsx}"],
+        exclude: [
+          "resources/js/**/*.d.ts",
+          "resources/js/**/*.test.{ts,tsx}",
+          "resources/js/**/*.test-d.{ts,tsx}",
+          "resources/js/test/**",
+          "resources/js/test-support.ts",
+          "resources/js/types/**",
+        ],
+      },
     },
   };
 });

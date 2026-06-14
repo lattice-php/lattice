@@ -4,6 +4,8 @@ declare(strict_types=1);
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\ParallelTesting;
 use Illuminate\Testing\TestResponse;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Tests\TestCase;
@@ -69,6 +71,44 @@ function wire(mixed $value): array
 function fixturePath(string $name): string
 {
     return __DIR__.'/Fixtures/'.$name;
+}
+
+/**
+ * @template TReturn
+ *
+ * @param  Closure(string): TReturn  $callback
+ * @return TReturn
+ */
+function withScaffoldWorkspace(Closure $callback): mixed
+{
+    $token = ParallelTesting::token() ?: 'default';
+    $basePath = sys_get_temp_dir().'/lattice-package-tests/scaffold/test_'.$token;
+    $originalBasePath = app()->basePath();
+    $originalAppPath = app()->path();
+    $originalDiscover = config('lattice.discover');
+    $originalTypescriptOutput = config('lattice.typescript.output');
+
+    try {
+        File::deleteDirectory($basePath);
+        app()->setBasePath($basePath);
+        app()->useAppPath($basePath.'/app');
+
+        config()->set('lattice.discover', [$basePath.'/app']);
+        config()->set('lattice.typescript.output', $basePath.'/resources/js/lattice/generated.d.ts');
+
+        File::ensureDirectoryExists($basePath.'/app');
+        File::ensureDirectoryExists($basePath.'/resources/js/lattice');
+
+        return $callback($basePath);
+    } finally {
+        app()->setBasePath($originalBasePath);
+        app()->useAppPath($originalAppPath);
+
+        config()->set('lattice.discover', $originalDiscover);
+        config()->set('lattice.typescript.output', $originalTypescriptOutput);
+
+        File::deleteDirectory($basePath);
+    }
 }
 
 /**
