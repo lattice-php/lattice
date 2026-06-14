@@ -12,6 +12,7 @@ export type Action = {
 };
 export type ActionGroup = {
   label: string;
+  orientation: Orientation | null;
   ref: string | null;
 };
 export type ActionNode =

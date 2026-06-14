@@ -8,6 +8,7 @@ use Lattice\Lattice\Actions\Effect;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Icon;
+use Lattice\Lattice\Core\Enums\Orientation;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Workbench\App\Actions\ArchiveProductAction;
@@ -109,6 +110,24 @@ it('serializes the action group wire shape', function (): void {
     expect($payload['props']['ref'])->toBeNull();
     expect($payload['schema'])->toHaveCount(1);
     expect($payload['schema'][0]['type'])->toBe('action');
+});
+
+it('serializes an inline action group orientation', function (): void {
+    $group = ActionGroup::make('locale-switcher')
+        ->label('Language')
+        ->inline(Orientation::Horizontal)
+        ->actions([
+            Action::make('locale-en')->label('English'),
+            Action::make('locale-de')->label('German'),
+        ]);
+
+    $payload = wire($group);
+
+    expect($payload['props'])->toMatchArray([
+        'label' => 'Language',
+        'orientation' => 'horizontal',
+    ]);
+    expect($payload['schema'])->toHaveCount(2);
 });
 
 it('carries typed props through Action::use from the registry', function (): void {

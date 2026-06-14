@@ -83,7 +83,8 @@ Badge::make('Trialing');
   `Link` (see [`ButtonVariant`](/advanced/enums/)).
 - **`Link::make($label)->href($url)`** — a navigational link.
 - **`SegmentedControl::make($name)`** — a segmented option control that emits an event on change.
-- **`ActionGroup`** — groups several [actions](/actions/overview/) behind one trigger.
+- **`ActionGroup`** — groups several [actions](/actions/overview/) behind one trigger, or inline with
+  `->inline()`.
 
 ```php
 Button::make('Save')->variant(ButtonVariant::Default);

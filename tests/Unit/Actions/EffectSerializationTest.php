@@ -81,6 +81,7 @@ test('action groups serialize grouped child actions', function () {
             'id' => 'workbench.user-actions',
             'props' => [
                 'label' => 'Manage user',
+                'orientation' => null,
                 'ref' => null,
             ],
             'schema' => [

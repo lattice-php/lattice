@@ -5,12 +5,15 @@ namespace Workbench\App\Layouts;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Lattice\Actions\Components\ActionGroup;
 use Lattice\Lattice\Attributes\Layout;
 use Lattice\Lattice\Core\Components\RawBlock;
 use Lattice\Lattice\Core\Components\Stack;
+use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Core\Enums\Justify;
+use Lattice\Lattice\Core\Enums\Orientation;
 use Lattice\Lattice\Core\Enums\Placement;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
@@ -73,14 +76,21 @@ final class AppLayout extends LayoutDefinition
                                     ])
                                     ->items([
                                         MenuItem::make(__('workbench.language.label'), 'language'),
-                                        ActionComponent::use(SetLocaleAction::class)
-                                            ->key('locale-en')
-                                            ->label(__('workbench.language.en'))
-                                            ->context(['locale' => 'en']),
-                                        ActionComponent::use(SetLocaleAction::class)
-                                            ->key('locale-de')
-                                            ->label(__('workbench.language.de'))
-                                            ->context(['locale' => 'de']),
+                                        ActionGroup::make('locale-switcher')
+                                            ->label(__('workbench.language.label'))
+                                            ->inline(Orientation::Horizontal)
+                                            ->actions([
+                                                ActionComponent::use(SetLocaleAction::class)
+                                                    ->key('locale-en')
+                                                    ->label(__('workbench.language.en'))
+                                                    ->variant(app()->getLocale() === 'en' ? ButtonVariant::Secondary : ButtonVariant::Ghost)
+                                                    ->context(['locale' => 'en']),
+                                                ActionComponent::use(SetLocaleAction::class)
+                                                    ->key('locale-de')
+                                                    ->label(__('workbench.language.de'))
+                                                    ->variant(app()->getLocale() === 'de' ? ButtonVariant::Secondary : ButtonVariant::Ghost)
+                                                    ->context(['locale' => 'de']),
+                                            ]),
                                         MenuItem::make(__('workbench.navigation.log-out'), 'log-out')->href('/logout')->method(HttpMethod::Post),
                                     ]),
                             ]),
