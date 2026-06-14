@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Inertia\Testing\AssertableInertia;
+use Illuminate\Http\Request;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\BusinessPartnerForm;
@@ -99,19 +99,21 @@ test('the business partner form updates default address FKs', function (): void 
 });
 
 test('the business partner edit page renders the effective prices panel', function (): void {
-    withoutVite();
-    $this->actingAs(workbenchTestUser());
+    Lattice::forms([BusinessPartnerForm::class]);
 
     $partner = BusinessPartner::factory()->create();
     $product = Product::factory()->create(['name' => 'Widget Pro']);
     SalesPrice::factory()->create(['product_id' => $product->getKey(), 'group_id' => null, 'amount' => '99.00']);
 
-    get("/business-partners/{$partner->getKey()}/edit")
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('lattice/page', false)
-            ->where('lattice.schema.0.schema.1.props.state.name', $partner->name)
-        );
+    $formDef = new BusinessPartnerForm;
+    $request = Request::create('/test', 'GET', [
+        'context' => ['business_partner_id' => $partner->getKey()],
+    ]);
+
+    $schema = wire($formDef->definition(Form::make('workbench.business-partners.form'), $request))['schema'];
+
+    expect($schema[1]['props']['title'])->toBe('Effective prices');
+    expect($schema[1]['schema'][0]['props']['text'])->toBe('Widget Pro: 99.00');
 });
 
 test('the business partner form deletes removed addresses', function (): void {
@@ -144,4 +146,38 @@ test('the business partner form deletes removed addresses', function (): void {
 
     expect($partner->addresses()->count())->toBe(1);
     expect(Address::query()->find($remove->getKey()))->toBeNull();
+});
+
+test('removing the default shipping address nulls the FK on the partner', function (): void {
+    Lattice::forms([BusinessPartnerForm::class]);
+
+    $partner = BusinessPartner::factory()->create();
+    $shipping = Address::factory()->create(['business_partner_id' => $partner->getKey()]);
+    $other = Address::factory()->create(['business_partner_id' => $partner->getKey()]);
+
+    $partner->update(['default_shipping_address_id' => $shipping->getKey()]);
+
+    $form = wire(Form::use(BusinessPartnerForm::class)
+        ->context(['business_partner_id' => $partner->getKey()]));
+
+    patch('/lattice/forms/workbench.business-partners.form', [
+        'name' => $partner->name,
+        'email' => $partner->email,
+        'groups' => [],
+        'addresses' => [
+            [
+                'id' => (string) $other->getKey(),
+                'label' => $other->label,
+                'line1' => $other->line1,
+                'line2' => $other->line2,
+                'city' => $other->city,
+                'postal_code' => $other->postal_code,
+                'country' => $other->country,
+            ],
+        ],
+    ], ['X-Lattice-Ref' => componentRef($form)])
+        ->assertRedirect('/business-partners');
+
+    $partner->refresh();
+    expect($partner->default_shipping_address_id)->toBeNull();
 });
