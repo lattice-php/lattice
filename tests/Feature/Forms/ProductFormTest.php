@@ -2,16 +2,19 @@
 declare(strict_types=1);
 
 use Inertia\Testing\AssertableInertia;
+use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Support\Testing\Assertions\FormAssertions;
 use Symfony\Component\HttpFoundation\Response;
+use Workbench\App\Actions\EditProductAction;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\patch;
+use function Pest\Laravel\patchJson;
 use function Pest\Laravel\post;
 use function Pest\Laravel\withoutVite;
 
@@ -279,4 +282,110 @@ test('the product form validates edit uniqueness from sealed context during prec
 
     expect($trustedProduct->sku)->toBe('LAMP-001')
         ->and($trustedProduct->status)->toBe('draft');
+});
+
+test('the product form create rejects two default sales prices', function () {
+    Lattice::forms([ProductForm::class]);
+
+    $form = wire(Form::use(ProductForm::class));
+
+    post('/lattice/forms/workbench.products.form', [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => '49.99'],
+            ['group_id' => '', 'amount' => '59.99'],
+        ],
+    ], productHeaders($form))
+        ->assertSessionHasErrors(['sales_prices']);
+
+    expect(Product::query()->count())->toBe(0);
+});
+
+test('the product form update rejects two default sales prices', function () {
+    Lattice::forms([ProductForm::class]);
+
+    $product = Product::factory()->withoutDefaultPrice()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+    ]);
+    $product->salesPrices()->create(['group_id' => null, 'amount' => '49.99']);
+
+    $form = wire(Form::use(ProductForm::class)
+        ->context(['product_id' => $product->getKey()]));
+
+    patch('/lattice/forms/workbench.products.form', [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => '49.99'],
+            ['group_id' => '', 'amount' => '59.99'],
+        ],
+    ], productHeaders($form))
+        ->assertSessionHasErrors(['sales_prices']);
+
+    expect($product->salesPrices()->whereNull('group_id')->count())->toBeLessThanOrEqual(1);
+});
+
+test('the edit product action syncs sales prices', function () {
+    Lattice::actions([EditProductAction::class]);
+
+    $product = Product::factory()->withoutDefaultPrice()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+    ]);
+
+    $ref = componentRef(
+        wire(Action::use(EditProductAction::class)
+            ->context(['product_id' => $product->getKey()])),
+    );
+
+    patchJson('/lattice/actions/workbench.products.edit-modal', [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+        'related_products' => [],
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => '79.99'],
+        ],
+    ], ['X-Lattice-Ref' => $ref])
+        ->assertOk();
+
+    expect($product->salesPrices()->whereNull('group_id')->count())->toBe(1)
+        ->and($product->salesPrices()->whereNull('group_id')->first()->amount)->toBe('79.99');
+});
+
+test('the edit product action rejects two default sales prices with a 422', function () {
+    Lattice::actions([EditProductAction::class]);
+
+    $product = Product::factory()->withoutDefaultPrice()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+    ]);
+    $product->salesPrices()->create(['group_id' => null, 'amount' => '49.99']);
+
+    $ref = componentRef(
+        wire(Action::use(EditProductAction::class)
+            ->context(['product_id' => $product->getKey()])),
+    );
+
+    patchJson('/lattice/actions/workbench.products.edit-modal', [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+        'related_products' => [],
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => '49.99'],
+            ['group_id' => '', 'amount' => '59.99'],
+        ],
+    ], ['X-Lattice-Ref' => $ref])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['sales_prices']);
+
+    expect($product->salesPrices()->whereNull('group_id')->count())->toBe(1);
 });

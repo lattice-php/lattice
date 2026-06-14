@@ -63,14 +63,7 @@ class EditProductAction extends FormActionDefinition
             Product::query()->whereIn('id', $relatedIds)->pluck('id')->all(),
         );
 
-        $product->salesPrices()->delete();
-
-        foreach ($priceRows as $row) {
-            $product->salesPrices()->create([
-                'group_id' => ($row['group_id'] ?? '') === '' ? null : (int) $row['group_id'],
-                'amount' => $row['amount'],
-            ]);
-        }
+        app(ProductForm::class)->syncSalesPrices($product, $priceRows);
 
         return ActionResult::success(['id' => $product->getKey()])
             ->toast(

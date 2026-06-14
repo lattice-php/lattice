@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Lattice\Lattice\Attributes\Form;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Option;
@@ -77,37 +79,44 @@ class ProductForm extends FormDefinition
         $priceRows = $validated['sales_prices'] ?? [];
         unset($validated['related_products'], $validated['sales_prices']);
 
+        DB::transaction(function () use ($product, $validated, $relatedIds, $priceRows): void {
+            if (! $product instanceof Product) {
+                $product = Product::query()->create($validated);
+            } else {
+                $product->update($validated);
+            }
+
+            $product->relatedProducts()->sync(
+                Product::query()->whereIn('id', $relatedIds)->pluck('id')->all(),
+            );
+
+            $this->syncSalesPrices($product, $priceRows);
+        });
+
+        return redirect('/products');
+    }
+
+    /**
+     * Validates the single-default invariant and replaces the product's sales prices.
+     * Throws a ValidationException when more than one row has an empty/null group_id.
+     *
+     * @param  array<int, array{group_id?: string|null, amount: string}>  $priceRows
+     *
+     * @throws ValidationException
+     */
+    public function syncSalesPrices(Product $product, array $priceRows): void
+    {
         $defaults = array_filter(
             $priceRows,
             static fn (array $row): bool => ($row['group_id'] ?? '') === '' || ($row['group_id'] ?? null) === null,
         );
 
         if (count($defaults) > 1) {
-            return back()->withErrors([
+            throw ValidationException::withMessages([
                 'sales_prices' => __('workbench.forms.product.sales-prices.single-default'),
             ]);
         }
 
-        if (! $product instanceof Product) {
-            $product = Product::query()->create($validated);
-        } else {
-            $product->update($validated);
-        }
-
-        $product->relatedProducts()->sync(
-            Product::query()->whereIn('id', $relatedIds)->pluck('id')->all(),
-        );
-
-        $this->syncSalesPrices($product, $priceRows);
-
-        return redirect('/products');
-    }
-
-    /**
-     * @param  array<int, array{group_id?: string|null, amount: string}>  $priceRows
-     */
-    private function syncSalesPrices(Product $product, array $priceRows): void
-    {
         $product->salesPrices()->delete();
 
         foreach ($priceRows as $row) {
