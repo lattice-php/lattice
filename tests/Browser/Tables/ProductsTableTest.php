@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Workbench\App\Models\Product;
 
 it('renders the custom status-badge column cell', function (): void {
+    $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Badge Product', 'sku' => 'BADGE-1', 'status' => 'active']);
 
     visit('/products')
@@ -14,6 +15,7 @@ it('renders the custom status-badge column cell', function (): void {
 });
 
 it('archives a product via the row action with confirmation', function (): void {
+    $this->actingAs(workbenchTestUser());
     $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
     visit('/products')
@@ -28,6 +30,7 @@ it('archives a product via the row action with confirmation', function (): void 
 });
 
 it('cancels the archive confirmation without changing the product', function (): void {
+    $this->actingAs(workbenchTestUser());
     $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
     visit('/products')
@@ -40,6 +43,7 @@ it('cancels the archive confirmation without changing the product', function ():
 });
 
 it('rejects a product through a modal form', function (): void {
+    $this->actingAs(workbenchTestUser());
     $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
     visit('/products')
@@ -55,6 +59,7 @@ it('rejects a product through a modal form', function (): void {
 });
 
 it('archives selected products in bulk', function (): void {
+    $this->actingAs(workbenchTestUser());
     Product::factory()->count(3)->create(['status' => 'active']);
 
     visit('/products')
@@ -66,6 +71,7 @@ it('archives selected products in bulk', function (): void {
 });
 
 it('edits a product in a prefilled modal form', function (): void {
+    $this->actingAs(workbenchTestUser());
     Product::factory()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
@@ -86,6 +92,7 @@ it('edits a product in a prefilled modal form', function (): void {
 });
 
 it('searches products inside the reject modal form', function (): void {
+    $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-001', 'status' => 'active']);
     $replacement = Product::factory()->create(['name' => 'Walnut Desk', 'sku' => 'DESK-001', 'status' => 'active']);
 

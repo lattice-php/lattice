@@ -8,5 +8,5 @@ use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Http\Page as BasePage;
 
-#[Page(layout: PageLayout::App, container: PageContainer::Default, middleware: ['web'])]
+#[Page(layout: PageLayout::App, container: PageContainer::Default, middleware: ['web', 'auth'])]
 abstract class WorkbenchPage extends BasePage {}

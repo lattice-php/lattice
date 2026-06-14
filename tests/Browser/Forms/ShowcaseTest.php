@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Workbench\App\Models\Product;
 
 it('renders the form showcase with every field type', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/showcase')
         ->assertSee('Form Showcase')
         ->assertNoSmoke()
@@ -26,6 +27,7 @@ it('renders the form showcase with every field type', function (): void {
 });
 
 it('inserts a table and a details block into the rich editor', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/showcase')
         ->assertPresent('[aria-label="Insert table"]')
         ->assertPresent('[aria-label="Details"]')
@@ -41,6 +43,7 @@ it('inserts a table and a details block into the rich editor', function (): void
 });
 
 it('selects a static option from the select field', function (): void {
+    $this->actingAs(workbenchTestUser());
     $page = visit('/showcase');
 
     $page->assertSee('Pick a country')
@@ -52,6 +55,7 @@ it('selects a static option from the select field', function (): void {
 });
 
 it('searches and selects entities in a multiple select', function (): void {
+    $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Walnut Desk']);
     Product::factory()->create(['name' => 'Steel Lamp']);
 
@@ -69,6 +73,7 @@ it('searches and selects entities in a multiple select', function (): void {
 });
 
 it('runs conditional and computed behavior on the showcase', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/showcase')
         ->assertDontSee('Company')
         ->click('Business')

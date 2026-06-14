@@ -35,6 +35,7 @@ function waitForLatticeBrowserTestTranslation(string $file, string $key): mixed
 }
 
 it('dumps missing React lattice keys back into the package lang file', function (): void {
+    $this->actingAs(workbenchTestUser());
     $file = package_path('lang/en/lattice.php');
     $original = File::get($file);
     $translations = require $file;

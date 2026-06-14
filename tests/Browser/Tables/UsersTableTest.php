@@ -5,6 +5,7 @@ use Illuminate\Foundation\Auth\User;
 use Orchestra\Testbench\Factories\UserFactory;
 
 it('lists users with their columns', function (): void {
+    $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
     visit('/')
@@ -18,6 +19,7 @@ it('lists users with their columns', function (): void {
 });
 
 it('loads more users in the infinite table', function (): void {
+    $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
     visit('/')
@@ -28,6 +30,7 @@ it('loads more users in the infinite table', function (): void {
 });
 
 it('sorts and clears sorting', function (): void {
+    $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
     visit('/')
@@ -43,6 +46,7 @@ it('sorts and clears sorting', function (): void {
 });
 
 it('copies a cell value to the clipboard', function (): void {
+    $this->actingAs(workbenchTestUser());
     User::query()->delete();
     UserFactory::new()->create(['name' => 'Ada Lovelace', 'email' => 'ada@example.com']);
 
@@ -53,6 +57,7 @@ it('copies a cell value to the clipboard', function (): void {
 });
 
 it('persists resized column widths until the column keys change', function (): void {
+    $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
     $page = visit('/');
@@ -99,6 +104,7 @@ it('persists resized column widths until the column keys change', function (): v
 });
 
 it('reveals a reset control once columns are resized and clears them on click', function (): void {
+    $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
     $page = visit('/');

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 it('adds heterogeneous blocks and submits a typed payload', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/builder')
         ->assertSee('Builder Demo')
         ->assertSee('Line items')
@@ -20,6 +21,7 @@ it('adds heterogeneous blocks and submits a typed payload', function (): void {
 });
 
 it('surfaces a per-row required error for the active block', function (): void {
+    $this->actingAs(workbenchTestUser());
     visit('/builder')
         ->assertSee('Builder Demo')
         ->click('@builder-add')

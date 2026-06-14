@@ -38,6 +38,18 @@ return [
             'toast' => ':count Produkte abgelehnt: :reason',
         ],
     ],
+    'auth' => [
+        'login' => [
+            'description' => 'Verwende den vorbereiteten Account, um die Workbench zu öffnen.',
+            'email' => 'E-Mail',
+            'failed' => 'Diese Zugangsdaten passen nicht zum vorbereiteten Workbench-Benutzer.',
+            'heading' => 'Lattice Workbench',
+            'password' => 'Passwort',
+            'seeded-account' => 'workbench@example.com / password',
+            'submit' => 'Anmelden',
+            'title' => 'Anmelden',
+        ],
+    ],
     'common' => [
         'add-block' => 'Block hinzufügen',
         'add-line' => 'Zeile hinzufügen',

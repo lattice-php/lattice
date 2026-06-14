@@ -9,6 +9,7 @@ use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\Action;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
+use Workbench\App\Models\WorkbenchUser;
 
 #[Action('workbench.locale.set')]
 class SetLocaleAction extends ActionDefinition
@@ -28,6 +29,12 @@ class SetLocaleAction extends ActionDefinition
 
         if (! is_string($locale) || ! in_array($locale, $locales, true)) {
             return ActionResult::failure();
+        }
+
+        $user = $request->user();
+
+        if ($user instanceof WorkbenchUser) {
+            $user->forceFill(['locale' => $locale])->save();
         }
 
         return ActionResult::success()->localeChange($locale);

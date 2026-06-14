@@ -13,6 +13,7 @@ use Laravel\Boost\Install\SkillComposer;
 use Laravel\Boost\Support\Config;
 use Laravel\Roster\Roster;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
+use Workbench\App\Models\WorkbenchUser;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
@@ -28,6 +29,7 @@ class WorkbenchServiceProvider extends ServiceProvider
         config(['lattice.discover' => [
             package_path('workbench/app'),
         ]]);
+        config(['auth.providers.users.model' => WorkbenchUser::class]);
 
         $this->keepLatticeEndpointsPublic();
 

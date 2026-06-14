@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
 
-beforeEach(fn () => seedWorkbenchUsers());
-
 it('shows pagination modes in lazily loaded tabs', function (): void {
+    $this->actingAs(workbenchTestUser());
+    seedWorkbenchUsers();
+
     visit('/tables')
         ->assertSee('Pagination modes')
         ->assertSee('No pagination')
@@ -23,6 +24,9 @@ it('shows pagination modes in lazily loaded tabs', function (): void {
 });
 
 it('navigates between pages in table pagination mode', function (): void {
+    $this->actingAs(workbenchTestUser());
+    seedWorkbenchUsers();
+
     visit('/tables')
         ->click('@tab-table')
         ->assertSee('Showing 1-25 of 30')
@@ -34,6 +38,9 @@ it('navigates between pages in table pagination mode', function (): void {
 });
 
 it('loads more rows in infinite mode', function (): void {
+    $this->actingAs(workbenchTestUser());
+    seedWorkbenchUsers();
+
     visit('/tables')
         ->click('@tab-infinite')
         ->assertDontSee('Browser User 26')
@@ -43,6 +50,9 @@ it('loads more rows in infinite mode', function (): void {
 });
 
 it('keeps the sidebar user menu visible on infinite pagination pages', function (): void {
+    $this->actingAs(workbenchTestUser());
+    seedWorkbenchUsers();
+
     $page = visit('/tables');
 
     $page->resize(1280, 720)

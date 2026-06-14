@@ -20,6 +20,7 @@ function seedFilterProducts(): void
 }
 
 it('narrows rows with the ternary featured filter and restores them via reset', function (): void {
+    $this->actingAs(workbenchTestUser());
     seedFilterProducts();
 
     visit('/products')
@@ -34,6 +35,7 @@ it('narrows rows with the ternary featured filter and restores them via reset', 
 });
 
 it('narrows rows with a custom toggle filter', function (): void {
+    $this->actingAs(workbenchTestUser());
     seedFilterProducts();
 
     visit('/products')
@@ -44,6 +46,7 @@ it('narrows rows with a custom toggle filter', function (): void {
 });
 
 it('narrows rows with the multi-select status filter', function (): void {
+    $this->actingAs(workbenchTestUser());
     seedFilterProducts();
 
     visit('/products')

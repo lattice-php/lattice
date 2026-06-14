@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Workbench\App\Models\Product;
 
 it('prefills computed prices, keeps manual edits, and re-prices untouched rows', function (): void {
+    $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Alpha Chair', 'price' => 100.00]);
     Product::factory()->create(['name' => 'Beta Table', 'price' => 200.00]);
     Product::factory()->create(['name' => 'Gamma Shelf', 'price' => 300.00]);
@@ -38,6 +39,7 @@ it('prefills computed prices, keeps manual edits, and re-prices untouched rows',
 });
 
 it('evaluates row field visibility against same-row siblings', function (): void {
+    $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Alpha Chair', 'price' => 100.00]);
 
     visit('/builder-pricing')
@@ -57,6 +59,7 @@ it('evaluates row field visibility against same-row siblings', function (): void
 });
 
 it('searches products inside a builder row select', function (): void {
+    $this->actingAs(workbenchTestUser());
     foreach (range(1, 20) as $number) {
         Product::factory()->create(['name' => sprintf('Alpha Product %02d', $number), 'price' => 10.00]);
     }
