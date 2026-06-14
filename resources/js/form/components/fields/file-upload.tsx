@@ -39,7 +39,7 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
   const scope = useFieldScope();
   const domName = scope ? scope.scopedName(name) : name;
   const errorKey = scope ? scope.errorKey(name) : name;
-  const uploadKey = scope ? scope.errorKey(name) : name;
+  const uploadKey = errorKey;
   const values = useFormValues();
   const inputId = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -218,20 +218,10 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
               {item.status === "error" && (
                 <span className="text-lt-danger">{t("file-upload.failed", "Failed")}</span>
               )}
-              {!item.existing && (
+              {(!item.existing || !scope) && (
                 <button
                   aria-label={t("file-upload.remove", "Remove {{name}}", { name: item.name })}
-                  disabled={locked}
-                  onClick={() => removeItem(item.id)}
-                  type="button"
-                >
-                  {t("file-upload.remove-label", "Remove")}
-                </button>
-              )}
-              {item.existing && !scope && (
-                <button
-                  aria-label={t("file-upload.remove", "Remove {{name}}", { name: item.name })}
-                  data-test={testIdentity(`${name}-remove-existing`)}
+                  data-test={item.existing ? testIdentity(`${name}-remove-existing`) : undefined}
                   disabled={locked}
                   onClick={() => removeItem(item.id)}
                   type="button"
@@ -256,35 +246,23 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
             <input key={token} name={`${name}__removed[]`} type="hidden" value={token} />
           ))}
 
-        {signed ? (
-          <input
-            accept={props.accept ?? undefined}
-            aria-label={props.label ?? name}
-            className="sr-only"
-            data-test={testIdentity(`${name}-input`)}
-            id={inputId}
-            multiple={multiple}
-            onChange={(event) => {
-              addFiles(event.target.files);
+        <input
+          accept={props.accept ?? undefined}
+          aria-label={props.label ?? name}
+          className="sr-only"
+          data-test={testIdentity(`${name}-input`)}
+          id={inputId}
+          multiple={multiple}
+          name={signed ? undefined : fieldName}
+          onChange={(event) => {
+            addFiles(event.target.files);
+            if (signed) {
               event.target.value = "";
-            }}
-            ref={fileInputRef}
-            type="file"
-          />
-        ) : (
-          <input
-            accept={props.accept ?? undefined}
-            aria-label={props.label ?? name}
-            className="sr-only"
-            data-test={testIdentity(`${name}-input`)}
-            id={inputId}
-            multiple={multiple}
-            name={fieldName}
-            onChange={(event) => addFiles(event.target.files)}
-            ref={fileInputRef}
-            type="file"
-          />
-        )}
+            }
+          }}
+          ref={fileInputRef}
+          type="file"
+        />
       </div>
     </FormFieldFrame>
   );

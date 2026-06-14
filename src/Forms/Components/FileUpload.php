@@ -162,11 +162,6 @@ class FileUpload extends Field
         return ["{$this->name()}.*" => [$this->itemRule()]];
     }
 
-    public function castValue(mixed $value): mixed
-    {
-        return $value;
-    }
-
     public function prefill(mixed $value): void
     {
         $paths = array_values(array_filter(
