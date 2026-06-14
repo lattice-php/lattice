@@ -3,7 +3,7 @@ import * as Toast from "@radix-ui/react-toast";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
-import type { ToastMessage, ToastVariant } from "@lattice-php/lattice/types/generated";
+import type { ToastMessage, Variant } from "@lattice-php/lattice/types/generated";
 import { onToast } from "@lattice-php/lattice/toast/toast";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
@@ -11,7 +11,7 @@ import { useRegistry } from "@lattice-php/lattice/provider";
 
 type ToastItem = ToastMessage & { id: number };
 
-const variantStyles: Record<ToastVariant, { accent: string; icon: ReactNode }> = {
+const variantStyles: Record<Variant, { accent: string; icon: ReactNode }> = {
   success: {
     accent: "border-l-lt-success",
     icon: <Icon name="circle-check" className="size-lt-icon-lg shrink-0 text-lt-success" />,

@@ -7,12 +7,12 @@ use Lattice\Lattice\Actions\Components\ActionGroup;
 use Lattice\Lattice\Actions\Effect;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\ToastMessage;
 
 test('a toast serializes its lifetime, dismissibility and link', function () {
     $wire = wire(Effect::toast(
-        ToastMessage::make(ToastVariant::Success, 'Saved.')
+        ToastMessage::make(Variant::Success, 'Saved.')
             ->duration(8000)
             ->dismissible(false)
             ->link('Undo', '/undo', HttpMethod::Patch),
@@ -30,7 +30,7 @@ test('a toast serializes its lifetime, dismissibility and link', function () {
 
 test('a toast can carry an action component', function () {
     $wire = wire(Effect::toast(
-        ToastMessage::make(ToastVariant::Info, 'Done.')
+        ToastMessage::make(Variant::Info, 'Done.')
             ->persistent()
             ->action(ActionComponent::make('demo.toast-action')->endpoint('/x')->label('Open')),
     ));

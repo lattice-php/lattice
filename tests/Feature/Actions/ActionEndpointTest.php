@@ -8,7 +8,7 @@ use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Effect;
 use Lattice\Lattice\Core\Concerns\CreatesToastMessages;
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\ToastMessage;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
@@ -95,7 +95,7 @@ test('registered actions can return a locale change effect', function () {
 test('toast messages serialize for flash data and action effects', function () {
     Route::get('toast-target', fn () => 'ok')->name('toast.target');
 
-    $response = WorkbenchToastFactory::flashToast(ToastVariant::Warning, 'Review the settings.')
+    $response = WorkbenchToastFactory::flashToast(Variant::Warning, 'Review the settings.')
         ->toRoute('toast.target');
     $flashedToast = session()->get(SessionKey::FLASH_DATA, [])['toast'] ?? null;
 
@@ -115,7 +115,7 @@ test('toast messages serialize for flash data and action effects', function () {
             'dismissible' => true,
             'action' => null,
         ])
-        ->and(wire(Effect::toast(ToastVariant::Warning, 'Review the settings.')))
+        ->and(wire(Effect::toast(Variant::Warning, 'Review the settings.')))
         ->toBe([
             'type' => 'toast',
             'toast' => [
@@ -143,7 +143,7 @@ test('toast messages serialize for flash data and action effects', function () {
                 ],
             ],
         ])
-        ->and(wire(ActionResult::success()->toast(ToastVariant::Warning, 'Review the settings.')))
+        ->and(wire(ActionResult::success()->toast(Variant::Warning, 'Review the settings.')))
         ->toMatchArray([
             'effects' => [
                 [
@@ -181,7 +181,7 @@ final class WorkbenchToastFactory
 {
     use CreatesToastMessages;
 
-    public static function flashToast(ToastVariant $variant, string $message): ResponseFactory
+    public static function flashToast(Variant $variant, string $message): ResponseFactory
     {
         return (new self)->toast($variant, $message);
     }

@@ -11,7 +11,7 @@ use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\BulkAction;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Variant;
 use Workbench\App\Models\Product;
 
 #[BulkAction('workbench.products.archive-selected')]
@@ -37,7 +37,7 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
         });
 
         return ActionResult::success(['archived' => $records->count()])
-            ->toast(ToastVariant::Success, __('workbench.actions.archive-selected.toast', ['count' => $records->count()]))
+            ->toast(Variant::Success, __('workbench.actions.archive-selected.toast', ['count' => $records->count()]))
             ->reloadComponent('workbench.products');
     }
 }

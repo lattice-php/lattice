@@ -988,8 +988,8 @@ export type ToastMessage = {
   persistent: boolean;
   dismissible: boolean;
   action: Node | null;
-  variant: ToastVariant;
+  variant: Variant;
   message: string;
 };
-export type ToastVariant = "success" | "info" | "warning" | "error";
+export type Variant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "sm" | "md" | "lg" | "fill";

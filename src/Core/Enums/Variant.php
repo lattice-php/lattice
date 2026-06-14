@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Core\Enums;
 use Lattice\Lattice\Attributes\TypeScript;
 
 #[TypeScript]
-enum ToastVariant: string
+enum Variant: string
 {
     case Success = 'success';
     case Info = 'info';

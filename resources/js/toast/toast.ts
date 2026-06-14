@@ -1,11 +1,11 @@
-import type { ToastMessage, ToastVariant } from "@lattice-php/lattice/types/generated";
+import type { ToastMessage, Variant } from "@lattice-php/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 
-export type { ToastMessage, ToastVariant };
+export type { ToastMessage, Variant };
 
-const variants = ["success", "info", "warning", "error"] as const satisfies readonly ToastVariant[];
+const variants = ["success", "info", "warning", "error"] as const satisfies readonly Variant[];
 
-export function isToastVariant(value: unknown): value is ToastVariant {
+export function isVariant(value: unknown): value is Variant {
   return variants.some((variant) => variant === value);
 }
 
@@ -30,7 +30,7 @@ export function normalizeToastMessage(value: unknown): ToastMessage | null {
     duration: typeof toast.duration === "number" ? toast.duration : null,
     message: toast.message,
     persistent: toast.persistent === true,
-    variant: isToastVariant(toast.variant) ? toast.variant : "success",
+    variant: isVariant(toast.variant) ? toast.variant : "success",
   };
 }
 

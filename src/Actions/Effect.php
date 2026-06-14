@@ -12,18 +12,18 @@ use Lattice\Lattice\Actions\Effects\ReloadComponentEffect;
 use Lattice\Lattice\Actions\Effects\ReloadPageEffect;
 use Lattice\Lattice\Actions\Effects\ResetFormEffect;
 use Lattice\Lattice\Actions\Effects\ToastEffect;
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\ToastMessage;
 
 final class Effect
 {
-    public static function toast(string|ToastMessage|ToastVariant $message, ToastVariant|string|null $variant = null): ToastEffect
+    public static function toast(string|ToastMessage|Variant $message, Variant|string|null $variant = null): ToastEffect
     {
         $toast = match (true) {
             $message instanceof ToastMessage => $message,
-            $message instanceof ToastVariant && is_string($variant) => ToastMessage::make($message, $variant),
-            is_string($message) && $variant instanceof ToastVariant => ToastMessage::make($variant, $message),
-            is_string($message) => ToastMessage::make(ToastVariant::Success, $message),
+            $message instanceof Variant && is_string($variant) => ToastMessage::make($message, $variant),
+            is_string($message) && $variant instanceof Variant => ToastMessage::make($variant, $message),
+            is_string($message) => ToastMessage::make(Variant::Success, $message),
             default => throw new \InvalidArgumentException('A toast message string is required.'),
         };
 

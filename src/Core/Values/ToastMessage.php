@@ -8,7 +8,7 @@ use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Variant;
 
 /**
  * Builder for a toast notification: a message and variant plus optional lifetime,
@@ -27,11 +27,11 @@ final class ToastMessage implements JsonSerializable
     public ?Component $action = null;
 
     private function __construct(
-        public ToastVariant $variant,
+        public Variant $variant,
         public string $message,
     ) {}
 
-    public static function make(ToastVariant $variant, string $message): self
+    public static function make(Variant $variant, string $message): self
     {
         return new self($variant, $message);
     }

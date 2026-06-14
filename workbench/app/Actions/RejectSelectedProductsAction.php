@@ -11,7 +11,7 @@ use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\BulkAction;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Workbench\App\Models\Product;
 
@@ -44,7 +44,7 @@ class RejectSelectedProductsAction extends BulkActionDefinition
         });
 
         return ActionResult::success(['archived' => $records->count(), 'reason' => $data['reason']])
-            ->toast(ToastVariant::Success, __('workbench.actions.reject-selected.toast', ['count' => $records->count(), 'reason' => $data['reason']]))
+            ->toast(Variant::Success, __('workbench.actions.reject-selected.toast', ['count' => $records->count(), 'reason' => $data['reason']]))
             ->reloadComponent('workbench.products');
     }
 }

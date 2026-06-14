@@ -9,7 +9,7 @@ use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Actions\FormActionDefinition;
 use Lattice\Lattice\Attributes\Action as ActionAttribute;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\ToastMessage;
 use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\ProductForm;
@@ -55,7 +55,7 @@ class EditProductAction extends FormActionDefinition
 
         return ActionResult::success(['id' => $product->getKey()])
             ->toast(
-                ToastMessage::make(ToastVariant::Success, __('workbench.actions.edit.toast'))
+                ToastMessage::make(Variant::Success, __('workbench.actions.edit.toast'))
                     ->action(
                         Action::use(RejectProductAction::class)
                             ->label(__('workbench.actions.edit.reject-product'))

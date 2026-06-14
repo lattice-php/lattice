@@ -11,7 +11,7 @@ use Lattice\Lattice\Attributes\Action;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\ToastMessage;
 use Workbench\App\Models\Product;
 
@@ -39,7 +39,7 @@ class ArchiveProductAction extends ActionDefinition
 
         return ActionResult::success(['id' => $product->getKey()])
             ->toast(
-                ToastMessage::make(ToastVariant::Success, __('workbench.actions.archive.toast'))
+                ToastMessage::make(Variant::Success, __('workbench.actions.archive.toast'))
                     ->action(Link::make(__('workbench.actions.archive.view-products'), 'view-products')->href('/products'))
                     ->persistent(),
             )
