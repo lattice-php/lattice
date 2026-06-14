@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Model;
+use Lattice\Lattice\Core\EloquentOptions;
 use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Forms\EloquentOptions;
 use Workbench\App\Models\Product;
 
 /** A model keyed by a non-`id` column (reuses the products table, keyed on its unique sku). */

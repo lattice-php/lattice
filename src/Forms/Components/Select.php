@@ -11,9 +11,9 @@ use Lattice\Lattice\Core\Concerns\HasAutoFocus;
 use Lattice\Lattice\Core\Concerns\HasOptions;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
+use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Facades\Evaluate;
-use Lattice\Lattice\Forms\Contracts\OptionSource;
 use Lattice\Lattice\Forms\FormData;
 
 #[Component('form.select')]
