@@ -24,9 +24,7 @@ final class EffectFlasher
             return;
         }
 
-        foreach ($effects as $effect) {
-            $this->effects[] = $effect;
-        }
+        array_push($this->effects, ...$effects);
 
         Inertia::flash('latticeEffects', $this->effects);
     }
