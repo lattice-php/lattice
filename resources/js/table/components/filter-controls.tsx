@@ -1,5 +1,6 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { useEffect, useState } from "react";
+import { Checkbox } from "@lattice-php/lattice/core/components/checkbox";
 import {
   Popover,
   PopoverContent,
@@ -162,13 +163,12 @@ function MultiSelectControl({
               key={option.value}
               className="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-lt-muted"
             >
-              <input
-                type="checkbox"
+              <Checkbox
                 aria-label={option.label}
                 data-test={`table-filter-${filter.key}-${option.value}`}
                 checked={selected.includes(option.value)}
                 disabled={processing}
-                onChange={() => toggle(option.value)}
+                onCheckedChange={() => toggle(option.value)}
               />
               <span className="truncate">{option.label}</span>
             </label>
@@ -285,11 +285,10 @@ function SearchableSelectControl({
               onClick={() => choose(option.value)}
             >
               {multiple && (
-                <input
-                  type="checkbox"
-                  aria-label={option.label}
-                  readOnly
-                  checked={selected.includes(option.value)}
+                <Icon
+                  name="check"
+                  aria-hidden="true"
+                  className={`size-lt-icon-sm shrink-0 ${selected.includes(option.value) ? "" : "invisible"}`}
                 />
               )}
               <span className="truncate">{option.label}</span>
@@ -393,13 +392,12 @@ function ToggleControl({
 
   return (
     <label className="flex h-9 cursor-pointer items-center gap-2 text-sm">
-      <input
-        type="checkbox"
+      <Checkbox
         aria-label={filter.label}
         data-test={`table-filter-${filter.key}`}
         checked={checked}
         disabled={processing}
-        onChange={(event) => onChange(event.target.checked ? "1" : "")}
+        onCheckedChange={(next) => onChange(next === true ? "1" : "")}
       />
       <span>{filter.label}</span>
     </label>
