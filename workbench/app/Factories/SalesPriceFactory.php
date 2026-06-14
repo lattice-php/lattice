@@ -18,7 +18,7 @@ class SalesPriceFactory extends Factory
         return [
             'product_id' => Product::factory(),
             'group_id' => null,
-            'amount' => fake()->randomFloat(2, 5, 500),
+            'amount' => number_format(fake()->randomFloat(2, 5, 500), 2, '.', ''),
         ];
     }
 }

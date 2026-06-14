@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Workbench\App\Enums\SalesOrderStatus;
 use Workbench\App\Models\BusinessPartner;
 use Workbench\App\Models\SalesOrder;
 
@@ -18,7 +19,7 @@ class SalesOrderFactory extends Factory
         return [
             'business_partner_id' => BusinessPartner::factory(),
             'number' => 'SO-'.fake()->unique()->numberBetween(1000, 9999),
-            'status' => 'draft',
+            'status' => SalesOrderStatus::Draft,
         ];
     }
 }

@@ -20,7 +20,7 @@ class SalesOrderLineFactory extends Factory
             'sales_order_id' => SalesOrder::factory(),
             'product_id' => Product::factory(),
             'quantity' => fake()->numberBetween(1, 5),
-            'unit_price' => fake()->randomFloat(2, 5, 500),
+            'unit_price' => number_format(fake()->randomFloat(2, 5, 500), 2, '.', ''),
         ];
     }
 }
