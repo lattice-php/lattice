@@ -82,6 +82,26 @@ describe("searchable select filter", () => {
     });
   });
 
+  it("toggles values in a searchable multi-select", async () => {
+    const fetch = stubFetch();
+    const multiNode: TableNode = {
+      ...node,
+      props: {
+        ...node.props,
+        filters: [{ ...filter, props: { ...filter.props, multiple: true } }],
+      },
+    };
+
+    render(<TableComponent node={multiNode} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Author" }));
+    fireEvent.click(await screen.findByRole("checkbox", { name: "Ada" }));
+
+    await waitFor(() => {
+      expect(fetch.mock.calls.at(-1)?.[0]).toContain("tf%5Bauthor%5D%5B%5D=1");
+    });
+  });
+
   it("issues a _search request as the user types", async () => {
     const fetch = stubFetch();
 

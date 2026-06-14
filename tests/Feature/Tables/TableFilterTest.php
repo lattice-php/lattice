@@ -87,6 +87,15 @@ test('a table searches a searchable column filter through the endpoint', functio
         ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
 });
 
+test('a table 404s searching an unknown filter key', function () {
+    Lattice::tables([WorkbenchSearchableFilterTable::class]);
+
+    $ref = componentRef(wire(Table::use(WorkbenchSearchableFilterTable::class)));
+
+    latticeGet('/lattice/tables/workbench.searchable-filter?_search=nope&q=a', $ref)
+        ->assertNotFound();
+});
+
 test('a table rejects searching a filter that is not searchable', function () {
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
 
