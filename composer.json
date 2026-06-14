@@ -83,10 +83,10 @@
         ],
         "test": "./vendor/bin/pest --testsuite Arch,Unit,Feature",
         "test:parallel": "./vendor/bin/pest --testsuite Arch,Unit,Feature --parallel",
-        "test:coverage": "runner=; command -v herd >/dev/null 2>&1 && runner='herd coverage'; $runner ./vendor/bin/pest --testsuite Arch,Unit,Feature --parallel --coverage --coverage-clover coverage_phpunit/clover.xml",
+        "test:coverage": "runner=; command -v herd >/dev/null 2>&1 && runner='herd coverage'; mkdir -p coverage_phpunit; $runner ./vendor/bin/pest --testsuite Arch,Unit,Feature --parallel --coverage --coverage-clover coverage_phpunit/clover.xml --log-junit coverage_phpunit/pest.junit.xml",
         "test:browser": "./vendor/bin/pest --testsuite Browser",
         "test:browser:parallel": "./vendor/bin/pest --testsuite Browser --parallel",
-        "test:browser:coverage": "runner=; command -v herd >/dev/null 2>&1 && runner='herd coverage'; $runner ./vendor/bin/pest --testsuite Browser --parallel --coverage --coverage-clover coverage_phpunit/browser-clover.xml",
+        "test:browser:coverage": "runner=; command -v herd >/dev/null 2>&1 && runner='herd coverage'; mkdir -p coverage_phpunit; $runner ./vendor/bin/pest --testsuite Browser --parallel --coverage --coverage-clover coverage_phpunit/browser-clover.xml --log-junit coverage_phpunit/pest-browser.junit.xml",
         "post-autoload-dump": [
             "@clear",
             "@prepare"

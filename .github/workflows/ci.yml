@@ -35,9 +35,12 @@ jobs:
 
       - run: npm run type-coverage
 
-      - run: npm run test:coverage
+      - run: |
+          mkdir -p coverage_vitest
+          npm run test:coverage -- --reporter=default --reporter=junit --outputFile.junit=coverage_vitest/junit.xml
 
       - name: Upload Vitest coverage to Codecov
+        if: ${{ !cancelled() }}
         uses: codecov/codecov-action@v5
         with:
           use_oidc: true
@@ -47,7 +50,24 @@ jobs:
           disable_search: true
           fail_ci_if_error: true
 
+      - name: Upload Vitest test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          files: coverage_vitest/junit.xml
+          flags: vitest
+          name: vitest-tests
+          report_type: test_results
+          disable_search: true
+          fail_ci_if_error: true
+
       - run: npm run build:lib
+
+      - name: Upload workbench bundle analysis to Codecov
+        env:
+          CODECOV_BUNDLE: "1"
+        run: npm run build
 
   php:
     name: PHP (pint, phpstan, pest)
@@ -103,13 +123,25 @@ jobs:
         run: composer test:coverage
 
       - name: Upload Pest coverage to Codecov
-        if: ${{ matrix.php-version == '8.4' }}
+        if: ${{ !cancelled() && matrix.php-version == '8.4' }}
         uses: codecov/codecov-action@v5
         with:
           use_oidc: true
           files: coverage_phpunit/clover.xml
           flags: pest
           name: pest
+          disable_search: true
+          fail_ci_if_error: true
+
+      - name: Upload Pest test results to Codecov
+        if: ${{ !cancelled() && matrix.php-version == '8.4' }}
+        uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          files: coverage_phpunit/pest.junit.xml
+          flags: pest
+          name: pest-tests
+          report_type: test_results
           disable_search: true
           fail_ci_if_error: true
 
@@ -193,12 +225,25 @@ jobs:
         run: composer test:browser:coverage
 
       - name: Upload Pest browser coverage to Codecov
+        if: ${{ !cancelled() }}
         uses: codecov/codecov-action@v5
         with:
           use_oidc: true
           files: coverage_phpunit/browser-clover.xml
           flags: pest
           name: pest-browser
+          disable_search: true
+          fail_ci_if_error: true
+
+      - name: Upload Pest browser test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          files: coverage_phpunit/pest-browser.junit.xml
+          flags: pest-browser
+          name: pest-browser-tests
+          report_type: test_results
           disable_search: true
           fail_ci_if_error: true
 

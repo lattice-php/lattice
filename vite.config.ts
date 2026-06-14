@@ -1,4 +1,5 @@
 import inertia from "@inertiajs/vite";
+import { codecovVitePlugin } from "@codecov/vite-plugin";
 import { svgSprite, writePhpEnum } from "@lattice-php/vite-svg-sprite";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
@@ -64,6 +65,7 @@ export default defineConfig(({ mode }) => {
   // env flag so it only runs for `npm run analyze` / the docs build, writing an
   // interactive report + JSON the bundle-size docs page reads at build time.
   const isSonda = !isLibrary && process.env.SONDA === "1";
+  const isCodecovBundle = !isLibrary && !isVitest && process.env.CODECOV_BUNDLE === "1";
 
   return {
     publicDir: isLibrary ? false : undefined,
@@ -131,6 +133,17 @@ export default defineConfig(({ mode }) => {
               open: false,
             }),
           ]
+        : []),
+      ...(isCodecovBundle
+        ? codecovVitePlugin({
+            enableBundleAnalysis: true,
+            bundleName: "lattice-workbench",
+            oidc: {
+              useGitHubOIDC: true,
+            },
+            dryRun: process.env.CODECOV_BUNDLE_DRY_RUN === "1",
+            telemetry: false,
+          })
         : []),
     ],
     resolve: {
