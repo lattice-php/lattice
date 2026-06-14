@@ -5,72 +5,79 @@ use Illuminate\Support\Facades\File;
 
 use function Pest\Laravel\artisan;
 
-beforeEach(function () {
-    File::ensureDirectoryExists(resource_path('js/lattice'));
-    File::put(resource_path('js/lattice/plugin.ts'),
-        "import { createPlugin } from \"@lattice-php/lattice\";\n\nexport const appPlugin = createPlugin({\n  name: \"app\",\n  components: {},\n});\n");
-});
+function withFieldScaffold(Closure $callback): mixed
+{
+    return withScaffoldWorkspace(function () use ($callback): mixed {
+        File::put(resource_path('js/lattice/plugin.ts'),
+            "import { createPlugin } from \"@lattice-php/lattice\";\n\nexport const appPlugin = createPlugin({\n  name: \"app\",\n  components: {},\n});\n");
 
-afterEach(function () {
-    File::deleteDirectory(app_path('Forms'));
-    File::deleteDirectory(resource_path('js/lattice'));
-});
+        return $callback();
+    });
+}
 
 it('scaffolds a field PHP class, a tsx renderer, registers it and derives the type', function () {
-    artisan('lattice:field', ['name' => 'ColorPicker'])->assertSuccessful();
+    withFieldScaffold(function () {
+        artisan('lattice:field', ['name' => 'ColorPicker'])->assertSuccessful();
 
-    $php = File::get(app_path('Forms/Fields/ColorPicker.php'));
-    expect($php)
-        ->toContain('namespace App\\Forms\\Fields;')
-        ->toContain('use Lattice\\Lattice\\Attributes\\Component;')
-        ->toContain("#[Component('form.color-picker')]")
-        ->toContain('class ColorPicker extends Field');
+        $php = File::get(app_path('Forms/Fields/ColorPicker.php'));
+        expect($php)
+            ->toContain('namespace App\\Forms\\Fields;')
+            ->toContain('use Lattice\\Lattice\\Attributes\\Component;')
+            ->toContain("#[Component('form.color-picker')]")
+            ->toContain('class ColorPicker extends Field');
 
-    $tsx = File::get(resource_path('js/lattice/fields/color-picker.tsx'));
-    expect($tsx)->toContain('RendererComponent<"form.color-picker">');
+        $tsx = File::get(resource_path('js/lattice/fields/color-picker.tsx'));
+        expect($tsx)->toContain('RendererComponent<"form.color-picker">');
 
-    $plugin = File::get(resource_path('js/lattice/plugin.ts'));
-    expect($plugin)
-        ->toContain('eagerComponent')
-        ->toContain('import { ColorPickerComponent } from "./fields/color-picker";')
-        ->toContain('"form.color-picker": eagerComponent(ColorPickerComponent)');
+        $plugin = File::get(resource_path('js/lattice/plugin.ts'));
+        expect($plugin)
+            ->toContain('eagerComponent')
+            ->toContain('import { ColorPickerComponent } from "./fields/color-picker";')
+            ->toContain('"form.color-picker": eagerComponent(ColorPickerComponent)');
+    });
 });
 
 it('is idempotent — re-running does not duplicate the registration', function () {
-    artisan('lattice:field', ['name' => 'ColorPicker'])->assertSuccessful();
-    artisan('lattice:field', ['name' => 'ColorPicker'])->assertSuccessful();
+    withFieldScaffold(function () {
+        artisan('lattice:field', ['name' => 'ColorPicker'])->assertSuccessful();
+        artisan('lattice:field', ['name' => 'ColorPicker'])->assertSuccessful();
 
-    $plugin = File::get(resource_path('js/lattice/plugin.ts'));
-    expect(substr_count($plugin, '"form.color-picker": eagerComponent'))->toBe(1)
-        ->and(substr_count($plugin, 'import { ColorPickerComponent }'))->toBe(1);
+        $plugin = File::get(resource_path('js/lattice/plugin.ts'));
+        expect(substr_count($plugin, '"form.color-picker": eagerComponent'))->toBe(1)
+            ->and(substr_count($plugin, 'import { ColorPickerComponent }'))->toBe(1);
+    });
 });
 
 it('honors a --type override', function () {
-    artisan('lattice:field', ['name' => 'Swatch', '--type' => 'form.color'])->assertSuccessful();
+    withFieldScaffold(function () {
+        artisan('lattice:field', ['name' => 'Swatch', '--type' => 'form.color'])->assertSuccessful();
 
-    expect(File::get(app_path('Forms/Fields/Swatch.php')))
-        ->toContain("#[Component('form.color')]");
+        expect(File::get(app_path('Forms/Fields/Swatch.php')))
+            ->toContain("#[Component('form.color')]");
 
-    expect(File::get(resource_path('js/lattice/fields/swatch.tsx')))
-        ->toContain('RendererComponent<"form.color">');
+        expect(File::get(resource_path('js/lattice/fields/swatch.tsx')))
+            ->toContain('RendererComponent<"form.color">');
 
-    expect(File::get(resource_path('js/lattice/plugin.ts')))
-        ->toContain('"form.color": eagerComponent(SwatchComponent)');
+        expect(File::get(resource_path('js/lattice/plugin.ts')))
+            ->toContain('"form.color": eagerComponent(SwatchComponent)');
+    });
 });
 
 it('registers multiple distinct fields without clobbering earlier ones', function () {
-    artisan('lattice:field', ['name' => 'ColorPicker'])->assertSuccessful();
-    artisan('lattice:field', ['name' => 'StarRating'])->assertSuccessful();
+    withFieldScaffold(function () {
+        artisan('lattice:field', ['name' => 'ColorPicker'])->assertSuccessful();
+        artisan('lattice:field', ['name' => 'StarRating'])->assertSuccessful();
 
-    $plugin = File::get(resource_path('js/lattice/plugin.ts'));
+        $plugin = File::get(resource_path('js/lattice/plugin.ts'));
 
-    expect($plugin)
-        ->toContain('"form.color-picker": eagerComponent(ColorPickerComponent)')
-        ->toContain('"form.star-rating": eagerComponent(StarRatingComponent)')
-        ->toContain('import { ColorPickerComponent } from "./fields/color-picker";')
-        ->toContain('import { StarRatingComponent } from "./fields/star-rating";');
+        expect($plugin)
+            ->toContain('"form.color-picker": eagerComponent(ColorPickerComponent)')
+            ->toContain('"form.star-rating": eagerComponent(StarRatingComponent)')
+            ->toContain('import { ColorPickerComponent } from "./fields/color-picker";')
+            ->toContain('import { StarRatingComponent } from "./fields/star-rating";');
 
-    // Assert exact 4-space indentation for both entries — locks the indentation bug fix
-    expect($plugin)
-        ->toContain("  components: {\n    \"form.color-picker\": eagerComponent(ColorPickerComponent),\n    \"form.star-rating\": eagerComponent(StarRatingComponent),\n  },");
+        // Assert exact 4-space indentation for both entries — locks the indentation bug fix
+        expect($plugin)
+            ->toContain("  components: {\n    \"form.color-picker\": eagerComponent(ColorPickerComponent),\n    \"form.star-rating\": eagerComponent(StarRatingComponent),\n  },");
+    });
 });

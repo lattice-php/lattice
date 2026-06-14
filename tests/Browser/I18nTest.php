@@ -11,7 +11,7 @@ use function Orchestra\Testbench\package_path;
  */
 function writeLatticeBrowserTestTranslations(string $file, array $translations): void
 {
-    File::put($file, "<?php\ndeclare(strict_types=1);\n\nreturn ".var_export($translations, true).";\n");
+    File::replace($file, "<?php\ndeclare(strict_types=1);\n\nreturn ".var_export($translations, true).";\n", 0644);
 }
 
 function waitForLatticeBrowserTestTranslation(string $file, string $key): mixed
@@ -39,20 +39,26 @@ it('dumps missing React lattice keys back into the package lang file', function 
     $original = File::get($file);
     $translations = require $file;
 
-    Arr::forget($translations, 'editor.bold');
+    Arr::forget($translations, 'editor.italic');
     writeLatticeBrowserTestTranslations($file, $translations);
 
+    $page = visit('/dependent-demo');
+
     try {
-        visit('/dependent-demo')
-            ->assertSee('Article')
-            ->assertPresent('[aria-label="Bold"]')
+        $page->assertSee('Article')
+            ->assertPresent('[aria-label="Italic"]')
             ->assertNoJavaScriptErrors();
 
-        expect(waitForLatticeBrowserTestTranslation($file, 'editor.bold'))
-            ->toBe('i18next-editor.bold')
+        expect(waitForLatticeBrowserTestTranslation($file, 'editor.italic'))
+            ->toBe('i18next-editor.italic')
             ->and(File::exists(package_path('workbench/lang/en/language.php')))->toBeFalse()
             ->and(File::exists(package_path('workbench/lang/en/status.php')))->toBeFalse();
     } finally {
-        File::put($file, $original);
+        try {
+            $page->script('window.location.assign("/")');
+            $page->wait(0.5);
+        } finally {
+            File::replace($file, $original, 0644);
+        }
     }
 });

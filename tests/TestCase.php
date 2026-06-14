@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tests;
 
 use Bambamboole\LaravelI18Next\I18NextServiceProvider;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\ParallelTesting;
 use Inertia\ServiceProvider as InertiaServiceProvider;
 use Lattice\Lattice\LatticeServiceProvider;
 use Lattice\Lattice\Support\Testing\AssertsLatticeComponents;
@@ -20,11 +22,15 @@ abstract class TestCase extends BaseTestCase
 
     protected function getEnvironmentSetUp($app): void
     {
-        $database = getenv('LATTICE_TEST_DATABASE') ?: sys_get_temp_dir().'/lattice-package-tests/database-'.getmypid().'.sqlite';
+        $token = ParallelTesting::token();
 
-        if (! is_dir(dirname($database))) {
-            mkdir(dirname($database), 0755, true);
+        if ($token) {
+            $database = sys_get_temp_dir().'/lattice-package-tests/database/test_'.$token.'.sqlite';
+        } else {
+            $database = getenv('LATTICE_TEST_DATABASE') ?: sys_get_temp_dir().'/lattice-package-tests/database-'.getmypid().'.sqlite';
         }
+
+        File::makeDirectory(dirname($database), 0755, true, true);
 
         if (! file_exists($database)) {
             touch($database);
