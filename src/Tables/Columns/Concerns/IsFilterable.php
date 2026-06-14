@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns\Concerns;
 
+use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Tables\Enums\FilterControl;
@@ -28,6 +29,8 @@ trait IsFilterable
 
     protected bool $filterMultiple = false;
 
+    protected ?OptionSource $filterOptionSource = null;
+
     /**
      * @param  array<int, Op>  $operators  narrows the offered operators; defaults to the value type's full set
      */
@@ -41,17 +44,25 @@ trait IsFilterable
     }
 
     /**
-     * Filter this column with a dropdown of fixed options instead of the operator
-     * input. Single selection matches with `=`; `multiple` matches any with `in`.
+     * Filter this column with a dropdown instead of the operator input. Pass a
+     * fixed list of options or an {@see OptionSource} (e.g. an Eloquent relation).
+     * Single selection matches with `=`; `multiple` matches any with `in`.
      *
-     * @param  array<int, Option|array{label: string, value: string}>  $options
+     * @param  array<int, Option|array{label: string, value: string}>|OptionSource  $options
      */
-    public function filterOptions(array $options, bool $multiple = false): static
+    public function filterOptions(array|OptionSource $options, bool $multiple = false): static
     {
         $this->filterable = true;
         $this->filterControl = FilterControl::Select;
-        $this->filterSelectOptions = $this->normalizeFilterOptions($options);
         $this->filterMultiple = $multiple;
+
+        if ($options instanceof OptionSource) {
+            $this->filterOptionSource = $options;
+            $this->filterSelectOptions = [];
+        } else {
+            $this->filterOptionSource = null;
+            $this->filterSelectOptions = $this->normalizeFilterOptions($options);
+        }
 
         return $this;
     }
@@ -76,7 +87,7 @@ trait IsFilterable
      */
     public function filterSelectOptions(): array
     {
-        return $this->filterSelectOptions;
+        return $this->filterOptionSource?->search('') ?? $this->filterSelectOptions;
     }
 
     public function filterMultiple(): bool

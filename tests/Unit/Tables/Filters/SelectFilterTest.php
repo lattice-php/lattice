@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Contracts\OptionSource;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Tables\Filters\SelectFilter;
 use Workbench\App\Models\Product;
 
@@ -63,4 +65,26 @@ test('a multiple select filter with no selected values applies no constraint', f
     SelectFilter::make('status')->multiple()->apply($builder, []);
 
     expect($builder->toSql())->not->toContain('where');
+});
+
+test('a select filter resolves its options from an option source', function () {
+    $source = new class implements OptionSource
+    {
+        public function search(string $query): array
+        {
+            return [new Option('Ada', '1'), new Option('Linus', '2')];
+        }
+
+        public function selected(array $values): array
+        {
+            return [];
+        }
+    };
+
+    $props = wire(SelectFilter::make('author_id')->optionsFrom($source))['props'];
+
+    expect($props['options'])->toBe([
+        ['label' => 'Ada', 'value' => '1'],
+        ['label' => 'Linus', 'value' => '2'],
+    ]);
 });

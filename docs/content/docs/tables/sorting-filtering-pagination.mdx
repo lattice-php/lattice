@@ -92,6 +92,18 @@ restricts the offered operators to `=` / `≠` (or `in` / `not in` when `multipl
 value rides the same column-filter clause as any other operator filter, so the data source applies
 it with no extra wiring.
 
+Options can also come from an `OptionSource` (e.g. an Eloquent relation) instead of a fixed list —
+the same source the [`Select` field](/forms/fields/select/) uses, so forms and tables resolve
+options the same way:
+
+```php
+use Lattice\Lattice\Core\EloquentOptions;
+
+TextColumn::make('author_id')
+    ->label('Author')
+    ->filterOptions(EloquentOptions::make(Author::class)->label('name'));
+```
+
 <Info>
 This is the per-column counterpart to a dedicated `SelectFilter`: use a column filter when the choice
 belongs to that column's header; use a dedicated filter when it spans the table or needs custom query

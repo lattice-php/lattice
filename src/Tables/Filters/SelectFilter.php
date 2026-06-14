@@ -6,11 +6,14 @@ namespace Lattice\Lattice\Tables\Filters;
 use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Core\Concerns\HasOptions;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
+use Lattice\Lattice\Core\Contracts\OptionSource;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 
 /**
  * A dropdown filter. Single by default ({@see Builder::where}); `multiple()`
- * matches any of the selected values ({@see Builder::whereIn}).
+ * matches any of the selected values ({@see Builder::whereIn}). Options can be a
+ * fixed list ({@see options}) or come from an {@see OptionSource} via {@see optionsFrom}.
  */
 class SelectFilter extends BaseFilter
 {
@@ -19,9 +22,22 @@ class SelectFilter extends BaseFilter
 
     public bool $multiple = false;
 
+    private ?OptionSource $optionSource = null;
+
     public function multiple(bool $multiple = true): static
     {
         $this->multiple = $multiple;
+
+        return $this;
+    }
+
+    /**
+     * Resolve options from an {@see OptionSource} (e.g. an Eloquent relation)
+     * instead of a fixed list, keeping the filter free of any persistence concern.
+     */
+    public function optionsFrom(OptionSource $source): static
+    {
+        $this->optionSource = $source;
 
         return $this;
     }
@@ -33,12 +49,20 @@ class SelectFilter extends BaseFilter
             $this->label,
             FilterControl::Select,
             [
-                'options' => $this->options,
+                'options' => $this->resolvedOptions(),
                 'multiple' => $this->multiple,
                 'searchable' => false,
                 'placeholder' => $this->placeholder,
             ],
         );
+    }
+
+    /**
+     * @return list<Option>
+     */
+    private function resolvedOptions(): array
+    {
+        return $this->optionSource?->search('') ?? $this->options;
     }
 
     public function apply(Builder $builder, mixed $value): void
