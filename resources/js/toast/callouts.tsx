@@ -1,13 +1,12 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
 import type { Callout, Variant } from "@lattice-php/lattice/types/generated";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { onCallout } from "@lattice-php/lattice/toast/callout";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
-import { useRegistry } from "@lattice-php/lattice/provider";
 
 type CalloutItem = Callout & { id: number };
 
@@ -34,7 +33,7 @@ let nextId = 0;
 
 const Callouts: RendererComponent<"callouts"> = () => {
   const { t } = useT("lattice");
-  const registry = useRegistry();
+  const { registry } = useRendererContext();
   const [callouts, setCallouts] = useState<CalloutItem[]>([]);
 
   useEffect(
