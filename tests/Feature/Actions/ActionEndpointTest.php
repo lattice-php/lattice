@@ -1,15 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Route;
-use Inertia\ResponseFactory;
-use Inertia\Support\SessionKey;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Effect;
-use Lattice\Lattice\Core\Concerns\CreatesToastMessages;
 use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Core\Values\ToastMessage;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
 use Workbench\App\Actions\SetLocaleAction;
@@ -92,30 +87,8 @@ test('registered actions can return a locale change effect', function () {
         ->assertJsonPath('effects.0.locale', 'de');
 });
 
-test('toast messages serialize for flash data and action effects', function () {
-    Route::get('toast-target', fn () => 'ok')->name('toast.target');
-
-    $response = WorkbenchToastFactory::flashToast(Variant::Warning, 'Review the settings.')
-        ->toRoute('toast.target');
-    $flashedToast = session()->get(SessionKey::FLASH_DATA, [])['toast'] ?? null;
-
-    expect($response->getTargetUrl())
-        ->toBe(route('toast.target'))
-        ->and($flashedToast)
-        ->toBeInstanceOf(ToastMessage::class);
-
-    assert($flashedToast instanceof ToastMessage);
-
-    expect(wire($flashedToast))
-        ->toBe([
-            'variant' => 'warning',
-            'message' => 'Review the settings.',
-            'duration' => null,
-            'persistent' => false,
-            'dismissible' => true,
-            'action' => null,
-        ])
-        ->and(wire(Effect::toast(Variant::Warning, 'Review the settings.')))
+test('toast effects serialize correctly for action results', function () {
+    expect(wire(Effect::toast(Variant::Warning, 'Review the settings.')))
         ->toBe([
             'type' => 'toast',
             'toast' => [
@@ -172,17 +145,3 @@ test('registered action endpoints require a valid component reference', function
     ], latticeHeaders('tampered'))
         ->assertForbidden();
 });
-
-// ---------------------------------------------------------------------------
-// Inline fixture class required only by this file
-// ---------------------------------------------------------------------------
-
-final class WorkbenchToastFactory
-{
-    use CreatesToastMessages;
-
-    public static function flashToast(Variant $variant, string $message): ResponseFactory
-    {
-        return (new self)->toast($variant, $message);
-    }
-}

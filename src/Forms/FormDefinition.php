@@ -6,7 +6,6 @@ namespace Lattice\Lattice\Forms;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Core\Concerns\CreatesToastMessages;
 use Lattice\Lattice\Core\Definition;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
@@ -17,7 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class FormDefinition extends Definition implements HandlesUploads, ProvidesForm
 {
-    use CreatesToastMessages;
     use ResolvesFormFields;
 
     abstract public function definition(Form $form, Request $request): Form;
