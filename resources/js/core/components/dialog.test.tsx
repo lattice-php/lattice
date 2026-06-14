@@ -20,4 +20,16 @@ describe("Dialog", () => {
     expect(document.querySelector('[data-slot="dialog-overlay"]')).not.toBeNull();
     expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
   });
+
+  it("renders the optional description in the header", () => {
+    render(
+      <Dialog open>
+        <DialogContent>
+          <DialogHeader title="Settings" description="Tune your preferences" />
+        </DialogContent>
+      </Dialog>,
+    );
+
+    expect(screen.getByText("Tune your preferences")).toBeVisible();
+  });
 });

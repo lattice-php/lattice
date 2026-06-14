@@ -107,6 +107,19 @@ describe("action form modal", () => {
     );
   });
 
+  it("closes the modal when dismissed", async () => {
+    renderAction(rejectAction());
+
+    fireEvent.click(screen.getByRole("button", { name: "Reject" }));
+    await screen.findByRole("textbox", { name: "Reason" });
+
+    fireEvent.keyDown(document.body, { key: "Escape" });
+
+    await waitFor(() =>
+      expect(screen.queryByRole("textbox", { name: "Reason" })).not.toBeInTheDocument(),
+    );
+  });
+
   it("shows server validation errors returned on submit", async () => {
     const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
       json: async () => ({ errors: { reason: ["The Reason field is required."] } }),
