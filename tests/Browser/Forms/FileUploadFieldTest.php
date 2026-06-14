@@ -18,6 +18,15 @@ it('uploads a file via multipart and shows it in the dropzone', function (): voi
         ->assertNoSmoke();
 });
 
+it('removes an existing file from the edit form', function (): void {
+    visit('/uploads/edit')
+        ->assertSee('avatar-existing.jpg')
+        ->click('@avatar-remove-existing')
+        ->assertDontSee('avatar-existing.jpg')
+        ->click('@form-submit')
+        ->assertNoSmoke();
+});
+
 it('uploads directly to s3 via the signed flow', function (): void {
     if (! class_exists(AwsS3V3Adapter::class)) {
         $this->markTestSkipped('S3 flysystem adapter not installed');

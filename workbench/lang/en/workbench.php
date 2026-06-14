@@ -263,6 +263,11 @@ return [
             'submit' => 'Upload',
             'title' => 'Upload files',
         ],
+        'upload-edit' => [
+            'heading' => 'Edit upload',
+            'submit' => 'Save',
+            'title' => 'Edit upload',
+        ],
         'uploads' => [
             'create' => 'Upload files',
             'heading' => 'Uploads',

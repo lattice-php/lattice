@@ -263,6 +263,11 @@ return [
             'submit' => 'Hochladen',
             'title' => 'Dateien hochladen',
         ],
+        'upload-edit' => [
+            'heading' => 'Upload bearbeiten',
+            'submit' => 'Speichern',
+            'title' => 'Upload bearbeiten',
+        ],
         'uploads' => [
             'create' => 'Dateien hochladen',
             'heading' => 'Uploads',
