@@ -5,8 +5,9 @@ namespace Lattice\Lattice\Core\Values;
 
 use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Core\Concerns\HasAction;
-use Lattice\Lattice\Core\Concerns\HasDismissible;
+use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Components\Link;
+use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Variant;
 
 /**
@@ -17,10 +18,11 @@ use Lattice\Lattice\Core\Enums\Variant;
 #[TypeScript]
 final class Callout implements JsonSerializable
 {
-    use HasAction;
-    use HasDismissible;
-
     public ?string $title = null;
+
+    public bool $dismissible = true;
+
+    public ?Component $action = null;
 
     private function __construct(
         public Variant $variant,
@@ -35,6 +37,25 @@ final class Callout implements JsonSerializable
     public function title(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function dismissible(bool $dismissible = true): self
+    {
+        $this->dismissible = $dismissible;
+
+        return $this;
+    }
+
+    public function link(string $label, string $href, HttpMethod $method = HttpMethod::Get): self
+    {
+        return $this->action(Link::make($label)->href($href)->method($method));
+    }
+
+    public function action(Component $action): self
+    {
+        $this->action = $action;
 
         return $this;
     }
