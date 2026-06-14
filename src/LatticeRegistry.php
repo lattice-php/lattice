@@ -12,9 +12,9 @@ use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
+use Lattice\Lattice\Http\PageRegistry;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
-use Lattice\Lattice\Pages\PageRegistry;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
 

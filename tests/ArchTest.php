@@ -12,9 +12,9 @@ declare(strict_types=1);
  * only intentional cross-domain couplings are tables -> actions (row and bulk
  * actions) and actions -> forms (action forms).
  *
- * Top: the orchestration and tooling layers — Http and Pages (which render and
- * route pages by consuming the feature domains), Console, and Facades. Nothing
- * below may depend upward on them.
+ * Top: the orchestration and tooling layers — Http (which renders and routes
+ * pages, including the page registry, by consuming the feature domains),
+ * Console, and Facades. Nothing below may depend upward on them.
  */
 
 arch('forms depend on no other feature domain')
@@ -74,7 +74,6 @@ arch('core does not depend upward on the orchestration or tooling layers')
     ->expect('Lattice\Lattice\Core')
     ->not->toUse([
         'Lattice\Lattice\Http',
-        'Lattice\Lattice\Pages',
         'Lattice\Lattice\Console',
         'Lattice\Lattice\Facades',
     ]);
@@ -89,7 +88,6 @@ arch('feature domains never depend upward on the orchestration or tooling layers
     ])
     ->not->toUse([
         'Lattice\Lattice\Http',
-        'Lattice\Lattice\Pages',
         'Lattice\Lattice\Console',
     ]);
 
@@ -106,9 +104,26 @@ arch('attributes depend on no feature domain or higher layer')
         'Lattice\Lattice\Fragments',
         'Lattice\Lattice\Layouts',
         'Lattice\Lattice\Http',
-        'Lattice\Lattice\Pages',
         'Lattice\Lattice\Console',
         'Lattice\Lattice\Facades',
+    ]);
+
+/*
+ * The Support utilities (Evaluation, Discovery) are part of the shared base and
+ * stay free of the feature domains. Support\Testing and Support\TypeScript are
+ * tooling that intentionally consumes the domains, so they are not constrained.
+ */
+arch('the support utilities do not depend on the feature domains')
+    ->expect([
+        'Lattice\Lattice\Support\Evaluation',
+        'Lattice\Lattice\Support\Discovery',
+    ])
+    ->not->toUse([
+        'Lattice\Lattice\Forms',
+        'Lattice\Lattice\Actions',
+        'Lattice\Lattice\Tables',
+        'Lattice\Lattice\Fragments',
+        'Lattice\Lattice\Layouts',
     ]);
 
 /*
@@ -132,6 +147,35 @@ arch('contracts are interfaces')
         'Lattice\Lattice\Layouts\Contracts',
     ])
     ->toBeInterfaces();
+
+arch('domain registries extend the base definition registry')
+    ->expect([
+        'Lattice\Lattice\Actions\ActionRegistry',
+        'Lattice\Lattice\Actions\BulkActionRegistry',
+        'Lattice\Lattice\Forms\FormRegistry',
+        'Lattice\Lattice\Fragments\FragmentRegistry',
+        'Lattice\Lattice\Layouts\LayoutRegistry',
+        'Lattice\Lattice\Tables\TableRegistry',
+    ])
+    ->toExtend('Lattice\Lattice\Core\DefinitionRegistry');
+
+/*
+ * Every definition derives from Core\Definition, including the ones that extend
+ * an intermediate base (FormActionDefinition, EloquentTableDefinition); a
+ * transitive is_subclass_of check covers those, where ->toExtend would not.
+ */
+it('derives every definition from the base definition', function (string $definition) {
+    expect(is_subclass_of($definition, 'Lattice\Lattice\Core\Definition'))->toBeTrue();
+})->with([
+    'Lattice\Lattice\Actions\ActionDefinition',
+    'Lattice\Lattice\Actions\BulkActionDefinition',
+    'Lattice\Lattice\Actions\FormActionDefinition',
+    'Lattice\Lattice\Forms\FormDefinition',
+    'Lattice\Lattice\Fragments\FragmentDefinition',
+    'Lattice\Lattice\Layouts\LayoutDefinition',
+    'Lattice\Lattice\Tables\TableDefinition',
+    'Lattice\Lattice\Tables\EloquentTableDefinition',
+]);
 
 arch('the lattice facade extends the laravel facade')
     ->expect('Lattice\Lattice\Facades')

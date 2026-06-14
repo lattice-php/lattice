@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Pages;
+namespace Lattice\Lattice\Http;
 
 use Lattice\Lattice\Core\Contracts\PageContract;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;

@@ -13,7 +13,7 @@ use Lattice\Lattice\LatticeRegistry;
  * @method static void layouts(class-string<\Lattice\Lattice\Layouts\LayoutDefinition>|array<int, class-string<\Lattice\Lattice\Layouts\LayoutDefinition>> $layouts)
  * @method static \Lattice\Lattice\Layouts\LayoutRegistry layoutRegistry()
  * @method static void pages(class-string<\Lattice\Lattice\Core\Contracts\PageContract>|array<int, class-string<\Lattice\Lattice\Core\Contracts\PageContract>> $pages)
- * @method static \Lattice\Lattice\Pages\PageRegistry pageRegistry()
+ * @method static \Lattice\Lattice\Http\PageRegistry pageRegistry()
  * @method static void actions(class-string<\Lattice\Lattice\Actions\ActionDefinition>|array<int, class-string<\Lattice\Lattice\Actions\ActionDefinition>> $actions)
  * @method static void bulkActions(class-string<\Lattice\Lattice\Actions\BulkActionDefinition>|array<int, class-string<\Lattice\Lattice\Actions\BulkActionDefinition>> $bulkActions)
  *
