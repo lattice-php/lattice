@@ -16,6 +16,7 @@ export {
   withVisitHeaders,
 } from "./inertia";
 export {
+  Callouts,
   layoutComponents,
   OutletContext,
   SchemaLayout,
@@ -23,7 +24,7 @@ export {
   useSidebarCollapsed,
 } from "./layout";
 export { Provider, useColumnRegistry, useRegistry } from "./provider";
-export { Callouts, onCallout, onToast, showToast, Toaster } from "./toast";
+export { onCallout, onToast, showToast, Toaster } from "./toast";
 export {
   createPlugin,
   createRegistry,

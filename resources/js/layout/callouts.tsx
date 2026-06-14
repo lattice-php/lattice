@@ -1,33 +1,14 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { useEffect, useState } from "react";
-import type { ReactNode } from "react";
 import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
-import type { Callout, Variant } from "@lattice-php/lattice/types/generated";
+import type { Callout } from "@lattice-php/lattice/types/generated";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { onCallout } from "@lattice-php/lattice/toast/callout";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
+import { variantStyles } from "@lattice-php/lattice/toast/variant-styles";
 
 type CalloutItem = Callout & { id: number };
-
-const accents: Record<Variant, { accent: string; icon: ReactNode }> = {
-  success: {
-    accent: "border-l-lt-success",
-    icon: <Icon name="circle-check" className="size-lt-icon-lg shrink-0 text-lt-success" />,
-  },
-  info: {
-    accent: "border-l-lt-info",
-    icon: <Icon name="info" className="size-lt-icon-lg shrink-0 text-lt-info" />,
-  },
-  warning: {
-    accent: "border-l-lt-warning",
-    icon: <Icon name="circle-alert" className="size-lt-icon-lg shrink-0 text-lt-warning" />,
-  },
-  error: {
-    accent: "border-l-lt-danger",
-    icon: <Icon name="circle-x" className="size-lt-icon-lg shrink-0 text-lt-danger" />,
-  },
-};
 
 let nextId = 0;
 
@@ -61,10 +42,10 @@ const Callouts: RendererComponent<"callouts"> = () => {
           data-test={`callout-${callout.variant}`}
           className={cn(
             "flex items-start gap-3 rounded-lt border border-l-4 border-lt-border bg-lt-popover p-4 text-lt-popover-fg",
-            accents[callout.variant].accent,
+            variantStyles[callout.variant].accent,
           )}
         >
-          {accents[callout.variant].icon}
+          {variantStyles[callout.variant].icon}
           <div className="flex min-w-0 flex-1 flex-col gap-2">
             {callout.title ? (
               <p className="text-sm font-medium text-lt-fg">{callout.title}</p>

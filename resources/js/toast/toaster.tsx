@@ -1,34 +1,15 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import * as Toast from "@radix-ui/react-toast";
 import { useEffect, useState } from "react";
-import type { ReactNode } from "react";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
-import type { ToastMessage, Variant } from "@lattice-php/lattice/types/generated";
+import type { ToastMessage } from "@lattice-php/lattice/types/generated";
 import { onToast } from "@lattice-php/lattice/toast/toast";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import { useRegistry } from "@lattice-php/lattice/provider";
+import { variantStyles } from "@lattice-php/lattice/toast/variant-styles";
 
 type ToastItem = ToastMessage & { id: number };
-
-const variantStyles: Record<Variant, { accent: string; icon: ReactNode }> = {
-  success: {
-    accent: "border-l-lt-success",
-    icon: <Icon name="circle-check" className="size-lt-icon-lg shrink-0 text-lt-success" />,
-  },
-  info: {
-    accent: "border-l-lt-info",
-    icon: <Icon name="info" className="size-lt-icon-lg shrink-0 text-lt-info" />,
-  },
-  warning: {
-    accent: "border-l-lt-warning",
-    icon: <Icon name="circle-alert" className="size-lt-icon-lg shrink-0 text-lt-warning" />,
-  },
-  error: {
-    accent: "border-l-lt-danger",
-    icon: <Icon name="circle-x" className="size-lt-icon-lg shrink-0 text-lt-danger" />,
-  },
-};
 
 let nextId = 0;
 
