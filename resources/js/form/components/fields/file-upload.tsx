@@ -1,0 +1,291 @@
+import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { testIdentity } from "@lattice-php/lattice/core/test-id";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { useT } from "@lattice-php/lattice/i18n";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { FormFieldFrame } from "../base/field";
+import { useFormContext } from "../context";
+import { xsrfToken } from "../form-transport";
+import { useDependentField } from "../use-dependent-field";
+import { useFieldScope } from "../field-scope";
+import { useFormValues } from "../values";
+
+type Item = {
+  id: string;
+  name: string;
+  size: number | null;
+  status: "ready" | "uploading" | "error";
+  progress: number;
+  file?: File;
+  key?: string;
+  url?: string | null;
+  token?: string;
+  existing: boolean;
+};
+
+type SignResponse = {
+  key: string;
+  url: string;
+  headers: Record<string, string>;
+  method: string;
+};
+
+export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ node }) => {
+  const { t } = useT("lattice");
+  const props = node.props;
+  const { hidden, required, readOnly, disabled } = useDependentField(node);
+  const { action, componentRef, errors } = useFormContext();
+  const name = props.name;
+  const scope = useFieldScope();
+  const domName = scope ? scope.scopedName(name) : name;
+  const errorKey = scope ? scope.errorKey(name) : name;
+  const uploadKey = scope ? scope.errorKey(name) : name;
+  const values = useFormValues();
+  const inputId = useId();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const locked = readOnly || disabled;
+  const signed = props.signed;
+  const multiple = props.multiple;
+  const fieldName = multiple ? `${domName}[]` : domName;
+
+  const initial = useMemo<Item[]>(
+    () =>
+      (props.files ?? []).map((file) => ({
+        id: crypto.randomUUID(),
+        name: file.name,
+        size: file.size,
+        status: "ready" as const,
+        progress: 100,
+        key: file.key,
+        url: file.url,
+        token: file.token,
+        existing: true,
+      })),
+    [props.files],
+  );
+  const [items, setItems] = useState<Item[]>(initial);
+  const [removedTokens, setRemovedTokens] = useState<string[]>([]);
+
+  const multipartFiles = items
+    .filter((item) => item.file && !item.existing)
+    .map((item) => item.file as File);
+  useEffect(() => {
+    if (signed || !fileInputRef.current) {
+      return;
+    }
+
+    const transfer = new DataTransfer();
+    multipartFiles.forEach((file) => transfer.items.add(file));
+    fileInputRef.current.files = transfer.files;
+  });
+
+  async function signAndUpload(item: Item, file: File): Promise<void> {
+    const response = await fetch(action, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+        "X-XSRF-TOKEN": xsrfToken(),
+        ...withRefHeader(componentRef),
+      },
+      body: JSON.stringify({
+        ...values,
+        _upload: uploadKey,
+        filename: file.name,
+        contentType: file.type,
+      }),
+    });
+
+    if (!response.ok) {
+      setItems((prev) =>
+        prev.map((entry) => (entry.id === item.id ? { ...entry, status: "error" } : entry)),
+      );
+
+      return;
+    }
+
+    const sign = (await response.json()) as SignResponse;
+
+    await new Promise<void>((resolve) => {
+      const request = new XMLHttpRequest();
+      request.open(sign.method, sign.url, true);
+      Object.entries(sign.headers).forEach(([key, value]) =>
+        request.setRequestHeader(key, String(value)),
+      );
+      request.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const progress = Math.round((event.loaded / event.total) * 100);
+          setItems((prev) =>
+            prev.map((entry) => (entry.id === item.id ? { ...entry, progress } : entry)),
+          );
+        }
+      };
+      request.onload = () => {
+        setItems((prev) =>
+          prev.map((entry) =>
+            entry.id === item.id
+              ? {
+                  ...entry,
+                  status: request.status < 300 ? "ready" : "error",
+                  key: sign.key,
+                  progress: 100,
+                }
+              : entry,
+          ),
+        );
+        resolve();
+      };
+      request.onerror = () => {
+        setItems((prev) =>
+          prev.map((entry) => (entry.id === item.id ? { ...entry, status: "error" } : entry)),
+        );
+        resolve();
+      };
+      request.send(file);
+    });
+  }
+
+  function addFiles(fileList: FileList | null): void {
+    if (!fileList || locked) {
+      return;
+    }
+
+    const incoming = Array.from(fileList);
+    const next = incoming.map<Item>((file) => ({
+      id: crypto.randomUUID(),
+      name: file.name,
+      size: file.size,
+      status: signed ? "uploading" : "ready",
+      progress: 0,
+      file,
+      existing: false,
+    }));
+
+    setItems((prev) => (multiple ? [...prev, ...next] : next));
+
+    if (signed) {
+      next.forEach((item, index) => void signAndUpload(item, incoming[index]));
+    }
+  }
+
+  function removeItem(id: string): void {
+    setItems((prev) => {
+      const target = prev.find((i) => i.id === id);
+      if (target?.existing && target.token && !scope) {
+        setRemovedTokens((tokens) => [...tokens, target.token as string]);
+      }
+      return prev.filter((i) => i.id !== id);
+    });
+  }
+
+  if (hidden) {
+    return null;
+  }
+
+  return (
+    <FormFieldFrame
+      error={errors[errorKey]}
+      helperText={props.helperText ?? undefined}
+      label={props.label ?? ""}
+      name={name}
+      required={required}
+    >
+      <div
+        className="flex flex-col gap-3 rounded-lt-sm border border-dashed border-lt-border bg-lt-surface px-4 py-6"
+        data-test={testIdentity(name)}
+        onDragOver={(event) => event.preventDefault()}
+        onDrop={(event) => {
+          event.preventDefault();
+          addFiles(event.dataTransfer.files);
+        }}
+      >
+        <button
+          className="text-sm text-lt-muted-fg"
+          disabled={locked}
+          onClick={() => fileInputRef.current?.click()}
+          type="button"
+        >
+          {t("file-upload.dropzone", "Drop files here or click to browse")}
+        </button>
+
+        <ul className="flex flex-col gap-2">
+          {items.map((item) => (
+            <li className="flex items-center justify-between gap-3 text-sm" key={item.id}>
+              <span data-test={testIdentity(`${name}-item`)}>{item.name}</span>
+              {item.status === "uploading" && <span>{item.progress}%</span>}
+              {item.status === "error" && (
+                <span className="text-lt-danger">{t("file-upload.failed", "Failed")}</span>
+              )}
+              {!item.existing && (
+                <button
+                  aria-label={t("file-upload.remove", "Remove {{name}}", { name: item.name })}
+                  disabled={locked}
+                  onClick={() => removeItem(item.id)}
+                  type="button"
+                >
+                  {t("file-upload.remove-label", "Remove")}
+                </button>
+              )}
+              {item.existing && !scope && (
+                <button
+                  aria-label={t("file-upload.remove", "Remove {{name}}", { name: item.name })}
+                  data-test={testIdentity(`${name}-remove-existing`)}
+                  disabled={locked}
+                  onClick={() => removeItem(item.id)}
+                  type="button"
+                >
+                  {t("file-upload.remove-label", "Remove")}
+                </button>
+              )}
+              {signed && !item.existing && item.key && item.status === "ready" && (
+                <input
+                  data-test={testIdentity(`${name}-uploaded`)}
+                  name={fieldName}
+                  type="hidden"
+                  value={item.key}
+                />
+              )}
+            </li>
+          ))}
+        </ul>
+
+        {!scope &&
+          removedTokens.map((token) => (
+            <input key={token} name={`${name}__removed[]`} type="hidden" value={token} />
+          ))}
+
+        {signed ? (
+          <input
+            accept={props.accept ?? undefined}
+            aria-label={props.label ?? name}
+            className="sr-only"
+            data-test={testIdentity(`${name}-input`)}
+            id={inputId}
+            multiple={multiple}
+            onChange={(event) => {
+              addFiles(event.target.files);
+              event.target.value = "";
+            }}
+            ref={fileInputRef}
+            type="file"
+          />
+        ) : (
+          <input
+            accept={props.accept ?? undefined}
+            aria-label={props.label ?? name}
+            className="sr-only"
+            data-test={testIdentity(`${name}-input`)}
+            id={inputId}
+            multiple={multiple}
+            name={fieldName}
+            onChange={(event) => addFiles(event.target.files)}
+            ref={fileInputRef}
+            type="file"
+          />
+        )}
+      </div>
+    </FormFieldFrame>
+  );
+};

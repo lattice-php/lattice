@@ -1,21 +1,21 @@
 [
     {
         "props": {
-            "autoFocus": null,
+            "autoFocus": false,
             "columnWidth": "md",
             "conditions": null,
-            "dependsOnAny": null,
+            "dependsOnAny": false,
             "dependsOnKeys": null,
-            "disabled": null,
+            "disabled": false,
             "helperText": null,
-            "hidden": null,
+            "hidden": false,
             "label": "Subscribe to the newsletter",
             "name": "newsletter",
-            "prefill": null,
+            "prefill": false,
             "prefillRefreshOn": null,
             "prefillResetOn": null,
-            "readOnly": null,
-            "required": null,
+            "readOnly": false,
+            "required": false,
             "tabIndex": null,
             "value": null
         },

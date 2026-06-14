@@ -29,11 +29,11 @@ class Form extends ContainerComponent
 
     public string $validationSummaryLabel = 'Fix these fields to continue:';
 
-    public ?bool $precognitive = null;
+    public bool $precognitive = false;
 
     public ?int $validationTimeout = null;
 
-    public ?bool $submitButton = null;
+    public bool $submitButton = true;
 
     /**
      * @var array<int, string>|bool|null

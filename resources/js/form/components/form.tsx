@@ -100,7 +100,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   const errorBag = props.errorBag;
   const componentRef = props.ref ?? "";
   const method = props.method ?? "post";
-  const precognitive = props.precognitive ?? false;
+  const precognitive = props.precognitive;
   const resetOnError = props.resetOnError ?? false;
   const resetOnSuccess = props.resetOnSuccess ?? [];
   const state = props.state;
@@ -109,7 +109,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
     [node.schema],
   );
   const initialValues = { ...fieldValues, ...state };
-  const shouldRenderSubmitButton = props.submitButton ?? true;
+  const shouldRenderSubmitButton = props.submitButton;
   const submitLabel = props.submitLabel ?? "Submit";
   const summaryLabel = props.validationSummaryLabel;
   const validationTimeout = props.validationTimeout ?? undefined;

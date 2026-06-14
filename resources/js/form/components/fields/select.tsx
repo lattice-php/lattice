@@ -40,8 +40,8 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
   const errorKey = scope ? scope.errorKey(name) : name;
   const searchKey = scope ? scope.errorKey(name) : name;
   const placeholder = props.placeholder || "Select…";
-  const multiple = props.multiple ?? false;
-  const searchable = props.searchable ?? false;
+  const multiple = props.multiple;
+  const searchable = props.searchable;
   const staticOptions = useMemo(
     () => (resolvedNode.props as { options?: Option[] }).options ?? [],
     [resolvedNode.props],

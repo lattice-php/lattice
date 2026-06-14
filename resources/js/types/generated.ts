@@ -57,23 +57,23 @@ export type Builder = {
     disabled?: Condition[];
   } | null;
   defaultItems: number;
-  dependsOnAny: boolean | null;
+  dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
-  disabled: boolean | null;
+  disabled: boolean;
   helperText: string | null;
-  hidden: boolean | null;
+  hidden: boolean;
   label: string | null;
   layout: RowLayout;
   maxItems: number | null;
   minItems: number | null;
   name: string;
-  prefill: boolean | null;
+  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
-  readOnly: boolean | null;
+  readOnly: boolean;
   reorderable: boolean;
-  required: boolean | null;
-  resizableColumns: boolean | null;
+  required: boolean;
+  resizableColumns: boolean;
   resizeIndicator: boolean;
   rowActions: RowAction[] | null;
   value: unknown;
@@ -111,7 +111,7 @@ export type Card = {
   title: string | null;
 };
 export type Checkbox = {
-  autoFocus: boolean | null;
+  autoFocus: boolean;
   columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
@@ -119,23 +119,23 @@ export type Checkbox = {
     readOnly?: Condition[];
     disabled?: Condition[];
   } | null;
-  dependsOnAny: boolean | null;
+  dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
-  disabled: boolean | null;
+  disabled: boolean;
   helperText: string | null;
-  hidden: boolean | null;
+  hidden: boolean;
   label: string | null;
   name: string;
-  prefill: boolean | null;
+  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
-  readOnly: boolean | null;
-  required: boolean | null;
+  readOnly: boolean;
+  required: boolean;
   tabIndex: number | null;
   value: unknown;
 };
 export type Choice = {
-  autoFocus: boolean | null;
+  autoFocus: boolean;
   columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
@@ -143,19 +143,19 @@ export type Choice = {
     readOnly?: Condition[];
     disabled?: Condition[];
   } | null;
-  dependsOnAny: boolean | null;
+  dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
-  disabled: boolean | null;
+  disabled: boolean;
   helperText: string | null;
-  hidden: boolean | null;
+  hidden: boolean;
   label: string | null;
   name: string;
   options: Option[];
-  prefill: boolean | null;
+  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
-  readOnly: boolean | null;
-  required: boolean | null;
+  readOnly: boolean;
+  required: boolean;
   tabIndex: number | null;
   value: unknown;
 };
@@ -283,7 +283,7 @@ export type CoreNode =
       props: Text;
     };
 export type DateInput = {
-  autoFocus: boolean | null;
+  autoFocus: boolean;
   columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
@@ -291,20 +291,20 @@ export type DateInput = {
     readOnly?: Condition[];
     disabled?: Condition[];
   } | null;
-  dependsOnAny: boolean | null;
+  dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
-  disabled: boolean | null;
+  disabled: boolean;
   helperText: string | null;
-  hidden: boolean | null;
+  hidden: boolean;
   label: string | null;
   max: string | null;
   min: string | null;
   name: string;
-  prefill: boolean | null;
+  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
-  readOnly: boolean | null;
-  required: boolean | null;
+  readOnly: boolean;
+  required: boolean;
   tabIndex: number | null;
   value: unknown;
 };
@@ -349,6 +349,43 @@ export type EffectType =
   | "openModal"
   | "closeModal"
   | "resetForm";
+export type FileUpload = {
+  accept: string | null;
+  columnWidth: ColumnWidth;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
+  dependsOnAny: boolean;
+  dependsOnKeys: string[] | null;
+  disabled: boolean;
+  files:
+    | {
+        key: string;
+        name: string;
+        url: string | null;
+        size: number | null;
+        token: string;
+      }[]
+    | null;
+  helperText: string | null;
+  hidden: boolean;
+  image: boolean;
+  label: string | null;
+  maxFiles: number | null;
+  maxSize: number | null;
+  multiple: boolean;
+  name: string;
+  prefill: boolean;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
+  readOnly: boolean;
+  required: boolean;
+  signed: boolean;
+  value: unknown;
+};
 export type FilterClause = {
   readonly field: string;
   readonly operator: string;
@@ -359,13 +396,13 @@ export type Form = {
   action: string | null;
   errorBag: string | null;
   method: HttpMethod | null;
-  precognitive: boolean | null;
+  precognitive: boolean;
   ref: string | null;
   resetOnError: string[] | boolean | null;
   resetOnSuccess: string[] | boolean | null;
   state: Record<string, unknown>;
   status: string | null;
-  submitButton: boolean | null;
+  submitButton: boolean;
   submitLabel: string | null;
   validationSummaryLabel: string;
   validationTimeout: number | null;
@@ -390,6 +427,11 @@ export type FormFieldNode =
       type: "form.date-input";
       key?: string;
       props: DateInput;
+    }
+  | {
+      type: "form.file-upload";
+      key?: string;
+      props: FileUpload;
     }
   | {
       type: "form.hidden-input";
@@ -470,18 +512,18 @@ export type HiddenInput = {
     readOnly?: Condition[];
     disabled?: Condition[];
   } | null;
-  dependsOnAny: boolean | null;
+  dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
-  disabled: boolean | null;
+  disabled: boolean;
   helperText: string | null;
-  hidden: boolean | null;
+  hidden: boolean;
   label: string | null;
   name: string;
-  prefill: boolean | null;
+  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
-  readOnly: boolean | null;
-  required: boolean | null;
+  readOnly: boolean;
+  required: boolean;
   value: unknown;
 };
 export type HttpMethod = import("@inertiajs/core").Method;
@@ -563,7 +605,7 @@ export type Modal = {
 export type Node = FormNode | CoreNode | ActionNode | FragmentNode | TableNode | LayoutNode;
 export type NodeType = Node["type"];
 export type NumberInput = {
-  autoFocus: boolean | null;
+  autoFocus: boolean;
   columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
@@ -571,22 +613,22 @@ export type NumberInput = {
     readOnly?: Condition[];
     disabled?: Condition[];
   } | null;
-  dependsOnAny: boolean | null;
+  dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
-  disabled: boolean | null;
+  disabled: boolean;
   helperText: string | null;
-  hidden: boolean | null;
+  hidden: boolean;
   label: string | null;
   max: number | null;
   min: number | null;
   name: string;
   placeholder: string | null;
-  prefill: boolean | null;
+  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
-  readOnly: boolean | null;
-  required: boolean | null;
-  slider: boolean | null;
+  readOnly: boolean;
+  required: boolean;
+  slider: boolean;
   step: number | null;
   tabIndex: number | null;
   value: unknown;
@@ -621,7 +663,7 @@ export type PageLayout = "app" | "auth" | "none";
 export type PaginationType = "none" | "simple" | "table" | "infinite";
 export type PasswordInput = {
   autoComplete: string | null;
-  autoFocus: boolean | null;
+  autoFocus: boolean;
   columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
@@ -634,11 +676,11 @@ export type PasswordInput = {
     name: string;
     placeholder: string;
   } | null;
-  dependsOnAny: boolean | null;
+  dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
-  disabled: boolean | null;
+  disabled: boolean;
   helperText: string | null;
-  hidden: boolean | null;
+  hidden: boolean;
   label: string | null;
   labelAction: {
     href: string;
@@ -648,11 +690,11 @@ export type PasswordInput = {
   name: string;
   passwordRules: string | null;
   placeholder: string | null;
-  prefill: boolean | null;
+  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
-  readOnly: boolean | null;
-  required: boolean | null;
+  readOnly: boolean;
+  required: boolean;
   tabIndex: number | null;
   value: unknown;
 };
@@ -677,24 +719,24 @@ export type Repeater = {
     disabled?: Condition[];
   } | null;
   defaultItems: number;
-  dependsOnAny: boolean | null;
+  dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
-  disabled: boolean | null;
+  disabled: boolean;
   helperText: string | null;
-  hidden: boolean | null;
+  hidden: boolean;
   itemLabel: string | null;
   label: string | null;
   layout: RowLayout;
   maxItems: number | null;
   minItems: number | null;
   name: string;
-  prefill: boolean | null;
+  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
-  readOnly: boolean | null;
+  readOnly: boolean;
   reorderable: boolean;
-  required: boolean | null;
-  resizableColumns: boolean | null;
+  required: boolean;
+  resizableColumns: boolean;
   resizeIndicator: boolean;
   rowActions: RowAction[] | null;
   value: unknown;
@@ -710,19 +752,19 @@ export type RichEditor = {
     readOnly?: Condition[];
     disabled?: Condition[];
   } | null;
-  dependsOnAny: boolean | null;
+  dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
-  disabled: boolean | null;
+  disabled: boolean;
   helperText: string | null;
-  hidden: boolean | null;
+  hidden: boolean;
   label: string | null;
   name: string;
   placeholder: string | null;
-  prefill: boolean | null;
+  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
-  readOnly: boolean | null;
-  required: boolean | null;
+  readOnly: boolean;
+  required: boolean;
   value: unknown;
 };
 export type RowAction = {
@@ -750,7 +792,7 @@ export type SegmentedControl = {
   value: string | null;
 };
 export type Select = {
-  autoFocus: boolean | null;
+  autoFocus: boolean;
   columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
@@ -758,24 +800,24 @@ export type Select = {
     readOnly?: Condition[];
     disabled?: Condition[];
   } | null;
-  dependsOnAny: boolean | null;
+  dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
-  disabled: boolean | null;
+  disabled: boolean;
   emptyLabel: string;
   helperText: string | null;
-  hidden: boolean | null;
+  hidden: boolean;
   label: string | null;
-  multiple: boolean | null;
+  multiple: boolean;
   name: string;
   options: Option[];
   placeholder: string | null;
-  prefill: boolean | null;
+  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
-  readOnly: boolean | null;
-  required: boolean | null;
+  readOnly: boolean;
+  required: boolean;
   searchPlaceholder: string;
-  searchable: boolean | null;
+  searchable: boolean;
   tabIndex: number | null;
   value: unknown;
 };
@@ -866,7 +908,7 @@ export type TextColumnProps = {
 };
 export type TextInput = {
   autoComplete: string | null;
-  autoFocus: boolean | null;
+  autoFocus: boolean;
   columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
@@ -874,25 +916,25 @@ export type TextInput = {
     readOnly?: Condition[];
     disabled?: Condition[];
   } | null;
-  dependsOnAny: boolean | null;
+  dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
-  disabled: boolean | null;
+  disabled: boolean;
   helperText: string | null;
-  hidden: boolean | null;
+  hidden: boolean;
   label: string | null;
   name: string;
   placeholder: string | null;
-  prefill: boolean | null;
+  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
-  readOnly: boolean | null;
-  required: boolean | null;
+  readOnly: boolean;
+  required: boolean;
   tabIndex: number | null;
   type: string | null;
   value: unknown;
 };
 export type Textarea = {
-  autoFocus: boolean | null;
+  autoFocus: boolean;
   columnWidth: ColumnWidth;
   conditions: {
     visible?: Condition[];
@@ -900,19 +942,19 @@ export type Textarea = {
     readOnly?: Condition[];
     disabled?: Condition[];
   } | null;
-  dependsOnAny: boolean | null;
+  dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
-  disabled: boolean | null;
+  disabled: boolean;
   helperText: string | null;
-  hidden: boolean | null;
+  hidden: boolean;
   label: string | null;
   name: string;
   placeholder: string | null;
-  prefill: boolean | null;
+  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
-  readOnly: boolean | null;
-  required: boolean | null;
+  readOnly: boolean;
+  required: boolean;
   rows: number | null;
   tabIndex: number | null;
   value: unknown;

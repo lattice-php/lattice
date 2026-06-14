@@ -7,6 +7,7 @@ type FormComponentName =
   | "CheckboxComponent"
   | "ChoiceComponent"
   | "DateInputComponent"
+  | "FileUploadComponent"
   | "FormComponent"
   | "HiddenInputComponent"
   | "NumberInputComponent"
@@ -39,6 +40,7 @@ export const formComponents = createPlugin({
     "form.checkbox": lazyComponent(loadFormComponent("CheckboxComponent")),
     "form.choice": lazyComponent(loadFormComponent("ChoiceComponent")),
     "form.date-input": lazyComponent(loadFormComponent("DateInputComponent")),
+    "form.file-upload": lazyComponent(loadFormComponent("FileUploadComponent")),
     "form.hidden-input": lazyComponent(loadFormComponent("HiddenInputComponent")),
     "form.number-input": lazyComponent(loadFormComponent("NumberInputComponent")),
     "form.password-input": lazyComponent(loadFormComponent("PasswordInputComponent")),

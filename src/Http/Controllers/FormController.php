@@ -28,6 +28,10 @@ final class FormController
 
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->forms, 'form', $form);
 
+        if ($request->filled('_upload')) {
+            return new JsonResponse($definition->signUpload($request));
+        }
+
         if ($request->filled('_search')) {
             return new JsonResponse($definition->searchOptions($request));
         }

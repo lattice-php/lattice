@@ -10,7 +10,7 @@ trait HasRowLayout
 {
     public RowLayout $layout = RowLayout::Stack;
 
-    public ?bool $resizableColumns = null;
+    public bool $resizableColumns = false;
 
     public bool $resizeIndicator = false;
 
@@ -23,7 +23,7 @@ trait HasRowLayout
 
     public function resizableColumns(bool $resizable = true, bool $showIndicator = false): static
     {
-        $this->resizableColumns = $resizable ?: null;
+        $this->resizableColumns = $resizable;
         $this->resizeIndicator = $resizable && $showIndicator;
 
         return $this;

@@ -258,6 +258,21 @@ return [
             'title' => 'Lattice Tabs',
             'vertical' => 'Vertikale Tabs',
         ],
+        'upload-create' => [
+            'heading' => 'Dateien hochladen',
+            'submit' => 'Hochladen',
+            'title' => 'Dateien hochladen',
+        ],
+        'upload-edit' => [
+            'heading' => 'Upload bearbeiten',
+            'submit' => 'Speichern',
+            'title' => 'Upload bearbeiten',
+        ],
+        'uploads' => [
+            'create' => 'Dateien hochladen',
+            'heading' => 'Uploads',
+            'title' => 'Uploads',
+        ],
     ],
     'status' => [
         'active' => 'Aktiv',

@@ -21,7 +21,7 @@ class NumberInput extends Field
 
     public int|float|null $step = null;
 
-    public ?bool $slider = null;
+    public bool $slider = false;
 
     public function min(int|float $min): static
     {

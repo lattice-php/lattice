@@ -35,6 +35,45 @@ final class ComponentReferenceSigner implements SignsComponentReferences
         return $this->encrypter->encryptString(json_encode($payload, JSON_THROW_ON_ERROR));
     }
 
+    public function unseal(string $token, string $type, string $key): ?array
+    {
+        if ($token === '') {
+            return null;
+        }
+
+        try {
+            $payload = json_decode($this->encrypter->decryptString($token), true, flags: JSON_THROW_ON_ERROR);
+        } catch (DecryptException|JsonException) {
+            return null;
+        }
+
+        if (! is_array($payload)) {
+            return null;
+        }
+
+        if (($payload['type'] ?? null) !== $type || ($payload['key'] ?? null) !== $key) {
+            return null;
+        }
+
+        if (! is_int($payload['expires_at'] ?? null) || $payload['expires_at'] < now()->timestamp) {
+            return null;
+        }
+
+        $request = app(Request::class);
+
+        $userId = $payload['user_id'] ?? null;
+        if ($userId !== null && (string) $userId !== (string) $request->user()?->getAuthIdentifier()) {
+            return null;
+        }
+
+        $session = $payload['session'] ?? null;
+        if (is_string($session) && (! $request->hasSession() || ! hash_equals($session, hash('sha256', $request->session()->getId())))) {
+            return null;
+        }
+
+        return is_array($payload['context'] ?? null) ? $payload['context'] : [];
+    }
+
     public function mergeTrustedContext(Request $request, string $type, string $key): Request
     {
         $request->merge([

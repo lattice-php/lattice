@@ -94,8 +94,37 @@ jobs:
   browser:
     name: Browser (Pest)
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: herd
+      AWS_SECRET_ACCESS_KEY: secretkey
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_BUCKET: herd-bucket
+      AWS_ENDPOINT: http://localhost:9000
+      AWS_URL: http://localhost:9000/herd-bucket
+      AWS_USE_PATH_STYLE_ENDPOINT: "true"
     steps:
       - uses: actions/checkout@v6
+
+      - name: Start RustFS (S3-compatible)
+        run: |
+          docker run -d --name rustfs \
+            -p 9000:9000 \
+            -e RUSTFS_ACCESS_KEY=herd \
+            -e RUSTFS_SECRET_KEY=secretkey \
+            -e RUSTFS_CORS_ALLOWED_ORIGINS=* \
+            rustfs/rustfs:latest /data
+          for i in $(seq 1 30); do
+            if curl -s -o /dev/null http://localhost:9000/; then
+              echo "RustFS is up"; exit 0
+            fi
+            echo "waiting for RustFS ($i)..."; sleep 1
+          done
+          echo "RustFS did not become ready"; docker logs rustfs; exit 1
+
+      - name: Create RustFS bucket
+        run: |
+          aws configure set default.s3.addressing_style path
+          aws --endpoint-url http://localhost:9000 s3 mb "s3://${AWS_BUCKET}"
 
       - uses: shivammathur/setup-php@v2
         with:

@@ -2,6 +2,7 @@ export { BuilderComponent } from "./fields/builder";
 export { CheckboxComponent } from "./fields/checkbox";
 export { ChoiceComponent } from "./fields/choice";
 export { DateInputComponent } from "./fields/date-input";
+export { FileUploadComponent } from "./fields/file-upload";
 export { FormComponent } from "./form";
 export { HiddenInputComponent } from "./fields/hidden-input";
 export { NumberInputComponent } from "./fields/number-input";

@@ -27,13 +27,13 @@ abstract class Field extends Component
 
     public mixed $value = null;
 
-    public ?bool $hidden = null;
+    public bool $hidden = false;
 
-    public ?bool $required = null;
+    public bool $required = false;
 
-    public ?bool $readOnly = null;
+    public bool $readOnly = false;
 
-    public ?bool $disabled = null;
+    public bool $disabled = false;
 
     /**
      * @var array{
@@ -50,7 +50,7 @@ abstract class Field extends Component
      */
     public ?array $dependsOnKeys = null;
 
-    public ?bool $dependsOnAny = null;
+    public bool $dependsOnAny = false;
 
     /**
      * Validation rules. Each entry is a rule (string/object) or a Closure that
@@ -75,7 +75,7 @@ abstract class Field extends Component
 
     protected ?Closure $valueResolver = null;
 
-    public ?bool $prefill = null;
+    public bool $prefill = false;
 
     /**
      * @var array<int, string>|null
@@ -571,7 +571,7 @@ abstract class Field extends Component
         }
 
         $this->dependsOnKeys = $keys === [] ? null : array_keys($keys);
-        $this->dependsOnAny = $this->valueResolver !== null ? true : null;
+        $this->dependsOnAny = $this->valueResolver !== null;
 
         return $data;
     }

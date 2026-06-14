@@ -35,7 +35,7 @@ test('registered forms serialize their configured endpoint and isolated error ba
                 'submitButton' => false,
                 'submitLabel' => null,
                 'validationSummaryLabel' => 'Fix these fields to continue:',
-                'precognitive' => null,
+                'precognitive' => false,
                 'validationTimeout' => null,
                 'resetOnSuccess' => null,
                 'resetOnError' => null,
