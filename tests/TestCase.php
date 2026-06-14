@@ -42,17 +42,6 @@ abstract class TestCase extends BaseTestCase
             dirname(__DIR__).'/workbench/resources/js/Pages',
         ]);
         $app['config']->set('inertia.testing.ensure_pages_exist', false);
-        $app['config']->set('filesystems.disks.s3', [
-            'driver' => 's3',
-            'key' => getenv('AWS_ACCESS_KEY_ID') ?: 'herd',
-            'secret' => getenv('AWS_SECRET_ACCESS_KEY') ?: 'secretkey',
-            'region' => getenv('AWS_DEFAULT_REGION') ?: 'us-east-1',
-            'bucket' => getenv('AWS_BUCKET') ?: 'herd-bucket',
-            'url' => getenv('AWS_URL') ?: 'https://rustfs.herd.test/herd-bucket',
-            'endpoint' => getenv('AWS_ENDPOINT') ?: 'https://rustfs.herd.test',
-            'use_path_style_endpoint' => filter_var(getenv('AWS_USE_PATH_STYLE_ENDPOINT') ?: 'true', FILTER_VALIDATE_BOOL),
-            'throw' => false,
-        ]);
     }
 
     /** @return array<int, class-string> */

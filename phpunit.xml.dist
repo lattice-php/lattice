@@ -23,4 +23,13 @@
             <directory>src</directory>
         </include>
     </source>
+    <php>
+        <env name="AWS_ACCESS_KEY_ID" value="herd"/>
+        <env name="AWS_SECRET_ACCESS_KEY" value="secretkey"/>
+        <env name="AWS_DEFAULT_REGION" value="us-east-1"/>
+        <env name="AWS_BUCKET" value="herd-bucket"/>
+        <env name="AWS_ENDPOINT" value="https://rustfs.herd.test"/>
+        <env name="AWS_URL" value="https://rustfs.herd.test/herd-bucket"/>
+        <env name="AWS_USE_PATH_STYLE_ENDPOINT" value="(true)"/>
+    </php>
 </phpunit>
