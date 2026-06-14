@@ -20,10 +20,6 @@ export type TranslationResult = {
   setLocale: (locale: string) => void;
 };
 
-function detectLanguage(): string {
-  return currentLocale();
-}
-
 export const i18n: I18nInstance = i18next.createInstance();
 
 let initialization: Promise<unknown> | undefined;
@@ -62,7 +58,7 @@ function snapshot(): number {
 export function ensureI18n(extend?: (base: InitOptions) => InitOptions): Promise<unknown> {
   if (!initialization) {
     const base: InitOptions = {
-      lng: detectLanguage(),
+      lng: currentLocale(),
       fallbackLng: "en",
       ns: [NAMESPACE],
       defaultNS: NAMESPACE,

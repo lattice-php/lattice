@@ -23,7 +23,7 @@ it('keeps the user dropdown usable when the sidebar is collapsed', function (): 
 
 it('renders the workbench locale switcher in a floating panel', function (): void {
     visit('/')
-        ->assertPresent('[data-lattice-component="locale-switcher-panel"]')
+        ->assertPresent('.fixed[aria-label="Language"]')
         ->assertSee('English')
         ->assertSee('German')
         ->assertNoSmoke();

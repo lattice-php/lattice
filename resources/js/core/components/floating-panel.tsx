@@ -1,5 +1,4 @@
 import type { CSSProperties } from "react";
-import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import type { FloatingPlacement } from "@lattice-php/lattice/types/generated";
 
@@ -20,7 +19,6 @@ function placementStyle(placement: FloatingPlacement, offset: number): CSSProper
 }
 
 const FloatingPanelComponent: RendererComponent<"floating-panel"> = ({ children, node }) => {
-  const identity = nodeIdentity(node);
   const label = node.props.label ?? undefined;
   const offset = Math.max(0, node.props.offset ?? 16);
   const placement = node.props.placement ?? "bottom-end";
@@ -29,7 +27,7 @@ const FloatingPanelComponent: RendererComponent<"floating-panel"> = ({ children,
     <div
       aria-label={label}
       className="fixed z-50 max-w-[calc(100vw-2rem)] rounded-lt border border-lt-border bg-lt-popover p-1 text-lt-popover-fg shadow-md"
-      data-lattice-component={identity}
+      data-lattice-component={node.id}
       role={label ? "group" : undefined}
       style={placementStyle(placement, offset)}
     >

@@ -6,7 +6,7 @@ import FloatingPanelComponent from "./floating-panel";
 describe("Floating panel", () => {
   it("renders children in a labelled fixed viewport panel", () => {
     const node = fakeNode({
-      key: "locale-switcher-panel",
+      id: "locale-switcher-panel",
       props: {
         label: "Language",
         offset: 24,
