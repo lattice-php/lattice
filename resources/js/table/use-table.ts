@@ -1,6 +1,7 @@
 import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { isEmptyFilterValue } from "./filter-values";
 import { getColumns, getPagination, getRows, getState } from "./payload";
 import { buildEndpoint, nextSort } from "./query";
 import type {
@@ -91,6 +92,28 @@ export function useTable(node: TableNode) {
     applyFilters(state.filters.filter((_, current) => current !== index));
   }
 
+  function setTableFilter(key: string, value: unknown): void {
+    const next = { ...state.tableFilters };
+
+    if (isEmptyFilterValue(value)) {
+      delete next[key];
+    } else {
+      next[key] = value;
+    }
+
+    const nextState = { ...state, tableFilters: next, page: 1 };
+
+    setState(nextState);
+    void load(nextState);
+  }
+
+  function resetFilters(): void {
+    const nextState = { ...state, filters: [], tableFilters: {}, page: 1 };
+
+    setState(nextState);
+    void load(nextState);
+  }
+
   function goToPage(page: number): void {
     void load({
       ...state,
@@ -169,9 +192,12 @@ export function useTable(node: TableNode) {
     pagination,
     state,
     filters: state.filters,
+    tableFilters: state.tableFilters,
     addFilter,
     updateFilter,
     removeFilter,
+    setTableFilter,
+    resetFilters,
     processing,
     hasLoaded,
     infiniteLoaderRef,

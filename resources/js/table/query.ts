@@ -32,10 +32,48 @@ export function buildEndpoint(endpoint: string, state: TableState): string {
     url.searchParams.set("sort", serializeSorts(state));
   }
 
+  appendTableFilters(url, state.tableFilters);
+
   url.searchParams.set("page", String(state.page));
   url.searchParams.set("per_page", String(state.perPage));
 
   return `${url.pathname}${url.search}`;
+}
+
+/**
+ * Serialize the dedicated table filters as Laravel-native bracket params:
+ * `tf[key]=v`, repeated `tf[key][]=v` for multi-value, and `tf[key][sub]=v`
+ * for structured values (e.g. a date range's from/until). Empty values are
+ * dropped so an unset filter never reaches the server.
+ */
+function appendTableFilters(url: URL, tableFilters: Record<string, unknown>): void {
+  for (const [key, value] of Object.entries(tableFilters)) {
+    if (typeof value === "string") {
+      if (value !== "") {
+        url.searchParams.set(`tf[${key}]`, value);
+      }
+
+      continue;
+    }
+
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        if (item != null && item !== "") {
+          url.searchParams.append(`tf[${key}][]`, String(item));
+        }
+      }
+
+      continue;
+    }
+
+    if (value != null && typeof value === "object") {
+      for (const [subKey, subValue] of Object.entries(value as Record<string, unknown>)) {
+        if (typeof subValue === "string" && subValue !== "") {
+          url.searchParams.set(`tf[${key}][${subKey}]`, subValue);
+        }
+      }
+    }
+  }
 }
 
 export function getQueryParams(state: TableState): Record<string, unknown> {

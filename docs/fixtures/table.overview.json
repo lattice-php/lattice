@@ -113,6 +113,7 @@
             ],
             "emptyLabel": "No results",
             "endpoint": null,
+            "filters": [],
             "layout": null,
             "lazy": null,
             "pagination": {
@@ -132,7 +133,8 @@
                 "filters": [],
                 "page": 1,
                 "perPage": 25,
-                "sorts": []
+                "sorts": [],
+                "tableFilters": []
             },
             "striped": true
         },

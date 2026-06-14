@@ -4,6 +4,7 @@ description: Make columns sortable and filterable, choose filter operators per v
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
 
 Sorting, filtering, and pagination are handled for you once a column opts in. The table sends the
 current sort and filters to its [endpoint](/advanced/security/), and the [data source](/tables/overview/#data-sources)
@@ -65,6 +66,65 @@ TextColumn::make('sku')->filterable(Op::Equals, [Op::Equals, Op::NotEquals]);
 A column's filter capability serializes as a `ColumnFilter` (`{ enabled, type, operators,
 defaultOperator }`) so the React filter control knows which inputs and operators to render. Open the
 **Tree** tab on the example above to see it.
+
+## Dedicated filters
+
+Per-column filters compare a single column with an operator. **Dedicated filters** are named,
+table-level controls rendered in a filter bar above the table — each owns its own control and query
+logic, and isn't tied to a column. Declare them by overriding `filters()`:
+
+```php
+use Illuminate\Database\Eloquent\Builder;
+use Lattice\Lattice\Tables\Filters\DateRangeFilter;
+use Lattice\Lattice\Tables\Filters\Filter;
+use Lattice\Lattice\Tables\Filters\SelectFilter;
+use Lattice\Lattice\Tables\Filters\TernaryFilter;
+
+public function filters(): array
+{
+    return [
+        SelectFilter::make('status')
+            ->options([
+                SelectFilter::option('Draft', 'draft'),
+                SelectFilter::option('Active', 'active'),
+            ])
+            ->multiple(),                          // match any selected → whereIn
+
+        TernaryFilter::make('featured')            // yes / no / all
+            ->trueLabel('Featured')
+            ->falseLabel('Not featured'),
+
+        DateRangeFilter::make('created_at'),       // from / until, inclusive
+
+        Filter::make('high_value')                 // custom toggle + query
+            ->query(fn (Builder $query): Builder => $query->where('price', '>', 1000)),
+    ];
+}
+```
+
+| Filter             | Control          | Applies                                                                 |
+| ------------------ | ---------------- | ----------------------------------------------------------------------- |
+| `SelectFilter`     | dropdown         | `where` (single) or `whereIn` (`->multiple()`); `->attribute()` to remap |
+| `TernaryFilter`    | yes / no / all   | boolean `where`, or custom `->queries(true: …, false: …)`                |
+| `DateRangeFilter`  | from / until     | inclusive `whereDate` on each provided bound                            |
+| `Filter`           | toggle           | your `->query()` closure when on                                        |
+
+Active values show as removable chips with a **Reset all** that clears every filter — dedicated and
+column alike.
+
+### How values reach the server
+
+Dedicated filter values post as Laravel bracket params — `tf[status]=active`, repeated
+`tf[status][]=…` for multi-select, and `tf[created][from]=…` / `[until]` for a range. They're
+validated against the declared filters, then applied by the [data source](/tables/overview/#data-sources).
+A custom `Filter::query()` closure runs server-side with utility injection — type-hint `Builder` to
+receive the query.
+
+<Info>
+Dedicated filters are independent of a column's `->filterable()`: column filters compare one column
+with an operator and render in the column header; dedicated filters are named, drive their own query,
+and live in the filter bar.
+</Info>
 
 ## Pagination
 

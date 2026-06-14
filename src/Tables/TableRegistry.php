@@ -57,6 +57,7 @@ final class TableRegistry extends DefinitionRegistry
         $component = TableComponent::make($key)
             ->endpoint($this->endpointFor($key))
             ->columns($columns)
+            ->filters($definition->filters())
             ->layout($definition->layout())
             ->striped($definition->striped())
             ->resizableColumns($definition->resizableColumns(), $definition->resizeIndicator())
@@ -76,7 +77,7 @@ final class TableRegistry extends DefinitionRegistry
     {
         $definition ??= $this->resolve($key);
         $columns = $definition->columns();
-        $query = TableQuery::fromRequest($request, $columns, $key, $definition->perPage());
+        $query = TableQuery::fromRequest($request, $columns, $key, $definition->perPage(), $definition->filters());
 
         return $this->decorateResult($definition, $definition->source()->query($query), $columns)->forQuery($query);
     }

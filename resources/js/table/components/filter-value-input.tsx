@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { FilterType } from "@lattice-php/lattice/types/generated";
 
-const baseClass =
+export const fieldClass =
   "h-9 w-full min-w-0 rounded-lt-sm border border-lt-input bg-lt-bg px-2 text-sm font-normal";
 
 export function FilterValueInput({
@@ -43,7 +43,7 @@ export function FilterValueInput({
       <select
         aria-label={inputLabel}
         data-test={testId}
-        className={`${baseClass} ${groupedClass}`}
+        className={`${fieldClass} ${groupedClass}`}
         disabled={processing}
         value={value}
         onChange={(event) => onCommit(event.target.value)}
@@ -61,7 +61,7 @@ export function FilterValueInput({
         type="date"
         aria-label={inputLabel}
         data-test={testId}
-        className={`${baseClass} ${groupedClass}`}
+        className={`${fieldClass} ${groupedClass}`}
         disabled={processing}
         value={draft}
         onChange={(event) => {
@@ -85,7 +85,7 @@ export function FilterValueInput({
         type={type === "number" ? "number" : "text"}
         aria-label={inputLabel}
         data-test={testId}
-        className={`${baseClass} ${groupedClass} ${withSearchIcon ? "pl-8" : ""} ${onClear ? "pr-8" : ""}`}
+        className={`${fieldClass} ${groupedClass} ${withSearchIcon ? "pl-8" : ""} ${onClear ? "pr-8" : ""}`}
         disabled={processing}
         value={draft}
         onChange={(event) => setDraft(event.target.value)}

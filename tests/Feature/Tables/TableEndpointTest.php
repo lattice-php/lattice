@@ -46,6 +46,7 @@ test('registered tables serialize their configured endpoint columns state and in
                 'resizeIndicator' => false,
                 'actionsLabel' => 'Actions',
                 'emptyLabel' => 'No results',
+                'filters' => [],
                 'columns' => [
                     [
                         'key' => 'name',
@@ -98,6 +99,7 @@ test('registered tables serialize their configured endpoint columns state and in
                     'sorts' => [],
                     'page' => 1,
                     'perPage' => 25,
+                    'tableFilters' => [],
                 ],
                 'pagination' => null,
             ],
@@ -126,6 +128,7 @@ test('registered tables can serialize lazily without running their query', funct
                 'resizeIndicator' => false,
                 'actionsLabel' => 'Actions',
                 'emptyLabel' => 'No results',
+                'filters' => [],
                 'columns' => [
                     [
                         'key' => 'name',
@@ -144,6 +147,7 @@ test('registered tables can serialize lazily without running their query', funct
                     'sorts' => [],
                     'page' => 1,
                     'perPage' => 25,
+                    'tableFilters' => [],
                 ],
                 'pagination' => [
                     'mode' => 'table',

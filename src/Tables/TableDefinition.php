@@ -9,6 +9,7 @@ use Lattice\Lattice\Core\Definition;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\Enums\PaginationType;
+use Lattice\Lattice\Tables\Filters\BaseFilter;
 
 abstract class TableDefinition extends Definition
 {
@@ -16,6 +17,16 @@ abstract class TableDefinition extends Definition
      * @return array<int, Column>
      */
     abstract public function columns(): array;
+
+    /**
+     * Dedicated, table-level filters rendered above the table.
+     *
+     * @return array<int, BaseFilter>
+     */
+    public function filters(): array
+    {
+        return [];
+    }
 
     public function perPage(): int
     {

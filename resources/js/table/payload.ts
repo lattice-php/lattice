@@ -73,6 +73,7 @@ export function getState(value: unknown): TableState {
       sorts: [],
       page: 1,
       perPage: 25,
+      tableFilters: {},
     };
   }
 
@@ -83,7 +84,20 @@ export function getState(value: unknown): TableState {
     sorts: Array.isArray(state.sorts) ? state.sorts : [],
     page: typeof state.page === "number" ? state.page : 1,
     perPage: typeof state.perPage === "number" ? state.perPage : 25,
+    tableFilters: getTableFilters(state.tableFilters),
   };
+}
+
+/**
+ * The wire serializes an empty filter map as `[]` and a populated one as an
+ * object, so coerce both to a plain `key => value` record.
+ */
+function getTableFilters(value: unknown): Record<string, unknown> {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return {};
+  }
+
+  return value as Record<string, unknown>;
 }
 
 export function getRowKey(row: TableRow, index: number): string {

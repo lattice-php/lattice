@@ -402,6 +402,13 @@ export type FilterClause = {
   readonly operator: string;
   readonly value: string;
 };
+export type FilterControl = "select" | "ternary" | "date-range" | "toggle";
+export type FilterData = {
+  readonly key: string;
+  readonly label: string;
+  readonly type: FilterControl;
+  readonly props: Record<string, unknown>;
+};
 export type FilterType = "text" | "number" | "date" | "boolean";
 export type FloatingPanel = {
   label: string | null;
@@ -871,6 +878,7 @@ export type Table = {
   columns: ColumnData[];
   emptyLabel: string;
   endpoint: string | null;
+  filters: FilterData[];
   layout: string | null;
   lazy: boolean | null;
   ref: string | null;
@@ -900,6 +908,7 @@ export type TableQuery = {
   readonly sorts: TableSort[];
   readonly page: number;
   readonly perPage: number;
+  readonly tableFilters: Record<string, unknown>;
 };
 export type TableSort = {
   readonly key: string;
