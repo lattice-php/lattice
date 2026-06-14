@@ -71,13 +71,13 @@ function Harness({
   onGetter?.(getResizeHandleProps);
 
   return (
-    <div data-testid="grid" style={{ gridTemplateColumns }}>
-      <span data-testid="has-overrides">{String(hasOverrides)}</span>
-      <button data-testid="reset" onClick={resetColumns} type="button">
+    <div data-test="grid" style={{ gridTemplateColumns }}>
+      <span data-test="has-overrides">{String(hasOverrides)}</span>
+      <button data-test="reset" onClick={resetColumns} type="button">
         reset
       </button>
       {hookColumns.map((column) => (
-        <div key={column.key} data-testid={`cell-${column.key}`}>
+        <div key={column.key} data-test={`cell-${column.key}`}>
           <div {...getResizeHandleProps(column)} />
         </div>
       ))}

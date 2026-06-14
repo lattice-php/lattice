@@ -6,12 +6,12 @@ function Probe() {
   const scope = useFieldScope();
   return (
     <div>
-      <span data-testid="dom">{scope?.scopedName("name")}</span>
-      <span data-testid="err">{scope?.errorKey("name")}</span>
-      <span data-testid="val">{String(scope?.getValue("name"))}</span>
-      <span data-testid="row-id">{String(scope?.rowId)}</span>
-      <span data-testid="override">{scope?.overrideKey("price")}</span>
-      <span data-testid="row-sku">{String(scope?.row.sku)}</span>
+      <span data-test="dom">{scope?.scopedName("name")}</span>
+      <span data-test="err">{scope?.errorKey("name")}</span>
+      <span data-test="val">{String(scope?.getValue("name"))}</span>
+      <span data-test="row-id">{String(scope?.rowId)}</span>
+      <span data-test="override">{scope?.overrideKey("price")}</span>
+      <span data-test="row-sku">{String(scope?.row.sku)}</span>
     </div>
   );
 }

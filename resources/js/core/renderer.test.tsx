@@ -6,7 +6,7 @@ import { CollapsedContext } from "./collapsed-context";
 import type { RendererComponent, RendererComponentModule } from "./types";
 
 const TestComponent: RendererComponent<"test.component"> = ({ children, node }) => (
-  <section data-testid={node.id}>
+  <section data-test={node.id}>
     {node.props?.label as string | undefined}
     {children}
   </section>
@@ -92,7 +92,7 @@ describe("Renderer", () => {
 
   it("renders a lazy component fallback while the chunk is loading", () => {
     const LazyFallback: RendererComponent<"test.lazy"> = ({ node }) => (
-      <div data-testid={`${node.id}-fallback`} />
+      <div data-test={`${node.id}-fallback`} />
     );
 
     const { components } = createRegistry({

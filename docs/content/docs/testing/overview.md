@@ -172,6 +172,18 @@ $this->assertLatticeComponent($action)
         ->assertHasForm());
 ```
 
+## Test selectors
+
+Lattice uses `data-test` as its standard test-hook attribute (83 usages in production source).
+`data-testid` is **not** used.
+
+**Pest browser tests** target `data-test` via the `@shorthand` selector. `->click('@foo')` is
+equivalent to clicking `[data-test="foo"]`.
+
+**Vitest + Testing Library unit tests** query it via `getByTestId`, `queryByTestId`, and friends.
+The resolver is pointed at `data-test` by the `configure({ testIdAttribute: "data-test" })` call
+in `resources/js/test/setup.ts`, so no test-by-test configuration is needed.
+
 ## Helpful failures
 
 Every assertion fails with context. A missing field lists the available fields; an

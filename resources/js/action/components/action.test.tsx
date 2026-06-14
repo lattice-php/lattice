@@ -126,7 +126,7 @@ describe("Lattice action component", () => {
 
   it("renders configured icons through the icon renderer", () => {
     const iconRenderer = vi.fn<IconRendererFunction>(({ icon }) => (
-      <span data-testid="action-icon">{icon}</span>
+      <span data-test="action-icon">{icon}</span>
     ));
 
     const node = fakeNode({

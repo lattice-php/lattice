@@ -19,7 +19,7 @@ export default function Page({ lattice }: Props) {
       {lattice.container === "centered" ? (
         <main className="min-h-svh bg-lt-bg text-lt-fg">
           <div
-            data-testid="lattice-centered-container"
+            data-test="lattice-centered-container"
             className="mx-auto flex min-h-svh w-full max-w-6xl flex-col justify-center px-6 py-12 sm:px-8 lg:px-10"
           >
             {content}
@@ -27,7 +27,7 @@ export default function Page({ lattice }: Props) {
         </main>
       ) : (
         <div
-          data-testid="lattice-default-container"
+          data-test="lattice-default-container"
           className={cn("w-full", {
             "px-4 py-6": lattice.layout !== null,
           })}
