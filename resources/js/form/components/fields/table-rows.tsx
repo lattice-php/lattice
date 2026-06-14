@@ -180,6 +180,7 @@ export function TableRows({
   resizableColumns?: boolean;
   resizeIndicator?: boolean;
 }) {
+  const { t } = useT("lattice");
   const sizingColumns = useMemo<SizableColumn[]>(
     () =>
       columns.map((column) => ({
@@ -189,56 +190,71 @@ export function TableRows({
       })),
     [columns],
   );
-  const { getResizeHandleProps, gridTemplateColumns } = useColumnResizing({
-    columns: sizingColumns,
-    enabled: resizableColumns,
-    columnGapPx: 12,
-    leadingTracks: rowControlTracks,
-    showIndicator: resizeIndicator,
-    storageKey: resizableColumns ? `lattice:table-columns:form:${base}` : undefined,
-    trailingTracks: rowActionTracks,
-  });
+  const { getResizeHandleProps, gridTemplateColumns, hasOverrides, resetColumns } =
+    useColumnResizing({
+      columns: sizingColumns,
+      enabled: resizableColumns,
+      columnGapPx: 12,
+      leadingTracks: rowControlTracks,
+      showIndicator: resizeIndicator,
+      storageKey: resizableColumns ? `lattice:table-columns:form:${base}` : undefined,
+      trailingTracks: rowActionTracks,
+    });
 
   return (
-    <div className="overflow-x-auto">
-      <div className="flex min-w-max flex-col gap-2">
-        <div className="grid items-center gap-x-3" style={{ gridTemplateColumns }}>
-          <div />
-          {columns.map((column, index) => (
-            <div
-              key={column.name}
-              className="relative min-w-0 pr-3 text-xs font-medium text-lt-muted-fg"
-            >
-              {column.label}
-              {resizableColumns && <div {...getResizeHandleProps(sizingColumns[index])} />}
-            </div>
-          ))}
-          <div />
-        </div>
+    <div className="relative">
+      {hasOverrides && (
+        <button
+          aria-label={t("a11y.resetColumnWidths", "Reset column widths")}
+          className="absolute right-1 top-1 z-10 hidden rounded-lt-sm p-1 text-lt-muted-fg hover:text-lt-fg md:inline-flex"
+          data-test="table-reset-columns"
+          onClick={resetColumns}
+          title={t("a11y.resetColumnWidths", "Reset column widths")}
+          type="button"
+        >
+          <Icon name="rotate-ccw" className="size-lt-icon-sm" />
+        </button>
+      )}
+      <div className="overflow-x-auto">
+        <div className="flex min-w-max flex-col gap-2">
+          <div className="grid items-center gap-x-3" style={{ gridTemplateColumns }}>
+            <div />
+            {columns.map((column, index) => (
+              <div
+                key={column.name}
+                className="relative min-w-0 pr-3 text-xs font-medium text-lt-muted-fg"
+              >
+                {column.label}
+                {resizableColumns && <div {...getResizeHandleProps(sizingColumns[index])} />}
+              </div>
+            ))}
+            <div />
+          </div>
 
-        {rows.map((row) => (
-          <TableRowItem
-            key={row.key}
-            base={base}
-            index={row.index}
-            row={row.row}
-            template={row.template}
-            span={row.span}
-            isFirst={row.index === 0}
-            isLast={row.index === rows.length - 1}
-            columnCount={columns.length}
-            gridTemplateColumns={gridTemplateColumns}
-            flipKey={row.key}
-            reorderable={reorderable}
-            removable={removable(row.index)}
-            rowActions={rowActions}
-            onField={onField}
-            onMove={onMove}
-            onRemove={onRemove}
-            onDuplicate={onDuplicate}
-            registerRow={registerRow}
-          />
-        ))}
+          {rows.map((row) => (
+            <TableRowItem
+              key={row.key}
+              base={base}
+              index={row.index}
+              row={row.row}
+              template={row.template}
+              span={row.span}
+              isFirst={row.index === 0}
+              isLast={row.index === rows.length - 1}
+              columnCount={columns.length}
+              gridTemplateColumns={gridTemplateColumns}
+              flipKey={row.key}
+              reorderable={reorderable}
+              removable={removable(row.index)}
+              rowActions={rowActions}
+              onField={onField}
+              onMove={onMove}
+              onRemove={onRemove}
+              onDuplicate={onDuplicate}
+              registerRow={registerRow}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
