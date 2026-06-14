@@ -2,9 +2,10 @@ import { Icon } from "@lattice-php/lattice/icons";
 import * as Popover from "@radix-ui/react-popover";
 import { useState } from "react";
 import { useT } from "@lattice-php/lattice/i18n";
-import type { FilterType, Op } from "@lattice-php/lattice/types/generated";
+import type { FilterData, FilterType, Op } from "@lattice-php/lattice/types/generated";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
 import type { FilterClause, TableColumn } from "../types";
+import { TableFilterControl } from "./filter-controls";
 import { FilterValueInput } from "./filter-value-input";
 
 type ColumnClause = { clause: FilterClause; index: number };
@@ -29,6 +30,19 @@ export function ColumnFilterControl({
 
   if (!filter) {
     return null;
+  }
+
+  if (filter.control === "select") {
+    return (
+      <ColumnSelectFilter
+        column={column}
+        clauses={clauses}
+        processing={processing}
+        onAdd={onAdd}
+        onUpdate={onUpdate}
+        onRemove={onRemove}
+      />
+    );
   }
 
   const type = filter.type ?? "text";
@@ -105,6 +119,71 @@ export function ColumnFilterControl({
         </Popover.Portal>
       </Popover.Root>
     </div>
+  );
+}
+
+/**
+ * Renders a column's option dropdown by reusing the shared table-filter select
+ * control, mapping its value to/from a single `eq` clause (or an `in` clause
+ * carrying a comma-joined value when the column is `multiple`).
+ */
+function ColumnSelectFilter({
+  column,
+  clauses,
+  processing,
+  onAdd,
+  onUpdate,
+  onRemove,
+}: {
+  column: TableColumn;
+  clauses: ColumnClause[];
+  processing: boolean;
+  onAdd: (clause: FilterClause) => void;
+  onUpdate: (index: number, clause: FilterClause) => void;
+  onRemove: (index: number) => void;
+}) {
+  const filter = column.filter;
+
+  if (!filter) {
+    return null;
+  }
+
+  const multiple = filter.multiple;
+  const operator = filter.defaultOperator;
+  const active = clauses.find((entry) => entry.clause.operator === operator) ?? clauses[0];
+  const value: unknown = multiple
+    ? active?.clause.value
+      ? active.clause.value.split(",")
+      : []
+    : (active?.clause.value ?? "");
+
+  const data: FilterData = {
+    key: column.key,
+    label: column.label,
+    type: "select",
+    props: { options: filter.options, multiple, searchable: false, placeholder: null },
+  };
+
+  function change(next: unknown): void {
+    const serialized = Array.isArray(next) ? next.join(",") : typeof next === "string" ? next : "";
+
+    if (serialized === "") {
+      if (active) {
+        onRemove(active.index);
+      }
+
+      return;
+    }
+
+    if (active) {
+      onUpdate(active.index, { ...active.clause, operator, value: serialized });
+    } else {
+      onAdd({ field: column.key, operator, value: serialized });
+    }
+  }
+
+  return (
+    <TableFilterControl filter={data} value={value} processing={processing} onChange={change} />
   );
 }
 

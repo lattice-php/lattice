@@ -45,13 +45,12 @@ it('narrows rows with a custom toggle filter', function (): void {
         ->assertNoSmoke();
 });
 
-it('narrows rows with the multi-select status filter', function (): void {
+it('narrows rows with the status column select filter', function (): void {
     $this->actingAs(workbenchTestUser());
     seedFilterProducts();
 
     visit('/products')
-        ->click('@table-filter-status')
-        ->click('@table-filter-status-active')
+        ->select('@table-filter-status', 'active')
         ->assertSee('Active Featured')
         ->assertDontSee('Draft Plain')
         ->assertNoSmoke();
