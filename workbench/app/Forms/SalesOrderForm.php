@@ -189,13 +189,18 @@ class SalesOrderForm extends FormDefinition
 
     private function generateNumber(): string
     {
-        do {
-            $number = 'SO-'.str_pad((string) (((int) SalesOrder::query()->max('id')) + 1), 4, '0', STR_PAD_LEFT);
+        $next = ((int) SalesOrder::query()->max('id')) + 1;
 
-            if (! SalesOrder::query()->where('number', $number)->exists()) {
-                return $number;
-            }
-        } while (true);
+        while (SalesOrder::query()->where('number', $this->formatNumber($next))->exists()) {
+            $next++;
+        }
+
+        return $this->formatNumber($next);
+    }
+
+    private function formatNumber(int $sequence): string
+    {
+        return 'SO-'.str_pad((string) $sequence, 4, '0', STR_PAD_LEFT);
     }
 
     private function order(Request $request): ?SalesOrder
