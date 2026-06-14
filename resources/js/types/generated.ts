@@ -117,6 +117,7 @@ export type Callout = {
 export type CalloutEffect = {
   readonly callout: Callout;
 };
+export type Callouts = Record<string, never>;
 export type Card = {
   description: string | null;
   title: string | null;
@@ -584,6 +585,11 @@ export type LayoutNode =
       type: "breadcrumbs";
       key?: string;
       props: Breadcrumbs;
+    }
+  | {
+      type: "callouts";
+      key?: string;
+      props: Callouts;
     }
   | {
       type: "dropdown";
