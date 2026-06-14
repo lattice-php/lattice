@@ -1,7 +1,7 @@
 import { createPlugin } from "@lattice-php/lattice/core/registry";
 import { builtinEffectHandlers } from "./registry";
 
-export const effectComponents = createPlugin({
+export const effectsPlugin = createPlugin({
   name: "lattice/effects",
   effects: builtinEffectHandlers,
 });

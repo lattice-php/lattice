@@ -19,9 +19,11 @@ import type { EffectHandlerRegistry } from "../effects/registry";
 export const RegistryContext = createContext<Registry | null>(null);
 
 /**
- * Set by provider.tsx at module-evaluation time, after registry.ts finishes.
- * Must not be imported in any module that is transitively reachable from
- * registry.ts before it completes (i.e. action.tsx, use-effect-dispatcher.ts).
+ * Called by provider.tsx at module-evaluation time, after registry.ts finishes
+ * loading. The constraint is on CALLING this setter, not on importing this
+ * module: do not call setDefaultRegistry from any module that evaluates before
+ * registry.ts completes. (use-effect-dispatcher.ts safely imports the selectors
+ * below — that import is exactly why this module was extracted.)
  */
 let _defaultRegistry: Registry | null = null;
 

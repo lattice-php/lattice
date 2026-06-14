@@ -45,6 +45,12 @@ export function getActionEffects(effects: unknown): ActionEffect[] {
   return Array.isArray(effects) ? effects.filter(isActionEffect) : [];
 }
 
+/**
+ * Structural guard for an effect on the wire. Intentionally open: it accepts any
+ * object with a string `type`, not only the built-in types, so consumer-registered
+ * effects pass through getActionEffects() and reach their handlers. Dispatch warns
+ * on (and skips) a type with no registered handler.
+ */
 export function isActionEffect(effect: unknown): effect is ActionEffect {
   return (
     typeof effect === "object" &&
