@@ -31,6 +31,8 @@ trait IsFilterable
 
     protected ?OptionSource $filterOptionSource = null;
 
+    protected bool $filterSearchable = false;
+
     /**
      * @param  array<int, Op>  $operators  narrows the offered operators; defaults to the value type's full set
      */
@@ -47,14 +49,16 @@ trait IsFilterable
      * Filter this column with a dropdown instead of the operator input. Pass a
      * fixed list of options or an {@see OptionSource} (e.g. an Eloquent relation).
      * Single selection matches with `=`; `multiple` matches any with `in`.
+     * `searchable` (only with a source) fetches options as the user types.
      *
      * @param  array<int, Option|array{label: string, value: string}>|OptionSource  $options
      */
-    public function filterOptions(array|OptionSource $options, bool $multiple = false): static
+    public function filterOptions(array|OptionSource $options, bool $multiple = false, bool $searchable = false): static
     {
         $this->filterable = true;
         $this->filterControl = FilterControl::Select;
         $this->filterMultiple = $multiple;
+        $this->filterSearchable = $searchable;
 
         if ($options instanceof OptionSource) {
             $this->filterOptionSource = $options;
@@ -93,6 +97,19 @@ trait IsFilterable
     public function filterMultiple(): bool
     {
         return $this->filterMultiple;
+    }
+
+    public function filterSearchable(): bool
+    {
+        return $this->filterSearchable && $this->filterOptionSource !== null;
+    }
+
+    /**
+     * @return list<Option>
+     */
+    public function searchFilterOptions(string $query): array
+    {
+        return $this->filterOptionSource?->search($query) ?? [];
     }
 
     /**

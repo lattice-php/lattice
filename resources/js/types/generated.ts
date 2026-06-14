@@ -193,6 +193,7 @@ export type ColumnFilter = {
   readonly control: FilterControl | null;
   readonly options: Option[];
   readonly multiple: boolean;
+  readonly searchable: boolean;
 };
 export type ColumnPropsMap = {
   badge: BadgeColumnProps;

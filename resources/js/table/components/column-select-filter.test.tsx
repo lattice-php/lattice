@@ -16,6 +16,7 @@ function selectFilter(multiple: boolean): ColumnFilter {
       { label: "Draft", value: "draft" },
     ],
     multiple,
+    searchable: false,
   };
 }
 
@@ -88,6 +89,31 @@ describe("column select filter", () => {
 
     await waitFor(() => {
       expect(fetch.mock.calls.at(-1)?.[0]).toContain("filter=status%3Ain%3Aactive");
+    });
+  });
+
+  it("supports a searchable column select that emits an eq clause", async () => {
+    const fetch = vi.fn<typeof globalThis.fetch>(async (input) => {
+      if (String(input).includes("_search")) {
+        return Response.json({ options: [{ label: "Active", value: "active" }] });
+      }
+
+      return Response.json({
+        data: [],
+        pagination: {},
+        state: { filters: [], page: 1, perPage: 25, sorts: [], tableFilters: {} },
+      });
+    });
+
+    vi.stubGlobal("fetch", fetch);
+
+    render(<TableComponent node={node({ ...selectFilter(false), searchable: true })} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Status" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Active" }));
+
+    await waitFor(() => {
+      expect(fetch.mock.calls.at(-1)?.[0]).toContain("filter=status%3Aeq%3Aactive");
     });
   });
 

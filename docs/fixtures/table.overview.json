@@ -22,6 +22,7 @@
                             "filled"
                         ],
                         "options": [],
+                        "searchable": false,
                         "type": "text"
                     },
                     "key": "name",
@@ -53,6 +54,7 @@
                             "filled"
                         ],
                         "options": [],
+                        "searchable": false,
                         "type": "number"
                     },
                     "key": "price",

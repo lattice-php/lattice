@@ -102,6 +102,10 @@ use Lattice\Lattice\Core\EloquentOptions;
 TextColumn::make('author_id')
     ->label('Author')
     ->filterOptions(EloquentOptions::make(Author::class)->label('name'));
+
+// fetch options as the user types instead of shipping them all up front:
+TextColumn::make('author_id')
+    ->filterOptions(EloquentOptions::make(Author::class)->label('name'), searchable: true);
 ```
 
 <Info>

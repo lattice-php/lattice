@@ -80,6 +80,7 @@ abstract class Column implements JsonSerializable
             control: $this->filterControl(),
             options: $this->filterSelectOptions(),
             multiple: $this->filterMultiple(),
+            searchable: $this->filterSearchable(),
         );
     }
 

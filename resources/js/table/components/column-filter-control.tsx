@@ -5,7 +5,7 @@ import { useT } from "@lattice-php/lattice/i18n";
 import type { FilterData, FilterType, Op } from "@lattice-php/lattice/types/generated";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
 import type { FilterClause, TableColumn } from "../types";
-import { TableFilterControl } from "./filter-controls";
+import { type FilterOptionSearch, TableFilterControl } from "./filter-controls";
 import { FilterValueInput } from "./filter-value-input";
 
 type ColumnClause = { clause: FilterClause; index: number };
@@ -17,6 +17,7 @@ export function ColumnFilterControl({
   onAdd,
   onUpdate,
   onRemove,
+  onSearch,
 }: {
   column: TableColumn;
   clauses: ColumnClause[];
@@ -24,6 +25,7 @@ export function ColumnFilterControl({
   onAdd: (clause: FilterClause) => void;
   onUpdate: (index: number, clause: FilterClause) => void;
   onRemove: (index: number) => void;
+  onSearch?: FilterOptionSearch;
 }) {
   const { t } = useT("lattice");
   const filter = column.filter;
@@ -41,6 +43,7 @@ export function ColumnFilterControl({
         onAdd={onAdd}
         onUpdate={onUpdate}
         onRemove={onRemove}
+        onSearch={onSearch}
       />
     );
   }
@@ -134,6 +137,7 @@ function ColumnSelectFilter({
   onAdd,
   onUpdate,
   onRemove,
+  onSearch,
 }: {
   column: TableColumn;
   clauses: ColumnClause[];
@@ -141,6 +145,7 @@ function ColumnSelectFilter({
   onAdd: (clause: FilterClause) => void;
   onUpdate: (index: number, clause: FilterClause) => void;
   onRemove: (index: number) => void;
+  onSearch?: FilterOptionSearch;
 }) {
   const filter = column.filter;
 
@@ -161,7 +166,7 @@ function ColumnSelectFilter({
     key: column.key,
     label: column.label,
     type: "select",
-    props: { options: filter.options, multiple, searchable: false, placeholder: null },
+    props: { options: filter.options, multiple, searchable: filter.searchable, placeholder: null },
   };
 
   function change(next: unknown): void {
@@ -183,7 +188,13 @@ function ColumnSelectFilter({
   }
 
   return (
-    <TableFilterControl filter={data} value={value} processing={processing} onChange={change} />
+    <TableFilterControl
+      filter={data}
+      value={value}
+      processing={processing}
+      onChange={change}
+      onSearch={onSearch}
+    />
   );
 }
 

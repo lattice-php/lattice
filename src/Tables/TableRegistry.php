@@ -11,6 +11,7 @@ use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\ColumnData;
+use Lattice\Lattice\Tables\Columns\Filterable;
 use Lattice\Lattice\Tables\Components\Table as TableComponent;
 use Lattice\Lattice\Tables\Filters\BaseFilter;
 use Lattice\Lattice\Tables\Filters\SelectFilter;
@@ -101,10 +102,19 @@ final class TableRegistry extends DefinitionRegistry
         $filter = collect($definition->filters())
             ->first(fn (BaseFilter $filter): bool => $filter->key === $filterKey);
 
-        abort_if($filter === null, Response::HTTP_NOT_FOUND);
-        abort_unless($filter instanceof SelectFilter && $filter->isSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        if ($filter !== null) {
+            abort_unless($filter instanceof SelectFilter && $filter->isSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        return ['options' => $filter->searchOptions($query)];
+            return ['options' => $filter->searchOptions($query)];
+        }
+
+        $column = collect($definition->columns())
+            ->first(fn (Column $column): bool => $column->key === $filterKey);
+
+        abort_unless($column instanceof Filterable, Response::HTTP_NOT_FOUND);
+        abort_unless($column->filterSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        return ['options' => $column->searchFilterOptions($query)];
     }
 
     /**

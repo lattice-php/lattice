@@ -31,6 +31,7 @@ final readonly class ColumnFilter implements JsonSerializable
         public ?FilterControl $control = null,
         public array $options = [],
         public bool $multiple = false,
+        public bool $searchable = false,
     ) {}
 
     /**
@@ -46,6 +47,7 @@ final readonly class ColumnFilter implements JsonSerializable
             'control' => $this->control?->value,
             'options' => $this->options,
             'multiple' => $this->multiple,
+            'searchable' => $this->searchable,
         ];
     }
 }

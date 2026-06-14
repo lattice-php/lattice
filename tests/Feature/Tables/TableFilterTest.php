@@ -96,6 +96,16 @@ test('a table searches a searchable filter\'s options through the endpoint', fun
         ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
 });
 
+test('a table searches a searchable column filter through the endpoint', function () {
+    Lattice::tables([WorkbenchSearchableFilterTable::class]);
+
+    $ref = componentRef(wire(Table::use(WorkbenchSearchableFilterTable::class)));
+
+    latticeGet('/lattice/tables/workbench.searchable-filter?_search=owner&q=ad', $ref)
+        ->assertOk()
+        ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
+});
+
 test('a table rejects searching a filter that is not searchable', function () {
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
 
@@ -113,7 +123,10 @@ class WorkbenchSearchableFilterTable extends EloquentTableDefinition
 {
     public function columns(): array
     {
-        return [TextColumn::make('name')->label('Name')];
+        return [
+            TextColumn::make('name')->label('Name'),
+            TextColumn::make('owner')->label('Owner')->filterOptions(peopleOptionSource(), searchable: true),
+        ];
     }
 
     public function filters(): array

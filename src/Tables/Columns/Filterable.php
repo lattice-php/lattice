@@ -29,4 +29,11 @@ interface Filterable
     public function filterSelectOptions(): array;
 
     public function filterMultiple(): bool;
+
+    public function filterSearchable(): bool;
+
+    /**
+     * @return list<Option>
+     */
+    public function searchFilterOptions(string $query): array;
 }

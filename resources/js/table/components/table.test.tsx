@@ -56,6 +56,7 @@ describe("Lattice table component", () => {
               control: null,
               options: [],
               multiple: false,
+              searchable: false,
             },
           }),
           col({
@@ -835,6 +836,7 @@ describe("Lattice table component", () => {
               control: null,
               options: [],
               multiple: false,
+              searchable: false,
             },
           }),
           col({
@@ -848,6 +850,7 @@ describe("Lattice table component", () => {
               control: null,
               options: [],
               multiple: false,
+              searchable: false,
             },
           }),
           col({
@@ -861,6 +864,7 @@ describe("Lattice table component", () => {
               control: null,
               options: [],
               multiple: false,
+              searchable: false,
             },
           }),
         ],
@@ -949,6 +953,7 @@ describe("Lattice table component", () => {
               control: null,
               options: [],
               multiple: false,
+              searchable: false,
             },
           }),
         ],

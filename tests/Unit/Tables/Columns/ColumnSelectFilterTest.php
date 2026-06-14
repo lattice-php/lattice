@@ -62,6 +62,19 @@ test('an operator column filter has no select control', function () {
         ->and($filter['multiple'])->toBeFalse();
 });
 
+test('a column filter can be made searchable', function () {
+    $filter = wire(TextColumn::make('author_id')->filterOptions(columnFilterOptionSource(), searchable: true))['filter'];
+
+    expect($filter['control'])->toBe('select')
+        ->and($filter['searchable'])->toBeTrue();
+});
+
+test('a static column select filter is not searchable', function () {
+    $filter = wire(TextColumn::make('status')->filterOptions([['label' => 'A', 'value' => 'a']]))['filter'];
+
+    expect($filter['searchable'])->toBeFalse();
+});
+
 test('a column filter resolves options from an option source', function () {
     $filter = wire(TextColumn::make('author_id')->filterOptions(columnFilterOptionSource()))['filter'];
 

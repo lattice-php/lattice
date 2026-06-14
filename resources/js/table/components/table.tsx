@@ -213,6 +213,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                         onAdd={addFilter}
                         onUpdate={updateFilter}
                         onRemove={removeFilter}
+                        onSearch={(query) => searchFilterOptions(column.key, query)}
                       />
                     )}
                   </div>
