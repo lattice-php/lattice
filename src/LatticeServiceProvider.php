@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\ResponseFactory;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Actions\EffectFlasher;
+use Lattice\Lattice\Effects\EffectFlasher;
 use Lattice\Lattice\Console\Commands\DiscoverCacheCommand;
 use Lattice\Lattice\Console\Commands\DiscoverClearCommand;
 use Lattice\Lattice\Console\Commands\MakeColumnCommand;

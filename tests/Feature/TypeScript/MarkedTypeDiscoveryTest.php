@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Actions\Enums\EffectType;
+use Lattice\Lattice\Effects\Enums\EffectType;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Option;

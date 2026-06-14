@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lattice\Lattice\Actions\EffectFlasher;
+use Lattice\Lattice\Effects\EffectFlasher;
 
 /**
- * @method static void flash(\Lattice\Lattice\Actions\Effects\AbstractEffect ...$effects)
+ * @method static void flash(\Lattice\Lattice\Effects\Contracts\Effect ...$effects)
  *
  * @see EffectFlasher
  */

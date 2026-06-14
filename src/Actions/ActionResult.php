@@ -4,18 +4,19 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Actions;
 
 use JsonSerializable;
-use Lattice\Lattice\Actions\Effects\AbstractEffect;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
+use Lattice\Lattice\Effects\Effect;
 
 #[TypeScript]
 final readonly class ActionResult implements JsonSerializable
 {
     /**
      * @param  array<string, mixed>  $data
-     * @param  array<int, AbstractEffect>  $effects
+     * @param  array<int, EffectContract>  $effects
      */
     private function __construct(
         public bool $ok,
@@ -39,7 +40,7 @@ final readonly class ActionResult implements JsonSerializable
         return new self(false, $data);
     }
 
-    public function effect(AbstractEffect $effect): self
+    public function effect(EffectContract $effect): self
     {
         return new self($this->ok, $this->data, [
             ...$this->effects,
@@ -98,7 +99,7 @@ final readonly class ActionResult implements JsonSerializable
     }
 
     /**
-     * @return array{ok: bool, data: array<string, mixed>, effects: array<int, AbstractEffect>}
+     * @return array{ok: bool, data: array<string, mixed>, effects: array<int, EffectContract>}
      */
     public function jsonSerialize(): array
     {

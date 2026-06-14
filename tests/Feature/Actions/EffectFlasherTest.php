@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use Inertia\Inertia;
-use Lattice\Lattice\Actions\Effect;
-use Lattice\Lattice\Actions\EffectFlasher;
+use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Effects\EffectFlasher;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Core\Values\ToastMessage;
