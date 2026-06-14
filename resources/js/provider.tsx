@@ -7,6 +7,7 @@ import { registry as defaultRegistry } from "./registry";
 import type { ColumnRegistry } from "./table/column-registry";
 import { Toaster } from "./toast";
 import { useFlashEffects } from "./action/use-flash-effects";
+import type { EffectHandlerRegistry } from "./effects/registry";
 
 const defaultSprite: SpriteValue = { href: "" };
 
@@ -41,4 +42,8 @@ export function useRegistry(): ComponentRegistry {
 
 export function useColumnRegistry(): ColumnRegistry {
   return useContext(RegistryContext).columns;
+}
+
+export function useEffectHandlers(): EffectHandlerRegistry {
+  return useContext(RegistryContext).effects;
 }

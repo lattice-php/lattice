@@ -2,6 +2,7 @@ import { lazy } from "react";
 import type { LazyExoticComponent } from "react";
 import type { RendererComponent, RendererComponentModule } from "./types";
 import type { ColumnRegistry } from "../table/column-registry";
+import type { EffectHandlerRegistry } from "../effects/registry";
 
 export type EagerComponentRegistration = {
   component: RendererComponent;
@@ -23,11 +24,13 @@ export type Plugin = {
   name: string;
   components?: ComponentRegistry;
   columns?: ColumnRegistry;
+  effects?: EffectHandlerRegistry;
 };
 
 export type Registry = {
   components: ComponentRegistry;
   columns: ColumnRegistry;
+  effects: EffectHandlerRegistry;
 };
 
 export type LazyComponentOptions<TType extends string> = {
@@ -66,8 +69,9 @@ export function createRegistry(...plugins: Plugin[]): Registry {
     (registry, plugin) => ({
       components: { ...registry.components, ...plugin.components },
       columns: { ...registry.columns, ...plugin.columns },
+      effects: { ...registry.effects, ...plugin.effects },
     }),
-    { components: {}, columns: {} },
+    { components: {}, columns: {}, effects: {} },
   );
 }
 
@@ -77,5 +81,6 @@ export function extendRegistry(registry: Registry, ...plugins: Plugin[]): Regist
   return {
     components: { ...registry.components, ...merged.components },
     columns: { ...registry.columns, ...merged.columns },
+    effects: { ...registry.effects, ...merged.effects },
   };
 }
