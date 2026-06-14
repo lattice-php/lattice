@@ -34,7 +34,7 @@ class SetLocaleAction extends ActionDefinition
         $user = $request->user();
 
         if ($user instanceof User) {
-            $user->forceFill(['locale' => $locale])->save();
+            $user->update(['locale' => $locale]);
         }
 
         return ActionResult::success()->localeChange($locale);
