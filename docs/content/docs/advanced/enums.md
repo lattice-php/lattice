@@ -90,7 +90,7 @@ fields.
 
 ## Actions
 
-`Lattice\Lattice\Actions\Enums\EffectType` — the kind of [effect](/actions/effects/) an action returns.
+`Lattice\Lattice\Effects\Enums\EffectType` — the kind of [effect](/actions/effects/) an action returns.
 
 `Toast` (toast), `Callout` (callout), `ReloadComponent` (reloadComponent), `ReloadPage` (reloadPage),
 `Redirect` (redirect), `Download` (download), `OpenModal` (openModal), `CloseModal` (closeModal),
