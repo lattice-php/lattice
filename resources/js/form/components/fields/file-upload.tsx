@@ -45,7 +45,7 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
   const fileInputRef = useRef<HTMLInputElement>(null);
   const locked = readOnly || disabled;
   const signed = props.signed;
-  const multiple = props.multiple ?? false;
+  const multiple = props.multiple;
   const fieldName = multiple ? `${domName}[]` : domName;
 
   const initial = useMemo<Item[]>(
