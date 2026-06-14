@@ -10,7 +10,7 @@ use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\Action;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\Textarea;
@@ -54,7 +54,7 @@ class RejectProductAction extends ActionDefinition
         $product->update(['status' => 'archived']);
 
         return ActionResult::success(['id' => $product->getKey(), 'reason' => $data['reason']])
-            ->toast(ToastVariant::Success, __('workbench.actions.reject.toast', ['reason' => $data['reason']]))
+            ->toast(Variant::Success, __('workbench.actions.reject.toast', ['reason' => $data['reason']]))
             ->reloadComponent('workbench.products');
     }
 

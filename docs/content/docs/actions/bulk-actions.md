@@ -19,7 +19,7 @@ use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\BulkAction as BulkActionAttribute;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Variant;
 
 #[BulkActionAttribute('app.products.archive-selected')]
 class ArchiveSelectedProductsAction extends BulkActionDefinition
@@ -36,7 +36,7 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
         $records->each(fn (Product $product) => $product->update(['status' => 'archived']));
 
         return ActionResult::success(['archived' => $records->count()])
-            ->toast(ToastVariant::Success, "Archived {$records->count()} products.")
+            ->toast(Variant::Success, "Archived {$records->count()} products.")
             ->reloadComponent('app.products');
     }
 }

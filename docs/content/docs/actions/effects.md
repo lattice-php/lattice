@@ -28,6 +28,7 @@ return ActionResult::success()
 | Effect                          | What it does                                                        |
 | ------------------------------- | ------------------------------------------------------------------- |
 | `->toast($message, $variant)`   | Shows a toast. Variant defaults to success.                         |
+| `->callout($callout)`           | Shows a persistent in-flow banner in the layout's callout slot.     |
 | `->reloadComponent($id)`        | Re-fetches a single component (e.g. the table the action changed).  |
 | `->reloadPage()`                | Reloads the current page's props.                                   |
 | `->redirect($url)`              | Navigates to a URL.                                                 |
@@ -38,16 +39,84 @@ return ActionResult::success()
 
 ```php
 return ActionResult::success()
-    ->toast('Report ready.', ToastVariant::Success)
+    ->toast('Report ready.', Variant::Success)
     ->download(route('reports.download', $report));
 ```
 
 ### Toasts
 
-`->toast()` accepts a message and an optional `ToastVariant` (`Success`, `Error`, `Warning`, `Info`).
+`->toast()` accepts a message and an optional `Variant` (`Success`, `Error`, `Warning`, `Info`).
 The variant can come first or second — both `->toast('Saved.')` and
-`->toast(ToastVariant::Error, 'Could not save.')` read naturally. Pass a `ToastMessage` instead to
+`->toast(Variant::Error, 'Could not save.')` read naturally. Pass a `ToastMessage` instead to
 set a lifetime, control dismissal, or attach a link or action — see [Toasts](/actions/toasts/).
+
+### Callouts
+
+A callout is a persistent in-flow banner — appropriate for warnings, trials, subscription notices, or
+any message that should stay visible until the user acts. Unlike a toast, a callout is not transient:
+it appears in the layout where the `Callouts` slot is placed and stays until the user dismisses it.
+There is no duration or auto-dismiss, and navigating between pages within the same layout does not
+clear it.
+
+Build a `Callout` value object and pass it to `->callout()`:
+
+```php
+use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Core\Values\Callout;
+
+return ActionResult::success()
+    ->callout(
+        Callout::make(Variant::Warning, 'Your trial ends in 3 days.')
+            ->title('Trial ending')
+            ->link('Upgrade', '/billing')
+    );
+```
+
+The `Callout` builder options:
+
+| Method                                    | Effect                                                                                 |
+| ----------------------------------------- | -------------------------------------------------------------------------------------- |
+| `->title($string)`                        | Optional heading above the message.                                                    |
+| `->dismissible(bool)`                     | Show or hide the close button (default: dismissible).                                  |
+| `->link($label, $href, $method?)`         | Render a link in the callout (`$method` defaults to `HttpMethod::Get`).                |
+| `->action($component)`                    | Render an action instead of a link.                                                    |
+
+Callouts are always persistent — there is no duration or auto-dismiss.
+
+**Placing the slot in your layout**
+
+A callout only renders where the `Callouts` layout slot is placed. Add `Callouts::make()` to the
+layout's `schema()`, typically between the header bar and `Outlet::make()`:
+
+```php
+use Lattice\Lattice\Layouts\Components\Callouts;
+use Lattice\Lattice\Layouts\Components\Outlet;
+
+public function schema(): array
+{
+    return [
+        $this->headerBar(),
+        Callouts::make(),
+        Outlet::make(),
+    ];
+}
+```
+
+:::caution
+A page or layout that does not include `Callouts::make()` silently drops any callout effect. If a
+callout does not appear, check that the active layout's `schema()` contains the slot.
+:::
+
+**Callout vs. toast**
+
+| | Callout | Toast |
+| --- | --- | --- |
+| Placement | In-flow, where the layout slot is | Overlay, anchored bottom center |
+| Persistence | Always persistent | Auto-dismisses after a duration |
+| Scope | Requires the layout slot | Global — rendered by the `<Toaster>` |
+
+Use a callout when the message warrants visible, persistent attention; use a toast for transient
+confirmations. See [Toasts](/actions/toasts/) for toast details.
 
 ### Refreshing what changed
 
@@ -59,9 +128,49 @@ component re-fetches:
 return ActionResult::success()->reloadComponent('app.products');
 ```
 
+## Flashing effects without an action
+
+`Effects::flash()` sends any effect(s) into the session and delivers them with the next Inertia
+response — no `ActionResult` needed. Use it from a controller, before returning a redirect, in an
+event listener, or in middleware — anywhere outside an action:
+
+```php
+use Lattice\Lattice\Core\Values\Callout;
+use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Facades\Effects;
+use Lattice\Lattice\Actions\Effect;
+
+// Flash a callout after a controller redirect
+Effects::flash(
+    Effect::callout(
+        Callout::make(Variant::Info, 'Your export is being processed.')
+            ->title('Export queued')
+    )
+);
+
+return redirect('/exports');
+```
+
+Pass multiple effects to flash them all at once:
+
+```php
+Effects::flash(
+    Effect::toast(Variant::Success, 'Settings saved.'),
+    Effect::callout(Callout::make(Variant::Warning, 'Some changes require a page reload.')),
+);
+```
+
+The flashed effects are stored in the `latticeEffects` session bag, drained on the next request, and
+run through the normal client-side effect pipeline in order.
+
+:::note
+`Effects::flash()` replaces the old toast-only flash helper (`CreatesToastMessages` trait and
+`flash.toast` bag). Any code using that trait should switch to `Effects::flash(Effect::toast(...))`.
+:::
+
 ## How effects reach the client
 
 The result serializes to `{ ok, data, effects }`. Each effect carries its `EffectType` (`toast`,
-`reloadComponent`, `reloadPage`, `redirect`, `download`, `openModal`, `closeModal`, `resetForm`,
-`localeChange`) and its payload; the client dispatches them in order. The effect types are a shared
-enum, so the PHP helpers and the client dispatcher stay in lockstep.
+`callout`, `reloadComponent`, `reloadPage`, `redirect`, `download`, `openModal`, `closeModal`,
+`resetForm`, `localeChange`) and its payload; the client dispatches them in order. The effect types
+are a shared enum, so the PHP helpers and the client dispatcher stay in lockstep.

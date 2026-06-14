@@ -11,16 +11,14 @@ use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Variant;
 
 /**
- * Builder for a toast notification: a message and variant plus optional lifetime,
- * a close button, and an action rendered in the toast (a link or a full Action
- * that can open a confirm dialog or modal form).
+ * Builder for a callout: a prominent, persistent banner rendered in a layout's
+ * Callouts slot. A heading plus body and variant, with an optional dismiss
+ * button and an action (a link or a full Action).
  */
 #[TypeScript]
-final class ToastMessage implements JsonSerializable
+final class Callout implements JsonSerializable
 {
-    public ?int $duration = null;
-
-    public bool $persistent = false;
+    public ?string $title = null;
 
     public bool $dismissible = true;
 
@@ -36,16 +34,9 @@ final class ToastMessage implements JsonSerializable
         return new self($variant, $message);
     }
 
-    public function duration(int $milliseconds): self
+    public function title(string $title): self
     {
-        $this->duration = $milliseconds;
-
-        return $this;
-    }
-
-    public function persistent(bool $persistent = true): self
-    {
-        $this->persistent = $persistent;
+        $this->title = $title;
 
         return $this;
     }
@@ -76,9 +67,8 @@ final class ToastMessage implements JsonSerializable
     {
         return [
             'variant' => $this->variant->value,
+            'title' => $this->title,
             'message' => $this->message,
-            'duration' => $this->duration,
-            'persistent' => $this->persistent,
             'dismissible' => $this->dismissible,
             'action' => $this->action,
         ];

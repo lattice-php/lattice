@@ -55,7 +55,7 @@ The icon names a `Lattice\Lattice\Core\Enums\Icon` accepts are listed on the [Ic
 | `ButtonVariant` | `Default` (default), `Destructive` (destructive), `Ghost` (ghost), `Info` (info), `Link` (link), `Outline` (outline), `Secondary` (secondary), `Success` (success) |
 | `ButtonType`    | `Button` (button), `Submit` (submit), `Reset` (reset)                                  |
 | `HttpMethod`    | `Get` (get), `Post` (post), `Put` (put), `Patch` (patch), `Delete` (delete)            |
-| `ToastVariant`  | `Success` (success), `Info` (info), `Warning` (warning), `Error` (error)               |
+| `Variant`       | `Success` (success), `Info` (info), `Warning` (warning), `Error` (error) — used by toasts and [callouts](/actions/effects/#callouts). |
 
 ## Operators
 
@@ -92,7 +92,7 @@ fields.
 
 `Lattice\Lattice\Actions\Enums\EffectType` — the kind of [effect](/actions/effects/) an action returns.
 
-`Toast` (toast), `ReloadComponent` (reloadComponent), `ReloadPage` (reloadPage), `Redirect` (redirect),
-`Download` (download), `OpenModal` (openModal), `CloseModal` (closeModal), `ResetForm` (resetForm),
-`LocaleChange` (localeChange).
+`Toast` (toast), `Callout` (callout), `ReloadComponent` (reloadComponent), `ReloadPage` (reloadPage),
+`Redirect` (redirect), `Download` (download), `OpenModal` (openModal), `CloseModal` (closeModal),
+`ResetForm` (resetForm), `LocaleChange` (localeChange).
 </content>

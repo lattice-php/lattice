@@ -1,4 +1,5 @@
+export { normalizeCallout, onCallout } from "./callout";
+export type { Callout } from "./callout";
 export { Toaster } from "./toaster";
-export { isToastVariant, normalizeToast, normalizeToastMessage, onToast, showToast } from "./toast";
-export type { ToastMessage, ToastVariant } from "./toast";
-export { useFlashToasts } from "./use-flash-toasts";
+export { isVariant, normalizeToast, normalizeToastMessage, onToast, showToast } from "./toast";
+export type { ToastMessage, Variant } from "./toast";

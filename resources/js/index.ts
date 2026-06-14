@@ -16,6 +16,7 @@ export {
   withVisitHeaders,
 } from "./inertia";
 export {
+  Callouts,
   layoutComponents,
   OutletContext,
   SchemaLayout,
@@ -23,7 +24,7 @@ export {
   useSidebarCollapsed,
 } from "./layout";
 export { Provider, useColumnRegistry, useRegistry } from "./provider";
-export { onToast, showToast, Toaster } from "./toast";
+export { onCallout, onToast, showToast, Toaster } from "./toast";
 export {
   createPlugin,
   createRegistry,
@@ -64,7 +65,7 @@ export type { ActionEffect } from "./action/effects";
 export type { ResolvedAppearance, UseAppearanceReturn } from "./appearance";
 export type { CopiedValue, CopyFn, UseClipboardReturn } from "./clipboard";
 export type { Appearance } from "./events/event-bridge";
-export type { ToastMessage, ToastVariant } from "./toast";
+export type { Callout, ToastMessage, Variant } from "./toast";
 export type {
   IconName,
   IconRendererFunction,

@@ -107,6 +107,17 @@ export type ButtonVariant =
   | "outline"
   | "secondary"
   | "success";
+export type Callout = {
+  title: string | null;
+  dismissible: boolean;
+  action: Node | null;
+  variant: Variant;
+  message: string;
+};
+export type CalloutEffect = {
+  readonly callout: Callout;
+};
+export type Callouts = Record<string, never>;
 export type Card = {
   description: string | null;
   title: string | null;
@@ -324,6 +335,9 @@ export type Dropdown = {
 };
 export type Effect =
   | ({
+      type: "callout";
+    } & CalloutEffect)
+  | ({
       type: "closeModal";
     } & CloseModalEffect)
   | ({
@@ -352,6 +366,7 @@ export type Effect =
     } & ToastEffect);
 export type EffectType =
   | "toast"
+  | "callout"
   | "reloadComponent"
   | "reloadPage"
   | "redirect"
@@ -577,6 +592,11 @@ export type LayoutNode =
       type: "breadcrumbs";
       key?: string;
       props: Breadcrumbs;
+    }
+  | {
+      type: "callouts";
+      key?: string;
+      props: Callouts;
     }
   | {
       type: "dropdown";
@@ -997,8 +1017,8 @@ export type ToastMessage = {
   persistent: boolean;
   dismissible: boolean;
   action: Node | null;
-  variant: ToastVariant;
+  variant: Variant;
   message: string;
 };
-export type ToastVariant = "success" | "info" | "warning" | "error";
+export type Variant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "sm" | "md" | "lg" | "fill";

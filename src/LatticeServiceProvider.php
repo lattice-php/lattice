@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\ResponseFactory;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Actions\EffectFlasher;
 use Lattice\Lattice\Console\Commands\DiscoverCacheCommand;
 use Lattice\Lattice\Console\Commands\DiscoverClearCommand;
 use Lattice\Lattice\Console\Commands\MakeColumnCommand;
@@ -69,6 +70,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(LatticeRegistry::class);
         $this->app->singleton(DiscoveryManifest::class);
         $this->app->singleton(Evaluator::class, fn ($app): Evaluator => new Evaluator($app, [Component::class]));
+        $this->app->scoped(EffectFlasher::class);
 
         // Default role; the workbench rebinds this to BaseProfile.
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);

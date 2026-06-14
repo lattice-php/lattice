@@ -1,6 +1,6 @@
 ---
 name: lattice-actions
-description: Use when building or editing Lattice actions — creating ActionDefinition or BulkActionDefinition classes, returning effects from an ActionResult (toast, redirect, reloadComponent, reloadPage, download, openModal, resetForm), adding confirmation modals or input forms to an action, grouping actions, authorizing them, or placing them on a page, a table row, or a table selection.
+description: Use when building or editing Lattice actions — creating ActionDefinition or BulkActionDefinition classes, returning effects from an ActionResult (toast, callout, redirect, reloadComponent, reloadPage, download, openModal, resetForm), flashing effects from controllers or listeners via Effects::flash(), adding confirmation modals or input forms to an action, grouping actions, authorizing them, or placing them on a page, a table row, or a table selection.
 ---
 
 # Building Lattice actions
@@ -18,7 +18,7 @@ use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\Action as ActionAttribute;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Variant;
 
 #[ActionAttribute('app.products.archive')]
 class ArchiveProductAction extends ActionDefinition
@@ -37,7 +37,7 @@ class ArchiveProductAction extends ActionDefinition
         $product->update(['status' => 'archived']);
 
         return ActionResult::success()
-            ->toast(ToastVariant::Success, 'Product archived.')
+            ->toast(Variant::Success, 'Product archived.')
             ->reloadComponent('app.products');
     }
 }
@@ -49,7 +49,8 @@ class ArchiveProductAction extends ActionDefinition
 
 | Effect | What it does |
 | --- | --- |
-| `->toast($message, $variant?)` | Show a toast (`ToastVariant::Success`/`Error`/`Warning`/`Info`; defaults to success; message and variant are order-insensitive). |
+| `->toast($message, $variant?)` | Show a toast (`Variant::Success`/`Error`/`Warning`/`Info`; defaults to success; message and variant are order-insensitive). |
+| `->callout($callout)` | Show a persistent in-flow banner in the layout's `Callouts::make()` slot. Pass a `Callout` value object (`Lattice\Lattice\Core\Values\Callout`). |
 | `->reloadComponent($id)` | Re-fetch one component — pass a `#[Table]`/component id so only it refreshes. |
 | `->reloadPage()` | Reload the current page's props. |
 | `->redirect($url)` | Navigate to a URL. |
@@ -60,6 +61,46 @@ class ArchiveProductAction extends ActionDefinition
 ```php
 return ActionResult::success()->toast('Saved.')->reloadComponent('app.products');
 ```
+
+### Callout effect
+
+`Callout::make(Variant $variant, string $message)` builds a persistent banner. Chain `->title()`, `->dismissible()`, `->link()`, or `->action()` to configure it:
+
+```php
+use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Core\Values\Callout;
+
+return ActionResult::success()
+    ->callout(
+        Callout::make(Variant::Warning, 'Your trial ends in 3 days.')
+            ->title('Trial ending')
+            ->link('Upgrade', '/billing')
+    );
+```
+
+The callout renders in the layout slot `Callouts::make()` (placed between the header bar and `Outlet::make()` in the layout's `schema()`). A layout without that slot silently drops the callout.
+
+## Flashing effects from outside an action
+
+`Effects::flash()` (facade `Lattice\Lattice\Facades\Effects`) delivers any effect(s) with the next Inertia response — no `ActionResult` needed. Use from controllers, listeners, middleware, or anywhere a redirect is returned:
+
+```php
+use Lattice\Lattice\Core\Values\Callout;
+use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Facades\Effects;
+use Lattice\Lattice\Actions\Effect;
+
+Effects::flash(
+    Effect::toast(Variant::Success, 'Settings saved.'),
+    Effect::callout(
+        Callout::make(Variant::Info, 'Export is being processed.')->title('Export queued')
+    )
+);
+
+return redirect('/dashboard');
+```
+
+`Effects::flash()` replaces the old `CreatesToastMessages` trait — migrate any `$this->toast(...)` calls to `Effects::flash(Effect::toast(...))`.
 
 ## Reading context
 
@@ -114,7 +155,7 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
         $records->each(fn (Product $product) => $product->update(['status' => 'archived']));
 
         return ActionResult::success(['archived' => $records->count()])
-            ->toast(ToastVariant::Success, "Archived {$records->count()} products.")
+            ->toast(Variant::Success, "Archived {$records->count()} products.")
             ->reloadComponent('app.products');
     }
 }
@@ -134,3 +175,4 @@ See the **`lattice-tables`** skill for the table wiring.
 - **`reloadComponent()` with the wrong id** — pass the target component's `#[Table]`/component id, not the action's id.
 - **Reading context off the raw request** — use `$this->context($request, $key)`; it is the signed, trusted copy.
 - **No `#[Action('id')]` / `#[BulkAction('id')]`** → the action is not discovered and has no endpoint.
+- **Callout not appearing** — the active layout's `schema()` must include `Callouts::make()`; without it the effect is silently dropped.

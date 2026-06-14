@@ -11,7 +11,7 @@ use Lattice\Lattice\Actions\Effect;
 use Lattice\Lattice\Attributes\Action;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Variant;
 
 #[Action('workbench.ping')]
 class WorkbenchPingAction extends ActionDefinition
@@ -34,7 +34,7 @@ class WorkbenchPingAction extends ActionDefinition
             'handled' => $request->string('name')->toString(),
             'team' => data_get($request->input('context', []), 'team'),
         ])
-            ->toast(ToastVariant::Info, 'Action handled.')
+            ->toast(Variant::Info, 'Action handled.')
             ->reloadComponent('workbench.users');
     }
 }

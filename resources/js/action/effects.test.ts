@@ -84,6 +84,26 @@ describe("dispatchActionEffects", () => {
     expect(events).toEqual([]);
   });
 
+  it("dispatches callout effects on the lattice:callout bus", () => {
+    const received: unknown[] = [];
+    const handler = (event: Event) => received.push((event as CustomEvent).detail);
+    window.addEventListener("lattice:callout", handler);
+
+    dispatchActionEffects([
+      {
+        type: "callout",
+        callout: { variant: "info", title: null, message: "Hi", dismissible: true, action: null },
+      },
+    ] as never);
+
+    window.removeEventListener("lattice:callout", handler);
+    expect(received).toHaveLength(1);
+    expect(received[0]).toMatchObject({
+      type: "callout",
+      callout: { message: "Hi", variant: "info" },
+    });
+  });
+
   it("applies locale change effects through the locale runtime", () => {
     const locales: string[] = [];
     const listener = (event: Event) => {
@@ -105,6 +125,7 @@ describe("dispatchActionEffects", () => {
 describe("isActionEffect", () => {
   it("accepts every known effect type", () => {
     for (const type of [
+      "callout",
       "toast",
       "reloadPage",
       "reloadComponent",

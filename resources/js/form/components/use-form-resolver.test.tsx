@@ -51,7 +51,7 @@ function ResolverHarness() {
   const items = Array.isArray(values.items) ? values.items : [];
   const price = items[0]?.price;
 
-  return <output data-testid="price">{String(price ?? "")}</output>;
+  return <output data-test="price">{String(price ?? "")}</output>;
 }
 
 describe("useFormResolver", () => {

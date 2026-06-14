@@ -47,9 +47,7 @@ describe("Lattice icon renderer", () => {
   });
 
   it("stacks custom renderers before the sprite", () => {
-    const fallbackRenderer = vi.fn<IconRendererFunction>(() => (
-      <span data-testid="fallback-icon" />
-    ));
+    const fallbackRenderer = vi.fn<IconRendererFunction>(() => <span data-test="fallback-icon" />);
     const customRenderer = vi.fn<IconRendererFunction>(() => null);
 
     render(
@@ -72,10 +70,8 @@ describe("Lattice icon renderer", () => {
   });
 
   it("can replace parent renderers", () => {
-    const fallbackRenderer = vi.fn<IconRendererFunction>(() => (
-      <span data-testid="fallback-icon" />
-    ));
-    const customRenderer = vi.fn<IconRendererFunction>(() => <span data-testid="custom-icon" />);
+    const fallbackRenderer = vi.fn<IconRendererFunction>(() => <span data-test="fallback-icon" />);
+    const customRenderer = vi.fn<IconRendererFunction>(() => <span data-test="custom-icon" />);
 
     render(
       <IconRendererProvider renderer={fallbackRenderer}>
