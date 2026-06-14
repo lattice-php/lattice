@@ -4,7 +4,7 @@ description: Define fields in PHP, render them with Inertia, and validate on a d
 ---
 
 A form is a PHP class that declares its fields and handles its own submission. You define the schema
-once; Lattice renders the React inputs, posts to a dedicated endpoint, validates with Laravel, and
+once; Lattice renders the React inputs, posts to a dedicated [endpoint](/advanced/security/), validates with Laravel, and
 runs your handler. Validation runs live as the user types, using the exact same rules.
 
 ## Defining a form
