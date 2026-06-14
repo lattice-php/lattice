@@ -53,6 +53,55 @@ return [
                 ],
             ],
         ],
+        'sales-orders' => [
+            'actions' => [
+                'edit' => 'Bearbeiten',
+            ],
+            'columns' => [
+                'business-partner' => 'Geschäftspartner',
+                'number' => 'Nummer',
+                'status' => 'Status',
+                'total' => 'Gesamt',
+            ],
+            'fields' => [
+                'add-line' => 'Position hinzufügen',
+                'billing-address' => 'Rechnungsadresse',
+                'business-partner' => 'Geschäftspartner',
+                'lines' => 'Positionen',
+                'product' => 'Produkt',
+                'quantity' => 'Menge',
+                'shipping-address' => 'Lieferadresse',
+                'status' => 'Status',
+                'unit-price' => 'Stückpreis',
+            ],
+            'form' => [
+                'addresses-card' => 'Adressen',
+                'details-card' => 'Details',
+                'lines-card' => 'Positionen',
+            ],
+            'pages' => [
+                'create' => [
+                    'heading' => 'Auftrag erstellen',
+                    'submit' => 'Auftrag erstellen',
+                    'title' => 'Auftrag erstellen',
+                ],
+                'edit' => [
+                    'heading' => 'Auftrag bearbeiten',
+                    'submit' => 'Auftrag speichern',
+                    'title' => 'Auftrag bearbeiten',
+                ],
+                'index' => [
+                    'create' => 'Auftrag erstellen',
+                    'heading' => 'Aufträge',
+                    'title' => 'Aufträge',
+                ],
+            ],
+            'status' => [
+                'cancelled' => 'Storniert',
+                'draft' => 'Entwurf',
+                'placed' => 'Bestellt',
+            ],
+        ],
         'groups' => [
             'actions' => [
                 'edit' => 'Bearbeiten',
@@ -255,13 +304,17 @@ return [
     ],
     'navigation' => [
         'builder-table-demo' => 'Builder-Tabellen-Demo',
+        'business-partners' => 'Geschäftspartner',
+        'commerce' => 'Commerce',
         'create-product' => 'Produkt erstellen',
         'dependent-fields' => 'Abhängige Felder',
         'forms' => 'Formulare',
+        'groups' => 'Gruppen',
         'home' => 'Home',
         'log-out' => 'Abmelden',
         'pagination-modes' => 'Paginierungsmodi',
         'products' => 'Produkte',
+        'sales-orders' => 'Aufträge',
         'showcase' => 'Showcase',
         'tables' => 'Tabellen',
         'tabs' => 'Tabs',

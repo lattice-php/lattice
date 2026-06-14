@@ -24,7 +24,7 @@ it('auto-expands the group containing the active page', function (): void {
 
     visit('/products')
         ->assertPresent('[data-test="menu-products"]')
-        ->assertPresent('[data-test="menu-pagination-modes"]');
+        ->assertPresent('[data-test="menu-sales-orders"]');
 });
 
 it('collapses to an icon rail and opens a group submenu as a flyout', function (): void {
@@ -34,7 +34,7 @@ it('collapses to an icon rail and opens a group submenu as a flyout', function (
     visit('/')
         ->click('@sidebar-toggle')
         ->assertPresent('[aria-label="Expand sidebar"]')
-        ->click('@menu-tables')
+        ->click('@menu-commerce')
         ->click('@menu-products')
         ->assertSee('Desk Lamp')
         ->assertPresent('[aria-label="Expand sidebar"]')

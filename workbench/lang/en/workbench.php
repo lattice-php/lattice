@@ -53,6 +53,55 @@ return [
                 ],
             ],
         ],
+        'sales-orders' => [
+            'actions' => [
+                'edit' => 'Edit',
+            ],
+            'columns' => [
+                'business-partner' => 'Business partner',
+                'number' => 'Number',
+                'status' => 'Status',
+                'total' => 'Total',
+            ],
+            'fields' => [
+                'add-line' => 'Add line',
+                'billing-address' => 'Billing address',
+                'business-partner' => 'Business partner',
+                'lines' => 'Line items',
+                'product' => 'Product',
+                'quantity' => 'Quantity',
+                'shipping-address' => 'Shipping address',
+                'status' => 'Status',
+                'unit-price' => 'Unit price',
+            ],
+            'form' => [
+                'addresses-card' => 'Addresses',
+                'details-card' => 'Details',
+                'lines-card' => 'Line items',
+            ],
+            'pages' => [
+                'create' => [
+                    'heading' => 'Create sales order',
+                    'submit' => 'Create sales order',
+                    'title' => 'Create sales order',
+                ],
+                'edit' => [
+                    'heading' => 'Edit sales order',
+                    'submit' => 'Save sales order',
+                    'title' => 'Edit sales order',
+                ],
+                'index' => [
+                    'create' => 'Create sales order',
+                    'heading' => 'Sales orders',
+                    'title' => 'Sales orders',
+                ],
+            ],
+            'status' => [
+                'cancelled' => 'Cancelled',
+                'draft' => 'Draft',
+                'placed' => 'Placed',
+            ],
+        ],
         'groups' => [
             'actions' => [
                 'edit' => 'Edit',
@@ -255,13 +304,17 @@ return [
     ],
     'navigation' => [
         'builder-table-demo' => 'Builder Table Demo',
+        'business-partners' => 'Business partners',
+        'commerce' => 'Commerce',
         'create-product' => 'Create Product',
         'dependent-fields' => 'Dependent Fields',
         'forms' => 'Forms',
+        'groups' => 'Groups',
         'home' => 'Home',
         'log-out' => 'Log out',
         'pagination-modes' => 'Pagination Modes',
         'products' => 'Products',
+        'sales-orders' => 'Sales orders',
         'showcase' => 'Showcase',
         'tables' => 'Tables',
         'tabs' => 'Tabs',
