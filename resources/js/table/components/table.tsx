@@ -90,7 +90,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
 
   return (
     <div data-lattice-component={node.id} className="relative">
-      {resizingEnabled && hasOverrides && (
+      {hasOverrides && (
         <button
           aria-label={t("a11y.resetColumnWidths", "Reset column widths")}
           className="absolute right-1 top-1 z-10 hidden rounded-lt-sm p-1 text-lt-muted-fg hover:text-lt-fg md:inline-flex"
