@@ -50,6 +50,7 @@ export default defineConfig({
         },
         {
           label: "Core",
+          collapsed: true,
           items: [
             { label: "Pages", link: "/core/pages/" },
             { label: "Components", link: "/core/components/" },
@@ -63,6 +64,7 @@ export default defineConfig({
         },
         {
           label: "Forms",
+          collapsed: true,
           items: [
             { label: "Overview", link: "/forms/overview/" },
             {
@@ -89,6 +91,7 @@ export default defineConfig({
         },
         {
           label: "Tables",
+          collapsed: true,
           items: [
             { label: "Overview", link: "/tables/overview/" },
             { label: "Eloquent tables", link: "/tables/eloquent-tables/" },
@@ -99,6 +102,7 @@ export default defineConfig({
         },
         {
           label: "Actions",
+          collapsed: true,
           items: [
             { label: "Overview", link: "/actions/overview/" },
             { label: "Effects & results", link: "/actions/effects/" },
@@ -108,6 +112,7 @@ export default defineConfig({
         },
         {
           label: "Extending",
+          collapsed: true,
           items: [
             { label: "Overview", link: "/extending/overview/" },
             { label: "Custom fields", link: "/extending/custom-fields/" },
@@ -117,6 +122,7 @@ export default defineConfig({
         },
         {
           label: "Advanced",
+          collapsed: true,
           items: [
             { label: "Authorization", link: "/advanced/authorization/" },
             { label: "Security", link: "/advanced/security/" },
@@ -126,12 +132,14 @@ export default defineConfig({
         },
         {
           label: "Testing",
+          collapsed: true,
           items: [
             { label: "Overview", link: "/testing/overview/" },
           ],
         },
         {
           label: "Contributing",
+          collapsed: true,
           items: [
             { label: "Local Development", link: "/contributing/local-development/" },
           ],
