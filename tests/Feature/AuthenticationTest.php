@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Orchestra\Testbench\Factories\UserFactory;
-use Workbench\App\Models\WorkbenchUser;
+use Workbench\App\Models\User;
 use Workbench\App\Seeders\UserSeeder;
 
 use function Pest\Laravel\get;
@@ -13,10 +13,10 @@ use function Pest\Laravel\withoutVite;
 test('workbench auth uses the locale aware workbench user model', function (): void {
     $model = config('auth.providers.users.model');
 
-    expect($model)->toBe(WorkbenchUser::class)
+    expect($model)->toBe(User::class)
         ->and(is_a($model, HasLocalePreference::class, true))->toBeTrue();
 
-    $user = new WorkbenchUser(['locale' => 'de']);
+    $user = new User(['locale' => 'de']);
 
     expect($user->preferredLocale())->toBe('de');
 });
@@ -47,7 +47,7 @@ test('seeded workbench user can log in', function (): void {
     ])->assertRedirect('/');
 
     $this->assertAuthenticated();
-    expect(auth()->user())->toBeInstanceOf(WorkbenchUser::class);
+    expect(auth()->user())->toBeInstanceOf(User::class);
 });
 
 test('invalid login keeps the user unauthenticated', function (): void {

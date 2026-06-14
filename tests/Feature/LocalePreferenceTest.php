@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Workbench\App\Actions\SetLocaleAction;
-use Workbench\App\Models\WorkbenchUser;
+use Workbench\App\Models\User;
 
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
@@ -21,9 +21,9 @@ beforeEach(function (): void {
     ]));
 });
 
-function createWorkbenchLocaleUser(string $locale): WorkbenchUser
+function createWorkbenchLocaleUser(string $locale): User
 {
-    return WorkbenchUser::query()->create([
+    return User::query()->create([
         'name' => 'Locale User',
         'email' => 'locale-user@example.com',
         'email_verified_at' => now(),

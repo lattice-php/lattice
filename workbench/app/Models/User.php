@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace Workbench\App\Models;
 
 use Illuminate\Contracts\Translation\HasLocalePreference;
-use Illuminate\Foundation\Auth\User;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * @property string|null $locale
  */
-class WorkbenchUser extends User implements HasLocalePreference
+class User extends Authenticatable implements HasLocalePreference
 {
     protected $table = 'users';
 

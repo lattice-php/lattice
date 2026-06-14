@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-final class WorkbenchSessionController
+final class SessionController
 {
     public function store(Request $request): RedirectResponse
     {

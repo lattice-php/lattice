@@ -6,7 +6,7 @@ namespace Workbench\App\Seeders;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Workbench\App\Models\WorkbenchUser;
+use Workbench\App\Models\User;
 
 class UserSeeder extends Seeder
 {
@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
         $users = $this->users();
         $password = Hash::make('password');
 
-        WorkbenchUser::query()->upsert(
+        User::query()->upsert(
             array_map(
                 function (array $user, int $index) use ($password): array {
                     $createdAt = CarbonImmutable::parse('2025-01-01 09:00:00')->addMinutes($index);
