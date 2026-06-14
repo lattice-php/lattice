@@ -10,6 +10,7 @@ describe("lattice component registry", () => {
     expect(registry.components["action.group"]?.mode).toBe("eager");
     expect(registry.components.badge?.mode).toBe("eager");
     expect(registry.components.card?.mode).toBe("eager");
+    expect(registry.components["floating-panel"]?.mode).toBe("eager");
     expect(registry.components.grid?.mode).toBe("eager");
     expect(registry.components.link?.mode).toBe("eager");
     expect(registry.components.tab?.mode).toBe("eager");

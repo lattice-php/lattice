@@ -217,6 +217,12 @@ export type CoreNode =
       schema?: Node[];
     }
   | {
+      type: "floating-panel";
+      key?: string;
+      props: FloatingPanel;
+      schema?: Node[];
+    }
+  | {
       type: "grid";
       key?: string;
       props: Grid;
@@ -397,6 +403,12 @@ export type FilterClause = {
   readonly value: string;
 };
 export type FilterType = "text" | "number" | "date" | "boolean";
+export type FloatingPanel = {
+  label: string | null;
+  offset: number;
+  placement: FloatingPlacement;
+};
+export type FloatingPlacement = "bottom-end" | "bottom-start" | "top-end" | "top-start";
 export type Form = {
   action: string | null;
   errorBag: string | null;

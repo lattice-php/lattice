@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Components\ActionGroup;
 use Lattice\Lattice\Attributes\Layout;
+use Lattice\Lattice\Core\Components\FloatingPanel;
 use Lattice\Lattice\Core\Components\RawBlock;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
+use Lattice\Lattice\Core\Enums\FloatingPlacement;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Core\Enums\Justify;
@@ -39,6 +41,8 @@ final class AppLayout extends LayoutDefinition
 {
     public function schema(PageSchema $schema, Request $request): PageSchema
     {
+        $locale = app()->getLocale();
+
         return $schema->schema([
             Stack::make('app-shell')
                 ->direction('row')
@@ -75,22 +79,6 @@ final class AppLayout extends LayoutDefinition
                                             ]),
                                     ])
                                     ->items([
-                                        MenuItem::make(__('workbench.language.label'), 'language'),
-                                        ActionGroup::make('locale-switcher')
-                                            ->label(__('workbench.language.label'))
-                                            ->inline(Orientation::Horizontal)
-                                            ->actions([
-                                                ActionComponent::use(SetLocaleAction::class)
-                                                    ->key('locale-en')
-                                                    ->label(__('workbench.language.en'))
-                                                    ->variant(app()->getLocale() === 'en' ? ButtonVariant::Secondary : ButtonVariant::Ghost)
-                                                    ->context(['locale' => 'en']),
-                                                ActionComponent::use(SetLocaleAction::class)
-                                                    ->key('locale-de')
-                                                    ->label(__('workbench.language.de'))
-                                                    ->variant(app()->getLocale() === 'de' ? ButtonVariant::Secondary : ButtonVariant::Ghost)
-                                                    ->context(['locale' => 'de']),
-                                            ]),
                                         MenuItem::make(__('workbench.navigation.log-out'), 'log-out')->href('/logout')->method(HttpMethod::Post),
                                     ]),
                             ]),
@@ -100,6 +88,26 @@ final class AppLayout extends LayoutDefinition
                         ->schema([
                             Breadcrumbs::make(),
                             Outlet::make(),
+                        ]),
+                ]),
+            FloatingPanel::make('locale-switcher-panel')
+                ->label(__('workbench.language.label'))
+                ->placement(FloatingPlacement::TopEnd)
+                ->schema([
+                    ActionGroup::make('locale-switcher')
+                        ->label(__('workbench.language.label'))
+                        ->inline(Orientation::Horizontal)
+                        ->actions([
+                            ActionComponent::use(SetLocaleAction::class)
+                                ->key('locale-en')
+                                ->label(__('workbench.language.en'))
+                                ->variant($locale === 'en' ? ButtonVariant::Secondary : ButtonVariant::Ghost)
+                                ->context(['locale' => 'en']),
+                            ActionComponent::use(SetLocaleAction::class)
+                                ->key('locale-de')
+                                ->label(__('workbench.language.de'))
+                                ->variant($locale === 'de' ? ButtonVariant::Secondary : ButtonVariant::Ghost)
+                                ->context(['locale' => 'de']),
                         ]),
                 ]),
         ]);
