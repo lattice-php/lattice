@@ -30,12 +30,20 @@ test('the scoped buffer resets between request cycles', function () {
 });
 
 test('flash sends the accumulated effects to the latticeEffects bag', function () {
-    Inertia::spy();
+    $flashed = [];
+
+    Inertia::shouldReceive('flash')
+        ->twice()
+        ->with('latticeEffects', Mockery::on(function (array $effects) use (&$flashed): bool {
+            $flashed = $effects;
+
+            return true;
+        }));
 
     Effects::flash(Effect::toast(ToastMessage::make(Variant::Success, 'Saved.')));
     Effects::flash(Effect::callout(Callout::make(Variant::Warning, 'Heads up.')));
 
-    Inertia::shouldHaveReceived('flash')
-        ->with('latticeEffects', Mockery::on(fn (array $effects): bool => count($effects) === 2))
-        ->atLeast()->once();
+    expect($flashed)->toHaveCount(2)
+        ->and($flashed[0]->jsonSerialize()['type'])->toBe('toast')
+        ->and($flashed[1]->jsonSerialize()['type'])->toBe('callout');
 });
