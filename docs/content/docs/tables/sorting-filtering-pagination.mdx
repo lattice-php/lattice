@@ -64,8 +64,39 @@ TextColumn::make('sku')->filterable(Op::Equals, [Op::Equals, Op::NotEquals]);
 ```
 
 A column's filter capability serializes as a `ColumnFilter` (`{ enabled, type, operators,
-defaultOperator }`) so the React filter control knows which inputs and operators to render. Open the
-**Tree** tab on the example above to see it.
+defaultOperator, control, options, multiple }`) so the React filter control knows which inputs and
+operators to render. Open the **Tree** tab on the example above to see it.
+
+### Filtering by a fixed set of options
+
+When a column holds one of a known set of values (a status, a type), `->filterOptions()` renders a
+**dropdown** in the column header instead of the operator input — the same control used by the
+dedicated [`SelectFilter`](#dedicated-filters). A single selection matches with `=`; pass
+`multiple: true` to match any of the chosen values with `in`.
+
+```php
+use Lattice\Lattice\Tables\Columns\TextColumn;
+
+TextColumn::make('status')->filterOptions([
+    ['label' => 'Draft', 'value' => 'draft'],
+    ['label' => 'Active', 'value' => 'active'],
+    ['label' => 'Archived', 'value' => 'archived'],
+]);
+
+// match any of several values:
+TextColumn::make('status')->filterOptions([...], multiple: true);
+```
+
+`filterOptions()` implies `filterable()`, sets the column's filter `control` to `select`, and
+restricts the offered operators to `=` / `≠` (or `in` / `not in` when `multiple`). The selected
+value rides the same column-filter clause as any other operator filter, so the data source applies
+it with no extra wiring.
+
+<Info>
+This is the per-column counterpart to a dedicated `SelectFilter`: use a column filter when the choice
+belongs to that column's header; use a dedicated filter when it spans the table or needs custom query
+logic.
+</Info>
 
 ## Dedicated filters
 
