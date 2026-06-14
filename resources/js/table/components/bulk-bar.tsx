@@ -1,12 +1,9 @@
 import { useHttp } from "@inertiajs/react";
 import { useState } from "react";
 import { ActionForm } from "@lattice-php/lattice/action/components/action-form";
-import {
-  dispatchActionEffects,
-  dispatchActionError,
-  getActionEffects,
-} from "@lattice-php/lattice/action/effects";
-import type { ActionResponse } from "@lattice-php/lattice/action/effects";
+import { dispatchActionError, getActionEffects } from "@lattice-php/lattice/effects/dispatch";
+import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
+import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { Button } from "@lattice-php/lattice/core/components/button";
 import { ConfirmDialog } from "@lattice-php/lattice/core/components/confirm-dialog";
@@ -41,6 +38,7 @@ export function BulkBar({
 }) {
   const { t } = useT("lattice");
   const http = useHttp<BulkData, ActionResponse>({});
+  const dispatch = useEffectDispatcher();
   const [confirming, setConfirming] = useState<BulkAction | null>(null);
   const [filling, setFilling] = useState<BulkAction | null>(null);
 
@@ -58,7 +56,7 @@ export function BulkBar({
         headers: withHeaders(action.ref ?? ""),
       });
 
-      dispatchActionEffects(getActionEffects(response.effects));
+      dispatch(getActionEffects(response.effects));
       setConfirming(null);
       onCompleted();
     } catch (error) {
@@ -141,7 +139,7 @@ export function BulkBar({
           method={filling.method}
           onClose={() => setFilling(null)}
           onSuccess={(response) => {
-            dispatchActionEffects(getActionEffects(response.effects));
+            dispatch(getActionEffects(response.effects));
             setFilling(null);
             onCompleted();
           }}

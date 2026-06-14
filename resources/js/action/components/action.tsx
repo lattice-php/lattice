@@ -8,8 +8,9 @@ import { Spinner } from "@lattice-php/lattice/core/components/spinner";
 import { prefixedTestId } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { IconRenderer } from "@lattice-php/lattice/icons";
-import { dispatchActionEffects, dispatchActionError, getActionEffects } from "../effects";
-import type { ActionResponse } from "../effects";
+import { dispatchActionError, getActionEffects } from "@lattice-php/lattice/effects/dispatch";
+import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
+import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import { ActionForm, useLazyActionForm } from "./action-form";
 
 const ActionComponent: RendererComponent<"action"> = ({ node }) => {
@@ -19,6 +20,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const componentRef = node.props.ref ?? "";
   const method: Method = node.props.method ?? "post";
   const http = useHttp<Record<string, never>, ActionResponse>({});
+  const dispatch = useEffectDispatcher();
   const [isConfirming, setIsConfirming] = useState(false);
   const [isFilling, setIsFilling] = useState(false);
   const confirmation = node.props.confirmation;
@@ -45,9 +47,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
       const response = await http[method](endpoint, { headers: withHeaders(componentRef) });
       const responseEffects = getActionEffects(response.effects);
 
-      dispatchActionEffects(
-        responseEffects.length > 0 ? responseEffects : getActionEffects(node.props.effects),
-      );
+      dispatch(responseEffects.length > 0 ? responseEffects : getActionEffects(node.props.effects));
       setIsConfirming(false);
     } catch (error) {
       dispatchActionError(error);
@@ -119,7 +119,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
           onSuccess={(response) => {
             const responseEffects = getActionEffects(response.effects);
 
-            dispatchActionEffects(
+            dispatch(
               responseEffects.length > 0 ? responseEffects : getActionEffects(node.props.effects),
             );
             setIsFilling(false);

@@ -1,7 +1,7 @@
 /**
  * Single source of truth for the `lattice:*` DOM events the runtime dispatches
  * and listens for. Effect-driven events are mapped from the generated EffectType
- * in action/effects.ts; the rest are framework events with no PHP counterpart.
+ * in effects/registry.ts; the rest are framework events with no PHP counterpart.
  */
 export const LATTICE_EVENT = {
   callout: "lattice:callout",

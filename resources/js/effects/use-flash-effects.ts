@@ -1,6 +1,7 @@
 import { router } from "@inertiajs/react";
 import { useEffect } from "react";
-import { dispatchActionEffects, getActionEffects } from "@lattice-php/lattice/action/effects";
+import { getActionEffects } from "@lattice-php/lattice/effects/dispatch";
+import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 
 type InertiaFlashEvent = CustomEvent<{
   flash?: {
@@ -10,17 +11,18 @@ type InertiaFlashEvent = CustomEvent<{
 
 /**
  * Drains the `latticeEffects` flash bag (server `Effects::flash(...)`) on each
- * Inertia navigation and runs the effects through the same pipeline as
- * action-result effects.
+ * Inertia navigation and runs the effects through the registry dispatcher.
  */
 export function useFlashEffects(): void {
+  const dispatch = useEffectDispatcher();
+
   useEffect(() => {
     return router.on("flash", (event) => {
       const effects = getActionEffects((event as InertiaFlashEvent).detail?.flash?.latticeEffects);
 
       if (effects.length > 0) {
-        dispatchActionEffects(effects);
+        dispatch(effects);
       }
     });
-  }, []);
+  }, [dispatch]);
 }

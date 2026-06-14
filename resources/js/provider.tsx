@@ -1,17 +1,18 @@
-import { createContext, useContext } from "react";
 import type { ReactNode } from "react";
-import type { ComponentRegistry, Registry } from "./core/registry";
-import { SpriteProvider } from "./icons/sprite";
 import type { SpriteValue } from "./icons/sprite";
+import { SpriteProvider } from "./icons/sprite";
 import { registry as defaultRegistry } from "./registry";
-import type { ColumnRegistry } from "./table/column-registry";
+import type { Registry } from "./core/registry";
+import { RegistryContext, setDefaultRegistry } from "./core/registry-context";
 import { Toaster } from "./toast";
-import { useFlashEffects } from "./action/use-flash-effects";
-import type { EffectHandlerRegistry } from "./effects/registry";
+import { useFlashEffects } from "./effects/use-flash-effects";
+
+// Register the default registry so selectors work outside <Provider>.
+// This module is always loaded after registry.ts finishes, so defaultRegistry
+// is guaranteed to be defined here.
+setDefaultRegistry(defaultRegistry);
 
 const defaultSprite: SpriteValue = { href: "" };
-
-const RegistryContext = createContext<Registry>(defaultRegistry);
 
 export function Provider({
   children,
@@ -36,14 +37,4 @@ export function Provider({
   );
 }
 
-export function useRegistry(): ComponentRegistry {
-  return useContext(RegistryContext).components;
-}
-
-export function useColumnRegistry(): ColumnRegistry {
-  return useContext(RegistryContext).columns;
-}
-
-export function useEffectHandlers(): EffectHandlerRegistry {
-  return useContext(RegistryContext).effects;
-}
+export { useRegistry, useColumnRegistry, useEffectHandlers } from "./core/registry-context";
