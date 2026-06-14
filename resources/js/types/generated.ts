@@ -367,6 +367,7 @@ export type FileUpload = {
         name: string;
         url: string | null;
         size: number | null;
+        token: string;
       }[]
     | null;
   helperText: string | null;

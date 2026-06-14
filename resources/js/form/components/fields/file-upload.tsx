@@ -19,6 +19,7 @@ type Item = {
   file?: File;
   key?: string;
   url?: string | null;
+  token?: string;
   existing: boolean;
 };
 
@@ -57,11 +58,13 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
         progress: 100,
         key: file.key,
         url: file.url,
+        token: file.token,
         existing: true,
       })),
     [props.files],
   );
   const [items, setItems] = useState<Item[]>(initial);
+  const [removedTokens, setRemovedTokens] = useState<string[]>([]);
 
   const multipartFiles = items
     .filter((item) => item.file && !item.existing)
@@ -168,7 +171,13 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
   }
 
   function removeItem(id: string): void {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+    setItems((prev) => {
+      const target = prev.find((i) => i.id === id);
+      if (target?.existing && target.token && !scope) {
+        setRemovedTokens((tokens) => [...tokens, target.token as string]);
+      }
+      return prev.filter((i) => i.id !== id);
+    });
   }
 
   if (hidden) {
@@ -219,6 +228,17 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
                   {t("file-upload.remove-label", "Remove")}
                 </button>
               )}
+              {item.existing && !scope && (
+                <button
+                  aria-label={t("file-upload.remove", "Remove {{name}}", { name: item.name })}
+                  data-test={testIdentity(`${name}-remove-existing`)}
+                  disabled={locked}
+                  onClick={() => removeItem(item.id)}
+                  type="button"
+                >
+                  {t("file-upload.remove-label", "Remove")}
+                </button>
+              )}
               {signed && !item.existing && item.key && item.status === "ready" && (
                 <input
                   data-test={testIdentity(`${name}-uploaded`)}
@@ -230,6 +250,11 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
             </li>
           ))}
         </ul>
+
+        {!scope &&
+          removedTokens.map((token) => (
+            <input key={token} name={`${name}__removed[]`} type="hidden" value={token} />
+          ))}
 
         {signed ? (
           <input
