@@ -6,11 +6,14 @@ namespace Lattice\Lattice\Tables\Columns\Concerns;
 use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Core\Option;
+use Lattice\Lattice\Tables\Concerns\ResolvesFilterOptions;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
 trait IsFilterable
 {
+    use ResolvesFilterOptions;
+
     protected bool $filterable = false;
 
     protected ?Op $defaultOperator = null;
@@ -28,8 +31,6 @@ trait IsFilterable
     protected array $filterSelectOptions = [];
 
     protected bool $filterMultiple = false;
-
-    protected ?OptionSource $filterOptionSource = null;
 
     protected bool $filterSearchable = false;
 
@@ -61,10 +62,10 @@ trait IsFilterable
         $this->filterSearchable = $searchable;
 
         if ($options instanceof OptionSource) {
-            $this->filterOptionSource = $options;
+            $this->optionSource = $options;
             $this->filterSelectOptions = [];
         } else {
-            $this->filterOptionSource = null;
+            $this->optionSource = null;
             $this->filterSelectOptions = $this->normalizeFilterOptions($options);
         }
 
@@ -91,7 +92,7 @@ trait IsFilterable
      */
     public function filterSelectOptions(): array
     {
-        return $this->filterOptionSource?->search('') ?? $this->filterSelectOptions;
+        return $this->resolveOptions($this->filterSelectOptions);
     }
 
     public function filterMultiple(): bool
@@ -101,7 +102,7 @@ trait IsFilterable
 
     public function filterSearchable(): bool
     {
-        return $this->filterSearchable && $this->filterOptionSource !== null;
+        return $this->filterSearchable && $this->hasOptionSource();
     }
 
     /**
@@ -109,7 +110,7 @@ trait IsFilterable
      */
     public function searchFilterOptions(string $query): array
     {
-        return $this->filterOptionSource?->search($query) ?? [];
+        return $this->searchOptionSource($query);
     }
 
     /**

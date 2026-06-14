@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Contracts\OptionSource;
-use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Tables\Filters\SelectFilter;
 use Workbench\App\Models\Product;
 
@@ -68,18 +66,7 @@ test('a multiple select filter with no selected values applies no constraint', f
 });
 
 test('a select filter resolves its options from an option source', function () {
-    $source = new class implements OptionSource
-    {
-        public function search(string $query): array
-        {
-            return [new Option('Ada', '1'), new Option('Linus', '2')];
-        }
-
-        public function selected(array $values): array
-        {
-            return [];
-        }
-    };
+    $source = inMemoryOptionSource(['1' => 'Ada', '2' => 'Linus']);
 
     $props = wire(SelectFilter::make('author_id')->optionsFrom($source))['props'];
 

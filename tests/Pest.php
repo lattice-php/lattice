@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
+use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Tests\TestCase;
 use Orchestra\Testbench\Factories\UserFactory;
 
@@ -76,6 +78,37 @@ function workbenchTestUser(array $attributes = []): User
 function wire(mixed $value): array
 {
     return json_decode(json_encode($value, JSON_THROW_ON_ERROR), true);
+}
+
+/**
+ * An in-memory {@see OptionSource} for filter/select tests — substring search
+ * over a `value => label` map, so tests never reach Eloquent.
+ *
+ * @param  array<int|string, string>  $people
+ */
+function inMemoryOptionSource(array $people): OptionSource
+{
+    return new class($people) implements OptionSource
+    {
+        /**
+         * @param  array<int|string, string>  $people
+         */
+        public function __construct(private array $people) {}
+
+        public function search(string $query): array
+        {
+            $matches = $query === ''
+                ? $this->people
+                : array_filter($this->people, fn (string $name): bool => str_contains(strtolower($name), strtolower($query)));
+
+            return array_map(fn (string $name, int|string $id): Option => new Option($name, (string) $id), $matches, array_keys($matches));
+        }
+
+        public function selected(array $values): array
+        {
+            return array_map(fn (string $id): Option => new Option($this->people[$id] ?? $id, $id), $values);
+        }
+    };
 }
 
 /**

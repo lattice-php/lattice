@@ -8,6 +8,7 @@ use Lattice\Lattice\Core\Concerns\HasOptions;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Option;
+use Lattice\Lattice\Tables\Concerns\ResolvesFilterOptions;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 
 /**
@@ -19,12 +20,11 @@ class SelectFilter extends BaseFilter
 {
     use HasOptions;
     use HasPlaceholder;
+    use ResolvesFilterOptions;
 
     public bool $multiple = false;
 
     public bool $searchable = false;
-
-    private ?OptionSource $optionSource = null;
 
     public function multiple(bool $multiple = true): static
     {
@@ -57,7 +57,7 @@ class SelectFilter extends BaseFilter
 
     public function isSearchable(): bool
     {
-        return $this->searchable && $this->optionSource !== null;
+        return $this->searchable && $this->hasOptionSource();
     }
 
     /**
@@ -65,7 +65,7 @@ class SelectFilter extends BaseFilter
      */
     public function searchOptions(string $query): array
     {
-        return $this->optionSource?->search($query) ?? [];
+        return $this->searchOptionSource($query);
     }
 
     public function toData(): FilterData
@@ -75,20 +75,12 @@ class SelectFilter extends BaseFilter
             $this->label,
             FilterControl::Select,
             [
-                'options' => $this->resolvedOptions(),
+                'options' => $this->resolveOptions($this->options),
                 'multiple' => $this->multiple,
                 'searchable' => $this->isSearchable(),
                 'placeholder' => $this->placeholder,
             ],
         );
-    }
-
-    /**
-     * @return list<Option>
-     */
-    private function resolvedOptions(): array
-    {
-        return $this->optionSource?->search('') ?? $this->options;
     }
 
     public function apply(Builder $builder, mixed $value): void

@@ -1,26 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Tables\Columns\TextColumn;
-
-function columnFilterOptionSource(): OptionSource
-{
-    return new class implements OptionSource
-    {
-        public function search(string $query): array
-        {
-            return [new Option('Ada', '1'), new Option('Linus', '2')];
-        }
-
-        public function selected(array $values): array
-        {
-            return [];
-        }
-    };
-}
 
 test('a column with filter options serializes a select control', function () {
     $filter = wire(TextColumn::make('status')->filterOptions([
@@ -63,7 +45,7 @@ test('an operator column filter has no select control', function () {
 });
 
 test('a column filter can be made searchable', function () {
-    $filter = wire(TextColumn::make('author_id')->filterOptions(columnFilterOptionSource(), searchable: true))['filter'];
+    $filter = wire(TextColumn::make('author_id')->filterOptions(inMemoryOptionSource(['1' => 'Ada', '2' => 'Linus']), searchable: true))['filter'];
 
     expect($filter['control'])->toBe('select')
         ->and($filter['searchable'])->toBeTrue();
@@ -76,7 +58,7 @@ test('a static column select filter is not searchable', function () {
 });
 
 test('a column filter resolves options from an option source', function () {
-    $filter = wire(TextColumn::make('author_id')->filterOptions(columnFilterOptionSource()))['filter'];
+    $filter = wire(TextColumn::make('author_id')->filterOptions(inMemoryOptionSource(['1' => 'Ada', '2' => 'Linus'])))['filter'];
 
     expect($filter['control'])->toBe('select')
         ->and($filter['options'])->toBe([

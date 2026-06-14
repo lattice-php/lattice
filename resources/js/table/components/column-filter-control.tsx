@@ -125,6 +125,14 @@ export function ColumnFilterControl({
   );
 }
 
+function serializeColumnValue(value: unknown): string {
+  if (Array.isArray(value)) {
+    return value.join(",");
+  }
+
+  return typeof value === "string" ? value : "";
+}
+
 /**
  * Renders a column's option dropdown by reusing the shared table-filter select
  * control, mapping its value to/from a single `eq` clause (or an `in` clause
@@ -170,7 +178,7 @@ function ColumnSelectFilter({
   };
 
   function change(next: unknown): void {
-    const serialized = Array.isArray(next) ? next.join(",") : typeof next === "string" ? next : "";
+    const serialized = serializeColumnValue(next);
 
     if (serialized === "") {
       if (active) {
