@@ -1,8 +1,3 @@
-# Coverage is uploaded from three separate jobs — vitest (JS), pest (PHP
-# unit/feature), and pest-browser. Without this, Codecov computes the patch /
-# project status after the first report arrives and reports spurious gaps for
-# lines covered by a not-yet-uploaded report. Wait for all three coverage
-# uploads (and for CI to finish) before sending any status or comment.
 codecov:
   notify:
     after_n_builds: 3
