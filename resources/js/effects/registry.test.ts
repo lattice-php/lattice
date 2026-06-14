@@ -1,25 +1,165 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 import { builtinEffectHandlers } from "./registry";
 
-vi.mock("@inertiajs/react", () => ({
-  router: { reload: vi.fn<() => void>(), visit: vi.fn<(url: string) => void>() },
+const router = vi.hoisted(() => ({
+  reload: vi.fn<() => void>(),
+  visit: vi.fn<(url: string) => void>(),
 }));
 
+vi.mock("@inertiajs/react", () => ({ router }));
+
+const setLocale = vi.hoisted(() => vi.fn<(locale: string) => void>());
+vi.mock("@lattice-php/lattice/i18n/locale", () => ({ setLocale }));
+
+afterEach(() => {
+  router.reload.mockReset();
+  router.visit.mockReset();
+  setLocale.mockReset();
+  vi.restoreAllMocks();
+});
+
 describe("builtinEffectHandlers", () => {
-  it("redirect visits the url", async () => {
-    const { router } = await import("@inertiajs/react");
+  // ── Imperative handlers ─────────────────────────────────────────────────
+
+  it("reloadPage calls router.reload()", () => {
+    builtinEffectHandlers.reloadPage({ type: "reloadPage" } as never);
+    expect(router.reload).toHaveBeenCalledOnce();
+  });
+
+  it("redirect visits the url", () => {
     builtinEffectHandlers.redirect({ type: "redirect", url: "/next" } as never);
     expect(router.visit).toHaveBeenCalledWith("/next");
   });
 
+  it("download creates an anchor, sets href, clicks it, and removes it", () => {
+    const hrefs: string[] = [];
+    const click = vi
+      .spyOn(HTMLAnchorElement.prototype, "click")
+      .mockImplementation(function (this: HTMLAnchorElement) {
+        hrefs.push(this.href);
+      });
+
+    builtinEffectHandlers.download({
+      type: "download",
+      url: "/exports/report.csv",
+    } as never);
+
+    expect(click).toHaveBeenCalledOnce();
+    expect(hrefs[0]).toContain("/exports/report.csv");
+    // anchor must be removed from the DOM after the click
+    expect(document.querySelector("a")).toBeNull();
+  });
+
+  it("localeChange calls setLocale with the locale", () => {
+    builtinEffectHandlers.localeChange({
+      type: "localeChange",
+      locale: "de",
+    } as never);
+    expect(setLocale).toHaveBeenCalledWith("de");
+  });
+
+  it("imperative handlers do NOT emit lattice:* DOM events", () => {
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+
+    const fired: string[] = [];
+    const listener = (event: Event) => fired.push(event.type);
+
+    window.addEventListener(LATTICE_EVENT.reloadPage, listener);
+    window.addEventListener(LATTICE_EVENT.redirect, listener);
+    window.addEventListener(LATTICE_EVENT.download, listener);
+    window.addEventListener(LATTICE_EVENT.localeChange, listener);
+
+    builtinEffectHandlers.reloadPage({ type: "reloadPage" } as never);
+    builtinEffectHandlers.redirect({ type: "redirect", url: "/x" } as never);
+    builtinEffectHandlers.download({ type: "download", url: "/f.csv" } as never);
+    builtinEffectHandlers.localeChange({ type: "localeChange", locale: "fr" } as never);
+
+    window.removeEventListener(LATTICE_EVENT.reloadPage, listener);
+    window.removeEventListener(LATTICE_EVENT.redirect, listener);
+    window.removeEventListener(LATTICE_EVENT.download, listener);
+    window.removeEventListener(LATTICE_EVENT.localeChange, listener);
+
+    expect(fired).toEqual([]);
+  });
+
+  // ── Bridged handlers (lattice:* DOM events) ─────────────────────────────
+
   it("toast bridges to the lattice:toast DOM event", () => {
     const listener = vi.fn<(event: Event) => void>();
-    window.addEventListener("lattice:toast", listener);
+    window.addEventListener(LATTICE_EVENT.toast, listener);
     builtinEffectHandlers.toast({
       type: "toast",
       toast: { variant: "success", message: "hi" },
     } as never);
     expect(listener).toHaveBeenCalledOnce();
-    window.removeEventListener("lattice:toast", listener);
+    const detail = (listener.mock.calls[0][0] as CustomEvent).detail;
+    expect(detail).toMatchObject({ type: "toast" });
+    window.removeEventListener(LATTICE_EVENT.toast, listener);
+  });
+
+  it("callout bridges to the lattice:callout DOM event with the full effect as detail", () => {
+    const received: unknown[] = [];
+    const listener = (event: Event) => received.push((event as CustomEvent).detail);
+    window.addEventListener(LATTICE_EVENT.callout, listener);
+
+    builtinEffectHandlers.callout({
+      type: "callout",
+      callout: { variant: "info", title: null, message: "Hi", dismissible: true, action: null },
+    } as never);
+
+    window.removeEventListener(LATTICE_EVENT.callout, listener);
+    expect(received).toHaveLength(1);
+    expect(received[0]).toMatchObject({ type: "callout", callout: { message: "Hi" } });
+  });
+
+  it("reloadComponent bridges to the lattice:reload-component DOM event", () => {
+    const listener = vi.fn<(event: Event) => void>();
+    window.addEventListener(LATTICE_EVENT.reloadComponent, listener);
+
+    builtinEffectHandlers.reloadComponent({ type: "reloadComponent" } as never);
+
+    expect(listener).toHaveBeenCalledOnce();
+    expect((listener.mock.calls[0][0] as CustomEvent).detail).toMatchObject({
+      type: "reloadComponent",
+    });
+    window.removeEventListener(LATTICE_EVENT.reloadComponent, listener);
+  });
+
+  it("openModal bridges to the lattice:open-modal DOM event", () => {
+    const listener = vi.fn<(event: Event) => void>();
+    window.addEventListener(LATTICE_EVENT.openModal, listener);
+
+    builtinEffectHandlers.openModal({ type: "openModal", modal: "confirm" } as never);
+
+    expect(listener).toHaveBeenCalledOnce();
+    expect((listener.mock.calls[0][0] as CustomEvent).detail).toMatchObject({
+      type: "openModal",
+    });
+    window.removeEventListener(LATTICE_EVENT.openModal, listener);
+  });
+
+  it("closeModal bridges to the lattice:close-modal DOM event", () => {
+    const listener = vi.fn<(event: Event) => void>();
+    window.addEventListener(LATTICE_EVENT.closeModal, listener);
+
+    builtinEffectHandlers.closeModal({ type: "closeModal" } as never);
+
+    expect(listener).toHaveBeenCalledOnce();
+    expect((listener.mock.calls[0][0] as CustomEvent).detail).toMatchObject({
+      type: "closeModal",
+    });
+    window.removeEventListener(LATTICE_EVENT.closeModal, listener);
+  });
+
+  it("resetForm bridges to the lattice:reset-form DOM event with detail equal to the effect", () => {
+    const received: unknown[] = [];
+    const listener = (event: Event) => received.push((event as CustomEvent).detail);
+    window.addEventListener(LATTICE_EVENT.resetForm, listener);
+
+    builtinEffectHandlers.resetForm({ type: "resetForm", form: "teams.create" } as never);
+
+    window.removeEventListener(LATTICE_EVENT.resetForm, listener);
+    expect(received).toEqual([{ type: "resetForm", form: "teams.create" }]);
   });
 });
