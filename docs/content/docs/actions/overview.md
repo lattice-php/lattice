@@ -21,7 +21,7 @@ use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\Action as ActionAttribute;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Core\Enums\Variant;
 
 #[ActionAttribute('app.products.archive')]
 class ArchiveProductAction extends ActionDefinition
@@ -40,7 +40,7 @@ class ArchiveProductAction extends ActionDefinition
         $product->update(['status' => 'archived']);
 
         return ActionResult::success()
-            ->toast(ToastVariant::Success, 'Product archived.')
+            ->toast(Variant::Success, 'Product archived.')
             ->reloadComponent('app.products');
     }
 }

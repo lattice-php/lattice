@@ -1,10 +1,10 @@
 ---
 title: Toasts
-description: Transient notifications raised from the server — from an action's result or flashed from a form.
+description: Transient notifications raised from the server — from an action's result or flashed into the next response.
 ---
 
 A toast is a short notification the client shows and dismisses. Toasts are raised on the server and
-carry a `ToastVariant` — `Success`, `Info`, `Warning`, or `Error` — that styles them.
+carry a `Variant` — `Success`, `Info`, `Warning`, or `Error` — that styles them.
 
 ## From an action
 
@@ -14,31 +14,35 @@ returns; the variant can come first or second:
 ```php
 return ActionResult::success()
     ->toast('Product archived.')                       // defaults to Success
-    ->toast(ToastVariant::Error, 'Could not reach the warehouse.');
+    ->toast(Variant::Error, 'Could not reach the warehouse.');
 ```
 
 See [Effects & results](/actions/effects/#toasts) for the full effect list.
 
-## From a form or definition
+## Flashing from outside an action
 
-A definition can flash a toast that appears on the next page — handy after a form submit that
-redirects. `$this->toast()` flashes the message; return your redirect as usual:
+To show a toast after a controller redirect, from a listener, middleware, or anywhere an `ActionResult`
+is not available, use `Effects::flash()`:
 
 ```php
-use Lattice\Lattice\Core\Enums\ToastVariant;
+use Lattice\Lattice\Actions\Effect;
+use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Facades\Effects;
 
 public function handle(Request $request): Response
 {
     $this->validate($request);
     // … persist …
 
-    $this->toast(ToastVariant::Success, 'Profile saved.');
+    Effects::flash(Effect::toast(Variant::Success, 'Profile saved.'));
 
     return redirect('/profile');
 }
 ```
 
-The flashed toast is delivered with the next Inertia response and shown once.
+The flashed toast is stored in the `latticeEffects` session bag, delivered with the next Inertia
+response, and shown once. `Effects::flash()` accepts any number of effects — toast, callout,
+and more — see [Effects & results](/actions/effects/#flashing-effects-without-an-action) for details.
 
 ## Building a message directly
 
@@ -49,7 +53,7 @@ dismissal, or attach an action, then pass it to `->toast()` (or `Effect::toast()
 use Lattice\Lattice\Core\Values\ToastMessage;
 
 return ActionResult::success()->toast(
-    ToastMessage::make(ToastVariant::Success, 'Product archived.')
+    ToastMessage::make(Variant::Success, 'Product archived.')
         ->duration(8000)                       // auto-dismiss after 8s (default 4000ms)
         ->link('View products', '/products'),  // a link rendered in the toast
 );
