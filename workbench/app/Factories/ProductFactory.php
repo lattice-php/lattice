@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Factories;
 
+use Bambamboole\ExtendedFaker\Repository\ProductRepository;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Workbench\App\Models\Product;
 
@@ -19,7 +20,7 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->words(2, true),
+            'name' => (new ProductRepository)->getRandomProduct('en_US')->name,
             'sku' => fake()->unique()->bothify('PRD-####'),
             'price' => fake()->randomFloat(2, 10, 250),
             'status' => fake()->randomElement(['draft', 'active', 'archived']),
