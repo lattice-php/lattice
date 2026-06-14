@@ -186,10 +186,18 @@ return [
             'card' => 'Product details',
             'fields' => [
                 'name' => 'Name',
-                'price' => 'Price',
                 'related-products' => 'Related products',
                 'sku' => 'SKU',
                 'status' => 'Status',
+            ],
+            'sales-prices' => [
+                'add' => 'Add price',
+                'amount' => 'Amount',
+                'card' => 'Sales prices',
+                'default-group' => 'Default',
+                'group' => 'Group',
+                'label' => 'Sales prices',
+                'single-default' => 'Only one default price (without a group) is allowed.',
             ],
             'status' => [
                 'active' => 'Active',
@@ -379,10 +387,10 @@ return [
     'tables' => [
         'columns' => [
             'created-at' => 'Created at',
+            'default-price' => 'Default price',
             'email' => 'Email',
             'featured' => 'Featured',
             'name' => 'Name',
-            'price' => 'Price',
             'sku' => 'SKU',
             'status' => 'Status',
             'updated-at' => 'Updated at',

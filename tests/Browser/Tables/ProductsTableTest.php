@@ -75,7 +75,6 @@ it('edits a product in a prefilled modal form', function (): void {
     Product::factory()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
-        'price' => '49.99',
         'status' => 'active',
     ]);
 

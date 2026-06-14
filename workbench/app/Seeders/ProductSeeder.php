@@ -15,7 +15,7 @@ class ProductSeeder extends Seeder
         Product::query()->upsert(
             $this->products(),
             ['sku'],
-            ['name', 'price', 'status', 'featured', 'created_at', 'updated_at'],
+            ['name', 'status', 'featured', 'created_at', 'updated_at'],
         );
 
         $this->seedRelations();
@@ -34,7 +34,7 @@ class ProductSeeder extends Seeder
     }
 
     /**
-     * @return array<int, array{name: string, sku: string, price: string, status: string, featured: bool, created_at: string, updated_at: string}>
+     * @return array<int, array{name: string, sku: string, status: string, featured: bool, created_at: string, updated_at: string}>
      */
     private function products(): array
     {
@@ -49,7 +49,6 @@ class ProductSeeder extends Seeder
                 return [
                     'name' => $names[($number - 1) % count($names)],
                     'sku' => sprintf('workbench-product-%03d', $number),
-                    'price' => number_format($faker->randomFloat(2, 9, 999), 2, '.', ''),
                     'status' => $statuses[($number - 1) % count($statuses)],
                     'featured' => $faker->boolean(),
                     'created_at' => $createdAt->toDateTimeString(),

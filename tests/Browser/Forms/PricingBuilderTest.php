@@ -3,11 +3,19 @@ declare(strict_types=1);
 
 use Workbench\App\Models\Product;
 
+function productWithDefaultPrice(string $name, string $amount): Product
+{
+    $product = Product::factory()->withoutDefaultPrice()->create(['name' => $name]);
+    $product->salesPrices()->create(['group_id' => null, 'amount' => $amount]);
+
+    return $product;
+}
+
 it('prefills computed prices, keeps manual edits, and re-prices untouched rows', function (): void {
     $this->actingAs(workbenchTestUser());
-    Product::factory()->create(['name' => 'Alpha Chair', 'price' => 100.00]);
-    Product::factory()->create(['name' => 'Beta Table', 'price' => 200.00]);
-    Product::factory()->create(['name' => 'Gamma Shelf', 'price' => 300.00]);
+    productWithDefaultPrice('Alpha Chair', '100.00');
+    productWithDefaultPrice('Beta Table', '200.00');
+    productWithDefaultPrice('Gamma Shelf', '300.00');
 
     visit('/builder-pricing')
         ->assertSee('Pricing Builder Demo')
@@ -40,7 +48,7 @@ it('prefills computed prices, keeps manual edits, and re-prices untouched rows',
 
 it('evaluates row field visibility against same-row siblings', function (): void {
     $this->actingAs(workbenchTestUser());
-    Product::factory()->create(['name' => 'Alpha Chair', 'price' => 100.00]);
+    productWithDefaultPrice('Alpha Chair', '100.00');
 
     visit('/builder-pricing')
         ->assertSee('Pricing Builder Demo')
@@ -61,10 +69,10 @@ it('evaluates row field visibility against same-row siblings', function (): void
 it('searches products inside a builder row select', function (): void {
     $this->actingAs(workbenchTestUser());
     foreach (range(1, 20) as $number) {
-        Product::factory()->create(['name' => sprintf('Alpha Product %02d', $number), 'price' => 10.00]);
+        productWithDefaultPrice(sprintf('Alpha Product %02d', $number), '10.00');
     }
 
-    Product::factory()->create(['name' => 'Zulu Search Only', 'price' => 400.00]);
+    productWithDefaultPrice('Zulu Search Only', '400.00');
 
     visit('/builder-pricing')
         ->assertSee('Pricing Builder Demo')

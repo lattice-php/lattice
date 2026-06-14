@@ -83,8 +83,10 @@ test('the product form creates products', function () {
     post('/lattice/forms/workbench.products.form', [
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
-        'price' => '49.99',
         'status' => 'active',
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => '49.99'],
+        ],
     ], productHeaders($form))
         ->assertRedirect('/products');
 
@@ -92,17 +94,17 @@ test('the product form creates products', function () {
 
     expect($product)->not->toBeNull()
         ->and($product?->name)->toBe('Desk Lamp')
-        ->and($product?->price)->toBe('49.99')
+        ->and($product?->defaultSalesPrice?->amount)->toBe('49.99')
         ->and($product?->status)->toBe('active');
 });
 
 test('the product edit page binds existing product state', function () {
-    $product = Product::factory()->create([
+    $product = Product::factory()->withoutDefaultPrice()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
-        'price' => '49.99',
         'status' => 'draft',
     ]);
+    $product->salesPrices()->create(['group_id' => null, 'amount' => '49.99']);
 
     withoutVite();
     $this->actingAs(workbenchTestUser());
@@ -116,7 +118,8 @@ test('the product edit page binds existing product state', function () {
             ->where('lattice.schema.0.schema.1.props.submitLabel', 'Save product')
             ->where('lattice.schema.0.schema.1.props.state.name', 'Desk Lamp')
             ->where('lattice.schema.0.schema.1.props.state.sku', 'LAMP-001')
-            ->where('lattice.schema.0.schema.1.props.state.price', '49.99')
+            ->where('lattice.schema.0.schema.1.props.state.sales_prices.0.amount', '49.99')
+            ->where('lattice.schema.0.schema.1.props.state.sales_prices.0.group_id', '')
             ->where('lattice.schema.0.schema.1.props.state.status', 'draft')
         );
 });
@@ -124,16 +127,14 @@ test('the product edit page binds existing product state', function () {
 test('the product form updates the trusted product from sealed context', function () {
     Lattice::forms([ProductForm::class]);
 
-    $trustedProduct = Product::factory()->create([
+    $trustedProduct = Product::factory()->withoutDefaultPrice()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
-        'price' => '49.99',
         'status' => 'draft',
     ]);
-    $tamperedProduct = Product::factory()->create([
+    $tamperedProduct = Product::factory()->withoutDefaultPrice()->create([
         'name' => 'Shelf',
         'sku' => 'SHELF-001',
-        'price' => '89.00',
         'status' => 'active',
     ]);
 
@@ -144,8 +145,10 @@ test('the product form updates the trusted product from sealed context', functio
         'product_id' => $tamperedProduct->getKey(),
         'name' => 'Updated Lamp',
         'sku' => 'LAMP-002',
-        'price' => '59.99',
         'status' => 'active',
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => '59.99'],
+        ],
     ], productHeaders($form))
         ->assertRedirect('/products');
 
@@ -154,7 +157,7 @@ test('the product form updates the trusted product from sealed context', functio
 
     expect($trustedProduct->name)->toBe('Updated Lamp')
         ->and($trustedProduct->sku)->toBe('LAMP-002')
-        ->and($trustedProduct->price)->toBe('59.99')
+        ->and($trustedProduct->defaultSalesPrice?->amount)->toBe('59.99')
         ->and($trustedProduct->status)->toBe('active')
         ->and($tamperedProduct->name)->toBe('Shelf')
         ->and($tamperedProduct->sku)->toBe('SHELF-001');
@@ -168,14 +171,16 @@ test('the product form validates required fields', function () {
     post('/lattice/forms/workbench.products.form', [
         'name' => '',
         'sku' => '',
-        'price' => 'invalid',
         'status' => 'retired',
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => 'invalid'],
+        ],
     ], productHeaders($form))
         ->assertSessionHasErrors([
             'name',
             'sku',
-            'price',
             'status',
+            'sales_prices.0.amount',
         ])
         ->assertStatus(Response::HTTP_FOUND);
 });
@@ -188,15 +193,17 @@ test('the product form returns precognitive validation errors without creating p
     post('/lattice/forms/workbench.products.form', [
         'name' => '',
         'sku' => '',
-        'price' => 'invalid',
         'status' => 'retired',
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => 'invalid'],
+        ],
     ], productHeaders($form, [
         'Accept' => 'application/json',
         'Precognition' => 'true',
-        'Precognition-Validate-Only' => 'name,price',
+        'Precognition-Validate-Only' => 'name,sales_prices.0.amount',
     ]))
         ->assertHeader('Precognition', 'true')
-        ->assertJsonValidationErrors(['name', 'price'])
+        ->assertJsonValidationErrors(['name', 'sales_prices.0.amount'])
         ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
     expect(Product::query()->count())->toBe(0);
@@ -210,8 +217,10 @@ test('the product form accepts valid precognitive validation without creating pr
     post('/lattice/forms/workbench.products.form', [
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
-        'price' => '49.99',
         'status' => 'active',
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => '49.99'],
+        ],
     ], productHeaders($form, [
         'Accept' => 'application/json',
         'Precognition' => 'true',
@@ -229,13 +238,11 @@ test('the product form validates edit uniqueness from sealed context during prec
     $trustedProduct = Product::factory()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
-        'price' => '49.99',
         'status' => 'draft',
     ]);
     Product::factory()->create([
         'name' => 'Shelf',
         'sku' => 'SHELF-001',
-        'price' => '89.00',
         'status' => 'active',
     ]);
 
@@ -245,7 +252,6 @@ test('the product form validates edit uniqueness from sealed context during prec
     patch('/lattice/forms/workbench.products.form', [
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
-        'price' => '49.99',
         'status' => 'active',
     ], productHeaders($form, [
         'Accept' => 'application/json',
@@ -259,7 +265,6 @@ test('the product form validates edit uniqueness from sealed context during prec
     patch('/lattice/forms/workbench.products.form', [
         'name' => 'Desk Lamp',
         'sku' => 'SHELF-001',
-        'price' => '49.99',
         'status' => 'active',
     ], productHeaders($form, [
         'Accept' => 'application/json',

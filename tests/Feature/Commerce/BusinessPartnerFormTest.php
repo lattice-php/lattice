@@ -102,7 +102,7 @@ test('the business partner edit page renders the effective prices panel', functi
     Lattice::forms([BusinessPartnerForm::class]);
 
     $partner = BusinessPartner::factory()->create();
-    $product = Product::factory()->create(['name' => 'Widget Pro']);
+    $product = Product::factory()->withoutDefaultPrice()->create(['name' => 'Widget Pro']);
     SalesPrice::factory()->create(['product_id' => $product->getKey(), 'group_id' => null, 'amount' => '99.00']);
 
     $formDef = new BusinessPartnerForm;

@@ -9,7 +9,7 @@ use Workbench\App\Pricing\PriceResolver;
 
 function priceProduct(): Product
 {
-    return Product::factory()->create();
+    return Product::factory()->withoutDefaultPrice()->create();
 }
 
 test('falls back to the groupless default price', function (): void {

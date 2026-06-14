@@ -186,10 +186,18 @@ return [
             'card' => 'Produktdetails',
             'fields' => [
                 'name' => 'Name',
-                'price' => 'Preis',
                 'related-products' => 'Verwandte Produkte',
                 'sku' => 'SKU',
                 'status' => 'Status',
+            ],
+            'sales-prices' => [
+                'add' => 'Preis hinzufügen',
+                'amount' => 'Betrag',
+                'card' => 'Verkaufspreise',
+                'default-group' => 'Standard',
+                'group' => 'Gruppe',
+                'label' => 'Verkaufspreise',
+                'single-default' => 'Es ist nur ein Standardpreis (ohne Gruppe) erlaubt.',
             ],
             'status' => [
                 'active' => 'Aktiv',
@@ -379,10 +387,10 @@ return [
     'tables' => [
         'columns' => [
             'created-at' => 'Erstellt am',
+            'default-price' => 'Standardpreis',
             'email' => 'E-Mail',
             'featured' => 'Hervorgehoben',
             'name' => 'Name',
-            'price' => 'Preis',
             'sku' => 'SKU',
             'status' => 'Status',
             'updated-at' => 'Aktualisiert am',

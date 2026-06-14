@@ -52,7 +52,7 @@ test('sales order total sums all line totals', function (): void {
 });
 
 test('product default sales price returns the groupless row', function (): void {
-    $product = Product::factory()->create();
+    $product = Product::factory()->withoutDefaultPrice()->create();
     $group = Group::factory()->create();
     $default = SalesPrice::factory()->create(['product_id' => $product->id, 'group_id' => null, 'amount' => '100.00']);
     SalesPrice::factory()->create(['product_id' => $product->id, 'group_id' => $group->id, 'amount' => '80.00']);

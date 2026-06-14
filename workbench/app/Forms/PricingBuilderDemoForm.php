@@ -115,6 +115,8 @@ class PricingBuilderDemoForm extends FormDefinition
 
         $discount = self::CUSTOMER_DISCOUNTS[is_string($customer) ? $customer : ''] ?? 0.0;
 
-        return round((float) $product->price * (1 - $discount), 2);
+        $amount = $product->defaultSalesPrice()->value('amount');
+
+        return round((float) $amount * (1 - $discount), 2);
     }
 }

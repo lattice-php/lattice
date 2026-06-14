@@ -7,8 +7,8 @@ it('shows precognitive validation messages in the form', function (): void {
     $this->actingAs(workbenchTestUser());
     visit('/products/create')
         ->assertSee('Create Product')
-        ->fill('@price', 'invalid')
-        ->assertSee('The Price field must be a number.')
+        ->fill('input[name="sales_prices[0][amount]"]', 'invalid')
+        ->assertSee('must be a number')
         ->assertNoSmoke();
 
     expect(Product::query()->count())->toBe(0);
@@ -19,10 +19,10 @@ it('disables the submit button while precognition errors are active', function (
     visit('/products/create')
         ->assertSee('Create Product')
         ->assertEnabled('@form-submit')
-        ->fill('@price', 'invalid')
+        ->fill('input[name="sales_prices[0][amount]"]', 'invalid')
         ->assertSee('Fix these fields to continue:')
         ->assertDisabled('@form-submit')
-        ->fill('@price', '49.99')
+        ->fill('input[name="sales_prices[0][amount]"]', '49.99')
         ->assertEnabled('@form-submit');
 });
 
@@ -42,7 +42,6 @@ it('shows existing related products on the edit page', function (): void {
     $product = Product::factory()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
-        'price' => '49.99',
         'status' => 'active',
     ]);
     $related = Product::factory()->create(['name' => 'Walnut Desk']);
@@ -64,7 +63,7 @@ it('attaches related products via search when creating', function (): void {
         ->assertSee('Create Product')
         ->fill('@name', 'Gadget')
         ->fill('@sku', 'GAD-100')
-        ->fill('@price', '12.00')
+        ->fill('input[name="sales_prices[0][amount]"]', '12.00')
         ->click('@status-active')
         ->click('@select-related_products')
         ->fill('@select-related_products-search', 'walnut')
@@ -77,7 +76,8 @@ it('attaches related products via search when creating', function (): void {
 
     $product = Product::query()->where('sku', 'GAD-100')->firstOrFail();
 
-    expect($product->relatedProducts->pluck('name')->all())->toBe(['Walnut Desk']);
+    expect($product->relatedProducts->pluck('name')->all())->toBe(['Walnut Desk'])
+        ->and($product->defaultSalesPrice?->amount)->toBe('12.00');
 });
 
 it('creates and edits a product through the form flow', function (): void {
@@ -88,7 +88,7 @@ it('creates and edits a product through the form flow', function (): void {
         ->assertSee('Create Product')
         ->fill('@name', 'Desk Lamp')
         ->fill('@sku', 'LAMP-001')
-        ->fill('@price', '49.99')
+        ->fill('input[name="sales_prices[0][amount]"]', '49.99')
         ->click('@status-active')
         ->click('@form-submit')
         ->assertSee('Products')

@@ -14,7 +14,6 @@ use Workbench\App\Factories\ProductFactory;
 /**
  * @property string $name
  * @property string $sku
- * @property string $price
  * @property string $status
  * @property bool $featured
  * @property-read Collection<int, Product> $relatedProducts
@@ -32,7 +31,6 @@ class Product extends Model
     protected $fillable = [
         'name',
         'sku',
-        'price',
         'status',
         'featured',
     ];
@@ -43,7 +41,6 @@ class Product extends Model
     protected function casts(): array
     {
         return [
-            'price' => 'decimal:2',
             'featured' => 'boolean',
         ];
     }
