@@ -47,7 +47,7 @@ return ActionResult::success()
 `->toast()` accepts a message and an optional `ToastVariant` (`Success`, `Error`, `Warning`, `Info`).
 The variant can come first or second — both `->toast('Saved.')` and
 `->toast(ToastVariant::Error, 'Could not save.')` read naturally. Pass a `ToastMessage` instead to
-set a lifetime, control dismissal, or attach a link or action — see [Toasts](/core/toasts/).
+set a lifetime, control dismissal, or attach a link or action — see [Toasts](/actions/toasts/).
 
 ### Refreshing what changed
 
