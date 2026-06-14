@@ -4,10 +4,13 @@ import type { EffectHandlerRegistry } from "./registry";
 
 describe("dispatchEffects", () => {
   it("routes each effect to its registered handler", () => {
-    const toast = vi.fn();
+    const toast = vi.fn<() => void>();
     const handlers: EffectHandlerRegistry = { toast };
 
-    dispatchEffects([{ type: "toast", toast: { variant: "success", message: "hi" } }] as never, handlers);
+    dispatchEffects(
+      [{ type: "toast", toast: { variant: "success", message: "hi" } }] as never,
+      handlers,
+    );
 
     expect(toast).toHaveBeenCalledOnce();
   });
