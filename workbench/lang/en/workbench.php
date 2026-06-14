@@ -3,6 +3,56 @@ declare(strict_types=1);
 
 return [
     'commerce' => [
+        'business-partners' => [
+            'actions' => [
+                'edit' => 'Edit',
+            ],
+            'columns' => [
+                'email' => 'Email',
+                'groups-count' => 'Groups',
+                'name' => 'Name',
+                'shipping-city' => 'Shipping city',
+            ],
+            'fields' => [
+                'add-address' => 'Add address',
+                'address' => [
+                    'city' => 'City',
+                    'country' => 'Country',
+                    'label' => 'Label',
+                    'line1' => 'Address line 1',
+                    'line2' => 'Address line 2',
+                    'postal-code' => 'Postal code',
+                ],
+                'addresses' => 'Addresses',
+                'default-billing-address' => 'Default billing address',
+                'default-shipping-address' => 'Default shipping address',
+                'email' => 'Email',
+                'groups' => 'Groups',
+                'name' => 'Name',
+            ],
+            'form' => [
+                'defaults-card' => 'Default addresses',
+                'details-card' => 'Details',
+                'prices-card' => 'Effective prices',
+            ],
+            'pages' => [
+                'create' => [
+                    'heading' => 'Create business partner',
+                    'submit' => 'Create business partner',
+                    'title' => 'Create business partner',
+                ],
+                'edit' => [
+                    'heading' => 'Edit business partner',
+                    'submit' => 'Save business partner',
+                    'title' => 'Edit business partner',
+                ],
+                'index' => [
+                    'create' => 'Create business partner',
+                    'heading' => 'Business partners',
+                    'title' => 'Business partners',
+                ],
+            ],
+        ],
         'groups' => [
             'actions' => [
                 'edit' => 'Edit',

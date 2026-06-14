@@ -3,6 +3,56 @@ declare(strict_types=1);
 
 return [
     'commerce' => [
+        'business-partners' => [
+            'actions' => [
+                'edit' => 'Bearbeiten',
+            ],
+            'columns' => [
+                'email' => 'E-Mail',
+                'groups-count' => 'Gruppen',
+                'name' => 'Name',
+                'shipping-city' => 'Lieferstadt',
+            ],
+            'fields' => [
+                'add-address' => 'Adresse hinzufügen',
+                'address' => [
+                    'city' => 'Stadt',
+                    'country' => 'Land',
+                    'label' => 'Bezeichnung',
+                    'line1' => 'Adresszeile 1',
+                    'line2' => 'Adresszeile 2',
+                    'postal-code' => 'Postleitzahl',
+                ],
+                'addresses' => 'Adressen',
+                'default-billing-address' => 'Standard-Rechnungsadresse',
+                'default-shipping-address' => 'Standard-Lieferadresse',
+                'email' => 'E-Mail',
+                'groups' => 'Gruppen',
+                'name' => 'Name',
+            ],
+            'form' => [
+                'defaults-card' => 'Standardadressen',
+                'details-card' => 'Details',
+                'prices-card' => 'Effektive Preise',
+            ],
+            'pages' => [
+                'create' => [
+                    'heading' => 'Geschäftspartner erstellen',
+                    'submit' => 'Geschäftspartner erstellen',
+                    'title' => 'Geschäftspartner erstellen',
+                ],
+                'edit' => [
+                    'heading' => 'Geschäftspartner bearbeiten',
+                    'submit' => 'Geschäftspartner speichern',
+                    'title' => 'Geschäftspartner bearbeiten',
+                ],
+                'index' => [
+                    'create' => 'Geschäftspartner erstellen',
+                    'heading' => 'Geschäftspartner',
+                    'title' => 'Geschäftspartner',
+                ],
+            ],
+        ],
         'groups' => [
             'actions' => [
                 'edit' => 'Bearbeiten',
