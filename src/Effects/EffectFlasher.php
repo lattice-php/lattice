@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Actions;
+namespace Lattice\Lattice\Effects;
 
 use Inertia\Inertia;
-use Lattice\Lattice\Actions\Effects\AbstractEffect;
+use Lattice\Lattice\Effects\Contracts\Effect;
 
 /**
  * Accumulates effects across a request and flashes them, as a single array,
@@ -14,11 +14,11 @@ use Lattice\Lattice\Actions\Effects\AbstractEffect;
 final class EffectFlasher
 {
     /**
-     * @var array<int, AbstractEffect>
+     * @var array<int, Effect>
      */
     private array $effects = [];
 
-    public function flash(AbstractEffect ...$effects): void
+    public function flash(Effect ...$effects): void
     {
         if ($effects === []) {
             return;
@@ -30,7 +30,7 @@ final class EffectFlasher
     }
 
     /**
-     * @return array<int, AbstractEffect>
+     * @return array<int, Effect>
      */
     public function all(): array
     {

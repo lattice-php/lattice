@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Actions\Enums;
+namespace Lattice\Lattice\Effects\Enums;
 
 use Lattice\Lattice\Attributes\TypeScript;
 
