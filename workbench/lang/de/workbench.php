@@ -2,6 +2,40 @@
 declare(strict_types=1);
 
 return [
+    'commerce' => [
+        'groups' => [
+            'actions' => [
+                'edit' => 'Bearbeiten',
+            ],
+            'columns' => [
+                'name' => 'Name',
+                'partners-count' => 'Geschäftspartner',
+            ],
+            'fields' => [
+                'name' => 'Name',
+            ],
+            'form' => [
+                'card' => 'Gruppendetails',
+            ],
+            'pages' => [
+                'create' => [
+                    'heading' => 'Gruppe erstellen',
+                    'submit' => 'Gruppe erstellen',
+                    'title' => 'Gruppe erstellen',
+                ],
+                'edit' => [
+                    'heading' => 'Gruppe bearbeiten',
+                    'submit' => 'Gruppe speichern',
+                    'title' => 'Gruppe bearbeiten',
+                ],
+                'index' => [
+                    'create' => 'Gruppe erstellen',
+                    'heading' => 'Gruppen',
+                    'title' => 'Gruppen',
+                ],
+            ],
+        ],
+    ],
     'actions' => [
         'archive' => [
             'confirm-description' => 'Blendet das Produkt im Katalog aus.',
