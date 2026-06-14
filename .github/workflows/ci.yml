@@ -111,6 +111,7 @@ jobs:
             -p 9000:9000 \
             -e RUSTFS_ACCESS_KEY=herd \
             -e RUSTFS_SECRET_KEY=secretkey \
+            -e RUSTFS_CORS_ALLOWED_ORIGINS=* \
             rustfs/rustfs:latest /data
           for i in $(seq 1 30); do
             if curl -s -o /dev/null http://localhost:9000/; then
