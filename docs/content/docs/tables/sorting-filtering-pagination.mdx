@@ -155,6 +155,18 @@ public function filters(): array
 Active values show as removable chips with a **Reset all** that clears every filter — dedicated and
 column alike.
 
+A `SelectFilter`'s options can come from an `OptionSource` instead of a fixed list, and
+`->searchable()` fetches them as the user types (via a `_search` round-trip to the table endpoint)
+rather than shipping the whole list up front:
+
+```php
+use Lattice\Lattice\Core\EloquentOptions;
+
+SelectFilter::make('author')
+    ->optionsFrom(EloquentOptions::make(Author::class)->label('name'))
+    ->searchable();
+```
+
 ### How values reach the server
 
 Dedicated filter values post as Laravel bracket params — `tf[status]=active`, repeated

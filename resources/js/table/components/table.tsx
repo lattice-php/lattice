@@ -38,6 +38,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     removeFilter,
     setTableFilter,
     resetFilters,
+    searchFilterOptions,
     processing,
     hasLoaded,
     infiniteLoaderRef,
@@ -120,6 +121,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             hasActiveFilters={hasActiveFilters}
             onChange={setTableFilter}
             onReset={resetFilters}
+            onSearch={searchFilterOptions}
           />
         )}
         {hasBulkActions && selection.active && (

@@ -61,6 +61,7 @@ return [
         'until' => ':label until',
         'selectedCount' => ':amount selected',
         'resetAll' => 'Reset all',
+        'search' => 'Search',
     ],
     'operators' => [
         'contains' => 'contains',

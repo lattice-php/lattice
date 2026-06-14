@@ -61,6 +61,7 @@ return [
         'until' => ':label bis',
         'selectedCount' => ':amount ausgewählt',
         'resetAll' => 'Alle zurücksetzen',
+        'search' => 'Suchen',
     ],
     'operators' => [
         'contains' => 'enthält',

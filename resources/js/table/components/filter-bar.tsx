@@ -1,6 +1,6 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
-import type { FilterData } from "@lattice-php/lattice/types/generated";
+import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
 import { filterOptions, isActiveFilterValue, stringProp } from "../filter-values";
 import { TableFilterControl } from "./filter-controls";
 
@@ -16,6 +16,7 @@ export function FilterBar({
   hasActiveFilters,
   onChange,
   onReset,
+  onSearch,
 }: {
   filters: FilterData[];
   values: Record<string, unknown>;
@@ -23,6 +24,7 @@ export function FilterBar({
   hasActiveFilters: boolean;
   onChange: (key: string, value: unknown) => void;
   onReset: () => void;
+  onSearch?: (filterKey: string, query: string) => Promise<Option[]>;
 }) {
   const { t } = useT("lattice");
   const active = filters.filter((filter) => isActiveFilterValue(values[filter.key]));
@@ -40,6 +42,7 @@ export function FilterBar({
               value={values[filter.key]}
               processing={processing}
               onChange={(value) => onChange(filter.key, value)}
+              onSearch={onSearch ? (query) => onSearch(filter.key, query) : undefined}
             />
           </div>
         ))}
