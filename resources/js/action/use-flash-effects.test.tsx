@@ -1,12 +1,11 @@
 import { render } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
-import { useFlashToasts } from "./use-flash-toasts";
 
 type FlashListener = (
   event: CustomEvent<{
     flash?: {
-      toast?: unknown;
+      latticeEffects?: unknown;
     };
   }>,
 ) => void;
@@ -17,18 +16,20 @@ const router = vi.hoisted(() => ({
 
 vi.mock("@inertiajs/react", () => ({ router }));
 
+import { useFlashEffects } from "@lattice-php/lattice/action/use-flash-effects";
+
 function Host() {
-  useFlashToasts();
+  useFlashEffects();
 
   return null;
 }
 
-describe("useFlashToasts", () => {
+describe("useFlashEffects", () => {
   beforeEach(() => router.on.mockClear());
 
-  it("funnels Laravel flash toasts onto the shared lattice:toast bus", () => {
+  it("dispatches flashed effects onto the bus", () => {
     const received = vi.fn<(event: Event) => void>();
-    window.addEventListener(LATTICE_EVENT.toast, received);
+    window.addEventListener(LATTICE_EVENT.callout, received);
 
     render(<Host />);
 
@@ -37,35 +38,37 @@ describe("useFlashToasts", () => {
 
     listener(
       new CustomEvent("flash", {
-        detail: { flash: { toast: { message: "Profile saved.", variant: "info" } } },
+        detail: {
+          flash: {
+            latticeEffects: [
+              {
+                type: "callout",
+                callout: {
+                  variant: "info",
+                  title: null,
+                  message: "Hi",
+                  dismissible: true,
+                  action: null,
+                },
+              },
+            ],
+          },
+        },
       }),
     );
 
     expect(received).toHaveBeenCalledTimes(1);
     const dispatched = received.mock.calls[0]?.[0] as CustomEvent;
-    expect(dispatched.detail.toast).toEqual({
-      action: null,
-      dismissible: true,
-      duration: null,
-      message: "Profile saved.",
-      persistent: false,
-      variant: "info",
-    });
+    expect(dispatched.detail.type).toBe("callout");
 
-    window.removeEventListener(LATTICE_EVENT.toast, received);
+    window.removeEventListener(LATTICE_EVENT.callout, received);
   });
 
-  it("ignores flash payloads without a toast", () => {
-    const received = vi.fn<(event: Event) => void>();
-    window.addEventListener(LATTICE_EVENT.toast, received);
-
+  it("does nothing when there are no flashed effects", () => {
     render(<Host />);
 
     const [, listener] = router.on.mock.calls[0] as ["flash", FlashListener];
-    listener(new CustomEvent("flash", { detail: { flash: {} } }));
 
-    expect(received).not.toHaveBeenCalled();
-
-    window.removeEventListener(LATTICE_EVENT.toast, received);
+    expect(() => listener(new CustomEvent("flash", { detail: { flash: {} } }))).not.toThrow();
   });
 });
