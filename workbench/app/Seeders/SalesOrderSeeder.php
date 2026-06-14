@@ -21,18 +21,32 @@ class SalesOrderSeeder extends Seeder
         $products = Product::query()->orderBy('id')->limit(2)->get();
 
         for ($i = 1; $i <= 2; $i++) {
-            $order = SalesOrder::query()->create([
-                'business_partner_id' => $partner->id,
-                'number' => sprintf('SO-%04d', $i),
-                'status' => SalesOrderStatus::Draft,
-            ]);
+            $number = sprintf('SO-%04d', $i);
+
+            $order = SalesOrder::query()->firstOrCreate(
+                ['number' => $number],
+                [
+                    'business_partner_id' => $partner->id,
+                    'status' => SalesOrderStatus::Draft,
+                ],
+            );
+
+            if (! $order->wasRecentlyCreated) {
+                continue;
+            }
 
             foreach ($products as $product) {
+                $price = $this->priceResolver->lowestFor($partner, $product);
+
+                if ($price === null) {
+                    continue;
+                }
+
                 SalesOrderLine::query()->create([
                     'sales_order_id' => $order->id,
                     'product_id' => $product->id,
                     'quantity' => fake()->numberBetween(1, 5),
-                    'unit_price' => $this->priceResolver->lowestFor($partner, $product) ?? $product->price,
+                    'unit_price' => $price,
                 ]);
             }
         }

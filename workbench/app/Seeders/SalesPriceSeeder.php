@@ -15,8 +15,11 @@ class SalesPriceSeeder extends Seeder
         $wholesale = Group::query()->where('name', 'Wholesale')->firstOrFail();
         $vip = Group::query()->where('name', 'VIP')->firstOrFail();
 
-        Product::query()->each(function (Product $product) use ($wholesale, $vip): void {
-            $base = (float) $product->price;
+        $faker = fake();
+        $faker->seed(20260608);
+
+        Product::query()->each(function (Product $product) use ($wholesale, $vip, $faker): void {
+            $base = $faker->randomFloat(2, 20, 500);
 
             SalesPrice::query()->updateOrCreate(
                 ['product_id' => $product->id, 'group_id' => null],

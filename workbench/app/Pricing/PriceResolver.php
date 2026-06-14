@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pricing;
 
+use Illuminate\Database\Eloquent\Builder;
 use Workbench\App\Models\BusinessPartner;
 use Workbench\App\Models\Product;
 
@@ -13,7 +14,7 @@ final class PriceResolver
         $groupIds = $partner->groups()->pluck('groups.id')->all();
 
         $amount = $product->salesPrices()
-            ->where(function ($query) use ($groupIds): void {
+            ->where(function (Builder $query) use ($groupIds): void {
                 $query->whereNull('group_id');
 
                 if ($groupIds !== []) {
