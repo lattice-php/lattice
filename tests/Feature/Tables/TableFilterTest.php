@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Attributes\Table as TableAttribute;
+use Lattice\Lattice\Core\Contracts\OptionSource;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
@@ -10,6 +12,29 @@ use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\Filters\SelectFilter;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Models\Product;
+
+function peopleOptionSource(): OptionSource
+{
+    return new class implements OptionSource
+    {
+        /** @var array<int|string, string> */
+        private array $people = ['1' => 'Ada', '2' => 'Linus', '3' => 'Grace'];
+
+        public function search(string $query): array
+        {
+            $matches = $query === ''
+                ? $this->people
+                : array_filter($this->people, fn (string $name): bool => str_contains(strtolower($name), strtolower($query)));
+
+            return array_map(fn (string $name, int|string $id): Option => new Option($name, (string) $id), $matches, array_keys($matches));
+        }
+
+        public function selected(array $values): array
+        {
+            return array_map(fn (string $id): Option => new Option($this->people[$id] ?? $id, $id), $values);
+        }
+    };
+}
 
 test('a table serializes its declared filters and starts with no active values', function () {
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
@@ -60,6 +85,52 @@ test('a table rejects a filter key that is not declared', function () {
         ->assertUnprocessable()
         ->assertJsonPath('message', 'Filter [unknown] is not allowed for table [workbench.filtered-products].');
 });
+
+test('a table searches a searchable filter\'s options through the endpoint', function () {
+    Lattice::tables([WorkbenchSearchableFilterTable::class]);
+
+    $ref = componentRef(wire(Table::use(WorkbenchSearchableFilterTable::class)));
+
+    latticeGet('/lattice/tables/workbench.searchable-filter?_search=author&q=ad', $ref)
+        ->assertOk()
+        ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
+});
+
+test('a table rejects searching a filter that is not searchable', function () {
+    Lattice::tables([WorkbenchFilteredProductsTable::class]);
+
+    $ref = componentRef(wire(Table::use(WorkbenchFilteredProductsTable::class)));
+
+    latticeGet('/lattice/tables/workbench.filtered-products?_search=status&q=a', $ref)
+        ->assertStatus(422);
+});
+
+/**
+ * @extends EloquentTableDefinition<Product>
+ */
+#[TableAttribute('workbench.searchable-filter')]
+class WorkbenchSearchableFilterTable extends EloquentTableDefinition
+{
+    public function columns(): array
+    {
+        return [TextColumn::make('name')->label('Name')];
+    }
+
+    public function filters(): array
+    {
+        return [
+            SelectFilter::make('author')->optionsFrom(peopleOptionSource())->searchable(),
+        ];
+    }
+
+    /**
+     * @return Builder<Product>
+     */
+    public function builder(TableQuery $query): Builder
+    {
+        return Product::query()->select(['id', 'name']);
+    }
+}
 
 /**
  * @extends EloquentTableDefinition<Product>

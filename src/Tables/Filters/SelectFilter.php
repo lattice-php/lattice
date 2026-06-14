@@ -22,6 +22,8 @@ class SelectFilter extends BaseFilter
 
     public bool $multiple = false;
 
+    public bool $searchable = false;
+
     private ?OptionSource $optionSource = null;
 
     public function multiple(bool $multiple = true): static
@@ -42,6 +44,30 @@ class SelectFilter extends BaseFilter
         return $this;
     }
 
+    /**
+     * Fetch options as the user types instead of shipping the full list up front.
+     * Only meaningful with an {@see optionsFrom} source.
+     */
+    public function searchable(bool $searchable = true): static
+    {
+        $this->searchable = $searchable;
+
+        return $this;
+    }
+
+    public function isSearchable(): bool
+    {
+        return $this->searchable && $this->optionSource !== null;
+    }
+
+    /**
+     * @return list<Option>
+     */
+    public function searchOptions(string $query): array
+    {
+        return $this->optionSource?->search($query) ?? [];
+    }
+
     public function toData(): FilterData
     {
         return new FilterData(
@@ -51,7 +77,7 @@ class SelectFilter extends BaseFilter
             [
                 'options' => $this->resolvedOptions(),
                 'multiple' => $this->multiple,
-                'searchable' => false,
+                'searchable' => $this->isSearchable(),
                 'placeholder' => $this->placeholder,
             ],
         );

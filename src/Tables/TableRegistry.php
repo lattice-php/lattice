@@ -8,9 +8,13 @@ use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\ComponentAttribute;
 use Lattice\Lattice\Attributes\Table;
 use Lattice\Lattice\Core\DefinitionRegistry;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Components\Table as TableComponent;
+use Lattice\Lattice\Tables\Filters\BaseFilter;
+use Lattice\Lattice\Tables\Filters\SelectFilter;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @extends DefinitionRegistry<TableDefinition>
@@ -80,6 +84,27 @@ final class TableRegistry extends DefinitionRegistry
         $query = TableQuery::fromRequest($request, $columns, $key, $definition->perPage(), $definition->filters());
 
         return $this->decorateResult($definition, $definition->source()->query($query), $columns)->forQuery($query);
+    }
+
+    /**
+     * Resolve options for a searchable filter from the user's query (the `_search`
+     * sub-action of the table endpoint).
+     *
+     * @return array{options: list<Option>}
+     */
+    public function searchFilterOptions(string $key, Request $request, ?TableDefinition $definition = null): array
+    {
+        $definition ??= $this->resolve($key);
+        $filterKey = $request->string('_search')->toString();
+        $query = $request->string('q')->toString();
+
+        $filter = collect($definition->filters())
+            ->first(fn (BaseFilter $filter): bool => $filter->key === $filterKey);
+
+        abort_if($filter === null, Response::HTTP_NOT_FOUND);
+        abort_unless($filter instanceof SelectFilter && $filter->isSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        return ['options' => $filter->searchOptions($query)];
     }
 
     /**
