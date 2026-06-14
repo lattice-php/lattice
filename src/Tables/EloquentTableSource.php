@@ -12,6 +12,7 @@ use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Filterable;
 use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\Enums\PaginationType;
+use Lattice\Lattice\Tables\Filters\BaseFilter;
 
 /**
  * The built-in Eloquent table source. Applies a TableQuery's filters and sorts
@@ -24,11 +25,13 @@ final readonly class EloquentTableSource implements TableSource
     /**
      * @param  Closure(TableQuery): Builder<TModel>  $builder  produces a fresh base query per request
      * @param  array<int, Column>  $columns
+     * @param  array<int, BaseFilter>  $filters
      */
     public function __construct(
         private Closure $builder,
         private array $columns,
         private PaginationType $pagination,
+        private array $filters = [],
         private FilterApplier $filterApplier = new FilterApplier,
     ) {}
 
@@ -90,6 +93,16 @@ final readonly class EloquentTableSource implements TableSource
                     $clause->field,
                     $clause->value,
                 );
+            }
+        }
+
+        $filters = collect($this->filters)->keyBy(fn (BaseFilter $filter): string => $filter->key);
+
+        foreach ($query->tableFilters as $key => $value) {
+            $filter = $filters->get($key);
+
+            if ($filter instanceof BaseFilter) {
+                $filter->apply($builder, $value);
             }
         }
 

@@ -17,6 +17,7 @@ import { useTableSelection } from "../use-table-selection";
 import { BulkBar } from "./bulk-bar";
 import { ColumnFilterControl } from "./column-filter-control";
 import { ColumnHeader } from "./column-header";
+import { FilterBar } from "./filter-bar";
 import { FilterStackBar } from "./filter-stack-bar";
 import { TablePagination } from "./pagination";
 import { SortBar } from "./sort-bar";
@@ -31,9 +32,12 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     pagination,
     state,
     filters,
+    tableFilters,
     addFilter,
     updateFilter,
     removeFilter,
+    setTableFilter,
+    resetFilters,
     processing,
     hasLoaded,
     infiniteLoaderRef,
@@ -68,6 +72,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   const striped = node.props?.striped === true;
   const hasFilters = columns.some((column) => column.filter?.enabled);
   const filterEntries = filters.map((clause, index) => ({ clause, index }));
+  const filterDefinitions = useMemo(
+    () => (Array.isArray(node.props?.filters) ? node.props.filters : []),
+    [node.props?.filters],
+  );
+  const hasActiveFilters = filters.length > 0 || Object.keys(tableFilters).length > 0;
   const sizingColumns = useMemo(() => getTableSizingColumns(columns), [columns]);
   const utilityTracks = useMemo(
     () => getTableUtilityTracks(hasActions, hasBulkActions),
@@ -103,6 +112,16 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
         </button>
       )}
       <div className="overflow-x-auto rounded-lt-sm border border-lt-border">
+        {filterDefinitions.length > 0 && (
+          <FilterBar
+            filters={filterDefinitions}
+            values={tableFilters}
+            processing={processing}
+            hasActiveFilters={hasActiveFilters}
+            onChange={setTableFilter}
+            onReset={resetFilters}
+          />
+        )}
         {hasBulkActions && selection.active && (
           <BulkBar
             actions={bulkActions}

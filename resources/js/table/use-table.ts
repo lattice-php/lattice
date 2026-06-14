@@ -91,6 +91,28 @@ export function useTable(node: TableNode) {
     applyFilters(state.filters.filter((_, current) => current !== index));
   }
 
+  function setTableFilter(key: string, value: unknown): void {
+    const next = { ...state.tableFilters };
+
+    if (isEmptyFilterValue(value)) {
+      delete next[key];
+    } else {
+      next[key] = value;
+    }
+
+    const nextState = { ...state, tableFilters: next, page: 1 };
+
+    setState(nextState);
+    void load(nextState);
+  }
+
+  function resetFilters(): void {
+    const nextState = { ...state, filters: [], tableFilters: {}, page: 1 };
+
+    setState(nextState);
+    void load(nextState);
+  }
+
   function goToPage(page: number): void {
     void load({
       ...state,
@@ -169,9 +191,12 @@ export function useTable(node: TableNode) {
     pagination,
     state,
     filters: state.filters,
+    tableFilters: state.tableFilters,
     addFilter,
     updateFilter,
     removeFilter,
+    setTableFilter,
+    resetFilters,
     processing,
     hasLoaded,
     infiniteLoaderRef,
@@ -180,4 +205,24 @@ export function useTable(node: TableNode) {
     goToPage,
     loadMore,
   };
+}
+
+/**
+ * Whether a table-filter value should clear the filter rather than apply it —
+ * an empty string, empty list, or an object whose every member is empty.
+ */
+function isEmptyFilterValue(value: unknown): boolean {
+  if (value == null || value === "") {
+    return true;
+  }
+
+  if (Array.isArray(value)) {
+    return value.length === 0;
+  }
+
+  if (typeof value === "object") {
+    return Object.values(value).every((member) => member == null || member === "");
+  }
+
+  return false;
 }

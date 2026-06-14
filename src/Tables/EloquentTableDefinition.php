@@ -23,6 +23,7 @@ abstract class EloquentTableDefinition extends TableDefinition
             fn (TableQuery $query): Builder => $this->builder($query),
             $this->columns(),
             $this->paginationType(),
+            $this->filters(),
         );
     }
 }

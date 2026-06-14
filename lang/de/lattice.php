@@ -57,6 +57,10 @@ return [
         'remove' => ':label-Filter entfernen',
         'value' => ':label-Filterwert',
         'add' => 'Filter hinzufügen',
+        'from' => ':label ab',
+        'until' => ':label bis',
+        'selectedCount' => ':amount ausgewählt',
+        'resetAll' => 'Alle zurücksetzen',
     ],
     'operators' => [
         'contains' => 'enthält',

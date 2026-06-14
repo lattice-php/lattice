@@ -12,6 +12,7 @@ use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Filterable;
 use Lattice\Lattice\Tables\Columns\Sortable;
+use Lattice\Lattice\Tables\Filters\BaseFilter;
 
 #[TypeScript]
 final readonly class TableQuery implements JsonSerializable
@@ -19,36 +20,40 @@ final readonly class TableQuery implements JsonSerializable
     /**
      * @param  array<int, FilterClause>  $filters
      * @param  array<int, TableSort>  $sorts
+     * @param  array<string, mixed>  $tableFilters
      */
     private function __construct(
         public array $filters,
         public array $sorts,
         public int $page,
         public int $perPage,
+        public array $tableFilters = [],
     ) {}
 
     public static function empty(int $defaultPerPage = 25): self
     {
-        return new self([], [], 1, self::clampPerPage($defaultPerPage));
+        return new self([], [], 1, self::clampPerPage($defaultPerPage), []);
     }
 
     /**
      * @param  array<int, Column>  $columns
+     * @param  array<int, BaseFilter>  $filters
      */
-    public static function fromRequest(Request $request, array $columns, string $table, int $defaultPerPage = 25): self
+    public static function fromRequest(Request $request, array $columns, string $table, int $defaultPerPage = 25, array $filters = []): self
     {
-        $filters = self::parseFilters($request->input('filter'));
+        $clauses = self::parseFilters($request->input('filter'));
         $sorts = self::parseSorts($request->input('sort'));
         $index = Column::index($columns);
 
-        self::validateFilters($filters, $index, $table);
+        self::validateFilters($clauses, $index, $table);
         self::validateSorts($sorts, $index, $table);
 
         return new self(
-            $filters,
+            $clauses,
             $sorts,
             max(1, $request->integer('page', 1)),
             self::clampPerPage($request->integer('per_page', $defaultPerPage)),
+            self::parseTableFilters($request->input('tf'), $filters, $table),
         );
     }
 
@@ -58,7 +63,7 @@ final readonly class TableQuery implements JsonSerializable
     }
 
     /**
-     * @return array{filters: array<int, FilterClause>, sorts: array<int, TableSort>, page: int, perPage: int}
+     * @return array{filters: array<int, FilterClause>, sorts: array<int, TableSort>, page: int, perPage: int, tableFilters: array<string, mixed>}
      */
     public function jsonSerialize(): array
     {
@@ -67,7 +72,39 @@ final readonly class TableQuery implements JsonSerializable
             'sorts' => $this->sorts,
             'page' => $this->page,
             'perPage' => $this->perPage,
+            'tableFilters' => $this->tableFilters,
         ];
+    }
+
+    /**
+     * Parse and validate the `tf` request param (a `key => value` map) against
+     * the table's declared filters, keeping only values the filter accepts.
+     *
+     * @param  array<int, BaseFilter>  $filters
+     * @return array<string, mixed>
+     */
+    private static function parseTableFilters(mixed $tableFilters, array $filters, string $table): array
+    {
+        if (! is_array($tableFilters) || $tableFilters === []) {
+            return [];
+        }
+
+        $index = collect($filters)->keyBy(fn (BaseFilter $filter): string => $filter->key);
+        $parsed = [];
+
+        foreach ($tableFilters as $key => $value) {
+            $filter = $index->get($key);
+
+            if (! $filter instanceof BaseFilter) {
+                throw InvalidTableQuery::filter((string) $key, $table);
+            }
+
+            if ($filter->accepts($value)) {
+                $parsed[$key] = $value;
+            }
+        }
+
+        return $parsed;
     }
 
     /**
