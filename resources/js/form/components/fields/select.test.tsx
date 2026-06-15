@@ -184,4 +184,23 @@ describe("SelectComponent options", () => {
 
     expect(screen.queryByText("Red")).not.toBeInTheDocument();
   });
+
+  it("toggles options without closing in a multiple select", () => {
+    renderStaticSelect({
+      multiple: true,
+      options: [
+        { label: "Red", value: "red" },
+        { label: "Blue", value: "blue" },
+      ],
+    });
+
+    fireEvent.click(screen.getByTestId("select-color"));
+    fireEvent.click(screen.getByTestId("select-color-option-red"));
+
+    // The popover stays open for multi-select, so the second option is clickable.
+    fireEvent.click(screen.getByTestId("select-color-option-blue"));
+
+    expect(screen.getByTestId("select-color-option-red")).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByTestId("select-color-option-blue")).toHaveAttribute("aria-selected", "true");
+  });
 });
