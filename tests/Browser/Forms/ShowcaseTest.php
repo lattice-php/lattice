@@ -83,3 +83,14 @@ it('runs conditional and computed behavior on the showcase', function (): void {
         ->wait(1)
         ->assertValue('total', '20');
 });
+
+it('opens a field tooltip revealing a link', function (): void {
+    $this->actingAs(workbenchTestUser());
+    visit('/showcase')
+        ->assertNoSmoke()
+        ->assertDontSee('the form guide')
+        ->click('[aria-label="More information"]')
+        ->assertSee('the form guide')
+        ->assertPresent('a[href="/showcase"]')
+        ->assertNoJavaScriptErrors();
+});
