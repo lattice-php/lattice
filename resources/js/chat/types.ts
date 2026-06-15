@@ -7,23 +7,17 @@ import type {
 export type { ChatRole };
 
 /**
- * A chat part is a component node, rendered by `type` through the component
- * registry like any other node. Built-in parts (`chat.part.*`) narrow to their
- * generated props; a consumer's custom part still type-checks as a loose node.
+ * The generated message shape, but `parts` is widened from the generated
+ * `ChatNode` union to open `Node`s — a part is just a component node rendered by
+ * `type`, so a message can also carry a consumer's custom part.
  */
-export type ChatPart = Node;
-
-/**
- * Sourced from the generated message shape but widened to the open `ChatPart`
- * so a message can carry a consumer's custom part.
- */
-export type ChatMessage = Omit<GeneratedChatMessage, "parts"> & { parts: ChatPart[] };
+export type ChatMessage = Omit<GeneratedChatMessage, "parts"> & { parts: Node[] };
 
 export type ChatStatus = "idle" | "submitted" | "streaming" | "error";
 
 export type ChatFrame =
   | { type: "text"; value: string }
-  | { type: "part"; part: ChatPart }
+  | { type: "part"; part: Node }
   | { type: "done" }
   | { type: "error"; message?: string };
 

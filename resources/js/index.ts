@@ -41,7 +41,6 @@ export type { UseChatOptions } from "./chat/use-chat";
 export type {
   ChatFrame,
   ChatMessage,
-  ChatPart,
   ChatRole,
   ChatStatus,
   ChatTransport,
