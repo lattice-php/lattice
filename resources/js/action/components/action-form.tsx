@@ -59,7 +59,7 @@ export function useLazyActionForm(
     void apiFetch(endpoint, {
       body: JSON.stringify({ _form: true }),
       ref: componentRef,
-      method: method.toUpperCase(),
+      method,
       signal: controller.signal,
       throwOnError: false,
     })
@@ -157,9 +157,7 @@ function ActionFormBody({
     (extraHeaders?: Record<string, string>): Promise<Response> =>
       apiFetch(endpoint, {
         body: JSON.stringify({ ...valuesRef.current, ...extraDataRef.current }),
-        // fetch only upper-cases the standardized methods, leaving PATCH/DELETE as
-        // given; some servers reject a lower-case method line, so normalize it.
-        method: method.toUpperCase(),
+        method,
         ref: componentRef,
         headers: extraHeaders,
         throwOnError: false,

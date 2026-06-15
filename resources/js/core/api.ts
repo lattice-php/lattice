@@ -30,7 +30,7 @@ export type ApiInit = Omit<RequestInit, "headers"> & {
 };
 
 function defaultHeaders(method: string | undefined): Record<string, string> {
-  const isWrite = method !== undefined && !["GET", "HEAD"].includes(method.toUpperCase());
+  const isWrite = method !== undefined && method !== "GET" && method !== "HEAD";
 
   if (!isWrite) {
     return { Accept: "application/json" };
@@ -45,11 +45,15 @@ function defaultHeaders(method: string | undefined): Record<string, string> {
 }
 
 export async function apiFetch(url: string, init: ApiInit = {}): Promise<Response> {
-  const { ref, headers, throwOnError = true, ...rest } = init;
+  const { ref, headers, throwOnError = true, method, ...rest } = init;
+  // fetch only upper-cases the standardized verbs, leaving PATCH/DELETE as given;
+  // some servers reject a lower-case method line, so normalize it here.
+  const normalizedMethod = method?.toUpperCase();
   const response = await fetch(url, {
     credentials: "same-origin",
     ...rest,
-    headers: withHeaders(ref ?? "", { ...defaultHeaders(rest.method), ...headers }),
+    method: normalizedMethod,
+    headers: withHeaders(ref ?? "", { ...defaultHeaders(normalizedMethod), ...headers }),
   });
 
   if (throwOnError && !response.ok) {

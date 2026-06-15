@@ -65,6 +65,17 @@ describe("apiFetch", () => {
     });
   });
 
+  it("upper-cases the request method so a lower-case verb is normalized", async () => {
+    const fetchMock = vi.fn<typeof fetch>(async () => okResponse());
+    vi.stubGlobal("fetch", fetchMock);
+
+    await apiFetch("/x", { method: "patch" });
+
+    const init = fetchMock.mock.calls[0]?.[1] as RequestInit;
+    expect(init.method).toBe("PATCH");
+    expect(init.headers).toMatchObject({ "X-Requested-With": "XMLHttpRequest" });
+  });
+
   it("passes through body and signal", async () => {
     const fetchMock = vi.fn<typeof fetch>(async () => okResponse());
     vi.stubGlobal("fetch", fetchMock);
