@@ -84,7 +84,7 @@ export const appPlugin = createPlugin({
 });
 ```
 
-### Provider and useRegistry
+### Provider and the registry
 
 `Provider` supplies the registry to every Lattice component below it in the tree:
 
@@ -98,12 +98,12 @@ createRoot(el).render(
 );
 ```
 
-`useRegistry` returns the current registry for custom renderers that need to look up child nodes:
+A custom renderer receives its already-rendered child nodes as `children`. When you need the active component registry directly, use `useComponentRegistry`:
 
 ```ts
-import { useRegistry } from "@lattice-php/lattice";
+import { useComponentRegistry } from "@lattice-php/lattice";
 
-const registry = useRegistry();
+const components = useComponentRegistry();
 ```
 
 ## Column-cell registry API

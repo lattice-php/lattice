@@ -95,11 +95,12 @@ export const StatusBadgeCell: ColumnCellComponent = ({ value }) => {
 };
 ```
 
-A `ColumnCellComponent` receives `{ column, row, value }`:
+A `ColumnCellComponent` receives `{ column, props, row, value }`:
 
 - `value` — the raw cell value (the column's key resolved from the row).
 - `row` — the full row data object.
-- `column` — the serialized column descriptor, including `column.props` for any extra data sent from PHP.
+- `props` — the column's props sent from PHP. They are a loose bag by default; type the cell as `ColumnCellComponent<"column.status-badge">` to narrow them to your column's props (see below).
+- `column` — the full serialized column descriptor (key, label, type, nested columns).
 
 Replace the stub body with real UI:
 
@@ -112,9 +113,9 @@ const colorClasses: Record<string, string> = {
   draft: "bg-gray-100 text-gray-800",
 };
 
-export const StatusBadgeCell: ColumnCellComponent = ({ column, value }) => {
+export const StatusBadgeCell: ColumnCellComponent = ({ props, value }) => {
   const label = String(value ?? "");
-  const map = (column.props?.colorMap as Record<string, string> | undefined) ?? colorClasses;
+  const map = (props?.colorMap as Record<string, string> | undefined) ?? colorClasses;
   const classes = map[label] ?? "bg-gray-100 text-gray-800";
 
   return (
@@ -125,7 +126,20 @@ export const StatusBadgeCell: ColumnCellComponent = ({ column, value }) => {
 };
 ```
 
-After running `lattice:typescript`, `column.props` is narrowed to the generated type so you can drop the cast.
+To drop the cast, type the cell as `ColumnCellComponent<"column.status-badge">` and register it with `columnCell()` (the column equivalent of `eagerComponent`). After `lattice:typescript`, `props` is narrowed to your column's generated props:
+
+```tsx
+import { columnCell } from "@lattice-php/lattice";
+import type { ColumnCellComponent } from "@lattice-php/lattice";
+
+export const StatusBadgeCell: ColumnCellComponent<"column.status-badge"> = ({ props, value }) => {
+  const map = props.colorMap ?? colorClasses; // typed, no cast
+  // ...
+};
+
+// register the typed cell:
+//   columns: { "column.status-badge": columnCell(StatusBadgeCell) }
+```
 
 ## 5. The column plugin registration
 
