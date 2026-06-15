@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { configureI18n } from "./backend";
-import { i18n, translate, useT } from "./instance";
+import { i18n, preloadLanguages, translate, useT } from "./instance";
 import { setLocale } from "./locale";
 
 const namespace = "test";
@@ -51,8 +51,29 @@ describe("i18n instance", () => {
     expect(await screen.findByText("Hallo")).toBeVisible();
   });
 
+  it("preloads the non-active languages and skips the current one", async () => {
+    const loadLanguages = vi.spyOn(i18n, "loadLanguages").mockResolvedValue(undefined);
+
+    await preloadLanguages(["en", "de"]);
+
+    expect(loadLanguages).toHaveBeenCalledWith(["de"]);
+
+    loadLanguages.mockClear();
+
+    await preloadLanguages(["en"]);
+
+    expect(loadLanguages).not.toHaveBeenCalled();
+
+    loadLanguages.mockRestore();
+  });
+
   it("returns locale controls and configured locales from useT", async () => {
-    await configureI18n({ enabled: false, saveMissing: false, locales: ["en", "de"] });
+    await configureI18n({
+      enabled: false,
+      saveMissing: false,
+      locales: ["en", "de"],
+      preloadLocales: [],
+    });
 
     render(<LocaleProbe />);
 

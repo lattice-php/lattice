@@ -93,6 +93,7 @@ it('creates and edits a product through the form flow', function (): void {
         ->click('@form-submit')
         ->assertSee('Products')
         ->assertSee('Desk Lamp')
+        ->click('@product-actions')
         ->click('@product-edit')
         ->assertSee('Edit Product')
         ->assertValue('Name', 'Desk Lamp')

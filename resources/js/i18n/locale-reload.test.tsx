@@ -24,18 +24,18 @@ describe("LocaleReload", () => {
 
     expect(router.visit).toHaveBeenCalledWith(href, {
       preserveScroll: true,
-      preserveState: false,
+      preserveState: true,
     });
   });
 
   it("allows the reload visit options to be adjusted", () => {
-    render(<LocaleReload preserveScroll={false} preserveState />);
+    render(<LocaleReload preserveScroll={false} preserveState={false} />);
 
     window.dispatchEvent(new CustomEvent("lattice:locale-change", { detail: { locale: "de" } }));
 
     expect(router.visit).toHaveBeenCalledWith(window.location.href, {
       preserveScroll: false,
-      preserveState: true,
+      preserveState: false,
     });
   });
 });

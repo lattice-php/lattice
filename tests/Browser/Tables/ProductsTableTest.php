@@ -20,6 +20,7 @@ it('archives a product via the row action with confirmation', function (): void 
 
     visit('/products')
         ->assertSee('Desk Lamp')
+        ->click('@product-actions')
         ->click('@action-archive')
         ->assertSee('Archive product?')
         ->click('@confirm-accept')
@@ -34,6 +35,7 @@ it('cancels the archive confirmation without changing the product', function ():
     $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
     visit('/products')
+        ->click('@product-actions')
         ->click('@action-archive')
         ->assertSee('Archive product?')
         ->click('@confirm-cancel')
@@ -47,6 +49,7 @@ it('rejects a product through a modal form', function (): void {
     $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
     visit('/products')
+        ->click('@product-actions')
         ->click('@action-reject')
         ->assertSee('Reject product?')
         ->click('@action-form-submit')
@@ -80,6 +83,7 @@ it('edits a product in a prefilled modal form', function (): void {
 
     visit('/products')
         ->assertSee('Desk Lamp')
+        ->click('@product-actions')
         ->click('@action-edit-modal')
         ->assertSee('Edit product')
         ->assertValue('#name', 'Desk Lamp')
@@ -97,6 +101,7 @@ it('searches products inside the reject modal form', function (): void {
 
     visit('/products')
         ->assertSee('Desk Lamp')
+        ->click('@product-actions')
         ->click('@action-reject')
         ->assertSee('Reject product?')
         ->click('@select-replacement')

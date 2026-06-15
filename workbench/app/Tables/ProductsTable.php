@@ -5,6 +5,7 @@ namespace Workbench\App\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Actions\Components\ActionGroup;
 use Lattice\Lattice\Actions\Components\BulkAction;
 use Lattice\Lattice\Attributes\Table;
 use Lattice\Lattice\Core\Components\Component;
@@ -107,14 +108,19 @@ class ProductsTable extends EloquentTableDefinition
     public function actions(array $row): array
     {
         return [
-            Link::make(__('workbench.tables.products.edit'), 'product-edit')
-                ->href('/products/'.$row['id'].'/edit'),
-            Action::use(EditProductAction::class)
-                ->context(['product_id' => $row['id']]),
-            Action::use(ArchiveProductAction::class)
-                ->context(['product_id' => $row['id']]),
-            Action::use(RejectProductAction::class)
-                ->context(['product_id' => $row['id']]),
+            ActionGroup::make('product-actions-'.$row['id'])
+                ->key('product-actions')
+                ->label(__('workbench.tables.products.actions'))
+                ->actions([
+                    Link::make(__('workbench.tables.products.edit'), 'product-edit')
+                        ->href('/products/'.$row['id'].'/edit'),
+                    Action::use(EditProductAction::class)
+                        ->context(['product_id' => $row['id']]),
+                    Action::use(ArchiveProductAction::class)
+                        ->context(['product_id' => $row['id']]),
+                    Action::use(RejectProductAction::class)
+                        ->context(['product_id' => $row['id']]),
+                ]),
         ];
     }
 

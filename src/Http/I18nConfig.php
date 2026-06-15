@@ -11,11 +11,13 @@ final readonly class I18nConfig implements JsonSerializable
 {
     /**
      * @param  array<int, string>  $locales
+     * @param  array<int, string>  $preloadLocales
      */
     public function __construct(
         public bool $enabled,
         public bool $saveMissing,
         public array $locales,
+        public array $preloadLocales,
     ) {}
 
     /**
@@ -26,12 +28,13 @@ final readonly class I18nConfig implements JsonSerializable
         return new self(
             enabled: (bool) config('i18next.routes.enabled', false),
             saveMissing: (bool) config('i18next.save_missing.enabled', false),
-            locales: $locales ?? self::configuredLocales(),
+            locales: $locales ?? self::configuredList('lattice.i18n.locales'),
+            preloadLocales: self::configuredList('lattice.i18n.preload_locales'),
         );
     }
 
     /**
-     * @return array{enabled: bool, saveMissing: bool, locales: array<int, string>}
+     * @return array{enabled: bool, saveMissing: bool, locales: array<int, string>, preloadLocales: array<int, string>}
      */
     public function jsonSerialize(): array
     {
@@ -39,15 +42,16 @@ final readonly class I18nConfig implements JsonSerializable
             'enabled' => $this->enabled,
             'saveMissing' => $this->saveMissing,
             'locales' => $this->locales,
+            'preloadLocales' => $this->preloadLocales,
         ];
     }
 
     /**
      * @return array<int, string>
      */
-    private static function configuredLocales(): array
+    private static function configuredList(string $key): array
     {
-        $configured = config('lattice.i18n.locales', []);
+        $configured = config($key, []);
 
         if (is_string($configured)) {
             $configured = [$configured];

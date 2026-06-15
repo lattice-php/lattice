@@ -437,6 +437,7 @@ return [
             'updated-at' => 'Updated at',
         ],
         'products' => [
+            'actions' => 'Actions',
             'edit' => 'Edit',
         ],
     ],

@@ -22,18 +22,36 @@ describe("page prop i18n helpers", () => {
     expect(
       i18nConfigFromPageProps({
         lattice: {
-          i18n: { enabled: false, saveMissing: false, locales: ["en", "de"] },
+          i18n: {
+            enabled: false,
+            saveMissing: false,
+            locales: ["en", "de"],
+            preloadLocales: ["en"],
+          },
         },
       }),
-    ).toEqual({ enabled: false, saveMissing: false, locales: ["en", "de"] });
+    ).toEqual({
+      enabled: false,
+      saveMissing: false,
+      locales: ["en", "de"],
+      preloadLocales: ["en"],
+    });
 
     expect(i18nConfigFromPageProps({})).toBeUndefined();
+
+    expect(
+      i18nConfigFromPageProps({
+        lattice: {
+          i18n: { enabled: false, saveMissing: false, locales: ["en"] },
+        },
+      }),
+    ).toBeUndefined();
   });
 
   it("configures the locale store from Inertia page props", async () => {
     await configureI18nFromPageProps({
       lattice: {
-        i18n: { enabled: false, saveMissing: false, locales: ["en", "de"] },
+        i18n: { enabled: false, saveMissing: false, locales: ["en", "de"], preloadLocales: [] },
       },
     });
 
