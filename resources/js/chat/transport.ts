@@ -1,5 +1,4 @@
-import { withHeaders } from "../core/headers";
-import { xsrfToken } from "../form/components/form-transport";
+import { jsonPostHeaders, withHeaders } from "../core/headers";
 import type { ChatFrame, ChatTransportRequest } from "./types";
 
 function parseFrame(line: string): ChatFrame | null {
@@ -19,12 +18,7 @@ export async function* ndjsonChatTransport({
     method: "POST",
     credentials: "same-origin",
     signal,
-    headers: withHeaders(undefined, {
-      "Content-Type": "application/json",
-      Accept: "application/x-ndjson",
-      "X-Requested-With": "XMLHttpRequest",
-      "X-XSRF-TOKEN": xsrfToken(),
-    }),
+    headers: withHeaders(undefined, jsonPostHeaders("application/x-ndjson")),
     body: JSON.stringify(body),
   });
 

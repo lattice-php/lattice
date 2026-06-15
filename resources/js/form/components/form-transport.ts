@@ -4,16 +4,12 @@
  * CSRF header, component-ref header, and request shape live here in one place.
  */
 
-import { withHeaders } from "@lattice-php/lattice/core/headers";
+import { jsonPostHeaders, withHeaders, xsrfToken } from "@lattice-php/lattice/core/headers";
 import { ROW_ID_KEY } from "./fields/repeater-rows";
 
 export const FORM_DEBOUNCE_MS = 250;
 
-export function xsrfToken(): string {
-  const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
-
-  return match ? decodeURIComponent(match[1]) : "";
-}
+export { xsrfToken };
 
 function scrubFormPayload(value: unknown): unknown {
   if (Array.isArray(value)) {
@@ -46,12 +42,7 @@ export function postFormAction<T>(
     method: "POST",
     credentials: "same-origin",
     signal,
-    headers: withHeaders(componentRef, {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      "X-Requested-With": "XMLHttpRequest",
-      "X-XSRF-TOKEN": xsrfToken(),
-    }),
+    headers: withHeaders(componentRef, jsonPostHeaders("application/json")),
     body: JSON.stringify(scrubFormPayload(body)),
   }).then((response) => (response.ok ? (response.json() as Promise<T>) : null));
 }
