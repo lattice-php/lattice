@@ -12,7 +12,6 @@ use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
-use Workbench\App\Models\SalesPrice;
 
 #[Page(route: '/products/{product}/edit')]
 class ProductEditPage extends WorkbenchPage
@@ -37,15 +36,7 @@ class ProductEditPage extends WorkbenchPage
                             'sku' => $product->sku,
                             'status' => $product->status,
                             'related_products' => $product->relatedProducts()->pluck('products.id')->all(),
-                            'sales_prices' => $product->salesPrices()
-                                ->orderByRaw('group_id is null desc')
-                                ->orderBy('group_id')
-                                ->get()
-                                ->map(fn (SalesPrice $salesPrice): array => [
-                                    'group_id' => $salesPrice->group_id !== null ? (string) $salesPrice->group_id : '',
-                                    'amount' => $salesPrice->amount,
-                                ])
-                                ->all(),
+                            'sales_prices' => app(ProductForm::class)->salesPriceRows($product),
                         ])
                         ->context([
                             'product_id' => $product->getKey(),

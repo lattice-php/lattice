@@ -11,8 +11,29 @@ final class PriceResolver
 {
     public function lowestFor(BusinessPartner $partner, Product $product): ?string
     {
+        return $this->lowest($partner->groups()->pluck('groups.id')->all(), $product);
+    }
+
+    /**
+     * @return array<int, array{product: Product, price: string|null}>
+     */
+    public function priceList(BusinessPartner $partner): array
+    {
         $groupIds = $partner->groups()->pluck('groups.id')->all();
 
+        return Product::query()->orderBy('name')->get()
+            ->map(fn (Product $product): array => [
+                'product' => $product,
+                'price' => $this->lowest($groupIds, $product),
+            ])
+            ->all();
+    }
+
+    /**
+     * @param  list<int>  $groupIds
+     */
+    private function lowest(array $groupIds, Product $product): ?string
+    {
         $amount = $product->salesPrices()
             ->where(function (Builder $query) use ($groupIds): void {
                 $query->whereNull('group_id');
@@ -24,18 +45,5 @@ final class PriceResolver
             ->min('amount');
 
         return $amount === null ? null : number_format((float) $amount, 2, '.', '');
-    }
-
-    /**
-     * @return array<int, array{product: Product, price: string|null}>
-     */
-    public function priceList(BusinessPartner $partner): array
-    {
-        return Product::query()->orderBy('name')->get()
-            ->map(fn (Product $product): array => [
-                'product' => $product,
-                'price' => $this->lowestFor($partner, $product),
-            ])
-            ->all();
     }
 }

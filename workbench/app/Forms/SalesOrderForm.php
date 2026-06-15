@@ -168,7 +168,7 @@ class SalesOrderForm extends FormDefinition
 
         return $partner->addresses()->get()->map(
             fn (Address $address): Option => Select::option(
-                $address->label.' — '.$address->city,
+                $address->displayLabel(),
                 (string) $address->getKey(),
             ),
         )->all();

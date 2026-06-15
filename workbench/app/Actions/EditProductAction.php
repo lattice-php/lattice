@@ -14,7 +14,6 @@ use Lattice\Lattice\Core\Values\ToastMessage;
 use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
-use Workbench\App\Models\SalesPrice;
 
 #[ActionAttribute('workbench.products.edit-modal')]
 class EditProductAction extends FormActionDefinition
@@ -30,22 +29,15 @@ class EditProductAction extends FormActionDefinition
     public function formSchema(Form $form, Request $request): Form
     {
         $product = $this->product($request);
+        $productForm = app(ProductForm::class);
 
         // Reuse the registered form's schema, then prefill the record's values.
-        return app(ProductForm::class)->definition($form, $request)->fill([
+        return $productForm->definition($form, $request)->fill([
             'name' => $product->name,
             'sku' => $product->sku,
             'status' => $product->status,
             'related_products' => $product->relatedProducts()->pluck('products.id')->all(),
-            'sales_prices' => $product->salesPrices()
-                ->orderByRaw('group_id is null desc')
-                ->orderBy('group_id')
-                ->get()
-                ->map(fn (SalesPrice $salesPrice): array => [
-                    'group_id' => $salesPrice->group_id !== null ? (string) $salesPrice->group_id : '',
-                    'amount' => $salesPrice->amount,
-                ])
-                ->all(),
+            'sales_prices' => $productForm->salesPriceRows($product),
         ]);
     }
 

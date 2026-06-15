@@ -31,6 +31,11 @@ class Address extends Model
         return $this->belongsTo(BusinessPartner::class);
     }
 
+    public function displayLabel(): string
+    {
+        return $this->label.' — '.$this->city;
+    }
+
     protected static function newFactory(): AddressFactory
     {
         return AddressFactory::new();
