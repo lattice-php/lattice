@@ -9,10 +9,12 @@ use Workbench\App\Chat\FakeConversationStore;
 
 final class ConversationHistoryController
 {
+    public function __construct(private readonly FakeConversationStore $store) {}
+
     public function __invoke(): JsonResponse
     {
         return response()->json([
-            'messages' => app(FakeConversationStore::class)->messages(),
+            'messages' => $this->store->messages(),
         ]);
     }
 }
