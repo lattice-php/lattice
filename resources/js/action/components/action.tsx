@@ -12,6 +12,7 @@ import { dispatchActionError, getActionEffects } from "@lattice-php/lattice/effe
 import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import { ActionForm, useLazyActionForm } from "./action-form";
+import { actionMenuItemClassName, useActionMenu } from "./action-menu-context";
 
 const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const endpoint = node.props.endpoint ?? "";
@@ -23,6 +24,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const dispatch = useEffectDispatcher();
   const [isConfirming, setIsConfirming] = useState(false);
   const [isFilling, setIsFilling] = useState(false);
+  const isMenuItem = useActionMenu();
   const confirmation = node.props.confirmation;
   const variant = node.props.variant ?? "default";
   const inlineForm = node.props.form;
@@ -78,17 +80,23 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   return (
     <>
       <Button
+        className={isMenuItem ? actionMenuItemClassName : undefined}
         data-lattice-component={node.id}
         data-test={testId}
         disabled={http.processing || !endpoint}
         onClick={requestSubmit}
         type="button"
-        variant={variant}
+        variant={isMenuItem ? "ghost" : variant}
       >
         {http.processing ? (
-          <Spinner />
+          <Spinner className={isMenuItem ? "size-lt-icon-sm" : undefined} />
         ) : (
-          icon && <IconRenderer className="size-lt-icon-md" icon={icon} />
+          icon && (
+            <IconRenderer
+              className={isMenuItem ? "size-lt-icon-sm" : "size-lt-icon-md"}
+              icon={icon}
+            />
+          )
         )}
         {label}
       </Button>

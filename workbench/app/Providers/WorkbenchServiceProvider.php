@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Workbench\App\Providers;
 
 use Bambamboole\ExtendedFaker\ExtendedFaker;
+use Bambamboole\ExtendedFaker\Providers\Product as ProductProvider;
 use Faker\Generator;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -49,8 +50,30 @@ class WorkbenchServiceProvider extends ServiceProvider
     private function registerExtendedFaker(): void
     {
         $this->app->resolving(Generator::class, function (Generator $faker): void {
-            ExtendedFaker::extend($faker);
+            $this->extendFaker($faker);
         });
+    }
+
+    private function extendFaker(Generator $faker): void
+    {
+        foreach ($faker->getProviders() as $provider) {
+            if ($provider instanceof ProductProvider) {
+                return;
+            }
+        }
+
+        ExtendedFaker::extend($faker, $this->fakerLocale($faker));
+    }
+
+    private function fakerLocale(Generator $faker): string
+    {
+        foreach ($faker->getProviders() as $provider) {
+            if (preg_match('/\\\\Provider\\\\([a-z]{2}_[A-Z]{2})\\\\/', $provider::class, $matches) === 1) {
+                return $matches[1];
+            }
+        }
+
+        return (string) config('app.faker_locale', 'en_US');
     }
 
     /**

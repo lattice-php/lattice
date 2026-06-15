@@ -1,8 +1,11 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia;
 use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\TextInput;
@@ -10,6 +13,7 @@ use Lattice\Lattice\Support\Testing\Assertions\FormAssertions;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Actions\EditProductAction;
 use Workbench\App\Forms\ProductForm;
+use Workbench\App\Models\File;
 use Workbench\App\Models\Product;
 
 use function Pest\Laravel\get;
@@ -101,13 +105,57 @@ test('the product form creates products', function () {
         ->and($product?->status)->toBe('active');
 });
 
+test('the product form creates product images from signed uploads', function () {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('tmp/lamp.jpg', 'image-data');
+    Lattice::forms([ProductForm::class]);
+
+    $form = wire(Form::use(ProductForm::class));
+
+    post('/lattice/forms/workbench.products.form', [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+        'images' => ['tmp/lamp.jpg'],
+    ], productHeaders($form))
+        ->assertRedirect('/products');
+
+    $product = Product::query()->where('sku', 'LAMP-001')->firstOrFail();
+    $image = $product->images()->firstOrFail();
+
+    expect($image->disk)->toBe('s3')
+        ->and($image->path)->toStartWith('workbench/products/lamp-001-')
+        ->and($image->path)->toEndWith('.jpg')
+        ->and($image->name)->toBe(basename($image->path))
+        ->and($image->mime_type)->toBe('image/jpeg')
+        ->and($image->size)->toBe(10)
+        ->and(DB::table('attachments')
+            ->where('file_id', $image->getKey())
+            ->where('attachable_type', Product::class)
+            ->where('attachable_id', $product->getKey())
+            ->value('sort_order'))->toBe(1);
+
+    Storage::disk('s3')->assertMissing('tmp/lamp.jpg');
+    Storage::disk('s3')->assertExists($image->path);
+});
+
 test('the product edit page binds existing product state', function () {
+    Storage::fake('s3');
     $product = Product::factory()->withoutDefaultPrice()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
         'status' => 'draft',
     ]);
     $product->salesPrices()->create(['group_id' => null, 'amount' => '49.99']);
+    Storage::disk('s3')->put('workbench/products/lamp.jpg', 'image-data');
+    $image = File::factory()->create([
+        'disk' => 's3',
+        'path' => 'workbench/products/lamp.jpg',
+        'name' => 'lamp.jpg',
+        'mime_type' => 'image/jpeg',
+        'size' => 10,
+    ]);
+    $product->images()->attach($image->getKey(), ['sort_order' => 1]);
 
     withoutVite();
     $this->actingAs(workbenchTestUser());
@@ -121,6 +169,7 @@ test('the product edit page binds existing product state', function () {
             ->where('lattice.schema.0.schema.1.props.submitLabel', 'Save product')
             ->where('lattice.schema.0.schema.1.props.state.name', 'Desk Lamp')
             ->where('lattice.schema.0.schema.1.props.state.sku', 'LAMP-001')
+            ->where('lattice.schema.0.schema.1.props.state.images.0', 'workbench/products/lamp.jpg')
             ->where('lattice.schema.0.schema.1.props.state.sales_prices.0.amount', '49.99')
             ->where('lattice.schema.0.schema.1.props.state.sales_prices.0.group_id', '')
             ->where('lattice.schema.0.schema.1.props.state.status', 'draft')
@@ -164,6 +213,74 @@ test('the product form updates the trusted product from sealed context', functio
         ->and($trustedProduct->status)->toBe('active')
         ->and($tamperedProduct->name)->toBe('Shelf')
         ->and($tamperedProduct->sku)->toBe('SHELF-001');
+});
+
+test('the product form updates product images from signed uploads and removals', function () {
+    Storage::fake('s3');
+    Lattice::forms([ProductForm::class]);
+
+    $product = Product::factory()->withoutDefaultPrice()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'draft',
+    ]);
+
+    Storage::disk('s3')->put('workbench/products/old.jpg', 'old-image');
+    Storage::disk('s3')->put('workbench/products/keep.jpg', 'keep-image');
+    Storage::disk('s3')->put('tmp/new.jpg', 'new-image');
+
+    $oldImage = File::factory()->create([
+        'disk' => 's3',
+        'path' => 'workbench/products/old.jpg',
+        'name' => 'old.jpg',
+        'mime_type' => 'image/jpeg',
+        'size' => 9,
+    ]);
+    $keptImage = File::factory()->create([
+        'disk' => 's3',
+        'path' => 'workbench/products/keep.jpg',
+        'name' => 'keep.jpg',
+        'mime_type' => 'image/jpeg',
+        'size' => 10,
+    ]);
+    $product->images()->attach([
+        $oldImage->getKey() => ['sort_order' => 1],
+        $keptImage->getKey() => ['sort_order' => 2],
+    ]);
+
+    $removedToken = app(SignsComponentReferences::class)
+        ->seal('file', 'images', ['disk' => 's3', 'path' => 'workbench/products/old.jpg']);
+    $form = wire(Form::use(ProductForm::class)
+        ->context(['product_id' => $product->getKey()]));
+
+    patch('/lattice/forms/workbench.products.form', [
+        'name' => 'Updated Lamp',
+        'sku' => 'LAMP-002',
+        'status' => 'active',
+        'images' => ['tmp/new.jpg'],
+        'images__removed' => [$removedToken],
+    ], productHeaders($form))
+        ->assertRedirect('/products');
+
+    $product->refresh();
+    $newImage = $product->images()
+        ->where('files.path', 'like', 'workbench/products/lamp-002-%')
+        ->firstOrFail();
+
+    expect($product->images()->pluck('files.path')->all())->toHaveCount(2)
+        ->and($product->images()->pluck('files.path')->all())->toContain('workbench/products/keep.jpg')
+        ->and($newImage->path)->toEndWith('.jpg')
+        ->and(DB::table('attachments')
+            ->where('file_id', $newImage->getKey())
+            ->where('attachable_type', Product::class)
+            ->where('attachable_id', $product->getKey())
+            ->value('sort_order'))->toBe(3)
+        ->and(File::query()->whereKey($oldImage->getKey())->exists())->toBeFalse();
+
+    Storage::disk('s3')->assertMissing('workbench/products/old.jpg');
+    Storage::disk('s3')->assertExists('workbench/products/keep.jpg');
+    Storage::disk('s3')->assertMissing('tmp/new.jpg');
+    Storage::disk('s3')->assertExists($newImage->path);
 });
 
 test('the product form validates required fields', function () {
@@ -357,6 +474,44 @@ test('the edit product action syncs sales prices', function () {
 
     expect($product->salesPrices()->whereNull('group_id')->count())->toBe(1)
         ->and($product->salesPrices()->whereNull('group_id')->first()->amount)->toBe('79.99');
+});
+
+test('the edit product action syncs images', function () {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('tmp/modal.jpg', 'image-data');
+    Lattice::actions([EditProductAction::class]);
+
+    $product = Product::factory()->withoutDefaultPrice()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+    ]);
+
+    $ref = componentRef(
+        wire(Action::use(EditProductAction::class)
+            ->context(['product_id' => $product->getKey()])),
+    );
+
+    patchJson('/lattice/actions/workbench.products.edit-modal', [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+        'related_products' => [],
+        'images' => ['tmp/modal.jpg'],
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => '79.99'],
+        ],
+    ], ['X-Lattice-Ref' => $ref])
+        ->assertOk();
+
+    $image = $product->images()->firstOrFail();
+
+    expect($image->path)->toStartWith('workbench/products/lamp-001-')
+        ->and($image->path)->toEndWith('.jpg')
+        ->and($image->disk)->toBe('s3');
+
+    Storage::disk('s3')->assertMissing('tmp/modal.jpg');
+    Storage::disk('s3')->assertExists($image->path);
 });
 
 test('the edit product action rejects two default sales prices with a 422', function () {

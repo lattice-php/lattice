@@ -3,6 +3,10 @@ import type { ComponentProps } from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import {
+  actionMenuItemClassName,
+  useActionMenu,
+} from "@lattice-php/lattice/action/components/action-menu-context";
 
 function TextLink({ className = "", children, ...props }: ComponentProps<typeof Link>) {
   return (
@@ -18,16 +22,21 @@ function TextLink({ className = "", children, ...props }: ComponentProps<typeof 
   );
 }
 
-const LinkComponent: RendererComponent<"link"> = ({ node }) => (
-  <TextLink
-    data-test={nodeIdentity(node)}
-    href={node.props.href ?? "#"}
-    method={node.props.method ?? "get"}
-    tabIndex={node.props.tabIndex ?? undefined}
-  >
-    {node.props.label}
-  </TextLink>
-);
+const LinkComponent: RendererComponent<"link"> = ({ node }) => {
+  const isMenuItem = useActionMenu();
+
+  return (
+    <TextLink
+      className={isMenuItem ? actionMenuItemClassName : undefined}
+      data-test={nodeIdentity(node)}
+      href={node.props.href ?? "#"}
+      method={node.props.method ?? "get"}
+      tabIndex={node.props.tabIndex ?? undefined}
+    >
+      {node.props.label}
+    </TextLink>
+  );
+};
 
 export default LinkComponent;
 export { TextLink };

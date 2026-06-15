@@ -1,6 +1,7 @@
 import { apiFetch } from "@lattice-php/lattice/core/api";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FormFieldFrame } from "../base/field";
@@ -42,6 +43,7 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
   const values = useFormValues();
   const inputId = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const previewUrlsRef = useRef<Set<string>>(new Set());
   const locked = readOnly || disabled;
   const signed = props.signed;
   const multiple = props.multiple;
@@ -65,6 +67,14 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
   const [items, setItems] = useState<Item[]>(initial);
   const [removedTokens, setRemovedTokens] = useState<string[]>([]);
 
+  useEffect(
+    () => () => {
+      previewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
+      previewUrlsRef.current.clear();
+    },
+    [],
+  );
+
   const multipartFiles = items
     .filter((item) => item.file && !item.existing)
     .map((item) => item.file as File);
@@ -77,6 +87,26 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
     multipartFiles.forEach((file) => transfer.items.add(file));
     fileInputRef.current.files = transfer.files;
   });
+
+  function createPreviewUrl(file: File): string | undefined {
+    if (!props.image) {
+      return undefined;
+    }
+
+    const url = URL.createObjectURL(file);
+    previewUrlsRef.current.add(url);
+
+    return url;
+  }
+
+  function revokePreviewUrl(item: Item): void {
+    if (!item.url || !previewUrlsRef.current.has(item.url)) {
+      return;
+    }
+
+    URL.revokeObjectURL(item.url);
+    previewUrlsRef.current.delete(item.url);
+  }
 
   async function signAndUpload(item: Item, file: File): Promise<void> {
     const response = await apiFetch(action, {
@@ -153,8 +183,23 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
       status: signed ? "uploading" : "ready",
       progress: 0,
       file,
+      url: createPreviewUrl(file),
       existing: false,
     }));
+
+    if (!multiple) {
+      items.forEach(revokePreviewUrl);
+
+      if (!scope) {
+        const replacedTokens = items
+          .filter((item) => item.existing && item.token)
+          .map((item) => item.token as string);
+
+        if (replacedTokens.length > 0) {
+          setRemovedTokens((tokens) => [...tokens, ...replacedTokens]);
+        }
+      }
+    }
 
     setItems((prev) => (multiple ? [...prev, ...next] : next));
 
@@ -164,8 +209,13 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
   }
 
   function removeItem(id: string): void {
+    const target = items.find((item) => item.id === id);
+
+    if (target) {
+      revokePreviewUrl(target);
+    }
+
     setItems((prev) => {
-      const target = prev.find((i) => i.id === id);
       if (target?.existing && target.token && !scope) {
         setRemovedTokens((tokens) => [...tokens, target.token as string]);
       }
@@ -203,23 +253,49 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
           {t("file-upload.dropzone", "Drop files here or click to browse")}
         </button>
 
-        <ul className="flex flex-col gap-2">
+        <ul
+          className={props.image ? "grid grid-cols-1 gap-3 sm:grid-cols-2" : "flex flex-col gap-2"}
+        >
           {items.map((item) => (
-            <li className="flex items-center justify-between gap-3 text-sm" key={item.id}>
-              <span data-test={testIdentity(`${name}-item`)}>{item.name}</span>
-              {item.status === "uploading" && <span>{item.progress}%</span>}
-              {item.status === "error" && (
-                <span className="text-lt-danger">{t("file-upload.failed", "Failed")}</span>
-              )}
+            <li
+              className={
+                props.image
+                  ? "flex min-w-0 items-center gap-3 rounded-lt-sm border border-lt-border bg-lt-bg p-2 text-sm"
+                  : "flex items-center justify-between gap-3 text-sm"
+              }
+              key={item.id}
+            >
+              {props.image && item.url ? (
+                <img
+                  alt={item.name}
+                  className="size-16 shrink-0 rounded-lt-sm border border-lt-border object-cover"
+                  data-test={testIdentity(`${name}-preview`)}
+                  src={item.url}
+                />
+              ) : null}
+              <div className="min-w-0 flex-1">
+                <span className="block truncate" data-test={testIdentity(`${name}-item`)}>
+                  {item.name}
+                </span>
+                {item.status === "uploading" && (
+                  <span className="text-xs text-lt-muted-fg">{item.progress}%</span>
+                )}
+                {item.status === "error" && (
+                  <span className="text-xs text-lt-danger">
+                    {t("file-upload.failed", "Failed")}
+                  </span>
+                )}
+              </div>
               {(!item.existing || !scope) && (
                 <button
                   aria-label={t("file-upload.remove", "Remove {{name}}", { name: item.name })}
+                  className="inline-flex size-7 shrink-0 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg disabled:pointer-events-none disabled:opacity-50"
                   data-test={item.existing ? testIdentity(`${name}-remove-existing`) : undefined}
                   disabled={locked}
                   onClick={() => removeItem(item.id)}
                   type="button"
                 >
-                  {t("file-upload.remove-label", "Remove")}
+                  <Icon name="x" aria-hidden="true" className="size-lt-icon-sm" />
                 </button>
               )}
               {signed && !item.existing && item.key && item.status === "ready" && (

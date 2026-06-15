@@ -98,7 +98,7 @@
         "serve": [
             "Composer\\Config::disableProcessTimeout",
             "@build",
-            "@php vendor/bin/testbench serve --ansi"
+            "@php artisan serve --ansi"
         ]
     },
     "extra": {

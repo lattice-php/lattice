@@ -66,6 +66,17 @@ it('builds file descriptors from a stored path on prefill', function (): void {
         ->and($field->files[0]['name'])->toBe('a.pdf');
 });
 
+it('prefers temporary urls for prefilled files when the disk supports them', function (): void {
+    $fake = Storage::fake('s3');
+    $fake->buildTemporaryUrlsUsing(fn (string $path) => "https://signed.test/{$path}");
+    Storage::disk('s3')->put('uploads/a.pdf', 'data');
+
+    $field = FileUpload::make('document')->disk('s3');
+    $field->prefill('uploads/a.pdf');
+
+    expect($field->files[0]['url'])->toBe('https://signed.test/uploads/a.pdf');
+});
+
 it('builds descriptors for each stored path when multiple', function (): void {
     Storage::fake('public');
     Storage::disk('public')->put('uploads/a.pdf', 'x');
@@ -91,6 +102,40 @@ it('signs an upload returning key url headers and method', function (): void {
         ->and($result['key'])->toStartWith('tmp/')
         ->and($result['key'])->toEndWith('.pdf')
         ->and($result['url'])->toBe("https://s3.test/{$result['key']}");
+});
+
+it('finalizes signed uploads on the configured disk', function (): void {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('tmp/photo.jpg', 'image-data');
+
+    $field = FileUpload::make('images')->disk('s3')->signedUpload();
+
+    $uploads = $field->finalizeSignedUploads(
+        ['tmp/photo.jpg'],
+        fn (string $key, array $metadata): string => 'uploads/final.'.$metadata['extension'],
+    );
+
+    expect($uploads)->toHaveCount(1)
+        ->and($uploads[0]['disk'])->toBe('s3')
+        ->and($uploads[0]['path'])->toBe('uploads/final.jpg')
+        ->and($uploads[0]['name'])->toBe('final.jpg')
+        ->and($uploads[0]['mime_type'])->toBe('image/jpeg')
+        ->and($uploads[0]['size'])->toBe(10);
+
+    Storage::disk('s3')->assertMissing('tmp/photo.jpg');
+    Storage::disk('s3')->assertExists('uploads/final.jpg');
+});
+
+it('rejects finalizing non-temporary signed upload keys', function (): void {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('uploads/photo.jpg', 'image-data');
+
+    $field = FileUpload::make('images')->disk('s3')->signedUpload();
+
+    expect(fn () => $field->finalizeSignedUploads(
+        ['uploads/photo.jpg'],
+        fn (): string => 'uploads/final.jpg',
+    ))->toThrow(InvalidArgumentException::class);
 });
 
 it('adds a sealed token to each prefilled file descriptor', function (): void {

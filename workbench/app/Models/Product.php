@@ -9,13 +9,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Workbench\App\Factories\ProductFactory;
 
 /**
  * @property string $name
  * @property string $sku
+ * @property-read string|null $image
  * @property string $status
  * @property bool $featured
+ * @property-read Collection<int, File> $images
  * @property-read Collection<int, Product> $relatedProducts
  * @property-read Collection<int, SalesPrice> $salesPrices
  * @property-read SalesPrice|null $defaultSalesPrice
@@ -24,6 +27,9 @@ class Product extends Model
 {
     /** @use HasFactory<ProductFactory> */
     use HasFactory;
+
+    /** @var list<string> */
+    protected $appends = ['image'];
 
     /**
      * @var list<string>
@@ -58,6 +64,15 @@ class Product extends Model
         );
     }
 
+    /** @return MorphToMany<File, $this> */
+    public function images(): MorphToMany
+    {
+        return $this->morphToMany(File::class, 'attachable', 'attachments')
+            ->withPivot('sort_order')
+            ->withTimestamps()
+            ->orderByPivot('sort_order');
+    }
+
     /** @return HasMany<SalesPrice, $this> */
     public function salesPrices(): HasMany
     {
@@ -68,6 +83,15 @@ class Product extends Model
     public function defaultSalesPrice(): HasOne
     {
         return $this->hasOne(SalesPrice::class)->whereNull('group_id');
+    }
+
+    public function getImageAttribute(): ?string
+    {
+        $image = $this->relationLoaded('images')
+            ? $this->images->first()
+            : $this->images()->first();
+
+        return $image?->url();
     }
 
     protected static function newFactory(): ProductFactory

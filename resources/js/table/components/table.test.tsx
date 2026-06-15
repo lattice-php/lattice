@@ -338,8 +338,14 @@ describe("Lattice table component", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Manage user" }));
 
-    expect(await screen.findByRole("button", { name: "Ping" })).toBeVisible();
-    expect(screen.getByRole("link", { name: "Edit" })).toHaveAttribute("href", "/products/2/edit");
+    const action = await screen.findByRole("button", { name: "Ping" });
+    const link = screen.getByRole("link", { name: "Edit" });
+
+    expect(action).toBeVisible();
+    expect(action).toHaveClass("h-8", "font-normal", "text-lt-popover-fg");
+    expect(action).not.toHaveClass("bg-lt-secondary");
+    expect(link).toHaveAttribute("href", "/products/2/edit");
+    expect(link).toHaveClass("h-8", "font-normal", "text-lt-popover-fg", "no-underline");
   });
 
   it("adds and clears individual sorts through the table endpoint", async () => {

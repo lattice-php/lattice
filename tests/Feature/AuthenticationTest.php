@@ -4,7 +4,6 @@ declare(strict_types=1);
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Orchestra\Testbench\Factories\UserFactory;
 use Workbench\App\Models\User;
-use Workbench\App\Seeders\UserSeeder;
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
@@ -38,8 +37,13 @@ test('login page renders a simple seeded credential form', function (): void {
             ->where('lattice.schema.0.schema.2.props.state.password', 'password'));
 });
 
-test('seeded workbench user can log in', function (): void {
-    app(UserSeeder::class)->run();
+test('workbench user can log in', function (): void {
+    User::query()->create([
+        'name' => 'Workbench User',
+        'email' => 'workbench@example.com',
+        'password' => 'password',
+        'locale' => 'en',
+    ]);
 
     post('/login', [
         'email' => 'workbench@example.com',

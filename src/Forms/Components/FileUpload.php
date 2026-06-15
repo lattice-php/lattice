@@ -3,14 +3,18 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Components;
 
+use Closure;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\Rules\FileUploadItem;
+use RuntimeException;
+use Throwable;
 
 #[Component('form.file-upload')]
 class FileUpload extends Field
@@ -136,6 +140,55 @@ class FileUpload extends Field
         ];
     }
 
+    /**
+     * @param  iterable<int, string>  $keys
+     * @param  Closure(string, array{extension: string, mime_type: ?string, size: ?int}): string  $destinationUsing
+     * @return list<array{disk: string, path: string, name: string, mime_type: ?string, size: ?int}>
+     */
+    public function finalizeSignedUploads(iterable $keys, Closure $destinationUsing): array
+    {
+        if (! $this->usesSignedUpload()) {
+            throw new RuntimeException('Only signed uploads can be finalized.');
+        }
+
+        $diskName = $this->resolveDisk();
+
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk($diskName);
+        $finalized = [];
+
+        foreach ($keys as $key) {
+            $this->ensureFinalizableKey($disk, $key);
+
+            $mimeType = self::fileMimeType($disk, $key);
+            $size = self::fileSize($disk, $key);
+            $extension = pathinfo($key, PATHINFO_EXTENSION);
+            $path = $destinationUsing($key, [
+                'extension' => $extension,
+                'mime_type' => $mimeType,
+                'size' => $size,
+            ]);
+
+            if ($path === '' || str_starts_with($path, rtrim($this->tempPrefix(), '/').'/')) {
+                throw new InvalidArgumentException('Signed uploads must be finalized outside the temporary upload prefix.');
+            }
+
+            if (! $disk->move($key, $path)) {
+                throw new RuntimeException("Unable to finalize signed upload [{$key}].");
+            }
+
+            $finalized[] = [
+                'disk' => $diskName,
+                'path' => $path,
+                'name' => basename($path),
+                'mime_type' => $mimeType,
+                'size' => $size,
+            ];
+        }
+
+        return $finalized;
+    }
+
     public function resolveRules(FormData $data, Request $request): array
     {
         $userRules = parent::resolveRules($data, $request);
@@ -179,23 +232,11 @@ class FileUpload extends Field
         $signer = app(SignsComponentReferences::class);
 
         $this->files = array_map(static function (string $path) use ($disk, $diskName, $name, $signer): array {
-            try {
-                $url = $disk->url($path);
-            } catch (\Throwable) {
-                $url = null;
-            }
-
-            try {
-                $size = $disk->size($path);
-            } catch (\Throwable) {
-                $size = null;
-            }
-
             return [
                 'key' => $path,
                 'name' => basename($path),
-                'url' => $url,
-                'size' => $size,
+                'url' => self::fileUrl($disk, $path),
+                'size' => self::fileSize($disk, $path),
                 'token' => $signer->seal('file', $name, ['disk' => $diskName, 'path' => $path]),
             ];
         }, $paths);
@@ -244,5 +285,49 @@ class FileUpload extends Field
             signed: $this->signed,
             tempPrefix: $this->tempPrefix(),
         );
+    }
+
+    private function ensureFinalizableKey(FilesystemAdapter $disk, string $key): void
+    {
+        if (! str_starts_with($key, rtrim($this->tempPrefix(), '/').'/')) {
+            throw new InvalidArgumentException("Signed upload [{$key}] is outside the temporary upload prefix.");
+        }
+
+        if (! $disk->exists($key)) {
+            throw new InvalidArgumentException("Signed upload [{$key}] does not exist.");
+        }
+    }
+
+    private static function fileUrl(FilesystemAdapter $disk, string $path): ?string
+    {
+        try {
+            return $disk->temporaryUrl($path, now()->addMinutes((int) config('lattice.files.url_ttl', 5)));
+        } catch (Throwable) {
+            try {
+                return $disk->url($path);
+            } catch (Throwable) {
+                return null;
+            }
+        }
+    }
+
+    private static function fileMimeType(FilesystemAdapter $disk, string $path): ?string
+    {
+        try {
+            $mimeType = $disk->mimeType($path);
+
+            return is_string($mimeType) && $mimeType !== '' ? $mimeType : null;
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    private static function fileSize(FilesystemAdapter $disk, string $path): ?int
+    {
+        try {
+            return $disk->size($path);
+        } catch (Throwable) {
+            return null;
+        }
     }
 }

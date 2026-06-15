@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Workbench\App\Factories;
 
-use Bambamboole\ExtendedFaker\Repository\ProductRepository;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use RuntimeException;
 use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesPrice;
 
@@ -21,11 +21,22 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => (new ProductRepository)->getRandomProduct('en_US')->name,
+            'name' => $this->productName(),
             'sku' => fake()->unique()->bothify('PRD-####'),
             'status' => fake()->randomElement(['draft', 'active', 'archived']),
             'featured' => fake()->boolean(),
         ];
+    }
+
+    private function productName(): string
+    {
+        $name = fake()->format('productName');
+
+        if (! is_string($name)) {
+            throw new RuntimeException('Extended Faker productName must return a string.');
+        }
+
+        return $name;
     }
 
     public function configure(): static
