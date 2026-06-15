@@ -37,4 +37,8 @@ export function Provider({
   );
 }
 
-export { useRegistry, useColumnRegistry, useEffectHandlers } from "./core/registry-context";
+export {
+  useComponentRegistry,
+  useColumnRegistry,
+  useEffectHandlerRegistry,
+} from "./core/registry-context";

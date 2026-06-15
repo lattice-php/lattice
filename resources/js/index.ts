@@ -25,7 +25,7 @@ export {
   SidebarCollapsedContext,
   useSidebarCollapsed,
 } from "./layout";
-export { Provider, useColumnRegistry, useRegistry } from "./provider";
+export { Provider, useColumnRegistry, useComponentRegistry } from "./provider";
 export { onCallout, onToast, showToast, Toaster } from "./toast";
 export {
   createPlugin,

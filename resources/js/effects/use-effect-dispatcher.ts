@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { useEffectHandlers } from "@lattice-php/lattice/core/registry-context";
+import { useEffectHandlerRegistry } from "@lattice-php/lattice/core/registry-context";
 import { dispatchEffects } from "./dispatch";
 import type { ActionEffect } from "./dispatch";
 import { mergeEffectHandlers, builtinEffectHandlers } from "./registry";
@@ -10,7 +10,7 @@ import { mergeEffectHandlers, builtinEffectHandlers } from "./registry";
  * hooks that run inside <Provider>.
  */
 export function useEffectDispatcher(): (effects: ActionEffect[]) => void {
-  const registered = useEffectHandlers();
+  const registered = useEffectHandlerRegistry();
 
   // Built-ins are merged in directly so they always fire, even if a consumer
   // supplies a registry that doesn't extend the default (where the effects plugin

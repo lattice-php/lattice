@@ -1,6 +1,6 @@
 import { Head } from "@inertiajs/react";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
-import { useRegistry } from "@lattice-php/lattice/provider";
+import { useComponentRegistry } from "@lattice-php/lattice/provider";
 import type { PagePayload } from "@lattice-php/lattice";
 import { cn } from "@lattice-php/lattice/lib/utils";
 
@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default function Page({ lattice }: Props) {
-  const registry = useRegistry();
+  const registry = useComponentRegistry();
   const content = <Renderer fallback={null} nodes={lattice.schema} registry={registry} />;
 
   return (

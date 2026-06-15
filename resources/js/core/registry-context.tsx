@@ -31,7 +31,7 @@ export function setDefaultRegistry(registry: Registry): void {
   _defaultRegistry = registry;
 }
 
-export function useRegistry(): ComponentRegistry {
+export function useComponentRegistry(): ComponentRegistry {
   const registry = useContext(RegistryContext) ?? _defaultRegistry;
   return registry?.components ?? {};
 }
@@ -41,7 +41,7 @@ export function useColumnRegistry(): ColumnRegistry {
   return registry?.columns ?? {};
 }
 
-export function useEffectHandlers(): EffectHandlerRegistry {
+export function useEffectHandlerRegistry(): EffectHandlerRegistry {
   const registry = useContext(RegistryContext) ?? _defaultRegistry;
   return registry?.effects ?? {};
 }
