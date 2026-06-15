@@ -6,11 +6,12 @@ import {
   PopoverTrigger,
 } from "@lattice-php/lattice/core/components/popover";
 import { useT } from "@lattice-php/lattice/i18n";
+import { cn } from "@lattice-php/lattice/lib/utils";
 import type { FilterData, FilterType, Op } from "@lattice-php/lattice/types/generated";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
 import type { FilterClause, TableColumn } from "../types";
 import { type FilterOptionSearch, TableFilterControl } from "./filter-controls";
-import { FilterValueInput } from "./filter-value-input";
+import { fieldClass, FilterValueInput } from "./filter-value-input";
 
 type ColumnClause = { clause: FilterClause; index: number };
 
@@ -318,7 +319,7 @@ function FilterClauseRow({
           <select
             aria-label={t("filter.operator", "{{label}} operator", { label: column.label })}
             data-test={`filter-${column.key}-operator`}
-            className="h-9 flex-1 rounded-lt-sm border border-lt-input bg-lt-bg px-2 text-sm font-normal"
+            className={cn(fieldClass, "flex-1")}
             disabled={processing}
             value={clause.operator}
             onChange={(event) => onOperator(event.target.value as Op)}

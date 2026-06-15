@@ -1,10 +1,10 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { useEffect, useState } from "react";
+import { controlSurface } from "@lattice-php/lattice/core/components/control";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { FilterType } from "@lattice-php/lattice/types/generated";
 
-export const fieldClass =
-  "h-9 w-full min-w-0 rounded-lt-sm border border-lt-input bg-lt-bg px-2 text-sm font-normal";
+export const fieldClass = controlSurface({ density: "compact" });
 
 export function FilterValueInput({
   type,
