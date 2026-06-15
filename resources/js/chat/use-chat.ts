@@ -78,7 +78,7 @@ export function useChat({
   initialMessages = [],
   generateId = defaultGenerateId,
 }: UseChatOptions): UseChatReturn {
-  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
+  const [messages, setMessagesState] = useState<ChatMessage[]>(initialMessages);
   const [status, setStatus] = useState<ChatStatus>("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -89,7 +89,7 @@ export function useChat({
 
   const commitMessages = useCallback((next: ChatMessage[]): void => {
     messagesRef.current = next;
-    setMessages(next);
+    setMessagesState(next);
   }, []);
 
   const runTurn = useCallback(
@@ -182,5 +182,5 @@ export function useChat({
     };
   }, []);
 
-  return { messages, status, error, sendMessage, stop, regenerate };
+  return { messages, status, error, sendMessage, setMessages: commitMessages, stop, regenerate };
 }

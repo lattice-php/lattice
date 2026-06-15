@@ -26,6 +26,7 @@ export type UseChatReturn = {
   status: ChatStatus;
   error: string | null;
   sendMessage: (text: string) => void;
+  setMessages: (messages: ChatMessage[]) => void;
   stop: () => void;
   regenerate: () => void;
 };

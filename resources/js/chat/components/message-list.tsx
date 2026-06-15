@@ -8,9 +8,7 @@ export function MessageList({ messages }: { messages: ChatMessage[] }): ReactNod
   const bottomRef = useRef<HTMLDivElement>(null);
   const lastMessage = messages.at(-1);
   const lastPartLength =
-    lastMessage?.parts.at(-1) !== undefined
-      ? JSON.stringify(lastMessage.parts.at(-1)).length
-      : 0;
+    lastMessage?.parts.at(-1) !== undefined ? JSON.stringify(lastMessage.parts.at(-1)).length : 0;
 
   useEffect(() => {
     if (bottomRef.current && typeof bottomRef.current.scrollIntoView === "function") {

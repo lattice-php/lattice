@@ -165,6 +165,18 @@ describe("useChat", () => {
     expect(result.current.messages.at(-1)!.parts).toEqual([{ type: "text", text: "first" }]);
   });
 
+  it("replaces messages via setMessages", () => {
+    const seeded: ChatMessage[] = [
+      { id: "1", role: "assistant", parts: [{ type: "text", text: "Hi" }] },
+    ];
+    const transport = scriptedTransport([{ type: "done" }]);
+    const { result } = renderHook(() => useChat({ endpoint: "/x", transport }));
+    expect(result.current.messages).toEqual([]);
+
+    act(() => result.current.setMessages(seeded));
+    expect(result.current.messages).toEqual(seeded);
+  });
+
   it("seeds messages from initialMessages", () => {
     const initialMessages: ChatMessage[] = [
       { id: "1", role: "user", parts: [{ type: "text", text: "hello" }] },
