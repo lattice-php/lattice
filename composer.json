@@ -116,10 +116,5 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true,
-    "repositories": [{
-        "name": "extended-faker",
-        "type": "vcs",
-        "url": "https://github.com/bambamboole/extended-faker.git"
-    }]
+    "prefer-stable": true
 }
