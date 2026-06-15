@@ -6,6 +6,9 @@ namespace Workbench\App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Lattice\Lattice\Chat\ChatMessage;
+use Lattice\Lattice\Chat\ChatPart;
+use Lattice\Lattice\Chat\Enums\ChatRole;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Workbench\App\Chat\FakeConversationStore;
 
@@ -19,13 +22,11 @@ final class ChatAgentController
     {
         $message = trim((string) $request->input('message'));
 
-        $this->store->append([
-            'id' => (string) Str::uuid(),
-            'role' => 'user',
-            'parts' => [
-                ['type' => 'text', 'text' => $message],
-            ],
-        ]);
+        $this->store->append(
+            (new ChatMessage((string) Str::uuid(), ChatRole::User, [
+                ChatPart::text($message),
+            ]))->jsonSerialize(),
+        );
 
         return response()->stream(function () use ($message): void {
             $words = explode(' ', self::REPLY);
@@ -38,23 +39,17 @@ final class ChatAgentController
                 }
             }
 
-            $toolCall = [
-                'type' => 'tool-call',
-                'name' => 'lookup',
-                'args' => ['query' => $message],
-            ];
+            $toolCall = ChatPart::toolCall('lookup', ['query' => $message]);
 
-            $this->writeFrame(['type' => 'part', 'part' => $toolCall]);
+            $this->writeFrame(['type' => 'part', 'part' => $toolCall->jsonSerialize()]);
             $this->writeFrame(['type' => 'done']);
 
-            $this->store->append([
-                'id' => (string) Str::uuid(),
-                'role' => 'assistant',
-                'parts' => [
-                    ['type' => 'text', 'text' => self::REPLY],
+            $this->store->append(
+                (new ChatMessage((string) Str::uuid(), ChatRole::Assistant, [
+                    ChatPart::text(self::REPLY),
                     $toolCall,
-                ],
-            ]);
+                ]))->jsonSerialize(),
+            );
         }, 200, [
             'Cache-Control' => 'no-cache',
             'X-Accel-Buffering' => 'no',

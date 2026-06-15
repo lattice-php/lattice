@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Workbench\App\Chat;
 
 use Illuminate\Contracts\Session\Session;
+use Lattice\Lattice\Chat\ChatMessage;
+use Lattice\Lattice\Chat\ChatPart;
+use Lattice\Lattice\Chat\Enums\ChatRole;
 
 final class FakeConversationStore
 {
@@ -46,20 +49,12 @@ final class FakeConversationStore
     private function seed(): array
     {
         return [
-            [
-                'id' => 'seed-user',
-                'role' => 'user',
-                'parts' => [
-                    ['type' => 'text', 'text' => 'What can you help me with?'],
-                ],
-            ],
-            [
-                'id' => 'seed-assistant',
-                'role' => 'assistant',
-                'parts' => [
-                    ['type' => 'text', 'text' => 'I can answer questions about this workbench and look things up for you.'],
-                ],
-            ],
+            (new ChatMessage('seed-user', ChatRole::User, [
+                ChatPart::text('What can you help me with?'),
+            ]))->jsonSerialize(),
+            (new ChatMessage('seed-assistant', ChatRole::Assistant, [
+                ChatPart::text('I can answer questions about this workbench and look things up for you.'),
+            ]))->jsonSerialize(),
         ];
     }
 }
