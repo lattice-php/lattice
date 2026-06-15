@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Tables\Columns;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
+use Lattice\Lattice\Tables\Enums\ColumnAlign;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
 /**
@@ -25,6 +26,7 @@ final readonly class ColumnData implements JsonSerializable
         public string $label,
         public ColumnType|string $type,
         public ColumnWidth $width = ColumnWidth::Md,
+        public ColumnAlign $align = ColumnAlign::Start,
         public ?bool $sortable = null,
         public ?ColumnFilter $filter = null,
         public ?array $columns = null,
@@ -41,6 +43,7 @@ final readonly class ColumnData implements JsonSerializable
             'label' => $this->label,
             'type' => $this->type instanceof ColumnType ? $this->type->value : $this->type,
             'width' => $this->width->value,
+            'align' => $this->align->value,
             'sortable' => $this->sortable,
             'filter' => $this->filter,
             'columns' => $this->columns,
