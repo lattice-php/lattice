@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             ->create(['name' => 'VIP']);
 
         $products = Product::factory()
-            ->count(100)
+            ->count(250)
             ->withImages()
             ->withSalesPricesFor($wholesaleGroup, $vipGroup)
             ->create();
