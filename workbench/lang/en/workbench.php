@@ -314,7 +314,6 @@ return [
         'sales-orders' => 'Sales orders',
         'showcase' => 'Showcase',
         'tables' => 'Tables',
-        'streaming' => 'Streaming',
         'tabs' => 'Tabs',
     ],
     'pages' => [
@@ -377,11 +376,6 @@ return [
         'showcase' => [
             'heading' => 'Form Showcase',
             'title' => 'Form Showcase',
-        ],
-        'streaming' => [
-            'description' => 'Text streams word-by-word from a custom workbench endpoint using core Laravel response streaming and @laravel/stream-react.',
-            'heading' => 'Streaming Demo',
-            'title' => 'Streaming Demo',
         ],
         'tables' => [
             'badge' => 'Tables',

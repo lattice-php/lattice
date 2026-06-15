@@ -39,7 +39,6 @@ use Workbench\App\Pages\ProductCreatePage;
 use Workbench\App\Pages\ProductsPage;
 use Workbench\App\Pages\SalesOrdersPage;
 use Workbench\App\Pages\ShowcasePage;
-use Workbench\App\Pages\StreamDemoPage;
 use Workbench\App\Pages\TablesPage;
 use Workbench\App\Pages\TabsPage;
 use Workbench\App\Support\Logo;
@@ -91,7 +90,6 @@ final class AppLayout extends LayoutDefinition
                                                 MenuItem::fromPage(TablesPage::class)->key('pagination-modes')->label(__('workbench.navigation.pagination-modes')),
                                             ]),
                                             MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs'))->icon('spark'),
-                                            MenuItem::fromPage(StreamDemoPage::class)->key('streaming')->label(__('workbench.navigation.streaming'))->icon('spark'),
                                         ]),
                                     ]),
                                 Dropdown::make('user-menu')

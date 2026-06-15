@@ -314,7 +314,6 @@ return [
         'sales-orders' => 'Aufträge',
         'showcase' => 'Showcase',
         'tables' => 'Tabellen',
-        'streaming' => 'Streaming',
         'tabs' => 'Tabs',
     ],
     'pages' => [
@@ -377,11 +376,6 @@ return [
         'showcase' => [
             'heading' => 'Formular-Showcase',
             'title' => 'Formular-Showcase',
-        ],
-        'streaming' => [
-            'description' => 'Text wird Wort für Wort von einem eigenen Workbench-Endpunkt mithilfe von Laravels Response-Streaming und @laravel/stream-react gestreamt.',
-            'heading' => 'Streaming-Demo',
-            'title' => 'Streaming-Demo',
         ],
         'tables' => [
             'badge' => 'Tabellen',
