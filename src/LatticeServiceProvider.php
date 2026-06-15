@@ -30,7 +30,6 @@ use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Http\Middleware\SetLocale;
 use Lattice\Lattice\Http\PageRegistry;
 use Lattice\Lattice\Layouts\LayoutRegistry;
-use Lattice\Lattice\Support\Discovery\ClassWalker;
 use Lattice\Lattice\Support\Evaluation\Evaluator;
 use Lattice\Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
@@ -74,15 +73,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(Evaluator::class, fn ($app): Evaluator => new Evaluator($app, [Component::class]));
         $this->app->scoped(EffectFlasher::class);
 
-        $this->app->singleton(EffectRegistry::class, function (): EffectRegistry {
-            $registry = new EffectRegistry;
-
-            foreach (ClassWalker::classes(__DIR__.'/Effects/Builtin') as $effect) {
-                $registry->register($effect);
-            }
-
-            return $registry;
-        });
+        $this->app->singleton(EffectRegistry::class, fn (): EffectRegistry => EffectRegistry::withBuiltins());
 
         // Default role; the workbench rebinds this to BaseProfile.
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);

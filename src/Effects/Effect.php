@@ -19,7 +19,6 @@ use Lattice\Lattice\Effects\Builtin\ReloadPageEffect;
 use Lattice\Lattice\Effects\Builtin\ResetFormEffect;
 use Lattice\Lattice\Effects\Builtin\ToastEffect;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
-use Spatie\Attributes\Attributes;
 
 abstract readonly class Effect implements EffectContract
 {
@@ -94,23 +93,6 @@ abstract readonly class Effect implements EffectContract
         /** @var array<class-string, string> $cache */
         static $cache = [];
 
-        return $cache[static::class] ??= self::resolveType(static::class);
-    }
-
-    /**
-     * @param  class-string  $class
-     */
-    private static function resolveType(string $class): string
-    {
-        $effect = Attributes::get($class, AsEffect::class);
-
-        if ($effect === null) {
-            throw new InvalidArgumentException(sprintf(
-                'Effect [%s] is missing the #[AsEffect] attribute that declares its wire type.',
-                $class,
-            ));
-        }
-
-        return $effect->wireType();
+        return $cache[static::class] ??= AsEffect::wireTypeForClass(static::class);
     }
 }

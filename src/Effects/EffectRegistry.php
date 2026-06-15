@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Effects;
 
 use InvalidArgumentException;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
-use Spatie\Attributes\Attributes;
+use Lattice\Lattice\Support\Discovery\ClassWalker;
 
 /**
  * The single source of truth for effect value objects: wire type → class-string.
@@ -22,20 +22,27 @@ final class EffectRegistry
     private array $effects = [];
 
     /**
+     * A fresh registry holding only the package's built-in effects. Used by the
+     * container binding and by TypeScript generation, both of which need the
+     * built-in set independent of an application's runtime registrations.
+     */
+    public static function withBuiltins(): self
+    {
+        $registry = new self;
+
+        foreach (ClassWalker::classes(__DIR__.'/Builtin') as $effect) {
+            $registry->register($effect);
+        }
+
+        return $registry;
+    }
+
+    /**
      * @param  class-string  $effect
      */
     public function register(string $effect): void
     {
-        $attribute = Attributes::get($effect, AsEffect::class);
-
-        if ($attribute === null) {
-            throw new InvalidArgumentException(sprintf(
-                'Effect [%s] is missing the #[AsEffect] attribute that declares its wire type.',
-                $effect,
-            ));
-        }
-
-        $type = $attribute->wireType();
+        $type = AsEffect::wireTypeForClass($effect);
 
         if (isset($this->effects[$type]) && $this->effects[$type] !== $effect) {
             throw new InvalidArgumentException(sprintf(

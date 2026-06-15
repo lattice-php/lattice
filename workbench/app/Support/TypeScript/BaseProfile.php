@@ -6,7 +6,6 @@ namespace Workbench\App\Support\TypeScript;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Effects\EffectRegistry;
 use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Support\Discovery\ClassWalker;
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
@@ -98,13 +97,7 @@ final class BaseProfile implements TypeScriptProfile
      */
     private function discoverEffects(): array
     {
-        $registry = new EffectRegistry;
-
-        foreach (ClassWalker::classes(dirname(__DIR__, 4).'/src/Effects/Builtin') as $effect) {
-            $registry->register($effect);
-        }
-
-        return array_flip($registry->all());
+        return array_flip(EffectRegistry::withBuiltins()->all());
     }
 
     /**
