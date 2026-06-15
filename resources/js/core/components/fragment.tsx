@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { withHeaders } from "@lattice-php/lattice/core/headers";
+import { Skeleton } from "@lattice-php/lattice/core/components/skeleton";
 import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
 import type { Node, RendererComponent, Schema } from "@lattice-php/lattice/core/types";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
@@ -77,7 +78,7 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
   return (
     <div data-lattice-fragment={node.id}>
       {processing && components.length === 0 ? (
-        <div className="h-16 animate-pulse rounded-lt-sm bg-lt-muted" />
+        <Skeleton className="h-16" />
       ) : (
         <Renderer
           fallback={fallback}
