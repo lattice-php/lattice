@@ -1,6 +1,8 @@
 import { render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { ReactNode } from "react";
 import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import { Provider } from "@lattice-php/lattice/provider";
 
 type FlashListener = (
   event: CustomEvent<{
@@ -16,12 +18,16 @@ const router = vi.hoisted(() => ({
 
 vi.mock("@inertiajs/react", () => ({ router }));
 
-import { useFlashEffects } from "@lattice-php/lattice/action/use-flash-effects";
+import { useFlashEffects } from "@lattice-php/lattice/effects/use-flash-effects";
 
 function Host() {
   useFlashEffects();
 
   return null;
+}
+
+function Wrapper({ children }: { children: ReactNode }) {
+  return <Provider toaster={false}>{children}</Provider>;
 }
 
 describe("useFlashEffects", () => {
@@ -32,7 +38,7 @@ describe("useFlashEffects", () => {
     window.addEventListener(LATTICE_EVENT.callout, received);
 
     try {
-      render(<Host />);
+      render(<Host />, { wrapper: Wrapper });
 
       const [event, listener] = router.on.mock.calls[0] as ["flash", FlashListener];
       expect(event).toBe("flash");
@@ -69,7 +75,7 @@ describe("useFlashEffects", () => {
   it("does nothing when there are no flashed effects", () => {
     const dispatchSpy = vi.spyOn(window, "dispatchEvent");
 
-    render(<Host />);
+    render(<Host />, { wrapper: Wrapper });
 
     const [, listener] = router.on.mock.calls[0] as ["flash", FlashListener];
 

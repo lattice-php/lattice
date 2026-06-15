@@ -94,7 +94,7 @@ arch('feature domains never depend upward on the orchestration or tooling layers
 /*
  * Attributes are a shared base layer of plain markers: they describe domain
  * objects without reaching into the domains. Actions is intentionally omitted
- * while the effects system (AsEffect -> Actions\Enums\EffectType) is reworked.
+ * because it is a consumer of core domain objects (not a peer layer).
  */
 arch('attributes depend on no feature domain or higher layer')
     ->expect('Lattice\Lattice\Attributes')

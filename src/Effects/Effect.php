@@ -1,23 +1,26 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Actions;
+namespace Lattice\Lattice\Effects;
 
-use Lattice\Lattice\Actions\Effects\CalloutEffect;
-use Lattice\Lattice\Actions\Effects\CloseModalEffect;
-use Lattice\Lattice\Actions\Effects\DownloadEffect;
-use Lattice\Lattice\Actions\Effects\LocaleChangeEffect;
-use Lattice\Lattice\Actions\Effects\OpenModalEffect;
-use Lattice\Lattice\Actions\Effects\RedirectEffect;
-use Lattice\Lattice\Actions\Effects\ReloadComponentEffect;
-use Lattice\Lattice\Actions\Effects\ReloadPageEffect;
-use Lattice\Lattice\Actions\Effects\ResetFormEffect;
-use Lattice\Lattice\Actions\Effects\ToastEffect;
+use InvalidArgumentException;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Effects\Attributes\AsEffect;
+use Lattice\Lattice\Effects\Builtin\CalloutEffect;
+use Lattice\Lattice\Effects\Builtin\CloseModalEffect;
+use Lattice\Lattice\Effects\Builtin\DownloadEffect;
+use Lattice\Lattice\Effects\Builtin\LocaleChangeEffect;
+use Lattice\Lattice\Effects\Builtin\OpenModalEffect;
+use Lattice\Lattice\Effects\Builtin\RedirectEffect;
+use Lattice\Lattice\Effects\Builtin\ReloadComponentEffect;
+use Lattice\Lattice\Effects\Builtin\ReloadPageEffect;
+use Lattice\Lattice\Effects\Builtin\ResetFormEffect;
+use Lattice\Lattice\Effects\Builtin\ToastEffect;
+use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 
-final class Effect
+abstract readonly class Effect implements EffectContract
 {
     public static function callout(Callout $callout): CalloutEffect
     {
@@ -31,7 +34,7 @@ final class Effect
             $message instanceof Variant && is_string($variant) => ToastMessage::make($message, $variant),
             is_string($message) && $variant instanceof Variant => ToastMessage::make($variant, $message),
             is_string($message) => ToastMessage::make(Variant::Success, $message),
-            default => throw new \InvalidArgumentException('A toast message string is required.'),
+            default => throw new InvalidArgumentException('A toast message string is required.'),
         };
 
         return new ToastEffect($toast);
@@ -75,5 +78,21 @@ final class Effect
     public static function localeChange(string $locale): LocaleChangeEffect
     {
         return new LocaleChangeEffect($locale);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array
+    {
+        return ['type' => $this->wireType(), ...get_object_vars($this)];
+    }
+
+    public function wireType(): string
+    {
+        /** @var array<class-string, string> $cache */
+        static $cache = [];
+
+        return $cache[static::class] ??= AsEffect::wireTypeForClass(static::class);
     }
 }

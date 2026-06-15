@@ -3,17 +3,15 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
-use Lattice\Lattice\Actions\Effects\AbstractEffect;
-use Lattice\Lattice\Attributes\AsEffect as EffectAttribute;
+use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
+use Lattice\Lattice\Effects\EffectRegistry;
 use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Support\Discovery\ClassWalker;
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
-use Spatie\Attributes\Attributes;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 
 /**
@@ -41,7 +39,7 @@ final class BaseProfile implements TypeScriptProfile
         $packageRoot = dirname(__DIR__, 4);
         $src = $packageRoot.'/src';
 
-        $effects = $this->discoverEffects($src.'/Actions/Effects');
+        $effects = $this->discoverEffects();
         $marked = (new MarkedTypeDiscovery)->discover($src);
 
         $discovered = (new ComponentDiscovery)->discover($src);
@@ -72,7 +70,7 @@ final class BaseProfile implements TypeScriptProfile
                     Form::class,
                     $domainNodes,
                     'form',
-                    AbstractEffect::class,
+                    EffectContract::class,
                     $effects,
                     $columnProps,
                 ),
@@ -86,28 +84,20 @@ final class BaseProfile implements TypeScriptProfile
     }
 
     /**
-     * Effect value objects keyed by class-string, valued by the wire type from
-     * their #[Effect] attribute. Drives the allow-list and the generated union.
+     * Effect value objects keyed by class-string, valued by wire type — for the
+     * allow-list and the generated `Effect` union.
+     *
+     * This profile generates the package's OWN built-in types only, so it builds
+     * a fresh registry over src/Effects/Builtin rather than resolving the
+     * container singleton: a consumer app's runtime-registered effects must not
+     * leak into the package's generated.ts. Typed augmentation of consumer
+     * effects is the AugmentProfile's job (deferred — see the effects-domain spec).
      *
      * @return array<class-string, string>
      */
-    private function discoverEffects(string $path): array
+    private function discoverEffects(): array
     {
-        $classes = ClassWalker::classes($path);
-
-        $effects = [];
-
-        foreach ($classes as $class) {
-            $effect = Attributes::get($class, EffectAttribute::class);
-
-            if ($effect === null) {
-                continue;
-            }
-
-            $effects[$class] = $effect->type->value;
-        }
-
-        return $effects;
+        return array_flip(EffectRegistry::withBuiltins()->all());
     }
 
     /**

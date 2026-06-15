@@ -138,7 +138,7 @@ event listener, or in middleware — anywhere outside an action:
 use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Actions\Effect;
+use Lattice\Lattice\Effects\Effect;
 
 // Flash a callout after a controller redirect
 Effects::flash(

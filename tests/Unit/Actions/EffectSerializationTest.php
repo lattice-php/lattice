@@ -4,12 +4,12 @@ declare(strict_types=1);
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Components\ActionGroup;
-use Lattice\Lattice\Actions\Effect;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Effects\Effect;
 
 test('a toast serializes its lifetime, dismissibility and link', function () {
     $wire = wire(Effect::toast(

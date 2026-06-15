@@ -1,10 +1,12 @@
 export { registry } from "./registry";
 export {
-  dispatchActionEffects,
-  dispatchActionError,
   getActionEffects,
   isActionEffect,
-} from "./action/effects";
+  dispatchEffects,
+  dispatchActionError,
+} from "./effects/dispatch";
+export { useEffectDispatcher } from "./effects/use-effect-dispatcher";
+export { builtinEffectHandlers, mergeEffectHandlers } from "./effects/registry";
 export { initializeTheme, useAppearance } from "./appearance";
 export { copyToClipboard, useClipboard } from "./clipboard";
 export { EventBridge } from "./events/event-bridge";
@@ -23,7 +25,7 @@ export {
   SidebarCollapsedContext,
   useSidebarCollapsed,
 } from "./layout";
-export { Provider, useColumnRegistry, useRegistry } from "./provider";
+export { Provider, useColumnRegistry, useComponentRegistry } from "./provider";
 export { onCallout, onToast, showToast, Toaster } from "./toast";
 export {
   createPlugin,
@@ -58,10 +60,11 @@ export type {
   UnknownComponent,
   WireNode,
 } from "./core/types";
-export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "./table/column-registry";
+export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "./table/registry";
 export type { ColumnProps, ColumnPropsOf } from "./table/types";
 export type { Method } from "@inertiajs/core";
-export type { ActionEffect } from "./action/effects";
+export type { ActionEffect, ActionResponse } from "./effects/dispatch";
+export type { EffectHandler, EffectHandlerRegistry } from "./effects/registry";
 export type { ResolvedAppearance, UseAppearanceReturn } from "./appearance";
 export type { CopiedValue, CopyFn, UseClipboardReturn } from "./clipboard";
 export type { Appearance } from "./events/event-bridge";

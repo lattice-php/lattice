@@ -14,8 +14,8 @@ import { ResolvedNodesProvider } from "@lattice-php/lattice/form/components/reso
 import { useFormResolver } from "@lattice-php/lattice/form/components/use-form-resolver";
 import { FormValuesProvider, useFormValues } from "@lattice-php/lattice/form/components/values";
 import { useT } from "@lattice-php/lattice/i18n";
-import { dispatchActionError } from "../effects";
-import type { ActionResponse } from "../effects";
+import { dispatchActionError } from "@lattice-php/lattice/effects/dispatch";
+import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
 
 type FieldErrors = Record<string, string | undefined>;
 

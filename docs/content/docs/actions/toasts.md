@@ -25,7 +25,7 @@ To show a toast after a controller redirect, from a listener, middleware, or any
 is not available, use `Effects::flash()`:
 
 ```php
-use Lattice\Lattice\Actions\Effect;
+use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Facades\Effects;
 

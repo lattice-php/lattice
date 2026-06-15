@@ -88,7 +88,7 @@ The callout renders in the layout slot `Callouts::make()` (placed between the he
 use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Actions\Effect;
+use Lattice\Lattice\Effects\Effect;
 
 Effects::flash(
     Effect::toast(Variant::Success, 'Settings saved.'),

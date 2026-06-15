@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Actions\Enums\EffectType;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Effects\Enums\EffectType;
 use Workbench\App\Support\TypeScript\MarkedTypeDiscovery;
 
 it('splits #[TypeScript]-marked classes into enums and value objects', function () {
