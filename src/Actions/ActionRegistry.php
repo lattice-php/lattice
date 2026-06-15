@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Actions;
 
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\Action;
-use Lattice\Lattice\Attributes\ComponentAttribute;
+use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Lattice\Lattice\Core\DefinitionRegistry;
 
 /**
@@ -41,7 +41,7 @@ final class ActionRegistry extends DefinitionRegistry
     }
 
     /**
-     * @return class-string<ComponentAttribute>
+     * @return class-string<DefinitionAttribute>
      */
     public function attributeClass(): string
     {
