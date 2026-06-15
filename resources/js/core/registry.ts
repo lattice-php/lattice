@@ -3,6 +3,7 @@ import type { LazyExoticComponent } from "react";
 import type { RendererComponent, RendererComponentModule } from "./types";
 import type { ColumnRegistry } from "../table/registry";
 import type { EffectHandlerRegistry } from "../effects/registry";
+import type { ChatPartRegistry } from "../chat/part-registry";
 
 export type EagerComponentRegistration = {
   component: RendererComponent;
@@ -25,12 +26,14 @@ export type Plugin = {
   components?: ComponentRegistry;
   columns?: ColumnRegistry;
   effects?: EffectHandlerRegistry;
+  chatParts?: ChatPartRegistry;
 };
 
 export type Registry = {
   components: ComponentRegistry;
   columns: ColumnRegistry;
   effects: EffectHandlerRegistry;
+  chatParts: ChatPartRegistry;
 };
 
 export type LazyComponentOptions<TType extends string> = {
@@ -70,8 +73,9 @@ export function createRegistry(...plugins: Plugin[]): Registry {
       components: { ...registry.components, ...plugin.components },
       columns: { ...registry.columns, ...plugin.columns },
       effects: { ...registry.effects, ...plugin.effects },
+      chatParts: { ...registry.chatParts, ...plugin.chatParts },
     }),
-    { components: {}, columns: {}, effects: {} },
+    { components: {}, columns: {}, effects: {}, chatParts: {} },
   );
 }
 
@@ -82,5 +86,6 @@ export function extendRegistry(registry: Registry, ...plugins: Plugin[]): Regist
     components: { ...registry.components, ...merged.components },
     columns: { ...registry.columns, ...merged.columns },
     effects: { ...registry.effects, ...merged.effects },
+    chatParts: { ...registry.chatParts, ...merged.chatParts },
   };
 }

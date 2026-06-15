@@ -1,5 +1,6 @@
 import { createRegistry } from "@lattice-php/lattice/core/registry";
 import { actionComponents } from "./action";
+import { chatPlugin } from "./chat";
 import { coreComponents } from "./core/components";
 import { effectsPlugin } from "./effects";
 import { formComponents } from "./form";
@@ -13,4 +14,5 @@ export const registry = createRegistry(
   layoutComponents,
   tableComponents,
   effectsPlugin,
+  chatPlugin,
 );

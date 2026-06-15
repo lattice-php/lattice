@@ -20,9 +20,7 @@
     "server-driven-ui"
   ],
   "sideEffects": [
-    "**/*.css",
-    "**/chat/parts/*",
-    "**/lattice/chat-parts.tsx"
+    "**/*.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",

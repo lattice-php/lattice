@@ -1,14 +1,23 @@
-export type ChatRole = "user" | "assistant" | "system";
+import type {
+  ChatMessage as GeneratedChatMessage,
+  ChatPart as GeneratedChatPart,
+  ChatRole,
+} from "@lattice-php/lattice/types/generated";
 
-export type ChatTextPart = { type: "text"; text: string };
-export type ChatToolCallPart = { type: "tool-call"; name: string; args: Record<string, unknown> };
-/** Open for other concepts: any { type, ... }. Renderers are looked up by `type`. */
-export type ChatPart =
-  | ChatTextPart
-  | ChatToolCallPart
-  | ({ type: string } & Record<string, unknown>);
+export type { ChatRole };
 
-export type ChatMessage = { id: string; role: ChatRole; parts: ChatPart[] };
+/**
+ * The generated union of built-in parts, kept open so a consumer's custom part
+ * (rendered by a registered renderer, not yet augmented into the generated
+ * union) still type-checks. Renderers are looked up by `type`.
+ */
+export type ChatPart = GeneratedChatPart | ({ type: string } & Record<string, unknown>);
+
+/**
+ * Sourced from the generated message shape but widened to the open `ChatPart`
+ * so a message can carry a consumer's custom part.
+ */
+export type ChatMessage = Omit<GeneratedChatMessage, "parts"> & { parts: ChatPart[] };
 
 export type ChatStatus = "idle" | "submitted" | "streaming" | "error";
 

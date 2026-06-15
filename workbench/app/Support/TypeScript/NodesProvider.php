@@ -39,6 +39,8 @@ final class NodesProvider implements TransformedProvider
      * @param  class-string|null  $effectContract
      * @param  array<class-string, string>  $effects  Effect value objects keyed by class-string, valued by wire type.
      * @param  array<string, class-string>  $columnProps  wire column type => props VO class-string
+     * @param  class-string|null  $chatPartContract
+     * @param  array<class-string, string>  $chatParts  Chat part value objects keyed by class-string, valued by wire type.
      */
     public function __construct(
         private readonly array $formFields,
@@ -48,6 +50,8 @@ final class NodesProvider implements TransformedProvider
         private readonly ?string $effectContract = null,
         private readonly array $effects = [],
         private readonly array $columnProps = [],
+        private readonly ?string $chatPartContract = null,
+        private readonly array $chatParts = [],
     ) {}
 
     /**
@@ -80,6 +84,14 @@ final class NodesProvider implements TransformedProvider
             $transformed[] = $this->alias('ColumnPropsMap', $this->columnPropsMap());
         }
 
+        if ($this->chatPartContract !== null && $this->chatParts !== []) {
+            $transformed[] = new Transformed(
+                new TypeScriptAlias('ChatPart', $this->chatPartUnion()),
+                new ClassStringReference($this->chatPartContract),
+                [],
+            );
+        }
+
         return $transformed;
     }
 
@@ -104,6 +116,24 @@ final class NodesProvider implements TransformedProvider
         $members = [];
 
         foreach ($this->effects as $class => $type) {
+            $members[$type] = new TypeScriptIntersection([
+                new TypeScriptObject([
+                    new TypeScriptProperty('type', new TypeScriptLiteral($type)),
+                ]),
+                new TypeScriptReference(new ClassStringReference($class)),
+            ]);
+        }
+
+        ksort($members);
+
+        return new TypeScriptUnion(array_values($members));
+    }
+
+    private function chatPartUnion(): TypeScriptUnion
+    {
+        $members = [];
+
+        foreach ($this->chatParts as $class => $type) {
             $members[$type] = new TypeScriptIntersection([
                 new TypeScriptObject([
                     new TypeScriptProperty('type', new TypeScriptLiteral($type)),

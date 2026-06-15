@@ -1,7 +1,16 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { ReactNode } from "react";
 import { fakeNode } from "@lattice-php/lattice/test-support";
+import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
+import { createRegistry } from "@lattice-php/lattice/core/registry";
+import { chatPlugin } from "../index";
 import { ChatWindow } from "./chat-window";
+
+function withRegistry(ui: ReactNode): ReactNode {
+  const registry = createRegistry(chatPlugin);
+  return <RegistryContext.Provider value={registry}>{ui}</RegistryContext.Provider>;
+}
 
 function historyResponse(): Response {
   return {
@@ -29,19 +38,21 @@ function streamResponse(lines: string[]): Response {
 
 function renderChatWindow(): void {
   render(
-    <ChatWindow
-      node={fakeNode({
-        type: "chat.window",
-        props: {
-          streamEndpoint: "/s",
-          historyEndpoint: "/h",
-          title: "Assistant",
-          placeholder: "Ask…",
-        },
-      })}
-    >
-      {null}
-    </ChatWindow>,
+    withRegistry(
+      <ChatWindow
+        node={fakeNode({
+          type: "chat.window",
+          props: {
+            streamEndpoint: "/s",
+            historyEndpoint: "/h",
+            title: "Assistant",
+            placeholder: "Ask…",
+          },
+        })}
+      >
+        {null}
+      </ChatWindow>,
+    ),
   );
 }
 
@@ -118,9 +129,11 @@ describe("ChatWindow component", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     render(
-      <ChatWindow node={fakeNode({ type: "chat.window", props: { historyEndpoint: "/h" } })}>
-        {null}
-      </ChatWindow>,
+      withRegistry(
+        <ChatWindow node={fakeNode({ type: "chat.window", props: { historyEndpoint: "/h" } })}>
+          {null}
+        </ChatWindow>,
+      ),
     );
     fireEvent.click(screen.getByTestId("chat-launcher"));
 

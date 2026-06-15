@@ -122,6 +122,19 @@ export type Card = {
   description: string | null;
   title: string | null;
 };
+export type ChatMessage = {
+  readonly id: string;
+  readonly role: ChatRole;
+  readonly parts: ChatPart[];
+};
+export type ChatPart =
+  | ({
+      type: "text";
+    } & TextPart)
+  | ({
+      type: "tool-call";
+    } & ToolCallPart);
+export type ChatRole = "user" | "assistant" | "system";
 export type ChatWindow = {
   conversationId: string | null;
   historyEndpoint: string | null;
@@ -1000,6 +1013,9 @@ export type TextInput = {
   type: string | null;
   value: unknown;
 };
+export type TextPart = {
+  readonly text: string;
+};
 export type Textarea = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
@@ -1036,6 +1052,10 @@ export type ToastMessage = {
   action: Node | null;
   variant: Variant;
   message: string;
+};
+export type ToolCallPart = {
+  readonly name: string;
+  readonly args: Record<string, unknown>;
 };
 export type Variant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "sm" | "md" | "lg" | "fill";
