@@ -144,7 +144,6 @@
   },
   "peerDependencies": {
     "@inertiajs/react": "^3.0.0",
-    "@laravel/stream-react": "^0.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -155,7 +154,6 @@
     "@codecov/vite-plugin": "^2.0.1",
     "@inertiajs/react": "^3.0.0",
     "@inertiajs/vite": "^3.0.0",
-    "@laravel/stream-react": "^0.3.13",
     "@tailwindcss/vite": "^4.1.11",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",

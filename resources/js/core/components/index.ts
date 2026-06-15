@@ -14,7 +14,6 @@ import RawBlockComponent from "./raw-block";
 import SectionComponent from "./section";
 import SegmentedControlComponent from "./segmented-control";
 import StackComponent from "./stack";
-import StreamComponent from "./stream";
 import TabComponent, { TabsComponent } from "./tabs";
 import TextComponent from "./text";
 
@@ -35,7 +34,6 @@ export const coreComponents = createPlugin({
     section: eagerComponent(SectionComponent),
     "segmented-control": eagerComponent(SegmentedControlComponent),
     stack: eagerComponent(StackComponent),
-    stream: eagerComponent(StreamComponent),
     tab: eagerComponent(TabComponent),
     tabs: eagerComponent(TabsComponent),
     text: eagerComponent(TextComponent),
