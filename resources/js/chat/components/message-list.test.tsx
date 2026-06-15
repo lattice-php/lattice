@@ -1,8 +1,16 @@
 import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { ReactNode } from "react";
+import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
+import { createRegistry } from "@lattice-php/lattice/core/registry";
 import type { ChatMessage } from "../types";
-import "../parts/text";
+import { chatPlugin } from "../index";
 import { MessageList } from "./message-list";
+
+function withRegistry(ui: ReactNode): ReactNode {
+  const registry = createRegistry(chatPlugin);
+  return <RegistryContext.Provider value={registry}>{ui}</RegistryContext.Provider>;
+}
 
 afterEach(() => {
   Reflect.deleteProperty(Element.prototype, "scrollIntoView");
@@ -16,7 +24,7 @@ const messages: ChatMessage[] = [
 
 describe("MessageList", () => {
   it("renders all messages in order", () => {
-    render(<MessageList messages={messages} />);
+    render(withRegistry(<MessageList messages={messages} />));
 
     expect(screen.getByText("First message")).toBeVisible();
     expect(screen.getByText("Second message")).toBeVisible();
@@ -24,7 +32,7 @@ describe("MessageList", () => {
   });
 
   it("renders the scrollable container with the correct data-test attribute", () => {
-    render(<MessageList messages={messages} />);
+    render(withRegistry(<MessageList messages={messages} />));
 
     const container = screen.getByTestId("chat-messages");
     expect(container).toBeInTheDocument();
@@ -32,7 +40,7 @@ describe("MessageList", () => {
   });
 
   it("renders an empty list without errors", () => {
-    render(<MessageList messages={[]} />);
+    render(withRegistry(<MessageList messages={[]} />));
 
     const container = screen.getByTestId("chat-messages");
     expect(container).toBeInTheDocument();
@@ -47,13 +55,13 @@ describe("MessageList", () => {
       value: scrollIntoView,
     });
 
-    render(<MessageList messages={messages} />);
+    render(withRegistry(<MessageList messages={messages} />));
 
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth" });
   });
 
   it("renders messages in document order", () => {
-    render(<MessageList messages={messages} />);
+    render(withRegistry(<MessageList messages={messages} />));
 
     const userMessages = screen.getAllByTestId("chat-message-user");
     const assistantMessages = screen.getAllByTestId("chat-message-assistant");

@@ -11,11 +11,11 @@ import {
 import { configureI18nFromPageProps, LocaleReload } from "@lattice-php/lattice/i18n";
 import { createRoot } from "react-dom/client";
 import sprite from "virtual:svg-sprite";
-import "./lattice/chat-parts";
+import { appChatParts } from "./lattice/chat-parts";
 import { appColumns } from "./lattice/columns";
 import { WORKBENCH_I18N_NAMESPACE } from "./lattice/i18n";
 
-const appRegistry = extendRegistry(registry, appColumns);
+const appRegistry = extendRegistry(registry, appColumns, appChatParts);
 
 createInertiaApp({
   strictMode: true,
