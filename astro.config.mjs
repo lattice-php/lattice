@@ -80,6 +80,7 @@ export default defineConfig({
                 { label: "Number input", link: "/forms/fields/number-input/" },
                 { label: "Password input", link: "/forms/fields/password-input/" },
                 { label: "Hidden input", link: "/forms/fields/hidden-input/" },
+                { label: "File upload", link: "/forms/fields/file-upload/" },
                 { label: "Rich editor", link: "/forms/fields/rich-editor/" },
                 { label: "Repeater", link: "/forms/fields/repeater/" },
                 { label: "Builder", link: "/forms/fields/builder/" },
