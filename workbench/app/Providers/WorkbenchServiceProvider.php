@@ -48,11 +48,14 @@ class WorkbenchServiceProvider extends ServiceProvider
 
     private function registerExtendedFaker(): void
     {
-        $this->app->extend(Generator::class, function (Generator $faker): Generator {
+        $extend = function (Generator $faker): Generator {
             ExtendedFaker::extend($faker, (string) config('app.faker_locale', self::FAKER_LOCALE));
 
             return $faker;
-        });
+        };
+
+        $this->app->extend(Generator::class, $extend);
+        $this->app->extend(Generator::class.':'.self::FAKER_LOCALE, $extend);
     }
 
     /**

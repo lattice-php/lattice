@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Workbench\App\Factories;
 
 use Bambamboole\ExtendedFaker\Dto\ImageDto;
-use Bambamboole\ExtendedFaker\Dto\ProductDto;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
@@ -25,11 +24,11 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
-        $product = $this->fakeProduct();
+        $product = fake()->unique()->product();
 
         return [
             'name' => $product->name,
-            'sku' => fake()->unique()->bothify('PRD-####'),
+            'sku' => $product->sku,
             'status' => fake()->randomElement(['draft', 'active', 'archived']),
             'featured' => fake()->boolean(),
         ];
@@ -50,7 +49,8 @@ class ProductFactory extends Factory
     {
         return $this->afterCreating(function (Product $product) use ($count): void {
             for ($sortOrder = 1; $sortOrder <= $count; $sortOrder++) {
-                $image = $this->fakeProduct()->image;
+                $fakeProduct = fake()->product($product->sku);
+                $image = $fakeProduct->image;
 
                 if (! $image instanceof ImageDto) {
                     continue;
@@ -78,17 +78,6 @@ class ProductFactory extends Factory
                 ]);
             }
         });
-    }
-
-    private function fakeProduct(): ProductDto
-    {
-        $product = $this->faker->format('product');
-
-        if (! $product instanceof ProductDto) {
-            throw new RuntimeException('Extended Faker product must return a product DTO.');
-        }
-
-        return $product;
     }
 
     private function createImageFile(Product $product, ImageDto $image, int $sortOrder): File
