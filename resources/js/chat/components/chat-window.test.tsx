@@ -17,7 +17,9 @@ function historyResponse(): Response {
     ok: true,
     status: 200,
     json: async () => ({
-      messages: [{ id: "1", role: "assistant", parts: [{ type: "text", text: "Hi" }] }],
+      messages: [
+        { id: "1", role: "assistant", parts: [{ type: "chat.part.text", props: { text: "Hi" } }] },
+      ],
     }),
   } as unknown as Response;
 }

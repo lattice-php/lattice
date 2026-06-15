@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Core;
 
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
-use Lattice\Lattice\Attributes\ComponentAttribute;
+use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Lattice\Lattice\Core\Contracts\DefinitionRegistry as DefinitionRegistryContract;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Exceptions\UnknownComponent;
@@ -126,7 +126,7 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
     abstract protected function definitionClass(): string;
 
     /**
-     * @return class-string<ComponentAttribute>
+     * @return class-string<DefinitionAttribute>
      */
     abstract public function attributeClass(): string;
 

@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { Node } from "@lattice-php/lattice/core/types";
 import BreadcrumbsComponent from "./breadcrumbs";
 
@@ -19,7 +20,7 @@ vi.mock("@inertiajs/react", () => ({
   ),
 }));
 
-const { components: registry } = createRegistry({
+const registry = createRegistry({
   components: { breadcrumbs: eagerComponent(BreadcrumbsComponent) },
   name: "test/breadcrumbs",
 });
@@ -30,7 +31,7 @@ describe("Breadcrumbs", () => {
   it("renders nothing when there are no breadcrumbs", () => {
     usePage.mockReturnValue({ props: { lattice: { breadcrumbs: [] } }, url: "/" });
 
-    const { container } = render(<Renderer nodes={[node]} registry={registry} />);
+    const { container } = renderWithRegistry(<Renderer nodes={[node]} />, registry);
 
     expect(container).toBeEmptyDOMElement();
   });
@@ -48,7 +49,7 @@ describe("Breadcrumbs", () => {
       url: "/dashboard/settings",
     });
 
-    render(<Renderer nodes={[node]} registry={registry} />);
+    renderWithRegistry(<Renderer nodes={[node]} />, registry);
 
     expect(screen.getByRole("link", { name: "Dashboard" })).toHaveAttribute("href", "/dashboard");
     const current = screen.getByText("Settings");

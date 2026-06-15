@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent, lazyComponent } from "@lattice-php/lattice";
 import { Renderer } from "@lattice-php/lattice";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { CollapsedContext } from "./collapsed-context";
 import type { RendererComponent, RendererComponentModule } from "./types";
 
@@ -14,14 +15,14 @@ const TestComponent: RendererComponent<"test.component"> = ({ children, node }) 
 
 describe("Renderer", () => {
   it("renders registered components recursively", () => {
-    const { components } = createRegistry({
+    const registry = createRegistry({
       components: {
         "test.component": eagerComponent(TestComponent),
       },
       name: "test",
     });
 
-    render(
+    renderWithRegistry(
       <Renderer
         nodes={[
           {
@@ -35,38 +36,30 @@ describe("Renderer", () => {
             type: "test.component",
           },
         ]}
-        registry={components}
       />,
+      registry,
     );
 
     expect(screen.getByTestId("parent")).toContainElement(screen.getByTestId("child"));
   });
 
-  it("renders the configured missing component fallback", () => {
-    render(
-      <Renderer
-        missingComponent={({ node }) => <span>Missing {node.type}</span>}
-        nodes={[
-          {
-            type: "unknown.component",
-          },
-        ]}
-        registry={{}}
-      />,
-    );
+  it("renders the built-in missing-component marker for unknown types", () => {
+    const registry = createRegistry({ components: {}, name: "empty" });
 
-    expect(screen.getByText("Missing unknown.component")).toBeVisible();
+    renderWithRegistry(<Renderer nodes={[{ type: "unknown.component" }]} />, registry);
+
+    expect(screen.getByText("Missing component: unknown.component")).toBeVisible();
   });
 
   it("skips nodes that hide when their sidebar context is collapsed", () => {
-    const { components } = createRegistry({
+    const registry = createRegistry({
       components: {
         "test.component": eagerComponent(TestComponent),
       },
       name: "test",
     });
 
-    render(
+    renderWithRegistry(
       <CollapsedContext.Provider value={true}>
         <Renderer
           nodes={[
@@ -81,9 +74,9 @@ describe("Renderer", () => {
               type: "test.component",
             },
           ]}
-          registry={components}
         />
       </CollapsedContext.Provider>,
+      registry,
     );
 
     expect(screen.getByText("Visible")).toBeVisible();
@@ -95,7 +88,7 @@ describe("Renderer", () => {
       <div data-test={`${node.id}-fallback`} />
     );
 
-    const { components } = createRegistry({
+    const registry = createRegistry({
       components: {
         "test.lazy": lazyComponent(
           () => new Promise<RendererComponentModule<"test.lazy">>(() => {}),
@@ -107,7 +100,7 @@ describe("Renderer", () => {
       name: "test",
     });
 
-    render(
+    renderWithRegistry(
       <Renderer
         nodes={[
           {
@@ -115,8 +108,8 @@ describe("Renderer", () => {
             type: "test.lazy",
           },
         ]}
-        registry={components}
       />,
+      registry,
     );
 
     expect(screen.getByTestId("lazy-node-fallback")).toBeVisible();

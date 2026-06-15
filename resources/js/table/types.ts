@@ -1,3 +1,4 @@
+import type { ResolveProps } from "@lattice-php/lattice/core/types";
 import type {
   ActionNode,
   ColumnData,
@@ -66,17 +67,13 @@ export type TableNode = {
  */
 export interface ColumnProps {}
 
-// Resolves a built-in column's props from the generated map; `never` when not built-in.
-type BuiltInColumnPropsOf<TType extends string> = TType extends keyof ColumnPropsMap
-  ? ColumnPropsMap[TType]
-  : never;
-
 /**
  * Resolves a column `type` to its props: consumer augmentations (`ColumnProps`)
  * first, then the generated built-ins, then a loose bag.
  */
-export type ColumnPropsOf<TType extends string> = TType extends keyof ColumnProps
-  ? ColumnProps[TType]
-  : [BuiltInColumnPropsOf<TType>] extends [never]
-    ? Record<string, unknown> | undefined
-    : BuiltInColumnPropsOf<TType>;
+export type ColumnPropsOf<TType extends string> = ResolveProps<
+  ColumnProps,
+  ColumnPropsMap,
+  TType,
+  Record<string, unknown> | undefined
+>;

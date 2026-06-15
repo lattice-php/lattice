@@ -2,22 +2,23 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { ReactNode } from "react";
 import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
-import { createPlugin, createRegistry } from "@lattice-php/lattice/core/registry";
-import type { ChatPartComponent } from "../part-registry";
+import { createPlugin, createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { ComponentRegistry } from "@lattice-php/lattice/core/registry";
 import type { ChatMessage } from "../types";
 import { chatPlugin } from "../index";
 import { Message } from "./message";
 
-function withRegistry(ui: ReactNode, extraParts?: Record<string, ChatPartComponent>): ReactNode {
+function withRegistry(ui: ReactNode, extraComponents?: ComponentRegistry): ReactNode {
   const registry = createRegistry(
     chatPlugin,
-    ...(extraParts ? [createPlugin({ name: "test", chatParts: extraParts })] : []),
+    ...(extraComponents ? [createPlugin({ name: "test", components: extraComponents })] : []),
   );
   return <RegistryContext.Provider value={registry}>{ui}</RegistryContext.Provider>;
 }
 
-const CustomPart: ChatPartComponent = ({ part }) => (
-  <span data-test="custom-part">{(part as { type: string; label: string }).label}</span>
+const CustomPart: RendererComponent = ({ node }) => (
+  <span data-test="custom-part">{(node.props as { label: string }).label}</span>
 );
 
 describe("Message", () => {
@@ -25,7 +26,7 @@ describe("Message", () => {
     const message: ChatMessage = {
       id: "1",
       role: "user",
-      parts: [{ type: "text", text: "Hello there" }],
+      parts: [{ type: "chat.part.text", props: { text: "Hello there" } }],
     };
 
     render(withRegistry(<Message message={message} />));
@@ -38,7 +39,7 @@ describe("Message", () => {
     const message: ChatMessage = {
       id: "2",
       role: "assistant",
-      parts: [{ type: "text", text: "Hi, how can I help?" }],
+      parts: [{ type: "chat.part.text", props: { text: "Hi, how can I help?" } }],
     };
 
     render(withRegistry(<Message message={message} />));
@@ -52,28 +53,30 @@ describe("Message", () => {
       id: "3",
       role: "assistant",
       parts: [
-        { type: "text", text: "Thinking…" },
-        { type: "custom", label: "my-tool" },
+        { type: "chat.part.text", props: { text: "Thinking…" } },
+        { type: "custom", props: { label: "my-tool" } },
       ],
     };
 
-    render(withRegistry(<Message message={message} />, { custom: CustomPart }));
+    render(withRegistry(<Message message={message} />, { custom: eagerComponent(CustomPart) }));
 
     expect(screen.getByText("Thinking…")).toBeVisible();
     expect(screen.getByTestId("custom-part")).toHaveTextContent("my-tool");
   });
 
-  it("renders nothing for an unknown part type", () => {
+  it("flags an unknown part type as a missing component", () => {
     const message: ChatMessage = {
       id: "4",
       role: "user",
-      parts: [{ type: "unknown-type-xyz" }],
+      parts: [{ type: "unknown-type-xyz", props: {} }],
     };
 
     const { container } = render(withRegistry(<Message message={message} />));
     const bubble = container.querySelector('[data-test="chat-message-user"]');
     expect(bubble).toBeInTheDocument();
-    expect(bubble?.textContent).toBe("");
+    expect(
+      bubble?.querySelector('[data-lattice-missing-component="unknown-type-xyz"]'),
+    ).toBeInTheDocument();
   });
 
   it("applies different alignment for user vs assistant", () => {

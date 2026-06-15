@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Workbench\App\Tables\Columns;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Filterable;
 
-#[Attributes\Column(type: 'column.status-badge', props: StatusBadgeColumnProps::class)]
+#[AsColumn(type: 'column.status-badge', props: StatusBadgeColumnProps::class)]
 class StatusBadgeColumn extends Column implements Filterable
 {
     use IsFilterable;
@@ -35,7 +35,7 @@ class StatusBadgeColumn extends Column implements Filterable
         return new ColumnData(
             key: $this->key,
             label: $this->label,
-            type: 'column.status-badge',
+            type: $this->resolvedType(),
             width: $this->resolvedWidth(),
             filter: $this->filterValue(),
             props: new StatusBadgeColumnProps(

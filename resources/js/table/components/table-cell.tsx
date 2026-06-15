@@ -1,41 +1,27 @@
 import { useColumnRegistry } from "../../provider";
+import { columnCell, type ColumnRegistry } from "../registry";
 import type { TableColumn, TableRow } from "../types";
 import { BadgeCell } from "./cells/badge-cell";
 import { IconCell } from "./cells/icon-cell";
 import { ImageCell } from "./cells/image-cell";
+import { StackCell } from "./cells/stack-cell";
 import { TextCell } from "./cells/text-cell";
 
+// Built-in cells live with the (lazy-loaded) table feature rather than the
+// eager registry, so they stay code-split. Consumer-registered columns are
+// merged on top and win on type collisions.
+const builtinColumnCells: ColumnRegistry = {
+  badge: columnCell(BadgeCell),
+  icon: columnCell(IconCell),
+  image: columnCell(ImageCell),
+  stack: columnCell(StackCell),
+  text: columnCell(TextCell),
+};
+
 export function ColumnCell({ column, row }: { column: TableColumn; row: TableRow }) {
-  const columnRegistry = useColumnRegistry();
-  const customRenderer = columnRegistry[column.type];
+  const customCells = useColumnRegistry();
+  const Cell =
+    customCells[column.type] ?? builtinColumnCells[column.type] ?? builtinColumnCells.text;
 
-  if (customRenderer) {
-    return customRenderer({ column, row, value: row[column.key] });
-  }
-
-  if (column.type === "stack") {
-    return (
-      <div className="grid gap-1">
-        {(column.columns ?? []).map((stackedColumn) => (
-          <span key={stackedColumn.key}>
-            <TextCell column={stackedColumn} row={row} value={row[stackedColumn.key]} />
-          </span>
-        ))}
-      </div>
-    );
-  }
-
-  if (column.type === "badge") {
-    return <BadgeCell column={column} value={row[column.key]} />;
-  }
-
-  if (column.type === "icon") {
-    return <IconCell column={column} value={row[column.key]} />;
-  }
-
-  if (column.type === "image") {
-    return <ImageCell column={column} value={row[column.key]} />;
-  }
-
-  return <TextCell column={column} row={row} value={row[column.key]} />;
+  return <Cell column={column} props={column.props ?? {}} row={row} value={row[column.key]} />;
 }

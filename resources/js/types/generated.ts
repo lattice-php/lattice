@@ -125,15 +125,19 @@ export type Card = {
 export type ChatMessage = {
   readonly id: string;
   readonly role: ChatRole;
-  readonly parts: ChatPart[];
+  readonly parts: ChatNode[];
 };
-export type ChatPart =
-  | ({
-      type: "text";
-    } & TextPart)
-  | ({
-      type: "tool-call";
-    } & ToolCallPart);
+export type ChatNode =
+  | {
+      type: "chat.part.text";
+      key?: string;
+      props: TextPart;
+    }
+  | {
+      type: "chat.part.tool-call";
+      key?: string;
+      props: ToolCallPart;
+    };
 export type ChatRole = "user" | "assistant" | "system";
 export type ChatWindow = {
   conversationId: string | null;
@@ -680,7 +684,14 @@ export type Modal = {
   ref: string | null;
   title: string | null;
 };
-export type Node = FormNode | CoreNode | ActionNode | FragmentNode | TableNode | LayoutNode;
+export type Node =
+  | FormNode
+  | CoreNode
+  | ActionNode
+  | FragmentNode
+  | TableNode
+  | LayoutNode
+  | ChatNode;
 export type NodeType = Node["type"];
 export type NumberInput = {
   autoFocus: boolean;
@@ -1014,7 +1025,7 @@ export type TextInput = {
   value: unknown;
 };
 export type TextPart = {
-  readonly text: string;
+  text: string;
 };
 export type Textarea = {
   autoFocus: boolean;
@@ -1054,8 +1065,8 @@ export type ToastMessage = {
   message: string;
 };
 export type ToolCallPart = {
-  readonly name: string;
-  readonly args: Record<string, unknown>;
+  args: Record<string, unknown>;
+  name: string;
 };
 export type Variant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "sm" | "md" | "lg" | "fill";

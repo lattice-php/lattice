@@ -6,6 +6,6 @@ namespace Lattice\Lattice\Chat\Enums;
 
 enum ChatPartType: string
 {
-    case Text = 'text';
-    case ToolCall = 'tool-call';
+    case Text = 'chat.part.text';
+    case ToolCall = 'chat.part.tool-call';
 }

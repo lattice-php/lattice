@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Tables;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Attributes\ComponentAttribute;
+use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Lattice\Lattice\Attributes\Table;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\Option;
@@ -137,7 +137,7 @@ final class TableRegistry extends DefinitionRegistry
     }
 
     /**
-     * @return class-string<ComponentAttribute>
+     * @return class-string<DefinitionAttribute>
      */
     public function attributeClass(): string
     {

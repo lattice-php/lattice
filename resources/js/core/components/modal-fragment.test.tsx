@@ -1,7 +1,8 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import FragmentComponent from "./fragment";
 import ModalComponent from "./modal";
@@ -15,7 +16,7 @@ describe("Lattice modal and fragment components", () => {
   });
 
   it("opens and closes modal content from lattice events", () => {
-    const { components: registry } = createRegistry({
+    const registry = createRegistry({
       components: {
         modal: eagerComponent(ModalComponent),
         text: eagerComponent(TextComponent),
@@ -23,7 +24,7 @@ describe("Lattice modal and fragment components", () => {
       name: "test/modal",
     });
 
-    render(
+    renderWithRegistry(
       <Renderer
         nodes={[
           {
@@ -43,8 +44,8 @@ describe("Lattice modal and fragment components", () => {
             type: "modal",
           },
         ]}
-        registry={registry}
       />,
+      registry,
     );
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
@@ -71,7 +72,7 @@ describe("Lattice modal and fragment components", () => {
     const fetch = vi.fn<() => Promise<Response>>(() => new Promise<Response>(() => {}));
     vi.stubGlobal("fetch", fetch);
 
-    const { components: registry } = createRegistry({
+    const registry = createRegistry({
       components: {
         fragment: eagerComponent(FragmentComponent),
         text: eagerComponent(TextComponent),
@@ -79,7 +80,7 @@ describe("Lattice modal and fragment components", () => {
       name: "test/fragment",
     });
 
-    const { container } = render(
+    const { container } = renderWithRegistry(
       <Renderer
         nodes={[
           {
@@ -88,8 +89,8 @@ describe("Lattice modal and fragment components", () => {
             type: "fragment",
           },
         ]}
-        registry={registry}
       />,
+      registry,
     );
 
     expect(container.querySelector('[data-slot="skeleton"]')).not.toBeNull();
@@ -120,7 +121,7 @@ describe("Lattice modal and fragment components", () => {
 
     vi.stubGlobal("fetch", fetch);
 
-    const { components: registry } = createRegistry({
+    const registry = createRegistry({
       components: {
         fragment: eagerComponent(FragmentComponent),
         text: eagerComponent(TextProbe),
@@ -128,7 +129,7 @@ describe("Lattice modal and fragment components", () => {
       name: "test/fragment",
     });
 
-    render(
+    renderWithRegistry(
       <Renderer
         nodes={[
           {
@@ -141,8 +142,8 @@ describe("Lattice modal and fragment components", () => {
             type: "fragment",
           },
         ]}
-        registry={registry}
       />,
+      registry,
     );
 
     await waitFor(() => {
@@ -194,7 +195,7 @@ describe("Lattice modal and fragment components", () => {
 
     vi.stubGlobal("fetch", fetch);
 
-    const { components: registry } = createRegistry({
+    const registry = createRegistry({
       components: {
         fragment: eagerComponent(FragmentComponent),
         text: eagerComponent(TextProbe),
@@ -202,7 +203,7 @@ describe("Lattice modal and fragment components", () => {
       name: "test/fragment",
     });
 
-    render(
+    renderWithRegistry(
       <Renderer
         nodes={[
           {
@@ -214,8 +215,8 @@ describe("Lattice modal and fragment components", () => {
             type: "fragment",
           },
         ]}
-        registry={registry}
       />,
+      registry,
     );
 
     await waitFor(() => {

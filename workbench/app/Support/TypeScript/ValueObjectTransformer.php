@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
+use Lattice\Lattice\Chat\ChatPart;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Support\TypeScript\MarkerRewriteClassPropertyProcessor;
 use Lattice\Lattice\Support\TypeScript\MixedToUnknownClassPropertyProcessor;
@@ -43,6 +44,12 @@ final class ValueObjectTransformer extends ClassTransformer
         return [
             ...parent::classPropertyProcessors(),
             new MixedToUnknownClassPropertyProcessor,
+            // Runs before the Component marker so a chat part — itself a Component —
+            // resolves to the narrower ChatNode union rather than the whole Node union.
+            new MarkerRewriteClassPropertyProcessor(
+                ChatPart::class,
+                fn (): TypeScriptReference => new TypeScriptReference(NodesProvider::chatNodeReference()),
+            ),
             new MarkerRewriteClassPropertyProcessor(
                 Component::class,
                 fn (): TypeScriptReference => new TypeScriptReference(NodesProvider::nodeReference()),

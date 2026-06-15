@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
-use Lattice\Lattice\Chat\ChatPart;
-use Lattice\Lattice\Chat\ChatPartRegistry;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Effects\EffectRegistry;
 use Lattice\Lattice\Forms\Components\Form;
@@ -34,6 +32,7 @@ final class BaseProfile implements TypeScriptProfile
         'Fragments' => 'FragmentNode',
         'Tables' => 'TableNode',
         'Layouts' => 'LayoutNode',
+        'Chat' => 'ChatNode',
     ];
 
     public function run(TypeScriptGenerator $generator): string
@@ -43,7 +42,6 @@ final class BaseProfile implements TypeScriptProfile
 
         $effects = $this->discoverEffects();
         $marked = (new MarkedTypeDiscovery)->discover($src);
-        $chatParts = $this->discoverChatParts();
 
         $discovered = (new ComponentDiscovery)->discover($src);
         $columnProps = $this->buildColumnProps($discovered);
@@ -60,7 +58,6 @@ final class BaseProfile implements TypeScriptProfile
                     ...$marked['valueObjects'],
                     ...array_keys($effects),
                     ...array_values($columnProps),
-                    ...array_keys($chatParts),
                 ]),
                 new ComponentTransformer([
                     ...array_keys($formFields),
@@ -77,8 +74,6 @@ final class BaseProfile implements TypeScriptProfile
                     EffectContract::class,
                     $effects,
                     $columnProps,
-                    ChatPart::class,
-                    $chatParts,
                 ),
             ],
             new FlatModuleWriter('generated.ts'),
@@ -104,17 +99,6 @@ final class BaseProfile implements TypeScriptProfile
     private function discoverEffects(): array
     {
         return array_flip(EffectRegistry::withBuiltins()->all());
-    }
-
-    /**
-     * Chat part value objects keyed by class-string, valued by wire type — for the
-     * value-object allow-list and the generated `ChatPart` union.
-     *
-     * @return array<class-string, string>
-     */
-    private function discoverChatParts(): array
-    {
-        return array_flip(ChatPartRegistry::withBuiltins()->all());
     }
 
     /**

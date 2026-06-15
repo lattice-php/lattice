@@ -5,7 +5,9 @@ namespace Lattice\Lattice\Tables\Columns;
 
 use Illuminate\Support\Collection;
 use JsonSerializable;
+use Lattice\Lattice\Attributes\Component as ComponentAttribute;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
+use Lattice\Lattice\Tables\Enums\ColumnType;
 
 /**
  * @phpstan-consistent-constructor
@@ -50,6 +52,18 @@ abstract class Column implements JsonSerializable
     }
 
     abstract public function toData(): ColumnData;
+
+    /**
+     * The column's type, hydrated from the #[AsColumn] attribute so it is
+     * declared once. Built-in types resolve to the ColumnType enum, custom
+     * types to their string.
+     */
+    protected function resolvedType(): ColumnType|string
+    {
+        $type = ComponentAttribute::typeForClass(static::class);
+
+        return ColumnType::tryFrom($type) ?? $type;
+    }
 
     protected function resolvedWidth(): ColumnWidth
     {

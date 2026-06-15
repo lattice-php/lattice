@@ -1,7 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { Node } from "@lattice-php/lattice/core/types";
 import RawBlockComponent from "@lattice-php/lattice/core/components/raw-block";
 import TextComponent from "@lattice-php/lattice/core/components/text";
@@ -16,7 +17,7 @@ vi.mock("@inertiajs/react", () => ({
   ),
 }));
 
-const { components: registry } = createRegistry({
+const registry = createRegistry({
   components: {
     dropdown: eagerComponent(DropdownComponent),
     "menu-item": eagerComponent(MenuItemComponent),
@@ -38,7 +39,7 @@ const node: Node = {
 
 describe("Dropdown", () => {
   it("hides its items until the trigger is clicked", () => {
-    render(<Renderer nodes={[node]} registry={registry} />);
+    renderWithRegistry(<Renderer nodes={[node]} />, registry);
 
     expect(screen.queryByRole("link", { name: "Profile" })).not.toBeInTheDocument();
 
@@ -48,7 +49,7 @@ describe("Dropdown", () => {
   });
 
   it("renders trigger nodes through the registry and hides collapsed trigger parts", () => {
-    render(
+    renderWithRegistry(
       <SidebarCollapsedContext.Provider value={true}>
         <Renderer
           nodes={[
@@ -63,9 +64,9 @@ describe("Dropdown", () => {
               },
             },
           ]}
-          registry={registry}
         />
       </SidebarCollapsedContext.Provider>,
+      registry,
     );
 
     const trigger = screen.getByRole("button", { name: "Account" });

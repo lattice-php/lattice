@@ -2,7 +2,6 @@ import { usePage } from "@inertiajs/react";
 import type { ReactNode } from "react";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import type { PagePayload } from "@lattice-php/lattice/core/types";
-import { useComponentRegistry } from "@lattice-php/lattice/provider";
 import { OutletContext } from "./context";
 
 /**
@@ -13,7 +12,6 @@ import { OutletContext } from "./context";
  */
 export default function SchemaLayout({ children }: { children: ReactNode }) {
   const lattice = usePage().props.lattice as PagePayload;
-  const registry = useComponentRegistry();
   const layout = lattice.layout;
 
   if (!layout) {
@@ -22,7 +20,7 @@ export default function SchemaLayout({ children }: { children: ReactNode }) {
 
   return (
     <OutletContext.Provider value={children}>
-      <Renderer fallback={null} nodes={layout.schema} registry={registry} />
+      <Renderer nodes={layout.schema} />
     </OutletContext.Provider>
   );
 }

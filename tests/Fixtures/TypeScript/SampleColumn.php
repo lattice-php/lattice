@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tests\Fixtures\TypeScript;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 
-#[Attributes\Column(type: 'column.rating', props: SampleColumnProps::class)]
+#[AsColumn(type: 'column.rating', props: SampleColumnProps::class)]
 class SampleColumn extends Column
 {
     public int $max = 5;
@@ -17,7 +17,7 @@ class SampleColumn extends Column
         return new ColumnData(
             key: $this->key,
             label: $this->label,
-            type: 'column.rating',
+            type: $this->resolvedType(),
             width: $this->resolvedWidth(),
             props: new SampleColumnProps($this->max),
         );

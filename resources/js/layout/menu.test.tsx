@@ -1,7 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { SidebarCollapsedContext } from "./context";
 import MenuComponent from "./menu";
@@ -27,7 +28,7 @@ vi.mock("@inertiajs/react", () => ({
   ),
 }));
 
-const { components: registry } = createRegistry({
+const registry = createRegistry({
   components: {
     menu: eagerComponent(MenuComponent),
     "menu-item": eagerComponent(MenuItemComponent),
@@ -36,7 +37,7 @@ const { components: registry } = createRegistry({
 });
 
 function renderMenu(node: Node) {
-  return render(<Renderer nodes={[node]} registry={registry} />);
+  return renderWithRegistry(<Renderer nodes={[node]} />, registry);
 }
 
 const menu: Node = {
@@ -126,10 +127,11 @@ describe("Menu", () => {
   });
 
   it("opens a group's submenu as a flyout when the sidebar is collapsed", () => {
-    render(
+    renderWithRegistry(
       <SidebarCollapsedContext.Provider value={true}>
-        <Renderer nodes={[menu]} registry={registry} />
+        <Renderer nodes={[menu]} />
       </SidebarCollapsedContext.Provider>,
+      registry,
     );
 
     expect(screen.queryByRole("link", { name: "Profile" })).not.toBeInTheDocument();
@@ -140,10 +142,11 @@ describe("Menu", () => {
   });
 
   it("keeps a collapsed leaf item's label reachable as a hover flyout", () => {
-    render(
+    renderWithRegistry(
       <SidebarCollapsedContext.Provider value={true}>
-        <Renderer nodes={[menu]} registry={registry} />
+        <Renderer nodes={[menu]} />
       </SidebarCollapsedContext.Provider>,
+      registry,
     );
 
     const link = screen.getByRole("link", { name: "Home" });

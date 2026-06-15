@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Fragments;
 
-use Lattice\Lattice\Attributes\ComponentAttribute;
+use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Lattice\Lattice\Attributes\Fragment;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\DefinitionRegistry;
@@ -53,7 +53,7 @@ final class FragmentRegistry extends DefinitionRegistry
     }
 
     /**
-     * @return class-string<ComponentAttribute>
+     * @return class-string<DefinitionAttribute>
      */
     public function attributeClass(): string
     {
