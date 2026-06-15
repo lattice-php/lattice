@@ -1,12 +1,8 @@
-import type { ChatPart, ChatPartComponent } from "@lattice-php/lattice";
-import { createPlugin } from "@lattice-php/lattice";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
+import type { ChatPartComponent } from "../part-registry";
+import type { ChatPart } from "../types";
 
-const ToolCallPart: ChatPartComponent = ({ part }) => {
-  if (part.type !== "tool-call") {
-    return null;
-  }
-
+export const ToolCallPart: ChatPartComponent = ({ part }) => {
   const toolCall = part as Extract<ChatPart, { type: "tool-call" }>;
 
   return (
@@ -18,8 +14,3 @@ const ToolCallPart: ChatPartComponent = ({ part }) => {
     </div>
   );
 };
-
-export const appChatParts = createPlugin({
-  name: "workbench-chat-parts",
-  chatParts: { "tool-call": ToolCallPart },
-});
