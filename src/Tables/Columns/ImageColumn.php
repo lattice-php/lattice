@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
-#[Attributes\Column(type: 'image', props: ImageColumnProps::class)]
+#[AsColumn(ColumnType::Image, props: ImageColumnProps::class)]
 class ImageColumn extends Column
 {
     protected bool $circular = false;
@@ -39,7 +39,7 @@ class ImageColumn extends Column
         return new ColumnData(
             key: $this->key,
             label: $this->label,
-            type: ColumnType::Image,
+            type: $this->resolvedType(),
             width: $this->resolvedWidth(),
             props: new ImageColumnProps(
                 circular: $this->circular,

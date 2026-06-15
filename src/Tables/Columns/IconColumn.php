@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Columns;
 
 use BackedEnum;
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
-#[Attributes\Column(type: 'icon', props: IconColumnProps::class)]
+#[AsColumn(ColumnType::Icon, props: IconColumnProps::class)]
 class IconColumn extends Column
 {
     protected ?string $icon = null;
@@ -68,7 +68,7 @@ class IconColumn extends Column
         return new ColumnData(
             key: $this->key,
             label: $this->label,
-            type: ColumnType::Icon,
+            type: $this->resolvedType(),
             width: $this->resolvedWidth(),
             props: new IconColumnProps(
                 icon: $this->icon,

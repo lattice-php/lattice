@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\TypeScript;
 
-use Lattice\Lattice\Attributes\Column as ColumnAttribute;
 use Lattice\Lattice\Attributes\Component as ComponentAttribute;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
+use Lattice\Lattice\Tables\Attributes\AsColumn as ColumnAttribute;
 use ReflectionAttribute;
 use ReflectionClass;
 

@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
-#[Attributes\Column(type: 'text', props: TextColumnProps::class)]
+#[AsColumn(ColumnType::Text, props: TextColumnProps::class)]
 class TextColumn extends Column implements Filterable, Sortable
 {
     use IsFilterable;
@@ -92,7 +92,7 @@ class TextColumn extends Column implements Filterable, Sortable
         return new ColumnData(
             key: $this->key,
             label: $this->label,
-            type: ColumnType::Text,
+            type: $this->resolvedType(),
             width: $this->resolvedWidth(),
             sortable: $this->sortableValue(),
             filter: $this->filterValue(),

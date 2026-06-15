@@ -22,7 +22,7 @@ it('scaffolds a column class, a cell tsx and registers it in columns.ts', functi
         $columnFile = app_path('Tables/Columns/StatusBadge.php');
         expect(File::get($columnFile))
             ->toContain('namespace App\\Tables\\Columns;')
-            ->toContain('Attributes\\Column(')
+            ->toContain('#[AsColumn(')
             ->toContain('StatusBadgeProps::class')
             ->toContain('class StatusBadge extends Column')
             ->toContain('public function toData(): ColumnData');
@@ -49,6 +49,6 @@ it('is idempotent and honors --type', function () {
         expect(substr_count(File::get(resource_path('js/lattice/columns.ts')), '"column.status-badge": StatusBadgeCell'))->toBe(1);
 
         artisan('lattice:column', ['name' => 'Priority', '--type' => 'column.prio'])->assertSuccessful();
-        expect(File::get(app_path('Tables/Columns/Priority.php')))->toContain("Attributes\\Column(type: 'column.prio'");
+        expect(File::get(app_path('Tables/Columns/Priority.php')))->toContain("#[AsColumn(type: 'column.prio'");
     });
 });
