@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import type { LazyExoticComponent } from "react";
 import type { RendererComponent, RendererComponentModule } from "./types";
-import type { ColumnRegistry } from "../table/column-registry";
+import type { ColumnRegistry } from "../table/registry";
 import type { EffectHandlerRegistry } from "../effects/registry";
 
 export type EagerComponentRegistration = {

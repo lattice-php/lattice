@@ -60,7 +60,7 @@ export type {
   UnknownComponent,
   WireNode,
 } from "./core/types";
-export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "./table/column-registry";
+export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "./table/registry";
 export type { ColumnProps, ColumnPropsOf } from "./table/types";
 export type { Method } from "@inertiajs/core";
 export type { ActionEffect, ActionResponse } from "./effects/dispatch";

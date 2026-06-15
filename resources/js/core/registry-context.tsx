@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import type { ComponentRegistry, Registry } from "./registry";
-import type { ColumnRegistry } from "../table/column-registry";
+import type { ColumnRegistry } from "../table/registry";
 import type { EffectHandlerRegistry } from "../effects/registry";
 
 /**
