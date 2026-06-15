@@ -31,6 +31,7 @@ use Lattice\Lattice\Layouts\LayoutDefinition;
 use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Pages\BuilderTableDemoPage;
 use Workbench\App\Pages\BusinessPartnersPage;
+use Workbench\App\Pages\ChatPage;
 use Workbench\App\Pages\DependentDemoPage;
 use Workbench\App\Pages\GroupsPage;
 use Workbench\App\Pages\HomePage;
@@ -38,6 +39,7 @@ use Workbench\App\Pages\ProductCreatePage;
 use Workbench\App\Pages\ProductsPage;
 use Workbench\App\Pages\SalesOrdersPage;
 use Workbench\App\Pages\ShowcasePage;
+use Workbench\App\Pages\StreamDemoPage;
 use Workbench\App\Pages\TablesPage;
 use Workbench\App\Pages\TabsPage;
 use Workbench\App\Support\Logo;
@@ -89,6 +91,8 @@ final class AppLayout extends LayoutDefinition
                                                 MenuItem::fromPage(TablesPage::class)->key('pagination-modes')->label(__('workbench.navigation.pagination-modes')),
                                             ]),
                                             MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs'))->icon('spark'),
+                                            MenuItem::fromPage(StreamDemoPage::class)->key('streaming')->label(__('workbench.navigation.streaming'))->icon('spark'),
+                                            MenuItem::fromPage(ChatPage::class)->key('chat')->label(__('workbench.navigation.chat'))->icon('spark'),
                                         ]),
                                     ]),
                                 Dropdown::make('user-menu')

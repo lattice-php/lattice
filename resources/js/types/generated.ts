@@ -288,6 +288,11 @@ export type CoreNode =
       schema?: Node[];
     }
   | {
+      type: "stream";
+      key?: string;
+      props: Stream;
+    }
+  | {
       type: "tab";
       key?: string;
       props: Tab;
@@ -886,6 +891,11 @@ export type Stack = {
   height: Height | null;
   justify: Justify | null;
   width: Width | null;
+};
+export type Stream = {
+  auto: boolean;
+  endpoint: string | null;
+  placeholder: string | null;
 };
 export type Tab = {
   confirm: {

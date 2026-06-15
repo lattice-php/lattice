@@ -168,6 +168,7 @@ export default defineConfig(({ mode }) => {
                 /^react($|\/)/,
                 /^react-dom($|\/)/,
                 /^@inertiajs\//,
+                /^@laravel\/stream-react($|\/)/,
                 /^@lattice-php\/vite-svg-sprite($|\/)/,
                 /^@radix-ui\//,
                 /^@tiptap\//,

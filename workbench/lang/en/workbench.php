@@ -298,6 +298,7 @@ return [
     'navigation' => [
         'builder-table-demo' => 'Builder Table Demo',
         'business-partners' => 'Business partners',
+        'chat' => 'Chat',
         'commerce' => 'Commerce',
         'create-product' => 'Create Product',
         'dependent-fields' => 'Dependent Fields',
@@ -310,6 +311,7 @@ return [
         'sales-orders' => 'Sales orders',
         'showcase' => 'Showcase',
         'tables' => 'Tables',
+        'streaming' => 'Streaming',
         'tabs' => 'Tabs',
     ],
     'pages' => [
@@ -322,6 +324,11 @@ return [
             'heading' => 'Builder Table Demo',
             'submit' => 'Submit',
             'title' => 'Builder Table Demo',
+        ],
+        'chat' => [
+            'description' => 'A composed chat demo. Messages stream back word-by-word from a custom workbench endpoint using core Laravel response streaming and the @laravel/stream-react useStream hook.',
+            'heading' => 'Composed Chat',
+            'title' => 'Composed Chat',
         ],
         'dependent' => [
             'heading' => 'Dependent Demo',
@@ -372,6 +379,11 @@ return [
         'showcase' => [
             'heading' => 'Form Showcase',
             'title' => 'Form Showcase',
+        ],
+        'streaming' => [
+            'description' => 'Text streams word-by-word from a custom workbench endpoint using core Laravel response streaming and @laravel/stream-react.',
+            'heading' => 'Streaming Demo',
+            'title' => 'Streaming Demo',
         ],
         'tables' => [
             'badge' => 'Tables',
