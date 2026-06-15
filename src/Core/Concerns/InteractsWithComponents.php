@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Contracts\DefinitionRegistry;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Core\Definition;
-use Lattice\Lattice\Core\Exceptions\UnknownLatticeComponent;
+use Lattice\Lattice\Core\Exceptions\UnknownComponent;
 
-trait InteractsWithLatticeComponents
+trait InteractsWithComponents
 {
     /**
      * @template TDefinition of Definition
@@ -28,7 +28,7 @@ trait InteractsWithLatticeComponents
 
         try {
             $definition = $registry->resolve($key);
-        } catch (UnknownLatticeComponent) {
+        } catch (UnknownComponent) {
             abort(404);
         }
 

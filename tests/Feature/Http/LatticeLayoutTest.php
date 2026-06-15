@@ -7,7 +7,7 @@ use Lattice\Lattice\Attributes\Page as PageAttr;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Components\Text;
-use Lattice\Lattice\Core\Exceptions\UnknownLatticeComponent;
+use Lattice\Lattice\Core\Exceptions\UnknownComponent;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Http\Page;
@@ -61,7 +61,7 @@ test('the layout registry resolves a registered layout to its wire schema', func
 
 test('the layout registry rejects an unregistered layout key', function () {
     expect(fn () => app(LayoutRegistry::class)->render('missing', new Request))
-        ->toThrow(UnknownLatticeComponent::class);
+        ->toThrow(UnknownComponent::class);
 });
 
 test('a page serializes its layout as key and schema with an outlet', function () {

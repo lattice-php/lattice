@@ -6,7 +6,7 @@ import type { Plugin, PluginOption, UserConfig } from "vite";
 
 type InlineDependency = string | RegExp;
 
-type LatticeUserConfig = UserConfig & {
+type ConfigWithTest = UserConfig & {
   test?: {
     server?: {
       deps?: {
@@ -28,14 +28,14 @@ export type LatticeViteOptions = {
   source?: boolean;
 };
 
-type LatticeRoots = {
+type Roots = {
   appRoot: string;
   root: string;
 };
 
 export function lattice(options: LatticeViteOptions = {}): PluginOption[] {
-  const plugins: PluginOption[] = [latticePlugin(options)];
-  const iconOptions = latticeIconOptions(options);
+  const plugins: PluginOption[] = [corePlugin(options)];
+  const iconOptions = resolveIconOptions(options);
 
   if (iconOptions) {
     plugins.push(svgSprite(iconOptions));
@@ -44,8 +44,8 @@ export function lattice(options: LatticeViteOptions = {}): PluginOption[] {
   return plugins;
 }
 
-export function latticeConfig(options: LatticeViteOptions = {}): LatticeUserConfig {
-  const { appRoot, root } = latticeRoots(options);
+export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest {
+  const { appRoot, root } = resolveRoots(options);
 
   return {
     resolve: {
@@ -83,7 +83,7 @@ export function latticeConfig(options: LatticeViteOptions = {}): LatticeUserConf
   };
 }
 
-function latticePlugin(options: LatticeViteOptions): Plugin {
+function corePlugin(options: LatticeViteOptions): Plugin {
   return {
     name: "lattice",
     config() {
@@ -92,14 +92,14 @@ function latticePlugin(options: LatticeViteOptions): Plugin {
   };
 }
 
-function latticeIconOptions(options: LatticeViteOptions): SvgSpriteOptions | null {
+function resolveIconOptions(options: LatticeViteOptions): SvgSpriteOptions | null {
   const icons = options.icons ?? true;
 
   if (icons === false) {
     return null;
   }
 
-  const { root } = latticeRoots(options);
+  const { root } = resolveRoots(options);
   const iconOptions = icons === true ? {} : icons;
   const { dirs = [], dts, ...spriteOptions } = iconOptions;
   const defaultTypes = {
@@ -115,7 +115,7 @@ function latticeIconOptions(options: LatticeViteOptions): SvgSpriteOptions | nul
   };
 }
 
-function latticeRoots(options: LatticeViteOptions): LatticeRoots {
+function resolveRoots(options: LatticeViteOptions): Roots {
   const appRoot = options.appRoot ?? process.cwd();
   const root = options.root ?? path.resolve(appRoot, "vendor/lattice-php/lattice");
 

@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\ActionRegistry;
-use Lattice\Lattice\Core\Concerns\InteractsWithLatticeComponents;
+use Lattice\Lattice\Core\Concerns\InteractsWithComponents;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Http\Controllers\Concerns\HandlesFormSubRequests;
 use Lattice\Lattice\Http\Controllers\Concerns\HandlesPrecognition;
@@ -15,7 +15,7 @@ final class ActionController
 {
     use HandlesFormSubRequests;
     use HandlesPrecognition;
-    use InteractsWithLatticeComponents;
+    use InteractsWithComponents;
 
     public function __construct(
         private readonly ActionRegistry $actions,

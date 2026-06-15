@@ -6,9 +6,9 @@ namespace Lattice\Lattice\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Core\Concerns\InteractsWithLatticeComponents;
+use Lattice\Lattice\Core\Concerns\InteractsWithComponents;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Core\Exceptions\UnknownLatticeComponent;
+use Lattice\Lattice\Core\Exceptions\UnknownComponent;
 use Lattice\Lattice\Http\Controllers\Concerns\HandlesFormSubRequests;
 use Lattice\Lattice\Http\Controllers\Concerns\HandlesPrecognition;
 use Lattice\Lattice\Tables\TableDefinition;
@@ -20,7 +20,7 @@ final class BulkActionController
 {
     use HandlesFormSubRequests;
     use HandlesPrecognition;
-    use InteractsWithLatticeComponents;
+    use InteractsWithComponents;
 
     public function __construct(
         private readonly BulkActionRegistry $bulkActions,
@@ -81,7 +81,7 @@ final class BulkActionController
     {
         try {
             return $this->tables->resolve($key);
-        } catch (UnknownLatticeComponent) {
+        } catch (UnknownComponent) {
             abort(404);
         }
     }
