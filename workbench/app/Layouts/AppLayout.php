@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Components\ActionGroup;
 use Lattice\Lattice\Attributes\Layout;
+use Lattice\Lattice\Core\Components\ChatWindow;
 use Lattice\Lattice\Core\Components\FloatingPanel;
 use Lattice\Lattice\Core\Components\RawBlock;
 use Lattice\Lattice\Core\Components\Stack;
@@ -31,7 +32,6 @@ use Lattice\Lattice\Layouts\LayoutDefinition;
 use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Pages\BuilderTableDemoPage;
 use Workbench\App\Pages\BusinessPartnersPage;
-use Workbench\App\Pages\ChatPage;
 use Workbench\App\Pages\DependentDemoPage;
 use Workbench\App\Pages\GroupsPage;
 use Workbench\App\Pages\HomePage;
@@ -92,7 +92,6 @@ final class AppLayout extends LayoutDefinition
                                             ]),
                                             MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs'))->icon('spark'),
                                             MenuItem::fromPage(StreamDemoPage::class)->key('streaming')->label(__('workbench.navigation.streaming'))->icon('spark'),
-                                            MenuItem::fromPage(ChatPage::class)->key('chat')->label(__('workbench.navigation.chat'))->icon('spark'),
                                         ]),
                                     ]),
                                 Dropdown::make('user-menu')
@@ -138,6 +137,15 @@ final class AppLayout extends LayoutDefinition
                                 ->variant($locale === 'de' ? ButtonVariant::Secondary : ButtonVariant::Ghost)
                                 ->context(['locale' => 'de']),
                         ]),
+                ]),
+            FloatingPanel::make('assistant-chat')
+                ->placement(FloatingPlacement::BottomEnd)
+                ->schema([
+                    ChatWindow::make('assistant')
+                        ->streamEndpoint('/workbench/chat/stream')
+                        ->historyEndpoint('/workbench/chat/history')
+                        ->title(__('workbench.assistant.title'))
+                        ->placeholder(__('workbench.assistant.placeholder')),
                 ]),
         ]);
     }

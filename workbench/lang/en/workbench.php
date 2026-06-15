@@ -2,6 +2,10 @@
 declare(strict_types=1);
 
 return [
+    'assistant' => [
+        'placeholder' => 'Ask the assistant…',
+        'title' => 'Assistant',
+    ],
     'commerce' => [
         'business-partners' => [
             'actions' => [
@@ -298,7 +302,6 @@ return [
     'navigation' => [
         'builder-table-demo' => 'Builder Table Demo',
         'business-partners' => 'Business partners',
-        'chat' => 'Chat',
         'commerce' => 'Commerce',
         'create-product' => 'Create Product',
         'dependent-fields' => 'Dependent Fields',
@@ -324,11 +327,6 @@ return [
             'heading' => 'Builder Table Demo',
             'submit' => 'Submit',
             'title' => 'Builder Table Demo',
-        ],
-        'chat' => [
-            'description' => 'A composed chat demo. Messages stream back word-by-word from a custom workbench endpoint using core Laravel response streaming and the @laravel/stream-react useStream hook.',
-            'heading' => 'Composed Chat',
-            'title' => 'Composed Chat',
         ],
         'dependent' => [
             'heading' => 'Dependent Demo',
