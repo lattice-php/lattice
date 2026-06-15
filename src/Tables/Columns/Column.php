@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Tables\Columns;
 use Illuminate\Support\Collection;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\Component as ComponentAttribute;
+use Lattice\Lattice\Core\Components\Concerns\ReflectsWireProps;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
@@ -14,13 +15,20 @@ use Lattice\Lattice\Tables\Enums\ColumnType;
  */
 abstract class Column implements JsonSerializable
 {
+    use ReflectsWireProps;
+
     protected string $label;
 
     protected ?ColumnWidth $width = null;
 
-    public function __construct(public readonly string $key)
+    public function __construct(protected readonly string $key)
     {
         $this->label = str($key)->headline()->toString();
+    }
+
+    public function key(): string
+    {
+        return $this->key;
     }
 
     public static function make(string $key): static
@@ -34,7 +42,7 @@ abstract class Column implements JsonSerializable
      */
     public static function index(array $columns): Collection
     {
-        return collect($columns)->keyBy(fn (Column $column): string => $column->key);
+        return collect($columns)->keyBy(fn (Column $column): string => $column->key());
     }
 
     public function label(string $label): static
@@ -51,7 +59,26 @@ abstract class Column implements JsonSerializable
         return $this;
     }
 
-    abstract public function toData(): ColumnData;
+    /**
+     * Reflects the column's public properties into the wire shape, mirroring how
+     * components serialize their props. The common fields (key, label, type,
+     * width, sortable, filter) are built here; everything a column adds as a
+     * public property becomes a type-specific prop.
+     */
+    public function toData(): ColumnData
+    {
+        $props = $this->wireProps();
+
+        return new ColumnData(
+            key: $this->key,
+            label: $this->label,
+            type: $this->resolvedType(),
+            width: $this->resolvedWidth(),
+            sortable: $this->sortableValue(),
+            filter: $this->filterValue(),
+            props: $props === [] ? null : $props,
+        );
+    }
 
     /**
      * The column's type, hydrated from the #[AsColumn] attribute so it is

@@ -109,7 +109,7 @@ final class TableRegistry extends DefinitionRegistry
         }
 
         $column = collect($definition->columns())
-            ->first(fn (Column $column): bool => $column->key === $filterKey);
+            ->first(fn (Column $column): bool => $column->key() === $filterKey);
 
         abort_unless($column instanceof Filterable, Response::HTTP_NOT_FOUND);
         abort_unless($column->filterSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);

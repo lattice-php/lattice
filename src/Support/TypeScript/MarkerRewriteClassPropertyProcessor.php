@@ -17,8 +17,8 @@ use Spatie\TypeScriptTransformer\Visitor\VisitorOperation;
 /**
  * Rewrites any property whose type references the given marker class or interface
  * to a fixed TypeScript node — e.g. the abstract Component base to the Node union,
- * or the ColumnProps marker to a loose record. Such markers have no generated type
- * of their own. The replacement is built per match so nodes are never shared.
+ * or a ChatPart to the ChatNode union. Such markers have no generated type of
+ * their own. The replacement is built per match so nodes are never shared.
  */
 final class MarkerRewriteClassPropertyProcessor implements ClassPropertyProcessor
 {

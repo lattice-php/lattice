@@ -57,12 +57,12 @@ final class BaseProfile implements TypeScriptProfile
                 new ValueObjectTransformer([
                     ...$marked['valueObjects'],
                     ...array_keys($effects),
-                    ...array_values($columnProps),
                 ]),
                 new ComponentTransformer([
                     ...array_keys($formFields),
                     Form::class,
                     ...$this->componentClasses($domainNodes),
+                    ...array_values($columnProps),
                 ]),
             ],
             [
@@ -102,7 +102,9 @@ final class BaseProfile implements TypeScriptProfile
     }
 
     /**
-     * Built-in column props VOs keyed by wire column type.
+     * Built-in column classes keyed by wire column type. A column reflects its
+     * public properties into its props, exactly like a component, so the column
+     * class itself is the source of the generated props type.
      *
      * @param  list<DiscoveredComponent>  $discovered
      * @return array<string, class-string>
@@ -111,13 +113,13 @@ final class BaseProfile implements TypeScriptProfile
     {
         $columns = array_filter(
             $discovered,
-            fn (DiscoveredComponent $dc): bool => $dc->category === 'column' && $dc->propsClass !== null,
+            fn (DiscoveredComponent $dc): bool => $dc->category === 'column',
         );
 
         $map = [];
 
         foreach ($columns as $dc) {
-            $map[$dc->type] = $dc->propsClass;
+            $map[$dc->type] = $dc->class;
         }
 
         return $map;

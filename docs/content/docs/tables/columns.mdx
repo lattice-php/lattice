@@ -19,14 +19,12 @@ TextColumn::make('name')->label('Full name');
 
 <ComponentExample
   php={`TextColumn::make('name')->sortable()->filterable();
-TextColumn::make('price')->numeric()->sortable()->filterable();
-TextColumn::make('featured')->boolean();
+NumberColumn::make('price')->sortable()->filterable();
+BooleanColumn::make('featured');
 TextColumn::make('updated_at')->date('Y-m-d')->sortable();`}
   fixture="table.overview"
 />
 
-- `->numeric()` right-aligns and formats the value as a number.
-- `->boolean()` renders a check or cross instead of the raw value.
 - `->date()` formats a date value; pass a format string such as `->date('Y-m-d H:i')`.
 - `->copyable()` adds a click-to-copy affordance to the cell.
 - `->link('/products/{value}')` renders the value as a link; `{value}` is substituted with the cell
@@ -36,6 +34,19 @@ TextColumn::make('updated_at')->date('Y-m-d')->sortable();`}
 TextColumn::make('email')
     ->link('mailto:{value}')
     ->copyable();
+```
+
+## Boolean & Number columns
+
+`BooleanColumn` and `NumberColumn` are dedicated text-style columns with their own rendering and
+filter type:
+
+- `BooleanColumn` renders a check or cross instead of the raw value, and filters as a boolean.
+- `NumberColumn` right-aligns the column and formats the value as a number, and filters as a number.
+
+```php
+BooleanColumn::make('featured')->sortable()->filterable();
+NumberColumn::make('price')->sortable()->filterable();
 ```
 
 ## Stack column

@@ -1,6 +1,6 @@
 ---
 name: lattice-tables
-description: Use when building or editing Lattice tables — creating EloquentTableDefinition or TableDefinition classes, declaring columns (TextColumn, BadgeColumn, IconColumn, ImageColumn, StackColumn), making columns sortable or filterable, choosing pagination, backing a table with a custom data source, rendering a table on a page with Table::use(), or adding row and bulk actions.
+description: Use when building or editing Lattice tables — creating EloquentTableDefinition or TableDefinition classes, declaring columns (TextColumn, NumberColumn, BooleanColumn, BadgeColumn, IconColumn, ImageColumn, StackColumn), making columns sortable or filterable, choosing pagination, backing a table with a custom data source, rendering a table on a page with Table::use(), or adding row and bulk actions.
 ---
 
 # Building Lattice tables
@@ -14,6 +14,7 @@ For a database-backed table, extend `EloquentTableDefinition` and implement `col
 ```php
 use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
@@ -26,7 +27,7 @@ class ProductsTable extends EloquentTableDefinition
     {
         return [
             TextColumn::make('name')->sortable()->filterable(),
-            TextColumn::make('price')->numeric()->sortable()->filterable(),
+            NumberColumn::make('price')->sortable()->filterable(),
             TextColumn::make('updated_at')->date('Y-m-d')->sortable(),
         ];
     }
@@ -46,7 +47,9 @@ class ProductsTable extends EloquentTableDefinition
 
 Columns live in `Lattice\Lattice\Tables\Columns`. `Column::make('key')` reads `$row['key']`; the label defaults to the humanized key (override with `->label()`).
 
-- **`TextColumn`** — `->numeric()` (right-aligns), `->boolean()` (check/cross), `->date('Y-m-d H:i')`, `->copyable()`, `->link('/products/{value}')` (`{value}` is substituted; pass `external: true` for outbound).
+- **`TextColumn`** — `->date('Y-m-d H:i')`, `->copyable()`, `->link('/products/{value}')` (`{value}` is substituted; pass `external: true` for outbound).
+- **`NumberColumn`** — right-aligns and formats the value as a number; filters as a number.
+- **`BooleanColumn`** — renders a check or cross; filters as a boolean.
 - **`BadgeColumn`** — `->colors(['active' => 'green', 'invited' => 'yellow', 'archived' => 'gray'])`. Colors: `gray`, `red`, `green`, `yellow`, `blue`, `purple`, `orange` (unmapped → gray).
 - **`IconColumn`** — `->icon(Icon::Star)` for one icon, or `->icons(['1' => Icon::Check, '0' => Icon::Minus])`; add `->colors([...])` to tint.
 - **`ImageColumn`** — renders the value as an image URL: `->circular()`, `->size(40)`.

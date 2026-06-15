@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Tables\Columns\BadgeColumn;
+use Lattice\Lattice\Tables\Columns\BooleanColumn;
 use Lattice\Lattice\Tables\Columns\IconColumn;
 use Lattice\Lattice\Tables\Columns\ImageColumn;
+use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
@@ -18,8 +20,8 @@ describe('docs fixtures', function (): void {
                 ->striped(true)
                 ->columns([
                     TextColumn::make('name')->label('Name')->sortable()->filterable(),
-                    TextColumn::make('price')->label('Price')->numeric()->sortable()->filterable(),
-                    TextColumn::make('featured')->label('Featured')->boolean(),
+                    NumberColumn::make('price')->label('Price')->sortable()->filterable(),
+                    BooleanColumn::make('featured')->label('Featured'),
                     TextColumn::make('updated_at')->label('Updated')->date('Y-m-d')->sortable(),
                 ])
                 ->result(

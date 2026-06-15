@@ -8,16 +8,16 @@ use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
-#[AsColumn(ColumnType::Badge, props: BadgeColumnProps::class)]
+#[AsColumn(ColumnType::Badge)]
 class BadgeColumn extends Column implements Filterable, Sortable
 {
     use IsFilterable;
     use IsSortable;
 
     /**
-     * @var array<array-key, string>
+     * @var array<array-key, string>|null
      */
-    protected array $colors = [];
+    public ?array $colors = null;
 
     /**
      * Map cell values to a colour name (gray, red, green, yellow, blue, purple,
@@ -27,22 +27,8 @@ class BadgeColumn extends Column implements Filterable, Sortable
      */
     public function colors(array $colors): static
     {
-        $this->colors = $colors;
+        $this->colors = $colors === [] ? null : $colors;
 
         return $this;
-    }
-
-    #[\Override]
-    public function toData(): ColumnData
-    {
-        return new ColumnData(
-            key: $this->key,
-            label: $this->label,
-            type: $this->resolvedType(),
-            width: $this->resolvedWidth(),
-            sortable: $this->sortableValue(),
-            filter: $this->filterValue(),
-            props: new BadgeColumnProps(colors: $this->colors === [] ? null : $this->colors),
-        );
     }
 }

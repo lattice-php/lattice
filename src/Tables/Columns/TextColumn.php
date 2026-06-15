@@ -9,7 +9,7 @@ use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
-#[AsColumn(ColumnType::Text, props: TextColumnProps::class)]
+#[AsColumn(ColumnType::Text)]
 class TextColumn extends Column implements Filterable, Sortable
 {
     use IsFilterable;
@@ -18,18 +18,14 @@ class TextColumn extends Column implements Filterable, Sortable
     /**
      * @var array{format: string|null}|null
      */
-    protected ?array $date = null;
+    public ?array $date = null;
 
-    protected bool $boolean = false;
-
-    protected bool $numeric = false;
-
-    protected bool $copyable = false;
+    public bool $copyable = false;
 
     /**
      * @var array{href: string|null, external: bool}|null
      */
-    protected ?array $link = null;
+    public ?array $link = null;
 
     public function date(?string $format = null): static
     {
@@ -38,35 +34,9 @@ class TextColumn extends Column implements Filterable, Sortable
         return $this;
     }
 
-    public function boolean(bool $boolean = true): static
-    {
-        $this->boolean = $boolean;
-
-        return $this;
-    }
-
-    public function numeric(bool $numeric = true): static
-    {
-        $this->numeric = $numeric;
-
-        return $this;
-    }
-
     public function filterType(): FilterType
     {
-        if ($this->date !== null) {
-            return FilterType::Date;
-        }
-
-        if ($this->boolean) {
-            return FilterType::Boolean;
-        }
-
-        if ($this->numeric) {
-            return FilterType::Number;
-        }
-
-        return FilterType::Text;
+        return $this->date !== null ? FilterType::Date : FilterType::Text;
     }
 
     public function copyable(bool $copyable = true): static
@@ -84,23 +54,5 @@ class TextColumn extends Column implements Filterable, Sortable
         ];
 
         return $this;
-    }
-
-    #[\Override]
-    public function toData(): ColumnData
-    {
-        return new ColumnData(
-            key: $this->key,
-            label: $this->label,
-            type: $this->resolvedType(),
-            width: $this->resolvedWidth(),
-            sortable: $this->sortableValue(),
-            filter: $this->filterValue(),
-            props: new TextColumnProps(
-                date: $this->date,
-                copyable: $this->copyable,
-                link: $this->link,
-            ),
-        );
     }
 }

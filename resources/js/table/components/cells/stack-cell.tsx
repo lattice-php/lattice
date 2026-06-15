@@ -1,5 +1,5 @@
-import type { TextColumnProps } from "@lattice-php/lattice/types/generated";
 import type { ColumnCellComponent } from "../../registry";
+import type { ColumnPropsOf } from "../../types";
 import { TextCell } from "./text-cell";
 
 /** Renders a stack column's nested columns as stacked text rows. */
@@ -9,7 +9,7 @@ export const StackCell: ColumnCellComponent<"stack"> = ({ column, row }) => (
       <span key={stackedColumn.key}>
         <TextCell
           column={stackedColumn}
-          props={(stackedColumn.props ?? {}) as TextColumnProps}
+          props={(stackedColumn.props ?? {}) as ColumnPropsOf<"text">}
           row={row}
           value={row[stackedColumn.key]}
         />

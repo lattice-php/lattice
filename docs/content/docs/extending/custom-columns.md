@@ -32,58 +32,49 @@ The derived type string is `column.status-badge`. Pass `--type=` to override it.
 
 ## 3. The generated PHP class
 
+A column reflects its **public** properties into its wire props — exactly like a component — so there
+is no `toData()` and no separate props class to maintain.
+
 ```php
 <?php
 
 namespace App\Tables\Columns;
 
-use Lattice\Lattice\Attributes\Component;
+use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Columns\ColumnData;
 
-#[Component('column.status-badge')]
+#[AsColumn(type: 'column.status-badge')]
 class StatusBadge extends Column
 {
-    public function toData(): ColumnData
-    {
-        return new ColumnData(
-            key: $this->key,
-            label: $this->label,
-            type: 'column.status-badge',
-            props: [],
-        );
-    }
+    // Add public properties here; they are reflected into the column's
+    // TypeScript props and passed to the cell renderer. Keep internal state
+    // (filter flags, helpers) protected so it stays off the wire.
 }
 ```
 
-Add public properties for anything the cell renderer needs at render time. For example, a colour map that controls which status gets which colour:
+Add a **public** property for anything the cell renderer needs at render time, and a fluent setter for
+it. For example, a colour map that controls which status gets which colour:
 
 ```php
-#[Component('column.status-badge')]
+#[AsColumn(type: 'column.status-badge')]
 class StatusBadge extends Column
 {
-    /** @var array<string, string> */
-    protected array $colorMap = [];
+    /** @var array<string, string>|null */
+    public ?array $colorMap = null;
 
     /** @param array<string, string> $colorMap */
     public function colorMap(array $colorMap): static
     {
-        $this->colorMap = $colorMap;
+        $this->colorMap = $colorMap === [] ? null : $colorMap;
 
         return $this;
     }
-
-    public function toData(): ColumnData
-    {
-        return new ColumnData(
-            key: $this->key,
-            label: $this->label,
-            type: 'column.status-badge',
-            props: $this->colorMap !== [] ? ['colorMap' => $this->colorMap] : null,
-        );
-    }
 }
 ```
+
+`colorMap` is public, so it lands in the column's `props`; declaring it nullable keeps the wire shape
+honest (it is `null` until set). Internal state a cell never reads — filter flags, cached lookups —
+stays `protected` so reflection leaves it off the wire.
 
 ## 4. The generated React cell renderer
 
