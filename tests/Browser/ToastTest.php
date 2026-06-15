@@ -8,6 +8,7 @@ it('shows a toast after an action and dismisses it', function (): void {
     Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
     visit('/products')
+        ->click('@product-actions')
         ->click('@action-archive')
         ->click('@confirm-accept')
         ->assertSee('Product archived.')
@@ -21,6 +22,7 @@ it('renders a link inside a toast', function (): void {
     Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
     visit('/products')
+        ->click('@product-actions')
         ->click('@action-archive')
         ->click('@confirm-accept')
         ->assertSee('Product archived.')
@@ -34,10 +36,12 @@ it('opens a modal form from a toast action', function (): void {
     $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
     visit('/products')
+        ->click('@product-actions')
         ->click('@action-edit-modal')
         ->assertValue('#name', 'Desk Lamp')
         ->click('@action-form-submit')
         ->assertSee('Product updated.')
+        ->click('@product-actions')
         ->click('@action-reject')
         ->assertSee('Reject product?')
         ->fill('@reason', 'Counterfeit listing')

@@ -5,6 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@lattice-php/lattice/core/components/dropdown-menu";
+import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 
@@ -35,6 +36,7 @@ const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, nod
           <Button
             aria-label={label}
             className="size-8 text-lt-muted-fg shadow-none hover:text-lt-fg"
+            data-test={nodeIdentity(node)}
             size="icon"
             type="button"
             variant="ghost"
