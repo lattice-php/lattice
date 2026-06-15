@@ -5,20 +5,31 @@ import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 import { setLocale } from "@lattice-php/lattice/i18n/locale";
 
 /**
- * Augmentable map of effect `type` → effect shape. Consumer apps extend it via
- * `declare module "@lattice-php/lattice"` so their custom effects type their
- * handler's payload; built-ins resolve through the generated `Effect` union.
+ * Augmentable map of effect `type` → payload (the effect's fields minus `type`).
+ * Consumer apps extend it via `declare module "@lattice-php/lattice"` so their
+ * custom effects type their handler's payload; built-ins resolve through the
+ * generated `Effect` union.
  */
 export interface EffectProps {}
 
-// The generated built-in effects, keyed by their `type` discriminant.
-type EffectMap = { [TEffect in Effect as TEffect["type"]]: TEffect };
+// The generated built-in effect payloads, keyed by `type` (the discriminant stripped).
+type EffectPayloads = { [TEffect in Effect as TEffect["type"]]: Omit<TEffect, "type"> };
+
+type EffectPayloadOf<TType extends string> = ResolveProps<
+  EffectProps,
+  EffectPayloads,
+  TType,
+  Record<string, unknown>
+>;
 
 /**
- * Resolves an effect `type` to its shape: consumer augmentations (`EffectProps`)
- * first, then the generated built-ins, then the loose `Effect` union.
+ * Resolves an effect `type` to its full shape — `{ type, ...payload }` — the way
+ * `Node<T>` pairs a type with its props, so built-ins and consumer effects alike
+ * always carry `type`. An unknown type falls back to the loose `Effect` union.
  */
-export type EffectOf<TType extends string> = ResolveProps<EffectProps, EffectMap, TType, Effect>;
+export type EffectOf<TType extends string> = string extends TType
+  ? Effect
+  : { type: TType } & EffectPayloadOf<TType>;
 
 export type EffectHandler<TType extends string = string> = (effect: EffectOf<TType>) => void;
 
@@ -33,7 +44,7 @@ export function effectHandler<TType extends string>(
   _type: TType,
   fn: EffectHandler<TType>,
 ): EffectHandler {
-  return fn as EffectHandler;
+  return fn as unknown as EffectHandler;
 }
 
 function triggerDownload(url: string): void {
