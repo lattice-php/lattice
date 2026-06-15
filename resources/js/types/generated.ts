@@ -203,11 +203,13 @@ export type CloseModalEffect = {
   readonly modal: string | null;
 };
 export type Color = "default" | "muted" | "primary" | "success" | "info" | "warning" | "danger";
+export type ColumnAlign = "start" | "center" | "end";
 export type ColumnData = {
   readonly key: string;
   readonly label: string;
   readonly type: ColumnType | string;
   readonly width: ColumnWidth;
+  readonly align: ColumnAlign;
   readonly sortable: boolean | null;
   readonly filter: ColumnFilter | null;
   readonly columns: ColumnData[] | null;
@@ -228,10 +230,19 @@ export type ColumnPropsMap = {
   boolean: BooleanColumn;
   icon: IconColumn;
   image: ImageColumn;
+  money: MoneyColumn;
   number: NumberColumn;
   text: TextColumn;
 };
-export type ColumnType = "text" | "boolean" | "number" | "stack" | "badge" | "icon" | "image";
+export type ColumnType =
+  | "text"
+  | "boolean"
+  | "number"
+  | "money"
+  | "stack"
+  | "badge"
+  | "icon"
+  | "image";
 export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type Condition = {
   readonly field: string;
@@ -693,6 +704,12 @@ export type Modal = {
   ref: string | null;
   title: string | null;
 };
+export type MoneyColumn = {
+  currency: string | null;
+  currencyField: string | null;
+  maximumFractionDigits: number | null;
+  minimumFractionDigits: number | null;
+};
 export type Node =
   | FormNode
   | CoreNode
@@ -702,7 +719,27 @@ export type Node =
   | LayoutNode
   | ChatNode;
 export type NodeType = Node["type"];
-export type NumberColumn = Record<string, never>;
+export type NumberColumn = {
+  maximumFractionDigits: number | null;
+  minimumFractionDigits: number | null;
+  unit: NumberFormatUnit | null;
+};
+export type NumberFormatUnit =
+  | "percent"
+  | "kilogram"
+  | "gram"
+  | "kilometer"
+  | "meter"
+  | "byte"
+  | "kilobyte"
+  | "megabyte"
+  | "gigabyte"
+  | "millisecond"
+  | "second"
+  | "minute"
+  | "hour"
+  | "celsius"
+  | "fahrenheit";
 export type NumberInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
