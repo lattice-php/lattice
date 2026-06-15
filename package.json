@@ -20,7 +20,9 @@
     "server-driven-ui"
   ],
   "sideEffects": [
-    "**/*.css"
+    "**/*.css",
+    "**/chat/parts/*",
+    "**/lattice/chat-parts.tsx"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -119,6 +121,7 @@
     "docs:preview": "astro preview"
   },
   "dependencies": {
+    "@lattice-php/vite-svg-sprite": "^0.2.1",
     "@radix-ui/react-checkbox": "^1.1.4",
     "@radix-ui/react-dialog": "^1.1.16",
     "@radix-ui/react-label": "^2.1.2",
@@ -133,7 +136,6 @@
     "@tiptap/pm": "^3.26.0",
     "@tiptap/react": "^3.26.0",
     "@tiptap/starter-kit": "^3.26.0",
-    "@lattice-php/vite-svg-sprite": "^0.2.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "i18next": "^26.3.1",

@@ -122,6 +122,13 @@ export type Card = {
   description: string | null;
   title: string | null;
 };
+export type ChatWindow = {
+  conversationId: string | null;
+  historyEndpoint: string | null;
+  placeholder: string | null;
+  streamEndpoint: string | null;
+  title: string | null;
+};
 export type Checkbox = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
@@ -230,6 +237,11 @@ export type CoreNode =
       key?: string;
       props: Card;
       schema?: Node[];
+    }
+  | {
+      type: "chat.window";
+      key?: string;
+      props: ChatWindow;
     }
   | {
       type: "floating-panel";

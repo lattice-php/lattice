@@ -1,0 +1,65 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Workbench\App\Chat;
+
+use Illuminate\Contracts\Session\Session;
+
+final class FakeConversationStore
+{
+    private const SESSION_KEY = 'workbench.chat.conversation';
+
+    public function __construct(private readonly Session $session) {}
+
+    /**
+     * @return array<int, array{id: string, role: string, parts: array<int, array<string, mixed>>}>
+     */
+    public function messages(): array
+    {
+        if (! $this->session->has(self::SESSION_KEY)) {
+            $this->session->put(self::SESSION_KEY, $this->seed());
+        }
+
+        return $this->session->get(self::SESSION_KEY, []);
+    }
+
+    /**
+     * @param  array{id: string, role: string, parts: array<int, array<string, mixed>>}  $message
+     */
+    public function append(array $message): void
+    {
+        $messages = $this->messages();
+        $messages[] = $message;
+
+        $this->session->put(self::SESSION_KEY, $messages);
+    }
+
+    public function reset(): void
+    {
+        $this->session->forget(self::SESSION_KEY);
+    }
+
+    /**
+     * @return array<int, array{id: string, role: string, parts: array<int, array<string, mixed>>}>
+     */
+    private function seed(): array
+    {
+        return [
+            [
+                'id' => 'seed-user',
+                'role' => 'user',
+                'parts' => [
+                    ['type' => 'text', 'text' => 'What can you help me with?'],
+                ],
+            ],
+            [
+                'id' => 'seed-assistant',
+                'role' => 'assistant',
+                'parts' => [
+                    ['type' => 'text', 'text' => 'I can answer questions about this workbench and look things up for you.'],
+                ],
+            ],
+        ];
+    }
+}

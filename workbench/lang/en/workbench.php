@@ -2,6 +2,10 @@
 declare(strict_types=1);
 
 return [
+    'assistant' => [
+        'placeholder' => 'Ask the assistant…',
+        'title' => 'Assistant',
+    ],
     'commerce' => [
         'business-partners' => [
             'actions' => [

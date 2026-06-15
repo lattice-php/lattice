@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Components\ActionGroup;
 use Lattice\Lattice\Attributes\Layout;
+use Lattice\Lattice\Core\Components\ChatWindow;
 use Lattice\Lattice\Core\Components\FloatingPanel;
 use Lattice\Lattice\Core\Components\RawBlock;
 use Lattice\Lattice\Core\Components\Stack;
@@ -113,6 +114,7 @@ final class AppLayout extends LayoutDefinition
                         ->schema([
                             Breadcrumbs::make(),
                             Outlet::make(),
+                            RawBlock::make('chat-scroll-clearance')->html('<div class="h-24" aria-hidden="true"></div>'),
                         ]),
                 ]),
             FloatingPanel::make('locale-switcher-panel')
@@ -134,6 +136,15 @@ final class AppLayout extends LayoutDefinition
                                 ->variant($locale === 'de' ? ButtonVariant::Secondary : ButtonVariant::Ghost)
                                 ->context(['locale' => 'de']),
                         ]),
+                ]),
+            FloatingPanel::make('assistant-chat')
+                ->placement(FloatingPlacement::BottomEnd)
+                ->schema([
+                    ChatWindow::make('assistant')
+                        ->streamEndpoint('/workbench/chat/stream')
+                        ->historyEndpoint('/workbench/chat/history')
+                        ->title(__('workbench.assistant.title'))
+                        ->placeholder(__('workbench.assistant.placeholder')),
                 ]),
         ]);
     }
