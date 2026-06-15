@@ -19,6 +19,7 @@
             "readOnly": false,
             "required": true,
             "tabIndex": null,
+            "tooltip": null,
             "type": null,
             "value": null
         },

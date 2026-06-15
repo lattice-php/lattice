@@ -24,6 +24,7 @@
                             "required": true,
                             "rows": null,
                             "tabIndex": null,
+                            "tooltip": null,
                             "value": null
                         },
                         "type": "form.textarea"
@@ -54,6 +55,7 @@
                             "readOnly": false,
                             "required": true,
                             "tabIndex": null,
+                            "tooltip": null,
                             "type": null,
                             "value": null
                         },
@@ -79,6 +81,7 @@
                             "readOnly": false,
                             "required": false,
                             "tabIndex": null,
+                            "tooltip": null,
                             "type": null,
                             "value": null
                         },
@@ -104,6 +107,7 @@
                             "readOnly": false,
                             "required": false,
                             "tabIndex": null,
+                            "tooltip": null,
                             "type": null,
                             "value": null
                         },
@@ -137,6 +141,7 @@
             "resizableColumns": false,
             "resizeIndicator": false,
             "rowActions": null,
+            "tooltip": null,
             "value": null
         },
         "type": "form.builder"
