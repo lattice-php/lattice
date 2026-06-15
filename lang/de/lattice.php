@@ -33,6 +33,7 @@ return [
         'removeOption' => ':label entfernen',
         'tabs' => 'Tabs',
         'loading' => 'Lädt',
+        'moreInfo' => 'Mehr Informationen',
         'closeMenu' => 'Menü schließen',
         'dismiss' => 'Schließen',
         'close' => 'Schließen',
