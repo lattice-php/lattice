@@ -17,12 +17,3 @@ export function xsrfToken(): string {
 
   return match ? decodeURIComponent(match[1]) : "";
 }
-
-export function jsonPostHeaders(accept: string): Record<string, string> {
-  return {
-    "Content-Type": "application/json",
-    Accept: accept,
-    "X-Requested-With": "XMLHttpRequest",
-    "X-XSRF-TOKEN": xsrfToken(),
-  };
-}

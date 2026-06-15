@@ -1,4 +1,4 @@
-import { withHeaders } from "@lattice-php/lattice/core/headers";
+import { apiFetch, apiJson } from "@lattice-php/lattice/core/api";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Option } from "@lattice-php/lattice/types/generated";
@@ -38,12 +38,9 @@ export function useTable(node: TableNode) {
       setProcessing(true);
 
       try {
-        const response = await fetch(buildEndpoint(endpoint, nextState), {
-          headers: withHeaders(componentRef, {
-            Accept: "application/json",
-          }),
+        const result = await apiJson<TableResponse>(buildEndpoint(endpoint, nextState), {
+          ref: componentRef,
         });
-        const result = (await response.json()) as TableResponse;
         const resultState = getState(result.state);
         const resultRows = getRows(result.data);
 
@@ -125,8 +122,9 @@ export function useTable(node: TableNode) {
       url.searchParams.set("_search", filterKey);
       url.searchParams.set("q", query);
 
-      const response = await fetch(`${url.pathname}${url.search}`, {
-        headers: withHeaders(componentRef, { Accept: "application/json" }),
+      const response = await apiFetch(`${url.pathname}${url.search}`, {
+        ref: componentRef,
+        throwOnError: false,
       });
 
       if (!response.ok) {

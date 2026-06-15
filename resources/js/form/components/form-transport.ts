@@ -4,12 +4,10 @@
  * CSRF header, component-ref header, and request shape live here in one place.
  */
 
-import { jsonPostHeaders, withHeaders, xsrfToken } from "@lattice-php/lattice/core/headers";
+import { apiFetch } from "@lattice-php/lattice/core/api";
 import { ROW_ID_KEY } from "./fields/repeater-rows";
 
 export const FORM_DEBOUNCE_MS = 250;
-
-export { xsrfToken };
 
 function scrubFormPayload(value: unknown): unknown {
   if (Array.isArray(value)) {
@@ -38,11 +36,11 @@ export function postFormAction<T>(
   body: Record<string, unknown>,
   signal: AbortSignal,
 ): Promise<T | null> {
-  return fetch(action, {
+  return apiFetch(action, {
     method: "POST",
-    credentials: "same-origin",
+    ref: componentRef,
     signal,
-    headers: withHeaders(componentRef, jsonPostHeaders("application/json")),
     body: JSON.stringify(scrubFormPayload(body)),
+    throwOnError: false,
   }).then((response) => (response.ok ? (response.json() as Promise<T>) : null));
 }

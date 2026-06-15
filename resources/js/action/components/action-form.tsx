@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { withHeaders } from "@lattice-php/lattice/core/headers";
+import { apiFetch } from "@lattice-php/lattice/core/api";
 import { Button } from "@lattice-php/lattice/core/components/button";
 import { Dialog, DialogContent, DialogHeader } from "@lattice-php/lattice/core/components/dialog";
 import { Skeleton } from "@lattice-php/lattice/core/components/skeleton";
@@ -8,7 +8,7 @@ import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer
 import type { Node } from "@lattice-php/lattice/core/types";
 import { FormProvider } from "@lattice-php/lattice/form/components/context";
 import { walkFields } from "@lattice-php/lattice/form/components/field-props";
-import { FORM_DEBOUNCE_MS, xsrfToken } from "@lattice-php/lattice/form/components/form-transport";
+import { FORM_DEBOUNCE_MS } from "@lattice-php/lattice/form/components/form-transport";
 import { PrefillProvider } from "@lattice-php/lattice/form/components/prefill-context";
 import { ResolvedNodesProvider } from "@lattice-php/lattice/form/components/resolved-nodes";
 import { useFormResolver } from "@lattice-php/lattice/form/components/use-form-resolver";
@@ -35,16 +35,6 @@ type ActionFormProps = {
   title: string;
 };
 
-function jsonHeaders(componentRef: string, extra?: Record<string, string>): Record<string, string> {
-  return withHeaders(componentRef, {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    "X-Requested-With": "XMLHttpRequest",
-    "X-XSRF-TOKEN": xsrfToken(),
-    ...extra,
-  });
-}
-
 /**
  * Fetch a lazily-served form schema from the action endpoint while `enabled`,
  * so it can be prefilled per record. Returns null until it arrives.
@@ -66,12 +56,12 @@ export function useLazyActionForm(
 
     const controller = new AbortController();
 
-    void fetch(endpoint, {
+    void apiFetch(endpoint, {
       body: JSON.stringify({ _form: true }),
-      credentials: "same-origin",
-      headers: jsonHeaders(componentRef),
+      ref: componentRef,
       method: method.toUpperCase(),
       signal: controller.signal,
+      throwOnError: false,
     })
       .then((response) => (response.ok ? (response.json() as Promise<Node>) : null))
       .then((fetched) => setNode(fetched))
@@ -165,13 +155,14 @@ function ActionFormBody({
 
   const request = useCallback(
     (extraHeaders?: Record<string, string>): Promise<Response> =>
-      fetch(endpoint, {
+      apiFetch(endpoint, {
         body: JSON.stringify({ ...valuesRef.current, ...extraDataRef.current }),
-        credentials: "same-origin",
         // fetch only upper-cases the standardized methods, leaving PATCH/DELETE as
         // given; some servers reject a lower-case method line, so normalize it.
         method: method.toUpperCase(),
-        headers: jsonHeaders(componentRef, extraHeaders),
+        ref: componentRef,
+        headers: extraHeaders,
+        throwOnError: false,
       }),
     [componentRef, endpoint, method],
   );

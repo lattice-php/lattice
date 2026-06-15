@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { apiFetch } from "@lattice-php/lattice/core/api";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { Button } from "@lattice-php/lattice/core/components/button";
@@ -27,11 +28,7 @@ export const ChatWindow: RendererComponent<"chat.window"> = ({ node }) => {
 
     seededRef.current = true;
 
-    const response = await fetch(historyEndpoint, {
-      method: "GET",
-      credentials: "same-origin",
-      headers: { Accept: "application/json" },
-    });
+    const response = await apiFetch(historyEndpoint, { throwOnError: false });
 
     if (!response.ok) {
       return;

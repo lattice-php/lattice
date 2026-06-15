@@ -150,6 +150,7 @@ describe("Lattice modal and fragment components", () => {
     });
 
     expect(fetch).toHaveBeenCalledWith("/lattice/fragments/settings.two-factor-setup", {
+      credentials: "same-origin",
       headers: {
         Accept: "application/json",
         "Accept-Language": "en",

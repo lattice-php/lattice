@@ -1,4 +1,4 @@
-import { jsonPostHeaders, withHeaders } from "../core/headers";
+import { apiFetch } from "../core/api";
 import type { ChatFrame, ChatTransportRequest } from "./types";
 
 function parseFrame(line: string): ChatFrame | null {
@@ -14,12 +14,12 @@ export async function* ndjsonChatTransport({
   body,
   signal,
 }: ChatTransportRequest): AsyncGenerator<ChatFrame> {
-  const res = await fetch(url, {
+  const res = await apiFetch(url, {
     method: "POST",
-    credentials: "same-origin",
     signal,
-    headers: withHeaders(undefined, jsonPostHeaders("application/x-ndjson")),
+    headers: { Accept: "application/x-ndjson" },
     body: JSON.stringify(body),
+    throwOnError: false,
   });
 
   if (!res.ok || !res.body) {
