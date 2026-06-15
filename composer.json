@@ -34,7 +34,7 @@
         "ueberdosis/tiptap-php": "^2.1"
     },
     "require-dev": {
-        "bambamboole/extended-faker": "^0.6.1",
+        "bambamboole/extended-faker": "^0.7.0",
         "bambamboole/laravel-i18next": "^0.6.0",
         "barryvdh/laravel-ide-helper": "^3.7",
         "larastan/larastan": "^3.0",
@@ -116,5 +116,10 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [{
+        "name": "extended-faker",
+        "type": "vcs",
+        "url": "https://github.com/bambamboole/extended-faker.git"
+    }]
 }

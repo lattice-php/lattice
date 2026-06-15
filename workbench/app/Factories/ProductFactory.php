@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Factories;
 
+use Bambamboole\ExtendedFaker\Dto\ImageDto;
 use Bambamboole\ExtendedFaker\Dto\ProductDto;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Storage;
@@ -11,8 +12,6 @@ use Workbench\App\Models\File;
 use Workbench\App\Models\Group;
 use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesPrice;
-
-use function Orchestra\Testbench\package_path;
 
 /**
  * @extends Factory<Product>
@@ -53,7 +52,7 @@ class ProductFactory extends Factory
             for ($sortOrder = 1; $sortOrder <= $count; $sortOrder++) {
                 $image = $this->fakeProduct()->image;
 
-                if ($image === '') {
+                if (! $image instanceof ImageDto) {
                     continue;
                 }
 
@@ -92,16 +91,16 @@ class ProductFactory extends Factory
         return $product;
     }
 
-    private function createImageFile(Product $product, string $image, int $sortOrder): File
+    private function createImageFile(Product $product, ImageDto $image, int $sortOrder): File
     {
-        $source = package_path('vendor/bambamboole/extended-faker/resources/'.$image);
-        $contents = file_get_contents($source);
+        $contents = file_get_contents($image->absolutePath);
 
         if ($contents === false) {
-            throw new RuntimeException("Unable to read product image fixture [{$image}].");
+            throw new RuntimeException("Unable to read product image fixture [{$image->path}].");
         }
 
-        $name = $product->sku.'-'.$sortOrder.'.webp';
+        $extension = pathinfo($image->path, PATHINFO_EXTENSION) ?: 'webp';
+        $name = $product->sku.'-'.$sortOrder.'.'.$extension;
         $path = 'workbench/products/'.$name;
 
         Storage::disk('s3')->put($path, $contents, 'public');
@@ -110,8 +109,8 @@ class ProductFactory extends Factory
             'disk' => 's3',
             'path' => $path,
             'name' => $name,
-            'mime_type' => 'image/webp',
-            'size' => strlen($contents),
+            'mime_type' => $image->mimeType,
+            'size' => $image->size,
         ]);
     }
 
