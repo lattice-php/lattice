@@ -82,7 +82,7 @@ class ProductFactory extends Factory
 
     private function fakeProduct(): ProductDto
     {
-        $product = fake()->format('product');
+        $product = $this->faker->format('product');
 
         if (! $product instanceof ProductDto) {
             throw new RuntimeException('Extended Faker product must return a product DTO.');

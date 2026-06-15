@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Workbench\App\Providers;
 
 use Bambamboole\ExtendedFaker\ExtendedFaker;
-use Bambamboole\ExtendedFaker\Providers\Product as ProductProvider;
 use Faker\Generator;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -26,6 +25,8 @@ use function Orchestra\Testbench\package_path;
 
 class WorkbenchServiceProvider extends ServiceProvider
 {
+    private const FAKER_LOCALE = 'en_US';
+
     #[\Override]
     public function register(): void
     {
@@ -33,6 +34,7 @@ class WorkbenchServiceProvider extends ServiceProvider
             package_path('workbench/app'),
         ]]);
         config(['auth.providers.users.model' => User::class]);
+        config(['app.faker_locale' => self::FAKER_LOCALE]);
 
         $this->keepLatticeEndpointsPublic();
 
@@ -44,36 +46,13 @@ class WorkbenchServiceProvider extends ServiceProvider
         $this->registerExtendedFaker();
     }
 
-    /**
-     * Enrich Faker with realistic product data for factories and seeders in dev.
-     */
     private function registerExtendedFaker(): void
     {
-        $this->app->resolving(Generator::class, function (Generator $faker): void {
-            $this->extendFaker($faker);
+        $this->app->extend(Generator::class, function (Generator $faker): Generator {
+            ExtendedFaker::extend($faker, (string) config('app.faker_locale', self::FAKER_LOCALE));
+
+            return $faker;
         });
-    }
-
-    private function extendFaker(Generator $faker): void
-    {
-        foreach ($faker->getProviders() as $provider) {
-            if ($provider instanceof ProductProvider) {
-                return;
-            }
-        }
-
-        ExtendedFaker::extend($faker, $this->fakerLocale($faker));
-    }
-
-    private function fakerLocale(Generator $faker): string
-    {
-        foreach ($faker->getProviders() as $provider) {
-            if (preg_match('/\\\\Provider\\\\([a-z]{2}_[A-Z]{2})\\\\/', $provider::class, $matches) === 1) {
-                return $matches[1];
-            }
-        }
-
-        return (string) config('app.faker_locale', 'en_US');
     }
 
     /**
