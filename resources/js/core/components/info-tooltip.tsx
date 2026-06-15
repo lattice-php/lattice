@@ -2,11 +2,6 @@ import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-/**
- * A clickable info icon that opens a popover with trusted, developer-authored
- * HTML. Content is rendered verbatim (no sanitization) — the same trust
- * boundary as raw-block.tsx. Renders nothing when content is empty.
- */
 export function InfoTooltip({ content }: { content?: string | null }) {
   const { t } = useT("lattice");
 
