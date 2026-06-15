@@ -101,4 +101,11 @@ return [
         'duplicate' => 'Duplizieren',
         'remove' => 'Entfernen',
     ],
+    'chat' => [
+        'launcher' => 'Chat',
+        'title' => 'Chat',
+        'close' => 'Schließen',
+        'send' => 'Senden',
+        'input-label' => 'Nachrichteneingabe',
+    ],
 ];

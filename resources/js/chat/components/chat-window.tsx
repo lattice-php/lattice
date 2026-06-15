@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { Button } from "@lattice-php/lattice/core/components/button";
+import { useT } from "@lattice-php/lattice/i18n";
 import { useChat } from "../use-chat";
 import type { ChatMessage } from "../types";
 import { MessageList } from "./message-list";
@@ -11,6 +12,7 @@ type ChatHistoryResponse = { messages: ChatMessage[] };
 
 export const ChatWindow: RendererComponent<"chat.window"> = ({ node }) => {
   const { streamEndpoint, historyEndpoint, placeholder, title } = node.props;
+  const { t } = useT("lattice");
   const [open, setOpen] = useState(false);
   const { messages, status, sendMessage, setMessages } = useChat({
     endpoint: streamEndpoint ?? "",
@@ -56,7 +58,7 @@ export const ChatWindow: RendererComponent<"chat.window"> = ({ node }) => {
         type="button"
         variant="default"
       >
-        Chat
+        {t("chat.launcher", "Chat")}
       </Button>
     );
   }
@@ -67,7 +69,7 @@ export const ChatWindow: RendererComponent<"chat.window"> = ({ node }) => {
       data-test={testIdentity("chat-panel")}
     >
       <div className="flex items-center justify-between border-b border-lt-border px-3 py-2">
-        <span className="text-sm font-medium text-lt-fg">{title ?? "Chat"}</span>
+        <span className="text-sm font-medium text-lt-fg">{title ?? t("chat.title", "Chat")}</span>
         <Button
           data-test={testIdentity("chat-close")}
           onClick={() => setOpen(false)}
@@ -75,7 +77,7 @@ export const ChatWindow: RendererComponent<"chat.window"> = ({ node }) => {
           type="button"
           variant="ghost"
         >
-          Close
+          {t("chat.close", "Close")}
         </Button>
       </div>
       <div className="flex-1 overflow-y-auto">

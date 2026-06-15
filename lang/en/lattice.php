@@ -101,4 +101,11 @@ return [
         'duplicate' => 'Duplicate',
         'remove' => 'Remove',
     ],
+    'chat' => [
+        'launcher' => 'Chat',
+        'title' => 'Chat',
+        'close' => 'Close',
+        'send' => 'Send',
+        'input-label' => 'Message input',
+    ],
 ];

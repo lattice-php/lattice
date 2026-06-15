@@ -3,6 +3,7 @@ import type { KeyboardEvent, ReactNode } from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import { Button } from "@lattice-php/lattice/core/components/button";
+import { useT } from "@lattice-php/lattice/i18n";
 
 type PromptInputProps = {
   onSubmit: (text: string) => void;
@@ -15,6 +16,7 @@ export function PromptInput({
   disabled = false,
   placeholder,
 }: PromptInputProps): ReactNode {
+  const { t } = useT("lattice");
   const [value, setValue] = useState("");
 
   function submit(): void {
@@ -37,7 +39,7 @@ export function PromptInput({
   return (
     <div className="flex items-end gap-2 border-t border-lt-border p-3">
       <textarea
-        aria-label="Message input"
+        aria-label={t("chat.input-label", "Message input")}
         className={cn(
           "min-h-[2.5rem] flex-1 resize-none rounded-lt-sm border border-lt-input bg-lt-bg px-3 py-2 text-sm text-lt-fg placeholder:text-lt-muted-fg focus:outline-none focus:ring-1 focus:ring-lt-ring disabled:opacity-50",
         )}
@@ -57,7 +59,7 @@ export function PromptInput({
         type="button"
         variant="default"
       >
-        Send
+        {t("chat.send", "Send")}
       </Button>
     </div>
   );
