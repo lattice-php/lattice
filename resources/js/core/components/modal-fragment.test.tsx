@@ -67,6 +67,34 @@ describe("Lattice modal and fragment components", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
+  it("shows a skeleton while a lazy fragment is loading", () => {
+    const fetch = vi.fn<() => Promise<Response>>(() => new Promise<Response>(() => {}));
+    vi.stubGlobal("fetch", fetch);
+
+    const { components: registry } = createRegistry({
+      components: {
+        fragment: eagerComponent(FragmentComponent),
+        text: eagerComponent(TextComponent),
+      },
+      name: "test/fragment",
+    });
+
+    const { container } = render(
+      <Renderer
+        nodes={[
+          {
+            id: "settings.two-factor-setup",
+            props: { endpoint: "/lattice/fragments/settings.two-factor-setup", lazy: true },
+            type: "fragment",
+          },
+        ]}
+        registry={registry}
+      />,
+    );
+
+    expect(container.querySelector('[data-slot="skeleton"]')).not.toBeNull();
+  });
+
   it("loads fragment schemas and renders them with the current registry", async () => {
     const fetch = vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>();
 
