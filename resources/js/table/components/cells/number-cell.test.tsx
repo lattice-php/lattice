@@ -36,7 +36,8 @@ describe("NumberCell", () => {
     expect(renderCell("n/a").container.textContent).toBe("n/a");
   });
 
-  it("renders empty for null", () => {
+  it("renders empty for null and undefined", () => {
     expect(renderCell(null).container.textContent).toBe("");
+    expect(renderCell(undefined).container.textContent).toBe("");
   });
 });

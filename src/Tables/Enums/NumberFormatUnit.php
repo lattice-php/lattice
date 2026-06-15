@@ -6,8 +6,7 @@ namespace Lattice\Lattice\Tables\Enums;
 use Lattice\Lattice\Attributes\TypeScript;
 
 /**
- * The subset of Intl.NumberFormat sanctioned units Lattice exposes. Backed
- * values are the exact Intl unit identifiers the client passes through.
+ * The subset of Intl.NumberFormat sanctioned units Lattice exposes.
  */
 #[TypeScript]
 enum NumberFormatUnit: string

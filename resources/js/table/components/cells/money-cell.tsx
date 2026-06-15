@@ -1,18 +1,18 @@
 import { useLocale } from "@lattice-php/lattice/i18n";
 import { formatCell } from "../../format";
 import type { ColumnCellComponent } from "../../registry";
+import { numericValue } from "./numeric";
 
 export const MoneyCell: ColumnCellComponent<"money"> = ({ column, props, row, value }) => {
   const { locale } = useLocale();
-  const number = typeof value === "number" ? value : Number(value);
-  const isNumeric = value !== null && value !== undefined && value !== "" && !Number.isNaN(number);
+  const number = numericValue(value);
 
-  if (!isNumeric) {
+  if (number === null) {
     return <span>{formatCell(value, column)}</span>;
   }
 
-  const code =
-    props.currency ?? (props.currencyField ? String(row[props.currencyField] ?? "") : "");
+  const rawCode = props.currencyField ? row[props.currencyField] : undefined;
+  const code = props.currency ?? (typeof rawCode === "string" ? rawCode : "");
   const fractionDigits = {
     minimumFractionDigits: props.minimumFractionDigits ?? undefined,
     maximumFractionDigits: props.maximumFractionDigits ?? undefined,

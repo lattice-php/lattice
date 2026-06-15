@@ -8,5 +8,9 @@ describe("column align classes", () => {
     expect(alignText("end")).toBe("text-end");
     expect(alignJustify("end")).toBe("justify-end");
     expect(alignJustifyItems("end")).toBe("justify-items-end");
+    expect(alignJustify("start")).toBe("justify-start");
+    expect(alignJustify("center")).toBe("justify-center");
+    expect(alignJustifyItems("start")).toBe("justify-items-start");
+    expect(alignJustifyItems("center")).toBe("justify-items-center");
   });
 });

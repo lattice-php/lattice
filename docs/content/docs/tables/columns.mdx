@@ -52,6 +52,9 @@ and filter type:
   default to `End`.
 
 ```php
+use Lattice\Lattice\Tables\Enums\ColumnAlign;
+use Lattice\Lattice\Tables\Enums\NumberFormatUnit;
+
 NumberColumn::make('progress')->unit(NumberFormatUnit::Percent);
 MoneyColumn::make('total')->currencyField('currency');
 ```
