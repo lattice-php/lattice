@@ -3,10 +3,16 @@ declare(strict_types=1);
 
 namespace Workbench\App\Factories;
 
+use Bambamboole\ExtendedFaker\Dto\ProductDto;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Storage;
 use RuntimeException;
+use Workbench\App\Models\File;
+use Workbench\App\Models\Group;
 use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesPrice;
+
+use function Orchestra\Testbench\package_path;
 
 /**
  * @extends Factory<Product>
@@ -20,23 +26,14 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $product = $this->fakeProduct();
+
         return [
-            'name' => $this->productName(),
+            'name' => $product->name,
             'sku' => fake()->unique()->bothify('PRD-####'),
             'status' => fake()->randomElement(['draft', 'active', 'archived']),
             'featured' => fake()->boolean(),
         ];
-    }
-
-    private function productName(): string
-    {
-        $name = fake()->format('productName');
-
-        if (! is_string($name)) {
-            throw new RuntimeException('Extended Faker productName must return a string.');
-        }
-
-        return $name;
     }
 
     public function configure(): static
@@ -48,6 +45,74 @@ class ProductFactory extends Factory
                 'amount' => number_format(fake()->randomFloat(2, 10, 500), 2, '.', ''),
             ]);
         });
+    }
+
+    public function withImages(int $count = 1): static
+    {
+        return $this->afterCreating(function (Product $product) use ($count): void {
+            for ($sortOrder = 1; $sortOrder <= $count; $sortOrder++) {
+                $image = $this->fakeProduct()->image;
+
+                if ($image === '') {
+                    continue;
+                }
+
+                $file = $this->createImageFile($product, $image, $sortOrder);
+
+                $product->images()->attach($file->getKey(), ['sort_order' => $sortOrder]);
+            }
+        });
+    }
+
+    public function withSalesPricesFor(Group ...$groups): static
+    {
+        return $this->afterCreating(function (Product $product) use ($groups): void {
+            $baseAmount = (float) ($product->salesPrices()
+                ->whereNull('group_id')
+                ->value('amount') ?? fake()->randomFloat(2, 10, 500));
+
+            foreach ($groups as $group) {
+                SalesPrice::factory()->create([
+                    'product_id' => $product->getKey(),
+                    'group_id' => $group->getKey(),
+                    'amount' => number_format($baseAmount * fake()->randomFloat(2, 0.65, 0.9), 2, '.', ''),
+                ]);
+            }
+        });
+    }
+
+    private function fakeProduct(): ProductDto
+    {
+        $product = fake()->format('product');
+
+        if (! $product instanceof ProductDto) {
+            throw new RuntimeException('Extended Faker product must return a product DTO.');
+        }
+
+        return $product;
+    }
+
+    private function createImageFile(Product $product, string $image, int $sortOrder): File
+    {
+        $source = package_path('vendor/bambamboole/extended-faker/resources/'.$image);
+        $contents = file_get_contents($source);
+
+        if ($contents === false) {
+            throw new RuntimeException("Unable to read product image fixture [{$image}].");
+        }
+
+        $name = $product->sku.'-'.$sortOrder.'.webp';
+        $path = 'workbench/products/'.$name;
+
+        Storage::disk('s3')->put($path, $contents, 'public');
+
+        return File::query()->create([
+            'disk' => 's3',
+            'path' => $path,
+            'name' => $name,
+            'mime_type' => 'image/webp',
+            'size' => strlen($contents),
+        ]);
     }
 
     public function withoutDefaultPrice(): static

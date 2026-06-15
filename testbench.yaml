@@ -24,7 +24,8 @@ workbench:
     components: false
     views: true
   build:
-    - migrate
+    - migrate:fresh:
+        --force: true
     - db:seed:
         --class: Workbench\App\Seeders\DatabaseSeeder
         --force: true
