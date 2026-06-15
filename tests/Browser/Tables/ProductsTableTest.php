@@ -110,3 +110,13 @@ it('searches products inside the reject modal form', function (): void {
         ->assertPresent("[data-test=\"select-replacement-option-{$replacement->getKey()}\"]")
         ->assertNoSmoke();
 });
+
+it('renders the default price as euro currency in the money column', function (): void {
+    $this->actingAs(workbenchTestUser());
+    Product::factory()->create(['name' => 'Euro Product', 'sku' => 'EURO-1', 'status' => 'active']);
+
+    visit('/products')
+        ->assertSee('Euro Product')
+        ->assertSee('€')
+        ->assertNoSmoke();
+});

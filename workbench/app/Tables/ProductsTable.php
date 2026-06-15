@@ -13,7 +13,7 @@ use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Tables\Columns\BooleanColumn;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\ImageColumn;
-use Lattice\Lattice\Tables\Columns\NumberColumn;
+use Lattice\Lattice\Tables\Columns\MoneyColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\Filters\BaseFilter;
@@ -45,7 +45,7 @@ class ProductsTable extends EloquentTableDefinition
             ImageColumn::make('image')->label(__('workbench.tables.columns.image'))->size(44),
             TextColumn::make('name')->label(__('workbench.tables.columns.name'))->sortable()->filterable(),
             TextColumn::make('sku')->label(__('workbench.tables.columns.sku'))->sortable()->filterable(),
-            NumberColumn::make('default_price')->label(__('workbench.tables.columns.default-price'))->sortable(),
+            MoneyColumn::make('default_price')->label(__('workbench.tables.columns.default-price'))->sortable()->currency('EUR'),
             StatusBadgeColumn::make('status')->label(__('workbench.tables.columns.status'))->filterOptions([
                 'draft' => 'Draft',
                 'active' => 'Active',

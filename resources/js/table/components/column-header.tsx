@@ -57,9 +57,7 @@ export function ColumnHeader({
           disabled={processing}
           onClick={() => sort(column)}
         >
-          <span className={cn("min-w-0 flex-1 truncate", alignText(align))}>
-            {column.label}
-          </span>
+          <span className={cn("min-w-0 flex-1 truncate", alignText(align))}>{column.label}</span>
           <SortIndicator sort={columnSort} />
         </button>
       ) : (

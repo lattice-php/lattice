@@ -257,7 +257,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                     {columns.map((column) => (
                       <div
                         key={column.key}
-                        className={cn("grid min-w-0 gap-1 p-4 align-middle", alignText(column.align), alignJustifyItems(column.align))}
+                        className={cn(
+                          "grid min-w-0 gap-1 p-4 align-middle",
+                          alignText(column.align),
+                          alignJustifyItems(column.align),
+                        )}
                         role="cell"
                       >
                         <span

@@ -48,7 +48,8 @@ class ProductsTable extends EloquentTableDefinition
 Columns live in `Lattice\Lattice\Tables\Columns`. `Column::make('key')` reads `$row['key']`; the label defaults to the humanized key (override with `->label()`).
 
 - **`TextColumn`** — `->date('Y-m-d H:i')`, `->copyable()`, `->link('/products/{value}')` (`{value}` is substituted; pass `external: true` for outbound).
-- **`NumberColumn`** — right-aligns and formats the value as a number; filters as a number.
+- **`NumberColumn`** — right-aligns and formats the value as a number; `->decimals(2)` fixes fraction digits (`->decimals(0, 2)` for a range); `->unit(NumberFormatUnit::Percent)` adds a locale-correct unit (percent, kilogram, byte, …). Filters as a number.
+- **`MoneyColumn`** — formats as a currency amount; `->currency('EUR')` for a fixed currency or `->currencyField('currency')` to read the currency from another row field; symbol placement and decimals follow the viewer's locale.
 - **`BooleanColumn`** — renders a check or cross; filters as a boolean.
 - **`BadgeColumn`** — `->colors(['active' => 'green', 'invited' => 'yellow', 'archived' => 'gray'])`. Colors: `gray`, `red`, `green`, `yellow`, `blue`, `purple`, `orange` (unmapped → gray).
 - **`IconColumn`** — `->icon(Icon::Star)` for one icon, or `->icons(['1' => Icon::Check, '0' => Icon::Minus])`; add `->colors([...])` to tint.

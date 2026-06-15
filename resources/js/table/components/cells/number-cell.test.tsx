@@ -14,9 +14,14 @@ function renderCell(value: unknown, props: Record<string, unknown> = {}) {
 
 describe("NumberCell", () => {
   it("formats with the configured fraction digits", () => {
-    const { container } = renderCell(1234.5, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const { container } = renderCell(1234.5, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
     expect(container.textContent).toBe(
-      new Intl.NumberFormat("en", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(1234.5),
+      new Intl.NumberFormat("en", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+        1234.5,
+      ),
     );
   });
 

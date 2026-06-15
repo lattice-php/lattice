@@ -5,8 +5,7 @@ import type { ColumnCellComponent } from "../../registry";
 export const NumberCell: ColumnCellComponent<"number"> = ({ column, props, value }) => {
   const { locale } = useLocale();
   const number = typeof value === "number" ? value : Number(value);
-  const isNumeric =
-    value !== null && value !== undefined && value !== "" && !Number.isNaN(number);
+  const isNumeric = value !== null && value !== undefined && value !== "" && !Number.isNaN(number);
 
   if (!isNumeric) {
     return <span>{formatCell(value, column)}</span>;

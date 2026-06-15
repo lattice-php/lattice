@@ -6,6 +6,7 @@
             "bulkActions": [],
             "columns": [
                 {
+                    "align": "start",
                     "columns": null,
                     "filter": null,
                     "key": "avatar",
@@ -19,6 +20,7 @@
                     "width": "md"
                 },
                 {
+                    "align": "start",
                     "columns": null,
                     "filter": null,
                     "key": "name",
@@ -33,6 +35,7 @@
                     "width": "md"
                 },
                 {
+                    "align": "start",
                     "columns": null,
                     "filter": null,
                     "key": "status",
@@ -49,6 +52,7 @@
                     "width": "md"
                 },
                 {
+                    "align": "start",
                     "columns": null,
                     "filter": null,
                     "key": "verified",
