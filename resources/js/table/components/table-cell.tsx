@@ -5,6 +5,7 @@ import { BadgeCell } from "./cells/badge-cell";
 import { BooleanCell } from "./cells/boolean-cell";
 import { IconCell } from "./cells/icon-cell";
 import { ImageCell } from "./cells/image-cell";
+import { MoneyCell } from "./cells/money-cell";
 import { NumberCell } from "./cells/number-cell";
 import { StackCell } from "./cells/stack-cell";
 import { TextCell } from "./cells/text-cell";
@@ -17,6 +18,7 @@ const builtinColumnCells: ColumnRegistry = {
   boolean: columnCell(BooleanCell),
   icon: columnCell(IconCell),
   image: columnCell(ImageCell),
+  money: columnCell(MoneyCell),
   number: columnCell(NumberCell),
   stack: columnCell(StackCell),
   text: columnCell(TextCell),
