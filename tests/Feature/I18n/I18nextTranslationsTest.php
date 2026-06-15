@@ -28,6 +28,7 @@ it('shares the i18n config to the frontend as a once prop', function () {
         ->where('lattice.i18n.enabled', true)
         ->where('lattice.i18n.saveMissing', true)
         ->where('lattice.i18n.locales', ['en', 'de'])
+        ->where('lattice.i18n.preloadLocales', ['en', 'de'])
         ->missing('lattice.i18n.loadPath')
         ->missing('lattice.i18n.addPath'),
     );

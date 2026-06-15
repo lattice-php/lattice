@@ -79,6 +79,23 @@ subscribeLocale((locale) => {
   });
 });
 
+/**
+ * Eagerly load the namespaces for the given locales so a later
+ * `changeLanguage` resolves them from the store instead of an HTTP round-trip,
+ * which would otherwise flash the fallback language on switch. The active
+ * locale is already loaded by {@link ensureI18n}, so it is skipped.
+ */
+export async function preloadLanguages(locales: readonly string[]): Promise<void> {
+  const pending = locales.filter((locale) => locale !== currentLocale());
+
+  if (pending.length === 0) {
+    return;
+  }
+
+  await ensureI18n();
+  await i18n.loadLanguages([...pending]);
+}
+
 export function useT(namespace: string): TranslationResult {
   ensureI18n();
   useSyncExternalStore(subscribe, snapshot, snapshot);

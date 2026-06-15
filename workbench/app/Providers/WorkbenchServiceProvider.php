@@ -64,6 +64,7 @@ class WorkbenchServiceProvider extends ServiceProvider
             'i18next.namespaces' => true,
             'i18next.output' => 'nested',
             'lattice.i18n.locales' => ['en', 'de'],
+            'lattice.i18n.preload_locales' => ['en', 'de'],
         ]);
 
         // Point lang_path() at the package's lang/ dir so saveMissing dumps land in

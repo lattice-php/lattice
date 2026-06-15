@@ -574,6 +574,7 @@ export type I18nConfig = {
   readonly enabled: boolean;
   readonly saveMissing: boolean;
   readonly locales: string[];
+  readonly preloadLocales: string[];
 };
 export type Icon = {
   class: string | null;

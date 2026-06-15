@@ -18,6 +18,7 @@ return [
 
     'i18n' => [
         'locales' => ['en'],
+        'preload_locales' => [],
     ],
 
     'forms' => [

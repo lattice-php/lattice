@@ -26,7 +26,12 @@ describe("locale switcher helpers", () => {
   });
 
   it("builds active locale options from the configured locales", async () => {
-    await configureI18n({ enabled: false, saveMissing: false, locales: ["en", "de"] });
+    await configureI18n({
+      enabled: false,
+      saveMissing: false,
+      locales: ["en", "de"],
+      preloadLocales: [],
+    });
 
     render(<LocaleOptionsProbe />);
 
@@ -46,7 +51,12 @@ describe("locale switcher helpers", () => {
   });
 
   it("exposes locale options through a headless render prop component", async () => {
-    await configureI18n({ enabled: false, saveMissing: false, locales: ["en", "de"] });
+    await configureI18n({
+      enabled: false,
+      saveMissing: false,
+      locales: ["en", "de"],
+      preloadLocales: [],
+    });
 
     render(
       <LocaleSwitcher label={(code) => code.toUpperCase()}>

@@ -1,7 +1,7 @@
 import type { I18nConfig } from "@lattice-php/lattice/types/generated";
 import HttpBackend from "i18next-http-backend";
 import { setConfig } from "./config";
-import { ensureI18n, i18n } from "./instance";
+import { ensureI18n, i18n, preloadLanguages } from "./instance";
 import { localeHeader } from "./locale";
 
 /** The i18n settings the backend shares to the frontend (Inertia `lattice.i18n`). */
@@ -43,6 +43,9 @@ export async function configureI18n(
   }
 
   await enableBackend({ saveMissing: config.saveMissing, namespaces: options.namespaces });
+
+  // Fire-and-forget so warming the other locales never delays the active one.
+  void preloadLanguages(config.preloadLocales);
 }
 
 /**
