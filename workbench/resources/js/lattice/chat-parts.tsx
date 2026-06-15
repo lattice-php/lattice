@@ -1,5 +1,5 @@
 import type { ChatPart, ChatPartComponent } from "@lattice-php/lattice";
-import { createPlugin } from "@lattice-php/lattice/core/registry";
+import { createPlugin } from "@lattice-php/lattice";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 
 const ToolCallPart: ChatPartComponent = ({ part }) => {
