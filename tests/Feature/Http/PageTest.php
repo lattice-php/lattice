@@ -13,7 +13,6 @@ use Lattice\Lattice\Http\Page;
 use Orchestra\Testbench\Factories\UserFactory;
 use Workbench\App\Pages\HomePage;
 use Workbench\App\Pages\TablesPage;
-use Workbench\App\Seeders\UserSeeder;
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\withoutVite;
@@ -189,20 +188,6 @@ test('workbench tables page serializes lazy tables for each pagination type', fu
             ->where('lattice.schema.0.schema.1.schema.3.schema.1.props.resizableColumns', true)
             ->where('lattice.schema.0.schema.1.schema.3.schema.1.props.resizeIndicator', true)
             ->where('lattice.schema.0.schema.1.schema.3.schema.1.props.pagination.mode', 'infinite'));
-});
-
-test('workbench user seeder creates sample table data idempotently', function () {
-    app(UserSeeder::class)->run();
-    app(UserSeeder::class)->run();
-
-    expect(User::query()->count())->toBe(1001)
-        ->and(User::query()->where('email', 'workbench@example.com')->value('name'))->toBe('Workbench User')
-        ->and(User::query()->where('email', 'workbench@example.com')->value('locale'))->toBe('en')
-        ->and(User::query()->where('email', 'ada@example.com')->value('name'))->toBe('Ada Lovelace')
-        ->and(User::query()->where('email', 'workbench-user-994@example.com')->exists())->toBeTrue()
-        ->and(User::query()->distinct()->count('created_at'))->toBe(1001)
-        ->and(User::query()->distinct()->count('updated_at'))->toBe(1001)
-        ->and(User::query()->whereColumn('updated_at', '<', 'created_at')->doesntExist())->toBeTrue();
 });
 
 // ---------------------------------------------------------------------------

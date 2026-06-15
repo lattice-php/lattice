@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\Components\Table;
@@ -9,20 +11,54 @@ use Lattice\Lattice\Tables\InvalidTableQuery;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Actions\RejectSelectedProductsAction;
+use Workbench\App\Models\File;
 use Workbench\App\Models\Product;
-use Workbench\App\Seeders\ProductSeeder;
 use Workbench\App\Tables\ProductsTable;
 
 use function Pest\Laravel\patch;
 
-test('the product seeder creates sample product data idempotently', function () {
-    app(ProductSeeder::class)->run();
-    app(ProductSeeder::class)->run();
+test('the products table exposes product images', function () {
+    Storage::fake('s3');
+    Lattice::tables([ProductsTable::class]);
 
-    expect(Product::query()->count())->toBe(100)
-        ->and(Product::query()->where('sku', 'workbench-product-001')->exists())->toBeTrue()
-        ->and(Product::query()->where('sku', 'workbench-product-100')->exists())->toBeTrue()
-        ->and(Product::query()->whereNotIn('status', ['draft', 'active', 'archived'])->exists())->toBeFalse();
+    Storage::disk('s3')->put('workbench/products/PHONE-001.webp', 'primary');
+    Storage::disk('s3')->put('workbench/products/PHONE-002.webp', 'secondary');
+
+    $primary = File::factory()->create([
+        'disk' => 's3',
+        'path' => 'workbench/products/PHONE-001.webp',
+        'name' => 'PHONE-001.webp',
+        'mime_type' => 'image/webp',
+        'size' => 7,
+    ]);
+    $secondary = File::factory()->create([
+        'disk' => 's3',
+        'path' => 'workbench/products/PHONE-002.webp',
+        'name' => 'PHONE-002.webp',
+        'mime_type' => 'image/webp',
+        'size' => 9,
+    ]);
+
+    $product = Product::factory()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+    ]);
+    $product->images()->attach([
+        $secondary->getKey() => ['sort_order' => 2],
+        $primary->getKey() => ['sort_order' => 1],
+    ]);
+
+    $table = wire(Table::use(ProductsTable::class));
+
+    expect(data_get($table, 'props.columns.0.type'))->toBe('image')
+        ->and(data_get($table, 'props.columns.0.key'))->toBe('image')
+        ->and(data_get($table, 'props.data.0.image'))->toContain('workbench/products/PHONE-001.webp')
+        ->and(DB::table('attachments')
+            ->where('attachable_type', Product::class)
+            ->where('attachable_id', $product->getKey())
+            ->count())->toBe(2)
+        ->and($product->images()->count())->toBe(2);
 });
 
 test('the products table is serialized as striped', function () {

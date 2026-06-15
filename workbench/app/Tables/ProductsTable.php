@@ -11,6 +11,7 @@ use Lattice\Lattice\Attributes\Table;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Columns\ImageColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\Filters\BaseFilter;
@@ -39,6 +40,7 @@ class ProductsTable extends EloquentTableDefinition
     public function columns(): array
     {
         return [
+            ImageColumn::make('image')->label(__('workbench.tables.columns.image'))->size(44),
             TextColumn::make('name')->label(__('workbench.tables.columns.name'))->sortable()->filterable(),
             TextColumn::make('sku')->label(__('workbench.tables.columns.sku'))->sortable()->filterable(),
             TextColumn::make('default_price')->label(__('workbench.tables.columns.default-price'))->sortable()->numeric(),
@@ -84,6 +86,7 @@ class ProductsTable extends EloquentTableDefinition
     public function builder(TableQuery $query): Builder
     {
         $builder = Product::query()
+            ->with('images')
             ->select(['id', 'name', 'sku', 'status', 'featured', 'updated_at'])
             ->selectSub(
                 SalesPrice::query()

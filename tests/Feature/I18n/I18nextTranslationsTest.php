@@ -100,9 +100,10 @@ it('localizes workbench page props and table column labels from the accept langu
             ->component('lattice/page', false)
             ->where('lattice.title', 'Produkte')
             ->where('lattice.schema.0.schema.0.schema.0.props.text', 'Produkte')
-            ->where('lattice.schema.0.schema.1.props.columns.2.label', 'Standardpreis')
-            ->where('lattice.schema.0.schema.1.props.columns.4.label', 'Hervorgehoben')
-            ->where('lattice.schema.0.schema.1.props.columns.5.label', 'Aktualisiert am'),
+            ->where('lattice.schema.0.schema.1.props.columns.0.label', 'Bild')
+            ->where('lattice.schema.0.schema.1.props.columns.3.label', 'Standardpreis')
+            ->where('lattice.schema.0.schema.1.props.columns.5.label', 'Hervorgehoben')
+            ->where('lattice.schema.0.schema.1.props.columns.6.label', 'Aktualisiert am'),
         );
 });
 

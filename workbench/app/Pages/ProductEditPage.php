@@ -23,6 +23,8 @@ class ProductEditPage extends WorkbenchPage
 
     public function render(PageSchema $schema, Product $product): PageSchema
     {
+        $productForm = app(ProductForm::class);
+
         return $schema->schema([
             Stack::make('product-edit-page')
                 ->gap(Gap::Large)
@@ -36,7 +38,8 @@ class ProductEditPage extends WorkbenchPage
                             'sku' => $product->sku,
                             'status' => $product->status,
                             'related_products' => $product->relatedProducts()->pluck('products.id')->all(),
-                            'sales_prices' => app(ProductForm::class)->salesPriceRows($product),
+                            'images' => $productForm->imagePaths($product),
+                            'sales_prices' => $productForm->salesPriceRows($product),
                         ])
                         ->context([
                             'product_id' => $product->getKey(),

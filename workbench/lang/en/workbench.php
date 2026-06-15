@@ -231,6 +231,8 @@ return [
         'product' => [
             'card' => 'Product details',
             'fields' => [
+                'images' => 'Images',
+                'images-help-text' => 'Upload up to 8 product images. Images are stored in RustFS.',
                 'name' => 'Name',
                 'related-products' => 'Related products',
                 'sku' => 'SKU',
@@ -435,6 +437,7 @@ return [
             'default-price' => 'Default price',
             'email' => 'Email',
             'featured' => 'Featured',
+            'image' => 'Image',
             'name' => 'Name',
             'sku' => 'SKU',
             'status' => 'Status',

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Actions;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Actions\FormActionDefinition;
@@ -11,6 +12,7 @@ use Lattice\Lattice\Attributes\Action as ActionAttribute;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
@@ -31,12 +33,12 @@ class EditProductAction extends FormActionDefinition
         $product = $this->product($request);
         $productForm = app(ProductForm::class);
 
-        // Reuse the registered form's schema, then prefill the record's values.
         return $productForm->definition($form, $request)->fill([
             'name' => $product->name,
             'sku' => $product->sku,
             'status' => $product->status,
             'related_products' => $product->relatedProducts()->pluck('products.id')->all(),
+            'images' => $productForm->imagePaths($product),
             'sales_prices' => $productForm->salesPriceRows($product),
         ]);
     }
@@ -48,14 +50,20 @@ class EditProductAction extends FormActionDefinition
 
         $relatedIds = $data['related_products'] ?? [];
         $priceRows = $data['sales_prices'] ?? [];
-        unset($data['related_products'], $data['sales_prices']);
+        $productForm = app(ProductForm::class);
+        $imageKeys = $productForm->uploadedImageKeys($data['images'] ?? []);
+        $removedImagePaths = FileUpload::removed($request, 'images');
+        unset($data['related_products'], $data['sales_prices'], $data['images']);
 
-        $product->update($data);
-        $product->relatedProducts()->sync(
-            Product::query()->whereIn('id', $relatedIds)->pluck('id')->all(),
-        );
+        DB::transaction(function () use ($product, $data, $relatedIds, $priceRows, $productForm, $imageKeys, $removedImagePaths): void {
+            $product->update($data);
+            $product->relatedProducts()->sync(
+                Product::query()->whereIn('id', $relatedIds)->pluck('id')->all(),
+            );
 
-        app(ProductForm::class)->syncSalesPrices($product, $priceRows);
+            $productForm->syncSalesPrices($product, $priceRows);
+            $productForm->syncImages($product, $imageKeys, $removedImagePaths);
+        });
 
         return ActionResult::success(['id' => $product->getKey()])
             ->toast(

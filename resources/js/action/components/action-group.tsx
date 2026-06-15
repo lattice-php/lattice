@@ -8,6 +8,7 @@ import {
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { ActionMenuProvider } from "./action-menu-context";
 
 const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, node }) => {
   const label = node.props.label;
@@ -48,10 +49,10 @@ const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, nod
         <DropdownMenuContent
           align="end"
           aria-label={label}
-          className="[&>button]:w-full [&>button]:justify-start"
+          className="min-w-44 gap-0.5 p-1.5"
           sideOffset={8}
         >
-          {children}
+          <ActionMenuProvider>{children}</ActionMenuProvider>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

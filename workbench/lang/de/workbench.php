@@ -231,6 +231,8 @@ return [
         'product' => [
             'card' => 'Produktdetails',
             'fields' => [
+                'images' => 'Bilder',
+                'images-help-text' => 'Lade bis zu 8 Produktbilder hoch. Die Bilder werden in RustFS gespeichert.',
                 'name' => 'Name',
                 'related-products' => 'Verwandte Produkte',
                 'sku' => 'SKU',
@@ -435,6 +437,7 @@ return [
             'default-price' => 'Standardpreis',
             'email' => 'E-Mail',
             'featured' => 'Hervorgehoben',
+            'image' => 'Bild',
             'name' => 'Name',
             'sku' => 'SKU',
             'status' => 'Status',

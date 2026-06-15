@@ -5,6 +5,8 @@ namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Lattice\Lattice\Attributes\Form;
@@ -12,12 +14,14 @@ use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\EloquentOptions;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Choice;
+use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
+use Workbench\App\Models\File;
 use Workbench\App\Models\Group;
 use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesPrice;
@@ -44,6 +48,7 @@ class ProductForm extends FormDefinition
                             Choice::option(__('workbench.forms.product.status.archived'), 'archived'),
                         ])
                         ->rules(['required', 'string', Rule::in(['draft', 'active', 'archived'])]),
+                    $this->imageUploadField(),
                     Select::make('related_products', __('workbench.forms.product.fields.related-products'))
                         ->multiple()
                         ->placeholder(__('workbench.common.search-products'))
@@ -78,9 +83,11 @@ class ProductForm extends FormDefinition
 
         $relatedIds = $validated['related_products'] ?? [];
         $priceRows = $validated['sales_prices'] ?? [];
-        unset($validated['related_products'], $validated['sales_prices']);
+        $imageKeys = $this->uploadedImageKeys($validated['images'] ?? []);
+        $removedImagePaths = FileUpload::removed($request, 'images');
+        unset($validated['related_products'], $validated['sales_prices'], $validated['images']);
 
-        DB::transaction(function () use ($product, $validated, $relatedIds, $priceRows): void {
+        DB::transaction(function () use ($product, $validated, $relatedIds, $priceRows, $imageKeys, $removedImagePaths): void {
             if (! $product instanceof Product) {
                 $product = Product::query()->create($validated);
             } else {
@@ -92,6 +99,7 @@ class ProductForm extends FormDefinition
             );
 
             $this->syncSalesPrices($product, $priceRows);
+            $this->syncImages($product, $imageKeys, $removedImagePaths);
         });
 
         return redirect('/products');
@@ -111,6 +119,27 @@ class ProductForm extends FormDefinition
                 'amount' => $salesPrice->amount,
             ])
             ->all();
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function imagePaths(Product $product): array
+    {
+        return $product->images()->pluck('files.path')->all();
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function uploadedImageKeys(mixed $value): array
+    {
+        $values = is_array($value) ? $value : [$value];
+
+        return array_values(array_unique(array_filter(
+            $values,
+            static fn (mixed $key): bool => is_string($key) && $key !== '',
+        )));
     }
 
     /**
@@ -147,6 +176,44 @@ class ProductForm extends FormDefinition
     }
 
     /**
+     * @param  list<string>  $imageKeys
+     * @param  list<string>  $removedPaths
+     */
+    public function syncImages(Product $product, array $imageKeys, array $removedPaths): void
+    {
+        $this->detachImages($product, $removedPaths);
+
+        if ($imageKeys === []) {
+            return;
+        }
+
+        $sortOrder = (int) DB::table('attachments')
+            ->where('attachable_type', Product::class)
+            ->where('attachable_id', $product->getKey())
+            ->max('sort_order');
+
+        $finalizedUploads = $this->imageUploadField()
+            ->finalizeSignedUploads(
+                $imageKeys,
+                fn (string $key, array $metadata): string => $this->productImagePath($product, $metadata['extension']),
+            );
+
+        foreach ($finalizedUploads as $upload) {
+            $file = File::query()->create([
+                'disk' => $upload['disk'],
+                'path' => $upload['path'],
+                'name' => $upload['name'],
+                'mime_type' => $upload['mime_type'],
+                'size' => $upload['size'],
+            ]);
+
+            $product->images()->attach($file->getKey(), [
+                'sort_order' => ++$sortOrder,
+            ]);
+        }
+    }
+
+    /**
      * @return array<int, Option>
      */
     private function groupOptions(): array
@@ -158,6 +225,57 @@ class ProductForm extends FormDefinition
         }
 
         return $options;
+    }
+
+    private function imageUploadField(): FileUpload
+    {
+        return FileUpload::make('images', __('workbench.forms.product.fields.images'))
+            ->image()
+            ->multiple()
+            ->maxFiles(8)
+            ->maxSize(4096)
+            ->disk('s3')
+            ->signedUpload()
+            ->helperText(__('workbench.forms.product.fields.images-help-text'));
+    }
+
+    /**
+     * @param  list<string>  $removedPaths
+     */
+    private function detachImages(Product $product, array $removedPaths): void
+    {
+        if ($removedPaths === []) {
+            return;
+        }
+
+        $files = $product->images()
+            ->where('files.disk', $this->imageUploadField()->resolveDisk())
+            ->whereIn('files.path', $removedPaths)
+            ->get();
+
+        foreach ($files as $file) {
+            $product->images()->detach($file->getKey());
+            $this->deleteOrphanedFile($file);
+        }
+    }
+
+    private function deleteOrphanedFile(File $file): void
+    {
+        if (DB::table('attachments')->where('file_id', $file->getKey())->exists()) {
+            return;
+        }
+
+        Storage::disk($file->disk)->delete($file->path);
+        $file->delete();
+    }
+
+    private function productImagePath(Product $product, string $extension): string
+    {
+        $sku = Str::slug($product->sku);
+        $basename = $sku !== '' ? $sku : 'product-'.$product->getKey();
+
+        return 'workbench/products/'.$basename.'-'.Str::uuid()->toString()
+            .($extension !== '' ? '.'.$extension : '');
     }
 
     private function product(Request $request): ?Product

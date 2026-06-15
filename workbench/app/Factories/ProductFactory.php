@@ -3,8 +3,13 @@ declare(strict_types=1);
 
 namespace Workbench\App\Factories;
 
-use Bambamboole\ExtendedFaker\Repository\ProductRepository;
+use Bambamboole\ExtendedFaker\Dto\ImageDto;
+use Bambamboole\ExtendedFaker\Dto\ProductDto;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Storage;
+use RuntimeException;
+use Workbench\App\Models\File;
+use Workbench\App\Models\Group;
 use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesPrice;
 
@@ -20,9 +25,11 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $product = $this->fakeProduct();
+
         return [
-            'name' => (new ProductRepository)->getRandomProduct('en_US')->name,
-            'sku' => fake()->unique()->bothify('PRD-####'),
+            'name' => $product->name,
+            'sku' => $product->sku,
             'status' => fake()->randomElement(['draft', 'active', 'archived']),
             'featured' => fake()->boolean(),
         ];
@@ -37,6 +44,72 @@ class ProductFactory extends Factory
                 'amount' => number_format(fake()->randomFloat(2, 10, 500), 2, '.', ''),
             ]);
         });
+    }
+
+    public function withImages(int $count = 1): static
+    {
+        return $this->afterCreating(function (Product $product) use ($count): void {
+            for ($sortOrder = 1; $sortOrder <= $count; $sortOrder++) {
+                $fakeProduct = $this->fakeProduct($product->sku);
+                $image = $fakeProduct->image;
+
+                if (! $image instanceof ImageDto) {
+                    continue;
+                }
+
+                $file = $this->createImageFile($product, $image, $sortOrder);
+
+                $product->images()->attach($file->getKey(), ['sort_order' => $sortOrder]);
+            }
+        });
+    }
+
+    private function fakeProduct(?string $identifier = null): ProductDto
+    {
+        $faker = $identifier === null ? fake()->unique() : fake();
+
+        /** @phpstan-ignore-next-line */
+        return $faker->product($identifier);
+    }
+
+    public function withSalesPricesFor(Group ...$groups): static
+    {
+        return $this->afterCreating(function (Product $product) use ($groups): void {
+            $baseAmount = (float) ($product->salesPrices()
+                ->whereNull('group_id')
+                ->value('amount') ?? fake()->randomFloat(2, 10, 500));
+
+            foreach ($groups as $group) {
+                SalesPrice::factory()->create([
+                    'product_id' => $product->getKey(),
+                    'group_id' => $group->getKey(),
+                    'amount' => number_format($baseAmount * fake()->randomFloat(2, 0.65, 0.9), 2, '.', ''),
+                ]);
+            }
+        });
+    }
+
+    private function createImageFile(Product $product, ImageDto $image, int $sortOrder): File
+    {
+        $contents = file_get_contents($image->absolutePath);
+
+        if ($contents === false) {
+            throw new RuntimeException("Unable to read product image fixture [{$image->path}].");
+        }
+
+        $extension = pathinfo($image->path, PATHINFO_EXTENSION) ?: 'webp';
+        $name = $product->sku.'-'.$sortOrder.'.'.$extension;
+        $path = 'workbench/products/'.$name;
+
+        Storage::disk('s3')->put($path, $contents, 'public');
+
+        return File::query()->create([
+            'disk' => 's3',
+            'path' => $path,
+            'name' => $name,
+            'mime_type' => $image->mimeType,
+            'size' => $image->size,
+        ]);
     }
 
     public function withoutDefaultPrice(): static

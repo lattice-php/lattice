@@ -5,6 +5,7 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import { IconRendererProvider } from "@lattice-php/lattice/icons";
 import type { IconRendererFunction } from "@lattice-php/lattice/icons";
 import ActionComponent from "./action";
+import { ActionMenuProvider } from "./action-menu-context";
 
 const http = vi.hoisted(() => ({
   delete: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
@@ -151,6 +152,61 @@ describe("Lattice action component", () => {
     });
     expect(screen.getByTestId("action-icon")).toHaveTextContent("custom.spark");
     expect(screen.getByRole("button", { name: "custom.sparkSend test email" })).toBeVisible();
+  });
+
+  it("uses compact context menu styling inside action menus", () => {
+    const iconRenderer = vi.fn<IconRendererFunction>(({ icon, className }) => (
+      <span className={className} data-test="action-icon">
+        {icon}
+      </span>
+    ));
+
+    const node = fakeNode({
+      props: {
+        endpoint: "/products/1/edit",
+        icon: "custom.spark",
+        label: "Edit",
+        method: "get",
+        variant: "secondary",
+      },
+      type: "action",
+    });
+
+    render(
+      <IconRendererProvider mode="replace" renderer={iconRenderer}>
+        <ActionMenuProvider>
+          <ActionComponent node={node}>{null}</ActionComponent>
+        </ActionMenuProvider>
+      </IconRendererProvider>,
+    );
+
+    expect(screen.getByRole("button", { name: "custom.sparkEdit" })).toHaveClass(
+      "h-8",
+      "w-full",
+      "text-lt-popover-fg",
+    );
+    expect(screen.getByTestId("action-icon")).toHaveClass("size-lt-icon-sm");
+  });
+
+  it("uses a compact spinner inside action menus", () => {
+    http.processing = true;
+
+    const node = fakeNode({
+      props: {
+        endpoint: "/products/1/archive",
+        label: "Archive",
+        method: "post",
+      },
+      type: "action",
+    });
+
+    render(
+      <ActionMenuProvider>
+        <ActionComponent node={node}>{null}</ActionComponent>
+      </ActionMenuProvider>,
+    );
+
+    expect(screen.getByRole("status", { name: "Loading" })).toHaveClass("size-lt-icon-sm");
   });
 
   it("opens a confirmation modal before submitting destructive actions", async () => {

@@ -25,6 +25,8 @@ use function Orchestra\Testbench\package_path;
 
 class WorkbenchServiceProvider extends ServiceProvider
 {
+    private const FAKER_LOCALE = 'en_US';
+
     #[\Override]
     public function register(): void
     {
@@ -32,6 +34,7 @@ class WorkbenchServiceProvider extends ServiceProvider
             package_path('workbench/app'),
         ]]);
         config(['auth.providers.users.model' => User::class]);
+        config(['app.faker_locale' => self::FAKER_LOCALE]);
 
         $this->keepLatticeEndpointsPublic();
 
@@ -43,14 +46,16 @@ class WorkbenchServiceProvider extends ServiceProvider
         $this->registerExtendedFaker();
     }
 
-    /**
-     * Enrich Faker with realistic product data for factories and seeders in dev.
-     */
     private function registerExtendedFaker(): void
     {
-        $this->app->resolving(Generator::class, function (Generator $faker): void {
-            ExtendedFaker::extend($faker);
-        });
+        $extend = function (Generator $faker): Generator {
+            ExtendedFaker::extend($faker, (string) config('app.faker_locale', self::FAKER_LOCALE));
+
+            return $faker;
+        };
+
+        $this->app->extend(Generator::class, $extend);
+        $this->app->extend(Generator::class.':'.self::FAKER_LOCALE, $extend);
     }
 
     /**
