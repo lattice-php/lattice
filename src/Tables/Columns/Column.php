@@ -5,22 +5,15 @@ namespace Lattice\Lattice\Tables\Columns;
 
 use Illuminate\Support\Collection;
 use JsonSerializable;
+use Lattice\Lattice\Attributes\Component as ComponentAttribute;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
-use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Enums\ColumnType;
-use LogicException;
-use ReflectionClass;
 
 /**
  * @phpstan-consistent-constructor
  */
 abstract class Column implements JsonSerializable
 {
-    /**
-     * @var array<class-string, ColumnType|string>
-     */
-    private static array $typeCache = [];
-
     protected string $label;
 
     protected ?ColumnWidth $width = null;
@@ -67,24 +60,7 @@ abstract class Column implements JsonSerializable
      */
     protected function resolvedType(): ColumnType|string
     {
-        return self::$typeCache[static::class] ??= self::resolveType(static::class);
-    }
-
-    /**
-     * @param  class-string  $class
-     */
-    private static function resolveType(string $class): ColumnType|string
-    {
-        $attributes = (new ReflectionClass($class))->getAttributes(AsColumn::class);
-
-        if ($attributes === []) {
-            throw new LogicException(sprintf(
-                'Column [%s] is missing the #[AsColumn] attribute that declares its type.',
-                $class,
-            ));
-        }
-
-        $type = $attributes[0]->newInstance()->type;
+        $type = ComponentAttribute::typeForClass(static::class);
 
         return ColumnType::tryFrom($type) ?? $type;
     }
