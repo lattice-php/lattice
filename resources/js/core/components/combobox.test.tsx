@@ -73,6 +73,25 @@ describe("Combobox", () => {
     expect(red).toHaveAttribute("aria-selected", "true");
   });
 
+  it("omits test ids and shows the empty label when no options match", () => {
+    render(
+      <Combobox
+        emptyLabel="No matches"
+        onOpenChange={() => {}}
+        onSelect={() => {}}
+        open
+        options={[]}
+        selected={[]}
+        trigger={<span>Open</span>}
+      />,
+    );
+
+    expect(screen.getByText("No matches")).toBeVisible();
+    expect(document.querySelector('[data-slot="combobox-search"]')).not.toHaveAttribute(
+      "data-test",
+    );
+  });
+
   it("debounces a remote search instead of filtering locally", () => {
     vi.useFakeTimers();
     const onSearch = vi.fn<(q: string) => void>();

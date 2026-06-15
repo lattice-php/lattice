@@ -13,7 +13,7 @@ const { postFormAction } = vi.hoisted(() => ({
       componentRef: string,
       body: Record<string, unknown>,
       signal: AbortSignal,
-    ) => Promise<{ options: [] }>
+    ) => Promise<{ options: { label: string; value: string }[] }>
   >(() => Promise.resolve({ options: [] })),
 }));
 
@@ -113,6 +113,32 @@ describe("SelectComponent search", () => {
       { _search: "items.0.product", q: "desk", ...initial },
       expect.any(AbortSignal),
     );
+  });
+
+  it("loads on open, fetches matches, and selects a searched option", async () => {
+    vi.useFakeTimers();
+    postFormAction.mockResolvedValue({ options: [{ label: "Desk", value: "desk" }] });
+
+    renderSelect({ initial: {} });
+
+    fireEvent.click(screen.getByTestId("select-product"));
+
+    // Opening fires an empty search that clears results without a request.
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+      await Promise.resolve();
+    });
+    expect(postFormAction).not.toHaveBeenCalled();
+
+    fireEvent.change(screen.getByTestId("select-product-search"), { target: { value: "de" } });
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+      await Promise.resolve();
+    });
+
+    fireEvent.click(screen.getByTestId("select-product-option-desk"));
+
+    expect(screen.getByTestId("select-product")).toHaveTextContent("Desk");
   });
 });
 
