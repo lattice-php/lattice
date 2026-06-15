@@ -17,6 +17,7 @@
             "readOnly": false,
             "required": false,
             "tabIndex": null,
+            "tooltip": null,
             "value": null
         },
         "type": "form.checkbox"

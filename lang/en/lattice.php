@@ -33,6 +33,7 @@ return [
         'removeOption' => 'Remove :label',
         'tabs' => 'Tabs',
         'loading' => 'Loading',
+        'moreInfo' => 'More information',
         'closeMenu' => 'Close menu',
         'dismiss' => 'Dismiss',
         'close' => 'Close',

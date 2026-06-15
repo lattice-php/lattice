@@ -21,6 +21,7 @@ export type FieldProps = {
   prefillResetOn?: string[] | null;
   readOnly?: boolean | null;
   required?: boolean | null;
+  tooltip?: string | null;
   value?: unknown;
 };
 

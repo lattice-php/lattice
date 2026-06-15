@@ -30,6 +30,7 @@ export const PasswordInputComponent: RendererComponent<"form.password-input"> = 
       <FormFieldFrame
         error={field.error}
         helperText={props.helperText ?? undefined}
+        tooltip={props.tooltip ?? undefined}
         label={props.label ?? ""}
         labelAction={props.labelAction ?? undefined}
         name={field.name}

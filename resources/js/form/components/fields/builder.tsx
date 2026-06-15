@@ -69,6 +69,7 @@ export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) =>
     <FormFieldFrame
       error={errors[name]}
       helperText={props.helperText ?? undefined}
+      tooltip={props.tooltip ?? undefined}
       label={props.label ?? ""}
       name={name}
       required={required}

@@ -231,6 +231,7 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
     <FormFieldFrame
       error={errors[errorKey]}
       helperText={props.helperText ?? undefined}
+      tooltip={props.tooltip ?? undefined}
       label={props.label ?? ""}
       name={name}
       required={required}

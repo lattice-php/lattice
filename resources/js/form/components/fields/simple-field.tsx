@@ -24,6 +24,7 @@ export function SimpleField({
     <FormFieldFrame
       error={field.error}
       helperText={fieldProps(node).helperText ?? undefined}
+      tooltip={fieldProps(node).tooltip ?? undefined}
       label={label}
       name={field.name}
       required={field.required}

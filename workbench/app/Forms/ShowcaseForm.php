@@ -37,6 +37,7 @@ class ShowcaseForm extends FormDefinition
                     Grid::make()->columns(2)->schema([
                         TextInput::make('name', __('workbench.forms.showcase.full-name'))
                             ->placeholder(__('workbench.forms.showcase.placeholders.name'))
+                            ->tooltip('Your legal name. See <a href="/showcase">the form guide</a>.')
                             ->rules(['required', 'string', 'max:255']),
                         TextInput::make('email', __('workbench.common.email'))
                             ->email()

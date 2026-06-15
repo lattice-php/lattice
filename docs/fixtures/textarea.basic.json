@@ -19,6 +19,7 @@
             "required": false,
             "rows": 4,
             "tabIndex": null,
+            "tooltip": null,
             "value": null
         },
         "type": "form.textarea"

@@ -29,3 +29,21 @@ it("keeps a visually-hidden accessible label inside a table cell", () => {
   // the label is visually hidden
   expect(screen.getByText("Qty")).toHaveClass("sr-only");
 });
+
+it("renders a tooltip trigger when a tooltip is provided", () => {
+  render(
+    <FormFieldFrame label="Qty" name="qty" tooltip="How many units">
+      <input aria-label="qty" />
+    </FormFieldFrame>,
+  );
+  expect(screen.getByRole("button", { name: "More information" })).toBeInTheDocument();
+});
+
+it("renders no tooltip trigger when no tooltip is provided", () => {
+  render(
+    <FormFieldFrame label="Qty" name="qty">
+      <input aria-label="qty" />
+    </FormFieldFrame>,
+  );
+  expect(screen.queryByRole("button", { name: "More information" })).not.toBeInTheDocument();
+});

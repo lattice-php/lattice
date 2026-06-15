@@ -16,6 +16,7 @@
             "prefillResetOn": null,
             "readOnly": false,
             "required": false,
+            "tooltip": null,
             "value": null
         },
         "type": "form.rich-editor"

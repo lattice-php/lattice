@@ -40,6 +40,7 @@
                     "type": "remove"
                 }
             ],
+            "tooltip": null,
             "value": null
         },
         "schema": [
@@ -63,6 +64,7 @@
                     "readOnly": false,
                     "required": false,
                     "tabIndex": null,
+                    "tooltip": null,
                     "type": null,
                     "value": null
                 },
@@ -88,6 +90,7 @@
                     "readOnly": false,
                     "required": false,
                     "tabIndex": null,
+                    "tooltip": null,
                     "type": null,
                     "value": null
                 },

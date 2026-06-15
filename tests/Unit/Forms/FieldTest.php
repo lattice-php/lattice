@@ -62,3 +62,13 @@ it('aliases hint to helper text', function (): void {
 
     expect(wire($field)['props']['helperText'])->toBe('Quick tip.');
 });
+
+it('serializes a tooltip', function (): void {
+    $field = makeField()->tooltip('See <a href="/docs">the docs</a>.');
+
+    expect(wire($field)['props']['tooltip'])->toBe('See <a href="/docs">the docs</a>.');
+});
+
+it('serializes tooltip as null when not set', function (): void {
+    expect(wire(makeField())['props']['tooltip'])->toBeNull();
+});

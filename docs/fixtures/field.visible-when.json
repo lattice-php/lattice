@@ -27,6 +27,7 @@
             "readOnly": false,
             "required": false,
             "tabIndex": null,
+            "tooltip": null,
             "value": null
         },
         "type": "form.choice"
@@ -59,6 +60,7 @@
             "readOnly": false,
             "required": false,
             "tabIndex": null,
+            "tooltip": null,
             "type": null,
             "value": null
         },

@@ -78,6 +78,7 @@ export type Builder = {
   resizableColumns: boolean;
   resizeIndicator: boolean;
   rowActions: RowAction[] | null;
+  tooltip: string | null;
   value: unknown;
 };
 export type BulkAction = {
@@ -169,6 +170,7 @@ export type Checkbox = {
   readOnly: boolean;
   required: boolean;
   tabIndex: number | null;
+  tooltip: string | null;
   value: unknown;
 };
 export type Choice = {
@@ -194,6 +196,7 @@ export type Choice = {
   readOnly: boolean;
   required: boolean;
   tabIndex: number | null;
+  tooltip: string | null;
   value: unknown;
 };
 export type CloseModalEffect = {
@@ -360,6 +363,7 @@ export type DateInput = {
   readOnly: boolean;
   required: boolean;
   tabIndex: number | null;
+  tooltip: string | null;
   value: unknown;
 };
 export type DownloadEffect = {
@@ -446,6 +450,7 @@ export type FileUpload = {
   readOnly: boolean;
   required: boolean;
   signed: boolean;
+  tooltip: string | null;
   value: unknown;
 };
 export type FilterClause = {
@@ -599,6 +604,7 @@ export type HiddenInput = {
   prefillResetOn: string[] | null;
   readOnly: boolean;
   required: boolean;
+  tooltip: string | null;
   value: unknown;
 };
 export type HttpMethod = import("@inertiajs/core").Method;
@@ -724,6 +730,7 @@ export type NumberInput = {
   slider: boolean;
   step: number | null;
   tabIndex: number | null;
+  tooltip: string | null;
   value: unknown;
 };
 export type Op =
@@ -789,6 +796,7 @@ export type PasswordInput = {
   readOnly: boolean;
   required: boolean;
   tabIndex: number | null;
+  tooltip: string | null;
   value: unknown;
 };
 export type Placement = "top" | "bottom" | "right";
@@ -832,6 +840,7 @@ export type Repeater = {
   resizableColumns: boolean;
   resizeIndicator: boolean;
   rowActions: RowAction[] | null;
+  tooltip: string | null;
   value: unknown;
 };
 export type ResetFormEffect = {
@@ -858,6 +867,7 @@ export type RichEditor = {
   prefillResetOn: string[] | null;
   readOnly: boolean;
   required: boolean;
+  tooltip: string | null;
   value: unknown;
 };
 export type RowAction = {
@@ -912,6 +922,7 @@ export type Select = {
   searchPlaceholder: string;
   searchable: boolean;
   tabIndex: number | null;
+  tooltip: string | null;
   value: unknown;
 };
 export type Sidebar = {
@@ -1025,6 +1036,7 @@ export type TextInput = {
   readOnly: boolean;
   required: boolean;
   tabIndex: number | null;
+  tooltip: string | null;
   type: string | null;
   value: unknown;
 };
@@ -1055,6 +1067,7 @@ export type Textarea = {
   required: boolean;
   rows: number | null;
   tabIndex: number | null;
+  tooltip: string | null;
   value: unknown;
 };
 export type ToastEffect = {

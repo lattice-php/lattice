@@ -22,6 +22,7 @@
             "slider": false,
             "step": null,
             "tabIndex": null,
+            "tooltip": null,
             "value": null
         },
         "type": "form.number-input"
