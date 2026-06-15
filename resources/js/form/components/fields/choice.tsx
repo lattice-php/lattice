@@ -27,6 +27,7 @@ export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
     <FormFieldFrame
       error={error}
       helperText={node.props.helperText ?? undefined}
+      tooltip={node.props.tooltip ?? undefined}
       label={node.props.label ?? ""}
       name={name}
       required={required}
