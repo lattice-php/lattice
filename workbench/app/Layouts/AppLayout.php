@@ -116,6 +116,7 @@ final class AppLayout extends LayoutDefinition
                         ->schema([
                             Breadcrumbs::make(),
                             Outlet::make(),
+                            RawBlock::make('chat-scroll-clearance')->html('<div class="h-24" aria-hidden="true"></div>'),
                         ]),
                 ]),
             FloatingPanel::make('locale-switcher-panel')
