@@ -1,7 +1,6 @@
 import { formatCell } from "../../format";
 import type { ColumnCellComponent } from "../../registry";
 
-/** Renders a numeric column right-aligned, formatting numbers for the locale. */
 export const NumberCell: ColumnCellComponent<"number"> = ({ column, value }) => {
   const number = typeof value === "number" ? value : Number(value);
   const text =
@@ -9,5 +8,5 @@ export const NumberCell: ColumnCellComponent<"number"> = ({ column, value }) => 
       ? new Intl.NumberFormat().format(number)
       : formatCell(value, column);
 
-  return <span className="block text-right tabular-nums">{text}</span>;
+  return <span className="tabular-nums">{text}</span>;
 };

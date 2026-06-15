@@ -19,6 +19,7 @@ function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): 
     filter: null,
     columns: null,
     props: null,
+    align: "start",
     ...partial,
   };
 }

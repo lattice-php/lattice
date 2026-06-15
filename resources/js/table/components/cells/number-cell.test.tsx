@@ -5,16 +5,17 @@ import { NumberCell } from "./number-cell";
 
 const column = { key: "price", label: "Price", type: "number" } as TableColumn;
 
+const numberProps = { maximumFractionDigits: null, minimumFractionDigits: null, unit: null };
+
 function renderCell(value: unknown) {
-  return render(<NumberCell column={column} props={{}} row={{}} value={value} />);
+  return render(<NumberCell column={column} props={numberProps} row={{}} value={value} />);
 }
 
 describe("NumberCell", () => {
-  it("formats a numeric value and right-aligns it", () => {
+  it("formats a numeric value", () => {
     const { container } = renderCell(1234.5);
     const span = container.querySelector("span");
 
-    expect(span?.className).toContain("text-right");
     expect(span?.textContent).toBe(new Intl.NumberFormat().format(1234.5));
   });
 

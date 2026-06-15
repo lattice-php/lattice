@@ -1,9 +1,11 @@
 import { type ReactNode, useMemo } from "react";
 import { useT } from "@lattice-php/lattice/i18n";
+import { cn } from "@lattice-php/lattice/lib/utils";
 import { useColumnResizing } from "@lattice-php/lattice/core/use-column-resizing";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import { Checkbox } from "@lattice-php/lattice/core/components/checkbox";
 import { Icon } from "@lattice-php/lattice/icons";
+import { alignJustifyItems, alignText } from "../align";
 import type { TableNode } from "../types";
 import { getBulkActions } from "../bulk";
 import { flattenColumns, getRowActions, getRowKey } from "../payload";
@@ -255,7 +257,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                     {columns.map((column) => (
                       <div
                         key={column.key}
-                        className="grid min-w-0 gap-1 p-4 align-middle"
+                        className={cn("grid min-w-0 gap-1 p-4 align-middle", alignText(column.align), alignJustifyItems(column.align))}
                         role="cell"
                       >
                         <span

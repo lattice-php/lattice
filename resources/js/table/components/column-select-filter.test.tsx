@@ -30,6 +30,7 @@ function col(filter: ColumnFilter): ColumnData {
     filter,
     columns: null,
     props: null,
+    align: "start",
   };
 }
 

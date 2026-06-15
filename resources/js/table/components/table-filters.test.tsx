@@ -14,6 +14,7 @@ function col(key: string, label: string): ColumnData {
     filter: null,
     columns: null,
     props: null,
+    align: "start",
   };
 }
 
