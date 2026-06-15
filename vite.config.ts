@@ -39,6 +39,7 @@ function libraryEntries(): string[] {
     // Exclude declaration files and type-level test files — *.test.ts, *.test-d.ts, *.d.ts — from the published bundle.
     .filter((file) => !/\.(test(-d)?|d)\.(ts|tsx)$/.test(file))
     .filter((file) => !file.startsWith("test/"))
+    .filter((file) => file !== "test-support.ts")
     .map((file) => path.join(sourceRoot, file));
 }
 
@@ -115,7 +116,12 @@ export default defineConfig(({ mode }) => {
               include: ["resources/js"],
               copyDtsFiles: true,
               // Exclude test files and declaration sources from .d.ts generation.
-              exclude: ["resources/js/**/*.test.*", "resources/js/**/*.test-d.*", "resources/js/test/**"],
+              exclude: [
+                "resources/js/**/*.test.*",
+                "resources/js/**/*.test-d.*",
+                "resources/js/test/**",
+                "resources/js/test-support.ts",
+              ],
               compilerOptions: { rootDir: sourceRoot },
               outDir: "dist",
             }),

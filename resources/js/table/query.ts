@@ -47,11 +47,9 @@ export function buildEndpoint(endpoint: string, state: TableState): string {
  * dropped so an unset filter never reaches the server.
  */
 function appendTableFilters(url: URL, tableFilters: Record<string, unknown>): void {
-  for (const [key, value] of Object.entries(tableFilters)) {
+  for (const [key, value] of Object.entries(getTableFilterParams(tableFilters))) {
     if (typeof value === "string") {
-      if (value !== "") {
-        url.searchParams.set(`tf[${key}]`, value);
-      }
+      url.searchParams.set(`tf[${key}]`, value);
 
       continue;
     }
@@ -66,14 +64,52 @@ function appendTableFilters(url: URL, tableFilters: Record<string, unknown>): vo
       continue;
     }
 
-    if (value != null && typeof value === "object") {
+    if (typeof value === "object" && value !== null) {
       for (const [subKey, subValue] of Object.entries(value as Record<string, unknown>)) {
-        if (typeof subValue === "string" && subValue !== "") {
-          url.searchParams.set(`tf[${key}][${subKey}]`, subValue);
-        }
+        url.searchParams.set(`tf[${key}][${subKey}]`, String(subValue));
       }
     }
   }
+}
+
+function getTableFilterParams(tableFilters: Record<string, unknown>): Record<string, unknown> {
+  const params: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(tableFilters)) {
+    const normalized = normalizeTableFilterValue(value);
+
+    if (normalized !== undefined) {
+      params[key] = normalized;
+    }
+  }
+
+  return params;
+}
+
+function normalizeTableFilterValue(value: unknown): unknown | undefined {
+  if (value == null || value === "") {
+    return undefined;
+  }
+
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    const items = value.filter((item) => item != null && item !== "").map(String);
+
+    return items.length > 0 ? items : undefined;
+  }
+
+  if (typeof value === "object") {
+    const entries = Object.entries(value)
+      .filter(([, subValue]) => subValue != null && subValue !== "")
+      .map(([subKey, subValue]) => [subKey, String(subValue)]);
+
+    return entries.length > 0 ? Object.fromEntries(entries) : undefined;
+  }
+
+  return String(value);
 }
 
 export function getQueryParams(state: TableState): Record<string, unknown> {
@@ -85,6 +121,12 @@ export function getQueryParams(state: TableState): Record<string, unknown> {
 
   if (state.sorts.length > 0) {
     params.sort = serializeSorts(state);
+  }
+
+  const tableFilters = getTableFilterParams(state.tableFilters);
+
+  if (Object.keys(tableFilters).length > 0) {
+    params.tf = tableFilters;
   }
 
   return params;

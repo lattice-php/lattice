@@ -95,6 +95,34 @@ test('bulk actions ignore selected ids that are not in the table result', functi
     expect($a->fresh()->status)->toBe('archived');
 });
 
+test('bulk actions resolve all matching rows with dedicated table filters', function () {
+    Lattice::tables([ProductsTable::class]);
+    Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
+
+    $featured = Product::factory()->create(['featured' => true, 'status' => 'active']);
+    $notFeatured = Product::factory()->create(['featured' => false, 'status' => 'active']);
+    $draft = Product::factory()->create(['featured' => true, 'status' => 'draft']);
+
+    $ref = app(ComponentReferenceSigner::class)->seal(
+        'bulkAction',
+        'workbench.products.archive-selected',
+        ['table' => 'workbench.products'],
+    );
+
+    patch('/lattice/bulk-actions/workbench.products.archive-selected', [
+        'allMatching' => true,
+        'tf' => [
+            'featured' => 'true',
+        ],
+    ], ['X-Lattice-Ref' => $ref])
+        ->assertOk()
+        ->assertJsonPath('data.archived', 2);
+
+    expect($featured->fresh()->status)->toBe('archived')
+        ->and($notFeatured->fresh()->status)->toBe('active')
+        ->and($draft->fresh()->status)->toBe('archived');
+});
+
 test('bulk action endpoints require a valid component reference', function () {
     Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
 

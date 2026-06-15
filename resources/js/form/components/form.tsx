@@ -108,7 +108,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
     () => collectFields(node.schema),
     [node.schema],
   );
-  const initialValues = { ...fieldValues, ...state };
+  const initialValues = useMemo(() => ({ ...fieldValues, ...state }), [fieldValues, state]);
   const shouldRenderSubmitButton = props.submitButton;
   const submitLabel = props.submitLabel ?? "Submit";
   const summaryLabel = props.validationSummaryLabel;

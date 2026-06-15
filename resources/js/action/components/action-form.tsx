@@ -41,7 +41,6 @@ type ActionFormProps = {
  */
 export function useLazyActionForm(
   endpoint: string,
-  method: string,
   componentRef: string,
   enabled: boolean,
 ): Node | null {
@@ -59,7 +58,7 @@ export function useLazyActionForm(
     void apiFetch(endpoint, {
       body: JSON.stringify({ _form: true }),
       ref: componentRef,
-      method,
+      method: "POST",
       signal: controller.signal,
       throwOnError: false,
     })
@@ -68,7 +67,7 @@ export function useLazyActionForm(
       .catch(() => {});
 
     return () => controller.abort();
-  }, [enabled, endpoint, method, componentRef]);
+  }, [enabled, endpoint, componentRef]);
 
   return node;
 }
