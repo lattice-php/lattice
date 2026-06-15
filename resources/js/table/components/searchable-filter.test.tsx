@@ -75,7 +75,7 @@ describe("searchable select filter", () => {
     render(<TableComponent node={node} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Author" }));
-    fireEvent.click(await screen.findByRole("button", { name: "Ada" }));
+    fireEvent.click(await screen.findByRole("option", { name: "Ada" }));
 
     await waitFor(() => {
       expect(fetch.mock.calls.at(-1)?.[0]).toContain("tf%5Bauthor%5D=1");
@@ -95,7 +95,7 @@ describe("searchable select filter", () => {
     render(<TableComponent node={multiNode} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Author" }));
-    fireEvent.click(await screen.findByRole("button", { name: "Ada" }));
+    fireEvent.click(await screen.findByRole("option", { name: "Ada" }));
 
     await waitFor(() => {
       expect(fetch.mock.calls.at(-1)?.[0]).toContain("tf%5Bauthor%5D%5B%5D=1");

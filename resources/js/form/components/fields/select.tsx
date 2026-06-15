@@ -1,16 +1,13 @@
 import { Icon } from "@lattice-php/lattice/icons";
-import { useEffect, useMemo, useState } from "react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@lattice-php/lattice/core/components/popover";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { Combobox } from "@lattice-php/lattice/core/components/combobox";
+import { controlSurface } from "@lattice-php/lattice/core/components/control";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { Option, RendererComponent } from "@lattice-php/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
-import { FORM_DEBOUNCE_MS, postFormAction } from "../form-transport";
+import { postFormAction } from "../form-transport";
 import { useResolvedNode } from "../resolved-nodes";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
@@ -53,17 +50,19 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
 
   const globalValue = useFormValue(name);
   const values = useFormValues();
+  const valuesRef = useRef(values);
+  valuesRef.current = values;
   const storedValue = scope ? scope.getValue(name) : globalValue;
   const selected = useMemo(() => toValues(storedValue, props.value), [storedValue, props.value]);
 
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Option[]>([]);
+  const [results, setResults] = useState<Option[] | null>(null);
   const [loading, setLoading] = useState(false);
+  const searchAbort = useRef<AbortController | null>(null);
 
   const labels = useMemo(() => {
     const map = new Map<string, string>();
-    for (const option of [...staticOptions, ...results]) {
+    for (const option of [...staticOptions, ...(results ?? [])]) {
       map.set(option.value, option.label);
     }
     return map;
@@ -72,26 +71,25 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
 
   const locked = readOnly || disabled;
 
-  useEffect(() => {
-    if (!searchable) {
-      return;
-    }
+  const search = useCallback(
+    (query: string) => {
+      searchAbort.current?.abort();
 
-    if (query.trim() === "") {
-      setResults([]);
-      setLoading(false);
+      if (query.trim() === "") {
+        setResults(null);
+        setLoading(false);
 
-      return;
-    }
+        return;
+      }
 
-    const controller = new AbortController();
-    setLoading(true);
+      const controller = new AbortController();
+      searchAbort.current = controller;
+      setLoading(true);
 
-    const timer = window.setTimeout(() => {
       void postFormAction<{ options?: Option[] }>(
         action,
         componentRef,
-        { ...values, _search: searchKey, q: query },
+        { ...valuesRef.current, _search: searchKey, q: query },
         controller.signal,
       )
         .then((response) => {
@@ -99,36 +97,24 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
           setLoading(false);
         })
         .catch(() => {});
-    }, FORM_DEBOUNCE_MS);
-
-    return () => {
-      window.clearTimeout(timer);
-      controller.abort();
-    };
-  }, [query, searchable, action, componentRef, searchKey, values]);
+    },
+    [action, componentRef, searchKey],
+  );
 
   function commit(next: string[]): void {
     change(name, multiple ? next : (next[0] ?? ""));
   }
 
-  function close(): void {
-    setOpen(false);
-    setQuery("");
-    blur(name);
-  }
-
-  function pick(option: Option): void {
+  function select(value: string): void {
     if (multiple) {
-      const next = selected.includes(option.value)
-        ? selected.filter((value) => value !== option.value)
-        : [...selected, option.value];
-      commit(next);
+      commit(
+        selected.includes(value) ? selected.filter((item) => item !== value) : [...selected, value],
+      );
 
       return;
     }
 
-    commit([option.value]);
-    close();
+    commit([value]);
   }
 
   function remove(value: string): void {
@@ -139,11 +125,7 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
     return null;
   }
 
-  const visibleOptions = !searchable
-    ? staticOptions.filter((option) => option.label.toLowerCase().includes(query.toLowerCase()))
-    : query.trim() === ""
-      ? staticOptions
-      : results;
+  const options = searchable ? (results ?? staticOptions) : staticOptions;
 
   return (
     <FormFieldFrame
@@ -188,87 +170,47 @@ export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
           </div>
         )}
 
-        <Popover
+        <Combobox
+          emptyLabel={props.emptyLabel ?? undefined}
+          loading={loading}
+          multiple={multiple}
+          onSearch={searchable ? search : undefined}
+          onSelect={select}
           open={open && !locked}
           onOpenChange={(next) => {
-            if (next) {
-              setOpen(true);
-            } else {
-              close();
+            setOpen(next);
+
+            if (!next) {
+              blur(name);
             }
           }}
-        >
-          <PopoverTrigger asChild>
-            <button
-              aria-haspopup="listbox"
-              autoFocus={props.autoFocus ?? undefined}
-              tabIndex={props.tabIndex ?? undefined}
-              data-test={`select-${name}`}
-              className={cn(
-                "flex min-h-9 w-full items-center justify-between gap-2 rounded-lt-sm border border-lt-input bg-transparent px-3 py-1.5 text-left text-sm shadow-xs transition-colors focus:border-lt-ring focus:outline-none focus:ring-[3px] focus:ring-lt-ring/50",
-                locked && "cursor-not-allowed opacity-60",
-              )}
-              disabled={locked}
-              type="button"
-            >
+          options={options}
+          searchPlaceholder={props.searchPlaceholder ?? undefined}
+          selected={selected}
+          testId={`select-${name}`}
+          trigger={
+            <>
               {!multiple && selected.length > 0 ? (
                 <span>{labelFor(selected[0])}</span>
               ) : (
                 <span className="text-lt-muted-fg">{placeholder}</span>
               )}
               <Icon name="chevrons-up-down" className="size-lt-icon-md shrink-0 text-lt-muted-fg" />
-            </button>
-          </PopoverTrigger>
-
-          <PopoverContent
-            align="start"
-            className="w-[var(--radix-popover-trigger-width)] overflow-hidden"
-          >
-            <div className="flex items-center gap-2 border-b border-lt-border px-3 py-2">
-              <input
-                aria-label={t("a11y.searchOptions", "Search options")}
-                data-test={`select-${name}-search`}
-                className="w-full bg-transparent text-sm outline-none placeholder:text-lt-muted-fg"
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={props.searchPlaceholder}
-                value={query}
-              />
-              {loading && (
-                <Icon
-                  name="loader-2"
-                  className="size-lt-icon-md shrink-0 animate-spin text-lt-muted-fg"
-                />
-              )}
-            </div>
-            <div className="max-h-60 overflow-y-auto p-1" role="listbox">
-              {visibleOptions.length === 0 ? (
-                <p className="px-3 py-2 text-sm text-lt-muted-fg">{props.emptyLabel}</p>
-              ) : (
-                visibleOptions.map((option) => {
-                  const isSelected = selected.includes(option.value);
-
-                  return (
-                    <button
-                      aria-selected={isSelected}
-                      data-test={`select-${name}-option-${option.value}`}
-                      className={cn(
-                        "flex w-full items-center justify-between gap-2 rounded-lt-sm px-3 py-1.5 text-left text-sm transition-colors hover:bg-lt-accent hover:text-lt-accent-fg",
-                        isSelected && "bg-lt-accent/60",
-                      )}
-                      key={option.value}
-                      onClick={() => pick(option)}
-                      role="option"
-                      type="button"
-                    >
-                      {option.label}
-                      {isSelected && <Icon name="check" className="size-lt-icon-md shrink-0" />}
-                    </button>
-                  );
-                })
-              )}
-            </div>
-          </PopoverContent>
-        </Popover>
+            </>
+          }
+          triggerClassName={cn(
+            controlSurface(),
+            "flex items-center justify-between gap-2 text-left",
+            locked && "cursor-not-allowed opacity-60",
+          )}
+          triggerProps={{
+            "aria-haspopup": "listbox",
+            autoFocus: props.autoFocus ?? undefined,
+            "data-test": `select-${name}`,
+            disabled: locked,
+            tabIndex: props.tabIndex ?? undefined,
+          }}
+        />
       </div>
     </FormFieldFrame>
   );
