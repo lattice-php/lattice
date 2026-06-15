@@ -8,7 +8,7 @@ export {
   dispatchActionError,
 } from "./effects/dispatch";
 export { useEffectDispatcher } from "./effects/use-effect-dispatcher";
-export { builtinEffectHandlers, mergeEffectHandlers } from "./effects/registry";
+export { builtinEffectHandlers, effectHandler, mergeEffectHandlers } from "./effects/registry";
 export { initializeTheme, useAppearance } from "./appearance";
 export { copyToClipboard, useClipboard } from "./clipboard";
 export { EventBridge } from "./events/event-bridge";
@@ -78,7 +78,12 @@ export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "./tabl
 export type { ColumnProps, ColumnPropsOf } from "./table/types";
 export type { Method } from "@inertiajs/core";
 export type { ActionEffect, ActionResponse } from "./effects/dispatch";
-export type { EffectHandler, EffectHandlerRegistry } from "./effects/registry";
+export type {
+  EffectHandler,
+  EffectHandlerRegistry,
+  EffectOf,
+  EffectProps,
+} from "./effects/registry";
 export type { ResolvedAppearance, UseAppearanceReturn } from "./appearance";
 export type { CopiedValue, CopyFn, UseClipboardReturn } from "./clipboard";
 export type { Appearance } from "./events/event-bridge";
