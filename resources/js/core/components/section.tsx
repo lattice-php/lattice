@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Icon } from "@lattice-php/lattice/icons";
-import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
+import { Renderer } from "@lattice-php/lattice/core/renderer";
 import { nodeIdentity, prefixedTestId } from "@lattice-php/lattice/core/test-id";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
@@ -31,7 +31,6 @@ const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
   const collapsible = node.props.collapsible === true;
   const rememberState = node.props.rememberState !== false;
   const headerActions = getNodes(node.props.headerActions);
-  const { fallback, missingComponent, registry } = useRendererContext();
   const identity = nodeIdentity(node);
   const storageKey = `lattice:section:${identity ?? "default"}`;
 
@@ -88,12 +87,7 @@ const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
 
           {headerActions.length > 0 && (
             <div className="flex shrink-0 items-center gap-2">
-              <Renderer
-                fallback={fallback}
-                missingComponent={missingComponent}
-                nodes={headerActions}
-                registry={registry}
-              />
+              <Renderer nodes={headerActions} />
             </div>
           )}
         </div>

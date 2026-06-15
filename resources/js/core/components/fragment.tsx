@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { apiJson } from "@lattice-php/lattice/core/api";
 import { Skeleton } from "@lattice-php/lattice/core/components/skeleton";
-import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
+import { Renderer } from "@lattice-php/lattice/core/renderer";
 import type { Node, RendererComponent, Schema } from "@lattice-php/lattice/core/types";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
 
@@ -27,7 +27,6 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
   const [components, setComponents] = useState(() => node.schema ?? []);
   const [hasLoaded, setHasLoaded] = useState(!isLazy);
   const [processing, setProcessing] = useState(isLazy && endpoint !== "");
-  const { fallback, missingComponent, registry } = useRendererContext();
 
   const load = useCallback(async (): Promise<void> => {
     if (!endpoint) {
@@ -75,12 +74,7 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
       {processing && components.length === 0 ? (
         <Skeleton className="h-16" />
       ) : (
-        <Renderer
-          fallback={fallback}
-          missingComponent={missingComponent}
-          nodes={components}
-          registry={registry}
-        />
+        <Renderer nodes={components} />
       )}
     </div>
   );

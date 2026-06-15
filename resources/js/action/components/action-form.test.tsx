@@ -1,9 +1,10 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, Renderer } from "@lattice-php/lattice";
 import type { Node } from "@lattice-php/lattice";
 import { formComponents } from "@lattice-php/lattice/form";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { actionComponents } from "../index";
 
 vi.mock("@inertiajs/react", () => ({
@@ -63,11 +64,9 @@ function lazyAction(): Node {
 }
 
 function renderAction(node: Node) {
-  return render(
-    <Renderer
-      nodes={[node]}
-      registry={createRegistry(actionComponents, formComponents).components}
-    />,
+  return renderWithRegistry(
+    <Renderer nodes={[node]} />,
+    createRegistry(actionComponents, formComponents),
   );
 }
 

@@ -1,6 +1,6 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { useEffect, useState } from "react";
-import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
+import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import type { Callout } from "@lattice-php/lattice/types/generated";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { onCallout } from "@lattice-php/lattice/toast/callout";
@@ -14,7 +14,6 @@ let nextId = 0;
 
 const Callouts: RendererComponent<"callouts"> = () => {
   const { t } = useT("lattice");
-  const { registry } = useRendererContext();
   const [callouts, setCallouts] = useState<CalloutItem[]>([]);
 
   useEffect(
@@ -53,7 +52,7 @@ const Callouts: RendererComponent<"callouts"> = () => {
             <p className="text-sm text-lt-fg">{callout.message}</p>
             {callout.action ? (
               <div className="flex flex-wrap gap-2">
-                <Renderer nodes={[callout.action]} registry={registry} />
+                <RenderNode node={callout.action} />
               </div>
             ) : null}
           </div>

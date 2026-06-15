@@ -1,13 +1,14 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { Node } from "@lattice-php/lattice/core/types";
 import ButtonComponent from "./button";
 import SectionComponent from "./section";
 import TextComponent from "./text";
 
-const { components: registry } = createRegistry({
+const registry = createRegistry({
   components: {
     button: eagerComponent(ButtonComponent),
     section: eagerComponent(SectionComponent),
@@ -17,7 +18,7 @@ const { components: registry } = createRegistry({
 });
 
 function renderSection(node: Node) {
-  return render(<Renderer nodes={[node]} registry={registry} />);
+  return renderWithRegistry(<Renderer nodes={[node]} />, registry);
 }
 
 describe("Section component", () => {

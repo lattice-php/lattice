@@ -4,7 +4,7 @@ import { Button } from "@lattice-php/lattice/core/components/button";
 import { Dialog, DialogContent, DialogHeader } from "@lattice-php/lattice/core/components/dialog";
 import { Skeleton } from "@lattice-php/lattice/core/components/skeleton";
 import { Spinner } from "@lattice-php/lattice/core/components/spinner";
-import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
+import { Renderer } from "@lattice-php/lattice/core/renderer";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { FormProvider } from "@lattice-php/lattice/form/components/context";
 import { walkFields } from "@lattice-php/lattice/form/components/field-props";
@@ -137,7 +137,6 @@ function ActionFormBody({
   formNode: Node;
   precognitive: boolean;
 }) {
-  const { fallback, missingComponent, registry } = useRendererContext();
   const values = useFormValues();
   const valuesRef = useRef(values);
   valuesRef.current = values;
@@ -245,12 +244,7 @@ function ActionFormBody({
       >
         <PrefillProvider value={{ markUserEdit }}>
           <ResolvedNodesProvider nodes={resolvedNodes}>
-            <Renderer
-              fallback={fallback}
-              missingComponent={missingComponent}
-              nodes={formNode.schema ?? []}
-              registry={registry}
-            />
+            <Renderer nodes={formNode.schema ?? []} />
           </ResolvedNodesProvider>
         </PrefillProvider>
 

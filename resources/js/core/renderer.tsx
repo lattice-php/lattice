@@ -1,8 +1,8 @@
-import { createContext, Suspense, useContext, useMemo } from "react";
+import { Suspense } from "react";
 import type { ReactNode } from "react";
-import type { ComponentRegistry } from "./registry";
-import type { Node, UnknownComponent } from "./types";
+import type { Node } from "./types";
 import { useCollapsed } from "./collapsed-context";
+import { useComponentRegistry } from "./registry-context";
 
 function MissingComponent({ node }: { node: Node }) {
   if (!import.meta.env.DEV) {
@@ -12,60 +12,23 @@ function MissingComponent({ node }: { node: Node }) {
   return <div data-lattice-missing-component={node.type}>Missing component: {node.type}</div>;
 }
 
-type RendererContextValue = {
-  fallback: ReactNode;
-  missingComponent: UnknownComponent;
-  registry: ComponentRegistry;
-};
-
-const RendererContext = createContext<RendererContextValue | null>(null);
-
-export function useRendererContext(): RendererContextValue {
-  const context = useContext(RendererContext);
-
-  if (!context) {
-    throw new Error("Renderer context is not available.");
-  }
-
-  return context;
-}
-
 function nodeKey(node: Node, index: number): string {
   return node.key ?? node.id ?? `${node.type}-${index}`;
 }
 
-export function Renderer({
-  fallback = null,
-  missingComponent: UnknownComponent = MissingComponent,
-  nodes,
-  registry,
-}: {
-  fallback?: ReactNode;
-  missingComponent?: UnknownComponent;
-  nodes: Node[];
-  registry: ComponentRegistry;
-}) {
-  const context = useMemo(
-    () => ({
-      fallback,
-      missingComponent: UnknownComponent,
-      registry,
-    }),
-    [fallback, registry, UnknownComponent],
-  );
+/** Renders a schema (list of nodes) against the active component registry. */
+export function Renderer({ nodes }: { nodes: Node[] }): ReactNode {
+  return nodes.map((node, index) => <NodeRenderer key={nodeKey(node, index)} node={node} />);
+}
 
-  return (
-    <RendererContext.Provider value={context}>
-      {nodes.map((node, index) => (
-        <NodeRenderer key={nodeKey(node, index)} node={node} />
-      ))}
-    </RendererContext.Provider>
-  );
+/** Renders a single node against the active component registry. */
+export function RenderNode({ node }: { node: Node }): ReactNode {
+  return <NodeRenderer node={node} />;
 }
 
 function NodeRenderer({ node }: { node: Node }) {
   const collapsed = useCollapsed();
-  const { fallback, missingComponent: UnknownComponent, registry } = useRendererContext();
+  const registry = useComponentRegistry();
   const registration = registry[node.type];
 
   if (collapsed && node.props?.hideWhenCollapsed === true) {
@@ -73,30 +36,21 @@ function NodeRenderer({ node }: { node: Node }) {
   }
 
   if (!registration) {
-    return <UnknownComponent node={node} />;
+    return <MissingComponent node={node} />;
   }
 
   const Component = registration.component;
-  const children = node.schema?.length
-    ? node.schema.map((child, index) => <NodeRenderer key={nodeKey(child, index)} node={child} />)
-    : null;
-
+  const children = node.schema?.length ? <Renderer nodes={node.schema} /> : null;
   const renderedComponent = <Component node={node}>{children}</Component>;
 
   if (registration.mode === "lazy") {
     const FallbackComponent = registration.fallback;
-    const suspenseFallback = FallbackComponent ? (
+    const fallback = FallbackComponent ? (
       <FallbackComponent node={node}>{null}</FallbackComponent>
-    ) : (
-      fallback
-    );
+    ) : null;
 
-    return <Suspense fallback={suspenseFallback}>{renderedComponent}</Suspense>;
+    return <Suspense fallback={fallback}>{renderedComponent}</Suspense>;
   }
 
   return renderedComponent;
-}
-
-export function RenderNode({ node }: { node: Node }): ReactNode {
-  return <NodeRenderer node={node} />;
 }

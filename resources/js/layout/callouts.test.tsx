@@ -5,7 +5,6 @@ import { vi } from "vitest";
 import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 import { Provider } from "@lattice-php/lattice/provider";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
-import { registry } from "@lattice-php/lattice/registry";
 
 vi.mock("@inertiajs/react", () => ({
   Link: ({ children, href }: { children: ReactNode; href: string }) => (
@@ -43,10 +42,7 @@ describe("Callouts slot", () => {
   it("renders callouts emitted on the bus and dismisses them", () => {
     render(
       <Provider toaster={false}>
-        <Renderer
-          nodes={[{ type: "callouts", id: "c", props: {} } as never]}
-          registry={registry.components}
-        />
+        <Renderer nodes={[{ type: "callouts", id: "c", props: {} } as never]} />
       </Provider>,
     );
 
@@ -60,10 +56,7 @@ describe("Callouts slot", () => {
   it("omits the dismiss button when the callout is not dismissible", () => {
     render(
       <Provider toaster={false}>
-        <Renderer
-          nodes={[{ type: "callouts", id: "c", props: {} } as never]}
-          registry={registry.components}
-        />
+        <Renderer nodes={[{ type: "callouts", id: "c", props: {} } as never]} />
       </Provider>,
     );
 
@@ -76,10 +69,7 @@ describe("Callouts slot", () => {
   it("renders a link action inside the callout", () => {
     render(
       <Provider toaster={false}>
-        <Renderer
-          nodes={[{ type: "callouts", id: "c", props: {} } as never]}
-          registry={registry.components}
-        />
+        <Renderer nodes={[{ type: "callouts", id: "c", props: {} } as never]} />
       </Provider>,
     );
 

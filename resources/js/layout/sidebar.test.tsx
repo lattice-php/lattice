@@ -1,11 +1,12 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { Node } from "@lattice-php/lattice/core/types";
 import SidebarComponent from "./sidebar";
 
-const { components: registry } = createRegistry({
+const registry = createRegistry({
   components: { sidebar: eagerComponent(SidebarComponent) },
   name: "test/sidebar",
 });
@@ -13,7 +14,7 @@ const { components: registry } = createRegistry({
 function renderSidebar(props: { collapsible: boolean; rememberState: boolean }) {
   const node: Node = { id: "app-sidebar", props, type: "sidebar" };
 
-  return render(<Renderer nodes={[node]} registry={registry} />);
+  return renderWithRegistry(<Renderer nodes={[node]} />, registry);
 }
 
 describe("Sidebar", () => {

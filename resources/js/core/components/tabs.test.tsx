@@ -1,8 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import TabComponent, { TabsComponent } from "./tabs";
 
@@ -15,7 +16,7 @@ vi.mock("@inertiajs/react", () => ({
 const TextProbe: RendererComponent<"text"> = ({ node }) => <span>{String(node.props?.text)}</span>;
 
 function renderTabs(tabsProps: Record<string, unknown>) {
-  const { components: registry } = createRegistry({
+  const registry = createRegistry({
     components: {
       tab: eagerComponent(TabComponent),
       tabs: eagerComponent(TabsComponent),
@@ -30,7 +31,7 @@ function renderTabs(tabsProps: Record<string, unknown>) {
     type: "tab",
   });
 
-  return render(
+  return renderWithRegistry(
     <Renderer
       nodes={[
         {
@@ -48,8 +49,8 @@ function renderTabs(tabsProps: Record<string, unknown>) {
           type: "tabs",
         },
       ]}
-      registry={registry}
     />,
+    registry,
   );
 }
 
@@ -60,7 +61,7 @@ describe("Lattice tabs component", () => {
   });
 
   it("switches panels on the client without navigation", () => {
-    const { components: registry } = createRegistry({
+    const registry = createRegistry({
       components: {
         tab: eagerComponent(TabComponent),
         tabs: eagerComponent(TabsComponent),
@@ -69,7 +70,7 @@ describe("Lattice tabs component", () => {
       name: "test/tabs",
     });
 
-    render(
+    renderWithRegistry(
       <Renderer
         nodes={[
           {
@@ -112,8 +113,8 @@ describe("Lattice tabs component", () => {
             type: "tabs",
           },
         ]}
-        registry={registry}
       />,
+      registry,
     );
 
     expect(screen.getByRole("tab", { name: "Profile" })).toHaveAttribute("aria-selected", "true");
@@ -131,7 +132,7 @@ describe("Lattice tabs component", () => {
   it("uses the configured query key for the initial active tab and url updates", () => {
     window.history.replaceState({}, "", "/settings?settings-tab=security");
 
-    const { components: registry } = createRegistry({
+    const registry = createRegistry({
       components: {
         tab: eagerComponent(TabComponent),
         tabs: eagerComponent(TabsComponent),
@@ -140,7 +141,7 @@ describe("Lattice tabs component", () => {
       name: "test/tabs",
     });
 
-    render(
+    renderWithRegistry(
       <Renderer
         nodes={[
           {
@@ -183,8 +184,8 @@ describe("Lattice tabs component", () => {
             type: "tabs",
           },
         ]}
-        registry={registry}
       />,
+      registry,
     );
 
     expect(screen.getByRole("tab", { name: "Security" })).toHaveAttribute("aria-selected", "true");
@@ -196,7 +197,7 @@ describe("Lattice tabs component", () => {
   });
 
   it("visits the query url when switching to a confirmed tab", () => {
-    const { components: registry } = createRegistry({
+    const registry = createRegistry({
       components: {
         tab: eagerComponent(TabComponent),
         tabs: eagerComponent(TabsComponent),
@@ -205,7 +206,7 @@ describe("Lattice tabs component", () => {
       name: "test/tabs",
     });
 
-    render(
+    renderWithRegistry(
       <Renderer
         nodes={[
           {
@@ -244,8 +245,8 @@ describe("Lattice tabs component", () => {
             type: "tabs",
           },
         ]}
-        registry={registry}
       />,
+      registry,
     );
 
     fireEvent.click(screen.getByRole("tab", { name: "Security" }));
@@ -257,7 +258,7 @@ describe("Lattice tabs component", () => {
   });
 
   it("only renders inactive panel children after the tab is opened", () => {
-    const { components: registry } = createRegistry({
+    const registry = createRegistry({
       components: {
         tab: eagerComponent(TabComponent),
         tabs: eagerComponent(TabsComponent),
@@ -266,7 +267,7 @@ describe("Lattice tabs component", () => {
       name: "test/tabs",
     });
 
-    render(
+    renderWithRegistry(
       <Renderer
         nodes={[
           {
@@ -308,8 +309,8 @@ describe("Lattice tabs component", () => {
             type: "tabs",
           },
         ]}
-        registry={registry}
       />,
+      registry,
     );
 
     expect(screen.getByText("Loaded immediately")).toBeVisible();

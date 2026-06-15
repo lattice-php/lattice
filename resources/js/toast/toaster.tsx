@@ -1,12 +1,11 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import * as Toast from "@radix-ui/react-toast";
 import { useEffect, useState } from "react";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import type { ToastMessage } from "@lattice-php/lattice/types/generated";
 import { onToast } from "@lattice-php/lattice/toast/toast";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
-import { useComponentRegistry } from "@lattice-php/lattice/provider";
 import { variantStyles } from "@lattice-php/lattice/toast/variant-styles";
 
 type ToastItem = ToastMessage & { id: number };
@@ -15,7 +14,6 @@ let nextId = 0;
 
 export function Toaster({ duration = 4000 }: { duration?: number }) {
   const { t } = useT("lattice");
-  const registry = useComponentRegistry();
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
   function dismiss(id: number): void {
@@ -54,7 +52,7 @@ export function Toaster({ duration = 4000 }: { duration?: number }) {
             <Toast.Title className="text-sm text-lt-fg">{toast.message}</Toast.Title>
             {toast.action ? (
               <div className="flex flex-wrap gap-2">
-                <Renderer nodes={[toast.action]} registry={registry} />
+                <RenderNode node={toast.action} />
               </div>
             ) : null}
           </div>
