@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\TableQuery;
@@ -16,7 +17,7 @@ it('serializes the table component wire shape', function (): void {
         ->endpoint('/tables/demo')
         ->columns([
             TextColumn::make('name')->label('Name')->width(ColumnWidth::Lg)->sortable()->filterable(),
-            TextColumn::make('price')->label('Price')->numeric(),
+            NumberColumn::make('price')->label('Price'),
         ])
         ->layout('table')
         ->striped(true)

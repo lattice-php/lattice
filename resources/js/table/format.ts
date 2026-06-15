@@ -1,12 +1,11 @@
-import type { TextColumnProps } from "@lattice-php/lattice/types/generated";
-import type { TableColumn, TableRow } from "./types";
+import type { ColumnPropsOf, TableColumn, TableRow } from "./types";
 
 export function formatCell(value: unknown, column?: TableColumn): string {
   if (value === null || value === undefined) {
     return "";
   }
 
-  const date = (column?.props as TextColumnProps | null)?.date;
+  const date = (column?.props as ColumnPropsOf<"text"> | null)?.date;
 
   if (date) {
     return formatDate(value, date.format ?? null);
@@ -50,7 +49,7 @@ function formatDate(value: unknown, format: string | null): string {
 }
 
 export function resolveLink(column: TableColumn, row: TableRow, value: unknown): string | null {
-  const link = (column.props as TextColumnProps | null)?.link;
+  const link = (column.props as ColumnPropsOf<"text"> | null)?.link;
 
   if (!link) {
     return null;

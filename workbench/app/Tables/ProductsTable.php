@@ -10,8 +10,10 @@ use Lattice\Lattice\Actions\Components\BulkAction;
 use Lattice\Lattice\Attributes\Table;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
+use Lattice\Lattice\Tables\Columns\BooleanColumn;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\ImageColumn;
+use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\Filters\BaseFilter;
@@ -43,13 +45,13 @@ class ProductsTable extends EloquentTableDefinition
             ImageColumn::make('image')->label(__('workbench.tables.columns.image'))->size(44),
             TextColumn::make('name')->label(__('workbench.tables.columns.name'))->sortable()->filterable(),
             TextColumn::make('sku')->label(__('workbench.tables.columns.sku'))->sortable()->filterable(),
-            TextColumn::make('default_price')->label(__('workbench.tables.columns.default-price'))->sortable()->numeric(),
+            NumberColumn::make('default_price')->label(__('workbench.tables.columns.default-price'))->sortable(),
             StatusBadgeColumn::make('status')->label(__('workbench.tables.columns.status'))->filterOptions([
                 'draft' => 'Draft',
                 'active' => 'Active',
                 'archived' => 'Archived',
             ])->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
-            TextColumn::make('featured')->label(__('workbench.tables.columns.featured'))->sortable()->boolean()->filterable(),
+            BooleanColumn::make('featured')->label(__('workbench.tables.columns.featured'))->sortable()->filterable(),
             TextColumn::make('updated_at')->label(__('workbench.tables.columns.updated-at'))->sortable()->date('Y-m-d H:i:s')->filterable(),
         ];
     }

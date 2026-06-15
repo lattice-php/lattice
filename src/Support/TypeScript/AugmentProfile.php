@@ -36,12 +36,6 @@ final class AugmentProfile implements TypeScriptProfile
         $entries = [];
 
         foreach ($discovered as $component) {
-            if ($component->category === 'column' && $component->propsClass !== null) {
-                $entries[$component->propsClass] = [$component->type, 'column'];
-
-                continue;
-            }
-
             $entries[$component->class] = [$component->type, $component->category];
         }
 

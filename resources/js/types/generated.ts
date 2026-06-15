@@ -44,9 +44,10 @@ export type Align = "center" | "left" | "start" | "stretch";
 export type Badge = {
   label: string;
 };
-export type BadgeColumnProps = {
-  readonly colors: Record<string | number, string> | null;
+export type BadgeColumn = {
+  colors: Record<string | number, string> | null;
 };
+export type BooleanColumn = Record<string, never>;
 export type Breadcrumbs = Record<string, never>;
 export type Builder = {
   addLabel: string | null;
@@ -220,12 +221,14 @@ export type ColumnFilter = {
   readonly searchable: boolean;
 };
 export type ColumnPropsMap = {
-  badge: BadgeColumnProps;
-  icon: IconColumnProps;
-  image: ImageColumnProps;
-  text: TextColumnProps;
+  badge: BadgeColumn;
+  boolean: BooleanColumn;
+  icon: IconColumn;
+  image: ImageColumn;
+  number: NumberColumn;
+  text: TextColumn;
 };
-export type ColumnType = "text" | "stack" | "badge" | "icon" | "image";
+export type ColumnType = "text" | "boolean" | "number" | "stack" | "badge" | "icon" | "image";
 export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type Condition = {
   readonly field: string;
@@ -611,14 +614,14 @@ export type Icon = {
   name: string;
   size: Size;
 };
-export type IconColumnProps = {
-  readonly icon: string | null;
-  readonly icons: Record<string | number, string> | null;
-  readonly colors: Record<string | number, string> | null;
+export type IconColumn = {
+  colors: Record<string | number, string> | null;
+  icon: string | null;
+  icons: Record<string | number, string> | null;
 };
-export type ImageColumnProps = {
-  readonly circular: boolean;
-  readonly size: number | null;
+export type ImageColumn = {
+  circular: boolean;
+  size: number | null;
 };
 export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 export type LayoutNode =
@@ -693,6 +696,7 @@ export type Node =
   | LayoutNode
   | ChatNode;
 export type NodeType = Node["type"];
+export type NumberColumn = Record<string, never>;
 export type NumberInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
@@ -987,12 +991,12 @@ export type Text = {
   size: Size;
   text: string;
 };
-export type TextColumnProps = {
-  readonly date: {
+export type TextColumn = {
+  copyable: boolean;
+  date: {
     format: string | null;
   } | null;
-  readonly copyable: boolean;
-  readonly link: {
+  link: {
     href: string | null;
     external: boolean;
   } | null;

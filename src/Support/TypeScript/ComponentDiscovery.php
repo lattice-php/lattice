@@ -50,7 +50,6 @@ final class ComponentDiscovery
                 interactive: in_array(IsInteractive::class, class_uses_recursive($class), true),
                 category: $isColumn ? 'column' : (is_subclass_of($class, Field::class) ? 'field' : 'component'),
                 domain: $this->domainFor($class),
-                propsClass: $isColumn ? $attribute->props : null,
             );
         }
 

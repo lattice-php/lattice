@@ -23,13 +23,11 @@ it('scaffolds a column class, a cell tsx and registers it in columns.ts', functi
         expect(File::get($columnFile))
             ->toContain('namespace App\\Tables\\Columns;')
             ->toContain('#[AsColumn(')
-            ->toContain('StatusBadgeProps::class')
             ->toContain('class StatusBadge extends Column')
-            ->toContain('public function toData(): ColumnData');
+            ->not->toContain('toData')
+            ->not->toContain('Props');
 
-        $propsFile = app_path('Tables/Columns/StatusBadgeProps.php');
-        expect(File::exists($propsFile))->toBeTrue()
-            ->and(File::get($propsFile))->toContain('implements ColumnProps');
+        expect(File::exists(app_path('Tables/Columns/StatusBadgeProps.php')))->toBeFalse();
 
         expect(File::get(resource_path('js/lattice/columns/status-badge.tsx')))
             ->toContain('ColumnCellComponent')

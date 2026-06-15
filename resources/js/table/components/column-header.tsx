@@ -1,4 +1,5 @@
 import { Icon } from "@lattice-php/lattice/icons";
+import { cn } from "@lattice-php/lattice/lib/utils";
 import type { HTMLAttributes } from "react";
 import { getColumnAriaSort, getColumnSort } from "../query";
 import type { TableColumn, TableSort, TableState } from "../types";
@@ -35,27 +36,33 @@ export function ColumnHeader({
   state: TableState;
 }) {
   const columnSort = getColumnSort(state, column);
+  const alignEnd = column.type === "number";
 
   return (
     <div
       aria-sort={getColumnAriaSort(columnSort)}
-      className="relative min-w-0 px-4 py-3 pr-5 text-left align-middle font-medium text-lt-muted-fg"
+      className={cn(
+        "relative min-w-0 px-4 py-3 pr-5 align-middle font-medium text-lt-muted-fg",
+        alignEnd ? "text-right" : "text-left",
+      )}
       role="columnheader"
     >
       {column.sortable ? (
         <button
           type="button"
           aria-label={`Sort ${column.label}`}
-          className="flex w-full items-center gap-1.5 font-medium"
+          className={cn("flex w-full items-center gap-1.5 font-medium", alignEnd && "justify-end")}
           data-test={`sort-${column.key}`}
           disabled={processing}
           onClick={() => sort(column)}
         >
-          <span className="min-w-0 flex-1 truncate text-left">{column.label}</span>
+          <span className={cn("min-w-0 flex-1 truncate", alignEnd ? "text-right" : "text-left")}>
+            {column.label}
+          </span>
           <SortIndicator sort={columnSort} />
         </button>
       ) : (
-        <span className="block truncate">{column.label}</span>
+        <span className={cn("block truncate", alignEnd && "text-right")}>{column.label}</span>
       )}
       {resizeHandleProps && <div {...resizeHandleProps} />}
     </div>

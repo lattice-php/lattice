@@ -12,7 +12,7 @@ beforeEach(function () {
     app()->bind(TypeScriptProfile::class, AugmentProfile::class);
 });
 
-it('writes a ColumnProps augmentation from the column props VO', function () {
+it('writes a ColumnProps augmentation from the column class public props', function () {
     $output = base_path('resources/js/lattice/generated-column.d.ts');
 
     config()->set('lattice.typescript.output', $output);

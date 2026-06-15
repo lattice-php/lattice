@@ -59,13 +59,9 @@
                     },
                     "key": "price",
                     "label": "Price",
-                    "props": {
-                        "copyable": false,
-                        "date": null,
-                        "link": null
-                    },
+                    "props": null,
                     "sortable": true,
-                    "type": "text",
+                    "type": "number",
                     "width": "md"
                 },
                 {
@@ -73,13 +69,9 @@
                     "filter": null,
                     "key": "featured",
                     "label": "Featured",
-                    "props": {
-                        "copyable": false,
-                        "date": null,
-                        "link": null
-                    },
+                    "props": null,
                     "sortable": null,
-                    "type": "text",
+                    "type": "boolean",
                     "width": "md"
                 },
                 {

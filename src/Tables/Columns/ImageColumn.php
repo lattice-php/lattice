@@ -6,12 +6,12 @@ namespace Lattice\Lattice\Tables\Columns;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
-#[AsColumn(ColumnType::Image, props: ImageColumnProps::class)]
+#[AsColumn(ColumnType::Image)]
 class ImageColumn extends Column
 {
-    protected bool $circular = false;
+    public bool $circular = false;
 
-    protected ?int $size = null;
+    public ?int $size = null;
 
     /**
      * Render the image as a circle — useful for avatars.
@@ -31,20 +31,5 @@ class ImageColumn extends Column
         $this->size = $size;
 
         return $this;
-    }
-
-    #[\Override]
-    public function toData(): ColumnData
-    {
-        return new ColumnData(
-            key: $this->key,
-            label: $this->label,
-            type: $this->resolvedType(),
-            width: $this->resolvedWidth(),
-            props: new ImageColumnProps(
-                circular: $this->circular,
-                size: $this->size,
-            ),
-        );
     }
 }

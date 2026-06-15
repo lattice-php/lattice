@@ -9,6 +9,8 @@ use Lattice\Lattice\Attributes\TypeScript;
 enum ColumnType: string
 {
     case Text = 'text';
+    case Boolean = 'boolean';
+    case Number = 'number';
     case Stack = 'stack';
     case Badge = 'badge';
     case Icon = 'icon';

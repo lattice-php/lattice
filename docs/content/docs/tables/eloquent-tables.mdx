@@ -10,6 +10,7 @@ columns, and pagination mode.
 ```php
 use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
@@ -24,7 +25,7 @@ class ProductsTable extends EloquentTableDefinition
     {
         return [
             TextColumn::make('name')->sortable()->filterable(),
-            TextColumn::make('price')->numeric()->sortable()->filterable(),
+            NumberColumn::make('price')->sortable()->filterable(),
         ];
     }
 

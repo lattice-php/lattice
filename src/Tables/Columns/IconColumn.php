@@ -7,20 +7,20 @@ use BackedEnum;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
-#[AsColumn(ColumnType::Icon, props: IconColumnProps::class)]
+#[AsColumn(ColumnType::Icon)]
 class IconColumn extends Column
 {
-    protected ?string $icon = null;
+    public ?string $icon = null;
 
     /**
-     * @var array<array-key, string>
+     * @var array<array-key, string>|null
      */
-    protected array $icons = [];
+    public ?array $icons = null;
 
     /**
-     * @var array<array-key, string>
+     * @var array<array-key, string>|null
      */
-    protected array $colors = [];
+    public ?array $colors = null;
 
     /**
      * The icon shown for every row.
@@ -39,7 +39,7 @@ class IconColumn extends Column
      */
     public function icons(array $icons): static
     {
-        $this->icons = array_map(self::iconValue(...), $icons);
+        $this->icons = $icons === [] ? null : array_map(self::iconValue(...), $icons);
 
         return $this;
     }
@@ -57,24 +57,8 @@ class IconColumn extends Column
      */
     public function colors(array $colors): static
     {
-        $this->colors = $colors;
+        $this->colors = $colors === [] ? null : $colors;
 
         return $this;
-    }
-
-    #[\Override]
-    public function toData(): ColumnData
-    {
-        return new ColumnData(
-            key: $this->key,
-            label: $this->label,
-            type: $this->resolvedType(),
-            width: $this->resolvedWidth(),
-            props: new IconColumnProps(
-                icon: $this->icon,
-                icons: $this->icons === [] ? null : $this->icons,
-                colors: $this->colors === [] ? null : $this->colors,
-            ),
-        );
     }
 }

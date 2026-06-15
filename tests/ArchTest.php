@@ -133,7 +133,7 @@ arch('the support utilities do not depend on the feature domains')
 /*
  * Cross-boundary contracts live in a `Contracts` namespace and are interfaces.
  * Capability interfaces that exist only to be implemented by a single local
- * hierarchy (e.g. Tables\Columns\{Filterable, Sortable, ColumnProps},
+ * hierarchy (e.g. Tables\Columns\{Filterable, Sortable},
  * Support\TypeScript\TypeScriptProfile) deliberately sit beside their
  * implementations and are not part of this convention.
  */

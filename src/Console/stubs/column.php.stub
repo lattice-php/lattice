@@ -4,19 +4,11 @@ namespace {{ namespace }};
 
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Columns\ColumnData;
 
-#[AsColumn(type: '{{ type }}', props: {{ class }}Props::class)]
+#[AsColumn(type: '{{ type }}')]
 class {{ class }} extends Column
 {
-    public function toData(): ColumnData
-    {
-        return new ColumnData(
-            key: $this->key,
-            label: $this->label,
-            type: $this->resolvedType(),
-            width: $this->resolvedWidth(),
-            props: new {{ class }}Props,
-        );
-    }
+    // Add public properties here; they are reflected into the column's
+    // TypeScript props and passed to the cell renderer. Keep internal state
+    // (filter flags, helpers) protected so it stays off the wire.
 }

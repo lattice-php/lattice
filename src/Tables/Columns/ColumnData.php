@@ -10,14 +10,15 @@ use Lattice\Lattice\Tables\Enums\ColumnType;
 
 /**
  * The common wire shape of a table column. Built by each Column's toData(). The
- * type-specific payload lives in `props`, a per-column ColumnProps value object;
- * client code narrows it via `ColumnPropsOf<type>`.
+ * type-specific payload lives in `props`, reflected from the column's public
+ * properties; client code narrows it via `ColumnPropsOf<type>`.
  */
 #[TypeScript]
 final readonly class ColumnData implements JsonSerializable
 {
     /**
      * @param  array<int, ColumnData>|null  $columns
+     * @param  array<string, mixed>|null  $props
      */
     public function __construct(
         public string $key,
@@ -27,7 +28,7 @@ final readonly class ColumnData implements JsonSerializable
         public ?bool $sortable = null,
         public ?ColumnFilter $filter = null,
         public ?array $columns = null,
-        public ?ColumnProps $props = null,
+        public ?array $props = null,
     ) {}
 
     /**

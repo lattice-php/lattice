@@ -10,6 +10,7 @@ use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
@@ -35,7 +36,7 @@ class SalesOrdersTable extends EloquentTableDefinition
                 ->label(__('workbench.commerce.sales-orders.columns.status'))
                 ->filterable(Op::Equals)
                 ->colorMap(['draft' => 'gray', 'placed' => 'green', 'cancelled' => 'red']),
-            TextColumn::make('total')->label(__('workbench.commerce.sales-orders.columns.total'))->numeric(),
+            NumberColumn::make('total')->label(__('workbench.commerce.sales-orders.columns.total')),
         ];
     }
 

@@ -7,9 +7,8 @@ use BackedEnum;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\Component as ComponentAttribute;
 use Lattice\Lattice\Attributes\SerializationHook;
-use ReflectionClass;
+use Lattice\Lattice\Core\Components\Concerns\ReflectsWireProps;
 use ReflectionMethod;
-use ReflectionProperty;
 use Spatie\Attributes\Attributes;
 use Spatie\Attributes\AttributeTarget;
 
@@ -18,15 +17,12 @@ use Spatie\Attributes\AttributeTarget;
  */
 abstract class Component implements JsonSerializable
 {
+    use ReflectsWireProps;
+
     /**
      * @var array<class-string, list<string>>
      */
     private static array $serializationHookCache = [];
-
-    /**
-     * @var array<class-string, list<ReflectionProperty>>
-     */
-    private static array $wirePropertyCache = [];
 
     protected bool $shouldRender = true;
 
@@ -123,43 +119,6 @@ abstract class Component implements JsonSerializable
         }
 
         return $props;
-    }
-
-    /**
-     * Reflects the public typed properties (including inherited and trait
-     * properties) into the full wire shape: every initialized prop is emitted,
-     * keeping null and empty-array values so the payload mirrors the generated
-     * type one-to-one. Backed enums serialize to their value.
-     *
-     * @return array<string, mixed>
-     */
-    protected function wireProps(): array
-    {
-        $props = [];
-
-        foreach (self::wireProperties(static::class) as $property) {
-            if (! $property->isInitialized($this)) {
-                continue;
-            }
-
-            $value = $property->getValue($this);
-
-            $props[$property->getName()] = $value instanceof BackedEnum ? $value->value : $value;
-        }
-
-        return $props;
-    }
-
-    /**
-     * @param  class-string  $class
-     * @return list<ReflectionProperty>
-     */
-    private static function wireProperties(string $class): array
-    {
-        return self::$wirePropertyCache[$class] ??= array_values(array_filter(
-            (new ReflectionClass($class))->getProperties(ReflectionProperty::IS_PUBLIC),
-            static fn (ReflectionProperty $property): bool => ! $property->isStatic(),
-        ));
     }
 
     /**
