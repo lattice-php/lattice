@@ -50,6 +50,18 @@ describe("foldFrame", () => {
     foldFrame(start, { type: "text", value: "Hello" });
     expect(start.at(-1)!.parts).toEqual([]);
   });
+
+  it("returns the input unchanged when the last message is not an assistant", () => {
+    const messages: ChatMessage[] = [
+      { id: "u", role: "user", parts: [{ type: "text", text: "hi" }] },
+    ];
+    expect(foldFrame(messages, { type: "text", value: "ignored" })).toBe(messages);
+  });
+
+  it("returns the input unchanged for frames that are neither text nor part", () => {
+    const messages = [assistant([])];
+    expect(foldFrame(messages, { type: "done" })).toBe(messages);
+  });
 });
 
 describe("useChat", () => {
@@ -119,6 +131,37 @@ describe("useChat", () => {
     act(() => result.current.sendMessage("hi"));
     await waitFor(() => expect(result.current.status).toBe("error"));
     expect(result.current.error).toBe("boom");
+  });
+
+  it("sets status to error when the transport throws an Error", async () => {
+    const transport: ChatTransport = async function* () {
+      yield { type: "text", value: "partial" };
+      throw new Error("network down");
+    };
+    const { result } = renderHook(() => useChat({ endpoint: "/x", transport }));
+    act(() => result.current.sendMessage("hi"));
+    await waitFor(() => expect(result.current.status).toBe("error"));
+    expect(result.current.error).toBe("network down");
+  });
+
+  it("stringifies non-Error failures thrown by the transport", async () => {
+    const transport: ChatTransport = async function* () {
+      const failure: unknown = "boom-string";
+      yield { type: "text", value: "partial" };
+      throw failure;
+    };
+    const { result } = renderHook(() => useChat({ endpoint: "/x", transport }));
+    act(() => result.current.sendMessage("hi"));
+    await waitFor(() => expect(result.current.status).toBe("error"));
+    expect(result.current.error).toBe("boom-string");
+  });
+
+  it("regenerate does nothing before any message has been sent", () => {
+    const transport = scriptedTransport([{ type: "done" }]);
+    const { result } = renderHook(() => useChat({ endpoint: "/x", transport }));
+    act(() => result.current.regenerate());
+    expect(result.current.messages).toEqual([]);
+    expect(result.current.status).toBe("idle");
   });
 
   it("ignores blank messages", () => {

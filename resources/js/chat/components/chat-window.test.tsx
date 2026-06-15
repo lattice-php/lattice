@@ -97,6 +97,37 @@ describe("ChatWindow component", () => {
     expect(afterReopen).toHaveLength(1);
   });
 
+  it("does not seed messages when the history response is not ok", async () => {
+    const fetchMock = vi.fn<(url: string, init?: RequestInit) => Promise<Response>>(
+      async (_url, init) =>
+        (init?.method ?? "GET") === "GET"
+          ? ({ ok: false, status: 500 } as unknown as Response)
+          : historyResponse(),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderChatWindow();
+    fireEvent.click(screen.getByTestId("chat-launcher"));
+
+    expect(await screen.findByTestId("chat-panel")).toBeVisible();
+    expect(screen.queryByText("Hi")).toBeNull();
+  });
+
+  it("falls back to defaults when the title, placeholder, and stream endpoint are omitted", async () => {
+    const fetchMock = vi.fn<() => Promise<Response>>(async () => historyResponse());
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      <ChatWindow node={fakeNode({ type: "chat.window", props: { historyEndpoint: "/h" } })}>
+        {null}
+      </ChatWindow>,
+    );
+    fireEvent.click(screen.getByTestId("chat-launcher"));
+
+    expect(await screen.findByTestId("chat-panel")).toBeVisible();
+    expect(screen.getByTestId("chat-close")).toBeVisible();
+  });
+
   it("sends a message and streams the assistant reply", async () => {
     const fetchMock = vi.fn<(url: string, init?: RequestInit) => Promise<Response>>(
       async (_url, init) => {

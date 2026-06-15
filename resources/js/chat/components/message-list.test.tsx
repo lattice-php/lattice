@@ -1,8 +1,12 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ChatMessage } from "../types";
 import "../parts/text";
 import { MessageList } from "./message-list";
+
+afterEach(() => {
+  Reflect.deleteProperty(Element.prototype, "scrollIntoView");
+});
 
 const messages: ChatMessage[] = [
   { id: "1", role: "user", parts: [{ type: "text", text: "First message" }] },
@@ -34,6 +38,18 @@ describe("MessageList", () => {
     expect(container).toBeInTheDocument();
     expect(screen.queryByTestId("chat-message-user")).not.toBeInTheDocument();
     expect(screen.queryByTestId("chat-message-assistant")).not.toBeInTheDocument();
+  });
+
+  it("scrolls the bottom anchor into view when messages change", () => {
+    const scrollIntoView = vi.fn<() => void>();
+    Object.defineProperty(Element.prototype, "scrollIntoView", {
+      configurable: true,
+      value: scrollIntoView,
+    });
+
+    render(<MessageList messages={messages} />);
+
+    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth" });
   });
 
   it("renders messages in document order", () => {

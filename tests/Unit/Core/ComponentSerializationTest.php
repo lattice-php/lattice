@@ -8,6 +8,7 @@ use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Badge;
 use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\Card;
+use Lattice\Lattice\Core\Components\ChatWindow;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\FloatingPanel;
 use Lattice\Lattice\Core\Components\Grid;
@@ -140,6 +141,26 @@ test('floating panels serialize their placement and children', function () {
     expect($payload['schema'])->toHaveCount(1)
         ->and($payload['schema'][0]['type'])->toBe('button')
         ->and($payload['schema'][0]['key'])->toBe('locale-en');
+});
+
+test('chat windows serialize their fluent endpoint and presentation configuration', function () {
+    expect(wire(ChatWindow::make('assistant')
+        ->streamEndpoint('/chat/stream')
+        ->historyEndpoint('/chat/history')
+        ->conversationId('conv-1')
+        ->placeholder('Ask anything…')
+        ->title('Assistant')))
+        ->toMatchArray([
+            'type' => 'chat.window',
+            'key' => 'assistant',
+            'props' => [
+                'streamEndpoint' => '/chat/stream',
+                'historyEndpoint' => '/chat/history',
+                'conversationId' => 'conv-1',
+                'placeholder' => 'Ask anything…',
+                'title' => 'Assistant',
+            ],
+        ]);
 });
 
 test('components serialize through prioritized hook attributes without child-specific base hooks', function () {

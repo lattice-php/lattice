@@ -66,6 +66,24 @@ describe("ndjsonChatTransport", () => {
     expect(frames).toEqual([{ type: "text", value: "Hi" }, { type: "done" }]);
   });
 
+  it("skips blank lines and drops malformed frames, including a malformed trailing line", async () => {
+    const fetchMock = vi.fn<() => Promise<Response>>(async () =>
+      streamResponse(["\n", '{"type":"text","value":"Hi"}\n', "not json\n", "also not json"]),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const frames: ChatFrame[] = [];
+    for await (const f of ndjsonChatTransport({
+      url: "/x",
+      body: {},
+      signal: new AbortController().signal,
+    })) {
+      frames.push(f);
+    }
+
+    expect(frames).toEqual([{ type: "text", value: "Hi" }]);
+  });
+
   it("throws on a non-ok response", async () => {
     const fetchMock = vi.fn<() => Promise<Response>>(
       async () => ({ ok: false, status: 500, body: null }) as unknown as Response,
