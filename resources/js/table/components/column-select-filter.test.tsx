@@ -110,7 +110,7 @@ describe("column select filter", () => {
     render(<TableComponent node={node({ ...selectFilter(false), searchable: true })} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Status" }));
-    fireEvent.click(await screen.findByRole("button", { name: "Active" }));
+    fireEvent.click(await screen.findByRole("option", { name: "Active" }));
 
     await waitFor(() => {
       expect(fetch.mock.calls.at(-1)?.[0]).toContain("filter=status%3Aeq%3Aactive");

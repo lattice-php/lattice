@@ -1,17 +1,12 @@
 import { Icon } from "@lattice-php/lattice/icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Checkbox } from "@lattice-php/lattice/core/components/checkbox";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@lattice-php/lattice/core/components/popover";
+import { Combobox } from "@lattice-php/lattice/core/components/combobox";
 import { useT } from "@lattice-php/lattice/i18n";
+import { cn } from "@lattice-php/lattice/lib/utils";
 import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
 import { filterOptions, stringProp } from "../filter-values";
 import { fieldClass } from "./filter-value-input";
-
-const SEARCH_DEBOUNCE_MS = 250;
 
 export type DateRangeValue = { from?: string; until?: string };
 
@@ -195,8 +190,8 @@ function SearchableSelectControl({
   const { t } = useT("lattice");
   const multiple = filter.props.multiple === true;
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
   const [results, setResults] = useState<Option[]>(() => filterOptions(filter));
+  const [loading, setLoading] = useState(false);
 
   const selected = multiple
     ? Array.isArray(value)
@@ -216,87 +211,50 @@ function SearchableSelectControl({
         ? t("filter.selectedCount", "{{amount}} selected", { amount: selected.length })
         : (labels.get(selected[0]) ?? selected[0]);
 
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    let active = true;
-    const timer = window.setTimeout(() => {
-      void onSearch(query).then((options) => {
-        if (active) {
-          setResults(options);
-        }
-      });
-    }, SEARCH_DEBOUNCE_MS);
-
-    return () => {
-      active = false;
-      window.clearTimeout(timer);
-    };
-  }, [open, query, onSearch]);
+  function search(query: string): void {
+    setLoading(true);
+    void onSearch(query).then((options) => {
+      setResults(options);
+      setLoading(false);
+    });
+  }
 
   function choose(optionValue: string): void {
-    if (multiple) {
-      onChange(
-        selected.includes(optionValue)
+    onChange(
+      multiple
+        ? selected.includes(optionValue)
           ? selected.filter((item) => item !== optionValue)
-          : [...selected, optionValue],
-      );
-
-      return;
-    }
-
-    onChange(optionValue);
-    setOpen(false);
+          : [...selected, optionValue]
+        : optionValue,
+    );
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          aria-label={filter.label}
-          data-test={`table-filter-${filter.key}`}
-          className={`${fieldClass} flex items-center justify-between gap-2`}
-          disabled={processing}
-        >
+    <Combobox
+      contentClassName="w-60"
+      loading={loading}
+      multiple={multiple}
+      onSearch={search}
+      onSelect={choose}
+      open={open}
+      onOpenChange={setOpen}
+      options={results}
+      searchLabel={t("filter.search", "Search")}
+      selected={selected}
+      testId={`table-filter-${filter.key}`}
+      trigger={
+        <>
           <span className="truncate">{summary}</span>
           <Icon name="chevron-down" aria-hidden="true" className="size-lt-icon-sm shrink-0" />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent align="start" className="w-60 p-2">
-        <input
-          type="text"
-          aria-label={t("filter.search", "Search")}
-          data-test={`table-filter-${filter.key}-search`}
-          className={fieldClass}
-          value={query}
-          disabled={processing}
-          onChange={(event) => setQuery(event.target.value)}
-        />
-        <div className="mt-1 max-h-60 overflow-y-auto" role="listbox">
-          {results.map((option) => (
-            <button
-              type="button"
-              key={option.value}
-              data-test={`table-filter-${filter.key}-${option.value}`}
-              className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm hover:bg-lt-muted"
-              onClick={() => choose(option.value)}
-            >
-              {multiple && (
-                <Icon
-                  name="check"
-                  aria-hidden="true"
-                  className={`size-lt-icon-sm shrink-0 ${selected.includes(option.value) ? "" : "invisible"}`}
-                />
-              )}
-              <span className="truncate">{option.label}</span>
-            </button>
-          ))}
-        </div>
-      </PopoverContent>
-    </Popover>
+        </>
+      }
+      triggerClassName={cn(fieldClass, "flex items-center justify-between gap-2")}
+      triggerProps={{
+        "aria-label": filter.label,
+        "data-test": `table-filter-${filter.key}`,
+        disabled: processing,
+      }}
+    />
   );
 }
 
