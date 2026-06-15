@@ -44,8 +44,8 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
     $partFrames = array_values(array_filter($frames, static fn (array $frame): bool => $frame['type'] === 'part'));
 
     expect($partFrames)->toHaveCount(1)
-        ->and($partFrames[0]['part']['type'])->toBe('tool-call')
-        ->and($partFrames[0]['part']['name'])->toBe('lookup');
+        ->and($partFrames[0]['part']['type'])->toBe('chat.part.tool-call')
+        ->and($partFrames[0]['part']['props']['name'])->toBe('lookup');
 
     $messages = app(FakeConversationStore::class)->messages();
     $roles = array_column($messages, 'role');
@@ -56,7 +56,7 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
     $latestAssistant = end($assistant);
     $partTypes = array_column($latestAssistant['parts'], 'type');
 
-    expect($partTypes)->toContain('text')->toContain('tool-call');
+    expect($partTypes)->toContain('chat.part.text')->toContain('chat.part.tool-call');
 });
 
 test('the floating chat window is mounted in the layout', function (): void {

@@ -17,9 +17,13 @@ afterEach(() => {
 });
 
 const messages: ChatMessage[] = [
-  { id: "1", role: "user", parts: [{ type: "text", text: "First message" }] },
-  { id: "2", role: "assistant", parts: [{ type: "text", text: "Second message" }] },
-  { id: "3", role: "user", parts: [{ type: "text", text: "Third message" }] },
+  { id: "1", role: "user", parts: [{ type: "chat.part.text", props: { text: "First message" } }] },
+  {
+    id: "2",
+    role: "assistant",
+    parts: [{ type: "chat.part.text", props: { text: "Second message" } }],
+  },
+  { id: "3", role: "user", parts: [{ type: "chat.part.text", props: { text: "Third message" } }] },
 ];
 
 describe("MessageList", () => {

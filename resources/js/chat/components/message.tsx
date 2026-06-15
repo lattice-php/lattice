@@ -1,11 +1,10 @@
 import type { ReactNode } from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
-import { useChatPartRegistry } from "@lattice-php/lattice/core/registry-context";
+import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import type { ChatMessage } from "../types";
 
 export function Message({ message }: { message: ChatMessage }): ReactNode {
-  const chatParts = useChatPartRegistry();
   const isUser = message.role === "user";
 
   return (
@@ -19,14 +18,9 @@ export function Message({ message }: { message: ChatMessage }): ReactNode {
           isUser ? "bg-lt-primary text-lt-primary-fg" : "bg-lt-muted text-lt-fg",
         )}
       >
-        {message.parts.map((part, index) => {
-          const Component = chatParts[part.type];
-          if (!Component) {
-            return null;
-          }
-
-          return <Component key={index} part={part} />;
-        })}
+        {message.parts.map((part, index) => (
+          <RenderNode key={part.key ?? index} node={part} />
+        ))}
       </div>
     </div>
   );

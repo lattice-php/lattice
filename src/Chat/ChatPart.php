@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Chat;
 
-use JsonSerializable;
-use Lattice\Lattice\Chat\Attributes\AsChatPart;
-use Lattice\Lattice\Chat\Parts\TextPart;
-use Lattice\Lattice\Chat\Parts\ToolCallPart;
+use Lattice\Lattice\Chat\Components\TextPart;
+use Lattice\Lattice\Chat\Components\ToolCallPart;
+use Lattice\Lattice\Core\Components\Component;
 
-abstract readonly class ChatPart implements JsonSerializable
+/**
+ * A chat part is a component: it serializes to a `{type, props}` node and renders
+ * through the same registry-driven renderer as every other component. The static
+ * factories build the built-in parts.
+ */
+abstract class ChatPart extends Component
 {
     public static function text(string $text): TextPart
     {
-        return new TextPart($text);
+        return TextPart::make($text);
     }
 
     /**
@@ -21,22 +25,6 @@ abstract readonly class ChatPart implements JsonSerializable
      */
     public static function toolCall(string $name, array $args = []): ToolCallPart
     {
-        return new ToolCallPart($name, $args);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
-    {
-        return ['type' => $this->wireType(), ...get_object_vars($this)];
-    }
-
-    public function wireType(): string
-    {
-        /** @var array<class-string, string> $cache */
-        static $cache = [];
-
-        return $cache[static::class] ??= AsChatPart::wireTypeForClass(static::class);
+        return ToolCallPart::make($name, $args);
     }
 }

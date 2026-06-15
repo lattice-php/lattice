@@ -6,23 +6,28 @@ namespace Lattice\Lattice\Chat\Attributes;
 
 use Attribute;
 use InvalidArgumentException;
+use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Chat\Enums\ChatPartType;
 use Spatie\Attributes\Attributes;
 
 /**
- * Marks a chat-part value object and declares its wire type — the PHP↔JS
- * discriminant. Built-ins pass the ChatPartType enum for type-safety; consumers
- * pass a raw string. Discovery shares ClassWalker, but the attribute stays
- * distinct by design (chat parts form their own discriminated union).
+ * Marks a chat-part component and declares its wire type — the PHP↔JS
+ * discriminant. Extends the Component attribute (like #[Column]) so a chat part
+ * is a component: it serializes, renders, and is discovered through the same
+ * machinery. Built-ins pass the ChatPartType enum for type-safety; consumers
+ * pass a raw string.
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-final class AsChatPart
+final class AsChatPart extends Component
 {
-    public function __construct(public readonly ChatPartType|string $type) {}
+    public function __construct(ChatPartType|string $type)
+    {
+        parent::__construct($type instanceof ChatPartType ? $type->value : $type);
+    }
 
     public function wireType(): string
     {
-        return $this->type instanceof ChatPartType ? $this->type->value : $this->type;
+        return $this->type;
     }
 
     /**

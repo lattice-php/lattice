@@ -37,7 +37,6 @@ export {
   lazyComponent,
 } from "./core/registry";
 export type { Plugin, Registry } from "./core/registry";
-export type { ChatPartComponent, ChatPartRegistry } from "./chat/part-registry";
 export type { UseChatOptions } from "./chat/use-chat";
 export type {
   ChatFrame,

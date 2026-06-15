@@ -19,29 +19,33 @@ describe("foldFrame", () => {
   it("opens a text part on the open assistant message and appends to it", () => {
     const start = [assistant([])];
     const afterFirst = foldFrame(start, { type: "text", value: "Hello " });
-    expect(afterFirst.at(-1)!.parts).toEqual([{ type: "text", text: "Hello " }]);
+    expect(afterFirst.at(-1)!.parts).toEqual([
+      { type: "chat.part.text", props: { text: "Hello " } },
+    ]);
 
     const afterSecond = foldFrame(afterFirst, { type: "text", value: "world" });
-    expect(afterSecond.at(-1)!.parts).toEqual([{ type: "text", text: "Hello world" }]);
+    expect(afterSecond.at(-1)!.parts).toEqual([
+      { type: "chat.part.text", props: { text: "Hello world" } },
+    ]);
   });
 
   it("pushes a part and closes the open text part", () => {
     const start = foldFrame([assistant([])], { type: "text", value: "Searching" });
     const afterPart = foldFrame(start, {
       type: "part",
-      part: { type: "tool-call", name: "search", args: { q: "x" } },
+      part: { type: "chat.part.tool-call", props: { name: "search", args: { q: "x" } } },
     });
 
     expect(afterPart.at(-1)!.parts).toEqual([
-      { type: "text", text: "Searching" },
-      { type: "tool-call", name: "search", args: { q: "x" } },
+      { type: "chat.part.text", props: { text: "Searching" } },
+      { type: "chat.part.tool-call", props: { name: "search", args: { q: "x" } } },
     ]);
 
     const afterMoreText = foldFrame(afterPart, { type: "text", value: "done" });
     expect(afterMoreText.at(-1)!.parts).toEqual([
-      { type: "text", text: "Searching" },
-      { type: "tool-call", name: "search", args: { q: "x" } },
-      { type: "text", text: "done" },
+      { type: "chat.part.text", props: { text: "Searching" } },
+      { type: "chat.part.tool-call", props: { name: "search", args: { q: "x" } } },
+      { type: "chat.part.text", props: { text: "done" } },
     ]);
   });
 
@@ -53,7 +57,7 @@ describe("foldFrame", () => {
 
   it("returns the input unchanged when the last message is not an assistant", () => {
     const messages: ChatMessage[] = [
-      { id: "u", role: "user", parts: [{ type: "text", text: "hi" }] },
+      { id: "u", role: "user", parts: [{ type: "chat.part.text", props: { text: "hi" } }] },
     ];
     expect(foldFrame(messages, { type: "text", value: "ignored" })).toBe(messages);
   });
@@ -76,7 +80,7 @@ describe("useChat", () => {
     await waitFor(() => expect(result.current.status).toBe("idle"));
     const last = result.current.messages.at(-1)!;
     expect(last.role).toBe("assistant");
-    expect(last.parts).toEqual([{ type: "text", text: "Hello world" }]);
+    expect(last.parts).toEqual([{ type: "chat.part.text", props: { text: "Hello world" } }]);
   });
 
   it("pushes an optimistic user message and an empty assistant message on send", async () => {
@@ -94,7 +98,11 @@ describe("useChat", () => {
 
     await waitFor(() => expect(result.current.status).toBe("streaming"));
     expect(result.current.messages).toEqual([
-      { id: expect.any(String), role: "user", parts: [{ type: "text", text: "hi" }] },
+      {
+        id: expect.any(String),
+        role: "user",
+        parts: [{ type: "chat.part.text", props: { text: "hi" } }],
+      },
       { id: expect.any(String), role: "assistant", parts: [] },
     ]);
 
@@ -105,15 +113,18 @@ describe("useChat", () => {
   it("appends a structured part and closes the open text part", async () => {
     const transport = scriptedTransport([
       { type: "text", value: "Searching" },
-      { type: "part", part: { type: "tool-call", name: "search", args: { q: "x" } } },
+      {
+        type: "part",
+        part: { type: "chat.part.tool-call", props: { name: "search", args: { q: "x" } } },
+      },
       { type: "done" },
     ]);
     const { result } = renderHook(() => useChat({ endpoint: "/x", transport }));
     act(() => result.current.sendMessage("find x"));
     await waitFor(() => expect(result.current.status).toBe("idle"));
     expect(result.current.messages.at(-1)!.parts).toEqual([
-      { type: "text", text: "Searching" },
-      { type: "tool-call", name: "search", args: { q: "x" } },
+      { type: "chat.part.text", props: { text: "Searching" } },
+      { type: "chat.part.tool-call", props: { name: "search", args: { q: "x" } } },
     ]);
   });
 
@@ -186,7 +197,9 @@ describe("useChat", () => {
     await waitFor(() => expect(result.current.status).toBe("streaming"));
     act(() => result.current.stop());
     await waitFor(() => expect(result.current.status).toBe("idle"));
-    expect(result.current.messages.at(-1)!.parts).toEqual([{ type: "text", text: "partial" }]);
+    expect(result.current.messages.at(-1)!.parts).toEqual([
+      { type: "chat.part.text", props: { text: "partial" } },
+    ]);
   });
 
   it("regenerate drops the last assistant message and re-streams the last user turn", async () => {
@@ -202,15 +215,17 @@ describe("useChat", () => {
     expect(result.current.messages[0]).toEqual({
       id: expect.any(String),
       role: "user",
-      parts: [{ type: "text", text: "hi" }],
+      parts: [{ type: "chat.part.text", props: { text: "hi" } }],
     });
     expect(result.current.messages.at(-1)!.role).toBe("assistant");
-    expect(result.current.messages.at(-1)!.parts).toEqual([{ type: "text", text: "first" }]);
+    expect(result.current.messages.at(-1)!.parts).toEqual([
+      { type: "chat.part.text", props: { text: "first" } },
+    ]);
   });
 
   it("replaces messages via setMessages", () => {
     const seeded: ChatMessage[] = [
-      { id: "1", role: "assistant", parts: [{ type: "text", text: "Hi" }] },
+      { id: "1", role: "assistant", parts: [{ type: "chat.part.text", props: { text: "Hi" } }] },
     ];
     const transport = scriptedTransport([{ type: "done" }]);
     const { result } = renderHook(() => useChat({ endpoint: "/x", transport }));
@@ -222,8 +237,12 @@ describe("useChat", () => {
 
   it("seeds messages from initialMessages", () => {
     const initialMessages: ChatMessage[] = [
-      { id: "1", role: "user", parts: [{ type: "text", text: "hello" }] },
-      { id: "2", role: "assistant", parts: [{ type: "text", text: "hi there" }] },
+      { id: "1", role: "user", parts: [{ type: "chat.part.text", props: { text: "hello" } }] },
+      {
+        id: "2",
+        role: "assistant",
+        parts: [{ type: "chat.part.text", props: { text: "hi there" } }],
+      },
     ];
     const transport = scriptedTransport([{ type: "done" }]);
     const { result } = renderHook(() => useChat({ endpoint: "/x", transport, initialMessages }));

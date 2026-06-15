@@ -41,5 +41,4 @@ export {
   useComponentRegistry,
   useColumnRegistry,
   useEffectHandlerRegistry,
-  useChatPartRegistry,
 } from "./core/registry-context";

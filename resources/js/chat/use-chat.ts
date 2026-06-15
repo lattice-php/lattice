@@ -50,10 +50,11 @@ export function foldFrame(messages: ChatMessage[], frame: ChatFrame): ChatMessag
     const openIndex = parts.length - 1;
     const open = parts[openIndex];
 
-    if (open !== undefined && open.type === "text") {
-      parts[openIndex] = { type: "text", text: `${(open as { text: string }).text}${frame.value}` };
+    if (open !== undefined && open.type === "chat.part.text") {
+      const openText = (open.props as { text: string }).text;
+      parts[openIndex] = { type: "chat.part.text", props: { text: `${openText}${frame.value}` } };
     } else {
-      parts.push({ type: "text", text: frame.value });
+      parts.push({ type: "chat.part.text", props: { text: frame.value } });
     }
 
     const next = [...messages];
@@ -104,7 +105,7 @@ export function useChat({
       const userMessage: ChatMessage = {
         id: generateId(),
         role: "user",
-        parts: [{ type: "text", text: userText }],
+        parts: [{ type: "chat.part.text", props: { text: userText } }],
       };
       const assistantMessage: ChatMessage = { id: generateId(), role: "assistant", parts: [] };
       commitMessages([...history, userMessage, assistantMessage]);

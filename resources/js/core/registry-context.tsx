@@ -2,7 +2,6 @@ import { createContext, useContext } from "react";
 import type { ComponentRegistry, Registry } from "./registry";
 import type { ColumnRegistry } from "../table/registry";
 import type { EffectHandlerRegistry } from "../effects/registry";
-import type { ChatPartRegistry } from "../chat/part-registry";
 
 /**
  * Holds the active Registry for the current Provider subtree. Extracted into
@@ -45,9 +44,4 @@ export function useColumnRegistry(): ColumnRegistry {
 export function useEffectHandlerRegistry(): EffectHandlerRegistry {
   const registry = useContext(RegistryContext) ?? _defaultRegistry;
   return registry?.effects ?? {};
-}
-
-export function useChatPartRegistry(): ChatPartRegistry {
-  const registry = useContext(RegistryContext) ?? _defaultRegistry;
-  return registry?.chatParts ?? {};
 }

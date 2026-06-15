@@ -8,6 +8,7 @@ use JsonSerializable;
 use Lattice\Lattice\Attributes\Component as ComponentAttribute;
 use Lattice\Lattice\Attributes\SerializationHook;
 use LogicException;
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -50,7 +51,7 @@ abstract class Component implements JsonSerializable
      */
     private static function resolveType(string $class): string
     {
-        $attributes = (new ReflectionClass($class))->getAttributes(ComponentAttribute::class);
+        $attributes = (new ReflectionClass($class))->getAttributes(ComponentAttribute::class, ReflectionAttribute::IS_INSTANCEOF);
 
         if ($attributes === []) {
             throw new LogicException(sprintf(

@@ -6,7 +6,7 @@ use Lattice\Lattice\Chat\ChatMessage;
 use Lattice\Lattice\Chat\ChatPart;
 use Lattice\Lattice\Chat\Enums\ChatRole;
 
-test('a chat message serializes id, role value, and flattened parts', function (): void {
+test('a chat message serializes id, role value, and its parts as nodes', function (): void {
     $message = new ChatMessage('m-1', ChatRole::Assistant, [
         ChatPart::text('Searching'),
         ChatPart::toolCall('lookup', ['q' => 'x']),
@@ -16,8 +16,8 @@ test('a chat message serializes id, role value, and flattened parts', function (
         'id' => 'm-1',
         'role' => 'assistant',
         'parts' => [
-            ['type' => 'text', 'text' => 'Searching'],
-            ['type' => 'tool-call', 'name' => 'lookup', 'args' => ['q' => 'x']],
+            ['type' => 'chat.part.text', 'props' => ['text' => 'Searching']],
+            ['type' => 'chat.part.tool-call', 'props' => ['name' => 'lookup', 'args' => ['q' => 'x']]],
         ],
     ]);
 });
