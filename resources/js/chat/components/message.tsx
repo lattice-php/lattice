@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import { getChatPart } from "../part-registry";
+import "../parts/text";
 import type { ChatMessage } from "../types";
 
 export function Message({ message }: { message: ChatMessage }): ReactNode {
@@ -15,9 +16,7 @@ export function Message({ message }: { message: ChatMessage }): ReactNode {
       <div
         className={cn(
           "max-w-[80%] rounded-lt-md px-3 py-2 text-sm",
-          isUser
-            ? "bg-lt-primary text-lt-primary-fg"
-            : "bg-lt-muted text-lt-fg",
+          isUser ? "bg-lt-primary text-lt-primary-fg" : "bg-lt-muted text-lt-fg",
         )}
       >
         {message.parts.map((part, index) => {
