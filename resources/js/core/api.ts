@@ -1,15 +1,9 @@
 /**
- * The single funnel for raw-fetch HTTP in the package. Callers pass a URL plus
- * overrides; this owns the cross-cutting header policy so call sites only
- * declare intent. It always sends same-origin credentials, defaults the Accept
- * (and, for write methods, the Content-Type) to JSON, adds the AJAX marker and
- * CSRF token to writes, composes the locale + component-ref headers (via
- * withHeaders), and throws on a failed response unless opted out.
- *
- * Returning a Response keeps one primitive serving JSON, the chat's streaming
- * getReader(), and multipart uniformly. Any default header can be overridden
- * through `headers` (e.g. a non-JSON Accept, or a body the browser must type).
- * Leave the Inertia world (router/useHttp) alone — this is for raw-data fetches.
+ * The single funnel for raw-fetch HTTP, so the cross-cutting header, credential,
+ * and error policy has one home and call sites only declare intent. Returns a
+ * Response (not parsed data) so one primitive serves JSON, the chat's streaming
+ * getReader(), and multipart alike. Not for the Inertia world (router/useHttp),
+ * which carries its own headers.
  */
 
 import { withHeaders } from "./headers";
@@ -27,11 +21,8 @@ function xsrfToken(): string {
 }
 
 export type ApiInit = Omit<RequestInit, "headers"> & {
-  /** Sent as the X-Lattice-Ref header; the locale header is always added. */
   ref?: string;
-  /** Merged over the defaulted headers, so callers can override any of them. */
   headers?: Record<string, string>;
-  /** Throw an ApiError on a non-ok response. Defaults to true. */
   throwOnError?: boolean;
 };
 
@@ -52,8 +43,8 @@ function defaultHeaders(method: string | undefined): Record<string, string> {
 
 export async function apiFetch(url: string, init: ApiInit = {}): Promise<Response> {
   const { ref, headers, throwOnError = true, method, ...rest } = init;
-  // fetch only upper-cases the standardized verbs, leaving PATCH/DELETE as given;
-  // some servers reject a lower-case method line, so normalize it here.
+  // Some servers reject a lower-case method line, and fetch only normalizes the
+  // standard verbs, so upper-case it here.
   const normalizedMethod = method?.toUpperCase();
   const response = await fetch(url, {
     credentials: "same-origin",

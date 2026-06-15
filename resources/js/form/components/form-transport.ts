@@ -1,7 +1,7 @@
 /**
- * Shared client transport for the lattice form endpoint. Every form sub-action
- * (validation resolve, option search) POSTs to the same signed form URL, so the
- * CSRF header, component-ref header, and request shape live here in one place.
+ * Shared client transport for the lattice form endpoint: every form sub-action
+ * (validation resolve, option search) POSTs to the same signed URL, so the
+ * request shape — notably stripping client-only row ids — lives here once.
  */
 
 import { apiFetch } from "@lattice-php/lattice/core/api";
