@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { withHeaders } from "@lattice-php/lattice/core/headers";
+import { apiJson } from "@lattice-php/lattice/core/api";
 import { Skeleton } from "@lattice-php/lattice/core/components/skeleton";
 import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
 import type { Node, RendererComponent, Schema } from "@lattice-php/lattice/core/types";
@@ -37,12 +37,7 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
     setProcessing(true);
 
     try {
-      const response = await fetch(endpoint, {
-        headers: withHeaders(componentRef, {
-          Accept: "application/json",
-        }),
-      });
-      const result = (await response.json()) as FragmentResponse;
+      const result = await apiJson<FragmentResponse>(endpoint, { ref: componentRef });
 
       setComponents(getComponents(result.schema));
       setHasLoaded(true);

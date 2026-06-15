@@ -1,11 +1,10 @@
-import { withRefHeader } from "@lattice-php/lattice/core/component-ref";
+import { apiFetch } from "@lattice-php/lattice/core/api";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { useT } from "@lattice-php/lattice/i18n";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
-import { xsrfToken } from "../form-transport";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldScope } from "../field-scope";
 import { useFormValues } from "../values";
@@ -80,22 +79,16 @@ export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ nod
   });
 
   async function signAndUpload(item: Item, file: File): Promise<void> {
-    const response = await fetch(action, {
+    const response = await apiFetch(action, {
       method: "POST",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-        "X-XSRF-TOKEN": xsrfToken(),
-        ...withRefHeader(componentRef),
-      },
+      ref: componentRef,
       body: JSON.stringify({
         ...values,
         _upload: uploadKey,
         filename: file.name,
         contentType: file.type,
       }),
+      throwOnError: false,
     });
 
     if (!response.ok) {
