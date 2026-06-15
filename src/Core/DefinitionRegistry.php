@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use Lattice\Lattice\Attributes\ComponentAttribute;
 use Lattice\Lattice\Core\Contracts\DefinitionRegistry as DefinitionRegistryContract;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Core\Exceptions\UnknownLatticeComponent;
+use Lattice\Lattice\Core\Exceptions\UnknownComponent;
 use Spatie\Attributes\Attributes;
 
 /**
@@ -61,7 +61,7 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
         $definitions = $this->definitions();
 
         if (! array_key_exists($key, $definitions)) {
-            throw new UnknownLatticeComponent($this->name(), $key);
+            throw new UnknownComponent($this->name(), $key);
         }
 
         return $this->make($definitions[$key]);

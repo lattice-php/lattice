@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Core\Exceptions;
 
 use InvalidArgumentException;
 
-final class UnknownLatticeComponent extends InvalidArgumentException
+final class UnknownComponent extends InvalidArgumentException
 {
     public function __construct(
         public readonly string $type,

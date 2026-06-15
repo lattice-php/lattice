@@ -5,13 +5,13 @@ namespace Lattice\Lattice\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Concerns\InteractsWithLatticeComponents;
+use Lattice\Lattice\Core\Concerns\InteractsWithComponents;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Tables\TableRegistry;
 
 final class TableController
 {
-    use InteractsWithLatticeComponents;
+    use InteractsWithComponents;
 
     public function __construct(
         private readonly TableRegistry $tables,

@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Http\Controllers;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Concerns\InteractsWithLatticeComponents;
+use Lattice\Lattice\Core\Concerns\InteractsWithComponents;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Http\Controllers\Concerns\HandlesPrecognition;
@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class FormController
 {
     use HandlesPrecognition;
-    use InteractsWithLatticeComponents;
+    use InteractsWithComponents;
 
     public function __construct(
         private readonly FormRegistry $forms,
