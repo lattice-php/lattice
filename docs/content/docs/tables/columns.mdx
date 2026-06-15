@@ -90,3 +90,16 @@ sort and filter for that column. They are covered in detail under
 ```php
 TextColumn::make('name')->sortable()->filterable();
 ```
+
+## Column width
+
+Every column carries a width hint the table uses to size its column. `->width()` overrides the default
+with a [`ColumnWidth`](/advanced/enums/#text--sizing) case (`Lattice\Lattice\Core\Enums\ColumnWidth` —
+`Xs`, `Sm`, `Md`, `Lg`, `Xl`).
+
+```php
+use Lattice\Lattice\Core\Enums\ColumnWidth;
+
+TextColumn::make('id')->width(ColumnWidth::Xs);
+TextColumn::make('description')->width(ColumnWidth::Xl);
+```

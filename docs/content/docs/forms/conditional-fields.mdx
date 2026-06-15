@@ -4,6 +4,7 @@ description: Show, require, or disable fields based on other fields, and compute
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
 
 Fields can react to the rest of the form. A condition compares another field's value and toggles this
 field's visibility, required, read-only, or disabled state. Conditions are evaluated on the client as
@@ -123,3 +124,33 @@ TextInput::make('total', 'Total')
         fn (TextInput $field, FormData $data) => $field->value($data->float('qty') * $data->float('price')),
     );
 ```
+
+A computed value is **authoritative** by default: the closure result overwrites whatever the user
+typed on every resolve and on submit, so the field reads as derived.
+
+## Editable defaults
+
+Pass `editable: true` to compute a **suggestion** instead — the value is applied as a default the user
+can then override by typing. Once a field is manually edited it stops tracking the computed value.
+
+```php
+TextInput::make('price', 'Price')
+    ->value(fn (FormData $data) => priceFor($data->get('product')), editable: true);
+```
+
+Two lists control when the suggestion re-applies:
+
+- `resetOn` — naming a field here **clears a manual override** when that field changes, so the
+  suggestion takes over again.
+- `refreshOn` — naming a field here **recomputes** the suggestion when that field changes, but only
+  while the user has not overridden it.
+
+```php
+TextInput::make('price', 'Price')
+    ->value(fn (FormData $data) => priceFor($data->get('product')), editable: true, resetOn: ['product']);
+```
+
+<Info>
+  Inside a [repeater or builder](/forms/fields/repeater/) row, a bare dependency name is row-relative;
+  prefix it with `@` (e.g. `@customer`) to watch a form-level field instead.
+</Info>

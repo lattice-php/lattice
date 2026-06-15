@@ -3,6 +3,9 @@ title: Effects & results
 description: What an action returns — a success or failure result carrying effects the client dispatches.
 ---
 
+import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
+
 `handle()` returns an `ActionResult`: a success/failure flag, optional data, and a list of **effects**
 the client runs in order once the action responds.
 
@@ -102,10 +105,10 @@ public function schema(): array
 }
 ```
 
-:::caution
-A page or layout that does not include `Callouts::make()` silently drops any callout effect. If a
-callout does not appear, check that the active layout's `schema()` contains the slot.
-:::
+<Warning>
+  A page or layout that does not include `Callouts::make()` silently drops any callout effect. If a
+  callout does not appear, check that the active layout's `schema()` contains the slot.
+</Warning>
 
 **Callout vs. toast**
 
@@ -163,10 +166,10 @@ Effects::flash(
 The flashed effects are stored in the `latticeEffects` session bag, drained on the next request, and
 run through the normal client-side effect pipeline in order.
 
-:::note
-`Effects::flash()` replaces the old toast-only flash helper (`CreatesToastMessages` trait and
-`flash.toast` bag). Any code using that trait should switch to `Effects::flash(Effect::toast(...))`.
-:::
+<Info>
+  `Effects::flash()` replaces the old toast-only flash helper (`CreatesToastMessages` trait and
+  `flash.toast` bag). Any code using that trait should switch to `Effects::flash(Effect::toast(...))`.
+</Info>
 
 ## How effects reach the client
 

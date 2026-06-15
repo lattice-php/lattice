@@ -75,6 +75,7 @@ The icon names a `Lattice\Lattice\Core\Enums\Icon` accepts are listed on the [Ic
 | ---------------- | ------------------------------------------------------------------------ |
 | `ColumnType`     | `Text` (text), `Stack` (stack), `Badge` (badge), `Icon` (icon), `Image` (image) |
 | `FilterType`     | `Text` (text), `Number` (number), `Date` (date), `Boolean` (boolean)     |
+| `FilterControl`  | `Select` (select), `Ternary` (ternary), `DateRange` (date-range), `Toggle` (toggle) |
 | `PaginationType` | `None` (none), `Simple` (simple), `Table` (table), `Infinite` (infinite) |
 | `SortDirection`  | `Asc` (asc), `Desc` (desc)                                               |
 
@@ -95,4 +96,3 @@ fields.
 `Toast` (toast), `Callout` (callout), `ReloadComponent` (reloadComponent), `ReloadPage` (reloadPage),
 `Redirect` (redirect), `Download` (download), `OpenModal` (openModal), `CloseModal` (closeModal),
 `ResetForm` (resetForm), `LocaleChange` (localeChange).
-</content>
