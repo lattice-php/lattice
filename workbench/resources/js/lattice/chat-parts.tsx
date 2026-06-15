@@ -1,8 +1,8 @@
-import type { ChatPart, ChatPartComponent, ChatToolCallPart } from "@lattice-php/lattice";
+import type { ChatPart, ChatPartComponent } from "@lattice-php/lattice";
 import { registerChatPart } from "@lattice-php/lattice";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 
-function isToolCallPart(part: ChatPart): part is ChatToolCallPart {
+function isToolCallPart(part: ChatPart): part is Extract<ChatPart, { type: "tool-call" }> {
   return part.type === "tool-call";
 }
 

@@ -45,8 +45,6 @@ export type {
   ChatPart,
   ChatRole,
   ChatStatus,
-  ChatTextPart,
-  ChatToolCallPart,
   ChatTransport,
   ChatTransportRequest,
   UseChatReturn,
