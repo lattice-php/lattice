@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { Button } from "@lattice-php/lattice/core/components/button";
 import { Dialog, DialogContent, DialogHeader } from "@lattice-php/lattice/core/components/dialog";
+import { Skeleton } from "@lattice-php/lattice/core/components/skeleton";
 import { Spinner } from "@lattice-php/lattice/core/components/spinner";
 import { Renderer, useRendererContext } from "@lattice-php/lattice/core/renderer";
 import type { Node } from "@lattice-php/lattice/core/types";
@@ -95,9 +96,9 @@ function firstErrors(errors: Record<string, string[] | string> | undefined): Fie
 function ActionFormSkeleton() {
   return (
     <div className="space-y-4" data-lattice-action-form-loading>
-      <div className="h-4 w-24 animate-pulse rounded bg-lt-muted" />
-      <div className="h-10 w-full animate-pulse rounded bg-lt-muted" />
-      <div className="h-10 w-full animate-pulse rounded bg-lt-muted" />
+      <Skeleton className="h-4 w-24" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
     </div>
   );
 }
