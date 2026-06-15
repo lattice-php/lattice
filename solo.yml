@@ -2,7 +2,7 @@ name: lattice-package
 icon: null
 processes:
   Serve:
-    command: php artisan serve
+    command: composer serve
     working_dir: null
     auto_start: true
     auto_restart: true
