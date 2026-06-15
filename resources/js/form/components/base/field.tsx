@@ -1,4 +1,5 @@
 import InputError from "@lattice-php/lattice/form/components/base/input-error";
+import { InfoTooltip } from "@lattice-php/lattice/core/components/info-tooltip";
 import { TextLink } from "@lattice-php/lattice/core/components/link";
 import { Label } from "@lattice-php/lattice/form/components/base/label";
 import { useInTableCell } from "../row-layout-context";
@@ -12,6 +13,7 @@ export function FormFieldFrame({
   labelAction,
   name,
   required,
+  tooltip,
 }: {
   children: React.ReactNode;
   error?: string;
@@ -20,6 +22,7 @@ export function FormFieldFrame({
   labelAction?: FormLabelAction;
   name: string;
   required?: boolean;
+  tooltip?: string;
 }) {
   const bare = useInTableCell();
 
@@ -44,6 +47,7 @@ export function FormFieldFrame({
             *
           </span>
         )}
+        <InfoTooltip content={tooltip} />
         {labelAction && (
           <TextLink
             href={labelAction.href}
