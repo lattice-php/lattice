@@ -126,10 +126,7 @@ class ProductForm extends FormDefinition
      */
     public function imagePaths(Product $product): array
     {
-        return $product->images()
-            ->get()
-            ->map(fn (File $file): string => $file->path)
-            ->all();
+        return $product->images()->pluck('files.path')->all();
     }
 
     /**

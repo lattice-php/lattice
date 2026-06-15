@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Factories;
 
 use Bambamboole\ExtendedFaker\Dto\ImageDto;
+use Bambamboole\ExtendedFaker\Dto\ProductDto;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
@@ -24,7 +25,7 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
-        $product = fake()->unique()->product();
+        $product = $this->fakeProduct();
 
         return [
             'name' => $product->name,
@@ -49,7 +50,7 @@ class ProductFactory extends Factory
     {
         return $this->afterCreating(function (Product $product) use ($count): void {
             for ($sortOrder = 1; $sortOrder <= $count; $sortOrder++) {
-                $fakeProduct = fake()->product($product->sku);
+                $fakeProduct = $this->fakeProduct($product->sku);
                 $image = $fakeProduct->image;
 
                 if (! $image instanceof ImageDto) {
@@ -61,6 +62,14 @@ class ProductFactory extends Factory
                 $product->images()->attach($file->getKey(), ['sort_order' => $sortOrder]);
             }
         });
+    }
+
+    private function fakeProduct(?string $identifier = null): ProductDto
+    {
+        $faker = $identifier === null ? fake()->unique() : fake();
+
+        /** @phpstan-ignore-next-line */
+        return $faker->product($identifier);
     }
 
     public function withSalesPricesFor(Group ...$groups): static

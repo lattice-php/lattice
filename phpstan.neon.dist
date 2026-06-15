@@ -11,9 +11,3 @@ parameters:
     excludePaths:
         # Pest's arch() DSL is a runtime fluent API PHPStan cannot statically model.
         - tests/ArchTest.php
-
-services:
-    -
-        class: Workbench\App\Support\PHPStan\ExtendedFakerMethodsClassReflectionExtension
-        tags:
-            - phpstan.broker.methodsClassReflectionExtension
