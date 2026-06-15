@@ -1,17 +1,15 @@
 import { cn } from "@lattice-php/lattice/lib/utils";
-import type { BadgeColumnProps } from "@lattice-php/lattice/types/generated";
 import { formatCell } from "../../format";
-import type { TableColumn } from "../../types";
+import type { ColumnCellComponent } from "../../registry";
 
-export function BadgeCell({ column, value }: { column: TableColumn; value: unknown }) {
+export const BadgeCell: ColumnCellComponent<"badge"> = ({ column, props, value }) => {
   const label = formatCell(value, column);
 
   if (label === "") {
     return null;
   }
 
-  const props = column.props as BadgeColumnProps | null;
-  const color = props?.colors?.[String(value)] ?? "gray";
+  const color = props.colors?.[String(value)] ?? "gray";
 
   return <span className={cn("lt-cell-badge", `lt-cell-tone-${color}`)}>{label}</span>;
-}
+};

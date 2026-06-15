@@ -74,6 +74,7 @@ export type {
   UnknownComponent,
   WireNode,
 } from "./core/types";
+export { columnCell } from "./table/registry";
 export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "./table/registry";
 export type { ColumnProps, ColumnPropsOf } from "./table/types";
 export type { Method } from "@inertiajs/core";

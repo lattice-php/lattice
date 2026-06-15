@@ -39,22 +39,39 @@ export type LooseNode<TType extends string = string> = {
  */
 export interface ComponentProps {}
 
-// Resolves a built-in node's props from the generated WireNode union; `never` when the type is not a built-in.
-type BuiltInPropsOf<TType extends string> = [Extract<WireNode, { type: TType }>] extends [never]
-  ? never
-  : Extract<WireNode, { type: TType }> extends { props: infer TProps }
-    ? TProps
-    : never;
+/**
+ * Resolves a registry `type` string to its payload: consumer augmentations
+ * (`TAugment`) first, then generated built-ins (`TBuiltins`), then a loose
+ * fallback. Shared by the component, column, chat-part and effect type maps so
+ * every extensible kind resolves the same way.
+ */
+export type ResolveProps<
+  TAugment,
+  TBuiltins,
+  TType extends string,
+  TFallback,
+> = TType extends keyof TAugment
+  ? TAugment[TType]
+  : TType extends keyof TBuiltins
+    ? TBuiltins[TType]
+    : TFallback;
+
+// The generated built-in nodes, keyed by their `type` discriminator.
+type WireNodeProps = {
+  [TNode in WireNode as TNode["type"]]: TNode extends { props: infer TProps } ? TProps : never;
+};
 
 /**
  * Resolves a wire `type` to its props: consumer augmentations
  * (`ComponentProps`) first, then generated built-ins, then a loose bag.
  */
-export type PropsOf<TType extends string> = TType extends keyof ComponentProps
-  ? ComponentProps[TType] & CommonNodeProps
-  : [BuiltInPropsOf<TType>] extends [never]
-    ? NodeProps & CommonNodeProps
-    : BuiltInPropsOf<TType> & CommonNodeProps;
+export type PropsOf<TType extends string> = ResolveProps<
+  ComponentProps,
+  WireNodeProps,
+  TType,
+  NodeProps
+> &
+  CommonNodeProps;
 
 /**
  * Resolves a wire `type` string to its node shape: built-ins narrow to their

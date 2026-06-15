@@ -1,20 +1,10 @@
 import { copyToClipboard } from "@lattice-php/lattice/clipboard";
 import { Icon } from "@lattice-php/lattice/icons";
-import type { TextColumnProps } from "@lattice-php/lattice/types/generated";
 import { useEffect, useState } from "react";
 import { formatCell, resolveLink } from "../../format";
-import type { TableColumn, TableRow } from "../../types";
+import type { ColumnCellComponent } from "../../registry";
 
-export function TextCell({
-  column,
-  row,
-  value,
-}: {
-  column: TableColumn;
-  row: TableRow;
-  value: unknown;
-}) {
-  const props = column.props as TextColumnProps | null;
+export const TextCell: ColumnCellComponent<"text"> = ({ column, props, row, value }) => {
   const text = formatCell(value, column);
   const [copied, setCopied] = useState(false);
   const href = resolveLink(column, row, value);
@@ -22,8 +12,8 @@ export function TextCell({
     <a
       className="underline underline-offset-2"
       href={href}
-      rel={props?.link?.external ? "noreferrer" : undefined}
-      target={props?.link?.external ? "_blank" : undefined}
+      rel={props.link?.external ? "noreferrer" : undefined}
+      target={props.link?.external ? "_blank" : undefined}
     >
       {text}
     </a>
@@ -46,7 +36,7 @@ export function TextCell({
     setCopied(true);
   }
 
-  if (!props?.copyable) {
+  if (!props.copyable) {
     return content;
   }
 
@@ -69,4 +59,4 @@ export function TextCell({
       </button>
     </span>
   );
-}
+};

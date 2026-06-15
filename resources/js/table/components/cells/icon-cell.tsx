@@ -1,17 +1,15 @@
 import { IconRenderer } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import type { IconColumnProps } from "@lattice-php/lattice/types/generated";
-import type { TableColumn } from "../../types";
+import type { ColumnCellComponent } from "../../registry";
 
-export function IconCell({ column, value }: { column: TableColumn; value: unknown }) {
-  const props = column.props as IconColumnProps | null;
-  const icon = props?.icons?.[String(value)] ?? props?.icon ?? undefined;
+export const IconCell: ColumnCellComponent<"icon"> = ({ props, value }) => {
+  const icon = props.icons?.[String(value)] ?? props.icon ?? undefined;
 
   if (!icon) {
     return null;
   }
 
-  const color = props?.colors?.[String(value)];
+  const color = props.colors?.[String(value)];
 
   return (
     <span
@@ -21,4 +19,4 @@ export function IconCell({ column, value }: { column: TableColumn; value: unknow
       <IconRenderer className="size-lt-icon-md" icon={icon} />
     </span>
   );
-}
+};
