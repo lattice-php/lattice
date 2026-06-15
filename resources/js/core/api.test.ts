@@ -53,6 +53,15 @@ describe("apiFetch", () => {
     });
   });
 
+  it("sends an empty csrf token on a write when no XSRF-TOKEN cookie is present", async () => {
+    const fetchMock = vi.fn<typeof fetch>(async () => okResponse());
+    vi.stubGlobal("fetch", fetchMock);
+
+    await apiFetch("/x", { method: "POST" });
+
+    expect(fetchMock.mock.calls[0]?.[1]?.headers).toMatchObject({ "X-XSRF-TOKEN": "" });
+  });
+
   it("lets the caller override a defaulted header", async () => {
     const fetchMock = vi.fn<typeof fetch>(async () => okResponse());
     vi.stubGlobal("fetch", fetchMock);

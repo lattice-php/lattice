@@ -12,12 +12,18 @@
  * Leave the Inertia world (router/useHttp) alone — this is for raw-data fetches.
  */
 
-import { withHeaders, xsrfToken } from "./headers";
+import { withHeaders } from "./headers";
 
 export class ApiError extends Error {
   constructor(readonly response: Response) {
     super(`HTTP ${response.status}`);
   }
+}
+
+function xsrfToken(): string {
+  const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+
+  return match ? decodeURIComponent(match[1]) : "";
 }
 
 export type ApiInit = Omit<RequestInit, "headers"> & {
