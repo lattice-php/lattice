@@ -1,0 +1,29 @@
+[
+    {
+        "props": {
+            "accept": "image/*",
+            "columnWidth": "md",
+            "conditions": null,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "files": null,
+            "helperText": null,
+            "hidden": false,
+            "image": true,
+            "label": "Avatar",
+            "maxFiles": null,
+            "maxSize": 2048,
+            "multiple": false,
+            "name": "avatar",
+            "prefill": false,
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "readOnly": false,
+            "required": false,
+            "signed": false,
+            "value": null
+        },
+        "type": "form.file-upload"
+    }
+]

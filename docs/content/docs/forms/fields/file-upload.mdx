@@ -1,0 +1,123 @@
+---
+title: File upload
+description: Upload files and images to a filesystem disk, with optional direct-to-S3 signed uploads.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
+
+The file upload field stores uploaded files on a filesystem disk and submits their paths. It supports
+single or multiple files, image-only mode, size and count limits, and direct-to-storage signed uploads.
+Create one with `FileUpload::make()`.
+
+<ComponentExample
+  php={`FileUpload::make('avatar', 'Avatar')
+    ->image()
+    ->maxSize(2048)`}
+  fixture="file-upload.basic"
+  values={{ avatar: null }}
+/>
+
+## Disk
+
+`->disk()` chooses the filesystem disk the field reads and writes. Without it the field uses the
+`lattice.files.disk` config value (defaulting to `public`).
+
+```php
+FileUpload::make('document')->disk('s3');
+```
+
+## Images
+
+`->image()` restricts the picker to images and renders an image-aware preview. It also defaults the
+accepted types to `image/*` unless you set them explicitly.
+
+```php
+FileUpload::make('avatar')->image();
+```
+
+## Accepted types and size
+
+`->acceptedFileTypes()` takes a list of MIME types or extensions for the file picker's `accept`
+attribute. `->maxSize()` caps each file's size in **kilobytes**.
+
+```php
+FileUpload::make('attachment')
+    ->acceptedFileTypes(['application/pdf', 'image/png'])
+    ->maxSize(5120);
+```
+
+## Multiple files
+
+`->multiple()` lets the field accept more than one file; it then submits an array of paths. `->maxFiles()`
+caps how many the form accepts.
+
+```php
+FileUpload::make('gallery', 'Gallery')
+    ->image()
+    ->multiple()
+    ->maxFiles(8);
+```
+
+## Signed (direct-to-storage) uploads
+
+By default files are uploaded through your form endpoint. `->signedUpload()` switches to **direct
+uploads**: the client asks the form endpoint for a short-lived signed URL, uploads straight to the
+disk (for example S3), and submits the resulting object key. This keeps large files off your PHP
+process. The disk must support temporary upload URLs.
+
+```php
+FileUpload::make('document')
+    ->disk('s3')
+    ->signedUpload();
+```
+
+<Info>
+  Signed-URL lifetime comes from `lattice.files.url_ttl` (minutes, default `5`) and temporary objects
+  are keyed under `lattice.files.temp_prefix` (default `tmp`).
+</Info>
+
+## Reading the value in `handle()`
+
+A submitted file arrives as an `UploadedFile` (or an array of them for `->multiple()`); a signed upload
+arrives as the object key string. Store it however you like:
+
+```php
+public function handle(Request $request): Response
+{
+    $data = $this->validate($request);
+
+    if (($data['avatar'] ?? null) instanceof UploadedFile) {
+        $data['avatar'] = $data['avatar']->store('avatars', 'public');
+    }
+
+    // persist $data['avatar'] ...
+}
+```
+
+## Removing existing files
+
+When a form is bound to a record, stored paths render as existing files the user can remove. Each
+existing file carries a **sealed token**, and the client posts the tokens of removed files under
+`{name}__removed[]`. Resolve them server-side with the static `FileUpload::removed()` helper, which
+unseals each token (skipping any forged, expired, or mismatched one) and returns the trusted disk
+paths to delete:
+
+```php
+foreach (FileUpload::removed($request, 'avatar') as $path) {
+    Storage::disk('public')->delete($path);
+}
+```
+
+<Warning title="Authorization">
+  `FileUpload::removed()` only returns paths whose token the server itself sealed for this field, so a
+  client cannot forge a path to delete. Always delete through it rather than trusting raw request input.
+  See [Security](/advanced/security/) for how sealed references work.
+</Warning>
+
+## Common options
+
+`FileUpload` shares label, required, disabled, read-only, and visibility options with every field — see
+[Fields](/forms/fields/overview/). For validation and conditional behavior, see
+[Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).
