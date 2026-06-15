@@ -66,7 +66,7 @@ class BusinessPartnerForm extends FormDefinition
             if ($addresses->isNotEmpty()) {
                 $addressOptions = $addresses->map(
                     fn (Address $address): Option => Select::option(
-                        $address->label.' — '.$address->city,
+                        $address->displayLabel(),
                         (string) $address->getKey(),
                     ),
                 )->all();
@@ -138,19 +138,13 @@ class BusinessPartnerForm extends FormDefinition
                 'country' => $row['country'],
             ];
 
-            if ($addressId !== null) {
-                $address = $partner->addresses()->find($addressId);
+            $address = $addressId !== null ? $partner->addresses()->find($addressId) : null;
 
-                if ($address instanceof Address) {
-                    $address->update($addressData);
-                    $submittedIds[] = $addressId;
-                } else {
-                    $created = Address::query()->create($addressData);
-                    $submittedIds[] = $created->getKey();
-                }
+            if ($address instanceof Address) {
+                $address->update($addressData);
+                $submittedIds[] = $address->getKey();
             } else {
-                $created = Address::query()->create($addressData);
-                $submittedIds[] = $created->getKey();
+                $submittedIds[] = Address::query()->create($addressData)->getKey();
             }
         }
 

@@ -20,6 +20,7 @@ use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Models\Group;
 use Workbench\App\Models\Product;
+use Workbench\App\Models\SalesPrice;
 
 #[Form('workbench.products.form')]
 class ProductForm extends FormDefinition
@@ -94,6 +95,22 @@ class ProductForm extends FormDefinition
         });
 
         return redirect('/products');
+    }
+
+    /**
+     * @return array<int, array{group_id: string, amount: string}>
+     */
+    public function salesPriceRows(Product $product): array
+    {
+        return $product->salesPrices()
+            ->orderByRaw('group_id is null desc')
+            ->orderBy('group_id')
+            ->get()
+            ->map(fn (SalesPrice $salesPrice): array => [
+                'group_id' => $salesPrice->group_id !== null ? (string) $salesPrice->group_id : '',
+                'amount' => $salesPrice->amount,
+            ])
+            ->all();
     }
 
     /**
