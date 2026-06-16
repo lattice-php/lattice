@@ -16,6 +16,8 @@ test('workbench remote schema page renders nested remote nodes', function (): vo
             ->where('lattice.schema.0.type', 'section')
             ->where('lattice.schema.0.schema.0.type', 'card')
             ->where('lattice.schema.0.schema.0.schema.1.type', 'remote.data-list')
+            ->where('lattice.schema.0.schema.0.schema.1.schema.0.type', 'card')
+            ->where('lattice.schema.0.schema.0.schema.1.schema.0.props.dataBindings.title', 'name')
             ->where('lattice.schema.0.schema.0.schema.2.type', 'remote.chat-box')
         );
 });

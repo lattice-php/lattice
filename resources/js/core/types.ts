@@ -12,6 +12,7 @@ export type { KnownPageContainer, NodeType, WireNode };
 export type NodeProps = Record<string, unknown>;
 
 export type CommonNodeProps = {
+  dataBindings?: Record<string, string> | null;
   hideWhenCollapsed?: boolean | null;
 };
 

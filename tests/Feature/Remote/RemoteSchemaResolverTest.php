@@ -49,8 +49,17 @@ test('remote source schema resolves nested nodes and injects trusted token props
                                         'audience' => 'https://crm.example.test',
                                         'scopes' => ['customers.read'],
                                         'resource' => 'customers',
-                                        'titleKey' => 'name',
-                                        'subtitleKey' => 'email',
+                                    ],
+                                    'schema' => [
+                                        [
+                                            'type' => 'card',
+                                            'props' => [
+                                                'dataBindings' => [
+                                                    'title' => 'name',
+                                                    'description' => 'email',
+                                                ],
+                                            ],
+                                        ],
                                     ],
                                 ],
                                 [
@@ -110,6 +119,12 @@ test('remote source schema resolves nested nodes and injects trusted token props
         ->and($dataList['props']['remote']['nodeId'])->toBe('customers')
         ->and($dataList['props']['remote']['nodeType'])->toBe('remote.data-list')
         ->and($dataList['props']['remote']['ref'])->toBeString()->not->toBe('forged-remote-ref');
+
+    expect($dataList['schema'][0]['type'])->toBe('card')
+        ->and($dataList['schema'][0]['props']['dataBindings'])->toBe([
+            'title' => 'name',
+            'description' => 'email',
+        ]);
 
     expect($chatBox['type'])->toBe('remote.chat-box')
         ->and($chatBox['id'])->toBe('crm-chat')
@@ -193,5 +208,10 @@ test('source schema resolves local json files for the workbench poc', function (
         ->and($wire[0]['props']['remote']['scopes'])->toBe(['customers.read'])
         ->and($wire[0]['props']['remote']['nodeId'])->toBe('fixture-customers')
         ->and($wire[0]['props']['remote']['nodeType'])->toBe('remote.data-list')
-        ->and($wire[0]['props']['remote']['ref'])->toBeString()->not->toBe('');
+        ->and($wire[0]['props']['remote']['ref'])->toBeString()->not->toBe('')
+        ->and($wire[0]['schema'][0]['type'])->toBe('card')
+        ->and($wire[0]['schema'][0]['props']['dataBindings'])->toBe([
+            'title' => 'name',
+            'description' => 'email',
+        ]);
 });

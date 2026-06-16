@@ -60,7 +60,12 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
         ->and($dataList['props']['remote']['scopes'])->toBe(['customers.read'])
         ->and($dataList['props']['remote']['nodeId'])->toBe('customers')
         ->and($dataList['props']['remote']['nodeType'])->toBe('remote.data-list')
-        ->and($dataList['props']['remote']['ref'])->toBeString()->not->toBe('');
+        ->and($dataList['props']['remote']['ref'])->toBeString()->not->toBe('')
+        ->and($dataList['schema'][0]['type'])->toBe('card')
+        ->and($dataList['schema'][0]['props']['dataBindings'])->toBe([
+            'title' => 'name',
+            'description' => 'email',
+        ]);
 
     expect($chatBox['type'])->toBe('remote.chat-box')
         ->and($chatBox['props']['streamEndpoint'])->toBe('/workbench/remote/chat/stream')

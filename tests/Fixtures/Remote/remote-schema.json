@@ -8,7 +8,18 @@
         "dataEndpoint": "https://crm.example.test/customers",
         "audience": "https://crm.example.test",
         "scopes": ["customers.read"]
-      }
+      },
+      "schema": [
+        {
+          "type": "card",
+          "props": {
+            "dataBindings": {
+              "title": "name",
+              "description": "email"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -399,8 +399,6 @@ export type DataList = {
   dataEndpoint: string | null;
   emptyLabel: string | null;
   remote: RemoteAccess | null;
-  subtitleKey: string | null;
-  titleKey: string | null;
 };
 export type DateInput = {
   autoFocus: boolean;
@@ -943,6 +941,7 @@ export type RemoteNode =
       type: "remote.data-list";
       key?: string;
       props: DataList;
+      schema?: Node[];
     };
 export type Repeater = {
   addLabel: string | null;

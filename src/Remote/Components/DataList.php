@@ -4,15 +4,14 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Remote\Components;
 
 use Lattice\Lattice\Attributes\AsRemoteComponent;
+use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
 
 #[AsRemoteComponent('data-list')]
 final class DataList extends RemoteComponent
 {
+    use HasChildSchema;
+
     public ?string $dataEndpoint = null;
-
-    public ?string $titleKey = null;
-
-    public ?string $subtitleKey = null;
 
     public ?string $emptyLabel = null;
 
@@ -24,20 +23,6 @@ final class DataList extends RemoteComponent
     public function dataEndpoint(string $endpoint): static
     {
         $this->dataEndpoint = $endpoint;
-
-        return $this;
-    }
-
-    public function titleKey(string $key): static
-    {
-        $this->titleKey = $key;
-
-        return $this;
-    }
-
-    public function subtitleKey(string $key): static
-    {
-        $this->subtitleKey = $key;
 
         return $this;
     }

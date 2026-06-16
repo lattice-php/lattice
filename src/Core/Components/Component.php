@@ -7,6 +7,7 @@ use BackedEnum;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Core\Components\Concerns\HasDataBindings;
 use Lattice\Lattice\Core\Components\Concerns\ReflectsWireProps;
 use ReflectionMethod;
 use Spatie\Attributes\Attributes;
@@ -17,6 +18,7 @@ use Spatie\Attributes\AttributeTarget;
  */
 abstract class Component implements JsonSerializable
 {
+    use HasDataBindings;
     use ReflectsWireProps;
 
     /**
@@ -114,6 +116,8 @@ abstract class Component implements JsonSerializable
      */
     protected function decorateProps(array $props): array
     {
+        $props = $this->decorateDataBindings($props);
+
         if ($this->hideWhenCollapsed) {
             $props['hideWhenCollapsed'] = true;
         }

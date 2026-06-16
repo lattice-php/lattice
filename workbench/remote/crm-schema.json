@@ -31,10 +31,19 @@
               "props": {
                 "dataEndpoint": "/workbench/remote/customers",
                 "audience": "https://crm.workbench.test",
-                "scopes": ["customers.read"],
-                "titleKey": "name",
-                "subtitleKey": "email"
-              }
+                "scopes": ["customers.read"]
+              },
+              "schema": [
+                {
+                  "type": "card",
+                  "props": {
+                    "dataBindings": {
+                      "title": "name",
+                      "description": "email"
+                    }
+                  }
+                }
+              ]
             },
             {
               "type": "remote.chat-box",
