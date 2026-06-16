@@ -102,4 +102,28 @@ describe("RemoteChatBox", () => {
       ),
     );
   });
+
+  it("skips history loading when remote access is missing", () => {
+    const fetchMock = vi.fn<typeof fetch>();
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      withRegistry(
+        <RemoteChatBox
+          node={{
+            ...node(),
+            props: {
+              ...node().props,
+              remote: null,
+            },
+          }}
+        >
+          {null}
+        </RemoteChatBox>,
+      ),
+    );
+
+    expect(screen.getByText("CRM assistant")).toBeVisible();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
 });

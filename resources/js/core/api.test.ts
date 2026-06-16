@@ -244,4 +244,61 @@ describe("remoteFetch", () => {
       Authorization: "Bearer fake-browser-token-2",
     });
   });
+
+  it("shares a pending browser token request for concurrent remote calls", async () => {
+    let tokenCount = 0;
+    const fetchMock = vi.fn<typeof fetch>(async (url) => {
+      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
+        tokenCount += 1;
+        await Promise.resolve();
+
+        return okResponse({
+          accessToken: "fake-browser-token",
+          audience: "https://crm.example.test",
+          expiresIn: 120,
+          scopes: ["customers.read"],
+          tokenType: "Bearer",
+        });
+      }
+
+      return okResponse({ data: [] });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await Promise.all([
+      remoteJson("https://crm.example.test/customers", { remote }),
+      remoteJson("https://crm.example.test/accounts", {
+        remote: { ...remote, nodeId: "accounts", ref: "accounts-ref" },
+      }),
+    ]);
+
+    expect(tokenCount).toBe(1);
+  });
+
+  it("throws ApiError when a remote response fails after token exchange", async () => {
+    const response = { ok: false, status: 500 } as unknown as Response;
+    const fetchMock = vi.fn<typeof fetch>(async (url) => {
+      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
+        return okResponse({
+          accessToken: "fake-browser-token",
+          audience: "https://crm.example.test",
+          expiresIn: 120,
+          scopes: ["customers.read"],
+          tokenType: "Bearer",
+        });
+      }
+
+      return response;
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const error = await remoteFetch("https://crm.example.test/customers", {
+      remote,
+      retryOnUnauthorized: false,
+    }).catch((reason: unknown) => reason);
+
+    expect(error).toBeInstanceOf(ApiError);
+    expect((error as ApiError).response).toBe(response);
+    expect((error as ApiError).message).toBe("HTTP 500");
+  });
 });

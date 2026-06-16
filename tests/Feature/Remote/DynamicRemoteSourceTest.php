@@ -3,9 +3,12 @@ declare(strict_types=1);
 
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Facades\Http;
+use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Exceptions\UnknownComponent;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Remote\RemoteSchemaEndpoint;
+use Lattice\Lattice\Remote\RemoteSourceDefinition;
 use Lattice\Lattice\Tests\Fixtures\Remote\DynamicExternalAppRemoteSource;
 use Lattice\Lattice\Tests\Fixtures\Remote\DynamicExternalAppStore;
 
@@ -88,4 +91,47 @@ test('dynamic remote source keys resolve the same source during token exchange',
             'audience' => 'https://acme.example.test',
             'scopes' => ['tickets.read'],
         ]);
+});
+
+test('remote source definitions return no schema when no endpoint is configured', function (): void {
+    $source = new class extends RemoteSourceDefinition {};
+
+    expect($source->withSourceKey('external-app:empty')->schema(request()))->toBe([]);
+});
+
+test('remote source definitions normalize inline manifests with the dynamic source key', function (): void {
+    $source = new class extends RemoteSourceDefinition
+    {
+        /**
+         * @param  list<array<string, mixed>>  $manifest
+         * @return list<Component>
+         */
+        public function manifest(array $manifest): array
+        {
+            return $this->schemaFromManifest($manifest);
+        }
+    };
+
+    $wire = wire($source
+        ->withSourceKey('external-app:inline')
+        ->manifest([
+            [
+                'type' => 'text',
+                'props' => ['text' => 'Inline remote schema'],
+            ],
+        ]));
+
+    expect($wire[0])->toMatchArray([
+        'type' => 'text',
+        'props' => [
+            'text' => 'Inline remote schema',
+        ],
+    ]);
+});
+
+test('dynamic remote source registry rejects unknown source keys', function (): void {
+    Lattice::remoteSourceResolver(fn (string $candidate, Container $container): ?RemoteSourceDefinition => null);
+
+    expect(fn () => Lattice::remoteSourceRegistry()->resolve('external-app:missing'))
+        ->toThrow(UnknownComponent::class, 'external-app:missing');
 });

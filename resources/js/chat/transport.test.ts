@@ -156,4 +156,44 @@ describe("ndjsonChatTransport", () => {
       }),
     );
   });
+
+  it("throws when a remote chat stream response is not readable", async () => {
+    const fetchMock = vi.fn<typeof fetch>(async (url) => {
+      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
+        return new Response(
+          JSON.stringify({
+            accessToken: "fake-browser-token",
+            audience: "https://crm.example.test",
+            expiresIn: 120,
+            scopes: ["chat.write"],
+            tokenType: "Bearer",
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+
+      return { ok: false, status: 500, body: null } as unknown as Response;
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const transport = createRemoteNdjsonChatTransport({
+      audience: "https://crm.example.test",
+      source: "fixtures.crm",
+      nodeId: "crm-chat",
+      nodeType: "remote.chat-box",
+      ref: "sealed-ref",
+      scopes: ["chat.write"],
+      tokenEndpoint: "/custom/remote-tokens/fixtures.crm",
+    });
+
+    await expect(async () => {
+      for await (const _ of transport({
+        url: "https://crm.example.test/chat/stream",
+        body: { message: "hi" },
+        signal: new AbortController().signal,
+      })) {
+        void _;
+      }
+    }).rejects.toThrow("Chat stream failed (500)");
+  });
 });

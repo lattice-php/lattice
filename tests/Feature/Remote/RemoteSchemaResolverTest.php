@@ -163,6 +163,21 @@ test('source schema rejects endpoints outside allowed hosts before sending a req
     Http::assertNothingSent();
 });
 
+test('source schema rejects endpoints without a host before sending a request', function (): void {
+    Http::preventStrayRequests();
+    Http::fake();
+
+    Lattice::remoteSources([RemoteSchemaSource::class]);
+    RemoteSchemaSource::$endpoint = RemoteSchemaEndpoint::url('/schema.json');
+
+    expect(fn () => Lattice::remoteSourceRegistry()
+        ->resolve('fixtures.remote-crm')
+        ->schema(request())
+    )->toThrow(InvalidRemoteSchema::class, 'must include a host');
+
+    Http::assertNothingSent();
+});
+
 test('remote source schema rejects component urls outside allowed hosts', function (): void {
     Http::preventStrayRequests();
     Http::fake([
@@ -193,6 +208,38 @@ test('remote source schema rejects component urls outside allowed hosts', functi
     )->toThrow(InvalidRemoteSchema::class, 'not allowed');
 });
 
+test('remote source schema allows relative component urls from a trusted schema endpoint', function (): void {
+    Http::preventStrayRequests();
+    Http::fake([
+        'https://crm.example.test/schema.json' => Http::response([
+            'schema' => [
+                [
+                    'type' => 'remote.data-list',
+                    'id' => 'customers',
+                    'props' => [
+                        'dataEndpoint' => '/customers',
+                        'audience' => 'https://crm.example.test',
+                        'scopes' => ['customers.read'],
+                    ],
+                ],
+            ],
+        ]),
+    ]);
+
+    Lattice::remoteSources([RemoteSchemaSource::class]);
+    RemoteSchemaSource::$endpoint = RemoteSchemaEndpoint::url(
+        'https://crm.example.test/schema.json',
+        allowedHosts: ['crm.example.test'],
+    );
+
+    $wire = wire(Lattice::remoteSourceRegistry()
+        ->resolve('fixtures.remote-crm')
+        ->schema(request()));
+
+    expect($wire[0]['props']['dataEndpoint'])->toBe('/customers')
+        ->and($wire[0]['props']['remote']['nodeId'])->toBe('customers');
+});
+
 test('source schema resolves local json files for the workbench poc', function (): void {
     Lattice::remoteSources([RemoteSchemaSource::class]);
 
@@ -217,6 +264,17 @@ test('source schema resolves local json files for the workbench poc', function (
             'title' => 'name',
             'description' => 'email',
         ]);
+});
+
+test('source schema rejects invalid local json files', function (): void {
+    Lattice::remoteSources([RemoteSchemaSource::class]);
+
+    RemoteSchemaSource::$endpoint = RemoteSchemaEndpoint::file(fixturePath('Remote/invalid-remote-schema.json'));
+
+    expect(fn () => Lattice::remoteSourceRegistry()
+        ->resolve('fixtures.remote-crm')
+        ->schema(request())
+    )->toThrow(InvalidRemoteSchema::class, 'valid JSON');
 });
 
 test('remote schema refs use configured token endpoints', function (): void {
@@ -251,3 +309,92 @@ test('remote schema refs use configured token endpoints', function (): void {
 
     expect($wire[0]['props']['remote']['tokenEndpoint'])->toBe('/custom/remotes/fixtures.remote-crm/browser-token');
 });
+
+test('source schema rejects invalid manifest payloads', function (array|string $payload, string $message): void {
+    Http::preventStrayRequests();
+    Http::fake([
+        'https://crm.example.test/schema.json' => Http::response($payload),
+    ]);
+
+    Lattice::remoteSources([RemoteSchemaSource::class]);
+    RemoteSchemaSource::$endpoint = RemoteSchemaEndpoint::url(
+        'https://crm.example.test/schema.json',
+        allowedHosts: ['crm.example.test'],
+    );
+
+    expect(fn () => Lattice::remoteSourceRegistry()
+        ->resolve('fixtures.remote-crm')
+        ->schema(request())
+    )->toThrow(InvalidRemoteSchema::class, $message);
+})->with([
+    'non-array payload' => ['not-json', 'JSON object or array'],
+    'associative schema' => [['schema' => ['customers' => ['type' => 'text']]], 'schema list'],
+    'scalar node' => [['schema' => ['broken']], 'only object nodes'],
+]);
+
+test('source schema rejects remote nodes without required browser token metadata', function (array $node, string $message): void {
+    Http::preventStrayRequests();
+    Http::fake([
+        'https://crm.example.test/schema.json' => Http::response([
+            'schema' => [$node],
+        ]),
+    ]);
+
+    Lattice::remoteSources([RemoteSchemaSource::class]);
+    RemoteSchemaSource::$endpoint = RemoteSchemaEndpoint::url(
+        'https://crm.example.test/schema.json',
+        allowedHosts: ['crm.example.test'],
+    );
+
+    expect(fn () => Lattice::remoteSourceRegistry()
+        ->resolve('fixtures.remote-crm')
+        ->schema(request())
+    )->toThrow(InvalidRemoteSchema::class, $message);
+})->with([
+    'missing audience' => [
+        [
+            'type' => 'remote.data-list',
+            'id' => 'customers',
+            'props' => [
+                'dataEndpoint' => 'https://crm.example.test/customers',
+                'scopes' => ['customers.read'],
+            ],
+        ],
+        'must include an audience',
+    ],
+    'missing id' => [
+        [
+            'type' => 'remote.data-list',
+            'props' => [
+                'dataEndpoint' => 'https://crm.example.test/customers',
+                'audience' => 'https://crm.example.test',
+                'scopes' => ['customers.read'],
+            ],
+        ],
+        'must include an id or key',
+    ],
+    'non-list scopes' => [
+        [
+            'type' => 'remote.data-list',
+            'id' => 'customers',
+            'props' => [
+                'dataEndpoint' => 'https://crm.example.test/customers',
+                'audience' => 'https://crm.example.test',
+                'scopes' => ['read' => true],
+            ],
+        ],
+        'scopes must be a list of strings',
+    ],
+    'non-string scope' => [
+        [
+            'type' => 'remote.data-list',
+            'id' => 'customers',
+            'props' => [
+                'dataEndpoint' => 'https://crm.example.test/customers',
+                'audience' => 'https://crm.example.test',
+                'scopes' => [true],
+            ],
+        ],
+        'scopes must be a list of strings',
+    ],
+]);

@@ -167,6 +167,91 @@ describe("DataList", () => {
     );
   });
 
+  it("shows the loading fallback when remote access is missing", () => {
+    render(
+      withRegistry(
+        <DataList
+          node={{
+            ...node(),
+            props: {
+              ...node().props,
+              remote: null,
+            },
+          }}
+        >
+          {null}
+        </DataList>,
+      ),
+    );
+
+    expect(screen.getByText("Loading...")).toBeVisible();
+  });
+
+  it("renders remote fetch errors", async () => {
+    const fetchMock = vi.fn<typeof fetch>(async (url) => {
+      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
+        return new Response(
+          JSON.stringify({
+            accessToken: "fake-browser-token",
+            audience: "https://crm.example.test",
+            expiresIn: 120,
+            scopes: ["customers.read"],
+            tokenType: "Bearer",
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+
+      return new Response("Failed", { status: 500 });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(withRegistry(<DataList node={node()}>{null}</DataList>));
+
+    expect(await screen.findByText("HTTP 500")).toBeVisible();
+  });
+
+  it("uses the configured empty label when the remote payload has no rows", async () => {
+    const fetchMock = vi.fn<typeof fetch>(async (url) => {
+      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
+        return new Response(
+          JSON.stringify({
+            accessToken: "fake-browser-token",
+            audience: "https://crm.example.test",
+            expiresIn: 120,
+            scopes: ["customers.read"],
+            tokenType: "Bearer",
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+
+      return new Response(JSON.stringify({ data: [] }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      withRegistry(
+        <DataList
+          node={{
+            ...node(),
+            props: {
+              ...node().props,
+              emptyLabel: "No customers yet",
+            },
+          }}
+        >
+          {null}
+        </DataList>,
+      ),
+    );
+
+    expect(await screen.findByText("No customers yet")).toBeVisible();
+  });
+
   it("renders the child schema once per remote row using data bindings", async () => {
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
       if (String(url) === "/custom/remote-tokens/fixtures.crm") {
