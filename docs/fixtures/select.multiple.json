@@ -7,6 +7,7 @@
             "dependsOnAny": false,
             "dependsOnKeys": null,
             "disabled": false,
+            "editablePrefill": false,
             "emptyLabel": "No options",
             "helperText": null,
             "hidden": false,
@@ -32,7 +33,6 @@
                 }
             ],
             "placeholder": "Choose languages",
-            "prefill": false,
             "prefillRefreshOn": null,
             "prefillResetOn": null,
             "readOnly": false,

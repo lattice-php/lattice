@@ -74,6 +74,13 @@ class Builder extends Field implements ProvidesRowFields, ProvidesRowPrefills
         return $this;
     }
 
+    public function defaultItems(int $count): static
+    {
+        $this->defaultItems = $count;
+
+        return $this;
+    }
+
     /**
      * The builder value is always an array; array-level rules live here so they
      * are not clobbered by the nested per-row rules (which use per-index keys).

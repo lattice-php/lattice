@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Forms\Components;
 use Closure;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
+use Lattice\Lattice\Facades\Evaluate;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Components\Concerns\HandlesRowSchemas;
 use Lattice\Lattice\Forms\Components\Concerns\HasRowActions;
@@ -14,6 +15,7 @@ use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
 use Lattice\Lattice\Forms\Contracts\ProvidesRowPrefills;
 use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\FormData;
+use Stringable;
 
 #[AsField(FieldType::Repeater)]
 class Repeater extends Field implements ProvidesRowFields, ProvidesRowPrefills
@@ -34,6 +36,13 @@ class Repeater extends Field implements ProvidesRowFields, ProvidesRowPrefills
     public ?string $itemLabel = null;
 
     public int $defaultItems = 1;
+
+    protected ?Closure $itemLabelResolver = null;
+
+    /**
+     * @var list<string|null>|null
+     */
+    protected ?array $itemLabels = null;
 
     public function minItems(int $min): static
     {
@@ -63,13 +72,17 @@ class Repeater extends Field implements ProvidesRowFields, ProvidesRowPrefills
         return $this;
     }
 
-    /**
-     * Per-row heading. v1 serialises only the string form; the Closure form is
-     * accepted for forward-compatible API parity and resolved in a follow-up.
-     */
     public function itemLabel(string|Closure $label): static
     {
-        $this->itemLabel = $label instanceof Closure ? null : $label;
+        if ($label instanceof Closure) {
+            $this->itemLabel = null;
+            $this->itemLabelResolver = $label;
+
+            return $this;
+        }
+
+        $this->itemLabel = $label;
+        $this->itemLabelResolver = null;
 
         return $this;
     }
@@ -136,5 +149,45 @@ class Repeater extends Field implements ProvidesRowFields, ProvidesRowPrefills
     public function castValue(mixed $value): mixed
     {
         return $this->castRows($value);
+    }
+
+    #[\Override]
+    public function hydrateState(mixed $value, ?FormData $form = null, ?Request $request = null): void
+    {
+        if ($this->itemLabelResolver === null || ! is_array($value)) {
+            $this->itemLabels = null;
+
+            return;
+        }
+
+        $form ??= FormData::make([]);
+        $request ??= request();
+
+        $this->itemLabels = array_map(function (mixed $row) use ($form, $request): ?string {
+            $row = is_array($row) ? $row : [];
+            $rowData = FormData::make($row);
+            $label = Evaluate::resolve(
+                $this->itemLabelResolver,
+                $this->evaluationContext($rowData, $request)
+                    ->named('row', $rowData)
+                    ->named('form', $form),
+            );
+
+            return is_scalar($label) || $label instanceof Stringable ? (string) $label : null;
+        }, array_values($value));
+    }
+
+    /**
+     * @param  array<string, mixed>  $props
+     * @return array<string, mixed>
+     */
+    #[\Override]
+    protected function decorateProps(array $props): array
+    {
+        if ($this->itemLabels === null) {
+            return parent::decorateProps($props);
+        }
+
+        return parent::decorateProps([...$props, 'itemLabels' => $this->itemLabels]);
     }
 }

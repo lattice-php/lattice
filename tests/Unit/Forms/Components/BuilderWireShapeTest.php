@@ -29,3 +29,13 @@ it('serialises a builder with its blocks and props', function (): void {
         ->and($wire['blocks'][1]['type'])->toBe('product')
         ->and($wire['blocks'][1]['schema'][0]['props']['name'])->toBe('qty');
 });
+
+it('configures default rows with the same fluent api as repeater', function (): void {
+    $wire = wire(
+        Builder::make('items')
+            ->blocks([Block::make('product')->label('Product')->schema([TextInput::make('qty')])])
+            ->defaultItems(2),
+    );
+
+    expect($wire['props']['defaultItems'])->toBe(2);
+});

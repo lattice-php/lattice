@@ -12,6 +12,7 @@ use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
+use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 
@@ -168,24 +169,27 @@ class Form extends ContainerComponent
     }
 
     /**
-     * Distribute the filled state to fields before children are serialized, so a
-     * field can react to its stored value (e.g. a Select resolving labels for ids).
+     * Distribute filled state before children are serialized, so a field can
+     * react to its stored value (e.g. a Select resolving labels for ids).
      *
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
     #[SerializationHook(priority: 250)]
-    protected function prefillFields(array $data): array
+    protected function hydrateFieldsFromState(array $data): array
     {
+        $form = FormData::make($this->state);
+        $request = request();
+
         foreach ($this->descendants() as $component) {
             if (! $component instanceof Field || ! array_key_exists($component->name(), $this->state)) {
                 continue;
             }
 
-            $component->prefill($this->state[$component->name()]);
+            $component->hydrateState($this->state[$component->name()], $form, $request);
 
             if ($component instanceof ProvidesRowFields) {
-                $component->prefillRowFields($this->state[$component->name()]);
+                $component->prefillRowFields($this->state[$component->name()], $form, $request);
             }
         }
 

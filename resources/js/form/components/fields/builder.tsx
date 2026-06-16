@@ -62,6 +62,7 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
       row,
       template: block?.schema ?? EMPTY_TEMPLATE,
       span: !isPrimary,
+      heading: block?.label ?? `Unknown block: ${String(row.type)}`,
     };
   });
 

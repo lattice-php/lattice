@@ -62,6 +62,7 @@ export type Builder = {
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
+  editablePrefill: boolean;
   helperText: string | null;
   hidden: boolean;
   label: string | null;
@@ -69,7 +70,6 @@ export type Builder = {
   maxItems: number | null;
   minItems: number | null;
   name: string;
-  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
@@ -183,11 +183,11 @@ export type Checkbox = {
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
+  editablePrefill: boolean;
   helperText: string | null;
   hidden: boolean;
   label: string | null;
   name: string;
-  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
@@ -208,12 +208,12 @@ export type Choice = {
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
+  editablePrefill: boolean;
   helperText: string | null;
   hidden: boolean;
   label: string | null;
   name: string;
   options: Option[];
-  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
@@ -390,13 +390,13 @@ export type DateInput = {
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
+  editablePrefill: boolean;
   helperText: string | null;
   hidden: boolean;
   label: string | null;
   max: string | null;
   min: string | null;
   name: string;
-  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
@@ -480,6 +480,7 @@ export type FileUpload = {
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
+  editablePrefill: boolean;
   files:
     | {
         key: string;
@@ -497,7 +498,6 @@ export type FileUpload = {
   maxSize: number | null;
   multiple: boolean;
   name: string;
-  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
@@ -650,11 +650,11 @@ export type HiddenInput = {
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
+  editablePrefill: boolean;
   helperText: string | null;
   hidden: boolean;
   label: string | null;
   name: string;
-  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
@@ -796,6 +796,7 @@ export type NumberInput = {
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
+  editablePrefill: boolean;
   helperText: string | null;
   hidden: boolean;
   label: string | null;
@@ -803,7 +804,6 @@ export type NumberInput = {
   min: number | null;
   name: string;
   placeholder: string | null;
-  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
@@ -860,6 +860,7 @@ export type PasswordInput = {
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
+  editablePrefill: boolean;
   helperText: string | null;
   hidden: boolean;
   label: string | null;
@@ -871,7 +872,6 @@ export type PasswordInput = {
   name: string;
   passwordRules: string | null;
   placeholder: string | null;
-  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
@@ -904,6 +904,7 @@ export type Repeater = {
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
+  editablePrefill: boolean;
   helperText: string | null;
   hidden: boolean;
   itemLabel: string | null;
@@ -912,7 +913,6 @@ export type Repeater = {
   maxItems: number | null;
   minItems: number | null;
   name: string;
-  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
@@ -938,12 +938,12 @@ export type RichEditor = {
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
+  editablePrefill: boolean;
   helperText: string | null;
   hidden: boolean;
   label: string | null;
   name: string;
   placeholder: string | null;
-  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
@@ -987,6 +987,7 @@ export type Select = {
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
+  editablePrefill: boolean;
   emptyLabel: string;
   helperText: string | null;
   hidden: boolean;
@@ -995,7 +996,6 @@ export type Select = {
   name: string;
   options: Option[];
   placeholder: string | null;
-  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
@@ -1106,12 +1106,12 @@ export type TextInput = {
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
+  editablePrefill: boolean;
   helperText: string | null;
   hidden: boolean;
   label: string | null;
   name: string;
   placeholder: string | null;
-  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
@@ -1136,12 +1136,12 @@ export type Textarea = {
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
+  editablePrefill: boolean;
   helperText: string | null;
   hidden: boolean;
   label: string | null;
   name: string;
   placeholder: string | null;
-  prefill: boolean;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;

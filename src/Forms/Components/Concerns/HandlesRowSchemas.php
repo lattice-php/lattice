@@ -72,7 +72,7 @@ trait HandlesRowSchemas
         return null;
     }
 
-    public function prefillRowFields(mixed $rows): void
+    public function prefillRowFields(mixed $rows, ?FormData $form = null, ?Request $request = null): void
     {
         if (! is_array($rows)) {
             return;
@@ -101,7 +101,7 @@ trait HandlesRowSchemas
         }
 
         foreach ($values as $key => $fieldValues) {
-            $fields[$key]->prefill(array_values($fieldValues));
+            $fields[$key]->hydrateState(array_values($fieldValues), $form, $request);
         }
     }
 

@@ -15,7 +15,7 @@ function priceField(): Node {
     type: "field.text",
     props: {
       name: "price",
-      prefill: true,
+      editablePrefill: true,
       prefillResetOn: ["product"],
       prefillRefreshOn: ["@customer"],
     },
@@ -60,7 +60,7 @@ it("collects a top-level target with form-level deps", () => {
   const node = {
     id: "t",
     type: "field.text",
-    props: { name: "total", prefill: true, prefillRefreshOn: ["@customer"] },
+    props: { name: "total", editablePrefill: true, prefillRefreshOn: ["@customer"] },
   } as unknown as Node;
 
   expect(collectPrefillTargets([node], {})).toEqual([

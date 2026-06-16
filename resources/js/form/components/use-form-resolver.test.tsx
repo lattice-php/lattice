@@ -12,7 +12,7 @@ function priceField(): Node {
     type: "field.text-input",
     props: {
       name: "price",
-      prefill: true,
+      editablePrefill: true,
       prefillRefreshOn: ["@customer"],
       prefillResetOn: ["product"],
     },
