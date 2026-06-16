@@ -6,6 +6,7 @@ use Lattice\Lattice\Http\Controllers\ActionController;
 use Lattice\Lattice\Http\Controllers\BulkActionController;
 use Lattice\Lattice\Http\Controllers\FormController;
 use Lattice\Lattice\Http\Controllers\FragmentController;
+use Lattice\Lattice\Http\Controllers\IntegrationTokenController;
 use Lattice\Lattice\Http\Controllers\TableController;
 
 Route::middleware(config('lattice.forms.middleware', ['web', 'auth']))
@@ -22,6 +23,11 @@ Route::middleware(config('lattice.fragments.middleware', ['web', 'auth']))
     ->get(config('lattice.fragments.endpoint', 'lattice/fragments/{fragment}'), FragmentController::class)
     ->where('fragment', '.*')
     ->name('lattice.fragments.show');
+
+Route::middleware(config('lattice.integrations.middleware', ['web', 'auth']))
+    ->post(config('lattice.integrations.endpoint', 'lattice/integrations/{integration}/token'), IntegrationTokenController::class)
+    ->where('integration', '.*')
+    ->name('lattice.integrations.token');
 
 Route::middleware(config('lattice.actions.middleware', ['web', 'auth']))
     ->match(['post', 'put', 'patch', 'delete'], config('lattice.actions.endpoint', 'lattice/actions/{action}'), ActionController::class)

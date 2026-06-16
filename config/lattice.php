@@ -36,6 +36,11 @@ return [
         'middleware' => ['web', 'auth'],
     ],
 
+    'integrations' => [
+        'endpoint' => 'lattice/integrations/{integration}/token',
+        'middleware' => ['web', 'auth'],
+    ],
+
     'actions' => [
         'endpoint' => 'lattice/actions/{action}',
         'middleware' => ['web', 'auth'],
