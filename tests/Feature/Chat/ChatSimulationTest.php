@@ -43,9 +43,19 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
 
     $partFrames = array_values(array_filter($frames, static fn (array $frame): bool => $frame['type'] === 'part'));
 
-    expect($partFrames)->toHaveCount(1)
+    expect($partFrames)->toHaveCount(2)
         ->and($partFrames[0]['part']['type'])->toBe('chat.part.tool-call')
-        ->and($partFrames[0]['part']['props']['name'])->toBe('lookup');
+        ->and($partFrames[0]['part']['props']['name'])->toBe('lookup')
+        ->and($partFrames[1]['part']['type'])->toBe('integration.browser-data');
+
+    $browserData = $partFrames[1]['part'];
+
+    expect($browserData['props']['endpoint'])->toBe('/lattice/integrations/workbench.crm/token')
+        ->and($browserData['props']['tokenEndpoint'])->toBe('/lattice/integrations/workbench.crm/token')
+        ->and($browserData['props']['dataEndpoint'])->toBe('/workbench/external/customers')
+        ->and($browserData['props']['audience'])->toBe('https://crm.workbench.test')
+        ->and($browserData['props']['scopes'])->toBe(['customers.read'])
+        ->and($browserData['props']['ref'])->toBeString()->not->toBe('');
 
     $messages = app(FakeConversationStore::class)->messages();
     $roles = array_column($messages, 'role');
@@ -56,7 +66,9 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
     $latestAssistant = end($assistant);
     $partTypes = array_column($latestAssistant['parts'], 'type');
 
-    expect($partTypes)->toContain('chat.part.text')->toContain('chat.part.tool-call');
+    expect($partTypes)->toContain('chat.part.text')
+        ->toContain('chat.part.tool-call')
+        ->toContain('integration.browser-data');
 });
 
 test('the floating chat box is mounted in the layout', function (): void {

@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Lattice\Lattice\Chat\ChatMessage;
 use Lattice\Lattice\Chat\ChatPart;
 use Lattice\Lattice\Chat\Enums\ChatRole;
+use Lattice\Lattice\Integrations\Components\BrowserData;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Workbench\App\Chat\FakeConversationStore;
 
@@ -40,14 +41,23 @@ final readonly class ChatAgentController
             }
 
             $toolCall = ChatPart::toolCall('lookup', ['query' => $message]);
+            $browserData = BrowserData::make('customers')
+                ->integration('workbench.crm')
+                ->tokenEndpoint('/lattice/integrations/workbench.crm/token')
+                ->dataEndpoint('/workbench/external/customers')
+                ->audience('https://crm.workbench.test')
+                ->scopes(['customers.read'])
+                ->resource('customers');
 
             $this->writeFrame(['type' => 'part', 'part' => $toolCall->jsonSerialize()]);
+            $this->writeFrame(['type' => 'part', 'part' => $browserData->jsonSerialize()]);
             $this->writeFrame(['type' => 'done']);
 
             $this->store->append(
                 (new ChatMessage((string) Str::uuid(), ChatRole::Assistant, [
                     ChatPart::text(self::REPLY),
                     $toolCall,
+                    $browserData,
                 ]))->jsonSerialize(),
             );
         }, 200, [

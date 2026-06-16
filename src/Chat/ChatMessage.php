@@ -7,12 +7,13 @@ namespace Lattice\Lattice\Chat;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Chat\Enums\ChatRole;
+use Lattice\Lattice\Core\Components\Component;
 
 #[TypeScript]
 final readonly class ChatMessage implements JsonSerializable
 {
     /**
-     * @param  list<ChatPart>  $parts
+     * @param  list<Component>  $parts
      */
     public function __construct(
         public string $id,
@@ -29,7 +30,7 @@ final readonly class ChatMessage implements JsonSerializable
             'id' => $this->id,
             'role' => $this->role->value,
             'parts' => array_map(
-                static fn (ChatPart $part): array => $part->jsonSerialize(),
+                static fn (Component $part): array => $part->jsonSerialize(),
                 $this->parts,
             ),
         ];
