@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
+import type { ChatBox as ChatBoxProps } from "@lattice-php/lattice/types/generated";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
 import { createRegistry } from "@lattice-php/lattice/core/registry";
@@ -38,7 +39,7 @@ function streamResponse(lines: string[]): Response {
   return { ok: true, status: 200, body } as unknown as Response;
 }
 
-function renderChatBox(): void {
+function renderChatBox(props: Partial<ChatBoxProps> = {}): void {
   render(
     withRegistry(
       <ChatBox
@@ -49,6 +50,7 @@ function renderChatBox(): void {
             historyEndpoint: "/h",
             title: "Assistant",
             placeholder: "Ask…",
+            ...props,
           },
         })}
       >
@@ -77,6 +79,22 @@ describe("ChatBox component", () => {
     expect(screen.getByText("Assistant")).toBeVisible();
     expect(screen.queryByTestId("chat-launcher")).toBeNull();
     expect(screen.queryByTestId("chat-close")).toBeNull();
+  });
+
+  it("renders fill mode without fetching history when no history endpoint is configured", async () => {
+    const fetchMock = vi.fn<() => Promise<Response>>(async () => historyResponse());
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderChatBox({ fill: true, historyEndpoint: null, title: null, placeholder: null });
+
+    const chatBox = await screen.findByTestId("chat-box");
+    expect(chatBox).toBeVisible();
+    expect(chatBox).toHaveClass("sticky", "top-0", "h-svh", "w-full");
+    expect(chatBox).not.toHaveClass("h-[28rem]");
+    expect(chatBox).not.toHaveClass("rounded-lt");
+    expect(chatBox).not.toHaveClass("shadow-lg");
+    expect(screen.getByText("Chat")).toBeVisible();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("fetches history once on mount and seeds the conversation", async () => {
