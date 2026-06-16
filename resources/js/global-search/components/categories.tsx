@@ -11,7 +11,7 @@ const GlobalSearchCategories: RendererComponent<"global-search.categories"> = ()
       {categories.map((category) => (
         <button
           key={category.name}
-          aria-selected={category.name === activeCategory}
+          aria-pressed={category.name === activeCategory}
           className={cn(
             "flex items-center justify-between gap-2 rounded-lt-sm px-3 py-2 text-left text-sm",
             category.name === activeCategory ? "bg-lt-muted text-lt-fg" : "text-lt-muted-fg hover:bg-lt-muted/60",
