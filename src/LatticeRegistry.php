@@ -13,6 +13,8 @@ use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
+use Lattice\Lattice\GlobalSearch\Contracts\SearchResultProvider;
+use Lattice\Lattice\GlobalSearch\SearchResultProviderRegistry;
 use Lattice\Lattice\Http\PageRegistry;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
@@ -32,6 +34,7 @@ final readonly class LatticeRegistry
         private PageRegistry $pages,
         private TableRegistry $tables,
         private RemoteSourceRegistry $remoteSources,
+        private SearchResultProviderRegistry $searchProviders,
     ) {}
 
     /**
@@ -119,5 +122,18 @@ final readonly class LatticeRegistry
     public function remoteSourceRegistry(): RemoteSourceRegistry
     {
         return $this->remoteSources;
+    }
+
+    /**
+     * @param  class-string<SearchResultProvider>|array<int, class-string<SearchResultProvider>>  $providers
+     */
+    public function searchProviders(string|array $providers): void
+    {
+        $this->searchProviders->register($providers);
+    }
+
+    public function searchProviderRegistry(): SearchResultProviderRegistry
+    {
+        return $this->searchProviders;
     }
 }
