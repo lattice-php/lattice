@@ -89,11 +89,11 @@ export async function apiJson<T>(url: string, init?: ApiInit): Promise<T> {
 }
 
 function remoteTokenKey(remote: RemoteAccess): string {
-  return [remote.integration, remote.audience, [...remote.scopes].sort().join(" ")].join("\u001f");
+  return [remote.source, remote.audience, [...remote.scopes].sort().join(" ")].join("\u001f");
 }
 
 function remoteTokenEndpoint(remote: RemoteAccess): string {
-  return `/lattice/integrations/${encodeURIComponent(remote.integration)}/token`;
+  return `/lattice/remote-sources/${encodeURIComponent(remote.source)}/token`;
 }
 
 export function clearRemoteTokenCache(): void {

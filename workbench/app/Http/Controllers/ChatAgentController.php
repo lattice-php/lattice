@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 use Lattice\Lattice\Chat\ChatMessage;
 use Lattice\Lattice\Chat\ChatPart;
 use Lattice\Lattice\Chat\Enums\ChatRole;
-use Lattice\Lattice\Integrations\IntegrationRegistry;
+use Lattice\Lattice\Remote\RemoteSourceRegistry;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Workbench\App\Chat\FakeConversationStore;
 
@@ -19,7 +19,7 @@ final readonly class ChatAgentController
 
     public function __construct(
         private FakeConversationStore $store,
-        private IntegrationRegistry $integrations,
+        private RemoteSourceRegistry $remoteSources,
     ) {}
 
     public function __invoke(Request $request): StreamedResponse
@@ -44,7 +44,7 @@ final readonly class ChatAgentController
             }
 
             $toolCall = ChatPart::toolCall('lookup', ['query' => $message]);
-            $schema = $this->integrations->resolve('workbench.crm')->schema($request);
+            $schema = $this->remoteSources->resolve('workbench.crm')->schema($request);
 
             $this->writeFrame(['type' => 'part', 'part' => $toolCall->jsonSerialize()]);
             foreach ($schema as $part) {

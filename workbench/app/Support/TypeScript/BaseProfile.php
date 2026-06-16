@@ -30,7 +30,7 @@ final class BaseProfile implements TypeScriptProfile
         'Core' => 'CoreNode',
         'Actions' => 'ActionNode',
         'Fragments' => 'FragmentNode',
-        'Integrations' => 'IntegrationNode',
+        'Remote' => 'RemoteNode',
         'Tables' => 'TableNode',
         'Layouts' => 'LayoutNode',
         'Chat' => 'ChatNode',

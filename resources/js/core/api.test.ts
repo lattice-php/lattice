@@ -21,7 +21,7 @@ afterEach(() => {
 
 const remote: RemoteAccess = {
   audience: "https://crm.example.test",
-  integration: "fixtures.crm",
+  source: "fixtures.crm",
   nodeId: "customers",
   nodeType: "remote.data-list",
   ref: "sealed-ref",
@@ -162,10 +162,10 @@ describe("apiJson", () => {
 });
 
 describe("remoteFetch", () => {
-  it("exchanges one browser token per integration, audience, and scopes", async () => {
+  it("exchanges one browser token per source, audience, and scopes", async () => {
     document.cookie = "XSRF-TOKEN=test-token";
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
-      if (String(url) === "/lattice/integrations/fixtures.crm/token") {
+      if (String(url) === "/lattice/remote-sources/fixtures.crm/token") {
         return okResponse({
           accessToken: "fake-browser-token",
           audience: "https://crm.example.test",
@@ -185,7 +185,7 @@ describe("remoteFetch", () => {
     });
 
     const tokenCalls = fetchMock.mock.calls.filter(
-      ([url]) => String(url) === "/lattice/integrations/fixtures.crm/token",
+      ([url]) => String(url) === "/lattice/remote-sources/fixtures.crm/token",
     );
     expect(tokenCalls).toHaveLength(1);
     expect(tokenCalls[0]?.[1]?.body).toBe(
@@ -210,11 +210,11 @@ describe("remoteFetch", () => {
     );
   });
 
-  it("refreshes a cached token once when an external request is unauthorized", async () => {
+  it("refreshes a cached token once when a remote request is unauthorized", async () => {
     let tokenCount = 0;
-    let externalCount = 0;
+    let remoteCount = 0;
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
-      if (String(url) === "/lattice/integrations/fixtures.crm/token") {
+      if (String(url) === "/lattice/remote-sources/fixtures.crm/token") {
         tokenCount += 1;
 
         return okResponse({
@@ -226,9 +226,9 @@ describe("remoteFetch", () => {
         });
       }
 
-      externalCount += 1;
+      remoteCount += 1;
 
-      return externalCount === 1
+      return remoteCount === 1
         ? ({ ok: false, status: 401 } as unknown as Response)
         : okResponse({ data: [] });
     });
@@ -238,7 +238,7 @@ describe("remoteFetch", () => {
 
     expect(response.ok).toBe(true);
     expect(tokenCount).toBe(2);
-    expect(externalCount).toBe(2);
+    expect(remoteCount).toBe(2);
     expect(fetchMock.mock.calls.at(-1)?.[1]?.headers).toMatchObject({
       Authorization: "Bearer fake-browser-token-2",
     });

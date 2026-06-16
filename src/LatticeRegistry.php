@@ -13,10 +13,10 @@ use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Http\PageRegistry;
-use Lattice\Lattice\Integrations\IntegrationDefinition;
-use Lattice\Lattice\Integrations\IntegrationRegistry;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
+use Lattice\Lattice\Remote\RemoteSourceDefinition;
+use Lattice\Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
 
@@ -30,7 +30,7 @@ final readonly class LatticeRegistry
         private LayoutRegistry $layouts,
         private PageRegistry $pages,
         private TableRegistry $tables,
-        private IntegrationRegistry $integrations,
+        private RemoteSourceRegistry $remoteSources,
     ) {}
 
     /**
@@ -90,11 +90,11 @@ final readonly class LatticeRegistry
     }
 
     /**
-     * @param  class-string<IntegrationDefinition>|array<int, class-string<IntegrationDefinition>>  $integrations
+     * @param  class-string<RemoteSourceDefinition>|array<int, class-string<RemoteSourceDefinition>>  $remoteSources
      */
-    public function integrations(string|array $integrations): void
+    public function remoteSources(string|array $remoteSources): void
     {
-        $this->integrations->register($integrations);
+        $this->remoteSources->register($remoteSources);
     }
 
     public function layoutRegistry(): LayoutRegistry
@@ -107,8 +107,8 @@ final readonly class LatticeRegistry
         return $this->pages;
     }
 
-    public function integrationRegistry(): IntegrationRegistry
+    public function remoteSourceRegistry(): RemoteSourceRegistry
     {
-        return $this->integrations;
+        return $this->remoteSources;
     }
 }

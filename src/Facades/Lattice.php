@@ -16,8 +16,8 @@ use Lattice\Lattice\LatticeRegistry;
  * @method static \Lattice\Lattice\Http\PageRegistry pageRegistry()
  * @method static void actions(class-string<\Lattice\Lattice\Actions\ActionDefinition>|array<int, class-string<\Lattice\Lattice\Actions\ActionDefinition>> $actions)
  * @method static void bulkActions(class-string<\Lattice\Lattice\Actions\BulkActionDefinition>|array<int, class-string<\Lattice\Lattice\Actions\BulkActionDefinition>> $bulkActions)
- * @method static void integrations(class-string<\Lattice\Lattice\Integrations\IntegrationDefinition>|array<int, class-string<\Lattice\Lattice\Integrations\IntegrationDefinition>> $integrations)
- * @method static \Lattice\Lattice\Integrations\IntegrationRegistry integrationRegistry()
+ * @method static void remoteSources(class-string<\Lattice\Lattice\Remote\RemoteSourceDefinition>|array<int, class-string<\Lattice\Lattice\Remote\RemoteSourceDefinition>> $remoteSources)
+ * @method static \Lattice\Lattice\Remote\RemoteSourceRegistry remoteSourceRegistry()
  *
  * @see LatticeRegistry
  */

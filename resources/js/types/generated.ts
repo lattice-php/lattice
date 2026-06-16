@@ -478,15 +478,6 @@ export type EffectType =
   | "closeModal"
   | "resetForm"
   | "localeChange";
-export type ExternalChatBox = {
-  conversationId: string | null;
-  fill: boolean;
-  historyEndpoint: string | null;
-  placeholder: string | null;
-  remote: RemoteAccess | null;
-  streamEndpoint: string | null;
-  title: string | null;
-};
 export type FieldType =
   | "field.builder"
   | "field.checkbox"
@@ -717,17 +708,6 @@ export type ImageColumn = {
   circular: boolean;
   size: number | null;
 };
-export type IntegrationNode =
-  | {
-      type: "remote.data-list";
-      key?: string;
-      props: DataList;
-    }
-  | {
-      type: "remote.external-chat-box";
-      key?: string;
-      props: ExternalChatBox;
-    };
 export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 export type LayoutNode =
   | {
@@ -803,7 +783,7 @@ export type Node =
   | CoreNode
   | ActionNode
   | FragmentNode
-  | IntegrationNode
+  | RemoteNode
   | TableNode
   | LayoutNode
   | ChatNode;
@@ -937,13 +917,33 @@ export type ReloadComponentEffect = {
 };
 export type ReloadPageEffect = object;
 export type RemoteAccess = {
-  readonly integration: string;
+  readonly source: string;
   readonly audience: string;
   readonly scopes: string[];
   readonly nodeId: string;
   readonly nodeType: string;
   readonly ref: string;
 };
+export type RemoteChatBox = {
+  conversationId: string | null;
+  fill: boolean;
+  historyEndpoint: string | null;
+  placeholder: string | null;
+  remote: RemoteAccess | null;
+  streamEndpoint: string | null;
+  title: string | null;
+};
+export type RemoteNode =
+  | {
+      type: "remote.chat-box";
+      key?: string;
+      props: RemoteChatBox;
+    }
+  | {
+      type: "remote.data-list";
+      key?: string;
+      props: DataList;
+    };
 export type Repeater = {
   addLabel: string | null;
   columnWidth: ColumnWidth;

@@ -36,8 +36,8 @@ return [
         'middleware' => ['web', 'auth'],
     ],
 
-    'integrations' => [
-        'endpoint' => 'lattice/integrations/{integration}/token',
+    'remote-sources' => [
+        'endpoint' => 'lattice/remote-sources/{source}/token',
         'middleware' => ['web', 'auth'],
     ],
 

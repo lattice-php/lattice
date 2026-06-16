@@ -103,9 +103,9 @@ describe("ndjsonChatTransport", () => {
     }).rejects.toThrow("Chat stream failed (500)");
   });
 
-  it("streams external chat frames with a browser token", async () => {
+  it("streams remote chat frames with a browser token", async () => {
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
-      if (String(url) === "/lattice/integrations/fixtures.crm/token") {
+      if (String(url) === "/lattice/remote-sources/fixtures.crm/token") {
         return new Response(
           JSON.stringify({
             accessToken: "fake-browser-token",
@@ -124,9 +124,9 @@ describe("ndjsonChatTransport", () => {
 
     const transport = createRemoteNdjsonChatTransport({
       audience: "https://crm.example.test",
-      integration: "fixtures.crm",
+      source: "fixtures.crm",
       nodeId: "crm-chat",
-      nodeType: "remote.external-chat-box",
+      nodeType: "remote.chat-box",
       ref: "sealed-ref",
       scopes: ["chat.write"],
     });

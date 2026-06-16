@@ -53,24 +53,24 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
     $chatBox = $section['schema'][0]['schema'][2];
 
     expect($dataList['type'])->toBe('remote.data-list')
-        ->and($dataList['props']['dataEndpoint'])->toBe('/workbench/external/customers')
+        ->and($dataList['props']['dataEndpoint'])->toBe('/workbench/remote/customers')
         ->and($dataList['props'])->not->toHaveKeys(['endpoint', 'tokenEndpoint', 'audience', 'scopes', 'resource', 'ref'])
-        ->and($dataList['props']['remote']['integration'])->toBe('workbench.crm')
+        ->and($dataList['props']['remote']['source'])->toBe('workbench.crm')
         ->and($dataList['props']['remote']['audience'])->toBe('https://crm.workbench.test')
         ->and($dataList['props']['remote']['scopes'])->toBe(['customers.read'])
         ->and($dataList['props']['remote']['nodeId'])->toBe('customers')
         ->and($dataList['props']['remote']['nodeType'])->toBe('remote.data-list')
         ->and($dataList['props']['remote']['ref'])->toBeString()->not->toBe('');
 
-    expect($chatBox['type'])->toBe('remote.external-chat-box')
-        ->and($chatBox['props']['streamEndpoint'])->toBe('/workbench/external/chat/stream')
-        ->and($chatBox['props']['historyEndpoint'])->toBe('/workbench/external/chat/history')
+    expect($chatBox['type'])->toBe('remote.chat-box')
+        ->and($chatBox['props']['streamEndpoint'])->toBe('/workbench/remote/chat/stream')
+        ->and($chatBox['props']['historyEndpoint'])->toBe('/workbench/remote/chat/history')
         ->and($chatBox['props'])->not->toHaveKeys(['endpoint', 'tokenEndpoint', 'audience', 'scopes', 'resource', 'ref'])
-        ->and($chatBox['props']['remote']['integration'])->toBe('workbench.crm')
+        ->and($chatBox['props']['remote']['source'])->toBe('workbench.crm')
         ->and($chatBox['props']['remote']['audience'])->toBe('https://crm.workbench.test')
         ->and($chatBox['props']['remote']['scopes'])->toBe(['chat.read', 'chat.write'])
         ->and($chatBox['props']['remote']['nodeId'])->toBe('workbench-crm-chat')
-        ->and($chatBox['props']['remote']['nodeType'])->toBe('remote.external-chat-box')
+        ->and($chatBox['props']['remote']['nodeType'])->toBe('remote.chat-box')
         ->and($chatBox['props']['remote']['ref'])->toBeString()->not->toBe('');
 
     $messages = app(FakeConversationStore::class)->messages();

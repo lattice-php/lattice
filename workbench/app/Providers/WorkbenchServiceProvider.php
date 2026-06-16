@@ -132,7 +132,7 @@ class WorkbenchServiceProvider extends ServiceProvider
             'lattice.forms.middleware' => ['web'],
             'lattice.tables.middleware' => ['web'],
             'lattice.fragments.middleware' => ['web'],
-            'lattice.integrations.middleware' => ['web'],
+            'lattice.remote-sources.middleware' => ['web'],
             'lattice.actions.middleware' => ['web'],
             'lattice.bulk-actions.middleware' => ['web'],
         ]);
