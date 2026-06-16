@@ -71,20 +71,19 @@ function isCartesianSeries(series: ChartSeries): series is CartesianSeries {
 
 function cartesianChartFor(series: CartesianSeries[]): CartesianChartComponent {
   const types = new Set(series.map((item) => item.type));
+  const firstSeries = series[0];
 
-  if (types.size !== 1) {
+  if (firstSeries === undefined || types.size !== 1) {
     return ComposedChart;
   }
 
-  switch (series[0]?.type) {
+  switch (firstSeries.type) {
     case "area":
       return AreaChart;
     case "bar":
       return BarChart;
     case "line":
       return LineChart;
-    default:
-      return ComposedChart;
   }
 }
 

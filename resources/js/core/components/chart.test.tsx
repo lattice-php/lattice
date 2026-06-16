@@ -191,6 +191,123 @@ describe("Chart component", () => {
     expect(screen.getAllByTestId("cell")).toHaveLength(2);
   });
 
+  it("prefers datum colors before falling back to the series color for pie cells", () => {
+    renderChart({
+      type: "chart",
+      props: {
+        categoryKey: null,
+        data: [
+          { amount: 4200, channel: "Direct", color: "#111827" },
+          { amount: 2600, channel: "Partner" },
+        ],
+        description: null,
+        grid: true,
+        height: 320,
+        legend: true,
+        series: [
+          {
+            color: "#2563eb",
+            dataKey: "amount",
+            name: null,
+            nameKey: "channel",
+            stackId: null,
+            type: "pie",
+          },
+        ],
+        title: "Revenue by channel",
+        tooltip: true,
+        xAxis: true,
+        yAxis: true,
+      },
+    });
+
+    const cells = screen.getAllByTestId("cell");
+
+    expect(cells[0]).toHaveAttribute("fill", "#111827");
+    expect(cells[1]).toHaveAttribute("fill", "#2563eb");
+  });
+
+  it("uses dedicated recharts containers for single-type area and bar charts", () => {
+    const area = renderChart({
+      type: "chart",
+      props: {
+        categoryKey: "month",
+        data: [{ forecast: 1400, month: "Jan" }],
+        description: null,
+        grid: true,
+        height: 320,
+        legend: true,
+        series: [
+          {
+            color: "#9333ea",
+            dataKey: "forecast",
+            name: "Forecast",
+            nameKey: null,
+            stackId: null,
+            type: "area",
+          },
+        ],
+        title: null,
+        tooltip: true,
+        xAxis: true,
+        yAxis: true,
+      },
+    });
+
+    expect(screen.getByTestId("area-chart")).toBeInTheDocument();
+
+    area.unmount();
+
+    renderChart({
+      type: "chart",
+      props: {
+        categoryKey: "month",
+        data: [{ month: "Jan", orders: 32 }],
+        description: null,
+        grid: true,
+        height: 320,
+        legend: true,
+        series: [
+          {
+            color: "#16a34a",
+            dataKey: "orders",
+            name: "Orders",
+            nameKey: null,
+            stackId: null,
+            type: "bar",
+          },
+        ],
+        title: null,
+        tooltip: true,
+        xAxis: true,
+        yAxis: true,
+      },
+    });
+
+    expect(screen.getByTestId("bar-chart")).toBeInTheDocument();
+  });
+
+  it("renders an empty cartesian chart when no series are configured", () => {
+    renderChart({
+      type: "chart",
+      props: {
+        categoryKey: "month",
+        data: [{ month: "Jan" }],
+        description: null,
+        grid: true,
+        height: 320,
+        legend: true,
+        series: [],
+        title: null,
+        tooltip: true,
+        xAxis: true,
+        yAxis: true,
+      },
+    });
+
+    expect(screen.getByTestId("composed-chart")).toBeInTheDocument();
+  });
+
   it("keeps cartesian series visible when a pie series is also present", () => {
     renderChart({
       type: "chart",

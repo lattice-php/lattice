@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Core\Components\Chart;
+use Lattice\Lattice\Core\Values\ChartSeries;
 
 it('serializes a cartesian chart with fluent series helpers', function (): void {
     $node = wire(
@@ -75,5 +76,38 @@ it('serializes a pie chart series', function (): void {
             'type' => 'pie',
             'dataKey' => 'amount',
             'nameKey' => 'channel',
+        ]);
+});
+
+it('serializes explicit axis toggles and configured series arrays', function (): void {
+    $node = wire(
+        Chart::make(key: 'revenue-chart')
+            ->xAxis(false)
+            ->yAxis(false)
+            ->series([
+                ChartSeries::line('revenue'),
+            ]),
+    );
+
+    expect($node['key'])->toBe('revenue-chart')
+        ->and($node['props'])->toMatchArray([
+            'title' => null,
+            'description' => null,
+            'categoryKey' => null,
+            'height' => 320,
+            'legend' => true,
+            'tooltip' => true,
+            'grid' => true,
+            'xAxis' => false,
+            'yAxis' => false,
+        ])
+        ->and($node['props']['series'])->toHaveCount(1)
+        ->and($node['props']['series'][0])->toMatchArray([
+            'type' => 'line',
+            'dataKey' => 'revenue',
+            'name' => null,
+            'color' => null,
+            'stackId' => null,
+            'nameKey' => null,
         ]);
 });
