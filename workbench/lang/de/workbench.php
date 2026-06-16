@@ -304,6 +304,7 @@ return [
     'navigation' => [
         'builder-table-demo' => 'Builder-Tabellen-Demo',
         'business-partners' => 'Geschäftspartner',
+        'charts' => 'Charts',
         'commerce' => 'Commerce',
         'create-product' => 'Produkt erstellen',
         'dependent-fields' => 'Abhängige Felder',
@@ -328,6 +329,27 @@ return [
             'heading' => 'Builder-Tabellen-Demo',
             'submit' => 'Absenden',
             'title' => 'Builder-Tabellen-Demo',
+        ],
+        'charts' => [
+            'description' => 'Jedes Diagramm wird über einen eigenen Lazy-Fragment-Endpunkt geladen.',
+            'heading' => 'Workbench-Charts',
+            'order-volume' => [
+                'description' => 'Gestapelte Entwurfs- und Bestellmengen pro Woche.',
+                'draft' => 'Entwurf',
+                'placed' => 'Bestellt',
+                'title' => 'Auftragsvolumen',
+            ],
+            'revenue' => [
+                'actual' => 'Ist',
+                'description' => 'Monatlich wiederkehrender Umsatz im Vergleich zur Prognose.',
+                'forecast' => 'Prognose',
+                'title' => 'Umsatztrend',
+            ],
+            'sales-mix' => [
+                'description' => 'Umsatzverteilung nach Akquisitionskanal.',
+                'title' => 'Sales Mix',
+            ],
+            'title' => 'Lattice Charts',
         ],
         'dependent' => [
             'heading' => 'Dependent-Demo',

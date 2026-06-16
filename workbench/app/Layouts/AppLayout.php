@@ -32,6 +32,7 @@ use Lattice\Lattice\Layouts\LayoutDefinition;
 use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Pages\BuilderTableDemoPage;
 use Workbench\App\Pages\BusinessPartnersPage;
+use Workbench\App\Pages\ChartsPage;
 use Workbench\App\Pages\DependentDemoPage;
 use Workbench\App\Pages\GroupsPage;
 use Workbench\App\Pages\HomePage;
@@ -74,6 +75,7 @@ final class AppLayout extends LayoutDefinition
                                             ]),
                                         Menu::make('sidebar')->items([
                                             MenuItem::fromPage(HomePage::class)->key('home')->label(__('workbench.navigation.home'))->icon('house'),
+                                            MenuItem::fromPage(ChartsPage::class)->key('charts')->label(__('workbench.navigation.charts'))->icon(Icon::LayoutDashboard),
                                             MenuItem::make(__('workbench.navigation.forms'), 'forms')->icon('form-input')->children([
                                                 MenuItem::fromPage(ShowcasePage::class)->key('showcase')->label(__('workbench.navigation.showcase')),
                                                 MenuItem::fromPage(DependentDemoPage::class)->key('dependent-fields')->label(__('workbench.navigation.dependent-fields')),

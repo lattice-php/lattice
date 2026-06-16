@@ -304,6 +304,7 @@ return [
     'navigation' => [
         'builder-table-demo' => 'Builder Table Demo',
         'business-partners' => 'Business partners',
+        'charts' => 'Charts',
         'commerce' => 'Commerce',
         'create-product' => 'Create Product',
         'dependent-fields' => 'Dependent Fields',
@@ -328,6 +329,27 @@ return [
             'heading' => 'Builder Table Demo',
             'submit' => 'Submit',
             'title' => 'Builder Table Demo',
+        ],
+        'charts' => [
+            'description' => 'Each chart is resolved from its own lazy fragment endpoint.',
+            'heading' => 'Workbench charts',
+            'order-volume' => [
+                'description' => 'Stacked draft and placed order counts by week.',
+                'draft' => 'Draft',
+                'placed' => 'Placed',
+                'title' => 'Order volume',
+            ],
+            'revenue' => [
+                'actual' => 'Actual',
+                'description' => 'Monthly recurring revenue against forecast.',
+                'forecast' => 'Forecast',
+                'title' => 'Revenue trend',
+            ],
+            'sales-mix' => [
+                'description' => 'Revenue distribution across acquisition channels.',
+                'title' => 'Sales mix',
+            ],
+            'title' => 'Lattice Charts',
         ],
         'dependent' => [
             'heading' => 'Dependent Demo',
