@@ -187,6 +187,11 @@ return [
             'title' => 'Sign in',
         ],
     ],
+    'chat-layout' => [
+        'hide' => 'Dock chat back to floating',
+        'label' => 'Chat layout',
+        'reveal' => 'Reveal chat in a side rail',
+    ],
     'common' => [
         'add-block' => 'Add block',
         'add-line' => 'Add line',

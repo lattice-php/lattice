@@ -67,10 +67,10 @@ test('the floating chat window is mounted in the layout', function (): void {
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page')
-            ->where('lattice.layout.schema.2.type', 'floating-panel')
-            ->where('lattice.layout.schema.2.schema.0.type', 'chat.window')
-            ->where('lattice.layout.schema.2.schema.0.props.streamEndpoint', '/workbench/chat/stream')
-            ->where('lattice.layout.schema.2.schema.0.props.historyEndpoint', '/workbench/chat/history')
+            ->where('lattice.layout.schema.3.type', 'floating-panel')
+            ->where('lattice.layout.schema.3.schema.0.type', 'chat.window')
+            ->where('lattice.layout.schema.3.schema.0.props.streamEndpoint', '/workbench/chat/stream')
+            ->where('lattice.layout.schema.3.schema.0.props.historyEndpoint', '/workbench/chat/history')
             ->etc()
         );
 });

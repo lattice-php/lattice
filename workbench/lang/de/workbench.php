@@ -187,6 +187,11 @@ return [
             'title' => 'Anmelden',
         ],
     ],
+    'chat-layout' => [
+        'hide' => 'Chat wieder schwebend andocken',
+        'label' => 'Chat-Layout',
+        'reveal' => 'Chat in einer Seitenleiste anzeigen',
+    ],
     'common' => [
         'add-block' => 'Block hinzufügen',
         'add-line' => 'Zeile hinzufügen',
