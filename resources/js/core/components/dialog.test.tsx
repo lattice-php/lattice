@@ -18,7 +18,7 @@ describe("Dialog", () => {
     expect(content).toHaveClass("bg-lt-bg", "max-w-md");
     expect(screen.getByText("Settings")).toBeVisible();
     expect(document.querySelector('[data-slot="dialog-overlay"]')).not.toBeNull();
-    expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
+    expect(screen.getByTestId("dialog-close")).toBe(screen.getByRole("button", { name: "Close" }));
   });
 
   it("renders the optional description in the header", () => {

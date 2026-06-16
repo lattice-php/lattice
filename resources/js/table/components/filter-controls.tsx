@@ -156,7 +156,7 @@ function MultiSelectControl({
           {filterOptions(filter).map((option) => (
             <label
               key={option.value}
-              className="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-lt-muted"
+              className="flex cursor-pointer items-center gap-2 rounded-lt-sm px-2 py-1.5 text-sm hover:bg-lt-muted"
             >
               <Checkbox
                 aria-label={option.label}

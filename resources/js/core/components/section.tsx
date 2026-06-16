@@ -66,7 +66,7 @@ const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
                 aria-expanded={!isCollapsed}
                 aria-label={isCollapsed ? "Expand section" : "Collapse section"}
                 data-test={prefixedTestId("section-toggle", identity) ?? "section-toggle-default"}
-                className="mt-0.5 inline-flex shrink-0 items-center rounded-md p-0.5 text-lt-muted-fg transition-colors hover:bg-lt-muted hover:text-lt-fg"
+                className="mt-0.5 inline-flex shrink-0 items-center rounded-lt-sm p-0.5 text-lt-muted-fg transition-colors hover:bg-lt-muted hover:text-lt-fg"
                 onClick={toggle}
                 type="button"
               >

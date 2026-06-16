@@ -10,7 +10,7 @@ const DropdownComponent: RendererComponent<"dropdown"> = ({ children, node }) =>
       placement={node.props.placement}
       testId={testId}
       trigger={
-        <span className="flex min-w-0 items-center rounded-md px-2 py-1.5 text-sm hover:bg-lt-muted">
+        <span className="flex min-w-0 items-center rounded-lt-sm px-2 py-1.5 text-sm hover:bg-lt-muted">
           {node.props.trigger.map((triggerNode, index) => (
             <RenderNode
               key={triggerNode.key ?? `${triggerNode.type}-${index}`}

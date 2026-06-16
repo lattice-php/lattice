@@ -291,7 +291,9 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
                 <button
                   aria-label={t("file-upload.remove", "Remove {{name}}", { name: item.name })}
                   className="inline-flex size-7 shrink-0 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg disabled:pointer-events-none disabled:opacity-50"
-                  data-test={item.existing ? testIdentity(`${name}-remove-existing`) : undefined}
+                  data-test={testIdentity(
+                    item.existing ? `${name}-remove-existing` : `${name}-remove`,
+                  )}
                   disabled={locked}
                   onClick={() => removeItem(item.id)}
                   type="button"

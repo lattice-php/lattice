@@ -32,7 +32,7 @@ export function SortBar({
             />
             <button
               type="button"
-              className="inline-flex size-5 items-center justify-center rounded text-lt-muted-fg hover:bg-lt-muted disabled:opacity-50"
+              className="inline-flex size-5 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-muted disabled:opacity-50"
               disabled={processing}
               aria-label={`Clear ${label} sort`}
               data-test={`clear-${sort.key}-sort`}

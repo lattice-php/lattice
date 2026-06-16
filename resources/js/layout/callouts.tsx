@@ -61,7 +61,7 @@ const Callouts: RendererComponent<"callouts"> = () => {
               type="button"
               aria-label={t("a11y.dismiss", "Dismiss")}
               data-test="callout-dismiss"
-              className="shrink-0 rounded-md p-1 text-lt-muted-fg transition-colors hover:bg-lt-muted hover:text-lt-fg"
+              className="shrink-0 rounded-lt-sm p-1 text-lt-muted-fg transition-colors hover:bg-lt-muted hover:text-lt-fg"
               onClick={() => dismiss(callout.id)}
             >
               <Icon name="x" className="size-lt-icon-md" />
