@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\PageContainer;
+use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page;
 
@@ -28,6 +29,42 @@ test('pages serialize layout and container metadata', function () {
         ->toMatchArray(['layout' => null, 'container' => 'centered'])
         ->and($configuredPage->toArray($configuredPage->render(PageSchema::make()), new Request))
         ->toMatchArray(['layout' => null, 'container' => 'default']);
+});
+
+test('the layout() method takes precedence over the page attribute', function () {
+    $page = new #[Lattice\Lattice\Attributes\Page(layout: PageLayout::App)] class extends Page
+    {
+        public function layout(): PageLayout
+        {
+            return PageLayout::None;
+        }
+
+        public function render(PageSchema $schema): PageSchema
+        {
+            return $schema->component(Text::make('Method layout'));
+        }
+    };
+
+    expect($page->toArray($page->render(PageSchema::make()), new Request))
+        ->toMatchArray(['layout' => null]);
+});
+
+test('the container() method takes precedence over the page attribute', function () {
+    $page = new #[Lattice\Lattice\Attributes\Page(container: PageContainer::Default)] class extends Page
+    {
+        public function container(): PageContainer
+        {
+            return PageContainer::Centered;
+        }
+
+        public function render(PageSchema $schema): PageSchema
+        {
+            return $schema->component(Text::make('Method container'));
+        }
+    };
+
+    expect($page->toArray($page->render(PageSchema::make()), new Request))
+        ->toMatchArray(['container' => 'centered']);
 });
 
 test('pages serialize breadcrumb metadata', function () {

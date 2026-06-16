@@ -28,9 +28,9 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptUnion;
  *
  * @phpstan-type ComponentSpec array{type: string, container?: bool, interactive?: bool}
  */
-final class NodesProvider implements TransformedProvider
+final readonly class NodesProvider implements TransformedProvider
 {
-    private const REFERENCE_KEY = 'lattice-nodes';
+    private const string REFERENCE_KEY = 'lattice-nodes';
 
     /**
      * @param  array<class-string, string>  $formFields  Form field components keyed by class-string, valued by wire type.
@@ -41,13 +41,13 @@ final class NodesProvider implements TransformedProvider
      * @param  array<string, class-string>  $columnProps  wire column type => props VO class-string
      */
     public function __construct(
-        private readonly array $formFields,
-        private readonly string $formClass,
-        private readonly array $domainNodes,
-        private readonly string $formType = 'form',
-        private readonly ?string $effectContract = null,
-        private readonly array $effects = [],
-        private readonly array $columnProps = [],
+        private array $formFields,
+        private string $formClass,
+        private array $domainNodes,
+        private string $formType = 'form',
+        private ?string $effectContract = null,
+        private array $effects = [],
+        private array $columnProps = [],
     ) {}
 
     /**

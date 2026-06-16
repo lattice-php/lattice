@@ -9,12 +9,12 @@ use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Forms\FormData;
 
 #[TypeScript]
-final class Condition implements JsonSerializable
+final readonly class Condition implements JsonSerializable
 {
     public function __construct(
-        public readonly string $field,
-        public readonly Op $operator,
-        public readonly mixed $value,
+        public string $field,
+        public Op $operator,
+        public mixed $value,
     ) {}
 
     public function matches(FormData $data): bool

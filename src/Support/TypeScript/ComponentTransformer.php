@@ -45,6 +45,7 @@ final class ComponentTransformer extends ClassTransformer
      * assignable to the renderer's loose `props` bag and the wire node could not
      * flow into the renderer; `Record<string, never>` keeps that path open.
      */
+    #[\Override]
     protected function getTypeScriptNode(
         PhpClassNode $phpClassNode,
         TransformationContext $context,
@@ -72,6 +73,7 @@ final class ComponentTransformer extends ClassTransformer
      *
      * @return array{0: mixed, 1: PhpClassNode}
      */
+    #[\Override]
     protected function resolvePropertyAnnotation(
         PhpPropertyNode $phpPropertyNode,
         PhpClassNode $phpClassNode,
@@ -111,6 +113,7 @@ final class ComponentTransformer extends ClassTransformer
     /**
      * @return array<ClassPropertyProcessor>
      */
+    #[\Override]
     protected function classPropertyProcessors(): array
     {
         return [
@@ -127,6 +130,7 @@ final class ComponentTransformer extends ClassTransformer
      *
      * @return array<PhpPropertyNode>
      */
+    #[\Override]
     protected function getProperties(PhpClassNode $phpClassNode): array
     {
         $properties = parent::getProperties($phpClassNode);

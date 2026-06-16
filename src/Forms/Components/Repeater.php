@@ -97,6 +97,7 @@ class Repeater extends Field implements ProvidesRowFields, ProvidesRowPrefills
      *
      * @return array<int, mixed>
      */
+    #[\Override]
     public function resolveRules(FormData $data, Request $request): array
     {
         $rules = ['array'];
@@ -121,6 +122,7 @@ class Repeater extends Field implements ProvidesRowFields, ProvidesRowPrefills
         return $this->childFields();
     }
 
+    #[\Override]
     public function nestedRules(FormData $data, Request $request): array
     {
         $rows = $data->get($this->name);
@@ -129,6 +131,7 @@ class Repeater extends Field implements ProvidesRowFields, ProvidesRowPrefills
         return $this->rowRules($this->name, $rows, $data, $request);
     }
 
+    #[\Override]
     public function castValue(mixed $value): mixed
     {
         return $this->castRows($value);

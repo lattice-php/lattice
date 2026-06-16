@@ -26,7 +26,7 @@ final class BaseProfile implements TypeScriptProfile
      * Component domains in output order, mapped to their node-alias name. The
      * order and (singular) names are meaningful, so they stay declared here.
      */
-    private const DOMAIN_NODES = [
+    private const array DOMAIN_NODES = [
         'Core' => 'CoreNode',
         'Actions' => 'ActionNode',
         'Fragments' => 'FragmentNode',

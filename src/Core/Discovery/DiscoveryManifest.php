@@ -91,7 +91,7 @@ final class DiscoveryManifest
             return [];
         }
 
-        return array_values(array_filter($configured, 'is_string'));
+        return array_values(array_filter($configured, is_string(...)));
     }
 
     /** @return array<string, mixed> */

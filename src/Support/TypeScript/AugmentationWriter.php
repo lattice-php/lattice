@@ -18,15 +18,15 @@ use Spatie\TypeScriptTransformer\Writers\Writer;
  * transformed prop body by its wire type under the `ComponentProps` / `ColumnProps`
  * interfaces an app's `@lattice-php/lattice` module exposes.
  */
-final class AugmentationWriter implements Writer
+final readonly class AugmentationWriter implements Writer
 {
     /**
      * @param  array<class-string, array{0: string, 1: 'component'|'field'|'column'}>  $components  FQCN (component or column class) => [wire type, category]
      */
     public function __construct(
-        private readonly array $components,
-        private readonly string $module,
-        private readonly string $path,
+        private array $components,
+        private string $module,
+        private string $path,
     ) {}
 
     public function output(array $transformed, TransformedCollection $transformedCollection): array

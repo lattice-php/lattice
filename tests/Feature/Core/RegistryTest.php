@@ -168,6 +168,7 @@ final class WorkbenchDeniedAction extends ActionDefinition
         return ActionResult::success();
     }
 
+    #[Override]
     public function authorize(Request $request): bool
     {
         return false;
@@ -187,6 +188,7 @@ final class WorkbenchDeniedForm extends FormDefinition
         return new Response;
     }
 
+    #[Override]
     public function authorize(Request $request): bool
     {
         return false;
@@ -206,6 +208,7 @@ final class WorkbenchDeniedTable extends TableDefinition
         return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([]));
     }
 
+    #[Override]
     public function authorize(Request $request): bool
     {
         return false;
@@ -220,6 +223,7 @@ final class WorkbenchDeniedFragment extends FragmentDefinition
         return $schema->component(Text::make('Denied fragment'));
     }
 
+    #[Override]
     public function authorize(Request $request): bool
     {
         return false;

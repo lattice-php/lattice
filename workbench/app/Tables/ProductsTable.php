@@ -59,6 +59,7 @@ class ProductsTable extends EloquentTableDefinition
     /**
      * @return array<int, BaseFilter>
      */
+    #[\Override]
     public function filters(): array
     {
         return [
@@ -77,6 +78,7 @@ class ProductsTable extends EloquentTableDefinition
         ];
     }
 
+    #[\Override]
     public function striped(): bool
     {
         return true;
@@ -110,6 +112,7 @@ class ProductsTable extends EloquentTableDefinition
      * @param  array<string, mixed>  $row
      * @return array<int, Component>
      */
+    #[\Override]
     public function actions(array $row): array
     {
         return [
@@ -132,6 +135,7 @@ class ProductsTable extends EloquentTableDefinition
     /**
      * @return array<int, Action>
      */
+    #[\Override]
     public function bulkActions(): array
     {
         return [

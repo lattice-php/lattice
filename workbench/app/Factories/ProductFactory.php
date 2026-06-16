@@ -35,6 +35,7 @@ class ProductFactory extends Factory
         ];
     }
 
+    #[\Override]
     public function configure(): static
     {
         return $this->afterCreating(function (Product $product): void {

@@ -13,14 +13,14 @@ use ReflectionParameter;
 use ReflectionType;
 use ReflectionUnionType;
 
-final class Evaluator
+final readonly class Evaluator
 {
     /**
      * @param  list<class-string>  $nonAutowirableTypes
      */
     public function __construct(
-        private readonly Container $container,
-        private readonly array $nonAutowirableTypes = [],
+        private Container $container,
+        private array $nonAutowirableTypes = [],
     ) {}
 
     public function context(): EvaluationContext

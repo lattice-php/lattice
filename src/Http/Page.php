@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lattice\Lattice\Core\Contracts\PageContract;
+use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\PageMetadata;
 use Lattice\Lattice\Core\PageSchema;
@@ -33,6 +34,24 @@ abstract class Page implements PageContract
     public function authorize(Request $request): bool
     {
         return true;
+    }
+
+    /**
+     * Resolve the page's layout at request time. Returning a non-null value
+     * takes precedence over the #[Page] attribute; null defers to it.
+     */
+    public function layout(): PageLayout|string|null
+    {
+        return null;
+    }
+
+    /**
+     * Resolve the page's container at request time. Returning a non-null value
+     * takes precedence over the #[Page] attribute; null defers to it.
+     */
+    public function container(): PageContainer|string|null
+    {
+        return null;
     }
 
     /**
@@ -75,11 +94,13 @@ abstract class Page implements PageContract
     public function toArray(PageSchema $schema, Request $request): array
     {
         $metadata = PageMetadata::for($this);
+        $layout = $this->layout() ?? $metadata->layout;
+        $container = $this->container() ?? $metadata->container;
 
         return [
             'title' => $this->title(),
-            'layout' => $this->resolveLayout($metadata, $request),
-            'container' => $this->serializePageMetadata($metadata->container),
+            'layout' => $this->resolveLayout($layout, $request),
+            'container' => $this->serializePageMetadata($container),
             'breadcrumbs' => $this->breadcrumbs(),
             'schema' => $this->serializeSchema($schema),
         ];
@@ -93,9 +114,9 @@ abstract class Page implements PageContract
      *
      * @return array{key: string, schema: array<int, array<string, mixed>>}|null
      */
-    private function resolveLayout(PageMetadata $metadata, Request $request): ?array
+    private function resolveLayout(PageLayout|string $layout, Request $request): ?array
     {
-        $key = $this->serializePageMetadata($metadata->layout);
+        $key = $this->serializePageMetadata($layout);
 
         if ($key === '' || $key === PageLayout::None->value) {
             return null;

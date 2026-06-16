@@ -9,6 +9,7 @@ use Lattice\Lattice\Tables\Enums\PaginationType;
 #[TableAttribute('workbench.users.simple')]
 final class UsersSimpleTable extends BaseUsersTable
 {
+    #[\Override]
     public function pagination(): PaginationType
     {
         return PaginationType::Simple;

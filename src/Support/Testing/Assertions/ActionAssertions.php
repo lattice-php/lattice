@@ -8,11 +8,11 @@ use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Support\Testing\ComponentNode;
 use PHPUnit\Framework\Assert;
 
-final class ActionAssertions
+final readonly class ActionAssertions
 {
     public function __construct(
-        private readonly ComponentNode $node,
-        private readonly ComponentAssertions $root,
+        private ComponentNode $node,
+        private ComponentAssertions $root,
     ) {}
 
     public function assertLabel(string $label): self

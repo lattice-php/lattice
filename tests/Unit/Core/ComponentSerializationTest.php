@@ -8,7 +8,7 @@ use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Badge;
 use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\Card;
-use Lattice\Lattice\Core\Components\ChatWindow;
+use Lattice\Lattice\Core\Components\ChatBox;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\FloatingPanel;
 use Lattice\Lattice\Core\Components\Grid;
@@ -136,6 +136,7 @@ test('floating panels serialize their placement and children', function () {
             'label' => 'Language',
             'placement' => 'top-end',
             'offset' => 24,
+            'trigger' => [],
         ],
     ]);
     expect($payload['schema'])->toHaveCount(1)
@@ -143,15 +144,18 @@ test('floating panels serialize their placement and children', function () {
         ->and($payload['schema'][0]['key'])->toBe('locale-en');
 });
 
-test('chat windows serialize their fluent endpoint and presentation configuration', function () {
-    expect(wire(ChatWindow::make('assistant')
+test('chat boxes serialize their fluent endpoint and presentation configuration', function () {
+    expect(wire(ChatBox::make('default-assistant'))['props']['fill'])->toBeFalse();
+
+    expect(wire(ChatBox::make('assistant')
         ->streamEndpoint('/chat/stream')
         ->historyEndpoint('/chat/history')
         ->conversationId('conv-1')
         ->placeholder('Ask anything…')
-        ->title('Assistant')))
+        ->title('Assistant')
+        ->fill()))
         ->toMatchArray([
-            'type' => 'chat.window',
+            'type' => 'chat.box',
             'key' => 'assistant',
             'props' => [
                 'streamEndpoint' => '/chat/stream',
@@ -159,6 +163,7 @@ test('chat windows serialize their fluent endpoint and presentation configuratio
                 'conversationId' => 'conv-1',
                 'placeholder' => 'Ask anything…',
                 'title' => 'Assistant',
+                'fill' => true,
             ],
         ]);
 });

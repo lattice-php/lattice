@@ -27,6 +27,7 @@ class File extends Model
     protected $fillable = ['disk', 'path', 'name', 'mime_type', 'size'];
 
     /** @return array<string, string> */
+    #[\Override]
     protected function casts(): array
     {
         return [

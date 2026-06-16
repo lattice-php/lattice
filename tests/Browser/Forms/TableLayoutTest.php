@@ -29,12 +29,12 @@ it('reveals a reset control for custom row-table column widths and clears them o
     $page = visit('/builder-table');
     $page->resize(1280, 800);
 
-    $page->script(<<<'JS'
+    $page->script(<<<'JS_WRAP'
         () => window.localStorage.setItem('lattice:table-columns:form:items', JSON.stringify({
             columns: ['product', 'qty', 'price'],
             overrides: { qty: 160 },
         }))
-    JS);
+    JS_WRAP);
     $page->refresh();
 
     $page->assertPresent('[aria-label="Resize Qty"]')

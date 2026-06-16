@@ -18,9 +18,9 @@ use Spatie\TypeScriptTransformer\Visitor\VisitorOperation;
  * guarantee than `unknown`, so this keeps the generated types honest: reads have
  * to narrow rather than silently passing an unchecked value downstream.
  */
-final class MixedToUnknownClassPropertyProcessor implements ClassPropertyProcessor
+final readonly class MixedToUnknownClassPropertyProcessor implements ClassPropertyProcessor
 {
-    private readonly Visitor $visitor;
+    private Visitor $visitor;
 
     public function __construct()
     {

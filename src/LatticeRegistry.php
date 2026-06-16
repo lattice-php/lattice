@@ -18,16 +18,16 @@ use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
 
-final class LatticeRegistry
+final readonly class LatticeRegistry
 {
     public function __construct(
-        private readonly ActionRegistry $actions,
-        private readonly BulkActionRegistry $bulkActions,
-        private readonly FormRegistry $forms,
-        private readonly FragmentRegistry $fragments,
-        private readonly LayoutRegistry $layouts,
-        private readonly PageRegistry $pages,
-        private readonly TableRegistry $tables,
+        private ActionRegistry $actions,
+        private BulkActionRegistry $bulkActions,
+        private FormRegistry $forms,
+        private FragmentRegistry $fragments,
+        private LayoutRegistry $layouts,
+        private PageRegistry $pages,
+        private TableRegistry $tables,
     ) {}
 
     /**

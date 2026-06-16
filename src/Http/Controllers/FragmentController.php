@@ -9,13 +9,13 @@ use Lattice\Lattice\Core\Concerns\InteractsWithComponents;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 
-final class FragmentController
+final readonly class FragmentController
 {
     use InteractsWithComponents;
 
     public function __construct(
-        private readonly FragmentRegistry $fragments,
-        private readonly SignsComponentReferences $references,
+        private FragmentRegistry $fragments,
+        private SignsComponentReferences $references,
     ) {}
 
     public function __invoke(Request $request, string $fragment): JsonResponse

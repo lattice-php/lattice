@@ -59,7 +59,7 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
     expect($partTypes)->toContain('chat.part.text')->toContain('chat.part.tool-call');
 });
 
-test('the floating chat window is mounted in the layout', function (): void {
+test('the floating chat box is mounted in the layout', function (): void {
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
@@ -67,10 +67,11 @@ test('the floating chat window is mounted in the layout', function (): void {
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('lattice/page')
-            ->where('lattice.layout.schema.2.type', 'floating-panel')
-            ->where('lattice.layout.schema.2.schema.0.type', 'chat.window')
-            ->where('lattice.layout.schema.2.schema.0.props.streamEndpoint', '/workbench/chat/stream')
-            ->where('lattice.layout.schema.2.schema.0.props.historyEndpoint', '/workbench/chat/history')
+            ->where('lattice.layout.schema.3.type', 'floating-panel')
+            ->where('lattice.layout.schema.3.props.trigger.0.type', 'badge')
+            ->where('lattice.layout.schema.3.schema.0.type', 'chat.box')
+            ->where('lattice.layout.schema.3.schema.0.props.streamEndpoint', '/workbench/chat/stream')
+            ->where('lattice.layout.schema.3.schema.0.props.historyEndpoint', '/workbench/chat/history')
             ->etc()
         );
 });

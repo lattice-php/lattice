@@ -73,6 +73,7 @@ class TernaryFilter extends BaseFilter
         );
     }
 
+    #[\Override]
     public function accepts(mixed $value): bool
     {
         return is_scalar($value) && filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null;

@@ -49,6 +49,7 @@ class User extends Authenticatable implements HasLocalePreference
     /**
      * @return array<string, string>
      */
+    #[\Override]
     protected function casts(): array
     {
         return [

@@ -15,6 +15,11 @@ class FloatingPanel extends ContainerComponent
 
     public int $offset = 16;
 
+    /**
+     * @var array<int, Component>
+     */
+    public array $trigger = [];
+
     public static function make(?string $key = null): static
     {
         return new static($key);
@@ -39,5 +44,28 @@ class FloatingPanel extends ContainerComponent
         $this->offset = $offset;
 
         return $this;
+    }
+
+    /**
+     * @param  array<int, Component>  $components
+     */
+    public function trigger(array $components): static
+    {
+        $this->trigger = $components;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<string, mixed>  $props
+     * @return array<string, mixed>
+     */
+    #[\Override]
+    protected function decorateProps(array $props): array
+    {
+        return [
+            ...parent::decorateProps($props),
+            'trigger' => $this->renderableComponents($this->trigger),
+        ];
     }
 }

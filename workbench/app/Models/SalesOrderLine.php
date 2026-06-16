@@ -23,6 +23,7 @@ class SalesOrderLine extends Model
     protected $fillable = ['sales_order_id', 'product_id', 'quantity', 'unit_price'];
 
     /** @return array<string, string> */
+    #[\Override]
     protected function casts(): array
     {
         return [

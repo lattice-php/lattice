@@ -12,6 +12,7 @@ class RichEditor extends Field
 {
     use HasPlaceholder;
 
+    #[\Override]
     public function castValue(mixed $value): mixed
     {
         if (! is_string($value) || $value === '') {

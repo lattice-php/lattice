@@ -5,6 +5,7 @@ return [
     'assistant' => [
         'placeholder' => 'Ask the assistant…',
         'title' => 'Assistant',
+        'trigger' => 'Chat',
     ],
     'commerce' => [
         'business-partners' => [
@@ -186,6 +187,11 @@ return [
             'submit' => 'Sign in',
             'title' => 'Sign in',
         ],
+    ],
+    'chat-layout' => [
+        'hide' => 'Dock chat back to floating',
+        'label' => 'Chat layout',
+        'reveal' => 'Reveal chat in a side rail',
     ],
     'common' => [
         'add-block' => 'Add block',

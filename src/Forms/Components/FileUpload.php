@@ -189,6 +189,7 @@ class FileUpload extends Field
         return $finalized;
     }
 
+    #[\Override]
     public function resolveRules(FormData $data, Request $request): array
     {
         $userRules = parent::resolveRules($data, $request);
@@ -206,6 +207,7 @@ class FileUpload extends Field
         return [$this->itemRule(), ...$userRules];
     }
 
+    #[\Override]
     public function nestedRules(FormData $data, Request $request): array
     {
         if ($this->multiple !== true) {
@@ -231,15 +233,13 @@ class FileUpload extends Field
         $name = $this->name();
         $signer = app(SignsComponentReferences::class);
 
-        $this->files = array_map(static function (string $path) use ($disk, $diskName, $name, $signer): array {
-            return [
-                'key' => $path,
-                'name' => basename($path),
-                'url' => self::fileUrl($disk, $path),
-                'size' => self::fileSize($disk, $path),
-                'token' => $signer->seal('file', $name, ['disk' => $diskName, 'path' => $path]),
-            ];
-        }, $paths);
+        $this->files = array_map(static fn (string $path): array => [
+            'key' => $path,
+            'name' => basename($path),
+            'url' => self::fileUrl($disk, $path),
+            'size' => self::fileSize($disk, $path),
+            'token' => $signer->seal('file', $name, ['disk' => $diskName, 'path' => $path]),
+        ], $paths);
     }
 
     /**

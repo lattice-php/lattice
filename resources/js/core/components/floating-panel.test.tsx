@@ -1,6 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
+import { createRegistry } from "@lattice-php/lattice/core/registry";
+import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
+import { coreComponents } from "./index";
 import FloatingPanelComponent from "./floating-panel";
 
 describe("Floating panel", () => {
@@ -45,5 +48,33 @@ describe("Floating panel", () => {
     );
 
     expect(container.firstElementChild).toHaveStyle({ left: "12px", top: "12px" });
+  });
+
+  it("renders trigger content and toggles the floating panel body", () => {
+    const node = fakeNode({
+      key: "assistant-chat",
+      props: {
+        label: "Assistant",
+        placement: "bottom-end",
+        trigger: [{ type: "badge", props: { label: "Chat" } }],
+      },
+      type: "floating-panel",
+    });
+
+    render(
+      <RegistryContext.Provider value={createRegistry(coreComponents)}>
+        <FloatingPanelComponent node={node}>
+          <section>Conversation</section>
+        </FloatingPanelComponent>
+      </RegistryContext.Provider>,
+    );
+
+    expect(screen.getByRole("button", { name: "Chat" })).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByText("Conversation").parentElement).toHaveClass("hidden");
+
+    fireEvent.click(screen.getByRole("button", { name: "Chat" }));
+
+    expect(screen.getByRole("button", { name: "Chat" })).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("Conversation").parentElement).toHaveClass("block");
   });
 });

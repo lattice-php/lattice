@@ -7,6 +7,7 @@ use Lattice\Lattice\Core\Components\Component;
 #[ComponentAttribute('test.widget')]
 class TypeResolutionWidget extends Component
 {
+    #[Override]
     protected function type(): string
     {
         return parent::type();

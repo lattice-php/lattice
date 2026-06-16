@@ -12,19 +12,19 @@ use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use ReflectionClass;
 
-final class PageMetadata
+final readonly class PageMetadata
 {
     /**
      * @param  class-string  $class
      * @param  array<int, string>  $middleware
      */
     private function __construct(
-        public readonly string $class,
-        public readonly ?string $route,
-        public readonly string $name,
-        public readonly PageLayout|string $layout,
-        public readonly PageContainer|string $container,
-        public readonly array $middleware,
+        public string $class,
+        public ?string $route,
+        public string $name,
+        public PageLayout|string $layout,
+        public PageContainer|string $container,
+        public array $middleware,
     ) {}
 
     public static function for(PageContract|string $page): self

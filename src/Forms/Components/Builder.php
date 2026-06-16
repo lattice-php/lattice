@@ -79,6 +79,7 @@ class Builder extends Field implements ProvidesRowFields, ProvidesRowPrefills
      *
      * @return array<int, mixed>
      */
+    #[\Override]
     public function resolveRules(FormData $data, Request $request): array
     {
         $rules = ['array'];
@@ -111,6 +112,7 @@ class Builder extends Field implements ProvidesRowFields, ProvidesRowPrefills
         return [];
     }
 
+    #[\Override]
     public function nestedRules(FormData $data, Request $request): array
     {
         $rows = $data->get($this->name);
@@ -127,6 +129,7 @@ class Builder extends Field implements ProvidesRowFields, ProvidesRowPrefills
         return $rules;
     }
 
+    #[\Override]
     public function castValue(mixed $value): mixed
     {
         if (! is_array($value)) {

@@ -6,12 +6,12 @@ namespace Lattice\Lattice\Forms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
-final class FormData
+final readonly class FormData
 {
     /**
      * @param  array<array-key, mixed>  $attributes
      */
-    public function __construct(private readonly array $attributes) {}
+    public function __construct(private array $attributes) {}
 
     /**
      * @param  array<array-key, mixed>  $attributes

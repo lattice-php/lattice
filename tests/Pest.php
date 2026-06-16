@@ -229,7 +229,7 @@ function stripFixtureRefs(mixed $value): mixed
 
     unset($value['ref']);
 
-    return array_map('stripFixtureRefs', $value);
+    return array_map(stripFixtureRefs(...), $value);
 }
 
 function sortFixtureKeys(mixed $value): mixed
@@ -242,5 +242,5 @@ function sortFixtureKeys(mixed $value): mixed
         ksort($value);
     }
 
-    return array_map('sortFixtureKeys', $value);
+    return array_map(sortFixtureKeys(...), $value);
 }

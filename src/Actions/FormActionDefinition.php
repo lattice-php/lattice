@@ -21,6 +21,7 @@ abstract class FormActionDefinition extends ActionDefinition
 {
     abstract public function formSchema(Form $form, Request $request): Form;
 
+    #[\Override]
     public function resolveFormSchema(Request $request): ?Form
     {
         return $this->formSchema(Form::make('form'), $request);

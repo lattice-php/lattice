@@ -5,6 +5,7 @@ return [
     'assistant' => [
         'placeholder' => 'Frag den Assistenten…',
         'title' => 'Assistent',
+        'trigger' => 'Chat',
     ],
     'commerce' => [
         'business-partners' => [
@@ -186,6 +187,11 @@ return [
             'submit' => 'Anmelden',
             'title' => 'Anmelden',
         ],
+    ],
+    'chat-layout' => [
+        'hide' => 'Chat wieder schwebend andocken',
+        'label' => 'Chat-Layout',
+        'reveal' => 'Chat in einer Seitenleiste anzeigen',
     ],
     'common' => [
         'add-block' => 'Block hinzufügen',

@@ -119,6 +119,7 @@ class WorkbenchSearchableFilterTable extends EloquentTableDefinition
         ];
     }
 
+    #[Override]
     public function filters(): array
     {
         return [
@@ -148,6 +149,7 @@ class WorkbenchFilteredProductsTable extends EloquentTableDefinition
         ];
     }
 
+    #[Override]
     public function filters(): array
     {
         return [

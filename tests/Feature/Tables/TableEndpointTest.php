@@ -435,11 +435,13 @@ class WorkbenchLazyUsersTable extends TableDefinition
 #[TableAttribute('workbench.stacked-users')]
 class WorkbenchStackedUsersTable extends TableDefinition
 {
+    #[Override]
     public function layout(): string
     {
         return 'grid';
     }
 
+    #[Override]
     public function pagination(): PaginationType
     {
         return PaginationType::None;
@@ -458,6 +460,7 @@ class WorkbenchStackedUsersTable extends TableDefinition
         ];
     }
 
+    #[Override]
     public function actions(array $row): array
     {
         return [
@@ -507,6 +510,7 @@ class WorkbenchProjectedProductsTable extends EloquentTableDefinition
             ->where('sku', 'PROJECT-001');
     }
 
+    #[Override]
     public function actions(array $row): array
     {
         return [

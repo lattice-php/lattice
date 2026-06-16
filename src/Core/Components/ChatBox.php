@@ -6,8 +6,8 @@ namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes;
 
-#[Attributes\Component('chat.window')]
-class ChatWindow extends Component
+#[Attributes\Component('chat.box')]
+class ChatBox extends Component
 {
     public ?string $streamEndpoint = null;
 
@@ -18,6 +18,8 @@ class ChatWindow extends Component
     public ?string $placeholder = null;
 
     public ?string $title = null;
+
+    public bool $fill = false;
 
     public static function make(string $key): static
     {
@@ -55,6 +57,13 @@ class ChatWindow extends Component
     public function title(string $title): static
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function fill(bool $fill = true): static
+    {
+        $this->fill = $fill;
 
         return $this;
     }

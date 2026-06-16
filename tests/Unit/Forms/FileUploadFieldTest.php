@@ -26,12 +26,12 @@ function fileUploadDisk(
     return new class($exists, $moves, $mimeType, $size, $throwsMetadata, $throwsUrls) extends FilesystemAdapter
     {
         public function __construct(
-            private bool $exists,
-            private bool $moves,
-            private ?string $mimeType,
-            private ?int $size,
-            private bool $throwsMetadata,
-            private bool $throwsUrls,
+            private readonly bool $exists,
+            private readonly bool $moves,
+            private readonly ?string $mimeType,
+            private readonly ?int $size,
+            private readonly bool $throwsMetadata,
+            private readonly bool $throwsUrls,
         ) {}
 
         public function exists(mixed $path): bool

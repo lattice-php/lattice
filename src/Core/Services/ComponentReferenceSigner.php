@@ -9,9 +9,9 @@ use Illuminate\Http\Request;
 use JsonException;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 
-final class ComponentReferenceSigner implements SignsComponentReferences
+final readonly class ComponentReferenceSigner implements SignsComponentReferences
 {
-    public function __construct(private readonly StringEncrypter $encrypter) {}
+    public function __construct(private StringEncrypter $encrypter) {}
 
     /**
      * @param  array<string, mixed>  $context

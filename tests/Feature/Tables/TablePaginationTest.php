@@ -138,11 +138,13 @@ test('eloquent tables can disable pagination for small datasets', function () {
 #[TableAttribute('workbench.infinite-users')]
 class WorkbenchInfiniteUsersTable extends EloquentTableDefinition
 {
+    #[Override]
     public function pagination(): PaginationType
     {
         return PaginationType::Infinite;
     }
 
+    #[Override]
     public function perPage(): int
     {
         return 2;
@@ -173,6 +175,7 @@ class WorkbenchInfiniteUsersTable extends EloquentTableDefinition
 #[TableAttribute('workbench.default-users')]
 class WorkbenchDefaultUsersTable extends EloquentTableDefinition
 {
+    #[Override]
     public function perPage(): int
     {
         return 2;
@@ -202,11 +205,13 @@ class WorkbenchDefaultUsersTable extends EloquentTableDefinition
 #[TableAttribute('workbench.simple-users')]
 class WorkbenchSimpleUsersTable extends EloquentTableDefinition
 {
+    #[Override]
     public function pagination(): PaginationType
     {
         return PaginationType::Simple;
     }
 
+    #[Override]
     public function perPage(): int
     {
         return 2;
@@ -236,6 +241,7 @@ class WorkbenchSimpleUsersTable extends EloquentTableDefinition
 #[TableAttribute('workbench.small-users')]
 class WorkbenchSmallUsersTable extends EloquentTableDefinition
 {
+    #[Override]
     public function pagination(): PaginationType
     {
         return PaginationType::None;
