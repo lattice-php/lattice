@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
 
-#[Attributes\Component('link')]
+#[AsComponent('link')]
 class Link extends Component
 {
     use HasHttpMethod;

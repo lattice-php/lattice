@@ -6,7 +6,7 @@ use Lattice\Lattice\Forms\Components\Checkbox;
 it('serializes the shared focus options', function (): void {
     $node = wire(Checkbox::make('terms', 'Accept terms')->autoFocus()->tabIndex(3));
 
-    expect($node['type'])->toBe('form.checkbox')
+    expect($node['type'])->toBe('field.checkbox')
         ->and($node['props'])->toMatchArray(['autoFocus' => true, 'tabIndex' => 3]);
 });
 

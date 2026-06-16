@@ -5,7 +5,7 @@ export function formatCell(value: unknown, column?: TableColumn): string {
     return "";
   }
 
-  const date = (column?.props as ColumnPropsOf<"text"> | null)?.date;
+  const date = (column?.props as ColumnPropsOf<"column.text"> | null)?.date;
 
   if (date) {
     return formatDate(value, date.format ?? null);
@@ -49,7 +49,7 @@ function formatDate(value: unknown, format: string | null): string {
 }
 
 export function resolveLink(column: TableColumn, row: TableRow, value: unknown): string | null {
-  const link = (column.props as ColumnPropsOf<"text"> | null)?.link;
+  const link = (column.props as ColumnPropsOf<"column.text"> | null)?.link;
 
   if (!link) {
     return null;

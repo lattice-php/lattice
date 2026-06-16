@@ -2,10 +2,10 @@
 
 namespace {{ namespace }};
 
-use Lattice\Lattice\Attributes\Component;
+use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Components\Field;
 
-#[Component('{{ type }}')]
+#[AsField(type: '{{ type }}')]
 class {{ class }} extends Field
 {
     //

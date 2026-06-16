@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tests\Fixtures\TypeScript;
 
-use Lattice\Lattice\Attributes\Component;
+use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Components\Field;
 
-#[Component('sample.field')]
+#[AsField('sample')]
 class SampleField extends Field {}

@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Fragments\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Enums\Size;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 
-#[Attributes\Component('fragment')]
+#[AsComponent('fragment')]
 class Fragment extends ContainerComponent
 {
     use IsInteractive;

@@ -14,20 +14,22 @@ import { TextCell } from "./cells/text-cell";
 // eager registry, so they stay code-split. Consumer-registered columns are
 // merged on top and win on type collisions.
 const builtinColumnCells: ColumnRegistry = {
-  badge: columnCell(BadgeCell),
-  boolean: columnCell(BooleanCell),
-  icon: columnCell(IconCell),
-  image: columnCell(ImageCell),
-  money: columnCell(MoneyCell),
-  number: columnCell(NumberCell),
-  stack: columnCell(StackCell),
-  text: columnCell(TextCell),
+  "column.badge": columnCell(BadgeCell),
+  "column.boolean": columnCell(BooleanCell),
+  "column.icon": columnCell(IconCell),
+  "column.image": columnCell(ImageCell),
+  "column.money": columnCell(MoneyCell),
+  "column.number": columnCell(NumberCell),
+  "column.stack": columnCell(StackCell),
+  "column.text": columnCell(TextCell),
 };
 
 export function ColumnCell({ column, row }: { column: TableColumn; row: TableRow }) {
   const customCells = useColumnRegistry();
   const Cell =
-    customCells[column.type] ?? builtinColumnCells[column.type] ?? builtinColumnCells.text;
+    customCells[column.type] ??
+    builtinColumnCells[column.type] ??
+    builtinColumnCells["column.text"];
 
   return <Cell column={column} props={column.props ?? {}} row={row} value={row[column.key]} />;
 }

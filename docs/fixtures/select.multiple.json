@@ -43,6 +43,6 @@
             "tooltip": null,
             "value": null
         },
-        "type": "form.select"
+        "type": "field.select"
     }
 ]

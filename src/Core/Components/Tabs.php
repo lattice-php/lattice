@@ -5,11 +5,11 @@ namespace Lattice\Lattice\Core\Components;
 
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Date;
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Enums\Orientation;
 
-#[Attributes\Component('tabs')]
+#[AsComponent('tabs')]
 class Tabs extends ContainerComponent
 {
     public ?string $defaultValue = null;

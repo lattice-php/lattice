@@ -16,7 +16,7 @@ type Block = { type: string; label: string; schema: Node[] };
 
 const EMPTY_TEMPLATE: Node[] = [];
 
-export const BuilderComponent: RendererComponent<"form.builder"> = ({ node }) => {
+export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) => {
   const props = node.props;
   const name = props.name;
   const blocks = ((node as unknown as { blocks?: Block[] }).blocks ?? []) as Block[];

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Tables\Columns\Column;
@@ -16,7 +16,7 @@ use Workbench\App\Models\BusinessPartner;
 /**
  * @extends EloquentTableDefinition<BusinessPartner>
  */
-#[Table('workbench.business-partners')]
+#[AsTable('workbench.business-partners')]
 class BusinessPartnersTable extends EloquentTableDefinition
 {
     /**

@@ -23,6 +23,6 @@
             "type": null,
             "value": "Acme Inc"
         },
-        "type": "form.text-input"
+        "type": "field.text-input"
     }
 ]

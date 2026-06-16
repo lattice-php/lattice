@@ -14,7 +14,7 @@ A page extends `Lattice\Lattice\Http\Page`. It returns a `title()` and builds it
 
 namespace App\Pages;
 
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Components\Grid;
 use Lattice\Lattice\Core\Components\Heading;
@@ -25,7 +25,7 @@ use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page as BasePage;
 
-#[Page(route: '/dashboard', layout: PageLayout::None, middleware: ['web'])]
+#[AsPage(route: '/dashboard', layout: PageLayout::None, middleware: ['web'])]
 final class DashboardPage extends BasePage
 {
     public function title(): string
@@ -55,7 +55,7 @@ final class DashboardPage extends BasePage
 
 ## Route the page
 
-There is no route file entry to write. Lattice scans the paths in `lattice.discover` (`app/` by default), finds every class carrying a `#[Page]` attribute, and registers a route for it automatically. The route name auto-derives from the URI (`/dashboard` → `dashboard`); supply `name:` in the attribute to override it.
+There is no route file entry to write. Lattice scans the paths in `lattice.discover` (`app/` by default), finds every class carrying a `#[AsPage]` attribute, and registers a route for it automatically. The route name auto-derives from the URI (`/dashboard` → `dashboard`); supply `name:` in the attribute to override it.
 
 Visit `/dashboard` and the page renders through Inertia — no route file entry, no controller, and no Inertia page component to write by hand.
 
@@ -64,14 +64,14 @@ Visit `/dashboard` and the page renders through Inertia — no route file entry,
 Rather than repeating `layout:` and `middleware:` on every page, declare a shared base page and inherit from it:
 
 ```php
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Http\Page as BasePage;
 
-#[Page(layout: PageLayout::App, middleware: ['web'])]
+#[AsPage(layout: PageLayout::App, middleware: ['web'])]
 abstract class AppPage extends BasePage {}
 
-#[Page(route: '/dashboard')] // inherits layout + web middleware
+#[AsPage(route: '/dashboard')] // inherits layout + web middleware
 final class DashboardPage extends AppPage { /* title(), render() */ }
 ```
 

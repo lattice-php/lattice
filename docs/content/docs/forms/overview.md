@@ -10,18 +10,18 @@ runs your handler. Validation runs live as the user types, using the exact same 
 ## Defining a form
 
 Extend `FormDefinition` and implement two methods: `definition()` builds the field schema, and
-`handle()` processes a valid submission. The `#[Form]` attribute gives the form a stable id so it can
+`handle()` processes a valid submission. The `#[AsForm]` attribute gives the form a stable id so it can
 be discovered and addressed by its own endpoint.
 
 ```php
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
-#[Form('app.profile.form')]
+#[AsForm('app.profile.form')]
 class ProfileForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent
@@ -71,7 +71,7 @@ Form::use(ProfileForm::class)
 
 ## The submit lifecycle
 
-Every form posts to its own endpoint, resolved from its `#[Form]` id. The request is signed, so a
+Every form posts to its own endpoint, resolved from its `#[AsForm]` id. The request is signed, so a
 form only accepts submissions for the schema it actually rendered. `FormController` routes the request:
 
 1. A **search** request (a searchable `Select` fetching options) returns matching options.

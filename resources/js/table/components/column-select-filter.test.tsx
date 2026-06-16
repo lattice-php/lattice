@@ -24,7 +24,7 @@ function col(filter: ColumnFilter): ColumnData {
   return {
     key: "status",
     label: "Status",
-    type: "text",
+    type: "column.text",
     width: "md",
     sortable: null,
     filter,

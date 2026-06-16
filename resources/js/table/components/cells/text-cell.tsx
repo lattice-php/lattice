@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { formatCell, resolveLink } from "../../format";
 import type { ColumnCellComponent } from "../../registry";
 
-export const TextCell: ColumnCellComponent<"text"> = ({ column, props, row, value }) => {
+export const TextCell: ColumnCellComponent<"column.text"> = ({ column, props, row, value }) => {
   const text = formatCell(value, column);
   const [copied, setCopied] = useState(false);
   const href = resolveLink(column, row, value);

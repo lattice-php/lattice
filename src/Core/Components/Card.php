@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 
-#[Attributes\Component('card')]
+#[AsComponent('card')]
 class Card extends ContainerComponent
 {
     public ?string $title = null;

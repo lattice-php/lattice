@@ -33,7 +33,7 @@ it('serializes the table component wire shape', function (): void {
     expect($payload['props']['columns'][0])->toMatchArray([
         'key' => 'name',
         'label' => 'Name',
-        'type' => 'text',
+        'type' => 'column.text',
         'width' => 'lg',
         'sortable' => true,
     ]);

@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\TypeScript;
 
-use Lattice\Lattice\Attributes\Component as ComponentAttribute;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
-use Lattice\Lattice\Tables\Attributes\AsColumn as ColumnAttribute;
+use Lattice\Lattice\Tables\Attributes\AsColumn;
 use ReflectionAttribute;
 use ReflectionClass;
 
@@ -34,14 +34,14 @@ final class ComponentDiscovery
                 continue;
             }
 
-            $attributes = $reflection->getAttributes(ComponentAttribute::class, ReflectionAttribute::IS_INSTANCEOF);
+            $attributes = $reflection->getAttributes(AsComponent::class, ReflectionAttribute::IS_INSTANCEOF);
 
             if ($attributes === []) {
                 continue;
             }
 
             $attribute = $attributes[0]->newInstance();
-            $isColumn = $attribute instanceof ColumnAttribute;
+            $isColumn = $attribute instanceof AsColumn;
 
             $discovered[] = new DiscoveredComponent(
                 class: $class,

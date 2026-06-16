@@ -7,13 +7,13 @@ Lattice ships with a built-in set of components, fields, and columns. When your 
 
 ## The mental model
 
-Every renderable in Lattice carries a `type` string. The PHP class declares it once via the `#[Component]` attribute, and the React renderer looks that type up in a registry to decide which component to render.
+Every renderable in Lattice carries a `type` string. The PHP class declares it once via an attribute, and the React renderer looks that type up in a registry to decide which component to render. Use `#[AsField]` for form fields, `#[AsComponent]` for regular UI components, and `#[AsColumn]` for table columns.
 
 ```php
-use Lattice\Lattice\Attributes\Component;
+use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Components\Field;
 
-#[Component('form.color-picker')]
+#[AsField(type: 'color-picker')]
 class ColorPickerField extends Field {}
 ```
 
@@ -22,12 +22,12 @@ On the React side, a matching renderer is registered under the same type key:
 ```tsx
 import type { RendererComponent } from "@lattice-php/lattice";
 
-export const ColorPickerComponent: RendererComponent<"form.color-picker"> = ({ node }) => {
+export const ColorPickerComponent: RendererComponent<"field.color-picker"> = ({ node }) => {
   return <input type="color" name={String(node.props.name ?? "")} />;
 };
 ```
 
-That string — `"form.color-picker"` — is the only coupling between the PHP class and the React component.
+That string — `"field.color-picker"` — is the only coupling between the PHP class and the React component.
 
 ## Three extension points
 

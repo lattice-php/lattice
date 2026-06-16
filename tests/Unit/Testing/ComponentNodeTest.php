@@ -38,7 +38,7 @@ it('descends into embedded form and bulkActions props', function (): void {
         ]], 'schema' => []],
         ['type' => 'action', 'id' => 'edit', 'props' => ['form' => [
             'type' => 'form', 'id' => 'edit-form', 'props' => [], 'schema' => [
-                ['type' => 'form.textarea', 'id' => null, 'props' => ['name' => 'reason'], 'schema' => []],
+                ['type' => 'field.textarea', 'id' => null, 'props' => ['name' => 'reason'], 'schema' => []],
             ],
         ]], 'schema' => []],
     ]);
@@ -49,8 +49,8 @@ it('descends into embedded form and bulkActions props', function (): void {
 
 it('finds a field by name and lists available field names', function (): void {
     $form = componentNode(['type' => 'form', 'id' => 'f', 'props' => [], 'schema' => [
-        ['type' => 'form.text-input', 'id' => null, 'props' => ['name' => 'email'], 'schema' => []],
-        ['type' => 'form.number-input', 'id' => null, 'props' => ['name' => 'price'], 'schema' => []],
+        ['type' => 'field.text-input', 'id' => null, 'props' => ['name' => 'email'], 'schema' => []],
+        ['type' => 'field.number-input', 'id' => null, 'props' => ['name' => 'price'], 'schema' => []],
     ]]);
 
     expect($form->field('email')?->prop('name'))->toBe('email')

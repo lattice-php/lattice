@@ -5,7 +5,7 @@ namespace Workbench\App\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Core\Enums\Op;
@@ -21,7 +21,7 @@ use Workbench\App\Tables\Columns\StatusBadgeColumn;
 /**
  * @extends EloquentTableDefinition<SalesOrder>
  */
-#[Table('workbench.sales-orders')]
+#[AsTable('workbench.sales-orders')]
 class SalesOrdersTable extends EloquentTableDefinition
 {
     /**

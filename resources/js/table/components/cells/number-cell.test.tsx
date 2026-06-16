@@ -4,7 +4,13 @@ import type { TableColumn } from "../../types";
 import { NumberCell } from "./number-cell";
 
 function column(props: Record<string, unknown> = {}): TableColumn {
-  return { key: "price", label: "Price", type: "number", align: "end", props } as TableColumn;
+  return {
+    key: "price",
+    label: "Price",
+    type: "column.number",
+    align: "end",
+    props,
+  } as TableColumn;
 }
 
 function renderCell(value: unknown, props: Record<string, unknown> = {}) {

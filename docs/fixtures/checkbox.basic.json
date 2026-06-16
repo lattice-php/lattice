@@ -20,6 +20,6 @@
             "tooltip": null,
             "value": null
         },
-        "type": "form.checkbox"
+        "type": "field.checkbox"
     }
 ]

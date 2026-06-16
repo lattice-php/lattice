@@ -25,6 +25,6 @@
             "tooltip": null,
             "value": null
         },
-        "type": "form.file-upload"
+        "type": "field.file-upload"
     }
 ]

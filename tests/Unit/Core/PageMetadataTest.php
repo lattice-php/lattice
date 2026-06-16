@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
@@ -10,22 +10,22 @@ use Lattice\Lattice\Core\PageMetadata;
 use Lattice\Lattice\Http\Page as BasePage;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
 
-#[Page(layout: PageLayout::App, container: PageContainer::Default)]
+#[AsPage(layout: PageLayout::App, container: PageContainer::Default)]
 abstract class FixtureBasePage extends BasePage {}
 
-#[Page(route: '/products', name: 'products.index')]
+#[AsPage(route: '/products', name: 'products.index')]
 final class FixtureProductsPage extends FixtureBasePage {}
 
-#[Page(route: '/products/{product}/edit')]
+#[AsPage(route: '/products/{product}/edit')]
 final class FixtureEditPage extends FixtureBasePage {}
 
-#[Page(route: '/', middleware: 'web')]
+#[AsPage(route: '/', middleware: 'web')]
 final class FixtureHomePage extends FixtureBasePage {}
 
-#[Page(route: '/standalone', container: PageContainer::Centered)]
+#[AsPage(route: '/standalone', container: PageContainer::Centered)]
 final class FixtureStandalonePage extends FixtureBasePage {}
 
-test('metadata inherits layout and container from a base page attribute', function () {
+test('metadata inherits layout and container from a base AsPage attribute', function () {
     $meta = PageMetadata::for(FixtureProductsPage::class);
 
     expect($meta->route)->toBe('/products')

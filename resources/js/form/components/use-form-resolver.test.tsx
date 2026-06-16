@@ -9,7 +9,7 @@ import { FormValuesProvider, useFormValues, useSetFormValue } from "./values";
 
 function priceField(): Node {
   return fakeNode({
-    type: "form.text-input",
+    type: "field.text-input",
     props: {
       name: "price",
       prefill: true,
@@ -22,7 +22,7 @@ function priceField(): Node {
 function builderNode(): Node {
   return {
     id: "builder",
-    type: "form.builder",
+    type: "field.builder",
     props: { name: "items" },
     blocks: [{ type: "product", label: "Product", schema: [priceField()] }],
   } as unknown as Node;

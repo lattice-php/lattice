@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Actions;
 
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Components\BulkAction as BulkActionComponent;
-use Lattice\Lattice\Attributes\BulkAction;
+use Lattice\Lattice\Attributes\AsBulkAction;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Lattice\Lattice\Core\DefinitionRegistry;
 
@@ -39,7 +39,7 @@ final class BulkActionRegistry extends DefinitionRegistry
      */
     public function attributeClass(): string
     {
-        return BulkAction::class;
+        return AsBulkAction::class;
     }
 
     protected function name(): string

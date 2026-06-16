@@ -17,7 +17,7 @@ it('serializes common fields plus a reflected props object', function () {
     expect(wire($data))->toBe([
         'key' => 'status',
         'label' => 'Status',
-        'type' => 'badge',
+        'type' => 'column.badge',
         'width' => 'sm',
         'align' => 'start',
         'sortable' => null,

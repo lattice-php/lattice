@@ -16,7 +16,7 @@ it('serialises a repeater with its row-template schema and props', function (): 
 
     $wire = wire($repeater);
 
-    expect($wire['type'])->toBe('form.repeater')
+    expect($wire['type'])->toBe('field.repeater')
         ->and($wire['props']['name'])->toBe('items')
         ->and($wire['props']['label'])->toBe('Line items')
         ->and($wire['props']['minItems'])->toBe(1)
@@ -26,7 +26,7 @@ it('serialises a repeater with its row-template schema and props', function (): 
         ->and($wire['props']['itemLabel'])->toBe('Line')
         ->and($wire['props']['defaultItems'])->toBe(2)
         ->and($wire['schema'])->toHaveCount(1)
-        ->and($wire['schema'][0]['type'])->toBe('form.text-input')
+        ->and($wire['schema'][0]['type'])->toBe('field.text-input')
         ->and($wire['schema'][0]['props']['name'])->toBe('name');
 });
 

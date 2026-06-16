@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
-use Lattice\Lattice\Attributes\Table as TableAttribute;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
@@ -135,7 +135,7 @@ test('eloquent tables can disable pagination for small datasets', function () {
  *
  * @phpstan-extends EloquentTableDefinition<User>
  */
-#[TableAttribute('workbench.infinite-users')]
+#[AsTable('workbench.infinite-users')]
 class WorkbenchInfiniteUsersTable extends EloquentTableDefinition
 {
     #[Override]
@@ -172,7 +172,7 @@ class WorkbenchInfiniteUsersTable extends EloquentTableDefinition
  *
  * @phpstan-extends EloquentTableDefinition<User>
  */
-#[TableAttribute('workbench.default-users')]
+#[AsTable('workbench.default-users')]
 class WorkbenchDefaultUsersTable extends EloquentTableDefinition
 {
     #[Override]
@@ -202,7 +202,7 @@ class WorkbenchDefaultUsersTable extends EloquentTableDefinition
  *
  * @phpstan-extends EloquentTableDefinition<User>
  */
-#[TableAttribute('workbench.simple-users')]
+#[AsTable('workbench.simple-users')]
 class WorkbenchSimpleUsersTable extends EloquentTableDefinition
 {
     #[Override]
@@ -238,7 +238,7 @@ class WorkbenchSimpleUsersTable extends EloquentTableDefinition
  *
  * @phpstan-extends EloquentTableDefinition<User>
  */
-#[TableAttribute('workbench.small-users')]
+#[AsTable('workbench.small-users')]
 class WorkbenchSmallUsersTable extends EloquentTableDefinition
 {
     #[Override]

@@ -11,7 +11,7 @@ drive the UI that follows.
 
 Extend `ActionDefinition` and implement two methods: `definition()` describes the trigger (label,
 icon, variant, confirmation), and `handle()` runs the work and returns an `ActionResult`. The
-`#[Action]` attribute gives the action a stable id so it can be discovered and addressed by its
+`#[AsAction]` attribute gives the action a stable id so it can be discovered and addressed by its
 [endpoint](/advanced/security/).
 
 ```php
@@ -19,11 +19,11 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\Action as ActionAttribute;
+use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Variant;
 
-#[ActionAttribute('app.products.archive')]
+#[AsAction('app.products.archive')]
 class ArchiveProductAction extends ActionDefinition
 {
     public function definition(Action $action): Action

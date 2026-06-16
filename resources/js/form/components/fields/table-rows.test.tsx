@@ -46,9 +46,9 @@ const sizedColumns: TableColumn[] = [
   { name: "qty", label: "Qty", columnWidth: "xs" },
   { name: "description", label: "Description", columnWidth: "xl" },
 ];
-const qtyNode = { id: "q", type: "form.text-input", props: { name: "qty" } } as never;
-const priceNode = { id: "p", type: "form.text-input", props: { name: "price" } } as never;
-const contentNode = { id: "c", type: "form.textarea", props: { name: "content" } } as never;
+const qtyNode = { id: "q", type: "field.text-input", props: { name: "qty" } } as never;
+const priceNode = { id: "p", type: "field.text-input", props: { name: "price" } } as never;
+const contentNode = { id: "c", type: "field.textarea", props: { name: "content" } } as never;
 
 function noop() {}
 
@@ -243,7 +243,7 @@ function wrap(ui: React.ReactNode, initial: Record<string, unknown> = {}) {
 
 const tableNode = {
   id: "r",
-  type: "form.repeater",
+  type: "field.repeater",
   props: {
     name: "items",
     layout: "table",
@@ -253,7 +253,7 @@ const tableNode = {
     maxItems: 5,
   },
   schema: [
-    { id: "q", type: "form.text-input", props: { name: "qty", label: "Qty", columnWidth: "md" } },
+    { id: "q", type: "field.text-input", props: { name: "qty", label: "Qty", columnWidth: "md" } },
   ],
 } as never;
 

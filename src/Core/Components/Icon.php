@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core\Components;
 
 use BackedEnum;
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Enums\Color;
 use Lattice\Lattice\Core\Enums\Size;
 
-#[Attributes\Component('icon')]
+#[AsComponent('icon')]
 class Icon extends Component
 {
     public string $name = '';

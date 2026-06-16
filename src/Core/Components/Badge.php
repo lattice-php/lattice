@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 
-#[Attributes\Component('badge')]
+#[AsComponent('badge')]
 class Badge extends Component
 {
     public string $label = '';

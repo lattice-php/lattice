@@ -53,7 +53,7 @@
                     "type": null,
                     "value": null
                 },
-                "type": "form.text-input"
+                "type": "field.text-input"
             },
             {
                 "props": {
@@ -79,9 +79,9 @@
                     "type": null,
                     "value": null
                 },
-                "type": "form.text-input"
+                "type": "field.text-input"
             }
         ],
-        "type": "form.repeater"
+        "type": "field.repeater"
     }
 ]

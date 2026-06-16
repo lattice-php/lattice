@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Core\Components;
 
 use BackedEnum;
 use JsonSerializable;
-use Lattice\Lattice\Attributes\Component as ComponentAttribute;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Concerns\ReflectsWireProps;
 use ReflectionMethod;
@@ -32,7 +32,7 @@ abstract class Component implements JsonSerializable
 
     protected function type(): string
     {
-        return ComponentAttribute::typeForClass(static::class);
+        return AsComponent::typeForClass(static::class);
     }
 
     public function key(string $key): static

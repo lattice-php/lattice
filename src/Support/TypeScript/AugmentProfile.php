@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\File;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 
 /**
- * Default profile: discovers an app's own #[Component] classes and writes a
+ * Default profile: discovers an app's own #[AsComponent] classes and writes a
  * module augmentation extending the package's published types.
  */
 final readonly class AugmentProfile implements TypeScriptProfile

@@ -8,10 +8,10 @@ use Illuminate\Support\Collection;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\BulkAction;
+use Lattice\Lattice\Attributes\AsBulkAction;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 
-#[BulkAction('fixtures.archive')]
+#[AsBulkAction('fixtures.archive')]
 class DiscoveredArchiveBulkAction extends BulkActionDefinition
 {
     public function definition(Action $action): Action

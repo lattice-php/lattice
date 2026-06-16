@@ -34,6 +34,6 @@
             "tooltip": null,
             "value": null
         },
-        "type": "form.choice"
+        "type": "field.choice"
     }
 ]

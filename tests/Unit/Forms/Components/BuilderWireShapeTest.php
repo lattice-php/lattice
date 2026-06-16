@@ -18,7 +18,7 @@ it('serialises a builder with its blocks and props', function (): void {
             ->addLabel('Add block')
     );
 
-    expect($wire['type'])->toBe('form.builder')
+    expect($wire['type'])->toBe('field.builder')
         ->and($wire['props']['name'])->toBe('items')
         ->and($wire['props']['minItems'])->toBe(1)
         ->and($wire['props']['maxItems'])->toBe(20)

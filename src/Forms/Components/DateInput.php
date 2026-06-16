@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Components;
 
-use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Concerns\HasAutoFocus;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
+use Lattice\Lattice\Forms\Attributes\AsField;
+use Lattice\Lattice\Forms\Enums\FieldType;
 
-#[Component('form.date-input')]
+#[AsField(FieldType::DateInput)]
 class DateInput extends Field
 {
     use HasAutoFocus;

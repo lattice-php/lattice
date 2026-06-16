@@ -6,7 +6,6 @@ namespace Lattice\Lattice\Forms\Components;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Concerns\HasAutoFocus;
 use Lattice\Lattice\Core\Concerns\HasOptions;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
@@ -14,9 +13,11 @@ use Lattice\Lattice\Core\Concerns\HasTabIndex;
 use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Facades\Evaluate;
+use Lattice\Lattice\Forms\Attributes\AsField;
+use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\FormData;
 
-#[Component('form.select')]
+#[AsField(FieldType::Select)]
 class Select extends Field
 {
     use HasAutoFocus;

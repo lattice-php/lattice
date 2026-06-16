@@ -4,28 +4,28 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Discovery;
 
-use Lattice\Lattice\Attributes\Action;
-use Lattice\Lattice\Attributes\BulkAction;
-use Lattice\Lattice\Attributes\Form;
-use Lattice\Lattice\Attributes\Fragment;
-use Lattice\Lattice\Attributes\Layout;
-use Lattice\Lattice\Attributes\Page;
-use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Attributes\AsAction;
+use Lattice\Lattice\Attributes\AsBulkAction;
+use Lattice\Lattice\Attributes\AsForm;
+use Lattice\Lattice\Attributes\AsFragment;
+use Lattice\Lattice\Attributes\AsLayout;
+use Lattice\Lattice\Attributes\AsPage;
+use Lattice\Lattice\Attributes\AsTable;
 use Spatie\Attributes\Attributes;
 
 final class DiscoveryKinds
 {
     /** @var array<string, class-string> */
     public const array COMPONENTS = [
-        'forms' => Form::class,
-        'tables' => Table::class,
-        'actions' => Action::class,
-        'bulk-actions' => BulkAction::class,
-        'fragments' => Fragment::class,
-        'layouts' => Layout::class,
+        'forms' => AsForm::class,
+        'tables' => AsTable::class,
+        'actions' => AsAction::class,
+        'bulk-actions' => AsBulkAction::class,
+        'fragments' => AsFragment::class,
+        'layouts' => AsLayout::class,
     ];
 
-    public const string PAGE_ATTRIBUTE = Page::class;
+    public const string PAGE_ATTRIBUTE = AsPage::class;
 
     /**
      * @param  class-string  $class

@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Workbench\App\Tables;
 
-use Lattice\Lattice\Attributes\Table as TableAttribute;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 
-#[TableAttribute('workbench.users.table')]
+#[AsTable('workbench.users.table')]
 final class UsersTablePaginationTable extends BaseUsersTable
 {
     #[\Override]

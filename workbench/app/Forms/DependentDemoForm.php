@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Components\Grid;
 use Lattice\Lattice\Forms\Components\Choice;
@@ -18,7 +18,7 @@ use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
-#[Form('workbench.dependent.form')]
+#[AsForm('workbench.dependent.form')]
 class DependentDemoForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent

@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Components;
 
-use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
+use Lattice\Lattice\Forms\Attributes\AsField;
+use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\RichContent;
 
-#[Component('form.rich-editor')]
+#[AsField(FieldType::RichEditor)]
 class RichEditor extends Field
 {
     use HasPlaceholder;

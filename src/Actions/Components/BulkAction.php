@@ -5,9 +5,9 @@ namespace Lattice\Lattice\Actions\Components;
 
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 
-#[Attributes\Component('bulkAction')]
+#[AsComponent('bulkAction')]
 class BulkAction extends Action
 {
     /**

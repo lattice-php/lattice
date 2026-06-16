@@ -12,7 +12,7 @@ import {
 function priceField(): Node {
   return {
     id: "f1",
-    type: "form.text",
+    type: "field.text",
     props: {
       name: "price",
       prefill: true,
@@ -25,7 +25,7 @@ function priceField(): Node {
 function builderNode(): Node {
   return {
     id: "b1",
-    type: "form.builder",
+    type: "field.builder",
     props: { name: "items" },
     blocks: [{ type: "product", label: "Product", schema: [priceField()] }],
   } as unknown as Node;
@@ -59,7 +59,7 @@ it("collects a concrete target per row, mapping bare and @ deps", () => {
 it("collects a top-level target with form-level deps", () => {
   const node = {
     id: "t",
-    type: "form.text",
+    type: "field.text",
     props: { name: "total", prefill: true, prefillRefreshOn: ["@customer"] },
   } as unknown as Node;
 

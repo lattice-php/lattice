@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Badge;
 use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\Card;
@@ -22,7 +22,7 @@ use Workbench\App\Fragments\RevenueTrendChartFragment;
 use Workbench\App\Fragments\SalesMixChartFragment;
 use Workbench\App\Tables\UsersTable;
 
-#[Page(route: '/')]
+#[AsPage(route: '/')]
 final class HomePage extends WorkbenchPage
 {
     public function title(): string

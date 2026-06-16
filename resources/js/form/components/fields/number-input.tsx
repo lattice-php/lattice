@@ -2,7 +2,7 @@ import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { Input } from "../base/input";
 import { SimpleField } from "./simple-field";
 
-export const NumberInputComponent: RendererComponent<"form.number-input"> = ({ node }) => {
+export const NumberInputComponent: RendererComponent<"field.number-input"> = ({ node }) => {
   const props = node.props;
 
   return (

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Layouts;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\Layout;
+use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\FloatingPlacement;
 use Lattice\Lattice\Core\Enums\Width;
@@ -12,7 +12,7 @@ use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Layouts\Components\Breadcrumbs;
 use Lattice\Lattice\Layouts\Components\Outlet;
 
-#[Layout('app-chat')]
+#[AsLayout('app-chat')]
 final class ChatLayout extends AppLayout
 {
     #[\Override]

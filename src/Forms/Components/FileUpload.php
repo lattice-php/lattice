@@ -9,14 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use Lattice\Lattice\Attributes\Component;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Forms\Attributes\AsField;
+use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\Rules\FileUploadItem;
 use RuntimeException;
 use Throwable;
 
-#[Component('form.file-upload')]
+#[AsField(FieldType::FileUpload)]
 class FileUpload extends Field
 {
     public bool $multiple = false;

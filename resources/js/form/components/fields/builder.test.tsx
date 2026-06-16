@@ -38,7 +38,7 @@ import { BuilderComponent } from "./builder";
 
 const node = {
   id: "b",
-  type: "form.builder",
+  type: "field.builder",
   props: {
     name: "items",
     reorderable: true,
@@ -51,12 +51,12 @@ const node = {
     {
       type: "text",
       label: "Text",
-      schema: [{ id: "t", type: "form.textarea", props: { name: "content" } }],
+      schema: [{ id: "t", type: "field.textarea", props: { name: "content" } }],
     },
     {
       type: "product",
       label: "Product line",
-      schema: [{ id: "p", type: "form.text-input", props: { name: "qty" } }],
+      schema: [{ id: "p", type: "field.text-input", props: { name: "qty" } }],
     },
   ],
 } as never;
@@ -117,7 +117,7 @@ it("can remove an unknown-block row", () => {
 it("renders the table layout: primary columns, spanning non-primary rows", () => {
   const node = {
     id: "b",
-    type: "form.builder",
+    type: "field.builder",
     props: {
       name: "items",
       layout: "table",
@@ -132,14 +132,14 @@ it("renders the table layout: primary columns, spanning non-primary rows", () =>
         type: "product",
         label: "Product",
         schema: [
-          { id: "p", type: "form.text-input", props: { name: "product", label: "Product" } },
-          { id: "q", type: "form.text-input", props: { name: "qty", label: "Qty" } },
+          { id: "p", type: "field.text-input", props: { name: "product", label: "Product" } },
+          { id: "q", type: "field.text-input", props: { name: "qty", label: "Qty" } },
         ],
       },
       {
         type: "text",
         label: "Text",
-        schema: [{ id: "c", type: "form.textarea", props: { name: "content", label: "Content" } }],
+        schema: [{ id: "c", type: "field.textarea", props: { name: "content", label: "Content" } }],
       },
     ],
   } as never;

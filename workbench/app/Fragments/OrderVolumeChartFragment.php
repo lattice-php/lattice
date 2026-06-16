@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Workbench\App\Fragments;
 
-use Lattice\Lattice\Attributes\Fragment;
+use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Core\Components\Chart;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 
-#[Fragment('workbench.order-volume-chart')]
+#[AsFragment('workbench.order-volume-chart')]
 final class OrderVolumeChartFragment extends FragmentDefinition
 {
     public function schema(PageSchema $schema): PageSchema

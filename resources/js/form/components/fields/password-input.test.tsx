@@ -5,7 +5,7 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FormValuesProvider, useFormValue } from "../values";
 import { PasswordInputComponent } from "./password-input";
 
-function renderField(node: Node<"form.password-input">, initial: Record<string, unknown> = {}) {
+function renderField(node: Node<"field.password-input">, initial: Record<string, unknown> = {}) {
   return render(
     <FormValuesProvider initial={initial}>
       <PasswordInputComponent node={node}>{null}</PasswordInputComponent>
@@ -21,7 +21,7 @@ describe("PasswordInputComponent conditions", () => {
   it("hides when its visible condition fails", () => {
     renderField(
       fakeNode({
-        type: "form.password-input",
+        type: "field.password-input",
         props: {
           name: "password",
           label: "Password",
@@ -37,7 +37,7 @@ describe("PasswordInputComponent conditions", () => {
   it("shows when its visible condition matches", () => {
     renderField(
       fakeNode({
-        type: "form.password-input",
+        type: "field.password-input",
         props: {
           name: "password",
           label: "Password",
@@ -53,7 +53,7 @@ describe("PasswordInputComponent conditions", () => {
   it("renders a prefilled password value", () => {
     renderField(
       fakeNode({
-        type: "form.password-input",
+        type: "field.password-input",
         props: {
           name: "password",
           label: "Password",
@@ -70,7 +70,7 @@ describe("PasswordInputComponent conditions", () => {
       <FormValuesProvider initial={{}}>
         <PasswordInputComponent
           node={fakeNode({
-            type: "form.password-input",
+            type: "field.password-input",
             props: {
               name: "password",
               label: "Password",

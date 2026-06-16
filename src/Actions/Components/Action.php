@@ -7,7 +7,8 @@ use BackedEnum;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\Confirmation;
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
@@ -16,7 +17,7 @@ use Lattice\Lattice\Effects\Contracts\Effect;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
 
-#[Attributes\Component('action')]
+#[AsComponent('action')]
 class Action extends Component
 {
     use HasHttpMethod;
@@ -132,7 +133,7 @@ class Action extends Component
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    #[Attributes\SerializationHook(priority: 250)]
+    #[SerializationHook(priority: 250)]
     protected function stripLazyFormSchema(array $data): array
     {
         if ($this->lazyForm === true) {

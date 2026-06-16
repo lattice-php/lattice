@@ -14,7 +14,7 @@ it('serializes static options without search flags', function (): void {
 
     $props = wire($field)['props'];
 
-    expect(wire($field)['type'])->toBe('form.select')
+    expect(wire($field)['type'])->toBe('field.select')
         ->and($props['options'])->toBe([
             ['label' => 'Free', 'value' => 'free'],
             ['label' => 'Pro', 'value' => 'pro'],

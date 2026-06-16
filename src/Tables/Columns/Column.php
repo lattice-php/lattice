@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Tables\Columns;
 
 use Illuminate\Support\Collection;
 use JsonSerializable;
-use Lattice\Lattice\Attributes\Component as ComponentAttribute;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\Concerns\ReflectsWireProps;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
@@ -98,7 +98,7 @@ abstract class Column implements JsonSerializable
      */
     protected function resolvedType(): ColumnType|string
     {
-        $type = ComponentAttribute::typeForClass(static::class);
+        $type = AsComponent::typeForClass(static::class);
 
         return ColumnType::tryFrom($type) ?? $type;
     }

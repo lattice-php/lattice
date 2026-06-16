@@ -28,7 +28,8 @@ This creates:
 - An entry in `resources/js/lattice/columns.ts` wiring them together.
 - Runs `lattice:typescript` to refresh the generated types file.
 
-The derived type string is `column.status-badge`. Pass `--type=` to override it.
+The PHP attribute receives the short identifier `status-badge`; the wire type is `column.status-badge`.
+Pass `--type=` to override it.
 
 ## 3. The generated PHP class
 
@@ -43,7 +44,7 @@ namespace App\Tables\Columns;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Column;
 
-#[AsColumn(type: 'column.status-badge')]
+#[AsColumn(type: 'status-badge')]
 class StatusBadge extends Column
 {
     // Add public properties here; they are reflected into the column's
@@ -56,7 +57,7 @@ Add a **public** property for anything the cell renderer needs at render time, a
 it. For example, a colour map that controls which status gets which colour:
 
 ```php
-#[AsColumn(type: 'column.status-badge')]
+#[AsColumn(type: 'status-badge')]
 class StatusBadge extends Column
 {
     /** @var array<string, string>|null */
@@ -206,7 +207,7 @@ declare module "@lattice-php/lattice" {
 ```php
 use App\Tables\Columns\StatusBadge;
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
@@ -215,7 +216,7 @@ use Lattice\Lattice\Tables\TableQuery;
 /**
  * @extends EloquentTableDefinition<\App\Models\User>
  */
-#[Table('app.users')]
+#[AsTable('app.users')]
 final class UsersTable extends EloquentTableDefinition
 {
     /**

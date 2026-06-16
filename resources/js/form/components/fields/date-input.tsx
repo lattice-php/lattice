@@ -2,7 +2,7 @@ import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { Input } from "../base/input";
 import { SimpleField } from "./simple-field";
 
-export const DateInputComponent: RendererComponent<"form.date-input"> = ({ node }) => {
+export const DateInputComponent: RendererComponent<"field.date-input"> = ({ node }) => {
   const props = node.props;
 
   return (

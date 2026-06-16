@@ -5,11 +5,11 @@ import type { ColumnData } from "@lattice-php/lattice/types/generated";
 import TableComponent from "./table";
 
 function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
-  const type = partial.type ?? "text";
+  const type = partial.type ?? "column.text";
 
   return {
     type,
-    width: type === "stack" ? "xl" : "md",
+    width: type === "column.stack" ? "xl" : "md",
     sortable: null,
     filter: null,
     columns: null,
@@ -298,25 +298,25 @@ describe("Lattice table component", () => {
           col({
             key: "identity",
             label: "Identity",
-            type: "stack",
+            type: "column.stack",
             columns: [
               col({
                 key: "name",
                 label: "Name",
-                type: "text",
+                type: "column.text",
                 sortable: true,
               }),
               col({
                 key: "email",
                 label: "Email",
-                type: "text",
+                type: "column.text",
               }),
             ],
           }),
           col({
             key: "status",
             label: "Status",
-            type: "text",
+            type: "column.text",
           }),
         ],
         data: [

@@ -51,7 +51,7 @@ test('the products table exposes product images', function () {
 
     $table = wire(Table::use(ProductsTable::class));
 
-    expect(data_get($table, 'props.columns.0.type'))->toBe('image')
+    expect(data_get($table, 'props.columns.0.type'))->toBe('column.image')
         ->and(data_get($table, 'props.columns.0.key'))->toBe('image')
         ->and(data_get($table, 'props.data.0.image'))->toContain('workbench/products/PHONE-001.webp')
         ->and(DB::table('attachments')

@@ -5,13 +5,13 @@ namespace Lattice\Lattice\Tests\Fixtures\Discovery;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
-#[Form('fixtures.profile')]
+#[AsForm('fixtures.profile')]
 class DiscoveredProfileForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent

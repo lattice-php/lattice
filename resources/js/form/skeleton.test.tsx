@@ -11,9 +11,9 @@ describe("FormSkeletonComponent", () => {
         {
           type: "grid",
           schema: [
-            { type: "form.text-input", props: {} },
-            { type: "form.text-input", props: {} },
-            { type: "form.hidden-input", props: {} },
+            { type: "field.text-input", props: {} },
+            { type: "field.text-input", props: {} },
+            { type: "field.hidden-input", props: {} },
           ],
         },
       ],

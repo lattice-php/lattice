@@ -8,13 +8,13 @@ use Illuminate\Support\Collection;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\BulkAction;
+use Lattice\Lattice\Attributes\AsBulkAction;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Variant;
 use Workbench\App\Models\Product;
 
-#[BulkAction('workbench.products.archive-selected')]
+#[AsBulkAction('workbench.products.archive-selected')]
 class ArchiveSelectedProductsAction extends BulkActionDefinition
 {
     public function definition(Action $action): Action

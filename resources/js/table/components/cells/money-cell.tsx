@@ -3,7 +3,7 @@ import { formatCell } from "../../format";
 import type { ColumnCellComponent } from "../../registry";
 import { numericValue } from "./numeric";
 
-export const MoneyCell: ColumnCellComponent<"money"> = ({ column, props, row, value }) => {
+export const MoneyCell: ColumnCellComponent<"column.money"> = ({ column, props, row, value }) => {
   const { locale } = useLocale();
   const number = numericValue(value);
 

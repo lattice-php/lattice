@@ -8,7 +8,7 @@ regular action, except `handle()` receives the selected records as a collection.
 
 ## Defining a bulk action
 
-Extend `BulkActionDefinition` and implement `definition()` and `handle()`. The `#[BulkAction]`
+Extend `BulkActionDefinition` and implement `definition()` and `handle()`. The `#[AsBulkAction]`
 attribute registers it.
 
 ```php
@@ -17,11 +17,11 @@ use Illuminate\Support\Collection;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\BulkAction as BulkActionAttribute;
+use Lattice\Lattice\Attributes\AsBulkAction;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Variant;
 
-#[BulkActionAttribute('app.products.archive-selected')]
+#[AsBulkAction('app.products.archive-selected')]
 class ArchiveSelectedProductsAction extends BulkActionDefinition
 {
     public function definition(Action $action): Action

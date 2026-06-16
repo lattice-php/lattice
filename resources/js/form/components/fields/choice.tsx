@@ -6,7 +6,7 @@ import { useControlledField } from "../use-controlled-field";
 import { useResolvedNode } from "../resolved-nodes";
 import { useSeedDefault } from "../use-seed-default";
 
-export const ChoiceComponent: RendererComponent<"form.choice"> = ({ node }) => {
+export const ChoiceComponent: RendererComponent<"field.choice"> = ({ node }) => {
   const resolvedNode = useResolvedNode(node);
   const { localName, name, testId, value, error, hidden, required, readOnly, disabled, commit } =
     useControlledField(node);

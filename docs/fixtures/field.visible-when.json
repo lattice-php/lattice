@@ -30,7 +30,7 @@
             "tooltip": null,
             "value": null
         },
-        "type": "form.choice"
+        "type": "field.choice"
     },
     {
         "props": {
@@ -64,6 +64,6 @@
             "type": null,
             "value": null
         },
-        "type": "form.text-input"
+        "type": "field.text-input"
     }
 ]

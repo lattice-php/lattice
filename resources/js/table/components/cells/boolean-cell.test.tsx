@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { TableColumn } from "../../types";
 import { BooleanCell } from "./boolean-cell";
 
-const column = { key: "featured", label: "Featured", type: "boolean" } as TableColumn;
+const column = { key: "featured", label: "Featured", type: "column.boolean" } as TableColumn;
 
 function renderCell(value: unknown) {
   return render(<BooleanCell column={column} props={{}} row={{}} value={value} />);

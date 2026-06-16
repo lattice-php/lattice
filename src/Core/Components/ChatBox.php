@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 
-#[Attributes\Component('chat.box')]
+#[AsComponent('chat.box')]
 class ChatBox extends Component
 {
     public ?string $streamEndpoint = null;

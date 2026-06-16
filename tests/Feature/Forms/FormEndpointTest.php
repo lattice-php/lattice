@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Lattice\Lattice\Attributes\Form as FormAttribute;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Facades\Lattice;
@@ -113,7 +113,7 @@ test('registered forms receive the current request while serializing definitions
 // Inline fixture classes required only by this file
 // ---------------------------------------------------------------------------
 
-#[FormAttribute('settings.profile')]
+#[AsForm('settings.profile')]
 class WorkbenchProfileForm extends FormDefinition
 {
     public function definition(Form $form, Request $request): Form
@@ -135,7 +135,7 @@ class WorkbenchProfileForm extends FormDefinition
     }
 }
 
-#[FormAttribute('workbench.required-profile')]
+#[AsForm('workbench.required-profile')]
 class WorkbenchRequiredProfileForm extends FormDefinition
 {
     public function definition(Form $form, Request $request): Form
@@ -155,7 +155,7 @@ class WorkbenchRequiredProfileForm extends FormDefinition
     }
 }
 
-#[FormAttribute('workbench.request-aware')]
+#[AsForm('workbench.request-aware')]
 class WorkbenchRequestAwareForm extends FormDefinition
 {
     public function definition(Form $form, Request $request): Form

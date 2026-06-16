@@ -15,15 +15,15 @@ function withComponentScaffold(Closure $callback): mixed
     });
 }
 
-it('scaffolds a component class with the Component attribute and registers it', function () {
+it('scaffolds a component class with the AsComponent attribute and registers it', function () {
     withComponentScaffold(function () {
         artisan('lattice:component', ['name' => 'Rating'])->assertSuccessful();
 
         $php = File::get(app_path('Components/Rating.php'));
         expect($php)
             ->toContain('namespace App\\Components;')
-            ->toContain('use Lattice\\Lattice\\Attributes;')
-            ->toContain("#[Attributes\\Component('rating')]")
+            ->toContain('use Lattice\\Lattice\\Attributes\\AsComponent;')
+            ->toContain("#[AsComponent('rating')]")
             ->toContain('class Rating extends Component');
 
         expect(File::get(resource_path('js/lattice/components/rating.tsx')))
@@ -39,6 +39,6 @@ it('honors a --type override', function () {
     withComponentScaffold(function () {
         artisan('lattice:component', ['name' => 'Stars', '--type' => 'rating.stars'])->assertSuccessful();
 
-        expect(File::get(app_path('Components/Stars.php')))->toContain("#[Attributes\\Component('rating.stars')]");
+        expect(File::get(app_path('Components/Stars.php')))->toContain("#[AsComponent('rating.stars')]");
     });
 });

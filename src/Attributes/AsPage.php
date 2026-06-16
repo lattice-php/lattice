@@ -9,7 +9,7 @@ use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-final readonly class Page
+final readonly class AsPage
 {
     /**
      * @param  array<int, string>|string|null  $middleware

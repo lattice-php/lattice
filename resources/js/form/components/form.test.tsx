@@ -121,7 +121,7 @@ describe("Lattice form schema components", () => {
         required: true,
         value: "taylor@example.com",
       },
-      type: "form.text-input",
+      type: "field.text-input",
     });
 
     const passwordNode = fakeNode({
@@ -143,7 +143,7 @@ describe("Lattice form schema components", () => {
         passwordRules: "minlength:8",
         required: true,
       },
-      type: "form.password-input",
+      type: "field.password-input",
     });
 
     const rememberNode = fakeNode({
@@ -152,7 +152,7 @@ describe("Lattice form schema components", () => {
         name: "remember",
         required: true,
       },
-      type: "form.checkbox",
+      type: "field.checkbox",
     });
 
     const tokenNode = fakeNode({
@@ -160,7 +160,7 @@ describe("Lattice form schema components", () => {
         name: "token",
         value: "reset-token",
       },
-      type: "form.hidden-input",
+      type: "field.hidden-input",
     });
 
     const submitNode = fakeNode({
@@ -229,7 +229,7 @@ describe("Lattice form schema components", () => {
         label: "Name",
         name: "name",
       },
-      type: "form.text-input",
+      type: "field.text-input",
     });
 
     const statusNode = fakeNode({
@@ -241,7 +241,7 @@ describe("Lattice form schema components", () => {
           { label: "Active", value: "active" },
         ],
       },
-      type: "form.choice",
+      type: "field.choice",
     });
 
     const featuredNode = fakeNode({
@@ -249,7 +249,7 @@ describe("Lattice form schema components", () => {
         label: "Featured",
         name: "featured",
       },
-      type: "form.checkbox",
+      type: "field.checkbox",
     });
 
     render(
@@ -285,7 +285,7 @@ describe("Lattice form schema components", () => {
         label: "Name",
         name: "name",
       },
-      type: "form.text-input",
+      type: "field.text-input",
     });
 
     const { rerender } = render(
@@ -346,7 +346,7 @@ describe("Lattice form schema components", () => {
         label: "Name",
         name: "name",
       },
-      type: "form.text-input",
+      type: "field.text-input",
     });
 
     render(

@@ -16,7 +16,7 @@
                         "size": 32
                     },
                     "sortable": null,
-                    "type": "image",
+                    "type": "column.image",
                     "width": "md"
                 },
                 {
@@ -31,7 +31,7 @@
                         "link": null
                     },
                     "sortable": null,
-                    "type": "text",
+                    "type": "column.text",
                     "width": "md"
                 },
                 {
@@ -48,7 +48,7 @@
                         }
                     },
                     "sortable": null,
-                    "type": "badge",
+                    "type": "column.badge",
                     "width": "md"
                 },
                 {
@@ -69,7 +69,7 @@
                         ]
                     },
                     "sortable": null,
-                    "type": "icon",
+                    "type": "column.icon",
                     "width": "md"
                 }
             ],

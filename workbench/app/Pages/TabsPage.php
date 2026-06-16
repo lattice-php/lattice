@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Components\Tab;
@@ -13,7 +13,7 @@ use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\Orientation;
 use Lattice\Lattice\Core\PageSchema;
 
-#[Page(route: '/tabs')]
+#[AsPage(route: '/tabs')]
 final class TabsPage extends WorkbenchPage
 {
     public function title(): string

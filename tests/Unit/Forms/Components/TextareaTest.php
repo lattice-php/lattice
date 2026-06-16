@@ -6,7 +6,7 @@ use Lattice\Lattice\Forms\Components\Textarea;
 it('serializes a textarea', function (): void {
     $node = wire(Textarea::make('bio', 'Bio')->rows(4)->placeholder('Tell us about yourself'));
 
-    expect($node['type'])->toBe('form.textarea')
+    expect($node['type'])->toBe('field.textarea')
         ->and($node['props'])->toMatchArray([
             'name' => 'bio',
             'label' => 'Bio',

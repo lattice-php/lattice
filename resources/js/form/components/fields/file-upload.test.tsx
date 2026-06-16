@@ -23,7 +23,7 @@ type RenderUploadOptions = {
 
 function renderUpload({ props = {}, values = {}, scoped = false }: RenderUploadOptions = {}) {
   const node = fakeNode({
-    type: "form.file-upload",
+    type: "field.file-upload",
     props: {
       name: "images",
       label: "Images",

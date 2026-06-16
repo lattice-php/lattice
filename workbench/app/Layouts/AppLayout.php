@@ -6,7 +6,7 @@ namespace Workbench\App\Layouts;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Components\ActionGroup;
-use Lattice\Lattice\Attributes\Layout;
+use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Core\Components\Badge;
 use Lattice\Lattice\Core\Components\ChatBox;
 use Lattice\Lattice\Core\Components\FloatingPanel;
@@ -45,7 +45,7 @@ use Workbench\App\Pages\TablesPage;
 use Workbench\App\Pages\TabsPage;
 use Workbench\App\Support\Logo;
 
-#[Layout('app')]
+#[AsLayout('app')]
 class AppLayout extends LayoutDefinition
 {
     public function schema(PageSchema $schema, Request $request): PageSchema

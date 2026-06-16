@@ -5,7 +5,7 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FormValuesProvider } from "../values";
 import { TextInputComponent } from "./text-input";
 
-function renderField(node: Node<"form.text-input">, initial: Record<string, unknown> = {}) {
+function renderField(node: Node<"field.text-input">, initial: Record<string, unknown> = {}) {
   return render(
     <FormValuesProvider initial={initial}>
       <TextInputComponent node={node}>{null}</TextInputComponent>
@@ -17,7 +17,7 @@ describe("TextInputComponent conditions", () => {
   it("hides when its visible condition fails", () => {
     renderField(
       fakeNode({
-        type: "form.text-input",
+        type: "field.text-input",
         props: {
           name: "company",
           label: "Company",
@@ -33,7 +33,7 @@ describe("TextInputComponent conditions", () => {
   it("shows when its visible condition matches", () => {
     renderField(
       fakeNode({
-        type: "form.text-input",
+        type: "field.text-input",
         props: {
           name: "company",
           label: "Company",
@@ -49,7 +49,7 @@ describe("TextInputComponent conditions", () => {
   it("renders helper text beneath the field", () => {
     renderField(
       fakeNode({
-        type: "form.text-input",
+        type: "field.text-input",
         props: { name: "price", label: "Price", helperText: "Shown to buyers." },
       }),
     );

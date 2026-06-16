@@ -30,7 +30,7 @@ type SignResponse = {
   method: string;
 };
 
-export const FileUploadComponent: RendererComponent<"form.file-upload"> = ({ node }) => {
+export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ node }) => {
   const { t } = useT("lattice");
   const props = node.props;
   const { hidden, required, readOnly, disabled } = useDependentField(node);

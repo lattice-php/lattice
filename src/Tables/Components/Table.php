@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Components;
 
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
@@ -17,7 +17,7 @@ use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableRegistry;
 use Lattice\Lattice\Tables\TableResult;
 
-#[Attributes\Component('table')]
+#[AsComponent('table')]
 class Table extends Component
 {
     use IsInteractive;

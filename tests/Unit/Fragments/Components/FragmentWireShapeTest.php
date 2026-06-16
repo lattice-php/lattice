@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Attributes\Fragment as FragmentAttribute;
+use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\Size;
 use Lattice\Lattice\Core\PageSchema;
@@ -59,7 +59,7 @@ it('includes lazy and endpoint as null on a fragment that is not lazy-loaded', f
     expect($payload['props']['size'])->toBe('md');
 });
 
-#[FragmentAttribute('wire-shape.panel')]
+#[AsFragment('wire-shape.panel')]
 final class FragmentWireShapePanel extends FragmentDefinition
 {
     public function schema(PageSchema $schema): PageSchema

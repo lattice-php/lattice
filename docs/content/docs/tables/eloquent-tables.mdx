@@ -9,7 +9,7 @@ columns, and pagination mode.
 
 ```php
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
@@ -18,7 +18,7 @@ use Lattice\Lattice\Tables\TableQuery;
 /**
  * @extends EloquentTableDefinition<Product>
  */
-#[Table('app.products')]
+#[AsTable('app.products')]
 class ProductsTable extends EloquentTableDefinition
 {
     public function columns(): array

@@ -26,7 +26,7 @@ The same flow powers interactive pieces: a form submit, a table page change, or 
 
 ### Pages
 
-A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its UI in `render()`. You annotate it with `#[Page(route: '…')]`; Lattice discovers the page and registers its route — no Inertia page component or controller to write by hand. A page also carries its layout, container, breadcrumbs, and menus.
+A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its UI in `render()`. You annotate it with `#[AsPage(route: '…')]`; Lattice discovers the page and registers its route — no Inertia page component or controller to write by hand. A page also carries its layout, container, breadcrumbs, and menus.
 
 [Learn more →](/core/pages/)
 
@@ -66,7 +66,7 @@ Fragments are a related building block — server-defined async or partial UI fe
 
 ## Discovery and endpoints
 
-You rarely wire definitions up by hand. Lattice **discovers** them: annotate a class with an attribute like `#[Form]`, `#[Table]`, `#[Action]`, `#[BulkAction]`, or `#[Fragment]`, and Lattice finds it under the path configured in `discover` (your `app/` directory by default). Each kind gets its own registry and a stable endpoint (`lattice/forms/{form}`, `lattice/tables/{table}`, and so on) that the rendered components call back into.
+You rarely wire definitions up by hand. Lattice **discovers** them: annotate a class with an attribute like `#[AsForm]`, `#[AsTable]`, `#[AsAction]`, `#[AsBulkAction]`, or `#[AsFragment]`, and Lattice finds it under the path configured in `discover` (your `app/` directory by default). Each kind gets its own registry and a stable endpoint (`lattice/forms/{form}`, `lattice/tables/{table}`, and so on) that the rendered components call back into.
 
 ## One model, no drift
 

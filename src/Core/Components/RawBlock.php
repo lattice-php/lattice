@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 
-#[Attributes\Component('raw-block')]
+#[AsComponent('raw-block')]
 class RawBlock extends Component
 {
     public string $html = '';

@@ -16,7 +16,7 @@ type PrefillSnapshot = {
 
 type Block = { type: string; label: string; schema: Node[] };
 
-const ROW_COLLECTION_TYPES = new Set(["form.builder", "form.repeater"]);
+const ROW_COLLECTION_TYPES = new Set(["field.builder", "field.repeater"]);
 
 function mapDep(dep: string, base: string | null, index: number): string {
   if (dep.startsWith("@")) {

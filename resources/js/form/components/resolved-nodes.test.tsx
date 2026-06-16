@@ -10,11 +10,11 @@ function Probe({ node }: { node: Node }) {
 
 describe("ResolvedNodes", () => {
   it("overrides a node by name", () => {
-    const original = { type: "form.text-input", props: { name: "total", value: "0" } } as Node;
+    const original = { type: "field.text-input", props: { name: "total", value: "0" } } as Node;
     render(
       <ResolvedNodesProvider
         nodes={{
-          total: { type: "form.text-input", props: { name: "total", value: "12" } } as Node,
+          total: { type: "field.text-input", props: { name: "total", value: "12" } } as Node,
         }}
       >
         <Probe node={original} />
@@ -24,7 +24,7 @@ describe("ResolvedNodes", () => {
   });
 
   it("falls back to the original node", () => {
-    const original = { type: "form.text-input", props: { name: "total", value: "0" } } as Node;
+    const original = { type: "field.text-input", props: { name: "total", value: "0" } } as Node;
     render(
       <ResolvedNodesProvider nodes={{}}>
         <Probe node={original} />

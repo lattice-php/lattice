@@ -29,9 +29,9 @@ it('writes an augmentation file for app components, not built-ins', function () 
             ->toBeString()
             ->toContain('declare module "@lattice-php/lattice"')
             ->toContain('interface ComponentProps')
-            ->toContain('"sample.field"')
+            ->toContain('"field.sample"')
             ->toContain('"sample.widget"')
-            ->toContain('"sample.field": {')
+            ->toContain('"field.sample": {')
             ->toContain('name: string')
             ->toContain('label: string | null');
 

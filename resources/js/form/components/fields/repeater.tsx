@@ -11,7 +11,7 @@ import { useRowCollection } from "./use-row-collection";
 
 const EMPTY_TEMPLATE: Node[] = [];
 
-export const RepeaterComponent: RendererComponent<"form.repeater"> = ({ node }) => {
+export const RepeaterComponent: RendererComponent<"field.repeater"> = ({ node }) => {
   const props = node.props;
   const name = props.name;
   const { errors } = useFormContext();

@@ -25,10 +25,10 @@ describe("lattice component registry", () => {
       fallback: expect.any(Function),
     });
 
-    expect(registry.components["form.checkbox"]?.mode).toBe("lazy");
-    expect(registry.components["form.hidden-input"]?.mode).toBe("lazy");
-    expect(registry.components["form.password-input"]?.mode).toBe("lazy");
-    expect(registry.components["form.text-input"]?.mode).toBe("lazy");
+    expect(registry.components["field.checkbox"]?.mode).toBe("lazy");
+    expect(registry.components["field.hidden-input"]?.mode).toBe("lazy");
+    expect(registry.components["field.password-input"]?.mode).toBe("lazy");
+    expect(registry.components["field.text-input"]?.mode).toBe("lazy");
     expect(registry.components.table?.mode).toBe("lazy");
   });
 
