@@ -56,7 +56,9 @@ export const RemoteChatBox: RendererComponent<"remote.chat-box"> = ({ node }) =>
     <div
       className={cn(
         "flex flex-col overflow-hidden border border-lt-border bg-lt-bg",
-        props.fill ? "sticky top-0 h-svh w-full" : "h-[28rem] w-80 rounded-lt shadow-lg",
+        props.fill
+          ? "sticky top-0 h-full min-h-[28rem] w-full"
+          : "h-[28rem] w-80 rounded-lt shadow-lg",
       )}
       data-test={testIdentity("chat-box")}
     >

@@ -126,4 +126,28 @@ describe("RemoteChatBox", () => {
     expect(screen.getByText("CRM assistant")).toBeVisible();
     expect(fetchMock).not.toHaveBeenCalled();
   });
+
+  it("fills its parent without forcing viewport height", () => {
+    render(
+      withRegistry(
+        <RemoteChatBox
+          node={{
+            ...node(),
+            props: {
+              ...node().props,
+              fill: true,
+              historyEndpoint: null,
+              remote: null,
+            },
+          }}
+        >
+          {null}
+        </RemoteChatBox>,
+      ),
+    );
+
+    const chatBox = screen.getByTestId("chat-box");
+    expect(chatBox).toHaveClass("sticky", "top-0", "h-full", "min-h-[28rem]", "w-full");
+    expect(chatBox).not.toHaveClass("h-svh");
+  });
 });
