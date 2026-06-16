@@ -13,12 +13,12 @@ final readonly class FakeRemoteChatHistoryController
 {
     public function __invoke(Request $request): JsonResponse
     {
-        abort_unless($request->bearerToken() === 'fake-workbench-crm-token', 403);
+        abort_unless($request->bearerToken() === 'fake-workbench-todos-token', 403);
 
         return response()->json([
             'messages' => [
                 (new ChatMessage('remote-assistant-1', ChatRole::Assistant, [
-                    ChatPart::text('Remote CRM history loaded with a browser token.'),
+                    ChatPart::text('Remote todo history loaded with a browser token.'),
                 ]))->jsonSerialize(),
             ],
         ]);

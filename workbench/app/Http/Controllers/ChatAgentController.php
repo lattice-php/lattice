@@ -44,7 +44,7 @@ final readonly class ChatAgentController
             }
 
             $toolCall = ChatPart::toolCall('lookup', ['query' => $message]);
-            $schema = $this->remoteSources->resolve('workbench.crm')->schema($request);
+            $schema = $this->remoteSources->resolve('workbench.todos')->schema($request);
 
             $this->writeFrame(['type' => 'part', 'part' => $toolCall->jsonSerialize()]);
             foreach ($schema as $part) {

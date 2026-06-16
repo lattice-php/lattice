@@ -9,7 +9,7 @@ use Workbench\App\Http\Controllers\ChatAgentController;
 use Workbench\App\Http\Controllers\ConversationHistoryController;
 use Workbench\App\Http\Controllers\FakeRemoteChatHistoryController;
 use Workbench\App\Http\Controllers\FakeRemoteChatStreamController;
-use Workbench\App\Http\Controllers\FakeRemoteCustomersController;
+use Workbench\App\Http\Controllers\FakeRemoteTodosController;
 use Workbench\App\Http\Controllers\SessionController;
 
 Route::post('/login', [SessionController::class, 'store'])->name('login.store');
@@ -23,8 +23,8 @@ Route::middleware(['web', 'auth'])->group(function (): void {
         ->name('workbench.chat.stream');
 
     Route::withoutMiddleware([Authenticate::class, PreventRequestForgery::class])->group(function (): void {
-        Route::get('/workbench/remote/customers', FakeRemoteCustomersController::class)
-            ->name('workbench.remote.customers');
+        Route::get('/workbench/remote/todos', FakeRemoteTodosController::class)
+            ->name('workbench.remote.todos');
 
         Route::get('/workbench/remote/chat/history', FakeRemoteChatHistoryController::class)
             ->name('workbench.remote.chat.history');

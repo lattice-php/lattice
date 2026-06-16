@@ -9,18 +9,18 @@ use Lattice\Lattice\Remote\BrowserToken;
 use Lattice\Lattice\Remote\RemoteSchemaEndpoint;
 use Lattice\Lattice\Remote\RemoteSourceDefinition;
 
-#[AsRemoteSource('workbench.crm')]
-final class WorkbenchCrmSource extends RemoteSourceDefinition
+#[AsRemoteSource('workbench.todos')]
+final class WorkbenchTodoSource extends RemoteSourceDefinition
 {
     public function schemaEndpoint(Request $request): RemoteSchemaEndpoint
     {
-        return RemoteSchemaEndpoint::file(dirname(__DIR__, 2).'/remote/crm-schema.json');
+        return RemoteSchemaEndpoint::file(dirname(__DIR__, 2).'/remote/todo-schema.json');
     }
 
     public function issueBrowserToken(Request $request): BrowserToken
     {
         return new BrowserToken(
-            accessToken: 'fake-workbench-crm-token',
+            accessToken: 'fake-workbench-todos-token',
             tokenType: 'Bearer',
             expiresIn: 120,
             audience: $request->string('audience')->toString(),

@@ -19,7 +19,7 @@ final class RemoteSchemaPage extends WorkbenchPage
     public function render(PageSchema $schema, Request $request, RemoteSourceRegistry $remoteSources): PageSchema
     {
         return $schema->schema(
-            $remoteSources->resolve('workbench.crm')->schema($request),
+            $remoteSources->resolve('workbench.todos')->schema($request),
         );
     }
 }

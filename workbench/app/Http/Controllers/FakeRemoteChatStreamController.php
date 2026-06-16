@@ -10,10 +10,10 @@ final readonly class FakeRemoteChatStreamController
 {
     public function __invoke(Request $request): StreamedResponse
     {
-        abort_unless($request->bearerToken() === 'fake-workbench-crm-token', 403);
+        abort_unless($request->bearerToken() === 'fake-workbench-todos-token', 403);
 
         return response()->stream(function (): void {
-            $this->writeFrame(['type' => 'text', 'value' => 'Remote CRM stream response.']);
+            $this->writeFrame(['type' => 'text', 'value' => 'Remote todo stream response.']);
             $this->writeFrame(['type' => 'done']);
         }, 200, [
             'Cache-Control' => 'no-cache',
