@@ -115,6 +115,7 @@ test('workbench pages serialize package component trees for inertia', function (
             ->where('lattice.title', 'Lattice Workbench')
             ->where('lattice.layout.key', 'app')
             ->where('lattice.layout.schema.0.type', 'stack')
+            ->where('lattice.layout.schema.0.schema.0.schema.0.schema.0.schema.1.schema.1.props.label', 'Forms')
             ->where('lattice.layout.schema.0.schema.0.schema.0.schema.0.schema.1.schema.1.schema.2.props.label', 'Builder Table Demo')
             ->where('lattice.layout.schema.0.schema.0.schema.0.schema.0.schema.1.schema.1.schema.2.props.href', '/builder-table')
             ->where('lattice.layout.schema.0.schema.0.schema.0.schema.1.schema.0.type', 'menu-item')
@@ -148,9 +149,22 @@ test('workbench pages serialize package component trees for inertia', function (
             ->where('lattice.schema.0.schema.1.type', 'grid')
             ->where('lattice.schema.0.schema.1.schema.0.type', 'card')
             ->where('lattice.schema.0.schema.1.schema.0.props.title', 'Components')
-            ->where('lattice.schema.0.schema.5.id', 'workbench.users')
-            ->where('lattice.schema.0.schema.5.props.resizableColumns', true)
-            ->where('lattice.schema.0.schema.5.props.resizeIndicator', true));
+            ->where('lattice.schema.0.schema.2.type', 'heading')
+            ->where('lattice.schema.0.schema.2.props.text', 'Dashboard charts')
+            ->where('lattice.schema.0.schema.3.type', 'grid')
+            ->where('lattice.schema.0.schema.3.props.columns', 3)
+            ->where('lattice.schema.0.schema.3.schema.0.id', 'workbench.revenue-trend-chart')
+            ->where('lattice.schema.0.schema.3.schema.0.props.lazy', true)
+            ->where('lattice.schema.0.schema.3.schema.0.props.size', 'lg')
+            ->where('lattice.schema.0.schema.3.schema.1.id', 'workbench.sales-mix-chart')
+            ->where('lattice.schema.0.schema.3.schema.1.props.lazy', true)
+            ->where('lattice.schema.0.schema.3.schema.1.props.size', 'lg')
+            ->where('lattice.schema.0.schema.3.schema.2.id', 'workbench.order-volume-chart')
+            ->where('lattice.schema.0.schema.3.schema.2.props.lazy', true)
+            ->where('lattice.schema.0.schema.3.schema.2.props.size', 'lg')
+            ->where('lattice.schema.0.schema.7.id', 'workbench.users')
+            ->where('lattice.schema.0.schema.7.props.resizableColumns', true)
+            ->where('lattice.schema.0.schema.7.props.resizeIndicator', true));
 });
 
 test('workbench tables page serializes lazy tables for each pagination type', function () {

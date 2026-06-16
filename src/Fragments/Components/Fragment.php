@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Fragments\Components;
 use Lattice\Lattice\Attributes;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Core\Enums\Size;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 
@@ -17,6 +18,8 @@ class Fragment extends ContainerComponent
     public ?string $endpoint = null;
 
     public ?bool $lazy = null;
+
+    public Size $size = Size::Md;
 
     public static function make(string $id): static
     {
@@ -34,6 +37,13 @@ class Fragment extends ContainerComponent
     public function endpoint(string $endpoint): static
     {
         $this->endpoint = $endpoint;
+
+        return $this;
+    }
+
+    public function size(Size $size): static
+    {
+        $this->size = $size;
 
         return $this;
     }

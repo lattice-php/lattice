@@ -9,6 +9,14 @@ type FragmentResponse = {
   schema?: Schema;
 };
 
+const fragmentSizeHeights = {
+  lg: 320,
+  md: 64,
+  sm: 40,
+  xl: 384,
+  xs: 32,
+} as const;
+
 function getComponents(value: unknown): Node[] {
   if (!Array.isArray(value)) {
     return [];
@@ -24,6 +32,7 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
   const endpoint = node.props.endpoint ?? "";
   const isLazy = node.props.lazy === true;
   const componentRef = node.props.ref ?? "";
+  const placeholderHeight = fragmentSizeHeights[node.props.size];
   const [components, setComponents] = useState(() => node.schema ?? []);
   const [hasLoaded, setHasLoaded] = useState(!isLazy);
   const [processing, setProcessing] = useState(isLazy && endpoint !== "");
@@ -69,10 +78,27 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
     return () => window.removeEventListener(LATTICE_EVENT.reloadComponent, reload);
   }, [load, node.id]);
 
+  useEffect(() => {
+    function reloadOnLocaleChange(): void {
+      if (!hasLoaded) {
+        return;
+      }
+
+      void load();
+    }
+
+    window.addEventListener(LATTICE_EVENT.localeChange, reloadOnLocaleChange);
+
+    return () => window.removeEventListener(LATTICE_EVENT.localeChange, reloadOnLocaleChange);
+  }, [hasLoaded, load]);
+
   return (
-    <div data-lattice-fragment={node.id}>
+    <div
+      data-lattice-fragment={node.id}
+      style={processing && components.length === 0 ? { minHeight: placeholderHeight } : undefined}
+    >
       {processing && components.length === 0 ? (
-        <Skeleton className="h-16" />
+        <Skeleton className="w-full" style={{ height: placeholderHeight }} />
       ) : (
         <Renderer nodes={components} />
       )}
