@@ -9,7 +9,7 @@ type FragmentResponse = {
   schema?: Schema;
 };
 
-const skeletonHeights = {
+const fragmentSizeHeights = {
   lg: 320,
   md: 64,
   sm: 40,
@@ -32,7 +32,7 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
   const endpoint = node.props.endpoint ?? "";
   const isLazy = node.props.lazy === true;
   const componentRef = node.props.ref ?? "";
-  const skeletonHeight = skeletonHeights[node.props.size];
+  const placeholderHeight = fragmentSizeHeights[node.props.size];
   const [components, setComponents] = useState(() => node.schema ?? []);
   const [hasLoaded, setHasLoaded] = useState(!isLazy);
   const [processing, setProcessing] = useState(isLazy && endpoint !== "");
@@ -95,10 +95,10 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
   return (
     <div
       data-lattice-fragment={node.id}
-      style={processing && components.length === 0 ? { minHeight: skeletonHeight } : undefined}
+      style={processing && components.length === 0 ? { minHeight: placeholderHeight } : undefined}
     >
       {processing && components.length === 0 ? (
-        <Skeleton className="w-full" style={{ height: skeletonHeight }} />
+        <Skeleton className="w-full" style={{ height: placeholderHeight }} />
       ) : (
         <Renderer nodes={components} />
       )}
