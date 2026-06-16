@@ -27,6 +27,9 @@ use Lattice\Lattice\Effects\EffectRegistry;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentRegistry;
+use Lattice\Lattice\GlobalSearch\Contracts\SearchHistoryRecorder;
+use Lattice\Lattice\GlobalSearch\NullSearchHistoryRecorder;
+use Lattice\Lattice\GlobalSearch\SearchResultProviderRegistry;
 use Lattice\Lattice\Http\Middleware\SetLocale;
 use Lattice\Lattice\Http\PageRegistry;
 use Lattice\Lattice\Layouts\LayoutRegistry;
@@ -68,6 +71,8 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(BulkActionRegistry::class);
         $this->app->singleton(PageRegistry::class);
         $this->app->singleton(RemoteSourceRegistry::class);
+        $this->app->singleton(SearchResultProviderRegistry::class);
+        $this->app->bind(SearchHistoryRecorder::class, NullSearchHistoryRecorder::class);
         $this->app->singleton(ComponentReferenceSigner::class);
         $this->app->alias(ComponentReferenceSigner::class, SignsComponentReferences::class);
         $this->app->singleton(LatticeRegistry::class);
