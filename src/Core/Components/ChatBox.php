@@ -19,7 +19,7 @@ class ChatBox extends Component
 
     public ?string $title = null;
 
-    public ?bool $fill = null;
+    public bool $fill = false;
 
     public static function make(string $key): static
     {

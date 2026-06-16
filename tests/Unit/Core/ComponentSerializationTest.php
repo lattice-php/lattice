@@ -145,6 +145,8 @@ test('floating panels serialize their placement and children', function () {
 });
 
 test('chat boxes serialize their fluent endpoint and presentation configuration', function () {
+    expect(wire(ChatBox::make('default-assistant'))['props']['fill'])->toBeFalse();
+
     expect(wire(ChatBox::make('assistant')
         ->streamEndpoint('/chat/stream')
         ->historyEndpoint('/chat/history')

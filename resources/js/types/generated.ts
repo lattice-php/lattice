@@ -148,7 +148,7 @@ export type ChartSeries = {
 export type ChartSeriesType = "area" | "bar" | "line" | "pie";
 export type ChatBox = {
   conversationId: string | null;
-  fill: boolean | null;
+  fill: boolean;
   historyEndpoint: string | null;
   placeholder: string | null;
   streamEndpoint: string | null;
