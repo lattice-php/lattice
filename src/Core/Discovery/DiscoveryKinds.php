@@ -11,6 +11,7 @@ use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Attributes\AsRemoteSource;
+use Lattice\Lattice\Attributes\AsSearchProvider;
 use Lattice\Lattice\Attributes\AsTable;
 use Spatie\Attributes\Attributes;
 
@@ -25,6 +26,7 @@ final class DiscoveryKinds
         'fragments' => AsFragment::class,
         'remote-sources' => AsRemoteSource::class,
         'layouts' => AsLayout::class,
+        'global-search' => AsSearchProvider::class,
     ];
 
     public const string PAGE_ATTRIBUTE = AsPage::class;
