@@ -1,4 +1,5 @@
 import { useCallback, useLayoutEffect } from "react";
+import { useFieldScope } from "../field-scope";
 import { useFormValue, useSetFormValue } from "../values";
 import {
   duplicateRow,
@@ -11,6 +12,7 @@ import {
 } from "./repeater-rows";
 
 export type RowCollection = {
+  path: string;
   rows: RepeaterRow[];
   onField: (index: number, field: string, value: unknown) => void;
   onRemove: (index: number) => void;
@@ -20,26 +22,28 @@ export type RowCollection = {
 };
 
 export function useRowCollection(name: string, defaultItems: number): RowCollection {
+  const scope = useFieldScope();
+  const path = scope ? scope.errorKey(name) : name;
   const setValue = useSetFormValue();
-  const stored = useFormValue(name);
+  const stored = useFormValue(path);
   const raw: RepeaterRow[] = Array.isArray(stored) ? stored : seedRows(stored, defaultItems);
   const rows = ensureRowIds(raw);
 
   useLayoutEffect(() => {
     if (rows !== raw) {
-      setValue(name, rows);
+      setValue(path, rows);
     }
-  }, [raw, rows, setValue, name]);
+  }, [raw, rows, setValue, path]);
 
   // Functional store updates preserve the identity of untouched rows, which lets
   // the memoised RowItem skip re-rendering siblings on a single-row edit.
   const mutate = useCallback(
     (fn: (rows: RepeaterRow[]) => RepeaterRow[]): void => {
-      setValue(name, (prev: unknown) =>
+      setValue(path, (prev: unknown) =>
         fn(Array.isArray(prev) ? (prev as RepeaterRow[]) : seedRows(prev, defaultItems)),
       );
     },
-    [setValue, name, defaultItems],
+    [setValue, path, defaultItems],
   );
 
   const onField = useCallback(
@@ -65,5 +69,5 @@ export function useRowCollection(name: string, defaultItems: number): RowCollect
     [mutate],
   );
 
-  return { rows, onField, onRemove, onMove, onDuplicate, append };
+  return { path, rows, onField, onRemove, onMove, onDuplicate, append };
 }

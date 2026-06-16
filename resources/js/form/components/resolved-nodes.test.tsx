@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
+import { FieldScopeProvider } from "./field-scope";
 import { ResolvedNodesProvider, useResolvedNode } from "./resolved-nodes";
 
 function Probe({ node }: { node: Node }) {
@@ -31,5 +32,31 @@ describe("ResolvedNodes", () => {
       </ResolvedNodesProvider>,
     );
     expect(screen.getByText("0")).toBeInTheDocument();
+  });
+
+  it("overrides a scoped node by full path", () => {
+    const original = { type: "field.text-input", props: { name: "price", value: "0" } } as Node;
+
+    render(
+      <ResolvedNodesProvider
+        nodes={{
+          "items.0.price": {
+            type: "field.text-input",
+            props: { name: "price", value: "12" },
+          } as Node,
+        }}
+      >
+        <FieldScopeProvider
+          base="items"
+          index={0}
+          row={{ __rowId: "r1", price: "0" }}
+          onChange={() => {}}
+        >
+          <Probe node={original} />
+        </FieldScopeProvider>
+      </ResolvedNodesProvider>,
+    );
+
+    expect(screen.getByText("12")).toBeInTheDocument();
   });
 });

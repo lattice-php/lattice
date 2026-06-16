@@ -10,6 +10,12 @@ interface ProvidesRowFields
 {
     /**
      * @param  array<string, mixed>  $row
+     * @return array<int, Field>
+     */
+    public function rowFields(array $row): array;
+
+    /**
+     * @param  array<string, mixed>  $row
      */
     public function rowField(array $row, string $name): ?Field;
 

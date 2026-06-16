@@ -110,3 +110,82 @@ it('skips validation for row children hidden by same-row conditions', function (
 
     expect($validated['items'][0]['kind'])->toBe('free');
 });
+
+it('validates repeater children recursively with full error paths', function (): void {
+    $field = Repeater::make('sections')
+        ->schema([
+            TextInput::make('title')->required(),
+            Repeater::make('items')->schema([
+                TextInput::make('name')->required(),
+            ]),
+        ]);
+
+    $request = Request::create('/', 'POST', ['sections' => [[
+        'title' => 'Hardware',
+        'items' => [
+            ['name' => 'Desk'],
+            ['name' => ''],
+        ],
+    ]]]);
+
+    $errors = null;
+
+    try {
+        (new FieldValidator)->validate([$field], $request);
+    } catch (ValidationException $exception) {
+        $errors = $exception->errors();
+    }
+
+    expect(array_keys($errors ?? []))->toBe(['sections.0.items.1.name']);
+});
+
+it('uses nested repeater child labels in validation messages', function (): void {
+    $field = Repeater::make('sections')
+        ->schema([
+            Repeater::make('items')->schema([
+                TextInput::make('name', 'Item Name')->required(),
+            ]),
+        ]);
+
+    $request = Request::create('/', 'POST', ['sections' => [[
+        'items' => [
+            ['name' => ''],
+        ],
+    ]]]);
+
+    $errors = null;
+
+    try {
+        (new FieldValidator)->validate([$field], $request);
+    } catch (ValidationException $exception) {
+        $errors = $exception->errors();
+    }
+
+    expect($errors['sections.0.items.0.name'][0] ?? null)->toBe('The Item Name field is required.');
+});
+
+it('returns recursively cast repeater values', function (): void {
+    $field = Repeater::make('sections')
+        ->schema([
+            TextInput::make('title')->required(),
+            Repeater::make('items')->schema([
+                TextInput::make('name')->required(),
+            ]),
+        ]);
+
+    $request = Request::create('/', 'POST', ['sections' => [[
+        'title' => 'Hardware',
+        'items' => [
+            ['name' => 'Desk'],
+        ],
+    ]]]);
+
+    $validated = (new FieldValidator)->validate([$field], $request);
+
+    expect($validated['sections'])->toBe([[
+        'title' => 'Hardware',
+        'items' => [
+            ['name' => 'Desk'],
+        ],
+    ]]);
+});

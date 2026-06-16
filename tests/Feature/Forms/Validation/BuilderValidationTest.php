@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Lattice\Lattice\Forms\Components\Block;
 use Lattice\Lattice\Forms\Components\Builder;
+use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FieldValidator;
@@ -126,4 +127,116 @@ it('skips validation for block children hidden by same-row conditions', function
     $validated = (new FieldValidator)->validate([$field], $request);
 
     expect($validated['items'][0]['type'])->toBe('product');
+});
+
+it('validates builder children recursively inside repeater rows', function (): void {
+    $field = Repeater::make('sections')
+        ->schema([
+            TextInput::make('title')->required(),
+            Builder::make('blocks')->blocks([
+                Block::make('text')->schema([
+                    Textarea::make('content')->required(),
+                ]),
+            ]),
+        ]);
+
+    $request = Request::create('/', 'POST', ['sections' => [[
+        'title' => 'Intro',
+        'blocks' => [
+            ['type' => 'text', 'content' => ''],
+        ],
+    ]]]);
+
+    $errors = null;
+
+    try {
+        (new FieldValidator)->validate([$field], $request);
+    } catch (ValidationException $exception) {
+        $errors = $exception->errors();
+    }
+
+    expect(array_keys($errors ?? []))->toBe(['sections.0.blocks.0.content']);
+});
+
+it('uses nested builder child labels in validation messages', function (): void {
+    $field = Repeater::make('sections')
+        ->schema([
+            Builder::make('blocks')->blocks([
+                Block::make('text')->schema([
+                    Textarea::make('content', 'Block Content')->required(),
+                ]),
+            ]),
+        ]);
+
+    $request = Request::create('/', 'POST', ['sections' => [[
+        'blocks' => [
+            ['type' => 'text', 'content' => ''],
+        ],
+    ]]]);
+
+    $errors = null;
+
+    try {
+        (new FieldValidator)->validate([$field], $request);
+    } catch (ValidationException $exception) {
+        $errors = $exception->errors();
+    }
+
+    expect($errors['sections.0.blocks.0.content'][0] ?? null)->toBe('The Block Content field is required.');
+});
+
+it('validates repeater children recursively inside builder rows', function (): void {
+    $field = Builder::make('sections')
+        ->blocks([
+            Block::make('section')->schema([
+                Repeater::make('items')->schema([
+                    TextInput::make('name')->required(),
+                ]),
+            ]),
+        ]);
+
+    $request = Request::create('/', 'POST', ['sections' => [[
+        'type' => 'section',
+        'items' => [
+            ['name' => ''],
+        ],
+    ]]]);
+
+    $errors = null;
+
+    try {
+        (new FieldValidator)->validate([$field], $request);
+    } catch (ValidationException $exception) {
+        $errors = $exception->errors();
+    }
+
+    expect(array_keys($errors ?? []))->toBe(['sections.0.items.0.name']);
+});
+
+it('uses nested repeater child labels inside builder rows in validation messages', function (): void {
+    $field = Builder::make('sections')
+        ->blocks([
+            Block::make('section')->schema([
+                Repeater::make('items')->schema([
+                    TextInput::make('name', 'Item Name')->required(),
+                ]),
+            ]),
+        ]);
+
+    $request = Request::create('/', 'POST', ['sections' => [[
+        'type' => 'section',
+        'items' => [
+            ['name' => ''],
+        ],
+    ]]]);
+
+    $errors = null;
+
+    try {
+        (new FieldValidator)->validate([$field], $request);
+    } catch (ValidationException $exception) {
+        $errors = $exception->errors();
+    }
+
+    expect($errors['sections.0.items.0.name'][0] ?? null)->toBe('The Item Name field is required.');
 });

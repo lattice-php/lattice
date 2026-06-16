@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Forms\Components\Concerns;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Forms\Components\Field;
+use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
 use Lattice\Lattice\Forms\FormData;
 
 /**
@@ -20,7 +21,7 @@ trait HandlesRowSchemas
      * @param  array<string, mixed>  $row
      * @return array<int, Field>
      */
-    abstract protected function rowFields(array $row): array;
+    abstract public function rowFields(array $row): array;
 
     /**
      * @param  array<int, mixed>  $rows
@@ -88,6 +89,12 @@ trait HandlesRowSchemas
                 $name = $field->name();
 
                 if (! array_key_exists($name, $row)) {
+                    continue;
+                }
+
+                if ($field instanceof ProvidesRowFields) {
+                    $field->prefillRowFields($row[$name]);
+
                     continue;
                 }
 
