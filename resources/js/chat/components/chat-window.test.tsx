@@ -83,6 +83,27 @@ describe("ChatWindow component", () => {
     expect(screen.getByTestId("chat-launcher")).toBeVisible();
   });
 
+  it("renders the panel open immediately when defaultOpen is set", async () => {
+    const fetchMock = vi.fn<() => Promise<Response>>(async () => historyResponse());
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      withRegistry(
+        <ChatWindow
+          node={fakeNode({
+            type: "chat.window",
+            props: { historyEndpoint: "/h", title: "Assistant", defaultOpen: true },
+          })}
+        >
+          {null}
+        </ChatWindow>,
+      ),
+    );
+
+    expect(await screen.findByTestId("chat-panel")).toBeVisible();
+    expect(screen.queryByTestId("chat-launcher")).toBeNull();
+  });
+
   it("fetches history once on open and seeds the conversation", async () => {
     const fetchMock = vi.fn<(url: string, init?: RequestInit) => Promise<Response>>(async () =>
       historyResponse(),

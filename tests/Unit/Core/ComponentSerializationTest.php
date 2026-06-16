@@ -149,7 +149,9 @@ test('chat windows serialize their fluent endpoint and presentation configuratio
         ->historyEndpoint('/chat/history')
         ->conversationId('conv-1')
         ->placeholder('Ask anything…')
-        ->title('Assistant')))
+        ->title('Assistant')
+        ->defaultOpen()
+        ->fill()))
         ->toMatchArray([
             'type' => 'chat.window',
             'key' => 'assistant',
@@ -159,6 +161,8 @@ test('chat windows serialize their fluent endpoint and presentation configuratio
                 'conversationId' => 'conv-1',
                 'placeholder' => 'Ask anything…',
                 'title' => 'Assistant',
+                'defaultOpen' => true,
+                'fill' => true,
             ],
         ]);
 });

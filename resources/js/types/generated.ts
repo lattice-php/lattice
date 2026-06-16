@@ -143,6 +143,8 @@ export type ChatNode =
 export type ChatRole = "user" | "assistant" | "system";
 export type ChatWindow = {
   conversationId: string | null;
+  defaultOpen: boolean | null;
+  fill: boolean | null;
   historyEndpoint: string | null;
   placeholder: string | null;
   streamEndpoint: string | null;

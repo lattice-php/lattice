@@ -19,6 +19,10 @@ class ChatWindow extends Component
 
     public ?string $title = null;
 
+    public ?bool $defaultOpen = null;
+
+    public ?bool $fill = null;
+
     public static function make(string $key): static
     {
         return new static($key);
@@ -55,6 +59,20 @@ class ChatWindow extends Component
     public function title(string $title): static
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function defaultOpen(bool $defaultOpen = true): static
+    {
+        $this->defaultOpen = $defaultOpen;
+
+        return $this;
+    }
+
+    public function fill(bool $fill = true): static
+    {
+        $this->fill = $fill;
 
         return $this;
     }

@@ -3,6 +3,7 @@ import { apiFetch } from "@lattice-php/lattice/core/api";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { Button } from "@lattice-php/lattice/core/components/button";
+import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import { useChat } from "../use-chat";
 import type { ChatMessage } from "../types";
@@ -12,9 +13,9 @@ import { PromptInput } from "./prompt-input";
 type ChatHistoryResponse = { messages: ChatMessage[] };
 
 export const ChatWindow: RendererComponent<"chat.window"> = ({ node }) => {
-  const { streamEndpoint, historyEndpoint, placeholder, title } = node.props;
+  const { streamEndpoint, historyEndpoint, placeholder, title, defaultOpen, fill } = node.props;
   const { t } = useT("lattice");
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen ?? false);
   const { messages, status, sendMessage, setMessages } = useChat({
     endpoint: streamEndpoint ?? "",
   });
@@ -62,7 +63,10 @@ export const ChatWindow: RendererComponent<"chat.window"> = ({ node }) => {
 
   return (
     <div
-      className="flex h-[28rem] w-80 flex-col overflow-hidden rounded-lt-md border border-lt-border bg-lt-bg shadow-lg"
+      className={cn(
+        "flex flex-col overflow-hidden border border-lt-border bg-lt-bg",
+        fill ? "sticky top-0 h-svh w-full" : "h-[28rem] w-80 rounded-lt-md shadow-lg",
+      )}
       data-test={testIdentity("chat-panel")}
     >
       <div className="flex items-center justify-between border-b border-lt-border px-3 py-2">
