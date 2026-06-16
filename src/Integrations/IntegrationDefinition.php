@@ -4,10 +4,27 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Integrations;
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Definition;
 
 abstract class IntegrationDefinition extends Definition
 {
+    /**
+     * @param  list<array<string, mixed>>  $manifest
+     * @return list<Component>
+     */
+    protected function schemaFromManifest(array $manifest): array
+    {
+        return app(ExternalSchemaNormalizer::class)->normalize($manifest, [
+            'integration' => $this->key(),
+        ]);
+    }
+
+    protected function key(): string
+    {
+        return app(IntegrationRegistry::class)->keyForDefinition(static::class);
+    }
+
     public function issueBrowserToken(Request $request): BrowserToken
     {
         abort(403);

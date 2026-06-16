@@ -42,4 +42,12 @@ final class IntegrationRegistry extends DefinitionRegistry
     {
         return $this->endpointFor($key);
     }
+
+    /**
+     * @param  class-string<IntegrationDefinition>  $definition
+     */
+    public function keyForDefinition(string $definition): string
+    {
+        return $this->registeredKeyFor($definition);
+    }
 }
