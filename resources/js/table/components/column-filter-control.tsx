@@ -7,7 +7,12 @@ import {
 } from "@lattice-php/lattice/core/components/popover";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import type { FilterData, FilterType, Op } from "@lattice-php/lattice/types/generated";
+import type {
+  ColumnFilterOption,
+  FilterData,
+  FilterType,
+  Op,
+} from "@lattice-php/lattice/types/generated";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
 import type { FilterClause, TableColumn } from "../types";
 import { type FilterOptionSearch, TableFilterControl } from "./filter-controls";
@@ -22,6 +27,7 @@ export function ColumnFilterControl({
   onAdd,
   onUpdate,
   onRemove,
+  onReplace,
   onSearch,
 }: {
   column: TableColumn;
@@ -30,6 +36,7 @@ export function ColumnFilterControl({
   onAdd: (clause: FilterClause) => void;
   onUpdate: (index: number, clause: FilterClause) => void;
   onRemove: (index: number) => void;
+  onReplace: (field: string, clauses: FilterClause[]) => void;
   onSearch?: FilterOptionSearch;
 }) {
   const { t } = useT("lattice");
@@ -45,9 +52,7 @@ export function ColumnFilterControl({
         column={column}
         clauses={clauses}
         processing={processing}
-        onAdd={onAdd}
-        onUpdate={onUpdate}
-        onRemove={onRemove}
+        onReplace={onReplace}
         onSearch={onSearch}
       />
     );
@@ -132,26 +137,17 @@ function serializeColumnValue(value: unknown): string {
   return typeof value === "string" ? value : "";
 }
 
-/**
- * Renders a column's option dropdown by reusing the shared table-filter select
- * control, mapping its value to/from a single `eq` clause (or an `in` clause
- * carrying a comma-joined value when the column is `multiple`).
- */
 function ColumnSelectFilter({
   column,
   clauses,
   processing,
-  onAdd,
-  onUpdate,
-  onRemove,
+  onReplace,
   onSearch,
 }: {
   column: TableColumn;
   clauses: ColumnClause[];
   processing: boolean;
-  onAdd: (clause: FilterClause) => void;
-  onUpdate: (index: number, clause: FilterClause) => void;
-  onRemove: (index: number) => void;
+  onReplace: (field: string, clauses: FilterClause[]) => void;
   onSearch?: FilterOptionSearch;
 }) {
   const filter = column.filter;
@@ -162,12 +158,19 @@ function ColumnSelectFilter({
 
   const multiple = filter.multiple;
   const operator = filter.defaultOperator;
+  const clauseOptions = filter.clauseOptions ?? [];
+  const activeClauseOption = findActiveClauseOption(
+    clauses.map((entry) => entry.clause),
+    clauseOptions,
+  );
   const active = clauses.find((entry) => entry.clause.operator === operator) ?? clauses[0];
-  const value: unknown = multiple
-    ? active?.clause.value
-      ? active.clause.value.split(",")
-      : []
-    : (active?.clause.value ?? "");
+  const value: unknown = activeClauseOption
+    ? activeClauseOption.value
+    : multiple
+      ? active?.clause.value
+        ? active.clause.value.split(",")
+        : []
+      : (active?.clause.value ?? "");
 
   const data: FilterData = {
     key: column.key,
@@ -180,18 +183,20 @@ function ColumnSelectFilter({
     const serialized = serializeColumnValue(next);
 
     if (serialized === "") {
-      if (active) {
-        onRemove(active.index);
-      }
+      onReplace(column.key, []);
 
       return;
     }
 
-    if (active) {
-      onUpdate(active.index, { ...active.clause, operator, value: serialized });
-    } else {
-      onAdd({ field: column.key, operator, value: serialized });
+    const clauseOption = clauseOptions.find((option) => option.value === serialized);
+
+    if (clauseOption) {
+      onReplace(column.key, clausesForOption(column.key, clauseOption));
+
+      return;
     }
+
+    onReplace(column.key, [{ field: column.key, operator, value: serialized }]);
   }
 
   return (
@@ -202,6 +207,33 @@ function ColumnSelectFilter({
       onChange={change}
       onSearch={onSearch}
     />
+  );
+}
+
+function clausesForOption(field: string, option: ColumnFilterOption): FilterClause[] {
+  return option.clauses.map((clause) => ({
+    field,
+    operator: clause.operator,
+    value: clause.value,
+  }));
+}
+
+function findActiveClauseOption(
+  clauses: FilterClause[],
+  options: ColumnFilterOption[],
+): ColumnFilterOption | undefined {
+  return options.find((option) => clausesMatch(clauses, clausesForOption("", option)));
+}
+
+function clausesMatch(active: FilterClause[], expected: FilterClause[]): boolean {
+  if (active.length !== expected.length) {
+    return false;
+  }
+
+  return expected.every((clause) =>
+    active.some(
+      (current) => current.operator === clause.operator && current.value === clause.value,
+    ),
   );
 }
 

@@ -70,6 +70,14 @@ abstract class Column implements JsonSerializable
     }
 
     /**
+     * @return list<ColumnFilterOption>
+     */
+    public function filterClauseOptions(): array
+    {
+        return [];
+    }
+
+    /**
      * Reflects the column's public properties into the wire shape, mirroring how
      * components serialize their props. The common fields (key, label, type,
      * width, sortable, filter) are built here; everything a column adds as a
@@ -143,6 +151,7 @@ abstract class Column implements JsonSerializable
             options: $this->filterSelectOptions(),
             multiple: $this->filterMultiple(),
             searchable: $this->filterSearchable(),
+            clauseOptions: $this->filterClauseOptions(),
         );
     }
 

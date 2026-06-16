@@ -9,6 +9,7 @@
                     "align": "start",
                     "columns": null,
                     "filter": {
+                        "clauseOptions": [],
                         "control": null,
                         "defaultOperator": "contains",
                         "enabled": true,
@@ -41,6 +42,7 @@
                     "align": "end",
                     "columns": null,
                     "filter": {
+                        "clauseOptions": [],
                         "control": null,
                         "defaultOperator": "eq",
                         "enabled": true,

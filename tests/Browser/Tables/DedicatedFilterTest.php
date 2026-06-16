@@ -25,6 +25,7 @@ it('narrows rows with the ternary featured filter and restores them via reset', 
     visit('/products')
         ->assertSee('Active Featured')
         ->assertSee('Draft Plain')
+        ->click('@table-filters-menu')
         ->select('@table-filter-featured', 'true')
         ->assertSee('Active Featured')
         ->assertDontSee('Draft Plain')
@@ -38,6 +39,7 @@ it('narrows rows with a custom toggle filter', function (): void {
     seedFilterProducts();
 
     visit('/products')
+        ->click('@table-filters-menu')
         ->click('@table-filter-high_value')
         ->assertSee('Active Featured')
         ->assertDontSee('Draft Plain')

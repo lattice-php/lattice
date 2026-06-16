@@ -4,7 +4,9 @@ declare(strict_types=1);
 use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\Contracts\OptionSource;
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Tables\Columns\ColumnFilterOption;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
@@ -105,6 +107,21 @@ test('a table rejects searching a filter that is not searchable', function () {
         ->assertStatus(422);
 });
 
+test('a table accepts column filter clause option operators', function () {
+    Lattice::tables([WorkbenchClauseOptionProductsTable::class]);
+
+    Product::factory()->create(['name' => 'June One', 'updated_at' => '2026-06-12 12:00:00']);
+    Product::factory()->create(['name' => 'July One', 'updated_at' => '2026-07-01 12:00:00']);
+
+    $ref = componentRef(wire(Table::use(WorkbenchClauseOptionProductsTable::class)));
+
+    $response = latticeGet('/lattice/tables/workbench.clause-option-products?filter=updated_at:gte:2026-06-01,updated_at:lte:2026-06-30', $ref)
+        ->assertOk()
+        ->assertJsonPath('data.0.name', 'June One');
+
+    expect($response->json('data'))->toHaveCount(1);
+});
+
 /**
  * @extends EloquentTableDefinition<Product>
  */
@@ -166,5 +183,33 @@ class WorkbenchFilteredProductsTable extends EloquentTableDefinition
     public function builder(TableQuery $query): Builder
     {
         return Product::query()->select(['id', 'name', 'status'])->orderBy('id');
+    }
+}
+
+/**
+ * @extends EloquentTableDefinition<Product>
+ */
+#[AsTable('workbench.clause-option-products')]
+class WorkbenchClauseOptionProductsTable extends EloquentTableDefinition
+{
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->label('Name'),
+            TextColumn::make('updated_at')->label('Updated')->date()->filterOptions([
+                ColumnFilterOption::range('June 2026', 'june-2026', '2026-06-01', '2026-06-30'),
+            ]),
+            TextColumn::make('status')->label('Status')->filterOptions([
+                ColumnFilterOption::clause('Unset', 'unset', Op::Empty),
+            ]),
+        ];
+    }
+
+    /**
+     * @return Builder<Product>
+     */
+    public function builder(TableQuery $query): Builder
+    {
+        return Product::query()->select(['id', 'name', 'updated_at', 'status'])->orderBy('id');
     }
 }

@@ -9,6 +9,7 @@ use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 use Lattice\Lattice\Tables\Enums\FilterType;
+use Spatie\TypeScriptTransformer\Attributes\Optional;
 
 /**
  * The wire shape of a column's filter capability. Built by a Filterable column
@@ -22,6 +23,7 @@ final readonly class ColumnFilter implements JsonSerializable
     /**
      * @param  array<int, Op>  $operators
      * @param  list<Option>  $options
+     * @param  list<ColumnFilterOption>  $clauseOptions
      */
     public function __construct(
         public bool $enabled,
@@ -32,6 +34,8 @@ final readonly class ColumnFilter implements JsonSerializable
         public array $options = [],
         public bool $multiple = false,
         public bool $searchable = false,
+        #[Optional]
+        public array $clauseOptions = [],
     ) {}
 
     /**
@@ -48,6 +52,7 @@ final readonly class ColumnFilter implements JsonSerializable
             'options' => $this->options,
             'multiple' => $this->multiple,
             'searchable' => $this->searchable,
+            'clauseOptions' => $this->clauseOptions,
         ];
     }
 }

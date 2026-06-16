@@ -71,6 +71,10 @@ function node(tableFilters: Record<string, unknown>): TableNode {
   } satisfies TableNode;
 }
 
+function openFilters(): void {
+  fireEvent.click(screen.getByRole("button", { name: "Filters" }));
+}
+
 describe("dedicated table filters in the table component", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
@@ -94,11 +98,23 @@ describe("dedicated table filters in the table component", () => {
     expect(screen.getByRole("button", { name: "Remove Featured filter" })).toBeInTheDocument();
   });
 
+  it("renders the filter trigger in the trailing header cell", () => {
+    stubFetch();
+
+    render(<TableComponent node={node({})} />);
+
+    const trigger = screen.getByRole("button", { name: "Filters" });
+
+    expect(trigger.closest('[role="columnheader"]')).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Reset all" })).not.toBeInTheDocument();
+  });
+
   it("applies a ternary selection through the endpoint", async () => {
     const fetch = stubFetch();
 
     render(<TableComponent node={node({})} />);
 
+    openFilters();
     fireEvent.change(screen.getByLabelText("Featured"), { target: { value: "false" } });
 
     await waitFor(() => {
@@ -114,6 +130,7 @@ describe("dedicated table filters in the table component", () => {
 
     render(<TableComponent node={node({ status: ["active", "draft"] })} />);
 
+    openFilters();
     fireEvent.click(screen.getByRole("button", { name: "Status" }));
     fireEvent.click(screen.getByRole("checkbox", { name: "Active" }));
 
@@ -129,6 +146,7 @@ describe("dedicated table filters in the table component", () => {
 
     render(<TableComponent node={node({})} />);
 
+    openFilters();
     fireEvent.change(screen.getByLabelText("Created from"), { target: { value: "2026-03-01" } });
 
     await waitFor(() => {
@@ -144,6 +162,7 @@ describe("dedicated table filters in the table component", () => {
 
     render(<TableComponent node={node({})} />);
 
+    openFilters();
     fireEvent.click(screen.getByRole("checkbox", { name: "High value" }));
 
     await waitFor(() => {

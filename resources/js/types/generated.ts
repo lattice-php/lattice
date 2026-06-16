@@ -247,6 +247,16 @@ export type ColumnFilter = {
   readonly options: Option[];
   readonly multiple: boolean;
   readonly searchable: boolean;
+  readonly clauseOptions?: ColumnFilterOption[];
+};
+export type ColumnFilterOption = {
+  readonly label: string;
+  readonly value: string;
+  readonly clauses: ColumnFilterOptionClause[];
+};
+export type ColumnFilterOptionClause = {
+  readonly operator: Op;
+  readonly value: string;
 };
 export type ColumnPropsMap = {
   "column.badge": BadgeColumn;

@@ -95,6 +95,10 @@ export function useTable(node: TableNode) {
     applyFilters(state.filters.filter((_, current) => current !== index));
   }
 
+  function replaceColumnFilters(field: string, clauses: FilterClause[]): void {
+    applyFilters([...state.filters.filter((clause) => clause.field !== field), ...clauses]);
+  }
+
   function setTableFilter(key: string, value: unknown): void {
     const next = { ...state.tableFilters };
 
@@ -233,6 +237,7 @@ export function useTable(node: TableNode) {
     addFilter,
     updateFilter,
     removeFilter,
+    replaceColumnFilters,
     setTableFilter,
     resetFilters,
     searchFilterOptions,
