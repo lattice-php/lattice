@@ -9,9 +9,8 @@ use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Components\Select;
-use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
-use Lattice\Lattice\Forms\Contracts\ProvidesRowPrefills;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Forms\FormSchemaWalker;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -41,58 +40,13 @@ trait ResolvesFormFields
         $data = FormData::fromRequest($request);
         $fields = $this->formFields($request);
 
-        $field = $fields
-            ->first(fn (Field $field): bool => $field->name() === $name);
-        $scope = $data;
-
-        if ($field === null) {
-            [$field, $scope] = $this->rowFieldTarget($fields, $name, $data);
-        }
+        $instance = app(FormSchemaWalker::class)->find($fields, $name, $data);
+        $field = $instance?->field;
 
         abort_if($field === null, Response::HTTP_NOT_FOUND);
         abort_unless($field instanceof Select && $field->isSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        return ['options' => $field->resolveSearch($query, $scope, $request)];
-    }
-
-    /**
-     * @param  Collection<int, Field>  $fields
-     * @return array{0: Field|null, 1: FormData}
-     */
-    private function rowFieldTarget(Collection $fields, string $path, FormData $data): array
-    {
-        $segments = explode('.', $path);
-
-        if (count($segments) < 3 || ! ctype_digit($segments[1])) {
-            return [null, $data];
-        }
-
-        $base = $segments[0];
-        $rowIndex = (int) $segments[1];
-        $name = implode('.', array_slice($segments, 2));
-
-        $container = $fields->first(
-            fn (Field $field): bool => $field->name() === $base && $field instanceof ProvidesRowFields,
-        );
-
-        if (! $container instanceof ProvidesRowFields) {
-            return [null, $data];
-        }
-
-        $rows = $data->get($base);
-
-        if (! is_array($rows) || ! array_key_exists($rowIndex, $rows) || ! is_array($rows[$rowIndex])) {
-            return [null, $data];
-        }
-
-        $row = $rows[$rowIndex];
-        $field = $container->rowField($row, $name);
-
-        if ($field === null) {
-            return [null, $data];
-        }
-
-        return [$field, $container->rowScope($data, $row)];
+        return ['options' => $field->resolveSearch($query, $instance->scope, $request)];
     }
 
     /**
@@ -104,12 +58,7 @@ trait ResolvesFormFields
         $data = FormData::fromRequest($request);
         $fields = $this->formFields($request);
 
-        $field = $fields
-            ->first(fn (Field $field): bool => $field->name() === $name);
-
-        if ($field === null) {
-            [$field] = $this->rowFieldTarget($fields, $name, $data);
-        }
+        $field = app(FormSchemaWalker::class)->find($fields, $name, $data)?->field;
 
         abort_if($field === null, Response::HTTP_NOT_FOUND);
         abort_unless($field instanceof FileUpload && $field->usesSignedUpload(), Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -127,22 +76,22 @@ trait ResolvesFormFields
         $values = [];
         $prefill = [];
 
-        foreach ($this->formFields($request) as $field) {
-            if ($field instanceof ProvidesRowPrefills) {
-                $prefill = [...$prefill, ...$field->rowPrefillValues($data, $request)];
-            } elseif ($field->hasPrefill()) {
-                $prefill[$field->name()] = $field->resolvePrefillValue($data, $data, $request);
+        foreach (app(FormSchemaWalker::class)->instances($this->formFields($request), $data) as $instance) {
+            $field = $instance->field;
+
+            if ($field->hasPrefill()) {
+                $prefill[$instance->path] = $field->resolvePrefillValue($instance->scope, $data, $request);
             }
 
             if (! $field->isComputed()) {
                 continue;
             }
 
-            $field->applyResolution($data, $request);
-            $fields[$field->name()] = $field;
+            $field->applyResolution($instance->scope, $request);
+            $fields[$instance->path] = $field;
 
             if ($field->hasResolvedValue()) {
-                $values[$field->name()] = $field->resolvedValue();
+                $values[$instance->path] = $field->resolvedValue();
             }
         }
 

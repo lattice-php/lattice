@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { getPath, setPath } from "./form-path";
 
 type FormValuesContextValue = {
   values: Record<string, unknown>;
@@ -68,10 +69,10 @@ export function FormValuesProvider({
     setValues((current) => {
       const next =
         typeof value === "function"
-          ? (value as (previous: unknown) => unknown)(current[name])
+          ? (value as (previous: unknown) => unknown)(getPath(current, name))
           : value;
 
-      return Object.is(current[name], next) ? current : { ...current, [name]: next };
+      return Object.is(getPath(current, name), next) ? current : setPath(current, name, next);
     });
   }, []);
 
@@ -85,7 +86,7 @@ export function useFormValues(): Record<string, unknown> {
 }
 
 export function useFormValue(name: string): unknown {
-  return useContext(FormValuesContext).values[name];
+  return getPath(useContext(FormValuesContext).values, name);
 }
 
 export function useSetFormValue(): (name: string, value: unknown) => void {

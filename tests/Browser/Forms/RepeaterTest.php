@@ -50,6 +50,6 @@ it('surfaces the per-row required validation error on submit', function (): void
     visit('/repeater')
         ->assertSee('Repeater Demo')
         ->click('Save')
-        ->assertSee('The items.0.name field is required.')
+        ->assertSee('The Name field is required.')
         ->assertNoSmoke();
 });

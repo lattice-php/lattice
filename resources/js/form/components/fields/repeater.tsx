@@ -16,7 +16,7 @@ export const RepeaterComponent: RendererComponent<"field.repeater"> = ({ node })
   const name = props.name;
   const { errors } = useFormContext();
   const { hidden, required } = useDependentField(node);
-  const { rows, onField, onRemove, onMove, onDuplicate, append } = useRowCollection(
+  const { path, rows, onField, onRemove, onMove, onDuplicate, append } = useRowCollection(
     name,
     props.defaultItems ?? 1,
   );
@@ -52,17 +52,17 @@ export const RepeaterComponent: RendererComponent<"field.repeater"> = ({ node })
 
   return (
     <FormFieldFrame
-      error={errors[name]}
+      error={errors[path]}
       helperText={props.helperText ?? undefined}
       tooltip={props.tooltip ?? undefined}
       label={props.label ?? ""}
-      name={name}
+      name={path}
       required={required}
     >
       <div className="flex flex-col gap-3">
         {isTable ? (
           <TableRows
-            base={name}
+            base={path}
             columns={columnsFromSchema(template)}
             rows={tableRows}
             reorderable={props.reorderable ?? false}
@@ -82,7 +82,7 @@ export const RepeaterComponent: RendererComponent<"field.repeater"> = ({ node })
             return (
               <div key={key} ref={(el) => registerRow(key, el)} data-flip-key={key}>
                 <RowItem
-                  base={name}
+                  base={path}
                   index={index}
                   row={row}
                   template={template}

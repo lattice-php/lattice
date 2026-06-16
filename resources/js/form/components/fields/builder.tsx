@@ -2,6 +2,7 @@ import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { useT } from "@lattice-php/lattice/i18n";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
+import { appendPath, toHtmlName } from "../form-path";
 import { useDependentField } from "../use-dependent-field";
 import { BlockAddMenu, type BlockOption } from "./block-add-menu";
 import { ROW_ID_KEY } from "./repeater-rows";
@@ -22,7 +23,7 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
   const blocks = ((node as unknown as { blocks?: Block[] }).blocks ?? []) as Block[];
   const { errors } = useFormContext();
   const { hidden, required } = useDependentField(node);
-  const { rows, onField, onRemove, onMove, onDuplicate, append } = useRowCollection(
+  const { path, rows, onField, onRemove, onMove, onDuplicate, append } = useRowCollection(
     name,
     props.defaultItems ?? 0,
   );
@@ -47,7 +48,7 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
     <input
       key={String(row[ROW_ID_KEY] ?? index)}
       type="hidden"
-      name={`${name}[${index}][type]`}
+      name={toHtmlName(appendPath(path, index, "type"))}
       value={String(row.type ?? "")}
     />
   ));
@@ -68,11 +69,11 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
 
   return (
     <FormFieldFrame
-      error={errors[name]}
+      error={errors[path]}
       helperText={props.helperText ?? undefined}
       tooltip={props.tooltip ?? undefined}
       label={props.label ?? ""}
-      name={name}
+      name={path}
       required={required}
     >
       <div className="flex flex-col gap-3">
@@ -80,7 +81,7 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
           <>
             {hiddenTypeInputs}
             <TableRows
-              base={name}
+              base={path}
               columns={columnsFromSchema(primary?.schema ?? [])}
               rows={tableRows}
               reorderable={props.reorderable ?? false}
@@ -104,12 +105,12 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
               <div key={key} ref={(el) => registerRow(key, el)} data-flip-key={key}>
                 <input
                   type="hidden"
-                  name={`${name}[${index}][type]`}
+                  name={toHtmlName(appendPath(path, index, "type"))}
                   value={String(row.type ?? "")}
                 />
                 {block ? (
                   <RowItem
-                    base={name}
+                    base={path}
                     index={index}
                     row={row}
                     template={block.schema ?? EMPTY_TEMPLATE}

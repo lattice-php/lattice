@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Forms;
 
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Validator;
 use Lattice\Lattice\Forms\Components\Field;
@@ -26,85 +27,100 @@ final class FieldValidator
     {
         $data = FormData::fromRequest($request);
 
-        /** @var Collection<int, Field> $fields */
-        $fields = collect($fields)->each(fn (Field $field) => $field->applyResolution($data, $request));
+        /** @var Collection<int, FormFieldInstance> $instances */
+        $instances = collect(app(FormSchemaWalker::class)->instances($fields, $data))
+            ->each(fn (FormFieldInstance $instance) => $instance->field->applyResolution($instance->scope, $request));
 
         $input = $request->all();
         $rules = [];
         $messages = [];
         $attributes = [];
 
-        /** @var array<int, array{field: Field, name: string, visible: bool, serverValue: bool, locked: bool}> $plan */
+        /** @var array<int, array{field: Field, path: string, visible: bool, serverValue: bool, locked: bool}> $plan */
         $plan = [];
 
-        foreach ($fields as $field) {
-            $name = $field->name();
-            $visible = $field->isVisible($data);
-            $locked = $field->isReadOnly($data) || $field->isDisabled($data);
+        foreach ($instances as $instance) {
+            $field = $instance->field;
+            $path = $instance->path;
+            $visible = $field->isVisible($instance->scope);
+            $locked = $field->isReadOnly($instance->scope) || $field->isDisabled($instance->scope);
             $serverValue = $field->hasResolvedValue() || ($locked && $field->hasValue());
 
             $plan[] = [
                 'field' => $field,
-                'name' => $name,
+                'path' => $path,
                 'visible' => $visible,
                 'serverValue' => $serverValue,
                 'locked' => $locked,
             ];
 
             if ($serverValue) {
-                $input[$name] = $field->resolvedValue();
+                Arr::set($input, $path, $field->resolvedValue());
             }
 
             if (! $visible) {
                 continue;
             }
 
-            $fieldRules = $field->resolvedRulesWithRequired($data, $request);
+            $fieldRules = $field->resolvedRulesWithRequired($instance->scope, $request);
 
             if ($fieldRules !== []) {
-                $rules[$name] = $fieldRules;
+                $rules[$path] = $fieldRules;
             }
 
-            foreach ($field->nestedRules($data, $request) as $ruleKey => $ruleSet) {
-                $rules[$ruleKey] = $ruleSet;
+            foreach ($field->nestedRules($instance->scope, $request) as $ruleKey => $ruleSet) {
+                $rules[$this->nestedRulePath($ruleKey, $field->name(), $path)] = $ruleSet;
             }
 
             foreach ($field->messages() as $rule => $message) {
-                $messages["{$name}.{$rule}"] = $message;
+                $messages["{$path}.{$rule}"] = $message;
             }
 
             if (($label = $field->getLabel()) !== null) {
-                $attributes[$name] = $label;
+                $attributes[$path] = $label;
             }
         }
 
         $validated = $this->validator($input, $rules, $messages, $attributes, $request)->validate();
 
-        foreach ($plan as ['field' => $field, 'name' => $name, 'visible' => $visible, 'serverValue' => $serverValue, 'locked' => $locked]) {
+        foreach ($plan as ['field' => $field, 'path' => $path, 'visible' => $visible, 'serverValue' => $serverValue, 'locked' => $locked]) {
             if (! $visible) {
-                unset($validated[$name]);
+                Arr::forget($validated, $path);
 
                 continue;
             }
 
             if ($serverValue) {
-                $validated[$name] = $field->resolvedValue();
+                Arr::set($validated, $path, $field->resolvedValue());
 
                 continue;
             }
 
             if ($locked) {
-                unset($validated[$name]);
+                Arr::forget($validated, $path);
 
                 continue;
             }
 
-            if (array_key_exists($name, $validated)) {
-                $validated[$name] = $field->castValue($validated[$name]);
+            if (Arr::has($validated, $path)) {
+                Arr::set($validated, $path, $field->castValue(Arr::get($validated, $path)));
             }
         }
 
         return $validated;
+    }
+
+    private function nestedRulePath(string $ruleKey, string $name, string $path): string
+    {
+        if ($ruleKey === $name) {
+            return $path;
+        }
+
+        if (str_starts_with($ruleKey, "{$name}.")) {
+            return $path.substr($ruleKey, strlen($name));
+        }
+
+        return $ruleKey;
     }
 
     /**

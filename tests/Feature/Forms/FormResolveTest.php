@@ -124,3 +124,48 @@ it('resolves repeater row prefill values from the fixed schema', function (): vo
         'lines.1.doubled' => 16.0,
     ]);
 });
+
+it('resolves nested repeater prefill values keyed by recursive full path', function (): void {
+    $definition = new class extends FormDefinition
+    {
+        public function definition(Form $form, Request $request): Form
+        {
+            return $form->schema([
+                TextInput::make('customer', 'Customer'),
+                Repeater::make('sections', 'Sections')->schema([
+                    TextInput::make('section', 'Section'),
+                    Repeater::make('lines', 'Lines')->schema([
+                        TextInput::make('base', 'Base'),
+                        TextInput::make('price', 'Price')->value(
+                            fn (FormData $row, FormData $form) => $row->float('base') + ($form->string('customer') === 'vip' ? 10 : 0),
+                            editable: true,
+                            resetOn: ['base'],
+                            refreshOn: ['@customer'],
+                        ),
+                    ]),
+                ]),
+            ]);
+        }
+
+        public function handle(Request $request): Response
+        {
+            return new Response('ok');
+        }
+    };
+
+    $result = $definition->resolveFields(Request::create('/', 'POST', [
+        'customer' => 'vip',
+        'sections' => [[
+            'section' => 'Hardware',
+            'lines' => [
+                ['base' => '5'],
+                ['base' => '8'],
+            ],
+        ]],
+    ]));
+
+    expect($result['prefill'])->toBe([
+        'sections.0.lines.0.price' => 15.0,
+        'sections.0.lines.1.price' => 18.0,
+    ]);
+});

@@ -31,6 +31,22 @@ function builderNode(): Node {
   } as unknown as Node;
 }
 
+function nestedRepeaterNode(): Node {
+  return {
+    id: "r1",
+    type: "field.repeater",
+    props: { name: "sections" },
+    schema: [
+      {
+        id: "r2",
+        type: "field.repeater",
+        props: { name: "lines" },
+        schema: [priceField()],
+      },
+    ],
+  } as unknown as Node;
+}
+
 it("collects a concrete target per row, mapping bare and @ deps", () => {
   const values = {
     items: [
@@ -73,6 +89,27 @@ it("ignores rows whose block type is unknown", () => {
   expect(collectPrefillTargets([builderNode()], values)).toEqual([]);
 });
 
+it("collects targets recursively through nested row collections", () => {
+  const values = {
+    customer: "vip",
+    sections: [
+      {
+        __rowId: "section-a",
+        lines: [{ __rowId: "line-a", product: "sku-1" }],
+      },
+    ],
+  };
+
+  expect(collectPrefillTargets([nestedRepeaterNode()], values)).toEqual([
+    {
+      path: "sections.0.lines.0.price",
+      overrideKey: "sections.section-a.lines.line-a.price",
+      resetOn: ["sections.0.lines.0.product"],
+      refreshOn: ["customer"],
+    },
+  ]);
+});
+
 it("reads and applies nested row paths", () => {
   const values: Record<string, unknown> = { items: [{ type: "product", price: 1 }] };
   expect(getPath(values, "items.0.price")).toBe(1);
@@ -85,8 +122,7 @@ it("reads and applies nested row paths", () => {
   };
   applyPrefillValue(setValue, "items.0.price", 9.5);
 
-  expect(writes[0][0]).toBe("items");
-  expect((writes[0][1] as Array<Record<string, unknown>>)[0].price).toBe(9.5);
+  expect(writes).toEqual([["items.0.price", 9.5]]);
 });
 
 it("clears targets whose resetOn dependency changed", () => {

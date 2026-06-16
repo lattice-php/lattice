@@ -27,7 +27,7 @@ it('surfaces a per-row required error for the active block', function (): void {
         ->click('@builder-add')
         ->click('@builder-add-product')
         ->click('Save')
-        ->assertSee('The items.0.product field is required.')
+        ->assertSee('The Product field is required.')
         ->assertNoSmoke()
         ->assertNoJavaScriptErrors();
 });

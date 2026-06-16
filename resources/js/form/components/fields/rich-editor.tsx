@@ -12,6 +12,7 @@ import { useT } from "@lattice-php/lattice/i18n";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
+import { useFieldScope } from "../field-scope";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
 import { useFormValue } from "../values";
@@ -318,7 +319,11 @@ export const RichEditorComponent: RendererComponent<"field.rich-editor"> = ({ no
   const { hidden, required, readOnly, disabled } = useDependentField(node);
   const { change, blur } = useFieldCommit();
   const name = node.props.name;
-  const storedValue = useFormValue(name);
+  const scope = useFieldScope();
+  const globalValue = useFormValue(name);
+  const storedValue = scope ? scope.getValue(name) : globalValue;
+  const domName = scope ? scope.scopedName(name) : name;
+  const errorKey = scope ? scope.errorKey(name) : name;
   const locked = readOnly || disabled;
   const initialContent =
     typeof storedValue === "object" && storedValue !== null
@@ -364,11 +369,11 @@ export const RichEditorComponent: RendererComponent<"field.rich-editor"> = ({ no
 
   return (
     <FormFieldFrame
-      error={errors[name]}
+      error={errors[errorKey]}
       helperText={node.props.helperText ?? undefined}
       tooltip={node.props.tooltip ?? undefined}
       label={node.props.label ?? ""}
-      name={name}
+      name={domName}
       required={required}
     >
       <div
@@ -380,7 +385,7 @@ export const RichEditorComponent: RendererComponent<"field.rich-editor"> = ({ no
         {editor && !locked && <Toolbar editor={editor} />}
         <EditorContent editor={editor} />
       </div>
-      <input name={name} type="hidden" value={submittedValue} />
+      <input name={domName} type="hidden" value={submittedValue} />
     </FormFieldFrame>
   );
 };

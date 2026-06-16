@@ -80,6 +80,38 @@ function rowSearchDefinition(): FormDefinition
     };
 }
 
+function nestedRowSearchDefinition(): FormDefinition
+{
+    return new class extends FormDefinition
+    {
+        public function definition(Form $form, Request $request): Form
+        {
+            $resolver = fn (string $search, FormData $data) => [
+                Select::option(
+                    "{$data->get('customer')}:{$data->get('section')}:{$data->get('category')}:{$search}",
+                    '1',
+                ),
+            ];
+
+            return $form->schema([
+                TextInput::make('customer'),
+                Repeater::make('sections')->schema([
+                    TextInput::make('section'),
+                    Repeater::make('items')->schema([
+                        TextInput::make('category'),
+                        Select::make('product')->searchable($resolver),
+                    ]),
+                ]),
+            ]);
+        }
+
+        public function handle(Request $request): Response
+        {
+            return new Response('ok');
+        }
+    };
+}
+
 it('resolves options for a searchable field', function (): void {
     $result = searchableDefinition()->searchOptions(
         Request::create('/', 'POST', ['_search' => 'author_id', 'q' => 'jane']),
@@ -139,6 +171,28 @@ it('resolves options for a searchable select inside a builder row', function ():
     expect($result)->toEqual([
         'options' => [
             new Option('initech:lighting:lamp', '1'),
+        ],
+    ]);
+});
+
+it('resolves options for a searchable select inside nested repeater rows', function (): void {
+    $result = nestedRowSearchDefinition()->searchOptions(
+        Request::create('/', 'POST', [
+            '_search' => 'sections.0.items.0.product',
+            'q' => 'desk',
+            'customer' => 'acme',
+            'sections' => [[
+                'section' => 'office',
+                'items' => [
+                    ['category' => 'chairs'],
+                ],
+            ]],
+        ]),
+    );
+
+    expect($result)->toEqual([
+        'options' => [
+            new Option('acme:office:chairs:desk', '1'),
         ],
     ]);
 });

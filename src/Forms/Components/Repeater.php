@@ -131,7 +131,7 @@ class Repeater extends Field implements ProvidesRowFields, ProvidesRowPrefills
      * @param  array<string, mixed>  $row
      * @return array<int, Field>
      */
-    protected function rowFields(array $row): array
+    public function rowFields(array $row): array
     {
         return $this->childFields();
     }

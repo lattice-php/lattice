@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import { act, render } from "@testing-library/react";
-import { FormValuesProvider } from "../values";
+import { FieldScopeProvider } from "../field-scope";
+import { FormValuesProvider, useFormValue, useFormValues, useSetFormValue } from "../values";
 import { ROW_ID_KEY } from "./repeater-rows";
 import { useRowCollection } from "./use-row-collection";
 
@@ -53,4 +54,46 @@ it("duplicates a row in place with a fresh id", () => {
   expect(c.rows[1].a).toBe("1");
   expect(c.rows[1][ROW_ID_KEY]).not.toBe(id0);
   expect(c.rows[2].a).toBe("2");
+});
+
+it("reads and writes collections inside the current field scope", () => {
+  let c!: ReturnType<typeof useRowCollection>;
+  let latestValues!: Record<string, unknown>;
+
+  function Probe() {
+    c = useRowCollection("children", 0);
+    latestValues = useFormValues();
+
+    return null;
+  }
+
+  function ScopedProbe() {
+    const setValue = useSetFormValue();
+    const row = useFormValue("items.0") as Record<string, unknown>;
+
+    return (
+      <FieldScopeProvider
+        base="items"
+        index={0}
+        row={row}
+        onChange={(field, value) => setValue(`items.0.${field}`, value)}
+      >
+        <Probe />
+      </FieldScopeProvider>
+    );
+  }
+
+  render(
+    <FormValuesProvider initial={{ items: [{ children: [{ name: "A" }] }] }}>
+      <ScopedProbe />
+    </FormValuesProvider>,
+  );
+
+  expect(c.rows[0].name).toBe("A");
+
+  act(() => c.onField(0, "name", "B"));
+
+  expect(latestValues).toEqual({
+    items: [{ children: [{ name: "B", [ROW_ID_KEY]: c.rows[0][ROW_ID_KEY] }] }],
+  });
 });

@@ -1,11 +1,16 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\Repeater;
+use Lattice\Lattice\Forms\FormDefinition;
+use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Forms\UploadForm;
 
 use function Pest\Laravel\post;
@@ -54,6 +59,44 @@ it('signs an upload for a file field inside a repeater row', function (): void {
     ], uploadHeaders($form))
         ->assertOk()
         ->assertJsonStructure(['key', 'url', 'headers', 'method']);
+});
+
+it('signs an upload for a file field inside nested repeater rows', function (): void {
+    Storage::fake('s3');
+    Storage::disk('s3')->buildTemporaryUploadUrlsUsing(
+        fn (string $path, $expiration, array $options = []) => ['url' => "https://s3.test/{$path}", 'headers' => []],
+    );
+
+    $definition = new class extends FormDefinition
+    {
+        public function definition(Form $form, Request $request): Form
+        {
+            return $form->schema([
+                Repeater::make('sections')->schema([
+                    Repeater::make('documents')->schema([
+                        FileUpload::make('file')->disk('s3')->signedUpload(),
+                    ]),
+                ]),
+            ]);
+        }
+
+        public function handle(Request $request): Response
+        {
+            return new Response('ok');
+        }
+    };
+
+    $result = $definition->signUpload(Request::create('/', 'POST', [
+        '_upload' => 'sections.0.documents.0.file',
+        'filename' => 'invoice.pdf',
+        'sections' => [[
+            'documents' => [
+                ['file' => null],
+            ],
+        ]],
+    ]));
+
+    expect($result)->toHaveKeys(['key', 'url', 'headers', 'method']);
 });
 
 it('returns 422 when the field does not use signed uploads', function (): void {

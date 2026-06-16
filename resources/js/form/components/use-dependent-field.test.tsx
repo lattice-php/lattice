@@ -69,4 +69,42 @@ describe("useDependentField", () => {
 
     expect(result.current.hidden).toBe(false);
   });
+
+  it("falls back to ancestor row values from inside nested rows", () => {
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <FormValuesProvider
+        initial={{
+          sections: [
+            {
+              __rowId: "section-1",
+              section: "office",
+              items: [{ __rowId: "item-1", product: "sku-1" }],
+            },
+          ],
+        }}
+      >
+        <FieldScopeProvider
+          base="sections"
+          index={0}
+          row={{ __rowId: "section-1", section: "office" }}
+          onChange={() => {}}
+        >
+          <FieldScopeProvider
+            base="sections.0.items"
+            index={0}
+            row={{ __rowId: "item-1", product: "sku-1" }}
+            onChange={() => {}}
+          >
+            {children}
+          </FieldScopeProvider>
+        </FieldScopeProvider>
+      </FormValuesProvider>
+    );
+
+    const { result } = renderHook(() => useDependentField(conditionNode("section", "office")), {
+      wrapper,
+    });
+
+    expect(result.current.hidden).toBe(false);
+  });
 });

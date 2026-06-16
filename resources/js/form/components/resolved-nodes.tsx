@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fieldProps } from "./field-props";
+import { useFieldScope } from "./field-scope";
 
 const ResolvedNodesContext = createContext<Record<string, Node>>({});
 
@@ -17,6 +18,8 @@ export function ResolvedNodesProvider({
 export function useResolvedNode(node: Node): Node {
   const nodes = useContext(ResolvedNodesContext);
   const name = fieldProps(node).name ?? "";
+  const scope = useFieldScope();
+  const path = name && scope ? scope.errorKey(name) : name;
 
-  return name && nodes[name] ? nodes[name] : node;
+  return (path && nodes[path]) || (name && nodes[name]) || node;
 }

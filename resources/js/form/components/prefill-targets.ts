@@ -1,5 +1,6 @@
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fieldProps } from "./field-props";
+import { appendPath, getPath } from "./form-path";
 import { buildOverrideKey, rowIdFrom } from "./override-keys";
 
 export type PrefillTarget = {
@@ -18,17 +19,20 @@ type Block = { type: string; label: string; schema: Node[] };
 
 const ROW_COLLECTION_TYPES = new Set(["field.builder", "field.repeater"]);
 
-function mapDep(dep: string, base: string | null, index: number): string {
+export { getPath } from "./form-path";
+
+function mapDep(dep: string, rowPath: string | null): string {
   if (dep.startsWith("@")) {
     return dep.slice(1);
   }
 
-  return base === null ? dep : `${base}.${index}.${dep}`;
+  return rowPath === null ? dep : appendPath(rowPath, dep);
 }
 
 function targetFor(
   node: Node,
-  base: string | null,
+  rowPath: string | null,
+  identityCollectionPath: string | null,
   index = 0,
   row: Record<string, unknown> = {},
 ): PrefillTarget | null {
@@ -41,10 +45,13 @@ function targetFor(
   const rowId = rowIdFrom(row);
 
   return {
-    path: base === null ? props.name : `${base}.${index}.${props.name}`,
-    overrideKey: base === null ? props.name : buildOverrideKey(base, rowId, index, props.name),
-    resetOn: (props.prefillResetOn ?? []).map((dep) => mapDep(dep, base, index)),
-    refreshOn: (props.prefillRefreshOn ?? []).map((dep) => mapDep(dep, base, index)),
+    path: rowPath === null ? props.name : appendPath(rowPath, props.name),
+    overrideKey:
+      identityCollectionPath === null
+        ? props.name
+        : buildOverrideKey(identityCollectionPath, rowId, index, props.name),
+    resetOn: (props.prefillResetOn ?? []).map((dep) => mapDep(dep, rowPath)),
+    refreshOn: (props.prefillRefreshOn ?? []).map((dep) => mapDep(dep, rowPath)),
   };
 }
 
@@ -54,39 +61,51 @@ export function collectPrefillTargets(
 ): PrefillTarget[] {
   const targets: PrefillTarget[] = [];
 
-  const walk = (list: Node[] | undefined): void => {
+  const walk = (
+    list: Node[] | undefined,
+    rowPath: string | null = null,
+    identityRowPath: string | null = null,
+    identityCollectionPath: string | null = null,
+    index = 0,
+    row: Record<string, unknown> = {},
+  ): void => {
     for (const node of list ?? []) {
       if (ROW_COLLECTION_TYPES.has(node.type)) {
         const name = fieldProps(node).name;
         if (name) {
-          const rows = Array.isArray(values[name])
-            ? (values[name] as Array<Record<string, unknown>>)
+          const childCollectionPath = appendPath(rowPath, name);
+          const childIdentityCollectionPath = appendPath(identityRowPath, name);
+          const storedRows = getPath(values, childCollectionPath);
+          const rows = Array.isArray(storedRows)
+            ? (storedRows as Array<Record<string, unknown>>)
             : [];
           const blocks = (node as unknown as { blocks?: Block[] }).blocks;
 
-          rows.forEach((row, index) => {
+          rows.forEach((childRow, childIndex) => {
             const template = blocks
-              ? (blocks.find((block) => block.type === row.type)?.schema ?? [])
+              ? (blocks.find((block) => block.type === childRow.type)?.schema ?? [])
               : (node.schema ?? []);
 
-            for (const child of template) {
-              const target = targetFor(child, name, index, row);
-              if (target) {
-                targets.push(target);
-              }
-            }
+            walk(
+              template,
+              appendPath(childCollectionPath, childIndex),
+              appendPath(childIdentityCollectionPath, rowIdFrom(childRow) ?? childIndex),
+              childIdentityCollectionPath,
+              childIndex,
+              childRow,
+            );
           });
         }
 
         continue;
       }
 
-      const target = targetFor(node, null);
+      const target = targetFor(node, rowPath, identityCollectionPath, index, row);
       if (target) {
         targets.push(target);
       }
 
-      walk(node.schema);
+      walk(node.schema, rowPath, identityRowPath, identityCollectionPath, index, row);
     }
   };
 
@@ -95,45 +114,12 @@ export function collectPrefillTargets(
   return targets;
 }
 
-export function getPath(values: Record<string, unknown>, path: string): unknown {
-  let current: unknown = values;
-
-  for (const part of path.split(".")) {
-    if (current == null) {
-      return undefined;
-    }
-    current = (current as Record<string, unknown>)[part];
-  }
-
-  return current;
-}
-
 export function applyPrefillValue(
   setValue: (name: string, value: unknown) => void,
   path: string,
   value: unknown,
 ): void {
-  const [head, ...rest] = path.split(".");
-
-  if (rest.length === 0) {
-    setValue(head, value);
-
-    return;
-  }
-
-  const index = Number(rest[0]);
-  const field = rest.slice(1).join(".");
-
-  setValue(head, (prev: unknown) => {
-    if (!Array.isArray(prev) || prev[index] == null) {
-      return prev;
-    }
-
-    const rows = [...(prev as Array<Record<string, unknown>>)];
-    rows[index] = { ...rows[index], [field]: value };
-
-    return rows;
-  });
+  setValue(path, value);
 }
 
 export function pathsToClear(previous: PrefillSnapshot, next: PrefillSnapshot): string[] {
