@@ -65,6 +65,10 @@ function stubFetch() {
   return fetch;
 }
 
+function openFilters(): void {
+  fireEvent.click(screen.getByRole("button", { name: "Filters" }));
+}
+
 describe("searchable select filter", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
@@ -75,6 +79,7 @@ describe("searchable select filter", () => {
 
     render(<TableComponent node={node} />);
 
+    openFilters();
     fireEvent.click(screen.getByRole("button", { name: "Author" }));
     fireEvent.click(await screen.findByRole("option", { name: "Ada" }));
 
@@ -95,6 +100,7 @@ describe("searchable select filter", () => {
 
     render(<TableComponent node={multiNode} />);
 
+    openFilters();
     fireEvent.click(screen.getByRole("button", { name: "Author" }));
     fireEvent.click(await screen.findByRole("option", { name: "Ada" }));
 
@@ -108,6 +114,7 @@ describe("searchable select filter", () => {
 
     render(<TableComponent node={node} />);
 
+    openFilters();
     fireEvent.click(screen.getByRole("button", { name: "Author" }));
     fireEvent.change(screen.getByLabelText("Search"), { target: { value: "ad" } });
 

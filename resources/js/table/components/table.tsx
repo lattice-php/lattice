@@ -20,7 +20,7 @@ import { useTableSelection } from "../use-table-selection";
 import { BulkBar } from "./bulk-bar";
 import { ColumnFilterControl } from "./column-filter-control";
 import { ColumnHeader } from "./column-header";
-import { FilterBar } from "./filter-bar";
+import { FilterBar, FilterMenu } from "./filter-bar";
 import { FilterStackBar } from "./filter-stack-bar";
 import { TablePagination } from "./pagination";
 import { SortBar } from "./sort-bar";
@@ -39,6 +39,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     addFilter,
     updateFilter,
     removeFilter,
+    replaceColumnFilters,
     setTableFilter,
     resetFilters,
     searchFilterOptions,
@@ -80,11 +81,13 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     () => (Array.isArray(node.props?.filters) ? node.props.filters : []),
     [node.props?.filters],
   );
+  const hasDedicatedFilters = filterDefinitions.length > 0;
   const hasActiveFilters = filters.length > 0 || Object.keys(tableFilters).length > 0;
+  const hasTrailingUtility = hasActions || hasDedicatedFilters;
   const sizingColumns = useMemo(() => getTableSizingColumns(columns), [columns]);
   const utilityTracks = useMemo(
-    () => getTableUtilityTracks(hasActions, hasBulkActions),
-    [hasActions, hasBulkActions],
+    () => getTableUtilityTracks(hasTrailingUtility, hasBulkActions),
+    [hasTrailingUtility, hasBulkActions],
   );
   const resizingEnabled = node.props?.resizableColumns === true;
   const resizeStorageIdentity = nodeIdentity(node);
@@ -116,7 +119,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
         </button>
       )}
       <div className="overflow-x-auto rounded-lt-sm border border-lt-border">
-        {filterDefinitions.length > 0 && (
+        {hasDedicatedFilters && hasActiveFilters && (
           <FilterBar
             filters={filterDefinitions}
             values={tableFilters}
@@ -124,7 +127,6 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             hasActiveFilters={hasActiveFilters}
             onChange={setTableFilter}
             onReset={resetFilters}
-            onSearch={searchFilterOptions}
           />
         )}
         {hasBulkActions && selection.active && (
@@ -189,12 +191,21 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                   state={state}
                 />
               ))}
-              {hasActions && (
+              {hasTrailingUtility && (
                 <div
-                  className="px-4 py-3 text-right align-middle font-medium text-lt-muted-fg"
+                  className="flex items-center justify-end gap-2 px-4 py-2 align-middle font-medium text-lt-muted-fg"
                   role="columnheader"
                 >
-                  <span className="sr-only">{node.props?.actionsLabel}</span>
+                  {hasDedicatedFilters && (
+                    <FilterMenu
+                      filters={filterDefinitions}
+                      values={tableFilters}
+                      processing={processing}
+                      onChange={setTableFilter}
+                      onSearch={searchFilterOptions}
+                    />
+                  )}
+                  {hasActions && <span className="sr-only">{node.props?.actionsLabel}</span>}
                 </div>
               )}
             </div>
@@ -215,12 +226,13 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                         onAdd={addFilter}
                         onUpdate={updateFilter}
                         onRemove={removeFilter}
+                        onReplace={replaceColumnFilters}
                         onSearch={(query) => searchFilterOptions(column.key, query)}
                       />
                     )}
                   </div>
                 ))}
-                {hasActions && <div className="px-4 py-2" role="cell" />}
+                {hasTrailingUtility && <div className="px-4 py-2" role="cell" />}
               </div>
             )}
           </div>
@@ -258,7 +270,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                       <div
                         key={column.key}
                         className={cn(
-                          "grid min-w-0 gap-1 p-4 align-middle",
+                          "grid min-w-0 gap-1 overflow-hidden p-4 align-middle",
                           alignText(column.align),
                           alignJustifyItems(column.align),
                         )}
@@ -270,14 +282,20 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                         >
                           {column.label}
                         </span>
-                        <div className="min-w-0 truncate">
+                        <div
+                          data-slot="table-cell-content"
+                          className="min-w-0 max-w-full overflow-hidden truncate"
+                        >
                           <ColumnCell column={column} row={row} />
                         </div>
                       </div>
                     ))}
-                    {actions.length > 0 && (
+                    {hasTrailingUtility && (
                       <div
-                        className="flex items-center justify-start gap-2 p-4 md:justify-end"
+                        className={cn(
+                          "items-center justify-start gap-2 p-4 md:justify-end",
+                          actions.length > 0 ? "flex" : "hidden md:flex",
+                        )}
                         role="cell"
                       >
                         {actions.map((action, actionIndex) => (

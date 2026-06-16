@@ -58,6 +58,7 @@ return [
         'remove' => 'Remove :label filter',
         'value' => ':label filter value',
         'add' => 'Add filter',
+        'filters' => 'Filters',
         'from' => ':label from',
         'until' => ':label until',
         'selectedCount' => ':amount selected',

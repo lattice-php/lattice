@@ -33,6 +33,11 @@ interface Filterable
     public function filterSearchable(): bool;
 
     /**
+     * @return list<ColumnFilterOption>
+     */
+    public function filterClauseOptions(): array;
+
+    /**
      * @return list<Option>
      */
     public function searchFilterOptions(string $query): array;

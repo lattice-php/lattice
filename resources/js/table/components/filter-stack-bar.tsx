@@ -1,6 +1,6 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
-import { operatorLabel } from "../query";
+import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
 import type { FilterClause, TableColumn } from "../types";
 
 export function FilterStackBar({
@@ -20,6 +20,7 @@ export function FilterStackBar({
     <div className="flex flex-wrap items-center gap-4 border-b border-lt-border px-4 py-2.5 text-sm">
       {filters.map((clause, index) => {
         const label = columnsByKey.get(clause.field)?.label ?? clause.field;
+        const valueless = VALUELESS_FILTER_OPERATORS.has(clause.operator);
 
         return (
           <span
@@ -27,8 +28,10 @@ export function FilterStackBar({
             className="inline-flex items-center gap-1.5"
           >
             <span>
-              {`${label} ${operatorLabel(clause.operator)}: `}
-              <span className="font-semibold">{clause.value}</span>
+              {valueless
+                ? `${label} ${operatorLabel(clause.operator)}`
+                : `${label} ${operatorLabel(clause.operator)}: `}
+              {!valueless && <span className="font-semibold">{clause.value}</span>}
             </span>
             <button
               type="button"

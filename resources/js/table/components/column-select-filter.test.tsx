@@ -15,7 +15,53 @@ function selectFilter(multiple: boolean): ColumnFilter {
       { label: "Active", value: "active" },
       { label: "Draft", value: "draft" },
     ],
+    clauseOptions: [],
     multiple,
+    searchable: false,
+  };
+}
+
+function clauseFilter(): ColumnFilter {
+  return {
+    enabled: true,
+    type: "boolean",
+    operators: ["eq", "neq", "empty"],
+    defaultOperator: "eq",
+    control: "select",
+    options: [
+      { label: "Yes", value: "yes" },
+      { label: "No", value: "no" },
+      { label: "Unset", value: "unset" },
+    ],
+    clauseOptions: [
+      { label: "Yes", value: "yes", clauses: [{ operator: "eq", value: "true" }] },
+      { label: "No", value: "no", clauses: [{ operator: "eq", value: "false" }] },
+      { label: "Unset", value: "unset", clauses: [{ operator: "empty", value: "" }] },
+    ],
+    multiple: false,
+    searchable: false,
+  };
+}
+
+function rangeFilter(): ColumnFilter {
+  return {
+    enabled: true,
+    type: "date",
+    operators: ["eq", "neq", "gte", "lte"],
+    defaultOperator: "eq",
+    control: "select",
+    options: [{ label: "June 2026", value: "june-2026" }],
+    clauseOptions: [
+      {
+        label: "June 2026",
+        value: "june-2026",
+        clauses: [
+          { operator: "gte", value: "2026-06-01" },
+          { operator: "lte", value: "2026-06-30" },
+        ],
+      },
+    ],
+    multiple: false,
     searchable: false,
   };
 }
@@ -115,6 +161,36 @@ describe("column select filter", () => {
 
     await waitFor(() => {
       expect(fetch.mock.calls.at(-1)?.[0]).toContain("filter=status%3Aeq%3Aactive");
+    });
+  });
+
+  it("emits a valueless clause when a clause option is chosen", async () => {
+    const fetch = stubFetch();
+
+    render(<TableComponent node={node(clauseFilter())} />);
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Status" }), {
+      target: { value: "unset" },
+    });
+
+    await waitFor(() => {
+      expect(fetch.mock.calls.at(-1)?.[0]).toContain("filter=status%3Aempty%3A");
+    });
+  });
+
+  it("emits multiple clauses when a range clause option is chosen", async () => {
+    const fetch = stubFetch();
+
+    render(<TableComponent node={node(rangeFilter())} />);
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Status" }), {
+      target: { value: "june-2026" },
+    });
+
+    await waitFor(() => {
+      expect(decodeURIComponent(String(fetch.mock.calls.at(-1)?.[0]))).toContain(
+        "filter=status:gte:2026-06-01,status:lte:2026-06-30",
+      );
     });
   });
 

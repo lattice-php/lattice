@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Lattice\Tables\Columns\BooleanColumn;
+use Lattice\Lattice\Tables\Columns\ColumnFilterOption;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 
 enum ColumnFilterStatus: string
@@ -100,4 +102,62 @@ test('a column select filter restricts its available operators', function () {
 
     expect(TextColumn::make('status')->filterOptions([['label' => 'A', 'value' => 'a']], multiple: true)->availableOperators())
         ->toBe([Op::In, Op::NotIn]);
+});
+
+test('a column filter serializes clause options', function () {
+    $filter = wire(BooleanColumn::make('featured')->filterOptions([
+        ColumnFilterOption::clause('Yes', 'yes', Op::Equals, 'true'),
+        ColumnFilterOption::clause('No', 'no', Op::Equals, 'false'),
+        ColumnFilterOption::clause('Unset', 'unset', Op::Empty),
+    ]))['filter'];
+
+    expect($filter)->toMatchArray([
+        'control' => 'select',
+        'options' => [
+            ['label' => 'Yes', 'value' => 'yes'],
+            ['label' => 'No', 'value' => 'no'],
+            ['label' => 'Unset', 'value' => 'unset'],
+        ],
+        'clauseOptions' => [
+            [
+                'label' => 'Yes',
+                'value' => 'yes',
+                'clauses' => [['operator' => 'eq', 'value' => 'true']],
+            ],
+            [
+                'label' => 'No',
+                'value' => 'no',
+                'clauses' => [['operator' => 'eq', 'value' => 'false']],
+            ],
+            [
+                'label' => 'Unset',
+                'value' => 'unset',
+                'clauses' => [['operator' => 'empty', 'value' => '']],
+            ],
+        ],
+        'operators' => ['eq', 'neq', 'empty'],
+    ]);
+});
+
+test('a column filter range option serializes date bounds as clauses', function () {
+    $filter = wire(TextColumn::make('updated_at')->date()->filterOptions([
+        ColumnFilterOption::range('This month', 'this-month', '2026-06-01', '2026-06-30'),
+    ]))['filter'];
+
+    expect($filter)->toMatchArray([
+        'options' => [
+            ['label' => 'This month', 'value' => 'this-month'],
+        ],
+        'clauseOptions' => [
+            [
+                'label' => 'This month',
+                'value' => 'this-month',
+                'clauses' => [
+                    ['operator' => 'gte', 'value' => '2026-06-01'],
+                    ['operator' => 'lte', 'value' => '2026-06-30'],
+                ],
+            ],
+        ],
+        'operators' => ['eq', 'neq', 'gte', 'lte'],
+    ]);
 });

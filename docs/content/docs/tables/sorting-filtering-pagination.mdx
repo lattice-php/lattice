@@ -75,6 +75,9 @@ dedicated [`SelectFilter`](#dedicated-filters). A single selection matches with 
 `multiple: true` to match any of the chosen values with `in`.
 
 ```php
+use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Lattice\Tables\Columns\BooleanColumn;
+use Lattice\Lattice\Tables\Columns\ColumnFilterOption;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 
 // associative value => label
@@ -112,6 +115,22 @@ TextColumn::make('author_id')
     ->filterOptions(EloquentOptions::make(Author::class)->label('name'), searchable: true);
 ```
 
+Use `ColumnFilterOption` when one dropdown choice should emit an operator other than the select
+default. This keeps the request in the standard column-filter clause format, so the data source still
+uses the same operator pipeline:
+
+```php
+BooleanColumn::make('verified')->filterOptions([
+    ColumnFilterOption::clause('Yes', 'yes', Op::Equals, 'true'),
+    ColumnFilterOption::clause('No', 'no', Op::Equals, 'false'),
+    ColumnFilterOption::clause('Unset', 'unset', Op::Empty),
+]);
+
+TextColumn::make('updated_at')->date()->filterOptions([
+    ColumnFilterOption::range('This month', 'this-month', '2026-06-01', '2026-06-30'),
+]);
+```
+
 <Info>
 This is the per-column counterpart to a dedicated `SelectFilter`: use a column filter when the choice
 belongs to that column's header; use a dedicated filter when it spans the table or needs custom query
@@ -121,7 +140,7 @@ logic.
 ## Dedicated filters
 
 Per-column filters compare a single column with an operator. **Dedicated filters** are named,
-table-level controls rendered in a filter bar above the table — each owns its own control and query
+table-level controls rendered in the header's filter dropdown — each owns its own control and query
 logic, and isn't tied to a column. Declare them by overriding `filters()`:
 
 ```php
@@ -160,8 +179,9 @@ public function filters(): array
 | `DateRangeFilter`  | from / until     | inclusive `whereDate` on each provided bound                            |
 | `Filter`           | toggle           | your `->query()` closure when on                                        |
 
-Active values show as removable chips with a **Reset all** that clears every filter — dedicated and
-column alike.
+The filter dropdown opens from the icon button in the trailing header cell, where the actions heading
+would otherwise sit. Active values show as removable chips with a **Reset all** that clears every
+filter — dedicated and column alike.
 
 A `SelectFilter`'s options can come from an `OptionSource` instead of a fixed list, and
 `->searchable()` fetches them as the user types (via a `_search` round-trip to the table endpoint)

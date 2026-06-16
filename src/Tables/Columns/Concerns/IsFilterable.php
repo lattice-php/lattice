@@ -6,9 +6,11 @@ namespace Lattice\Lattice\Tables\Columns\Concerns;
 use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Core\Option;
+use Lattice\Lattice\Tables\Columns\ColumnFilterOption;
 use Lattice\Lattice\Tables\Concerns\ResolvesFilterOptions;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 use Lattice\Lattice\Tables\Enums\FilterType;
+use UnitEnum;
 
 trait IsFilterable
 {
@@ -35,6 +37,11 @@ trait IsFilterable
     protected bool $filterSearchable = false;
 
     /**
+     * @var list<ColumnFilterOption>
+     */
+    protected array $filterClauseOptions = [];
+
+    /**
      * @param  array<int, Op>  $operators  narrows the offered operators; defaults to the value type's full set
      */
     public function filterable(?Op $default = null, array $operators = []): static
@@ -53,7 +60,7 @@ trait IsFilterable
      * with `=`; `multiple` matches any with `in`. `searchable` (only with a
      * source) fetches options as the user types.
      *
-     * @param  class-string<\UnitEnum>|array<mixed>|OptionSource  $options
+     * @param  class-string<UnitEnum>|array<mixed>|OptionSource  $options
      */
     public function filterOptions(array|string|OptionSource $options, bool $multiple = false, bool $searchable = false): static
     {
@@ -61,13 +68,14 @@ trait IsFilterable
         $this->filterControl = FilterControl::Select;
         $this->filterMultiple = $multiple;
         $this->filterSearchable = $searchable;
+        $this->filterClauseOptions = [];
 
         if ($options instanceof OptionSource) {
             $this->optionSource = $options;
             $this->filterSelectOptions = [];
         } else {
             $this->optionSource = null;
-            $this->filterSelectOptions = Option::expand($options);
+            [$this->filterSelectOptions, $this->filterClauseOptions] = $this->expandFilterOptions($options);
         }
 
         return $this;
@@ -107,6 +115,14 @@ trait IsFilterable
     }
 
     /**
+     * @return list<ColumnFilterOption>
+     */
+    public function filterClauseOptions(): array
+    {
+        return $this->filterClauseOptions;
+    }
+
+    /**
      * @return list<Option>
      */
     public function searchFilterOptions(string $query): array
@@ -120,7 +136,21 @@ trait IsFilterable
     public function availableOperators(): array
     {
         if ($this->filterControl === FilterControl::Select) {
-            return $this->filterMultiple ? [Op::In, Op::NotIn] : [Op::Equals, Op::NotEquals];
+            $operators = $this->filterMultiple ? [Op::In, Op::NotIn] : [Op::Equals, Op::NotEquals];
+
+            foreach ($this->filterClauseOptions as $option) {
+                foreach ($option->clauses as $clause) {
+                    $operators[] = $clause->operator;
+                }
+            }
+
+            $unique = [];
+
+            foreach ($operators as $operator) {
+                $unique[$operator->value] = $operator;
+            }
+
+            return array_values($unique);
         }
 
         return $this->operators ?? $this->filterType()->operators();
@@ -133,5 +163,32 @@ trait IsFilterable
         }
 
         return $this->defaultOperator ?? $this->filterType()->defaultOperator();
+    }
+
+    /**
+     * @param  class-string<UnitEnum>|array<mixed>  $options
+     * @return array{0: list<Option>, 1: list<ColumnFilterOption>}
+     */
+    private function expandFilterOptions(array|string $options): array
+    {
+        if (is_string($options) || ! array_is_list($options)) {
+            return [Option::expand($options), []];
+        }
+
+        $selectOptions = [];
+        $clauseOptions = [];
+
+        foreach ($options as $option) {
+            if ($option instanceof ColumnFilterOption) {
+                $selectOptions[] = new Option($option->label, $option->value);
+                $clauseOptions[] = $option;
+
+                continue;
+            }
+
+            $selectOptions[] = Option::expand([$option])[0];
+        }
+
+        return [$selectOptions, $clauseOptions];
     }
 }
