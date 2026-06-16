@@ -94,6 +94,7 @@ export function FilterMenu({
         <button
           type="button"
           aria-label={filtersLabel}
+          data-test="table-filters-menu"
           className="relative inline-flex size-7 shrink-0 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lt-ring/50 data-[state=open]:bg-lt-muted data-[state=open]:text-lt-fg"
           disabled={processing}
         >
