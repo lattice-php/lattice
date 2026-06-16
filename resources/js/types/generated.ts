@@ -920,6 +920,7 @@ export type RemoteAccess = {
   readonly scopes: string[];
   readonly nodeId: string;
   readonly nodeType: string;
+  readonly tokenEndpoint: string;
   readonly ref: string;
 };
 export type RemoteChatBox = {

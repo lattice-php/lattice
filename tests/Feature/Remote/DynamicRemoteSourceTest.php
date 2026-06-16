@@ -56,6 +56,7 @@ test('dynamic remote source keys are injected into schema refs', function (): vo
         ->and($wire[0]['props']['remote']['audience'])->toBe('https://acme.example.test')
         ->and($wire[0]['props']['remote']['scopes'])->toBe(['tickets.read'])
         ->and($wire[0]['props']['remote']['nodeId'])->toBe('tickets')
+        ->and($wire[0]['props']['remote']['tokenEndpoint'])->toBe('/lattice/remote-sources/external-app%3Aacme/token')
         ->and($wire[0]['props']['remote']['ref'])->toBeString()->not->toBe('');
 });
 

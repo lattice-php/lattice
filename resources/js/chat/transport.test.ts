@@ -105,7 +105,7 @@ describe("ndjsonChatTransport", () => {
 
   it("streams remote chat frames with a browser token", async () => {
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
-      if (String(url) === "/lattice/remote-sources/fixtures.crm/token") {
+      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
         return new Response(
           JSON.stringify({
             accessToken: "fake-browser-token",
@@ -129,6 +129,7 @@ describe("ndjsonChatTransport", () => {
       nodeType: "remote.chat-box",
       ref: "sealed-ref",
       scopes: ["chat.write"],
+      tokenEndpoint: "/custom/remote-tokens/fixtures.crm",
     });
 
     const frames: ChatFrame[] = [];

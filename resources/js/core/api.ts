@@ -92,10 +92,6 @@ function remoteTokenKey(remote: RemoteAccess): string {
   return [remote.source, remote.audience, [...remote.scopes].sort().join(" ")].join("\u001f");
 }
 
-function remoteTokenEndpoint(remote: RemoteAccess): string {
-  return `/lattice/remote-sources/${encodeURIComponent(remote.source)}/token`;
-}
-
 export function clearRemoteTokenCache(): void {
   remoteTokenCache.clear();
   pendingRemoteTokens.clear();
@@ -119,7 +115,7 @@ export async function remoteToken(remote: RemoteAccess): Promise<BrowserToken> {
     return pending;
   }
 
-  const request = apiJson<BrowserToken>(remoteTokenEndpoint(remote), {
+  const request = apiJson<BrowserToken>(remote.tokenEndpoint, {
     method: "POST",
     ref: remote.ref,
     body: JSON.stringify({

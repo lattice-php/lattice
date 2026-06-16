@@ -3,6 +3,7 @@ import { Renderer } from "@lattice-php/lattice/core/renderer";
 import type { Node, NodeProps, RendererComponent, Schema } from "@lattice-php/lattice/core/types";
 import { remoteJson } from "@lattice-php/lattice/core/api";
 import type { DataList as DataListProps } from "@lattice-php/lattice/types/generated";
+import { useT } from "@lattice-php/lattice/i18n";
 
 type RemotePayload = {
   data?: Array<Record<string, unknown>>;
@@ -81,6 +82,7 @@ function materializeSchema(schema: Schema | undefined, row: RemoteRow): Schema {
 }
 
 export function RemoteDataList({ props }: { props: RemoteDataListProps }) {
+  const { t } = useT("lattice");
   const [rows, setRows] = useState<RemoteRow[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -124,12 +126,18 @@ export function RemoteDataList({ props }: { props: RemoteDataListProps }) {
   }
 
   if (loading || !props.remote) {
-    return <div className="rounded-lt border border-lt-border p-3 text-sm">Loading...</div>;
+    return (
+      <div className="rounded-lt border border-lt-border p-3 text-sm">
+        {t("remote.data-list.loading", "Loading...")}
+      </div>
+    );
   }
 
   return (
     <div className="rounded-lt border border-lt-border bg-lt-bg">
-      <div className="border-b border-lt-border px-3 py-2 text-sm font-medium">Remote data</div>
+      <div className="border-b border-lt-border px-3 py-2 text-sm font-medium">
+        {t("remote.data-list.title", "Remote data")}
+      </div>
       <div className="divide-y divide-lt-border">
         {rows.map((row, index) => {
           return (
@@ -139,7 +147,9 @@ export function RemoteDataList({ props }: { props: RemoteDataListProps }) {
           );
         })}
         {rows.length === 0 ? (
-          <div className="px-3 py-2 text-sm text-lt-muted-fg">{props.emptyLabel ?? "No data"}</div>
+          <div className="px-3 py-2 text-sm text-lt-muted-fg">
+            {props.emptyLabel ?? t("remote.data-list.empty", "No data")}
+          </div>
         ) : null}
       </div>
     </div>

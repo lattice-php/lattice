@@ -18,11 +18,12 @@ final readonly class RemoteAccess implements JsonSerializable
         public array $scopes,
         public string $nodeId,
         public string $nodeType,
+        public string $tokenEndpoint,
         public string $ref,
     ) {}
 
     /**
-     * @return array{source: string, audience: string, scopes: list<string>, nodeId: string, nodeType: string, ref: string}
+     * @return array{source: string, audience: string, scopes: list<string>, nodeId: string, nodeType: string, tokenEndpoint: string, ref: string}
      */
     public function jsonSerialize(): array
     {
@@ -32,6 +33,7 @@ final readonly class RemoteAccess implements JsonSerializable
             'scopes' => $this->scopes,
             'nodeId' => $this->nodeId,
             'nodeType' => $this->nodeType,
+            'tokenEndpoint' => $this->tokenEndpoint,
             'ref' => $this->ref,
         ];
     }

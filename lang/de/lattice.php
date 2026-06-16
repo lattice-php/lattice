@@ -110,4 +110,11 @@ return [
         'send' => 'Senden',
         'input-label' => 'Nachrichteneingabe',
     ],
+    'remote' => [
+        'data-list' => [
+            'loading' => 'Lädt...',
+            'title' => 'Remote-Daten',
+            'empty' => 'Keine Daten',
+        ],
+    ],
 ];

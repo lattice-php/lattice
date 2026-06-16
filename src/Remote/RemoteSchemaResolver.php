@@ -22,6 +22,7 @@ final readonly class RemoteSchemaResolver
 
     public function __construct(
         private RemoteSchemaNormalizer $normalizer,
+        private RemoteSourceRegistry $remoteSources,
         private Filesystem $files,
         private SignsComponentReferences $references,
     ) {}
@@ -190,6 +191,7 @@ final readonly class RemoteSchemaResolver
             scopes: $scopes,
             nodeId: $nodeId,
             nodeType: $type,
+            tokenEndpoint: $this->remoteSources->endpointFor($source),
             ref: $this->references->seal($type, $nodeId, [
                 'audience' => $audience,
                 'source' => $source,

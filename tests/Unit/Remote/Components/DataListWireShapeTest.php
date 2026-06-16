@@ -30,6 +30,7 @@ test('data list component serializes remote access with a signed ref', function 
                     'scopes' => ['customers.read'],
                     'nodeId' => 'customers',
                     'nodeType' => 'remote.data-list',
+                    'tokenEndpoint' => '/lattice/remote-sources/fixtures.crm/token',
                 ],
             ],
         ]);

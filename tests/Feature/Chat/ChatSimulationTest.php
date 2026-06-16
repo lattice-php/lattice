@@ -60,6 +60,7 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
         ->and($dataList['props']['remote']['scopes'])->toBe(['todos.read'])
         ->and($dataList['props']['remote']['nodeId'])->toBe('todos')
         ->and($dataList['props']['remote']['nodeType'])->toBe('remote.data-list')
+        ->and($dataList['props']['remote']['tokenEndpoint'])->toBe('/lattice/remote-sources/workbench.todos/token')
         ->and($dataList['props']['remote']['ref'])->toBeString()->not->toBe('')
         ->and($dataList['schema'][0]['type'])->toBe('card')
         ->and($dataList['schema'][0]['props']['dataBindings'])->toBe([
@@ -81,6 +82,7 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
         ->and($chatBox['props']['remote']['scopes'])->toBe(['chat.read', 'chat.write'])
         ->and($chatBox['props']['remote']['nodeId'])->toBe('workbench-todo-chat')
         ->and($chatBox['props']['remote']['nodeType'])->toBe('remote.chat-box')
+        ->and($chatBox['props']['remote']['tokenEndpoint'])->toBe('/lattice/remote-sources/workbench.todos/token')
         ->and($chatBox['props']['remote']['ref'])->toBeString()->not->toBe('')
         ->and($chatBox['props']['fill'])->toBeTrue();
 

@@ -23,6 +23,7 @@ function node(): Node<"remote.data-list"> {
         nodeType: "remote.data-list",
         ref: "sealed-ref",
         scopes: ["customers.read"],
+        tokenEndpoint: "/custom/remote-tokens/fixtures.crm",
       },
     },
     schema: [
@@ -127,7 +128,7 @@ describe("DataList", () => {
   it("fetches remote rows with a scoped browser token", async () => {
     document.cookie = "XSRF-TOKEN=test-token";
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
-      if (String(url) === "/lattice/remote-sources/fixtures.crm/token") {
+      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
         return new Response(
           JSON.stringify({
             accessToken: "fake-browser-token",
@@ -168,7 +169,7 @@ describe("DataList", () => {
 
   it("renders the child schema once per remote row using data bindings", async () => {
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
-      if (String(url) === "/lattice/remote-sources/fixtures.crm/token") {
+      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
         return new Response(
           JSON.stringify({
             accessToken: "fake-browser-token",

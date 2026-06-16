@@ -118,6 +118,7 @@ test('remote source schema resolves nested nodes and injects trusted token props
         ->and($dataList['props']['remote']['scopes'])->toBe(['customers.read'])
         ->and($dataList['props']['remote']['nodeId'])->toBe('customers')
         ->and($dataList['props']['remote']['nodeType'])->toBe('remote.data-list')
+        ->and($dataList['props']['remote']['tokenEndpoint'])->toBe('/lattice/remote-sources/fixtures.remote-crm/token')
         ->and($dataList['props']['remote']['ref'])->toBeString()->not->toBe('forged-remote-ref');
 
     expect($dataList['schema'][0]['type'])->toBe('card')
@@ -136,6 +137,7 @@ test('remote source schema resolves nested nodes and injects trusted token props
         ->and($chatBox['props']['remote']['scopes'])->toBe(['chat.read', 'chat.write'])
         ->and($chatBox['props']['remote']['nodeId'])->toBe('crm-chat')
         ->and($chatBox['props']['remote']['nodeType'])->toBe('remote.chat-box')
+        ->and($chatBox['props']['remote']['tokenEndpoint'])->toBe('/lattice/remote-sources/fixtures.remote-crm/token')
         ->and($chatBox['props']['remote']['ref'])->toBeString()->not->toBe('forged-remote-ref');
 
     Http::assertSentCount(1);
@@ -208,10 +210,44 @@ test('source schema resolves local json files for the workbench poc', function (
         ->and($wire[0]['props']['remote']['scopes'])->toBe(['customers.read'])
         ->and($wire[0]['props']['remote']['nodeId'])->toBe('fixture-customers')
         ->and($wire[0]['props']['remote']['nodeType'])->toBe('remote.data-list')
+        ->and($wire[0]['props']['remote']['tokenEndpoint'])->toBe('/lattice/remote-sources/fixtures.remote-crm/token')
         ->and($wire[0]['props']['remote']['ref'])->toBeString()->not->toBe('')
         ->and($wire[0]['schema'][0]['type'])->toBe('card')
         ->and($wire[0]['schema'][0]['props']['dataBindings'])->toBe([
             'title' => 'name',
             'description' => 'email',
         ]);
+});
+
+test('remote schema refs use configured token endpoints', function (): void {
+    config()->set('lattice.remote-sources.endpoint', 'custom/remotes/{source}/browser-token');
+
+    Http::preventStrayRequests();
+    Http::fake([
+        'https://crm.example.test/schema.json' => Http::response([
+            'schema' => [
+                [
+                    'type' => 'remote.data-list',
+                    'id' => 'customers',
+                    'props' => [
+                        'dataEndpoint' => 'https://crm.example.test/customers',
+                        'audience' => 'https://crm.example.test',
+                        'scopes' => ['customers.read'],
+                    ],
+                ],
+            ],
+        ]),
+    ]);
+
+    Lattice::remoteSources([RemoteSchemaSource::class]);
+    RemoteSchemaSource::$endpoint = RemoteSchemaEndpoint::url(
+        'https://crm.example.test/schema.json',
+        allowedHosts: ['crm.example.test'],
+    );
+
+    $wire = wire(Lattice::remoteSourceRegistry()
+        ->resolve('fixtures.remote-crm')
+        ->schema(request()));
+
+    expect($wire[0]['props']['remote']['tokenEndpoint'])->toBe('/custom/remotes/fixtures.remote-crm/browser-token');
 });

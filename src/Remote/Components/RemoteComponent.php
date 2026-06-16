@@ -7,6 +7,7 @@ use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Remote\RemoteAccess;
+use Lattice\Lattice\Remote\RemoteSourceRegistry;
 use LogicException;
 
 abstract class RemoteComponent extends Component
@@ -95,6 +96,7 @@ abstract class RemoteComponent extends Component
                 scopes: $this->scopes,
                 nodeId: $this->id,
                 nodeType: $this->type(),
+                tokenEndpoint: app(RemoteSourceRegistry::class)->endpointFor($this->source),
                 ref: app(SignsComponentReferences::class)->seal($this->type(), $this->id, [
                     'audience' => $this->audience,
                     'source' => $this->source,

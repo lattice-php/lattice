@@ -29,6 +29,7 @@ function node(): Node<"remote.chat-box"> {
         nodeType: "remote.chat-box",
         ref: "sealed-ref",
         scopes: ["chat.read", "chat.write"],
+        tokenEndpoint: "/custom/remote-tokens/fixtures.crm",
       },
       streamEndpoint: "https://crm.example.test/chat/stream",
       title: "CRM assistant",
@@ -46,7 +47,7 @@ describe("RemoteChatBox", () => {
   it("loads remote chat history with a scoped browser token", async () => {
     document.cookie = "XSRF-TOKEN=test-token";
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
-      if (String(url) === "/lattice/remote-sources/fixtures.crm/token") {
+      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
         return new Response(
           JSON.stringify({
             accessToken: "fake-browser-token",

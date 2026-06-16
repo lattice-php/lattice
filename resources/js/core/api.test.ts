@@ -26,6 +26,7 @@ const remote: RemoteAccess = {
   nodeType: "remote.data-list",
   ref: "sealed-ref",
   scopes: ["customers.read"],
+  tokenEndpoint: "/custom/remote-tokens/fixtures.crm",
 };
 
 describe("apiFetch", () => {
@@ -165,7 +166,7 @@ describe("remoteFetch", () => {
   it("exchanges one browser token per source, audience, and scopes", async () => {
     document.cookie = "XSRF-TOKEN=test-token";
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
-      if (String(url) === "/lattice/remote-sources/fixtures.crm/token") {
+      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
         return okResponse({
           accessToken: "fake-browser-token",
           audience: "https://crm.example.test",
@@ -185,7 +186,7 @@ describe("remoteFetch", () => {
     });
 
     const tokenCalls = fetchMock.mock.calls.filter(
-      ([url]) => String(url) === "/lattice/remote-sources/fixtures.crm/token",
+      ([url]) => String(url) === "/custom/remote-tokens/fixtures.crm",
     );
     expect(tokenCalls).toHaveLength(1);
     expect(tokenCalls[0]?.[1]?.body).toBe(
@@ -214,7 +215,7 @@ describe("remoteFetch", () => {
     let tokenCount = 0;
     let remoteCount = 0;
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
-      if (String(url) === "/lattice/remote-sources/fixtures.crm/token") {
+      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
         tokenCount += 1;
 
         return okResponse({
