@@ -52,8 +52,23 @@ final readonly class GlobalSearchController
 
     public function record(RecordSelectionRequest $request): JsonResponse
     {
-        // Implemented in Task 7.
-        return response()->json(['data' => null, 'state' => ['recorded' => false]]);
+        /** @var string $category */
+        $category = $request->validated('category');
+        /** @var string $id */
+        $id = $request->validated('id');
+
+        $provider = $this->providers->forCategory($category);
+
+        abort_if($provider === null, 404);
+        abort_unless($provider->authorize($request), 403);
+
+        $result = $provider->resolve($id, $request);
+        $recorded = $result !== null && $this->history->record($request, $result);
+
+        return response()->json([
+            'data' => $result,
+            'state' => ['recorded' => $recorded],
+        ]);
     }
 
     /**
