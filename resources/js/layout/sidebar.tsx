@@ -50,7 +50,7 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             data-test="sidebar-toggle"
             className={cn(
-              "inline-flex items-center rounded-md p-2 text-lt-fg transition-colors hover:bg-lt-muted",
+              "inline-flex items-center rounded-lt-sm p-2 text-lt-fg transition-colors hover:bg-lt-muted",
               isCollapsed ? "self-center" : "self-end",
             )}
             onClick={toggle}

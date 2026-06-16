@@ -14,7 +14,7 @@ export function Message({ message }: { message: ChatMessage }): ReactNode {
     >
       <div
         className={cn(
-          "max-w-[80%] rounded-lt-md px-3 py-2 text-sm",
+          "max-w-[80%] rounded-lt px-3 py-2 text-sm",
           isUser ? "bg-lt-primary text-lt-primary-fg" : "bg-lt-muted text-lt-fg",
         )}
       >

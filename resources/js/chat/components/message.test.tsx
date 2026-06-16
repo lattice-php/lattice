@@ -32,7 +32,10 @@ describe("Message", () => {
     render(withRegistry(<Message message={message} />));
 
     expect(screen.getByText("Hello there")).toBeVisible();
-    expect(screen.getByTestId("chat-message-user")).toBeInTheDocument();
+    const messageWrapper = screen.getByTestId("chat-message-user");
+    expect(messageWrapper).toBeInTheDocument();
+    expect(messageWrapper.firstElementChild).toHaveClass("rounded-lt");
+    expect(messageWrapper.firstElementChild).not.toHaveClass("rounded-lt-md");
   });
 
   it("renders an assistant message with its text part", () => {

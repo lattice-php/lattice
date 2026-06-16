@@ -105,7 +105,7 @@ export function FilterValueInput({
           type="button"
           aria-label={t("filter.clear", "Clear {{label}} filter", { label })}
           data-test={testId ? `${testId}-clear` : undefined}
-          className="absolute right-1 inline-flex size-6 items-center justify-center rounded hover:bg-lt-muted disabled:opacity-50"
+          className="absolute right-1 inline-flex size-6 items-center justify-center rounded-lt-sm hover:bg-lt-muted disabled:opacity-50"
           disabled={processing}
           onClick={onClear}
         >

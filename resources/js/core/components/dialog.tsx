@@ -81,7 +81,7 @@ function DialogHeader({
         {description ? <DialogDescription>{description}</DialogDescription> : null}
       </div>
       <DialogClose asChild>
-        <Button aria-label={closeLabel} size="icon" variant="ghost">
+        <Button aria-label={closeLabel} data-test="dialog-close" size="icon" variant="ghost">
           <Icon name="x" aria-hidden="true" className="size-lt-icon-md" />
         </Button>
       </DialogClose>

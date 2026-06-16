@@ -245,6 +245,7 @@ describe("FileUploadComponent image previews", () => {
     expect(createObjectURL).toHaveBeenCalledWith(file);
     expect(screen.getByRole("img", { name: "lamp.jpg" })).toHaveAttribute("src", "blob:lamp.jpg");
 
+    expect(screen.getByTestId("images-remove")).toBeVisible();
     fireEvent.click(screen.getByRole("button", { name: "Remove lamp.jpg" }));
 
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:lamp.jpg");

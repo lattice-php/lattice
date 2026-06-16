@@ -70,7 +70,10 @@ describe("ChatBox component", () => {
 
     renderChatBox();
 
-    expect(await screen.findByTestId("chat-box")).toBeVisible();
+    const chatBox = await screen.findByTestId("chat-box");
+    expect(chatBox).toBeVisible();
+    expect(chatBox).toHaveClass("rounded-lt");
+    expect(chatBox).not.toHaveClass("rounded-lt-md");
     expect(screen.getByText("Assistant")).toBeVisible();
     expect(screen.queryByTestId("chat-launcher")).toBeNull();
     expect(screen.queryByTestId("chat-close")).toBeNull();
