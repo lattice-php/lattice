@@ -5,7 +5,8 @@ import { useGlobalSearchContext } from "../context";
 import { ResultRow } from "./result-row";
 
 const GlobalSearchResults: RendererComponent<"global-search.results"> = () => {
-  const { results, focusedId, setFocusedId, openResult, loadMore, status, pagination } = useGlobalSearchContext();
+  const { results, focusedId, setFocusedId, openResult, loadMore, status, pagination } =
+    useGlobalSearchContext();
   const { t } = useT("lattice");
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -30,7 +31,10 @@ const GlobalSearchResults: RendererComponent<"global-search.results"> = () => {
       return;
     }
 
-    const index = Math.max(0, results.findIndex((result) => result.item.id === focusedId));
+    const index = Math.max(
+      0,
+      results.findIndex((result) => result.item.id === focusedId),
+    );
 
     if (event.key === "ArrowDown") {
       event.preventDefault();
@@ -48,19 +52,35 @@ const GlobalSearchResults: RendererComponent<"global-search.results"> = () => {
   }
 
   if (status === "error") {
-    return <div className="p-4 text-sm text-lt-danger">{t("globalSearch.error", "Something went wrong.")}</div>;
+    return (
+      <div className="p-4 text-sm text-lt-danger">
+        {t("globalSearch.error", "Something went wrong.")}
+      </div>
+    );
   }
 
   if (status === "loading" && results.length === 0) {
-    return <div className="p-4 text-sm text-lt-muted-fg">{t("globalSearch.loading", "Searching…")}</div>;
+    return (
+      <div className="p-4 text-sm text-lt-muted-fg">{t("globalSearch.loading", "Searching…")}</div>
+    );
   }
 
   if (results.length === 0) {
-    return <div className="p-4 text-sm text-lt-muted-fg">{t("globalSearch.empty", "No results found.")}</div>;
+    return (
+      <div className="p-4 text-sm text-lt-muted-fg">
+        {t("globalSearch.empty", "No results found.")}
+      </div>
+    );
   }
 
   return (
-    <div aria-label={t("globalSearch.results", "Results")} className="flex flex-col gap-1 overflow-y-auto p-1 outline-none" onKeyDown={onKeyDown} role="listbox" tabIndex={0}>
+    <div
+      aria-label={t("globalSearch.results", "Results")}
+      className="flex flex-col gap-1 overflow-y-auto p-1 outline-none"
+      onKeyDown={onKeyDown}
+      role="listbox"
+      tabIndex={0}
+    >
       {results.map((result) => (
         <ResultRow
           key={`${result.category.name}:${result.item.id}`}

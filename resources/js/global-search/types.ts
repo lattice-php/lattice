@@ -12,11 +12,32 @@ export type SearchResult = {
   };
 };
 
-export type SearchCategory = { name: string; label: string; icon: string | null; count: number | null };
-export type SearchPagination = { page: number; perPage: number; total: number; hasMore: boolean; nextPage: number | null };
+export type SearchCategory = {
+  name: string;
+  label: string;
+  icon: string | null;
+  count: number | null;
+};
+export type SearchPagination = {
+  page: number;
+  perPage: number;
+  total: number;
+  hasMore: boolean;
+  nextPage: number | null;
+};
 
-export type SearchState = { query: string; category: string | null; perPage: number; countsIncluded: boolean };
-export type SearchResponse = { data: SearchResult[]; categories: SearchCategory[]; pagination: SearchPagination; state: SearchState };
+export type SearchState = {
+  query: string;
+  category: string | null;
+  perPage: number;
+  countsIncluded: boolean;
+};
+export type SearchResponse = {
+  data: SearchResult[];
+  categories: SearchCategory[];
+  pagination: SearchPagination;
+  state: SearchState;
+};
 export type RecordResponse = { data: SearchResult | null; state: { recorded: boolean } };
 
 export type GlobalSearchStatus = "idle" | "loading" | "success" | "error";

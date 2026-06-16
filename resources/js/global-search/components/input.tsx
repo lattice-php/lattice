@@ -11,6 +11,7 @@ const GlobalSearchInput: RendererComponent<"global-search.input"> = () => {
     <div className="flex items-center gap-2 border-b border-lt-border px-3 py-2">
       <Icon name="search" aria-hidden="true" className="size-lt-icon-md text-lt-muted-fg" />
       <input
+        aria-label={t("globalSearch.placeholder", "Search…")}
         autoFocus
         className="w-full bg-transparent text-sm text-lt-fg outline-none placeholder:text-lt-muted-fg"
         onChange={(event) => setQuery(event.target.value)}

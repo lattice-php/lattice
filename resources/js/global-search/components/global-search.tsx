@@ -47,7 +47,10 @@ const GlobalSearch: RendererComponent<"global-search.root"> = ({ node, children 
   const { endpoint, placeholder, title, shortcut, perPage } = node.props;
   const { t } = useT("lattice");
   const [open, setOpen] = useState(false);
-  const search = useGlobalSearch({ endpoint: endpoint ?? "/lattice/global-search", perPage: perPage ?? 20 });
+  const search = useGlobalSearch({
+    endpoint: endpoint ?? "/lattice/global-search",
+    perPage: perPage ?? 20,
+  });
 
   useEffect(() => {
     if (shortcut === false) {
@@ -86,11 +89,16 @@ const GlobalSearch: RendererComponent<"global-search.root"> = ({ node, children 
         type="button"
       >
         <Icon name="search" aria-hidden="true" className="size-lt-icon-sm" />
-        <span className="flex-1 text-left">{placeholder ?? t("globalSearch.placeholder", "Search…")}</span>
+        <span className="flex-1 text-left">
+          {placeholder ?? t("globalSearch.placeholder", "Search…")}
+        </span>
         <kbd className="rounded-lt-xs border border-lt-border px-1.5 text-xs">⌘K</kbd>
       </button>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent aria-label={title ?? t("globalSearch.title", "Search")} className="w-[44rem] max-w-[calc(100vw-2rem)] p-0">
+        <DialogContent
+          aria-label={title ?? t("globalSearch.title", "Search")}
+          className="w-[44rem] max-w-[calc(100vw-2rem)] p-0"
+        >
           <GlobalSearchProvider value={search}>{composed}</GlobalSearchProvider>
         </DialogContent>
       </Dialog>

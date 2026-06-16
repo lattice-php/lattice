@@ -5,21 +5,49 @@ import type { SearchResult, UseGlobalSearchReturn } from "../types";
 import GlobalSearchResults from "./results";
 
 function row(id: string, title: string): SearchResult {
-  return { category: { name: "products" }, item: { id, title, subtitle: "SKU-" + id, additionalInfo: null, link: "/products/" + id, badge: null } };
+  return {
+    category: { name: "products" },
+    item: {
+      id,
+      title,
+      subtitle: "SKU-" + id,
+      additionalInfo: null,
+      link: "/products/" + id,
+      badge: null,
+    },
+  };
 }
 
 function harness(overrides: Partial<UseGlobalSearchReturn> = {}) {
-  const setFocusedId = vi.fn();
-  const openResult = vi.fn();
-  const loadMore = vi.fn();
+  const setFocusedId = vi.fn<(id: string | null) => void>();
+  const openResult = vi.fn<(result: SearchResult) => void>();
+  const loadMore = vi.fn<() => void>();
   const value: UseGlobalSearchReturn = {
-    query: "wid", setQuery: vi.fn(), categories: [], activeCategory: "products", setCategory: vi.fn(),
-    results: [row("1", "Widget 1"), row("2", "Widget 2")], recent: [], pagination: { page: 1, perPage: 20, total: 2, hasMore: false, nextPage: null },
-    status: "success", error: null, focusedId: "1", setFocusedId, openResult, loadMore, refreshRecent: vi.fn(),
+    query: "wid",
+    setQuery: vi.fn<(value: string) => void>(),
+    categories: [],
+    activeCategory: "products",
+    setCategory: vi.fn<(name: string | null) => void>(),
+    results: [row("1", "Widget 1"), row("2", "Widget 2")],
+    recent: [],
+    pagination: { page: 1, perPage: 20, total: 2, hasMore: false, nextPage: null },
+    status: "success",
+    error: null,
+    focusedId: "1",
+    setFocusedId,
+    openResult,
+    loadMore,
+    refreshRecent: vi.fn<() => void>(),
     ...overrides,
   };
 
-  render(<GlobalSearchProvider value={value}><GlobalSearchResults node={{ type: "global-search.results", props: {} } as never}>{null}</GlobalSearchResults></GlobalSearchProvider>);
+  render(
+    <GlobalSearchProvider value={value}>
+      <GlobalSearchResults node={{ type: "global-search.results", props: {} } as never}>
+        {null}
+      </GlobalSearchResults>
+    </GlobalSearchProvider>,
+  );
 
   return { setFocusedId, openResult, loadMore };
 }
@@ -39,7 +67,9 @@ describe("GlobalSearchResults", () => {
     expect(setFocusedId).toHaveBeenCalledWith("2");
 
     fireEvent.keyDown(list, { key: "Enter" });
-    expect(openResult).toHaveBeenCalledWith(expect.objectContaining({ item: expect.objectContaining({ id: "1" }) }));
+    expect(openResult).toHaveBeenCalledWith(
+      expect.objectContaining({ item: expect.objectContaining({ id: "1" }) }),
+    );
   });
 
   it("shows the empty state when there are no results", () => {

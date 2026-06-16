@@ -18,7 +18,10 @@ function buildUrl(endpoint: string, params: Record<string, string>): string {
   return search === "" ? endpoint : `${endpoint}?${search}`;
 }
 
-export function useGlobalSearch({ endpoint, perPage = 20 }: UseGlobalSearchOptions): UseGlobalSearchReturn {
+export function useGlobalSearch({
+  endpoint,
+  perPage = 20,
+}: UseGlobalSearchOptions): UseGlobalSearchReturn {
   const [query, setQueryState] = useState("");
   const [categories, setCategories] = useState<SearchCategory[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -34,7 +37,12 @@ export function useGlobalSearch({ endpoint, perPage = 20 }: UseGlobalSearchOptio
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const run = useCallback(
-    async (nextQuery: string, category: string | null, page: number, append: boolean): Promise<void> => {
+    async (
+      nextQuery: string,
+      category: string | null,
+      page: number,
+      append: boolean,
+    ): Promise<void> => {
       abortRef.current?.abort();
       const controller = new AbortController();
       abortRef.current = controller;
@@ -44,12 +52,19 @@ export function useGlobalSearch({ endpoint, perPage = 20 }: UseGlobalSearchOptio
       setError(null);
 
       try {
-        const params: Record<string, string> = { query: nextQuery, page: String(page), per_page: String(perPage), counts: "1" };
+        const params: Record<string, string> = {
+          query: nextQuery,
+          page: String(page),
+          per_page: String(perPage),
+          counts: "1",
+        };
         if (category !== null) {
           params.category = category;
         }
 
-        const payload = await apiJson<SearchResponse>(buildUrl(endpoint, params), { signal: controller.signal });
+        const payload = await apiJson<SearchResponse>(buildUrl(endpoint, params), {
+          signal: controller.signal,
+        });
 
         // Stale-response guard: drop anything superseded by a newer request.
         if (requestId !== requestIdRef.current) {
@@ -109,7 +124,9 @@ export function useGlobalSearch({ endpoint, perPage = 20 }: UseGlobalSearchOptio
 
   const refreshRecent = useCallback(async (): Promise<void> => {
     try {
-      const payload = await apiJson<SearchResponse>(buildUrl(endpoint, { recent: "1", per_page: String(perPage) }));
+      const payload = await apiJson<SearchResponse>(
+        buildUrl(endpoint, { recent: "1", per_page: String(perPage) }),
+      );
       setRecent(payload.data);
     } catch {
       setRecent([]);

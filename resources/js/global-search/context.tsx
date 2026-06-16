@@ -3,7 +3,13 @@ import type { UseGlobalSearchReturn } from "./types";
 
 const GlobalSearchContext = createContext<UseGlobalSearchReturn | null>(null);
 
-export function GlobalSearchProvider({ value, children }: { value: UseGlobalSearchReturn; children: ReactNode }) {
+export function GlobalSearchProvider({
+  value,
+  children,
+}: {
+  value: UseGlobalSearchReturn;
+  children: ReactNode;
+}) {
   return <GlobalSearchContext.Provider value={value}>{children}</GlobalSearchContext.Provider>;
 }
 

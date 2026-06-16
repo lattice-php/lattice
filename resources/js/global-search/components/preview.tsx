@@ -10,7 +10,11 @@ const GlobalSearchPreview: RendererComponent<"global-search.preview"> = () => {
   const focused = [...results, ...recent].find((result) => result.item.id === focusedId) ?? null;
 
   if (focused === null) {
-    return <div className="hidden p-4 text-sm text-lt-muted-fg md:block">{t("globalSearch.previewEmpty", "Select a result to preview.")}</div>;
+    return (
+      <div className="hidden p-4 text-sm text-lt-muted-fg md:block">
+        {t("globalSearch.previewEmpty", "Select a result to preview.")}
+      </div>
+    );
   }
 
   const detail = [focused.item.subtitle, focused.item.additionalInfo].filter(Boolean).join(" · ");
@@ -20,9 +24,15 @@ const GlobalSearchPreview: RendererComponent<"global-search.preview"> = () => {
       <div className="grid gap-1">
         <span className="text-base font-semibold text-lt-fg">{focused.item.title}</span>
         {detail !== "" ? <span className="text-sm text-lt-muted-fg">{detail}</span> : null}
-        {focused.item.badge ? <span className="w-fit rounded-lt-xs bg-lt-accent px-1.5 py-0.5 text-xs text-lt-accent-fg">{focused.item.badge}</span> : null}
+        {focused.item.badge ? (
+          <span className="w-fit rounded-lt-xs bg-lt-accent px-1.5 py-0.5 text-xs text-lt-accent-fg">
+            {focused.item.badge}
+          </span>
+        ) : null}
       </div>
-      <Button onClick={() => openResult(focused)} variant="secondary">{t("globalSearch.open", "Open")}</Button>
+      <Button onClick={() => openResult(focused)} variant="secondary">
+        {t("globalSearch.open", "Open")}
+      </Button>
     </div>
   );
 };
