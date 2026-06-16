@@ -49,14 +49,12 @@ export type BadgeColumn = {
 };
 export type BooleanColumn = Record<string, never>;
 export type Breadcrumbs = Record<string, never>;
-export type BrowserData = {
-  audience: string | null;
-  dataEndpoint: string | null;
-  endpoint: string | null;
-  ref: string | null;
-  resource: string | null;
-  scopes: string[];
-  tokenEndpoint: string | null;
+export type BrowserToken = {
+  readonly accessToken: string;
+  readonly tokenType: string;
+  readonly expiresIn: number;
+  readonly audience: string;
+  readonly scopes: string[];
 };
 export type Builder = {
   addLabel: string | null;
@@ -397,6 +395,13 @@ export type CoreNode =
       key?: string;
       props: Text;
     };
+export type DataList = {
+  dataEndpoint: string | null;
+  emptyLabel: string | null;
+  remote: RemoteAccess | null;
+  subtitleKey: string | null;
+  titleKey: string | null;
+};
 export type DateInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
@@ -473,6 +478,15 @@ export type EffectType =
   | "closeModal"
   | "resetForm"
   | "localeChange";
+export type ExternalChatBox = {
+  conversationId: string | null;
+  fill: boolean;
+  historyEndpoint: string | null;
+  placeholder: string | null;
+  remote: RemoteAccess | null;
+  streamEndpoint: string | null;
+  title: string | null;
+};
 export type FieldType =
   | "field.builder"
   | "field.checkbox"
@@ -703,12 +717,17 @@ export type ImageColumn = {
   circular: boolean;
   size: number | null;
 };
-export type IntegrationNode = {
-  type: "integration.browser-data";
-  key?: string;
-  id?: string;
-  props: BrowserData;
-};
+export type IntegrationNode =
+  | {
+      type: "remote.data-list";
+      key?: string;
+      props: DataList;
+    }
+  | {
+      type: "remote.external-chat-box";
+      key?: string;
+      props: ExternalChatBox;
+    };
 export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 export type LayoutNode =
   | {
@@ -917,6 +936,14 @@ export type ReloadComponentEffect = {
   readonly component: string;
 };
 export type ReloadPageEffect = object;
+export type RemoteAccess = {
+  readonly integration: string;
+  readonly audience: string;
+  readonly scopes: string[];
+  readonly nodeId: string;
+  readonly nodeType: string;
+  readonly ref: string;
+};
 export type Repeater = {
   addLabel: string | null;
   columnWidth: ColumnWidth;

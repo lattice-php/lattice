@@ -46,17 +46,32 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
     expect($partFrames)->toHaveCount(2)
         ->and($partFrames[0]['part']['type'])->toBe('chat.part.tool-call')
         ->and($partFrames[0]['part']['props']['name'])->toBe('lookup')
-        ->and($partFrames[1]['part']['type'])->toBe('integration.browser-data');
+        ->and($partFrames[1]['part']['type'])->toBe('section');
 
-    $browserData = $partFrames[1]['part'];
+    $section = $partFrames[1]['part'];
+    $dataList = $section['schema'][0]['schema'][1];
+    $chatBox = $section['schema'][0]['schema'][2];
 
-    expect($browserData['props']['endpoint'])->toBe('/lattice/integrations/workbench.crm/token')
-        ->and($browserData['props']['tokenEndpoint'])->toBe('/lattice/integrations/workbench.crm/token')
-        ->and($browserData['props']['dataEndpoint'])->toBe('/workbench/external/customers')
-        ->and($browserData['props']['audience'])->toBe('https://crm.workbench.test')
-        ->and($browserData['props']['scopes'])->toBe(['customers.read'])
-        ->and($browserData['props']['resource'])->toBe('workbench-crm-customers')
-        ->and($browserData['props']['ref'])->toBeString()->not->toBe('');
+    expect($dataList['type'])->toBe('remote.data-list')
+        ->and($dataList['props']['dataEndpoint'])->toBe('/workbench/external/customers')
+        ->and($dataList['props'])->not->toHaveKeys(['endpoint', 'tokenEndpoint', 'audience', 'scopes', 'resource', 'ref'])
+        ->and($dataList['props']['remote']['integration'])->toBe('workbench.crm')
+        ->and($dataList['props']['remote']['audience'])->toBe('https://crm.workbench.test')
+        ->and($dataList['props']['remote']['scopes'])->toBe(['customers.read'])
+        ->and($dataList['props']['remote']['nodeId'])->toBe('customers')
+        ->and($dataList['props']['remote']['nodeType'])->toBe('remote.data-list')
+        ->and($dataList['props']['remote']['ref'])->toBeString()->not->toBe('');
+
+    expect($chatBox['type'])->toBe('remote.external-chat-box')
+        ->and($chatBox['props']['streamEndpoint'])->toBe('/workbench/external/chat/stream')
+        ->and($chatBox['props']['historyEndpoint'])->toBe('/workbench/external/chat/history')
+        ->and($chatBox['props'])->not->toHaveKeys(['endpoint', 'tokenEndpoint', 'audience', 'scopes', 'resource', 'ref'])
+        ->and($chatBox['props']['remote']['integration'])->toBe('workbench.crm')
+        ->and($chatBox['props']['remote']['audience'])->toBe('https://crm.workbench.test')
+        ->and($chatBox['props']['remote']['scopes'])->toBe(['chat.read', 'chat.write'])
+        ->and($chatBox['props']['remote']['nodeId'])->toBe('workbench-crm-chat')
+        ->and($chatBox['props']['remote']['nodeType'])->toBe('remote.external-chat-box')
+        ->and($chatBox['props']['remote']['ref'])->toBeString()->not->toBe('');
 
     $messages = app(FakeConversationStore::class)->messages();
     $roles = array_column($messages, 'role');
@@ -69,7 +84,7 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
 
     expect($partTypes)->toContain('chat.part.text')
         ->toContain('chat.part.tool-call')
-        ->toContain('integration.browser-data');
+        ->toContain('section');
 });
 
 test('the floating chat box is mounted in the layout', function (): void {

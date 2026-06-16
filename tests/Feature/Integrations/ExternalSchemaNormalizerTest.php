@@ -6,15 +6,18 @@ use Lattice\Lattice\Integrations\ExternalSchemaNormalizer;
 test('external schema manifest normalizes to serializable component nodes', function (): void {
     $nodes = app(ExternalSchemaNormalizer::class)->normalize([
         [
-            'type' => 'integration.browser-data',
+            'type' => 'remote.data-list',
             'key' => 'customers',
             'props' => [
-                'endpoint' => '/lattice/integrations/fixtures.crm/token',
-                'tokenEndpoint' => '/lattice/integrations/fixtures.crm/token',
                 'dataEndpoint' => '/workbench/external/customers',
-                'audience' => 'https://crm.example.test',
-                'scopes' => ['customers.read'],
-                'resource' => 'customers',
+                'remote' => [
+                    'integration' => 'fixtures.crm',
+                    'audience' => 'https://crm.example.test',
+                    'scopes' => ['customers.read'],
+                    'nodeId' => 'customers',
+                    'nodeType' => 'remote.data-list',
+                    'ref' => 'sealed-ref',
+                ],
             ],
             'schema' => [
                 [
@@ -29,21 +32,21 @@ test('external schema manifest normalizes to serializable component nodes', func
 
     $wire = wire($nodes);
 
-    expect($wire[0]['props']['ref'])->toBeString()->not->toBe('');
-    unset($wire[0]['props']['ref']);
-
     expect($wire)->toMatchArray([
         [
-            'type' => 'integration.browser-data',
+            'type' => 'remote.data-list',
             'id' => 'customers',
             'key' => 'customers',
             'props' => [
-                'endpoint' => '/lattice/integrations/fixtures.crm/token',
-                'tokenEndpoint' => '/lattice/integrations/fixtures.crm/token',
                 'dataEndpoint' => '/workbench/external/customers',
-                'audience' => 'https://crm.example.test',
-                'scopes' => ['customers.read'],
-                'resource' => 'customers',
+                'remote' => [
+                    'integration' => 'fixtures.crm',
+                    'audience' => 'https://crm.example.test',
+                    'scopes' => ['customers.read'],
+                    'nodeId' => 'customers',
+                    'nodeType' => 'remote.data-list',
+                    'ref' => 'sealed-ref',
+                ],
             ],
             'schema' => [
                 [

@@ -17,7 +17,7 @@ final class ExternalNode extends Component
      */
     public function __construct(
         ?string $key = null,
-        private string $nodeType = 'integration.external-node',
+        private string $nodeType = 'remote.external-node',
         private array $props = [],
         private array $schema = [],
     ) {

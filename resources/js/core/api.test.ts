@@ -1,14 +1,32 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ApiError, apiFetch, apiJson } from "./api";
+import {
+  ApiError,
+  apiFetch,
+  apiJson,
+  clearRemoteTokenCache,
+  remoteFetch,
+  remoteJson,
+  type RemoteAccess,
+} from "./api";
 
 function okResponse(body: unknown = {}): Response {
   return { ok: true, status: 200, json: async () => body } as unknown as Response;
 }
 
 afterEach(() => {
+  clearRemoteTokenCache();
   vi.unstubAllGlobals();
   document.cookie = "XSRF-TOKEN=;path=/;max-age=0";
 });
+
+const remote: RemoteAccess = {
+  audience: "https://crm.example.test",
+  integration: "fixtures.crm",
+  nodeId: "customers",
+  nodeType: "remote.data-list",
+  ref: "sealed-ref",
+  scopes: ["customers.read"],
+};
 
 describe("apiFetch", () => {
   it("sends same-origin credentials and composes the locale and ref headers", async () => {
@@ -140,5 +158,89 @@ describe("apiJson", () => {
     );
 
     await expect(apiJson("/x")).rejects.toBeInstanceOf(ApiError);
+  });
+});
+
+describe("remoteFetch", () => {
+  it("exchanges one browser token per integration, audience, and scopes", async () => {
+    document.cookie = "XSRF-TOKEN=test-token";
+    const fetchMock = vi.fn<typeof fetch>(async (url) => {
+      if (String(url) === "/lattice/integrations/fixtures.crm/token") {
+        return okResponse({
+          accessToken: "fake-browser-token",
+          audience: "https://crm.example.test",
+          expiresIn: 120,
+          scopes: ["customers.read"],
+          tokenType: "Bearer",
+        });
+      }
+
+      return okResponse({ data: [] });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await remoteJson("https://crm.example.test/customers", { remote });
+    await remoteJson("https://crm.example.test/accounts", {
+      remote: { ...remote, nodeId: "accounts", ref: "accounts-ref" },
+    });
+
+    const tokenCalls = fetchMock.mock.calls.filter(
+      ([url]) => String(url) === "/lattice/integrations/fixtures.crm/token",
+    );
+    expect(tokenCalls).toHaveLength(1);
+    expect(tokenCalls[0]?.[1]?.body).toBe(
+      JSON.stringify({
+        nodeId: "customers",
+        nodeType: "remote.data-list",
+        audience: "https://crm.example.test",
+        scopes: ["customers.read"],
+      }),
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://crm.example.test/accounts",
+      expect.objectContaining({
+        credentials: "omit",
+        headers: {
+          Accept: "application/json",
+          "Accept-Language": "en",
+          Authorization: "Bearer fake-browser-token",
+        },
+      }),
+    );
+  });
+
+  it("refreshes a cached token once when an external request is unauthorized", async () => {
+    let tokenCount = 0;
+    let externalCount = 0;
+    const fetchMock = vi.fn<typeof fetch>(async (url) => {
+      if (String(url) === "/lattice/integrations/fixtures.crm/token") {
+        tokenCount += 1;
+
+        return okResponse({
+          accessToken: `fake-browser-token-${tokenCount}`,
+          audience: "https://crm.example.test",
+          expiresIn: 120,
+          scopes: ["customers.read"],
+          tokenType: "Bearer",
+        });
+      }
+
+      externalCount += 1;
+
+      return externalCount === 1
+        ? ({ ok: false, status: 401 } as unknown as Response)
+        : okResponse({ data: [] });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const response = await remoteFetch("https://crm.example.test/customers", { remote });
+
+    expect(response.ok).toBe(true);
+    expect(tokenCount).toBe(2);
+    expect(externalCount).toBe(2);
+    expect(fetchMock.mock.calls.at(-1)?.[1]?.headers).toMatchObject({
+      Authorization: "Bearer fake-browser-token-2",
+    });
   });
 });

@@ -1,9 +1,11 @@
 import { createPlugin, eagerComponent } from "@lattice-php/lattice/core/registry";
-import BrowserDataComponent from "./components/browser-data";
+import DataListComponent from "./components/data-list";
+import ExternalChatBoxComponent from "./components/external-chat-box";
 
-export const integrationComponents = createPlugin({
+export const remoteComponents = createPlugin({
   components: {
-    "integration.browser-data": eagerComponent(BrowserDataComponent),
+    "remote.data-list": eagerComponent(DataListComponent),
+    "remote.external-chat-box": eagerComponent(ExternalChatBoxComponent),
   },
-  name: "lattice/integrations",
+  name: "lattice/remote",
 });

@@ -2,9 +2,13 @@
 
 declare(strict_types=1);
 
+use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Support\Facades\Route;
 use Workbench\App\Http\Controllers\ChatAgentController;
 use Workbench\App\Http\Controllers\ConversationHistoryController;
+use Workbench\App\Http\Controllers\FakeExternalChatHistoryController;
+use Workbench\App\Http\Controllers\FakeExternalChatStreamController;
 use Workbench\App\Http\Controllers\FakeExternalCustomersController;
 use Workbench\App\Http\Controllers\SessionController;
 
@@ -18,6 +22,14 @@ Route::middleware(['web', 'auth'])->group(function (): void {
     Route::post('/workbench/chat/stream', ChatAgentController::class)
         ->name('workbench.chat.stream');
 
-    Route::get('/workbench/external/customers', FakeExternalCustomersController::class)
-        ->name('workbench.external.customers');
+    Route::withoutMiddleware([Authenticate::class, PreventRequestForgery::class])->group(function (): void {
+        Route::get('/workbench/external/customers', FakeExternalCustomersController::class)
+            ->name('workbench.external.customers');
+
+        Route::get('/workbench/external/chat/history', FakeExternalChatHistoryController::class)
+            ->name('workbench.external.chat.history');
+
+        Route::post('/workbench/external/chat/stream', FakeExternalChatStreamController::class)
+            ->name('workbench.external.chat.stream');
+    });
 });

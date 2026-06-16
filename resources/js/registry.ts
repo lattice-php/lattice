@@ -3,7 +3,7 @@ import { actionComponents } from "./action";
 import { chatPlugin } from "./chat";
 import { coreComponents } from "./core/components";
 import { formComponents } from "./form";
-import { integrationComponents } from "./integrations";
+import { remoteComponents } from "./integrations";
 import { layoutComponents } from "./layout/components";
 import { tableComponents } from "./table";
 
@@ -14,5 +14,5 @@ export const registry = createRegistry(
   layoutComponents,
   tableComponents,
   chatPlugin,
-  integrationComponents,
+  remoteComponents,
 );

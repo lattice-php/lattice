@@ -38,11 +38,6 @@ final class IntegrationRegistry extends DefinitionRegistry
         return 'integrations';
     }
 
-    public function tokenEndpointFor(string $key): string
-    {
-        return $this->endpointFor($key);
-    }
-
     /**
      * @param  class-string<IntegrationDefinition>  $definition
      */

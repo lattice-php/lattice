@@ -14,8 +14,8 @@ final readonly class FakeExternalCustomersController
 
         return response()->json([
             'data' => [
-                ['id' => 1, 'name' => 'Ada Lovelace'],
-                ['id' => 2, 'name' => 'Grace Hopper'],
+                ['id' => 1, 'name' => 'Ada Lovelace', 'email' => 'ada@example.test'],
+                ['id' => 2, 'name' => 'Grace Hopper', 'email' => 'grace@example.test'],
             ],
         ]);
     }

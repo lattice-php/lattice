@@ -313,6 +313,7 @@ return [
         'commerce' => 'Commerce',
         'create-product' => 'Produkt erstellen',
         'dependent-fields' => 'Abhängige Felder',
+        'external-schema' => 'Externes Schema',
         'forms' => 'Formulare',
         'groups' => 'Gruppen',
         'home' => 'Home',
@@ -379,6 +380,9 @@ return [
             'heading' => 'Dependent-Demo',
             'submit' => 'Speichern',
             'title' => 'Dependent-Demo',
+        ],
+        'external-schema' => [
+            'title' => 'Externes Schema',
         ],
         'home' => [
             'badge' => 'Lattice-Paket',

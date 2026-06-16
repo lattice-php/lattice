@@ -35,6 +35,7 @@ use Workbench\App\Actions\ToggleChatLayoutAction;
 use Workbench\App\Pages\BuilderTableDemoPage;
 use Workbench\App\Pages\BusinessPartnersPage;
 use Workbench\App\Pages\DependentDemoPage;
+use Workbench\App\Pages\ExternalSchemaPage;
 use Workbench\App\Pages\GroupsPage;
 use Workbench\App\Pages\HomePage;
 use Workbench\App\Pages\ProductCreatePage;
@@ -113,6 +114,7 @@ class AppLayout extends LayoutDefinition
                                 MenuItem::make(__('workbench.navigation.tables'), 'tables')->icon(Icon::Table)->children([
                                     MenuItem::fromPage(TablesPage::class)->key('pagination-modes')->label(__('workbench.navigation.pagination-modes')),
                                 ]),
+                                MenuItem::fromPage(ExternalSchemaPage::class)->key('external-schema')->label(__('workbench.navigation.external-schema'))->icon('plug'),
                                 MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs'))->icon('spark'),
                             ]),
                         ]),

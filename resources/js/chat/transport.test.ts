@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ndjsonChatTransport } from "./transport";
+import { clearRemoteTokenCache } from "../core/api";
+import { createRemoteNdjsonChatTransport, ndjsonChatTransport } from "./transport";
 import type { ChatFrame } from "./types";
 
 function streamResponse(lines: string[]): Response {
@@ -17,6 +18,7 @@ function streamResponse(lines: string[]): Response {
 }
 
 afterEach(() => {
+  clearRemoteTokenCache();
   vi.unstubAllGlobals();
 });
 
@@ -99,5 +101,58 @@ describe("ndjsonChatTransport", () => {
         void _;
       }
     }).rejects.toThrow("Chat stream failed (500)");
+  });
+
+  it("streams external chat frames with a browser token", async () => {
+    const fetchMock = vi.fn<typeof fetch>(async (url) => {
+      if (String(url) === "/lattice/integrations/fixtures.crm/token") {
+        return new Response(
+          JSON.stringify({
+            accessToken: "fake-browser-token",
+            audience: "https://crm.example.test",
+            expiresIn: 120,
+            scopes: ["chat.write"],
+            tokenType: "Bearer",
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+
+      return streamResponse(['{"type":"text","value":"Hi"}\n', '{"type":"done"}\n']);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const transport = createRemoteNdjsonChatTransport({
+      audience: "https://crm.example.test",
+      integration: "fixtures.crm",
+      nodeId: "crm-chat",
+      nodeType: "remote.external-chat-box",
+      ref: "sealed-ref",
+      scopes: ["chat.write"],
+    });
+
+    const frames: ChatFrame[] = [];
+    for await (const f of transport({
+      url: "https://crm.example.test/chat/stream",
+      body: { message: "hi" },
+      signal: new AbortController().signal,
+    })) {
+      frames.push(f);
+    }
+
+    expect(frames).toEqual([{ type: "text", value: "Hi" }, { type: "done" }]);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://crm.example.test/chat/stream",
+      expect.objectContaining({
+        body: JSON.stringify({ message: "hi" }),
+        headers: {
+          Accept: "application/x-ndjson",
+          "Accept-Language": "en",
+          Authorization: "Bearer fake-browser-token",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      }),
+    );
   });
 });

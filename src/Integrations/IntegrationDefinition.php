@@ -36,7 +36,7 @@ abstract class IntegrationDefinition extends Definition
             return [];
         }
 
-        return app(ExternalSchemaResolver::class)->resolve($this, $endpoint, $request);
+        return app(RemoteSchemaResolver::class)->resolve($this, $endpoint, $request);
     }
 
     public function schemaEndpoint(Request $request): ?ExternalSchemaEndpoint
