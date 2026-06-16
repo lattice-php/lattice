@@ -13,6 +13,8 @@ use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Http\PageRegistry;
+use Lattice\Lattice\Integrations\IntegrationDefinition;
+use Lattice\Lattice\Integrations\IntegrationRegistry;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Tables\TableDefinition;
@@ -28,6 +30,7 @@ final readonly class LatticeRegistry
         private LayoutRegistry $layouts,
         private PageRegistry $pages,
         private TableRegistry $tables,
+        private IntegrationRegistry $integrations,
     ) {}
 
     /**
@@ -86,6 +89,14 @@ final readonly class LatticeRegistry
         $this->pages->register($pages);
     }
 
+    /**
+     * @param  class-string<IntegrationDefinition>|array<int, class-string<IntegrationDefinition>>  $integrations
+     */
+    public function integrations(string|array $integrations): void
+    {
+        $this->integrations->register($integrations);
+    }
+
     public function layoutRegistry(): LayoutRegistry
     {
         return $this->layouts;
@@ -94,5 +105,10 @@ final readonly class LatticeRegistry
     public function pageRegistry(): PageRegistry
     {
         return $this->pages;
+    }
+
+    public function integrationRegistry(): IntegrationRegistry
+    {
+        return $this->integrations;
     }
 }

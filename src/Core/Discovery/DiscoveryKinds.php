@@ -8,6 +8,7 @@ use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Attributes\AsBulkAction;
 use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Attributes\AsFragment;
+use Lattice\Lattice\Attributes\AsIntegration;
 use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Attributes\AsTable;
@@ -22,6 +23,7 @@ final class DiscoveryKinds
         'actions' => AsAction::class,
         'bulk-actions' => AsBulkAction::class,
         'fragments' => AsFragment::class,
+        'integrations' => AsIntegration::class,
         'layouts' => AsLayout::class,
     ];
 
