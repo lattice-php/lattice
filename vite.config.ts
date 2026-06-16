@@ -184,6 +184,7 @@ export default defineConfig(({ mode }) => {
                 /^i18next($|\/)/,
                 /^react-i18next($|\/)/,
                 /^i18next-http-backend($|\/)/,
+                /^recharts($|\/)/,
                 /^use-sync-external-store($|\/)/,
               ],
               output: {

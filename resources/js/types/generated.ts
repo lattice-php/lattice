@@ -124,6 +124,28 @@ export type Card = {
   description: string | null;
   title: string | null;
 };
+export type Chart = {
+  categoryKey: string | null;
+  data: Record<string, unknown>[];
+  description: string | null;
+  grid: boolean;
+  height: number;
+  legend: boolean;
+  series: ChartSeries[];
+  title: string | null;
+  tooltip: boolean;
+  xAxis: boolean;
+  yAxis: boolean;
+};
+export type ChartSeries = {
+  readonly type: ChartSeriesType;
+  readonly dataKey: string;
+  readonly name: string | null;
+  readonly color: string | null;
+  readonly stackId: string | null;
+  readonly nameKey: string | null;
+};
+export type ChartSeriesType = "area" | "bar" | "line" | "pie";
 export type ChatMessage = {
   readonly id: string;
   readonly role: ChatRole;
@@ -271,6 +293,11 @@ export type CoreNode =
       key?: string;
       props: Card;
       schema?: Node[];
+    }
+  | {
+      type: "chart";
+      key?: string;
+      props: Chart;
     }
   | {
       type: "chat.window";
@@ -578,6 +605,7 @@ export type Fragment = {
   endpoint: string | null;
   lazy: boolean | null;
   ref: string | null;
+  size: Size;
 };
 export type FragmentNode = {
   type: "fragment";

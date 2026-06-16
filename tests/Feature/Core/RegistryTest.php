@@ -78,6 +78,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'endpoint' => '/lattice/fragments/fixtures.panel',
                 'lazy' => true,
                 'ref' => componentRef($fragment),
+                'size' => 'md',
             ],
         ]);
 });
