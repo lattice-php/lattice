@@ -49,6 +49,15 @@ export type BadgeColumn = {
 };
 export type BooleanColumn = Record<string, never>;
 export type Breadcrumbs = Record<string, never>;
+export type BrowserData = {
+  audience: string | null;
+  dataEndpoint: string | null;
+  endpoint: string | null;
+  ref: string | null;
+  resource: string | null;
+  scopes: string[];
+  tokenEndpoint: string | null;
+};
 export type Builder = {
   addLabel: string | null;
   columnWidth: ColumnWidth;
@@ -157,7 +166,7 @@ export type ChatBox = {
 export type ChatMessage = {
   readonly id: string;
   readonly role: ChatRole;
-  readonly parts: ChatNode[];
+  readonly parts: Node[];
 };
 export type ChatNode =
   | {
@@ -694,6 +703,12 @@ export type ImageColumn = {
   circular: boolean;
   size: number | null;
 };
+export type IntegrationNode = {
+  type: "integration.browser-data";
+  key?: string;
+  id?: string;
+  props: BrowserData;
+};
 export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 export type LayoutNode =
   | {
@@ -769,6 +784,7 @@ export type Node =
   | CoreNode
   | ActionNode
   | FragmentNode
+  | IntegrationNode
   | TableNode
   | LayoutNode
   | ChatNode;

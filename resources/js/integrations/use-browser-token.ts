@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { apiJson } from "@lattice-php/lattice/core/api";
 
 export type BrowserToken = {
@@ -22,13 +22,13 @@ export function useBrowserToken(request: BrowserTokenRequest): {
   loading: boolean;
   token: BrowserToken | null;
 } {
+  const { audience, component, ref, scopes, tokenEndpoint } = request;
   const [token, setToken] = useState<BrowserToken | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const scopesKey = useMemo(() => request.scopes.join(" "), [request.scopes]);
 
   useEffect(() => {
-    if (!request.tokenEndpoint || !request.ref || !request.audience || !request.component) {
+    if (!tokenEndpoint || !ref || !audience || !component) {
       setToken(null);
       setError(null);
       setLoading(false);
@@ -40,13 +40,13 @@ export function useBrowserToken(request: BrowserTokenRequest): {
     setLoading(true);
     setError(null);
 
-    void apiJson<BrowserToken>(request.tokenEndpoint, {
+    void apiJson<BrowserToken>(tokenEndpoint, {
       method: "POST",
-      ref: request.ref,
+      ref,
       body: JSON.stringify({
-        component: request.component,
-        audience: request.audience,
-        scopes: request.scopes,
+        component,
+        audience,
+        scopes,
       }),
     })
       .then((next) => {
@@ -68,7 +68,7 @@ export function useBrowserToken(request: BrowserTokenRequest): {
     return () => {
       cancelled = true;
     };
-  }, [request.audience, request.component, request.ref, request.tokenEndpoint, scopesKey]);
+  }, [audience, component, ref, scopes, tokenEndpoint]);
 
   return { error, loading, token };
 }

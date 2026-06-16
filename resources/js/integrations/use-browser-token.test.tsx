@@ -10,17 +10,18 @@ describe("useBrowserToken", () => {
 
   it("requests a browser token from the token endpoint with the component ref", async () => {
     document.cookie = "XSRF-TOKEN=test-token";
-    const fetchMock = vi.fn<typeof fetch>(async () =>
-      new Response(
-        JSON.stringify({
-          accessToken: "fake-browser-token",
-          tokenType: "Bearer",
-          expiresIn: 120,
-          audience: "https://crm.example.test",
-          scopes: ["customers.read"],
-        }),
-        { status: 200, headers: { "Content-Type": "application/json" } },
-      ),
+    const fetchMock = vi.fn<typeof fetch>(
+      async () =>
+        new Response(
+          JSON.stringify({
+            accessToken: "fake-browser-token",
+            tokenType: "Bearer",
+            expiresIn: 120,
+            audience: "https://crm.example.test",
+            scopes: ["customers.read"],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        ),
     );
     vi.stubGlobal("fetch", fetchMock);
 

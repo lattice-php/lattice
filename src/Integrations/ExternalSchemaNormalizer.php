@@ -16,11 +16,11 @@ final class ExternalSchemaNormalizer
      */
     public function normalize(array $manifest, array $context = []): array
     {
-        return array_values(array_map(
+        return array_map(
             fn (array $node, int|string $index): Component => $this->node($node, (string) $index, $context),
             $manifest,
             array_keys($manifest),
-        ));
+        );
     }
 
     /**
@@ -45,18 +45,18 @@ final class ExternalSchemaNormalizer
             throw new InvalidArgumentException("External schema node at [{$path}] has invalid schema.");
         }
 
-        $normalized = array_values(array_map(
+        $normalized = array_map(
             fn (mixed $child, int|string $index): Component => is_array($child)
                 ? $this->node($child, "{$path}.schema.{$index}", $context)
                 : throw new InvalidArgumentException("External schema node at [{$path}.schema.{$index}] is invalid."),
             $children,
             array_keys($children),
-        ));
+        );
 
         $key = is_string($node['key'] ?? null) ? $node['key'] : null;
         $component = new ExternalNode(
-            nodeType: $type,
             key: $key,
+            nodeType: $type,
             props: $props,
             schema: $normalized,
         );

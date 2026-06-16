@@ -33,7 +33,7 @@ final class BrowserData extends Component
 
     public static function make(string $id): static
     {
-        return (new static)->id($id);
+        return (new self)->id($id);
     }
 
     public function integration(string $integration): static
