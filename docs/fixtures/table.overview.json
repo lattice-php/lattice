@@ -6,6 +6,7 @@
             "bulkActions": [],
             "columns": [
                 {
+                    "align": "start",
                     "columns": null,
                     "filter": {
                         "control": null,
@@ -37,6 +38,7 @@
                     "width": "md"
                 },
                 {
+                    "align": "end",
                     "columns": null,
                     "filter": {
                         "control": null,
@@ -59,12 +61,17 @@
                     },
                     "key": "price",
                     "label": "Price",
-                    "props": null,
+                    "props": {
+                        "maximumFractionDigits": null,
+                        "minimumFractionDigits": null,
+                        "unit": null
+                    },
                     "sortable": true,
                     "type": "number",
                     "width": "md"
                 },
                 {
+                    "align": "start",
                     "columns": null,
                     "filter": null,
                     "key": "featured",
@@ -75,6 +82,7 @@
                     "width": "md"
                 },
                 {
+                    "align": "start",
                     "columns": null,
                     "filter": null,
                     "key": "updated_at",

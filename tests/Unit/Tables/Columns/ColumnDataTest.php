@@ -19,6 +19,7 @@ it('serializes common fields plus a reflected props object', function () {
         'label' => 'Status',
         'type' => 'badge',
         'width' => 'sm',
+        'align' => 'start',
         'sortable' => null,
         'filter' => null,
         'columns' => null,

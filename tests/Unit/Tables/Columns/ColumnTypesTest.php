@@ -55,11 +55,11 @@ it('serializes a boolean column with a boolean filter and no props', function ()
         ->and($data['filter']['type'])->toBe(FilterType::Boolean->value);
 });
 
-it('serializes a number column with a number filter and no props', function (): void {
+it('serializes a number column with a number filter and end alignment', function (): void {
     $data = wire(NumberColumn::make('price')->label('Price')->sortable()->filterable());
 
     expect($data['type'])->toBe('number')
-        ->and($data['props'])->toBeNull()
+        ->and($data['align'])->toBe('end')
         ->and($data['sortable'])->toBeTrue()
         ->and($data['filter']['type'])->toBe(FilterType::Number->value);
 });

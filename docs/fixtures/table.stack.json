@@ -6,8 +6,10 @@
             "bulkActions": [],
             "columns": [
                 {
+                    "align": "start",
                     "columns": [
                         {
+                            "align": "start",
                             "columns": null,
                             "filter": null,
                             "key": "name",
@@ -22,6 +24,7 @@
                             "width": "md"
                         },
                         {
+                            "align": "start",
                             "columns": null,
                             "filter": null,
                             "key": "email",
@@ -45,6 +48,7 @@
                     "width": "xl"
                 },
                 {
+                    "align": "start",
                     "columns": null,
                     "filter": null,
                     "key": "role",

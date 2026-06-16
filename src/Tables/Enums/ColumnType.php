@@ -11,6 +11,7 @@ enum ColumnType: string
     case Text = 'text';
     case Boolean = 'boolean';
     case Number = 'number';
+    case Money = 'money';
     case Stack = 'stack';
     case Badge = 'badge';
     case Icon = 'icon';

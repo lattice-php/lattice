@@ -31,6 +31,7 @@ class StackColumn extends Column
             label: $this->label,
             type: ColumnType::Stack,
             width: $this->resolvedWidth(),
+            align: $this->resolvedAlign(),
             sortable: $this->sortableValue(),
             filter: $this->filterValue(),
             columns: array_map(

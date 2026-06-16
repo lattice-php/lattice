@@ -8,6 +8,7 @@ use JsonSerializable;
 use Lattice\Lattice\Attributes\Component as ComponentAttribute;
 use Lattice\Lattice\Core\Components\Concerns\ReflectsWireProps;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
+use Lattice\Lattice\Tables\Enums\ColumnAlign;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
 /**
@@ -20,6 +21,8 @@ abstract class Column implements JsonSerializable
     protected string $label;
 
     protected ?ColumnWidth $width = null;
+
+    protected ?ColumnAlign $align = null;
 
     public function __construct(protected readonly string $key)
     {
@@ -59,6 +62,13 @@ abstract class Column implements JsonSerializable
         return $this;
     }
 
+    public function align(ColumnAlign $align): static
+    {
+        $this->align = $align;
+
+        return $this;
+    }
+
     /**
      * Reflects the column's public properties into the wire shape, mirroring how
      * components serialize their props. The common fields (key, label, type,
@@ -74,6 +84,7 @@ abstract class Column implements JsonSerializable
             label: $this->label,
             type: $this->resolvedType(),
             width: $this->resolvedWidth(),
+            align: $this->resolvedAlign(),
             sortable: $this->sortableValue(),
             filter: $this->filterValue(),
             props: $props === [] ? null : $props,
@@ -100,6 +111,16 @@ abstract class Column implements JsonSerializable
     protected function defaultWidth(): ColumnWidth
     {
         return ColumnWidth::Md;
+    }
+
+    protected function resolvedAlign(): ColumnAlign
+    {
+        return $this->align ?? $this->defaultAlign();
+    }
+
+    protected function defaultAlign(): ColumnAlign
+    {
+        return ColumnAlign::Start;
     }
 
     protected function sortableValue(): ?bool

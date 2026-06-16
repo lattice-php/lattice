@@ -4,19 +4,18 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Columns;
 
 use Lattice\Lattice\Tables\Attributes\AsColumn;
-use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
-use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
 use Lattice\Lattice\Tables\Enums\ColumnType;
-use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Lattice\Tables\Enums\NumberFormatUnit;
 
 #[AsColumn(ColumnType::Number)]
-class NumberColumn extends Column implements Filterable, Sortable
+class NumberColumn extends NumericColumn
 {
-    use IsFilterable;
-    use IsSortable;
+    public ?NumberFormatUnit $unit = null;
 
-    public function filterType(): FilterType
+    public function unit(NumberFormatUnit $unit): static
     {
-        return FilterType::Number;
+        $this->unit = $unit;
+
+        return $this;
     }
 }

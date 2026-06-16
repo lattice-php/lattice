@@ -38,11 +38,26 @@ TextColumn::make('email')
 
 ## Boolean & Number columns
 
-`BooleanColumn` and `NumberColumn` are dedicated text-style columns with their own rendering and
-filter type:
+`BooleanColumn`, `NumberColumn`, and `MoneyColumn` are dedicated columns with their own rendering
+and filter type:
 
 - `BooleanColumn` renders a check or cross instead of the raw value, and filters as a boolean.
-- `NumberColumn` right-aligns the column and formats the value as a number, and filters as a number.
+- `NumberColumn` right-aligns and formats the value as a number; `->decimals(2)` fixes the fraction
+  digits (`->decimals(0, 2)` for a min–max range); `->unit(NumberFormatUnit::Percent)` adds a
+  locale-correct unit suffix (percent, kilogram, byte, …). Filters as a number.
+- `MoneyColumn` formats the value as a currency amount — `->currency('EUR')` for a fixed currency or
+  `->currencyField('currency')` to read each row's currency from another field; symbol placement and
+  decimal digits follow the viewer's locale.
+- Every column also accepts `->align(ColumnAlign::Start|Center|End)`; numeric and money columns
+  default to `End`.
+
+```php
+use Lattice\Lattice\Tables\Enums\ColumnAlign;
+use Lattice\Lattice\Tables\Enums\NumberFormatUnit;
+
+NumberColumn::make('progress')->unit(NumberFormatUnit::Percent);
+MoneyColumn::make('total')->currencyField('currency');
+```
 
 ```php
 BooleanColumn::make('featured')->sortable()->filterable();

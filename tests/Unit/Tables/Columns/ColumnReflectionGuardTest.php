@@ -6,6 +6,7 @@ use Lattice\Lattice\Tables\Columns\BooleanColumn;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\IconColumn;
 use Lattice\Lattice\Tables\Columns\ImageColumn;
+use Lattice\Lattice\Tables\Columns\MoneyColumn;
 use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
@@ -36,7 +37,8 @@ it('exposes only the intended wire props on each built-in column', function (str
 })->with([
     'text' => [TextColumn::class, ['date', 'copyable', 'link']],
     'boolean' => [BooleanColumn::class, []],
-    'number' => [NumberColumn::class, []],
+    'number' => [NumberColumn::class, ['minimumFractionDigits', 'maximumFractionDigits', 'unit']],
+    'money' => [MoneyColumn::class, ['minimumFractionDigits', 'maximumFractionDigits', 'currency', 'currencyField']],
     'badge' => [BadgeColumn::class, ['colors']],
     'icon' => [IconColumn::class, ['icon', 'icons', 'colors']],
     'image' => [ImageColumn::class, ['circular', 'size']],
