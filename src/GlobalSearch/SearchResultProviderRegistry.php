@@ -62,7 +62,7 @@ final class SearchResultProviderRegistry
      */
     private function keyFor(string $provider): string
     {
-        if (! is_subclass_of($provider, SearchResultProvider::class) && ! in_array(SearchResultProvider::class, class_implements($provider) ?: [], true)) {
+        if (! is_subclass_of($provider, SearchResultProvider::class)) {
             throw new InvalidArgumentException("[{$provider}] must implement ".SearchResultProvider::class.'.');
         }
 
