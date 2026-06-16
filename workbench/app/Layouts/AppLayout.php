@@ -39,6 +39,7 @@ use Workbench\App\Pages\GroupsPage;
 use Workbench\App\Pages\HomePage;
 use Workbench\App\Pages\ProductCreatePage;
 use Workbench\App\Pages\ProductsPage;
+use Workbench\App\Pages\RemoteSchemaPage;
 use Workbench\App\Pages\SalesOrdersPage;
 use Workbench\App\Pages\ShowcasePage;
 use Workbench\App\Pages\TablesPage;
@@ -113,6 +114,7 @@ class AppLayout extends LayoutDefinition
                                 MenuItem::make(__('workbench.navigation.tables'), 'tables')->icon(Icon::Table)->children([
                                     MenuItem::fromPage(TablesPage::class)->key('pagination-modes')->label(__('workbench.navigation.pagination-modes')),
                                 ]),
+                                MenuItem::fromPage(RemoteSchemaPage::class)->key('remote-schema')->label(__('workbench.navigation.remote-schema'))->icon('plug'),
                                 MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs'))->icon('spark'),
                             ]),
                         ]),

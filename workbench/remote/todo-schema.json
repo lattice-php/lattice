@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "schema": [
+    {
+      "type": "section",
+      "id": "workbench-todo-overview",
+      "props": {
+        "title": "Remote todo workspace",
+        "description": "This workbench page is resolved from a remote schema source and mixes browser-fetched todo data with a remote AI chat."
+      },
+      "schema": [
+        {
+          "type": "grid",
+          "id": "workbench-todo-grid",
+          "props": {
+            "columns": 2
+          },
+          "schema": [
+            {
+              "type": "stack",
+              "id": "workbench-todo-list-pane",
+              "props": {
+                "gap": "md",
+                "height": "full"
+              },
+              "schema": [
+                {
+                  "type": "card",
+                  "id": "workbench-todo-list-card",
+                  "props": {
+                    "title": "Remote todo list",
+                    "description": "Five rows are fetched directly by the browser and rendered with a reusable row schema."
+                  },
+                  "schema": [
+                    {
+                      "type": "text",
+                      "props": {
+                        "text": "Each row below is a card generated from remote data. The status badge and button link are bound from row keys.",
+                        "color": "muted",
+                        "size": "sm"
+                      }
+                    },
+                    {
+                      "type": "remote.data-list",
+                      "id": "todos",
+                      "props": {
+                        "dataEndpoint": "/workbench/remote/todos",
+                        "audience": "https://todos.workbench.test",
+                        "scopes": ["todos.read"]
+                      },
+                      "schema": [
+                        {
+                          "type": "card",
+                          "props": {
+                            "dataBindings": {
+                              "title": "title",
+                              "description": "detail"
+                            }
+                          },
+                          "schema": [
+                            {
+                              "type": "stack",
+                              "props": {
+                                "direction": "row",
+                                "align": "center",
+                                "justify": "between",
+                                "gap": "sm"
+                              },
+                              "schema": [
+                                {
+                                  "type": "badge",
+                                  "props": {
+                                    "label": "",
+                                    "dataBindings": {
+                                      "label": "status"
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "button",
+                                  "props": {
+                                    "buttonType": "button",
+                                    "href": null,
+                                    "label": "Open",
+                                    "variant": "outline",
+                                    "dataBindings": {
+                                      "label": "actionLabel",
+                                      "href": "actionHref"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "remote.chat-box",
+              "id": "workbench-todo-chat",
+              "props": {
+                "streamEndpoint": "/workbench/remote/chat/stream",
+                "historyEndpoint": "/workbench/remote/chat/history",
+                "audience": "https://todos.workbench.test",
+                "scopes": ["chat.read", "chat.write"],
+                "title": "Remote todo AI",
+                "placeholder": "Ask the remote todo assistant",
+                "fill": true
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

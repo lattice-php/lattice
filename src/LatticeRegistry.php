@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice;
 
+use Illuminate\Contracts\Container\Container;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionDefinition;
@@ -15,6 +16,8 @@ use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Http\PageRegistry;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
+use Lattice\Lattice\Remote\RemoteSourceDefinition;
+use Lattice\Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
 
@@ -28,6 +31,7 @@ final readonly class LatticeRegistry
         private LayoutRegistry $layouts,
         private PageRegistry $pages,
         private TableRegistry $tables,
+        private RemoteSourceRegistry $remoteSources,
     ) {}
 
     /**
@@ -86,6 +90,22 @@ final readonly class LatticeRegistry
         $this->pages->register($pages);
     }
 
+    /**
+     * @param  class-string<RemoteSourceDefinition>|array<int, class-string<RemoteSourceDefinition>>  $remoteSources
+     */
+    public function remoteSources(string|array $remoteSources): void
+    {
+        $this->remoteSources->register($remoteSources);
+    }
+
+    /**
+     * @param  callable(string, Container): ?RemoteSourceDefinition  $resolver
+     */
+    public function remoteSourceResolver(callable $resolver): void
+    {
+        $this->remoteSources->resolveUsing($resolver);
+    }
+
     public function layoutRegistry(): LayoutRegistry
     {
         return $this->layouts;
@@ -94,5 +114,10 @@ final readonly class LatticeRegistry
     public function pageRegistry(): PageRegistry
     {
         return $this->pages;
+    }
+
+    public function remoteSourceRegistry(): RemoteSourceRegistry
+    {
+        return $this->remoteSources;
     }
 }

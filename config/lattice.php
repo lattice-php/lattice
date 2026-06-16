@@ -36,6 +36,11 @@ return [
         'middleware' => ['web', 'auth'],
     ],
 
+    'remote-sources' => [
+        'endpoint' => 'lattice/remote-sources/{source}/token',
+        'middleware' => ['web', 'auth'],
+    ],
+
     'actions' => [
         'endpoint' => 'lattice/actions/{action}',
         'middleware' => ['web', 'auth'],

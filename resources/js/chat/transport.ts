@@ -1,4 +1,4 @@
-import { apiFetch } from "../core/api";
+import { apiFetch, remoteFetch, type RemoteAccess } from "../core/api";
 import type { ChatFrame, ChatTransportRequest } from "./types";
 
 function parseFrame(line: string): ChatFrame | null {
@@ -26,7 +26,37 @@ export async function* ndjsonChatTransport({
     throw new Error(`Chat stream failed (${res.status})`);
   }
 
-  const reader = res.body.getReader();
+  yield* readNdjsonFrames(res.body);
+}
+
+export function createRemoteNdjsonChatTransport(remote: RemoteAccess) {
+  return async function* remoteNdjsonChatTransport({
+    url,
+    body,
+    signal,
+  }: ChatTransportRequest): AsyncGenerator<ChatFrame> {
+    const res = await remoteFetch(url, {
+      remote,
+      method: "POST",
+      signal,
+      headers: {
+        Accept: "application/x-ndjson",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+      throwOnError: false,
+    });
+
+    if (!res.ok || !res.body) {
+      throw new Error(`Chat stream failed (${res.status})`);
+    }
+
+    yield* readNdjsonFrames(res.body);
+  };
+}
+
+async function* readNdjsonFrames(body: ReadableStream<Uint8Array>): AsyncGenerator<ChatFrame> {
+  const reader = body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
 

@@ -8,7 +8,7 @@ import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldScope } from "../field-scope";
-import { useFormValues } from "../values";
+import { useFormValues, useSetFormValue } from "../values";
 
 type Item = {
   id: string;
@@ -30,6 +30,18 @@ type SignResponse = {
   method: string;
 };
 
+function uploadValueEquals(current: unknown, next: string[] | string): boolean {
+  if (Array.isArray(next)) {
+    return (
+      Array.isArray(current) &&
+      current.length === next.length &&
+      current.every((value, index) => value === next[index])
+    );
+  }
+
+  return current === next;
+}
+
 export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ node }) => {
   const { t } = useT("lattice");
   const props = node.props;
@@ -41,6 +53,7 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
   const errorKey = scope ? scope.errorKey(name) : name;
   const uploadKey = errorKey;
   const values = useFormValues();
+  const setValue = useSetFormValue();
   const inputId = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewUrlsRef = useRef<Set<string>>(new Set());
@@ -66,6 +79,35 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
   );
   const [items, setItems] = useState<Item[]>(initial);
   const [removedTokens, setRemovedTokens] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!signed) {
+      return;
+    }
+
+    const keys = items
+      .filter((item) => !item.existing && item.key && item.status === "ready")
+      .map((item) => item.key as string);
+    const next = multiple ? keys : (keys[0] ?? "");
+
+    if (scope) {
+      if (!uploadValueEquals(scope.getValue(name), next)) {
+        scope.setValue(name, next);
+      }
+
+      return;
+    }
+
+    setValue(name, next);
+  }, [items, multiple, name, scope, setValue, signed]);
+
+  useEffect(() => {
+    if (!signed || scope) {
+      return;
+    }
+
+    setValue(`${name}__removed`, removedTokens);
+  }, [name, removedTokens, scope, setValue, signed]);
 
   useEffect(
     () => () => {

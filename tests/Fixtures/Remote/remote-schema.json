@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "schema": [
+    {
+      "type": "remote.data-list",
+      "id": "fixture-customers",
+      "props": {
+        "dataEndpoint": "https://crm.example.test/customers",
+        "audience": "https://crm.example.test",
+        "scopes": ["customers.read"]
+      },
+      "schema": [
+        {
+          "type": "card",
+          "props": {
+            "dataBindings": {
+              "title": "name",
+              "description": "email"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

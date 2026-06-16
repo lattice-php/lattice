@@ -10,6 +10,7 @@ use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Attributes\AsPage;
+use Lattice\Lattice\Attributes\AsRemoteSource;
 use Lattice\Lattice\Attributes\AsTable;
 use Spatie\Attributes\Attributes;
 
@@ -22,6 +23,7 @@ final class DiscoveryKinds
         'actions' => AsAction::class,
         'bulk-actions' => AsBulkAction::class,
         'fragments' => AsFragment::class,
+        'remote-sources' => AsRemoteSource::class,
         'layouts' => AsLayout::class,
     ];
 

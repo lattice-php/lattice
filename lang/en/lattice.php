@@ -110,4 +110,11 @@ return [
         'send' => 'Send',
         'input-label' => 'Message input',
     ],
+    'remote' => [
+        'data-list' => [
+            'loading' => 'Loading...',
+            'title' => 'Remote data',
+            'empty' => 'No data',
+        ],
+    ],
 ];

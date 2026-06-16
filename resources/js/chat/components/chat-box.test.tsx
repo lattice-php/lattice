@@ -89,7 +89,8 @@ describe("ChatBox component", () => {
 
     const chatBox = await screen.findByTestId("chat-box");
     expect(chatBox).toBeVisible();
-    expect(chatBox).toHaveClass("sticky", "top-0", "h-svh", "w-full");
+    expect(chatBox).toHaveClass("sticky", "top-0", "h-full", "min-h-[28rem]", "w-full");
+    expect(chatBox).not.toHaveClass("h-svh");
     expect(chatBox).not.toHaveClass("h-[28rem]");
     expect(chatBox).not.toHaveClass("rounded-lt");
     expect(chatBox).not.toHaveClass("shadow-lg");

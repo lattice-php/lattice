@@ -1,9 +1,10 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { useEffect } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FormProvider } from "../context";
 import { FieldScopeProvider } from "../field-scope";
-import { FormValuesProvider } from "../values";
+import { FormValuesProvider, useFormValues } from "../values";
 import { FileUploadComponent } from "./file-upload";
 
 const apiFetch = vi.hoisted(() =>
@@ -16,12 +17,28 @@ const createObjectURL = vi.fn<(file: File) => string>((file) => `blob:${file.nam
 const revokeObjectURL = vi.fn<(url: string) => void>();
 
 type RenderUploadOptions = {
+  onValues?: (values: Record<string, unknown>) => void;
   props?: Record<string, unknown>;
   values?: Record<string, unknown>;
   scoped?: boolean;
 };
 
-function renderUpload({ props = {}, values = {}, scoped = false }: RenderUploadOptions = {}) {
+function ValuesProbe({ onValues }: { onValues?: (values: Record<string, unknown>) => void }) {
+  const values = useFormValues();
+
+  useEffect(() => {
+    onValues?.(values);
+  }, [onValues, values]);
+
+  return null;
+}
+
+function renderUpload({
+  onValues,
+  props = {},
+  values = {},
+  scoped = false,
+}: RenderUploadOptions = {}) {
   const node = fakeNode({
     type: "field.file-upload",
     props: {
@@ -49,6 +66,7 @@ function renderUpload({ props = {}, values = {}, scoped = false }: RenderUploadO
       }}
     >
       <FormValuesProvider initial={values}>
+        <ValuesProbe onValues={onValues} />
         {scoped ? (
           <FieldScopeProvider base="items" index={0} row={{ id: "row-1" }} onChange={() => {}}>
             <FileUploadComponent node={node}>{null}</FileUploadComponent>
@@ -277,7 +295,8 @@ describe("FileUploadComponent image previews", () => {
 
   it("stores signed upload keys after a successful direct upload", async () => {
     apiFetch.mockResolvedValue(successfulSignResponse("tmp/lamp.jpg"));
-    renderUpload({ values: { sku: "LMP-001" } });
+    const values: Record<string, unknown>[] = [];
+    renderUpload({ values: { sku: "LMP-001" }, onValues: (next) => values.push(next) });
 
     const file = new File(["image-data"], "lamp.jpg", { type: "image/jpeg" });
 
@@ -288,12 +307,17 @@ describe("FileUploadComponent image previews", () => {
     await waitFor(() => {
       expect(screen.getByTestId("images-uploaded")).toHaveValue("tmp/lamp.jpg");
     });
+    await waitFor(() => {
+      expect(values.at(-1)).toMatchObject({ images: ["tmp/lamp.jpg"] });
+    });
 
     expect(apiFetch).toHaveBeenCalledWith("/forms/products", {
       method: "POST",
       ref: "ref-1",
       body: JSON.stringify({
         sku: "LMP-001",
+        images: [],
+        images__removed: [],
         _upload: "images",
         filename: "lamp.jpg",
         contentType: "image/jpeg",
@@ -362,8 +386,10 @@ describe("FileUploadComponent image previews", () => {
     );
   });
 
-  it("tracks removed existing files with sealed removal tokens", () => {
+  it("tracks removed existing files with sealed removal tokens", async () => {
+    const values: Record<string, unknown>[] = [];
     const { container } = renderUpload({
+      onValues: (next) => values.push(next),
       props: {
         files: [
           {
@@ -375,6 +401,7 @@ describe("FileUploadComponent image previews", () => {
           },
         ],
       },
+      values: { images: ["workbench/products/lamp.jpg"] },
     });
 
     fireEvent.click(screen.getByRole("button", { name: "Remove lamp.jpg" }));
@@ -383,6 +410,12 @@ describe("FileUploadComponent image previews", () => {
       container.querySelector<HTMLInputElement>('input[name="images__removed[]"]')?.value,
     ).toBe("sealed-lamp");
     expect(screen.queryByText("lamp.jpg")).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(values.at(-1)).toMatchObject({
+        images: [],
+        images__removed: ["sealed-lamp"],
+      });
+    });
   });
 
   it("does not add files when the field is disabled", () => {

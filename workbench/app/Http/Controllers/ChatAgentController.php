@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Lattice\Lattice\Chat\ChatMessage;
 use Lattice\Lattice\Chat\ChatPart;
 use Lattice\Lattice\Chat\Enums\ChatRole;
+use Lattice\Lattice\Remote\RemoteSourceRegistry;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Workbench\App\Chat\FakeConversationStore;
 
@@ -16,7 +17,10 @@ final readonly class ChatAgentController
 {
     private const string REPLY = 'Sure, let me look that up for you right away.';
 
-    public function __construct(private FakeConversationStore $store) {}
+    public function __construct(
+        private FakeConversationStore $store,
+        private RemoteSourceRegistry $remoteSources,
+    ) {}
 
     public function __invoke(Request $request): StreamedResponse
     {
@@ -28,7 +32,7 @@ final readonly class ChatAgentController
             ]))->jsonSerialize(),
         );
 
-        return response()->stream(function () use ($message): void {
+        return response()->stream(function () use ($message, $request): void {
             $words = explode(' ', self::REPLY);
 
             foreach ($words as $word) {
@@ -40,14 +44,20 @@ final readonly class ChatAgentController
             }
 
             $toolCall = ChatPart::toolCall('lookup', ['query' => $message]);
+            $schema = $this->remoteSources->resolve('workbench.todos')->schema($request);
 
             $this->writeFrame(['type' => 'part', 'part' => $toolCall->jsonSerialize()]);
+            foreach ($schema as $part) {
+                $this->writeFrame(['type' => 'part', 'part' => $part->jsonSerialize()]);
+            }
+
             $this->writeFrame(['type' => 'done']);
 
             $this->store->append(
                 (new ChatMessage((string) Str::uuid(), ChatRole::Assistant, [
                     ChatPart::text(self::REPLY),
                     $toolCall,
+                    ...$schema,
                 ]))->jsonSerialize(),
             );
         }, 200, [

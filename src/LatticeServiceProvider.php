@@ -30,6 +30,7 @@ use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Http\Middleware\SetLocale;
 use Lattice\Lattice\Http\PageRegistry;
 use Lattice\Lattice\Layouts\LayoutRegistry;
+use Lattice\Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Lattice\Support\Evaluation\Evaluator;
 use Lattice\Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
@@ -66,6 +67,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(ActionRegistry::class);
         $this->app->singleton(BulkActionRegistry::class);
         $this->app->singleton(PageRegistry::class);
+        $this->app->singleton(RemoteSourceRegistry::class);
         $this->app->singleton(ComponentReferenceSigner::class);
         $this->app->alias(ComponentReferenceSigner::class, SignsComponentReferences::class);
         $this->app->singleton(LatticeRegistry::class);

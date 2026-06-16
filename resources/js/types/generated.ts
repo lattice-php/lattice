@@ -49,6 +49,13 @@ export type BadgeColumn = {
 };
 export type BooleanColumn = Record<string, never>;
 export type Breadcrumbs = Record<string, never>;
+export type BrowserToken = {
+  readonly accessToken: string;
+  readonly tokenType: string;
+  readonly expiresIn: number;
+  readonly audience: string;
+  readonly scopes: string[];
+};
 export type Builder = {
   addLabel: string | null;
   columnWidth: ColumnWidth;
@@ -157,7 +164,7 @@ export type ChatBox = {
 export type ChatMessage = {
   readonly id: string;
   readonly role: ChatRole;
-  readonly parts: ChatNode[];
+  readonly parts: Node[];
 };
 export type ChatNode =
   | {
@@ -388,6 +395,11 @@ export type CoreNode =
       key?: string;
       props: Text;
     };
+export type DataList = {
+  dataEndpoint: string | null;
+  emptyLabel: string | null;
+  remote: RemoteAccess | null;
+};
 export type DateInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
@@ -769,6 +781,7 @@ export type Node =
   | CoreNode
   | ActionNode
   | FragmentNode
+  | RemoteNode
   | TableNode
   | LayoutNode
   | ChatNode;
@@ -901,6 +914,36 @@ export type ReloadComponentEffect = {
   readonly component: string;
 };
 export type ReloadPageEffect = object;
+export type RemoteAccess = {
+  readonly source: string;
+  readonly audience: string;
+  readonly scopes: string[];
+  readonly nodeId: string;
+  readonly nodeType: string;
+  readonly tokenEndpoint: string;
+  readonly ref: string;
+};
+export type RemoteChatBox = {
+  conversationId: string | null;
+  fill: boolean;
+  historyEndpoint: string | null;
+  placeholder: string | null;
+  remote: RemoteAccess | null;
+  streamEndpoint: string | null;
+  title: string | null;
+};
+export type RemoteNode =
+  | {
+      type: "remote.chat-box";
+      key?: string;
+      props: RemoteChatBox;
+    }
+  | {
+      type: "remote.data-list";
+      key?: string;
+      props: DataList;
+      schema?: Node[];
+    };
 export type Repeater = {
   addLabel: string | null;
   columnWidth: ColumnWidth;

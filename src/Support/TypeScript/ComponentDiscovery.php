@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support\TypeScript;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Forms\Components\Field;
@@ -46,7 +47,8 @@ final class ComponentDiscovery
             $discovered[] = new DiscoveredComponent(
                 class: $class,
                 type: $attribute->type,
-                container: is_subclass_of($class, ContainerComponent::class),
+                container: is_subclass_of($class, ContainerComponent::class)
+                    || in_array(HasChildSchema::class, class_uses_recursive($class), true),
                 interactive: in_array(IsInteractive::class, class_uses_recursive($class), true),
                 category: $isColumn ? 'column' : (is_subclass_of($class, Field::class) ? 'field' : 'component'),
                 domain: $this->domainFor($class),

@@ -63,6 +63,53 @@ function lazyAction(method = "post"): Node {
   } as unknown as Node;
 }
 
+function editProductActionWithExistingImage(): Node {
+  return {
+    id: "test.edit-product",
+    type: "action",
+    props: {
+      confirmation: { confirmLabel: "Save", title: "Edit product" },
+      endpoint: "/lattice/actions/test.edit-product",
+      form: {
+        id: "test.edit-product-form",
+        props: {
+          state: {
+            images: ["workbench/products/lamp.jpg"],
+            name: "Desk Lamp",
+          },
+        },
+        schema: [
+          { key: "name", props: { label: "Name", name: "name" }, type: "field.text-input" },
+          {
+            key: "images",
+            props: {
+              files: [
+                {
+                  key: "workbench/products/lamp.jpg",
+                  name: "lamp.jpg",
+                  size: 10,
+                  token: "sealed-lamp",
+                  url: "https://rustfs.test/lamp.jpg?signature=1",
+                },
+              ],
+              image: true,
+              label: "Images",
+              multiple: true,
+              name: "images",
+              signed: true,
+            },
+            type: "field.file-upload",
+          },
+        ],
+        type: "form",
+      },
+      label: "Edit",
+      method: "patch",
+      ref: "sealed-ref",
+    },
+  } as unknown as Node;
+}
+
 function renderAction(node: Node) {
   return renderWithRegistry(
     <Renderer nodes={[node]} />,
@@ -193,6 +240,30 @@ describe("action form modal", () => {
 
     const [, init] = fetchMock.mock.calls.at(0) as [string, RequestInit];
     expect(init.method).toBe("POST");
+  });
+
+  it("submits removed file tokens without stale existing file values", async () => {
+    const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
+      json: async () => ({ effects: [], ok: true }),
+      ok: true,
+      status: 200,
+    } as unknown as Response);
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderAction(editProductActionWithExistingImage());
+
+    fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Remove lamp.jpg" }));
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+
+    const [, init] = fetchMock.mock.calls.at(-1) as [string, RequestInit];
+    expect(JSON.parse(init.body as string)).toMatchObject({
+      images: [],
+      images__removed: ["sealed-lamp"],
+      name: "Desk Lamp",
+    });
   });
 
   it("validates precognitively as the user types", async () => {
