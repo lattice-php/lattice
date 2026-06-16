@@ -55,6 +55,14 @@
       "types": "./dist/chat/*.d.ts",
       "import": "./dist/chat/*.js"
     },
+    "./global-search": {
+      "types": "./dist/global-search/index.d.ts",
+      "import": "./dist/global-search/index.js"
+    },
+    "./global-search/*": {
+      "types": "./dist/global-search/*.d.ts",
+      "import": "./dist/global-search/*.js"
+    },
     "./clipboard": {
       "types": "./dist/clipboard/index.d.ts",
       "import": "./dist/clipboard/index.js"

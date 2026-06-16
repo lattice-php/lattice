@@ -31,6 +31,8 @@ const latticeIcons = [
   "align-center", "align-justify", "align-left", "align-right", "bold", "code",
   "columns-3", "heading-1", "heading-2", "heading-3", "highlighter", "italic",
   "list", "list-ordered", "quote", "rows-3", "smile", "strikethrough", "table", "underline",
+  // Global-search category icons
+  "package", "receipt", "users",
 ];
 
 function libraryEntries(): string[] {
