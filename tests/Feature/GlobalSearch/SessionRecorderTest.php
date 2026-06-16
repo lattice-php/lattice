@@ -24,9 +24,8 @@ test('records a selection and reads it back', function () {
     expect($recorder->record($request, $result))->toBeTrue();
 
     $recent = $recorder->recent($request, 10);
-    expect($recent)->toHaveCount(1)
-        ->and($recent[0])->toBeInstanceOf(SearchResult::class)
-        ->and($recent[0]->item->id)->toBe('1')
+    expect($recent)->toHaveCount(1);
+    expect($recent[0]->item->id)->toBe('1')
         ->and($recent[0]->category)->toBe('products');
 });
 

@@ -14,7 +14,9 @@ final class SessionSearchHistoryRecorder implements SearchHistoryRecorder
 
     public function record(Request $request, SearchResult $result): bool
     {
-        $recent = collect($request->session()->get(self::KEY, []))
+        /** @var list<array{category: array{name: string}, item: array{id: string, title: string, subtitle: string|null, additionalInfo: string|null, link: string, badge: string|null}}> $stored */
+        $stored = $request->session()->get(self::KEY, []);
+        $recent = collect($stored)
             ->reject(fn (array $row): bool => $row['category']['name'] === $result->category && $row['item']['id'] === $result->item->id)
             ->prepend($result->jsonSerialize())
             ->take(10)
@@ -28,7 +30,10 @@ final class SessionSearchHistoryRecorder implements SearchHistoryRecorder
 
     public function recent(Request $request, int $limit): array
     {
-        return collect($request->session()->get(self::KEY, []))
+        /** @var list<array{category: array{name: string}, item: array{id: string, title: string, subtitle: string|null, additionalInfo: string|null, link: string, badge: string|null}}> $stored */
+        $stored = $request->session()->get(self::KEY, []);
+
+        return collect($stored)
             ->take($limit)
             ->map(fn (array $row): SearchResult => new SearchResult($row['category']['name'], new SearchResultItem(
                 id: $row['item']['id'], title: $row['item']['title'], link: $row['item']['link'],
