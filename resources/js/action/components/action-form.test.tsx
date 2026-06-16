@@ -47,7 +47,7 @@ function rejectAction(precognitive = false): Node {
   } as unknown as Node;
 }
 
-function lazyAction(): Node {
+function lazyAction(method = "post"): Node {
   return {
     id: "test.edit",
     type: "action",
@@ -57,7 +57,7 @@ function lazyAction(): Node {
       form: null,
       label: "Edit",
       lazyForm: true,
-      method: "post",
+      method,
       ref: "sealed-ref",
     },
   } as unknown as Node;
@@ -159,11 +159,36 @@ describe("action form modal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Edit" }));
 
     expect(await screen.findByRole("textbox", { name: "Title" })).toBeVisible();
-    expect(
-      fetchMock.mock.calls.some(
-        ([, init]) => (JSON.parse(String((init as RequestInit).body)) as { _form?: boolean })._form,
-      ),
-    ).toBe(true);
+    const [, init] = fetchMock.mock.calls.find(
+      ([, requestInit]) =>
+        (JSON.parse(String((requestInit as RequestInit).body)) as { _form?: boolean })._form,
+    ) as [string, RequestInit];
+
+    expect(init.method).toBe("POST");
+  });
+
+  it("posts lazy schema requests even when the action submits with another method", async () => {
+    const formNode = {
+      id: "test.edit-form",
+      props: {},
+      schema: [{ key: "title", props: { label: "Title", name: "title" }, type: "form.text-input" }],
+      type: "form",
+    };
+    const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
+      json: async () => formNode,
+      ok: true,
+      status: 200,
+    } as unknown as Response);
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderAction(lazyAction("patch"));
+
+    fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+
+    await screen.findByRole("textbox", { name: "Title" });
+
+    const [, init] = fetchMock.mock.calls.at(0) as [string, RequestInit];
+    expect(init.method).toBe("POST");
   });
 
   it("validates precognitively as the user types", async () => {

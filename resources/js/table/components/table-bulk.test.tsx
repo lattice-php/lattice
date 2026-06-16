@@ -99,6 +99,10 @@ describe("table bulk actions", () => {
         state: {
           filters: [{ field: "status", operator: "eq", value: "active" }],
           sorts: [],
+          tableFilters: {
+            featured: "true",
+            updated_at: { from: "2026-01-01", until: "" },
+          },
           page: 1,
           perPage: 25,
         },
@@ -129,6 +133,10 @@ describe("table bulk actions", () => {
     expect(http.transformer({})).toEqual({
       allMatching: true,
       filter: "status:eq:active",
+      tf: {
+        featured: "true",
+        updated_at: { from: "2026-01-01" },
+      },
     });
   });
 });

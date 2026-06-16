@@ -20,8 +20,13 @@ export function useTable(node: TableNode) {
   const componentRef = typeof node.props?.ref === "string" ? node.props.ref : "";
   const isLazy = node.props?.lazy === true;
   const initialState = useMemo(() => getState(node.props?.state), [node.props?.state]);
-  const [rows, setRows] = useState(() => getRows(node.props?.data));
-  const [pagination, setPagination] = useState(() => getPagination(node.props?.pagination));
+  const initialRows = useMemo(() => getRows(node.props?.data), [node.props?.data]);
+  const initialPagination = useMemo(
+    () => getPagination(node.props?.pagination),
+    [node.props?.pagination],
+  );
+  const [rows, setRows] = useState(initialRows);
+  const [pagination, setPagination] = useState(initialPagination);
   const [state, setState] = useState(initialState);
   const [processing, setProcessing] = useState(isLazy);
   const [hasLoaded, setHasLoaded] = useState(!isLazy);
@@ -158,6 +163,14 @@ export function useTable(node: TableNode) {
       true,
     );
   }, [currentPage, load, pagination.hasMore, pagination.nextPage, processing, state]);
+
+  useEffect(() => {
+    setRows(initialRows);
+    setPagination(initialPagination);
+    setState(initialState);
+    setProcessing(isLazy);
+    setHasLoaded(!isLazy);
+  }, [initialRows, initialPagination, initialState, isLazy]);
 
   useEffect(() => {
     if (!isLazy || hasLoaded) {

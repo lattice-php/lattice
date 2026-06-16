@@ -61,7 +61,13 @@ final class BulkActionController
 
         if ($request->boolean('allMatching')) {
             return $source->resolveMatching(
-                TableQuery::fromRequest($request, $table->columns(), $tableKey, $table->perPage()),
+                TableQuery::fromRequest(
+                    $request,
+                    $table->columns(),
+                    $tableKey,
+                    $table->perPage(),
+                    $table->filters(),
+                ),
             );
         }
 

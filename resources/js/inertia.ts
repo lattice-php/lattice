@@ -23,7 +23,7 @@ export function createPageResolver(pages: PageModules) {
       return { default: Page };
     }
 
-    const resolvedPage = pages[`./pages/${name}.tsx`];
+    const resolvedPage = pages[`./Pages/${name}.tsx`] ?? pages[`./pages/${name}.tsx`];
 
     if (resolvedPage) {
       return resolvedPage();

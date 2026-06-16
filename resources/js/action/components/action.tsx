@@ -30,7 +30,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const inlineForm = node.props.form;
   const lazyForm = node.props.lazyForm === true;
   const hasForm = Boolean(inlineForm) || lazyForm;
-  const lazyNode = useLazyActionForm(endpoint, method, componentRef, isFilling && lazyForm);
+  const lazyNode = useLazyActionForm(endpoint, componentRef, isFilling && lazyForm);
   const formNode = lazyForm ? lazyNode : inlineForm;
 
   const submit = async (): Promise<void> => {

@@ -1,7 +1,12 @@
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { searchForWorkspaceRoot } from "vite";
 import { describe, expect, it } from "vitest";
 import { latticeConfig } from "./vite";
+
+type PackageJson = {
+  exports: Record<string, unknown>;
+};
 
 describe("lattice Vite helper", () => {
   it("configures package-link mode without reading an environment variable", () => {
@@ -49,5 +54,14 @@ describe("lattice Vite helper", () => {
         },
       },
     });
+  });
+
+  it("keeps package exports explicit and internal test helpers private", () => {
+    const packageJson = JSON.parse(
+      readFileSync(path.resolve(process.cwd(), "package.json"), "utf8"),
+    ) as PackageJson;
+
+    expect(packageJson.exports).not.toHaveProperty("./*");
+    expect(packageJson.exports).not.toHaveProperty("./test-support");
   });
 });

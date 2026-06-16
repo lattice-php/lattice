@@ -268,6 +268,53 @@ describe("Lattice form schema components", () => {
     );
   });
 
+  it("refreshes field values when form state props change", () => {
+    const formNode = fakeNode({
+      id: "product-form",
+      props: {
+        action: "/lattice/forms/workbench.products.form",
+        state: {
+          name: "Desk Lamp",
+        },
+      },
+      type: "form",
+    });
+
+    const nameNode = fakeNode({
+      props: {
+        label: "Name",
+        name: "name",
+      },
+      type: "form.text-input",
+    });
+
+    const { rerender } = render(
+      <FormComponent node={formNode}>
+        <TextInputComponent node={nameNode}>{null}</TextInputComponent>
+      </FormComponent>,
+    );
+
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("Desk Lamp");
+
+    rerender(
+      <FormComponent
+        node={{
+          ...formNode,
+          props: {
+            ...formNode.props,
+            state: {
+              name: "Floor Lamp",
+            },
+          },
+        }}
+      >
+        <TextInputComponent node={nameNode}>{null}</TextInputComponent>
+      </FormComponent>,
+    );
+
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("Floor Lamp");
+  });
+
   it("passes precognitive validation delay to the inertia form", () => {
     const formNode = fakeNode({
       id: "product-form",

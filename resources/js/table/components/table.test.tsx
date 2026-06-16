@@ -134,6 +134,50 @@ describe("Lattice table component", () => {
     expect(screen.getByRole("button", { name: "Copied Email" })).toBeVisible();
   });
 
+  it("refreshes rows when table data props change", () => {
+    const node = {
+      id: "workbench.users",
+      props: {
+        columns: [
+          col({
+            key: "name",
+            label: "Name",
+          }),
+        ],
+        data: [{ name: "Taylor" }],
+        endpoint: "/lattice/tables/workbench.users",
+        state: {
+          filters: [],
+          page: 1,
+          perPage: 25,
+          sorts: [],
+        },
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    const { rerender } = render(<TableComponent node={node}>{null}</TableComponent>);
+
+    expect(screen.getByRole("cell", { name: "Taylor" })).toBeVisible();
+
+    rerender(
+      <TableComponent
+        node={{
+          ...node,
+          props: {
+            ...node.props,
+            data: [{ name: "Nuno" }],
+          },
+        }}
+      >
+        {null}
+      </TableComponent>,
+    );
+
+    expect(screen.getByRole("cell", { name: "Nuno" })).toBeVisible();
+    expect(screen.queryByRole("cell", { name: "Taylor" })).not.toBeInTheDocument();
+  });
+
   it("uses column width hints when building the table grid", () => {
     const node = {
       id: "workbench.products",

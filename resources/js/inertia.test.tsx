@@ -47,11 +47,11 @@ describe("createPageResolver", () => {
     expect(resolver("lattice/page")).toEqual({ default: Page });
   });
 
-  it("resolves app pages from the provided modules", async () => {
+  it("resolves app pages from the documented Pages directory", async () => {
     const component = (() => null) satisfies ResolvedComponent;
     const page = vi.fn<() => Promise<ResolvedComponent>>(() => Promise.resolve(component));
     const resolver = createPageResolver({
-      "./pages/dashboard.tsx": page,
+      "./Pages/dashboard.tsx": page,
     });
 
     await expect(resolver("dashboard")).resolves.toBe(component);
