@@ -8,11 +8,11 @@ use Closure;
 use Lattice\Lattice\Support\Testing\ComponentNode;
 use PHPUnit\Framework\Assert;
 
-final class FormAssertions
+final readonly class FormAssertions
 {
     public function __construct(
-        private readonly ComponentNode $node,
-        private readonly ComponentAssertions $root,
+        private ComponentNode $node,
+        private ComponentAssertions $root,
     ) {}
 
     public function field(string $name, ?Closure $tap = null): FieldAssertions|self

@@ -9,11 +9,11 @@ use Lattice\Lattice\Chat\ChatMessage;
 use Lattice\Lattice\Chat\ChatPart;
 use Lattice\Lattice\Chat\Enums\ChatRole;
 
-final class FakeConversationStore
+final readonly class FakeConversationStore
 {
-    private const SESSION_KEY = 'workbench.chat.conversation';
+    private const string SESSION_KEY = 'workbench.chat.conversation';
 
-    public function __construct(private readonly Session $session) {}
+    public function __construct(private Session $session) {}
 
     /**
      * @return array<int, array{id: string, role: string, parts: array<int, array<string, mixed>>}>

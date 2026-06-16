@@ -16,16 +16,16 @@ use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableRegistry;
 use Symfony\Component\HttpFoundation\Response;
 
-final class BulkActionController
+final readonly class BulkActionController
 {
     use HandlesFormSubRequests;
     use HandlesPrecognition;
     use InteractsWithComponents;
 
     public function __construct(
-        private readonly BulkActionRegistry $bulkActions,
-        private readonly TableRegistry $tables,
-        private readonly SignsComponentReferences $references,
+        private BulkActionRegistry $bulkActions,
+        private TableRegistry $tables,
+        private SignsComponentReferences $references,
     ) {}
 
     public function __invoke(Request $request, string $bulkAction): Response

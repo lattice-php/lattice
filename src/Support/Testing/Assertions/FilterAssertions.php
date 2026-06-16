@@ -8,15 +8,15 @@ use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Enums\FilterType;
 use PHPUnit\Framework\Assert;
 
-final class FilterAssertions
+final readonly class FilterAssertions
 {
     /**
      * @param  array<string, mixed>  $filter
      */
     public function __construct(
-        private readonly string $key,
-        private readonly array $filter,
-        private readonly TableAssertions $table,
+        private string $key,
+        private array $filter,
+        private TableAssertions $table,
     ) {}
 
     public function assertType(FilterType $type): self

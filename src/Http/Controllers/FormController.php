@@ -12,14 +12,14 @@ use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Http\Controllers\Concerns\HandlesPrecognition;
 use Symfony\Component\HttpFoundation\Response;
 
-final class FormController
+final readonly class FormController
 {
     use HandlesPrecognition;
     use InteractsWithComponents;
 
     public function __construct(
-        private readonly FormRegistry $forms,
-        private readonly SignsComponentReferences $references,
+        private FormRegistry $forms,
+        private SignsComponentReferences $references,
     ) {}
 
     public function __invoke(Request $request, string $form): Response|Responsable

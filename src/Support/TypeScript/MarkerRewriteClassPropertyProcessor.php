@@ -20,9 +20,9 @@ use Spatie\TypeScriptTransformer\Visitor\VisitorOperation;
  * or a ChatPart to the ChatNode union. Such markers have no generated type of
  * their own. The replacement is built per match so nodes are never shared.
  */
-final class MarkerRewriteClassPropertyProcessor implements ClassPropertyProcessor
+final readonly class MarkerRewriteClassPropertyProcessor implements ClassPropertyProcessor
 {
-    private readonly Visitor $visitor;
+    private Visitor $visitor;
 
     /**
      * @param  class-string  $marker

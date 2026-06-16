@@ -1,5 +1,22 @@
 <?php
 declare(strict_types=1);
+use Illuminate\Support\Facades\Facade;
+use Lattice\Lattice\Actions\ActionDefinition;
+use Lattice\Lattice\Actions\ActionRegistry;
+use Lattice\Lattice\Actions\BulkActionDefinition;
+use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Actions\FormActionDefinition;
+use Lattice\Lattice\Core\Definition;
+use Lattice\Lattice\Core\DefinitionRegistry;
+use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Forms\FormRegistry;
+use Lattice\Lattice\Fragments\FragmentDefinition;
+use Lattice\Lattice\Fragments\FragmentRegistry;
+use Lattice\Lattice\Layouts\LayoutDefinition;
+use Lattice\Lattice\Layouts\LayoutRegistry;
+use Lattice\Lattice\Tables\EloquentTableDefinition;
+use Lattice\Lattice\Tables\TableDefinition;
+use Lattice\Lattice\Tables\TableRegistry;
 
 /*
  * Layering.
@@ -150,14 +167,14 @@ arch('contracts are interfaces')
 
 arch('domain registries extend the base definition registry')
     ->expect([
-        'Lattice\Lattice\Actions\ActionRegistry',
-        'Lattice\Lattice\Actions\BulkActionRegistry',
-        'Lattice\Lattice\Forms\FormRegistry',
-        'Lattice\Lattice\Fragments\FragmentRegistry',
-        'Lattice\Lattice\Layouts\LayoutRegistry',
-        'Lattice\Lattice\Tables\TableRegistry',
+        ActionRegistry::class,
+        BulkActionRegistry::class,
+        FormRegistry::class,
+        FragmentRegistry::class,
+        LayoutRegistry::class,
+        TableRegistry::class,
     ])
-    ->toExtend('Lattice\Lattice\Core\DefinitionRegistry');
+    ->toExtend(DefinitionRegistry::class);
 
 /*
  * Every definition derives from Core\Definition, including the ones that extend
@@ -165,21 +182,21 @@ arch('domain registries extend the base definition registry')
  * transitive is_subclass_of check covers those, where ->toExtend would not.
  */
 it('derives every definition from the base definition', function (string $definition) {
-    expect(is_subclass_of($definition, 'Lattice\Lattice\Core\Definition'))->toBeTrue();
+    expect(is_subclass_of($definition, Definition::class))->toBeTrue();
 })->with([
-    'Lattice\Lattice\Actions\ActionDefinition',
-    'Lattice\Lattice\Actions\BulkActionDefinition',
-    'Lattice\Lattice\Actions\FormActionDefinition',
-    'Lattice\Lattice\Forms\FormDefinition',
-    'Lattice\Lattice\Fragments\FragmentDefinition',
-    'Lattice\Lattice\Layouts\LayoutDefinition',
-    'Lattice\Lattice\Tables\TableDefinition',
-    'Lattice\Lattice\Tables\EloquentTableDefinition',
+    ActionDefinition::class,
+    BulkActionDefinition::class,
+    FormActionDefinition::class,
+    FormDefinition::class,
+    FragmentDefinition::class,
+    LayoutDefinition::class,
+    TableDefinition::class,
+    EloquentTableDefinition::class,
 ]);
 
 arch('the lattice facade extends the laravel facade')
     ->expect('Lattice\Lattice\Facades')
-    ->toExtend('Illuminate\Support\Facades\Facade');
+    ->toExtend(Facade::class);
 
 arch('no debug statements ship in the package')
     ->expect(['dd', 'ddd', 'dump', 'ray', 'var_dump', 'print_r'])

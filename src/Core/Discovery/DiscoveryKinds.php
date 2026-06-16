@@ -16,7 +16,7 @@ use Spatie\Attributes\Attributes;
 final class DiscoveryKinds
 {
     /** @var array<string, class-string> */
-    public const COMPONENTS = [
+    public const array COMPONENTS = [
         'forms' => Form::class,
         'tables' => Table::class,
         'actions' => Action::class,
@@ -25,7 +25,7 @@ final class DiscoveryKinds
         'layouts' => Layout::class,
     ];
 
-    public const PAGE_ATTRIBUTE = Page::class;
+    public const string PAGE_ATTRIBUTE = Page::class;
 
     /**
      * @param  class-string  $class

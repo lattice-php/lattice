@@ -16,9 +16,9 @@ use Spatie\Attributes\Attributes;
  * node hierarchy).
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-final class AsEffect
+final readonly class AsEffect
 {
-    public function __construct(public readonly EffectType|string $type) {}
+    public function __construct(public EffectType|string $type) {}
 
     public function wireType(): string
     {

@@ -15,6 +15,7 @@ use Lattice\Lattice\Layouts\Components\Outlet;
 #[Layout('app-chat')]
 final class ChatLayout extends AppLayout
 {
+    #[\Override]
     public function schema(PageSchema $schema, Request $request): PageSchema
     {
         return $schema->schema([
@@ -31,7 +32,7 @@ final class ChatLayout extends AppLayout
                     Stack::make('chat-rail')
                         ->width(Width::Small)
                         ->schema([
-                            $this->chatWindow()->defaultOpen()->fill(),
+                            $this->chatBox()->fill(),
                         ]),
                 ]),
             $this->localeSwitcherPanel(FloatingPlacement::BottomStart),

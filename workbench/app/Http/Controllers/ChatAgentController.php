@@ -12,11 +12,11 @@ use Lattice\Lattice\Chat\Enums\ChatRole;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Workbench\App\Chat\FakeConversationStore;
 
-final class ChatAgentController
+final readonly class ChatAgentController
 {
-    private const REPLY = 'Sure, let me look that up for you right away.';
+    private const string REPLY = 'Sure, let me look that up for you right away.';
 
-    public function __construct(private readonly FakeConversationStore $store) {}
+    public function __construct(private FakeConversationStore $store) {}
 
     public function __invoke(Request $request): StreamedResponse
     {

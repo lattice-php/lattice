@@ -27,6 +27,7 @@ class ArchiveProductAction extends ActionDefinition
             ->confirm(__('workbench.actions.archive.confirm-title'), __('workbench.actions.archive.confirm-description'));
     }
 
+    #[\Override]
     public function authorize(Request $request): bool
     {
         return $this->product($request)->status !== 'archived';

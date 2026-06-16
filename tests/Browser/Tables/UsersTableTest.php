@@ -69,9 +69,9 @@ it('persists resized column widths until the column keys change', function (): v
         ->keys('[aria-label="Resize Name"]', 'ArrowRight')
         ->assertNoJavaScriptErrors();
 
-    expect($page->script(<<<'JS'
+    expect($page->script(<<<'JS_WRAP'
         () => JSON.parse(window.localStorage.getItem('lattice:table-columns:workbench.users'))
-    JS))->toEqual([
+    JS_WRAP))->toEqual([
         'columns' => ['name', 'email', 'created_at', 'updated_at'],
         'overrides' => [
             'name' => 184,
@@ -84,12 +84,12 @@ it('persists resized column widths until the column keys change', function (): v
 
     expect(workbenchUsersTableColumns($page))->toStartWith('184px ');
 
-    $page->script(<<<'JS'
+    $page->script(<<<'JS_WRAP'
         () => window.localStorage.setItem('lattice:table-columns:workbench.users', JSON.stringify({
             columns: ['name'],
             overrides: { name: 240 },
         }))
-    JS);
+    JS_WRAP);
 
     $page->refresh();
 

@@ -46,7 +46,7 @@ final readonly class Option implements JsonSerializable
             );
         }
 
-        return array_map(static fn (mixed $option): self => self::from($option), $options);
+        return array_map(self::from(...), $options);
     }
 
     /**

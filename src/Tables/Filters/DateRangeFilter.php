@@ -22,6 +22,7 @@ class DateRangeFilter extends BaseFilter
         );
     }
 
+    #[\Override]
     public function accepts(mixed $value): bool
     {
         return is_array($value);

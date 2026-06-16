@@ -34,6 +34,7 @@ final class ValueObjectTransformer extends ClassTransformer
     /**
      * @return array<ClassPropertyProcessor>
      */
+    #[\Override]
     protected function classPropertyProcessors(): array
     {
         return [

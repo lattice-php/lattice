@@ -8,9 +8,9 @@ use Closure;
 use Lattice\Lattice\Support\Testing\ComponentNode;
 use PHPUnit\Framework\Assert;
 
-final class ComponentAssertions
+final readonly class ComponentAssertions
 {
-    public function __construct(private readonly ComponentNode $node) {}
+    public function __construct(private ComponentNode $node) {}
 
     public function form(?string $id = null, ?Closure $tap = null): FormAssertions|self
     {

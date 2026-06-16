@@ -41,6 +41,7 @@ class RejectProductAction extends ActionDefinition
             ]);
     }
 
+    #[\Override]
     public function authorize(Request $request): bool
     {
         return $this->product($request)->status !== 'archived';

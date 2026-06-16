@@ -25,7 +25,7 @@ use function Orchestra\Testbench\package_path;
 
 class WorkbenchServiceProvider extends ServiceProvider
 {
-    private const FAKER_LOCALE = 'en_US';
+    private const string FAKER_LOCALE = 'en_US';
 
     #[\Override]
     public function register(): void

@@ -16,7 +16,7 @@ use Workbench\App\Forms\UploadForm;
 #[Page(route: '/uploads/edit')]
 class UploadEditPage extends WorkbenchPage
 {
-    private const EXISTING_PATH = 'uploads/avatar-existing.jpg';
+    private const string EXISTING_PATH = 'uploads/avatar-existing.jpg';
 
     public function title(): string
     {

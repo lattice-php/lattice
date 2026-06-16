@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\Testing;
 
-final class ComponentNode
+final readonly class ComponentNode
 {
-    private const NESTED_COMPONENT_PROPS = ['form', 'headerActions', 'bulkActions', 'actions'];
+    private const array NESTED_COMPONENT_PROPS = ['form', 'headerActions', 'bulkActions', 'actions'];
 
     /**
      * @param  array<string, mixed>  $data
      */
     public function __construct(
-        private readonly array $data,
-        private readonly string $path = 'root',
+        private array $data,
+        private string $path = 'root',
     ) {}
 
     /**

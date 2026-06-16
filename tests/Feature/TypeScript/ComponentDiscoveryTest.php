@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleColumn;
+use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleUnattributed;
 
 it('discovers attributed components under a path with type, flags and category', function () {
     $discovered = (new ComponentDiscovery)->discover(__DIR__.'/../../Fixtures/TypeScript');
@@ -31,7 +32,7 @@ it('excludes classes without the Component attribute from discovery', function (
     expect($types)->not->toContain('SampleUnattributed');
 
     $classes = collect($discovered)->pluck('class')->all();
-    expect($classes)->not->toContain('Lattice\\Lattice\\Tests\\Fixtures\\TypeScript\\SampleUnattributed');
+    expect($classes)->not->toContain(SampleUnattributed::class);
 });
 
 it('returns an empty array when the path does not exist', function () {

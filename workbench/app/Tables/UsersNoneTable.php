@@ -12,6 +12,7 @@ use Lattice\Lattice\Tables\TableQuery;
 #[TableAttribute('workbench.users.none')]
 final class UsersNoneTable extends BaseUsersTable
 {
+    #[\Override]
     public function pagination(): PaginationType
     {
         return PaginationType::None;
@@ -20,6 +21,7 @@ final class UsersNoneTable extends BaseUsersTable
     /**
      * @return Builder<User>
      */
+    #[\Override]
     public function builder(TableQuery $query): Builder
     {
         return parent::builder($query)->limit(12);

@@ -8,11 +8,11 @@ use Closure;
 use Lattice\Lattice\Support\Testing\ComponentNode;
 use PHPUnit\Framework\Assert;
 
-final class TableAssertions
+final readonly class TableAssertions
 {
     public function __construct(
-        private readonly ComponentNode $node,
-        private readonly ComponentAssertions $root,
+        private ComponentNode $node,
+        private ComponentAssertions $root,
     ) {}
 
     public function filter(string $key, ?Closure $tap = null): FilterAssertions|self
@@ -94,7 +94,7 @@ final class TableAssertions
     {
         $columns = $this->node->prop('columns');
 
-        return is_array($columns) ? array_values(array_filter($columns, 'is_array')) : [];
+        return is_array($columns) ? array_values(array_filter($columns, is_array(...))) : [];
     }
 
     /**

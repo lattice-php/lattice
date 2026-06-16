@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { apiFetch } from "@lattice-php/lattice/core/api";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { Button } from "@lattice-php/lattice/core/components/button";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import { useChat } from "../use-chat";
@@ -12,10 +11,9 @@ import { PromptInput } from "./prompt-input";
 
 type ChatHistoryResponse = { messages: ChatMessage[] };
 
-export const ChatWindow: RendererComponent<"chat.window"> = ({ node }) => {
-  const { streamEndpoint, historyEndpoint, placeholder, title, defaultOpen, fill } = node.props;
+export const ChatBox: RendererComponent<"chat.box"> = ({ node }) => {
+  const { streamEndpoint, historyEndpoint, placeholder, title, fill } = node.props;
   const { t } = useT("lattice");
-  const [open, setOpen] = useState(defaultOpen ?? false);
   const { messages, status, sendMessage, setMessages } = useChat({
     endpoint: streamEndpoint ?? "",
   });
@@ -40,26 +38,10 @@ export const ChatWindow: RendererComponent<"chat.window"> = ({ node }) => {
   }, [historyEndpoint, setMessages]);
 
   useEffect(() => {
-    if (open) {
-      void seedHistory();
-    }
-  }, [open, seedHistory]);
+    void seedHistory();
+  }, [seedHistory]);
 
   const busy = status === "submitted" || status === "streaming";
-
-  if (!open) {
-    return (
-      <Button
-        data-test={testIdentity("chat-launcher")}
-        onClick={() => setOpen(true)}
-        size="sm"
-        type="button"
-        variant="default"
-      >
-        {t("chat.launcher", "Chat")}
-      </Button>
-    );
-  }
 
   return (
     <div
@@ -67,19 +49,10 @@ export const ChatWindow: RendererComponent<"chat.window"> = ({ node }) => {
         "flex flex-col overflow-hidden border border-lt-border bg-lt-bg",
         fill ? "sticky top-0 h-svh w-full" : "h-[28rem] w-80 rounded-lt-md shadow-lg",
       )}
-      data-test={testIdentity("chat-panel")}
+      data-test={testIdentity("chat-box")}
     >
-      <div className="flex items-center justify-between border-b border-lt-border px-3 py-2">
+      <div className="flex items-center border-b border-lt-border px-3 py-2">
         <span className="text-sm font-medium text-lt-fg">{title ?? t("chat.title", "Chat")}</span>
-        <Button
-          data-test={testIdentity("chat-close")}
-          onClick={() => setOpen(false)}
-          size="sm"
-          type="button"
-          variant="ghost"
-        >
-          {t("chat.close", "Close")}
-        </Button>
       </div>
       <div className="flex-1 overflow-y-auto">
         <MessageList messages={messages} />
@@ -89,4 +62,4 @@ export const ChatWindow: RendererComponent<"chat.window"> = ({ node }) => {
   );
 };
 
-export default ChatWindow;
+export default ChatBox;

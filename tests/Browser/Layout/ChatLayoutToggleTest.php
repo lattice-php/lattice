@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 it('reveals the docked chat panel when the chat layout is toggled', function (): void {
@@ -6,15 +7,15 @@ it('reveals the docked chat panel when the chat layout is toggled', function ():
 
     visit('/')
         ->assertSee('Reveal chat in a side rail')
-        ->assertPresent('@chat-launcher')
-        ->assertMissing('@chat-panel')
+        ->assertVisible('@assistant-chat-trigger')
+        ->assertMissing('@chat-box')
         ->click('@chat-layout-toggle')
         ->assertSee('Dock chat back to floating')
-        ->assertPresent('@chat-panel')
-        ->assertMissing('@chat-launcher')
+        ->assertVisible('@chat-box')
+        ->assertMissing('@assistant-chat-trigger')
         ->click('@chat-layout-toggle')
         ->assertSee('Reveal chat in a side rail')
-        ->assertPresent('@chat-launcher')
-        ->assertMissing('@chat-panel')
+        ->assertVisible('@assistant-chat-trigger')
+        ->assertMissing('@chat-box')
         ->assertNoSmoke();
 });

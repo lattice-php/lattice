@@ -66,6 +66,7 @@ class SalesOrdersTable extends EloquentTableDefinition
      * @param  array<string, mixed>  $row
      * @return array<int, Component>
      */
+    #[\Override]
     public function actions(array $row): array
     {
         return [

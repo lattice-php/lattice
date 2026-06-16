@@ -28,6 +28,7 @@ class SalesOrder extends Model
     protected $fillable = ['business_partner_id', 'number', 'status', 'shipping_address_id', 'billing_address_id'];
 
     /** @return array<string, string> */
+    #[\Override]
     protected function casts(): array
     {
         return ['status' => SalesOrderStatus::class];

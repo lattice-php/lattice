@@ -124,6 +124,14 @@ export type Card = {
   description: string | null;
   title: string | null;
 };
+export type ChatBox = {
+  conversationId: string | null;
+  fill: boolean | null;
+  historyEndpoint: string | null;
+  placeholder: string | null;
+  streamEndpoint: string | null;
+  title: string | null;
+};
 export type ChatMessage = {
   readonly id: string;
   readonly role: ChatRole;
@@ -141,15 +149,6 @@ export type ChatNode =
       props: ToolCallPart;
     };
 export type ChatRole = "user" | "assistant" | "system";
-export type ChatWindow = {
-  conversationId: string | null;
-  defaultOpen: boolean | null;
-  fill: boolean | null;
-  historyEndpoint: string | null;
-  placeholder: string | null;
-  streamEndpoint: string | null;
-  title: string | null;
-};
 export type Checkbox = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
@@ -275,9 +274,9 @@ export type CoreNode =
       schema?: Node[];
     }
   | {
-      type: "chat.window";
+      type: "chat.box";
       key?: string;
-      props: ChatWindow;
+      props: ChatBox;
     }
   | {
       type: "floating-panel";
@@ -483,6 +482,7 @@ export type FloatingPanel = {
   label: string | null;
   offset: number;
   placement: FloatingPlacement;
+  trigger: Node[];
 };
 export type FloatingPlacement = "bottom-end" | "bottom-start" | "top-end" | "top-start";
 export type Form = {

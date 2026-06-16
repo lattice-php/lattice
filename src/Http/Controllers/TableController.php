@@ -9,13 +9,13 @@ use Lattice\Lattice\Core\Concerns\InteractsWithComponents;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Tables\TableRegistry;
 
-final class TableController
+final readonly class TableController
 {
     use InteractsWithComponents;
 
     public function __construct(
-        private readonly TableRegistry $tables,
-        private readonly SignsComponentReferences $references,
+        private TableRegistry $tables,
+        private SignsComponentReferences $references,
     ) {}
 
     public function __invoke(Request $request, string $table): JsonResponse

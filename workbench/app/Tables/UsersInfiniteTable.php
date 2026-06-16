@@ -9,6 +9,7 @@ use Lattice\Lattice\Tables\Enums\PaginationType;
 #[TableAttribute('workbench.users.infinite')]
 final class UsersInfiniteTable extends BaseUsersTable
 {
+    #[\Override]
     public function pagination(): PaginationType
     {
         return PaginationType::Infinite;

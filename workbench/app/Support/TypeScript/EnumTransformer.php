@@ -23,6 +23,7 @@ final class EnumTransformer extends BaseEnumTransformer
         parent::__construct(useUnionEnums: true);
     }
 
+    #[\Override]
     public function transform(PhpClassNode $phpClassNode, TransformationContext $context): Transformed|Untransformable
     {
         if (! in_array($phpClassNode->getName(), $this->allowed, true)) {

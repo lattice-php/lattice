@@ -22,6 +22,7 @@ class SalesPrice extends Model
     protected $fillable = ['product_id', 'group_id', 'amount'];
 
     /** @return array<string, string> */
+    #[\Override]
     protected function casts(): array
     {
         return ['amount' => 'decimal:2'];

@@ -10,9 +10,9 @@ use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
  * Default profile: discovers an app's own #[Component] classes and writes a
  * module augmentation extending the package's published types.
  */
-final class AugmentProfile implements TypeScriptProfile
+final readonly class AugmentProfile implements TypeScriptProfile
 {
-    public function __construct(private readonly ComponentDiscovery $discovery) {}
+    public function __construct(private ComponentDiscovery $discovery) {}
 
     public function run(TypeScriptGenerator $generator): string
     {

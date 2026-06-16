@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final class TableRegistry extends DefinitionRegistry
 {
-    private const ROW_IDENTITY_KEYS = ['id', 'uuid', 'key'];
+    private const array ROW_IDENTITY_KEYS = ['id', 'uuid', 'key'];
 
     /**
      * @param  class-string<TableDefinition>  $table

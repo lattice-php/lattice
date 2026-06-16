@@ -65,6 +65,7 @@ class Tabs extends ContainerComponent
      * @return array<string, mixed>
      */
     #[SerializationHook(priority: 300)]
+    #[\Override]
     protected function serialiseSchema(array $data): array
     {
         return [

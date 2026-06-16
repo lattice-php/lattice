@@ -10,12 +10,12 @@ use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Support\Testing\ComponentNode;
 use PHPUnit\Framework\Assert;
 
-final class FieldAssertions
+final readonly class FieldAssertions
 {
     public function __construct(
-        private readonly ComponentNode $node,
-        private readonly FormAssertions $form,
-        private readonly ?ComponentNode $formNode = null,
+        private ComponentNode $node,
+        private FormAssertions $form,
+        private ?ComponentNode $formNode = null,
     ) {}
 
     /**

@@ -41,6 +41,7 @@ class Filter extends BaseFilter
         );
     }
 
+    #[\Override]
     public function accepts(mixed $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null;

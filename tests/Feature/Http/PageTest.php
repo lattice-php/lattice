@@ -236,7 +236,7 @@ final class WorkbenchConfirmedTabsPage extends Page
 
 final class WorkbenchInjectedPage extends Page
 {
-    public function __construct(private WorkbenchPageDependency $dependency) {}
+    public function __construct(private readonly WorkbenchPageDependency $dependency) {}
 
     public function render(PageSchema $schema, Request $request, User $user, string $label): PageSchema
     {
@@ -260,6 +260,7 @@ final class WorkbenchPageDependency
 
 final class WorkbenchAuthorizedPage extends Page
 {
+    #[Override]
     public function authorize(Request $request): bool
     {
         return $request->query('allow') === 'yes';

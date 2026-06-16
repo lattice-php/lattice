@@ -52,6 +52,7 @@ class Dropdown extends ContainerComponent
      * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */
+    #[\Override]
     protected function decorateProps(array $props): array
     {
         return [

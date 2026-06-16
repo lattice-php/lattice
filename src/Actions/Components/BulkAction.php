@@ -13,6 +13,7 @@ class BulkAction extends Action
     /**
      * @param  class-string<BulkActionDefinition>  $action
      */
+    #[\Override]
     public static function use(string $action): static
     {
         /** @var static $registered */

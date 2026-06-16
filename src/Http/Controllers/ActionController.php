@@ -11,15 +11,15 @@ use Lattice\Lattice\Http\Controllers\Concerns\HandlesFormSubRequests;
 use Lattice\Lattice\Http\Controllers\Concerns\HandlesPrecognition;
 use Symfony\Component\HttpFoundation\Response;
 
-final class ActionController
+final readonly class ActionController
 {
     use HandlesFormSubRequests;
     use HandlesPrecognition;
     use InteractsWithComponents;
 
     public function __construct(
-        private readonly ActionRegistry $actions,
-        private readonly SignsComponentReferences $references,
+        private ActionRegistry $actions,
+        private SignsComponentReferences $references,
     ) {}
 
     public function __invoke(Request $request, string $action): Response

@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Components\ActionGroup;
 use Lattice\Lattice\Attributes\Layout;
-use Lattice\Lattice\Core\Components\ChatWindow;
+use Lattice\Lattice\Core\Components\Badge;
+use Lattice\Lattice\Core\Components\ChatBox;
 use Lattice\Lattice\Core\Components\FloatingPanel;
 use Lattice\Lattice\Core\Components\RawBlock;
 use Lattice\Lattice\Core\Components\Stack;
@@ -66,8 +67,11 @@ class AppLayout extends LayoutDefinition
             $this->chatLayoutTogglePanel(),
             FloatingPanel::make('assistant-chat')
                 ->placement(FloatingPlacement::BottomEnd)
+                ->trigger([
+                    Badge::make(__('workbench.assistant.trigger')),
+                ])
                 ->schema([
-                    $this->chatWindow(),
+                    $this->chatBox(),
                 ]),
         ]);
     }
@@ -171,9 +175,9 @@ class AppLayout extends LayoutDefinition
             ]);
     }
 
-    protected function chatWindow(): ChatWindow
+    protected function chatBox(): ChatBox
     {
-        return ChatWindow::make('assistant')
+        return ChatBox::make('assistant')
             ->streamEndpoint('/workbench/chat/stream')
             ->historyEndpoint('/workbench/chat/history')
             ->title(__('workbench.assistant.title'))

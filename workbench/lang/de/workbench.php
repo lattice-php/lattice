@@ -5,6 +5,7 @@ return [
     'assistant' => [
         'placeholder' => 'Frag den Assistenten…',
         'title' => 'Assistent',
+        'trigger' => 'Chat',
     ],
     'commerce' => [
         'business-partners' => [
