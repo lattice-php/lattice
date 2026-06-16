@@ -6,4 +6,4 @@ namespace Lattice\Lattice\Attributes;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class Fragment extends DefinitionAttribute {}
+class AsLayout extends DefinitionAttribute {}

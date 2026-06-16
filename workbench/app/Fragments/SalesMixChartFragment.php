@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Workbench\App\Fragments;
 
-use Lattice\Lattice\Attributes\Fragment;
+use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Core\Components\Chart;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 
-#[Fragment('workbench.sales-mix-chart')]
+#[AsFragment('workbench.sales-mix-chart')]
 final class SalesMixChartFragment extends FragmentDefinition
 {
     public function schema(PageSchema $schema): PageSchema

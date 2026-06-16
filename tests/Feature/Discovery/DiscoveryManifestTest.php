@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Attributes\Action;
-use Lattice\Lattice\Attributes\BulkAction;
-use Lattice\Lattice\Attributes\Form;
-use Lattice\Lattice\Attributes\Fragment;
-use Lattice\Lattice\Attributes\Layout;
-use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Attributes\AsAction;
+use Lattice\Lattice\Attributes\AsBulkAction;
+use Lattice\Lattice\Attributes\AsForm;
+use Lattice\Lattice\Attributes\AsFragment;
+use Lattice\Lattice\Attributes\AsLayout;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Facades\Lattice;
@@ -17,17 +17,17 @@ use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
 
 test('discovery kinds map every component group to its attribute', function () {
     expect(DiscoveryKinds::COMPONENTS)->toMatchArray([
-        'forms' => Form::class,
-        'tables' => Table::class,
-        'actions' => Action::class,
-        'bulk-actions' => BulkAction::class,
-        'fragments' => Fragment::class,
-        'layouts' => Layout::class,
+        'forms' => AsForm::class,
+        'tables' => AsTable::class,
+        'actions' => AsAction::class,
+        'bulk-actions' => AsBulkAction::class,
+        'fragments' => AsFragment::class,
+        'layouts' => AsLayout::class,
     ]);
 });
 
 test('discovery kinds extracts a component key from its attribute', function () {
-    expect(DiscoveryKinds::keyOf(DiscoveredProfileForm::class, Form::class))
+    expect(DiscoveryKinds::keyOf(DiscoveredProfileForm::class, AsForm::class))
         ->toBe('fixtures.profile');
 });
 

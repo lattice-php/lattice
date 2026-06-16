@@ -12,7 +12,7 @@ it('serialises a block as type + label + schema', function (): void {
     expect($wire['type'])->toBe('product')
         ->and($wire['label'])->toBe('Product line')
         ->and($wire['schema'])->toHaveCount(1)
-        ->and($wire['schema'][0]['type'])->toBe('form.text-input')
+        ->and($wire['schema'][0]['type'])->toBe('field.text-input')
         ->and($wire['schema'][0]['props']['name'])->toBe('qty');
 });
 

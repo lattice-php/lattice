@@ -9,7 +9,7 @@ import { useFieldCommit } from "../use-field-commit";
 import { useSeedDefault } from "../use-seed-default";
 import { useFormValue } from "../values";
 
-export const CheckboxComponent: RendererComponent<"form.checkbox"> = ({ node }) => {
+export const CheckboxComponent: RendererComponent<"field.checkbox"> = ({ node }) => {
   const { hidden, readOnly, disabled } = useDependentField(node);
   const localName = node.props.name;
   const scope = useFieldScope();

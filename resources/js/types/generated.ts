@@ -249,23 +249,23 @@ export type ColumnFilter = {
   readonly searchable: boolean;
 };
 export type ColumnPropsMap = {
-  badge: BadgeColumn;
-  boolean: BooleanColumn;
-  icon: IconColumn;
-  image: ImageColumn;
-  money: MoneyColumn;
-  number: NumberColumn;
-  text: TextColumn;
+  "column.badge": BadgeColumn;
+  "column.boolean": BooleanColumn;
+  "column.icon": IconColumn;
+  "column.image": ImageColumn;
+  "column.money": MoneyColumn;
+  "column.number": NumberColumn;
+  "column.text": TextColumn;
 };
 export type ColumnType =
-  | "text"
-  | "boolean"
-  | "number"
-  | "money"
-  | "stack"
-  | "badge"
-  | "icon"
-  | "image";
+  | "column.text"
+  | "column.boolean"
+  | "column.number"
+  | "column.money"
+  | "column.stack"
+  | "column.badge"
+  | "column.icon"
+  | "column.image";
 export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type Condition = {
   readonly field: string;
@@ -454,6 +454,20 @@ export type EffectType =
   | "closeModal"
   | "resetForm"
   | "localeChange";
+export type FieldType =
+  | "field.builder"
+  | "field.checkbox"
+  | "field.choice"
+  | "field.date-input"
+  | "field.file-upload"
+  | "field.hidden-input"
+  | "field.number-input"
+  | "field.password-input"
+  | "field.repeater"
+  | "field.rich-editor"
+  | "field.select"
+  | "field.textarea"
+  | "field.text-input";
 export type FileUpload = {
   accept: string | null;
   columnWidth: ColumnWidth;
@@ -529,67 +543,67 @@ export type Form = {
 };
 export type FormFieldNode =
   | {
-      type: "form.builder";
+      type: "field.builder";
       key?: string;
       props: Builder;
     }
   | {
-      type: "form.checkbox";
+      type: "field.checkbox";
       key?: string;
       props: Checkbox;
     }
   | {
-      type: "form.choice";
+      type: "field.choice";
       key?: string;
       props: Choice;
     }
   | {
-      type: "form.date-input";
+      type: "field.date-input";
       key?: string;
       props: DateInput;
     }
   | {
-      type: "form.file-upload";
+      type: "field.file-upload";
       key?: string;
       props: FileUpload;
     }
   | {
-      type: "form.hidden-input";
+      type: "field.hidden-input";
       key?: string;
       props: HiddenInput;
     }
   | {
-      type: "form.number-input";
+      type: "field.number-input";
       key?: string;
       props: NumberInput;
     }
   | {
-      type: "form.password-input";
+      type: "field.password-input";
       key?: string;
       props: PasswordInput;
     }
   | {
-      type: "form.repeater";
+      type: "field.repeater";
       key?: string;
       props: Repeater;
     }
   | {
-      type: "form.rich-editor";
+      type: "field.rich-editor";
       key?: string;
       props: RichEditor;
     }
   | {
-      type: "form.select";
+      type: "field.select";
       key?: string;
       props: Select;
     }
   | {
-      type: "form.text-input";
+      type: "field.text-input";
       key?: string;
       props: TextInput;
     }
   | {
-      type: "form.textarea";
+      type: "field.textarea";
       key?: string;
       props: Textarea;
     };

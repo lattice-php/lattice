@@ -20,7 +20,7 @@
                                 "link": null
                             },
                             "sortable": true,
-                            "type": "text",
+                            "type": "column.text",
                             "width": "md"
                         },
                         {
@@ -35,7 +35,7 @@
                                 "link": null
                             },
                             "sortable": null,
-                            "type": "text",
+                            "type": "column.text",
                             "width": "md"
                         }
                     ],
@@ -44,7 +44,7 @@
                     "label": "User",
                     "props": null,
                     "sortable": null,
-                    "type": "stack",
+                    "type": "column.stack",
                     "width": "xl"
                 },
                 {
@@ -59,7 +59,7 @@
                         "link": null
                     },
                     "sortable": null,
-                    "type": "text",
+                    "type": "column.text",
                     "width": "md"
                 }
             ],

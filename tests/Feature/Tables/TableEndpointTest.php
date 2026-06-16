@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\Table as TableAttribute;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Facades\Lattice;
@@ -51,7 +51,7 @@ test('registered tables serialize their configured endpoint columns state and in
                     [
                         'key' => 'name',
                         'label' => 'Name',
-                        'type' => 'text',
+                        'type' => 'column.text',
                         'sortable' => true,
                         'filter' => [
                             'enabled' => true,
@@ -71,7 +71,7 @@ test('registered tables serialize their configured endpoint columns state and in
                     [
                         'key' => 'status',
                         'label' => 'Status',
-                        'type' => 'text',
+                        'type' => 'column.text',
                         'sortable' => null,
                         'filter' => [
                             'enabled' => true,
@@ -91,7 +91,7 @@ test('registered tables serialize their configured endpoint columns state and in
                     [
                         'key' => 'email',
                         'label' => 'Email',
-                        'type' => 'text',
+                        'type' => 'column.text',
                         'sortable' => true,
                         'filter' => null,
                         'columns' => null,
@@ -144,7 +144,7 @@ test('registered tables can serialize lazily without running their query', funct
                     [
                         'key' => 'name',
                         'label' => 'Name',
-                        'type' => 'text',
+                        'type' => 'column.text',
                         'sortable' => null,
                         'filter' => null,
                         'columns' => null,
@@ -192,14 +192,14 @@ test('registered tables serialize grid layout stack columns and row actions', fu
             [
                 'key' => 'identity',
                 'label' => 'Identity',
-                'type' => 'stack',
+                'type' => 'column.stack',
                 'sortable' => null,
                 'filter' => null,
                 'columns' => [
                     [
                         'key' => 'name',
                         'label' => 'Name',
-                        'type' => 'text',
+                        'type' => 'column.text',
                         'sortable' => true,
                         'filter' => null,
                         'columns' => null,
@@ -210,7 +210,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                     [
                         'key' => 'email',
                         'label' => 'Email',
-                        'type' => 'text',
+                        'type' => 'column.text',
                         'sortable' => null,
                         'filter' => null,
                         'columns' => null,
@@ -226,7 +226,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
             [
                 'key' => 'status',
                 'label' => 'Status',
-                'type' => 'text',
+                'type' => 'column.text',
                 'sortable' => null,
                 'filter' => null,
                 'columns' => null,
@@ -348,7 +348,7 @@ test('text columns serialize display modifiers', function () {
         ->toMatchArray([
             'key' => 'published_at',
             'label' => 'Published',
-            'type' => 'text',
+            'type' => 'column.text',
             'props' => [
                 'date' => ['format' => 'Y-m-d'],
                 'copyable' => true,
@@ -381,7 +381,7 @@ test('workbench users table exposes timestamp columns for each row', function ()
 // Inline fixture classes required only by this file
 // ---------------------------------------------------------------------------
 
-#[TableAttribute('workbench.users')]
+#[AsTable('workbench.users')]
 class WorkbenchUsersTable extends TableDefinition
 {
     public function columns(): array
@@ -414,7 +414,7 @@ class WorkbenchUsersTable extends TableDefinition
     }
 }
 
-#[TableAttribute('workbench.lazy-users')]
+#[AsTable('workbench.lazy-users')]
 class WorkbenchLazyUsersTable extends TableDefinition
 {
     public function columns(): array
@@ -432,7 +432,7 @@ class WorkbenchLazyUsersTable extends TableDefinition
     }
 }
 
-#[TableAttribute('workbench.stacked-users')]
+#[AsTable('workbench.stacked-users')]
 class WorkbenchStackedUsersTable extends TableDefinition
 {
     #[Override]
@@ -484,7 +484,7 @@ class WorkbenchStackedUsersTable extends TableDefinition
 /**
  * @extends EloquentTableDefinition<Product>
  */
-#[TableAttribute('workbench.projected-products')]
+#[AsTable('workbench.projected-products')]
 class WorkbenchProjectedProductsTable extends EloquentTableDefinition
 {
     public function columns(): array

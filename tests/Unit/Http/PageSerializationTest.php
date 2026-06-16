@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
@@ -17,7 +18,7 @@ test('pages serialize layout and container metadata', function () {
         }
     };
 
-    $configuredPage = new #[Lattice\Lattice\Attributes\Page(container: PageContainer::Default)] class extends Page
+    $configuredPage = new #[AsPage(container: PageContainer::Default)] class extends Page
     {
         public function render(PageSchema $schema): PageSchema
         {
@@ -32,7 +33,7 @@ test('pages serialize layout and container metadata', function () {
 });
 
 test('the layout() method takes precedence over the page attribute', function () {
-    $page = new #[Lattice\Lattice\Attributes\Page(layout: PageLayout::App)] class extends Page
+    $page = new #[AsPage(layout: PageLayout::App)] class extends Page
     {
         public function layout(): PageLayout
         {
@@ -50,7 +51,7 @@ test('the layout() method takes precedence over the page attribute', function ()
 });
 
 test('the container() method takes precedence over the page attribute', function () {
-    $page = new #[Lattice\Lattice\Attributes\Page(container: PageContainer::Default)] class extends Page
+    $page = new #[AsPage(container: PageContainer::Default)] class extends Page
     {
         public function container(): PageContainer
         {

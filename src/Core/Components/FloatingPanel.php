@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Enums\FloatingPlacement;
 
-#[Attributes\Component('floating-panel')]
+#[AsComponent('floating-panel')]
 class FloatingPanel extends ContainerComponent
 {
     public ?string $label = null;

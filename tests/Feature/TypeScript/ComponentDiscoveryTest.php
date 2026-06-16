@@ -11,10 +11,10 @@ it('discovers attributed components under a path with type, flags and category',
 
     $byType = collect($discovered)->keyBy->type;
 
-    expect($byType)->toHaveKey('sample.widget')->toHaveKey('sample.field');
+    expect($byType)->toHaveKey('sample.widget')->toHaveKey('field.sample');
 
     $widget = $byType->get('sample.widget');
-    $field = $byType->get('sample.field');
+    $field = $byType->get('field.sample');
 
     assert($widget instanceof DiscoveredComponent);
     assert($field instanceof DiscoveredComponent);
@@ -24,7 +24,7 @@ it('discovers attributed components under a path with type, flags and category',
         ->and($field->category)->toBe('field');
 });
 
-it('excludes classes without the Component attribute from discovery', function () {
+it('excludes classes without the AsComponent attribute from discovery', function () {
     $discovered = (new ComponentDiscovery)->discover(__DIR__.'/../../Fixtures/TypeScript');
 
     $types = collect($discovered)->pluck('type')->all();

@@ -5,7 +5,7 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FormValuesProvider } from "../values";
 import { RichEditorComponent } from "./rich-editor";
 
-function renderField(node: Node<"form.rich-editor">, initial: Record<string, unknown> = {}) {
+function renderField(node: Node<"field.rich-editor">, initial: Record<string, unknown> = {}) {
   return render(
     <FormValuesProvider initial={initial}>
       <RichEditorComponent node={node}>{null}</RichEditorComponent>
@@ -17,7 +17,7 @@ describe("RichEditorComponent", () => {
   it("hides when its visible condition fails", () => {
     renderField(
       fakeNode({
-        type: "form.rich-editor",
+        type: "field.rich-editor",
         props: {
           name: "body",
           label: "Body",
@@ -31,7 +31,7 @@ describe("RichEditorComponent", () => {
   });
 
   it("renders the toolbar and a hidden input for submission", async () => {
-    renderField(fakeNode({ type: "form.rich-editor", props: { name: "body", label: "Body" } }));
+    renderField(fakeNode({ type: "field.rich-editor", props: { name: "body", label: "Body" } }));
 
     expect(await screen.findByLabelText("Bold")).toBeInTheDocument();
     expect(document.querySelector('input[type="hidden"][name="body"]')).toBeInTheDocument();

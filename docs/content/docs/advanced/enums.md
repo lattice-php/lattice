@@ -73,7 +73,7 @@ The icon names a `Lattice\Lattice\Core\Enums\Icon` accepts are listed on the [Ic
 
 | Enum             | Cases (value)                                                            |
 | ---------------- | ------------------------------------------------------------------------ |
-| `ColumnType`     | `Text` (text), `Stack` (stack), `Badge` (badge), `Icon` (icon), `Image` (image) |
+| `ColumnType`     | `Text` (column.text), `Stack` (column.stack), `Badge` (column.badge), `Icon` (column.icon), `Image` (column.image) |
 | `FilterType`     | `Text` (text), `Number` (number), `Date` (date), `Boolean` (boolean)     |
 | `FilterControl`  | `Select` (select), `Ternary` (ternary), `DateRange` (date-range), `Toggle` (toggle) |
 | `PaginationType` | `None` (none), `Simple` (simple), `Table` (table), `Infinite` (infinite) |
@@ -86,6 +86,7 @@ fields.
 
 | Enum            | Namespace                       | Cases (value)                    |
 | --------------- | ------------------------------- | -------------------------------- |
+| `FieldType`     | `Lattice\Lattice\Forms\Enums`   | `TextInput` (field.text-input), `Select` (field.select), `Repeater` (field.repeater), `Builder` (field.builder) |
 | `RowLayout`     | `Lattice\Lattice\Core\Enums`    | `Stack` (stack), `Table` (table) |
 | `RowActionType` | `Lattice\Lattice\Forms\Enums`   | `Duplicate` (duplicate), `Remove` (remove) |
 

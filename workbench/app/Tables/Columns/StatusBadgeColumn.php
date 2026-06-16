@@ -8,7 +8,7 @@ use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Filterable;
 
-#[AsColumn(type: 'column.status-badge')]
+#[AsColumn(type: 'status-badge')]
 class StatusBadgeColumn extends Column implements Filterable
 {
     use IsFilterable;

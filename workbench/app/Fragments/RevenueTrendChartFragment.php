@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Workbench\App\Fragments;
 
-use Lattice\Lattice\Attributes\Fragment;
+use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Core\Components\Chart;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 
-#[Fragment('workbench.revenue-trend-chart')]
+#[AsFragment('workbench.revenue-trend-chart')]
 final class RevenueTrendChartFragment extends FragmentDefinition
 {
     public function schema(PageSchema $schema): PageSchema

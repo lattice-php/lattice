@@ -6,14 +6,14 @@ namespace Workbench\App\Forms;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
-#[Form('workbench.upload.form')]
+#[AsForm('workbench.upload.form')]
 class UploadForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent

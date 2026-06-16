@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\EloquentOptions;
 use Lattice\Lattice\Core\Option;
@@ -26,7 +26,7 @@ use Workbench\App\Models\Group;
 use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesPrice;
 
-#[Form('workbench.products.form')]
+#[AsForm('workbench.products.form')]
 class ProductForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent

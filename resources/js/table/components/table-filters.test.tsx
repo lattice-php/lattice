@@ -8,7 +8,7 @@ function col(key: string, label: string): ColumnData {
   return {
     key,
     label,
-    type: "text",
+    type: "column.text",
     width: "md",
     sortable: null,
     filter: null,

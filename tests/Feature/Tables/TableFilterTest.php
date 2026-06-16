@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Attributes\Table as TableAttribute;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\Columns\TextColumn;
@@ -108,7 +108,7 @@ test('a table rejects searching a filter that is not searchable', function () {
 /**
  * @extends EloquentTableDefinition<Product>
  */
-#[TableAttribute('workbench.searchable-filter')]
+#[AsTable('workbench.searchable-filter')]
 class WorkbenchSearchableFilterTable extends EloquentTableDefinition
 {
     public function columns(): array
@@ -139,7 +139,7 @@ class WorkbenchSearchableFilterTable extends EloquentTableDefinition
 /**
  * @extends EloquentTableDefinition<Product>
  */
-#[TableAttribute('workbench.filtered-products')]
+#[AsTable('workbench.filtered-products')]
 class WorkbenchFilteredProductsTable extends EloquentTableDefinition
 {
     public function columns(): array

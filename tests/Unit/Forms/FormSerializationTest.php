@@ -32,7 +32,7 @@ test('password inputs can request automatic confirmation fields', function () {
         ->passwordRules('minlength:8')
         ->needsConfirmation()))
         ->toMatchArray([
-            'type' => 'form.password-input',
+            'type' => 'field.password-input',
             'props' => [
                 'confirmation' => [
                     'label' => 'Confirm password',

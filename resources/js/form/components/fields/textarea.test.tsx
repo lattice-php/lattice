@@ -5,7 +5,7 @@ import { FormValuesProvider } from "../values";
 import { TextareaComponent } from "./textarea";
 
 const node = fakeNode({
-  type: "form.textarea",
+  type: "field.textarea",
   props: {
     name: "bio",
     label: "Bio",

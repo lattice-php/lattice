@@ -8,7 +8,7 @@ export const FormSkeletonComponent: RendererComponent<"form"> = ({ node }) => {
       4,
       node.schema
         ?.find((child) => child.type === "grid")
-        ?.schema?.filter((child) => child.type !== "form.hidden-input").length ?? 2,
+        ?.schema?.filter((child) => child.type !== "field.hidden-input").length ?? 2,
     ),
   );
 

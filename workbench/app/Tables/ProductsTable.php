@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Actions\Components\ActionGroup;
 use Lattice\Lattice\Actions\Components\BulkAction;
-use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Tables\Columns\BooleanColumn;
@@ -33,7 +33,7 @@ use Workbench\App\Tables\Columns\StatusBadgeColumn;
 /**
  * @extends EloquentTableDefinition<Product>
  */
-#[Table('workbench.products')]
+#[AsTable('workbench.products')]
 class ProductsTable extends EloquentTableDefinition
 {
     /**

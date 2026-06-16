@@ -23,6 +23,6 @@
             "type": "email",
             "value": null
         },
-        "type": "form.text-input"
+        "type": "field.text-input"
     }
 ]

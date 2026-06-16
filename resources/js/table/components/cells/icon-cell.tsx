@@ -2,7 +2,7 @@ import { IconRenderer } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { ColumnCellComponent } from "../../registry";
 
-export const IconCell: ColumnCellComponent<"icon"> = ({ props, value }) => {
+export const IconCell: ColumnCellComponent<"column.icon"> = ({ props, value }) => {
   const icon = props.icons?.[String(value)] ?? props.icon ?? undefined;
 
   if (!icon) {

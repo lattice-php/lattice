@@ -46,7 +46,7 @@ function renderSelect({
   row?: Record<string, unknown>;
 }) {
   const node = fakeNode({
-    type: "form.select",
+    type: "field.select",
     props: {
       name: "product",
       label: "Product",
@@ -148,7 +148,7 @@ describe("SelectComponent options", () => {
     initial: Record<string, unknown> = {},
   ) {
     const node = fakeNode({
-      type: "form.select",
+      type: "field.select",
       props: {
         name: "color",
         label: "Color",

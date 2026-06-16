@@ -2,7 +2,7 @@ import { cn } from "@lattice-php/lattice/lib/utils";
 import { formatCell } from "../../format";
 import type { ColumnCellComponent } from "../../registry";
 
-export const BadgeCell: ColumnCellComponent<"badge"> = ({ column, props, value }) => {
+export const BadgeCell: ColumnCellComponent<"column.badge"> = ({ column, props, value }) => {
   const label = formatCell(value, column);
 
   if (label === "") {

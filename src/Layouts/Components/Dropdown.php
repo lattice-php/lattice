@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Layouts\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Enums\Placement;
 
-#[Attributes\Component('dropdown')]
+#[AsComponent('dropdown')]
 class Dropdown extends ContainerComponent
 {
     /**

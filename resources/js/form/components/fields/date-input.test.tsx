@@ -5,7 +5,7 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FormValuesProvider } from "../values";
 import { DateInputComponent } from "./date-input";
 
-function renderField(node: Node<"form.date-input">, initial: Record<string, unknown> = {}) {
+function renderField(node: Node<"field.date-input">, initial: Record<string, unknown> = {}) {
   return render(
     <FormValuesProvider initial={initial}>
       <DateInputComponent node={node}>{null}</DateInputComponent>
@@ -15,7 +15,7 @@ function renderField(node: Node<"form.date-input">, initial: Record<string, unkn
 
 describe("DateInputComponent", () => {
   it("renders a date input seeded from the store", () => {
-    renderField(fakeNode({ type: "form.date-input", props: { name: "due", label: "Due" } }), {
+    renderField(fakeNode({ type: "field.date-input", props: { name: "due", label: "Due" } }), {
       due: "2026-06-08",
     });
 
@@ -27,7 +27,7 @@ describe("DateInputComponent", () => {
   it("hides when its visible condition fails", () => {
     renderField(
       fakeNode({
-        type: "form.date-input",
+        type: "field.date-input",
         props: {
           name: "due",
           label: "Due",

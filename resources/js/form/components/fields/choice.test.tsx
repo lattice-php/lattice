@@ -16,7 +16,7 @@ describe("Lattice form choice component", () => {
         ],
         value: "free",
       },
-      type: "form.choice",
+      type: "field.choice",
     });
 
     render(

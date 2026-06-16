@@ -7,7 +7,7 @@ use Lattice\Lattice\Forms\Components\TextInput;
 it('serializes a text input', function (): void {
     $node = wire(TextInput::make('name', 'Team name')->placeholder('My team')->required());
 
-    expect($node['type'])->toBe('form.text-input')
+    expect($node['type'])->toBe('field.text-input')
         ->and($node['props'])->toMatchArray([
             'name' => 'name',
             'label' => 'Team name',
@@ -19,7 +19,7 @@ it('serializes a text input', function (): void {
 it('serializes an email text input', function (): void {
     $node = wire(TextInput::make('email', 'Email address')->email()->placeholder('you@example.com'));
 
-    expect($node['type'])->toBe('form.text-input')
+    expect($node['type'])->toBe('field.text-input')
         ->and($node['props'])->toMatchArray([
             'name' => 'email',
             'label' => 'Email address',

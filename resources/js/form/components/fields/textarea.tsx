@@ -2,7 +2,7 @@ import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { Textarea } from "../base/textarea";
 import { SimpleField } from "./simple-field";
 
-export const TextareaComponent: RendererComponent<"form.textarea"> = ({ node }) => {
+export const TextareaComponent: RendererComponent<"field.textarea"> = ({ node }) => {
   const props = node.props;
 
   return (

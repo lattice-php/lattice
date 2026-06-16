@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Concerns\HasOptions;
 
 /**
@@ -11,7 +11,7 @@ use Lattice\Lattice\Core\Concerns\HasOptions;
  * and emits a client event when the selection changes. Use it for client-side
  * settings (e.g. an appearance switcher) rather than as a form field.
  */
-#[Attributes\Component('segmented-control')]
+#[AsComponent('segmented-control')]
 class SegmentedControl extends Component
 {
     use HasOptions;

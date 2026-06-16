@@ -28,7 +28,7 @@ it('writes a ColumnProps augmentation from the column class public props', funct
     expect($contents)
         ->toContain('declare module "@lattice-php/lattice"')
         ->toContain('interface ComponentProps')
-        ->toContain('"sample.field"')
+        ->toContain('"field.sample"')
         ->toContain('"sample.widget"')
         ->toContain('interface ColumnProps')
         ->toContain('"column.rating"')

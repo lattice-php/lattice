@@ -313,7 +313,7 @@ function Toolbar({ editor }: { editor: Editor }) {
   );
 }
 
-export const RichEditorComponent: RendererComponent<"form.rich-editor"> = ({ node }) => {
+export const RichEditorComponent: RendererComponent<"field.rich-editor"> = ({ node }) => {
   const { errors } = useFormContext();
   const { hidden, required, readOnly, disabled } = useDependentField(node);
   const { change, blur } = useFieldCommit();

@@ -6,7 +6,7 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\FormActionDefinition;
-use Lattice\Lattice\Attributes\Action;
+use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
@@ -49,7 +49,7 @@ it('validates submitted values against a lazy form schema', function (): void {
         ->assertJsonPath('data.title', 'Renamed');
 });
 
-#[Action('test.edit')]
+#[AsAction('test.edit')]
 class EditActionFixture extends FormActionDefinition
 {
     public function definition(ActionComponent $action): ActionComponent
@@ -136,7 +136,7 @@ it('resolves computed fields for an embedded form', function (): void {
         ->assertJsonPath('values.total', 7.5);
 });
 
-#[Action('test.assign')]
+#[AsAction('test.assign')]
 class AssignActionFixture extends ActionDefinition
 {
     public function definition(ActionComponent $action): ActionComponent
@@ -159,7 +159,7 @@ class AssignActionFixture extends ActionDefinition
     }
 }
 
-#[Action('test.reject')]
+#[AsAction('test.reject')]
 class RejectActionFixture extends ActionDefinition
 {
     public function definition(ActionComponent $action): ActionComponent
@@ -180,7 +180,7 @@ class RejectActionFixture extends ActionDefinition
     }
 }
 
-#[Action('test.unvalidated-reject')]
+#[AsAction('test.unvalidated-reject')]
 class UnvalidatedRejectActionFixture extends ActionDefinition
 {
     public function definition(ActionComponent $action): ActionComponent

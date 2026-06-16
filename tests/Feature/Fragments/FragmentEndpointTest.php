@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Attributes\Fragment;
+use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
@@ -44,7 +44,7 @@ test('registered fragments serialize lazy endpoints and return component schemas
 // Inline fixture class required only by this file
 // ---------------------------------------------------------------------------
 
-#[Fragment('workbench.two-factor-setup')]
+#[AsFragment('workbench.two-factor-setup')]
 final class WorkbenchTwoFactorSetupFragment extends FragmentDefinition
 {
     public function schema(PageSchema $schema): PageSchema

@@ -4,17 +4,17 @@ description: The entry point of a Lattice screen — a PHP class that builds a c
 ---
 
 A page is the entry point of a Lattice screen. It extends `Lattice\Lattice\Http\Page`, declares its
-route with a `#[Page]` attribute, and builds its UI in `render()`. Lattice discovers the class,
+route with a `#[AsPage]` attribute, and builds its UI in `render()`. Lattice discovers the class,
 registers a route for it, and renders it through Inertia — you write no controller and no Inertia page
 component of your own.
 
 ```php
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Tables\Components\Table;
 
-#[Page(route: '/products')]
+#[AsPage(route: '/products')]
 class ProductsPage extends Page
 {
     public function title(): string
@@ -59,7 +59,7 @@ straight into its signature alongside the `PageSchema`:
 ```php
 use Workbench\App\Models\Product;
 
-#[Page(route: '/products/{product}/edit')]
+#[AsPage(route: '/products/{product}/edit')]
 class ProductEditPage extends Page
 {
     public function render(PageSchema $schema, Product $product): PageSchema
@@ -75,9 +75,9 @@ class ProductEditPage extends Page
 Anything the container can resolve — a `Request`, a service, a bound model — can be type-hinted here
 too.
 
-## The `#[Page]` attribute
+## The `#[AsPage]` attribute
 
-`#[Page]` declares how the page is routed and framed:
+`#[AsPage]` declares how the page is routed and framed:
 
 | Argument     | Purpose                                                                                   |
 | ------------ | ----------------------------------------------------------------------------------------- |
@@ -91,7 +91,7 @@ too.
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 
-#[Page(
+#[AsPage(
     route: '/products',
     name: 'products.index',
     layout: PageLayout::App,
@@ -107,17 +107,17 @@ value set by a parent class. Put the shared framing on a base page once, and con
 only their own route:
 
 ```php
-#[Page(layout: PageLayout::App, container: PageContainer::Default, middleware: ['web'])]
+#[AsPage(layout: PageLayout::App, container: PageContainer::Default, middleware: ['web'])]
 abstract class AppPage extends Page {}
 
-#[Page(route: '/products', name: 'products.index')]
+#[AsPage(route: '/products', name: 'products.index')]
 class ProductsPage extends AppPage {} // inherits the App layout, container, and middleware
 ```
 
 ## Discovery and registration
 
 Lattice scans the paths in `config('lattice.discover')` (your `app/` directory by default) for classes
-carrying `#[Page]` and registers a route for each one. Register pages that live outside those paths
+carrying `#[AsPage]` and registers a route for each one. Register pages that live outside those paths
 explicitly:
 
 ```php

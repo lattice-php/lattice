@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Fragments;
 
+use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Attributes\Fragment;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\PageSchema;
@@ -57,7 +57,7 @@ final class FragmentRegistry extends DefinitionRegistry
      */
     public function attributeClass(): string
     {
-        return Fragment::class;
+        return AsFragment::class;
     }
 
     protected function name(): string

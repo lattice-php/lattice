@@ -38,7 +38,7 @@ abstract class Page implements PageContract
 
     /**
      * Resolve the page's layout at request time. Returning a non-null value
-     * takes precedence over the #[Page] attribute; null defers to it.
+     * takes precedence over the #[AsPage] attribute; null defers to it.
      */
     public function layout(): PageLayout|string|null
     {
@@ -47,7 +47,7 @@ abstract class Page implements PageContract
 
     /**
      * Resolve the page's container at request time. Returning a non-null value
-     * takes precedence over the #[Page] attribute; null defers to it.
+     * takes precedence over the #[AsPage] attribute; null defers to it.
      */
     public function container(): PageContainer|string|null
     {

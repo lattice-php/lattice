@@ -34,18 +34,18 @@ implementing the source interface.
 ## Defining a table
 
 Extend `TableDefinition` (or, for a database-backed table, `EloquentTableDefinition`) and declare the
-columns. The `#[Table]` attribute gives the table a stable id so it can be discovered and addressed by
+columns. The `#[AsTable]` attribute gives the table a stable id so it can be discovered and addressed by
 its own endpoint.
 
 ```php
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 
-#[Table('app.products')]
+#[AsTable('app.products')]
 class ProductsTable extends EloquentTableDefinition
 {
     public function columns(): array

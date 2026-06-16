@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Lattice\Lattice\Console\Commands\Concerns\GeneratesComponentPair;
+use Lattice\Lattice\Tables\Enums\ColumnType;
 
 final class MakeColumnCommand extends Command
 {
@@ -18,13 +19,15 @@ final class MakeColumnCommand extends Command
     public function handle(): int
     {
         $name = $this->argument('name');
-        $type = $this->option('type') ?: $this->typeFromName($name, 'column.');
+        $type = $this->option('type') ?: $this->typeFromName($name, '');
+        $attributeType = ColumnType::localType($type);
+        $wireType = ColumnType::wireType($type);
         $kebab = Str::kebab($name);
 
         $this->writeStub(
             'column.php.stub',
             app_path('Tables/Columns/'.$name.'.php'),
-            ['namespace' => 'App\\Tables\\Columns', 'class' => $name, 'type' => $type],
+            ['namespace' => 'App\\Tables\\Columns', 'class' => $name, 'type' => $attributeType],
         );
 
         $this->writeStub(
@@ -35,7 +38,7 @@ final class MakeColumnCommand extends Command
 
         $this->registerInPlugin(
             resource_path('js/lattice/columns.ts'),
-            $type,
+            $wireType,
             $name.'Cell',
             './columns/'.$kebab,
             blockKey: 'columns',
@@ -44,7 +47,7 @@ final class MakeColumnCommand extends Command
 
         $this->refreshTypes();
 
-        $this->components->info("Column [$name] created with type [$type].");
+        $this->components->info("Column [$name] created with type [$wireType].");
 
         return self::SUCCESS;
     }

@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Attributes\Action;
+use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 
-#[Action('fixtures.ping')]
+#[AsAction('fixtures.ping')]
 class DiscoveredPingAction extends ActionDefinition
 {
     public function definition(ActionComponent $action): ActionComponent

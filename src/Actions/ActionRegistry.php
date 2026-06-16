@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Actions;
 
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Attributes\Action;
+use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Lattice\Lattice\Core\DefinitionRegistry;
 
@@ -45,7 +45,7 @@ final class ActionRegistry extends DefinitionRegistry
      */
     public function attributeClass(): string
     {
-        return Action::class;
+        return AsAction::class;
     }
 
     protected function name(): string

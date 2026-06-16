@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\Gap;
@@ -13,7 +13,7 @@ use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\GroupForm;
 use Workbench\App\Models\Group;
 
-#[Page(route: '/groups/{group}/edit')]
+#[AsPage(route: '/groups/{group}/edit')]
 class GroupEditPage extends WorkbenchPage
 {
     public function title(): string

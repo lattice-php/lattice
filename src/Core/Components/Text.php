@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Color;
 use Lattice\Lattice\Core\Enums\Size;
 
-#[Attributes\Component('text')]
+#[AsComponent('text')]
 class Text extends Component
 {
     public string $text = '';

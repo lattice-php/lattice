@@ -36,7 +36,7 @@ function rejectAction(precognitive = false): Node {
         id: "test.reject-form",
         props: { precognitive },
         schema: [
-          { key: "reason", props: { label: "Reason", name: "reason" }, type: "form.text-input" },
+          { key: "reason", props: { label: "Reason", name: "reason" }, type: "field.text-input" },
         ],
         type: "form",
       },
@@ -139,7 +139,9 @@ describe("action form modal", () => {
     const formNode = {
       id: "test.edit-form",
       props: {},
-      schema: [{ key: "title", props: { label: "Title", name: "title" }, type: "form.text-input" }],
+      schema: [
+        { key: "title", props: { label: "Title", name: "title" }, type: "field.text-input" },
+      ],
       type: "form",
     };
     const fetchMock = vi.fn<FetchMock>().mockImplementation((_url, init) => {
@@ -171,7 +173,9 @@ describe("action form modal", () => {
     const formNode = {
       id: "test.edit-form",
       props: {},
-      schema: [{ key: "title", props: { label: "Title", name: "title" }, type: "form.text-input" }],
+      schema: [
+        { key: "title", props: { label: "Title", name: "title" }, type: "field.text-input" },
+      ],
       type: "form",
     };
     const fetchMock = vi.fn<FetchMock>().mockResolvedValue({

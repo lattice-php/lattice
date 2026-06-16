@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\Layout;
-use Lattice\Lattice\Attributes\Page as PageAttr;
+use Lattice\Lattice\Attributes\AsLayout;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Components\Text;
@@ -15,7 +15,7 @@ use Lattice\Lattice\Layouts\Components\Outlet;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
 
-#[Layout('app')]
+#[AsLayout('app')]
 final class WorkbenchAppLayout extends LayoutDefinition
 {
     public function schema(PageSchema $schema, Request $request): PageSchema
@@ -29,7 +29,7 @@ final class WorkbenchAppLayout extends LayoutDefinition
     }
 }
 
-#[PageAttr(layout: 'app')]
+#[AsPage(layout: 'app')]
 final class WorkbenchLayoutPage extends Page
 {
     public function render(PageSchema $schema): PageSchema

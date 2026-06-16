@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Forms;
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Attributes\Form;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 
@@ -45,7 +45,7 @@ final class FormRegistry extends DefinitionRegistry
      */
     public function attributeClass(): string
     {
-        return Form::class;
+        return AsForm::class;
     }
 
     protected function name(): string

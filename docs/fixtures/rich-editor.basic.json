@@ -19,6 +19,6 @@
             "tooltip": null,
             "value": null
         },
-        "type": "form.rich-editor"
+        "type": "field.rich-editor"
     }
 ]

@@ -36,25 +36,25 @@ export const formComponents = createPlugin({
     form: lazyComponent(loadFormComponent("FormComponent"), {
       fallback: FormSkeletonComponent,
     }),
-    "form.builder": lazyComponent(loadFormComponent("BuilderComponent")),
-    "form.checkbox": lazyComponent(loadFormComponent("CheckboxComponent")),
-    "form.choice": lazyComponent(loadFormComponent("ChoiceComponent")),
-    "form.date-input": lazyComponent(loadFormComponent("DateInputComponent")),
-    "form.file-upload": lazyComponent(loadFormComponent("FileUploadComponent")),
-    "form.hidden-input": lazyComponent(loadFormComponent("HiddenInputComponent")),
-    "form.number-input": lazyComponent(loadFormComponent("NumberInputComponent")),
-    "form.password-input": lazyComponent(loadFormComponent("PasswordInputComponent")),
-    "form.repeater": lazyComponent(loadFormComponent("RepeaterComponent")),
+    "field.builder": lazyComponent(loadFormComponent("BuilderComponent")),
+    "field.checkbox": lazyComponent(loadFormComponent("CheckboxComponent")),
+    "field.choice": lazyComponent(loadFormComponent("ChoiceComponent")),
+    "field.date-input": lazyComponent(loadFormComponent("DateInputComponent")),
+    "field.file-upload": lazyComponent(loadFormComponent("FileUploadComponent")),
+    "field.hidden-input": lazyComponent(loadFormComponent("HiddenInputComponent")),
+    "field.number-input": lazyComponent(loadFormComponent("NumberInputComponent")),
+    "field.password-input": lazyComponent(loadFormComponent("PasswordInputComponent")),
+    "field.repeater": lazyComponent(loadFormComponent("RepeaterComponent")),
     // Loaded from its own module so TipTap is split into a separate chunk,
     // only fetched on pages that actually render a rich editor.
-    "form.rich-editor": lazyComponent<"form.rich-editor">(async () => {
+    "field.rich-editor": lazyComponent<"field.rich-editor">(async () => {
       const { RichEditorComponent } = await import("./components/fields/rich-editor");
 
       return { default: RichEditorComponent };
     }),
-    "form.select": lazyComponent(loadFormComponent("SelectComponent")),
-    "form.textarea": lazyComponent(loadFormComponent("TextareaComponent")),
-    "form.text-input": lazyComponent(loadFormComponent("TextInputComponent")),
+    "field.select": lazyComponent(loadFormComponent("SelectComponent")),
+    "field.textarea": lazyComponent(loadFormComponent("TextareaComponent")),
+    "field.text-input": lazyComponent(loadFormComponent("TextInputComponent")),
   },
   name: "lattice/form",
 });

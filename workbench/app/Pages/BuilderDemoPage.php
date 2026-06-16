@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\Gap;
@@ -12,7 +12,7 @@ use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\BuilderDemoForm;
 
-#[Page(route: '/builder')]
+#[AsPage(route: '/builder')]
 class BuilderDemoPage extends WorkbenchPage
 {
     public function title(): string

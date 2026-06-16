@@ -139,10 +139,10 @@ test('interaction endpoints re-run authorization for every interaction', functio
 
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Attributes\Action;
-use Lattice\Lattice\Attributes\Form as FormAttribute;
-use Lattice\Lattice\Attributes\Fragment;
-use Lattice\Lattice\Attributes\Table as TableAttribute;
+use Lattice\Lattice\Attributes\AsAction;
+use Lattice\Lattice\Attributes\AsForm;
+use Lattice\Lattice\Attributes\AsFragment;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\FormDefinition;
@@ -155,7 +155,7 @@ use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
 use Symfony\Component\HttpFoundation\Response;
 
-#[Action('workbench.denied')]
+#[AsAction('workbench.denied')]
 final class WorkbenchDeniedAction extends ActionDefinition
 {
     public function definition(ActionComponent $action): ActionComponent
@@ -175,7 +175,7 @@ final class WorkbenchDeniedAction extends ActionDefinition
     }
 }
 
-#[FormAttribute('workbench.denied')]
+#[AsForm('workbench.denied')]
 final class WorkbenchDeniedForm extends FormDefinition
 {
     public function definition(Form $form, Request $request): Form
@@ -195,7 +195,7 @@ final class WorkbenchDeniedForm extends FormDefinition
     }
 }
 
-#[TableAttribute('workbench.denied')]
+#[AsTable('workbench.denied')]
 final class WorkbenchDeniedTable extends TableDefinition
 {
     public function columns(): array
@@ -215,7 +215,7 @@ final class WorkbenchDeniedTable extends TableDefinition
     }
 }
 
-#[Fragment('workbench.denied')]
+#[AsFragment('workbench.denied')]
 final class WorkbenchDeniedFragment extends FragmentDefinition
 {
     public function schema(PageSchema $schema): PageSchema

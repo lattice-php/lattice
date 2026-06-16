@@ -6,7 +6,7 @@ namespace Workbench\App\Forms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\EloquentOptions;
 use Lattice\Lattice\Core\Option;
@@ -26,7 +26,7 @@ use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesOrder;
 use Workbench\App\Pricing\PriceResolver;
 
-#[Form('workbench.sales-orders.form')]
+#[AsForm('workbench.sales-orders.form')]
 class SalesOrderForm extends FormDefinition
 {
     public function __construct(private readonly PriceResolver $priceResolver) {}

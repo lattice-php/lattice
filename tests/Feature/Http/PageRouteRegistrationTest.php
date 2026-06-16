@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
@@ -13,10 +13,10 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Http\Page as BasePage;
 use Lattice\Lattice\LatticeServiceProvider;
 
-#[Page(layout: PageLayout::App, container: PageContainer::Default)]
+#[AsPage(layout: PageLayout::App, container: PageContainer::Default)]
 abstract class RegBasePage extends BasePage {}
 
-#[Page(route: '/widgets', name: 'widgets.index', middleware: 'web')]
+#[AsPage(route: '/widgets', name: 'widgets.index', middleware: 'web')]
 final class RegWidgetsPage extends RegBasePage
 {
     public function render(PageSchema $schema): PageSchema

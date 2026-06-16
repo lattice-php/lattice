@@ -7,7 +7,7 @@ function isTruthy(value: unknown): boolean {
 }
 
 /** Renders a boolean column as a check (truthy) or cross (falsy) icon. */
-export const BooleanCell: ColumnCellComponent<"boolean"> = ({ value }) => {
+export const BooleanCell: ColumnCellComponent<"column.boolean"> = ({ value }) => {
   const truthy = isTruthy(value);
 
   return (

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\EloquentOptions;
@@ -21,7 +21,7 @@ use Workbench\App\Models\BusinessPartner;
 use Workbench\App\Models\Group;
 use Workbench\App\Pricing\PriceResolver;
 
-#[Form('workbench.business-partners.form')]
+#[AsForm('workbench.business-partners.form')]
 class BusinessPartnerForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent

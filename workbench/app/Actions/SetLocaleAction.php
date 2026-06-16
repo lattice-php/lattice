@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Attributes\Action;
+use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Workbench\App\Models\User;
 
-#[Action('workbench.locale.set')]
+#[AsAction('workbench.locale.set')]
 class SetLocaleAction extends ActionDefinition
 {
     public function definition(ActionComponent $action): ActionComponent

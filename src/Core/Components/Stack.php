@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\Height;
 use Lattice\Lattice\Core\Enums\Justify;
 use Lattice\Lattice\Core\Enums\Width;
 
-#[Attributes\Component('stack')]
+#[AsComponent('stack')]
 class Stack extends ContainerComponent
 {
     public ?Gap $gap = null;

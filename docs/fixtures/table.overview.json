@@ -34,7 +34,7 @@
                         "link": null
                     },
                     "sortable": true,
-                    "type": "text",
+                    "type": "column.text",
                     "width": "md"
                 },
                 {
@@ -67,7 +67,7 @@
                         "unit": null
                     },
                     "sortable": true,
-                    "type": "number",
+                    "type": "column.number",
                     "width": "md"
                 },
                 {
@@ -78,7 +78,7 @@
                     "label": "Featured",
                     "props": null,
                     "sortable": null,
-                    "type": "boolean",
+                    "type": "column.boolean",
                     "width": "md"
                 },
                 {
@@ -95,7 +95,7 @@
                         "link": null
                     },
                     "sortable": true,
-                    "type": "text",
+                    "type": "column.text",
                     "width": "md"
                 }
             ],

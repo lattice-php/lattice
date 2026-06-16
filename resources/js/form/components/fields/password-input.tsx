@@ -7,7 +7,7 @@ import { useControlledField } from "../use-controlled-field";
 import { useFieldCommit } from "../use-field-commit";
 import { useFormContext } from "../context";
 
-export const PasswordInputComponent: RendererComponent<"form.password-input"> = ({ node }) => {
+export const PasswordInputComponent: RendererComponent<"field.password-input"> = ({ node }) => {
   const props = node.props;
   const { errors } = useFormContext();
   const field = useControlledField(node);

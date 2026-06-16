@@ -9,11 +9,10 @@ use ReflectionAttribute;
 use ReflectionClass;
 
 /**
- * Marks a renderable node for the generated node types and registry. The
- * `AsColumn` attribute extends this for table cells.
+ * Marks a renderable node for the generated node types and registry.
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-class Component
+class AsComponent
 {
     /**
      * @var array<class-string, string>
@@ -23,8 +22,8 @@ class Component
     public function __construct(public readonly string $type) {}
 
     /**
-     * Resolve the wire type declared by a #[Component] (or subclass) attribute on
-     * $class, cached per class.
+     * Resolve the wire type declared by an #[AsComponent] or subclass attribute
+     * on $class, cached per class.
      *
      * @param  class-string  $class
      */
@@ -42,7 +41,7 @@ class Component
 
         if ($attributes === []) {
             throw new LogicException(sprintf(
-                'Class [%s] is missing the #[Component] attribute that declares its wire type.',
+                'Class [%s] is missing the #[AsComponent] attribute that declares its wire type.',
                 $class,
             ));
         }

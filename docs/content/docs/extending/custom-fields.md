@@ -28,7 +28,8 @@ This creates:
 - An entry in `resources/js/lattice/plugin.ts` wiring them together.
 - Runs `lattice:typescript` to refresh the generated types file.
 
-The derived type string is `form.color-picker`. Pass `--type=` to override it.
+The PHP attribute receives the short identifier `color-picker`; the wire type is `field.color-picker`.
+Pass `--type=` to override it.
 
 ## 3. The generated PHP class
 
@@ -37,10 +38,10 @@ The derived type string is `form.color-picker`. Pass `--type=` to override it.
 
 namespace App\Forms\Fields;
 
-use Lattice\Lattice\Attributes\Component;
+use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Components\Field;
 
-#[Component('form.color-picker')]
+#[AsField(type: 'color-picker')]
 class ColorPicker extends Field
 {
     //
@@ -50,7 +51,7 @@ class ColorPicker extends Field
 `Field` provides the standard field API — `make()`, `required()`, `disabled()`, `value()`, and the rest. Add public properties for any extra data you want available in the renderer:
 
 ```php
-#[Component('form.color-picker')]
+#[AsField(type: 'color-picker')]
 class ColorPicker extends Field
 {
     public ?string $swatches = null;
@@ -69,8 +70,8 @@ class ColorPicker extends Field
 ```tsx
 import type { RendererComponent } from "@lattice-php/lattice";
 
-export const ColorPickerComponent: RendererComponent<"form.color-picker"> = ({ node }) => {
-  // Render the form.color-picker field. Field state is available on node.props.
+export const ColorPickerComponent: RendererComponent<"field.color-picker"> = ({ node }) => {
+  // Render the field.color-picker field. Field state is available on node.props.
   return <div data-lattice-field={String(node.props.name ?? "")} />;
 };
 ```
@@ -80,7 +81,7 @@ Replace the stub body with real UI:
 ```tsx
 import type { RendererComponent } from "@lattice-php/lattice";
 
-export const ColorPickerComponent: RendererComponent<"form.color-picker"> = ({ node }) => {
+export const ColorPickerComponent: RendererComponent<"field.color-picker"> = ({ node }) => {
   return (
     <input
       type="color"
@@ -104,7 +105,7 @@ import { ColorPickerComponent } from "./fields/color-picker";
 export const appPlugin = createPlugin({
   name: "app",
   components: {
-    "form.color-picker": ColorPickerComponent,
+    "field.color-picker": ColorPickerComponent,
   },
 });
 ```
@@ -117,7 +118,7 @@ import { createPlugin, lazyComponent } from "@lattice-php/lattice";
 export const appPlugin = createPlugin({
   name: "app",
   components: {
-    "form.color-picker": lazyComponent(() =>
+    "field.color-picker": lazyComponent(() =>
       import("./fields/color-picker").then((m) => m.ColorPickerComponent)
     ),
   },
@@ -166,7 +167,7 @@ This writes `resources/js/lattice/generated.d.ts`, which augments the `Component
 ```ts
 declare module "@lattice-php/lattice" {
   interface ComponentProps {
-    "form.color-picker": {
+    "field.color-picker": {
       swatches: string | null;
     };
   }
@@ -180,12 +181,12 @@ After running this command, `node.props.swatches` is typed in your renderer.
 ```php
 use App\Forms\Fields\ColorPicker;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
-#[Form('app.brand-settings')]
+#[AsForm('app.brand-settings')]
 final class BrandSettingsForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent
@@ -208,4 +209,4 @@ final class BrandSettingsForm extends FormDefinition
 }
 ```
 
-The field serializes to a node with `type: "form.color-picker"` and the renderer picks it up automatically.
+The field serializes to a node with `type: "field.color-picker"` and the renderer picks it up automatically.

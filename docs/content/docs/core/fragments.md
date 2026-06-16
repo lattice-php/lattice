@@ -9,16 +9,16 @@ expensive panels, deferred content, or UI an [action](/actions/overview/) wants 
 
 ## Defining a fragment
 
-Extend `FragmentDefinition` and build its `schema()`, the same way a page does. The `#[Fragment]`
+Extend `FragmentDefinition` and build its `schema()`, the same way a page does. The `#[AsFragment]`
 attribute registers it.
 
 ```php
-use Lattice\Lattice\Attributes\Fragment;
+use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 
-#[Fragment('app.two-factor-setup')]
+#[AsFragment('app.two-factor-setup')]
 class TwoFactorSetupFragment extends FragmentDefinition
 {
     public function schema(PageSchema $schema): PageSchema

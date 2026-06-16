@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Attributes\Action;
+use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
@@ -15,7 +15,7 @@ use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\ToastMessage;
 use Workbench\App\Models\Product;
 
-#[Action('workbench.products.archive')]
+#[AsAction('workbench.products.archive')]
 class ArchiveProductAction extends ActionDefinition
 {
     public function definition(ActionComponent $action): ActionComponent

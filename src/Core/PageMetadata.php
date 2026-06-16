@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core;
 
 use BackedEnum;
-use Lattice\Lattice\Attributes\Page as PageAttribute;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Contracts\PageContract;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Enums\PageContainer;
@@ -54,9 +54,9 @@ final readonly class PageMetadata
             class: $class,
             route: $own?->route,
             name: self::resolveName($class, $own),
-            layout: self::inherited($class, fn (PageAttribute $a) => $a->layout) ?? PageLayout::None,
-            container: self::inherited($class, fn (PageAttribute $a) => $a->container) ?? PageContainer::Centered,
-            middleware: (array) (self::inherited($class, fn (PageAttribute $a) => $a->middleware) ?? []),
+            layout: self::inherited($class, fn (AsPage $a) => $a->layout) ?? PageLayout::None,
+            container: self::inherited($class, fn (AsPage $a) => $a->container) ?? PageContainer::Centered,
+            middleware: (array) (self::inherited($class, fn (AsPage $a) => $a->middleware) ?? []),
         );
     }
 
@@ -95,15 +95,15 @@ final readonly class PageMetadata
         return $value instanceof BackedEnum ? (string) $value->value : $value;
     }
 
-    private static function attributeOn(string $class): ?PageAttribute
+    private static function attributeOn(string $class): ?AsPage
     {
-        $attributes = (new ReflectionClass($class))->getAttributes(PageAttribute::class);
+        $attributes = (new ReflectionClass($class))->getAttributes(AsPage::class);
 
         return $attributes === [] ? null : $attributes[0]->newInstance();
     }
 
     /**
-     * @param  callable(PageAttribute): (PageLayout|PageContainer|array<int,string>|string|null)  $value
+     * @param  callable(AsPage): (PageLayout|PageContainer|array<int,string>|string|null)  $value
      */
     private static function inherited(string $class, callable $value): mixed
     {
@@ -118,7 +118,7 @@ final readonly class PageMetadata
         return null;
     }
 
-    private static function resolveName(string $class, ?PageAttribute $own): string
+    private static function resolveName(string $class, ?AsPage $own): string
     {
         if ($own?->name !== null) {
             return $own->name;

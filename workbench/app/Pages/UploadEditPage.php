@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Pages;
 
 use Illuminate\Support\Facades\Storage;
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\Gap;
@@ -13,7 +13,7 @@ use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\UploadForm;
 
-#[Page(route: '/uploads/edit')]
+#[AsPage(route: '/uploads/edit')]
 class UploadEditPage extends WorkbenchPage
 {
     private const string EXISTING_PATH = 'uploads/avatar-existing.jpg';

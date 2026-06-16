@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Forms\Components\Block;
 use Lattice\Lattice\Forms\Components\Builder;
@@ -14,7 +14,7 @@ use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
-#[Form('workbench.builder.form')]
+#[AsForm('workbench.builder.form')]
 class BuilderDemoForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent

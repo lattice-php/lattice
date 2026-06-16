@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\RawBlock;
 use Lattice\Lattice\Core\Components\Stack;
@@ -20,7 +20,7 @@ use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Http\Page as BasePage;
 use Workbench\App\Support\Logo;
 
-#[Page(route: '/login', name: 'login', layout: PageLayout::None, container: PageContainer::Centered, middleware: ['web'])]
+#[AsPage(route: '/login', name: 'login', layout: PageLayout::None, container: PageContainer::Centered, middleware: ['web'])]
 final class LoginPage extends BasePage
 {
     public function title(): string

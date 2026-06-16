@@ -5,7 +5,7 @@ namespace Workbench\App\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
-use Lattice\Lattice\Attributes\Table as TableAttribute;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\Enums\PaginationType;
@@ -14,7 +14,7 @@ use Lattice\Lattice\Tables\TableQuery;
 /**
  * @extends EloquentTableDefinition<User>
  */
-#[TableAttribute('workbench.users')]
+#[AsTable('workbench.users')]
 class UsersTable extends EloquentTableDefinition
 {
     /**

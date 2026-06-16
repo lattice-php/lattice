@@ -71,7 +71,7 @@ it('serializes an embedded form schema', function (): void {
 
     expect($payload['props']['form']['type'])->toBe('form');
     expect($payload['props']['form']['schema'])->toHaveCount(1);
-    expect($payload['props']['form']['schema'][0]['type'])->toBe('form.textarea');
+    expect($payload['props']['form']['schema'][0]['type'])->toBe('field.textarea');
     expect($payload['props']['form']['schema'][0]['props']['name'])->toBe('reason');
 });
 

@@ -7,7 +7,7 @@ use BackedEnum;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
@@ -17,7 +17,7 @@ use Lattice\Lattice\Core\Contracts\PageContract;
  * A single menu entry. Renders an Inertia link when it has an href, otherwise a
  * plain label that can act as a section header for its nested children.
  */
-#[Attributes\Component('menu-item')]
+#[AsComponent('menu-item')]
 class MenuItem extends ContainerComponent
 {
     use HasHttpMethod;

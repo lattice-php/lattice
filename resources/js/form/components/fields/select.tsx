@@ -28,7 +28,7 @@ function toValues(stored: unknown, fallback: unknown): string[] {
   return [String(source)];
 }
 
-export const SelectComponent: RendererComponent<"form.select"> = ({ node }) => {
+export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => {
   const { t } = useT("lattice");
   const props = node.props;
   const { action, componentRef, errors } = useFormContext();

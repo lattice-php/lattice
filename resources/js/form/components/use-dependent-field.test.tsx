@@ -9,7 +9,7 @@ import { FormValuesProvider } from "./values";
 
 function conditionNode(field: string, value: string): Node {
   return fakeNode({
-    type: "form.text-input",
+    type: "field.text-input",
     props: {
       name: "discount",
       conditions: { visible: [{ field, operator: "eq", value }] },

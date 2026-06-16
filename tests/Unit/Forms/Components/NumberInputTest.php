@@ -6,7 +6,7 @@ use Lattice\Lattice\Forms\Components\NumberInput;
 it('serializes a number input', function (): void {
     $node = wire(NumberInput::make('qty', 'Qty')->min(0)->max(100)->step(1));
 
-    expect($node['type'])->toBe('form.number-input')
+    expect($node['type'])->toBe('field.number-input')
         ->and($node['props'])->toMatchArray(['name' => 'qty', 'min' => 0, 'max' => 100, 'step' => 1]);
 });
 

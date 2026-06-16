@@ -11,7 +11,7 @@ function makeField(string $name = 'price', string $label = 'Price'): Field
     {
         protected function type(): string
         {
-            return 'form.test-field';
+            return 'field.test-field';
         }
     })::make($name, $label);
 }

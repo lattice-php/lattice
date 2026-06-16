@@ -7,7 +7,7 @@ use Lattice\Lattice\Tables\Enums\FilterType;
 it('serializes a static-currency money column', function () {
     $data = wire(MoneyColumn::make('total')->currency('EUR'));
 
-    expect($data['type'])->toBe('money')
+    expect($data['type'])->toBe('column.money')
         ->and($data['align'])->toBe('end')
         ->and($data['props']['currency'])->toBe('EUR')
         ->and($data['props']['currencyField'])->toBeNull()

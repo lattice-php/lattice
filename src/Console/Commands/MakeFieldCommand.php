@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Lattice\Lattice\Console\Commands\Concerns\GeneratesComponentPair;
+use Lattice\Lattice\Forms\Enums\FieldType;
 
 final class MakeFieldCommand extends Command
 {
@@ -18,31 +19,33 @@ final class MakeFieldCommand extends Command
     public function handle(): int
     {
         $name = $this->argument('name');
-        $type = $this->option('type') ?: $this->typeFromName($name, 'form.');
+        $type = $this->option('type') ?: $this->typeFromName($name, '');
+        $attributeType = FieldType::localType($type);
+        $wireType = FieldType::wireType($type);
         $kebab = Str::kebab($name);
 
         $this->writeStub(
             'field.php.stub',
             app_path('Forms/Fields/'.$name.'.php'),
-            ['namespace' => 'App\\Forms\\Fields', 'class' => $name, 'type' => $type],
+            ['namespace' => 'App\\Forms\\Fields', 'class' => $name, 'type' => $attributeType],
         );
 
         $this->writeStub(
             'field.tsx.stub',
             resource_path('js/lattice/fields/'.$kebab.'.tsx'),
-            ['class' => $name, 'type' => $type],
+            ['class' => $name, 'type' => $wireType],
         );
 
         $this->registerInPlugin(
             resource_path('js/lattice/plugin.ts'),
-            $type,
+            $wireType,
             $name.'Component',
             './fields/'.$kebab,
         );
 
         $this->refreshTypes();
 
-        $this->components->info("Field [$name] created with type [$type].");
+        $this->components->info("Field [$name] created with type [$wireType].");
 
         return self::SUCCESS;
     }

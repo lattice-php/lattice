@@ -45,7 +45,7 @@ import { RepeaterComponent } from "./repeater";
 
 const repeaterNode = {
   id: "r",
-  type: "form.repeater",
+  type: "field.repeater",
   props: {
     name: "items",
     reorderable: true,
@@ -55,7 +55,7 @@ const repeaterNode = {
     maxItems: 3,
     label: "Line items",
   },
-  schema: [{ id: "c", type: "form.text-input", props: { name: "name", label: "Name" } }],
+  schema: [{ id: "c", type: "field.text-input", props: { name: "name", label: "Name" } }],
 } as never;
 
 function wrap(
@@ -108,7 +108,7 @@ it("removes a row", () => {
 it("renders declared row actions in a kebab and duplicates a row", () => {
   const node = {
     id: "r",
-    type: "form.repeater",
+    type: "field.repeater",
     props: {
       name: "items",
       reorderable: true,
@@ -121,7 +121,7 @@ it("renders declared row actions in a kebab and duplicates a row", () => {
         { type: "remove", key: "remove", label: null, icon: null, destructive: true },
       ],
     },
-    schema: [{ id: "c", type: "form.text-input", props: { name: "name", label: "Name" } }],
+    schema: [{ id: "c", type: "field.text-input", props: { name: "name", label: "Name" } }],
   } as never;
 
   wrap(<RepeaterComponent node={node}>{null}</RepeaterComponent>, {
@@ -149,7 +149,7 @@ it("shows the array-level error for the repeater field", () => {
 it("renders the table layout with a header from the schema", () => {
   const node = {
     id: "r",
-    type: "form.repeater",
+    type: "field.repeater",
     props: {
       name: "items",
       layout: "table",
@@ -160,8 +160,8 @@ it("renders the table layout with a header from the schema", () => {
       addLabel: "Add",
     },
     schema: [
-      { id: "q", type: "form.text-input", props: { name: "qty", label: "Qty" } },
-      { id: "p", type: "form.text-input", props: { name: "price", label: "Price" } },
+      { id: "q", type: "field.text-input", props: { name: "qty", label: "Qty" } },
+      { id: "p", type: "field.text-input", props: { name: "price", label: "Price" } },
     ],
   } as never;
   wrap(<RepeaterComponent node={node}>{null}</RepeaterComponent>, {

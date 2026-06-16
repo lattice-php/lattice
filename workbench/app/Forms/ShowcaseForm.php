@@ -5,7 +5,7 @@ namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Components\Grid;
 use Lattice\Lattice\Forms\Components\Checkbox;
@@ -24,7 +24,7 @@ use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Models\Product;
 
-#[Form('workbench.showcase.form')]
+#[AsForm('workbench.showcase.form')]
 class ShowcaseForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent

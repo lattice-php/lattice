@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Actions\FormActionDefinition;
-use Lattice\Lattice\Attributes\Action as ActionAttribute;
+use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\ToastMessage;
@@ -17,7 +17,7 @@ use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 
-#[ActionAttribute('workbench.products.edit-modal')]
+#[AsAction('workbench.products.edit-modal')]
 class EditProductAction extends FormActionDefinition
 {
     public function definition(Action $action): Action

@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Concerns\HasVariant;
 use Lattice\Lattice\Core\Enums\ButtonType;
 
-#[Attributes\Component('button')]
+#[AsComponent('button')]
 class Button extends Component
 {
     use HasVariant;

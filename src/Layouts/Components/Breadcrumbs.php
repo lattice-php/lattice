@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Layouts\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\Component;
 
-#[Attributes\Component('breadcrumbs')]
+#[AsComponent('breadcrumbs')]
 class Breadcrumbs extends Component
 {
     public static function make(?string $key = null): static

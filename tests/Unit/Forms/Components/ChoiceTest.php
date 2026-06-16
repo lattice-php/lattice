@@ -6,7 +6,7 @@ use Lattice\Lattice\Forms\Components\Choice;
 it('serializes the shared focus options', function (): void {
     $node = wire(Choice::make('plan', 'Plan')->autoFocus()->tabIndex(2));
 
-    expect($node['type'])->toBe('form.choice')
+    expect($node['type'])->toBe('field.choice')
         ->and($node['props'])->toMatchArray(['autoFocus' => true, 'tabIndex' => 2]);
 });
 

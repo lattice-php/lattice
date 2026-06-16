@@ -9,12 +9,12 @@ component tree, with one `Outlet` marking where the active [page](/core/pages/) 
 
 ## Defining a layout
 
-Extend `LayoutDefinition` and build the shell in `schema()`. The `#[Layout]` attribute registers it
+Extend `LayoutDefinition` and build the shell in `schema()`. The `#[AsLayout]` attribute registers it
 under a key, and `Outlet::make()` marks where the page's content appears:
 
 ```php
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\Layout;
+use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
@@ -24,7 +24,7 @@ use Lattice\Lattice\Layouts\Components\Outlet;
 use Lattice\Lattice\Layouts\Components\Sidebar;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 
-#[Layout('app')]
+#[AsLayout('app')]
 final class AppLayout extends LayoutDefinition
 {
     public function schema(PageSchema $schema, Request $request): PageSchema
@@ -57,22 +57,22 @@ header — is shared chrome rendered once and left in place as the page changes.
 
 ## Choosing a layout
 
-A page selects its layout in its [`#[Page]` attribute](/core/pages/#the-page-attribute), not with a
+A page selects its layout in its [`#[AsPage]` attribute](/core/pages/#the-aspage-attribute), not with a
 method. Pass a [`PageLayout`](/advanced/enums/#pages) for the common shells, or a string matching a
-`#[Layout]` key:
+`#[AsLayout]` key:
 
 ```php
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 
-#[Page(route: '/products', layout: PageLayout::App, container: PageContainer::Default)]
+#[AsPage(route: '/products', layout: PageLayout::App, container: PageContainer::Default)]
 class ProductsPage extends Page {}
 ```
 
 `PageLayout::App` and `PageLayout::Auth` are conventional keys (`app`, `auth`) for the two shells most
 apps need — a signed-in application frame and a bare authentication screen. `PageLayout::None` opts out
 entirely: the page renders with no shell, which is what auth and error screens usually want. A custom
-key works the same way — register the layout with `#[Layout('marketing')]` and reference it with
+key works the same way — register the layout with `#[AsLayout('marketing')]` and reference it with
 `layout: 'marketing'`.
 
 Because the layout is set on the attribute, a [base page](/core/pages/#shared-base-pages) can pick it

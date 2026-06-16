@@ -10,11 +10,11 @@ vi.mock("@lattice-php/lattice/clipboard", () => ({
 }));
 
 function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
-  const type = partial.type ?? "text";
+  const type = partial.type ?? "column.text";
 
   return {
     type,
-    width: type === "stack" ? "xl" : "md",
+    width: type === "column.stack" ? "xl" : "md",
     sortable: null,
     filter: null,
     columns: null,
@@ -63,7 +63,7 @@ describe("column registry", () => {
             <tr>
               <td>
                 <ColumnCell
-                  column={col({ key: "b", label: "B", type: "text" })}
+                  column={col({ key: "b", label: "B", type: "column.text" })}
                   row={{ b: "plain" }}
                 />
               </td>
@@ -87,10 +87,10 @@ describe("column registry", () => {
                   column={col({
                     key: "identity",
                     label: "Identity",
-                    type: "stack",
+                    type: "column.stack",
                     columns: [
-                      col({ key: "name", label: "Name", type: "text" }),
-                      col({ key: "email", label: "Email", type: "text" }),
+                      col({ key: "name", label: "Name", type: "column.text" }),
+                      col({ key: "email", label: "Email", type: "column.text" }),
                     ],
                   })}
                   row={{ name: "Ada", email: "ada@example.com" }}
@@ -111,7 +111,7 @@ describe("column registry", () => {
       createPlugin({
         name: "test",
         columns: {
-          stack: () => <span>custom-stack</span>,
+          "column.stack": () => <span>custom-stack</span>,
         },
       }),
     );
@@ -123,7 +123,7 @@ describe("column registry", () => {
             <tr>
               <td>
                 <ColumnCell
-                  column={col({ key: "identity", label: "Identity", type: "stack" })}
+                  column={col({ key: "identity", label: "Identity", type: "column.stack" })}
                   row={{ identity: "ignored" }}
                 />
               </td>
@@ -157,7 +157,7 @@ describe("column registry", () => {
       col({
         key: "status",
         label: "Status",
-        type: "badge",
+        type: "column.badge",
         props: { colors: { active: "green" } },
       }),
       { status: "active" },
@@ -170,7 +170,12 @@ describe("column registry", () => {
 
   it("renders an icon cell from the value map", () => {
     renderCell(
-      col({ key: "verified", label: "Verified", type: "icon", props: { icons: { "1": "check" } } }),
+      col({
+        key: "verified",
+        label: "Verified",
+        type: "column.icon",
+        props: { icons: { "1": "check" } },
+      }),
       { verified: "1" },
     );
 
@@ -179,7 +184,12 @@ describe("column registry", () => {
 
   it("renders an image cell as a circular avatar", () => {
     renderCell(
-      col({ key: "avatar", label: "Avatar", type: "image", props: { circular: true, size: 40 } }),
+      col({
+        key: "avatar",
+        label: "Avatar",
+        type: "column.image",
+        props: { circular: true, size: 40 },
+      }),
       { avatar: "https://example.com/a.png" },
     );
 
@@ -189,18 +199,24 @@ describe("column registry", () => {
   });
 
   it("renders a copyable text cell from props", () => {
-    renderCell(col({ key: "token", label: "Token", type: "text", props: { copyable: true } }), {
-      token: "abc",
-    });
+    renderCell(
+      col({ key: "token", label: "Token", type: "column.text", props: { copyable: true } }),
+      {
+        token: "abc",
+      },
+    );
 
     expect(screen.getByText("abc")).toBeVisible();
     expect(screen.getByRole("button", { name: /Copy Token/ })).toBeVisible();
   });
 
   it("copies the text cell value and shows the copied state", () => {
-    renderCell(col({ key: "token", label: "Token", type: "text", props: { copyable: true } }), {
-      token: "abc",
-    });
+    renderCell(
+      col({ key: "token", label: "Token", type: "column.text", props: { copyable: true } }),
+      {
+        token: "abc",
+      },
+    );
 
     fireEvent.click(screen.getByRole("button", { name: /Copy Token/ }));
 
@@ -212,7 +228,7 @@ describe("column registry", () => {
       col({
         key: "status",
         label: "Status",
-        type: "badge",
+        type: "column.badge",
         props: { colors: { active: "green" } },
       }),
       { status: "archived" },
@@ -222,16 +238,19 @@ describe("column registry", () => {
   });
 
   it("renders nothing for a badge cell with an empty value", () => {
-    const { container } = renderCell(col({ key: "status", label: "Status", type: "badge" }), {
-      status: "",
-    });
+    const { container } = renderCell(
+      col({ key: "status", label: "Status", type: "column.badge" }),
+      {
+        status: "",
+      },
+    );
 
     expect(container.querySelector(".lt-cell-badge")).toBeNull();
   });
 
   it("renders nothing for an icon cell with no matching icon", () => {
     const { container } = renderCell(
-      col({ key: "flag", label: "Flag", type: "icon", props: { icons: { "1": "check" } } }),
+      col({ key: "flag", label: "Flag", type: "column.icon", props: { icons: { "1": "check" } } }),
       { flag: "0" },
     );
 
@@ -239,9 +258,12 @@ describe("column registry", () => {
   });
 
   it("renders a square image cell at the default size", () => {
-    renderCell(col({ key: "avatar", label: "Avatar", type: "image", props: { circular: false } }), {
-      avatar: "https://example.com/a.png",
-    });
+    renderCell(
+      col({ key: "avatar", label: "Avatar", type: "column.image", props: { circular: false } }),
+      {
+        avatar: "https://example.com/a.png",
+      },
+    );
 
     const img = screen.getByRole("img", { name: "Avatar" });
     expect(img.className).toContain("rounded-lt-sm");
@@ -249,9 +271,12 @@ describe("column registry", () => {
   });
 
   it("renders nothing for an image cell with a non-string value", () => {
-    const { container } = renderCell(col({ key: "avatar", label: "Avatar", type: "image" }), {
-      avatar: 42,
-    });
+    const { container } = renderCell(
+      col({ key: "avatar", label: "Avatar", type: "column.image" }),
+      {
+        avatar: 42,
+      },
+    );
 
     expect(container.querySelector("img")).toBeNull();
   });
@@ -261,7 +286,7 @@ describe("column registry", () => {
       col({
         key: "site",
         label: "Site",
-        type: "text",
+        type: "column.text",
         props: { link: { href: "/go", external: true } },
       }),
       { site: "Visit" },
@@ -273,7 +298,9 @@ describe("column registry", () => {
   });
 
   it("renders an empty stack cell when it has no nested columns", () => {
-    const { container } = renderCell(col({ key: "x", label: "X", type: "stack" }), { x: "v" });
+    const { container } = renderCell(col({ key: "x", label: "X", type: "column.stack" }), {
+      x: "v",
+    });
 
     expect(container.querySelector(".grid")).not.toBeNull();
   });
@@ -289,7 +316,7 @@ describe("column registry", () => {
       col({
         key: "s",
         label: "S",
-        type: "icon",
+        type: "column.icon",
         props: { icons: { ok: "check" }, colors: { ok: "green" } },
       }),
       { s: "ok" },
@@ -303,7 +330,7 @@ describe("column registry", () => {
       col({
         key: "site",
         label: "Site",
-        type: "text",
+        type: "column.text",
         props: { link: { href: "/in", external: false } },
       }),
       { site: "Go" },

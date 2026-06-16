@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\Gap;
@@ -14,7 +14,7 @@ use Workbench\App\Forms\SalesOrderForm;
 use Workbench\App\Models\SalesOrder;
 use Workbench\App\Models\SalesOrderLine;
 
-#[Page(route: '/sales-orders/{salesOrder}/edit')]
+#[AsPage(route: '/sales-orders/{salesOrder}/edit')]
 class SalesOrderEditPage extends WorkbenchPage
 {
     public function title(): string

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 
-test('page attribute stores route metadata', function () {
-    $attribute = new Page(
+test('AsPage attribute stores route metadata', function () {
+    $attribute = new AsPage(
         route: '/products/{product}/edit',
         name: 'products.edit',
         layout: PageLayout::App,
@@ -22,8 +22,8 @@ test('page attribute stores route metadata', function () {
         ->and($attribute->middleware)->toBe(['can:manage']);
 });
 
-test('page attribute defaults every argument to null', function () {
-    $attribute = new Page;
+test('AsPage attribute defaults every argument to null', function () {
+    $attribute = new AsPage;
 
     expect($attribute->route)->toBeNull()
         ->and($attribute->name)->toBeNull()

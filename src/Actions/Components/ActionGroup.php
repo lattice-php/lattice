@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Actions\Components;
 
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Enums\Orientation;
 
-#[Attributes\Component('action.group')]
+#[AsComponent('action.group')]
 class ActionGroup extends ContainerComponent
 {
     use IsInteractive;

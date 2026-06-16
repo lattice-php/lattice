@@ -27,7 +27,7 @@
                             "tooltip": null,
                             "value": null
                         },
-                        "type": "form.textarea"
+                        "type": "field.textarea"
                     }
                 ],
                 "type": "text"
@@ -59,7 +59,7 @@
                             "type": null,
                             "value": null
                         },
-                        "type": "form.text-input"
+                        "type": "field.text-input"
                     },
                     {
                         "props": {
@@ -85,7 +85,7 @@
                             "type": null,
                             "value": null
                         },
-                        "type": "form.text-input"
+                        "type": "field.text-input"
                     },
                     {
                         "props": {
@@ -111,7 +111,7 @@
                             "type": null,
                             "value": null
                         },
-                        "type": "form.text-input"
+                        "type": "field.text-input"
                     }
                 ],
                 "type": "product"
@@ -144,6 +144,6 @@
             "tooltip": null,
             "value": null
         },
-        "type": "form.builder"
+        "type": "field.builder"
     }
 ]

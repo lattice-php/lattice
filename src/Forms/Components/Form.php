@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Forms\Components;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Attributes;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
@@ -15,7 +15,7 @@ use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 
-#[Attributes\Component('form')]
+#[AsComponent('form')]
 class Form extends ContainerComponent
 {
     use HasHttpMethod;

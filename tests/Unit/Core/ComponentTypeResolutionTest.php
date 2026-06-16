@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Attributes\Component as ComponentAttribute;
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\Component;
 
-#[ComponentAttribute('test.widget')]
+#[AsComponent('test.widget')]
 class TypeResolutionWidget extends Component
 {
     #[Override]
@@ -14,7 +14,7 @@ class TypeResolutionWidget extends Component
     }
 }
 
-it('resolves the wire type from the Component attribute', function () {
+it('resolves the wire type from the AsComponent attribute', function () {
     expect((new TypeResolutionWidget)->jsonSerialize()['type'])->toBe('test.widget');
 });
 
@@ -28,5 +28,5 @@ it('throws a clear error when the attribute is missing', function () {
     };
 
     expect(fn () => $component->jsonSerialize())
-        ->toThrow(LogicException::class, 'missing the #[Component] attribute');
+        ->toThrow(LogicException::class, 'missing the #[AsComponent] attribute');
 });

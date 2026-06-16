@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Layouts;
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Attributes\Layout;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\PageSchema;
@@ -43,7 +43,7 @@ final class LayoutRegistry extends DefinitionRegistry
      */
     public function attributeClass(): string
     {
-        return Layout::class;
+        return AsLayout::class;
     }
 
     protected function name(): string

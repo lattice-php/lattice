@@ -20,7 +20,7 @@ function col(): ColumnData {
   return {
     key: "name",
     label: "Name",
-    type: "text",
+    type: "column.text",
     width: "md",
     sortable: null,
     filter: null,

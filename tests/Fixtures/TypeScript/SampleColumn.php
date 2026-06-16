@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Tests\Fixtures\TypeScript;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Column;
 
-#[AsColumn(type: 'column.rating')]
+#[AsColumn(type: 'rating')]
 class SampleColumn extends Column
 {
     public int $max = 5;

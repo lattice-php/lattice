@@ -5,7 +5,7 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FormValuesProvider } from "../values";
 import { NumberInputComponent } from "./number-input";
 
-function renderField(node: Node<"form.number-input">, initial: Record<string, unknown> = {}) {
+function renderField(node: Node<"field.number-input">, initial: Record<string, unknown> = {}) {
   return render(
     <FormValuesProvider initial={initial}>
       <NumberInputComponent node={node}>{null}</NumberInputComponent>
@@ -15,7 +15,7 @@ function renderField(node: Node<"form.number-input">, initial: Record<string, un
 
 describe("NumberInputComponent", () => {
   it("renders a number input and writes to the store", () => {
-    renderField(fakeNode({ type: "form.number-input", props: { name: "qty", label: "Qty" } }));
+    renderField(fakeNode({ type: "field.number-input", props: { name: "qty", label: "Qty" } }));
     const input = screen.getByLabelText("Qty");
 
     expect(input).toHaveAttribute("type", "number");
@@ -27,7 +27,7 @@ describe("NumberInputComponent", () => {
   it("renders as a slider with a value readout", () => {
     renderField(
       fakeNode({
-        type: "form.number-input",
+        type: "field.number-input",
         props: { name: "level", label: "Level", slider: true, min: 0, max: 10 },
       }),
       { level: "7" },
@@ -41,7 +41,7 @@ describe("NumberInputComponent", () => {
   it("hides when its visible condition fails", () => {
     renderField(
       fakeNode({
-        type: "form.number-input",
+        type: "field.number-input",
         props: {
           name: "qty",
           label: "Qty",

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
@@ -13,7 +13,7 @@ use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Tables\Components\Table;
 use Workbench\App\Tables\BusinessPartnersTable;
 
-#[Page(route: '/business-partners', name: 'business-partners.index')]
+#[AsPage(route: '/business-partners', name: 'business-partners.index')]
 class BusinessPartnersPage extends WorkbenchPage
 {
     public function title(): string

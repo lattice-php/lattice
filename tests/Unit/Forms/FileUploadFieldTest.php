@@ -90,7 +90,7 @@ it('serializes its client props', function (): void {
 
     $json = wire($field);
 
-    expect($json['type'])->toBe('form.file-upload')
+    expect($json['type'])->toBe('field.file-upload')
         ->and($json['props']['name'])->toBe('document')
         ->and($json['props']['multiple'])->toBeTrue()
         ->and($json['props']['maxFiles'])->toBe(3)
