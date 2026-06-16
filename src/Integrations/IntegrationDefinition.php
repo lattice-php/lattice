@@ -25,6 +25,25 @@ abstract class IntegrationDefinition extends Definition
         return app(IntegrationRegistry::class)->keyForDefinition(static::class);
     }
 
+    /**
+     * @return list<Component>
+     */
+    public function schema(Request $request): array
+    {
+        $endpoint = $this->schemaEndpoint($request);
+
+        if ($endpoint === null) {
+            return [];
+        }
+
+        return app(ExternalSchemaResolver::class)->resolve($this, $endpoint, $request);
+    }
+
+    public function schemaEndpoint(Request $request): ?ExternalSchemaEndpoint
+    {
+        return null;
+    }
+
     public function issueBrowserToken(Request $request): BrowserToken
     {
         abort(403);

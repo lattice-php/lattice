@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "schema": [
+    {
+      "type": "integration.browser-data",
+      "id": "fixture-customers",
+      "props": {
+        "dataEndpoint": "https://crm.example.test/customers",
+        "audience": "https://crm.example.test",
+        "scopes": ["customers.read"],
+        "resource": "fixture-customers"
+      }
+    }
+  ]
+}

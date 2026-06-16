@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 use Lattice\Lattice\Chat\ChatMessage;
 use Lattice\Lattice\Chat\ChatPart;
 use Lattice\Lattice\Chat\Enums\ChatRole;
-use Lattice\Lattice\Integrations\Components\BrowserData;
+use Lattice\Lattice\Integrations\IntegrationRegistry;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Workbench\App\Chat\FakeConversationStore;
 
@@ -17,7 +17,10 @@ final readonly class ChatAgentController
 {
     private const string REPLY = 'Sure, let me look that up for you right away.';
 
-    public function __construct(private FakeConversationStore $store) {}
+    public function __construct(
+        private FakeConversationStore $store,
+        private IntegrationRegistry $integrations,
+    ) {}
 
     public function __invoke(Request $request): StreamedResponse
     {
@@ -29,7 +32,7 @@ final readonly class ChatAgentController
             ]))->jsonSerialize(),
         );
 
-        return response()->stream(function () use ($message): void {
+        return response()->stream(function () use ($message, $request): void {
             $words = explode(' ', self::REPLY);
 
             foreach ($words as $word) {
@@ -41,23 +44,20 @@ final readonly class ChatAgentController
             }
 
             $toolCall = ChatPart::toolCall('lookup', ['query' => $message]);
-            $browserData = BrowserData::make('customers')
-                ->integration('workbench.crm')
-                ->tokenEndpoint('/lattice/integrations/workbench.crm/token')
-                ->dataEndpoint('/workbench/external/customers')
-                ->audience('https://crm.workbench.test')
-                ->scopes(['customers.read'])
-                ->resource('customers');
+            $schema = $this->integrations->resolve('workbench.crm')->schema($request);
 
             $this->writeFrame(['type' => 'part', 'part' => $toolCall->jsonSerialize()]);
-            $this->writeFrame(['type' => 'part', 'part' => $browserData->jsonSerialize()]);
+            foreach ($schema as $part) {
+                $this->writeFrame(['type' => 'part', 'part' => $part->jsonSerialize()]);
+            }
+
             $this->writeFrame(['type' => 'done']);
 
             $this->store->append(
                 (new ChatMessage((string) Str::uuid(), ChatRole::Assistant, [
                     ChatPart::text(self::REPLY),
                     $toolCall,
-                    $browserData,
+                    ...$schema,
                 ]))->jsonSerialize(),
             );
         }, 200, [

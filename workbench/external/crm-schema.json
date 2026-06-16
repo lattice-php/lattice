@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "schema": [
+    {
+      "type": "integration.browser-data",
+      "id": "customers",
+      "props": {
+        "dataEndpoint": "/workbench/external/customers",
+        "audience": "https://crm.workbench.test",
+        "scopes": ["customers.read"],
+        "resource": "workbench-crm-customers"
+      }
+    }
+  ]
+}

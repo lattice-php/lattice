@@ -55,6 +55,7 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
         ->and($browserData['props']['dataEndpoint'])->toBe('/workbench/external/customers')
         ->and($browserData['props']['audience'])->toBe('https://crm.workbench.test')
         ->and($browserData['props']['scopes'])->toBe(['customers.read'])
+        ->and($browserData['props']['resource'])->toBe('workbench-crm-customers')
         ->and($browserData['props']['ref'])->toBeString()->not->toBe('');
 
     $messages = app(FakeConversationStore::class)->messages();
