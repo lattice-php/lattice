@@ -24,6 +24,7 @@ test('registered fragments serialize lazy endpoints and return component schemas
                 'endpoint' => '/lattice/fragments/workbench.two-factor-setup',
                 'lazy' => true,
                 'ref' => $ref,
+                'size' => 'md',
             ],
         ]);
 

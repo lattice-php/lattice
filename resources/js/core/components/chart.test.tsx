@@ -28,7 +28,18 @@ vi.mock("recharts", async () => {
       h("div", { "data-test": "cell", fill: String(props.fill) }),
     ComposedChart: ({ children }: { children: React.ReactNode }) =>
       h("div", { "data-test": "composed-chart" }, children),
-    Legend: () => h("div", { "data-test": "legend" }),
+    Legend: (props: Record<string, unknown>) => {
+      const wrapperStyle = props.wrapperStyle as Record<string, unknown> | undefined;
+
+      return h("div", {
+        "data-align": String(props.align),
+        "data-font-size": String(wrapperStyle?.fontSize),
+        "data-height": String(props.height),
+        "data-icon-size": String(props.iconSize),
+        "data-test": "legend",
+        "data-vertical-align": String(props.verticalAlign),
+      });
+    },
     Line: (props: Record<string, unknown>) => h("div", seriesAttrs("series-line", props)),
     LineChart: ({ children }: { children: React.ReactNode }) =>
       h("div", { "data-test": "line-chart" }, children),
@@ -61,7 +72,15 @@ vi.mock("recharts", async () => {
     Tooltip: () => h("div", { "data-test": "tooltip" }),
     XAxis: (props: Record<string, unknown>) =>
       h("div", { "data-key": String(props.dataKey), "data-test": "x-axis" }),
-    YAxis: () => h("div", { "data-test": "y-axis" }),
+    YAxis: (props: Record<string, unknown>) => {
+      const tick = props.tick as Record<string, unknown> | undefined;
+
+      return h("div", {
+        "data-font-size": String(tick?.fontSize),
+        "data-test": "y-axis",
+        "data-width": String(props.width),
+      });
+    },
   };
 });
 
@@ -124,6 +143,13 @@ describe("Chart component", () => {
     expect(screen.getByTestId("cartesian-grid")).toBeInTheDocument();
     expect(screen.getByTestId("tooltip")).toBeInTheDocument();
     expect(screen.getByTestId("legend")).toBeInTheDocument();
+    expect(screen.getByTestId("legend")).toHaveAttribute("data-align", "center");
+    expect(screen.getByTestId("legend")).toHaveAttribute("data-font-size", "11");
+    expect(screen.getByTestId("legend")).toHaveAttribute("data-height", "24");
+    expect(screen.getByTestId("legend")).toHaveAttribute("data-icon-size", "7");
+    expect(screen.getByTestId("legend")).toHaveAttribute("data-vertical-align", "top");
+    expect(screen.getByTestId("y-axis")).toHaveAttribute("data-font-size", "10");
+    expect(screen.getByTestId("y-axis")).toHaveAttribute("data-width", "42");
     expect(screen.getByTestId("series-line")).toHaveAttribute("data-key", "revenue");
     expect(screen.getByTestId("series-bar")).toHaveAttribute("data-key", "orders");
     expect(screen.getByTestId("series-area")).toHaveAttribute("data-key", "forecast");

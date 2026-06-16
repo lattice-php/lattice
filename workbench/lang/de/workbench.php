@@ -304,7 +304,6 @@ return [
     'navigation' => [
         'builder-table-demo' => 'Builder-Tabellen-Demo',
         'business-partners' => 'Geschäftspartner',
-        'charts' => 'Charts',
         'commerce' => 'Commerce',
         'create-product' => 'Produkt erstellen',
         'dependent-fields' => 'Abhängige Felder',
@@ -331,8 +330,20 @@ return [
             'title' => 'Builder-Tabellen-Demo',
         ],
         'charts' => [
-            'description' => 'Jedes Diagramm wird über einen eigenen Lazy-Fragment-Endpunkt geladen.',
-            'heading' => 'Workbench-Charts',
+            'channels' => [
+                'direct' => 'Direkt',
+                'marketplace' => 'Marktplatz',
+                'partner' => 'Partner',
+                'retail' => 'Handel',
+            ],
+            'months' => [
+                'apr' => 'Apr',
+                'feb' => 'Feb',
+                'jan' => 'Jan',
+                'jun' => 'Jun',
+                'mar' => 'Mär',
+                'may' => 'Mai',
+            ],
             'order-volume' => [
                 'description' => 'Gestapelte Entwurfs- und Bestellmengen pro Woche.',
                 'draft' => 'Entwurf',
@@ -347,9 +358,16 @@ return [
             ],
             'sales-mix' => [
                 'description' => 'Umsatzverteilung nach Akquisitionskanal.',
-                'title' => 'Sales Mix',
+                'title' => 'Umsatzmix',
             ],
-            'title' => 'Lattice Charts',
+            'weeks' => [
+                'week-1' => 'KW 1',
+                'week-2' => 'KW 2',
+                'week-3' => 'KW 3',
+                'week-4' => 'KW 4',
+                'week-5' => 'KW 5',
+                'week-6' => 'KW 6',
+            ],
         ],
         'dependent' => [
             'heading' => 'Dependent-Demo',
@@ -368,6 +386,7 @@ return [
                 'success' => 'Erfolg',
             ],
             'button-variants' => 'Button-Varianten',
+            'charts' => 'Dashboard-Diagramme',
             'components-description' => 'Serverseitige Komponentenbäume werden zu typisierten React-Nodes serialisiert.',
             'components-title' => 'Komponenten',
             'heading' => 'Workbench-Seite',

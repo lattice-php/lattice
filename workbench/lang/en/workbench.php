@@ -304,7 +304,6 @@ return [
     'navigation' => [
         'builder-table-demo' => 'Builder Table Demo',
         'business-partners' => 'Business partners',
-        'charts' => 'Charts',
         'commerce' => 'Commerce',
         'create-product' => 'Create Product',
         'dependent-fields' => 'Dependent Fields',
@@ -331,8 +330,20 @@ return [
             'title' => 'Builder Table Demo',
         ],
         'charts' => [
-            'description' => 'Each chart is resolved from its own lazy fragment endpoint.',
-            'heading' => 'Workbench charts',
+            'channels' => [
+                'direct' => 'Direct',
+                'marketplace' => 'Marketplace',
+                'partner' => 'Partner',
+                'retail' => 'Retail',
+            ],
+            'months' => [
+                'apr' => 'Apr',
+                'feb' => 'Feb',
+                'jan' => 'Jan',
+                'jun' => 'Jun',
+                'mar' => 'Mar',
+                'may' => 'May',
+            ],
             'order-volume' => [
                 'description' => 'Stacked draft and placed order counts by week.',
                 'draft' => 'Draft',
@@ -349,7 +360,14 @@ return [
                 'description' => 'Revenue distribution across acquisition channels.',
                 'title' => 'Sales mix',
             ],
-            'title' => 'Lattice Charts',
+            'weeks' => [
+                'week-1' => 'W1',
+                'week-2' => 'W2',
+                'week-3' => 'W3',
+                'week-4' => 'W4',
+                'week-5' => 'W5',
+                'week-6' => 'W6',
+            ],
         ],
         'dependent' => [
             'heading' => 'Dependent Demo',
@@ -368,6 +386,7 @@ return [
                 'success' => 'Success',
             ],
             'button-variants' => 'Button variants',
+            'charts' => 'Dashboard charts',
             'components-description' => 'Server-side component trees serialize to typed React nodes.',
             'components-title' => 'Components',
             'heading' => 'Workbench page',

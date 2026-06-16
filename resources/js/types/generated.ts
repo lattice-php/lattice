@@ -594,6 +594,7 @@ export type Fragment = {
   endpoint: string | null;
   lazy: boolean | null;
   ref: string | null;
+  size: Size;
 };
 export type FragmentNode = {
   type: "fragment";

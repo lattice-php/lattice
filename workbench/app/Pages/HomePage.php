@@ -13,8 +13,13 @@ use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
+use Lattice\Lattice\Core\Enums\Size;
 use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Fragments\Components\Fragment;
 use Lattice\Lattice\Tables\Components\Table;
+use Workbench\App\Fragments\OrderVolumeChartFragment;
+use Workbench\App\Fragments\RevenueTrendChartFragment;
+use Workbench\App\Fragments\SalesMixChartFragment;
 use Workbench\App\Tables\UsersTable;
 
 #[Page(route: '/')]
@@ -43,6 +48,14 @@ final class HomePage extends WorkbenchPage
                         ->schema([
                             Card::make(__('workbench.pages.home.components-title'), __('workbench.pages.home.components-description')),
                             Card::make(__('workbench.pages.home.renderer-title'), __('workbench.pages.home.renderer-description')),
+                        ]),
+                    Heading::make(__('workbench.pages.home.charts'), 2),
+                    Grid::make('workbench-charts')
+                        ->columns(3)
+                        ->schema([
+                            Fragment::lazy(RevenueTrendChartFragment::class)->size(Size::Lg),
+                            Fragment::lazy(SalesMixChartFragment::class)->size(Size::Lg),
+                            Fragment::lazy(OrderVolumeChartFragment::class)->size(Size::Lg),
                         ]),
                     Heading::make(__('workbench.pages.home.button-variants'), 2),
                     Stack::make('workbench-buttons')

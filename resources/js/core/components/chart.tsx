@@ -23,6 +23,22 @@ type ChartProps = PropsOf<"chart">;
 type ChartSeries = ChartProps["series"][number];
 type ChartDatum = ChartProps["data"][number];
 type CartesianSeries = ChartSeries & { type: "area" | "bar" | "line" };
+type ChartMargin = { bottom: number; left: number; right: number; top: number };
+type CartesianChartComponent = ComponentType<{
+  children: ReactNode;
+  data: ChartProps["data"];
+  margin?: ChartMargin;
+}>;
+
+const chartMargin: ChartMargin = { bottom: 0, left: 0, right: 16, top: 8 };
+const compactLegendProps = {
+  align: "center" as const,
+  height: 24,
+  iconSize: 7,
+  verticalAlign: "top" as const,
+  wrapperStyle: { fontSize: 11, lineHeight: "14px", paddingBottom: 6 },
+};
+const axisTick = { fontSize: 10 };
 
 const palette = [
   "var(--lt-primary)",
@@ -53,9 +69,7 @@ function isCartesianSeries(series: ChartSeries): series is CartesianSeries {
   return series.type === "area" || series.type === "bar" || series.type === "line";
 }
 
-function cartesianChartFor(
-  series: CartesianSeries[],
-): ComponentType<{ children: ReactNode; data: ChartProps["data"] }> {
+function cartesianChartFor(series: CartesianSeries[]): CartesianChartComponent {
   const types = new Set(series.map((item) => item.type));
 
   if (types.size !== 1) {
@@ -89,13 +103,15 @@ function ChartFrame({
 
   return (
     <div
-      className="flex flex-col gap-4 rounded-lt border border-lt-border bg-lt-surface p-6 text-lt-surface-fg shadow-xs"
+      className="flex flex-col gap-3 rounded-lt border border-lt-border bg-lt-surface p-4 text-lt-surface-fg shadow-xs"
       data-lattice-component={id}
     >
       {hasHeader && (
         <div className="flex min-w-0 flex-col gap-1.5">
-          {title !== null && <div className="font-semibold leading-none">{title}</div>}
-          {description !== null && <div className="text-sm text-lt-muted-fg">{description}</div>}
+          {title !== null && <div className="text-sm font-semibold leading-tight">{title}</div>}
+          {description !== null && (
+            <div className="text-xs leading-5 text-lt-muted-fg">{description}</div>
+          )}
         </div>
       )}
       {children}
@@ -109,14 +125,21 @@ function CartesianChart({ props }: { props: ChartProps }) {
 
   return (
     <ResponsiveContainer width="100%" height={props.height}>
-      <RechartsChart data={props.data}>
+      <RechartsChart data={props.data} margin={chartMargin}>
         {props.grid && <CartesianGrid strokeDasharray="3 3" stroke="var(--lt-border)" />}
         {props.xAxis && props.categoryKey !== null && (
-          <XAxis dataKey={props.categoryKey} stroke="var(--lt-muted-fg)" tickLine={false} />
+          <XAxis
+            dataKey={props.categoryKey}
+            stroke="var(--lt-muted-fg)"
+            tick={axisTick}
+            tickLine={false}
+          />
         )}
-        {props.yAxis && <YAxis stroke="var(--lt-muted-fg)" tickLine={false} width={40} />}
+        {props.yAxis && (
+          <YAxis stroke="var(--lt-muted-fg)" tick={axisTick} tickLine={false} width={42} />
+        )}
         {props.tooltip && <Tooltip />}
-        {props.legend && <Legend />}
+        {props.legend && <Legend {...compactLegendProps} />}
         {series.map((item, index) => {
           const color = item.color ?? colorAt(index);
           const key = `${item.type}:${item.dataKey}`;
@@ -169,15 +192,15 @@ function CartesianChart({ props }: { props: ChartProps }) {
 function PieChartView({ props, series }: { props: ChartProps; series: ChartSeries }) {
   return (
     <ResponsiveContainer width="100%" height={props.height}>
-      <PieChart>
+      <PieChart margin={chartMargin}>
         {props.tooltip && <Tooltip />}
-        {props.legend && <Legend />}
+        {props.legend && <Legend {...compactLegendProps} />}
         <Pie
           data={props.data}
           dataKey={series.dataKey}
           name={series.name ?? undefined}
           nameKey={series.nameKey ?? undefined}
-          outerRadius="80%"
+          outerRadius="68%"
         >
           {props.data.map((datum, index) => (
             <Cell key={index} fill={datumColor(datum, series, index)} />

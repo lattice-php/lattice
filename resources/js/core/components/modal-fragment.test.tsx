@@ -85,7 +85,11 @@ describe("Lattice modal and fragment components", () => {
         nodes={[
           {
             id: "settings.two-factor-setup",
-            props: { endpoint: "/lattice/fragments/settings.two-factor-setup", lazy: true },
+            props: {
+              endpoint: "/lattice/fragments/settings.two-factor-setup",
+              lazy: true,
+              size: "lg",
+            },
             type: "fragment",
           },
         ]}
@@ -93,7 +97,10 @@ describe("Lattice modal and fragment components", () => {
       registry,
     );
 
-    expect(container.querySelector('[data-slot="skeleton"]')).not.toBeNull();
+    expect(
+      container.querySelector('[data-lattice-fragment="settings.two-factor-setup"]'),
+    ).toHaveStyle({ minHeight: "320px" });
+    expect(container.querySelector('[data-slot="skeleton"]')).toHaveStyle({ height: "320px" });
   });
 
   it("loads fragment schemas and renders them with the current registry", async () => {
@@ -138,6 +145,7 @@ describe("Lattice modal and fragment components", () => {
               endpoint: "/lattice/fragments/settings.two-factor-setup",
               ref: "sealed-reference",
               lazy: true,
+              size: "md",
             },
             type: "fragment",
           },
@@ -211,6 +219,7 @@ describe("Lattice modal and fragment components", () => {
             props: {
               endpoint: "/lattice/fragments/settings.two-factor-setup",
               lazy: true,
+              size: "md",
             },
             type: "fragment",
           },
@@ -235,6 +244,85 @@ describe("Lattice modal and fragment components", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Reloaded fragment body")).toBeVisible();
+    });
+  });
+
+  it("reloads a loaded fragment when the locale changes", async () => {
+    const fetch = vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>();
+
+    fetch
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            schema: [
+              {
+                props: {
+                  text: "Initial fragment body",
+                },
+                type: "text",
+              },
+            ],
+          }),
+        ),
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            schema: [
+              {
+                props: {
+                  text: "Translated fragment body",
+                },
+                type: "text",
+              },
+            ],
+          }),
+        ),
+      );
+
+    vi.stubGlobal("fetch", fetch);
+
+    const registry = createRegistry({
+      components: {
+        fragment: eagerComponent(FragmentComponent),
+        text: eagerComponent(TextProbe),
+      },
+      name: "test/fragment",
+    });
+
+    renderWithRegistry(
+      <Renderer
+        nodes={[
+          {
+            id: "settings.two-factor-setup",
+            props: {
+              endpoint: "/lattice/fragments/settings.two-factor-setup",
+              lazy: true,
+              size: "md",
+            },
+            type: "fragment",
+          },
+        ]}
+      />,
+      registry,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Initial fragment body")).toBeVisible();
+    });
+
+    act(() => {
+      window.dispatchEvent(
+        new CustomEvent("lattice:locale-change", {
+          detail: {
+            locale: "de",
+          },
+        }),
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Translated fragment body")).toBeVisible();
     });
   });
 });

@@ -16,12 +16,12 @@ final class SalesMixChartFragment extends FragmentDefinition
         return $schema->component(
             Chart::make(__('workbench.pages.charts.sales-mix.title'))
                 ->description(__('workbench.pages.charts.sales-mix.description'))
-                ->height(280)
+                ->height(220)
                 ->data([
-                    ['channel' => 'Direct', 'amount' => 42_000, 'color' => '#2563eb'],
-                    ['channel' => 'Partner', 'amount' => 27_000, 'color' => '#16a34a'],
-                    ['channel' => 'Marketplace', 'amount' => 19_000, 'color' => '#f59e0b'],
-                    ['channel' => 'Retail', 'amount' => 12_000, 'color' => '#dc2626'],
+                    ['channel' => __('workbench.pages.charts.channels.direct'), 'amount' => 42_000, 'color' => '#2563eb'],
+                    ['channel' => __('workbench.pages.charts.channels.partner'), 'amount' => 27_000, 'color' => '#16a34a'],
+                    ['channel' => __('workbench.pages.charts.channels.marketplace'), 'amount' => 19_000, 'color' => '#f59e0b'],
+                    ['channel' => __('workbench.pages.charts.channels.retail'), 'amount' => 12_000, 'color' => '#dc2626'],
                 ])
                 ->pie('amount', nameKey: 'channel'),
         );
