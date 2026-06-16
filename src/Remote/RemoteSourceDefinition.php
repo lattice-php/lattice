@@ -9,6 +9,20 @@ use Lattice\Lattice\Core\Definition;
 
 abstract class RemoteSourceDefinition extends Definition
 {
+    private ?string $sourceKey = null;
+
+    public function sourceKey(): string
+    {
+        return $this->sourceKey ?? app(RemoteSourceRegistry::class)->keyForDefinition(static::class);
+    }
+
+    public function withSourceKey(string $sourceKey): static
+    {
+        $this->sourceKey = $sourceKey;
+
+        return $this;
+    }
+
     /**
      * @param  list<array<string, mixed>>  $manifest
      * @return list<Component>
@@ -16,13 +30,8 @@ abstract class RemoteSourceDefinition extends Definition
     protected function schemaFromManifest(array $manifest): array
     {
         return app(RemoteSchemaNormalizer::class)->normalize($manifest, [
-            'source' => $this->key(),
+            'source' => $this->sourceKey(),
         ]);
-    }
-
-    protected function key(): string
-    {
-        return app(RemoteSourceRegistry::class)->keyForDefinition(static::class);
     }
 
     /**

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice;
 
+use Illuminate\Contracts\Container\Container;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionDefinition;
@@ -95,6 +96,14 @@ final readonly class LatticeRegistry
     public function remoteSources(string|array $remoteSources): void
     {
         $this->remoteSources->register($remoteSources);
+    }
+
+    /**
+     * @param  callable(string, Container): ?RemoteSourceDefinition  $resolver
+     */
+    public function remoteSourceResolver(callable $resolver): void
+    {
+        $this->remoteSources->resolveUsing($resolver);
     }
 
     public function layoutRegistry(): LayoutRegistry

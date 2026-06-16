@@ -22,7 +22,6 @@ final readonly class RemoteSchemaResolver
 
     public function __construct(
         private RemoteSchemaNormalizer $normalizer,
-        private RemoteSourceRegistry $remoteSources,
         private Filesystem $files,
         private SignsComponentReferences $references,
     ) {}
@@ -32,7 +31,7 @@ final readonly class RemoteSchemaResolver
      */
     public function resolve(RemoteSourceDefinition $definition, RemoteSchemaEndpoint $endpoint, Request $request): array
     {
-        $source = $this->remoteSources->keyForDefinition($definition::class);
+        $source = $definition->sourceKey();
         $manifest = $this->manifest($this->load($endpoint, $request));
 
         return $this->normalizer->normalize(

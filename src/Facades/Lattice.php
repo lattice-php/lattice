@@ -17,6 +17,7 @@ use Lattice\Lattice\LatticeRegistry;
  * @method static void actions(class-string<\Lattice\Lattice\Actions\ActionDefinition>|array<int, class-string<\Lattice\Lattice\Actions\ActionDefinition>> $actions)
  * @method static void bulkActions(class-string<\Lattice\Lattice\Actions\BulkActionDefinition>|array<int, class-string<\Lattice\Lattice\Actions\BulkActionDefinition>> $bulkActions)
  * @method static void remoteSources(class-string<\Lattice\Lattice\Remote\RemoteSourceDefinition>|array<int, class-string<\Lattice\Lattice\Remote\RemoteSourceDefinition>> $remoteSources)
+ * @method static void remoteSourceResolver(callable $resolver)
  * @method static \Lattice\Lattice\Remote\RemoteSourceRegistry remoteSourceRegistry()
  *
  * @see LatticeRegistry
