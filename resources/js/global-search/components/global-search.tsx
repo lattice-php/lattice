@@ -73,11 +73,12 @@ const GlobalSearch: RendererComponent<"global-search.root"> = ({ node, children 
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [shortcut]);
 
+  const { refreshRecent } = search;
   useEffect(() => {
     if (open) {
-      search.refreshRecent();
+      refreshRecent();
     }
-  }, [open, search]);
+  }, [open, refreshRecent]);
 
   const composed: ReactNode = node.schema?.length ? children : (children ?? <DefaultComposition />);
 

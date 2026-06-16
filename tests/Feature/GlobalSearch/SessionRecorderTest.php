@@ -8,7 +8,7 @@ use Lattice\Lattice\GlobalSearch\SearchResult;
 use Lattice\Lattice\GlobalSearch\SearchResultItem;
 use Workbench\App\Search\SessionSearchHistoryRecorder;
 
-function recorderRequest(): Request
+function sessionRecorderRequest(): Request
 {
     $request = Request::create('/');
     $request->setLaravelSession(new Store('test', new ArraySessionHandler(120)));
@@ -17,7 +17,7 @@ function recorderRequest(): Request
 }
 
 test('records a selection and reads it back', function () {
-    $request = recorderRequest();
+    $request = sessionRecorderRequest();
     $recorder = new SessionSearchHistoryRecorder;
     $result = new SearchResult('products', new SearchResultItem(id: '1', title: 'Widget', link: '/products/1'));
 
@@ -30,7 +30,7 @@ test('records a selection and reads it back', function () {
 });
 
 test('recording the same selection twice dedupes to one entry', function () {
-    $request = recorderRequest();
+    $request = sessionRecorderRequest();
     $recorder = new SessionSearchHistoryRecorder;
     $result = new SearchResult('products', new SearchResultItem(id: '1', title: 'Widget', link: '/products/1'));
 

@@ -31,6 +31,7 @@ export type SearchState = {
   category: string | null;
   perPage: number;
   countsIncluded: boolean;
+  mode: string;
 };
 export type SearchResponse = {
   data: SearchResult[];

@@ -164,6 +164,17 @@ export function useGlobalSearch({
     };
   }, []);
 
+  const handleOpenResult = useCallback(
+    (result: SearchResult): void => {
+      void openResult(result);
+    },
+    [openResult],
+  );
+
+  const handleRefreshRecent = useCallback((): void => {
+    void refreshRecent();
+  }, [refreshRecent]);
+
   return {
     query,
     setQuery,
@@ -178,7 +189,7 @@ export function useGlobalSearch({
     focusedId,
     setFocusedId,
     loadMore,
-    openResult: (result) => void openResult(result),
-    refreshRecent: () => void refreshRecent(),
+    openResult: handleOpenResult,
+    refreshRecent: handleRefreshRecent,
   };
 }

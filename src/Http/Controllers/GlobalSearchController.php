@@ -30,7 +30,7 @@ final readonly class GlobalSearchController
                 'data' => $this->history->recent($request, $request->perPage()),
                 'categories' => $this->categories($request, $authorized),
                 'pagination' => SearchPagination::forPage(1, $request->perPage(), 0),
-                'state' => $this->state($request, null),
+                'state' => $this->state($request, null, 'recent'),
             ]);
         }
 
@@ -111,14 +111,15 @@ final readonly class GlobalSearchController
         return $names[0] ?? null;
     }
 
-    /** @return array{query:string,category:?string,perPage:int,countsIncluded:bool} */
-    private function state(SearchRequest $request, ?string $active): array
+    /** @return array{query:string,category:?string,perPage:int,countsIncluded:bool,mode:string} */
+    private function state(SearchRequest $request, ?string $active, string $mode = 'results'): array
     {
         return [
             'query' => $request->queryString(),
             'category' => $active,
             'perPage' => $request->perPage(),
             'countsIncluded' => $request->wantsCounts(),
+            'mode' => $mode,
         ];
     }
 }
