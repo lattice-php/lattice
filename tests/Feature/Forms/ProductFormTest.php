@@ -514,6 +514,51 @@ test('the edit product action syncs images', function () {
     Storage::disk('s3')->assertExists($image->path);
 });
 
+test('the edit product action removes existing images without new uploads', function () {
+    Storage::fake('s3');
+    Lattice::actions([EditProductAction::class]);
+
+    $product = Product::factory()->withoutDefaultPrice()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+    ]);
+    Storage::disk('s3')->put('workbench/products/lamp.jpg', 'image-data');
+    $image = File::factory()->create([
+        'disk' => 's3',
+        'path' => 'workbench/products/lamp.jpg',
+        'name' => 'lamp.jpg',
+        'mime_type' => 'image/jpeg',
+        'size' => 10,
+    ]);
+    $product->images()->attach($image->getKey(), ['sort_order' => 1]);
+
+    $removedToken = app(SignsComponentReferences::class)
+        ->seal('file', 'images', ['disk' => 's3', 'path' => 'workbench/products/lamp.jpg']);
+    $ref = componentRef(
+        wire(Action::use(EditProductAction::class)
+            ->context(['product_id' => $product->getKey()])),
+    );
+
+    patchJson('/lattice/actions/workbench.products.edit-modal', [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+        'related_products' => [],
+        'images' => [],
+        'images__removed' => [$removedToken],
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => '79.99'],
+        ],
+    ], ['X-Lattice-Ref' => $ref])
+        ->assertOk();
+
+    expect($product->images()->count())->toBe(0)
+        ->and(File::query()->whereKey($image->getKey())->exists())->toBeFalse();
+
+    Storage::disk('s3')->assertMissing('workbench/products/lamp.jpg');
+});
+
 test('the edit product action rejects two default sales prices with a 422', function () {
     Lattice::actions([EditProductAction::class]);
 
