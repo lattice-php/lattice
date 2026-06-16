@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\GlobalSearch\Contracts\SearchHistoryRecorder;
+use Lattice\Lattice\GlobalSearch\NullSearchHistoryRecorder;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredProductsSearchProvider;
 use Orchestra\Testbench\Factories\UserFactory;
 
@@ -11,6 +13,7 @@ beforeEach(function () {
     DiscoveredProductsSearchProvider::$authorized = true;
     DiscoveredProductsSearchProvider::$rows = [['id' => '7', 'title' => 'Canonical Widget']];
     discoverFixtures();
+    app()->bind(SearchHistoryRecorder::class, NullSearchHistoryRecorder::class);
     actingAs(UserFactory::new()->create());
 });
 

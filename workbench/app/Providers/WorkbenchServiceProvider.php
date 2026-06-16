@@ -42,12 +42,10 @@ class WorkbenchServiceProvider extends ServiceProvider
 
         // Rebind so lattice:typescript regenerates the package's own built-in types.
         $this->app->bind(TypeScriptProfile::class, BaseProfile::class);
-        if (! $this->app->runningUnitTests()) {
-            $this->app->bind(
-                SearchHistoryRecorder::class,
-                SessionSearchHistoryRecorder::class,
-            );
-        }
+        $this->app->bind(
+            SearchHistoryRecorder::class,
+            SessionSearchHistoryRecorder::class,
+        );
         $this->useWorkbenchDatabase();
         $this->readBoostConfigFromPackageRoot();
         $this->serveLatticeTranslations();

@@ -15,7 +15,7 @@ final class SessionSearchHistoryRecorder implements SearchHistoryRecorder
     public function record(Request $request, SearchResult $result): bool
     {
         $recent = collect($request->session()->get(self::KEY, []))
-            ->reject(fn (array $row): bool => $row['category'] === $result->category && $row['item']['id'] === $result->item->id)
+            ->reject(fn (array $row): bool => $row['category']['name'] === $result->category && $row['item']['id'] === $result->item->id)
             ->prepend($result->jsonSerialize())
             ->take(10)
             ->values()
