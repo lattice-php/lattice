@@ -4,6 +4,8 @@ declare(strict_types=1);
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\PasswordInput;
+use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Forms\FormData;
 
 test('forms serialize schema children like pages', function () {
     expect(wire(Form::make('profile-form')->schema([
@@ -53,7 +55,7 @@ test('password inputs can request automatic confirmation fields', function () {
                 'conditions' => null,
                 'dependsOnKeys' => null,
                 'dependsOnAny' => false,
-                'prefill' => false,
+                'editablePrefill' => false,
                 'prefillResetOn' => null,
                 'prefillRefreshOn' => null,
                 'autoComplete' => null,
@@ -63,4 +65,21 @@ test('password inputs can request automatic confirmation fields', function () {
                 'columnWidth' => 'md',
             ],
         ]);
+});
+
+test('editable computed fields serialize an explicit client prefill flag', function () {
+    $wire = wire(
+        TextInput::make('price')->value(
+            fn (FormData $data): string => (string) $data->get('suggested_price', ''),
+            editable: true,
+            resetOn: ['product'],
+            refreshOn: ['@customer'],
+        ),
+    );
+
+    expect($wire['props'])->toMatchArray([
+        'editablePrefill' => true,
+        'prefillResetOn' => ['product'],
+        'prefillRefreshOn' => ['@customer'],
+    ])->not->toHaveKey('prefill');
 });

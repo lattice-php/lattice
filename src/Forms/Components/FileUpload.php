@@ -218,7 +218,8 @@ class FileUpload extends Field
         return ["{$this->name()}.*" => [$this->itemRule()]];
     }
 
-    public function prefill(mixed $value): void
+    #[\Override]
+    public function hydrateState(mixed $value, ?FormData $form = null, ?Request $request = null): void
     {
         $paths = array_values(array_filter(
             is_array($value) ? $value : [$value],

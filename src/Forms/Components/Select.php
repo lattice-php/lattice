@@ -128,7 +128,8 @@ class Select extends Field
         return $this->normalizeOptions(Evaluate::resolve($this->searchResolver, $context));
     }
 
-    public function prefill(mixed $value): void
+    #[\Override]
+    public function hydrateState(mixed $value, ?FormData $form = null, ?Request $request = null): void
     {
         if ($this->optionSource === null && $this->selectedResolver === null) {
             return;

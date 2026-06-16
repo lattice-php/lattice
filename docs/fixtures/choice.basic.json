@@ -7,6 +7,7 @@
             "dependsOnAny": false,
             "dependsOnKeys": null,
             "disabled": false,
+            "editablePrefill": false,
             "helperText": null,
             "hidden": false,
             "label": "Plan",
@@ -25,7 +26,6 @@
                     "value": "enterprise"
                 }
             ],
-            "prefill": false,
             "prefillRefreshOn": null,
             "prefillResetOn": null,
             "readOnly": false,

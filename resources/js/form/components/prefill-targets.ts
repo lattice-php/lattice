@@ -34,7 +34,7 @@ function targetFor(
 ): PrefillTarget | null {
   const props = fieldProps(node);
 
-  if (!props.prefill || !props.name) {
+  if (!props.editablePrefill || !props.name) {
     return null;
   }
 

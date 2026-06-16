@@ -26,6 +26,16 @@ export const RepeaterComponent: RendererComponent<"field.repeater"> = ({ node })
   const atMax = props.maxItems != null && rows.length >= props.maxItems;
   const atMin = props.minItems != null && rows.length <= props.minItems;
   const isTable = props.layout === "table";
+  const itemLabels = (props as { itemLabels?: Array<string | null> | null }).itemLabels;
+  const rowHeading = (index: number) => {
+    const label = itemLabels?.[index];
+
+    if (typeof label === "string" && label !== "") {
+      return label;
+    }
+
+    return props.itemLabel ? `${props.itemLabel} ${index + 1}` : `#${index + 1}`;
+  };
 
   if (hidden) {
     return null;
@@ -37,6 +47,7 @@ export const RepeaterComponent: RendererComponent<"field.repeater"> = ({ node })
     row,
     template,
     span: false,
+    heading: rowHeading(index),
   }));
 
   return (
@@ -75,7 +86,7 @@ export const RepeaterComponent: RendererComponent<"field.repeater"> = ({ node })
                   index={index}
                   row={row}
                   template={template}
-                  heading={props.itemLabel ? `${props.itemLabel} ${index + 1}` : `#${index + 1}`}
+                  heading={rowHeading(index)}
                   reorderable={props.reorderable ?? false}
                   isFirst={index === 0}
                   isLast={index === rows.length - 1}

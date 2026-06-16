@@ -1,9 +1,11 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\Components\RowAction;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Forms\FormData;
 
 it('serialises a repeater with its row-template schema and props', function (): void {
     $repeater = Repeater::make('items', 'Line items')
@@ -61,4 +63,22 @@ it('serialises declared rowActions into the field props', function (): void {
         ->and($wire['props']['rowActions'][1]['type'])->toBe('remove')
         ->and($wire['props']['rowActions'][1]['label'])->toBe('Delete')
         ->and($wire['props']['rowActions'][1]['destructive'])->toBeTrue();
+});
+
+it('resolves closure item labels from filled row state', function (): void {
+    $wire = wire(
+        Form::make('order')->fill([
+            'items' => [
+                ['sku' => 'A-100'],
+                ['sku' => 'B-200'],
+            ],
+        ])->schema([
+            Repeater::make('items')
+                ->schema([TextInput::make('sku')])
+                ->itemLabel(fn (FormData $row): string => 'SKU '.$row->string('sku')),
+        ]),
+    );
+
+    expect($wire['schema'][0]['props']['itemLabel'])->toBeNull()
+        ->and($wire['schema'][0]['props']['itemLabels'])->toBe(['SKU A-100', 'SKU B-200']);
 });

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Contracts;
 
+use Illuminate\Http\Request;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\FormData;
 
@@ -18,5 +19,5 @@ interface ProvidesRowFields
      */
     public function rowScope(FormData $form, array $row): FormData;
 
-    public function prefillRowFields(mixed $rows): void;
+    public function prefillRowFields(mixed $rows, ?FormData $form = null, ?Request $request = null): void;
 }

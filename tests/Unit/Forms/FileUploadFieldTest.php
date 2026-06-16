@@ -130,7 +130,7 @@ it('builds file descriptors from a stored path on prefill', function (): void {
     Storage::disk('public')->put('uploads/a.pdf', 'data');
 
     $field = FileUpload::make('document');
-    $field->prefill('uploads/a.pdf');
+    $field->hydrateState('uploads/a.pdf');
 
     expect($field->files)->toHaveCount(1)
         ->and($field->files[0]['key'])->toBe('uploads/a.pdf')
@@ -143,7 +143,7 @@ it('prefers temporary urls for prefilled files when the disk supports them', fun
     Storage::disk('s3')->put('uploads/a.pdf', 'data');
 
     $field = FileUpload::make('document')->disk('s3');
-    $field->prefill('uploads/a.pdf');
+    $field->hydrateState('uploads/a.pdf');
 
     expect($field->files[0]['url'])->toBe('https://signed.test/uploads/a.pdf');
 });
@@ -154,7 +154,7 @@ it('builds descriptors for each stored path when multiple', function (): void {
     Storage::disk('public')->put('uploads/b.pdf', 'y');
 
     $field = FileUpload::make('docs')->multiple();
-    $field->prefill(['uploads/a.pdf', 'uploads/b.pdf']);
+    $field->hydrateState(['uploads/a.pdf', 'uploads/b.pdf']);
 
     expect($field->files)->toHaveCount(2);
 });
@@ -282,7 +282,7 @@ it('sets url and size to null when prefill metadata cannot be read', function ()
     Storage::shouldReceive('disk')->with('broken')->once()->andReturn($disk);
 
     $field = FileUpload::make('document')->disk('broken');
-    $field->prefill('uploads/a.pdf');
+    $field->hydrateState('uploads/a.pdf');
 
     expect($field->files[0]['url'])->toBeNull()
         ->and($field->files[0]['size'])->toBeNull();
@@ -293,7 +293,7 @@ it('adds a sealed token to each prefilled file descriptor', function (): void {
     Storage::disk('public')->put('uploads/a.pdf', 'data');
 
     $field = FileUpload::make('document');
-    $field->prefill('uploads/a.pdf');
+    $field->hydrateState('uploads/a.pdf');
 
     expect($field->files[0])->toHaveKeys(['key', 'name', 'url', 'size', 'token'])
         ->and($field->files[0]['token'])->not->toBe('');

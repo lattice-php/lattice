@@ -55,7 +55,7 @@ it('resolves search options through the option source', function (): void {
 it('prefills a selected value label through the option source', function (): void {
     $select = Select::make('author_id')->optionsFrom(arrayOptionSource());
 
-    $select->prefill('2');
+    $select->hydrateState('2');
 
     expect($select->options)->toHaveCount(1)
         ->and($select->options[0]->label)->toBe('Linus')
@@ -65,7 +65,7 @@ it('prefills a selected value label through the option source', function (): voi
 it('prefills multiple selected values for a multiple select', function (): void {
     $select = Select::make('authors')->multiple()->optionsFrom(arrayOptionSource());
 
-    $select->prefill(['1', '3']);
+    $select->hydrateState(['1', '3']);
 
     expect(array_map(fn (Option $o): string => $o->label, $select->options))->toBe(['Ada', 'Grace']);
 });

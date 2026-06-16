@@ -16,7 +16,7 @@ export type FieldProps = {
   hidden?: boolean | null;
   label?: string | null;
   name?: string;
-  prefill?: boolean | null;
+  editablePrefill?: boolean | null;
   prefillRefreshOn?: string[] | null;
   prefillResetOn?: string[] | null;
   readOnly?: boolean | null;

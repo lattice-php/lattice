@@ -7,7 +7,10 @@ beforeAll(() => {
   configure({ testIdAttribute: "data-test" });
 });
 afterAll(() => configure({ testIdAttribute: prev }));
-afterEach(() => window.localStorage.clear());
+afterEach(() => {
+  window.localStorage.clear();
+  vi.unstubAllGlobals();
+});
 
 const { renderCounts } = vi.hoisted(() => ({ renderCounts: new Map<string, number>() }));
 
@@ -51,6 +54,26 @@ const priceNode = { id: "p", type: "field.text-input", props: { name: "price" } 
 const contentNode = { id: "c", type: "field.textarea", props: { name: "content" } } as never;
 
 function noop() {}
+
+type MediaQueryListener = (this: MediaQueryList, event: MediaQueryListEvent) => void;
+
+function mockTableViewport(matches: boolean) {
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn<(query: string) => MediaQueryList>().mockImplementation((query: string) => ({
+      matches,
+      media: query,
+      onchange: null,
+      addEventListener:
+        vi.fn<(type: string, listener: EventListenerOrEventListenerObject | null) => void>(),
+      removeEventListener:
+        vi.fn<(type: string, listener: EventListenerOrEventListenerObject | null) => void>(),
+      addListener: vi.fn<(listener: MediaQueryListener | null) => void>(),
+      removeListener: vi.fn<(listener: MediaQueryListener | null) => void>(),
+      dispatchEvent: vi.fn<(event: Event) => boolean>(() => true),
+    })),
+  );
+}
 
 it("renders the header columns once and a columnar row's scoped cells", () => {
   render(
@@ -220,6 +243,34 @@ it("stores table layout column widths under the field base", () => {
       },
     },
   );
+});
+
+it("renders stack rows instead of the horizontal table below the table breakpoint", () => {
+  mockTableViewport(false);
+
+  render(
+    <TableRows
+      base="items"
+      columns={columns}
+      rows={[
+        { key: "a", index: 0, row: {}, template: [qtyNode, priceNode], span: false, heading: "#1" },
+      ]}
+      reorderable={true}
+      removable={() => true}
+      onField={noop}
+      onMove={noop}
+      onRemove={noop}
+      rowActions={null}
+      onDuplicate={noop}
+    />,
+  );
+
+  expect(screen.getByTestId("repeater-items-row-0")).toBeInTheDocument();
+  expect(screen.queryByTestId("table-row-items-0")).not.toBeInTheDocument();
+  expect(screen.getAllByTestId("child").map((child) => child.textContent)).toEqual([
+    "items[0][qty]",
+    "items[0][price]",
+  ]);
 });
 
 function wrap(ui: React.ReactNode, initial: Record<string, unknown> = {}) {

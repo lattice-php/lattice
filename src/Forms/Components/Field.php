@@ -78,7 +78,7 @@ abstract class Field extends Component
 
     protected ?Closure $valueResolver = null;
 
-    public bool $prefill = false;
+    public bool $editablePrefill = false;
 
     /**
      * @var array<int, string>|null
@@ -349,7 +349,7 @@ abstract class Field extends Component
         if ($value instanceof Closure) {
             if ($editable) {
                 $this->prefillResolver = $value;
-                $this->prefill = true;
+                $this->editablePrefill = true;
                 $this->prefillResetOn = $resetOn === [] ? null : array_values($resetOn);
                 $this->prefillRefreshOn = $refreshOn === [] ? null : array_values($refreshOn);
 
@@ -523,7 +523,7 @@ abstract class Field extends Component
      * React to the form's filled value for this field during serialization. Override
      * per field (e.g. a Select resolving labels for stored ids). Defaults to a no-op.
      */
-    public function prefill(mixed $value): void {}
+    public function hydrateState(mixed $value, ?FormData $form = null, ?Request $request = null): void {}
 
     private function makeCondition(string $field, mixed $operatorOrValue, mixed $value): Condition
     {

@@ -22,7 +22,7 @@ it('injects selected values into the selected resolver', function () {
         fn ($values) => array_map(fn (string $value) => new Option('User '.$value, $value), $values),
     );
 
-    $field->prefill(['7']);
+    $field->hydrateState(['7']);
 
     expect($field->options)->toHaveCount(1)
         ->and($field->options[0]->label)->toBe('User 7');
