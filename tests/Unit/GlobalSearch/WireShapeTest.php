@@ -34,3 +34,17 @@ test('pagination reports the next page when more remain', function () {
         'page' => 1, 'perPage' => 20, 'total' => 96, 'hasMore' => true, 'nextPage' => 2,
     ]);
 });
+
+test('SearchPagination::forPage calculates pagination with items remaining', function () {
+    $pagination = SearchPagination::forPage(1, 20, 96);
+    expect($pagination->jsonSerialize())->toBe([
+        'page' => 1, 'perPage' => 20, 'total' => 96, 'hasMore' => true, 'nextPage' => 2,
+    ]);
+});
+
+test('SearchPagination::forPage handles exact last page boundary', function () {
+    $pagination = SearchPagination::forPage(5, 20, 100);
+    expect($pagination->jsonSerialize())->toBe([
+        'page' => 5, 'perPage' => 20, 'total' => 100, 'hasMore' => false, 'nextPage' => null,
+    ]);
+});
