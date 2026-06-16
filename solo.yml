@@ -1,7 +1,7 @@
-name: lattice-package
+name: lattice
 icon: null
 processes:
-  Serve:
+  composer:serve:
     command: composer serve
     working_dir: null
     auto_start: true
@@ -15,7 +15,14 @@ processes:
     auto_restart: true
     restart_when_changed: []
     env: {}
-  Docs dev:
+  npm:build:
+    command: npm run build
+    working_dir: null
+    auto_start: true
+    auto_restart: true
+    restart_when_changed: []
+    env: {}
+  npm:docs:
     command: npm run docs:dev
     working_dir: null
     auto_start: true
