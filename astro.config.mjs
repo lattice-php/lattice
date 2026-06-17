@@ -25,6 +25,9 @@ export default defineConfig({
         dark: "./docs/assets/logo-dark.svg",
         replacesTitle: true,
       },
+      components: {
+        Head: "./docs/components/Head.astro",
+      },
       social: [
         {
           icon: "github",
