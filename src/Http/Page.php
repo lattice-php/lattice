@@ -14,6 +14,7 @@ use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\PageMetadata;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Realtime\Listen;
 use UnexpectedValueException;
 
 abstract class Page implements PageContract
@@ -27,6 +28,14 @@ abstract class Page implements PageContract
      * @return array<int, array{title: string, href: string}>
      */
     public function breadcrumbs(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array<int, Listen>
+     */
+    protected function listeners(): array
     {
         return [];
     }
@@ -89,7 +98,7 @@ abstract class Page implements PageContract
     }
 
     /**
-     * @return array{title: string|null, layout: array{key: string, schema: array<int, array<string, mixed>>}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, schema: array<int, array<string, mixed>>}
+     * @return array{title: string|null, layout: array{key: string, schema: array<int, array<string, mixed>>}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, schema: array<int, array<string, mixed>>, listeners?: array<int, array<string, mixed>>}
      */
     public function toArray(PageSchema $schema, Request $request): array
     {
@@ -103,6 +112,7 @@ abstract class Page implements PageContract
             'container' => $this->serializePageMetadata($container),
             'breadcrumbs' => $this->breadcrumbs(),
             'schema' => $this->serializeSchema($schema),
+            ...$this->serializeListeners(),
         ];
     }
 
@@ -141,6 +151,24 @@ abstract class Page implements PageContract
     private function serializeSchema(PageSchema $schema): array
     {
         return json_decode(json_encode($schema->renderable(), JSON_THROW_ON_ERROR), true);
+    }
+
+    /**
+     * @return array{listeners?: array<int, array<string, mixed>>}
+     */
+    private function serializeListeners(): array
+    {
+        if (! config('lattice.realtime.enabled', true)) {
+            return [];
+        }
+
+        $listeners = array_values($this->listeners());
+
+        if ($listeners === []) {
+            return [];
+        }
+
+        return ['listeners' => json_decode(json_encode($listeners, JSON_THROW_ON_ERROR), true)];
     }
 
     private function response(PageSchema $schema): Response

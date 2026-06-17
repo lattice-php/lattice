@@ -21,6 +21,10 @@ return [
         'preload_locales' => [],
     ],
 
+    'realtime' => [
+        'enabled' => env('LATTICE_REALTIME_ENABLED', true),
+    ],
+
     'forms' => [
         'endpoint' => 'lattice/forms/{form}',
         'middleware' => ['web', 'auth'],
