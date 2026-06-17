@@ -5,7 +5,7 @@ import { Button } from "@lattice-php/lattice/core/components/button";
 import { cn } from "@lattice-php/lattice/lib/utils";
 
 export const DIALOG_SURFACE =
-  "fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 rounded-lt border border-lt-border bg-lt-bg p-6 shadow-lg";
+  "fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 rounded-lt border border-lt-border bg-lt-bg p-6 shadow-lt-lg";
 
 function Dialog(props: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;

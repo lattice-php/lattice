@@ -34,7 +34,7 @@ export function Toaster({ duration = 4000 }: { duration?: number }) {
         <Toast.Root
           key={toast.id}
           className={cn(
-            "flex items-start gap-3 rounded-lt border border-l-4 border-lt-border bg-lt-popover p-4 text-lt-popover-fg shadow-lg",
+            "flex items-start gap-3 rounded-lt border border-l-4 border-lt-border bg-lt-popover p-4 text-lt-popover-fg shadow-lt-lg",
             variantStyles[toast.variant].accent,
             "data-[state=open]:animate-lt-toast-in data-[state=closed]:animate-lt-toast-out",
             "data-[swipe=move]:translate-y-[var(--radix-toast-swipe-move-y)] data-[swipe=cancel]:translate-y-0 data-[swipe=cancel]:transition-transform",

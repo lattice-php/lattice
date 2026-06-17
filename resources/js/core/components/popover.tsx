@@ -3,7 +3,7 @@ import * as React from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 
 export const POPOVER_SURFACE =
-  "z-50 rounded-lt-sm border border-lt-border bg-lt-popover text-lt-popover-fg shadow-md";
+  "z-50 rounded-lt-sm border border-lt-border bg-lt-popover text-lt-popover-fg shadow-lt-md";
 
 function Popover(props: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />;

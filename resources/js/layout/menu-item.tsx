@@ -9,7 +9,7 @@ import { useSidebarCollapsed } from "./context";
 import { Popover } from "./popover";
 
 const rowClass =
-  "flex items-center gap-2 rounded-lt-sm px-3 py-2 text-sm text-lt-fg transition-colors hover:bg-lt-muted";
+  "flex items-center gap-2 rounded-lt-sm px-3 py-2 text-base font-medium text-lt-fg transition-colors hover:bg-lt-muted";
 
 function schemaContainsPath(schema: Schema | undefined, path: string): boolean {
   return (schema ?? []).some(
@@ -30,7 +30,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
       {icon ? <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} /> : null}
       {collapsed ? (
         <span
-          className="pointer-events-none absolute top-1/2 left-full z-50 ml-2 hidden -translate-y-1/2 rounded-lt-sm border border-lt-border bg-lt-popover px-2 py-1 text-sm whitespace-nowrap text-lt-popover-fg shadow-lg group-hover:block"
+          className="pointer-events-none absolute top-1/2 left-full z-50 ml-2 hidden -translate-y-1/2 rounded-lt-sm border border-lt-border bg-lt-popover px-2 py-1 text-sm whitespace-nowrap text-lt-popover-fg shadow-lt-md group-hover:block"
           role="tooltip"
         >
           {label}

@@ -1,31 +1,31 @@
 name: lattice
 icon: null
 processes:
+  npm:build:
+    command: npm run build
+    working_dir: null
+    auto_start: true
+    auto_restart: false
+    restart_when_changed: []
+    env: {}
   composer:serve:
     command: composer serve
     working_dir: null
     auto_start: true
-    auto_restart: true
+    auto_restart: false
     restart_when_changed: []
     env: {}
   npm:dev:
     command: npm run dev
     working_dir: null
     auto_start: true
-    auto_restart: true
-    restart_when_changed: []
-    env: {}
-  npm:build:
-    command: npm run build
-    working_dir: null
-    auto_start: true
-    auto_restart: true
+    auto_restart: false
     restart_when_changed: []
     env: {}
   npm:docs:
     command: npm run docs:dev
     working_dir: null
     auto_start: true
-    auto_restart: true
+    auto_restart: false
     restart_when_changed: []
     env: {}
