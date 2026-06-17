@@ -15,6 +15,7 @@ use Laravel\Boost\Install\SkillComposer;
 use Laravel\Boost\Support\Config;
 use Laravel\Roster\Roster;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
+use Workbench\App\Http\Middleware\ShareReverbConnection;
 use Workbench\App\Models\User;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
@@ -118,6 +119,7 @@ class WorkbenchServiceProvider extends ServiceProvider
     {
         if ($kernel instanceof HttpKernel) {
             $kernel->appendMiddlewareToGroup('web', InertiaMiddleware::class);
+            $kernel->appendMiddlewareToGroup('web', ShareReverbConnection::class);
         }
 
         $this->loadMigrationsFrom(package_path('workbench/database/migrations'));
