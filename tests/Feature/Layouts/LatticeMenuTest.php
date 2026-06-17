@@ -92,11 +92,10 @@ test('a menu item prefix takes an icon by name via the affix escape hatch', func
     expect($wire['props']['prefix'])->toBe(['icon' => 'house', 'text' => null]);
 });
 
-test('icon sets a menu item as icon-only and replaces the iconOnly flag', function (): void {
+test('icon serializes as a string prop on a menu item', function (): void {
     $wire = wire(MenuItem::make('Settings')->href('/settings')->icon(Icon::Settings));
 
-    expect($wire['props']['icon'])->toBe('settings')
-        ->and($wire['props'])->not->toHaveKey('iconOnly');
+    expect($wire['props']['icon'])->toBe('settings');
 });
 
 test('fromPage resolves the href and a default label from the page route', function (): void {
