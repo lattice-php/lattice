@@ -75,6 +75,51 @@ final readonly class ComponentAssertions
         return $assertions;
     }
 
+    public function component(string $type, ?string $id = null, ?Closure $tap = null): self
+    {
+        $node = $this->node->firstOfTypeIncludingSelf($type, $id);
+
+        Assert::assertNotNull($node, sprintf(
+            'Lattice component [%s] not found. Rendered: [%s].',
+            $id === null ? $type : $type.':'.$id,
+            implode(', ', $this->node->availableSelectors()),
+        ));
+
+        $scoped = new self($node);
+
+        if ($tap !== null) {
+            $tap($scoped);
+
+            return $this;
+        }
+
+        return $scoped;
+    }
+
+    public function assertProp(string $key, mixed $value): self
+    {
+        Assert::assertSame($value, $this->node->prop($key), sprintf(
+            'Expected prop [%s] on [%s] to equal %s.',
+            $key,
+            $this->node->type() ?? 'root',
+            var_export($value, true),
+        ));
+
+        return $this;
+    }
+
+    /**
+     * @param  array<string, mixed>  $props
+     */
+    public function assertProps(array $props): self
+    {
+        foreach ($props as $key => $value) {
+            $this->assertProp($key, $value);
+        }
+
+        return $this;
+    }
+
     public function assertRendered(string $selector): self
     {
         Assert::assertNotEmpty($this->select($selector), sprintf(
@@ -121,8 +166,7 @@ final readonly class ComponentAssertions
         [$type, $id] = array_pad(explode(':', $selector, 2), 2, null);
 
         return $this->node->findAllIncludingSelf(
-            static fn (ComponentNode $node): bool => $node->type() === $type
-                && ($id === null || $node->id() === $id),
+            static fn (ComponentNode $node): bool => $node->matches($type, $id),
         );
     }
 }

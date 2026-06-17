@@ -11,17 +11,14 @@ test('workbench pages render the floating chat layout by default', function () {
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
-    get('/')
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->where('lattice.layout.key', 'app')
-            ->has('lattice.layout.schema', 3)
-            ->has('lattice.layout.schema.0.schema', 2)
-            ->where('lattice.layout.schema.2.type', 'floating-panel')
-            ->where('lattice.layout.schema.2.key', 'assistant-chat')
-            ->where('lattice.layout.schema.2.props.trigger.0.type', 'badge')
-            ->where('lattice.layout.schema.2.schema.0.type', 'chat.box')
-        );
+    $response = get('/')->assertOk();
+
+    $response->assertInertia(fn (AssertableInertia $page) => $page->where('lattice.layout.key', 'app'));
+
+    $this->assertLatticeLayout($response)
+        ->component('floating-panel', 'assistant-chat', fn ($panel) => $panel
+            ->assertRendered('badge')
+            ->assertRendered('chat.box'));
 });
 
 test('workbench pages dock the chat in a side rail when the chat-inline flag is set', function () {
@@ -31,13 +28,11 @@ test('workbench pages dock the chat in a side rail when the chat-inline flag is 
 
     withSession(['workbench.chat_inline' => true]);
 
-    get('/')
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->where('lattice.layout.key', 'app-chat')
-            ->has('lattice.layout.schema', 2)
-            ->where('lattice.layout.schema.0.schema.2.key', 'chat-rail')
-            ->where('lattice.layout.schema.0.schema.2.schema.0.type', 'chat.box')
-            ->where('lattice.layout.schema.0.schema.2.schema.0.props.fill', true)
-        );
+    $response = get('/')->assertOk();
+
+    $response->assertInertia(fn (AssertableInertia $page) => $page->where('lattice.layout.key', 'app-chat'));
+
+    $this->assertLatticeLayout($response)
+        ->assertRendered('stack:chat-rail')
+        ->component('chat.box', tap: fn ($box) => $box->assertProp('fill', true));
 });

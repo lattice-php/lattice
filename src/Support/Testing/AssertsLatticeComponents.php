@@ -34,4 +34,15 @@ trait AssertsLatticeComponents
 
         return new ComponentAssertions(ComponentNode::root(is_array($schema) ? $schema : []));
     }
+
+    /**
+     * @param  TestResponse<Response>  $response
+     */
+    public function assertLatticeLayout(TestResponse $response): ComponentAssertions
+    {
+        $page = AssertableInertia::fromTestResponse($response)->toArray();
+        $schema = $page['props']['lattice']['layout']['schema'] ?? [];
+
+        return new ComponentAssertions(ComponentNode::root(is_array($schema) ? $schema : []));
+    }
 }

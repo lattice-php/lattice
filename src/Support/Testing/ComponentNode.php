@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Support\Testing;
 
 final readonly class ComponentNode
 {
-    private const array NESTED_COMPONENT_PROPS = ['form', 'headerActions', 'bulkActions', 'actions'];
+    private const array NESTED_COMPONENT_PROPS = ['form', 'headerActions', 'bulkActions', 'actions', 'trigger'];
 
     /**
      * @param  array<string, mixed>  $data
@@ -36,6 +36,24 @@ final readonly class ComponentNode
         $id = $this->data['id'] ?? null;
 
         return is_string($id) ? $id : null;
+    }
+
+    public function key(): ?string
+    {
+        $key = $this->data['key'] ?? null;
+
+        return is_string($key) ? $key : null;
+    }
+
+    /**
+     * Match a component by type and, optionally, by its identifier — either the
+     * interactive `id` or the author-supplied `key`, so layout/container
+     * components (which only carry a key) are addressable too.
+     */
+    public function matches(string $type, ?string $id = null): bool
+    {
+        return $this->type() === $type
+            && ($id === null || $this->id() === $id || $this->key() === $id);
     }
 
     /**
@@ -145,7 +163,8 @@ final readonly class ComponentNode
                 continue;
             }
 
-            $selectors[] = $node->id() !== null ? $type.':'.$node->id() : $type;
+            $identifier = $node->id() ?? $node->key();
+            $selectors[] = $identifier !== null ? $type.':'.$identifier : $type;
         }
 
         return array_values(array_unique($selectors));
@@ -174,8 +193,7 @@ final readonly class ComponentNode
      */
     private function typeMatcher(string $type, ?string $id): callable
     {
-        return static fn (self $node): bool => $node->type() === $type
-            && ($id === null || $node->id() === $id);
+        return static fn (self $node): bool => $node->matches($type, $id);
     }
 
     /**
@@ -245,7 +263,9 @@ final readonly class ComponentNode
      */
     private function childPath(array $child): string
     {
-        $label = is_string($child['id'] ?? null) ? $child['id'] : (string) ($child['type'] ?? '?');
+        $label = is_string($child['id'] ?? null)
+            ? $child['id']
+            : (is_string($child['key'] ?? null) ? $child['key'] : (string) ($child['type'] ?? '?'));
 
         return $this->path.' › '.$label;
     }

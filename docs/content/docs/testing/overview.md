@@ -31,9 +31,9 @@ abstract class TestCase extends \Tests\TestCase
 uses(Lattice\Lattice\Support\Testing\AssertsLatticeComponents::class);
 ```
 
-## Two entry points
+## Entry points
 
-Both produce the same fluent assertions; pick the one that fits the test.
+They produce the same fluent assertions; pick the one that fits the test.
 
 **Against a component you build in the test** — fast, no HTTP:
 
@@ -54,6 +54,14 @@ $this->assertLatticeComponent($form)
 ```php
 $this->assertLatticePage($this->get('/products'))
     ->assertRendered('table:products');
+```
+
+**Against a page's layout shell** — the sidebar, topbar, and other chrome around the page:
+
+```php
+$this->assertLatticeLayout($this->get('/'))
+    ->assertRendered('topbar')
+    ->assertRendered('menu-item:settings');
 ```
 
 > Page tests render a real Inertia view. If your front-end assets aren't built in the test
@@ -77,7 +85,19 @@ $this->assertLatticeComponent($form)
 ```
 
 `form(?id)`, `table(?id)`, and `action(id)` find a component by type (and optional id). When
-the id is omitted, the first component of that type is used.
+the id is omitted, the first component of that type is used. `component(type, ?id, ?tap)` does
+the same for any component type; `assertProp(key, value)` and `assertProps([...])` then assert
+the scoped node's props:
+
+```php
+$this->assertLatticeLayout($this->get('/'))
+    ->component('topbar', tap: fn ($topbar) => $topbar->assertProp('sticky', true))
+    ->component('menu-item', 'settings', fn ($item) => $item->assertProp('icon', 'settings'));
+```
+
+The `id` segment matches a component's interactive `id` **or** its author-supplied `key`, so
+layout and container components (`topbar`, `menu-item:settings`, `dropdown:user-menu`, …) are
+addressable the same way.
 
 ## Asserting what is rendered
 
