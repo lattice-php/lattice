@@ -82,9 +82,9 @@ class MenuItem extends ContainerComponent
     }
 
     /**
-     * Render the item as its icon only; the label is kept for accessibility
-     * (aria-label and a hover tooltip). Useful for compact controls like a
-     * topbar settings cog. For an icon shown alongside the label, use prefix().
+     * Render the item as its icon only; the label is kept as the aria-label for
+     * accessibility. Useful for compact controls like a topbar settings cog. For
+     * an icon shown alongside the label, use prefix().
      */
     public function icon(BackedEnum|string $icon): static
     {
