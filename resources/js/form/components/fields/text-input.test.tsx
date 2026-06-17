@@ -108,6 +108,19 @@ describe("TextInputComponent affixes", () => {
     expect(container.querySelector('[data-slot="affix-start"] svg')).not.toBeNull();
   });
 
+  it("draws the focus ring around the whole group and suppresses the bare input ring", () => {
+    const { container } = renderField(
+      fakeNode({
+        type: "field.text-input",
+        props: { name: "price", label: "Price", prefix: { icon: null, text: "$" } },
+      }),
+    );
+
+    const group = container.querySelector('[data-slot="affix-group"]');
+    expect(group?.className).toContain("has-[:focus-visible]:ring-[3px]");
+    expect(screen.getByRole("textbox", { name: "Price" })).toHaveClass("focus-visible:ring-0");
+  });
+
   it("leaves the input unwrapped when there are no affixes", () => {
     renderField(
       fakeNode({
