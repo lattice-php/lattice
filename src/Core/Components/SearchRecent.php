@@ -5,8 +5,8 @@ namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
 
-#[AsComponent('global-search.preview')]
-class GlobalSearchPreview extends Component
+#[AsComponent('search.recent')]
+class SearchRecent extends Component
 {
     public static function make(?string $key = null): static
     {

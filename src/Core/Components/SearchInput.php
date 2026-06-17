@@ -5,8 +5,8 @@ namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
 
-#[AsComponent('global-search.categories')]
-class GlobalSearchCategories extends Component
+#[AsComponent('search.input')]
+class SearchInput extends Component
 {
     public static function make(?string $key = null): static
     {

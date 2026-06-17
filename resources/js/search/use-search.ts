@@ -2,14 +2,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { router } from "@inertiajs/react";
 import { apiJson } from "@lattice-php/lattice/core/api";
 import {
-  GLOBAL_SEARCH_DEBOUNCE_MS,
+  SEARCH_DEBOUNCE_MS,
   type RecordResponse,
   type SearchCategory,
   type SearchPagination,
   type SearchResponse,
   type SearchResult,
-  type UseGlobalSearchOptions,
-  type UseGlobalSearchReturn,
+  type UseSearchOptions,
+  type UseSearchReturn,
 } from "./types";
 
 function buildUrl(endpoint: string, params: Record<string, string>): string {
@@ -18,17 +18,14 @@ function buildUrl(endpoint: string, params: Record<string, string>): string {
   return search === "" ? endpoint : `${endpoint}?${search}`;
 }
 
-export function useGlobalSearch({
-  endpoint,
-  perPage = 20,
-}: UseGlobalSearchOptions): UseGlobalSearchReturn {
+export function useSearch({ endpoint, perPage = 20 }: UseSearchOptions): UseSearchReturn {
   const [query, setQueryState] = useState("");
   const [categories, setCategories] = useState<SearchCategory[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [recent, setRecent] = useState<SearchResult[]>([]);
   const [pagination, setPagination] = useState<SearchPagination | null>(null);
-  const [status, setStatus] = useState<UseGlobalSearchReturn["status"]>("idle");
+  const [status, setStatus] = useState<UseSearchReturn["status"]>("idle");
   const [error, setError] = useState<string | null>(null);
   const [focusedId, setFocusedId] = useState<string | null>(null);
 
@@ -100,7 +97,7 @@ export function useGlobalSearch({
 
       debounceRef.current = setTimeout(async () => {
         await run(value, activeCategory, 1, false);
-      }, GLOBAL_SEARCH_DEBOUNCE_MS);
+      }, SEARCH_DEBOUNCE_MS);
     },
     [activeCategory, run],
   );

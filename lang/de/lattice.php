@@ -110,7 +110,7 @@ return [
         'send' => 'Senden',
         'input-label' => 'Nachrichteneingabe',
     ],
-    'globalSearch' => [
+    'search' => [
         'placeholder' => 'Suchen…',
         'title' => 'Suche',
         'results' => 'Ergebnisse',

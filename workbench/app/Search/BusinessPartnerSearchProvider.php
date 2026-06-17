@@ -24,7 +24,7 @@ final class BusinessPartnerSearchProvider implements SearchResultProvider
 
     public function category(): SearchCategory
     {
-        return new SearchCategory('business-partners', __('workbench.global-search.business-partners'), 'users');
+        return new SearchCategory('business-partners', __('workbench.search.business-partners'), 'users');
     }
 
     public function count(SearchQuery $query): int

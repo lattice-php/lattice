@@ -24,7 +24,7 @@ final class ProductSearchProvider implements SearchResultProvider
 
     public function category(): SearchCategory
     {
-        return new SearchCategory('products', __('workbench.global-search.products'), 'package');
+        return new SearchCategory('products', __('workbench.search.products'), 'package');
     }
 
     public function count(SearchQuery $query): int

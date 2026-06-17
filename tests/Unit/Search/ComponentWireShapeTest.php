@@ -1,24 +1,24 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\GlobalSearch;
-use Lattice\Lattice\Core\Components\GlobalSearchInput;
-use Lattice\Lattice\Core\Components\GlobalSearchResults;
+use Lattice\Lattice\Core\Components\SearchBox;
+use Lattice\Lattice\Core\Components\SearchInput;
+use Lattice\Lattice\Core\Components\SearchResults;
 
 test('the root serializes its props and nested slots', function () {
     $node = wire(
-        GlobalSearch::make('global-search')
+        SearchBox::make('search')
             ->endpoint('/lattice/search')
             ->placeholder('Search…')
             ->title('Search')
             ->schema([
-                GlobalSearchInput::make(),
-                GlobalSearchResults::make(),
+                SearchInput::make(),
+                SearchResults::make(),
             ]),
     );
 
     expect($node)->toMatchArray([
-        'type' => 'global-search',
+        'type' => 'search.box',
         'props' => [
             'endpoint' => '/lattice/search',
             'placeholder' => 'Search…',
@@ -28,6 +28,6 @@ test('the root serializes its props and nested slots', function () {
         ],
     ]);
 
-    expect($node['schema'][0]['type'])->toBe('global-search.input');
-    expect($node['schema'][1]['type'])->toBe('global-search.results');
+    expect($node['schema'][0]['type'])->toBe('search.input');
+    expect($node['schema'][1]['type'])->toBe('search.results');
 });

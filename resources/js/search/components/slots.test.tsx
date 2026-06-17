@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { GlobalSearchProvider } from "../context";
-import type { SearchResult, UseGlobalSearchReturn } from "../types";
-import GlobalSearchCategories from "./categories";
-import GlobalSearchInput from "./input";
-import GlobalSearchRecent from "./recent";
+import { SearchProvider } from "../context";
+import type { SearchResult, UseSearchReturn } from "../types";
+import SearchCategories from "./categories";
+import SearchInput from "./input";
+import SearchRecent from "./recent";
 
 function row(id: string): SearchResult {
   return {
@@ -20,7 +20,7 @@ function row(id: string): SearchResult {
   };
 }
 
-function value(overrides: Partial<UseGlobalSearchReturn> = {}): UseGlobalSearchReturn {
+function value(overrides: Partial<UseSearchReturn> = {}): UseSearchReturn {
   return {
     query: "",
     setQuery: vi.fn<(value: string) => void>(),
@@ -45,13 +45,13 @@ function node(type: string) {
   return { type, props: {} } as never;
 }
 
-describe("global-search slots", () => {
+describe("search slots", () => {
   it("input forwards typing to setQuery", () => {
     const v = value();
     render(
-      <GlobalSearchProvider value={v}>
-        <GlobalSearchInput node={node("global-search.input")}>{null}</GlobalSearchInput>
-      </GlobalSearchProvider>,
+      <SearchProvider value={v}>
+        <SearchInput node={node("search.input")}>{null}</SearchInput>
+      </SearchProvider>,
     );
     fireEvent.change(screen.getByRole("searchbox"), { target: { value: "wid" } });
     expect(v.setQuery).toHaveBeenCalledWith("wid");
@@ -60,11 +60,9 @@ describe("global-search slots", () => {
   it("categories render label + count and select on click", () => {
     const v = value();
     render(
-      <GlobalSearchProvider value={v}>
-        <GlobalSearchCategories node={node("global-search.categories")}>
-          {null}
-        </GlobalSearchCategories>
-      </GlobalSearchProvider>,
+      <SearchProvider value={v}>
+        <SearchCategories node={node("search.categories")}>{null}</SearchCategories>
+      </SearchProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: /Products/ }));
     expect(v.setCategory).toHaveBeenCalledWith("products");
@@ -73,9 +71,9 @@ describe("global-search slots", () => {
 
   it("recent hides while a query is active", () => {
     const { container } = render(
-      <GlobalSearchProvider value={value({ query: "wid", recent: [row("1")] })}>
-        <GlobalSearchRecent node={node("global-search.recent")}>{null}</GlobalSearchRecent>
-      </GlobalSearchProvider>,
+      <SearchProvider value={value({ query: "wid", recent: [row("1")] })}>
+        <SearchRecent node={node("search.recent")}>{null}</SearchRecent>
+      </SearchProvider>,
     );
     expect(container).toBeEmptyDOMElement();
   });

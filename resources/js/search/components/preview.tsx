@@ -1,10 +1,10 @@
 import { Button } from "@lattice-php/lattice/core/components/button";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { useT } from "@lattice-php/lattice/i18n";
-import { useGlobalSearchContext } from "../context";
+import { useSearchContext } from "../context";
 
-const GlobalSearchPreview: RendererComponent<"global-search.preview"> = () => {
-  const { results, recent, focusedId, openResult } = useGlobalSearchContext();
+const SearchPreview: RendererComponent<"search.preview"> = () => {
+  const { results, recent, focusedId, openResult } = useSearchContext();
   const { t } = useT("lattice");
 
   const focused = [...results, ...recent].find((result) => result.item.id === focusedId) ?? null;
@@ -12,7 +12,7 @@ const GlobalSearchPreview: RendererComponent<"global-search.preview"> = () => {
   if (focused === null) {
     return (
       <div className="hidden p-4 text-sm text-lt-muted-fg md:block">
-        {t("globalSearch.previewEmpty", "Select a result to preview.")}
+        {t("search.previewEmpty", "Select a result to preview.")}
       </div>
     );
   }
@@ -31,10 +31,10 @@ const GlobalSearchPreview: RendererComponent<"global-search.preview"> = () => {
         ) : null}
       </div>
       <Button onClick={() => openResult(focused)} variant="secondary">
-        {t("globalSearch.open", "Open")}
+        {t("search.open", "Open")}
       </Button>
     </div>
   );
 };
 
-export default GlobalSearchPreview;
+export default SearchPreview;

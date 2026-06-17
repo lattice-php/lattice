@@ -1,8 +1,8 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { router } from "@inertiajs/react";
-import { GLOBAL_SEARCH_DEBOUNCE_MS } from "./types";
-import { useGlobalSearch } from "./use-global-search";
+import { SEARCH_DEBOUNCE_MS } from "./types";
+import { useSearch } from "./use-search";
 
 vi.mock("@inertiajs/react", () => ({ router: { visit: vi.fn<(href: string) => void>() } }));
 
@@ -50,7 +50,7 @@ const page2 = {
   state: { query: "wid", category: "products", perPage: 1, countsIncluded: false },
 };
 
-describe("useGlobalSearch", () => {
+describe("useSearch", () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => {
     vi.useRealTimers();
@@ -61,14 +61,12 @@ describe("useGlobalSearch", () => {
     const fetchMock = vi.fn<typeof fetch>(async () => jsonResponse(page1));
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() =>
-      useGlobalSearch({ endpoint: "/lattice/search", perPage: 1 }),
-    );
+    const { result } = renderHook(() => useSearch({ endpoint: "/lattice/search", perPage: 1 }));
     act(() => result.current.setQuery("wid"));
 
     expect(fetchMock).not.toHaveBeenCalled(); // still within debounce window
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(GLOBAL_SEARCH_DEBOUNCE_MS);
+      await vi.advanceTimersByTimeAsync(SEARCH_DEBOUNCE_MS);
     });
 
     await waitFor(() => expect(result.current.results).toHaveLength(1));
@@ -82,12 +80,10 @@ describe("useGlobalSearch", () => {
       .mockResolvedValueOnce(jsonResponse(page2));
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() =>
-      useGlobalSearch({ endpoint: "/lattice/search", perPage: 1 }),
-    );
+    const { result } = renderHook(() => useSearch({ endpoint: "/lattice/search", perPage: 1 }));
     act(() => result.current.setQuery("wid"));
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(GLOBAL_SEARCH_DEBOUNCE_MS);
+      await vi.advanceTimersByTimeAsync(SEARCH_DEBOUNCE_MS);
     });
     await waitFor(() => expect(result.current.results).toHaveLength(1));
 
@@ -104,16 +100,14 @@ describe("useGlobalSearch", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() =>
-      useGlobalSearch({ endpoint: "/lattice/search", perPage: 1 }),
-    );
+    const { result } = renderHook(() => useSearch({ endpoint: "/lattice/search", perPage: 1 }));
     act(() => result.current.setQuery("old"));
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(GLOBAL_SEARCH_DEBOUNCE_MS);
+      await vi.advanceTimersByTimeAsync(SEARCH_DEBOUNCE_MS);
     });
     act(() => result.current.setQuery("new"));
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(GLOBAL_SEARCH_DEBOUNCE_MS);
+      await vi.advanceTimersByTimeAsync(SEARCH_DEBOUNCE_MS);
     });
 
     await waitFor(() => expect(result.current.results[0]?.item.id).toBe("2"));
@@ -138,9 +132,7 @@ describe("useGlobalSearch", () => {
     const fetchMock = vi.fn<typeof fetch>(async () => jsonResponse(recordResponse));
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() =>
-      useGlobalSearch({ endpoint: "/lattice/search", perPage: 1 }),
-    );
+    const { result } = renderHook(() => useSearch({ endpoint: "/lattice/search", perPage: 1 }));
     // The client-supplied link is deliberately wrong; navigation must use the re-resolved row.
     const clicked = {
       category: { name: "products" },

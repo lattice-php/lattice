@@ -1,4 +1,4 @@
-export const GLOBAL_SEARCH_DEBOUNCE_MS = 250;
+export const SEARCH_DEBOUNCE_MS = 250;
 
 export type SearchResult = {
   category: { name: string };
@@ -41,10 +41,10 @@ export type SearchResponse = {
 };
 export type RecordResponse = { data: SearchResult | null; state: { recorded: boolean } };
 
-export type GlobalSearchStatus = "idle" | "loading" | "success" | "error";
-export type UseGlobalSearchOptions = { endpoint: string; perPage?: number };
+export type SearchStatus = "idle" | "loading" | "success" | "error";
+export type UseSearchOptions = { endpoint: string; perPage?: number };
 
-export type UseGlobalSearchReturn = {
+export type UseSearchReturn = {
   query: string;
   setQuery: (value: string) => void;
   categories: SearchCategory[];
@@ -53,7 +53,7 @@ export type UseGlobalSearchReturn = {
   results: SearchResult[];
   recent: SearchResult[];
   pagination: SearchPagination | null;
-  status: GlobalSearchStatus;
+  status: SearchStatus;
   error: string | null;
   focusedId: string | null;
   setFocusedId: (id: string | null) => void;

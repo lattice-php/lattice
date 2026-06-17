@@ -24,7 +24,7 @@ final class SalesOrderSearchProvider implements SearchResultProvider
 
     public function category(): SearchCategory
     {
-        return new SearchCategory('sales-orders', __('workbench.global-search.sales-orders'), 'receipt');
+        return new SearchCategory('sales-orders', __('workbench.search.sales-orders'), 'receipt');
     }
 
     public function count(SearchQuery $query): int

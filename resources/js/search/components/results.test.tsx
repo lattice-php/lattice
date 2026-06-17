@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { GlobalSearchProvider } from "../context";
-import type { SearchResult, UseGlobalSearchReturn } from "../types";
-import GlobalSearchResults from "./results";
+import { SearchProvider } from "../context";
+import type { SearchResult, UseSearchReturn } from "../types";
+import SearchResults from "./results";
 
 function row(id: string, title: string): SearchResult {
   return {
@@ -18,11 +18,11 @@ function row(id: string, title: string): SearchResult {
   };
 }
 
-function harness(overrides: Partial<UseGlobalSearchReturn> = {}) {
+function harness(overrides: Partial<UseSearchReturn> = {}) {
   const setFocusedId = vi.fn<(id: string | null) => void>();
   const openResult = vi.fn<(result: SearchResult) => void>();
   const loadMore = vi.fn<() => void>();
-  const value: UseGlobalSearchReturn = {
+  const value: UseSearchReturn = {
     query: "wid",
     setQuery: vi.fn<(value: string) => void>(),
     categories: [],
@@ -42,17 +42,15 @@ function harness(overrides: Partial<UseGlobalSearchReturn> = {}) {
   };
 
   render(
-    <GlobalSearchProvider value={value}>
-      <GlobalSearchResults node={{ type: "global-search.results", props: {} } as never}>
-        {null}
-      </GlobalSearchResults>
-    </GlobalSearchProvider>,
+    <SearchProvider value={value}>
+      <SearchResults node={{ type: "search.results", props: {} } as never}>{null}</SearchResults>
+    </SearchProvider>,
   );
 
   return { setFocusedId, openResult, loadMore };
 }
 
-describe("GlobalSearchResults", () => {
+describe("SearchResults", () => {
   it("renders rows with title and joined subtitle", () => {
     harness();
     expect(screen.getByText("Widget 1")).toBeInTheDocument();

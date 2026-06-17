@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import GlobalSearch from "./global-search";
+import SearchBox from "./search-box";
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -13,7 +13,7 @@ const emptyPayload = JSON.stringify({
 
 function renderRoot() {
   const node = {
-    type: "global-search",
+    type: "search.box",
     props: {
       endpoint: "/lattice/search",
       placeholder: "Search…",
@@ -23,10 +23,10 @@ function renderRoot() {
     },
   } as never;
 
-  return render(<GlobalSearch node={node}>{null}</GlobalSearch>);
+  return render(<SearchBox node={node}>{null}</SearchBox>);
 }
 
-describe("GlobalSearch root", () => {
+describe("SearchBox root", () => {
   it("opens on Cmd+K and shows the default composition", async () => {
     vi.stubGlobal(
       "fetch",

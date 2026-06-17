@@ -1,12 +1,12 @@
 import { useEffect, useRef, type KeyboardEvent } from "react";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { useT } from "@lattice-php/lattice/i18n";
-import { useGlobalSearchContext } from "../context";
+import { useSearchContext } from "../context";
 import { ResultRow } from "./result-row";
 
-const GlobalSearchResults: RendererComponent<"global-search.results"> = () => {
+const SearchResults: RendererComponent<"search.results"> = () => {
   const { results, focusedId, setFocusedId, openResult, loadMore, status, pagination } =
-    useGlobalSearchContext();
+    useSearchContext();
   const { t } = useT("lattice");
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -53,29 +53,23 @@ const GlobalSearchResults: RendererComponent<"global-search.results"> = () => {
 
   if (status === "error") {
     return (
-      <div className="p-4 text-sm text-lt-danger">
-        {t("globalSearch.error", "Something went wrong.")}
-      </div>
+      <div className="p-4 text-sm text-lt-danger">{t("search.error", "Something went wrong.")}</div>
     );
   }
 
   if (status === "loading" && results.length === 0) {
-    return (
-      <div className="p-4 text-sm text-lt-muted-fg">{t("globalSearch.loading", "Searching…")}</div>
-    );
+    return <div className="p-4 text-sm text-lt-muted-fg">{t("search.loading", "Searching…")}</div>;
   }
 
   if (results.length === 0) {
     return (
-      <div className="p-4 text-sm text-lt-muted-fg">
-        {t("globalSearch.empty", "No results found.")}
-      </div>
+      <div className="p-4 text-sm text-lt-muted-fg">{t("search.empty", "No results found.")}</div>
     );
   }
 
   return (
     <div
-      aria-label={t("globalSearch.results", "Results")}
+      aria-label={t("search.results", "Results")}
       className="flex flex-col gap-1 overflow-y-auto p-1 outline-none"
       onKeyDown={onKeyDown}
       role="listbox"
@@ -95,4 +89,4 @@ const GlobalSearchResults: RendererComponent<"global-search.results"> = () => {
   );
 };
 
-export default GlobalSearchResults;
+export default SearchResults;

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 return [
-    'global-search' => [
+    'search' => [
         'placeholder' => 'Produkte, Partner, Aufträge suchen…',
         'title' => 'Suche',
         'products' => 'Produkte',

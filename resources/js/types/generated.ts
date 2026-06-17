@@ -329,37 +329,6 @@ export type CoreNode =
       schema?: Node[];
     }
   | {
-      type: "global-search";
-      key?: string;
-      props: GlobalSearch;
-      schema?: Node[];
-    }
-  | {
-      type: "global-search.categories";
-      key?: string;
-      props: GlobalSearchCategories;
-    }
-  | {
-      type: "global-search.input";
-      key?: string;
-      props: GlobalSearchInput;
-    }
-  | {
-      type: "global-search.preview";
-      key?: string;
-      props: GlobalSearchPreview;
-    }
-  | {
-      type: "global-search.recent";
-      key?: string;
-      props: GlobalSearchRecent;
-    }
-  | {
-      type: "global-search.results";
-      key?: string;
-      props: GlobalSearchResults;
-    }
-  | {
       type: "grid";
       key?: string;
       props: Grid;
@@ -391,6 +360,37 @@ export type CoreNode =
       type: "raw-block";
       key?: string;
       props: RawBlock;
+    }
+  | {
+      type: "search.box";
+      key?: string;
+      props: SearchBox;
+      schema?: Node[];
+    }
+  | {
+      type: "search.categories";
+      key?: string;
+      props: SearchCategories;
+    }
+  | {
+      type: "search.input";
+      key?: string;
+      props: SearchInput;
+    }
+  | {
+      type: "search.preview";
+      key?: string;
+      props: SearchPreview;
+    }
+  | {
+      type: "search.recent";
+      key?: string;
+      props: SearchRecent;
+    }
+  | {
+      type: "search.results";
+      key?: string;
+      props: SearchResults;
     }
   | {
       type: "section";
@@ -684,18 +684,6 @@ export type FragmentNode = {
   schema?: Node[];
 };
 export type Gap = "none" | "xs" | "sm" | "md" | "lg" | "xl";
-export type GlobalSearch = {
-  endpoint: string | null;
-  perPage: number;
-  placeholder: string | null;
-  shortcut: boolean;
-  title: string | null;
-};
-export type GlobalSearchCategories = Record<string, never>;
-export type GlobalSearchInput = Record<string, never>;
-export type GlobalSearchPreview = Record<string, never>;
-export type GlobalSearchRecent = Record<string, never>;
-export type GlobalSearchResults = Record<string, never>;
 export type Grid = {
   columns: number | null;
 };
@@ -1056,6 +1044,18 @@ export type RowAction = {
 };
 export type RowActionType = "duplicate" | "remove";
 export type RowLayout = "stack" | "table";
+export type SearchBox = {
+  endpoint: string | null;
+  perPage: number;
+  placeholder: string | null;
+  shortcut: boolean;
+  title: string | null;
+};
+export type SearchCategories = Record<string, never>;
+export type SearchInput = Record<string, never>;
+export type SearchPreview = Record<string, never>;
+export type SearchRecent = Record<string, never>;
+export type SearchResults = Record<string, never>;
 export type Section = {
   collapsed: boolean;
   collapsible: boolean;

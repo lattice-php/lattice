@@ -1,10 +1,10 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { useGlobalSearchContext } from "../context";
+import { useSearchContext } from "../context";
 
-const GlobalSearchCategories: RendererComponent<"global-search.categories"> = () => {
-  const { categories, activeCategory, setCategory } = useGlobalSearchContext();
+const SearchCategories: RendererComponent<"search.categories"> = () => {
+  const { categories, activeCategory, setCategory } = useSearchContext();
 
   return (
     <div className="flex flex-col gap-1 p-1">
@@ -36,4 +36,4 @@ const GlobalSearchCategories: RendererComponent<"global-search.categories"> = ()
   );
 };
 
-export default GlobalSearchCategories;
+export default SearchCategories;

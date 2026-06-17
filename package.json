@@ -55,13 +55,13 @@
       "types": "./dist/chat/*.d.ts",
       "import": "./dist/chat/*.js"
     },
-    "./global-search": {
-      "types": "./dist/global-search/index.d.ts",
-      "import": "./dist/global-search/index.js"
+    "./search": {
+      "types": "./dist/search/index.d.ts",
+      "import": "./dist/search/index.js"
     },
-    "./global-search/*": {
-      "types": "./dist/global-search/*.d.ts",
-      "import": "./dist/global-search/*.js"
+    "./search/*": {
+      "types": "./dist/search/*.d.ts",
+      "import": "./dist/search/*.js"
     },
     "./clipboard": {
       "types": "./dist/clipboard/index.d.ts",

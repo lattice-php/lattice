@@ -1,10 +1,10 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { useT } from "@lattice-php/lattice/i18n";
-import { useGlobalSearchContext } from "../context";
+import { useSearchContext } from "../context";
 import { ResultRow } from "./result-row";
 
-const GlobalSearchRecent: RendererComponent<"global-search.recent"> = () => {
-  const { query, recent, focusedId, setFocusedId, openResult } = useGlobalSearchContext();
+const SearchRecent: RendererComponent<"search.recent"> = () => {
+  const { query, recent, focusedId, setFocusedId, openResult } = useSearchContext();
   const { t } = useT("lattice");
 
   if (query.trim() !== "" || recent.length === 0) {
@@ -14,7 +14,7 @@ const GlobalSearchRecent: RendererComponent<"global-search.recent"> = () => {
   return (
     <div className="flex flex-col gap-1 p-1">
       <span className="px-3 py-1 text-xs font-medium uppercase tracking-wide text-lt-muted-fg">
-        {t("globalSearch.recent", "Recent")}
+        {t("search.recent", "Recent")}
       </span>
       {recent.map((result) => (
         <ResultRow
@@ -29,4 +29,4 @@ const GlobalSearchRecent: RendererComponent<"global-search.recent"> = () => {
   );
 };
 
-export default GlobalSearchRecent;
+export default SearchRecent;

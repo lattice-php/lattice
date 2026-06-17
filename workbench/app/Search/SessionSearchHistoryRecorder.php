@@ -10,7 +10,7 @@ use Lattice\Lattice\Search\SearchResultItem;
 
 final class SessionSearchHistoryRecorder implements SearchHistoryRecorder
 {
-    private const KEY = 'workbench.global-search.recent';
+    private const KEY = 'workbench.search.recent';
 
     public function record(Request $request, SearchResult $result): bool
     {
