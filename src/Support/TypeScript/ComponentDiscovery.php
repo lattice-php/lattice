@@ -7,7 +7,6 @@ use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
-use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use ReflectionAttribute;
@@ -50,7 +49,7 @@ final class ComponentDiscovery
                 container: is_subclass_of($class, ContainerComponent::class)
                     || in_array(HasChildSchema::class, class_uses_recursive($class), true),
                 interactive: in_array(IsInteractive::class, class_uses_recursive($class), true),
-                category: $isColumn ? 'column' : (is_subclass_of($class, Field::class) ? 'field' : 'component'),
+                category: $isColumn ? 'column' : 'component',
                 domain: $this->domainFor($class),
             );
         }

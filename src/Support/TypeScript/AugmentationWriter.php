@@ -21,7 +21,7 @@ use Spatie\TypeScriptTransformer\Writers\Writer;
 final readonly class AugmentationWriter implements Writer
 {
     /**
-     * @param  array<class-string, array{0: string, 1: 'component'|'field'|'column'}>  $components  FQCN (component or column class) => [wire type, category]
+     * @param  array<class-string, array{0: string, 1: 'component'|'column'}>  $components  FQCN (component or column class) => [wire type, category]
      */
     public function __construct(
         private array $components,
