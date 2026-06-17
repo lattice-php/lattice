@@ -17,7 +17,7 @@ final readonly class RemoteSchemaResolver
      */
     private const array EXTERNAL_URL_PROPS = [
         'remote.data-list' => ['dataEndpoint'],
-        'remote.chat-box' => ['streamEndpoint', 'historyEndpoint'],
+        'chat.box' => ['streamEndpoint', 'historyEndpoint'],
     ];
 
     public function __construct(
@@ -139,10 +139,6 @@ final readonly class RemoteSchemaResolver
 
         if (is_array($props)) {
             unset($props['action'], $props['endpoint'], $props['ref'], $props['remote'], $props['tokenEndpoint']);
-
-            if ($type === 'chat.box') {
-                unset($props['historyEndpoint'], $props['streamEndpoint']);
-            }
 
             if (is_string($type) && array_key_exists($type, self::EXTERNAL_URL_PROPS)) {
                 foreach (self::EXTERNAL_URL_PROPS[$type] as $property) {

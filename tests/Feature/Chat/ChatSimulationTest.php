@@ -72,7 +72,7 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
             'href' => 'actionHref',
         ]);
 
-    expect($chatBox['type'])->toBe('remote.chat-box')
+    expect($chatBox['type'])->toBe('chat.box')
         ->and($chatBox['props']['streamEndpoint'])->toBe('/workbench/remote/chat/stream')
         ->and($chatBox['props']['historyEndpoint'])->toBe('/workbench/remote/chat/history')
         ->and($chatBox['props'])->not->toHaveKeys(['endpoint', 'tokenEndpoint', 'audience', 'scopes', 'resource', 'ref'])
@@ -80,7 +80,7 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
         ->and($chatBox['props']['remote']['audience'])->toBe('https://todos.workbench.test')
         ->and($chatBox['props']['remote']['scopes'])->toBe(['chat.read', 'chat.write'])
         ->and($chatBox['props']['remote']['nodeId'])->toBe('workbench-todo-chat')
-        ->and($chatBox['props']['remote']['nodeType'])->toBe('remote.chat-box')
+        ->and($chatBox['props']['remote']['nodeType'])->toBe('chat.box')
         ->and($chatBox['props']['remote']['tokenEndpoint'])->toBe('/lattice/remote-sources/workbench.todos/token')
         ->and($chatBox['props']['remote']['ref'])->toBeString()->not->toBe('')
         ->and($chatBox['props']['fill'])->toBeTrue();

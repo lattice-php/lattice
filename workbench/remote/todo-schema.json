@@ -100,7 +100,7 @@
               ]
             },
             {
-              "type": "remote.chat-box",
+              "type": "chat.box",
               "id": "workbench-todo-chat",
               "props": {
                 "streamEndpoint": "/workbench/remote/chat/stream",

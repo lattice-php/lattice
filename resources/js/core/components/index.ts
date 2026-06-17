@@ -1,6 +1,5 @@
 import { createPlugin, eagerComponent, lazyComponent } from "@lattice-php/lattice/core/registry";
 import type { RendererComponentModule } from "@lattice-php/lattice/core/types";
-import ChatBoxComponent from "../../chat/components/chat-box";
 import BadgeComponent from "./badge";
 import ButtonComponent from "./button";
 import CardComponent from "./card";
@@ -26,7 +25,6 @@ export const coreComponents = createPlugin({
     chart: lazyComponent(
       () => import("./chart") as unknown as Promise<RendererComponentModule<"chart">>,
     ),
-    "chat.box": eagerComponent(ChatBoxComponent),
     "floating-panel": eagerComponent(FloatingPanelComponent),
     fragment: eagerComponent(FragmentComponent),
     grid: eagerComponent(GridComponent),

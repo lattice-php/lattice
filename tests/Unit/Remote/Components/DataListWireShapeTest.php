@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Chat\Components\ChatBox;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Remote\Components\DataList;
-use Lattice\Lattice\Remote\Components\RemoteChatBox;
 
 test('data list component serializes remote access with a signed ref', function (): void {
     $node = wire(
@@ -78,15 +78,14 @@ test('component data bindings can be replaced in one call', function (): void {
     ]);
 });
 
-test('remote chat box component serializes remote access with a signed ref', function (): void {
+test('chat box component serializes remote access with a signed ref', function (): void {
     $node = wire(
-        RemoteChatBox::make('crm-chat')
+        ChatBox::make('crm-chat')
             ->source('fixtures.crm')
             ->audience('https://crm.example.test')
             ->scopes(['chat.read', 'chat.write'])
             ->streamEndpoint('/workbench/remote/chat/stream')
             ->historyEndpoint('/workbench/remote/chat/history')
-            ->conversationId('conversation-1')
             ->placeholder('Ask CRM')
             ->title('CRM assistant')
             ->fill(),
@@ -97,12 +96,11 @@ test('remote chat box component serializes remote access with a signed ref', fun
 
     expect($node)
         ->toMatchArray([
-            'type' => 'remote.chat-box',
+            'type' => 'chat.box',
             'id' => 'crm-chat',
             'props' => [
                 'streamEndpoint' => '/workbench/remote/chat/stream',
                 'historyEndpoint' => '/workbench/remote/chat/history',
-                'conversationId' => 'conversation-1',
                 'placeholder' => 'Ask CRM',
                 'title' => 'CRM assistant',
                 'fill' => true,
@@ -111,7 +109,7 @@ test('remote chat box component serializes remote access with a signed ref', fun
                     'audience' => 'https://crm.example.test',
                     'scopes' => ['chat.read', 'chat.write'],
                     'nodeId' => 'crm-chat',
-                    'nodeType' => 'remote.chat-box',
+                    'nodeType' => 'chat.box',
                     'tokenEndpoint' => '/lattice/remote-sources/fixtures.crm/token',
                 ],
             ],
@@ -127,7 +125,7 @@ test('remote components require source and audience before remote access is seri
 
 test('remote components require an id before remote access is serialized', function (): void {
     expect(fn (): array => wire(
-        (new RemoteChatBox)
+        (new ChatBox)
             ->source('fixtures.crm')
             ->audience('https://crm.example.test'),
     ))->toThrow(LogicException::class, 'must be given an id()');

@@ -2,18 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Core\Components;
+namespace Lattice\Lattice\Chat\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Remote\Components\RemoteComponent;
 
+/**
+ * A streaming chat box. Same-origin by default; call source()/audience() to
+ * fetch from a remote source with a browser token (see RemoteComponent).
+ */
 #[AsComponent('chat.box')]
-class ChatBox extends Component
+class ChatBox extends RemoteComponent
 {
     public ?string $streamEndpoint = null;
 
     public ?string $historyEndpoint = null;
-
-    public ?string $conversationId = null;
 
     public ?string $placeholder = null;
 
@@ -21,9 +24,9 @@ class ChatBox extends Component
 
     public bool $fill = false;
 
-    public static function make(string $key): static
+    public static function make(string $id): static
     {
-        return new static($key);
+        return (new static)->id($id);
     }
 
     public function streamEndpoint(string $streamEndpoint): static
@@ -36,13 +39,6 @@ class ChatBox extends Component
     public function historyEndpoint(string $historyEndpoint): static
     {
         $this->historyEndpoint = $historyEndpoint;
-
-        return $this;
-    }
-
-    public function conversationId(string $conversationId): static
-    {
-        $this->conversationId = $conversationId;
 
         return $this;
     }
