@@ -1,0 +1,90 @@
+<?php
+declare(strict_types=1);
+
+namespace Lattice\Lattice\Realtime;
+
+use JsonSerializable;
+use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Core\Values\Callout;
+use Lattice\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Core\Values\Translatable;
+use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
+use Lattice\Lattice\Effects\Effect;
+
+/**
+ * Declares a websocket listener for a page: a channel, the broadcast event
+ * name(s) to react to, and the effects to dispatch on the client when one
+ * arrives. Effects are limited to the broadcast-safe subset.
+ */
+final class Listen implements JsonSerializable
+{
+    /** @var list<string> */
+    private array $events = [];
+
+    /** @var list<EffectContract> */
+    private array $effects = [];
+
+    private function __construct(
+        private readonly string $channel,
+        private readonly string $visibility,
+    ) {}
+
+    public static function channel(string $name): self
+    {
+        return new self($name, 'public');
+    }
+
+    public static function private(string $name): self
+    {
+        return new self($name, 'private');
+    }
+
+    public static function presence(string $name): self
+    {
+        return new self($name, 'presence');
+    }
+
+    /**
+     * @param  string|list<string>  $events
+     */
+    public function on(string|array $events): self
+    {
+        $this->events = array_values(array_unique([...$this->events, ...(array) $events]));
+
+        return $this;
+    }
+
+    public function toast(string|Translatable|ToastMessage|Variant $message, Variant|string|null $variant = null): self
+    {
+        $this->effects[] = Effect::toast($message, $variant);
+
+        return $this;
+    }
+
+    public function callout(Callout $callout): self
+    {
+        $this->effects[] = Effect::callout($callout);
+
+        return $this;
+    }
+
+    public function reloadPage(): self
+    {
+        $this->effects[] = Effect::reloadPage();
+
+        return $this;
+    }
+
+    /**
+     * @return array{channel: string, visibility: string, events: list<string>, effects: list<EffectContract>}
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'channel' => $this->channel,
+            'visibility' => $this->visibility,
+            'events' => $this->events,
+            'effects' => $this->effects,
+        ];
+    }
+}
