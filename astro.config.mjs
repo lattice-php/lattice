@@ -1,6 +1,7 @@
 import path from "node:path";
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import starlightLlmsTxt from "starlight-llms-txt";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 
@@ -20,6 +21,17 @@ export default defineConfig({
     starlight({
       title: "Lattice",
       description: "Server-driven React components for Laravel and Inertia.",
+      lastUpdated: true,
+      plugins: [
+        starlightLlmsTxt({
+          projectName: "Lattice",
+          description:
+            "Lattice is a server-driven UI layer for Laravel applications running Inertia with React. Describe pages, forms, tables, and actions in PHP; Lattice serializes them to a typed component tree that real React components render through Inertia — no hand-written API or duplicated UI contract.",
+          details:
+            "Lattice targets Laravel 13 and PHP 8.4 with Inertia v3 and React 19. It is open source under the MIT license. Source: https://github.com/lattice-php/lattice",
+          rawContent: true,
+        }),
+      ],
       logo: {
         light: "./docs/assets/logo.svg",
         dark: "./docs/assets/logo-dark.svg",
