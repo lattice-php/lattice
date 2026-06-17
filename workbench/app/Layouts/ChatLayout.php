@@ -6,7 +6,7 @@ namespace Workbench\App\Layouts;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Enums\FloatingPlacement;
+use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Layouts\Components\Breadcrumbs;
@@ -21,11 +21,13 @@ final class ChatLayout extends AppLayout
         return $schema->schema([
             Stack::make('app-shell')
                 ->direction('row')
+                ->gap(Gap::None)
                 ->schema([
                     $this->sidebar(),
                     Stack::make('app-main')
                         ->width(Width::Fill)
                         ->schema([
+                            $this->topbar(),
                             Breadcrumbs::make(),
                             Outlet::make(),
                         ]),
@@ -35,7 +37,6 @@ final class ChatLayout extends AppLayout
                             $this->chatBox()->fill(),
                         ]),
                 ]),
-            $this->localeSwitcherPanel(FloatingPlacement::BottomStart),
             $this->chatLayoutTogglePanel(),
         ]);
     }

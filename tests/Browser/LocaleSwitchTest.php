@@ -9,6 +9,7 @@ it('switches the server-driven UI language in place when the locale changes', fu
 
     visit('/products')
         ->assertSee('Updated at')
+        ->click('@locale-switcher')
         ->click('@locale-de')
         ->assertSee('Aktualisiert am')
         ->assertDontSee('Updated at')

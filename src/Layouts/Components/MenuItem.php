@@ -28,6 +28,8 @@ class MenuItem extends ContainerComponent
 
     public ?string $icon = null;
 
+    public bool $iconOnly = false;
+
     public static function make(string $label, ?string $key = null): static
     {
         $item = new static($key);
@@ -82,6 +84,17 @@ class MenuItem extends ContainerComponent
     public function icon(BackedEnum|string $icon): static
     {
         $this->icon = $this->enumValue($icon);
+
+        return $this;
+    }
+
+    /**
+     * Render only the icon; the label is kept for accessibility (aria-label and
+     * a hover tooltip). Useful for compact controls like a topbar settings cog.
+     */
+    public function iconOnly(bool $iconOnly = true): static
+    {
+        $this->iconOnly = $iconOnly;
 
         return $this;
     }

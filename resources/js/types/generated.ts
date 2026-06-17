@@ -746,6 +746,12 @@ export type LayoutNode =
       key?: string;
       props: Sidebar;
       schema?: Node[];
+    }
+  | {
+      type: "topbar";
+      key?: string;
+      props: Topbar;
+      schema?: Node[];
     };
 export type Link = {
   href: string | null;
@@ -760,6 +766,7 @@ export type Menu = Record<string, never>;
 export type MenuItem = {
   href: string | null;
   icon: string | null;
+  iconOnly: boolean;
   label: string;
   method: HttpMethod | null;
 };
@@ -1059,6 +1066,7 @@ export type Select = {
   tooltip: string | null;
   value: unknown;
 };
+export type Side = "start" | "end";
 export type Sidebar = {
   collapsible: boolean;
   rememberState: boolean;
@@ -1068,6 +1076,7 @@ export type SortDirection = "asc" | "desc";
 export type Stack = {
   align: Align | null;
   direction: string | null;
+  float: Side | null;
   gap: Gap | null;
   height: Height | null;
   justify: Justify | null;
@@ -1219,5 +1228,8 @@ export type ToolCallPart = {
   args: Record<string, unknown>;
   name: string;
 };
+export type Topbar = {
+  sticky: boolean;
+};
 export type Variant = "success" | "info" | "warning" | "error";
-export type Width = "full" | "sm" | "md" | "lg" | "fill";
+export type Width = "full" | "auto" | "sm" | "md" | "lg" | "fill";

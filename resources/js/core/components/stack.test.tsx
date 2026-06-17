@@ -78,6 +78,18 @@ describe("Lattice stack component", () => {
     expect(screen.getByText("Content")).toHaveClass("grid", "content-start");
   });
 
+  it("floats to the trailing edge with an auto margin when float is end", () => {
+    const node = fakeNode({
+      id: "topbar-end",
+      props: { direction: "row", float: "end", width: "auto" },
+      type: "stack",
+    });
+
+    render(<StackComponent node={node}>Content</StackComponent>);
+
+    expect(screen.getByText("Content")).toHaveClass("flex", "ml-auto", "w-auto");
+  });
+
   it("fills the viewport height when height is set to screen", () => {
     const node = fakeNode({
       id: "app-shell",

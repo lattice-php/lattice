@@ -3,6 +3,7 @@
         "props": {
             "align": null,
             "direction": "row",
+            "float": null,
             "gap": "sm",
             "height": null,
             "justify": null,

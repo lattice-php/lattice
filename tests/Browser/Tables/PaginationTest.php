@@ -49,7 +49,7 @@ it('loads more rows in infinite mode', function (): void {
         ->assertNoSmoke();
 });
 
-it('keeps the sidebar user menu visible on infinite pagination pages', function (): void {
+it('keeps the topbar user menu visible on infinite pagination pages', function (): void {
     $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 

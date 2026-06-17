@@ -20,6 +20,7 @@ it('translates dashboard chart examples in lazy fragments', function (): void {
     $this->actingAs(workbenchTestUser());
 
     visit('/')
+        ->click('@locale-switcher')
         ->click('@locale-de')
         ->assertSee('Dashboard-Diagramme')
         ->assertSee('Umsatztrend')

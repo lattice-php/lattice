@@ -9,6 +9,7 @@
                 "props": {
                     "align": null,
                     "direction": null,
+                    "float": null,
                     "gap": "sm",
                     "height": null,
                     "justify": null,

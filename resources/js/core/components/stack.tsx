@@ -23,6 +23,7 @@ const stackGaps: Record<string, string> = {
 };
 
 const stackWidths: Record<string, string> = {
+  auto: "w-auto",
   fill: "min-w-0 flex-1",
   full: "w-full",
   lg: "mx-auto w-full max-w-4xl",
@@ -44,6 +45,11 @@ const stackHeights: Record<string, string> = {
   screen: "min-h-screen",
 };
 
+const floatClasses: Record<string, string> = {
+  end: "ml-auto",
+  start: "mr-auto",
+};
+
 const StackComponent: RendererComponent<"stack"> = ({ children, node }) => {
   const align = node.props.align ?? "stretch";
   const direction = node.props.direction ?? "column";
@@ -51,6 +57,7 @@ const StackComponent: RendererComponent<"stack"> = ({ children, node }) => {
   const width = node.props.width ?? "full";
   const justify = node.props.justify;
   const height = node.props.height;
+  const float = node.props.float;
   const isFlex = direction === "row" || justify != null;
 
   return (
@@ -65,6 +72,7 @@ const StackComponent: RendererComponent<"stack"> = ({ children, node }) => {
         stackWidths[width] ?? stackWidths.full,
         justify ? justifyClasses[justify] : null,
         height ? stackHeights[height] : null,
+        float ? floatClasses[float] : null,
       )}
     >
       {children}
