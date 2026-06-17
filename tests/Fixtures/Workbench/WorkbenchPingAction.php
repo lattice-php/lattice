@@ -11,7 +11,6 @@ use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Effects\Effect;
 
 #[AsAction('workbench.ping')]
 class WorkbenchPingAction extends ActionDefinition
@@ -21,11 +20,7 @@ class WorkbenchPingAction extends ActionDefinition
         return $action
             ->label('Ping')
             ->method(HttpMethod::Post)
-            ->variant(ButtonVariant::Secondary)
-            ->effects([
-                Effect::toast('Ready.'),
-                Effect::reloadComponent('workbench.users'),
-            ]);
+            ->variant(ButtonVariant::Secondary);
     }
 
     public function handle(Request $request): ActionResult

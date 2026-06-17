@@ -8,9 +8,10 @@ import { Spinner } from "@lattice-php/lattice/core/components/spinner";
 import { prefixedTestId } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { IconRenderer } from "@lattice-php/lattice/icons";
-import { dispatchActionError, getActionEffects } from "@lattice-php/lattice/effects/dispatch";
+import { getActionEffects } from "@lattice-php/lattice/effects/dispatch";
 import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
+import { runAction } from "../run-action";
 import { ActionForm, useLazyActionForm } from "./action-form";
 import { actionMenuItemClassName, useActionMenu } from "./action-menu-context";
 
@@ -38,21 +39,20 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
       return;
     }
 
-    try {
-      if (method === "get") {
-        router.visit(endpoint, { headers: withHeaders(componentRef) });
-        setIsConfirming(false);
-
-        return;
-      }
-
-      const response = await http[method](endpoint, { headers: withHeaders(componentRef) });
-      const responseEffects = getActionEffects(response.effects);
-
-      dispatch(responseEffects.length > 0 ? responseEffects : getActionEffects(node.props.effects));
+    if (method === "get") {
+      router.visit(endpoint, { headers: withHeaders(componentRef) });
       setIsConfirming(false);
-    } catch (error) {
-      dispatchActionError(error);
+
+      return;
+    }
+
+    const ok = await runAction(
+      () => http[method](endpoint, { headers: withHeaders(componentRef) }),
+      dispatch,
+    );
+
+    if (ok) {
+      setIsConfirming(false);
     }
   };
 
@@ -125,11 +125,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
           method={method}
           onClose={() => setIsFilling(false)}
           onSuccess={(response) => {
-            const responseEffects = getActionEffects(response.effects);
-
-            dispatch(
-              responseEffects.length > 0 ? responseEffects : getActionEffects(node.props.effects),
-            );
+            dispatch(getActionEffects(response.effects));
             setIsFilling(false);
           }}
           submitLabel={confirmationConfirmLabel}

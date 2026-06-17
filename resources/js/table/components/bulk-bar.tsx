@@ -1,7 +1,8 @@
 import { useHttp } from "@inertiajs/react";
 import { useState } from "react";
 import { ActionForm } from "@lattice-php/lattice/action/components/action-form";
-import { dispatchActionError, getActionEffects } from "@lattice-php/lattice/effects/dispatch";
+import { runAction } from "@lattice-php/lattice/action/run-action";
+import { getActionEffects } from "@lattice-php/lattice/effects/dispatch";
 import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import { withHeaders } from "@lattice-php/lattice/core/headers";
@@ -46,21 +47,16 @@ export function BulkBar({
     allMatching ? { allMatching: true, ...query } : { selected: selectedKeys };
 
   async function submit(action: BulkAction): Promise<void> {
-    try {
-      http.transform((data) => ({
-        ...data,
-        ...(allMatching ? { allMatching: true, ...query } : { selected: selectedKeys }),
-      }));
+    http.transform((data) => ({ ...data, ...selectionPayload() }));
 
-      const response = await http[action.method](action.endpoint, {
-        headers: withHeaders(action.ref ?? ""),
-      });
+    const ok = await runAction(
+      () => http[action.method](action.endpoint, { headers: withHeaders(action.ref ?? "") }),
+      dispatch,
+    );
 
-      dispatch(getActionEffects(response.effects));
+    if (ok) {
       setConfirming(null);
       onCompleted();
-    } catch (error) {
-      dispatchActionError(error);
     }
   }
 

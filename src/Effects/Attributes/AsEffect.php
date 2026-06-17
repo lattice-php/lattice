@@ -5,24 +5,22 @@ namespace Lattice\Lattice\Effects\Attributes;
 
 use Attribute;
 use InvalidArgumentException;
-use Lattice\Lattice\Effects\Enums\EffectType;
 use Spatie\Attributes\Attributes;
 
 /**
  * Marks an effect value object and declares its wire type — the PHP↔JS
- * discriminant. Built-ins pass the EffectType enum for type-safety; consumers
- * pass a raw string. Discovery shares ClassWalker, but the attribute stays
- * distinct by design (effects form the discriminated `Effect` union, not the
- * node hierarchy).
+ * discriminant that keys the `Effect` union. Discovery shares ClassWalker, but
+ * the attribute stays distinct by design (effects form the discriminated
+ * `Effect` union, not the node hierarchy).
  */
 #[Attribute(Attribute::TARGET_CLASS)]
 final readonly class AsEffect
 {
-    public function __construct(public EffectType|string $type) {}
+    public function __construct(public string $type) {}
 
     public function wireType(): string
     {
-        return $this->type instanceof EffectType ? $this->type->value : $this->type;
+        return $this->type;
     }
 
     /**

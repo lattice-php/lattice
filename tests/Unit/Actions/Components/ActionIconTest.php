@@ -17,7 +17,6 @@ test('actions serialize lucide icon enum values', function (): void {
                 'endpoint' => null,
                 'method' => null,
                 'confirmation' => null,
-                'effects' => [],
                 'form' => null,
                 'lazyForm' => null,
                 'variant' => null,

@@ -64,7 +64,6 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'ref' => componentRef($action),
                 'icon' => null,
                 'confirmation' => null,
-                'effects' => [],
                 'form' => null,
                 'lazyForm' => null,
                 'variant' => null,

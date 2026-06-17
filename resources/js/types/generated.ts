@@ -1,6 +1,5 @@
 export type Action = {
   confirmation: Confirmation | null;
-  effects: Effect[];
   endpoint: string | null;
   form: Node | null;
   icon: string | null;
@@ -94,7 +93,6 @@ export type Builder = {
 };
 export type BulkAction = {
   confirmation: Confirmation | null;
-  effects: Effect[];
   endpoint: string | null;
   form: Node | null;
   icon: string | null;
@@ -470,17 +468,6 @@ export type Effect =
   | ({
       type: "toast";
     } & ToastEffect);
-export type EffectType =
-  | "toast"
-  | "callout"
-  | "reloadComponent"
-  | "reloadPage"
-  | "redirect"
-  | "download"
-  | "openModal"
-  | "closeModal"
-  | "resetForm"
-  | "localeChange";
 export type FieldType =
   | "field.builder"
   | "field.checkbox"

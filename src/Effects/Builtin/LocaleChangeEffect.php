@@ -5,9 +5,8 @@ namespace Lattice\Lattice\Effects\Builtin;
 
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\Effects\Enums\EffectType;
 
-#[AsEffect(EffectType::LocaleChange)]
+#[AsEffect('localeChange')]
 final readonly class LocaleChangeEffect extends Effect
 {
     public function __construct(
