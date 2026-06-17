@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Inertia\Testing\AssertableInertia;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\ProductForm;
@@ -95,12 +94,10 @@ test('the product edit page binds related product ids into form state', function
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
-    get("/products/{$product->getKey()}/edit")
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('lattice/page', false)
-            ->where('lattice.schema.0.schema.1.props.state.related_products', [$related->getKey()])
-        );
+    $this->assertLatticePage(get("/products/{$product->getKey()}/edit")->assertOk())
+        ->form('workbench.products.form', fn ($form) => $form
+            ->field('related_products', fn ($field) => $field
+                ->assertInitialValue([$related->getKey()])));
 });
 
 test('the product form resolves related product labels for prefilled ids', function () {

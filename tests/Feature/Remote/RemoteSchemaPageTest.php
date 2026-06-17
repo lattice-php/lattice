@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Inertia\Testing\AssertableInertia;
-
 use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\withoutVite;
@@ -11,23 +9,16 @@ test('workbench remote schema page renders the remote todo list beside a full re
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
-    get('/workbench/remote-schema')
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->where('lattice.schema.0.type', 'section')
-            ->where('lattice.schema.0.schema.0.type', 'grid')
-            ->where('lattice.schema.0.schema.0.props.columns', 2)
-            ->where('lattice.schema.0.schema.0.schema.0.type', 'stack')
-            ->where('lattice.schema.0.schema.0.schema.0.schema.0.type', 'card')
-            ->where('lattice.schema.0.schema.0.schema.0.schema.0.schema.1.type', 'remote.data-list')
-            ->where('lattice.schema.0.schema.0.schema.0.schema.0.schema.1.props.dataEndpoint', '/workbench/remote/todos')
-            ->where('lattice.schema.0.schema.0.schema.0.schema.0.schema.1.schema.0.type', 'card')
-            ->where('lattice.schema.0.schema.0.schema.0.schema.0.schema.1.schema.0.props.dataBindings.title', 'title')
-            ->where('lattice.schema.0.schema.0.schema.0.schema.0.schema.1.schema.0.schema.0.schema.1.type', 'button')
-            ->where('lattice.schema.0.schema.0.schema.0.schema.0.schema.1.schema.0.schema.0.schema.1.props.dataBindings.href', 'actionHref')
-            ->where('lattice.schema.0.schema.0.schema.1.type', 'remote.chat-box')
-            ->where('lattice.schema.0.schema.0.schema.1.props.fill', true)
-        );
+    $this->assertLatticePage(get('/workbench/remote-schema')->assertOk())
+        ->assertRendered('section')
+        ->component('grid', tap: fn ($grid) => $grid->assertProp('columns', 2))
+        ->component('remote.data-list', tap: fn ($list) => $list
+            ->assertProp('dataEndpoint', '/workbench/remote/todos')
+            ->component('card', tap: fn ($card) => $card
+                ->assertProp('dataBindings.title', 'title')
+                ->component('button', tap: fn ($button) => $button
+                    ->assertProp('dataBindings.href', 'actionHref'))))
+        ->component('remote.chat-box', tap: fn ($chat) => $chat->assertProp('fill', true));
 });
 
 test('workbench remote todos endpoint returns five todo rows', function (): void {

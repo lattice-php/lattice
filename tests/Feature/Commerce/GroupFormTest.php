@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Inertia\Testing\AssertableInertia;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\GroupForm;
@@ -38,12 +37,9 @@ test('the group edit page renders with prefilled form state', function () {
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
-    get("/groups/{$group->getKey()}/edit")
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('lattice/page', false)
-            ->where('lattice.schema.0.schema.1.props.state.name', 'VIP Partners')
-        );
+    $this->assertLatticePage(get("/groups/{$group->getKey()}/edit")->assertOk())
+        ->form(tap: fn ($form) => $form
+            ->field('name', fn ($name) => $name->assertInitialValue('VIP Partners')));
 });
 
 test('the group form updates an existing group', function () {
