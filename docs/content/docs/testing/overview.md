@@ -99,6 +99,30 @@ The `id` segment matches a component's interactive `id` **or** its author-suppli
 layout and container components (`topbar`, `menu-item:settings`, `dropdown:user-menu`, …) are
 addressable the same way.
 
+Anywhere a `type` is accepted you may pass the component class instead of its wire string — it
+resolves to the declared type, so a rename or typo is caught by the compiler:
+
+```php
+use Lattice\Lattice\Layouts\Components\MenuItem;
+use Lattice\Lattice\Layouts\Components\Topbar;
+
+$this->assertLatticeLayout($this->get('/'))
+    ->component(Topbar::class, tap: fn ($topbar) => $topbar->assertProp('sticky', true))
+    ->component(MenuItem::class, 'settings', fn ($item) => $item->assertProp('icon', 'settings'));
+```
+
+`assertProp()` keys may be dot-notated to reach into nested prop data — handy for form state or
+table columns without walking the tree by index:
+
+```php
+$this->assertLatticePage($this->get('/products/1/edit'))
+    ->component('form', 'products.form', fn ($form) => $form->assertProps([
+        'method' => 'patch',
+        'state.name' => 'Desk Lamp',
+        'state.sales_prices.0.amount' => '49.99',
+    ]));
+```
+
 ## Asserting what is rendered
 
 A component is "rendered" when it survives `shouldRender()` and `authorize()` and appears in
