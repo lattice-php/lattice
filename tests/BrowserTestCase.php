@@ -10,10 +10,8 @@ class BrowserTestCase extends TestCase
 {
     private static ?ReverbServer $reverb = null;
 
-    protected function setUp(): void
+    protected function bootReverb(): void
     {
-        parent::setUp();
-
         self::$reverb ??= ReverbServer::boot();
 
         $reverb = self::$reverb;

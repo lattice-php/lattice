@@ -35,6 +35,7 @@ function retryUntil(Closure $assert, int $attempts, int $sleepMicroseconds, ?Clo
 
 it('delivers a broadcast to the browser and shows a toast', function (): void {
     $this->actingAs(workbenchTestUser());
+    $this->bootReverb();
 
     $page = visit('/realtime');
 

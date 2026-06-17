@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tests\Browser\Support;
 
 use Pest\Browser\Support\Port;
+use RuntimeException;
 use Symfony\Component\Process\Process;
 
 /**
@@ -34,8 +35,8 @@ final class ReverbServer
     {
         $port = Port::find();
 
-        $process = Process::fromShellCommandline(
-            'php artisan reverb:start --host='.self::HOST.' --port='.$port.' --debug',
+        $process = new Process(
+            [PHP_BINARY, 'artisan', 'reverb:start', '--host='.self::HOST, '--port='.$port, '--debug'],
             base_path(),
             self::environment($port),
         );
@@ -45,6 +46,12 @@ final class ReverbServer
         $process->waitUntil(
             fn (string $type, string $output): bool => str_contains($output, self::READY_MARKER),
         );
+
+        if (! $process->isRunning()) {
+            throw new RuntimeException(
+                'Reverb failed to start. Output: '.$process->getOutput().' Error: '.$process->getErrorOutput(),
+            );
+        }
 
         $server = new self($port, $process);
 
