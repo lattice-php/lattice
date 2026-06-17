@@ -18,7 +18,7 @@ test('the root serializes its props and nested slots', function () {
     );
 
     expect($node)->toMatchArray([
-        'type' => 'global-search.root',
+        'type' => 'global-search',
         'props' => [
             'endpoint' => '/lattice/search',
             'placeholder' => 'Search…',

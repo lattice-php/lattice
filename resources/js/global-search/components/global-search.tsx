@@ -43,7 +43,7 @@ function DefaultComposition() {
   );
 }
 
-const GlobalSearch: RendererComponent<"global-search.root"> = ({ node, children }) => {
+const GlobalSearch: RendererComponent<"global-search"> = ({ node, children }) => {
   const { endpoint, placeholder, title, shortcut, perPage } = node.props;
   const { t } = useT("lattice");
   const [open, setOpen] = useState(false);

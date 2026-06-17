@@ -9,7 +9,7 @@ import GlobalSearchResults from "./components/results";
 export const globalSearchPlugin = createPlugin({
   name: "global-search",
   components: {
-    "global-search.root": eagerComponent(GlobalSearch),
+    "global-search": eagerComponent(GlobalSearch),
     "global-search.input": eagerComponent(GlobalSearchInput),
     "global-search.categories": eagerComponent(GlobalSearchCategories),
     "global-search.results": eagerComponent(GlobalSearchResults),

@@ -329,6 +329,12 @@ export type CoreNode =
       schema?: Node[];
     }
   | {
+      type: "global-search";
+      key?: string;
+      props: GlobalSearch;
+      schema?: Node[];
+    }
+  | {
       type: "global-search.categories";
       key?: string;
       props: GlobalSearchCategories;
@@ -352,12 +358,6 @@ export type CoreNode =
       type: "global-search.results";
       key?: string;
       props: GlobalSearchResults;
-    }
-  | {
-      type: "global-search.root";
-      key?: string;
-      props: GlobalSearch;
-      schema?: Node[];
     }
   | {
       type: "grid";

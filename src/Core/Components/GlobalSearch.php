@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
 
-#[AsComponent('global-search.root')]
+#[AsComponent('global-search')]
 class GlobalSearch extends ContainerComponent
 {
     public ?string $endpoint = null;

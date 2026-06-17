@@ -5,7 +5,7 @@ describe("globalSearchPlugin", () => {
   it("registers every global-search wire type", () => {
     expect(Object.keys(globalSearchPlugin.components ?? {})).toEqual(
       expect.arrayContaining([
-        "global-search.root",
+        "global-search",
         "global-search.input",
         "global-search.categories",
         "global-search.results",

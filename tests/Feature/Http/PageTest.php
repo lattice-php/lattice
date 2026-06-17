@@ -120,7 +120,7 @@ test('workbench pages serialize package component trees for inertia', function (
             ->where('lattice.layout.schema.0.schema.0.schema.0.schema.0.schema.1.schema.1.schema.2.props.href', '/builder-table')
             ->where('lattice.layout.schema.0.schema.0.schema.0.schema.1.schema.0.type', 'menu-item')
             ->where('lattice.layout.schema.0.schema.0.schema.0.schema.1.schema.0.props.label', 'Log out')
-            ->where('lattice.layout.schema.0.schema.1.schema.0.type', 'global-search.root')
+            ->where('lattice.layout.schema.0.schema.1.schema.0.type', 'global-search')
             ->where('lattice.layout.schema.0.schema.1.schema.1.type', 'breadcrumbs')
             ->where('lattice.layout.schema.0.schema.1.schema.2.type', 'outlet')
             ->where('lattice.layout.schema.1.type', 'floating-panel')

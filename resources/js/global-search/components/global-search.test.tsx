@@ -13,7 +13,7 @@ const emptyPayload = JSON.stringify({
 
 function renderRoot() {
   const node = {
-    type: "global-search.root",
+    type: "global-search",
     props: {
       endpoint: "/lattice/search",
       placeholder: "Search…",
