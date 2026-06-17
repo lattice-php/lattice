@@ -55,7 +55,10 @@
     "autoload": {
         "psr-4": {
             "Lattice\\Lattice\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
