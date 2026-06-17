@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Components\Grid;
+use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Forms\Components\Checkbox;
 use Lattice\Lattice\Forms\Components\Choice;
 use Lattice\Lattice\Forms\Components\DateInput;
@@ -41,6 +42,7 @@ class ShowcaseForm extends FormDefinition
                             ->rules(['required', 'string', 'max:255']),
                         TextInput::make('email', __('workbench.common.email'))
                             ->email()
+                            ->prefix(Icon::Send)
                             ->placeholder(__('workbench.forms.showcase.placeholders.email'))
                             ->rules(['required']),
                     ]),
@@ -91,9 +93,14 @@ class ShowcaseForm extends FormDefinition
                 Card::make(__('workbench.forms.showcase.order-total'), __('workbench.forms.showcase.order-total-description'))->schema([
                     Grid::make()->columns(2)->schema([
                         NumberInput::make('quantity', __('workbench.forms.showcase.quantity'))->min(1),
-                        NumberInput::make('unit_price', __('workbench.common.unit-price'))->min(0)->step(0.01),
+                        NumberInput::make('unit_price', __('workbench.common.unit-price'))
+                            ->min(0)
+                            ->step(0.01)
+                            ->prefix('$')
+                            ->suffix('USD'),
                     ]),
                     TextInput::make('total', __('workbench.forms.dependent.total'))
+                        ->prefix('$')
                         ->readOnly()
                         ->dependsOn(
                             ['quantity', 'unit_price'],
