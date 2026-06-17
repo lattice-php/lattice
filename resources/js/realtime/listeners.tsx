@@ -23,8 +23,8 @@ class EchoBoundary extends Component<{ children: ReactNode }, { failed: boolean 
 }
 
 /**
- * Mounts the real-time listeners declared on a page. Renders nothing when a
- * page has none, so the echo-react chunk is only fetched where it is needed.
+ * Renders nothing when a page declares no listeners, so the echo-react chunk
+ * is only fetched where it is actually needed.
  */
 export function RealtimeListeners({ listeners }: { listeners?: ListenerPayload[] }) {
   if (listeners === undefined || listeners.length === 0) {
