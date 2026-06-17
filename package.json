@@ -55,6 +55,14 @@
       "types": "./dist/chat/*.d.ts",
       "import": "./dist/chat/*.js"
     },
+    "./global-search": {
+      "types": "./dist/global-search/index.d.ts",
+      "import": "./dist/global-search/index.js"
+    },
+    "./global-search/*": {
+      "types": "./dist/global-search/*.d.ts",
+      "import": "./dist/global-search/*.js"
+    },
     "./clipboard": {
       "types": "./dist/clipboard/index.d.ts",
       "import": "./dist/clipboard/index.js"
@@ -186,7 +194,7 @@
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "type-coverage": "type-coverage --project tsconfig.json --at-least 99.5",
-    "check": "npm run lint:fix && npm run format && npm run typecheck && npm run type-coverage && npm run test && npm run build:lib",
+    "check": "npm run lint:fix && npm run format && npm run typecheck && npm run type-coverage && npm run test && npm run build && npm run build:lib",
     "docs:typecheck": "tsc --noEmit -p docs/tsconfig.json",
     "lint": "oxlint resources/js workbench/resources/js",
     "lint:fix": "oxlint resources/js workbench/resources/js --fix",

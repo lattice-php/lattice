@@ -18,6 +18,8 @@ use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Remote\RemoteSourceDefinition;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
+use Lattice\Lattice\Search\Contracts\SearchResultProvider;
+use Lattice\Lattice\Search\SearchResultProviderRegistry;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
 
@@ -32,6 +34,7 @@ final readonly class LatticeRegistry
         private PageRegistry $pages,
         private TableRegistry $tables,
         private RemoteSourceRegistry $remoteSources,
+        private SearchResultProviderRegistry $searchProviders,
     ) {}
 
     /**
@@ -119,5 +122,18 @@ final readonly class LatticeRegistry
     public function remoteSourceRegistry(): RemoteSourceRegistry
     {
         return $this->remoteSources;
+    }
+
+    /**
+     * @param  class-string<SearchResultProvider>|array<int, class-string<SearchResultProvider>>  $providers
+     */
+    public function searchProviders(string|array $providers): void
+    {
+        $this->searchProviders->register($providers);
+    }
+
+    public function searchProviderRegistry(): SearchResultProviderRegistry
+    {
+        return $this->searchProviders;
     }
 }

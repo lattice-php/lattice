@@ -14,8 +14,10 @@ use Laravel\Boost\Install\GuidelineComposer;
 use Laravel\Boost\Install\SkillComposer;
 use Laravel\Boost\Support\Config;
 use Laravel\Roster\Roster;
+use Lattice\Lattice\Search\Contracts\SearchHistoryRecorder;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Workbench\App\Models\User;
+use Workbench\App\Search\SessionSearchHistoryRecorder;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
@@ -40,6 +42,10 @@ class WorkbenchServiceProvider extends ServiceProvider
 
         // Rebind so lattice:typescript regenerates the package's own built-in types.
         $this->app->bind(TypeScriptProfile::class, BaseProfile::class);
+        $this->app->bind(
+            SearchHistoryRecorder::class,
+            SessionSearchHistoryRecorder::class,
+        );
         $this->useWorkbenchDatabase();
         $this->readBoostConfigFromPackageRoot();
         $this->serveLatticeTranslations();

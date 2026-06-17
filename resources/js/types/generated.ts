@@ -329,6 +329,37 @@ export type CoreNode =
       schema?: Node[];
     }
   | {
+      type: "global-search";
+      key?: string;
+      props: GlobalSearch;
+      schema?: Node[];
+    }
+  | {
+      type: "global-search.categories";
+      key?: string;
+      props: GlobalSearchCategories;
+    }
+  | {
+      type: "global-search.input";
+      key?: string;
+      props: GlobalSearchInput;
+    }
+  | {
+      type: "global-search.preview";
+      key?: string;
+      props: GlobalSearchPreview;
+    }
+  | {
+      type: "global-search.recent";
+      key?: string;
+      props: GlobalSearchRecent;
+    }
+  | {
+      type: "global-search.results";
+      key?: string;
+      props: GlobalSearchResults;
+    }
+  | {
       type: "grid";
       key?: string;
       props: Grid;
@@ -653,6 +684,18 @@ export type FragmentNode = {
   schema?: Node[];
 };
 export type Gap = "none" | "xs" | "sm" | "md" | "lg" | "xl";
+export type GlobalSearch = {
+  endpoint: string | null;
+  perPage: number;
+  placeholder: string | null;
+  shortcut: boolean;
+  title: string | null;
+};
+export type GlobalSearchCategories = Record<string, never>;
+export type GlobalSearchInput = Record<string, never>;
+export type GlobalSearchPreview = Record<string, never>;
+export type GlobalSearchRecent = Record<string, never>;
+export type GlobalSearchResults = Record<string, never>;
 export type Grid = {
   columns: number | null;
 };

@@ -38,11 +38,13 @@ export const iconNames = [
   "loader-2",
   "minus",
   "more-horizontal",
+  "package",
   "panel-left",
   "pencil",
   "pencil-line",
   "plus",
   "quote",
+  "receipt",
   "rotate-ccw",
   "rows-3",
   "search",
@@ -54,6 +56,7 @@ export const iconNames = [
   "table",
   "trash-2",
   "underline",
+  "users",
   "x",
 ] as const;
 
@@ -98,11 +101,13 @@ declare module "@lattice-php/lattice" {
     "loader-2": true;
     minus: true;
     "more-horizontal": true;
+    package: true;
     "panel-left": true;
     pencil: true;
     "pencil-line": true;
     plus: true;
     quote: true;
+    receipt: true;
     "rotate-ccw": true;
     "rows-3": true;
     search: true;
@@ -114,6 +119,7 @@ declare module "@lattice-php/lattice" {
     table: true;
     "trash-2": true;
     underline: true;
+    users: true;
     x: true;
   }
 }

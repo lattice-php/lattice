@@ -10,6 +10,7 @@ use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Core\Components\Badge;
 use Lattice\Lattice\Core\Components\ChatBox;
 use Lattice\Lattice\Core\Components\FloatingPanel;
+use Lattice\Lattice\Core\Components\GlobalSearch;
 use Lattice\Lattice\Core\Components\RawBlock;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\Align;
@@ -59,6 +60,9 @@ class AppLayout extends LayoutDefinition
                     Stack::make('app-main')
                         ->width(Width::Fill)
                         ->schema([
+                            GlobalSearch::make('global-search')
+                                ->placeholder(__('workbench.global-search.placeholder'))
+                                ->title(__('workbench.global-search.title')),
                             Breadcrumbs::make(),
                             Outlet::make(),
                             RawBlock::make('chat-scroll-clearance')->html('<div class="h-24" aria-hidden="true"></div>'),

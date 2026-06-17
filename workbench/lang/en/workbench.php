@@ -2,6 +2,13 @@
 declare(strict_types=1);
 
 return [
+    'global-search' => [
+        'placeholder' => 'Search products, partners, orders…',
+        'title' => 'Search',
+        'products' => 'Products',
+        'business-partners' => 'Business partners',
+        'sales-orders' => 'Sales orders',
+    ],
     'assistant' => [
         'placeholder' => 'Ask the assistant…',
         'title' => 'Assistant',

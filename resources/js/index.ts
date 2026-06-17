@@ -1,6 +1,23 @@
 export { registry } from "./registry";
 export { useChat } from "./chat/use-chat";
 export { chatPlugin } from "./chat";
+export { useGlobalSearch } from "./global-search/use-global-search";
+export {
+  GlobalSearch,
+  GlobalSearchInput,
+  GlobalSearchCategories,
+  GlobalSearchResults,
+  GlobalSearchRecent,
+  GlobalSearchPreview,
+  globalSearchPlugin,
+} from "./global-search";
+export type {
+  SearchResult,
+  SearchCategory,
+  SearchPagination,
+  UseGlobalSearchOptions,
+  UseGlobalSearchReturn,
+} from "./global-search/types";
 export {
   getActionEffects,
   isActionEffect,

@@ -110,6 +110,17 @@ return [
         'send' => 'Senden',
         'input-label' => 'Nachrichteneingabe',
     ],
+    'globalSearch' => [
+        'placeholder' => 'Suchen…',
+        'title' => 'Suche',
+        'results' => 'Ergebnisse',
+        'recent' => 'Zuletzt',
+        'open' => 'Öffnen',
+        'empty' => 'Keine Ergebnisse gefunden.',
+        'loading' => 'Suche läuft…',
+        'error' => 'Etwas ist schiefgelaufen.',
+        'previewEmpty' => 'Ergebnis auswählen, um eine Vorschau anzuzeigen.',
+    ],
     'remote' => [
         'data-list' => [
             'loading' => 'Lädt...',
