@@ -8,6 +8,7 @@ use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\Height;
 use Lattice\Lattice\Core\Enums\Justify;
+use Lattice\Lattice\Core\Enums\Side;
 use Lattice\Lattice\Core\Enums\Width;
 
 #[AsComponent('stack')]
@@ -25,9 +26,18 @@ class Stack extends ContainerComponent
 
     public ?string $direction = null;
 
+    public ?Side $float = null;
+
     public static function make(?string $key = null): static
     {
         return new static($key);
+    }
+
+    public function float(Side $float): static
+    {
+        $this->float = $float;
+
+        return $this;
     }
 
     public function gap(Gap $gap): static

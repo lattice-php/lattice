@@ -34,6 +34,7 @@ test('stack serializes enums direction and key wire-identically', function () {
                 'direction' => 'row',
                 'justify' => null,
                 'height' => null,
+                'float' => null,
             ],
             'schema' => [
                 ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => 'muted']],

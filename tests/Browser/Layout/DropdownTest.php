@@ -5,8 +5,6 @@ it('opens the composed user dropdown and reveals its items', function (): void {
     $this->actingAs(workbenchTestUser());
     visit('/')
         ->assertSee('Workbench User')
-        ->assertSee('English')
-        ->assertSee('German')
         ->assertDontSee('Log out')
         ->click('@user-menu')
         ->assertSee('Log out')
@@ -23,10 +21,11 @@ it('keeps the user dropdown usable when the sidebar is collapsed', function (): 
         ->assertNoSmoke();
 });
 
-it('renders the workbench locale switcher in a floating panel', function (): void {
+it('renders the workbench locale switcher as a topbar dropdown', function (): void {
     $this->actingAs(workbenchTestUser());
     visit('/')
-        ->assertPresent('.fixed[aria-label="Language"]')
+        ->assertPresent('[data-test="locale-switcher"]')
+        ->click('@locale-switcher')
         ->assertSee('English')
         ->assertSee('German')
         ->assertNoSmoke();

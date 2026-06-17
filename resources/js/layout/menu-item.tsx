@@ -21,6 +21,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
   const collapsed = useSidebarCollapsed();
   const icon = node.props.icon;
   const label = node.props.label;
+  const iconOnly = node.props.iconOnly;
   const href = node.props.href ?? "";
   const currentPath = usePage().url.split("?")[0];
   const testId = prefixedNodeTestId("menu", node);
@@ -28,7 +29,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
   const content = (
     <>
       {icon ? <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} /> : null}
-      {collapsed ? (
+      {iconOnly ? null : collapsed ? (
         <span
           className="pointer-events-none absolute top-1/2 left-full z-50 ml-2 hidden -translate-y-1/2 rounded-lt-sm border border-lt-border bg-lt-popover px-2 py-1 text-sm whitespace-nowrap text-lt-popover-fg shadow-lt-md group-hover:block"
           role="tooltip"
@@ -78,12 +79,13 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
     <li>
       <Link
         aria-current={active ? "page" : undefined}
-        aria-label={collapsed ? label : undefined}
+        aria-label={collapsed || iconOnly ? label : undefined}
         as={method === "get" ? undefined : "button"}
         className={cn(
           rowClass,
           "w-full",
           collapsed && "group relative justify-center",
+          iconOnly && "justify-center",
           active && "bg-lt-muted font-medium",
         )}
         data-test={testId}

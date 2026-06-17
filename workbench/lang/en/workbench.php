@@ -321,6 +321,7 @@ return [
         'pagination-modes' => 'Pagination Modes',
         'products' => 'Products',
         'sales-orders' => 'Sales orders',
+        'settings' => 'Settings',
         'showcase' => 'Showcase',
         'tables' => 'Tables',
         'tabs' => 'Tabs',
@@ -443,6 +444,11 @@ return [
             'table' => 'Table',
             'table-heading' => 'Table pagination',
             'title' => 'Lattice Tables',
+        ],
+        'settings' => [
+            'heading' => 'Settings',
+            'placeholder' => 'Workspace settings live here.',
+            'title' => 'Settings',
         ],
         'tabs' => [
             'account' => 'Account',

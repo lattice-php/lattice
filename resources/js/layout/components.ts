@@ -6,6 +6,7 @@ import MenuComponent from "./menu";
 import MenuItemComponent from "./menu-item";
 import OutletComponent from "./outlet";
 import SidebarComponent from "./sidebar";
+import TopbarComponent from "./topbar";
 
 export const layoutComponents = createPlugin({
   components: {
@@ -16,6 +17,7 @@ export const layoutComponents = createPlugin({
     "menu-item": eagerComponent(MenuItemComponent),
     outlet: eagerComponent(OutletComponent),
     sidebar: eagerComponent(SidebarComponent),
+    topbar: eagerComponent(TopbarComponent),
   },
   name: "lattice/layout",
 });
