@@ -56,6 +56,8 @@ trait IsInteractive
      */
     protected function decorateProps(array $props): array
     {
+        $props = parent::decorateProps($props);
+
         if ($this->hasEndpoint($props)) {
             if ($this->id === null) {
                 throw new LogicException(sprintf(
