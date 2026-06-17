@@ -2,6 +2,7 @@ import { Icon } from "@lattice-php/lattice/icons";
 import { useState } from "react";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { CollapsedContext } from "../core/collapsed-context";
+import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import { cn } from "@lattice-php/lattice/lib/utils";
 
 function readStored(key: string, remember: boolean): boolean {
@@ -15,7 +16,8 @@ function readStored(key: string, remember: boolean): boolean {
 const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
   const collapsible = node.props.collapsible;
   const rememberState = node.props.rememberState;
-  const storageKey = `lattice:sidebar:${node.id ?? "default"}`;
+  const identity = nodeIdentity(node);
+  const storageKey = `lattice:sidebar:${identity ?? "default"}`;
 
   const [collapsed, setCollapsed] = useState(() =>
     readStored(storageKey, collapsible && rememberState),
@@ -42,7 +44,7 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
           "sticky top-0 flex h-svh shrink-0 flex-col gap-4 border-r border-lt-border p-4 transition-[width]",
           isCollapsed ? "w-16 overflow-visible" : "w-64 overflow-x-hidden overflow-y-auto",
         )}
-        data-lattice-component={node.id}
+        data-lattice-component={identity}
       >
         {collapsible ? (
           <button

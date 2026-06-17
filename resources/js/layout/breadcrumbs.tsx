@@ -1,6 +1,7 @@
 import { Link, usePage } from "@inertiajs/react";
 import { Fragment } from "react";
 import type { PagePayload, RendererComponent } from "@lattice-php/lattice/core/types";
+import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 
 const BreadcrumbsComponent: RendererComponent<"breadcrumbs"> = ({ node }) => {
   const page = usePage();
@@ -11,7 +12,7 @@ const BreadcrumbsComponent: RendererComponent<"breadcrumbs"> = ({ node }) => {
   }
 
   return (
-    <nav aria-label="Breadcrumb" data-lattice-component={node.id}>
+    <nav aria-label="Breadcrumb" data-lattice-component={nodeIdentity(node)}>
       <ol className="flex items-center gap-2 text-sm text-lt-muted-fg">
         {crumbs.map((crumb, index) => {
           const isLast = index === crumbs.length - 1;

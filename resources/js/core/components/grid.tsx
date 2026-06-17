@@ -1,12 +1,13 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 
 const GridComponent: RendererComponent<"grid"> = ({ children, node }) => {
   const columns = Math.min(Math.max(node.props.columns ?? 1, 1), 4);
 
   return (
     <div
-      data-lattice-component={node.id}
+      data-lattice-component={nodeIdentity(node)}
       className={cn(
         "grid gap-x-4 gap-y-6",
         columns >= 2 && "md:grid-cols-2",
