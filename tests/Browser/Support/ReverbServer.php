@@ -37,7 +37,7 @@ final class ReverbServer
 
         $process = new Process(
             [PHP_BINARY, 'artisan', 'reverb:start', '--host='.self::HOST, '--port='.$port, '--debug'],
-            base_path(),
+            dirname(__DIR__, 3),
             self::environment($port),
         );
 
