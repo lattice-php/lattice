@@ -1,4 +1,5 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { AffixGroup } from "../base/affix-group";
 import { Input } from "../base/input";
 import { SimpleField } from "./simple-field";
 
@@ -33,22 +34,27 @@ export const NumberInputComponent: RendererComponent<"field.number-input"> = ({ 
             </output>
           </div>
         ) : (
-          <Input
-            autoFocus={props.autoFocus ?? false}
-            data-test={testId}
-            disabled={disabled}
-            id={name}
-            max={props.max ?? undefined}
-            min={props.min ?? undefined}
-            name={name}
-            onChange={onChange}
-            placeholder={props.placeholder ?? ""}
-            readOnly={readOnly}
-            step={props.step ?? undefined}
-            tabIndex={props.tabIndex ?? undefined}
-            type="number"
-            value={value}
-          />
+          <AffixGroup prefix={props.prefix} suffix={props.suffix}>
+            {(controlClassName) => (
+              <Input
+                autoFocus={props.autoFocus ?? false}
+                className={controlClassName}
+                data-test={testId}
+                disabled={disabled}
+                id={name}
+                max={props.max ?? undefined}
+                min={props.min ?? undefined}
+                name={name}
+                onChange={onChange}
+                placeholder={props.placeholder ?? ""}
+                readOnly={readOnly}
+                step={props.step ?? undefined}
+                tabIndex={props.tabIndex ?? undefined}
+                type="number"
+                value={value}
+              />
+            )}
+          </AffixGroup>
         );
       }}
     </SimpleField>

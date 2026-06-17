@@ -95,3 +95,16 @@ describe("PasswordInputComponent conditions", () => {
     expect(screen.getByTestId("value-password_confirmation")).toHaveTextContent("secret");
   });
 });
+
+describe("PasswordInputComponent affixes", () => {
+  it("renders a text prefix around the password control", () => {
+    renderField(
+      fakeNode({
+        type: "field.password-input",
+        props: { name: "token", label: "Token", prefix: { icon: null, text: "tok_" } },
+      }),
+    );
+
+    expect(screen.getByText("tok_")).toBeVisible();
+  });
+});

@@ -42,6 +42,15 @@ NumberInput::make('unit_price', 'Unit price')
   values={{ satisfaction: 5 }}
 />
 
+## Affixes
+
+`->prefix()` and `->suffix()` add a currency symbol, unit, or icon to the input. See
+[affixes on Text input](/forms/fields/text-input/#affixes) for the full rules.
+
+```php
+NumberInput::make('price', 'Price')->prefix('$')->suffix('USD');
+```
+
 ## Common options
 
 `NumberInput` shares label, default value, required, disabled, read-only, and visibility options with

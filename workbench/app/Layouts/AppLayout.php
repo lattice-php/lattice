@@ -29,6 +29,7 @@ use Lattice\Lattice\Layouts\Components\Outlet;
 use Lattice\Lattice\Layouts\Components\Sidebar;
 use Lattice\Lattice\Layouts\Components\Topbar;
 use Lattice\Lattice\Layouts\LayoutDefinition;
+use Lattice\Lattice\Support\Affix;
 use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Actions\ToggleChatLayoutAction;
 use Workbench\App\Pages\BuilderTableDemoPage;
@@ -91,24 +92,24 @@ class AppLayout extends LayoutDefinition
                         ->hideWhenCollapsed(),
                 ]),
             Menu::make('sidebar')->items([
-                MenuItem::fromPage(HomePage::class)->key('home')->label(__('workbench.navigation.home'))->icon('house'),
-                MenuItem::make(__('workbench.navigation.forms'), 'forms')->icon('form-input')->children([
+                MenuItem::fromPage(HomePage::class)->key('home')->label(__('workbench.navigation.home'))->prefix(Affix::icon('house')),
+                MenuItem::make(__('workbench.navigation.forms'), 'forms')->prefix(Affix::icon('form-input'))->children([
                     MenuItem::fromPage(ShowcasePage::class)->key('showcase')->label(__('workbench.navigation.showcase')),
                     MenuItem::fromPage(DependentDemoPage::class)->key('dependent-fields')->label(__('workbench.navigation.dependent-fields')),
                     MenuItem::fromPage(BuilderTableDemoPage::class)->key('builder-table-demo')->label(__('workbench.navigation.builder-table-demo')),
                     MenuItem::fromPage(ProductCreatePage::class)->key('create-product')->label(__('workbench.navigation.create-product')),
                 ]),
-                MenuItem::make(__('workbench.navigation.commerce'), 'commerce')->icon('layout-dashboard')->children([
+                MenuItem::make(__('workbench.navigation.commerce'), 'commerce')->prefix(Icon::LayoutDashboard)->children([
                     MenuItem::fromPage(BusinessPartnersPage::class)->key('business-partners')->label(__('workbench.navigation.business-partners')),
                     MenuItem::fromPage(GroupsPage::class)->key('groups')->label(__('workbench.navigation.groups')),
                     MenuItem::fromPage(ProductsPage::class)->key('products')->label(__('workbench.navigation.products')),
                     MenuItem::fromPage(SalesOrdersPage::class)->key('sales-orders')->label(__('workbench.navigation.sales-orders')),
                 ]),
-                MenuItem::make(__('workbench.navigation.tables'), 'tables')->icon(Icon::Table)->children([
+                MenuItem::make(__('workbench.navigation.tables'), 'tables')->prefix(Icon::Table)->children([
                     MenuItem::fromPage(TablesPage::class)->key('pagination-modes')->label(__('workbench.navigation.pagination-modes')),
                 ]),
-                MenuItem::fromPage(RemoteSchemaPage::class)->key('remote-schema')->label(__('workbench.navigation.remote-schema'))->icon('plug'),
-                MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs'))->icon('spark'),
+                MenuItem::fromPage(RemoteSchemaPage::class)->key('remote-schema')->label(__('workbench.navigation.remote-schema'))->prefix(Affix::icon('plug')),
+                MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs'))->prefix(Affix::icon('spark')),
             ]),
         ]);
     }
@@ -127,8 +128,7 @@ class AppLayout extends LayoutDefinition
                     Menu::make('topbar-settings')->items([
                         MenuItem::make(__('workbench.navigation.settings'), 'settings')
                             ->icon(Icon::Settings)
-                            ->href('/settings')
-                            ->iconOnly(),
+                            ->href('/settings'),
                     ]),
                     $this->userMenu(),
                 ]),

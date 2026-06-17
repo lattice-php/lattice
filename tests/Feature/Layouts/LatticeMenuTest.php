@@ -4,10 +4,12 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Layouts\Components\Menu;
 use Lattice\Lattice\Layouts\Components\MenuItem;
+use Lattice\Lattice\Support\Affix;
 
 final class MenuProductsPage extends Page
 {
@@ -70,7 +72,31 @@ test('a menu item includes unset optional props as null on the wire', function (
     $wire = wire(MenuItem::make('Home')->href('/'));
 
     expect($wire['props']['method'])->toBeNull()
-        ->and($wire['props']['icon'])->toBeNull();
+        ->and($wire['props']['icon'])->toBeNull()
+        ->and($wire['props']['prefix'])->toBeNull()
+        ->and($wire['props']['suffix'])->toBeNull();
+});
+
+test('a menu item serializes prefix and suffix affixes', function () {
+    $wire = wire(
+        MenuItem::make('Tables')->href('/tables')->prefix(Icon::Table)->suffix('beta'),
+    );
+
+    expect($wire['props']['prefix'])->toBe(['icon' => 'table', 'text' => null])
+        ->and($wire['props']['suffix'])->toBe(['icon' => null, 'text' => 'beta']);
+});
+
+test('a menu item prefix takes an icon by name via the affix escape hatch', function () {
+    $wire = wire(MenuItem::make('Home')->href('/')->prefix(Affix::icon('house')));
+
+    expect($wire['props']['prefix'])->toBe(['icon' => 'house', 'text' => null]);
+});
+
+test('icon sets a menu item as icon-only and replaces the iconOnly flag', function () {
+    $wire = wire(MenuItem::make('Settings')->href('/settings')->icon(Icon::Settings));
+
+    expect($wire['props']['icon'])->toBe('settings')
+        ->and($wire['props'])->not->toHaveKey('iconOnly');
 });
 
 test('fromPage resolves the href and a default label from the page route', function () {

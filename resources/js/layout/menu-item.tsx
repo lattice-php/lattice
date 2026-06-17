@@ -5,11 +5,20 @@ import { prefixedNodeTestId } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent, Schema } from "@lattice-php/lattice/core/types";
 import { Icon, IconRenderer } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import type { Affix } from "@lattice-php/lattice/types/generated";
 import { useSidebarCollapsed } from "./context";
 import { Popover } from "./popover";
 
 const rowClass =
   "flex items-center gap-2 rounded-lt-sm px-3 py-2 text-base font-medium text-lt-fg transition-colors hover:bg-lt-muted";
+
+function MenuAffix({ affix, className }: { affix: Affix; className?: string }) {
+  if (affix.icon) {
+    return <IconRenderer className={cn("size-lt-icon-md shrink-0", className)} icon={affix.icon} />;
+  }
+
+  return <span className={cn("shrink-0 text-sm text-lt-muted-fg", className)}>{affix.text}</span>;
+}
 
 function schemaContainsPath(schema: Schema | undefined, path: string): boolean {
   return (schema ?? []).some(
@@ -21,15 +30,20 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
   const collapsed = useSidebarCollapsed();
   const icon = node.props.icon;
   const label = node.props.label;
-  const iconOnly = node.props.iconOnly;
+  const prefix = node.props.prefix;
+  const suffix = node.props.suffix;
+  const iconOnly = Boolean(icon);
+  const flyoutIcon = icon ?? prefix?.icon ?? null;
   const href = node.props.href ?? "";
   const currentPath = usePage().url.split("?")[0];
   const testId = prefixedNodeTestId("menu", node);
 
-  const content = (
+  const content = icon ? (
+    <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} />
+  ) : (
     <>
-      {icon ? <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} /> : null}
-      {iconOnly ? null : collapsed ? (
+      {prefix ? <MenuAffix affix={prefix} /> : null}
+      {collapsed ? (
         <span
           className="pointer-events-none absolute top-1/2 left-full z-50 ml-2 hidden -translate-y-1/2 rounded-lt-sm border border-lt-border bg-lt-popover px-2 py-1 text-sm whitespace-nowrap text-lt-popover-fg shadow-lt-md group-hover:block"
           role="tooltip"
@@ -39,6 +53,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
       ) : (
         <span>{label}</span>
       )}
+      {suffix ? <MenuAffix affix={suffix} className="ml-auto" /> : null}
     </>
   );
 
@@ -55,7 +70,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
 
     if (collapsed) {
       return (
-        <FlyoutGroup icon={icon} label={label} testId={testId}>
+        <FlyoutGroup icon={flyoutIcon} label={label} testId={testId}>
           {children}
         </FlyoutGroup>
       );
