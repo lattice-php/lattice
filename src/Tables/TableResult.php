@@ -87,7 +87,6 @@ final readonly class TableResult implements JsonSerializable
                 from: $total > 0 ? 1 : 0,
                 to: $total,
                 hasMore: false,
-                nextPage: null,
             ),
         );
     }

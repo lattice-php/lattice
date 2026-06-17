@@ -18,7 +18,7 @@ use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
 use function Pest\Laravel\patch;
 use function Pest\Laravel\postJson;
 
-test('lattice can discover attributed definitions from a path and namespace', function () {
+test('lattice can discover attributed definitions from a path and namespace', function (): void {
     discoverFixtures();
 
     $form = wire(Form::use(DiscoveredProfileForm::class));
@@ -83,14 +83,14 @@ test('lattice can discover attributed definitions from a path and namespace', fu
         ]);
 });
 
-test('lattice discovers attributed bulk action definitions', function () {
+test('lattice discovers attributed bulk action definitions', function (): void {
     discoverFixtures();
 
     expect(app(BulkActionRegistry::class)->resolve('fixtures.archive'))
         ->toBeInstanceOf(DiscoveredArchiveBulkAction::class);
 });
 
-test('interaction endpoints return 404 for unknown component ids', function () {
+test('interaction endpoints return 404 for unknown component ids', function (): void {
     $signer = app(ComponentReferenceSigner::class);
     $refs = [
         'action' => $signer->seal('action', 'workbench.missing', []),
@@ -109,7 +109,7 @@ test('interaction endpoints return 404 for unknown component ids', function () {
         ->assertNotFound();
 });
 
-test('interaction endpoints re-run authorization for every interaction', function () {
+test('interaction endpoints re-run authorization for every interaction', function (): void {
     Lattice::actions([WorkbenchDeniedAction::class]);
     Lattice::forms([WorkbenchDeniedForm::class]);
     Lattice::tables([WorkbenchDeniedTable::class]);

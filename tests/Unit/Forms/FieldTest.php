@@ -31,7 +31,7 @@ it('resolves array rules', function (): void {
 });
 
 it('resolves closure rules with form data', function (): void {
-    $field = makeField()->rules(fn (FormData $data) => $data->get('type') === 'member'
+    $field = makeField()->rules(fn (FormData $data): array => $data->get('type') === 'member'
         ? ['required', 'numeric']
         : ['nullable']);
 
@@ -44,7 +44,7 @@ it('resolves closure rules with form data', function (): void {
 it('merges rules across calls, including closures', function (): void {
     $field = makeField()
         ->rules(['required'])
-        ->rules(fn () => ['string'])
+        ->rules(fn (): array => ['string'])
         ->rules(['max:10']);
 
     expect($field->resolveRules(FormData::make([]), Request::create('/')))

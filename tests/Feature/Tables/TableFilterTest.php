@@ -19,7 +19,7 @@ function peopleOptionSource(): OptionSource
     return inMemoryOptionSource(['1' => 'Ada', '2' => 'Linus', '3' => 'Grace']);
 }
 
-test('a table serializes its declared filters and starts with no active values', function () {
+test('a table serializes its declared filters and starts with no active values', function (): void {
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
 
     $table = wire(Table::use(WorkbenchFilteredProductsTable::class));
@@ -43,7 +43,7 @@ test('a table serializes its declared filters and starts with no active values',
         ->and($table['props']['state']['tableFilters'])->toBe([]);
 });
 
-test('a table applies a dedicated select filter from the request', function () {
+test('a table applies a dedicated select filter from the request', function (): void {
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
 
     Product::factory()->create(['name' => 'Active One', 'status' => 'active']);
@@ -59,7 +59,7 @@ test('a table applies a dedicated select filter from the request', function () {
     expect($response->json('data'))->toHaveCount(1);
 });
 
-test('a table rejects a filter key that is not declared', function () {
+test('a table rejects a filter key that is not declared', function (): void {
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
 
     $ref = componentRef(wire(Table::use(WorkbenchFilteredProductsTable::class)));
@@ -69,7 +69,7 @@ test('a table rejects a filter key that is not declared', function () {
         ->assertJsonPath('message', 'Filter [unknown] is not allowed for table [workbench.filtered-products].');
 });
 
-test('a table searches a searchable filter\'s options through the endpoint', function () {
+test('a table searches a searchable filter\'s options through the endpoint', function (): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
     $ref = componentRef(wire(Table::use(WorkbenchSearchableFilterTable::class)));
@@ -79,7 +79,7 @@ test('a table searches a searchable filter\'s options through the endpoint', fun
         ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
 });
 
-test('a table searches a searchable column filter through the endpoint', function () {
+test('a table searches a searchable column filter through the endpoint', function (): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
     $ref = componentRef(wire(Table::use(WorkbenchSearchableFilterTable::class)));
@@ -89,7 +89,7 @@ test('a table searches a searchable column filter through the endpoint', functio
         ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
 });
 
-test('a table 404s searching an unknown filter key', function () {
+test('a table 404s searching an unknown filter key', function (): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
     $ref = componentRef(wire(Table::use(WorkbenchSearchableFilterTable::class)));
@@ -98,7 +98,7 @@ test('a table 404s searching an unknown filter key', function () {
         ->assertNotFound();
 });
 
-test('a table rejects searching a filter that is not searchable', function () {
+test('a table rejects searching a filter that is not searchable', function (): void {
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
 
     $ref = componentRef(wire(Table::use(WorkbenchFilteredProductsTable::class)));
@@ -107,7 +107,7 @@ test('a table rejects searching a filter that is not searchable', function () {
         ->assertStatus(422);
 });
 
-test('a table accepts column filter clause option operators', function () {
+test('a table accepts column filter clause option operators', function (): void {
     Lattice::tables([WorkbenchClauseOptionProductsTable::class]);
 
     Product::factory()->create(['name' => 'June One', 'updated_at' => '2026-06-12 12:00:00']);

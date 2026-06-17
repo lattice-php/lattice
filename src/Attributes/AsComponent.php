@@ -37,7 +37,7 @@ class AsComponent
      */
     private static function resolveType(string $class): string
     {
-        $attributes = (new ReflectionClass($class))->getAttributes(self::class, ReflectionAttribute::IS_INSTANCEOF);
+        $attributes = new ReflectionClass($class)->getAttributes(self::class, ReflectionAttribute::IS_INSTANCEOF);
 
         if ($attributes === []) {
             throw new LogicException(sprintf(

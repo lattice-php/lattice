@@ -30,8 +30,8 @@ function withPublishedJsScaffold(Closure $callback): mixed
     });
 }
 
-it('publishes the JS scaffold under resources/js/lattice', function () {
-    withPublishedJsScaffold(function () {
+it('publishes the JS scaffold under resources/js/lattice', function (): void {
+    withPublishedJsScaffold(function (): void {
         File::delete(resource_path('js/lattice/plugin.ts'));
         File::delete(resource_path('js/lattice/columns.ts'));
 

@@ -27,9 +27,9 @@ final readonly class ChatAgentController
         $message = trim((string) $request->input('message'));
 
         $this->store->append(
-            (new ChatMessage((string) Str::uuid(), ChatRole::User, [
+            new ChatMessage((string) Str::uuid(), ChatRole::User, [
                 ChatPart::text($message),
-            ]))->jsonSerialize(),
+            ])->jsonSerialize(),
         );
 
         return response()->stream(function () use ($message, $request): void {
@@ -54,11 +54,11 @@ final readonly class ChatAgentController
             $this->writeFrame(['type' => 'done']);
 
             $this->store->append(
-                (new ChatMessage((string) Str::uuid(), ChatRole::Assistant, [
+                new ChatMessage((string) Str::uuid(), ChatRole::Assistant, [
                     ChatPart::text(self::REPLY),
                     $toolCall,
                     ...$schema,
-                ]))->jsonSerialize(),
+                ])->jsonSerialize(),
             );
         }, 200, [
             'Cache-Control' => 'no-cache',

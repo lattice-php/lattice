@@ -6,11 +6,11 @@ use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
 
 use function Pest\Laravel\artisan;
 
-afterEach(function () {
+afterEach(function (): void {
     app(DiscoveryManifest::class)->clear();
 });
 
-it('caches and clears the discovery manifest', function () {
+it('caches and clears the discovery manifest', function (): void {
     $manifest = app(DiscoveryManifest::class);
 
     expect($manifest->isCached())->toBeFalse();
@@ -22,7 +22,7 @@ it('caches and clears the discovery manifest', function () {
     expect($manifest->isCached())->toBeFalse();
 });
 
-it('walks fresh when the cache is cold', function () {
+it('walks fresh when the cache is cold', function (): void {
     discoverFixtures();
 
     $manifest = app(DiscoveryManifest::class);

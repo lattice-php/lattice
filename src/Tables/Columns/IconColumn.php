@@ -27,7 +27,7 @@ class IconColumn extends Column
      */
     public function icon(BackedEnum|string $icon): static
     {
-        $this->icon = self::iconValue($icon);
+        $this->icon = $this->iconValue($icon);
 
         return $this;
     }
@@ -39,12 +39,12 @@ class IconColumn extends Column
      */
     public function icons(array $icons): static
     {
-        $this->icons = $icons === [] ? null : array_map(self::iconValue(...), $icons);
+        $this->icons = $icons === [] ? null : array_map($this->iconValue(...), $icons);
 
         return $this;
     }
 
-    private static function iconValue(BackedEnum|string $icon): string
+    private function iconValue(BackedEnum|string $icon): string
     {
         return $icon instanceof BackedEnum ? (string) $icon->value : $icon;
     }

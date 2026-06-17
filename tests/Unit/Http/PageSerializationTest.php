@@ -9,7 +9,7 @@ use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page;
 
-test('pages serialize layout and container metadata', function () {
+test('pages serialize layout and container metadata', function (): void {
     $defaultPage = new class extends Page
     {
         public function render(PageSchema $schema): PageSchema
@@ -32,7 +32,7 @@ test('pages serialize layout and container metadata', function () {
         ->toMatchArray(['layout' => null, 'container' => 'default']);
 });
 
-test('the layout() method takes precedence over the page attribute', function () {
+test('the layout() method takes precedence over the page attribute', function (): void {
     $page = new #[AsPage(layout: PageLayout::App)] class extends Page
     {
         public function layout(): PageLayout
@@ -50,7 +50,7 @@ test('the layout() method takes precedence over the page attribute', function ()
         ->toMatchArray(['layout' => null]);
 });
 
-test('the container() method takes precedence over the page attribute', function () {
+test('the container() method takes precedence over the page attribute', function (): void {
     $page = new #[AsPage(container: PageContainer::Default)] class extends Page
     {
         public function container(): PageContainer
@@ -68,7 +68,7 @@ test('the container() method takes precedence over the page attribute', function
         ->toMatchArray(['container' => 'centered']);
 });
 
-test('pages serialize breadcrumb metadata', function () {
+test('pages serialize breadcrumb metadata', function (): void {
     $page = new class extends Page
     {
         public function breadcrumbs(): array
@@ -98,7 +98,7 @@ test('pages serialize breadcrumb metadata', function () {
         ]);
 });
 
-test('pages do not serialize shared i18n metadata', function () {
+test('pages do not serialize shared i18n metadata', function (): void {
     $page = new class extends Page
     {
         public function render(PageSchema $schema): PageSchema

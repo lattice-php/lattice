@@ -12,7 +12,7 @@ enum ColumnFilterStatus: string
     case Active = 'active';
 }
 
-test('a column filter accepts an associative value => label array', function () {
+test('a column filter accepts an associative value => label array', function (): void {
     $filter = wire(TextColumn::make('status')->filterOptions([
         'draft' => 'Draft',
         'active' => 'Active',
@@ -24,7 +24,7 @@ test('a column filter accepts an associative value => label array', function () 
     ]);
 });
 
-test('a column filter accepts an enum', function () {
+test('a column filter accepts an enum', function (): void {
     $filter = wire(TextColumn::make('status')->filterOptions(ColumnFilterStatus::class))['filter'];
 
     expect($filter['options'])->toBe([
@@ -33,7 +33,7 @@ test('a column filter accepts an enum', function () {
     ]);
 });
 
-test('a column with filter options serializes a select control', function () {
+test('a column with filter options serializes a select control', function (): void {
     $filter = wire(TextColumn::make('status')->filterOptions([
         ['label' => 'Draft', 'value' => 'draft'],
         ['label' => 'Active', 'value' => 'active'],
@@ -52,7 +52,7 @@ test('a column with filter options serializes a select control', function () {
     ]);
 });
 
-test('a multiple column select filter offers the in operators', function () {
+test('a multiple column select filter offers the in operators', function (): void {
     $filter = wire(TextColumn::make('status')->filterOptions([
         ['label' => 'Draft', 'value' => 'draft'],
     ], multiple: true))['filter'];
@@ -65,7 +65,7 @@ test('a multiple column select filter offers the in operators', function () {
     ]);
 });
 
-test('an operator column filter has no select control', function () {
+test('an operator column filter has no select control', function (): void {
     $filter = wire(TextColumn::make('name')->filterable())['filter'];
 
     expect($filter['control'])->toBeNull()
@@ -73,20 +73,20 @@ test('an operator column filter has no select control', function () {
         ->and($filter['multiple'])->toBeFalse();
 });
 
-test('a column filter can be made searchable', function () {
+test('a column filter can be made searchable', function (): void {
     $filter = wire(TextColumn::make('author_id')->filterOptions(inMemoryOptionSource(['1' => 'Ada', '2' => 'Linus']), searchable: true))['filter'];
 
     expect($filter['control'])->toBe('select')
         ->and($filter['searchable'])->toBeTrue();
 });
 
-test('a static column select filter is not searchable', function () {
+test('a static column select filter is not searchable', function (): void {
     $filter = wire(TextColumn::make('status')->filterOptions([['label' => 'A', 'value' => 'a']]))['filter'];
 
     expect($filter['searchable'])->toBeFalse();
 });
 
-test('a column filter resolves options from an option source', function () {
+test('a column filter resolves options from an option source', function (): void {
     $filter = wire(TextColumn::make('author_id')->filterOptions(inMemoryOptionSource(['1' => 'Ada', '2' => 'Linus'])))['filter'];
 
     expect($filter['control'])->toBe('select')
@@ -96,7 +96,7 @@ test('a column filter resolves options from an option source', function () {
         ]);
 });
 
-test('a column select filter restricts its available operators', function () {
+test('a column select filter restricts its available operators', function (): void {
     expect(TextColumn::make('status')->filterOptions([['label' => 'A', 'value' => 'a']])->availableOperators())
         ->toBe([Op::Equals, Op::NotEquals]);
 
@@ -104,7 +104,7 @@ test('a column select filter restricts its available operators', function () {
         ->toBe([Op::In, Op::NotIn]);
 });
 
-test('a column filter serializes clause options', function () {
+test('a column filter serializes clause options', function (): void {
     $filter = wire(BooleanColumn::make('featured')->filterOptions([
         ColumnFilterOption::clause('Yes', 'yes', Op::Equals, 'true'),
         ColumnFilterOption::clause('No', 'no', Op::Equals, 'false'),
@@ -139,7 +139,7 @@ test('a column filter serializes clause options', function () {
     ]);
 });
 
-test('a column filter range option serializes date bounds as clauses', function () {
+test('a column filter range option serializes date bounds as clauses', function (): void {
     $filter = wire(TextColumn::make('updated_at')->date()->filterOptions([
         ColumnFilterOption::range('This month', 'this-month', '2026-06-01', '2026-06-30'),
     ]))['filter'];

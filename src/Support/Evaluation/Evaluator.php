@@ -36,7 +36,7 @@ final readonly class Evaluator
 
         $arguments = array_map(
             fn (ReflectionParameter $parameter): mixed => $this->resolveParameter($parameter, $context),
-            (new ReflectionFunction($value))->getParameters(),
+            new ReflectionFunction($value)->getParameters(),
         );
 
         return $value(...$arguments);
@@ -87,13 +87,7 @@ final readonly class Evaluator
      */
     private function isNonAutowirable(string $class): bool
     {
-        foreach ($this->nonAutowirableTypes as $base) {
-            if ($class === $base || is_subclass_of($class, $base)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($this->nonAutowirableTypes, fn ($base): bool => $class === $base || is_subclass_of($class, $base));
     }
 
     /**

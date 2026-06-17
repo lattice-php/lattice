@@ -145,8 +145,8 @@ abstract class Component implements JsonSerializable
     private function serializationHooks(): array
     {
         return self::$serializationHookCache[static::class] ??= collect(Attributes::find($this, SerializationHook::class))
-            ->filter(fn (AttributeTarget $target) => $target->attribute instanceof SerializationHook && $target->target instanceof ReflectionMethod)
-            ->filter(fn (AttributeTarget $target) => ! $target->target->isPrivate())
+            ->filter(fn (AttributeTarget $target): bool => $target->attribute instanceof SerializationHook && $target->target instanceof ReflectionMethod)
+            ->filter(fn (AttributeTarget $target): bool => ! $target->target->isPrivate())
             ->sortBy(fn (AttributeTarget $target): array => [$target->attribute->priority, $target->name])
             ->map(fn (AttributeTarget $target): string => $target->name)
             ->values()

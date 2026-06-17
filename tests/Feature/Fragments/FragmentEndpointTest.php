@@ -10,7 +10,7 @@ use Lattice\Lattice\Fragments\FragmentDefinition;
 
 use function Pest\Laravel\getJson;
 
-test('registered fragments serialize lazy endpoints and return component schemas', function () {
+test('registered fragments serialize lazy endpoints and return component schemas', function (): void {
     Lattice::fragments([WorkbenchTwoFactorSetupFragment::class]);
 
     $fragment = wire(FragmentComponent::lazy(WorkbenchTwoFactorSetupFragment::class));

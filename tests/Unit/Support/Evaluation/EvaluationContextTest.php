@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Lattice\Lattice\Support\Evaluation\EvaluationContext;
 
-it('adds named utilities immutably', function () {
+it('adds named utilities immutably', function (): void {
     $base = new EvaluationContext;
     $with = $base->named('foo', 42);
 
@@ -14,7 +14,7 @@ it('adds named utilities immutably', function () {
         ->and($with->getNamed('foo'))->toBe(42);
 });
 
-it('stores and reads typed utilities', function () {
+it('stores and reads typed utilities', function (): void {
     $request = Request::create('/');
     $context = (new EvaluationContext)->typed(Request::class, $request);
 
@@ -22,7 +22,7 @@ it('stores and reads typed utilities', function () {
         ->and($context->getTyped(Request::class))->toBe($request);
 });
 
-it('lists available named utility names for diagnostics', function () {
+it('lists available named utility names for diagnostics', function (): void {
     $context = (new EvaluationContext)->named('a', 1)->named('b', 2);
 
     expect($context->names())->toBe(['a', 'b']);

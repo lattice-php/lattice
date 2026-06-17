@@ -49,11 +49,11 @@ class Filter extends BaseFilter
 
     public function apply(Builder $builder, mixed $value): void
     {
-        if (filter_var($value, FILTER_VALIDATE_BOOLEAN) !== true) {
+        if (! filter_var($value, FILTER_VALIDATE_BOOLEAN)) {
             return;
         }
 
-        if ($this->query !== null) {
+        if ($this->query instanceof Closure) {
             Evaluate::resolve(
                 $this->query,
                 Evaluate::context()->typed($builder::class, $builder)->named('value', $value),

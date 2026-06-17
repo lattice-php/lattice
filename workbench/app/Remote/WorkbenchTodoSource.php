@@ -17,6 +17,7 @@ final class WorkbenchTodoSource extends RemoteSourceDefinition
         return RemoteSchemaEndpoint::file(dirname(__DIR__, 2).'/remote/todo-schema.json');
     }
 
+    #[\Override]
     public function issueBrowserToken(Request $request): BrowserToken
     {
         return new BrowserToken(

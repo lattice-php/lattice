@@ -24,7 +24,7 @@ function retryUntil(Closure $assert, int $attempts, int $sleepMicroseconds, ?Clo
                 throw $exception;
             }
 
-            if ($between !== null) {
+            if ($between instanceof Closure) {
                 $between();
             }
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Core\Values\Translatable;
 
-test('it serializes key, payload paths, and static replacements', function () {
+test('it serializes key, payload paths, and static replacements', function (): void {
     $translatable = Translatable::make('orders.shipped-live')
         ->fromPayload(['id' => 'order.id'])
         ->with(['warehouse' => 'Berlin']);
@@ -15,7 +15,7 @@ test('it serializes key, payload paths, and static replacements', function () {
     ]);
 });
 
-test('payload and replacement calls merge instead of replacing', function () {
+test('payload and replacement calls merge instead of replacing', function (): void {
     $translatable = Translatable::make('k')
         ->fromPayload(['a' => 'x.a'])
         ->fromPayload(['b' => 'x.b'])
@@ -29,6 +29,6 @@ test('payload and replacement calls merge instead of replacing', function () {
     ]);
 });
 
-test('rt() returns a Translatable for the given key', function () {
+test('rt() returns a Translatable for the given key', function (): void {
     expect(rt('a.b')->jsonSerialize()['key'])->toBe('a.b');
 });

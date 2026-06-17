@@ -43,7 +43,7 @@ class DependentDemoForm extends FormDefinition
                     ]),
                     TextInput::make('total', __('workbench.forms.dependent.total'))
                         ->readOnly()
-                        ->value(fn (FormData $data) => $data->float('qty') * $data->float('unit_price')),
+                        ->value(fn (FormData $data): float => $data->float('qty') * $data->float('unit_price')),
                     NumberInput::make('level', __('workbench.forms.dependent.level'))->slider()->min(0)->max(10),
                     DateInput::make('due', __('workbench.forms.dependent.due-date')),
                 ]),

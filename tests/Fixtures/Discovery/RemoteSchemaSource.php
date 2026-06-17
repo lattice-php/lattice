@@ -24,6 +24,7 @@ final class RemoteSchemaSource extends RemoteSourceDefinition
         return self::$endpoint;
     }
 
+    #[\Override]
     public function issueBrowserToken(Request $request): BrowserToken
     {
         return new BrowserToken(

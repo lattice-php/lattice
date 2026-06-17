@@ -73,6 +73,7 @@ abstract class RemoteComponent extends Component
      * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */
+    #[\Override]
     protected function decorateProps(array $props): array
     {
         if ($this->source !== null || $this->audience !== null || $this->scopes !== []) {

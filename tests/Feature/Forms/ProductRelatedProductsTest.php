@@ -11,7 +11,7 @@ use function Pest\Laravel\patch;
 use function Pest\Laravel\post;
 use function Pest\Laravel\withoutVite;
 
-test('the product form syncs related products on create', function () {
+test('the product form syncs related products on create', function (): void {
     Lattice::forms([ProductForm::class]);
 
     $alpha = Product::factory()->create(['name' => 'Alpha']);
@@ -33,7 +33,7 @@ test('the product form syncs related products on create', function () {
         ->toEqualCanonicalizing([$alpha->getKey(), $beta->getKey()]);
 });
 
-test('the product form replaces related products on update', function () {
+test('the product form replaces related products on update', function (): void {
     Lattice::forms([ProductForm::class]);
 
     $product = Product::factory()->create([
@@ -62,7 +62,7 @@ test('the product form replaces related products on update', function () {
         ->toBe([$gamma->getKey()]);
 });
 
-test('the product form ignores related ids that do not exist', function () {
+test('the product form ignores related ids that do not exist', function (): void {
     Lattice::forms([ProductForm::class]);
 
     $alpha = Product::factory()->create(['name' => 'Alpha']);
@@ -82,7 +82,7 @@ test('the product form ignores related ids that do not exist', function () {
     expect($product->relatedProducts->pluck('id')->all())->toBe([$alpha->getKey()]);
 });
 
-test('the product edit page binds related product ids into form state', function () {
+test('the product edit page binds related product ids into form state', function (): void {
     $product = Product::factory()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
@@ -100,7 +100,7 @@ test('the product edit page binds related product ids into form state', function
                 ->assertInitialValue([$related->getKey()])));
 });
 
-test('the product form resolves related product labels for prefilled ids', function () {
+test('the product form resolves related product labels for prefilled ids', function (): void {
     Lattice::forms([ProductForm::class]);
 
     $related = Product::factory()->create(['name' => 'Walnut Desk']);

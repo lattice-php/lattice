@@ -24,7 +24,7 @@ use Workbench\App\Tables\UsersTable as WorkbenchAppUsersTable;
 
 use function Pest\Laravel\getJson;
 
-test('registered tables serialize their configured endpoint columns state and initial data', function () {
+test('registered tables serialize their configured endpoint columns state and initial data', function (): void {
     config(['lattice.tables.endpoint' => 'custom/tables/{table}']);
 
     Lattice::tables([WorkbenchUsersTable::class]);
@@ -119,7 +119,7 @@ test('registered tables serialize their configured endpoint columns state and in
         ]);
 });
 
-test('registered tables can serialize lazily without running their query', function () {
+test('registered tables can serialize lazily without running their query', function (): void {
     config(['lattice.tables.endpoint' => 'custom/tables/{table}']);
 
     Lattice::tables([WorkbenchLazyUsersTable::class]);
@@ -178,7 +178,7 @@ test('registered tables can serialize lazily without running their query', funct
         ]);
 });
 
-test('registered tables serialize grid layout stack columns and row actions', function () {
+test('registered tables serialize grid layout stack columns and row actions', function (): void {
     Lattice::actions([WorkbenchPingAction::class]);
     Lattice::tables([WorkbenchStackedUsersTable::class]);
 
@@ -248,7 +248,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
         ]);
 });
 
-test('registered tables parse clause filters sorts and pagination through the endpoint', function () {
+test('registered tables parse clause filters sorts and pagination through the endpoint', function (): void {
     Lattice::tables([WorkbenchUsersTable::class]);
 
     $ref = componentRef(wire(Table::use(WorkbenchUsersTable::class)));
@@ -275,7 +275,7 @@ test('registered tables parse clause filters sorts and pagination through the en
     ]);
 });
 
-test('registered tables reject filters and sorts that are not allowed by columns', function () {
+test('registered tables reject filters and sorts that are not allowed by columns', function (): void {
     Lattice::tables([WorkbenchUsersTable::class]);
 
     $ref = componentRef(wire(Table::use(WorkbenchUsersTable::class)));
@@ -291,7 +291,7 @@ test('registered tables reject filters and sorts that are not allowed by columns
         ->assertJsonPath('errors.sort.0', 'Sort [password] is not allowed for table [workbench.users].');
 });
 
-test('registered table endpoints require a valid component reference and use trusted context', function () {
+test('registered table endpoints require a valid component reference and use trusted context', function (): void {
     discoverFixtures();
 
     $ref = componentRef(wire(Table::use(DiscoveredUsersTable::class)
@@ -308,7 +308,7 @@ test('registered table endpoints require a valid component reference and use tru
         ->assertJsonPath('data.0.name', 'trusted-team');
 });
 
-test('registered table responses expose only declared columns row identity and generated actions', function () {
+test('registered table responses expose only declared columns row identity and generated actions', function (): void {
     Lattice::tables([WorkbenchProjectedProductsTable::class]);
 
     $product = Product::factory()->create([
@@ -341,7 +341,7 @@ test('registered table responses expose only declared columns row identity and g
         ->and($row['actions'][0]['props']['href'])->toBe("/products/{$product->getKey()}/edit");
 });
 
-test('text columns serialize display modifiers', function () {
+test('text columns serialize display modifiers', function (): void {
     expect(wire(TextColumn::make('published_at')
         ->label('Published')
         ->date('Y-m-d')
@@ -359,7 +359,7 @@ test('text columns serialize display modifiers', function () {
         ]);
 });
 
-test('workbench users table exposes timestamp columns for each row', function () {
+test('workbench users table exposes timestamp columns for each row', function (): void {
     Lattice::tables([WorkbenchAppUsersTable::class]);
 
     $columns = wire(Table::use(WorkbenchAppUsersTable::class))['props']['columns'];

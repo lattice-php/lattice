@@ -105,7 +105,7 @@ final class DiscoveryManifest
 
         foreach (self::configuredPaths() as $path) {
             foreach (ClassWalker::classes($path) as $class) {
-                if ((new ReflectionClass($class))->isAbstract()) {
+                if (new ReflectionClass($class)->isAbstract()) {
                     continue;
                 }
 

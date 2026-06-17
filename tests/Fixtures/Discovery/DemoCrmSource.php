@@ -11,6 +11,7 @@ use Lattice\Lattice\Remote\RemoteSourceDefinition;
 #[AsRemoteSource('fixtures.crm')]
 final class DemoCrmSource extends RemoteSourceDefinition
 {
+    #[\Override]
     public function issueBrowserToken(Request $request): BrowserToken
     {
         return new BrowserToken(

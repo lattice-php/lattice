@@ -5,7 +5,7 @@ use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\Callout;
 
-test('a callout serializes its variant, title, body, dismissibility and action', function () {
+test('a callout serializes its variant, title, body, dismissibility and action', function (): void {
     $wire = wire(
         Callout::make(Variant::Warning, 'Your trial ends in 3 days.')
             ->title('Trial ending')
@@ -21,7 +21,7 @@ test('a callout serializes its variant, title, body, dismissibility and action',
         ->and($wire['action']['props']['label'])->toBe('Upgrade');
 });
 
-test('a callout defaults to dismissible with no title or action', function () {
+test('a callout defaults to dismissible with no title or action', function (): void {
     $wire = wire(Callout::make(Variant::Info, 'Heads up.'));
 
     expect($wire['title'])->toBeNull()

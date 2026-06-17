@@ -24,15 +24,15 @@ function publicColumnProps(string $class): array
 {
     return array_map(
         fn (ReflectionProperty $property): string => $property->getName(),
-        (new ReflectionClass($class))->getProperties(ReflectionProperty::IS_PUBLIC),
+        new ReflectionClass($class)->getProperties(ReflectionProperty::IS_PUBLIC),
     );
 }
 
-it('keeps the base Column free of public properties', function () {
+it('keeps the base Column free of public properties', function (): void {
     expect(publicColumnProps(Column::class))->toBe([]);
 });
 
-it('exposes only the intended wire props on each built-in column', function (string $class, array $expected) {
+it('exposes only the intended wire props on each built-in column', function (string $class, array $expected): void {
     expect(publicColumnProps($class))->toEqualCanonicalizing($expected);
 })->with([
     'text' => [TextColumn::class, ['date', 'copyable', 'link']],

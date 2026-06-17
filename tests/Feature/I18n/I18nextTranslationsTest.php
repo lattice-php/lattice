@@ -12,19 +12,19 @@ use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
 use function Pest\Laravel\withoutVite;
 
-afterEach(function () {
+afterEach(function (): void {
     File::deleteDirectory(package_path('lang/zz'));
     File::deleteDirectory(package_path('workbench/lang/zz'));
     File::delete(package_path('lang/zz.json'));
 });
 
-it('shares the i18n config to the frontend as a once prop', function () {
+it('shares the i18n config to the frontend as a once prop', function (): void {
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
     $response = get('/');
 
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
         ->where('lattice.i18n.enabled', true)
         ->where('lattice.i18n.saveMissing', true)
         ->where('lattice.i18n.locales', ['en', 'de'])
@@ -38,7 +38,7 @@ it('shares the i18n config to the frontend as a once prop', function () {
     expect($page['onceProps']['lattice.i18n']['prop'] ?? null)->toBe('lattice.i18n');
 });
 
-it('omits the i18n config when the client already has the once prop', function () {
+it('omits the i18n config when the client already has the once prop', function (): void {
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
@@ -59,7 +59,7 @@ it('omits the i18n config when the client already has the once prop', function (
         ->and($response->json('onceProps')['lattice.i18n']['prop'] ?? null)->toBe('lattice.i18n');
 });
 
-it('serves the bundled English lattice namespace from the package lang dir', function () {
+it('serves the bundled English lattice namespace from the package lang dir', function (): void {
     getJson('/locales/en/lattice.json')
         ->assertOk()
         ->assertJsonPath('editor.bold', 'Bold')
@@ -67,7 +67,7 @@ it('serves the bundled English lattice namespace from the package lang dir', fun
         ->assertJsonPath('operators.eq', 'equals');
 });
 
-it('serves the lattice namespace from the package lang dir as nested i18next JSON', function () {
+it('serves the lattice namespace from the package lang dir as nested i18next JSON', function (): void {
     getJson('/locales/de/lattice.json')
         ->assertOk()
         ->assertJsonPath('editor.bold', 'Fett')
@@ -78,7 +78,7 @@ it('serves the lattice namespace from the package lang dir as nested i18next JSO
         ->assertJsonPath('bulk.selected', '{{count}} ausgewählt');
 });
 
-it('serves workbench translations from the workbench lang dir', function () {
+it('serves workbench translations from the workbench lang dir', function (): void {
     getJson('/locales/en/workbench::workbench.json')
         ->assertOk()
         ->assertJsonPath('pages.products.title', 'Products')
@@ -90,13 +90,13 @@ it('serves workbench translations from the workbench lang dir', function () {
         ->assertJsonPath('forms.product.fields.name', 'Name');
 });
 
-it('localizes workbench page props and table column labels from the accept language header', function () {
+it('localizes workbench page props and table column labels from the accept language header', function (): void {
     withoutVite();
     $this->actingAs(workbenchTestUser(['locale' => 'de']));
 
     $response = get('/products', ['Accept-Language' => 'de'])->assertOk();
 
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
         ->component('lattice/page', false)
         ->where('lattice.title', 'Produkte'));
 
@@ -111,7 +111,7 @@ it('localizes workbench page props and table column labels from the accept langu
         ]));
 });
 
-it('keeps workbench translation keys aligned between English and German', function () {
+it('keeps workbench translation keys aligned between English and German', function (): void {
     $english = require package_path('workbench/lang/en/workbench.php');
     $german = require package_path('workbench/lang/de/workbench.php');
 
@@ -124,7 +124,7 @@ it('keeps workbench translation keys aligned between English and German', functi
         ->toBe(array_keys(Arr::dot($english)));
 });
 
-it('dumps missing lattice keys into the package lang dir, never vendor', function () {
+it('dumps missing lattice keys into the package lang dir, never vendor', function (): void {
     postJson('/locales/add/zz/lattice', ['editor.demo' => 'editor.demo'])->assertOk();
 
     $file = package_path('lang/zz/lattice.php');
@@ -136,7 +136,7 @@ it('dumps missing lattice keys into the package lang dir, never vendor', functio
     expect(require $file)->toBe(['editor' => ['demo' => 'i18next-editor.demo']]);
 });
 
-it('dumps namespace-less keys to a JSON file in the package lang dir', function () {
+it('dumps namespace-less keys to a JSON file in the package lang dir', function (): void {
     postJson('/locales/add/zz/translation', ['Save changes' => 'Save changes'])->assertOk();
 
     $file = package_path('lang/zz.json');
@@ -147,7 +147,7 @@ it('dumps namespace-less keys to a JSON file in the package lang dir', function 
     expect(json_decode(File::get($file), true))->toBe(['Save changes' => 'i18next-Save changes']);
 });
 
-it('dumps missing workbench keys into the workbench lang dir', function () {
+it('dumps missing workbench keys into the workbench lang dir', function (): void {
     postJson('/locales/add/zz/workbench::workbench', ['language.demo' => 'language.demo'])->assertOk();
 
     $file = package_path('workbench/lang/zz/workbench.php');

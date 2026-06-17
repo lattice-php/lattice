@@ -74,7 +74,7 @@ function conditionalDefinition(): FormDefinition
 it('derives validation rules from fields and fails an empty payload', function (): void {
     $definition = stubDefinition();
 
-    expect(fn () => $definition->validate(Request::create('/', 'POST', [])))
+    expect(fn (): array => $definition->validate(Request::create('/', 'POST', [])))
         ->toThrow(ValidationException::class);
 });
 
@@ -90,7 +90,7 @@ it('passes validation with a valid payload', function (): void {
 });
 
 it('rejects a non-fully-qualified email when email() is used', function (): void {
-    expect(fn () => emailDefinition()->validate(Request::create('/', 'POST', ['email' => 'a@a'])))
+    expect(fn (): array => emailDefinition()->validate(Request::create('/', 'POST', ['email' => 'a@a'])))
         ->toThrow(ValidationException::class);
 });
 
@@ -107,6 +107,6 @@ it('skips hidden field rules', function (): void {
 });
 
 it('requires the field when its condition matches', function (): void {
-    expect(fn () => conditionalDefinition()->validate(Request::create('/', 'POST', ['type' => 'business'])))
+    expect(fn (): array => conditionalDefinition()->validate(Request::create('/', 'POST', ['type' => 'business'])))
         ->toThrow(ValidationException::class);
 });

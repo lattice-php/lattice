@@ -181,7 +181,7 @@ arch('domain registries extend the base definition registry')
  * an intermediate base (FormActionDefinition, EloquentTableDefinition); a
  * transitive is_subclass_of check covers those, where ->toExtend would not.
  */
-it('derives every definition from the base definition', function (string $definition) {
+it('derives every definition from the base definition', function (string $definition): void {
     expect(is_subclass_of($definition, Definition::class))->toBeTrue();
 })->with([
     ActionDefinition::class,

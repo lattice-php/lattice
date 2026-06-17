@@ -175,7 +175,7 @@ final readonly class FieldAssertions
     {
         $name = $this->node->prop('name');
 
-        if ($this->formNode !== null && is_string($name)) {
+        if ($this->formNode instanceof ComponentNode && is_string($name)) {
             $state = $this->formNode->prop('state');
 
             if (is_array($state) && array_key_exists($name, $state)) {

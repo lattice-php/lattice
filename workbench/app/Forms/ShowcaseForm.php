@@ -9,6 +9,7 @@ use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Components\Grid;
 use Lattice\Lattice\Core\Enums\Icon;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Checkbox;
 use Lattice\Lattice\Forms\Components\Choice;
 use Lattice\Lattice\Forms\Components\DateInput;
@@ -128,12 +129,12 @@ class ShowcaseForm extends FormDefinition
                             ->orderBy('name')
                             ->limit(10)
                             ->get()
-                            ->map(fn (Product $product) => Select::option($product->name, (string) $product->id))
+                            ->map(fn (Product $product): Option => Select::option($product->name, (string) $product->id))
                             ->all())
                         ->resolveSelectedUsing(fn (array $values) => Product::query()
                             ->whereIn('id', $values)
                             ->get()
-                            ->map(fn (Product $product) => Select::option($product->name, (string) $product->id))
+                            ->map(fn (Product $product): Option => Select::option($product->name, (string) $product->id))
                             ->all())
                         ->rules(['nullable', 'array']),
                 ]),

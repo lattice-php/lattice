@@ -49,12 +49,12 @@ final readonly class FakeConversationStore
     private function seed(): array
     {
         return [
-            (new ChatMessage('seed-user', ChatRole::User, [
+            new ChatMessage('seed-user', ChatRole::User, [
                 ChatPart::text('What can you help me with?'),
-            ]))->jsonSerialize(),
-            (new ChatMessage('seed-assistant', ChatRole::Assistant, [
+            ])->jsonSerialize(),
+            new ChatMessage('seed-assistant', ChatRole::Assistant, [
                 ChatPart::text('I can answer questions about this workbench and look things up for you.'),
-            ]))->jsonSerialize(),
+            ])->jsonSerialize(),
         ];
     }
 }

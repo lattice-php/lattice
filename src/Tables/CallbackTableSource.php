@@ -35,7 +35,7 @@ final readonly class CallbackTableSource implements TableSource
      */
     public function resolveMatching(TableQuery $query): Collection
     {
-        return $this->matching !== null ? ($this->matching)($query) : new Collection;
+        return $this->matching instanceof Closure ? ($this->matching)($query) : new Collection;
     }
 
     /**
@@ -44,6 +44,6 @@ final readonly class CallbackTableSource implements TableSource
      */
     public function resolveSelection(array $keys): Collection
     {
-        return $this->selection !== null ? ($this->selection)($keys) : new Collection;
+        return $this->selection instanceof Closure ? ($this->selection)($keys) : new Collection;
     }
 }

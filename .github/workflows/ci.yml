@@ -114,6 +114,9 @@ jobs:
       - name: PHPStan
         run: composer analyse
 
+      - name: Rector (dry-run)
+        run: composer rector:test
+
       - name: Pest (parallel)
         if: ${{ matrix.php-version != '8.4' }}
         run: composer test:parallel

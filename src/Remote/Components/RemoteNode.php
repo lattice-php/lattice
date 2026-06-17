@@ -24,6 +24,7 @@ final class RemoteNode extends Component
         parent::__construct($key);
     }
 
+    #[\Override]
     protected function type(): string
     {
         return $this->nodeType;
@@ -34,6 +35,7 @@ final class RemoteNode extends Component
      * @return array<string, mixed>
      */
     #[SerializationHook(priority: 200)]
+    #[\Override]
     protected function serialiseProps(array $data): array
     {
         return [

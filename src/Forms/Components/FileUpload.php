@@ -161,7 +161,7 @@ class FileUpload extends Field
         foreach ($keys as $key) {
             $this->ensureFinalizableKey($disk, $key);
 
-            $mimeType = self::fileMimeType($disk, $key);
+            $mimeType = $this->fileMimeType($disk, $key);
             $size = self::fileSize($disk, $key);
             $extension = pathinfo($key, PATHINFO_EXTENSION);
             $path = $destinationUsing($key, [
@@ -195,7 +195,7 @@ class FileUpload extends Field
     {
         $userRules = parent::resolveRules($data, $request);
 
-        if ($this->multiple === true) {
+        if ($this->multiple) {
             $rules = ['array'];
 
             if ($this->maxFiles !== null) {
@@ -211,7 +211,7 @@ class FileUpload extends Field
     #[\Override]
     public function nestedRules(FormData $data, Request $request): array
     {
-        if ($this->multiple !== true) {
+        if (! $this->multiple) {
             return [];
         }
 
@@ -313,7 +313,7 @@ class FileUpload extends Field
         }
     }
 
-    private static function fileMimeType(FilesystemAdapter $disk, string $path): ?string
+    private function fileMimeType(FilesystemAdapter $disk, string $path): ?string
     {
         try {
             $mimeType = $disk->mimeType($path);

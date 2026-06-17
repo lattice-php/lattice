@@ -16,7 +16,7 @@ use function Pest\Laravel\getJson;
 use function Pest\Laravel\patch;
 use function Pest\Laravel\patchJson;
 
-test('registered forms serialize their configured endpoint and isolated error bag', function () {
+test('registered forms serialize their configured endpoint and isolated error bag', function (): void {
     config(['lattice.forms.endpoint' => 'custom/forms/{form}']);
 
     Lattice::forms([WorkbenchProfileForm::class]);
@@ -56,7 +56,7 @@ test('registered forms serialize their configured endpoint and isolated error ba
         ]);
 });
 
-test('registered forms can be submitted through the package endpoint', function () {
+test('registered forms can be submitted through the package endpoint', function (): void {
     Lattice::forms([WorkbenchProfileForm::class]);
 
     $ref = componentRef(wire(Form::use(WorkbenchProfileForm::class)
@@ -74,7 +74,7 @@ test('registered forms can be submitted through the package endpoint', function 
     expect(session('handled-form-team'))->toBe('lattice-core');
 });
 
-test('registered form endpoints require a valid component reference', function () {
+test('registered form endpoints require a valid component reference', function (): void {
     Lattice::forms([WorkbenchProfileForm::class]);
 
     patch('/lattice/forms/settings.profile', ['name' => 'Taylor'])
@@ -86,7 +86,7 @@ test('registered form endpoints require a valid component reference', function (
         ->assertForbidden();
 });
 
-test('registered form submissions validate before handle is called', function () {
+test('registered form submissions validate before handle is called', function (): void {
     Lattice::forms([WorkbenchRequiredProfileForm::class]);
 
     $ref = componentRef(wire(Form::use(WorkbenchRequiredProfileForm::class)));
@@ -98,7 +98,7 @@ test('registered form submissions validate before handle is called', function ()
     expect(session('handled-required-profile'))->toBeNull();
 });
 
-test('registered forms receive the current request while serializing definitions', function () {
+test('registered forms receive the current request while serializing definitions', function (): void {
     Lattice::forms([WorkbenchRequestAwareForm::class]);
 
     Route::get('request-aware-form', fn () => response()->json(wire(Form::use(WorkbenchRequestAwareForm::class))))

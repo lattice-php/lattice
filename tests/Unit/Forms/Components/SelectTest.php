@@ -27,7 +27,7 @@ it('serializes static options without search flags', function (): void {
 it('serializes the multiple and searchable flags but never the resolver', function (): void {
     $field = Select::make('tags', 'Tags')
         ->multiple()
-        ->searchable(fn (string $search) => []);
+        ->searchable(fn (string $search): array => []);
 
     $props = wire($field)['props'];
 
@@ -39,7 +39,7 @@ it('serializes the multiple and searchable flags but never the resolver', functi
 
 it('runs the search resolver and normalizes options to strings', function (): void {
     $field = Select::make('author_id', 'Author')
-        ->searchable(fn (string $search) => [
+        ->searchable(fn (string $search): array => [
             ['label' => 'Jane Doe', 'value' => 5],
             ['label' => 'Janet Roe', 'value' => 9],
         ]);
@@ -54,7 +54,7 @@ it('runs the search resolver and normalizes options to strings', function (): vo
 
 it('passes the query to the resolver', function (): void {
     $field = Select::make('city', 'City')
-        ->searchable(fn (string $search) => [
+        ->searchable(fn (string $search): array => [
             ['label' => strtoupper($search), 'value' => $search],
         ]);
 

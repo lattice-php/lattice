@@ -4,7 +4,7 @@ declare(strict_types=1);
 use Lattice\Lattice\Tables\Columns\BooleanColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 
-it('reflects a column\'s public properties into the full props shape', function () {
+it('reflects a column\'s public properties into the full props shape', function (): void {
     expect(wire(TextColumn::make('name'))['props'])->toBe([
         'date' => null,
         'copyable' => false,
@@ -22,11 +22,11 @@ it('reflects a column\'s public properties into the full props shape', function 
     ]);
 });
 
-it('omits props for columns that expose no public properties', function () {
+it('omits props for columns that expose no public properties', function (): void {
     expect(wire(BooleanColumn::make('active'))['props'])->toBeNull();
 });
 
-it('keeps protected filter and sort state off the wire props', function () {
+it('keeps protected filter and sort state off the wire props', function (): void {
     $props = wire(TextColumn::make('name')->sortable()->filterable())['props'];
 
     expect($props)->toBe([

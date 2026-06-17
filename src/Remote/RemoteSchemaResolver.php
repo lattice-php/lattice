@@ -88,7 +88,7 @@ final readonly class RemoteSchemaResolver
         try {
             return json_decode($contents, true, flags: JSON_THROW_ON_ERROR);
         } catch (JsonException $exception) {
-            throw new InvalidRemoteSchema("Remote schema source [{$source}] did not return valid JSON.", previous: $exception);
+            throw new InvalidRemoteSchema("Remote schema source [{$source}] did not return valid JSON.", $exception->getCode(), previous: $exception);
         }
     }
 

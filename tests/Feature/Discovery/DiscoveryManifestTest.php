@@ -15,7 +15,7 @@ use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
 
-test('discovery kinds map every component group to its attribute', function () {
+test('discovery kinds map every component group to its attribute', function (): void {
     expect(DiscoveryKinds::COMPONENTS)->toMatchArray([
         'forms' => AsForm::class,
         'tables' => AsTable::class,
@@ -26,12 +26,12 @@ test('discovery kinds map every component group to its attribute', function () {
     ]);
 });
 
-test('discovery kinds extracts a component key from its attribute', function () {
+test('discovery kinds extracts a component key from its attribute', function (): void {
     expect(DiscoveryKinds::keyOf(DiscoveredProfileForm::class, AsForm::class))
         ->toBe('fixtures.profile');
 });
 
-test('the manifest builds resolved entries for every kind', function () {
+test('the manifest builds resolved entries for every kind', function (): void {
     discoverFixtures();
 
     $manifest = app(DiscoveryManifest::class);
@@ -42,7 +42,7 @@ test('the manifest builds resolved entries for every kind', function () {
         ->toMatchArray(['route' => '/discovered-demo', 'name' => 'discovered.demo', 'middleware' => ['web']]);
 });
 
-test('the manifest indexes page descriptors by class', function () {
+test('the manifest indexes page descriptors by class', function (): void {
     discoverFixtures();
 
     $manifest = app(DiscoveryManifest::class);
@@ -55,7 +55,7 @@ test('the manifest indexes page descriptors by class', function () {
         ->toMatchArray(['route' => '/discovered-demo', 'name' => 'discovered.demo', 'middleware' => ['web']]);
 });
 
-test('the manifest round-trips through the cached file', function () {
+test('the manifest round-trips through the cached file', function (): void {
     discoverFixtures();
 
     $manifest = app(DiscoveryManifest::class);
@@ -76,7 +76,7 @@ test('the manifest round-trips through the cached file', function () {
 
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 
-test('registries resolve discovered definitions from the manifest', function () {
+test('registries resolve discovered definitions from the manifest', function (): void {
     discoverFixtures();
 
     // No explicit Lattice::forms([...]) — resolution comes from the manifest.
@@ -85,7 +85,7 @@ test('registries resolve discovered definitions from the manifest', function () 
     expect($form)->toMatchArray(['type' => 'form', 'id' => 'fixtures.profile']);
 });
 
-test('discovered pages are available through the page registry', function () {
+test('discovered pages are available through the page registry', function (): void {
     discoverFixtures();
 
     $classes = collect(Lattice::pageRegistry()->all())->pluck('class');

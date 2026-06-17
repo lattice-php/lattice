@@ -32,7 +32,7 @@ final class MarkedTypeDiscovery
         $valueObjects = [];
 
         foreach ($classes as $class) {
-            if ((new ReflectionClass($class))->getAttributes(TypeScript::class) === []) {
+            if (new ReflectionClass($class)->getAttributes(TypeScript::class) === []) {
                 continue;
             }
 

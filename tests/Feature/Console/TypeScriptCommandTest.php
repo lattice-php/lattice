@@ -7,12 +7,12 @@ use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use function Pest\Laravel\artisan;
 
 // Restore the default profile; the workbench binds BaseProfile.
-beforeEach(function () {
+beforeEach(function (): void {
     app()->bind(TypeScriptProfile::class, AugmentProfile::class);
 });
 
-it('writes an augmentation file for app components, not built-ins', function () {
-    withScaffoldWorkspace(function () {
+it('writes an augmentation file for app components, not built-ins', function (): void {
+    withScaffoldWorkspace(function (): void {
         $output = base_path('resources/js/lattice/generated.d.ts');
 
         config()->set('lattice.typescript.output', $output);
@@ -39,8 +39,8 @@ it('writes an augmentation file for app components, not built-ins', function () 
     });
 });
 
-it('produces a valid augmentation file even when discover config is empty', function () {
-    withScaffoldWorkspace(function () {
+it('produces a valid augmentation file even when discover config is empty', function (): void {
+    withScaffoldWorkspace(function (): void {
         $output = base_path('resources/js/lattice/generated-empty.d.ts');
 
         config()->set('lattice.typescript.output', $output);

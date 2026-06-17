@@ -11,7 +11,7 @@ use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Core\Values\ToastMessage;
 use Lattice\Lattice\Effects\Effect;
 
-test('a toast serializes its lifetime, dismissibility and link', function () {
+test('a toast serializes its lifetime, dismissibility and link', function (): void {
     $wire = wire(Effect::toast(
         ToastMessage::make(Variant::Success, 'Saved.')
             ->duration(8000)
@@ -29,7 +29,7 @@ test('a toast serializes its lifetime, dismissibility and link', function () {
         ->and($wire['toast']['action']['props']['method'])->toBe('patch');
 });
 
-test('a toast can carry an action component', function () {
+test('a toast can carry an action component', function (): void {
     $wire = wire(Effect::toast(
         ToastMessage::make(Variant::Info, 'Done.')
             ->persistent()
@@ -42,7 +42,7 @@ test('a toast can carry an action component', function () {
         ->and($wire['toast']['action']['props']['endpoint'])->toBe('/x');
 });
 
-test('action results expose the full effect vocabulary', function () {
+test('action results expose the full effect vocabulary', function (): void {
     $result = ActionResult::success()
         ->reloadPage()
         ->redirect('/dashboard')
@@ -61,7 +61,7 @@ test('action results expose the full effect vocabulary', function () {
         ->and(wire(Effect::reloadPage()))->toBe(['type' => 'reloadPage']);
 });
 
-test('a callout effect serializes its callout payload', function () {
+test('a callout effect serializes its callout payload', function (): void {
     $wire = wire(Effect::callout(
         Callout::make(Variant::Warning, 'Your trial ends in 3 days.')
             ->title('Trial ending')
@@ -75,7 +75,7 @@ test('a callout effect serializes its callout payload', function () {
         ->and($wire['callout']['action']['props']['label'])->toBe('Upgrade');
 });
 
-test('action results expose the callout effect', function () {
+test('action results expose the callout effect', function (): void {
     $result = ActionResult::success()->callout(
         Callout::make(Variant::Info, 'Saved as draft.'),
     );
@@ -84,7 +84,7 @@ test('action results expose the callout effect', function () {
         ->and(wire($result)['effects'][0]['callout']['variant'])->toBe('info');
 });
 
-test('action groups serialize grouped child actions', function () {
+test('action groups serialize grouped child actions', function (): void {
     $group = wire(ActionGroup::make('workbench.user-actions')
         ->label('Manage user')
         ->actions([

@@ -9,7 +9,7 @@ use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Effects\EffectFlasher;
 use Lattice\Lattice\Facades\Effects;
 
-test('effects accumulate across multiple flash calls', function () {
+test('effects accumulate across multiple flash calls', function (): void {
     Effects::flash(Effect::toast(ToastMessage::make(Variant::Success, 'Saved.')));
     Effects::flash(Effect::callout(Callout::make(Variant::Warning, 'Heads up.')));
 
@@ -20,13 +20,13 @@ test('effects accumulate across multiple flash calls', function () {
         ->and($effects[1]->jsonSerialize()['type'])->toBe('callout');
 });
 
-test('flashing no effects is a no-op', function () {
+test('flashing no effects is a no-op', function (): void {
     Effects::flash();
 
     expect(app(EffectFlasher::class)->all())->toBeEmpty();
 });
 
-test('the scoped buffer resets between request cycles', function () {
+test('the scoped buffer resets between request cycles', function (): void {
     Effects::flash(Effect::toast(ToastMessage::make(Variant::Info, 'One.')));
     expect(app(EffectFlasher::class)->all())->toHaveCount(1);
 
@@ -35,7 +35,7 @@ test('the scoped buffer resets between request cycles', function () {
     expect(app(EffectFlasher::class)->all())->toBeEmpty();
 });
 
-test('flash sends the accumulated effects to the latticeEffects bag', function () {
+test('flash sends the accumulated effects to the latticeEffects bag', function (): void {
     $flashed = [];
 
     Inertia::shouldReceive('flash')

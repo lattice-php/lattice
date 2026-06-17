@@ -72,6 +72,7 @@
         "check": [
             "@test:lint",
             "@analyse",
+            "@rector:test",
             "@test:parallel"
         ],
         "lint": "./vendor/bin/pint",

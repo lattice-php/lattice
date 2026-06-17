@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Block;
 use Lattice\Lattice\Forms\Components\Builder;
 use Lattice\Lattice\Forms\Components\Form;
@@ -44,9 +45,9 @@ it('resolves the label for a single filled id', function (): void {
         ->fill(['author_id' => '5'])
         ->schema([
             Select::make('author_id', 'Author')
-                ->searchable(fn (string $search) => [])
+                ->searchable(fn (string $search): array => [])
                 ->resolveSelectedUsing(fn (array $values) => collect($values)
-                    ->map(fn (string $id) => Select::option("User {$id}", $id))
+                    ->map(fn (string $id): Option => Select::option("User {$id}", $id))
                     ->all()),
         ]);
 
@@ -61,9 +62,9 @@ it('resolves labels for multiple filled ids', function (): void {
         ->schema([
             Select::make('tags', 'Tags')
                 ->multiple()
-                ->searchable(fn (string $search) => [])
+                ->searchable(fn (string $search): array => [])
                 ->resolveSelectedUsing(fn (array $values) => collect($values)
-                    ->map(fn (string $id) => Select::option("Tag {$id}", $id))
+                    ->map(fn (string $id): Option => Select::option("Tag {$id}", $id))
                     ->all()),
         ]);
 
@@ -80,7 +81,7 @@ it('passes a single value to the resolver as a one-element array', function (): 
         ->fill(['author_id' => '7'])
         ->schema([
             Select::make('author_id', 'Author')
-                ->resolveSelectedUsing(function (array $values) use (&$received) {
+                ->resolveSelectedUsing(function (array $values) use (&$received): array {
                     $received = $values;
 
                     return [];
@@ -110,7 +111,7 @@ it('does not resolve when there is no filled value', function (): void {
     $form = Form::make('f')
         ->schema([
             Select::make('author_id', 'Author')
-                ->resolveSelectedUsing(function (array $values) use (&$resolved) {
+                ->resolveSelectedUsing(function (array $values) use (&$resolved): array {
                     $resolved = true;
 
                     return [];
@@ -137,7 +138,7 @@ it('resolves labels for filled ids inside repeater rows', function (): void {
                         $received = $values;
 
                         return collect($values)
-                            ->map(fn (string $id) => Select::option("Product {$id}", $id))
+                            ->map(fn (string $id): Option => Select::option("Product {$id}", $id))
                             ->all();
                     }),
             ]),
@@ -165,7 +166,7 @@ it('resolves labels for filled ids inside builder rows', function (): void {
                             $received = $values;
 
                             return collect($values)
-                                ->map(fn (string $id) => Select::option("Product {$id}", $id))
+                                ->map(fn (string $id): Option => Select::option("Product {$id}", $id))
                                 ->all();
                         }),
                 ]),
@@ -196,7 +197,7 @@ it('resolves labels for filled ids inside nested repeater rows', function (): vo
                             $received = $values;
 
                             return collect($values)
-                                ->map(fn (string $id) => Select::option("Product {$id}", $id))
+                                ->map(fn (string $id): Option => Select::option("Product {$id}", $id))
                                 ->all();
                         }),
                 ]),

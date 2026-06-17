@@ -15,6 +15,9 @@ final readonly class FormAssertions
         private ComponentAssertions $root,
     ) {}
 
+    /**
+     * @param  (Closure(FieldAssertions): mixed)|null  $tap
+     */
     public function field(string $name, ?Closure $tap = null): FieldAssertions|self
     {
         $node = $this->node->field($name);
@@ -28,7 +31,7 @@ final readonly class FormAssertions
 
         $assertions = new FieldAssertions($node, $this, $this->node);
 
-        if ($tap !== null) {
+        if ($tap instanceof Closure) {
             $tap($assertions);
 
             return $this;

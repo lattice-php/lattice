@@ -14,7 +14,7 @@ use Symfony\Component\Process\Process;
  * via symfony/process, wait for the ready marker on stdout, and tear down on
  * process shutdown.
  */
-final class ReverbServer
+final readonly class ReverbServer
 {
     private const string HOST = '127.0.0.1';
 
@@ -27,8 +27,8 @@ final class ReverbServer
     private const string READY_MARKER = 'Starting server on';
 
     private function __construct(
-        private readonly int $port,
-        private readonly Process $process,
+        private int $port,
+        private Process $process,
     ) {}
 
     public static function boot(): self

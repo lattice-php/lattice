@@ -32,19 +32,19 @@ use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\LatticeRegistry;
 use Lattice\Lattice\Tables\Components\Table;
 
-test('lattice component factories stay open for extension', function () {
+test('lattice component factories stay open for extension', function (): void {
     $badgeClass = (new class extends Badge {})::class;
     $badge = $badgeClass::make('Extended badge', 'extended-badge');
 
     expect($badge::class)->toBe($badgeClass)
-        ->and((new ReflectionClass(Badge::class))->isFinal())->toBeFalse();
+        ->and(new ReflectionClass(Badge::class)->isFinal())->toBeFalse();
 });
 
-test('lattice facade resolves the registry', function () {
+test('lattice facade resolves the registry', function (): void {
     expect(Lattice::getFacadeRoot())->toBe(app(LatticeRegistry::class));
 });
 
-test('interactive components keep their serialized ids', function () {
+test('interactive components keep their serialized ids', function (): void {
     expect(wire(Form::make('demo-form')))
         ->toMatchArray([
             'type' => 'form',
@@ -57,7 +57,7 @@ test('interactive components keep their serialized ids', function () {
         ]);
 });
 
-test('interactive components seal request context for endpoints', function () {
+test('interactive components seal request context for endpoints', function (): void {
     $form = wire(Form::make('demo-form')
         ->action('/lattice/forms/demo-form')
         ->context(['team' => 'lattice-core']));
@@ -86,7 +86,7 @@ function exposesSchemaApi(object $component): bool
     return method_exists($component, 'schema');
 }
 
-test('only container components expose a schema', function () {
+test('only container components expose a schema', function (): void {
     $containerComponents = [
         Card::make('Card', 'Description'),
         FloatingPanel::make('locale-switcher-panel'),
@@ -120,7 +120,7 @@ test('only container components expose a schema', function () {
     }
 });
 
-test('floating panels serialize their placement and children', function () {
+test('floating panels serialize their placement and children', function (): void {
     $payload = wire(FloatingPanel::make('locale-switcher-panel')
         ->label('Language')
         ->placement(FloatingPlacement::TopEnd)
@@ -144,7 +144,7 @@ test('floating panels serialize their placement and children', function () {
         ->and($payload['schema'][0]['key'])->toBe('locale-en');
 });
 
-test('chat boxes serialize their fluent endpoint and presentation configuration', function () {
+test('chat boxes serialize their fluent endpoint and presentation configuration', function (): void {
     expect(wire(ChatBox::make('default-assistant'))['props']['fill'])->toBeFalse();
 
     expect(wire(ChatBox::make('assistant')
@@ -168,7 +168,7 @@ test('chat boxes serialize their fluent endpoint and presentation configuration'
         ]);
 });
 
-test('components serialize through prioritized hook attributes without child-specific base hooks', function () {
+test('components serialize through prioritized hook attributes without child-specific base hooks', function (): void {
     $component = new class extends Component
     {
         protected function type(): string
@@ -199,11 +199,11 @@ test('components serialize through prioritized hook attributes without child-spe
         ])
         ->and(method_exists(Component::class, 'serializedChildren'))
         ->toBeFalse()
-        ->and((new ReflectionClass(Component::class))->hasProperty('serialisationHooks'))
+        ->and(new ReflectionClass(Component::class)->hasProperty('serialisationHooks'))
         ->toBeFalse();
 });
 
-test('private serialization hooks are ignored', function () {
+test('private serialization hooks are ignored', function (): void {
     $component = new class extends Component
     {
         protected function type(): string
@@ -242,7 +242,7 @@ test('private serialization hooks are ignored', function () {
     ]);
 });
 
-test('components can opt out of rendering with when', function () {
+test('components can opt out of rendering with when', function (): void {
     $page = new class extends Page
     {
         public function render(PageSchema $schema): PageSchema
@@ -267,7 +267,7 @@ test('components can opt out of rendering with when', function () {
         ->and($pageData['schema'][1]['schema'][0]['props']['text'])->toBe('Visible child');
 });
 
-test('actions can serialize confirmation modal configuration', function () {
+test('actions can serialize confirmation modal configuration', function (): void {
     expect(wire(ActionComponent::make('delete-account')
         ->label('Delete account')
         ->method(HttpMethod::Delete)
@@ -301,7 +301,7 @@ test('actions can serialize confirmation modal configuration', function () {
         ]);
 });
 
-test('modals serialize composable children for action driven dialogs', function () {
+test('modals serialize composable children for action driven dialogs', function (): void {
     expect(wire(Modal::make('settings.two-factor-setup')
         ->title('Set up two-factor authentication')
         ->description('Scan the QR code with your authenticator app.')
@@ -332,7 +332,7 @@ test('modals serialize composable children for action driven dialogs', function 
         ]);
 });
 
-test('links and horizontal stacks serialize as separate composable primitives', function () {
+test('links and horizontal stacks serialize as separate composable primitives', function (): void {
     expect(wire(Stack::make('prompt')->direction('row')->gap(Gap::ExtraSmall)->schema([
         Text::make('Need access?'),
         Link::make('Register')->href('/register'),
@@ -372,7 +372,7 @@ test('links and horizontal stacks serialize as separate composable primitives', 
         ]);
 });
 
-test('tabs ignore hidden tab children when resolving their active value', function () {
+test('tabs ignore hidden tab children when resolving their active value', function (): void {
     $tabs = wire(Tabs::make('settings-tabs')
         ->defaultValue('security')
         ->schema([

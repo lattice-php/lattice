@@ -10,7 +10,7 @@ use Lattice\Lattice\Tables\Filters\TernaryFilter;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Models\Product;
 
-test('ternary filter serializes its wire shape', function () {
+test('ternary filter serializes its wire shape', function (): void {
     expect(wire(TernaryFilter::make('featured')
         ->trueLabel('Featured')
         ->falseLabel('Not featured')))
@@ -26,7 +26,7 @@ test('ternary filter serializes its wire shape', function () {
         ]);
 });
 
-test('a ternary filter applies a boolean constraint', function () {
+test('a ternary filter applies a boolean constraint', function (): void {
     $builder = Product::query();
     TernaryFilter::make('featured')->apply($builder, 'true');
     expect($builder->toSql())->toContain('"featured" = ?')
@@ -37,7 +37,7 @@ test('a ternary filter applies a boolean constraint', function () {
     expect($other->getBindings())->toBe([false]);
 });
 
-test('a ternary filter runs custom queries when provided', function () {
+test('a ternary filter runs custom queries when provided', function (): void {
     $builder = Product::query();
 
     TernaryFilter::make('verified')
@@ -50,14 +50,14 @@ test('a ternary filter runs custom queries when provided', function () {
     expect($builder->toSql())->toContain('"verified_at" is not null');
 });
 
-test('a ternary filter rejects non-boolean values', function () {
+test('a ternary filter rejects non-boolean values', function (): void {
     $filter = TernaryFilter::make('featured');
     expect($filter->accepts('true'))->toBeTrue()
         ->and($filter->accepts('false'))->toBeTrue()
         ->and($filter->accepts('garbage'))->toBeFalse();
 });
 
-test('date range filter serializes its wire shape', function () {
+test('date range filter serializes its wire shape', function (): void {
     expect(wire(DateRangeFilter::make('created_at')->label('Created')))
         ->toBe([
             'key' => 'created_at',
@@ -67,7 +67,7 @@ test('date range filter serializes its wire shape', function () {
         ]);
 });
 
-test('a date range filter applies from and until bounds', function () {
+test('a date range filter applies from and until bounds', function (): void {
     $builder = Product::query();
 
     DateRangeFilter::make('created_at')->apply($builder, ['from' => '2026-01-01', 'until' => '2026-06-30']);
@@ -77,7 +77,7 @@ test('a date range filter applies from and until bounds', function () {
         ->and($builder->getBindings())->toBe(['2026-01-01', '2026-06-30']);
 });
 
-test('a date range filter applies only the provided bound', function () {
+test('a date range filter applies only the provided bound', function (): void {
     $builder = Product::query();
 
     DateRangeFilter::make('created_at')->apply($builder, ['from' => '2026-01-01']);
@@ -86,7 +86,7 @@ test('a date range filter applies only the provided bound', function () {
         ->and($builder->toSql())->not->toContain('<=');
 });
 
-test('a generic filter serializes as a toggle', function () {
+test('a generic filter serializes as a toggle', function (): void {
     expect(wire(Filter::make('high_value')->label('High value')))
         ->toBe([
             'key' => 'high_value',
@@ -96,7 +96,7 @@ test('a generic filter serializes as a toggle', function () {
         ]);
 });
 
-test('a generic filter runs its query closure when toggled on', function () {
+test('a generic filter runs its query closure when toggled on', function (): void {
     $builder = Product::query();
 
     Filter::make('high_value')
@@ -107,7 +107,7 @@ test('a generic filter runs its query closure when toggled on', function () {
         ->and($builder->getBindings())->toBe([1000]);
 });
 
-test('a generic filter is a no-op when toggled off', function () {
+test('a generic filter is a no-op when toggled off', function (): void {
     $builder = Product::query();
 
     Filter::make('high_value')
@@ -117,7 +117,7 @@ test('a generic filter is a no-op when toggled off', function () {
     expect($builder->toSql())->not->toContain('where');
 });
 
-test('a generic filter without a query applies a boolean constraint on its column', function () {
+test('a generic filter without a query applies a boolean constraint on its column', function (): void {
     $builder = Product::query();
 
     Filter::make('featured')->apply($builder, '1');
@@ -126,7 +126,7 @@ test('a generic filter without a query applies a boolean constraint on its colum
         ->and($builder->getBindings())->toBe([true]);
 });
 
-test('a ternary filter runs the false query branch', function () {
+test('a ternary filter runs the false query branch', function (): void {
     $builder = Product::query();
 
     TernaryFilter::make('verified')
@@ -139,7 +139,7 @@ test('a ternary filter runs the false query branch', function () {
     expect($builder->toSql())->toContain('"verified_at" is null');
 });
 
-test('a ternary filter ignores an unparseable value', function () {
+test('a ternary filter ignores an unparseable value', function (): void {
     $builder = Product::query();
 
     TernaryFilter::make('featured')->apply($builder, 'garbage');
@@ -147,7 +147,7 @@ test('a ternary filter ignores an unparseable value', function () {
     expect($builder->toSql())->not->toContain('where');
 });
 
-test('a date range filter ignores a non-array value', function () {
+test('a date range filter ignores a non-array value', function (): void {
     $filter = DateRangeFilter::make('created_at');
     $builder = Product::query();
 
@@ -157,7 +157,7 @@ test('a date range filter ignores a non-array value', function () {
         ->and($builder->toSql())->not->toContain('where');
 });
 
-test('a filter constrains the column named by attribute()', function () {
+test('a filter constrains the column named by attribute()', function (): void {
     $builder = Product::query();
 
     SelectFilter::make('state')->attribute('status')->apply($builder, 'active');
@@ -166,7 +166,7 @@ test('a filter constrains the column named by attribute()', function () {
         ->and($builder->getBindings())->toBe(['active']);
 });
 
-test('table query drops a table-filter value the filter rejects', function () {
+test('table query drops a table-filter value the filter rejects', function (): void {
     $request = Request::create('/', 'GET', ['tf' => ['featured' => 'garbage']]);
 
     $query = TableQuery::fromRequest($request, [], 'demo', 25, [TernaryFilter::make('featured')]);

@@ -7,13 +7,13 @@ use function Pest\Laravel\get;
 use function Pest\Laravel\withoutVite;
 use function Pest\Laravel\withSession;
 
-test('workbench pages render the floating chat layout by default', function () {
+test('workbench pages render the floating chat layout by default', function (): void {
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
     $response = get('/')->assertOk();
 
-    $response->assertInertia(fn (AssertableInertia $page) => $page->where('lattice.layout.key', 'app'));
+    $response->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page->where('lattice.layout.key', 'app'));
 
     $this->assertLatticeLayout($response)
         ->component('floating-panel', 'assistant-chat', fn ($panel) => $panel
@@ -21,7 +21,7 @@ test('workbench pages render the floating chat layout by default', function () {
             ->assertRendered('chat.box'));
 });
 
-test('workbench pages dock the chat in a side rail when the chat-inline flag is set', function () {
+test('workbench pages dock the chat in a side rail when the chat-inline flag is set', function (): void {
     withoutVite();
     config(['session.driver' => 'array']);
     $this->actingAs(workbenchTestUser());
@@ -30,7 +30,7 @@ test('workbench pages dock the chat in a side rail when the chat-inline flag is 
 
     $response = get('/')->assertOk();
 
-    $response->assertInertia(fn (AssertableInertia $page) => $page->where('lattice.layout.key', 'app-chat'));
+    $response->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page->where('lattice.layout.key', 'app-chat'));
 
     $this->assertLatticeLayout($response)
         ->assertRendered('stack:chat-rail')

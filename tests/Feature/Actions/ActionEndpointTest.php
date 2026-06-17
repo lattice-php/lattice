@@ -11,7 +11,7 @@ use Workbench\App\Actions\SetLocaleAction;
 
 use function Pest\Laravel\postJson;
 
-test('registered actions serialize their configured endpoint method label and effects', function () {
+test('registered actions serialize their configured endpoint method label and effects', function (): void {
     config(['lattice.actions.endpoint' => 'custom/actions/{action}']);
 
     Lattice::actions([WorkbenchPingAction::class]);
@@ -53,7 +53,7 @@ test('registered actions serialize their configured endpoint method label and ef
         ]);
 });
 
-test('registered actions can be handled through the package endpoint', function () {
+test('registered actions can be handled through the package endpoint', function (): void {
     Lattice::actions([WorkbenchPingAction::class]);
 
     $ref = componentRef(wire(ActionComponent::use(WorkbenchPingAction::class)
@@ -76,7 +76,7 @@ test('registered actions can be handled through the package endpoint', function 
         ->assertJsonPath('effects.1.component', 'workbench.users');
 });
 
-test('registered actions can return a locale change effect', function () {
+test('registered actions can return a locale change effect', function (): void {
     $ref = componentRef(wire(ActionComponent::use(SetLocaleAction::class)
         ->context(['locale' => 'de'])));
 
@@ -87,7 +87,7 @@ test('registered actions can return a locale change effect', function () {
         ->assertJsonPath('effects.0.locale', 'de');
 });
 
-test('toast effects serialize correctly for action results', function () {
+test('toast effects serialize correctly for action results', function (): void {
     expect(wire(Effect::toast(Variant::Warning, 'Review the settings.')))
         ->toBe([
             'type' => 'toast',
@@ -134,7 +134,7 @@ test('toast effects serialize correctly for action results', function () {
         ]);
 });
 
-test('registered action endpoints require a valid component reference', function () {
+test('registered action endpoints require a valid component reference', function (): void {
     Lattice::actions([WorkbenchPingAction::class]);
 
     postJson('/lattice/actions/workbench.ping', ['name' => 'Taylor'])

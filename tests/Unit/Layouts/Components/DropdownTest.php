@@ -8,7 +8,7 @@ use Lattice\Lattice\Core\Enums\Placement;
 use Lattice\Lattice\Layouts\Components\Dropdown;
 use Lattice\Lattice\Layouts\Components\MenuItem;
 
-it('builds a dropdown with trigger components, placement and menu items', function () {
+it('builds a dropdown with trigger components, placement and menu items', function (): void {
     $dropdown = Dropdown::make('account-menu')
         ->placement(Placement::Top)
         ->trigger([

@@ -11,7 +11,7 @@ it('serializes dependsOn keys and the any-change marker', function (): void {
         ->dependsOn('country', fn ($component, FormData $d) => $component))['props'];
 
     $valueProps = wire(TextInput::make('total', 'Total')
-        ->value(fn (FormData $d) => $d->float('qty')))['props'];
+        ->value(fn (FormData $d): float => $d->float('qty')))['props'];
 
     expect($optionsProps['dependsOnKeys'])->toBe(['country'])
         ->and($valueProps['dependsOnAny'])->toBeTrue();
@@ -19,7 +19,7 @@ it('serializes dependsOn keys and the any-change marker', function (): void {
 
 it('resolves a value closure during resolution', function (): void {
     $field = TextInput::make('total', 'Total')
-        ->value(fn (FormData $d) => $d->float('qty') * $d->float('price'));
+        ->value(fn (FormData $d): float => $d->float('qty') * $d->float('price'));
 
     $field->applyResolution(FormData::make(['qty' => '3', 'price' => '4']), Request::create('/'));
 
@@ -54,7 +54,7 @@ it('runs dependsOn closures during resolution', function (): void {
 
 it('stores an editable computed default without making the field server-authoritative', function (): void {
     $field = TextInput::make('price')->value(
-        fn (FormData $row, FormData $form) => 42.0,
+        fn (FormData $row, FormData $form): float => 42.0,
         editable: true,
         resetOn: ['product'],
         refreshOn: ['@customer'],
@@ -71,7 +71,7 @@ it('stores an editable computed default without making the field server-authorit
 });
 
 it('keeps read-only value(fn) behavior unchanged', function (): void {
-    $field = TextInput::make('total')->value(fn (FormData $data) => 5.0);
+    $field = TextInput::make('total')->value(fn (FormData $data): float => 5.0);
 
     expect($field->isComputed())->toBeTrue()
         ->and($field->hasPrefill())->toBeFalse();

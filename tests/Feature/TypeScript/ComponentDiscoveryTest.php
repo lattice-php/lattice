@@ -6,7 +6,7 @@ use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleColumn;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleUnattributed;
 
-it('discovers attributed components under a path with type, flags and category', function () {
+it('discovers attributed components under a path with type, flags and category', function (): void {
     $discovered = (new ComponentDiscovery)->discover(__DIR__.'/../../Fixtures/TypeScript');
 
     $byType = collect($discovered)->keyBy->type;
@@ -24,7 +24,7 @@ it('discovers attributed components under a path with type, flags and category',
         ->and($field->category)->toBe('field');
 });
 
-it('excludes classes without the AsComponent attribute from discovery', function () {
+it('excludes classes without the AsComponent attribute from discovery', function (): void {
     $discovered = (new ComponentDiscovery)->discover(__DIR__.'/../../Fixtures/TypeScript');
 
     $types = collect($discovered)->pluck('type')->all();
@@ -35,13 +35,13 @@ it('excludes classes without the AsComponent attribute from discovery', function
     expect($classes)->not->toContain(SampleUnattributed::class);
 });
 
-it('returns an empty array when the path does not exist', function () {
+it('returns an empty array when the path does not exist', function (): void {
     $discovered = (new ComponentDiscovery)->discover(__DIR__.'/../../Fixtures/TypeScript/does-not-exist');
 
     expect($discovered)->toBe([]);
 });
 
-it('derives the domain from the namespace segment before Components', function () {
+it('derives the domain from the namespace segment before Components', function (): void {
     $discovered = (new ComponentDiscovery)->discover(dirname(__DIR__, 3).'/src/Core/Components');
 
     $card = collect($discovered)->keyBy->type->get('card');
@@ -51,7 +51,7 @@ it('derives the domain from the namespace segment before Components', function (
     expect($card->domain)->toBe('Core');
 });
 
-it('discovers columns via attribute inheritance and captures the column class', function () {
+it('discovers columns via attribute inheritance and captures the column class', function (): void {
     $discovered = (new ComponentDiscovery)->discover(__DIR__.'/../../Fixtures/TypeScript');
 
     $column = collect($discovered)->keyBy->type->get('column.rating');

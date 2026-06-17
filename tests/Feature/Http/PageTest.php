@@ -20,21 +20,21 @@ use function Pest\Laravel\get;
 use function Pest\Laravel\withoutVite;
 use function Pest\Laravel\withSession;
 
-test('tabs hydrate their active value from the request query string', function () {
+test('tabs hydrate their active value from the request query string', function (): void {
     Route::get('query-tabs', [WorkbenchTabsPage::class, 'render'])->middleware('web')->name('query-tabs.show');
 
     withoutVite();
 
     get('/query-tabs?tabs=security')
         ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
             ->component('lattice/page')
             ->where('lattice.schema.0.props.defaultValue', 'profile')
             ->where('lattice.schema.0.props.activeValue', 'security')
         );
 });
 
-test('confirmed active tabs redirect to password confirmation when the password is not confirmed', function () {
+test('confirmed active tabs redirect to password confirmation when the password is not confirmed', function (): void {
     Route::get('confirmed-tabs', [WorkbenchConfirmedTabsPage::class, 'render'])->middleware('web')->name('confirmed-tabs.show');
     config(['session.driver' => 'array']);
 
@@ -44,7 +44,7 @@ test('confirmed active tabs redirect to password confirmation when the password 
     expect(session('url.intended'))->toContain('/confirmed-tabs?tabs=security');
 });
 
-test('confirmed active tabs serialize their children after password confirmation', function () {
+test('confirmed active tabs serialize their children after password confirmation', function (): void {
     Route::get('confirmed-tabs', [WorkbenchConfirmedTabsPage::class, 'render'])->middleware('web')->name('confirmed-tabs.show');
 
     withoutVite();
@@ -54,22 +54,22 @@ test('confirmed active tabs serialize their children after password confirmation
 
     get('/confirmed-tabs?tabs=security')
         ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
             ->component('lattice/page')
             ->where('lattice.schema.0.props.activeValue', 'security')
             ->where('lattice.schema.0.schema.1.schema.0.props.text', 'Security form')
         );
 });
 
-test('the workbench home route uses a workbench-owned page directly', function () {
+test('the workbench home route uses a workbench-owned page directly', function (): void {
     expect(Route::getRoutes()->getByName('home')?->getActionName())->toBe(HomePage::class.'@render');
 });
 
-test('the workbench tables route uses lazy pagination tab tables', function () {
+test('the workbench tables route uses lazy pagination tab tables', function (): void {
     expect(Route::getRoutes()->getByName('tables')?->getActionName())->toBe(TablesPage::class.'@render');
 });
 
-test('pages use laravel controller resolution for constructor dependencies render dependencies and route arguments', function () {
+test('pages use laravel controller resolution for constructor dependencies render dependencies and route arguments', function (): void {
     $user = UserFactory::new()->create([
         'name' => 'Route Bound User',
     ]);
@@ -82,13 +82,13 @@ test('pages use laravel controller resolution for constructor dependencies rende
 
     get("/page-injection/{$user->getKey()}/details")
         ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
             ->component('lattice/page')
             ->where('lattice.schema.0.props.text', 'Injected Route Bound User details details')
         );
 });
 
-test('pages can authorize requests before rendering', function () {
+test('pages can authorize requests before rendering', function (): void {
     Route::get('authorized-page', [WorkbenchAuthorizedPage::class, 'render'])
         ->middleware('web')
         ->name('authorized-page.show');
@@ -100,13 +100,13 @@ test('pages can authorize requests before rendering', function () {
 
     get('/authorized-page?allow=yes')
         ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
             ->component('lattice/page')
             ->where('lattice.schema.0.props.text', 'Authorized page')
         );
 });
 
-test('workbench pages serialize package component trees for inertia', function () {
+test('workbench pages serialize package component trees for inertia', function (): void {
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
@@ -143,7 +143,7 @@ test('workbench pages serialize package component trees for inertia', function (
         ->component('table', 'workbench.users', fn ($table) => $table
             ->assertProps(['resizableColumns' => true, 'resizeIndicator' => true]));
 
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
         ->component('lattice/page')
         ->where('lattice.title', 'Lattice Workbench')
         ->where('lattice.layout.key', 'app')
@@ -153,13 +153,13 @@ test('workbench pages serialize package component trees for inertia', function (
         ->etc());
 });
 
-test('workbench tables page serializes lazy tables for each pagination type', function () {
+test('workbench tables page serializes lazy tables for each pagination type', function (): void {
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
     get('/tables')
         ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
             ->component('lattice/page')
             ->where('lattice.title', 'Lattice Tables')
             ->where('lattice.schema.0.type', 'stack')

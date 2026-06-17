@@ -14,6 +14,9 @@ final readonly class ComponentAssertions
 {
     public function __construct(private ComponentNode $node) {}
 
+    /**
+     * @param  (Closure(FormAssertions): mixed)|null  $tap
+     */
     public function form(?string $id = null, ?Closure $tap = null): FormAssertions|self
     {
         $node = $this->node->firstOfTypeIncludingSelf('form', $id);
@@ -26,7 +29,7 @@ final readonly class ComponentAssertions
 
         $assertions = new FormAssertions($node, $this);
 
-        if ($tap !== null) {
+        if ($tap instanceof Closure) {
             $tap($assertions);
 
             return $this;
@@ -35,6 +38,9 @@ final readonly class ComponentAssertions
         return $assertions;
     }
 
+    /**
+     * @param  (Closure(TableAssertions): mixed)|null  $tap
+     */
     public function table(?string $id = null, ?Closure $tap = null): TableAssertions|self
     {
         $node = $this->node->firstOfTypeIncludingSelf('table', $id);
@@ -47,7 +53,7 @@ final readonly class ComponentAssertions
 
         $assertions = new TableAssertions($node, $this);
 
-        if ($tap !== null) {
+        if ($tap instanceof Closure) {
             $tap($assertions);
 
             return $this;
@@ -56,6 +62,9 @@ final readonly class ComponentAssertions
         return $assertions;
     }
 
+    /**
+     * @param  (Closure(ActionAssertions): mixed)|null  $tap
+     */
     public function action(string $id, ?Closure $tap = null): ActionAssertions|self
     {
         $node = $this->node->firstOfTypeIncludingSelf('action', $id);
@@ -68,7 +77,7 @@ final readonly class ComponentAssertions
 
         $assertions = new ActionAssertions($node, $this);
 
-        if ($tap !== null) {
+        if ($tap instanceof Closure) {
             $tap($assertions);
 
             return $this;
@@ -80,10 +89,11 @@ final readonly class ComponentAssertions
     /**
      * @param  class-string<Component>|string  $type  A wire type (`'menu-item'`) or
      *                                                the component class (`MenuItem::class`).
+     * @param  (Closure(self): mixed)|null  $tap
      */
     public function component(string $type, ?string $id = null, ?Closure $tap = null): self
     {
-        $type = self::resolveType($type);
+        $type = $this->resolveType($type);
         $node = $this->node->firstOfTypeIncludingSelf($type, $id);
 
         Assert::assertNotNull($node, sprintf(
@@ -94,7 +104,7 @@ final readonly class ComponentAssertions
 
         $scoped = new self($node);
 
-        if ($tap !== null) {
+        if ($tap instanceof Closure) {
             $tap($scoped);
 
             return $this;
@@ -175,7 +185,7 @@ final readonly class ComponentAssertions
     private function select(string $selector): array
     {
         [$type, $id] = array_pad(explode(':', $selector, 2), 2, null);
-        $type = self::resolveType($type);
+        $type = $this->resolveType($type);
 
         return $this->node->findAllIncludingSelf(
             static fn (ComponentNode $node): bool => $node->matches($type, $id),
@@ -186,7 +196,7 @@ final readonly class ComponentAssertions
      * Accept either a wire type (`'menu-item'`) or a component class
      * (`MenuItem::class`), resolving the class to its declared wire type.
      */
-    private static function resolveType(string $type): string
+    private function resolveType(string $type): string
     {
         if (is_subclass_of($type, Component::class)) {
             return AsComponent::typeForClass($type);

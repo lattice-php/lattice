@@ -269,7 +269,7 @@ abstract class Field extends Component
             return $this;
         }
 
-        return $this->addCondition('visible', (string) $attributes, $operatorOrValue, $value);
+        return $this->addCondition('visible', $attributes, $operatorOrValue, $value);
     }
 
     public function visibleWhen(string $field, mixed $operatorOrValue = null, mixed $value = null): static
@@ -376,7 +376,7 @@ abstract class Field extends Component
      */
     public function isComputed(): bool
     {
-        return $this->dependencies !== [] || $this->valueResolver !== null;
+        return $this->dependencies !== [] || $this->valueResolver instanceof Closure;
     }
 
     /**
@@ -384,7 +384,7 @@ abstract class Field extends Component
      */
     public function hasPrefill(): bool
     {
-        return $this->prefillResolver !== null;
+        return $this->prefillResolver instanceof Closure;
     }
 
     /**
@@ -392,7 +392,7 @@ abstract class Field extends Component
      */
     public function resolvePrefillValue(FormData $row, FormData $form, Request $request): mixed
     {
-        assert($this->prefillResolver !== null);
+        assert($this->prefillResolver instanceof Closure);
 
         $context = $this->evaluationContext($row, $request)
             ->named('row', $row)
@@ -414,7 +414,7 @@ abstract class Field extends Component
             Evaluate::resolve($dependency['callback'], $context);
         }
 
-        if ($this->valueResolver !== null) {
+        if ($this->valueResolver instanceof Closure) {
             $this->value(Evaluate::resolve($this->valueResolver, $context));
         }
 
@@ -457,7 +457,7 @@ abstract class Field extends Component
      */
     public function isVisible(FormData $data): bool
     {
-        return $this->hidden !== true && $this->allConditionsMatch('visible', $data);
+        return ! $this->hidden && $this->allConditionsMatch('visible', $data);
     }
 
     /**
@@ -465,7 +465,7 @@ abstract class Field extends Component
      */
     public function isRequired(FormData $data): bool
     {
-        return $this->required === true || $this->anyConditionMatches('required', $data);
+        return $this->required || $this->anyConditionMatches('required', $data);
     }
 
     /**
@@ -473,7 +473,7 @@ abstract class Field extends Component
      */
     public function isReadOnly(FormData $data): bool
     {
-        return $this->readOnly === true || $this->anyConditionMatches('readOnly', $data);
+        return $this->readOnly || $this->anyConditionMatches('readOnly', $data);
     }
 
     /**
@@ -481,7 +481,7 @@ abstract class Field extends Component
      */
     public function isDisabled(FormData $data): bool
     {
-        return $this->disabled === true || $this->anyConditionMatches('disabled', $data);
+        return $this->disabled || $this->anyConditionMatches('disabled', $data);
     }
 
     /**
@@ -574,7 +574,7 @@ abstract class Field extends Component
         }
 
         $this->dependsOnKeys = $keys === [] ? null : array_keys($keys);
-        $this->dependsOnAny = $this->valueResolver !== null;
+        $this->dependsOnAny = $this->valueResolver instanceof Closure;
 
         return $data;
     }
