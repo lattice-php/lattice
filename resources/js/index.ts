@@ -72,6 +72,8 @@ export type {
   UnknownComponent,
   WireNode,
 } from "./core/types";
+export { LatticeListeners } from "./realtime/lattice-listeners";
+export type { ListenerPayload, ListenerVisibility } from "./realtime/types";
 export { columnCell } from "./table/registry";
 export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "./table/registry";
 export type { ColumnProps, ColumnPropsOf } from "./table/types";

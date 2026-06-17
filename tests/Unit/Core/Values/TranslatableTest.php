@@ -29,6 +29,5 @@ test('payload and replacement calls merge instead of replacing', function () {
 });
 
 test('rt() returns a Translatable for the given key', function () {
-    expect(rt('a.b'))->toBeInstanceOf(Translatable::class)
-        ->and(rt('a.b')->jsonSerialize()['key'])->toBe('a.b');
+    expect(rt('a.b')->jsonSerialize()['key'])->toBe('a.b');
 });

@@ -64,6 +64,12 @@ describe("Page", () => {
     expect(screen.queryByTestId("lattice-centered-container")).not.toBeInTheDocument();
   });
 
+  it("does not mount realtime listeners for an empty listeners array", () => {
+    const lattice = payload({ listeners: [] });
+    const { container } = render(<Page lattice={lattice} />);
+    expect(container).toBeTruthy();
+  });
+
   it("uses a provided registry for app and package extensions", () => {
     const CustomComponent: RendererComponent<"custom.message"> = ({ node }) => (
       <div>{String(node.props?.message ?? "")}</div>

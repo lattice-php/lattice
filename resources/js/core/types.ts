@@ -5,6 +5,7 @@ import type {
   Option,
   PageContainer as KnownPageContainer,
 } from "@lattice-php/lattice/types/generated";
+import type { ListenerPayload } from "@lattice-php/lattice/realtime/types";
 
 export type { KnownPageContainer, NodeType, WireNode };
 
@@ -111,6 +112,7 @@ export type PagePayload = {
   breadcrumbs: PageBreadcrumb[];
   container: PageContainer;
   layout: LayoutPayload | null;
+  listeners?: ListenerPayload[];
   schema: Schema;
   title: string | null;
 };

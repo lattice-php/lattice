@@ -2,6 +2,7 @@ import { Head } from "@inertiajs/react";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import type { PagePayload } from "@lattice-php/lattice";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { LatticeListeners } from "@lattice-php/lattice/realtime/lattice-listeners";
 
 type Props = {
   lattice: PagePayload;
@@ -13,6 +14,8 @@ export default function Page({ lattice }: Props) {
   return (
     <>
       <Head title={lattice.title ?? undefined} />
+
+      <LatticeListeners listeners={lattice.listeners} />
 
       {lattice.container === "centered" ? (
         <main className="min-h-svh bg-lt-bg text-lt-fg">
