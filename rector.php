@@ -12,7 +12,7 @@ return RectorConfig::configure()
         __DIR__.'/workbench/app',
         __DIR__.'/workbench/routes',
     ])
-    ->withPhpSets()
+    ->withPhpSets(php84: true)
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,
