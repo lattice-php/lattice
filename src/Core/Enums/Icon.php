@@ -42,11 +42,13 @@ enum Icon: string
     case Loader2 = 'loader-2';
     case Minus = 'minus';
     case MoreHorizontal = 'more-horizontal';
+    case Package = 'package';
     case PanelLeft = 'panel-left';
     case Pencil = 'pencil';
     case PencilLine = 'pencil-line';
     case Plus = 'plus';
     case Quote = 'quote';
+    case Receipt = 'receipt';
     case RotateCcw = 'rotate-ccw';
     case Rows3 = 'rows-3';
     case Search = 'search';
@@ -57,5 +59,6 @@ enum Icon: string
     case Table = 'table';
     case Trash2 = 'trash-2';
     case Underline = 'underline';
+    case Users = 'users';
     case X = 'x';
 }
