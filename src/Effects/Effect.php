@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Core\Values\Translatable;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Builtin\CalloutEffect;
 use Lattice\Lattice\Effects\Builtin\CloseModalEffect;
@@ -27,13 +28,13 @@ abstract readonly class Effect implements EffectContract
         return new CalloutEffect($callout);
     }
 
-    public static function toast(string|ToastMessage|Variant $message, Variant|string|null $variant = null): ToastEffect
+    public static function toast(string|Translatable|ToastMessage|Variant $message, Variant|string|null $variant = null): ToastEffect
     {
         $toast = match (true) {
             $message instanceof ToastMessage => $message,
             $message instanceof Variant && is_string($variant) => ToastMessage::make($message, $variant),
-            is_string($message) && $variant instanceof Variant => ToastMessage::make($variant, $message),
-            is_string($message) => ToastMessage::make(Variant::Success, $message),
+            ($message instanceof Translatable || is_string($message)) && $variant instanceof Variant => ToastMessage::make($variant, $message),
+            $message instanceof Translatable || is_string($message) => ToastMessage::make(Variant::Success, $message),
             default => throw new InvalidArgumentException('A toast message string is required.'),
         };
 

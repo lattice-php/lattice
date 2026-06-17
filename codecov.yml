@@ -3,7 +3,21 @@ codecov:
     after_n_builds: 3
     wait_for_ci: true
 
+coverage:
+  status:
+    project:
+      default:
+        target: 90%
+        threshold: 1%
+    patch:
+      default:
+        target: 80%
+        threshold: 1%
+
 comment:
   after_n_builds: 3
   require_changes: false
   hide_project_coverage: false
+
+bundle_analysis:
+  status: informational

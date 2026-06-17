@@ -28,10 +28,10 @@ final class ToastMessage implements JsonSerializable
 
     private function __construct(
         public Variant $variant,
-        public string $message,
+        public string|Translatable $message,
     ) {}
 
-    public static function make(Variant $variant, string $message): self
+    public static function make(Variant $variant, string|Translatable $message): self
     {
         return new self($variant, $message);
     }
@@ -76,7 +76,7 @@ final class ToastMessage implements JsonSerializable
     {
         return [
             'variant' => $this->variant->value,
-            'message' => $this->message,
+            'message' => $this->message instanceof Translatable ? $this->message->jsonSerialize() : $this->message,
             'duration' => $this->duration,
             'persistent' => $this->persistent,
             'dismissible' => $this->dismissible,

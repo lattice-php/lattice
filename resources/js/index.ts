@@ -72,6 +72,8 @@ export type {
   UnknownComponent,
   WireNode,
 } from "./core/types";
+export { RealtimeListeners } from "./realtime/listeners";
+export type { ChannelVisibility, ListenerPayload } from "./types/generated";
 export { columnCell } from "./table/registry";
 export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "./table/registry";
 export type { ColumnProps, ColumnPropsOf } from "./table/types";

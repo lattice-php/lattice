@@ -6,9 +6,17 @@ description: Use when reviewing a Lattice pull request, branch diff, or set of s
 # Lattice PR Review
 
 Review changed code for **quality**, applying the `/simplify` discipline so any agent can run it
-even without the built-in skill. This is **not** a bug hunt — for correctness defects use
-`/code-review`. The mandate here is: is the change as simple, reused, efficient, and well-placed as
-it should be, and does it follow the project guidelines?
+even without the built-in skill. The mandate here is: is the change as simple, reused, efficient, and
+well-placed as it should be, and does it follow the project guidelines?
+
+This is **not** a broad bug hunt — for a full correctness sweep (logic errors, races, security, all
+edge cases) use `/code-review`; the two are complementary and a thorough PR pass runs both. But
+"not a bug hunt" is **not** a licence to ignore correctness you stumble into. When a hunk you are
+already reading raises a *concrete* correctness doubt, **trace it to ground before deciding** —
+follow the data path, read the handler, confirm whether the defect is real. Then either report a
+verified defect as a finding, or raise it as an explicit question if the behavior is genuinely
+ambiguous. **Never defer an un-investigated suspicion** with "run /code-review" — only a broad
+sweep gets deferred, never the specific doubt in front of you.
 
 **Core principle:** every finding must be behavior-preserving and earn its place. Suggest the
 change a senior engineer would actually make — not a restyle, not a nitpick a linter already catches.
@@ -29,6 +37,12 @@ change a senior engineer would actually make — not a restyle, not a nitpick a 
   needed to judge them. Do not flag pre-existing issues on unmodified lines.
 - **Preserve behavior.** If a suggestion changes outputs, side effects, or edge-case handling, it is
   out of scope — note it as a question, don't present it as a cleanup.
+- **Trace concrete correctness doubts to ground.** If a touched hunk makes you suspect a real defect
+  (a value that can reach a branch that silently drops it, an unhandled shape, a path that no longer
+  resolves), follow it through the code until you can confirm or refute it — read the handler, trace
+  the data flow, check the type at every hop. Report a confirmed defect as a finding (or a genuinely
+  ambiguous one as a question). Deferring an *unverified* correctness suspicion to `/code-review` is
+  not allowed; only a broad, out-of-scope sweep is deferred.
 - **Confidence gate.** Only surface findings you are confident improve the code. When unsure, drop
   it. A short list of real improvements beats a long list of maybes.
 
@@ -215,3 +229,5 @@ No findings. Checked reuse, simplification, efficiency, altitude, and guideline 
 - Reviewing the whole file instead of the diff.
 - Listing low-confidence nitpicks to look thorough — it dilutes the real findings.
 - Recommending an existing helper without grepping to confirm it exists and fits.
+- Hiding behind "not a bug hunt" to skip a correctness doubt you already noticed. Trace it to ground;
+  defer only a broad sweep, never the specific suspicion in the diff in front of you.

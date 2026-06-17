@@ -1,5 +1,6 @@
 import "../css/app.css";
 import { createInertiaApp } from "@inertiajs/react";
+import { configureEcho } from "@laravel/echo-react";
 import {
   createLayoutResolver,
   createPageResolver,
@@ -16,6 +17,25 @@ import { WORKBENCH_I18N_NAMESPACE } from "./i18n";
 
 const appRegistry = extendRegistry(registry, appColumns);
 
+type ReverbProp = {
+  host: string;
+  port: number;
+  key: string;
+  scheme: string;
+};
+
+function configureEchoFromProps(reverb: ReverbProp): void {
+  configureEcho({
+    broadcaster: "reverb",
+    key: reverb.key,
+    wsHost: reverb.host,
+    wsPort: reverb.port,
+    wssPort: reverb.port,
+    forceTLS: false,
+    enabledTransports: ["ws"],
+  });
+}
+
 createInertiaApp({
   strictMode: true,
   resolve: createPageResolver({}),
@@ -26,6 +46,12 @@ createInertiaApp({
   setup({ el, App, props }) {
     if (!el) {
       return;
+    }
+
+    const reverb = props.initialPage.props.reverb as ReverbProp | null | undefined;
+
+    if (typeof window !== "undefined" && reverb) {
+      configureEchoFromProps(reverb);
     }
 
     const root = createRoot(el);

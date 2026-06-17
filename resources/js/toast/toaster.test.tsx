@@ -72,4 +72,12 @@ describe("Toaster", () => {
 
     expect(screen.getByRole("link", { name: "Undo" })).toHaveAttribute("href", "/undo");
   });
+
+  it("renders a Translatable message by resolving it to its key when no catalog is loaded", () => {
+    renderToaster();
+
+    emit({ message: { key: "orders.created", payload: {}, replacements: {} }, variant: "success" });
+
+    expect(screen.getByText("orders.created")).toBeVisible();
+  });
 });
