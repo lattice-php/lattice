@@ -94,17 +94,21 @@ it('localizes workbench page props and table column labels from the accept langu
     withoutVite();
     $this->actingAs(workbenchTestUser(['locale' => 'de']));
 
-    get('/products', ['Accept-Language' => 'de'])
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('lattice/page', false)
-            ->where('lattice.title', 'Produkte')
-            ->where('lattice.schema.0.schema.0.schema.0.props.text', 'Produkte')
-            ->where('lattice.schema.0.schema.1.props.columns.0.label', 'Bild')
-            ->where('lattice.schema.0.schema.1.props.columns.3.label', 'Standardpreis')
-            ->where('lattice.schema.0.schema.1.props.columns.5.label', 'Hervorgehoben')
-            ->where('lattice.schema.0.schema.1.props.columns.6.label', 'Aktualisiert am'),
-        );
+    $response = get('/products', ['Accept-Language' => 'de'])->assertOk();
+
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('lattice/page', false)
+        ->where('lattice.title', 'Produkte'));
+
+    $this->assertLatticePage($response)
+        ->component('stack', 'products-header', fn ($header) => $header
+            ->component('heading', tap: fn ($heading) => $heading->assertProp('text', 'Produkte')))
+        ->component('table', 'workbench.products', fn ($table) => $table->assertProps([
+            'columns.0.label' => 'Bild',
+            'columns.3.label' => 'Standardpreis',
+            'columns.5.label' => 'Hervorgehoben',
+            'columns.6.label' => 'Aktualisiert am',
+        ]));
 });
 
 it('keeps workbench translation keys aligned between English and German', function () {

@@ -23,18 +23,21 @@ test('workbench auth uses the locale aware workbench user model', function (): v
 test('login page renders a simple seeded credential form', function (): void {
     withoutVite();
 
-    get('/login')
-        ->assertOk()
-        ->assertInertia(fn ($page) => $page
-            ->component('lattice/page')
-            ->where('lattice.title', 'Sign in')
-            ->where('lattice.layout', null)
-            ->where('lattice.schema.0.key', 'login-page')
-            ->where('lattice.schema.0.schema.2.type', 'form')
-            ->where('lattice.schema.0.schema.2.props.action', '/login')
-            ->where('lattice.schema.0.schema.2.props.submitLabel', 'Sign in')
-            ->where('lattice.schema.0.schema.2.props.state.email', 'workbench@example.com')
-            ->where('lattice.schema.0.schema.2.props.state.password', 'password'));
+    $response = get('/login')->assertOk();
+
+    $response->assertInertia(fn ($page) => $page
+        ->component('lattice/page')
+        ->where('lattice.title', 'Sign in')
+        ->where('lattice.layout', null));
+
+    $this->assertLatticePage($response)
+        ->assertRendered('stack:login-page')
+        ->component('form', 'login-form', fn ($form) => $form->assertProps([
+            'action' => '/login',
+            'submitLabel' => 'Sign in',
+            'state.email' => 'workbench@example.com',
+            'state.password' => 'password',
+        ]));
 });
 
 test('workbench user can log in', function (): void {

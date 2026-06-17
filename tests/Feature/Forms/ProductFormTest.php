@@ -71,15 +71,15 @@ test('the product index page lists products and links to creation', function () 
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
-    get('/products')
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('lattice/page', false)
-            ->where('lattice.title', 'Products')
-            ->where('lattice.schema.0.schema.0.schema.1.props.href', '/products/create')
-            ->where('lattice.schema.0.schema.1.id', 'workbench.products')
-            ->where('lattice.schema.0.schema.1.props.data.0.name', 'Desk Lamp')
-        );
+    $response = get('/products')->assertOk();
+
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('lattice/page', false)
+        ->where('lattice.title', 'Products'));
+
+    $this->assertLatticePage($response)
+        ->component('button', 'create-product', fn ($button) => $button->assertProp('href', '/products/create'))
+        ->component('table', 'workbench.products', fn ($table) => $table->assertProp('data.0.name', 'Desk Lamp'));
 });
 
 test('the product form creates products', function () {
@@ -160,20 +160,23 @@ test('the product edit page binds existing product state', function () {
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
-    get("/products/{$product->getKey()}/edit")
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('lattice/page', false)
-            ->where('lattice.title', 'Edit Product')
-            ->where('lattice.schema.0.schema.1.props.method', 'patch')
-            ->where('lattice.schema.0.schema.1.props.submitLabel', 'Save product')
-            ->where('lattice.schema.0.schema.1.props.state.name', 'Desk Lamp')
-            ->where('lattice.schema.0.schema.1.props.state.sku', 'LAMP-001')
-            ->where('lattice.schema.0.schema.1.props.state.images.0', 'workbench/products/lamp.jpg')
-            ->where('lattice.schema.0.schema.1.props.state.sales_prices.0.amount', '49.99')
-            ->where('lattice.schema.0.schema.1.props.state.sales_prices.0.group_id', '')
-            ->where('lattice.schema.0.schema.1.props.state.status', 'draft')
-        );
+    $response = get("/products/{$product->getKey()}/edit")->assertOk();
+
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('lattice/page', false)
+        ->where('lattice.title', 'Edit Product'));
+
+    $this->assertLatticePage($response)
+        ->component('form', 'workbench.products.form', fn ($form) => $form->assertProps([
+            'method' => 'patch',
+            'submitLabel' => 'Save product',
+            'state.name' => 'Desk Lamp',
+            'state.sku' => 'LAMP-001',
+            'state.images.0' => 'workbench/products/lamp.jpg',
+            'state.sales_prices.0.amount' => '49.99',
+            'state.sales_prices.0.group_id' => '',
+            'state.status' => 'draft',
+        ]));
 });
 
 test('the product form updates the trusted product from sealed context', function () {

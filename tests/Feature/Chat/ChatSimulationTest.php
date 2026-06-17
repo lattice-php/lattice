@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Inertia\Testing\AssertableInertia;
 use Workbench\App\Chat\FakeConversationStore;
 
 use function Pest\Laravel\get;
@@ -104,15 +103,12 @@ test('the floating chat box is mounted in the layout', function (): void {
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
-    get('/')
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('lattice/page')
-            ->where('lattice.layout.schema.2.type', 'floating-panel')
-            ->where('lattice.layout.schema.2.props.trigger.0.type', 'badge')
-            ->where('lattice.layout.schema.2.schema.0.type', 'chat.box')
-            ->where('lattice.layout.schema.2.schema.0.props.streamEndpoint', '/workbench/chat/stream')
-            ->where('lattice.layout.schema.2.schema.0.props.historyEndpoint', '/workbench/chat/history')
-            ->etc()
-        );
+    $response = get('/')->assertOk();
+
+    $this->assertLatticeLayout($response)
+        ->component('floating-panel', 'assistant-chat', fn ($panel) => $panel
+            ->assertRendered('badge')
+            ->component('chat.box', tap: fn ($box) => $box
+                ->assertProp('streamEndpoint', '/workbench/chat/stream')
+                ->assertProp('historyEndpoint', '/workbench/chat/history')));
 });

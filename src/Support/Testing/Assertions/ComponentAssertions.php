@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support\Testing\Assertions;
 
 use Closure;
+use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Support\Testing\ComponentNode;
 use PHPUnit\Framework\Assert;
 
@@ -75,6 +77,60 @@ final readonly class ComponentAssertions
         return $assertions;
     }
 
+    /**
+     * @param  class-string<Component>|string  $type  A wire type (`'menu-item'`) or
+     *                                                the component class (`MenuItem::class`).
+     */
+    public function component(string $type, ?string $id = null, ?Closure $tap = null): self
+    {
+        $type = self::resolveType($type);
+        $node = $this->node->firstOfTypeIncludingSelf($type, $id);
+
+        Assert::assertNotNull($node, sprintf(
+            'Lattice component [%s] not found. Rendered: [%s].',
+            $id === null ? $type : $type.':'.$id,
+            implode(', ', $this->node->availableSelectors()),
+        ));
+
+        $scoped = new self($node);
+
+        if ($tap !== null) {
+            $tap($scoped);
+
+            return $this;
+        }
+
+        return $scoped;
+    }
+
+    /**
+     * Assert a prop value. The key may be dot-notated to reach into nested prop
+     * data: `assertProp('state.sales_prices.0.amount', '49.99')`.
+     */
+    public function assertProp(string $key, mixed $value): self
+    {
+        Assert::assertSame($value, data_get($this->node->props(), $key), sprintf(
+            'Expected prop [%s] on [%s] to equal %s.',
+            $key,
+            $this->node->type() ?? 'root',
+            var_export($value, true),
+        ));
+
+        return $this;
+    }
+
+    /**
+     * @param  array<string, mixed>  $props
+     */
+    public function assertProps(array $props): self
+    {
+        foreach ($props as $key => $value) {
+            $this->assertProp($key, $value);
+        }
+
+        return $this;
+    }
+
     public function assertRendered(string $selector): self
     {
         Assert::assertNotEmpty($this->select($selector), sprintf(
@@ -119,10 +175,23 @@ final readonly class ComponentAssertions
     private function select(string $selector): array
     {
         [$type, $id] = array_pad(explode(':', $selector, 2), 2, null);
+        $type = self::resolveType($type);
 
         return $this->node->findAllIncludingSelf(
-            static fn (ComponentNode $node): bool => $node->type() === $type
-                && ($id === null || $node->id() === $id),
+            static fn (ComponentNode $node): bool => $node->matches($type, $id),
         );
+    }
+
+    /**
+     * Accept either a wire type (`'menu-item'`) or a component class
+     * (`MenuItem::class`), resolving the class to its declared wire type.
+     */
+    private static function resolveType(string $type): string
+    {
+        if (is_subclass_of($type, Component::class)) {
+            return AsComponent::typeForClass($type);
+        }
+
+        return $type;
     }
 }

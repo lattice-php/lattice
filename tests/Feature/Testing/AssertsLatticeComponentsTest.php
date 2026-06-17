@@ -5,11 +5,16 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Lattice\Core\Enums\Side;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Layouts\Components\Menu;
+use Lattice\Lattice\Layouts\Components\MenuItem;
+use Lattice\Lattice\Layouts\Components\Topbar;
 use Lattice\Lattice\Support\Testing\Assertions\ActionAssertions;
 use Lattice\Lattice\Support\Testing\Assertions\FieldAssertions;
 use Lattice\Lattice\Support\Testing\Assertions\FilterAssertions;
@@ -158,4 +163,60 @@ it('asserts against a rendered Inertia page', function (): void {
         ->table('products', fn (TableAssertions $t) => $t->assertHasFilter('name'))
         ->form('create', fn (FormAssertions $f) => $f
             ->field('email')->assertInitialValue('a@b.c'));
+});
+
+it('addresses layout components by key and asserts their props', function (): void {
+    $topbar = Topbar::make('app-topbar')->sticky()->items([
+        Stack::make('end')->direction('row')->float(Side::End)->schema([
+            Menu::make('nav')->items([
+                MenuItem::make('Settings', 'settings')->icon('settings')->href('/settings'),
+            ]),
+        ]),
+    ]);
+
+    $this->assertLatticeComponent($topbar)
+        ->assertRendered('topbar:app-topbar')
+        ->assertRendered('menu-item:settings')
+        ->assertNotRendered('menu-item:missing')
+        ->component('topbar', 'app-topbar', fn ($bar) => $bar->assertProp('sticky', true))
+        ->component('menu-item', 'settings', fn ($item) => $item
+            ->assertProps(['icon' => 'settings', 'href' => '/settings', 'label' => 'Settings']));
+});
+
+it('addresses a component by its class instead of its wire type', function (): void {
+    $topbar = Topbar::make('app-topbar')->sticky()->items([
+        Menu::make('nav')->items([
+            MenuItem::make('Settings', 'settings')->icon('settings'),
+        ]),
+    ]);
+
+    $this->assertLatticeComponent($topbar)
+        ->assertRendered(MenuItem::class)
+        ->assertNotRendered(MenuItem::class.':missing')
+        ->component(Topbar::class, tap: fn ($bar) => $bar->assertProp('sticky', true))
+        ->component(MenuItem::class, 'settings', fn ($item) => $item->assertProp('icon', 'settings'));
+});
+
+it('asserts against a rendered layout tree', function (): void {
+    withoutVite();
+
+    Route::get('lattice-layout-demo', fn () => Inertia::render('lattice/page', [
+        'lattice' => [
+            'layout' => [
+                'key' => 'app',
+                'schema' => wire([
+                    Topbar::make('app-topbar')->sticky()->items([
+                        Menu::make('nav')->items([
+                            MenuItem::make('Home', 'home')->href('/'),
+                        ]),
+                    ]),
+                ]),
+            ],
+            'schema' => wire([]),
+        ],
+    ]))->middleware('web');
+
+    $this->assertLatticeLayout($this->get('lattice-layout-demo'))
+        ->assertRendered('menu-item:home')
+        ->component('topbar', 'app-topbar', fn ($bar) => $bar->assertProp('sticky', true));
 });

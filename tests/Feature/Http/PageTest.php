@@ -5,10 +5,12 @@ use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Testing\AssertableInertia;
+use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Tab;
 use Lattice\Lattice\Core\Components\Tabs;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Fragments\Components\Fragment;
 use Lattice\Lattice\Http\Page;
 use Orchestra\Testbench\Factories\UserFactory;
 use Workbench\App\Pages\HomePage;
@@ -108,56 +110,47 @@ test('workbench pages serialize package component trees for inertia', function (
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
-    get('/')
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('lattice/page')
-            ->where('lattice.title', 'Lattice Workbench')
-            ->where('lattice.layout.key', 'app')
-            ->where('lattice.layout.schema.0.type', 'stack')
-            ->where('lattice.layout.schema.0.schema.0.schema.1.schema.1.props.label', 'Forms')
-            ->where('lattice.layout.schema.0.schema.0.schema.1.schema.1.schema.2.props.label', 'Builder Table Demo')
-            ->where('lattice.layout.schema.0.schema.0.schema.1.schema.1.schema.2.props.href', '/builder-table')
-            ->where('lattice.layout.schema.0.schema.1.schema.0.type', 'topbar')
-            ->where('lattice.layout.schema.0.schema.1.schema.0.props.sticky', true)
-            ->where('lattice.layout.schema.0.schema.1.schema.0.schema.0.schema.2.schema.0.type', 'menu-item')
-            ->where('lattice.layout.schema.0.schema.1.schema.0.schema.0.schema.2.schema.0.props.label', 'Log out')
-            ->where('lattice.layout.schema.0.schema.1.schema.1.type', 'breadcrumbs')
-            ->where('lattice.layout.schema.0.schema.1.schema.2.type', 'outlet')
-            ->where('lattice.layout.schema.0.schema.1.schema.0.schema.0.schema.0.type', 'dropdown')
-            ->where('lattice.layout.schema.0.schema.1.schema.0.schema.0.schema.0.key', 'locale-switcher')
-            ->where('lattice.layout.schema.0.schema.1.schema.0.schema.0.schema.0.schema.0.key', 'locale-en')
-            ->where('lattice.layout.schema.0.schema.1.schema.0.schema.0.schema.0.schema.1.key', 'locale-de')
-            ->where('lattice.layout.schema.0.schema.1.schema.0.schema.0.schema.1.schema.0.type', 'menu-item')
-            ->where('lattice.layout.schema.0.schema.1.schema.0.schema.0.schema.1.schema.0.props.icon', 'settings')
-            ->where('lattice.container', 'default')
-            ->where('lattice.schema.0.type', 'stack')
-            ->where('lattice.schema.0.key', 'workbench-page')
-            ->where('lattice.schema.0.schema.0.type', 'stack')
-            ->where('lattice.schema.0.schema.0.key', 'workbench-hero')
-            ->where('lattice.schema.0.schema.0.schema.0.type', 'badge')
-            ->where('lattice.schema.0.schema.0.schema.0.props.label', 'Lattice Package')
-            ->where('lattice.schema.0.schema.0.schema.1.type', 'heading')
-            ->where('lattice.schema.0.schema.0.schema.1.props.text', 'Workbench page')
-            ->where('lattice.schema.0.schema.1.type', 'grid')
-            ->where('lattice.schema.0.schema.1.schema.0.type', 'card')
-            ->where('lattice.schema.0.schema.1.schema.0.props.title', 'Components')
-            ->where('lattice.schema.0.schema.2.type', 'heading')
-            ->where('lattice.schema.0.schema.2.props.text', 'Dashboard charts')
-            ->where('lattice.schema.0.schema.3.type', 'grid')
-            ->where('lattice.schema.0.schema.3.props.columns', 3)
-            ->where('lattice.schema.0.schema.3.schema.0.id', 'workbench.revenue-trend-chart')
-            ->where('lattice.schema.0.schema.3.schema.0.props.lazy', true)
-            ->where('lattice.schema.0.schema.3.schema.0.props.size', 'lg')
-            ->where('lattice.schema.0.schema.3.schema.1.id', 'workbench.sales-mix-chart')
-            ->where('lattice.schema.0.schema.3.schema.1.props.lazy', true)
-            ->where('lattice.schema.0.schema.3.schema.1.props.size', 'lg')
-            ->where('lattice.schema.0.schema.3.schema.2.id', 'workbench.order-volume-chart')
-            ->where('lattice.schema.0.schema.3.schema.2.props.lazy', true)
-            ->where('lattice.schema.0.schema.3.schema.2.props.size', 'lg')
-            ->where('lattice.schema.0.schema.7.id', 'workbench.users')
-            ->where('lattice.schema.0.schema.7.props.resizableColumns', true)
-            ->where('lattice.schema.0.schema.7.props.resizeIndicator', true));
+    $response = get('/')->assertOk();
+
+    // Layout chrome — addressed by type/key, resilient to structural reordering.
+    $this->assertLatticeLayout($response)
+        ->assertRendered('menu-item:home')
+        ->component('menu-item', 'forms', fn ($menu) => $menu->assertProp('label', 'Forms'))
+        ->component('menu-item', 'builder-table-demo', fn ($menu) => $menu
+            ->assertProps(['label' => 'Builder Table Demo', 'href' => '/builder-table']))
+        ->component('topbar', tap: fn ($topbar) => $topbar->assertProp('sticky', true))
+        ->assertRendered('dropdown:locale-switcher')
+        ->assertRendered('action:locale-en')
+        ->component('menu-item', 'settings', fn ($menu) => $menu->assertProp('icon', 'settings'))
+        ->assertRendered('menu-item:log-out')
+        ->assertRendered('breadcrumbs')
+        ->assertRendered('outlet');
+
+    // Page content — addressed by type/key/id, resilient to structural reordering.
+    $this->assertLatticePage($response)
+        ->component('stack', 'workbench-hero', fn ($hero) => $hero
+            ->component('badge', tap: fn ($badge) => $badge->assertProp('label', 'Lattice Package'))
+            ->component(Heading::class, tap: fn ($heading) => $heading->assertProp('text', 'Workbench page')))
+        ->component('card', tap: fn ($card) => $card->assertProp('title', 'Components'))
+        ->component('grid', 'workbench-charts', fn ($charts) => $charts
+            ->assertProp('columns', 3)
+            ->component(Fragment::class, 'workbench.revenue-trend-chart', fn ($chart) => $chart
+                ->assertProps(['lazy' => true, 'size' => 'lg']))
+            ->component(Fragment::class, 'workbench.sales-mix-chart', fn ($chart) => $chart
+                ->assertProps(['lazy' => true, 'size' => 'lg']))
+            ->component(Fragment::class, 'workbench.order-volume-chart', fn ($chart) => $chart
+                ->assertProps(['lazy' => true, 'size' => 'lg'])))
+        ->component('table', 'workbench.users', fn ($table) => $table
+            ->assertProps(['resizableColumns' => true, 'resizeIndicator' => true]));
+
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('lattice/page')
+        ->where('lattice.title', 'Lattice Workbench')
+        ->where('lattice.layout.key', 'app')
+        ->where('lattice.container', 'default')
+        ->where('lattice.schema.0.key', 'workbench-page')
+        ->where('lattice.schema.0.schema.2.props.text', 'Dashboard charts')
+        ->etc());
 });
 
 test('workbench tables page serializes lazy tables for each pagination type', function () {
