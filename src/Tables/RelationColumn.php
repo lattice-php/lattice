@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Lattice\Lattice\Tables\Contracts\RelationProjection;
 
 /**
  * A column keyed by a dotted path into a to-one relation, e.g.
@@ -21,15 +22,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * (no dot, multi-level, to-many, or a non-relation segment) resolves to null and
  * the key is left untouched.
  */
-final readonly class RelationColumn
+final readonly class RelationColumn implements RelationProjection
 {
     /**
      * @param  BelongsTo<Model, Model>|HasOne<Model, Model>  $relationInstance
      */
     private function __construct(
-        public string $key,
-        public string $relation,
-        public string $field,
+        private string $key,
+        private string $relation,
+        private string $field,
         private BelongsTo|HasOne $relationInstance,
     ) {}
 
@@ -54,18 +55,33 @@ final readonly class RelationColumn
         return new self($key, $relation, $field, $instance);
     }
 
-    public function value(Model $model): mixed
+    public function key(): string
+    {
+        return $this->key;
+    }
+
+    public function relation(): string
+    {
+        return $this->relation;
+    }
+
+    public function field(): string
+    {
+        return $this->field;
+    }
+
+    public function project(Model $model): mixed
     {
         return data_get($model, $this->key);
     }
 
     /**
-     * The related-table columns the constrained eager load must select: the leaf
+     * The related-table columns the constrained eager load selects: the leaf
      * field plus the key the relation matches on.
      *
      * @return list<string>
      */
-    public function relatedColumns(): array
+    public function eagerColumns(): array
     {
         $matchKey = $this->relationInstance instanceof BelongsTo
             ? $this->relationInstance->getOwnerKeyName()

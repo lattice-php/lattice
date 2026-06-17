@@ -22,6 +22,7 @@ use Workbench\App\Factories\ProductFactory;
  * @property-read Collection<int, Product> $relatedProducts
  * @property-read Collection<int, SalesPrice> $salesPrices
  * @property-read SalesPrice|null $defaultSalesPrice
+ * @property-read Collection<int, Tag> $tags
  */
 class Product extends Model
 {
@@ -72,6 +73,12 @@ class Product extends Model
             ->withPivot('sort_order')
             ->withTimestamps()
             ->orderByPivot('sort_order');
+    }
+
+    /** @return MorphToMany<Tag, $this> */
+    public function tags(): MorphToMany
+    {
+        return $this->morphToMany(Tag::class, 'taggable', 'taggables');
     }
 
     /** @return HasMany<SalesPrice, $this> */

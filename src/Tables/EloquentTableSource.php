@@ -12,6 +12,7 @@ use Illuminate\Support\Collection;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Filterable;
+use Lattice\Lattice\Tables\Contracts\RelationProjection;
 use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\Filters\BaseFilter;
@@ -42,7 +43,7 @@ final readonly class EloquentTableSource implements TableSource
     public function query(TableQuery $query): TableResult
     {
         $builder = ($this->builder)($query);
-        $relations = $this->relationColumns($builder->getModel());
+        $relations = $this->relationProjections($builder->getModel());
 
         $this->eagerLoadRelations($builder, $relations);
         $this->applyQuery($builder, $query, $relations);
@@ -70,7 +71,7 @@ final readonly class EloquentTableSource implements TableSource
     {
         $builder = ($this->builder)($query);
 
-        $this->applyQuery($builder, $query, $this->relationColumns($builder->getModel()));
+        $this->applyQuery($builder, $query, $this->relationProjections($builder->getModel()));
 
         return $builder->get();
     }
@@ -92,7 +93,7 @@ final readonly class EloquentTableSource implements TableSource
 
     /**
      * @param  Builder<TModel>  $builder
-     * @param  array<string, RelationColumn>  $relations
+     * @param  array<string, RelationProjection>  $relations
      */
     private function applyQuery(Builder $builder, TableQuery $query, array $relations): void
     {
@@ -108,12 +109,12 @@ final readonly class EloquentTableSource implements TableSource
             $operator = Op::from($clause->operator);
             $relation = $relations[$clause->field] ?? null;
 
-            if ($relation instanceof RelationColumn) {
+            if ($relation instanceof RelationProjection) {
                 $relation->applyFilter($builder, fn (Builder $related) => $this->filterApplier->apply(
                     $operator,
                     $related,
                     $column->filterType(),
-                    $relation->field,
+                    $relation->field(),
                     $clause->value,
                 ));
 
@@ -136,7 +137,7 @@ final readonly class EloquentTableSource implements TableSource
         foreach ($query->sorts as $sort) {
             $relation = $relations[$sort->key] ?? null;
 
-            if ($relation instanceof RelationColumn) {
+            if ($relation instanceof RelationProjection) {
                 $relation->applySort($builder, $sort->direction->value);
 
                 continue;
@@ -147,26 +148,30 @@ final readonly class EloquentTableSource implements TableSource
     }
 
     /**
-     * @return array<string, RelationColumn>
+     * Resolve every column that draws its value from a relation: a dotted to-one
+     * key (`businessPartner.name`) or a to-many `multiple()` column. Each column
+     * decides via {@see Column::relationProjection()}.
+     *
+     * @return array<string, RelationProjection>
      */
-    private function relationColumns(Model $model): array
+    private function relationProjections(Model $model): array
     {
-        $relations = [];
+        $projections = [];
 
         foreach ($this->columns as $column) {
-            $relation = RelationColumn::resolve($model, $column->key());
+            $projection = $column->relationProjection($model);
 
-            if ($relation instanceof RelationColumn) {
-                $relations[$column->key()] = $relation;
+            if ($projection instanceof RelationProjection) {
+                $projections[$column->key()] = $projection;
             }
         }
 
-        return $relations;
+        return $projections;
     }
 
     /**
      * @param  Builder<TModel>  $builder
-     * @param  array<string, RelationColumn>  $relations
+     * @param  array<string, RelationProjection>  $relations
      */
     private function eagerLoadRelations(Builder $builder, array $relations): void
     {
@@ -178,9 +183,9 @@ final readonly class EloquentTableSource implements TableSource
         $columnsByRelation = [];
 
         foreach ($relations as $relation) {
-            $columnsByRelation[$relation->relation] = array_merge(
-                $columnsByRelation[$relation->relation] ?? [],
-                $relation->relatedColumns(),
+            $columnsByRelation[$relation->relation()] = array_merge(
+                $columnsByRelation[$relation->relation()] ?? [],
+                $relation->eagerColumns(),
             );
 
             $this->keepBaseColumn($builder, $relation->baseKey());
@@ -190,7 +195,7 @@ final readonly class EloquentTableSource implements TableSource
 
         foreach ($columnsByRelation as $name => $columns) {
             $select = array_values(array_unique($columns));
-            $eager[$name] = static fn (Relation $related): Relation => $related->select($select);
+            $eager[$name] = static fn (Relation $related): Relation => $select === [] ? $related : $related->select($select);
         }
 
         $builder->with($eager);
@@ -229,7 +234,7 @@ final readonly class EloquentTableSource implements TableSource
      * there are no relation columns, so non-relation tables keep serializing
      * through TableResult exactly as before.
      *
-     * @param  array<string, RelationColumn>  $relations
+     * @param  array<string, RelationProjection>  $relations
      * @return Closure(Model): (array<string, mixed>|Model)
      */
     private function rowProjector(array $relations): Closure
@@ -239,7 +244,7 @@ final readonly class EloquentTableSource implements TableSource
         }
 
         $relationNames = array_values(array_unique(array_map(
-            static fn (RelationColumn $relation): string => $relation->relation,
+            static fn (RelationProjection $relation): string => $relation->relation(),
             $relations,
         )));
 
@@ -247,7 +252,7 @@ final readonly class EloquentTableSource implements TableSource
             $row = $model->makeHidden($relationNames)->toArray();
 
             foreach ($relations as $relation) {
-                $row[$relation->key] = $relation->value($model);
+                $row[$relation->key()] = $relation->project($model);
             }
 
             return $row;

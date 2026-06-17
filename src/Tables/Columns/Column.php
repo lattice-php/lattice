@@ -3,13 +3,16 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\Concerns\ReflectsWireProps;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
+use Lattice\Lattice\Tables\Contracts\RelationProjection;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
 use Lattice\Lattice\Tables\Enums\ColumnType;
+use Lattice\Lattice\Tables\RelationColumn;
 
 /**
  * @phpstan-consistent-constructor
@@ -32,6 +35,17 @@ abstract class Column implements JsonSerializable
     public function key(): string
     {
         return $this->key;
+    }
+
+    /**
+     * The relation projection this column draws its value from, or null when it
+     * reads a plain attribute. By default a dotted key (`businessPartner.name`)
+     * resolves to a to-one projection; column types override to add their own
+     * (e.g. a to-many `multiple()` column).
+     */
+    public function relationProjection(Model $model): ?RelationProjection
+    {
+        return RelationColumn::resolve($model, $this->key);
     }
 
     public static function make(string $key): static

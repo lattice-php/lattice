@@ -498,6 +498,7 @@ return [
             'name' => 'Name',
             'sku' => 'SKU',
             'status' => 'Status',
+            'tags' => 'Tags',
             'updated-at' => 'Updated at',
         ],
         'products' => [

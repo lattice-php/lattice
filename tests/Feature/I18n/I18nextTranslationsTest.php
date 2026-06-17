@@ -107,7 +107,8 @@ it('localizes workbench page props and table column labels from the accept langu
             'columns.0.label' => 'Bild',
             'columns.3.label' => 'Standardpreis',
             'columns.5.label' => 'Hervorgehoben',
-            'columns.6.label' => 'Aktualisiert am',
+            'columns.6.label' => 'Schlagwörter',
+            'columns.7.label' => 'Aktualisiert am',
         ]));
 });
 

@@ -1134,6 +1134,9 @@ export type Text = {
   text: string;
 };
 export type TextColumn = {
+  badge: {
+    colorKey: string;
+  } | null;
   copyable: boolean;
   date: {
     format: string | null;
@@ -1142,6 +1145,7 @@ export type TextColumn = {
     href: string | null;
     external: boolean;
   } | null;
+  multiple: string | null;
 };
 export type TextInput = {
   autoComplete: string | null;

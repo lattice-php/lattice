@@ -26,9 +26,11 @@
                     "key": "name",
                     "label": "Name",
                     "props": {
+                        "badge": null,
                         "copyable": false,
                         "date": null,
-                        "link": null
+                        "link": null,
+                        "multiple": null
                     },
                     "sortable": null,
                     "type": "column.text",

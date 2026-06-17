@@ -9,16 +9,20 @@ it('reflects a column\'s public properties into the full props shape', function 
         'date' => null,
         'copyable' => false,
         'link' => null,
+        'badge' => null,
+        'multiple' => null,
     ]);
 
     $configured = wire(
-        TextColumn::make('name')->date('Y-m-d')->copyable()->link('/x', external: true),
+        TextColumn::make('tags')->date('Y-m-d')->copyable()->link('/x', external: true)->badge('color')->multiple('name'),
     );
 
     expect($configured['props'])->toBe([
         'date' => ['format' => 'Y-m-d'],
         'copyable' => true,
         'link' => ['href' => '/x', 'external' => true],
+        'badge' => ['colorKey' => 'color'],
+        'multiple' => 'name',
     ]);
 });
 
@@ -33,5 +37,7 @@ it('keeps protected filter and sort state off the wire props', function (): void
         'date' => null,
         'copyable' => false,
         'link' => null,
+        'badge' => null,
+        'multiple' => null,
     ]);
 });

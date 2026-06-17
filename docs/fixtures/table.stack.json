@@ -15,9 +15,11 @@
                             "key": "name",
                             "label": "Name",
                             "props": {
+                                "badge": null,
                                 "copyable": false,
                                 "date": null,
-                                "link": null
+                                "link": null,
+                                "multiple": null
                             },
                             "sortable": true,
                             "type": "column.text",
@@ -30,9 +32,11 @@
                             "key": "email",
                             "label": "Email",
                             "props": {
+                                "badge": null,
                                 "copyable": true,
                                 "date": null,
-                                "link": null
+                                "link": null,
+                                "multiple": null
                             },
                             "sortable": null,
                             "type": "column.text",
@@ -54,9 +58,11 @@
                     "key": "role",
                     "label": "Role",
                     "props": {
+                        "badge": null,
                         "copyable": false,
                         "date": null,
-                        "link": null
+                        "link": null,
+                        "multiple": null
                     },
                     "sortable": null,
                     "type": "column.text",
