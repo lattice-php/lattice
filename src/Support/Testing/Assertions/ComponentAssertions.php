@@ -14,6 +14,9 @@ final readonly class ComponentAssertions
 {
     public function __construct(private ComponentNode $node) {}
 
+    /**
+     * @param  (Closure(FormAssertions): mixed)|null  $tap
+     */
     public function form(?string $id = null, ?Closure $tap = null): FormAssertions|self
     {
         $node = $this->node->firstOfTypeIncludingSelf('form', $id);
@@ -35,6 +38,9 @@ final readonly class ComponentAssertions
         return $assertions;
     }
 
+    /**
+     * @param  (Closure(TableAssertions): mixed)|null  $tap
+     */
     public function table(?string $id = null, ?Closure $tap = null): TableAssertions|self
     {
         $node = $this->node->firstOfTypeIncludingSelf('table', $id);
@@ -56,6 +62,9 @@ final readonly class ComponentAssertions
         return $assertions;
     }
 
+    /**
+     * @param  (Closure(ActionAssertions): mixed)|null  $tap
+     */
     public function action(string $id, ?Closure $tap = null): ActionAssertions|self
     {
         $node = $this->node->firstOfTypeIncludingSelf('action', $id);
@@ -80,6 +89,7 @@ final readonly class ComponentAssertions
     /**
      * @param  class-string<Component>|string  $type  A wire type (`'menu-item'`) or
      *                                                the component class (`MenuItem::class`).
+     * @param  (Closure(self): mixed)|null  $tap
      */
     public function component(string $type, ?string $id = null, ?Closure $tap = null): self
     {
