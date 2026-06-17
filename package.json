@@ -223,6 +223,7 @@
     "i18next": "^26.3.1",
     "i18next-http-backend": "^4.0.0",
     "recharts": "^3.8.1",
+    "starlight-llms-txt": "^0.10.0",
     "tailwind-merge": "^3.0.1"
   },
   "peerDependencies": {

@@ -1,8 +1,80 @@
 ---
 import Default from "@astrojs/starlight/components/Head.astro";
 
-const { entry } = Astro.locals.starlightRoute;
+const route = Astro.locals.starlightRoute;
+const { entry, head, lastUpdated } = route;
+const isHome = !entry.id;
+
 const ogImageUrl = new URL(`/og/${entry.id || "index"}.png`, Astro.site);
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const repository = "https://github.com/lattice-php/lattice";
+
+if (isHome) {
+  const ogType = head.find((tag) => tag.attrs?.property === "og:type");
+  if (ogType) {
+    ogType.attrs.content = "website";
+  }
+}
+
+const organization = {
+  "@type": "Organization",
+  "@id": new URL("/#organization", Astro.site).href,
+  name: "Lattice",
+  url: Astro.site?.href,
+  logo: new URL("/favicon.svg", Astro.site).href,
+  sameAs: [repository],
+};
+
+const website = {
+  "@type": "WebSite",
+  "@id": new URL("/#website", Astro.site).href,
+  name: "Lattice",
+  url: Astro.site?.href,
+  description: "Server-driven React components for Laravel and Inertia.",
+  publisher: { "@id": organization["@id"] },
+};
+
+function homeGraph() {
+  return [
+    {
+      "@type": "SoftwareApplication",
+      name: "Lattice",
+      description:
+        "Server-driven React components for Laravel and Inertia. Describe pages, forms, and tables in PHP; Lattice serializes them to typed React components and renders them through Inertia.",
+      url: Astro.site?.href,
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Any",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      codeRepository: repository,
+      programmingLanguage: ["PHP", "TypeScript"],
+      runtimePlatform: "PHP 8.4",
+      softwareRequirements: "Laravel 13, Inertia.js v3, React 19",
+      publisher: { "@id": organization["@id"] },
+    },
+    organization,
+    website,
+  ];
+}
+
+function docGraph() {
+  const article = {
+    "@type": "TechArticle",
+    headline: entry.data.title,
+    description: entry.data.description,
+    url: canonical,
+    image: ogImageUrl.href,
+    author: { "@id": organization["@id"] },
+    publisher: { "@id": organization["@id"] },
+    isPartOf: { "@id": website["@id"] },
+    ...(lastUpdated ? { dateModified: lastUpdated.toISOString() } : {}),
+  };
+  return [article, organization, website];
+}
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": isHome ? homeGraph() : docGraph(),
+};
 ---
 
 <Default><slot /></Default>
@@ -10,3 +82,4 @@ const ogImageUrl = new URL(`/og/${entry.id || "index"}.png`, Astro.site);
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:image" content={ogImageUrl.href} />
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
