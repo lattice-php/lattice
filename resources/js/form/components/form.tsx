@@ -84,7 +84,7 @@ function FormBody({
           {children}
 
           {shouldRenderSubmitButton && (
-            <div className="flex justify-end rounded-lt border border-lt-border bg-lt-surface px-6 py-4 shadow-xs">
+            <div className="flex justify-end rounded-lt border border-lt-border bg-lt-surface px-6 py-4 shadow-lt-sm">
               <FormSubmitButton label={submitLabel} summaryLabel={summaryLabel} />
             </div>
           )}

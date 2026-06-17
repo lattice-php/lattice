@@ -47,7 +47,7 @@ export const ChatBox: RendererComponent<"chat.box"> = ({ node }) => {
     <div
       className={cn(
         "flex flex-col overflow-hidden border border-lt-border bg-lt-bg",
-        fill ? "sticky top-0 h-full min-h-[28rem] w-full" : "h-[28rem] w-80 rounded-lt shadow-lg",
+        fill ? "sticky top-0 h-full min-h-[28rem] w-full" : "h-[28rem] w-80 rounded-lt shadow-lt-lg",
       )}
       data-test={testIdentity("chat-box")}
     >

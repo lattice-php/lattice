@@ -10,26 +10,29 @@ import type { ButtonVariant } from "@lattice-php/lattice/types/generated";
 export type { ButtonVariant };
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lt-sm text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-lt-icon-md [&_svg]:shrink-0 outline-none focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[3px] aria-invalid:ring-lt-danger/20 dark:aria-invalid:ring-lt-danger/40 aria-invalid:border-lt-danger",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lt-sm text-base font-medium transition-[color,box-shadow] disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-lt-icon-md [&_svg]:shrink-0 outline-none focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[3px] aria-invalid:ring-lt-danger/20 dark:aria-invalid:ring-lt-danger/40 aria-invalid:border-lt-danger",
   {
     variants: {
       variant: {
-        default: "bg-lt-primary text-lt-primary-fg shadow-xs hover:bg-lt-primary/90",
+        default:
+          "bg-lt-primary text-lt-primary-fg shadow-lt-xs hover:bg-lt-primary-hover active:bg-lt-primary-active disabled:bg-lt-disabled disabled:text-lt-disabled-fg disabled:shadow-none",
         destructive:
-          "bg-lt-danger text-lt-danger-fg shadow-xs hover:bg-lt-danger/90 focus-visible:ring-lt-danger/20 dark:focus-visible:ring-lt-danger/40",
-        success: "bg-lt-success text-lt-success-fg shadow-xs hover:bg-lt-success/90",
-        info: "bg-lt-info text-lt-info-fg shadow-xs hover:bg-lt-info/90",
+          "bg-lt-danger text-lt-danger-fg shadow-lt-xs hover:bg-lt-danger-hover active:bg-lt-danger-active focus-visible:ring-lt-danger/20 dark:focus-visible:ring-lt-danger/40 disabled:bg-lt-disabled disabled:text-lt-disabled-fg disabled:shadow-none",
+        success:
+          "bg-lt-success text-lt-success-fg shadow-lt-xs hover:bg-lt-success-hover active:bg-lt-success-active disabled:bg-lt-disabled disabled:text-lt-disabled-fg disabled:shadow-none",
+        info: "bg-lt-info text-lt-info-fg shadow-lt-xs hover:bg-lt-info-hover active:bg-lt-info-active disabled:bg-lt-disabled disabled:text-lt-disabled-fg disabled:shadow-none",
         outline:
-          "border border-lt-input bg-lt-bg shadow-xs hover:bg-lt-accent hover:text-lt-accent-fg",
-        secondary: "bg-lt-secondary text-lt-secondary-fg shadow-xs hover:bg-lt-secondary/80",
-        ghost: "hover:bg-lt-accent hover:text-lt-accent-fg",
-        link: "text-lt-primary underline-offset-4 hover:underline",
+          "border border-lt-input bg-lt-bg shadow-lt-xs hover:bg-lt-accent hover:text-lt-accent-fg disabled:bg-lt-disabled disabled:text-lt-disabled-fg disabled:border-transparent disabled:shadow-none",
+        secondary:
+          "bg-lt-secondary text-lt-secondary-fg shadow-lt-xs hover:bg-lt-secondary-hover active:bg-lt-secondary-active disabled:bg-lt-disabled disabled:text-lt-disabled-fg disabled:shadow-none",
+        ghost: "hover:bg-lt-accent hover:text-lt-accent-fg disabled:text-lt-disabled-fg",
+        link: "text-lt-primary underline-offset-4 hover:underline disabled:text-lt-disabled-fg disabled:no-underline",
       },
       size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-lt-sm px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-lt-sm px-6 has-[>svg]:px-4",
-        icon: "size-9",
+        default: "h-[var(--lt-control-h-md)] px-4 py-2 has-[>svg]:px-3",
+        sm: "h-[var(--lt-control-h-sm)] rounded-lt-sm px-3 has-[>svg]:px-2.5",
+        lg: "h-[var(--lt-control-h-lg)] rounded-lt-sm px-6 has-[>svg]:px-4",
+        icon: "size-[var(--lt-control-h-md)]",
       },
     },
     defaultVariants: {
@@ -67,14 +70,14 @@ const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
 
   if (href) {
     return (
-      <Button asChild data-test={testId} variant={variant} size="lg">
+      <Button asChild data-test={testId} variant={variant} size="default">
         <Link href={href}>{label}</Link>
       </Button>
     );
   }
 
   return (
-    <Button data-test={testId} type={node.props.buttonType} variant={variant} size="lg">
+    <Button data-test={testId} type={node.props.buttonType} variant={variant} size="default">
       {label}
     </Button>
   );

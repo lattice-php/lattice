@@ -15,7 +15,7 @@ export const FormSkeletonComponent: RendererComponent<"form"> = ({ node }) => {
   return (
     <div
       aria-hidden="true"
-      className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-lt border border-lt-border bg-lt-surface p-6 shadow-xs"
+      className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-lt border border-lt-border bg-lt-surface p-6 shadow-lt-sm"
       data-lattice-skeleton={node.id ?? node.type}
     >
       <div className="grid gap-6">
