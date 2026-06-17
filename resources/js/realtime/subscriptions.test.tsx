@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { ListenerPayload } from "./types";
+import type { ListenerPayload } from "@lattice-php/lattice/types/generated";
 
 const handlers: { current: ((payload: unknown) => void) | null } = { current: null };
 

@@ -1,6 +1,6 @@
 import { Component, lazy, Suspense } from "react";
 import type { ReactNode } from "react";
-import type { ListenerPayload } from "./types";
+import type { ListenerPayload } from "@lattice-php/lattice/types/generated";
 
 const Subscriptions = lazy(() => import("./subscriptions"));
 

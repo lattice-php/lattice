@@ -5,7 +5,7 @@ import type {
   Option,
   PageContainer as KnownPageContainer,
 } from "@lattice-php/lattice/types/generated";
-import type { ListenerPayload } from "@lattice-php/lattice/realtime/types";
+import type { ListenerPayload } from "@lattice-php/lattice/types/generated";
 
 export type { KnownPageContainer, NodeType, WireNode };
 

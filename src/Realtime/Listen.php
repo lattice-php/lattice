@@ -10,6 +10,7 @@ use Lattice\Lattice\Core\Values\ToastMessage;
 use Lattice\Lattice\Core\Values\Translatable;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Realtime\Enums\ChannelVisibility;
 
 /**
  * Declares a websocket listener for a page: a channel, the broadcast event
@@ -26,22 +27,22 @@ final class Listen implements JsonSerializable
 
     private function __construct(
         private readonly string $channel,
-        private readonly string $visibility,
+        private readonly ChannelVisibility $visibility,
     ) {}
 
     public static function channel(string $name): self
     {
-        return new self($name, 'public');
+        return new self($name, ChannelVisibility::Public);
     }
 
     public static function private(string $name): self
     {
-        return new self($name, 'private');
+        return new self($name, ChannelVisibility::Private);
     }
 
     public static function presence(string $name): self
     {
-        return new self($name, 'presence');
+        return new self($name, ChannelVisibility::Presence);
     }
 
     /**
@@ -75,16 +76,8 @@ final class Listen implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return array{channel: string, visibility: string, events: list<string>, effects: list<EffectContract>}
-     */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): ListenerPayload
     {
-        return [
-            'channel' => $this->channel,
-            'visibility' => $this->visibility,
-            'events' => $this->events,
-            'effects' => $this->effects,
-        ];
+        return new ListenerPayload($this->channel, $this->visibility, $this->events, $this->effects);
     }
 }

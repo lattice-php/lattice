@@ -4,7 +4,7 @@ import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dis
 import { useT } from "@lattice-php/lattice/i18n";
 import { buildEffects } from "./build-effects";
 import type { RawEffect } from "./build-effects";
-import type { ListenerPayload } from "./types";
+import type { ListenerPayload } from "@lattice-php/lattice/types/generated";
 
 function useListenerHandler(listener: ListenerPayload): (payload: unknown) => void {
   const { t } = useT("lattice");

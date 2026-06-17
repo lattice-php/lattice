@@ -135,6 +135,7 @@ export type Card = {
   description: string | null;
   title: string | null;
 };
+export type ChannelVisibility = "public" | "private" | "presence";
 export type Chart = {
   categoryKey: string | null;
   data: Record<string, unknown>[];
@@ -762,6 +763,12 @@ export type Link = {
   label: string;
   method: HttpMethod | null;
   tabIndex: number | null;
+};
+export type ListenerPayload = {
+  readonly channel: string;
+  readonly visibility: ChannelVisibility;
+  readonly events: string[];
+  readonly effects: Effect[];
 };
 export type LocaleChangeEffect = {
   readonly locale: string;
