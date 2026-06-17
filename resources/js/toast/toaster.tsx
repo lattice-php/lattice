@@ -49,7 +49,9 @@ export function Toaster({ duration = 4000 }: { duration?: number }) {
         >
           {variantStyles[toast.variant].icon}
           <div className="flex min-w-0 flex-1 flex-col gap-2">
-            <Toast.Title className="text-sm text-lt-fg">{toast.message}</Toast.Title>
+            <Toast.Title className="text-sm text-lt-fg">
+              {typeof toast.message === "string" ? toast.message : null}
+            </Toast.Title>
             {toast.action ? (
               <div className="flex flex-wrap gap-2">
                 <RenderNode node={toast.action} />

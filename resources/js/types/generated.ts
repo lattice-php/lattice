@@ -1233,7 +1233,7 @@ export type ToastMessage = {
   dismissible: boolean;
   action: Node | null;
   variant: Variant;
-  message: string;
+  message: Translatable | string;
 };
 export type ToolCallPart = {
   args: Record<string, unknown>;
@@ -1241,6 +1241,11 @@ export type ToolCallPart = {
 };
 export type Topbar = {
   sticky: boolean;
+};
+export type Translatable = {
+  payload: Record<string, string>;
+  replacements: Record<string, string | number | boolean>;
+  key: string;
 };
 export type Variant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "auto" | "sm" | "md" | "lg" | "fill";
