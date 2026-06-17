@@ -127,6 +127,10 @@
       "types": "./dist/provider.d.ts",
       "import": "./dist/provider.js"
     },
+    "./realtime/*": {
+      "types": "./dist/realtime/*.d.ts",
+      "import": "./dist/realtime/*.js"
+    },
     "./registry": {
       "types": "./dist/registry.d.ts",
       "import": "./dist/registry.js"
