@@ -55,6 +55,39 @@ A layout's schema must contain **exactly one** `Outlet`. It carries no markup of
 seam where Lattice drops the active page's component tree. Everything around it — sidebar, breadcrumbs,
 header — is shared chrome rendered once and left in place as the page changes.
 
+## The header bar
+
+`Topbar` is a horizontal bar for chrome that sits above the page — a logo, search, settings menu, or
+appearance switcher. Call `->sticky()` to keep it pinned to the top of the viewport as the page
+scrolls, and `->items([...])` to fill it:
+
+```php
+use Lattice\Lattice\Layouts\Components\Topbar;
+
+Topbar::make('app-topbar')->sticky()->items([
+    Menu::make('topbar-settings')->items([
+        MenuItem::make('Settings', 'settings'),
+    ]),
+]);
+```
+
+## Callouts
+
+`Callouts` marks where flashed and action-emitted [callouts](/actions/effects/#callouts) render inside
+the shell — the persistent banners an action or a redirect can raise. Place it once, typically between
+the header bar and the `Outlet`:
+
+```php
+use Lattice\Lattice\Layouts\Components\Callouts;
+
+Stack::make('app-main')->width(Width::Fill)->schema([
+    Callouts::make(),
+    Outlet::make(),
+]);
+```
+
+Without a `Callouts` slot, callout effects have nowhere to render.
+
 ## Choosing a layout
 
 A page selects its layout in its [`#[AsPage]` attribute](/core/pages/#the-aspage-attribute), not with a
@@ -92,6 +125,6 @@ Lattice::layouts([AppLayout::class]);
 ## What goes inside a layout
 
 The shell is built from the same components as a page, plus a set made for navigation chrome —
-`Sidebar`, `Menu`, `MenuItem`, `Dropdown`, and `Breadcrumbs`. Those are covered in
+`Sidebar`, `Topbar`, `Menu`, `MenuItem`, `Dropdown`, and `Breadcrumbs`. Those are covered in
 [Navigation](/core/navigation/).
 </content>

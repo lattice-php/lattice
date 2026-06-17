@@ -1,0 +1,81 @@
+---
+interface EnumCase {
+  name: string;
+  value: string | number | null;
+}
+
+interface EnumEntry {
+  name: string;
+  namespace: string;
+  cases: EnumCase[];
+}
+
+interface Props {
+  enums: string[];
+  showNamespace?: boolean;
+}
+
+const { enums, showNamespace = false } = Astro.props;
+
+const modules = import.meta.glob<{ default: Record<string, EnumEntry> }>(
+  "../fixtures/enums.json",
+  { eager: true },
+);
+
+const registry = modules["../fixtures/enums.json"].default;
+
+const byShortName = new Map<string, EnumEntry>();
+for (const entry of Object.values(registry)) {
+  byShortName.set(entry.name, entry);
+}
+
+const shortNamespace = (namespace: string) =>
+  namespace.replace(/^Lattice\\Lattice\\/, "");
+
+const rows = enums.map((key) => {
+  const entry = registry[key] ?? byShortName.get(key);
+
+  if (!entry) {
+    throw new Error(
+      `Unknown enum "${key}" in <EnumTable>. Is it dumped to docs/fixtures/enums.json?`,
+    );
+  }
+
+  return entry;
+});
+---
+
+<table>
+  <thead>
+    <tr>
+      <th>Enum</th>
+      {showNamespace && <th>Namespace</th>}
+      <th>Cases (value)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      rows.map((entry) => (
+        <tr>
+          <td>
+            <code>{entry.name}</code>
+          </td>
+          {showNamespace && (
+            <td>
+              <code>{shortNamespace(entry.namespace)}</code>
+            </td>
+          )}
+          <td>
+            {entry.cases.map((c, index) => (
+              <>
+                {index > 0 && ", "}
+                <code>{c.name}</code>
+                {c.value !== null && <> ({c.value})</>}
+              </>
+            ))}
+          </td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

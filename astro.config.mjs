@@ -63,6 +63,7 @@ export default defineConfig({
             { label: "Navigation", link: "/core/navigation/" },
             { label: "Icons", link: "/core/icons/" },
             { label: "Internationalization", link: "/core/i18n/" },
+            { label: "Realtime", link: "/core/realtime/" },
           ],
         },
         {

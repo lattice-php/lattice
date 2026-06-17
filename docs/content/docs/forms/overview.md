@@ -84,6 +84,20 @@ form only accepts submissions for the schema it actually rendered. `FormControll
 visible-only, with hidden and disabled values stripped. Your `handle()` returns any Laravel
 `Response` or `Responsable`: a redirect, a JSON payload, or a [toast effect](/actions/overview/).
 
+## Resetting after submit
+
+Control what the form does with its fields once a submission resolves:
+
+```php
+$form
+    ->resetOnSuccess()              // clear every field after a successful submit
+    ->resetOnError(['password']);   // clear only these fields after a failed submit
+```
+
+Both accept `true`/`false` to reset all fields or none, or an array of field names to reset a subset.
+`resetOnError(['password'])` is the common case — clear the password but keep what the user typed
+everywhere else.
+
 ## Working with submitted data
 
 `validate()` returns a plain array of validated values. Where a callback needs to read the in-flight
