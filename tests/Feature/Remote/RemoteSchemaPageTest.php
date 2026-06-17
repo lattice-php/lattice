@@ -18,7 +18,7 @@ test('workbench remote schema page renders the remote todo list beside a full re
                 ->assertProp('dataBindings.title', 'title')
                 ->component('button', tap: fn ($button) => $button
                     ->assertProp('dataBindings.href', 'actionHref'))))
-        ->component('remote.chat-box', tap: fn ($chat) => $chat->assertProp('fill', true));
+        ->component('chat.box', tap: fn ($chat) => $chat->assertProp('fill', true));
 });
 
 test('workbench remote todos endpoint returns five todo rows', function (): void {

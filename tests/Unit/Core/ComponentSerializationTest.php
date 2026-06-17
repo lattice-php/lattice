@@ -5,10 +5,10 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Components\ActionGroup;
 use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Chat\Components\ChatBox;
 use Lattice\Lattice\Core\Components\Badge;
 use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\Card;
-use Lattice\Lattice\Core\Components\ChatBox;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\FloatingPanel;
 use Lattice\Lattice\Core\Components\Grid;
@@ -150,20 +150,19 @@ test('chat boxes serialize their fluent endpoint and presentation configuration'
     expect(wire(ChatBox::make('assistant')
         ->streamEndpoint('/chat/stream')
         ->historyEndpoint('/chat/history')
-        ->conversationId('conv-1')
         ->placeholder('Ask anything…')
         ->title('Assistant')
         ->fill()))
         ->toMatchArray([
             'type' => 'chat.box',
-            'key' => 'assistant',
+            'id' => 'assistant',
             'props' => [
                 'streamEndpoint' => '/chat/stream',
                 'historyEndpoint' => '/chat/history',
-                'conversationId' => 'conv-1',
                 'placeholder' => 'Ask anything…',
                 'title' => 'Assistant',
                 'fill' => true,
+                'remote' => null,
             ],
         ]);
 });

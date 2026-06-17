@@ -23,8 +23,6 @@ final readonly class RemoteSourceTokenController
         $nodeType = $request->string('nodeType')->toString();
         abort_if($nodeType === '', 403);
 
-        abort_unless(str_starts_with($nodeType, 'remote.'), 403);
-
         $context = $this->references->trustedContext($request, $nodeType, $nodeId);
 
         abort_unless(($context['source'] ?? null) === $source, 403);

@@ -5,6 +5,7 @@ import type { ChatBox as ChatBoxProps } from "@lattice-php/lattice/types/generat
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
 import { createRegistry } from "@lattice-php/lattice/core/registry";
+import { clearRemoteTokenCache } from "@lattice-php/lattice/core/api";
 import { chatPlugin } from "../index";
 import { ChatBox } from "./chat-box";
 
@@ -63,6 +64,8 @@ function renderChatBox(props: Partial<ChatBoxProps> = {}): void {
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
+  clearRemoteTokenCache();
+  document.cookie = "XSRF-TOKEN=;path=/;max-age=0";
 });
 
 describe("ChatBox component", () => {
@@ -170,5 +173,88 @@ describe("ChatBox component", () => {
       const posts = fetchMock.mock.calls.filter(([, init]) => init?.method === "POST");
       expect(posts).toHaveLength(1);
     });
+  });
+
+  it("loads history with a scoped browser token when remote access is configured", async () => {
+    document.cookie = "XSRF-TOKEN=test-token";
+    const fetchMock = vi.fn<typeof fetch>(async (url) => {
+      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
+        return new Response(
+          JSON.stringify({
+            accessToken: "fake-browser-token",
+            tokenType: "Bearer",
+            expiresIn: 120,
+            audience: "https://crm.example.test",
+            scopes: ["chat.read", "chat.write"],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+
+      return new Response(
+        JSON.stringify({
+          messages: [
+            {
+              id: "assistant-1",
+              role: "assistant",
+              parts: [{ type: "chat.part.text", props: { text: "Previous answer" } }],
+            },
+          ],
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      withRegistry(
+        <ChatBox
+          node={fakeNode({
+            type: "chat.box",
+            props: {
+              streamEndpoint: "https://crm.example.test/chat/stream",
+              historyEndpoint: "https://crm.example.test/chat/history",
+              title: "CRM assistant",
+              remote: {
+                audience: "https://crm.example.test",
+                source: "fixtures.crm",
+                nodeId: "crm-chat",
+                nodeType: "chat.box",
+                ref: "sealed-ref",
+                scopes: ["chat.read", "chat.write"],
+                tokenEndpoint: "/custom/remote-tokens/fixtures.crm",
+              },
+            },
+          })}
+        >
+          {null}
+        </ChatBox>,
+      ),
+    );
+
+    expect(await screen.findByText("Previous answer")).toBeVisible();
+
+    const tokenInit = fetchMock.mock.calls[0]?.[1] as RequestInit;
+    expect(tokenInit.body).toBe(
+      JSON.stringify({
+        nodeId: "crm-chat",
+        nodeType: "chat.box",
+        audience: "https://crm.example.test",
+        scopes: ["chat.read", "chat.write"],
+      }),
+    );
+
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        "https://crm.example.test/chat/history",
+        expect.objectContaining({
+          headers: {
+            Accept: "application/json",
+            "Accept-Language": "en",
+            Authorization: "Bearer fake-browser-token",
+          },
+        }),
+      ),
+    );
   });
 });

@@ -157,10 +157,10 @@ export type ChartSeries = {
 };
 export type ChartSeriesType = "area" | "bar" | "line" | "pie";
 export type ChatBox = {
-  conversationId: string | null;
   fill: boolean;
   historyEndpoint: string | null;
   placeholder: string | null;
+  remote: RemoteAccess | null;
   streamEndpoint: string | null;
   title: string | null;
 };
@@ -170,6 +170,11 @@ export type ChatMessage = {
   readonly parts: Node[];
 };
 export type ChatNode =
+  | {
+      type: "chat.box";
+      key?: string;
+      props: ChatBox;
+    }
   | {
       type: "chat.part.text";
       key?: string;
@@ -319,11 +324,6 @@ export type CoreNode =
       type: "chart";
       key?: string;
       props: Chart;
-    }
-  | {
-      type: "chat.box";
-      key?: string;
-      props: ChatBox;
     }
   | {
       type: "floating-panel";
@@ -933,27 +933,12 @@ export type RemoteAccess = {
   readonly tokenEndpoint: string;
   readonly ref: string;
 };
-export type RemoteChatBox = {
-  conversationId: string | null;
-  fill: boolean;
-  historyEndpoint: string | null;
-  placeholder: string | null;
-  remote: RemoteAccess | null;
-  streamEndpoint: string | null;
-  title: string | null;
+export type RemoteNode = {
+  type: "remote.data-list";
+  key?: string;
+  props: DataList;
+  schema?: Node[];
 };
-export type RemoteNode =
-  | {
-      type: "remote.chat-box";
-      key?: string;
-      props: RemoteChatBox;
-    }
-  | {
-      type: "remote.data-list";
-      key?: string;
-      props: DataList;
-      schema?: Node[];
-    };
 export type Repeater = {
   addLabel: string | null;
   columnWidth: ColumnWidth;

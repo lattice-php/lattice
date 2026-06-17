@@ -63,7 +63,7 @@ test('remote source schema resolves nested nodes and injects trusted token props
                                     ],
                                 ],
                                 [
-                                    'type' => 'remote.chat-box',
+                                    'type' => 'chat.box',
                                     'id' => 'crm-chat',
                                     'props' => [
                                         'endpoint' => 'https://evil.example.test/token',
@@ -127,7 +127,7 @@ test('remote source schema resolves nested nodes and injects trusted token props
             'description' => 'email',
         ]);
 
-    expect($chatBox['type'])->toBe('remote.chat-box')
+    expect($chatBox['type'])->toBe('chat.box')
         ->and($chatBox['id'])->toBe('crm-chat')
         ->and($chatBox['props']['streamEndpoint'])->toBe('https://crm.example.test/chat/stream')
         ->and($chatBox['props']['historyEndpoint'])->toBe('https://crm.example.test/chat/history')
@@ -136,7 +136,7 @@ test('remote source schema resolves nested nodes and injects trusted token props
         ->and($chatBox['props']['remote']['audience'])->toBe('https://crm.example.test')
         ->and($chatBox['props']['remote']['scopes'])->toBe(['chat.read', 'chat.write'])
         ->and($chatBox['props']['remote']['nodeId'])->toBe('crm-chat')
-        ->and($chatBox['props']['remote']['nodeType'])->toBe('remote.chat-box')
+        ->and($chatBox['props']['remote']['nodeType'])->toBe('chat.box')
         ->and($chatBox['props']['remote']['tokenEndpoint'])->toBe('/lattice/remote-sources/fixtures.remote-crm/token')
         ->and($chatBox['props']['remote']['ref'])->toBeString()->not->toBe('forged-remote-ref');
 

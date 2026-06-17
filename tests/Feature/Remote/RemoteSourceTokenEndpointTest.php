@@ -45,7 +45,7 @@ test('source token endpoint verifies refs for remote chat components', function 
     $this->actingAs(workbenchTestUser());
     Lattice::remoteSources([DemoCrmSource::class]);
 
-    $ref = app(ComponentReferenceSigner::class)->seal('remote.chat-box', 'crm-chat', [
+    $ref = app(ComponentReferenceSigner::class)->seal('chat.box', 'crm-chat', [
         'audience' => 'https://crm.example.test',
         'source' => 'fixtures.crm',
         'scopes' => ['chat.read', 'chat.write'],
@@ -53,7 +53,7 @@ test('source token endpoint verifies refs for remote chat components', function 
 
     $response = $this->postJson('/lattice/remote-sources/fixtures.crm/token', [
         'nodeId' => 'crm-chat',
-        'nodeType' => 'remote.chat-box',
+        'nodeType' => 'chat.box',
         'audience' => 'https://crm.example.test',
         'scopes' => ['chat.read', 'chat.write'],
     ], latticeHeaders($ref));
