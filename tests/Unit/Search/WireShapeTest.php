@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\GlobalSearch\SearchCategory;
-use Lattice\Lattice\GlobalSearch\SearchPagination;
-use Lattice\Lattice\GlobalSearch\SearchResult;
-use Lattice\Lattice\GlobalSearch\SearchResultItem;
+use Lattice\Lattice\Search\SearchCategory;
+use Lattice\Lattice\Search\SearchPagination;
+use Lattice\Lattice\Search\SearchResult;
+use Lattice\Lattice\Search\SearchResultItem;
 
 test('a result serializes to the category/item envelope', function () {
     $result = new SearchResult('products', new SearchResultItem(

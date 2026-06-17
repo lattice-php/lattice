@@ -48,7 +48,7 @@ const GlobalSearch: RendererComponent<"global-search.root"> = ({ node, children 
   const { t } = useT("lattice");
   const [open, setOpen] = useState(false);
   const search = useGlobalSearch({
-    endpoint: endpoint ?? "/lattice/global-search",
+    endpoint: endpoint ?? "/lattice/search",
     perPage: perPage ?? 20,
   });
 

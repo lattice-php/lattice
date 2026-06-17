@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Workbench\App\Search;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\GlobalSearch\Contracts\SearchHistoryRecorder;
-use Lattice\Lattice\GlobalSearch\SearchResult;
-use Lattice\Lattice\GlobalSearch\SearchResultItem;
+use Lattice\Lattice\Search\Contracts\SearchHistoryRecorder;
+use Lattice\Lattice\Search\SearchResult;
+use Lattice\Lattice\Search\SearchResultItem;
 
 final class SessionSearchHistoryRecorder implements SearchHistoryRecorder
 {

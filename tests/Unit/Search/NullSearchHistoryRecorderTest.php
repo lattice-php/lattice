@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\GlobalSearch\NullSearchHistoryRecorder;
-use Lattice\Lattice\GlobalSearch\SearchResult;
-use Lattice\Lattice\GlobalSearch\SearchResultItem;
+use Lattice\Lattice\Search\NullSearchHistoryRecorder;
+use Lattice\Lattice\Search\SearchResult;
+use Lattice\Lattice\Search\SearchResultItem;
 
 test('the null recorder persists nothing', function () {
     $recorder = new NullSearchHistoryRecorder;

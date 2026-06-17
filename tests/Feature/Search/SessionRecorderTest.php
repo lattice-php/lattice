@@ -4,8 +4,8 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Illuminate\Session\ArraySessionHandler;
 use Illuminate\Session\Store;
-use Lattice\Lattice\GlobalSearch\SearchResult;
-use Lattice\Lattice\GlobalSearch\SearchResultItem;
+use Lattice\Lattice\Search\SearchResult;
+use Lattice\Lattice\Search\SearchResultItem;
 use Workbench\App\Search\SessionSearchHistoryRecorder;
 
 function sessionRecorderRequest(): Request

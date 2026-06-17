@@ -26,7 +26,7 @@ final class DiscoveryKinds
         'fragments' => AsFragment::class,
         'remote-sources' => AsRemoteSource::class,
         'layouts' => AsLayout::class,
-        'global-search' => AsSearchProvider::class,
+        'search' => AsSearchProvider::class,
     ];
 
     public const string PAGE_ATTRIBUTE = AsPage::class;

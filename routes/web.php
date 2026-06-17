@@ -6,8 +6,8 @@ use Lattice\Lattice\Http\Controllers\ActionController;
 use Lattice\Lattice\Http\Controllers\BulkActionController;
 use Lattice\Lattice\Http\Controllers\FormController;
 use Lattice\Lattice\Http\Controllers\FragmentController;
-use Lattice\Lattice\Http\Controllers\GlobalSearchController;
 use Lattice\Lattice\Http\Controllers\RemoteSourceTokenController;
+use Lattice\Lattice\Http\Controllers\SearchController;
 use Lattice\Lattice\Http\Controllers\TableController;
 
 Route::middleware(config('lattice.forms.middleware', ['web', 'auth']))
@@ -40,10 +40,10 @@ Route::middleware(config('lattice.bulk-actions.middleware', ['web', 'auth']))
     ->where('bulkAction', '.*')
     ->name('lattice.bulk-actions.handle');
 
-Route::middleware(config('lattice.global-search.middleware', ['web', 'auth']))
-    ->get(config('lattice.global-search.endpoint', 'lattice/global-search'), [GlobalSearchController::class, 'search'])
-    ->name('lattice.global-search.search');
+Route::middleware(config('lattice.search.middleware', ['web', 'auth']))
+    ->get(config('lattice.search.endpoint', 'lattice/search'), [SearchController::class, 'search'])
+    ->name('lattice.search.query');
 
-Route::middleware(config('lattice.global-search.middleware', ['web', 'auth']))
-    ->post(config('lattice.global-search.endpoint', 'lattice/global-search'), [GlobalSearchController::class, 'record'])
-    ->name('lattice.global-search.record');
+Route::middleware(config('lattice.search.middleware', ['web', 'auth']))
+    ->post(config('lattice.search.endpoint', 'lattice/search'), [SearchController::class, 'record'])
+    ->name('lattice.search.record');

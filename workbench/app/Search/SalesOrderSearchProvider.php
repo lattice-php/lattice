@@ -6,12 +6,12 @@ namespace Workbench\App\Search;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsSearchProvider;
-use Lattice\Lattice\GlobalSearch\Contracts\SearchResultProvider;
-use Lattice\Lattice\GlobalSearch\SearchCategory;
-use Lattice\Lattice\GlobalSearch\SearchQuery;
-use Lattice\Lattice\GlobalSearch\SearchResult;
-use Lattice\Lattice\GlobalSearch\SearchResultItem;
-use Lattice\Lattice\GlobalSearch\SearchResults;
+use Lattice\Lattice\Search\Contracts\SearchResultProvider;
+use Lattice\Lattice\Search\SearchCategory;
+use Lattice\Lattice\Search\SearchQuery;
+use Lattice\Lattice\Search\SearchResult;
+use Lattice\Lattice\Search\SearchResultItem;
+use Lattice\Lattice\Search\SearchResults;
 use Workbench\App\Models\SalesOrder;
 
 #[AsSearchProvider('sales-orders')]

@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\GlobalSearch;
+namespace Lattice\Lattice\Search;
 
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Lattice\Lattice\Attributes\AsSearchProvider;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\GlobalSearch\Contracts\SearchResultProvider;
+use Lattice\Lattice\Search\Contracts\SearchResultProvider;
 use Spatie\Attributes\Attributes;
 
 final class SearchResultProviderRegistry
@@ -35,7 +35,7 @@ final class SearchResultProviderRegistry
     public function all(): array
     {
         /** @var array<string, class-string<SearchResultProvider>> $discovered */
-        $discovered = $this->manifest->forGroup('global-search');
+        $discovered = $this->manifest->forGroup('search');
 
         return array_map(
             fn (string $class): SearchResultProvider => $this->container->make($class),

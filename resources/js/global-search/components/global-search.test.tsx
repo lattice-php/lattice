@@ -15,7 +15,7 @@ function renderRoot() {
   const node = {
     type: "global-search.root",
     props: {
-      endpoint: "/lattice/global-search",
+      endpoint: "/lattice/search",
       placeholder: "Search…",
       title: "Search",
       shortcut: true,

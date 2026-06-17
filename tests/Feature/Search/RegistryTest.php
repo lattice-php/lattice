@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\GlobalSearch\Contracts\SearchResultProvider;
-use Lattice\Lattice\GlobalSearch\SearchResultProviderRegistry;
+use Lattice\Lattice\Search\Contracts\SearchResultProvider;
+use Lattice\Lattice\Search\SearchResultProviderRegistry;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredProductsSearchProvider;
 
 beforeEach(function () {

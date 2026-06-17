@@ -14,7 +14,7 @@ use Laravel\Boost\Install\GuidelineComposer;
 use Laravel\Boost\Install\SkillComposer;
 use Laravel\Boost\Support\Config;
 use Laravel\Roster\Roster;
-use Lattice\Lattice\GlobalSearch\Contracts\SearchHistoryRecorder;
+use Lattice\Lattice\Search\Contracts\SearchHistoryRecorder;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Workbench\App\Models\User;
 use Workbench\App\Search\SessionSearchHistoryRecorder;

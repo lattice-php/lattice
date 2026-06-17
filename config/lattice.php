@@ -41,8 +41,8 @@ return [
         'middleware' => ['web', 'auth'],
     ],
 
-    'global-search' => [
-        'endpoint' => 'lattice/global-search',
+    'search' => [
+        'endpoint' => 'lattice/search',
         'middleware' => ['web', 'auth'],
     ],
 

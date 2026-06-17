@@ -18,12 +18,12 @@ beforeEach(function () {
 });
 
 test('config exposes the default endpoint and middleware', function () {
-    expect(config('lattice.global-search.endpoint'))->toBe('lattice/global-search');
-    expect(config('lattice.global-search.middleware'))->toBe(['web', 'auth']);
+    expect(config('lattice.search.endpoint'))->toBe('lattice/search');
+    expect(config('lattice.search.middleware'))->toBe(['web', 'auth']);
 });
 
 test('search returns the closed response envelope', function () {
-    $response = getJson('/lattice/global-search?query=Widget&category=products&per_page=10');
+    $response = getJson('/lattice/search?query=Widget&category=products&per_page=10');
 
     $response->assertOk()
         ->assertJsonStructure([
@@ -42,21 +42,21 @@ test('search returns the closed response envelope', function () {
 });
 
 test('counts are present only when requested', function () {
-    expect(getJson('/lattice/global-search?query=Widget&category=products')->json('categories.0.count'))->toBeNull();
-    expect(getJson('/lattice/global-search?query=Widget&category=products&counts=1')->json('categories.0.count'))->toBe(25);
-    expect(getJson('/lattice/global-search?query=Widget&category=products')->json('state.countsIncluded'))->toBeFalse();
+    expect(getJson('/lattice/search?query=Widget&category=products')->json('categories.0.count'))->toBeNull();
+    expect(getJson('/lattice/search?query=Widget&category=products&counts=1')->json('categories.0.count'))->toBe(25);
+    expect(getJson('/lattice/search?query=Widget&category=products')->json('state.countsIncluded'))->toBeFalse();
 });
 
 test('unauthorized providers are excluded', function () {
     DiscoveredProductsSearchProvider::$authorized = false;
 
-    $response = getJson('/lattice/global-search?query=Widget');
+    $response = getJson('/lattice/search?query=Widget');
 
     expect($response->json('categories'))->toBe([])
         ->and($response->json('data'))->toBe([]);
 });
 
 test('search validates pagination parameters', function () {
-    getJson('/lattice/global-search?per_page=999')->assertStatus(422);
-    getJson('/lattice/global-search?page=0')->assertStatus(422);
+    getJson('/lattice/search?per_page=999')->assertStatus(422);
+    getJson('/lattice/search?page=0')->assertStatus(422);
 });

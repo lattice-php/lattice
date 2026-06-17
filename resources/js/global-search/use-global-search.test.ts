@@ -62,7 +62,7 @@ describe("useGlobalSearch", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() =>
-      useGlobalSearch({ endpoint: "/lattice/global-search", perPage: 1 }),
+      useGlobalSearch({ endpoint: "/lattice/search", perPage: 1 }),
     );
     act(() => result.current.setQuery("wid"));
 
@@ -83,7 +83,7 @@ describe("useGlobalSearch", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() =>
-      useGlobalSearch({ endpoint: "/lattice/global-search", perPage: 1 }),
+      useGlobalSearch({ endpoint: "/lattice/search", perPage: 1 }),
     );
     act(() => result.current.setQuery("wid"));
     await act(async () => {
@@ -105,7 +105,7 @@ describe("useGlobalSearch", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() =>
-      useGlobalSearch({ endpoint: "/lattice/global-search", perPage: 1 }),
+      useGlobalSearch({ endpoint: "/lattice/search", perPage: 1 }),
     );
     act(() => result.current.setQuery("old"));
     await act(async () => {
@@ -139,7 +139,7 @@ describe("useGlobalSearch", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() =>
-      useGlobalSearch({ endpoint: "/lattice/global-search", perPage: 1 }),
+      useGlobalSearch({ endpoint: "/lattice/search", perPage: 1 }),
     );
     // The client-supplied link is deliberately wrong; navigation must use the re-resolved row.
     const clicked = {

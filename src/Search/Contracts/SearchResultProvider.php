@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\GlobalSearch\Contracts;
+namespace Lattice\Lattice\Search\Contracts;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\GlobalSearch\SearchCategory;
-use Lattice\Lattice\GlobalSearch\SearchQuery;
-use Lattice\Lattice\GlobalSearch\SearchResult;
-use Lattice\Lattice\GlobalSearch\SearchResults;
+use Lattice\Lattice\Search\SearchCategory;
+use Lattice\Lattice\Search\SearchQuery;
+use Lattice\Lattice\Search\SearchResult;
+use Lattice\Lattice\Search\SearchResults;
 
 interface SearchResultProvider
 {

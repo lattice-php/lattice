@@ -8,7 +8,7 @@ use Lattice\Lattice\Core\Components\GlobalSearchResults;
 test('the root serializes its props and nested slots', function () {
     $node = wire(
         GlobalSearch::make('global-search')
-            ->endpoint('/lattice/global-search')
+            ->endpoint('/lattice/search')
             ->placeholder('Search…')
             ->title('Search')
             ->schema([
@@ -20,7 +20,7 @@ test('the root serializes its props and nested slots', function () {
     expect($node)->toMatchArray([
         'type' => 'global-search.root',
         'props' => [
-            'endpoint' => '/lattice/global-search',
+            'endpoint' => '/lattice/search',
             'placeholder' => 'Search…',
             'title' => 'Search',
             'shortcut' => true,

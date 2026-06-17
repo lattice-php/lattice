@@ -4,17 +4,17 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
-use Lattice\Lattice\GlobalSearch\Contracts\SearchHistoryRecorder;
-use Lattice\Lattice\GlobalSearch\Contracts\SearchResultProvider;
-use Lattice\Lattice\GlobalSearch\SearchCategory;
-use Lattice\Lattice\GlobalSearch\SearchPagination;
-use Lattice\Lattice\GlobalSearch\SearchQuery;
-use Lattice\Lattice\GlobalSearch\SearchResultProviderRegistry;
-use Lattice\Lattice\GlobalSearch\SearchResults;
 use Lattice\Lattice\Http\Requests\RecordSelectionRequest;
 use Lattice\Lattice\Http\Requests\SearchRequest;
+use Lattice\Lattice\Search\Contracts\SearchHistoryRecorder;
+use Lattice\Lattice\Search\Contracts\SearchResultProvider;
+use Lattice\Lattice\Search\SearchCategory;
+use Lattice\Lattice\Search\SearchPagination;
+use Lattice\Lattice\Search\SearchQuery;
+use Lattice\Lattice\Search\SearchResultProviderRegistry;
+use Lattice\Lattice\Search\SearchResults;
 
-final readonly class GlobalSearchController
+final readonly class SearchController
 {
     public function __construct(
         private SearchResultProviderRegistry $providers,

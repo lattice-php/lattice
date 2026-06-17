@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\GlobalSearch\Contracts;
+namespace Lattice\Lattice\Search\Contracts;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\GlobalSearch\SearchResult;
+use Lattice\Lattice\Search\SearchResult;
 
 interface SearchHistoryRecorder
 {

@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\GlobalSearch\Contracts\SearchHistoryRecorder;
-use Lattice\Lattice\GlobalSearch\NullSearchHistoryRecorder;
+use Lattice\Lattice\Search\Contracts\SearchHistoryRecorder;
+use Lattice\Lattice\Search\NullSearchHistoryRecorder;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredProductsSearchProvider;
 use Orchestra\Testbench\Factories\UserFactory;
 
@@ -18,7 +18,7 @@ beforeEach(function () {
 });
 
 test('record re-resolves through the provider and ignores client payload', function () {
-    $response = postJson('/lattice/global-search', [
+    $response = postJson('/lattice/search', [
         'category' => 'products',
         'id' => '7',
         'item' => ['title' => 'TAMPERED', 'link' => 'https://evil.example/x'],
@@ -31,19 +31,19 @@ test('record re-resolves through the provider and ignores client payload', funct
 });
 
 test('record validates the payload', function () {
-    postJson('/lattice/global-search', [])->assertStatus(422);
+    postJson('/lattice/search', [])->assertStatus(422);
 });
 
 test('record 404s an unknown category and 403s an unauthorized one', function () {
-    postJson('/lattice/global-search', ['category' => 'missing', 'id' => '7'])->assertStatus(404);
+    postJson('/lattice/search', ['category' => 'missing', 'id' => '7'])->assertStatus(404);
 
     DiscoveredProductsSearchProvider::$authorized = false;
-    postJson('/lattice/global-search', ['category' => 'products', 'id' => '7'])->assertStatus(403);
+    postJson('/lattice/search', ['category' => 'products', 'id' => '7'])->assertStatus(403);
 });
 
 test('recent returns an empty list with the default recorder', function () {
     actingAs(UserFactory::new()->create());
-    $response = \Pest\Laravel\getJson('/lattice/global-search?recent=1');
+    $response = \Pest\Laravel\getJson('/lattice/search?recent=1');
     $response->assertOk();
     expect($response->json('data'))->toBe([]);
 });

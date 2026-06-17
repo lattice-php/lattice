@@ -13,7 +13,7 @@ test('the workbench product provider returns matching products', function () {
 
     actingAs(UserFactory::new()->create());
 
-    $response = getJson('/lattice/global-search?query=Aurora&category=products&counts=1');
+    $response = getJson('/lattice/search?query=Aurora&category=products&counts=1');
 
     $response->assertOk();
     expect($response->json('data'))->toHaveCount(1)

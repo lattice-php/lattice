@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\GlobalSearch;
+namespace Lattice\Lattice\Search;
 
 final readonly class SearchQuery
 {

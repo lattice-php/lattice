@@ -13,13 +13,13 @@ use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
-use Lattice\Lattice\GlobalSearch\Contracts\SearchResultProvider;
-use Lattice\Lattice\GlobalSearch\SearchResultProviderRegistry;
 use Lattice\Lattice\Http\PageRegistry;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Remote\RemoteSourceDefinition;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
+use Lattice\Lattice\Search\Contracts\SearchResultProvider;
+use Lattice\Lattice\Search\SearchResultProviderRegistry;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
 
