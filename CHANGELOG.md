@@ -1,5 +1,72 @@
 # Changelog
 
+## [0.4.0](https://github.com/lattice-php/lattice/compare/0.3.0...0.4.0) (2026-06-17)
+
+
+### Features
+
+* accept Translatable in toast messages ([bcb241c](https://github.com/lattice-php/lattice/commit/bcb241c372f622863af0b7ed8ee0e9f29518bdf7))
+* add browser token integration component ([e6ff5ca](https://github.com/lattice-php/lattice/commit/e6ff5caa0dcbe379d1c7f98ed5da2257fb71f73e))
+* add buildEffects resolver for real-time listener effects ([90208ca](https://github.com/lattice-php/lattice/commit/90208caa1edb2a6f61924f5c3374265415b55443))
+* add integration registry ([95a445f](https://github.com/lattice-php/lattice/commit/95a445f4b62eed9c8f77b7b8c58ceb398043524b))
+* add integration token endpoint ([cd571b3](https://github.com/lattice-php/lattice/commit/cd571b30ca1c3aad49a20cad07f4ecf403e6d396))
+* add Listen builder for real-time page listeners ([c798b95](https://github.com/lattice-php/lattice/commit/c798b9569661039b5774b309dfc66c6d1b62cecd))
+* add remote schema sources ([fa98383](https://github.com/lattice-php/lattice/commit/fa9838342840bc90ae8653e93189b6a5cdbd0428))
+* add table filter clause options ([9bb6e46](https://github.com/lattice-php/lattice/commit/9bb6e46af48c19bdf3ce52718b982ed383003afe))
+* add Translatable value object and rt() helper ([7048549](https://github.com/lattice-php/lattice/commit/7048549302d47dae314bcdc667185fc42caa6a32))
+* demo browser token integrations in chat ([580b0e3](https://github.com/lattice-php/lattice/commit/580b0e3154eb139f766d5ba85e7c4187ac01d975))
+* **design:** expand rem-based design tokens and tighten component density ([9c2669f](https://github.com/lattice-php/lattice/commit/9c2669f3233b8dcfedda2beb5def59dc99348024))
+* **design:** expand rem-based design tokens and tighten component density ([325d5a5](https://github.com/lattice-php/lattice/commit/325d5a50f1708176248947534119c26db00c1db0))
+* **forms:** add prefix/suffix affixes to fields and menu items ([4ffc64d](https://github.com/lattice-php/lattice/commit/4ffc64dab4691ce6af694dc772c83c23ea1f6a78))
+* **forms:** prefix/suffix affixes for fields and menu items ([d5f9cd5](https://github.com/lattice-php/lattice/commit/d5f9cd5352480aee343c54028a14a79cf4bf6d51))
+* **layout:** add Topbar component with sticky and float modifiers ([0b64c83](https://github.com/lattice-php/lattice/commit/0b64c83000a4517c055d99356ef17c5f59ef028f))
+* **layout:** add Topbar component with sticky and float modifiers ([03c3998](https://github.com/lattice-php/lattice/commit/03c39988f4ae8630513146a1bc1b43b385f6e077))
+* mount real-time listeners in the page host and export the API ([5c5d812](https://github.com/lattice-php/lattice/commit/5c5d812d880baddbc5db692593c0746e3ce76006))
+* normalize integration schema ([ca7ca78](https://github.com/lattice-php/lattice/commit/ca7ca789d1b077ec4fb76d8d71ccb29803c09f5f))
+* optional Reverb/Echo real-time (Phase 1) ([8a9f1bb](https://github.com/lattice-php/lattice/commit/8a9f1bb0fb84c733e5beb33e569d85e8cedc3c73))
+* render remote data lists from row schemas ([08ed0aa](https://github.com/lattice-php/lattice/commit/08ed0aa266fc8cb906551fe3816f4416c09c167a))
+* resolve integration schemas from external sources ([25d81a0](https://github.com/lattice-php/lattice/commit/25d81a09480221167b882f739f6524459d5a566e))
+* serialize page listeners behind realtime config flag ([cb701a5](https://github.com/lattice-php/lattice/commit/cb701a562e0a5049e522caba6570a8f10973e9e2))
+* show remote todo workbench example ([cd9ed6d](https://github.com/lattice-php/lattice/commit/cd9ed6d890a878df5422f24f88b7142b6c26d484))
+* subscribe to Echo channels and dispatch listener effects ([9e7cbfe](https://github.com/lattice-php/lattice/commit/9e7cbfe5e26a03cf70411b93733803e9684b5790))
+* support dynamic remote source keys ([a538a96](https://github.com/lattice-php/lattice/commit/a538a967479d9db324d144b921eb8abcbdaf6c71))
+* **testing:** address components by class and assert nested props by dot path ([4af8382](https://github.com/lattice-php/lattice/commit/4af83828dee51da84fca275d85eec768fb32efa5))
+* **testing:** address layout components by key and assert their props ([5494b43](https://github.com/lattice-php/lattice/commit/5494b436e4f4c223428e752dd40baf68005d1e8c))
+* **testing:** address layout components by key and assert their props ([30772f0](https://github.com/lattice-php/lattice/commit/30772f0bc4501a7db8fe48a012f1f0157c39f05a))
+* **workbench:** real-time demo page wired to Echo over Reverb ([6f8163f](https://github.com/lattice-php/lattice/commit/6f8163f73acff95f70ccbdea0e7fa529bc461b88))
+
+
+### Bug Fixes
+
+* address remote source review findings ([262c2e6](https://github.com/lattice-php/lattice/commit/262c2e6454eecd77c5c222a3ebebdfa9c7a74f61))
+* **build:** export ./realtime/* and bump docs workflow to setup-node v6 ([7d2cb01](https://github.com/lattice-php/lattice/commit/7d2cb0174d244802c8e4fc45f7eb6e1694172bbe))
+* **build:** export ./realtime/* and bump docs workflow to setup-node v6 ([fa9e28e](https://github.com/lattice-php/lattice/commit/fa9e28ec99830f567916eff88decdb8e7e70365c))
+* constrain filled chat boxes to parent height ([dd05fec](https://github.com/lattice-php/lattice/commit/dd05fec0c646db1d649a7fbb946669990544673e))
+* **forms:** wrap the focus ring around the whole affix group ([c40d75a](https://github.com/lattice-php/lattice/commit/c40d75a3f1f4f232de80895a1ff603e987e5009a))
+* launch Reverb from the package root so CI finds the autoloader ([568df70](https://github.com/lattice-php/lattice/commit/568df70e66cbf662ca09a79c6dbfc2eb9029dba1))
+* normalize component tokens and selectors ([a3b8d56](https://github.com/lattice-php/lattice/commit/a3b8d56597a23d1121bcd759920784f223245ffe))
+* resolve Translatable toast messages on every effect path ([a14a23f](https://github.com/lattice-php/lattice/commit/a14a23fb97375003f993323a3067309df3090fd1))
+* sync signed upload action payloads ([8021492](https://github.com/lattice-php/lattice/commit/802149201fbff6e8b3d13aa010f1f26e747b01b1))
+
+
+### Refactoring
+
+* consolidate remote integration components ([3159366](https://github.com/lattice-php/lattice/commit/31593665b678439b200572408d9401c8cfeb1459))
+* drop redundant "lattice" from realtime listener naming ([5f3838a](https://github.com/lattice-php/lattice/commit/5f3838adb8f30319713f28fff6698536b43ddd65))
+* generate realtime listener payload types ([f9777d7](https://github.com/lattice-php/lattice/commit/f9777d736986aed302a766a45485397a55297b24))
+* rename integrations to remote sources ([5c971ab](https://github.com/lattice-php/lattice/commit/5c971abcfe202f9f1a233e3b20a4e8ad8774868e))
+* **testing:** share the schema-assertion builder and flatten childPath ([4274f65](https://github.com/lattice-php/lattice/commit/4274f650d52130c6f5f125bd5ac29d3c1f28fa7b))
+* **tests:** assert page and layout structure by type and key ([5f4be54](https://github.com/lattice-php/lattice/commit/5f4be5461bcab926cc7c0c84659300d121e09123))
+* trim what-comment from realtime listeners host ([6dfb7ef](https://github.com/lattice-php/lattice/commit/6dfb7ef228d061f28ecfb36788abd453a0b12713))
+
+
+### Documentation
+
+* add per-page Open Graph social card images ([ab9ff01](https://github.com/lattice-php/lattice/commit/ab9ff01e3db72227c2917688084302cbac4b7de0))
+* **forms:** correct MenuItem::icon() accessibility note ([37e8b55](https://github.com/lattice-php/lattice/commit/37e8b559b53cbf260b4bee22d186e907aa6ccff3))
+* per-page Open Graph social card images ([16a3c56](https://github.com/lattice-php/lattice/commit/16a3c5670a71c22f36b1654a842d7eadf915d0da))
+* **testing:** document class addressing and dot-notation props ([8cea565](https://github.com/lattice-php/lattice/commit/8cea5650f777669f2f7d1dc6a06941f0818a1392))
+
 ## [0.3.0](https://github.com/lattice-php/lattice/compare/0.2.0...0.3.0) (2026-06-16)
 
 
