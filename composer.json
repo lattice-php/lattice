@@ -40,6 +40,7 @@
         "larastan/larastan": "^3.0",
         "laravel/boost": "^2.4",
         "laravel/pint": "^1.16",
+        "laravel/reverb": "^1.10",
         "league/flysystem-aws-s3-v3": "^3.34",
         "mrpunyapal/peststan": "^0.2.10",
         "orchestra/testbench": "^9.0 || ^10.0 || ^11.0",

@@ -11,12 +11,14 @@ use Illuminate\Testing\TestResponse;
 use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Option;
+use Lattice\Lattice\Tests\BrowserTestCase;
 use Lattice\Lattice\Tests\TestCase;
 use Orchestra\Testbench\Factories\UserFactory;
 
 use function Pest\Laravel\getJson;
 
-uses(TestCase::class)->in(__DIR__);
+uses(TestCase::class)->in('Feature', 'Unit');
+uses(BrowserTestCase::class)->in('Browser');
 uses(RefreshDatabase::class)->in(__DIR__);
 
 /**
