@@ -23,15 +23,18 @@ import RealtimeListeners from "./listeners";
 
 const toasts: unknown[] = [];
 
+const collectToast = (event: Event) => {
+  toasts.push((event as CustomEvent).detail.toast);
+};
+
 beforeEach(() => {
   handlers.current = null;
   toasts.length = 0;
-  window.addEventListener("lattice:toast", (event) => {
-    toasts.push((event as CustomEvent).detail.toast);
-  });
+  window.addEventListener("lattice:toast", collectToast);
 });
 
 afterEach(() => {
+  window.removeEventListener("lattice:toast", collectToast);
   vi.clearAllMocks();
 });
 
