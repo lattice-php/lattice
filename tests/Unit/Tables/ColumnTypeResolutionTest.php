@@ -27,7 +27,6 @@ it('throws when a column is missing the #[AsColumn] attribute', function (): voi
                 label: 'X',
                 type: $this->resolvedType(),
                 width: ColumnWidth::Md,
-                props: null,
             );
         }
     };
