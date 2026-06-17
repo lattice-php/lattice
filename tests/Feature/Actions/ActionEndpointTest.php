@@ -11,7 +11,7 @@ use Workbench\App\Actions\SetLocaleAction;
 
 use function Pest\Laravel\postJson;
 
-test('registered actions serialize their configured endpoint method label and effects', function (): void {
+test('registered actions serialize their configured endpoint method and label', function (): void {
     config(['lattice.actions.endpoint' => 'custom/actions/{action}']);
 
     Lattice::actions([WorkbenchPingAction::class]);
@@ -32,23 +32,6 @@ test('registered actions serialize their configured endpoint method label and ef
                 'confirmation' => null,
                 'form' => null,
                 'lazyForm' => null,
-                'effects' => [
-                    [
-                        'type' => 'toast',
-                        'toast' => [
-                            'variant' => 'success',
-                            'message' => 'Ready.',
-                            'duration' => null,
-                            'persistent' => false,
-                            'dismissible' => true,
-                            'action' => null,
-                        ],
-                    ],
-                    [
-                        'type' => 'reloadComponent',
-                        'component' => 'workbench.users',
-                    ],
-                ],
             ],
         ]);
 });

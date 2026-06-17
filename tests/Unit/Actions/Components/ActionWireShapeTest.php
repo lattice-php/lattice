@@ -8,7 +8,6 @@ use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Core\Enums\Orientation;
-use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Workbench\App\Actions\ArchiveProductAction;
@@ -21,8 +20,7 @@ it('serializes the action wire shape', function (): void {
         ->method(HttpMethod::Patch)
         ->icon(Icon::Send)
         ->variant(ButtonVariant::Destructive)
-        ->confirm('Archive product?', 'This hides the product.', 'Archive', 'Keep')
-        ->effects([Effect::reloadComponent('table'), Effect::reloadPage()]);
+        ->confirm('Archive product?', 'This hides the product.', 'Archive', 'Keep');
 
     $payload = wire($action);
 
@@ -39,10 +37,6 @@ it('serializes the action wire shape', function (): void {
             'description' => 'This hides the product.',
             'confirmLabel' => 'Archive',
             'cancelLabel' => 'Keep',
-        ],
-        'effects' => [
-            ['type' => 'reloadComponent', 'component' => 'table'],
-            ['type' => 'reloadPage'],
         ],
     ]);
     expect($payload['props']['ref'])->toBeString();
@@ -83,7 +77,7 @@ it('serializes a null form when none is attached', function (): void {
     expect($payload['props']['form'])->toBeNull();
 });
 
-it('serializes the full confirmation shape and includes empty effects', function (): void {
+it('serializes the full confirmation shape', function (): void {
     $action = Action::make('simple')->confirm('Sure?');
 
     $payload = wire($action);
@@ -94,7 +88,6 @@ it('serializes the full confirmation shape and includes empty effects', function
         'confirmLabel' => null,
         'cancelLabel' => null,
     ]);
-    expect($payload['props']['effects'])->toBe([]);
 });
 
 it('serializes the action group wire shape', function (): void {

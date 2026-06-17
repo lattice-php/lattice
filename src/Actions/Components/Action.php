@@ -13,7 +13,6 @@ use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasVariant;
-use Lattice\Lattice\Effects\Contracts\Effect;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
 
@@ -35,11 +34,6 @@ class Action extends Component
      * {@see confirm()} sets one.
      */
     public ?Confirmation $confirmation = null;
-
-    /**
-     * @var array<int, Effect>
-     */
-    public array $effects = [];
 
     public ?Form $form = null;
 
@@ -89,16 +83,6 @@ class Action extends Component
         ?string $cancelLabel = null,
     ): static {
         $this->confirmation = new Confirmation($title, $description, $confirmLabel, $cancelLabel);
-
-        return $this;
-    }
-
-    /**
-     * @param  array<int, Effect>  $effects
-     */
-    public function effects(array $effects): static
-    {
-        $this->effects = $effects;
 
         return $this;
     }

@@ -292,7 +292,6 @@ test('actions can serialize confirmation modal configuration', function (): void
                     'confirmLabel' => 'Delete account',
                     'cancelLabel' => 'Keep account',
                 ],
-                'effects' => [],
                 'form' => null,
                 'lazyForm' => null,
                 'variant' => 'destructive',

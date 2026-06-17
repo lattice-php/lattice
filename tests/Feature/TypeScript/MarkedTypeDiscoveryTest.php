@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Enums\Align;
+use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Core\Values\ToastMessage;
-use Lattice\Lattice\Effects\Enums\EffectType;
 use Workbench\App\Support\TypeScript\MarkedTypeDiscovery;
 
 it('splits #[TypeScript]-marked classes into enums and value objects', function (): void {
     $result = (new MarkedTypeDiscovery)->discover(dirname(__DIR__, 3).'/src');
 
-    expect($result['enums'])->toContain(Align::class)->toContain(EffectType::class);
+    expect($result['enums'])->toContain(Align::class)->toContain(Variant::class);
     expect($result['enums'])->not->toContain(Option::class);
 
     expect($result['valueObjects'])->toContain(Option::class)->toContain(ToastMessage::class);

@@ -6,9 +6,8 @@ namespace Lattice\Lattice\Effects\Builtin;
 use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\Effects\Enums\EffectType;
 
-#[AsEffect(EffectType::Callout)]
+#[AsEffect('callout')]
 final readonly class CalloutEffect extends Effect
 {
     public function __construct(
