@@ -92,14 +92,15 @@ That is the whole setup. Testbench provisions the `workbench/` skeleton and its 
 demand (via `composer post-autoload-dump` and the test bootstrap); there is no app `.env`, key
 generation, or manual `migrate` step to run.
 
-`composer install` also refreshes the Laravel Boost guidelines — its `post-install-cmd` runs
-`composer boost:refresh`, which regenerates the gitignored `CLAUDE.md` / `AGENTS.md` so each fresh
-worktree has the agent context. It uses `--ignore-skills`, so it only writes those generated files
-and never touches tracked sources (`boost.json`, `.ai/`) — running it leaves `git status` clean. If
-the guidelines ever look stale or missing, regenerate them on demand:
+`composer install` also refreshes the Laravel Boost guidelines and skills — its `post-install-cmd`
+runs `composer boost:refresh` (`boost:update`), which regenerates the gitignored `CLAUDE.md` /
+`AGENTS.md` so each fresh worktree has the agent context. `boost.json` is kept in sync with the
+skills the pinned Boost version ships, so the update is idempotent and leaves `git status` clean
+(the only outputs are the gitignored guideline files). If the guidelines ever look stale or missing,
+regenerate them on demand:
 
 ```bash
-composer boost:refresh   # = php artisan boost:update --ignore-skills --no-interaction
+composer boost:refresh   # = php artisan boost:update --no-interaction
 ```
 
 ## Verify
