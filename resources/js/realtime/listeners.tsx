@@ -1,59 +1,41 @@
-import { useEcho, useEchoPresence, useEchoPublic } from "@laravel/echo-react";
-import { useCallback } from "react";
-import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
-import { useT } from "@lattice-php/lattice/i18n";
-import { buildEffects } from "./build-effects";
-import type { RawEffect } from "./build-effects";
+import { Component, lazy, Suspense } from "react";
+import type { ReactNode } from "react";
 import type { ListenerPayload } from "./types";
 
-function useListenerHandler(listener: ListenerPayload): (payload: unknown) => void {
-  const { t } = useT("lattice");
-  const dispatch = useEffectDispatcher();
+const Subscriptions = lazy(() => import("./subscriptions"));
 
-  return useCallback(
-    (payload: unknown) => {
-      const data = (typeof payload === "object" && payload !== null ? payload : {}) as Record<
-        string,
-        unknown
-      >;
-      dispatch(buildEffects(listener.effects as unknown as RawEffect[], data, t));
-    },
-    [dispatch, listener, t],
-  );
-}
+class EchoBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
 
-function PublicListener({ listener }: { listener: ListenerPayload }) {
-  useEchoPublic(listener.channel, listener.events, useListenerHandler(listener));
-  return null;
-}
+  static getDerivedStateFromError(): { failed: boolean } {
+    return { failed: true };
+  }
 
-function PrivateListener({ listener }: { listener: ListenerPayload }) {
-  useEcho(listener.channel, listener.events, useListenerHandler(listener));
-  return null;
-}
+  componentDidCatch(): void {
+    console.warn(
+      "[lattice] Real-time listeners are declared but Echo is unavailable. Install @laravel/echo-react and call configureEcho().",
+    );
+  }
 
-function PresenceListener({ listener }: { listener: ListenerPayload }) {
-  useEchoPresence(listener.channel, listener.events, useListenerHandler(listener));
-  return null;
-}
-
-function Listener({ listener }: { listener: ListenerPayload }) {
-  switch (listener.visibility) {
-    case "private":
-      return <PrivateListener listener={listener} />;
-    case "presence":
-      return <PresenceListener listener={listener} />;
-    default:
-      return <PublicListener listener={listener} />;
+  render(): ReactNode {
+    return this.state.failed ? null : this.props.children;
   }
 }
 
-export default function RealtimeListeners({ listeners }: { listeners: ListenerPayload[] }) {
+/**
+ * Mounts the real-time listeners declared on a page. Renders nothing when a
+ * page has none, so the echo-react chunk is only fetched where it is needed.
+ */
+export function RealtimeListeners({ listeners }: { listeners?: ListenerPayload[] }) {
+  if (listeners === undefined || listeners.length === 0) {
+    return null;
+  }
+
   return (
-    <>
-      {listeners.map((listener, index) => (
-        <Listener key={`${listener.visibility}:${listener.channel}:${index}`} listener={listener} />
-      ))}
-    </>
+    <EchoBoundary>
+      <Suspense fallback={null}>
+        <Subscriptions listeners={listeners} />
+      </Suspense>
+    </EchoBoundary>
   );
 }

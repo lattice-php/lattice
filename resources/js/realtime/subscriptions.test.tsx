@@ -19,7 +19,7 @@ vi.mock("@laravel/echo-react", () => ({
   },
 }));
 
-import RealtimeListeners from "./listeners";
+import Subscriptions from "./subscriptions";
 
 const toasts: unknown[] = [];
 
@@ -38,7 +38,7 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-describe("RealtimeListeners", () => {
+describe("Subscriptions", () => {
   it("dispatches a resolved toast effect when its event fires", () => {
     const listeners: ListenerPayload[] = [
       {
@@ -62,7 +62,7 @@ describe("RealtimeListeners", () => {
       },
     ];
 
-    render(<RealtimeListeners listeners={listeners} />);
+    render(<Subscriptions listeners={listeners} />);
 
     expect(handlers.current).toBeTypeOf("function");
 
