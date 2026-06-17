@@ -29,10 +29,7 @@ trait AssertsLatticeComponents
      */
     public function assertLatticePage(TestResponse $response): ComponentAssertions
     {
-        $page = AssertableInertia::fromTestResponse($response)->toArray();
-        $schema = $page['props']['lattice']['schema'] ?? [];
-
-        return new ComponentAssertions(ComponentNode::root(is_array($schema) ? $schema : []));
+        return $this->latticeSchemaAssertions($response, 'lattice.schema');
     }
 
     /**
@@ -40,8 +37,16 @@ trait AssertsLatticeComponents
      */
     public function assertLatticeLayout(TestResponse $response): ComponentAssertions
     {
+        return $this->latticeSchemaAssertions($response, 'lattice.layout.schema');
+    }
+
+    /**
+     * @param  TestResponse<Response>  $response
+     */
+    private function latticeSchemaAssertions(TestResponse $response, string $schemaPath): ComponentAssertions
+    {
         $page = AssertableInertia::fromTestResponse($response)->toArray();
-        $schema = $page['props']['lattice']['layout']['schema'] ?? [];
+        $schema = data_get($page, 'props.'.$schemaPath);
 
         return new ComponentAssertions(ComponentNode::root(is_array($schema) ? $schema : []));
     }

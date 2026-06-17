@@ -263,10 +263,20 @@ final readonly class ComponentNode
      */
     private function childPath(array $child): string
     {
-        $label = is_string($child['id'] ?? null)
-            ? $child['id']
-            : (is_string($child['key'] ?? null) ? $child['key'] : (string) ($child['type'] ?? '?'));
+        return $this->path.' › '.$this->childLabel($child);
+    }
 
-        return $this->path.' › '.$label;
+    /**
+     * @param  array<string, mixed>  $child
+     */
+    private function childLabel(array $child): string
+    {
+        foreach (['id', 'key'] as $key) {
+            if (is_string($child[$key] ?? null)) {
+                return $child[$key];
+            }
+        }
+
+        return (string) ($child['type'] ?? '?');
     }
 }
