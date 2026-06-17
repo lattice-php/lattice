@@ -102,7 +102,7 @@ function ChartFrame({
 
   return (
     <div
-      className="flex flex-col gap-3 rounded-lt border border-lt-border bg-lt-surface p-4 text-lt-surface-fg shadow-xs"
+      className="flex flex-col gap-3 rounded-lt border border-lt-border bg-lt-surface p-4 text-lt-surface-fg shadow-lt-sm"
       data-lattice-component={id}
     >
       {hasHeader && (

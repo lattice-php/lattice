@@ -252,7 +252,7 @@ function EmojiPicker({ editor }: { editor: Editor }) {
         <Icon name="smile" />
       </button>
       {open && (
-        <div className="absolute z-10 mt-1 grid grid-cols-8 gap-0.5 rounded-lt-sm border border-lt-border bg-lt-bg p-1 shadow-md">
+        <div className="absolute z-10 mt-1 grid grid-cols-8 gap-0.5 rounded-lt-sm border border-lt-border bg-lt-bg p-1 shadow-lt-md">
           {emojis.map((emoji) => (
             <button
               className="inline-flex size-7 items-center justify-center rounded-lt-sm text-base hover:bg-lt-accent"
@@ -378,7 +378,7 @@ export const RichEditorComponent: RendererComponent<"field.rich-editor"> = ({ no
     >
       <div
         className={cn(
-          "overflow-hidden rounded-lt-sm border border-lt-input bg-transparent shadow-xs focus-within:border-lt-ring focus-within:ring-[3px] focus-within:ring-lt-ring/50",
+          "overflow-hidden rounded-lt-sm border border-lt-input bg-transparent shadow-lt-xs focus-within:border-lt-ring focus-within:ring-[3px] focus-within:ring-lt-ring/50",
           locked && "opacity-60",
         )}
       >

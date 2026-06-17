@@ -43,7 +43,7 @@ export function ColumnHeader({
     <div
       aria-sort={getColumnAriaSort(columnSort)}
       className={cn(
-        "relative min-w-0 px-4 py-3 pr-5 align-middle font-medium text-lt-muted-fg",
+        "relative min-w-0 px-4 py-3 pr-5 align-middle font-semibold text-lt-fg",
         alignText(align),
       )}
       role="columnheader"
@@ -52,7 +52,7 @@ export function ColumnHeader({
         <button
           type="button"
           aria-label={`Sort ${column.label}`}
-          className={cn("flex w-full items-center gap-1.5 font-medium", alignJustify(align))}
+          className={cn("flex w-full items-center gap-1.5 font-semibold", alignJustify(align))}
           data-test={`sort-${column.key}`}
           disabled={processing}
           onClick={() => sort(column)}

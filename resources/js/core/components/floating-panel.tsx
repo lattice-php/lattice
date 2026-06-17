@@ -31,7 +31,7 @@ const FloatingPanelComponent: RendererComponent<"floating-panel"> = ({ children,
     return (
       <div
         aria-label={label}
-        className="fixed z-50 max-w-[calc(100vw-2rem)] rounded-lt border border-lt-border bg-lt-popover p-1 text-lt-popover-fg shadow-md"
+        className="fixed z-50 max-w-[calc(100vw-2rem)] rounded-lt border border-lt-border bg-lt-popover p-1 text-lt-popover-fg shadow-lt-md"
         data-lattice-component={node.id}
         role={label ? "group" : undefined}
         style={placementStyle(placement, offset)}
@@ -56,7 +56,7 @@ const FloatingPanelComponent: RendererComponent<"floating-panel"> = ({ children,
         <button
           aria-expanded={open}
           className={cn(
-            "inline-flex items-center gap-2 rounded-lt border border-lt-border bg-lt-popover px-3 py-1.5 text-sm font-medium text-lt-popover-fg shadow-md hover:bg-lt-muted",
+            "inline-flex items-center gap-2 rounded-lt border border-lt-border bg-lt-popover px-3 py-1.5 text-sm font-medium text-lt-popover-fg shadow-lt-md hover:bg-lt-muted",
             anchorsToStart ? "self-start" : "self-end",
           )}
           data-test={node.key ? `${node.key}-trigger` : undefined}

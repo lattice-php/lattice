@@ -152,7 +152,7 @@ function MultiSelectControl({
         <Icon name="chevron-down" aria-hidden="true" className="size-lt-icon-sm shrink-0" />
       </button>
       {open && (
-        <div className="absolute z-10 mt-1 min-w-full rounded-lt-sm border border-lt-border bg-lt-bg p-1 shadow-md">
+        <div className="absolute z-10 mt-1 min-w-full rounded-lt-sm border border-lt-border bg-lt-bg p-1 shadow-lt-md">
           {filterOptions(filter).map((option) => (
             <label
               key={option.value}

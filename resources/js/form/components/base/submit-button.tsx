@@ -34,7 +34,7 @@ export function FormSubmitButton({
 
       {hasErrors && (
         <div
-          className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 w-max max-w-xs -translate-x-1/2 rounded-lt border border-lt-border bg-lt-surface p-3 text-left text-sm opacity-0 shadow-md transition-opacity group-hover:opacity-100"
+          className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 w-max max-w-xs -translate-x-1/2 rounded-lt border border-lt-border bg-lt-surface p-3 text-left text-sm opacity-0 shadow-lt-md transition-opacity group-hover:opacity-100"
           role="tooltip"
         >
           <p className="mb-1 font-medium text-lt-fg">{summaryLabel}</p>

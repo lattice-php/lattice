@@ -12,17 +12,17 @@ export const FOCUS_RING =
  */
 export const controlSurface = cva(
   [
-    "w-full min-w-0 rounded-lt-sm border border-lt-input shadow-xs outline-none transition-[color,box-shadow]",
+    "w-full min-w-0 rounded-lt-sm border border-lt-input shadow-lt-xs outline-none transition-[color,box-shadow]",
     "placeholder:text-lt-muted-fg",
     FOCUS_RING,
     "aria-invalid:border-lt-danger aria-invalid:ring-lt-danger/20 dark:aria-invalid:ring-lt-danger/40",
-    "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
+    "disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-lt-disabled disabled:text-lt-disabled-fg",
   ],
   {
     variants: {
       density: {
-        comfortable: "h-9 bg-transparent px-3 py-1 text-base md:text-sm",
-        compact: "h-9 bg-lt-bg px-2 text-sm font-normal",
+        comfortable: "h-lt-control-md bg-transparent px-3 py-1 text-base",
+        compact: "h-lt-control-md bg-lt-bg px-2 text-sm font-normal",
       },
     },
     defaultVariants: { density: "comfortable" },

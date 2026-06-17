@@ -58,7 +58,7 @@ export const RemoteChatBox: RendererComponent<"remote.chat-box"> = ({ node }) =>
         "flex flex-col overflow-hidden border border-lt-border bg-lt-bg",
         props.fill
           ? "sticky top-0 h-full min-h-[28rem] w-full"
-          : "h-[28rem] w-80 rounded-lt shadow-lg",
+          : "h-[28rem] w-80 rounded-lt shadow-lt-lg",
       )}
       data-test={testIdentity("chat-box")}
     >

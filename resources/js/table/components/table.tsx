@@ -162,7 +162,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             onClear={clearSort}
           />
         )}
-        <div className="min-w-full text-sm" role="table">
+        <div className="min-w-full text-base" role="table">
           <div className="border-b border-lt-border bg-lt-muted/50" role="rowgroup">
             <div
               className="hidden min-w-full md:grid md:grid-cols-[var(--lattice-table-columns)]"
@@ -193,7 +193,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
               ))}
               {hasTrailingUtility && (
                 <div
-                  className="flex items-center justify-end gap-2 px-4 py-2 align-middle font-medium text-lt-muted-fg"
+                  className="flex items-center justify-end gap-2 px-4 py-2 align-middle font-semibold text-lt-fg"
                   role="columnheader"
                 >
                   {hasDedicatedFilters && (

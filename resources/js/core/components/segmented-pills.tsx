@@ -57,7 +57,7 @@ export function SegmentedPills({
             className={cn(
               "whitespace-nowrap rounded-lt-sm px-3 py-1.5 text-sm font-medium transition-colors",
               isSelected
-                ? "bg-lt-bg text-lt-fg shadow-xs"
+                ? "bg-lt-bg text-lt-fg shadow-lt-xs"
                 : "text-lt-muted-fg hover:bg-lt-bg/60 hover:text-lt-fg",
               disabled && "cursor-not-allowed opacity-60",
             )}
