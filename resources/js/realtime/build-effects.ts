@@ -47,12 +47,6 @@ function resolveTranslatable(
   return t(value.key, value.key, { ...value.replacements, ...fromPayload });
 }
 
-/**
- * Resolve a listener's templated effects against a live event payload: any
- * Translatable message becomes a finished string (via i18next `t()`), every
- * other field is copied through. The result is a normal Effect[] ready for the
- * existing dispatchEffects().
- */
 export function buildEffects(
   effects: readonly RawEffect[],
   payload: Record<string, unknown>,

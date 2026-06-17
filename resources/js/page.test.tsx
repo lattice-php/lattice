@@ -65,9 +65,15 @@ describe("Page", () => {
   });
 
   it("does not mount realtime listeners for an empty listeners array", () => {
-    const lattice = payload({ listeners: [] });
-    const { container } = render(<Page lattice={lattice} />);
-    expect(container).toBeTruthy();
+    render(
+      <Page
+        lattice={payload({
+          schema: [{ props: { text: "No listeners rendered" }, type: "text" }],
+          listeners: [],
+        })}
+      />,
+    );
+    expect(screen.getByText("No listeners rendered")).toBeVisible();
   });
 
   it("uses a provided registry for app and package extensions", () => {

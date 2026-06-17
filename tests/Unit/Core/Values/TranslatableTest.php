@@ -22,7 +22,8 @@ test('payload and replacement calls merge instead of replacing', function () {
         ->with(['c' => 1])
         ->with(['d' => 2]);
 
-    expect($translatable->jsonSerialize())->toMatchArray([
+    expect($translatable->jsonSerialize())->toBe([
+        'key' => 'k',
         'payload' => ['a' => 'x.a', 'b' => 'x.b'],
         'replacements' => ['c' => 1, 'd' => 2],
     ]);
