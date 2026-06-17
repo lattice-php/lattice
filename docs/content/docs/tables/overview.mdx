@@ -72,10 +72,30 @@ class ProductsTable extends EloquentTableDefinition
 | `perPage()`       | Rows per page (default `25`).                                        |
 | `pagination()`    | The [pagination mode](/tables/sorting-filtering-pagination/#pagination). |
 | `striped()`       | Alternate row shading.                                               |
+| `resizableColumns()` | Let users drag column borders to resize. Widths persist per table in the browser. |
+| `resizeIndicator()`  | Show a drag indicator on column borders when resizing is enabled.   |
 | `emptyLabel()`    | Text shown when the table has no rows (default "No results").        |
 | `actionsLabel()`  | Accessible label for the row-actions column (default "Actions").     |
 | `actions($row)`   | Per-row [actions](/tables/actions/).                                 |
 | `bulkActions()`   | [Bulk actions](/tables/actions/#bulk-actions) for selected rows.    |
+
+Each hook is a method you override on the definition. For example, to enable resizable columns with a
+drag indicator:
+
+```php
+public function resizableColumns(): bool
+{
+    return true;
+}
+
+public function resizeIndicator(): bool
+{
+    return true;
+}
+```
+
+Resized widths are remembered per table in the browser, with a control to reset them back to the
+defaults.
 
 ## Data sources
 

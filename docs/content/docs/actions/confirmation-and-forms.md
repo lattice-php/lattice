@@ -78,5 +78,40 @@ client fetches the prefilled form from the action endpoint when the modal opens.
 $action->lazyForm()->form([/* … */]);
 ```
 
+### Building the schema per request
+
+`->lazyForm()->form([...])` ships a fixed schema that the client fetches on open. When the schema
+itself needs the request — to prefill from the record being acted on, or to vary fields by user —
+extend `FormActionDefinition` instead and build it in `formSchema()`:
+
+```php
+use Lattice\Lattice\Actions\FormActionDefinition;
+use Lattice\Lattice\Forms\Components\Form;
+use Illuminate\Http\Request;
+
+#[AsAction('products.edit')]
+final class EditProduct extends FormActionDefinition
+{
+    public function formSchema(Form $form, Request $request): Form
+    {
+        $product = $this->product($request);
+
+        return $form->schema([
+            TextInput::make('name', 'Name')->value($product->name),
+        ]);
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        $data = $this->validate($request);
+        // …
+    }
+}
+```
+
+Lattice marks these actions lazy automatically and fetches the schema from the trusted record context
+on open, so the prefilled values never ship in the page payload. You can also delegate to an existing
+[`FormDefinition`](/forms/overview/): `return app(MyForm::class)->definition($form, $request);`.
+
 Confirmation and forms compose with everything else: the same action still returns
 [effects](/actions/effects/) from `handle()`, and still runs its [authorization](/actions/overview/#authorization) check first.

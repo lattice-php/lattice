@@ -4,6 +4,7 @@ description: The CSS custom properties Lattice exposes, their defaults, and how 
 ---
 
 import TokenReference from "@components/TokenReference.astro";
+import Info from "@components/Info.astro";
 
 Lattice renders with a small set of semantic design tokens — CSS custom properties prefixed
 with `--lt-`. Every token resolves through a host variable with a built-in fallback, so you can
@@ -14,5 +15,46 @@ Tokens are global and shared across components. The **Style** tab on each compon
 the tokens that example uses in its initial rendered state. Tokens that only appear in
 interactive or overlay content — a dropdown panel, a dialog, a popover that opens on demand — are
 not captured there; this page is the complete reference.
+
+## Dark mode
+
+Every token ships a light and a dark value (the **Light** and **Dark** columns below). Dark mode is
+driven by a `dark` class on the `<html>` element: when it is present, the `.dark` host variables
+take over and Lattice's tokens follow. You theme dark mode the same way as light — by defining the
+host variables under `.dark`.
+
+Lattice manages the class for you through its appearance helpers, exported from the package:
+
+- **`initializeTheme()`** — call once before your app mounts (e.g. in your entry file). It reads the
+  stored preference (`localStorage` key `appearance`, default `system`), applies the `dark` class and
+  `color-scheme`, and keeps them in sync when the OS preference changes.
+- **`useAppearance()`** — a hook returning `{ appearance, resolvedAppearance, updateAppearance }`.
+  `appearance` is the chosen mode (`"light" | "dark" | "system"`), `resolvedAppearance` is the
+  effective `"light" | "dark"` after resolving `system`, and `updateAppearance(mode)` persists the
+  choice (to `localStorage` and a cookie) and applies it immediately. Build your own theme switcher
+  on top of it.
+
+```tsx
+import { initializeTheme, useAppearance } from "@lattice-php/lattice";
+
+initializeTheme();
+
+function AppearanceToggle() {
+  const { appearance, updateAppearance } = useAppearance();
+
+  return (
+    <button onClick={() => updateAppearance(appearance === "dark" ? "light" : "dark")}>
+      Toggle theme
+    </button>
+  );
+}
+```
+
+<Info>
+  The preference is persisted to both `localStorage` and an `appearance` cookie. The cookie lets the
+  server render the correct theme on first paint, avoiding a flash of the wrong mode.
+</Info>
+
+## Token reference
 
 <TokenReference />

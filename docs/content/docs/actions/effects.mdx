@@ -173,7 +173,56 @@ run through the normal client-side effect pipeline in order.
 
 ## How effects reach the client
 
-The result serializes to `{ ok, data, effects }`. Each effect carries its `EffectType` (`toast`,
-`callout`, `reloadComponent`, `reloadPage`, `redirect`, `download`, `openModal`, `closeModal`,
-`resetForm`, `localeChange`) and its payload; the client dispatches them in order. The effect types
-are a shared enum, so the PHP helpers and the client dispatcher stay in lockstep.
+The result serializes to `{ ok, data, effects }`. Each effect carries a `type` discriminant
+(`toast`, `callout`, `reloadComponent`, `reloadPage`, `redirect`, `download`, `openModal`,
+`closeModal`, `resetForm`, `localeChange`) and its payload; the client dispatches them in order.
+Each `type` is declared once on its PHP class via `#[AsEffect('…')]` and generated into the
+discriminated `Effect` union, so the PHP helpers and the client dispatcher stay in lockstep.
+
+## Custom effects
+
+The effect system is extensible — define your own effect type and a client handler for it, the same
+way [components](/extending/registry-and-types/) and columns extend the renderer.
+
+On the server, an effect is a readonly value object marked with `#[AsEffect]`, where the constructor
+arguments are the wire payload:
+
+```php
+use Lattice\Lattice\Effects\Attributes\AsEffect;
+use Lattice\Lattice\Effects\Effect;
+
+#[AsEffect('confetti')]
+final readonly class ConfettiEffect extends Effect
+{
+    public function __construct(public int $pieces = 100) {}
+}
+```
+
+Return it from `handle()` with `->effect()`, alongside any built-ins:
+
+```php
+return ActionResult::success()
+    ->toast('Onboarding complete!')
+    ->effect(new ConfettiEffect(pieces: 250));
+```
+
+On the client, author a handler with `effectHandler("confetti", …)` and register it through your
+[registry plugin](/extending/registry-and-types/#createplugin)'s `effects` map. The handler receives
+the typed payload:
+
+```ts
+import { effectHandler } from "@lattice-php/lattice";
+
+const confetti = effectHandler("confetti", (effect) => {
+  launchConfetti(effect.pieces);
+});
+```
+
+Unknown effect types are skipped with a console warning, so a server effect with no registered handler
+fails soft rather than breaking the page.
+
+<Info>
+  Failed action requests dispatch a `lattice:action-error` DOM event carrying the error. Listen for it
+  to add global error handling or observability — a toast, a Sentry report — without touching each
+  action.
+</Info>
