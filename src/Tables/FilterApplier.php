@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
@@ -16,9 +15,7 @@ use Lattice\Lattice\Tables\Enums\FilterType;
 final class FilterApplier
 {
     /**
-     * @template TModel of Model
-     *
-     * @param  Builder<TModel>  $builder
+     * @param  Builder<*>  $builder
      */
     public function apply(Op $operator, Builder $builder, FilterType $filterType, string $field, string $value): void
     {
@@ -62,9 +59,7 @@ final class FilterApplier
     }
 
     /**
-     * @template TModel of Model
-     *
-     * @param  Builder<TModel>  $builder
+     * @param  Builder<*>  $builder
      */
     private function compare(Builder $builder, FilterType $filterType, string $field, string $sqlOperator, string $value): void
     {
