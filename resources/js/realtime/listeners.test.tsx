@@ -1,0 +1,71 @@
+import { render } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { ListenerPayload } from "./types";
+
+const handlers: { current: ((payload: unknown) => void) | null } = { current: null };
+
+vi.mock("@laravel/echo-react", () => ({
+  useEcho: (_channel: string, _events: string[], callback: (payload: unknown) => void) => {
+    handlers.current = callback;
+    return {};
+  },
+  useEchoPublic: (_channel: string, _events: string[], callback: (payload: unknown) => void) => {
+    handlers.current = callback;
+    return {};
+  },
+  useEchoPresence: (_channel: string, _events: string[], callback: (payload: unknown) => void) => {
+    handlers.current = callback;
+    return {};
+  },
+}));
+
+import RealtimeListeners from "./listeners";
+
+const toasts: unknown[] = [];
+
+beforeEach(() => {
+  handlers.current = null;
+  toasts.length = 0;
+  window.addEventListener("lattice:toast", (event) => {
+    toasts.push((event as CustomEvent).detail.toast);
+  });
+});
+
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
+describe("RealtimeListeners", () => {
+  it("dispatches a resolved toast effect when its event fires", () => {
+    const listeners: ListenerPayload[] = [
+      {
+        channel: "orders",
+        visibility: "private",
+        events: ["OrderShipped"],
+        effects: [
+          {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            type: "toast",
+            toast: {
+              variant: "success",
+              message: {
+                key: "orders.shipped-live",
+                payload: { id: "order.id" },
+                replacements: {},
+              },
+            },
+          } as never,
+        ],
+      },
+    ];
+
+    render(<RealtimeListeners listeners={listeners} />);
+
+    expect(handlers.current).toBeTypeOf("function");
+
+    handlers.current?.({ order: { id: 7 } });
+
+    expect(toasts).toHaveLength(1);
+    expect((toasts[0] as { message: string }).message).toContain("orders.shipped-live");
+  });
+});

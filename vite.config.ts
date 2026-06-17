@@ -181,6 +181,7 @@ export default defineConfig(({ mode }) => {
                 /^class-variance-authority($|\/)/,
                 /^tailwind-merge($|\/)/,
                 /^vite($|\/)/,
+                /^@laravel\/echo-react($|\/)/,
                 /^i18next($|\/)/,
                 /^react-i18next($|\/)/,
                 /^i18next-http-backend($|\/)/,
