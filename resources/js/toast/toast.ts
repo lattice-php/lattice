@@ -1,5 +1,6 @@
 import type { ToastMessage, Variant } from "@lattice-php/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import { isTranslatable } from "@lattice-php/lattice/i18n/translatable";
 
 export type { ToastMessage, Variant };
 
@@ -20,7 +21,11 @@ export function normalizeToastMessage(value: unknown): ToastMessage | null {
 
   const toast = value as Record<string, unknown>;
 
-  if (typeof toast.message !== "string" || toast.message === "") {
+  const rawMessage = toast.message;
+  const message =
+    typeof rawMessage === "string" ? rawMessage : isTranslatable(rawMessage) ? rawMessage : null;
+
+  if (message === null || message === "") {
     return null;
   }
 
@@ -28,7 +33,7 @@ export function normalizeToastMessage(value: unknown): ToastMessage | null {
     action: (toast.action as ToastMessage["action"]) ?? null,
     dismissible: toast.dismissible !== false,
     duration: typeof toast.duration === "number" ? toast.duration : null,
-    message: toast.message,
+    message,
     persistent: toast.persistent === true,
     variant: isVariant(toast.variant) ? toast.variant : "success",
   };
