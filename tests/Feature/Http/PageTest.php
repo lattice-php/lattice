@@ -129,7 +129,7 @@ test('workbench pages serialize package component trees for inertia', function (
             ->where('lattice.layout.schema.0.schema.1.schema.0.schema.0.schema.0.schema.0.key', 'locale-en')
             ->where('lattice.layout.schema.0.schema.1.schema.0.schema.0.schema.0.schema.1.key', 'locale-de')
             ->where('lattice.layout.schema.0.schema.1.schema.0.schema.0.schema.1.schema.0.type', 'menu-item')
-            ->where('lattice.layout.schema.0.schema.1.schema.0.schema.0.schema.1.schema.0.props.iconOnly', true)
+            ->where('lattice.layout.schema.0.schema.1.schema.0.schema.0.schema.1.schema.0.props.icon', 'settings')
             ->where('lattice.container', 'default')
             ->where('lattice.schema.0.type', 'stack')
             ->where('lattice.schema.0.key', 'workbench-page')

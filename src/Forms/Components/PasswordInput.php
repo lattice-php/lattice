@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Components;
 
+use Lattice\Lattice\Core\Concerns\HasAffixes;
 use Lattice\Lattice\Core\Concerns\HasAutoComplete;
 use Lattice\Lattice\Core\Concerns\HasAutoFocus;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
@@ -13,6 +14,7 @@ use Lattice\Lattice\Forms\Enums\FieldType;
 #[AsField(FieldType::PasswordInput)]
 class PasswordInput extends Field
 {
+    use HasAffixes;
     use HasAutoComplete;
     use HasAutoFocus;
     use HasPlaceholder;

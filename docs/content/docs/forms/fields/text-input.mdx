@@ -4,6 +4,7 @@ description: A single-line text field, with email and other HTML input types.
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
 
 The text input collects a single line of text. Create one with `TextInput::make()`, passing the field name and its label.
 
@@ -31,6 +32,40 @@ Call `->email()` to set the HTML input type to `email` and apply email validatio
   fixture="text-input.email"
   values={{ email: "" }}
 />
+
+## Affixes
+
+`->prefix()` and `->suffix()` attach a small adornment to the start or end of the input — a unit, a
+currency symbol, or an icon. Pass a **string** for literal text, or an [`Icon`](/core/icons/) enum
+case for an icon:
+
+<ComponentExample
+  php={`TextInput::make('price', 'Price')
+    ->prefix('$')
+    ->suffix('USD')`}
+  fixture="text-input.affixes"
+  values={{ price: "" }}
+/>
+
+<ComponentExample
+  php={`TextInput::make('search', 'Search')
+    ->prefix(Icon::Search)`}
+  fixture="text-input.affix-icon"
+  values={{ search: "" }}
+/>
+
+The rule is the argument type: an `Icon` enum (or any backed enum) renders as an **icon**, a plain
+string renders as **text**. To use an icon that isn't an `Icon` case — for example a host app's own
+sprite name — reach for the explicit `Affix` value object:
+
+```php
+use Lattice\Lattice\Support\Affix;
+
+TextInput::make('search', 'Search')->prefix(Affix::icon('custom-glyph'));
+TextInput::make('weight', 'Weight')->suffix(Affix::text('kg'));
+```
+
+<Info>Affixes are also available on [Number input](/forms/fields/number-input/) and [Password input](/forms/fields/password-input/).</Info>
 
 ## Autocomplete
 

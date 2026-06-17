@@ -54,3 +54,17 @@ describe("NumberInputComponent", () => {
     expect(screen.queryByLabelText("Qty")).not.toBeInTheDocument();
   });
 });
+
+describe("NumberInputComponent affixes", () => {
+  it("renders a text prefix around the input", () => {
+    renderField(
+      fakeNode({
+        type: "field.number-input",
+        props: { name: "price", label: "Price", prefix: { icon: null, text: "$" } },
+      }),
+    );
+
+    expect(screen.getByText("$")).toBeVisible();
+    expect(screen.getByLabelText("Price")).toHaveClass("rounded-l-none");
+  });
+});

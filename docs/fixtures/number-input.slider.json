@@ -17,10 +17,12 @@
             "placeholder": null,
             "prefillRefreshOn": null,
             "prefillResetOn": null,
+            "prefix": null,
             "readOnly": false,
             "required": false,
             "slider": true,
             "step": null,
+            "suffix": null,
             "tabIndex": null,
             "tooltip": null,
             "value": null

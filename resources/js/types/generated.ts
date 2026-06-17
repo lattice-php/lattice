@@ -40,6 +40,10 @@ export type ActionResult = {
   readonly data: Record<string, unknown>;
   readonly effects: Effect[];
 };
+export type Affix = {
+  readonly icon: string | null;
+  readonly text: string | null;
+};
 export type Align = "center" | "left" | "start" | "stretch";
 export type Badge = {
   label: string;
@@ -766,9 +770,10 @@ export type Menu = Record<string, never>;
 export type MenuItem = {
   href: string | null;
   icon: string | null;
-  iconOnly: boolean;
   label: string;
   method: HttpMethod | null;
+  prefix: Affix | null;
+  suffix: Affix | null;
 };
 export type Modal = {
   closeLabel: string;
@@ -836,10 +841,12 @@ export type NumberInput = {
   placeholder: string | null;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
+  prefix: Affix | null;
   readOnly: boolean;
   required: boolean;
   slider: boolean;
   step: number | null;
+  suffix: Affix | null;
   tabIndex: number | null;
   tooltip: string | null;
   value: unknown;
@@ -904,8 +911,10 @@ export type PasswordInput = {
   placeholder: string | null;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
+  prefix: Affix | null;
   readOnly: boolean;
   required: boolean;
+  suffix: Affix | null;
   tabIndex: number | null;
   tooltip: string | null;
   value: unknown;
@@ -1176,8 +1185,10 @@ export type TextInput = {
   placeholder: string | null;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
+  prefix: Affix | null;
   readOnly: boolean;
   required: boolean;
+  suffix: Affix | null;
   tabIndex: number | null;
   tooltip: string | null;
   type: string | null;

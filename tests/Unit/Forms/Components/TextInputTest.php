@@ -1,8 +1,12 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Forms\Components\Choice;
+use Lattice\Lattice\Forms\Components\NumberInput;
+use Lattice\Lattice\Forms\Components\PasswordInput;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Support\Affix;
 
 it('serializes a text input', function (): void {
     $node = wire(TextInput::make('name', 'Team name')->placeholder('My team')->required());
@@ -28,6 +32,39 @@ it('serializes an email text input', function (): void {
         ]);
 });
 
+describe('affixes', function (): void {
+    it('serializes an icon prefix from an enum', function (): void {
+        $node = wire(TextInput::make('amount', 'Amount')->prefix(Icon::Eye));
+
+        expect($node['props']['prefix'])->toBe(['icon' => 'eye', 'text' => null]);
+    });
+
+    it('serializes a text suffix', function (): void {
+        $node = wire(TextInput::make('weight', 'Weight')->suffix('kg'));
+
+        expect($node['props']['suffix'])->toBe(['icon' => null, 'text' => 'kg']);
+    });
+
+    it('accepts an explicit affix value object', function (): void {
+        $node = wire(TextInput::make('handle', 'Handle')->prefix(Affix::text('@')));
+
+        expect($node['props']['prefix'])->toBe(['icon' => null, 'text' => '@']);
+    });
+
+    it('supports affixes on number inputs', function (): void {
+        $node = wire(NumberInput::make('price', 'Price')->prefix('$')->suffix('USD'));
+
+        expect($node['props']['prefix'])->toBe(['icon' => null, 'text' => '$'])
+            ->and($node['props']['suffix'])->toBe(['icon' => null, 'text' => 'USD']);
+    });
+
+    it('supports affixes on password inputs', function (): void {
+        $node = wire(PasswordInput::make('token', 'Token')->prefix(Icon::Eye));
+
+        expect($node['props']['prefix'])->toBe(['icon' => 'eye', 'text' => null]);
+    });
+});
+
 describe('docs fixtures', function (): void {
     it('dumps the required text input example', function (): void {
         dumpFixture('text-input.required', [
@@ -43,6 +80,19 @@ describe('docs fixtures', function (): void {
         ]);
 
         expect('docs/fixtures/text-input.email.json')->toBeReadableFile();
+    });
+
+    it('dumps the affix examples', function (): void {
+        dumpFixture('text-input.affixes', [
+            TextInput::make('price', 'Price')->prefix('$')->suffix('USD'),
+        ]);
+
+        dumpFixture('text-input.affix-icon', [
+            TextInput::make('search', 'Search')->prefix(Icon::Search),
+        ]);
+
+        expect('docs/fixtures/text-input.affixes.json')->toBeReadableFile()
+            ->and('docs/fixtures/text-input.affix-icon.json')->toBeReadableFile();
     });
 
     it('dumps the common field option examples', function (): void {

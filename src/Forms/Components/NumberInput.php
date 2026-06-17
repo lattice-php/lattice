@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Components;
 
+use Lattice\Lattice\Core\Concerns\HasAffixes;
 use Lattice\Lattice\Core\Concerns\HasAutoFocus;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
@@ -12,6 +13,7 @@ use Lattice\Lattice\Forms\Enums\FieldType;
 #[AsField(FieldType::NumberInput)]
 class NumberInput extends Field
 {
+    use HasAffixes;
     use HasAutoFocus;
     use HasPlaceholder;
     use HasTabIndex;

@@ -1,5 +1,6 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
+import { AffixGroup } from "../base/affix-group";
 import { FormFieldFrame } from "../base/field";
 import PasswordInput from "../base/password-input";
 import { useFieldScope } from "../field-scope";
@@ -36,22 +37,27 @@ export const PasswordInputComponent: RendererComponent<"field.password-input"> =
         name={field.name}
         required={field.required}
       >
-        <PasswordInput
-          autoComplete={props.autoComplete ?? ""}
-          autoFocus={props.autoFocus ?? false}
-          data-test={field.testId}
-          disabled={field.disabled}
-          id={field.name}
-          name={field.name}
-          onChange={(event) => {
-            field.commit(event.target.value);
-          }}
-          placeholder={props.placeholder ?? ""}
-          passwordrules={passwordRules}
-          readOnly={field.readOnly}
-          tabIndex={props.tabIndex ?? undefined}
-          value={field.value}
-        />
+        <AffixGroup prefix={props.prefix} suffix={props.suffix}>
+          {(controlClassName) => (
+            <PasswordInput
+              autoComplete={props.autoComplete ?? ""}
+              autoFocus={props.autoFocus ?? false}
+              className={controlClassName}
+              data-test={field.testId}
+              disabled={field.disabled}
+              id={field.name}
+              name={field.name}
+              onChange={(event) => {
+                field.commit(event.target.value);
+              }}
+              placeholder={props.placeholder ?? ""}
+              passwordrules={passwordRules}
+              readOnly={field.readOnly}
+              tabIndex={props.tabIndex ?? undefined}
+              value={field.value}
+            />
+          )}
+        </AffixGroup>
       </FormFieldFrame>
 
       {confirmation && (

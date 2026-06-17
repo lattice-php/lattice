@@ -11,19 +11,25 @@
             "editablePrefill": false,
             "helperText": null,
             "hidden": false,
-            "label": "Slug",
-            "name": "slug",
+            "label": "Price",
+            "name": "price",
             "placeholder": null,
             "prefillRefreshOn": null,
             "prefillResetOn": null,
-            "prefix": null,
-            "readOnly": true,
+            "prefix": {
+                "icon": null,
+                "text": "$"
+            },
+            "readOnly": false,
             "required": false,
-            "suffix": null,
+            "suffix": {
+                "icon": null,
+                "text": "USD"
+            },
             "tabIndex": null,
             "tooltip": null,
             "type": null,
-            "value": "acme-inc"
+            "value": null
         },
         "type": "field.text-input"
     }

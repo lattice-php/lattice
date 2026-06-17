@@ -57,3 +57,66 @@ describe("TextInputComponent conditions", () => {
     expect(screen.getByText("Shown to buyers.")).toBeVisible();
   });
 });
+
+describe("TextInputComponent affixes", () => {
+  it("renders a text prefix and suffix around the input", () => {
+    renderField(
+      fakeNode({
+        type: "field.text-input",
+        props: {
+          name: "price",
+          label: "Price",
+          prefix: { icon: null, text: "$" },
+          suffix: { icon: null, text: "USD" },
+        },
+      }),
+    );
+
+    expect(screen.getByText("$")).toBeVisible();
+    expect(screen.getByText("USD")).toBeVisible();
+  });
+
+  it("squares the input corners adjacent to each affix", () => {
+    renderField(
+      fakeNode({
+        type: "field.text-input",
+        props: {
+          name: "price",
+          label: "Price",
+          prefix: { icon: null, text: "$" },
+          suffix: { icon: null, text: "USD" },
+        },
+      }),
+    );
+
+    const input = screen.getByRole("textbox", { name: "Price" });
+    expect(input).toHaveClass("rounded-l-none", "rounded-r-none");
+  });
+
+  it("renders an icon affix as an icon, not literal text", () => {
+    const { container } = renderField(
+      fakeNode({
+        type: "field.text-input",
+        props: {
+          name: "search",
+          label: "Search",
+          prefix: { icon: "search", text: null },
+        },
+      }),
+    );
+
+    expect(container.querySelector('[data-slot="affix-start"] svg')).not.toBeNull();
+  });
+
+  it("leaves the input unwrapped when there are no affixes", () => {
+    renderField(
+      fakeNode({
+        type: "field.text-input",
+        props: { name: "plain", label: "Plain" },
+      }),
+    );
+
+    const input = screen.getByRole("textbox", { name: "Plain" });
+    expect(input).not.toHaveClass("rounded-l-none", "rounded-r-none");
+  });
+});

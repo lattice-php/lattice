@@ -11,19 +11,22 @@
             "editablePrefill": false,
             "helperText": null,
             "hidden": false,
-            "label": "Slug",
-            "name": "slug",
+            "label": "Search",
+            "name": "search",
             "placeholder": null,
             "prefillRefreshOn": null,
             "prefillResetOn": null,
-            "prefix": null,
-            "readOnly": true,
+            "prefix": {
+                "icon": "search",
+                "text": null
+            },
+            "readOnly": false,
             "required": false,
             "suffix": null,
             "tabIndex": null,
             "tooltip": null,
             "type": null,
-            "value": "acme-inc"
+            "value": null
         },
         "type": "field.text-input"
     }
