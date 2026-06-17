@@ -41,7 +41,7 @@ jobs:
 
       - name: Upload Vitest coverage to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           use_oidc: true
           files: coverage_vitest/lcov.info
@@ -52,7 +52,7 @@ jobs:
 
       - name: Upload Vitest test results to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           use_oidc: true
           files: coverage_vitest/junit.xml
@@ -124,7 +124,7 @@ jobs:
 
       - name: Upload Pest coverage to Codecov
         if: ${{ !cancelled() && matrix.php-version == '8.4' }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           use_oidc: true
           files: coverage_phpunit/clover.xml
@@ -135,7 +135,7 @@ jobs:
 
       - name: Upload Pest test results to Codecov
         if: ${{ !cancelled() && matrix.php-version == '8.4' }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           use_oidc: true
           files: coverage_phpunit/pest.junit.xml
@@ -226,7 +226,7 @@ jobs:
 
       - name: Upload Pest browser coverage to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           use_oidc: true
           files: coverage_phpunit/browser-clover.xml
@@ -237,7 +237,7 @@ jobs:
 
       - name: Upload Pest browser test results to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           use_oidc: true
           files: coverage_phpunit/pest-browser.junit.xml
