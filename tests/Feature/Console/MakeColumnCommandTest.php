@@ -15,8 +15,8 @@ function withColumnScaffold(Closure $callback): mixed
     });
 }
 
-it('scaffolds a column class, a cell tsx and registers it in columns.ts', function () {
-    withColumnScaffold(function () {
+it('scaffolds a column class, a cell tsx and registers it in columns.ts', function (): void {
+    withColumnScaffold(function (): void {
         artisan('lattice:column', ['name' => 'StatusBadge'])->assertSuccessful();
 
         $columnFile = app_path('Tables/Columns/StatusBadge.php');
@@ -40,8 +40,8 @@ it('scaffolds a column class, a cell tsx and registers it in columns.ts', functi
     });
 });
 
-it('is idempotent and honors --type', function () {
-    withColumnScaffold(function () {
+it('is idempotent and honors --type', function (): void {
+    withColumnScaffold(function (): void {
         artisan('lattice:column', ['name' => 'StatusBadge'])->assertSuccessful();
         artisan('lattice:column', ['name' => 'StatusBadge'])->assertSuccessful();
         expect(substr_count(File::get(resource_path('js/lattice/columns.ts')), '"column.status-badge": StatusBadgeCell'))->toBe(1);

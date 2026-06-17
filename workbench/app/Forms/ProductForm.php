@@ -56,7 +56,7 @@ class ProductForm extends FormDefinition
                             EloquentOptions::make(Product::class)
                                 ->label('name')
                                 ->limit(10)
-                                ->scope(fn ($query) => $product
+                                ->scope(fn ($query) => $product instanceof Product
                                     ? $query->whereKeyNot($product->getKey())
                                     : $query),
                         )

@@ -8,34 +8,34 @@ use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Support\Evaluation\UnresolvableEvaluationParameter;
 
-it('injects named utilities into rule closures', function () {
-    $field = TextInput::make('email')->rules(fn ($get) => $get('strict') ? ['email'] : []);
+it('injects named utilities into rule closures', function (): void {
+    $field = TextInput::make('email')->rules(fn ($get): array => $get('strict') ? ['email'] : []);
 
     expect($field->resolveRules(FormData::make(['strict' => true]), Request::create('/')))->toBe(['email']);
 });
 
-it('injects the field component and its own value into rule closures', function () {
-    $field = TextInput::make('email')->rules(fn ($component, $value) => [$component->name().':'.$value]);
+it('injects the field component and its own value into rule closures', function (): void {
+    $field = TextInput::make('email')->rules(fn ($component, $value): array => [$component->name().':'.$value]);
 
     expect($field->resolveRules(FormData::make(['email' => 'a@b.c']), Request::create('/')))->toBe(['email:a@b.c']);
 });
 
-it('keeps supporting typed FormData and Request rule closures', function () {
-    $field = TextInput::make('age')->rules(fn (FormData $state, Request $request) => [$state->string('extra')]);
+it('keeps supporting typed FormData and Request rule closures', function (): void {
+    $field = TextInput::make('age')->rules(fn (FormData $state, Request $request): array => [$state->string('extra')]);
 
     expect($field->resolveRules(FormData::make(['extra' => 'min:3']), Request::create('/')))->toBe(['min:3']);
 });
 
-it('injects named utilities into computed value resolvers', function () {
+it('injects named utilities into computed value resolvers', function (): void {
     $field = TextInput::make('total')
-        ->value(fn ($get) => $get('qty') * 2);
+        ->value(fn ($get): int|float => $get('qty') * 2);
 
     $field->applyResolution(FormData::make(['qty' => 5]), Request::create('/'));
 
     expect($field->resolvedValue())->toBe(10);
 });
 
-it('injects named utilities into dependsOn callbacks', function () {
+it('injects named utilities into dependsOn callbacks', function (): void {
     $field = TextInput::make('city')
         ->dependsOn('country', fn ($component, $get) => $component->value($get('country').'-city'));
 
@@ -44,9 +44,9 @@ it('injects named utilities into dependsOn callbacks', function () {
     expect($field->resolvedValue())->toBe('de-city');
 });
 
-it('injects row and form scopes into prefill resolvers by name', function () {
+it('injects row and form scopes into prefill resolvers by name', function (): void {
     $field = TextInput::make('label')
-        ->value(fn ($form, $row) => $row->string('first').'@'.$form->string('domain'), editable: true);
+        ->value(fn ($form, $row): string => $row->string('first').'@'.$form->string('domain'), editable: true);
 
     $row = FormData::make(['first' => 'ada']);
     $form = FormData::make(['domain' => 'lattice.dev']);
@@ -54,9 +54,9 @@ it('injects row and form scopes into prefill resolvers by name', function () {
     expect($field->resolvePrefillValue($row, $form, Request::create('/')))->toBe('ada@lattice.dev');
 });
 
-it('resolves a typed FormData prefill parameter to the row scope', function () {
+it('resolves a typed FormData prefill parameter to the row scope', function (): void {
     $field = TextInput::make('label')
-        ->value(fn (FormData $data) => $data->string('first'), editable: true);
+        ->value(fn (FormData $data): string => $data->string('first'), editable: true);
 
     $row = FormData::make(['first' => 'ada']);
     $form = FormData::make(['first' => 'grace']);
@@ -64,24 +64,24 @@ it('resolves a typed FormData prefill parameter to the row scope', function () {
     expect($field->resolvePrefillValue($row, $form, Request::create('/')))->toBe('ada');
 });
 
-it('resolves a concrete field-typed parameter to the live component', function () {
-    $field = TextInput::make('total')->value(fn (TextInput $self) => $self->name());
+it('resolves a concrete field-typed parameter to the live component', function (): void {
+    $field = TextInput::make('total')->value(fn (TextInput $self): string => $self->name());
 
     $field->applyResolution(FormData::make([]), Request::create('/'));
 
     expect($field->resolvedValue())->toBe('total');
 });
 
-it('resolves an abstract Field-typed parameter to the live component', function () {
-    $field = TextInput::make('total')->value(fn (Field $self) => $self->name());
+it('resolves an abstract Field-typed parameter to the live component', function (): void {
+    $field = TextInput::make('total')->value(fn (Field $self): string => $self->name());
 
     $field->applyResolution(FormData::make([]), Request::create('/'));
 
     expect($field->resolvedValue())->toBe('total');
 });
 
-it('throws instead of autowiring a mismatched component type', function () {
-    $field = TextInput::make('total')->value(fn (Select $other) => $other);
+it('throws instead of autowiring a mismatched component type', function (): void {
+    $field = TextInput::make('total')->value(fn (Select $other): Select => $other);
 
     expect(fn () => $field->applyResolution(FormData::make([]), Request::create('/')))
         ->toThrow(UnresolvableEvaluationParameter::class);

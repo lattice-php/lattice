@@ -25,7 +25,7 @@ final class FixtureHomePage extends FixtureBasePage {}
 #[AsPage(route: '/standalone', container: PageContainer::Centered)]
 final class FixtureStandalonePage extends FixtureBasePage {}
 
-test('metadata inherits layout and container from a base AsPage attribute', function () {
+test('metadata inherits layout and container from a base AsPage attribute', function (): void {
     $meta = PageMetadata::for(FixtureProductsPage::class);
 
     expect($meta->route)->toBe('/products')
@@ -35,20 +35,20 @@ test('metadata inherits layout and container from a base AsPage attribute', func
         ->and($meta->middleware)->toBe([]);
 });
 
-test('metadata derives the route name when none is given', function () {
+test('metadata derives the route name when none is given', function (): void {
     expect(PageMetadata::for(FixtureEditPage::class)->name)->toBe('products.edit');
 });
 
-test('metadata falls back to the class name for the root route', function () {
+test('metadata falls back to the class name for the root route', function (): void {
     expect(PageMetadata::for(FixtureHomePage::class)->name)->toBe('fixture-home')
         ->and(PageMetadata::for(FixtureHomePage::class)->middleware)->toBe(['web']);
 });
 
-test('a concrete page overrides an inherited container', function () {
+test('a concrete page overrides an inherited container', function (): void {
     expect(PageMetadata::for(FixtureStandalonePage::class)->container)->toBe(PageContainer::Centered);
 });
 
-test('a page without any attribute resolves to defaults', function () {
+test('a page without any attribute resolves to defaults', function (): void {
     $page = new class extends BasePage {};
 
     $meta = PageMetadata::for($page);
@@ -59,7 +59,7 @@ test('a page without any attribute resolves to defaults', function () {
         ->and($meta->middleware)->toBe([]);
 });
 
-test('page metadata round-trips through an array descriptor', function () {
+test('page metadata round-trips through an array descriptor', function (): void {
     $descriptor = PageMetadata::reflect(FixtureEditPage::class)->toArray();
 
     expect($descriptor)->toMatchArray([
@@ -78,7 +78,7 @@ test('page metadata round-trips through an array descriptor', function () {
         ->and($rebuilt->container)->toBe('default');
 });
 
-test('for() prefers a manifest descriptor and falls back to reflection', function () {
+test('for() prefers a manifest descriptor and falls back to reflection', function (): void {
     config(['lattice.discover' => [
         __DIR__.'/../Fixtures/Discovery',
     ]]);

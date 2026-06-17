@@ -30,7 +30,7 @@ function searchableDefinition(): FormDefinition
                 TextInput::make('name', 'Name'),
                 Select::make('plan', 'Plan')->options([Select::option('Free', 'free')]),
                 Select::make('author_id', 'Author')
-                    ->searchable(fn (string $search) => [
+                    ->searchable(fn (string $search): array => [
                         ['label' => "Match: {$search}", 'value' => '1'],
                         ['label' => 'Other', 'value' => '2'],
                     ]),
@@ -50,7 +50,7 @@ function rowSearchDefinition(): FormDefinition
     {
         public function definition(Form $form, Request $request): Form
         {
-            $resolver = fn (string $search, FormData $data) => [
+            $resolver = fn (string $search, FormData $data): array => [
                 Select::option(
                     "{$data->get('customer')}:{$data->get('category')}:{$search}",
                     '1',
@@ -86,7 +86,7 @@ function nestedRowSearchDefinition(): FormDefinition
     {
         public function definition(Form $form, Request $request): Form
         {
-            $resolver = fn (string $search, FormData $data) => [
+            $resolver = fn (string $search, FormData $data): array => [
                 Select::option(
                     "{$data->get('customer')}:{$data->get('section')}:{$data->get('category')}:{$search}",
                     '1',

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
@@ -17,7 +18,7 @@ use Workbench\App\Tables\ProductsTable;
 
 use function Pest\Laravel\patch;
 
-test('the products table exposes product images', function () {
+test('the products table exposes product images', function (): void {
     Storage::fake('s3');
     Lattice::tables([ProductsTable::class]);
 
@@ -61,13 +62,13 @@ test('the products table exposes product images', function () {
         ->and($product->images()->count())->toBe(2);
 });
 
-test('the products table is serialized as striped', function () {
+test('the products table is serialized as striped', function (): void {
     Lattice::tables([ProductsTable::class]);
 
     expect(data_get(wire(Table::use(ProductsTable::class)), 'props.striped'))->toBeTrue();
 });
 
-test('the products table serializes bulk actions bound to the table', function () {
+test('the products table serializes bulk actions bound to the table', function (): void {
     Lattice::tables([ProductsTable::class]);
     Lattice::bulkActions([ArchiveSelectedProductsAction::class, RejectSelectedProductsAction::class]);
 
@@ -82,7 +83,7 @@ test('the products table serializes bulk actions bound to the table', function (
         ->and($bulkActions[1]['props']['form']['schema'][0]['props']['name'])->toBe('reason');
 });
 
-test('bulk actions can target every row matching the current filter', function () {
+test('bulk actions can target every row matching the current filter', function (): void {
     Lattice::tables([ProductsTable::class]);
     Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
 
@@ -106,7 +107,7 @@ test('bulk actions can target every row matching the current filter', function (
         ->and($draft->fresh()->status)->toBe('draft');
 });
 
-test('bulk all-matching validates the filter against the table columns', function () {
+test('bulk all-matching validates the filter against the table columns', function (): void {
     Lattice::tables([ProductsTable::class]);
     Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
 
@@ -124,14 +125,14 @@ test('bulk all-matching validates the filter against the table columns', functio
         ->assertJsonPath('errors.filter.0', 'Filter [id] is not allowed for table [workbench.products].');
 });
 
-test('the products table applies date and boolean clause filters', function () {
+test('the products table applies date and boolean clause filters', function (): void {
     $featured = Product::factory()->create(['featured' => true, 'updated_at' => '2026-06-01 10:00:00']);
     Product::factory()->create(['featured' => false, 'updated_at' => '2026-06-02 10:00:00']);
 
     $table = new ProductsTable;
     $columns = $table->columns();
 
-    $resolve = fn (string $filter) => $table->source()->resolveMatching(
+    $resolve = fn (string $filter): Collection => $table->source()->resolveMatching(
         TableQuery::fromRequest(Request::create('/', 'GET', ['filter' => $filter]), $columns, 'workbench.products'),
     );
 
@@ -139,14 +140,14 @@ test('the products table applies date and boolean clause filters', function () {
         ->and($resolve('updated_at:before:2026-06-02')->pluck('id')->all())->toBe([$featured->getKey()]);
 });
 
-test('the products table high value filter matches by default sales price', function () {
+test('the products table high value filter matches by default sales price', function (): void {
     $expensive = Product::factory()->withoutDefaultPrice()->create();
     $expensive->salesPrices()->create(['group_id' => null, 'amount' => '1500.00']);
     Product::factory()->withoutDefaultPrice()->create()
         ->salesPrices()->create(['group_id' => null, 'amount' => '50.00']);
 
     $table = new ProductsTable;
-    $highValue = collect($table->filters())->firstOrFail(fn ($filter) => $filter->key === 'high_value');
+    $highValue = collect($table->filters())->firstOrFail(fn ($filter): bool => $filter->key === 'high_value');
 
     $builder = $table->builder(TableQuery::fromRequest(Request::create('/'), $table->columns(), 'workbench.products'));
     $highValue->apply($builder, true);
@@ -154,7 +155,7 @@ test('the products table high value filter matches by default sales price', func
     expect($builder->pluck('products.id')->all())->toBe([$expensive->getKey()]);
 });
 
-test('the products table applies text, starts/ends-with, and presence filters', function () {
+test('the products table applies text, starts/ends-with, and presence filters', function (): void {
     $widget = Product::factory()->create(['name' => 'Widget']);
     $gizmo = Product::factory()->create(['name' => 'Gizmo']);
     $blank = Product::factory()->create(['name' => '']);
@@ -162,7 +163,7 @@ test('the products table applies text, starts/ends-with, and presence filters', 
     $table = new ProductsTable;
     $columns = $table->columns();
 
-    $resolve = fn (string $filter) => $table->source()->resolveMatching(
+    $resolve = fn (string $filter): Collection => $table->source()->resolveMatching(
         TableQuery::fromRequest(Request::create('/', 'GET', ['filter' => $filter]), $columns, 'workbench.products'),
     );
 
@@ -172,10 +173,10 @@ test('the products table applies text, starts/ends-with, and presence filters', 
         ->and($resolve('name:filled:')->pluck('id')->sort()->values()->all())->toBe([$widget->getKey(), $gizmo->getKey()]);
 });
 
-test('the products table rejects a filter operator not allowed for the column', function () {
+test('the products table rejects a filter operator not allowed for the column', function (): void {
     $columns = (new ProductsTable)->columns();
 
-    expect(fn () => TableQuery::fromRequest(
+    expect(fn (): TableQuery => TableQuery::fromRequest(
         Request::create('/', 'GET', ['filter' => 'featured:contains:x']),
         $columns,
         'workbench.products',
@@ -185,10 +186,10 @@ test('the products table rejects a filter operator not allowed for the column', 
     );
 });
 
-test('the products table rejects invalid boolean and date filter values', function (string $filter, string $message) {
+test('the products table rejects invalid boolean and date filter values', function (string $filter, string $message): void {
     $columns = (new ProductsTable)->columns();
 
-    expect(fn () => TableQuery::fromRequest(
+    expect(fn (): TableQuery => TableQuery::fromRequest(
         Request::create('/', 'GET', ['filter' => $filter]),
         $columns,
         'workbench.products',

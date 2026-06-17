@@ -51,7 +51,7 @@ trait ReflectsWireProps
     private static function wireProperties(string $class): array
     {
         return self::$wirePropertyCache[$class] ??= array_values(array_filter(
-            (new ReflectionClass($class))->getProperties(ReflectionProperty::IS_PUBLIC),
+            new ReflectionClass($class)->getProperties(ReflectionProperty::IS_PUBLIC),
             static fn (ReflectionProperty $property): bool => ! $property->isStatic(),
         ));
     }

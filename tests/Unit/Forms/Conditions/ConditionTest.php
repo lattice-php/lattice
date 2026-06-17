@@ -13,6 +13,6 @@ it('matches against form data', function (): void {
 });
 
 it('serializes to data', function (): void {
-    expect((new Condition('age', Op::GreaterThanOrEqual, 18))->jsonSerialize())
+    expect(new Condition('age', Op::GreaterThanOrEqual, 18)->jsonSerialize())
         ->toBe(['field' => 'age', 'operator' => 'gte', 'value' => 18]);
 });

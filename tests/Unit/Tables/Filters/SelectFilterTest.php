@@ -4,7 +4,7 @@ declare(strict_types=1);
 use Lattice\Lattice\Tables\Filters\SelectFilter;
 use Workbench\App\Models\Product;
 
-test('select filter serializes its wire shape', function () {
+test('select filter serializes its wire shape', function (): void {
     expect(wire(SelectFilter::make('status')
         ->label('Status')
         ->options([
@@ -27,11 +27,11 @@ test('select filter serializes its wire shape', function () {
         ]);
 });
 
-test('select filter defaults its label from the key', function () {
+test('select filter defaults its label from the key', function (): void {
     expect(wire(SelectFilter::make('order_status'))['label'])->toBe('Order Status');
 });
 
-test('a single select filter applies an equality constraint', function () {
+test('a single select filter applies an equality constraint', function (): void {
     $builder = Product::query();
 
     SelectFilter::make('status')->apply($builder, 'active');
@@ -40,7 +40,7 @@ test('a single select filter applies an equality constraint', function () {
         ->and($builder->getBindings())->toBe(['active']);
 });
 
-test('a multiple select filter applies a whereIn constraint', function () {
+test('a multiple select filter applies a whereIn constraint', function (): void {
     $builder = Product::query();
 
     SelectFilter::make('status')->multiple()->apply($builder, ['active', 'draft']);
@@ -49,7 +49,7 @@ test('a multiple select filter applies a whereIn constraint', function () {
         ->and($builder->getBindings())->toBe(['active', 'draft']);
 });
 
-test('a select filter without a value applies no constraint', function () {
+test('a select filter without a value applies no constraint', function (): void {
     $builder = Product::query();
 
     SelectFilter::make('status')->apply($builder, '');
@@ -57,7 +57,7 @@ test('a select filter without a value applies no constraint', function () {
     expect($builder->toSql())->not->toContain('where');
 });
 
-test('a multiple select filter with no selected values applies no constraint', function () {
+test('a multiple select filter with no selected values applies no constraint', function (): void {
     $builder = Product::query();
 
     SelectFilter::make('status')->multiple()->apply($builder, []);
@@ -65,7 +65,7 @@ test('a multiple select filter with no selected values applies no constraint', f
     expect($builder->toSql())->not->toContain('where');
 });
 
-test('a select filter accepts an associative value => label array', function () {
+test('a select filter accepts an associative value => label array', function (): void {
     $props = wire(SelectFilter::make('status')->options(['draft' => 'Draft', 'active' => 'Active']))['props'];
 
     expect($props['options'])->toBe([
@@ -74,7 +74,7 @@ test('a select filter accepts an associative value => label array', function () 
     ]);
 });
 
-test('a select filter resolves its options from an option source', function () {
+test('a select filter resolves its options from an option source', function (): void {
     $source = inMemoryOptionSource(['1' => 'Ada', '2' => 'Linus']);
 
     $props = wire(SelectFilter::make('author_id')->optionsFrom($source))['props'];

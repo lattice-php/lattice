@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Forms\Components;
 
 use Closure;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
 use Lattice\Lattice\Facades\Evaluate;
 use Lattice\Lattice\Forms\Attributes\AsField;
@@ -101,7 +102,7 @@ class Repeater extends Field implements ProvidesRowFields, ProvidesRowPrefills
     {
         return array_values(array_filter(
             $this->children,
-            static fn ($child): bool => $child instanceof Field,
+            static fn (Component $child): bool => $child instanceof Field,
         ));
     }
 
@@ -154,7 +155,7 @@ class Repeater extends Field implements ProvidesRowFields, ProvidesRowPrefills
     #[\Override]
     public function hydrateState(mixed $value, ?FormData $form = null, ?Request $request = null): void
     {
-        if ($this->itemLabelResolver === null || ! is_array($value)) {
+        if (! $this->itemLabelResolver instanceof Closure || ! is_array($value)) {
             $this->itemLabels = null;
 
             return;

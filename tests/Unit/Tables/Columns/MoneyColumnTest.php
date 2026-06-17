@@ -4,7 +4,7 @@ declare(strict_types=1);
 use Lattice\Lattice\Tables\Columns\MoneyColumn;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
-it('serializes a static-currency money column', function () {
+it('serializes a static-currency money column', function (): void {
     $data = wire(MoneyColumn::make('total')->currency('EUR'));
 
     expect($data['type'])->toBe('column.money')
@@ -14,7 +14,7 @@ it('serializes a static-currency money column', function () {
         ->and($data['filter'] ?? null)->toBeNull();
 });
 
-it('serializes a per-row currency reference', function () {
+it('serializes a per-row currency reference', function (): void {
     $props = wire(MoneyColumn::make('total')->currencyField('currency')->decimals(0))['props'];
 
     expect($props['currencyField'])->toBe('currency')
@@ -22,7 +22,7 @@ it('serializes a per-row currency reference', function () {
         ->and($props['minimumFractionDigits'])->toBe(0);
 });
 
-it('filters money as a number', function () {
+it('filters money as a number', function (): void {
     $data = wire(MoneyColumn::make('total')->filterable());
 
     expect($data['filter']['type'])->toBe(FilterType::Number->value);

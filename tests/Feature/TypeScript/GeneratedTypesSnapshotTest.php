@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use function Pest\Laravel\artisan;
 
-it('keeps the committed generated.ts in sync with the transformer', function () {
+it('keeps the committed generated.ts in sync with the transformer', function (): void {
     $path = dirname(__DIR__, 3).'/resources/js/types/generated.ts';
     $manifest = dirname(__DIR__, 3).'/resources/js/types/typescript-transformer-manifest.json';
 

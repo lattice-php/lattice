@@ -19,7 +19,7 @@ final class MenuProductsPage extends Page
     }
 }
 
-test('a menu serializes its items as a menu node tree', function () {
+test('a menu serializes its items as a menu node tree', function (): void {
     $menu = Menu::make('main')->items([
         MenuItem::make('Home')->href('/'),
         MenuItem::make('Account')->children([
@@ -40,7 +40,7 @@ test('a menu serializes its items as a menu node tree', function () {
         ]);
 });
 
-test('a menu item nests children that pipe to its schema', function () {
+test('a menu item nests children that pipe to its schema', function (): void {
     $wire = wire(
         MenuItem::make('Account')->children([
             MenuItem::make('Profile')->href('/profile'),
@@ -54,7 +54,7 @@ test('a menu item nests children that pipe to its schema', function () {
         ]);
 });
 
-test('a menu item serializes its icon and method', function () {
+test('a menu item serializes its icon and method', function (): void {
     $wire = wire(
         MenuItem::make('Log out')->href('/logout')->icon('log-out')->method(HttpMethod::Post),
     );
@@ -68,7 +68,7 @@ test('a menu item serializes its icon and method', function () {
         ]);
 });
 
-test('a menu item includes unset optional props as null on the wire', function () {
+test('a menu item includes unset optional props as null on the wire', function (): void {
     $wire = wire(MenuItem::make('Home')->href('/'));
 
     expect($wire['props']['method'])->toBeNull()
@@ -77,7 +77,7 @@ test('a menu item includes unset optional props as null on the wire', function (
         ->and($wire['props']['suffix'])->toBeNull();
 });
 
-test('a menu item serializes prefix and suffix affixes', function () {
+test('a menu item serializes prefix and suffix affixes', function (): void {
     $wire = wire(
         MenuItem::make('Tables')->href('/tables')->prefix(Icon::Table)->suffix('beta'),
     );
@@ -86,20 +86,20 @@ test('a menu item serializes prefix and suffix affixes', function () {
         ->and($wire['props']['suffix'])->toBe(['icon' => null, 'text' => 'beta']);
 });
 
-test('a menu item prefix takes an icon by name via the affix escape hatch', function () {
+test('a menu item prefix takes an icon by name via the affix escape hatch', function (): void {
     $wire = wire(MenuItem::make('Home')->href('/')->prefix(Affix::icon('house')));
 
     expect($wire['props']['prefix'])->toBe(['icon' => 'house', 'text' => null]);
 });
 
-test('icon sets a menu item as icon-only and replaces the iconOnly flag', function () {
+test('icon sets a menu item as icon-only and replaces the iconOnly flag', function (): void {
     $wire = wire(MenuItem::make('Settings')->href('/settings')->icon(Icon::Settings));
 
     expect($wire['props']['icon'])->toBe('settings')
         ->and($wire['props'])->not->toHaveKey('iconOnly');
 });
 
-test('fromPage resolves the href and a default label from the page route', function () {
+test('fromPage resolves the href and a default label from the page route', function (): void {
     Route::get('/menu-products', [MenuProductsPage::class, 'render']);
 
     $wire = wire(MenuItem::fromPage(MenuProductsPage::class));
@@ -110,7 +110,7 @@ test('fromPage resolves the href and a default label from the page route', funct
     ]);
 });
 
-test('fromPage substitutes route parameters into the href', function () {
+test('fromPage substitutes route parameters into the href', function (): void {
     Route::get('/menu-products/{product}', [MenuProductsPage::class, 'render']);
 
     $wire = wire(MenuItem::fromPage(MenuProductsPage::class, ['product' => 7]));
@@ -118,7 +118,7 @@ test('fromPage substitutes route parameters into the href', function () {
     expect($wire['props']['href'])->toBe('/menu-products/7');
 });
 
-test('fromPage label can be overridden fluently', function () {
+test('fromPage label can be overridden fluently', function (): void {
     Route::get('/menu-products', [MenuProductsPage::class, 'render']);
 
     $wire = wire(MenuItem::fromPage(MenuProductsPage::class)->label('Catalog'));
@@ -126,24 +126,24 @@ test('fromPage label can be overridden fluently', function () {
     expect($wire['props']['label'])->toBe('Catalog');
 });
 
-test('fromPage rejects a class that is not a lattice page', function () {
-    expect(fn () => MenuItem::fromPage(stdClass::class))
+test('fromPage rejects a class that is not a lattice page', function (): void {
+    expect(fn (): MenuItem => MenuItem::fromPage(stdClass::class))
         ->toThrow(InvalidArgumentException::class);
 });
 
-test('fromPage rejects a page without a registered route', function () {
-    expect(fn () => MenuItem::fromPage(MenuProductsPage::class))
+test('fromPage rejects a page without a registered route', function (): void {
+    expect(fn (): MenuItem => MenuItem::fromPage(MenuProductsPage::class))
         ->toThrow(InvalidArgumentException::class);
 });
 
-test('a link menu item cannot be given children', function () {
-    expect(fn () => MenuItem::make('Account')->href('/account')->children([
+test('a link menu item cannot be given children', function (): void {
+    expect(fn (): MenuItem => MenuItem::make('Account')->href('/account')->children([
         MenuItem::make('Profile')->href('/profile'),
     ]))->toThrow(InvalidArgumentException::class);
 });
 
-test('a menu item with children cannot become a link', function () {
-    expect(fn () => MenuItem::make('Account')->children([
+test('a menu item with children cannot become a link', function (): void {
+    expect(fn (): MenuItem => MenuItem::make('Account')->children([
         MenuItem::make('Profile')->href('/profile'),
     ])->href('/account'))->toThrow(InvalidArgumentException::class);
 });

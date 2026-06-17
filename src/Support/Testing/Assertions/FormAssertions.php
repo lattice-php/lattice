@@ -31,7 +31,7 @@ final readonly class FormAssertions
 
         $assertions = new FieldAssertions($node, $this, $this->node);
 
-        if ($tap !== null) {
+        if ($tap instanceof Closure) {
             $tap($assertions);
 
             return $this;

@@ -47,7 +47,7 @@ class BusinessPartnerEditPage extends WorkbenchPage
                         ->fill([
                             'name' => $businessPartner->name,
                             'email' => $businessPartner->email,
-                            'groups' => $businessPartner->groups->pluck('id')->map(fn ($id) => (string) $id)->all(),
+                            'groups' => $businessPartner->groups->pluck('id')->map(fn ($id): string => (string) $id)->all(),
                             'addresses' => $addresses,
                             'default_shipping_address_id' => $businessPartner->default_shipping_address_id !== null
                                 ? (string) $businessPartner->default_shipping_address_id

@@ -11,14 +11,14 @@ use function Pest\Laravel\patch;
 use function Pest\Laravel\post;
 use function Pest\Laravel\withoutVite;
 
-test('the group create page renders', function () {
+test('the group create page renders', function (): void {
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
     get('/groups/create')->assertOk();
 });
 
-test('the group form creates a group and redirects', function () {
+test('the group form creates a group and redirects', function (): void {
     Lattice::forms([GroupForm::class]);
 
     $form = wire(Form::use(GroupForm::class));
@@ -31,7 +31,7 @@ test('the group form creates a group and redirects', function () {
     expect(Group::query()->where('name', 'Premium Customers')->exists())->toBeTrue();
 });
 
-test('the group edit page renders with prefilled form state', function () {
+test('the group edit page renders with prefilled form state', function (): void {
     $group = Group::factory()->create(['name' => 'VIP Partners']);
 
     withoutVite();
@@ -42,7 +42,7 @@ test('the group edit page renders with prefilled form state', function () {
             ->field('name', fn ($name) => $name->assertInitialValue('VIP Partners')));
 });
 
-test('the group form updates an existing group', function () {
+test('the group form updates an existing group', function (): void {
     Lattice::forms([GroupForm::class]);
 
     $group = Group::factory()->create(['name' => 'Old Name']);

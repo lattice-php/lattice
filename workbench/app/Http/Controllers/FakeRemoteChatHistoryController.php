@@ -17,9 +17,9 @@ final readonly class FakeRemoteChatHistoryController
 
         return response()->json([
             'messages' => [
-                (new ChatMessage('remote-assistant-1', ChatRole::Assistant, [
+                new ChatMessage('remote-assistant-1', ChatRole::Assistant, [
                     ChatPart::text('Remote todo history loaded with a browser token.'),
-                ]))->jsonSerialize(),
+                ])->jsonSerialize(),
             ],
         ]);
     }

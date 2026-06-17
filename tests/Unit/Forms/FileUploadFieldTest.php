@@ -139,7 +139,7 @@ it('builds file descriptors from a stored path on prefill', function (): void {
 
 it('prefers temporary urls for prefilled files when the disk supports them', function (): void {
     $fake = Storage::fake('s3');
-    $fake->buildTemporaryUrlsUsing(fn (string $path) => "https://signed.test/{$path}");
+    $fake->buildTemporaryUrlsUsing(fn (string $path): string => "https://signed.test/{$path}");
     Storage::disk('s3')->put('uploads/a.pdf', 'data');
 
     $field = FileUpload::make('document')->disk('s3');
@@ -162,7 +162,7 @@ it('builds descriptors for each stored path when multiple', function (): void {
 it('signs an upload returning key url headers and method', function (): void {
     $fake = Storage::fake('s3');
     $fake->buildTemporaryUploadUrlsUsing(
-        fn (string $path, $expiration, array $options = []) => ['url' => "https://s3.test/{$path}", 'headers' => ['x-test' => '1']],
+        fn (string $path, $expiration, array $options = []): array => ['url' => "https://s3.test/{$path}", 'headers' => ['x-test' => '1']],
     );
 
     $field = FileUpload::make('document')->disk('s3')->signedUpload();
@@ -203,7 +203,7 @@ it('rejects finalizing non-temporary signed upload keys', function (): void {
 
     $field = FileUpload::make('images')->disk('s3')->signedUpload();
 
-    expect(fn () => $field->finalizeSignedUploads(
+    expect(fn (): array => $field->finalizeSignedUploads(
         ['uploads/photo.jpg'],
         fn (): string => 'uploads/final.jpg',
     ))->toThrow(InvalidArgumentException::class);
@@ -212,7 +212,7 @@ it('rejects finalizing non-temporary signed upload keys', function (): void {
 it('rejects finalizing uploads when signed uploads are disabled', function (): void {
     $field = FileUpload::make('images');
 
-    expect(fn () => $field->finalizeSignedUploads(
+    expect(fn (): array => $field->finalizeSignedUploads(
         ['tmp/photo.jpg'],
         fn (): string => 'uploads/final.jpg',
     ))->toThrow(RuntimeException::class, 'Only signed uploads can be finalized.');
@@ -223,7 +223,7 @@ it('rejects finalizing signed upload keys that do not exist', function (): void 
 
     $field = FileUpload::make('images')->disk('s3')->signedUpload();
 
-    expect(fn () => $field->finalizeSignedUploads(
+    expect(fn (): array => $field->finalizeSignedUploads(
         ['tmp/missing.jpg'],
         fn (): string => 'uploads/final.jpg',
     ))->toThrow(InvalidArgumentException::class, 'Signed upload [tmp/missing.jpg] does not exist.');
@@ -235,7 +235,7 @@ it('rejects destinations inside the temporary upload prefix', function (): void 
 
     $field = FileUpload::make('images')->disk('s3')->signedUpload();
 
-    expect(fn () => $field->finalizeSignedUploads(
+    expect(fn (): array => $field->finalizeSignedUploads(
         ['tmp/photo.jpg'],
         fn (): string => 'tmp/final.jpg',
     ))->toThrow(InvalidArgumentException::class, 'Signed uploads must be finalized outside the temporary upload prefix.');
@@ -247,7 +247,7 @@ it('fails when the disk cannot move a finalized upload', function (): void {
 
     $field = FileUpload::make('images')->disk('s3')->signedUpload();
 
-    expect(fn () => $field->finalizeSignedUploads(
+    expect(fn (): array => $field->finalizeSignedUploads(
         ['tmp/photo.jpg'],
         fn (): string => 'uploads/final.jpg',
     ))->toThrow(RuntimeException::class, 'Unable to finalize signed upload [tmp/photo.jpg].');

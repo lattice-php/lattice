@@ -91,7 +91,7 @@ class Select extends Field
      */
     public function isSearchable(): bool
     {
-        return $this->optionSource !== null || $this->searchResolver !== null;
+        return $this->optionSource instanceof OptionSource || $this->searchResolver instanceof Closure;
     }
 
     /**
@@ -115,11 +115,11 @@ class Select extends Field
      */
     public function resolveSearch(string $query, FormData $data, Request $request): array
     {
-        if ($this->optionSource !== null) {
+        if ($this->optionSource instanceof OptionSource) {
             return $this->normalizeOptions($this->optionSource->search($query));
         }
 
-        if ($this->searchResolver === null) {
+        if (! $this->searchResolver instanceof Closure) {
             return [];
         }
 
@@ -131,7 +131,7 @@ class Select extends Field
     #[\Override]
     public function hydrateState(mixed $value, ?FormData $form = null, ?Request $request = null): void
     {
-        if ($this->optionSource === null && $this->selectedResolver === null) {
+        if (! $this->optionSource instanceof OptionSource && ! $this->selectedResolver instanceof Closure) {
             return;
         }
 
@@ -144,7 +144,7 @@ class Select extends Field
             return;
         }
 
-        $resolved = $this->optionSource !== null
+        $resolved = $this->optionSource instanceof OptionSource
             ? $this->normalizeOptions($this->optionSource->selected($values))
             : $this->normalizeOptions(Evaluate::resolve(
                 $this->selectedResolver,

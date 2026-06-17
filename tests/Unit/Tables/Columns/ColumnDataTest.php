@@ -5,7 +5,7 @@ use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
-it('serializes common fields plus a reflected props object', function () {
+it('serializes common fields plus a reflected props object', function (): void {
     $data = new ColumnData(
         key: 'status',
         label: 'Status',
@@ -27,7 +27,7 @@ it('serializes common fields plus a reflected props object', function () {
     ]);
 });
 
-it('serializes the default column width', function () {
+it('serializes the default column width', function (): void {
     $data = new ColumnData(
         key: 'status',
         label: 'Status',

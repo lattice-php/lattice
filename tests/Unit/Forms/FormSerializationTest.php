@@ -7,7 +7,7 @@ use Lattice\Lattice\Forms\Components\PasswordInput;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 
-test('forms serialize schema children like pages', function () {
+test('forms serialize schema children like pages', function (): void {
     expect(wire(Form::make('profile-form')->schema([
         Text::make('Profile details'),
     ])))
@@ -28,7 +28,7 @@ test('forms serialize schema children like pages', function () {
         ]);
 });
 
-test('password inputs can request automatic confirmation fields', function () {
+test('password inputs can request automatic confirmation fields', function (): void {
     expect(wire(PasswordInput::make('password', 'Password')
         ->required()
         ->passwordRules('minlength:8')
@@ -69,7 +69,7 @@ test('password inputs can request automatic confirmation fields', function () {
         ]);
 });
 
-test('editable computed fields serialize an explicit client prefill flag', function () {
+test('editable computed fields serialize an explicit client prefill flag', function (): void {
     $wire = wire(
         TextInput::make('price')->value(
             fn (FormData $data): string => (string) $data->get('suggested_price', ''),

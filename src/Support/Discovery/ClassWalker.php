@@ -27,7 +27,7 @@ final class ClassWalker
         }
 
         /** @var list<class-string> $classes */
-        $classes = (new Discover(directories: [$path]))->classes()->get();
+        $classes = new Discover(directories: [$path])->classes()->get();
 
         return $classes;
     }
@@ -44,7 +44,7 @@ final class ClassWalker
         }
 
         /** @var list<class-string> $classes */
-        $classes = (new Discover(directories: [$path]))->get();
+        $classes = new Discover(directories: [$path])->get();
 
         return $classes;
     }

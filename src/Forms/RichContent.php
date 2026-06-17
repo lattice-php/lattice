@@ -74,7 +74,7 @@ final class RichContent
 
     private function editor(): Editor
     {
-        return $this->editor ??= (new Editor(['extensions' => [
+        return $this->editor ??= new Editor(['extensions' => [
             new StarterKit,
             new Underline,
             new Highlight,
@@ -87,12 +87,12 @@ final class RichContent
             new Details,
             new DetailsSummary,
             new DetailsContent,
-        ]]))->setContent($this->document);
+        ]])->setContent($this->document);
     }
 
     private function isEmpty(): bool
     {
-        return $this->document === null || $this->document === '' || $this->document === [];
+        return in_array($this->document, [null, '', []], true);
     }
 
     private function sanitize(string $html): string
@@ -111,6 +111,6 @@ final class RichContent
             ->allowElement('summary')
             ->allowAttribute('style', ['p', 'h1', 'h2', 'h3']);
 
-        return (new HtmlSanitizer($config))->sanitize($html);
+        return new HtmlSanitizer($config)->sanitize($html);
     }
 }

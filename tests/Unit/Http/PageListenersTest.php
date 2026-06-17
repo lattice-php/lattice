@@ -7,7 +7,7 @@ use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Realtime\Listen;
 
-test('pages serialize declared listeners when realtime is enabled', function () {
+test('pages serialize declared listeners when realtime is enabled', function (): void {
     config()->set('lattice.realtime.enabled', true);
 
     $page = new class extends Page
@@ -35,7 +35,7 @@ test('pages serialize declared listeners when realtime is enabled', function () 
         ]);
 });
 
-test('pages omit the listeners key when none are declared', function () {
+test('pages omit the listeners key when none are declared', function (): void {
     config()->set('lattice.realtime.enabled', true);
 
     $page = new class extends Page
@@ -50,7 +50,7 @@ test('pages omit the listeners key when none are declared', function () {
         ->not->toHaveKey('listeners');
 });
 
-test('pages omit listeners when realtime is disabled', function () {
+test('pages omit listeners when realtime is disabled', function (): void {
     config()->set('lattice.realtime.enabled', false);
 
     $page = new class extends Page

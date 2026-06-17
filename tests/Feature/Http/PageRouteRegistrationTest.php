@@ -25,7 +25,7 @@ final class RegWidgetsPage extends RegBasePage
     }
 }
 
-test('Lattice::pageRegistry()->all() resolves route metadata for registered pages', function () {
+test('Lattice::pageRegistry()->all() resolves route metadata for registered pages', function (): void {
     Lattice::pages([RegWidgetsPage::class]);
 
     $widgets = collect(Lattice::pageRegistry()->all())
@@ -37,7 +37,7 @@ test('Lattice::pageRegistry()->all() resolves route metadata for registered page
         ->and($widgets->middleware)->toContain('web');
 });
 
-test('Lattice::pageRegistry()->all() excludes abstract base pages', function () {
+test('Lattice::pageRegistry()->all() excludes abstract base pages', function (): void {
     Lattice::pages([RegBasePage::class]);
 
     $classes = collect(Lattice::pageRegistry()->all())->pluck('class');
@@ -45,10 +45,10 @@ test('Lattice::pageRegistry()->all() excludes abstract base pages', function () 
     expect($classes)->not->toContain(RegBasePage::class);
 });
 
-test('the service provider builds a named GET route for each page', function () {
+test('the service provider builds a named GET route for each page', function (): void {
     Lattice::pages([RegWidgetsPage::class]);
 
-    (new LatticeServiceProvider(app()))->bootPages();
+    new LatticeServiceProvider(app())->bootPages();
 
     $route = Route::getRoutes()->getByName('widgets.index');
 
@@ -58,7 +58,7 @@ test('the service provider builds a named GET route for each page', function () 
         ->and($route->gatherMiddleware())->toContain('web');
 });
 
-test('the service provider skips building routes when the route cache is active', function () {
+test('the service provider skips building routes when the route cache is active', function (): void {
     Lattice::pages([RegWidgetsPage::class]);
 
     $cachedApp = new class extends Application
@@ -71,7 +71,7 @@ test('the service provider skips building routes when the route cache is active'
         }
     };
 
-    (new LatticeServiceProvider($cachedApp))->bootPages();
+    new LatticeServiceProvider($cachedApp)->bootPages();
 
     expect(Route::getRoutes()->getByName('widgets.index'))->toBeNull();
 });

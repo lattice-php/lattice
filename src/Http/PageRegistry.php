@@ -42,7 +42,7 @@ final class PageRegistry
                 continue;
             }
 
-            if (! is_a($page, PageContract::class, true) || (new ReflectionClass($page))->isAbstract()) {
+            if (! is_a($page, PageContract::class, true) || new ReflectionClass($page)->isAbstract()) {
                 continue;
             }
 

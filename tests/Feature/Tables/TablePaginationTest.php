@@ -12,7 +12,7 @@ use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\TableQuery;
 use Orchestra\Testbench\Factories\UserFactory;
 
-test('eloquent tables can use infinite pagination metadata', function () {
+test('eloquent tables can use infinite pagination metadata', function (): void {
     User::query()->delete();
 
     foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
@@ -57,7 +57,7 @@ test('eloquent tables can use infinite pagination metadata', function () {
         ->assertJsonPath('pagination.nextPage', null);
 });
 
-test('eloquent tables use table pagination with totals by default', function () {
+test('eloquent tables use table pagination with totals by default', function (): void {
     User::query()->delete();
 
     foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
@@ -81,7 +81,7 @@ test('eloquent tables use table pagination with totals by default', function () 
         ->assertJsonPath('pagination.nextPage', 2);
 });
 
-test('eloquent tables can use simple pagination without totals', function () {
+test('eloquent tables can use simple pagination without totals', function (): void {
     User::query()->delete();
 
     foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
@@ -104,7 +104,7 @@ test('eloquent tables can use simple pagination without totals', function () {
         ->assertJsonPath('pagination.nextPage', 2);
 });
 
-test('eloquent tables can disable pagination for small datasets', function () {
+test('eloquent tables can disable pagination for small datasets', function (): void {
     User::query()->delete();
 
     foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {

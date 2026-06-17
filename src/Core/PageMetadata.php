@@ -54,9 +54,9 @@ final readonly class PageMetadata
             class: $class,
             route: $own?->route,
             name: self::resolveName($class, $own),
-            layout: self::inherited($class, fn (AsPage $a) => $a->layout) ?? PageLayout::None,
-            container: self::inherited($class, fn (AsPage $a) => $a->container) ?? PageContainer::Centered,
-            middleware: (array) (self::inherited($class, fn (AsPage $a) => $a->middleware) ?? []),
+            layout: self::inherited($class, fn (AsPage $a): PageLayout|string|null => $a->layout) ?? PageLayout::None,
+            container: self::inherited($class, fn (AsPage $a): PageContainer|string|null => $a->container) ?? PageContainer::Centered,
+            middleware: (array) (self::inherited($class, fn (AsPage $a): string|array|null => $a->middleware) ?? []),
         );
     }
 
@@ -70,8 +70,8 @@ final readonly class PageMetadata
             'route' => $this->route,
             'name' => $this->name,
             'middleware' => $this->middleware,
-            'layout' => self::serialize($this->layout),
-            'container' => self::serialize($this->container),
+            'layout' => $this->serialize($this->layout),
+            'container' => $this->serialize($this->container),
         ];
     }
 
@@ -90,14 +90,14 @@ final readonly class PageMetadata
         );
     }
 
-    private static function serialize(PageLayout|PageContainer|string $value): string
+    private function serialize(PageLayout|PageContainer|string $value): string
     {
         return $value instanceof BackedEnum ? (string) $value->value : $value;
     }
 
     private static function attributeOn(string $class): ?AsPage
     {
-        $attributes = (new ReflectionClass($class))->getAttributes(AsPage::class);
+        $attributes = new ReflectionClass($class)->getAttributes(AsPage::class);
 
         return $attributes === [] ? null : $attributes[0]->newInstance();
     }
@@ -110,7 +110,7 @@ final readonly class PageMetadata
         for ($current = $class; $current !== false; $current = get_parent_class($current)) {
             $attribute = self::attributeOn($current);
 
-            if ($attribute !== null && ($resolved = $value($attribute)) !== null) {
+            if ($attribute instanceof AsPage && ($resolved = $value($attribute)) !== null) {
                 return $resolved;
             }
         }
@@ -124,7 +124,7 @@ final readonly class PageMetadata
             return $own->name;
         }
 
-        $route = $own !== null ? ($own->route ?? '') : '';
+        $route = $own instanceof AsPage ? ($own->route ?? '') : '';
 
         $segments = array_filter(
             explode('/', $route),

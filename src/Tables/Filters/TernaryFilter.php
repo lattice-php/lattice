@@ -89,7 +89,7 @@ class TernaryFilter extends BaseFilter
 
         $query = $state ? $this->trueQuery : $this->falseQuery;
 
-        if ($query !== null) {
+        if ($query instanceof Closure) {
             Evaluate::resolve($query, Evaluate::context()->typed($builder::class, $builder));
 
             return;

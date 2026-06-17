@@ -27,7 +27,7 @@ final class RemoteSchemaNormalizer
      * @param  array<string, mixed>  $node
      * @param  array<string, mixed>  $context
      */
-    private function node(array $node, string $path, array $context): Component
+    private function node(array $node, string $path, array $context): RemoteNode
     {
         $type = $node['type'] ?? null;
 

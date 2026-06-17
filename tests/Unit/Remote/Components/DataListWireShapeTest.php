@@ -119,14 +119,14 @@ test('remote chat box component serializes remote access with a signed ref', fun
 });
 
 test('remote components require source and audience before remote access is serialized', function (): void {
-    expect(fn () => wire(
+    expect(fn (): array => wire(
         DataList::make('customers')
             ->source('fixtures.crm'),
     ))->toThrow(LogicException::class, 'must define source() and audience()');
 });
 
 test('remote components require an id before remote access is serialized', function (): void {
-    expect(fn () => wire(
+    expect(fn (): array => wire(
         (new RemoteChatBox)
             ->source('fixtures.crm')
             ->audience('https://crm.example.test'),

@@ -24,7 +24,7 @@ function resolvedDefinition(): FormDefinition
                 TextInput::make('qty', 'Qty'),
                 TextInput::make('price', 'Price'),
                 TextInput::make('total', 'Total')
-                    ->value(fn (FormData $d) => $d->float('qty') * $d->float('price')),
+                    ->value(fn (FormData $d): float => $d->float('qty') * $d->float('price')),
             ]);
         }
 
@@ -42,7 +42,7 @@ it('skips validation for a field hidden by a closure', function (): void {
 });
 
 it('applies rules set inside a dependsOn closure', function (): void {
-    expect(fn () => resolvedDefinition()->validate(Request::create('/', 'POST', ['mode' => 'reveal'])))
+    expect(fn (): array => resolvedDefinition()->validate(Request::create('/', 'POST', ['mode' => 'reveal'])))
         ->toThrow(ValidationException::class);
 });
 

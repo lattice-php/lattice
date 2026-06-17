@@ -8,11 +8,11 @@ use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use function Pest\Laravel\artisan;
 
 // Restore the default profile; the workbench binds BaseProfile.
-beforeEach(function () {
+beforeEach(function (): void {
     app()->bind(TypeScriptProfile::class, AugmentProfile::class);
 });
 
-it('writes a ColumnProps augmentation from the column class public props', function () {
+it('writes a ColumnProps augmentation from the column class public props', function (): void {
     $output = base_path('resources/js/lattice/generated-column.d.ts');
 
     config()->set('lattice.typescript.output', $output);

@@ -21,7 +21,7 @@ function computedDefinition(): FormDefinition
                 TextInput::make('qty', 'Qty'),
                 TextInput::make('price', 'Price'),
                 TextInput::make('total', 'Total')
-                    ->value(fn (FormData $d) => $d->float('qty') * $d->float('price')),
+                    ->value(fn (FormData $d): float => $d->float('qty') * $d->float('price')),
             ]);
         }
 
@@ -51,7 +51,7 @@ function pricingDefinition(): FormDefinition
                     Block::make('product')->label('Product')->schema([
                         TextInput::make('product', 'Product'),
                         TextInput::make('price', 'Price')->value(
-                            fn (FormData $row, FormData $form) => $row->float('product') * ($form->string('customer') === 'vip' ? 0.5 : 1.0),
+                            fn (FormData $row, FormData $form): float => $row->float('product') * ($form->string('customer') === 'vip' ? 0.5 : 1.0),
                             editable: true,
                             resetOn: ['product'],
                             refreshOn: ['@customer'],
@@ -101,7 +101,7 @@ it('resolves repeater row prefill values from the fixed schema', function (): vo
                 Repeater::make('lines', 'Lines')->schema([
                     TextInput::make('base', 'Base'),
                     TextInput::make('doubled', 'Doubled')->value(
-                        fn (FormData $row, FormData $form) => $row->float('base') * 2,
+                        fn (FormData $row, FormData $form): float => $row->float('base') * 2,
                         editable: true,
                         resetOn: ['base'],
                     ),
@@ -137,7 +137,7 @@ it('resolves nested repeater prefill values keyed by recursive full path', funct
                     Repeater::make('lines', 'Lines')->schema([
                         TextInput::make('base', 'Base'),
                         TextInput::make('price', 'Price')->value(
-                            fn (FormData $row, FormData $form) => $row->float('base') + ($form->string('customer') === 'vip' ? 10 : 0),
+                            fn (FormData $row, FormData $form): float => $row->float('base') + ($form->string('customer') === 'vip' ? 10 : 0),
                             editable: true,
                             resetOn: ['base'],
                             refreshOn: ['@customer'],

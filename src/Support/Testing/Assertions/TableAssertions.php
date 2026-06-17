@@ -28,7 +28,7 @@ final readonly class TableAssertions
 
         $assertions = new FilterAssertions($key, $filter, $this);
 
-        if ($tap !== null) {
+        if ($tap instanceof Closure) {
             $tap($assertions);
 
             return $this;

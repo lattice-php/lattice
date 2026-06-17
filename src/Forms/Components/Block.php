@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Forms\Components;
 
 use Illuminate\Support\Str;
 use JsonSerializable;
+use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
 
 final class Block implements JsonSerializable
@@ -34,7 +35,7 @@ final class Block implements JsonSerializable
     {
         return array_values(array_filter(
             $this->children,
-            static fn ($child): bool => $child instanceof Field,
+            static fn (Component $child): bool => $child instanceof Field,
         ));
     }
 

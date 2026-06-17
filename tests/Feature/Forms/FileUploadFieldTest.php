@@ -28,7 +28,7 @@ function uploadHeaders(array $component, array $extra = []): array
 it('signs an upload through the form endpoint', function (): void {
     Storage::fake('s3');
     Storage::disk('s3')->buildTemporaryUploadUrlsUsing(
-        fn (string $path, $expiration, array $options = []) => ['url' => "https://s3.test/{$path}", 'headers' => []],
+        fn (string $path, $expiration, array $options = []): array => ['url' => "https://s3.test/{$path}", 'headers' => []],
     );
 
     Lattice::forms([UploadForm::class]);
@@ -43,7 +43,7 @@ it('signs an upload through the form endpoint', function (): void {
 it('signs an upload for a file field inside a repeater row', function (): void {
     Storage::fake('s3');
     Storage::disk('s3')->buildTemporaryUploadUrlsUsing(
-        fn (string $path, $expiration, array $options = []) => ['url' => "https://s3.test/{$path}", 'headers' => []],
+        fn (string $path, $expiration, array $options = []): array => ['url' => "https://s3.test/{$path}", 'headers' => []],
     );
 
     Lattice::forms([UploadForm::class]);
@@ -64,7 +64,7 @@ it('signs an upload for a file field inside a repeater row', function (): void {
 it('signs an upload for a file field inside nested repeater rows', function (): void {
     Storage::fake('s3');
     Storage::disk('s3')->buildTemporaryUploadUrlsUsing(
-        fn (string $path, $expiration, array $options = []) => ['url' => "https://s3.test/{$path}", 'headers' => []],
+        fn (string $path, $expiration, array $options = []): array => ['url' => "https://s3.test/{$path}", 'headers' => []],
     );
 
     $definition = new class extends FormDefinition

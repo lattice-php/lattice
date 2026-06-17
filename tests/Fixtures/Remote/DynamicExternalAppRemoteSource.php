@@ -20,6 +20,7 @@ final class DynamicExternalAppRemoteSource extends RemoteSourceDefinition
         return $this->apps->schemaEndpoint($this->sourceKey);
     }
 
+    #[\Override]
     public function issueBrowserToken(Request $request): BrowserToken
     {
         return new BrowserToken(

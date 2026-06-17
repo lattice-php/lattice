@@ -68,7 +68,7 @@ enum FilterType: string
     public function acceptsValue(string $value): bool
     {
         return match ($this) {
-            self::Date => self::dateFrom($value) !== null,
+            self::Date => self::dateFrom($value) instanceof DateTimeImmutable,
             self::Boolean => self::booleanFrom($value) !== null,
             default => true,
         };

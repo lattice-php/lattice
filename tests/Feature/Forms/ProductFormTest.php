@@ -9,6 +9,7 @@ use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Support\Testing\Assertions\FieldAssertions;
 use Lattice\Lattice\Support\Testing\Assertions\FormAssertions;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Actions\EditProductAction;
@@ -32,7 +33,7 @@ function productHeaders(array $component, array $extra = []): array
     return ['X-Lattice-Ref' => componentRef($component), ...$extra];
 }
 
-test('forms serialize initial state for bound edit values', function () {
+test('forms serialize initial state for bound edit values', function (): void {
     $form = Form::make('product-form')
         ->fill([
             'name' => 'Desk Lamp',
@@ -44,7 +45,7 @@ test('forms serialize initial state for bound edit values', function () {
 
     $this->assertLatticeComponent($form)
         ->assertHasForm('product-form')
-        ->form('product-form', fn (FormAssertions $f) => $f
+        ->form('product-form', fn (FormAssertions $f): FieldAssertions => $f
             ->field('name')->assertInitialValue('Desk Lamp'));
 
     expect(wire($form)['props']['state'])->toBe([
@@ -53,7 +54,7 @@ test('forms serialize initial state for bound edit values', function () {
     ]);
 });
 
-test('forms can enable precognitive validation with a delay', function () {
+test('forms can enable precognitive validation with a delay', function (): void {
     $form = wire(Form::make('product-form')
         ->precognitive(650));
 
@@ -61,7 +62,7 @@ test('forms can enable precognitive validation with a delay', function () {
         ->and($form['props']['validationTimeout'])->toBe(650);
 });
 
-test('the product index page lists products and links to creation', function () {
+test('the product index page lists products and links to creation', function (): void {
     Product::factory()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
@@ -73,7 +74,7 @@ test('the product index page lists products and links to creation', function () 
 
     $response = get('/products')->assertOk();
 
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
         ->component('lattice/page', false)
         ->where('lattice.title', 'Products'));
 
@@ -82,7 +83,7 @@ test('the product index page lists products and links to creation', function () 
         ->component('table', 'workbench.products', fn ($table) => $table->assertProp('data.0.name', 'Desk Lamp'));
 });
 
-test('the product form creates products', function () {
+test('the product form creates products', function (): void {
     Lattice::forms([ProductForm::class]);
 
     $form = wire(Form::use(ProductForm::class));
@@ -105,7 +106,7 @@ test('the product form creates products', function () {
         ->and($product?->status)->toBe('active');
 });
 
-test('the product form creates product images from signed uploads', function () {
+test('the product form creates product images from signed uploads', function (): void {
     Storage::fake('s3');
     Storage::disk('s3')->put('tmp/lamp.jpg', 'image-data');
     Lattice::forms([ProductForm::class]);
@@ -139,7 +140,7 @@ test('the product form creates product images from signed uploads', function () 
     Storage::disk('s3')->assertExists($image->path);
 });
 
-test('the product edit page binds existing product state', function () {
+test('the product edit page binds existing product state', function (): void {
     Storage::fake('s3');
     $product = Product::factory()->withoutDefaultPrice()->create([
         'name' => 'Desk Lamp',
@@ -162,7 +163,7 @@ test('the product edit page binds existing product state', function () {
 
     $response = get("/products/{$product->getKey()}/edit")->assertOk();
 
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
         ->component('lattice/page', false)
         ->where('lattice.title', 'Edit Product'));
 
@@ -179,7 +180,7 @@ test('the product edit page binds existing product state', function () {
         ]));
 });
 
-test('the product form updates the trusted product from sealed context', function () {
+test('the product form updates the trusted product from sealed context', function (): void {
     Lattice::forms([ProductForm::class]);
 
     $trustedProduct = Product::factory()->withoutDefaultPrice()->create([
@@ -218,7 +219,7 @@ test('the product form updates the trusted product from sealed context', functio
         ->and($tamperedProduct->sku)->toBe('SHELF-001');
 });
 
-test('the product form updates product images from signed uploads and removals', function () {
+test('the product form updates product images from signed uploads and removals', function (): void {
     Storage::fake('s3');
     Lattice::forms([ProductForm::class]);
 
@@ -286,7 +287,7 @@ test('the product form updates product images from signed uploads and removals',
     Storage::disk('s3')->assertExists($newImage->path);
 });
 
-test('the product form validates required fields', function () {
+test('the product form validates required fields', function (): void {
     Lattice::forms([ProductForm::class]);
 
     $form = wire(Form::use(ProductForm::class));
@@ -308,7 +309,7 @@ test('the product form validates required fields', function () {
         ->assertStatus(Response::HTTP_FOUND);
 });
 
-test('the product form returns precognitive validation errors without creating products', function () {
+test('the product form returns precognitive validation errors without creating products', function (): void {
     Lattice::forms([ProductForm::class]);
 
     $form = wire(Form::use(ProductForm::class));
@@ -332,7 +333,7 @@ test('the product form returns precognitive validation errors without creating p
     expect(Product::query()->count())->toBe(0);
 });
 
-test('the product form accepts valid precognitive validation without creating products', function () {
+test('the product form accepts valid precognitive validation without creating products', function (): void {
     Lattice::forms([ProductForm::class]);
 
     $form = wire(Form::use(ProductForm::class));
@@ -355,7 +356,7 @@ test('the product form accepts valid precognitive validation without creating pr
     expect(Product::query()->count())->toBe(0);
 });
 
-test('the product form validates edit uniqueness from sealed context during precognition', function () {
+test('the product form validates edit uniqueness from sealed context during precognition', function (): void {
     Lattice::forms([ProductForm::class]);
 
     $trustedProduct = Product::factory()->create([
@@ -404,7 +405,7 @@ test('the product form validates edit uniqueness from sealed context during prec
         ->and($trustedProduct->status)->toBe('draft');
 });
 
-test('the product form create rejects two default sales prices', function () {
+test('the product form create rejects two default sales prices', function (): void {
     Lattice::forms([ProductForm::class]);
 
     $form = wire(Form::use(ProductForm::class));
@@ -423,7 +424,7 @@ test('the product form create rejects two default sales prices', function () {
     expect(Product::query()->count())->toBe(0);
 });
 
-test('the product form update rejects two default sales prices', function () {
+test('the product form update rejects two default sales prices', function (): void {
     Lattice::forms([ProductForm::class]);
 
     $product = Product::factory()->withoutDefaultPrice()->create([
@@ -450,7 +451,7 @@ test('the product form update rejects two default sales prices', function () {
     expect($product->salesPrices()->whereNull('group_id')->count())->toBeLessThanOrEqual(1);
 });
 
-test('the edit product action syncs sales prices', function () {
+test('the edit product action syncs sales prices', function (): void {
     Lattice::actions([EditProductAction::class]);
 
     $product = Product::factory()->withoutDefaultPrice()->create([
@@ -479,7 +480,7 @@ test('the edit product action syncs sales prices', function () {
         ->and($product->salesPrices()->whereNull('group_id')->first()->amount)->toBe('79.99');
 });
 
-test('the edit product action syncs images', function () {
+test('the edit product action syncs images', function (): void {
     Storage::fake('s3');
     Storage::disk('s3')->put('tmp/modal.jpg', 'image-data');
     Lattice::actions([EditProductAction::class]);
@@ -517,7 +518,7 @@ test('the edit product action syncs images', function () {
     Storage::disk('s3')->assertExists($image->path);
 });
 
-test('the edit product action removes existing images without new uploads', function () {
+test('the edit product action removes existing images without new uploads', function (): void {
     Storage::fake('s3');
     Lattice::actions([EditProductAction::class]);
 
@@ -562,7 +563,7 @@ test('the edit product action removes existing images without new uploads', func
     Storage::disk('s3')->assertMissing('workbench/products/lamp.jpg');
 });
 
-test('the edit product action rejects two default sales prices with a 422', function () {
+test('the edit product action rejects two default sales prices with a 422', function (): void {
     Lattice::actions([EditProductAction::class]);
 
     $product = Product::factory()->withoutDefaultPrice()->create([

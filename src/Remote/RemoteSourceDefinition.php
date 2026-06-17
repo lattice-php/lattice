@@ -41,7 +41,7 @@ abstract class RemoteSourceDefinition extends Definition
     {
         $endpoint = $this->schemaEndpoint($request);
 
-        if ($endpoint === null) {
+        if (! $endpoint instanceof RemoteSchemaEndpoint) {
             return [];
         }
 

@@ -59,18 +59,18 @@ it('asserts field visibility, conditions and initial value', function (): void {
         ]);
 
     $this->assertLatticeComponent($form)
-        ->form('create', fn (FormAssertions $form) => $form
+        ->form('create', fn (FormAssertions $form): FieldAssertions|\Lattice\Lattice\Support\Testing\Assertions\FormAssertions => $form
             ->assertSubmitsTo('/products')
             ->assertHasField('email')
             ->assertMissingField('nope')
-            ->field('email', fn (FieldAssertions $f) => $f
+            ->field('email', fn (FieldAssertions $f): FieldAssertions => $f
                 ->assertVisible()
                 ->assertInitialValue('a@b.c'))
-            ->field('company', fn (FieldAssertions $f) => $f
+            ->field('company', fn (FieldAssertions $f): FieldAssertions => $f
                 ->assertVisibleWhen(['type' => 'business'])
                 ->assertHiddenWhen(['type' => 'personal'])
                 ->assertHasCondition('visible', 'type', Op::Equals, 'business'))
-            ->field('secret', fn (FieldAssertions $f) => $f->assertHidden()));
+            ->field('secret', fn (FieldAssertions $f): FieldAssertions => $f->assertHidden()));
 });
 
 it('asserts table filters, columns and operators', function (): void {
@@ -83,11 +83,11 @@ it('asserts table filters, columns and operators', function (): void {
         ->result(TableResult::make([]), TableQuery::empty());
 
     $this->assertLatticeComponent($table)
-        ->table('products', fn (TableAssertions $table) => $table
+        ->table('products', fn (TableAssertions $table): FilterAssertions|\Lattice\Lattice\Support\Testing\Assertions\TableAssertions => $table
             ->assertHasColumn('name')
             ->assertHasFilter('name')
             ->assertMissingFilter('price')
-            ->filter('name', fn (FilterAssertions $f) => $f
+            ->filter('name', fn (FilterAssertions $f): FilterAssertions => $f
                 ->assertType(FilterType::Text)
                 ->assertDefaultOperator(Op::Contains)
                 ->assertOperators([
@@ -105,7 +105,7 @@ it('asserts action state', function (): void {
         ->form([Textarea::make('reason')->label('Reason')]);
 
     $this->assertLatticeComponent($action)
-        ->action('archive', fn (ActionAssertions $a) => $a
+        ->action('archive', fn (ActionAssertions $a): ActionAssertions => $a
             ->assertLabel('Archive')
             ->assertEndpoint('/lattice/actions/archive')
             ->assertVariant(ButtonVariant::Destructive)
@@ -123,11 +123,11 @@ it('asserts field required, optional, disabled, enabled and read-only flags', fu
     ]);
 
     $this->assertLatticeComponent($form)
-        ->form('flags', fn (FormAssertions $f) => $f
-            ->field('plain', fn (FieldAssertions $x) => $x->assertOptional()->assertEnabled())
-            ->field('req', fn (FieldAssertions $x) => $x->assertRequired())
-            ->field('ro', fn (FieldAssertions $x) => $x->assertReadOnly())
-            ->field('dis', fn (FieldAssertions $x) => $x->assertDisabled()));
+        ->form('flags', fn (FormAssertions $f): FieldAssertions|\Lattice\Lattice\Support\Testing\Assertions\FormAssertions => $f
+            ->field('plain', fn (FieldAssertions $x): FieldAssertions => $x->assertOptional()->assertEnabled())
+            ->field('req', fn (FieldAssertions $x): FieldAssertions => $x->assertRequired())
+            ->field('ro', fn (FieldAssertions $x): FieldAssertions => $x->assertReadOnly())
+            ->field('dis', fn (FieldAssertions $x): FieldAssertions => $x->assertDisabled()));
 });
 
 it('asserts table presence and bulk actions', function (): void {
@@ -138,7 +138,7 @@ it('asserts table presence and bulk actions', function (): void {
 
     $this->assertLatticeComponent($table)
         ->assertHasTable('orders')
-        ->table('orders', fn (TableAssertions $t) => $t->assertHasBulkAction('archive'));
+        ->table('orders', fn (TableAssertions $t): TableAssertions => $t->assertHasBulkAction('archive'));
 });
 
 it('asserts against a rendered Inertia page', function (): void {
@@ -160,8 +160,8 @@ it('asserts against a rendered Inertia page', function (): void {
     $this->assertLatticePage($this->get('lattice-demo-page'))
         ->assertRendered('form:create')
         ->assertRendered('table:products')
-        ->table('products', fn (TableAssertions $t) => $t->assertHasFilter('name'))
-        ->form('create', fn (FormAssertions $f) => $f
+        ->table('products', fn (TableAssertions $t): TableAssertions => $t->assertHasFilter('name'))
+        ->form('create', fn (FormAssertions $f): FieldAssertions => $f
             ->field('email')->assertInitialValue('a@b.c'));
 });
 

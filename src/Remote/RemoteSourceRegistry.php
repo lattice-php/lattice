@@ -53,6 +53,7 @@ final class RemoteSourceRegistry extends DefinitionRegistry
         return 'remote-sources';
     }
 
+    #[\Override]
     public function resolve(string $key): RemoteSourceDefinition
     {
         $definitions = $this->definitions();

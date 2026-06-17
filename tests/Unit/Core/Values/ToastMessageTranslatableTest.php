@@ -5,7 +5,7 @@ use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\ToastMessage;
 use Lattice\Lattice\Effects\Effect;
 
-test('a toast message accepts a Translatable and serializes it', function () {
+test('a toast message accepts a Translatable and serializes it', function (): void {
     $toast = ToastMessage::make(Variant::Success, rt('orders.shipped-live')->with(['a' => 'b']));
 
     expect($toast->jsonSerialize()['message'])->toBe([
@@ -15,7 +15,7 @@ test('a toast message accepts a Translatable and serializes it', function () {
     ]);
 });
 
-test('Effect::toast accepts a Translatable message', function () {
+test('Effect::toast accepts a Translatable message', function (): void {
     $effect = Effect::toast(rt('orders.shipped-live'));
 
     expect($effect->jsonSerialize())
@@ -24,7 +24,7 @@ test('Effect::toast accepts a Translatable message', function () {
         ->toBe(['key' => 'orders.shipped-live', 'payload' => [], 'replacements' => []]);
 });
 
-test('Effect::toast accepts a Translatable message with an explicit variant', function () {
+test('Effect::toast accepts a Translatable message with an explicit variant', function (): void {
     $effect = Effect::toast(rt('orders.shipped-live'), Variant::Warning);
 
     $toast = $effect->jsonSerialize()['toast'];
@@ -37,7 +37,7 @@ test('Effect::toast accepts a Translatable message with an explicit variant', fu
         ]);
 });
 
-test('Effect::toast still accepts a plain string', function () {
+test('Effect::toast still accepts a plain string', function (): void {
     $effect = Effect::toast('Order shipped');
 
     expect($effect->jsonSerialize()['toast']->jsonSerialize()['message'])->toBe('Order shipped');

@@ -129,7 +129,7 @@ final class EloquentOptions implements OptionSource
     {
         $builder = $this->model::query();
 
-        if ($this->scope !== null) {
+        if ($this->scope instanceof Closure) {
             $scoped = ($this->scope)($builder);
 
             if ($scoped instanceof Builder) {

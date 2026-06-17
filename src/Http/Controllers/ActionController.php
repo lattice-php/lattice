@@ -28,7 +28,7 @@ final readonly class ActionController
 
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->actions, 'action', $action);
 
-        if (($response = $this->formSubRequest($request, $definition)) !== null) {
+        if (($response = $this->formSubRequest($request, $definition)) instanceof Response) {
             return $response;
         }
 

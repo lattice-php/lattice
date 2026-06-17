@@ -8,7 +8,7 @@ use Lattice\Lattice\Core\Values\ToastMessage;
 use Lattice\Lattice\Effects\Enums\EffectType;
 use Workbench\App\Support\TypeScript\MarkedTypeDiscovery;
 
-it('splits #[TypeScript]-marked classes into enums and value objects', function () {
+it('splits #[TypeScript]-marked classes into enums and value objects', function (): void {
     $result = (new MarkedTypeDiscovery)->discover(dirname(__DIR__, 3).'/src');
 
     expect($result['enums'])->toContain(Align::class)->toContain(EffectType::class);
@@ -18,7 +18,7 @@ it('splits #[TypeScript]-marked classes into enums and value objects', function 
     expect($result['valueObjects'])->not->toContain(Align::class);
 });
 
-it('excludes classes without the #[TypeScript] attribute', function () {
+it('excludes classes without the #[TypeScript] attribute', function (): void {
     $result = (new MarkedTypeDiscovery)->discover(dirname(__DIR__, 3).'/src');
 
     $all = [...$result['enums'], ...$result['valueObjects']];
@@ -26,7 +26,7 @@ it('excludes classes without the #[TypeScript] attribute', function () {
     expect($all)->not->toContain(Card::class);
 });
 
-it('sorts each list deterministically by class-string', function () {
+it('sorts each list deterministically by class-string', function (): void {
     $result = (new MarkedTypeDiscovery)->discover(dirname(__DIR__, 3).'/src');
 
     $sortedEnums = $result['enums'];
@@ -38,7 +38,7 @@ it('sorts each list deterministically by class-string', function () {
         ->and($result['valueObjects'])->toBe($sortedValueObjects);
 });
 
-it('returns empty lists when the path does not exist', function () {
+it('returns empty lists when the path does not exist', function (): void {
     expect((new MarkedTypeDiscovery)->discover('/no/such/path'))
         ->toBe(['enums' => [], 'valueObjects' => []]);
 });

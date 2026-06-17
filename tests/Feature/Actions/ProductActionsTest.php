@@ -13,7 +13,7 @@ use Workbench\App\Tables\ProductsTable;
 
 use function Pest\Laravel\patch;
 
-test('the product archive row action is pinned to its sealed product', function () {
+test('the product archive row action is pinned to its sealed product', function (): void {
     Lattice::actions([ArchiveProductAction::class]);
 
     $target = Product::factory()->create(['status' => 'active']);
@@ -35,7 +35,7 @@ test('the product archive row action is pinned to its sealed product', function 
         ->and($other->fresh()->status)->toBe('active');
 });
 
-test('the product archive row action authorizes per row', function () {
+test('the product archive row action authorizes per row', function (): void {
     Lattice::actions([ArchiveProductAction::class]);
 
     $archived = Product::factory()->create(['status' => 'archived']);
@@ -49,7 +49,7 @@ test('the product archive row action authorizes per row', function () {
         ->assertForbidden();
 });
 
-test('bulk actions resolve the selection through the table and archive only those rows', function () {
+test('bulk actions resolve the selection through the table and archive only those rows', function (): void {
     Lattice::tables([ProductsTable::class]);
     Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
 
@@ -74,7 +74,7 @@ test('bulk actions resolve the selection through the table and archive only thos
         ->and($c->fresh()->status)->toBe('active');
 });
 
-test('bulk actions ignore selected ids that are not in the table result', function () {
+test('bulk actions ignore selected ids that are not in the table result', function (): void {
     Lattice::tables([ProductsTable::class]);
     Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
 
@@ -95,7 +95,7 @@ test('bulk actions ignore selected ids that are not in the table result', functi
     expect($a->fresh()->status)->toBe('archived');
 });
 
-test('bulk actions resolve all matching rows with dedicated table filters', function () {
+test('bulk actions resolve all matching rows with dedicated table filters', function (): void {
     Lattice::tables([ProductsTable::class]);
     Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
 
@@ -123,7 +123,7 @@ test('bulk actions resolve all matching rows with dedicated table filters', func
         ->and($draft->fresh()->status)->toBe('archived');
 });
 
-test('bulk action endpoints require a valid component reference', function () {
+test('bulk action endpoints require a valid component reference', function (): void {
     Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
 
     patch('/lattice/bulk-actions/workbench.products.archive-selected', [
@@ -131,7 +131,7 @@ test('bulk action endpoints require a valid component reference', function () {
     ])->assertForbidden();
 });
 
-test('bulk actions execute through their serialized component reference', function () {
+test('bulk actions execute through their serialized component reference', function (): void {
     Lattice::tables([ProductsTable::class]);
     Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
 
@@ -152,7 +152,7 @@ test('bulk actions execute through their serialized component reference', functi
     expect($product->fresh()->status)->toBe('archived');
 });
 
-test('bulk form actions validate the submitted reason before archiving', function () {
+test('bulk form actions validate the submitted reason before archiving', function (): void {
     Lattice::tables([ProductsTable::class]);
     Lattice::bulkActions([RejectSelectedProductsAction::class]);
 
@@ -185,7 +185,7 @@ test('bulk form actions validate the submitted reason before archiving', functio
     expect($product->fresh()->status)->toBe('archived');
 });
 
-test('bulk form actions validate precognitively without archiving', function () {
+test('bulk form actions validate precognitively without archiving', function (): void {
     Lattice::tables([ProductsTable::class]);
     Lattice::bulkActions([RejectSelectedProductsAction::class]);
 

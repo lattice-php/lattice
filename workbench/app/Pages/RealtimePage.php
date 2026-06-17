@@ -24,6 +24,7 @@ final class RealtimePage extends WorkbenchPage
     /**
      * @return array<int, Listen>
      */
+    #[\Override]
     protected function listeners(): array
     {
         return [

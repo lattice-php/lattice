@@ -34,7 +34,7 @@ final readonly class BulkActionController
 
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->bulkActions, 'bulkAction', $bulkAction);
 
-        if (($response = $this->formSubRequest($request, $definition)) !== null) {
+        if (($response = $this->formSubRequest($request, $definition)) instanceof Response) {
             return $response;
         }
 

@@ -14,11 +14,11 @@ class TypeResolutionWidget extends Component
     }
 }
 
-it('resolves the wire type from the AsComponent attribute', function () {
+it('resolves the wire type from the AsComponent attribute', function (): void {
     expect((new TypeResolutionWidget)->jsonSerialize()['type'])->toBe('test.widget');
 });
 
-it('throws a clear error when the attribute is missing', function () {
+it('throws a clear error when the attribute is missing', function (): void {
     $component = new class extends Component
     {
         protected function type(): string
@@ -27,6 +27,6 @@ it('throws a clear error when the attribute is missing', function () {
         }
     };
 
-    expect(fn () => $component->jsonSerialize())
+    expect(fn (): array => $component->jsonSerialize())
         ->toThrow(LogicException::class, 'missing the #[AsComponent] attribute');
 });

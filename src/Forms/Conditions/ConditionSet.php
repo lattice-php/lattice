@@ -28,24 +28,12 @@ final class ConditionSet implements JsonSerializable
 
     public function anyMatches(FormData $data): bool
     {
-        foreach ($this->conditions as $condition) {
-            if ($condition->matches($data)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($this->conditions, fn ($condition) => $condition->matches($data));
     }
 
     public function allMatch(FormData $data): bool
     {
-        foreach ($this->conditions as $condition) {
-            if (! $condition->matches($data)) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all($this->conditions, fn ($condition) => $condition->matches($data));
     }
 
     /**

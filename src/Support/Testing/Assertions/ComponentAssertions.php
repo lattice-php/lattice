@@ -29,7 +29,7 @@ final readonly class ComponentAssertions
 
         $assertions = new FormAssertions($node, $this);
 
-        if ($tap !== null) {
+        if ($tap instanceof Closure) {
             $tap($assertions);
 
             return $this;
@@ -53,7 +53,7 @@ final readonly class ComponentAssertions
 
         $assertions = new TableAssertions($node, $this);
 
-        if ($tap !== null) {
+        if ($tap instanceof Closure) {
             $tap($assertions);
 
             return $this;
@@ -77,7 +77,7 @@ final readonly class ComponentAssertions
 
         $assertions = new ActionAssertions($node, $this);
 
-        if ($tap !== null) {
+        if ($tap instanceof Closure) {
             $tap($assertions);
 
             return $this;
@@ -93,7 +93,7 @@ final readonly class ComponentAssertions
      */
     public function component(string $type, ?string $id = null, ?Closure $tap = null): self
     {
-        $type = self::resolveType($type);
+        $type = $this->resolveType($type);
         $node = $this->node->firstOfTypeIncludingSelf($type, $id);
 
         Assert::assertNotNull($node, sprintf(
@@ -104,7 +104,7 @@ final readonly class ComponentAssertions
 
         $scoped = new self($node);
 
-        if ($tap !== null) {
+        if ($tap instanceof Closure) {
             $tap($scoped);
 
             return $this;
@@ -185,7 +185,7 @@ final readonly class ComponentAssertions
     private function select(string $selector): array
     {
         [$type, $id] = array_pad(explode(':', $selector, 2), 2, null);
-        $type = self::resolveType($type);
+        $type = $this->resolveType($type);
 
         return $this->node->findAllIncludingSelf(
             static fn (ComponentNode $node): bool => $node->matches($type, $id),
@@ -196,7 +196,7 @@ final readonly class ComponentAssertions
      * Accept either a wire type (`'menu-item'`) or a component class
      * (`MenuItem::class`), resolving the class to its declared wire type.
      */
-    private static function resolveType(string $type): string
+    private function resolveType(string $type): string
     {
         if (is_subclass_of($type, Component::class)) {
             return AsComponent::typeForClass($type);

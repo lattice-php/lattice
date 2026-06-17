@@ -5,20 +5,20 @@ use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\Side;
 use Lattice\Lattice\Layouts\Components\Topbar;
 
-test('the topbar serializes to its wire type, not sticky by default', function () {
+test('the topbar serializes to its wire type, not sticky by default', function (): void {
     $wire = Topbar::make('app-topbar')->jsonSerialize();
 
     expect($wire['type'])->toBe('topbar')
         ->and($wire['props']['sticky'])->toBeFalse();
 });
 
-test('sticky() marks the topbar sticky', function () {
+test('sticky() marks the topbar sticky', function (): void {
     $wire = Topbar::make()->sticky()->jsonSerialize();
 
     expect($wire['props']['sticky'])->toBeTrue();
 });
 
-test('float() pushes a stack along the main axis', function () {
+test('float() pushes a stack along the main axis', function (): void {
     $wire = Stack::make()->float(Side::End)->jsonSerialize();
 
     expect($wire['props']['float'])->toBe('end');

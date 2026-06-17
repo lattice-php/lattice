@@ -46,7 +46,7 @@ final class WorkbenchStandalonePage extends Page
     }
 }
 
-test('the layout registry resolves a registered layout to its wire schema', function () {
+test('the layout registry resolves a registered layout to its wire schema', function (): void {
     Lattice::layouts([WorkbenchAppLayout::class]);
 
     $rendered = app(LayoutRegistry::class)->render('app', new Request);
@@ -59,12 +59,12 @@ test('the layout registry resolves a registered layout to its wire schema', func
         ->and($schema[0]['schema'][1]['type'])->toBe('outlet');
 });
 
-test('the layout registry rejects an unregistered layout key', function () {
+test('the layout registry rejects an unregistered layout key', function (): void {
     expect(fn () => app(LayoutRegistry::class)->render('missing', new Request))
         ->toThrow(UnknownComponent::class);
 });
 
-test('a page serializes its layout as key and schema with an outlet', function () {
+test('a page serializes its layout as key and schema with an outlet', function (): void {
     Lattice::layouts([WorkbenchAppLayout::class]);
 
     $page = new WorkbenchLayoutPage;
@@ -80,7 +80,7 @@ test('a page serializes its layout as key and schema with an outlet', function (
         ]);
 });
 
-test('a page without a layout serializes a null layout', function () {
+test('a page without a layout serializes a null layout', function (): void {
     $page = new WorkbenchStandalonePage;
 
     $payload = $page->toArray($page->render(PageSchema::make()), new Request);
@@ -88,7 +88,7 @@ test('a page without a layout serializes a null layout', function () {
     expect($payload['layout'])->toBeNull();
 });
 
-test('the none layout sentinel serializes a null layout', function () {
+test('the none layout sentinel serializes a null layout', function (): void {
     $page = new class extends Page
     {
         public function render(PageSchema $schema): PageSchema
