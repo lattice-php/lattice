@@ -5,7 +5,6 @@ namespace Lattice\Lattice\Tables\Enums;
 
 use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\Op;
 
@@ -75,9 +74,7 @@ enum FilterType: string
     }
 
     /**
-     * @template TModel of Model
-     *
-     * @param  Builder<TModel>  $builder
+     * @param  Builder<*>  $builder
      */
     public function applyEquals(Builder $builder, string $field, string $value): void
     {
@@ -89,9 +86,7 @@ enum FilterType: string
     }
 
     /**
-     * @template TModel of Model
-     *
-     * @param  Builder<TModel>  $builder
+     * @param  Builder<*>  $builder
      */
     private function applyBooleanEquals(Builder $builder, string $field, string $value): void
     {
