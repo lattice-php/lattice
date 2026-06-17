@@ -52,7 +52,7 @@ function isIn(actual: unknown, expected: unknown): boolean {
 }
 
 function isBlank(value: unknown): boolean {
-  return value == null || String(value) === "";
+  return value == null || String(value).trim() === "";
 }
 
 // Null when either value can't be parsed, so before/after never matches a bad date. Mirrors PHP strtotime.

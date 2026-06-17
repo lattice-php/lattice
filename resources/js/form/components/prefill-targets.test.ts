@@ -1,7 +1,6 @@
 import { expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import {
-  applyPrefillValue,
   collectPrefillTargets,
   getPath,
   pathsToClear,
@@ -110,19 +109,10 @@ it("collects targets recursively through nested row collections", () => {
   ]);
 });
 
-it("reads and applies nested row paths", () => {
+it("reads nested row paths", () => {
   const values: Record<string, unknown> = { items: [{ type: "product", price: 1 }] };
+
   expect(getPath(values, "items.0.price")).toBe(1);
-
-  const writes: Array<[string, unknown]> = [];
-  const setValue = (name: string, value: unknown) => {
-    const next =
-      typeof value === "function" ? (value as (p: unknown) => unknown)(values[name]) : value;
-    writes.push([name, next]);
-  };
-  applyPrefillValue(setValue, "items.0.price", 9.5);
-
-  expect(writes).toEqual([["items.0.price", 9.5]]);
 });
 
 it("clears targets whose resetOn dependency changed", () => {

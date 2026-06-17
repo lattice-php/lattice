@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 
 function Card({ className, ...props }: React.ComponentProps<"article">) {
@@ -59,7 +60,7 @@ const CardComponent: RendererComponent<"card"> = ({ children, node }) => {
   const { title, description } = node.props;
 
   return (
-    <Card data-lattice-component={node.id}>
+    <Card data-lattice-component={nodeIdentity(node)}>
       {(title || description) && (
         <CardHeader>
           {title && <CardTitle>{title}</CardTitle>}

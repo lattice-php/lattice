@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { apiJson } from "@lattice-php/lattice/core/api";
 import { Skeleton } from "@lattice-php/lattice/core/components/skeleton";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
-import type { Node, RendererComponent, Schema } from "@lattice-php/lattice/core/types";
+import type { RendererComponent, Schema } from "@lattice-php/lattice/core/types";
+import { toNodes } from "@lattice-php/lattice/core/nodes";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
 
 type FragmentResponse = {
@@ -16,17 +17,6 @@ const fragmentSizeHeights = {
   xl: 384,
   xs: 32,
 } as const;
-
-function getComponents(value: unknown): Node[] {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-
-  return value.filter(
-    (node): node is Node =>
-      typeof node === "object" && node !== null && "type" in node && typeof node.type === "string",
-  );
-}
 
 const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
   const endpoint = node.props.endpoint ?? "";
@@ -47,7 +37,7 @@ const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {
     try {
       const result = await apiJson<FragmentResponse>(endpoint, { ref: componentRef });
 
-      setComponents(getComponents(result.schema));
+      setComponents(toNodes(result.schema));
       setHasLoaded(true);
     } finally {
       setProcessing(false);

@@ -157,37 +157,45 @@ test('workbench tables page serializes lazy tables for each pagination type', fu
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
-    get('/tables')
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
-            ->component('lattice/page')
-            ->where('lattice.title', 'Lattice Tables')
-            ->where('lattice.schema.0.type', 'stack')
-            ->where('lattice.schema.0.key', 'tables-page')
-            ->where('lattice.schema.0.schema.1.type', 'tabs')
-            ->where('lattice.schema.0.schema.1.props.defaultValue', 'none')
-            ->where('lattice.schema.0.schema.1.schema.0.props.value', 'none')
-            ->where('lattice.schema.0.schema.1.schema.0.schema.1.id', 'workbench.users.none')
-            ->where('lattice.schema.0.schema.1.schema.0.schema.1.props.lazy', true)
-            ->where('lattice.schema.0.schema.1.schema.0.schema.1.props.resizableColumns', true)
-            ->where('lattice.schema.0.schema.1.schema.0.schema.1.props.resizeIndicator', true)
-            ->where('lattice.schema.0.schema.1.schema.0.schema.1.props.data', [])
-            ->where('lattice.schema.0.schema.1.schema.0.schema.1.props.pagination.mode', 'none')
-            ->where('lattice.schema.0.schema.1.schema.1.props.value', 'simple')
-            ->where('lattice.schema.0.schema.1.schema.1.schema.1.id', 'workbench.users.simple')
-            ->where('lattice.schema.0.schema.1.schema.1.schema.1.props.resizableColumns', true)
-            ->where('lattice.schema.0.schema.1.schema.1.schema.1.props.resizeIndicator', true)
-            ->where('lattice.schema.0.schema.1.schema.1.schema.1.props.pagination.mode', 'simple')
-            ->where('lattice.schema.0.schema.1.schema.2.props.value', 'table')
-            ->where('lattice.schema.0.schema.1.schema.2.schema.1.id', 'workbench.users.table')
-            ->where('lattice.schema.0.schema.1.schema.2.schema.1.props.resizableColumns', true)
-            ->where('lattice.schema.0.schema.1.schema.2.schema.1.props.resizeIndicator', true)
-            ->where('lattice.schema.0.schema.1.schema.2.schema.1.props.pagination.mode', 'table')
-            ->where('lattice.schema.0.schema.1.schema.3.props.value', 'infinite')
-            ->where('lattice.schema.0.schema.1.schema.3.schema.1.id', 'workbench.users.infinite')
-            ->where('lattice.schema.0.schema.1.schema.3.schema.1.props.resizableColumns', true)
-            ->where('lattice.schema.0.schema.1.schema.3.schema.1.props.resizeIndicator', true)
-            ->where('lattice.schema.0.schema.1.schema.3.schema.1.props.pagination.mode', 'infinite'));
+    $response = get('/tables')->assertOk();
+
+    // Tables addressed by id — resilient to tab/stack reordering.
+    $this->assertLatticePage($response)
+        ->component('table', 'workbench.users.none', fn ($table) => $table->assertProps([
+            'lazy' => true,
+            'resizableColumns' => true,
+            'resizeIndicator' => true,
+            'data' => [],
+            'pagination.mode' => 'none',
+        ]))
+        ->component('table', 'workbench.users.simple', fn ($table) => $table->assertProps([
+            'resizableColumns' => true,
+            'resizeIndicator' => true,
+            'pagination.mode' => 'simple',
+        ]))
+        ->component('table', 'workbench.users.table', fn ($table) => $table->assertProps([
+            'resizableColumns' => true,
+            'resizeIndicator' => true,
+            'pagination.mode' => 'table',
+        ]))
+        ->component('table', 'workbench.users.infinite', fn ($table) => $table->assertProps([
+            'resizableColumns' => true,
+            'resizeIndicator' => true,
+            'pagination.mode' => 'infinite',
+        ]));
+
+    $response->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+        ->component('lattice/page')
+        ->where('lattice.title', 'Lattice Tables')
+        ->where('lattice.schema.0.type', 'stack')
+        ->where('lattice.schema.0.key', 'tables-page')
+        ->where('lattice.schema.0.schema.1.type', 'tabs')
+        ->where('lattice.schema.0.schema.1.props.defaultValue', 'none')
+        ->where('lattice.schema.0.schema.1.schema.0.props.value', 'none')
+        ->where('lattice.schema.0.schema.1.schema.1.props.value', 'simple')
+        ->where('lattice.schema.0.schema.1.schema.2.props.value', 'table')
+        ->where('lattice.schema.0.schema.1.schema.3.props.value', 'infinite')
+        ->etc());
 });
 
 // ---------------------------------------------------------------------------

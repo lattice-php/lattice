@@ -1,6 +1,7 @@
 import { translate } from "@lattice-php/lattice/i18n";
 import { DEFAULT_COLUMN_WIDTH } from "@lattice-php/lattice/core/column-sizing";
 import type { ColumnWidth } from "@lattice-php/lattice/types/generated";
+import { isEmptyMember } from "./filter-values";
 import type { TableColumn, TableSort, TableState } from "./types";
 
 export function getColumnSort(state: TableState, column: TableColumn): TableSort | undefined {
@@ -56,7 +57,7 @@ function appendTableFilters(url: URL, tableFilters: Record<string, unknown>): vo
 
     if (Array.isArray(value)) {
       for (const item of value) {
-        if (item != null && item !== "") {
+        if (!isEmptyMember(item)) {
           url.searchParams.append(`tf[${key}][]`, String(item));
         }
       }
@@ -87,7 +88,7 @@ function getTableFilterParams(tableFilters: Record<string, unknown>): Record<str
 }
 
 function normalizeTableFilterValue(value: unknown): unknown | undefined {
-  if (value == null || value === "") {
+  if (isEmptyMember(value)) {
     return undefined;
   }
 
@@ -96,14 +97,14 @@ function normalizeTableFilterValue(value: unknown): unknown | undefined {
   }
 
   if (Array.isArray(value)) {
-    const items = value.filter((item) => item != null && item !== "").map(String);
+    const items = value.filter((item) => !isEmptyMember(item)).map(String);
 
     return items.length > 0 ? items : undefined;
   }
 
   if (typeof value === "object") {
     const entries = Object.entries(value)
-      .filter(([, subValue]) => subValue != null && subValue !== "")
+      .filter(([, subValue]) => !isEmptyMember(subValue))
       .map(([subKey, subValue]) => [subKey, String(subValue)]);
 
     return entries.length > 0 ? Object.fromEntries(entries) : undefined;

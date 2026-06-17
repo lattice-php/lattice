@@ -17,6 +17,7 @@ import {
   YAxis,
 } from "recharts";
 import type { ComponentType, ReactNode } from "react";
+import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { PropsOf, RendererComponent } from "@lattice-php/lattice/core/types";
 
 type ChartProps = PropsOf<"chart">;
@@ -216,7 +217,7 @@ const ChartComponent: RendererComponent<"chart"> = ({ node }) => {
   const hasCartesianSeries = props.series.some(isCartesianSeries);
 
   return (
-    <ChartFrame description={props.description} id={node.id} title={props.title}>
+    <ChartFrame description={props.description} id={nodeIdentity(node)} title={props.title}>
       <div className="min-h-0 w-full">
         {pieSeries && !hasCartesianSeries ? (
           <PieChartView props={props} series={pieSeries} />

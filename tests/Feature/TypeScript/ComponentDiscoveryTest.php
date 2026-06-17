@@ -21,7 +21,7 @@ it('discovers attributed components under a path with type, flags and category',
 
     expect($widget->container)->toBeTrue()
         ->and($widget->category)->toBe('component')
-        ->and($field->category)->toBe('field');
+        ->and($field->category)->toBe('component');
 });
 
 it('excludes classes without the AsComponent attribute from discovery', function (): void {

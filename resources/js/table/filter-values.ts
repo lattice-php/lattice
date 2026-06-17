@@ -1,11 +1,19 @@
 import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
 
 /**
+ * Whether a single scalar filter member is absent — the atomic rule the
+ * filter-emptiness and query-serialization logic both build on.
+ */
+export function isEmptyMember(value: unknown): value is null | undefined | "" {
+  return value == null || value === "";
+}
+
+/**
  * Whether a table-filter value should clear the filter rather than apply it —
  * an empty string, empty list, or an object whose every member is empty.
  */
 export function isEmptyFilterValue(value: unknown): boolean {
-  if (value == null || value === "") {
+  if (isEmptyMember(value)) {
     return true;
   }
 
@@ -14,7 +22,7 @@ export function isEmptyFilterValue(value: unknown): boolean {
   }
 
   if (typeof value === "object") {
-    return Object.values(value).every((member) => member == null || member === "");
+    return Object.values(value).every(isEmptyMember);
   }
 
   return false;

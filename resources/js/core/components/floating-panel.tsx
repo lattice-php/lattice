@@ -2,6 +2,7 @@ import { type CSSProperties, useState } from "react";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import type { FloatingPlacement } from "@lattice-php/lattice/types/generated";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
+import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import { cn } from "@lattice-php/lattice/lib/utils";
 
 function placementStyle(placement: FloatingPlacement, offset: number): CSSProperties {
@@ -32,7 +33,7 @@ const FloatingPanelComponent: RendererComponent<"floating-panel"> = ({ children,
       <div
         aria-label={label}
         className="fixed z-50 max-w-[calc(100vw-2rem)] rounded-lt border border-lt-border bg-lt-popover p-1 text-lt-popover-fg shadow-lt-md"
-        data-lattice-component={node.id}
+        data-lattice-component={nodeIdentity(node)}
         role={label ? "group" : undefined}
         style={placementStyle(placement, offset)}
       >
@@ -48,7 +49,7 @@ const FloatingPanelComponent: RendererComponent<"floating-panel"> = ({ children,
     <div
       aria-label={label}
       className="fixed z-50 max-w-[calc(100vw-2rem)]"
-      data-lattice-component={node.id}
+      data-lattice-component={nodeIdentity(node)}
       role={label ? "group" : undefined}
       style={placementStyle(placement, offset)}
     >

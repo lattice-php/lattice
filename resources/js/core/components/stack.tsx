@@ -1,5 +1,6 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 
 const gridAlignments: Record<string, string> = {
   center: "justify-items-center text-center",
@@ -62,7 +63,7 @@ const StackComponent: RendererComponent<"stack"> = ({ children, node }) => {
 
   return (
     <div
-      data-lattice-component={node.id}
+      data-lattice-component={nodeIdentity(node)}
       className={cn(
         isFlex ? cn("flex", direction === "row" ? "flex-wrap" : "flex-col") : "grid content-start",
         isFlex

@@ -3,7 +3,6 @@ import type { Node } from "@lattice-php/lattice/core/types";
 import { walkFields } from "./field-props";
 import { FORM_DEBOUNCE_MS, postFormAction } from "./form-transport";
 import {
-  applyPrefillValue,
   collectPrefillTargets,
   getPath,
   pathsToClear,
@@ -151,7 +150,7 @@ export function useFormResolver(
             const target = targetsByPath.get(path);
 
             if (target && !overrides.current.has(target.overrideKey)) {
-              applyPrefillValue(setValue, path, value);
+              setValue(path, value);
             }
           }
           if (response.fields) {

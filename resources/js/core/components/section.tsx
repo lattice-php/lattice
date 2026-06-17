@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Icon } from "@lattice-php/lattice/icons";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import { nodeIdentity, prefixedTestId } from "@lattice-php/lattice/core/test-id";
-import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
+import { toNodes } from "@lattice-php/lattice/core/nodes";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 
 function readStored(key: string, remember: boolean, fallback: boolean): boolean {
@@ -15,22 +16,11 @@ function readStored(key: string, remember: boolean, fallback: boolean): boolean 
   return stored === null ? fallback : stored === "true";
 }
 
-function getNodes(value: unknown): Node[] {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-
-  return value.filter(
-    (node): node is Node =>
-      typeof node === "object" && node !== null && "type" in node && typeof node.type === "string",
-  );
-}
-
 const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
   const { title, description } = node.props;
   const collapsible = node.props.collapsible === true;
   const rememberState = node.props.rememberState !== false;
-  const headerActions = getNodes(node.props.headerActions);
+  const headerActions = toNodes(node.props.headerActions);
   const identity = nodeIdentity(node);
   const storageKey = `lattice:section:${identity ?? "default"}`;
 
@@ -56,7 +46,7 @@ const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
   return (
     <section
       className="flex flex-col gap-6 rounded-lt border border-lt-border bg-lt-surface py-6 text-lt-surface-fg shadow-lt-sm"
-      data-lattice-component={node.id}
+      data-lattice-component={identity}
     >
       {hasHeader && (
         <div className="flex items-start justify-between gap-4 px-6">

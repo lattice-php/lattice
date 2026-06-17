@@ -114,14 +114,6 @@ export function collectPrefillTargets(
   return targets;
 }
 
-export function applyPrefillValue(
-  setValue: (name: string, value: unknown) => void,
-  path: string,
-  value: unknown,
-): void {
-  setValue(path, value);
-}
-
 export function pathsToClear(previous: PrefillSnapshot, next: PrefillSnapshot): string[] {
   const previousByKey = new Map(
     previous.targets.map((target) => [target.overrideKey, target] as const),

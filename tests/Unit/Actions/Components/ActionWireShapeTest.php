@@ -43,6 +43,20 @@ it('serializes the action wire shape', function (): void {
     expect($payload['props'])->not->toHaveKey('context');
 });
 
+it('chains the base prop decoration so interactive components keep data bindings and collapse hints', function (): void {
+    $action = Action::make('toggle')
+        ->label('Toggle')
+        ->hideWhenCollapsed()
+        ->dataKey('label', 'displayName');
+
+    $payload = wire($action);
+
+    expect($payload['props'])->toMatchArray([
+        'hideWhenCollapsed' => true,
+        'dataBindings' => ['label' => 'displayName'],
+    ]);
+});
+
 it('accepts arbitrary string icons', function (): void {
     $action = Action::make('custom')
         ->icon('custom.spark')
