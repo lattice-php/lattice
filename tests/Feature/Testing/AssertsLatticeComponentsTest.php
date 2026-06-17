@@ -183,6 +183,20 @@ it('addresses layout components by key and asserts their props', function (): vo
             ->assertProps(['icon' => 'settings', 'href' => '/settings', 'label' => 'Settings']));
 });
 
+it('addresses a component by its class instead of its wire type', function (): void {
+    $topbar = Topbar::make('app-topbar')->sticky()->items([
+        Menu::make('nav')->items([
+            MenuItem::make('Settings', 'settings')->icon('settings'),
+        ]),
+    ]);
+
+    $this->assertLatticeComponent($topbar)
+        ->assertRendered(MenuItem::class)
+        ->assertNotRendered(MenuItem::class.':missing')
+        ->component(Topbar::class, tap: fn ($bar) => $bar->assertProp('sticky', true))
+        ->component(MenuItem::class, 'settings', fn ($item) => $item->assertProp('icon', 'settings'));
+});
+
 it('asserts against a rendered layout tree', function (): void {
     withoutVite();
 
