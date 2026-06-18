@@ -8,6 +8,7 @@ use Lattice\Lattice\Effects\EffectFlasher;
 
 /**
  * @method static void flash(\Lattice\Lattice\Effects\Contracts\Effect ...$effects)
+ * @method static \Lattice\Lattice\Http\LatticeResponse respond()
  *
  * @see EffectFlasher
  */

@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Effects;
 
 use Inertia\Inertia;
 use Lattice\Lattice\Effects\Contracts\Effect;
+use Lattice\Lattice\Http\LatticeResponse;
 
 /**
  * Accumulates effects across a request and flashes them, as a single array,
@@ -27,6 +28,15 @@ final class EffectFlasher
         array_push($this->effects, ...$effects);
 
         Inertia::flash('latticeEffects', $this->effects);
+    }
+
+    /**
+     * Start a fluent response that queues effects and redirects — for plain
+     * controllers, returned the same way an action returns an ActionResult.
+     */
+    public function respond(): LatticeResponse
+    {
+        return LatticeResponse::make();
     }
 
     /**
