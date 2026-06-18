@@ -37,6 +37,7 @@
         "bambamboole/extended-faker": "^0.8.0",
         "bambamboole/laravel-i18next": "^0.6.0",
         "barryvdh/laravel-ide-helper": "^3.7",
+        "fruitcake/laravel-debugbar": "^4.3",
         "larastan/larastan": "^3.0",
         "laravel/boost": "^2.4",
         "laravel/pint": "^1.16",
