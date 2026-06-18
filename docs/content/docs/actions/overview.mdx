@@ -3,9 +3,39 @@ title: Actions
 description: Server-run actions that respond to a click and return effects — toasts, redirects, refreshes, and modals — to the client.
 ---
 
+import Mermaid from "@components/Mermaid.astro";
+
 An action runs on the server in response to a click and returns **effects** the client dispatches: a
 toast, a redirect, a component or page refresh, opening a modal. An action can both change data and
 drive the UI that follows.
+
+## How an action runs
+
+A click posts the action's signed reference to its endpoint. The server verifies the reference (and the
+trusted context baked into it), authorizes, runs `handle()`, and returns an `ActionResult` whose
+effects the client then dispatches:
+
+<Mermaid
+  title="Click to server-run work to client effects"
+  code={`sequenceDiagram
+    autonumber
+    actor U as User
+    participant B as Browser (React)
+    participant L as Lattice backend (action endpoint)
+    U->>B: Open the page
+    B->>L: GET page
+    L-->>B: Page payload — action trigger (signed ref + context)
+    U->>B: Click (confirm if required)
+    B->>L: POST action endpoint with signed ref
+    L->>L: verify ref + trusted context, authorize()
+    alt authorized
+        L->>L: handle() — run the work
+        L-->>B: ActionResult — effects
+        B->>U: Dispatch effects (toast, redirect, reload, modal)
+    else denied
+        L-->>B: 403
+    end`}
+/>
 
 ## Defining an action
 

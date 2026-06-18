@@ -4,6 +4,7 @@ description: Listings with columns, sorting, filtering, pagination, and row and 
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
+import Mermaid from "@components/Mermaid.astro";
 
 A table is a listing backed by a **data source**. You declare columns in PHP; Lattice renders the
 React table and handles sorting, filtering, and pagination, fetching rows from the table's [endpoint](/advanced/security/).
@@ -30,6 +31,34 @@ implementing the source interface.
 
 }`}
 fixture="table.overview"
+/>
+
+## How a table loads data
+
+Every sort, filter, and page change is a fresh `GET` to the table's endpoint. The request becomes a
+`TableQuery` that the data source turns into rows — so the React table never holds the full dataset, it
+asks for the page it needs:
+
+<Mermaid
+  title="Fetching a page of rows through the data source"
+  code={`sequenceDiagram
+    autonumber
+    actor U as User
+    participant B as Browser (React)
+    participant L as Lattice backend (table endpoint)
+    participant D as Data source
+    U->>B: Open the page
+    B->>L: GET page
+    L-->>B: Page payload — signed table (columns + ref)
+    B->>L: GET table endpoint — sort, filter, page
+    L->>L: build TableQuery from the request
+    L->>D: source.query(TableQuery)
+    D-->>L: TableResult — rows + pagination
+    L-->>B: rows + pagination metadata
+    B->>U: Render the table
+    U->>B: Sort / filter / paginate
+    B->>L: GET table endpoint — updated query
+    Note over B,L: same round-trip, new TableQuery`}
 />
 
 ## Defining a table
