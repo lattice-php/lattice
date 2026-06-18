@@ -3,9 +3,38 @@ title: Fragments
 description: A self-contained piece of UI resolved on its own endpoint, so it can load and reload independently of the page.
 ---
 
+import Mermaid from "@components/Mermaid.astro";
+
 A fragment is a slice of UI that resolves on its own — separate from the page that hosts it. Because
 it has its own endpoint, it can load lazily and be reloaded on its own, which makes it a good fit for
 expensive panels, deferred content, or UI an [action](/actions/overview/) wants to refresh.
+
+## How a fragment loads
+
+The page ships only a placeholder. The fragment fetches its own schema from its endpoint when it
+mounts, and the same endpoint lets an [action](/actions/overview/) reload it later without touching the
+rest of the page:
+
+<Mermaid
+  title="Lazy load and independent reload"
+  code={`sequenceDiagram
+    autonumber
+    actor U as User
+    participant B as Browser (React)
+    participant L as Lattice backend (fragment endpoint)
+    U->>B: Open the page
+    B->>L: GET page
+    L-->>B: Page payload — fragment placeholder (id + ref)
+    Note over B: on mount
+    B->>L: GET fragment endpoint with signed ref
+    L->>L: authorize, run schema()
+    L-->>B: fragment nodes
+    B->>U: Swap placeholder for the rendered fragment
+    U->>B: Run an action returning reloadComponent(id)
+    B->>L: GET fragment endpoint again
+    L-->>B: fresh fragment nodes
+    B->>U: Re-render just the fragment`}
+/>
 
 ## Defining a fragment
 

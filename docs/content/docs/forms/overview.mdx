@@ -3,6 +3,8 @@ title: Forms
 description: Define fields in PHP, render them with Inertia, and validate on a dedicated server endpoint — live, through Precognition.
 ---
 
+import Mermaid from "@components/Mermaid.astro";
+
 A form is a PHP class that declares its fields and handles its own submission. You define the schema
 once; Lattice renders the React inputs, posts to a dedicated [endpoint](/advanced/security/), validates with Laravel, and
 runs your handler. Validation runs live as the user types, using the exact same rules.
@@ -73,6 +75,32 @@ Form::use(ProfileForm::class)
 
 Every form posts to its own endpoint, resolved from its `#[AsForm]` id. The request is signed, so a
 form only accepts submissions for the schema it actually rendered. `FormController` routes the request:
+
+<Mermaid
+  title="One form endpoint, routed by request kind"
+  code={`sequenceDiagram
+    autonumber
+    actor U as User
+    participant B as Browser (React)
+    participant L as Lattice backend (form endpoint)
+    U->>B: Open the page
+    B->>L: GET page
+    L-->>B: Page payload — signed form schema (fields + rules)
+    U->>B: Interact (type, search, change a dependent field)
+    B->>L: POST form endpoint with signed ref
+    Note over L: one endpoint, routed by request kind
+    alt searchable Select (_search)
+        L-->>B: matching options
+    else dependent field (_resolve)
+        L-->>B: recomputed field nodes + values
+    else live validation (Precognition)
+        L-->>B: 204 valid / 422 messages
+    else submit
+        L->>L: validate() then handle()
+        L-->>B: redirect / JSON / effects
+    end
+    B->>U: Show result`}
+/>
 
 1. A **search** request (a searchable `Select` fetching options) returns matching options.
 2. A **resolve** request (a [dependent field](/forms/conditional-fields/) recomputing) returns the
