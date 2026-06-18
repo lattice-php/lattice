@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { activeTimezoneForTest, setConfig } from "./config";
+import { configTimezone, setConfig } from "./config";
 
 describe("i18n config store", () => {
   it("stores the timezone from the shared config", () => {
@@ -11,7 +11,7 @@ describe("i18n config store", () => {
       timezone: "Europe/Berlin",
     });
 
-    expect(activeTimezoneForTest()).toBe("Europe/Berlin");
+    expect(configTimezone()).toBe("Europe/Berlin");
   });
 
   it("falls back to null when no timezone is shared", () => {
@@ -23,6 +23,6 @@ describe("i18n config store", () => {
       timezone: null,
     });
 
-    expect(activeTimezoneForTest()).toBeNull();
+    expect(configTimezone()).toBeNull();
   });
 });

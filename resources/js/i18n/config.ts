@@ -47,10 +47,6 @@ export function setConfig(config: I18nConfig | undefined): void {
   notify();
 }
 
-export function activeTimezoneForTest(): string | null {
-  return active.timezone;
-}
-
 export function configTimezone(): string | null {
   return active.timezone;
 }
