@@ -18,23 +18,25 @@ final readonly class I18nConfig implements JsonSerializable
         public bool $saveMissing,
         public array $locales,
         public array $preloadLocales,
+        public ?string $timezone = null,
     ) {}
 
     /**
      * @param  array<int, string>|null  $locales
      */
-    public static function fromConfig(?array $locales = null): self
+    public static function fromConfig(?array $locales = null, ?string $timezone = null): self
     {
         return new self(
             enabled: (bool) config('i18next.routes.enabled', false),
             saveMissing: (bool) config('i18next.save_missing.enabled', false),
             locales: $locales ?? self::configuredList('lattice.i18n.locales'),
             preloadLocales: self::configuredList('lattice.i18n.preload_locales'),
+            timezone: $timezone,
         );
     }
 
     /**
-     * @return array{enabled: bool, saveMissing: bool, locales: array<int, string>, preloadLocales: array<int, string>}
+     * @return array{enabled: bool, saveMissing: bool, locales: array<int, string>, preloadLocales: array<int, string>, timezone: string|null}
      */
     public function jsonSerialize(): array
     {
@@ -43,6 +45,7 @@ final readonly class I18nConfig implements JsonSerializable
             'saveMissing' => $this->saveMissing,
             'locales' => $this->locales,
             'preloadLocales' => $this->preloadLocales,
+            'timezone' => $this->timezone,
         ];
     }
 
