@@ -16,6 +16,7 @@ export const LATTICE_EVENT = {
   toggleSidebar: "lattice:toggle-sidebar",
   appearanceChange: "lattice:appearance-change",
   localeChange: "lattice:locale-change",
+  timezoneChange: "lattice:timezone-change",
   actionError: "lattice:action-error",
 } as const;
 

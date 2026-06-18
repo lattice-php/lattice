@@ -12,3 +12,5 @@ export type {
   UseLocaleOptionsReturn,
 } from "./locale-switcher";
 export type { UseLocaleReturn } from "./locale";
+export { currentTimezone, setTimezone, useTimezone } from "./timezone";
+export type { UseTimezoneReturn } from "./timezone";

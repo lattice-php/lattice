@@ -51,6 +51,18 @@ export function activeTimezoneForTest(): string | null {
   return active.timezone;
 }
 
+export function configTimezone(): string | null {
+  return active.timezone;
+}
+
+export function subscribeConfig(callback: () => void): () => void {
+  listeners.add(callback);
+
+  return () => {
+    listeners.delete(callback);
+  };
+}
+
 export function useConfig(): Config {
   return useSyncExternalStore(subscribe, snapshot, () => fallback);
 }
