@@ -23,7 +23,7 @@ function productRows(array $params = []): array
         'workbench.products',
     );
 
-    return json_decode((string) json_encode($table->source()->query($query)), true)['data'];
+    return wire($table->source()->query($query))['data'];
 }
 
 test('a multiple badge column projects coloured chips onto a flat key without N+1', function (): void {

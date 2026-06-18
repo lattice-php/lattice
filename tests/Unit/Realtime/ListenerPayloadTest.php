@@ -8,7 +8,7 @@ use Lattice\Lattice\Realtime\ListenerPayload;
 test('it serializes a listener payload with the visibility enum value', function (): void {
     $payload = new ListenerPayload('orders', ChannelVisibility::Private, ['OrderShipped'], [Effect::reloadPage()]);
 
-    $array = json_decode(json_encode($payload), true);
+    $array = wire($payload);
 
     expect($array)->toMatchArray([
         'channel' => 'orders',

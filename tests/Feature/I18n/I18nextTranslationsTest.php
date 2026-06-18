@@ -33,7 +33,7 @@ it('shares the i18n config to the frontend as a once prop', function (): void {
         ->missing('lattice.i18n.addPath'),
     );
 
-    $page = json_decode(json_encode($response->viewData('page'), JSON_THROW_ON_ERROR), true, flags: JSON_THROW_ON_ERROR);
+    $page = wire($response->viewData('page'));
 
     expect($page['onceProps']['lattice.i18n']['prop'] ?? null)->toBe('lattice.i18n');
 });
@@ -43,7 +43,7 @@ it('omits the i18n config when the client already has the once prop', function (
     $this->actingAs(workbenchTestUser());
 
     $response = get('/');
-    $page = json_decode(json_encode($response->viewData('page'), JSON_THROW_ON_ERROR), true, flags: JSON_THROW_ON_ERROR);
+    $page = wire($response->viewData('page'));
 
     $response = get('/', [
         Header::INERTIA => 'true',

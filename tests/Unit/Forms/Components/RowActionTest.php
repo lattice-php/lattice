@@ -8,7 +8,7 @@ use Lattice\Lattice\Forms\Components\RowAction;
  */
 function serializeRowAction(RowAction $action): array
 {
-    return json_decode(json_encode($action, JSON_THROW_ON_ERROR), true);
+    return wire($action);
 }
 
 it('serialises the built-in duplicate action with client-defaulted label and icon', function (): void {
