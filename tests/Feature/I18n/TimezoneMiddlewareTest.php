@@ -23,7 +23,7 @@ it('shares the authenticated user timezone preference', function (): void {
     {
         protected $table = 'users';
 
-        public function preferredTimezone(): ?string
+        public function preferredTimezone(): string
         {
             return 'Europe/Berlin';
         }
