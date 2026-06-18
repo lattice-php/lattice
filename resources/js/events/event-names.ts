@@ -13,6 +13,7 @@ export const LATTICE_EVENT = {
   openModal: "lattice:open-modal",
   closeModal: "lattice:close-modal",
   resetForm: "lattice:reset-form",
+  toggleSidebar: "lattice:toggle-sidebar",
   appearanceChange: "lattice:appearance-change",
   localeChange: "lattice:locale-change",
   actionError: "lattice:action-error",

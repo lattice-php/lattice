@@ -15,7 +15,7 @@ it('keeps the user dropdown usable when the sidebar is collapsed', function (): 
     $this->actingAs(workbenchTestUser());
     visit('/')
         ->click('@sidebar-toggle')
-        ->assertPresent('[aria-label="Expand sidebar"]')
+        ->assertPresent('[data-test="sidebar"][data-collapsed="true"]')
         ->click('@user-menu')
         ->assertSee('Log out')
         ->assertNoSmoke();

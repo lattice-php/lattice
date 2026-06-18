@@ -37,7 +37,6 @@ final class ChatLayout extends AppLayout
                             $this->chatBox()->fill(),
                         ]),
                 ]),
-            $this->chatLayoutTogglePanel(),
         ]);
     }
 }

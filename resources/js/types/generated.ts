@@ -104,7 +104,9 @@ export type BulkAction = {
 };
 export type Button = {
   buttonType: ButtonType;
+  effects: Effect[];
   href: string | null;
+  icon: string | null;
   label: string;
   variant: ButtonVariant | null;
 };
@@ -467,7 +469,10 @@ export type Effect =
     } & ResetFormEffect)
   | ({
       type: "toast";
-    } & ToastEffect);
+    } & ToastEffect)
+  | ({
+      type: "toggleSidebar";
+    } & ToggleSidebarEffect);
 export type FieldType =
   | "field.builder"
   | "field.checkbox"
@@ -1217,6 +1222,9 @@ export type ToastMessage = {
   action: Node | null;
   variant: Variant;
   message: Translatable | string;
+};
+export type ToggleSidebarEffect = {
+  readonly target: string | null;
 };
 export type ToolCallPart = {
   args: Record<string, unknown>;

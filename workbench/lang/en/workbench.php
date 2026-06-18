@@ -325,6 +325,7 @@ return [
         'showcase' => 'Showcase',
         'tables' => 'Tables',
         'tabs' => 'Tabs',
+        'toggle-sidebar' => 'Toggle sidebar',
     ],
     'pages' => [
         'builder' => [

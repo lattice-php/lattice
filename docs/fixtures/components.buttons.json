@@ -13,7 +13,9 @@
             {
                 "props": {
                     "buttonType": "button",
+                    "effects": [],
                     "href": null,
+                    "icon": null,
                     "label": "Default",
                     "variant": "default"
                 },
@@ -22,7 +24,9 @@
             {
                 "props": {
                     "buttonType": "button",
+                    "effects": [],
                     "href": null,
+                    "icon": null,
                     "label": "Secondary",
                     "variant": "secondary"
                 },
@@ -31,7 +35,9 @@
             {
                 "props": {
                     "buttonType": "button",
+                    "effects": [],
                     "href": null,
+                    "icon": null,
                     "label": "Success",
                     "variant": "success"
                 },
@@ -40,7 +46,9 @@
             {
                 "props": {
                     "buttonType": "button",
+                    "effects": [],
                     "href": null,
+                    "icon": null,
                     "label": "Info",
                     "variant": "info"
                 },
@@ -49,7 +57,9 @@
             {
                 "props": {
                     "buttonType": "button",
+                    "effects": [],
                     "href": null,
+                    "icon": null,
                     "label": "Destructive",
                     "variant": "destructive"
                 },
@@ -58,7 +68,9 @@
             {
                 "props": {
                     "buttonType": "button",
+                    "effects": [],
                     "href": null,
+                    "icon": null,
                     "label": "Outline",
                     "variant": "outline"
                 },
@@ -67,7 +79,9 @@
             {
                 "props": {
                     "buttonType": "button",
+                    "effects": [],
                     "href": null,
+                    "icon": null,
                     "label": "Ghost",
                     "variant": "ghost"
                 },

@@ -162,4 +162,15 @@ describe("builtinEffectHandlers", () => {
     window.removeEventListener(LATTICE_EVENT.resetForm, listener);
     expect(received).toEqual([{ type: "resetForm", form: "teams.create" }]);
   });
+
+  it("toggleSidebar bridges to the lattice:toggle-sidebar DOM event with the target as detail", () => {
+    const received: unknown[] = [];
+    const listener = (event: Event) => received.push((event as CustomEvent).detail);
+    window.addEventListener(LATTICE_EVENT.toggleSidebar, listener);
+
+    builtinEffectHandlers.toggleSidebar({ type: "toggleSidebar", target: "app-sidebar" } as never);
+
+    window.removeEventListener(LATTICE_EVENT.toggleSidebar, listener);
+    expect(received).toEqual([{ type: "toggleSidebar", target: "app-sidebar" }]);
+  });
 });

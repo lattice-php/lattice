@@ -19,6 +19,7 @@ use Lattice\Lattice\Effects\Builtin\ReloadComponentEffect;
 use Lattice\Lattice\Effects\Builtin\ReloadPageEffect;
 use Lattice\Lattice\Effects\Builtin\ResetFormEffect;
 use Lattice\Lattice\Effects\Builtin\ToastEffect;
+use Lattice\Lattice\Effects\Builtin\ToggleSidebarEffect;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 
 abstract readonly class Effect implements EffectContract
@@ -79,6 +80,11 @@ abstract readonly class Effect implements EffectContract
     public static function localeChange(string $locale): LocaleChangeEffect
     {
         return new LocaleChangeEffect($locale);
+    }
+
+    public static function toggleSidebar(?string $target = null): ToggleSidebarEffect
+    {
+        return new ToggleSidebarEffect($target);
     }
 
     /**

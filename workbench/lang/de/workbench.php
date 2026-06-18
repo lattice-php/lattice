@@ -325,6 +325,7 @@ return [
         'showcase' => 'Showcase',
         'tables' => 'Tabellen',
         'tabs' => 'Tabs',
+        'toggle-sidebar' => 'Seitenleiste umschalten',
     ],
     'pages' => [
         'builder' => [

@@ -3,8 +3,11 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { getActionEffects } from "@lattice-php/lattice/effects/dispatch";
+import { IconRenderer } from "@lattice-php/lattice/icons";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import type { ButtonVariant } from "@lattice-php/lattice/types/generated";
 
 export type { ButtonVariant };
@@ -64,9 +67,11 @@ function Button({
 }
 
 const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
-  const { href, label } = node.props;
+  const { href, label, icon } = node.props;
+  const effects = node.props.effects ?? [];
   const variant = node.props.variant ?? "default";
   const testId = nodeIdentity(node);
+  const dispatch = useEffectDispatcher();
 
   if (href) {
     return (
@@ -76,9 +81,18 @@ const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
     );
   }
 
+  const hasEffects = effects.length > 0;
+
   return (
-    <Button data-test={testId} type={node.props.buttonType} variant={variant} size="default">
-      {label}
+    <Button
+      aria-label={icon ? label || undefined : undefined}
+      data-test={testId}
+      onClick={hasEffects ? () => dispatch(getActionEffects(effects)) : undefined}
+      size={icon ? "icon" : "default"}
+      type={node.props.buttonType}
+      variant={variant}
+    >
+      {icon ? <IconRenderer className="size-lt-icon-md" icon={icon} /> : label}
     </Button>
   );
 };
