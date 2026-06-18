@@ -17,10 +17,6 @@ use Lattice\Lattice\Tables\RelationBinding;
  * Eloquent: a constrained eager load for display, a `whereHas` for filtering,
  * and a correlated subquery for sorting — so authors get relation columns
  * without hand-writing aggregates.
- *
- * Handles a single relation segment of a BelongsTo or HasOne; a binding whose
- * relation is anything else (to-many or a non-relation segment) resolves to null
- * and the key is left untouched.
  */
 final readonly class RelationColumn implements RelationProjection
 {

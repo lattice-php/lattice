@@ -183,10 +183,8 @@ final readonly class EloquentTableSource implements TableSource
     }
 
     /**
-     * The relation a column draws its value from, as a driver-agnostic binding —
-     * a `multiple()` column binds to its named to-many relation; any column with a
-     * dotted key (`businessPartner.name`) binds to a to-one relation; everything
-     * else reads a plain attribute and binds to nothing.
+     * The relation a column draws its value from, as a driver-agnostic binding,
+     * or null when the column reads a plain attribute.
      */
     private function relationBinding(Column $column): ?RelationBinding
     {

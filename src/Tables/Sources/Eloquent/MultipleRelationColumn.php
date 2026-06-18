@@ -18,9 +18,6 @@ use Lattice\Lattice\Tables\RelationBinding;
  * relation is eager-loaded once (no N+1) and projected to a list: plain values,
  * or `{value, color}` pairs when a colour field is configured. Filtering matches
  * any related row through `whereHas`; the column is not sortable.
- *
- * Handles a single relation segment of a HasMany or BelongsToMany (so also
- * MorphToMany); any other binding resolves to null and the key is left untouched.
  */
 final readonly class MultipleRelationColumn implements RelationProjection
 {
