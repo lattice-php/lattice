@@ -11,6 +11,7 @@ type FormComponentName =
   | "FormComponent"
   | "HiddenInputComponent"
   | "NumberInputComponent"
+  | "OtpInputComponent"
   | "PasswordInputComponent"
   | "RepeaterComponent"
   | "SelectComponent"
@@ -43,6 +44,7 @@ export const formComponents = createPlugin({
     "field.file-upload": lazyComponent(loadFormComponent("FileUploadComponent")),
     "field.hidden-input": lazyComponent(loadFormComponent("HiddenInputComponent")),
     "field.number-input": lazyComponent(loadFormComponent("NumberInputComponent")),
+    "field.otp": lazyComponent(loadFormComponent("OtpInputComponent")),
     "field.password-input": lazyComponent(loadFormComponent("PasswordInputComponent")),
     "field.repeater": lazyComponent(loadFormComponent("RepeaterComponent")),
     // Loaded from its own module so TipTap is split into a separate chunk,

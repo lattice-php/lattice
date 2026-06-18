@@ -6,6 +6,7 @@ export { FileUploadComponent } from "./fields/file-upload";
 export { FormComponent } from "./form";
 export { HiddenInputComponent } from "./fields/hidden-input";
 export { NumberInputComponent } from "./fields/number-input";
+export { OtpInputComponent } from "./fields/otp-input";
 export { PasswordInputComponent } from "./fields/password-input";
 export { RepeaterComponent } from "./fields/repeater";
 export { SelectComponent } from "./fields/select";

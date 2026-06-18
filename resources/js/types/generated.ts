@@ -481,6 +481,7 @@ export type FieldType =
   | "field.file-upload"
   | "field.hidden-input"
   | "field.number-input"
+  | "field.otp"
   | "field.password-input"
   | "field.repeater"
   | "field.rich-editor"
@@ -595,6 +596,11 @@ export type FormFieldNode =
       type: "field.number-input";
       key?: string;
       props: NumberInput;
+    }
+  | {
+      type: "field.otp";
+      key?: string;
+      props: OtpInput;
     }
   | {
       type: "field.password-input";
@@ -874,6 +880,31 @@ export type Option = {
   readonly value: string;
 };
 export type Orientation = "horizontal" | "vertical";
+export type OtpInput = {
+  autoFocus: boolean;
+  columnWidth: ColumnWidth;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
+  dependsOnAny: boolean;
+  dependsOnKeys: string[] | null;
+  disabled: boolean;
+  editablePrefill: boolean;
+  helperText: string | null;
+  hidden: boolean;
+  label: string | null;
+  length: number;
+  name: string;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
+  readOnly: boolean;
+  required: boolean;
+  tooltip: string | null;
+  value: unknown;
+};
 export type Outlet = Record<string, never>;
 export type PageContainer = "centered" | "default";
 export type PageLayout = "app" | "auth" | "none";
