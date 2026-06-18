@@ -14,7 +14,8 @@ function isI18nConfig(value: unknown): value is I18nConfig {
     typeof value.enabled === "boolean" &&
     typeof value.saveMissing === "boolean" &&
     isStringArray(value.locales) &&
-    isStringArray(value.preloadLocales)
+    isStringArray(value.preloadLocales) &&
+    (value.timezone === null || typeof value.timezone === "string")
   );
 }
 

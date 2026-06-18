@@ -693,6 +693,7 @@ export type I18nConfig = {
   readonly saveMissing: boolean;
   readonly locales: string[];
   readonly preloadLocales: string[];
+  readonly timezone: string | null;
 };
 export type Icon = {
   class: string | null;
