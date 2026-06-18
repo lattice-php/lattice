@@ -1,0 +1,244 @@
+---
+title: Remote components
+description: Embed components that fetch from another application through short-lived, audience-scoped browser tokens.
+---
+
+import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
+import Mermaid from "@components/Mermaid.astro";
+
+Remote lets one Lattice application embed a component whose data — or whole schema — comes from a
+**different** application. A page renders a `remote.data-list` (or a remote-configured chat box); the
+browser exchanges a signed reference for a short-lived, audience-scoped token and calls the remote
+provider directly. The provider stays in control of what it hands out, and the embedding app never
+proxies the data.
+
+<Warning title="Proof of concept">
+  Remote is an experimental POC. The wire shapes, class names, and the set of remote-capable
+  components may still change. Build on it with that in mind.
+</Warning>
+
+## Two roles
+
+| Role | Responsibility |
+| --- | --- |
+| **Consumer** | Renders the page and embeds the remote component. Hosts the token endpoint that mints browser tokens for its logged-in user. |
+| **Provider** | Serves the data endpoint (and optionally the schema manifest) that the browser calls with the issued token. |
+
+A single application is often both — it embeds its own remote sources during development, which is
+exactly what the [workbench](/contributing/local-development/) does.
+
+## How a request flows
+
+<Mermaid
+  title="Browser-token exchange for a remote component"
+  code={`sequenceDiagram
+    autonumber
+    participant P as Consumer page (PHP)
+    participant B as Browser (React)
+    participant T as Consumer token endpoint
+    participant R as Remote provider
+    P->>P: Build DataList / resolve schema manifest
+    Note over P: seal ref, resolve tokenEndpoint
+    P->>B: props.remote { source, audience, scopes, tokenEndpoint, ref }
+    B->>T: POST tokenEndpoint — ref header, session cookie
+    T->>T: verify ref, match source/audience/scopes, authorize
+    T-->>B: BrowserToken { accessToken, tokenType, expiresIn }
+    B->>R: GET dataEndpoint — Authorization Bearer, credentials omitted
+    R-->>B: { data: [ ... ] }
+    B->>B: render rows via dataBindings`}
+/>
+
+The consumer's server seals a tamper-proof `ref` that binds the node identity to a `source`,
+`audience`, and `scopes`. The browser sends that `ref` (as a header, with the session cookie) to the
+consumer's own token endpoint, which re-checks every bound value before asking the matching source to
+issue a token. The provider call carries only the resulting bearer token — `credentials` are omitted,
+so no cookies leak across the origin boundary.
+
+## Embedding a data list
+
+`DataList` (registered as `remote.data-list`) fetches rows from a remote endpoint and renders a
+reusable row schema for each one. Configure the source, the audience it is for, the scopes it needs,
+and the provider's data endpoint:
+
+```php
+use Lattice\Lattice\Remote\Components\DataList;
+use Lattice\Lattice\Core\Components\Card;
+use Lattice\Lattice\Core\Components\Text;
+
+DataList::make('todos')
+    ->source('workbench.todos')
+    ->audience('https://todos.example.test')
+    ->scopes(['todos.read'])
+    ->dataEndpoint('https://todos.example.test/api/todos')
+    ->emptyLabel('No todos yet')
+    ->schema([
+        Card::make()->dataBindings(['title' => 'title', 'description' => 'detail']),
+    ]);
+```
+
+Each row in the provider's `{ "data": [...] }` payload is materialized through the child schema.
+`dataBindings` map a component prop to a row key (dotted paths are supported), so the same row schema
+renders every record.
+
+<Info>
+  `source()` and `audience()` are required together, and the node needs an `id` (the first argument
+  to `make()`). Serializing a remote component without them throws — the `ref` cannot be sealed
+  otherwise.
+</Info>
+
+## Remote chat
+
+A chat box can also read from a remote source. There is **no** `remote.chat-box` type — the regular
+[`chat.box`](/core/components/) component extends the remote machinery, so you opt in by calling
+`source()`/`audience()` on it:
+
+```php
+use Lattice\Lattice\Chat\Components\ChatBox;
+
+ChatBox::make('assistant')
+    ->source('workbench.todos')
+    ->audience('https://todos.example.test')
+    ->scopes(['chat.read', 'chat.write'])
+    ->streamEndpoint('https://todos.example.test/api/chat/stream')
+    ->historyEndpoint('https://todos.example.test/api/chat/history')
+    ->fill();
+```
+
+## Remote sources
+
+A **source** describes a provider. Extend `RemoteSourceDefinition`, tag it with `#[AsRemoteSource]`,
+and override `issueBrowserToken()` to mint a token after the consumer's endpoint has verified the
+request:
+
+```php
+use Illuminate\Http\Request;
+use Lattice\Lattice\Attributes\AsRemoteSource;
+use Lattice\Lattice\Remote\BrowserToken;
+use Lattice\Lattice\Remote\RemoteSourceDefinition;
+
+#[AsRemoteSource('workbench.todos')]
+final class TodoSource extends RemoteSourceDefinition
+{
+    public function issueBrowserToken(Request $request): BrowserToken
+    {
+        return new BrowserToken(
+            accessToken: '…', // call your real authorization server here
+            tokenType: 'Bearer',
+            expiresIn: 120,
+            audience: $request->string('audience')->toString(),
+            scopes: $request->array('scopes'),
+        );
+    }
+}
+```
+
+Sources are [discovered](/introduction/configuration/#discovery) like every other definition, or you
+can register them explicitly:
+
+```php
+use Lattice\Lattice\Facades\Lattice;
+
+Lattice::remoteSources([\App\Remote\TodoSource::class]);
+
+// Resolve keys dynamically — e.g. one source per tenant:
+Lattice::remoteSourceResolver(
+    fn (string $key, $container) => str_starts_with($key, 'tenant:')
+        ? new TenantSource(/* … */)
+        : null,
+);
+```
+
+Override `authorize(Request)` on the definition to gate token issuance per user; it defaults to
+allowing the request.
+
+## Schema-driven federation
+
+A source can also hand the consumer an entire **schema manifest** to render, not just rows. Override
+`schemaEndpoint()` to point at a JSON manifest — an allow-listed URL or a local file — and return its
+nodes from `schema()`:
+
+```php
+use Lattice\Lattice\Remote\RemoteSchemaEndpoint;
+
+public function schemaEndpoint(Request $request): RemoteSchemaEndpoint
+{
+    return RemoteSchemaEndpoint::url(
+        'https://todos.example.test/lattice/manifest',
+        allowedHosts: ['todos.example.test'],
+    );
+    // …or RemoteSchemaEndpoint::file(storage_path('manifests/todos.json'));
+}
+```
+
+Render it by resolving the source on a page:
+
+```php
+public function render(PageSchema $schema, Request $request, RemoteSourceRegistry $remoteSources): PageSchema
+{
+    return $schema->schema(
+        $remoteSources->resolve('workbench.todos')->schema($request),
+    );
+}
+```
+
+The manifest is a tree of `{ "type", "id", "props", "schema" }` nodes. A remote-capable node only
+needs to declare its `audience` and `scopes` — the consumer stamps the trusted `remote` access:
+
+```json
+{
+  "type": "remote.data-list",
+  "id": "todos",
+  "props": {
+    "dataEndpoint": "/api/todos",
+    "audience": "https://todos.example.test",
+    "scopes": ["todos.read"]
+  },
+  "schema": [
+    { "type": "card", "props": { "dataBindings": { "title": "title" } } }
+  ]
+}
+```
+
+<Warning title="The manifest is untrusted input">
+  `RemoteSchemaResolver` treats everything the provider returns as hostile. It strips any
+  `ref`, `remote`, `endpoint`, `tokenEndpoint`, and `action` keys from the manifest and re-stamps a
+  server-trusted `remote` descriptor with a freshly sealed `ref`, so a provider can never forge a
+  usable token endpoint. External URL props (a data list's `dataEndpoint`, a chat box's
+  `streamEndpoint`/`historyEndpoint`) are validated against `allowedHosts` (relative URLs are
+  allowed); a host outside the list is rejected before any request is sent. The consumer's
+  `Accept-Language` is forwarded when fetching the manifest so the provider can localize it.
+</Warning>
+
+## Frontend setup
+
+The `remote.data-list` renderer ships in a separate plugin that you add to your registry:
+
+```ts
+import { createRegistry } from "@lattice-php/lattice/core/registry";
+import { remoteComponents } from "@lattice-php/lattice/remote";
+
+export const registry = createRegistry(/* …core plugins…, */ remoteComponents);
+```
+
+A remote chat box needs `chatPlugin` instead — it registers the `chat.box` type that remote chat
+reuses. Unlike `chatPlugin`, `remoteComponents` is not re-exported from the package root, so import it
+from the `@lattice-php/lattice/remote` subpath as shown above.
+
+## Configuration
+
+The token endpoint and its middleware live under `remote-sources` in `config/lattice.php`:
+
+```php
+'remote-sources' => [
+    'endpoint' => 'lattice/remote-sources/{source}/token',
+    'middleware' => ['web', 'auth'],
+],
+```
+
+`{source}` is URL-encoded into the path, so the wire `tokenEndpoint` for a source keyed
+`workbench.todos` is `/lattice/remote-sources/workbench.todos/token`. The signed `ref` lifetime is
+shared with the rest of Lattice via [`security.ref_lifetime`](/introduction/configuration/#security).
+
+See [Configuration](/introduction/configuration/#endpoints-and-middleware) for the full endpoint
+table and [Security](/advanced/security/) for how component references are signed and verified.
