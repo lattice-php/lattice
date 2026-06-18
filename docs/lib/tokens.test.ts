@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { parseTokens, parseSuffixMap, resolveTokens, tokenLabel, collectClassNames } from "./tokens";
+import {
+  parseTokens,
+  parseSuffixMap,
+  resolveTokens,
+  tokenLabel,
+  collectClassNames,
+} from "./tokens";
 
 const SAMPLE_CSS = `
 :root,

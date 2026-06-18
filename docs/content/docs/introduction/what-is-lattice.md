@@ -9,7 +9,7 @@ Lattice is a server-driven UI layer for Laravel applications running [Inertia](h
 
 A typical Inertia app splits every screen across two languages: the data and rules live in PHP, while the page, its forms, and its tables are rebuilt by hand in React. The two sides duplicate the same contract — field names, validation, table columns, what an action does — and drift apart as the app grows.
 
-Lattice removes that duplication. The server is the single source of truth for what a screen *is*; the client's only job is to render it. There is no hand-written API between them and no UI contract to keep in sync, because the renderer always receives exactly what the server produced.
+Lattice removes that duplication. The server is the single source of truth for what a screen _is_; the client's only job is to render it. There is no hand-written API between them and no UI contract to keep in sync, because the renderer always receives exactly what the server produced.
 
 ## How it works
 

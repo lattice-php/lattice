@@ -150,6 +150,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             { label: "Security", link: "/advanced/security/" },
+            { label: "Remote components", link: "/advanced/remote/" },
             { label: "Bundle size", link: "/advanced/bundle-size/" },
             { label: "Enums reference", link: "/advanced/enums/" },
           ],

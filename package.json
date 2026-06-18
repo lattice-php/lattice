@@ -135,6 +135,14 @@
       "types": "./dist/registry.d.ts",
       "import": "./dist/registry.js"
     },
+    "./remote": {
+      "types": "./dist/remote/index.d.ts",
+      "import": "./dist/remote/index.js"
+    },
+    "./remote/*": {
+      "types": "./dist/remote/*.d.ts",
+      "import": "./dist/remote/*.js"
+    },
     "./table": {
       "types": "./dist/table/index.d.ts",
       "import": "./dist/table/index.js"
@@ -195,8 +203,8 @@
     "lint": "oxlint resources/js workbench/resources/js",
     "lint:fix": "oxlint resources/js workbench/resources/js --fix",
     "lint:github": "oxlint resources/js workbench/resources/js --format=github",
-    "format": "oxfmt --write \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\"",
-    "format:check": "oxfmt --check \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\"",
+    "format": "oxfmt --write \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
+    "format:check": "oxfmt --check \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
     "analyze": "SONDA=1 vite build && mkdir -p docs/public && cp docs/generated/bundle-report.html docs/public/bundle-report.html",
     "docs:dev": "npm run analyze && astro dev",
     "docs:build": "npm run analyze && astro build",
@@ -265,6 +273,7 @@
     "laravel-echo": "^2.3.7",
     "laravel-vite-plugin": "^3.0.0",
     "lucide-static": "^1.18.0",
+    "mermaid": "^11.15.0",
     "oxfmt": "^0.54.0",
     "oxlint": "^1.68.0",
     "playwright": "^1.60.0",

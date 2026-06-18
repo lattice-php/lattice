@@ -25,9 +25,9 @@ Each method names the field to watch, an optional operator, and the value to com
 ]);
 
 TextInput::make('vat', 'VAT ID')
-    ->visibleWhen('type', 'business')`}
-  fixture="field.visible-when"
-  values={{ type: "business", vat: "" }}
+->visibleWhen('type', 'business')`}
+fixture="field.visible-when"
+values={{ type: "business", vat: "" }}
 />
 
 ## Required when
@@ -43,9 +43,9 @@ selected the VAT ID is required; pick another country and it becomes optional.
 ]);
 
 TextInput::make('vat', 'VAT ID')
-    ->requiredWhen('country', 'DE')`}
-  fixture="field.required-when"
-  values={{ country: "DE", vat: "" }}
+->requiredWhen('country', 'DE')`}
+fixture="field.required-when"
+values={{ country: "DE", vat: "" }}
 />
 
 ## Read-only and disabled when
@@ -75,16 +75,16 @@ NumberInput::make('guardian', 'Guardian name')
 
 The operator accepts a comparison string or an [`Op`](/advanced/enums/#operators) case (`Lattice\Lattice\Core\Enums\Op`):
 
-| Condition  | String                              | `Op` case                                     |
-| ---------- | ----------------------------------- | --------------------------------------------- |
-| equal      | `=`, `==`                           | `Op::Equals`                                  |
-| not equal  | `!=`, `<>`                          | `Op::NotEquals`                               |
-| greater    | `>`, `>=`                           | `Op::GreaterThan`, `Op::GreaterThanOrEqual`   |
-| less       | `<`, `<=`                           | `Op::LessThan`, `Op::LessThanOrEqual`         |
+| Condition  | String                                 | `Op` case                                        |
+| ---------- | -------------------------------------- | ------------------------------------------------ |
+| equal      | `=`, `==`                              | `Op::Equals`                                     |
+| not equal  | `!=`, `<>`                             | `Op::NotEquals`                                  |
+| greater    | `>`, `>=`                              | `Op::GreaterThan`, `Op::GreaterThanOrEqual`      |
+| less       | `<`, `<=`                              | `Op::LessThan`, `Op::LessThanOrEqual`            |
 | substring  | `contains`, `starts_with`, `ends_with` | `Op::Contains`, `Op::StartsWith`, `Op::EndsWith` |
-| membership | `in`, `not_in`                      | `Op::In`, `Op::NotIn`                         |
-| presence   | `empty`, `filled`                   | `Op::Empty`, `Op::Filled`                     |
-| dates      | `before`, `after`                   | `Op::Before`, `Op::After`                     |
+| membership | `in`, `not_in`                         | `Op::In`, `Op::NotIn`                            |
+| presence   | `empty`, `filled`                      | `Op::Empty`, `Op::Filled`                        |
+| dates      | `before`, `after`                      | `Op::Before`, `Op::After`                        |
 
 ## Server and client agreement
 
@@ -151,6 +151,6 @@ TextInput::make('price', 'Price')
 ```
 
 <Info>
-  Inside a [repeater or builder](/forms/fields/repeater/) row, a bare dependency name is row-relative;
-  prefix it with `@` (e.g. `@customer`) to watch a form-level field instead.
+  Inside a [repeater or builder](/forms/fields/repeater/) row, a bare dependency name is
+  row-relative; prefix it with `@` (e.g. `@customer`) to watch a form-level field instead.
 </Info>

@@ -7,13 +7,13 @@ Lattice adds a server-driven UI layer to a Laravel application running [Inertia]
 
 ## Requirements
 
-| Requirement | Version |
-| --- | --- |
-| PHP | 8.4+ |
-| Laravel | 11, 12, or 13 |
-| Inertia (Laravel + React) | v3 |
-| React | 19 |
-| Tailwind CSS | 4 |
+| Requirement               | Version       |
+| ------------------------- | ------------- |
+| PHP                       | 8.4+          |
+| Laravel                   | 11, 12, or 13 |
+| Inertia (Laravel + React) | v3            |
+| React                     | 19            |
+| Tailwind CSS              | 4             |
 
 ## How Lattice is delivered
 

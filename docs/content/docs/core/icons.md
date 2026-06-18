@@ -26,7 +26,9 @@ export default defineConfig({
         dirs: ["resources/icons"],
       },
     }),
-    laravel({ /* ... */ }),
+    laravel({
+      /* ... */
+    }),
     // ...
   ],
 });

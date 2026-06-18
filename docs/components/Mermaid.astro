@@ -1,0 +1,72 @@
+---
+interface Props {
+  code: string;
+  title?: string;
+}
+
+const { code, title } = Astro.props;
+---
+
+<figure class="mermaid-figure not-content">
+  <pre class="mermaid" data-source={code} aria-label={title ?? "Diagram"}></pre>
+  {title && <figcaption>{title}</figcaption>}
+</figure>
+
+<script>
+  import mermaid from "mermaid";
+
+  function mermaidTheme(): "default" | "dark" {
+    return document.documentElement.dataset.theme === "light" ? "default" : "dark";
+  }
+
+  async function renderDiagrams(): Promise<void> {
+    const nodes = Array.from(document.querySelectorAll<HTMLElement>("pre.mermaid[data-source]"));
+
+    if (nodes.length === 0) {
+      return;
+    }
+
+    mermaid.initialize({ startOnLoad: false, theme: mermaidTheme(), securityLevel: "strict" });
+
+    for (const node of nodes) {
+      node.removeAttribute("data-processed");
+      node.textContent = node.dataset.source ?? "";
+    }
+
+    await mermaid.run({ nodes });
+  }
+
+  void renderDiagrams();
+  document.addEventListener("astro:after-swap", () => void renderDiagrams());
+
+  const themeObserver = new MutationObserver((mutations) => {
+    if (mutations.some((mutation) => mutation.attributeName === "data-theme")) {
+      void renderDiagrams();
+    }
+  });
+
+  themeObserver.observe(document.documentElement, { attributes: true });
+</script>
+
+<style>
+  .mermaid-figure {
+    margin: 1.5rem 0;
+  }
+
+  .mermaid-figure pre.mermaid {
+    display: flex;
+    justify-content: center;
+    min-height: 2rem;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+  }
+
+  .mermaid-figure figcaption {
+    margin-top: 0.5rem;
+    text-align: center;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+</style>
