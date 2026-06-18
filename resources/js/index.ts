@@ -11,6 +11,7 @@ export { useEffectDispatcher } from "./effects/use-effect-dispatcher";
 export { builtinEffectHandlers, effectHandler, mergeEffectHandlers } from "./effects/registry";
 export { initializeTheme, useAppearance } from "./appearance";
 export { copyToClipboard, useClipboard } from "./clipboard";
+export { createLatticeApp, type CreateLatticeAppOptions } from "./create-app";
 export { EventBridge } from "./events/event-bridge";
 export { Icon, IconRenderer, IconRendererProvider, SpriteProvider } from "./icons";
 export {

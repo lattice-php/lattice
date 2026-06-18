@@ -34,7 +34,7 @@ type Roots = {
 };
 
 export function lattice(options: LatticeViteOptions = {}): PluginOption[] {
-  const plugins: PluginOption[] = [corePlugin(options)];
+  const plugins: PluginOption[] = [corePlugin(options), optionalPeersPlugin()];
   const iconOptions = resolveIconOptions(options);
 
   if (iconOptions) {
@@ -88,6 +88,50 @@ function corePlugin(options: LatticeViteOptions): Plugin {
     name: "lattice",
     config() {
       return latticeConfig(options);
+    },
+  };
+}
+
+const OPTIONAL_PEER_STUB_PREFIX = "\0lattice-optional-peer/";
+
+/**
+ * Real-time listeners statically import their optional Echo peers. A consumer
+ * that never uses real-time should still build, so stub a missing peer with
+ * hooks that throw — the `RealtimeListeners` error boundary then degrades
+ * gracefully and warns to install the peer, exactly as when it is absent.
+ */
+const OPTIONAL_PEER_STUBS: Record<string, string> = {
+  "@laravel/echo-react": [
+    "const missing = () => {",
+    "  throw new Error(",
+    '    "[lattice] Real-time listeners require @laravel/echo-react. Install it and call configureEcho().",',
+    "  );",
+    "};",
+    "export const useEcho = missing;",
+    "export const useEchoPublic = missing;",
+    "export const useEchoPresence = missing;",
+  ].join("\n"),
+};
+
+function optionalPeersPlugin(): Plugin {
+  return {
+    name: "lattice:optional-peers",
+    enforce: "pre",
+    async resolveId(id) {
+      if (!Object.prototype.hasOwnProperty.call(OPTIONAL_PEER_STUBS, id)) {
+        return null;
+      }
+
+      const installed = await this.resolve(id, undefined, { skipSelf: true });
+
+      return installed ? null : `${OPTIONAL_PEER_STUB_PREFIX}${id}`;
+    },
+    load(id) {
+      if (!id.startsWith(OPTIONAL_PEER_STUB_PREFIX)) {
+        return null;
+      }
+
+      return OPTIONAL_PEER_STUBS[id.slice(OPTIONAL_PEER_STUB_PREFIX.length)] ?? null;
     },
   };
 }
