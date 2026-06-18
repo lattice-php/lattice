@@ -15,11 +15,11 @@ use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\ImageColumn;
 use Lattice\Lattice\Tables\Columns\MoneyColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\Filters\BaseFilter;
 use Lattice\Lattice\Tables\Filters\DateRangeFilter;
 use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\Filters\TernaryFilter;
+use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
@@ -52,6 +52,7 @@ class ProductsTable extends EloquentTableDefinition
                 'archived' => 'Archived',
             ])->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
             BooleanColumn::make('featured')->label(__('workbench.tables.columns.featured'))->sortable()->filterable(),
+            TextColumn::make('tags')->label(__('workbench.tables.columns.tags'))->multiple('name')->badge('color')->filterable(),
             TextColumn::make('updated_at')->label(__('workbench.tables.columns.updated-at'))->sortable()->date('Y-m-d H:i:s')->filterable(),
         ];
     }

@@ -9,7 +9,7 @@ use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\EloquentTableDefinition;
+use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Models\Group;
 

@@ -1,10 +1,61 @@
 import { copyToClipboard } from "@lattice-php/lattice/clipboard";
 import { Icon } from "@lattice-php/lattice/icons";
-import { useEffect, useState } from "react";
+import { cn } from "@lattice-php/lattice/lib/utils";
+import { type ReactNode, useEffect, useState } from "react";
 import { formatCell, resolveLink } from "../../format";
-import type { ColumnCellComponent } from "../../registry";
+import type { ColumnCellArgs, ColumnCellComponent } from "../../registry";
 
-export const TextCell: ColumnCellComponent<"column.text"> = ({ column, props, row, value }) => {
+type TextProps = ColumnCellArgs<"column.text">["props"];
+
+export const TextCell: ColumnCellComponent<"column.text"> = (args) => {
+  if (args.props.multiple) {
+    return <MultipleCell {...args} />;
+  }
+
+  if (args.props.badge) {
+    return <SingleBadgeCell {...args} />;
+  }
+
+  return <PlainTextCell {...args} />;
+};
+
+function Badge({ label, color }: { label: string; color?: string | null }): ReactNode {
+  if (label === "") {
+    return null;
+  }
+
+  return <span className={cn("lt-cell-badge", `lt-cell-tone-${color || "gray"}`)}>{label}</span>;
+}
+
+function MultipleCell({ column, props, value }: ColumnCellArgs<"column.text">): ReactNode {
+  const items = Array.isArray(value) ? value : [];
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  if (!props.badge) {
+    return <span>{items.map((item) => formatCell(item, column)).join(", ")}</span>;
+  }
+
+  return (
+    <div className="flex flex-wrap gap-1">
+      {items.map((item, index) => {
+        const chip = item as { value: unknown; color?: string };
+
+        return <Badge key={index} label={formatCell(chip.value, column)} color={chip.color} />;
+      })}
+    </div>
+  );
+}
+
+function SingleBadgeCell({ column, props, row, value }: ColumnCellArgs<"column.text">): ReactNode {
+  const colorKey = (props.badge as NonNullable<TextProps["badge"]>).colorKey;
+
+  return <Badge label={formatCell(value, column)} color={String(row[colorKey] ?? "")} />;
+}
+
+function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.text">): ReactNode {
   const text = formatCell(value, column);
   const [copied, setCopied] = useState(false);
   const href = resolveLink(column, row, value);
@@ -59,4 +110,4 @@ export const TextCell: ColumnCellComponent<"column.text"> = ({ column, props, ro
       </button>
     </span>
   );
-};
+}

@@ -8,7 +8,7 @@ test('it serializes channel, visibility, events and a toast effect', function ()
         ->on('OrderShipped')
         ->toast(rt('orders.shipped-live')->fromPayload(['id' => 'order.id']));
 
-    $array = json_decode(json_encode($listen), true);
+    $array = wire($listen);
 
     expect($array)->toMatchArray([
         'channel' => 'orders',
@@ -27,7 +27,7 @@ test('it serializes channel, visibility, events and a toast effect', function ()
 test('channel() builds a public listener and on() accepts an array, de-duplicating', function (): void {
     $listen = Listen::channel('inventory')->on(['StockLow', 'StockLow', 'StockOut'])->reloadPage();
 
-    $array = json_decode(json_encode($listen), true);
+    $array = wire($listen);
 
     expect($array['visibility'])->toBe('public')
         ->and($array['events'])->toBe(['StockLow', 'StockOut'])
@@ -35,7 +35,7 @@ test('channel() builds a public listener and on() accepts an array, de-duplicati
 });
 
 test('presence() builds a presence listener', function (): void {
-    $array = json_decode(json_encode(Listen::presence('room.1')->on('Joined')), true);
+    $array = wire(Listen::presence('room.1')->on('Joined'));
 
     expect($array['visibility'])->toBe('presence');
 });

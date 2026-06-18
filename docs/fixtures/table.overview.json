@@ -30,9 +30,11 @@
                     "key": "name",
                     "label": "Name",
                     "props": {
+                        "badge": null,
                         "copyable": false,
                         "date": null,
-                        "link": null
+                        "link": null,
+                        "multiple": null
                     },
                     "sortable": true,
                     "type": "column.text",
@@ -90,11 +92,13 @@
                     "key": "updated_at",
                     "label": "Updated",
                     "props": {
+                        "badge": null,
                         "copyable": false,
                         "date": {
                             "format": "Y-m-d"
                         },
-                        "link": null
+                        "link": null,
+                        "multiple": null
                     },
                     "sortable": true,
                     "type": "column.text",

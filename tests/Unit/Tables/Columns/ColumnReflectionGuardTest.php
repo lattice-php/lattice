@@ -35,7 +35,7 @@ it('keeps the base Column free of public properties', function (): void {
 it('exposes only the intended wire props on each built-in column', function (string $class, array $expected): void {
     expect(publicColumnProps($class))->toEqualCanonicalizing($expected);
 })->with([
-    'text' => [TextColumn::class, ['date', 'copyable', 'link']],
+    'text' => [TextColumn::class, ['date', 'copyable', 'link', 'badge', 'multiple']],
     'boolean' => [BooleanColumn::class, []],
     'number' => [NumberColumn::class, ['minimumFractionDigits', 'maximumFractionDigits', 'unit']],
     'money' => [MoneyColumn::class, ['minimumFractionDigits', 'maximumFractionDigits', 'currency', 'currencyField']],

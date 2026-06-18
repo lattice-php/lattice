@@ -12,7 +12,7 @@ use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\EloquentTableDefinition;
+use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Models\SalesOrder;
 use Workbench\App\Models\SalesOrderLine;
@@ -31,7 +31,7 @@ class SalesOrdersTable extends EloquentTableDefinition
     {
         return [
             TextColumn::make('number')->label(__('workbench.commerce.sales-orders.columns.number'))->sortable()->filterable(),
-            TextColumn::make('business_partner_name')->label(__('workbench.commerce.sales-orders.columns.business-partner')),
+            TextColumn::make('businessPartner.name')->label(__('workbench.commerce.sales-orders.columns.business-partner'))->sortable()->filterable(),
             StatusBadgeColumn::make('status')
                 ->label(__('workbench.commerce.sales-orders.columns.status'))
                 ->filterable(Op::Equals)
@@ -47,7 +47,6 @@ class SalesOrdersTable extends EloquentTableDefinition
     {
         $builder = SalesOrder::query()
             ->select(['id', 'business_partner_id', 'number', 'status'])
-            ->withAggregate('businessPartner', 'name')
             ->selectSub(
                 SalesOrderLine::query()
                     ->select(DB::raw('coalesce(sum(quantity * unit_price), 0)'))
