@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Http;
 
 use BackedEnum;
 use BadMethodCallException;
+use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -15,9 +16,10 @@ use Lattice\Lattice\Core\PageMetadata;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Realtime\Listen;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use UnexpectedValueException;
 
-abstract class Page implements PageContract
+abstract class Page implements PageContract, Responsable
 {
     public function title(): ?string
     {
@@ -90,6 +92,18 @@ abstract class Page implements PageContract
         }
 
         return $this->response($schema);
+    }
+
+    /**
+     * Render the page as an HTTP response so it can be returned directly —
+     * for example from a Fortify view closure — instead of reaching through
+     * callAction().
+     *
+     * @param  Request  $request
+     */
+    public function toResponse($request): HttpResponse
+    {
+        return $this->callAction('render', [PageSchema::make(), $request])->toResponse($request);
     }
 
     protected function component(): string

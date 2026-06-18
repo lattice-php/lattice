@@ -198,6 +198,21 @@ test('workbench tables page serializes lazy tables for each pagination type', fu
         ->etc());
 });
 
+test('a page can be returned directly and renders through the responsable contract', function (): void {
+    Route::get('responsable-page', fn (): Page => new WorkbenchTabsPage)
+        ->middleware('web')
+        ->name('responsable-page.show');
+
+    withoutVite();
+
+    get('/responsable-page')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->component('lattice/page')
+            ->where('lattice.schema.0.props.defaultValue', 'profile')
+        );
+});
+
 // ---------------------------------------------------------------------------
 // Inline fixture classes required only by this file
 // ---------------------------------------------------------------------------
