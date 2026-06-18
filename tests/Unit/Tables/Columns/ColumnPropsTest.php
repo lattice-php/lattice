@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Tables\Columns\BooleanColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Lattice\Tables\Enums\DateTimeStyle;
 
 it('reflects a column\'s public properties into the full props shape', function (): void {
     expect(wire(TextColumn::make('name'))['props'])->toBe([
@@ -24,6 +25,17 @@ it('reflects a column\'s public properties into the full props shape', function 
         'badge' => ['colorKey' => 'color'],
         'multiple' => 'name',
     ]);
+});
+
+it('maps each date style method to its dateStyle/timeStyle shape', function (): void {
+    expect(wire(TextColumn::make('at')->date())['props']['date'])
+        ->toBe(['dateStyle' => 'medium', 'timeStyle' => null]);
+
+    expect(wire(TextColumn::make('at')->time(DateTimeStyle::Short))['props']['date'])
+        ->toBe(['dateStyle' => null, 'timeStyle' => 'short']);
+
+    expect(wire(TextColumn::make('at')->dateTime(DateTimeStyle::Long))['props']['date'])
+        ->toBe(['dateStyle' => 'long', 'timeStyle' => 'long']);
 });
 
 it('omits props for columns that expose no public properties', function (): void {

@@ -20,4 +20,20 @@ describe("<DateTime>", () => {
     expect(time?.getAttribute("dateTime")).toBe("2026-06-18T00:30:00.000Z");
     expect(time?.getAttribute("title")).toContain("Europe/Berlin");
   });
+
+  it("renders nothing for a null value", () => {
+    const { container } = render(<DateTime value={null} />);
+
+    expect(container.querySelector("time")).toBeNull();
+    expect(container.textContent).toBe("");
+  });
+
+  it("renders an unparseable value verbatim without date or title attributes", () => {
+    const { container } = render(<DateTime value="not-a-date" />);
+    const time = container.querySelector("time");
+
+    expect(time?.textContent).toBe("not-a-date");
+    expect(time?.getAttribute("dateTime")).toBeNull();
+    expect(time?.getAttribute("title")).toBeNull();
+  });
 });
