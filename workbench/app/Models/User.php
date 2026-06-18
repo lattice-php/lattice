@@ -5,11 +5,13 @@ namespace Workbench\App\Models;
 
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Lattice\Lattice\Contracts\HasTimezonePreference;
 
 /**
  * @property string|null $locale
+ * @property string|null $timezone
  */
-class User extends Authenticatable implements HasLocalePreference
+class User extends Authenticatable implements HasLocalePreference, HasTimezonePreference
 {
     protected $table = 'users';
 
@@ -22,6 +24,7 @@ class User extends Authenticatable implements HasLocalePreference
         'email_verified_at',
         'password',
         'locale',
+        'timezone',
     ];
 
     /**
@@ -46,6 +49,13 @@ class User extends Authenticatable implements HasLocalePreference
         return is_string($locale) && $locale !== '' ? $locale : null;
     }
 
+    public function preferredTimezone(): ?string
+    {
+        $timezone = $this->getAttribute('timezone');
+
+        return is_string($timezone) && $timezone !== '' ? $timezone : null;
+    }
+
     /**
      * @return array<string, string>
      */
@@ -56,6 +66,7 @@ class User extends Authenticatable implements HasLocalePreference
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'locale' => 'string',
+            'timezone' => 'string',
         ];
     }
 }
