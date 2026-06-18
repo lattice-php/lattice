@@ -124,7 +124,7 @@ function CartesianChart({ props }: { props: ChartProps }) {
   const RechartsChart = cartesianChartFor(series);
 
   return (
-    <ResponsiveContainer width="100%" height={props.height}>
+    <ResponsiveContainer width="100%" height={props.height} debounce={100}>
       <RechartsChart data={props.data} margin={chartMargin}>
         {props.grid && <CartesianGrid strokeDasharray="3 3" stroke="var(--lt-border)" />}
         {props.xAxis && props.categoryKey !== null && (
@@ -191,7 +191,7 @@ function CartesianChart({ props }: { props: ChartProps }) {
 
 function PieChartView({ props, series }: { props: ChartProps; series: ChartSeries }) {
   return (
-    <ResponsiveContainer width="100%" height={props.height}>
+    <ResponsiveContainer width="100%" height={props.height} debounce={100}>
       <PieChart margin={chartMargin}>
         {props.tooltip && <Tooltip />}
         {props.legend && <Legend {...compactLegendProps} />}
