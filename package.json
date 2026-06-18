@@ -135,6 +135,14 @@
       "types": "./dist/registry.d.ts",
       "import": "./dist/registry.js"
     },
+    "./remote": {
+      "types": "./dist/remote/index.d.ts",
+      "import": "./dist/remote/index.js"
+    },
+    "./remote/*": {
+      "types": "./dist/remote/*.d.ts",
+      "import": "./dist/remote/*.js"
+    },
     "./table": {
       "types": "./dist/table/index.d.ts",
       "import": "./dist/table/index.js"
