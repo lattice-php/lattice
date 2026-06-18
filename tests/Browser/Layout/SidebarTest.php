@@ -32,11 +32,25 @@ it('collapses to an icon rail and opens a group submenu as a flyout', function (
     Product::factory()->create(['name' => 'Desk Lamp']);
 
     visit('/')
+        ->assertPresent('[data-test="sidebar"][data-collapsed="false"]')
         ->click('@sidebar-toggle')
-        ->assertPresent('[aria-label="Expand sidebar"]')
+        ->assertPresent('[data-test="sidebar"][data-collapsed="true"]')
         ->click('@menu-commerce')
         ->click('@menu-products')
         ->assertSee('Desk Lamp')
-        ->assertPresent('[aria-label="Expand sidebar"]')
+        ->assertPresent('[data-test="sidebar"][data-collapsed="true"]')
+        ->assertNoSmoke();
+});
+
+it('opens the sidebar as an off-canvas drawer on mobile', function (): void {
+    $this->actingAs(workbenchTestUser());
+
+    visit('/')
+        ->on()->mobile()
+        ->assertMissing('[data-test="sidebar-backdrop"]')
+        ->click('@sidebar-toggle')
+        ->assertPresent('[data-test="sidebar-backdrop"]')
+        ->click('@menu-tabs')
+        ->assertMissing('[data-test="sidebar-backdrop"]')
         ->assertNoSmoke();
 });

@@ -77,6 +77,7 @@ export const builtinEffectHandlers: EffectHandlerRegistry = {
   openModal: bridge(LATTICE_EVENT.openModal),
   closeModal: bridge(LATTICE_EVENT.closeModal),
   resetForm: bridge(LATTICE_EVENT.resetForm),
+  toggleSidebar: bridge(LATTICE_EVENT.toggleSidebar),
 };
 
 export function mergeEffectHandlers(

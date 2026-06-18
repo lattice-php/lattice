@@ -8,6 +8,7 @@ use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Chat\Components\ChatBox;
 use Lattice\Lattice\Core\Components\Badge;
+use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\FloatingPanel;
 use Lattice\Lattice\Core\Components\RawBlock;
 use Lattice\Lattice\Core\Components\Stack;
@@ -21,6 +22,7 @@ use Lattice\Lattice\Core\Enums\Placement;
 use Lattice\Lattice\Core\Enums\Side;
 use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Layouts\Components\Breadcrumbs;
 use Lattice\Lattice\Layouts\Components\Dropdown;
 use Lattice\Lattice\Layouts\Components\Menu;
@@ -66,7 +68,6 @@ class AppLayout extends LayoutDefinition
                             RawBlock::make('chat-scroll-clearance')->html('<div class="h-24" aria-hidden="true"></div>'),
                         ]),
                 ]),
-            $this->chatLayoutTogglePanel(),
             FloatingPanel::make('assistant-chat')
                 ->placement(FloatingPlacement::BottomEnd)
                 ->trigger([
@@ -117,6 +118,10 @@ class AppLayout extends LayoutDefinition
     protected function topbar(): Topbar
     {
         return Topbar::make('app-topbar')->sticky()->items([
+            Button::make(__('workbench.navigation.toggle-sidebar'), 'sidebar-toggle')
+                ->icon('panel-left')
+                ->variant(ButtonVariant::Ghost)
+                ->effects(Effect::toggleSidebar('app-sidebar')),
             Stack::make('topbar-end')
                 ->direction('row')
                 ->align(Align::Center)
@@ -152,8 +157,19 @@ class AppLayout extends LayoutDefinition
                     ]),
             ])
             ->items([
+                $this->chatLayoutToggle(),
                 MenuItem::make(__('workbench.navigation.log-out'), 'log-out')->href('/logout')->method(HttpMethod::Post),
             ]);
+    }
+
+    protected function chatLayoutToggle(): ActionComponent
+    {
+        $inline = (bool) session('workbench.chat_inline', false);
+
+        return ActionComponent::use(ToggleChatLayoutAction::class)
+            ->key('chat-layout-toggle')
+            ->variant(ButtonVariant::Ghost)
+            ->label($inline ? __('workbench.chat-layout.hide') : __('workbench.chat-layout.reveal'));
     }
 
     protected function localeSwitcher(): Dropdown
@@ -179,20 +195,6 @@ class AppLayout extends LayoutDefinition
                     ->label(__('workbench.language.de'))
                     ->variant(ButtonVariant::Ghost)
                     ->context(['locale' => 'de']),
-            ]);
-    }
-
-    protected function chatLayoutTogglePanel(): FloatingPanel
-    {
-        $inline = (bool) session('workbench.chat_inline', false);
-
-        return FloatingPanel::make('chat-layout-toggle-panel')
-            ->label(__('workbench.chat-layout.label'))
-            ->placement(FloatingPlacement::TopStart)
-            ->schema([
-                ActionComponent::use(ToggleChatLayoutAction::class)
-                    ->key('chat-layout-toggle')
-                    ->label($inline ? __('workbench.chat-layout.hide') : __('workbench.chat-layout.reveal')),
             ]);
     }
 

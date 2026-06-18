@@ -7,6 +7,6 @@ it('auto-registers all built-in effects in the container', function (): void {
     $registry = app(EffectRegistry::class);
 
     expect(array_keys($registry->all()))
-        ->toContain('toast', 'callout', 'redirect', 'download', 'openModal', 'closeModal', 'reloadPage', 'reloadComponent', 'resetForm', 'localeChange')
-        ->and($registry->all())->toHaveCount(10);
+        ->toContain('toast', 'callout', 'redirect', 'download', 'openModal', 'closeModal', 'reloadPage', 'reloadComponent', 'resetForm', 'localeChange', 'toggleSidebar')
+        ->and($registry->all())->toHaveCount(11);
 });
