@@ -432,6 +432,7 @@ export type DateInput = {
   tooltip: string | null;
   value: unknown;
 };
+export type DateTimeStyle = "full" | "long" | "medium" | "short";
 export type DownloadEffect = {
   readonly url: string;
 };
@@ -1176,7 +1177,8 @@ export type TextColumn = {
   } | null;
   copyable: boolean;
   date: {
-    format: string | null;
+    dateStyle: string | null;
+    timeStyle: string | null;
   } | null;
   link: {
     href: string | null;

@@ -95,7 +95,8 @@
                         "badge": null,
                         "copyable": false,
                         "date": {
-                            "format": "Y-m-d"
+                            "dateStyle": "medium",
+                            "timeStyle": "medium"
                         },
                         "link": null,
                         "multiple": null

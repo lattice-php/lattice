@@ -14,11 +14,11 @@ it('reflects a column\'s public properties into the full props shape', function 
     ]);
 
     $configured = wire(
-        TextColumn::make('tags')->date('Y-m-d')->copyable()->link('/x', external: true)->badge('color')->multiple('name'),
+        TextColumn::make('tags')->dateTime()->copyable()->link('/x', external: true)->badge('color')->multiple('name'),
     );
 
     expect($configured['props'])->toBe([
-        'date' => ['format' => 'Y-m-d'],
+        'date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'],
         'copyable' => true,
         'link' => ['href' => '/x', 'external' => true],
         'badge' => ['colorKey' => 'color'],

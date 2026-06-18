@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { formatCell, preciseDateTime } from "./format";
 
-const dateColumn = { key: "created", label: "Created", props: { date: { format: null } } } as never;
+const dateColumn = {
+  key: "created",
+  label: "Created",
+  props: { date: { dateStyle: "medium", timeStyle: "short" } },
+} as never;
 
 describe("formatCell date rendering", () => {
   it("renders the default date format in the requested timezone", () => {

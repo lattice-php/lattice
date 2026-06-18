@@ -7,6 +7,7 @@ use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
 use Lattice\Lattice\Tables\Enums\ColumnType;
+use Lattice\Lattice\Tables\Enums\DateTimeStyle;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
 #[AsColumn(ColumnType::Text)]
@@ -16,7 +17,7 @@ class TextColumn extends Column implements Filterable, Sortable
     use IsSortable;
 
     /**
-     * @var array{format: string|null}|null
+     * @var array{dateStyle: string|null, timeStyle: string|null}|null
      */
     public ?array $date = null;
 
@@ -34,9 +35,23 @@ class TextColumn extends Column implements Filterable, Sortable
 
     public ?string $multiple = null;
 
-    public function date(?string $format = null): static
+    public function date(DateTimeStyle $style = DateTimeStyle::Medium): static
     {
-        $this->date = ['format' => $format];
+        $this->date = ['dateStyle' => $style->value, 'timeStyle' => null];
+
+        return $this;
+    }
+
+    public function time(DateTimeStyle $style = DateTimeStyle::Medium): static
+    {
+        $this->date = ['dateStyle' => null, 'timeStyle' => $style->value];
+
+        return $this;
+    }
+
+    public function dateTime(DateTimeStyle $style = DateTimeStyle::Medium): static
+    {
+        $this->date = ['dateStyle' => $style->value, 'timeStyle' => $style->value];
 
         return $this;
     }

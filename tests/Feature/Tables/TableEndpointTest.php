@@ -344,7 +344,7 @@ test('registered table responses expose only declared columns row identity and g
 test('text columns serialize display modifiers', function (): void {
     expect(wire(TextColumn::make('published_at')
         ->label('Published')
-        ->date('Y-m-d')
+        ->dateTime()
         ->copyable()
         ->link('/posts/{id}')))
         ->toMatchArray([
@@ -352,7 +352,7 @@ test('text columns serialize display modifiers', function (): void {
             'label' => 'Published',
             'type' => 'column.text',
             'props' => [
-                'date' => ['format' => 'Y-m-d'],
+                'date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'],
                 'copyable' => true,
                 'link' => ['href' => '/posts/{id}', 'external' => false],
                 'badge' => null,
@@ -371,13 +371,13 @@ test('workbench users table exposes timestamp columns for each row', function ()
             'key' => 'created_at',
             'label' => 'Created at',
             'sortable' => true,
-            'props' => ['date' => ['format' => 'Y-m-d H:i:s'], 'copyable' => false, 'link' => null, 'badge' => null, 'multiple' => null],
+            'props' => ['date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'], 'copyable' => false, 'link' => null, 'badge' => null, 'multiple' => null],
         ])
         ->and($columns[3])->toMatchArray([
             'key' => 'updated_at',
             'label' => 'Updated at',
             'sortable' => true,
-            'props' => ['date' => ['format' => 'Y-m-d H:i:s'], 'copyable' => false, 'link' => null, 'badge' => null, 'multiple' => null],
+            'props' => ['date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'], 'copyable' => false, 'link' => null, 'badge' => null, 'multiple' => null],
         ]);
 });
 

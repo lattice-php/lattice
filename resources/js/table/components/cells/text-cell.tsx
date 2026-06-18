@@ -92,7 +92,9 @@ function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.tex
   }
 
   if (dateProps && !href && !props.copyable && value !== null && value !== undefined) {
-    return <DateTime value={value} format={dateProps.format ?? null} />;
+    return (
+      <DateTime value={value} dateStyle={dateProps.dateStyle} timeStyle={dateProps.timeStyle} />
+    );
   }
 
   if (!props.copyable) {

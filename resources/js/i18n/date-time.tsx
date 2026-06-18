@@ -1,17 +1,19 @@
 import type { ReactNode } from "react";
-import { type FormatOptions, formatCell, preciseDateTime } from "../table/format";
+import { type FormatOptions, formatDateValue, preciseDateTime } from "../table/format";
 import { useLocale } from "./locale";
 import { useTimezone } from "./timezone";
 
 export type DateTimeProps = {
   value: unknown;
-  format?: string | null;
+  dateStyle?: string | null;
+  timeStyle?: string | null;
 };
 
-const dateColumn = (format: string | null) =>
-  ({ key: "", label: "", props: { date: { format } } }) as never;
-
-export function DateTime({ value, format = null }: DateTimeProps): ReactNode {
+export function DateTime({
+  value,
+  dateStyle = "medium",
+  timeStyle = "short",
+}: DateTimeProps): ReactNode {
   const { locale } = useLocale();
   const { timezone } = useTimezone();
 
@@ -20,7 +22,7 @@ export function DateTime({ value, format = null }: DateTimeProps): ReactNode {
   }
 
   const options: FormatOptions = { locale, timeZone: timezone };
-  const text = formatCell(value, dateColumn(format), options);
+  const text = formatDateValue(value, { dateStyle, timeStyle }, options);
   const iso = isoOrNull(value);
   const title = preciseDateTime(value, options);
 

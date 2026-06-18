@@ -69,7 +69,8 @@ describe("Lattice table component", () => {
             label: "Created",
             props: {
               date: {
-                format: "Y-m-d H:i",
+                dateStyle: "medium",
+                timeStyle: "short",
               },
             },
           }),
@@ -125,7 +126,9 @@ describe("Lattice table component", () => {
 
     expect(screen.getByRole("cell", { name: "Taylor" })).toBeVisible();
     expect(screen.getByRole("cell", { name: "Active" })).toBeVisible();
-    expect(screen.getByRole("cell", { name: "2025-01-01 09:15" })).toBeVisible();
+    const createdCell = screen.getByRole("cell", { name: /2025/ });
+    expect(createdCell).toBeVisible();
+    expect(createdCell.querySelector("time")).not.toBeNull();
     expect(screen.getByRole("link", { name: "taylor@example.com" })).toHaveAttribute(
       "href",
       "mailto:taylor%40example.com",

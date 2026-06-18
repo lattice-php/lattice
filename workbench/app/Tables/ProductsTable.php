@@ -53,7 +53,7 @@ class ProductsTable extends EloquentTableDefinition
             ])->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
             BooleanColumn::make('featured')->label(__('workbench.tables.columns.featured'))->sortable()->filterable(),
             TextColumn::make('tags')->label(__('workbench.tables.columns.tags'))->multiple('name')->badge('color')->filterable(),
-            TextColumn::make('updated_at')->label(__('workbench.tables.columns.updated-at'))->sortable()->date('Y-m-d H:i:s')->filterable(),
+            TextColumn::make('updated_at')->label(__('workbench.tables.columns.updated-at'))->sortable()->dateTime()->filterable(),
         ];
     }
 
