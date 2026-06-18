@@ -8,6 +8,7 @@ use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
+use Lattice\Lattice\Contracts\HasTimezonePreference;
 use Lattice\Lattice\Http\I18nConfig;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,7 +16,7 @@ final class SetLocale
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $config = I18nConfig::fromConfig();
+        $config = I18nConfig::fromConfig(timezone: $this->userTimezone($request));
         $locales = $config->locales;
 
         $this->shareConfig($config);
@@ -58,6 +59,19 @@ final class SetLocale
         $preferred = $request->getPreferredLanguage($locales);
 
         return is_string($preferred) && in_array($preferred, $locales, true) ? $preferred : null;
+    }
+
+    private function userTimezone(Request $request): ?string
+    {
+        $user = $request->user();
+
+        if (! $user instanceof HasTimezonePreference) {
+            return null;
+        }
+
+        $timezone = $user->preferredTimezone();
+
+        return is_string($timezone) && $timezone !== '' ? $timezone : null;
     }
 
     private function userLocale(Request $request): ?string
