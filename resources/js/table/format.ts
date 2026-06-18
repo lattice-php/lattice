@@ -1,6 +1,11 @@
 import type { ColumnPropsOf, TableColumn, TableRow } from "./types";
 
-export function formatCell(value: unknown, column?: TableColumn): string {
+export type FormatOptions = {
+  locale?: string;
+  timeZone?: string;
+};
+
+export function formatCell(value: unknown, column?: TableColumn, options?: FormatOptions): string {
   if (value === null || value === undefined) {
     return "";
   }
@@ -8,7 +13,7 @@ export function formatCell(value: unknown, column?: TableColumn): string {
   const date = (column?.props as ColumnPropsOf<"column.text"> | null)?.date;
 
   if (date) {
-    return formatDate(value, date.format ?? null);
+    return formatDate(value, date.format ?? null, options);
   }
 
   if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
@@ -18,7 +23,7 @@ export function formatCell(value: unknown, column?: TableColumn): string {
   return JSON.stringify(value);
 }
 
-function formatDate(value: unknown, format: string | null): string {
+function formatDate(value: unknown, format: string | null, options?: FormatOptions): string {
   const date = new Date(String(value));
 
   if (Number.isNaN(date.getTime())) {
@@ -26,9 +31,10 @@ function formatDate(value: unknown, format: string | null): string {
   }
 
   if (!format) {
-    return new Intl.DateTimeFormat(undefined, {
+    return new Intl.DateTimeFormat(options?.locale, {
       dateStyle: "medium",
       timeStyle: "short",
+      timeZone: options?.timeZone,
     }).format(date);
   }
 
@@ -46,6 +52,27 @@ function formatDate(value: unknown, format: string | null): string {
   };
 
   return format.replace(/[YymndjHGis]/g, (token) => replacements[token] ?? token);
+}
+
+export function preciseDateTime(value: unknown, options?: FormatOptions): string {
+  const date = new Date(String(value));
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  const formatted = new Intl.DateTimeFormat(options?.locale, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZone: options?.timeZone,
+    timeZoneName: "short",
+  }).format(date);
+
+  return options?.timeZone ? `${formatted} (${options.timeZone})` : formatted;
 }
 
 export function resolveLink(column: TableColumn, row: TableRow, value: unknown): string | null {
