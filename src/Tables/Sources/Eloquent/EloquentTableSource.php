@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables;
+namespace Lattice\Lattice\Tables\Sources\Eloquent;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,10 +12,14 @@ use Illuminate\Support\Collection;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Filterable;
-use Lattice\Lattice\Tables\Contracts\RelationProjection;
+use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\Enums\PaginationType;
+use Lattice\Lattice\Tables\FilterApplier;
 use Lattice\Lattice\Tables\Filters\BaseFilter;
+use Lattice\Lattice\Tables\RelationBinding;
+use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Lattice\Tables\TableResult;
 
 /**
  * The built-in Eloquent table source. Applies a TableQuery's filters and sorts
@@ -148,9 +152,10 @@ final readonly class EloquentTableSource implements TableSource
     }
 
     /**
-     * Resolve every column that draws its value from a relation: a dotted to-one
-     * key (`businessPartner.name`) or a to-many `multiple()` column. Each column
-     * decides via {@see Column::relationProjection()}.
+     * Resolve every column that binds to a relation into the Eloquent machinery
+     * that loads, filters, and sorts it. Columns stay driver-agnostic — they only
+     * carry declarative data (a dotted key, a `multiple()` field); the source
+     * reads that and decides how Eloquent fulfils it.
      *
      * @return array<string, RelationProjection>
      */
@@ -159,7 +164,15 @@ final readonly class EloquentTableSource implements TableSource
         $projections = [];
 
         foreach ($this->columns as $column) {
-            $projection = $column->relationProjection($model);
+            $binding = $this->relationBinding($column);
+
+            if (! $binding instanceof RelationBinding) {
+                continue;
+            }
+
+            $projection = $binding->many
+                ? MultipleRelationColumn::resolve($model, $binding)
+                : RelationColumn::resolve($model, $binding);
 
             if ($projection instanceof RelationProjection) {
                 $projections[$column->key()] = $projection;
@@ -167,6 +180,31 @@ final readonly class EloquentTableSource implements TableSource
         }
 
         return $projections;
+    }
+
+    /**
+     * The relation a column draws its value from, as a driver-agnostic binding —
+     * a `multiple()` column binds to its named to-many relation; any column with a
+     * dotted key (`businessPartner.name`) binds to a to-one relation; everything
+     * else reads a plain attribute and binds to nothing.
+     */
+    private function relationBinding(Column $column): ?RelationBinding
+    {
+        if ($column instanceof TextColumn && $column->multiple !== null) {
+            return new RelationBinding($column->key(), $column->multiple, many: true, colorField: $column->badge['colorKey'] ?? null);
+        }
+
+        if (! str_contains($column->key(), '.')) {
+            return null;
+        }
+
+        [$relation, $field] = explode('.', $column->key(), 2);
+
+        if ($field === '' || str_contains($field, '.')) {
+            return null;
+        }
+
+        return new RelationBinding($relation, $field, many: false);
     }
 
     /**

@@ -14,7 +14,7 @@ use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
-use Lattice\Lattice\Tables\EloquentTableDefinition;
+use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
 
@@ -197,6 +197,16 @@ it('derives every definition from the base definition', function (string $defini
 arch('the lattice facade extends the laravel facade')
     ->expect('Lattice\Lattice\Facades')
     ->toExtend(Facade::class);
+
+/*
+ * Columns are a declarative layer: they describe what to render, never how to
+ * fetch it. Eloquent is one table-source driver, so the column classes must not
+ * reach for a model, query builder, or relation — the binding they expose
+ * (RelationBinding) is plain data a driver interprets.
+ */
+arch('columns never depend on eloquent')
+    ->expect('Lattice\Lattice\Tables\Columns')
+    ->not->toUse('Illuminate\Database\Eloquent');
 
 arch('no debug statements ship in the package')
     ->expect(['dd', 'ddd', 'dump', 'ray', 'var_dump', 'print_r'])

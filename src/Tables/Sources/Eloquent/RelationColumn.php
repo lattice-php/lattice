@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables;
+namespace Lattice\Lattice\Tables\Sources\Eloquent;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Lattice\Lattice\Tables\Contracts\RelationProjection;
+use Lattice\Lattice\Tables\RelationBinding;
 
 /**
- * A column keyed by a dotted path into a to-one relation, e.g.
- * `businessPartner.name`. Resolves the relation against the model and compiles
- * each table concern to its idiomatic Eloquent: a constrained eager load for
- * display, a `whereHas` for filtering, and a correlated subquery for sorting —
- * so authors get relation columns without hand-writing aggregates.
+ * The Eloquent resolution of a to-one {@see RelationBinding} (e.g. the dotted
+ * key `businessPartner.name`). Compiles each table concern to its idiomatic
+ * Eloquent: a constrained eager load for display, a `whereHas` for filtering,
+ * and a correlated subquery for sorting — so authors get relation columns
+ * without hand-writing aggregates.
  *
- * v1 handles a single relation segment of a BelongsTo or HasOne. Anything else
- * (no dot, multi-level, to-many, or a non-relation segment) resolves to null and
- * the key is left untouched.
+ * Handles a single relation segment of a BelongsTo or HasOne; a binding whose
+ * relation is anything else (to-many or a non-relation segment) resolves to null
+ * and the key is left untouched.
  */
 final readonly class RelationColumn implements RelationProjection
 {
@@ -34,25 +34,19 @@ final readonly class RelationColumn implements RelationProjection
         private BelongsTo|HasOne $relationInstance,
     ) {}
 
-    public static function resolve(Model $model, string $key): ?self
+    public static function resolve(Model $model, RelationBinding $binding): ?self
     {
-        if (! str_contains($key, '.')) {
+        if (! $model->isRelation($binding->relation)) {
             return null;
         }
 
-        [$relation, $field] = explode('.', $key, 2);
-
-        if ($field === '' || str_contains($field, '.') || ! $model->isRelation($relation)) {
-            return null;
-        }
-
-        $instance = $model->{$relation}();
+        $instance = $model->{$binding->relation}();
 
         if (! $instance instanceof BelongsTo && ! $instance instanceof HasOne) {
             return null;
         }
 
-        return new self($key, $relation, $field, $instance);
+        return new self($binding->relation.'.'.$binding->field, $binding->relation, $binding->field, $instance);
     }
 
     public function key(): string

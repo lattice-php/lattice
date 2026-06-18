@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
 use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\Enums\PaginationType;
+use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 
 /**

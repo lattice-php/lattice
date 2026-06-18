@@ -9,8 +9,8 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\Columns\ColumnFilterOption;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
-use Lattice\Lattice\Tables\EloquentTableDefinition;
 use Lattice\Lattice\Tables\Filters\SelectFilter;
+use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Models\Product;
 

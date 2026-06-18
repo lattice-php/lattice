@@ -2,18 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Contracts;
+namespace Lattice\Lattice\Tables\Sources\Eloquent;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * A column whose value comes from an eager-loaded relation. The Eloquent source
- * loads the relation once (no N+1), flattens the projected value onto the row's
- * flat key, hides the nested relation, and filters through `whereHas`.
- * Implemented by RelationColumn (a dotted to-one key) and MultipleRelationColumn
- * (a to-many list).
+ * How the Eloquent driver resolves a column's {@see RelationBinding} into a
+ * value: it loads the relation once (no N+1), flattens the projected value onto
+ * the row's flat key, hides the nested relation, filters through `whereHas`, and
+ * sorts to-one relations through a correlated subquery. This contract is
+ * internal to the Eloquent driver — columns never see it. Implemented by
+ * RelationColumn (a dotted to-one key) and MultipleRelationColumn (a to-many
+ * list).
  */
 interface RelationProjection
 {

@@ -6,7 +6,7 @@ namespace Workbench\App\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
 use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\EloquentTableDefinition;
+use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 
 /**

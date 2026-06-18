@@ -3,14 +3,11 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
-use Illuminate\Database\Eloquent\Model;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
-use Lattice\Lattice\Tables\Contracts\RelationProjection;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Tables\Enums\FilterType;
-use Lattice\Lattice\Tables\MultipleRelationColumn;
 
 #[AsColumn(ColumnType::Text)]
 class TextColumn extends Column implements Filterable, Sortable
@@ -79,16 +76,6 @@ class TextColumn extends Column implements Filterable, Sortable
     public function isSortable(): bool
     {
         return $this->multiple === null && $this->sortable;
-    }
-
-    #[\Override]
-    public function relationProjection(Model $model): ?RelationProjection
-    {
-        if ($this->multiple !== null) {
-            return MultipleRelationColumn::resolve($model, $this->key(), $this->multiple, $this->badge['colorKey'] ?? null);
-        }
-
-        return parent::relationProjection($model);
     }
 
     public function copyable(bool $copyable = true): static
