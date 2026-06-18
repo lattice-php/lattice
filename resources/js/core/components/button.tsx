@@ -85,14 +85,20 @@ const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
 
   return (
     <Button
-      aria-label={icon ? label || undefined : undefined}
       data-test={testId}
       onClick={hasEffects ? () => dispatch(getActionEffects(effects)) : undefined}
       size={icon ? "icon" : "default"}
       type={node.props.buttonType}
       variant={variant}
     >
-      {icon ? <IconRenderer className="size-lt-icon-md" icon={icon} /> : label}
+      {icon ? (
+        <>
+          <IconRenderer className="size-lt-icon-md" icon={icon} />
+          {label ? <span className="sr-only">{label}</span> : null}
+        </>
+      ) : (
+        label
+      )}
     </Button>
   );
 };
