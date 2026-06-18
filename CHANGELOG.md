@@ -1,5 +1,59 @@
 # Changelog
 
+## [0.5.0](https://github.com/lattice-php/lattice/compare/0.4.0...0.5.0) (2026-06-18)
+
+
+### Features
+
+* createLatticeApp helper, Responsable pages, and optional realtime peer build fix ([7e1b06c](https://github.com/lattice-php/lattice/commit/7e1b06c5552e21e3d8b2cb71b283c48c4244c053))
+* expose the remote plugin via package exports ([2c7672b](https://github.com/lattice-php/lattice/commit/2c7672b4b1277c9f1014aa0844daae087b56c653))
+* fluent form response helpers and an OTP field ([b081674](https://github.com/lattice-php/lattice/commit/b0816747a75ff670b129538ab3c0e3b5b0404bb2))
+* **form:** add an OTP field and InputOTP primitive ([bc7d54c](https://github.com/lattice-php/lattice/commit/bc7d54cf5a7fcbd9f2cf9af394832f7cb82d7420))
+* **forms:** add fluent response helpers to FormDefinition ([e86e4db](https://github.com/lattice-php/lattice/commit/e86e4db97c96b59b0b84b3366544024c40ffd6d5))
+* **inertia:** add createLatticeApp to bootstrap an app with the lattice shell ([5fc6d8e](https://github.com/lattice-php/lattice/commit/5fc6d8e1c81568d22044ef6416dbaf68082ed005))
+* responsive sidebar with off-canvas mobile drawer ([56c76ef](https://github.com/lattice-php/lattice/commit/56c76ef72628dee3b6e7372e9e3420b546346d43))
+* responsive sidebar with off-canvas mobile drawer ([d915676](https://github.com/lattice-php/lattice/commit/d915676725e7f1e0df73cee7b454313efb7b7d4f))
+* **tables:** badge + multiple text-column modifiers for relation values ([5a56601](https://github.com/lattice-php/lattice/commit/5a566018eaf2670499dc15c49d989aaa921bee39))
+* **tables:** relation columns — dotted to-one keys + badge/multiple modifiers, decoupled from Eloquent ([ab2e1a5](https://github.com/lattice-php/lattice/commit/ab2e1a555a1559263bcb9bea23a6406eaaf9dc3a))
+* **tables:** relation columns by dotted key (with/whereHas/subquery sort) ([877c8de](https://github.com/lattice-php/lattice/commit/877c8de267d08456135b06fac5183ce2d1962a01))
+* **testing:** type the assertion callbacks so closures infer their scope ([4fbc12b](https://github.com/lattice-php/lattice/commit/4fbc12be5d9a5e4bf67d1832e19f6e5c0cd11091))
+
+
+### Bug Fixes
+
+* **components:** chain base prop decoration in IsInteractive ([e304353](https://github.com/lattice-php/lattice/commit/e304353d04122174c7f23c2cce27af25c275f311))
+* **forms:** trim whitespace in client-side blank check ([e225dae](https://github.com/lattice-php/lattice/commit/e225dae70d6eb555acb366c15b0e9149d1860364))
+* **rector:** pin the php set to 8.4 so local and CI agree ([6a59455](https://github.com/lattice-php/lattice/commit/6a59455431e3dd9f54b0fd1bde6b9c66b39731b9))
+* render icon Button label as sr-only text instead of aria-label ([5f6a638](https://github.com/lattice-php/lattice/commit/5f6a6381c0bc5c4e1ffcac08c4745384f4ec4cb9))
+* **vite:** stub absent optional realtime peers so consumer builds succeed ([4afc26d](https://github.com/lattice-php/lattice/commit/4afc26d58838ffa31bc8dd7e24afa3e193ba5654))
+
+
+### Refactoring
+
+* **actions:** share the action-invocation flow via runAction ([26c3103](https://github.com/lattice-php/lattice/commit/26c310334d8e654046f45bf4b0ecbdf3ea60b64c))
+* **chat:** unify the chat-box into one remote-capable component ([0daf764](https://github.com/lattice-php/lattice/commit/0daf7647546179052d85c8729ace89433316cc6f))
+* **chat:** unify the chat-box into one remote-capable component ([bff4d24](https://github.com/lattice-php/lattice/commit/bff4d2460eafad80c57e6d563d8824d28af1d6c8))
+* **components:** render data-lattice-component from node identity ([900c0b5](https://github.com/lattice-php/lattice/commit/900c0b58d512f4a704ea6696f615606bd57d7d61))
+* **core:** extract shared toNodes helper ([76b4c52](https://github.com/lattice-php/lattice/commit/76b4c52344e8c25b6b5e53da3719c53703c79520))
+* **effects:** declare wire types by string, drop the EffectType enum ([b847a0e](https://github.com/lattice-php/lattice/commit/b847a0ec99b149a59667dfcc21a9b4b9a4542e7e))
+* **effects:** drop the EffectType enum and dead Action.effects; share action invocation ([7751bcc](https://github.com/lattice-php/lattice/commit/7751bcc997a1efa32ac3e5a63c6721333f0aeaa8))
+* **forms:** inline applyPrefillValue ([57323fe](https://github.com/lattice-php/lattice/commit/57323fe8106bd4957434345576579d792e7cc004))
+* **table:** single-source the empty filter-member rule ([d8c6a43](https://github.com/lattice-php/lattice/commit/d8c6a43b28c10cf2f47cac4b4e671cf0ac1af184))
+* **tables:** make columns driver-agnostic; house the Eloquent driver in Sources\Eloquent ([54a81a2](https://github.com/lattice-php/lattice/commit/54a81a244c0ed06df1788c911ce9026109dca916))
+* **tables:** trim docblocks that narrate the resolve() bodies ([8bcc591](https://github.com/lattice-php/lattice/commit/8bcc59119a63934479c79171db9edb2265c50054))
+* **typescript:** drop unused 'field' discovery category ([2d4f7f2](https://github.com/lattice-php/lattice/commit/2d4f7f23172039b107ad5386a1e8be5a5a304a95))
+
+
+### Documentation
+
+* add flow diagrams to forms, tables, fragments, and actions ([6df7ca2](https://github.com/lattice-php/lattice/commit/6df7ca25252f6fa8afdb0cc48764d17a6b79d406))
+* add flow diagrams to forms, tables, fragments, and actions ([b1da78b](https://github.com/lattice-php/lattice/commit/b1da78b3c001270476575c509138ca63cd4b265a))
+* clarify actors in the remote flow diagram ([5faf8ca](https://github.com/lattice-php/lattice/commit/5faf8cad954f5f5f8fd1f4f40b281c29a71c7f6a))
+* close coverage gaps and generate the enums reference ([154faac](https://github.com/lattice-php/lattice/commit/154faac4a05c280a2197ede1de5a98d0f74a45bf))
+* close coverage gaps and generate the enums reference ([36f83e3](https://github.com/lattice-php/lattice/commit/36f83e39dcf590b19fc3c223cc2bd8b927f44f23))
+* document the Remote feature ([7d4625c](https://github.com/lattice-php/lattice/commit/7d4625cee5c77db951f54cbafd93b5be2589828a))
+* document the Remote feature ([d3637a0](https://github.com/lattice-php/lattice/commit/d3637a09931d4e297d069d963caef5e451cce9c3))
+
 ## [0.4.0](https://github.com/lattice-php/lattice/compare/0.3.0...0.4.0) (2026-06-17)
 
 
