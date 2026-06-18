@@ -31,6 +31,7 @@ describe("locale switcher helpers", () => {
       saveMissing: false,
       locales: ["en", "de"],
       preloadLocales: [],
+      timezone: null,
     });
 
     render(<LocaleOptionsProbe />);
@@ -56,6 +57,7 @@ describe("locale switcher helpers", () => {
       saveMissing: false,
       locales: ["en", "de"],
       preloadLocales: [],
+      timezone: null,
     });
 
     render(

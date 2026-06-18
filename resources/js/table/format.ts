@@ -1,6 +1,13 @@
 import type { ColumnPropsOf, TableColumn, TableRow } from "./types";
 
-export function formatCell(value: unknown, column?: TableColumn): string {
+export type FormatOptions = {
+  locale?: string;
+  timeZone?: string;
+};
+
+export type DateConfig = { dateStyle: string | null; timeStyle: string | null };
+
+export function formatCell(value: unknown, column?: TableColumn, options?: FormatOptions): string {
   if (value === null || value === undefined) {
     return "";
   }
@@ -8,7 +15,7 @@ export function formatCell(value: unknown, column?: TableColumn): string {
   const date = (column?.props as ColumnPropsOf<"column.text"> | null)?.date;
 
   if (date) {
-    return formatDate(value, date.format ?? null);
+    return formatDateValue(value, date, options);
   }
 
   if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
@@ -18,34 +25,45 @@ export function formatCell(value: unknown, column?: TableColumn): string {
   return JSON.stringify(value);
 }
 
-function formatDate(value: unknown, format: string | null): string {
+export function formatDateValue(value: unknown, date: DateConfig, options?: FormatOptions): string {
+  const parsed = new Date(String(value));
+
+  if (Number.isNaN(parsed.getTime())) {
+    return String(value ?? "");
+  }
+
+  const intl: Intl.DateTimeFormatOptions = { timeZone: options?.timeZone };
+
+  if (date.dateStyle) {
+    intl.dateStyle = date.dateStyle as Intl.DateTimeFormatOptions["dateStyle"];
+  }
+
+  if (date.timeStyle) {
+    intl.timeStyle = date.timeStyle as Intl.DateTimeFormatOptions["timeStyle"];
+  }
+
+  return new Intl.DateTimeFormat(options?.locale, intl).format(parsed);
+}
+
+export function preciseDateTime(value: unknown, options?: FormatOptions): string {
   const date = new Date(String(value));
 
   if (Number.isNaN(date.getTime())) {
-    return formatCell(value);
+    return "";
   }
 
-  if (!format) {
-    return new Intl.DateTimeFormat(undefined, {
-      dateStyle: "medium",
-      timeStyle: "short",
-    }).format(date);
-  }
+  const formatted = new Intl.DateTimeFormat(options?.locale, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZone: options?.timeZone,
+    timeZoneName: "short",
+  }).format(date);
 
-  const replacements: Record<string, string> = {
-    Y: String(date.getFullYear()),
-    y: String(date.getFullYear()).slice(-2),
-    m: String(date.getMonth() + 1).padStart(2, "0"),
-    n: String(date.getMonth() + 1),
-    d: String(date.getDate()).padStart(2, "0"),
-    j: String(date.getDate()),
-    H: String(date.getHours()).padStart(2, "0"),
-    G: String(date.getHours()),
-    i: String(date.getMinutes()).padStart(2, "0"),
-    s: String(date.getSeconds()).padStart(2, "0"),
-  };
-
-  return format.replace(/[YymndjHGis]/g, (token) => replacements[token] ?? token);
+  return options?.timeZone ? `${formatted} (${options.timeZone})` : formatted;
 }
 
 export function resolveLink(column: TableColumn, row: TableRow, value: unknown): string | null {

@@ -1,9 +1,11 @@
 import { copyToClipboard } from "@lattice-php/lattice/clipboard";
+import { DateTime } from "@lattice-php/lattice/i18n";
 import { Icon } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { type ReactNode, useEffect, useState } from "react";
 import { formatCell, resolveLink } from "../../format";
 import type { ColumnCellArgs, ColumnCellComponent } from "../../registry";
+import type { ColumnPropsOf } from "../../types";
 
 type TextProps = ColumnCellArgs<"column.text">["props"];
 
@@ -56,9 +58,11 @@ function SingleBadgeCell({ column, props, row, value }: ColumnCellArgs<"column.t
 }
 
 function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.text">): ReactNode {
+  const dateProps = (column.props as ColumnPropsOf<"column.text"> | null)?.date;
+  const href = resolveLink(column, row, value);
   const text = formatCell(value, column);
   const [copied, setCopied] = useState(false);
-  const href = resolveLink(column, row, value);
+
   const content = href ? (
     <a
       className="underline underline-offset-2"
@@ -85,6 +89,12 @@ function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.tex
   function handleCopy(): void {
     void copyToClipboard(text);
     setCopied(true);
+  }
+
+  if (dateProps && !href && !props.copyable && value !== null && value !== undefined) {
+    return (
+      <DateTime value={value} dateStyle={dateProps.dateStyle} timeStyle={dateProps.timeStyle} />
+    );
   }
 
   if (!props.copyable) {

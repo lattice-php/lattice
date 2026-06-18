@@ -3,9 +3,10 @@ import { useSyncExternalStore } from "react";
 
 export type Config = {
   readonly locales: readonly string[];
+  readonly timezone: string | null;
 };
 
-const fallback: Config = { locales: [] };
+const fallback: Config = { locales: [], timezone: null };
 const listeners = new Set<() => void>();
 
 let active: Config = fallback;
@@ -36,13 +37,26 @@ function notify(): void {
 
 export function setConfig(config: I18nConfig | undefined): void {
   const locales = normalizeLocales(config?.locales);
+  const timezone = config?.timezone ?? null;
 
-  if (sameLocales(active.locales, locales)) {
+  if (sameLocales(active.locales, locales) && active.timezone === timezone) {
     return;
   }
 
-  active = { locales };
+  active = { locales, timezone };
   notify();
+}
+
+export function configTimezone(): string | null {
+  return active.timezone;
+}
+
+export function subscribeConfig(callback: () => void): () => void {
+  listeners.add(callback);
+
+  return () => {
+    listeners.delete(callback);
+  };
 }
 
 export function useConfig(): Config {

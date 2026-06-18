@@ -22,7 +22,7 @@ describe('docs fixtures', function (): void {
                     TextColumn::make('name')->label('Name')->sortable()->filterable(),
                     NumberColumn::make('price')->label('Price')->sortable()->filterable(),
                     BooleanColumn::make('featured')->label('Featured'),
-                    TextColumn::make('updated_at')->label('Updated')->date('Y-m-d')->sortable(),
+                    TextColumn::make('updated_at')->label('Updated')->dateTime()->sortable(),
                 ])
                 ->result(
                     TableResult::fromItems(collect([

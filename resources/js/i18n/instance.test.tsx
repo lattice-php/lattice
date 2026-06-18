@@ -73,6 +73,7 @@ describe("i18n instance", () => {
       saveMissing: false,
       locales: ["en", "de"],
       preloadLocales: [],
+      timezone: null,
     });
 
     render(<LocaleProbe />);

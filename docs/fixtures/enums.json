@@ -699,6 +699,28 @@
             }
         ]
     },
+    "Lattice\\Lattice\\Tables\\Enums\\DateTimeStyle": {
+        "name": "DateTimeStyle",
+        "namespace": "Lattice\\Lattice\\Tables\\Enums",
+        "cases": [
+            {
+                "name": "Full",
+                "value": "full"
+            },
+            {
+                "name": "Long",
+                "value": "long"
+            },
+            {
+                "name": "Medium",
+                "value": "medium"
+            },
+            {
+                "name": "Short",
+                "value": "short"
+            }
+        ]
+    },
     "Lattice\\Lattice\\Tables\\Enums\\FilterControl": {
         "name": "FilterControl",
         "namespace": "Lattice\\Lattice\\Tables\\Enums",

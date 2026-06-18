@@ -28,7 +28,7 @@ class ProductsTable extends EloquentTableDefinition
         return [
             TextColumn::make('name')->sortable()->filterable(),
             NumberColumn::make('price')->sortable()->filterable(),
-            TextColumn::make('updated_at')->date('Y-m-d')->sortable(),
+            TextColumn::make('updated_at')->dateTime()->sortable(),
         ];
     }
 
@@ -47,7 +47,7 @@ class ProductsTable extends EloquentTableDefinition
 
 Columns live in `Lattice\Lattice\Tables\Columns`. `Column::make('key')` reads `$row['key']`; the label defaults to the humanized key (override with `->label()`).
 
-- **`TextColumn`** — `->date('Y-m-d H:i')`, `->copyable()`, `->link('/products/{value}')` (`{value}` is substituted; pass `external: true` for outbound).
+- **`TextColumn`** — `->date()`, `->time()`, `->dateTime()` (style: `full|long|medium|short`, e.g. `->dateTime(DateTimeStyle::Short)`), `->copyable()`, `->link('/products/{value}')` (`{value}` is substituted; pass `external: true` for outbound).
 - **`NumberColumn`** — right-aligns and formats the value as a number; `->decimals(2)` fixes fraction digits (`->decimals(0, 2)` for a range); `->unit(NumberFormatUnit::Percent)` adds a locale-correct unit (percent, kilogram, byte, …). Filters as a number.
 - **`MoneyColumn`** — formats as a currency amount; `->currency('EUR')` for a fixed currency or `->currencyField('currency')` to read the currency from another row field; symbol placement and decimals follow the viewer's locale.
 - **`BooleanColumn`** — renders a check or cross; filters as a boolean.
