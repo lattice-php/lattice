@@ -74,8 +74,8 @@ FileUpload::make('document')
 ```
 
 <Info>
-  Signed-URL lifetime comes from `lattice.files.url_ttl` (minutes, default `5`) and temporary objects
-  are keyed under `lattice.files.temp_prefix` (default `tmp`).
+  Signed-URL lifetime comes from `lattice.files.url_ttl` (minutes, default `5`) and temporary
+  objects are keyed under `lattice.files.temp_prefix` (default `tmp`).
 </Info>
 
 ## Reading the value in `handle()`
@@ -111,9 +111,9 @@ foreach (FileUpload::removed($request, 'avatar') as $path) {
 ```
 
 <Warning title="Authorization">
-  `FileUpload::removed()` only returns paths whose token the server itself sealed for this field, so a
-  client cannot forge a path to delete. Always delete through it rather than trusting raw request input.
-  See [Security](/advanced/security/) for how sealed references work.
+  `FileUpload::removed()` only returns paths whose token the server itself sealed for this field, so
+  a client cannot forge a path to delete. Always delete through it rather than trusting raw request
+  input. See [Security](/advanced/security/) for how sealed references work.
 </Warning>
 
 ## Common options

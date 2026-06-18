@@ -34,13 +34,13 @@ The same method exists for `fragments`, `actions`, `bulkActions`, `layouts`, `pa
 
 Each definition type is served by a dedicated endpoint with its own middleware stack. The defaults all run behind `web` and `auth`:
 
-| Type | Endpoint | Middleware |
-| --- | --- | --- |
-| Forms | `lattice/forms/{form}` | `['web', 'auth']` |
-| Tables | `lattice/tables/{table}` | `['web', 'auth']` |
-| Fragments | `lattice/fragments/{fragment}` | `['web', 'auth']` |
-| Actions | `lattice/actions/{action}` | `['web', 'auth']` |
-| Bulk actions | `lattice/bulk-actions/{bulkAction}` | `['web', 'auth']` |
+| Type           | Endpoint                                | Middleware        |
+| -------------- | --------------------------------------- | ----------------- |
+| Forms          | `lattice/forms/{form}`                  | `['web', 'auth']` |
+| Tables         | `lattice/tables/{table}`                | `['web', 'auth']` |
+| Fragments      | `lattice/fragments/{fragment}`          | `['web', 'auth']` |
+| Actions        | `lattice/actions/{action}`              | `['web', 'auth']` |
+| Bulk actions   | `lattice/bulk-actions/{bulkAction}`     | `['web', 'auth']` |
 | Remote sources | `lattice/remote-sources/{source}/token` | `['web', 'auth']` |
 
 Change the endpoint or middleware stack per type:

@@ -20,10 +20,10 @@ never proxies the data.
 
 ## Two roles
 
-| Role | Responsibility |
-| --- | --- |
+| Role                               | Responsibility                                                                                                               |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | **Consumer** (the Lattice backend) | Renders the page and embeds the remote component. Hosts the token endpoint that mints browser tokens for its logged-in user. |
-| **Remote service** | Serves the data endpoint (and optionally the schema manifest) that the browser calls with the issued token. |
+| **Remote service**                 | Serves the data endpoint (and optionally the schema manifest) that the browser calls with the issued token.                  |
 
 A single application is often both — it embeds its own remote sources during development, which is
 exactly what the [workbench](/contributing/local-development/) does.
@@ -197,17 +197,15 @@ needs to declare its `audience` and `scopes` — the consumer stamps the trusted
     "audience": "https://todos.example.test",
     "scopes": ["todos.read"]
   },
-  "schema": [
-    { "type": "card", "props": { "dataBindings": { "title": "title" } } }
-  ]
+  "schema": [{ "type": "card", "props": { "dataBindings": { "title": "title" } } }]
 }
 ```
 
 <Warning title="The manifest is untrusted input">
   `RemoteSchemaResolver` treats everything the remote service returns as hostile. It strips any
   `ref`, `remote`, `endpoint`, `tokenEndpoint`, and `action` keys from the manifest and re-stamps a
-  server-trusted `remote` descriptor with a freshly sealed `ref`, so a remote service can never forge
-  a usable token endpoint. External URL props (a data list's `dataEndpoint`, a chat box's
+  server-trusted `remote` descriptor with a freshly sealed `ref`, so a remote service can never
+  forge a usable token endpoint. External URL props (a data list's `dataEndpoint`, a chat box's
   `streamEndpoint`/`historyEndpoint`) are validated against `allowedHosts` (relative URLs are
   allowed); a host outside the list is rejected before any request is sent. The consumer's
   `Accept-Language` is forwarded when fetching the manifest so the remote service can localize it.

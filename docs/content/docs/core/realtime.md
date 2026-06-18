@@ -51,11 +51,11 @@ so only authorized users subscribe.
 Listener effects are the broadcast-safe subset of [action effects](/actions/effects/) — they run with
 no request context, so they can't redirect or open a modal:
 
-| Effect | What it does |
-| --- | --- |
-| `->toast($message, $variant?)` | Shows a [toast](/actions/toasts/). |
-| `->callout($callout)` | Raises a persistent [callout](/actions/effects/#callouts) (needs a `Callouts` slot in the layout). |
-| `->reloadPage()` | Reloads the current page's props — the simplest way to pull fresh data. |
+| Effect                         | What it does                                                                                       |
+| ------------------------------ | -------------------------------------------------------------------------------------------------- |
+| `->toast($message, $variant?)` | Shows a [toast](/actions/toasts/).                                                                 |
+| `->callout($callout)`          | Raises a persistent [callout](/actions/effects/#callouts) (needs a `Callouts` slot in the layout). |
+| `->reloadPage()`               | Reloads the current page's props — the simplest way to pull fresh data.                            |
 
 Chain several on one listener, and declare several listeners per page:
 

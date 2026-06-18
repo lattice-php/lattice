@@ -35,7 +35,7 @@ export const appPlugin = createPlugin({
   name: "app",
   components: {
     "field.color-picker": eagerComponent(ColorPickerComponent),
-    "rating": eagerComponent(RatingComponent),
+    rating: eagerComponent(RatingComponent),
   },
 });
 ```
@@ -75,7 +75,7 @@ export const appPlugin = createPlugin({
   name: "app",
   components: {
     // Eager — bundled with the entry point.
-    "rating": eagerComponent(RatingComponent),
+    rating: eagerComponent(RatingComponent),
     // Lazy — splits into a separate chunk loaded on demand.
     "field.color-picker": lazyComponent(async () => ({
       default: (await import("./fields/color-picker")).ColorPickerComponent,

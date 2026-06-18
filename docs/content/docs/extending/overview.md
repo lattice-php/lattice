@@ -31,11 +31,11 @@ That string — `"field.color-picker"` — is the only coupling between the PHP 
 
 ## Three extension points
 
-| Kind | PHP base class | Registry |
-| --- | --- | --- |
-| Form field | `Lattice\Lattice\Forms\Components\Field` | Node registry (`plugin.ts`) |
-| UI component | `Lattice\Lattice\Core\Components\Component` | Node registry (`plugin.ts`) |
-| Table column | `Lattice\Lattice\Tables\Columns\Column` | Column-cell registry (`columns.ts`) |
+| Kind         | PHP base class                              | Registry                            |
+| ------------ | ------------------------------------------- | ----------------------------------- |
+| Form field   | `Lattice\Lattice\Forms\Components\Field`    | Node registry (`plugin.ts`)         |
+| UI component | `Lattice\Lattice\Core\Components\Component` | Node registry (`plugin.ts`)         |
+| Table column | `Lattice\Lattice\Tables\Columns\Column`     | Column-cell registry (`columns.ts`) |
 
 Form fields and UI components share the **node registry** — the renderer walks the component tree and resolves each `type` to a `RendererComponent`. Table columns use a separate **column-cell registry** because only the cell needs a custom renderer; the table chrome (header, sorting, filtering) is provided by Lattice.
 

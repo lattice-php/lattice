@@ -119,7 +119,7 @@ export const appPlugin = createPlugin({
   name: "app",
   components: {
     "field.color-picker": lazyComponent(() =>
-      import("./fields/color-picker").then((m) => m.ColorPickerComponent)
+      import("./fields/color-picker").then((m) => m.ColorPickerComponent),
     ),
   },
 });

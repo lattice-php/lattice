@@ -79,13 +79,13 @@ too.
 
 `#[AsPage]` declares how the page is routed and framed:
 
-| Argument     | Purpose                                                                                   |
-| ------------ | ----------------------------------------------------------------------------------------- |
-| `route`      | The URL path. Supports parameters (`/products/{product}/edit`).                            |
-| `name`       | The route name. Defaults to the route segments joined by dots (`products.edit`), falling back to the class name without its `Page` suffix. |
+| Argument     | Purpose                                                                                                                                                              |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `route`      | The URL path. Supports parameters (`/products/{product}/edit`).                                                                                                      |
+| `name`       | The route name. Defaults to the route segments joined by dots (`products.edit`), falling back to the class name without its `Page` suffix.                           |
 | `layout`     | The [layout](/core/layouts/) the page renders into — a [`PageLayout`](/advanced/enums/#pages) or a registered layout key. Defaults to `PageLayout::None` (no shell). |
-| `container`  | How the content is framed — a [`PageContainer`](/advanced/enums/#pages) (`Default` or `Centered`). Defaults to `PageContainer::Centered`. |
-| `middleware` | Middleware for the page's route — a string or an array.                                    |
+| `container`  | How the content is framed — a [`PageContainer`](/advanced/enums/#pages) (`Default` or `Centered`). Defaults to `PageContainer::Centered`.                            |
+| `middleware` | Middleware for the page's route — a string or an array.                                                                                                              |
 
 ```php
 use Lattice\Lattice\Core\Enums\PageContainer;

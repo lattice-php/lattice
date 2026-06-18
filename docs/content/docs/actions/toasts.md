@@ -61,13 +61,13 @@ return ActionResult::success()->toast(
 
 The builder options:
 
-| Method                            | Effect                                                                 |
-| --------------------------------- | ---------------------------------------------------------------------- |
-| `->duration($ms)`                 | Auto-dismiss after `$ms` milliseconds (default 4000).                  |
-| `->persistent()`                  | Never auto-dismiss; the toast stays until it is closed.                |
-| `->dismissible(false)`            | Hide the close button.                                                 |
-| `->link($label, $href, $method)`  | Render a link in the toast (`$method` defaults to `HttpMethod::Get`).  |
-| `->action($component)`            | Render an action instead of a link — e.g. an [`Action`](/actions/overview/) that opens a confirm dialog or [modal form](/actions/confirmation-and-forms/). |
+| Method                           | Effect                                                                                                                                                     |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `->duration($ms)`                | Auto-dismiss after `$ms` milliseconds (default 4000).                                                                                                      |
+| `->persistent()`                 | Never auto-dismiss; the toast stays until it is closed.                                                                                                    |
+| `->dismissible(false)`           | Hide the close button.                                                                                                                                     |
+| `->link($label, $href, $method)` | Render a link in the toast (`$method` defaults to `HttpMethod::Get`).                                                                                      |
+| `->action($component)`           | Render an action instead of a link — e.g. an [`Action`](/actions/overview/) that opens a confirm dialog or [modal form](/actions/confirmation-and-forms/). |
 
 ## Rendering
 

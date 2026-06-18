@@ -27,8 +27,9 @@ implementing the source interface.
     {
         return Product::query();
     }
+
 }`}
-  fixture="table.overview"
+fixture="table.overview"
 />
 
 ## Defining a table
@@ -65,19 +66,19 @@ class ProductsTable extends EloquentTableDefinition
 
 `TableDefinition` exposes a handful of hooks beyond `columns()`:
 
-| Method            | Purpose                                                              |
-| ----------------- | ------------------------------------------------------------------- |
-| `columns()`       | The columns to render — see [Columns](/tables/columns/).            |
-| `source()`        | The [data source](#data-sources). `EloquentTableDefinition` builds one for you. |
-| `perPage()`       | Rows per page (default `25`).                                        |
-| `pagination()`    | The [pagination mode](/tables/sorting-filtering-pagination/#pagination). |
-| `striped()`       | Alternate row shading.                                               |
+| Method               | Purpose                                                                           |
+| -------------------- | --------------------------------------------------------------------------------- |
+| `columns()`          | The columns to render — see [Columns](/tables/columns/).                          |
+| `source()`           | The [data source](#data-sources). `EloquentTableDefinition` builds one for you.   |
+| `perPage()`          | Rows per page (default `25`).                                                     |
+| `pagination()`       | The [pagination mode](/tables/sorting-filtering-pagination/#pagination).          |
+| `striped()`          | Alternate row shading.                                                            |
 | `resizableColumns()` | Let users drag column borders to resize. Widths persist per table in the browser. |
-| `resizeIndicator()`  | Show a drag indicator on column borders when resizing is enabled.   |
-| `emptyLabel()`    | Text shown when the table has no rows (default "No results").        |
-| `actionsLabel()`  | Accessible label for the row-actions column (default "Actions").     |
-| `actions($row)`   | Per-row [actions](/tables/actions/).                                 |
-| `bulkActions()`   | [Bulk actions](/tables/actions/#bulk-actions) for selected rows.    |
+| `resizeIndicator()`  | Show a drag indicator on column borders when resizing is enabled.                 |
+| `emptyLabel()`       | Text shown when the table has no rows (default "No results").                     |
+| `actionsLabel()`     | Accessible label for the row-actions column (default "Actions").                  |
+| `actions($row)`      | Per-row [actions](/tables/actions/).                                              |
+| `bulkActions()`      | [Bulk actions](/tables/actions/#bulk-actions) for selected rows.                  |
 
 Each hook is a method you override on the definition. For example, to enable resizable columns with a
 drag indicator:
