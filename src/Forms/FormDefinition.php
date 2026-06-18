@@ -7,6 +7,9 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Core\Definition;
+use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Core\Values\Translatable;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Concerns\ResolvesFormFields;
@@ -21,6 +24,22 @@ abstract class FormDefinition extends Definition implements HandlesUploads, Prov
     abstract public function definition(Form $form, Request $request): Form;
 
     abstract public function handle(Request $request): Response|Responsable;
+
+    /**
+     * Start a fluent form response — queue effects and a redirect.
+     */
+    protected function respond(): FormResponse
+    {
+        return FormResponse::make();
+    }
+
+    /**
+     * Start a fluent form response with a toast already queued.
+     */
+    protected function toast(string|Translatable|ToastMessage|Variant $message, Variant|string|null $variant = null): FormResponse
+    {
+        return FormResponse::make()->toast($message, $variant);
+    }
 
     /**
      * @return array<string, mixed>

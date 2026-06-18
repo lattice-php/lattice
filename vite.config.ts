@@ -179,6 +179,7 @@ export default defineConfig(({ mode }) => {
                 /^@tiptap\//,
                 /^clsx($|\/)/,
                 /^class-variance-authority($|\/)/,
+                /^input-otp($|\/)/,
                 /^tailwind-merge($|\/)/,
                 /^vite($|\/)/,
                 /^@laravel\/echo-react($|\/)/,

@@ -17,6 +17,7 @@ enum FieldType: string
     case FileUpload = 'field.file-upload';
     case HiddenInput = 'field.hidden-input';
     case NumberInput = 'field.number-input';
+    case Otp = 'field.otp';
     case PasswordInput = 'field.password-input';
     case Repeater = 'field.repeater';
     case RichEditor = 'field.rich-editor';

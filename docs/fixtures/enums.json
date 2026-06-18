@@ -582,6 +582,10 @@
                 "value": "field.number-input"
             },
             {
+                "name": "Otp",
+                "value": "field.otp"
+            },
+            {
                 "name": "PasswordInput",
                 "value": "field.password-input"
             },
