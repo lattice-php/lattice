@@ -10,8 +10,8 @@ import Mermaid from "@components/Mermaid.astro";
 Remote lets one Lattice application embed a component whose data — or whole schema — comes from a
 **different** application. A page renders a `remote.data-list` (or a remote-configured chat box); the
 browser exchanges a signed reference for a short-lived, audience-scoped token and calls the remote
-provider directly. The provider stays in control of what it hands out, and the embedding app never
-proxies the data.
+service directly. The remote service stays in control of what it hands out, and the embedding app
+never proxies the data.
 
 <Warning title="Proof of concept">
   Remote is an experimental POC. The wire shapes, class names, and the set of remote-capable
@@ -22,8 +22,8 @@ proxies the data.
 
 | Role | Responsibility |
 | --- | --- |
-| **Consumer** | Renders the page and embeds the remote component. Hosts the token endpoint that mints browser tokens for its logged-in user. |
-| **Provider** | Serves the data endpoint (and optionally the schema manifest) that the browser calls with the issued token. |
+| **Consumer** (the Lattice backend) | Renders the page and embeds the remote component. Hosts the token endpoint that mints browser tokens for its logged-in user. |
+| **Remote service** | Serves the data endpoint (and optionally the schema manifest) that the browser calls with the issued token. |
 
 A single application is often both — it embeds its own remote sources during development, which is
 exactly what the [workbench](/contributing/local-development/) does.
@@ -34,32 +34,35 @@ exactly what the [workbench](/contributing/local-development/) does.
   title="Browser-token exchange for a remote component"
   code={`sequenceDiagram
     autonumber
-    participant P as Consumer page (PHP)
+    actor U as User
     participant B as Browser (React)
-    participant T as Consumer token endpoint
-    participant R as Remote provider
-    P->>P: Build DataList / resolve schema manifest
-    Note over P: seal ref, resolve tokenEndpoint
-    P->>B: props.remote { source, audience, scopes, tokenEndpoint, ref }
-    B->>T: POST tokenEndpoint — ref header, session cookie
-    T->>T: verify ref, match source/audience/scopes, authorize
-    T-->>B: BrowserToken { accessToken, tokenType, expiresIn }
+    participant L as Lattice backend (PHP)
+    participant R as Remote service
+    U->>B: Visit the page
+    B->>L: GET page
+    L->>L: Build DataList / resolve schema manifest
+    Note over L: seal ref, resolve tokenEndpoint
+    L-->>B: props.remote { source, audience, scopes, tokenEndpoint, ref }
+    B->>L: POST tokenEndpoint — ref header, session cookie
+    L->>L: verify ref, match source/audience/scopes, authorize
+    L-->>B: BrowserToken { accessToken, tokenType, expiresIn }
     B->>R: GET dataEndpoint — Authorization Bearer, credentials omitted
     R-->>B: { data: [ ... ] }
-    B->>B: render rows via dataBindings`}
+    B->>B: render rows via dataBindings
+    B-->>U: Render the remote list`}
 />
 
-The consumer's server seals a tamper-proof `ref` that binds the node identity to a `source`,
-`audience`, and `scopes`. The browser sends that `ref` (as a header, with the session cookie) to the
-consumer's own token endpoint, which re-checks every bound value before asking the matching source to
-issue a token. The provider call carries only the resulting bearer token — `credentials` are omitted,
-so no cookies leak across the origin boundary.
+The Lattice backend seals a tamper-proof `ref` that binds the node identity to a `source`, `audience`,
+and `scopes`. The browser sends that `ref` (as a header, with the session cookie) back to the Lattice
+backend's token endpoint, which re-checks every bound value before asking the matching source to issue
+a token. The call to the remote service carries only the resulting bearer token — `credentials` are
+omitted, so no cookies leak across the origin boundary.
 
 ## Embedding a data list
 
 `DataList` (registered as `remote.data-list`) fetches rows from a remote endpoint and renders a
 reusable row schema for each one. Configure the source, the audience it is for, the scopes it needs,
-and the provider's data endpoint:
+and the remote service's data endpoint:
 
 ```php
 use Lattice\Lattice\Remote\Components\DataList;
@@ -77,7 +80,7 @@ DataList::make('todos')
     ]);
 ```
 
-Each row in the provider's `{ "data": [...] }` payload is materialized through the child schema.
+Each row in the remote service's `{ "data": [...] }` payload is materialized through the child schema.
 `dataBindings` map a component prop to a row key (dotted paths are supported), so the same row schema
 renders every record.
 
@@ -107,7 +110,7 @@ ChatBox::make('assistant')
 
 ## Remote sources
 
-A **source** describes a provider. Extend `RemoteSourceDefinition`, tag it with `#[AsRemoteSource]`,
+A **source** describes a remote service. Extend `RemoteSourceDefinition`, tag it with `#[AsRemoteSource]`,
 and override `issueBrowserToken()` to mint a token after the consumer's endpoint has verified the
 request:
 
@@ -201,13 +204,13 @@ needs to declare its `audience` and `scopes` — the consumer stamps the trusted
 ```
 
 <Warning title="The manifest is untrusted input">
-  `RemoteSchemaResolver` treats everything the provider returns as hostile. It strips any
+  `RemoteSchemaResolver` treats everything the remote service returns as hostile. It strips any
   `ref`, `remote`, `endpoint`, `tokenEndpoint`, and `action` keys from the manifest and re-stamps a
-  server-trusted `remote` descriptor with a freshly sealed `ref`, so a provider can never forge a
-  usable token endpoint. External URL props (a data list's `dataEndpoint`, a chat box's
+  server-trusted `remote` descriptor with a freshly sealed `ref`, so a remote service can never forge
+  a usable token endpoint. External URL props (a data list's `dataEndpoint`, a chat box's
   `streamEndpoint`/`historyEndpoint`) are validated against `allowedHosts` (relative URLs are
   allowed); a host outside the list is rejected before any request is sent. The consumer's
-  `Accept-Language` is forwarded when fetching the manifest so the provider can localize it.
+  `Accept-Language` is forwarded when fetching the manifest so the remote service can localize it.
 </Warning>
 
 ## Frontend setup
