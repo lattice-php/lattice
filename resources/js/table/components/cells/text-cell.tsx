@@ -63,10 +63,6 @@ function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.tex
   const text = formatCell(value, column);
   const [copied, setCopied] = useState(false);
 
-  if (dateProps && !href && !props.copyable && value !== null && value !== undefined) {
-    return <DateTime value={value} format={dateProps.format ?? null} />;
-  }
-
   const content = href ? (
     <a
       className="underline underline-offset-2"
@@ -93,6 +89,10 @@ function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.tex
   function handleCopy(): void {
     void copyToClipboard(text);
     setCopied(true);
+  }
+
+  if (dateProps && !href && !props.copyable && value !== null && value !== undefined) {
+    return <DateTime value={value} format={dateProps.format ?? null} />;
   }
 
   if (!props.copyable) {
