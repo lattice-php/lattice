@@ -19,7 +19,7 @@ it('filters by text and clears via the filter chip', function (): void {
 
 it('adds a filter through the column popover', function (): void {
     $this->actingAs(workbenchTestUser());
-    seedWorkbenchUsers();
+    seedNamedWorkbenchUsers();
 
     visit('/')
         ->click('@filter-name')

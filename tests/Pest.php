@@ -35,11 +35,11 @@ function discoverFixtures(): void
 }
 
 /**
- * Seed a deterministic set of workbench users for browser table tests: four
- * named users plus 26 generated ones, enough to exercise pagination and
- * infinite scroll.
+ * Seed the four named workbench users browser table tests assert against. Kept
+ * under one page so tables never auto-load a second page while the test
+ * interacts with them.
  */
-function seedWorkbenchUsers(): void
+function seedNamedWorkbenchUsers(): void
 {
     User::query()->delete();
 
@@ -49,6 +49,16 @@ function seedWorkbenchUsers(): void
             'email' => strtolower(explode(' ', $name)[0]).'@example.com',
         ]);
     }
+}
+
+/**
+ * Seed a deterministic set of workbench users for browser table tests: four
+ * named users plus 26 generated ones, enough to exercise pagination and
+ * infinite scroll.
+ */
+function seedWorkbenchUsers(): void
+{
+    seedNamedWorkbenchUsers();
 
     foreach (range(1, 26) as $number) {
         UserFactory::new()->create([
