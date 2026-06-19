@@ -15,6 +15,7 @@ use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Concerns\ResolvesFormFields;
 use Lattice\Lattice\Forms\Contracts\HandlesUploads;
 use Lattice\Lattice\Forms\Contracts\ProvidesForm;
+use Lattice\Lattice\Http\LatticeResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class FormDefinition extends Definition implements HandlesUploads, ProvidesForm
@@ -26,19 +27,19 @@ abstract class FormDefinition extends Definition implements HandlesUploads, Prov
     abstract public function handle(Request $request): Response|Responsable;
 
     /**
-     * Start a fluent form response — queue effects and a redirect.
+     * Start a fluent response — queue effects and a redirect.
      */
-    protected function respond(): FormResponse
+    protected function respond(): LatticeResponse
     {
-        return FormResponse::make();
+        return LatticeResponse::make();
     }
 
     /**
-     * Start a fluent form response with a toast already queued.
+     * Start a fluent response with a toast already queued.
      */
-    protected function toast(string|Translatable|ToastMessage|Variant $message, Variant|string|null $variant = null): FormResponse
+    protected function toast(string|Translatable|ToastMessage|Variant $message, Variant|string|null $variant = null): LatticeResponse
     {
-        return FormResponse::make()->toast($message, $variant);
+        return LatticeResponse::make()->toast($message, $variant);
     }
 
     /**
