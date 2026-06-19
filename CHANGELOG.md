@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.7.0](https://github.com/lattice-php/lattice/compare/0.6.0...0.7.0) (2026-06-19)
+
+
+### Features
+
+* apply appearance changes in the Provider for turnkey theme switching ([9ebe5e8](https://github.com/lattice-php/lattice/commit/9ebe5e8a446154cf26acfdc852c7e25aa53f0628))
+* **console:** add definition generators and consolidate the JS registry ([1577560](https://github.com/lattice-php/lattice/commit/1577560085d65fe305acce2a971912452520f147))
+* definition generators (page/form/table/action/…) and a single JS registry ([bc63740](https://github.com/lattice-php/lattice/commit/bc6374022c9924f3c59d0ff61c861200d762df8c))
+* **provider:** apply appearance changes so theme switching needs no app wiring ([5ae9f9b](https://github.com/lattice-php/lattice/commit/5ae9f9b6295cdbf7c160a66ef445b25db9a1fc46))
+
 ## [0.6.0](https://github.com/lattice-php/lattice/compare/0.5.0...0.6.0) (2026-06-19)
 
 
