@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Enums\SalesOrderStatus;
 use Workbench\App\Forms\SalesOrderForm;
 use Workbench\App\Models\Address;
@@ -14,7 +13,6 @@ use Workbench\App\Models\SalesPrice;
 use Workbench\App\Pricing\PriceResolver;
 
 use function Pest\Laravel\get;
-use function Pest\Laravel\post;
 use function Pest\Laravel\withoutVite;
 
 test('the sales order create page renders', function (): void {
@@ -44,16 +42,14 @@ test('the sales order form creates an order with snapshotted lines and partner d
     $chair = Product::factory()->withoutDefaultPrice()->create(['name' => 'Office Chair']);
     SalesPrice::factory()->create(['product_id' => $chair->getKey(), 'group_id' => null, 'amount' => '250.00']);
 
-    $form = wire(Form::use(SalesOrderForm::class));
-
-    post('/lattice/forms/workbench.sales-orders.form', [
+    $this->submitForm(SalesOrderForm::class, [
         'business_partner_id' => (string) $partner->getKey(),
         'status' => SalesOrderStatus::Placed->value,
         'lines' => [
             ['id' => '', 'product_id' => (string) $deskLamp->getKey(), 'quantity' => '2', 'unit_price' => '100.00'],
             ['id' => '', 'product_id' => (string) $chair->getKey(), 'quantity' => '1', 'unit_price' => '250.00'],
         ],
-    ], ['X-Lattice-Ref' => componentRef($form)])
+    ])
         ->assertRedirect('/sales-orders');
 
     $order = SalesOrder::query()->where('business_partner_id', $partner->getKey())->firstOrFail();

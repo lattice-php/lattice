@@ -4,7 +4,6 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia;
-use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
@@ -19,7 +18,6 @@ use Workbench\App\Models\Product;
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\patch;
-use function Pest\Laravel\patchJson;
 use function Pest\Laravel\post;
 use function Pest\Laravel\withoutVite;
 
@@ -86,16 +84,14 @@ test('the product index page lists products and links to creation', function ():
 test('the product form creates products', function (): void {
     Lattice::forms([ProductForm::class]);
 
-    $form = wire(Form::use(ProductForm::class));
-
-    post('/lattice/forms/workbench.products.form', [
+    $this->submitForm(ProductForm::class, [
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
         'status' => 'active',
         'sales_prices' => [
             ['group_id' => '', 'amount' => '49.99'],
         ],
-    ], productHeaders($form))
+    ])
         ->assertRedirect('/products');
 
     $product = Product::query()->where('sku', 'LAMP-001')->first();
@@ -111,14 +107,12 @@ test('the product form creates product images from signed uploads', function ():
     Storage::disk('s3')->put('tmp/lamp.jpg', 'image-data');
     Lattice::forms([ProductForm::class]);
 
-    $form = wire(Form::use(ProductForm::class));
-
-    post('/lattice/forms/workbench.products.form', [
+    $this->submitForm(ProductForm::class, [
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
         'status' => 'active',
         'images' => ['tmp/lamp.jpg'],
-    ], productHeaders($form))
+    ])
         ->assertRedirect('/products');
 
     $product = Product::query()->where('sku', 'LAMP-001')->firstOrFail();
@@ -194,10 +188,7 @@ test('the product form updates the trusted product from sealed context', functio
         'status' => 'active',
     ]);
 
-    $form = wire(Form::use(ProductForm::class)
-        ->context(['product_id' => $trustedProduct->getKey()]));
-
-    patch('/lattice/forms/workbench.products.form', [
+    $this->submitForm(ProductForm::class, [
         'product_id' => $tamperedProduct->getKey(),
         'name' => 'Updated Lamp',
         'sku' => 'LAMP-002',
@@ -205,7 +196,7 @@ test('the product form updates the trusted product from sealed context', functio
         'sales_prices' => [
             ['group_id' => '', 'amount' => '59.99'],
         ],
-    ], productHeaders($form))
+    ], ['product_id' => $trustedProduct->getKey()])
         ->assertRedirect('/products');
 
     $trustedProduct->refresh();
@@ -254,16 +245,14 @@ test('the product form updates product images from signed uploads and removals',
 
     $removedToken = app(SignsComponentReferences::class)
         ->seal('file', 'images', ['disk' => 's3', 'path' => 'workbench/products/old.jpg']);
-    $form = wire(Form::use(ProductForm::class)
-        ->context(['product_id' => $product->getKey()]));
 
-    patch('/lattice/forms/workbench.products.form', [
+    $this->submitForm(ProductForm::class, [
         'name' => 'Updated Lamp',
         'sku' => 'LAMP-002',
         'status' => 'active',
         'images' => ['tmp/new.jpg'],
         'images__removed' => [$removedToken],
-    ], productHeaders($form))
+    ], ['product_id' => $product->getKey()])
         ->assertRedirect('/products');
 
     $product->refresh();
@@ -460,12 +449,7 @@ test('the edit product action syncs sales prices', function (): void {
         'status' => 'active',
     ]);
 
-    $ref = componentRef(
-        wire(Action::use(EditProductAction::class)
-            ->context(['product_id' => $product->getKey()])),
-    );
-
-    patchJson('/lattice/actions/workbench.products.edit-modal', [
+    $this->callAction(EditProductAction::class, [
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
         'status' => 'active',
@@ -473,7 +457,7 @@ test('the edit product action syncs sales prices', function (): void {
         'sales_prices' => [
             ['group_id' => '', 'amount' => '79.99'],
         ],
-    ], ['X-Lattice-Ref' => $ref])
+    ], ['product_id' => $product->getKey()])
         ->assertOk();
 
     expect($product->salesPrices()->whereNull('group_id')->count())->toBe(1)
@@ -491,12 +475,7 @@ test('the edit product action syncs images', function (): void {
         'status' => 'active',
     ]);
 
-    $ref = componentRef(
-        wire(Action::use(EditProductAction::class)
-            ->context(['product_id' => $product->getKey()])),
-    );
-
-    patchJson('/lattice/actions/workbench.products.edit-modal', [
+    $this->callAction(EditProductAction::class, [
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
         'status' => 'active',
@@ -505,7 +484,7 @@ test('the edit product action syncs images', function (): void {
         'sales_prices' => [
             ['group_id' => '', 'amount' => '79.99'],
         ],
-    ], ['X-Lattice-Ref' => $ref])
+    ], ['product_id' => $product->getKey()])
         ->assertOk();
 
     $image = $product->images()->firstOrFail();
@@ -539,12 +518,8 @@ test('the edit product action removes existing images without new uploads', func
 
     $removedToken = app(SignsComponentReferences::class)
         ->seal('file', 'images', ['disk' => 's3', 'path' => 'workbench/products/lamp.jpg']);
-    $ref = componentRef(
-        wire(Action::use(EditProductAction::class)
-            ->context(['product_id' => $product->getKey()])),
-    );
 
-    patchJson('/lattice/actions/workbench.products.edit-modal', [
+    $this->callAction(EditProductAction::class, [
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
         'status' => 'active',
@@ -554,7 +529,7 @@ test('the edit product action removes existing images without new uploads', func
         'sales_prices' => [
             ['group_id' => '', 'amount' => '79.99'],
         ],
-    ], ['X-Lattice-Ref' => $ref])
+    ], ['product_id' => $product->getKey()])
         ->assertOk();
 
     expect($product->images()->count())->toBe(0)
@@ -573,12 +548,7 @@ test('the edit product action rejects two default sales prices with a 422', func
     ]);
     $product->salesPrices()->create(['group_id' => null, 'amount' => '49.99']);
 
-    $ref = componentRef(
-        wire(Action::use(EditProductAction::class)
-            ->context(['product_id' => $product->getKey()])),
-    );
-
-    patchJson('/lattice/actions/workbench.products.edit-modal', [
+    $this->callAction(EditProductAction::class, [
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
         'status' => 'active',
@@ -587,7 +557,7 @@ test('the edit product action rejects two default sales prices with a 422', func
             ['group_id' => '', 'amount' => '49.99'],
             ['group_id' => '', 'amount' => '59.99'],
         ],
-    ], ['X-Lattice-Ref' => $ref])
+    ], ['product_id' => $product->getKey()])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['sales_prices']);
 

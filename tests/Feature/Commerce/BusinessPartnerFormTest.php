@@ -12,8 +12,6 @@ use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesPrice;
 
 use function Pest\Laravel\get;
-use function Pest\Laravel\patch;
-use function Pest\Laravel\post;
 use function Pest\Laravel\withoutVite;
 
 test('the business partner create page renders', function (): void {
@@ -27,9 +25,8 @@ test('the business partner form creates a partner with groups and addresses', fu
     Lattice::forms([BusinessPartnerForm::class]);
 
     $group = Group::factory()->create();
-    $form = wire(Form::use(BusinessPartnerForm::class));
 
-    post('/lattice/forms/workbench.business-partners.form', [
+    $this->submitForm(BusinessPartnerForm::class, [
         'name' => 'Acme Corp',
         'email' => 'acme@example.com',
         'groups' => [(string) $group->getKey()],
@@ -44,7 +41,7 @@ test('the business partner form creates a partner with groups and addresses', fu
                 'country' => 'DE',
             ],
         ],
-    ], ['X-Lattice-Ref' => componentRef($form)])
+    ])
         ->assertRedirect('/business-partners');
 
     $partner = BusinessPartner::query()->where('name', 'Acme Corp')->firstOrFail();
@@ -61,10 +58,7 @@ test('the business partner form updates default address FKs', function (): void 
     $shipping = Address::factory()->create(['business_partner_id' => $partner->getKey()]);
     $billing = Address::factory()->create(['business_partner_id' => $partner->getKey()]);
 
-    $form = wire(Form::use(BusinessPartnerForm::class)
-        ->context(['business_partner_id' => $partner->getKey()]));
-
-    patch('/lattice/forms/workbench.business-partners.form', [
+    $this->submitForm(BusinessPartnerForm::class, [
         'name' => $partner->name,
         'email' => $partner->email,
         'groups' => [],
@@ -90,7 +84,7 @@ test('the business partner form updates default address FKs', function (): void 
         ],
         'default_shipping_address_id' => (string) $shipping->getKey(),
         'default_billing_address_id' => (string) $billing->getKey(),
-    ], ['X-Lattice-Ref' => componentRef($form)])
+    ], ['business_partner_id' => $partner->getKey()])
         ->assertRedirect('/business-partners');
 
     $partner->refresh();
@@ -121,10 +115,7 @@ test('the business partner form deletes removed addresses', function (): void {
     $keep = Address::factory()->create(['business_partner_id' => $partner->getKey()]);
     $remove = Address::factory()->create(['business_partner_id' => $partner->getKey()]);
 
-    $form = wire(Form::use(BusinessPartnerForm::class)
-        ->context(['business_partner_id' => $partner->getKey()]));
-
-    patch('/lattice/forms/workbench.business-partners.form', [
+    $this->submitForm(BusinessPartnerForm::class, [
         'name' => $partner->name,
         'email' => $partner->email,
         'groups' => [],
@@ -139,7 +130,7 @@ test('the business partner form deletes removed addresses', function (): void {
                 'country' => $keep->country,
             ],
         ],
-    ], ['X-Lattice-Ref' => componentRef($form)])
+    ], ['business_partner_id' => $partner->getKey()])
         ->assertRedirect('/business-partners');
 
     expect($partner->addresses()->count())->toBe(1);
@@ -155,10 +146,7 @@ test('removing the default shipping address nulls the FK on the partner', functi
 
     $partner->update(['default_shipping_address_id' => $shipping->getKey()]);
 
-    $form = wire(Form::use(BusinessPartnerForm::class)
-        ->context(['business_partner_id' => $partner->getKey()]));
-
-    patch('/lattice/forms/workbench.business-partners.form', [
+    $this->submitForm(BusinessPartnerForm::class, [
         'name' => $partner->name,
         'email' => $partner->email,
         'groups' => [],
@@ -173,7 +161,7 @@ test('removing the default shipping address nulls the FK on the partner', functi
                 'country' => $other->country,
             ],
         ],
-    ], ['X-Lattice-Ref' => componentRef($form)])
+    ], ['business_partner_id' => $partner->getKey()])
         ->assertRedirect('/business-partners');
 
     $partner->refresh();
