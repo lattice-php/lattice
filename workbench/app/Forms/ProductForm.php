@@ -47,7 +47,7 @@ class ProductForm extends FormDefinition
                             Choice::option(__('workbench.forms.product.status.active'), 'active'),
                             Choice::option(__('workbench.forms.product.status.archived'), 'archived'),
                         ])
-                        ->rules(['required', 'string', Rule::in(['draft', 'active', 'archived'])]),
+                        ->rules(['required', 'string']),
                     $this->imageUploadField(),
                     Select::make('related_products', __('workbench.forms.product.fields.related-products'))
                         ->multiple()

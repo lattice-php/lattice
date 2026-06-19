@@ -43,4 +43,14 @@ trait HasOptions
     {
         return $this->options($enum);
     }
+
+    /**
+     * The configured option values.
+     *
+     * @return list<string>
+     */
+    public function optionValues(): array
+    {
+        return array_map(static fn (Option $option): string => $option->value, $this->options);
+    }
 }
