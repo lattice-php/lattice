@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
 use Inertia\ServiceProvider as InertiaServiceProvider;
 use Lattice\Lattice\LatticeServiceProvider;
-use Lattice\Lattice\Support\Testing\AssertsLatticeComponents;
+use Lattice\Lattice\Support\Testing\InteractsWithLatticeComponents;
 use Orchestra\Testbench\Concerns\WithLaravelMigrations;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as BaseTestCase;
@@ -16,7 +16,7 @@ use Workbench\App\Providers\WorkbenchServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
-    use AssertsLatticeComponents;
+    use InteractsWithLatticeComponents;
     use WithLaravelMigrations;
     use WithWorkbench;
 

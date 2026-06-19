@@ -1,35 +1,54 @@
 ---
 title: Testing
-description: Assert against the components a Lattice page renders — forms, fields, tables, filters, and actions — with the AssertsLatticeComponents trait.
+description: Why testing matters for a server-driven UI, and the Lattice traits for asserting what a page renders and exercising its endpoints.
 ---
 
-Lattice ships a testing trait, `AssertsLatticeComponents`, that lets you make readable
-assertions about the components your pages render: which forms, tables, and actions are
-visible, whether a field is shown or hidden, what initial value it carries, and which
-filters a table exposes. It asserts against the serialized wire tree — the exact payload
-that reaches the browser — so a passing test reflects what a user with the current request
-and authorization actually sees.
+Testing matters more, not less, for a server-driven UI. Your interface is described in PHP
+and serialized to the browser, so a test can assert against the _exact_ payload a user
+receives — what renders, what is hidden, what a field is seeded with — without a browser or
+a duplicated UI contract. Correctness becomes cheap to pin down, so treat tests as a
+first-class part of building with Lattice, not an afterthought.
 
-It is inspired by Filament's test helpers, adapted to Lattice's stateless Inertia output.
+Lattice holds itself to the same bar: the package is covered by an extensive Pest and Vitest
+suite, and it ships — and dogfoods — the very helpers documented here.
+
+[![Pest coverage](https://img.shields.io/codecov/c/github/lattice-php/lattice/main?flag=pest&label=pest&style=flat-square)](https://app.codecov.io/gh/lattice-php/lattice) [![Vitest coverage](https://img.shields.io/codecov/c/github/lattice-php/lattice/main?flag=vitest&label=vitest&style=flat-square)](https://app.codecov.io/gh/lattice-php/lattice)
+
+Two traits cover the ground. `AssertsLatticeComponents` makes readable assertions about the
+components your pages render — which forms, tables, and actions are visible, whether a field
+is shown or hidden, what value it carries, which filters a table exposes — all against the
+serialized wire tree, the exact payload that reaches the browser. `InteractsWithLatticeComponents`
+adds the other half: it submits to a component's own endpoint with a signed ref sealed from the
+class and context, so you can exercise forms, actions, tables, and fragments end to end. It
+bundles `AssertsLatticeComponents`, so a single trait gives you both.
+
+The assertion helpers are inspired by Filament's, adapted to Lattice's stateless Inertia output.
 
 ## Setup
 
-The trait adds methods to your test case. Apply it once in your base `TestCase`:
+Apply `InteractsWithLatticeComponents` once in your base `TestCase`. It bundles
+`AssertsLatticeComponents`, so a single trait provides both the assertions and the endpoint
+helpers:
 
 ```php
-use Lattice\Lattice\Support\Testing\AssertsLatticeComponents;
+use Lattice\Lattice\Support\Testing\InteractsWithLatticeComponents;
 
 abstract class TestCase extends \Tests\TestCase
 {
-    use AssertsLatticeComponents;
+    use InteractsWithLatticeComponents;
 }
 ```
 
 …or per file in Pest:
 
 ```php
-uses(Lattice\Lattice\Support\Testing\AssertsLatticeComponents::class);
+uses(Lattice\Lattice\Support\Testing\InteractsWithLatticeComponents::class);
 ```
+
+:::note
+If you only assert against rendered components and never submit to an endpoint, the
+`AssertsLatticeComponents` trait on its own is enough.
+:::
 
 ## Entry points
 
@@ -215,6 +234,42 @@ $this->assertLatticeComponent($action)
         ->assertConfirmationTitle('Archive product?')
         ->assertHasForm());
 ```
+
+## Submitting to a component endpoint
+
+The assertions above check what a page _renders_. To exercise the other half — what happens
+when a form is submitted, an action is invoked, or a table is queried — `InteractsWithLatticeComponents`
+seals a signed ref from the component class and context and posts to the generic endpoint for
+you, returning the `TestResponse` to assert on with the usual Laravel helpers:
+
+```php
+$this->submitForm(ProductForm::class, ['name' => 'Desk Lamp'])
+    ->assertRedirect('/products');
+
+$this->callAction(ArchiveProduct::class, ['id' => 7], context: ['team' => $team])
+    ->assertJsonPath('ok', true);
+
+$this->callBulkAction(ArchiveProducts::class, ['selected' => [1, 2]], context: ['table' => 'products'])
+    ->assertOk();
+
+$this->loadTable(ProductsTable::class, ['filter' => ['name' => 'lamp'], 'page' => 2])
+    ->assertJsonPath('data.0.name', 'Desk Lamp');
+
+$this->loadFragment(SalesChart::class)
+    ->assertOk();
+```
+
+Each helper builds the component exactly as a render would — same class, same context — extracts
+the signed ref, and issues the request with the component's declared HTTP method and the
+`X-Lattice-Ref` header. The request payload is the second argument; context (the active team or
+tenant, and the bound table slug for a bulk action) is the third.
+
+:::caution
+These helpers issue **JSON** requests, so a form whose validation fails returns a `422` JSON
+response rather than the redirect-back-with-errors path of a non-JSON post. Assert with
+`assertJsonValidationErrors()` (not `assertSessionHasErrors()`), and for multi-step flows that
+reuse a single sealed ref, build the request by hand instead.
+:::
 
 ## Test selectors
 

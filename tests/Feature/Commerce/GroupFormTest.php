@@ -2,13 +2,10 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Forms\Components\Form;
 use Workbench\App\Forms\GroupForm;
 use Workbench\App\Models\Group;
 
 use function Pest\Laravel\get;
-use function Pest\Laravel\patch;
-use function Pest\Laravel\post;
 use function Pest\Laravel\withoutVite;
 
 test('the group create page renders', function (): void {
@@ -21,11 +18,9 @@ test('the group create page renders', function (): void {
 test('the group form creates a group and redirects', function (): void {
     Lattice::forms([GroupForm::class]);
 
-    $form = wire(Form::use(GroupForm::class));
-
-    post('/lattice/forms/workbench.groups.form', [
+    $this->submitForm(GroupForm::class, [
         'name' => 'Premium Customers',
-    ], ['X-Lattice-Ref' => componentRef($form)])
+    ])
         ->assertRedirect('/groups');
 
     expect(Group::query()->where('name', 'Premium Customers')->exists())->toBeTrue();
@@ -47,12 +42,9 @@ test('the group form updates an existing group', function (): void {
 
     $group = Group::factory()->create(['name' => 'Old Name']);
 
-    $form = wire(Form::use(GroupForm::class)
-        ->context(['group_id' => $group->getKey()]));
-
-    patch('/lattice/forms/workbench.groups.form', [
+    $this->submitForm(GroupForm::class, [
         'name' => 'New Name',
-    ], ['X-Lattice-Ref' => componentRef($form)])
+    ], ['group_id' => $group->getKey()])
         ->assertRedirect('/groups');
 
     expect($group->fresh()->name)->toBe('New Name');

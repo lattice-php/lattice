@@ -49,9 +49,7 @@ test('a table applies a dedicated select filter from the request', function (): 
     Product::factory()->create(['name' => 'Active One', 'status' => 'active']);
     Product::factory()->create(['name' => 'Draft One', 'status' => 'draft']);
 
-    $ref = componentRef(wire(Table::use(WorkbenchFilteredProductsTable::class)));
-
-    $response = latticeGet('/lattice/tables/workbench.filtered-products?tf[status]=active', $ref)
+    $response = $this->loadTable(WorkbenchFilteredProductsTable::class, ['tf' => ['status' => 'active']])
         ->assertOk()
         ->assertJsonPath('data.0.name', 'Active One')
         ->assertJsonPath('state.tableFilters.status', 'active');
@@ -62,9 +60,7 @@ test('a table applies a dedicated select filter from the request', function (): 
 test('a table rejects a filter key that is not declared', function (): void {
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
 
-    $ref = componentRef(wire(Table::use(WorkbenchFilteredProductsTable::class)));
-
-    latticeGet('/lattice/tables/workbench.filtered-products?tf[unknown]=x', $ref)
+    $this->loadTable(WorkbenchFilteredProductsTable::class, ['tf' => ['unknown' => 'x']])
         ->assertUnprocessable()
         ->assertJsonPath('message', 'Filter [unknown] is not allowed for table [workbench.filtered-products].');
 });
@@ -72,9 +68,7 @@ test('a table rejects a filter key that is not declared', function (): void {
 test('a table searches a searchable filter\'s options through the endpoint', function (): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
-    $ref = componentRef(wire(Table::use(WorkbenchSearchableFilterTable::class)));
-
-    latticeGet('/lattice/tables/workbench.searchable-filter?_search=author&q=ad', $ref)
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'author', 'q' => 'ad'])
         ->assertOk()
         ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
 });
@@ -82,9 +76,7 @@ test('a table searches a searchable filter\'s options through the endpoint', fun
 test('a table searches a searchable column filter through the endpoint', function (): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
-    $ref = componentRef(wire(Table::use(WorkbenchSearchableFilterTable::class)));
-
-    latticeGet('/lattice/tables/workbench.searchable-filter?_search=owner&q=ad', $ref)
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'owner', 'q' => 'ad'])
         ->assertOk()
         ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
 });
@@ -92,18 +84,14 @@ test('a table searches a searchable column filter through the endpoint', functio
 test('a table 404s searching an unknown filter key', function (): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
-    $ref = componentRef(wire(Table::use(WorkbenchSearchableFilterTable::class)));
-
-    latticeGet('/lattice/tables/workbench.searchable-filter?_search=nope&q=a', $ref)
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'nope', 'q' => 'a'])
         ->assertNotFound();
 });
 
 test('a table rejects searching a filter that is not searchable', function (): void {
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
 
-    $ref = componentRef(wire(Table::use(WorkbenchFilteredProductsTable::class)));
-
-    latticeGet('/lattice/tables/workbench.filtered-products?_search=status&q=a', $ref)
+    $this->loadTable(WorkbenchFilteredProductsTable::class, ['_search' => 'status', 'q' => 'a'])
         ->assertStatus(422);
 });
 
@@ -113,9 +101,9 @@ test('a table accepts column filter clause option operators', function (): void 
     Product::factory()->create(['name' => 'June One', 'updated_at' => '2026-06-12 12:00:00']);
     Product::factory()->create(['name' => 'July One', 'updated_at' => '2026-07-01 12:00:00']);
 
-    $ref = componentRef(wire(Table::use(WorkbenchClauseOptionProductsTable::class)));
-
-    $response = latticeGet('/lattice/tables/workbench.clause-option-products?filter=updated_at:gte:2026-06-01,updated_at:lte:2026-06-30', $ref)
+    $response = $this->loadTable(WorkbenchClauseOptionProductsTable::class, [
+        'filter' => 'updated_at:gte:2026-06-01,updated_at:lte:2026-06-30',
+    ])
         ->assertOk()
         ->assertJsonPath('data.0.name', 'June One');
 

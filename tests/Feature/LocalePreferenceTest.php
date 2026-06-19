@@ -4,12 +4,10 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
-use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Models\User;
 
 use function Pest\Laravel\getJson;
-use function Pest\Laravel\postJson;
 
 beforeEach(function (): void {
     config(['lattice.i18n.locales' => ['en', 'de']]);
@@ -45,10 +43,7 @@ test('locale action persists the authenticated user locale preference', function
     $user = createWorkbenchLocaleUser('en');
     $this->actingAs($user);
 
-    $ref = componentRef(wire(ActionComponent::use(SetLocaleAction::class)
-        ->context(['locale' => 'de'])));
-
-    postJson('/lattice/actions/workbench.locale.set', [], latticeHeaders($ref))
+    $this->callAction(SetLocaleAction::class, [], ['locale' => 'de'])
         ->assertOk()
         ->assertJsonPath('ok', true)
         ->assertJsonPath('effects.0.type', 'localeChange')

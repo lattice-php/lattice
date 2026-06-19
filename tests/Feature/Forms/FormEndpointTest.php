@@ -59,15 +59,12 @@ test('registered forms serialize their configured endpoint and isolated error ba
 test('registered forms can be submitted through the package endpoint', function (): void {
     Lattice::forms([WorkbenchProfileForm::class]);
 
-    $ref = componentRef(wire(Form::use(WorkbenchProfileForm::class)
-        ->context(['team' => 'lattice-core'])));
-
-    patch('/lattice/forms/settings.profile', [
+    $this->submitForm(WorkbenchProfileForm::class, [
         'name' => 'Taylor',
         'context' => [
             'team' => 'tampered-team',
         ],
-    ], latticeHeaders($ref))
+    ], ['team' => 'lattice-core'])
         ->assertRedirect('/submitted');
 
     expect(session('handled-form'))->toBe('Taylor');

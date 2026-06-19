@@ -39,15 +39,12 @@ test('registered actions serialize their configured endpoint method and label', 
 test('registered actions can be handled through the package endpoint', function (): void {
     Lattice::actions([WorkbenchPingAction::class]);
 
-    $ref = componentRef(wire(ActionComponent::use(WorkbenchPingAction::class)
-        ->context(['team' => 'trusted-team'])));
-
-    postJson('/lattice/actions/workbench.ping', [
+    $this->callAction(WorkbenchPingAction::class, [
         'name' => 'Taylor',
         'context' => [
             'team' => 'tampered-team',
         ],
-    ], latticeHeaders($ref))
+    ], ['team' => 'trusted-team'])
         ->assertOk()
         ->assertJsonPath('ok', true)
         ->assertJsonPath('data.handled', 'Taylor')

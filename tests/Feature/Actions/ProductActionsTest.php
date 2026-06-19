@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Actions\Components\BulkAction;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Facades\Lattice;
 use Workbench\App\Actions\ArchiveProductAction;
@@ -19,15 +17,10 @@ test('the product archive row action is pinned to its sealed product', function 
     $target = Product::factory()->create(['status' => 'active']);
     $other = Product::factory()->create(['status' => 'active']);
 
-    $ref = componentRef(
-        wire(Action::use(ArchiveProductAction::class)
-            ->context(['product_id' => $target->getKey()])),
-    );
-
-    patch('/lattice/actions/workbench.products.archive', [
+    $this->callAction(ArchiveProductAction::class, [
         'context' => ['product_id' => $other->getKey()],
         'product_id' => $other->getKey(),
-    ], ['X-Lattice-Ref' => $ref])
+    ], ['product_id' => $target->getKey()])
         ->assertOk()
         ->assertJsonPath('data.id', $target->getKey());
 
@@ -40,12 +33,7 @@ test('the product archive row action authorizes per row', function (): void {
 
     $archived = Product::factory()->create(['status' => 'archived']);
 
-    $ref = componentRef(
-        wire(Action::use(ArchiveProductAction::class)
-            ->context(['product_id' => $archived->getKey()])),
-    );
-
-    patch('/lattice/actions/workbench.products.archive', [], ['X-Lattice-Ref' => $ref])
+    $this->callAction(ArchiveProductAction::class, [], ['product_id' => $archived->getKey()])
         ->assertForbidden();
 });
 
@@ -57,15 +45,9 @@ test('bulk actions resolve the selection through the table and archive only thos
     $b = Product::factory()->create(['status' => 'active']);
     $c = Product::factory()->create(['status' => 'active']);
 
-    $ref = app(ComponentReferenceSigner::class)->seal(
-        'bulkAction',
-        'workbench.products.archive-selected',
-        ['table' => 'workbench.products'],
-    );
-
-    patch('/lattice/bulk-actions/workbench.products.archive-selected', [
+    $this->callBulkAction(ArchiveSelectedProductsAction::class, [
         'selected' => [$a->getKey(), $b->getKey()],
-    ], ['X-Lattice-Ref' => $ref])
+    ], ['table' => 'workbench.products'])
         ->assertOk()
         ->assertJsonPath('data.archived', 2);
 
@@ -80,15 +62,9 @@ test('bulk actions ignore selected ids that are not in the table result', functi
 
     $a = Product::factory()->create(['status' => 'active']);
 
-    $ref = app(ComponentReferenceSigner::class)->seal(
-        'bulkAction',
-        'workbench.products.archive-selected',
-        ['table' => 'workbench.products'],
-    );
-
-    patch('/lattice/bulk-actions/workbench.products.archive-selected', [
+    $this->callBulkAction(ArchiveSelectedProductsAction::class, [
         'selected' => [$a->getKey(), 999999],
-    ], ['X-Lattice-Ref' => $ref])
+    ], ['table' => 'workbench.products'])
         ->assertOk()
         ->assertJsonPath('data.archived', 1);
 
@@ -103,18 +79,12 @@ test('bulk actions resolve all matching rows with dedicated table filters', func
     $notFeatured = Product::factory()->create(['featured' => false, 'status' => 'active']);
     $draft = Product::factory()->create(['featured' => true, 'status' => 'draft']);
 
-    $ref = app(ComponentReferenceSigner::class)->seal(
-        'bulkAction',
-        'workbench.products.archive-selected',
-        ['table' => 'workbench.products'],
-    );
-
-    patch('/lattice/bulk-actions/workbench.products.archive-selected', [
+    $this->callBulkAction(ArchiveSelectedProductsAction::class, [
         'allMatching' => true,
         'tf' => [
             'featured' => 'true',
         ],
-    ], ['X-Lattice-Ref' => $ref])
+    ], ['table' => 'workbench.products'])
         ->assertOk()
         ->assertJsonPath('data.archived', 2);
 
@@ -137,15 +107,9 @@ test('bulk actions execute through their serialized component reference', functi
 
     $product = Product::factory()->create(['status' => 'active']);
 
-    $ref = data_get(
-        wire(BulkAction::use(ArchiveSelectedProductsAction::class)
-            ->context(['table' => 'workbench.products'])),
-        'props.ref',
-    );
-
-    patch('/lattice/bulk-actions/workbench.products.archive-selected', [
+    $this->callBulkAction(ArchiveSelectedProductsAction::class, [
         'selected' => [$product->getKey()],
-    ], ['X-Lattice-Ref' => $ref])
+    ], ['table' => 'workbench.products'])
         ->assertOk()
         ->assertJsonPath('data.archived', 1);
 

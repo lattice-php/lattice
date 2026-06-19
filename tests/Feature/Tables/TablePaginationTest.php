@@ -69,9 +69,7 @@ test('eloquent tables use table pagination with totals by default', function ():
 
     Lattice::tables([WorkbenchDefaultUsersTable::class]);
 
-    $ref = componentRef(wire(Table::use(WorkbenchDefaultUsersTable::class)));
-
-    latticeGet('/lattice/tables/workbench.default-users?per_page=2', $ref)
+    $this->loadTable(WorkbenchDefaultUsersTable::class, ['per_page' => 2])
         ->assertOk()
         ->assertJsonCount(2, 'data')
         ->assertJsonPath('pagination.mode', 'table')
@@ -93,9 +91,7 @@ test('eloquent tables can use simple pagination without totals', function (): vo
 
     Lattice::tables([WorkbenchSimpleUsersTable::class]);
 
-    $ref = componentRef(wire(Table::use(WorkbenchSimpleUsersTable::class)));
-
-    latticeGet('/lattice/tables/workbench.simple-users?per_page=2', $ref)
+    $this->loadTable(WorkbenchSimpleUsersTable::class, ['per_page' => 2])
         ->assertOk()
         ->assertJsonCount(2, 'data')
         ->assertJsonPath('pagination.mode', 'simple')
@@ -116,9 +112,7 @@ test('eloquent tables can disable pagination for small datasets', function (): v
 
     Lattice::tables([WorkbenchSmallUsersTable::class]);
 
-    $ref = componentRef(wire(Table::use(WorkbenchSmallUsersTable::class)));
-
-    latticeGet('/lattice/tables/workbench.small-users?per_page=1', $ref)
+    $this->loadTable(WorkbenchSmallUsersTable::class, ['per_page' => 1])
         ->assertOk()
         ->assertJsonCount(3, 'data')
         ->assertJsonPath('pagination.mode', 'none')

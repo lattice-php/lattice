@@ -251,9 +251,12 @@ test('registered tables serialize grid layout stack columns and row actions', fu
 test('registered tables parse clause filters sorts and pagination through the endpoint', function (): void {
     Lattice::tables([WorkbenchUsersTable::class]);
 
-    $ref = componentRef(wire(Table::use(WorkbenchUsersTable::class)));
-
-    latticeGet('/lattice/tables/workbench.users?filter=name:contains:tay,status:eq:active&sort=-name,email&page=2&per_page=50', $ref)
+    $this->loadTable(WorkbenchUsersTable::class, [
+        'filter' => 'name:contains:tay,status:eq:active',
+        'sort' => '-name,email',
+        'page' => 2,
+        'per_page' => 50,
+    ])
         ->assertOk()
         ->assertJsonPath('data.0.name', 'Taylor')
         ->assertJsonPath('state.filters.0.field', 'name')

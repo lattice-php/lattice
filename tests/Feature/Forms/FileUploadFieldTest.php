@@ -15,16 +15,6 @@ use Workbench\App\Forms\UploadForm;
 
 use function Pest\Laravel\post;
 
-/**
- * @param  array<string, mixed>  $component
- * @param  array<string, string>  $extra
- * @return array<string, string>
- */
-function uploadHeaders(array $component, array $extra = []): array
-{
-    return ['X-Lattice-Ref' => componentRef($component), ...$extra];
-}
-
 it('signs an upload through the form endpoint', function (): void {
     Storage::fake('s3');
     Storage::disk('s3')->buildTemporaryUploadUrlsUsing(
@@ -33,9 +23,7 @@ it('signs an upload through the form endpoint', function (): void {
 
     Lattice::forms([UploadForm::class]);
 
-    $form = wire(Form::use(UploadForm::class));
-
-    post('/lattice/forms/workbench.upload.form', ['_upload' => 'document', 'filename' => 'invoice.pdf'], uploadHeaders($form))
+    $this->submitForm(UploadForm::class, ['_upload' => 'document', 'filename' => 'invoice.pdf'])
         ->assertOk()
         ->assertJsonStructure(['key', 'url', 'headers', 'method']);
 });
@@ -48,15 +36,13 @@ it('signs an upload for a file field inside a repeater row', function (): void {
 
     Lattice::forms([UploadForm::class]);
 
-    $form = wire(Form::use(UploadForm::class));
-
-    post('/lattice/forms/workbench.upload.form', [
+    $this->submitForm(UploadForm::class, [
         '_upload' => 'documents.0.file',
         'filename' => 'invoice.pdf',
         'documents' => [
             ['file' => null],
         ],
-    ], uploadHeaders($form))
+    ])
         ->assertOk()
         ->assertJsonStructure(['key', 'url', 'headers', 'method']);
 });
@@ -104,9 +90,7 @@ it('returns 422 when the field does not use signed uploads', function (): void {
 
     Lattice::forms([UploadForm::class]);
 
-    $form = wire(Form::use(UploadForm::class));
-
-    post('/lattice/forms/workbench.upload.form', ['_upload' => 'avatar', 'filename' => 'photo.jpg'], uploadHeaders($form))
+    $this->submitForm(UploadForm::class, ['_upload' => 'avatar', 'filename' => 'photo.jpg'])
         ->assertStatus(422);
 });
 
@@ -115,9 +99,7 @@ it('returns 404 when the upload field does not exist', function (): void {
 
     Lattice::forms([UploadForm::class]);
 
-    $form = wire(Form::use(UploadForm::class));
-
-    post('/lattice/forms/workbench.upload.form', ['_upload' => 'nonexistent', 'filename' => 'file.pdf'], uploadHeaders($form))
+    $this->submitForm(UploadForm::class, ['_upload' => 'nonexistent', 'filename' => 'file.pdf'])
         ->assertNotFound();
 });
 
@@ -126,11 +108,9 @@ it('stores a multipart upload through the form', function (): void {
 
     Lattice::forms([UploadForm::class]);
 
-    $form = wire(Form::use(UploadForm::class));
-
-    post('/lattice/forms/workbench.upload.form', [
+    $this->submitForm(UploadForm::class, [
         'avatar' => UploadedFile::fake()->image('me.jpg'),
-    ], uploadHeaders($form))
+    ])
         ->assertRedirect('/uploads');
 
     $stored = session('upload')['avatar'];
@@ -149,7 +129,7 @@ it('rejects a multipart image upload that exceeds maxSize', function (): void {
 
     post('/lattice/forms/workbench.upload.form', [
         'avatar' => UploadedFile::fake()->create('huge.jpg', 5000, 'image/jpeg'),
-    ], uploadHeaders($form))
+    ], ['X-Lattice-Ref' => componentRef($form)])
         ->assertSessionHasErrors(['avatar']);
 });
 
@@ -162,10 +142,10 @@ it('accepts a signed tmp key that exists and rejects an out-of-prefix key', func
 
     $form = wire(Form::use(UploadForm::class));
 
-    post('/lattice/forms/workbench.upload.form', ['document' => 'tmp/real.pdf'], uploadHeaders($form))
+    post('/lattice/forms/workbench.upload.form', ['document' => 'tmp/real.pdf'], ['X-Lattice-Ref' => componentRef($form)])
         ->assertRedirect('/uploads');
 
-    post('/lattice/forms/workbench.upload.form', ['document' => 'uploads/secret.pdf'], uploadHeaders($form))
+    post('/lattice/forms/workbench.upload.form', ['document' => 'uploads/secret.pdf'], ['X-Lattice-Ref' => componentRef($form)])
         ->assertSessionHasErrors(['document']);
 });
 
@@ -176,9 +156,8 @@ it('deletes an existing file when its removal token is submitted', function (): 
     $token = $signer->seal('file', 'avatar', ['disk' => 'public', 'path' => 'uploads/old.jpg']);
 
     Lattice::forms([UploadForm::class]);
-    $form = wire(Form::use(UploadForm::class));
 
-    post('/lattice/forms/workbench.upload.form', ['avatar__removed' => [$token]], uploadHeaders($form))
+    $this->submitForm(UploadForm::class, ['avatar__removed' => [$token]])
         ->assertRedirect('/uploads');
 
     Storage::disk('public')->assertMissing('uploads/old.jpg');
@@ -189,9 +168,8 @@ it('ignores a forged removal token (no deletion)', function (): void {
     Storage::disk('public')->put('uploads/keep.jpg', 'data');
 
     Lattice::forms([UploadForm::class]);
-    $form = wire(Form::use(UploadForm::class));
 
-    post('/lattice/forms/workbench.upload.form', ['avatar__removed' => ['forged']], uploadHeaders($form))
+    $this->submitForm(UploadForm::class, ['avatar__removed' => ['forged']])
         ->assertRedirect('/uploads');
 
     Storage::disk('public')->assertExists('uploads/keep.jpg');

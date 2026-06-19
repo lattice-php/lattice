@@ -28,9 +28,8 @@ it('marks a form-action component as lazy without inlining the schema', function
 
 it('returns a prefilled schema for a lazy form action', function (): void {
     Lattice::actions([EditActionFixture::class]);
-    $ref = componentRef(wire(ActionComponent::use(EditActionFixture::class)->context(['current_title' => 'Existing'])));
 
-    postJson('/lattice/actions/test.edit', ['_form' => true], latticeHeaders($ref))
+    $this->callAction(EditActionFixture::class, ['_form' => true], ['current_title' => 'Existing'])
         ->assertOk()
         ->assertJsonPath('type', 'form')
         ->assertJsonPath('props.state.title', 'Existing');
@@ -72,9 +71,8 @@ class EditActionFixture extends FormActionDefinition
 
 it('validates the embedded form and hands the data to handle', function (): void {
     Lattice::actions([RejectActionFixture::class]);
-    $ref = componentRef(wire(ActionComponent::use(RejectActionFixture::class)));
 
-    postJson('/lattice/actions/test.reject', ['reason' => 'spam'], latticeHeaders($ref))
+    $this->callAction(RejectActionFixture::class, ['reason' => 'spam'])
         ->assertOk()
         ->assertJsonPath('ok', true)
         ->assertJsonPath('data.reason', 'spam');
@@ -82,18 +80,16 @@ it('validates the embedded form and hands the data to handle', function (): void
 
 it('rejects an invalid embedded form with a 422', function (): void {
     Lattice::actions([RejectActionFixture::class]);
-    $ref = componentRef(wire(ActionComponent::use(RejectActionFixture::class)));
 
-    postJson('/lattice/actions/test.reject', ['reason' => ''], latticeHeaders($ref))
+    $this->callAction(RejectActionFixture::class, ['reason' => ''])
         ->assertStatus(422)
         ->assertJsonValidationErrors('reason');
 });
 
 it('validates final embedded form submissions before handle is called', function (): void {
     Lattice::actions([UnvalidatedRejectActionFixture::class]);
-    $ref = componentRef(wire(ActionComponent::use(UnvalidatedRejectActionFixture::class)));
 
-    postJson('/lattice/actions/test.unvalidated-reject', ['reason' => ''], latticeHeaders($ref))
+    $this->callAction(UnvalidatedRejectActionFixture::class, ['reason' => ''])
         ->assertStatus(422)
         ->assertJsonValidationErrors('reason');
 
@@ -119,9 +115,8 @@ it('validates the embedded form precognitively without running handle', function
 
 it('resolves searchable options for an embedded select', function (): void {
     Lattice::actions([AssignActionFixture::class]);
-    $ref = componentRef(wire(ActionComponent::use(AssignActionFixture::class)));
 
-    postJson('/lattice/actions/test.assign', ['_search' => 'owner', 'q' => 'taylor'], latticeHeaders($ref))
+    $this->callAction(AssignActionFixture::class, ['_search' => 'owner', 'q' => 'taylor'])
         ->assertOk()
         ->assertJsonPath('options.0.label', 'Match: taylor')
         ->assertJsonPath('options.0.value', '7');
@@ -129,9 +124,8 @@ it('resolves searchable options for an embedded select', function (): void {
 
 it('resolves computed fields for an embedded form', function (): void {
     Lattice::actions([AssignActionFixture::class]);
-    $ref = componentRef(wire(ActionComponent::use(AssignActionFixture::class)));
 
-    postJson('/lattice/actions/test.assign', ['_resolve' => true, 'qty' => '5'], latticeHeaders($ref))
+    $this->callAction(AssignActionFixture::class, ['_resolve' => true, 'qty' => '5'])
         ->assertOk()
         ->assertJsonPath('values.total', 7.5);
 });
