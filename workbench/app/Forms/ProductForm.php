@@ -31,7 +31,7 @@ class ProductForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent
     {
-        $product = $this->product($request);
+        $product = $this->product();
 
         return $form
             ->precognitive(2650)
@@ -47,7 +47,7 @@ class ProductForm extends FormDefinition
                             Choice::option(__('workbench.forms.product.status.active'), 'active'),
                             Choice::option(__('workbench.forms.product.status.archived'), 'archived'),
                         ])
-                        ->rules(['required', 'string', Rule::in(['draft', 'active', 'archived'])]),
+                        ->rules(['required', 'string']),
                     $this->imageUploadField(),
                     Select::make('related_products', __('workbench.forms.product.fields.related-products'))
                         ->multiple()
@@ -78,7 +78,7 @@ class ProductForm extends FormDefinition
 
     public function handle(Request $request): Response
     {
-        $product = $this->product($request);
+        $product = $this->product();
         $validated = $this->validate($request);
 
         $relatedIds = $validated['related_products'] ?? [];
@@ -278,9 +278,9 @@ class ProductForm extends FormDefinition
             .($extension !== '' ? '.'.$extension : '');
     }
 
-    private function product(Request $request): ?Product
+    private function product(): ?Product
     {
-        $id = $this->context($request, 'product_id');
+        $id = $this->context('product_id');
 
         if ($id === null || $id === '') {
             return null;

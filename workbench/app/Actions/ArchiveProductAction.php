@@ -30,12 +30,12 @@ class ArchiveProductAction extends ActionDefinition
     #[\Override]
     public function authorize(Request $request): bool
     {
-        return $this->product($request)->status !== 'archived';
+        return $this->product()->status !== 'archived';
     }
 
     public function handle(Request $request): ActionResult
     {
-        $product = $this->product($request);
+        $product = $this->product();
         $product->update(['status' => 'archived']);
 
         return ActionResult::success(['id' => $product->getKey()])
@@ -47,8 +47,8 @@ class ArchiveProductAction extends ActionDefinition
             ->reloadComponent('workbench.products');
     }
 
-    private function product(Request $request): Product
+    private function product(): Product
     {
-        return Product::query()->findOrFail($this->context($request, 'product_id'));
+        return Product::query()->findOrFail($this->context('product_id'));
     }
 }

@@ -12,8 +12,6 @@ interface SignsComponentReferences
      */
     public function seal(string $type, string $key, array $context): string;
 
-    public function mergeTrustedContext(Request $request, string $type, string $key): Request;
-
     /**
      * @return array<string, mixed>
      */

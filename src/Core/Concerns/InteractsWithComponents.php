@@ -15,7 +15,7 @@ trait InteractsWithComponents
      * @template TDefinition of Definition
      *
      * @param  DefinitionRegistry<TDefinition>  $registry
-     * @return array{0: Request, 1: TDefinition}
+     * @return array{0: Request, 1: TDefinition, 2: array<string, mixed>}
      */
     protected function authorizeComponent(
         Request $request,
@@ -24,16 +24,16 @@ trait InteractsWithComponents
         string $type,
         string $key,
     ): array {
-        $request = $references->mergeTrustedContext($request, $type, $key);
+        $context = $references->trustedContext($request, $type, $key);
 
         try {
-            $definition = $registry->resolve($key);
+            $definition = $registry->resolve($key)->withContext($context);
         } catch (UnknownComponent) {
             abort(404);
         }
 
         abort_unless($definition->authorize($request), 403);
 
-        return [$request, $definition];
+        return [$request, $definition, $context];
     }
 }

@@ -33,7 +33,7 @@ class SalesOrderForm extends FormDefinition
 
     public function definition(FormComponent $form, Request $request): FormComponent
     {
-        $order = $this->order($request);
+        $order = $this->order();
 
         $schema = [
             Card::make(__('workbench.commerce.sales-orders.form.details-card'))->schema([
@@ -97,7 +97,7 @@ class SalesOrderForm extends FormDefinition
 
     public function handle(Request $request): Response
     {
-        $order = $this->order($request);
+        $order = $this->order();
         $validated = $this->validate($request);
 
         $lineRows = $validated['lines'] ?? [];
@@ -203,9 +203,9 @@ class SalesOrderForm extends FormDefinition
         return 'SO-'.str_pad((string) $sequence, 4, '0', STR_PAD_LEFT);
     }
 
-    private function order(Request $request): ?SalesOrder
+    private function order(): ?SalesOrder
     {
-        $id = $this->context($request, 'sales_order_id');
+        $id = $this->context('sales_order_id');
 
         if ($id === null || $id === '') {
             return null;

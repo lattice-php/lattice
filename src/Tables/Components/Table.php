@@ -69,22 +69,24 @@ class Table extends Component
 
     /**
      * @param  class-string<TableDefinition>  $table
+     * @param  array<string, mixed>  $context
      */
-    public static function use(string $table): static
+    public static function use(string $table, array $context = []): static
     {
         /** @var static $registered */
-        $registered = app(TableRegistry::class)->component($table);
+        $registered = app(TableRegistry::class)->component($table, $context);
 
         return clone $registered;
     }
 
     /**
      * @param  class-string<TableDefinition>  $table
+     * @param  array<string, mixed>  $context
      */
-    public static function lazy(string $table): static
+    public static function lazy(string $table, array $context = []): static
     {
         /** @var static $registered */
-        $registered = app(TableRegistry::class)->lazyComponent($table);
+        $registered = app(TableRegistry::class)->lazyComponent($table, $context);
 
         return clone $registered;
     }

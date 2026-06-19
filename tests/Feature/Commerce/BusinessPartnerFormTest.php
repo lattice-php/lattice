@@ -105,10 +105,8 @@ test('the business partner edit page renders the effective prices panel', functi
     $product = Product::factory()->withoutDefaultPrice()->create(['name' => 'Widget Pro']);
     SalesPrice::factory()->create(['product_id' => $product->getKey(), 'group_id' => null, 'amount' => '99.00']);
 
-    $formDef = new BusinessPartnerForm;
-    $request = Request::create('/test', 'GET', [
-        'context' => ['business_partner_id' => $partner->getKey()],
-    ]);
+    $formDef = (new BusinessPartnerForm)->withContext(['business_partner_id' => $partner->getKey()]);
+    $request = Request::create('/test', 'GET');
 
     $schema = wire($formDef->definition(Form::make('workbench.business-partners.form'), $request))['schema'];
 

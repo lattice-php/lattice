@@ -41,7 +41,7 @@ class BusinessPartnerEditPage extends WorkbenchPage
                 ->gap(Gap::Large)
                 ->schema([
                     Heading::make(__('workbench.commerce.business-partners.pages.edit.heading')),
-                    Form::use(BusinessPartnerForm::class)
+                    Form::use(BusinessPartnerForm::class, ['business_partner_id' => $businessPartner->getKey()])
                         ->method(HttpMethod::Patch)
                         ->submitLabel(__('workbench.commerce.business-partners.pages.edit.submit'))
                         ->fill([
@@ -55,9 +55,6 @@ class BusinessPartnerEditPage extends WorkbenchPage
                             'default_billing_address_id' => $businessPartner->default_billing_address_id !== null
                                 ? (string) $businessPartner->default_billing_address_id
                                 : null,
-                        ])
-                        ->context([
-                            'business_partner_id' => $businessPartner->getKey(),
                         ]),
                 ]),
         ]);

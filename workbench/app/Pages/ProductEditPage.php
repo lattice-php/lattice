@@ -30,7 +30,7 @@ class ProductEditPage extends WorkbenchPage
                 ->gap(Gap::Large)
                 ->schema([
                     Heading::make(__('workbench.pages.product-edit.heading')),
-                    Form::use(ProductForm::class)
+                    Form::use(ProductForm::class, ['product_id' => $product->getKey()])
                         ->method(HttpMethod::Patch)
                         ->submitLabel(__('workbench.pages.product-edit.submit'))
                         ->fill([
@@ -40,9 +40,6 @@ class ProductEditPage extends WorkbenchPage
                             'related_products' => $product->relatedProducts()->pluck('products.id')->all(),
                             'images' => $productForm->imagePaths($product),
                             'sales_prices' => $productForm->salesPriceRows($product),
-                        ])
-                        ->context([
-                            'product_id' => $product->getKey(),
                         ]),
                 ]),
         ]);

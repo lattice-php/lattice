@@ -17,12 +17,15 @@ final class FragmentRegistry extends DefinitionRegistry
 {
     /**
      * @param  class-string<FragmentDefinition>  $fragment
+     * @param  array<string, mixed>  $context
      */
-    public function lazyComponent(string $fragment): FragmentComponent
+    public function lazyComponent(string $fragment, array $context = []): FragmentComponent
     {
         $key = $this->registeredKeyFor($fragment);
 
         $component = FragmentComponent::make($key)
+            ->signedAs($key)
+            ->context($context)
             ->endpoint($this->endpointFor($key));
 
         $component->lazy = true;

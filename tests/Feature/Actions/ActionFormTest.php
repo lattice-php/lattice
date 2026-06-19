@@ -61,7 +61,7 @@ class EditActionFixture extends FormActionDefinition
     {
         return $form
             ->schema([TextInput::make('title', 'Title')->required()])
-            ->fill(['title' => $this->context($request, 'current_title')]);
+            ->fill(['title' => $this->context('current_title')]);
     }
 
     public function handle(Request $request): ActionResult

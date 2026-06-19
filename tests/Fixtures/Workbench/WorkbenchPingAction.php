@@ -27,7 +27,7 @@ class WorkbenchPingAction extends ActionDefinition
     {
         return ActionResult::success([
             'handled' => $request->string('name')->toString(),
-            'team' => data_get($request->input('context', []), 'team'),
+            'team' => $this->context('team'),
         ])
             ->toast(Variant::Info, 'Action handled.')
             ->reloadComponent('workbench.users');

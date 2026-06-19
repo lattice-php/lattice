@@ -74,15 +74,6 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
         return is_array($payload['context'] ?? null) ? $payload['context'] : [];
     }
 
-    public function mergeTrustedContext(Request $request, string $type, string $key): Request
-    {
-        $request->merge([
-            'context' => $this->trustedContext($request, $type, $key),
-        ]);
-
-        return $request;
-    }
-
     /**
      * @return array<string, mixed>
      */

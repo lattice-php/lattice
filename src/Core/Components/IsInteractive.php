@@ -11,6 +11,13 @@ trait IsInteractive
 {
     protected ?string $id = null;
 
+    /**
+     * The key the reference is sealed under (the registered definition slug).
+     * Defaults to the id, so the DOM id can vary freely per instance while the
+     * sealed key still matches the endpoint slug.
+     */
+    protected ?string $signatureKey = null;
+
     /** @var array<string, mixed> */
     protected array $context = [];
 
@@ -23,6 +30,16 @@ trait IsInteractive
     public function id(string $id): static
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Set the key the reference is sealed under (the registered definition slug).
+     */
+    public function signedAs(string $signatureKey): static
+    {
+        $this->signatureKey = $signatureKey;
 
         return $this;
     }
@@ -66,7 +83,7 @@ trait IsInteractive
                 ));
             }
 
-            $props['ref'] = app(SignsComponentReferences::class)->seal($this->type(), $this->id, $this->context);
+            $props['ref'] = app(SignsComponentReferences::class)->seal($this->type(), $this->signatureKey ?? $this->id, $this->context);
         }
 
         return $props;

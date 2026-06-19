@@ -16,13 +16,17 @@ final class FormRegistry extends DefinitionRegistry
 {
     /**
      * @param  class-string<FormDefinition>  $form
+     * @param  array<string, mixed>  $context
      */
-    public function component(string $form): FormComponent
+    public function component(string $form, array $context = []): FormComponent
     {
         $key = $this->registeredKeyFor($form);
 
+        $component = FormComponent::make($key)->signedAs($key)->context($context);
+
         return $this->make($form)
-            ->definition(FormComponent::make($key), $this->container->make(Request::class))
+            ->withContext($context)
+            ->definition($component, $this->container->make(Request::class))
             ->action($this->endpointFor($key))
             ->errorBag($this->errorBagFor($key));
     }

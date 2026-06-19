@@ -21,7 +21,7 @@ class DiscoveredProfileForm extends FormDefinition
 
     public function handle(Request $request): Response|Responsable
     {
-        $request->session()->put('discovered-form-team', $this->context($request, 'team'));
+        $request->session()->put('discovered-form-team', $this->context('team'));
 
         return response()->noContent();
     }

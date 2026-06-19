@@ -16,13 +16,17 @@ final class BulkActionRegistry extends DefinitionRegistry
 {
     /**
      * @param  class-string<BulkActionDefinition>  $bulkAction
+     * @param  array<string, mixed>  $context
      */
-    public function component(string $bulkAction): ActionComponent
+    public function component(string $bulkAction, array $context = []): ActionComponent
     {
         $key = $this->registeredKeyFor($bulkAction);
 
         return $this->make($bulkAction)
+            ->withContext($context)
             ->definition(BulkActionComponent::make($key))
+            ->signedAs($key)
+            ->context($context)
             ->endpoint($this->endpointFor($key));
     }
 

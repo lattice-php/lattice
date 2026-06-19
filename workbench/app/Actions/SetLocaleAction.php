@@ -21,7 +21,7 @@ class SetLocaleAction extends ActionDefinition
 
     public function handle(Request $request): ActionResult
     {
-        $locale = $this->context($request, 'locale');
+        $locale = $this->context('locale');
         $configured = config('lattice.i18n.locales', []);
         $locales = is_array($configured)
             ? array_values(array_filter($configured, is_string(...)))

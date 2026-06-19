@@ -32,7 +32,7 @@ final readonly class BulkActionController
     {
         $this->markPrecognitive($request);
 
-        [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->bulkActions, 'bulkAction', $bulkAction);
+        [$request, $definition, $context] = $this->authorizeComponent($request, $this->references, $this->bulkActions, 'bulkAction', $bulkAction);
 
         if (($response = $this->formSubRequest($request, $definition)) instanceof Response) {
             return $response;
@@ -42,8 +42,8 @@ final readonly class BulkActionController
             return $this->validatePrecognitive($request, fn () => $definition->validate($request));
         }
 
-        $tableKey = $this->trustedTableKey($request);
-        $table = $this->resolveTable($tableKey);
+        $tableKey = $this->trustedTableKey($context);
+        $table = $this->resolveTable($tableKey)->withContext($context);
 
         abort_unless($table->authorize($request), 403);
 
@@ -74,9 +74,12 @@ final readonly class BulkActionController
         return $source->resolveSelection($this->selectedKeys($request));
     }
 
-    private function trustedTableKey(Request $request): string
+    /**
+     * @param  array<string, mixed>  $context
+     */
+    private function trustedTableKey(array $context): string
     {
-        $key = data_get($request->input('context', []), 'table');
+        $key = data_get($context, 'table');
 
         abort_unless(is_string($key), 422);
 

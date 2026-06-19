@@ -195,6 +195,18 @@ abstract class Field extends Component
     }
 
     /**
+     * Rules the field contributes intrinsically, before any added via rules().
+     * Overridden by fields with a built-in constraint (e.g. a Choice limiting
+     * its value to the configured options).
+     *
+     * @return array<int, mixed>
+     */
+    protected function defaultRules(): array
+    {
+        return [];
+    }
+
+    /**
      * @internal
      *
      * @return array<int, mixed>
@@ -202,7 +214,7 @@ abstract class Field extends Component
     public function resolveRules(FormData $data, Request $request): array
     {
         $context = $this->evaluationContext($data, $request);
-        $resolved = [];
+        $resolved = $this->defaultRules();
 
         foreach ($this->rules as $rule) {
             if ($rule instanceof Closure) {

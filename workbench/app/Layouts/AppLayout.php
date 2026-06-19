@@ -185,16 +185,14 @@ class AppLayout extends LayoutDefinition
                 ),
             ])
             ->items([
-                ActionComponent::use(SetLocaleAction::class)
+                ActionComponent::use(SetLocaleAction::class, ['locale' => 'en'])
                     ->key('locale-en')
                     ->label(__('workbench.language.en'))
-                    ->variant(ButtonVariant::Ghost)
-                    ->context(['locale' => 'en']),
-                ActionComponent::use(SetLocaleAction::class)
+                    ->variant(ButtonVariant::Ghost),
+                ActionComponent::use(SetLocaleAction::class, ['locale' => 'de'])
                     ->key('locale-de')
                     ->label(__('workbench.language.de'))
-                    ->variant(ButtonVariant::Ghost)
-                    ->context(['locale' => 'de']),
+                    ->variant(ButtonVariant::Ghost),
             ]);
     }
 

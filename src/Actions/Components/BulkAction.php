@@ -12,12 +12,13 @@ class BulkAction extends Action
 {
     /**
      * @param  class-string<BulkActionDefinition>  $action
+     * @param  array<string, mixed>  $context
      */
     #[\Override]
-    public static function use(string $action): static
+    public static function use(string $action, array $context = []): static
     {
         /** @var static $registered */
-        $registered = app(BulkActionRegistry::class)->component($action);
+        $registered = app(BulkActionRegistry::class)->component($action, $context);
 
         return clone $registered;
     }

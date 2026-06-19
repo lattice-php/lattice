@@ -46,11 +46,12 @@ class Action extends Component
 
     /**
      * @param  class-string<ActionDefinition>  $action
+     * @param  array<string, mixed>  $context
      */
-    public static function use(string $action): static
+    public static function use(string $action, array $context = []): static
     {
         /** @var static $registered */
-        $registered = app(ActionRegistry::class)->component($action);
+        $registered = app(ActionRegistry::class)->component($action, $context);
 
         return clone $registered;
     }

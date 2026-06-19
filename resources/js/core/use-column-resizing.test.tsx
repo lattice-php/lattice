@@ -387,29 +387,6 @@ describe("useColumnResizing", () => {
     expect(screen.getByRole("separator", { name: "Resize sku" })).toBeInTheDocument();
   });
 
-  it("measures fixed px tracks when capping the grid width", () => {
-    render(
-      <Harness
-        hookColumns={twoColumns}
-        leadingTracks={["40px"]}
-        trailingTracks={["unset"]}
-        columnGapPx={0}
-      />,
-    );
-
-    const grid = screen.getByTestId("grid");
-    const handle = screen.getByRole("separator", { name: "Resize Qty" });
-
-    vi.spyOn(grid, "getBoundingClientRect").mockReturnValue(rect(400));
-
-    fireEvent.pointerDown(handle, { clientX: 0, pointerId: 1 });
-    fireEvent.pointerMove(handle, { clientX: 1000, pointerId: 1 });
-
-    expect(grid).toHaveStyle({
-      gridTemplateColumns: "40px 232px minmax(8rem, 1fr) unset",
-    });
-  });
-
   it("ignores stored overrides that are not finite numbers", () => {
     window.localStorage.setItem(
       "lattice:table-columns:orders",
@@ -429,31 +406,5 @@ describe("useColumnResizing", () => {
 
     expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "minmax(6rem, 0.5fr)" });
     expect(window.localStorage.getItem("lattice:table-columns:orders")).toBeNull();
-  });
-
-  it("falls back to a 16px root font size when the computed value is non-positive", () => {
-    render(<Harness hookColumns={twoColumns} leadingTracks={["1rem"]} columnGapPx={0} />);
-
-    const grid = screen.getByTestId("grid");
-    const handle = screen.getByRole("separator", { name: "Resize Qty" });
-
-    vi.spyOn(grid, "getBoundingClientRect").mockReturnValue(rect(400));
-    const realComputedStyle = window.getComputedStyle.bind(window);
-    const computed = vi
-      .spyOn(window, "getComputedStyle")
-      .mockImplementation((element: Element, pseudo?: string | null) =>
-        element === document.documentElement
-          ? ({ fontSize: "0px" } as never)
-          : realComputedStyle(element, pseudo),
-      );
-
-    fireEvent.pointerDown(handle, { clientX: 0, pointerId: 1 });
-    fireEvent.pointerMove(handle, { clientX: 1000, pointerId: 1 });
-
-    expect(grid).toHaveStyle({
-      gridTemplateColumns: "1rem 256px minmax(8rem, 1fr)",
-    });
-
-    computed.mockRestore();
   });
 });

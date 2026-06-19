@@ -30,8 +30,8 @@ class EditProductAction extends FormActionDefinition
 
     public function formSchema(Form $form, Request $request): Form
     {
-        $product = $this->product($request);
-        $productForm = app(ProductForm::class);
+        $product = $this->product();
+        $productForm = app(ProductForm::class)->withContext(['product_id' => $product->getKey()]);
 
         return $productForm->definition($form, $request)->fill([
             'name' => $product->name,
@@ -46,7 +46,7 @@ class EditProductAction extends FormActionDefinition
     public function handle(Request $request): ActionResult
     {
         $data = $this->validate($request);
-        $product = $this->product($request);
+        $product = $this->product();
 
         $relatedIds = $data['related_products'] ?? [];
         $priceRows = $data['sales_prices'] ?? [];
@@ -69,17 +69,16 @@ class EditProductAction extends FormActionDefinition
             ->toast(
                 ToastMessage::make(Variant::Success, __('workbench.actions.edit.toast'))
                     ->action(
-                        Action::use(RejectProductAction::class)
-                            ->label(__('workbench.actions.edit.reject-product'))
-                            ->context(['product_id' => $product->getKey()]),
+                        Action::use(RejectProductAction::class, ['product_id' => $product->getKey()])
+                            ->label(__('workbench.actions.edit.reject-product')),
                     )
                     ->persistent(),
             )
             ->reloadComponent('workbench.products');
     }
 
-    private function product(Request $request): Product
+    private function product(): Product
     {
-        return Product::query()->findOrFail($this->context($request, 'product_id'));
+        return Product::query()->findOrFail($this->context('product_id'));
     }
 }
