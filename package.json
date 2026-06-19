@@ -195,6 +195,7 @@
     "build:lib:watch": "vite build --mode lib --watch",
     "prepack": "npm run build:lib",
     "test": "vitest run",
+    "test:browser": "vitest run --project browser",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "type-coverage": "type-coverage --project tsconfig.json --at-least 99.5",
@@ -266,6 +267,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.2",
+    "@vitest/browser-playwright": "^4.1.8",
     "@vitest/coverage-v8": "^4.1.8",
     "astro": "7.0.0-beta.3",
     "astro-og-canvas": "^0.11.1",
@@ -289,6 +291,7 @@
     "typescript": "^6.0.3",
     "vite": "^8.0.0",
     "vite-plugin-dts": "^4.5.4",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.8",
+    "vitest-browser-react": "^2.2.0"
   }
 }

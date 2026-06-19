@@ -27,6 +27,25 @@ jobs:
 
       - run: npm ci
 
+      - name: Resolve Playwright version
+        id: js-pw
+        run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: js-pw-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.js-pw.outputs.version }}
+
+      - name: Install Playwright browser and system deps
+        if: steps.js-pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright system deps only
+        if: steps.js-pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
       - run: npm run format:check
 
       - run: npm run lint:github
