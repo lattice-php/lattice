@@ -20,8 +20,6 @@ afterEach(() => {
 });
 
 describe("builtinEffectHandlers", () => {
-  // ── Imperative handlers ─────────────────────────────────────────────────
-
   it("reloadPage calls router.reload()", () => {
     builtinEffectHandlers.reloadPage({ type: "reloadPage" } as never);
     expect(router.reload).toHaveBeenCalledOnce();
@@ -47,7 +45,6 @@ describe("builtinEffectHandlers", () => {
 
     expect(click).toHaveBeenCalledOnce();
     expect(hrefs[0]).toContain("/exports/report.csv");
-    // anchor must be removed from the DOM after the click
     expect(document.querySelector("a")).toBeNull();
   });
 
@@ -82,8 +79,6 @@ describe("builtinEffectHandlers", () => {
 
     expect(fired).toEqual([]);
   });
-
-  // ── Bridged handlers (lattice:* DOM events) ─────────────────────────────
 
   it("toast bridges to the lattice:toast DOM event", () => {
     const listener = vi.fn<(event: Event) => void>();

@@ -6,7 +6,6 @@ function isTruthy(value: unknown): boolean {
   return value === true || value === 1 || value === "1" || value === "true";
 }
 
-/** Renders a boolean column as a check (truthy) or cross (falsy) icon. */
 export const BooleanCell: ColumnCellComponent<"column.boolean"> = ({ value }) => {
   const truthy = isTruthy(value);
 

@@ -17,7 +17,6 @@ export type ControlledField = FieldState & {
   commit: (value: unknown) => void;
 };
 
-/** Shared wiring read by every store-controlled, condition-aware field. */
 export function useControlledField(node: Node): ControlledField {
   const { errors } = useFormContext();
   const scope = useFieldScope();

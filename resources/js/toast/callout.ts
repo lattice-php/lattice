@@ -4,7 +4,6 @@ import { isVariant } from "@lattice-php/lattice/toast/toast";
 
 export type { Callout };
 
-/** Coerce a raw callout value (effect detail `{ callout: {...} }`) into a Callout. */
 export function normalizeCallout(detail: unknown): Callout | null {
   if (typeof detail !== "object" || detail === null) {
     return null;
@@ -31,7 +30,6 @@ export function normalizeCallout(detail: unknown): Callout | null {
   };
 }
 
-/** Subscribe to the `lattice:callout` bus. Returns an unsubscribe function. */
 export function onCallout(callback: (callout: Callout) => void): () => void {
   const listener = (event: Event): void => {
     const callout = normalizeCallout((event as CustomEvent).detail);

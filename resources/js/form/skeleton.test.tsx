@@ -21,7 +21,6 @@ describe("FormSkeletonComponent", () => {
 
     const { container } = render(<FormSkeletonComponent node={node}>{null}</FormSkeletonComponent>);
 
-    // 2 visible fields × (label + input) + 1 submit placeholder.
     expect(container.querySelectorAll('[data-slot="skeleton"]')).toHaveLength(5);
   });
 });

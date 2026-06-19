@@ -12,12 +12,14 @@ it('keeps the committed generated.ts in sync with the transformer', function ():
     $before = file_get_contents($path);
     $manifestBefore = file_exists($manifest) ? file_get_contents($manifest) : null;
 
-    artisan('lattice:typescript')->assertSuccessful();
+    try {
+        artisan('lattice:typescript')->assertSuccessful();
 
-    $after = file_get_contents($path);
+        $after = file_get_contents($path);
 
-    file_put_contents($path, $before); // restore regardless of outcome
-    $manifestBefore === null ? @unlink($manifest) : file_put_contents($manifest, $manifestBefore);
-
-    expect($after)->toBe($before);
+        expect($after)->toBe($before);
+    } finally {
+        file_put_contents($path, $before);
+        $manifestBefore === null ? @unlink($manifest) : file_put_contents($manifest, $manifestBefore);
+    }
 });

@@ -132,10 +132,6 @@ test('interaction endpoints re-run authorization for every interaction', functio
         ->assertForbidden();
 });
 
-// ---------------------------------------------------------------------------
-// Inline fixture classes required only by this file
-// ---------------------------------------------------------------------------
-
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Attributes\AsAction;

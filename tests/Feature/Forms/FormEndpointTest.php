@@ -106,10 +106,6 @@ test('registered forms receive the current request while serializing definitions
         ->assertJsonPath('schema.0.props.text', 'Request aware');
 });
 
-// ---------------------------------------------------------------------------
-// Inline fixture classes required only by this file
-// ---------------------------------------------------------------------------
-
 #[AsForm('settings.profile')]
 class WorkbenchProfileForm extends FormDefinition
 {

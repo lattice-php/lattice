@@ -78,10 +78,6 @@ test('loadFragment seals the ref and gets the lazy fragment endpoint', function 
         ->assertJsonPath('schema.0.props.text', 'Fragment loaded.');
 });
 
-// ---------------------------------------------------------------------------
-// Inline fixture classes required only by this file
-// ---------------------------------------------------------------------------
-
 #[AsForm('helper.demo')]
 class HelperDemoForm extends FormDefinition
 {

@@ -120,10 +120,6 @@ test('eloquent tables can disable pagination for small datasets', function (): v
         ->assertJsonPath('pagination.hasMore', false);
 });
 
-// ---------------------------------------------------------------------------
-// Inline fixture classes required only by this file
-// ---------------------------------------------------------------------------
-
 /**
  * @extends EloquentTableDefinition<User>
  *

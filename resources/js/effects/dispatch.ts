@@ -5,7 +5,6 @@ import type { EffectHandlerRegistry } from "./registry";
 
 export type ActionEffect = Effect;
 
-/** The server's action response. Fields are optional: a handler may omit any of them. */
 export type ActionResponse = Partial<ActionResult>;
 
 /**

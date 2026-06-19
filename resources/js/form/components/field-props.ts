@@ -29,7 +29,6 @@ export function fieldProps(node: Node): FieldProps {
   return node.props as FieldProps;
 }
 
-/** The single schema traversal shared by the label/value and dependency-watch collectors. */
 export function walkFields(
   nodes: Node[] | undefined,
   visit: (props: FieldProps, node: Node) => void,

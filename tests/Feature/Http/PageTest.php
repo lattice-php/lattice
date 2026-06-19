@@ -253,10 +253,6 @@ test('directly returned pages resolve render dependencies through the container,
         ->assertStatus(302);
 });
 
-// ---------------------------------------------------------------------------
-// Inline fixture classes required only by this file
-// ---------------------------------------------------------------------------
-
 final class WorkbenchTabsPage extends Page
 {
     public function render(PageSchema $schema): PageSchema

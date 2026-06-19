@@ -22,11 +22,8 @@ it("keeps a visually-hidden accessible label inside a table cell", () => {
       </FormFieldFrame>
     </TableCellProvider>,
   );
-  // input is accessibly labeled via the sr-only <label for="qty">
   expect(screen.getByLabelText("Qty")).toBeInTheDocument();
-  // the error still renders
   expect(screen.getByText("bad")).toBeInTheDocument();
-  // the label is visually hidden
   expect(screen.getByText("Qty")).toHaveClass("sr-only");
 });
 
