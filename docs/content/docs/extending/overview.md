@@ -51,6 +51,8 @@ php artisan lattice:column StatusBadge
 
 Each command accepts `--type=` to override the derived type string.
 
+See [Artisan commands](/core/artisan-commands/) for the full CLI reference.
+
 ## Type generation
 
 After adding custom props to a PHP class, run:

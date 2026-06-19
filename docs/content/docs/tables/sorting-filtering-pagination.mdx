@@ -201,7 +201,7 @@ Dedicated filter values post as Laravel bracket params — `tf[status]=active`, 
 `tf[status][]=…` for multi-select, and `tf[created][from]=…` / `[until]` for a range. They're
 validated against the declared filters, then applied by the [data source](/tables/overview/#data-sources).
 A custom `Filter::query()` closure runs server-side with utility injection — type-hint `Builder` to
-receive the query.
+receive the query. See [Closure evaluation](/core/closure-evaluation/) for the resolver contract.
 
 <Info>
 Dedicated filters are independent of a column's `->filterable()`: column filters compare one column

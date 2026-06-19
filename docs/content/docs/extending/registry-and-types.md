@@ -212,6 +212,8 @@ export {};
 
 Without this file, `node.props` and `column.props` fall back to `Record<string, unknown>`. The renderers still work — types are just not narrowed.
 
+See [Artisan commands](/core/artisan-commands/) for the full command reference.
+
 ### Augmenting manually
 
 If you prefer not to run the generator, augment the interfaces directly in any `.d.ts` file included in your `tsconfig.json`:
