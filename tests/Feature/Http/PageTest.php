@@ -214,6 +214,25 @@ test('a page can be returned directly and renders through the responsable contra
         );
 });
 
+test('directly returned pages resolve route arguments and bound models in render', function (): void {
+    $user = UserFactory::new()->create([
+        'name' => 'Route Bound User',
+    ]);
+
+    Route::get('responsable-injection/{user}/{label}', fn (User $user): Page => app(WorkbenchInjectedPage::class))
+        ->middleware('web')
+        ->name('responsable-injection.show');
+
+    withoutVite();
+
+    get("/responsable-injection/{$user->getKey()}/details")
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->component('lattice/page')
+            ->where('lattice.schema.0.props.text', 'Injected Route Bound User details details')
+        );
+});
+
 test('directly returned pages resolve render dependencies through the container, including form requests', function (): void {
     Route::get('responsable-form-request', fn (): Page => new WorkbenchFormRequestPage)
         ->middleware('web')

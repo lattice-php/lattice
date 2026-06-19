@@ -91,8 +91,12 @@ abstract class Page implements PageContract, Responsable
         abort_unless($this->authorize($request), 403);
 
         // schema is passed so the container resolves render()'s other
-        // dependencies but does not rebuild PageSchema itself.
-        $schema = app()->call([$this, 'render'], ['schema' => PageSchema::make()]);
+        // dependencies but does not rebuild PageSchema itself; the route's
+        // (already-bound) parameters are merged so route arguments and model
+        // binding resolve exactly as they do on the [Page, 'render'] path.
+        $parameters = ['schema' => PageSchema::make()] + ($request->route()?->parameters() ?? []);
+
+        $schema = app()->call([$this, 'render'], $parameters);
 
         return $this->pageResponse('render', $schema)->toResponse($request);
     }
