@@ -13,7 +13,7 @@ If you have not done this yet:
 php artisan vendor:publish --tag=lattice-js
 ```
 
-This writes `resources/js/lattice/columns.ts` (and `plugin.ts` for fields/components) if they do not already exist.
+This writes a single `resources/js/registry.ts` if it does not already exist — the one place custom fields, components, and columns are registered.
 
 ## 2. Generate the column
 
@@ -24,8 +24,8 @@ php artisan lattice:column StatusBadge
 This creates:
 
 - `app/Tables/Columns/StatusBadge.php` — the PHP column class.
-- `resources/js/lattice/columns/status-badge.tsx` — the React cell renderer stub.
-- An entry in `resources/js/lattice/columns.ts` wiring them together.
+- `resources/js/columns/status-badge.tsx` — the React cell renderer stub.
+- An entry under `columns` in `resources/js/registry.ts` wiring them together.
 - Runs `lattice:typescript` to refresh the generated types file.
 
 The PHP attribute receives the short identifier `status-badge`; the wire type is `column.status-badge`.
@@ -118,50 +118,50 @@ export const StatusBadgeCell: ColumnCellComponent = ({ props, value }) => {
 };
 ```
 
-To drop the cast, type the cell as `ColumnCellComponent<"column.status-badge">` and register it with `columnCell()` (the column equivalent of `eagerComponent`). After `lattice:typescript`, `props` is narrowed to your column's generated props:
+To drop the cast, type the cell as `ColumnCellComponent<"column.status-badge">`. After `lattice:typescript`, `props` is narrowed to your column's generated props:
 
 ```tsx
-import { columnCell } from "@lattice-php/lattice";
 import type { ColumnCellComponent } from "@lattice-php/lattice";
 
 export const StatusBadgeCell: ColumnCellComponent<"column.status-badge"> = ({ props, value }) => {
   const map = props.colorMap ?? colorClasses; // typed, no cast
   // ...
 };
-
-// register the typed cell:
-//   columns: { "column.status-badge": columnCell(StatusBadgeCell) }
 ```
 
-## 5. The column plugin registration
+The generator registers column cells **bare** (`"column.status-badge": StatusBadgeCell`). The optional `columnCell()` helper is a type-narrowing identity wrapper — `columnCell(StatusBadgeCell)` — for when you want the registry entry itself type-checked against the column's props; it changes nothing at runtime.
 
-The generator appended an entry to `resources/js/lattice/columns.ts`:
+## 5. The registry entry
+
+The generator appended an entry under `columns` in `resources/js/registry.ts`:
 
 ```ts
-import { createPlugin } from "@lattice-php/lattice";
+import { createPlugin, extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
 import { StatusBadgeCell } from "./columns/status-badge";
 
-export const appColumns = createPlugin({
-  name: "app",
-  columns: {
-    "column.status-badge": StatusBadgeCell,
-  },
-});
+export const registry = extendRegistry(
+  packageRegistry,
+  createPlugin({
+    name: "app",
+    components: {},
+    columns: {
+      "column.status-badge": StatusBadgeCell,
+    },
+  }),
+);
 ```
 
-## 6. Wire columns in app.tsx
+## 6. Wire the registry in app.tsx
 
-Extend the built-in registry with your column plugin and pass that registry to `Provider`:
+`registry.ts` already merges your column onto the built-in registry, so import its exported `registry` and pass it to `Provider`:
 
 ```tsx
 import "../css/app.css";
 import { createInertiaApp } from "@inertiajs/react";
 import { createRoot } from "react-dom/client";
 import LatticePage from "@lattice-php/lattice/page";
-import { extendRegistry, Provider, registry } from "@lattice-php/lattice";
-import { appColumns } from "./lattice/columns";
-
-const appRegistry = extendRegistry(registry, appColumns);
+import { Provider } from "@lattice-php/lattice";
+import { registry } from "./registry";
 
 createInertiaApp({
   resolve: (name) => {
@@ -172,7 +172,7 @@ createInertiaApp({
   setup({ el, App, props }) {
     if (!el) return;
     createRoot(el).render(
-      <Provider registry={appRegistry}>
+      <Provider registry={registry}>
         <App {...props} />
       </Provider>,
     );
@@ -180,7 +180,7 @@ createInertiaApp({
 });
 ```
 
-If you also have custom fields or components, pass all of those plugins to the same `extendRegistry(registry, ...)` call.
+Custom fields, components, and columns all live in this same `registry.ts` — there is no second registry to merge.
 
 ## 7. Generate TypeScript types
 

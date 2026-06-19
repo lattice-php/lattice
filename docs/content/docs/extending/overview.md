@@ -31,17 +31,17 @@ That string — `"field.color-picker"` — is the only coupling between the PHP 
 
 ## Three extension points
 
-| Kind         | PHP base class                              | Registry                            |
-| ------------ | ------------------------------------------- | ----------------------------------- |
-| Form field   | `Lattice\Lattice\Forms\Components\Field`    | Node registry (`plugin.ts`)         |
-| UI component | `Lattice\Lattice\Core\Components\Component` | Node registry (`plugin.ts`)         |
-| Table column | `Lattice\Lattice\Tables\Columns\Column`     | Column-cell registry (`columns.ts`) |
+| Kind         | PHP base class                              | Registry block                   |
+| ------------ | ------------------------------------------- | -------------------------------- |
+| Form field   | `Lattice\Lattice\Forms\Components\Field`    | `components` (node registry)     |
+| UI component | `Lattice\Lattice\Core\Components\Component` | `components` (node registry)     |
+| Table column | `Lattice\Lattice\Tables\Columns\Column`     | `columns` (column-cell registry) |
 
-Form fields and UI components share the **node registry** — the renderer walks the component tree and resolves each `type` to a `RendererComponent`. Table columns use a separate **column-cell registry** because only the cell needs a custom renderer; the table chrome (header, sorting, filtering) is provided by Lattice.
+All three register in a single file — `resources/js/registry.ts`, published by `php artisan vendor:publish --tag=lattice-js`. It calls `createPlugin({ components: {}, columns: {} })` and merges it onto the package registry with `extendRegistry`. Form fields and UI components share the **node registry** (the `components` block) — the renderer walks the component tree and resolves each `type` to a `RendererComponent`. Table columns use the separate **column-cell registry** (the `columns` block) because only the cell needs a custom renderer; the table chrome (header, sorting, filtering) is provided by Lattice.
 
 ## Generators scaffold both sides
 
-The `lattice:field`, `lattice:component`, and `lattice:column` commands generate the PHP class, the `.tsx` renderer, and insert the registration entry — so you get a working pair to build on:
+The `lattice:field`, `lattice:component`, and `lattice:column` commands generate the PHP class, the `.tsx` renderer (under `resources/js/fields/`, `components/`, or `columns/`), and append the registration entry to `resources/js/registry.ts` — so you get a working pair to build on:
 
 ```bash
 php artisan lattice:field ColorPicker

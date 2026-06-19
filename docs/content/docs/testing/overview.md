@@ -218,8 +218,7 @@ $this->assertLatticeComponent($action)
 
 ## Test selectors
 
-Lattice uses `data-test` as its standard test-hook attribute (83 usages in production source).
-`data-testid` is **not** used.
+Lattice uses `data-test` as its standard test-hook attribute. `data-testid` is **not** used.
 
 **Pest browser tests** target `data-test` via the `@shorthand` selector. `->click('@foo')` is
 equivalent to clicking `[data-test="foo"]`.

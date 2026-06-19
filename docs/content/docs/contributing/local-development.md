@@ -21,11 +21,11 @@ composer install
 npm install
 ```
 
-Serve the workbench:
+Serve the workbench in two terminals — `composer serve` runs the PHP server (building the workbench app first), and `npm run dev` runs Vite for hot-reloading the React and CSS:
 
 ```bash
-composer serve
-npm run dev
+composer serve   # PHP server
+npm run dev      # Vite HMR (separate terminal)
 ```
 
 The workbench compiles Lattice directly from `resources/js` and imports the stylesheet directly from `resources/css/lattice.css`, so frontend changes are picked up by Vite without running the package build.

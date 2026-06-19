@@ -58,7 +58,7 @@ Select::make('status', 'Status')->enum(OrderStatus::class);
 
 ## Searchable
 
-`->searchable()` turns the select into a [server-driven search](/advanced/security/). The resolver receives `$search` (the
+`->searchable()` turns the select into a server-driven search. The resolver receives `$search` (the
 query string) and returns the matching options; it may also inject `$get`/`$state`/`$component` and
 any container type such as `Request`. The option value is the entity identifier and is fully
 controlled by the resolver, so it scales to large datasets without shipping every option to the
@@ -94,7 +94,7 @@ Backing a select with an Eloquent model is the common case, so `->optionsFrom()`
 `EloquentOptions` is the shipped source:
 
 ```php
-use Lattice\Lattice\Forms\EloquentOptions;
+use Lattice\Lattice\Core\EloquentOptions;
 
 Select::make('author_id', 'Author')
     ->optionsFrom(EloquentOptions::make(User::class)->label('name'));

@@ -30,7 +30,7 @@ class ProfileForm extends FormDefinition
     {
         return $form->schema([
             TextInput::make('name', 'Name')->rules(['required', 'string', 'max:255']),
-            TextInput::make('email', 'Email')->email()->rules(['required', 'email']),
+            TextInput::make('email', 'Email')->email()->rules(['required']),
         ]);
     }
 
@@ -109,7 +109,8 @@ form only accepts submissions for the schema it actually rendered. `FormControll
 4. Otherwise the submission is validated and passed to `handle()`.
 
 `$this->validate($request)` runs the field rules and returns the validated, cast data as an array —
-visible-only, with hidden and disabled values stripped. Your `handle()` returns any Laravel
+visible-only, with hidden values and locked (disabled or read-only) user input stripped; a
+server-set `->value()` on a locked field still comes through. Your `handle()` returns any Laravel
 `Response` or `Responsable`: a redirect, a JSON payload, or a [toast effect](/actions/overview/).
 
 ## Resetting after submit

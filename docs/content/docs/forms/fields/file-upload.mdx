@@ -80,8 +80,8 @@ FileUpload::make('document')
 
 ## Reading the value in `handle()`
 
-A submitted file arrives as an `UploadedFile` (or an array of them for `->multiple()`); a signed upload
-arrives as the object key string. Store it however you like:
+A submitted file arrives as an `UploadedFile` (or an array of them for `->multiple()`); store it
+however you like:
 
 ```php
 public function handle(Request $request): Response
@@ -95,6 +95,32 @@ public function handle(Request $request): Response
     // persist $data['avatar'] ...
 }
 ```
+
+### Finalizing a signed upload
+
+A signed upload arrives as a **temporary** object key under `lattice.files.temp_prefix`, not the final
+path — temporary objects are cleaned up, so you must promote the key out of the temp prefix before
+persisting it. Call `finalizeSignedUploads()` on the same field, passing the submitted keys and a
+closure that returns each file's destination path. It moves the object and returns the finalized
+`disk`, `path`, `name`, `mime_type`, and `size` for each file:
+
+```php
+$finalized = FileUpload::make('document')->disk('s3')->signedUpload()
+    ->finalizeSignedUploads(
+        (array) $data['document'],
+        fn (string $key, array $meta): string => "documents/{$request->user()->id}.{$meta['extension']}",
+    );
+
+foreach ($finalized as $upload) {
+    // $upload['disk'], $upload['path'], $upload['name'], $upload['mime_type'], $upload['size']
+}
+```
+
+<Warning>
+  `finalizeSignedUploads()` throws if the destination stays inside the temporary prefix — return a
+  path outside `lattice.files.temp_prefix`. Storing the raw temporary key would persist a file that
+  gets swept away.
+</Warning>
 
 ## Removing existing files
 

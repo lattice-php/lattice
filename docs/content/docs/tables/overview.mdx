@@ -20,7 +20,7 @@ implementing the source interface.
             TextColumn::make('name')->sortable()->filterable(),
             NumberColumn::make('price')->sortable()->filterable(),
             BooleanColumn::make('featured'),
-            TextColumn::make('updated_at')->date('Y-m-d')->sortable(),
+            TextColumn::make('updated_at')->label('Updated')->dateTime()->sortable(),
         ];
     }
 
