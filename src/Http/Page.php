@@ -80,8 +80,25 @@ abstract class Page implements PageContract, Responsable
 
         abort_unless($this->authorize(app(Request::class)), 403);
 
-        $schema = $this->{$method}(...array_values($parameters));
+        return $this->pageResponse($method, $this->{$method}(...array_values($parameters)));
+    }
 
+    /**
+     * @param  Request  $request
+     */
+    public function toResponse($request): HttpResponse
+    {
+        abort_unless($this->authorize($request), 403);
+
+        // schema is passed so the container resolves render()'s other
+        // dependencies but does not rebuild PageSchema itself.
+        $schema = app()->call([$this, 'render'], ['schema' => PageSchema::make()]);
+
+        return $this->pageResponse('render', $schema)->toResponse($request);
+    }
+
+    private function pageResponse(string $method, mixed $schema): Response
+    {
         if (! $schema instanceof PageSchema) {
             throw new UnexpectedValueException(sprintf(
                 'Method %s::%s must return an instance of %s.',
@@ -92,18 +109,6 @@ abstract class Page implements PageContract, Responsable
         }
 
         return $this->response($schema);
-    }
-
-    /**
-     * Render the page as an HTTP response so it can be returned directly —
-     * for example from a Fortify view closure — instead of reaching through
-     * callAction().
-     *
-     * @param  Request  $request
-     */
-    public function toResponse($request): HttpResponse
-    {
-        return $this->callAction('render', [PageSchema::make(), $request])->toResponse($request);
     }
 
     protected function component(): string
