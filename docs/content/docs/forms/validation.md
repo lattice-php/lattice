@@ -53,7 +53,7 @@ TextInput::make('name', 'Team name')
 
 Pass a closure to `->rules()` to build rules from the current form data. The closure receives the
 `FormData` and the `Request`, and returns additional rules. It runs at validation time, so it always
-sees the latest input.
+sees the latest input. See [Closure evaluation](/core/closure-evaluation/) for the full utility list.
 
 ```php
 TextInput::make('discount_code', 'Discount code')

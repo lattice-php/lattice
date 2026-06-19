@@ -60,9 +60,9 @@ Select::make('status', 'Status')->enum(OrderStatus::class);
 
 `->searchable()` turns the select into a server-driven search. The resolver receives `$search` (the
 query string) and returns the matching options; it may also inject `$get`/`$state`/`$component` and
-any container type such as `Request`. The option value is the entity identifier and is fully
-controlled by the resolver, so it scales to large datasets without shipping every option to the
-client.
+any container type such as `Request` through [closure evaluation](/core/closure-evaluation/). The
+option value is the entity identifier and is fully controlled by the resolver, so it scales to large
+datasets without shipping every option to the client.
 
 ```php
 Select::make('author_id', 'Author')

@@ -108,6 +108,7 @@ cannot drift apart.
 
 A field's value can be derived from the form data instead of typed. Pass a closure to `->value()` to
 compute it from the current `FormData`. The closure runs on the server whenever the inputs change.
+Closure parameters use [Lattice's closure evaluation](/core/closure-evaluation/) utilities.
 
 ```php
 TextInput::make('total', 'Total')
