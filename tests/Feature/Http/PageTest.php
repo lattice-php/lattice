@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Testing\AssertableInertia;
@@ -213,6 +214,26 @@ test('a page can be returned directly and renders through the responsable contra
         );
 });
 
+test('directly returned pages resolve render dependencies through the container, including form requests', function (): void {
+    Route::get('responsable-form-request', fn (): Page => new WorkbenchFormRequestPage)
+        ->middleware('web')
+        ->name('responsable-form-request.show');
+
+    withoutVite();
+
+    get('/responsable-form-request?label=Injected')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->component('lattice/page')
+            ->where('lattice.schema.0.props.text', 'Injected via form request')
+        );
+
+    // The form request is resolved and validated on the responsable path too,
+    // so a missing required field fails validation rather than rendering.
+    get('/responsable-form-request')
+        ->assertStatus(302);
+});
+
 // ---------------------------------------------------------------------------
 // Inline fixture classes required only by this file
 // ---------------------------------------------------------------------------
@@ -278,6 +299,25 @@ final class WorkbenchPageDependency
     public function label(): string
     {
         return 'Injected';
+    }
+}
+
+final class WorkbenchPageFormRequest extends FormRequest
+{
+    /**
+     * @return array<string, array<int, string>>
+     */
+    public function rules(): array
+    {
+        return ['label' => ['required', 'string']];
+    }
+}
+
+final class WorkbenchFormRequestPage extends Page
+{
+    public function render(PageSchema $schema, WorkbenchPageFormRequest $request): PageSchema
+    {
+        return $schema->component(Text::make($request->string('label').' via form request'));
     }
 }
 
