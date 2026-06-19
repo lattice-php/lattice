@@ -49,6 +49,9 @@
   --lt-icon-md: 1rem;
   --lt-icon-lg: 1.25rem;
   --lt-icon-xl: 1.5rem;
+  --lt-icon-2xl: 2rem;
+  --lt-icon-3xl: 2.5rem;
+  --lt-icon-4xl: 3rem;
   --lt-icon-stroke: 1.5;
 
   /* Control heights — density lever */
@@ -190,6 +193,9 @@
   --spacing-lt-icon-md: var(--lt-icon-md);
   --spacing-lt-icon-lg: var(--lt-icon-lg);
   --spacing-lt-icon-xl: var(--lt-icon-xl);
+  --spacing-lt-icon-2xl: var(--lt-icon-2xl);
+  --spacing-lt-icon-3xl: var(--lt-icon-3xl);
+  --spacing-lt-icon-4xl: var(--lt-icon-4xl);
   --spacing-lt-control-sm: var(--lt-control-h-sm);
   --spacing-lt-control-md: var(--lt-control-h-md);
   --spacing-lt-control-lg: var(--lt-control-h-lg);

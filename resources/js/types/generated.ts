@@ -1105,7 +1105,7 @@ export type Sidebar = {
   collapsible: boolean;
   rememberState: boolean;
 };
-export type Size = "xs" | "sm" | "md" | "lg" | "xl";
+export type Size = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
 export type SortDirection = "asc" | "desc";
 export type Stack = {
   align: Align | null;

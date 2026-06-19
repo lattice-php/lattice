@@ -13,4 +13,7 @@ enum Size: string
     case Md = 'md';
     case Lg = 'lg';
     case Xl = 'xl';
+    case Xl2 = '2xl';
+    case Xl3 = '3xl';
+    case Xl4 = '4xl';
 }
