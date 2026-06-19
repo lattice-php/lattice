@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.6.0](https://github.com/lattice-php/lattice/compare/0.5.0...0.6.0) (2026-06-19)
+
+
+### Features
+
+* generalize the form response into a reusable LatticeResponse ([af034c0](https://github.com/lattice-php/lattice/commit/af034c04c72d828b29822eb7ab3dd8906c9be6f9))
+* **http:** generalize the form response into a reusable LatticeResponse ([b6492c7](https://github.com/lattice-php/lattice/commit/b6492c77f0b9f16f69a5be16dc874b0d72ec3ded))
+* **i18n:** add a client timezone store resolving server, browser, then UTC ([1ee4c5a](https://github.com/lattice-php/lattice/commit/1ee4c5a744b358e85479b071c5be1afeefbe6fa4))
+* **i18n:** carry an optional timezone on I18nConfig ([23d0a09](https://github.com/lattice-php/lattice/commit/23d0a0943b38ced7d111c3e505e028251883229e))
+* **i18n:** carry the timezone through the frontend config store ([163f389](https://github.com/lattice-php/lattice/commit/163f389dccddc52a38873bf9e435e815bec05a0e))
+* **i18n:** deliver the user timezone preference via SetLocale middleware ([92e154b](https://github.com/lattice-php/lattice/commit/92e154bb08f435777ac024df403271563c19e27f))
+* **table:** format dates in the active locale and timezone ([d272c40](https://github.com/lattice-php/lattice/commit/d272c40ff89a745f97a598b0e53e045cd179c659))
+* **table:** render date cells with a timezone-aware DateTime tooltip ([24bad30](https://github.com/lattice-php/lattice/commit/24bad308b2e6543a1c793ed600368109dd811040))
+* **table:** replace date format tokens with Intl style presets (date/time/dateTime) ([1c0dc11](https://github.com/lattice-php/lattice/commit/1c0dc11d8e7a2cbd728e9b519d6c971d78bb03a9))
+* timezone-aware datetime display + Intl date formatting ([2d4a8ad](https://github.com/lattice-php/lattice/commit/2d4a8ad0f1fe0d80b6515a99eafa2c816e979c5d))
+* **workbench:** store a timezone preference on the user ([ff9a082](https://github.com/lattice-php/lattice/commit/ff9a082225f84c6ed7aa0a3d850b126c21c8b060))
+
+
+### Bug Fixes
+
+* **i18n:** accept page-prop configs that omit the optional timezone ([7f0e52a](https://github.com/lattice-php/lattice/commit/7f0e52a40e30704633412910d64644791b9232a4))
+* **table:** call PlainTextCell hooks before the date-branch return ([5e85c76](https://github.com/lattice-php/lattice/commit/5e85c76d5fc5c105efd8e43f2b95a88e026607b0))
+* **test:** narrow anonymous user preferredTimezone return type for PHPStan ([c069882](https://github.com/lattice-php/lattice/commit/c069882dc5e751d4c3b5adfa2fdb1a31796de532))
+
+
+### Refactoring
+
+* **i18n:** drop the duplicate test-only config timezone getter ([a562d93](https://github.com/lattice-php/lattice/commit/a562d93905fb135effc6d0e69a6dcec9265a3197))
+
 ## [0.5.0](https://github.com/lattice-php/lattice/compare/0.4.0...0.5.0) (2026-06-18)
 
 
