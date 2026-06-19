@@ -68,3 +68,25 @@ describe("NumberInputComponent affixes", () => {
     expect(screen.getByLabelText("Price")).toHaveClass("rounded-l-none");
   });
 });
+
+describe("NumberInputComponent defaults", () => {
+  it("renders a slider without a label, min, max or step", () => {
+    renderField(fakeNode({ type: "field.number-input", props: { name: "level", slider: true } }), {
+      level: "3",
+    });
+
+    const slider = screen.getByRole("slider");
+    expect(slider).toHaveValue("3");
+    expect(slider).not.toHaveAttribute("min");
+    expect(slider).not.toHaveAttribute("max");
+    expect(slider).not.toHaveAttribute("step");
+  });
+
+  it("renders a bare number input when only a name is provided", () => {
+    renderField(fakeNode({ type: "field.number-input", props: { name: "qty" } }));
+
+    const input = document.querySelector('input[name="qty"]')!;
+    expect(input).toHaveAttribute("type", "number");
+    expect(input).not.toHaveAttribute("min");
+  });
+});

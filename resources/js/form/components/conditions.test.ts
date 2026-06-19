@@ -86,4 +86,44 @@ describe("evaluateConditions", () => {
     );
     expect(result.hidden).toBe(false);
   });
+
+  const shows = (operator: Condition["operator"], value: unknown, fieldValue: unknown) =>
+    !evaluateConditions({ visible: [{ field: "x", operator, value }] }, { x: fieldValue }, {})
+      .hidden;
+
+  it("compares booleans through filter_var semantics for eq", () => {
+    expect(shows("eq", true, "yes")).toBe(true);
+    expect(shows("eq", true, "0")).toBe(false);
+    expect(shows("eq", false, "")).toBe(true);
+  });
+
+  it("falls back to string comparison when values are null", () => {
+    expect(shows("eq", null, null)).toBe(true);
+    expect(shows("eq", "value", undefined)).toBe(false);
+    expect(shows("neq", "a", "b")).toBe(true);
+    expect(shows("neq", "a", "a")).toBe(false);
+  });
+
+  it("supports the numeric comparison operators", () => {
+    expect(shows("gt", 5, "6")).toBe(true);
+    expect(shows("lt", 5, "4")).toBe(true);
+    expect(shows("lte", 5, "5")).toBe(true);
+  });
+
+  it("wraps a non-array expected value for in and not_in", () => {
+    expect(shows("in", "free", "free")).toBe(true);
+    expect(shows("not_in", "paid", "free")).toBe(true);
+    expect(shows("not_in", ["free", "trial"], "free")).toBe(false);
+  });
+
+  it("coerces null actuals to an empty string for text operators", () => {
+    expect(shows("contains", "", null)).toBe(true);
+    expect(shows("starts_with", "", null)).toBe(true);
+    expect(shows("ends_with", "", null)).toBe(true);
+  });
+
+  it("treats equal dates as neither before nor after", () => {
+    expect(shows("before", "2024-01-01", "2024-01-01")).toBe(false);
+    expect(shows("after", "2024-01-01", "2024-01-01")).toBe(false);
+  });
 });

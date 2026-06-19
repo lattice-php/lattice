@@ -38,4 +38,38 @@ describe("SegmentedControl", () => {
 
     window.removeEventListener("lattice:appearance-change", handleChange);
   });
+
+  it("renders nothing when there are no options", () => {
+    const node = fakeNode({
+      type: "segmented-control",
+      props: { name: "empty", options: [] },
+    });
+
+    const { container } = render(
+      <SegmentedControlComponent node={node}>{null}</SegmentedControlComponent>,
+    );
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("defaults to the first option and selects without emitting when no event is configured", () => {
+    const node = fakeNode({
+      type: "segmented-control",
+      props: {
+        name: "size",
+        options: [
+          { label: "Small", value: "s" },
+          { label: "Large", value: "l" },
+        ],
+      },
+    });
+
+    render(<SegmentedControlComponent node={node}>{null}</SegmentedControlComponent>);
+
+    expect(screen.getByRole("radio", { name: "Small" })).toHaveAttribute("aria-checked", "true");
+
+    fireEvent.click(screen.getByRole("radio", { name: "Large" }));
+
+    expect(screen.getByRole("radio", { name: "Large" })).toHaveAttribute("aria-checked", "true");
+  });
 });
