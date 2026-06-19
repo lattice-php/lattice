@@ -21,6 +21,7 @@ use Lattice\Lattice\Forms\Components\RichEditor;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Forms\Components\Toggle;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
@@ -144,6 +145,8 @@ class ShowcaseForm extends FormDefinition
                 ]),
 
                 Card::make(__('workbench.forms.showcase.consent'))->schema([
+                    Toggle::make('marketing_opt_in', __('workbench.forms.showcase.marketing-opt-in.label'))
+                        ->helperText(__('workbench.forms.showcase.marketing-opt-in.help-text')),
                     Checkbox::make('newsletter', __('workbench.forms.showcase.newsletter')),
                     Checkbox::make('terms', __('workbench.forms.showcase.terms'))
                         ->rules(['accepted']),

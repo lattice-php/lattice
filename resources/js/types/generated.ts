@@ -488,7 +488,8 @@ export type FieldType =
   | "field.rich-editor"
   | "field.select"
   | "field.textarea"
-  | "field.text-input";
+  | "field.text-input"
+  | "field.toggle";
 export type FileUpload = {
   accept: string | null;
   columnWidth: ColumnWidth;
@@ -632,6 +633,11 @@ export type FormFieldNode =
       type: "field.textarea";
       key?: string;
       props: Textarea;
+    }
+  | {
+      type: "field.toggle";
+      key?: string;
+      props: Toggle;
     };
 export type FormNode =
   | FormFieldNode
@@ -1260,6 +1266,31 @@ export type ToastMessage = {
   action: Node | null;
   variant: Variant;
   message: Translatable | string;
+};
+export type Toggle = {
+  autoFocus: boolean;
+  columnWidth: ColumnWidth;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
+  dependsOnAny: boolean;
+  dependsOnKeys: string[] | null;
+  disabled: boolean;
+  editablePrefill: boolean;
+  helperText: string | null;
+  hidden: boolean;
+  label: string | null;
+  name: string;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
+  readOnly: boolean;
+  required: boolean;
+  tabIndex: number | null;
+  tooltip: string | null;
+  value: unknown;
 };
 export type ToggleSidebarEffect = {
   readonly target: string | null;

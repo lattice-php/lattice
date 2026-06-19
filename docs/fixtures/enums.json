@@ -630,6 +630,10 @@
             {
                 "name": "TextInput",
                 "value": "field.text-input"
+            },
+            {
+                "name": "Toggle",
+                "value": "field.toggle"
             }
         ]
     },

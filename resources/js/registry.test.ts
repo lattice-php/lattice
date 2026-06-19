@@ -29,6 +29,7 @@ describe("lattice component registry", () => {
     expect(registry.components["field.hidden-input"]?.mode).toBe("lazy");
     expect(registry.components["field.password-input"]?.mode).toBe("lazy");
     expect(registry.components["field.text-input"]?.mode).toBe("lazy");
+    expect(registry.components["field.toggle"]?.mode).toBe("lazy");
     expect(registry.components.table?.mode).toBe("lazy");
   });
 

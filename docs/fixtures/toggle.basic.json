@@ -1,0 +1,25 @@
+[
+    {
+        "props": {
+            "autoFocus": false,
+            "columnWidth": "md",
+            "conditions": null,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "editablePrefill": false,
+            "helperText": "Show this item publicly.",
+            "hidden": false,
+            "label": "Published",
+            "name": "published",
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "readOnly": false,
+            "required": false,
+            "tabIndex": null,
+            "tooltip": null,
+            "value": null
+        },
+        "type": "field.toggle"
+    }
+]
