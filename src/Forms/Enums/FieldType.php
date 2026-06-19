@@ -14,6 +14,7 @@ enum FieldType: string
     case Checkbox = 'field.checkbox';
     case Choice = 'field.choice';
     case DateInput = 'field.date-input';
+    case DateTimeInput = 'field.date-time-input';
     case FileUpload = 'field.file-upload';
     case HiddenInput = 'field.hidden-input';
     case NumberInput = 'field.number-input';
@@ -24,6 +25,7 @@ enum FieldType: string
     case Select = 'field.select';
     case Textarea = 'field.textarea';
     case TextInput = 'field.text-input';
+    case TimeInput = 'field.time-input';
     case Toggle = 'field.toggle';
 
     public static function wireType(self|string $type): string
