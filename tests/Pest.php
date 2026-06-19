@@ -161,6 +161,26 @@ function withScaffoldWorkspace(Closure $callback): mixed
 }
 
 /**
+ * The published single-registry scaffold the make commands append to.
+ */
+function latticeRegistryStub(): string
+{
+    return <<<'TS'
+import { createPlugin, extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
+
+export const registry = extendRegistry(
+  packageRegistry,
+  createPlugin({
+    name: "app",
+    components: {},
+    columns: {},
+  }),
+);
+
+TS;
+}
+
+/**
  * Extract the signed ref from a serialized interactive component.
  *
  * @param  array<string, mixed>  $component

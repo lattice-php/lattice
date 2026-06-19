@@ -1,0 +1,27 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Http\Request;
+use Lattice\Lattice\Attributes\AsForm;
+use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Http\LatticeResponse;
+
+#[AsForm('{{ key }}')]
+class {{ class }} extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form->schema([
+            //
+        ]);
+    }
+
+    public function handle(Request $request): LatticeResponse
+    {
+        $this->validate($request);
+
+        return $this->respond()->back();
+    }
+}

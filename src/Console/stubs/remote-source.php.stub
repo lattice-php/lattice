@@ -1,0 +1,21 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Http\Request;
+use Lattice\Lattice\Attributes\AsRemoteSource;
+use Lattice\Lattice\Remote\RemoteSourceDefinition;
+
+#[AsRemoteSource('{{ key }}')]
+class {{ class }} extends RemoteSourceDefinition
+{
+    /**
+     * @return array<int, mixed>
+     */
+    public function schema(Request $request): array
+    {
+        return [
+            //
+        ];
+    }
+}

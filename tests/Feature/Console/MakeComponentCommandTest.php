@@ -8,8 +8,7 @@ use function Pest\Laravel\artisan;
 function withComponentScaffold(Closure $callback): mixed
 {
     return withScaffoldWorkspace(function () use ($callback): mixed {
-        File::put(resource_path('js/lattice/plugin.ts'),
-            "import { createPlugin } from \"@lattice-php/lattice\";\n\nexport const appPlugin = createPlugin({\n  name: \"app\",\n  components: {},\n});\n");
+        File::put(resource_path('js/registry.ts'), latticeRegistryStub());
 
         return $callback();
     });
@@ -26,10 +25,10 @@ it('scaffolds a component class with the AsComponent attribute and registers it'
             ->toContain("#[AsComponent('rating')]")
             ->toContain('class Rating extends Component');
 
-        expect(File::get(resource_path('js/lattice/components/rating.tsx')))
+        expect(File::get(resource_path('js/components/rating.tsx')))
             ->toContain('RendererComponent<"rating">');
 
-        expect(File::get(resource_path('js/lattice/plugin.ts')))
+        expect(File::get(resource_path('js/registry.ts')))
             ->toContain('import { RatingComponent } from "./components/rating";')
             ->toContain('"rating": eagerComponent(RatingComponent)');
     });

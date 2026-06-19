@@ -1,0 +1,23 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Http\Request;
+use Lattice\Lattice\Actions\ActionDefinition;
+use Lattice\Lattice\Actions\ActionResult;
+use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Attributes\AsAction;
+
+#[AsAction('{{ key }}')]
+class {{ class }} extends ActionDefinition
+{
+    public function definition(Action $action): Action
+    {
+        return $action->label('{{ class }}');
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        return ActionResult::success();
+    }
+}

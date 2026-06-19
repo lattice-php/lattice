@@ -14,9 +14,17 @@ use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionRegistry;
 use Lattice\Lattice\Console\Commands\DiscoverCacheCommand;
 use Lattice\Lattice\Console\Commands\DiscoverClearCommand;
+use Lattice\Lattice\Console\Commands\MakeActionCommand;
+use Lattice\Lattice\Console\Commands\MakeBulkActionCommand;
 use Lattice\Lattice\Console\Commands\MakeColumnCommand;
 use Lattice\Lattice\Console\Commands\MakeComponentCommand;
 use Lattice\Lattice\Console\Commands\MakeFieldCommand;
+use Lattice\Lattice\Console\Commands\MakeFormCommand;
+use Lattice\Lattice\Console\Commands\MakeFragmentCommand;
+use Lattice\Lattice\Console\Commands\MakeLayoutCommand;
+use Lattice\Lattice\Console\Commands\MakePageCommand;
+use Lattice\Lattice\Console\Commands\MakeRemoteSourceCommand;
+use Lattice\Lattice\Console\Commands\MakeTableCommand;
 use Lattice\Lattice\Console\Commands\TypeScriptCommand;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
@@ -50,9 +58,17 @@ final class LatticeServiceProvider extends PackageServiceProvider
             ->hasRoute('web')
             ->hasConsoleCommands([
                 TypeScriptCommand::class,
-                MakeFieldCommand::class,
                 MakeComponentCommand::class,
+                MakeFieldCommand::class,
                 MakeColumnCommand::class,
+                MakePageCommand::class,
+                MakeFormCommand::class,
+                MakeTableCommand::class,
+                MakeActionCommand::class,
+                MakeBulkActionCommand::class,
+                MakeFragmentCommand::class,
+                MakeLayoutCommand::class,
+                MakeRemoteSourceCommand::class,
                 DiscoverCacheCommand::class,
                 DiscoverClearCommand::class,
             ]);
@@ -100,8 +116,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../stubs/lattice/plugin.ts' => resource_path('js/lattice/plugin.ts'),
-                __DIR__.'/../stubs/lattice/columns.ts' => resource_path('js/lattice/columns.ts'),
+                __DIR__.'/../stubs/registry.ts' => resource_path('js/registry.ts'),
             ], 'lattice-js');
         }
 

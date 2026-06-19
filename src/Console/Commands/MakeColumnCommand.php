@@ -12,7 +12,7 @@ final class MakeColumnCommand extends Command
 {
     use GeneratesComponentPair;
 
-    protected $signature = 'lattice:column {name} {--type=}';
+    protected $signature = 'lattice:column {name} {--type=} {--force}';
 
     protected $description = 'Scaffold a custom Lattice table column (PHP + React cell)';
 
@@ -23,21 +23,20 @@ final class MakeColumnCommand extends Command
         $attributeType = ColumnType::localType($type);
         $wireType = ColumnType::wireType($type);
         $kebab = Str::kebab($name);
+        $force = (bool) $this->option('force');
 
         $this->writeStub(
             'column.php.stub',
             app_path('Tables/Columns/'.$name.'.php'),
-            ['namespace' => 'App\\Tables\\Columns', 'class' => $name, 'type' => $attributeType],
-        );
+            ['namespace' => 'App\\Tables\\Columns', 'class' => $name, 'type' => $attributeType], force: $force);
 
         $this->writeStub(
             'column.tsx.stub',
-            resource_path('js/lattice/columns/'.$kebab.'.tsx'),
-            ['class' => $name, 'type' => $type],
-        );
+            resource_path('js/columns/'.$kebab.'.tsx'),
+            ['class' => $name, 'type' => $type], force: $force);
 
         $this->registerInPlugin(
-            resource_path('js/lattice/columns.ts'),
+            resource_path('js/registry.ts'),
             $wireType,
             $name.'Cell',
             './columns/'.$kebab,
