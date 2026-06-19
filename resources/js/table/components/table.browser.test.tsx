@@ -1,8 +1,8 @@
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ColumnData } from "@lattice-php/lattice/types/generated";
-import type { TableNode } from "../types";
+import type { TableNode, TableResponse, TableState } from "../types";
 import TableComponent from "./table";
 
 const storageKey = "lattice:table-columns:browser.products";
@@ -20,6 +20,40 @@ function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): 
   };
 }
 
+function tableState(overrides: Partial<TableState> = {}): Partial<TableState> {
+  return {
+    filters: [],
+    page: 1,
+    perPage: 25,
+    sorts: [],
+    tableFilters: {},
+    ...overrides,
+  };
+}
+
+function tableResponse(overrides: TableResponse = {}): Response {
+  return Response.json({
+    data: [],
+    pagination: {},
+    ...overrides,
+    state: tableState(overrides.state),
+  });
+}
+
+function tableFetch(...responses: TableResponse[]) {
+  let calls = 0;
+  const fetch = vi.fn<typeof globalThis.fetch>(async () => {
+    const response = responses[Math.min(calls, responses.length - 1)] ?? {};
+    calls += 1;
+
+    return tableResponse(response);
+  });
+
+  vi.stubGlobal("fetch", fetch);
+
+  return fetch;
+}
+
 function node(overrides: Partial<TableNode["props"]> = {}): TableNode {
   return {
     id: "browser.products",
@@ -35,6 +69,7 @@ function node(overrides: Partial<TableNode["props"]> = {}): TableNode {
         page: 1,
         perPage: 25,
         sorts: [],
+        tableFilters: {},
       },
       ...overrides,
     },
@@ -45,6 +80,10 @@ describe("Lattice table component in a browser", () => {
   beforeEach(async () => {
     await page.viewport(1280, 800);
     window.localStorage.clear();
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it("renders the desktop table as a CSS grid and hides mobile labels", async () => {
@@ -204,5 +243,62 @@ describe("Lattice table component in a browser", () => {
       "minmax(6rem, 0.5fr) 224px",
     );
     await expect.element(screen.getByTestId("table-reset-columns")).toBeInTheDocument();
+  });
+
+  it("adds and clears table sorts through the endpoint", async () => {
+    const fetch = tableFetch(
+      {
+        data: [{ id: 1, sku: "SKU-001", name: "Ada Lovelace" }],
+        state: tableState({ sorts: [{ key: "sku", direction: "asc" }] }),
+      },
+      {
+        data: [{ id: 1, sku: "SKU-001", name: "Ada Lovelace" }],
+        state: tableState({
+          sorts: [
+            { key: "sku", direction: "asc" },
+            { key: "name", direction: "asc" },
+          ],
+        }),
+      },
+      {
+        data: [{ id: 1, sku: "SKU-001", name: "Ada Lovelace" }],
+        state: tableState({ sorts: [{ key: "name", direction: "asc" }] }),
+      },
+    );
+    const screen = await render(
+      <TableComponent
+        node={node({
+          columns: [
+            col({ key: "sku", label: "SKU", sortable: true }),
+            col({ key: "name", label: "Name", sortable: true }),
+          ],
+          data: [{ id: 1, sku: "SKU-001", name: "Desk Lamp" }],
+          endpoint: "/lattice/tables/workbench.users",
+          state: tableState(),
+        })}
+      />,
+    );
+
+    await screen.getByRole("button", { name: "Sort SKU" }).click();
+
+    await expect.element(screen.getByText("1. SKU")).toBeInTheDocument();
+    await expect
+      .poll(() => fetch.mock.calls.at(-1)?.[0])
+      .toBe("/lattice/tables/workbench.users?sort=sku&page=1&per_page=25");
+
+    await screen.getByRole("button", { name: "Sort Name" }).click();
+
+    await expect.element(screen.getByText("2. Name")).toBeInTheDocument();
+    await expect
+      .poll(() => fetch.mock.calls.at(-1)?.[0])
+      .toBe("/lattice/tables/workbench.users?sort=sku%2Cname&page=1&per_page=25");
+
+    await screen.getByRole("button", { name: "Clear SKU sort" }).click();
+
+    await expect.element(screen.getByText("1. SKU")).not.toBeInTheDocument();
+    await expect.element(screen.getByText("1. Name")).toBeInTheDocument();
+    await expect
+      .poll(() => fetch.mock.calls.at(-1)?.[0])
+      .toBe("/lattice/tables/workbench.users?sort=name&page=1&per_page=25");
   });
 });

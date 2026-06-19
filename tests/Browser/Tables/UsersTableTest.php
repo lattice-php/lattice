@@ -18,22 +18,6 @@ it('lists users with their columns', function (): void {
         ->assertNoSmoke();
 });
 
-it('sorts and clears sorting', function (): void {
-    $this->actingAs(workbenchTestUser());
-    seedWorkbenchUsers();
-
-    visit('/')
-        ->click('@sort-name')
-        ->assertSee('1. Name')
-        ->assertSee('Ada Lovelace')
-        ->click('@sort-email')
-        ->assertSee('2. Email')
-        ->click('@clear-name-sort')
-        ->assertDontSee('1. Name')
-        ->assertSee('1. Email')
-        ->assertNoSmoke();
-});
-
 it('copies a cell value to the clipboard', function (): void {
     $this->actingAs(workbenchTestUser());
     User::query()->delete();
