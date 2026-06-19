@@ -12,7 +12,7 @@ final class MakeFieldCommand extends Command
 {
     use GeneratesComponentPair;
 
-    protected $signature = 'lattice:field {name} {--type=}';
+    protected $signature = 'lattice:field {name} {--type=} {--force}';
 
     protected $description = 'Scaffold a custom Lattice form field (PHP + React)';
 
@@ -23,21 +23,20 @@ final class MakeFieldCommand extends Command
         $attributeType = FieldType::localType($type);
         $wireType = FieldType::wireType($type);
         $kebab = Str::kebab($name);
+        $force = (bool) $this->option('force');
 
         $this->writeStub(
             'field.php.stub',
             app_path('Forms/Fields/'.$name.'.php'),
-            ['namespace' => 'App\\Forms\\Fields', 'class' => $name, 'type' => $attributeType],
-        );
+            ['namespace' => 'App\\Forms\\Fields', 'class' => $name, 'type' => $attributeType], force: $force);
 
         $this->writeStub(
             'field.tsx.stub',
-            resource_path('js/lattice/fields/'.$kebab.'.tsx'),
-            ['class' => $name, 'type' => $wireType],
-        );
+            resource_path('js/fields/'.$kebab.'.tsx'),
+            ['class' => $name, 'type' => $wireType], force: $force);
 
         $this->registerInPlugin(
-            resource_path('js/lattice/plugin.ts'),
+            resource_path('js/registry.ts'),
             $wireType,
             $name.'Component',
             './fields/'.$kebab,

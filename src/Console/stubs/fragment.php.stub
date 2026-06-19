@@ -1,0 +1,16 @@
+<?php
+
+namespace {{ namespace }};
+
+use Lattice\Lattice\Attributes\AsFragment;
+use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Fragments\FragmentDefinition;
+
+#[AsFragment('{{ key }}')]
+class {{ class }} extends FragmentDefinition
+{
+    public function schema(PageSchema $schema): PageSchema
+    {
+        return $schema;
+    }
+}

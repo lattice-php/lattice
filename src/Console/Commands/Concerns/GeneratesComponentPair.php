@@ -16,13 +16,13 @@ trait GeneratesComponentPair
     /**
      * @param  array<string, string>  $replacements
      */
-    protected function writeStub(string $stub, string $targetPath, array $replacements): void
+    protected function writeStub(string $stub, string $targetPath, array $replacements, bool $force = false): void
     {
         $stubPath = __DIR__.'/../../stubs/'.$stub;
         $contents = strtr(File::get($stubPath), $this->placeholders($replacements));
 
-        if (File::exists($targetPath)) {
-            $this->components->warn('File already exists, skipping: '.$targetPath);
+        if (File::exists($targetPath) && ! $force) {
+            $this->components->warn('File already exists, skipping (use --force to overwrite): '.$targetPath);
 
             return;
         }
