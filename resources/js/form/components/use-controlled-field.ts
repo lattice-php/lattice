@@ -15,6 +15,8 @@ export type ControlledField = FieldState & {
   value: string;
   error?: string;
   commit: (value: unknown) => void;
+  change: (value: unknown) => void;
+  blur: () => void;
 };
 
 export function useControlledField(node: Node): ControlledField {
@@ -35,8 +37,10 @@ export function useControlledField(node: Node): ControlledField {
   const domName = scope ? scope.scopedName(localName) : localName;
   const errorKey = scope ? scope.errorKey(localName) : localName;
 
-  const { commit: commitField } = useFieldCommit();
+  const { commit: commitField, change: changeField, blur: blurField } = useFieldCommit();
   const commit = (next: unknown): void => commitField(localName, next);
+  const change = (next: unknown): void => changeField(localName, next);
+  const blur = (): void => blurField(localName);
 
   return {
     ...state,
@@ -46,5 +50,7 @@ export function useControlledField(node: Node): ControlledField {
     value,
     error: errors[errorKey],
     commit,
+    change,
+    blur,
   };
 }

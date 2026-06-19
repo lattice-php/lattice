@@ -7,6 +7,7 @@ type FormComponentName =
   | "CheckboxComponent"
   | "ChoiceComponent"
   | "DateInputComponent"
+  | "DateTimeInputComponent"
   | "FileUploadComponent"
   | "FormComponent"
   | "HiddenInputComponent"
@@ -17,6 +18,7 @@ type FormComponentName =
   | "SelectComponent"
   | "TextareaComponent"
   | "TextInputComponent"
+  | "TimeInputComponent"
   | "ToggleComponent";
 
 const loadFormComponents = () => import("./components");
@@ -42,6 +44,7 @@ export const formComponents = createPlugin({
     "field.checkbox": lazyComponent(loadFormComponent("CheckboxComponent")),
     "field.choice": lazyComponent(loadFormComponent("ChoiceComponent")),
     "field.date-input": lazyComponent(loadFormComponent("DateInputComponent")),
+    "field.date-time-input": lazyComponent(loadFormComponent("DateTimeInputComponent")),
     "field.file-upload": lazyComponent(loadFormComponent("FileUploadComponent")),
     "field.hidden-input": lazyComponent(loadFormComponent("HiddenInputComponent")),
     "field.number-input": lazyComponent(loadFormComponent("NumberInputComponent")),
@@ -58,6 +61,7 @@ export const formComponents = createPlugin({
     "field.select": lazyComponent(loadFormComponent("SelectComponent")),
     "field.textarea": lazyComponent(loadFormComponent("TextareaComponent")),
     "field.text-input": lazyComponent(loadFormComponent("TextInputComponent")),
+    "field.time-input": lazyComponent(loadFormComponent("TimeInputComponent")),
     "field.toggle": lazyComponent(loadFormComponent("ToggleComponent")),
   },
   name: "lattice/form",

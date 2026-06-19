@@ -4,6 +4,7 @@ export type {
   Checkbox,
   Choice,
   DateInput,
+  DateTimeInput,
   Form,
   FormFieldNode,
   FormNode,
@@ -15,6 +16,7 @@ export type {
   Select,
   Textarea,
   TextInput,
+  TimeInput,
 } from "@lattice-php/lattice/types/generated";
 
 export type FormMethod = Method;

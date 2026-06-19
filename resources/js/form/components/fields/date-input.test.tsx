@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
@@ -19,9 +19,20 @@ describe("DateInputComponent", () => {
       due: "2026-06-08",
     });
 
-    const input = screen.getByLabelText("Due");
-    expect(input).toHaveAttribute("type", "date");
-    expect(input).toHaveValue("2026-06-08");
+    expect(document.querySelector('input[name="due"]')).toHaveValue("2026-06-08");
+  });
+
+  it("commits a date picked from the calendar", async () => {
+    renderField(fakeNode({ type: "field.date-input", props: { name: "due", label: "Due" } }), {
+      due: "2026-06-01",
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /open due calendar/i }));
+    fireEvent.click(await screen.findByRole("button", { name: /19/i }));
+
+    await waitFor(() => {
+      expect(document.querySelector('input[name="due"]')).toHaveValue("2026-06-19");
+    });
   });
 
   it("hides when its visible condition fails", () => {
