@@ -27,7 +27,7 @@ class GroupForm extends FormDefinition
 
     public function handle(Request $request): Response
     {
-        $group = $this->group($request);
+        $group = $this->group();
         $validated = $this->validate($request);
 
         if (! $group instanceof Group) {
@@ -39,7 +39,7 @@ class GroupForm extends FormDefinition
         return redirect('/groups');
     }
 
-    private function group(Request $request): ?Group
+    private function group(): ?Group
     {
         $id = $this->context('group_id');
 

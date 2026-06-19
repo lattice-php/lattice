@@ -31,7 +31,7 @@ class ProductForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent
     {
-        $product = $this->product($request);
+        $product = $this->product();
 
         return $form
             ->precognitive(2650)
@@ -78,7 +78,7 @@ class ProductForm extends FormDefinition
 
     public function handle(Request $request): Response
     {
-        $product = $this->product($request);
+        $product = $this->product();
         $validated = $this->validate($request);
 
         $relatedIds = $validated['related_products'] ?? [];
@@ -278,7 +278,7 @@ class ProductForm extends FormDefinition
             .($extension !== '' ? '.'.$extension : '');
     }
 
-    private function product(Request $request): ?Product
+    private function product(): ?Product
     {
         $id = $this->context('product_id');
 

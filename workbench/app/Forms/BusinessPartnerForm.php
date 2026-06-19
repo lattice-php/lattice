@@ -26,7 +26,7 @@ class BusinessPartnerForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent
     {
-        $partner = $this->partner($request);
+        $partner = $this->partner();
 
         $schema = [
             Card::make(__('workbench.commerce.business-partners.form.details-card'))->schema([
@@ -98,7 +98,7 @@ class BusinessPartnerForm extends FormDefinition
 
     public function handle(Request $request): Response
     {
-        $partner = $this->partner($request);
+        $partner = $this->partner();
         $validated = $this->validate($request);
 
         $groupIds = $validated['groups'] ?? [];
@@ -164,7 +164,7 @@ class BusinessPartnerForm extends FormDefinition
         return redirect('/business-partners');
     }
 
-    private function partner(Request $request): ?BusinessPartner
+    private function partner(): ?BusinessPartner
     {
         $id = $this->context('business_partner_id');
 

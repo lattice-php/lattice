@@ -30,7 +30,7 @@ class EditProductAction extends FormActionDefinition
 
     public function formSchema(Form $form, Request $request): Form
     {
-        $product = $this->product($request);
+        $product = $this->product();
         $productForm = app(ProductForm::class)->withContext(['product_id' => $product->getKey()]);
 
         return $productForm->definition($form, $request)->fill([
@@ -46,7 +46,7 @@ class EditProductAction extends FormActionDefinition
     public function handle(Request $request): ActionResult
     {
         $data = $this->validate($request);
-        $product = $this->product($request);
+        $product = $this->product();
 
         $relatedIds = $data['related_products'] ?? [];
         $priceRows = $data['sales_prices'] ?? [];
@@ -77,7 +77,7 @@ class EditProductAction extends FormActionDefinition
             ->reloadComponent('workbench.products');
     }
 
-    private function product(Request $request): Product
+    private function product(): Product
     {
         return Product::query()->findOrFail($this->context('product_id'));
     }
