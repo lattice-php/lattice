@@ -40,10 +40,6 @@ test('registered fragments serialize lazy endpoints and return component schemas
         ->assertJsonPath('schema.0.props.text', 'Authenticator setup loaded.');
 });
 
-// ---------------------------------------------------------------------------
-// Inline fixture class required only by this file
-// ---------------------------------------------------------------------------
-
 #[AsFragment('workbench.two-factor-setup')]
 final class WorkbenchTwoFactorSetupFragment extends FragmentDefinition
 {

@@ -103,7 +103,6 @@ describe("Combobox", () => {
     act(() => vi.advanceTimersByTime(250));
 
     expect(onSearch).toHaveBeenCalledWith("x");
-    // Remote mode shows options as given (no local filtering).
     expect(screen.getByRole("option", { name: "Red" })).toBeVisible();
   });
 });

@@ -2,9 +2,7 @@ import type { ReactNode } from "react";
 import type { ColumnPropsOf, TableColumn, TableRow } from "./types";
 
 export type ColumnCellArgs<TType extends string = string> = {
-  /** The full wire column (key, label, type, nested columns). */
   column: TableColumn;
-  /** The column's `props`, resolved to the type's shape. */
   props: ColumnPropsOf<TType>;
   row: TableRow;
   value: unknown;

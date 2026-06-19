@@ -4,7 +4,6 @@ export const ROW_ID_KEY = "__rowId";
 
 let rowIdCounter = 0;
 
-/** Stamp a stable client-only id on a row (no-op if it already has one). */
 export function withRowId(row: RepeaterRow): RepeaterRow {
   return row[ROW_ID_KEY] ? row : { ...row, [ROW_ID_KEY]: `r${rowIdCounter++}` };
 }
@@ -17,7 +16,6 @@ export function ensureRowIds(rows: RepeaterRow[]): RepeaterRow[] {
   return rows.map(withRowId);
 }
 
-/** Seed the row list from a stored value, falling back to `defaultItems` blank rows. */
 export function seedRows(value: unknown, defaultItems: number): RepeaterRow[] {
   if (Array.isArray(value) && value.length > 0) {
     return value.map((row) => (row && typeof row === "object" ? { ...(row as RepeaterRow) } : {}));

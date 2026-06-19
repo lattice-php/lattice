@@ -15,13 +15,10 @@ use Illuminate\Support\Str;
  */
 abstract class MakeDefinitionCommand extends Command
 {
-    /** Human label, e.g. "Page". */
     protected string $type;
 
-    /** Target directory under app/, e.g. "Pages". */
     protected string $directory;
 
-    /** Stub filename, e.g. "page.php.stub". */
     protected string $stub;
 
     public function handle(): int

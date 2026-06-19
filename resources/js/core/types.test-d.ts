@@ -20,7 +20,6 @@ const _customBad: PropsOf<"custom.thing"> = { foo: "no" };
 // 3. Unaugmented unknown type falls back to the loose NodeProps bag
 const _loose: PropsOf<"totally.unknown"> = { anything: true } satisfies NodeProps;
 
-// Silence unused-variable warnings
 void _okBadge;
 void _badBadge;
 void _customOk;

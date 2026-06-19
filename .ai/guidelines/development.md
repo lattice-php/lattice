@@ -28,6 +28,12 @@
 - Code must be self-explanatory: reach for clear names, small functions, and types before a comment.
 - Do not add comments. A comment is a last resort and explains only *why* something is done, never *what* the code does.
 - When you encounter an obsolete, redundant, or "what" comment, delete it.
+- Delete section banners and navigation comments unless they explain a non-obvious boundary.
+- Delete comments that narrate the next line, assertion, or obvious test setup; prefer clearer test names and variable names.
+- Keep PHPDoc/JSDoc only when it carries type information, public API intent, static-analysis value, generated-file context,
+  or a non-obvious constraint.
+- Keep comments that explain framework quirks, ordering requirements, browser/test timing, cache/build behavior, performance
+  traps, or other constraints that are hard to infer from the code alone.
 
 ## Testing
 

@@ -15,12 +15,10 @@ const _bad: ColumnPropsOf<"column.rating"> = { max: "five" };
 // 2. Unaugmented type falls back to the loose bag.
 const _loose: ColumnPropsOf<"totally.unknown"> = { anything: true };
 
-// Silence unused-variable warnings
 void _ok;
 void _bad;
 void _loose;
 
-// Silence unused import warning
 type _ColumnProps = ColumnProps;
 
 // 3. Built-in column type resolves from the generated map.

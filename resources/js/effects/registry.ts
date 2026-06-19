@@ -12,7 +12,6 @@ import { setLocale } from "@lattice-php/lattice/i18n/locale";
  */
 export interface EffectProps {}
 
-// The generated built-in effect payloads, keyed by `type` (the discriminant stripped).
 type EffectPayloads = { [TEffect in Effect as TEffect["type"]]: Omit<TEffect, "type"> };
 
 type EffectPayloadOf<TType extends string> = ResolveProps<
@@ -56,7 +55,6 @@ function triggerDownload(url: string): void {
   link.remove();
 }
 
-/** Re-broadcast an effect as its `lattice:*` DOM event for feature components. */
 function bridge(event: string): EffectHandler {
   return (effect) => window.dispatchEvent(new CustomEvent(event, { detail: effect }));
 }

@@ -16,12 +16,10 @@ function nodeKey(node: Node, index: number): string {
   return node.key ?? node.id ?? `${node.type}-${index}`;
 }
 
-/** Renders a schema (list of nodes) against the active component registry. */
 export function Renderer({ nodes }: { nodes: Node[] }): ReactNode {
   return nodes.map((node, index) => <NodeRenderer key={nodeKey(node, index)} node={node} />);
 }
 
-/** Renders a single node against the active component registry. */
 export function RenderNode({ node }: { node: Node }): ReactNode {
   return <NodeRenderer node={node} />;
 }

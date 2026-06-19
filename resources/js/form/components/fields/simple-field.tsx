@@ -4,7 +4,6 @@ import { FormFieldFrame } from "../base/field";
 import { fieldProps } from "../field-props";
 import { type ControlledField, useControlledField } from "../use-controlled-field";
 
-/** The shared shell for single-input fields; the control is a render prop receiving the resolved field state. */
 export function SimpleField({
   node,
   label,

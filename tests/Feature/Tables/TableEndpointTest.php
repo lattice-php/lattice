@@ -384,10 +384,6 @@ test('workbench users table exposes timestamp columns for each row', function ()
         ]);
 });
 
-// ---------------------------------------------------------------------------
-// Inline fixture classes required only by this file
-// ---------------------------------------------------------------------------
-
 #[AsTable('workbench.users')]
 class WorkbenchUsersTable extends TableDefinition
 {

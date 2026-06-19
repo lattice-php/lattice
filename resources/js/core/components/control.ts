@@ -1,6 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
 
-/** The focus-visible ring shared by every interactive control surface. */
 export const FOCUS_RING =
   "focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[3px]";
 

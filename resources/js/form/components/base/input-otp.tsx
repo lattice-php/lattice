@@ -27,7 +27,6 @@ export type InputOTPProps = Omit<
   length: number;
 };
 
-/** A segmented one-time-code input styled to match Lattice's control surfaces. */
 export function InputOTP({
   length,
   containerClassName,

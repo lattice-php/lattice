@@ -87,13 +87,11 @@ test('for() prefers a manifest descriptor and falls back to reflection', functio
     $manifest->cache();
 
     try {
-        // DiscoveredDemoPage is in the cached manifest.
-        $fromManifest = PageMetadata::for(DiscoveredDemoPage::class);
-        expect($fromManifest->name)->toBe('discovered.demo');
+        $fromCachedManifest = PageMetadata::for(DiscoveredDemoPage::class);
+        expect($fromCachedManifest->name)->toBe('discovered.demo');
 
-        // FixtureEditPage is NOT discovered (it lives in this test file) -> reflection fallback.
-        $fromReflection = PageMetadata::for(FixtureEditPage::class);
-        expect($fromReflection->name)->toBe('products.edit');
+        $fromReflectionFallback = PageMetadata::for(FixtureEditPage::class);
+        expect($fromReflectionFallback->name)->toBe('products.edit');
     } finally {
         $manifest->clear();
     }
