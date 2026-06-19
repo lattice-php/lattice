@@ -1,5 +1,45 @@
 # Changelog
 
+## [0.9.0](https://github.com/lattice-php/lattice/compare/0.8.0...0.9.0) (2026-06-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* **layouts:** bind MenuItem and Link to actions with sealed context
+* **effects:** ActionResult::redirect() is removed; use to() instead. ActionResult now exposes the full effect vocabulary (openModal, resetForm, download, toggleSidebar, Translatable toasts) and the same navigation verbs as LatticeResponse (to/toRoute/back). Navigation on ActionResult emits a RedirectEffect (resolved server-side) rather than a real HTTP redirect; the wire format is unchanged.
+* **context:** own context on the definition instance, symmetric across render and endpoints
+
+### Features
+
+* **context:** own context on the definition instance, symmetric across render and endpoints ([0220d01](https://github.com/lattice-php/lattice/commit/0220d0101cfa5bdf933a37b54f0b0427b30cab21))
+* **forms:** constrain a Choice to its configured options automatically ([3aa0db2](https://github.com/lattice-php/lattice/commit/3aa0db2c561cdc81867d3b787bf773e62c7219ef))
+* **layouts:** bind MenuItem and Link to actions with sealed context ([b26b313](https://github.com/lattice-php/lattice/commit/b26b313be4776c7d0985b151d55f78f0ff74a18e))
+* **testing:** add InteractsWithLatticeComponents endpoint helpers ([c0588f0](https://github.com/lattice-php/lattice/commit/c0588f024500c5962628742274bd53909dd653dc))
+* **testing:** first-class endpoint testing helpers ([76a2c23](https://github.com/lattice-php/lattice/commit/76a2c237834ea42d9d964a7364b69c0108e2c934))
+
+
+### Bug Fixes
+
+* **pages:** resolve route arguments and bound models on directly-returned pages ([3136ff6](https://github.com/lattice-php/lattice/commit/3136ff66a2ff8fc6fcd422135224808e6c315559))
+* **pages:** resolve route arguments and bound models on directly-returned pages ([6e89341](https://github.com/lattice-php/lattice/commit/6e89341480bc2c102ef010e2a4e409a8cc7a85d7))
+
+
+### Refactoring
+
+* **effects:** unify ActionResult and LatticeResponse effect builders ([638af63](https://github.com/lattice-php/lattice/commit/638af6380f15688a9cb5aba508227ff948472df3))
+* **workbench:** drop now-unused Request param from context resolvers ([38bc66f](https://github.com/lattice-php/lattice/commit/38bc66f44831eda1067f5d4f158af31fdbae1c14))
+
+
+### Documentation
+
+* **actions:** sync effects reference with the unified builder ([37ecbcd](https://github.com/lattice-php/lattice/commit/37ecbcdb2045fc7c649765efe7052bede18a3d4e))
+* add closure evaluation and cli references ([a9d5058](https://github.com/lattice-php/lattice/commit/a9d5058595521e05ea435dd488d4f61f223a149e))
+* add closure evaluation and CLI references ([9b5a73c](https://github.com/lattice-php/lattice/commit/9b5a73c88ab25a7d0746d588a198fad9b6cac49e))
+* **boost:** fix obsolete attribute names in shipped guidelines ([9277e90](https://github.com/lattice-php/lattice/commit/9277e90009106c8093eb7d8727d65b853d730679))
+* correct obsolete and inaccurate API references ([1c23734](https://github.com/lattice-php/lattice/commit/1c23734ad95d01eebc3a368b46b5818ac20abb1f))
+* correct obsolete and inaccurate API references ([37c0c8a](https://github.com/lattice-php/lattice/commit/37c0c8a5f683f599e6c6a7b5440c3752e90efb91))
+* **testing:** document endpoint helpers, dogfooding, and coverage badges ([92a5a34](https://github.com/lattice-php/lattice/commit/92a5a3403c61c2df0c56b6810352aecbd0718ca4))
+
 ## [0.8.0](https://github.com/lattice-php/lattice/compare/0.7.0...0.8.0) (2026-06-19)
 
 
