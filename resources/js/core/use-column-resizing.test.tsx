@@ -42,6 +42,7 @@ function rect(width: number): DOMRect {
 
 function Harness({
   columnGapPx = 0,
+  enabled = true,
   hookColumns = columns,
   leadingTracks,
   onGetter,
@@ -50,6 +51,7 @@ function Harness({
   trailingTracks,
 }: {
   columnGapPx?: number;
+  enabled?: boolean;
   hookColumns?: SizableColumn[];
   leadingTracks?: string[];
   onGetter?: (getter: ResizeGetter) => void;
@@ -59,7 +61,7 @@ function Harness({
 }) {
   const { gridTemplateColumns, getResizeHandleProps, hasOverrides, resetColumns } =
     useColumnResizing({
-      enabled: true,
+      enabled,
       columns: hookColumns,
       columnGapPx,
       leadingTracks,
@@ -257,5 +259,201 @@ describe("useColumnResizing", () => {
 
     expect(getters.length).toBeGreaterThan(1);
     expect(new Set(getters).size).toBe(1);
+  });
+
+  it("ignores all interactions while disabled", () => {
+    render(<Harness enabled={false} />);
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    fireEvent.keyDown(handle, { key: "ArrowRight" });
+    fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 400, pointerId: 1 });
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "minmax(6rem, 0.5fr)" });
+  });
+
+  it("does not render overrides into the grid while disabled", () => {
+    window.localStorage.setItem(
+      "lattice:table-columns:orders",
+      JSON.stringify({ columns: ["qty"], overrides: { qty: 200 } }),
+    );
+
+    render(<Harness enabled={false} storageKey="lattice:table-columns:orders" />);
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "minmax(6rem, 0.5fr)" });
+  });
+
+  it("takes a larger keyboard step while holding shift", () => {
+    render(<Harness />);
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    fireEvent.keyDown(handle, { key: "ArrowRight", shiftKey: true });
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "160px" });
+  });
+
+  it("shrinks the column with ArrowLeft", () => {
+    render(<Harness />);
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    fireEvent.keyDown(handle, { key: "ArrowRight" });
+    fireEvent.keyDown(handle, { key: "ArrowRight" });
+    fireEvent.keyDown(handle, { key: "ArrowLeft" });
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "136px" });
+  });
+
+  it("clamps to the minimum width with Home", () => {
+    render(<Harness />);
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    fireEvent.keyDown(handle, { key: "Home" });
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "96px" });
+  });
+
+  it("clamps to the maximum width with End", () => {
+    render(<Harness />);
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    fireEvent.keyDown(handle, { key: "End" });
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "1024px" });
+  });
+
+  it("resets with Escape", () => {
+    render(<Harness />);
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    fireEvent.keyDown(handle, { key: "ArrowRight" });
+    fireEvent.keyDown(handle, { key: "Escape" });
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "minmax(6rem, 0.5fr)" });
+  });
+
+  it("clears the drag on pointer up and ignores later moves", () => {
+    render(<Harness />);
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
+    fireEvent.pointerUp(handle, { clientX: 180, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 400, pointerId: 1 });
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "208px" });
+  });
+
+  it("ignores a pointer up for a column that is not actively dragging", () => {
+    render(<Harness hookColumns={twoColumns} />);
+
+    const qtyHandle = screen.getByRole("separator", { name: "Resize Qty" });
+    const priceHandle = screen.getByRole("separator", { name: "Resize Price" });
+
+    fireEvent.pointerDown(qtyHandle, { clientX: 100, pointerId: 1 });
+    fireEvent.pointerUp(priceHandle, { clientX: 100, pointerId: 1 });
+    fireEvent.pointerMove(qtyHandle, { clientX: 180, pointerId: 1 });
+
+    expect(screen.getByTestId("grid")).toHaveStyle({
+      gridTemplateColumns: "208px minmax(8rem, 1fr)",
+    });
+  });
+
+  it("falls back to the current width when the handle has no measured parent", () => {
+    render(<Harness />);
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+    const cell = screen.getByTestId("cell-qty");
+
+    vi.spyOn(cell, "getBoundingClientRect").mockReturnValue(rect(0));
+
+    fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 140, pointerId: 1 });
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "168px" });
+  });
+
+  it("labels the handle with the column key when no label is set", () => {
+    const unlabeled: SizableColumn[] = [{ key: "sku", width: "sm" }];
+
+    render(<Harness hookColumns={unlabeled} />);
+
+    expect(screen.getByRole("separator", { name: "Resize sku" })).toBeInTheDocument();
+  });
+
+  it("measures fixed px tracks when capping the grid width", () => {
+    render(
+      <Harness
+        hookColumns={twoColumns}
+        leadingTracks={["40px"]}
+        trailingTracks={["unset"]}
+        columnGapPx={0}
+      />,
+    );
+
+    const grid = screen.getByTestId("grid");
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    vi.spyOn(grid, "getBoundingClientRect").mockReturnValue(rect(400));
+
+    fireEvent.pointerDown(handle, { clientX: 0, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 1000, pointerId: 1 });
+
+    expect(grid).toHaveStyle({
+      gridTemplateColumns: "40px 232px minmax(8rem, 1fr) unset",
+    });
+  });
+
+  it("ignores stored overrides that are not finite numbers", () => {
+    window.localStorage.setItem(
+      "lattice:table-columns:orders",
+      JSON.stringify({ columns: ["qty"], overrides: { qty: "wide" } }),
+    );
+
+    render(<Harness storageKey="lattice:table-columns:orders" />);
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "minmax(6rem, 0.5fr)" });
+    expect(window.localStorage.getItem("lattice:table-columns:orders")).toBeNull();
+  });
+
+  it("discards stored data that is not a column-width record", () => {
+    window.localStorage.setItem("lattice:table-columns:orders", "42");
+
+    render(<Harness storageKey="lattice:table-columns:orders" />);
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "minmax(6rem, 0.5fr)" });
+    expect(window.localStorage.getItem("lattice:table-columns:orders")).toBeNull();
+  });
+
+  it("falls back to a 16px root font size when the computed value is non-positive", () => {
+    render(<Harness hookColumns={twoColumns} leadingTracks={["1rem"]} columnGapPx={0} />);
+
+    const grid = screen.getByTestId("grid");
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    vi.spyOn(grid, "getBoundingClientRect").mockReturnValue(rect(400));
+    const realComputedStyle = window.getComputedStyle.bind(window);
+    const computed = vi
+      .spyOn(window, "getComputedStyle")
+      .mockImplementation((element: Element, pseudo?: string | null) =>
+        element === document.documentElement
+          ? ({ fontSize: "0px" } as never)
+          : realComputedStyle(element, pseudo),
+      );
+
+    fireEvent.pointerDown(handle, { clientX: 0, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 1000, pointerId: 1 });
+
+    expect(grid).toHaveStyle({
+      gridTemplateColumns: "1rem 256px minmax(8rem, 1fr)",
+    });
+
+    computed.mockRestore();
   });
 });
