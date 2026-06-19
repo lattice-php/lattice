@@ -12,3 +12,4 @@ export { RepeaterComponent } from "./fields/repeater";
 export { SelectComponent } from "./fields/select";
 export { TextareaComponent } from "./fields/textarea";
 export { TextInputComponent } from "./fields/text-input";
+export { ToggleComponent } from "./fields/toggle";

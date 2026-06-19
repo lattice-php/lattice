@@ -16,7 +16,8 @@ type FormComponentName =
   | "RepeaterComponent"
   | "SelectComponent"
   | "TextareaComponent"
-  | "TextInputComponent";
+  | "TextInputComponent"
+  | "ToggleComponent";
 
 const loadFormComponents = () => import("./components");
 
@@ -57,6 +58,7 @@ export const formComponents = createPlugin({
     "field.select": lazyComponent(loadFormComponent("SelectComponent")),
     "field.textarea": lazyComponent(loadFormComponent("TextareaComponent")),
     "field.text-input": lazyComponent(loadFormComponent("TextInputComponent")),
+    "field.toggle": lazyComponent(loadFormComponent("ToggleComponent")),
   },
   name: "lattice/form",
 });

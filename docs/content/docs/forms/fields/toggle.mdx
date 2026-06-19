@@ -1,0 +1,27 @@
+---
+title: Toggle
+description: A switch-style boolean input for enabling or disabling a setting.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+The toggle captures a single boolean with a switch-style control. Use it for settings where the on
+or off state is the important thing. Create one with `Toggle::make()`.
+
+<ComponentExample
+  php={`Toggle::make('published', 'Published')
+    ->helperText('Show this item publicly.')`}
+  fixture="toggle.basic"
+  values={{ published: false }}
+/>
+
+## Checkbox or toggle
+
+Use a [Checkbox](/forms/fields/checkbox/) when the label is consent or agreement text. Use a toggle
+when the field enables or disables a setting.
+
+## Common options
+
+`Toggle` shares label, default value, required, disabled, read-only, and visibility options with
+every field — see [Fields](/forms/fields/overview/). For validation and conditional behavior, see
+[Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).

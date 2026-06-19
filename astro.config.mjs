@@ -94,6 +94,7 @@ export default defineConfig({
                 { label: "Select", link: "/forms/fields/select/" },
                 { label: "Choice", link: "/forms/fields/choice/" },
                 { label: "Checkbox", link: "/forms/fields/checkbox/" },
+                { label: "Toggle", link: "/forms/fields/toggle/" },
                 { label: "Date input", link: "/forms/fields/date-input/" },
                 { label: "Number input", link: "/forms/fields/number-input/" },
                 { label: "Password input", link: "/forms/fields/password-input/" },

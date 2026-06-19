@@ -24,6 +24,7 @@ enum FieldType: string
     case Select = 'field.select';
     case Textarea = 'field.textarea';
     case TextInput = 'field.text-input';
+    case Toggle = 'field.toggle';
 
     public static function wireType(self|string $type): string
     {
