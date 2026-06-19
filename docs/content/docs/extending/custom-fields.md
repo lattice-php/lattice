@@ -7,13 +7,13 @@ This walkthrough adds a `ColorPicker` field — a native `<input type="color">` 
 
 ## 1. Publish the JS scaffold
 
-If you have not done this yet, publish the two registration files the generators expect:
+If you have not done this yet, publish the registration file the generators expect:
 
 ```bash
 php artisan vendor:publish --tag=lattice-js
 ```
 
-This writes `resources/js/lattice/plugin.ts` (for fields and components) and `resources/js/lattice/columns.ts` (for columns) if they do not already exist.
+This writes a single `resources/js/registry.ts` if it does not already exist — the one place custom fields, components, and columns are registered.
 
 ## 2. Generate the field
 
@@ -24,8 +24,8 @@ php artisan lattice:field ColorPicker
 This creates:
 
 - `app/Forms/Fields/ColorPicker.php` — the PHP class.
-- `resources/js/lattice/fields/color-picker.tsx` — the React renderer stub.
-- An entry in `resources/js/lattice/plugin.ts` wiring them together.
+- `resources/js/fields/color-picker.tsx` — the React renderer stub.
+- An entry under `components` in `resources/js/registry.ts` wiring them together.
 - Runs `lattice:typescript` to refresh the generated types file.
 
 The PHP attribute receives the short identifier `color-picker`; the wire type is `field.color-picker`.
@@ -94,50 +94,50 @@ export const ColorPickerComponent: RendererComponent<"field.color-picker"> = ({ 
 
 `node.props` contains all the serialized field data — name, value, label, required, and any extra properties you added to the PHP class.
 
-## 5. The plugin registration
+## 5. The registry entry
 
-The generator appended an entry to `resources/js/lattice/plugin.ts`:
+The generator appended an entry to `resources/js/registry.ts`, wrapping the renderer in `eagerComponent`:
 
 ```ts
-import { createPlugin } from "@lattice-php/lattice";
+import {
+  createPlugin,
+  eagerComponent,
+  extendRegistry,
+  registry as packageRegistry,
+} from "@lattice-php/lattice";
 import { ColorPickerComponent } from "./fields/color-picker";
 
-export const appPlugin = createPlugin({
-  name: "app",
-  components: {
-    "field.color-picker": ColorPickerComponent,
-  },
-});
+export const registry = extendRegistry(
+  packageRegistry,
+  createPlugin({
+    name: "app",
+    components: {
+      "field.color-picker": eagerComponent(ColorPickerComponent),
+    },
+    columns: {},
+  }),
+);
 ```
 
-`createPlugin` accepts any number of component type keys. You can also use `lazyComponent` for code-split renderers:
+`createPlugin` accepts any number of component type keys. Use `lazyComponent` instead for a code-split renderer — its loader must resolve to a module with a `default` export:
 
 ```ts
-import { createPlugin, lazyComponent } from "@lattice-php/lattice";
-
-export const appPlugin = createPlugin({
-  name: "app",
-  components: {
-    "field.color-picker": lazyComponent(() =>
-      import("./fields/color-picker").then((m) => m.ColorPickerComponent),
-    ),
-  },
-});
+"field.color-picker": lazyComponent(async () => ({
+  default: (await import("./fields/color-picker")).ColorPickerComponent,
+})),
 ```
 
-## 6. Wire the plugin in app.tsx
+## 6. Wire the registry in app.tsx
 
-Pass your plugin to `extendRegistry` and wrap the app in `Provider` with the extended registry:
+`registry.ts` already merges your plugin onto the built-in registry, so import its exported `registry` and pass it to `Provider`:
 
 ```tsx
 import "../css/app.css";
 import { createInertiaApp } from "@inertiajs/react";
 import { createRoot } from "react-dom/client";
 import LatticePage from "@lattice-php/lattice/page";
-import { extendRegistry, Provider, registry } from "@lattice-php/lattice";
-import { appPlugin } from "./lattice/plugin";
-
-const appRegistry = extendRegistry(registry, appPlugin);
+import { Provider } from "@lattice-php/lattice";
+import { registry } from "./registry";
 
 createInertiaApp({
   resolve: (name) => {
@@ -148,7 +148,7 @@ createInertiaApp({
   setup({ el, App, props }) {
     if (!el) return;
     createRoot(el).render(
-      <Provider registry={appRegistry}>
+      <Provider registry={registry}>
         <App {...props} />
       </Provider>,
     );

@@ -21,11 +21,13 @@ TextColumn::make('name')->label('Full name');
   php={`TextColumn::make('name')->sortable()->filterable();
 NumberColumn::make('price')->sortable()->filterable();
 BooleanColumn::make('featured');
-TextColumn::make('updated_at')->date('Y-m-d')->sortable();`}
+TextColumn::make('updated_at')->label('Updated')->dateTime()->sortable();`}
   fixture="table.overview"
 />
 
-- `->date()` formats a date value; pass a format string such as `->date('Y-m-d H:i')`.
+- `->date()`, `->time()`, and `->dateTime()` format a date/time value for the viewer's locale. Pass a
+  [`DateTimeStyle`](/advanced/enums/#tables) case — `Short`, `Medium` (the default), `Long`, or `Full` —
+  to control the style, e.g. `->dateTime(DateTimeStyle::Short)`.
 - `->copyable()` adds a click-to-copy affordance to the cell.
 - `->link('/products/{value}')` renders the value as a link; `{value}` is substituted with the cell
   value. Pass `external: true` for an outbound link.

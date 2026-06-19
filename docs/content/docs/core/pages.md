@@ -12,6 +12,7 @@ component of your own.
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Tables\Components\Table;
 
 #[AsPage(route: '/products')]
@@ -112,6 +113,20 @@ abstract class AppPage extends Page {}
 
 #[AsPage(route: '/products', name: 'products.index')]
 class ProductsPage extends AppPage {} // inherits the App layout, container, and middleware
+```
+
+## Layout and container at request time
+
+The attribute sets the layout and container statically. To decide them per request — a different shell
+for a guest versus an authenticated user, say — override `layout()` or `container()` on the page.
+Returning a non-null value (a `PageLayout`/`PageContainer` case or a registered key) takes precedence
+over the attribute; returning `null` defers to it.
+
+```php
+public function layout(): PageLayout|string|null
+{
+    return request()->user() ? PageLayout::App : PageLayout::Auth;
+}
 ```
 
 ## Discovery and registration

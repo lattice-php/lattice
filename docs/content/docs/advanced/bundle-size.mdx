@@ -43,6 +43,7 @@ Lattice's marginal cost even though they show up in the entry chunk below.
 The breakdown above is JavaScript only. Lattice also ships a stylesheet you import into your Tailwind
 entry with `@import "@lattice-php/lattice/css"`. The source file is small — theme tokens plus a few
 component styles — but it carries an `@source` directive, so your own Tailwind build scans Lattice's
-components and generates the utility classes they use. The compiled CSS for the workbench app (the same
-build measured above, exercising every feature) is roughly **50&nbsp;KB raw / 9.5&nbsp;KB gzipped**,
-and like the JS its real cost depends on which components you actually render.
+components and generates the utility classes they use. The compiled CSS Lattice contributes to the
+workbench app (the same build measured above, exercising every feature) lands in the tens of kilobytes
+raw — a handful gzipped — and like the JS its real cost depends on which components you actually render
+and your own Tailwind configuration.

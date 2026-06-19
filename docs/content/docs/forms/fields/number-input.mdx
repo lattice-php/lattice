@@ -45,7 +45,8 @@ NumberInput::make('unit_price', 'Unit price')
 ## Affixes
 
 `->prefix()` and `->suffix()` add a currency symbol, unit, or icon to the input. See
-[affixes on Text input](/forms/fields/text-input/#affixes) for the full rules.
+[affixes on Text input](/forms/fields/text-input/#affixes) for the full rules. Affixes apply to the
+spinner variant only — they are not rendered in [slider](#slider) mode.
 
 ```php
 NumberInput::make('price', 'Price')->prefix('$')->suffix('USD');

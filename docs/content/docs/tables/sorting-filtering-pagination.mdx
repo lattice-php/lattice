@@ -13,7 +13,7 @@ applies them.
 <ComponentExample
   php={`TextColumn::make('name')->sortable()->filterable();
 NumberColumn::make('price')->sortable()->filterable();
-TextColumn::make('updated_at')->date('Y-m-d')->sortable();`}
+TextColumn::make('updated_at')->label('Updated')->dateTime()->sortable();`}
   fixture="table.overview"
 />
 
@@ -64,8 +64,8 @@ TextColumn::make('sku')->filterable(Op::Equals, [Op::Equals, Op::NotEquals]);
 ```
 
 A column's filter capability serializes as a `ColumnFilter` (`{ enabled, type, operators,
-defaultOperator, control, options, multiple }`) so the React filter control knows which inputs and
-operators to render. Open the **Tree** tab on the example above to see it.
+defaultOperator, control, options, multiple, searchable, clauseOptions }`) so the React filter control
+knows which inputs and operators to render. Open the **Tree** tab on the example above to see it.
 
 ### Filtering by a fixed set of options
 

@@ -9,18 +9,18 @@ A Lattice table is a listing backed by a **data source**. You declare columns in
 
 ## Defining a table
 
-For a database-backed table, extend `EloquentTableDefinition` and implement `columns()` + `builder()`. The `#[Table('id')]` attribute gives a stable id so the table is discovered and addressed by its endpoint.
+For a database-backed table, extend `EloquentTableDefinition` and implement `columns()` + `builder()`. The `#[AsTable('id')]` attribute gives a stable id so the table is discovered and addressed by its endpoint.
 
 ```php
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Attributes\Table;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\EloquentTableDefinition;
+use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 
 /** @extends EloquentTableDefinition<Product> */
-#[Table('app.products')]
+#[AsTable('app.products')]
 class ProductsTable extends EloquentTableDefinition
 {
     public function columns(): array
@@ -119,4 +119,4 @@ A table only *attaches* actions and their context; the action classes themselves
 
 - **Making a computed/accessor column `sortable()`/`filterable()`** → it maps to a non-existent DB column. Keep it display-only or use a custom source.
 - **Filtering/sorting by hand in `builder()`** → Lattice already applies the request's filters and sorts; `builder()` is only the base query.
-- **No `#[Table('id')]` attribute** → the table is not discovered and has no endpoint.
+- **No `#[AsTable('id')]` attribute** → the table is not discovered and has no endpoint.

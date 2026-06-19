@@ -50,7 +50,7 @@ The browser needs the Lattice React renderer to turn the server's component tree
 npm install @lattice-php/lattice
 ```
 
-The renderer's UI libraries (Radix, TipTap, i18n, and styling utilities) come with it. Only `react`, `react-dom`, and `@inertiajs/react` are peer dependencies you already have in a Laravel React app. Styling is driven by Tailwind CSS v4:
+The renderer's UI libraries (Radix, TipTap, i18n, and styling utilities) come with it. `react`, `react-dom`, and `@inertiajs/react` are required peer dependencies you already have in a Laravel React app; `@laravel/echo-react` and `pusher-js` are optional peers, needed only if you use Lattice's [realtime](/core/realtime/) layer. Styling is driven by Tailwind CSS v4:
 
 ```bash
 npm install -D tailwindcss @tailwindcss/vite tw-animate-css
@@ -62,7 +62,7 @@ Lattice targets React 19, Inertia v3, Tailwind 4, and TipTap 3. The npm package 
 
 ### Version compatibility
 
-Keep the Composer and npm package lines aligned. For pre-1.0 releases, install the same minor line on both sides, such as `lattice-php/lattice:^0.2` with `@lattice-php/lattice@^0.2`. From 1.0 onward, keep the major versions matched, such as `1.x` with `1.x` or `2.x` with `2.x`.
+Keep the Composer and npm package lines aligned. For pre-1.0 releases, install the same `0.x` minor line on both sides, e.g. `lattice-php/lattice:^0.7` with `@lattice-php/lattice@^0.7`. From 1.0 onward, keep the major versions matched, such as `1.x` with `1.x` or `2.x` with `2.x`.
 
 The split is intentional: React, React DOM, and Inertia stay as peer dependencies so the application owns its SPA runtime, while Lattice bundles its renderer internals.
 
@@ -129,7 +129,26 @@ The component tokens (`--lt-*`) fall back to sensible defaults, so the UI is sty
 
 ### Register the Inertia renderer
 
-Every Lattice route resolves to the same Inertia page component, `lattice/page`, which the package provides. In your Inertia entrypoint, use Lattice's page resolver, import the sprite Vite exposes, and wrap the app in `Provider`:
+Every Lattice route resolves to the same Inertia page component, `lattice/page`, which the package provides. The quickest setup is `createLatticeApp`, a one-call helper that wires the Lattice page and layout resolvers, the `Provider` (registry, sprite, and flash toasts), and theme initialization in one go:
+
+```tsx
+// resources/js/app.tsx
+/// <reference types="@lattice-php/lattice/svg-sprite-client" />
+import "../css/app.css";
+import { createLatticeApp } from "@lattice-php/lattice";
+import sprite from "virtual:svg-sprite";
+
+createLatticeApp({
+  sprite,
+  pages: import.meta.glob("./Pages/**/*.tsx"),
+});
+```
+
+It forwards any other `createInertiaApp` option — `title`, `progress`, SSR setup — and accepts a custom `registry` and a `defaultLayout`.
+
+#### Manual wiring
+
+If you need full control of the Inertia bootstrap, wire the pieces yourself: use Lattice's page resolver, import the sprite Vite exposes, and wrap the app in `Provider`:
 
 ```tsx
 // resources/js/app.tsx

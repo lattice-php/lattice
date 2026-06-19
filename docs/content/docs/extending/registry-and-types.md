@@ -5,18 +5,32 @@ description: The React registry API and the TypeScript augmentation system for c
 
 ## The JS scaffold
 
-Before registering custom components or columns, publish the two scaffold files:
+Before registering custom components or columns, publish the scaffold file:
 
 ```bash
 php artisan vendor:publish --tag=lattice-js
 ```
 
-This writes:
+This writes a single `resources/js/registry.ts`. It calls `createPlugin` with empty `components` and
+`columns` blocks and merges it onto the built-in registry with `extendRegistry`, exporting the result
+as `registry`:
 
-- `resources/js/lattice/plugin.ts` — node registry plugin for custom fields and components.
-- `resources/js/lattice/columns.ts` — column-cell registry plugin for custom column cells.
+```ts
+import { createPlugin, extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
 
-The generators (`lattice:field`, `lattice:component`, `lattice:column`) append entries to the appropriate file automatically. You only need to publish once.
+export const registry = extendRegistry(
+  packageRegistry,
+  createPlugin({
+    name: "app",
+    components: {}, // custom fields and UI components
+    columns: {}, // custom column cells
+  }),
+);
+```
+
+The generators (`lattice:field`, `lattice:component`, `lattice:column`) append their entries to this
+file automatically — fields and components under `components`, columns under `columns`. You only need
+to publish once, and you pass the exported `registry` to `Provider`.
 
 ## Node registry API
 
@@ -42,16 +56,20 @@ export const appPlugin = createPlugin({
 
 ### extendRegistry
 
-Merges a plugin into an existing registry, returning a new registry without mutating the original:
+Merges a plugin into an existing registry, returning a new registry without mutating the original. The
+published `resources/js/registry.ts` already calls it for you — this is the pattern it uses:
 
 ```ts
-import { extendRegistry, registry } from "@lattice-php/lattice";
-import { appPlugin } from "./lattice/plugin";
+import { createPlugin, extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
 
-const appRegistry = extendRegistry(registry, appPlugin);
+export const registry = extendRegistry(
+  packageRegistry,
+  createPlugin({ name: "app", components: {}, columns: {} }),
+);
 ```
 
-`registry` is Lattice's built-in registry. Pass `appRegistry` to `Provider`.
+`packageRegistry` is Lattice's built-in registry. Pass the extended `registry` to `Provider`. Call
+`extendRegistry` again yourself only if you keep additional plugins in their own files.
 
 ### createRegistry
 
@@ -112,28 +130,27 @@ The column-cell registry maps type strings to `ColumnCellComponent` functions.
 
 ### Column plugins
 
-Column cell renderers use the same plugin object as components. Put them under the `columns` key:
+Column cell renderers use the same plugin object as components. They go under the `columns` key of the
+same `resources/js/registry.ts` (registered bare — `columnCell()` is optional, see below):
 
 ```ts
-import { createPlugin } from "@lattice-php/lattice";
+import { createPlugin, extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
 import { StatusBadgeCell } from "./columns/status-badge";
 
-export const appColumns = createPlugin({
-  name: "app",
-  columns: {
-    "column.status-badge": StatusBadgeCell,
-  },
-});
+export const registry = extendRegistry(
+  packageRegistry,
+  createPlugin({
+    name: "app",
+    components: {},
+    columns: {
+      "column.status-badge": StatusBadgeCell,
+    },
+  }),
+);
 ```
 
-Merge column plugins into the same registry you pass to `Provider`:
-
-```ts
-import { extendRegistry, registry } from "@lattice-php/lattice";
-import { appColumns } from "./lattice/columns";
-
-const appRegistry = extendRegistry(registry, appColumns);
-```
+The same exported `registry` carries both your components and your column cells — there is no second
+registry to merge.
 
 ### useColumnRegistry
 

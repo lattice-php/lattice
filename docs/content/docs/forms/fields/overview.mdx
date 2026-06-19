@@ -84,8 +84,9 @@ more naturally for short tips. It renders muted, below the input and above any v
 
 ## Read-only
 
-`->readOnly()` shows the value but prevents editing. Unlike `disabled`, a read-only field is still
-submitted.
+`->readOnly()` shows the value but prevents editing. Like a disabled field, a read-only field's typed
+value is not trusted on submit — Lattice drops user input for locked fields and only submits a
+server-set `->value()` (as in the example below).
 
 <ComponentExample
   php={`TextInput::make('slug', 'Slug')
