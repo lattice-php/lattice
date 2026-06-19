@@ -5,7 +5,10 @@ it('shows pagination modes in lazily loaded tabs', function (): void {
     $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
+    // A short viewport keeps the infinite-scroll sentinel below the fold so its
+    // IntersectionObserver cannot auto-load page two before we assert "Load more".
     visit('/tables')
+        ->resize(1280, 720)
         ->assertSee('Pagination modes')
         ->assertSee('No pagination')
         ->assertSee('Maya Chen')
@@ -41,7 +44,10 @@ it('loads more rows in infinite mode', function (): void {
     $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
+    // A short viewport keeps the infinite-scroll sentinel below the fold so its
+    // IntersectionObserver cannot auto-load page two before the explicit click.
     visit('/tables')
+        ->resize(1280, 720)
         ->click('@tab-infinite')
         ->assertDontSee('Browser User 26')
         ->click('@pagination-load-more')

@@ -18,17 +18,6 @@ it('lists users with their columns', function (): void {
         ->assertNoSmoke();
 });
 
-it('loads more users in the infinite table', function (): void {
-    $this->actingAs(workbenchTestUser());
-    seedWorkbenchUsers();
-
-    visit('/')
-        ->assertDontSee('Browser User 26')
-        ->click('@pagination-load-more')
-        ->assertSee('Browser User 26')
-        ->assertNoSmoke();
-});
-
 it('sorts and clears sorting', function (): void {
     $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
