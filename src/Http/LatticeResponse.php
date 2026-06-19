@@ -6,12 +6,8 @@ namespace Lattice\Lattice\Http;
 use BackedEnum;
 use Closure;
 use Illuminate\Contracts\Support\Responsable;
-use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Core\Values\Callout;
-use Lattice\Lattice\Core\Values\ToastMessage;
-use Lattice\Lattice\Core\Values\Translatable;
+use Lattice\Lattice\Effects\Concerns\QueuesEffects;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
-use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Facades\Effects;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,6 +22,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 readonly class LatticeResponse implements Responsable
 {
+    use QueuesEffects;
+
     /**
      * @param  array<int, EffectContract>  $effects
      * @param  (Closure(): Response)|null  $redirect
@@ -43,31 +41,6 @@ readonly class LatticeResponse implements Responsable
     public function effect(EffectContract $effect): static
     {
         return new static([...$this->effects, $effect], $this->redirect);
-    }
-
-    public function toast(string|Translatable|ToastMessage|Variant $message, Variant|string|null $variant = null): static
-    {
-        return $this->effect(Effect::toast($message, $variant));
-    }
-
-    public function callout(Callout $callout): static
-    {
-        return $this->effect(Effect::callout($callout));
-    }
-
-    public function reloadPage(): static
-    {
-        return $this->effect(Effect::reloadPage());
-    }
-
-    public function reloadComponent(string $component): static
-    {
-        return $this->effect(Effect::reloadComponent($component));
-    }
-
-    public function closeModal(?string $modal = null): static
-    {
-        return $this->effect(Effect::closeModal($modal));
     }
 
     /**

@@ -3,17 +3,18 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Actions;
 
+use BackedEnum;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Core\Values\Callout;
-use Lattice\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Effects\Concerns\QueuesEffects;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Effects\Effect;
 
 #[TypeScript]
 final readonly class ActionResult implements JsonSerializable
 {
+    use QueuesEffects;
+
     /**
      * @param  array<string, mixed>  $data
      * @param  array<int, EffectContract>  $effects
@@ -40,7 +41,7 @@ final readonly class ActionResult implements JsonSerializable
         return new self(false, $data);
     }
 
-    public function effect(EffectContract $effect): self
+    public function effect(EffectContract $effect): static
     {
         return new self($this->ok, $this->data, [
             ...$this->effects,
@@ -48,54 +49,24 @@ final readonly class ActionResult implements JsonSerializable
         ]);
     }
 
-    public function callout(Callout $callout): self
-    {
-        return $this->effect(Effect::callout($callout));
-    }
-
-    public function toast(string|ToastMessage|Variant $message, Variant|string|null $variant = null): self
-    {
-        return $this->effect(Effect::toast($message, $variant));
-    }
-
-    public function reloadComponent(string $component): self
-    {
-        return $this->effect(Effect::reloadComponent($component));
-    }
-
-    public function reloadPage(): self
-    {
-        return $this->effect(Effect::reloadPage());
-    }
-
-    public function redirect(string $url): self
+    public function to(string $url): static
     {
         return $this->effect(Effect::redirect($url));
     }
 
-    public function download(string $url): self
+    /**
+     * @param  array<string, mixed>|string  $parameters
+     */
+    public function toRoute(BackedEnum|string $route, array|string $parameters = []): static
     {
-        return $this->effect(Effect::download($url));
+        $name = $route instanceof BackedEnum ? (string) $route->value : $route;
+
+        return $this->effect(Effect::redirect(to_route($name, $parameters)->getTargetUrl()));
     }
 
-    public function openModal(string $modal): self
+    public function back(): static
     {
-        return $this->effect(Effect::openModal($modal));
-    }
-
-    public function closeModal(?string $modal = null): self
-    {
-        return $this->effect(Effect::closeModal($modal));
-    }
-
-    public function resetForm(?string $form = null): self
-    {
-        return $this->effect(Effect::resetForm($form));
-    }
-
-    public function localeChange(string $locale): self
-    {
-        return $this->effect(Effect::localeChange($locale));
+        return $this->effect(Effect::redirect(redirect()->back()->getTargetUrl()));
     }
 
     /**
