@@ -1,13 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ColumnData } from "@lattice-php/lattice/types/generated";
 import { Provider } from "../provider";
 import { createPlugin, createRegistry } from "../core/registry";
 import { ColumnCell } from "./components/table-cell";
-
-vi.mock("@lattice-php/lattice/clipboard", () => ({
-  copyToClipboard: vi.fn<(value: string) => Promise<boolean>>(),
-}));
 
 function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
   const type = partial.type ?? "column.text";
@@ -24,7 +20,28 @@ function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): 
   };
 }
 
+const clipboardDescriptor = Object.getOwnPropertyDescriptor(navigator, "clipboard");
+
+function stubClipboard(writeText = vi.fn<Clipboard["writeText"]>(async () => undefined)) {
+  Object.defineProperty(navigator, "clipboard", {
+    configurable: true,
+    value: { writeText },
+  });
+
+  return writeText;
+}
+
 describe("column registry", () => {
+  afterEach(() => {
+    if (clipboardDescriptor) {
+      Object.defineProperty(navigator, "clipboard", clipboardDescriptor);
+    } else {
+      Reflect.deleteProperty(navigator, "clipboard");
+    }
+
+    vi.restoreAllMocks();
+  });
+
   it("dispatches a registered custom cell renderer", () => {
     const registry = createRegistry(
       createPlugin({
@@ -210,7 +227,9 @@ describe("column registry", () => {
     expect(screen.getByRole("button", { name: /Copy Token/ })).toBeVisible();
   });
 
-  it("copies the text cell value and shows the copied state", () => {
+  it("copies the text cell value and shows the copied state", async () => {
+    const writeText = stubClipboard();
+
     renderCell(
       col({ key: "token", label: "Token", type: "column.text", props: { copyable: true } }),
       {
@@ -220,7 +239,8 @@ describe("column registry", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /Copy Token/ }));
 
-    expect(screen.getByRole("button", { name: /Copied Token/ })).toBeVisible();
+    expect(await screen.findByRole("button", { name: /Copied Token/ })).toBeVisible();
+    expect(writeText).toHaveBeenCalledWith("abc");
   });
 
   it("renders a badge cell with the gray fallback for an unmapped value", () => {

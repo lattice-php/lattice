@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { TableNode, TablePagination } from "../types";
+import type { TableNode, TablePagination, TableResponse, TableState } from "../types";
 import type { ColumnData } from "@lattice-php/lattice/types/generated";
 import TableComponent from "./table";
 
@@ -31,6 +31,51 @@ function pagination(overrides: Partial<TablePagination> = {}): TablePagination {
     hasMore: false,
     nextPage: null,
     ...overrides,
+  };
+}
+
+function tableState(overrides: Partial<TableState> = {}): Partial<TableState> {
+  return {
+    filters: [],
+    page: 1,
+    perPage: 25,
+    sorts: [],
+    ...overrides,
+  };
+}
+
+function tableResponse(overrides: TableResponse = {}): Response {
+  return Response.json({
+    data: [],
+    pagination: {},
+    ...overrides,
+    state: tableState(overrides.state),
+  });
+}
+
+function tableFetch(...responses: TableResponse[]) {
+  let calls = 0;
+  const fetch = vi.fn<typeof globalThis.fetch>(async () => {
+    const response = responses[Math.min(calls, responses.length - 1)] ?? {};
+    calls += 1;
+
+    return tableResponse(response);
+  });
+
+  vi.stubGlobal("fetch", fetch);
+
+  return fetch;
+}
+
+function requestOptions(headers: Record<string, string> = {}) {
+  return {
+    credentials: "same-origin",
+    method: undefined,
+    headers: {
+      Accept: "application/json",
+      "Accept-Language": "en",
+      ...headers,
+    },
   };
 }
 
@@ -429,23 +474,14 @@ describe("Lattice table component", () => {
   });
 
   it("adds and clears individual sorts through the table endpoint", async () => {
-    const fetch = vi.fn<typeof globalThis.fetch>(async () =>
-      Response.json({
-        data: [],
-        pagination: {},
-        state: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [
-            { key: "name", direction: "asc" },
-            { key: "email", direction: "asc" },
-          ],
-        },
+    const fetch = tableFetch({
+      state: tableState({
+        sorts: [
+          { key: "name", direction: "asc" },
+          { key: "email", direction: "asc" },
+        ],
       }),
-    );
-
-    vi.stubGlobal("fetch", fetch);
+    });
 
     const node = {
       id: "workbench.users",
@@ -464,12 +500,7 @@ describe("Lattice table component", () => {
         ],
         data: [],
         endpoint: "/lattice/tables/workbench.users",
-        state: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [{ key: "name", direction: "asc" }],
-        },
+        state: tableState({ sorts: [{ key: "name", direction: "asc" }] }),
       },
       type: "table",
     } satisfies TableNode;
@@ -481,13 +512,7 @@ describe("Lattice table component", () => {
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
         "/lattice/tables/workbench.users?sort=name%2Cemail&page=1&per_page=25",
-        {
-          credentials: "same-origin",
-          headers: {
-            Accept: "application/json",
-            "Accept-Language": "en",
-          },
-        },
+        requestOptions(),
       );
     });
 
@@ -498,32 +523,15 @@ describe("Lattice table component", () => {
     await waitFor(() => {
       expect(fetch).toHaveBeenLastCalledWith(
         "/lattice/tables/workbench.users?sort=name&page=1&per_page=25",
-        {
-          credentials: "same-origin",
-          headers: {
-            Accept: "application/json",
-            "Accept-Language": "en",
-          },
-        },
+        requestOptions(),
       );
     });
   });
 
   it("sends component refs with table state requests", async () => {
-    const fetch = vi.fn<typeof globalThis.fetch>(async () =>
-      Response.json({
-        data: [],
-        pagination: {},
-        state: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [{ key: "name", direction: "asc" }],
-        },
-      }),
-    );
-
-    vi.stubGlobal("fetch", fetch);
+    const fetch = tableFetch({
+      state: tableState({ sorts: [{ key: "name", direction: "asc" }] }),
+    });
 
     const node = {
       id: "teams.members",
@@ -538,12 +546,7 @@ describe("Lattice table component", () => {
         data: [],
         endpoint: "/lattice/tables/teams.members",
         ref: "sealed-reference",
-        state: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
+        state: tableState(),
       },
       type: "table",
     } satisfies TableNode;
@@ -555,35 +558,18 @@ describe("Lattice table component", () => {
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
         "/lattice/tables/teams.members?sort=name&page=1&per_page=25",
-        {
-          credentials: "same-origin",
-          headers: {
-            Accept: "application/json",
-            "Accept-Language": "en",
-            "X-Lattice-Ref": "sealed-reference",
-          },
-        },
+        requestOptions({ "X-Lattice-Ref": "sealed-reference" }),
       );
     });
   });
 
   it("reloads itself when a matching reload component event is dispatched", async () => {
-    const fetch = vi.fn<typeof globalThis.fetch>(async () =>
-      Response.json({
-        data: [{ id: 2, name: "Ada" }],
-        pagination: {
-          mode: "none",
-        },
-        state: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
+    const fetch = tableFetch({
+      data: [{ id: 2, name: "Ada" }],
+      pagination: pagination({
+        mode: "none",
       }),
-    );
-
-    vi.stubGlobal("fetch", fetch);
+    });
 
     const node = {
       id: "settings.passkeys",
@@ -597,12 +583,7 @@ describe("Lattice table component", () => {
         data: [{ id: 1, name: "Taylor" }],
         endpoint: "/lattice/tables/settings.passkeys",
         pagination: pagination(),
-        state: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
+        state: tableState(),
       },
       type: "table",
     } satisfies TableNode;
@@ -620,57 +601,38 @@ describe("Lattice table component", () => {
 
     await screen.findByRole("cell", { name: "Ada" });
 
-    expect(fetch).toHaveBeenCalledWith("/lattice/tables/settings.passkeys?page=1&per_page=25", {
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "Accept-Language": "en",
-      },
-    });
+    expect(fetch).toHaveBeenCalledWith(
+      "/lattice/tables/settings.passkeys?page=1&per_page=25",
+      requestOptions(),
+    );
     expect(screen.queryByRole("cell", { name: "Taylor" })).not.toBeInTheDocument();
   });
 
   it("appends infinite table rows and resets them when sorting", async () => {
-    const fetch = vi
-      .fn<typeof globalThis.fetch>()
-      .mockResolvedValueOnce(
-        Response.json({
-          data: [{ id: 2, name: "Ada" }],
-          pagination: {
-            currentPage: 2,
-            hasMore: false,
-            mode: "infinite",
-            nextPage: null,
-            perPage: 1,
-          },
-          state: {
-            filters: [],
-            page: 2,
-            perPage: 1,
-            sorts: [],
-          },
+    const fetch = tableFetch(
+      {
+        data: [{ id: 2, name: "Ada" }],
+        pagination: pagination({
+          currentPage: 2,
+          hasMore: false,
+          mode: "infinite",
+          nextPage: null,
+          perPage: 1,
         }),
-      )
-      .mockResolvedValueOnce(
-        Response.json({
-          data: [{ id: 3, name: "Grace" }],
-          pagination: {
-            currentPage: 1,
-            hasMore: false,
-            mode: "infinite",
-            nextPage: null,
-            perPage: 1,
-          },
-          state: {
-            filters: [],
-            page: 1,
-            perPage: 1,
-            sorts: [{ key: "name", direction: "asc" }],
-          },
+        state: tableState({ page: 2, perPage: 1 }),
+      },
+      {
+        data: [{ id: 3, name: "Grace" }],
+        pagination: pagination({
+          currentPage: 1,
+          hasMore: false,
+          mode: "infinite",
+          nextPage: null,
+          perPage: 1,
         }),
-      );
-
-    vi.stubGlobal("fetch", fetch);
+        state: tableState({ perPage: 1, sorts: [{ key: "name", direction: "asc" }] }),
+      },
+    );
 
     const node = {
       id: "workbench.users",
@@ -691,12 +653,7 @@ describe("Lattice table component", () => {
           hasMore: true,
           nextPage: 2,
         }),
-        state: {
-          filters: [],
-          page: 1,
-          perPage: 1,
-          sorts: [],
-        },
+        state: tableState({ perPage: 1 }),
       },
       type: "table",
     } satisfies TableNode;
@@ -708,13 +665,11 @@ describe("Lattice table component", () => {
     await screen.findByRole("cell", { name: "Ada" });
 
     expect(screen.getByRole("cell", { name: "Taylor" })).toBeVisible();
-    expect(fetch).toHaveBeenNthCalledWith(1, "/lattice/tables/workbench.users?page=2&per_page=1", {
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "Accept-Language": "en",
-      },
-    });
+    expect(fetch).toHaveBeenNthCalledWith(
+      1,
+      "/lattice/tables/workbench.users?page=2&per_page=1",
+      requestOptions(),
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Sort Name" }));
 
@@ -725,13 +680,7 @@ describe("Lattice table component", () => {
     expect(fetch).toHaveBeenNthCalledWith(
       2,
       "/lattice/tables/workbench.users?sort=name&page=1&per_page=1",
-      {
-        credentials: "same-origin",
-        headers: {
-          Accept: "application/json",
-          "Accept-Language": "en",
-        },
-      },
+      requestOptions(),
     );
   });
 
@@ -766,30 +715,21 @@ describe("Lattice table component", () => {
   });
 
   it("renders numbered controls for table pagination", async () => {
-    const fetch = vi.fn<typeof globalThis.fetch>(async () =>
-      Response.json({
-        data: [{ id: 3, name: "Grace" }],
-        pagination: {
-          currentPage: 3,
-          hasMore: true,
-          lastPage: 4,
-          mode: "table",
-          nextPage: 4,
-          perPage: 1,
-          from: 3,
-          to: 3,
-          total: 4,
-        },
-        state: {
-          filters: [],
-          page: 3,
-          perPage: 1,
-          sorts: [],
-        },
-      }),
-    );
-
-    vi.stubGlobal("fetch", fetch);
+    const fetch = tableFetch({
+      data: [{ id: 3, name: "Grace" }],
+      pagination: {
+        currentPage: 3,
+        hasMore: true,
+        lastPage: 4,
+        mode: "table",
+        nextPage: 4,
+        perPage: 1,
+        from: 3,
+        to: 3,
+        total: 4,
+      },
+      state: tableState({ page: 3, perPage: 1 }),
+    });
 
     const node = {
       id: "workbench.users",
@@ -813,12 +753,7 @@ describe("Lattice table component", () => {
           to: 2,
           total: 4,
         },
-        state: {
-          filters: [],
-          page: 2,
-          perPage: 1,
-          sorts: [],
-        },
+        state: tableState({ page: 2, perPage: 1 }),
       },
       type: "table",
     } satisfies TableNode;
@@ -832,37 +767,24 @@ describe("Lattice table component", () => {
 
     await screen.findByRole("cell", { name: "Grace" });
 
-    expect(fetch).toHaveBeenCalledWith("/lattice/tables/workbench.users?page=3&per_page=1", {
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "Accept-Language": "en",
-      },
-    });
+    expect(fetch).toHaveBeenCalledWith(
+      "/lattice/tables/workbench.users?page=3&per_page=1",
+      requestOptions(),
+    );
   });
 
   it("loads lazy table data after the component mounts", async () => {
-    const fetch = vi.fn<typeof globalThis.fetch>(async () =>
-      Response.json({
-        data: [{ id: 1, name: "Ada" }],
-        pagination: {
-          currentPage: 1,
-          hasMore: false,
-          mode: "none",
-          total: 1,
-          from: 1,
-          to: 1,
-        },
-        state: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
+    const fetch = tableFetch({
+      data: [{ id: 1, name: "Ada" }],
+      pagination: pagination({
+        currentPage: 1,
+        hasMore: false,
+        mode: "none",
+        total: 1,
+        from: 1,
+        to: 1,
       }),
-    );
-
-    vi.stubGlobal("fetch", fetch);
+    });
 
     const node = {
       id: "workbench.users.none",
@@ -877,12 +799,7 @@ describe("Lattice table component", () => {
         endpoint: "/lattice/tables/workbench.users.none",
         lazy: true,
         pagination: pagination(),
-        state: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
+        state: tableState(),
       },
       type: "table",
     } satisfies TableNode;
@@ -894,26 +811,15 @@ describe("Lattice table component", () => {
     await screen.findByRole("cell", { name: "Ada" });
 
     expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith("/lattice/tables/workbench.users.none?page=1&per_page=25", {
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "Accept-Language": "en",
-      },
-    });
+    expect(fetch).toHaveBeenCalledWith(
+      "/lattice/tables/workbench.users.none?page=1&per_page=25",
+      requestOptions(),
+    );
     expect(screen.getByText("Showing 1-1 of 1")).toBeVisible();
   });
 
   it("applies per-column header filters by type", async () => {
-    const fetch = vi.fn<typeof globalThis.fetch>(async () =>
-      Response.json({
-        data: [],
-        pagination: {},
-        state: { filters: [], page: 1, perPage: 25, sorts: [] },
-      }),
-    );
-
-    vi.stubGlobal("fetch", fetch);
+    const fetch = tableFetch();
 
     const node = {
       id: "workbench.products",
@@ -964,7 +870,7 @@ describe("Lattice table component", () => {
         ],
         data: [],
         endpoint: "/lattice/tables/workbench.products",
-        state: { filters: [], page: 1, perPage: 25, sorts: [] },
+        state: tableState(),
       },
       type: "table",
     } satisfies TableNode;
@@ -977,10 +883,7 @@ describe("Lattice table component", () => {
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
         "/lattice/tables/workbench.products?filter=featured%3Aeq%3Atrue&page=1&per_page=25",
-        {
-          credentials: "same-origin",
-          headers: { Accept: "application/json", "Accept-Language": "en" },
-        },
+        requestOptions(),
       ),
     );
 
@@ -990,10 +893,7 @@ describe("Lattice table component", () => {
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
         "/lattice/tables/workbench.products?filter=updated_at%3Aeq%3A2026-06-01&page=1&per_page=25",
-        {
-          credentials: "same-origin",
-          headers: { Accept: "application/json", "Accept-Language": "en" },
-        },
+        requestOptions(),
       ),
     );
 
@@ -1003,10 +903,7 @@ describe("Lattice table component", () => {
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
         "/lattice/tables/workbench.products?filter=name%3Acontains%3ALamp&page=1&per_page=25",
-        {
-          credentials: "same-origin",
-          headers: { Accept: "application/json", "Accept-Language": "en" },
-        },
+        requestOptions(),
       ),
     );
   });
@@ -1018,7 +915,7 @@ describe("Lattice table component", () => {
         columns: [col({ key: "name", label: "Name" })],
         data: [{ name: "Taylor" }],
         striped: true,
-        state: { filters: [], page: 1, perPage: 25, sorts: [] },
+        state: tableState(),
       },
       type: "table",
     } satisfies TableNode;
@@ -1031,15 +928,7 @@ describe("Lattice table component", () => {
   });
 
   it("adds a clause with a chosen operator from the column filter popover", async () => {
-    const fetch = vi.fn<typeof globalThis.fetch>(async () =>
-      Response.json({
-        data: [],
-        pagination: {},
-        state: { filters: [], page: 1, perPage: 25, sorts: [] },
-      }),
-    );
-
-    vi.stubGlobal("fetch", fetch);
+    const fetch = tableFetch();
 
     const node = {
       id: "workbench.products",
@@ -1062,7 +951,7 @@ describe("Lattice table component", () => {
         ],
         data: [],
         endpoint: "/lattice/tables/workbench.products",
-        state: { filters: [], page: 1, perPage: 25, sorts: [] },
+        state: tableState(),
       },
       type: "table",
     } satisfies TableNode;
@@ -1082,10 +971,7 @@ describe("Lattice table component", () => {
     await waitFor(() =>
       expect(fetch).toHaveBeenLastCalledWith(
         "/lattice/tables/workbench.products?filter=name%3Aneq%3Abar&page=1&per_page=25",
-        {
-          credentials: "same-origin",
-          headers: { Accept: "application/json", "Accept-Language": "en" },
-        },
+        requestOptions(),
       ),
     );
   });
