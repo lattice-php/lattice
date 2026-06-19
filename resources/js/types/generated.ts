@@ -759,6 +759,7 @@ export type LayoutNode =
       schema?: Node[];
     };
 export type Link = {
+  action: Node | null;
   href: string | null;
   label: string;
   method: HttpMethod | null;
@@ -775,6 +776,7 @@ export type LocaleChangeEffect = {
 };
 export type Menu = Record<string, never>;
 export type MenuItem = {
+  action: Node | null;
   href: string | null;
   icon: string | null;
   label: string;

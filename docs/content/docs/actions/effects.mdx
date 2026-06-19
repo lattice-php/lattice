@@ -28,23 +28,32 @@ return ActionResult::success()
 
 ## Effects
 
-| Effect                                   | What it does                                                                 |
-| ---------------------------------------- | ---------------------------------------------------------------------------- |
-| `->toast($message, $variant)`            | Shows a toast. Variant defaults to success.                                  |
-| `->callout($callout)`                    | Shows a persistent in-flow banner in the layout's callout slot.              |
-| `->reloadComponent($id)`                 | Re-fetches a single component (e.g. the table the action changed).           |
-| `->reloadPage()`                         | Reloads the current page's props.                                            |
-| `->redirect($url)`                       | Navigates to a URL.                                                          |
-| `->download($url)`                       | Triggers a file download.                                                    |
-| `->openModal($id)` / `->closeModal($id)` | Opens or closes a modal by id (`closeModal()` closes the current modal).     |
-| `->resetForm($id)`                       | Resets a form to its initial values (`resetForm()` resets the current form). |
-| `->localeChange($locale)`                | Persists the frontend locale and dispatches `lattice:locale-change`.         |
+| Effect                                                  | What it does                                                                 |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `->toast($message, $variant)`                           | Shows a toast. Variant defaults to success.                                  |
+| `->callout($callout)`                                   | Shows a persistent in-flow banner in the layout's callout slot.              |
+| `->reloadComponent($id)`                                | Re-fetches a single component (e.g. the table the action changed).           |
+| `->reloadPage()`                                        | Reloads the current page's props.                                            |
+| `->to($url)` / `->toRoute($name, $params)` / `->back()` | Navigates to a URL, a named route, or the previous page.                     |
+| `->download($url)`                                      | Triggers a file download.                                                    |
+| `->openModal($id)` / `->closeModal($id)`                | Opens or closes a modal by id (`closeModal()` closes the current modal).     |
+| `->resetForm($id)`                                      | Resets a form to its initial values (`resetForm()` resets the current form). |
+| `->localeChange($locale)`                               | Persists the frontend locale and dispatches `lattice:locale-change`.         |
+| `->toggleSidebar($target)`                              | Toggles the layout sidebar (optionally a named target).                      |
 
 ```php
 return ActionResult::success()
     ->toast('Report ready.', Variant::Success)
     ->download(route('reports.download', $report));
 ```
+
+<Info>
+  This effect builder is shared with form and controller responses. A `LatticeResponse` (returned from
+  a form's `handle()`, or via `Effects::respond()`) exposes the identical `->toast()`, `->callout()`,
+  `->openModal()`, … methods. The only difference is the return: an action serializes to JSON, while a
+  `LatticeResponse` performs a real redirect — so `->to()` / `->toRoute()` / `->back()` navigate on the
+  server there, and emit a redirect effect here.
+</Info>
 
 ### Toasts
 

@@ -16,7 +16,6 @@ use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\FloatingPlacement;
 use Lattice\Lattice\Core\Enums\Gap;
-use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Core\Enums\Placement;
 use Lattice\Lattice\Core\Enums\Side;
@@ -32,6 +31,7 @@ use Lattice\Lattice\Layouts\Components\Sidebar;
 use Lattice\Lattice\Layouts\Components\Topbar;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Support\Affix;
+use Workbench\App\Actions\LogoutAction;
 use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Actions\ToggleChatLayoutAction;
 use Workbench\App\Pages\BuilderTableDemoPage;
@@ -158,7 +158,7 @@ class AppLayout extends LayoutDefinition
             ])
             ->items([
                 $this->chatLayoutToggle(),
-                MenuItem::make(__('workbench.navigation.log-out'), 'log-out')->href('/logout')->method(HttpMethod::Post),
+                MenuItem::make(__('workbench.navigation.log-out'), 'log-out')->action(LogoutAction::class),
             ]);
     }
 

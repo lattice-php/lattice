@@ -51,6 +51,19 @@ test('a lattice response queues every effect helper and redirects to a url', fun
     expect(app(EffectFlasher::class)->all())->toHaveCount(4);
 });
 
+test('a lattice response flashes the trait-provided effects', function (): void {
+    $response = LatticeResponse::make()
+        ->openModal('two-factor')
+        ->localeChange('de')
+        ->to('/dashboard')
+        ->toResponse(request());
+
+    expect($response->getStatusCode())->toBe(302);
+    expect(app(EffectFlasher::class)->all())->toHaveCount(2);
+    expect(wire(app(EffectFlasher::class)->all()[0])['type'])->toBe('openModal');
+    expect(wire(app(EffectFlasher::class)->all()[1])['type'])->toBe('localeChange');
+});
+
 test('Effects::respond starts a fluent response', function (): void {
     $response = Effects::respond()
         ->toast('Done.')

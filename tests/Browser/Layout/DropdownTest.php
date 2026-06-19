@@ -21,6 +21,15 @@ it('keeps the user dropdown usable when the sidebar is collapsed', function (): 
         ->assertNoSmoke();
 });
 
+it('logs the user out through the user dropdown action', function (): void {
+    $this->actingAs(workbenchTestUser());
+    visit('/')
+        ->click('@user-menu')
+        ->click('Log out')
+        ->assertSee('Use the seeded account to enter the workbench.')
+        ->assertNoSmoke();
+});
+
 it('renders the workbench locale switcher as a topbar dropdown', function (): void {
     $this->actingAs(workbenchTestUser());
     visit('/')

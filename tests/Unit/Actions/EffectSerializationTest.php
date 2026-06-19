@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Route;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Components\ActionGroup;
@@ -9,6 +10,7 @@ use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Core\Values\Translatable;
 use Lattice\Lattice\Effects\Effect;
 
 test('a toast serializes its lifetime, dismissibility and link', function (): void {
@@ -45,7 +47,7 @@ test('a toast can carry an action component', function (): void {
 test('action results expose the full effect vocabulary', function (): void {
     $result = ActionResult::success()
         ->reloadPage()
-        ->redirect('/dashboard')
+        ->to('/dashboard')
         ->download('/exports/report.csv')
         ->resetForm('teams.create')
         ->localeChange('de');
@@ -59,6 +61,25 @@ test('action results expose the full effect vocabulary', function (): void {
     ])
         ->and(wire(Effect::resetForm()))->toBe(['type' => 'resetForm', 'form' => null])
         ->and(wire(Effect::reloadPage()))->toBe(['type' => 'reloadPage']);
+});
+
+test('action result navigation verbs emit a redirect effect', function (): void {
+    Route::get('action-target', fn (): string => 'ok')->name('action-target');
+
+    $to = ActionResult::success()->to('/dashboard');
+    $toRoute = ActionResult::success()->toRoute('action-target');
+    $back = ActionResult::success()->back();
+
+    expect(wire($to)['effects'])->toBe([['type' => 'redirect', 'url' => '/dashboard']])
+        ->and(wire($toRoute)['effects'])->toBe([['type' => 'redirect', 'url' => route('action-target')]])
+        ->and(wire($back)['effects'][0]['type'])->toBe('redirect');
+});
+
+test('action result toasts accept a translatable message', function (): void {
+    $result = ActionResult::success()->toast(Translatable::make('common.action.save'), Variant::Info);
+
+    expect(wire($result)['effects'][0]['type'])->toBe('toast')
+        ->and(wire($result)['effects'][0]['toast']['variant'])->toBe('info');
 });
 
 test('a callout effect serializes its callout payload', function (): void {

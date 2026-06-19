@@ -1,8 +1,9 @@
 import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import type { ReactNode } from "react";
+import { useAction } from "@lattice-php/lattice/action/use-action";
 import { prefixedNodeTestId } from "@lattice-php/lattice/core/test-id";
-import type { RendererComponent, Schema } from "@lattice-php/lattice/core/types";
+import type { Node, RendererComponent, Schema } from "@lattice-php/lattice/core/types";
 import { Icon, IconRenderer } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { Affix } from "@lattice-php/lattice/types/generated";
@@ -56,6 +57,26 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
       {suffix ? <MenuAffix affix={suffix} className="ml-auto" /> : null}
     </>
   );
+
+  const action = node.props.action;
+
+  if (action && href === "" && !children) {
+    return (
+      <ActionMenuItem
+        action={action as Node<"action">}
+        className={cn(
+          rowClass,
+          "w-full",
+          collapsed && "group relative justify-center",
+          iconOnly && "justify-center",
+        )}
+        label={collapsed || iconOnly ? label : undefined}
+        testId={testId}
+      >
+        {content}
+      </ActionMenuItem>
+    );
+  }
 
   if (href === "") {
     if (!children) {
@@ -183,6 +204,38 @@ function FlyoutGroup({
           {children}
         </ul>
       </Popover>
+    </li>
+  );
+}
+
+function ActionMenuItem({
+  action,
+  children,
+  className,
+  label,
+  testId,
+}: {
+  action: Node<"action">;
+  children: ReactNode;
+  className: string;
+  label?: string;
+  testId?: string;
+}) {
+  const { processing, requestSubmit, overlays } = useAction(action);
+
+  return (
+    <li>
+      <button
+        aria-label={label}
+        className={className}
+        data-test={testId}
+        disabled={processing}
+        onClick={requestSubmit}
+        type="button"
+      >
+        {children}
+      </button>
+      {overlays}
     </li>
   );
 }
