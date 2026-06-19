@@ -9,24 +9,24 @@ A Lattice form is a PHP class that declares its fields and handles its own submi
 
 ## Defining a form
 
-Extend `FormDefinition` and implement `definition()` (build the schema) and `handle()` (process a valid submit). The `#[Form('id')]` attribute gives a stable id so the form is discovered and addressed at `lattice/forms/{form}`.
+Extend `FormDefinition` and implement `definition()` (build the schema) and `handle()` (process a valid submit). The `#[AsForm('id')]` attribute gives a stable id so the form is discovered and addressed at `lattice/forms/{form}`.
 
 ```php
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\Form;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
-#[Form('app.profile.form')]
+#[AsForm('app.profile.form')]
 class ProfileForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent
     {
         return $form->schema([
             TextInput::make('name', 'Name')->rules(['required', 'string', 'max:255']),
-            TextInput::make('email', 'Email')->email()->rules(['required', 'email']),
+            TextInput::make('email', 'Email')->email()->rules(['required']),
         ]);
     }
 
@@ -55,7 +55,7 @@ Options shared by **every** field (they extend the base `Field`):
 | `->required()` | Required indicator + `required` rule. |
 | `->rules([...])` | Laravel validation rules for this field. |
 | `->disabled()` | Non-interactive **and not submitted**. |
-| `->readOnly()` | Shown, not editable, **still submitted**. |
+| `->readOnly()` | Shown, not editable. Like disabled, typed input is **not submitted** — only a server-set `->value()` survives. |
 | `->hidden()` / `->visible($bool)` | Remove / show the field. |
 
 ### Select and Choice options
@@ -96,7 +96,7 @@ Select::make('author_id', 'Author')
 
 ## Validation
 
-Attach Laravel rules per field with `->rules([...])` (or `->required()`). In `handle()`, call `$this->validate($request)` — it runs the field rules and returns the validated, cast data as an array (**visible-only**; hidden and disabled values are stripped).
+Attach Laravel rules per field with `->rules([...])` (or `->required()`). In `handle()`, call `$this->validate($request)` — it runs the field rules and returns the validated, cast data as an array (**visible-only**; hidden values and locked (disabled or read-only) user input are stripped, but a server-set `->value()` on a locked field survives).
 
 Turn on **live validation** by calling `->precognitive(500)` (debounce ms) in `definition()`. It validates as the user types using the exact same ruleset — nothing to keep in sync.
 
@@ -160,10 +160,10 @@ Every form posts to its signed endpoint; `FormController` routes the request: a 
 
 ## Common mistakes
 
-- **No `#[Form('id')]` attribute** → the form is not discovered and has no endpoint.
+- **No `#[AsForm('id')]` attribute** → the form is not discovered and has no endpoint.
 - **Validating only in `handle()`** instead of per-field `->rules()` → no live validation; the client can't reflect the rules.
-- **Expecting `disabled()` values in the validated data** — they are stripped. Use `->readOnly()` when the value must still be submitted.
+- **Expecting `disabled()` or `readOnly()` typed values in the validated data** — locked fields are stripped; only a server-set `->value()` survives. Set the value server-side in `definition()` or `handle()`.
 - **Relying on a conditionally hidden field's value** — a field hidden by `visibleWhen` (or `->hidden()`) is stripped from `validate()`'s result, so it is absent from the array. Default it in `handle()` if you still need a value.
-- **Changing a `#[Form]` id later** → breaks already-rendered references.
+- **Changing a `#[AsForm]` id later** → breaks already-rendered references.
 
 Need an action behind a button, a row, or a selection? See the **`lattice-actions`** skill.

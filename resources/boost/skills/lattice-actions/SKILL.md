@@ -9,18 +9,18 @@ An action runs on the server in response to a click and returns **effects** the 
 
 ## Defining an action
 
-Extend `ActionDefinition` with `definition()` (describe the trigger) and `handle()` (do the work, return an `ActionResult`). The `#[Action('id')]` attribute gives it a stable id. Note the import alias — the attribute and the `Action` component share a name:
+Extend `ActionDefinition` with `definition()` (describe the trigger) and `handle()` (do the work, return an `ActionResult`). The `#[AsAction('id')]` attribute gives it a stable id — distinct from the `Action` component you build in `definition()`:
 
 ```php
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\Action as ActionAttribute;
+use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Variant;
 
-#[ActionAttribute('app.products.archive')]
+#[AsAction('app.products.archive')]
 class ArchiveProductAction extends ActionDefinition
 {
     public function definition(Action $action): Action
@@ -51,7 +51,7 @@ class ArchiveProductAction extends ActionDefinition
 | --- | --- |
 | `->toast($message, $variant?)` | Show a toast (`Variant::Success`/`Error`/`Warning`/`Info`; defaults to success; message and variant are order-insensitive). |
 | `->callout($callout)` | Show a persistent in-flow banner in the layout's `Callouts::make()` slot. Pass a `Callout` value object (`Lattice\Lattice\Core\Values\Callout`). |
-| `->reloadComponent($id)` | Re-fetch one component — pass a `#[Table]`/component id so only it refreshes. |
+| `->reloadComponent($id)` | Re-fetch one component — pass a `#[AsTable]`/component id so only it refreshes. |
 | `->reloadPage()` | Reload the current page's props. |
 | `->redirect($url)` | Navigate to a URL. |
 | `->download($url)` | Trigger a file download. |
@@ -140,9 +140,9 @@ use Illuminate\Support\Collection;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\BulkAction as BulkActionAttribute;
+use Lattice\Lattice\Attributes\AsBulkAction;
 
-#[BulkActionAttribute('app.products.archive-selected')]
+#[AsBulkAction('app.products.archive-selected')]
 class ArchiveSelectedProductsAction extends BulkActionDefinition
 {
     public function definition(Action $action): Action
@@ -171,8 +171,8 @@ See the **`lattice-tables`** skill for the table wiring.
 
 ## Common mistakes
 
-- **Confusing the attribute and the component** — `#[Action]`/`#[BulkAction]` live in `Lattice\Lattice\Attributes` (alias them on import); `Action::use()`/`BulkAction::use()` are components in `Lattice\Lattice\Actions\Components`.
-- **`reloadComponent()` with the wrong id** — pass the target component's `#[Table]`/component id, not the action's id.
+- **Confusing the attribute and the component** — `#[AsAction]`/`#[AsBulkAction]` live in `Lattice\Lattice\Attributes`; `Action::use()`/`BulkAction::use()` are components in `Lattice\Lattice\Actions\Components`.
+- **`reloadComponent()` with the wrong id** — pass the target component's `#[AsTable]`/component id, not the action's id.
 - **Reading context off the raw request** — use `$this->context($request, $key)`; it is the signed, trusted copy.
-- **No `#[Action('id')]` / `#[BulkAction('id')]`** → the action is not discovered and has no endpoint.
+- **No `#[AsAction('id')]` / `#[AsBulkAction('id')]`** → the action is not discovered and has no endpoint.
 - **Callout not appearing** — the active layout's `schema()` must include `Callouts::make()`; without it the effect is silently dropped.

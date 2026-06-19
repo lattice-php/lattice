@@ -5,15 +5,15 @@ Lattice (`lattice-php/lattice`) is a server-driven UI layer for Laravel apps run
 ### The model
 
 - A **page** is a PHP class that builds a tree of component definitions; one React component (`lattice/page`) renders it over Inertia by resolving each node against a registry.
-- **Forms, tables, actions, and fragments** are PHP classes tagged with an attribute (`#[Form]`, `#[Table]`, `#[Action]`, `#[BulkAction]`, `#[Fragment]`). Lattice **discovers** them under the paths in `config('lattice.discover')` (your `app/` directory by default) and exposes each at a stable, signed endpoint (e.g. `lattice/forms/{form}`, `lattice/tables/{table}`). The rendered components call back into those endpoints for submits, paging, and clicks.
+- **Forms, tables, actions, and fragments** are PHP classes tagged with an attribute (`#[AsForm]`, `#[AsTable]`, `#[AsAction]`, `#[AsBulkAction]`, `#[AsFragment]`). Lattice **discovers** them under the paths in `config('lattice.discover')` (your `app/` directory by default) and exposes each at a stable, signed endpoint (e.g. `lattice/forms/{form}`, `lattice/tables/{table}`). The rendered components call back into those endpoints for submits, paging, and clicks.
 
 ### Building a page
 
-A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its UI in `render()`. Annotate it with `#[Page(route: '…')]`; Lattice discovers the page and registers its route automatically — no controller, route file entry, or Inertia page component to write by hand.
+A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its UI in `render()`. Annotate it with `#[AsPage(route: '…')]`; Lattice discovers the page and registers its route automatically — no controller, route file entry, or Inertia page component to write by hand.
 
 @verbatim
 <code-snippet name="A page and its route" lang="php">
-use Lattice\Lattice\Attributes\Page;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\Gap;
@@ -22,7 +22,7 @@ use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page as BasePage;
 use Lattice\Lattice\Tables\Components\Table;
 
-#[Page(route: '/products', layout: PageLayout::App, middleware: ['web'])]
+#[AsPage(route: '/products', layout: PageLayout::App, middleware: ['web'])]
 final class ProductsPage extends BasePage
 {
     public function title(): string
@@ -59,7 +59,7 @@ Drop a form or a table into the tree with `Form::use(MyForm::class)` and `Table:
 ### Conventions
 
 - Definitions (forms, tables, actions, pages) live under a discover path (`app/` by default) and follow normal PSR-4 namespacing — e.g. `App\Forms\ProfileForm`, `App\Tables\ProductsTable`. Discovery scans recursively, so the sub-folder is your choice.
-- Always give a definition a **stable id** in its attribute: `#[Form('app.profile.form')]`. Endpoints and signed refs derive from it; changing it breaks existing references.
+- Always give a definition a **stable id** in its attribute: `#[AsForm('app.profile.form')]`. Endpoints and signed refs derive from it; changing it breaks existing references.
 - After changing the PHP wire format (enums / value objects) or adding custom components, regenerate the TypeScript types with `php artisan lattice:typescript`.
 - Scaffold custom UI with the `make` commands below — each generates a paired PHP builder and React `.tsx` component.
 - Use Boost's `search-docs` tool for Laravel/Inertia/Pest specifics.
