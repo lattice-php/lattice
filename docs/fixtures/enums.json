@@ -497,6 +497,28 @@
             }
         ]
     },
+    "Lattice\\Lattice\\Core\\Enums\\TabsAlignment": {
+        "name": "TabsAlignment",
+        "namespace": "Lattice\\Lattice\\Core\\Enums",
+        "cases": [
+            {
+                "name": "Start",
+                "value": "start"
+            },
+            {
+                "name": "Center",
+                "value": "center"
+            },
+            {
+                "name": "End",
+                "value": "end"
+            },
+            {
+                "name": "Stretch",
+                "value": "stretch"
+            }
+        ]
+    },
     "Lattice\\Lattice\\Core\\Enums\\Variant": {
         "name": "Variant",
         "namespace": "Lattice\\Lattice\\Core\\Enums",

@@ -15,6 +15,7 @@ use Lattice\Lattice\Core\Enums\Icon as IconName;
 use Lattice\Lattice\Core\Enums\Justify;
 use Lattice\Lattice\Core\Enums\Orientation;
 use Lattice\Lattice\Core\Enums\Size;
+use Lattice\Lattice\Core\Enums\TabsAlignment;
 use Lattice\Lattice\Core\Enums\Width;
 
 test('stack serializes enums direction and key wire-identically', function (): void {
@@ -116,6 +117,7 @@ test('tabs serialize defaultValue queryKey and computed activeValue', function (
             'props' => [
                 'queryKey' => 'tabs',
                 'orientation' => 'horizontal',
+                'alignment' => 'stretch',
                 'defaultValue' => 'security',
                 'activeValue' => 'security',
             ],
@@ -142,6 +144,7 @@ test('tabs with custom queryKey and no defaultValue keep empty activeValue', fun
             'props' => [
                 'queryKey' => 'settings-tab',
                 'orientation' => 'horizontal',
+                'alignment' => 'stretch',
                 'activeValue' => '',
                 'defaultValue' => null,
             ],
@@ -151,6 +154,13 @@ test('tabs with custom queryKey and no defaultValue keep empty activeValue', fun
 test('tabs serialize a vertical orientation', function (): void {
     expect(wire(Tabs::make('settings-tabs')->orientation(Orientation::Vertical))['props']['orientation'])
         ->toBe('vertical');
+});
+
+test('tabs serialize a stretched alignment by default and honour an override', function (): void {
+    expect(wire(Tabs::make('settings-tabs'))['props']['alignment'])->toBe('stretch');
+
+    expect(wire(Tabs::make('settings-tabs')->alignment(TabsAlignment::Center))['props']['alignment'])
+        ->toBe('center');
 });
 
 test('confirmed inactive tab serializes confirm metadata and drops its children', function (): void {
