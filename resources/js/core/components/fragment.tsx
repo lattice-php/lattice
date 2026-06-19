@@ -16,6 +16,9 @@ const fragmentSizeHeights = {
   sm: 40,
   xl: 384,
   xs: 32,
+  "2xl": 448,
+  "3xl": 512,
+  "4xl": 576,
 } as const;
 
 const FragmentComponent: RendererComponent<"fragment"> = ({ node }) => {

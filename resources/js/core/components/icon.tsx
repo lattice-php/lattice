@@ -9,6 +9,9 @@ const sizeClass: Record<Size, string> = {
   md: "size-lt-icon-md",
   lg: "size-lt-icon-lg",
   xl: "size-lt-icon-xl",
+  "2xl": "size-lt-icon-2xl",
+  "3xl": "size-lt-icon-3xl",
+  "4xl": "size-lt-icon-4xl",
 };
 
 const colorClass: Record<Color, string> = {

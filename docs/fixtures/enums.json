@@ -494,6 +494,18 @@
             {
                 "name": "Xl",
                 "value": "xl"
+            },
+            {
+                "name": "Xl2",
+                "value": "2xl"
+            },
+            {
+                "name": "Xl3",
+                "value": "3xl"
+            },
+            {
+                "name": "Xl4",
+                "value": "4xl"
             }
         ]
     },

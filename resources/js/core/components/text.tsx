@@ -23,6 +23,9 @@ const textSizes: Record<Size, string> = {
   md: "text-base leading-7",
   lg: "text-lg leading-8",
   xl: "text-xl leading-8",
+  "2xl": "text-2xl leading-9",
+  "3xl": "text-3xl leading-10",
+  "4xl": "text-4xl leading-none",
 };
 
 const TextComponent: RendererComponent<"text"> = ({ node }) => {
