@@ -71,4 +71,54 @@ describe("Subscriptions", () => {
     expect(toasts).toHaveLength(1);
     expect((toasts[0] as { message: string }).message).toContain("orders.shipped-live");
   });
+
+  it.each(["public", "private", "presence"] as const)(
+    "subscribes to %s channels and dispatches their effects",
+    (visibility) => {
+      const listeners: ListenerPayload[] = [
+        {
+          channel: "orders",
+          visibility,
+          events: ["OrderShipped"],
+          effects: [
+            {
+              type: "toast",
+              toast: {
+                variant: "success",
+                message: { key: "orders.live", payload: {}, replacements: {} },
+              },
+            } as never,
+          ],
+        },
+      ];
+
+      render(<Subscriptions listeners={listeners} />);
+      handlers.current?.({});
+
+      expect(toasts).toHaveLength(1);
+    },
+  );
+
+  it("passes non-toast effects through untouched, even for non-object payloads", () => {
+    const closed: unknown[] = [];
+    const collect = (event: Event) => closed.push((event as CustomEvent).detail);
+    window.addEventListener("lattice:close-modal", collect);
+
+    const listeners: ListenerPayload[] = [
+      {
+        channel: "orders",
+        visibility: "public",
+        events: ["OrderShipped"],
+        effects: [{ type: "closeModal", target: "checkout" } as never],
+      },
+    ];
+
+    render(<Subscriptions listeners={listeners} />);
+    handlers.current?.("not-an-object");
+
+    expect(closed).toHaveLength(1);
+    expect(toasts).toHaveLength(0);
+
+    window.removeEventListener("lattice:close-modal", collect);
+  });
 });
