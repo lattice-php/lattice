@@ -5,6 +5,8 @@ import { registry as defaultRegistry } from "./registry";
 import type { Registry } from "./core/registry";
 import { RegistryContext, setDefaultRegistry } from "./core/registry-context";
 import { Toaster } from "./toast";
+import { updateAppearance } from "./appearance";
+import { EventBridge } from "./events/event-bridge";
 import { useFlashEffects } from "./effects/use-flash-effects";
 
 // Register the default registry so selectors work outside <Provider>.
@@ -31,6 +33,7 @@ export function Provider({
     <RegistryContext.Provider value={registry}>
       <SpriteProvider sprite={sprite}>
         {children}
+        <EventBridge onAppearanceChange={updateAppearance} />
         {toaster ? <Toaster /> : null}
       </SpriteProvider>
     </RegistryContext.Provider>

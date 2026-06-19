@@ -75,6 +75,17 @@ const handleSystemThemeChange = (): void => {
   notify();
 };
 
+export function updateAppearance(mode: Appearance): void {
+  currentAppearance = mode;
+
+  localStorage.setItem("appearance", mode);
+
+  setCookie("appearance", mode);
+
+  applyTheme(mode);
+  notify();
+}
+
 export function initializeTheme(): void {
   if (typeof window === "undefined") {
     return;
@@ -105,17 +116,6 @@ export function useAppearance(): UseAppearanceReturn {
 
   const resolvedAppearance: ResolvedAppearance =
     appearance === "system" ? systemAppearance : appearance;
-
-  const updateAppearance = (mode: Appearance): void => {
-    currentAppearance = mode;
-
-    localStorage.setItem("appearance", mode);
-
-    setCookie("appearance", mode);
-
-    applyTheme(mode);
-    notify();
-  };
 
   return { appearance, resolvedAppearance, updateAppearance } as const;
 }
