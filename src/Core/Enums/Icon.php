@@ -14,8 +14,10 @@ enum Icon: string
     case ArrowDown = 'arrow-down';
     case ArrowUp = 'arrow-up';
     case Bold = 'bold';
+    case Calendar = 'calendar';
     case Check = 'check';
     case ChevronDown = 'chevron-down';
+    case ChevronLeft = 'chevron-left';
     case ChevronRight = 'chevron-right';
     case ChevronsUpDown = 'chevrons-up-down';
     case CircleAlert = 'circle-alert';

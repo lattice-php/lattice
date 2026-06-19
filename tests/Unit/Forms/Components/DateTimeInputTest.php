@@ -77,7 +77,7 @@ it('hydrates Carbon values to datetime plus timezone', function (): void {
 describe('docs fixtures', function (): void {
     it('dumps the datetime input example', function (): void {
         dumpFixture('date-time-input.basic', [
-            DateTimeInput::make('starts_at', 'Starts at')->convertTimeZone(),
+            DateTimeInput::make('starts_at', 'Starts at'),
         ]);
 
         expect('docs/fixtures/date-time-input.basic.json')->toBeReadableFile();

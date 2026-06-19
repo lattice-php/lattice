@@ -8,8 +8,10 @@ export const iconNames = [
   "arrow-down",
   "arrow-up",
   "bold",
+  "calendar",
   "check",
   "chevron-down",
+  "chevron-left",
   "chevron-right",
   "chevrons-up-down",
   "circle-alert",
@@ -69,8 +71,10 @@ declare module "@lattice-php/lattice" {
     "arrow-down": true;
     "arrow-up": true;
     bold: true;
+    calendar: true;
     check: true;
     "chevron-down": true;
+    "chevron-left": true;
     "chevron-right": true;
     "chevrons-up-down": true;
     "circle-alert": true;

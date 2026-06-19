@@ -604,6 +604,10 @@
                 "value": "field.date-input"
             },
             {
+                "name": "DateTimeInput",
+                "value": "field.date-time-input"
+            },
+            {
                 "name": "FileUpload",
                 "value": "field.file-upload"
             },
@@ -642,6 +646,10 @@
             {
                 "name": "TextInput",
                 "value": "field.text-input"
+            },
+            {
+                "name": "TimeInput",
+                "value": "field.time-input"
             },
             {
                 "name": "Toggle",

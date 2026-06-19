@@ -13,6 +13,7 @@ use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Checkbox;
 use Lattice\Lattice\Forms\Components\Choice;
 use Lattice\Lattice\Forms\Components\DateInput;
+use Lattice\Lattice\Forms\Components\DateTimeInput;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\HiddenInput;
 use Lattice\Lattice\Forms\Components\NumberInput;
@@ -21,6 +22,7 @@ use Lattice\Lattice\Forms\Components\RichEditor;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Forms\Components\TimeInput;
 use Lattice\Lattice\Forms\Components\Toggle;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormDefinition;
@@ -66,6 +68,11 @@ class ShowcaseForm extends FormDefinition
                         DateInput::make('birthday', __('workbench.forms.showcase.birthday'))
                             ->max('2026-01-01')
                             ->rules(['nullable', 'date']),
+                        TimeInput::make('meeting_time', __('workbench.forms.showcase.meeting-time'))
+                            ->min('08:00')
+                            ->max('18:00'),
+                        DateTimeInput::make('launch_at', __('workbench.forms.showcase.launch-at'))
+                            ->convertTimeZone(),
                     ]),
                     NumberInput::make('satisfaction', __('workbench.forms.showcase.satisfaction'))
                         ->slider()

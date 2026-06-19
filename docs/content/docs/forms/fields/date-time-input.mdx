@@ -1,0 +1,44 @@
+---
+title: Date time input
+description: A timezone-aware date and time picker.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+The date time input collects a calendar date and time in the active frontend timezone. Validation
+returns a `CarbonImmutable`.
+
+<ComponentExample
+  php={`DateTimeInput::make('starts_at', 'Starts at')`}
+  fixture="date-time-input.basic"
+  values={{ starts_at: "" }}
+/>
+
+## Timezone behavior
+
+The picker uses the frontend timezone configured through `lattice.i18n.timezone`. Submitted values
+include that timezone, so validation returns a `CarbonImmutable` in the user's timezone by default.
+
+```php
+DateTimeInput::make('starts_at', 'Starts at');
+```
+
+To store the value in the app timezone, opt in:
+
+```php
+DateTimeInput::make('starts_at', 'Starts at')
+    ->convertTimeZone();
+```
+
+To convert to a specific timezone, pass it explicitly:
+
+```php
+DateTimeInput::make('starts_at', 'Starts at')
+    ->convertTimeZone('UTC');
+```
+
+## Common options
+
+`DateTimeInput` shares label, default value, required, disabled, read-only, and visibility options
+with every field — see [Fields](/forms/fields/overview/). For validation and conditional behavior,
+see [Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).
