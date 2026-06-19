@@ -12,32 +12,15 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-const { renderCounts } = vi.hoisted(() => ({ renderCounts: new Map<string, number>() }));
-
 vi.mock("@lattice-php/lattice/core/renderer", async () => {
-  const { useFieldScope } = await import("../field-scope");
-  return {
-    RenderNode: ({ node }: { node: { props: { name: string } } }) => {
-      const scope = useFieldScope();
-      const key = scope ? scope.scopedName(node.props.name) : "no-scope";
-      renderCounts.set(key, (renderCounts.get(key) ?? 0) + 1);
-      return (
-        <>
-          <span data-test="child">{key}</span>
-          <button
-            aria-label={`commit ${key}`}
-            data-test={`commit-${key}`}
-            type="button"
-            onClick={() => scope?.setValue(node.props.name, "x")}
-          />
-        </>
-      );
-    },
-  };
+  const { RenderNode } = await import("../../../test/form-renderer-probe");
+
+  return { RenderNode };
 });
 
 import { FormProvider } from "../context";
 import { FormValuesProvider } from "../values";
+import { renderCounts } from "../../../test/form-renderer-probe";
 import { RepeaterComponent } from "./repeater";
 import { TableRows, type TableColumn } from "./table-rows";
 

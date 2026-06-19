@@ -1,6 +1,9 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
+import type { EffectHandler } from "@lattice-php/lattice/effects/registry";
+import { createPlugin, createRegistry } from "@lattice-php/lattice/core/registry";
+import { Provider } from "@lattice-php/lattice/provider";
 import { BulkBar } from "./bulk-bar";
 import type { BulkAction } from "../bulk";
 
@@ -18,62 +21,17 @@ const http = vi.hoisted(() => ({
   })),
 }));
 
+const router = vi.hoisted(() => ({
+  on: vi.fn<(event: string, listener: (event: Event) => void) => () => void>(() =>
+    vi.fn<() => void>(),
+  ),
+  reload: vi.fn<() => void>(),
+  visit: vi.fn<(url: string) => void>(),
+}));
+
 vi.mock("@inertiajs/react", () => ({
+  router,
   useHttp: () => http,
-}));
-
-const runAction = vi.hoisted(() =>
-  vi.fn<(request: () => Promise<ActionResponse>, dispatch: unknown) => Promise<boolean>>(
-    async (request) => {
-      await request();
-
-      return true;
-    },
-  ),
-);
-
-vi.mock("@lattice-php/lattice/action/run-action", () => ({
-  runAction,
-}));
-
-const dispatch = vi.hoisted(() => vi.fn<(effects: unknown) => void>());
-
-vi.mock("@lattice-php/lattice/effects/use-effect-dispatcher", () => ({
-  useEffectDispatcher: () => dispatch,
-}));
-
-const getActionEffects = vi.hoisted(() =>
-  vi.fn<(effects: unknown) => unknown>((effects) => effects),
-);
-
-vi.mock("@lattice-php/lattice/effects/dispatch", () => ({
-  getActionEffects,
-}));
-
-type ConfirmProps = {
-  title: string;
-  description?: string;
-  confirmLabel: string;
-  cancelLabel?: string;
-  onConfirm: () => void;
-  onCancel: () => void;
-};
-
-vi.mock("@lattice-php/lattice/core/components/confirm-dialog", () => ({
-  ConfirmDialog: (props: ConfirmProps) => (
-    <div data-test="confirm-dialog">
-      <span data-test="confirm-title">{props.title}</span>
-      <span data-test="confirm-description">{props.description ?? "(none)"}</span>
-      <span data-test="confirm-confirm-label">{props.confirmLabel}</span>
-      <span data-test="confirm-cancel-label">{props.cancelLabel}</span>
-      <button type="button" data-test="confirm-accept" onClick={props.onConfirm}>
-        accept
-      </button>
-      <button type="button" data-test="confirm-cancel" onClick={props.onCancel}>
-        cancel
-      </button>
-    </div>
-  ),
 }));
 
 type ActionFormProps = {
@@ -97,7 +55,7 @@ vi.mock("@lattice-php/lattice/action/components/action-form", () => ({
       <button
         type="button"
         data-test="form-success"
-        onClick={() => props.onSuccess({ effects: [{ type: "reloadPage" }] })}
+        onClick={() => props.onSuccess({ effects: [{ type: "test.bulk-success" } as never] })}
       >
         success
       </button>
@@ -121,21 +79,33 @@ function action(partial: Partial<BulkAction> & Pick<BulkAction, "id">): BulkActi
   };
 }
 
+const effectHandler = vi.fn<EffectHandler>();
+const registry = createRegistry(
+  createPlugin({
+    name: "bulk-bar-test",
+    effects: {
+      "test.bulk-success": effectHandler,
+    },
+  }),
+);
+
 function renderBar(props: Partial<Parameters<typeof BulkBar>[0]> = {}) {
   const onSelectAllMatching = vi.fn<() => void>();
   const onCompleted = vi.fn<() => void>();
 
   render(
-    <BulkBar
-      actions={[action({ id: "archive" })]}
-      selectedKeys={["1", "2"]}
-      allMatching={false}
-      query={{ filter: "status:eq:active" }}
-      canSelectAllMatching={false}
-      onSelectAllMatching={onSelectAllMatching}
-      onCompleted={onCompleted}
-      {...props}
-    />,
+    <Provider registry={registry} toaster={false}>
+      <BulkBar
+        actions={[action({ id: "archive" })]}
+        selectedKeys={["1", "2"]}
+        allMatching={false}
+        query={{ filter: "status:eq:active" }}
+        canSelectAllMatching={false}
+        onSelectAllMatching={onSelectAllMatching}
+        onCompleted={onCompleted}
+        {...props}
+      />
+    </Provider>,
   );
 
   return { onSelectAllMatching, onCompleted };
@@ -144,19 +114,16 @@ function renderBar(props: Partial<Parameters<typeof BulkBar>[0]> = {}) {
 describe("BulkBar", () => {
   beforeEach(() => {
     http.processing = false;
+    http.transformer = (data: Record<string, unknown>): Record<string, unknown> => data;
   });
 
   afterEach(() => {
     http.patch.mockClear();
     http.post.mockClear();
-    runAction.mockClear();
-    dispatch.mockClear();
-    getActionEffects.mockClear();
-    runAction.mockImplementation(async (request) => {
-      await request();
-
-      return true;
-    });
+    router.on.mockClear();
+    router.reload.mockClear();
+    router.visit.mockClear();
+    effectHandler.mockClear();
   });
 
   it("shows the selected count when not selecting all matching", () => {
@@ -244,12 +211,14 @@ describe("BulkBar", () => {
   });
 
   it("does not complete when the request fails", async () => {
-    runAction.mockImplementation(async () => false);
+    const actionError = vi.fn<(event: Event) => void>();
+    http.post.mockRejectedValueOnce(new Error("failed"));
+    window.addEventListener("lattice:action-error", actionError, { once: true });
     const { onCompleted } = renderBar({ actions: [action({ id: "archive" })] });
 
     fireEvent.click(screen.getByTestId("bulk-action-archive"));
 
-    await waitFor(() => expect(runAction).toHaveBeenCalled());
+    await waitFor(() => expect(actionError).toHaveBeenCalledTimes(1));
     expect(onCompleted).not.toHaveBeenCalled();
   });
 
@@ -279,10 +248,10 @@ describe("BulkBar", () => {
 
       fireEvent.click(screen.getByTestId("bulk-action-archive"));
 
-      expect(screen.getByTestId("confirm-title")).toHaveTextContent("Archive items?");
-      expect(screen.getByTestId("confirm-description")).toHaveTextContent("This cannot be undone.");
-      expect(screen.getByTestId("confirm-confirm-label")).toHaveTextContent("Yes archive");
-      expect(screen.getByTestId("confirm-cancel-label")).toHaveTextContent("No");
+      const dialog = screen.getByRole("dialog", { name: "Archive items?" });
+      expect(within(dialog).getByText("This cannot be undone.")).toBeVisible();
+      expect(within(dialog).getByRole("button", { name: "Yes archive" })).toBeVisible();
+      expect(within(dialog).getByRole("button", { name: "No" })).toBeVisible();
     });
 
     it("falls back to the action label and defaults when confirmation fields are missing", () => {
@@ -303,10 +272,10 @@ describe("BulkBar", () => {
 
       fireEvent.click(screen.getByTestId("bulk-action-archive"));
 
-      expect(screen.getByTestId("confirm-title")).toHaveTextContent("Archive");
-      expect(screen.getByTestId("confirm-description")).toHaveTextContent("(none)");
-      expect(screen.getByTestId("confirm-confirm-label")).toHaveTextContent("Archive");
-      expect(screen.getByTestId("confirm-cancel-label")).toHaveTextContent("Cancel");
+      const dialog = screen.getByRole("dialog", { name: "Archive" });
+      expect(within(dialog).getByRole("button", { name: "Archive" })).toBeVisible();
+      expect(within(dialog).getByRole("button", { name: "Cancel" })).toBeVisible();
+      expect(within(dialog).queryByText("(none)")).toBeNull();
     });
 
     it("submits and closes when the confirmation is accepted", async () => {
@@ -328,7 +297,9 @@ describe("BulkBar", () => {
       fireEvent.click(screen.getByTestId("confirm-accept"));
 
       await waitFor(() => expect(onCompleted).toHaveBeenCalledTimes(1));
-      await waitFor(() => expect(screen.queryByTestId("confirm-dialog")).toBeNull());
+      await waitFor(() =>
+        expect(screen.queryByRole("dialog", { name: "Sure?" })).not.toBeInTheDocument(),
+      );
     });
 
     it("closes without submitting when the confirmation is cancelled", () => {
@@ -349,7 +320,7 @@ describe("BulkBar", () => {
       fireEvent.click(screen.getByTestId("bulk-action-archive"));
       fireEvent.click(screen.getByTestId("confirm-cancel"));
 
-      expect(screen.queryByTestId("confirm-dialog")).toBeNull();
+      expect(screen.queryByRole("dialog", { name: "Sure?" })).not.toBeInTheDocument();
       expect(onCompleted).not.toHaveBeenCalled();
     });
   });
@@ -408,8 +379,7 @@ describe("BulkBar", () => {
       fireEvent.click(screen.getByTestId("bulk-action-tag"));
       fireEvent.click(screen.getByTestId("form-success"));
 
-      expect(getActionEffects).toHaveBeenCalledWith([{ type: "reloadPage" }]);
-      expect(dispatch).toHaveBeenCalledWith([{ type: "reloadPage" }]);
+      expect(effectHandler).toHaveBeenCalledWith({ type: "test.bulk-success" });
       await waitFor(() => expect(onCompleted).toHaveBeenCalledTimes(1));
       expect(screen.queryByTestId("action-form")).toBeNull();
     });
