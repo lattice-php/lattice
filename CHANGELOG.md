@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.8.0](https://github.com/lattice-php/lattice/compare/0.7.0...0.8.0) (2026-06-19)
+
+
+### Features
+
+* resolve page render() dependencies through the container on the responsable path ([488944b](https://github.com/lattice-php/lattice/commit/488944bc0784e185c927047cc87eb649f9014da1))
+* resolve page render() dependencies through the container on the responsable path ([b628e8b](https://github.com/lattice-php/lattice/commit/b628e8b955c2ba6198a6a5ae3252742c8565ee7d))
+* **tabs:** add alignment modifier to the Tabs component ([0201e64](https://github.com/lattice-php/lattice/commit/0201e64d4f2d7b403f5a1585da09d95e451a2270))
+* **tabs:** add alignment modifier to the Tabs component ([1510c08](https://github.com/lattice-php/lattice/commit/1510c08b322421e43a3727fe3b4f04cdd29ea7f4))
+
 ## [0.7.0](https://github.com/lattice-php/lattice/compare/0.6.0...0.7.0) (2026-06-19)
 
 
