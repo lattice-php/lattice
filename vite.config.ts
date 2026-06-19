@@ -3,6 +3,7 @@ import { codecovVitePlugin } from "@codecov/vite-plugin";
 import { svgSprite, writePhpEnum } from "@lattice-php/vite-svg-sprite";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
+import { playwright } from "@vitest/browser-playwright";
 import laravel from "laravel-vite-plugin";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
@@ -199,9 +200,39 @@ export default defineConfig(({ mode }) => {
         }
       : { build: { sourcemap: true,  chunkSizeWarningLimit: 600 } }),
     test: {
-      environment: "jsdom",
-      include: ["resources/js/**/*.test.{ts,tsx}", "docs/**/*.test.{ts,tsx}"],
-      setupFiles: ["resources/js/test/setup.ts"],
+      projects: [
+        {
+          extends: true,
+          test: {
+            name: "jsdom",
+            environment: "jsdom",
+            include: ["resources/js/**/*.test.{ts,tsx}", "docs/**/*.test.{ts,tsx}"],
+            exclude: ["resources/js/**/*.browser.test.{ts,tsx}"],
+            setupFiles: ["resources/js/test/setup.ts"],
+          },
+        },
+        {
+          extends: true,
+          test: {
+            name: "browser",
+            include: ["resources/js/**/*.browser.test.{ts,tsx}"],
+            setupFiles: ["resources/js/test/browser-setup.ts"],
+            browser: {
+              enabled: true,
+              provider: playwright(),
+              headless: true,
+              locators: {
+                testIdAttribute: "data-test",
+              },
+              viewport: {
+                width: 1280,
+                height: 800,
+              },
+              instances: [{ browser: "chromium" }],
+            },
+          },
+        },
+      ],
       coverage: {
         provider: "v8",
         reportsDirectory: "coverage_vitest",
