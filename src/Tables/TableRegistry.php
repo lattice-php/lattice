@@ -26,24 +26,28 @@ final class TableRegistry extends DefinitionRegistry
 
     /**
      * @param  class-string<TableDefinition>  $table
+     * @param  array<string, mixed>  $context
      */
-    public function component(string $table): TableComponent
+    public function component(string $table, array $context = []): TableComponent
     {
         return $this->buildComponent(
             $table,
             fn (TableDefinition $definition, TableQuery $query): TableResult => $definition->source()->query($query),
+            $context,
         );
     }
 
     /**
      * @param  class-string<TableDefinition>  $table
+     * @param  array<string, mixed>  $context
      */
-    public function lazyComponent(string $table): TableComponent
+    public function lazyComponent(string $table, array $context = []): TableComponent
     {
         return $this->buildComponent(
             $table,
             fn (TableDefinition $definition, TableQuery $query): TableResult => TableResult::make([])
                 ->pagination(TablePagination::pending($definition->paginationType())),
+            $context,
             lazy: true,
         );
     }
@@ -51,15 +55,18 @@ final class TableRegistry extends DefinitionRegistry
     /**
      * @param  class-string<TableDefinition>  $table
      * @param  callable(TableDefinition, TableQuery): TableResult  $result
+     * @param  array<string, mixed>  $context
      */
-    private function buildComponent(string $table, callable $result, bool $lazy = false): TableComponent
+    private function buildComponent(string $table, callable $result, array $context = [], bool $lazy = false): TableComponent
     {
         $key = $this->registeredKeyFor($table);
-        $definition = $this->make($table);
+        $definition = $this->make($table)->withContext($context);
         $columns = $definition->columns();
         $query = TableQuery::empty($definition->perPage());
 
         $component = TableComponent::make($key)
+            ->signedAs($key)
+            ->context($context)
             ->endpoint($this->endpointFor($key))
             ->columns($columns)
             ->filters($definition->filters())
@@ -68,7 +75,7 @@ final class TableRegistry extends DefinitionRegistry
             ->resizableColumns($definition->resizableColumns(), $definition->resizeIndicator())
             ->actionsLabel($definition->actionsLabel())
             ->emptyLabel($definition->emptyLabel())
-            ->bulkActions($this->bulkActions($definition, $key))
+            ->bulkActions($this->bulkActions($definition, $key, $context))
             ->result($this->decorateResult($definition, $result($definition, $query), $columns), $query);
 
         if ($lazy) {
@@ -118,12 +125,13 @@ final class TableRegistry extends DefinitionRegistry
     }
 
     /**
+     * @param  array<string, mixed>  $context
      * @return array<int, ActionComponent>
      */
-    private function bulkActions(TableDefinition $definition, string $key): array
+    private function bulkActions(TableDefinition $definition, string $key, array $context): array
     {
         return array_map(
-            fn (ActionComponent $action): ActionComponent => $action->context(['table' => $key]),
+            fn (ActionComponent $action): ActionComponent => $action->context([...$context, 'table' => $key]),
             $definition->bulkActions(),
         );
     }

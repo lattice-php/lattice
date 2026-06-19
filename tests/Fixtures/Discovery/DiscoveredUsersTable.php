@@ -26,7 +26,7 @@ class DiscoveredUsersTable extends TableDefinition
         return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([
             [
                 'id' => 1,
-                'name' => $this->context(request(), 'team'),
+                'name' => $this->context('team'),
             ],
         ]));
     }

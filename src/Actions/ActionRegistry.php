@@ -15,14 +15,17 @@ final class ActionRegistry extends DefinitionRegistry
 {
     /**
      * @param  class-string<ActionDefinition>  $action
+     * @param  array<string, mixed>  $context
      */
-    public function component(string $action): ActionComponent
+    public function component(string $action, array $context = []): ActionComponent
     {
         $key = $this->registeredKeyFor($action);
 
-        $definition = $this->make($action);
+        $definition = $this->make($action)->withContext($context);
 
         $component = $definition->definition(ActionComponent::make($key))
+            ->signedAs($key)
+            ->context($context)
             ->endpoint($this->endpointFor($key));
 
         if ($definition instanceof FormActionDefinition) {

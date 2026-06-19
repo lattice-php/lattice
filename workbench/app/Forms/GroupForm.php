@@ -41,7 +41,7 @@ class GroupForm extends FormDefinition
 
     private function group(Request $request): ?Group
     {
-        $id = $this->context($request, 'group_id');
+        $id = $this->context('group_id');
 
         if ($id === null || $id === '') {
             return null;

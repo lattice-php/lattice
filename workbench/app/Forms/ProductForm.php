@@ -280,7 +280,7 @@ class ProductForm extends FormDefinition
 
     private function product(Request $request): ?Product
     {
-        $id = $this->context($request, 'product_id');
+        $id = $this->context('product_id');
 
         if ($id === null || $id === '') {
             return null;

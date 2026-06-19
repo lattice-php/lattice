@@ -129,7 +129,7 @@ class WorkbenchProfileForm extends FormDefinition
     public function handle(Request $request): Response
     {
         $request->session()->put('handled-form', $request->string('name')->toString());
-        $request->session()->put('handled-form-team', $this->context($request, 'team'));
+        $request->session()->put('handled-form-team', $this->context('team'));
 
         return redirect('/submitted');
     }

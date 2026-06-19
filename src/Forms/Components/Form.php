@@ -62,11 +62,12 @@ class Form extends ContainerComponent
 
     /**
      * @param  class-string<FormDefinition>  $form
+     * @param  array<string, mixed>  $context
      */
-    public static function use(string $form): static
+    public static function use(string $form, array $context = []): static
     {
         /** @var static $registered */
-        $registered = app(FormRegistry::class)->component($form);
+        $registered = app(FormRegistry::class)->component($form, $context);
 
         return clone $registered;
     }

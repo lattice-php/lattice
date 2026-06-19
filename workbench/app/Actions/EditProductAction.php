@@ -31,7 +31,7 @@ class EditProductAction extends FormActionDefinition
     public function formSchema(Form $form, Request $request): Form
     {
         $product = $this->product($request);
-        $productForm = app(ProductForm::class);
+        $productForm = app(ProductForm::class)->withContext(['product_id' => $product->getKey()]);
 
         return $productForm->definition($form, $request)->fill([
             'name' => $product->name,
@@ -69,9 +69,8 @@ class EditProductAction extends FormActionDefinition
             ->toast(
                 ToastMessage::make(Variant::Success, __('workbench.actions.edit.toast'))
                     ->action(
-                        Action::use(RejectProductAction::class)
-                            ->label(__('workbench.actions.edit.reject-product'))
-                            ->context(['product_id' => $product->getKey()]),
+                        Action::use(RejectProductAction::class, ['product_id' => $product->getKey()])
+                            ->label(__('workbench.actions.edit.reject-product')),
                     )
                     ->persistent(),
             )
@@ -80,6 +79,6 @@ class EditProductAction extends FormActionDefinition
 
     private function product(Request $request): Product
     {
-        return Product::query()->findOrFail($this->context($request, 'product_id'));
+        return Product::query()->findOrFail($this->context('product_id'));
     }
 }

@@ -123,12 +123,9 @@ class ProductsTable extends EloquentTableDefinition
                 ->actions([
                     Link::make(__('workbench.tables.products.edit'), 'product-edit')
                         ->href('/products/'.$row['id'].'/edit'),
-                    Action::use(EditProductAction::class)
-                        ->context(['product_id' => $row['id']]),
-                    Action::use(ArchiveProductAction::class)
-                        ->context(['product_id' => $row['id']]),
-                    Action::use(RejectProductAction::class)
-                        ->context(['product_id' => $row['id']]),
+                    Action::use(EditProductAction::class, ['product_id' => $row['id']]),
+                    Action::use(ArchiveProductAction::class, ['product_id' => $row['id']]),
+                    Action::use(RejectProductAction::class, ['product_id' => $row['id']]),
                 ]),
         ];
     }

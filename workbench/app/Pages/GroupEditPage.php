@@ -28,14 +28,11 @@ class GroupEditPage extends WorkbenchPage
                 ->gap(Gap::Large)
                 ->schema([
                     Heading::make(__('workbench.commerce.groups.pages.edit.heading')),
-                    Form::use(GroupForm::class)
+                    Form::use(GroupForm::class, ['group_id' => $group->getKey()])
                         ->method(HttpMethod::Patch)
                         ->submitLabel(__('workbench.commerce.groups.pages.edit.submit'))
                         ->fill([
                             'name' => $group->name,
-                        ])
-                        ->context([
-                            'group_id' => $group->getKey(),
                         ]),
                 ]),
         ]);

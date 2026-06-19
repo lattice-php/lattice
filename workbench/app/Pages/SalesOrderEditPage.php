@@ -38,7 +38,7 @@ class SalesOrderEditPage extends WorkbenchPage
                 ->gap(Gap::Large)
                 ->schema([
                     Heading::make(__('workbench.commerce.sales-orders.pages.edit.heading')),
-                    Form::use(SalesOrderForm::class)
+                    Form::use(SalesOrderForm::class, ['sales_order_id' => $salesOrder->getKey()])
                         ->method(HttpMethod::Patch)
                         ->submitLabel(__('workbench.commerce.sales-orders.pages.edit.submit'))
                         ->fill([
@@ -51,9 +51,6 @@ class SalesOrderEditPage extends WorkbenchPage
                                 ? (string) $salesOrder->billing_address_id
                                 : null,
                             'lines' => $lines,
-                        ])
-                        ->context([
-                            'sales_order_id' => $salesOrder->getKey(),
                         ]),
                 ]),
         ]);

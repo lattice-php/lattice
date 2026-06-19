@@ -28,10 +28,11 @@ class Fragment extends ContainerComponent
 
     /**
      * @param  class-string<FragmentDefinition>  $fragment
+     * @param  array<string, mixed>  $context
      */
-    public static function lazy(string $fragment): self
+    public static function lazy(string $fragment, array $context = []): self
     {
-        return app(FragmentRegistry::class)->lazyComponent($fragment);
+        return app(FragmentRegistry::class)->lazyComponent($fragment, $context);
     }
 
     public function endpoint(string $endpoint): static

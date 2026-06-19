@@ -49,6 +49,6 @@ class ArchiveProductAction extends ActionDefinition
 
     private function product(Request $request): Product
     {
-        return Product::query()->findOrFail($this->context($request, 'product_id'));
+        return Product::query()->findOrFail($this->context('product_id'));
     }
 }

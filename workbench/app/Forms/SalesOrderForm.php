@@ -205,7 +205,7 @@ class SalesOrderForm extends FormDefinition
 
     private function order(Request $request): ?SalesOrder
     {
-        $id = $this->context($request, 'sales_order_id');
+        $id = $this->context('sales_order_id');
 
         if ($id === null || $id === '') {
             return null;
