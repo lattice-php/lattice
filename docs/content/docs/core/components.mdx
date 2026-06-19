@@ -139,6 +139,10 @@ Link::make('Documentation')->href('https://latticephp.com');
   holds `Tab::make('value', 'Label')->schema([...])` children. `->orientation(Orientation::Vertical)`
   moves the strip to the side, and the active tab is kept in the URL query string — `->queryKey('tab')`
   sets the parameter name. A tab's content renders lazily on first open.
+- **`->alignment(TabsAlignment::…)`** controls how the strip sits. Horizontal tabs default to
+  `Stretch` (tabs share the full width); `Start`, `Center`, and `End` shrink the strip to its content
+  and pin it left, centre, or right. Vertical tabs only read `End` to move the strip to the right of the
+  panels — every other value keeps it on the left.
 - **`Modal::make($id)->title('…')->schema([...])`** is a dialog opened and closed by
   [action effects](/actions/effects/) (`openModal`/`closeModal`). Add a `->description()`, relabel its
   close button with `->closeLabel()`, or start it open with `->open()`.

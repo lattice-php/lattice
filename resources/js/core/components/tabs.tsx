@@ -91,6 +91,8 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
   const queryKey = node.props.queryKey;
   const orientation = node.props.orientation;
   const isVertical = orientation === "vertical";
+  const alignment = node.props.alignment;
+  const isStretched = !isVertical && alignment === "stretch";
   const serverActiveValue = node.props.activeValue;
   const defaultValue = node.props.defaultValue ?? firstValue;
   const tablistRef = useRef<HTMLDivElement>(null);
@@ -160,7 +162,10 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
   return (
     <TabsContext.Provider value={{ activeValue, setActiveValue: selectTabValue }}>
       <div
-        className={cn("gap-6", isVertical ? "flex" : "grid")}
+        className={cn(
+          "gap-6",
+          isVertical ? cn("flex", alignment === "end" && "flex-row-reverse") : "grid",
+        )}
         data-lattice-tabs={node.key ?? node.id}
       >
         <div
@@ -168,7 +173,14 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
           aria-orientation={orientation}
           className={cn(
             "gap-1 rounded-lt bg-lt-muted p-1",
-            isVertical ? "flex flex-col" : "inline-flex w-fit max-w-full overflow-x-auto",
+            isVertical && "flex flex-col",
+            isStretched && "flex w-full",
+            !isVertical &&
+              !isStretched &&
+              cn("inline-flex w-fit max-w-full overflow-x-auto", {
+                "justify-self-center": alignment === "center",
+                "justify-self-end": alignment === "end",
+              }),
           )}
           ref={tablistRef}
           role="tablist"
@@ -187,6 +199,7 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
                     ? "bg-lt-bg text-lt-fg shadow-lt-xs"
                     : "text-lt-muted-fg hover:bg-lt-bg/60 hover:text-lt-fg",
                   isVertical && "text-left",
+                  isStretched && "flex-1",
                 )}
                 id={`${tab.value}-tab`}
                 key={tab.value}

@@ -8,6 +8,8 @@ it('switches horizontal and vertical tabs end to end', function (): void {
         ->assertSee('Vertical tabs')
         ->assertPresent('[role="tablist"][aria-orientation="horizontal"]')
         ->assertPresent('[role="tablist"][aria-orientation="vertical"]')
+        ->assertPresent('[data-lattice-tabs="centered-tabs"] [role="tablist"].justify-self-center')
+        ->assertPresent('[data-lattice-tabs="vertical-end-tabs"].flex-row-reverse')
         ->assertSee('Overview panel')
         ->assertSee('Account panel')
         ->assertDontSee('Details panel')

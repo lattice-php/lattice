@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Date;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Enums\Orientation;
+use Lattice\Lattice\Core\Enums\TabsAlignment;
 
 #[AsComponent('tabs')]
 class Tabs extends ContainerComponent
@@ -17,6 +18,8 @@ class Tabs extends ContainerComponent
     public string $queryKey = 'tabs';
 
     public Orientation $orientation = Orientation::Horizontal;
+
+    public TabsAlignment $alignment = TabsAlignment::Stretch;
 
     public string $activeValue;
 
@@ -42,6 +45,13 @@ class Tabs extends ContainerComponent
     public function orientation(Orientation $orientation): static
     {
         $this->orientation = $orientation;
+
+        return $this;
+    }
+
+    public function alignment(TabsAlignment $alignment): static
+    {
+        $this->alignment = $alignment;
 
         return $this;
     }

@@ -1161,10 +1161,12 @@ export type TableSort = {
 };
 export type Tabs = {
   activeValue: string;
+  alignment: TabsAlignment;
   defaultValue: string | null;
   orientation: Orientation;
   queryKey: string;
 };
+export type TabsAlignment = "start" | "center" | "end" | "stretch";
 export type Text = {
   align: Align | null;
   color: Color;
