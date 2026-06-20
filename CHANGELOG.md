@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.10.0](https://github.com/lattice-php/lattice/compare/0.9.0...0.10.0) (2026-06-19)
+
+
+### Features
+
+* add toggle form field ([cbba72c](https://github.com/lattice-php/lattice/commit/cbba72cc00b4fdadabfc21165f3615a319682597))
+
+
+### Bug Fixes
+
+* **icon:** let an explicit size override the sprite baseline, add 2xl–4xl ([22544ed](https://github.com/lattice-php/lattice/commit/22544edd133dfb3c41f91638ad2cc234799e000b))
+
 ## [0.9.0](https://github.com/lattice-php/lattice/compare/0.8.0...0.9.0) (2026-06-19)
 
 
