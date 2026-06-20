@@ -1,5 +1,5 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { DatePickerControl } from "./date-picker-control";
+import { LazyDatePickerControl } from "./lazy-date-picker-control";
 import { SimpleField } from "./simple-field";
 
 export const DateInputComponent: RendererComponent<"field.date-input"> = ({ node }) => {
@@ -8,7 +8,7 @@ export const DateInputComponent: RendererComponent<"field.date-input"> = ({ node
   return (
     <SimpleField node={node} label={props.label ?? ""}>
       {({ name, testId, value, readOnly, disabled, change, blur }) => (
-        <DatePickerControl
+        <LazyDatePickerControl
           autoFocus={props.autoFocus ?? false}
           disabled={disabled}
           label={props.label ?? props.name}
