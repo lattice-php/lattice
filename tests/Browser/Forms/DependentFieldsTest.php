@@ -39,7 +39,8 @@ it('renders textarea, number, slider, and date fields', function (): void {
         ->fill('@bio', 'Hello world')
         ->fill('@due', '2026-06-08')
         ->assertValue('bio', 'Hello world')
-        ->assertValue('due', '2026-06-08');
+        ->assertValue('due', '06/08/2026')
+        ->assertPresent('input[type="hidden"][name="due"][value="2026-06-08"]');
 });
 
 it('renders the rich text editor with a toolbar', function (): void {
