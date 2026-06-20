@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
+import { setLocale } from "@lattice-php/lattice/i18n/locale";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FormValuesProvider } from "../values";
 import { DateInputComponent } from "./date-input";
@@ -29,6 +30,10 @@ async function findNamedInput(name: string): Promise<HTMLInputElement> {
   return input;
 }
 
+afterEach(() => {
+  setLocale("en");
+});
+
 describe("DateInputComponent", () => {
   it("renders a date input seeded from the store", async () => {
     renderField(fakeNode({ type: "field.date-input", props: { name: "due", label: "Due" } }), {
@@ -36,6 +41,24 @@ describe("DateInputComponent", () => {
     });
 
     expect(await findNamedInput("due")).toHaveValue("2026-06-08");
+  });
+
+  it("updates the visible date format when the locale changes", async () => {
+    setLocale("en");
+
+    renderField(fakeNode({ type: "field.date-input", props: { name: "due", label: "Due" } }), {
+      due: "2026-06-19",
+    });
+
+    expect(await screen.findByLabelText("Due")).toHaveValue("06/19/2026");
+    expect(await findNamedInput("due")).toHaveValue("2026-06-19");
+
+    setLocale("de");
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Due")).toHaveValue("19.06.2026");
+      expect(document.querySelector('input[type="hidden"][name="due"]')).toHaveValue("2026-06-19");
+    });
   });
 
   it("commits a date picked from the calendar", async () => {
@@ -59,7 +82,7 @@ describe("DateInputComponent", () => {
     fireEvent.input(input, { target: { value: "20260608" } });
 
     await waitFor(() => {
-      expect(input).toHaveValue("2026-06-08");
+      expect(input).toHaveValue("06/08/2026");
       expect(document.querySelector('input[type="hidden"][name="due"]')).toHaveValue("2026-06-08");
     });
   });

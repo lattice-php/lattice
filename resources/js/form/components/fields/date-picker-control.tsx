@@ -4,11 +4,17 @@ import { normalizeProps, useMachine } from "@zag-js/react";
 import { useId, useMemo } from "react";
 import { Button } from "@lattice-php/lattice/core/components/button";
 import { Icon } from "@lattice-php/lattice/icons";
+import { useLocale } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { Input } from "../base/input";
 import {
+  formatDateDisplayValue,
+  formatDateTimeDisplayValue,
   formatDateTimeValue,
   formatDateValue,
+  formatTimeInputValue,
+  parseDateDisplayValue,
+  parseDateTimeDisplayValue,
   parseDateTimeValue,
   parseDateValue,
 } from "./date-picker-value";
@@ -49,6 +55,7 @@ export function DatePickerControl({
   onBlur,
 }: DatePickerControlProps) {
   const id = useId();
+  const { locale } = useLocale();
   const selected = useMemo(
     () =>
       [mode === "date" ? parseDateValue(value) : parseDateTimeValue(value, timezone)].filter(
@@ -64,14 +71,19 @@ export function DatePickerControl({
     max: max ? parseDateValue(max) : undefined,
     disabled,
     readOnly,
+    locale,
     selectionMode: "single",
     timeZone: timezone,
     closeOnSelect: mode === "date",
     format(date) {
-      return mode === "date" ? formatDateValue(date) : formatDateTimeValue(date, timezone);
+      return mode === "date"
+        ? formatDateDisplayValue(date, locale)
+        : formatDateTimeDisplayValue(date, locale, timezone);
     },
     parse(text) {
-      return mode === "date" ? parseDateValue(text) : parseDateTimeValue(text, timezone);
+      return mode === "date"
+        ? parseDateDisplayValue(text, locale)
+        : parseDateTimeDisplayValue(text, locale, timezone);
     },
     onValueChange(details) {
       const next = details.value[0];
@@ -86,12 +98,12 @@ export function DatePickerControl({
   });
   const api = datePicker.connect(service, normalizeProps);
   const { name: _inputName, onInput, ...inputProps } = api.getInputProps();
-  const inputValue =
+  const submittedValue =
     mode === "date" ? formatDateValue(selected[0]) : formatDateTimeValue(selected[0], timezone);
 
   return (
-    <div {...api.getRootProps()} className="relative">
-      <input type="hidden" name={name} value={inputValue} data-test={`${testId}-value`} />
+    <div {...api.getRootProps()} className={cn("relative", api.open && "z-[var(--lt-z-popover)]")}>
+      <input type="hidden" name={name} value={submittedValue} data-test={`${testId}-value`} />
       <div {...api.getControlProps()} className="flex gap-2">
         <Input
           {...inputProps}
@@ -121,6 +133,7 @@ export function DatePickerControl({
 
             event.currentTarget.value = normalized;
             api.setValue([next]);
+            event.currentTarget.value = formatDateDisplayValue(next, locale);
             onChange(formatDateValue(next));
           }}
           readOnly={readOnly}
@@ -140,7 +153,7 @@ export function DatePickerControl({
       {api.open ? (
         <div
           {...api.getPositionerProps()}
-          className="absolute z-50 mt-2 rounded-lt-sm border border-lt-border bg-lt-popover p-3 text-lt-popover-fg shadow-lt-md"
+          className="absolute z-[var(--lt-z-popover)] mt-2 rounded-lt-sm border border-lt-border bg-lt-popover p-3 text-lt-popover-fg shadow-lt-md"
         >
           <div {...api.getContentProps()} className="grid gap-3">
             <div className="flex items-center justify-between gap-2">
@@ -214,6 +227,7 @@ export function DatePickerControl({
                 readOnly={readOnly}
                 step={step ?? undefined}
                 type="time"
+                value={formatTimeInputValue(selected[0], timezone)}
               />
             ) : null}
           </div>

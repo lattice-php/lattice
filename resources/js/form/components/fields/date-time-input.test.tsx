@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
+import { setLocale } from "@lattice-php/lattice/i18n/locale";
 import { setTimezone } from "@lattice-php/lattice/i18n/timezone";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FormValuesProvider } from "../values";
@@ -31,6 +32,7 @@ async function findNamedInput(name: string): Promise<HTMLInputElement> {
 }
 
 afterEach(() => {
+  setLocale("en");
   setTimezone("");
 });
 
@@ -46,6 +48,22 @@ describe("DateTimeInputComponent", () => {
       { starts_at: "2026-06-19T14:30:00 Europe/Berlin" },
     );
 
+    expect(await findNamedInput("starts_at")).toHaveValue("2026-06-19T14:30:00 Europe/Berlin");
+  });
+
+  it("shows a localized datetime without the submitted timezone suffix", async () => {
+    setLocale("de");
+    setTimezone("Europe/Berlin");
+
+    renderField(
+      fakeNode({
+        type: "field.date-time-input",
+        props: { name: "starts_at", label: "Starts at" },
+      }),
+      { starts_at: "2026-06-19T14:30:00 Europe/Berlin" },
+    );
+
+    expect(await screen.findByLabelText("Starts at")).toHaveValue("19.06.2026, 14:30");
     expect(await findNamedInput("starts_at")).toHaveValue("2026-06-19T14:30:00 Europe/Berlin");
   });
 
@@ -76,5 +94,23 @@ describe("DateTimeInputComponent", () => {
         "2026-06-19T14:30:00 Europe/Berlin",
       );
     });
+  });
+
+  it("uses the native time input inside the datetime picker", async () => {
+    setTimezone("Europe/Berlin");
+
+    renderField(
+      fakeNode({
+        type: "field.date-time-input",
+        props: { name: "starts_at", label: "Starts at" },
+      }),
+      { starts_at: "2026-06-19T01:01:00 Europe/Berlin" },
+    );
+
+    fireEvent.click(await screen.findByRole("button", { name: /open starts at calendar/i }));
+
+    expect(await screen.findByLabelText("Starts at time")).toHaveAttribute("type", "time");
+    expect(screen.queryByRole("option", { name: "Hour 01" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: "Minute 01" })).not.toBeInTheDocument();
   });
 });
