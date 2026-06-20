@@ -36,8 +36,8 @@ it('casts submitted datetime to CarbonImmutable in the submitted timezone', func
         ->toBe('2026-06-19 14:30:00 Europe/Berlin +02:00');
 });
 
-it('converts submitted datetime to the app timezone when requested', function (): void {
-    config()->set('app.timezone', 'UTC');
+it('converts submitted datetime to the configured app timezone when requested', function (): void {
+    config()->set('app.timezone', 'America/New_York');
 
     $validated = (new FieldValidator)->validate(
         [DateTimeInput::make('starts_at', 'Starts at')->convertTimeZone()],
@@ -46,7 +46,7 @@ it('converts submitted datetime to the app timezone when requested', function ()
 
     expect($validated['starts_at'])->toBeInstanceOf(CarbonImmutable::class)
         ->and($validated['starts_at']->format('Y-m-d H:i:s e P'))
-        ->toBe('2026-06-19 12:30:00 UTC +00:00');
+        ->toBe('2026-06-19 08:30:00 America/New_York -04:00');
 });
 
 it('converts submitted datetime to an explicit timezone when requested', function (): void {
