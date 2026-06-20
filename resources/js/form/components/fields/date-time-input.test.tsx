@@ -67,6 +67,22 @@ describe("DateTimeInputComponent", () => {
     expect(await findNamedInput("starts_at")).toHaveValue("2026-06-19T14:30:00 Europe/Berlin");
   });
 
+  it("does not compact-normalize datetime text input", async () => {
+    setTimezone("Europe/Berlin");
+
+    renderField(
+      fakeNode({
+        type: "field.date-time-input",
+        props: { name: "starts_at", label: "Starts at" },
+      }),
+      { starts_at: "2026-06-19T14:30:00 Europe/Berlin" },
+    );
+
+    fireEvent.input(await screen.findByLabelText("Starts at"), { target: { value: "20260608" } });
+
+    expect(await findNamedInput("starts_at")).toHaveValue("2026-06-19T14:30:00 Europe/Berlin");
+  });
+
   it("uses the configured timezone when committing a datetime", async () => {
     setTimezone("Europe/Berlin");
 

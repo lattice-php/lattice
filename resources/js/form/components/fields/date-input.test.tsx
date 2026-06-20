@@ -87,6 +87,18 @@ describe("DateInputComponent", () => {
     });
   });
 
+  it("ignores incomplete and invalid compact dates typed into the picker input", async () => {
+    renderField(fakeNode({ type: "field.date-input", props: { name: "due", label: "Due" } }));
+
+    const input = await screen.findByLabelText("Due");
+    const value = document.querySelector('input[type="hidden"][name="due"]');
+
+    fireEvent.input(input, { target: { value: "202606" } });
+    fireEvent.input(input, { target: { value: "20261340" } });
+
+    expect(value).toHaveValue("");
+  });
+
   it("hides when its visible condition fails", () => {
     renderField(
       fakeNode({
