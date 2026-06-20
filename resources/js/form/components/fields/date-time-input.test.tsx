@@ -14,12 +14,28 @@ function renderField(node: Node<"field.date-time-input">, initial: Record<string
   );
 }
 
+async function findNamedInput(name: string): Promise<HTMLInputElement> {
+  let input: HTMLInputElement | null = null;
+
+  await waitFor(() => {
+    input = document.querySelector<HTMLInputElement>(`input[name="${name}"]`);
+
+    expect(input).toBeInstanceOf(HTMLInputElement);
+  });
+
+  if (!input) {
+    throw new Error(`Input ${name} was not rendered.`);
+  }
+
+  return input;
+}
+
 afterEach(() => {
   setTimezone("");
 });
 
 describe("DateTimeInputComponent", () => {
-  it("renders an existing datetime in the active timezone", () => {
+  it("renders an existing datetime in the active timezone", async () => {
     setTimezone("Europe/Berlin");
 
     renderField(
@@ -30,9 +46,7 @@ describe("DateTimeInputComponent", () => {
       { starts_at: "2026-06-19T14:30:00 Europe/Berlin" },
     );
 
-    expect(document.querySelector('input[name="starts_at"]')).toHaveValue(
-      "2026-06-19T14:30:00 Europe/Berlin",
-    );
+    expect(await findNamedInput("starts_at")).toHaveValue("2026-06-19T14:30:00 Europe/Berlin");
   });
 
   it("uses the configured timezone when committing a datetime", async () => {
@@ -46,7 +60,7 @@ describe("DateTimeInputComponent", () => {
       { starts_at: "2026-06-01T00:00:00 Europe/Berlin" },
     );
 
-    fireEvent.click(screen.getByRole("button", { name: /open starts at calendar/i }));
+    fireEvent.click(await screen.findByRole("button", { name: /open starts at calendar/i }));
     fireEvent.click(await screen.findByRole("button", { name: /19/i }));
 
     await waitFor(() => {

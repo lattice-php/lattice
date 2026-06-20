@@ -67,6 +67,12 @@ export function DatePickerControl({
     selectionMode: "single",
     timeZone: timezone,
     closeOnSelect: mode === "date",
+    format(date) {
+      return mode === "date" ? formatDateValue(date) : formatDateTimeValue(date, timezone);
+    },
+    parse(text) {
+      return mode === "date" ? parseDateValue(text) : parseDateTimeValue(text, timezone);
+    },
     onValueChange(details) {
       const next = details.value[0];
 
@@ -79,21 +85,44 @@ export function DatePickerControl({
     },
   });
   const api = datePicker.connect(service, normalizeProps);
-  const { name: _inputName, ...inputProps } = api.getInputProps();
+  const { name: _inputName, onInput, ...inputProps } = api.getInputProps();
   const inputValue =
     mode === "date" ? formatDateValue(selected[0]) : formatDateTimeValue(selected[0], timezone);
 
   return (
     <div {...api.getRootProps()} className="relative">
-      <input type="hidden" name={name} value={inputValue} data-test={testId} />
+      <input type="hidden" name={name} value={inputValue} data-test={`${testId}-value`} />
       <div {...api.getControlProps()} className="flex gap-2">
         <Input
           {...inputProps}
           aria-label={label}
           autoFocus={autoFocus}
-          data-test={`${testId}-display`}
+          data-test={testId}
           disabled={disabled}
           id={name}
+          onInput={(event) => {
+            onInput?.(event);
+
+            if (mode !== "date") {
+              return;
+            }
+
+            const normalized = normalizeDateInputValue(event.currentTarget.value);
+
+            if (!normalized) {
+              return;
+            }
+
+            const next = parseDateValue(normalized);
+
+            if (!next) {
+              return;
+            }
+
+            event.currentTarget.value = normalized;
+            api.setValue([next]);
+            onChange(formatDateValue(next));
+          }}
           readOnly={readOnly}
           tabIndex={tabIndex ?? undefined}
         />
@@ -192,4 +221,14 @@ export function DatePickerControl({
       ) : null}
     </div>
   );
+}
+
+function normalizeDateInputValue(value: string): string | undefined {
+  const compact = value.replace(/\D/g, "");
+
+  if (compact.length !== 8) {
+    return undefined;
+  }
+
+  return `${compact.slice(0, 4)}-${compact.slice(4, 6)}-${compact.slice(6, 8)}`;
 }

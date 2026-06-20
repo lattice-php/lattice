@@ -13,13 +13,29 @@ function renderField(node: Node<"field.date-input">, initial: Record<string, unk
   );
 }
 
+async function findNamedInput(name: string): Promise<HTMLInputElement> {
+  let input: HTMLInputElement | null = null;
+
+  await waitFor(() => {
+    input = document.querySelector<HTMLInputElement>(`input[name="${name}"]`);
+
+    expect(input).toBeInstanceOf(HTMLInputElement);
+  });
+
+  if (!input) {
+    throw new Error(`Input ${name} was not rendered.`);
+  }
+
+  return input;
+}
+
 describe("DateInputComponent", () => {
-  it("renders a date input seeded from the store", () => {
+  it("renders a date input seeded from the store", async () => {
     renderField(fakeNode({ type: "field.date-input", props: { name: "due", label: "Due" } }), {
       due: "2026-06-08",
     });
 
-    expect(document.querySelector('input[name="due"]')).toHaveValue("2026-06-08");
+    expect(await findNamedInput("due")).toHaveValue("2026-06-08");
   });
 
   it("commits a date picked from the calendar", async () => {
@@ -27,11 +43,24 @@ describe("DateInputComponent", () => {
       due: "2026-06-01",
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /open due calendar/i }));
+    fireEvent.click(await screen.findByRole("button", { name: /open due calendar/i }));
     fireEvent.click(await screen.findByRole("button", { name: /19/i }));
 
     await waitFor(() => {
       expect(document.querySelector('input[name="due"]')).toHaveValue("2026-06-19");
+    });
+  });
+
+  it("normalizes compact dates typed into the picker input", async () => {
+    renderField(fakeNode({ type: "field.date-input", props: { name: "due", label: "Due" } }));
+
+    const input = await screen.findByLabelText("Due");
+
+    fireEvent.input(input, { target: { value: "20260608" } });
+
+    await waitFor(() => {
+      expect(input).toHaveValue("2026-06-08");
+      expect(document.querySelector('input[type="hidden"][name="due"]')).toHaveValue("2026-06-08");
     });
   });
 
