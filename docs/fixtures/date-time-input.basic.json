@@ -1,0 +1,30 @@
+[
+    {
+        "props": {
+            "autoFocus": false,
+            "columnWidth": "md",
+            "conditions": null,
+            "convertTimezone": false,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "editablePrefill": false,
+            "helperText": null,
+            "hidden": false,
+            "label": "Starts at",
+            "max": null,
+            "min": null,
+            "name": "starts_at",
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "readOnly": false,
+            "required": false,
+            "step": null,
+            "tabIndex": null,
+            "timezone": null,
+            "tooltip": null,
+            "value": null
+        },
+        "type": "field.date-time-input"
+    }
+]

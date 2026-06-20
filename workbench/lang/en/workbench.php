@@ -278,10 +278,12 @@ return [
             'full-name' => 'Full name',
             'germany' => 'Germany',
             'italy' => 'Italy',
+            'launch-at' => 'Launch at',
             'marketing-opt-in' => [
                 'help-text' => 'Receive product news and release notes.',
                 'label' => 'Marketing updates',
             ],
+            'meeting-time' => 'Meeting time',
             'newsletter' => 'Subscribe to the newsletter',
             'order-total' => 'Order total',
             'order-total-description' => 'The total is computed on the server.',

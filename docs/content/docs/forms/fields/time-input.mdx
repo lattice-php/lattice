@@ -1,0 +1,34 @@
+---
+title: Time input
+description: A time field with optional minimum, maximum, and step bounds.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+The time input collects a time of day and returns a string such as `14:30`.
+
+<ComponentExample
+  php={`TimeInput::make('starts_at', 'Start time')
+    ->min('08:00')
+    ->max('18:00')`}
+  fixture="time-input.basic"
+  values={{ starts_at: "" }}
+/>
+
+## Seconds and step
+
+Use `->step()` to control the browser's time granularity. The value is seconds.
+
+```php
+TimeInput::make('starts_at', 'Start time')
+    ->step(900);
+```
+
+`TimeInput` returns a string. It does not cast to a date object because a time without a date is not
+an instant.
+
+## Common options
+
+`TimeInput` shares label, default value, required, disabled, read-only, and visibility options with
+every field — see [Fields](/forms/fields/overview/). For validation and conditional behavior, see
+[Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).

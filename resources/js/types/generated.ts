@@ -432,6 +432,36 @@ export type DateInput = {
   tooltip: string | null;
   value: unknown;
 };
+export type DateTimeInput = {
+  autoFocus: boolean;
+  columnWidth: ColumnWidth;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
+  convertTimezone: boolean;
+  dependsOnAny: boolean;
+  dependsOnKeys: string[] | null;
+  disabled: boolean;
+  editablePrefill: boolean;
+  helperText: string | null;
+  hidden: boolean;
+  label: string | null;
+  max: string | null;
+  min: string | null;
+  name: string;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
+  readOnly: boolean;
+  required: boolean;
+  step: number | null;
+  tabIndex: number | null;
+  timezone: string | null;
+  tooltip: string | null;
+  value: unknown;
+};
 export type DateTimeStyle = "full" | "long" | "medium" | "short";
 export type DownloadEffect = {
   readonly url: string;
@@ -479,6 +509,7 @@ export type FieldType =
   | "field.checkbox"
   | "field.choice"
   | "field.date-input"
+  | "field.date-time-input"
   | "field.file-upload"
   | "field.hidden-input"
   | "field.number-input"
@@ -489,6 +520,7 @@ export type FieldType =
   | "field.select"
   | "field.textarea"
   | "field.text-input"
+  | "field.time-input"
   | "field.toggle";
 export type FileUpload = {
   accept: string | null;
@@ -585,6 +617,11 @@ export type FormFieldNode =
       props: DateInput;
     }
   | {
+      type: "field.date-time-input";
+      key?: string;
+      props: DateTimeInput;
+    }
+  | {
       type: "field.file-upload";
       key?: string;
       props: FileUpload;
@@ -633,6 +670,11 @@ export type FormFieldNode =
       type: "field.textarea";
       key?: string;
       props: Textarea;
+    }
+  | {
+      type: "field.time-input";
+      key?: string;
+      props: TimeInput;
     }
   | {
       type: "field.toggle";
@@ -1252,6 +1294,34 @@ export type Textarea = {
   readOnly: boolean;
   required: boolean;
   rows: number | null;
+  tabIndex: number | null;
+  tooltip: string | null;
+  value: unknown;
+};
+export type TimeInput = {
+  autoFocus: boolean;
+  columnWidth: ColumnWidth;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
+  dependsOnAny: boolean;
+  dependsOnKeys: string[] | null;
+  disabled: boolean;
+  editablePrefill: boolean;
+  helperText: string | null;
+  hidden: boolean;
+  label: string | null;
+  max: string | null;
+  min: string | null;
+  name: string;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
+  readOnly: boolean;
+  required: boolean;
+  step: number | null;
   tabIndex: number | null;
   tooltip: string | null;
   value: unknown;

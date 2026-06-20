@@ -278,10 +278,12 @@ return [
             'full-name' => 'Vollständiger Name',
             'germany' => 'Deutschland',
             'italy' => 'Italien',
+            'launch-at' => 'Startet am',
             'marketing-opt-in' => [
                 'help-text' => 'Erhalte Produktneuigkeiten und Versionshinweise.',
                 'label' => 'Marketing-Updates',
             ],
+            'meeting-time' => 'Terminzeit',
             'newsletter' => 'Newsletter abonnieren',
             'order-total' => 'Bestellsumme',
             'order-total-description' => 'Die Summe wird auf dem Server berechnet.',

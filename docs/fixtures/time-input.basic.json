@@ -1,0 +1,28 @@
+[
+    {
+        "props": {
+            "autoFocus": false,
+            "columnWidth": "md",
+            "conditions": null,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "editablePrefill": false,
+            "helperText": null,
+            "hidden": false,
+            "label": "Start time",
+            "max": "18:00",
+            "min": "08:00",
+            "name": "starts_at",
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "readOnly": false,
+            "required": false,
+            "step": null,
+            "tabIndex": null,
+            "tooltip": null,
+            "value": null
+        },
+        "type": "field.time-input"
+    }
+]

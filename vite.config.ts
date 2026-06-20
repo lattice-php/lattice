@@ -26,8 +26,9 @@ const latticeIcons = [
   "eye-off", "layout-dashboard", "link", "more-horizontal", "pencil", "pencil-line",
   "send", "settings", "trash-2", "x",
   // Internal chrome
-  "chevron-down", "chevron-right", "circle-alert", "circle-check", "circle-help", "circle-x",
-  "eye", "filter", "info", "loader-2", "minus", "panel-left", "plus", "rotate-ccw", "search",
+  "calendar", "chevron-down", "chevron-left", "chevron-right", "circle-alert", "circle-check",
+  "circle-help", "circle-x", "eye", "filter", "info", "loader-2", "minus", "panel-left",
+  "plus", "rotate-ccw", "search",
   // Rich-editor toolbar
   "align-center", "align-justify", "align-left", "align-right", "bold", "code",
   "columns-3", "heading-1", "heading-2", "heading-3", "highlighter", "italic",
@@ -175,9 +176,11 @@ export default defineConfig(({ mode }) => {
                 /^react($|\/)/,
                 /^react-dom($|\/)/,
                 /^@inertiajs\//,
+                /^@internationalized\/date($|\/)/,
                 /^@lattice-php\/vite-svg-sprite($|\/)/,
                 /^@radix-ui\//,
                 /^@tiptap\//,
+                /^@zag-js\//,
                 /^clsx($|\/)/,
                 /^class-variance-authority($|\/)/,
                 /^input-otp($|\/)/,

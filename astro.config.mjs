@@ -96,6 +96,8 @@ export default defineConfig({
                 { label: "Checkbox", link: "/forms/fields/checkbox/" },
                 { label: "Toggle", link: "/forms/fields/toggle/" },
                 { label: "Date input", link: "/forms/fields/date-input/" },
+                { label: "Time input", link: "/forms/fields/time-input/" },
+                { label: "Date time input", link: "/forms/fields/date-time-input/" },
                 { label: "Number input", link: "/forms/fields/number-input/" },
                 { label: "Password input", link: "/forms/fields/password-input/" },
                 { label: "Hidden input", link: "/forms/fields/hidden-input/" },
