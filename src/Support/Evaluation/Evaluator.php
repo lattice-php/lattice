@@ -87,7 +87,7 @@ final readonly class Evaluator
      */
     private function isNonAutowirable(string $class): bool
     {
-        return array_any($this->nonAutowirableTypes, fn ($base): bool => $class === $base || is_subclass_of($class, $base));
+        return array_any($this->nonAutowirableTypes, fn (string $base): bool => $class === $base || is_subclass_of($class, $base));
     }
 
     /**
