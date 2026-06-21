@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.11.0](https://github.com/lattice-php/lattice/compare/0.10.0...0.11.0) (2026-06-21)
+
+
+### Features
+
+* add time and datetime form fields ([c5fe36c](https://github.com/lattice-php/lattice/commit/c5fe36c859433f270c72d86c7a79b8f1bc8c9a0c))
+* add zag date form components ([407e438](https://github.com/lattice-php/lattice/commit/407e4384dab8d3a9c1cdf6ee4c71fdc55a432162))
+* register the lattice translation namespace for consumers ([cfe1185](https://github.com/lattice-php/lattice/commit/cfe1185819df53ba392da98519412350f7e79129))
+* render zag date form controls ([2357c7e](https://github.com/lattice-php/lattice/commit/2357c7e783686f1d479e8ef57578021e3cb3e77c))
+
+
+### Bug Fixes
+
+* add closure types flagged by rector in array_any/array_all calls ([ef995ea](https://github.com/lattice-php/lattice/commit/ef995eaa426cdfc61ebe246921b3fa69779a5f09))
+* polish date picker display behavior ([1433507](https://github.com/lattice-php/lattice/commit/1433507a1c3e72cb4d6719d7b038a0e4cda35fd6))
+* restore date picker browser input ([e69a9c6](https://github.com/lattice-php/lattice/commit/e69a9c60aa5d12711fee8d1a8013ef30f600d7cd))
+
+
+### Performance
+
+* lazy load date picker control ([9e7cd37](https://github.com/lattice-php/lattice/commit/9e7cd373b63bfb7213b83b9634333efeb1f433fd))
+
+
+### Documentation
+
+* document date time form fields ([58d2a13](https://github.com/lattice-php/lattice/commit/58d2a13e081a5de84572fea7660e3980b6651aea))
+
 ## [0.10.0](https://github.com/lattice-php/lattice/compare/0.9.0...0.10.0) (2026-06-19)
 
 
