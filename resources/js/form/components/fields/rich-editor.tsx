@@ -241,12 +241,12 @@ function EmojiPicker({ editor }: { editor: Editor }) {
   return (
     <div className="relative">
       <button
-        aria-label={t("editor.insert-emoji", "Insert emoji")}
+        aria-label={t("form.editor.insert-emoji", "Insert emoji")}
         data-test="editor-emoji"
         className="inline-flex size-7 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg [&_svg]:size-lt-icon-md"
         onClick={() => setOpen((value) => !value)}
         onMouseDown={(event) => event.preventDefault()}
-        title={t("editor.insert-emoji", "Insert emoji")}
+        title={t("form.editor.insert-emoji", "Insert emoji")}
         type="button"
       >
         <Icon name="smile" />
@@ -284,7 +284,7 @@ function Toolbar({ editor }: { editor: Editor }) {
           return <span key={`sep-${index}`} className="mx-1 h-5 w-px bg-lt-border" />;
         }
 
-        const label = t(`editor.${item.key}`, item.label);
+        const label = t(`form.editor.${item.key}`, item.label);
 
         return (
           <button

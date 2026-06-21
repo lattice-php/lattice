@@ -293,7 +293,7 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
           onClick={() => fileInputRef.current?.click()}
           type="button"
         >
-          {t("file-upload.dropzone", "Drop files here or click to browse")}
+          {t("form.file-upload.dropzone", "Drop files here or click to browse")}
         </button>
 
         <ul
@@ -325,13 +325,13 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
                 )}
                 {item.status === "error" && (
                   <span className="text-xs text-lt-danger">
-                    {t("file-upload.failed", "Failed")}
+                    {t("form.file-upload.failed", "Failed")}
                   </span>
                 )}
               </div>
               {(!item.existing || !scope) && (
                 <button
-                  aria-label={t("file-upload.remove", "Remove {{name}}", { name: item.name })}
+                  aria-label={t("form.file-upload.remove", "Remove {{name}}", { name: item.name })}
                   className="inline-flex size-7 shrink-0 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg disabled:pointer-events-none disabled:opacity-50"
                   data-test={testIdentity(
                     item.existing ? `${name}-remove-existing` : `${name}-remove`,

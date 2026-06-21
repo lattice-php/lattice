@@ -155,7 +155,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
                 {labelFor(value)}
                 {!locked && (
                   <button
-                    aria-label={t("a11y.removeOption", "Remove {{label}}", {
+                    aria-label={t("form.removeOption", "Remove {{label}}", {
                       label: labelFor(value),
                     })}
                     data-test={`select-${name}-remove-${value}`}

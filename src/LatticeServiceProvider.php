@@ -108,6 +108,16 @@ final class LatticeServiceProvider extends PackageServiceProvider
     {
         EncryptCookies::except('locale');
 
+        // Serve Lattice's built-in chrome translations under the `lattice`
+        // namespace so consumers get them (and i18next /locales/{lng}/lattice.json)
+        // without copying any files. Each lang group is its own file so the
+        // i18next keys stay un-prefixed (e.g. `editor.bold`, not `lattice.editor.bold`).
+        // Registered directly on the loader rather than via loadTranslationsFrom():
+        // the i18next route resolves only the translation loader, never the
+        // translator, so the deferred loadTranslationsFrom() callback would never fire.
+        $translationLoader = $this->app->make('translation.loader');
+        $translationLoader->addNamespace(self::$name, __DIR__.'/../lang');
+
         $this->callAfterResolving(Kernel::class, function (Kernel $kernel): void {
             if ($kernel instanceof HttpKernel) {
                 $kernel->appendMiddlewareToGroup('web', SetLocale::class);
@@ -118,6 +128,10 @@ final class LatticeServiceProvider extends PackageServiceProvider
             $this->publishes([
                 __DIR__.'/../stubs/registry.ts' => resource_path('js/registry.ts'),
             ], 'lattice-js');
+
+            $this->publishes([
+                __DIR__.'/../lang' => $this->app->langPath('vendor/'.self::$name),
+            ], 'lattice-translations');
         }
 
         $this->optimizes(

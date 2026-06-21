@@ -5,8 +5,8 @@ export type RowActionTranslate = (key: string, fallback: string) => string;
 
 /** Translation key + fallback and icon for each built-in; the server sends null labels. */
 const BUILT_IN: Record<"duplicate" | "remove", { key: string; fallback: string; icon: string }> = {
-  duplicate: { key: "rowActions.duplicate", fallback: "Duplicate", icon: "copy" },
-  remove: { key: "rowActions.remove", fallback: "Remove", icon: "trash-2" },
+  duplicate: { key: "table.rowActions.duplicate", fallback: "Duplicate", icon: "copy" },
+  remove: { key: "table.rowActions.remove", fallback: "Remove", icon: "trash-2" },
 };
 
 export type RowActionContext = {

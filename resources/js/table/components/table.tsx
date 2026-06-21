@@ -108,11 +108,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     <div data-lattice-component={node.id} className="relative">
       {hasOverrides && (
         <button
-          aria-label={t("a11y.resetColumnWidths", "Reset column widths")}
+          aria-label={t("table.resetColumnWidths", "Reset column widths")}
           className="absolute right-1 top-1 z-10 hidden rounded-lt-sm p-1 text-lt-muted-fg hover:text-lt-fg md:inline-flex"
           data-test="table-reset-columns"
           onClick={resetColumns}
-          title={t("a11y.resetColumnWidths", "Reset column widths")}
+          title={t("table.resetColumnWidths", "Reset column widths")}
           type="button"
         >
           <Icon name="rotate-ccw" className="size-lt-icon-sm" />
@@ -172,7 +172,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
               {hasBulkActions && (
                 <div className="flex items-center px-4 py-3" role="columnheader">
                   <Checkbox
-                    aria-label={t("a11y.selectAllRows", "Select all rows")}
+                    aria-label={t("table.selectAllRows", "Select all rows")}
                     data-test="select-all"
                     checked={selection.allSelected}
                     onCheckedChange={() => selection.toggleAll()}
@@ -259,7 +259,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                     {hasBulkActions && (
                       <div className="flex items-center p-4" role="cell">
                         <Checkbox
-                          aria-label={t("a11y.selectRow", "Select row {{key}}", { key })}
+                          aria-label={t("table.selectRow", "Select row {{key}}", { key })}
                           data-test={`select-row-${key}`}
                           checked={selection.isSelected(key)}
                           onCheckedChange={() => selection.toggle(key)}

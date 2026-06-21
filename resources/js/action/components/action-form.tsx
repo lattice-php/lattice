@@ -307,7 +307,7 @@ export function ActionForm({ description, formNode, onClose, title, ...rest }: A
         className="max-h-[min(680px,calc(100vh-2rem))] w-full max-w-lg overflow-y-auto"
       >
         <DialogHeader
-          closeLabel={t("a11y.close", "Close")}
+          closeLabel={t("common.close", "Close")}
           description={description}
           title={title}
         />

@@ -36,7 +36,7 @@ function waitForLatticeBrowserTestTranslation(string $file, string $key): mixed
 
 it('dumps missing React lattice keys back into the package lang file', function (): void {
     $this->actingAs(workbenchTestUser());
-    $file = package_path('lang/en/lattice.php');
+    $file = package_path('lang/en/form.php');
     $original = File::get($file);
     $translations = require $file;
 
@@ -51,7 +51,7 @@ it('dumps missing React lattice keys back into the package lang file', function 
             ->assertNoJavaScriptErrors();
 
         expect(waitForLatticeBrowserTestTranslation($file, 'editor.italic'))
-            ->toBe('i18next-editor.italic')
+            ->toBe('i18next-form.editor.italic')
             ->and(File::exists(package_path('workbench/lang/en/language.php')))->toBeFalse()
             ->and(File::exists(package_path('workbench/lang/en/status.php')))->toBeFalse();
     } finally {

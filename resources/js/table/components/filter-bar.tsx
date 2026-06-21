@@ -48,7 +48,7 @@ export function FilterBar({
               data-test={`table-filter-chip-${filter.key}-remove`}
               className="inline-flex size-5 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-border disabled:opacity-50"
               disabled={processing}
-              aria-label={t("filter.remove", "Remove {{label}} filter", {
+              aria-label={t("table.filter.remove", "Remove {{label}} filter", {
                 label: filter.label,
               })}
               onClick={() => onChange(filter.key, undefined)}
@@ -64,7 +64,7 @@ export function FilterBar({
           disabled={processing}
           onClick={onReset}
         >
-          {t("filter.resetAll", "Reset all")}
+          {t("table.filter.resetAll", "Reset all")}
         </button>
       </div>
     </div>
@@ -86,7 +86,7 @@ export function FilterMenu({
 }) {
   const { t } = useT("lattice");
   const active = filters.filter((filter) => isActiveFilterValue(values[filter.key]));
-  const filtersLabel = t("filter.filters", "Filters");
+  const filtersLabel = t("table.filter.filters", "Filters");
 
   return (
     <Popover>

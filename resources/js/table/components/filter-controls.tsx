@@ -88,7 +88,7 @@ function SelectControl({
   onChange: (value: unknown) => void;
 }) {
   const { t } = useT("lattice");
-  const placeholder = stringProp(filter, "placeholder", t("filter.all", "All"));
+  const placeholder = stringProp(filter, "placeholder", t("table.filter.all", "All"));
 
   return (
     <select
@@ -134,8 +134,8 @@ function MultiSelectControl({
 
   const summary =
     selected.length === 0
-      ? stringProp(filter, "placeholder", t("filter.all", "All"))
-      : t("filter.selectedCount", "{{amount}} selected", { amount: selected.length });
+      ? stringProp(filter, "placeholder", t("table.filter.all", "All"))
+      : t("table.filter.selectedCount", "{{amount}} selected", { amount: selected.length });
 
   return (
     <div className="relative">
@@ -206,9 +206,9 @@ function SearchableSelectControl({
   );
   const summary =
     selected.length === 0
-      ? stringProp(filter, "placeholder", t("filter.all", "All"))
+      ? stringProp(filter, "placeholder", t("table.filter.all", "All"))
       : multiple
-        ? t("filter.selectedCount", "{{amount}} selected", { amount: selected.length })
+        ? t("table.filter.selectedCount", "{{amount}} selected", { amount: selected.length })
         : (labels.get(selected[0]) ?? selected[0]);
 
   function search(query: string): void {
@@ -239,7 +239,7 @@ function SearchableSelectControl({
       open={open}
       onOpenChange={setOpen}
       options={results}
-      searchLabel={t("filter.search", "Search")}
+      searchLabel={t("table.filter.search", "Search")}
       selected={selected}
       testId={`table-filter-${filter.key}`}
       trigger={
@@ -270,9 +270,9 @@ function TernaryControl({
   onChange: (value: unknown) => void;
 }) {
   const { t } = useT("lattice");
-  const placeholder = stringProp(filter, "placeholder", t("filter.all", "All"));
-  const trueLabel = stringProp(filter, "trueLabel", t("filter.true", "True"));
-  const falseLabel = stringProp(filter, "falseLabel", t("filter.false", "False"));
+  const placeholder = stringProp(filter, "placeholder", t("table.filter.all", "All"));
+  const trueLabel = stringProp(filter, "trueLabel", t("table.filter.true", "True"));
+  const falseLabel = stringProp(filter, "falseLabel", t("table.filter.false", "False"));
 
   return (
     <select
@@ -312,7 +312,7 @@ function DateRangeControl({
     <div className="flex items-center gap-1">
       <input
         type="date"
-        aria-label={t("filter.from", "{{label}} from", { label: filter.label })}
+        aria-label={t("table.filter.from", "{{label}} from", { label: filter.label })}
         data-test={`table-filter-${filter.key}-from`}
         className={fieldClass}
         disabled={processing}
@@ -324,7 +324,7 @@ function DateRangeControl({
       </span>
       <input
         type="date"
-        aria-label={t("filter.until", "{{label}} until", { label: filter.label })}
+        aria-label={t("table.filter.until", "{{label}} until", { label: filter.label })}
         data-test={`table-filter-${filter.key}-until`}
         className={fieldClass}
         disabled={processing}

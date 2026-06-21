@@ -62,20 +62,20 @@ it('omits the i18n config when the client already has the once prop', function (
 it('serves the bundled English lattice namespace from the package lang dir', function (): void {
     getJson('/locales/en/lattice.json')
         ->assertOk()
-        ->assertJsonPath('editor.bold', 'Bold')
-        ->assertJsonPath('pagination.next', 'Next')
-        ->assertJsonPath('operators.eq', 'equals');
+        ->assertJsonPath('form.editor.bold', 'Bold')
+        ->assertJsonPath('table.pagination.next', 'Next')
+        ->assertJsonPath('table.operators.eq', 'equals');
 });
 
 it('serves the lattice namespace from the package lang dir as nested i18next JSON', function (): void {
     getJson('/locales/de/lattice.json')
         ->assertOk()
-        ->assertJsonPath('editor.bold', 'Fett')
-        ->assertJsonPath('editor.heading-1', 'Überschrift 1')
-        ->assertJsonPath('pagination.next', 'Weiter')
-        ->assertJsonPath('operators.eq', 'ist gleich')
-        ->assertJsonPath('a11y.selectRow', 'Zeile {{key}} auswählen')
-        ->assertJsonPath('bulk.selected', '{{count}} ausgewählt');
+        ->assertJsonPath('form.editor.bold', 'Fett')
+        ->assertJsonPath('form.editor.heading-1', 'Überschrift 1')
+        ->assertJsonPath('table.pagination.next', 'Weiter')
+        ->assertJsonPath('table.operators.eq', 'ist gleich')
+        ->assertJsonPath('table.selectRow', 'Zeile {{key}} auswählen')
+        ->assertJsonPath('table.bulk.selected', '{{count}} ausgewählt');
 });
 
 it('serves workbench translations from the workbench lang dir', function (): void {
@@ -126,15 +126,15 @@ it('keeps workbench translation keys aligned between English and German', functi
 });
 
 it('dumps missing lattice keys into the package lang dir, never vendor', function (): void {
-    postJson('/locales/add/zz/lattice', ['editor.demo' => 'editor.demo'])->assertOk();
+    postJson('/locales/add/zz/lattice', ['form.editor.demo' => 'form.editor.demo'])->assertOk();
 
-    $file = package_path('lang/zz/lattice.php');
+    $file = package_path('lang/zz/form.php');
 
     expect($file)->toBeReadableFile()
         ->and(str_contains($file, '/vendor/'))->toBeFalse()
         ->and(str_contains($file, '/workbench/'))->toBeFalse();
 
-    expect(require $file)->toBe(['editor' => ['demo' => 'i18next-editor.demo']]);
+    expect(require $file)->toBe(['editor' => ['demo' => 'i18next-form.editor.demo']]);
 });
 
 it('dumps namespace-less keys to a JSON file in the package lang dir', function (): void {

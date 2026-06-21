@@ -1,0 +1,25 @@
+<?php
+declare(strict_types=1);
+
+return [
+    'tabs' => 'Tabs',
+    'loading' => 'Lädt',
+    'moreInfo' => 'Mehr Informationen',
+    'closeMenu' => 'Menü schließen',
+    'dismiss' => 'Schließen',
+    'close' => 'Schließen',
+    'chat' => [
+        'launcher' => 'Chat',
+        'title' => 'Chat',
+        'close' => 'Schließen',
+        'send' => 'Senden',
+        'input-label' => 'Nachrichteneingabe',
+    ],
+    'remote' => [
+        'data-list' => [
+            'loading' => 'Lädt...',
+            'title' => 'Remote-Daten',
+            'empty' => 'Keine Daten',
+        ],
+    ],
+];
