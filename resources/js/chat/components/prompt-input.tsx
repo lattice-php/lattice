@@ -39,7 +39,7 @@ export function PromptInput({
   return (
     <div className="flex items-end gap-2 border-t border-lt-border p-3">
       <textarea
-        aria-label={t("chat.input-label", "Message input")}
+        aria-label={t("common.chat.input-label", "Message input")}
         className={cn(
           "min-h-[2.5rem] flex-1 resize-none rounded-lt-sm border border-lt-input bg-lt-bg px-3 py-2 text-sm text-lt-fg placeholder:text-lt-muted-fg focus:outline-none focus:ring-1 focus:ring-lt-ring disabled:opacity-50",
         )}
@@ -59,7 +59,7 @@ export function PromptInput({
         type="button"
         variant="default"
       >
-        {t("chat.send", "Send")}
+        {t("common.chat.send", "Send")}
       </Button>
     </div>
   );

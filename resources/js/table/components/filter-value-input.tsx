@@ -31,7 +31,7 @@ export function FilterValueInput({
 }) {
   const { t } = useT("lattice");
   const [draft, setDraft] = useState(value);
-  const inputLabel = ariaLabel ?? t("filter.filterBy", "Filter {{label}}", { label });
+  const inputLabel = ariaLabel ?? t("table.filter.filterBy", "Filter {{label}}", { label });
   const groupedClass = grouped ? "rounded-r-none" : "";
 
   useEffect(() => {
@@ -48,9 +48,9 @@ export function FilterValueInput({
         value={value}
         onChange={(event) => onCommit(event.target.value)}
       >
-        <option value="">{t("filter.all", "All")}</option>
-        <option value="true">{t("filter.true", "True")}</option>
-        <option value="false">{t("filter.false", "False")}</option>
+        <option value="">{t("table.filter.all", "All")}</option>
+        <option value="true">{t("table.filter.true", "True")}</option>
+        <option value="false">{t("table.filter.false", "False")}</option>
       </select>
     );
   }
@@ -103,7 +103,7 @@ export function FilterValueInput({
       {onClear && draft !== "" && (
         <button
           type="button"
-          aria-label={t("filter.clear", "Clear {{label}} filter", { label })}
+          aria-label={t("table.filter.clear", "Clear {{label}} filter", { label })}
           data-test={testId ? `${testId}-clear` : undefined}
           className="absolute right-1 inline-flex size-6 items-center justify-center rounded-lt-sm hover:bg-lt-muted disabled:opacity-50"
           disabled={processing}

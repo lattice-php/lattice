@@ -50,7 +50,7 @@ describe("buildRowActions", () => {
       context({ t: (key) => `t:${key}` }),
     );
 
-    expect(action.label).toBe("t:rowActions.duplicate");
+    expect(action.label).toBe("t:table.rowActions.duplicate");
   });
 
   it("maps a duplicate action to onDuplicate with client-default label and icon", () => {

@@ -128,7 +128,7 @@ export function RemoteDataList({ props }: { props: RemoteDataListProps }) {
   if (loading || !props.remote) {
     return (
       <div className="rounded-lt border border-lt-border p-3 text-sm">
-        {t("remote.data-list.loading", "Loading...")}
+        {t("common.remote.data-list.loading", "Loading...")}
       </div>
     );
   }
@@ -136,7 +136,7 @@ export function RemoteDataList({ props }: { props: RemoteDataListProps }) {
   return (
     <div className="rounded-lt border border-lt-border bg-lt-bg">
       <div className="border-b border-lt-border px-3 py-2 text-sm font-medium">
-        {t("remote.data-list.title", "Remote data")}
+        {t("common.remote.data-list.title", "Remote data")}
       </div>
       <div className="divide-y divide-lt-border">
         {rows.map((row, index) => {
@@ -148,7 +148,7 @@ export function RemoteDataList({ props }: { props: RemoteDataListProps }) {
         })}
         {rows.length === 0 ? (
           <div className="px-3 py-2 text-sm text-lt-muted-fg">
-            {props.emptyLabel ?? t("remote.data-list.empty", "No data")}
+            {props.emptyLabel ?? t("common.remote.data-list.empty", "No data")}
           </div>
         ) : null}
       </div>

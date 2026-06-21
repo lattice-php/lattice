@@ -98,7 +98,9 @@ export function ColumnFilterControl({
         <PopoverTrigger asChild>
           <button
             type="button"
-            aria-label={t("filter.columnFilters", "{{label}} filters", { label: column.label })}
+            aria-label={t("table.filter.columnFilters", "{{label}} filters", {
+              label: column.label,
+            })}
             data-test={`filter-${column.key}`}
             className="relative -ml-px inline-flex size-9 shrink-0 items-center justify-center rounded-r-lt-sm border border-lt-input disabled:opacity-50 data-[state=open]:z-10 data-[state=open]:border-lt-primary"
             disabled={processing}
@@ -315,7 +317,7 @@ function FilterClauseList({
           onClick={() => setAdding(true)}
         >
           <Icon name="plus" aria-hidden="true" className="size-lt-icon-md" />
-          {t("filter.add", "Add filter")}
+          {t("table.filter.add", "Add filter")}
         </button>
       </div>
     </div>
@@ -349,7 +351,7 @@ function FilterClauseRow({
       <div className="flex items-center gap-2">
         {operators.length > 1 ? (
           <select
-            aria-label={t("filter.operator", "{{label}} operator", { label: column.label })}
+            aria-label={t("table.filter.operator", "{{label}} operator", { label: column.label })}
             data-test={`filter-${column.key}-operator`}
             className={cn(fieldClass, "flex-1")}
             disabled={processing}
@@ -367,7 +369,7 @@ function FilterClauseRow({
         )}
         <button
           type="button"
-          aria-label={t("filter.remove", "Remove {{label}} filter", { label: column.label })}
+          aria-label={t("table.filter.remove", "Remove {{label}} filter", { label: column.label })}
           data-test={`filter-${column.key}-remove`}
           className="inline-flex size-9 items-center justify-center rounded-lt-sm border border-lt-border hover:bg-lt-muted disabled:opacity-50"
           disabled={processing}
@@ -380,7 +382,7 @@ function FilterClauseRow({
         <FilterValueInput
           type={type}
           label={column.label}
-          ariaLabel={t("filter.value", "{{label}} filter value", { label: column.label })}
+          ariaLabel={t("table.filter.value", "{{label}} filter value", { label: column.label })}
           value={clause.value}
           processing={processing}
           onCommit={onValue}

@@ -72,7 +72,7 @@ export const ChatBox: RendererComponent<"chat.box"> = ({ node }) => {
     >
       <div className="flex items-center border-b border-lt-border px-3 py-2">
         <span className="text-sm font-medium text-lt-fg">
-          {props.title ?? t("chat.title", "Chat")}
+          {props.title ?? t("common.chat.title", "Chat")}
         </span>
       </div>
       <div className="flex-1 overflow-y-auto">

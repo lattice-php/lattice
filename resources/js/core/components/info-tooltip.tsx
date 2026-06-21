@@ -13,7 +13,7 @@ export function InfoTooltip({ content }: { content?: string | null }) {
     <Popover>
       <PopoverTrigger
         type="button"
-        aria-label={t("a11y.moreInfo", "More information")}
+        aria-label={t("common.moreInfo", "More information")}
         className="ml-1 inline-flex rounded-lt-sm text-lt-muted-fg outline-none hover:text-lt-fg focus-visible:text-lt-fg focus-visible:ring-lt-ring/50 focus-visible:ring-[3px]"
       >
         <Icon name="info" className="size-lt-icon-sm" />

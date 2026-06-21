@@ -59,7 +59,7 @@ const Callouts: RendererComponent<"callouts"> = () => {
           {callout.dismissible ? (
             <button
               type="button"
-              aria-label={t("a11y.dismiss", "Dismiss")}
+              aria-label={t("common.dismiss", "Dismiss")}
               data-test="callout-dismiss"
               className="shrink-0 rounded-lt-sm p-1 text-lt-muted-fg transition-colors hover:bg-lt-muted hover:text-lt-fg"
               onClick={() => dismiss(callout.id)}

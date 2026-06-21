@@ -1,0 +1,39 @@
+<?php
+declare(strict_types=1);
+
+return [
+    'editor' => [
+        'bold' => 'Bold',
+        'italic' => 'Italic',
+        'strikethrough' => 'Strikethrough',
+        'underline' => 'Underline',
+        'highlight' => 'Highlight',
+        'heading-1' => 'Heading 1',
+        'heading-2' => 'Heading 2',
+        'heading-3' => 'Heading 3',
+        'bullet-list' => 'Bullet list',
+        'ordered-list' => 'Ordered list',
+        'blockquote' => 'Blockquote',
+        'code-block' => 'Code block',
+        'horizontal-rule' => 'Horizontal rule',
+        'align-left' => 'Align left',
+        'align-center' => 'Align center',
+        'align-right' => 'Align right',
+        'justify' => 'Justify',
+        'link' => 'Link',
+        'insert-table' => 'Insert table',
+        'add-column' => 'Add column',
+        'add-row' => 'Add row',
+        'delete-table' => 'Delete table',
+        'details' => 'Details',
+        'insert-emoji' => 'Insert emoji',
+    ],
+    'file-upload' => [
+        'dropzone' => 'Drop files here or click to browse',
+        'remove' => 'Remove :name',
+        'remove-label' => 'Remove',
+        'failed' => 'Failed',
+    ],
+    'searchOptions' => 'Search options',
+    'removeOption' => 'Remove :label',
+];
