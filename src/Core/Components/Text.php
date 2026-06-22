@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Core\Concerns\HasCopyable;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\Color;
 use Lattice\Lattice\Core\Enums\Size;
@@ -11,6 +12,8 @@ use Lattice\Lattice\Core\Enums\Size;
 #[AsComponent('text')]
 class Text extends Component
 {
+    use HasCopyable;
+
     public string $text = '';
 
     public ?Align $align = null;

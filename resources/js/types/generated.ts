@@ -1220,6 +1220,7 @@ export type TabsAlignment = "start" | "center" | "end" | "stretch";
 export type Text = {
   align: Align | null;
   color: Color;
+  copyable: boolean;
   size: Size;
   text: string;
 };

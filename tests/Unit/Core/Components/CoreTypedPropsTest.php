@@ -38,7 +38,7 @@ test('stack serializes enums direction and key wire-identically', function (): v
                 'float' => null,
             ],
             'schema' => [
-                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => 'muted']],
+                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => 'muted', 'copyable' => false]],
             ],
         ]);
 });
@@ -84,7 +84,7 @@ test('modal serializes id title description and children', function (): void {
                 'ref' => null,
             ],
             'schema' => [
-                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => 'muted']],
+                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => 'muted', 'copyable' => false]],
             ],
         ]);
 });
@@ -125,12 +125,12 @@ test('tabs serialize defaultValue queryKey and computed activeValue', function (
                 [
                     'type' => 'tab',
                     'props' => ['label' => 'Profile', 'value' => 'profile', 'confirm' => null],
-                    'schema' => [['type' => 'text', 'props' => ['text' => 'Profile form', 'align' => null, 'size' => 'md', 'color' => 'muted']]],
+                    'schema' => [['type' => 'text', 'props' => ['text' => 'Profile form', 'align' => null, 'size' => 'md', 'color' => 'muted', 'copyable' => false]]],
                 ],
                 [
                     'type' => 'tab',
                     'props' => ['label' => 'Security', 'value' => 'security', 'confirm' => null],
-                    'schema' => [['type' => 'text', 'props' => ['text' => 'Security form', 'align' => null, 'size' => 'md', 'color' => 'muted']]],
+                    'schema' => [['type' => 'text', 'props' => ['text' => 'Security form', 'align' => null, 'size' => 'md', 'color' => 'muted', 'copyable' => false]]],
                 ],
             ],
         ]);
@@ -212,6 +212,7 @@ it('serializes default text styling props', function (): void {
         'align' => null,
         'size' => 'md',
         'color' => 'muted',
+        'copyable' => false,
     ]);
 });
 
@@ -229,7 +230,12 @@ it('serializes text size and color styling', function (): void {
             'align' => 'center',
             'size' => 'sm',
             'color' => 'default',
+            'copyable' => false,
         ]);
+});
+
+it('marks text as copyable', function (): void {
+    expect(wire(Text::make('tok_secret')->copyable())['props']['copyable'])->toBeTrue();
 });
 
 it('serializes an icon with name, size, color and class', function (): void {

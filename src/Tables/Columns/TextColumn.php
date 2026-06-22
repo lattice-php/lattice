@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
+use Lattice\Lattice\Core\Concerns\HasCopyable;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
@@ -13,6 +14,7 @@ use Lattice\Lattice\Tables\Enums\FilterType;
 #[AsColumn(ColumnType::Text)]
 class TextColumn extends Column implements Filterable, Sortable
 {
+    use HasCopyable;
     use IsFilterable;
     use IsSortable;
 
@@ -20,8 +22,6 @@ class TextColumn extends Column implements Filterable, Sortable
      * @var array{dateStyle: string|null, timeStyle: string|null}|null
      */
     public ?array $date = null;
-
-    public bool $copyable = false;
 
     /**
      * @var array{href: string|null, external: bool}|null
@@ -91,13 +91,6 @@ class TextColumn extends Column implements Filterable, Sortable
     public function isSortable(): bool
     {
         return $this->multiple === null && $this->sortable;
-    }
-
-    public function copyable(bool $copyable = true): static
-    {
-        $this->copyable = $copyable;
-
-        return $this;
     }
 
     public function link(?string $href = null, bool $external = false): static

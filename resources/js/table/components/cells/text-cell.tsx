@@ -1,8 +1,7 @@
-import { copyToClipboard } from "@lattice-php/lattice/clipboard";
+import { CopyableText } from "@lattice-php/lattice/clipboard";
 import { DateTime } from "@lattice-php/lattice/i18n";
-import { Icon } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import { type ReactNode, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { formatCell, resolveLink } from "../../format";
 import type { ColumnCellArgs, ColumnCellComponent } from "../../registry";
 import type { ColumnPropsOf } from "../../types";
@@ -61,7 +60,6 @@ function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.tex
   const dateProps = (column.props as ColumnPropsOf<"column.text"> | null)?.date;
   const href = resolveLink(column, row, value);
   const text = formatCell(value, column);
-  const [copied, setCopied] = useState(false);
 
   const content = href ? (
     <a
@@ -76,21 +74,6 @@ function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.tex
     text
   );
 
-  useEffect(() => {
-    if (!copied) {
-      return;
-    }
-
-    const timeout = window.setTimeout(() => setCopied(false), 1500);
-
-    return () => window.clearTimeout(timeout);
-  }, [copied]);
-
-  function handleCopy(): void {
-    void copyToClipboard(text);
-    setCopied(true);
-  }
-
   if (dateProps && !href && !props.copyable && value !== null && value !== undefined) {
     return (
       <DateTime value={value} dateStyle={dateProps.dateStyle} timeStyle={dateProps.timeStyle} />
@@ -102,22 +85,8 @@ function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.tex
   }
 
   return (
-    <span className="inline-flex items-center gap-2">
-      <span>{content}</span>
-      <button
-        type="button"
-        data-test={`copy-${column.key}`}
-        className="inline-flex items-center gap-1 rounded-lt-sm border border-lt-border px-2 py-1 text-xs"
-        aria-label={`${copied ? "Copied" : "Copy"} ${column.label}`}
-        onClick={handleCopy}
-      >
-        {copied ? (
-          <Icon name="check" className="size-lt-icon-xs" />
-        ) : (
-          <Icon name="copy" className="size-lt-icon-xs" />
-        )}
-        {copied ? "Copied" : "Copy"}
-      </button>
-    </span>
+    <CopyableText value={text} label={column.label} testId={`copy-${column.key}`}>
+      {content}
+    </CopyableText>
   );
 }

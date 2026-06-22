@@ -8,10 +8,10 @@ use Lattice\Lattice\Tables\Enums\DateTimeStyle;
 it('reflects a column\'s public properties into the full props shape', function (): void {
     expect(wire(TextColumn::make('name'))['props'])->toBe([
         'date' => null,
-        'copyable' => false,
         'link' => null,
         'badge' => null,
         'multiple' => null,
+        'copyable' => false,
     ]);
 
     $configured = wire(
@@ -20,10 +20,10 @@ it('reflects a column\'s public properties into the full props shape', function 
 
     expect($configured['props'])->toBe([
         'date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'],
-        'copyable' => true,
         'link' => ['href' => '/x', 'external' => true],
         'badge' => ['colorKey' => 'color'],
         'multiple' => 'name',
+        'copyable' => true,
     ]);
 });
 
@@ -47,9 +47,9 @@ it('keeps protected filter and sort state off the wire props', function (): void
 
     expect($props)->toBe([
         'date' => null,
-        'copyable' => false,
         'link' => null,
         'badge' => null,
         'multiple' => null,
+        'copyable' => false,
     ]);
 });
