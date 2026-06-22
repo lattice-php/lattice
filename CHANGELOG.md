@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.12.0](https://github.com/lattice-php/lattice/compare/0.11.0...0.12.0) (2026-06-22)
+
+
+### Features
+
+* add copyable modifier to the Text component ([f22a013](https://github.com/lattice-php/lattice/commit/f22a013d4dec1e9e7e628f76485671c8eec0d2d5))
+
+
+### Bug Fixes
+
+* make modal open prop reactive to server-driven changes ([7ecf944](https://github.com/lattice-php/lattice/commit/7ecf94478c7ef4c17c0a2f5a5cd90aa40fdc1880))
+
 ## [0.11.0](https://github.com/lattice-php/lattice/compare/0.10.0...0.11.0) (2026-06-21)
 
 
