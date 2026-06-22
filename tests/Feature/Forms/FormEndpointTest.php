@@ -50,6 +50,7 @@ test('registered forms serialize their configured endpoint and isolated error ba
                         'align' => null,
                         'size' => 'md',
                         'color' => 'muted',
+                        'copyable' => false,
                     ],
                 ],
             ],

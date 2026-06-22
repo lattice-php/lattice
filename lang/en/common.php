@@ -8,6 +8,10 @@ return [
     'closeMenu' => 'Close menu',
     'dismiss' => 'Dismiss',
     'close' => 'Close',
+    'copy' => 'Copy',
+    'copied' => 'Copied',
+    'copyValue' => 'Copy :label',
+    'copiedValue' => 'Copied :label',
     'chat' => [
         'launcher' => 'Chat',
         'title' => 'Chat',

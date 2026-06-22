@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+export { CopyableText } from "./copyable-text";
+
 export type CopiedValue = string | null;
 export type CopyFn = (text: string) => Promise<boolean>;
 export type UseClipboardReturn = [CopiedValue, CopyFn];

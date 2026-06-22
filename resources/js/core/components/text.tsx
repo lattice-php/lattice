@@ -1,3 +1,4 @@
+import { CopyableText } from "@lattice-php/lattice/clipboard";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { Color, Size } from "@lattice-php/lattice/types/generated";
@@ -31,7 +32,7 @@ const textSizes: Record<Size, string> = {
 const TextComponent: RendererComponent<"text"> = ({ node }) => {
   const align = node.props.align ?? "left";
 
-  return (
+  const text = (
     <p
       className={cn(
         "m-0",
@@ -43,6 +44,16 @@ const TextComponent: RendererComponent<"text"> = ({ node }) => {
     >
       {node.props.text}
     </p>
+  );
+
+  if (!node.props.copyable) {
+    return text;
+  }
+
+  return (
+    <CopyableText value={node.props.text} label={node.props.text}>
+      {text}
+    </CopyableText>
   );
 };
 
