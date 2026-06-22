@@ -29,6 +29,44 @@ describe("ModalComponent", () => {
     expect(screen.getByText("Body content")).toBeInTheDocument();
   });
 
+  it("opens when the server flips the open prop on a later render", () => {
+    const { rerender } = renderModal(
+      fakeNode({ type: "modal", id: "welcome", props: { open: false, title: "Welcome" } }),
+    );
+
+    expect(screen.queryByText("Welcome")).not.toBeInTheDocument();
+
+    rerender(
+      <ModalComponent
+        node={fakeNode({ type: "modal", id: "welcome", props: { open: true, title: "Welcome" } })}
+      >
+        <p>Body content</p>
+      </ModalComponent>,
+    );
+
+    expect(screen.getByText("Welcome")).toBeInTheDocument();
+  });
+
+  it("does not fight a manual close when the server keeps open true across renders", () => {
+    const { rerender } = renderModal(
+      fakeNode({ type: "modal", id: "welcome", props: { open: true, title: "Welcome" } }),
+    );
+    expect(screen.getByText("Welcome")).toBeInTheDocument();
+
+    fire(LATTICE_EVENT.closeModal, "welcome");
+    expect(screen.queryByText("Welcome")).not.toBeInTheDocument();
+
+    rerender(
+      <ModalComponent
+        node={fakeNode({ type: "modal", id: "welcome", props: { open: true, title: "Welcome" } })}
+      >
+        <p>Body content</p>
+      </ModalComponent>,
+    );
+
+    expect(screen.queryByText("Welcome")).not.toBeInTheDocument();
+  });
+
   it("stays closed until a matching open event arrives", () => {
     renderModal(fakeNode({ type: "modal", id: "confirm", props: { title: "Confirm" } }));
 

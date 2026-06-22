@@ -19,6 +19,15 @@ const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {
   const closeLabel = node.props.closeLabel;
   const [isOpen, setIsOpen] = useState(node.props.open === true);
 
+  // Honour server-driven open changes across re-renders, not just on mount. One
+  // way on purpose: closing stays user/closeModal-driven so it never fights a
+  // manual close, and the dep keeps it from re-firing while open stays true.
+  useEffect(() => {
+    if (node.props.open === true) {
+      setIsOpen(true);
+    }
+  }, [node.props.open]);
+
   useEffect(() => {
     function open(event: Event): void {
       if (node.id && matchesModal(event, node.id)) {
