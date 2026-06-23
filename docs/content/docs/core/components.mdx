@@ -89,7 +89,9 @@ Call `->tooltip('…')` to attach an ⓘ info popover in the trigger row; the co
 
 `Tooltip::make()->content('…')` renders an ⓘ info popover you can place anywhere. The content is
 trusted HTML (links are supported). Pass `->trigger([...])` to use your own non-interactive trigger
-(text, a badge, an icon) instead of the default ⓘ icon — clicking it opens the popover.
+(text, a badge, an icon) instead of the default ⓘ icon — clicking it opens the popover. Keep the
+trigger non-interactive: it becomes the popover's clickable button, so a button or link inside it
+would nest one interactive element in another.
 
 <ComponentExample
   php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
