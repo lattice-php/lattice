@@ -12,6 +12,7 @@
                             "align": "start",
                             "columns": null,
                             "filter": null,
+                            "hiddenByDefault": null,
                             "key": "name",
                             "label": "Name",
                             "props": {
@@ -22,6 +23,7 @@
                                 "multiple": null
                             },
                             "sortable": true,
+                            "toggleable": null,
                             "type": "column.text",
                             "width": "md"
                         },
@@ -29,6 +31,7 @@
                             "align": "start",
                             "columns": null,
                             "filter": null,
+                            "hiddenByDefault": null,
                             "key": "email",
                             "label": "Email",
                             "props": {
@@ -39,15 +42,18 @@
                                 "multiple": null
                             },
                             "sortable": null,
+                            "toggleable": null,
                             "type": "column.text",
                             "width": "md"
                         }
                     ],
                     "filter": null,
+                    "hiddenByDefault": null,
                     "key": "identity",
                     "label": "User",
                     "props": null,
                     "sortable": null,
+                    "toggleable": null,
                     "type": "column.stack",
                     "width": "xl"
                 },
@@ -55,6 +61,7 @@
                     "align": "start",
                     "columns": null,
                     "filter": null,
+                    "hiddenByDefault": null,
                     "key": "role",
                     "label": "Role",
                     "props": {
@@ -65,6 +72,7 @@
                         "multiple": null
                     },
                     "sortable": null,
+                    "toggleable": null,
                     "type": "column.text",
                     "width": "md"
                 }

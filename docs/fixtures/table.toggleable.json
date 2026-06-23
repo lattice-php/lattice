@@ -8,25 +8,7 @@
                 {
                     "align": "start",
                     "columns": null,
-                    "filter": {
-                        "clauseOptions": [],
-                        "control": null,
-                        "defaultOperator": "contains",
-                        "enabled": true,
-                        "multiple": false,
-                        "operators": [
-                            "contains",
-                            "starts_with",
-                            "ends_with",
-                            "eq",
-                            "neq",
-                            "empty",
-                            "filled"
-                        ],
-                        "options": [],
-                        "searchable": false,
-                        "type": "text"
-                    },
+                    "filter": null,
                     "hiddenByDefault": null,
                     "key": "name",
                     "label": "Name",
@@ -37,34 +19,34 @@
                         "link": null,
                         "multiple": null
                     },
-                    "sortable": true,
+                    "sortable": null,
                     "toggleable": null,
+                    "type": "column.text",
+                    "width": "md"
+                },
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "sku",
+                    "label": "SKU",
+                    "props": {
+                        "badge": null,
+                        "copyable": false,
+                        "date": null,
+                        "link": null,
+                        "multiple": null
+                    },
+                    "sortable": null,
+                    "toggleable": true,
                     "type": "column.text",
                     "width": "md"
                 },
                 {
                     "align": "end",
                     "columns": null,
-                    "filter": {
-                        "clauseOptions": [],
-                        "control": null,
-                        "defaultOperator": "eq",
-                        "enabled": true,
-                        "multiple": false,
-                        "operators": [
-                            "eq",
-                            "neq",
-                            "gt",
-                            "gte",
-                            "lt",
-                            "lte",
-                            "empty",
-                            "filled"
-                        ],
-                        "options": [],
-                        "searchable": false,
-                        "type": "number"
-                    },
+                    "filter": null,
                     "hiddenByDefault": null,
                     "key": "price",
                     "label": "Price",
@@ -73,8 +55,8 @@
                         "minimumFractionDigits": null,
                         "unit": null
                     },
-                    "sortable": true,
-                    "toggleable": null,
+                    "sortable": null,
+                    "toggleable": true,
                     "type": "column.number",
                     "width": "md"
                 },
@@ -82,20 +64,7 @@
                     "align": "start",
                     "columns": null,
                     "filter": null,
-                    "hiddenByDefault": null,
-                    "key": "featured",
-                    "label": "Featured",
-                    "props": null,
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.boolean",
-                    "width": "md"
-                },
-                {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
+                    "hiddenByDefault": true,
                     "key": "updated_at",
                     "label": "Updated",
                     "props": {
@@ -108,30 +77,24 @@
                         "link": null,
                         "multiple": null
                     },
-                    "sortable": true,
-                    "toggleable": null,
+                    "sortable": null,
+                    "toggleable": true,
                     "type": "column.text",
                     "width": "md"
                 }
             ],
             "data": [
                 {
-                    "featured": true,
                     "name": "Desk Lamp",
                     "price": "49.00",
+                    "sku": "LAMP-1",
                     "updated_at": "2026-05-30 09:15:00"
                 },
                 {
-                    "featured": false,
                     "name": "Office Chair",
                     "price": "189.00",
+                    "sku": "CHAIR-2",
                     "updated_at": "2026-06-02 14:40:00"
-                },
-                {
-                    "featured": true,
-                    "name": "Monitor Stand",
-                    "price": "75.50",
-                    "updated_at": "2026-06-08 08:05:00"
                 }
             ],
             "emptyLabel": "No results",
@@ -147,8 +110,8 @@
                 "mode": "none",
                 "nextPage": null,
                 "perPage": null,
-                "to": 3,
-                "total": 3
+                "to": 2,
+                "total": 2
             },
             "resizableColumns": null,
             "resizeIndicator": false,
@@ -159,7 +122,7 @@
                 "sorts": [],
                 "tableFilters": []
             },
-            "striped": true
+            "striped": null
         },
         "type": "table"
     }

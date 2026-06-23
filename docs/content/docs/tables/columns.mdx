@@ -4,6 +4,7 @@ description: TextColumn and StackColumn — labels, value formatting, and the so
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
 
 Columns declare what each row shows. Create one with `Column::make()`, passing the **key** — the row
 field it reads. The label defaults to the humanized key; override it with `->label()`.
@@ -118,6 +119,29 @@ sort and filter for that column. They are covered in detail under
 ```php
 TextColumn::make('name')->sortable()->filterable();
 ```
+
+## Toggleable
+
+`->toggleable()` lets viewers show or hide the column from a **Columns** menu in the table toolbar.
+The menu appears as soon as at least one column opts in; columns without `->toggleable()` stay pinned
+and never appear in it. Pass `hiddenByDefault: true` to ship a column hidden — viewers can reveal it
+when they need it.
+
+<ComponentExample
+  php={`TextColumn::make('name');                        // pinned, always visible
+TextColumn::make('sku')->toggleable();           // hide-able, shown by default
+NumberColumn::make('price')->toggleable();
+TextColumn::make('updated_at')->label('Updated')
+    ->dateTime()
+    ->toggleable(hiddenByDefault: true);         // hide-able, starts hidden`}
+  fixture="table.toggleable"
+/>
+
+<Info>
+  Each viewer's choice is remembered per table in the browser (`localStorage`), so it survives
+  reloads. The table always keeps at least one column visible, and a **Reset** action restores the
+  defaults.
+</Info>
 
 ## Column width
 
