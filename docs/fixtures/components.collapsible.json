@@ -1,0 +1,34 @@
+[
+    {
+        "key": "account-name",
+        "props": {
+            "collapsed": true,
+            "rememberState": false,
+            "trigger": [
+                {
+                    "props": {
+                        "align": null,
+                        "color": "muted",
+                        "copyable": false,
+                        "size": "md",
+                        "text": "Name"
+                    },
+                    "type": "text"
+                }
+            ]
+        },
+        "schema": [
+            {
+                "props": {
+                    "align": null,
+                    "color": "muted",
+                    "copyable": false,
+                    "size": "md",
+                    "text": "Update the name shown on your account."
+                },
+                "type": "text"
+            }
+        ],
+        "type": "collapsible"
+    }
+]
