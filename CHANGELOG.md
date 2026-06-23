@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.13.0](https://github.com/lattice-php/lattice/compare/0.12.0...0.13.0) (2026-06-23)
+
+
+### Features
+
+* add Collapsible disclosure component ([367353c](https://github.com/lattice-php/lattice/commit/367353cc083fbed0a8d39732d96c3545896e6274))
+* add Collapsible disclosure component ([b29f9b9](https://github.com/lattice-php/lattice/commit/b29f9b938b1c8b418a52c81e868261a740d44182))
+* add column visibility menu component ([010be20](https://github.com/lattice-php/lattice/commit/010be2072fb2a3f188b118048a172f5d8dc4dc01))
+* add toggleable() opt-in to table columns ([4779340](https://github.com/lattice-php/lattice/commit/47793406af8bcaba4539b4d33ec2c04f04c7542b))
+* add useColumnVisibility hook ([995a3d5](https://github.com/lattice-php/lattice/commit/995a3d5e4c2ebb11d559d3b4656d4226dc25718c))
+* render toggleable column visibility menu in tables ([a5afb26](https://github.com/lattice-php/lattice/commit/a5afb26d8b4e41d263f69963680e8500255786b3))
+* toggleable (show/hide) table columns ([2fa4377](https://github.com/lattice-php/lattice/commit/2fa43776ddd3577c7f23be3cc1e7aa25c19615c2))
+
+
+### Refactoring
+
+* keep resize widths for surviving columns on self-heal ([45fbedc](https://github.com/lattice-php/lattice/commit/45fbedcf67f8a43fcb551e346bff729d864e5c2b))
+
+
+### Documentation
+
+* document toggleable table columns ([b17b1dd](https://github.com/lattice-php/lattice/commit/b17b1ddbe8e7591e555a8a25c6d53f9a3f1bc200))
+
 ## [0.12.0](https://github.com/lattice-php/lattice/compare/0.11.0...0.12.0) (2026-06-22)
 
 
