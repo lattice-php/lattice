@@ -23,6 +23,7 @@ use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\FloatingPlacement;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Choice;
@@ -30,6 +31,7 @@ use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\LatticeRegistry;
+use Lattice\Lattice\Support\Affix;
 use Lattice\Lattice\Tables\Components\Table;
 
 test('lattice component factories stay open for extension', function (): void {
@@ -367,10 +369,31 @@ test('links and horizontal stacks serialize as separate composable primitives', 
                         'method' => null,
                         'tabIndex' => null,
                         'action' => null,
+                        'icon' => null,
+                        'prefix' => null,
+                        'suffix' => null,
                     ],
                 ],
             ],
         ]);
+});
+
+test('links serialize their icon and affixes', function (): void {
+    $wire = wire(
+        Link::make('Docs')
+            ->href('/docs')
+            ->icon(Icon::ExternalLink)
+            ->prefix(Affix::icon('book-open'))
+            ->suffix('new'),
+    );
+
+    expect($wire['props'])->toMatchArray([
+        'href' => '/docs',
+        'icon' => 'external-link',
+        'label' => 'Docs',
+        'prefix' => ['icon' => 'book-open', 'text' => null],
+        'suffix' => ['icon' => null, 'text' => 'new'],
+    ]);
 });
 
 test('tabs ignore hidden tab children when resolving their active value', function (): void {
