@@ -9,7 +9,7 @@ vi.mock("@inertiajs/react", () => ({ createInertiaApp }));
 import { createLatticeApp } from "./create-app";
 import { pageComponentName } from "./inertia";
 import Page from "./page";
-import { Provider } from "./provider";
+import { ProviderBase } from "./provider-base";
 
 type CapturedOptions = {
   resolve: (name: string) => unknown;
@@ -62,12 +62,14 @@ describe("createLatticeApp", () => {
 
   it("wraps the app in the Provider so toasts use Lattice's own Toaster", () => {
     const sprite = { href: "/sprite.svg" };
+    const registry = { columns: {}, components: {}, effects: {} };
 
-    createLatticeApp({ sprite });
+    createLatticeApp({ registry, sprite });
 
     const wrapped = captureOptions().withApp(<div />);
 
-    expect(wrapped.type).toBe(Provider);
+    expect(wrapped.type).toBe(ProviderBase);
+    expect((wrapped.props as { registry: unknown }).registry).toBe(registry);
     expect((wrapped.props as { sprite: unknown }).sprite).toBe(sprite);
   });
 

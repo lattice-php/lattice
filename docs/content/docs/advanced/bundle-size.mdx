@@ -29,6 +29,20 @@ so a page only pays for what it actually renders:
 Everything else — the renderer, registry, layout shell, toasts, and core components — sits in the eager
 entry chunk that every page loads.
 
+If you prefer a single eager Lattice component graph, pass the eager registry when bootstrapping the app:
+
+```ts
+import { createLatticeApp } from "@lattice-php/lattice";
+import { eagerRegistry } from "@lattice-php/lattice/registry/eager";
+
+createLatticeApp({
+  registry: eagerRegistry,
+});
+```
+
+The default `registry` export remains lazy. Use the eager registry when your deployment favors fewer
+runtime chunk requests over a smaller initial component bundle.
+
 :::note
 React, React-DOM, and Inertia are **peer dependencies**: your app already ships them, so they are not
 Lattice's marginal cost even though they show up in the entry chunk below.
