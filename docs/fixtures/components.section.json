@@ -18,7 +18,8 @@
                 }
             ],
             "rememberState": true,
-            "title": "Members"
+            "title": "Members",
+            "tooltip": "Only admins can change who has access."
         },
         "schema": [
             {

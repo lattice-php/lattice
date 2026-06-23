@@ -134,6 +134,7 @@ export type Callouts = Record<string, never>;
 export type Card = {
   description: string | null;
   title: string | null;
+  tooltip: string | null;
 };
 export type ChannelVisibility = "public" | "private" | "presence";
 export type Chart = {
@@ -245,6 +246,7 @@ export type CloseModalEffect = {
 export type Collapsible = {
   collapsed: boolean;
   rememberState: boolean;
+  tooltip: string | null;
   trigger: Node[];
 };
 export type Color = "default" | "muted" | "primary" | "success" | "info" | "warning" | "danger";
@@ -412,6 +414,11 @@ export type CoreNode =
       type: "text";
       key?: string;
       props: Text;
+    }
+  | {
+      type: "tooltip";
+      key?: string;
+      props: Tooltip;
     };
 export type DataList = {
   dataEndpoint: string | null;
@@ -724,6 +731,7 @@ export type Grid = {
 export type Heading = {
   level: number;
   text: string;
+  tooltip: string | null;
 };
 export type Height = "full" | "screen";
 export type HiddenInput = {
@@ -1116,6 +1124,7 @@ export type Section = {
   headerActions: Node[];
   rememberState: boolean;
   title: string | null;
+  tooltip: string | null;
 };
 export type SegmentedControl = {
   emits: string | null;
@@ -1382,6 +1391,10 @@ export type ToggleSidebarEffect = {
 export type ToolCallPart = {
   args: Record<string, unknown>;
   name: string;
+};
+export type Tooltip = {
+  content: string | null;
+  trigger: Node[];
 };
 export type Topbar = {
   sticky: boolean;

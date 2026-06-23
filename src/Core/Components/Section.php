@@ -4,10 +4,13 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Core\Concerns\HasTooltip;
 
 #[AsComponent('section')]
 class Section extends ContainerComponent
 {
+    use HasTooltip;
+
     public ?string $title = null;
 
     public ?string $description = null;

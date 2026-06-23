@@ -1,0 +1,29 @@
+[
+    {
+        "props": {
+            "align": null,
+            "direction": "row",
+            "float": null,
+            "gap": "sm",
+            "height": null,
+            "justify": null,
+            "width": null
+        },
+        "schema": [
+            {
+                "props": {
+                    "label": "Plan: Pro"
+                },
+                "type": "badge"
+            },
+            {
+                "props": {
+                    "content": "Includes unlimited seats and priority support.",
+                    "trigger": []
+                },
+                "type": "tooltip"
+            }
+        ],
+        "type": "stack"
+    }
+]

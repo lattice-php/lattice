@@ -30,6 +30,12 @@ it('serializes the open and remember-state flags', function (): void {
     ]);
 });
 
+it('serializes a collapsible tooltip', function (): void {
+    $node = wire(Collapsible::make('details')->tooltip('Reveals the edit form.'));
+
+    expect($node['props']['tooltip'])->toBe('Reveals the edit form.');
+});
+
 it('omits trigger components hidden by a condition', function (): void {
     $node = wire(
         Collapsible::make()->trigger([
@@ -47,6 +53,7 @@ describe('docs fixtures', function (): void {
         dumpFixture('components.collapsible', [
             Collapsible::make('account-name')
                 ->trigger([Text::make('Name')])
+                ->tooltip('Shown on invoices and receipts.')
                 ->content([Text::make('Update the name shown on your account.')]),
         ]);
 

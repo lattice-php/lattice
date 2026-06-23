@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { InfoTooltip } from "./info-tooltip";
 
 function Card({ className, ...props }: React.ComponentProps<"article">) {
   return (
@@ -57,14 +58,24 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 const CardComponent: RendererComponent<"card"> = ({ children, node }) => {
-  const { title, description } = node.props;
+  const { title, description, tooltip } = node.props;
 
   return (
     <Card data-lattice-component={nodeIdentity(node)}>
       {(title || description) && (
         <CardHeader>
-          {title && <CardTitle>{title}</CardTitle>}
-          {description && <CardDescription>{description}</CardDescription>}
+          {title && (
+            <div className="flex items-center">
+              <CardTitle>{title}</CardTitle>
+              <InfoTooltip content={tooltip} />
+            </div>
+          )}
+          {description && (
+            <div className="flex items-center">
+              <CardDescription>{description}</CardDescription>
+              {!title && <InfoTooltip content={tooltip} />}
+            </div>
+          )}
         </CardHeader>
       )}
       {children && <CardContent className="flex flex-col gap-6">{children}</CardContent>}

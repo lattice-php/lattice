@@ -109,4 +109,25 @@ describe("Collapsible component", () => {
     expect(screen.getByText("Hidden body")).toBeVisible();
     window.localStorage.clear();
   });
+
+  it("opens the tooltip without toggling the collapse", () => {
+    renderCollapsible({
+      id: "name",
+      type: "collapsible",
+      props: {
+        tooltip: "Reveals the edit form.",
+        trigger: [{ type: "text", props: { text: "Name" } }],
+      },
+      schema: [{ type: "text", props: { text: "Hidden body" } }],
+    });
+
+    const toggle = screen.getByRole("button", { name: /Name/ });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+
+    fireEvent.click(screen.getByRole("button", { name: "More information" }));
+
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByText("Hidden body")).not.toBeInTheDocument();
+    expect(screen.getByText("Reveals the edit form.")).toBeVisible();
+  });
 });

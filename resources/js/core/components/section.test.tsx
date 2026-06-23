@@ -40,6 +40,30 @@ describe("Section component", () => {
     expect(screen.getByRole("button", { name: "Invite" })).toBeVisible();
   });
 
+  it("reveals a tooltip next to the title on click", () => {
+    renderSection({
+      id: "members",
+      type: "section",
+      props: { title: "Members", tooltip: "People with access." },
+      schema: [],
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "More information" }));
+    expect(screen.getByText("People with access.")).toBeVisible();
+  });
+
+  it("anchors the tooltip to the description when there is no title", () => {
+    renderSection({
+      id: "members",
+      type: "section",
+      props: { description: "People with access.", tooltip: "Only admins can change this." },
+      schema: [],
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "More information" }));
+    expect(screen.getByText("Only admins can change this.")).toBeVisible();
+  });
+
   it("toggles its content when collapsible", () => {
     renderSection({
       id: "advanced",

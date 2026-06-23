@@ -4,16 +4,14 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Concerns\HasTooltip;
+use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 
-#[AsComponent('collapsible')]
-class Collapsible extends ContainerComponent
+#[AsComponent('tooltip')]
+class Tooltip extends Component
 {
-    use HasTooltip;
+    use FiltersRenderableComponents;
 
-    public bool $collapsed = true;
-
-    public bool $rememberState = false;
+    public ?string $content = null;
 
     /**
      * @var array<int, Component>
@@ -25,16 +23,9 @@ class Collapsible extends ContainerComponent
         return new static($key);
     }
 
-    public function collapsed(bool $collapsed = true): static
+    public function content(string $content): static
     {
-        $this->collapsed = $collapsed;
-
-        return $this;
-    }
-
-    public function rememberState(bool $rememberState = true): static
-    {
-        $this->rememberState = $rememberState;
+        $this->content = $content;
 
         return $this;
     }
@@ -47,14 +38,6 @@ class Collapsible extends ContainerComponent
         $this->trigger = $components;
 
         return $this;
-    }
-
-    /**
-     * @param  array<int, Component>  $components
-     */
-    public function content(array $components): static
-    {
-        return $this->schema($components);
     }
 
     /**
