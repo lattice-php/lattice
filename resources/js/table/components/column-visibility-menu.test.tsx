@@ -9,8 +9,8 @@ const columns: ToggleableColumn[] = [
 ];
 
 function setup(overrides: Partial<Parameters<typeof ColumnVisibilityMenu>[0]> = {}) {
-  const onToggle = vi.fn();
-  const onReset = vi.fn();
+  const onToggle = vi.fn<(key: string, visible: boolean) => void>();
+  const onReset = vi.fn<() => void>();
   render(
     <ColumnVisibilityMenu
       columns={columns}

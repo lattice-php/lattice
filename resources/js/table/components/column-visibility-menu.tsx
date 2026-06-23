@@ -38,7 +38,7 @@ export function ColumnVisibilityMenu({
           className="relative inline-flex size-7 shrink-0 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lt-ring/50 data-[state=open]:bg-lt-muted data-[state=open]:text-lt-fg"
           disabled={processing}
         >
-          <Icon name="columns" aria-hidden="true" className="size-lt-icon-md" />
+          <Icon name="columns-3" aria-hidden="true" className="size-lt-icon-md" />
         </button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-64 p-4">

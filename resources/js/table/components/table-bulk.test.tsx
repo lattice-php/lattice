@@ -9,6 +9,8 @@ function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): 
     type: "column.text",
     width: "md",
     sortable: null,
+    toggleable: null,
+    hiddenByDefault: null,
     filter: null,
     columns: null,
     props: null,

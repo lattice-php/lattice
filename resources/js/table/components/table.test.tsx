@@ -11,6 +11,8 @@ function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): 
     type,
     width: type === "column.stack" ? "xl" : "md",
     sortable: null,
+    toggleable: null,
+    hiddenByDefault: null,
     filter: null,
     columns: null,
     props: null,

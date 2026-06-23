@@ -44,7 +44,7 @@ class ProductsTable extends EloquentTableDefinition
         return [
             ImageColumn::make('image')->label(__('workbench.tables.columns.image'))->size(44),
             TextColumn::make('name')->label(__('workbench.tables.columns.name'))->sortable()->filterable(),
-            TextColumn::make('sku')->label(__('workbench.tables.columns.sku'))->sortable()->filterable(),
+            TextColumn::make('sku')->label(__('workbench.tables.columns.sku'))->sortable()->filterable()->toggleable(),
             MoneyColumn::make('default_price')->label(__('workbench.tables.columns.default-price'))->sortable()->currency('EUR'),
             StatusBadgeColumn::make('status')->label(__('workbench.tables.columns.status'))->filterOptions([
                 'draft' => 'Draft',
@@ -52,7 +52,7 @@ class ProductsTable extends EloquentTableDefinition
                 'archived' => 'Archived',
             ])->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
             BooleanColumn::make('featured')->label(__('workbench.tables.columns.featured'))->sortable()->filterable(),
-            TextColumn::make('tags')->label(__('workbench.tables.columns.tags'))->multiple('name')->badge('color')->filterable(),
+            TextColumn::make('tags')->label(__('workbench.tables.columns.tags'))->multiple('name')->badge('color')->filterable()->toggleable(),
             TextColumn::make('updated_at')->label(__('workbench.tables.columns.updated-at'))->sortable()->dateTime()->filterable(),
         ];
     }

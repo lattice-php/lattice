@@ -26,6 +26,8 @@ function col(filter: ColumnFilter | null): TableColumn {
     type: "column.text",
     width: "md",
     sortable: null,
+    toggleable: null,
+    hiddenByDefault: null,
     filter,
     columns: null,
     props: null,

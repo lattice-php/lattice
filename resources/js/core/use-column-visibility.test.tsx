@@ -17,9 +17,15 @@ function Harness({ storageKey }: { storageKey?: string }) {
       <span data-test="visible">{visibleColumns.map((c) => c.key).join(",")}</span>
       <span data-test="has-toggleable">{String(hasToggleableColumns)}</span>
       <span data-test="has-hidden">{String(hasHidden)}</span>
-      <button data-test="hide-sku" onClick={() => setColumnVisible("sku", false)} type="button" />
-      <button data-test="show-notes" onClick={() => setColumnVisible("notes", true)} type="button" />
-      <button data-test="reset" onClick={resetVisibility} type="button" />
+      <button data-test="hide-sku" onClick={() => setColumnVisible("sku", false)} type="button">
+        hide sku
+      </button>
+      <button data-test="show-notes" onClick={() => setColumnVisible("notes", true)} type="button">
+        show notes
+      </button>
+      <button data-test="reset" onClick={resetVisibility} type="button">
+        reset
+      </button>
     </div>
   );
 }
