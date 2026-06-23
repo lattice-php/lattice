@@ -295,9 +295,8 @@ function readStoredOverrides(
     }
 
     const stored = JSON.parse(raw) as unknown;
-    const columnKeys = columns.map((column) => column.key);
 
-    if (!isStoredColumnWidths(stored) || !sameColumnKeys(stored.columns, columnKeys)) {
+    if (!isStoredColumnWidths(stored)) {
       removeStoredOverrides(storageKey);
 
       return {};
@@ -380,10 +379,6 @@ function isStoredColumnWidths(value: unknown): value is StoredColumnWidths {
     record.overrides !== null &&
     !Array.isArray(record.overrides)
   );
-}
-
-function sameColumnKeys(stored: string[], current: string[]): boolean {
-  return stored.length === current.length && stored.every((key, index) => key === current[index]);
 }
 
 function sanitizeOverrides(
