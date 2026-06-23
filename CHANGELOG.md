@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.14.0](https://github.com/lattice-php/lattice/compare/0.13.0...0.14.0) (2026-06-23)
+
+
+### Features
+
+* add eager registry entrypoints ([366cf08](https://github.com/lattice-php/lattice/commit/366cf0875dae0ccca1d528391fc51c79c99c9bc9))
+* add standalone Tooltip component ([d943a94](https://github.com/lattice-php/lattice/commit/d943a9423d94a90daaaf906b16063f060cecb7f9))
+* add tooltip support to Card ([95b58f0](https://github.com/lattice-php/lattice/commit/95b58f032dd09bf5b7fccd154811bb85d5ddf9ad))
+* add tooltip support to Collapsible ([088329d](https://github.com/lattice-php/lattice/commit/088329dab011e36ffe74d759c3f69bd3b0520654))
+* add tooltip support to Heading ([a1cd360](https://github.com/lattice-php/lattice/commit/a1cd3600f7b86c72cfee168aa1a5a31b68716704))
+* add tooltip support to Section ([13dabaa](https://github.com/lattice-php/lattice/commit/13dabaad780bab152fd5d2cf915e618902d6f15a))
+* extend tooltips to Card, Section, Heading, Collapsible + standalone Tooltip ([b89a10b](https://github.com/lattice-php/lattice/commit/b89a10b1c3ea94227fd028b98fa5e601abd54af2))
+* only show the select search box when the field is searchable ([433e5c5](https://github.com/lattice-php/lattice/commit/433e5c53c97100d08c9cc562162cb55843e6ad1e))
+* only show the select search box when the field is searchable ([1a0ccc9](https://github.com/lattice-php/lattice/commit/1a0ccc98a4ea0563047d8c1d6b2ae89f37cc0e04))
+* register Tooltip in the eager core component registry ([7954c48](https://github.com/lattice-php/lattice/commit/7954c48cf170b2f5b6b498379b6d5f3ff40ab7ad))
+
+
+### Bug Fixes
+
+* add presentation role to collapsible tooltip wrapper for a11y lint ([8e947d0](https://github.com/lattice-php/lattice/commit/8e947d0b83fa2cb06b50a08f3e95078a40189d8c))
+
+
+### Refactoring
+
+* align Card tooltip header structure with Section ([2b146fc](https://github.com/lattice-php/lattice/commit/2b146fce19b27c8bfd95b3645a4d6d4010d40101))
+
+
+### Documentation
+
+* document component tooltips and the standalone Tooltip ([803afb0](https://github.com/lattice-php/lattice/commit/803afb04cf8ed3ad6930295e542675e1ff1f972c))
+* explain why standalone Tooltip triggers must be non-interactive ([436e703](https://github.com/lattice-php/lattice/commit/436e703b6ee72dcc402b6e152bd88e357b38e5d2))
+
 ## [0.13.0](https://github.com/lattice-php/lattice/compare/0.12.0...0.13.0) (2026-06-23)
 
 
