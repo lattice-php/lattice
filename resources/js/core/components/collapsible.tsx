@@ -61,6 +61,7 @@ const CollapsibleComponent: RendererComponent<"collapsible"> = ({ children, node
           <Renderer nodes={trigger} />
           {node.props.tooltip && (
             <span
+              role="presentation"
               onClick={(event) => event.stopPropagation()}
               onKeyDown={(event) => event.stopPropagation()}
             >
