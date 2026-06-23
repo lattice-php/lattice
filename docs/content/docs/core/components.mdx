@@ -31,7 +31,8 @@ Layout components arrange their children. They are containers — pass children 
   optional `->align()` and `->width()`. Pass `->direction('row')` to lay children out horizontally.
 - **`Grid`** lays children out in columns via `->columns(n)`.
 - **`Card`** wraps children in a bordered panel with an optional title and description —
-  `Card::make('Title', 'Description')`.
+  `Card::make('Title', 'Description')`. Call `->tooltip('…')` to attach an ⓘ info popover next
+  to the title; the content may include links.
 - **`Section`** is a titled panel like `Card`, but it can collapse and carry actions in its header —
   see [below](#section).
 - **`Collapsible`** is an untitled disclosure: a clickable trigger row that folds a body of children
@@ -50,9 +51,10 @@ Layout components arrange their children. They are containers — pass children 
 
 ### Section
 
-`Section::make('Title', 'Description')` groups content under a heading. Call `->collapsible()` to let
-it fold (pass `collapsed: true` to start folded; `rememberState: false` to not persist the state), and
-`->headerActions([...])` to place buttons or actions in the header.
+`Section::make('Title', 'Description')` groups content under a heading. Call `->tooltip('…')` to
+attach an ⓘ info popover next to the title; the content may include links. Call `->collapsible()` to
+let it fold (pass `collapsed: true` to start folded; `rememberState: false` to not persist the
+state), and `->headerActions([...])` to place buttons or actions in the header.
 
 <ComponentExample
   php={`Section::make('Members', 'People with access to this team.')
@@ -74,12 +76,27 @@ it fold (pass `collapsed: true` to start folded; `rememberState: false` to not p
 starts folded; call `->collapsed(false)` to start open, and `->rememberState()` to persist the open
 state across reloads. Unlike `Section`, the whole trigger row is clickable and there is no built-in
 title — you supply it, which makes it a good fit for settings rows that reveal an inline edit form.
+Call `->tooltip('…')` to attach an ⓘ info popover in the trigger row; the content may include links.
 
 <ComponentExample
   php={`Collapsible::make('account-name')
     ->trigger([Text::make('Name')])
     ->content([Text::make('Update the name shown on your account.')]);`}
   fixture="components.collapsible"
+/>
+
+### Tooltip
+
+`Tooltip::make()->content('…')` renders an ⓘ info popover you can place anywhere. The content is
+trusted HTML (links are supported). Pass `->trigger([...])` to use your own non-interactive trigger
+(text, a badge, an icon) instead of the default ⓘ icon — clicking it opens the popover.
+
+<ComponentExample
+  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+    Badge::make('Plan: Pro'),
+    Tooltip::make()->content('Includes unlimited seats and priority support.'),
+]);`}
+  fixture="components.tooltip"
 />
 
 ## Display
