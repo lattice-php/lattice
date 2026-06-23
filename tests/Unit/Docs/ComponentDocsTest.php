@@ -9,6 +9,7 @@ use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Section;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Core\Components\Tooltip;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
 
@@ -67,6 +68,17 @@ describe('docs fixtures', function (): void {
         ]);
 
         expect('docs/fixtures/components.section.json')->toBeReadableFile();
+    });
+
+    it('dumps the tooltip example', function (): void {
+        dumpFixture('components.tooltip', [
+            Stack::make()->direction('row')->gap(Gap::Small)->schema([
+                Badge::make('Plan: Pro'),
+                Tooltip::make()->content('Includes unlimited seats and priority support.'),
+            ]),
+        ]);
+
+        expect('docs/fixtures/components.tooltip.json')->toBeReadableFile();
     });
 
     it('dumps the button variants example', function (): void {

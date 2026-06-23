@@ -17,6 +17,7 @@ import SegmentedControlComponent from "./segmented-control";
 import StackComponent from "./stack";
 import TabComponent, { TabsComponent } from "./tabs";
 import TextComponent from "./text";
+import TooltipComponent from "./tooltip";
 
 export const coreComponents = createPlugin({
   components: {
@@ -41,6 +42,7 @@ export const coreComponents = createPlugin({
     tab: eagerComponent(TabComponent),
     tabs: eagerComponent(TabsComponent),
     text: eagerComponent(TextComponent),
+    tooltip: eagerComponent(TooltipComponent),
   },
   name: "lattice/core",
 });

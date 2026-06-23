@@ -414,6 +414,11 @@ export type CoreNode =
       type: "text";
       key?: string;
       props: Text;
+    }
+  | {
+      type: "tooltip";
+      key?: string;
+      props: Tooltip;
     };
 export type DataList = {
   dataEndpoint: string | null;
@@ -1386,6 +1391,10 @@ export type ToggleSidebarEffect = {
 export type ToolCallPart = {
   args: Record<string, unknown>;
   name: string;
+};
+export type Tooltip = {
+  content: string | null;
+  trigger: Node[];
 };
 export type Topbar = {
   sticky: boolean;
