@@ -58,6 +58,7 @@ describe('docs fixtures', function (): void {
         dumpFixture('components.section', [
             Section::make('Members', 'People with access to this team.')
                 ->collapsible()
+                ->tooltip('Only admins can change who has access.')
                 ->headerActions([Button::make('Invite member')->variant(ButtonVariant::Outline)])
                 ->schema([
                     Text::make('Three people have access to this team.'),

@@ -5,6 +5,7 @@ import { nodeIdentity, prefixedTestId } from "@lattice-php/lattice/core/test-id"
 import { toNodes } from "@lattice-php/lattice/core/nodes";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { InfoTooltip } from "./info-tooltip";
 
 function readStored(key: string, remember: boolean, fallback: boolean): boolean {
   if (!remember || typeof window === "undefined") {
@@ -17,7 +18,7 @@ function readStored(key: string, remember: boolean, fallback: boolean): boolean 
 }
 
 const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
-  const { title, description } = node.props;
+  const { title, description, tooltip } = node.props;
   const collapsible = node.props.collapsible === true;
   const rememberState = node.props.rememberState !== false;
   const headerActions = toNodes(node.props.headerActions);
@@ -70,8 +71,18 @@ const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
               </button>
             )}
             <div className="flex min-w-0 flex-col gap-1.5">
-              {title && <div className="font-semibold leading-none">{title}</div>}
-              {description && <div className="text-sm text-lt-muted-fg">{description}</div>}
+              {title && (
+                <div className="flex items-center">
+                  <div className="font-semibold leading-none">{title}</div>
+                  <InfoTooltip content={tooltip} />
+                </div>
+              )}
+              {description && (
+                <div className="flex items-center">
+                  <div className="text-sm text-lt-muted-fg">{description}</div>
+                  {!title && <InfoTooltip content={tooltip} />}
+                </div>
+              )}
             </div>
           </div>
 

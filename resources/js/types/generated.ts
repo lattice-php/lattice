@@ -1117,6 +1117,7 @@ export type Section = {
   headerActions: Node[];
   rememberState: boolean;
   title: string | null;
+  tooltip: string | null;
 };
 export type SegmentedControl = {
   emits: string | null;

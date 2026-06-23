@@ -34,3 +34,9 @@ it('serializes the collapsible flags', function (): void {
         'rememberState' => false,
     ]);
 });
+
+it('serializes a section tooltip', function (): void {
+    $node = wire(Section::make('Members')->tooltip('People with access.'));
+
+    expect($node['props']['tooltip'])->toBe('People with access.');
+});
