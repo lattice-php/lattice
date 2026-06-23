@@ -33,6 +33,8 @@ class StackColumn extends Column
             width: $this->resolvedWidth(),
             align: $this->resolvedAlign(),
             sortable: $this->sortableValue(),
+            toggleable: $this->toggleable ? true : null,
+            hiddenByDefault: $this->hiddenByDefault ? true : null,
             filter: $this->filterValue(),
             columns: array_map(
                 fn (Column $column): ColumnData => $column->toData(),

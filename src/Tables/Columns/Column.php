@@ -24,6 +24,10 @@ abstract class Column implements JsonSerializable
 
     protected ?ColumnAlign $align = null;
 
+    protected bool $toggleable = false;
+
+    protected bool $hiddenByDefault = false;
+
     public function __construct(protected readonly string $key)
     {
         $this->label = str($key)->headline()->toString();
@@ -69,6 +73,14 @@ abstract class Column implements JsonSerializable
         return $this;
     }
 
+    public function toggleable(bool $hiddenByDefault = false): static
+    {
+        $this->toggleable = true;
+        $this->hiddenByDefault = $hiddenByDefault;
+
+        return $this;
+    }
+
     /**
      * @return list<ColumnFilterOption>
      */
@@ -94,6 +106,8 @@ abstract class Column implements JsonSerializable
             width: $this->resolvedWidth(),
             align: $this->resolvedAlign(),
             sortable: $this->sortableValue(),
+            toggleable: $this->toggleable ? true : null,
+            hiddenByDefault: $this->hiddenByDefault ? true : null,
             filter: $this->filterValue(),
             props: $props === [] ? null : $props,
         );
