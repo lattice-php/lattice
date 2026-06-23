@@ -4,6 +4,7 @@
         "props": {
             "collapsed": true,
             "rememberState": false,
+            "tooltip": "Shown on invoices and receipts.",
             "trigger": [
                 {
                     "props": {

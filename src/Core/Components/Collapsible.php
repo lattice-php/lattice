@@ -4,10 +4,13 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Core\Concerns\HasTooltip;
 
 #[AsComponent('collapsible')]
 class Collapsible extends ContainerComponent
 {
+    use HasTooltip;
+
     public bool $collapsed = true;
 
     public bool $rememberState = false;

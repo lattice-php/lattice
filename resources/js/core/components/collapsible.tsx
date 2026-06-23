@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Icon } from "@lattice-php/lattice/icons";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { InfoTooltip } from "./info-tooltip";
 import { nodeIdentity, prefixedTestId } from "@lattice-php/lattice/core/test-id";
 import { toNodes } from "@lattice-php/lattice/core/nodes";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
@@ -58,6 +59,14 @@ const CollapsibleComponent: RendererComponent<"collapsible"> = ({ children, node
       >
         <div className="flex min-w-0 flex-1 items-center gap-2">
           <Renderer nodes={trigger} />
+          {node.props.tooltip && (
+            <span
+              onClick={(event) => event.stopPropagation()}
+              onKeyDown={(event) => event.stopPropagation()}
+            >
+              <InfoTooltip content={node.props.tooltip} />
+            </span>
+          )}
         </div>
         <Icon
           name="chevron-down"

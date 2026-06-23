@@ -246,6 +246,7 @@ export type CloseModalEffect = {
 export type Collapsible = {
   collapsed: boolean;
   rememberState: boolean;
+  tooltip: string | null;
   trigger: Node[];
 };
 export type Color = "default" | "muted" | "primary" | "success" | "info" | "warning" | "danger";
