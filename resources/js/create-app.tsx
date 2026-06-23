@@ -2,6 +2,7 @@ import { createInertiaApp } from "@inertiajs/react";
 import type { ReactElement } from "react";
 import { initializeTheme } from "./appearance";
 import type { Registry } from "./core/registry";
+import { setDefaultRegistry } from "./core/registry-context";
 import type { SpriteValue } from "./icons/sprite";
 import {
   createLayoutResolver,
@@ -9,7 +10,8 @@ import {
   type CreateLayoutResolverOptions,
   type PageModules,
 } from "./inertia";
-import { Provider } from "./provider";
+import { ProviderBase } from "./provider-base";
+import { registry as defaultRegistry } from "./registry";
 
 type InertiaAppOptions = NonNullable<Parameters<typeof createInertiaApp>[0]>;
 
@@ -38,15 +40,19 @@ export function createLatticeApp({
   strictMode = true,
   ...inertiaOptions
 }: CreateLatticeAppOptions = {}) {
+  const activeRegistry = registry ?? defaultRegistry;
+
+  setDefaultRegistry(activeRegistry);
+
   const app = createInertiaApp({
     ...inertiaOptions,
     strictMode,
     resolve: createPageResolver(pages),
     layout: createLayoutResolver({ defaultLayout }),
     withApp: (node: ReactElement): ReactElement => (
-      <Provider registry={registry} sprite={sprite}>
+      <ProviderBase registry={activeRegistry} sprite={sprite}>
         {node}
-      </Provider>
+      </ProviderBase>
     ),
   });
 

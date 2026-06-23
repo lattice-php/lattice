@@ -1,4 +1,4 @@
-export { registry } from "./registry";
+export { lazyRegistry, registry } from "./registry";
 export { useChat } from "./chat/use-chat";
 export { chatPlugin } from "./chat";
 export {

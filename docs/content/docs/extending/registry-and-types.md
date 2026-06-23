@@ -71,6 +71,19 @@ export const registry = extendRegistry(
 `packageRegistry` is Lattice's built-in registry. Pass the extended `registry` to `Provider`. Call
 `extendRegistry` again yourself only if you keep additional plugins in their own files.
 
+The package-level `registry` export is the default lazy registry. To eager-load Lattice's built-in
+components, extend the eager registry instead:
+
+```ts
+import { createPlugin, extendRegistry } from "@lattice-php/lattice";
+import { eagerRegistry } from "@lattice-php/lattice/registry/eager";
+
+export const registry = extendRegistry(
+  eagerRegistry,
+  createPlugin({ name: "app", components: {}, columns: {} }),
+);
+```
+
 ### createRegistry
 
 Creates a registry from scratch (no built-ins). Only use this if you want to replace the entire built-in component set:
