@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import HeadingComponent from "./heading";
 
-function renderHeading(level: number, text = "Title") {
-  const node = { type: "heading", props: { level, text } } as Node<"heading">;
+function renderHeading(level: number, text = "Title", tooltip: string | null = null) {
+  const node = { type: "heading", props: { level, text, tooltip } } as Node<"heading">;
   return render(<HeadingComponent node={node}>{null}</HeadingComponent>);
 }
 
