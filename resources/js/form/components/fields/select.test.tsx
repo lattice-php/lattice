@@ -192,6 +192,20 @@ describe("SelectComponent options", () => {
     expect(screen.getByTestId("select-color")).toHaveTextContent("Blue");
   });
 
+  it("omits the search box when not searchable", () => {
+    renderStaticSelect({
+      options: [
+        { label: "Red", value: "red" },
+        { label: "Blue", value: "blue" },
+      ],
+    });
+
+    fireEvent.click(screen.getByTestId("select-color"));
+
+    expect(screen.queryByTestId("select-color-search")).not.toBeInTheDocument();
+    expect(screen.getByTestId("select-color-option-red")).toBeVisible();
+  });
+
   it("shows chips and removes a value in a multiple select", () => {
     renderStaticSelect(
       {

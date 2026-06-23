@@ -187,6 +187,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
           }}
           options={options}
           searchPlaceholder={props.searchPlaceholder ?? undefined}
+          showSearch={Boolean(searchable)}
           selected={selected}
           testId={`select-${name}`}
           trigger={
