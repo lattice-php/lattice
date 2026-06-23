@@ -3,6 +3,7 @@ import type { RendererComponentModule } from "@lattice-php/lattice/core/types";
 import BadgeComponent from "./badge";
 import ButtonComponent from "./button";
 import CardComponent from "./card";
+import CollapsibleComponent from "./collapsible";
 import FloatingPanelComponent from "./floating-panel";
 import FragmentComponent from "./fragment";
 import GridComponent from "./grid";
@@ -25,6 +26,7 @@ export const coreComponents = createPlugin({
     chart: lazyComponent(
       () => import("./chart") as unknown as Promise<RendererComponentModule<"chart">>,
     ),
+    collapsible: eagerComponent(CollapsibleComponent),
     "floating-panel": eagerComponent(FloatingPanelComponent),
     fragment: eagerComponent(FragmentComponent),
     grid: eagerComponent(GridComponent),

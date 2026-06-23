@@ -242,6 +242,11 @@ export type Choice = {
 export type CloseModalEffect = {
   readonly modal: string | null;
 };
+export type Collapsible = {
+  collapsed: boolean;
+  rememberState: boolean;
+  trigger: Node[];
+};
 export type Color = "default" | "muted" | "primary" | "success" | "info" | "warning" | "danger";
 export type ColumnAlign = "start" | "center" | "end";
 export type ColumnData = {
@@ -326,6 +331,12 @@ export type CoreNode =
       type: "chart";
       key?: string;
       props: Chart;
+    }
+  | {
+      type: "collapsible";
+      key?: string;
+      props: Collapsible;
+      schema?: Node[];
     }
   | {
       type: "floating-panel";

@@ -34,6 +34,8 @@ Layout components arrange their children. They are containers — pass children 
   `Card::make('Title', 'Description')`.
 - **`Section`** is a titled panel like `Card`, but it can collapse and carry actions in its header —
   see [below](#section).
+- **`Collapsible`** is an untitled disclosure: a clickable trigger row that folds a body of children
+  open and closed — see [below](#collapsible).
 - **`FloatingPanel`** fixes children to a viewport corner, useful for compact persistent controls
   such as language or appearance switchers. Set the corner with `->placement(FloatingPlacement::TopEnd)`.
 
@@ -63,6 +65,21 @@ it fold (pass `collapsed: true` to start folded; `rememberState: false` to not p
         Badge::make('3 active'),
     ]);`}
   fixture="components.section"
+/>
+
+### Collapsible
+
+`Collapsible::make()` folds a body of children behind a clickable trigger. Pass the header content to
+`->trigger([...])` (any components — a label, a value, a badge) and the body to `->content([...])`. It
+starts folded; call `->collapsed(false)` to start open, and `->rememberState()` to persist the open
+state across reloads. Unlike `Section`, the whole trigger row is clickable and there is no built-in
+title — you supply it, which makes it a good fit for settings rows that reveal an inline edit form.
+
+<ComponentExample
+  php={`Collapsible::make('account-name')
+    ->trigger([Text::make('Name')])
+    ->content([Text::make('Update the name shown on your account.')]);`}
+  fixture="components.collapsible"
 />
 
 ## Display

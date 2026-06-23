@@ -1,0 +1,55 @@
+<?php
+declare(strict_types=1);
+
+use Lattice\Lattice\Core\Components\Collapsible;
+use Lattice\Lattice\Core\Components\Text;
+
+it('serializes its trigger, content, and default flags', function (): void {
+    $node = wire(
+        Collapsible::make('details')
+            ->trigger([Text::make('Name')])
+            ->content([Text::make('Hidden body')]),
+    );
+
+    expect($node['type'])->toBe('collapsible')
+        ->and($node['props'])->toMatchArray([
+            'collapsed' => true,
+            'rememberState' => false,
+        ])
+        ->and($node['props']['trigger'])->toHaveCount(1)
+        ->and($node['props']['trigger'][0]['type'])->toBe('text')
+        ->and($node['schema'][0]['type'])->toBe('text');
+});
+
+it('serializes the open and remember-state flags', function (): void {
+    $node = wire(Collapsible::make()->collapsed(false)->rememberState());
+
+    expect($node['props'])->toMatchArray([
+        'collapsed' => false,
+        'rememberState' => true,
+    ]);
+});
+
+it('omits trigger components hidden by a condition', function (): void {
+    $node = wire(
+        Collapsible::make()->trigger([
+            Text::make('Visible'),
+            Text::make('Hidden')->when(false),
+        ]),
+    );
+
+    expect($node['props']['trigger'])->toHaveCount(1)
+        ->and($node['props']['trigger'][0]['props']['text'])->toBe('Visible');
+});
+
+describe('docs fixtures', function (): void {
+    it('dumps the collapsible example', function (): void {
+        dumpFixture('components.collapsible', [
+            Collapsible::make('account-name')
+                ->trigger([Text::make('Name')])
+                ->content([Text::make('Update the name shown on your account.')]),
+        ]);
+
+        expect('docs/fixtures/components.collapsible.json')->toBeReadableFile();
+    });
+});
