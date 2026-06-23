@@ -20,7 +20,8 @@
                     {
                         "props": {
                             "level": 2,
-                            "text": "Members"
+                            "text": "Members",
+                            "tooltip": null
                         },
                         "type": "heading"
                     },
