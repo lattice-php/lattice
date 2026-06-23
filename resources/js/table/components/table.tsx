@@ -2,6 +2,7 @@ import { type ReactNode, useMemo } from "react";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useColumnResizing } from "@lattice-php/lattice/core/use-column-resizing";
+import { useColumnVisibility } from "@lattice-php/lattice/core/use-column-visibility";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import { Checkbox } from "@lattice-php/lattice/core/components/checkbox";
 import { Icon } from "@lattice-php/lattice/icons";
@@ -20,6 +21,7 @@ import { useTableSelection } from "../use-table-selection";
 import { BulkBar } from "./bulk-bar";
 import { ColumnFilterControl } from "./column-filter-control";
 import { ColumnHeader } from "./column-header";
+import { ColumnVisibilityMenu } from "./column-visibility-menu";
 import { FilterBar, FilterMenu } from "./filter-bar";
 import { FilterStackBar } from "./filter-stack-bar";
 import { TablePagination } from "./pagination";
@@ -68,6 +70,21 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     () => new Map(flattenColumns(columns).map((column) => [column.key, column])),
     [columns],
   );
+  const visibilityIdentity = nodeIdentity(node);
+  const {
+    hasToggleableColumns,
+    hasHidden,
+    isVisible,
+    resetVisibility,
+    setColumnVisible,
+    toggleableColumns,
+    visibleColumns,
+  } = useColumnVisibility({
+    columns,
+    storageKey: visibilityIdentity
+      ? `lattice:table-column-visibility:${visibilityIdentity}`
+      : undefined,
+  });
   const currentPage = pagination.currentPage ?? state.page;
   const lastPage = pagination.lastPage ?? currentPage;
   const mode = pagination.mode ?? "table";
@@ -75,7 +92,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   const hasNextPage = pagination.hasMore ?? currentPage < lastPage;
   const hasActions = rowEntries.some((entry) => entry.actions.length > 0);
   const striped = node.props?.striped === true;
-  const hasFilters = columns.some((column) => column.filter?.enabled);
+  const hasFilters = visibleColumns.some((column) => column.filter?.enabled);
   const filterEntries = filters.map((clause, index) => ({ clause, index }));
   const filterDefinitions = useMemo(
     () => (Array.isArray(node.props?.filters) ? node.props.filters : []),
@@ -83,8 +100,8 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   );
   const hasDedicatedFilters = filterDefinitions.length > 0;
   const hasActiveFilters = filters.length > 0 || Object.keys(tableFilters).length > 0;
-  const hasTrailingUtility = hasActions || hasDedicatedFilters;
-  const sizingColumns = useMemo(() => getTableSizingColumns(columns), [columns]);
+  const hasTrailingUtility = hasActions || hasDedicatedFilters || hasToggleableColumns;
+  const sizingColumns = useMemo(() => getTableSizingColumns(visibleColumns), [visibleColumns]);
   const utilityTracks = useMemo(
     () => getTableUtilityTracks(hasTrailingUtility, hasBulkActions),
     [hasTrailingUtility, hasBulkActions],
@@ -179,7 +196,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                   />
                 </div>
               )}
-              {columns.map((column, index) => (
+              {visibleColumns.map((column, index) => (
                 <ColumnHeader
                   column={column}
                   key={column.key}
@@ -205,6 +222,17 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                       onSearch={searchFilterOptions}
                     />
                   )}
+                  {hasToggleableColumns && (
+                    <ColumnVisibilityMenu
+                      columns={toggleableColumns}
+                      isVisible={isVisible}
+                      visibleColumnCount={visibleColumns.length}
+                      hasHidden={hasHidden}
+                      onToggle={setColumnVisible}
+                      onReset={resetVisibility}
+                      processing={processing}
+                    />
+                  )}
                   {hasActions && <span className="sr-only">{node.props?.actionsLabel}</span>}
                 </div>
               )}
@@ -216,7 +244,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                 style={{ "--lattice-table-columns": gridTemplateColumns } as never}
               >
                 {hasBulkActions && <div className="px-4 py-2" role="cell" />}
-                {columns.map((column) => (
+                {visibleColumns.map((column) => (
                   <div key={column.key} className="min-w-0 px-2 py-2" role="cell">
                     {column.filter?.enabled && (
                       <ColumnFilterControl
@@ -266,7 +294,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                         />
                       </div>
                     )}
-                    {columns.map((column) => (
+                    {visibleColumns.map((column) => (
                       <div
                         key={column.key}
                         className={cn(

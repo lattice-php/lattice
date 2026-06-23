@@ -73,6 +73,8 @@ function col(filter: ColumnFilter): ColumnData {
     type: "column.text",
     width: "md",
     sortable: null,
+    toggleable: null,
+    hiddenByDefault: null,
     filter,
     columns: null,
     props: null,

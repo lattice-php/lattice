@@ -200,7 +200,7 @@ describe("useColumnResizing", () => {
     });
   });
 
-  it("resets stored widths when the column keys do not match", () => {
+  it("keeps stored widths for columns that still exist", () => {
     window.localStorage.setItem(
       "lattice:table-columns:orders",
       JSON.stringify({
@@ -214,9 +214,25 @@ describe("useColumnResizing", () => {
     render(<Harness hookColumns={twoColumns} storageKey="lattice:table-columns:orders" />);
 
     expect(screen.getByTestId("grid")).toHaveStyle({
-      gridTemplateColumns: "minmax(6rem, 0.5fr) minmax(8rem, 1fr)",
+      gridTemplateColumns: "192px minmax(8rem, 1fr)",
     });
-    expect(window.localStorage.getItem("lattice:table-columns:orders")).toBeNull();
+  });
+
+  it("drops stored widths for columns that no longer exist", () => {
+    window.localStorage.setItem(
+      "lattice:table-columns:orders",
+      JSON.stringify({
+        columns: ["qty", "removed"],
+        overrides: {
+          qty: 192,
+          removed: 300,
+        },
+      }),
+    );
+
+    render(<Harness storageKey="lattice:table-columns:orders" />);
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "192px" });
   });
 
   it("stores resized widths with the complete column key list", () => {

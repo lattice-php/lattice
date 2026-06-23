@@ -9,6 +9,7 @@
                     "align": "start",
                     "columns": null,
                     "filter": null,
+                    "hiddenByDefault": null,
                     "key": "avatar",
                     "label": "",
                     "props": {
@@ -16,6 +17,7 @@
                         "size": 32
                     },
                     "sortable": null,
+                    "toggleable": null,
                     "type": "column.image",
                     "width": "md"
                 },
@@ -23,6 +25,7 @@
                     "align": "start",
                     "columns": null,
                     "filter": null,
+                    "hiddenByDefault": null,
                     "key": "name",
                     "label": "Name",
                     "props": {
@@ -33,6 +36,7 @@
                         "multiple": null
                     },
                     "sortable": null,
+                    "toggleable": null,
                     "type": "column.text",
                     "width": "md"
                 },
@@ -40,6 +44,7 @@
                     "align": "start",
                     "columns": null,
                     "filter": null,
+                    "hiddenByDefault": null,
                     "key": "status",
                     "label": "Status",
                     "props": {
@@ -50,6 +55,7 @@
                         }
                     },
                     "sortable": null,
+                    "toggleable": null,
                     "type": "column.badge",
                     "width": "md"
                 },
@@ -57,6 +63,7 @@
                     "align": "start",
                     "columns": null,
                     "filter": null,
+                    "hiddenByDefault": null,
                     "key": "verified",
                     "label": "Verified",
                     "props": {
@@ -71,6 +78,7 @@
                         ]
                     },
                     "sortable": null,
+                    "toggleable": null,
                     "type": "column.icon",
                     "width": "md"
                 }

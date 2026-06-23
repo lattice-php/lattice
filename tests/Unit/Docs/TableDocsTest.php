@@ -59,6 +59,27 @@ describe('docs fixtures', function (): void {
         expect('docs/fixtures/table.stack.json')->toBeReadableFile();
     });
 
+    it('dumps the toggleable columns table example', function (): void {
+        dumpFixture('table.toggleable', [
+            Table::make('products')
+                ->columns([
+                    TextColumn::make('name')->label('Name'),
+                    TextColumn::make('sku')->label('SKU')->toggleable(),
+                    NumberColumn::make('price')->label('Price')->toggleable(),
+                    TextColumn::make('updated_at')->label('Updated')->dateTime()->toggleable(hiddenByDefault: true),
+                ])
+                ->result(
+                    TableResult::fromItems(collect([
+                        ['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'price' => '49.00', 'updated_at' => '2026-05-30 09:15:00'],
+                        ['name' => 'Office Chair', 'sku' => 'CHAIR-2', 'price' => '189.00', 'updated_at' => '2026-06-02 14:40:00'],
+                    ])),
+                    TableQuery::empty(),
+                ),
+        ]);
+
+        expect('docs/fixtures/table.toggleable.json')->toBeReadableFile();
+    });
+
     it('dumps the column types table example', function (): void {
         dumpFixture('table.column-types', [
             Table::make('members')

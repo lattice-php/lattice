@@ -21,6 +21,10 @@ return [
         'duplicate' => 'Duplicate',
         'remove' => 'Remove',
     ],
+    'columns' => [
+        'label' => 'Columns',
+        'reset' => 'Reset',
+    ],
     'filter' => [
         'all' => 'All',
         'true' => 'True',

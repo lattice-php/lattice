@@ -1,0 +1,27 @@
+<?php
+declare(strict_types=1);
+
+use Lattice\Lattice\Tables\Columns\StackColumn;
+use Lattice\Lattice\Tables\Columns\TextColumn;
+
+it('is not toggleable by default', function (): void {
+    expect(wire(TextColumn::make('name')->toData()))
+        ->toMatchArray(['toggleable' => null, 'hiddenByDefault' => null]);
+});
+
+it('opts in to toggling', function (): void {
+    expect(wire(TextColumn::make('name')->toggleable()->toData()))
+        ->toMatchArray(['toggleable' => true, 'hiddenByDefault' => null]);
+});
+
+it('opts in to toggling hidden by default', function (): void {
+    expect(wire(TextColumn::make('name')->toggleable(hiddenByDefault: true)->toData()))
+        ->toMatchArray(['toggleable' => true, 'hiddenByDefault' => true]);
+});
+
+it('carries the toggle flags through a stack column', function (): void {
+    $stack = StackColumn::make('summary')->toggleable(hiddenByDefault: true);
+
+    expect(wire($stack->toData()))
+        ->toMatchArray(['toggleable' => true, 'hiddenByDefault' => true]);
+});

@@ -21,6 +21,10 @@ return [
         'duplicate' => 'Duplizieren',
         'remove' => 'Entfernen',
     ],
+    'columns' => [
+        'label' => 'Spalten',
+        'reset' => 'Zurücksetzen',
+    ],
     'filter' => [
         'all' => 'Alle',
         'true' => 'Ja',

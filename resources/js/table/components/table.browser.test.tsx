@@ -12,6 +12,8 @@ function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): 
     type: partial.type ?? "column.text",
     width: "md",
     sortable: null,
+    toggleable: null,
+    hiddenByDefault: null,
     filter: null,
     columns: null,
     props: null,
@@ -175,10 +177,10 @@ describe("Lattice table component in a browser", () => {
     await expect.element(screen.getByTestId("table-reset-columns")).toBeInTheDocument();
   });
 
-  it("removes stale stored column widths when rendered columns change", async () => {
+  it("keeps stored widths for surviving columns and drops removed ones", async () => {
     window.localStorage.setItem(
       storageKey,
-      JSON.stringify({ columns: ["sku"], overrides: { sku: 240 } }),
+      JSON.stringify({ columns: ["sku", "ghost"], overrides: { sku: 240, ghost: 300 } }),
     );
 
     const screen = await render(
@@ -189,12 +191,11 @@ describe("Lattice table component in a browser", () => {
     const skuHeader = screen.getByRole("columnheader", { name: "SKU" }).element();
     const headerRow = skuHeader.parentElement;
 
-    expect(window.localStorage.getItem(storageKey)).toBeNull();
     expect(headerRow).toBeInstanceOf(HTMLElement);
     expect((headerRow as HTMLElement).style.getPropertyValue("--lattice-table-columns")).toBe(
-      "minmax(6rem, 0.5fr) minmax(8rem, 1fr)",
+      "240px minmax(8rem, 1fr)",
     );
-    await expect.element(screen.getByTestId("table-reset-columns")).not.toBeInTheDocument();
+    await expect.element(screen.getByTestId("table-reset-columns")).toBeInTheDocument();
   });
 
   it("persists and resets resized column widths on the component", async () => {

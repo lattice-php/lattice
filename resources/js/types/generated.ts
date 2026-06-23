@@ -256,6 +256,8 @@ export type ColumnData = {
   readonly width: ColumnWidth;
   readonly align: ColumnAlign;
   readonly sortable: boolean | null;
+  readonly toggleable: boolean | null;
+  readonly hiddenByDefault: boolean | null;
   readonly filter: ColumnFilter | null;
   readonly columns: ColumnData[] | null;
   readonly props: Record<string, unknown> | null;
