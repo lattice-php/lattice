@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.15.0](https://github.com/lattice-php/lattice/compare/0.14.0...0.15.0) (2026-06-23)
+
+
+### Features
+
+* support link icons and affixes ([2f1f83d](https://github.com/lattice-php/lattice/commit/2f1f83d0b3cd6acd1c1844890ef07dbe7ad25acc))
+* support link icons and affixes ([e2ea5b9](https://github.com/lattice-php/lattice/commit/e2ea5b98caf550eada84560125e78f1a830c0b61))
+
 ## [0.14.0](https://github.com/lattice-php/lattice/compare/0.13.0...0.14.0) (2026-06-23)
 
 
