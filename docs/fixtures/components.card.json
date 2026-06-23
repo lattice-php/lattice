@@ -2,7 +2,8 @@
     {
         "props": {
             "description": "Manage how your team appears.",
-            "title": "Team settings"
+            "title": "Team settings",
+            "tooltip": "These settings affect everyone on the team."
         },
         "schema": [
             {

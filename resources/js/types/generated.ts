@@ -134,6 +134,7 @@ export type Callouts = Record<string, never>;
 export type Card = {
   description: string | null;
   title: string | null;
+  tooltip: string | null;
 };
 export type ChannelVisibility = "public" | "private" | "presence";
 export type Chart = {

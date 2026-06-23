@@ -12,17 +12,31 @@ use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
 
+it('serializes a card tooltip', function (): void {
+    $node = wire(Card::make('Plan')->tooltip('Billed monthly.'));
+
+    expect($node['props']['tooltip'])->toBe('Billed monthly.');
+});
+
+it('serializes a null card tooltip when unset', function (): void {
+    $node = wire(Card::make('Plan'));
+
+    expect($node['props']['tooltip'])->toBeNull();
+});
+
 describe('docs fixtures', function (): void {
     it('dumps the card example', function (): void {
         dumpFixture('components.card', [
-            Card::make('Team settings', 'Manage how your team appears.')->schema([
-                Stack::make()->gap(Gap::Small)->schema([
-                    Heading::make('Members', 2),
-                    Text::make('Three people have access to this team.'),
-                    Badge::make('3 active'),
+            Card::make('Team settings', 'Manage how your team appears.')
+                ->tooltip('These settings affect everyone on the team.')
+                ->schema([
+                    Stack::make()->gap(Gap::Small)->schema([
+                        Heading::make('Members', 2),
+                        Text::make('Three people have access to this team.'),
+                        Badge::make('3 active'),
+                    ]),
+                    Button::make('Invite member')->variant(ButtonVariant::Default),
                 ]),
-                Button::make('Invite member')->variant(ButtonVariant::Default),
-            ]),
         ]);
 
         expect('docs/fixtures/components.card.json')->toBeReadableFile();
