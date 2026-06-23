@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import HeadingComponent from "./heading";
@@ -39,5 +39,16 @@ describe("HeadingComponent", () => {
     renderHeading(2);
 
     expect(screen.getByRole("heading", { level: 2 })).toHaveClass("text-xl");
+  });
+
+  it("reveals a tooltip after the heading text on click", () => {
+    const node = {
+      type: "heading",
+      props: { level: 2, text: "Billing", tooltip: "Invoices go out monthly." },
+    } as Node<"heading">;
+    render(<HeadingComponent node={node}>{null}</HeadingComponent>);
+
+    fireEvent.click(screen.getByRole("button", { name: "More information" }));
+    expect(screen.getByText("Invoices go out monthly.")).toBeVisible();
   });
 });

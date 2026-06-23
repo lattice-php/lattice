@@ -725,6 +725,7 @@ export type Grid = {
 export type Heading = {
   level: number;
   text: string;
+  tooltip: string | null;
 };
 export type Height = "full" | "screen";
 export type HiddenInput = {

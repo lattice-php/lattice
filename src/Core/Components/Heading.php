@@ -4,10 +4,13 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Core\Concerns\HasTooltip;
 
 #[AsComponent('heading')]
 class Heading extends Component
 {
+    use HasTooltip;
+
     public string $text = '';
 
     public int $level = 1;
