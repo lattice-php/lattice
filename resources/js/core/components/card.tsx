@@ -64,18 +64,18 @@ const CardComponent: RendererComponent<"card"> = ({ children, node }) => {
     <Card data-lattice-component={nodeIdentity(node)}>
       {(title || description) && (
         <CardHeader>
-          {title ? (
+          {title && (
             <div className="flex items-center">
               <CardTitle>{title}</CardTitle>
               <InfoTooltip content={tooltip} />
             </div>
-          ) : (
+          )}
+          {description && (
             <div className="flex items-center">
               <CardDescription>{description}</CardDescription>
-              <InfoTooltip content={tooltip} />
+              {!title && <InfoTooltip content={tooltip} />}
             </div>
           )}
-          {title && description && <CardDescription>{description}</CardDescription>}
         </CardHeader>
       )}
       {children && <CardContent className="flex flex-col gap-6">{children}</CardContent>}
