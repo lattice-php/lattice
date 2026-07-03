@@ -5,7 +5,12 @@ export type FormatOptions = {
   timeZone?: string;
 };
 
-export type DateConfig = { dateStyle: string | null; timeStyle: string | null };
+export type DateConfig = {
+  dateStyle: string | null;
+  timeStyle: string | null;
+  month?: string | null;
+  year?: string | null;
+};
 
 export function formatCell(value: unknown, column?: TableColumn, options?: FormatOptions): string {
   if (value === null || value === undefined) {
@@ -40,6 +45,14 @@ export function formatDateValue(value: unknown, date: DateConfig, options?: Form
 
   if (date.timeStyle) {
     intl.timeStyle = date.timeStyle as Intl.DateTimeFormatOptions["timeStyle"];
+  }
+
+  if (date.month) {
+    intl.month = date.month as Intl.DateTimeFormatOptions["month"];
+  }
+
+  if (date.year) {
+    intl.year = date.year as Intl.DateTimeFormatOptions["year"];
   }
 
   return new Intl.DateTimeFormat(options?.locale, intl).format(parsed);

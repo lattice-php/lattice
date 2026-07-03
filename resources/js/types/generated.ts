@@ -431,6 +431,8 @@ export type DateFormat = {
   kind: string;
   dateStyle: string | null;
   timeStyle: string | null;
+  month: string | null;
+  year: string | null;
 };
 export type DateInput = {
   autoFocus: boolean;

@@ -392,7 +392,13 @@ describe("Chart component", () => {
     renderChart({
       type: "chart",
       props: {
-        categoryFormat: { kind: "date", dateStyle: "short", timeStyle: null },
+        categoryFormat: {
+          kind: "date",
+          dateStyle: "short",
+          timeStyle: null,
+          month: null,
+          year: null,
+        },
         categoryKey: "month",
         data: [{ month: "2026-01-15", revenue: 28000 }],
         description: null,

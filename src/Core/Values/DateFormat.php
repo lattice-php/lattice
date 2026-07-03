@@ -16,10 +16,31 @@ final class DateFormat implements JsonSerializable
 
     public ?string $timeStyle = null;
 
+    public ?string $month = null;
+
+    public ?string $year = null;
+
     public static function date(DateTimeStyle $style = DateTimeStyle::Medium): self
     {
         $format = new self;
         $format->dateStyle = $style->value;
+
+        return $format;
+    }
+
+    public static function month(bool $long = false): self
+    {
+        $format = new self;
+        $format->month = $long ? 'long' : 'short';
+
+        return $format;
+    }
+
+    public static function monthYear(bool $long = false): self
+    {
+        $format = new self;
+        $format->month = $long ? 'long' : 'short';
+        $format->year = 'numeric';
 
         return $format;
     }
@@ -42,7 +63,7 @@ final class DateFormat implements JsonSerializable
     }
 
     /**
-     * @return array{kind: string, dateStyle: string|null, timeStyle: string|null}
+     * @return array{kind: string, dateStyle: string|null, timeStyle: string|null, month: string|null, year: string|null}
      */
     public function jsonSerialize(): array
     {
@@ -50,6 +71,8 @@ final class DateFormat implements JsonSerializable
             'kind' => $this->kind,
             'dateStyle' => $this->dateStyle,
             'timeStyle' => $this->timeStyle,
+            'month' => $this->month,
+            'year' => $this->year,
         ];
     }
 }
