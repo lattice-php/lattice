@@ -10,7 +10,7 @@ const TopbarComponent: RendererComponent<"topbar"> = ({ children, node }) => {
       data-lattice-component={nodeIdentity(node)}
       className={cn(
         "flex h-14 w-full items-center gap-2 border-b border-lt-border bg-lt-bg px-4 text-lt-fg",
-        sticky && "sticky top-0 z-30",
+        sticky && "sticky top-0 z-lt-sticky",
       )}
     >
       {children}

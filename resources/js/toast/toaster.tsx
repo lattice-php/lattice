@@ -72,7 +72,7 @@ export function Toaster({ duration = 4000 }: { duration?: number }) {
           ) : null}
         </Toast.Root>
       ))}
-      <Toast.Viewport className="fixed inset-x-0 bottom-0 z-[100] mx-auto flex w-full max-w-sm flex-col gap-2 p-4 outline-none" />
+      <Toast.Viewport className="fixed inset-x-0 bottom-0 z-lt-toast mx-auto flex w-full max-w-sm flex-col gap-2 p-4 outline-none" />
     </Toast.Provider>
   );
 }

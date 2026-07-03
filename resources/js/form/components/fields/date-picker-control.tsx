@@ -102,7 +102,7 @@ export function DatePickerControl({
     mode === "date" ? formatDateValue(selected[0]) : formatDateTimeValue(selected[0], timezone);
 
   return (
-    <div {...api.getRootProps()} className={cn("relative", api.open && "z-[var(--lt-z-popover)]")}>
+    <div {...api.getRootProps()} className={cn("relative", api.open && "z-lt-popover")}>
       <input type="hidden" name={name} value={submittedValue} data-test={`${testId}-value`} />
       <div {...api.getControlProps()} className="flex gap-2">
         <Input
@@ -153,7 +153,7 @@ export function DatePickerControl({
       {api.open ? (
         <div
           {...api.getPositionerProps()}
-          className="absolute z-[var(--lt-z-popover)] mt-2 rounded-lt-sm border border-lt-border bg-lt-popover p-3 text-lt-popover-fg shadow-lt-md"
+          className="absolute z-lt-popover mt-2 rounded-lt-sm border border-lt-border bg-lt-popover p-3 text-lt-popover-fg shadow-lt-md"
         >
           <div {...api.getContentProps()} className="grid gap-3">
             <div className="flex items-center justify-between gap-2">

@@ -229,6 +229,30 @@
   --text-7xl--line-height: 1;
 }
 
+/*
+ * Layering utilities backed by the --lt-z-* scale. Tailwind v4 does not expose
+ * z-index as a themeable namespace, so these are defined as named utilities
+ * (the scale itself stays the single source of truth in the :root block above).
+ */
+@utility z-lt-dropdown {
+  z-index: var(--lt-z-dropdown);
+}
+@utility z-lt-sticky {
+  z-index: var(--lt-z-sticky);
+}
+@utility z-lt-overlay {
+  z-index: var(--lt-z-overlay);
+}
+@utility z-lt-modal {
+  z-index: var(--lt-z-modal);
+}
+@utility z-lt-popover {
+  z-index: var(--lt-z-popover);
+}
+@utility z-lt-toast {
+  z-index: var(--lt-z-toast);
+}
+
 @keyframes lt-toast-in {
   from {
     opacity: 0;

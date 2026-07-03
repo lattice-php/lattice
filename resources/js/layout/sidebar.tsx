@@ -112,14 +112,14 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
       {mobileOpen ? (
         <div
           aria-hidden="true"
-          className="fixed inset-0 z-30 bg-lt-overlay md:hidden"
+          className="fixed inset-0 z-lt-overlay bg-lt-overlay md:hidden"
           data-test="sidebar-backdrop"
           onClick={() => setMobileOpen(false)}
         />
       ) : null}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex h-svh w-72 max-w-[80vw] shrink-0 flex-col gap-4 border-r border-lt-border bg-lt-bg p-4 transition-transform",
+          "fixed inset-y-0 left-0 z-lt-modal flex h-svh w-72 max-w-[80vw] shrink-0 flex-col gap-4 border-r border-lt-border bg-lt-bg p-4 transition-transform",
           "md:sticky md:top-0 md:z-auto md:max-w-none md:translate-x-0 md:transition-[width]",
           mobileOpen ? "translate-x-0" : "-translate-x-full",
           isCollapsed
