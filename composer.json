@@ -98,8 +98,15 @@
             "@clear",
             "@prepare"
         ],
-        "post-install-cmd": "@boost:refresh",
-        "post-update-cmd": "@boost:refresh",
+        "post-install-cmd": [
+            "@boost:refresh",
+            "@hooks:install"
+        ],
+        "post-update-cmd": [
+            "@boost:refresh",
+            "@hooks:install"
+        ],
+        "hooks:install": "git config core.hooksPath .githooks 2>/dev/null || true",
         "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
         "boost:refresh": "@php vendor/bin/testbench boost:update --no-interaction",

@@ -1,0 +1,19 @@
+#!/bin/sh
+# Full CI-equivalent gate. Mirrors the local Verification routine in .ai/guidelines/development.md.
+# Bypass with `git push --no-verify` (emergencies only — never push on red).
+#
+# The generated-types and docs-fixtures diffs are intentionally left to CI: a local run
+# regenerates resources/js/types/generated.ts with a different property ordering than main,
+# so a local diff check would fail spuriously.
+set -e
+
+root="$(git rev-parse --show-toplevel)"
+cd "$root"
+
+echo "▶ pre-push: composer check (pint, phpstan, rector, pest)"
+composer check
+
+echo "▶ pre-push: npm run check (lint, format, typecheck, type-coverage, vitest, build:lib)"
+npm run check
+
+echo "✓ pre-push gate passed"

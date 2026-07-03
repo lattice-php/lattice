@@ -13,15 +13,17 @@
 
 ## Verification
 
-- Before pushing or opening a PR, run `composer check` (Pint, PHPStan, Pest) — it mirrors the CI PHP job. Never push on
-  red. `composer test` alone is not enough; PHPStan and Pint run in CI too. For frontend changes run `npm run check` —
-  it fixes lint/format, then runs the type check, the Vitest suite, and the library build. CI additionally verifies that
-  generated TypeScript types (`composer types`) and docs fixtures are up to date.
-- After any change to TypeScript/TSX files (`resources/js/**`, `workbench/resources/js/**`), always run `npm run check`
-  before finalizing. It fixes lint and formatting (`oxlint --fix`, `oxfmt`), then runs the type check (`tsc`), the
-  Vitest suite, and the library build (`build:lib`).
+- Git hooks enforce the gate automatically. `composer install` points `core.hooksPath` at `.githooks/`; if the hooks are
+  not active, run `composer install` (or `git config core.hooksPath .githooks`) once.
+  - **pre-commit** auto-formats staged PHP/JS (Pint, oxfmt, oxlint) and blocks on lint errors.
+  - **pre-push** runs the full CI-equivalent gate: `composer check` (Pint, PHPStan, Rector, Pest) and `npm run check`
+    (lint, format, type check, type coverage, Vitest, library build).
+- Never push on red. Use `git commit`/`git push --no-verify` only in emergencies.
 - The library build is part of the gate on purpose: it is the artifact consumers receive, and it catches bundling
   regressions (e.g. dependencies that must stay external) that the type check and tests do not.
+- CI additionally verifies that generated TypeScript types (`composer types`) and docs fixtures are up to date. These are
+  left out of the local hooks because a local run reorders `resources/js/types/generated.ts` spuriously; regenerate and
+  commit them deliberately only when you change a `#[TypeScript]`/component shape.
 
 ## Comments
 
