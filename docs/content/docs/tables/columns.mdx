@@ -47,7 +47,8 @@ and filter type:
 - `BooleanColumn` renders a check or cross instead of the raw value, and filters as a boolean.
 - `NumberColumn` right-aligns and formats the value as a number; `->decimals(2)` fixes the fraction
   digits (`->decimals(0, 2)` for a min–max range); `->unit(NumberFormatUnit::Percent)` adds a
-  locale-correct unit suffix (percent, kilogram, byte, …). Filters as a number.
+  locale-correct unit suffix (percent, kilogram, byte, …); `->compact()` renders large numbers
+  compactly (`1.2K`, `3.4M`). Filters as a number.
 - `MoneyColumn` formats the value as a currency amount — `->currency('EUR')` for a fixed currency or
   `->currencyField('currency')` to read each row's currency from another field; symbol placement and
   decimal digits follow the viewer's locale.
@@ -56,7 +57,7 @@ and filter type:
 
 ```php
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
-use Lattice\Lattice\Tables\Enums\NumberFormatUnit;
+use Lattice\Lattice\Core\Enums\NumberFormatUnit;
 
 NumberColumn::make('progress')->unit(NumberFormatUnit::Percent);
 MoneyColumn::make('total')->currencyField('currency');
