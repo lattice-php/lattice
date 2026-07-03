@@ -102,7 +102,7 @@ export function ColumnFilterControl({
               label: column.label,
             })}
             data-test={`filter-${column.key}`}
-            className="relative -ml-px inline-flex size-9 shrink-0 items-center justify-center rounded-r-lt-sm border border-lt-input disabled:opacity-50 data-[state=open]:z-10 data-[state=open]:border-lt-primary"
+            className="relative -ml-px inline-flex size-lt-control-md shrink-0 items-center justify-center rounded-r-lt-sm border border-lt-input disabled:opacity-50 data-[state=open]:z-10 data-[state=open]:border-lt-primary"
             disabled={processing}
           >
             <Icon name="filter" aria-hidden="true" className="size-lt-icon-md" />
@@ -371,7 +371,7 @@ function FilterClauseRow({
           type="button"
           aria-label={t("table.filter.remove", "Remove {{label}} filter", { label: column.label })}
           data-test={`filter-${column.key}-remove`}
-          className="inline-flex size-9 items-center justify-center rounded-lt-sm border border-lt-border hover:bg-lt-muted disabled:opacity-50"
+          className="inline-flex size-lt-control-md items-center justify-center rounded-lt-sm border border-lt-border hover:bg-lt-muted disabled:opacity-50"
           disabled={processing}
           onClick={onRemove}
         >

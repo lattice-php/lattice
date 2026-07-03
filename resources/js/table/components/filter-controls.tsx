@@ -349,7 +349,7 @@ function ToggleControl({
   const checked = value === "1" || value === true || value === "true";
 
   return (
-    <label className="flex h-9 cursor-pointer items-center gap-2 text-sm">
+    <label className="flex h-lt-control-md cursor-pointer items-center gap-2 text-sm">
       <Checkbox
         aria-label={filter.label}
         data-test={`table-filter-${filter.key}`}

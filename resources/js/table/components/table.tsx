@@ -293,7 +293,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                     style={{ "--lattice-table-columns": gridTemplateColumns } as never}
                   >
                     {hasBulkActions && (
-                      <div className="flex items-center p-4" role="cell">
+                      <div className="flex items-center px-lt-cell-x py-lt-cell-y" role="cell">
                         <Checkbox
                           aria-label={t("table.selectRow", "Select row {{key}}", { key })}
                           data-test={`select-row-${key}`}
@@ -307,7 +307,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                         key={column.key}
                         data-slot="table-cell"
                         className={cn(
-                          "grid min-w-0 gap-1 overflow-hidden p-4 align-middle",
+                          "grid min-w-0 gap-1 overflow-hidden px-lt-cell-x py-lt-cell-y align-middle",
                           alignText(column.align),
                           alignJustifyItems(column.align),
                         )}
@@ -330,7 +330,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                     {hasTrailingUtility && (
                       <div
                         className={cn(
-                          "items-center justify-start gap-2 p-4 md:justify-end",
+                          "items-center justify-start gap-2 px-lt-cell-x py-lt-cell-y md:justify-end",
                           actions.length > 0 ? "flex" : "hidden md:flex",
                         )}
                         role="cell"
