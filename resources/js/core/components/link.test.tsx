@@ -35,7 +35,7 @@ describe("Lattice link component", () => {
       </ActionMenuProvider>,
     );
 
-    expect(screen.getByRole("link", { name: "Edit" })).toHaveClass("h-8", "w-full", "no-underline");
+    expect(screen.getByRole("link", { name: "Edit" })).toHaveClass("h-lt-control-sm", "w-full", "no-underline");
   });
 
   it("renders prefix and suffix affixes around the label", () => {

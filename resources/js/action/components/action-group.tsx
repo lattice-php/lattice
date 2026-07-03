@@ -36,7 +36,7 @@ const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, nod
         <DropdownMenuTrigger asChild>
           <Button
             aria-label={label}
-            className="size-8 text-lt-muted-fg shadow-none hover:text-lt-fg"
+            className="size-lt-control-sm text-lt-muted-fg shadow-none hover:text-lt-fg"
             data-test={nodeIdentity(node)}
             size="icon"
             type="button"

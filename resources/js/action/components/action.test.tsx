@@ -181,7 +181,7 @@ describe("Lattice action component", () => {
     );
 
     expect(screen.getByRole("button", { name: "custom.sparkEdit" })).toHaveClass(
-      "h-8",
+      "h-lt-control-sm",
       "w-full",
       "text-lt-popover-fg",
     );

@@ -46,7 +46,7 @@ export function TablePagination({
             <button
               type="button"
               data-test="pagination-load-more"
-              className="h-9 rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
+              className="h-lt-control-md rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
               disabled={processing}
               onClick={onLoadMore}
             >
@@ -65,7 +65,7 @@ export function TablePagination({
           <button
             type="button"
             data-test="pagination-previous"
-            className="h-9 rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
+            className="h-lt-control-md rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
             disabled={processing || currentPage <= 1}
             onClick={() => onPage(currentPage - 1)}
           >
@@ -74,7 +74,7 @@ export function TablePagination({
           <button
             type="button"
             data-test="pagination-next"
-            className="h-9 rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
+            className="h-lt-control-md rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
             disabled={processing || !hasNextPage}
             onClick={() => onPage(currentPage + 1)}
           >
@@ -86,7 +86,7 @@ export function TablePagination({
           <button
             type="button"
             data-test="pagination-previous"
-            className="h-9 rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
+            className="h-lt-control-md rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
             disabled={processing || currentPage <= 1}
             onClick={() => onPage(currentPage - 1)}
           >
@@ -97,7 +97,7 @@ export function TablePagination({
               key={pageNumber}
               type="button"
               data-test={`pagination-page-${pageNumber}`}
-              className="inline-flex size-9 items-center justify-center rounded-lt-sm border border-lt-border font-medium disabled:opacity-50"
+              className="inline-flex size-lt-control-md items-center justify-center rounded-lt-sm border border-lt-border font-medium disabled:opacity-50"
               disabled={processing || pageNumber === currentPage}
               aria-current={pageNumber === currentPage ? "page" : undefined}
               aria-label={t("table.pagination.page", "Page {{page}}", { page: pageNumber })}
@@ -109,7 +109,7 @@ export function TablePagination({
           <button
             type="button"
             data-test="pagination-next"
-            className="h-9 rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
+            className="h-lt-control-md rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
             disabled={processing || !hasNextPage}
             onClick={() => onPage(currentPage + 1)}
           >
