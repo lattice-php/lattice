@@ -2,6 +2,7 @@
     {
         "key": "channel-mix-chart",
         "props": {
+            "categoryFormat": null,
             "categoryKey": null,
             "data": [
                 {
@@ -41,6 +42,7 @@
             ],
             "title": "Revenue by channel",
             "tooltip": true,
+            "valueFormat": null,
             "xAxis": true,
             "yAxis": true
         },

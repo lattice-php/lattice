@@ -2,6 +2,7 @@
     {
         "key": "mrr-chart",
         "props": {
+            "categoryFormat": null,
             "categoryKey": "month",
             "data": [
                 {
@@ -49,6 +50,7 @@
             ],
             "title": "Monthly recurring revenue",
             "tooltip": true,
+            "valueFormat": null,
             "xAxis": true,
             "yAxis": true
         },

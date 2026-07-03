@@ -2,6 +2,7 @@
     {
         "key": "orders-chart",
         "props": {
+            "categoryFormat": null,
             "categoryKey": "week",
             "data": [
                 {
@@ -49,6 +50,7 @@
             ],
             "title": "Orders by channel",
             "tooltip": true,
+            "valueFormat": null,
             "xAxis": true,
             "yAxis": true
         },

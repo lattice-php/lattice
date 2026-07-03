@@ -93,12 +93,14 @@ describe("Chart component", () => {
     renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: "month",
         data: [
           { month: "Jan", orders: 32, revenue: 1200, forecast: 1400 },
           { month: "Feb", orders: 41, revenue: 1800, forecast: 1900 },
         ],
         description: "Monthly recurring revenue",
+        valueFormat: null,
         grid: true,
         height: 280,
         legend: true,
@@ -159,12 +161,14 @@ describe("Chart component", () => {
     renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: null,
         data: [
           { amount: 4200, channel: "Direct" },
           { amount: 2600, channel: "Partner" },
         ],
         description: null,
+        valueFormat: null,
         grid: true,
         height: 320,
         legend: true,
@@ -195,12 +199,14 @@ describe("Chart component", () => {
     renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: null,
         data: [
           { amount: 4200, channel: "Direct", color: "#111827" },
           { amount: 2600, channel: "Partner" },
         ],
         description: null,
+        valueFormat: null,
         grid: true,
         height: 320,
         legend: true,
@@ -231,9 +237,11 @@ describe("Chart component", () => {
     const area = renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: "month",
         data: [{ forecast: 1400, month: "Jan" }],
         description: null,
+        valueFormat: null,
         grid: true,
         height: 320,
         legend: true,
@@ -261,9 +269,11 @@ describe("Chart component", () => {
     renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: "month",
         data: [{ month: "Jan", orders: 32 }],
         description: null,
+        valueFormat: null,
         grid: true,
         height: 320,
         legend: true,
@@ -291,9 +301,11 @@ describe("Chart component", () => {
     renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: "month",
         data: [{ month: "Jan" }],
         description: null,
+        valueFormat: null,
         grid: true,
         height: 320,
         legend: true,
@@ -312,9 +324,11 @@ describe("Chart component", () => {
     renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: "month",
         data: [{ amount: 4200, month: "Jan", revenue: 1200 }],
         description: null,
+        valueFormat: null,
         grid: true,
         height: 320,
         legend: true,

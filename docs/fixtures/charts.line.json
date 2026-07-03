@@ -2,6 +2,7 @@
     {
         "key": "signups-chart",
         "props": {
+            "categoryFormat": null,
             "categoryKey": "month",
             "data": [
                 {
@@ -54,6 +55,7 @@
             ],
             "title": "Signups",
             "tooltip": true,
+            "valueFormat": null,
             "xAxis": true,
             "yAxis": true
         },
