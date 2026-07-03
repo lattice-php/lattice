@@ -117,6 +117,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   return (
     <InertiaForm
       action={action}
+      data-slot="form"
       data-lattice-component={node.id}
       errorBag={errorBag}
       method={method}

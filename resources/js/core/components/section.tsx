@@ -46,6 +46,7 @@ const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
 
   return (
     <section
+      data-slot="section"
       className="flex flex-col gap-6 rounded-lt border border-lt-border bg-lt-surface py-6 text-lt-surface-fg shadow-lt-sm"
       data-lattice-component={identity}
     >

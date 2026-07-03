@@ -27,7 +27,10 @@ export function TablePagination({
   const { t } = useT("lattice");
 
   return (
-    <div className="flex items-center justify-between gap-3 border-t border-lt-border p-4 text-sm">
+    <div
+      data-slot="table-pagination"
+      className="flex items-center justify-between gap-3 border-t border-lt-border p-4 text-sm"
+    >
       <span>
         {pagination.total == null
           ? t("table.pagination.page", "Page {{page}}", { page: currentPage })

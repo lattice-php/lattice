@@ -7,6 +7,7 @@ const GridComponent: RendererComponent<"grid"> = ({ children, node }) => {
 
   return (
     <div
+      data-slot="grid"
       data-lattice-component={nodeIdentity(node)}
       className={cn(
         "grid gap-x-4 gap-y-6",
