@@ -237,4 +237,24 @@ describe('docs fixtures', function (): void {
 
         expect('docs/fixtures/charts.pie.json')->toBeReadableFile();
     });
+
+    it('dumps the formatting example', function (): void {
+        dumpFixture('charts.formatting', [
+            Chart::make('Revenue', 'formatting-chart')
+                ->description('Compact currency on the value axis, short dates on the category axis')
+                ->categoryKey('month')
+                ->data([
+                    ['month' => '2026-01-01', 'revenue' => 28000],
+                    ['month' => '2026-02-01', 'revenue' => 32000],
+                    ['month' => '2026-03-01', 'revenue' => 36500],
+                    ['month' => '2026-04-01', 'revenue' => 41500],
+                ])
+                ->line('revenue', 'Revenue')
+                ->categoryFormat(DateFormat::date(DateTimeStyle::Short))
+                ->valueFormat(NumberFormat::currency('USD')->compact())
+                ->height(260),
+        ]);
+
+        expect('docs/fixtures/charts.formatting.json')->toBeReadableFile();
+    });
 });
