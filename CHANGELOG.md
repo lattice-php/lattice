@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.15.0](https://github.com/lattice-php/lattice/compare/0.14.0...0.15.0) (2026-07-03)
+
+
+### Features
+
+* add --lt-gutter token and prune dead tokens ([38fc8d1](https://github.com/lattice-php/lattice/commit/38fc8d174176273fd2d620b029049d8a87ba1396))
+* add semantic data-slot hooks to structural components ([ad2dd45](https://github.com/lattice-php/lattice/commit/ad2dd45232a3d74b2053d61d3f3c4a013c1dada1))
+* add semantic data-slot hooks to structural components ([d9d0f97](https://github.com/lattice-php/lattice/commit/d9d0f97c5a66272fe8ad94da3cc1e6cbf5bc4b25))
+* add weight + table cell-padding tokens and tokenize prose ([e0352ee](https://github.com/lattice-php/lattice/commit/e0352eeca3a482fc50ad939a5902460039bfd280))
+* support link icons and affixes ([2f1f83d](https://github.com/lattice-php/lattice/commit/2f1f83d0b3cd6acd1c1844890ef07dbe7ad25acc))
+* support link icons and affixes ([e2ea5b9](https://github.com/lattice-php/lattice/commit/e2ea5b98caf550eada84560125e78f1a830c0b61))
+
+
+### Bug Fixes
+
+* wire the z-index scale and adopt it across layered UI ([8f4daa2](https://github.com/lattice-php/lattice/commit/8f4daa2215d45f35ce1b2083c0da92c5ff8ef852))
+
+
+### Refactoring
+
+* adopt control-height tokens on peripheral controls ([415fe99](https://github.com/lattice-php/lattice/commit/415fe99416c8f0160bb9053de0a80648b0463f01))
+* adopt density tokens (control heights, cell padding, prose) + weight token ([24763e8](https://github.com/lattice-php/lattice/commit/24763e8bd4cff57b8ddd0eb30faf946b4d173615))
+
 ## [0.14.0](https://github.com/lattice-php/lattice/compare/0.13.0...0.14.0) (2026-06-23)
 
 
