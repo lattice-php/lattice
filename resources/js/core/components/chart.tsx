@@ -19,6 +19,8 @@ import {
 import type { ComponentType, ReactNode } from "react";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { PropsOf, RendererComponent } from "@lattice-php/lattice/core/types";
+import { useLocale, useTimezone } from "@lattice-php/lattice/i18n";
+import { formatValue } from "../../format/value";
 
 type ChartProps = PropsOf<"chart">;
 type ChartSeries = ChartProps["series"][number];
@@ -134,6 +136,11 @@ function ChartFrame({
 function CartesianChart({ props }: { props: ChartProps }) {
   const series = props.series.filter(isCartesianSeries);
   const RechartsChart = cartesianChartFor(series);
+  const { locale } = useLocale();
+  const { timezone } = useTimezone();
+  const ctx = { locale, timezone };
+  const formatCategory = (value: unknown) => formatValue(value, props.categoryFormat, ctx);
+  const formatValueTick = (value: unknown) => formatValue(value, props.valueFormat, ctx);
 
   return (
     <ResponsiveContainer width="100%" height={props.height} debounce={100}>
@@ -144,13 +151,22 @@ function CartesianChart({ props }: { props: ChartProps }) {
             dataKey={props.categoryKey}
             stroke="var(--lt-muted-fg)"
             tick={axisTick}
+            tickFormatter={formatCategory}
             tickLine={false}
           />
         )}
         {props.yAxis && (
-          <YAxis stroke="var(--lt-muted-fg)" tick={axisTick} tickLine={false} width={42} />
+          <YAxis
+            stroke="var(--lt-muted-fg)"
+            tick={axisTick}
+            tickFormatter={formatValueTick}
+            tickLine={false}
+            width={42}
+          />
         )}
-        {props.tooltip && <Tooltip {...tooltipProps} />}
+        {props.tooltip && (
+          <Tooltip {...tooltipProps} formatter={formatValueTick} labelFormatter={formatCategory} />
+        )}
         {props.legend && <Legend {...compactLegendProps} />}
         {series.map((item, index) => {
           const color = item.color ?? colorAt(index);
@@ -202,10 +218,20 @@ function CartesianChart({ props }: { props: ChartProps }) {
 }
 
 function PieChartView({ props, series }: { props: ChartProps; series: ChartSeries }) {
+  const { locale } = useLocale();
+  const { timezone } = useTimezone();
+  const ctx = { locale, timezone };
+
   return (
     <ResponsiveContainer width="100%" height={props.height} debounce={100}>
       <PieChart margin={chartMargin}>
-        {props.tooltip && <Tooltip {...tooltipProps} />}
+        {props.tooltip && (
+          <Tooltip
+            {...tooltipProps}
+            formatter={(value) => formatValue(value, props.valueFormat, ctx)}
+            labelFormatter={(value) => formatValue(value, props.categoryFormat, ctx)}
+          />
+        )}
         {props.legend && <Legend {...compactLegendProps} />}
         <Pie
           data={props.data}
