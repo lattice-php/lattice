@@ -141,6 +141,10 @@ function CartesianChart({ props }: { props: ChartProps }) {
   const ctx = { locale, timezone };
   const formatCategory = (value: unknown) => formatValue(value, props.categoryFormat, ctx);
   const formatValueTick = (value: unknown) => formatValue(value, props.valueFormat, ctx);
+  const hasBarSeries = series.some((item) => item.type === "bar");
+  const tooltipCursor = hasBarSeries
+    ? { fill: "var(--lt-muted-fg)", fillOpacity: 0.15 }
+    : { stroke: "var(--lt-muted-fg)", strokeOpacity: 0.4 };
 
   return (
     <ResponsiveContainer width="100%" height={props.height} debounce={100}>
@@ -165,7 +169,12 @@ function CartesianChart({ props }: { props: ChartProps }) {
           />
         )}
         {props.tooltip && (
-          <Tooltip {...tooltipProps} formatter={formatValueTick} labelFormatter={formatCategory} />
+          <Tooltip
+            {...tooltipProps}
+            cursor={tooltipCursor}
+            formatter={formatValueTick}
+            labelFormatter={formatCategory}
+          />
         )}
         {props.legend && <Legend {...compactLegendProps} />}
         {series.map((item, index) => {
