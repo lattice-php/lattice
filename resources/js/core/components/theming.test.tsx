@@ -68,6 +68,6 @@ describe("Lattice component theming", () => {
 
     expect(getByText("Recovery codes")).toHaveClass("font-semibold");
     expect(getByText("Keep these somewhere safe.")).toHaveClass("text-lt-muted-fg");
-    expect(getByText("Codes")).toHaveClass("px-6");
+    expect(getByText("Codes")).toHaveClass("px-lt-gutter");
   });
 });

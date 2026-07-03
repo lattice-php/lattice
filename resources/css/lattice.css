@@ -59,15 +59,6 @@
   --lt-control-h-md: 2.25rem;
   --lt-control-h-lg: 2.5rem;
 
-  --lt-font-weight-normal: 400;
-  --lt-font-weight-medium: 500;
-  --lt-font-weight-semibold: 600;
-  --lt-font-weight-bold: 700;
-
-  /* Focus-ring size (colour: --lt-ring) */
-  --lt-ring-width: 0.125rem;
-  --lt-ring-offset: 0.125rem;
-
   /* Elevation */
   --lt-shadow-xs: 0 1px 1px 0 oklch(0 0 0 / 0.04);
   --lt-shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.05);
@@ -87,13 +78,14 @@
   /* Motion */
   --lt-duration-fast: 120ms;
   --lt-duration-base: 160ms;
-  --lt-duration-slow: 240ms;
-  --lt-ease: cubic-bezier(0.2, 0, 0, 1);
 
   /* Layout dimensions */
   --lt-sidebar-w: 16rem;
   --lt-sidebar-w-collapsed: 4rem;
   --lt-container-max: 80rem;
+
+  /* Card / section content inset — the gutter apps can break out of */
+  --lt-gutter: calc(var(--spacing) * 6); /* 1.5rem */
 
   color-scheme: light;
 }
@@ -199,6 +191,7 @@
   --spacing-lt-control-sm: var(--lt-control-h-sm);
   --spacing-lt-control-md: var(--lt-control-h-md);
   --spacing-lt-control-lg: var(--lt-control-h-lg);
+  --spacing-lt-gutter: var(--lt-gutter);
   --animate-lt-toast-in: lt-toast-in var(--lt-duration-base) ease-out;
   --animate-lt-toast-out: lt-toast-out var(--lt-duration-fast) ease-in;
 }
@@ -234,6 +227,30 @@
   --text-6xl--line-height: 1;
   --text-7xl: 3rem;
   --text-7xl--line-height: 1;
+}
+
+/*
+ * Layering utilities backed by the --lt-z-* scale. Tailwind v4 does not expose
+ * z-index as a themeable namespace, so these are defined as named utilities
+ * (the scale itself stays the single source of truth in the :root block above).
+ */
+@utility z-lt-dropdown {
+  z-index: var(--lt-z-dropdown);
+}
+@utility z-lt-sticky {
+  z-index: var(--lt-z-sticky);
+}
+@utility z-lt-overlay {
+  z-index: var(--lt-z-overlay);
+}
+@utility z-lt-modal {
+  z-index: var(--lt-z-modal);
+}
+@utility z-lt-popover {
+  z-index: var(--lt-z-popover);
+}
+@utility z-lt-toast {
+  z-index: var(--lt-z-toast);
 }
 
 @keyframes lt-toast-in {

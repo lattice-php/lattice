@@ -20,6 +20,6 @@ describe("Lattice topbar component", () => {
 
     render(<TopbarComponent node={node}>Content</TopbarComponent>);
 
-    expect(screen.getByText("Content")).toHaveClass("sticky", "top-0", "z-30");
+    expect(screen.getByText("Content")).toHaveClass("sticky", "top-0", "z-lt-sticky");
   });
 });

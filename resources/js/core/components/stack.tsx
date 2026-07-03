@@ -63,6 +63,7 @@ const StackComponent: RendererComponent<"stack"> = ({ children, node }) => {
 
   return (
     <div
+      data-slot="stack"
       data-lattice-component={nodeIdentity(node)}
       className={cn(
         isFlex ? cn("flex", direction === "row" ? "flex-wrap" : "flex-col") : "grid content-start",

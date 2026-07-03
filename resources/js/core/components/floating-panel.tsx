@@ -32,7 +32,7 @@ const FloatingPanelComponent: RendererComponent<"floating-panel"> = ({ children,
     return (
       <div
         aria-label={label}
-        className="fixed z-50 max-w-[calc(100vw-2rem)] rounded-lt border border-lt-border bg-lt-popover p-1 text-lt-popover-fg shadow-lt-md"
+        className="fixed z-lt-popover max-w-[calc(100vw-2rem)] rounded-lt border border-lt-border bg-lt-popover p-1 text-lt-popover-fg shadow-lt-md"
         data-lattice-component={nodeIdentity(node)}
         role={label ? "group" : undefined}
         style={placementStyle(placement, offset)}
@@ -48,7 +48,7 @@ const FloatingPanelComponent: RendererComponent<"floating-panel"> = ({ children,
   return (
     <div
       aria-label={label}
-      className="fixed z-50 max-w-[calc(100vw-2rem)]"
+      className="fixed z-lt-popover max-w-[calc(100vw-2rem)]"
       data-lattice-component={nodeIdentity(node)}
       role={label ? "group" : undefined}
       style={placementStyle(placement, offset)}
