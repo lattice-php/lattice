@@ -10,7 +10,6 @@ use Lattice\Lattice\Core\Components\Grid;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Components\Text;
-use Lattice\Lattice\Core\Enums\DateTimeStyle;
 use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Core\Enums\NumberFormatUnit;
 use Lattice\Lattice\Core\PageSchema;
@@ -76,15 +75,16 @@ final class ChartsPage extends WorkbenchPage
             ->categoryKey('month')
             ->height(240)
             ->data([
-                ['month' => __('workbench.pages.charts.months.jan'), 'free' => 240, 'pro' => 90],
-                ['month' => __('workbench.pages.charts.months.feb'), 'free' => 300, 'pro' => 140],
-                ['month' => __('workbench.pages.charts.months.mar'), 'free' => 280, 'pro' => 180],
-                ['month' => __('workbench.pages.charts.months.apr'), 'free' => 360, 'pro' => 240],
-                ['month' => __('workbench.pages.charts.months.may'), 'free' => 420, 'pro' => 320],
-                ['month' => __('workbench.pages.charts.months.jun'), 'free' => 470, 'pro' => 380],
+                ['month' => '2026-01-01', 'free' => 240, 'pro' => 90],
+                ['month' => '2026-02-01', 'free' => 300, 'pro' => 140],
+                ['month' => '2026-03-01', 'free' => 280, 'pro' => 180],
+                ['month' => '2026-04-01', 'free' => 360, 'pro' => 240],
+                ['month' => '2026-05-01', 'free' => 420, 'pro' => 320],
+                ['month' => '2026-06-01', 'free' => 470, 'pro' => 380],
             ])
             ->line('free', __('workbench.pages.charts.gallery.signups.free'))
-            ->line('pro', __('workbench.pages.charts.gallery.signups.pro'));
+            ->line('pro', __('workbench.pages.charts.gallery.signups.pro'))
+            ->categoryFormat(DateFormat::month());
     }
 
     private function ordersBarChart(): Chart
@@ -110,14 +110,15 @@ final class ChartsPage extends WorkbenchPage
             ->categoryKey('month')
             ->height(240)
             ->data([
-                ['month' => __('workbench.pages.charts.months.jan'), 'visits' => 4200],
-                ['month' => __('workbench.pages.charts.months.feb'), 'visits' => 4800],
-                ['month' => __('workbench.pages.charts.months.mar'), 'visits' => 5300],
-                ['month' => __('workbench.pages.charts.months.apr'), 'visits' => 5100],
-                ['month' => __('workbench.pages.charts.months.may'), 'visits' => 6200],
-                ['month' => __('workbench.pages.charts.months.jun'), 'visits' => 6900],
+                ['month' => '2026-01-01', 'visits' => 4200],
+                ['month' => '2026-02-01', 'visits' => 4800],
+                ['month' => '2026-03-01', 'visits' => 5300],
+                ['month' => '2026-04-01', 'visits' => 5100],
+                ['month' => '2026-05-01', 'visits' => 6200],
+                ['month' => '2026-06-01', 'visits' => 6900],
             ])
-            ->area('visits', __('workbench.pages.charts.gallery.traffic.visits'));
+            ->area('visits', __('workbench.pages.charts.gallery.traffic.visits'))
+            ->categoryFormat(DateFormat::month());
     }
 
     private function revenueFormattingChart(): Chart
@@ -135,7 +136,7 @@ final class ChartsPage extends WorkbenchPage
                 ['month' => '2026-06-01', 'revenue' => 52000],
             ])
             ->line('revenue', __('workbench.pages.charts.gallery.formatting.revenue'))
-            ->categoryFormat(DateFormat::date(DateTimeStyle::Short))
+            ->categoryFormat(DateFormat::monthYear())
             ->valueFormat(NumberFormat::currency('USD')->compact());
     }
 
@@ -146,14 +147,15 @@ final class ChartsPage extends WorkbenchPage
             ->categoryKey('month')
             ->height(240)
             ->data([
-                ['month' => __('workbench.pages.charts.months.jan'), 'rate' => 3.2],
-                ['month' => __('workbench.pages.charts.months.feb'), 'rate' => 3.8],
-                ['month' => __('workbench.pages.charts.months.mar'), 'rate' => 4.1],
-                ['month' => __('workbench.pages.charts.months.apr'), 'rate' => 3.9],
-                ['month' => __('workbench.pages.charts.months.may'), 'rate' => 4.6],
-                ['month' => __('workbench.pages.charts.months.jun'), 'rate' => 5.0],
+                ['month' => '2026-01-01', 'rate' => 3.2],
+                ['month' => '2026-02-01', 'rate' => 3.8],
+                ['month' => '2026-03-01', 'rate' => 4.1],
+                ['month' => '2026-04-01', 'rate' => 3.9],
+                ['month' => '2026-05-01', 'rate' => 4.6],
+                ['month' => '2026-06-01', 'rate' => 5.0],
             ])
             ->bar('rate', __('workbench.pages.charts.gallery.conversion.rate'))
+            ->categoryFormat(DateFormat::month())
             ->valueFormat(NumberFormat::make()->unit(NumberFormatUnit::Percent)->decimals(1));
     }
 }

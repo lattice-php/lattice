@@ -395,14 +395,6 @@ return [
                     'visits' => 'Visits',
                 ],
             ],
-            'months' => [
-                'apr' => 'Apr',
-                'feb' => 'Feb',
-                'jan' => 'Jan',
-                'jun' => 'Jun',
-                'mar' => 'Mar',
-                'may' => 'May',
-            ],
             'order-volume' => [
                 'description' => 'Stacked draft and placed order counts by week.',
                 'draft' => 'Draft',

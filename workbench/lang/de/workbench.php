@@ -395,14 +395,6 @@ return [
                     'visits' => 'Besuche',
                 ],
             ],
-            'months' => [
-                'apr' => 'Apr',
-                'feb' => 'Feb',
-                'jan' => 'Jan',
-                'jun' => 'Jun',
-                'mar' => 'Mär',
-                'may' => 'Mai',
-            ],
             'order-volume' => [
                 'description' => 'Gestapelte Entwurfs- und Bestellmengen pro Woche.',
                 'draft' => 'Entwurf',
