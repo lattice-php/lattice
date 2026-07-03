@@ -161,16 +161,18 @@ the same Intl formatting the tables use. The **value** axis (always numeric) tak
         ['month' => '2026-04-01', 'revenue' => 41500],
     ])
     ->line('revenue', 'Revenue')
-    ->categoryFormat(DateFormat::date(DateTimeStyle::Short))   // raw dates → short, localized
+    ->categoryFormat(DateFormat::monthYear())                  // raw dates → 'Jan 2026', localized
     ->valueFormat(NumberFormat::currency('USD')->compact())    // 28000 → $28K
     ->height(260);`}
   fixture="charts.formatting"
 />
 
 `NumberFormat` mirrors the numeric table columns: `->decimals($min, $max?)`, `->compact()`,
-`NumberFormat::currency($code)`, and `->unit(NumberFormatUnit::Percent)`. `DateFormat::date()`,
-`::time()`, and `::dateTime()` take a `DateTimeStyle` (Full/Long/Medium/Short) and format with the
-active locale and timezone — so you pass **raw dates** instead of pre-translated labels.
+`NumberFormat::currency($code)`, and `->unit(NumberFormatUnit::Percent)`. For dates,
+`DateFormat::date()`, `::time()`, and `::dateTime()` take a `DateTimeStyle` (Full/Long/Medium/Short),
+while `DateFormat::month()` and `::monthYear()` render just the month (`Jan`) or month and year
+(`Jan 2026`) — pass `long: true` for the full month name. All format with the active locale and
+timezone, so you feed the chart **raw dates** instead of pre-translated labels.
 
 <Info>The value axis is always numeric, so `->valueFormat()` only accepts a `NumberFormat`. The
 category can be a string (no format needed), a number, or a date, so `->categoryFormat()` accepts

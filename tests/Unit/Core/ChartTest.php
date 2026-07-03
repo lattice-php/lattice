@@ -129,6 +129,8 @@ it('serializes value and category formats', function (): void {
         'kind' => 'date',
         'dateStyle' => 'short',
         'timeStyle' => null,
+        'month' => null,
+        'year' => null,
     ])->and($node['props']['valueFormat'])->toMatchArray([
         'kind' => 'number',
         'notation' => 'compact',
@@ -241,7 +243,7 @@ describe('docs fixtures', function (): void {
     it('dumps the formatting example', function (): void {
         dumpFixture('charts.formatting', [
             Chart::make('Revenue', 'formatting-chart')
-                ->description('Compact currency on the value axis, short dates on the category axis')
+                ->description('Compact currency on the value axis, month labels on the category axis')
                 ->categoryKey('month')
                 ->data([
                     ['month' => '2026-01-01', 'revenue' => 28000],
@@ -250,7 +252,7 @@ describe('docs fixtures', function (): void {
                     ['month' => '2026-04-01', 'revenue' => 41500],
                 ])
                 ->line('revenue', 'Revenue')
-                ->categoryFormat(DateFormat::date(DateTimeStyle::Short))
+                ->categoryFormat(DateFormat::monthYear())
                 ->valueFormat(NumberFormat::currency('USD')->compact())
                 ->height(260),
         ]);
