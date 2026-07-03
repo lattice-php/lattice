@@ -40,6 +40,18 @@ const compactLegendProps = {
   wrapperStyle: { fontSize: 11, lineHeight: "14px", paddingBottom: 6 },
 };
 const axisTick = { fontSize: 10 };
+const tooltipProps = {
+  contentStyle: {
+    background: "var(--lt-surface)",
+    border: "1px solid var(--lt-border)",
+    borderRadius: "var(--lt-radius-sm)",
+    boxShadow: "var(--lt-shadow-sm)",
+    color: "var(--lt-surface-fg)",
+    fontSize: 12,
+  },
+  itemStyle: { color: "var(--lt-surface-fg)" },
+  labelStyle: { color: "var(--lt-muted-fg)" },
+} as const;
 
 const palette = [
   "var(--lt-primary)",
@@ -138,7 +150,7 @@ function CartesianChart({ props }: { props: ChartProps }) {
         {props.yAxis && (
           <YAxis stroke="var(--lt-muted-fg)" tick={axisTick} tickLine={false} width={42} />
         )}
-        {props.tooltip && <Tooltip />}
+        {props.tooltip && <Tooltip {...tooltipProps} />}
         {props.legend && <Legend {...compactLegendProps} />}
         {series.map((item, index) => {
           const color = item.color ?? colorAt(index);
@@ -193,7 +205,7 @@ function PieChartView({ props, series }: { props: ChartProps; series: ChartSerie
   return (
     <ResponsiveContainer width="100%" height={props.height} debounce={100}>
       <PieChart margin={chartMargin}>
-        {props.tooltip && <Tooltip />}
+        {props.tooltip && <Tooltip {...tooltipProps} />}
         {props.legend && <Legend {...compactLegendProps} />}
         <Pie
           data={props.data}
