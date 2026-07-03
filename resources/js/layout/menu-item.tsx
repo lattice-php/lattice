@@ -46,7 +46,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
       {prefix ? <MenuAffix affix={prefix} /> : null}
       {collapsed ? (
         <span
-          className="pointer-events-none absolute top-1/2 left-full z-50 ml-2 hidden -translate-y-1/2 rounded-lt-sm border border-lt-border bg-lt-popover px-2 py-1 text-sm whitespace-nowrap text-lt-popover-fg shadow-lt-md group-hover:block"
+          className="pointer-events-none absolute top-1/2 left-full z-lt-popover ml-2 hidden -translate-y-1/2 rounded-lt-sm border border-lt-border bg-lt-popover px-2 py-1 text-sm whitespace-nowrap text-lt-popover-fg shadow-lt-md group-hover:block"
           role="tooltip"
         >
           {label}

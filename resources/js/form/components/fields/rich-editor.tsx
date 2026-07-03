@@ -252,7 +252,7 @@ function EmojiPicker({ editor }: { editor: Editor }) {
         <Icon name="smile" />
       </button>
       {open && (
-        <div className="absolute z-10 mt-1 grid grid-cols-8 gap-0.5 rounded-lt-sm border border-lt-border bg-lt-bg p-1 shadow-lt-md">
+        <div className="absolute z-lt-dropdown mt-1 grid grid-cols-8 gap-0.5 rounded-lt-sm border border-lt-border bg-lt-bg p-1 shadow-lt-md">
           {emojis.map((emoji) => (
             <button
               className="inline-flex size-7 items-center justify-center rounded-lt-sm text-base hover:bg-lt-accent"

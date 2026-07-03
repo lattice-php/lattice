@@ -122,7 +122,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     });
 
   return (
-    <div data-lattice-component={node.id} className="relative">
+    <div data-slot="table" data-lattice-component={node.id} className="relative">
       {hasOverrides && (
         <button
           aria-label={t("table.resetColumnWidths", "Reset column widths")}
@@ -135,7 +135,10 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
           <Icon name="rotate-ccw" className="size-lt-icon-sm" />
         </button>
       )}
-      <div className="overflow-x-auto rounded-lt-sm border border-lt-border">
+      <div
+        data-slot="table-scroll"
+        className="overflow-x-auto rounded-lt-sm border border-lt-border"
+      >
         {hasDedicatedFilters && hasActiveFilters && (
           <FilterBar
             filters={filterDefinitions}
@@ -180,7 +183,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
           />
         )}
         <div className="min-w-full text-base" role="table">
-          <div className="border-b border-lt-border bg-lt-muted/50" role="rowgroup">
+          <div
+            data-slot="table-header"
+            className="border-b border-lt-border bg-lt-muted/50"
+            role="rowgroup"
+          >
             <div
               className="hidden min-w-full md:grid md:grid-cols-[var(--lattice-table-columns)]"
               role="row"
@@ -270,7 +277,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                 <div role="cell">{t("table.loading", "Loading rows...")}</div>
               </div>
             ) : rowEntries.length === 0 ? (
-              <div className="p-8 text-center text-lt-muted-fg" role="row">
+              <div data-slot="table-empty" className="p-8 text-center text-lt-muted-fg" role="row">
                 <div role="cell">{node.props?.emptyLabel}</div>
               </div>
             ) : (
@@ -278,6 +285,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                 return (
                   <div
                     key={key}
+                    data-slot="table-row"
                     className={`grid grid-cols-1 border-b border-lt-border last:border-b-0 md:grid-cols-[var(--lattice-table-columns)] ${
                       striped ? "odd:bg-lt-muted/30" : ""
                     }`}
@@ -297,6 +305,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                     {visibleColumns.map((column) => (
                       <div
                         key={column.key}
+                        data-slot="table-cell"
                         className={cn(
                           "grid min-w-0 gap-1 overflow-hidden p-4 align-middle",
                           alignText(column.align),

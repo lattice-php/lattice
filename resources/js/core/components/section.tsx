@@ -46,11 +46,12 @@ const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
 
   return (
     <section
-      className="flex flex-col gap-6 rounded-lt border border-lt-border bg-lt-surface py-6 text-lt-surface-fg shadow-lt-sm"
+      data-slot="section"
+      className="flex flex-col gap-6 rounded-lt border border-lt-border bg-lt-surface py-lt-gutter text-lt-surface-fg shadow-lt-sm"
       data-lattice-component={identity}
     >
       {hasHeader && (
-        <div className="flex items-start justify-between gap-4 px-6">
+        <div className="flex items-start justify-between gap-4 px-lt-gutter">
           <div className="flex min-w-0 items-start gap-2">
             {collapsible && (
               <button
@@ -94,7 +95,9 @@ const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
         </div>
       )}
 
-      {!isCollapsed && children && <div className="flex flex-col gap-6 px-6">{children}</div>}
+      {!isCollapsed && children && (
+        <div className="flex flex-col gap-6 px-lt-gutter">{children}</div>
+      )}
     </section>
   );
 };

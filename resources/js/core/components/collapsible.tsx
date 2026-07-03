@@ -41,7 +41,7 @@ const CollapsibleComponent: RendererComponent<"collapsible"> = ({ children, node
   }
 
   return (
-    <div data-lattice-component={identity}>
+    <div data-slot="collapsible" data-lattice-component={identity}>
       <div
         aria-controls={contentId}
         aria-expanded={open}

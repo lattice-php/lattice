@@ -84,7 +84,7 @@ function FormBody({
           {children}
 
           {shouldRenderSubmitButton && (
-            <div className="flex justify-end rounded-lt border border-lt-border bg-lt-surface px-6 py-4 shadow-lt-sm">
+            <div className="flex justify-end rounded-lt border border-lt-border bg-lt-surface px-lt-gutter py-4 shadow-lt-sm">
               <FormSubmitButton label={submitLabel} summaryLabel={summaryLabel} />
             </div>
           )}
@@ -117,6 +117,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   return (
     <InertiaForm
       action={action}
+      data-slot="form"
       data-lattice-component={node.id}
       errorBag={errorBag}
       method={method}
