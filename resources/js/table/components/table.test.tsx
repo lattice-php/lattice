@@ -472,7 +472,12 @@ describe("Lattice table component", () => {
     expect(action).toHaveClass("h-lt-control-sm", "font-normal", "text-lt-popover-fg");
     expect(action).not.toHaveClass("bg-lt-secondary");
     expect(link).toHaveAttribute("href", "/products/2/edit");
-    expect(link).toHaveClass("h-lt-control-sm", "font-normal", "text-lt-popover-fg", "no-underline");
+    expect(link).toHaveClass(
+      "h-lt-control-sm",
+      "font-normal",
+      "text-lt-popover-fg",
+      "no-underline",
+    );
   });
 
   it("adds and clears individual sorts through the table endpoint", async () => {
