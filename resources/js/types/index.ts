@@ -1,5 +1,6 @@
 export type {
   ComponentProps,
+  DateFormat,
   Node,
   NodeProps,
   NumberFormat,
