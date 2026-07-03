@@ -138,6 +138,7 @@ export type Card = {
 };
 export type ChannelVisibility = "public" | "private" | "presence";
 export type Chart = {
+  categoryFormat: NumberFormat | DateFormat | null;
   categoryKey: string | null;
   data: Record<string, unknown>[];
   description: string | null;
@@ -147,6 +148,7 @@ export type Chart = {
   series: ChartSeries[];
   title: string | null;
   tooltip: boolean;
+  valueFormat: NumberFormat | null;
   xAxis: boolean;
   yAxis: boolean;
 };
@@ -424,6 +426,13 @@ export type DataList = {
   dataEndpoint: string | null;
   emptyLabel: string | null;
   remote: RemoteAccess | null;
+};
+export type DateFormat = {
+  kind: string;
+  dateStyle: string | null;
+  timeStyle: string | null;
+  month: string | null;
+  year: string | null;
 };
 export type DateInput = {
   autoFocus: boolean;
@@ -880,8 +889,17 @@ export type Node =
   | ChatNode;
 export type NodeType = Node["type"];
 export type NumberColumn = {
+  compact: boolean;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
+  unit: NumberFormatUnit | null;
+};
+export type NumberFormat = {
+  kind: string;
+  notation: string;
+  minimumFractionDigits: number | null;
+  maximumFractionDigits: number | null;
+  currency: string | null;
   unit: NumberFormatUnit | null;
 };
 export type NumberFormatUnit =

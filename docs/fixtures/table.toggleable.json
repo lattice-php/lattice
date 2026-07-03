@@ -51,6 +51,7 @@
                     "key": "price",
                     "label": "Price",
                     "props": {
+                        "compact": false,
                         "maximumFractionDigits": null,
                         "minimumFractionDigits": null,
                         "unit": null

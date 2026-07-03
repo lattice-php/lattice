@@ -5,6 +5,8 @@ namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Values\ChartSeries;
+use Lattice\Lattice\Core\Values\DateFormat;
+use Lattice\Lattice\Core\Values\NumberFormat;
 
 #[AsComponent('chart')]
 class Chart extends Component
@@ -37,6 +39,10 @@ class Chart extends Component
 
     public bool $yAxis = true;
 
+    public NumberFormat|DateFormat|null $categoryFormat = null;
+
+    public ?NumberFormat $valueFormat = null;
+
     public static function make(?string $title = null, ?string $key = null): static
     {
         $chart = new static($key);
@@ -65,6 +71,20 @@ class Chart extends Component
     public function categoryKey(?string $key): static
     {
         $this->categoryKey = $key;
+
+        return $this;
+    }
+
+    public function categoryFormat(NumberFormat|DateFormat $format): static
+    {
+        $this->categoryFormat = $format;
+
+        return $this;
+    }
+
+    public function valueFormat(NumberFormat $format): static
+    {
+        $this->valueFormat = $format;
 
         return $this;
     }

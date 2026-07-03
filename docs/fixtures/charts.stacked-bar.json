@@ -1,0 +1,59 @@
+[
+    {
+        "key": "mrr-chart",
+        "props": {
+            "categoryFormat": null,
+            "categoryKey": "month",
+            "data": [
+                {
+                    "expansion": 300,
+                    "month": "Jan",
+                    "new": 1200
+                },
+                {
+                    "expansion": 450,
+                    "month": "Feb",
+                    "new": 1500
+                },
+                {
+                    "expansion": 600,
+                    "month": "Mar",
+                    "new": 1800
+                },
+                {
+                    "expansion": 780,
+                    "month": "Apr",
+                    "new": 2100
+                }
+            ],
+            "description": "Stacked by revenue type",
+            "grid": true,
+            "height": 260,
+            "legend": true,
+            "series": [
+                {
+                    "color": null,
+                    "dataKey": "new",
+                    "name": "New",
+                    "nameKey": null,
+                    "stackId": "mrr",
+                    "type": "bar"
+                },
+                {
+                    "color": null,
+                    "dataKey": "expansion",
+                    "name": "Expansion",
+                    "nameKey": null,
+                    "stackId": "mrr",
+                    "type": "bar"
+                }
+            ],
+            "title": "Monthly recurring revenue",
+            "tooltip": true,
+            "valueFormat": null,
+            "xAxis": true,
+            "yAxis": true
+        },
+        "type": "chart"
+    }
+]

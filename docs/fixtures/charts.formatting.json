@@ -1,0 +1,60 @@
+[
+    {
+        "key": "formatting-chart",
+        "props": {
+            "categoryFormat": {
+                "dateStyle": null,
+                "kind": "date",
+                "month": "short",
+                "timeStyle": null,
+                "year": "numeric"
+            },
+            "categoryKey": "month",
+            "data": [
+                {
+                    "month": "2026-01-01",
+                    "revenue": 28000
+                },
+                {
+                    "month": "2026-02-01",
+                    "revenue": 32000
+                },
+                {
+                    "month": "2026-03-01",
+                    "revenue": 36500
+                },
+                {
+                    "month": "2026-04-01",
+                    "revenue": 41500
+                }
+            ],
+            "description": "Compact currency on the value axis, month labels on the category axis",
+            "grid": true,
+            "height": 260,
+            "legend": true,
+            "series": [
+                {
+                    "color": null,
+                    "dataKey": "revenue",
+                    "name": "Revenue",
+                    "nameKey": null,
+                    "stackId": null,
+                    "type": "line"
+                }
+            ],
+            "title": "Revenue",
+            "tooltip": true,
+            "valueFormat": {
+                "currency": "USD",
+                "kind": "number",
+                "maximumFractionDigits": null,
+                "minimumFractionDigits": null,
+                "notation": "compact",
+                "unit": null
+            },
+            "xAxis": true,
+            "yAxis": true
+        },
+        "type": "chart"
+    }
+]

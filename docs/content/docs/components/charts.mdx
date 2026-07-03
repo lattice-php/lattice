@@ -1,0 +1,224 @@
+---
+title: Charts
+description: Data charts — line, bar, area, and pie series that serialize to Recharts.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
+
+`Chart::make($title)` renders a data chart. You feed it rows with `->data()`, name the category (X)
+axis with `->categoryKey()`, then declare one or more **series** — each series plots one data key as a
+line, bar, area, or pie. The PHP builder serializes to a typed node the renderer draws with
+[Recharts](https://recharts.org).
+
+<ComponentExample
+  php={`Chart::make('Signups')
+    ->description('New users per month')
+    ->categoryKey('month')
+    ->data([
+        ['month' => 'Jan', 'free' => 240, 'pro' => 90],
+        ['month' => 'Feb', 'free' => 300, 'pro' => 140],
+        ['month' => 'Mar', 'free' => 280, 'pro' => 180],
+        ['month' => 'Apr', 'free' => 360, 'pro' => 240],
+        ['month' => 'May', 'free' => 420, 'pro' => 320],
+    ])
+    ->line('free', 'Free')
+    ->line('pro', 'Pro')
+    ->height(260);`}
+  fixture="charts.line"
+/>
+
+## Data and series
+
+A chart is `->data()` — a list of rows — plus one or more series. Each series names the row key it
+plots, with an optional display name and color:
+
+- **`->line($dataKey, $name?, $color?)`** — a line.
+- **`->bar($dataKey, $name?, $color?, $stackId?)`** — a bar; stackable via `$stackId`.
+- **`->area($dataKey, $name?, $color?, $stackId?)`** — a filled area; stackable via `$stackId`.
+- **`->pie($dataKey, $nameKey?, $name?, $color?)`** — a pie; `$nameKey` names each slice.
+
+`->categoryKey($key)` names the row field used for the X axis. `->height($px)` sets the plot height
+(default `320`).
+
+<Info>Cartesian charts only show the X axis when a `->categoryKey()` is set — without it the series
+still plot, but the axis ticks are hidden. Always set it for line, bar, and area charts.</Info>
+
+## Bar charts
+
+Two `->bar()` series render grouped side by side:
+
+<ComponentExample
+  php={`Chart::make('Orders by channel')
+    ->categoryKey('week')
+    ->data([
+        ['week' => 'W1', 'online' => 120, 'store' => 80],
+        ['week' => 'W2', 'online' => 150, 'store' => 70],
+        ['week' => 'W3', 'online' => 170, 'store' => 90],
+        ['week' => 'W4', 'online' => 210, 'store' => 110],
+    ])
+    ->bar('online', 'Online')
+    ->bar('store', 'In-store')
+    ->height(260);`}
+  fixture="charts.grouped-bar"
+/>
+
+### Stacking
+
+Give bars — or areas — the same `stackId` to stack them into one column instead:
+
+<ComponentExample
+  php={`Chart::make('Monthly recurring revenue')
+    ->description('Stacked by revenue type')
+    ->categoryKey('month')
+    ->data([
+        ['month' => 'Jan', 'new' => 1200, 'expansion' => 300],
+        ['month' => 'Feb', 'new' => 1500, 'expansion' => 450],
+        ['month' => 'Mar', 'new' => 1800, 'expansion' => 600],
+        ['month' => 'Apr', 'new' => 2100, 'expansion' => 780],
+    ])
+    ->bar('new', 'New', stackId: 'mrr')
+    ->bar('expansion', 'Expansion', stackId: 'mrr')
+    ->height(260);`}
+  fixture="charts.stacked-bar"
+/>
+
+## Area and composed charts
+
+Series types mix freely in one chart. Declaring an `->area()` and a `->line()` together layers the
+line over the filled band:
+
+<ComponentExample
+  php={`Chart::make('Revenue vs forecast')
+    ->description('Actuals as a line over the forecast band')
+    ->categoryKey('month')
+    ->data([
+        ['month' => 'Jan', 'forecast' => 26000, 'revenue' => 28000],
+        ['month' => 'Feb', 'forecast' => 30000, 'revenue' => 32000],
+        ['month' => 'Mar', 'forecast' => 34000, 'revenue' => 36500],
+        ['month' => 'Apr', 'forecast' => 37000, 'revenue' => 34000],
+        ['month' => 'May', 'forecast' => 39500, 'revenue' => 41500],
+    ])
+    ->area('forecast', 'Forecast')
+    ->line('revenue', 'Revenue')
+    ->height(260);`}
+  fixture="charts.composed"
+/>
+
+<Info>
+  When every series shares one type, Lattice draws it with the dedicated Recharts container
+  (`LineChart` / `BarChart` / `AreaChart`); mixing types falls back to `ComposedChart`. This follows
+  the series you declare — there's nothing to configure.
+</Info>
+
+## Pie charts
+
+A `->pie()` series plots one value per row as slices. `nameKey` names each slice; give a row a `color`
+field to color its slice, or let the theme palette pick:
+
+<ComponentExample
+  php={`Chart::make('Revenue by channel')
+    ->description('Share of total revenue')
+    ->data([
+        ['channel' => 'Direct', 'amount' => 42000, 'color' => '#2563eb'],
+        ['channel' => 'Partner', 'amount' => 27000, 'color' => '#16a34a'],
+        ['channel' => 'Marketplace', 'amount' => 19000, 'color' => '#f59e0b'],
+        ['channel' => 'Retail', 'amount' => 12000, 'color' => '#dc2626'],
+    ])
+    ->pie('amount', nameKey: 'channel')
+    ->height(260);`}
+  fixture="charts.pie"
+/>
+
+<Warning>
+  A pie can't share a chart with cartesian series. If a chart declares a pie **and** any line, bar,
+  or area series, only the cartesian series render and the pie is dropped. Put the pie in its own
+  chart.
+</Warning>
+
+## Colors and theming
+
+Omit a series color and Lattice cycles a palette built on your [theme tokens](/theming/) —
+`--lt-primary`, `--lt-success`, `--lt-info`, `--lt-warning`, `--lt-danger` — so charts follow light and
+dark mode automatically. Pass an explicit `color` to override: a hex value, or a CSS variable like
+`var(--lt-primary)` to stay theme-aware. For pies, a per-row `color` field wins over the series color.
+
+## Formatting values and categories
+
+By default the axes print raw values. Attach a **format** to render them locale- and timezone-aware —
+the same Intl formatting the tables use. The **value** axis (always numeric) takes a `NumberFormat`; the
+**category** axis takes either a `NumberFormat` or a `DateFormat`.
+
+<ComponentExample
+  php={`Chart::make('Revenue')
+    ->description('Compact currency on the value axis, short dates on the category axis')
+    ->categoryKey('month')
+    ->data([
+        ['month' => '2026-01-01', 'revenue' => 28000],
+        ['month' => '2026-02-01', 'revenue' => 32000],
+        ['month' => '2026-03-01', 'revenue' => 36500],
+        ['month' => '2026-04-01', 'revenue' => 41500],
+    ])
+    ->line('revenue', 'Revenue')
+    ->categoryFormat(DateFormat::monthYear())                  // raw dates → 'Jan 2026', localized
+    ->valueFormat(NumberFormat::currency('USD')->compact())    // 28000 → $28K
+    ->height(260);`}
+  fixture="charts.formatting"
+/>
+
+`NumberFormat` mirrors the numeric table columns: `->decimals($min, $max?)`, `->compact()`,
+`NumberFormat::currency($code)`, and `->unit(NumberFormatUnit::Percent)`. For dates,
+`DateFormat::date()`, `::time()`, and `::dateTime()` take a `DateTimeStyle` (Full/Long/Medium/Short),
+while `DateFormat::month()` and `::monthYear()` render just the month (`Jan`) or month and year
+(`Jan 2026`) — pass `long: true` for the full month name. All format with the active locale and
+timezone, so you feed the chart **raw dates** instead of pre-translated labels.
+
+<Info>The value axis is always numeric, so `->valueFormat()` only accepts a `NumberFormat`. The
+category can be a string (no format needed), a number, or a date, so `->categoryFormat()` accepts
+either a `NumberFormat` or a `DateFormat`.</Info>
+
+<Warning>
+  Date categories are parsed on the client with `new Date(...)`, so pass **ISO-8601** date strings.
+  Carbon instances (including Eloquent date casts) serialize to ISO-8601 automatically and work
+  as-is; plain PHP `DateTime` objects and numeric Unix timestamps do **not** parse — format them to
+  an ISO string first.
+</Warning>
+
+## Chrome
+
+Every part of the chart frame toggles independently. All default to on:
+
+- `->legend(bool)` — the series legend.
+- `->tooltip(bool)` — the hover tooltip.
+- `->grid(bool)` — the background grid.
+- `->xAxis(bool)` / `->yAxis(bool)` — the axes.
+- `->description($text)` — a subtitle under the title.
+
+```php
+Chart::make('Signups')
+    ->data($rows)
+    ->categoryKey('month')
+    ->line('total')
+    ->legend(false)
+    ->grid(false);
+```
+
+## Dynamic series
+
+When the series aren't known ahead of time, build [`ChartSeries`](/advanced/enums/#charts) value
+objects and hand them to `->series([...])` instead of the per-type helpers. The static factories
+mirror the fluent methods:
+
+```php
+use Lattice\Lattice\Core\Values\ChartSeries;
+
+$series = collect($metrics)
+    ->map(fn (string $key): ChartSeries => ChartSeries::line($key, ucfirst($key)))
+    ->all();
+
+Chart::make('Metrics')
+    ->data($rows)
+    ->categoryKey('day')
+    ->series($series);
+```

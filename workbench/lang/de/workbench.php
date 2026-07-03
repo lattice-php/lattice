@@ -2,6 +2,12 @@
 declare(strict_types=1);
 
 return [
+    'appearance' => [
+        'dark' => 'Dunkel',
+        'label' => 'Erscheinungsbild',
+        'light' => 'Hell',
+        'system' => 'System',
+    ],
     'assistant' => [
         'placeholder' => 'Frag den Assistenten…',
         'title' => 'Assistent',
@@ -316,6 +322,7 @@ return [
     'navigation' => [
         'builder-table-demo' => 'Builder-Tabellen-Demo',
         'business-partners' => 'Geschäftspartner',
+        'charts' => 'Diagramme',
         'commerce' => 'Commerce',
         'create-product' => 'Produkt erstellen',
         'dependent-fields' => 'Abhängige Felder',
@@ -351,13 +358,42 @@ return [
                 'partner' => 'Partner',
                 'retail' => 'Handel',
             ],
-            'months' => [
-                'apr' => 'Apr',
-                'feb' => 'Feb',
-                'jan' => 'Jan',
-                'jun' => 'Jun',
-                'mar' => 'Mär',
-                'may' => 'Mai',
+            'gallery' => [
+                'conversion' => [
+                    'description' => 'Konversionsrate als Prozentwert formatiert.',
+                    'rate' => 'Konversionsrate',
+                    'title' => 'Konversionsrate',
+                ],
+                'formatting' => [
+                    'description' => 'Kompakte Währung auf der Werteachse, kurze lokalisierte Daten auf der Kategorieachse.',
+                    'revenue' => 'Umsatz',
+                    'title' => 'Umsatz (formatiert)',
+                ],
+                'heading' => 'Diagramm-Galerie',
+                'intro' => 'Alle vom Diagramm unterstützten Serientypen sowie sprach- und zeitzonenbewusste Werte- und Kategorieformatierung.',
+                'orders' => [
+                    'description' => 'Gruppierte Online- und Ladenbestellungen pro Woche.',
+                    'online' => 'Online',
+                    'store' => 'Im Laden',
+                    'title' => 'Bestellungen nach Kanal',
+                ],
+                'sections' => [
+                    'combining' => 'Stapeln & Kombinieren',
+                    'formatting' => 'Formatierung',
+                    'series-types' => 'Serientypen',
+                ],
+                'signups' => [
+                    'description' => 'Kostenlose und Pro-Anmeldungen pro Monat.',
+                    'free' => 'Kostenlos',
+                    'pro' => 'Pro',
+                    'title' => 'Anmeldungen',
+                ],
+                'title' => 'Diagramme',
+                'traffic' => [
+                    'description' => 'Monatliche Seitenbesuche.',
+                    'title' => 'Traffic',
+                    'visits' => 'Besuche',
+                ],
             ],
             'order-volume' => [
                 'description' => 'Gestapelte Entwurfs- und Bestellmengen pro Woche.',

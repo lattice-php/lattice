@@ -1,0 +1,64 @@
+[
+    {
+        "key": "signups-chart",
+        "props": {
+            "categoryFormat": null,
+            "categoryKey": "month",
+            "data": [
+                {
+                    "free": 240,
+                    "month": "Jan",
+                    "pro": 90
+                },
+                {
+                    "free": 300,
+                    "month": "Feb",
+                    "pro": 140
+                },
+                {
+                    "free": 280,
+                    "month": "Mar",
+                    "pro": 180
+                },
+                {
+                    "free": 360,
+                    "month": "Apr",
+                    "pro": 240
+                },
+                {
+                    "free": 420,
+                    "month": "May",
+                    "pro": 320
+                }
+            ],
+            "description": "New users per month",
+            "grid": true,
+            "height": 260,
+            "legend": true,
+            "series": [
+                {
+                    "color": null,
+                    "dataKey": "free",
+                    "name": "Free",
+                    "nameKey": null,
+                    "stackId": null,
+                    "type": "line"
+                },
+                {
+                    "color": null,
+                    "dataKey": "pro",
+                    "name": "Pro",
+                    "nameKey": null,
+                    "stackId": null,
+                    "type": "line"
+                }
+            ],
+            "title": "Signups",
+            "tooltip": true,
+            "valueFormat": null,
+            "xAxis": true,
+            "yAxis": true
+        },
+        "type": "chart"
+    }
+]

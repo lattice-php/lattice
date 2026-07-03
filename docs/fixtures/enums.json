@@ -191,6 +191,28 @@
             }
         ]
     },
+    "Lattice\\Lattice\\Core\\Enums\\DateTimeStyle": {
+        "name": "DateTimeStyle",
+        "namespace": "Lattice\\Lattice\\Core\\Enums",
+        "cases": [
+            {
+                "name": "Full",
+                "value": "full"
+            },
+            {
+                "name": "Long",
+                "value": "long"
+            },
+            {
+                "name": "Medium",
+                "value": "medium"
+            },
+            {
+                "name": "Short",
+                "value": "short"
+            }
+        ]
+    },
     "Lattice\\Lattice\\Core\\Enums\\FloatingPlacement": {
         "name": "FloatingPlacement",
         "namespace": "Lattice\\Lattice\\Core\\Enums",
@@ -310,6 +332,72 @@
             {
                 "name": "Evenly",
                 "value": "evenly"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Core\\Enums\\NumberFormatUnit": {
+        "name": "NumberFormatUnit",
+        "namespace": "Lattice\\Lattice\\Core\\Enums",
+        "cases": [
+            {
+                "name": "Percent",
+                "value": "percent"
+            },
+            {
+                "name": "Kilogram",
+                "value": "kilogram"
+            },
+            {
+                "name": "Gram",
+                "value": "gram"
+            },
+            {
+                "name": "Kilometer",
+                "value": "kilometer"
+            },
+            {
+                "name": "Meter",
+                "value": "meter"
+            },
+            {
+                "name": "Byte",
+                "value": "byte"
+            },
+            {
+                "name": "Kilobyte",
+                "value": "kilobyte"
+            },
+            {
+                "name": "Megabyte",
+                "value": "megabyte"
+            },
+            {
+                "name": "Gigabyte",
+                "value": "gigabyte"
+            },
+            {
+                "name": "Millisecond",
+                "value": "millisecond"
+            },
+            {
+                "name": "Second",
+                "value": "second"
+            },
+            {
+                "name": "Minute",
+                "value": "minute"
+            },
+            {
+                "name": "Hour",
+                "value": "hour"
+            },
+            {
+                "name": "Celsius",
+                "value": "celsius"
+            },
+            {
+                "name": "Fahrenheit",
+                "value": "fahrenheit"
             }
         ]
     },
@@ -745,28 +833,6 @@
             }
         ]
     },
-    "Lattice\\Lattice\\Tables\\Enums\\DateTimeStyle": {
-        "name": "DateTimeStyle",
-        "namespace": "Lattice\\Lattice\\Tables\\Enums",
-        "cases": [
-            {
-                "name": "Full",
-                "value": "full"
-            },
-            {
-                "name": "Long",
-                "value": "long"
-            },
-            {
-                "name": "Medium",
-                "value": "medium"
-            },
-            {
-                "name": "Short",
-                "value": "short"
-            }
-        ]
-    },
     "Lattice\\Lattice\\Tables\\Enums\\FilterControl": {
         "name": "FilterControl",
         "namespace": "Lattice\\Lattice\\Tables\\Enums",
@@ -808,72 +874,6 @@
             {
                 "name": "Boolean",
                 "value": "boolean"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Tables\\Enums\\NumberFormatUnit": {
-        "name": "NumberFormatUnit",
-        "namespace": "Lattice\\Lattice\\Tables\\Enums",
-        "cases": [
-            {
-                "name": "Percent",
-                "value": "percent"
-            },
-            {
-                "name": "Kilogram",
-                "value": "kilogram"
-            },
-            {
-                "name": "Gram",
-                "value": "gram"
-            },
-            {
-                "name": "Kilometer",
-                "value": "kilometer"
-            },
-            {
-                "name": "Meter",
-                "value": "meter"
-            },
-            {
-                "name": "Byte",
-                "value": "byte"
-            },
-            {
-                "name": "Kilobyte",
-                "value": "kilobyte"
-            },
-            {
-                "name": "Megabyte",
-                "value": "megabyte"
-            },
-            {
-                "name": "Gigabyte",
-                "value": "gigabyte"
-            },
-            {
-                "name": "Millisecond",
-                "value": "millisecond"
-            },
-            {
-                "name": "Second",
-                "value": "second"
-            },
-            {
-                "name": "Minute",
-                "value": "minute"
-            },
-            {
-                "name": "Hour",
-                "value": "hour"
-            },
-            {
-                "name": "Celsius",
-                "value": "celsius"
-            },
-            {
-                "name": "Fahrenheit",
-                "value": "fahrenheit"
             }
         ]
     },

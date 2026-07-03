@@ -11,6 +11,7 @@ use Lattice\Lattice\Core\Components\Badge;
 use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\FloatingPanel;
 use Lattice\Lattice\Core\Components\RawBlock;
+use Lattice\Lattice\Core\Components\SegmentedControl;
 use Lattice\Lattice\Core\Components\Stack;
 use Lattice\Lattice\Core\Enums\Align;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
@@ -36,6 +37,7 @@ use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Actions\ToggleChatLayoutAction;
 use Workbench\App\Pages\BuilderTableDemoPage;
 use Workbench\App\Pages\BusinessPartnersPage;
+use Workbench\App\Pages\ChartsPage;
 use Workbench\App\Pages\DependentDemoPage;
 use Workbench\App\Pages\GroupsPage;
 use Workbench\App\Pages\HomePage;
@@ -94,6 +96,7 @@ class AppLayout extends LayoutDefinition
                 ]),
             Menu::make('sidebar')->items([
                 MenuItem::fromPage(HomePage::class)->key('home')->label(__('workbench.navigation.home'))->prefix(Affix::icon('house')),
+                MenuItem::fromPage(ChartsPage::class)->key('charts')->label(__('workbench.navigation.charts'))->prefix(Affix::icon('chart-column')),
                 MenuItem::make(__('workbench.navigation.forms'), 'forms')->prefix(Affix::icon('form-input'))->children([
                     MenuItem::fromPage(ShowcasePage::class)->key('showcase')->label(__('workbench.navigation.showcase')),
                     MenuItem::fromPage(DependentDemoPage::class)->key('dependent-fields')->label(__('workbench.navigation.dependent-fields')),
@@ -129,6 +132,7 @@ class AppLayout extends LayoutDefinition
                 ->width(Width::Auto)
                 ->float(Side::End)
                 ->schema([
+                    $this->appearanceSwitcher(),
                     $this->localeSwitcher(),
                     Menu::make('topbar-settings')->items([
                         MenuItem::make(__('workbench.navigation.settings'), 'settings')
@@ -170,6 +174,18 @@ class AppLayout extends LayoutDefinition
             ->key('chat-layout-toggle')
             ->variant(ButtonVariant::Ghost)
             ->label($inline ? __('workbench.chat-layout.hide') : __('workbench.chat-layout.reveal'));
+    }
+
+    protected function appearanceSwitcher(): SegmentedControl
+    {
+        return SegmentedControl::make('appearance', null, 'appearance-switcher')
+            ->value('system')
+            ->emits('lattice:appearance-change')
+            ->options([
+                SegmentedControl::option(__('workbench.appearance.light'), 'light'),
+                SegmentedControl::option(__('workbench.appearance.dark'), 'dark'),
+                SegmentedControl::option(__('workbench.appearance.system'), 'system'),
+            ]);
     }
 
     protected function localeSwitcher(): Dropdown

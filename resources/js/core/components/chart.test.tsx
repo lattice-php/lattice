@@ -69,17 +69,43 @@ vi.mock("recharts", async () => {
         { "data-height": height, "data-test": "responsive-container", "data-width": width },
         children,
       ),
-    Tooltip: () => h("div", { "data-test": "tooltip" }),
-    XAxis: (props: Record<string, unknown>) =>
-      h("div", { "data-key": String(props.dataKey), "data-test": "x-axis" }),
+    Tooltip: (props: Record<string, unknown>) => {
+      const formatter = props.formatter as ((v: unknown) => string) | undefined;
+      const labelFormatter = props.labelFormatter as ((v: unknown) => string) | undefined;
+
+      return h(
+        "div",
+        { "data-test": "tooltip" },
+        h("span", { "data-test": "tooltip-value" }, formatter ? formatter(28000) : ""),
+        h(
+          "span",
+          { "data-test": "tooltip-label" },
+          labelFormatter ? labelFormatter("2026-01-15") : "",
+        ),
+      );
+    },
+    XAxis: (props: Record<string, unknown>) => {
+      const tickFormatter = props.tickFormatter as ((v: unknown) => string) | undefined;
+
+      return h(
+        "div",
+        { "data-key": String(props.dataKey), "data-test": "x-axis" },
+        tickFormatter ? tickFormatter("2026-01-15") : "",
+      );
+    },
     YAxis: (props: Record<string, unknown>) => {
       const tick = props.tick as Record<string, unknown> | undefined;
+      const tickFormatter = props.tickFormatter as ((v: unknown) => string) | undefined;
 
-      return h("div", {
-        "data-font-size": String(tick?.fontSize),
-        "data-test": "y-axis",
-        "data-width": String(props.width),
-      });
+      return h(
+        "div",
+        {
+          "data-font-size": String(tick?.fontSize),
+          "data-test": "y-axis",
+          "data-width": String(props.width),
+        },
+        tickFormatter ? tickFormatter(28000) : "",
+      );
     },
   };
 });
@@ -93,12 +119,14 @@ describe("Chart component", () => {
     renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: "month",
         data: [
           { month: "Jan", orders: 32, revenue: 1200, forecast: 1400 },
           { month: "Feb", orders: 41, revenue: 1800, forecast: 1900 },
         ],
         description: "Monthly recurring revenue",
+        valueFormat: null,
         grid: true,
         height: 280,
         legend: true,
@@ -159,12 +187,14 @@ describe("Chart component", () => {
     renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: null,
         data: [
           { amount: 4200, channel: "Direct" },
           { amount: 2600, channel: "Partner" },
         ],
         description: null,
+        valueFormat: null,
         grid: true,
         height: 320,
         legend: true,
@@ -195,12 +225,14 @@ describe("Chart component", () => {
     renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: null,
         data: [
           { amount: 4200, channel: "Direct", color: "#111827" },
           { amount: 2600, channel: "Partner" },
         ],
         description: null,
+        valueFormat: null,
         grid: true,
         height: 320,
         legend: true,
@@ -231,9 +263,11 @@ describe("Chart component", () => {
     const area = renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: "month",
         data: [{ forecast: 1400, month: "Jan" }],
         description: null,
+        valueFormat: null,
         grid: true,
         height: 320,
         legend: true,
@@ -261,9 +295,11 @@ describe("Chart component", () => {
     renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: "month",
         data: [{ month: "Jan", orders: 32 }],
         description: null,
+        valueFormat: null,
         grid: true,
         height: 320,
         legend: true,
@@ -291,9 +327,11 @@ describe("Chart component", () => {
     renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: "month",
         data: [{ month: "Jan" }],
         description: null,
+        valueFormat: null,
         grid: true,
         height: 320,
         legend: true,
@@ -312,9 +350,11 @@ describe("Chart component", () => {
     renderChart({
       type: "chart",
       props: {
+        categoryFormat: null,
         categoryKey: "month",
         data: [{ amount: 4200, month: "Jan", revenue: 1200 }],
         description: null,
+        valueFormat: null,
         grid: true,
         height: 320,
         legend: true,
@@ -346,5 +386,52 @@ describe("Chart component", () => {
     expect(screen.getByTestId("line-chart")).toBeInTheDocument();
     expect(screen.getByTestId("series-line")).toHaveAttribute("data-key", "revenue");
     expect(screen.queryByTestId("pie-chart")).not.toBeInTheDocument();
+  });
+
+  it("formats axis ticks and tooltip via value and category formats", () => {
+    renderChart({
+      type: "chart",
+      props: {
+        categoryFormat: {
+          kind: "date",
+          dateStyle: "short",
+          timeStyle: null,
+          month: null,
+          year: null,
+        },
+        categoryKey: "month",
+        data: [{ month: "2026-01-15", revenue: 28000 }],
+        description: null,
+        valueFormat: {
+          kind: "number",
+          notation: "compact",
+          minimumFractionDigits: null,
+          maximumFractionDigits: null,
+          currency: "USD",
+          unit: null,
+        },
+        grid: true,
+        height: 320,
+        legend: true,
+        series: [
+          {
+            color: null,
+            dataKey: "revenue",
+            name: null,
+            nameKey: null,
+            stackId: null,
+            type: "line",
+          },
+        ],
+        title: null,
+        tooltip: true,
+        xAxis: true,
+        yAxis: true,
+      },
+    });
+
+    expect(screen.getByTestId("y-axis")).toHaveTextContent("$28K");
+    expect(screen.getByTestId("tooltip-value")).toHaveTextContent("$28K");
+    expect(screen.getByTestId("x-axis").textContent).not.toBe("2026-01-15");
   });
 });
