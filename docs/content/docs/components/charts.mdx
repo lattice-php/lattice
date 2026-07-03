@@ -106,9 +106,11 @@ line over the filled band:
   fixture="charts.composed"
 />
 
-<Info>When every series shares one type, Lattice draws it with the dedicated Recharts container
-(`LineChart` / `BarChart` / `AreaChart`); mixing types falls back to `ComposedChart`. This follows the
-series you declare — there's nothing to configure.</Info>
+<Info>
+  When every series shares one type, Lattice draws it with the dedicated Recharts container
+  (`LineChart` / `BarChart` / `AreaChart`); mixing types falls back to `ComposedChart`. This follows
+  the series you declare — there's nothing to configure.
+</Info>
 
 ## Pie charts
 
@@ -129,9 +131,11 @@ field to color its slice, or let the theme palette pick:
   fixture="charts.pie"
 />
 
-<Warning>A pie can't share a chart with cartesian series. If a chart declares a pie **and** any line,
-bar, or area series, only the cartesian series render and the pie is dropped. Put the pie in its own
-chart.</Warning>
+<Warning>
+  A pie can't share a chart with cartesian series. If a chart declares a pie **and** any line, bar,
+  or area series, only the cartesian series render and the pie is dropped. Put the pie in its own
+  chart.
+</Warning>
 
 ## Colors and theming
 
@@ -148,6 +152,7 @@ the same Intl formatting the tables use. The **value** axis (always numeric) tak
 
 <ComponentExample
   php={`Chart::make('Revenue')
+    ->description('Compact currency on the value axis, short dates on the category axis')
     ->categoryKey('month')
     ->data([
         ['month' => '2026-01-01', 'revenue' => 28000],
@@ -170,6 +175,13 @@ active locale and timezone — so you pass **raw dates** instead of pre-translat
 <Info>The value axis is always numeric, so `->valueFormat()` only accepts a `NumberFormat`. The
 category can be a string (no format needed), a number, or a date, so `->categoryFormat()` accepts
 either a `NumberFormat` or a `DateFormat`.</Info>
+
+<Warning>
+  Date categories are parsed on the client with `new Date(...)`, so pass **ISO-8601** date strings.
+  Carbon instances (including Eloquent date casts) serialize to ISO-8601 automatically and work as-is;
+  plain PHP `DateTime` objects and numeric Unix timestamps do **not** parse — format them to an ISO
+  string first.
+</Warning>
 
 ## Chrome
 
