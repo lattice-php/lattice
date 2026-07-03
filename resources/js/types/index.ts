@@ -2,6 +2,7 @@ export type {
   ComponentProps,
   Node,
   NodeProps,
+  NumberFormat,
   PageContainer,
   PageBreadcrumb,
   PagePayload,
