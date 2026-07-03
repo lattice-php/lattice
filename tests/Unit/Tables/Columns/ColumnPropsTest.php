@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Enums\DateTimeStyle;
 use Lattice\Lattice\Tables\Columns\BooleanColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Enums\DateTimeStyle;
 
 it('reflects a column\'s public properties into the full props shape', function (): void {
     expect(wire(TextColumn::make('name'))['props'])->toBe([
