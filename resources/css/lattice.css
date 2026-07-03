@@ -59,15 +59,6 @@
   --lt-control-h-md: 2.25rem;
   --lt-control-h-lg: 2.5rem;
 
-  --lt-font-weight-normal: 400;
-  --lt-font-weight-medium: 500;
-  --lt-font-weight-semibold: 600;
-  --lt-font-weight-bold: 700;
-
-  /* Focus-ring size (colour: --lt-ring) */
-  --lt-ring-width: 0.125rem;
-  --lt-ring-offset: 0.125rem;
-
   /* Elevation */
   --lt-shadow-xs: 0 1px 1px 0 oklch(0 0 0 / 0.04);
   --lt-shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.05);
@@ -87,13 +78,14 @@
   /* Motion */
   --lt-duration-fast: 120ms;
   --lt-duration-base: 160ms;
-  --lt-duration-slow: 240ms;
-  --lt-ease: cubic-bezier(0.2, 0, 0, 1);
 
   /* Layout dimensions */
   --lt-sidebar-w: 16rem;
   --lt-sidebar-w-collapsed: 4rem;
   --lt-container-max: 80rem;
+
+  /* Card / section content inset — the gutter apps can break out of */
+  --lt-gutter: calc(var(--spacing) * 6); /* 1.5rem */
 
   color-scheme: light;
 }
@@ -199,6 +191,7 @@
   --spacing-lt-control-sm: var(--lt-control-h-sm);
   --spacing-lt-control-md: var(--lt-control-h-md);
   --spacing-lt-control-lg: var(--lt-control-h-lg);
+  --spacing-lt-gutter: var(--lt-gutter);
   --animate-lt-toast-in: lt-toast-in var(--lt-duration-base) ease-out;
   --animate-lt-toast-out: lt-toast-out var(--lt-duration-fast) ease-in;
 }

@@ -112,7 +112,7 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
       {mobileOpen ? (
         <div
           aria-hidden="true"
-          className="fixed inset-0 z-30 bg-black/50 md:hidden"
+          className="fixed inset-0 z-30 bg-lt-overlay md:hidden"
           data-test="sidebar-backdrop"
           onClick={() => setMobileOpen(false)}
         />
