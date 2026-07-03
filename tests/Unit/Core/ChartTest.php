@@ -111,3 +111,99 @@ it('serializes explicit axis toggles and configured series arrays', function ():
             'nameKey' => null,
         ]);
 });
+
+describe('docs fixtures', function (): void {
+    it('dumps the line chart example', function (): void {
+        dumpFixture('charts.line', [
+            Chart::make('Signups', 'signups-chart')
+                ->description('New users per month')
+                ->categoryKey('month')
+                ->data([
+                    ['month' => 'Jan', 'free' => 240, 'pro' => 90],
+                    ['month' => 'Feb', 'free' => 300, 'pro' => 140],
+                    ['month' => 'Mar', 'free' => 280, 'pro' => 180],
+                    ['month' => 'Apr', 'free' => 360, 'pro' => 240],
+                    ['month' => 'May', 'free' => 420, 'pro' => 320],
+                ])
+                ->line('free', 'Free')
+                ->line('pro', 'Pro')
+                ->height(260),
+        ]);
+
+        expect('docs/fixtures/charts.line.json')->toBeReadableFile();
+    });
+
+    it('dumps the grouped bar chart example', function (): void {
+        dumpFixture('charts.grouped-bar', [
+            Chart::make('Orders by channel', 'orders-chart')
+                ->categoryKey('week')
+                ->data([
+                    ['week' => 'W1', 'online' => 120, 'store' => 80],
+                    ['week' => 'W2', 'online' => 150, 'store' => 70],
+                    ['week' => 'W3', 'online' => 170, 'store' => 90],
+                    ['week' => 'W4', 'online' => 210, 'store' => 110],
+                ])
+                ->bar('online', 'Online')
+                ->bar('store', 'In-store')
+                ->height(260),
+        ]);
+
+        expect('docs/fixtures/charts.grouped-bar.json')->toBeReadableFile();
+    });
+
+    it('dumps the stacked bar chart example', function (): void {
+        dumpFixture('charts.stacked-bar', [
+            Chart::make('Monthly recurring revenue', 'mrr-chart')
+                ->description('Stacked by revenue type')
+                ->categoryKey('month')
+                ->data([
+                    ['month' => 'Jan', 'new' => 1200, 'expansion' => 300],
+                    ['month' => 'Feb', 'new' => 1500, 'expansion' => 450],
+                    ['month' => 'Mar', 'new' => 1800, 'expansion' => 600],
+                    ['month' => 'Apr', 'new' => 2100, 'expansion' => 780],
+                ])
+                ->bar('new', 'New', stackId: 'mrr')
+                ->bar('expansion', 'Expansion', stackId: 'mrr')
+                ->height(260),
+        ]);
+
+        expect('docs/fixtures/charts.stacked-bar.json')->toBeReadableFile();
+    });
+
+    it('dumps the composed area and line chart example', function (): void {
+        dumpFixture('charts.composed', [
+            Chart::make('Revenue vs forecast', 'revenue-forecast-chart')
+                ->description('Actuals as a line over the forecast band')
+                ->categoryKey('month')
+                ->data([
+                    ['month' => 'Jan', 'forecast' => 26_000, 'revenue' => 28_000],
+                    ['month' => 'Feb', 'forecast' => 30_000, 'revenue' => 32_000],
+                    ['month' => 'Mar', 'forecast' => 34_000, 'revenue' => 36_500],
+                    ['month' => 'Apr', 'forecast' => 37_000, 'revenue' => 34_000],
+                    ['month' => 'May', 'forecast' => 39_500, 'revenue' => 41_500],
+                ])
+                ->area('forecast', 'Forecast')
+                ->line('revenue', 'Revenue')
+                ->height(260),
+        ]);
+
+        expect('docs/fixtures/charts.composed.json')->toBeReadableFile();
+    });
+
+    it('dumps the pie chart example', function (): void {
+        dumpFixture('charts.pie', [
+            Chart::make('Revenue by channel', 'channel-mix-chart')
+                ->description('Share of total revenue')
+                ->data([
+                    ['channel' => 'Direct', 'amount' => 42_000, 'color' => '#2563eb'],
+                    ['channel' => 'Partner', 'amount' => 27_000, 'color' => '#16a34a'],
+                    ['channel' => 'Marketplace', 'amount' => 19_000, 'color' => '#f59e0b'],
+                    ['channel' => 'Retail', 'amount' => 12_000, 'color' => '#dc2626'],
+                ])
+                ->pie('amount', nameKey: 'channel')
+                ->height(260),
+        ]);
+
+        expect('docs/fixtures/charts.pie.json')->toBeReadableFile();
+    });
+});

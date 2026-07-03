@@ -115,30 +115,8 @@ Badge::make('Trialing');
 
 ## Charts
 
-`Chart::make($title)` renders a data chart. Feed it rows with `->data()`, name the category axis with
-`->categoryKey()`, then declare one or more series — `->line()`, `->bar()`, `->area()`, or `->pie()`
-(see [`ChartSeriesType`](/advanced/enums/#charts)). Each series takes the data key it plots, an optional
-display name, and an optional color; stack bars or areas by sharing a `stackId`.
-
-```php
-use Lattice\Lattice\Core\Components\Chart;
-
-Chart::make('Revenue')
-    ->description('Monthly recurring revenue')
-    ->data([
-        ['month' => 'Jan', 'new' => 1200, 'expansion' => 300],
-        ['month' => 'Feb', 'new' => 1500, 'expansion' => 450],
-        ['month' => 'Mar', 'new' => 1800, 'expansion' => 600],
-    ])
-    ->categoryKey('month')
-    ->bar('new', 'New', stackId: 'mrr')
-    ->bar('expansion', 'Expansion', stackId: 'mrr')
-    ->height(280);
-```
-
-Toggle the chrome with `->legend()`, `->tooltip()`, `->grid()`, `->xAxis()`, and `->yAxis()`. For a
-dynamic set of series, pass `ChartSeries` value objects to `->series([...])` instead of the per-type
-helpers.
+`Chart::make($title)` renders a data chart from rows of `->data()` and one or more line, bar, area, or
+pie series. See the dedicated [Charts](/components/charts/) page for the full API and live examples.
 
 ## Interactive
 

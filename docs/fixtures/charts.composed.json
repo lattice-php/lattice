@@ -1,0 +1,62 @@
+[
+    {
+        "key": "revenue-forecast-chart",
+        "props": {
+            "categoryKey": "month",
+            "data": [
+                {
+                    "forecast": 26000,
+                    "month": "Jan",
+                    "revenue": 28000
+                },
+                {
+                    "forecast": 30000,
+                    "month": "Feb",
+                    "revenue": 32000
+                },
+                {
+                    "forecast": 34000,
+                    "month": "Mar",
+                    "revenue": 36500
+                },
+                {
+                    "forecast": 37000,
+                    "month": "Apr",
+                    "revenue": 34000
+                },
+                {
+                    "forecast": 39500,
+                    "month": "May",
+                    "revenue": 41500
+                }
+            ],
+            "description": "Actuals as a line over the forecast band",
+            "grid": true,
+            "height": 260,
+            "legend": true,
+            "series": [
+                {
+                    "color": null,
+                    "dataKey": "forecast",
+                    "name": "Forecast",
+                    "nameKey": null,
+                    "stackId": null,
+                    "type": "area"
+                },
+                {
+                    "color": null,
+                    "dataKey": "revenue",
+                    "name": "Revenue",
+                    "nameKey": null,
+                    "stackId": null,
+                    "type": "line"
+                }
+            ],
+            "title": "Revenue vs forecast",
+            "tooltip": true,
+            "xAxis": true,
+            "yAxis": true
+        },
+        "type": "chart"
+    }
+]

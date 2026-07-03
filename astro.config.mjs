@@ -81,6 +81,11 @@ export default defineConfig({
           ],
         },
         {
+          label: "Components",
+          collapsed: true,
+          items: [{ label: "Charts", link: "/components/charts/" }],
+        },
+        {
           label: "Forms",
           collapsed: true,
           items: [

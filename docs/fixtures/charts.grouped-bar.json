@@ -1,0 +1,57 @@
+[
+    {
+        "key": "orders-chart",
+        "props": {
+            "categoryKey": "week",
+            "data": [
+                {
+                    "online": 120,
+                    "store": 80,
+                    "week": "W1"
+                },
+                {
+                    "online": 150,
+                    "store": 70,
+                    "week": "W2"
+                },
+                {
+                    "online": 170,
+                    "store": 90,
+                    "week": "W3"
+                },
+                {
+                    "online": 210,
+                    "store": 110,
+                    "week": "W4"
+                }
+            ],
+            "description": null,
+            "grid": true,
+            "height": 260,
+            "legend": true,
+            "series": [
+                {
+                    "color": null,
+                    "dataKey": "online",
+                    "name": "Online",
+                    "nameKey": null,
+                    "stackId": null,
+                    "type": "bar"
+                },
+                {
+                    "color": null,
+                    "dataKey": "store",
+                    "name": "In-store",
+                    "nameKey": null,
+                    "stackId": null,
+                    "type": "bar"
+                }
+            ],
+            "title": "Orders by channel",
+            "tooltip": true,
+            "xAxis": true,
+            "yAxis": true
+        },
+        "type": "chart"
+    }
+]
