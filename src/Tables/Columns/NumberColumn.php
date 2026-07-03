@@ -12,9 +12,18 @@ class NumberColumn extends NumericColumn
 {
     public ?NumberFormatUnit $unit = null;
 
+    public bool $compact = false;
+
     public function unit(NumberFormatUnit $unit): static
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    public function compact(bool $compact = true): static
+    {
+        $this->compact = $compact;
 
         return $this;
     }

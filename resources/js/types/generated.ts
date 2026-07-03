@@ -887,6 +887,7 @@ export type Node =
   | ChatNode;
 export type NodeType = Node["type"];
 export type NumberColumn = {
+  compact: boolean;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
   unit: NumberFormatUnit | null;

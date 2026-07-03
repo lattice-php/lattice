@@ -46,4 +46,9 @@ describe("NumberCell", () => {
     expect(renderCell(null).container.textContent).toBe("");
     expect(renderCell(undefined).container.textContent).toBe("");
   });
+
+  it("renders compact notation", () => {
+    const { container } = renderCell(28000, { compact: true });
+    expect(container.textContent).toBe("28K");
+  });
 });

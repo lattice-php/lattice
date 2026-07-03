@@ -15,7 +15,7 @@ export const NumberCell: ColumnCellComponent<"column.number"> = ({ column, props
     value,
     {
       kind: "number",
-      notation: "standard",
+      notation: props.compact ? "compact" : "standard",
       minimumFractionDigits: props.minimumFractionDigits,
       maximumFractionDigits: props.maximumFractionDigits,
       currency: null,
