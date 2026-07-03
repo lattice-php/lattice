@@ -2,6 +2,12 @@
 declare(strict_types=1);
 
 return [
+    'appearance' => [
+        'dark' => 'Dark',
+        'label' => 'Appearance',
+        'light' => 'Light',
+        'system' => 'System',
+    ],
     'assistant' => [
         'placeholder' => 'Ask the assistant…',
         'title' => 'Assistant',
@@ -316,6 +322,7 @@ return [
     'navigation' => [
         'builder-table-demo' => 'Builder Table Demo',
         'business-partners' => 'Business partners',
+        'charts' => 'Charts',
         'commerce' => 'Commerce',
         'create-product' => 'Create Product',
         'dependent-fields' => 'Dependent Fields',
@@ -350,6 +357,43 @@ return [
                 'marketplace' => 'Marketplace',
                 'partner' => 'Partner',
                 'retail' => 'Retail',
+            ],
+            'gallery' => [
+                'conversion' => [
+                    'description' => 'Conversion rate formatted as a percentage.',
+                    'rate' => 'Conversion rate',
+                    'title' => 'Conversion rate',
+                ],
+                'formatting' => [
+                    'description' => 'Compact currency on the value axis, short localized dates on the category axis.',
+                    'revenue' => 'Revenue',
+                    'title' => 'Revenue (formatted)',
+                ],
+                'heading' => 'Chart gallery',
+                'intro' => 'Every series type the chart component supports, plus locale- and timezone-aware value and category formatting.',
+                'orders' => [
+                    'description' => 'Grouped online and in-store orders by week.',
+                    'online' => 'Online',
+                    'store' => 'In-store',
+                    'title' => 'Orders by channel',
+                ],
+                'sections' => [
+                    'combining' => 'Stacking & combining',
+                    'formatting' => 'Formatting',
+                    'series-types' => 'Series types',
+                ],
+                'signups' => [
+                    'description' => 'Free and pro signups per month.',
+                    'free' => 'Free',
+                    'pro' => 'Pro',
+                    'title' => 'Signups',
+                ],
+                'title' => 'Charts',
+                'traffic' => [
+                    'description' => 'Monthly site visits.',
+                    'title' => 'Traffic',
+                    'visits' => 'Visits',
+                ],
             ],
             'months' => [
                 'apr' => 'Apr',
