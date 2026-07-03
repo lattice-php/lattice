@@ -2,7 +2,10 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Core\Components\Chart;
+use Lattice\Lattice\Core\Enums\DateTimeStyle;
 use Lattice\Lattice\Core\Values\ChartSeries;
+use Lattice\Lattice\Core\Values\DateFormat;
+use Lattice\Lattice\Core\Values\NumberFormat;
 
 it('serializes a cartesian chart with fluent series helpers', function (): void {
     $node = wire(
@@ -110,6 +113,34 @@ it('serializes explicit axis toggles and configured series arrays', function ():
             'stackId' => null,
             'nameKey' => null,
         ]);
+});
+
+it('serializes value and category formats', function (): void {
+    $node = wire(
+        Chart::make('Revenue')
+            ->categoryKey('month')
+            ->data([['month' => '2026-01-01', 'revenue' => 28000]])
+            ->line('revenue')
+            ->categoryFormat(DateFormat::date(DateTimeStyle::Short))
+            ->valueFormat(NumberFormat::currency('USD')->compact()),
+    );
+
+    expect($node['props']['categoryFormat'])->toBe([
+        'kind' => 'date',
+        'dateStyle' => 'short',
+        'timeStyle' => null,
+    ])->and($node['props']['valueFormat'])->toMatchArray([
+        'kind' => 'number',
+        'notation' => 'compact',
+        'currency' => 'USD',
+    ]);
+});
+
+it('defaults both formats to null', function (): void {
+    $node = wire(Chart::make('Revenue')->data([])->line('revenue'));
+
+    expect($node['props']['categoryFormat'])->toBeNull()
+        ->and($node['props']['valueFormat'])->toBeNull();
 });
 
 describe('docs fixtures', function (): void {
