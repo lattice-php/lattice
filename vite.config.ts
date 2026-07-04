@@ -22,27 +22,74 @@ const isVitest = process.env.VITEST !== undefined;
 // installing lucide-static. Keep sorted and grouped by origin.
 const latticeIcons = [
   // Server-driven defaults (names components emit / consumers commonly use)
-  "arrow-down", "arrow-up", "check", "chevrons-up-down", "copy", "external-link",
-  "eye-off", "layout-dashboard", "link", "more-horizontal", "pencil", "pencil-line",
-  "send", "settings", "trash-2", "x",
+  "arrow-down",
+  "arrow-up",
+  "check",
+  "chevrons-up-down",
+  "copy",
+  "external-link",
+  "eye-off",
+  "layout-dashboard",
+  "link",
+  "more-horizontal",
+  "pencil",
+  "pencil-line",
+  "send",
+  "settings",
+  "trash-2",
+  "x",
   // Internal chrome
-  "calendar", "chevron-down", "chevron-left", "chevron-right", "circle-alert", "circle-check",
-  "circle-help", "circle-x", "eye", "filter", "info", "loader-2", "minus", "panel-left",
-  "plus", "rotate-ccw", "search",
+  "calendar",
+  "chevron-down",
+  "chevron-left",
+  "chevron-right",
+  "circle-alert",
+  "circle-check",
+  "circle-help",
+  "circle-x",
+  "clock",
+  "eye",
+  "filter",
+  "info",
+  "loader-2",
+  "minus",
+  "panel-left",
+  "plus",
+  "rotate-ccw",
+  "search",
   // Rich-editor toolbar
-  "align-center", "align-justify", "align-left", "align-right", "bold", "code",
-  "columns-3", "heading-1", "heading-2", "heading-3", "highlighter", "italic",
-  "list", "list-ordered", "quote", "rows-3", "smile", "strikethrough", "table", "underline",
+  "align-center",
+  "align-justify",
+  "align-left",
+  "align-right",
+  "bold",
+  "code",
+  "columns-3",
+  "heading-1",
+  "heading-2",
+  "heading-3",
+  "highlighter",
+  "italic",
+  "list",
+  "list-ordered",
+  "quote",
+  "rows-3",
+  "smile",
+  "strikethrough",
+  "table",
+  "underline",
 ];
 
 function libraryEntries(): string[] {
-  return readdirSync(sourceRoot, { recursive: true, encoding: "utf8" })
-    .filter((file) => /\.(ts|tsx)$/.test(file))
-    // Exclude declaration files and type-level test files — *.test.ts, *.test-d.ts, *.d.ts — from the published bundle.
-    .filter((file) => !/\.(test(-d)?|d)\.(ts|tsx)$/.test(file))
-    .filter((file) => !file.startsWith("test/"))
-    .filter((file) => file !== "test-support.ts")
-    .map((file) => path.join(sourceRoot, file));
+  return (
+    readdirSync(sourceRoot, { recursive: true, encoding: "utf8" })
+      .filter((file) => /\.(ts|tsx)$/.test(file))
+      // Exclude declaration files and type-level test files — *.test.ts, *.test-d.ts, *.d.ts — from the published bundle.
+      .filter((file) => !/\.(test(-d)?|d)\.(ts|tsx)$/.test(file))
+      .filter((file) => !file.startsWith("test/"))
+      .filter((file) => file !== "test-support.ts")
+      .map((file) => path.join(sourceRoot, file))
+  );
 }
 
 function stylesheet(): Plugin {
@@ -201,7 +248,7 @@ export default defineConfig(({ mode }) => {
             },
           },
         }
-      : { build: { sourcemap: true,  chunkSizeWarningLimit: 600 } }),
+      : { build: { sourcemap: true, chunkSizeWarningLimit: 600 } }),
     test: {
       projects: [
         {

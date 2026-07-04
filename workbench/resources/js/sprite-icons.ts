@@ -19,6 +19,7 @@ export const iconNames = [
   "circle-check",
   "circle-help",
   "circle-x",
+  "clock",
   "code",
   "columns-3",
   "copy",
@@ -83,6 +84,7 @@ declare module "@lattice-php/lattice" {
     "circle-check": true;
     "circle-help": true;
     "circle-x": true;
+    clock: true;
     code: true;
     "columns-3": true;
     copy: true;

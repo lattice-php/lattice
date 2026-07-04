@@ -24,6 +24,7 @@ enum Icon: string
     case CircleCheck = 'circle-check';
     case CircleHelp = 'circle-help';
     case CircleX = 'circle-x';
+    case Clock = 'clock';
     case Code = 'code';
     case Columns3 = 'columns-3';
     case Copy = 'copy';
