@@ -103,7 +103,8 @@ describe("DateTimeInputComponent", () => {
       );
     });
 
-    fireEvent.change(screen.getByLabelText("Starts at time"), { target: { value: "14:30" } });
+    fireEvent.click(screen.getByRole("option", { name: "Hour 14" }));
+    fireEvent.click(screen.getByRole("option", { name: "Minute 30" }));
 
     await waitFor(() => {
       expect(document.querySelector('input[name="starts_at"]')).toHaveValue(
@@ -112,7 +113,7 @@ describe("DateTimeInputComponent", () => {
     });
   });
 
-  it("uses the native time input inside the datetime picker", async () => {
+  it("renders the time picker columns inside the datetime picker", async () => {
     setTimezone("Europe/Berlin");
 
     renderField(
@@ -125,8 +126,11 @@ describe("DateTimeInputComponent", () => {
 
     fireEvent.click(await screen.findByRole("button", { name: /open starts at calendar/i }));
 
-    expect(await screen.findByLabelText("Starts at time")).toHaveAttribute("type", "time");
-    expect(screen.queryByRole("option", { name: "Hour 01" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("option", { name: "Minute 01" })).not.toBeInTheDocument();
+    expect(await screen.findByRole("option", { name: "Hour 01" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    expect(screen.getByRole("option", { name: "Minute 01" })).toBeInTheDocument();
+    expect(screen.queryByLabelText("Starts at time")).not.toBeInTheDocument();
   });
 });
