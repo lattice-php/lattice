@@ -15,41 +15,36 @@ function renderField(node: Node<"field.time-input">, initial: Record<string, unk
 }
 
 describe("TimeInputComponent", () => {
-  it("renders and commits a time value", () => {
+  it("renders a text input and commits a normalized value", () => {
     renderField(
       fakeNode({ type: "field.time-input", props: { name: "starts_at", label: "Start time" } }),
     );
 
     const input = screen.getByLabelText("Start time");
 
-    expect(input).toHaveAttribute("type", "time");
+    expect(input).toHaveAttribute("type", "text");
 
     fireEvent.change(input, { target: { value: "14:30" } });
 
     expect(input).toHaveValue("14:30");
   });
 
-  it("applies min max step and tab index props", () => {
+  it("picks a time from the popover", () => {
     renderField(
       fakeNode({
         type: "field.time-input",
-        props: {
-          name: "starts_at",
-          label: "Start time",
-          min: "08:00",
-          max: "18:00",
-          step: 900,
-          tabIndex: 2,
-        },
+        props: { name: "starts_at", label: "Start time", min: "08:00", max: "18:00" },
       }),
     );
 
-    const input = screen.getByLabelText("Start time");
+    fireEvent.click(screen.getByRole("button", { name: /open start time time picker/i }));
 
-    expect(input).toHaveAttribute("min", "08:00");
-    expect(input).toHaveAttribute("max", "18:00");
-    expect(input).toHaveAttribute("step", "900");
-    expect(input).toHaveAttribute("tabindex", "2");
+    expect(screen.getByRole("option", { name: "Hour 07" })).toBeDisabled();
+
+    fireEvent.click(screen.getByRole("option", { name: "Hour 09" }));
+    fireEvent.click(screen.getByRole("option", { name: "Minute 30" }));
+
+    expect(screen.getByLabelText("Start time")).toHaveValue("09:30");
   });
 
   it("uses scoped row names inside row fields", () => {
