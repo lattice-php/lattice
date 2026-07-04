@@ -18,6 +18,8 @@ import {
   parseDateTimeValue,
   parseDateValue,
 } from "./date-picker-value";
+import { TimePicker } from "./time-picker";
+import { parseTimeString } from "./time-picker-columns";
 
 export type DatePickerControlProps = {
   mode: "date" | "date-time";
@@ -212,22 +214,15 @@ export function DatePickerControl({
               </tbody>
             </table>
             {mode === "date-time" ? (
-              <Input
-                aria-label={`${label || name} time`}
+              <TimePicker
+                value={parseTimeString(formatTimeInputValue(selected[0], timezone))}
+                onChange={(next) =>
+                  api.setTime({ hour: next.hour, minute: next.minute, second: next.second })
+                }
+                step={step}
                 disabled={disabled}
-                onChange={(event) => {
-                  const [hour = "0", minute = "0", second = "0"] = event.target.value.split(":");
-
-                  api.setTime({
-                    hour: Number(hour),
-                    minute: Number(minute),
-                    second: Number(second),
-                  });
-                }}
                 readOnly={readOnly}
-                step={step ?? undefined}
-                type="time"
-                value={formatTimeInputValue(selected[0], timezone)}
+                testId={`${testId}-time`}
               />
             ) : null}
           </div>
