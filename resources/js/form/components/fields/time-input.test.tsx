@@ -63,4 +63,36 @@ describe("TimeInputComponent", () => {
 
     expect(screen.getByLabelText("Start time")).toHaveAttribute("name", "items[0][starts_at]");
   });
+
+  it("keeps a seconds-enabled value intact while typing and normalizes on blur", () => {
+    renderField(
+      fakeNode({
+        type: "field.time-input",
+        props: { name: "starts_at", label: "Start time", step: 1 },
+      }),
+    );
+
+    const input = screen.getByLabelText("Start time");
+
+    fireEvent.change(input, { target: { value: "10:15" } });
+    expect(input).toHaveValue("10:15");
+
+    fireEvent.change(input, { target: { value: "10:15:30" } });
+    fireEvent.blur(input);
+
+    expect(input).toHaveValue("10:15:30");
+  });
+
+  it("normalizes a complete value on blur", () => {
+    renderField(
+      fakeNode({ type: "field.time-input", props: { name: "starts_at", label: "Start time" } }),
+    );
+
+    const input = screen.getByLabelText("Start time");
+
+    fireEvent.change(input, { target: { value: "9:30" } });
+    fireEvent.blur(input);
+
+    expect(input).toHaveValue("09:30");
+  });
 });

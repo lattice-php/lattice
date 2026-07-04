@@ -27,12 +27,16 @@ export const TimeInputComponent: RendererComponent<"field.time-input"> = ({ node
             disabled={disabled}
             id={name}
             name={name}
-            onBlur={blur}
-            onChange={(event) => {
-              const parsed = parseTimeString(event.target.value);
+            onBlur={() => {
+              const parsed = parseTimeString(value);
 
-              commit(parsed ? formatTimeValue(parsed, withSeconds) : event.target.value);
+              if (parsed) {
+                commit(formatTimeValue(parsed, withSeconds));
+              }
+
+              blur();
             }}
+            onChange={(event) => commit(event.target.value)}
             readOnly={readOnly}
             tabIndex={props.tabIndex ?? undefined}
             type="text"
