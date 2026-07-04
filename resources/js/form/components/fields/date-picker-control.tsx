@@ -1,7 +1,7 @@
 import type { DateValue } from "@internationalized/date";
 import * as datePicker from "@zag-js/date-picker";
 import { normalizeProps, useMachine } from "@zag-js/react";
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo } from "react";
 import { Button } from "@lattice-php/lattice/core/components/button";
 import { Icon } from "@lattice-php/lattice/icons";
 import { useLocale } from "@lattice-php/lattice/i18n";
@@ -19,7 +19,7 @@ import {
   parseDateValue,
 } from "./date-picker-value";
 import { TimePicker } from "./time-picker";
-import { parseTimeString, type TimeValue } from "./time-picker-columns";
+import { parseTimeString } from "./time-picker-columns";
 
 export type DatePickerControlProps = {
   mode: "date" | "date-time";
@@ -102,19 +102,6 @@ export function DatePickerControl({
   const { name: _inputName, onInput, ...inputProps } = api.getInputProps();
   const submittedValue =
     mode === "date" ? formatDateValue(selected[0]) : formatDateTimeValue(selected[0], timezone);
-
-  // Zag applies api.setTime() on the next microtask, so consecutive column
-  // edits in the same tick would otherwise merge against a stale committed
-  // value. Hold the last requested time in state (forcing a synchronous
-  // re-render) until the machine catches up.
-  const [pendingTimeValue, setPendingTimeValue] = useState<TimeValue | null>(null);
-  const committedTimeValue = parseTimeString(formatTimeInputValue(selected[0], timezone));
-
-  if (pendingTimeValue && timeValuesEqual(pendingTimeValue, committedTimeValue)) {
-    setPendingTimeValue(null);
-  }
-
-  const timeValue = pendingTimeValue ?? committedTimeValue;
 
   return (
     <div {...api.getRootProps()} className={cn("relative", api.open && "z-lt-popover")}>
@@ -228,11 +215,10 @@ export function DatePickerControl({
             </table>
             {mode === "date-time" ? (
               <TimePicker
-                value={timeValue}
-                onChange={(next) => {
-                  setPendingTimeValue(next);
-                  api.setTime({ hour: next.hour, minute: next.minute, second: next.second });
-                }}
+                value={parseTimeString(formatTimeInputValue(selected[0], timezone))}
+                onChange={(next) =>
+                  api.setTime({ hour: next.hour, minute: next.minute, second: next.second })
+                }
                 step={step}
                 disabled={disabled}
                 readOnly={readOnly}
@@ -254,13 +240,4 @@ function normalizeDateInputValue(value: string): string | undefined {
   }
 
   return `${compact.slice(0, 4)}-${compact.slice(4, 6)}-${compact.slice(6, 8)}`;
-}
-
-function timeValuesEqual(left: TimeValue, right: TimeValue | null): boolean {
-  return (
-    right != null &&
-    left.hour === right.hour &&
-    left.minute === right.minute &&
-    left.second === right.second
-  );
 }

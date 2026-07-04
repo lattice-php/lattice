@@ -104,6 +104,13 @@ describe("DateTimeInputComponent", () => {
     });
 
     fireEvent.click(screen.getByRole("option", { name: "Hour 14" }));
+
+    await waitFor(() => {
+      expect(document.querySelector('input[name="starts_at"]')).toHaveValue(
+        "2026-06-19T14:00:00 Europe/Berlin",
+      );
+    });
+
     fireEvent.click(screen.getByRole("option", { name: "Minute 30" }));
 
     await waitFor(() => {
