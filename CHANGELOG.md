@@ -1,5 +1,52 @@
 # Changelog
 
+## [0.16.0](https://github.com/lattice-php/lattice/compare/0.15.0...0.16.0) (2026-07-04)
+
+
+### Features
+
+* add clock icon for the time picker trigger ([39065c6](https://github.com/lattice-php/lattice/commit/39065c610c52ddc2c9fc4b5f91d515ded5e49d7f))
+* add compact notation to NumberColumn ([927a03c](https://github.com/lattice-php/lattice/commit/927a03c2e6da62c49443fa5219142f3da7f09d49))
+* add DateFormat descriptor ([b9880b3](https://github.com/lattice-php/lattice/commit/b9880b34ba80512c3f65903ef3a24cac756c37ec))
+* add DateFormat::month() and monthYear() field formats ([5450ea3](https://github.com/lattice-php/lattice/commit/5450ea3b43e0269d1cadd850e946b1cc6ea41831))
+* add formatValue dispatcher ([2bf74b7](https://github.com/lattice-php/lattice/commit/2bf74b76dcc1a2be5478bcf8f2e6fc6a3f00f97c))
+* add NumberFormat descriptor ([dedaaea](https://github.com/lattice-php/lattice/commit/dedaaea5e639e439fc2137b479314cdffc06db13))
+* add scrollable-column TimePicker control ([ce23b22](https://github.com/lattice-php/lattice/commit/ce23b228f83479d6ef1018795d143b93ffbdf0fb))
+* add time-picker column model ([ef4942b](https://github.com/lattice-php/lattice/commit/ef4942b15b9806431746ca46ee8a5d045b867eb8))
+* add value and category format to Chart ([f3d694a](https://github.com/lattice-php/lattice/commit/f3d694a4eef32d08674af5e6f10fb2a7647d18d3))
+* add workbench charts gallery page and appearance switcher ([8722822](https://github.com/lattice-php/lattice/commit/8722822c896990bb6d49958c37a4f6845753c3ab))
+* chart value & category formatting + dedicated Charts docs ([d342e61](https://github.com/lattice-php/lattice/commit/d342e61f9c92588dd95aa3effd77a15955fac75a))
+* custom in-popover time picker for DateTimeInput and TimeInput ([06a888e](https://github.com/lattice-php/lattice/commit/06a888e4063dffb9ccae146aba8591482693162b))
+* format chart axes and tooltip from value and category formats ([6b28f40](https://github.com/lattice-php/lattice/commit/6b28f4060139686d92239ca1fa492dca6181df91))
+* give standalone TimeInput a picker popover with a typeable input ([e3f85b4](https://github.com/lattice-php/lattice/commit/e3f85b425bb740532dc300cd60662edddfcd8973))
+* use TimePicker for the DateTimeInput time control ([5919d86](https://github.com/lattice-php/lattice/commit/5919d8651aa097e8944780867a8470b0b181df05))
+
+
+### Bug Fixes
+
+* normalize TimeInput text on blur instead of every keystroke ([9a06350](https://github.com/lattice-php/lattice/commit/9a0635013680632452698186be8e0ae7a508f082))
+* satisfy new chart format props in test and docs fixtures ([dade0c1](https://github.com/lattice-php/lattice/commit/dade0c11c53e91051dfb5cc59eb58db5a0c65e95))
+* theme the chart hover cursor so bar backgrounds adapt to light and dark ([2419211](https://github.com/lattice-php/lattice/commit/2419211bc82ada877f10d9bc5f7d023461a13d48))
+* theme the chart tooltip for dark mode ([62d6196](https://github.com/lattice-php/lattice/commit/62d61962656a2c059fea02fbcc5ead5e31c3ba93))
+* update column guard and docs fixtures for chart formatting ([bee2e85](https://github.com/lattice-php/lattice/commit/bee2e8545b00d27c1b7cb099afdffc995605a93a))
+
+
+### Refactoring
+
+* extract shared formatNumber and adopt it in table cells ([4fb7e45](https://github.com/lattice-php/lattice/commit/4fb7e457f6ce61cdb9d029ccc8f11ed1d1ac6a2a))
+* format workbench chart months from raw dates, drop month translations ([2412b65](https://github.com/lattice-php/lattice/commit/2412b65557df39f3ce266d9930b8eff0a5cb68ca))
+* keep Zag as sole source of truth for the datetime time control ([e8418b7](https://github.com/lattice-php/lattice/commit/e8418b7ac7d8774e666ff04a46b740dacc79d016))
+* move NumberFormatUnit and DateTimeStyle to Core\Enums ([6cab818](https://github.com/lattice-php/lattice/commit/6cab81804edbd0d3161617e10af23507a96060a4))
+
+
+### Documentation
+
+* add dedicated Charts page under a Components section ([a82e3e1](https://github.com/lattice-php/lattice/commit/a82e3e19816a105c4d34012ef93ecd4ea6470217))
+* describe the DateTimeInput time picker columns ([8b9d83f](https://github.com/lattice-php/lattice/commit/8b9d83f1448a7d9b1e56b3f133abbe795bde8c53))
+* document chart value and category formatting ([1481472](https://github.com/lattice-php/lattice/commit/1481472261d34585af893c309d1909e20366fba4))
+* document DateFormat month and monthYear formats ([64b9cc2](https://github.com/lattice-php/lattice/commit/64b9cc290166d66a24f92e20d0dd2558f9f0767c))
+* fix relocated enum namespace and document NumberColumn compact ([6e2172b](https://github.com/lattice-php/lattice/commit/6e2172bfa2f5173d62f05c3d3e38d718ac5da68c))
+
 ## [0.15.0](https://github.com/lattice-php/lattice/compare/0.14.0...0.15.0) (2026-07-03)
 
 
