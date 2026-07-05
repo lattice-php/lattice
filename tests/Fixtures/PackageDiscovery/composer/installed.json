@@ -1,0 +1,13 @@
+{
+    "packages": [
+        {
+            "name": "acme/widget",
+            "install-path": "../acme/widget",
+            "extra": { "lattice": { "discover": ["src"] } }
+        },
+        {
+            "name": "acme/plain",
+            "install-path": "../acme/plain"
+        }
+    ]
+}

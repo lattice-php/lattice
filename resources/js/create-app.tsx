@@ -1,7 +1,7 @@
 import { createInertiaApp } from "@inertiajs/react";
 import type { ReactElement } from "react";
 import { initializeTheme } from "./appearance";
-import type { Registry } from "./core/registry";
+import { extendRegistry, type Plugin, type Registry } from "./core/registry";
 import { setDefaultRegistry } from "./core/registry-context";
 import type { SpriteValue } from "./icons/sprite";
 import {
@@ -20,6 +20,12 @@ export type CreateLatticeAppOptions = Omit<
   "resolve" | "layout" | "setup" | "withApp" | "pages"
 > & {
   registry?: Registry;
+  /**
+   * Component-package plugins to merge onto the registry — pass the
+   * Composer-discovered `virtual:lattice/plugins` here to register vendor
+   * components with no manual `extendRegistry` call.
+   */
+  plugins?: Plugin[];
   sprite?: SpriteValue;
   /** Normal Inertia page modules, e.g. `import.meta.glob('./pages/**\/*.tsx')`. */
   pages?: PageModules;
@@ -34,13 +40,16 @@ export type CreateLatticeAppOptions = Omit<
  */
 export function createLatticeApp({
   registry,
+  plugins,
   sprite,
   pages = {},
   defaultLayout,
   strictMode = true,
   ...inertiaOptions
 }: CreateLatticeAppOptions = {}) {
-  const activeRegistry = registry ?? defaultRegistry;
+  const baseRegistry = registry ?? defaultRegistry;
+  const activeRegistry =
+    plugins && plugins.length > 0 ? extendRegistry(baseRegistry, ...plugins) : baseRegistry;
 
   setDefaultRegistry(activeRegistry);
 

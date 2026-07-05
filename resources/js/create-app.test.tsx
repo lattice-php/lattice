@@ -73,6 +73,22 @@ describe("createLatticeApp", () => {
     expect((wrapped.props as { sprite: unknown }).sprite).toBe(sprite);
   });
 
+  it("merges component-package plugins onto the registry", () => {
+    const Widget = (): null => null;
+
+    createLatticeApp({
+      plugins: [
+        { name: "acme", components: { "acme.widget": { component: Widget, mode: "eager" } } },
+      ],
+    });
+
+    const wrapped = captureOptions().withApp(<div />);
+    const registry = (wrapped.props as { registry: { components: Record<string, unknown> } })
+      .registry;
+
+    expect(registry.components["acme.widget"]).toBeDefined();
+  });
+
   it("defaults strictMode on and forwards other inertia options", () => {
     const title = (value: string): string => value;
 
