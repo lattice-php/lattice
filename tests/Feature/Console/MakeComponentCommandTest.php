@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 use function Pest\Laravel\artisan;
 
@@ -32,6 +33,32 @@ it('scaffolds a component class with the AsComponent attribute and registers it'
             ->toContain('import { RatingComponent } from "./components/rating";')
             ->toContain('"rating": eagerComponent(RatingComponent)');
     });
+});
+
+it('scaffolds into a Composer package via --package', function (): void {
+    $dir = sys_get_temp_dir().'/lattice-pkg-'.Str::random(8);
+    File::ensureDirectoryExists($dir);
+    File::put($dir.'/composer.json', (string) json_encode([
+        'name' => 'acme/widgets',
+        'autoload' => ['psr-4' => ['Acme\\Widgets\\' => 'src/']],
+    ]));
+
+    try {
+        artisan('lattice:component', ['name' => 'Widget', '--package' => $dir])->assertSuccessful();
+
+        expect(File::get($dir.'/src/Components/Widget.php'))
+            ->toContain('namespace Acme\\Widgets\\Components;')
+            ->toContain("#[AsComponent('widget')]");
+
+        expect(File::exists($dir.'/resources/js/widget.tsx'))->toBeTrue();
+
+        expect(File::get($dir.'/resources/js/plugin.ts'))
+            ->toContain('createPlugin')
+            ->toContain('import { WidgetComponent } from "./widget";')
+            ->toContain('"widget": eagerComponent(WidgetComponent)');
+    } finally {
+        File::deleteDirectory($dir);
+    }
 });
 
 it('honors a --type override', function (): void {

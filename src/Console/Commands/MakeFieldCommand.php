@@ -12,7 +12,7 @@ final class MakeFieldCommand extends Command
 {
     use GeneratesComponentPair;
 
-    protected $signature = 'lattice:field {name} {--type=} {--force}';
+    protected $signature = 'lattice:field {name} {--type=} {--package=} {--force}';
 
     protected $description = 'Scaffold a custom Lattice form field (PHP + React)';
 
@@ -25,24 +25,23 @@ final class MakeFieldCommand extends Command
         $kebab = Str::kebab($name);
         $force = (bool) $this->option('force');
 
+        $target = $this->scaffoldTarget($name, $kebab, 'Forms/Fields', 'fields', 'App\\Forms\\Fields');
+
         $this->writeStub(
             'field.php.stub',
-            app_path('Forms/Fields/'.$name.'.php'),
-            ['namespace' => 'App\\Forms\\Fields', 'class' => $name, 'type' => $attributeType], force: $force);
+            $target['php'],
+            ['namespace' => $target['namespace'], 'class' => $name, 'type' => $attributeType], force: $force);
 
         $this->writeStub(
             'field.tsx.stub',
-            resource_path('js/fields/'.$kebab.'.tsx'),
+            $target['tsx'],
             ['class' => $name, 'type' => $wireType], force: $force);
 
-        $this->registerInPlugin(
-            resource_path('js/registry.ts'),
-            $wireType,
-            $name.'Component',
-            './fields/'.$kebab,
-        );
+        $this->registerInPlugin($target['plugin'], $wireType, $name.'Component', $target['import']);
 
-        $this->refreshTypes();
+        if ($target['refresh']) {
+            $this->refreshTypes();
+        }
 
         $this->components->info("Field [$name] created with type [$wireType].");
 

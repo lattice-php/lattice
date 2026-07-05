@@ -12,7 +12,7 @@ final class MakeColumnCommand extends Command
 {
     use GeneratesComponentPair;
 
-    protected $signature = 'lattice:column {name} {--type=} {--force}';
+    protected $signature = 'lattice:column {name} {--type=} {--package=} {--force}';
 
     protected $description = 'Scaffold a custom Lattice table column (PHP + React cell)';
 
@@ -25,26 +25,30 @@ final class MakeColumnCommand extends Command
         $kebab = Str::kebab($name);
         $force = (bool) $this->option('force');
 
+        $target = $this->scaffoldTarget($name, $kebab, 'Tables/Columns', 'columns', 'App\\Tables\\Columns');
+
         $this->writeStub(
             'column.php.stub',
-            app_path('Tables/Columns/'.$name.'.php'),
-            ['namespace' => 'App\\Tables\\Columns', 'class' => $name, 'type' => $attributeType], force: $force);
+            $target['php'],
+            ['namespace' => $target['namespace'], 'class' => $name, 'type' => $attributeType], force: $force);
 
         $this->writeStub(
             'column.tsx.stub',
-            resource_path('js/columns/'.$kebab.'.tsx'),
+            $target['tsx'],
             ['class' => $name, 'type' => $type], force: $force);
 
         $this->registerInPlugin(
-            resource_path('js/registry.ts'),
+            $target['plugin'],
             $wireType,
             $name.'Cell',
-            './columns/'.$kebab,
+            $target['import'],
             blockKey: 'columns',
             entryWrapper: null,
         );
 
-        $this->refreshTypes();
+        if ($target['refresh']) {
+            $this->refreshTypes();
+        }
 
         $this->components->info("Column [$name] created with type [$wireType].");
 
