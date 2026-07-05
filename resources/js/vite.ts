@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { svgSprite } from "@lattice-php/vite-svg-sprite";
 import type { SvgSpriteOptions } from "@lattice-php/vite-svg-sprite";
@@ -34,7 +35,12 @@ type Roots = {
 };
 
 export function lattice(options: LatticeViteOptions = {}): PluginOption[] {
-  const plugins: PluginOption[] = [corePlugin(options), optionalPeersPlugin()];
+  const { appRoot } = resolveRoots(options);
+  const plugins: PluginOption[] = [
+    corePlugin(options),
+    optionalPeersPlugin(),
+    componentPackagesPlugin(discoverComponentPackages(appRoot)),
+  ];
   const iconOptions = resolveIconOptions(options);
 
   if (iconOptions) {
@@ -42,6 +48,97 @@ export function lattice(options: LatticeViteOptions = {}): PluginOption[] {
   }
 
   return plugins;
+}
+
+/** A Composer package that contributes a Lattice component plugin. */
+export type LatticeComponentPackage = {
+  name: string;
+  /** Absolute path to the package's installed directory. */
+  dir: string;
+  /** Absolute path to the package's JS plugin entry (its `createPlugin(...)`). */
+  plugin: string;
+};
+
+type InstalledPackage = {
+  name: string;
+  "install-path"?: string;
+  extra?: { lattice?: { plugin?: string } };
+};
+
+/**
+ * Resolve every Composer package that declares `extra.lattice.plugin` into an
+ * absolute plugin-entry path. `installPathsRelativeTo` is `vendor/composer` (the
+ * dir `installed.json` records its `install-path`s against).
+ */
+export function collectComponentPackages(
+  installed: { packages?: InstalledPackage[] } | InstalledPackage[],
+  installPathsRelativeTo: string,
+): LatticeComponentPackage[] {
+  const packages = Array.isArray(installed) ? installed : (installed.packages ?? []);
+
+  return packages.flatMap((pkg) => {
+    const entry = pkg.extra?.lattice?.plugin;
+
+    if (typeof entry !== "string") {
+      return [];
+    }
+
+    const dir = path.resolve(installPathsRelativeTo, pkg["install-path"] ?? `../${pkg.name}`);
+
+    return [{ name: pkg.name, dir, plugin: path.resolve(dir, entry) }];
+  });
+}
+
+/** Read `<appRoot>/vendor/composer/installed.json` and collect component packages. */
+export function discoverComponentPackages(appRoot: string): LatticeComponentPackage[] {
+  const composerDir = path.resolve(appRoot, "vendor/composer");
+
+  let raw: string;
+
+  try {
+    raw = readFileSync(path.join(composerDir, "installed.json"), "utf8");
+  } catch {
+    return [];
+  }
+
+  return collectComponentPackages(JSON.parse(raw), composerDir);
+}
+
+const VIRTUAL_PLUGINS_ID = "virtual:lattice/plugins";
+const RESOLVED_VIRTUAL_PLUGINS_ID = `\0${VIRTUAL_PLUGINS_ID}`;
+
+/**
+ * Exposes the discovered component packages as `virtual:lattice/plugins` — a
+ * module whose default export is the array of their `createPlugin(...)` results,
+ * ready for `extendRegistry(registry, ...plugins)`. Also grants Vite filesystem
+ * access to each package dir so its source compiles from `vendor/` (or a symlink).
+ */
+export function componentPackagesPlugin(packages: LatticeComponentPackage[]): Plugin {
+  return {
+    name: "lattice:component-packages",
+    config() {
+      if (packages.length === 0) {
+        return {};
+      }
+
+      return { server: { fs: { allow: packages.map((pkg) => pkg.dir) } } };
+    },
+    resolveId(id) {
+      return id === VIRTUAL_PLUGINS_ID ? RESOLVED_VIRTUAL_PLUGINS_ID : null;
+    },
+    load(id) {
+      if (id !== RESOLVED_VIRTUAL_PLUGINS_ID) {
+        return null;
+      }
+
+      const imports = packages
+        .map((pkg, index) => `import p${index} from ${JSON.stringify(pkg.plugin)};`)
+        .join("\n");
+      const list = packages.map((_, index) => `p${index}`).join(", ");
+
+      return `${imports}\nexport default [${list}];\n`;
+    },
+  };
 }
 
 export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest {

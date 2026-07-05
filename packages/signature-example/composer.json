@@ -1,0 +1,17 @@
+{
+    "name": "lattice-php/signature-example",
+    "description": "Example third-party package contributing a custom Lattice component via Composer only.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Lattice\\SignatureExample\\": "src/"
+        }
+    },
+    "extra": {
+        "lattice": {
+            "plugin": "resources/js/plugin.ts",
+            "discover": ["src"]
+        }
+    }
+}

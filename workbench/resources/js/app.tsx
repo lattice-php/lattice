@@ -12,10 +12,11 @@ import {
 import { configureI18nFromPageProps, LocaleReload } from "@lattice-php/lattice/i18n";
 import { createRoot } from "react-dom/client";
 import sprite from "virtual:svg-sprite";
+import latticePlugins from "virtual:lattice/plugins";
 import { appColumns } from "./columns";
 import { WORKBENCH_I18N_NAMESPACE } from "./i18n";
 
-const appRegistry = extendRegistry(registry, appColumns);
+const appRegistry = extendRegistry(registry, appColumns, ...latticePlugins);
 
 type ReverbProp = {
   host: string;

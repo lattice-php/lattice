@@ -9,6 +9,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import Sonda from "sonda/vite";
 import type { Plugin } from "vite";
+import { componentPackagesPlugin, discoverComponentPackages } from "./resources/js/vite";
 import dts from "vite-plugin-dts";
 import { defineConfig } from "vitest/config";
 
@@ -156,6 +157,10 @@ export default defineConfig(({ mode }) => {
               refresh: ["workbench/resources/**", "workbench/routes/**", "resources/js/**"],
             }),
             inertia(),
+            // The workbench acts as a Lattice consumer: auto-discover component
+            // packages installed via Composer and expose them as
+            // `virtual:lattice/plugins` (external apps get this from `lattice()`).
+            componentPackagesPlugin(discoverComponentPackages(__dirname)),
           ]),
       react(),
       ...(isLibrary
