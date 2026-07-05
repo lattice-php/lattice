@@ -58,12 +58,12 @@ trait GeneratesComponentPair
 
     private function packageNamespace(string $packageDir): string
     {
-        $composer = json_decode((string) File::get($packageDir.'/composer.json'), true);
+        $composer = json_decode(File::get($packageDir.'/composer.json'), true);
         $psr4 = is_array($composer['autoload']['psr-4'] ?? null) ? $composer['autoload']['psr-4'] : [];
 
         foreach ($psr4 as $namespace => $path) {
             if (is_string($path) && rtrim($path, '/') === 'src') {
-                return rtrim($namespace, '\\');
+                return rtrim((string) $namespace, '\\');
             }
         }
 
@@ -78,7 +78,7 @@ trait GeneratesComponentPair
             return;
         }
 
-        $composer = json_decode((string) File::get($packageDir.'/composer.json'), true);
+        $composer = json_decode(File::get($packageDir.'/composer.json'), true);
         $name = is_string($composer['name'] ?? null) ? $composer['name'] : basename($packageDir);
 
         File::ensureDirectoryExists(dirname($pluginPath));
