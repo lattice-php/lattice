@@ -22,6 +22,7 @@ it('adds a filter through the column popover', function (): void {
     seedNamedWorkbenchUsers();
 
     visit('/')
+        ->assertSee('Ada Lovelace')
         ->click('@filter-name')
         ->fill('[aria-label="Name filter value"]', 'Grace')
         ->keys('[aria-label="Name filter value"]', 'Enter')

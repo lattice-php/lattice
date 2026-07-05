@@ -11,3 +11,13 @@ parameters:
     excludePaths:
         # Pest's arch() DSL is a runtime fluent API PHPStan cannot statically model.
         - tests/ArchTest.php
+    # peststan (0.2.10) memoizes expectation analysis keyed by spl_object_id() of
+    # short-lived AST nodes and Type objects; PHP recycles those ids after GC, so
+    # within a parallel worker a later file collides with a stale cache entry and
+    # these two rules fire nondeterministically — including on non-expect() calls
+    # (e.g. a Laravel Http ->json()). CI-only, different file each run. Suppress
+    # the two affected rules; the rest of peststan is unaffected.
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - identifier: pest.expectation.requiresString
+        - identifier: pest.expectation.impossible

@@ -5,10 +5,21 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tests;
 
 use Lattice\Lattice\Tests\Browser\Support\ReverbServer;
+use Pest\Browser\Playwright\Playwright;
 
 class BrowserTestCase extends TestCase
 {
     private static ?ReverbServer $reverb = null;
+
+    #[\Override]
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // CI runners are slower than Playwright's tight 5s default, which
+        // intermittently trips browser actions/assertions under load.
+        Playwright::setTimeout(15_000);
+    }
 
     protected function bootReverb(): void
     {
