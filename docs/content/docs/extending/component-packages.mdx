@@ -1,0 +1,121 @@
+---
+title: Component packages
+description: Ship a custom component — PHP and its React renderer — as a Composer package, with no npm publish.
+---
+
+import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
+
+The [extension points](/extending/overview/) assume a component lives in your own app. To _distribute_ one — a signature pad, a chart widget, a domain-specific field — you would normally also publish an npm package for its React renderer, and keep it in lockstep with the PHP side. Lattice avoids that second release pipeline: because a consuming app already pulls Lattice itself from `vendor/` through the `lattice()` Vite plugin, a component package ships its renderer as source in `vendor/` too. A plain `composer require` is enough.
+
+## What a package ships
+
+Four things — or scaffold them with `php artisan lattice:component Signature --package=.`:
+
+**1. A `composer.json` declaring the two Lattice entry points:**
+
+```json
+{
+  "name": "acme/lattice-signature",
+  "autoload": { "psr-4": { "Acme\\Signature\\": "src/" } },
+  "extra": {
+    "lattice": {
+      "plugin": "resources/js/plugin.ts",
+      "discover": ["src"]
+    }
+  }
+}
+```
+
+**2. The PHP component, carrying its wire `type`:**
+
+```php
+use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Core\Components\Component;
+
+#[AsComponent('signature')]
+final class Signature extends Component
+{
+    public string $label = 'Sign here';
+}
+```
+
+**3. The React renderer for that type:**
+
+```tsx
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
+
+const Signature: RendererComponent<"signature"> = ({ node }) => (
+  <div className="rounded-lt-sm border border-lt-border p-4 text-lt-fg">
+    {String(node.props?.label ?? "Sign here")}
+  </div>
+);
+
+export default Signature;
+```
+
+**4. The plugin entry that registers it:**
+
+```ts
+import { createPlugin, lazyComponent } from "@lattice-php/lattice";
+
+export default createPlugin({
+  name: "acme-signature",
+  components: {
+    signature: lazyComponent(() => import("./signature")),
+  },
+});
+```
+
+## How it reaches the app
+
+The two `extra.lattice` keys are each read by one side of the stack:
+
+- **`plugin`** — the `lattice()` Vite plugin scans `vendor/composer/installed.json`, and for every package that declares it, grants Vite filesystem access to the package directory and exposes its plugin under the virtual module `virtual:lattice/plugins`. The package's TSX compiles straight into the consumer's bundle: no separate build step, one shared React instance, full tree-shaking.
+- **`discover`** — Lattice's PHP discovery merges these roots into `lattice.discover`, so the package's `#[AsComponent]` classes are picked up by `php artisan lattice:typescript` (which types `node.props` for the package's components) and by definition discovery for any forms, tables, or pages the package also ships.
+
+## Installing one
+
+For the consumer, it is a single dependency:
+
+```bash
+composer require acme/lattice-signature
+```
+
+Register the discovered plugins where the app is created:
+
+```ts
+import latticePlugins from "virtual:lattice/plugins";
+
+createLatticeApp({ plugins: latticePlugins });
+```
+
+Or merge them onto the registry yourself with `extendRegistry(registry, ...latticePlugins)`. Then use the component like any built-in:
+
+```php
+Signature::make('signature')->label('Sign the contract');
+```
+
+<Info>
+  Run `php artisan lattice:typescript` after installing a package to refresh the `ComponentProps`
+  augmentation, so `node.props` is typed for its components.
+</Info>
+
+<Warning title="Requires the Vite plugin">
+  Build-time discovery only runs when the consuming app uses Lattice's `lattice()` Vite plugin —
+  that plugin reads `installed.json`, provides `virtual:lattice/plugins`, and grants filesystem
+  access to the vendor package so its source can compile. Apps scaffolded from the Lattice starter
+  kit already have it.
+</Warning>
+
+## Styling
+
+<Warning title="Style with Lattice tokens">
+  Use Lattice's `lt-` design tokens — `bg-lt-surface`, `text-lt-fg`, `border-lt-border`,
+  `rounded-lt-sm` — in a package component. They ship pre-compiled in `@lattice-php/lattice/css`, so
+  the component is themed correctly with no extra Tailwind configuration in the consuming app.
+  Arbitrary utility classes would instead require every consumer to add the vendor path to their
+  Tailwind content sources.
+</Warning>
+
+See [Registry and types](/extending/registry-and-types/) for how the `type` string couples the two sides, and how generated types keep `node.props` sound.

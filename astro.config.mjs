@@ -146,6 +146,7 @@ export default defineConfig({
             { label: "Custom fields", link: "/extending/custom-fields/" },
             { label: "Custom columns", link: "/extending/custom-columns/" },
             { label: "Registry and types", link: "/extending/registry-and-types/" },
+            { label: "Component packages", link: "/extending/component-packages/" },
           ],
         },
         {
