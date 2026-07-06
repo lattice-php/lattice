@@ -3,7 +3,13 @@ import path from "node:path";
 import { searchForWorkspaceRoot } from "vite";
 import type { Plugin } from "vite";
 import { describe, expect, it } from "vitest";
-import { lattice, latticeConfig } from "./vite";
+import {
+  collectComponentPackages,
+  componentPackagesPlugin,
+  discoverComponentPackages,
+  lattice,
+  latticeConfig,
+} from "./vite";
 
 type PackageJson = {
   exports: Record<string, unknown>;
@@ -105,6 +111,66 @@ describe("lattice Vite helper", () => {
     expect(resolved).toBeNull();
     expect(await resolveId.call({ resolve: async () => null }, "react")).toBeNull();
     expect(load("react")).toBeNull();
+  });
+
+  it("resolves plugin entries only for packages that declare extra.lattice.plugin", () => {
+    const composerDir = path.resolve("/tmp/app/vendor/composer");
+
+    const packages = collectComponentPackages(
+      {
+        packages: [
+          {
+            name: "acme/signature",
+            "install-path": "../acme/signature",
+            extra: { lattice: { plugin: "resources/js/plugin.ts" } },
+          },
+          { name: "acme/plain", "install-path": "../acme/plain" },
+        ],
+      },
+      composerDir,
+    );
+
+    expect(packages).toEqual([
+      {
+        name: "acme/signature",
+        dir: path.resolve("/tmp/app/vendor/acme/signature"),
+        plugin: path.resolve("/tmp/app/vendor/acme/signature/resources/js/plugin.ts"),
+      },
+    ]);
+  });
+
+  it("exposes the discovered plugins as the virtual:lattice/plugins module", () => {
+    const plugin = componentPackagesPlugin([
+      {
+        name: "acme/signature",
+        dir: "/app/vendor/acme/signature",
+        plugin: "/app/vendor/acme/signature/resources/js/plugin.ts",
+      },
+    ]);
+    const resolveId = plugin.resolveId as unknown as (id: string) => string | null;
+    const load = plugin.load as unknown as (id: string) => string | null;
+    const config = plugin.config as unknown as () => unknown;
+
+    const resolved = resolveId("virtual:lattice/plugins");
+
+    expect(resolved).toBe("\0virtual:lattice/plugins");
+
+    const code = load(resolved as string) ?? "";
+
+    expect(code).toContain('import p0 from "/app/vendor/acme/signature/resources/js/plugin.ts";');
+    expect(code).toContain("export default [p0];");
+    expect(config()).toMatchObject({ server: { fs: { allow: ["/app/vendor/acme/signature"] } } });
+  });
+
+  it("degrades to an empty plugin list when nothing is discoverable", () => {
+    expect(discoverComponentPackages(path.resolve("/tmp/lattice-missing"))).toEqual([]);
+
+    const plugin = componentPackagesPlugin([]);
+    const load = plugin.load as unknown as (id: string) => string | null;
+    const config = plugin.config as unknown as () => unknown;
+
+    expect(load("\0virtual:lattice/plugins")).toContain("export default [];");
+    expect(config()).toEqual({});
   });
 
   it("keeps package exports explicit and internal test helpers private", () => {

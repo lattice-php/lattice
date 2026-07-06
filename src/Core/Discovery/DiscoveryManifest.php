@@ -86,12 +86,11 @@ final class DiscoveryManifest
     public static function configuredPaths(): array
     {
         $configured = config('lattice.discover', []);
+        $configured = is_array($configured)
+            ? array_values(array_filter($configured, is_string(...)))
+            : [];
 
-        if (! is_array($configured)) {
-            return [];
-        }
-
-        return array_values(array_filter($configured, is_string(...)));
+        return array_values(array_unique([...$configured, ...ComponentPackages::discoverRoots()]));
     }
 
     /** @return array<string, mixed> */

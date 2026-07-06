@@ -187,6 +187,9 @@
       "types": "./dist/vite.d.ts",
       "import": "./dist/vite.js"
     },
+    "./vite-client": {
+      "types": "./dist/vite-client.d.ts"
+    },
     "./package.json": "./package.json"
   },
   "files": [

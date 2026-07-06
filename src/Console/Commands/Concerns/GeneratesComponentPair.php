@@ -14,6 +14,117 @@ trait GeneratesComponentPair
     }
 
     /**
+     * Resolve where to scaffold the pair — the app by default, or a Composer
+     * package when `--package=<dir>` is passed. In package mode the PHP
+     * namespace comes from the package's composer.json psr-4 map, files land in
+     * the package's own `src/` and `resources/js/`, and registration targets its
+     * `plugin.ts` (created if absent) instead of the app's `registry.ts`.
+     *
+     * @return array{php: string, namespace: string, tsx: string, plugin: string, import: string, refresh: bool}
+     */
+    protected function scaffoldTarget(
+        string $name,
+        string $kebab,
+        string $phpSubdir,
+        string $tsxSubdir,
+        string $appNamespace,
+    ): array {
+        $package = $this->option('package');
+
+        if (! is_string($package) || trim($package) === '') {
+            return [
+                'php' => app_path($phpSubdir.'/'.$name.'.php'),
+                'namespace' => $appNamespace,
+                'tsx' => resource_path('js/'.$tsxSubdir.'/'.$kebab.'.tsx'),
+                'plugin' => resource_path('js/registry.ts'),
+                'import' => './'.$tsxSubdir.'/'.$kebab,
+                'refresh' => true,
+            ];
+        }
+
+        $dir = rtrim(trim($package), '/');
+        $this->ensurePackageComposer($dir);
+        $plugin = $dir.'/resources/js/plugin.ts';
+        $this->ensurePluginFile($plugin, $dir);
+
+        return [
+            'php' => $dir.'/src/'.$phpSubdir.'/'.$name.'.php',
+            'namespace' => $this->packageNamespace($dir).'\\'.str_replace('/', '\\', $phpSubdir),
+            'tsx' => $dir.'/resources/js/'.$kebab.'.tsx',
+            'plugin' => $plugin,
+            'import' => './'.$kebab,
+            'refresh' => false,
+        ];
+    }
+
+    /**
+     * Scaffold a Composer package on first use: when the target dir has no
+     * composer.json, derive a vendor/name and PSR-4 namespace from its basename
+     * (`acme-signature` → `acme/signature`, `Acme\Signature\`) and write a
+     * skeleton already wired with the `extra.lattice` entry points.
+     */
+    private function ensurePackageComposer(string $packageDir): void
+    {
+        $composerPath = $packageDir.'/composer.json';
+
+        if (File::exists($composerPath)) {
+            return;
+        }
+
+        $slug = Str::kebab(basename($packageDir));
+        [$vendor, $package] = str_contains($slug, '-')
+            ? explode('-', $slug, 2)
+            : [$slug, $slug];
+        $namespace = Str::studly($vendor).'\\'.Str::studly($package);
+
+        File::ensureDirectoryExists($packageDir);
+        File::put($composerPath, json_encode([
+            'name' => $vendor.'/'.$package,
+            'type' => 'library',
+            'autoload' => ['psr-4' => [$namespace.'\\' => 'src/']],
+            'extra' => ['lattice' => ['plugin' => 'resources/js/plugin.ts', 'discover' => ['src']]],
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES).PHP_EOL);
+
+        $this->components->info('Scaffolded package: '.$composerPath);
+    }
+
+    private function packageNamespace(string $packageDir): string
+    {
+        $composer = json_decode(File::get($packageDir.'/composer.json'), true);
+        $psr4 = is_array($composer['autoload']['psr-4'] ?? null) ? $composer['autoload']['psr-4'] : [];
+
+        foreach ($psr4 as $namespace => $path) {
+            if (is_string($path) && rtrim($path, '/') === 'src') {
+                return rtrim((string) $namespace, '\\');
+            }
+        }
+
+        $first = array_key_first($psr4);
+
+        return is_string($first) ? rtrim($first, '\\') : 'App';
+    }
+
+    private function ensurePluginFile(string $pluginPath, string $packageDir): void
+    {
+        if (File::exists($pluginPath)) {
+            return;
+        }
+
+        $composer = json_decode(File::get($packageDir.'/composer.json'), true);
+        $name = is_string($composer['name'] ?? null) ? $composer['name'] : basename($packageDir);
+
+        File::ensureDirectoryExists(dirname($pluginPath));
+        File::put(
+            $pluginPath,
+            'import { createPlugin } from "@lattice-php/lattice";'."\n\n"
+            .'export default createPlugin({'."\n"
+            .'  name: "'.$name.'",'."\n"
+            .'  components: {},'."\n"
+            .'});'."\n",
+        );
+    }
+
+    /**
      * @param  array<string, string>  $replacements
      */
     protected function writeStub(string $stub, string $targetPath, array $replacements, bool $force = false): void

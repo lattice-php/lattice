@@ -22,6 +22,15 @@
             "email": "manuel@christlieb.eu"
         }
     ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "packages/*",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
     "require": {
         "php": "^8.4",
         "illuminate/http": "^11.0 || ^12.0 || ^13.0",
@@ -39,6 +48,7 @@
         "barryvdh/laravel-ide-helper": "^3.7",
         "fruitcake/laravel-debugbar": "^4.3",
         "larastan/larastan": "^3.0",
+        "lattice-php/signature-example": "@dev",
         "laravel/boost": "^2.4",
         "laravel/pint": "^1.16",
         "laravel/reverb": "^1.10",

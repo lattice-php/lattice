@@ -11,7 +11,7 @@ final class MakeComponentCommand extends Command
 {
     use GeneratesComponentPair;
 
-    protected $signature = 'lattice:component {name} {--type=} {--force}';
+    protected $signature = 'lattice:component {name} {--type=} {--package=} {--force}';
 
     protected $description = 'Scaffold a custom Lattice UI component (PHP + React)';
 
@@ -22,24 +22,23 @@ final class MakeComponentCommand extends Command
         $kebab = Str::kebab($name);
         $force = (bool) $this->option('force');
 
+        $target = $this->scaffoldTarget($name, $kebab, 'Components', 'components', 'App\\Components');
+
         $this->writeStub(
             'component.php.stub',
-            app_path('Components/'.$name.'.php'),
-            ['namespace' => 'App\\Components', 'class' => $name, 'type' => $type], force: $force);
+            $target['php'],
+            ['namespace' => $target['namespace'], 'class' => $name, 'type' => $type], force: $force);
 
         $this->writeStub(
             'component.tsx.stub',
-            resource_path('js/components/'.$kebab.'.tsx'),
+            $target['tsx'],
             ['class' => $name, 'type' => $type], force: $force);
 
-        $this->registerInPlugin(
-            resource_path('js/registry.ts'),
-            $type,
-            $name.'Component',
-            './components/'.$kebab,
-        );
+        $this->registerInPlugin($target['plugin'], $type, $name.'Component', $target['import']);
 
-        $this->refreshTypes();
+        if ($target['refresh']) {
+            $this->refreshTypes();
+        }
 
         $this->components->info("Component [$name] created with type [$type].");
 

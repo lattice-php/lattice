@@ -134,17 +134,22 @@ Every Lattice route resolves to the same Inertia page component, `lattice/page`,
 ```tsx
 // resources/js/app.tsx
 /// <reference types="@lattice-php/lattice/svg-sprite-client" />
+/// <reference types="@lattice-php/lattice/vite-client" />
 import "../css/app.css";
 import { createLatticeApp } from "@lattice-php/lattice";
+import latticePlugins from "virtual:lattice/plugins";
 import sprite from "virtual:svg-sprite";
 
 createLatticeApp({
+  plugins: latticePlugins,
   sprite,
   pages: import.meta.glob("./Pages/**/*.tsx"),
 });
 ```
 
 It forwards any other `createInertiaApp` option — `title`, `progress`, SSR setup — and accepts a custom `registry` and a `defaultLayout`.
+
+`plugins: latticePlugins` registers the renderers of any [component packages](/extending/component-packages/) you install via Composer. The `virtual:lattice/plugins` module is provided by the `lattice()` Vite plugin and resolves to an empty list until you install one, so it is safe to keep here from the start.
 
 #### Manual wiring
 
@@ -153,21 +158,24 @@ If you need full control of the Inertia bootstrap, wire the pieces yourself: use
 ```tsx
 // resources/js/app.tsx
 /// <reference types="@lattice-php/lattice/svg-sprite-client" />
+/// <reference types="@lattice-php/lattice/vite-client" />
 import "../css/app.css";
 import { createInertiaApp, type ResolvedComponent } from "@inertiajs/react";
-import { createPageResolver, Provider, registry } from "@lattice-php/lattice";
+import { createPageResolver, extendRegistry, Provider, registry } from "@lattice-php/lattice";
 import { createRoot } from "react-dom/client";
+import latticePlugins from "virtual:lattice/plugins";
 import sprite from "virtual:svg-sprite";
 
 const pages = import.meta.glob<ResolvedComponent>("./Pages/**/*.tsx");
 const resolve = createPageResolver(pages);
+const appRegistry = extendRegistry(registry, ...latticePlugins);
 
 createInertiaApp({
   resolve,
   setup({ el, App, props }) {
     if (el) {
       createRoot(el).render(
-        <Provider registry={registry} sprite={sprite}>
+        <Provider registry={appRegistry} sprite={sprite}>
           <App {...props} />
         </Provider>,
       );
@@ -176,7 +184,7 @@ createInertiaApp({
 });
 ```
 
-Keep your existing Inertia options such as `title`, `progress`, layouts, and SSR setup. The important pieces are `createPageResolver(...)` and the single `Provider` around the app.
+Keep your existing Inertia options such as `title`, `progress`, layouts, and SSR setup. The important pieces are `createPageResolver(...)` and the single `Provider` around the app. `extendRegistry(registry, ...latticePlugins)` folds in any installed [component packages](/extending/component-packages/); drop it if you don't use them.
 
 ### Customizing the registry
 
