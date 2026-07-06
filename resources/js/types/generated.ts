@@ -886,8 +886,20 @@ export type Node =
   | RemoteNode
   | TableNode
   | LayoutNode
-  | ChatNode;
+  | ChatNode
+  | NotificationNode;
 export type NodeType = Node["type"];
+export type NotificationNode = {
+  type: "notifications";
+  key?: string;
+  props: Notifications;
+};
+export type Notifications = {
+  channel: string;
+  endpoint: string;
+  pollingInterval: number | null;
+  slideOut: boolean;
+};
 export type NumberColumn = {
   compact: boolean;
   maximumFractionDigits: number | null;
