@@ -103,10 +103,11 @@ export function useNotifications({
         setNotifications((current) => [...current, ...result.notifications]);
         setHasMore(result.hasMore);
       })
+      .catch(() => void hydrate())
       .finally(() => {
         loadingMoreRef.current = false;
       });
-  }, [endpoint]);
+  }, [endpoint, hydrate]);
 
   const markRead = useCallback(
     (id: string): void => {
@@ -146,8 +147,13 @@ export function useNotifications({
   }, [endpoint, hydrate]);
 
   const receive = useCallback((item: NotificationItem): void => {
-    setNotifications((current) => prependIncoming(current, item));
-    setUnreadCount((count) => count + 1);
+    setNotifications((current) => {
+      const next = prependIncoming(current, item);
+      if (next !== current) {
+        setUnreadCount((count) => count + 1);
+      }
+      return next;
+    });
   }, []);
 
   return {

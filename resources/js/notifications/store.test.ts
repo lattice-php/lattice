@@ -139,4 +139,24 @@ describe("useNotifications", () => {
     expect(result.current.notifications[0].id).toBe("live");
     expect(result.current.unreadCount).toBe(1);
   });
+
+  it("ignores a re-delivered live notification for an id already loaded", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<() => Promise<Response>>(async () =>
+        jsonResponse({ notifications: [item("a")], unreadCount: 0, hasMore: false }),
+      ),
+    );
+
+    const { result } = renderHook(() => useNotifications({ endpoint: "/lattice/notifications" }));
+    await waitFor(() => expect(result.current.notifications).toHaveLength(1));
+
+    act(() => result.current.receive(item("a")));
+    expect(result.current.notifications).toHaveLength(1);
+    expect(result.current.unreadCount).toBe(0);
+
+    act(() => result.current.receive(item("live")));
+    expect(result.current.notifications.map((n) => n.id)).toEqual(["live", "a"]);
+    expect(result.current.unreadCount).toBe(1);
+  });
 });
