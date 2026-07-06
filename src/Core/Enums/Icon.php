@@ -13,6 +13,7 @@ enum Icon: string
     case AlignRight = 'align-right';
     case ArrowDown = 'arrow-down';
     case ArrowUp = 'arrow-up';
+    case Bell = 'bell';
     case Bold = 'bold';
     case Calendar = 'calendar';
     case Check = 'check';
