@@ -1,0 +1,61 @@
+---
+title: Sorting & pagination
+description: Make columns sortable, and choose how a table's rows are paged.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+Sorting and pagination are handled for you once a column opts in and a mode is chosen. The table sends
+the current sort and page to its [endpoint](/advanced/security/), and the
+[data source](/tables/data-sources/) applies them.
+
+<ComponentExample
+  php={`TextColumn::make('name')->label('Name')->sortable();
+NumberColumn::make('price')->label('Price')->sortable();
+TextColumn::make('updated_at')->label('Updated')->dateTime()->sortable();`}
+  fixture="table.overview"
+/>
+
+## Sorting
+
+`->sortable()` adds the sort control to a column header. Clicking it cycles ascending, descending, and
+off, and the source applies an `orderBy` on the column key. Several columns can be sortable at once.
+
+```php
+TextColumn::make('name')->sortable();
+```
+
+Sorting is keyed by the column key, so a sortable column must map to a real database column — or a
+to-one [relation field](/tables/eloquent-tables/#relation-columns), which sorts through a correlated
+subquery. Set a default order in the [builder](/tables/eloquent-tables/#the-builder) for when the user
+hasn't chosen one.
+
+## Pagination
+
+Override `pagination()` to choose how rows are paged, and `perPage()` for the page size. The mode is a
+`PaginationType`:
+
+| Mode                       | Behavior                                              |
+| -------------------------- | ----------------------------------------------------- |
+| `PaginationType::Table`    | Full pager with page numbers and total (the default). |
+| `PaginationType::Simple`   | Previous / next only — cheaper, no total count.       |
+| `PaginationType::Infinite` | Loads the next page as the user scrolls.              |
+| `PaginationType::None`     | Returns every row, no pagination.                     |
+
+```php
+use Lattice\Lattice\Tables\Enums\PaginationType;
+
+public function pagination(): PaginationType
+{
+    return PaginationType::Simple;
+}
+
+public function perPage(): int
+{
+    return 50;
+}
+```
+
+A [custom data source](/tables/data-sources/) chooses its own `TableResult` builder to match the mode —
+`fromPaginator()` for a full pager, `fromSimplePaginator()` for previous/next. The
+[Eloquent source](/tables/eloquent-tables/) picks the right one from the mode automatically.

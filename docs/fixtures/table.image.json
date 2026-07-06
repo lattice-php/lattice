@@ -1,0 +1,104 @@
+[
+    {
+        "id": "members",
+        "props": {
+            "actionsLabel": "Actions",
+            "bulkActions": [],
+            "columns": [
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "avatar",
+                    "label": "",
+                    "props": {
+                        "circular": true,
+                        "size": 32
+                    },
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.image",
+                    "width": "md"
+                },
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "name",
+                    "label": "Name",
+                    "props": {
+                        "badge": null,
+                        "copyable": false,
+                        "date": null,
+                        "link": null,
+                        "multiple": null
+                    },
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.text",
+                    "width": "md"
+                },
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "role",
+                    "label": "Role",
+                    "props": {
+                        "badge": null,
+                        "copyable": false,
+                        "date": null,
+                        "link": null,
+                        "multiple": null
+                    },
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.text",
+                    "width": "md"
+                }
+            ],
+            "data": [
+                {
+                    "avatar": "https://i.pravatar.cc/64?img=1",
+                    "name": "Ada Lovelace",
+                    "role": "Admin"
+                },
+                {
+                    "avatar": "https://i.pravatar.cc/64?img=2",
+                    "name": "Alan Turing",
+                    "role": "Editor"
+                }
+            ],
+            "emptyLabel": "No results",
+            "endpoint": null,
+            "filters": [],
+            "layout": null,
+            "lazy": null,
+            "pagination": {
+                "currentPage": null,
+                "from": 1,
+                "hasMore": false,
+                "lastPage": null,
+                "mode": "none",
+                "nextPage": null,
+                "perPage": null,
+                "to": 2,
+                "total": 2
+            },
+            "resizableColumns": null,
+            "resizeIndicator": false,
+            "state": {
+                "filters": [],
+                "page": 1,
+                "perPage": 25,
+                "sorts": [],
+                "tableFilters": []
+            },
+            "striped": null
+        },
+        "type": "table"
+    }
+]

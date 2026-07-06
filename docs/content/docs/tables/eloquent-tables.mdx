@@ -1,11 +1,14 @@
 ---
 title: Eloquent tables
-description: The database-backed table source — define a base query with builder() and let Lattice apply filters, sorts, and pagination.
+description: The database-backed table source — define a base query with builder() and let Lattice apply filters, sorts, relations, and pagination.
 ---
 
-Most tables are backed by an Eloquent model. Extend `EloquentTableDefinition` and implement
-`builder()` instead of `source()` — Lattice wires up an `EloquentTableSource` from your builder,
-columns, and pagination mode.
+import Info from "@components/Info.astro";
+
+Backing a table with an Eloquent model is common enough that Lattice ships a source for it. Extend
+`EloquentTableDefinition` and implement `builder()` instead of `source()` — Lattice wires up an
+`EloquentTableSource` from your builder, columns, and pagination mode. It is the same
+[`TableSource`](/tables/data-sources/) contract underneath, with the query-building done for you.
 
 ```php
 use Illuminate\Database\Eloquent\Builder;
@@ -49,7 +52,7 @@ public function builder(TableQuery $query): Builder
         ->where('team_id', $this->team->id)
         ->select(['id', 'name', 'price', 'status']);
 
-    if ($query->sorts() === []) {
+    if ($query->sorts === []) {
         $builder->latest('id');
     }
 
@@ -65,13 +68,49 @@ default order only when the user hasn't chosen a sort.
 `EloquentTableSource` reads the request's filters and sorts from the `TableQuery` and applies them to
 your builder automatically, driven by the columns' capabilities:
 
-- A **filter** is applied only for a column that is [`filterable()`](/tables/sorting-filtering-pagination/#filtering),
-  using the column's [`FilterType`](/tables/sorting-filtering-pagination/#filter-types-and-operators) to build the right `where`.
+- A **filter** is applied only for a column that is [`filterable()`](/tables/filtering/), using the
+  column's [`FilterType`](/tables/filtering/#filter-types-and-operators) to build the right `where`.
 - A **sort** becomes an `orderBy` on the column key.
 
 Because both map to the column **key**, a filterable or sortable column key must be a real database
-column (or an aliased select). For anything computed, keep the column display-only or back the table
-with a custom [source](/tables/overview/#data-sources).
+column (or an aliased select) — or a relation field, below. For anything computed, keep the column
+display-only or back the table with a custom [source](/tables/data-sources/).
+
+## Relation columns
+
+A column keyed with **dot notation** reads through a to-one relation. `TextColumn::make('author.name')`
+resolves the `author` relation and shows its `name`; Lattice eager-loads the relation, so there is no
+N+1. Because it maps to a real relation and field, it stays fully sortable and filterable — the sort
+becomes a correlated subquery and the filter a `whereHas`:
+
+```php
+public function columns(): array
+{
+    return [
+        TextColumn::make('title')->sortable()->filterable(),
+        TextColumn::make('author.name')->label('Author')->sortable()->filterable(),
+    ];
+}
+
+public function builder(TableQuery $query): Builder
+{
+    return Post::query()->select(['id', 'title', 'author_id']);
+}
+```
+
+For a **to-many** relation, key the column by the relation name and name the field with `->multiple()`.
+It renders the related values as a list, filters through `whereHas`, and is never sortable. Combine it
+with [`->badge()`](/tables/columns/text/#as-a-badge) to render each related value as a pill:
+
+```php
+TextColumn::make('tags')->multiple('name')->label('Tags')->filterable();
+```
+
+<Info>
+  Relation columns are an Eloquent-source feature — they build on the relationship methods on your
+  model. A [custom source](/tables/data-sources/) resolves nested values however its backing store
+  allows.
+</Info>
 
 ## Selecting bulk-action rows
 

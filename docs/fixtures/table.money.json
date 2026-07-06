@@ -1,0 +1,107 @@
+[
+    {
+        "id": "invoices",
+        "props": {
+            "actionsLabel": "Actions",
+            "bulkActions": [],
+            "columns": [
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "number",
+                    "label": "Invoice",
+                    "props": {
+                        "badge": null,
+                        "copyable": false,
+                        "date": null,
+                        "link": null,
+                        "multiple": null
+                    },
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.text",
+                    "width": "md"
+                },
+                {
+                    "align": "end",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "total",
+                    "label": "Total",
+                    "props": {
+                        "currency": "EUR",
+                        "currencyField": null,
+                        "maximumFractionDigits": null,
+                        "minimumFractionDigits": null
+                    },
+                    "sortable": true,
+                    "toggleable": null,
+                    "type": "column.money",
+                    "width": "md"
+                },
+                {
+                    "align": "end",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "refunded",
+                    "label": "Refunded",
+                    "props": {
+                        "currency": null,
+                        "currencyField": "currency",
+                        "maximumFractionDigits": null,
+                        "minimumFractionDigits": null
+                    },
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.money",
+                    "width": "md"
+                }
+            ],
+            "data": [
+                {
+                    "currency": "USD",
+                    "number": "INV-1001",
+                    "refunded": "0.00",
+                    "total": "189.00"
+                },
+                {
+                    "currency": "GBP",
+                    "number": "INV-1002",
+                    "refunded": "49.50",
+                    "total": "49.50"
+                }
+            ],
+            "emptyLabel": "No results",
+            "endpoint": null,
+            "filters": [],
+            "layout": null,
+            "lazy": null,
+            "pagination": {
+                "currentPage": null,
+                "from": 1,
+                "hasMore": false,
+                "lastPage": null,
+                "mode": "none",
+                "nextPage": null,
+                "perPage": null,
+                "to": 2,
+                "total": 2
+            },
+            "resizableColumns": null,
+            "resizeIndicator": false,
+            "state": {
+                "filters": [],
+                "page": 1,
+                "perPage": 25,
+                "sorts": [],
+                "tableFilters": []
+            },
+            "striped": null
+        },
+        "type": "table"
+    }
+]

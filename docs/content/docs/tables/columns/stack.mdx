@@ -1,0 +1,30 @@
+---
+title: Stack column
+description: Group several columns into one cell, stacked vertically.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+`StackColumn` groups several columns into one cell, stacking them vertically — useful for showing a
+name and email together, or a title with a subtitle. Pass the child columns to `->columns()`.
+
+<ComponentExample
+  php={`StackColumn::make('identity')->label('User')->columns([
+    TextColumn::make('name')->sortable(),
+    TextColumn::make('email')->copyable(),
+]);
+
+TextColumn::make('role');`}
+  fixture="table.stack"
+/>
+
+Each child is a normal column, so its display modifiers still apply — the example makes the name
+sortable and the email copyable. The stack's own key labels the header; the children read their own row
+fields.
+
+```php
+StackColumn::make('product')->label('Product')->columns([
+    TextColumn::make('title'),
+    TextColumn::make('sku')->copyable(),
+]);
+```

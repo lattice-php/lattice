@@ -1,0 +1,67 @@
+---
+title: Text column
+description: Render a value as text, with date/time formatting, links, copy-to-clipboard, and badge rendering.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+`TextColumn` renders a value as text. It is sortable and filterable, and carries display modifiers for
+the common value types a text cell holds.
+
+<ComponentExample
+  php={`TextColumn::make('name')->label('Name')->link('/people/{value}')->sortable();
+TextColumn::make('email')->label('Email')->link('mailto:{value}')->copyable();
+TextColumn::make('joined_at')->label('Joined')->date()->sortable();`}
+  fixture="table.text"
+/>
+
+## Dates and times
+
+`->date()`, `->time()`, and `->dateTime()` format a date/time value for the viewer's locale and
+timezone. Pass a [`DateTimeStyle`](/advanced/enums/#tables) case — `Short`, `Medium` (the default),
+`Long`, or `Full` — to control the style. A dated column filters as a [date](/tables/filtering/).
+
+```php
+use Lattice\Lattice\Core\Enums\DateTimeStyle;
+
+TextColumn::make('created_at')->date();
+TextColumn::make('updated_at')->dateTime(DateTimeStyle::Short);
+```
+
+## Links
+
+`->link('/products/{value}')` renders the value as a link; `{value}` is substituted with the cell
+value. Pass `external: true` for an outbound link that opens in a new tab.
+
+```php
+TextColumn::make('email')->link('mailto:{value}')->copyable();
+TextColumn::make('homepage')->link('{value}', external: true);
+```
+
+## Copyable
+
+`->copyable()` adds a click-to-copy affordance to the cell.
+
+```php
+TextColumn::make('api_token')->copyable();
+```
+
+## As a badge
+
+`->badge()` renders the value as a coloured pill. The tone is read from a sibling field on the row —
+`->badge('status_color')` reads the colour from `status_color`, defaulting to the `color` field.
+For a fixed value-to-colour map instead, use a dedicated [Badge column](/tables/columns/badge/).
+
+```php
+TextColumn::make('status')->badge('status_color');
+```
+
+## To-many relations
+
+`->multiple('name')` draws the value from a to-many relation named by the column key, reading `name`
+from each related row and rendering the values as a list. It filters through the relation and is never
+sortable — see [relation columns](/tables/eloquent-tables/#relation-columns).
+
+```php
+TextColumn::make('tags')->multiple('name')->badge('color');
+```

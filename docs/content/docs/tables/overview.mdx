@@ -5,14 +5,18 @@ description: Listings with columns, sorting, filtering, pagination, and row and 
 
 import ComponentExample from "@components/ComponentExample.astro";
 import Mermaid from "@components/Mermaid.astro";
+import Info from "@components/Info.astro";
 
 A table is a listing backed by a **data source**. You declare columns in PHP; Lattice renders the
-React table and handles sorting, filtering, and pagination, fetching rows from the table's [endpoint](/advanced/security/).
-An Eloquent-backed source ships out of the box, and you can back a table with anything else by
-implementing the source interface.
+React table and handles sorting, filtering, and pagination, fetching rows from the table's
+[endpoint](/advanced/security/). Nothing about a table is tied to a database — a table is a
+`TableDefinition` plus a [source](/tables/data-sources/) that turns a request into rows. An
+[Eloquent source](/tables/eloquent-tables/) ships out of the box, and an in-memory array, an HTTP API,
+or a search index works just as well.
 
 <ComponentExample
-  php={`class ProductsTable extends EloquentTableDefinition
+  php={`#[AsTable('app.products')]
+class ProductsTable extends TableDefinition
 {
     public function columns(): array
     {
@@ -24,13 +28,14 @@ implementing the source interface.
         ];
     }
 
-    public function builder(TableQuery $query): Builder
+    public function source(): TableSource
     {
-        return Product::query();
+        return new CallbackTableSource(
+            fn (TableQuery $query) => TableResult::fromItems($this->products()),
+        );
     }
-
 }`}
-fixture="table.overview"
+  fixture="table.overview"
 />
 
 ## How a table loads data
@@ -63,20 +68,22 @@ asks for the page it needs:
 
 ## Defining a table
 
-Extend `TableDefinition` (or, for a database-backed table, `EloquentTableDefinition`) and declare the
-columns. The `#[AsTable]` attribute gives the table a stable id so it can be discovered and addressed by
-its own endpoint.
+Extend `TableDefinition` and implement its two abstract methods — `columns()` and `source()`. The
+`#[AsTable]` attribute gives the table a stable id so it can be discovered and addressed by its own
+endpoint.
 
 ```php
-use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Attributes\AsTable;
+use Lattice\Lattice\Tables\CallbackTableSource;
 use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
+use Lattice\Lattice\Tables\Contracts\TableSource;
+use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Lattice\Tables\TableResult;
 
 #[AsTable('app.products')]
-class ProductsTable extends EloquentTableDefinition
+class ProductsTable extends TableDefinition
 {
     public function columns(): array
     {
@@ -86,21 +93,32 @@ class ProductsTable extends EloquentTableDefinition
         ];
     }
 
-    public function builder(TableQuery $query): Builder
+    public function source(): TableSource
     {
-        return Product::query();
+        return new CallbackTableSource(
+            fn (TableQuery $query) => TableResult::fromItems($this->rows()),
+        );
     }
 }
 ```
 
-`TableDefinition` exposes a handful of hooks beyond `columns()`:
+<Info>
+  Backing a table with an Eloquent model is common enough that
+  [`EloquentTableDefinition`](/tables/eloquent-tables/) implements `source()` for you — you write a
+  `builder()` instead. It is a convenience over the same `TableSource` contract, not a separate kind of
+  table.
+</Info>
+
+Everything except the source is declared the same way whatever backs the table. `TableDefinition`
+exposes these hooks beyond `columns()` and `source()`:
 
 | Method               | Purpose                                                                           |
 | -------------------- | --------------------------------------------------------------------------------- |
-| `columns()`          | The columns to render — see [Columns](/tables/columns/).                          |
-| `source()`           | The [data source](#data-sources). `EloquentTableDefinition` builds one for you.   |
+| `columns()`          | The columns to render — see [Columns](/tables/columns/overview/).                 |
+| `source()`           | The [data source](/tables/data-sources/) that turns a query into rows.            |
+| `filters()`          | Table-level [dedicated filters](/tables/filtering/#dedicated-filters).            |
 | `perPage()`          | Rows per page (default `25`).                                                     |
-| `pagination()`       | The [pagination mode](/tables/sorting-filtering-pagination/#pagination).          |
+| `pagination()`       | The [pagination mode](/tables/sorting-and-pagination/#pagination).                |
 | `striped()`          | Alternate row shading.                                                            |
 | `resizableColumns()` | Let users drag column borders to resize. Widths persist per table in the browser. |
 | `resizeIndicator()`  | Show a drag indicator on column borders when resizing is enabled.                 |
@@ -109,8 +127,7 @@ class ProductsTable extends EloquentTableDefinition
 | `actions($row)`      | Per-row [actions](/tables/actions/).                                              |
 | `bulkActions()`      | [Bulk actions](/tables/actions/#bulk-actions) for selected rows.                  |
 
-Each hook is a method you override on the definition. For example, to enable resizable columns with a
-drag indicator:
+Each hook is a method you override. For example, to enable resizable columns with a drag indicator:
 
 ```php
 public function resizableColumns(): bool
@@ -124,40 +141,7 @@ public function resizeIndicator(): bool
 }
 ```
 
-Resized widths are remembered per table in the browser, with a control to reset them back to the
-defaults.
-
-## Data sources
-
-A table's rows come from a `TableSource`. The interface has three methods — one to fetch a page, and
-two that resolve rows for bulk actions:
-
-```php
-interface TableSource
-{
-    public function query(TableQuery $query): TableResult;
-    public function resolveMatching(TableQuery $query): Collection;
-    public function resolveSelection(array $keys): Collection;
-}
-```
-
-- `TableQuery` is the read model of the current request — its filters, sorts, page, and page size.
-- `TableResult` wraps the rows and pagination metadata. Build one from a paginator
-  (`TableResult::fromPaginator()`, `fromSimplePaginator()`) or a plain collection
-  (`TableResult::fromItems()`).
-
-Most tables use the built-in [Eloquent source](/tables/eloquent-tables/). For an in-memory list, an
-API, or a search index, implement `TableSource` yourself or use `CallbackTableSource`, which takes the
-three methods as closures:
-
-```php
-public function source(): TableSource
-{
-    return new CallbackTableSource(
-        fn (TableQuery $query) => TableResult::fromItems($this->rows($query)),
-    );
-}
-```
+Resized widths are remembered per table in the browser, with a control to reset them to the defaults.
 
 ## Rendering a table
 
@@ -174,7 +158,9 @@ useful inside a tab or a section that isn't visible on page load.
 
 ## Next steps
 
-- [Eloquent tables](/tables/eloquent-tables/) — the database-backed source and `builder()`.
-- [Columns](/tables/columns/) — `TextColumn`, `StackColumn`, and their display options.
-- [Sorting, filtering & pagination](/tables/sorting-filtering-pagination/) — making columns sortable and filterable, and choosing a pagination mode.
+- [Data sources](/tables/data-sources/) — the `TableSource` contract and backing a table with anything.
+- [Eloquent tables](/tables/eloquent-tables/) — the database-backed source, `builder()`, and relation columns.
+- [Columns](/tables/columns/overview/) — the column types and their display options.
+- [Filtering](/tables/filtering/) — column filters and dedicated table filters.
+- [Sorting & pagination](/tables/sorting-and-pagination/) — sortable columns and the pagination modes.
 - [Actions](/tables/actions/) — row and bulk actions.

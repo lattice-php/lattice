@@ -1,0 +1,33 @@
+---
+title: Number column
+description: Render a value as a locale-formatted number — fixed decimals, unit suffixes, and compact notation.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+`NumberColumn` right-aligns its cell and formats the value as a number for the viewer's locale. It is
+sortable and filters as a [number](/tables/filtering/).
+
+<ComponentExample
+  php={`NumberColumn::make('views')->label('Views')->compact()->sortable();
+NumberColumn::make('conversion')->label('Conversion')
+    ->unit(NumberFormatUnit::Percent)
+    ->decimals(1);`}
+  fixture="table.number"
+/>
+
+- `->decimals($min, $max?)` fixes the fraction digits — `->decimals(2)` for exactly two, or
+  `->decimals(0, 2)` for a min–max range.
+- `->unit(NumberFormatUnit::…)` adds a locale-correct unit suffix — `Percent`, `Kilogram`, `Byte`, and
+  the rest of the [`NumberFormatUnit`](/advanced/enums/) cases. A percent value is scaled by the
+  formatter, so store `0.128` to render `12.8%`.
+- `->compact()` renders large numbers compactly (`1.2K`, `3.4M`).
+
+```php
+use Lattice\Lattice\Core\Enums\NumberFormatUnit;
+
+NumberColumn::make('weight')->unit(NumberFormatUnit::Kilogram)->decimals(1);
+NumberColumn::make('downloads')->compact();
+```
+
+For a currency amount, reach for the dedicated [Money column](/tables/columns/money/).

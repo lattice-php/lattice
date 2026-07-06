@@ -1,0 +1,90 @@
+[
+    {
+        "id": "checks",
+        "props": {
+            "actionsLabel": "Actions",
+            "bulkActions": [],
+            "columns": [
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "name",
+                    "label": "Name",
+                    "props": {
+                        "badge": null,
+                        "copyable": false,
+                        "date": null,
+                        "link": null,
+                        "multiple": null
+                    },
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.text",
+                    "width": "md"
+                },
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "verified",
+                    "label": "Verified",
+                    "props": {
+                        "colors": [
+                            "gray",
+                            "green"
+                        ],
+                        "icon": null,
+                        "icons": [
+                            "minus",
+                            "check"
+                        ]
+                    },
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.icon",
+                    "width": "md"
+                }
+            ],
+            "data": [
+                {
+                    "name": "Ada Lovelace",
+                    "verified": "1"
+                },
+                {
+                    "name": "Alan Turing",
+                    "verified": "0"
+                }
+            ],
+            "emptyLabel": "No results",
+            "endpoint": null,
+            "filters": [],
+            "layout": null,
+            "lazy": null,
+            "pagination": {
+                "currentPage": null,
+                "from": 1,
+                "hasMore": false,
+                "lastPage": null,
+                "mode": "none",
+                "nextPage": null,
+                "perPage": null,
+                "to": 2,
+                "total": 2
+            },
+            "resizableColumns": null,
+            "resizeIndicator": false,
+            "state": {
+                "filters": [],
+                "page": 1,
+                "perPage": 25,
+                "sorts": [],
+                "tableFilters": []
+            },
+            "striped": null
+        },
+        "type": "table"
+    }
+]

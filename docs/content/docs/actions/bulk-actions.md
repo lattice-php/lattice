@@ -66,7 +66,7 @@ When at least one row is selected, the table shows a bulk action bar.
 ## How records are resolved
 
 The collection passed to `handle()` is resolved by the table's
-[data source](/tables/overview/#data-sources) — both an explicit set of checked rows and "select all
+[data source](/tables/data-sources/) — both an explicit set of checked rows and "select all
 matching", which re-runs the current filters on a signed [endpoint](/advanced/security/). With the
 [Eloquent source](/tables/eloquent-tables/#selecting-bulk-action-rows) this needs no extra code: the
 records arrive as models, ready to act on.

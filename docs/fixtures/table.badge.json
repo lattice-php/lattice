@@ -1,0 +1,108 @@
+[
+    {
+        "id": "orders",
+        "props": {
+            "actionsLabel": "Actions",
+            "bulkActions": [],
+            "columns": [
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "reference",
+                    "label": "Reference",
+                    "props": {
+                        "badge": null,
+                        "copyable": false,
+                        "date": null,
+                        "link": null,
+                        "multiple": null
+                    },
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.text",
+                    "width": "md"
+                },
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": {
+                        "clauseOptions": [],
+                        "control": null,
+                        "defaultOperator": "contains",
+                        "enabled": true,
+                        "multiple": false,
+                        "operators": [
+                            "contains",
+                            "starts_with",
+                            "ends_with",
+                            "eq",
+                            "neq",
+                            "empty",
+                            "filled"
+                        ],
+                        "options": [],
+                        "searchable": false,
+                        "type": "text"
+                    },
+                    "hiddenByDefault": null,
+                    "key": "status",
+                    "label": "Status",
+                    "props": {
+                        "colors": {
+                            "paid": "green",
+                            "pending": "yellow",
+                            "refunded": "gray"
+                        }
+                    },
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.badge",
+                    "width": "md"
+                }
+            ],
+            "data": [
+                {
+                    "reference": "ORD-501",
+                    "status": "paid"
+                },
+                {
+                    "reference": "ORD-502",
+                    "status": "pending"
+                },
+                {
+                    "reference": "ORD-503",
+                    "status": "refunded"
+                }
+            ],
+            "emptyLabel": "No results",
+            "endpoint": null,
+            "filters": [],
+            "layout": null,
+            "lazy": null,
+            "pagination": {
+                "currentPage": null,
+                "from": 1,
+                "hasMore": false,
+                "lastPage": null,
+                "mode": "none",
+                "nextPage": null,
+                "perPage": null,
+                "to": 3,
+                "total": 3
+            },
+            "resizableColumns": null,
+            "resizeIndicator": false,
+            "state": {
+                "filters": [],
+                "page": 1,
+                "perPage": 25,
+                "sorts": [],
+                "tableFilters": []
+            },
+            "striped": null
+        },
+        "type": "table"
+    }
+]

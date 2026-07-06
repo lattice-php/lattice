@@ -1,0 +1,116 @@
+[
+    {
+        "id": "people",
+        "props": {
+            "actionsLabel": "Actions",
+            "bulkActions": [],
+            "columns": [
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "name",
+                    "label": "Name",
+                    "props": {
+                        "badge": null,
+                        "copyable": false,
+                        "date": null,
+                        "link": {
+                            "external": false,
+                            "href": "/people/{value}"
+                        },
+                        "multiple": null
+                    },
+                    "sortable": true,
+                    "toggleable": null,
+                    "type": "column.text",
+                    "width": "md"
+                },
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "email",
+                    "label": "Email",
+                    "props": {
+                        "badge": null,
+                        "copyable": true,
+                        "date": null,
+                        "link": {
+                            "external": false,
+                            "href": "mailto:{value}"
+                        },
+                        "multiple": null
+                    },
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.text",
+                    "width": "md"
+                },
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "joined_at",
+                    "label": "Joined",
+                    "props": {
+                        "badge": null,
+                        "copyable": false,
+                        "date": {
+                            "dateStyle": "medium",
+                            "timeStyle": null
+                        },
+                        "link": null,
+                        "multiple": null
+                    },
+                    "sortable": true,
+                    "toggleable": null,
+                    "type": "column.text",
+                    "width": "md"
+                }
+            ],
+            "data": [
+                {
+                    "email": "ada@example.com",
+                    "joined_at": "2026-01-14 09:00:00",
+                    "name": "Ada Lovelace"
+                },
+                {
+                    "email": "alan@example.com",
+                    "joined_at": "2026-02-03 12:30:00",
+                    "name": "Alan Turing"
+                }
+            ],
+            "emptyLabel": "No results",
+            "endpoint": null,
+            "filters": [],
+            "layout": null,
+            "lazy": null,
+            "pagination": {
+                "currentPage": null,
+                "from": 1,
+                "hasMore": false,
+                "lastPage": null,
+                "mode": "none",
+                "nextPage": null,
+                "perPage": null,
+                "to": 2,
+                "total": 2
+            },
+            "resizableColumns": null,
+            "resizeIndicator": false,
+            "state": {
+                "filters": [],
+                "page": 1,
+                "perPage": 25,
+                "sorts": [],
+                "tableFilters": []
+            },
+            "striped": null
+        },
+        "type": "table"
+    }
+]
