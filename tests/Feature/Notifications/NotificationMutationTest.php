@@ -19,7 +19,7 @@ test('a user can mark a single notification read', function (): void {
         ->assertOk()
         ->assertJsonPath('unreadCount', 0);
 
-    expect($user->notifications()->first()->read_at)->not->toBeNull();
+    expect($user->notifications()->first()->getAttribute('read_at'))->not->toBeNull();
 });
 
 test('a user can mark all notifications read', function (): void {
@@ -61,5 +61,5 @@ test('a user cannot mutate another users notification', function (): void {
 
     patchJson("/lattice/notifications/{$id}/read")->assertNotFound();
     deleteJson("/lattice/notifications/{$id}")->assertNotFound();
-    expect($other->notifications()->first()->read_at)->toBeNull();
+    expect($other->notifications()->first()->getAttribute('read_at'))->toBeNull();
 });

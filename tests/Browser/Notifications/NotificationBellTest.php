@@ -20,7 +20,6 @@ it('shows the bell, opens the panel, and marks notifications read', function ():
         ->assertNoSmoke();
 });
 
-it('renders the slide-out variant when configured', function (): void {
-    // Requires a workbench route/layout variant using Notifications::make()->slideOut();
-    // add a dedicated workbench demo page if AppLayout uses the default popover bell.
-})->todo();
+it('renders the slide-out variant when configured')->todo(
+    'Requires a workbench route/layout variant using Notifications::make()->slideOut(); add a dedicated workbench demo page if AppLayout uses the default popover bell.'
+);

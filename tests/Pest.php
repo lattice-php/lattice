@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\File;
@@ -16,6 +15,7 @@ use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tests\BrowserTestCase;
 use Lattice\Lattice\Tests\TestCase;
 use Orchestra\Testbench\Factories\UserFactory;
+use Workbench\App\Models\User;
 
 use function Pest\Laravel\getJson;
 
@@ -75,12 +75,18 @@ function seedWorkbenchUsers(): void
  */
 function workbenchTestUser(array $attributes = []): User
 {
-    return UserFactory::new()->create([
+    $user = UserFactory::new()->create([
         'name' => 'Authenticated Workbench User',
         'email' => 'workbench-test-'.Str::random(12).'@example.com',
         'locale' => 'en',
         ...$attributes,
     ]);
+
+    if (! $user instanceof User) {
+        throw new RuntimeException('Expected the workbench auth model to be an instance of '.User::class);
+    }
+
+    return $user;
 }
 
 /**

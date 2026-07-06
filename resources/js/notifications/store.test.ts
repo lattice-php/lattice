@@ -79,7 +79,7 @@ describe("useNotifications", () => {
   it("marks a notification read optimistically", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn<() => Promise<Response>>(async (url) => {
+      vi.fn<typeof fetch>(async (url) => {
         if (String(url).endsWith("/read")) {
           return jsonResponse({ unreadCount: 0 });
         }
@@ -99,7 +99,7 @@ describe("useNotifications", () => {
     let page2Calls = 0;
     vi.stubGlobal(
       "fetch",
-      vi.fn<() => Promise<Response>>(async (url) => {
+      vi.fn<typeof fetch>(async (url) => {
         const requested = String(url);
         if (requested.includes("page=2")) {
           page2Calls += 1;
