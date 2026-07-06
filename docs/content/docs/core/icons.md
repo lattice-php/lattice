@@ -65,7 +65,63 @@ MenuItem::make('Spark')->icon('spark');
 ```
 
 Icons inherit their colour via `currentColor` and their size via the `size-*` utility on the element,
-so a single SVG adapts to wherever it's used.
+so a single SVG adapts to wherever it's used. To pull icons from a package instead of downloading them
+by hand, [vendor them](#vendoring-icons-from-a-package).
+
+## Vendoring icons from a package
+
+Rather than hand-download SVGs, you can **vendor** a named set from an icon package: the plugin copies
+just the icons you list into your project and commits them. You ship only the icons you use — not a
+whole library — and the set is reproducible from the config. This is how Lattice sources its own icons
+from [`lucide-static`](https://www.npmjs.com/package/lucide-static).
+
+Install the source package as a dev dependency:
+
+```bash
+npm install -D lucide-static
+```
+
+Then list the icons you want under `include`:
+
+```ts
+lattice({
+  icons: {
+    dirs: ["resources/icons"],
+    include: [
+      {
+        from: "lucide-static/icons", // a package's icon folder, or any local directory
+        names: ["rocket", "sparkles", "wand-sparkles"],
+        outDir: "resources/icons/lucide",
+      },
+    ],
+  },
+});
+```
+
+Each build copies `rocket.svg`, `sparkles.svg`, and `wand-sparkles.svg` out of the package into
+`resources/icons/lucide` and folds them into the sprite. Reference them by name like any other icon:
+
+```php
+MenuItem::make('Launch')->icon('rocket');
+```
+
+- **`from`** — a folder of SVGs: a package's icon directory resolved from `node_modules`
+  (e.g. `lucide-static/icons`), or a path to a local directory.
+- **`names`** — the filenames to copy, without `.svg`. A name missing from the source **fails the
+  build**, so a typo surfaces immediately.
+- **`outDir`** — where the SVGs are written. It joins the sprite automatically; you don't also list it
+  under `dirs`.
+
+The copy is **idempotent and pruning**: it writes only files whose content changed and removes any
+`*.svg` in `outDir` that isn't in `names`. So `names` is the single source of truth for that folder, and
+re-running the build is a no-op once synced. Commit the copied SVGs — the source package is then only
+needed at build time, so anyone installing *your* package gets the icons without it.
+
+:::caution
+Because `outDir` is pruned to exactly `names`, point it at a **dedicated** folder (like
+`resources/icons/lucide`) — never the folder that holds your hand-drawn icons, or any SVG there that
+isn't in `names` will be deleted. Keep vendored and hand-authored icons in separate directories.
+:::
 
 ## Referencing icons
 
