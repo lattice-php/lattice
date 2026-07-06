@@ -34,7 +34,7 @@ final class NotificationController
         return [
             'id' => $notification->getAttribute('id'),
             'title' => $data['title'] ?? $data['message'] ?? $data['subject'] ?? null,
-            'body' => $data['body'] ?? ($data['title'] ? ($data['message'] ?? null) : null),
+            'body' => $data['body'] ?? (($data['title'] ?? null) ? ($data['message'] ?? null) : null),
             'icon' => $data['icon'] ?? null,
             'variant' => $data['variant'] ?? null,
             'href' => $data['href'] ?? null,

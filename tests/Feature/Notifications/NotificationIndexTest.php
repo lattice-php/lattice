@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Support\Str;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Notifications\Notification;
 use Workbench\App\Actions\MarkNotificationSeenAction;
@@ -51,4 +52,33 @@ test('index materializes action descriptors into signed action nodes', function 
         ->assertOk()
         ->assertJsonPath('notifications.0.actions.0.type', 'action')
         ->assertJsonPath('notifications.0.actions.1.type', 'link');
+});
+
+test('index gracefully drops an action descriptor referencing an unregistered action', function (): void {
+    $user = workbenchTestUser();
+    Notification::make()->title('Order shipped')
+        ->action('definitely-unregistered-action', ['order' => 1234])
+        ->send($user);
+
+    actingAs($user);
+
+    getJson('/lattice/notifications')
+        ->assertOk()
+        ->assertJsonCount(0, 'notifications.0.actions');
+});
+
+test('index renders a legacy non-lattice notification row with a best-effort fallback', function (): void {
+    $user = workbenchTestUser();
+    $user->notifications()->create([
+        'id' => (string) Str::uuid(),
+        'type' => 'legacy-notification',
+        'data' => ['message' => 'Legacy message'],
+        'read_at' => null,
+    ]);
+
+    actingAs($user);
+
+    getJson('/lattice/notifications')
+        ->assertOk()
+        ->assertJsonPath('notifications.0.title', 'Legacy message');
 });

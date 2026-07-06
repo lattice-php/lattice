@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Notifications\Support;
 
+use InvalidArgumentException;
 use JsonSerializable;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Core\Components\Link;
-use Lattice\Lattice\Core\Exceptions\UnknownComponent;
 
 final class ActionDescriptor
 {
@@ -47,7 +47,7 @@ final class ActionDescriptor
     {
         try {
             $action = Action::use($descriptor['name'], $descriptor['arguments'] ?? []);
-        } catch (UnknownComponent) {
+        } catch (InvalidArgumentException) {
             return null;
         }
 
