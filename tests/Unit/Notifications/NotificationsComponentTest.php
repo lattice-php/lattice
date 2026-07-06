@@ -33,3 +33,13 @@ test('the bell defaults to popover mode', function (): void {
 
     expect(wire(Notifications::make())['props']['slideOut'])->toBeFalse();
 });
+
+describe('docs fixtures', function (): void {
+    it('dumps the bell example', function (): void {
+        dumpFixture('notifications.bell', [
+            Notifications::make('notifications-bell'),
+        ]);
+
+        expect('docs/fixtures/notifications.bell.json')->toBeReadableFile();
+    });
+});
