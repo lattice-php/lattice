@@ -95,31 +95,33 @@ Notification::make()
 
 ## Reusable notification classes
 
-For a notification that also needs other channels — mail, Slack, SMS — extend `LatticeNotification`
-instead of building one inline. Implement `toLattice()` once and it backs both the database row and
-the broadcast payload; override `via()` to add channels:
+For a notification that also needs other channels — mail, Slack, SMS — don't reach for a Lattice
+base class. Write a plain Laravel notification and return the `Notification` builder's payload from
+`toArray()`, the same shape `->send()` produces:
 
 ```php
 use Illuminate\Notifications\Messages\MailMessage;
-use Lattice\Lattice\Notifications\LatticeNotification;
+use Illuminate\Notifications\Notification as LaravelNotification;
+use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Notifications\Notification;
 
-class OrderShipped extends LatticeNotification
+class OrderShipped extends LaravelNotification
 {
     public function __construct(private readonly Order $order) {}
 
-    public function toLattice(object $notifiable): Notification
+    public function via(object $notifiable): array
+    {
+        return ['mail', 'database', 'broadcast'];
+    }
+
+    public function toArray(object $notifiable): array
     {
         return Notification::make()
             ->title("Order #{$this->order->number} shipped")
             ->body('Tracking is now available.')
-            ->icon('truck')
-            ->href("/orders/{$this->order->id}");
-    }
-
-    public function via(object $notifiable): array
-    {
-        return [...parent::via($notifiable), 'mail'];
+            ->variant(Variant::Success)
+            ->href("/orders/{$this->order->id}")
+            ->toArray();
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -133,9 +135,9 @@ class OrderShipped extends LatticeNotification
 $order->user->notify(new OrderShipped($order));
 ```
 
-`LatticeNotification` defaults `via()` to `['database', 'broadcast']` — call
-`parent::via($notifiable)` and append to it rather than replacing the list, or the bell stops
-receiving that notification.
+Laravel uses the array returned by `toArray()` for both the `database` and `broadcast` channels, so
+the bell renders it and pushes it live exactly like `->send()` does — no Lattice base class involved,
+just the builder's own `toArray()` as the reusable payload getter.
 
 <Info>
   The bell renders **any** row in the `notifications` table, not only Lattice ones. A notification

@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Notifications\LatticeNotification;
 use Lattice\Lattice\Notifications\Notification;
-use Lattice\Lattice\Notifications\PendingLatticeNotification;
 
 test('send persists a lattice payload to the native notifications table', function (): void {
     $user = workbenchTestUser();
@@ -22,8 +22,8 @@ test('send persists a lattice payload to the native notifications table', functi
 test('via includes broadcast for send and omits it for sendToDatabase', function (): void {
     $user = workbenchTestUser();
 
-    $broadcasting = new PendingLatticeNotification(Notification::make()->title('x'), broadcast: true);
-    $databaseOnly = new PendingLatticeNotification(Notification::make()->title('x'), broadcast: false);
+    $broadcasting = new LatticeNotification(Notification::make()->title('x'), broadcast: true);
+    $databaseOnly = new LatticeNotification(Notification::make()->title('x'), broadcast: false);
 
     expect($broadcasting->via($user))->toBe(['database', 'broadcast'])
         ->and($databaseOnly->via($user))->toBe(['database']);

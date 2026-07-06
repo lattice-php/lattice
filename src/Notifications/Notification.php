@@ -85,12 +85,12 @@ final class Notification
 
     public function send(object $notifiable): void
     {
-        $notifiable->notify(new PendingLatticeNotification($this, broadcast: true));
+        $notifiable->notify(new LatticeNotification($this, broadcast: true));
     }
 
     public function sendToDatabase(object $notifiable): void
     {
-        $notifiable->notify(new PendingLatticeNotification($this, broadcast: false));
+        $notifiable->notify(new LatticeNotification($this, broadcast: false));
     }
 
     /**
