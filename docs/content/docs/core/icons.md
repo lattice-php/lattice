@@ -115,7 +115,7 @@ MenuItem::make('Launch')->icon('rocket');
 The copy is **idempotent**: it writes only files whose content changed, so re-running the build is a
 no-op once synced, and it never touches anything else in the folder — vendored and hand-authored icons
 can share a directory. Commit the copied SVGs; the source package is then only needed at build time, so
-anyone installing *your* package gets the icons without it.
+anyone installing _your_ package gets the icons without it.
 
 :::note
 Dropping an icon from `names` leaves its committed SVG in place — vendoring never deletes files. Remove

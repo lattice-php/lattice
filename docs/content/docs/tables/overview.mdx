@@ -34,8 +34,9 @@ class ProductsTable extends TableDefinition
             fn (TableQuery $query) => TableResult::fromItems($this->products()),
         );
     }
+
 }`}
-  fixture="table.overview"
+fixture="table.overview"
 />
 
 ## How a table loads data
@@ -105,8 +106,8 @@ class ProductsTable extends TableDefinition
 <Info>
   Backing a table with an Eloquent model is common enough that
   [`EloquentTableDefinition`](/tables/eloquent-tables/) implements `source()` for you — you write a
-  `builder()` instead. It is a convenience over the same `TableSource` contract, not a separate kind of
-  table.
+  `builder()` instead. It is a convenience over the same `TableSource` contract, not a separate kind
+  of table.
 </Info>
 
 Everything except the source is declared the same way whatever backs the table. `TableDefinition`

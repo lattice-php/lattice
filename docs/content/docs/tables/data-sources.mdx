@@ -34,13 +34,13 @@ interface TableSource
 `TableQuery` is the read model of the current request. It is an immutable value with the request's
 state as public properties:
 
-| Property        | Holds                                                       |
-| --------------- | ----------------------------------------------------------- |
-| `->filters`     | The active [column filters](/tables/filtering/).            |
-| `->sorts`       | The active [sorts](/tables/sorting-and-pagination/).        |
-| `->tableFilters`| The active [dedicated filters](/tables/filtering/#dedicated-filters). |
-| `->page`        | The requested page number.                                  |
-| `->perPage`     | Rows per page.                                              |
+| Property         | Holds                                                                 |
+| ---------------- | --------------------------------------------------------------------- |
+| `->filters`      | The active [column filters](/tables/filtering/).                      |
+| `->sorts`        | The active [sorts](/tables/sorting-and-pagination/).                  |
+| `->tableFilters` | The active [dedicated filters](/tables/filtering/#dedicated-filters). |
+| `->page`         | The requested page number.                                            |
+| `->perPage`      | Rows per page.                                                        |
 
 `TableResult` wraps the rows and their pagination metadata. Build one with a static factory:
 
@@ -97,8 +97,8 @@ For anything more involved, implement `TableSource` on a class of its own and re
 <Info>
   Whether a source can apply a given sort or filter is up to the source. A column that is
   [`sortable()`](/tables/sorting-and-pagination/) or [`filterable()`](/tables/filtering/) only tells
-  the table to render the control and send the parameter — the source decides how (or whether) to honor
-  it. The [Eloquent source](/tables/eloquent-tables/) applies both automatically.
+  the table to render the control and send the parameter — the source decides how (or whether) to
+  honor it. The [Eloquent source](/tables/eloquent-tables/) applies both automatically.
 </Info>
 
 ## Computing per-row data
