@@ -69,13 +69,21 @@ Notification::make()
 - **`->icon($name)`** — a [sprite icon](/core/icons/) name or a backed enum case.
 - **`->variant(Variant::…)`** — the same [`Variant`](/advanced/enums/#buttons--feedback) enum toasts
   and callouts use; drives the bell item's accent color.
-- **`->href($url, $newTab = false)`** — makes the whole row a link.
+- **`->href($url, $newTab = false)`** — makes the whole row a link: clicking the title/body navigates
+  to `$url` and marks the notification read. Pass `$newTab: true` to open it in a new tab instead of
+  the current one.
 - **`->action($actionClass, $arguments = [], $label = null)`** — attaches a real
   [Lattice action](/actions/overview/) button, referenced by class name.
 - **`->link($label, $url, $newTab = false)`** — attaches a plain link button instead of (or alongside)
   an action.
 - **`->send($notifiable)`** — delivers over `database` and `broadcast`.
 - **`->sendToDatabase($notifiable)`** — persists only, without a broadcast event.
+
+<Info>
+  The `$newTab` argument on `->link()` is reserved and not yet honored — action-link buttons always
+  open in the same tab today. This is distinct from `->href()`'s row-level `$newTab`, which does open
+  a new tab.
+</Info>
 
 <Info>
   Actions and links are stored as lightweight **descriptors**, not materialized components — the row

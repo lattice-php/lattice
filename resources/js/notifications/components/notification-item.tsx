@@ -36,10 +36,32 @@ export function NotificationItemRow({
         />
       ) : null}
       <div className="min-w-0 flex-1">
-        {notification.title ? (
-          <p className="truncate text-sm font-medium text-lt-fg">{notification.title}</p>
-        ) : null}
-        {notification.body ? <p className="text-sm text-lt-muted-fg">{notification.body}</p> : null}
+        {notification.href ? (
+          <a
+            href={notification.href}
+            target={notification.openInNewTab ? "_blank" : undefined}
+            rel={notification.openInNewTab ? "noopener noreferrer" : undefined}
+            className="block"
+            data-test="notification-link"
+            onClick={() => onMarkRead(notification.id)}
+          >
+            {notification.title ? (
+              <p className="truncate text-sm font-medium text-lt-fg">{notification.title}</p>
+            ) : null}
+            {notification.body ? (
+              <p className="text-sm text-lt-muted-fg">{notification.body}</p>
+            ) : null}
+          </a>
+        ) : (
+          <>
+            {notification.title ? (
+              <p className="truncate text-sm font-medium text-lt-fg">{notification.title}</p>
+            ) : null}
+            {notification.body ? (
+              <p className="text-sm text-lt-muted-fg">{notification.body}</p>
+            ) : null}
+          </>
+        )}
         {notification.actions.length > 0 ? (
           <div className="mt-2 flex flex-wrap gap-2">
             {notification.actions.map((node, index) => (

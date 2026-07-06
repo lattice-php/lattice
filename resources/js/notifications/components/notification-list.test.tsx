@@ -104,4 +104,62 @@ describe("NotificationList", () => {
     fireEvent.click(loadMoreButton);
     expect(onLoadMore).toHaveBeenCalledTimes(1);
   });
+
+  it("renders a same-tab link and marks it read on click when href is set", () => {
+    const onMarkRead = vi.fn<(id: string) => void>();
+    render(
+      <NotificationList
+        notifications={[
+          { ...item("a", "Order shipped"), href: "/orders/1234", openInNewTab: false },
+        ]}
+        status="idle"
+        hasMore={false}
+        onMarkRead={onMarkRead}
+        onDismiss={vi.fn<(id: string) => void>()}
+        onLoadMore={vi.fn<() => void>()}
+      />,
+    );
+
+    const link = screen.getByTestId("notification-link");
+    expect(link).toHaveAttribute("href", "/orders/1234");
+    expect(link).not.toHaveAttribute("target");
+
+    fireEvent.click(link);
+    expect(onMarkRead).toHaveBeenCalledWith("a");
+  });
+
+  it("renders a new-tab link when openInNewTab is true", () => {
+    render(
+      <NotificationList
+        notifications={[
+          { ...item("a", "Order shipped"), href: "/orders/1234", openInNewTab: true },
+        ]}
+        status="idle"
+        hasMore={false}
+        onMarkRead={vi.fn<(id: string) => void>()}
+        onDismiss={vi.fn<(id: string) => void>()}
+        onLoadMore={vi.fn<() => void>()}
+      />,
+    );
+
+    const link = screen.getByTestId("notification-link");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  it("renders plain text (no link) when href is null", () => {
+    render(
+      <NotificationList
+        notifications={[item("a", "Order shipped")]}
+        status="idle"
+        hasMore={false}
+        onMarkRead={vi.fn<(id: string) => void>()}
+        onDismiss={vi.fn<(id: string) => void>()}
+        onLoadMore={vi.fn<() => void>()}
+      />,
+    );
+
+    expect(screen.queryByTestId("notification-link")).not.toBeInTheDocument();
+    expect(screen.getByText("Order shipped")).toBeInTheDocument();
+  });
 });
