@@ -4,6 +4,7 @@ import { chatPlugin } from "../chat";
 import { coreComponents } from "../core/components";
 import { formComponents } from "../form";
 import { layoutComponents } from "../layout/components";
+import { notificationsPlugin } from "../notifications";
 import { remoteComponents } from "../remote";
 import { tableComponents } from "../table";
 
@@ -14,5 +15,6 @@ export const lazyRegistry = createRegistry(
   layoutComponents,
   tableComponents,
   chatPlugin,
+  notificationsPlugin,
   remoteComponents,
 );

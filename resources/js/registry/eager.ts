@@ -4,6 +4,7 @@ import { chatPlugin } from "../chat";
 import { eagerCoreComponents } from "../core/components/eager";
 import { eagerFormComponents } from "../form/eager";
 import { layoutComponents } from "../layout/components";
+import { notificationsPlugin } from "../notifications";
 import { remoteComponents } from "../remote";
 import { eagerTableComponents } from "../table/eager";
 
@@ -14,5 +15,6 @@ export const eagerRegistry = createRegistry(
   layoutComponents,
   eagerTableComponents,
   chatPlugin,
+  notificationsPlugin,
   remoteComponents,
 );
