@@ -1,10 +1,10 @@
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
-import { Icon } from "@lattice-php/lattice/icons";
+import { IconRenderer } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { NotificationItem } from "../types";
 
-const variantIconClass: Record<string, string> = {
+const variantIconClass: Record<NonNullable<NotificationItem["variant"]>, string> = {
   success: "text-lt-success",
   info: "text-lt-info",
   warning: "text-lt-warning",
@@ -27,8 +27,8 @@ export function NotificationItemRow({
       data-test="notification"
     >
       {notification.icon ? (
-        <Icon
-          name={notification.icon}
+        <IconRenderer
+          icon={notification.icon}
           className={cn(
             "mt-0.5 size-lt-icon-md",
             notification.variant ? variantIconClass[notification.variant] : undefined,

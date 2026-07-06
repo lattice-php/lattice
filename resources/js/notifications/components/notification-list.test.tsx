@@ -73,4 +73,35 @@ describe("NotificationList", () => {
     );
     expect(container.querySelector('[data-slot="skeleton"]')).not.toBeNull();
   });
+
+  it("shows a load more button only when hasMore is true, and fires onLoadMore", () => {
+    const onLoadMore = vi.fn<() => void>();
+    const { rerender } = render(
+      <NotificationList
+        notifications={[item("a", "Order shipped")]}
+        status="idle"
+        hasMore={false}
+        onMarkRead={vi.fn<(id: string) => void>()}
+        onDismiss={vi.fn<(id: string) => void>()}
+        onLoadMore={onLoadMore}
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: /load more/i })).not.toBeInTheDocument();
+
+    rerender(
+      <NotificationList
+        notifications={[item("a", "Order shipped")]}
+        status="idle"
+        hasMore={true}
+        onMarkRead={vi.fn<(id: string) => void>()}
+        onDismiss={vi.fn<(id: string) => void>()}
+        onLoadMore={onLoadMore}
+      />,
+    );
+
+    const loadMoreButton = screen.getByRole("button", { name: /load more/i });
+    fireEvent.click(loadMoreButton);
+    expect(onLoadMore).toHaveBeenCalledTimes(1);
+  });
 });
