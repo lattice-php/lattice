@@ -4,6 +4,7 @@ import starlight from "@astrojs/starlight";
 import starlightLlmsTxt from "starlight-llms-txt";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
+import { svgSprite } from "@lattice-php/vite-svg-sprite";
 
 const site = process.env.SITE_URL || "https://latticephp.com";
 const viteCacheSuffix = process.argv.includes("build") ? "build" : "dev";
@@ -210,7 +211,7 @@ export default defineConfig({
   ],
   vite: {
     cacheDir: `node_modules/.vite-${viteCacheSuffix}`,
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), svgSprite({ iconDirs: [path.resolve("./resources/icons")] })],
     resolve: {
       alias: {
         "@lattice/lattice": path.resolve("./resources/js"),
