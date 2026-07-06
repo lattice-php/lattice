@@ -24,6 +24,43 @@ final class NotificationController
         ]);
     }
 
+    public function read(Request $request, string $id): JsonResponse
+    {
+        $notifiable = $request->user();
+        $notifiable->notifications()->findOrFail($id)->markAsRead();
+
+        return $this->count($notifiable);
+    }
+
+    public function readAll(Request $request): JsonResponse
+    {
+        $notifiable = $request->user();
+        $notifiable->unreadNotifications()->update(['read_at' => now()]);
+
+        return $this->count($notifiable);
+    }
+
+    public function destroy(Request $request, string $id): JsonResponse
+    {
+        $notifiable = $request->user();
+        $notifiable->notifications()->findOrFail($id)->delete();
+
+        return $this->count($notifiable);
+    }
+
+    public function clear(Request $request): JsonResponse
+    {
+        $notifiable = $request->user();
+        $notifiable->notifications()->delete();
+
+        return $this->count($notifiable);
+    }
+
+    private function count(object $notifiable): JsonResponse
+    {
+        return response()->json(['unreadCount' => $notifiable->unreadNotifications()->count()]);
+    }
+
     /**
      * @return array<string, mixed>
      */
