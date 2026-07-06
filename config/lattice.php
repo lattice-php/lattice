@@ -55,6 +55,14 @@ return [
         'middleware' => ['web', 'auth'],
     ],
 
+    'notifications' => [
+        'endpoint' => 'lattice/notifications',
+        'middleware' => ['web', 'auth'],
+        'per_page' => 15,
+        'polling_interval' => null,
+        'prune_after_days' => 30,
+    ],
+
     'typescript' => [
         'output' => resource_path('js/lattice/generated.d.ts'),
         'module' => '@lattice-php/lattice',
