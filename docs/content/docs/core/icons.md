@@ -112,15 +112,14 @@ MenuItem::make('Launch')->icon('rocket');
 - **`outDir`** — where the SVGs are written. It joins the sprite automatically; you don't also list it
   under `dirs`.
 
-The copy is **idempotent and pruning**: it writes only files whose content changed and removes any
-`*.svg` in `outDir` that isn't in `names`. So `names` is the single source of truth for that folder, and
-re-running the build is a no-op once synced. Commit the copied SVGs — the source package is then only
-needed at build time, so anyone installing *your* package gets the icons without it.
+The copy is **idempotent**: it writes only files whose content changed, so re-running the build is a
+no-op once synced, and it never touches anything else in the folder — vendored and hand-authored icons
+can share a directory. Commit the copied SVGs; the source package is then only needed at build time, so
+anyone installing *your* package gets the icons without it.
 
-:::caution
-Because `outDir` is pruned to exactly `names`, point it at a **dedicated** folder (like
-`resources/icons/lucide`) — never the folder that holds your hand-drawn icons, or any SVG there that
-isn't in `names` will be deleted. Keep vendored and hand-authored icons in separate directories.
+:::note
+Dropping an icon from `names` leaves its committed SVG in place — vendoring never deletes files. Remove
+the stale SVG by hand when you no longer want it in the sprite.
 :::
 
 ## Referencing icons
