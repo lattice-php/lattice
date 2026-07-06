@@ -10,12 +10,13 @@ it('shows the bell, opens the panel, and marks notifications read', function ():
     $this->actingAs($user);
 
     visit('/')
-        ->assertPresent('[data-test="notifications-trigger"]')
-        ->assertSee('1')
-        ->click('[data-test="notifications-trigger"]')
+        ->assertPresent('@notifications-trigger')
+        ->assertPresent('[data-test="notifications-badge"]')
+        ->assertSeeIn('[data-test="notifications-badge"]', '1')
+        ->click('@notifications-trigger')
         ->assertSee('Order #1234 shipped')
         ->click('Mark all read')
-        ->assertDontSee('Mark all read')
+        ->assertNotPresent('[data-test="notifications-badge"]')
         ->assertNoSmoke();
 });
 

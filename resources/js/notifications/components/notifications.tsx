@@ -50,6 +50,7 @@ const NotificationsComponent: RendererComponent<"notifications"> = ({ node }) =>
       {store.unreadCount > 0 ? (
         <Badge
           variant="destructive"
+          data-test="notifications-badge"
           className="absolute -right-0.5 -top-0.5 min-w-4 px-1 py-0 text-[10px]"
         >
           {store.unreadCount}
