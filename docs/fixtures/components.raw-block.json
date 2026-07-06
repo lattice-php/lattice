@@ -1,0 +1,8 @@
+[
+    {
+        "props": {
+            "html": "<p>Rendered from <strong>trusted</strong> server HTML.</p>"
+        },
+        "type": "raw-block"
+    }
+]

@@ -1,0 +1,40 @@
+[
+    {
+        "props": {
+            "align": null,
+            "direction": null,
+            "float": null,
+            "gap": "sm",
+            "height": null,
+            "justify": null,
+            "width": null
+        },
+        "schema": [
+            {
+                "props": {
+                    "level": 2,
+                    "text": "Billing",
+                    "tooltip": null
+                },
+                "type": "heading"
+            },
+            {
+                "props": {
+                    "align": null,
+                    "color": "muted",
+                    "copyable": false,
+                    "size": "md",
+                    "text": "Invoices are sent on the first of each month."
+                },
+                "type": "text"
+            },
+            {
+                "props": {
+                    "label": "Trialing"
+                },
+                "type": "badge"
+            }
+        ],
+        "type": "stack"
+    }
+]

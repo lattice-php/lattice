@@ -1,0 +1,31 @@
+---
+title: Floating panel
+description: Pin a group of children to a corner of the viewport — useful for compact persistent controls.
+---
+
+import Info from "@components/Info.astro";
+
+`FloatingPanel::make()` fixes its children to a corner of the viewport, so they stay in place as the
+page scrolls. It suits compact persistent controls — a language or appearance switcher, a support
+launcher — that should always be reachable without taking a slot in the page flow.
+
+```php
+FloatingPanel::make()
+    ->placement(FloatingPlacement::BottomEnd)
+    ->schema([
+        SegmentedControl::make('appearance')
+            ->options(['light' => 'Light', 'dark' => 'Dark'])
+            ->emits('appearance-changed'),
+    ]);
+```
+
+- `->placement(FloatingPlacement::…)` sets the corner: `BottomEnd` (default), `BottomStart`, `TopEnd`,
+  or `TopStart` (see the [enums reference](/advanced/enums/)).
+- `->offset($px)` is the distance from the viewport edge — `16` by default.
+- `->label('…')` labels the panel for assistive tech.
+- `->trigger([...])` sets the components rendered as the panel's trigger.
+
+<Info>
+  Because a floating panel is fixed to the viewport rather than the page, its examples here are shown
+  as code — a live preview would escape this box and pin itself to the corner of the docs window.
+</Info>

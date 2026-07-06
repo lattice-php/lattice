@@ -69,7 +69,6 @@ export default defineConfig({
           items: [
             { label: "Pages", link: "/core/pages/" },
             { label: "Layouts", link: "/core/layouts/" },
-            { label: "Components", link: "/core/components/" },
             { label: "Closure evaluation", link: "/core/closure-evaluation/" },
             { label: "Authorization", link: "/core/authorization/" },
             { label: "Fragments", link: "/core/fragments/" },
@@ -83,7 +82,18 @@ export default defineConfig({
         {
           label: "Components",
           collapsed: true,
-          items: [{ label: "Charts", link: "/components/charts/" }],
+          items: [
+            { label: "Overview", link: "/components/overview/" },
+            { label: "Layout", link: "/components/layout/" },
+            { label: "Section & Collapsible", link: "/components/section-collapsible/" },
+            { label: "Floating panel", link: "/components/floating-panel/" },
+            { label: "Text & badges", link: "/components/text/" },
+            { label: "Buttons & links", link: "/components/buttons/" },
+            { label: "Tabs", link: "/components/tabs/" },
+            { label: "Modals", link: "/components/modals/" },
+            { label: "Tooltip", link: "/components/tooltip/" },
+            { label: "Charts", link: "/components/charts/" },
+          ],
         },
         {
           label: "Forms",

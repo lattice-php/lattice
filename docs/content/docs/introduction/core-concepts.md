@@ -34,7 +34,7 @@ A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its 
 
 Components are the visual vocabulary. Server-side builders — `Card`, `Grid`, `Stack`, `Heading`, `Text`, `Tabs`, `Badge`, `Link`, and more — compose into the tree a page renders. Each one serializes to a typed node that maps to a React component in the registry, and you can register your own.
 
-[Learn more →](/core/components/)
+[Learn more →](/components/overview/)
 
 ### Forms
 

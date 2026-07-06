@@ -1,0 +1,49 @@
+---
+title: Tabs
+description: A tab strip whose active tab is kept in the URL and whose panels render lazily.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Warning from "@components/Warning.astro";
+
+`Tabs::make()->schema([...])` renders a tab strip of `Tab::make('value', 'Label')->schema([...])`
+children. The active tab is kept in the URL query string, and a tab's content renders lazily on first
+open.
+
+<ComponentExample
+  php={`Tabs::make()->defaultValue('details')->schema([
+    Tab::make('details', 'Details')->schema([
+        Text::make('Team details go here.'),
+    ]),
+    Tab::make('history', 'History')->schema([
+        Text::make('Recent activity for the team.'),
+    ]),
+]);`}
+  fixture="components.tabs"
+/>
+
+## Active tab and the URL
+
+- `->defaultValue('details')` picks the tab shown when the URL names none. Otherwise the first tab
+  wins.
+- `->queryKey('tab')` sets the query-string parameter that tracks the active tab (defaults to `tabs`),
+  so tabs survive reloads and are shareable by URL.
+
+## Orientation and alignment
+
+- `->orientation(Orientation::Vertical)` moves the strip to the side of the panels.
+- `->alignment(TabsAlignment::…)` controls how the strip sits. Horizontal tabs default to `Stretch`
+  (tabs share the full width); `Start`, `Center`, and `End` shrink the strip to its content and pin it
+  left, center, or right. Vertical tabs only read `End` — it moves the strip to the right of the
+  panels; every other value keeps it on the left.
+
+See the [enums reference](/advanced/enums/) for the full `Orientation` and `TabsAlignment` cases.
+
+## Password-confirmed tabs
+
+<Warning title="Gate sensitive panels">
+  `Tab::make('billing', 'Billing')->confirm()` gates a tab behind Laravel's password confirmation.
+  Until the user confirms — redirected to `/user/confirm-password` by default; pass your own URL and an
+  optional `timeout` — the tab's children are stripped from the response, so protected content never
+  reaches the client. Reach for it on sensitive panels.
+</Warning>

@@ -1,0 +1,38 @@
+[
+    {
+        "props": {
+            "align": null,
+            "direction": "row",
+            "float": null,
+            "gap": "sm",
+            "height": null,
+            "justify": null,
+            "width": null
+        },
+        "schema": [
+            {
+                "props": {
+                    "buttonType": "button",
+                    "effects": [],
+                    "href": null,
+                    "icon": null,
+                    "label": "Save",
+                    "variant": "default"
+                },
+                "type": "button"
+            },
+            {
+                "props": {
+                    "buttonType": "button",
+                    "effects": [],
+                    "href": null,
+                    "icon": null,
+                    "label": "Cancel",
+                    "variant": "ghost"
+                },
+                "type": "button"
+            }
+        ],
+        "type": "stack"
+    }
+]

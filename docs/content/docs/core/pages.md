@@ -47,7 +47,7 @@ public function render(PageSchema $schema): PageSchema
 }
 ```
 
-The components are the same [building blocks](/core/components/) used everywhere else — layout
+The components are the same [building blocks](/components/overview/) used everywhere else — layout
 primitives like `Stack`, content like `Heading` and `Text`, and the interactive
 [forms](/forms/overview/), [tables](/tables/overview/), and [actions](/actions/overview/) that carry
 their own endpoints.

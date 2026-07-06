@@ -1,0 +1,37 @@
+---
+title: Modals
+description: A dialog opened and closed from the server through action effects.
+---
+
+import Info from "@components/Info.astro";
+
+`Modal::make($id)->title('…')->schema([...])` declares a dialog. It renders nothing until it is
+opened, and it is driven from the server: an [action](/actions/overview/) returns an `openModal` /
+`closeModal` [effect](/actions/effects/) targeting the modal's `$id`.
+
+```php
+Modal::make('invite-member')
+    ->title('Invite a member')
+    ->description('They will receive an email invitation.')
+    ->schema([
+        // form fields, text, buttons…
+    ]);
+```
+
+The dialog's `$id` is how effects find it:
+
+```php
+Action::make('invite')
+    ->effects(Effect::openModal('invite-member'));
+```
+
+- `->title('…')` and `->description('…')` set the dialog header.
+- `->closeLabel('…')` relabels the close button (defaults to `Close`).
+- `->open()` renders the modal already open — for a dialog that should show on load, rather than in
+  response to an effect.
+
+<Info>
+  Modals are normally opened and closed by [effects](/actions/effects/), never by the client on its
+  own. `->open()` is only for a modal that should render already open. Because a modal takes over the
+  viewport, its examples here are shown as code rather than a live preview.
+</Info>
