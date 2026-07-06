@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Notifications;
 
 use BackedEnum;
 use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Notifications\Support\ActionDescriptor;
 
 final class Notification
 {
@@ -20,6 +21,9 @@ final class Notification
     private ?string $href = null;
 
     private bool $openInNewTab = false;
+
+    /** @var list<array<string, mixed>> */
+    private array $actions = [];
 
     public static function make(): self
     {
@@ -62,6 +66,23 @@ final class Notification
         return $this;
     }
 
+    /**
+     * @param  array<string, mixed>  $arguments
+     */
+    public function action(string $action, array $arguments = [], ?string $label = null): self
+    {
+        $this->actions[] = ActionDescriptor::action($action, $arguments, $label);
+
+        return $this;
+    }
+
+    public function link(string $label, string $url, bool $newTab = false): self
+    {
+        $this->actions[] = ActionDescriptor::link($label, $url, $newTab);
+
+        return $this;
+    }
+
     public function send(object $notifiable): void
     {
         $notifiable->notify(new PendingLatticeNotification($this, broadcast: true));
@@ -85,7 +106,7 @@ final class Notification
             'variant' => $this->variant->value,
             'href' => $this->href,
             'openInNewTab' => $this->openInNewTab,
-            'actions' => [],
+            'actions' => $this->actions,
         ];
     }
 }
