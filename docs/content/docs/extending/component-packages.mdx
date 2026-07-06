@@ -10,7 +10,11 @@ The [extension points](/extending/overview/) assume a component lives in your ow
 
 ## What a package ships
 
-Four things — or scaffold them with `php artisan lattice:component Signature --package=.`:
+Four things — or let the generator write them. Point `--package` at a directory that has no `composer.json` yet and Lattice scaffolds the whole package on first use (the name and PSR-4 namespace are derived from the folder — `packages/acme-signature` → `acme/signature`, `Acme\Signature\`), then creates the component inside it:
+
+```bash
+php artisan lattice:component Signature --package=packages/acme-signature
+```
 
 **1. A `composer.json` declaring the two Lattice entry points:**
 

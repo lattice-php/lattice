@@ -61,6 +61,29 @@ it('scaffolds into a Composer package via --package', function (): void {
     }
 });
 
+it('scaffolds a new package on first component when composer.json is absent', function (): void {
+    $dir = sys_get_temp_dir().'/lattice-new-'.Str::random(8).'/acme-signature';
+
+    try {
+        artisan('lattice:component', ['name' => 'Signature', '--package' => $dir])->assertSuccessful();
+
+        $composer = json_decode(File::get($dir.'/composer.json'), true);
+        expect($composer['name'])->toBe('acme/signature')
+            ->and($composer['autoload']['psr-4'])->toHaveKey('Acme\\Signature\\')
+            ->and($composer['extra']['lattice'])->toBe([
+                'plugin' => 'resources/js/plugin.ts',
+                'discover' => ['src'],
+            ]);
+
+        expect(File::get($dir.'/src/Components/Signature.php'))
+            ->toContain('namespace Acme\\Signature\\Components;');
+        expect(File::get($dir.'/resources/js/plugin.ts'))
+            ->toContain('"signature": eagerComponent(SignatureComponent)');
+    } finally {
+        File::deleteDirectory(dirname($dir));
+    }
+});
+
 it('honors a --type override', function (): void {
     withComponentScaffold(function (): void {
         artisan('lattice:component', ['name' => 'Stars', '--type' => 'rating.stars'])->assertSuccessful();

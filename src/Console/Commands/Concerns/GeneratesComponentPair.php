@@ -43,6 +43,7 @@ trait GeneratesComponentPair
         }
 
         $dir = rtrim(trim($package), '/');
+        $this->ensurePackageComposer($dir);
         $plugin = $dir.'/resources/js/plugin.ts';
         $this->ensurePluginFile($plugin, $dir);
 
@@ -54,6 +55,37 @@ trait GeneratesComponentPair
             'import' => './'.$kebab,
             'refresh' => false,
         ];
+    }
+
+    /**
+     * Scaffold a Composer package on first use: when the target dir has no
+     * composer.json, derive a vendor/name and PSR-4 namespace from its basename
+     * (`acme-signature` → `acme/signature`, `Acme\Signature\`) and write a
+     * skeleton already wired with the `extra.lattice` entry points.
+     */
+    private function ensurePackageComposer(string $packageDir): void
+    {
+        $composerPath = $packageDir.'/composer.json';
+
+        if (File::exists($composerPath)) {
+            return;
+        }
+
+        $slug = Str::kebab(basename($packageDir));
+        [$vendor, $package] = str_contains($slug, '-')
+            ? explode('-', $slug, 2)
+            : [$slug, $slug];
+        $namespace = Str::studly($vendor).'\\'.Str::studly($package);
+
+        File::ensureDirectoryExists($packageDir);
+        File::put($composerPath, json_encode([
+            'name' => $vendor.'/'.$package,
+            'type' => 'library',
+            'autoload' => ['psr-4' => [$namespace.'\\' => 'src/']],
+            'extra' => ['lattice' => ['plugin' => 'resources/js/plugin.ts', 'discover' => ['src']]],
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES).PHP_EOL);
+
+        $this->components->info('Scaffolded package: '.$composerPath);
     }
 
     private function packageNamespace(string $packageDir): string
