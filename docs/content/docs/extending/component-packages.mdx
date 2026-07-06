@@ -6,7 +6,7 @@ description: Ship a custom component — PHP and its React renderer — as a Com
 import Info from "@components/Info.astro";
 import Warning from "@components/Warning.astro";
 
-The [extension points](/extending/overview/) assume a component lives in your own app. To _distribute_ one — a signature pad, a chart widget, a domain-specific field — you would normally also publish an npm package for its React renderer, and keep it in lockstep with the PHP side. Lattice avoids that second release pipeline: because a consuming app already pulls Lattice itself from `vendor/` through the `lattice()` Vite plugin, a component package ships its renderer as source in `vendor/` too. A plain `composer require` is enough.
+The [extension points](/extending/overview/) assume a component lives in your own app. To _distribute_ one — a signature pad, a chart widget, a domain-specific field — you would normally also publish an npm package for its React renderer, and keep it in lockstep with the PHP side. Lattice removes that second release pipeline: a component package ships its React renderer as source inside its Composer package, and the `lattice()` Vite plugin compiles it straight into your app's existing build — resolving `@lattice-php/lattice` against the copy you already installed. A plain `composer require` is enough.
 
 ## What a package ships
 
@@ -86,7 +86,7 @@ For the consumer, it is a single dependency:
 composer require acme/lattice-signature
 ```
 
-Register the discovered plugins where the app is created:
+If you followed the [installation guide](/introduction/installation/), the discovered plugins are already registered — the standard bootstrap passes `virtual:lattice/plugins` to `createLatticeApp`, so an installed package registers itself with no further wiring:
 
 ```ts
 import latticePlugins from "virtual:lattice/plugins";
@@ -94,7 +94,7 @@ import latticePlugins from "virtual:lattice/plugins";
 createLatticeApp({ plugins: latticePlugins });
 ```
 
-Or merge them onto the registry yourself with `extendRegistry(registry, ...latticePlugins)`. Then use the component like any built-in:
+(Or merge them onto the registry yourself with `extendRegistry(registry, ...latticePlugins)`.) Then use the component like any built-in:
 
 ```php
 Signature::make('signature')->label('Sign the contract');
