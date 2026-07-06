@@ -1,0 +1,28 @@
+---
+title: Money column
+description: Render a value as a currency amount — a fixed currency, or one read per row from another field.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+`MoneyColumn` is a numeric column rendered as currency. Symbol placement and the number of decimal
+places follow the viewer's locale and the currency itself, so you feed it a plain amount. It is
+sortable and filters as a [number](/tables/filtering/).
+
+<ComponentExample
+  php={`MoneyColumn::make('total')->label('Total')->currency('EUR')->sortable();
+MoneyColumn::make('refunded')->label('Refunded')->currencyField('currency');`}
+  fixture="table.money"
+/>
+
+- `->currency('EUR')` fixes one currency for the whole column.
+- `->currencyField('currency')` reads each row's currency code from another field — for a table whose
+  rows are in different currencies.
+
+```php
+MoneyColumn::make('price')->currency('USD');
+MoneyColumn::make('amount')->currencyField('currency_code');
+```
+
+Like every numeric column, `->decimals($min, $max?)` overrides the fraction digits when you need to
+depart from the currency's default.

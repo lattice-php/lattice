@@ -65,7 +65,62 @@ MenuItem::make('Spark')->icon('spark');
 ```
 
 Icons inherit their colour via `currentColor` and their size via the `size-*` utility on the element,
-so a single SVG adapts to wherever it's used.
+so a single SVG adapts to wherever it's used. To pull icons from a package instead of downloading them
+by hand, [vendor them](#vendoring-icons-from-a-package).
+
+## Vendoring icons from a package
+
+Rather than hand-download SVGs, you can **vendor** a named set from an icon package: the plugin copies
+just the icons you list into your project and commits them. You ship only the icons you use — not a
+whole library — and the set is reproducible from the config. This is how Lattice sources its own icons
+from [`lucide-static`](https://www.npmjs.com/package/lucide-static).
+
+Install the source package as a dev dependency:
+
+```bash
+npm install -D lucide-static
+```
+
+Then list the icons you want under `include`:
+
+```ts
+lattice({
+  icons: {
+    dirs: ["resources/icons"],
+    include: [
+      {
+        from: "lucide-static/icons", // a package's icon folder, or any local directory
+        names: ["rocket", "sparkles", "wand-sparkles"],
+        outDir: "resources/icons/lucide",
+      },
+    ],
+  },
+});
+```
+
+Each build copies `rocket.svg`, `sparkles.svg`, and `wand-sparkles.svg` out of the package into
+`resources/icons/lucide` and folds them into the sprite. Reference them by name like any other icon:
+
+```php
+MenuItem::make('Launch')->icon('rocket');
+```
+
+- **`from`** — a folder of SVGs: a package's icon directory resolved from `node_modules`
+  (e.g. `lucide-static/icons`), or a path to a local directory.
+- **`names`** — the filenames to copy, without `.svg`. A name missing from the source **fails the
+  build**, so a typo surfaces immediately.
+- **`outDir`** — where the SVGs are written. It joins the sprite automatically; you don't also list it
+  under `dirs`.
+
+The copy is **idempotent**: it writes only files whose content changed, so re-running the build is a
+no-op once synced, and it never touches anything else in the folder — vendored and hand-authored icons
+can share a directory. Commit the copied SVGs; the source package is then only needed at build time, so
+anyone installing _your_ package gets the icons without it.
+
+:::note
+Dropping an icon from `names` leaves its committed SVG in place — vendoring never deletes files. Remove
+the stale SVG by hand when you no longer want it in the sprite.
+:::
 
 ## Referencing icons
 

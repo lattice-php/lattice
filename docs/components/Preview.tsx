@@ -1,5 +1,8 @@
+/// <reference types="@lattice-php/vite-svg-sprite/client" />
+import sprite from "virtual:svg-sprite";
 import { Renderer, registry } from "@lattice-php/lattice";
 import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
+import { SpriteProvider } from "@lattice-php/lattice/icons/sprite";
 import { FormValuesProvider } from "@lattice-php/lattice/form/components/values";
 import type { Node } from "@lattice-php/lattice/core/types";
 
@@ -10,10 +13,12 @@ type Props = {
 
 export default function Preview({ nodes, values = {} }: Props) {
   return (
-    <RegistryContext.Provider value={registry}>
-      <FormValuesProvider initial={values}>
-        <Renderer nodes={nodes} />
-      </FormValuesProvider>
-    </RegistryContext.Provider>
+    <SpriteProvider sprite={sprite}>
+      <RegistryContext.Provider value={registry}>
+        <FormValuesProvider initial={values}>
+          <Renderer nodes={nodes} />
+        </FormValuesProvider>
+      </RegistryContext.Provider>
+    </SpriteProvider>
   );
 }

@@ -50,7 +50,7 @@ public function bulkActions(): array
 }
 ```
 
-The selection is resolved by the table's [data source](/tables/overview/#data-sources) — both an
+The selection is resolved by the table's [data source](/tables/data-sources/) — both an
 explicit set of checked rows and "select all matching", which re-runs the current filters. With the
 [Eloquent source](/tables/eloquent-tables/#selecting-bulk-action-rows) this works with no extra code.
 

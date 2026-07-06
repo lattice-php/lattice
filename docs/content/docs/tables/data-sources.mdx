@@ -1,0 +1,116 @@
+---
+title: Data sources
+description: The TableSource contract — back a table with an array, an API, a search index, or anything that turns a query into rows.
+---
+
+import Info from "@components/Info.astro";
+
+A table's rows come from a `TableSource`. It is the seam that keeps tables independent of any storage:
+the definition declares columns and behaviour, the source turns the current request into rows. The
+[Eloquent source](/tables/eloquent-tables/) is one implementation; this page covers the contract and
+how to back a table with anything else.
+
+## The contract
+
+```php
+namespace Lattice\Lattice\Tables\Contracts;
+
+interface TableSource
+{
+    public function query(TableQuery $query): TableResult;
+    public function resolveMatching(TableQuery $query): Collection;
+    public function resolveSelection(array $keys): Collection;
+}
+```
+
+- **`query()`** fetches one page of rows for the current request. This is the only method a read-only
+  table needs.
+- **`resolveMatching()`** and **`resolveSelection()`** resolve rows for [bulk actions](/tables/actions/#bulk-actions)
+  — everything matching the current filters, and an explicit set of selected keys. They can return an
+  empty collection until the table has bulk actions.
+
+## The query and the result
+
+`TableQuery` is the read model of the current request. It is an immutable value with the request's
+state as public properties:
+
+| Property         | Holds                                                                 |
+| ---------------- | --------------------------------------------------------------------- |
+| `->filters`      | The active [column filters](/tables/filtering/).                      |
+| `->sorts`        | The active [sorts](/tables/sorting-and-pagination/).                  |
+| `->tableFilters` | The active [dedicated filters](/tables/filtering/#dedicated-filters). |
+| `->page`         | The requested page number.                                            |
+| `->perPage`      | Rows per page.                                                        |
+
+`TableResult` wraps the rows and their pagination metadata. Build one with a static factory:
+
+- **`TableResult::fromItems($items)`** — a plain iterable of rows (arrays or models). Use it when you
+  page the data yourself or don't paginate.
+- **`TableResult::fromPaginator($paginator)`** — a `LengthAwarePaginator`, carrying the total count for
+  a full pager.
+- **`TableResult::fromSimplePaginator($paginator)`** — a simple paginator, for previous/next paging
+  without a total.
+
+## Backing a table with your own source
+
+For a one-off source, `CallbackTableSource` takes the three methods as closures — you only pass the
+first unless the table has bulk actions:
+
+```php
+use Lattice\Lattice\Tables\CallbackTableSource;
+use Lattice\Lattice\Tables\Contracts\TableSource;
+use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Lattice\Tables\TableResult;
+
+public function source(): TableSource
+{
+    return new CallbackTableSource(
+        fn (TableQuery $query): TableResult => TableResult::fromItems(
+            collect($this->rows())->forPage($query->page, $query->perPage),
+        ),
+    );
+}
+```
+
+The closure receives the `TableQuery`, so it can page, sort, and filter however the backing store
+allows — slice an in-memory collection, forward the parameters to an HTTP API, or query a search
+index. When the backend returns its own paginator (or you build one), hand it to
+`TableResult::fromPaginator()` so the table renders a full pager:
+
+```php
+public function source(): TableSource
+{
+    return new CallbackTableSource(function (TableQuery $query): TableResult {
+        $response = $this->api->search(
+            page: $query->page,
+            perPage: $query->perPage,
+        );
+
+        return TableResult::fromPaginator($response->toPaginator());
+    });
+}
+```
+
+For anything more involved, implement `TableSource` on a class of its own and return it from
+`source()`.
+
+<Info>
+  Whether a source can apply a given sort or filter is up to the source. A column that is
+  [`sortable()`](/tables/sorting-and-pagination/) or [`filterable()`](/tables/filtering/) only tells
+  the table to render the control and send the parameter — the source decides how (or whether) to
+  honor it. The [Eloquent source](/tables/eloquent-tables/) applies both automatically.
+</Info>
+
+## Computing per-row data
+
+`TableResult::decorateRows()` maps every row through a callback after it is built, so you can attach
+computed fields a column reads without touching the backing store:
+
+```php
+return TableResult::fromItems($rows)->decorateRows(
+    fn (array $row): array => [...$row, 'full_name' => $row['first'].' '.$row['last']],
+);
+```
+
+The callback receives the serialized row array and its index, and returns the row to render — a good
+place to add a value a display-only column shows, or per-row metadata.

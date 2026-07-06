@@ -1,0 +1,31 @@
+---
+title: Tooltip
+description: An ⓘ info popover you can place anywhere.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Warning from "@components/Warning.astro";
+
+`Tooltip::make()->content('…')` renders an ⓘ info popover you can place anywhere in a schema. The
+content is trusted HTML, so links are supported.
+
+<ComponentExample
+  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+    Badge::make('Plan: Pro'),
+    Tooltip::make()->content('Includes unlimited seats and priority support.'),
+]);`}
+  fixture="components.tooltip"
+/>
+
+Pass `->trigger([...])` to use your own trigger — text, a badge, an icon — instead of the default ⓘ
+icon. Clicking it opens the popover.
+
+<Warning>
+  Keep the trigger non-interactive: it becomes the popover's clickable button, so a button or link
+  inside it would nest one interactive element in another. Use plain [display](/components/text/)
+  components.
+</Warning>
+
+Several components take a `->tooltip('…')` shorthand that attaches this same popover to their title or
+header — [`Card`](/components/layout/#card), [`Section`](/components/section-collapsible/#section),
+[`Collapsible`](/components/section-collapsible/#collapsible), and [`Heading`](/components/text/#heading).

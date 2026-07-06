@@ -1,0 +1,54 @@
+[
+    {
+        "props": {
+            "activeValue": "details",
+            "alignment": "stretch",
+            "defaultValue": "details",
+            "orientation": "horizontal",
+            "queryKey": "tabs"
+        },
+        "schema": [
+            {
+                "props": {
+                    "confirm": null,
+                    "label": "Details",
+                    "value": "details"
+                },
+                "schema": [
+                    {
+                        "props": {
+                            "align": null,
+                            "color": "muted",
+                            "copyable": false,
+                            "size": "md",
+                            "text": "Team details go here."
+                        },
+                        "type": "text"
+                    }
+                ],
+                "type": "tab"
+            },
+            {
+                "props": {
+                    "confirm": null,
+                    "label": "History",
+                    "value": "history"
+                },
+                "schema": [
+                    {
+                        "props": {
+                            "align": null,
+                            "color": "muted",
+                            "copyable": false,
+                            "size": "md",
+                            "text": "Recent activity for the team."
+                        },
+                        "type": "text"
+                    }
+                ],
+                "type": "tab"
+            }
+        ],
+        "type": "tabs"
+    }
+]

@@ -1,0 +1,31 @@
+---
+title: Icon column
+description: Render a cell as an icon — the same one for every row, or one chosen per value.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+`IconColumn` renders an [icon](/core/icons/) instead of text — useful for a status or a boolean-like
+flag.
+
+<ComponentExample
+  php={`TextColumn::make('name')->label('Name');
+IconColumn::make('verified')->label('Verified')
+    ->icons(['1' => Icon::Check, '0' => Icon::Minus])
+    ->colors(['1' => 'green', '0' => 'gray']);`}
+  fixture="table.icon"
+/>
+
+- `->icon('star')` shows the same icon for every row.
+- `->icons([value => icon])` picks an icon per value — each key is a cell value, each icon a sprite
+  name or a backed enum case (e.g. the built-in `Icon` enum).
+- `->colors([value => color])` tints the icon per value, with the same palette as a
+  [badge](/tables/columns/badge/).
+
+```php
+use Lattice\Lattice\Core\Enums\Icon;
+
+IconColumn::make('priority')
+    ->icons(['high' => Icon::ArrowUp, 'low' => Icon::ArrowDown])
+    ->colors(['high' => 'red', 'low' => 'gray']);
+```

@@ -1,0 +1,69 @@
+---
+title: Layout
+description: Stack, Grid, and Card — the containers that arrange and frame a page's children.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+
+Layout components arrange their children. They are containers — pass children to `->schema([...])`,
+and nest them freely. This page covers the three you reach for most; the disclosures
+([Section & Collapsible](/components/section-collapsible/)) and the corner-pinned
+[Floating panel](/components/floating-panel/) have their own pages.
+
+## Stack
+
+`Stack::make()` lays children out in one direction with a consistent gap. It defaults to a vertical
+column; pass `->direction('row')` to lay them out horizontally.
+
+<ComponentExample
+  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+    Button::make('Save')->variant(ButtonVariant::Default),
+    Button::make('Cancel')->variant(ButtonVariant::Ghost),
+]);`}
+  fixture="components.stack"
+/>
+
+Tune the layout with enum-typed options (see the [enums reference](/advanced/enums/)):
+
+- `->gap(Gap::ExtraSmall … ExtraLarge)` — the space between children.
+- `->align(Align::…)` and `->justify(Justify::…)` — cross-axis and main-axis alignment.
+- `->width(Width::…)` and `->height(Height::…)` — sizing.
+- `->float(Side::…)` — float the stack to one side.
+
+## Grid
+
+`Grid::make()->columns(n)` lays children out in `n` equal columns.
+
+<ComponentExample
+  php={`Grid::make()->columns(3)->schema([
+    Badge::make('First'),
+    Badge::make('Second'),
+    Badge::make('Third'),
+]);`}
+  fixture="components.grid"
+/>
+
+## Card
+
+`Card::make('Title', 'Description')` wraps children in a bordered panel. Both arguments are optional —
+omit them for a plain panel. Call `->tooltip('…')` to attach an ⓘ info popover next to the title; its
+content is trusted HTML and may include links.
+
+<ComponentExample
+  php={`Card::make('Team settings', 'Manage how your team appears.')->schema([
+    Stack::make()->gap(Gap::Small)->schema([
+        Heading::make('Members', 2),
+        Text::make('Three people have access to this team.'),
+        Badge::make('3 active'),
+    ]),
+    Button::make('Invite member'),
+]);`}
+  fixture="components.card"
+/>
+
+<Info>
+  Need the panel to collapse or carry buttons in its header? Reach for
+  [`Section`](/components/section-collapsible/), which is a `Card`-like titled panel with those
+  extras.
+</Info>

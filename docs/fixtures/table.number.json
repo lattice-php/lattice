@@ -1,0 +1,110 @@
+[
+    {
+        "id": "metrics",
+        "props": {
+            "actionsLabel": "Actions",
+            "bulkActions": [],
+            "columns": [
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "label",
+                    "label": "Metric",
+                    "props": {
+                        "badge": null,
+                        "copyable": false,
+                        "date": null,
+                        "link": null,
+                        "multiple": null
+                    },
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.text",
+                    "width": "md"
+                },
+                {
+                    "align": "end",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "views",
+                    "label": "Views",
+                    "props": {
+                        "compact": true,
+                        "maximumFractionDigits": null,
+                        "minimumFractionDigits": null,
+                        "unit": null
+                    },
+                    "sortable": true,
+                    "toggleable": null,
+                    "type": "column.number",
+                    "width": "md"
+                },
+                {
+                    "align": "end",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "conversion",
+                    "label": "Conversion",
+                    "props": {
+                        "compact": false,
+                        "maximumFractionDigits": 1,
+                        "minimumFractionDigits": 1,
+                        "unit": "percent"
+                    },
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.number",
+                    "width": "md"
+                }
+            ],
+            "data": [
+                {
+                    "conversion": 0.128,
+                    "label": "Landing page",
+                    "views": 12400
+                },
+                {
+                    "conversion": 0.064,
+                    "label": "Pricing",
+                    "views": 3820
+                },
+                {
+                    "conversion": 0.011,
+                    "label": "Blog",
+                    "views": 1045000
+                }
+            ],
+            "emptyLabel": "No results",
+            "endpoint": null,
+            "filters": [],
+            "layout": null,
+            "lazy": null,
+            "pagination": {
+                "currentPage": null,
+                "from": 1,
+                "hasMore": false,
+                "lastPage": null,
+                "mode": "none",
+                "nextPage": null,
+                "perPage": null,
+                "to": 3,
+                "total": 3
+            },
+            "resizableColumns": null,
+            "resizeIndicator": false,
+            "state": {
+                "filters": [],
+                "page": 1,
+                "perPage": 25,
+                "sorts": [],
+                "tableFilters": []
+            },
+            "striped": null
+        },
+        "type": "table"
+    }
+]

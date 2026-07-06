@@ -1,0 +1,84 @@
+---
+title: Text & badges
+description: Display primitives — headings, prose, status pills, sprite icons, and an escape hatch for raw HTML.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Warning from "@components/Warning.astro";
+
+Display components render content and carry no interaction. Compose them inside a
+[layout](/components/layout/) container.
+
+<ComponentExample
+  php={`Stack::make()->gap(Gap::Small)->schema([
+    Heading::make('Billing', 2),
+    Text::make('Invoices are sent on the first of each month.'),
+    Badge::make('Trialing'),
+]);`}
+  fixture="components.text"
+/>
+
+## Heading
+
+`Heading::make($text, $level)` renders a heading; `$level` is `1`–`6` and defaults to `1`. Call
+`->tooltip('…')` to attach an ⓘ info popover next to it.
+
+```php
+Heading::make('Billing', 2);
+```
+
+## Text
+
+`Text::make($text)` renders a paragraph of muted prose. Tune it with enum-typed options (see the
+[enums reference](/advanced/enums/)):
+
+- `->size(Size::…)` — text size (`Md` by default).
+- `->color(Color::…)` — color (`Muted` by default).
+- `->align(Align::Center)` — alignment.
+- `->copyable()` — render a copy-to-clipboard affordance.
+
+```php
+Text::make('Invoices are sent on the first of each month.')->align(Align::Center);
+```
+
+## Badge
+
+`Badge::make($label)` renders a small status pill.
+
+```php
+Badge::make('Trialing');
+```
+
+## Icon
+
+`Icon::make($name)` renders an icon from your app's SVG sprite by name — a string, or a backed enum
+whose value is the name. Set `->size(Size::…)`, `->color(Color::…)`, or add classes with
+`->class('…')`.
+
+```php
+Icon::make('check-circle')->color(Color::Success);
+```
+
+See [Icons](/core/icons/) for how the sprite is built and how to add or type your own icon names.
+
+## Raw HTML
+
+`RawBlock::make()->html($html)` renders a string of HTML verbatim — an escape hatch for markup that
+has no dedicated component. `->blade($view, $data)` renders a Blade view and uses its output instead.
+
+```php
+RawBlock::make()->html('<p>Rendered from <strong>trusted</strong> server HTML.</p>');
+
+RawBlock::make()->blade('components.legal-notice', ['year' => now()->year]);
+```
+
+<ComponentExample
+  php={`RawBlock::make()->html('<p>Rendered from <strong>trusted</strong> server HTML.</p>');`}
+  fixture="components.raw-block"
+/>
+
+<Warning title="Trusted HTML only">
+  A `RawBlock` is injected into the page without escaping. Only ever pass HTML you control — never
+  user-supplied content — or you open the page to cross-site scripting. Prefer a real component when
+  one exists.
+</Warning>

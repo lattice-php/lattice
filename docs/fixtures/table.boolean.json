@@ -1,0 +1,114 @@
+[
+    {
+        "id": "flags",
+        "props": {
+            "actionsLabel": "Actions",
+            "bulkActions": [],
+            "columns": [
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "name",
+                    "label": "Name",
+                    "props": {
+                        "badge": null,
+                        "copyable": false,
+                        "date": null,
+                        "link": null,
+                        "multiple": null
+                    },
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.text",
+                    "width": "md"
+                },
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": {
+                        "clauseOptions": [],
+                        "control": null,
+                        "defaultOperator": "eq",
+                        "enabled": true,
+                        "multiple": false,
+                        "operators": [
+                            "eq",
+                            "empty",
+                            "filled"
+                        ],
+                        "options": [],
+                        "searchable": false,
+                        "type": "boolean"
+                    },
+                    "hiddenByDefault": null,
+                    "key": "featured",
+                    "label": "Featured",
+                    "props": null,
+                    "sortable": true,
+                    "toggleable": null,
+                    "type": "column.boolean",
+                    "width": "md"
+                },
+                {
+                    "align": "start",
+                    "columns": null,
+                    "filter": null,
+                    "hiddenByDefault": null,
+                    "key": "archived",
+                    "label": "Archived",
+                    "props": null,
+                    "sortable": null,
+                    "toggleable": null,
+                    "type": "column.boolean",
+                    "width": "md"
+                }
+            ],
+            "data": [
+                {
+                    "archived": false,
+                    "featured": true,
+                    "name": "Desk Lamp"
+                },
+                {
+                    "archived": false,
+                    "featured": false,
+                    "name": "Office Chair"
+                },
+                {
+                    "archived": true,
+                    "featured": true,
+                    "name": "Monitor Stand"
+                }
+            ],
+            "emptyLabel": "No results",
+            "endpoint": null,
+            "filters": [],
+            "layout": null,
+            "lazy": null,
+            "pagination": {
+                "currentPage": null,
+                "from": 1,
+                "hasMore": false,
+                "lastPage": null,
+                "mode": "none",
+                "nextPage": null,
+                "perPage": null,
+                "to": 3,
+                "total": 3
+            },
+            "resizableColumns": null,
+            "resizeIndicator": false,
+            "state": {
+                "filters": [],
+                "page": 1,
+                "perPage": 25,
+                "sorts": [],
+                "tableFilters": []
+            },
+            "striped": null
+        },
+        "type": "table"
+    }
+]

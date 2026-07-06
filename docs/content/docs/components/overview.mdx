@@ -1,0 +1,58 @@
+---
+title: Components
+description: The server-side visual vocabulary — layout, display, and interactive builders that serialize to React.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+Components are the building blocks a page renders. Each is a PHP builder that serializes to a typed
+node (`type` plus `props`) the renderer maps to a React component. They compose into a tree:
+container components take a `->schema([...])` of children, and children can be containers themselves.
+
+<ComponentExample
+  php={`Card::make('Team settings', 'Manage how your team appears.')->schema([
+    Stack::make()->gap(Gap::Small)->schema([
+        Heading::make('Members', 2),
+        Text::make('Three people have access to this team.'),
+        Badge::make('3 active'),
+    ]),
+    Button::make('Invite member'),
+]);`}
+  fixture="components.card"
+/>
+
+Every example on these pages has four tabs: the **PHP** that builds it, the live **Preview**, the
+serialized **Tree** the renderer receives, and the theme **Style** tokens it uses.
+
+## Catalog
+
+| Component                                      | Purpose                                                             | Page                                                      |
+| ---------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------- |
+| `Stack`, `Grid`, `Card`                        | Arrange children — vertical/horizontal, columns, bordered panels    | [Layout](/components/layout/)                             |
+| `Section`, `Collapsible`                       | Titled and untitled disclosures that fold open and closed           | [Section & Collapsible](/components/section-collapsible/) |
+| `FloatingPanel`                                | Pin children to a viewport corner                                   | [Floating panel](/components/floating-panel/)             |
+| `Heading`, `Text`, `Badge`, `Icon`, `RawBlock` | Display primitives — headings, prose, pills, sprite icons, raw HTML | [Text & badges](/components/text/)                        |
+| `Button`, `Link`, `SegmentedControl`           | Buttons, navigational links, and standalone segmented controls      | [Buttons & links](/components/buttons/)                   |
+| `Tabs`, `Tab`                                  | A tab strip with URL-synced, lazily rendered panels                 | [Tabs](/components/tabs/)                                 |
+| `Modal`                                        | A dialog opened and closed by action effects                        | [Modals](/components/modals/)                             |
+| `Tooltip`                                      | An ⓘ info popover you can place anywhere                            | [Tooltip](/components/tooltip/)                           |
+| `Chart`                                        | Line, bar, area, and pie charts                                     | [Charts](/components/charts/)                             |
+
+## Where components appear
+
+Components are the same building blocks used across Lattice. You place them in a
+[page](/core/pages/)'s schema, inside a [form](/forms/overview/) alongside fields, and in a
+[table](/tables/overview/)'s empty and header slots. Containers nest freely, so a `Card` can hold a
+`Stack` of `Text` and `Button`s, and a `Section` can hold a `Grid` of anything.
+
+## Fragments
+
+A `Fragment` renders a piece of UI resolved on its own, so it can be reloaded independently of the
+page — see [Fragments](/core/fragments/).
+
+## Custom components
+
+Register your own components to extend the renderer with your own typed nodes and React views. See
+[Extending → Custom fields](/extending/custom-fields/),
+[Registry and types](/extending/registry-and-types/), and
+[Component packages](/extending/component-packages/).

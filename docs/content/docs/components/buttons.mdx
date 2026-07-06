@@ -1,0 +1,72 @@
+---
+title: Buttons & links
+description: Buttons, navigational links, and standalone segmented controls.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+
+## Button
+
+`Button::make($label)` renders a button. Style it with `->variant()`: `Default`, `Secondary`,
+`Success`, `Info`, `Destructive`, `Outline`, `Ghost`, or `Link` (see
+[`ButtonVariant`](/advanced/enums/)).
+
+<ComponentExample
+  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+    Button::make('Default')->variant(ButtonVariant::Default),
+    Button::make('Secondary')->variant(ButtonVariant::Secondary),
+    Button::make('Success')->variant(ButtonVariant::Success),
+    Button::make('Info')->variant(ButtonVariant::Info),
+    Button::make('Destructive')->variant(ButtonVariant::Destructive),
+    Button::make('Outline')->variant(ButtonVariant::Outline),
+    Button::make('Ghost')->variant(ButtonVariant::Ghost),
+]);`}
+  fixture="components.buttons"
+/>
+
+A button does one of a few things depending on how you configure it:
+
+- `->href($url)` renders it as a link.
+- `->submit()` makes it a form's submit control — see [Forms](/forms/overview/#the-submit-button).
+- `->icon($name)` adds a sprite [icon](/core/icons/) before the label.
+- `->effects(Effect::…)` dispatches client-side [effects](/actions/effects/) on click with no request
+  to the server, e.g. `->effects(Effect::toggleSidebar('app-sidebar'))`.
+
+To run a server [action](/actions/overview/) on click, use an [`Action`](/actions/overview/) rather
+than a plain button.
+
+## Link
+
+`Link::make($label)->href($url)` renders a navigational link. It navigates through Inertia by default,
+takes an `->icon($name)`, and supports affixes. It can also trigger an [action](/actions/overview/)
+instead of navigating.
+
+```php
+Link::make('Documentation')->href('https://latticephp.com');
+```
+
+## Segmented control
+
+`SegmentedControl::make($name, $label?)` renders single-select pills that live **outside** a form and
+emit a client event when the selection changes — reach for it for client-side settings like an
+appearance switcher, not as a form field (use [Choice](/forms/fields/choice/) for that). Give it
+`->options([...])`, an initial `->value()`, and `->emits($event)` to name the window event dispatched
+on change (its `detail` carries `{ name, value }`).
+
+<ComponentExample
+  php={`SegmentedControl::make('appearance', 'Appearance')
+    ->options([
+        SegmentedControl::option('Light', 'light'),
+        SegmentedControl::option('Dark', 'dark'),
+        SegmentedControl::option('System', 'system'),
+    ])
+    ->value('light')
+    ->emits('appearance-changed');`}
+  fixture="components.segmented-control"
+/>
+
+<Info>
+  `->options()` also accepts an enum class-string or an associative `value => label` array, the same
+  as form fields — see [Choice](/forms/fields/choice/) and [Select](/forms/fields/select/).
+</Info>

@@ -1,0 +1,23 @@
+---
+title: Boolean column
+description: Render a truthy value as a check or cross, filterable as a boolean.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+`BooleanColumn` renders a check or cross instead of the raw value. It is sortable and filters as a
+[boolean](/tables/filtering/) — yes / no / any.
+
+<ComponentExample
+  php={`TextColumn::make('name')->label('Name');
+BooleanColumn::make('featured')->label('Featured')->sortable()->filterable();
+BooleanColumn::make('archived')->label('Archived');`}
+  fixture="table.boolean"
+/>
+
+The column reads the row value as truthy or falsy, so a `1`/`0`, `true`/`false`, or a cast boolean all
+render correctly.
+
+```php
+BooleanColumn::make('is_active')->label('Active')->filterable();
+```

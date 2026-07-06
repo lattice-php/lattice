@@ -6,8 +6,12 @@ use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Core\Components\Grid;
 use Lattice\Lattice\Core\Components\Heading;
+use Lattice\Lattice\Core\Components\RawBlock;
 use Lattice\Lattice\Core\Components\Section;
+use Lattice\Lattice\Core\Components\SegmentedControl;
 use Lattice\Lattice\Core\Components\Stack;
+use Lattice\Lattice\Core\Components\Tab;
+use Lattice\Lattice\Core\Components\Tabs;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Components\Tooltip;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
@@ -95,5 +99,66 @@ describe('docs fixtures', function (): void {
         ]);
 
         expect('docs/fixtures/components.buttons.json')->toBeReadableFile();
+    });
+
+    it('dumps the stack example', function (): void {
+        dumpFixture('components.stack', [
+            Stack::make()->direction('row')->gap(Gap::Small)->schema([
+                Button::make('Save')->variant(ButtonVariant::Default),
+                Button::make('Cancel')->variant(ButtonVariant::Ghost),
+            ]),
+        ]);
+
+        expect('docs/fixtures/components.stack.json')->toBeReadableFile();
+    });
+
+    it('dumps the display example', function (): void {
+        dumpFixture('components.text', [
+            Stack::make()->gap(Gap::Small)->schema([
+                Heading::make('Billing', 2),
+                Text::make('Invoices are sent on the first of each month.'),
+                Badge::make('Trialing'),
+            ]),
+        ]);
+
+        expect('docs/fixtures/components.text.json')->toBeReadableFile();
+    });
+
+    it('dumps the raw block example', function (): void {
+        dumpFixture('components.raw-block', [
+            RawBlock::make()->html('<p>Rendered from <strong>trusted</strong> server HTML.</p>'),
+        ]);
+
+        expect('docs/fixtures/components.raw-block.json')->toBeReadableFile();
+    });
+
+    it('dumps the segmented control example', function (): void {
+        dumpFixture('components.segmented-control', [
+            SegmentedControl::make('appearance', 'Appearance')
+                ->options([
+                    SegmentedControl::option('Light', 'light'),
+                    SegmentedControl::option('Dark', 'dark'),
+                    SegmentedControl::option('System', 'system'),
+                ])
+                ->value('light')
+                ->emits('appearance-changed'),
+        ]);
+
+        expect('docs/fixtures/components.segmented-control.json')->toBeReadableFile();
+    });
+
+    it('dumps the tabs example', function (): void {
+        dumpFixture('components.tabs', [
+            Tabs::make()->defaultValue('details')->schema([
+                Tab::make('details', 'Details')->schema([
+                    Text::make('Team details go here.'),
+                ]),
+                Tab::make('history', 'History')->schema([
+                    Text::make('Recent activity for the team.'),
+                ]),
+            ]),
+        ]);
+
+        expect('docs/fixtures/components.tabs.json')->toBeReadableFile();
     });
 });

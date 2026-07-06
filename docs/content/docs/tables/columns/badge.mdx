@@ -1,0 +1,35 @@
+---
+title: Badge column
+description: Render a value as a coloured pill, mapping each value to a tone.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+`BadgeColumn` renders the value as a pill. It is sortable and filterable like a text column, and reads
+its colour from a fixed value-to-tone map.
+
+<ComponentExample
+  php={`TextColumn::make('reference')->label('Reference');
+BadgeColumn::make('status')->label('Status')
+    ->colors(['paid' => 'green', 'pending' => 'yellow', 'refunded' => 'gray'])
+    ->filterable();`}
+  fixture="table.badge"
+/>
+
+`->colors([value => color])` maps cell values to a colour name — `gray`, `red`, `green`, `yellow`,
+`blue`, `purple`, or `orange`. Unmapped values fall back to gray.
+
+```php
+BadgeColumn::make('status')->colors([
+    'draft' => 'gray',
+    'active' => 'green',
+    'suspended' => 'red',
+])->filterOptions([
+    'draft' => 'Draft',
+    'active' => 'Active',
+    'suspended' => 'Suspended',
+]);
+```
+
+When the colour lives on the row instead of a fixed map — a `status_color` field — a
+[Text column's `->badge()`](/tables/columns/text/#as-a-badge) reads it per row.

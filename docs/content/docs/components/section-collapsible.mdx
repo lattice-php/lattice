@@ -1,0 +1,47 @@
+---
+title: Section & Collapsible
+description: The two disclosure containers — a titled panel that folds and carries header actions, and an untitled clickable trigger.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+Both of these fold a body of children open and closed. `Section` is a titled panel with a header;
+`Collapsible` is an untitled row you build yourself. Reach for `Section` when the group has a heading,
+`Collapsible` when the trigger _is_ the content — a settings row that reveals an inline form.
+
+## Section
+
+`Section::make('Title', 'Description')` groups content under a heading, like a [`Card`](/components/layout/#card)
+that can also collapse and hold actions. Call `->tooltip('…')` to attach an ⓘ info popover next to the
+title; the content may include links. Call `->collapsible()` to let it fold — pass `collapsed: true` to
+start folded, or `rememberState: false` to not persist the state across reloads — and
+`->headerActions([...])` to place buttons or actions in the header.
+
+<ComponentExample
+  php={`Section::make('Members', 'People with access to this team.')
+    ->collapsible()
+    ->headerActions([
+        Button::make('Invite member')->variant(ButtonVariant::Outline),
+    ])
+    ->schema([
+        Text::make('Three people have access to this team.'),
+        Badge::make('3 active'),
+    ]);`}
+  fixture="components.section"
+/>
+
+## Collapsible
+
+`Collapsible::make()` folds a body of children behind a clickable trigger. Pass the header content to
+`->trigger([...])` (any components — a label, a value, a badge) and the body to `->content([...])`. It
+starts folded; call `->collapsed(false)` to start open, and `->rememberState()` to persist the open
+state across reloads. Unlike `Section`, the whole trigger row is clickable and there is no built-in
+title — you supply it, which makes it a good fit for settings rows that reveal an inline edit form.
+Call `->tooltip('…')` to attach an ⓘ info popover in the trigger row; the content may include links.
+
+<ComponentExample
+  php={`Collapsible::make('account-name')
+    ->trigger([Text::make('Name')])
+    ->content([Text::make('Update the name shown on your account.')]);`}
+  fixture="components.collapsible"
+/>

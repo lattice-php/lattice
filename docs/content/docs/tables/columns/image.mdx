@@ -1,0 +1,25 @@
+---
+title: Image column
+description: Render the cell value as an image or a round avatar.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+`ImageColumn` renders the cell value as an image URL — an avatar, a logo, a thumbnail.
+
+<ComponentExample
+  php={`ImageColumn::make('avatar')->label('')->circular()->size(32);
+TextColumn::make('name')->label('Name');
+TextColumn::make('role')->label('Role');`}
+  fixture="table.image"
+/>
+
+- `->circular()` clips the image to a circle — an avatar.
+- `->size(40)` sets the rendered size in pixels (square).
+
+```php
+ImageColumn::make('logo')->size(24);
+ImageColumn::make('photo')->circular()->size(48);
+```
+
+Give the column an empty `->label('')` to drop its header, which reads better for a leading avatar.

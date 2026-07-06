@@ -4,6 +4,7 @@ import starlight from "@astrojs/starlight";
 import starlightLlmsTxt from "starlight-llms-txt";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
+import { svgSprite } from "@lattice-php/vite-svg-sprite";
 
 const site = process.env.SITE_URL || "https://latticephp.com";
 const viteCacheSuffix = process.argv.includes("build") ? "build" : "dev";
@@ -69,7 +70,6 @@ export default defineConfig({
           items: [
             { label: "Pages", link: "/core/pages/" },
             { label: "Layouts", link: "/core/layouts/" },
-            { label: "Components", link: "/core/components/" },
             { label: "Closure evaluation", link: "/core/closure-evaluation/" },
             { label: "Authorization", link: "/core/authorization/" },
             { label: "Fragments", link: "/core/fragments/" },
@@ -83,7 +83,18 @@ export default defineConfig({
         {
           label: "Components",
           collapsed: true,
-          items: [{ label: "Charts", link: "/components/charts/" }],
+          items: [
+            { label: "Overview", link: "/components/overview/" },
+            { label: "Layout", link: "/components/layout/" },
+            { label: "Section & Collapsible", link: "/components/section-collapsible/" },
+            { label: "Floating panel", link: "/components/floating-panel/" },
+            { label: "Text & badges", link: "/components/text/" },
+            { label: "Buttons & links", link: "/components/buttons/" },
+            { label: "Tabs", link: "/components/tabs/" },
+            { label: "Modals", link: "/components/modals/" },
+            { label: "Tooltip", link: "/components/tooltip/" },
+            { label: "Charts", link: "/components/charts/" },
+          ],
         },
         {
           label: "Forms",
@@ -121,9 +132,24 @@ export default defineConfig({
           collapsed: true,
           items: [
             { label: "Overview", link: "/tables/overview/" },
+            { label: "Data sources", link: "/tables/data-sources/" },
             { label: "Eloquent tables", link: "/tables/eloquent-tables/" },
-            { label: "Columns", link: "/tables/columns/" },
-            { label: "Sorting, filtering & pagination", link: "/tables/sorting-filtering-pagination/" },
+            {
+              label: "Columns",
+              items: [
+                { label: "Overview", link: "/tables/columns/overview/" },
+                { label: "Text", link: "/tables/columns/text/" },
+                { label: "Number", link: "/tables/columns/number/" },
+                { label: "Money", link: "/tables/columns/money/" },
+                { label: "Boolean", link: "/tables/columns/boolean/" },
+                { label: "Badge", link: "/tables/columns/badge/" },
+                { label: "Icon", link: "/tables/columns/icon/" },
+                { label: "Image", link: "/tables/columns/image/" },
+                { label: "Stack", link: "/tables/columns/stack/" },
+              ],
+            },
+            { label: "Filtering", link: "/tables/filtering/" },
+            { label: "Sorting & pagination", link: "/tables/sorting-and-pagination/" },
             { label: "Actions", link: "/tables/actions/" },
           ],
         },
@@ -185,7 +211,7 @@ export default defineConfig({
   ],
   vite: {
     cacheDir: `node_modules/.vite-${viteCacheSuffix}`,
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), svgSprite({ iconDirs: [path.resolve("./resources/icons")] })],
     resolve: {
       alias: {
         "@lattice/lattice": path.resolve("./resources/js"),

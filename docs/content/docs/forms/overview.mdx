@@ -46,7 +46,7 @@ class ProfileForm extends FormDefinition
 ```
 
 The schema accepts fields and layout containers (`Card`, `Grid`, `Stack`) in any nesting — see
-[Fields](/forms/fields/overview/) for the field types and [Components](/core/components/) for layout.
+[Fields](/forms/fields/overview/) for the field types and [Components](/components/overview/) for layout.
 
 ## Rendering a form
 
@@ -167,7 +167,7 @@ disables while submitting and while there are validation errors, and shows a spi
 that error summary is set with `->validationSummaryLabel()` (default "Fix these fields to continue:").
 To take over
 placement — render the button somewhere other than the form footer — call `->withoutSubmitButton()`
-and place a [`Button`](/core/components/) with `->submit()` in the schema yourself:
+and place a [`Button`](/components/buttons/) with `->submit()` in the schema yourself:
 
 ```php
 use Lattice\Lattice\Core\Components\Button;
