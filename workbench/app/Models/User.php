@@ -5,6 +5,7 @@ namespace Workbench\App\Models;
 
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Lattice\Lattice\Contracts\HasTimezonePreference;
 
 /**
@@ -13,6 +14,8 @@ use Lattice\Lattice\Contracts\HasTimezonePreference;
  */
 class User extends Authenticatable implements HasLocalePreference, HasTimezonePreference
 {
+    use Notifiable;
+
     protected $table = 'users';
 
     /**

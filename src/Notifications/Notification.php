@@ -62,6 +62,16 @@ final class Notification
         return $this;
     }
 
+    public function send(object $notifiable): void
+    {
+        $notifiable->notify(new PendingLatticeNotification($this, broadcast: true));
+    }
+
+    public function sendToDatabase(object $notifiable): void
+    {
+        $notifiable->notify(new PendingLatticeNotification($this, broadcast: false));
+    }
+
     /**
      * @return array<string, mixed>
      */
