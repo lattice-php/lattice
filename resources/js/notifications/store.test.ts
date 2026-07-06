@@ -40,6 +40,20 @@ describe("reducers", () => {
     expect(list[0].isRead).toBe(false);
     expect(removeIn(list, "a").map((n) => n.id)).toEqual(["b"]);
   });
+
+  it("does not mutate the original list when prepending", () => {
+    const list = [item("a")];
+    prependIncoming(list, item("b"));
+    expect(list).toHaveLength(1);
+    expect(list.map((n) => n.id)).toEqual(["a"]);
+  });
+
+  it("does not mutate the original list when removing", () => {
+    const list = [item("a"), item("b")];
+    removeIn(list, "a");
+    expect(list).toHaveLength(2);
+    expect(list.map((n) => n.id)).toEqual(["a", "b"]);
+  });
 });
 
 describe("useNotifications", () => {
@@ -79,6 +93,35 @@ describe("useNotifications", () => {
     act(() => result.current.markRead("a"));
     expect(result.current.notifications[0].isRead).toBe(true);
     expect(result.current.unreadCount).toBe(0);
+  });
+
+  it("guards against concurrent double-clicked loadMore calls", async () => {
+    let page2Calls = 0;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<() => Promise<Response>>(async (url) => {
+        const requested = String(url);
+        if (requested.includes("page=2")) {
+          page2Calls += 1;
+          return jsonResponse({ notifications: [item("b")], unreadCount: 0, hasMore: false });
+        }
+        return jsonResponse({ notifications: [item("a")], unreadCount: 0, hasMore: true });
+      }),
+    );
+
+    const { result } = renderHook(() => useNotifications({ endpoint: "/lattice/notifications" }));
+    await waitFor(() => expect(result.current.notifications).toHaveLength(1));
+    expect(result.current.hasMore).toBe(true);
+
+    await act(async () => {
+      result.current.loadMore();
+      result.current.loadMore();
+      await Promise.resolve();
+    });
+
+    await waitFor(() => expect(result.current.notifications).toHaveLength(2));
+    expect(page2Calls).toBe(1);
+    expect(result.current.notifications.map((n) => n.id)).toEqual(["a", "b"]);
   });
 
   it("prepends a received live notification and bumps the count", async () => {

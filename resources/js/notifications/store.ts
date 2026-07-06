@@ -61,6 +61,7 @@ export function useNotifications({
   const pageRef = useRef(1);
   const hasMoreRef = useRef(hasMore);
   hasMoreRef.current = hasMore;
+  const loadingMoreRef = useRef(false);
 
   const hydrate = useCallback(async (): Promise<void> => {
     try {
@@ -90,16 +91,21 @@ export function useNotifications({
   }, [hydrate, pollingInterval]);
 
   const loadMore = useCallback((): void => {
-    if (!hasMoreRef.current) {
+    if (loadingMoreRef.current || !hasMoreRef.current) {
       return;
     }
 
+    loadingMoreRef.current = true;
     const next = pageRef.current + 1;
-    void fetchNotifications(endpoint, next).then((result) => {
-      pageRef.current = next;
-      setNotifications((current) => [...current, ...result.notifications]);
-      setHasMore(result.hasMore);
-    });
+    void fetchNotifications(endpoint, next)
+      .then((result) => {
+        pageRef.current = next;
+        setNotifications((current) => [...current, ...result.notifications]);
+        setHasMore(result.hasMore);
+      })
+      .finally(() => {
+        loadingMoreRef.current = false;
+      });
   }, [endpoint]);
 
   const markRead = useCallback(
@@ -116,7 +122,9 @@ export function useNotifications({
   const markAllRead = useCallback((): void => {
     setNotifications((current) => current.map((n) => ({ ...n, isRead: true })));
     setUnreadCount(0);
-    void apiMarkAllRead(endpoint).catch(() => void hydrate());
+    void apiMarkAllRead(endpoint)
+      .then((r) => setUnreadCount(r.unreadCount))
+      .catch(() => void hydrate());
   }, [endpoint, hydrate]);
 
   const dismiss = useCallback(
@@ -132,7 +140,9 @@ export function useNotifications({
   const clearAll = useCallback((): void => {
     setNotifications([]);
     setUnreadCount(0);
-    void apiClearAll(endpoint).catch(() => void hydrate());
+    void apiClearAll(endpoint)
+      .then((r) => setUnreadCount(r.unreadCount))
+      .catch(() => void hydrate());
   }, [endpoint, hydrate]);
 
   const receive = useCallback((item: NotificationItem): void => {
