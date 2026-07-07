@@ -18,7 +18,7 @@ type ResolveResponse = {
   prefill?: Record<string, unknown>;
 };
 
-export type FormResolver = {
+type FormResolver = {
   nodes: Record<string, Node>;
   markUserEdit: PrefillController["markUserEdit"];
 };

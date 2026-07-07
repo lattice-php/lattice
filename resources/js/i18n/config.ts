@@ -1,7 +1,7 @@
 import type { I18nConfig } from "@lattice-php/lattice/types/generated";
 import { useSyncExternalStore } from "react";
 
-export type Config = {
+type Config = {
   readonly locales: readonly string[];
   readonly timezone: string | null;
 };

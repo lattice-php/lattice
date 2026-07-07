@@ -8,7 +8,7 @@ import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
 import { filterOptions, stringProp } from "../filter-values";
 import { fieldClass } from "./filter-value-input";
 
-export type DateRangeValue = { from?: string; until?: string };
+type DateRangeValue = { from?: string; until?: string };
 
 export type FilterOptionSearch = (query: string) => Promise<Option[]>;
 

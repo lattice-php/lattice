@@ -29,12 +29,12 @@ export function removeIn(list: NotificationItem[], id: string): NotificationItem
 
 export type NotificationsStatus = "loading" | "idle" | "error";
 
-export type UseNotificationsOptions = {
+type UseNotificationsOptions = {
   endpoint: string;
   pollingInterval?: number | null;
 };
 
-export type UseNotificationsReturn = {
+type UseNotificationsReturn = {
   notifications: NotificationItem[];
   unreadCount: number;
   status: NotificationsStatus;

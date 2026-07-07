@@ -3,7 +3,7 @@ import { useFormContext } from "./context";
 import { usePrefillController } from "./prefill-context";
 import { useSetFormValue } from "./values";
 
-export type FieldCommit = {
+type FieldCommit = {
   /** Write the value and validate immediately (precognitive) or clear errors. */
   commit: (name: string, value: unknown) => void;
   /** Write the value and clear errors, deferring validation to a later `blur`. */

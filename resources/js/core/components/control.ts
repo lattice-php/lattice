@@ -1,4 +1,4 @@
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 
 export const FOCUS_RING =
   "focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[3px]";
@@ -27,5 +27,3 @@ export const controlSurface = cva(
     defaultVariants: { density: "comfortable" },
   },
 );
-
-export type ControlSurfaceVariants = VariantProps<typeof controlSurface>;

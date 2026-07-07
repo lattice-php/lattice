@@ -20,10 +20,7 @@ function Slot({ char, hasFakeCaret, isActive }: SlotProps) {
   );
 }
 
-export type InputOTPProps = Omit<
-  ComponentProps<typeof OTPInput>,
-  "children" | "maxLength" | "render"
-> & {
+type InputOTPProps = Omit<ComponentProps<typeof OTPInput>, "children" | "maxLength" | "render"> & {
   length: number;
 };
 

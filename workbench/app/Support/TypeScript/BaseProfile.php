@@ -38,6 +38,13 @@ final class BaseProfile implements TypeScriptProfile
     ];
 
     /**
+     * Node aliases whose per-domain `…Type` string union a client actually consumes
+     * (via `NodeUnionOf`). Only these are emitted — the rest would be dead exports.
+     * Add one here when a client starts deriving a node union for that domain.
+     */
+    private const array NODE_TYPE_ALIASES = ['ActionNode'];
+
+    /**
      * The component domains this profile emits a node type for. Exposed so the
      * drift-guard test can assert no src/ domain is missing from the hand-list —
      * an unregistered domain's components would silently vanish from the generated
@@ -89,6 +96,7 @@ final class BaseProfile implements TypeScriptProfile
                     EffectContract::class,
                     $effects,
                     $columnProps,
+                    self::NODE_TYPE_ALIASES,
                 ),
             ],
             new FlatModuleWriter('generated.ts'),

@@ -2,7 +2,7 @@ export type TimeValue = { hour: number; minute: number; second: number };
 
 export type TimeColumnOption = { value: number; label: string; disabled: boolean };
 
-export type TimeColumns = {
+type TimeColumns = {
   hours: TimeColumnOption[];
   minutes: TimeColumnOption[];
   seconds: TimeColumnOption[] | null;

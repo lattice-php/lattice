@@ -7,7 +7,7 @@ import type { FieldConditions } from "./conditions";
  * lens the shared hooks read them through. Everything is optional because the
  * lens is also applied to non-field nodes while walking the schema.
  */
-export type FieldProps = {
+type FieldProps = {
   conditions?: FieldConditions | null;
   dependsOnAny?: boolean | null;
   dependsOnKeys?: string[] | null;

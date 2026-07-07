@@ -2,7 +2,7 @@ import { type KeyboardEvent, useEffect, useRef } from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { buildTimeColumns, type TimeColumnOption, type TimeValue } from "./time-picker-columns";
 
-export type TimePickerProps = {
+type TimePickerProps = {
   value: TimeValue | null;
   onChange: (next: TimeValue) => void;
   step?: number | null;
