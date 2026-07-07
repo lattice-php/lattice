@@ -556,40 +556,22 @@ export type Dropdown = {
   placement: Placement;
   trigger: WireNode[];
 };
-export type Effect =
-  | ({
-      type: "callout";
-    } & CalloutEffect)
-  | ({
-      type: "closeModal";
-    } & CloseModalEffect)
-  | ({
-      type: "download";
-    } & DownloadEffect)
-  | ({
-      type: "localeChange";
-    } & LocaleChangeEffect)
-  | ({
-      type: "openModal";
-    } & OpenModalEffect)
-  | ({
-      type: "redirect";
-    } & RedirectEffect)
-  | ({
-      type: "reloadComponent";
-    } & ReloadComponentEffect)
-  | ({
-      type: "reloadPage";
-    } & ReloadPageEffect)
-  | ({
-      type: "resetForm";
-    } & ResetFormEffect)
-  | ({
-      type: "toast";
-    } & ToastEffect)
-  | ({
-      type: "toggleSidebar";
-    } & ToggleSidebarEffect);
+export type Effect = {
+  type: string;
+} & Record<string, unknown>;
+export type EffectPropsMap = {
+  callout: CalloutEffect;
+  closeModal: CloseModalEffect;
+  download: DownloadEffect;
+  localeChange: LocaleChangeEffect;
+  openModal: OpenModalEffect;
+  redirect: RedirectEffect;
+  reloadComponent: ReloadComponentEffect;
+  reloadPage: ReloadPageEffect;
+  resetForm: ResetFormEffect;
+  toast: ToastEffect;
+  toggleSidebar: ToggleSidebarEffect;
+};
 export type FieldType =
   | "field.builder"
   | "field.checkbox"

@@ -1,6 +1,6 @@
 import { router } from "@inertiajs/react";
 import type { ResolveProps } from "@lattice-php/lattice/core/types";
-import type { Effect } from "@lattice-php/lattice/types/generated";
+import type { Effect, EffectPropsMap } from "@lattice-php/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 import { setLocale } from "@lattice-php/lattice/i18n/locale";
 
@@ -8,15 +8,14 @@ import { setLocale } from "@lattice-php/lattice/i18n/locale";
  * Augmentable map of effect `type` → payload (the effect's fields minus `type`).
  * Consumer apps extend it via `declare module "@lattice-php/lattice"` so their
  * custom effects type their handler's payload; built-ins resolve through the
- * generated `Effect` union.
+ * generated `EffectPropsMap`, the same way `ComponentProps` augments
+ * `ComponentPropsMap` — one augmentable-map pattern.
  */
 export interface EffectProps {}
 
-type EffectPayloads = { [TEffect in Effect as TEffect["type"]]: Omit<TEffect, "type"> };
-
 type EffectPayloadOf<TType extends string> = ResolveProps<
   EffectProps,
-  EffectPayloads,
+  EffectPropsMap,
   TType,
   Record<string, unknown>
 >;

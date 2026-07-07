@@ -10,7 +10,7 @@ describe("buildEffects", () => {
   it("passes a plain-string toast message through unchanged", () => {
     const effects = [{ type: "toast", toast: { variant: "success", message: "Order shipped" } }];
 
-    const [effect] = buildEffects(effects, {}, t) as { toast: { message: string } }[];
+    const [effect] = buildEffects(effects, {}, t) as unknown as { toast: { message: string } }[];
 
     expect(effect.toast.message).toBe("Order shipped");
   });
@@ -30,7 +30,7 @@ describe("buildEffects", () => {
       },
     ];
 
-    const [effect] = buildEffects(effects, { order: { id: 42 } }, t) as {
+    const [effect] = buildEffects(effects, { order: { id: 42 } }, t) as unknown as {
       toast: { message: string };
     }[];
 

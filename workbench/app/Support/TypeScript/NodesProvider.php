@@ -69,28 +69,36 @@ final readonly class NodesProvider implements TransformedProvider
 
         $transformed[] = $this->alias('WireNode', $this->wireNode());
         $transformed[] = $this->alias('NodeType', $this->componentTypeUnion());
-        $transformed[] = $this->alias('ComponentPropsMap', $this->componentPropsMap());
+        $transformed[] = $this->alias('ComponentPropsMap', $this->propsMap($this->componentClassesByType()));
 
         if ($this->effectContract !== null && $this->effects !== []) {
             $transformed[] = new Transformed(
-                new TypeScriptAlias('Effect', $this->effectUnion()),
+                new TypeScriptAlias('Effect', $this->looseEffect()),
                 new ClassStringReference($this->effectContract),
                 [],
             );
+            $transformed[] = $this->alias('EffectPropsMap', $this->propsMap(array_flip($this->effects)));
         }
 
         if ($this->columnProps !== []) {
-            $transformed[] = $this->alias('ColumnPropsMap', $this->columnPropsMap());
+            $transformed[] = $this->alias('ColumnPropsMap', $this->propsMap($this->columnProps));
         }
 
         return $transformed;
     }
 
-    private function columnPropsMap(): TypeScriptObject
+    /**
+     * An augmentable props map (`{ type: Props }`), the built-in source consumed by
+     * a `ResolveProps<…Props, …PropsMap, …>` resolver. Shared by components, columns
+     * and effects — see {@see AugmentableMap}.
+     *
+     * @param  array<string, class-string>  $entries  wire type => the class whose generated type is its props
+     */
+    private function propsMap(array $entries): TypeScriptObject
     {
         $properties = [];
 
-        foreach ($this->columnProps as $type => $class) {
+        foreach ($entries as $type => $class) {
             $properties[$type] = new TypeScriptProperty(
                 $type,
                 new TypeScriptReference(new ClassStringReference($class)),
@@ -102,22 +110,17 @@ final readonly class NodesProvider implements TransformedProvider
         return new TypeScriptObject(array_values($properties));
     }
 
-    private function effectUnion(): TypeScriptUnion
+    /**
+     * The loose wire shape an effect arrives in: a `type` discriminator plus an open
+     * bag. Typed resolution goes through `EffectPropsMap`; `Effect[]` fields and the
+     * dispatch layer stay open so consumer effects flow through by `type`.
+     */
+    private function looseEffect(): TypeScriptIntersection
     {
-        $members = [];
-
-        foreach ($this->effects as $class => $type) {
-            $members[$type] = new TypeScriptIntersection([
-                new TypeScriptObject([
-                    new TypeScriptProperty('type', new TypeScriptLiteral($type)),
-                ]),
-                new TypeScriptReference(new ClassStringReference($class)),
-            ]);
-        }
-
-        ksort($members);
-
-        return new TypeScriptUnion(array_values($members));
+        return new TypeScriptIntersection([
+            new TypeScriptObject([new TypeScriptProperty('type', new TypeScriptString)]),
+            $this->looseProps(),
+        ]);
     }
 
     private function formFieldUnion(): TypeScriptUnion
@@ -195,27 +198,6 @@ final readonly class NodesProvider implements TransformedProvider
             fn (string $type): TypeScriptLiteral => new TypeScriptLiteral($type),
             $types,
         ));
-    }
-
-    /**
-     * The built-in props source consumed by core/types' `PropsOf`: every component
-     * wire type mapped to its generated props type. The consumer-side `ComponentProps`
-     * interface augments this exactly as `ColumnProps` augments `ColumnPropsMap`.
-     */
-    private function componentPropsMap(): TypeScriptObject
-    {
-        $properties = [];
-
-        foreach ($this->componentClassesByType() as $type => $class) {
-            $properties[$type] = new TypeScriptProperty(
-                $type,
-                new TypeScriptReference(new ClassStringReference($class)),
-            );
-        }
-
-        ksort($properties);
-
-        return new TypeScriptObject(array_values($properties));
     }
 
     /**
