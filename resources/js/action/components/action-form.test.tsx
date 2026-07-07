@@ -5,6 +5,7 @@ import { createRegistry, Renderer } from "@lattice-php/lattice";
 import type { Node } from "@lattice-php/lattice";
 import { formComponents } from "@lattice-php/lattice/form";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import { actionComponents } from "../index";
 
 vi.mock("@inertiajs/react", () => ({
@@ -26,7 +27,7 @@ vi.mock("@inertiajs/react", () => ({
 type FetchMock = (input: string, init: RequestInit) => Promise<Response>;
 
 function rejectAction(precognitive = false): Node {
-  return {
+  return fakeNode({
     id: "test.reject",
     type: "action",
     props: {
@@ -44,11 +45,11 @@ function rejectAction(precognitive = false): Node {
       method: "post",
       ref: "sealed-ref",
     },
-  } as unknown as Node;
+  });
 }
 
 function lazyAction(method = "post"): Node {
-  return {
+  return fakeNode({
     id: "test.edit",
     type: "action",
     props: {
@@ -60,11 +61,11 @@ function lazyAction(method = "post"): Node {
       method,
       ref: "sealed-ref",
     },
-  } as unknown as Node;
+  });
 }
 
 function editProductActionWithExistingImage(): Node {
-  return {
+  return fakeNode({
     id: "test.edit-product",
     type: "action",
     props: {
@@ -107,7 +108,7 @@ function editProductActionWithExistingImage(): Node {
       method: "patch",
       ref: "sealed-ref",
     },
-  } as unknown as Node;
+  });
 }
 
 function renderAction(node: Node) {

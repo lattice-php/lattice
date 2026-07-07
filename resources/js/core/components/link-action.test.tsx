@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import type { Node, WireNode } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/lattice/core/types";
 import LinkComponent from "./link";
 
 const http = vi.hoisted(() => ({
@@ -34,7 +34,7 @@ function actionLink(props: Record<string, unknown> = {}): Node<"link"> {
           ref: "sealed-reference",
           ...props,
         },
-      } as unknown as WireNode,
+      },
     },
   });
 }

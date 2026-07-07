@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import type { Node, WireNode } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/lattice/core/types";
 import MenuItemComponent from "./menu-item";
 
 const http = vi.hoisted(() => ({
@@ -35,7 +35,7 @@ function actionMenuItem(props: Record<string, unknown> = {}): Node<"menu-item"> 
           ref: "sealed-reference",
           ...props,
         },
-      } as unknown as WireNode,
+      },
     },
   });
 }
