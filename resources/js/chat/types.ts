@@ -1,17 +1,7 @@
 import type { Node } from "@lattice-php/lattice/core/types";
-import type {
-  ChatMessage as GeneratedChatMessage,
-  ChatRole,
-} from "@lattice-php/lattice/types/generated";
+import type { ChatMessage, ChatRole } from "@lattice-php/lattice/types/generated";
 
-export type { ChatRole };
-
-/**
- * The generated message shape, but `parts` is widened from the generated
- * `ChatNode` union to open `Node`s — a part is just a component node rendered by
- * `type`, so a message can also carry a consumer's custom part.
- */
-export type ChatMessage = Omit<GeneratedChatMessage, "parts"> & { parts: Node[] };
+export type { ChatMessage, ChatRole };
 
 export type ChatStatus = "idle" | "submitted" | "streaming" | "error";
 

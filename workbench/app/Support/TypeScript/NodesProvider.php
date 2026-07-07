@@ -10,6 +10,8 @@ use Spatie\TypeScriptTransformer\Transformed\Transformed;
 use Spatie\TypeScriptTransformer\TransformedProviders\TransformedProvider;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptAlias;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptArray;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptGeneric;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIdentifier;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIndexedAccess;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIntersection;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptLiteral;
@@ -65,8 +67,9 @@ final readonly class NodesProvider implements TransformedProvider
             $transformed[] = $this->alias($nodeName, $this->componentsUnion($components));
         }
 
-        $transformed[] = $this->alias('Node', $this->nodeUnion());
-        $transformed[] = $this->alias('NodeType', $this->typeAccess('Node'));
+        $transformed[] = $this->alias('WireNode', $this->wireNode());
+        $transformed[] = $this->alias('NodeType', $this->componentTypeUnion());
+        $transformed[] = $this->alias('ComponentPropsMap', $this->componentPropsMap());
 
         if ($this->effectContract !== null && $this->effects !== []) {
             $transformed[] = new Transformed(
@@ -155,12 +158,89 @@ final readonly class NodesProvider implements TransformedProvider
         return new TypeScriptUnion($members);
     }
 
-    private function nodeUnion(): TypeScriptUnion
+    /**
+     * The loose wire shape every node arrives in: a `type` discriminator plus an
+     * open props bag. The typed `Node<TType>` in core/types resolves props per type
+     * through `ComponentPropsMap`; this is what `Component`-typed fields serialize as.
+     */
+    private function wireNode(): TypeScriptObject
     {
+        return new TypeScriptObject([
+            new TypeScriptProperty('id', new TypeScriptString, isOptional: true),
+            new TypeScriptProperty('key', new TypeScriptString, isOptional: true),
+            new TypeScriptProperty('type', new TypeScriptString),
+            new TypeScriptProperty('props', $this->looseProps(), isOptional: true),
+            new TypeScriptProperty(
+                'schema',
+                new TypeScriptArray([new TypeScriptReference($this->selfReference('WireNode'))]),
+                isOptional: true,
+            ),
+        ]);
+    }
+
+    private function looseProps(): TypeScriptGeneric
+    {
+        return new TypeScriptGeneric(
+            new TypeScriptIdentifier('Record'),
+            [new TypeScriptString, new TypeScriptIdentifier('unknown')],
+        );
+    }
+
+    private function componentTypeUnion(): TypeScriptUnion
+    {
+        $types = array_keys($this->componentClassesByType());
+        sort($types);
+
         return new TypeScriptUnion(array_map(
-            fn (string $name): TypeScriptReference => new TypeScriptReference($this->selfReference($name)),
-            ['FormNode', ...array_keys($this->domainNodes)],
+            fn (string $type): TypeScriptLiteral => new TypeScriptLiteral($type),
+            $types,
         ));
+    }
+
+    /**
+     * The built-in props source consumed by core/types' `PropsOf`: every component
+     * wire type mapped to its generated props type. The consumer-side `ComponentProps`
+     * interface augments this exactly as `ColumnProps` augments `ColumnPropsMap`.
+     */
+    private function componentPropsMap(): TypeScriptObject
+    {
+        $properties = [];
+
+        foreach ($this->componentClassesByType() as $type => $class) {
+            $properties[$type] = new TypeScriptProperty(
+                $type,
+                new TypeScriptReference(new ClassStringReference($class)),
+            );
+        }
+
+        ksort($properties);
+
+        return new TypeScriptObject(array_values($properties));
+    }
+
+    /**
+     * Every component (form fields, the form, and each domain's components) keyed by
+     * wire type, valued by the class whose generated type is its props.
+     *
+     * @return array<string, class-string>
+     */
+    private function componentClassesByType(): array
+    {
+        $map = [];
+
+        foreach ($this->formFields as $class => $type) {
+            $map[$type] = $class;
+        }
+
+        $map[$this->formType] = $this->formClass;
+
+        foreach ($this->domainNodes as $components) {
+            foreach ($components as $class => $spec) {
+                $map[$spec['type']] = $class;
+            }
+        }
+
+        return $map;
     }
 
     private function member(string $type, Reference $propsReference, bool $interactive, bool $container): TypeScriptObject
@@ -179,7 +259,7 @@ final readonly class NodesProvider implements TransformedProvider
         if ($container) {
             $properties[] = new TypeScriptProperty(
                 'schema',
-                new TypeScriptArray([new TypeScriptReference($this->selfReference('Node'))]),
+                new TypeScriptArray([new TypeScriptReference($this->selfReference('WireNode'))]),
                 isOptional: true,
             );
         }
@@ -195,9 +275,9 @@ final readonly class NodesProvider implements TransformedProvider
         );
     }
 
-    public static function nodeReference(): CustomReference
+    public static function wireNodeReference(): CustomReference
     {
-        return new CustomReference(self::REFERENCE_KEY, 'Node');
+        return new CustomReference(self::REFERENCE_KEY, 'WireNode');
     }
 
     public static function chatNodeReference(): CustomReference

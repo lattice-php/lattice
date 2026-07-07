@@ -118,7 +118,7 @@ final class ComponentTransformer extends ClassTransformer
     {
         return [
             ...parent::classPropertyProcessors(),
-            new MarkerRewriteClassPropertyProcessor(Component::class, fn (): TypeScriptNode => new TypeScriptIdentifier('Node')),
+            new MarkerRewriteClassPropertyProcessor(Component::class, fn (): TypeScriptNode => new TypeScriptIdentifier('WireNode')),
             new MixedToUnknownClassPropertyProcessor,
         ];
     }

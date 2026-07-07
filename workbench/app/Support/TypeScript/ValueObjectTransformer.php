@@ -48,7 +48,7 @@ final class ValueObjectTransformer extends ClassTransformer
             ),
             new MarkerRewriteClassPropertyProcessor(
                 Component::class,
-                fn (): TypeScriptReference => new TypeScriptReference(NodesProvider::nodeReference()),
+                fn (): TypeScriptReference => new TypeScriptReference(NodesProvider::wireNodeReference()),
             ),
         ];
     }
