@@ -84,11 +84,13 @@ export type BulkAction = {
   variant: ButtonVariant | null;
 };
 export type Button = {
+  action: WireNode | null;
   buttonType: ButtonType;
   effects: Effect[];
   href: string | null;
   icon: string | null;
   label: string;
+  method: HttpMethod | null;
   variant: ButtonVariant | null;
 };
 export type ButtonType = "button" | "submit" | "reset";
@@ -655,6 +657,7 @@ export type LayoutNodeType =
   | "topbar";
 export type Link = {
   action: WireNode | null;
+  effects: Effect[];
   href: string | null;
   icon: string | null;
   label: string;
@@ -675,6 +678,7 @@ export type LocaleChangeEffect = {
 export type Menu = Record<string, never>;
 export type MenuItem = {
   action: WireNode | null;
+  effects: Effect[];
   href: string | null;
   icon: string | null;
   label: string;

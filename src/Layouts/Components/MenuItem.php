@@ -7,27 +7,26 @@ use BackedEnum;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Actions\Concerns\TriggersAction;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Concerns\HasAffixes;
-use Lattice\Lattice\Core\Concerns\Navigable;
+use Lattice\Lattice\Core\Concerns\Triggerable;
 use Lattice\Lattice\Core\Contracts\PageContract;
 
 /**
  * A single menu entry. Renders an Inertia link when it has an href, triggers a
- * registered action when bound to one, otherwise a plain label that can act as
- * a section header for its nested children.
+ * registered action or effects when bound to one, otherwise a plain label that
+ * can act as a section header for its nested children.
  */
 #[AsComponent('menu-item')]
 class MenuItem extends ContainerComponent
 {
     use HasAffixes;
-    use Navigable;
-    use TriggersAction;
+    use Triggerable {
+        assertBehaviorAllowed as private assertSingleBehavior;
+    }
 
     public ?string $icon = null;
 
@@ -72,31 +71,16 @@ class MenuItem extends ContainerComponent
     }
 
     /**
-     * @param  class-string<ActionDefinition>  $actionClass
-     * @param  array<string, mixed>  $context
+     * A menu item is a link/action/effect trigger XOR a container with a
+     * collapsible submenu — the two cannot mix.
      */
-    public function action(string $actionClass, array $context = []): static
+    protected function assertBehaviorAllowed(string $incoming): void
     {
         if ($this->children !== []) {
-            throw new InvalidArgumentException('A menu item with children cannot trigger an action; only non-link, non-action items can hold a collapsible submenu.');
+            throw new InvalidArgumentException('A menu item with children cannot be a link, action, or effect trigger; only plain items can hold a collapsible submenu.');
         }
 
-        return $this->bindAction($actionClass, $context);
-    }
-
-    public function href(string $href): static
-    {
-        if ($this->children !== []) {
-            throw new InvalidArgumentException('A menu item with children cannot be a link; only non-link items can hold a collapsible submenu.');
-        }
-
-        if ($this->action instanceof Action) {
-            throw new InvalidArgumentException('A menu item bound to an action cannot also have an href; an action and an href are mutually exclusive.');
-        }
-
-        $this->href = $href;
-
-        return $this;
+        $this->assertSingleBehavior($incoming);
     }
 
     /**
@@ -116,12 +100,8 @@ class MenuItem extends ContainerComponent
      */
     public function children(array $children): static
     {
-        if ($this->href !== null) {
-            throw new InvalidArgumentException('A link menu item cannot have children; only non-link items can hold a collapsible submenu.');
-        }
-
-        if ($this->action instanceof Action) {
-            throw new InvalidArgumentException('An action menu item cannot have children; only non-link, non-action items can hold a collapsible submenu.');
+        if ($this->href !== null || $this->action instanceof Action || $this->effects !== []) {
+            throw new InvalidArgumentException('A menu item that is a link, action, or effect trigger cannot have children; only plain items can hold a collapsible submenu.');
         }
 
         return $this->schema($children);

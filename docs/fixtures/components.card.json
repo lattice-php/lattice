@@ -46,11 +46,13 @@
             },
             {
                 "props": {
+                    "action": null,
                     "buttonType": "button",
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Invite member",
+                    "method": null,
                     "variant": "default"
                 },
                 "type": "button"

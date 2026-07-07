@@ -3,11 +3,14 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import { getActionEffects } from "@lattice-php/lattice/effects/dispatch";
 import { IconRenderer } from "@lattice-php/lattice/icons";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
+import {
+  ActionTrigger,
+  type TriggerState,
+  useClickBehavior,
+} from "@lattice-php/lattice/core/use-click-behavior";
 import type { ButtonVariant } from "@lattice-php/lattice/types/generated";
 
 export type { ButtonVariant };
@@ -67,38 +70,53 @@ function Button({
 }
 
 const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
-  const { href, label, icon } = node.props;
-  const effects = node.props.effects ?? [];
+  const { label, icon } = node.props;
   const variant = node.props.variant ?? "default";
   const testId = nodeIdentity(node);
-  const dispatch = useEffectDispatcher();
+  const behavior = useClickBehavior(node.props);
+  const size = icon ? "icon" : "default";
+  const content = icon ? (
+    <>
+      <IconRenderer className="size-lt-icon-md" icon={icon} />
+      {label ? <span className="sr-only">{label}</span> : null}
+    </>
+  ) : (
+    label
+  );
 
-  if (href) {
+  const triggerButton = ({ onClick, processing }: TriggerState) => (
+    <Button
+      data-test={testId}
+      disabled={processing}
+      onClick={onClick}
+      size={size}
+      variant={variant}
+    >
+      {content}
+    </Button>
+  );
+
+  if (behavior.kind === "navigate") {
     return (
-      <Button asChild data-test={testId} variant={variant} size="default">
-        <Link href={href}>{label}</Link>
+      <Button asChild data-test={testId} variant={variant} size={size}>
+        <Link href={behavior.href} method={behavior.method}>
+          {content}
+        </Link>
       </Button>
     );
   }
 
-  const hasEffects = effects.length > 0;
+  if (behavior.kind === "action") {
+    return <ActionTrigger action={behavior.action}>{triggerButton}</ActionTrigger>;
+  }
+
+  if (behavior.kind === "effects") {
+    return triggerButton({ onClick: behavior.onClick, processing: false });
+  }
 
   return (
-    <Button
-      data-test={testId}
-      onClick={hasEffects ? () => dispatch(getActionEffects(effects)) : undefined}
-      size={icon ? "icon" : "default"}
-      type={node.props.buttonType}
-      variant={variant}
-    >
-      {icon ? (
-        <>
-          <IconRenderer className="size-lt-icon-md" icon={icon} />
-          {label ? <span className="sr-only">{label}</span> : null}
-        </>
-      ) : (
-        label
-      )}
+    <Button data-test={testId} size={size} type={node.props.buttonType} variant={variant}>
+      {content}
     </Button>
   );
 };
