@@ -1,7 +1,7 @@
 import type { RowAction as WireRowAction } from "@lattice-php/lattice/types/generated";
 import type { RowAction } from "./row-actions";
 
-export type RowActionTranslate = (key: string, fallback: string) => string;
+type RowActionTranslate = (key: string, fallback: string) => string;
 
 /** Translation key + fallback and icon for each built-in; the server sends null labels. */
 const BUILT_IN: Record<"duplicate" | "remove", { key: string; fallback: string; icon: string }> = {

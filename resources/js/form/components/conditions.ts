@@ -9,7 +9,7 @@ export type FieldConditions = {
   disabled?: Condition[];
 };
 
-export type FieldFlags = {
+type FieldFlags = {
   hidden?: boolean;
   required?: boolean;
   readOnly?: boolean;

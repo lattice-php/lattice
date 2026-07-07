@@ -3,7 +3,7 @@ import { onToast as subscribeToToasts } from "@lattice-php/lattice/toast/toast";
 import type { ToastMessage } from "@lattice-php/lattice/toast/toast";
 import { LATTICE_EVENT } from "./event-names";
 
-export const appearances = ["light", "dark", "system"] as const;
+const appearances = ["light", "dark", "system"] as const;
 
 export type Appearance = (typeof appearances)[number];
 

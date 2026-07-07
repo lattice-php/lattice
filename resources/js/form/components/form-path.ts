@@ -1,4 +1,4 @@
-export function pathParts(path: string): string[] {
+function pathParts(path: string): string[] {
   return path.split(".").filter((part) => part !== "");
 }
 

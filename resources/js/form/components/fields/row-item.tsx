@@ -34,7 +34,7 @@ export function RowButton({
   );
 }
 
-export type RowItemProps = {
+type RowItemProps = {
   base: string;
   index: number;
   row: RepeaterRow;

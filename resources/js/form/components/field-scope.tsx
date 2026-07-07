@@ -2,7 +2,7 @@ import { createContext, useContext, useMemo } from "react";
 import { appendPath, getPath, toHtmlName } from "./form-path";
 import { buildOverrideKey, rowIdFrom } from "./override-keys";
 
-export type FieldScopeValue = {
+type FieldScopeValue = {
   row: Record<string, unknown>;
   rowId: string | null;
   path: string;

@@ -21,7 +21,7 @@ const tableViewportQuery = "(min-width: 768px)";
 
 export type TableColumn = { name: string; label: string; columnWidth: ColumnWidth };
 
-export type TableRowModel = {
+type TableRowModel = {
   key: string;
   index: number;
   row: RepeaterRow;

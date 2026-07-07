@@ -11,7 +11,7 @@ import {
   type RepeaterRow,
 } from "./repeater-rows";
 
-export type RowCollection = {
+type RowCollection = {
   path: string;
   rows: RepeaterRow[];
   onField: (index: number, field: string, value: unknown) => void;

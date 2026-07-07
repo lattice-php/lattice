@@ -3,7 +3,7 @@ import { fieldProps } from "./field-props";
 import { appendPath, getPath } from "./form-path";
 import { buildOverrideKey, rowIdFrom } from "./override-keys";
 
-export type PrefillTarget = {
+type PrefillTarget = {
   path: string;
   overrideKey: string;
   resetOn: string[];

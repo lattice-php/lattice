@@ -2,7 +2,7 @@ import type { Effect } from "@lattice-php/lattice/types/generated";
 import { isTranslatable, resolveTranslatable } from "@lattice-php/lattice/i18n/translatable";
 import type { Translate } from "@lattice-php/lattice/i18n/translatable";
 
-export type RawEffect = Record<string, unknown>;
+type RawEffect = Record<string, unknown>;
 
 export function buildEffects(
   effects: readonly RawEffect[],

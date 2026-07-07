@@ -11,7 +11,7 @@ type TranslationFunction = (
   options?: Record<string, unknown>,
 ) => string;
 
-export type TranslationResult = {
+type TranslationResult = {
   t: TranslationFunction;
   i18n: I18nInstance;
   locale: string;
