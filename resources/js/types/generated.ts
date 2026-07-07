@@ -889,6 +889,17 @@ export type Node =
   | ChatNode
   | NotificationNode;
 export type NodeType = Node["type"];
+export type NotificationItem = {
+  readonly id: string;
+  readonly title: string | null;
+  readonly body: string | null;
+  readonly icon: string | null;
+  readonly variant: Variant | null;
+  readonly href: string | null;
+  readonly isRead: boolean;
+  readonly createdAt: string | null;
+  readonly actions: Node[];
+};
 export type NotificationNode = {
   type: "notifications";
   key?: string;

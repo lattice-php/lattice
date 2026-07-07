@@ -6,6 +6,8 @@ namespace Lattice\Lattice\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
+use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Notifications\NotificationItem;
 use Lattice\Lattice\Notifications\Support\ActionDescriptor;
 
 final class NotificationController
@@ -61,26 +63,24 @@ final class NotificationController
         return response()->json(['unreadCount' => $notifiable->unreadNotifications()->count()]);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function present(DatabaseNotification $notification): array
+    private function present(DatabaseNotification $notification): NotificationItem
     {
         $data = $notification->getAttribute('data');
+        $variant = $data['variant'] ?? null;
 
-        return [
-            'id' => $notification->getAttribute('id'),
-            'title' => $data['title'] ?? $data['message'] ?? $data['subject'] ?? null,
-            'body' => $data['body'] ?? (($data['title'] ?? null) ? ($data['message'] ?? null) : null),
-            'icon' => $data['icon'] ?? null,
-            'variant' => $data['variant'] ?? null,
-            'href' => $data['href'] ?? null,
-            'isRead' => $notification->getAttribute('read_at') !== null,
-            'createdAt' => $notification->getAttribute('created_at')?->toIso8601String(),
-            'actions' => array_values(array_filter(array_map(
+        return new NotificationItem(
+            id: $notification->getAttribute('id'),
+            title: $data['title'] ?? $data['message'] ?? $data['subject'] ?? null,
+            body: $data['body'] ?? (($data['title'] ?? null) ? ($data['message'] ?? null) : null),
+            icon: $data['icon'] ?? null,
+            variant: is_string($variant) ? Variant::tryFrom($variant) : null,
+            href: $data['href'] ?? null,
+            isRead: $notification->getAttribute('read_at') !== null,
+            createdAt: $notification->getAttribute('created_at')?->toIso8601String(),
+            actions: array_values(array_filter(array_map(
                 ActionDescriptor::materialize(...),
                 $data['actions'] ?? [],
             ))),
-        ];
+        );
     }
 }

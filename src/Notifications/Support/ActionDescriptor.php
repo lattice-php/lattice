@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Notifications\Support;
 
 use InvalidArgumentException;
-use JsonSerializable;
 use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Link;
 
 final class ActionDescriptor
@@ -31,7 +31,7 @@ final class ActionDescriptor
     /**
      * @param  array<string, mixed>  $descriptor
      */
-    public static function materialize(array $descriptor): ?JsonSerializable
+    public static function materialize(array $descriptor): ?Component
     {
         return match ($descriptor['kind'] ?? null) {
             'action' => self::materializeAction($descriptor),
@@ -43,7 +43,7 @@ final class ActionDescriptor
     /**
      * @param  array<string, mixed>  $descriptor
      */
-    private static function materializeAction(array $descriptor): ?JsonSerializable
+    private static function materializeAction(array $descriptor): ?Component
     {
         try {
             $action = Action::use($descriptor['name'], $descriptor['arguments'] ?? []);
