@@ -3,7 +3,6 @@ import { useCallback } from "react";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import { useT } from "@lattice-php/lattice/i18n";
 import { buildEffects } from "./build-effects";
-import type { RawEffect } from "./build-effects";
 import type { ListenerPayload } from "@lattice-php/lattice/types/generated";
 
 function useListenerHandler(listener: ListenerPayload): (payload: unknown) => void {
@@ -16,7 +15,7 @@ function useListenerHandler(listener: ListenerPayload): (payload: unknown) => vo
         string,
         unknown
       >;
-      dispatch(buildEffects(listener.effects as unknown as RawEffect[], data, t));
+      dispatch(buildEffects(listener.effects, data, t));
     },
     [dispatch, listener, t],
   );
