@@ -5,14 +5,12 @@ namespace Workbench\App\Support\TypeScript;
 
 use Spatie\TypeScriptTransformer\References\ClassStringReference;
 use Spatie\TypeScriptTransformer\References\CustomReference;
-use Spatie\TypeScriptTransformer\References\Reference;
 use Spatie\TypeScriptTransformer\Transformed\Transformed;
 use Spatie\TypeScriptTransformer\TransformedProviders\TransformedProvider;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptAlias;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptArray;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptGeneric;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIdentifier;
-use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIndexedAccess;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIntersection;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptLiteral;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptNode;
@@ -23,10 +21,10 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptString;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptUnion;
 
 /**
- * Emits the discriminated node unions that tie each component's wire `type`
- * string to its generated props type, one union per domain plus a shared `Node`
- * union. Members are built from typed TypeScript nodes so the props/schema
- * references are linked to their generated types rather than emitted as raw text.
+ * Emits the type-level glue that ties wire `type` strings to their generated props:
+ * a per-domain `…NodeType` string union (the client builds its typed node union
+ * from it with `NodeUnionOf`), the loose `WireNode`/`Effect` wire shapes, the
+ * `NodeType` union, and the augmentable `…PropsMap` maps ({@see AugmentableMap}).
  *
  * @phpstan-type ComponentSpec array{type: string, container?: bool, interactive?: bool}
  */
@@ -57,18 +55,20 @@ final readonly class NodesProvider implements TransformedProvider
      */
     public function provide(): array
     {
+        $formFieldTypes = array_values($this->formFields);
+
         $transformed = [
-            $this->alias('FormFieldNode', $this->formFieldUnion()),
-            $this->alias('FormNode', $this->formNodeUnion()),
-            $this->alias('FormNodeType', $this->typeAccess('FormNode')),
+            $this->alias('FormFieldNodeType', $this->typeUnion($formFieldTypes)),
+            $this->alias('FormNodeType', $this->typeUnion([...$formFieldTypes, $this->formType])),
         ];
 
         foreach ($this->domainNodes as $nodeName => $components) {
-            $transformed[] = $this->alias($nodeName, $this->componentsUnion($components));
+            $types = array_map(static fn (array $spec): string => $spec['type'], array_values($components));
+            $transformed[] = $this->alias($nodeName.'Type', $this->typeUnion($types));
         }
 
         $transformed[] = $this->alias('WireNode', $this->wireNode());
-        $transformed[] = $this->alias('NodeType', $this->componentTypeUnion());
+        $transformed[] = $this->alias('NodeType', $this->typeUnion(array_keys($this->componentClassesByType())));
         $transformed[] = $this->alias('ComponentPropsMap', $this->propsMap($this->componentClassesByType()));
 
         if ($this->effectContract !== null && $this->effects !== []) {
@@ -123,42 +123,21 @@ final readonly class NodesProvider implements TransformedProvider
         ]);
     }
 
-    private function formFieldUnion(): TypeScriptUnion
-    {
-        $members = [];
-
-        foreach ($this->formFields as $class => $type) {
-            $members[] = $this->member($type, new ClassStringReference($class), false, false);
-        }
-
-        return new TypeScriptUnion($members);
-    }
-
-    private function formNodeUnion(): TypeScriptUnion
-    {
-        return new TypeScriptUnion([
-            new TypeScriptReference($this->selfReference('FormFieldNode')),
-            $this->member($this->formType, new ClassStringReference($this->formClass), true, true),
-        ]);
-    }
-
     /**
-     * @param  array<class-string, ComponentSpec>  $components
+     * A union of wire-type string literals. Domains build their typed node union
+     * from this on the client with `NodeUnionOf<…NodeType>`, so the generator no
+     * longer hand-assembles discriminated object unions here.
+     *
+     * @param  list<string>  $types
      */
-    private function componentsUnion(array $components): TypeScriptUnion
+    private function typeUnion(array $types): TypeScriptUnion
     {
-        $members = [];
+        sort($types);
 
-        foreach ($components as $class => $spec) {
-            $members[] = $this->member(
-                $spec['type'],
-                new ClassStringReference($class),
-                $spec['interactive'] ?? false,
-                $spec['container'] ?? false,
-            );
-        }
-
-        return new TypeScriptUnion($members);
+        return new TypeScriptUnion(array_map(
+            static fn (string $type): TypeScriptLiteral => new TypeScriptLiteral($type),
+            $types,
+        ));
     }
 
     /**
@@ -189,17 +168,6 @@ final readonly class NodesProvider implements TransformedProvider
         );
     }
 
-    private function componentTypeUnion(): TypeScriptUnion
-    {
-        $types = array_keys($this->componentClassesByType());
-        sort($types);
-
-        return new TypeScriptUnion(array_map(
-            fn (string $type): TypeScriptLiteral => new TypeScriptLiteral($type),
-            $types,
-        ));
-    }
-
     /**
      * Every component (form fields, the form, and each domain's components) keyed by
      * wire type, valued by the class whose generated type is its props.
@@ -225,46 +193,9 @@ final readonly class NodesProvider implements TransformedProvider
         return $map;
     }
 
-    private function member(string $type, Reference $propsReference, bool $interactive, bool $container): TypeScriptObject
-    {
-        $properties = [
-            new TypeScriptProperty('type', new TypeScriptLiteral($type)),
-            new TypeScriptProperty('key', new TypeScriptString, isOptional: true),
-        ];
-
-        if ($interactive) {
-            $properties[] = new TypeScriptProperty('id', new TypeScriptString, isOptional: true);
-        }
-
-        $properties[] = new TypeScriptProperty('props', new TypeScriptReference($propsReference));
-
-        if ($container) {
-            $properties[] = new TypeScriptProperty(
-                'schema',
-                new TypeScriptArray([new TypeScriptReference($this->selfReference('WireNode'))]),
-                isOptional: true,
-            );
-        }
-
-        return new TypeScriptObject($properties);
-    }
-
-    private function typeAccess(string $name): TypeScriptIndexedAccess
-    {
-        return new TypeScriptIndexedAccess(
-            new TypeScriptReference($this->selfReference($name)),
-            [new TypeScriptLiteral('type')],
-        );
-    }
-
     public static function wireNodeReference(): CustomReference
     {
         return new CustomReference(self::REFERENCE_KEY, 'WireNode');
-    }
-
-    public static function chatNodeReference(): CustomReference
-    {
-        return new CustomReference(self::REFERENCE_KEY, 'ChatNode');
     }
 
     private function selfReference(string $name): CustomReference

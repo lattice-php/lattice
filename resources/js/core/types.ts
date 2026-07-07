@@ -79,6 +79,14 @@ export type NodeOfType<TType extends string = string> = string extends TType
 
 export type Node<TType extends string = string> = NodeOfType<TType>;
 
+/**
+ * A discriminated node union for a set of wire types — `NodeUnionOf<"a" | "b">`
+ * is `NodeOfType<"a"> | NodeOfType<"b">`, so `node.type` narrows `node.props` to
+ * the matching built-in. Domains build their typed node unions from a generated
+ * `…NodeType` string union with this instead of the generator emitting the union.
+ */
+export type NodeUnionOf<TTypes extends string> = TTypes extends string ? NodeOfType<TTypes> : never;
+
 /** An ordered list of component nodes — the content of a page, form, or container. */
 export type Schema = Node[];
 

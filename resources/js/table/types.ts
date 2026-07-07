@@ -1,6 +1,6 @@
-import type { ResolveProps } from "@lattice-php/lattice/core/types";
+import type { NodeUnionOf, ResolveProps } from "@lattice-php/lattice/core/types";
 import type {
-  ActionNode,
+  ActionNodeType,
   ColumnData,
   ColumnFilter,
   ColumnPropsMap,
@@ -14,6 +14,9 @@ import type {
 } from "@lattice-php/lattice/types/generated";
 
 export type { ColumnData, ColumnFilter, ColumnType, TablePagination, TableSort };
+
+/** The action nodes a table's bulk bar renders, discriminated by wire type. */
+export type ActionNode = NodeUnionOf<ActionNodeType>;
 
 export type TableColumn = ColumnData;
 
