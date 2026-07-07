@@ -26,17 +26,21 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptString;
  */
 final class ComponentTransformer extends ClassTransformer
 {
+    use AllowsListedClasses;
+
     /**
      * @param  array<int, class-string>  $allowed
      */
-    public function __construct(private readonly array $allowed)
+    public function __construct(array $allowed)
     {
+        $this->allowed = $allowed;
+
         parent::__construct();
     }
 
     protected function shouldTransform(PhpClassNode $phpClassNode): bool
     {
-        return in_array($phpClassNode->getName(), $this->allowed, true);
+        return $this->isListed($phpClassNode);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Workbench\App\Support\TypeScript;
 
 use Lattice\Lattice\Chat\ChatPart;
 use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Support\TypeScript\AllowsListedClasses;
 use Lattice\Lattice\Support\TypeScript\MarkerRewriteClassPropertyProcessor;
 use Lattice\Lattice\Support\TypeScript\MixedToUnknownClassPropertyProcessor;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
@@ -18,17 +19,21 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptReference;
  */
 final class ValueObjectTransformer extends ClassTransformer
 {
+    use AllowsListedClasses;
+
     /**
      * @param  array<int, class-string>  $allowed
      */
-    public function __construct(private readonly array $allowed)
+    public function __construct(array $allowed)
     {
+        $this->allowed = $allowed;
+
         parent::__construct();
     }
 
     protected function shouldTransform(PhpClassNode $phpClassNode): bool
     {
-        return in_array($phpClassNode->getName(), $this->allowed, true);
+        return $this->isListed($phpClassNode);
     }
 
     /**
