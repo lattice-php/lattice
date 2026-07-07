@@ -1,9 +1,13 @@
 import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { useAction } from "@lattice-php/lattice/action/use-action";
 import { prefixedNodeTestId } from "@lattice-php/lattice/core/test-id";
-import type { Node, RendererComponent, Schema } from "@lattice-php/lattice/core/types";
+import type { RendererComponent, Schema } from "@lattice-php/lattice/core/types";
+import {
+  ActionTrigger,
+  type TriggerState,
+  useClickBehavior,
+} from "@lattice-php/lattice/core/use-click-behavior";
 import { Icon, IconRenderer } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { Affix } from "@lattice-php/lattice/types/generated";
@@ -29,15 +33,12 @@ function schemaContainsPath(schema: Schema | undefined, path: string): boolean {
 
 const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) => {
   const collapsed = useSidebarCollapsed();
-  const icon = node.props.icon;
-  const label = node.props.label;
-  const prefix = node.props.prefix;
-  const suffix = node.props.suffix;
+  const { icon, label, prefix, suffix } = node.props;
   const iconOnly = Boolean(icon);
   const flyoutIcon = icon ?? prefix?.icon ?? null;
-  const href = node.props.href ?? "";
   const currentPath = usePage().url.split("?")[0];
   const testId = prefixedNodeTestId("menu", node);
+  const behavior = useClickBehavior(node.props);
 
   const content = icon ? (
     <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} />
@@ -58,79 +59,84 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
     </>
   );
 
-  const action = node.props.action;
+  const rowClassName = cn(
+    rowClass,
+    "w-full",
+    collapsed && "group relative justify-center",
+    iconOnly && "justify-center",
+  );
 
-  if (action && href === "" && !children) {
+  const triggerButton = ({ onClick, processing }: TriggerState) => (
+    <button
+      aria-label={collapsed || iconOnly ? label : undefined}
+      className={rowClassName}
+      data-test={testId}
+      disabled={processing}
+      onClick={onClick}
+      type="button"
+    >
+      {content}
+    </button>
+  );
+
+  if (behavior.kind === "action") {
     return (
-      <ActionMenuItem
-        action={action as Node<"action">}
-        className={cn(
-          rowClass,
-          "w-full",
-          collapsed && "group relative justify-center",
-          iconOnly && "justify-center",
-        )}
-        label={collapsed || iconOnly ? label : undefined}
-        testId={testId}
-      >
-        {content}
-      </ActionMenuItem>
+      <li>
+        <ActionTrigger action={behavior.action}>{triggerButton}</ActionTrigger>
+      </li>
     );
   }
 
-  if (href === "") {
-    if (!children) {
-      return collapsed ? null : (
-        <li>
-          <span className="flex items-center gap-2 px-3 py-2 text-xs font-semibold tracking-wide text-lt-muted-fg uppercase">
-            {content}
-          </span>
-        </li>
-      );
-    }
+  if (behavior.kind === "effects") {
+    return <li>{triggerButton({ onClick: behavior.onClick, processing: false })}</li>;
+  }
 
-    if (collapsed) {
-      return (
-        <FlyoutGroup icon={flyoutIcon} label={label} testId={testId}>
-          {children}
-        </FlyoutGroup>
-      );
-    }
+  if (behavior.kind === "navigate") {
+    const active = currentPath === behavior.href;
 
     return (
-      <CollapsibleItem
-        content={content}
-        defaultOpen={schemaContainsPath(node.schema, currentPath)}
-        testId={testId}
-      >
+      <li>
+        <Link
+          aria-current={active ? "page" : undefined}
+          aria-label={collapsed || iconOnly ? label : undefined}
+          as={behavior.method === "get" ? undefined : "button"}
+          className={cn(rowClassName, active && "bg-lt-muted font-medium")}
+          data-test={testId}
+          href={behavior.href}
+          method={behavior.method}
+        >
+          {content}
+        </Link>
+      </li>
+    );
+  }
+
+  if (!children) {
+    return collapsed ? null : (
+      <li>
+        <span className="flex items-center gap-2 px-3 py-2 text-xs font-semibold tracking-wide text-lt-muted-fg uppercase">
+          {content}
+        </span>
+      </li>
+    );
+  }
+
+  if (collapsed) {
+    return (
+      <FlyoutGroup icon={flyoutIcon} label={label} testId={testId}>
         {children}
-      </CollapsibleItem>
+      </FlyoutGroup>
     );
   }
-
-  const active = currentPath === href;
-  const method = node.props.method ?? "get";
 
   return (
-    <li>
-      <Link
-        aria-current={active ? "page" : undefined}
-        aria-label={collapsed || iconOnly ? label : undefined}
-        as={method === "get" ? undefined : "button"}
-        className={cn(
-          rowClass,
-          "w-full",
-          collapsed && "group relative justify-center",
-          iconOnly && "justify-center",
-          active && "bg-lt-muted font-medium",
-        )}
-        data-test={testId}
-        href={href}
-        method={method}
-      >
-        {content}
-      </Link>
-    </li>
+    <CollapsibleItem
+      content={content}
+      defaultOpen={schemaContainsPath(node.schema, currentPath)}
+      testId={testId}
+    >
+      {children}
+    </CollapsibleItem>
   );
 };
 
@@ -204,38 +210,6 @@ function FlyoutGroup({
           {children}
         </ul>
       </Popover>
-    </li>
-  );
-}
-
-function ActionMenuItem({
-  action,
-  children,
-  className,
-  label,
-  testId,
-}: {
-  action: Node<"action">;
-  children: ReactNode;
-  className: string;
-  label?: string;
-  testId?: string;
-}) {
-  const { processing, requestSubmit, overlays } = useAction(action);
-
-  return (
-    <li>
-      <button
-        aria-label={label}
-        className={className}
-        data-test={testId}
-        disabled={processing}
-        onClick={requestSubmit}
-        type="button"
-      >
-        {children}
-      </button>
-      {overlays}
     </li>
   );
 }

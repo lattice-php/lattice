@@ -4,19 +4,17 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core\Components;
 
 use BackedEnum;
-use Lattice\Lattice\Actions\Concerns\TriggersAction;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Concerns\HasAffixes;
 use Lattice\Lattice\Core\Concerns\HasTabIndex;
-use Lattice\Lattice\Core\Concerns\Navigable;
+use Lattice\Lattice\Core\Concerns\Triggerable;
 
 #[AsComponent('link')]
 class Link extends Component
 {
     use HasAffixes;
     use HasTabIndex;
-    use Navigable;
-    use TriggersAction;
+    use Triggerable;
 
     public ?string $icon = null;
 

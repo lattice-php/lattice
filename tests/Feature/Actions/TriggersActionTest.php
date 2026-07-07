@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Core\Components\Link;
+use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Layouts\Components\MenuItem;
 use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
@@ -79,4 +81,45 @@ test('a link cannot bind an action and an href together', function (): void {
 
 test('a link cannot set an href after binding an action', function (): void {
     Link::make('Log out', 'log-out')->action(WorkbenchPingAction::class)->href('/logout');
+})->throws(InvalidArgumentException::class);
+
+test('a button bound to an action serializes a nested action node sealed to its endpoint', function (): void {
+    $wire = wire(Button::make('Ping', 'ping')->action(WorkbenchPingAction::class));
+
+    expect($wire['type'])->toBe('button')
+        ->and($wire['props']['href'])->toBeNull()
+        ->and($wire['props']['action']['type'])->toBe('action')
+        ->and($wire['props']['action']['props']['endpoint'])->toBe('/lattice/actions/workbench.ping')
+        ->and($wire['props']['action']['props']['ref'])->not->toBe('');
+});
+
+test('the nested action node of a button dispatches through the action endpoint', function (): void {
+    $wire = wire(Button::make('Ping', 'ping')->action(WorkbenchPingAction::class));
+    $action = $wire['props']['action'];
+
+    postJson($action['props']['endpoint'], ['name' => 'Sam'], latticeHeaders($action['props']['ref']))
+        ->assertOk()
+        ->assertJsonPath('ok', true)
+        ->assertJsonPath('data.handled', 'Sam');
+});
+
+test('a link bound to effects serializes them without an href or action', function (): void {
+    $wire = wire(Link::make('Collapse', 'collapse')->effects(Effect::toggleSidebar('app-sidebar')));
+
+    expect($wire['type'])->toBe('link')
+        ->and($wire['props']['href'])->toBeNull()
+        ->and($wire['props']['action'])->toBeNull()
+        ->and($wire['props']['effects'][0]['type'])->toBe('toggleSidebar');
+});
+
+test('a button cannot bind both effects and an action', function (): void {
+    Button::make('Collapse', 'collapse')
+        ->effects(Effect::toggleSidebar('app-sidebar'))
+        ->action(WorkbenchPingAction::class);
+})->throws(InvalidArgumentException::class);
+
+test('a link cannot set an href after binding effects', function (): void {
+    Link::make('Collapse', 'collapse')
+        ->effects(Effect::toggleSidebar('app-sidebar'))
+        ->href('/logout');
 })->throws(InvalidArgumentException::class);

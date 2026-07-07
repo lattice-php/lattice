@@ -12,77 +12,91 @@
         "schema": [
             {
                 "props": {
+                    "action": null,
                     "buttonType": "button",
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Default",
+                    "method": null,
                     "variant": "default"
                 },
                 "type": "button"
             },
             {
                 "props": {
+                    "action": null,
                     "buttonType": "button",
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Secondary",
+                    "method": null,
                     "variant": "secondary"
                 },
                 "type": "button"
             },
             {
                 "props": {
+                    "action": null,
                     "buttonType": "button",
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Success",
+                    "method": null,
                     "variant": "success"
                 },
                 "type": "button"
             },
             {
                 "props": {
+                    "action": null,
                     "buttonType": "button",
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Info",
+                    "method": null,
                     "variant": "info"
                 },
                 "type": "button"
             },
             {
                 "props": {
+                    "action": null,
                     "buttonType": "button",
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Destructive",
+                    "method": null,
                     "variant": "destructive"
                 },
                 "type": "button"
             },
             {
                 "props": {
+                    "action": null,
                     "buttonType": "button",
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Outline",
+                    "method": null,
                     "variant": "outline"
                 },
                 "type": "button"
             },
             {
                 "props": {
+                    "action": null,
                     "buttonType": "button",
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Ghost",
+                    "method": null,
                     "variant": "ghost"
                 },
                 "type": "button"

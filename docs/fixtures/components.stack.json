@@ -12,22 +12,26 @@
         "schema": [
             {
                 "props": {
+                    "action": null,
                     "buttonType": "button",
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Save",
+                    "method": null,
                     "variant": "default"
                 },
                 "type": "button"
             },
             {
                 "props": {
+                    "action": null,
                     "buttonType": "button",
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Cancel",
+                    "method": null,
                     "variant": "ghost"
                 },
                 "type": "button"

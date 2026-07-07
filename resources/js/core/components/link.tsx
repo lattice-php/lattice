@@ -1,9 +1,13 @@
 import { Link } from "@inertiajs/react";
-import type { ComponentProps, ReactNode } from "react";
-import { useAction } from "@lattice-php/lattice/action/use-action";
+import type { ComponentProps } from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
-import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import {
+  ActionTrigger,
+  type TriggerState,
+  useClickBehavior,
+} from "@lattice-php/lattice/core/use-click-behavior";
 import { IconRenderer } from "@lattice-php/lattice/icons";
 import type { Affix } from "@lattice-php/lattice/types/generated";
 import {
@@ -19,38 +23,6 @@ function TextLink({ className = "", children, ...props }: ComponentProps<typeof 
     <Link className={cn(textLinkClassName, className)} {...props}>
       {children}
     </Link>
-  );
-}
-
-function ActionLink({
-  action,
-  ariaLabel,
-  className,
-  children,
-  testId,
-}: {
-  action: Node<"action">;
-  ariaLabel?: string;
-  className?: string;
-  children: ReactNode;
-  testId?: string;
-}) {
-  const { processing, requestSubmit, overlays } = useAction(action);
-
-  return (
-    <>
-      <button
-        aria-label={ariaLabel}
-        className={cn(textLinkClassName, className)}
-        data-test={testId}
-        disabled={processing}
-        onClick={requestSubmit}
-        type="button"
-      >
-        {children}
-      </button>
-      {overlays}
-    </>
   );
 }
 
@@ -114,12 +86,10 @@ function labelWithTextAffixes(label: string, prefix?: Affix | null, suffix?: Aff
 
 const LinkComponent: RendererComponent<"link"> = ({ node }) => {
   const isMenuItem = useActionMenu();
-  const action = node.props.action;
-  const icon = node.props.icon;
-  const label = node.props.label;
-  const prefix = node.props.prefix;
-  const suffix = node.props.suffix;
-  const iconOnly = Boolean(icon);
+  const { icon, label, prefix, suffix } = node.props;
+  const behavior = useClickBehavior(node.props);
+  const className = isMenuItem ? actionMenuItemClassName : undefined;
+  const testId = nodeIdentity(node);
   const content = (
     <LinkContent
       icon={icon}
@@ -129,28 +99,36 @@ const LinkComponent: RendererComponent<"link"> = ({ node }) => {
       suffix={suffix}
     />
   );
-  const ariaLabel = iconOnly ? label : labelWithTextAffixes(label, prefix, suffix);
+  const ariaLabel = icon ? label : labelWithTextAffixes(label, prefix, suffix);
 
-  if (action) {
-    return (
-      <ActionLink
-        action={action as Node<"action">}
-        ariaLabel={ariaLabel}
-        className={isMenuItem ? actionMenuItemClassName : undefined}
-        testId={nodeIdentity(node)}
-      >
-        {content}
-      </ActionLink>
-    );
+  const triggerButton = ({ onClick, processing }: TriggerState) => (
+    <button
+      aria-label={ariaLabel}
+      className={cn(textLinkClassName, className)}
+      data-test={testId}
+      disabled={processing}
+      onClick={onClick}
+      type="button"
+    >
+      {content}
+    </button>
+  );
+
+  if (behavior.kind === "action") {
+    return <ActionTrigger action={behavior.action}>{triggerButton}</ActionTrigger>;
+  }
+
+  if (behavior.kind === "effects") {
+    return triggerButton({ onClick: behavior.onClick, processing: false });
   }
 
   return (
     <TextLink
       aria-label={ariaLabel}
-      className={isMenuItem ? actionMenuItemClassName : undefined}
-      data-test={nodeIdentity(node)}
-      href={node.props.href ?? "#"}
-      method={node.props.method ?? "get"}
+      className={className}
+      data-test={testId}
+      href={behavior.kind === "navigate" ? behavior.href : "#"}
+      method={behavior.kind === "navigate" ? behavior.method : "get"}
       tabIndex={node.props.tabIndex ?? undefined}
     >
       {content}
