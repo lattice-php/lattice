@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
-import { type FormatOptions, formatDateValue, preciseDateTime } from "../table/format";
+import {
+  type FormatOptions,
+  formatDateValue,
+  preciseDateTime,
+} from "@lattice-php/lattice/format/date-time";
 import { useLocale } from "./locale";
 import { useTimezone } from "./timezone";
 

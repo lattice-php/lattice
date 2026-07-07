@@ -1,7 +1,7 @@
 export type Action = {
   confirmation: Confirmation | null;
   endpoint: string | null;
-  form: Node | null;
+  form: WireNode | null;
   icon: string | null;
   label: string | null;
   lazyForm: boolean | null;
@@ -14,26 +14,7 @@ export type ActionGroup = {
   orientation: Orientation | null;
   ref: string | null;
 };
-export type ActionNode =
-  | {
-      type: "action";
-      key?: string;
-      id?: string;
-      props: Action;
-    }
-  | {
-      type: "action.group";
-      key?: string;
-      id?: string;
-      props: ActionGroup;
-      schema?: Node[];
-    }
-  | {
-      type: "bulkAction";
-      key?: string;
-      id?: string;
-      props: BulkAction;
-    };
+export type ActionNodeType = "action" | "action.group" | "bulkAction";
 export type ActionResult = {
   readonly ok: boolean;
   readonly data: Record<string, unknown>;
@@ -94,7 +75,7 @@ export type Builder = {
 export type BulkAction = {
   confirmation: Confirmation | null;
   endpoint: string | null;
-  form: Node | null;
+  form: WireNode | null;
   icon: string | null;
   label: string | null;
   lazyForm: boolean | null;
@@ -123,7 +104,7 @@ export type ButtonVariant =
 export type Callout = {
   title: string | null;
   dismissible: boolean;
-  action: Node | null;
+  action: WireNode | null;
   variant: Variant;
   message: string;
 };
@@ -172,24 +153,9 @@ export type ChatBox = {
 export type ChatMessage = {
   readonly id: string;
   readonly role: ChatRole;
-  readonly parts: Node[];
+  readonly parts: WireNode[];
 };
-export type ChatNode =
-  | {
-      type: "chat.box";
-      key?: string;
-      props: ChatBox;
-    }
-  | {
-      type: "chat.part.text";
-      key?: string;
-      props: TextPart;
-    }
-  | {
-      type: "chat.part.tool-call";
-      key?: string;
-      props: ToolCallPart;
-    };
+export type ChatNodeType = "chat.box" | "chat.part.text" | "chat.part.tool-call";
 export type ChatRole = "user" | "assistant" | "system";
 export type Checkbox = {
   autoFocus: boolean;
@@ -249,7 +215,7 @@ export type Collapsible = {
   collapsed: boolean;
   rememberState: boolean;
   tooltip: string | null;
-  trigger: Node[];
+  trigger: WireNode[];
 };
 export type Color = "default" | "muted" | "primary" | "success" | "info" | "warning" | "danger";
 export type ColumnAlign = "start" | "center" | "end";
@@ -305,6 +271,63 @@ export type ColumnType =
   | "column.icon"
   | "column.image";
 export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
+export type ComponentPropsMap = {
+  action: Action;
+  "action.group": ActionGroup;
+  badge: Badge;
+  breadcrumbs: Breadcrumbs;
+  bulkAction: BulkAction;
+  button: Button;
+  callouts: Callouts;
+  card: Card;
+  chart: Chart;
+  "chat.box": ChatBox;
+  "chat.part.text": TextPart;
+  "chat.part.tool-call": ToolCallPart;
+  collapsible: Collapsible;
+  dropdown: Dropdown;
+  "field.builder": Builder;
+  "field.checkbox": Checkbox;
+  "field.choice": Choice;
+  "field.date-input": DateInput;
+  "field.date-time-input": DateTimeInput;
+  "field.file-upload": FileUpload;
+  "field.hidden-input": HiddenInput;
+  "field.number-input": NumberInput;
+  "field.otp": OtpInput;
+  "field.password-input": PasswordInput;
+  "field.repeater": Repeater;
+  "field.rich-editor": RichEditor;
+  "field.select": Select;
+  "field.text-input": TextInput;
+  "field.textarea": Textarea;
+  "field.time-input": TimeInput;
+  "field.toggle": Toggle;
+  "floating-panel": FloatingPanel;
+  form: Form;
+  fragment: Fragment;
+  grid: Grid;
+  heading: Heading;
+  icon: Icon;
+  link: Link;
+  menu: Menu;
+  "menu-item": MenuItem;
+  modal: Modal;
+  notifications: Notifications;
+  outlet: Outlet;
+  "raw-block": RawBlock;
+  "remote.data-list": DataList;
+  section: Section;
+  "segmented-control": SegmentedControl;
+  sidebar: Sidebar;
+  stack: Stack;
+  tab: Tab;
+  table: Table;
+  tabs: Tabs;
+  text: Text;
+  tooltip: Tooltip;
+  topbar: Topbar;
+};
 export type Condition = {
   readonly field: string;
   readonly operator: Op;
@@ -316,112 +339,26 @@ export type Confirmation = {
   readonly confirmLabel: string | null;
   readonly cancelLabel: string | null;
 };
-export type CoreNode =
-  | {
-      type: "badge";
-      key?: string;
-      props: Badge;
-    }
-  | {
-      type: "button";
-      key?: string;
-      props: Button;
-    }
-  | {
-      type: "card";
-      key?: string;
-      props: Card;
-      schema?: Node[];
-    }
-  | {
-      type: "chart";
-      key?: string;
-      props: Chart;
-    }
-  | {
-      type: "collapsible";
-      key?: string;
-      props: Collapsible;
-      schema?: Node[];
-    }
-  | {
-      type: "floating-panel";
-      key?: string;
-      props: FloatingPanel;
-      schema?: Node[];
-    }
-  | {
-      type: "grid";
-      key?: string;
-      props: Grid;
-      schema?: Node[];
-    }
-  | {
-      type: "heading";
-      key?: string;
-      props: Heading;
-    }
-  | {
-      type: "icon";
-      key?: string;
-      props: Icon;
-    }
-  | {
-      type: "link";
-      key?: string;
-      props: Link;
-    }
-  | {
-      type: "modal";
-      key?: string;
-      id?: string;
-      props: Modal;
-      schema?: Node[];
-    }
-  | {
-      type: "raw-block";
-      key?: string;
-      props: RawBlock;
-    }
-  | {
-      type: "section";
-      key?: string;
-      props: Section;
-      schema?: Node[];
-    }
-  | {
-      type: "segmented-control";
-      key?: string;
-      props: SegmentedControl;
-    }
-  | {
-      type: "stack";
-      key?: string;
-      props: Stack;
-      schema?: Node[];
-    }
-  | {
-      type: "tab";
-      key?: string;
-      props: Tab;
-      schema?: Node[];
-    }
-  | {
-      type: "tabs";
-      key?: string;
-      props: Tabs;
-      schema?: Node[];
-    }
-  | {
-      type: "text";
-      key?: string;
-      props: Text;
-    }
-  | {
-      type: "tooltip";
-      key?: string;
-      props: Tooltip;
-    };
+export type CoreNodeType =
+  | "badge"
+  | "button"
+  | "card"
+  | "chart"
+  | "collapsible"
+  | "floating-panel"
+  | "grid"
+  | "heading"
+  | "icon"
+  | "link"
+  | "modal"
+  | "raw-block"
+  | "section"
+  | "segmented-control"
+  | "stack"
+  | "tab"
+  | "tabs"
+  | "text"
+  | "tooltip";
 export type DataList = {
   dataEndpoint: string | null;
   emptyLabel: string | null;
@@ -497,42 +434,24 @@ export type DownloadEffect = {
 };
 export type Dropdown = {
   placement: Placement;
-  trigger: Node[];
+  trigger: WireNode[];
 };
-export type Effect =
-  | ({
-      type: "callout";
-    } & CalloutEffect)
-  | ({
-      type: "closeModal";
-    } & CloseModalEffect)
-  | ({
-      type: "download";
-    } & DownloadEffect)
-  | ({
-      type: "localeChange";
-    } & LocaleChangeEffect)
-  | ({
-      type: "openModal";
-    } & OpenModalEffect)
-  | ({
-      type: "redirect";
-    } & RedirectEffect)
-  | ({
-      type: "reloadComponent";
-    } & ReloadComponentEffect)
-  | ({
-      type: "reloadPage";
-    } & ReloadPageEffect)
-  | ({
-      type: "resetForm";
-    } & ResetFormEffect)
-  | ({
-      type: "toast";
-    } & ToastEffect)
-  | ({
-      type: "toggleSidebar";
-    } & ToggleSidebarEffect);
+export type Effect = {
+  type: string;
+} & Record<string, unknown>;
+export type EffectPropsMap = {
+  callout: CalloutEffect;
+  closeModal: CloseModalEffect;
+  download: DownloadEffect;
+  localeChange: LocaleChangeEffect;
+  openModal: OpenModalEffect;
+  redirect: RedirectEffect;
+  reloadComponent: ReloadComponentEffect;
+  reloadPage: ReloadPageEffect;
+  resetForm: ResetFormEffect;
+  toast: ToastEffect;
+  toggleSidebar: ToggleSidebarEffect;
+};
 export type FieldType =
   | "field.builder"
   | "field.checkbox"
@@ -606,7 +525,7 @@ export type FloatingPanel = {
   label: string | null;
   offset: number;
   placement: FloatingPlacement;
-  trigger: Node[];
+  trigger: WireNode[];
 };
 export type FloatingPlacement = "bottom-end" | "bottom-start" | "top-end" | "top-start";
 export type Form = {
@@ -624,115 +543,50 @@ export type Form = {
   validationSummaryLabel: string;
   validationTimeout: number | null;
 };
-export type FormFieldNode =
-  | {
-      type: "field.builder";
-      key?: string;
-      props: Builder;
-    }
-  | {
-      type: "field.checkbox";
-      key?: string;
-      props: Checkbox;
-    }
-  | {
-      type: "field.choice";
-      key?: string;
-      props: Choice;
-    }
-  | {
-      type: "field.date-input";
-      key?: string;
-      props: DateInput;
-    }
-  | {
-      type: "field.date-time-input";
-      key?: string;
-      props: DateTimeInput;
-    }
-  | {
-      type: "field.file-upload";
-      key?: string;
-      props: FileUpload;
-    }
-  | {
-      type: "field.hidden-input";
-      key?: string;
-      props: HiddenInput;
-    }
-  | {
-      type: "field.number-input";
-      key?: string;
-      props: NumberInput;
-    }
-  | {
-      type: "field.otp";
-      key?: string;
-      props: OtpInput;
-    }
-  | {
-      type: "field.password-input";
-      key?: string;
-      props: PasswordInput;
-    }
-  | {
-      type: "field.repeater";
-      key?: string;
-      props: Repeater;
-    }
-  | {
-      type: "field.rich-editor";
-      key?: string;
-      props: RichEditor;
-    }
-  | {
-      type: "field.select";
-      key?: string;
-      props: Select;
-    }
-  | {
-      type: "field.text-input";
-      key?: string;
-      props: TextInput;
-    }
-  | {
-      type: "field.textarea";
-      key?: string;
-      props: Textarea;
-    }
-  | {
-      type: "field.time-input";
-      key?: string;
-      props: TimeInput;
-    }
-  | {
-      type: "field.toggle";
-      key?: string;
-      props: Toggle;
-    };
-export type FormNode =
-  | FormFieldNode
-  | {
-      type: "form";
-      key?: string;
-      id?: string;
-      props: Form;
-      schema?: Node[];
-    };
-export type FormNodeType = FormNode["type"];
+export type FormFieldNodeType =
+  | "field.builder"
+  | "field.checkbox"
+  | "field.choice"
+  | "field.date-input"
+  | "field.date-time-input"
+  | "field.file-upload"
+  | "field.hidden-input"
+  | "field.number-input"
+  | "field.otp"
+  | "field.password-input"
+  | "field.repeater"
+  | "field.rich-editor"
+  | "field.select"
+  | "field.text-input"
+  | "field.textarea"
+  | "field.time-input"
+  | "field.toggle";
+export type FormNodeType =
+  | "field.builder"
+  | "field.checkbox"
+  | "field.choice"
+  | "field.date-input"
+  | "field.date-time-input"
+  | "field.file-upload"
+  | "field.hidden-input"
+  | "field.number-input"
+  | "field.otp"
+  | "field.password-input"
+  | "field.repeater"
+  | "field.rich-editor"
+  | "field.select"
+  | "field.text-input"
+  | "field.textarea"
+  | "field.time-input"
+  | "field.toggle"
+  | "form";
 export type Fragment = {
   endpoint: string | null;
   lazy: boolean | null;
   ref: string | null;
   size: Size;
 };
-export type FragmentNode = {
-  type: "fragment";
-  key?: string;
-  id?: string;
-  props: Fragment;
-  schema?: Node[];
-};
+export type FragmentNodeType = "fragment";
 export type Gap = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type Grid = {
   columns: number | null;
@@ -790,54 +644,17 @@ export type ImageColumn = {
   size: number | null;
 };
 export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
-export type LayoutNode =
-  | {
-      type: "breadcrumbs";
-      key?: string;
-      props: Breadcrumbs;
-    }
-  | {
-      type: "callouts";
-      key?: string;
-      props: Callouts;
-    }
-  | {
-      type: "dropdown";
-      key?: string;
-      props: Dropdown;
-      schema?: Node[];
-    }
-  | {
-      type: "menu";
-      key?: string;
-      props: Menu;
-      schema?: Node[];
-    }
-  | {
-      type: "menu-item";
-      key?: string;
-      props: MenuItem;
-      schema?: Node[];
-    }
-  | {
-      type: "outlet";
-      key?: string;
-      props: Outlet;
-    }
-  | {
-      type: "sidebar";
-      key?: string;
-      props: Sidebar;
-      schema?: Node[];
-    }
-  | {
-      type: "topbar";
-      key?: string;
-      props: Topbar;
-      schema?: Node[];
-    };
+export type LayoutNodeType =
+  | "breadcrumbs"
+  | "callouts"
+  | "dropdown"
+  | "menu"
+  | "menu-item"
+  | "outlet"
+  | "sidebar"
+  | "topbar";
 export type Link = {
-  action: Node | null;
+  action: WireNode | null;
   href: string | null;
   icon: string | null;
   label: string;
@@ -857,7 +674,7 @@ export type LocaleChangeEffect = {
 };
 export type Menu = Record<string, never>;
 export type MenuItem = {
-  action: Node | null;
+  action: WireNode | null;
   href: string | null;
   icon: string | null;
   label: string;
@@ -878,17 +695,62 @@ export type MoneyColumn = {
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
 };
-export type Node =
-  | FormNode
-  | CoreNode
-  | ActionNode
-  | FragmentNode
-  | RemoteNode
-  | TableNode
-  | LayoutNode
-  | ChatNode
-  | NotificationNode;
-export type NodeType = Node["type"];
+export type NodeType =
+  | "action"
+  | "action.group"
+  | "badge"
+  | "breadcrumbs"
+  | "bulkAction"
+  | "button"
+  | "callouts"
+  | "card"
+  | "chart"
+  | "chat.box"
+  | "chat.part.text"
+  | "chat.part.tool-call"
+  | "collapsible"
+  | "dropdown"
+  | "field.builder"
+  | "field.checkbox"
+  | "field.choice"
+  | "field.date-input"
+  | "field.date-time-input"
+  | "field.file-upload"
+  | "field.hidden-input"
+  | "field.number-input"
+  | "field.otp"
+  | "field.password-input"
+  | "field.repeater"
+  | "field.rich-editor"
+  | "field.select"
+  | "field.text-input"
+  | "field.textarea"
+  | "field.time-input"
+  | "field.toggle"
+  | "floating-panel"
+  | "form"
+  | "fragment"
+  | "grid"
+  | "heading"
+  | "icon"
+  | "link"
+  | "menu"
+  | "menu-item"
+  | "modal"
+  | "notifications"
+  | "outlet"
+  | "raw-block"
+  | "remote.data-list"
+  | "section"
+  | "segmented-control"
+  | "sidebar"
+  | "stack"
+  | "tab"
+  | "table"
+  | "tabs"
+  | "text"
+  | "tooltip"
+  | "topbar";
 export type NotificationItem = {
   readonly id: string;
   readonly title: string | null;
@@ -898,13 +760,9 @@ export type NotificationItem = {
   readonly href: string | null;
   readonly isRead: boolean;
   readonly createdAt: string | null;
-  readonly actions: Node[];
+  readonly actions: WireNode[];
 };
-export type NotificationNode = {
-  type: "notifications";
-  key?: string;
-  props: Notifications;
-};
+export type NotificationNodeType = "notifications";
 export type Notifications = {
   channel: string;
   endpoint: string;
@@ -1086,12 +944,7 @@ export type RemoteAccess = {
   readonly tokenEndpoint: string;
   readonly ref: string;
 };
-export type RemoteNode = {
-  type: "remote.data-list";
-  key?: string;
-  props: DataList;
-  schema?: Node[];
-};
+export type RemoteNodeType = "remote.data-list";
 export type Repeater = {
   addLabel: string | null;
   columnWidth: ColumnWidth;
@@ -1165,7 +1018,7 @@ export type Section = {
   collapsed: boolean;
   collapsible: boolean;
   description: string | null;
-  headerActions: Node[];
+  headerActions: WireNode[];
   rememberState: boolean;
   title: string | null;
   tooltip: string | null;
@@ -1235,7 +1088,7 @@ export type Tab = {
 };
 export type Table = {
   actionsLabel: string;
-  bulkActions: Node[];
+  bulkActions: WireNode[];
   columns: ColumnData[];
   emptyLabel: string;
   endpoint: string | null;
@@ -1247,12 +1100,7 @@ export type Table = {
   resizeIndicator: boolean;
   striped: boolean | null;
 };
-export type TableNode = {
-  type: "table";
-  key?: string;
-  id?: string;
-  props: Table;
-};
+export type TableNodeType = "table";
 export type TablePagination = {
   readonly mode: PaginationType;
   readonly currentPage: number | null;
@@ -1400,7 +1248,7 @@ export type ToastMessage = {
   duration: number | null;
   persistent: boolean;
   dismissible: boolean;
-  action: Node | null;
+  action: WireNode | null;
   variant: Variant;
   message: Translatable | string;
 };
@@ -1438,7 +1286,7 @@ export type ToolCallPart = {
 };
 export type Tooltip = {
   content: string | null;
-  trigger: Node[];
+  trigger: WireNode[];
 };
 export type Topbar = {
   sticky: boolean;
@@ -1450,3 +1298,10 @@ export type Translatable = {
 };
 export type Variant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "auto" | "sm" | "md" | "lg" | "fill";
+export type WireNode = {
+  id?: string;
+  key?: string;
+  type: string;
+  props?: Record<string, unknown>;
+  schema?: WireNode[];
+};

@@ -4,6 +4,7 @@ import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
 import type { EffectHandler } from "@lattice-php/lattice/effects/registry";
 import { createPlugin, createRegistry } from "@lattice-php/lattice/core/registry";
 import { Provider } from "@lattice-php/lattice/provider";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import { BulkBar } from "./bulk-bar";
 import type { BulkAction } from "../bulk";
 
@@ -326,7 +327,7 @@ describe("BulkBar", () => {
   });
 
   describe("form flow", () => {
-    const formNode = { type: "form", schema: [] } as unknown as BulkAction["form"];
+    const formNode = fakeNode({ type: "form", schema: [] });
 
     it("opens the action form with explicit confirmation labels and the selection payload", () => {
       renderBar({

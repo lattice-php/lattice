@@ -14,9 +14,9 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptAlias;
 use Spatie\TypeScriptTransformer\Writers\Writer;
 
 /**
- * Writes the discovered components as a TypeScript module augmentation, keying each
- * transformed prop body by its wire type under the `ComponentProps` / `ColumnProps`
- * interfaces an app's `@lattice-php/lattice` module exposes.
+ * Writes the discovered components as a TypeScript module augmentation of the app's
+ * `@lattice-php/lattice` module, keying each transformed prop body by wire type
+ * under the augmentable interface for its category ({@see AugmentableMap}).
  */
 final readonly class AugmentationWriter implements Writer
 {
@@ -39,8 +39,7 @@ final readonly class AugmentationWriter implements Writer
 
         $context = new WritingContext($resolvedReferenceMap);
 
-        $componentEntries = [];
-        $columnEntries = [];
+        $entriesByCategory = [];
 
         foreach ($transformed as $item) {
             $reference = $item->getReference();
@@ -57,16 +56,10 @@ final readonly class AugmentationWriter implements Writer
             }
 
             [$type, $category] = $this->components[$class];
-            $entry = sprintf('    "%s": %s;', $type, $node->type->write($context));
-
-            if ($category === 'column') {
-                $columnEntries[$type] = $entry;
-            } else {
-                $componentEntries[$type] = $entry;
-            }
+            $entriesByCategory[$category][$type] = sprintf('    "%s": %s;', $type, $node->type->write($context));
         }
 
-        return [new WriteableFile($this->path, self::render($this->module, $componentEntries, $columnEntries))];
+        return [new WriteableFile($this->path, self::render($this->module, $entriesByCategory))];
     }
 
     public function resolveReference(Transformed $transformed): ModuleImportResolvedReference
@@ -75,18 +68,23 @@ final readonly class AugmentationWriter implements Writer
     }
 
     /**
-     * @param  array<string, string>  $componentEntries  wire type => `"type": <body>;` line
-     * @param  array<string, string>  $columnEntries
+     * @param  array<string, array<string, string>>  $entriesByCategory  category => (wire type => `"type": <body>;` line)
      */
-    public static function render(string $module, array $componentEntries, array $columnEntries): string
+    public static function render(string $module, array $entriesByCategory): string
     {
-        ksort($componentEntries);
-        ksort($columnEntries);
+        $interfaces = [];
 
-        $interfaces = [self::interface('ComponentProps', $componentEntries)];
+        foreach (AugmentableMap::all() as $map) {
+            $entries = $entriesByCategory[$map->category] ?? [];
 
-        if ($columnEntries !== []) {
-            $interfaces[] = self::interface('ColumnProps', $columnEntries);
+            // The component interface is always emitted so the module augmentation is
+            // valid even for an app with no custom components; the rest only when populated.
+            if ($entries === [] && $map->category !== 'component') {
+                continue;
+            }
+
+            ksort($entries);
+            $interfaces[] = self::interface($map->interface, $entries);
         }
 
         return implode("\n", [

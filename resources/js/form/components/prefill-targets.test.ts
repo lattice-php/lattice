@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import {
   collectPrefillTargets,
   getPath,
@@ -9,7 +10,7 @@ import {
 } from "./prefill-targets";
 
 function priceField(): Node {
-  return {
+  return fakeNode({
     id: "f1",
     type: "field.text",
     props: {
@@ -18,7 +19,7 @@ function priceField(): Node {
       prefillResetOn: ["product"],
       prefillRefreshOn: ["@customer"],
     },
-  } as unknown as Node;
+  });
 }
 
 function builderNode(): Node {
@@ -31,19 +32,19 @@ function builderNode(): Node {
 }
 
 function nestedRepeaterNode(): Node {
-  return {
+  return fakeNode({
     id: "r1",
     type: "field.repeater",
     props: { name: "sections" },
     schema: [
-      {
+      fakeNode({
         id: "r2",
         type: "field.repeater",
         props: { name: "lines" },
         schema: [priceField()],
-      },
+      }),
     ],
-  } as unknown as Node;
+  });
 }
 
 it("collects a concrete target per row, mapping bare and @ deps", () => {
@@ -72,11 +73,11 @@ it("collects a concrete target per row, mapping bare and @ deps", () => {
 });
 
 it("collects a top-level target with form-level deps", () => {
-  const node = {
+  const node = fakeNode({
     id: "t",
     type: "field.text",
     props: { name: "total", editablePrefill: true, prefillRefreshOn: ["@customer"] },
-  } as unknown as Node;
+  });
 
   expect(collectPrefillTargets([node], {})).toEqual([
     { path: "total", overrideKey: "total", resetOn: [], refreshOn: ["customer"] },

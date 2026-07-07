@@ -22,21 +22,25 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptString;
 /**
  * Emits TypeScript prop types for an explicit allow-list of components. Every
  * prop is a required key; nullable PHP types surface as `T | null`, mirroring
- * the full wire shape that wireProps() now serializes.
+ * the full wire shape `wireProps()` serializes.
  */
 final class ComponentTransformer extends ClassTransformer
 {
+    use AllowsListedClasses;
+
     /**
      * @param  array<int, class-string>  $allowed
      */
-    public function __construct(private readonly array $allowed)
+    public function __construct(array $allowed)
     {
+        $this->allowed = $allowed;
+
         parent::__construct();
     }
 
     protected function shouldTransform(PhpClassNode $phpClassNode): bool
     {
-        return in_array($phpClassNode->getName(), $this->allowed, true);
+        return $this->isListed($phpClassNode);
     }
 
     /**
@@ -118,7 +122,7 @@ final class ComponentTransformer extends ClassTransformer
     {
         return [
             ...parent::classPropertyProcessors(),
-            new MarkerRewriteClassPropertyProcessor(Component::class, fn (): TypeScriptNode => new TypeScriptIdentifier('Node')),
+            new MarkerRewriteClassPropertyProcessor(Component::class, fn (): TypeScriptNode => new TypeScriptIdentifier('WireNode')),
             new MixedToUnknownClassPropertyProcessor,
         ];
     }

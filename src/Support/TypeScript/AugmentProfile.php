@@ -22,7 +22,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
 
         if ($roots === []) {
             File::ensureDirectoryExists(dirname($output));
-            File::put($output, AugmentationWriter::render($module, [], []));
+            File::put($output, AugmentationWriter::render($module, []));
 
             return sprintf('Generated 0 type(s) → %s', $output);
         }

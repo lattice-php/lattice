@@ -59,7 +59,7 @@ final class ComponentDiscovery
 
     /**
      * The namespace segment before `\Components\`, grouping the component into its
-     * Node union.
+     * domain's `…NodeType` union.
      *
      * @param  class-string  $class
      */

@@ -1,31 +1,23 @@
 import { router } from "@inertiajs/react";
 import type { ResolveProps } from "@lattice-php/lattice/core/types";
-import type { Effect } from "@lattice-php/lattice/types/generated";
+import type { Effect, EffectPropsMap } from "@lattice-php/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 import { setLocale } from "@lattice-php/lattice/i18n/locale";
 
 /**
- * Augmentable map of effect `type` → payload (the effect's fields minus `type`).
- * Consumer apps extend it via `declare module "@lattice-php/lattice"` so their
- * custom effects type their handler's payload; built-ins resolve through the
- * generated `Effect` union.
+ * Consumer apps augment this via `declare module "@lattice-php/lattice"` to type
+ * their custom effects' payloads; built-ins resolve through `EffectPropsMap`. The
+ * effect counterpart of `ComponentProps`.
  */
 export interface EffectProps {}
 
-type EffectPayloads = { [TEffect in Effect as TEffect["type"]]: Omit<TEffect, "type"> };
-
 type EffectPayloadOf<TType extends string> = ResolveProps<
   EffectProps,
-  EffectPayloads,
+  EffectPropsMap,
   TType,
   Record<string, unknown>
 >;
 
-/**
- * Resolves an effect `type` to its full shape — `{ type, ...payload }` — the way
- * `Node<T>` pairs a type with its props, so built-ins and consumer effects alike
- * always carry `type`. An unknown type falls back to the loose `Effect` union.
- */
 export type EffectOf<TType extends string> = string extends TType
   ? Effect
   : { type: TType } & EffectPayloadOf<TType>;
@@ -35,9 +27,8 @@ export type EffectHandler<TType extends string = string> = (effect: EffectOf<TTy
 export type EffectHandlerRegistry = Record<string, EffectHandler>;
 
 /**
- * Registers a typed effect handler, erasing the type parameter for the registry.
- * Mirrors `eagerComponent`/`columnCell`: author against `EffectHandler<"my.type">`
- * for a typed payload, register through this.
+ * Author a handler against `EffectHandler<"my.type">` for a typed payload, then
+ * register it through this — it erases the type parameter for the loose registry.
  */
 export function effectHandler<TType extends string>(
   _type: TType,
@@ -60,9 +51,8 @@ function bridge(event: string): EffectHandler {
 }
 
 /**
- * Built-in effect handlers. Imperative effects act directly; the rest bridge to
- * the `lattice:*` DOM events that toast/callout/modal/fragment/form subscribe to
- * — preserving today's behavior exactly.
+ * Imperative effects act directly; the rest bridge to the `lattice:*` DOM events
+ * that toast/callout/modal/fragment/form subscribe to.
  */
 export const builtinEffectHandlers: EffectHandlerRegistry = {
   reloadPage: () => router.reload(),

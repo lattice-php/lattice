@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
-use Lattice\Lattice\Chat\ChatPart;
 use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Support\TypeScript\AllowsListedClasses;
 use Lattice\Lattice\Support\TypeScript\MarkerRewriteClassPropertyProcessor;
 use Lattice\Lattice\Support\TypeScript\MixedToUnknownClassPropertyProcessor;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
@@ -18,17 +18,21 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptReference;
  */
 final class ValueObjectTransformer extends ClassTransformer
 {
+    use AllowsListedClasses;
+
     /**
      * @param  array<int, class-string>  $allowed
      */
-    public function __construct(private readonly array $allowed)
+    public function __construct(array $allowed)
     {
+        $this->allowed = $allowed;
+
         parent::__construct();
     }
 
     protected function shouldTransform(PhpClassNode $phpClassNode): bool
     {
-        return in_array($phpClassNode->getName(), $this->allowed, true);
+        return $this->isListed($phpClassNode);
     }
 
     /**
@@ -40,15 +44,9 @@ final class ValueObjectTransformer extends ClassTransformer
         return [
             ...parent::classPropertyProcessors(),
             new MixedToUnknownClassPropertyProcessor,
-            // Runs before the Component marker so a chat part — itself a Component —
-            // resolves to the narrower ChatNode union rather than the whole Node union.
-            new MarkerRewriteClassPropertyProcessor(
-                ChatPart::class,
-                fn (): TypeScriptReference => new TypeScriptReference(NodesProvider::chatNodeReference()),
-            ),
             new MarkerRewriteClassPropertyProcessor(
                 Component::class,
-                fn (): TypeScriptReference => new TypeScriptReference(NodesProvider::nodeReference()),
+                fn (): TypeScriptReference => new TypeScriptReference(NodesProvider::wireNodeReference()),
             ),
         ];
     }
