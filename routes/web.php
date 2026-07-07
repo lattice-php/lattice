@@ -6,6 +6,7 @@ use Lattice\Lattice\Http\Controllers\ActionController;
 use Lattice\Lattice\Http\Controllers\BulkActionController;
 use Lattice\Lattice\Http\Controllers\FormController;
 use Lattice\Lattice\Http\Controllers\FragmentController;
+use Lattice\Lattice\Http\Controllers\NotificationController;
 use Lattice\Lattice\Http\Controllers\RemoteSourceTokenController;
 use Lattice\Lattice\Http\Controllers\TableController;
 
@@ -38,3 +39,14 @@ Route::middleware(config('lattice.bulk-actions.middleware', ['web', 'auth']))
     ->match(['post', 'put', 'patch', 'delete'], config('lattice.bulk-actions.endpoint', 'lattice/bulk-actions/{bulkAction}'), BulkActionController::class)
     ->where('bulkAction', '.*')
     ->name('lattice.bulk-actions.handle');
+
+Route::middleware(config('lattice.notifications.middleware', ['web', 'auth']))
+    ->prefix(config('lattice.notifications.endpoint', 'lattice/notifications'))
+    ->name('lattice.notifications.')
+    ->group(function (): void {
+        Route::get('/', [NotificationController::class, 'index'])->name('index');
+        Route::post('read-all', [NotificationController::class, 'readAll'])->name('read-all');
+        Route::patch('{id}/read', [NotificationController::class, 'read'])->name('read');
+        Route::delete('{id}', [NotificationController::class, 'destroy'])->name('destroy');
+        Route::delete('/', [NotificationController::class, 'clear'])->name('clear');
+    });

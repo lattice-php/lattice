@@ -31,6 +31,7 @@ use Lattice\Lattice\Layouts\Components\Outlet;
 use Lattice\Lattice\Layouts\Components\Sidebar;
 use Lattice\Lattice\Layouts\Components\Topbar;
 use Lattice\Lattice\Layouts\LayoutDefinition;
+use Lattice\Lattice\Notifications\Components\Notifications;
 use Lattice\Lattice\Support\Affix;
 use Workbench\App\Actions\LogoutAction;
 use Workbench\App\Actions\SetLocaleAction;
@@ -139,6 +140,7 @@ class AppLayout extends LayoutDefinition
                             ->icon(Icon::Settings)
                             ->href('/settings'),
                     ]),
+                    Notifications::make(),
                     $this->userMenu(),
                 ]),
         ]);

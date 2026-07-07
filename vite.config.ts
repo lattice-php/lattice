@@ -40,6 +40,7 @@ const latticeIcons = [
   "trash-2",
   "x",
   // Internal chrome
+  "bell",
   "calendar",
   "chevron-down",
   "chevron-left",

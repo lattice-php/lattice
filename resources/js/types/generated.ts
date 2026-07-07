@@ -886,8 +886,31 @@ export type Node =
   | RemoteNode
   | TableNode
   | LayoutNode
-  | ChatNode;
+  | ChatNode
+  | NotificationNode;
 export type NodeType = Node["type"];
+export type NotificationItem = {
+  readonly id: string;
+  readonly title: string | null;
+  readonly body: string | null;
+  readonly icon: string | null;
+  readonly variant: Variant | null;
+  readonly href: string | null;
+  readonly isRead: boolean;
+  readonly createdAt: string | null;
+  readonly actions: Node[];
+};
+export type NotificationNode = {
+  type: "notifications";
+  key?: string;
+  props: Notifications;
+};
+export type Notifications = {
+  channel: string;
+  endpoint: string;
+  pollingInterval: number | null;
+  slideOut: boolean;
+};
 export type NumberColumn = {
   compact: boolean;
   maximumFractionDigits: number | null;

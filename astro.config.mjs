@@ -94,6 +94,7 @@ export default defineConfig({
             { label: "Modals", link: "/components/modals/" },
             { label: "Tooltip", link: "/components/tooltip/" },
             { label: "Charts", link: "/components/charts/" },
+            { label: "Notifications", link: "/components/notifications/" },
           ],
         },
         {

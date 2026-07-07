@@ -34,6 +34,7 @@ final class BaseProfile implements TypeScriptProfile
         'Tables' => 'TableNode',
         'Layouts' => 'LayoutNode',
         'Chat' => 'ChatNode',
+        'Notifications' => 'NotificationNode',
     ];
 
     public function run(TypeScriptGenerator $generator): string

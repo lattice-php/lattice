@@ -119,6 +119,14 @@
       "types": "./dist/lib/*.d.ts",
       "import": "./dist/lib/*.js"
     },
+    "./notifications": {
+      "types": "./dist/notifications/index.d.ts",
+      "import": "./dist/notifications/index.js"
+    },
+    "./notifications/*": {
+      "types": "./dist/notifications/*.d.ts",
+      "import": "./dist/notifications/*.js"
+    },
     "./page": {
       "types": "./dist/page.d.ts",
       "import": "./dist/page.js"

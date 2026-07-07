@@ -1,0 +1,235 @@
+---
+title: Notifications
+description: A server-driven notification bell backed by Laravel's native notifications, with realtime delivery and a polling fallback.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
+
+The notifications bell is an opt-in module: a fluent `Notification` builder that sends a
+self-describing payload through Laravel's native notification channels, and a `Notifications` bell
+component that lists, reads, and dismisses them. Nothing is enabled until you publish the migration
+and mark your notifiable model.
+
+## Prerequisite
+
+<Warning title="Migration and Notifiable">
+  Lattice does not ship its own notifications table — it rides Laravel's native `notifications`
+  table. Publish it and add the `Notifiable` trait to whichever model receives notifications
+  (usually `User`):
+
+```bash
+php artisan notifications:table
+php artisan migrate
+```
+
+```php
+use Illuminate\Notifications\Notifiable;
+
+class User extends Authenticatable
+{
+    use Notifiable;
+}
+```
+
+Without `Notifiable`, `$user->notify(...)`, `$user->notifications()`, and the bell's endpoints have
+nothing to call.
+
+</Warning>
+
+<Info title="Queue worker">
+  Lattice notifications are queued — the internal notification implements `ShouldQueue`. A running
+  queue worker (`php artisan queue:work`) is required for them to be delivered and appear in the
+  bell; without one, a `->send()` sits in the queue and nothing shows up. In local development you
+  can set `QUEUE_CONNECTION=sync` to process them inline instead.
+</Info>
+
+## The bell
+
+<ComponentExample php={`Notifications::make();`} fixture="notifications.bell" />
+
+The live preview above can't reach a real endpoint from a static docs page, so it renders empty —
+in your app it hydrates from the [config-driven endpoint](#configuration) on mount.
+
+## Sending a notification
+
+`Notification::make()` builds the payload fluently, then `->send()` or `->sendToDatabase()` dispatches
+it to any notifiable:
+
+```php
+use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Notifications\Notification;
+
+Notification::make()
+    ->title('Order #1234 shipped')
+    ->body('Tracking is now available.')
+    ->icon('truck')
+    ->variant(Variant::Success)
+    ->href('/orders/1234')
+    ->action(MarkOrderSeenAction::class, ['order_id' => 1234])
+    ->link('Track shipment', '/orders/1234/track')
+    ->send($order->user);
+```
+
+- **`->title()`** / **`->body()`** — the headline and supporting text.
+- **`->icon($name)`** — a [sprite icon](/core/icons/) name or a backed enum case.
+- **`->variant(Variant::…)`** — the same [`Variant`](/advanced/enums/#buttons--feedback) enum toasts
+  and callouts use; drives the bell item's accent color.
+- **`->href($url)`** — makes the whole row a link: clicking the title/body navigates to `$url` (an
+  internal app route, followed as an Inertia visit) and marks the notification read.
+- **`->action($actionClass, $arguments = [], $label = null)`** — attaches a real
+  [Lattice action](/actions/overview/) button, referenced by class name.
+- **`->link($label, $url)`** — attaches a plain link button (an internal app route) instead of (or
+  alongside) an action.
+- **`->send($notifiable)`** — delivers over `database` and `broadcast`.
+- **`->sendToDatabase($notifiable)`** — persists only, without a broadcast event.
+
+<Info>
+  Notification links point at **internal app routes** and are followed as Inertia visits, not external
+  URLs. For a link off-site, put the destination in an [`->action()`](/actions/overview/) that
+  redirects, or link out from the page the notification opens.
+</Info>
+
+<Info>
+  Actions and links are stored as lightweight **descriptors**, not materialized components — the row
+  only carries an action's class name and arguments. The real [`Action`](/actions/overview/) is
+  built and signed when the notification is **fetched**, using the reading user's own authorization
+  context. If `$actionClass` is no longer registered, the descriptor is silently dropped from that
+  row instead of breaking the fetch.
+</Info>
+
+## Reusable notification classes
+
+For a notification that also needs other channels — mail, Slack, SMS — don't reach for a Lattice
+base class. Write a plain Laravel notification and return the `Notification` builder's payload from
+`toArray()`, the same shape `->send()` produces:
+
+```php
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification as LaravelNotification;
+use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Notifications\Notification;
+
+class OrderShipped extends LaravelNotification
+{
+    public function __construct(private readonly Order $order) {}
+
+    public function via(object $notifiable): array
+    {
+        return ['mail', 'database', 'broadcast'];
+    }
+
+    public function toArray(object $notifiable): array
+    {
+        return Notification::make()
+            ->title("Order #{$this->order->number} shipped")
+            ->body('Tracking is now available.')
+            ->variant(Variant::Success)
+            ->href("/orders/{$this->order->id}")
+            ->toArray();
+    }
+
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)->line("Order #{$this->order->number} has shipped.");
+    }
+}
+```
+
+```php
+$order->user->notify(new OrderShipped($order));
+```
+
+Laravel uses the array returned by `toArray()` for both the `database` and `broadcast` channels, so
+the bell renders it and pushes it live exactly like `->send()` does — no Lattice base class involved,
+just the builder's own `toArray()` as the reusable payload getter.
+
+<Info>
+  The bell renders **any** row in the `notifications` table, not only Lattice ones. A notification
+  sent through a different channel — plain `DatabaseNotification` data with a `title`, `message`, or
+  `subject` key — still shows up with a best-effort title and no actions.
+</Info>
+
+## Placing the bell
+
+Drop `Notifications::make()` into a [`Topbar`](/core/layouts/#the-header-bar) like any other
+component:
+
+```php
+use Lattice\Lattice\Core\Components\Stack;
+use Lattice\Lattice\Core\Enums\Side;
+use Lattice\Lattice\Layouts\Components\Topbar;
+use Lattice\Lattice\Notifications\Components\Notifications;
+
+Topbar::make('app-topbar')->sticky()->items([
+    Stack::make()->direction('row')->float(Side::End)->schema([
+        Notifications::make(),
+    ]),
+]);
+```
+
+It defaults to a popover anchored under the bell. Call `->slideOut()` for a full-height panel that
+slides in from the trailing edge instead — a better fit for a dense topbar or a mobile layout:
+
+```php
+Notifications::make()->slideOut();
+```
+
+## Configuration
+
+```php
+'notifications' => [
+    'endpoint' => 'lattice/notifications',
+    'middleware' => ['web', 'auth'],
+    'per_page' => 15,
+    'polling_interval' => null,
+    'prune_after_days' => 30,
+],
+```
+
+- **`endpoint`** / **`middleware`** — where the list and mutation routes are served, same convention
+  as every other [Lattice endpoint](/introduction/configuration/#endpoints-and-middleware).
+- **`per_page`** — page size for the list and its "load more" pagination.
+- **`polling_interval`** — seconds between polling refetches; `null` disables polling (the default —
+  rely on realtime, or set an explicit interval as a fallback). Override per bell with
+  `->pollingInterval($seconds)`.
+- **`prune_after_days`** — how long a **read** notification is kept before
+  [pruning](#retention) deletes it.
+
+## Realtime and polling
+
+Each notifiable gets a private channel — `NotificationChannel::for($notifiable)`, the same channel
+Laravel's broadcast notifications use (or `receivesBroadcastNotificationsOn()` if the model defines
+it). The bell subscribes to it with `useEchoNotification` from `@laravel/echo-react` and prepends
+whatever arrives, no page reload needed.
+
+<Info>
+  If `@laravel/echo-react` isn't installed or `configureEcho()` hasn't run, the bell catches the
+  failure, logs a console warning, and falls back to plain polling — it never crashes the page. Set
+  `polling_interval` (globally or per bell) for a fallback cadence, or rely on the initial fetch
+  alone if neither realtime nor polling is needed.
+</Info>
+
+See [Realtime](/core/realtime/) for the broadcasting setup (Echo, Reverb) this depends on — this is a
+different mechanism from a page's declarative `Listen` listeners, purpose-built for one notifiable's
+private notification stream.
+
+## Retention
+
+Read notifications older than `prune_after_days` are deleted by an Artisan command, not
+automatically:
+
+```bash
+php artisan lattice:notifications:prune
+```
+
+Schedule it in your application:
+
+```php
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::command('lattice:notifications:prune')->daily();
+```
+
+Unread notifications are never pruned, regardless of age.

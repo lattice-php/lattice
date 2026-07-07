@@ -42,6 +42,7 @@ Each definition type is served by a dedicated endpoint with its own middleware s
 | Actions        | `lattice/actions/{action}`              | `['web', 'auth']` |
 | Bulk actions   | `lattice/bulk-actions/{bulkAction}`     | `['web', 'auth']` |
 | Remote sources | `lattice/remote-sources/{source}/token` | `['web', 'auth']` |
+| Notifications  | `lattice/notifications`                 | `['web', 'auth']` |
 
 Change the endpoint or middleware stack per type:
 
@@ -51,6 +52,9 @@ Change the endpoint or middleware stack per type:
     'middleware' => ['web', 'auth'],
 ],
 ```
+
+The `notifications` block also takes `per_page`, `polling_interval`, and `prune_after_days` — see
+[Notifications](/components/notifications/#configuration).
 
 ## Files
 

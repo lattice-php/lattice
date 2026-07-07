@@ -24,6 +24,7 @@
         </include>
     </source>
     <php>
+        <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="AWS_ACCESS_KEY_ID" value="herd"/>
         <env name="AWS_SECRET_ACCESS_KEY" value="secretkey"/>
         <env name="AWS_DEFAULT_REGION" value="us-east-1"/>
