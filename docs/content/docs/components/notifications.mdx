@@ -38,6 +38,13 @@ nothing to call.
 
 </Warning>
 
+<Info title="Queue worker">
+  Lattice notifications are queued — the internal notification implements `ShouldQueue`. A running
+  queue worker (`php artisan queue:work`) is required for them to be delivered and appear in the
+  bell; without one, a `->send()` sits in the queue and nothing shows up. In local development you
+  can set `QUEUE_CONNECTION=sync` to process them inline instead.
+</Info>
+
 ## The bell
 
 <ComponentExample php={`Notifications::make();`} fixture="notifications.bell" />
