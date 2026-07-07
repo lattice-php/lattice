@@ -75,7 +75,6 @@ final class NotificationController
             'icon' => $data['icon'] ?? null,
             'variant' => $data['variant'] ?? null,
             'href' => $data['href'] ?? null,
-            'openInNewTab' => $data['openInNewTab'] ?? false,
             'isRead' => $notification->getAttribute('read_at') !== null,
             'createdAt' => $notification->getAttribute('created_at')?->toIso8601String(),
             'actions' => array_values(array_filter(array_map(

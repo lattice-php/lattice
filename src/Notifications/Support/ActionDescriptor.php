@@ -23,9 +23,9 @@ final class ActionDescriptor
     /**
      * @return array<string, mixed>
      */
-    public static function link(string $label, string $url, bool $newTab = false): array
+    public static function link(string $label, string $url): array
     {
-        return ['kind' => 'link', 'label' => $label, 'url' => $url, 'newTab' => $newTab];
+        return ['kind' => 'link', 'label' => $label, 'url' => $url];
     }
 
     /**

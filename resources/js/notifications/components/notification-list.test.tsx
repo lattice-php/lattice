@@ -4,9 +4,7 @@ import { NotificationList } from "./notification-list";
 import type { NotificationItem } from "../types";
 
 vi.mock("@inertiajs/react", () => ({
-  Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
-  ),
+  Link: ({ children, ...props }: React.ComponentProps<"a">) => <a {...props}>{children}</a>,
 }));
 
 function item(id: string, title: string): NotificationItem {
@@ -17,7 +15,6 @@ function item(id: string, title: string): NotificationItem {
     icon: "bell",
     variant: "info",
     href: null,
-    openInNewTab: false,
     isRead: false,
     createdAt: null,
     actions: [],
@@ -105,13 +102,11 @@ describe("NotificationList", () => {
     expect(onLoadMore).toHaveBeenCalledTimes(1);
   });
 
-  it("renders a same-tab link and marks it read on click when href is set", () => {
+  it("renders a link and marks it read on click when href is set", () => {
     const onMarkRead = vi.fn<(id: string) => void>();
     render(
       <NotificationList
-        notifications={[
-          { ...item("a", "Order shipped"), href: "/orders/1234", openInNewTab: false },
-        ]}
+        notifications={[{ ...item("a", "Order shipped"), href: "/orders/1234" }]}
         status="idle"
         hasMore={false}
         onMarkRead={onMarkRead}
@@ -122,29 +117,9 @@ describe("NotificationList", () => {
 
     const link = screen.getByTestId("notification-link");
     expect(link).toHaveAttribute("href", "/orders/1234");
-    expect(link).not.toHaveAttribute("target");
 
     fireEvent.click(link);
     expect(onMarkRead).toHaveBeenCalledWith("a");
-  });
-
-  it("renders a new-tab link when openInNewTab is true", () => {
-    render(
-      <NotificationList
-        notifications={[
-          { ...item("a", "Order shipped"), href: "/orders/1234", openInNewTab: true },
-        ]}
-        status="idle"
-        hasMore={false}
-        onMarkRead={vi.fn<(id: string) => void>()}
-        onDismiss={vi.fn<(id: string) => void>()}
-        onLoadMore={vi.fn<() => void>()}
-      />,
-    );
-
-    const link = screen.getByTestId("notification-link");
-    expect(link).toHaveAttribute("target", "_blank");
-    expect(link).toHaveAttribute("rel", "noopener noreferrer");
   });
 
   it("renders plain text (no link) when href is null", () => {

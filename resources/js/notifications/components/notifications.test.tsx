@@ -52,7 +52,6 @@ describe("NotificationsComponent", () => {
               icon: "bell",
               variant: "info",
               href: null,
-              openInNewTab: false,
               isRead: false,
               createdAt: null,
               actions: [],

@@ -1,3 +1,4 @@
+import { Link } from "@inertiajs/react";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import { IconRenderer } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
@@ -21,6 +22,16 @@ export function NotificationItemRow({
   onDismiss: (id: string) => void;
 }) {
   const { t } = useT("lattice");
+
+  const content = (
+    <>
+      {notification.title ? (
+        <p className="truncate text-sm font-medium text-lt-fg">{notification.title}</p>
+      ) : null}
+      {notification.body ? <p className="text-sm text-lt-muted-fg">{notification.body}</p> : null}
+    </>
+  );
+
   return (
     <li
       className={cn("flex gap-3 px-3 py-3", !notification.isRead && "bg-lt-muted/40")}
@@ -37,30 +48,16 @@ export function NotificationItemRow({
       ) : null}
       <div className="min-w-0 flex-1">
         {notification.href ? (
-          <a
+          <Link
             href={notification.href}
-            target={notification.openInNewTab ? "_blank" : undefined}
-            rel={notification.openInNewTab ? "noopener noreferrer" : undefined}
             className="block"
             data-test="notification-link"
             onClick={() => onMarkRead(notification.id)}
           >
-            {notification.title ? (
-              <p className="truncate text-sm font-medium text-lt-fg">{notification.title}</p>
-            ) : null}
-            {notification.body ? (
-              <p className="text-sm text-lt-muted-fg">{notification.body}</p>
-            ) : null}
-          </a>
+            {content}
+          </Link>
         ) : (
-          <>
-            {notification.title ? (
-              <p className="truncate text-sm font-medium text-lt-fg">{notification.title}</p>
-            ) : null}
-            {notification.body ? (
-              <p className="text-sm text-lt-muted-fg">{notification.body}</p>
-            ) : null}
-          </>
+          content
         )}
         {notification.actions.length > 0 ? (
           <div className="mt-2 flex flex-wrap gap-2">

@@ -43,7 +43,7 @@ test('index materializes action descriptors into signed action nodes', function 
     $user = workbenchTestUser();
     Notification::make()->title('Order shipped')
         ->action(MarkNotificationSeenAction::class, ['order' => 1234])
-        ->link('Track', 'https://tracking.test/1234')
+        ->link('Track', '/orders/1234/track')
         ->send($user);
 
     actingAs($user);

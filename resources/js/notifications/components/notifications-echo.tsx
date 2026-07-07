@@ -16,7 +16,6 @@ export function NotificationsEcho({
       icon: payload.icon ?? null,
       variant: payload.variant ?? null,
       href: payload.href ?? null,
-      openInNewTab: payload.openInNewTab ?? false,
       isRead: false,
       createdAt: null,
       actions: [],

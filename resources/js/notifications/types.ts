@@ -7,7 +7,6 @@ export type NotificationItem = {
   icon: string | null;
   variant: "success" | "info" | "warning" | "error" | null;
   href: string | null;
-  openInNewTab: boolean;
   isRead: boolean;
   createdAt: string | null;
   actions: Node[];

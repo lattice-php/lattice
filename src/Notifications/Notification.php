@@ -20,8 +20,6 @@ final class Notification
 
     private ?string $href = null;
 
-    private bool $openInNewTab = false;
-
     /** @var list<array<string, mixed>> */
     private array $actions = [];
 
@@ -58,10 +56,9 @@ final class Notification
         return $this;
     }
 
-    public function href(string $href, bool $newTab = false): self
+    public function href(string $href): self
     {
         $this->href = $href;
-        $this->openInNewTab = $newTab;
 
         return $this;
     }
@@ -76,9 +73,9 @@ final class Notification
         return $this;
     }
 
-    public function link(string $label, string $url, bool $newTab = false): self
+    public function link(string $label, string $url): self
     {
-        $this->actions[] = ActionDescriptor::link($label, $url, $newTab);
+        $this->actions[] = ActionDescriptor::link($label, $url);
 
         return $this;
     }
@@ -105,7 +102,6 @@ final class Notification
             'icon' => $this->icon,
             'variant' => $this->variant->value,
             'href' => $this->href,
-            'openInNewTab' => $this->openInNewTab,
             'actions' => $this->actions,
         ];
     }

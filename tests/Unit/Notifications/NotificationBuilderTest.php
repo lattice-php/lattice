@@ -21,20 +21,18 @@ test('the builder produces a self-describing lattice payload', function (): void
         'icon' => 'truck',
         'variant' => 'success',
         'href' => '/orders/1234',
-        'openInNewTab' => false,
         'actions' => [],
     ]);
 });
 
-test('optional fields are null and openInNewTab reflects the flag', function (): void {
-    $payload = Notification::make()->title('Ping')->href('https://x.test', newTab: true)->toArray();
+test('optional fields are null and href passes through', function (): void {
+    $payload = Notification::make()->title('Ping')->href('/orders/1234')->toArray();
 
     expect($payload)->toMatchArray([
         'title' => 'Ping',
         'body' => null,
         'icon' => null,
         'variant' => 'info',
-        'href' => 'https://x.test',
-        'openInNewTab' => true,
+        'href' => '/orders/1234',
     ]);
 });

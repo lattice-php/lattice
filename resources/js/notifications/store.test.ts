@@ -11,7 +11,6 @@ function item(id: string, isRead = false): NotificationItem {
     icon: null,
     variant: "info",
     href: null,
-    openInNewTab: false,
     isRead,
     createdAt: null,
     actions: [],

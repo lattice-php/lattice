@@ -8,11 +8,11 @@ test('actions serialize as descriptors, never as signed nodes', function (): voi
     $actions = Notification::make()
         ->title('Order shipped')
         ->action('mark-order-seen', ['order' => 1234], label: 'Mark seen')
-        ->link('Track', 'https://tracking.test/1234', newTab: true)
+        ->link('Track', '/orders/1234/track')
         ->toArray()['actions'];
 
     expect($actions)->toBe([
         ['kind' => 'action', 'name' => 'mark-order-seen', 'arguments' => ['order' => 1234], 'label' => 'Mark seen'],
-        ['kind' => 'link', 'label' => 'Track', 'url' => 'https://tracking.test/1234', 'newTab' => true],
+        ['kind' => 'link', 'label' => 'Track', 'url' => '/orders/1234/track'],
     ]);
 });
