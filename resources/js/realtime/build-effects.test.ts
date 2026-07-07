@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import type { EffectOf } from "@lattice-php/lattice/effects/registry";
 import { buildEffects } from "./build-effects";
 
 const t = vi.fn<(key: string, defaultValue?: string, options?: Record<string, unknown>) => string>(
@@ -10,7 +11,7 @@ describe("buildEffects", () => {
   it("passes a plain-string toast message through unchanged", () => {
     const effects = [{ type: "toast", toast: { variant: "success", message: "Order shipped" } }];
 
-    const [effect] = buildEffects(effects, {}, t) as unknown as { toast: { message: string } }[];
+    const [effect] = buildEffects(effects, {}, t) as EffectOf<"toast">[];
 
     expect(effect.toast.message).toBe("Order shipped");
   });
@@ -30,9 +31,7 @@ describe("buildEffects", () => {
       },
     ];
 
-    const [effect] = buildEffects(effects, { order: { id: 42 } }, t) as unknown as {
-      toast: { message: string };
-    }[];
+    const [effect] = buildEffects(effects, { order: { id: 42 } }, t) as EffectOf<"toast">[];
 
     expect(t).toHaveBeenCalledWith("orders.shipped-live", "orders.shipped-live", {
       warehouse: "Berlin",
