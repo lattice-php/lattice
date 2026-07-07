@@ -1,5 +1,75 @@
 # Changelog
 
+## [0.17.0](https://github.com/lattice-php/lattice/compare/0.16.0...0.17.0) (2026-07-07)
+
+
+### Features
+
+* add --package to lattice:component and lattice:field generators ([76f8f8a](https://github.com/lattice-php/lattice/commit/76f8f8ac412dfc2f60699101ef547592d2cdcf78))
+* add lattice notification payload builder ([a78b634](https://github.com/lattice-php/lattice/commit/a78b634cae13a442ad86183da195413fc2e81948))
+* add the notifications bell component and generate its types ([5ffbf92](https://github.com/lattice-php/lattice/commit/5ffbf927c40d1a2b6d7e2b4b459e3e906c1a3e8d))
+* attach action descriptors to lattice notifications ([6fc00dd](https://github.com/lattice-php/lattice/commit/6fc00dd6b5f4b79beb4cb3e5230b20569706c702))
+* composer-only custom component packages ([820f331](https://github.com/lattice-php/lattice/commit/820f331d7c5811b6c1a8363133433cb9d373c1d3))
+* discover component-package roots from extra.lattice.discover ([295ecbd](https://github.com/lattice-php/lattice/commit/295ecbddad5dda781b6991f30d52a017d5cf8e3d))
+* mark-read, dismiss and clear notification endpoints ([6f74cdf](https://github.com/lattice-php/lattice/commit/6f74cdf6b05eb9c8dbf2e183f85b907a69224018))
+* notification center (bell + panel) ([ca7bfd7](https://github.com/lattice-php/lattice/commit/ca7bfd76927118eefb43cad38a1a7f1ece67e528))
+* notification list, item and empty-state components ([c332fea](https://github.com/lattice-php/lattice/commit/c332fea323890b6b1ef008c6fb8b7d2e2f3860d1))
+* notifications bell component with realtime and registration ([9e9426a](https://github.com/lattice-php/lattice/commit/9e9426a6c5a5e952fb8e5d6163058db7558a3688))
+* notifications client store with optimistic mutations ([df04d3d](https://github.com/lattice-php/lattice/commit/df04d3d2880ba554aba45616b03ecb45d0cd5cd8))
+* notifications frontend types and api client ([a166c02](https://github.com/lattice-php/lattice/commit/a166c02dd338a9ff86ef5306510974878c50d227))
+* prune read notifications past the retention window ([12cdbfe](https://github.com/lattice-php/lattice/commit/12cdbfeabd9ca3c17957db88928c7f424b977e4c))
+* scaffold the Composer package on first component when it doesn't exist ([12322a6](https://github.com/lattice-php/lattice/commit/12322a63b3e15f860f65ae9e7a0a5d169d40d129))
+* send lattice notifications through database and broadcast channels ([6e0b5e3](https://github.com/lattice-php/lattice/commit/6e0b5e39f3d9d89de1f0f6dad1aecf66aaf9232f))
+* serve paginated notifications with materialized actions ([3bdcd8a](https://github.com/lattice-php/lattice/commit/3bdcd8acd3b8ac2836be6d9675d76df53062ae85))
+* type virtual:lattice/plugins and wire it into the standard install ([943d1d5](https://github.com/lattice-php/lattice/commit/943d1d55345d6e0f88b25519622228cb60247a60))
+* wire notification row click-through to its href ([83cb6f1](https://github.com/lattice-php/lattice/commit/83cb6f19fe990fff53e196646c4a0ff7b118f522))
+
+
+### Bug Fixes
+
+* gracefully degrade unregistered notification actions ([dd414d3](https://github.com/lattice-php/lattice/commit/dd414d35e305233fbbfa45bd4c05c3f90586b7b9))
+* guard notifications loadMore against concurrent double-fetch ([a514eb9](https://github.com/lattice-php/lattice/commit/a514eb97b0aa8cfbefe7833ed5510e58f75dbc1b))
+* keep the notifications badge accurate and swallow load-more rejections ([c0a9e01](https://github.com/lattice-php/lattice/commit/c0a9e0138e2628ead7206132ed064796ebea47d6))
+* render notification icons through IconRenderer ([da1fc8c](https://github.com/lattice-php/lattice/commit/da1fc8cad0f92506bda62eeeb71514810826e089))
+* satisfy PHPStan and TS typecheck on the notifications test suite ([6c40e18](https://github.com/lattice-php/lattice/commit/6c40e188b049f1ee2254059d920bc24814ba2397))
+* vendor the bell icon and harden the notifications slide-out ([897d10f](https://github.com/lattice-php/lattice/commit/897d10f7f690f3d74905c469e6f350007e1c65f5))
+
+
+### Refactoring
+
+* collapse core LooseNode into the generated WireNode ([d81eef1](https://github.com/lattice-php/lattice/commit/d81eef1bdc34b005b2cd54e4bc4c71be338ecbdb))
+* collapse notification adapters into one queued LatticeNotification ([f61a831](https://github.com/lattice-php/lattice/commit/f61a831e7d651dd9db5f8bd4f6d9395f27469568))
+* derive per-domain node unions from generated type-string unions ([352a480](https://github.com/lattice-php/lattice/commit/352a4800849d57ebb6d26fd6588cb82600865b50))
+* drop the unknown-laundered effects cast in realtime subscriptions ([2bc1de4](https://github.com/lattice-php/lattice/commit/2bc1de4f70830b0f9f4c3dd7e68c7f8365b5dcdb))
+* emit per-domain NodeType unions only for consumed domains ([03e7bd9](https://github.com/lattice-php/lattice/commit/03e7bd9cbf802cef2b4899dbbae23aff58fc0626))
+* generate the NotificationItem type from the backend ([8f70df7](https://github.com/lattice-php/lattice/commit/8f70df7415911322a85ea2630f67d92fdbe581df))
+* import the column registry hook from core, not the root provider ([1d63517](https://github.com/lattice-php/lattice/commit/1d63517d98cb828b71174eb3352c722f59f8e06e))
+* make notification links internal-only via Inertia ([8a43e77](https://github.com/lattice-php/lattice/commit/8a43e771209ae5a72f7ac79810fb51145d4e3489))
+* move the generic date formatters out of the table domain ([d170f62](https://github.com/lattice-php/lattice/commit/d170f62ec871885c5c30d39b6845c822e5bc0827))
+* share the transformers' allow-list gate via one trait ([0c6113d](https://github.com/lattice-php/lattice/commit/0c6113dbeaa2fc1450e0ce4574caa604c73de9ca))
+* stop exporting internal-only component and helper types ([8f05204](https://github.com/lattice-php/lattice/commit/8f05204cc7fd4a586e360723d4cdc69ca8d389cf))
+* TS cleanup — dead exports (E/F/G) + registry import direction (C) ([31658b5](https://github.com/lattice-php/lattice/commit/31658b5aba399373fac8760c405d50248513931f))
+* unify clickable behavior under one Triggerable concern ([8ec8c59](https://github.com/lattice-php/lattice/commit/8ec8c59f4a6ff50e375b6221279b9cf73d3585dd))
+* unify clickable behavior under one Triggerable concern ([d9f6d4d](https://github.com/lattice-php/lattice/commit/d9f6d4dfaecd32bd748240dc95fcf9cf3b00e67f))
+* unify component/column/effect props onto one augmentable-map registry ([d0ba83c](https://github.com/lattice-php/lattice/commit/d0ba83c776ab6adc3cadfec95a66e92286826d77))
+* unify node prop resolution through one open path ([848cc38](https://github.com/lattice-php/lattice/commit/848cc38bd47ad669f5315e25410e480f83336ce6))
+* unify the PHP→TypeScript type system ([0847682](https://github.com/lattice-php/lattice/commit/0847682876b2972e19f368510bd7e1fa5ca9fb33))
+
+
+### Documentation
+
+* add a Component packages authoring guide ([909ae99](https://github.com/lattice-php/lattice/commit/909ae99ae1e8b971c038bc089d2d6a274121d652))
+* apply the comment rules across the typing system ([5d0511f](https://github.com/lattice-php/lattice/commit/5d0511f484c5e83b10a2cf6ad430c399995b8232))
+* components & tables sections, icon rendering + vendoring ([5d9066d](https://github.com/lattice-php/lattice/commit/5d9066d5a4d07179420d5113f1b89dc11e22d8a9))
+* document the notifications bell component ([2147e4f](https://github.com/lattice-php/lattice/commit/2147e4f5c8bb56ae30d911275632eb8de975cf73))
+* document vendoring icons from a package ([6342487](https://github.com/lattice-php/lattice/commit/63424870e59551db993238b2ece771294bca22b9))
+* icon vendoring no longer deletes other files ([51c3450](https://github.com/lattice-php/lattice/commit/51c3450aff7146717838495b746f66d4bcafd7df))
+* note the queue-worker prerequisite for notifications ([9c94ef7](https://github.com/lattice-php/lattice/commit/9c94ef701413af3e0db5be7d8d72196413df55af))
+* reflect that a button can trigger an action and a link can dispatch effects ([51c9a1e](https://github.com/lattice-php/lattice/commit/51c9a1e1f5f97e58a0e499c1434ba4c3dfddc4b4))
+* render sprite icons in live component examples ([cbb7d3f](https://github.com/lattice-php/lattice/commit/cbb7d3f1fcc4dc3ed9048afd64c5805a18a30c09))
+* restructure the Tables section, abstract-first with per-column pages ([0ece2a6](https://github.com/lattice-php/lattice/commit/0ece2a65ce1c0c4a389696284f04cd7681b25eb1))
+* split the components page into a dedicated Components section ([72c8735](https://github.com/lattice-php/lattice/commit/72c87358d9d21a47d5aaf2904dfdd3c75ec6e090))
+
 ## [0.16.0](https://github.com/lattice-php/lattice/compare/0.15.0...0.16.0) (2026-07-04)
 
 
