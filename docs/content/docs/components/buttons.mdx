@@ -25,22 +25,21 @@ import Info from "@components/Info.astro";
   fixture="components.buttons"
 />
 
-A button does one of a few things depending on how you configure it:
+A button carries exactly one click behavior — `->href()`, `->action()`, or `->effects()` — plus
+optional styling:
 
 - `->href($url)` renders it as a link.
-- `->submit()` makes it a form's submit control — see [Forms](/forms/overview/#the-submit-button).
-- `->icon($name)` adds a sprite [icon](/core/icons/) before the label.
+- `->action(SomeAction::class)` runs a server [action](/actions/overview/) on click.
 - `->effects(Effect::…)` dispatches client-side [effects](/actions/effects/) on click with no request
   to the server, e.g. `->effects(Effect::toggleSidebar('app-sidebar'))`.
-
-To run a server [action](/actions/overview/) on click, use an [`Action`](/actions/overview/) rather
-than a plain button.
+- `->submit()` makes it a form's submit control — see [Forms](/forms/overview/#the-submit-button).
+- `->icon($name)` adds a sprite [icon](/core/icons/) before the label.
 
 ## Link
 
 `Link::make($label)->href($url)` renders a navigational link. It navigates through Inertia by default,
-takes an `->icon($name)`, and supports affixes. It can also trigger an [action](/actions/overview/)
-instead of navigating.
+takes an `->icon($name)`, and supports affixes. Like a button, it can instead trigger an
+[action](/actions/overview/) or dispatch client [effects](/actions/effects/) rather than navigating.
 
 ```php
 Link::make('Documentation')->href('https://latticephp.com');
