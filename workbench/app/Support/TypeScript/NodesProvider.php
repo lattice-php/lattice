@@ -111,9 +111,8 @@ final readonly class NodesProvider implements TransformedProvider
     }
 
     /**
-     * The loose wire shape an effect arrives in: a `type` discriminator plus an open
-     * bag. Typed resolution goes through `EffectPropsMap`; `Effect[]` fields and the
-     * dispatch layer stay open so consumer effects flow through by `type`.
+     * `Effect` stays loose (typed resolution is `EffectPropsMap`'s job) so that
+     * `Effect[]` fields and the dispatch layer pass consumer effects through by `type`.
      */
     private function looseEffect(): TypeScriptIntersection
     {
@@ -124,9 +123,9 @@ final readonly class NodesProvider implements TransformedProvider
     }
 
     /**
-     * A union of wire-type string literals. Domains build their typed node union
-     * from this on the client with `NodeUnionOf<…NodeType>`, so the generator no
-     * longer hand-assembles discriminated object unions here.
+     * The client builds its typed node union from this string union with
+     * `NodeUnionOf<…NodeType>`, so the generator no longer hand-assembles the
+     * discriminated object unions itself.
      *
      * @param  list<string>  $types
      */
@@ -141,9 +140,8 @@ final readonly class NodesProvider implements TransformedProvider
     }
 
     /**
-     * The loose wire shape every node arrives in: a `type` discriminator plus an
-     * open props bag. The typed `Node<TType>` in core/types resolves props per type
-     * through `ComponentPropsMap`; this is what `Component`-typed fields serialize as.
+     * The loose shape `Component`-typed fields serialize as; core/types' typed
+     * `Node<TType>` resolves props per type through `ComponentPropsMap`.
      */
     private function wireNode(): TypeScriptObject
     {

@@ -22,7 +22,7 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptString;
 /**
  * Emits TypeScript prop types for an explicit allow-list of components. Every
  * prop is a required key; nullable PHP types surface as `T | null`, mirroring
- * the full wire shape that wireProps() now serializes.
+ * the full wire shape `wireProps()` serializes.
  */
 final class ComponentTransformer extends ClassTransformer
 {

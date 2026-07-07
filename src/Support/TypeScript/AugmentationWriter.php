@@ -14,9 +14,9 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptAlias;
 use Spatie\TypeScriptTransformer\Writers\Writer;
 
 /**
- * Writes the discovered components as a TypeScript module augmentation, keying each
- * transformed prop body by its wire type under the `ComponentProps` / `ColumnProps`
- * interfaces an app's `@lattice-php/lattice` module exposes.
+ * Writes the discovered components as a TypeScript module augmentation of the app's
+ * `@lattice-php/lattice` module, keying each transformed prop body by wire type
+ * under the augmentable interface for its category ({@see AugmentableMap}).
  */
 final readonly class AugmentationWriter implements Writer
 {

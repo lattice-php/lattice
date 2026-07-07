@@ -8,7 +8,7 @@ final readonly class DiscoveredComponent
     /**
      * @param  class-string  $class
      * @param  'component'|'column'  $category
-     * @param  string  $domain  Namespace segment before `\Components\` (e.g. 'Core'), grouping it into its Node union.
+     * @param  string  $domain  Namespace segment before `\Components\` (e.g. 'Core'), grouping its components into a `…NodeType` union.
      */
     public function __construct(
         public string $class,

@@ -101,7 +101,7 @@ final class BaseProfile implements TypeScriptProfile
 
     /**
      * Effect value objects keyed by class-string, valued by wire type — for the
-     * allow-list and the generated `Effect` union.
+     * allow-list and the generated `EffectPropsMap`.
      *
      * This profile generates the package's OWN built-in types only, so it builds
      * a fresh registry over src/Effects/Builtin rather than resolving the

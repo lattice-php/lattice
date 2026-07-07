@@ -19,10 +19,8 @@ export type {
   TimeInput,
 } from "@lattice-php/lattice/types/generated";
 
-/** The form field nodes, discriminated by wire type — built from the generated field-type union. */
 export type FormFieldNode = NodeUnionOf<FormFieldNodeType>;
 
-/** A form node: any field, or the form container itself. */
 export type FormNode = NodeUnionOf<FormNodeType>;
 
 export type FormMethod = Method;

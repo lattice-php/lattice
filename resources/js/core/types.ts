@@ -8,18 +8,14 @@ import type {
 } from "@lattice-php/lattice/types/generated";
 import type { ListenerPayload } from "@lattice-php/lattice/types/generated";
 
-export type { KnownPageContainer, NodeType, WireNode };
+export type { KnownPageContainer, NodeType, Option, WireNode };
 
-/** Loose props bag for nodes whose `type` is not a generated built-in. */
 export type NodeProps = Record<string, unknown>;
 
 export type CommonNodeProps = {
   dataBindings?: Record<string, string> | null;
   hideWhenCollapsed?: boolean | null;
 };
-
-/** A `{ label, value }` pair used by the choice, select and segmented controls. */
-export type { Option };
 
 /**
  * Augmentable map of wire `type` string → props for consumer components. Apps
@@ -32,10 +28,9 @@ export type { Option };
 export interface ComponentProps {}
 
 /**
- * Resolves a registry `type` string to its payload: consumer augmentations
- * (`TAugment`) first, then generated built-ins (`TBuiltins`), then a loose
- * fallback. Shared by the component, column, chat-part and effect type maps so
- * every extensible kind resolves the same way.
+ * Resolves a `type` string to its payload: consumer augmentations (`TAugment`)
+ * win over generated built-ins (`TBuiltins`), then a loose fallback. The one
+ * resolver behind the component, column and effect maps.
  */
 export type ResolveProps<
   TAugment,
@@ -48,11 +43,6 @@ export type ResolveProps<
     ? TBuiltins[TType]
     : TFallback;
 
-/**
- * Resolves a wire `type` to its props: consumer augmentations
- * (`ComponentProps`) first, then generated built-ins (`ComponentPropsMap`), then a
- * loose bag.
- */
 export type PropsOf<TType extends string> = ResolveProps<
   ComponentProps,
   ComponentPropsMap,
@@ -62,10 +52,8 @@ export type PropsOf<TType extends string> = ResolveProps<
   CommonNodeProps;
 
 /**
- * Resolves a wire `type` string to its node shape: built-ins narrow to their
- * generated props, unknown types fall back to the loose `WireNode` so custom
- * components still type-check. Built-in `props` is always present — the wire
- * serializes the full prop object, so reads need no optional chaining.
+ * Built-in `props` is required, not optional — the wire serializes the full prop
+ * object, so reads need no optional chaining. Unknown types fall back to `WireNode`.
  */
 export type NodeOfType<TType extends string = string> = string extends TType
   ? WireNode
@@ -80,17 +68,15 @@ export type NodeOfType<TType extends string = string> = string extends TType
 export type Node<TType extends string = string> = NodeOfType<TType>;
 
 /**
- * A discriminated node union for a set of wire types — `NodeUnionOf<"a" | "b">`
- * is `NodeOfType<"a"> | NodeOfType<"b">`, so `node.type` narrows `node.props` to
- * the matching built-in. Domains build their typed node unions from a generated
- * `…NodeType` string union with this instead of the generator emitting the union.
+ * Distributes so `NodeUnionOf<"a" | "b">` is `NodeOfType<"a"> | NodeOfType<"b">`
+ * — a discriminated union where `node.type` narrows `node.props`. Domains build
+ * their node union from a generated `…NodeType` string union with this.
  */
 export type NodeUnionOf<TTypes extends string> = TTypes extends string ? NodeOfType<TTypes> : never;
 
-/** An ordered list of component nodes — the content of a page, form, or container. */
 export type Schema = Node[];
 
-/** A server-composed layout shell: its key plus a schema containing one Outlet. */
+/** Its `schema` holds exactly one Outlet node. */
 export type LayoutPayload = {
   key: string;
   schema: Schema;
