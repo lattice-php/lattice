@@ -37,6 +37,19 @@ final class BaseProfile implements TypeScriptProfile
         'Notifications' => 'NotificationNode',
     ];
 
+    /**
+     * The component domains this profile emits a node type for. Exposed so the
+     * drift-guard test can assert no src/ domain is missing from the hand-list —
+     * an unregistered domain's components would silently vanish from the generated
+     * `ComponentPropsMap`/`NodeType`.
+     *
+     * @return list<string>
+     */
+    public static function domainNodeNames(): array
+    {
+        return array_keys(self::DOMAIN_NODES);
+    }
+
     public function run(TypeScriptGenerator $generator): string
     {
         $packageRoot = dirname(__DIR__, 4);
