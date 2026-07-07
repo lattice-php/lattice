@@ -1,5 +1,5 @@
 import type { DateFormat, NumberFormat } from "@lattice-php/lattice/types";
-import { formatDateValue } from "../table/format";
+import { formatDateValue } from "./date-time";
 import { formatNumber } from "./number";
 
 export type Format = NumberFormat | DateFormat;
