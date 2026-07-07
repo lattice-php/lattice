@@ -155,7 +155,6 @@ export type ChatMessage = {
   readonly role: ChatRole;
   readonly parts: WireNode[];
 };
-export type ChatNodeType = "chat.box" | "chat.part.text" | "chat.part.tool-call";
 export type ChatRole = "user" | "assistant" | "system";
 export type Checkbox = {
   autoFocus: boolean;
@@ -339,26 +338,6 @@ export type Confirmation = {
   readonly confirmLabel: string | null;
   readonly cancelLabel: string | null;
 };
-export type CoreNodeType =
-  | "badge"
-  | "button"
-  | "card"
-  | "chart"
-  | "collapsible"
-  | "floating-panel"
-  | "grid"
-  | "heading"
-  | "icon"
-  | "link"
-  | "modal"
-  | "raw-block"
-  | "section"
-  | "segmented-control"
-  | "stack"
-  | "tab"
-  | "tabs"
-  | "text"
-  | "tooltip";
 export type DataList = {
   dataEndpoint: string | null;
   emptyLabel: string | null;
@@ -586,7 +565,6 @@ export type Fragment = {
   ref: string | null;
   size: Size;
 };
-export type FragmentNodeType = "fragment";
 export type Gap = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type Grid = {
   columns: number | null;
@@ -644,15 +622,6 @@ export type ImageColumn = {
   size: number | null;
 };
 export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
-export type LayoutNodeType =
-  | "breadcrumbs"
-  | "callouts"
-  | "dropdown"
-  | "menu"
-  | "menu-item"
-  | "outlet"
-  | "sidebar"
-  | "topbar";
 export type Link = {
   action: WireNode | null;
   href: string | null;
@@ -762,7 +731,6 @@ export type NotificationItem = {
   readonly createdAt: string | null;
   readonly actions: WireNode[];
 };
-export type NotificationNodeType = "notifications";
 export type Notifications = {
   channel: string;
   endpoint: string;
@@ -944,7 +912,6 @@ export type RemoteAccess = {
   readonly tokenEndpoint: string;
   readonly ref: string;
 };
-export type RemoteNodeType = "remote.data-list";
 export type Repeater = {
   addLabel: string | null;
   columnWidth: ColumnWidth;
@@ -1100,7 +1067,6 @@ export type Table = {
   resizeIndicator: boolean;
   striped: boolean | null;
 };
-export type TableNodeType = "table";
 export type TablePagination = {
   readonly mode: PaginationType;
   readonly currentPage: number | null;

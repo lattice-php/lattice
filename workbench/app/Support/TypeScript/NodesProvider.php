@@ -39,6 +39,7 @@ final readonly class NodesProvider implements TransformedProvider
      * @param  class-string|null  $effectContract
      * @param  array<class-string, string>  $effects  Effect value objects keyed by class-string, valued by wire type.
      * @param  array<string, class-string>  $columnProps  wire column type => props VO class-string
+     * @param  list<string>  $nodeTypeAliases  Node-alias names (e.g. 'ActionNode') whose per-domain `…Type` union a client consumes via `NodeUnionOf`; others are not emitted.
      */
     public function __construct(
         private array $formFields,
@@ -48,6 +49,7 @@ final readonly class NodesProvider implements TransformedProvider
         private ?string $effectContract = null,
         private array $effects = [],
         private array $columnProps = [],
+        private array $nodeTypeAliases = [],
     ) {}
 
     /**
@@ -63,6 +65,10 @@ final readonly class NodesProvider implements TransformedProvider
         ];
 
         foreach ($this->domainNodes as $nodeName => $components) {
+            if (! in_array($nodeName, $this->nodeTypeAliases, true)) {
+                continue;
+            }
+
             $types = array_map(static fn (array $spec): string => $spec['type'], array_values($components));
             $transformed[] = $this->alias($nodeName.'Type', $this->typeUnion($types));
         }
