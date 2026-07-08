@@ -21,6 +21,7 @@ use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Attributes\AsRemoteSource;
 use Lattice\Lattice\Attributes\AsTable;
+use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Console\Commands\DiscoverCacheCommand;
 use Lattice\Lattice\Console\Commands\DiscoverClearCommand;
 use Lattice\Lattice\Console\Commands\MakeActionCommand;
@@ -106,6 +107,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(FormRegistry::class);
         $this->app->singleton(TableRegistry::class);
         $this->app->singleton(FragmentRegistry::class);
+        $this->app->singleton(BlockRegistry::class);
         $this->app->singleton(LayoutRegistry::class);
         $this->app->singleton(ActionRegistry::class);
         $this->app->singleton(BulkActionRegistry::class);

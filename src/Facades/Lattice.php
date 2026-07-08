@@ -10,6 +10,7 @@ use Lattice\Lattice\LatticeRegistry;
  * @method static void forms(class-string<\Lattice\Lattice\Forms\FormDefinition>|array<int, class-string<\Lattice\Lattice\Forms\FormDefinition>> $forms)
  * @method static void tables(class-string<\Lattice\Lattice\Tables\TableDefinition>|array<int, class-string<\Lattice\Lattice\Tables\TableDefinition>> $tables)
  * @method static void fragments(class-string<\Lattice\Lattice\Fragments\FragmentDefinition>|array<int, class-string<\Lattice\Lattice\Fragments\FragmentDefinition>> $fragments)
+ * @method static void blocks(class-string<\Lattice\Lattice\Blocks\BlockDefinition>|array<int, class-string<\Lattice\Lattice\Blocks\BlockDefinition>> $blocks)
  * @method static void layouts(class-string<\Lattice\Lattice\Layouts\LayoutDefinition>|array<int, class-string<\Lattice\Lattice\Layouts\LayoutDefinition>> $layouts)
  * @method static \Lattice\Lattice\Layouts\LayoutRegistry layoutRegistry()
  * @method static void pages(class-string<\Lattice\Lattice\Core\Contracts\PageContract>|array<int, class-string<\Lattice\Lattice\Core\Contracts\PageContract>> $pages)

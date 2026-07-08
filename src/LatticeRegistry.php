@@ -8,6 +8,8 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Blocks\BlockDefinition;
+use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Core\Contracts\PageContract;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
@@ -25,6 +27,7 @@ final readonly class LatticeRegistry
 {
     public function __construct(
         private ActionRegistry $actions,
+        private BlockRegistry $blocks,
         private BulkActionRegistry $bulkActions,
         private FormRegistry $forms,
         private FragmentRegistry $fragments,
@@ -56,6 +59,14 @@ final readonly class LatticeRegistry
     public function fragments(string|array $fragments): void
     {
         $this->fragments->register($fragments);
+    }
+
+    /**
+     * @param  class-string<BlockDefinition>|array<int, class-string<BlockDefinition>>  $blocks
+     */
+    public function blocks(string|array $blocks): void
+    {
+        $this->blocks->register($blocks);
     }
 
     /**
