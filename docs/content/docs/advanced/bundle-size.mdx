@@ -19,29 +19,13 @@ bundler tree-shakes and minifies them, so the app build is the honest measure of
 
 ## Code splitting
 
-Lattice lazy-loads its heavy pieces with `React.lazy` + dynamic `import()` at the registry boundaries,
-so a page only pays for what it actually renders:
+Every component loads eagerly in the entry chunk, except the ones below. Each lazy-loads its heavy
+dependency from inside the component (`React.lazy` + dynamic `import()`), so that dependency loads only
+when the component renders:
 
-- The **rich editor** (TipTap + ProseMirror — by far the largest dependency) loads only when a
-  [`RichEditor`](/forms/fields/rich-editor/) field is rendered.
-- The **table** renderer and the **form field** components load on demand as well.
-
-Everything else — the renderer, registry, layout shell, toasts, and core components — sits in the eager
-entry chunk that every page loads.
-
-If you prefer a single eager Lattice component graph, pass the eager registry when bootstrapping the app:
-
-```ts
-import { createLatticeApp } from "@lattice-php/lattice";
-import { eagerRegistry } from "@lattice-php/lattice/registry/eager";
-
-createLatticeApp({
-  registry: eagerRegistry,
-});
-```
-
-The default `registry` export remains lazy. Use the eager registry when your deployment favors fewer
-runtime chunk requests over a smaller initial component bundle.
+- The **rich editor** loads TipTap + ProseMirror.
+- The **chart** loads Recharts.
+- The **date** inputs load their zag-js date picker.
 
 :::note
 React, React-DOM, and Inertia are **peer dependencies**: your app already ships them, so they are not

@@ -147,14 +147,6 @@
       "types": "./dist/registry.d.ts",
       "import": "./dist/registry.js"
     },
-    "./registry/eager": {
-      "types": "./dist/registry/eager.d.ts",
-      "import": "./dist/registry/eager.js"
-    },
-    "./registry/lazy": {
-      "types": "./dist/registry/lazy.d.ts",
-      "import": "./dist/registry/lazy.js"
-    },
     "./remote": {
       "types": "./dist/remote/index.d.ts",
       "import": "./dist/remote/index.js"

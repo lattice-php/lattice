@@ -21,7 +21,7 @@ import {
 import { TimePicker } from "./time-picker";
 import { parseTimeString } from "./time-picker-columns";
 
-export type DatePickerControlProps = {
+export type DatePickerFieldProps = {
   mode: "date" | "date-time";
   label: string;
   name: string;
@@ -39,7 +39,7 @@ export type DatePickerControlProps = {
   onBlur?: () => void;
 };
 
-export function DatePickerControl({
+export function DatePickerField({
   mode,
   label,
   name,
@@ -55,7 +55,7 @@ export function DatePickerControl({
   timezone = "UTC",
   onChange,
   onBlur,
-}: DatePickerControlProps) {
+}: DatePickerFieldProps) {
   const id = useId();
   const { locale } = useLocale();
   const selected = useMemo(

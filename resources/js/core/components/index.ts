@@ -1,13 +1,8 @@
-import {
-  createPlugin,
-  type ComponentRegistry,
-  eagerComponent,
-  lazyComponent,
-} from "@lattice-php/lattice/core/registry";
-import type { RendererComponentModule } from "@lattice-php/lattice/core/types";
+import { createPlugin, eagerComponent } from "@lattice-php/lattice/core/registry";
 import BadgeComponent from "./badge";
 import ButtonComponent from "./button";
 import CardComponent from "./card";
+import ChartComponent from "./chart";
 import CollapsibleComponent from "./collapsible";
 import FloatingPanelComponent from "./floating-panel";
 import FragmentComponent from "./fragment";
@@ -24,32 +19,28 @@ import TabComponent, { TabsComponent } from "./tabs";
 import TextComponent from "./text";
 import TooltipComponent from "./tooltip";
 
-const components = {
-  badge: eagerComponent(BadgeComponent),
-  button: eagerComponent(ButtonComponent),
-  card: eagerComponent(CardComponent),
-  chart: lazyComponent(
-    () => import("./chart") as unknown as Promise<RendererComponentModule<"chart">>,
-  ),
-  collapsible: eagerComponent(CollapsibleComponent),
-  "floating-panel": eagerComponent(FloatingPanelComponent),
-  fragment: eagerComponent(FragmentComponent),
-  grid: eagerComponent(GridComponent),
-  heading: eagerComponent(HeadingComponent),
-  icon: eagerComponent(IconComponent),
-  link: eagerComponent(LinkComponent),
-  modal: eagerComponent(ModalComponent),
-  "raw-block": eagerComponent(RawBlockComponent),
-  section: eagerComponent(SectionComponent),
-  "segmented-control": eagerComponent(SegmentedControlComponent),
-  stack: eagerComponent(StackComponent),
-  tab: eagerComponent(TabComponent),
-  tabs: eagerComponent(TabsComponent),
-  text: eagerComponent(TextComponent),
-  tooltip: eagerComponent(TooltipComponent),
-} satisfies ComponentRegistry;
-
-export const coreComponents = createPlugin({ components, name: "lattice/core" });
-
-/** The component types this domain registers; its eager twin is pinned to this. */
-export type CoreComponentType = keyof typeof components;
+export const coreComponents = createPlugin({
+  components: {
+    badge: eagerComponent(BadgeComponent),
+    button: eagerComponent(ButtonComponent),
+    card: eagerComponent(CardComponent),
+    chart: eagerComponent(ChartComponent),
+    collapsible: eagerComponent(CollapsibleComponent),
+    "floating-panel": eagerComponent(FloatingPanelComponent),
+    fragment: eagerComponent(FragmentComponent),
+    grid: eagerComponent(GridComponent),
+    heading: eagerComponent(HeadingComponent),
+    icon: eagerComponent(IconComponent),
+    link: eagerComponent(LinkComponent),
+    modal: eagerComponent(ModalComponent),
+    "raw-block": eagerComponent(RawBlockComponent),
+    section: eagerComponent(SectionComponent),
+    "segmented-control": eagerComponent(SegmentedControlComponent),
+    stack: eagerComponent(StackComponent),
+    tab: eagerComponent(TabComponent),
+    tabs: eagerComponent(TabsComponent),
+    text: eagerComponent(TextComponent),
+    tooltip: eagerComponent(TooltipComponent),
+  },
+  name: "lattice/core",
+});

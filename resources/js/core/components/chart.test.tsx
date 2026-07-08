@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
-import ChartComponent from "./chart";
+import ChartComponent from "./chart-view";
 
 vi.mock("recharts", async () => {
   const React = await import("react");
