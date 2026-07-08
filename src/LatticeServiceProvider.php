@@ -14,6 +14,7 @@ use Inertia\ResponseFactory;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionRegistry;
 use Lattice\Lattice\Attributes\AsAction;
+use Lattice\Lattice\Attributes\AsBlock;
 use Lattice\Lattice\Attributes\AsBulkAction;
 use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Attributes\AsFragment;
@@ -98,6 +99,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         DiscoveryKinds::register('actions', AsAction::class);
         DiscoveryKinds::register('bulk-actions', AsBulkAction::class);
         DiscoveryKinds::register('fragments', AsFragment::class);
+        DiscoveryKinds::register('blocks', AsBlock::class);
         DiscoveryKinds::register('remote-sources', AsRemoteSource::class);
         DiscoveryKinds::register('layouts', AsLayout::class);
 
