@@ -360,6 +360,36 @@ test('registered table responses expose only declared columns row identity and g
         ->and($row['actions'][0]['props']['href'])->toBe("/products/{$product->getKey()}/edit");
 });
 
+test('registered table responses prune hidden columns from the row payload', function (): void {
+    Lattice::tables([WorkbenchHiddenColumnUsersTable::class]);
+
+    $ref = componentRef(wire(Table::use(WorkbenchHiddenColumnUsersTable::class)));
+    $row = latticeGet('/lattice/tables/workbench.hidden-column-users', $ref)
+        ->assertOk()
+        ->json('data.0');
+
+    expect($row)->toBeArray();
+    assert(is_array($row));
+
+    expect(array_keys($row))->toBe(['name'])
+        ->and($row)->not->toHaveKey('secret');
+});
+
+test('a hidden column referenced by a visible badge column is still pruned from the row payload', function (): void {
+    Lattice::tables([WorkbenchHiddenBadgeHelperUsersTable::class]);
+
+    $ref = componentRef(wire(Table::use(WorkbenchHiddenBadgeHelperUsersTable::class)));
+    $row = latticeGet('/lattice/tables/workbench.hidden-badge-helper-users', $ref)
+        ->assertOk()
+        ->json('data.0');
+
+    expect($row)->toBeArray();
+    assert(is_array($row));
+
+    expect(array_keys($row))->toBe(['status'])
+        ->and($row)->not->toHaveKey('helper');
+});
+
 test('text columns serialize display modifiers', function (): void {
     expect(wire(TextColumn::make('published_at')
         ->label('Published')
@@ -536,5 +566,49 @@ class WorkbenchProjectedProductsTable extends EloquentTableDefinition
             Link::make('Edit', 'edit-product')
                 ->href("/products/{$row['id']}/edit"),
         ];
+    }
+}
+
+#[AsTable('workbench.hidden-column-users')]
+class WorkbenchHiddenColumnUsersTable extends TableDefinition
+{
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name'),
+            TextColumn::make('secret')->visible(false),
+        ];
+    }
+
+    public function source(): TableSource
+    {
+        return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([
+            [
+                'name' => 'Taylor',
+                'secret' => 'top-secret',
+            ],
+        ]));
+    }
+}
+
+#[AsTable('workbench.hidden-badge-helper-users')]
+class WorkbenchHiddenBadgeHelperUsersTable extends TableDefinition
+{
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('status')->badge('helper'),
+            TextColumn::make('helper')->visible(false),
+        ];
+    }
+
+    public function source(): TableSource
+    {
+        return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([
+            [
+                'status' => 'Active',
+                'helper' => 'green',
+            ],
+        ]));
     }
 }

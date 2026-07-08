@@ -192,6 +192,10 @@ final class TableRegistry extends DefinitionRegistry
         $keys = self::ROW_IDENTITY_KEYS;
 
         foreach ($columns as $column) {
+            if (! $column->shouldRender()) {
+                continue;
+            }
+
             array_push($keys, ...$this->columnKeys($column->toData()));
         }
 

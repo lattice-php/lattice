@@ -1,27 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Tables\Filters\SelectFilter;
 use Workbench\App\Models\Product;
-
-it('serialises a select filter', function (): void {
-    $wire = SelectFilter::make('status')
-        ->options(['active' => 'Active', 'inactive' => 'Inactive'])
-        ->toData()
-        ->jsonSerialize();
-
-    expect($wire['key'])->toBe('status')
-        ->and($wire['label'])->toBe('Status')
-        ->and($wire['type'])->toBe('select')
-        ->and($wire['props']['multiple'])->toBeFalse()
-        ->and($wire['props']['searchable'])->toBeFalse()
-        ->and($wire['props']['placeholder'])->toBeNull()
-        ->and($wire['props']['options'])->toEqual([
-            new Option('Active', 'active'),
-            new Option('Inactive', 'inactive'),
-        ]);
-});
 
 test('select filter serializes its wire shape', function (): void {
     expect(wire(SelectFilter::make('status')
