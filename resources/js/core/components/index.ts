@@ -1,8 +1,8 @@
-import { createPlugin, eagerComponent, lazyComponent } from "@lattice-php/lattice/core/registry";
-import type { RendererComponentModule } from "@lattice-php/lattice/core/types";
+import { createPlugin, eagerComponent } from "@lattice-php/lattice/core/registry";
 import BadgeComponent from "./badge";
 import ButtonComponent from "./button";
 import CardComponent from "./card";
+import ChartComponent from "./chart";
 import CollapsibleComponent from "./collapsible";
 import FloatingPanelComponent from "./floating-panel";
 import FragmentComponent from "./fragment";
@@ -24,9 +24,7 @@ export const coreComponents = createPlugin({
     badge: eagerComponent(BadgeComponent),
     button: eagerComponent(ButtonComponent),
     card: eagerComponent(CardComponent),
-    chart: lazyComponent(
-      () => import("./chart") as unknown as Promise<RendererComponentModule<"chart">>,
-    ),
+    chart: eagerComponent(ChartComponent),
     collapsible: eagerComponent(CollapsibleComponent),
     "floating-panel": eagerComponent(FloatingPanelComponent),
     fragment: eagerComponent(FragmentComponent),

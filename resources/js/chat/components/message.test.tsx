@@ -6,12 +6,12 @@ import { createPlugin, createRegistry, eagerComponent } from "@lattice-php/latti
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import type { ComponentRegistry } from "@lattice-php/lattice/core/registry";
 import type { ChatMessage } from "../types";
-import { chatPlugin } from "../index";
+import { chatComponents } from "../index";
 import { Message } from "./message";
 
 function withRegistry(ui: ReactNode, extraComponents?: ComponentRegistry): ReactNode {
   const registry = createRegistry(
-    chatPlugin,
+    chatComponents,
     ...(extraComponents ? [createPlugin({ name: "test", components: extraComponents })] : []),
   );
   return <RegistryContext.Provider value={registry}>{ui}</RegistryContext.Provider>;

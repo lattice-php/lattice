@@ -1,6 +1,6 @@
-export { lazyRegistry, registry } from "./registry";
+export { registry } from "./registry";
 export { useChat } from "./chat/use-chat";
-export { chatPlugin } from "./chat";
+export { chatComponents } from "./chat";
 export {
   getActionEffects,
   isActionEffect,

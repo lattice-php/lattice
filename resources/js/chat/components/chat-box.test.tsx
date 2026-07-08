@@ -6,11 +6,11 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
 import { createRegistry } from "@lattice-php/lattice/core/registry";
 import { clearRemoteTokenCache } from "@lattice-php/lattice/core/api";
-import { chatPlugin } from "../index";
+import { chatComponents } from "../index";
 import { ChatBox } from "./chat-box";
 
 function withRegistry(ui: ReactNode): ReactNode {
-  const registry = createRegistry(chatPlugin);
+  const registry = createRegistry(chatComponents);
   return <RegistryContext.Provider value={registry}>{ui}</RegistryContext.Provider>;
 }
 

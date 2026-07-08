@@ -4,11 +4,11 @@ import type { ReactNode } from "react";
 import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
 import { createRegistry } from "@lattice-php/lattice/core/registry";
 import type { ChatMessage } from "../types";
-import { chatPlugin } from "../index";
+import { chatComponents } from "../index";
 import { MessageList } from "./message-list";
 
 function withRegistry(ui: ReactNode): ReactNode {
-  const registry = createRegistry(chatPlugin);
+  const registry = createRegistry(chatComponents);
   return <RegistryContext.Provider value={registry}>{ui}</RegistryContext.Provider>;
 }
 

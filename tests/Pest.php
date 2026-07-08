@@ -24,6 +24,36 @@ uses(BrowserTestCase::class)->in('Browser');
 uses(RefreshDatabase::class)->in(__DIR__);
 
 /**
+ * Retry a browser assertion that fails fast (the browser plugin's assertions do
+ * not poll), sleeping between attempts so an async round-trip — a websocket
+ * connecting, a broadcast arriving, a dependent field recomputing — has time to
+ * settle. Returns as soon as the assertion passes; rethrows after the last attempt.
+ *
+ * @param  Closure(): void  $assert
+ * @param  (Closure(): void)|null  $between
+ */
+function retryUntil(Closure $assert, int $attempts = 10, int $sleepMicroseconds = 100_000, ?Closure $between = null): void
+{
+    foreach (range(1, $attempts) as $attempt) {
+        try {
+            $assert();
+
+            return;
+        } catch (Throwable $exception) {
+            if ($attempt === $attempts) {
+                throw $exception;
+            }
+
+            if ($between instanceof Closure) {
+                $between();
+            }
+
+            usleep($sleepMicroseconds);
+        }
+    }
+}
+
+/**
  * Point discovery at the test fixtures and rebuild the manifest so the
  * registries resolve the attributed classes under tests/Fixtures/Discovery.
  */

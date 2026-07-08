@@ -76,14 +76,16 @@ it('searches and selects entities in a multiple select', function (): void {
 
 it('runs conditional and computed behavior on the showcase', function (): void {
     $this->actingAs(workbenchTestUser());
-    visit('/showcase')
-        ->assertDontSee('Company')
+    $page = visit('/showcase')
+        ->assertMissing('input[name="company"]')
         ->click('Business')
-        ->assertSee('Company')
+        ->assertPresent('input[name="company"]')
         ->fill('quantity', '4')
-        ->fill('unit_price', '5')
-        ->wait(1)
-        ->assertValue('total', '20');
+        ->fill('unit_price', '5');
+
+    retryUntil(function () use ($page): void {
+        $page->assertValue('total', '20');
+    });
 });
 
 it('opens a field tooltip revealing a link', function (): void {
