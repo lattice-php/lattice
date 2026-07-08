@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FieldScopeProvider } from "../field-scope";
@@ -67,5 +67,64 @@ describe("RichEditorComponent", () => {
     expect(
       document.querySelector('input[type="hidden"][name="items[0][children][1][body]"]'),
     ).toBeInTheDocument();
+  });
+
+  it("runs every toolbar command without error", async () => {
+    const prompt = vi.spyOn(window, "prompt").mockReturnValue("https://example.com");
+    renderField(fakeNode({ type: "field.rich-editor", props: { name: "body", label: "Body" } }));
+
+    await screen.findByLabelText("Bold");
+
+    const markCommands = [
+      "Bold",
+      "Italic",
+      "Strikethrough",
+      "Underline",
+      "Highlight",
+      "Heading 1",
+      "Heading 2",
+      "Heading 3",
+      "Bullet list",
+      "Ordered list",
+      "Blockquote",
+      "Code block",
+      "Horizontal rule",
+      "Align left",
+      "Align center",
+      "Align right",
+      "Justify",
+    ];
+    for (const label of markCommands) {
+      fireEvent.click(screen.getByLabelText(label));
+    }
+
+    fireEvent.click(screen.getByLabelText("Link"));
+    fireEvent.click(screen.getByLabelText("Link"));
+    expect(prompt).toHaveBeenCalled();
+
+    fireEvent.click(screen.getByLabelText("Insert table"));
+    for (const label of ["Add column", "Add row", "Delete table"]) {
+      const button = await screen.findByLabelText(label);
+      await waitFor(() => expect(button).not.toBeDisabled());
+      fireEvent.click(button);
+    }
+
+    fireEvent.click(screen.getByLabelText("Details"));
+    fireEvent.click(screen.getByLabelText("Details"));
+
+    prompt.mockRestore();
+  });
+
+  it("inserts an emoji from the picker", async () => {
+    renderField(fakeNode({ type: "field.rich-editor", props: { name: "body", label: "Body" } }));
+
+    await screen.findByLabelText("Insert emoji");
+
+    fireEvent.click(screen.getByLabelText("Insert emoji"));
+    expect(screen.getByText("🚀")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText("🎉"));
+
+    expect(screen.queryByText("🚀")).not.toBeInTheDocument();
   });
 });

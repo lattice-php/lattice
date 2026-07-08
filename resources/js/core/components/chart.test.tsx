@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import ChartComponent from "./chart-view";
+import ChartWrapper from "./chart";
 
 vi.mock("recharts", async () => {
   const React = await import("react");
@@ -433,5 +434,43 @@ describe("Chart component", () => {
     expect(screen.getByTestId("y-axis")).toHaveTextContent("$28K");
     expect(screen.getByTestId("tooltip-value")).toHaveTextContent("$28K");
     expect(screen.getByTestId("x-axis").textContent).not.toBe("2026-01-15");
+  });
+
+  it("lazily mounts the chart view through the registered wrapper", async () => {
+    render(
+      <ChartWrapper
+        node={{
+          type: "chart",
+          props: {
+            categoryFormat: null,
+            categoryKey: "month",
+            data: [{ month: "Jan", revenue: 1200 }],
+            description: null,
+            valueFormat: null,
+            grid: false,
+            height: 200,
+            legend: false,
+            series: [
+              {
+                color: "#2563eb",
+                dataKey: "revenue",
+                name: "Revenue",
+                nameKey: null,
+                stackId: null,
+                type: "line",
+              },
+            ],
+            title: null,
+            tooltip: false,
+            xAxis: true,
+            yAxis: true,
+          },
+        }}
+      >
+        {null}
+      </ChartWrapper>,
+    );
+
+    expect(await screen.findByTestId("responsive-container")).toBeInTheDocument();
   });
 });
