@@ -107,7 +107,7 @@ final class TableRegistry extends DefinitionRegistry
         $query = $request->string('q')->toString();
 
         $filter = collect($definition->filters())
-            ->first(fn (BaseFilter $filter): bool => $filter->key === $filterKey);
+            ->first(fn (BaseFilter $filter): bool => $filter->key() === $filterKey);
 
         if ($filter !== null) {
             abort_unless($filter instanceof SelectFilter && $filter->isSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);

@@ -89,7 +89,7 @@ final readonly class TableQuery implements JsonSerializable
             return [];
         }
 
-        $index = collect($filters)->keyBy(fn (BaseFilter $filter): string => $filter->key);
+        $index = collect($filters)->keyBy(fn (BaseFilter $filter): string => $filter->key());
         $parsed = [];
 
         foreach ($tableFilters as $key => $value) {

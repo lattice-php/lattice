@@ -128,7 +128,7 @@ final readonly class EloquentTableSource implements TableSource
             $this->filterApplier->apply($operator, $builder, $column->filterType(), $clause->field, $clause->value);
         }
 
-        $filters = collect($this->filters)->keyBy(fn (BaseFilter $filter): string => $filter->key);
+        $filters = collect($this->filters)->keyBy(fn (BaseFilter $filter): string => $filter->key());
 
         foreach ($query->tableFilters as $key => $value) {
             $filter = $filters->get($key);

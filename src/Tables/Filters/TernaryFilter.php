@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lattice\Lattice\Facades\Evaluate;
+use Lattice\Lattice\Tables\Attributes\AsFilter;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 
 /**
@@ -14,6 +15,7 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
  * constraint; pass {@see queries} to drive each state with a custom query (e.g.
  * null-existence checks). Custom queries receive the `Builder` by type injection.
  */
+#[AsFilter(FilterControl::Ternary)]
 class TernaryFilter extends BaseFilter
 {
     public string $trueLabel = 'Yes';
@@ -57,20 +59,6 @@ class TernaryFilter extends BaseFilter
         $this->falseQuery = $false;
 
         return $this;
-    }
-
-    public function toData(): FilterData
-    {
-        return new FilterData(
-            $this->key,
-            $this->label,
-            FilterControl::Ternary,
-            [
-                'trueLabel' => $this->trueLabel,
-                'falseLabel' => $this->falseLabel,
-                'placeholder' => $this->placeholder,
-            ],
-        );
     }
 
     #[\Override]

@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lattice\Lattice\Facades\Evaluate;
+use Lattice\Lattice\Tables\Attributes\AsFilter;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 
 /**
@@ -15,6 +16,7 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
  * parameter receives the query, `$value` the toggle state, and any type-hinted
  * service resolves from the container.
  */
+#[AsFilter(FilterControl::Toggle)]
 class Filter extends BaseFilter
 {
     private ?Closure $query = null;
@@ -29,16 +31,6 @@ class Filter extends BaseFilter
         $this->query = $query;
 
         return $this;
-    }
-
-    public function toData(): FilterData
-    {
-        return new FilterData(
-            $this->key,
-            $this->label,
-            FilterControl::Toggle,
-            [],
-        );
     }
 
     #[\Override]

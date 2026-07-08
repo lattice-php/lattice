@@ -157,6 +157,37 @@ test('a date range filter ignores a non-array value', function (): void {
         ->and($builder->toSql())->not->toContain('where');
 });
 
+it('serialises a toggle filter', function (): void {
+    expect(Filter::make('active')->toData()->jsonSerialize())->toBe([
+        'key' => 'active',
+        'label' => 'Active',
+        'type' => 'toggle',
+        'props' => [],
+    ]);
+});
+
+it('serialises a date-range filter', function (): void {
+    expect(DateRangeFilter::make('created')->toData()->jsonSerialize())->toBe([
+        'key' => 'created',
+        'label' => 'Created',
+        'type' => 'date-range',
+        'props' => [],
+    ]);
+});
+
+it('serialises a ternary filter', function (): void {
+    expect(TernaryFilter::make('verified')->toData()->jsonSerialize())->toBe([
+        'key' => 'verified',
+        'label' => 'Verified',
+        'type' => 'ternary',
+        'props' => [
+            'trueLabel' => 'Yes',
+            'falseLabel' => 'No',
+            'placeholder' => 'All',
+        ],
+    ]);
+});
+
 test('a filter constrains the column named by attribute()', function (): void {
     $builder = Product::query();
 
