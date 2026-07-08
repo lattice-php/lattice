@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Components;
 
-use BackedEnum;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
@@ -42,11 +41,6 @@ abstract class Component implements JsonSerializable
         $this->key = $key;
 
         return $this;
-    }
-
-    protected function enumValue(BackedEnum|string|null $value): ?string
-    {
-        return $value instanceof BackedEnum ? (string) $value->value : $value;
     }
 
     public function when(bool $condition): static

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Layouts\Components;
 
-use BackedEnum;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -12,6 +11,7 @@ use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Concerns\HasAffixes;
+use Lattice\Lattice\Core\Concerns\HasIcon;
 use Lattice\Lattice\Core\Concerns\Triggerable;
 use Lattice\Lattice\Core\Contracts\PageContract;
 
@@ -24,11 +24,10 @@ use Lattice\Lattice\Core\Contracts\PageContract;
 class MenuItem extends ContainerComponent
 {
     use HasAffixes;
+    use HasIcon;
     use Triggerable {
         assertBehaviorAllowed as private assertSingleBehavior;
     }
-
-    public ?string $icon = null;
 
     public static function make(string $label, ?string $key = null): static
     {
@@ -81,18 +80,6 @@ class MenuItem extends ContainerComponent
         }
 
         $this->assertSingleBehavior($incoming);
-    }
-
-    /**
-     * Render the item as its icon only; the label is kept as the aria-label for
-     * accessibility. Useful for compact controls like a topbar settings cog. For
-     * an icon shown alongside the label, use prefix().
-     */
-    public function icon(BackedEnum|string $icon): static
-    {
-        $this->icon = $this->enumValue($icon);
-
-        return $this;
     }
 
     /**

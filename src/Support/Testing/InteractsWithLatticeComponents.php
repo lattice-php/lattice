@@ -15,6 +15,7 @@ use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Fragments\Components\Fragment;
 use Lattice\Lattice\Fragments\FragmentDefinition;
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\TableDefinition;
 use RuntimeException;
@@ -126,7 +127,7 @@ trait InteractsWithLatticeComponents
      */
     private function sealLatticeComponent(mixed $component): array
     {
-        return json_decode(json_encode($component, JSON_THROW_ON_ERROR), true);
+        return Wire::toArray($component);
     }
 
     /**

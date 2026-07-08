@@ -7,6 +7,7 @@ namespace Lattice\Lattice\Notifications;
 use BackedEnum;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Notifications\Support\ActionDescriptor;
+use Lattice\Lattice\Support\Wire;
 
 final class Notification
 {
@@ -44,7 +45,7 @@ final class Notification
 
     public function icon(BackedEnum|string $icon): self
     {
-        $this->icon = $icon instanceof BackedEnum ? (string) $icon->value : $icon;
+        $this->icon = Wire::scalar($icon);
 
         return $this;
     }

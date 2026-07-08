@@ -21,7 +21,7 @@ final class ToolCallPart extends ChatPart
     /**
      * @param  array<string, mixed>  $args
      */
-    public static function make(string $name, array $args = [], ?string $key = null): self
+    public static function make(string $name, array $args = [], ?string $key = null): static
     {
         $part = new self($key);
         $part->name = $name;

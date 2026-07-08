@@ -9,6 +9,7 @@ use Illuminate\Contracts\Support\Responsable;
 use Lattice\Lattice\Effects\Concerns\QueuesEffects;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Facades\Effects;
+use Lattice\Lattice\Support\Wire;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -48,7 +49,7 @@ readonly class LatticeResponse implements Responsable
      */
     public function toRoute(BackedEnum|string $route, array|string $parameters = []): static
     {
-        $name = $route instanceof BackedEnum ? (string) $route->value : $route;
+        $name = Wire::scalar($route);
 
         return $this->withRedirect(fn (): Response => to_route($name, $parameters));
     }

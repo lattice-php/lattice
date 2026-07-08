@@ -16,6 +16,7 @@ use Lattice\Lattice\Core\PageMetadata;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Realtime\Listen;
+use Lattice\Lattice\Support\Wire;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use UnexpectedValueException;
 
@@ -159,7 +160,7 @@ abstract class Page implements PageContract, Responsable
 
         return [
             'key' => $rendered['key'],
-            'schema' => json_decode(json_encode($rendered['schema'], JSON_THROW_ON_ERROR), true),
+            'schema' => Wire::toArray($rendered['schema']),
         ];
     }
 
@@ -173,7 +174,7 @@ abstract class Page implements PageContract, Responsable
      */
     private function serializeSchema(PageSchema $schema): array
     {
-        return json_decode(json_encode($schema->renderable(), JSON_THROW_ON_ERROR), true);
+        return Wire::toArray($schema->renderable());
     }
 
     /**
@@ -191,7 +192,7 @@ abstract class Page implements PageContract, Responsable
             return [];
         }
 
-        return ['listeners' => json_decode(json_encode($listeners, JSON_THROW_ON_ERROR), true)];
+        return ['listeners' => Wire::toArray($listeners)];
     }
 
     private function response(PageSchema $schema): Response
@@ -203,6 +204,6 @@ abstract class Page implements PageContract, Responsable
 
     private function serializePageMetadata(BackedEnum|string $value): string
     {
-        return $value instanceof BackedEnum ? (string) $value->value : $value;
+        return Wire::scalar($value);
     }
 }

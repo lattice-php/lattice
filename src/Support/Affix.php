@@ -21,7 +21,7 @@ final readonly class Affix implements JsonSerializable
 
     public static function icon(BackedEnum|string $icon): self
     {
-        return new self(icon: $icon instanceof BackedEnum ? (string) $icon->value : $icon);
+        return new self(icon: Wire::scalar($icon));
     }
 
     public static function text(string $text): self

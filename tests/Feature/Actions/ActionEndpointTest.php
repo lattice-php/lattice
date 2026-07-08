@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Core\Enums\Variant;
@@ -8,6 +9,7 @@ use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
 use Workbench\App\Actions\SetLocaleAction;
+use Workbench\App\Models\User;
 
 use function Pest\Laravel\postJson;
 
@@ -123,5 +125,30 @@ test('registered action endpoints require a valid component reference', function
     postJson('/lattice/actions/workbench.ping', [
         'name' => 'Taylor',
     ], latticeHeaders('tampered'))
+        ->assertForbidden();
+});
+
+test('registered action endpoints reject an expired component reference', function (): void {
+    Lattice::actions([WorkbenchPingAction::class]);
+
+    $ref = componentRef(wire(ActionComponent::use(WorkbenchPingAction::class)));
+
+    $this->travel(config('lattice.security.ref_lifetime', 30) + 1)->minutes();
+
+    postJson('/lattice/actions/workbench.ping', ['name' => 'Taylor'], latticeHeaders($ref))
+        ->assertForbidden();
+});
+
+test('registered action endpoints reject a reference sealed for another user', function (): void {
+    Lattice::actions([WorkbenchPingAction::class]);
+
+    $request = Request::create('/');
+    app()->instance('request', $request);
+    $request->setUserResolver(fn (): User => workbenchTestUser());
+    $ref = componentRef(wire(ActionComponent::use(WorkbenchPingAction::class)));
+
+    $this->actingAs(workbenchTestUser());
+
+    postJson('/lattice/actions/workbench.ping', ['name' => 'Taylor'], latticeHeaders($ref))
         ->assertForbidden();
 });

@@ -13,7 +13,7 @@ final class TextPart extends ChatPart
 {
     public string $text = '';
 
-    public static function make(string $text, ?string $key = null): self
+    public static function make(string $text, ?string $key = null): static
     {
         $part = new self($key);
         $part->text = $text;

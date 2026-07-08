@@ -4,13 +4,15 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Columns;
 
 use BackedEnum;
+use Lattice\Lattice\Core\Concerns\HasIcon;
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
 #[AsColumn(ColumnType::Icon)]
 class IconColumn extends Column
 {
-    public ?string $icon = null;
+    use HasIcon;
 
     /**
      * @var array<array-key, string>|null
@@ -23,30 +25,15 @@ class IconColumn extends Column
     public ?array $colors = null;
 
     /**
-     * The icon shown for every row.
-     */
-    public function icon(BackedEnum|string $icon): static
-    {
-        $this->icon = $this->iconValue($icon);
-
-        return $this;
-    }
-
-    /**
      * Map cell values to icons, so each row shows an icon based on its value.
      *
      * @param  array<array-key, BackedEnum|string>  $icons
      */
     public function icons(array $icons): static
     {
-        $this->icons = $icons === [] ? null : array_map($this->iconValue(...), $icons);
+        $this->icons = $icons === [] ? null : array_map(Wire::scalar(...), $icons);
 
         return $this;
-    }
-
-    private function iconValue(BackedEnum|string $icon): string
-    {
-        return $icon instanceof BackedEnum ? (string) $icon->value : $icon;
     }
 
     /**
