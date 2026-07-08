@@ -58,6 +58,21 @@ final readonly class BlockRenderer
             return [Text::make("Unknown block [{$type}]")];
         }
 
-        return $block->render(FormData::make($row), new BlockSlots)->renderable();
+        return $block->render(FormData::make($row), $this->slotsFor($block, $row))->renderable();
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     */
+    private function slotsFor(BlockDefinition $block, array $row): BlockSlots
+    {
+        $rendered = [];
+
+        foreach ($block->slots() as $name) {
+            $childRows = $row['slots'][$name] ?? [];
+            $rendered[$name] = is_array($childRows) ? $this->components($childRows) : [];
+        }
+
+        return new BlockSlots($rendered);
     }
 }
