@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Tables\Columns;
 use Illuminate\Support\Collection;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Components\Concerns\ReflectsWireProps;
+use Lattice\Lattice\Core\Components\Concerns\SerializesToWire;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
 use Lattice\Lattice\Tables\Enums\ColumnType;
@@ -16,7 +16,7 @@ use Lattice\Lattice\Tables\Enums\ColumnType;
  */
 abstract class Column implements JsonSerializable
 {
-    use ReflectsWireProps;
+    use SerializesToWire;
 
     protected string $label;
 

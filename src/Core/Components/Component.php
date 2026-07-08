@@ -7,7 +7,7 @@ use JsonSerializable;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Concerns\HasDataBindings;
-use Lattice\Lattice\Core\Components\Concerns\ReflectsWireProps;
+use Lattice\Lattice\Core\Components\Concerns\SerializesToWire;
 use ReflectionMethod;
 use Spatie\Attributes\Attributes;
 use Spatie\Attributes\AttributeTarget;
@@ -18,7 +18,7 @@ use Spatie\Attributes\AttributeTarget;
 abstract class Component implements JsonSerializable
 {
     use HasDataBindings;
-    use ReflectsWireProps;
+    use SerializesToWire;
 
     /**
      * @var array<class-string, list<string>>

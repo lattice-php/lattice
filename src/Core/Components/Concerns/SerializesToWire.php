@@ -8,11 +8,12 @@ use ReflectionClass;
 use ReflectionProperty;
 
 /**
- * Reflects a node's public typed properties into its wire props. Shared by
- * components and table columns so both follow the same convention: a public
- * property is a wire prop, a protected one is internal state.
+ * The shared wire-serialization convention for every node family (components,
+ * table columns, table filters): a public typed property is a wire prop, a
+ * protected one is internal state. `decorateProps()` is the single seam where a
+ * cross-cutting prop concern is injected before serialization.
  */
-trait ReflectsWireProps
+trait SerializesToWire
 {
     /**
      * @var array<class-string, list<ReflectionProperty>>
@@ -41,6 +42,18 @@ trait ReflectsWireProps
             $props[$property->getName()] = $value instanceof BackedEnum ? $value->value : $value;
         }
 
+        return $props;
+    }
+
+    /**
+     * Extension seam: adjust the reflected props before serialization. The base
+     * implementation returns them unchanged.
+     *
+     * @param  array<string, mixed>  $props
+     * @return array<string, mixed>
+     */
+    protected function decorateProps(array $props): array
+    {
         return $props;
     }
 
