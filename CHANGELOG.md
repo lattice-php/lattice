@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.17.1](https://github.com/lattice-php/lattice/compare/0.17.0...0.17.1) (2026-07-08)
+
+
+### Bug Fixes
+
+* export the ./format/* subpath from the package ([918d319](https://github.com/lattice-php/lattice/commit/918d3198ff84827ce7caf6c19f2621791d7feab9))
+* export the ./format/* subpath from the package ([49a2fd4](https://github.com/lattice-php/lattice/commit/49a2fd43b7465aa13b8c6cfab547a536c34326c0))
+* render a visible placeholder for unregistered node types ([4a84b4c](https://github.com/lattice-php/lattice/commit/4a84b4c16cbaa4effa3e5ad94ed83216e4907abf))
+* surface unregistered node types instead of failing silently ([8a6d8c7](https://github.com/lattice-php/lattice/commit/8a6d8c760f11aa1c86fb44fb8531c3de5165f81d))
+* warn when a node type has no registered renderer ([defb347](https://github.com/lattice-php/lattice/commit/defb3479604590adf3bac9c393787ca371649f8b))
+
+
+### Documentation
+
+* bootstrap custom components through createLatticeApp({ registry }) ([56532b0](https://github.com/lattice-php/lattice/commit/56532b0c0e9a170bac2bc480e128c5679529d796))
+* import the virtual plugins module as `plugins` ([b2d5bad](https://github.com/lattice-php/lattice/commit/b2d5badd6fb647cfd17a232380f1cbdb790d6c69))
+
 ## [0.17.0](https://github.com/lattice-php/lattice/compare/0.16.0...0.17.0) (2026-07-07)
 
 
