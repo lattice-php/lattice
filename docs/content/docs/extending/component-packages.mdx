@@ -89,12 +89,12 @@ composer require acme/lattice-signature
 If you followed the [installation guide](/introduction/installation/), the discovered plugins are already registered — the standard bootstrap passes `virtual:lattice/plugins` to `createLatticeApp`, so an installed package registers itself with no further wiring:
 
 ```ts
-import latticePlugins from "virtual:lattice/plugins";
+import plugins from "virtual:lattice/plugins";
 
-createLatticeApp({ plugins: latticePlugins });
+createLatticeApp({ plugins });
 ```
 
-(Or merge them onto the registry yourself with `extendRegistry(registry, ...latticePlugins)`.) Then use the component like any built-in:
+(Or merge them onto the registry yourself with `extendRegistry(registry, ...plugins)`.) Then use the component like any built-in:
 
 ```php
 Signature::make('signature')->label('Sign the contract');

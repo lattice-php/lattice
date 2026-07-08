@@ -158,13 +158,13 @@ export const registry = extendRegistry(
 ```tsx
 import "../css/app.css";
 import { createLatticeApp } from "@lattice-php/lattice";
-import latticePlugins from "virtual:lattice/plugins";
+import plugins from "virtual:lattice/plugins";
 import sprite from "virtual:svg-sprite";
 import { registry } from "./registry";
 
 createLatticeApp({
   registry,
-  plugins: latticePlugins,
+  plugins,
   sprite,
   pages: import.meta.glob("./Pages/**/*.tsx"),
 });
