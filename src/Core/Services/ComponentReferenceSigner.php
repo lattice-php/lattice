@@ -7,28 +7,27 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Encryption\StringEncrypter;
 use Illuminate\Http\Request;
 use JsonException;
+use Lattice\Lattice\Core\Contracts\ResolvesReferenceIdentity;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Core\Values\ReferenceIdentity;
 
 final readonly class ComponentReferenceSigner implements SignsComponentReferences
 {
-    public function __construct(private StringEncrypter $encrypter) {}
+    public function __construct(
+        private StringEncrypter $encrypter,
+        private ResolvesReferenceIdentity $identity,
+    ) {}
 
-    /**
-     * @param  array<string, mixed>  $context
-     */
     public function seal(string $type, string $key, array $context): string
     {
-        $request = app(Request::class);
-        $sessionHash = $request->hasSession()
-            ? hash('sha256', $request->session()->getId())
-            : null;
+        $identity = $this->identity->current();
 
         $payload = [
             'type' => $type,
             'key' => $key,
             'context' => $context,
-            'user_id' => $request->user()?->getAuthIdentifier(),
-            'session' => $sessionHash,
+            'user_id' => $identity->userId,
+            'session' => $identity->sessionHash,
             'expires_at' => now()->addMinutes($this->lifetime())->timestamp,
         ];
 
@@ -37,7 +36,7 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
 
     public function unseal(string $token, string $type, string $key): ?array
     {
-        return $this->verify(app(Request::class), $token, $type, $key);
+        return $this->verify($token, $type, $key);
     }
 
     /**
@@ -45,7 +44,7 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
      */
     public function trustedContext(Request $request, string $type, string $key): array
     {
-        $context = $this->verify($request, $this->token($request), $type, $key);
+        $context = $this->verify($this->token($request), $type, $key);
 
         if ($context === null) {
             abort(403);
@@ -56,13 +55,13 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
 
     /**
      * Decrypt and fully validate a sealed token: structure, type/key, expiry, and
-     * the user and session it was bound to. Returns the trusted context on success
-     * (an empty array when none was sealed), or null when any check fails — callers
+     * the identity it was bound to. Returns the trusted context on success (an
+     * empty array when none was sealed), or null when any check fails — callers
      * turn that into a silent miss (unseal) or a 403 (trustedContext).
      *
      * @return array<string, mixed>|null
      */
-    private function verify(Request $request, string $token, string $type, string $key): ?array
+    private function verify(string $token, string $type, string $key): ?array
     {
         if ($token === '') {
             return null;
@@ -86,11 +85,13 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
             return null;
         }
 
-        if (! $this->userMatches($request, $payload['user_id'] ?? null)) {
+        $identity = $this->identity->current();
+
+        if (! $this->userMatches($identity, $payload['user_id'] ?? null)) {
             return null;
         }
 
-        if (! $this->sessionMatches($request, $payload['session'] ?? null)) {
+        if (! $this->sessionMatches($identity, $payload['session'] ?? null)) {
             return null;
         }
 
@@ -102,20 +103,19 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
         return $request->header('X-Lattice-Ref', '');
     }
 
-    private function userMatches(Request $request, mixed $userId): bool
+    private function userMatches(ReferenceIdentity $identity, mixed $userId): bool
     {
-        return $userId === null
-            || (string) $userId === (string) $request->user()?->getAuthIdentifier();
+        return $userId === null || (string) $userId === (string) $identity->userId;
     }
 
-    private function sessionMatches(Request $request, mixed $sessionHash): bool
+    private function sessionMatches(ReferenceIdentity $identity, mixed $sessionHash): bool
     {
         if (! is_string($sessionHash)) {
             return true;
         }
 
-        return $request->hasSession()
-            && hash_equals($sessionHash, hash('sha256', $request->session()->getId()));
+        return $identity->sessionHash !== null
+            && hash_equals($sessionHash, $identity->sessionHash);
     }
 
     private function lifetime(): int
