@@ -231,7 +231,7 @@ export type ColumnData = {
   readonly hiddenByDefault: boolean | null;
   readonly filter: ColumnFilter | null;
   readonly columns: ColumnData[] | null;
-  readonly props: Record<string, unknown> | null;
+  readonly props: Record<string, unknown>;
 };
 export type ColumnFilter = {
   readonly enabled: boolean;

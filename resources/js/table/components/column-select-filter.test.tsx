@@ -77,7 +77,7 @@ function col(filter: ColumnFilter): ColumnData {
     hiddenByDefault: null,
     filter,
     columns: null,
-    props: null,
+    props: {},
     align: "start",
   };
 }

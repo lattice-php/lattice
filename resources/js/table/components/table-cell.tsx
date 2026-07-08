@@ -31,5 +31,5 @@ export function ColumnCell({ column, row }: { column: TableColumn; row: TableRow
     builtinColumnCells[column.type] ??
     builtinColumnCells["column.text"];
 
-  return <Cell column={column} props={column.props ?? {}} row={row} value={row[column.key]} />;
+  return <Cell column={column} props={column.props} row={row} value={row[column.key]} />;
 }

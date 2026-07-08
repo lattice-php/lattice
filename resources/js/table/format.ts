@@ -20,7 +20,7 @@ export function formatCell(value: unknown, column?: TableColumn, options?: Forma
 }
 
 export function resolveLink(column: TableColumn, row: TableRow, value: unknown): string | null {
-  const link = (column.props as ColumnPropsOf<"column.text"> | null)?.link;
+  const link = (column.props as ColumnPropsOf<"column.text">).link;
 
   if (!link) {
     return null;
