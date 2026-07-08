@@ -4,12 +4,62 @@ import type { Node } from "./types";
 import { useCollapsed } from "./collapsed-context";
 import { useComponentRegistry } from "./registry-context";
 
-function MissingComponent({ node }: { node: Node }) {
-  if (!import.meta.env.DEV) {
-    return null;
+const warnedMissingTypes = new Set<string>();
+
+function warnMissingComponent(type: string): void {
+  if (!import.meta.env.DEV || warnedMissingTypes.has(type)) {
+    return;
   }
 
-  return <div data-lattice-missing-component={node.type}>Missing component: {node.type}</div>;
+  warnedMissingTypes.add(type);
+  console.warn(
+    `[lattice] No component registered for node type "${type}" — Lattice rendered a fallback ` +
+      "placeholder. Likely causes: your app registry was not passed to " +
+      "createLatticeApp({ registry }), or the registry key does not match the PHP " +
+      "#[AsComponent]/AsField type.",
+  );
+}
+
+function MissingComponentIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-lt-icon-md shrink-0"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <rect height="18" rx="2" strokeDasharray="4 3" width="18" x="3" y="3" />
+      <path d="M12 8v4" />
+      <path d="M12 16h.01" />
+    </svg>
+  );
+}
+
+/**
+ * Fallback for a node whose type has no registered renderer. Always renders a
+ * visible, muted marker — icon-only survives tight spots like table cells — so
+ * the gap is never invisible. Shows the type inline in development; keeps it
+ * screen-reader-only (plus a hover tooltip) in production.
+ */
+function MissingComponent({ node }: { node: Node }) {
+  warnMissingComponent(node.type);
+
+  const label = `Missing component: ${node.type}`;
+
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 align-middle text-lt-muted-fg"
+      data-lattice-missing-component={node.type}
+      title={label}
+    >
+      <MissingComponentIcon />
+      <span className={import.meta.env.DEV ? "text-sm" : "sr-only"}>{label}</span>
+    </span>
+  );
 }
 
 function nodeKey(node: Node, index: number): string {

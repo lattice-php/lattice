@@ -137,11 +137,11 @@ Every Lattice route resolves to the same Inertia page component, `lattice/page`,
 /// <reference types="@lattice-php/lattice/vite-client" />
 import "../css/app.css";
 import { createLatticeApp } from "@lattice-php/lattice";
-import latticePlugins from "virtual:lattice/plugins";
+import plugins from "virtual:lattice/plugins";
 import sprite from "virtual:svg-sprite";
 
 createLatticeApp({
-  plugins: latticePlugins,
+  plugins,
   sprite,
   pages: import.meta.glob("./Pages/**/*.tsx"),
 });
@@ -149,7 +149,9 @@ createLatticeApp({
 
 It forwards any other `createInertiaApp` option — `title`, `progress`, SSR setup — and accepts a custom `registry` and a `defaultLayout`.
 
-`plugins: latticePlugins` registers the renderers of any [component packages](/extending/component-packages/) you install via Composer. The `virtual:lattice/plugins` module is provided by the `lattice()` Vite plugin and resolves to an empty list until you install one, so it is safe to keep here from the start.
+Once you scaffold your own fields, components, or columns (see [Custom fields](/extending/custom-fields/)), they are registered in `resources/js/registry.ts`. Pass that file's exported `registry` here so `createLatticeApp` renders them — `createLatticeApp({ registry, plugins, sprite, pages })`. Omit it and your custom types have no renderer, so their nodes render a muted missing-component placeholder instead (and log a `[lattice]` warning in development).
+
+`plugins` registers the renderers of any [component packages](/extending/component-packages/) you install via Composer. The `virtual:lattice/plugins` module is provided by the `lattice()` Vite plugin and resolves to an empty list until you install one, so it is safe to keep here from the start.
 
 #### Manual wiring
 
@@ -163,12 +165,12 @@ import "../css/app.css";
 import { createInertiaApp, type ResolvedComponent } from "@inertiajs/react";
 import { createPageResolver, extendRegistry, Provider, registry } from "@lattice-php/lattice";
 import { createRoot } from "react-dom/client";
-import latticePlugins from "virtual:lattice/plugins";
+import plugins from "virtual:lattice/plugins";
 import sprite from "virtual:svg-sprite";
 
 const pages = import.meta.glob<ResolvedComponent>("./Pages/**/*.tsx");
 const resolve = createPageResolver(pages);
-const appRegistry = extendRegistry(registry, ...latticePlugins);
+const appRegistry = extendRegistry(registry, ...plugins);
 
 createInertiaApp({
   resolve,
@@ -184,7 +186,7 @@ createInertiaApp({
 });
 ```
 
-Keep your existing Inertia options such as `title`, `progress`, layouts, and SSR setup. The important pieces are `createPageResolver(...)` and the single `Provider` around the app. `extendRegistry(registry, ...latticePlugins)` folds in any installed [component packages](/extending/component-packages/); drop it if you don't use them.
+Keep your existing Inertia options such as `title`, `progress`, layouts, and SSR setup. The important pieces are `createPageResolver(...)` and the single `Provider` around the app. `extendRegistry(registry, ...plugins)` folds in any installed [component packages](/extending/component-packages/); drop it if you don't use them.
 
 ### Customizing the registry
 

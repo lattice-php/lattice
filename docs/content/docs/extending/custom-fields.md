@@ -129,32 +129,24 @@ export const registry = extendRegistry(
 
 ## 6. Wire the registry in app.tsx
 
-`registry.ts` already merges your plugin onto the built-in registry, so import its exported `registry` and pass it to `Provider`:
+`registry.ts` already merges your plugin onto the built-in registry. Pass its exported `registry` to `createLatticeApp` — the same one-call bootstrap from installation, now made aware of your custom components:
 
 ```tsx
 import "../css/app.css";
-import { createInertiaApp } from "@inertiajs/react";
-import { createRoot } from "react-dom/client";
-import LatticePage from "@lattice-php/lattice/page";
-import { Provider } from "@lattice-php/lattice";
+import { createLatticeApp } from "@lattice-php/lattice";
+import plugins from "virtual:lattice/plugins";
+import sprite from "virtual:svg-sprite";
 import { registry } from "./registry";
 
-createInertiaApp({
-  resolve: (name) => {
-    if (name === "lattice/page") return { default: LatticePage };
-    const pages = import.meta.glob("./Pages/**/*.tsx", { eager: true });
-    return pages[`./Pages/${name}.tsx`];
-  },
-  setup({ el, App, props }) {
-    if (!el) return;
-    createRoot(el).render(
-      <Provider registry={registry}>
-        <App {...props} />
-      </Provider>,
-    );
-  },
+createLatticeApp({
+  registry,
+  plugins,
+  sprite,
+  pages: import.meta.glob("./Pages/**/*.tsx"),
 });
 ```
+
+Passing `registry` is what makes your field render. Without it, `createLatticeApp` falls back to the built-in registry, your custom type has no renderer, and the node renders a muted missing-component placeholder instead of your field (Lattice also logs a `[lattice] No component registered…` warning in development to flag exactly this).
 
 ## 7. Generate TypeScript types
 
