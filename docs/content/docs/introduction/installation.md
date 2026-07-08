@@ -149,6 +149,8 @@ createLatticeApp({
 
 It forwards any other `createInertiaApp` option — `title`, `progress`, SSR setup — and accepts a custom `registry` and a `defaultLayout`.
 
+Once you scaffold your own fields, components, or columns (see [Custom fields](/extending/custom-fields/)), they are registered in `resources/js/registry.ts`. Pass that file's exported `registry` here so `createLatticeApp` renders them — `createLatticeApp({ registry, plugins: latticePlugins, sprite, pages })`. Omit it and your custom types have no renderer, so their nodes are silently skipped (with a `[lattice]` dev-mode warning).
+
 `plugins: latticePlugins` registers the renderers of any [component packages](/extending/component-packages/) you install via Composer. The `virtual:lattice/plugins` module is provided by the `lattice()` Vite plugin and resolves to an empty list until you install one, so it is safe to keep here from the start.
 
 #### Manual wiring
