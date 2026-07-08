@@ -146,7 +146,7 @@ createLatticeApp({
 });
 ```
 
-Passing `registry` is what makes your field render. Without it, `createLatticeApp` falls back to the built-in registry, your custom type has no renderer, and the node is silently skipped (Lattice logs a `[lattice] No component registered…` warning in development to flag exactly this).
+Passing `registry` is what makes your field render. Without it, `createLatticeApp` falls back to the built-in registry, your custom type has no renderer, and the node renders a muted missing-component placeholder instead of your field (Lattice also logs a `[lattice] No component registered…` warning in development to flag exactly this).
 
 ## 7. Generate TypeScript types
 

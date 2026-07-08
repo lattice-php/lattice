@@ -51,6 +51,17 @@ describe("Renderer", () => {
     expect(screen.getByText("Missing component: unknown.component")).toBeVisible();
   });
 
+  it("renders a visible icon placeholder for unknown types so the gap is never invisible", () => {
+    const registry = createRegistry({ components: {}, name: "empty" });
+
+    renderWithRegistry(<Renderer nodes={[{ type: "widget.unknown" }]} />, registry);
+
+    const marker = screen.getByTitle("Missing component: widget.unknown");
+
+    expect(marker).toBeVisible();
+    expect(marker.querySelector("svg")).not.toBeNull();
+  });
+
   it("warns once, with actionable guidance, when a node type has no renderer", () => {
     const registry = createRegistry({ components: {}, name: "empty" });
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
