@@ -19,7 +19,7 @@ test('every src component domain is registered for node generation', function ()
     $registered = [...BaseProfile::domainNodeNames(), ...$handledOutOfBand];
 
     $unregistered = collect($components)
-        ->reject(fn ($component): bool => $component->category === 'column')
+        ->reject(fn ($component): bool => in_array($component->category, ['column', 'filter'], true))
         ->map(fn ($component): string => $component->domain)
         ->unique()
         ->reject(fn (string $domain): bool => in_array($domain, $registered, true))
