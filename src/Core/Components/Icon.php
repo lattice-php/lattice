@@ -7,6 +7,7 @@ use BackedEnum;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Enums\Color;
 use Lattice\Lattice\Core\Enums\Size;
+use Lattice\Lattice\Support\Wire;
 
 #[AsComponent('icon')]
 class Icon extends Component
@@ -22,7 +23,7 @@ class Icon extends Component
     public static function make(BackedEnum|string $name, ?string $key = null): static
     {
         $icon = new static($key);
-        $icon->name = (string) $icon->enumValue($name);
+        $icon->name = Wire::scalar($name);
 
         return $icon;
     }

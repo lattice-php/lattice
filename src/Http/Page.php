@@ -16,6 +16,7 @@ use Lattice\Lattice\Core\PageMetadata;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Realtime\Listen;
+use Lattice\Lattice\Support\Wire;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use UnexpectedValueException;
 
@@ -203,6 +204,6 @@ abstract class Page implements PageContract, Responsable
 
     private function serializePageMetadata(BackedEnum|string $value): string
     {
-        return $value instanceof BackedEnum ? (string) $value->value : $value;
+        return Wire::scalar($value);
     }
 }

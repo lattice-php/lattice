@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core;
 
-use BackedEnum;
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Contracts\PageContract;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
+use Lattice\Lattice\Support\Wire;
 use ReflectionClass;
 
 final readonly class PageMetadata
@@ -92,7 +92,7 @@ final readonly class PageMetadata
 
     private function serialize(PageLayout|PageContainer|string $value): string
     {
-        return $value instanceof BackedEnum ? (string) $value->value : $value;
+        return Wire::scalar($value);
     }
 
     private static function attributeOn(string $class): ?AsPage

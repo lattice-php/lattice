@@ -9,6 +9,7 @@ use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Effects\Concerns\QueuesEffects;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Support\Wire;
 
 #[TypeScript]
 final readonly class ActionResult implements JsonSerializable
@@ -59,7 +60,7 @@ final readonly class ActionResult implements JsonSerializable
      */
     public function toRoute(BackedEnum|string $route, array|string $parameters = []): static
     {
-        $name = $route instanceof BackedEnum ? (string) $route->value : $route;
+        $name = Wire::scalar($route);
 
         return $this->effect(Effect::redirect(to_route($name, $parameters)->getTargetUrl()));
     }
