@@ -8,6 +8,8 @@ use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Concerns\HasDataBindings;
 use Lattice\Lattice\Core\Components\Concerns\SerializesToWire;
+use Lattice\Lattice\Core\Concerns\GatesRendering;
+use Lattice\Lattice\Core\Contracts\Renderable;
 use ReflectionMethod;
 use Spatie\Attributes\Attributes;
 use Spatie\Attributes\AttributeTarget;
@@ -15,8 +17,9 @@ use Spatie\Attributes\AttributeTarget;
 /**
  * @phpstan-consistent-constructor
  */
-abstract class Component implements JsonSerializable
+abstract class Component implements JsonSerializable, Renderable
 {
+    use GatesRendering;
     use HasDataBindings;
     use SerializesToWire;
 
@@ -24,8 +27,6 @@ abstract class Component implements JsonSerializable
      * @var array<class-string, list<string>>
      */
     private static array $serializationHookCache = [];
-
-    protected bool $shouldRender = true;
 
     protected bool $hideWhenCollapsed = false;
 
@@ -41,18 +42,6 @@ abstract class Component implements JsonSerializable
         $this->key = $key;
 
         return $this;
-    }
-
-    public function when(bool $condition): static
-    {
-        $this->shouldRender = $condition;
-
-        return $this;
-    }
-
-    public function shouldRender(): bool
-    {
-        return $this->shouldRender;
     }
 
     public function hideWhenCollapsed(bool $hide = true): static
