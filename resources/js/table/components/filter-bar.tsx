@@ -6,7 +6,8 @@ import {
 } from "@lattice-php/lattice/core/components/popover";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
-import { filterOptions, isActiveFilterValue, stringProp } from "../filter-values";
+import { filterOptions, isActiveFilterValue } from "../filter-values";
+import type { FilterPropsOf } from "../types";
 import { TableFilterControl } from "./filter-controls";
 
 export function FilterBar({
@@ -142,9 +143,9 @@ function displayValue(filter: FilterData, value: unknown): string {
   }
 
   if (filter.type === "ternary") {
-    return value === "true"
-      ? stringProp(filter, "trueLabel", "True")
-      : stringProp(filter, "falseLabel", "False");
+    const props = filter.props as FilterPropsOf<"ternary">;
+
+    return value === "true" ? props.trueLabel : props.falseLabel;
   }
 
   if (filter.type === "date-range" && value && typeof value === "object") {

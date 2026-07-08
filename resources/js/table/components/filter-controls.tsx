@@ -6,6 +6,7 @@ import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
 import { filterOptions, stringProp } from "../filter-values";
+import type { FilterPropsOf } from "../types";
 import { fieldClass } from "./filter-value-input";
 
 type DateRangeValue = { from?: string; until?: string };
@@ -31,8 +32,10 @@ export function TableFilterControl({
   onSearch?: FilterOptionSearch;
 }) {
   switch (filter.type) {
-    case "select":
-      if (filter.props.searchable === true && onSearch) {
+    case "select": {
+      const props = filter.props as FilterPropsOf<"select">;
+
+      if (props.searchable === true && onSearch) {
         return (
           <SearchableSelectControl
             filter={filter}
@@ -44,7 +47,7 @@ export function TableFilterControl({
         );
       }
 
-      return filter.props.multiple === true ? (
+      return props.multiple === true ? (
         <MultiSelectControl
           filter={filter}
           value={value}
@@ -54,6 +57,7 @@ export function TableFilterControl({
       ) : (
         <SelectControl filter={filter} value={value} processing={processing} onChange={onChange} />
       );
+    }
     case "ternary":
       return (
         <TernaryControl filter={filter} value={value} processing={processing} onChange={onChange} />
@@ -188,7 +192,8 @@ function SearchableSelectControl({
   onSearch: FilterOptionSearch;
 }) {
   const { t } = useT("lattice");
-  const multiple = filter.props.multiple === true;
+  const props = filter.props as FilterPropsOf<"select">;
+  const multiple = props.multiple === true;
   const [open, setOpen] = useState(false);
   const [results, setResults] = useState<Option[]>(() => filterOptions(filter));
   const [loading, setLoading] = useState(false);
@@ -269,10 +274,10 @@ function TernaryControl({
   processing: boolean;
   onChange: (value: unknown) => void;
 }) {
-  const { t } = useT("lattice");
-  const placeholder = stringProp(filter, "placeholder", t("table.filter.all", "All"));
-  const trueLabel = stringProp(filter, "trueLabel", t("table.filter.true", "True"));
-  const falseLabel = stringProp(filter, "falseLabel", t("table.filter.false", "False"));
+  const props = filter.props as FilterPropsOf<"ternary">;
+  const placeholder = props.placeholder;
+  const trueLabel = props.trueLabel;
+  const falseLabel = props.falseLabel;
 
   return (
     <select

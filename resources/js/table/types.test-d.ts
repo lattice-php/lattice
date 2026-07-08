@@ -1,4 +1,4 @@
-import type { ColumnProps, ColumnPropsOf } from "./types";
+import type { ColumnProps, ColumnPropsOf, FilterPropsOf } from "./types";
 
 // Augment ColumnProps locally — scoped to this module (has top-level imports).
 declare module "./types" {
@@ -27,3 +27,21 @@ const _builtin: ColumnPropsOf<"column.badge"> = { colors: { active: "green" } };
 const _builtinBad: ColumnPropsOf<"column.badge"> = { colors: 1 };
 void _builtin;
 void _builtinBad;
+
+// Built-in select filter props resolve through the generated FilterPropsMap.
+const _selectFilter: FilterPropsOf<"select"> = {
+  multiple: false,
+  searchable: false,
+  options: [],
+  placeholder: null,
+};
+
+// @ts-expect-error - multiple must be a boolean
+const _selectFilterBad: FilterPropsOf<"select"> = { multiple: 1 };
+
+// Unknown filter types fall back to the loose bag.
+const _looseFilter: FilterPropsOf<"totally.unknown"> = { anything: true };
+
+void _selectFilter;
+void _selectFilterBad;
+void _looseFilter;
