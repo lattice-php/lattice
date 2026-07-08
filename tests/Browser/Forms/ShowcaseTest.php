@@ -83,13 +83,9 @@ it('runs conditional and computed behavior on the showcase', function (): void {
         ->fill('quantity', '4')
         ->fill('unit_price', '5');
 
-    retryUntil(
-        function () use ($page): void {
-            $page->assertValue('total', '20');
-        },
-        attempts: 20,
-        sleepMicroseconds: 100_000,
-    );
+    retryUntil(function () use ($page): void {
+        $page->assertValue('total', '20');
+    });
 });
 
 it('opens a field tooltip revealing a link', function (): void {

@@ -34,25 +34,17 @@ it('auto-resolves, re-resolves on partner change, and persists a manual override
         ->fill('[data-test="select-product_id-search"]', 'Standard')
         ->click('Standard Desk');
 
-    retryUntil(
-        function () use ($page): void {
-            $page->assertValue('input[name="lines[0][unit_price]"]', '100.00');
-        },
-        attempts: 20,
-        sleepMicroseconds: 100_000,
-    );
+    retryUntil(function () use ($page): void {
+        $page->assertValue('input[name="lines[0][unit_price]"]', '100.00');
+    });
 
     $page->click('[data-test="select-business_partner_id"]')
         ->fill('[data-test="select-business_partner_id-search"]', 'VIP')
         ->click('VIP Partner');
 
-    retryUntil(
-        function () use ($page): void {
-            $page->assertValue('input[name="lines[0][unit_price]"]', '80.00');
-        },
-        attempts: 20,
-        sleepMicroseconds: 100_000,
-    );
+    retryUntil(function () use ($page): void {
+        $page->assertValue('input[name="lines[0][unit_price]"]', '80.00');
+    });
 
     $page->fill('input[name="lines[0][quantity]"]', '2')
         ->fill('input[name="lines[0][unit_price]"]', '73.50')
