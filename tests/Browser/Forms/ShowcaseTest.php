@@ -77,9 +77,9 @@ it('searches and selects entities in a multiple select', function (): void {
 it('runs conditional and computed behavior on the showcase', function (): void {
     $this->actingAs(workbenchTestUser());
     $page = visit('/showcase')
-        ->assertDontSee('Company')
+        ->assertMissing('input[name="company"]')
         ->click('Business')
-        ->assertSee('Company')
+        ->assertPresent('input[name="company"]')
         ->fill('quantity', '4')
         ->fill('unit_price', '5');
 
