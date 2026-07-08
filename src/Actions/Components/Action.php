@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Actions\Components;
 
-use BackedEnum;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\Confirmation;
@@ -12,6 +11,7 @@ use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
+use Lattice\Lattice\Core\Concerns\HasIcon;
 use Lattice\Lattice\Core\Concerns\HasVariant;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
@@ -20,14 +20,13 @@ use Lattice\Lattice\Forms\Components\Form;
 class Action extends Component
 {
     use HasHttpMethod;
+    use HasIcon;
     use HasVariant;
     use IsInteractive;
 
     public ?string $endpoint = null;
 
     public ?string $label = null;
-
-    public ?string $icon = null;
 
     /**
      * The confirmation dialog shown before the action runs, or `null` until
@@ -66,13 +65,6 @@ class Action extends Component
     public function label(string $label): static
     {
         $this->label = $label;
-
-        return $this;
-    }
-
-    public function icon(BackedEnum|string $icon): static
-    {
-        $this->icon = $this->enumValue($icon);
 
         return $this;
     }

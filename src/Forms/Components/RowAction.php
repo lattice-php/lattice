@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Components;
 
+use BackedEnum;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Forms\Enums\RowActionType;
+use Lattice\Lattice\Support\Wire;
 
 /**
  * A per-row action declared on a Repeater or Builder. The built-in types map to
@@ -40,9 +42,9 @@ final class RowAction implements JsonSerializable
         return $this;
     }
 
-    public function icon(string $icon): self
+    public function icon(BackedEnum|string $icon): self
     {
-        $this->icon = $icon;
+        $this->icon = Wire::scalar($icon);
 
         return $this;
     }

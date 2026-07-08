@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Forms\Components\RowAction;
 
 /**
@@ -36,4 +37,10 @@ it('overrides label, icon and destructive fluently', function (): void {
     expect($wire['label'])->toBe('Clone')
         ->and($wire['icon'])->toBe('files')
         ->and($wire['destructive'])->toBeTrue();
+});
+
+it('accepts a backed enum icon, like every other builder', function (): void {
+    $wire = serializeRowAction(RowAction::duplicate()->icon(Icon::Copy));
+
+    expect($wire['icon'])->toBe('copy');
 });
