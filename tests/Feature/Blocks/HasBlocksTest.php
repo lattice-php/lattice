@@ -31,10 +31,10 @@ test('persists a block tree and renders it back through the registry', function 
         ],
     ]);
 
-    $reloaded = HasBlocksPage::findOrFail($page->id);
+    $reloaded = HasBlocksPage::query()->whereKey($page->getKey())->firstOrFail();
     $wire = wire($reloaded->renderBlocks('content')->renderable());
 
-    expect($reloaded->content)->toBe([['type' => 'has-blocks.hero', 'title' => 'Stored heading']])
+    expect($reloaded->getAttribute('content'))->toBe([['type' => 'has-blocks.hero', 'title' => 'Stored heading']])
         ->and($wire)->toHaveCount(1)
         ->and($wire[0]['type'])->toBe('heading')
         ->and($wire[0]['props']['text'])->toBe('Stored heading');
@@ -48,6 +48,7 @@ class HasBlocksPage extends Model
 
     protected $guarded = [];
 
+    #[Override]
     protected function casts(): array
     {
         return ['content' => AsBlocks::class];

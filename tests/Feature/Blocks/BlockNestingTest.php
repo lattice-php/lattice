@@ -41,6 +41,7 @@ final class NestingColumnsBlock extends BlockDefinition
         return [];
     }
 
+    #[Override]
     public function slots(): array
     {
         return ['left', 'right'];
