@@ -7,6 +7,8 @@ use Illuminate\Support\Collection;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\Concerns\SerializesToWire;
+use Lattice\Lattice\Core\Concerns\GatesRendering;
+use Lattice\Lattice\Core\Contracts\Renderable;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
 use Lattice\Lattice\Tables\Enums\ColumnType;
@@ -14,8 +16,9 @@ use Lattice\Lattice\Tables\Enums\ColumnType;
 /**
  * @phpstan-consistent-constructor
  */
-abstract class Column implements JsonSerializable
+abstract class Column implements JsonSerializable, Renderable
 {
+    use GatesRendering;
     use SerializesToWire;
 
     protected string $label;
@@ -57,6 +60,11 @@ abstract class Column implements JsonSerializable
         $this->label = $label;
 
         return $this;
+    }
+
+    public function visible(bool $visible = true): static
+    {
+        return $this->when($visible);
     }
 
     public function width(ColumnWidth $width): static
