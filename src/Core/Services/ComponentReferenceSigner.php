@@ -37,41 +37,7 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
 
     public function unseal(string $token, string $type, string $key): ?array
     {
-        if ($token === '') {
-            return null;
-        }
-
-        try {
-            $payload = json_decode($this->encrypter->decryptString($token), true, flags: JSON_THROW_ON_ERROR);
-        } catch (DecryptException|JsonException) {
-            return null;
-        }
-
-        if (! is_array($payload)) {
-            return null;
-        }
-
-        if (($payload['type'] ?? null) !== $type || ($payload['key'] ?? null) !== $key) {
-            return null;
-        }
-
-        if (! is_int($payload['expires_at'] ?? null) || $payload['expires_at'] < now()->timestamp) {
-            return null;
-        }
-
-        $request = app(Request::class);
-
-        $userId = $payload['user_id'] ?? null;
-        if ($userId !== null && (string) $userId !== (string) $request->user()?->getAuthIdentifier()) {
-            return null;
-        }
-
-        $session = $payload['session'] ?? null;
-        if (is_string($session) && (! $request->hasSession() || ! hash_equals($session, hash('sha256', $request->session()->getId())))) {
-            return null;
-        }
-
-        return is_array($payload['context'] ?? null) ? $payload['context'] : [];
+        return $this->verify(app(Request::class), $token, $type, $key);
     }
 
     /**
@@ -79,44 +45,56 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
      */
     public function trustedContext(Request $request, string $type, string $key): array
     {
-        $payload = $this->payload($request);
+        $context = $this->verify($request, $this->token($request), $type, $key);
 
-        if (($payload['type'] ?? null) !== $type || ($payload['key'] ?? null) !== $key) {
+        if ($context === null) {
             abort(403);
         }
 
-        if (! is_int($payload['expires_at'] ?? null) || $payload['expires_at'] < now()->timestamp) {
-            abort(403);
-        }
-
-        $this->validateUser($request, $payload['user_id'] ?? null);
-        $this->validateSession($request, $payload['session'] ?? null);
-
-        return is_array($payload['context'] ?? null) ? $payload['context'] : [];
+        return $context;
     }
 
     /**
-     * @return array<string, mixed>
+     * Decrypt and fully validate a sealed token: structure, type/key, expiry, and
+     * the user and session it was bound to. Returns the trusted context on success
+     * (an empty array when none was sealed), or null when any check fails — callers
+     * turn that into a silent miss (unseal) or a 403 (trustedContext).
+     *
+     * @return array<string, mixed>|null
      */
-    private function payload(Request $request): array
+    private function verify(Request $request, string $token, string $type, string $key): ?array
     {
-        $token = $this->token($request);
-
         if ($token === '') {
-            abort(403);
+            return null;
         }
 
         try {
             $payload = json_decode($this->encrypter->decryptString($token), true, flags: JSON_THROW_ON_ERROR);
         } catch (DecryptException|JsonException) {
-            abort(403);
+            return null;
         }
 
         if (! is_array($payload)) {
-            abort(403);
+            return null;
         }
 
-        return $payload;
+        if (($payload['type'] ?? null) !== $type || ($payload['key'] ?? null) !== $key) {
+            return null;
+        }
+
+        if (! is_int($payload['expires_at'] ?? null) || $payload['expires_at'] < now()->timestamp) {
+            return null;
+        }
+
+        if (! $this->userMatches($request, $payload['user_id'] ?? null)) {
+            return null;
+        }
+
+        if (! $this->sessionMatches($request, $payload['session'] ?? null)) {
+            return null;
+        }
+
+        return is_array($payload['context'] ?? null) ? $payload['context'] : [];
     }
 
     private function token(Request $request): string
@@ -124,26 +102,20 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
         return $request->header('X-Lattice-Ref', '');
     }
 
-    private function validateUser(Request $request, mixed $userId): void
+    private function userMatches(Request $request, mixed $userId): bool
     {
-        if ($userId === null) {
-            return;
-        }
-
-        if ((string) $userId !== (string) $request->user()?->getAuthIdentifier()) {
-            abort(403);
-        }
+        return $userId === null
+            || (string) $userId === (string) $request->user()?->getAuthIdentifier();
     }
 
-    private function validateSession(Request $request, mixed $sessionHash): void
+    private function sessionMatches(Request $request, mixed $sessionHash): bool
     {
         if (! is_string($sessionHash)) {
-            return;
+            return true;
         }
 
-        if (! $request->hasSession() || ! hash_equals($sessionHash, hash('sha256', $request->session()->getId()))) {
-            abort(403);
-        }
+        return $request->hasSession()
+            && hash_equals($sessionHash, hash('sha256', $request->session()->getId()));
     }
 
     private function lifetime(): int
