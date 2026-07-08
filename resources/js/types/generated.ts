@@ -379,6 +379,7 @@ export type DateInput = {
   tooltip: string | null;
   value: unknown;
 };
+export type DateRangeFilter = Record<string, never>;
 export type DateTimeInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
@@ -489,6 +490,7 @@ export type FileUpload = {
   tooltip: string | null;
   value: unknown;
 };
+export type Filter = Record<string, never>;
 export type FilterClause = {
   readonly field: string;
   readonly operator: string;
@@ -500,6 +502,12 @@ export type FilterData = {
   readonly label: string;
   readonly type: FilterControl;
   readonly props: Record<string, unknown>;
+};
+export type FilterPropsMap = {
+  "date-range": DateRangeFilter;
+  select: SelectFilter;
+  ternary: TernaryFilter;
+  toggle: Filter;
 };
 export type FilterType = "text" | "number" | "date" | "boolean";
 export type FloatingPanel = {
@@ -1032,6 +1040,12 @@ export type Select = {
   tooltip: string | null;
   value: unknown;
 };
+export type SelectFilter = {
+  multiple: boolean;
+  options: Option[];
+  placeholder: string | null;
+  searchable: boolean;
+};
 export type Side = "start" | "end";
 export type Sidebar = {
   collapsible: boolean;
@@ -1101,6 +1115,11 @@ export type Tabs = {
   queryKey: string;
 };
 export type TabsAlignment = "start" | "center" | "end" | "stretch";
+export type TernaryFilter = {
+  falseLabel: string;
+  placeholder: string;
+  trueLabel: string;
+};
 export type Text = {
   align: Align | null;
   color: Color;

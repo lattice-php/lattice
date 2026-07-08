@@ -17,7 +17,7 @@ namespace Lattice\Lattice\Support\TypeScript;
 final readonly class AugmentableMap
 {
     /**
-     * @param  'component'|'column'|'effect'  $category  the discovery bucket entries are keyed under
+     * @param  'component'|'column'|'effect'|'filter'  $category  the discovery bucket entries are keyed under
      */
     public function __construct(
         public string $category,
@@ -34,6 +34,7 @@ final readonly class AugmentableMap
             new self('component', 'ComponentPropsMap', 'ComponentProps'),
             new self('column', 'ColumnPropsMap', 'ColumnProps'),
             new self('effect', 'EffectPropsMap', 'EffectProps'),
+            new self('filter', 'FilterPropsMap', 'FilterProps'),
         ];
     }
 }

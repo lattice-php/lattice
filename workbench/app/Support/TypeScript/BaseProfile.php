@@ -67,6 +67,7 @@ final class BaseProfile implements TypeScriptProfile
 
         $discovered = (new ComponentDiscovery)->discover($src);
         $columnProps = $this->buildColumnProps($discovered);
+        $filterProps = $this->buildFilterProps($discovered);
 
         $formFields = $this->buildFormFields($discovered);
         $domainNodes = $this->buildDomainNodes($discovered);
@@ -85,6 +86,7 @@ final class BaseProfile implements TypeScriptProfile
                     Form::class,
                     ...$this->componentClasses($domainNodes),
                     ...array_values($columnProps),
+                    ...array_values($filterProps),
                 ]),
             ],
             [
@@ -96,6 +98,7 @@ final class BaseProfile implements TypeScriptProfile
                     EffectContract::class,
                     $effects,
                     $columnProps,
+                    $filterProps,
                     self::NODE_TYPE_ALIASES,
                 ),
             ],
@@ -142,6 +145,30 @@ final class BaseProfile implements TypeScriptProfile
         $map = [];
 
         foreach ($columns as $dc) {
+            $map[$dc->type] = $dc->class;
+        }
+
+        return $map;
+    }
+
+    /**
+     * Built-in filter classes keyed by wire filter type. A filter reflects its
+     * public properties into its props, exactly like a component, so the filter
+     * class itself is the source of the generated props type.
+     *
+     * @param  list<DiscoveredComponent>  $discovered
+     * @return array<string, class-string>
+     */
+    private function buildFilterProps(array $discovered): array
+    {
+        $filters = array_filter(
+            $discovered,
+            fn (DiscoveredComponent $dc): bool => $dc->category === 'filter',
+        );
+
+        $map = [];
+
+        foreach ($filters as $dc) {
             $map[$dc->type] = $dc->class;
         }
 
