@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.17.2](https://github.com/lattice-php/lattice/compare/0.17.1...0.17.2) (2026-07-08)
+
+
+### Refactoring
+
+* cleanup batch 2 — single eager registry, tooling, browser de-flake ([41589a0](https://github.com/lattice-php/lattice/commit/41589a07a0639551a9f2d8380b2714002636313c))
+* cleanup pass — reference signer, Wire helpers, HasIcon, chat factories ([939f8fb](https://github.com/lattice-php/lattice/commit/939f8fb5c91468eab42e39e49fb2de40c332febd))
+* collapse to one eager registry per domain, self-split heavy deps ([bca470b](https://github.com/lattice-php/lattice/commit/bca470b654940a0cd085903930bf4438743c4e6c))
+* extract a HasIcon concern and fix RowAction::icon() ([de300d7](https://github.com/lattice-php/lattice/commit/de300d727ebea9e6ce923c5bbd38ba0c04bd13df))
+* extract Wire::scalar() for the enum-to-wire-string cast ([f208829](https://github.com/lattice-php/lattice/commit/f208829bb07f4380935a73de91cdfcf8b83087af))
+* pin each eager registry to its lazy twin's key set ([2b6885c](https://github.com/lattice-php/lattice/commit/2b6885c020b55db1bfc2150c472b1fb7d964fdf1))
+* return static from the chat part factories ([1424d77](https://github.com/lattice-php/lattice/commit/1424d77c4a0b4628b47fd474e01ef1dae4487d9d))
+
 ## [0.17.1](https://github.com/lattice-php/lattice/compare/0.17.0...0.17.1) (2026-07-08)
 
 
