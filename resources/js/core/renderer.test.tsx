@@ -1,5 +1,5 @@
 import { screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent, lazyComponent } from "@lattice-php/lattice";
 import { Renderer } from "@lattice-php/lattice";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
@@ -49,6 +49,22 @@ describe("Renderer", () => {
     renderWithRegistry(<Renderer nodes={[{ type: "unknown.component" }]} />, registry);
 
     expect(screen.getByText("Missing component: unknown.component")).toBeVisible();
+  });
+
+  it("warns once, with actionable guidance, when a node type has no renderer", () => {
+    const registry = createRegistry({ components: {}, name: "empty" });
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    renderWithRegistry(
+      <Renderer nodes={[{ type: "app.unregistered" }, { type: "app.unregistered" }]} />,
+      registry,
+    );
+
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0]?.[0]).toContain("app.unregistered");
+    expect(warn.mock.calls[0]?.[0]).toContain("createLatticeApp({ registry })");
+
+    warn.mockRestore();
   });
 
   it("skips nodes that hide when their sidebar context is collapsed", () => {

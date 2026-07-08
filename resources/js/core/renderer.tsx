@@ -4,7 +4,24 @@ import type { Node } from "./types";
 import { useCollapsed } from "./collapsed-context";
 import { useComponentRegistry } from "./registry-context";
 
+const warnedMissingTypes = new Set<string>();
+
+function warnMissingComponent(type: string): void {
+  if (!import.meta.env.DEV || warnedMissingTypes.has(type)) {
+    return;
+  }
+
+  warnedMissingTypes.add(type);
+  console.warn(
+    `[lattice] No component registered for node type "${type}" — the renderer skipped it. ` +
+      "Likely causes: your app registry was not passed to createLatticeApp({ registry }), " +
+      "or the registry key does not match the PHP #[AsComponent]/AsField type.",
+  );
+}
+
 function MissingComponent({ node }: { node: Node }) {
+  warnMissingComponent(node.type);
+
   if (!import.meta.env.DEV) {
     return null;
   }
