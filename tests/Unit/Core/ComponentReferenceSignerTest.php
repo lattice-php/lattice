@@ -1,34 +1,22 @@
 <?php
 declare(strict_types=1);
 
-use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Contracts\ResolvesReferenceIdentity;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Core\Values\ReferenceIdentity;
+use Lattice\Lattice\Tests\Fixtures\Core\FakeReferenceIdentity;
 
 function signer(): SignsComponentReferences
 {
     return app(SignsComponentReferences::class);
 }
 
-function bindRequestWithSession(string $sessionId): Request
+function fakeIdentity(): FakeReferenceIdentity
 {
-    $request = Request::create('/');
-    $session = app('session')->driver();
-    $session->setId($sessionId);
-    $request->setLaravelSession($session);
-    app()->instance('request', $request);
+    $identity = new FakeReferenceIdentity;
+    app()->instance(ResolvesReferenceIdentity::class, $identity);
 
-    return $request;
-}
-
-function bindRequestForUser(mixed $user): Request
-{
-    $request = Request::create('/');
-    app()->instance('request', $request);
-    // Bind first: instance() fires the auth request-rebinding handler, which
-    // overwrites the user resolver — so set ours after the container has it.
-    $request->setUserResolver(fn (): mixed => $user);
-
-    return $request;
+    return $identity;
 }
 
 it('unseals a token it sealed and returns the context', function (): void {
@@ -59,33 +47,39 @@ it('returns null once the token has expired', function (): void {
 });
 
 it('unseals a token for the user it was sealed for', function (): void {
-    bindRequestForUser(workbenchTestUser());
+    $identity = fakeIdentity();
+    $identity->identity = new ReferenceIdentity('7', null);
+
     $token = signer()->seal('file', 'avatar', ['path' => 'x']);
 
     expect(signer()->unseal($token, 'file', 'avatar'))->toBe(['path' => 'x']);
 });
 
 it('returns null for a token sealed for a different user', function (): void {
-    bindRequestForUser(workbenchTestUser());
+    $identity = fakeIdentity();
+    $identity->identity = new ReferenceIdentity('7', null);
     $token = signer()->seal('file', 'avatar', ['path' => 'x']);
 
-    bindRequestForUser(workbenchTestUser());
+    $identity->identity = new ReferenceIdentity('8', null);
 
     expect(signer()->unseal($token, 'file', 'avatar'))->toBeNull();
 });
 
 it('unseals a token while its sealed session still matches', function (): void {
-    bindRequestWithSession(str_repeat('a', 40));
+    $identity = fakeIdentity();
+    $identity->identity = new ReferenceIdentity(null, 'session-hash-a');
+
     $token = signer()->seal('file', 'avatar', ['path' => 'x']);
 
     expect(signer()->unseal($token, 'file', 'avatar'))->toBe(['path' => 'x']);
 });
 
 it('returns null once the sealed session no longer matches', function (): void {
-    $session = bindRequestWithSession(str_repeat('a', 40))->session();
+    $identity = fakeIdentity();
+    $identity->identity = new ReferenceIdentity(null, 'session-hash-a');
     $token = signer()->seal('file', 'avatar', ['path' => 'x']);
 
-    $session->setId(str_repeat('b', 40));
+    $identity->identity = new ReferenceIdentity(null, 'session-hash-b');
 
     expect(signer()->unseal($token, 'file', 'avatar'))->toBeNull();
 });
