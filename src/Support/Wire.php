@@ -20,4 +20,16 @@ final class Wire
     {
         return $value instanceof BackedEnum ? (string) $value->value : $value;
     }
+
+    /**
+     * Materialize a value into its plain wire array by round-tripping through
+     * JSON, realizing every nested JsonSerializable eagerly (inside the current
+     * request) rather than lazily during the final response encode.
+     *
+     * @return array<mixed>
+     */
+    public static function toArray(mixed $value): array
+    {
+        return (array) json_decode(json_encode($value, JSON_THROW_ON_ERROR), true);
+    }
 }

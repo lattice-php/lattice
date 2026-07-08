@@ -160,7 +160,7 @@ abstract class Page implements PageContract, Responsable
 
         return [
             'key' => $rendered['key'],
-            'schema' => json_decode(json_encode($rendered['schema'], JSON_THROW_ON_ERROR), true),
+            'schema' => Wire::toArray($rendered['schema']),
         ];
     }
 
@@ -174,7 +174,7 @@ abstract class Page implements PageContract, Responsable
      */
     private function serializeSchema(PageSchema $schema): array
     {
-        return json_decode(json_encode($schema->renderable(), JSON_THROW_ON_ERROR), true);
+        return Wire::toArray($schema->renderable());
     }
 
     /**
@@ -192,7 +192,7 @@ abstract class Page implements PageContract, Responsable
             return [];
         }
 
-        return ['listeners' => json_decode(json_encode($listeners, JSON_THROW_ON_ERROR), true)];
+        return ['listeners' => Wire::toArray($listeners)];
     }
 
     private function response(PageSchema $schema): Response

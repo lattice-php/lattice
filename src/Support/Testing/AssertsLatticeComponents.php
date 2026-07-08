@@ -9,6 +9,7 @@ use Illuminate\Testing\TestResponse;
 use Inertia\Testing\AssertableInertia;
 use JsonSerializable;
 use Lattice\Lattice\Support\Testing\Assertions\ComponentAssertions;
+use Lattice\Lattice\Support\Wire;
 
 trait AssertsLatticeComponents
 {
@@ -19,7 +20,7 @@ trait AssertsLatticeComponents
     {
         $wire = is_array($component)
             ? $component
-            : json_decode(json_encode($component, JSON_THROW_ON_ERROR), true);
+            : Wire::toArray($component);
 
         return new ComponentAssertions(new ComponentNode($wire));
     }
