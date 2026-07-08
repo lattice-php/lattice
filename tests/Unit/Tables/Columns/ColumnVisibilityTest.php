@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
@@ -12,7 +13,7 @@ it('omits a column hidden via visible(false) from the serialized table', functio
     ]);
 
     $keys = array_map(fn (array $c): string => $c['key'], array_map(
-        fn ($c) => $c->jsonSerialize(),
+        fn (ColumnData $c): array => $c->jsonSerialize(),
         $table->columns,
     ));
 
