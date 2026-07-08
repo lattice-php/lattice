@@ -31,6 +31,22 @@ test('renders each stored row through its block definition in order', function (
         ->and($wire[1]['schema'][0]['props']['text'])->toBe('Second');
 });
 
+test('renders a placeholder for an unknown block type without throwing', function (): void {
+    Lattice::blocks([RendererHeroBlock::class]);
+
+    $schema = app(BlockRenderer::class)->render([
+        ['type' => 'renderer.hero', 'title' => 'Kept', 'body' => 'Body'],
+        ['type' => 'renderer.gone', 'headline' => 'Legacy data'],
+    ]);
+
+    $wire = wire($schema->renderable());
+
+    expect($wire)->toHaveCount(2)
+        ->and($wire[0]['type'])->toBe('section')
+        ->and($wire[1]['type'])->toBe('text')
+        ->and($wire[1]['props']['text'])->toBe('Unknown block [renderer.gone]');
+});
+
 #[AsBlock('renderer.hero')]
 final class RendererHeroBlock extends BlockDefinition
 {

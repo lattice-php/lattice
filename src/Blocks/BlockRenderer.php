@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Blocks;
 
 use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Core\Exceptions\UnknownComponent;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\FormData;
 
@@ -49,7 +51,12 @@ final readonly class BlockRenderer
     private function componentsForRow(array $row): array
     {
         $type = is_string($row['type'] ?? null) ? $row['type'] : '';
-        $block = $this->blocks->resolve($type);
+
+        try {
+            $block = $this->blocks->resolve($type);
+        } catch (UnknownComponent) {
+            return [Text::make("Unknown block [{$type}]")];
+        }
 
         return $block->render(FormData::make($row), new BlockSlots)->renderable();
     }
