@@ -97,8 +97,6 @@ abstract class Column implements JsonSerializable
      */
     public function toData(): ColumnData
     {
-        $props = $this->wireProps();
-
         return new ColumnData(
             key: $this->key,
             label: $this->label,
@@ -109,7 +107,7 @@ abstract class Column implements JsonSerializable
             toggleable: $this->toggleable ? true : null,
             hiddenByDefault: $this->hiddenByDefault ? true : null,
             filter: $this->filterValue(),
-            props: $props === [] ? null : $props,
+            props: $this->decorateProps($this->wireProps()),
         );
     }
 

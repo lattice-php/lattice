@@ -51,7 +51,7 @@ it('serializes a boolean column with a boolean filter and no props', function ()
     $data = wire(BooleanColumn::make('featured')->label('Featured')->filterable());
 
     expect($data['type'])->toBe('column.boolean')
-        ->and($data['props'])->toBeNull()
+        ->and($data['props'])->toBe([])
         ->and($data['filter']['type'])->toBe(FilterType::Boolean->value);
 });
 
@@ -62,4 +62,10 @@ it('serializes a number column with a number filter and end alignment', function
         ->and($data['align'])->toBe('end')
         ->and($data['sortable'])->toBeTrue()
         ->and($data['filter']['type'])->toBe(FilterType::Number->value);
+});
+
+it('serialises an empty prop bag as an empty array, not null', function (): void {
+    $wire = BooleanColumn::make('active')->toData()->jsonSerialize();
+
+    expect($wire['props'])->toBe([]);
 });

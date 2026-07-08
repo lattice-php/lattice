@@ -235,7 +235,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                         'align' => 'start',
                     ],
                 ],
-                'props' => null,
+                'props' => [],
                 'width' => 'xl',
                 'align' => 'start',
             ],
