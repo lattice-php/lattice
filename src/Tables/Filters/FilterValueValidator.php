@@ -14,7 +14,10 @@ use Lattice\Lattice\Forms\FormSchemaWalker;
 
 final readonly class FilterValueValidator
 {
-    public function __construct(private FieldValidator $fields) {}
+    public function __construct(
+        private FieldValidator $fields,
+        private FormSchemaWalker $schemaWalker,
+    ) {}
 
     public function validate(Filter $filter, mixed $raw, Request $request): ?FormData
     {
@@ -41,7 +44,7 @@ final readonly class FilterValueValidator
 
         $validated = $this->prune($validated);
 
-        return $this->hasActiveValue($validated) ? FormData::make($validated) : null;
+        return Filter::hasActiveValue($validated) ? FormData::make($validated) : null;
     }
 
     /**
@@ -53,7 +56,7 @@ final readonly class FilterValueValidator
     {
         $sanitized = $raw;
 
-        foreach (app(FormSchemaWalker::class)->instances($schema, FormData::make($raw)) as $instance) {
+        foreach ($this->schemaWalker->instances($schema, FormData::make($raw)) as $instance) {
             $field = $instance->field;
 
             if (! $field instanceof Select || $field->options === [] || ! Arr::has($sanitized, $instance->path)) {
@@ -121,24 +124,11 @@ final readonly class FilterValueValidator
                 $value = $this->prune($value);
             }
 
-            if ($this->hasActiveValue($value)) {
+            if (Filter::hasActiveValue($value)) {
                 $pruned[$key] = $value;
             }
         }
 
         return $pruned;
-    }
-
-    private function hasActiveValue(mixed $value): bool
-    {
-        if ($value === null || $value === '') {
-            return false;
-        }
-
-        if (is_array($value)) {
-            return array_any($value, $this->hasActiveValue(...));
-        }
-
-        return true;
     }
 }

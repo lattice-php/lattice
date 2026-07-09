@@ -14,6 +14,7 @@ import type {
   Option,
   Op,
 } from "@lattice-php/lattice/types/generated";
+import { filterValue } from "../filter-values";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
 import type { FilterClause, TableColumn } from "../types";
 import { TableFilterControl } from "./filter-controls";
@@ -225,12 +226,6 @@ function ColumnSelectFilter({
       onSearch={onSearch ? (_field, query, signal) => onSearch(query, signal) : undefined}
     />
   );
-}
-
-function filterValue(value: unknown): Record<string, unknown> {
-  return value !== null && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : {};
 }
 
 function clausesForOption(field: string, option: ColumnFilterOption): FilterClause[] {

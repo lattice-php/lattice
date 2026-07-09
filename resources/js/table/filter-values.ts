@@ -33,6 +33,18 @@ export function isActiveFilterValue(value: unknown): boolean {
 }
 
 /**
+ * Whether a value has the wire shape of a dedicated-filter value: a plain
+ * `field => value` record.
+ */
+export function isFilterValue(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+export function filterValue(value: unknown): Record<string, unknown> {
+  return isFilterValue(value) ? value : {};
+}
+
+/**
  * Read a string entry from a filter's loose `props` bag, falling back when the
  * key is absent or not a string.
  */

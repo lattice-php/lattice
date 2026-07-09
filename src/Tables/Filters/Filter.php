@@ -136,13 +136,15 @@ abstract class Filter implements JsonSerializable
      */
     protected function defaultIndicators(FormData $data): array
     {
-        if ($this->schema() === []) {
+        $schema = $this->schema();
+
+        if ($schema === []) {
             return [new FilterIndicator($this->key, $this->label, '')];
         }
 
         $indicators = [];
 
-        foreach ($this->schema() as $field) {
+        foreach ($schema as $field) {
             $value = $data->get($field->name());
 
             if (! self::hasActiveValue($value)) {
@@ -159,7 +161,11 @@ abstract class Filter implements JsonSerializable
         return $indicators;
     }
 
-    protected static function hasActiveValue(mixed $value): bool
+    /**
+     * Whether a value counts as an active constraint — null, empty strings and
+     * arrays of only inactive values do not.
+     */
+    public static function hasActiveValue(mixed $value): bool
     {
         if ($value === null || $value === '') {
             return false;

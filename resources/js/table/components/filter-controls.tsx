@@ -16,7 +16,7 @@ import {
 import { Icon } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { FilterData } from "@lattice-php/lattice/types/generated";
-import { isActiveFilterValue } from "../filter-values";
+import { filterValue, isActiveFilterValue } from "../filter-values";
 
 export type FilterOptionSearch = (
   field: string,
@@ -39,7 +39,7 @@ export function TableFilterControl({
   onChange: (value: unknown) => void;
   onSearch?: FilterOptionSearch;
 }) {
-  const schema = filterSchema(filter);
+  const schema = filter.schema as Node[];
 
   if (schema.length === 0) {
     return (
@@ -196,18 +196,6 @@ function ToggleControl({
       <span>{filter.label}</span>
     </label>
   );
-}
-
-function filterSchema(filter: FilterData): Node[] {
-  const schema = (filter as { schema?: unknown }).schema;
-
-  return Array.isArray(schema) ? (schema as Node[]) : [];
-}
-
-function filterValue(value: unknown): FilterValue {
-  return value !== null && typeof value === "object" && !Array.isArray(value)
-    ? (value as FilterValue)
-    : {};
 }
 
 function isTruthy(value: unknown): boolean {

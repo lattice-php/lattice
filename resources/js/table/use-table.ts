@@ -2,7 +2,7 @@ import { apiFetch, apiJson } from "@lattice-php/lattice/core/api";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Option } from "@lattice-php/lattice/types/generated";
-import { isEmptyFilterValue } from "./filter-values";
+import { isEmptyFilterValue, isFilterValue } from "./filter-values";
 import { getColumns, getPagination, getRows, getState } from "./payload";
 import { buildEndpoint, nextSort } from "./query";
 import type {
@@ -263,8 +263,4 @@ export function useTable(node: TableNode) {
     goToPage,
     loadMore,
   };
-}
-
-function isFilterValue(value: unknown): value is Record<string, unknown> {
-  return value !== null && typeof value === "object" && !Array.isArray(value);
 }

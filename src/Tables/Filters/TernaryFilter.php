@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Filters;
 
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lattice\Lattice\Facades\Evaluate;
@@ -12,7 +11,6 @@ use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Attributes\AsFilter;
 use Lattice\Lattice\Tables\Enums\FilterControl;
-use Lattice\Lattice\Tables\Filters\Rules\BooleanFilterValue;
 
 /**
  * A three-state filter: true / false / all (unset). Defaults to a boolean column
@@ -78,7 +76,7 @@ class TernaryFilter extends Filter
                     $this->option($this->trueLabel, 'true'),
                     $this->option($this->falseLabel, 'false'),
                 ])
-                ->rules(['string', $this->booleanValueRule()]),
+                ->rules(['string']),
         ];
     }
 
@@ -125,10 +123,5 @@ class TernaryFilter extends Filter
     private function option(string $label, string $value): array
     {
         return ['label' => $label, 'value' => $value];
-    }
-
-    private function booleanValueRule(): ValidationRule
-    {
-        return new BooleanFilterValue;
     }
 }

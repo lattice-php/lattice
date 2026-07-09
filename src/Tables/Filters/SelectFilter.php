@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Filters;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Core\Concerns\HasOptions;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
@@ -14,7 +13,6 @@ use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Attributes\AsFilter;
 use Lattice\Lattice\Tables\Concerns\ResolvesFilterOptions;
 use Lattice\Lattice\Tables\Enums\FilterControl;
-use Lattice\Lattice\Tables\Filters\Rules\AllowedFilterValues;
 
 /**
  * A dropdown filter. Single by default ({@see Builder::where}); `multiple()`
@@ -93,13 +91,7 @@ class SelectFilter extends Filter
             $field->options($this->options);
         }
 
-        $rules = $this->multiple ? ['array'] : ['string'];
-
-        if (! $this->hasOptionSource() && $this->options !== []) {
-            $rules[] = $this->allowedValuesRule();
-        }
-
-        return [$field->rules($rules)];
+        return [$field->rules($this->multiple ? ['array'] : ['string'])];
     }
 
     /**
@@ -162,11 +154,6 @@ class SelectFilter extends Filter
         ));
     }
 
-    private function allowedValuesRule(): ValidationRule
-    {
-        return new AllowedFilterValues($this->optionValues(), $this->multiple);
-    }
-
     /**
      * @param  list<string>  $values
      * @return list<string>
@@ -176,13 +163,15 @@ class SelectFilter extends Filter
         $options = $this->hasOptionSource()
             ? $this->optionSource->selected($values)
             : $this->options;
-        $labels = [];
+        $labelsByValue = [];
 
-        foreach ($values as $value) {
-            $option = collect($options)->first(fn (Option $option): bool => $option->value === $value);
-            $labels[] = $option instanceof Option ? $option->label : $value;
+        foreach ($options as $option) {
+            $labelsByValue[$option->value] = $option->label;
         }
 
-        return $labels;
+        return array_map(
+            static fn (string $value): string => $labelsByValue[$value] ?? $value,
+            $values,
+        );
     }
 }
