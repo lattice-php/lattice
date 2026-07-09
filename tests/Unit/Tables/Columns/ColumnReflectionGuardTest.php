@@ -28,12 +28,14 @@ function publicColumnProps(string $class): array
     );
 }
 
-it('keeps the base Column free of public properties', function (): void {
-    expect(publicColumnProps(Column::class))->toBe([]);
+const COMMON_COLUMN_PROPS = ['label', 'width', 'align', 'sortable', 'toggleable', 'hiddenByDefault', 'filter'];
+
+it('exposes exactly the common wire props on the base Column', function (): void {
+    expect(publicColumnProps(Column::class))->toEqualCanonicalizing(COMMON_COLUMN_PROPS);
 });
 
 it('exposes only the intended wire props on each built-in column', function (string $class, array $expected): void {
-    expect(publicColumnProps($class))->toEqualCanonicalizing($expected);
+    expect(publicColumnProps($class))->toEqualCanonicalizing([...COMMON_COLUMN_PROPS, ...$expected]);
 })->with([
     'text' => [TextColumn::class, ['date', 'copyable', 'link', 'badge', 'multiple']],
     'boolean' => [BooleanColumn::class, []],

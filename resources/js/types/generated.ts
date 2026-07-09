@@ -29,9 +29,24 @@ export type Badge = {
   label: string;
 };
 export type BadgeColumn = {
+  align: ColumnAlign;
   colors: Record<string | number, string> | null;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean | null;
+  label: string;
+  sortable: boolean | null;
+  toggleable: boolean | null;
+  width: ColumnWidth;
 };
-export type BooleanColumn = Record<string, never>;
+export type BooleanColumn = {
+  align: ColumnAlign;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean | null;
+  label: string;
+  sortable: boolean | null;
+  toggleable: boolean | null;
+  width: ColumnWidth;
+};
 export type Breadcrumbs = Record<string, never>;
 export type BrowserToken = {
   readonly accessToken: string;
@@ -611,13 +626,27 @@ export type Icon = {
   size: Size;
 };
 export type IconColumn = {
+  align: ColumnAlign;
   colors: Record<string | number, string> | null;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean | null;
   icon: string | null;
   icons: Record<string | number, string> | null;
+  label: string;
+  sortable: boolean | null;
+  toggleable: boolean | null;
+  width: ColumnWidth;
 };
 export type ImageColumn = {
+  align: ColumnAlign;
   circular: boolean;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean | null;
+  label: string;
   size: number | null;
+  sortable: boolean | null;
+  toggleable: boolean | null;
+  width: ColumnWidth;
 };
 export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 export type Link = {
@@ -659,10 +688,17 @@ export type Modal = {
   title: string | null;
 };
 export type MoneyColumn = {
+  align: ColumnAlign;
   currency: string | null;
   currencyField: string | null;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean | null;
+  label: string;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
+  sortable: boolean | null;
+  toggleable: boolean | null;
+  width: ColumnWidth;
 };
 export type NodeType =
   | "action"
@@ -738,10 +774,17 @@ export type Notifications = {
   slideOut: boolean;
 };
 export type NumberColumn = {
+  align: ColumnAlign;
   compact: boolean;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean | null;
+  label: string;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
+  sortable: boolean | null;
+  toggleable: boolean | null;
   unit: NumberFormatUnit | null;
+  width: ColumnWidth;
 };
 export type NumberFormat = {
   kind: string;
@@ -1050,7 +1093,15 @@ export type Stack = {
   justify: Justify | null;
   width: Width | null;
 };
-export type StackColumn = Record<string, never>;
+export type StackColumn = {
+  align: ColumnAlign;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean | null;
+  label: string;
+  sortable: boolean | null;
+  toggleable: boolean | null;
+  width: ColumnWidth;
+};
 export type Tab = {
   confirm: {
     required: boolean;
@@ -1117,6 +1168,7 @@ export type Text = {
   text: string;
 };
 export type TextColumn = {
+  align: ColumnAlign;
   badge: {
     colorKey: string;
   } | null;
@@ -1125,11 +1177,17 @@ export type TextColumn = {
     dateStyle: string | null;
     timeStyle: string | null;
   } | null;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean | null;
+  label: string;
   link: {
     href: string | null;
     external: boolean;
   } | null;
   multiple: string | null;
+  sortable: boolean | null;
+  toggleable: boolean | null;
+  width: ColumnWidth;
 };
 export type TextInput = {
   autoComplete: string | null;

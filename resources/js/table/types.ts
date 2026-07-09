@@ -1,11 +1,9 @@
 import type { NodeUnionOf, ResolveProps, Schema } from "@lattice-php/lattice/core/types";
 import type {
   ActionNodeType,
-  ColumnAlign,
   ColumnFilter,
   ColumnPropsMap,
   ColumnType,
-  ColumnWidth,
   FilterClause as WireFilterClause,
   FilterPropsMap,
   Op,
@@ -64,31 +62,27 @@ export type TableNode = {
 export interface ColumnProps {}
 
 /**
- * Mirrors `CommonNodeProps`: the concerns `Column::decorateProps` injects into
- * every column's `props` on the wire, regardless of type.
+ * The base `Column` props every column node carries on the wire regardless of
+ * type — custom columns extend `Column`, so the unaugmented fallback carries
+ * them too. Derived from the generated types (each built-in bakes them in)
+ * rather than hand-written.
  */
-export type CommonColumnProps = {
-  label: string;
-  width: ColumnWidth;
-  align: ColumnAlign;
-  sortable: boolean | null;
-  toggleable: boolean | null;
-  hiddenByDefault: boolean | null;
-  filter: ColumnFilter | null;
-};
+export type CommonColumnProps = Pick<
+  ColumnPropsMap["column.text"],
+  "label" | "width" | "align" | "sortable" | "toggleable" | "hiddenByDefault" | "filter"
+>;
 
 export type ColumnPropsOf<TType extends string> = ResolveProps<
   ColumnProps,
   ColumnPropsMap,
   TType,
-  Record<string, unknown>
-> &
-  CommonColumnProps;
+  CommonColumnProps & Record<string, unknown>
+>;
 
 /**
  * A column node, authored and consumed like a field/component: `key`/`type`
  * stay top-level, every common concern (`label`/`width`/`filter`/…) lives in
- * `props` via `CommonColumnProps`. `schema` is only present for a
+ * `props` on each generated column type. `schema` is only present for a
  * `StackColumn`: the bound component nodes rendered per row (see
  * `materializeSchema`). The column counterpart of `NodeOfType`.
  */

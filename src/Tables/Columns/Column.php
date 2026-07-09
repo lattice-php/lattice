@@ -21,15 +21,19 @@ abstract class Column implements JsonSerializable, Renderable
     use GatesRendering;
     use SerializesToWire;
 
-    protected string $label;
+    public string $label;
 
-    protected ?ColumnWidth $width = null;
+    public ColumnWidth $width = ColumnWidth::Md;
 
-    protected ?ColumnAlign $align = null;
+    public ColumnAlign $align = ColumnAlign::Start;
 
-    protected bool $toggleable = false;
+    public ?bool $sortable = null;
 
-    protected bool $hiddenByDefault = false;
+    public ?bool $toggleable = null;
+
+    public ?bool $hiddenByDefault = null;
+
+    public ?ColumnFilter $filter = null;
 
     public function __construct(protected readonly string $key)
     {
@@ -84,7 +88,7 @@ abstract class Column implements JsonSerializable, Renderable
     public function toggleable(bool $hiddenByDefault = false): static
     {
         $this->toggleable = true;
-        $this->hiddenByDefault = $hiddenByDefault;
+        $this->hiddenByDefault = $hiddenByDefault ? true : null;
 
         return $this;
     }
@@ -95,26 +99,6 @@ abstract class Column implements JsonSerializable, Renderable
     public function filterClauseOptions(): array
     {
         return [];
-    }
-
-    protected function resolvedWidth(): ColumnWidth
-    {
-        return $this->width ?? $this->defaultWidth();
-    }
-
-    protected function defaultWidth(): ColumnWidth
-    {
-        return ColumnWidth::Md;
-    }
-
-    protected function resolvedAlign(): ColumnAlign
-    {
-        return $this->align ?? $this->defaultAlign();
-    }
-
-    protected function defaultAlign(): ColumnAlign
-    {
-        return ColumnAlign::Start;
     }
 
     protected function sortableValue(): ?bool
@@ -146,28 +130,13 @@ abstract class Column implements JsonSerializable, Renderable
      */
     public function jsonSerialize(): array
     {
+        $this->sortable = $this->sortableValue();
+        $this->filter = $this->filterValue();
+
         return [
             'type' => AsComponent::typeForClass(static::class),
             'key' => $this->key,
             'props' => Wire::map($this->decorateProps($this->wireProps())),
-        ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $props
-     * @return array<string, mixed>
-     */
-    protected function decorateProps(array $props): array
-    {
-        return [
-            ...$props,
-            'label' => $this->label,
-            'width' => $this->resolvedWidth()->value,
-            'align' => $this->resolvedAlign()->value,
-            'sortable' => $this->sortableValue(),
-            'toggleable' => $this->toggleable ? true : null,
-            'hiddenByDefault' => $this->hiddenByDefault ? true : null,
-            'filter' => $this->filterValue(),
         ];
     }
 }

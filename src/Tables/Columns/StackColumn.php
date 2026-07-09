@@ -14,6 +14,8 @@ class StackColumn extends Column
 {
     use FiltersRenderableComponents;
 
+    public ColumnWidth $width = ColumnWidth::Xl;
+
     /**
      * @var array<int, Component>
      */
@@ -50,11 +52,5 @@ class StackColumn extends Column
                 array_values($this->renderableComponents($this->children)),
             ),
         ];
-    }
-
-    #[\Override]
-    protected function defaultWidth(): ColumnWidth
-    {
-        return ColumnWidth::Xl;
     }
 }
