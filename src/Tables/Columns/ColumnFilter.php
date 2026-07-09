@@ -26,7 +26,6 @@ final readonly class ColumnFilter implements JsonSerializable
      * @param  list<ColumnFilterOption>  $clauseOptions
      */
     public function __construct(
-        public bool $enabled,
         public FilterType $type,
         public array $operators,
         public Op $defaultOperator,
@@ -44,7 +43,6 @@ final readonly class ColumnFilter implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'enabled' => $this->enabled,
             'type' => $this->type->value,
             'operators' => array_map(fn (Op $operator): string => $operator->value, $this->operators),
             'defaultOperator' => $this->defaultOperator->value,

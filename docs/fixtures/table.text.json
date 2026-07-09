@@ -13,7 +13,7 @@
                         "copyable": false,
                         "date": null,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Name",
                         "link": {
                             "external": false,
@@ -21,7 +21,7 @@
                         },
                         "multiple": null,
                         "sortable": true,
-                        "toggleable": null,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"
@@ -34,15 +34,15 @@
                         "copyable": true,
                         "date": null,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Email",
                         "link": {
                             "external": false,
                             "href": "mailto:{value}"
                         },
                         "multiple": null,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"
@@ -58,12 +58,12 @@
                             "timeStyle": null
                         },
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Joined",
                         "link": null,
                         "multiple": null,
                         "sortable": true,
-                        "toggleable": null,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"
@@ -85,7 +85,7 @@
             "endpoint": null,
             "filters": [],
             "layout": null,
-            "lazy": null,
+            "lazy": false,
             "pagination": {
                 "currentPage": null,
                 "from": 1,
@@ -97,7 +97,7 @@
                 "to": 2,
                 "total": 2
             },
-            "resizableColumns": null,
+            "resizableColumns": false,
             "resizeIndicator": false,
             "state": {
                 "filters": [],
@@ -106,7 +106,7 @@
                 "sorts": [],
                 "tableFilters": {}
             },
-            "striped": null
+            "striped": false
         },
         "type": "table"
     }

@@ -11,11 +11,11 @@
                         "align": "start",
                         "circular": true,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "",
                         "size": 32,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.image"
@@ -28,12 +28,12 @@
                         "copyable": false,
                         "date": null,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Name",
                         "link": null,
                         "multiple": null,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"
@@ -48,10 +48,10 @@
                             "invited": "yellow"
                         },
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Status",
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.badge"
@@ -65,15 +65,15 @@
                             "1": "green"
                         },
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "icon": null,
                         "icons": {
                             "0": "minus",
                             "1": "check"
                         },
                         "label": "Verified",
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.icon"
@@ -103,7 +103,7 @@
             "endpoint": null,
             "filters": [],
             "layout": null,
-            "lazy": null,
+            "lazy": false,
             "pagination": {
                 "currentPage": null,
                 "from": 1,
@@ -115,7 +115,7 @@
                 "to": 3,
                 "total": 3
             },
-            "resizableColumns": null,
+            "resizableColumns": false,
             "resizeIndicator": false,
             "state": {
                 "filters": [],
@@ -124,7 +124,7 @@
                 "sorts": [],
                 "tableFilters": {}
             },
-            "striped": null
+            "striped": false
         },
         "type": "table"
     }

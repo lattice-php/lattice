@@ -13,12 +13,12 @@
                         "copyable": false,
                         "date": null,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Invoice",
                         "link": null,
                         "multiple": null,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"
@@ -30,12 +30,12 @@
                         "currency": "EUR",
                         "currencyField": null,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Total",
                         "maximumFractionDigits": null,
                         "minimumFractionDigits": null,
                         "sortable": true,
-                        "toggleable": null,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.money"
@@ -47,12 +47,12 @@
                         "currency": null,
                         "currencyField": "currency",
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Refunded",
                         "maximumFractionDigits": null,
                         "minimumFractionDigits": null,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.money"
@@ -76,7 +76,7 @@
             "endpoint": null,
             "filters": [],
             "layout": null,
-            "lazy": null,
+            "lazy": false,
             "pagination": {
                 "currentPage": null,
                 "from": 1,
@@ -88,7 +88,7 @@
                 "to": 2,
                 "total": 2
             },
-            "resizableColumns": null,
+            "resizableColumns": false,
             "resizeIndicator": false,
             "state": {
                 "filters": [],
@@ -97,7 +97,7 @@
                 "sorts": [],
                 "tableFilters": {}
             },
-            "striped": null
+            "striped": false
         },
         "type": "table"
     }

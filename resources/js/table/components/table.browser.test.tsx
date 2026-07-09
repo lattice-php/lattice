@@ -12,7 +12,7 @@ function col(partial: {
   label: string;
   type?: string;
   width?: TableColumn["props"]["width"];
-  sortable?: boolean | null;
+  sortable?: boolean;
 }): TableColumn {
   const { key, label, type = "column.text", width, sortable } = partial;
 
@@ -24,8 +24,8 @@ function col(partial: {
       width: width ?? "md",
       align: "start",
       sortable: sortable ?? null,
-      toggleable: null,
-      hiddenByDefault: null,
+      toggleable: false,
+      hiddenByDefault: false,
       filter: null,
     },
   } as TableColumn;

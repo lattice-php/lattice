@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { Node } from "@lattice-php/lattice/core/types";
 import type { TableColumn } from "./types";
 import { Provider } from "../provider";
 import { createPlugin, createRegistry } from "../core/registry";
@@ -9,10 +10,10 @@ function col(partial: {
   key: string;
   label: string;
   type?: string;
-  columns?: TableColumn[];
+  schema?: Node[];
   props?: Record<string, unknown>;
 }): TableColumn {
-  const { key, label, type = "column.text", columns, props } = partial;
+  const { key, label, type = "column.text", schema, props } = partial;
 
   return {
     key,
@@ -21,13 +22,13 @@ function col(partial: {
       label,
       width: type === "column.stack" ? "xl" : "md",
       align: "start",
-      sortable: null,
-      toggleable: null,
-      hiddenByDefault: null,
+      sortable: false,
+      toggleable: false,
+      hiddenByDefault: false,
       filter: null,
-      ...(columns ? { columns } : {}),
       ...props,
     },
+    ...(schema ? { schema } : {}),
   } as TableColumn;
 }
 
@@ -116,10 +117,10 @@ describe("column registry", () => {
                     key: "identity",
                     label: "Identity",
                     type: "column.stack",
-                    columns: [
-                      col({ key: "name", label: "Name", type: "column.text" }),
-                      col({ key: "email", label: "Email", type: "column.text" }),
-                    ],
+                    schema: [
+                      { type: "text", props: { dataBindings: { text: "name" } } },
+                      { type: "text", props: { dataBindings: { text: "email" } } },
+                    ] as Node[],
                   })}
                   row={{ name: "Ada", email: "ada@example.com" }}
                 />
@@ -328,7 +329,7 @@ describe("column registry", () => {
     expect(link).toHaveAttribute("target", "_blank");
   });
 
-  it("renders an empty stack cell when it has no nested columns", () => {
+  it("renders an empty stack cell when it has no bound schema", () => {
     const { container } = renderCell(col({ key: "x", label: "X", type: "column.stack" }), {
       x: "v",
     });

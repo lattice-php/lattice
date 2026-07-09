@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core\Components\Concerns;
 
 use BackedEnum;
+use Lattice\Lattice\Attributes\WireMap;
+use Lattice\Lattice\Support\Wire;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -24,7 +26,8 @@ trait SerializesToWire
      * Reflects the public typed properties (including inherited and trait
      * properties) into the full wire shape: every initialized prop is emitted,
      * keeping null and empty-array values so the payload mirrors the generated
-     * type one-to-one. Backed enums serialize to their value.
+     * type one-to-one. Backed enums serialize to their value; arrays marked
+     * {@see WireMap} serialize as JSON objects.
      *
      * @return array<string, mixed>
      */
@@ -39,7 +42,13 @@ trait SerializesToWire
 
             $value = $property->getValue($this);
 
-            $props[$property->getName()] = $value instanceof BackedEnum ? $value->value : $value;
+            if ($value instanceof BackedEnum) {
+                $value = $value->value;
+            } elseif (is_array($value) && $property->getAttributes(WireMap::class) !== []) {
+                $value = Wire::map($value);
+            }
+
+            $props[$property->getName()] = $value;
         }
 
         return $props;

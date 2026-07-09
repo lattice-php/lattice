@@ -294,7 +294,7 @@ test('actions can serialize confirmation modal configuration', function (): void
                     'cancelLabel' => 'Keep account',
                 ],
                 'form' => null,
-                'lazyForm' => null,
+                'lazyForm' => false,
                 'variant' => 'destructive',
                 'ref' => null,
             ],
@@ -315,7 +315,7 @@ test('modals serialize composable children for action driven dialogs', function 
                 'title' => 'Set up two-factor authentication',
                 'description' => 'Scan the QR code with your authenticator app.',
                 'closeLabel' => 'Close',
-                'open' => null,
+                'open' => false,
                 'ref' => null,
             ],
             'schema' => [

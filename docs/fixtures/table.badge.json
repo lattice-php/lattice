@@ -13,12 +13,12 @@
                         "copyable": false,
                         "date": null,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Reference",
                         "link": null,
                         "multiple": null,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"
@@ -36,7 +36,6 @@
                             "clauseOptions": [],
                             "control": null,
                             "defaultOperator": "contains",
-                            "enabled": true,
                             "multiple": false,
                             "operators": [
                                 "contains",
@@ -51,10 +50,10 @@
                             "searchable": false,
                             "type": "text"
                         },
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Status",
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.badge"
@@ -78,7 +77,7 @@
             "endpoint": null,
             "filters": [],
             "layout": null,
-            "lazy": null,
+            "lazy": false,
             "pagination": {
                 "currentPage": null,
                 "from": 1,
@@ -90,7 +89,7 @@
                 "to": 3,
                 "total": 3
             },
-            "resizableColumns": null,
+            "resizableColumns": false,
             "resizeIndicator": false,
             "state": {
                 "filters": [],
@@ -99,7 +98,7 @@
                 "sorts": [],
                 "tableFilters": {}
             },
-            "striped": null
+            "striped": false
         },
         "type": "table"
     }

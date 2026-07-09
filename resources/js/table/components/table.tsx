@@ -9,7 +9,7 @@ import { Icon } from "@lattice-php/lattice/icons";
 import { alignJustifyItems, alignText } from "../align";
 import type { TableNode } from "../types";
 import { getBulkActions } from "../bulk";
-import { flattenColumns, getRowActions, getRowKey } from "../payload";
+import { getRowActions, getRowKey } from "../payload";
 import {
   getQueryParams,
   getTableSizingColumns,
@@ -67,7 +67,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   const selection = useTableSelection(rowEntries.map((entry) => entry.key));
 
   const columnsByKey = useMemo(
-    () => new Map(flattenColumns(columns).map((column) => [column.key, column])),
+    () => new Map(columns.map((column) => [column.key, column])),
     [columns],
   );
   const visibilityIdentity = nodeIdentity(node);
@@ -92,7 +92,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   const hasNextPage = pagination.hasMore ?? currentPage < lastPage;
   const hasActions = rowEntries.some((entry) => entry.actions.length > 0);
   const striped = node.props?.striped === true;
-  const hasFilters = visibleColumns.some((column) => column.props.filter?.enabled);
+  const hasFilters = visibleColumns.some((column) => column.props.filter != null);
   const filterEntries = filters.map((clause, index) => ({ clause, index }));
   const filterDefinitions = useMemo(
     () => (Array.isArray(node.props?.filters) ? node.props.filters : []),
@@ -253,7 +253,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                 {hasBulkActions && <div className="px-4 py-2" role="cell" />}
                 {visibleColumns.map((column) => (
                   <div key={column.key} className="min-w-0 px-2 py-2" role="cell">
-                    {column.props.filter?.enabled && (
+                    {column.props.filter != null && (
                       <ColumnFilterControl
                         column={column}
                         clauses={filterEntries.filter((entry) => entry.clause.field === column.key)}

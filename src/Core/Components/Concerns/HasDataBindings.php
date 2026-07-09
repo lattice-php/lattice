@@ -28,6 +28,14 @@ trait HasDataBindings
     }
 
     /**
+     * @return array<int, string>
+     */
+    public function dataBindingKeys(): array
+    {
+        return array_values($this->dataBindings);
+    }
+
+    /**
      * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */

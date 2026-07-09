@@ -1,18 +1,9 @@
+import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { materializeSchema } from "@lattice-php/lattice/core/materialize";
 import type { ColumnCellComponent } from "../../registry";
-import type { ColumnPropsOf } from "../../types";
-import { TextCell } from "./text-cell";
 
 export const StackCell: ColumnCellComponent<"column.stack"> = ({ column, row }) => (
   <div className="grid gap-1">
-    {(column.props.columns ?? []).map((stackedColumn) => (
-      <span key={stackedColumn.key}>
-        <TextCell
-          column={stackedColumn}
-          props={stackedColumn.props as ColumnPropsOf<"column.text">}
-          row={row}
-          value={row[stackedColumn.key]}
-        />
-      </span>
-    ))}
+    <Renderer nodes={materializeSchema(column.schema, row)} />
   </div>
 );

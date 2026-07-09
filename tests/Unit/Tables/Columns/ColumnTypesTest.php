@@ -17,7 +17,7 @@ it('serializes a badge column with its colour map', function (): void {
 
     expect($data['type'])->toBe('column.badge')
         ->and($data['props']['sortable'])->toBeTrue()
-        ->and($data['props']['filter']['enabled'])->toBeTrue()
+        ->and($data['props']['filter']['type'])->toBe('text')
         ->and($data['props']['colors'])->toBe(['active' => 'green', 'archived' => 'red']);
 });
 

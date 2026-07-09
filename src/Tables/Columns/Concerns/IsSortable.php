@@ -5,17 +5,17 @@ namespace Lattice\Lattice\Tables\Columns\Concerns;
 
 trait IsSortable
 {
-    protected bool $sortable = false;
+    protected bool $sortableEnabled = false;
 
     public function sortable(bool $sortable = true): static
     {
-        $this->sortable = $sortable;
+        $this->sortableEnabled = $sortable;
 
         return $this;
     }
 
     public function isSortable(): bool
     {
-        return $this->sortable;
+        return $this->sortableEnabled;
     }
 }

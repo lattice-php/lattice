@@ -36,7 +36,7 @@ class Action extends Component
 
     public ?Form $form = null;
 
-    public ?bool $lazyForm = null;
+    public bool $lazyForm = false;
 
     public static function make(string $id): static
     {
@@ -113,7 +113,7 @@ class Action extends Component
     #[SerializationHook(priority: 250)]
     protected function stripLazyFormSchema(array $data): array
     {
-        if ($this->lazyForm === true) {
+        if ($this->lazyForm) {
             $data['props']['form'] = null;
         }
 

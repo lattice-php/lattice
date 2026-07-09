@@ -90,7 +90,7 @@ class TextColumn extends Column implements Filterable, Sortable
     #[\Override]
     public function isSortable(): bool
     {
-        return $this->multiple === null && $this->sortable;
+        return $this->multiple === null && $this->sortableEnabled;
     }
 
     public function link(?string $href = null, bool $external = false): static

@@ -33,7 +33,7 @@ test('registered actions serialize their configured endpoint method and label', 
                 'icon' => null,
                 'confirmation' => null,
                 'form' => null,
-                'lazyForm' => null,
+                'lazyForm' => false,
             ],
         ]);
 });

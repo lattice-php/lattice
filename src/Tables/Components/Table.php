@@ -42,11 +42,11 @@ class Table extends Component
      */
     public array $bulkActions = [];
 
-    public ?bool $striped = null;
+    public bool $striped = false;
 
-    public ?bool $lazy = null;
+    public bool $lazy = false;
 
-    public ?bool $resizableColumns = null;
+    public bool $resizableColumns = false;
 
     public bool $resizeIndicator = false;
 
@@ -155,14 +155,14 @@ class Table extends Component
 
     public function striped(bool $striped): static
     {
-        $this->striped = $striped ?: null;
+        $this->striped = $striped;
 
         return $this;
     }
 
     public function resizableColumns(bool $resizable = true, bool $showIndicator = false): static
     {
-        $this->resizableColumns = $resizable ?: null;
+        $this->resizableColumns = $resizable;
         $this->resizeIndicator = $resizable && $showIndicator;
 
         return $this;
