@@ -15,8 +15,8 @@ use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
 
-test('discovery kinds map every component group to its attribute', function (): void {
-    expect(DiscoveryKinds::COMPONENTS)->toMatchArray([
+test('the service provider registers every built-in component group', function (): void {
+    expect(DiscoveryKinds::components())->toMatchArray([
         'forms' => AsForm::class,
         'tables' => AsTable::class,
         'actions' => AsAction::class,

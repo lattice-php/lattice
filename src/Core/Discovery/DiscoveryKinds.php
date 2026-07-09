@@ -4,44 +4,27 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Discovery;
 
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Attributes\AsBulkAction;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Attributes\AsRemoteSource;
-use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Spatie\Attributes\Attributes;
 
 final class DiscoveryKinds
 {
-    /** @var array<string, class-string> */
-    public const array COMPONENTS = [
-        'forms' => AsForm::class,
-        'tables' => AsTable::class,
-        'actions' => AsAction::class,
-        'bulk-actions' => AsBulkAction::class,
-        'fragments' => AsFragment::class,
-        'remote-sources' => AsRemoteSource::class,
-        'layouts' => AsLayout::class,
-    ];
-
     public const string PAGE_ATTRIBUTE = AsPage::class;
 
     /**
-     * Discovery groups contributed at runtime, keyed by group so a provider that
-     * boots more than once (as in the test suite) stays idempotent.
+     * Discovery groups keyed by group name. Registration is the only way to add a
+     * kind: core registers its built-ins from `LatticeServiceProvider`, and
+     * packages/apps register theirs the same way. Keyed by group so a provider
+     * that boots more than once (as in the test suite) stays idempotent.
      *
      * @var array<string, class-string<DefinitionAttribute>>
      */
     private static array $registered = [];
 
     /**
-     * Register an additional discovery group so `DiscoveryManifest` scans for its
-     * marker attribute. Call this from a package or app service provider to make a
-     * new `DefinitionRegistry` kind discoverable without editing core.
+     * Register a discovery group so `DiscoveryManifest` scans for its marker
+     * attribute.
      *
      * @param  class-string<DefinitionAttribute>  $attributeClass
      */
@@ -51,17 +34,18 @@ final class DiscoveryKinds
     }
 
     /**
-     * The built-in groups plus any registered at runtime.
+     * The registered discovery groups.
      *
-     * @return array<string, class-string>
+     * @return array<string, class-string<DefinitionAttribute>>
      */
     public static function components(): array
     {
-        return [...self::COMPONENTS, ...self::$registered];
+        return self::$registered;
     }
 
     /**
-     * Drop all runtime registrations. Intended for test isolation.
+     * Drop all registrations. Intended for test isolation; providers re-register
+     * on the next boot.
      */
     public static function flush(): void
     {

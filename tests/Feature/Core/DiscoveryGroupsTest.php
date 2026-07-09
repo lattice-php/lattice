@@ -10,7 +10,7 @@ afterEach(function (): void {
     DiscoveryKinds::flush();
 });
 
-test('components() merges a registered group over the built-in groups', function (): void {
+test('components() exposes a registered group alongside the provider-registered built-ins', function (): void {
     DiscoveryKinds::register('widgets', AsWidget::class);
 
     expect(DiscoveryKinds::components())
