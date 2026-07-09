@@ -12,6 +12,7 @@ use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Attributes\AsRemoteSource;
 use Lattice\Lattice\Attributes\AsTable;
+use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Spatie\Attributes\Attributes;
 
 final class DiscoveryKinds
@@ -28,6 +29,44 @@ final class DiscoveryKinds
     ];
 
     public const string PAGE_ATTRIBUTE = AsPage::class;
+
+    /**
+     * Discovery groups contributed at runtime, keyed by group so a provider that
+     * boots more than once (as in the test suite) stays idempotent.
+     *
+     * @var array<string, class-string<DefinitionAttribute>>
+     */
+    private static array $registered = [];
+
+    /**
+     * Register an additional discovery group so `DiscoveryManifest` scans for its
+     * marker attribute. Call this from a package or app service provider to make a
+     * new `DefinitionRegistry` kind discoverable without editing core.
+     *
+     * @param  class-string<DefinitionAttribute>  $attributeClass
+     */
+    public static function register(string $group, string $attributeClass): void
+    {
+        self::$registered[$group] = $attributeClass;
+    }
+
+    /**
+     * The built-in groups plus any registered at runtime.
+     *
+     * @return array<string, class-string>
+     */
+    public static function components(): array
+    {
+        return [...self::COMPONENTS, ...self::$registered];
+    }
+
+    /**
+     * Drop all runtime registrations. Intended for test isolation.
+     */
+    public static function flush(): void
+    {
+        self::$registered = [];
+    }
 
     /**
      * @param  class-string  $class
