@@ -32,15 +32,15 @@
                     "key": "verified",
                     "label": "Verified",
                     "props": {
-                        "colors": [
-                            "gray",
-                            "green"
-                        ],
+                        "colors": {
+                            "0": "gray",
+                            "1": "green"
+                        },
                         "icon": null,
-                        "icons": [
-                            "minus",
-                            "check"
-                        ]
+                        "icons": {
+                            "0": "minus",
+                            "1": "check"
+                        }
                     },
                     "sortable": null,
                     "toggleable": null,
@@ -81,7 +81,7 @@
                 "page": 1,
                 "perPage": 25,
                 "sorts": [],
-                "tableFilters": []
+                "tableFilters": {}
             },
             "striped": null
         },

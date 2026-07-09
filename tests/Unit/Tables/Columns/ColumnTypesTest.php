@@ -64,8 +64,8 @@ it('serializes a number column with a number filter and end alignment', function
         ->and($data['filter']['type'])->toBe(FilterType::Number->value);
 });
 
-it('serialises an empty prop bag as an empty array, not null', function (): void {
+it('serialises an empty prop bag as an empty object, not null', function (): void {
     $wire = BooleanColumn::make('active')->toData()->jsonSerialize();
 
-    expect($wire['props'])->toBe([]);
+    expect($wire['props'])->toEqual(new stdClass);
 });

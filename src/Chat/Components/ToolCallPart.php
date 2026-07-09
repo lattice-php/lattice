@@ -7,6 +7,7 @@ namespace Lattice\Lattice\Chat\Components;
 use Lattice\Lattice\Chat\Attributes\AsChatPart;
 use Lattice\Lattice\Chat\ChatPart;
 use Lattice\Lattice\Chat\Enums\ChatPartType;
+use Lattice\Lattice\Support\Wire;
 
 #[AsChatPart(ChatPartType::ToolCall)]
 final class ToolCallPart extends ChatPart
@@ -28,5 +29,17 @@ final class ToolCallPart extends ChatPart
         $part->args = $args;
 
         return $part;
+    }
+
+    /**
+     * @param  array<string, mixed>  $props
+     * @return array<string, mixed>
+     */
+    #[\Override]
+    protected function decorateProps(array $props): array
+    {
+        $props['args'] = Wire::map($this->args);
+
+        return parent::decorateProps($props);
     }
 }

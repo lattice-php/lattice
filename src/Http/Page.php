@@ -122,7 +122,7 @@ abstract class Page implements PageContract, Responsable
     }
 
     /**
-     * @return array{title: string|null, layout: array{key: string, schema: array<int, array<string, mixed>>}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, schema: array<int, array<string, mixed>>, listeners?: array<int, array<string, mixed>>}
+     * @return array{title: string|null, layout: array{key: string, schema: mixed}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, schema: mixed, listeners?: mixed}
      */
     public function toArray(PageSchema $schema, Request $request): array
     {
@@ -146,7 +146,7 @@ abstract class Page implements PageContract, Responsable
      * this page's content renders). Returns null when the page opts out of a
      * layout (rendered standalone, e.g. centered auth screens).
      *
-     * @return array{key: string, schema: array<int, array<string, mixed>>}|null
+     * @return array{key: string, schema: mixed}|null
      */
     private function resolveLayout(PageLayout|string $layout, Request $request): ?array
     {
@@ -160,7 +160,7 @@ abstract class Page implements PageContract, Responsable
 
         return [
             'key' => $rendered['key'],
-            'schema' => Wire::toArray($rendered['schema']),
+            'schema' => Wire::toWire($rendered['schema']),
         ];
     }
 
@@ -169,16 +169,14 @@ abstract class Page implements PageContract, Responsable
      * lifecycle, so serialization side effects (such as a Tabs confirmation
      * redirect) fire before the response view is rendered rather than during
      * the final json_encode.
-     *
-     * @return array<int, array<string, mixed>>
      */
-    private function serializeSchema(PageSchema $schema): array
+    private function serializeSchema(PageSchema $schema): mixed
     {
-        return Wire::toArray($schema->renderable());
+        return Wire::toWire($schema->renderable());
     }
 
     /**
-     * @return array{listeners?: array<int, array<string, mixed>>}
+     * @return array{listeners?: mixed}
      */
     private function serializeListeners(): array
     {
@@ -192,7 +190,7 @@ abstract class Page implements PageContract, Responsable
             return [];
         }
 
-        return ['listeners' => Wire::toArray($listeners)];
+        return ['listeners' => Wire::toWire($listeners)];
     }
 
     private function response(PageSchema $schema): Response

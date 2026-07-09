@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support;
 
 use BackedEnum;
+use stdClass;
 
 /**
  * Helpers for turning PHP values into the scalar shape the frontend receives.
@@ -31,5 +32,29 @@ final class Wire
     public static function toArray(mixed $value): array
     {
         return (array) json_decode(json_encode($value, JSON_THROW_ON_ERROR), true);
+    }
+
+    /**
+     * Like toArray(), but decodes as objects instead of associative arrays, so
+     * an empty map (wrapped via {@see map()} as an stdClass) survives the
+     * round-trip as `{}` instead of collapsing to `[]`.
+     */
+    public static function toWire(mixed $value): mixed
+    {
+        return json_decode(json_encode($value, JSON_THROW_ON_ERROR), false);
+    }
+
+    /**
+     * A wire map (`Record<string, X>` on the TS side) must serialize as a JSON
+     * object even when empty; json_encode() cannot tell an empty PHP array
+     * apart from an empty list, so an empty map is marked as an stdClass here,
+     * at the source, before it enters any array-decoding round-trip.
+     *
+     * @param  array<string, mixed>  $map
+     * @return array<string, mixed>|stdClass
+     */
+    public static function map(array $map): array|stdClass
+    {
+        return $map === [] ? new stdClass : $map;
     }
 }

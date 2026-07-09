@@ -69,7 +69,7 @@ test('a page serializes its layout as key and schema with an outlet', function (
 
     $page = new WorkbenchLayoutPage;
 
-    $payload = $page->toArray($page->render(PageSchema::make()), new Request);
+    $payload = wire($page->toArray($page->render(PageSchema::make()), new Request));
 
     expect($payload['layout']['key'])->toBe('app')
         ->and($payload['layout']['schema'][0]['type'])->toBe('stack')

@@ -45,7 +45,7 @@
                     "hiddenByDefault": null,
                     "key": "featured",
                     "label": "Featured",
-                    "props": [],
+                    "props": {},
                     "sortable": true,
                     "toggleable": null,
                     "type": "column.boolean",
@@ -58,7 +58,7 @@
                     "hiddenByDefault": null,
                     "key": "archived",
                     "label": "Archived",
-                    "props": [],
+                    "props": {},
                     "sortable": null,
                     "toggleable": null,
                     "type": "column.boolean",
@@ -105,7 +105,7 @@
                 "page": 1,
                 "perPage": 25,
                 "sorts": [],
-                "tableFilters": []
+                "tableFilters": {}
             },
             "striped": null
         },

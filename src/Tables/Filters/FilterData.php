@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Tables\Filters;
 
 use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 
 /**
@@ -34,7 +35,7 @@ final readonly class FilterData implements JsonSerializable
             'key' => $this->key,
             'label' => $this->label,
             'type' => $this->type instanceof FilterControl ? $this->type->value : $this->type,
-            'props' => $this->props,
+            'props' => Wire::map($this->props),
         ];
     }
 }

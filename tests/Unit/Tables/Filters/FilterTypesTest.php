@@ -158,20 +158,20 @@ test('a date range filter ignores a non-array value', function (): void {
 });
 
 it('serialises a toggle filter', function (): void {
-    expect(Filter::make('active')->toData()->jsonSerialize())->toBe([
+    expect(Filter::make('active')->toData()->jsonSerialize())->toEqual([
         'key' => 'active',
         'label' => 'Active',
         'type' => 'toggle',
-        'props' => [],
+        'props' => new stdClass,
     ]);
 });
 
 it('serialises a date-range filter', function (): void {
-    expect(DateRangeFilter::make('created')->toData()->jsonSerialize())->toBe([
+    expect(DateRangeFilter::make('created')->toData()->jsonSerialize())->toEqual([
         'key' => 'created',
         'label' => 'Created',
         'type' => 'date-range',
-        'props' => [],
+        'props' => new stdClass,
     ]);
 });
 

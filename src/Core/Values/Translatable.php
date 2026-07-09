@@ -5,6 +5,8 @@ namespace Lattice\Lattice\Core\Values;
 
 use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Lattice\Support\Wire;
+use stdClass;
 
 /**
  * A deferred, client-resolved translation: an i18next key plus replacements
@@ -49,14 +51,14 @@ final class Translatable implements JsonSerializable
     }
 
     /**
-     * @return array{key: string, payload: array<string, string>, replacements: array<string, string|int|float|bool>}
+     * @return array{key: string, payload: array<string, string>|stdClass, replacements: array<string, string|int|float|bool>|stdClass}
      */
     public function jsonSerialize(): array
     {
         return [
             'key' => $this->key,
-            'payload' => $this->payload,
-            'replacements' => $this->replacements,
+            'payload' => Wire::map($this->payload),
+            'replacements' => Wire::map($this->replacements),
         ];
     }
 }

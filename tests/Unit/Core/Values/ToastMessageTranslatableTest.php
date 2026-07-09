@@ -8,9 +8,9 @@ use Lattice\Lattice\Effects\Effect;
 test('a toast message accepts a Translatable and serializes it', function (): void {
     $toast = ToastMessage::make(Variant::Success, rt('orders.shipped-live')->with(['a' => 'b']));
 
-    expect($toast->jsonSerialize()['message'])->toBe([
+    expect($toast->jsonSerialize()['message'])->toEqual([
         'key' => 'orders.shipped-live',
-        'payload' => [],
+        'payload' => new stdClass,
         'replacements' => ['a' => 'b'],
     ]);
 });
@@ -21,7 +21,7 @@ test('Effect::toast accepts a Translatable message', function (): void {
     expect($effect->jsonSerialize())
         ->toHaveKey('type', 'toast')
         ->and($effect->jsonSerialize()['toast']->jsonSerialize()['message'])
-        ->toBe(['key' => 'orders.shipped-live', 'payload' => [], 'replacements' => []]);
+        ->toEqual(['key' => 'orders.shipped-live', 'payload' => new stdClass, 'replacements' => new stdClass]);
 });
 
 test('Effect::toast accepts a Translatable message with an explicit variant', function (): void {
@@ -30,10 +30,10 @@ test('Effect::toast accepts a Translatable message with an explicit variant', fu
     $toast = $effect->jsonSerialize()['toast'];
 
     expect($toast->variant)->toBe(Variant::Warning)
-        ->and($toast->jsonSerialize()['message'])->toBe([
+        ->and($toast->jsonSerialize()['message'])->toEqual([
             'key' => 'orders.shipped-live',
-            'payload' => [],
-            'replacements' => [],
+            'payload' => new stdClass,
+            'replacements' => new stdClass,
         ]);
 });
 

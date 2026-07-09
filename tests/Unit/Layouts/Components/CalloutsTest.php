@@ -7,5 +7,5 @@ test('the callouts slot serializes to its wire type', function (): void {
     $wire = Callouts::make()->jsonSerialize();
 
     expect($wire['type'])->toBe('callouts')
-        ->and($wire['props'])->toBe([]);
+        ->and($wire['props'])->toEqual(new stdClass);
 });
