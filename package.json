@@ -55,6 +55,10 @@
       "types": "./dist/form/index.d.ts",
       "import": "./dist/form/index.js"
     },
+    "./form/embed": {
+      "types": "./dist/form/embed.d.ts",
+      "import": "./dist/form/embed.js"
+    },
     "./form/toolkit": {
       "types": "./dist/form/toolkit.d.ts",
       "import": "./dist/form/toolkit.js"
