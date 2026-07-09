@@ -190,7 +190,7 @@ function fixturePath(string $name): string
 function withScaffoldWorkspace(Closure $callback): mixed
 {
     $token = ParallelTesting::token() ?: 'default';
-    $basePath = sys_get_temp_dir().'/lattice-package-tests/scaffold/test_'.$token;
+    $basePath = sys_get_temp_dir().'/lattice-package-tests/'.basename(dirname(__DIR__)).'/scaffold/test_'.$token;
     $originalBasePath = app()->basePath();
     $originalAppPath = app()->path();
     $originalDiscover = config('lattice.discover');
