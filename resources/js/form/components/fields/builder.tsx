@@ -2,27 +2,24 @@ import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { useT } from "@lattice-php/lattice/i18n";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
-import { appendPath, toHtmlName } from "../form-path";
 import { useDependentField } from "../use-dependent-field";
 import { AddRowMenu, type AddRowOption } from "./add-row-menu";
 import { ROW_ID_KEY } from "./repeater-rows";
 import { buildRowActions } from "./row-action-menu";
 import { RowActions } from "./row-actions";
-import { RowIdInputs } from "./row-id-inputs";
+import { RowKeyInputs } from "./row-key-inputs";
 import { RowItem } from "./row-item";
+import { rowTemplatesOf, type RowTemplate } from "./row-templates";
 import { columnsFromSchema, TableRows } from "./table-rows";
 import { useFlipReorder } from "./use-flip-reorder";
 import { useRowCollection } from "./use-row-collection";
-
-type RowTemplate = { type: string; label: string; schema: Node[] };
 
 const EMPTY_TEMPLATE: Node[] = [];
 
 export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) => {
   const props = node.props;
   const name = props.name;
-  const templates = ((node as unknown as { templates?: RowTemplate[] }).templates ??
-    []) as RowTemplate[];
+  const templates = rowTemplatesOf(node) ?? [];
   const { errors } = useFormContext();
   const { hidden, required } = useDependentField(node);
   const { path, rows, onField, onRemove, onMove, onDuplicate, append } = useRowCollection(
@@ -46,15 +43,6 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
   if (hidden) {
     return null;
   }
-
-  const hiddenTypeInputs = rows.map((row, index) => (
-    <input
-      key={String(row[ROW_ID_KEY] ?? index)}
-      type="hidden"
-      name={toHtmlName(appendPath(path, index, "type"))}
-      value={String(row.type ?? "")}
-    />
-  ));
 
   const primary = templates[0];
   const tableRows = rows.map((row, index) => {
@@ -80,10 +68,10 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
       required={required}
     >
       <div className="flex flex-col gap-3">
-        <RowIdInputs path={path} rows={rows} />
+        <RowKeyInputs path={path} rows={rows} rowKey={ROW_ID_KEY} />
+        <RowKeyInputs path={path} rows={rows} rowKey="type" />
         {isTable ? (
           <>
-            {hiddenTypeInputs}
             <TableRows
               base={path}
               columns={columnsFromSchema(primary?.schema ?? [])}
@@ -107,11 +95,6 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
 
             return (
               <div key={key} ref={(el) => registerRow(key, el)} data-flip-key={key}>
-                <input
-                  type="hidden"
-                  name={toHtmlName(appendPath(path, index, "type"))}
-                  value={String(row.type ?? "")}
-                />
                 {template ? (
                   <RowItem
                     base={path}

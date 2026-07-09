@@ -4,19 +4,22 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Forms\Components;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Forms\FormData;
 
 /**
- * Rows discriminated by their `type` key: each row validates and casts through
- * the RowTemplate matching its type, `type` itself is required and constrained
- * to the declared templates, and it survives casting. The templates serialize
- * onto the wire node under `templates`.
+ * Rows discriminated by their reserved `type` key: each row validates and
+ * casts through the RowTemplate matching its type, `type` is required and
+ * constrained to the declared templates, and it survives casting. The
+ * templates serialize onto the wire node under `templates`.
  *
- * @api Stable extension point for fields whose rows are typed templates.
+ * @api
  */
 abstract class TypedRowsField extends RowsField
 {
+    public const string TYPE = 'type';
+
     /**
      * @var array<int, RowTemplate>
      */
@@ -38,7 +41,7 @@ abstract class TypedRowsField extends RowsField
      */
     public function rowFields(array $row): array
     {
-        $type = is_string($row['type'] ?? null) ? $row['type'] : null;
+        $type = is_string($row[self::TYPE] ?? null) ? $row[self::TYPE] : null;
 
         foreach ($this->templates as $template) {
             if ($template->type === $type) {
@@ -50,36 +53,32 @@ abstract class TypedRowsField extends RowsField
     }
 
     #[\Override]
-    public function nestedRules(FormData $data, Request $request): array
+    protected function rulesForRows(array $rows, FormData $data, Request $request): array
     {
-        $rules = parent::nestedRules($data, $request);
+        $rules = parent::rulesForRows($rows, $data, $request);
 
-        $types = array_map(static fn (RowTemplate $template): string => $template->type, $this->templates);
+        $typeRules = [
+            'required',
+            Rule::in(array_map(static fn (RowTemplate $template): string => $template->type, $this->templates)),
+        ];
 
-        foreach (array_keys($this->rows($data)) as $index) {
-            $rules["{$this->name}.{$index}.type"] = ['required', 'in:'.implode(',', $types)];
+        foreach (array_keys($rows) as $index) {
+            $rules["{$this->name}.{$index}.".self::TYPE] = $typeRules;
         }
 
         return $rules;
     }
 
     #[\Override]
-    public function castValue(mixed $value): mixed
+    protected function castRow(array $castRow, mixed $original): array
     {
-        if (! is_array($value)) {
-            return [];
+        $castRow = parent::castRow($castRow, $original);
+
+        if (is_array($original) && isset($original[self::TYPE])) {
+            return [self::TYPE => $original[self::TYPE]] + $castRow;
         }
 
-        /** @var array<int, array<string, mixed>> $cast */
-        $cast = parent::castValue($value);
-
-        return array_map(static function (array $castRow, mixed $original): array {
-            if (is_array($original) && isset($original['type'])) {
-                return ['type' => $original['type']] + $castRow;
-            }
-
-            return $castRow;
-        }, $cast, array_values($value));
+        return $castRow;
     }
 
     /**

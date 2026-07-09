@@ -5,28 +5,24 @@ namespace Lattice\Lattice\Forms\Components;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Lattice\Lattice\Forms\Components\Concerns\HandlesRowSchemas;
 use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
 use Lattice\Lattice\Forms\Contracts\ProvidesRowPrefills;
 use Lattice\Lattice\Forms\FormData;
+use LogicException;
 
 /**
  * Base for fields whose value is an ordered list of rows, each validated,
  * cast, and prefilled through the child Fields supplied by rowFields().
  *
- * Every row carries a stable UUID under the reserved `rowId` key: server-filled
- * rows are stamped during serialization, the client mints one for rows it
- * creates, and casting preserves (or mints) it so validated data always
- * identifies each row. Row schemas must not declare their own `rowId` field.
+ * Every row carries a uuid under the reserved `rowId` key: server-filled rows
+ * are stamped during serialization, the client mints one for rows it creates,
+ * and casting preserves (or mints) it so validated data always identifies each
+ * row. Row schemas must not declare their own `rowId` field.
  *
- * @api Stable extension point for custom row fields; the per-row validation,
- *      casting, and prefill wiring live here so subclasses only describe
- *      which fields make up a row.
+ * @api
  */
 abstract class RowsField extends Field implements ProvidesRowFields, ProvidesRowPrefills
 {
-    use HandlesRowSchemas;
-
     public const string ROW_ID = 'rowId';
 
     public ?int $minItems = null;
@@ -38,6 +34,14 @@ abstract class RowsField extends Field implements ProvidesRowFields, ProvidesRow
     public ?string $addLabel = null;
 
     public int $defaultItems = 0;
+
+    /**
+     * The child Fields that validate and cast the given submitted row.
+     *
+     * @param  array<string, mixed>  $row
+     * @return array<int, Field>
+     */
+    abstract public function rowFields(array $row): array;
 
     public function minItems(int $min): static
     {
@@ -99,10 +103,40 @@ abstract class RowsField extends Field implements ProvidesRowFields, ProvidesRow
     #[\Override]
     public function nestedRules(FormData $data, Request $request): array
     {
-        $rows = $this->rows($data);
-        $rules = $this->rowRules($this->name, $rows, $data, $request);
+        return $this->rulesForRows($this->rows($data), $data, $request);
+    }
 
-        foreach (array_keys($rows) as $index) {
+    /**
+     * @param  array<int, mixed>  $rows
+     * @return array<string, array<int, mixed>>
+     */
+    protected function rulesForRows(array $rows, FormData $data, Request $request): array
+    {
+        $rules = [];
+
+        foreach ($rows as $index => $row) {
+            $row = is_array($row) ? $row : [];
+            $scope = $this->rowScope($data, $row);
+
+            foreach ($this->rowFields($row) as $child) {
+                if ($child->name() === self::ROW_ID) {
+                    throw new LogicException(sprintf(
+                        'Row schemas must not declare a [%s] field: the key is reserved for the per-row identity.',
+                        self::ROW_ID,
+                    ));
+                }
+
+                if (! $child->isVisible($scope)) {
+                    continue;
+                }
+
+                $childRules = $child->resolvedRulesWithRequired($scope, $request);
+
+                // excludeUnvalidatedArrayKeys drops a row's unruled keys once a sibling
+                // (e.g. the type discriminator) has a rule, so give every field a passthrough.
+                $rules["{$this->name}.{$index}.{$child->name()}"] = $childRules !== [] ? $childRules : ['sometimes', 'nullable'];
+            }
+
             $rules["{$this->name}.{$index}.".self::ROW_ID] = ['sometimes', 'nullable', 'uuid'];
         }
 
@@ -116,14 +150,109 @@ abstract class RowsField extends Field implements ProvidesRowFields, ProvidesRow
             return [];
         }
 
+        $originals = array_values($value);
+
         return array_map(
-            static fn (array $castRow, mixed $original): array => [
-                self::ROW_ID => self::rowIdOf($original),
-                ...$castRow,
-            ],
-            $this->castRows($value),
-            array_values($value),
+            fn (array $castRow, mixed $original): array => $this->castRow($castRow, $original),
+            $this->castRows($originals),
+            $originals,
         );
+    }
+
+    /**
+     * Decorates one cast row with the reserved keys the child fields do not own.
+     *
+     * @param  array<string, mixed>  $castRow
+     * @return array<string, mixed>
+     */
+    protected function castRow(array $castRow, mixed $original): array
+    {
+        return [self::ROW_ID => self::rowIdOf($original), ...$castRow];
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     */
+    public function rowScope(FormData $form, array $row): FormData
+    {
+        return FormData::make([...$form->all(), ...$row]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     */
+    public function rowField(array $row, string $name): ?Field
+    {
+        foreach ($this->rowFields($row) as $field) {
+            if ($field->name() === $name) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
+    public function prefillRowFields(mixed $rows, ?FormData $form = null, ?Request $request = null): void
+    {
+        if (! is_array($rows)) {
+            return;
+        }
+
+        $fields = [];
+        $values = [];
+
+        foreach ($rows as $row) {
+            $row = is_array($row) ? $row : [];
+
+            foreach ($this->rowFields($row) as $field) {
+                $name = $field->name();
+
+                if (! array_key_exists($name, $row)) {
+                    continue;
+                }
+
+                if ($field instanceof ProvidesRowFields) {
+                    $field->prefillRowFields($row[$name]);
+
+                    continue;
+                }
+
+                $key = spl_object_id($field);
+                $fields[$key] = $field;
+
+                foreach ($this->filledRowValues($row[$name]) as $value) {
+                    $values[$key][$value] = $value;
+                }
+            }
+        }
+
+        foreach ($values as $key => $fieldValues) {
+            $fields[$key]->hydrateState(array_values($fieldValues), $form, $request);
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function rowPrefillValues(FormData $form, Request $request): array
+    {
+        $name = $this->name();
+        $rows = $form->get($name);
+        $rows = is_array($rows) ? $rows : [];
+        $values = [];
+
+        foreach ($rows as $index => $row) {
+            $row = is_array($row) ? $row : [];
+            $scope = FormData::make($row);
+
+            foreach ($this->rowFields($row) as $child) {
+                if ($child->hasPrefill()) {
+                    $values["{$name}.{$index}.{$child->name()}"] = $child->resolvePrefillValue($scope, $form, $request);
+                }
+            }
+        }
+
+        return $values;
     }
 
     /**
@@ -147,9 +276,6 @@ abstract class RowsField extends Field implements ProvidesRowFields, ProvidesRow
         return $props;
     }
 
-    /**
-     * The row's uuid when it already carries a valid one, a fresh uuid otherwise.
-     */
     protected static function rowIdOf(mixed $row): string
     {
         $rowId = is_array($row) ? ($row[self::ROW_ID] ?? null) : null;
@@ -165,5 +291,37 @@ abstract class RowsField extends Field implements ProvidesRowFields, ProvidesRow
         $rows = $data->get($this->name);
 
         return is_array($rows) ? $rows : [];
+    }
+
+    /**
+     * @param  array<int, mixed>  $rows
+     * @return array<int, array<string, mixed>>
+     */
+    private function castRows(array $rows): array
+    {
+        return array_map(function (mixed $row): array {
+            $row = is_array($row) ? $row : [];
+            $cast = [];
+
+            foreach ($this->rowFields($row) as $child) {
+                $name = $child->name();
+                $cast[$name] = $child->castValue($row[$name] ?? null);
+            }
+
+            return $cast;
+        }, $rows);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function filledRowValues(mixed $value): array
+    {
+        $values = is_array($value) ? $value : [$value];
+
+        return array_values(array_filter(
+            array_map(static fn (mixed $item): string => (string) $item, $values),
+            static fn (string $item): bool => $item !== '',
+        ));
     }
 }

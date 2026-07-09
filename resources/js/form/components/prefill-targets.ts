@@ -1,5 +1,6 @@
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fieldProps } from "./field-props";
+import { rowSchemaFor } from "./fields/row-templates";
 import { appendPath, getPath } from "./form-path";
 import { buildOverrideKey, rowIdFrom } from "./override-keys";
 
@@ -15,18 +16,7 @@ type PrefillSnapshot = {
   values: Record<string, unknown>;
 };
 
-type RowTemplate = { type: string; label: string; schema: Node[] };
-
 const ROW_COLLECTION_TYPES = new Set(["field.builder", "field.repeater"]);
-
-/**
- * Registers a custom node type as a row collection so the prefill walker
- * recurses into its rows. Call once at module scope from the package or app
- * that ships the field.
- */
-export function registerRowCollectionType(type: string): void {
-  ROW_COLLECTION_TYPES.add(type);
-}
 
 export { getPath } from "./form-path";
 
@@ -88,15 +78,9 @@ export function collectPrefillTargets(
           const rows = Array.isArray(storedRows)
             ? (storedRows as Array<Record<string, unknown>>)
             : [];
-          const templates = (node as unknown as { templates?: RowTemplate[] }).templates;
-
           rows.forEach((childRow, childIndex) => {
-            const template = templates
-              ? (templates.find((t) => t.type === childRow.type)?.schema ?? [])
-              : (node.schema ?? []);
-
             walk(
-              template,
+              rowSchemaFor(node, childRow),
               appendPath(childCollectionPath, childIndex),
               appendPath(childIdentityCollectionPath, rowIdFrom(childRow) ?? childIndex),
               childIdentityCollectionPath,

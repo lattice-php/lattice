@@ -1,9 +1,9 @@
 export type RepeaterRow = Record<string, unknown>;
 
 /**
- * The reserved per-row identity key. Server-filled rows arrive with a uuid
- * under it, the client mints one for rows it creates, and it submits with the
- * row so validated data identifies every row across saves.
+ * Reserved per-row identity key: server-filled rows arrive with a uuid, the
+ * client mints one for rows it creates, and it submits with the row so
+ * validated data identifies every row.
  */
 export const ROW_ID_KEY = "rowId";
 
