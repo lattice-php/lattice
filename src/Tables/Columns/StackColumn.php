@@ -5,8 +5,10 @@ namespace Lattice\Lattice\Tables\Columns;
 
 use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
+use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
+#[AsColumn(ColumnType::Stack)]
 class StackColumn extends Column
 {
     use FiltersRenderableComponents;
@@ -26,24 +28,29 @@ class StackColumn extends Column
         return $this;
     }
 
-    #[\Override]
-    public function toData(): ColumnData
+    /**
+     * @return array<int, Column>
+     */
+    public function children(): array
     {
-        return new ColumnData(
-            key: $this->key,
-            label: $this->label,
-            type: ColumnType::Stack,
-            width: $this->resolvedWidth(),
-            align: $this->resolvedAlign(),
-            sortable: $this->sortableValue(),
-            toggleable: $this->toggleable ? true : null,
-            hiddenByDefault: $this->hiddenByDefault ? true : null,
-            filter: $this->filterValue(),
-            columns: array_map(
-                fn (Column $column): ColumnData => $column->toData(),
-                $this->renderableComponents($this->columns),
-            ),
+        return $this->columns;
+    }
+
+    /**
+     * @param  array<string, mixed>  $props
+     * @return array<string, mixed>
+     */
+    #[\Override]
+    protected function decorateProps(array $props): array
+    {
+        $props = parent::decorateProps($props);
+
+        $props['columns'] = array_map(
+            fn (Column $column): array => $column->jsonSerialize(),
+            array_values($this->renderableComponents($this->columns)),
         );
+
+        return $props;
     }
 
     #[\Override]

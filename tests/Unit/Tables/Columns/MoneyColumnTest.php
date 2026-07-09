@@ -8,10 +8,10 @@ it('serializes a static-currency money column', function (): void {
     $data = wire(MoneyColumn::make('total')->currency('EUR'));
 
     expect($data['type'])->toBe('column.money')
-        ->and($data['align'])->toBe('end')
+        ->and($data['props']['align'])->toBe('end')
         ->and($data['props']['currency'])->toBe('EUR')
         ->and($data['props']['currencyField'])->toBeNull()
-        ->and($data['filter'] ?? null)->toBeNull();
+        ->and($data['props']['filter'] ?? null)->toBeNull();
 });
 
 it('serializes a per-row currency reference', function (): void {
@@ -25,5 +25,5 @@ it('serializes a per-row currency reference', function (): void {
 it('filters money as a number', function (): void {
     $data = wire(MoneyColumn::make('total')->filterable());
 
-    expect($data['filter']['type'])->toBe(FilterType::Number->value);
+    expect($data['props']['filter']['type'])->toBe(FilterType::Number->value);
 });

@@ -10,8 +10,8 @@ use Lattice\Lattice\Core\Components\Concerns\SerializesToWire;
 use Lattice\Lattice\Core\Concerns\GatesRendering;
 use Lattice\Lattice\Core\Contracts\Renderable;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
-use Lattice\Lattice\Tables\Enums\ColumnType;
 
 /**
  * @phpstan-consistent-constructor
@@ -97,40 +97,6 @@ abstract class Column implements JsonSerializable, Renderable
         return [];
     }
 
-    /**
-     * Reflects the column's public properties into the wire shape, mirroring how
-     * components serialize their props. The common fields (key, label, type,
-     * width, sortable, filter) are built here; everything a column adds as a
-     * public property becomes a type-specific prop.
-     */
-    public function toData(): ColumnData
-    {
-        return new ColumnData(
-            key: $this->key,
-            label: $this->label,
-            type: $this->resolvedType(),
-            width: $this->resolvedWidth(),
-            align: $this->resolvedAlign(),
-            sortable: $this->sortableValue(),
-            toggleable: $this->toggleable ? true : null,
-            hiddenByDefault: $this->hiddenByDefault ? true : null,
-            filter: $this->filterValue(),
-            props: $this->decorateProps($this->wireProps()),
-        );
-    }
-
-    /**
-     * The column's type, hydrated from the #[AsColumn] attribute so it is
-     * declared once. Built-in types resolve to the ColumnType enum, custom
-     * types to their string.
-     */
-    protected function resolvedType(): ColumnType|string
-    {
-        $type = AsComponent::typeForClass(static::class);
-
-        return ColumnType::tryFrom($type) ?? $type;
-    }
-
     protected function resolvedWidth(): ColumnWidth
     {
         return $this->width ?? $this->defaultWidth();
@@ -175,8 +141,33 @@ abstract class Column implements JsonSerializable, Renderable
         );
     }
 
-    public function jsonSerialize(): ColumnData
+    /**
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array
     {
-        return $this->toData();
+        return [
+            'type' => AsComponent::typeForClass(static::class),
+            'key' => $this->key,
+            'props' => Wire::map($this->decorateProps($this->wireProps())),
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $props
+     * @return array<string, mixed>
+     */
+    protected function decorateProps(array $props): array
+    {
+        return [
+            ...$props,
+            'label' => $this->label,
+            'width' => $this->resolvedWidth()->value,
+            'align' => $this->resolvedAlign()->value,
+            'sortable' => $this->sortableValue(),
+            'toggleable' => $this->toggleable ? true : null,
+            'hiddenByDefault' => $this->hiddenByDefault ? true : null,
+            'filter' => $this->filterValue(),
+        ];
     }
 }

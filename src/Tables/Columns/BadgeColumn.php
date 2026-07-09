@@ -40,6 +40,8 @@ class BadgeColumn extends Column implements Filterable, Sortable
     #[\Override]
     protected function decorateProps(array $props): array
     {
+        $props = parent::decorateProps($props);
+
         if (is_array($props['colors'] ?? null)) {
             $props['colors'] = Wire::map($props['colors']);
         }

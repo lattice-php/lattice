@@ -32,13 +32,15 @@ it('serializes the table component wire shape', function (): void {
     expect($payload['props']['resizeIndicator'])->toBeFalse();
     expect($payload['props']['columns'][0])->toMatchArray([
         'key' => 'name',
-        'label' => 'Name',
         'type' => 'column.text',
+    ]);
+    expect($payload['props']['columns'][0]['props'])->toMatchArray([
+        'label' => 'Name',
         'width' => 'lg',
         'sortable' => true,
     ]);
-    expect($payload['props']['columns'][1]['width'])->toBe('md');
-    expect($payload['props']['columns'][0])->toHaveKey('filter');
+    expect($payload['props']['columns'][1]['props']['width'])->toBe('md');
+    expect($payload['props']['columns'][0]['props'])->toHaveKey('filter');
     expect($payload['props']['data'])->toBe([['name' => 'A'], ['name' => 'B']]);
     expect($payload['props']['state'])->toBe([
         'filters' => [],
@@ -81,7 +83,7 @@ it('narrows the offered operators when a column restricts them', function (): vo
 
     expect($column->availableOperators())->toBe([Op::Equals, Op::Contains]);
 
-    $filter = wire($column)['filter'];
+    $filter = wire($column)['props']['filter'];
 
     expect($filter['operators'])->toBe(['eq', 'contains'])
         ->and($filter['defaultOperator'])->toBe('eq');

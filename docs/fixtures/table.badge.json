@@ -6,60 +6,58 @@
             "bulkActions": [],
             "columns": [
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "reference",
-                    "label": "Reference",
                     "props": {
+                        "align": "start",
                         "badge": null,
                         "copyable": false,
                         "date": null,
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Reference",
                         "link": null,
-                        "multiple": null
+                        "multiple": null,
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.text",
-                    "width": "md"
+                    "type": "column.text"
                 },
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": {
-                        "clauseOptions": [],
-                        "control": null,
-                        "defaultOperator": "contains",
-                        "enabled": true,
-                        "multiple": false,
-                        "operators": [
-                            "contains",
-                            "starts_with",
-                            "ends_with",
-                            "eq",
-                            "neq",
-                            "empty",
-                            "filled"
-                        ],
-                        "options": [],
-                        "searchable": false,
-                        "type": "text"
-                    },
-                    "hiddenByDefault": null,
                     "key": "status",
-                    "label": "Status",
                     "props": {
+                        "align": "start",
                         "colors": {
                             "paid": "green",
                             "pending": "yellow",
                             "refunded": "gray"
-                        }
+                        },
+                        "filter": {
+                            "clauseOptions": [],
+                            "control": null,
+                            "defaultOperator": "contains",
+                            "enabled": true,
+                            "multiple": false,
+                            "operators": [
+                                "contains",
+                                "starts_with",
+                                "ends_with",
+                                "eq",
+                                "neq",
+                                "empty",
+                                "filled"
+                            ],
+                            "options": [],
+                            "searchable": false,
+                            "type": "text"
+                        },
+                        "hiddenByDefault": null,
+                        "label": "Status",
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.badge",
-                    "width": "md"
+                    "type": "column.badge"
                 }
             ],
             "data": [

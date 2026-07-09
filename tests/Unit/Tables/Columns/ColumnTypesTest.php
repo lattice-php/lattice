@@ -16,8 +16,8 @@ it('serializes a badge column with its colour map', function (): void {
     );
 
     expect($data['type'])->toBe('column.badge')
-        ->and($data['sortable'])->toBeTrue()
-        ->and($data['filter']['enabled'])->toBeTrue()
+        ->and($data['props']['sortable'])->toBeTrue()
+        ->and($data['props']['filter']['enabled'])->toBeTrue()
         ->and($data['props']['colors'])->toBe(['active' => 'green', 'archived' => 'red']);
 });
 
@@ -44,28 +44,21 @@ it('serializes an image column', function (): void {
     $data = wire(ImageColumn::make('avatar')->label('Avatar')->circular()->size(40));
 
     expect($data['type'])->toBe('column.image')
-        ->and($data['props'])->toBe(['circular' => true, 'size' => 40]);
+        ->and($data['props'])->toMatchArray(['circular' => true, 'size' => 40]);
 });
 
-it('serializes a boolean column with a boolean filter and no props', function (): void {
+it('serializes a boolean column with a boolean filter', function (): void {
     $data = wire(BooleanColumn::make('featured')->label('Featured')->filterable());
 
     expect($data['type'])->toBe('column.boolean')
-        ->and($data['props'])->toBe([])
-        ->and($data['filter']['type'])->toBe(FilterType::Boolean->value);
+        ->and($data['props']['filter']['type'])->toBe(FilterType::Boolean->value);
 });
 
 it('serializes a number column with a number filter and end alignment', function (): void {
     $data = wire(NumberColumn::make('price')->label('Price')->sortable()->filterable());
 
     expect($data['type'])->toBe('column.number')
-        ->and($data['align'])->toBe('end')
-        ->and($data['sortable'])->toBeTrue()
-        ->and($data['filter']['type'])->toBe(FilterType::Number->value);
-});
-
-it('serialises an empty prop bag as an empty object, not null', function (): void {
-    $wire = BooleanColumn::make('active')->toData()->jsonSerialize();
-
-    expect($wire['props'])->toEqual(new stdClass);
+        ->and($data['props']['align'])->toBe('end')
+        ->and($data['props']['sortable'])->toBeTrue()
+        ->and($data['props']['filter']['type'])->toBe(FilterType::Number->value);
 });

@@ -6,59 +6,56 @@
             "bulkActions": [],
             "columns": [
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "number",
-                    "label": "Invoice",
                     "props": {
+                        "align": "start",
                         "badge": null,
                         "copyable": false,
                         "date": null,
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Invoice",
                         "link": null,
-                        "multiple": null
+                        "multiple": null,
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.text",
-                    "width": "md"
+                    "type": "column.text"
                 },
                 {
-                    "align": "end",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "total",
-                    "label": "Total",
                     "props": {
+                        "align": "end",
                         "currency": "EUR",
                         "currencyField": null,
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Total",
                         "maximumFractionDigits": null,
-                        "minimumFractionDigits": null
+                        "minimumFractionDigits": null,
+                        "sortable": true,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": true,
-                    "toggleable": null,
-                    "type": "column.money",
-                    "width": "md"
+                    "type": "column.money"
                 },
                 {
-                    "align": "end",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "refunded",
-                    "label": "Refunded",
                     "props": {
+                        "align": "end",
                         "currency": null,
                         "currencyField": "currency",
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Refunded",
                         "maximumFractionDigits": null,
-                        "minimumFractionDigits": null
+                        "minimumFractionDigits": null,
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.money",
-                    "width": "md"
+                    "type": "column.money"
                 }
             ],
             "data": [

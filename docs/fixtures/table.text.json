@@ -6,70 +6,67 @@
             "bulkActions": [],
             "columns": [
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "name",
-                    "label": "Name",
                     "props": {
+                        "align": "start",
                         "badge": null,
                         "copyable": false,
                         "date": null,
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Name",
                         "link": {
                             "external": false,
                             "href": "/people/{value}"
                         },
-                        "multiple": null
+                        "multiple": null,
+                        "sortable": true,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": true,
-                    "toggleable": null,
-                    "type": "column.text",
-                    "width": "md"
+                    "type": "column.text"
                 },
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "email",
-                    "label": "Email",
                     "props": {
+                        "align": "start",
                         "badge": null,
                         "copyable": true,
                         "date": null,
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Email",
                         "link": {
                             "external": false,
                             "href": "mailto:{value}"
                         },
-                        "multiple": null
+                        "multiple": null,
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.text",
-                    "width": "md"
+                    "type": "column.text"
                 },
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "joined_at",
-                    "label": "Joined",
                     "props": {
+                        "align": "start",
                         "badge": null,
                         "copyable": false,
                         "date": {
                             "dateStyle": "medium",
                             "timeStyle": null
                         },
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Joined",
                         "link": null,
-                        "multiple": null
+                        "multiple": null,
+                        "sortable": true,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": true,
-                    "toggleable": null,
-                    "type": "column.text",
-                    "width": "md"
+                    "type": "column.text"
                 }
             ],
             "data": [
