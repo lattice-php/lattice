@@ -435,6 +435,7 @@ export type EffectPropsMap = {
 };
 export type FieldType =
   | "field.builder"
+  | "field.block-editor"
   | "field.checkbox"
   | "field.choice"
   | "field.date-input"

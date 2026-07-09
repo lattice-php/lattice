@@ -11,6 +11,7 @@ enum FieldType: string
     private const string Prefix = 'field.';
 
     case Builder = 'field.builder';
+    case BlockEditor = 'field.block-editor';
     case Checkbox = 'field.checkbox';
     case Choice = 'field.choice';
     case DateInput = 'field.date-input';
