@@ -9,10 +9,12 @@ use Illuminate\Support\Collection;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Filterable;
 use Lattice\Lattice\Tables\Columns\Sortable;
 use Lattice\Lattice\Tables\Filters\BaseFilter;
+use stdClass;
 
 #[TypeScript]
 final readonly class TableQuery implements JsonSerializable
@@ -63,7 +65,7 @@ final readonly class TableQuery implements JsonSerializable
     }
 
     /**
-     * @return array{filters: array<int, FilterClause>, sorts: array<int, TableSort>, page: int, perPage: int, tableFilters: array<string, mixed>}
+     * @return array{filters: array<int, FilterClause>, sorts: array<int, TableSort>, page: int, perPage: int, tableFilters: array<string, mixed>|stdClass}
      */
     public function jsonSerialize(): array
     {
@@ -72,7 +74,7 @@ final readonly class TableQuery implements JsonSerializable
             'sorts' => $this->sorts,
             'page' => $this->page,
             'perPage' => $this->perPage,
-            'tableFilters' => $this->tableFilters,
+            'tableFilters' => Wire::map($this->tableFilters),
         ];
     }
 

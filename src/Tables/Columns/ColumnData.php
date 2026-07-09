@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Tables\Columns;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
@@ -51,7 +52,7 @@ final readonly class ColumnData implements JsonSerializable
             'hiddenByDefault' => $this->hiddenByDefault,
             'filter' => $this->filter,
             'columns' => $this->columns,
-            'props' => $this->props,
+            'props' => Wire::map($this->props),
         ];
     }
 }

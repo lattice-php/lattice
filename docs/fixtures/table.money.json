@@ -98,7 +98,7 @@
                 "page": 1,
                 "perPage": 25,
                 "sorts": [],
-                "tableFilters": []
+                "tableFilters": {}
             },
             "striped": null
         },

@@ -11,6 +11,7 @@ use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tests\BrowserTestCase;
 use Lattice\Lattice\Tests\TestCase;
@@ -128,6 +129,16 @@ function workbenchTestUser(array $attributes = []): User
 function wire(mixed $value): array
 {
     return json_decode(json_encode($value, JSON_THROW_ON_ERROR), true);
+}
+
+/**
+ * The raw JSON a wire object encodes to, with no decode round-trip — the only
+ * way to observe the `{}` vs `[]` distinction an assoc decode (see wire())
+ * collapses.
+ */
+function wireJson(mixed $value): string
+{
+    return json_encode($value, JSON_THROW_ON_ERROR);
 }
 
 /**
@@ -273,11 +284,14 @@ function latticeGet(string $url, string $ref): TestResponse
  * the committed fixtures stable for the CI guard. List order (nodes, options,
  * conditions) is preserved.
  *
+ * Materializes object-preserving (Wire::toWire(), not the assoc wire()) so an
+ * empty map reaches the fixture as `{}` rather than collapsing to `[]`.
+ *
  * @param  array<int, mixed>  $nodes
  */
 function dumpFixture(string $key, array $nodes): void
 {
-    $normalized = wire($nodes);
+    $normalized = Wire::toWire($nodes);
 
     file_put_contents(
         dirname(__DIR__).'/docs/fixtures/'.$key.'.json',
@@ -290,9 +304,19 @@ function dumpFixture(string $key, array $nodes): void
  * props. The ref is encrypted with a random IV and a time-based expiry, so it
  * differs every run; a committed fixture must stay stable, and the static docs
  * preview never calls an endpoint, so the ref is unused there.
+ *
+ * Recurses over stdClass (a wire map, see Wire::toWire()) as well as arrays;
+ * list order is untouched either way.
  */
 function stripFixtureRefs(mixed $value): mixed
 {
+    if ($value instanceof stdClass) {
+        $properties = (array) $value;
+        unset($properties['ref']);
+
+        return (object) array_map(stripFixtureRefs(...), $properties);
+    }
+
     if (! is_array($value)) {
         return $value;
     }
@@ -304,6 +328,13 @@ function stripFixtureRefs(mixed $value): mixed
 
 function sortFixtureKeys(mixed $value): mixed
 {
+    if ($value instanceof stdClass) {
+        $properties = (array) $value;
+        ksort($properties);
+
+        return (object) array_map(sortFixtureKeys(...), $properties);
+    }
+
     if (! is_array($value)) {
         return $value;
     }

@@ -10,6 +10,7 @@ use Lattice\Lattice\Core\Components\Concerns\HasDataBindings;
 use Lattice\Lattice\Core\Components\Concerns\SerializesToWire;
 use Lattice\Lattice\Core\Concerns\GatesRendering;
 use Lattice\Lattice\Core\Contracts\Renderable;
+use Lattice\Lattice\Support\Wire;
 use ReflectionMethod;
 use Spatie\Attributes\Attributes;
 use Spatie\Attributes\AttributeTarget;
@@ -86,7 +87,7 @@ abstract class Component implements JsonSerializable, Renderable
     {
         return [
             ...$data,
-            'props' => $this->decorateProps($this->wireProps()),
+            'props' => Wire::map($this->decorateProps($this->wireProps())),
         ];
     }
 
