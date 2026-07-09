@@ -42,9 +42,11 @@ trait HandlesRowSchemas
 
                 $childRules = $child->resolvedRulesWithRequired($scope, $request);
 
-                if ($childRules !== []) {
-                    $rules["{$name}.{$index}.{$child->name()}"] = $childRules;
-                }
+                // A rule entry must exist for every declared child, even one with no
+                // constraints: Laravel's validated() only returns keys present in the
+                // rule set, and excludeUnvalidatedArrayKeys strips a row's unruled keys
+                // once any sibling (e.g. Builder's `type`) has its own rule.
+                $rules["{$name}.{$index}.{$child->name()}"] = $childRules !== [] ? $childRules : ['sometimes', 'nullable'];
             }
         }
 
