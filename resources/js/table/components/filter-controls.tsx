@@ -1,22 +1,22 @@
 import { useCallback, useMemo, useRef } from "react";
 import type { ReactNode } from "react";
-import { Checkbox } from "@lattice-php/lattice/core/components/checkbox";
+import { Checkbox } from "@lattice-php/lattice/ui/checkbox";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import type { Node, Option } from "@lattice-php/lattice/core/types";
-import { FormProvider } from "@lattice-php/lattice/form/components/context";
-import { FieldCommitOverrideProvider } from "@lattice-php/lattice/form/components/use-field-commit";
-import { getPath, setPath } from "@lattice-php/lattice/form/components/form-path";
-import { PrefillProvider } from "@lattice-php/lattice/form/components/prefill-context";
-import { ResolvedNodesProvider } from "@lattice-php/lattice/form/components/resolved-nodes";
+import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
+import { FieldCommitOverrideProvider } from "@lattice-php/lattice/form/hooks/use-field-commit";
+import { getPath, setPath } from "@lattice-php/lattice/form/lib/form-path";
+import { PrefillProvider } from "@lattice-php/lattice/form/hooks/prefill-context";
+import { ResolvedNodesProvider } from "@lattice-php/lattice/form/hooks/resolved-nodes";
 import {
   FormValuesProvider,
   useFormValues,
   useSetFormValue,
-} from "@lattice-php/lattice/form/components/values";
+} from "@lattice-php/lattice/form/hooks/values";
 import { Icon } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { FilterData } from "@lattice-php/lattice/types/generated";
-import { filterValue, isActiveFilterValue } from "../filter-values";
+import { filterValue, isActiveFilterValue } from "../lib/filter-values";
 
 export type FilterOptionSearch = (
   field: string,

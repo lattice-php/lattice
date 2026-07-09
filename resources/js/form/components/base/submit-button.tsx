@@ -1,7 +1,7 @@
-import { Button } from "@lattice-php/lattice/core/components/button";
-import { Spinner } from "@lattice-php/lattice/core/components/spinner";
+import { Button } from "@lattice-php/lattice/ui/button";
+import { Spinner } from "@lattice-php/lattice/ui/spinner";
 import type { ButtonVariant } from "@lattice-php/lattice/types/generated";
-import { useFormContext } from "../context";
+import { useFormContext } from "../../hooks/context";
 
 export function FormSubmitButton({
   label,

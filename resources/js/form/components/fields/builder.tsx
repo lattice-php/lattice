@@ -1,8 +1,8 @@
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { useT } from "@lattice-php/lattice/i18n";
 import { FormFieldFrame } from "../base/field";
-import { useFormContext } from "../context";
-import { useDependentField } from "../use-dependent-field";
+import { useFormContext } from "../../hooks/context";
+import { useDependentField } from "../../hooks/use-dependent-field";
 import { AddRowMenu, type AddRowOption } from "./add-row-menu";
 import { ROW_ID_KEY } from "./repeater-rows";
 import { buildRowActions } from "./row-action-menu";

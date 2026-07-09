@@ -1,6 +1,6 @@
 export { registry } from "./registry";
-export { useChat } from "./chat/use-chat";
-export { chatComponents } from "./chat";
+export { useChat } from "./chat/hooks/use-chat";
+export { chatComponents } from "./chat/plugin";
 export {
   getActionEffects,
   isActionEffect,
@@ -38,7 +38,7 @@ export {
   lazyComponent,
 } from "./core/registry";
 export type { Plugin, Registry } from "./core/registry";
-export type { UseChatOptions } from "./chat/use-chat";
+export type { UseChatOptions } from "./chat/hooks/use-chat";
 export type {
   ChatFrame,
   ChatMessage,
@@ -52,7 +52,7 @@ export { Renderer } from "./core/renderer";
 export { LATTICE_REF_HEADER, withRefHeader } from "./core/component-ref";
 export { withHeaders } from "./core/headers";
 export { LATTICE_EVENT } from "./events/event-names";
-export type { ButtonVariant } from "./core/components/button";
+export type { ButtonVariant } from "./ui/button";
 export type { ReloadComponentEvent } from "./events/event-names";
 export type {
   ComponentProps,

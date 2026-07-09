@@ -1,7 +1,7 @@
 import type { Node } from "@lattice-php/lattice/core/types";
 import ActionComponent from "@lattice-php/lattice/action/components/action";
 import ActionGroupComponent from "@lattice-php/lattice/action/components/action-group";
-import LinkComponent from "@lattice-php/lattice/core/components/link";
+import LinkComponent from "@lattice-php/lattice/ui/link";
 
 export function TableActionNode({ node }: { node: Node }) {
   if (node.type === "action") {

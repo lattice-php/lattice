@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { copyToClipboard, useClipboard } from "./index";
+import { copyToClipboard, useClipboard } from ".";
 
 function stubClipboard(writeText: ((text: string) => Promise<void>) | undefined) {
   Object.defineProperty(navigator, "clipboard", {

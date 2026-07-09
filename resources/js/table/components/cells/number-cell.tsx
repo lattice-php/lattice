@@ -1,7 +1,7 @@
 import { useLocale } from "@lattice-php/lattice/i18n";
 import { formatNumber } from "../../../format/number";
 import { numericValue } from "../../../format/numeric";
-import { formatCell } from "../../format";
+import { formatCell } from "../../lib/format";
 import type { ColumnCellComponent } from "../../registry";
 
 export const NumberCell: ColumnCellComponent<"column.number"> = ({ column, props, value }) => {

@@ -1,6 +1,6 @@
 import { useCallback, useLayoutEffect } from "react";
-import { useFieldScope } from "../field-scope";
-import { useFormValue, useSetFormValue } from "../values";
+import { useFieldScope } from "../../hooks/field-scope";
+import { useFormValue, useSetFormValue } from "../../hooks/values";
 import {
   duplicateRow,
   ensureRowIds,

@@ -11,11 +11,11 @@ import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
-import { useFormContext } from "../context";
-import { useFieldScope } from "../field-scope";
-import { useDependentField } from "../use-dependent-field";
-import { useFieldCommit } from "../use-field-commit";
-import { useFormValue } from "../values";
+import { useFormContext } from "../../hooks/context";
+import { useFieldScope } from "../../hooks/field-scope";
+import { useDependentField } from "../../hooks/use-dependent-field";
+import { useFieldCommit } from "../../hooks/use-field-commit";
+import { useFormValue } from "../../hooks/values";
 
 type ToolbarItem =
   | "separator"

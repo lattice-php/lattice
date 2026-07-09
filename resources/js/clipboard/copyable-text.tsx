@@ -1,7 +1,7 @@
 import { useT } from "@lattice-php/lattice/i18n";
 import { Icon } from "@lattice-php/lattice/icons";
 import { type ReactNode, useEffect, useState } from "react";
-import { copyToClipboard } from "./index";
+import { copyToClipboard } from ".";
 
 interface CopyableTextProps {
   value: string;

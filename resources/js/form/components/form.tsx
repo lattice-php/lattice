@@ -4,12 +4,12 @@ import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { useEffect, useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
-import { FormProvider } from "./context";
-import { walkFields } from "./field-props";
-import { PrefillProvider } from "./prefill-context";
-import { ResolvedNodesProvider } from "./resolved-nodes";
-import { useFormResolver } from "./use-form-resolver";
-import { FormValuesProvider } from "./values";
+import { FormProvider } from "../hooks/context";
+import { walkFields } from "../lib/field-props";
+import { PrefillProvider } from "../hooks/prefill-context";
+import { ResolvedNodesProvider } from "../hooks/resolved-nodes";
+import { useFormResolver } from "../hooks/use-form-resolver";
+import { FormValuesProvider } from "../hooks/values";
 
 type CollectedFields = {
   labels: Record<string, string>;

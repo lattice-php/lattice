@@ -5,7 +5,7 @@ import type { Node } from "@lattice-php/lattice/core/types";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { RowAction as WireRowAction } from "@lattice-php/lattice/types/generated";
-import { FieldScopeProvider } from "../field-scope";
+import { FieldScopeProvider } from "../../hooks/field-scope";
 import { buildRowActions } from "./row-action-menu";
 import { RowActions } from "./row-actions";
 import type { RepeaterRow } from "./repeater-rows";

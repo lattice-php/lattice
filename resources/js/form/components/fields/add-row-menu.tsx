@@ -4,7 +4,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@lattice-php/lattice/core/components/dropdown-menu";
+} from "@lattice-php/lattice/ui/dropdown-menu";
 
 export type AddRowOption = { type: string; label: string };
 

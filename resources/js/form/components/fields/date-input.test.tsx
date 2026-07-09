@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { setLocale } from "@lattice-php/lattice/i18n/locale";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { FormValuesProvider } from "../values";
+import { FormValuesProvider } from "../../hooks/values";
 import { DateInputComponent } from "./date-input";
 
 function renderField(node: Node<"field.date-input">, initial: Record<string, unknown> = {}) {

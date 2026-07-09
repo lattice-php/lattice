@@ -1,5 +1,5 @@
 import { Icon } from "@lattice-php/lattice/icons";
-import { getSortDirectionLabel } from "../query";
+import { getSortDirectionLabel } from "../lib/query";
 import type { TableColumn, TableSort, TableState } from "../types";
 
 export function SortBar({

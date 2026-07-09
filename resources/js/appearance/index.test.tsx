@@ -49,7 +49,7 @@ function stubColorScheme(initialMatches: boolean) {
 it("updates subscribers when the system theme changes in system mode", async () => {
   const colorScheme = stubColorScheme(false);
   localStorage.setItem("appearance", "system");
-  const { initializeTheme, useAppearance } = await import("./index");
+  const { initializeTheme, useAppearance } = await import(".");
 
   function Probe() {
     const { resolvedAppearance } = useAppearance();

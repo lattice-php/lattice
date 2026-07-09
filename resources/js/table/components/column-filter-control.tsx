@@ -1,10 +1,6 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { useState } from "react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@lattice-php/lattice/core/components/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/lattice/ui/popover";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type {
@@ -14,8 +10,8 @@ import type {
   Option,
   Op,
 } from "@lattice-php/lattice/types/generated";
-import { filterValue } from "../filter-values";
-import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
+import { filterValue } from "../lib/filter-values";
+import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../lib/query";
 import type { FilterClause, TableColumn } from "../types";
 import { TableFilterControl } from "./filter-controls";
 import { fieldClass, FilterValueInput } from "./filter-value-input";

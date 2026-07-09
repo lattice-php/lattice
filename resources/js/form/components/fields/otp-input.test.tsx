@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { FormValuesProvider } from "../values";
+import { FormValuesProvider } from "../../hooks/values";
 import { OtpInputComponent } from "./otp-input";
 
 function renderField(node: Node<"field.otp">, initial: Record<string, unknown> = {}) {

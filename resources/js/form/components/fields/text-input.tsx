@@ -1,6 +1,6 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { AffixGroup } from "../base/affix-group";
-import { Input } from "../base/input";
+import { AffixGroup } from "../../../ui/affix-group";
+import { Input } from "../../../ui/input";
 import { SimpleField } from "./simple-field";
 
 export const TextInputComponent: RendererComponent<"field.text-input"> = ({ node }) => {

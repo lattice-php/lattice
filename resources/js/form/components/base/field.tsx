@@ -1,9 +1,9 @@
-import InputError from "@lattice-php/lattice/form/components/base/input-error";
-import { InfoTooltip } from "@lattice-php/lattice/core/components/info-tooltip";
-import { TextLink } from "@lattice-php/lattice/core/components/link";
-import { Label } from "@lattice-php/lattice/form/components/base/label";
-import { useInTableCell } from "../row-layout-context";
-import type { FormLabelAction } from "../types";
+import InputError from "@lattice-php/lattice/ui/input-error";
+import { InfoTooltip } from "@lattice-php/lattice/ui/info-tooltip";
+import { TextLink } from "@lattice-php/lattice/ui/link";
+import { Label } from "@lattice-php/lattice/ui/label";
+import { useInTableCell } from "../../hooks/row-layout-context";
+import type { FormLabelAction } from "../../types";
 
 export function FormFieldFrame({
   children,

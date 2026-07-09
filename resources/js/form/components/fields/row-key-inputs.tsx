@@ -1,4 +1,4 @@
-import { appendPath, toHtmlName } from "../form-path";
+import { appendPath, toHtmlName } from "../../lib/form-path";
 import { ROW_ID_KEY, type RepeaterRow } from "./repeater-rows";
 
 /** Inertia serializes the live DOM on submit, so reserved row keys must be mounted as inputs. */

@@ -1,10 +1,10 @@
 import { Icon } from "@lattice-php/lattice/icons";
-import { Button } from "@lattice-php/lattice/core/components/button";
+import { Button } from "@lattice-php/lattice/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@lattice-php/lattice/core/components/dropdown-menu";
+} from "@lattice-php/lattice/ui/dropdown-menu";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";

@@ -1,5 +1,5 @@
 import { cn } from "@lattice-php/lattice/lib/utils";
-import { formatCell } from "../../format";
+import { formatCell } from "../../lib/format";
 import type { ColumnCellComponent } from "../../registry";
 
 export const BadgeCell: ColumnCellComponent<"column.badge"> = ({ column, props, value }) => {

@@ -1,0 +1,126 @@
+import { router, useHttp } from "@inertiajs/react";
+import type { Method } from "@inertiajs/core";
+import { useState } from "react";
+import type { ReactNode } from "react";
+import { ConfirmDialog } from "@lattice-php/lattice/ui/confirm-dialog";
+import { withHeaders } from "@lattice-php/lattice/core/headers";
+import type { Node } from "@lattice-php/lattice/core/types";
+import { getActionEffects } from "@lattice-php/lattice/effects/dispatch";
+import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
+import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
+import { runAction } from "../lib/run-action";
+import { ActionForm, useLazyActionForm } from "../components/action-form";
+
+type UseAction = {
+  /** Whether the action request is in flight. */
+  processing: boolean;
+  /** Gate then run the action: open the form, confirm, or dispatch directly. */
+  requestSubmit: () => void;
+  /** The confirm dialog and action form rendered next to the trigger. */
+  overlays: ReactNode;
+};
+
+/**
+ * The shared action machinery behind the Action button, action menu items, and
+ * action links: it gates submission (form → modal, confirmation → confirm,
+ * otherwise dispatch) and renders the matching overlays. The host owns the
+ * trigger element so each surface keeps its own styling.
+ */
+export function useAction(node: Node<"action">): UseAction {
+  const endpoint = node.props.endpoint ?? "";
+  const componentRef = node.props.ref ?? "";
+  const method: Method = node.props.method ?? "post";
+  const label = node.props.label ?? "Run action";
+  const variant = node.props.variant ?? "default";
+  const confirmation = node.props.confirmation;
+  const inlineForm = node.props.form;
+  const lazyForm = node.props.lazyForm === true;
+  const hasForm = Boolean(inlineForm) || lazyForm;
+
+  const http = useHttp<Record<string, never>, ActionResponse>({});
+  const dispatch = useEffectDispatcher();
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [isFilling, setIsFilling] = useState(false);
+  const lazyNode = useLazyActionForm(endpoint, componentRef, isFilling && lazyForm);
+  const formNode = lazyForm ? lazyNode : inlineForm;
+
+  const submit = async (): Promise<void> => {
+    if (!endpoint) {
+      return;
+    }
+
+    if (method === "get") {
+      router.visit(endpoint, { headers: withHeaders(componentRef) });
+      setIsConfirming(false);
+
+      return;
+    }
+
+    const ok = await runAction(
+      () => http[method](endpoint, { headers: withHeaders(componentRef) }),
+      dispatch,
+    );
+
+    if (ok) {
+      setIsConfirming(false);
+    }
+  };
+
+  const requestSubmit = (): void => {
+    if (hasForm) {
+      setIsFilling(true);
+
+      return;
+    }
+
+    if (confirmation) {
+      setIsConfirming(true);
+
+      return;
+    }
+
+    void submit();
+  };
+
+  const confirmationTitle = confirmation?.title ?? label;
+  const confirmationConfirmLabel = confirmation?.confirmLabel ?? label;
+  const confirmationCancelLabel = confirmation?.cancelLabel ?? "Cancel";
+
+  const overlays = (
+    <>
+      {isConfirming && confirmation && (
+        <ConfirmDialog
+          title={confirmationTitle}
+          description={confirmation.description ?? undefined}
+          confirmLabel={confirmationConfirmLabel}
+          cancelLabel={confirmationCancelLabel}
+          confirmVariant={variant}
+          processing={http.processing}
+          confirmDisabled={!endpoint}
+          onConfirm={() => void submit()}
+          onCancel={() => setIsConfirming(false)}
+        />
+      )}
+
+      {isFilling && hasForm && (
+        <ActionForm
+          cancelLabel={confirmationCancelLabel}
+          componentRef={componentRef}
+          description={confirmation?.description ?? undefined}
+          endpoint={endpoint}
+          formNode={formNode}
+          method={method}
+          onClose={() => setIsFilling(false)}
+          onSuccess={(response) => {
+            dispatch(getActionEffects(response.effects));
+            setIsFilling(false);
+          }}
+          submitLabel={confirmationConfirmLabel}
+          title={confirmationTitle}
+        />
+      )}
+    </>
+  );
+
+  return { processing: http.processing, requestSubmit, overlays };
+}
