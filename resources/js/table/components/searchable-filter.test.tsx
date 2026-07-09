@@ -165,7 +165,9 @@ describe("searchable select filter", () => {
 
     await waitFor(() => {
       expect(
-        fetch.mock.calls.some((call) => String(call[0]).includes("_search=author.value&q=ad")),
+        fetch.mock.calls.some((call) =>
+          String(call[0]).includes("_search=filter%3Aauthor.value&q=ad"),
+        ),
       ).toBe(true);
     });
   });

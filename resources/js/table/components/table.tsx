@@ -23,7 +23,6 @@ import { ColumnFilterControl } from "./column-filter-control";
 import { ColumnHeader } from "./column-header";
 import { ColumnVisibilityMenu } from "./column-visibility-menu";
 import { FilterBar, FilterMenu } from "./filter-bar";
-import { FilterStackBar } from "./filter-stack-bar";
 import { TablePagination } from "./pagination";
 import { SortBar } from "./sort-bar";
 import { TableActionNode } from "./table-action-node";
@@ -99,7 +98,6 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     [node.props?.filters],
   );
   const hasDedicatedFilters = filterDefinitions.length > 0;
-  const hasActiveFilters = filters.length > 0 || Object.keys(tableFilters).length > 0;
   const hasTrailingUtility = hasActions || hasDedicatedFilters || hasToggleableColumns;
   const sizingColumns = useMemo(() => getTableSizingColumns(visibleColumns), [visibleColumns]);
   const utilityTracks = useMemo(
@@ -139,15 +137,15 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
         data-slot="table-scroll"
         className="overflow-x-auto rounded-lt-sm border border-lt-border"
       >
-        {hasDedicatedFilters && hasActiveFilters && (
-          <FilterBar
-            indicators={state.tableFilterIndicators}
-            processing={processing}
-            hasActiveFilters={hasActiveFilters}
-            onChange={setTableFilter}
-            onReset={resetFilters}
-          />
-        )}
+        <FilterBar
+          clauses={filters}
+          columnsByKey={columnsByKey}
+          indicators={state.tableFilterIndicators}
+          processing={processing}
+          onRemoveClause={removeFilter}
+          onChange={setTableFilter}
+          onReset={resetFilters}
+        />
         {hasBulkActions && selection.active && (
           <BulkBar
             actions={bulkActions}
@@ -163,14 +161,6 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             }
             onSelectAllMatching={selection.selectAllMatching}
             onCompleted={selection.clear}
-          />
-        )}
-        {filters.length > 0 && (
-          <FilterStackBar
-            filters={filters}
-            columnsByKey={columnsByKey}
-            processing={processing}
-            onRemove={removeFilter}
           />
         )}
         {state.sorts.length > 0 && (
@@ -261,7 +251,9 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                         onUpdate={updateFilter}
                         onRemove={removeFilter}
                         onReplace={replaceColumnFilters}
-                        onSearch={(query, signal) => searchFilterOptions(column.key, query, signal)}
+                        onSearch={(query, signal) =>
+                          searchFilterOptions(`column:${column.key}`, query, signal)
+                        }
                       />
                     )}
                   </div>

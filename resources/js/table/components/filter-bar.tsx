@@ -7,59 +7,64 @@ import {
 import { useT } from "@lattice-php/lattice/i18n";
 import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
 import { isActiveFilterValue } from "../filter-values";
-import type { TableFilterIndicator } from "../types";
+import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
+import type { FilterClause, TableColumn, TableFilterIndicator } from "../types";
 import { TableFilterControl } from "./filter-controls";
 
 export function FilterBar({
+  clauses,
+  columnsByKey,
   indicators,
   processing,
-  hasActiveFilters,
+  onRemoveClause,
   onChange,
   onReset,
 }: {
+  clauses: FilterClause[];
+  columnsByKey: Map<string, TableColumn>;
   indicators: TableFilterIndicator[];
   processing: boolean;
-  hasActiveFilters: boolean;
+  onRemoveClause: (index: number) => void;
   onChange: (key: string, value: unknown) => void;
   onReset: () => void;
 }) {
   const { t } = useT("lattice");
 
-  if (!hasActiveFilters || indicators.length === 0) {
+  if (clauses.length === 0 && indicators.length === 0) {
     return null;
   }
 
   return (
     <div className="border-b border-lt-border px-4 py-3">
       <div className="flex flex-wrap items-center gap-2 text-sm">
+        {clauses.map((clause, index) => {
+          const label = columnsByKey.get(clause.field)?.props.label ?? clause.field;
+          const valueless = VALUELESS_FILTER_OPERATORS.has(clause.operator);
+
+          return (
+            <FilterChip
+              key={`${clause.field}-${clause.operator}-${index}`}
+              label={`${label} ${operatorLabel(clause.operator)}`}
+              value={valueless ? "" : clause.value}
+              removeTestId={`filter-chip-${clause.field}-remove`}
+              removeLabel={t("table.filter.remove", "Remove {{label}} filter", { label })}
+              processing={processing}
+              onRemove={() => onRemoveClause(index)}
+            />
+          );
+        })}
         {indicators.map((indicator) => (
-          <span
+          <FilterChip
             key={`${indicator.filter}:${indicator.label}:${indicator.value}`}
-            className="inline-flex items-center gap-1.5 rounded-lt-sm bg-lt-muted px-2 py-1"
-          >
-            <span>
-              {indicator.value === "" ? (
-                <span className="font-semibold">{indicator.label}</span>
-              ) : (
-                <>
-                  {`${indicator.label}: `}
-                  <span className="font-semibold">{indicator.value}</span>
-                </>
-              )}
-            </span>
-            <button
-              type="button"
-              data-test={`table-filter-chip-${indicator.filter}-remove`}
-              className="inline-flex size-5 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-border disabled:opacity-50"
-              disabled={processing}
-              aria-label={t("table.filter.remove", "Remove {{label}} filter", {
-                label: indicator.label,
-              })}
-              onClick={() => onChange(indicator.filter, undefined)}
-            >
-              <Icon name="x" aria-hidden="true" className="size-lt-icon-sm" />
-            </button>
-          </span>
+            label={indicator.label}
+            value={indicator.value}
+            removeTestId={`table-filter-chip-${indicator.filter}-remove`}
+            removeLabel={t("table.filter.remove", "Remove {{label}} filter", {
+              label: indicator.label,
+            })}
+            processing={processing}
+            onRemove={() => onChange(indicator.filter, undefined)}
+          />
         ))}
         <button
           type="button"
@@ -72,6 +77,47 @@ export function FilterBar({
         </button>
       </div>
     </div>
+  );
+}
+
+function FilterChip({
+  label,
+  value,
+  removeTestId,
+  removeLabel,
+  processing,
+  onRemove,
+}: {
+  label: string;
+  value: string;
+  removeTestId: string;
+  removeLabel: string;
+  processing: boolean;
+  onRemove: () => void;
+}) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-lt-sm bg-lt-muted px-2 py-1">
+      <span>
+        {value === "" ? (
+          <span className="font-semibold">{label}</span>
+        ) : (
+          <>
+            {`${label}: `}
+            <span className="font-semibold">{value}</span>
+          </>
+        )}
+      </span>
+      <button
+        type="button"
+        data-test={removeTestId}
+        className="inline-flex size-5 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-border disabled:opacity-50"
+        disabled={processing}
+        aria-label={removeLabel}
+        onClick={onRemove}
+      >
+        <Icon name="x" aria-hidden="true" className="size-lt-icon-sm" />
+      </button>
+    </span>
   );
 }
 
@@ -121,7 +167,8 @@ export function FilterMenu({
                 onChange={(value) => onChange(filter.key, value)}
                 onSearch={
                   onSearch
-                    ? (field, query, signal) => onSearch(`${filter.key}.${field}`, query, signal)
+                    ? (field, query, signal) =>
+                        onSearch(`filter:${filter.key}.${field}`, query, signal)
                     : undefined
                 }
               />

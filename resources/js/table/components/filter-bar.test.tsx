@@ -1,6 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { FilterData } from "@lattice-php/lattice/types/generated";
+import type { TableColumn } from "../types";
 import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { FilterBar, FilterMenu } from "./filter-bar";
@@ -44,15 +45,32 @@ const toggleFilter: FilterData = {
   props: {},
 };
 
+const nameColumn: TableColumn = {
+  key: "name",
+  type: "column.text",
+  props: {
+    label: "Name",
+    width: "md",
+    align: "start",
+    sortable: false,
+    toggleable: false,
+    hiddenByDefault: false,
+    filter: null,
+  },
+};
+
 function renderBar(props: Partial<Parameters<typeof FilterBar>[0]> = {}) {
   const onChange = vi.fn<(key: string, value: unknown) => void>();
+  const onRemoveClause = vi.fn<(index: number) => void>();
   const onReset = vi.fn<() => void>();
 
   renderWithRegistry(
     <FilterBar
+      clauses={[]}
+      columnsByKey={new Map()}
       indicators={[]}
       processing={false}
-      hasActiveFilters={false}
+      onRemoveClause={onRemoveClause}
       onChange={onChange}
       onReset={onReset}
       {...props}
@@ -60,7 +78,7 @@ function renderBar(props: Partial<Parameters<typeof FilterBar>[0]> = {}) {
     registry,
   );
 
-  return { onChange, onReset };
+  return { onChange, onRemoveClause, onReset };
 }
 
 function renderMenu(props: Partial<Parameters<typeof FilterMenu>[0]> = {}) {
@@ -105,7 +123,6 @@ describe("FilterBar", () => {
   it("renders an active-value chip whose remove clears the filter", () => {
     const { onChange } = renderBar({
       indicators: [{ filter: "status", label: "Status", value: "Active" }],
-      hasActiveFilters: true,
     });
 
     const remove = screen.getByRole("button", { name: "Remove Status filter" });
@@ -116,10 +133,40 @@ describe("FilterBar", () => {
     expect(onChange).toHaveBeenCalledWith("status", undefined);
   });
 
+  it("renders a column-filter chip whose remove drops the clause", () => {
+    const { onRemoveClause } = renderBar({
+      clauses: [{ field: "name", operator: "contains", value: "Ada" }],
+      columnsByKey: new Map([["name", nameColumn]]),
+    });
+
+    expect(screen.getByText("Ada")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Remove Name filter" }));
+
+    expect(onRemoveClause).toHaveBeenCalledWith(0);
+  });
+
+  it("shows column and dedicated chips side by side with one reset", () => {
+    renderBar({
+      clauses: [{ field: "name", operator: "contains", value: "Ada" }],
+      columnsByKey: new Map([["name", nameColumn]]),
+      indicators: [{ filter: "status", label: "Status", value: "Active" }],
+    });
+
+    expect(screen.getByRole("button", { name: "Remove Name filter" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Remove Status filter" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "Reset all" })).toHaveLength(1);
+  });
+
+  it("renders nothing while no filter is active", () => {
+    renderBar();
+
+    expect(screen.queryByRole("button", { name: "Reset all" })).not.toBeInTheDocument();
+  });
+
   it("resets all filters", () => {
     const { onReset } = renderBar({
       indicators: [{ filter: "status", label: "Status", value: "Active" }],
-      hasActiveFilters: true,
     });
 
     fireEvent.click(screen.getByRole("button", { name: "Reset all" }));

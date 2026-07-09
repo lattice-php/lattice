@@ -69,7 +69,7 @@ test('a table rejects a filter key that is not declared', function (): void {
 test('a table searches a searchable filter\'s options through the endpoint', function (): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
-    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'author.value', 'q' => 'ad'])
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'filter:author.value', 'q' => 'ad'])
         ->assertOk()
         ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
 });
@@ -77,7 +77,7 @@ test('a table searches a searchable filter\'s options through the endpoint', fun
 test('a table searches a searchable column filter through the endpoint', function (): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
-    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'owner', 'q' => 'ad'])
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'column:owner', 'q' => 'ad'])
         ->assertOk()
         ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
 });
@@ -85,14 +85,29 @@ test('a table searches a searchable column filter through the endpoint', functio
 test('a table 404s searching an unknown filter key', function (): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
-    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'nope', 'q' => 'a'])
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'filter:nope', 'q' => 'a'])
         ->assertNotFound();
+});
+
+test('a table 404s searching without a namespaced target', function (): void {
+    Lattice::tables([WorkbenchSearchableFilterTable::class]);
+
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'owner', 'q' => 'a'])
+        ->assertNotFound();
+});
+
+test('a filter key does not shadow a column of the same name', function (): void {
+    Lattice::tables([WorkbenchSearchableFilterTable::class]);
+
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'column:author', 'q' => 'ad'])
+        ->assertOk()
+        ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
 });
 
 test('a table rejects searching a filter that is not searchable', function (): void {
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
 
-    $this->loadTable(WorkbenchFilteredProductsTable::class, ['_search' => 'status', 'q' => 'a'])
+    $this->loadTable(WorkbenchFilteredProductsTable::class, ['_search' => 'filter:status', 'q' => 'a'])
         ->assertStatus(422);
 });
 
@@ -122,6 +137,7 @@ class WorkbenchSearchableFilterTable extends EloquentTableDefinition
         return [
             TextColumn::make('name')->label('Name'),
             TextColumn::make('owner')->label('Owner')->filterOptions(peopleOptionSource(), searchable: true),
+            TextColumn::make('author')->label('Author')->filterOptions(peopleOptionSource(), searchable: true),
         ];
     }
 

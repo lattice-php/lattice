@@ -168,12 +168,14 @@ public function filters(): array
 | `ToggleFilter`    | toggle         | your `->query()` closure when on, or boolean `where` by default          |
 
 The filter dropdown opens from the icon button in the trailing header cell, where the actions heading
-would otherwise sit. Active values show as removable chips with a **Reset all** that clears every
-filter — dedicated and column alike.
+would otherwise sit. Active dedicated and column filters share one bar of individually removable
+chips with a single **Reset all** that clears them both.
 
 A `SelectFilter`'s options can come from an `OptionSource` instead of a fixed list, and
-`->searchable()` fetches them as the user types (via a `_search` round-trip to the table endpoint)
-rather than shipping the whole list up front:
+`->searchable()` fetches them as the user types rather than shipping the whole list up front. The
+lookup is a `_search` round-trip to the table endpoint with a namespaced target —
+`filter:<key>.<field>` for a dedicated filter's field, `column:<key>` for a searchable column
+filter — so filter keys and dot-keyed relation columns can never collide:
 
 ```php
 use Lattice\Lattice\Core\EloquentOptions;
