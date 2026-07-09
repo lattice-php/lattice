@@ -12,9 +12,13 @@ import { BlockCanvas } from "./canvas";
 import { hiddenInputsFor } from "./hidden-inputs";
 import { BlockInspector } from "./inspector";
 import { moveBlock, type BlockPath } from "./move-block";
-import { useBlockPreview } from "./use-block-preview";
+import { useBlockPreview, type BlockSource } from "./use-block-preview";
 
 type BlockTemplate = { type: string; label: string; schema: Node[] };
+
+function rowAttributes(row: RepeaterRow): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(row).filter(([key]) => key !== ROW_ID_KEY));
+}
 
 export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ node }) => {
   const props = node.props;
@@ -28,13 +32,16 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
   const { path, rows, onField, append } = useRowCollection(name, props.defaultItems ?? 0);
   const setValue = useSetFormValue();
 
-  const initial = useMemo(() => {
-    const map: Record<string, Node[]> = {};
+  const seeds = useMemo(() => {
+    const wire: Record<string, Node[]> = {};
+    const sources: Record<string, BlockSource> = {};
     rows.forEach((row, i) => {
-      map[String(row[ROW_ID_KEY])] = rendered[i] ?? [];
+      const rowId = String(row[ROW_ID_KEY]);
+      wire[rowId] = rendered[i] ?? [];
+      sources[rowId] = { type: String(row.type ?? ""), attributes: rowAttributes(row) };
     });
 
-    return map;
+    return { wire, sources };
     // seed once from the server-rendered payload
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -42,7 +49,8 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
   const { wireFor, refresh } = useBlockPreview({
     endpoint: props.endpoint ?? "",
     ref: props.ref ?? "",
-    initial,
+    initial: seeds.wire,
+    renderedWith: seeds.sources,
   });
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -120,11 +128,7 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
                   template={template?.schema}
                   onField={onField}
                   onCommit={() =>
-                    refresh(
-                      String(row[ROW_ID_KEY]),
-                      String(row.type),
-                      Object.fromEntries(Object.entries(row).filter(([k]) => k !== ROW_ID_KEY)),
-                    )
+                    refresh(String(row[ROW_ID_KEY]), String(row.type), rowAttributes(row))
                   }
                 />
               </div>

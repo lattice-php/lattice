@@ -22,7 +22,18 @@ export function BlockInspector({ base, index, row, template, onField, onCommit }
   }
 
   return (
-    <div data-test="block-inspector" onBlur={onCommit}>
+    <div
+      data-test="block-inspector"
+      onBlur={(event) => {
+        const focusStaysInside =
+          event.relatedTarget instanceof Element &&
+          event.currentTarget.contains(event.relatedTarget);
+
+        if (!focusStaysInside) {
+          onCommit();
+        }
+      }}
+    >
       <FieldScopeProvider
         base={base}
         index={index}

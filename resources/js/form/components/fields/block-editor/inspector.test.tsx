@@ -56,6 +56,27 @@ it("renders the block fields and commits on blur", () => {
   expect(onCommit).toHaveBeenCalledOnce();
 });
 
+it("does not commit when focus moves between fields inside the inspector", () => {
+  const onCommit = vi.fn<() => void>();
+
+  wrap(
+    <BlockInspector
+      base="content"
+      index={0}
+      row={{ __rowId: "a", type: "hero", title: "Hi" }}
+      template={template}
+      onField={vi.fn<(index: number, field: string, value: unknown) => void>()}
+      onCommit={onCommit}
+    />,
+  );
+
+  fireEvent.blur(screen.getByTestId("block-inspector"), {
+    relatedTarget: screen.getByTestId("fld-title"),
+  });
+
+  expect(onCommit).not.toHaveBeenCalled();
+});
+
 it("shows an unknown-block note when there is no template", () => {
   wrap(
     <BlockInspector
