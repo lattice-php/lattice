@@ -1,11 +1,14 @@
 export type RepeaterRow = Record<string, unknown>;
 
-export const ROW_ID_KEY = "__rowId";
-
-let rowIdCounter = 0;
+/**
+ * Reserved per-row identity key: server-filled rows arrive with a uuid, the
+ * client mints one for rows it creates, and it submits with the row so
+ * validated data identifies every row.
+ */
+export const ROW_ID_KEY = "rowId";
 
 export function withRowId(row: RepeaterRow): RepeaterRow {
-  return row[ROW_ID_KEY] ? row : { ...row, [ROW_ID_KEY]: `r${rowIdCounter++}` };
+  return row[ROW_ID_KEY] ? row : { ...row, [ROW_ID_KEY]: crypto.randomUUID() };
 }
 
 /** Ensure every row has a stable id; returns the SAME array reference if none were missing. */

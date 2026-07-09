@@ -1,23 +1,23 @@
 ---
 title: Builder
-description: A polymorphic repeatable field — rows of different consumer-defined block types, each with its own schema.
+description: A polymorphic repeatable field — typed rows built from consumer-defined row templates, each with its own schema.
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
 
-The builder renders a repeatable list of rows where each row can be a different block type. You define
-the available block types up front, and every block carries its own schema of fields. A row records
-which block it is through an automatic hidden `type` discriminator, so the field submits an array of
-row objects — each tagged with its `type` and keyed by that block's field names. Create one with
-`Builder::make()` and list the blocks with `->blocks()`.
+The builder renders a repeatable list of rows where each row can be a different type. You define
+the available row templates up front, and every template carries its own schema of fields. A row
+records which template it uses through an automatic hidden `type` discriminator, so the field submits
+an array of row objects — each tagged with its `type` and keyed by that template's field names. Create
+one with `Builder::make()` and list the templates with `->templates()`.
 
 <ComponentExample
   php={`Builder::make('items', 'Line items')
-    ->blocks([
-        Block::make('text')->label('Text')->schema([
+    ->templates([
+        RowTemplate::make('text')->label('Text')->schema([
             Textarea::make('content', 'Content')->required(),
         ]),
-        Block::make('product')->label('Product line')->schema([
+        RowTemplate::make('product')->label('Product line')->schema([
             TextInput::make('product', 'Product')->required(),
             TextInput::make('qty', 'Qty')->rules(['numeric']),
             TextInput::make('price', 'Price')->rules(['numeric']),
@@ -29,15 +29,15 @@ row objects — each tagged with its `type` and keyed by that block's field name
   values={{ items: [] }}
 />
 
-## Blocks
+## Row templates
 
-`->blocks()` takes the list of block types the builder offers. Each is a `Block::make($type)` where
-`$type` is the discriminator stored on every row of that kind. Give it a human label with `->label()`
-and its row template with `->schema()`; the schema is a normal array of fields, so each child keeps its
-own label, placeholder, default value, and rules.
+`->templates()` takes the list of row types the builder offers. Each is a `RowTemplate::make($type)`
+where `$type` is the discriminator stored on every row of that kind. Give it a human label with
+`->label()` and its row schema with `->schema()`; the schema is a normal array of fields, so each child
+keeps its own label, placeholder, default value, and rules.
 
 ```php
-Block::make('product')
+RowTemplate::make('product')
     ->label('Product line')
     ->schema([
         TextInput::make('product', 'Product')->required(),
@@ -49,31 +49,36 @@ The example above submits as an array of typed rows:
 
 ```php
 ['items' => [
-    ['type' => 'text', 'content' => 'Thanks for your order.'],
-    ['type' => 'product', 'product' => 'Widget', 'qty' => '3', 'price' => '9.99'],
+    ['type' => 'text', 'rowId' => '9f3c…', 'content' => 'Thanks for your order.'],
+    ['type' => 'product', 'rowId' => 'a2b1…', 'product' => 'Widget', 'qty' => '3', 'price' => '9.99'],
 ]]
 ```
 
+Every row carries a stable UUID under the reserved `rowId` key: rows filled from stored data keep
+theirs, new rows get one when they are added, and it survives validation into your `handle()` data —
+so rows stay identifiable across saves (`collect($data['items'])->keyBy('rowId')` gives a map view).
+Row schemas must not declare their own `rowId` field.
+
 ## Adding rows
 
-Each builder row is inserted through an add menu listing every block by its label. Picking a block
+Each builder row is inserted through an add menu listing every template by its label. Picking one
 appends an empty row of that type. `->addLabel()` sets the text on the button that opens the menu
 (default "Add").
 
 ```php
 Builder::make('items', 'Line items')
-    ->blocks([Block::make('text')->schema([Textarea::make('content')])])
+    ->templates([RowTemplate::make('text')->schema([Textarea::make('content')])])
     ->addLabel('Add block');
 ```
 
 ## Row counts
 
 `->minItems()` and `->maxItems()` bound how many rows the form accepts; both are enforced as
-array-level validation rules independent of which block each row is.
+array-level validation rules independent of which template each row uses.
 
 ```php
 Builder::make('items', 'Line items')
-    ->blocks([Block::make('text')->schema([Textarea::make('content')])])
+    ->templates([RowTemplate::make('text')->schema([Textarea::make('content')])])
     ->minItems(1)
     ->maxItems(20);
 ```
@@ -85,26 +90,26 @@ order.
 
 ```php
 Builder::make('items', 'Line items')
-    ->blocks([Block::make('text')->schema([Textarea::make('content')])])
+    ->templates([RowTemplate::make('text')->schema([Textarea::make('content')])])
     ->reorderable(false);
 ```
 
 ## Table layout
 
 Rows stack by default — each row is a full block of stacked fields. Call `->table()` to lay rows out
-as a table instead. The columns come from the first block's schema, a shared header of those field
+as a table instead. The columns come from the first template's schema, a shared header of those field
 labels sits above the rows, and each cell renders the input alone (the field's own label moves up into
-the header). A row of any other block type spans the full width below the header rather than fitting
-the columns.
+the header). A row of any other type spans the full width below the header rather than fitting the
+columns.
 
 ```php
 Builder::make('items', 'Line items')
-    ->blocks([
-        Block::make('product')->label('Product line')->schema([
+    ->templates([
+        RowTemplate::make('product')->label('Product line')->schema([
             TextInput::make('product', 'Product'),
             TextInput::make('qty', 'Qty')->rules(['numeric']),
         ]),
-        Block::make('text')->label('Text')->schema([
+        RowTemplate::make('text')->label('Text')->schema([
             Textarea::make('content', 'Content'),
         ]),
     ])
@@ -125,17 +130,17 @@ for the full rundown.
 
 ## Validation
 
-Each row is validated against the schema of its own block: a child marked `->required()` is required
-only in rows of that block type, and an error points at the offending row. The hidden `type`
-discriminator is validated too — a row whose `type` is not one of the declared blocks is rejected. The
-array-level `minItems`/`maxItems` rules validate the number of rows independently of the per-row
+Each row is validated against the schema of its own template: a child marked `->required()` is
+required only in rows of that type, and an error points at the offending row. The hidden `type`
+discriminator is validated too — a row whose `type` is not one of the declared templates is rejected.
+The array-level `minItems`/`maxItems` rules validate the number of rows independently of the per-row
 rules. See [Validation](/forms/validation/) for how field rules are resolved.
 
 ## Not yet supported (v1)
 
 These are follow-ups, not part of the first release:
 
-- Built-in image and subtotal blocks.
+- Built-in image and subtotal row templates.
 - Nested builders (a builder inside a builder row).
 - Customer-aware price prefill — tracked as separate upcoming work.
 

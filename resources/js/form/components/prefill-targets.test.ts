@@ -27,7 +27,7 @@ function builderNode(): Node {
     id: "b1",
     type: "field.builder",
     props: { name: "items" },
-    blocks: [{ type: "product", label: "Product", schema: [priceField()] }],
+    templates: [{ type: "product", label: "Product", schema: [priceField()] }],
   } as unknown as Node;
 }
 
@@ -50,8 +50,8 @@ function nestedRepeaterNode(): Node {
 it("collects a concrete target per row, mapping bare and @ deps", () => {
   const values = {
     items: [
-      { __rowId: "r-a", type: "product" },
-      { __rowId: "r-b", type: "product" },
+      { rowId: "r-a", type: "product" },
+      { rowId: "r-b", type: "product" },
     ],
   };
   const targets = collectPrefillTargets([builderNode()], values);
@@ -94,8 +94,8 @@ it("collects targets recursively through nested row collections", () => {
     customer: "vip",
     sections: [
       {
-        __rowId: "section-a",
-        lines: [{ __rowId: "line-a", product: "sku-1" }],
+        rowId: "section-a",
+        lines: [{ rowId: "line-a", product: "sku-1" }],
       },
     ],
   };

@@ -24,7 +24,7 @@ function builderNode(): Node {
     id: "builder",
     type: "field.builder",
     props: { name: "items" },
-    blocks: [{ type: "product", label: "Product", schema: [priceField()] }],
+    templates: [{ type: "product", label: "Product", schema: [priceField()] }],
   } as unknown as Node;
 }
 
@@ -35,11 +35,11 @@ function StampRowId() {
   useLayoutEffect(() => {
     const items = values.items;
 
-    if (!Array.isArray(items) || items[0]?.__rowId) {
+    if (!Array.isArray(items) || items[0]?.rowId) {
       return;
     }
 
-    setValue("items", [{ ...items[0], __rowId: "r-stable" }]);
+    setValue("items", [{ ...items[0], rowId: "r-stable" }]);
   }, [setValue, values]);
 
   return null;

@@ -15,7 +15,7 @@ describe("HiddenInputComponent", () => {
       <FieldScopeProvider
         base="items.0.children"
         index={1}
-        row={{ __rowId: "r1", token: "abc" }}
+        row={{ rowId: "r1", token: "abc" }}
         onChange={() => {}}
       >
         <HiddenInputComponent node={node}>{null}</HiddenInputComponent>
