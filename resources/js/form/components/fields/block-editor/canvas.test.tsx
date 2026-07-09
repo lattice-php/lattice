@@ -12,7 +12,7 @@ vi.mock("@lattice-php/lattice/core/renderer", () => ({
 import { BlockCanvas } from "./canvas";
 
 it("renders each row's wire and selects on click", () => {
-  const onSelect = vi.fn<[string], void>();
+  const onSelect = vi.fn<(rowId: string) => void>();
   const rows = [
     { __rowId: "a", type: "hero" },
     { __rowId: "b", type: "text" },

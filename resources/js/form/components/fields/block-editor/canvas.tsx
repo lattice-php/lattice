@@ -12,7 +12,7 @@ type Props = {
 
 export function BlockCanvas({ rows, wireFor, selectedId, onSelect }: Props) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" role="listbox" aria-label="Blocks">
       {rows.map((row) => {
         const id = String(row[ROW_ID_KEY]);
 
@@ -25,6 +25,9 @@ export function BlockCanvas({ rows, wireFor, selectedId, onSelect }: Props) {
             onClick={() => onSelect(id)}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
+                if (e.key === " ") {
+                  e.preventDefault();
+                }
                 onSelect(id);
               }
             }}
