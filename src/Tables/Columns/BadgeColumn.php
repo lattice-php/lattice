@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
-use Lattice\Lattice\Support\Wire;
+use Lattice\Lattice\Attributes\WireMap;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
@@ -18,6 +18,7 @@ class BadgeColumn extends Column implements Filterable, Sortable
     /**
      * @var array<array-key, string>|null
      */
+    #[WireMap]
     public ?array $colors = null;
 
     /**
@@ -31,21 +32,5 @@ class BadgeColumn extends Column implements Filterable, Sortable
         $this->colors = $colors === [] ? null : $colors;
 
         return $this;
-    }
-
-    /**
-     * @param  array<string, mixed>  $props
-     * @return array<string, mixed>
-     */
-    #[\Override]
-    protected function decorateProps(array $props): array
-    {
-        $props = parent::decorateProps($props);
-
-        if (is_array($props['colors'] ?? null)) {
-            $props['colors'] = Wire::map($props['colors']);
-        }
-
-        return $props;
     }
 }
