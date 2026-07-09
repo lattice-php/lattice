@@ -55,6 +55,41 @@ function replaceContainer(
   );
 }
 
+function sameStep(a: BlockStep, b: BlockStep): boolean {
+  return a.index === b.index && a.slot === b.slot;
+}
+
+function adjustToForRemoval(from: BlockPath, to: BlockPath): BlockPath {
+  const sourceDepth = from.length - 1;
+
+  if (to.length <= sourceDepth) {
+    return to;
+  }
+
+  for (let i = 0; i < sourceDepth; i++) {
+    if (!sameStep(from[i], to[i])) {
+      return to;
+    }
+  }
+
+  if (to.length === sourceDepth + 1) {
+    return to;
+  }
+
+  const fromIndex = from[sourceDepth].index;
+  const toStep = to[sourceDepth];
+
+  if (fromIndex >= toStep.index) {
+    return to;
+  }
+
+  return [
+    ...to.slice(0, sourceDepth),
+    { ...toStep, index: toStep.index - 1 },
+    ...to.slice(sourceDepth + 1),
+  ];
+}
+
 export function moveBlock(rows: RepeaterRow[], from: BlockPath, to: BlockPath): RepeaterRow[] {
   const source = getContainer(rows, from);
   const fromIndex = from[from.length - 1]?.index ?? -1;
@@ -67,14 +102,10 @@ export function moveBlock(rows: RepeaterRow[], from: BlockPath, to: BlockPath): 
 
   const removed = replaceContainer(rows, from, (list) => list.filter((_, i) => i !== fromIndex));
 
-  // Adjust the "to" path if we removed a top-level element that shifts subsequent indices
-  // Only adjust if "to" has multiple steps (navigating into a nested container)
-  let adjustedTo = to;
-  if (from.length === 1 && to.length > 1) {
-    const removedIndex = from[0].index;
-    if (to[0].index > removedIndex) {
-      adjustedTo = [{ ...to[0], index: to[0].index - 1 }, ...to.slice(1)];
-    }
+  const adjustedTo = adjustToForRemoval(from, to);
+
+  if (getContainer(removed, adjustedTo) === null) {
+    return rows;
   }
 
   return replaceContainer(removed, adjustedTo, (list) => {

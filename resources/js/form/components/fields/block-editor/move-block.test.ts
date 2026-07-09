@@ -46,4 +46,36 @@ describe("moveBlock", () => {
     const input = rows();
     expect(moveBlock(input, [{ index: 9 }], [{ index: 0 }])).toBe(input);
   });
+
+  it("moves a block into a deeper nested container without dropping a later sibling", () => {
+    const nested = [
+      {
+        __rowId: "outer",
+        slots: {
+          left: [{ __rowId: "P" }, { __rowId: "Q", slots: { inner: [{ __rowId: "R" }] } }],
+        },
+      },
+    ];
+
+    const out = moveBlock(
+      nested,
+      [{ index: 0, slot: "left" }, { index: 0 }],
+      [{ index: 0, slot: "left" }, { index: 1, slot: "inner" }, { index: 0 }],
+    );
+
+    const outer = out.find((r) => r.__rowId === "outer") as Record<string, any>;
+    expect(outer.slots.left.map((r: any) => r.__rowId)).toEqual(["Q"]);
+    const q = outer.slots.left.find((r: any) => r.__rowId === "Q");
+    expect(q.slots.inner.map((r: any) => r.__rowId)).toEqual(["P", "R"]);
+  });
+
+  it("returns rows unchanged for an invalid target", () => {
+    const input = rows();
+    const out = moveBlock(
+      input,
+      [{ index: 1, slot: "left" }, { index: 0 }],
+      [{ index: 5, slot: "left" }, { index: 0 }],
+    );
+    expect(out).toBe(input);
+  });
 });
