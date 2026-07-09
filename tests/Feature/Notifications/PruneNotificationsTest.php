@@ -14,12 +14,16 @@ test('prune deletes only read notifications older than the cutoff', function ():
     Notification::make()->title('Old unread')->send($user);
     Notification::make()->title('Recent read')->send($user);
 
-    $rows = $user->notifications()->orderBy('created_at')->get();
-    DB::table('notifications')->where('id', $rows[0]->id)->update([
+    $notifications = $user->notifications()->get();
+    $idFor = fn (string $title): string => $notifications
+        ->sole(fn ($row): bool => $row->getAttribute('data')['title'] === $title)
+        ->getAttribute('id');
+
+    DB::table('notifications')->where('id', $idFor('Old read'))->update([
         'read_at' => now()->subDays(40), 'created_at' => now()->subDays(40),
     ]);
-    DB::table('notifications')->where('id', $rows[1]->id)->update(['created_at' => now()->subDays(40)]);
-    DB::table('notifications')->where('id', $rows[2]->id)->update(['read_at' => now()]);
+    DB::table('notifications')->where('id', $idFor('Old unread'))->update(['created_at' => now()->subDays(40)]);
+    DB::table('notifications')->where('id', $idFor('Recent read'))->update(['read_at' => now()]);
 
     artisan('lattice:notifications:prune')->assertSuccessful();
 

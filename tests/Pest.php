@@ -11,6 +11,7 @@ use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\Components\RowsField;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tests\BrowserTestCase;
@@ -190,7 +191,7 @@ function fixturePath(string $name): string
 function withScaffoldWorkspace(Closure $callback): mixed
 {
     $token = ParallelTesting::token() ?: 'default';
-    $basePath = sys_get_temp_dir().'/lattice-package-tests/scaffold/test_'.$token;
+    $basePath = sys_get_temp_dir().'/lattice-package-tests/'.basename(dirname(__DIR__)).'/scaffold/test_'.$token;
     $originalBasePath = app()->basePath();
     $originalAppPath = app()->path();
     $originalDiscover = config('lattice.discover');
@@ -264,6 +265,22 @@ function componentRef(array $component): string
 function latticeHeaders(string $ref): array
 {
     return ['X-Lattice-Ref' => $ref];
+}
+
+/**
+ * Strip the minted per-row uuids so row assertions stay about the payloads.
+ *
+ * @param  array<int|string, mixed>  $rows
+ * @return array<int|string, mixed>
+ */
+function withoutRowIds(array $rows): array
+{
+    unset($rows[RowsField::ROW_ID]);
+
+    return array_map(
+        static fn (mixed $value): mixed => is_array($value) ? withoutRowIds($value) : $value,
+        $rows,
+    );
 }
 
 /**

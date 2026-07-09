@@ -4,10 +4,10 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Forms\Components\Block;
 use Lattice\Lattice\Forms\Components\Builder;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\Repeater;
+use Lattice\Lattice\Forms\Components\RowTemplate;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
@@ -64,8 +64,8 @@ function rowSearchDefinition(): FormDefinition
                     Select::make('plan')->options([Select::option('Free', 'free')]),
                     Select::make('product')->searchable($resolver),
                 ]),
-                Builder::make('blocks')->blocks([
-                    Block::make('product')->schema([
+                Builder::make('blocks')->templates([
+                    RowTemplate::make('product')->schema([
                         TextInput::make('category'),
                         Select::make('product')->searchable($resolver),
                     ]),

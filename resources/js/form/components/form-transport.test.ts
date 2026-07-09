@@ -7,7 +7,7 @@ describe("postFormAction", () => {
     vi.unstubAllGlobals();
   });
 
-  it("strips client row ids from JSON payloads", async () => {
+  it("sends the payload including row ids", async () => {
     const fetchMock = vi.fn<typeof fetch>(() =>
       Promise.resolve(new Response(JSON.stringify({ ok: true }), { status: 200 })),
     );
@@ -19,14 +19,7 @@ describe("postFormAction", () => {
       {
         _search: "items.0.product",
         q: "desk",
-        items: [
-          {
-            [ROW_ID_KEY]: "r1",
-            category: "chairs",
-            product: "",
-            children: [{ [ROW_ID_KEY]: "r2", name: "Nested" }],
-          },
-        ],
+        items: [{ [ROW_ID_KEY]: "9f3cf7c2-6c2e-4f0e-9c1a-0e1a2b3c4d5e", category: "chairs" }],
       },
       new AbortController().signal,
     );
@@ -36,13 +29,7 @@ describe("postFormAction", () => {
     expect(JSON.parse(String(body))).toEqual({
       _search: "items.0.product",
       q: "desk",
-      items: [
-        {
-          category: "chairs",
-          product: "",
-          children: [{ name: "Nested" }],
-        },
-      ],
+      items: [{ [ROW_ID_KEY]: "9f3cf7c2-6c2e-4f0e-9c1a-0e1a2b3c4d5e", category: "chairs" }],
     });
   });
 });

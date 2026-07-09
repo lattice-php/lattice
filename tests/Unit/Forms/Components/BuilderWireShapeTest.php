@@ -1,17 +1,17 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Block;
 use Lattice\Lattice\Forms\Components\Builder;
+use Lattice\Lattice\Forms\Components\RowTemplate;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
 
 it('serialises a builder with its blocks and props', function (): void {
     $wire = wire(
         Builder::make('items', 'Line items')
-            ->blocks([
-                Block::make('text')->label('Text')->schema([Textarea::make('content')]),
-                Block::make('product')->label('Product line')->schema([TextInput::make('qty')]),
+            ->templates([
+                RowTemplate::make('text')->label('Text')->schema([Textarea::make('content')]),
+                RowTemplate::make('product')->label('Product line')->schema([TextInput::make('qty')]),
             ])
             ->minItems(1)
             ->maxItems(20)
@@ -24,16 +24,16 @@ it('serialises a builder with its blocks and props', function (): void {
         ->and($wire['props']['maxItems'])->toBe(20)
         ->and($wire['props']['reorderable'])->toBeTrue()
         ->and($wire['props']['addLabel'])->toBe('Add block')
-        ->and($wire['blocks'])->toHaveCount(2)
-        ->and($wire['blocks'][0]['type'])->toBe('text')
-        ->and($wire['blocks'][1]['type'])->toBe('product')
-        ->and($wire['blocks'][1]['schema'][0]['props']['name'])->toBe('qty');
+        ->and($wire['templates'])->toHaveCount(2)
+        ->and($wire['templates'][0]['type'])->toBe('text')
+        ->and($wire['templates'][1]['type'])->toBe('product')
+        ->and($wire['templates'][1]['schema'][0]['props']['name'])->toBe('qty');
 });
 
 it('configures default rows with the same fluent api as repeater', function (): void {
     $wire = wire(
         Builder::make('items')
-            ->blocks([Block::make('product')->label('Product')->schema([TextInput::make('qty')])])
+            ->templates([RowTemplate::make('product')->label('Product')->schema([TextInput::make('qty')])])
             ->defaultItems(2),
     );
 

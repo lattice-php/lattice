@@ -6,15 +6,15 @@ import {
   DropdownMenuTrigger,
 } from "@lattice-php/lattice/core/components/dropdown-menu";
 
-export type BlockOption = { type: string; label: string };
+export type AddRowOption = { type: string; label: string };
 
-export function BlockAddMenu({
+export function AddRowMenu({
   addLabel,
-  blocks,
+  options,
   onSelect,
 }: {
   addLabel: string;
-  blocks: BlockOption[];
+  options: AddRowOption[];
   onSelect: (type: string) => void;
 }) {
   return (
@@ -30,13 +30,13 @@ export function BlockAddMenu({
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-[12rem]">
-        {blocks.map((block) => (
+        {options.map((option) => (
           <DropdownMenuItem
-            key={block.type}
-            data-test={`builder-add-${block.type}`}
-            onClick={() => onSelect(block.type)}
+            key={option.type}
+            data-test={`builder-add-${option.type}`}
+            onClick={() => onSelect(option.type)}
           >
-            {block.label}
+            {option.label}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

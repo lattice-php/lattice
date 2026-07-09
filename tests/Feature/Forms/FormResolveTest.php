@@ -2,10 +2,10 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Forms\Components\Block;
 use Lattice\Lattice\Forms\Components\Builder;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\Repeater;
+use Lattice\Lattice\Forms\Components\RowTemplate;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormDefinition;
@@ -47,8 +47,8 @@ function pricingDefinition(): FormDefinition
         {
             return $form->schema([
                 TextInput::make('customer', 'Customer'),
-                Builder::make('items', 'Line items')->blocks([
-                    Block::make('product')->label('Product')->schema([
+                Builder::make('items', 'Line items')->templates([
+                    RowTemplate::make('product')->label('Product')->schema([
                         TextInput::make('product', 'Product'),
                         TextInput::make('price', 'Price')->value(
                             fn (FormData $row, FormData $form): float => $row->float('product') * ($form->string('customer') === 'vip' ? 0.5 : 1.0),

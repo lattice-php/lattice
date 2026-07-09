@@ -45,7 +45,7 @@ describe("useDependentField", () => {
   it("evaluates row conditions against same-row siblings", () => {
     const { result } = renderScopedField({
       global: { product: "global" },
-      row: { __rowId: "r1", product: "sku-1" },
+      row: { rowId: "r1", product: "sku-1" },
     });
 
     expect(result.current.hidden).toBe(false);
@@ -54,7 +54,7 @@ describe("useDependentField", () => {
   it("lets row values shadow same-named global values", () => {
     const { result } = renderScopedField({
       global: { product: "sku-1" },
-      row: { __rowId: "r1", product: "other" },
+      row: { rowId: "r1", product: "other" },
     });
 
     expect(result.current.hidden).toBe(true);
@@ -64,7 +64,7 @@ describe("useDependentField", () => {
     const { result } = renderScopedField({
       global: { customer: "vip" },
       node: conditionNode("customer", "vip"),
-      row: { __rowId: "r1" },
+      row: { rowId: "r1" },
     });
 
     expect(result.current.hidden).toBe(false);
@@ -76,9 +76,9 @@ describe("useDependentField", () => {
         initial={{
           sections: [
             {
-              __rowId: "section-1",
+              rowId: "section-1",
               section: "office",
-              items: [{ __rowId: "item-1", product: "sku-1" }],
+              items: [{ rowId: "item-1", product: "sku-1" }],
             },
           ],
         }}
@@ -86,13 +86,13 @@ describe("useDependentField", () => {
         <FieldScopeProvider
           base="sections"
           index={0}
-          row={{ __rowId: "section-1", section: "office" }}
+          row={{ rowId: "section-1", section: "office" }}
           onChange={() => {}}
         >
           <FieldScopeProvider
             base="sections.0.items"
             index={0}
-            row={{ __rowId: "item-1", product: "sku-1" }}
+            row={{ rowId: "item-1", product: "sku-1" }}
             onChange={() => {}}
           >
             {children}

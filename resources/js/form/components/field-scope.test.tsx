@@ -21,7 +21,7 @@ it("derives scoped DOM name, error key, and row value", () => {
     <FieldScopeProvider
       base="items"
       index={2}
-      row={{ __rowId: "row-7", name: "hi", sku: "A-1" }}
+      row={{ rowId: "row-7", name: "hi", sku: "A-1" }}
       onChange={() => {}}
     >
       <Probe />
@@ -41,7 +41,7 @@ it("derives nested scoped DOM names and error keys from dot collection paths", (
     <FieldScopeProvider
       base="items.0.children"
       index={1}
-      row={{ __rowId: "child-2", name: "nested", sku: "C-2" }}
+      row={{ rowId: "child-2", name: "nested", sku: "C-2" }}
       onChange={() => {}}
     >
       <Probe />
@@ -59,13 +59,13 @@ it("derives nested override keys from parent row ids", () => {
     <FieldScopeProvider
       base="sections"
       index={0}
-      row={{ __rowId: "section-a", name: "section" }}
+      row={{ rowId: "section-a", name: "section" }}
       onChange={() => {}}
     >
       <FieldScopeProvider
         base="sections.0.lines"
         index={0}
-        row={{ __rowId: "line-a", name: "line" }}
+        row={{ rowId: "line-a", name: "line" }}
         onChange={() => {}}
       >
         <Probe />

@@ -49,7 +49,7 @@ describe("ResolvedNodes", () => {
         <FieldScopeProvider
           base="items"
           index={0}
-          row={{ __rowId: "r1", price: "0" }}
+          row={{ rowId: "r1", price: "0" }}
           onChange={() => {}}
         >
           <Probe node={original} />
