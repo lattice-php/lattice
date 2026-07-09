@@ -21,13 +21,15 @@ class BlockEditor extends Builder
     public ?string $endpoint = null;
 
     /**
-     * @param  array<int, class-string<BlockDefinition>>  $blocks
+     * @param  array<int, class-string<BlockDefinition>|Block>  $blocks
      */
     #[\Override]
     public function blocks(array $blocks): static
     {
         $this->blocks = array_map(
-            fn (string $class): Block => Block::make($this->keyFor($class))->schema(app($class)->attributes()),
+            fn (string|Block $block): Block => $block instanceof Block
+                ? $block
+                : Block::make($this->keyFor($block))->schema(app($block)->attributes()),
             $blocks,
         );
 
