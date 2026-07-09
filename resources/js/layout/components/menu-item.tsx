@@ -3,11 +3,7 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import { prefixedNodeTestId } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent, Schema } from "@lattice-php/lattice/core/types";
-import {
-  ActionTrigger,
-  type TriggerState,
-  useClickBehavior,
-} from "@lattice-php/lattice/core/hooks/use-click-behavior";
+import { ActionTrigger, type TriggerState, useClickBehavior } from "@lattice-php/lattice/action";
 import { Icon, IconRenderer } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { Affix } from "@lattice-php/lattice/types/generated";
