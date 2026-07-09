@@ -1,5 +1,6 @@
 import type { Node } from "@lattice-php/lattice/core/types";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
+import { useT } from "@lattice-php/lattice/i18n";
 import { FieldScopeProvider } from "../../field-scope";
 import type { RepeaterRow } from "../repeater-rows";
 
@@ -13,10 +14,12 @@ type Props = {
 };
 
 export function BlockInspector({ base, index, row, template, onField, onCommit }: Props) {
+  const { t } = useT("lattice");
+
   if (!template) {
     return (
       <div data-test="block-inspector-unknown" className="text-sm text-lt-muted-fg">
-        Unknown block
+        {t("form.block-editor.unknown-block", "Unknown block")}
       </div>
     );
   }

@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
+import { useT } from "@lattice-php/lattice/i18n";
 import { FormFieldFrame } from "../../base/field";
 import { useFormContext } from "../../context";
 import { appendPath, toHtmlName } from "../../form-path";
@@ -31,6 +32,7 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
   const { hidden, required } = useDependentField(node);
   const { path, rows, onField, append } = useRowCollection(name, props.defaultItems ?? 0);
   const setValue = useSetFormValue();
+  const { t } = useT("lattice");
 
   const seeds = useMemo(() => {
     const wire: Record<string, Node[]> = {};
@@ -134,7 +136,11 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
               </div>
             );
           })}
-          {!selectedRow && <p className="text-sm text-lt-muted-fg">Select a block to edit it.</p>}
+          {!selectedRow && (
+            <p className="text-sm text-lt-muted-fg">
+              {t("form.block-editor.select-block", "Select a block to edit it.")}
+            </p>
+          )}
         </div>
       </div>
     </FormFieldFrame>

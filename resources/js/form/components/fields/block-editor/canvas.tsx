@@ -11,6 +11,7 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-
 import { CSS } from "@dnd-kit/utilities";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { ROW_ID_KEY, type RepeaterRow } from "../repeater-rows";
 import { encodePath, resolveMove } from "./dnd";
@@ -40,6 +41,7 @@ function Shell({
   const id = encodePath(path);
   const rowId = String(row[ROW_ID_KEY]);
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+  const { t } = useT("lattice");
 
   return (
     <div
@@ -67,14 +69,14 @@ function Shell({
     >
       <button
         type="button"
-        aria-label="Drag to reorder"
+        aria-label={t("form.block-editor.drag-to-reorder", "Drag to reorder")}
         data-test={`block-drag-${rowId}`}
         onClick={(e) => e.stopPropagation()}
         className="mb-1 cursor-grab text-lt-muted-fg hover:text-lt-fg active:cursor-grabbing"
         {...attributes}
         {...listeners}
       >
-        Drag
+        {t("form.block-editor.drag", "Drag")}
       </button>
       <Renderer nodes={wireFor(rowId)} />
     </div>
