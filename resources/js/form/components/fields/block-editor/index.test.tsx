@@ -18,14 +18,18 @@ import { FormProvider } from "../../context";
 import { FormValuesProvider } from "../../values";
 import { BlockEditorComponent } from "./index";
 
-function wrap(ui: React.ReactNode, initial: Record<string, unknown>) {
+function wrap(
+  ui: React.ReactNode,
+  initial: Record<string, unknown>,
+  errors: Record<string, string | undefined> = {},
+) {
   return render(
     <FormProvider
       value={{
         action: "#",
         clearErrors: () => {},
         componentRef: "",
-        errors: {},
+        errors,
         fieldLabels: {},
         precognitive: false,
         processing: false,
@@ -37,7 +41,7 @@ function wrap(ui: React.ReactNode, initial: Record<string, unknown>) {
   );
 }
 
-const node = {
+const baseNode = {
   id: "content",
   type: "field.block-editor",
   props: { name: "content", ref: "sealed", endpoint: "/lattice/blocks/render", defaultItems: 0 },
@@ -49,7 +53,8 @@ const node = {
     },
   ],
   rendered: [[{ type: "heading", props: { text: "Stored" } }]],
-} as never;
+};
+const node = baseNode as never;
 
 it("renders stored blocks on the canvas from the rendered prop", () => {
   wrap(<BlockEditorComponent node={node}>{null}</BlockEditorComponent>, {
@@ -58,4 +63,24 @@ it("renders stored blocks on the canvas from the rendered prop", () => {
 
   expect(screen.getByText("Stored")).toBeInTheDocument();
   expect(screen.getByTestId("block-shell-a")).toBeInTheDocument();
+});
+
+it("renders nothing when the field is hidden", () => {
+  const hiddenNode = { ...baseNode, props: { ...baseNode.props, hidden: true } } as never;
+
+  wrap(<BlockEditorComponent node={hiddenNode}>{null}</BlockEditorComponent>, {
+    content: [{ __rowId: "a", type: "hero", title: "Stored" }],
+  });
+
+  expect(screen.queryByTestId("block-editor-inspector")).not.toBeInTheDocument();
+});
+
+it("shows the field error from the form context", () => {
+  wrap(
+    <BlockEditorComponent node={node}>{null}</BlockEditorComponent>,
+    { content: [{ __rowId: "a", type: "hero", title: "Stored" }] },
+    { content: "At least one block is required." },
+  );
+
+  expect(screen.getByText("At least one block is required.")).toBeInTheDocument();
 });

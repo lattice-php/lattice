@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { FormFieldFrame } from "../../base/field";
+import { useFormContext } from "../../context";
 import { appendPath, toHtmlName } from "../../form-path";
+import { useDependentField } from "../../use-dependent-field";
 import { useSetFormValue } from "../../values";
 import { BlockAddMenu, type BlockOption } from "../block-add-menu";
 import { ROW_ID_KEY, type RepeaterRow } from "../repeater-rows";
@@ -21,6 +23,8 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
     []) as BlockTemplate[];
   const rendered = ((node as unknown as { rendered?: Node[][] }).rendered ?? []) as Node[][];
 
+  const { errors } = useFormContext();
+  const { hidden, required } = useDependentField(node);
   const { path, rows, onField, append } = useRowCollection(name, props.defaultItems ?? 0);
   const setValue = useSetFormValue();
 
@@ -42,9 +46,15 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
   });
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  if (hidden) {
+    return null;
+  }
+
   const templateFor = (type: unknown): BlockTemplate | undefined =>
     blocks.find((b) => b.type === type);
   const options: BlockOption[] = blocks.map((b) => ({ type: b.type, label: b.label }));
+  const atMax = props.maxItems != null && rows.length >= props.maxItems;
 
   const selectedRow = rows.find((row) => String(row[ROW_ID_KEY]) === selectedId) ?? null;
 
@@ -56,11 +66,12 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
 
   return (
     <FormFieldFrame
-      error={undefined}
+      error={errors[path]}
       helperText={props.helperText ?? undefined}
+      tooltip={props.tooltip ?? undefined}
       label={props.label ?? ""}
       name={path}
-      required={false}
+      required={required}
     >
       {rows.map((row, index) => (
         <input
@@ -86,11 +97,13 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
             onSelect={setSelectedId}
             onMoveBlock={onMoveBlock}
           />
-          <BlockAddMenu
-            addLabel={props.addLabel ?? "Add"}
-            blocks={options}
-            onSelect={(type) => append({ type })}
-          />
+          {!atMax && (
+            <BlockAddMenu
+              addLabel={props.addLabel ?? "Add"}
+              blocks={options}
+              onSelect={(type) => append({ type })}
+            />
+          )}
         </div>
 
         <div data-test="block-editor-inspector">
