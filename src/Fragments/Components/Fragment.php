@@ -17,7 +17,7 @@ class Fragment extends ContainerComponent
 
     public ?string $endpoint = null;
 
-    public ?bool $lazy = null;
+    public bool $lazy = false;
 
     public Size $size = Size::Md;
 

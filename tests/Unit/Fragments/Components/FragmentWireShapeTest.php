@@ -21,7 +21,7 @@ it('serializes a fragment with an endpoint and injected ref', function (): void 
     expect($payload['props']['endpoint'])->toBe('/lattice/fragments/demo');
     expect($payload['props']['ref'])->toBeString();
     expect($payload['props']['ref'])->not->toBe('');
-    expect($payload['props']['lazy'])->toBeNull();
+    expect($payload['props']['lazy'])->toBeFalse();
     expect($payload['props']['size'])->toBe('md');
     expect($payload['props'])->not->toHaveKey('context');
     expect($payload)->toHaveKey('schema');
@@ -49,12 +49,12 @@ it('serializes a configured lazy fragment size', function (): void {
     expect($fragment['props']['size'])->toBe('lg');
 });
 
-it('includes lazy and endpoint as null on a fragment that is not lazy-loaded', function (): void {
+it('serializes a plain fragment as not lazy with no endpoint', function (): void {
     $fragment = Fragment::make('plain');
 
     $payload = wire($fragment);
 
-    expect($payload['props']['lazy'])->toBeNull();
+    expect($payload['props']['lazy'])->toBeFalse();
     expect($payload['props']['endpoint'])->toBeNull();
     expect($payload['props']['size'])->toBe('md');
 });

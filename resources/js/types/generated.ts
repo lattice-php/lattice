@@ -4,7 +4,7 @@ export type Action = {
   form: WireNode | null;
   icon: string | null;
   label: string | null;
-  lazyForm: boolean | null;
+  lazyForm: boolean;
   method: HttpMethod | null;
   ref: string | null;
   variant: ButtonVariant | null;
@@ -29,9 +29,24 @@ export type Badge = {
   label: string;
 };
 export type BadgeColumn = {
+  align: ColumnAlign;
   colors: Record<string | number, string> | null;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
 };
-export type BooleanColumn = Record<string, never>;
+export type BooleanColumn = {
+  align: ColumnAlign;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
+};
 export type Breadcrumbs = Record<string, never>;
 export type BrowserToken = {
   readonly accessToken: string;
@@ -78,7 +93,7 @@ export type BulkAction = {
   form: WireNode | null;
   icon: string | null;
   label: string | null;
-  lazyForm: boolean | null;
+  lazyForm: boolean;
   method: HttpMethod | null;
   ref: string | null;
   variant: ButtonVariant | null;
@@ -221,7 +236,6 @@ export type Collapsible = {
 export type Color = "default" | "muted" | "primary" | "success" | "info" | "warning" | "danger";
 export type ColumnAlign = "start" | "center" | "end";
 export type ColumnFilter = {
-  readonly enabled: boolean;
   readonly type: FilterType;
   readonly operators: Op[];
   readonly defaultOperator: Op;
@@ -559,7 +573,7 @@ export type FormNodeType =
   | "form";
 export type Fragment = {
   endpoint: string | null;
-  lazy: boolean | null;
+  lazy: boolean;
   ref: string | null;
   size: Size;
 };
@@ -611,13 +625,27 @@ export type Icon = {
   size: Size;
 };
 export type IconColumn = {
+  align: ColumnAlign;
   colors: Record<string | number, string> | null;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
   icon: string | null;
   icons: Record<string | number, string> | null;
+  label: string;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
 };
 export type ImageColumn = {
+  align: ColumnAlign;
   circular: boolean;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string;
   size: number | null;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
 };
 export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 export type Link = {
@@ -654,15 +682,22 @@ export type MenuItem = {
 export type Modal = {
   closeLabel: string;
   description: string | null;
-  open: boolean | null;
+  open: boolean;
   ref: string | null;
   title: string | null;
 };
 export type MoneyColumn = {
+  align: ColumnAlign;
   currency: string | null;
   currencyField: string | null;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
 };
 export type NodeType =
   | "action"
@@ -738,10 +773,17 @@ export type Notifications = {
   slideOut: boolean;
 };
 export type NumberColumn = {
+  align: ColumnAlign;
   compact: boolean;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
+  sortable: boolean;
+  toggleable: boolean;
   unit: NumberFormatUnit | null;
+  width: ColumnWidth;
 };
 export type NumberFormat = {
   kind: string;
@@ -1050,7 +1092,15 @@ export type Stack = {
   justify: Justify | null;
   width: Width | null;
 };
-export type StackColumn = Record<string, never>;
+export type StackColumn = {
+  align: ColumnAlign;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
+};
 export type Tab = {
   confirm: {
     required: boolean;
@@ -1068,11 +1118,11 @@ export type Table = {
   endpoint: string | null;
   filters: FilterData[];
   layout: string | null;
-  lazy: boolean | null;
+  lazy: boolean;
   ref: string | null;
-  resizableColumns: boolean | null;
+  resizableColumns: boolean;
   resizeIndicator: boolean;
-  striped: boolean | null;
+  striped: boolean;
 };
 export type TablePagination = {
   readonly mode: PaginationType;
@@ -1117,6 +1167,7 @@ export type Text = {
   text: string;
 };
 export type TextColumn = {
+  align: ColumnAlign;
   badge: {
     colorKey: string;
   } | null;
@@ -1125,11 +1176,17 @@ export type TextColumn = {
     dateStyle: string | null;
     timeStyle: string | null;
   } | null;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string;
   link: {
     href: string | null;
     external: boolean;
   } | null;
   multiple: string | null;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
 };
 export type TextInput = {
   autoComplete: string | null;

@@ -96,7 +96,7 @@ function schemaNode(): Node<"remote.data-list"> {
               form: null,
               icon: null,
               label: "Open",
-              lazyForm: null,
+              lazyForm: false,
               method: "get",
               ref: null,
               variant: "secondary",

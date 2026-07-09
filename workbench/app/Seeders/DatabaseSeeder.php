@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             'locale' => 'en',
         ]);
 
-        UserFactory::times(10)->create();
+        UserFactory::times(2000)->create();
 
         $retailGroup = GroupFactory::new()
             ->withCustomers(10)

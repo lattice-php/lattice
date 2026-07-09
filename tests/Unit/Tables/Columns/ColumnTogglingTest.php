@@ -6,12 +6,12 @@ use Lattice\Lattice\Tables\Columns\TextColumn;
 
 it('is not toggleable by default', function (): void {
     expect(wire(TextColumn::make('name'))['props'])
-        ->toMatchArray(['toggleable' => null, 'hiddenByDefault' => null]);
+        ->toMatchArray(['toggleable' => false, 'hiddenByDefault' => false]);
 });
 
 it('opts in to toggling', function (): void {
     expect(wire(TextColumn::make('name')->toggleable())['props'])
-        ->toMatchArray(['toggleable' => true, 'hiddenByDefault' => null]);
+        ->toMatchArray(['toggleable' => true, 'hiddenByDefault' => false]);
 });
 
 it('opts in to toggling hidden by default', function (): void {

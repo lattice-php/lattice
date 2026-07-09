@@ -21,15 +21,19 @@ abstract class Column implements JsonSerializable, Renderable
     use GatesRendering;
     use SerializesToWire;
 
-    protected string $label;
+    public string $label;
 
-    protected ?ColumnWidth $width = null;
+    public ColumnWidth $width = ColumnWidth::Md;
 
-    protected ?ColumnAlign $align = null;
+    public ColumnAlign $align = ColumnAlign::Start;
 
-    protected bool $toggleable = false;
+    public bool $sortable = false;
 
-    protected bool $hiddenByDefault = false;
+    public bool $toggleable = false;
+
+    public bool $hiddenByDefault = false;
+
+    public ?ColumnFilter $filter = null;
 
     public function __construct(protected readonly string $key)
     {
@@ -97,29 +101,9 @@ abstract class Column implements JsonSerializable, Renderable
         return [];
     }
 
-    protected function resolvedWidth(): ColumnWidth
+    protected function sortableValue(): bool
     {
-        return $this->width ?? $this->defaultWidth();
-    }
-
-    protected function defaultWidth(): ColumnWidth
-    {
-        return ColumnWidth::Md;
-    }
-
-    protected function resolvedAlign(): ColumnAlign
-    {
-        return $this->align ?? $this->defaultAlign();
-    }
-
-    protected function defaultAlign(): ColumnAlign
-    {
-        return ColumnAlign::Start;
-    }
-
-    protected function sortableValue(): ?bool
-    {
-        return $this instanceof Sortable && $this->isSortable() ? true : null;
+        return $this instanceof Sortable && $this->isSortable();
     }
 
     protected function filterValue(): ?ColumnFilter
@@ -129,7 +113,6 @@ abstract class Column implements JsonSerializable, Renderable
         }
 
         return new ColumnFilter(
-            enabled: true,
             type: $this->filterType(),
             operators: $this->availableOperators(),
             defaultOperator: $this->defaultFilterOperator(),
@@ -146,28 +129,13 @@ abstract class Column implements JsonSerializable, Renderable
      */
     public function jsonSerialize(): array
     {
+        $this->sortable = $this->sortableValue();
+        $this->filter = $this->filterValue();
+
         return [
             'type' => AsComponent::typeForClass(static::class),
             'key' => $this->key,
             'props' => Wire::map($this->decorateProps($this->wireProps())),
-        ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $props
-     * @return array<string, mixed>
-     */
-    protected function decorateProps(array $props): array
-    {
-        return [
-            ...$props,
-            'label' => $this->label,
-            'width' => $this->resolvedWidth()->value,
-            'align' => $this->resolvedAlign()->value,
-            'sortable' => $this->sortableValue(),
-            'toggleable' => $this->toggleable ? true : null,
-            'hiddenByDefault' => $this->hiddenByDefault ? true : null,
-            'filter' => $this->filterValue(),
         ];
     }
 }

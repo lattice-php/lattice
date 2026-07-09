@@ -1,7 +1,9 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import "../../provider";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TableNode, TablePagination, TableResponse, TableState } from "../types";
 import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
+import type { Node } from "@lattice-php/lattice/core/types";
 import type { TableColumn } from "../types";
 import TableComponent from "./table";
 
@@ -10,12 +12,12 @@ function col(partial: {
   label: string;
   type?: string;
   width?: TableColumn["props"]["width"];
-  sortable?: boolean | null;
+  sortable?: boolean;
   filter?: ColumnFilter | null;
-  columns?: TableColumn[];
+  schema?: Node[];
   props?: Record<string, unknown>;
 }): TableColumn {
-  const { key, label, type = "column.text", width, sortable, filter, columns, props } = partial;
+  const { key, label, type = "column.text", width, sortable, filter, schema, props } = partial;
 
   return {
     key,
@@ -25,12 +27,12 @@ function col(partial: {
       width: width ?? (type === "column.stack" ? "xl" : "md"),
       align: "start",
       sortable: sortable ?? null,
-      toggleable: null,
-      hiddenByDefault: null,
+      toggleable: false,
+      hiddenByDefault: false,
       filter: filter ?? null,
-      ...(columns ? { columns } : {}),
       ...props,
     },
+    ...(schema ? { schema } : {}),
   } as TableColumn;
 }
 
@@ -110,7 +112,6 @@ describe("Lattice table component", () => {
             label: "Name",
             sortable: true,
             filter: {
-              enabled: true,
               type: "text",
               operators: ["contains", "eq", "neq"],
               defaultOperator: "contains",
@@ -394,19 +395,10 @@ describe("Lattice table component", () => {
             key: "identity",
             label: "Identity",
             type: "column.stack",
-            columns: [
-              col({
-                key: "name",
-                label: "Name",
-                type: "column.text",
-                sortable: true,
-              }),
-              col({
-                key: "email",
-                label: "Email",
-                type: "column.text",
-              }),
-            ],
+            schema: [
+              { type: "text", props: { dataBindings: { text: "name" } } },
+              { type: "text", props: { dataBindings: { text: "email" } } },
+            ] as Node[],
           }),
           col({
             key: "status",
@@ -849,7 +841,6 @@ describe("Lattice table component", () => {
             key: "name",
             label: "Name",
             filter: {
-              enabled: true,
               type: "text",
               operators: ["contains", "eq", "neq"],
               defaultOperator: "contains",
@@ -863,7 +854,6 @@ describe("Lattice table component", () => {
             key: "featured",
             label: "Featured",
             filter: {
-              enabled: true,
               type: "boolean",
               operators: ["eq"],
               defaultOperator: "eq",
@@ -877,7 +867,6 @@ describe("Lattice table component", () => {
             key: "updated_at",
             label: "Updated",
             filter: {
-              enabled: true,
               type: "date",
               operators: ["eq", "before", "after"],
               defaultOperator: "eq",
@@ -958,7 +947,6 @@ describe("Lattice table component", () => {
             key: "name",
             label: "Name",
             filter: {
-              enabled: true,
               type: "text",
               operators: ["contains", "eq", "neq"],
               defaultOperator: "contains",

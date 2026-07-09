@@ -12,9 +12,9 @@ function col(key: string, label: string): TableColumn {
       label,
       width: "md",
       align: "start",
-      sortable: null,
-      toggleable: null,
-      hiddenByDefault: null,
+      sortable: false,
+      toggleable: false,
+      hiddenByDefault: false,
       filter: null,
     },
   };

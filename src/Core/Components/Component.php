@@ -53,6 +53,25 @@ abstract class Component implements JsonSerializable, Renderable
     }
 
     /**
+     * All row keys this component subtree binds to: its own data bindings plus,
+     * for a container, every descendant's.
+     *
+     * @return array<int, string>
+     */
+    public function boundRowKeys(): array
+    {
+        $keys = $this->dataBindingKeys();
+
+        if ($this instanceof ContainerComponent) {
+            foreach ($this->descendants() as $descendant) {
+                array_push($keys, ...$descendant->dataBindingKeys());
+            }
+        }
+
+        return array_values(array_unique($keys));
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function jsonSerialize(): array

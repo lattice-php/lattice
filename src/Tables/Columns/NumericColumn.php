@@ -13,6 +13,8 @@ abstract class NumericColumn extends Column implements Filterable, Sortable
     use IsFilterable;
     use IsSortable;
 
+    public ColumnAlign $align = ColumnAlign::End;
+
     public ?int $minimumFractionDigits = null;
 
     public ?int $maximumFractionDigits = null;
@@ -29,11 +31,5 @@ abstract class NumericColumn extends Column implements Filterable, Sortable
     public function filterType(): FilterType
     {
         return FilterType::Number;
-    }
-
-    #[\Override]
-    protected function defaultAlign(): ColumnAlign
-    {
-        return ColumnAlign::End;
     }
 }

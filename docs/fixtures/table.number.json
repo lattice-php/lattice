@@ -13,12 +13,12 @@
                         "copyable": false,
                         "date": null,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Metric",
                         "link": null,
                         "multiple": null,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"
@@ -29,12 +29,12 @@
                         "align": "end",
                         "compact": true,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Views",
                         "maximumFractionDigits": null,
                         "minimumFractionDigits": null,
                         "sortable": true,
-                        "toggleable": null,
+                        "toggleable": false,
                         "unit": null,
                         "width": "md"
                     },
@@ -46,12 +46,12 @@
                         "align": "end",
                         "compact": false,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Conversion",
                         "maximumFractionDigits": 1,
                         "minimumFractionDigits": 1,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "unit": "percent",
                         "width": "md"
                     },
@@ -79,7 +79,7 @@
             "endpoint": null,
             "filters": [],
             "layout": null,
-            "lazy": null,
+            "lazy": false,
             "pagination": {
                 "currentPage": null,
                 "from": 1,
@@ -91,7 +91,7 @@
                 "to": 3,
                 "total": 3
             },
-            "resizableColumns": null,
+            "resizableColumns": false,
             "resizeIndicator": false,
             "state": {
                 "filters": [],
@@ -100,7 +100,7 @@
                 "sorts": [],
                 "tableFilters": {}
             },
-            "striped": null
+            "striped": false
         },
         "type": "table"
     }
