@@ -6,5 +6,5 @@ namespace Lattice\Lattice\Effects\Builtin;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
-#[AsEffect('reloadPage')]
+#[AsEffect('reload-page')]
 final readonly class ReloadPageEffect extends Effect {}

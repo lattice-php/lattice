@@ -7,7 +7,7 @@ use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\BulkActionRegistry;
 use Lattice\Lattice\Attributes\AsComponent;
 
-#[AsComponent('bulkAction')]
+#[AsComponent('action.bulk')]
 class BulkAction extends Action
 {
     /**

@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Effects\Builtin;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
-#[AsEffect('reloadComponent')]
+#[AsEffect('reload-component')]
 final readonly class ReloadComponentEffect extends Effect
 {
     public function __construct(

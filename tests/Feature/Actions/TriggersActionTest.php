@@ -109,7 +109,7 @@ test('a link bound to effects serializes them without an href or action', functi
     expect($wire['type'])->toBe('link')
         ->and($wire['props']['href'])->toBeNull()
         ->and($wire['props']['action'])->toBeNull()
-        ->and($wire['props']['effects'][0]['type'])->toBe('toggleSidebar');
+        ->and($wire['props']['effects'][0]['type'])->toBe('toggle-sidebar');
 });
 
 test('a button cannot bind both effects and an action', function (): void {

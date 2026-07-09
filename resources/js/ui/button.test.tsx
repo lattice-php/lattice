@@ -34,7 +34,7 @@ describe("ButtonComponent client effects", () => {
       key: "sidebar-toggle",
       props: {
         buttonType: "button",
-        effects: [{ type: "toggleSidebar", target: "app-sidebar" }],
+        effects: [{ type: "toggle-sidebar", target: "app-sidebar" }],
         icon: "panel-left",
         label: "Toggle sidebar",
       },
@@ -48,7 +48,7 @@ describe("ButtonComponent client effects", () => {
 
     expect(listener).toHaveBeenCalledTimes(1);
     expect((listener.mock.calls[0][0] as CustomEvent).detail).toMatchObject({
-      type: "toggleSidebar",
+      type: "toggle-sidebar",
       target: "app-sidebar",
     });
 

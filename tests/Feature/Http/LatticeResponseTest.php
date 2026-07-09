@@ -60,8 +60,8 @@ test('a lattice response flashes the trait-provided effects', function (): void 
 
     expect($response->getStatusCode())->toBe(302);
     expect(app(EffectFlasher::class)->all())->toHaveCount(2);
-    expect(wire(app(EffectFlasher::class)->all()[0])['type'])->toBe('openModal');
-    expect(wire(app(EffectFlasher::class)->all()[1])['type'])->toBe('localeChange');
+    expect(wire(app(EffectFlasher::class)->all()[0])['type'])->toBe('open-modal');
+    expect(wire(app(EffectFlasher::class)->all()[1])['type'])->toBe('locale-change');
 });
 
 test('Effects::respond starts a fluent response', function (): void {

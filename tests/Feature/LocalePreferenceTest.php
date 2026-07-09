@@ -46,7 +46,7 @@ test('locale action persists the authenticated user locale preference', function
     $this->callAction(SetLocaleAction::class, [], ['locale' => 'de'])
         ->assertOk()
         ->assertJsonPath('ok', true)
-        ->assertJsonPath('effects.0.type', 'localeChange')
+        ->assertJsonPath('effects.0.type', 'locale-change')
         ->assertJsonPath('effects.0.locale', 'de');
 
     expect($user->refresh()->preferredLocale())->toBe('de');

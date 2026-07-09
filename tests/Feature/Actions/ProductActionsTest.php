@@ -123,7 +123,7 @@ test('bulk form actions validate the submitted reason before archiving', functio
     $product = Product::factory()->create(['status' => 'active']);
 
     $ref = app(ComponentReferenceSigner::class)->seal(
-        'bulkAction',
+        'action.bulk',
         'workbench.products.reject-selected',
         ['table' => 'workbench.products'],
     );
@@ -156,7 +156,7 @@ test('bulk form actions validate precognitively without archiving', function ():
     $product = Product::factory()->create(['status' => 'active']);
 
     $ref = app(ComponentReferenceSigner::class)->seal(
-        'bulkAction',
+        'action.bulk',
         'workbench.products.reject-selected',
         ['table' => 'workbench.products'],
     );

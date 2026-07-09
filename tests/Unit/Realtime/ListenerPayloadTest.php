@@ -14,5 +14,5 @@ test('it serializes a listener payload with the visibility enum value', function
         'channel' => 'orders',
         'visibility' => 'private',
         'events' => ['OrderShipped'],
-    ])->and($array['effects'][0]['type'])->toBe('reloadPage');
+    ])->and($array['effects'][0]['type'])->toBe('reload-page');
 });

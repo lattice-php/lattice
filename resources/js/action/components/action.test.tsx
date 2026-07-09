@@ -265,10 +265,10 @@ describe("Lattice action component", () => {
         },
         {
           component: "settings.profile",
-          type: "reloadComponent",
+          type: "reload-component",
         },
         {
-          type: "reloadPage",
+          type: "reload-page",
         },
       ],
       ok: true,
@@ -313,7 +313,7 @@ describe("Lattice action component", () => {
     });
     expect(reloadEvent.detail).toEqual({
       component: "settings.profile",
-      type: "reloadComponent",
+      type: "reload-component",
     });
     expect(router.reload).toHaveBeenCalledWith();
 

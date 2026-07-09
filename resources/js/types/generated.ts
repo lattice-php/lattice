@@ -14,7 +14,7 @@ export type ActionGroup = {
   orientation: Orientation | null;
   ref: string | null;
 };
-export type ActionNodeType = "action" | "action.group" | "bulkAction";
+export type ActionNodeType = "action" | "action.bulk" | "action.group";
 export type ActionResult = {
   readonly ok: boolean;
   readonly data: Record<string, unknown>;
@@ -276,10 +276,10 @@ export type ColumnType =
 export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type ComponentPropsMap = {
   action: Action;
+  "action.bulk": BulkAction;
   "action.group": ActionGroup;
   badge: Badge;
   breadcrumbs: Breadcrumbs;
-  bulkAction: BulkAction;
   button: Button;
   callouts: Callouts;
   card: Card;
@@ -425,16 +425,16 @@ export type Effect = {
 } & Record<string, unknown>;
 export type EffectPropsMap = {
   callout: CalloutEffect;
-  closeModal: CloseModalEffect;
+  "close-modal": CloseModalEffect;
   download: DownloadEffect;
-  localeChange: LocaleChangeEffect;
-  openModal: OpenModalEffect;
+  "locale-change": LocaleChangeEffect;
+  "open-modal": OpenModalEffect;
   redirect: RedirectEffect;
-  reloadComponent: ReloadComponentEffect;
-  reloadPage: ReloadPageEffect;
-  resetForm: ResetFormEffect;
+  "reload-component": ReloadComponentEffect;
+  "reload-page": ReloadPageEffect;
+  "reset-form": ResetFormEffect;
   toast: ToastEffect;
-  toggleSidebar: ToggleSidebarEffect;
+  "toggle-sidebar": ToggleSidebarEffect;
 };
 export type FieldType =
   | "field.builder"
@@ -710,10 +710,10 @@ export type MoneyColumn = {
 };
 export type NodeType =
   | "action"
+  | "action.bulk"
   | "action.group"
   | "badge"
   | "breadcrumbs"
-  | "bulkAction"
   | "button"
   | "callouts"
   | "card"

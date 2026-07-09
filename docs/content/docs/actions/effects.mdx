@@ -184,9 +184,9 @@ run through the normal client-side effect pipeline in order.
 ## How effects reach the client
 
 The result serializes to `{ ok, data, effects }`. Each effect carries a `type` discriminant
-(`toast`, `callout`, `reloadComponent`, `reloadPage`, `redirect`, `download`, `openModal`,
-`closeModal`, `resetForm`, `localeChange`, `toggleSidebar`) and its payload; the client dispatches them
-in order.
+(`toast`, `callout`, `reload-component`, `reload-page`, `redirect`, `download`, `open-modal`,
+`close-modal`, `reset-form`, `locale-change`, `toggle-sidebar`) and its payload; the client dispatches
+them in order.
 Each `type` is declared once on its PHP class via `#[AsEffect('…')]` and generated into the
 discriminated `Effect` union, so the PHP helpers and the client dispatcher stay in lockstep.
 

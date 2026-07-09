@@ -78,10 +78,10 @@ test('the products table serializes bulk actions bound to the table', function (
     expect(data_get($table, 'props.bulkActions.0.props.ref'))->toBeString();
 
     $this->assertLatticeComponent($table)
-        ->assertRenderedCount('bulkAction', 2)
-        ->component('bulkAction', 'workbench.products.archive-selected', fn ($action) => $action
+        ->assertRenderedCount('action.bulk', 2)
+        ->component('action.bulk', 'workbench.products.archive-selected', fn ($action) => $action
             ->assertProp('endpoint', '/lattice/bulk-actions/workbench.products.archive-selected'))
-        ->component('bulkAction', 'workbench.products.reject-selected', fn ($action) => $action
+        ->component('action.bulk', 'workbench.products.reject-selected', fn ($action) => $action
             ->assertProp('form.schema.0.props.name', 'reason'));
 });
 
@@ -93,7 +93,7 @@ test('bulk actions can target every row matching the current filter', function (
     $draft = Product::factory()->create(['status' => 'draft']);
 
     $ref = app(ComponentReferenceSigner::class)->seal(
-        'bulkAction',
+        'action.bulk',
         'workbench.products.archive-selected',
         ['table' => 'workbench.products'],
     );
@@ -114,7 +114,7 @@ test('bulk all-matching validates the filter against the table columns', functio
     Lattice::bulkActions([ArchiveSelectedProductsAction::class]);
 
     $ref = app(ComponentReferenceSigner::class)->seal(
-        'bulkAction',
+        'action.bulk',
         'workbench.products.archive-selected',
         ['table' => 'workbench.products'],
     );

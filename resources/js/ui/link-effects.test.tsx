@@ -17,7 +17,7 @@ describe("LinkComponent client effects", () => {
     const node: Node = {
       key: "collapse",
       props: {
-        effects: [{ type: "toggleSidebar", target: "app-sidebar" }],
+        effects: [{ type: "toggle-sidebar", target: "app-sidebar" }],
         label: "Collapse",
       },
       type: "link",
@@ -30,7 +30,7 @@ describe("LinkComponent client effects", () => {
 
     expect(listener).toHaveBeenCalledTimes(1);
     expect((listener.mock.calls[0][0] as CustomEvent).detail).toMatchObject({
-      type: "toggleSidebar",
+      type: "toggle-sidebar",
       target: "app-sidebar",
     });
 

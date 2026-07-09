@@ -54,9 +54,9 @@ describe("buildEffects", () => {
   });
 
   it("leaves non-toast effects untouched", () => {
-    const effects = [{ type: "reloadPage" }];
+    const effects = [{ type: "reload-page" }];
 
-    expect(buildEffects(effects, {}, t)).toEqual([{ type: "reloadPage" }]);
+    expect(buildEffects(effects, {}, t)).toEqual([{ type: "reload-page" }]);
   });
 
   it("does not mutate the input effect objects", () => {

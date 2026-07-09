@@ -54,7 +54,7 @@ test('registered actions can be handled through the package endpoint', function 
         ->assertJsonPath('effects.0.type', 'toast')
         ->assertJsonPath('effects.0.toast.message', 'Action handled.')
         ->assertJsonPath('effects.0.toast.variant', 'info')
-        ->assertJsonPath('effects.1.type', 'reloadComponent')
+        ->assertJsonPath('effects.1.type', 'reload-component')
         ->assertJsonPath('effects.1.component', 'workbench.users');
 });
 
@@ -65,7 +65,7 @@ test('registered actions can return a locale change effect', function (): void {
     postJson('/lattice/actions/workbench.locale.set', [], latticeHeaders($ref))
         ->assertOk()
         ->assertJsonPath('ok', true)
-        ->assertJsonPath('effects.0.type', 'localeChange')
+        ->assertJsonPath('effects.0.type', 'locale-change')
         ->assertJsonPath('effects.0.locale', 'de');
 });
 

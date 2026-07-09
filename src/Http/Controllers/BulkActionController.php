@@ -32,7 +32,7 @@ final readonly class BulkActionController
     {
         $this->markPrecognitive($request);
 
-        [$request, $definition, $context] = $this->authorizeComponent($request, $this->references, $this->bulkActions, 'bulkAction', $bulkAction);
+        [$request, $definition, $context] = $this->authorizeComponent($request, $this->references, $this->bulkActions, 'action.bulk', $bulkAction);
 
         if (($response = $this->formSubRequest($request, $definition)) instanceof Response) {
             return $response;
