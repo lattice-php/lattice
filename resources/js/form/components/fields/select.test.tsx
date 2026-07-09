@@ -1,9 +1,9 @@
 import { act, configure, fireEvent, getConfig, render, screen } from "@testing-library/react";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { FormProvider } from "../context";
-import { FieldScopeProvider } from "../field-scope";
-import { FormValuesProvider } from "../values";
+import { FormProvider } from "../../hooks/context";
+import { FieldScopeProvider } from "../../hooks/field-scope";
+import { FormValuesProvider } from "../../hooks/values";
 import { SelectComponent } from "./select";
 
 const { postFormAction } = vi.hoisted(() => ({
@@ -17,7 +17,7 @@ const { postFormAction } = vi.hoisted(() => ({
   >(() => Promise.resolve({ options: [] })),
 }));
 
-vi.mock("../form-transport", () => ({
+vi.mock("../../lib/form-transport", () => ({
   FORM_DEBOUNCE_MS: 250,
   postFormAction,
 }));

@@ -164,7 +164,7 @@ it('carries typed props through BulkAction::use from the registry', function ():
 
     $payload = wire(BulkAction::use(ArchiveSelectedProductsAction::class));
 
-    expect($payload['type'])->toBe('bulkAction');
+    expect($payload['type'])->toBe('action.bulk');
     expect($payload['id'])->toBe('workbench.products.archive-selected');
     expect($payload['props'])->toMatchArray([
         'endpoint' => '/lattice/bulk-actions/workbench.products.archive-selected',

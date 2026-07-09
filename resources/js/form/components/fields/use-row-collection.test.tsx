@@ -1,7 +1,12 @@
 import { expect, it } from "vitest";
 import { act, render } from "@testing-library/react";
-import { FieldScopeProvider } from "../field-scope";
-import { FormValuesProvider, useFormValue, useFormValues, useSetFormValue } from "../values";
+import { FieldScopeProvider } from "../../hooks/field-scope";
+import {
+  FormValuesProvider,
+  useFormValue,
+  useFormValues,
+  useSetFormValue,
+} from "../../hooks/values";
 import { ROW_ID_KEY } from "./repeater-rows";
 import { useRowCollection } from "./use-row-collection";
 

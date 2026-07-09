@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import ButtonComponent from "@lattice-php/lattice/core/components/button";
+import ButtonComponent from "@lattice-php/lattice/ui/button";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import {
   CheckboxComponent,
@@ -10,7 +10,7 @@ import {
   HiddenInputComponent,
   PasswordInputComponent,
   TextInputComponent,
-} from "./index";
+} from ".";
 
 const formSlotState = vi.hoisted(() => ({
   clearErrors: vi.fn<(field: string) => void>(),

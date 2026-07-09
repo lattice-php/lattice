@@ -606,7 +606,7 @@ describe("Lattice table component", () => {
       new CustomEvent("lattice:reload-component", {
         detail: {
           component: "settings.passkeys",
-          type: "reloadComponent",
+          type: "reload-component",
         },
       }),
     );

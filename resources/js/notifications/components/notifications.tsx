@@ -1,11 +1,11 @@
 import { Component, lazy, Suspense, type ReactNode } from "react";
-import { Badge } from "@lattice-php/lattice/core/components/badge";
-import { Dialog, DialogContent, DialogTitle } from "@lattice-php/lattice/core/components/dialog";
+import { Badge } from "@lattice-php/lattice/ui/badge";
+import { Dialog, DialogContent, DialogTitle } from "@lattice-php/lattice/ui/dialog";
 import {
   Popover as PopoverRoot,
   PopoverContent,
   PopoverTrigger,
-} from "@lattice-php/lattice/core/components/popover";
+} from "@lattice-php/lattice/ui/popover";
 import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";

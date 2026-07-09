@@ -13,7 +13,7 @@ use Lattice\Lattice\Effects\Effect;
  * a {@see Button} via `->effects(...)` so the
  * trigger can live anywhere in the layout.
  */
-#[AsEffect('toggleSidebar')]
+#[AsEffect('toggle-sidebar')]
 final readonly class ToggleSidebarEffect extends Effect
 {
     public function __construct(

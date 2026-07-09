@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Effects\Builtin;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
-#[AsEffect('openModal')]
+#[AsEffect('open-modal')]
 final readonly class OpenModalEffect extends Effect
 {
     public function __construct(

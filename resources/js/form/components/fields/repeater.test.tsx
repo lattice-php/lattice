@@ -16,8 +16,8 @@ vi.mock("@lattice-php/lattice/core/renderer", async () => {
   return { RenderNode };
 });
 
-import { FormProvider } from "../context";
-import { FormValuesProvider } from "../values";
+import { FormProvider } from "../../hooks/context";
+import { FormValuesProvider } from "../../hooks/values";
 import { renderCounts } from "../../../test/form-renderer-probe";
 import { RepeaterComponent } from "./repeater";
 

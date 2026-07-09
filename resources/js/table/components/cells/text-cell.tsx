@@ -2,7 +2,7 @@ import { CopyableText } from "@lattice-php/lattice/clipboard";
 import { DateTime } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { ReactNode } from "react";
-import { formatCell, resolveLink } from "../../format";
+import { formatCell, resolveLink } from "../../lib/format";
 import type { ColumnCellArgs, ColumnCellComponent } from "../../registry";
 import type { ColumnPropsOf } from "../../types";
 

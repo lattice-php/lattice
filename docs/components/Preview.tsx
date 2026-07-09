@@ -1,10 +1,10 @@
 /// <reference types="@lattice-php/vite-svg-sprite/client" />
 import sprite from "virtual:svg-sprite";
 import { Renderer, registry } from "@lattice-php/lattice";
-import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
-import { SpriteProvider } from "@lattice-php/lattice/icons/sprite";
-import { FormValuesProvider } from "@lattice-php/lattice/form/components/values";
-import type { Node } from "@lattice-php/lattice/core/types";
+import { RegistryContext } from "@lattice-php/lattice/core";
+import { SpriteProvider } from "@lattice-php/lattice/icons";
+import { FormValuesProvider } from "@lattice-php/lattice/form";
+import type { Node } from "@lattice-php/lattice/core";
 
 type Props = {
   nodes: Node[];

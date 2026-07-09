@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
-import { Button } from "@lattice-php/lattice/core/components/button";
+import { Button } from "@lattice-php/lattice/ui/button";
 import { useT } from "@lattice-php/lattice/i18n";
 
 type PromptInputProps = {

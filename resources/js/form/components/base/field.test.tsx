@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { FormFieldFrame } from "./field";
-import { TableCellProvider } from "../row-layout-context";
+import { TableCellProvider } from "../../hooks/row-layout-context";
 
 it("renders the label and error in normal (stack) context", () => {
   render(

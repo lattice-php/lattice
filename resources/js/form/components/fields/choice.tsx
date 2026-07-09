@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import type { Option, RendererComponent } from "@lattice-php/lattice/core/types";
-import { SegmentedPills } from "@lattice-php/lattice/core/components/segmented-pills";
+import { SegmentedPills } from "@lattice-php/lattice/ui/segmented-pills";
 import { FormFieldFrame } from "../base/field";
-import { useControlledField } from "../use-controlled-field";
-import { useResolvedNode } from "../resolved-nodes";
-import { useSeedDefault } from "../use-seed-default";
+import { useControlledField } from "../../hooks/use-controlled-field";
+import { useResolvedNode } from "../../hooks/resolved-nodes";
+import { useSeedDefault } from "../../hooks/use-seed-default";
 
 export const ChoiceComponent: RendererComponent<"field.choice"> = ({ node }) => {
   const resolvedNode = useResolvedNode(node);

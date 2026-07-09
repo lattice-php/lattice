@@ -5,10 +5,10 @@ import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FormFieldFrame } from "../base/field";
-import { useFormContext } from "../context";
-import { useDependentField } from "../use-dependent-field";
-import { useFieldScope } from "../field-scope";
-import { useFormValues, useSetFormValue } from "../values";
+import { useFormContext } from "../../hooks/context";
+import { useDependentField } from "../../hooks/use-dependent-field";
+import { useFieldScope } from "../../hooks/field-scope";
+import { useFormValues, useSetFormValue } from "../../hooks/values";
 
 type Item = {
   id: string;

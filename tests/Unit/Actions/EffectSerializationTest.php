@@ -53,14 +53,14 @@ test('action results expose the full effect vocabulary', function (): void {
         ->localeChange('de');
 
     expect(wire($result)['effects'])->toBe([
-        ['type' => 'reloadPage'],
+        ['type' => 'reload-page'],
         ['type' => 'redirect', 'url' => '/dashboard'],
         ['type' => 'download', 'url' => '/exports/report.csv'],
-        ['type' => 'resetForm', 'form' => 'teams.create'],
-        ['type' => 'localeChange', 'locale' => 'de'],
+        ['type' => 'reset-form', 'form' => 'teams.create'],
+        ['type' => 'locale-change', 'locale' => 'de'],
     ])
-        ->and(wire(Effect::resetForm()))->toBe(['type' => 'resetForm', 'form' => null])
-        ->and(wire(Effect::reloadPage()))->toBe(['type' => 'reloadPage']);
+        ->and(wire(Effect::resetForm()))->toBe(['type' => 'reset-form', 'form' => null])
+        ->and(wire(Effect::reloadPage()))->toBe(['type' => 'reload-page']);
 });
 
 test('action result navigation verbs emit a redirect effect', function (): void {

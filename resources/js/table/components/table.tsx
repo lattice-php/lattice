@@ -1,23 +1,23 @@
 import { type ReactNode, useMemo } from "react";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import { useColumnResizing } from "@lattice-php/lattice/core/use-column-resizing";
-import { useColumnVisibility } from "@lattice-php/lattice/core/use-column-visibility";
+import { useColumnResizing } from "@lattice-php/lattice/core/hooks/use-column-resizing";
+import { useColumnVisibility } from "@lattice-php/lattice/table/hooks/use-column-visibility";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
-import { Checkbox } from "@lattice-php/lattice/core/components/checkbox";
+import { Checkbox } from "@lattice-php/lattice/ui/checkbox";
 import { Icon } from "@lattice-php/lattice/icons";
-import { alignJustifyItems, alignText } from "../align";
+import { alignJustifyItems, alignText } from "../lib/align";
 import type { TableNode } from "../types";
-import { getBulkActions } from "../bulk";
-import { getRowActions, getRowKey } from "../payload";
+import { getBulkActions } from "../lib/bulk";
+import { getRowActions, getRowKey } from "../lib/payload";
 import {
   getQueryParams,
   getTableSizingColumns,
   getTableUtilityTracks,
   getVisiblePages,
-} from "../query";
-import { useTable } from "../use-table";
-import { useTableSelection } from "../use-table-selection";
+} from "../lib/query";
+import { useTable } from "../hooks/use-table";
+import { useTableSelection } from "../hooks/use-table-selection";
 import { BulkBar } from "./bulk-bar";
 import { ColumnFilterControl } from "./column-filter-control";
 import { ColumnHeader } from "./column-header";

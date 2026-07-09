@@ -1,4 +1,4 @@
-import { useFieldScope } from "../form/components/field-scope";
+import { useFieldScope } from "../form/hooks/field-scope";
 
 export const renderCounts = new Map<string, number>();
 

@@ -1,9 +1,9 @@
-import { Button } from "@lattice-php/lattice/core/components/button";
-import { Spinner } from "@lattice-php/lattice/core/components/spinner";
+import { Button } from "@lattice-php/lattice/ui/button";
+import { Spinner } from "@lattice-php/lattice/ui/spinner";
 import { prefixedTestId } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { IconRenderer } from "@lattice-php/lattice/icons";
-import { useAction } from "../use-action";
+import { useAction } from "../hooks/use-action";
 import { actionMenuItemClassName, useActionMenu } from "./action-menu-context";
 
 const ActionComponent: RendererComponent<"action"> = ({ node }) => {

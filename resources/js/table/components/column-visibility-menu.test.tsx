@@ -1,4 +1,4 @@
-import type { ToggleableColumn } from "@lattice-php/lattice/core/use-column-visibility";
+import type { ToggleableColumn } from "@lattice-php/lattice/table/hooks/use-column-visibility";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { ColumnVisibilityMenu } from "./column-visibility-menu";

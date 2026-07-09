@@ -16,7 +16,7 @@ The sidebar's links are `Menu` and `MenuItem` components:
   open state. Below the `md` breakpoint it becomes an off-canvas drawer instead of consuming layout
   width.
 - The sidebar renders no toggle button itself. Place one wherever you like (typically the `Topbar`)
-  with a `Button` that fires the `toggleSidebar` effect on the client — see below.
+  with a `Button` that fires the `toggle-sidebar` effect on the client — see below.
 - `Menu::make()->items([...])` — a list of menu items.
 - `MenuItem::make($label)->href($url)->icon($icon)` — a link. Nest a group with `->children([...])`.
 - `MenuItem::fromPage(SomePage::class)` — builds an item that links to a page's route automatically,
@@ -40,7 +40,7 @@ MenuItem::make('Log out')->href(route('logout', absolute: false))->icon('log-out
 ## Toggling the sidebar
 
 A `Button` can dispatch effects on the client when clicked — no request to the server. The
-`toggleSidebar` effect collapses the rail on desktop and opens the off-canvas drawer on mobile, so
+`toggle-sidebar` effect collapses the rail on desktop and opens the off-canvas drawer on mobile, so
 the toggle button can live anywhere (here, in the `Topbar`):
 
 ```php

@@ -1,8 +1,8 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { HTMLAttributes } from "react";
-import { alignJustify, alignText } from "../align";
-import { getColumnAriaSort, getColumnSort } from "../query";
+import { alignJustify, alignText } from "../lib/align";
+import { getColumnAriaSort, getColumnSort } from "../lib/query";
 import type { TableColumn, TableSort, TableState } from "../types";
 
 function SortIndicator({ sort }: { sort: TableSort | undefined }) {

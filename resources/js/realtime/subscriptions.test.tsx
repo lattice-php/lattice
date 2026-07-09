@@ -109,7 +109,7 @@ describe("Subscriptions", () => {
         channel: "orders",
         visibility: "public",
         events: ["OrderShipped"],
-        effects: [{ type: "closeModal", target: "checkout" } as never],
+        effects: [{ type: "close-modal", target: "checkout" } as never],
       },
     ];
 

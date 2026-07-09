@@ -104,5 +104,5 @@ it('keeps empty data present on a lazy table (wire trap)', function (): void {
     expect($payload['props']['data'])->toBe([]);
     expect($payload['props']['pagination']['mode'])->toBe('table');
     expect($payload['props']['columns'])->toHaveCount(8);
-    expect($payload['props']['bulkActions'][0]['type'])->toBe('bulkAction');
+    expect($payload['props']['bulkActions'][0]['type'])->toBe('action.bulk');
 });

@@ -1,13 +1,16 @@
 import type { Node } from "@lattice-php/lattice/core/types";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
-import { DEFAULT_COLUMN_WIDTH, type SizableColumn } from "@lattice-php/lattice/core/column-sizing";
-import { useColumnResizing } from "@lattice-php/lattice/core/use-column-resizing";
+import {
+  DEFAULT_COLUMN_WIDTH,
+  type SizableColumn,
+} from "@lattice-php/lattice/core/hooks/column-sizing";
+import { useColumnResizing } from "@lattice-php/lattice/core/hooks/use-column-resizing";
 import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
 import { memo, useEffect, useMemo, useState } from "react";
 import type { ColumnWidth, RowAction as WireRowAction } from "@lattice-php/lattice/types/generated";
-import { FieldScopeProvider } from "../field-scope";
-import { TableCellProvider } from "../row-layout-context";
+import { FieldScopeProvider } from "../../hooks/field-scope";
+import { TableCellProvider } from "../../hooks/row-layout-context";
 import { buildRowActions } from "./row-action-menu";
 import { RowActions } from "./row-actions";
 import { RowButton, RowItem } from "./row-item";

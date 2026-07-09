@@ -21,7 +21,7 @@ afterEach(() => {
 
 describe("builtinEffectHandlers", () => {
   it("reloadPage calls router.reload()", () => {
-    builtinEffectHandlers.reloadPage({ type: "reloadPage" } as never);
+    builtinEffectHandlers["reload-page"]({ type: "reload-page" } as never);
     expect(router.reload).toHaveBeenCalledOnce();
   });
 
@@ -49,8 +49,8 @@ describe("builtinEffectHandlers", () => {
   });
 
   it("localeChange calls setLocale with the locale", () => {
-    builtinEffectHandlers.localeChange({
-      type: "localeChange",
+    builtinEffectHandlers["locale-change"]({
+      type: "locale-change",
       locale: "de",
     } as never);
     expect(setLocale).toHaveBeenCalledWith("de");
@@ -67,10 +67,10 @@ describe("builtinEffectHandlers", () => {
     window.addEventListener(LATTICE_EVENT.download, listener);
     window.addEventListener(LATTICE_EVENT.localeChange, listener);
 
-    builtinEffectHandlers.reloadPage({ type: "reloadPage" } as never);
+    builtinEffectHandlers["reload-page"]({ type: "reload-page" } as never);
     builtinEffectHandlers.redirect({ type: "redirect", url: "/x" } as never);
     builtinEffectHandlers.download({ type: "download", url: "/f.csv" } as never);
-    builtinEffectHandlers.localeChange({ type: "localeChange", locale: "fr" } as never);
+    builtinEffectHandlers["locale-change"]({ type: "locale-change", locale: "fr" } as never);
 
     window.removeEventListener(LATTICE_EVENT.reloadPage, listener);
     window.removeEventListener(LATTICE_EVENT.redirect, listener);
@@ -112,11 +112,11 @@ describe("builtinEffectHandlers", () => {
     const listener = vi.fn<(event: Event) => void>();
     window.addEventListener(LATTICE_EVENT.reloadComponent, listener);
 
-    builtinEffectHandlers.reloadComponent({ type: "reloadComponent" } as never);
+    builtinEffectHandlers["reload-component"]({ type: "reload-component" } as never);
 
     expect(listener).toHaveBeenCalledOnce();
     expect((listener.mock.calls[0][0] as CustomEvent).detail).toMatchObject({
-      type: "reloadComponent",
+      type: "reload-component",
     });
     window.removeEventListener(LATTICE_EVENT.reloadComponent, listener);
   });
@@ -125,11 +125,11 @@ describe("builtinEffectHandlers", () => {
     const listener = vi.fn<(event: Event) => void>();
     window.addEventListener(LATTICE_EVENT.openModal, listener);
 
-    builtinEffectHandlers.openModal({ type: "openModal", modal: "confirm" } as never);
+    builtinEffectHandlers["open-modal"]({ type: "open-modal", modal: "confirm" } as never);
 
     expect(listener).toHaveBeenCalledOnce();
     expect((listener.mock.calls[0][0] as CustomEvent).detail).toMatchObject({
-      type: "openModal",
+      type: "open-modal",
     });
     window.removeEventListener(LATTICE_EVENT.openModal, listener);
   });
@@ -138,11 +138,11 @@ describe("builtinEffectHandlers", () => {
     const listener = vi.fn<(event: Event) => void>();
     window.addEventListener(LATTICE_EVENT.closeModal, listener);
 
-    builtinEffectHandlers.closeModal({ type: "closeModal" } as never);
+    builtinEffectHandlers["close-modal"]({ type: "close-modal" } as never);
 
     expect(listener).toHaveBeenCalledOnce();
     expect((listener.mock.calls[0][0] as CustomEvent).detail).toMatchObject({
-      type: "closeModal",
+      type: "close-modal",
     });
     window.removeEventListener(LATTICE_EVENT.closeModal, listener);
   });
@@ -152,10 +152,10 @@ describe("builtinEffectHandlers", () => {
     const listener = (event: Event) => received.push((event as CustomEvent).detail);
     window.addEventListener(LATTICE_EVENT.resetForm, listener);
 
-    builtinEffectHandlers.resetForm({ type: "resetForm", form: "teams.create" } as never);
+    builtinEffectHandlers["reset-form"]({ type: "reset-form", form: "teams.create" } as never);
 
     window.removeEventListener(LATTICE_EVENT.resetForm, listener);
-    expect(received).toEqual([{ type: "resetForm", form: "teams.create" }]);
+    expect(received).toEqual([{ type: "reset-form", form: "teams.create" }]);
   });
 
   it("toggleSidebar bridges to the lattice:toggle-sidebar DOM event with the target as detail", () => {
@@ -163,9 +163,12 @@ describe("builtinEffectHandlers", () => {
     const listener = (event: Event) => received.push((event as CustomEvent).detail);
     window.addEventListener(LATTICE_EVENT.toggleSidebar, listener);
 
-    builtinEffectHandlers.toggleSidebar({ type: "toggleSidebar", target: "app-sidebar" } as never);
+    builtinEffectHandlers["toggle-sidebar"]({
+      type: "toggle-sidebar",
+      target: "app-sidebar",
+    } as never);
 
     window.removeEventListener(LATTICE_EVENT.toggleSidebar, listener);
-    expect(received).toEqual([{ type: "toggleSidebar", target: "app-sidebar" }]);
+    expect(received).toEqual([{ type: "toggle-sidebar", target: "app-sidebar" }]);
   });
 });

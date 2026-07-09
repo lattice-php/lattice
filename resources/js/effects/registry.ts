@@ -55,17 +55,17 @@ function bridge(event: string): EffectHandler {
  * that toast/callout/modal/fragment/form subscribe to.
  */
 export const builtinEffectHandlers: EffectHandlerRegistry = {
-  reloadPage: () => router.reload(),
+  "reload-page": () => router.reload(),
   redirect: effectHandler("redirect", (effect) => router.visit(effect.url)),
   download: effectHandler("download", (effect) => triggerDownload(effect.url)),
-  localeChange: effectHandler("localeChange", (effect) => setLocale(effect.locale)),
+  "locale-change": effectHandler("locale-change", (effect) => setLocale(effect.locale)),
   toast: bridge(LATTICE_EVENT.toast),
   callout: bridge(LATTICE_EVENT.callout),
-  reloadComponent: bridge(LATTICE_EVENT.reloadComponent),
-  openModal: bridge(LATTICE_EVENT.openModal),
-  closeModal: bridge(LATTICE_EVENT.closeModal),
-  resetForm: bridge(LATTICE_EVENT.resetForm),
-  toggleSidebar: bridge(LATTICE_EVENT.toggleSidebar),
+  "reload-component": bridge(LATTICE_EVENT.reloadComponent),
+  "open-modal": bridge(LATTICE_EVENT.openModal),
+  "close-modal": bridge(LATTICE_EVENT.closeModal),
+  "reset-form": bridge(LATTICE_EVENT.resetForm),
+  "toggle-sidebar": bridge(LATTICE_EVENT.toggleSidebar),
 };
 
 export function mergeEffectHandlers(

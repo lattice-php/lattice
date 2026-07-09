@@ -1,12 +1,12 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
-import { AffixGroup } from "../base/affix-group";
+import { AffixGroup } from "../../../ui/affix-group";
 import { FormFieldFrame } from "../base/field";
-import PasswordInput from "../base/password-input";
-import { useFieldScope } from "../field-scope";
-import { useControlledField } from "../use-controlled-field";
-import { useFieldCommit } from "../use-field-commit";
-import { useFormContext } from "../context";
+import PasswordInput from "../../../ui/password-input";
+import { useFieldScope } from "../../hooks/field-scope";
+import { useControlledField } from "../../hooks/use-controlled-field";
+import { useFieldCommit } from "../../hooks/use-field-commit";
+import { useFormContext } from "../../hooks/context";
 
 export const PasswordInputComponent: RendererComponent<"field.password-input"> = ({ node }) => {
   const props = node.props;

@@ -1,6 +1,6 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { useEffect, useState } from "react";
-import { controlSurface } from "@lattice-php/lattice/core/components/control";
+import { controlSurface } from "@lattice-php/lattice/ui/control";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { FilterType } from "@lattice-php/lattice/types/generated";
 

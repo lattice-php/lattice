@@ -31,7 +31,7 @@ test('channel() builds a public listener and on() accepts an array, de-duplicati
 
     expect($array['visibility'])->toBe('public')
         ->and($array['events'])->toBe(['StockLow', 'StockOut'])
-        ->and($array['effects'][0]['type'])->toBe('reloadPage');
+        ->and($array['effects'][0]['type'])->toBe('reload-page');
 });
 
 test('presence() builds a presence listener', function (): void {

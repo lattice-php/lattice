@@ -6,8 +6,8 @@ description: A dialog opened and closed from the server through action effects.
 import Info from "@components/Info.astro";
 
 `Modal::make($id)->title('…')->schema([...])` declares a dialog. It renders nothing until it is
-opened, and it is driven from the server: an [action](/actions/overview/) returns an `openModal` /
-`closeModal` [effect](/actions/effects/) targeting the modal's `$id`.
+opened, and it is driven from the server: an [action](/actions/overview/) returns an `open-modal` /
+`close-modal` [effect](/actions/effects/) targeting the modal's `$id`.
 
 ```php
 Modal::make('invite-member')
