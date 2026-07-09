@@ -19,7 +19,7 @@ final readonly class ColumnData implements JsonSerializable
 {
     /**
      * @param  array<int, ColumnData>|null  $columns
-     * @param  array<string, mixed>|null  $props
+     * @param  array<string, mixed>  $props
      */
     public function __construct(
         public string $key,
@@ -32,7 +32,7 @@ final readonly class ColumnData implements JsonSerializable
         public ?bool $hiddenByDefault = null,
         public ?ColumnFilter $filter = null,
         public ?array $columns = null,
-        public ?array $props = null,
+        public array $props = [],
     ) {}
 
     /**

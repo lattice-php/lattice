@@ -86,7 +86,7 @@
                     "hiddenByDefault": null,
                     "key": "featured",
                     "label": "Featured",
-                    "props": null,
+                    "props": [],
                     "sortable": null,
                     "toggleable": null,
                     "type": "column.boolean",

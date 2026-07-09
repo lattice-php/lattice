@@ -16,12 +16,12 @@ test('select filter serializes its wire shape', function (): void {
             'label' => 'Status',
             'type' => 'select',
             'props' => [
+                'multiple' => false,
+                'searchable' => false,
                 'options' => [
                     ['label' => 'Draft', 'value' => 'draft'],
                     ['label' => 'Active', 'value' => 'active'],
                 ],
-                'multiple' => false,
-                'searchable' => false,
                 'placeholder' => null,
             ],
         ]);

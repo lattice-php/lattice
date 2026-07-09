@@ -15,7 +15,7 @@ function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): 
     hiddenByDefault: null,
     filter: null,
     columns: null,
-    props: null,
+    props: {},
     align: "start",
     ...partial,
   };

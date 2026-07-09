@@ -3,11 +3,14 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
+use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
 class StackColumn extends Column
 {
+    use FiltersRenderableComponents;
+
     /**
      * @var array<int, Column>
      */
@@ -38,7 +41,7 @@ class StackColumn extends Column
             filter: $this->filterValue(),
             columns: array_map(
                 fn (Column $column): ColumnData => $column->toData(),
-                $this->columns,
+                $this->renderableComponents($this->columns),
             ),
         );
     }

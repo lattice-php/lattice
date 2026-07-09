@@ -6,6 +6,9 @@ namespace Lattice\Lattice\Tables\Filters;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use JsonSerializable;
+use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Core\Components\Concerns\SerializesToWire;
+use Lattice\Lattice\Tables\Enums\FilterControl;
 
 /**
  * A dedicated, table-level filter — named, not bound to a column, owning its own
@@ -17,11 +20,13 @@ use JsonSerializable;
  */
 abstract class BaseFilter implements JsonSerializable
 {
+    use SerializesToWire;
+
     protected string $label;
 
     protected ?string $attribute = null;
 
-    public function __construct(public readonly string $key)
+    public function __construct(protected readonly string $key)
     {
         $this->label = str($key)->headline()->toString();
     }
@@ -29,6 +34,11 @@ abstract class BaseFilter implements JsonSerializable
     public static function make(string $key): static
     {
         return new static($key);
+    }
+
+    public function key(): string
+    {
+        return $this->key;
     }
 
     public function label(string $label): static
@@ -48,7 +58,22 @@ abstract class BaseFilter implements JsonSerializable
         return $this;
     }
 
-    abstract public function toData(): FilterData;
+    public function toData(): FilterData
+    {
+        return new FilterData(
+            $this->key,
+            $this->label,
+            $this->wireControl(),
+            $this->decorateProps($this->wireProps()),
+        );
+    }
+
+    private function wireControl(): FilterControl|string
+    {
+        $control = AsComponent::typeForClass(static::class);
+
+        return FilterControl::tryFrom($control) ?? $control;
+    }
 
     /**
      * @template TModel of Model

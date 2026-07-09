@@ -148,7 +148,7 @@ test('the products table high value filter matches by default sales price', func
         ->salesPrices()->create(['group_id' => null, 'amount' => '50.00']);
 
     $table = new ProductsTable;
-    $highValue = collect($table->filters())->firstOrFail(fn ($filter): bool => $filter->key === 'high_value');
+    $highValue = collect($table->filters())->firstOrFail(fn ($filter): bool => $filter->key() === 'high_value');
 
     $builder = $table->builder(TableQuery::fromRequest(Request::create('/'), $table->columns(), 'workbench.products'));
     $highValue->apply($builder, true);

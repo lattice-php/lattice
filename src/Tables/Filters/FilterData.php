@@ -21,7 +21,7 @@ final readonly class FilterData implements JsonSerializable
     public function __construct(
         public string $key,
         public string $label,
-        public FilterControl $type,
+        public FilterControl|string $type,
         public array $props,
     ) {}
 
@@ -33,7 +33,7 @@ final readonly class FilterData implements JsonSerializable
         return [
             'key' => $this->key,
             'label' => $this->label,
-            'type' => $this->type->value,
+            'type' => $this->type instanceof FilterControl ? $this->type->value : $this->type,
             'props' => $this->props,
         ];
     }

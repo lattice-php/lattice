@@ -38,8 +38,8 @@ it('maps each date style method to its dateStyle/timeStyle shape', function (): 
         ->toBe(['dateStyle' => 'long', 'timeStyle' => 'long']);
 });
 
-it('omits props for columns that expose no public properties', function (): void {
-    expect(wire(BooleanColumn::make('active'))['props'])->toBeNull();
+it('serializes an empty props array for columns that expose no public properties', function (): void {
+    expect(wire(BooleanColumn::make('active'))['props'])->toBe([]);
 });
 
 it('keeps protected filter and sort state off the wire props', function (): void {

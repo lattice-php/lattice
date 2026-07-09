@@ -30,7 +30,7 @@ function col(filter: ColumnFilter | null): TableColumn {
     hiddenByDefault: null,
     filter,
     columns: null,
-    props: null,
+    props: {},
     align: "start",
   };
 }

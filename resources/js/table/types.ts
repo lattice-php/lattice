@@ -6,6 +6,7 @@ import type {
   ColumnPropsMap,
   ColumnType,
   FilterClause as WireFilterClause,
+  FilterPropsMap,
   Op,
   Table,
   TablePagination,
@@ -67,4 +68,18 @@ export type ColumnPropsOf<TType extends string> = ResolveProps<
   ColumnPropsMap,
   TType,
   Record<string, unknown> | undefined
+>;
+
+/**
+ * Consumer apps augment this via `declare module` to type their custom filters'
+ * props; built-ins resolve through `FilterPropsMap`. The filter counterpart of
+ * `ColumnProps`.
+ */
+export interface FilterProps {}
+
+export type FilterPropsOf<TType extends string> = ResolveProps<
+  FilterProps,
+  FilterPropsMap,
+  TType,
+  Record<string, unknown>
 >;

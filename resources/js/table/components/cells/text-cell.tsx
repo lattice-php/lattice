@@ -57,7 +57,7 @@ function SingleBadgeCell({ column, props, row, value }: ColumnCellArgs<"column.t
 }
 
 function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.text">): ReactNode {
-  const dateProps = (column.props as ColumnPropsOf<"column.text"> | null)?.date;
+  const dateProps = (column.props as ColumnPropsOf<"column.text">).date;
   const href = resolveLink(column, row, value);
   const text = formatCell(value, column);
 

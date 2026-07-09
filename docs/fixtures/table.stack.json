@@ -51,7 +51,7 @@
                     "hiddenByDefault": null,
                     "key": "identity",
                     "label": "User",
-                    "props": null,
+                    "props": [],
                     "sortable": null,
                     "toggleable": null,
                     "type": "column.stack",

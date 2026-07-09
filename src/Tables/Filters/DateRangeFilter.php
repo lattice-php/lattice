@@ -4,24 +4,16 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Lattice\Lattice\Tables\Attributes\AsFilter;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 
 /**
  * A from/until date-range filter. Each bound is optional; a present bound adds an
  * inclusive `whereDate` comparison against the column.
  */
+#[AsFilter(FilterControl::DateRange)]
 class DateRangeFilter extends BaseFilter
 {
-    public function toData(): FilterData
-    {
-        return new FilterData(
-            $this->key,
-            $this->label,
-            FilterControl::DateRange,
-            [],
-        );
-    }
-
     #[\Override]
     public function accepts(mixed $value): bool
     {

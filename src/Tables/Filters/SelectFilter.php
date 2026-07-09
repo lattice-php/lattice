@@ -8,6 +8,7 @@ use Lattice\Lattice\Core\Concerns\HasOptions;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Option;
+use Lattice\Lattice\Tables\Attributes\AsFilter;
 use Lattice\Lattice\Tables\Concerns\ResolvesFilterOptions;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 
@@ -16,6 +17,7 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
  * matches any of the selected values ({@see Builder::whereIn}). Options can be a
  * fixed list ({@see options}) or come from an {@see OptionSource} via {@see optionsFrom}.
  */
+#[AsFilter(FilterControl::Select)]
 class SelectFilter extends BaseFilter
 {
     use HasOptions;
@@ -68,19 +70,17 @@ class SelectFilter extends BaseFilter
         return $this->searchOptionSource($query);
     }
 
-    public function toData(): FilterData
+    /**
+     * @param  array<string, mixed>  $props
+     * @return array<string, mixed>
+     */
+    #[\Override]
+    protected function decorateProps(array $props): array
     {
-        return new FilterData(
-            $this->key,
-            $this->label,
-            FilterControl::Select,
-            [
-                'options' => $this->resolveOptions($this->options),
-                'multiple' => $this->multiple,
-                'searchable' => $this->isSearchable(),
-                'placeholder' => $this->placeholder,
-            ],
-        );
+        $props['options'] = $this->resolveOptions($this->options);
+        $props['searchable'] = $this->isSearchable();
+
+        return $props;
     }
 
     public function apply(Builder $builder, mixed $value): void

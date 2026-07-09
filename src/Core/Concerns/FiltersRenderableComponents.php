@@ -3,19 +3,21 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Concerns;
 
-use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Contracts\Renderable;
 
 trait FiltersRenderableComponents
 {
     /**
-     * @param  array<int, Component>  $components
-     * @return array<int, Component>
+     * @template T of Renderable
+     *
+     * @param  array<int, T>  $components
+     * @return array<int, T>
      */
     protected function renderableComponents(array $components): array
     {
         return array_values(array_filter(
             $components,
-            fn (Component $component): bool => $component->shouldRender(),
+            static fn (Renderable $component): bool => $component->shouldRender(),
         ));
     }
 }

@@ -27,7 +27,7 @@ function col(): ColumnData {
     hiddenByDefault: null,
     filter: null,
     columns: null,
-    props: null,
+    props: {},
     align: "start",
   };
 }

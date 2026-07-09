@@ -6,7 +6,9 @@ namespace Lattice\Lattice\Tables\Columns;
 use Illuminate\Support\Collection;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Components\Concerns\ReflectsWireProps;
+use Lattice\Lattice\Core\Components\Concerns\SerializesToWire;
+use Lattice\Lattice\Core\Concerns\GatesRendering;
+use Lattice\Lattice\Core\Contracts\Renderable;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
 use Lattice\Lattice\Tables\Enums\ColumnType;
@@ -14,9 +16,10 @@ use Lattice\Lattice\Tables\Enums\ColumnType;
 /**
  * @phpstan-consistent-constructor
  */
-abstract class Column implements JsonSerializable
+abstract class Column implements JsonSerializable, Renderable
 {
-    use ReflectsWireProps;
+    use GatesRendering;
+    use SerializesToWire;
 
     protected string $label;
 
@@ -59,6 +62,11 @@ abstract class Column implements JsonSerializable
         return $this;
     }
 
+    public function visible(bool $visible = true): static
+    {
+        return $this->when($visible);
+    }
+
     public function width(ColumnWidth $width): static
     {
         $this->width = $width;
@@ -97,8 +105,6 @@ abstract class Column implements JsonSerializable
      */
     public function toData(): ColumnData
     {
-        $props = $this->wireProps();
-
         return new ColumnData(
             key: $this->key,
             label: $this->label,
@@ -109,7 +115,7 @@ abstract class Column implements JsonSerializable
             toggleable: $this->toggleable ? true : null,
             hiddenByDefault: $this->hiddenByDefault ? true : null,
             filter: $this->filterValue(),
-            props: $props === [] ? null : $props,
+            props: $this->decorateProps($this->wireProps()),
         );
     }
 

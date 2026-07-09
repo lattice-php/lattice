@@ -9,6 +9,7 @@ use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
+use Lattice\Lattice\Tables\Attributes\AsFilter;
 use ReflectionAttribute;
 use ReflectionClass;
 
@@ -41,7 +42,11 @@ final class ComponentDiscovery
             }
 
             $attribute = $attributes[0]->newInstance();
-            $isColumn = $attribute instanceof AsColumn;
+            $category = match (true) {
+                $attribute instanceof AsColumn => 'column',
+                $attribute instanceof AsFilter => 'filter',
+                default => 'component',
+            };
 
             $discovered[] = new DiscoveredComponent(
                 class: $class,
@@ -49,7 +54,7 @@ final class ComponentDiscovery
                 container: is_subclass_of($class, ContainerComponent::class)
                     || in_array(HasChildSchema::class, class_uses_recursive($class), true),
                 interactive: in_array(IsInteractive::class, class_uses_recursive($class), true),
-                category: $isColumn ? 'column' : 'component',
+                category: $category,
                 domain: $this->domainFor($class),
             );
         }

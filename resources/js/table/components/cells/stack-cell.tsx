@@ -8,7 +8,7 @@ export const StackCell: ColumnCellComponent<"column.stack"> = ({ column, row }) 
       <span key={stackedColumn.key}>
         <TextCell
           column={stackedColumn}
-          props={(stackedColumn.props ?? {}) as ColumnPropsOf<"column.text">}
+          props={stackedColumn.props as ColumnPropsOf<"column.text">}
           row={row}
           value={row[stackedColumn.key]}
         />
