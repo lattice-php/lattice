@@ -4,16 +4,16 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsBlock;
 use Lattice\Lattice\Blocks\BlockDefinition;
+use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockSlots;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\BlockEditor;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 
 beforeEach(function (): void {
-    Lattice::blocks([ValidationHeroBlock::class]);
+    app(BlockRegistry::class)->register([ValidationHeroBlock::class]);
 });
 
 test('rejects a row whose type is not an allowed block', function (): void {

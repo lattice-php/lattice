@@ -5,12 +5,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Lattice\Lattice\Attributes\AsBlock;
 use Lattice\Lattice\Blocks\BlockDefinition;
+use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockSlots;
 use Lattice\Lattice\Blocks\Casts\AsBlocks;
 use Lattice\Lattice\Blocks\Concerns\HasBlocks;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 
@@ -23,7 +23,7 @@ beforeEach(function (): void {
 });
 
 test('persists a block tree and renders it back through the registry', function (): void {
-    Lattice::blocks([HasBlocksHeroBlock::class]);
+    app(BlockRegistry::class)->register([HasBlocksHeroBlock::class]);
 
     $page = HasBlocksPage::create([
         'content' => [

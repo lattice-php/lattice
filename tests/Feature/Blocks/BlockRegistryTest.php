@@ -8,12 +8,11 @@ use Lattice\Lattice\Blocks\BlockSlots;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Exceptions\UnknownComponent;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 
 test('registers and resolves a block by its AsBlock key', function (): void {
-    Lattice::blocks([RegistryHeroBlock::class]);
+    app(BlockRegistry::class)->register([RegistryHeroBlock::class]);
 
     $block = app(BlockRegistry::class)->resolve('registry.hero');
 

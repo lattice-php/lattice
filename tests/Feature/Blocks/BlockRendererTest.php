@@ -3,18 +3,18 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Attributes\AsBlock;
 use Lattice\Lattice\Blocks\BlockDefinition;
+use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockRenderer;
 use Lattice\Lattice\Blocks\BlockSlots;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\Components\Section;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 
 test('renders each stored row through its block definition in order', function (): void {
-    Lattice::blocks([RendererHeroBlock::class]);
+    app(BlockRegistry::class)->register([RendererHeroBlock::class]);
 
     $schema = app(BlockRenderer::class)->render([
         ['type' => 'renderer.hero', 'title' => 'First', 'body' => 'One'],
@@ -32,7 +32,7 @@ test('renders each stored row through its block definition in order', function (
 });
 
 test('renders a placeholder for an unknown block type without throwing', function (): void {
-    Lattice::blocks([RendererHeroBlock::class]);
+    app(BlockRegistry::class)->register([RendererHeroBlock::class]);
 
     $schema = app(BlockRenderer::class)->render([
         ['type' => 'renderer.hero', 'title' => 'Kept', 'body' => 'Body'],

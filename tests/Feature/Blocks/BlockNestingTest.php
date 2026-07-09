@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Attributes\AsBlock;
 use Lattice\Lattice\Blocks\BlockDefinition;
+use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockRenderer;
 use Lattice\Lattice\Blocks\BlockSlots;
 use Lattice\Lattice\Core\Components\Grid;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\FormData;
 
 test('renders child rows declared in a layout block slot', function (): void {
-    Lattice::blocks([NestingColumnsBlock::class, NestingTextBlock::class]);
+    app(BlockRegistry::class)->register([NestingColumnsBlock::class, NestingTextBlock::class]);
 
     $schema = app(BlockRenderer::class)->render([
         [

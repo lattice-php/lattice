@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Attributes\AsBlock;
 use Lattice\Lattice\Blocks\BlockDefinition;
+use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockSlots;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\BlockEditor;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
@@ -24,7 +24,7 @@ test('serializes as a block-editor field with a template per block', function ()
 });
 
 test('serializes rendered wire for each stored row aligned by index', function (): void {
-    Lattice::blocks([EditorHeroBlock::class]);
+    app(BlockRegistry::class)->register([EditorHeroBlock::class]);
 
     $field = BlockEditor::make('content')
         ->blocks([EditorHeroBlock::class])

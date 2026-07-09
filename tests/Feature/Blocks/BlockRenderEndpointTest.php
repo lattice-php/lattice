@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Attributes\AsBlock;
 use Lattice\Lattice\Blocks\BlockDefinition;
+use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockSlots;
 use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\BlockEditor;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
@@ -14,7 +14,7 @@ use Lattice\Lattice\Forms\FormData;
 use function Pest\Laravel\postJson;
 
 beforeEach(function (): void {
-    Lattice::blocks([EndpointHeroBlock::class]);
+    app(BlockRegistry::class)->register([EndpointHeroBlock::class]);
 });
 
 test('renders a block via the signed endpoint and returns wire', function (): void {
@@ -36,7 +36,7 @@ test('rejects an unsigned request', function (): void {
 });
 
 test('forbids rendering a block the field does not allow', function (): void {
-    Lattice::blocks([EndpointHeroBlock::class, EndpointOtherBlock::class]);
+    app(BlockRegistry::class)->register([EndpointHeroBlock::class, EndpointOtherBlock::class]);
     $field = BlockEditor::make('content')->blocks([EndpointHeroBlock::class])->id('content');
     $ref = componentRef(wire($field));
 
