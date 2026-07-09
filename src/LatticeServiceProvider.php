@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Route;
 use Inertia\ResponseFactory;
 use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Attributes\AsAction;
+use Lattice\Lattice\Attributes\AsBulkAction;
+use Lattice\Lattice\Attributes\AsForm;
+use Lattice\Lattice\Attributes\AsFragment;
+use Lattice\Lattice\Attributes\AsLayout;
+use Lattice\Lattice\Attributes\AsRemoteSource;
+use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Console\Commands\DiscoverCacheCommand;
 use Lattice\Lattice\Console\Commands\DiscoverClearCommand;
 use Lattice\Lattice\Console\Commands\MakeActionCommand;
@@ -30,6 +37,7 @@ use Lattice\Lattice\Console\Commands\TypeScriptCommand;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Contracts\ResolvesReferenceIdentity;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Core\Services\RequestReferenceIdentity;
@@ -80,6 +88,14 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
+        DiscoveryKinds::register('forms', AsForm::class);
+        DiscoveryKinds::register('tables', AsTable::class);
+        DiscoveryKinds::register('actions', AsAction::class);
+        DiscoveryKinds::register('bulk-actions', AsBulkAction::class);
+        DiscoveryKinds::register('fragments', AsFragment::class);
+        DiscoveryKinds::register('remote-sources', AsRemoteSource::class);
+        DiscoveryKinds::register('layouts', AsLayout::class);
+
         $this->app->singleton(FormRegistry::class);
         $this->app->singleton(TableRegistry::class);
         $this->app->singleton(FragmentRegistry::class);

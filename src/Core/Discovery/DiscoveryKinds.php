@@ -4,30 +4,44 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Discovery;
 
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Attributes\AsBulkAction;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Attributes\AsRemoteSource;
-use Lattice\Lattice\Attributes\AsTable;
+use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Spatie\Attributes\Attributes;
 
 final class DiscoveryKinds
 {
-    /** @var array<string, class-string> */
-    public const array COMPONENTS = [
-        'forms' => AsForm::class,
-        'tables' => AsTable::class,
-        'actions' => AsAction::class,
-        'bulk-actions' => AsBulkAction::class,
-        'fragments' => AsFragment::class,
-        'remote-sources' => AsRemoteSource::class,
-        'layouts' => AsLayout::class,
-    ];
-
     public const string PAGE_ATTRIBUTE = AsPage::class;
+
+    /**
+     * Keyed by group so re-registering on each provider boot stays idempotent.
+     *
+     * @var array<string, class-string<DefinitionAttribute>>
+     */
+    private static array $registered = [];
+
+    /**
+     * @param  class-string<DefinitionAttribute>  $attributeClass
+     */
+    public static function register(string $group, string $attributeClass): void
+    {
+        self::$registered[$group] = $attributeClass;
+    }
+
+    /**
+     * @return array<string, class-string<DefinitionAttribute>>
+     */
+    public static function components(): array
+    {
+        return self::$registered;
+    }
+
+    /**
+     * For test isolation; providers re-register on the next boot.
+     */
+    public static function flush(): void
+    {
+        self::$registered = [];
+    }
 
     /**
      * @param  class-string  $class

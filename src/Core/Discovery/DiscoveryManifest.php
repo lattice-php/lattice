@@ -97,8 +97,9 @@ final class DiscoveryManifest
     public function build(): array
     {
         $manifest = ['pages' => []];
+        $groups = DiscoveryKinds::components();
 
-        foreach (array_keys(DiscoveryKinds::COMPONENTS) as $group) {
+        foreach (array_keys($groups) as $group) {
             $manifest[$group] = [];
         }
 
@@ -108,7 +109,7 @@ final class DiscoveryManifest
                     continue;
                 }
 
-                foreach (DiscoveryKinds::COMPONENTS as $group => $attribute) {
+                foreach ($groups as $group => $attribute) {
                     if (Attributes::has($class, $attribute)) {
                         $manifest[$group][DiscoveryKinds::keyOf($class, $attribute)] = $class;
                     }

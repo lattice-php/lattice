@@ -42,9 +42,9 @@ trait HandlesRowSchemas
 
                 $childRules = $child->resolvedRulesWithRequired($scope, $request);
 
-                if ($childRules !== []) {
-                    $rules["{$name}.{$index}.{$child->name()}"] = $childRules;
-                }
+                // excludeUnvalidatedArrayKeys drops a row's unruled keys once a sibling
+                // (Builder's `type`) has a rule, so give every field a passthrough.
+                $rules["{$name}.{$index}.{$child->name()}"] = $childRules !== [] ? $childRules : ['sometimes', 'nullable'];
             }
         }
 
