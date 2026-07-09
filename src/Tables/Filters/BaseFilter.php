@@ -68,9 +68,11 @@ abstract class BaseFilter implements JsonSerializable
         );
     }
 
-    private function wireControl(): FilterControl
+    private function wireControl(): FilterControl|string
     {
-        return FilterControl::from(AsComponent::typeForClass(static::class));
+        $control = AsComponent::typeForClass(static::class);
+
+        return FilterControl::tryFrom($control) ?? $control;
     }
 
     /**

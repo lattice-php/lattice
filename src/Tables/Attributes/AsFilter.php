@@ -9,14 +9,16 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
 
 /**
  * Marks a table filter and declares its control, using the same wire type
- * machinery as components. Like a column, a filter's wire props are reflected
- * from its public properties, so no props class is declared.
+ * machinery as components. Built-ins pass the FilterControl enum for
+ * type-safety; consumers pass a raw string to declare a custom control the
+ * client renders through an augmented FilterProps map. Like a column, a filter's
+ * wire props are reflected from its public properties, so no props class is declared.
  */
 #[Attribute(Attribute::TARGET_CLASS)]
 class AsFilter extends AsComponent
 {
-    public function __construct(FilterControl $control)
+    public function __construct(FilterControl|string $control)
     {
-        parent::__construct($control->value);
+        parent::__construct($control instanceof FilterControl ? $control->value : $control);
     }
 }

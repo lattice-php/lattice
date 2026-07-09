@@ -500,7 +500,7 @@ export type FilterControl = "select" | "ternary" | "date-range" | "toggle";
 export type FilterData = {
   readonly key: string;
   readonly label: string;
-  readonly type: FilterControl;
+  readonly type: FilterControl | string;
   readonly props: Record<string, unknown>;
 };
 export type FilterPropsMap = {
