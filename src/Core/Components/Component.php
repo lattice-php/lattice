@@ -91,9 +91,6 @@ abstract class Component implements JsonSerializable, Renderable
     }
 
     /**
-     * Extension point for traits and subclasses to adjust the reflected props
-     * before serialization. The base implementation returns them unchanged.
-     *
      * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */
