@@ -5,6 +5,7 @@ import {
 } from "@lattice-php/lattice/core/registry";
 import type { FormNodeType } from "@lattice-php/lattice/types/generated";
 import {
+  BlockEditorComponent,
   BuilderComponent,
   CheckboxComponent,
   ChoiceComponent,
@@ -28,6 +29,7 @@ import { RichEditorComponent } from "./components/fields/rich-editor";
 export const formComponents = createPlugin({
   components: {
     form: eagerComponent(FormComponent),
+    "field.block-editor": eagerComponent(BlockEditorComponent),
     "field.builder": eagerComponent(BuilderComponent),
     "field.checkbox": eagerComponent(CheckboxComponent),
     "field.choice": eagerComponent(ChoiceComponent),
