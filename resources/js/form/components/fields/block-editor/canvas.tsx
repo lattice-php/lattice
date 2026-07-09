@@ -45,8 +45,6 @@ function Shell({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      {...attributes}
-      {...listeners}
       role="option"
       data-test={`block-shell-${rowId}`}
       aria-selected={selectedId === rowId}
@@ -67,6 +65,17 @@ function Shell({
           : "border-transparent hover:border-lt-border",
       )}
     >
+      <button
+        type="button"
+        aria-label="Drag to reorder"
+        data-test={`block-drag-${rowId}`}
+        onClick={(e) => e.stopPropagation()}
+        className="mb-1 cursor-grab text-lt-muted-fg hover:text-lt-fg active:cursor-grabbing"
+        {...attributes}
+        {...listeners}
+      >
+        Drag
+      </button>
       <Renderer nodes={wireFor(rowId)} />
     </div>
   );
