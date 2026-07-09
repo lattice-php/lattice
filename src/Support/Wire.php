@@ -45,16 +45,20 @@ final class Wire
     }
 
     /**
-     * A wire map (`Record<string, X>` on the TS side) must serialize as a JSON
-     * object even when empty; json_encode() cannot tell an empty PHP array
-     * apart from an empty list, so an empty map is marked as an stdClass here,
-     * at the source, before it enters any array-decoding round-trip.
+     * A wire map (`Record<…, X>` on the TS side) must serialize as a JSON object,
+     * not an array. json_encode() emits `[]` for an empty PHP array and a JSON
+     * array for any sequential-integer-keyed one — neither matches a map type.
+     * Marking such a map as an stdClass at the source guarantees an object shape
+     * (`{}` when empty) that survives the serialization round-trips.
      *
-     * @param  array<string, mixed>  $map
-     * @return array<string, mixed>|stdClass
+     * An already-string-keyed, non-empty map is left as an array — it already
+     * encodes to an object — so only the ambiguous cases become stdClass.
+     *
+     * @param  array<array-key, mixed>  $map
+     * @return array<array-key, mixed>|stdClass
      */
     public static function map(array $map): array|stdClass
     {
-        return $map === [] ? new stdClass : $map;
+        return $map === [] || array_is_list($map) ? (object) $map : $map;
     }
 }

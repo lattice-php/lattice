@@ -48,4 +48,20 @@ class IconColumn extends Column
 
         return $this;
     }
+
+    /**
+     * @param  array<string, mixed>  $props
+     * @return array<string, mixed>
+     */
+    #[\Override]
+    protected function decorateProps(array $props): array
+    {
+        foreach (['colors', 'icons'] as $key) {
+            if (is_array($props[$key] ?? null)) {
+                $props[$key] = Wire::map($props[$key]);
+            }
+        }
+
+        return $props;
+    }
 }
