@@ -5,7 +5,9 @@ namespace Lattice\Lattice\Forms\Components;
 
 use InvalidArgumentException;
 use Lattice\Lattice\Attributes\AsBlock;
+use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Blocks\BlockDefinition;
+use Lattice\Lattice\Blocks\BlockRenderer;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Enums\FieldType;
 use Spatie\Attributes\Attributes;
@@ -25,6 +27,23 @@ class BlockEditor extends Builder
         );
 
         return $this;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 350)]
+    protected function serialiseRenderedRows(array $data): array
+    {
+        $rows = is_array($this->value) ? array_values($this->value) : [];
+
+        $rendered = array_map(
+            fn (mixed $row): array => app(BlockRenderer::class)->render([is_array($row) ? $row : []])->renderable(),
+            $rows,
+        );
+
+        return [...$data, 'rendered' => $rendered];
     }
 
     /**
