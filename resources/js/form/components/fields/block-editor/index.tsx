@@ -7,6 +7,7 @@ import { BlockAddMenu, type BlockOption } from "../block-add-menu";
 import { ROW_ID_KEY, type RepeaterRow } from "../repeater-rows";
 import { useRowCollection } from "../use-row-collection";
 import { BlockCanvas } from "./canvas";
+import { hiddenInputsFor } from "./hidden-inputs";
 import { BlockInspector } from "./inspector";
 import { moveBlock, type BlockPath } from "./move-block";
 import { useBlockPreview } from "./use-block-preview";
@@ -45,9 +46,7 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
     blocks.find((b) => b.type === type);
   const options: BlockOption[] = blocks.map((b) => ({ type: b.type, label: b.label }));
 
-  const selectedIndex = rows.findIndex((row) => String(row[ROW_ID_KEY]) === selectedId);
-  const selectedRow = selectedIndex >= 0 ? rows[selectedIndex] : null;
-  const selectedTemplate = selectedRow ? templateFor(selectedRow.type) : undefined;
+  const selectedRow = rows.find((row) => String(row[ROW_ID_KEY]) === selectedId) ?? null;
 
   const onMoveBlock = (from: BlockPath, to: BlockPath): void => {
     setValue(path, (prev: unknown) =>
@@ -72,6 +71,10 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
         />
       ))}
 
+      {rows.flatMap((row, index) =>
+        row.slots == null ? [] : hiddenInputsFor(`${path}[${index}][slots]`, row.slots),
+      )}
+
       <div className="grid grid-cols-[1fr_18rem] gap-4">
         <div className="flex flex-col gap-3">
           <BlockCanvas
@@ -89,24 +92,30 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
         </div>
 
         <div data-test="block-editor-inspector">
-          {selectedRow ? (
-            <BlockInspector
-              base={path}
-              index={selectedIndex}
-              row={selectedRow}
-              template={selectedTemplate?.schema}
-              onField={onField}
-              onCommit={() =>
-                refresh(
-                  String(selectedRow[ROW_ID_KEY]),
-                  String(selectedRow.type),
-                  Object.fromEntries(Object.entries(selectedRow).filter(([k]) => k !== ROW_ID_KEY)),
-                )
-              }
-            />
-          ) : (
-            <p className="text-sm text-lt-muted-fg">Select a block to edit it.</p>
-          )}
+          {rows.map((row, index) => {
+            const isSelected = String(row[ROW_ID_KEY]) === selectedId;
+            const template = templateFor(row.type);
+
+            return (
+              <div key={String(row[ROW_ID_KEY])} className={isSelected ? undefined : "hidden"}>
+                <BlockInspector
+                  base={path}
+                  index={index}
+                  row={row}
+                  template={template?.schema}
+                  onField={onField}
+                  onCommit={() =>
+                    refresh(
+                      String(row[ROW_ID_KEY]),
+                      String(row.type),
+                      Object.fromEntries(Object.entries(row).filter(([k]) => k !== ROW_ID_KEY)),
+                    )
+                  }
+                />
+              </div>
+            );
+          })}
+          {!selectedRow && <p className="text-sm text-lt-muted-fg">Select a block to edit it.</p>}
         </div>
       </div>
     </FormFieldFrame>
