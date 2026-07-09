@@ -27,11 +27,11 @@ abstract class Column implements JsonSerializable, Renderable
 
     public ColumnAlign $align = ColumnAlign::Start;
 
-    public ?bool $sortable = null;
+    public bool $sortable = false;
 
-    public ?bool $toggleable = null;
+    public bool $toggleable = false;
 
-    public ?bool $hiddenByDefault = null;
+    public bool $hiddenByDefault = false;
 
     public ?ColumnFilter $filter = null;
 
@@ -88,7 +88,7 @@ abstract class Column implements JsonSerializable, Renderable
     public function toggleable(bool $hiddenByDefault = false): static
     {
         $this->toggleable = true;
-        $this->hiddenByDefault = $hiddenByDefault ? true : null;
+        $this->hiddenByDefault = $hiddenByDefault;
 
         return $this;
     }
@@ -101,9 +101,9 @@ abstract class Column implements JsonSerializable, Renderable
         return [];
     }
 
-    protected function sortableValue(): ?bool
+    protected function sortableValue(): bool
     {
-        return $this instanceof Sortable && $this->isSortable() ? true : null;
+        return $this instanceof Sortable && $this->isSortable();
     }
 
     protected function filterValue(): ?ColumnFilter
@@ -113,7 +113,6 @@ abstract class Column implements JsonSerializable, Renderable
         }
 
         return new ColumnFilter(
-            enabled: true,
             type: $this->filterType(),
             operators: $this->availableOperators(),
             defaultOperator: $this->defaultFilterOperator(),

@@ -12,7 +12,7 @@ function col(partial: {
   label: string;
   type?: string;
   width?: TableColumn["props"]["width"];
-  sortable?: boolean | null;
+  sortable?: boolean;
   filter?: ColumnFilter | null;
   schema?: Node[];
   props?: Record<string, unknown>;
@@ -27,8 +27,8 @@ function col(partial: {
       width: width ?? (type === "column.stack" ? "xl" : "md"),
       align: "start",
       sortable: sortable ?? null,
-      toggleable: null,
-      hiddenByDefault: null,
+      toggleable: false,
+      hiddenByDefault: false,
       filter: filter ?? null,
       ...props,
     },
@@ -112,7 +112,6 @@ describe("Lattice table component", () => {
             label: "Name",
             sortable: true,
             filter: {
-              enabled: true,
               type: "text",
               operators: ["contains", "eq", "neq"],
               defaultOperator: "contains",
@@ -842,7 +841,6 @@ describe("Lattice table component", () => {
             key: "name",
             label: "Name",
             filter: {
-              enabled: true,
               type: "text",
               operators: ["contains", "eq", "neq"],
               defaultOperator: "contains",
@@ -856,7 +854,6 @@ describe("Lattice table component", () => {
             key: "featured",
             label: "Featured",
             filter: {
-              enabled: true,
               type: "boolean",
               operators: ["eq"],
               defaultOperator: "eq",
@@ -870,7 +867,6 @@ describe("Lattice table component", () => {
             key: "updated_at",
             label: "Updated",
             filter: {
-              enabled: true,
               type: "date",
               operators: ["eq", "before", "after"],
               defaultOperator: "eq",
@@ -951,7 +947,6 @@ describe("Lattice table component", () => {
             key: "name",
             label: "Name",
             filter: {
-              enabled: true,
               type: "text",
               operators: ["contains", "eq", "neq"],
               defaultOperator: "contains",

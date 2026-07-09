@@ -6,7 +6,6 @@ import { ColumnFilterControl } from "./column-filter-control";
 
 function textFilter(overrides: Partial<ColumnFilter> = {}): ColumnFilter {
   return {
-    enabled: true,
     type: "text",
     operators: ["eq", "neq", "contains", "empty"],
     defaultOperator: "eq",
@@ -27,9 +26,9 @@ function col(filter: ColumnFilter | null): TableColumn {
       label: "Name",
       width: "md",
       align: "start",
-      sortable: null,
-      toggleable: null,
-      hiddenByDefault: null,
+      sortable: false,
+      toggleable: false,
+      hiddenByDefault: false,
       filter,
     },
   };

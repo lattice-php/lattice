@@ -43,9 +43,9 @@ it('reflects only the common concerns for columns that expose no public properti
         'label' => 'Active',
         'width' => 'md',
         'align' => 'start',
-        'sortable' => null,
-        'toggleable' => null,
-        'hiddenByDefault' => null,
+        'sortable' => false,
+        'toggleable' => false,
+        'hiddenByDefault' => false,
         'filter' => null,
     ]);
 });

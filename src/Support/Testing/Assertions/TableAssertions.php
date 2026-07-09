@@ -144,10 +144,6 @@ final readonly class TableAssertions
         $props = is_array($column['props'] ?? null) ? $column['props'] : [];
         $filter = $props['filter'] ?? null;
 
-        if (is_array($filter) && ($filter['enabled'] ?? false) === true) {
-            return $filter;
-        }
-
-        return null;
+        return is_array($filter) ? $filter : null;
     }
 }

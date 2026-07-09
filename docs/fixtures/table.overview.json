@@ -16,7 +16,6 @@
                             "clauseOptions": [],
                             "control": null,
                             "defaultOperator": "contains",
-                            "enabled": true,
                             "multiple": false,
                             "operators": [
                                 "contains",
@@ -31,12 +30,12 @@
                             "searchable": false,
                             "type": "text"
                         },
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Name",
                         "link": null,
                         "multiple": null,
                         "sortable": true,
-                        "toggleable": null,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"
@@ -50,7 +49,6 @@
                             "clauseOptions": [],
                             "control": null,
                             "defaultOperator": "eq",
-                            "enabled": true,
                             "multiple": false,
                             "operators": [
                                 "eq",
@@ -66,12 +64,12 @@
                             "searchable": false,
                             "type": "number"
                         },
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Price",
                         "maximumFractionDigits": null,
                         "minimumFractionDigits": null,
                         "sortable": true,
-                        "toggleable": null,
+                        "toggleable": false,
                         "unit": null,
                         "width": "md"
                     },
@@ -82,10 +80,10 @@
                     "props": {
                         "align": "start",
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Featured",
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.boolean"
@@ -101,12 +99,12 @@
                             "timeStyle": "medium"
                         },
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Updated",
                         "link": null,
                         "multiple": null,
                         "sortable": true,
-                        "toggleable": null,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"

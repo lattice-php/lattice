@@ -13,12 +13,12 @@
                         "copyable": false,
                         "date": null,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Reference",
                         "link": null,
                         "multiple": null,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"
@@ -36,7 +36,6 @@
                             "clauseOptions": [],
                             "control": null,
                             "defaultOperator": "contains",
-                            "enabled": true,
                             "multiple": false,
                             "operators": [
                                 "contains",
@@ -51,10 +50,10 @@
                             "searchable": false,
                             "type": "text"
                         },
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Status",
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.badge"

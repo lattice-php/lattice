@@ -13,12 +13,12 @@
                         "copyable": false,
                         "date": null,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Name",
                         "link": null,
                         "multiple": null,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"
@@ -32,15 +32,15 @@
                             "1": "green"
                         },
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "icon": null,
                         "icons": {
                             "0": "minus",
                             "1": "check"
                         },
                         "label": "Verified",
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.icon"

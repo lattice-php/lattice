@@ -10,10 +10,10 @@
                     "props": {
                         "align": "start",
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "User",
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "xl"
                     },
                     "schema": [
@@ -54,12 +54,12 @@
                         "copyable": false,
                         "date": null,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Role",
                         "link": null,
                         "multiple": null,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"

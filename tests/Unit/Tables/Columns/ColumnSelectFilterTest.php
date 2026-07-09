@@ -40,7 +40,6 @@ test('a column with filter options serializes a select control', function (): vo
     ]))['props']['filter'];
 
     expect($filter)->toMatchArray([
-        'enabled' => true,
         'control' => 'select',
         'multiple' => false,
         'options' => [

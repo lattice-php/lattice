@@ -4,8 +4,8 @@ export type ToggleableColumn = {
   key: string;
   props: {
     label?: string;
-    toggleable?: boolean | null;
-    hiddenByDefault?: boolean | null;
+    toggleable?: boolean;
+    hiddenByDefault?: boolean;
   };
 };
 
@@ -22,7 +22,7 @@ export function useColumnVisibility<TColumn extends ToggleableColumn>({
   storageKey?: string;
 }) {
   const toggleableColumns = useMemo(
-    () => columns.filter((column) => column.props.toggleable === true),
+    () => columns.filter((column) => column.props.toggleable),
     [columns],
   );
   const toggleableKeys = useMemo(
@@ -36,11 +36,11 @@ export function useColumnVisibility<TColumn extends ToggleableColumn>({
 
   const isVisible = useCallback(
     (column: ToggleableColumn): boolean => {
-      if (column.props.toggleable !== true) {
+      if (!column.props.toggleable) {
         return true;
       }
 
-      return overrides[column.key] ?? column.props.hiddenByDefault !== true;
+      return overrides[column.key] ?? !column.props.hiddenByDefault;
     },
     [overrides],
   );

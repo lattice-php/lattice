@@ -13,12 +13,12 @@
                         "copyable": false,
                         "date": null,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Name",
                         "link": null,
                         "multiple": null,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"
@@ -31,7 +31,6 @@
                             "clauseOptions": [],
                             "control": null,
                             "defaultOperator": "eq",
-                            "enabled": true,
                             "multiple": false,
                             "operators": [
                                 "eq",
@@ -42,10 +41,10 @@
                             "searchable": false,
                             "type": "boolean"
                         },
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Featured",
                         "sortable": true,
-                        "toggleable": null,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.boolean"
@@ -55,10 +54,10 @@
                     "props": {
                         "align": "start",
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Archived",
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.boolean"

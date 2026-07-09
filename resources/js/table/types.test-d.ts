@@ -11,9 +11,9 @@ const commonColumnProps: CommonColumnProps = {
   label: "Rating",
   width: "md",
   align: "start",
-  sortable: null,
-  toggleable: null,
-  hiddenByDefault: null,
+  sortable: false,
+  toggleable: false,
+  hiddenByDefault: false,
   filter: null,
 };
 
@@ -33,13 +33,7 @@ type _ColumnProps = ColumnProps;
 
 // 3. Built-in column type resolves from the generated map, common concerns included.
 const _builtin: ColumnPropsOf<"column.badge"> = {
-  label: "Status",
-  width: "md",
-  align: "start",
-  sortable: null,
-  toggleable: null,
-  hiddenByDefault: null,
-  filter: null,
+  ...commonColumnProps,
   colors: { active: "green" },
 };
 // @ts-expect-error colors must be a record of strings, not a number

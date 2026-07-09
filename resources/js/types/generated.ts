@@ -32,19 +32,19 @@ export type BadgeColumn = {
   align: ColumnAlign;
   colors: Record<string | number, string> | null;
   filter: ColumnFilter | null;
-  hiddenByDefault: boolean | null;
+  hiddenByDefault: boolean;
   label: string;
-  sortable: boolean | null;
-  toggleable: boolean | null;
+  sortable: boolean;
+  toggleable: boolean;
   width: ColumnWidth;
 };
 export type BooleanColumn = {
   align: ColumnAlign;
   filter: ColumnFilter | null;
-  hiddenByDefault: boolean | null;
+  hiddenByDefault: boolean;
   label: string;
-  sortable: boolean | null;
-  toggleable: boolean | null;
+  sortable: boolean;
+  toggleable: boolean;
   width: ColumnWidth;
 };
 export type Breadcrumbs = Record<string, never>;
@@ -236,7 +236,6 @@ export type Collapsible = {
 export type Color = "default" | "muted" | "primary" | "success" | "info" | "warning" | "danger";
 export type ColumnAlign = "start" | "center" | "end";
 export type ColumnFilter = {
-  readonly enabled: boolean;
   readonly type: FilterType;
   readonly operators: Op[];
   readonly defaultOperator: Op;
@@ -629,23 +628,23 @@ export type IconColumn = {
   align: ColumnAlign;
   colors: Record<string | number, string> | null;
   filter: ColumnFilter | null;
-  hiddenByDefault: boolean | null;
+  hiddenByDefault: boolean;
   icon: string | null;
   icons: Record<string | number, string> | null;
   label: string;
-  sortable: boolean | null;
-  toggleable: boolean | null;
+  sortable: boolean;
+  toggleable: boolean;
   width: ColumnWidth;
 };
 export type ImageColumn = {
   align: ColumnAlign;
   circular: boolean;
   filter: ColumnFilter | null;
-  hiddenByDefault: boolean | null;
+  hiddenByDefault: boolean;
   label: string;
   size: number | null;
-  sortable: boolean | null;
-  toggleable: boolean | null;
+  sortable: boolean;
+  toggleable: boolean;
   width: ColumnWidth;
 };
 export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
@@ -692,12 +691,12 @@ export type MoneyColumn = {
   currency: string | null;
   currencyField: string | null;
   filter: ColumnFilter | null;
-  hiddenByDefault: boolean | null;
+  hiddenByDefault: boolean;
   label: string;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
-  sortable: boolean | null;
-  toggleable: boolean | null;
+  sortable: boolean;
+  toggleable: boolean;
   width: ColumnWidth;
 };
 export type NodeType =
@@ -777,12 +776,12 @@ export type NumberColumn = {
   align: ColumnAlign;
   compact: boolean;
   filter: ColumnFilter | null;
-  hiddenByDefault: boolean | null;
+  hiddenByDefault: boolean;
   label: string;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
-  sortable: boolean | null;
-  toggleable: boolean | null;
+  sortable: boolean;
+  toggleable: boolean;
   unit: NumberFormatUnit | null;
   width: ColumnWidth;
 };
@@ -1096,10 +1095,10 @@ export type Stack = {
 export type StackColumn = {
   align: ColumnAlign;
   filter: ColumnFilter | null;
-  hiddenByDefault: boolean | null;
+  hiddenByDefault: boolean;
   label: string;
-  sortable: boolean | null;
-  toggleable: boolean | null;
+  sortable: boolean;
+  toggleable: boolean;
   width: ColumnWidth;
 };
 export type Tab = {
@@ -1178,15 +1177,15 @@ export type TextColumn = {
     timeStyle: string | null;
   } | null;
   filter: ColumnFilter | null;
-  hiddenByDefault: boolean | null;
+  hiddenByDefault: boolean;
   label: string;
   link: {
     href: string | null;
     external: boolean;
   } | null;
   multiple: string | null;
-  sortable: boolean | null;
-  toggleable: boolean | null;
+  sortable: boolean;
+  toggleable: boolean;
   width: ColumnWidth;
 };
 export type TextInput = {

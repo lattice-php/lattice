@@ -92,7 +92,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   const hasNextPage = pagination.hasMore ?? currentPage < lastPage;
   const hasActions = rowEntries.some((entry) => entry.actions.length > 0);
   const striped = node.props?.striped === true;
-  const hasFilters = visibleColumns.some((column) => column.props.filter?.enabled);
+  const hasFilters = visibleColumns.some((column) => column.props.filter != null);
   const filterEntries = filters.map((clause, index) => ({ clause, index }));
   const filterDefinitions = useMemo(
     () => (Array.isArray(node.props?.filters) ? node.props.filters : []),
@@ -253,7 +253,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                 {hasBulkActions && <div className="px-4 py-2" role="cell" />}
                 {visibleColumns.map((column) => (
                   <div key={column.key} className="min-w-0 px-2 py-2" role="cell">
-                    {column.props.filter?.enabled && (
+                    {column.props.filter != null && (
                       <ColumnFilterControl
                         column={column}
                         clauses={filterEntries.filter((entry) => entry.clause.field === column.key)}

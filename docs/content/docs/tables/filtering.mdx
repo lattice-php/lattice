@@ -51,7 +51,7 @@ use Lattice\Lattice\Core\Enums\Op;
 TextColumn::make('sku')->filterable(Op::Equals, [Op::Equals, Op::NotEquals]);
 ```
 
-A column's filter capability serializes as a `ColumnFilter` (`{ enabled, type, operators,
+A column's filter capability serializes as a `ColumnFilter` (`{ type, operators,
 defaultOperator, control, options, multiple, searchable, clauseOptions }`) so the React filter control
 knows which inputs and operators to render. Open the **Tree** tab on the example above to see it.
 

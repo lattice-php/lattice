@@ -6,7 +6,6 @@ import TableComponent from "./table";
 
 function selectFilter(multiple: boolean): ColumnFilter {
   return {
-    enabled: true,
     type: "text",
     operators: multiple ? ["in", "not_in"] : ["eq", "neq"],
     defaultOperator: multiple ? "in" : "eq",
@@ -23,7 +22,6 @@ function selectFilter(multiple: boolean): ColumnFilter {
 
 function clauseFilter(): ColumnFilter {
   return {
-    enabled: true,
     type: "boolean",
     operators: ["eq", "neq", "empty"],
     defaultOperator: "eq",
@@ -45,7 +43,6 @@ function clauseFilter(): ColumnFilter {
 
 function rangeFilter(): ColumnFilter {
   return {
-    enabled: true,
     type: "date",
     operators: ["eq", "neq", "gte", "lte"],
     defaultOperator: "eq",
@@ -74,9 +71,9 @@ function col(filter: ColumnFilter): TableColumn {
       label: "Status",
       width: "md",
       align: "start",
-      sortable: null,
-      toggleable: null,
-      hiddenByDefault: null,
+      sortable: false,
+      toggleable: false,
+      hiddenByDefault: false,
       filter,
     },
   };

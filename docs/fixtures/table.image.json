@@ -11,11 +11,11 @@
                         "align": "start",
                         "circular": true,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "",
                         "size": 32,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.image"
@@ -28,12 +28,12 @@
                         "copyable": false,
                         "date": null,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Name",
                         "link": null,
                         "multiple": null,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"
@@ -46,12 +46,12 @@
                         "copyable": false,
                         "date": null,
                         "filter": null,
-                        "hiddenByDefault": null,
+                        "hiddenByDefault": false,
                         "label": "Role",
                         "link": null,
                         "multiple": null,
-                        "sortable": null,
-                        "toggleable": null,
+                        "sortable": false,
+                        "toggleable": false,
                         "width": "md"
                     },
                     "type": "column.text"
