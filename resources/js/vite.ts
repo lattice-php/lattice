@@ -116,12 +116,14 @@ const RESOLVED_VIRTUAL_PLUGINS_ID = `\0${VIRTUAL_PLUGINS_ID}`;
 export function componentPackagesPlugin(packages: LatticeComponentPackage[]): Plugin {
   return {
     name: "lattice:component-packages",
-    config() {
+    config(config) {
       if (packages.length === 0) {
         return {};
       }
 
-      return { server: { fs: { allow: packages.map((pkg) => pkg.dir) } } };
+      const workspaceRoot = searchForWorkspaceRoot(config.root ?? process.cwd());
+
+      return { server: { fs: { allow: [workspaceRoot, ...packages.map((pkg) => pkg.dir)] } } };
     },
     resolveId(id) {
       return id === VIRTUAL_PLUGINS_ID ? RESOLVED_VIRTUAL_PLUGINS_ID : null;

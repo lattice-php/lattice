@@ -23,11 +23,12 @@ abstract class TestCase extends BaseTestCase
     protected function getEnvironmentSetUp($app): void
     {
         $token = ParallelTesting::token();
+        $workspace = sys_get_temp_dir().'/lattice-package-tests/'.basename(dirname(__DIR__));
 
         if ($token) {
-            $database = sys_get_temp_dir().'/lattice-package-tests/database/test_'.$token.'.sqlite';
+            $database = $workspace.'/database/test_'.$token.'.sqlite';
         } else {
-            $database = getenv('LATTICE_TEST_DATABASE') ?: sys_get_temp_dir().'/lattice-package-tests/database-'.getmypid().'.sqlite';
+            $database = getenv('LATTICE_TEST_DATABASE') ?: $workspace.'/database-'.getmypid().'.sqlite';
         }
 
         File::makeDirectory(dirname($database), 0755, true, true);
