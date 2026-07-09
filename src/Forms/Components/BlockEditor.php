@@ -34,7 +34,7 @@ class BlockEditor extends Builder
         );
 
         $this->id ??= $this->name;
-        $this->endpoint ??= (string) config('lattice.blocks.endpoint', 'lattice/blocks/render');
+        $this->endpoint ??= '/'.ltrim((string) config('lattice.blocks.endpoint', 'lattice/blocks/render'), '/');
         $this->signedAs('block-editor');
         $this->context(['allowedBlocks' => array_map(fn (Block $block): string => $block->type, $this->blocks)]);
 

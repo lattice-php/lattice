@@ -17,6 +17,7 @@ test('serializes as a block-editor field with a template per block', function ()
     $wire = wire($field);
 
     expect($wire['type'])->toBe('field.block-editor')
+        ->and($wire['props']['endpoint'])->toBe('/lattice/blocks/render')
         ->and($wire['blocks'])->toHaveCount(1)
         ->and($wire['blocks'][0]['type'])->toBe('editor.hero')
         ->and($wire['blocks'][0]['schema'][0]['props']['name'])->toBe('title');
