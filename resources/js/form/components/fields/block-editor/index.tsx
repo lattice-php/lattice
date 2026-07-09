@@ -2,11 +2,13 @@ import { useMemo, useState } from "react";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { FormFieldFrame } from "../../base/field";
 import { appendPath, toHtmlName } from "../../form-path";
+import { useSetFormValue } from "../../values";
 import { BlockAddMenu, type BlockOption } from "../block-add-menu";
-import { ROW_ID_KEY } from "../repeater-rows";
+import { ROW_ID_KEY, type RepeaterRow } from "../repeater-rows";
 import { useRowCollection } from "../use-row-collection";
 import { BlockCanvas } from "./canvas";
 import { BlockInspector } from "./inspector";
+import { moveBlock, type BlockPath } from "./move-block";
 import { useBlockPreview } from "./use-block-preview";
 
 type BlockTemplate = { type: string; label: string; schema: Node[] };
@@ -19,6 +21,7 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
   const rendered = ((node as unknown as { rendered?: Node[][] }).rendered ?? []) as Node[][];
 
   const { path, rows, onField, append } = useRowCollection(name, props.defaultItems ?? 0);
+  const setValue = useSetFormValue();
 
   const initial = useMemo(() => {
     const map: Record<string, Node[]> = {};
@@ -46,6 +49,12 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
   const selectedRow = selectedIndex >= 0 ? rows[selectedIndex] : null;
   const selectedTemplate = selectedRow ? templateFor(selectedRow.type) : undefined;
 
+  const onMoveBlock = (from: BlockPath, to: BlockPath): void => {
+    setValue(path, (prev: unknown) =>
+      moveBlock(Array.isArray(prev) ? (prev as RepeaterRow[]) : [], from, to),
+    );
+  };
+
   return (
     <FormFieldFrame
       error={undefined}
@@ -70,6 +79,7 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
             wireFor={wireFor}
             selectedId={selectedId}
             onSelect={setSelectedId}
+            onMoveBlock={onMoveBlock}
           />
           <BlockAddMenu
             addLabel={props.addLabel ?? "Add"}

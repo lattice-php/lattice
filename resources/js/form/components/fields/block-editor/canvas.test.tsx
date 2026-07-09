@@ -28,6 +28,7 @@ it("renders each row's wire and selects on click", () => {
       wireFor={(id: string) => (wire as any)[id]}
       selectedId="a"
       onSelect={onSelect}
+      onMoveBlock={() => {}}
     />,
   );
 
