@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { onToast as subscribeToToasts } from "@lattice-php/lattice/toast/toast";
-import type { ToastMessage } from "@lattice-php/lattice/toast/toast";
+import { onToast as subscribeToToasts } from "@lattice-php/lattice/toast";
+import type { ToastMessage } from "@lattice-php/lattice/toast";
 import { LATTICE_EVENT } from "./event-names";
 
 const appearances = ["light", "dark", "system"] as const;

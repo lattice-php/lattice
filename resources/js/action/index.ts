@@ -1,3 +1,6 @@
+export { default as ActionComponent } from "./components/action";
+export { ActionForm } from "./components/action-form";
+export { default as ActionGroupComponent } from "./components/action-group";
 export {
   ActionMenuProvider,
   actionMenuItemClassName,

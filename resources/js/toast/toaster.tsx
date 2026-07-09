@@ -3,10 +3,10 @@ import * as Toast from "@radix-ui/react-toast";
 import { useEffect, useState } from "react";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import type { ToastMessage } from "@lattice-php/lattice/types/generated";
-import { onToast } from "@lattice-php/lattice/toast/toast";
+import { onToast } from "./toast";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
-import { variantStyles } from "@lattice-php/lattice/toast/variant-styles";
+import { variantStyles } from "./variant-styles";
 import { resolveTranslatable } from "@lattice-php/lattice/i18n/translatable";
 
 type ToastItem = ToastMessage & { id: number };

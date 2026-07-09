@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import type { Callout } from "@lattice-php/lattice/types/generated";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { onCallout } from "@lattice-php/lattice/toast/callout";
+import { onCallout } from "@lattice-php/lattice/toast";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
-import { variantStyles } from "@lattice-php/lattice/toast/variant-styles";
+import { variantStyles } from "@lattice-php/lattice/toast";
 
 type CalloutItem = Callout & { id: number };
 
