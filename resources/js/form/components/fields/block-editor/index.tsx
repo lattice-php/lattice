@@ -72,7 +72,9 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
       ))}
 
       {rows.flatMap((row, index) =>
-        row.slots == null ? [] : hiddenInputsFor(`${path}[${index}][slots]`, row.slots),
+        row.slots == null
+          ? []
+          : hiddenInputsFor(toHtmlName(appendPath(path, index, "slots")), row.slots),
       )}
 
       <div className="grid grid-cols-[1fr_18rem] gap-4">
