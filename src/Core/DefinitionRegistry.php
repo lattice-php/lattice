@@ -101,7 +101,7 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
     /**
      * @param  class-string<TDefinition>  $definition
      */
-    protected function keyFor(string $definition): string
+    public function keyFor(string $definition): string
     {
         if (! is_subclass_of($definition, $this->definitionClass())) {
             throw new InvalidArgumentException("Lattice {$this->name()} [{$definition}] must extend [".$this->definitionClass().'].');
