@@ -1,30 +1,35 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Filters\SelectFilter;
 use Workbench\App\Models\Product;
 
 test('select filter serializes its wire shape', function (): void {
-    expect(wire(SelectFilter::make('status')
+    $filter = wire(SelectFilter::make('status')
         ->label('Status')
         ->options([
             SelectFilter::option('Draft', 'draft'),
             SelectFilter::option('Active', 'active'),
-        ])))
-        ->toBe([
-            'key' => 'status',
-            'label' => 'Status',
-            'type' => 'select',
-            'props' => [
-                'multiple' => false,
-                'searchable' => false,
-                'options' => [
-                    ['label' => 'Draft', 'value' => 'draft'],
-                    ['label' => 'Active', 'value' => 'active'],
-                ],
-                'placeholder' => null,
+        ]));
+
+    expect($filter)->toMatchArray([
+        'key' => 'status',
+        'label' => 'Status',
+        'type' => 'filter.select',
+        'props' => [
+            'multiple' => false,
+            'searchable' => false,
+            'options' => [
+                ['label' => 'Draft', 'value' => 'draft'],
+                ['label' => 'Active', 'value' => 'active'],
             ],
-        ]);
+            'placeholder' => null,
+        ],
+    ])
+        ->and($filter['schema'])->toHaveCount(1)
+        ->and($filter['schema'][0]['type'])->toBe('field.select')
+        ->and($filter['schema'][0]['props']['name'])->toBe('value');
 });
 
 test('select filter defaults its label from the key', function (): void {
@@ -34,7 +39,7 @@ test('select filter defaults its label from the key', function (): void {
 test('a single select filter applies an equality constraint', function (): void {
     $builder = Product::query();
 
-    SelectFilter::make('status')->apply($builder, 'active');
+    SelectFilter::make('status')->apply($builder, FormData::make(['value' => 'active']));
 
     expect($builder->toSql())->toContain('"status" = ?')
         ->and($builder->getBindings())->toBe(['active']);
@@ -43,7 +48,7 @@ test('a single select filter applies an equality constraint', function (): void 
 test('a multiple select filter applies a whereIn constraint', function (): void {
     $builder = Product::query();
 
-    SelectFilter::make('status')->multiple()->apply($builder, ['active', 'draft']);
+    SelectFilter::make('status')->multiple()->apply($builder, FormData::make(['value' => ['active', 'draft']]));
 
     expect($builder->toSql())->toContain('"status" in (?, ?)')
         ->and($builder->getBindings())->toBe(['active', 'draft']);
@@ -52,7 +57,7 @@ test('a multiple select filter applies a whereIn constraint', function (): void 
 test('a select filter without a value applies no constraint', function (): void {
     $builder = Product::query();
 
-    SelectFilter::make('status')->apply($builder, '');
+    SelectFilter::make('status')->apply($builder, FormData::make(['value' => '']));
 
     expect($builder->toSql())->not->toContain('where');
 });
@@ -60,7 +65,7 @@ test('a select filter without a value applies no constraint', function (): void 
 test('a multiple select filter with no selected values applies no constraint', function (): void {
     $builder = Product::query();
 
-    SelectFilter::make('status')->multiple()->apply($builder, []);
+    SelectFilter::make('status')->multiple()->apply($builder, FormData::make(['value' => []]));
 
     expect($builder->toSql())->not->toContain('where');
 });

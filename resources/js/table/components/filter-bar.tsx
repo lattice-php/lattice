@@ -6,57 +6,65 @@ import {
 } from "@lattice-php/lattice/core/components/popover";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
-import { filterOptions, isActiveFilterValue } from "../filter-values";
-import type { FilterPropsOf } from "../types";
+import { isActiveFilterValue } from "../filter-values";
+import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
+import type { FilterClause, TableColumn, TableFilterIndicator } from "../types";
 import { TableFilterControl } from "./filter-controls";
 
 export function FilterBar({
-  filters,
-  values,
+  clauses,
+  columnsByKey,
+  indicators,
   processing,
-  hasActiveFilters,
+  onRemoveClause,
   onChange,
   onReset,
 }: {
-  filters: FilterData[];
-  values: Record<string, unknown>;
+  clauses: FilterClause[];
+  columnsByKey: Map<string, TableColumn>;
+  indicators: TableFilterIndicator[];
   processing: boolean;
-  hasActiveFilters: boolean;
+  onRemoveClause: (index: number) => void;
   onChange: (key: string, value: unknown) => void;
   onReset: () => void;
 }) {
   const { t } = useT("lattice");
-  const active = filters.filter((filter) => isActiveFilterValue(values[filter.key]));
 
-  if (!hasActiveFilters) {
+  if (clauses.length === 0 && indicators.length === 0) {
     return null;
   }
 
   return (
     <div className="border-b border-lt-border px-4 py-3">
       <div className="flex flex-wrap items-center gap-2 text-sm">
-        {active.map((filter) => (
-          <span
-            key={filter.key}
-            className="inline-flex items-center gap-1.5 rounded-lt-sm bg-lt-muted px-2 py-1"
-          >
-            <span>
-              {`${filter.label}: `}
-              <span className="font-semibold">{displayValue(filter, values[filter.key])}</span>
-            </span>
-            <button
-              type="button"
-              data-test={`table-filter-chip-${filter.key}-remove`}
-              className="inline-flex size-5 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-border disabled:opacity-50"
-              disabled={processing}
-              aria-label={t("table.filter.remove", "Remove {{label}} filter", {
-                label: filter.label,
-              })}
-              onClick={() => onChange(filter.key, undefined)}
-            >
-              <Icon name="x" aria-hidden="true" className="size-lt-icon-sm" />
-            </button>
-          </span>
+        {clauses.map((clause, index) => {
+          const label = columnsByKey.get(clause.field)?.props.label ?? clause.field;
+          const valueless = VALUELESS_FILTER_OPERATORS.has(clause.operator);
+
+          return (
+            <FilterChip
+              key={`${clause.field}-${clause.operator}-${index}`}
+              label={`${label} ${operatorLabel(clause.operator)}`}
+              value={valueless ? "" : clause.value}
+              removeTestId={`filter-chip-${clause.field}-remove`}
+              removeLabel={t("table.filter.remove", "Remove {{label}} filter", { label })}
+              processing={processing}
+              onRemove={() => onRemoveClause(index)}
+            />
+          );
+        })}
+        {indicators.map((indicator) => (
+          <FilterChip
+            key={`${indicator.filter}:${indicator.label}:${indicator.value}`}
+            label={indicator.label}
+            value={indicator.value}
+            removeTestId={`table-filter-chip-${indicator.filter}-remove`}
+            removeLabel={t("table.filter.remove", "Remove {{label}} filter", {
+              label: indicator.label,
+            })}
+            processing={processing}
+            onRemove={() => onChange(indicator.filter, undefined)}
+          />
         ))}
         <button
           type="button"
@@ -72,6 +80,47 @@ export function FilterBar({
   );
 }
 
+function FilterChip({
+  label,
+  value,
+  removeTestId,
+  removeLabel,
+  processing,
+  onRemove,
+}: {
+  label: string;
+  value: string;
+  removeTestId: string;
+  removeLabel: string;
+  processing: boolean;
+  onRemove: () => void;
+}) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-lt-sm bg-lt-muted px-2 py-1">
+      <span>
+        {value === "" ? (
+          <span className="font-semibold">{label}</span>
+        ) : (
+          <>
+            {`${label}: `}
+            <span className="font-semibold">{value}</span>
+          </>
+        )}
+      </span>
+      <button
+        type="button"
+        data-test={removeTestId}
+        className="inline-flex size-5 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-border disabled:opacity-50"
+        disabled={processing}
+        aria-label={removeLabel}
+        onClick={onRemove}
+      >
+        <Icon name="x" aria-hidden="true" className="size-lt-icon-sm" />
+      </button>
+    </span>
+  );
+}
+
 export function FilterMenu({
   filters,
   values,
@@ -83,7 +132,7 @@ export function FilterMenu({
   values: Record<string, unknown>;
   processing: boolean;
   onChange: (key: string, value: unknown) => void;
-  onSearch?: (filterKey: string, query: string) => Promise<Option[]>;
+  onSearch?: (searchKey: string, query: string, signal?: AbortSignal) => Promise<Option[]>;
 }) {
   const { t } = useT("lattice");
   const active = filters.filter((filter) => isActiveFilterValue(values[filter.key]));
@@ -111,15 +160,17 @@ export function FilterMenu({
         <div className="grid gap-3">
           {filters.map((filter) => (
             <div key={filter.key} className="grid gap-1">
-              {filter.type !== "toggle" && (
-                <span className="text-xs font-medium text-lt-muted-fg">{filter.label}</span>
-              )}
               <TableFilterControl
                 filter={filter}
                 value={values[filter.key]}
                 processing={processing}
                 onChange={(value) => onChange(filter.key, value)}
-                onSearch={onSearch ? (query) => onSearch(filter.key, query) : undefined}
+                onSearch={
+                  onSearch
+                    ? (field, query, signal) =>
+                        onSearch(`filter:${filter.key}.${field}`, query, signal)
+                    : undefined
+                }
               />
             </div>
           ))}
@@ -127,32 +178,4 @@ export function FilterMenu({
       </PopoverContent>
     </Popover>
   );
-}
-
-function optionLabel(filter: FilterData, value: string): string {
-  return filterOptions(filter).find((option) => option.value === value)?.label ?? value;
-}
-
-function displayValue(filter: FilterData, value: unknown): string {
-  if (filter.type === "select") {
-    if (Array.isArray(value)) {
-      return value.map((item) => optionLabel(filter, String(item))).join(", ");
-    }
-
-    return optionLabel(filter, String(value));
-  }
-
-  if (filter.type === "ternary") {
-    const props = filter.props as FilterPropsOf<"ternary">;
-
-    return value === "true" ? props.trueLabel : props.falseLabel;
-  }
-
-  if (filter.type === "date-range" && value && typeof value === "object") {
-    const range = value as { from?: string; until?: string };
-
-    return [range.from, range.until].filter((part) => part).join(" – ");
-  }
-
-  return String(value);
 }

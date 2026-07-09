@@ -8,6 +8,8 @@ use Lattice\Lattice\Core\Concerns\HasOptions;
 use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Option;
+use Lattice\Lattice\Forms\Components\Select;
+use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Attributes\AsFilter;
 use Lattice\Lattice\Tables\Concerns\ResolvesFilterOptions;
 use Lattice\Lattice\Tables\Enums\FilterControl;
@@ -18,7 +20,7 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
  * fixed list ({@see options}) or come from an {@see OptionSource} via {@see optionsFrom}.
  */
 #[AsFilter(FilterControl::Select)]
-class SelectFilter extends BaseFilter
+class SelectFilter extends Filter
 {
     use HasOptions;
     use HasPlaceholder;
@@ -71,6 +73,45 @@ class SelectFilter extends BaseFilter
     }
 
     /**
+     * @return array<int, Select>
+     */
+    #[\Override]
+    public function schema(): array
+    {
+        $field = Select::make('value', $this->label)
+            ->multiple($this->multiple);
+
+        if ($this->placeholder !== null) {
+            $field->placeholder($this->placeholder);
+        }
+
+        if ($this->hasOptionSource()) {
+            $field->optionsFrom($this->optionSource);
+        } else {
+            $field->options($this->options);
+        }
+
+        return [$field->rules($this->multiple ? ['array'] : ['string'])];
+    }
+
+    /**
+     * @return string|list<string|FilterIndicator|array{label?: string, value: mixed}>|array<string, mixed>|null
+     */
+    #[\Override]
+    public function indicator(FormData $data): string|array|null
+    {
+        $values = $this->normalizeValues($data->get('value'));
+
+        if ($values === []) {
+            return null;
+        }
+
+        $labels = $this->labelsFor($values);
+
+        return $this->multiple ? implode(', ', $labels) : ($labels[0] ?? null);
+    }
+
+    /**
      * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */
@@ -83,8 +124,10 @@ class SelectFilter extends BaseFilter
         return $props;
     }
 
-    public function apply(Builder $builder, mixed $value): void
+    public function apply(Builder $builder, FormData $data): void
     {
+        $value = $data->get('value');
+
         if ($this->multiple) {
             $values = $this->normalizeValues($value);
 
@@ -109,5 +152,26 @@ class SelectFilter extends BaseFilter
             array_map(static fn (mixed $item): string => (string) $item, is_array($value) ? $value : [$value]),
             static fn (string $item): bool => $item !== '',
         ));
+    }
+
+    /**
+     * @param  list<string>  $values
+     * @return list<string>
+     */
+    private function labelsFor(array $values): array
+    {
+        $options = $this->hasOptionSource()
+            ? $this->optionSource->selected($values)
+            : $this->options;
+        $labelsByValue = [];
+
+        foreach ($options as $option) {
+            $labelsByValue[$option->value] = $option->label;
+        }
+
+        return array_map(
+            static fn (string $value): string => $labelsByValue[$value] ?? $value,
+            $values,
+        );
     }
 }

@@ -1,6 +1,8 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { FilterData } from "@lattice-php/lattice/types/generated";
+import { registry } from "@lattice-php/lattice/registry";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { TableColumn, TableNode } from "../types";
 import TableComponent from "./table";
 
@@ -24,7 +26,23 @@ const filters: FilterData[] = [
   {
     key: "status",
     label: "Status",
-    type: "select",
+    type: "filter.select",
+    schema: [
+      {
+        type: "field.select",
+        props: {
+          name: "value",
+          label: "Status",
+          options: [
+            { label: "Active", value: "active" },
+            { label: "Draft", value: "draft" },
+          ],
+          multiple: true,
+          searchable: false,
+          placeholder: null,
+        },
+      },
+    ],
     props: {
       options: [
         { label: "Active", value: "active" },
@@ -38,11 +56,36 @@ const filters: FilterData[] = [
   {
     key: "featured",
     label: "Featured",
-    type: "ternary",
+    type: "filter.ternary",
+    schema: [
+      {
+        type: "field.select",
+        props: {
+          name: "value",
+          label: "Featured",
+          options: [
+            { label: "Yes", value: "true" },
+            { label: "No", value: "false" },
+          ],
+          multiple: false,
+          searchable: false,
+          placeholder: "All",
+        },
+      },
+    ],
     props: { trueLabel: "Yes", falseLabel: "No", placeholder: "All" },
   },
-  { key: "created", label: "Created", type: "date-range", props: {} },
-  { key: "high", label: "High value", type: "toggle", props: {} },
+  {
+    key: "created",
+    label: "Created",
+    type: "filter.date-range",
+    schema: [
+      { type: "field.date-input", props: { name: "from", label: "Created from" } },
+      { type: "field.date-input", props: { name: "until", label: "Created until" } },
+    ],
+    props: {},
+  },
+  { key: "high", label: "High value", type: "filter.toggle", schema: [], props: {} },
 ];
 
 function stubFetch() {
@@ -50,7 +93,14 @@ function stubFetch() {
     Response.json({
       data: [{ name: "Alpha" }],
       pagination: {},
-      state: { filters: [], page: 1, perPage: 25, sorts: [], tableFilters: {} },
+      state: {
+        filters: [],
+        page: 1,
+        perPage: 25,
+        sorts: [],
+        tableFilters: {},
+        tableFilterIndicators: [],
+      },
     }),
   );
 
@@ -59,7 +109,23 @@ function stubFetch() {
   return fetch;
 }
 
-function node(tableFilters: Record<string, unknown>): TableNode {
+function indicatorsFor(tableFilters: Record<string, unknown>) {
+  const indicators = [];
+
+  if (tableFilters.status) {
+    indicators.push({ filter: "status", label: "Status", value: "Active, Draft" });
+  }
+  if (tableFilters.featured) {
+    indicators.push({ filter: "featured", label: "Featured", value: "Yes" });
+  }
+  if (tableFilters.created) {
+    indicators.push({ filter: "created", label: "Created", value: "2026-01-01" });
+  }
+
+  return indicators;
+}
+
+function node(tableFilters: Record<string, Record<string, unknown>>): TableNode {
   return {
     id: "workbench.products",
     type: "table",
@@ -68,7 +134,14 @@ function node(tableFilters: Record<string, unknown>): TableNode {
       filters,
       data: [{ name: "Alpha" }],
       endpoint: "/lattice/tables/workbench.products",
-      state: { filters: [], page: 1, perPage: 25, sorts: [], tableFilters },
+      state: {
+        filters: [],
+        page: 1,
+        perPage: 25,
+        sorts: [],
+        tableFilters,
+        tableFilterIndicators: indicatorsFor(tableFilters),
+      },
     },
   } satisfies TableNode;
 }
@@ -85,14 +158,15 @@ describe("dedicated table filters in the table component", () => {
   it("renders an active-value chip per dedicated filter type", () => {
     stubFetch();
 
-    render(
+    renderWithRegistry(
       <TableComponent
         node={node({
-          status: ["active", "draft"],
-          featured: "true",
+          status: { value: ["active", "draft"] },
+          featured: { value: "true" },
           created: { from: "2026-01-01", until: "" },
         })}
       />,
+      registry,
     );
 
     expect(screen.getByText("Active, Draft")).toBeInTheDocument();
@@ -103,7 +177,7 @@ describe("dedicated table filters in the table component", () => {
   it("renders the filter trigger in the trailing header cell", () => {
     stubFetch();
 
-    render(<TableComponent node={node({})} />);
+    renderWithRegistry(<TableComponent node={node({})} />, registry);
 
     const trigger = screen.getByRole("button", { name: "Filters" });
 
@@ -114,14 +188,15 @@ describe("dedicated table filters in the table component", () => {
   it("applies a ternary selection through the endpoint", async () => {
     const fetch = stubFetch();
 
-    render(<TableComponent node={node({})} />);
+    renderWithRegistry(<TableComponent node={node({})} />, registry);
 
     openFilters();
-    fireEvent.change(screen.getByLabelText("Featured"), { target: { value: "false" } });
+    fireEvent.click(screen.getByRole("button", { name: "Featured" }));
+    fireEvent.click(screen.getByRole("option", { name: "No" }));
 
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining("tf%5Bfeatured%5D=false"),
+        expect.stringContaining("tf%5Bfeatured%5D%5Bvalue%5D=false"),
         expect.anything(),
       );
     });
@@ -130,15 +205,18 @@ describe("dedicated table filters in the table component", () => {
   it("toggles a single value off the multi-select through the endpoint", async () => {
     const fetch = stubFetch();
 
-    render(<TableComponent node={node({ status: ["active", "draft"] })} />);
+    renderWithRegistry(
+      <TableComponent node={node({ status: { value: ["active", "draft"] } })} />,
+      registry,
+    );
 
     openFilters();
     fireEvent.click(screen.getByRole("button", { name: "Status" }));
-    fireEvent.click(screen.getByRole("checkbox", { name: "Active" }));
+    fireEvent.click(screen.getByRole("option", { name: "Active" }));
 
     await waitFor(() => {
       const url = fetch.mock.calls.at(-1)?.[0];
-      expect(url).toContain("tf%5Bstatus%5D%5B%5D=draft");
+      expect(url).toContain("tf%5Bstatus%5D%5Bvalue%5D%5B%5D=draft");
       expect(url).not.toContain("active");
     });
   });
@@ -146,10 +224,12 @@ describe("dedicated table filters in the table component", () => {
   it("applies a date-range bound through the endpoint", async () => {
     const fetch = stubFetch();
 
-    render(<TableComponent node={node({})} />);
+    renderWithRegistry(<TableComponent node={node({})} />, registry);
 
     openFilters();
-    fireEvent.change(screen.getByLabelText("Created from"), { target: { value: "2026-03-01" } });
+    fireEvent.input(await screen.findByLabelText("Created from"), {
+      target: { value: "2026-03-01" },
+    });
 
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
@@ -162,14 +242,14 @@ describe("dedicated table filters in the table component", () => {
   it("turns a toggle filter on through the endpoint", async () => {
     const fetch = stubFetch();
 
-    render(<TableComponent node={node({})} />);
+    renderWithRegistry(<TableComponent node={node({})} />, registry);
 
     openFilters();
     fireEvent.click(screen.getByRole("checkbox", { name: "High value" }));
 
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining("tf%5Bhigh%5D=1"),
+        expect.stringContaining("tf%5Bhigh%5D%5Bvalue%5D=1"),
         expect.anything(),
       );
     });
@@ -178,21 +258,26 @@ describe("dedicated table filters in the table component", () => {
   it("clears one filter through its indicator chip", async () => {
     const fetch = stubFetch();
 
-    render(<TableComponent node={node({ featured: "true", status: ["active"] })} />);
+    renderWithRegistry(
+      <TableComponent
+        node={node({ featured: { value: "true" }, status: { value: ["active"] } })}
+      />,
+      registry,
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Remove Featured filter" }));
 
     await waitFor(() => {
       const url = fetch.mock.calls.at(-1)?.[0];
       expect(url).not.toContain("tf%5Bfeatured%5D");
-      expect(url).toContain("tf%5Bstatus%5D%5B%5D=active");
+      expect(url).toContain("tf%5Bstatus%5D%5Bvalue%5D%5B%5D=active");
     });
   });
 
   it("resets every filter", async () => {
     const fetch = stubFetch();
 
-    render(<TableComponent node={node({ featured: "true" })} />);
+    renderWithRegistry(<TableComponent node={node({ featured: { value: "true" } })} />, registry);
 
     fireEvent.click(screen.getByRole("button", { name: "Reset all" }));
 

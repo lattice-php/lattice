@@ -492,24 +492,33 @@ export type FileUpload = {
   tooltip: string | null;
   value: unknown;
 };
-export type Filter = Record<string, never>;
 export type FilterClause = {
   readonly field: string;
   readonly operator: string;
   readonly value: string;
 };
-export type FilterControl = "select" | "ternary" | "date-range" | "toggle";
+export type FilterControl =
+  | "filter.select"
+  | "filter.ternary"
+  | "filter.date-range"
+  | "filter.toggle";
 export type FilterData = {
   readonly key: string;
   readonly label: string;
   readonly type: FilterControl | string;
+  readonly schema: WireNode[];
   readonly props: Record<string, unknown>;
 };
+export type FilterIndicator = {
+  readonly filter: string;
+  readonly label: string;
+  readonly value: string;
+};
 export type FilterPropsMap = {
-  "date-range": DateRangeFilter;
-  select: SelectFilter;
-  ternary: TernaryFilter;
-  toggle: Filter;
+  "filter.date-range": DateRangeFilter;
+  "filter.select": SelectFilter;
+  "filter.ternary": TernaryFilter;
+  "filter.toggle": ToggleFilter;
 };
 export type FilterType = "text" | "number" | "date" | "boolean";
 export type FloatingPanel = {
@@ -1140,7 +1149,8 @@ export type TableQuery = {
   readonly sorts: TableSort[];
   readonly page: number;
   readonly perPage: number;
-  readonly tableFilters: Record<string, unknown>;
+  readonly tableFilters: Record<string, Record<string, unknown>>;
+  readonly tableFilterIndicators: FilterIndicator[];
 };
 export type TableSort = {
   readonly key: string;
@@ -1312,6 +1322,7 @@ export type Toggle = {
   tooltip: string | null;
   value: unknown;
 };
+export type ToggleFilter = Record<string, never>;
 export type ToggleSidebarEffect = {
   readonly target: string | null;
 };

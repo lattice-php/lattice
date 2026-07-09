@@ -1,6 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { ColumnFilter, Op } from "@lattice-php/lattice/types/generated";
+import { registry } from "@lattice-php/lattice/registry";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { FilterClause, TableColumn } from "../types";
 import { ColumnFilterControl } from "./column-filter-control";
 
@@ -60,7 +62,7 @@ function renderControl(
   h: Handlers,
   processing = false,
 ) {
-  return render(
+  return renderWithRegistry(
     <ColumnFilterControl
       column={column}
       clauses={clauses}
@@ -70,6 +72,7 @@ function renderControl(
       onRemove={h.onRemove}
       onReplace={h.onReplace}
     />,
+    registry,
   );
 }
 
@@ -83,16 +86,16 @@ describe("ColumnFilterControl", () => {
 
   it("delegates select-control columns to the select filter", () => {
     const h = handlers();
-    renderControl(col(textFilter({ control: "select" })), [], h);
+    renderControl(col(textFilter({ control: "filter.select" })), [], h);
 
     expect(screen.queryByRole("button", { name: "Name filters" })).not.toBeInTheDocument();
-    expect(screen.getByRole("combobox", { name: "Name" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Name" })).toBeInTheDocument();
   });
 
   describe("select control", () => {
     function selectFilter(overrides: Partial<ColumnFilter> = {}): ColumnFilter {
       return textFilter({
-        control: "select",
+        control: "filter.select",
         operators: ["eq", "neq"],
         defaultOperator: "eq",
         options: [
@@ -112,9 +115,8 @@ describe("ColumnFilterControl", () => {
 
       renderControl(col(filter), [], h);
 
-      fireEvent.change(screen.getByRole("combobox", { name: "Name" }), {
-        target: { value: "active" },
-      });
+      fireEvent.click(screen.getByRole("button", { name: "Name" }));
+      fireEvent.click(screen.getByRole("option", { name: "Active" }));
 
       expect(h.onReplace).toHaveBeenCalledWith("name", [
         { field: "name", operator: "eq", value: "active" },
@@ -125,7 +127,7 @@ describe("ColumnFilterControl", () => {
       const h = handlers();
       renderControl(col(selectFilter()), [{ clause: clause("eq", "active"), index: 0 }], h);
 
-      fireEvent.change(screen.getByRole("combobox", { name: "Name" }), { target: { value: "" } });
+      fireEvent.click(screen.getByRole("button", { name: "Clear Name filter" }));
 
       expect(h.onReplace).toHaveBeenCalledWith("name", []);
     });
@@ -134,9 +136,8 @@ describe("ColumnFilterControl", () => {
       const h = handlers();
       renderControl(col(selectFilter()), [], h);
 
-      fireEvent.change(screen.getByRole("combobox", { name: "Name" }), {
-        target: { value: "active" },
-      });
+      fireEvent.click(screen.getByRole("button", { name: "Name" }));
+      fireEvent.click(screen.getByRole("option", { name: "Active" }));
 
       expect(h.onReplace).toHaveBeenCalledWith("name", [
         { field: "name", operator: "eq", value: "active" },
@@ -154,9 +155,8 @@ describe("ColumnFilterControl", () => {
 
       renderControl(col(filter), [], h);
 
-      fireEvent.change(screen.getByRole("combobox", { name: "Name" }), {
-        target: { value: "unset" },
-      });
+      fireEvent.click(screen.getByRole("button", { name: "Name" }));
+      fireEvent.click(screen.getByRole("option", { name: "Unset" }));
 
       expect(h.onReplace).toHaveBeenCalledWith("name", [
         { field: "name", operator: "empty", value: "" },
@@ -174,14 +174,14 @@ describe("ColumnFilterControl", () => {
 
       renderControl(col(filter), [{ clause: clause("empty", ""), index: 0 }], h);
 
-      expect(screen.getByRole("combobox", { name: "Name" })).toHaveValue("unset");
+      expect(screen.getByRole("button", { name: "Name" })).toHaveTextContent("Unset");
     });
 
     it("reflects a plain active clause as the current selection", () => {
       const h = handlers();
       renderControl(col(selectFilter()), [{ clause: clause("eq", "draft"), index: 0 }], h);
 
-      expect(screen.getByRole("combobox", { name: "Name" })).toHaveValue("draft");
+      expect(screen.getByRole("button", { name: "Name" })).toHaveTextContent("Draft");
     });
 
     it("derives a multi-select value from the comma-joined clause value", () => {
@@ -196,8 +196,14 @@ describe("ColumnFilterControl", () => {
 
       fireEvent.click(screen.getByRole("button", { name: "Name" }));
 
-      expect(screen.getByRole("checkbox", { name: "Active" })).toBeChecked();
-      expect(screen.getByRole("checkbox", { name: "Draft" })).toBeChecked();
+      expect(screen.getByRole("option", { name: "Active" })).toHaveAttribute(
+        "aria-selected",
+        "true",
+      );
+      expect(screen.getByRole("option", { name: "Draft" })).toHaveAttribute(
+        "aria-selected",
+        "true",
+      );
     });
 
     it("serializes a multi-select array selection into a comma-joined clause", () => {
@@ -211,7 +217,7 @@ describe("ColumnFilterControl", () => {
       renderControl(col(filter), [], h);
 
       fireEvent.click(screen.getByRole("button", { name: "Name" }));
-      fireEvent.click(screen.getByRole("checkbox", { name: "Active" }));
+      fireEvent.click(screen.getByRole("option", { name: "Active" }));
 
       expect(h.onReplace).toHaveBeenCalledWith("name", [
         { field: "name", operator: "in", value: "active" },
@@ -230,7 +236,10 @@ describe("ColumnFilterControl", () => {
 
       fireEvent.click(screen.getByRole("button", { name: "Name" }));
 
-      expect(screen.getByRole("checkbox", { name: "Active" })).not.toBeChecked();
+      expect(screen.getByRole("option", { name: "Active" })).toHaveAttribute(
+        "aria-selected",
+        "false",
+      );
     });
   });
 

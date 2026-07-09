@@ -42,7 +42,7 @@ void _builtin;
 void _builtinBad;
 
 // Built-in select filter props resolve through the generated FilterPropsMap.
-const _selectFilter: FilterPropsOf<"select"> = {
+const _selectFilter: FilterPropsOf<"filter.select"> = {
   multiple: false,
   searchable: false,
   options: [],
@@ -50,7 +50,7 @@ const _selectFilter: FilterPropsOf<"select"> = {
 };
 
 // @ts-expect-error - multiple must be a boolean
-const _selectFilterBad: FilterPropsOf<"select"> = { multiple: 1 };
+const _selectFilterBad: FilterPropsOf<"filter.select"> = { multiple: 1 };
 
 // Unknown filter types fall back to the loose bag.
 const _looseFilter: FilterPropsOf<"totally.unknown"> = { anything: true };

@@ -7,6 +7,7 @@ import { useT } from "@lattice-php/lattice/i18n";
 import type { Option, RendererComponent } from "@lattice-php/lattice/core/types";
 import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
+import { fieldDomName } from "../field-dom-name";
 import { postFormAction } from "../form-transport";
 import { useResolvedNode } from "../resolved-nodes";
 import { useDependentField } from "../use-dependent-field";
@@ -31,13 +32,13 @@ function toValues(stored: unknown, fallback: unknown): string[] {
 export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => {
   const { t } = useT("lattice");
   const props = node.props;
-  const { action, componentRef, errors } = useFormContext();
+  const { action, componentRef, errors, fieldIdPrefix, searchOptions } = useFormContext();
   const { hidden, required, readOnly, disabled } = useDependentField(node);
   const { change, blur } = useFieldCommit();
   const resolvedNode = useResolvedNode(node);
   const name = props.name;
   const scope = useFieldScope();
-  const domName = scope ? scope.scopedName(name) : name;
+  const domName = fieldDomName(scope ? scope.scopedName(name) : name, fieldIdPrefix);
   const errorKey = scope ? scope.errorKey(name) : name;
   const searchKey = scope ? scope.errorKey(name) : name;
   const placeholder = props.placeholder || "Select…";
@@ -86,6 +87,17 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
       searchAbort.current = controller;
       setLoading(true);
 
+      if (searchOptions) {
+        void searchOptions(searchKey, query, valuesRef.current, controller.signal)
+          .then((options) => {
+            setResults(options);
+            setLoading(false);
+          })
+          .catch(() => {});
+
+        return;
+      }
+
       void postFormAction<{ options?: Option[] }>(
         action,
         componentRef,
@@ -98,7 +110,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
         })
         .catch(() => {});
     },
-    [action, componentRef, searchKey],
+    [action, componentRef, searchKey, searchOptions],
   );
 
   function commit(next: string[]): void {
@@ -133,7 +145,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
       helperText={props.helperText ?? undefined}
       tooltip={props.tooltip ?? undefined}
       label={props.label ?? ""}
-      name={name}
+      name={domName}
       required={required}
     >
       {multiple ? (
@@ -210,6 +222,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
             autoFocus: props.autoFocus ?? undefined,
             "data-test": `select-${name}`,
             disabled: locked,
+            id: domName,
             tabIndex: props.tabIndex ?? undefined,
           }}
         />

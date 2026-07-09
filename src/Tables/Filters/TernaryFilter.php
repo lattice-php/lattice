@@ -7,6 +7,8 @@ use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lattice\Lattice\Facades\Evaluate;
+use Lattice\Lattice\Forms\Components\Select;
+use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Attributes\AsFilter;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 
@@ -16,7 +18,7 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
  * null-existence checks). Custom queries receive the `Builder` by type injection.
  */
 #[AsFilter(FilterControl::Ternary)]
-class TernaryFilter extends BaseFilter
+class TernaryFilter extends Filter
 {
     public string $trueLabel = 'Yes';
 
@@ -61,14 +63,43 @@ class TernaryFilter extends BaseFilter
         return $this;
     }
 
+    /**
+     * @return array<int, Select>
+     */
     #[\Override]
-    public function accepts(mixed $value): bool
+    public function schema(): array
     {
-        return is_scalar($value) && filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null;
+        return [
+            Select::make('value', $this->label)
+                ->placeholder($this->placeholder)
+                ->options([
+                    $this->option($this->trueLabel, 'true'),
+                    $this->option($this->falseLabel, 'false'),
+                ])
+                ->rules(['string']),
+        ];
     }
 
-    public function apply(Builder $builder, mixed $value): void
+    /**
+     * @return string|list<string|FilterIndicator|array{label?: string, value: mixed}>|array<string, mixed>|null
+     */
+    #[\Override]
+    public function indicator(FormData $data): string|array|null
     {
+        $state = is_scalar($data->get('value'))
+            ? filter_var($data->get('value'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)
+            : null;
+
+        if ($state === null) {
+            return null;
+        }
+
+        return $state ? $this->trueLabel : $this->falseLabel;
+    }
+
+    public function apply(Builder $builder, FormData $data): void
+    {
+        $value = $data->get('value');
         $state = is_scalar($value) ? filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : null;
 
         if ($state === null) {
@@ -84,5 +115,13 @@ class TernaryFilter extends BaseFilter
         }
 
         $builder->where($this->column(), $state);
+    }
+
+    /**
+     * @return array{label: string, value: string}
+     */
+    private function option(string $label, string $value): array
+    {
+        return ['label' => $label, 'value' => $value];
     }
 }

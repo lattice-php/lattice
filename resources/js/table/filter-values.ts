@@ -18,11 +18,11 @@ export function isEmptyFilterValue(value: unknown): boolean {
   }
 
   if (Array.isArray(value)) {
-    return value.length === 0;
+    return value.every(isEmptyFilterValue);
   }
 
-  if (typeof value === "object") {
-    return Object.values(value).every(isEmptyMember);
+  if (typeof value === "object" && value !== null) {
+    return Object.values(value).every(isEmptyFilterValue);
   }
 
   return false;
@@ -30,6 +30,18 @@ export function isEmptyFilterValue(value: unknown): boolean {
 
 export function isActiveFilterValue(value: unknown): boolean {
   return !isEmptyFilterValue(value);
+}
+
+/**
+ * Whether a value has the wire shape of a dedicated-filter value: a plain
+ * `field => value` record.
+ */
+export function isFilterValue(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+export function filterValue(value: unknown): Record<string, unknown> {
+  return isFilterValue(value) ? value : {};
 }
 
 /**

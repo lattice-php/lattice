@@ -40,7 +40,7 @@ test('a column with filter options serializes a select control', function (): vo
     ]))['props']['filter'];
 
     expect($filter)->toMatchArray([
-        'control' => 'select',
+        'control' => 'filter.select',
         'multiple' => false,
         'options' => [
             ['label' => 'Draft', 'value' => 'draft'],
@@ -57,7 +57,7 @@ test('a multiple column select filter offers the in operators', function (): voi
     ], multiple: true))['props']['filter'];
 
     expect($filter)->toMatchArray([
-        'control' => 'select',
+        'control' => 'filter.select',
         'multiple' => true,
         'operators' => ['in', 'not_in'],
         'defaultOperator' => 'in',
@@ -75,7 +75,7 @@ test('an operator column filter has no select control', function (): void {
 test('a column filter can be made searchable', function (): void {
     $filter = wire(TextColumn::make('author_id')->filterOptions(inMemoryOptionSource(['1' => 'Ada', '2' => 'Linus']), searchable: true))['props']['filter'];
 
-    expect($filter['control'])->toBe('select')
+    expect($filter['control'])->toBe('filter.select')
         ->and($filter['searchable'])->toBeTrue();
 });
 
@@ -88,7 +88,7 @@ test('a static column select filter is not searchable', function (): void {
 test('a column filter resolves options from an option source', function (): void {
     $filter = wire(TextColumn::make('author_id')->filterOptions(inMemoryOptionSource(['1' => 'Ada', '2' => 'Linus'])))['props']['filter'];
 
-    expect($filter['control'])->toBe('select')
+    expect($filter['control'])->toBe('filter.select')
         ->and($filter['options'])->toBe([
             ['label' => 'Ada', 'value' => '1'],
             ['label' => 'Linus', 'value' => '2'],
@@ -111,7 +111,7 @@ test('a column filter serializes clause options', function (): void {
     ]))['props']['filter'];
 
     expect($filter)->toMatchArray([
-        'control' => 'select',
+        'control' => 'filter.select',
         'options' => [
             ['label' => 'Yes', 'value' => 'yes'],
             ['label' => 'No', 'value' => 'no'],

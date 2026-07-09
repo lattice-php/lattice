@@ -1,5 +1,12 @@
 import type { Node } from "@lattice-php/lattice/core/types";
-import type { FilterClause, TableColumn, TablePagination, TableRow, TableState } from "./types";
+import type {
+  FilterClause,
+  TableColumn,
+  TableFilterIndicator,
+  TablePagination,
+  TableRow,
+  TableState,
+} from "./types";
 
 function getFilters(value: unknown): FilterClause[] {
   if (!Array.isArray(value)) {
@@ -72,6 +79,7 @@ export function getState(value: unknown): TableState {
       page: 1,
       perPage: 25,
       tableFilters: {},
+      tableFilterIndicators: [],
     };
   }
 
@@ -83,6 +91,7 @@ export function getState(value: unknown): TableState {
     page: typeof state.page === "number" ? state.page : 1,
     perPage: typeof state.perPage === "number" ? state.perPage : 25,
     tableFilters: getTableFilters(state.tableFilters),
+    tableFilterIndicators: getTableFilterIndicators(state.tableFilterIndicators),
   };
 }
 
@@ -90,12 +99,32 @@ export function getState(value: unknown): TableState {
  * The wire serializes an empty filter map as `[]` and a populated one as an
  * object, so coerce both to a plain `key => value` record.
  */
-function getTableFilters(value: unknown): Record<string, unknown> {
+function getTableFilters(value: unknown): Record<string, Record<string, unknown>> {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return {};
   }
 
-  return value as Record<string, unknown>;
+  return Object.fromEntries(
+    Object.entries(value).filter(
+      (entry): entry is [string, Record<string, unknown>] =>
+        typeof entry[1] === "object" && entry[1] !== null && !Array.isArray(entry[1]),
+    ),
+  );
+}
+
+function getTableFilterIndicators(value: unknown): TableFilterIndicator[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter(
+    (indicator): indicator is TableFilterIndicator =>
+      typeof indicator === "object" &&
+      indicator !== null &&
+      typeof indicator.filter === "string" &&
+      typeof indicator.label === "string" &&
+      typeof indicator.value === "string",
+  );
 }
 
 export function getRowKey(row: TableRow, index: number): string {

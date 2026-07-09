@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Lattice\Lattice\Forms\Components\DateInput;
+use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Attributes\AsFilter;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 
@@ -12,22 +14,36 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
  * inclusive `whereDate` comparison against the column.
  */
 #[AsFilter(FilterControl::DateRange)]
-class DateRangeFilter extends BaseFilter
+class DateRangeFilter extends Filter
 {
+    /**
+     * @return array<int, DateInput>
+     */
     #[\Override]
-    public function accepts(mixed $value): bool
+    public function schema(): array
     {
-        return is_array($value);
+        return [
+            DateInput::make('from', 'From')->rules(['date']),
+            DateInput::make('until', 'Until')->rules(['date']),
+        ];
     }
 
-    public function apply(Builder $builder, mixed $value): void
+    /**
+     * @return string|list<string|FilterIndicator|array{label?: string, value: mixed}>|array<string, mixed>|null
+     */
+    #[\Override]
+    public function indicator(FormData $data): string|array|null
     {
-        if (! is_array($value)) {
-            return;
-        }
+        $from = $data->string('from');
+        $until = $data->string('until');
 
-        $from = $value['from'] ?? null;
-        $until = $value['until'] ?? null;
+        return trim($from.' - '.$until, ' -') ?: null;
+    }
+
+    public function apply(Builder $builder, FormData $data): void
+    {
+        $from = $data->get('from');
+        $until = $data->get('until');
 
         if (is_string($from) && $from !== '') {
             $builder->whereDate($this->column(), '>=', $from);

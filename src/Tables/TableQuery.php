@@ -13,7 +13,9 @@ use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Filterable;
 use Lattice\Lattice\Tables\Columns\Sortable;
-use Lattice\Lattice\Tables\Filters\BaseFilter;
+use Lattice\Lattice\Tables\Filters\Filter;
+use Lattice\Lattice\Tables\Filters\FilterIndicator;
+use Lattice\Lattice\Tables\Filters\FilterValueValidator;
 use stdClass;
 
 #[TypeScript]
@@ -22,7 +24,8 @@ final readonly class TableQuery implements JsonSerializable
     /**
      * @param  array<int, FilterClause>  $filters
      * @param  array<int, TableSort>  $sorts
-     * @param  array<string, mixed>  $tableFilters
+     * @param  array<string, array<string, mixed>>  $tableFilters
+     * @param  list<FilterIndicator>  $tableFilterIndicators
      */
     private function __construct(
         public array $filters,
@@ -30,16 +33,17 @@ final readonly class TableQuery implements JsonSerializable
         public int $page,
         public int $perPage,
         public array $tableFilters = [],
+        public array $tableFilterIndicators = [],
     ) {}
 
     public static function empty(int $defaultPerPage = 25): self
     {
-        return new self([], [], 1, self::clampPerPage($defaultPerPage), []);
+        return new self([], [], 1, self::clampPerPage($defaultPerPage), [], []);
     }
 
     /**
      * @param  array<int, Column>  $columns
-     * @param  array<int, BaseFilter>  $filters
+     * @param  array<int, Filter>  $filters
      */
     public static function fromRequest(Request $request, array $columns, string $table, int $defaultPerPage = 25, array $filters = []): self
     {
@@ -50,12 +54,15 @@ final readonly class TableQuery implements JsonSerializable
         self::validateFilters($clauses, $index, $table);
         self::validateSorts($sorts, $index, $table);
 
+        [$tableFilters, $tableFilterIndicators] = self::parseTableFilters($request->input('tf'), $filters, $table, $request);
+
         return new self(
             $clauses,
             $sorts,
             max(1, $request->integer('page', 1)),
             self::clampPerPage($request->integer('per_page', $defaultPerPage)),
-            self::parseTableFilters($request->input('tf'), $filters, $table),
+            $tableFilters,
+            $tableFilterIndicators,
         );
     }
 
@@ -65,7 +72,7 @@ final readonly class TableQuery implements JsonSerializable
     }
 
     /**
-     * @return array{filters: array<int, FilterClause>, sorts: array<int, TableSort>, page: int, perPage: int, tableFilters: array<string, mixed>|stdClass}
+     * @return array{filters: array<int, FilterClause>, sorts: array<int, TableSort>, page: int, perPage: int, tableFilters: array<string, mixed>|stdClass, tableFilterIndicators: list<FilterIndicator>}
      */
     public function jsonSerialize(): array
     {
@@ -75,38 +82,44 @@ final readonly class TableQuery implements JsonSerializable
             'page' => $this->page,
             'perPage' => $this->perPage,
             'tableFilters' => Wire::map($this->tableFilters),
+            'tableFilterIndicators' => $this->tableFilterIndicators,
         ];
     }
 
     /**
-     * Parse and validate the `tf` request param (a `key => value` map) against
-     * the table's declared filters, keeping only values the filter accepts.
+     * Parse and validate the `tf` request param against the table's declared
+     * filters, keeping only values that satisfy the filter schema.
      *
-     * @param  array<int, BaseFilter>  $filters
-     * @return array<string, mixed>
+     * @param  array<int, Filter>  $filters
+     * @return array{0: array<string, array<string, mixed>>, 1: list<FilterIndicator>}
      */
-    private static function parseTableFilters(mixed $tableFilters, array $filters, string $table): array
+    private static function parseTableFilters(mixed $tableFilters, array $filters, string $table, Request $request): array
     {
         if (! is_array($tableFilters) || $tableFilters === []) {
-            return [];
+            return [[], []];
         }
 
-        $index = collect($filters)->keyBy(fn (BaseFilter $filter): string => $filter->key());
+        $index = collect($filters)->keyBy(fn (Filter $filter): string => $filter->key());
         $parsed = [];
+        $indicators = [];
+        $validator = app(FilterValueValidator::class);
 
         foreach ($tableFilters as $key => $value) {
             $filter = $index->get($key);
 
-            if (! $filter instanceof BaseFilter) {
+            if (! $filter instanceof Filter) {
                 throw InvalidTableQuery::filter((string) $key, $table);
             }
 
-            if ($filter->accepts($value)) {
-                $parsed[$key] = $value;
+            $data = $validator->validate($filter, $value, $request);
+
+            if ($data !== null) {
+                $parsed[$key] = $data->all();
+                array_push($indicators, ...$filter->indicators($data));
             }
         }
 
-        return $parsed;
+        return [$parsed, $indicators];
     }
 
     /**

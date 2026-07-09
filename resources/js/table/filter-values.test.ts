@@ -25,7 +25,8 @@ describe("isEmptyFilterValue", () => {
 const filter: FilterData = {
   key: "status",
   label: "Status",
-  type: "select",
+  type: "filter.select",
+  schema: [],
   props: { placeholder: "Pick", options: [{ label: "Active", value: "active" }] },
 };
 

@@ -27,9 +27,10 @@ use Lattice\Lattice\Tables\TableRegistry;
  *
  * Middle: the five feature domains. Each stays independent of its siblings; the
  * only intentional cross-domain couplings are tables -> actions (row and bulk
- * actions), actions -> forms (action forms), and layouts -> actions (menu items
- * that trigger an action). The Core link primitive may likewise trigger an
- * action, the one deliberate Core -> Actions coupling.
+ * actions), tables -> forms (table filters are form-field schemas), actions ->
+ * forms (action forms), and layouts -> actions (menu items that trigger an
+ * action). The Core link primitive may likewise trigger an action, the one
+ * deliberate Core -> Actions coupling.
  *
  * Top: the orchestration and tooling layers — Http (which renders and routes
  * pages, including the page registry, by consuming the feature domains),
@@ -53,10 +54,9 @@ arch('actions depend on no feature domain other than forms')
         'Lattice\Lattice\Layouts',
     ]);
 
-arch('tables depend on no feature domain other than actions')
+arch('tables depend on no feature domain other than actions and forms')
     ->expect('Lattice\Lattice\Tables')
     ->not->toUse([
-        'Lattice\Lattice\Forms',
         'Lattice\Lattice\Fragments',
         'Lattice\Lattice\Layouts',
     ]);

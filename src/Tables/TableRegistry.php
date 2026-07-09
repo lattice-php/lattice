@@ -9,12 +9,14 @@ use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\Option;
+use Lattice\Lattice\Forms\Components\Select;
+use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Forms\FormSchemaWalker;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Filterable;
 use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Components\Table as TableComponent;
-use Lattice\Lattice\Tables\Filters\BaseFilter;
-use Lattice\Lattice\Tables\Filters\SelectFilter;
+use Lattice\Lattice\Tables\Filters\Filter;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -96,32 +98,66 @@ final class TableRegistry extends DefinitionRegistry
 
     /**
      * Resolve options for a searchable filter from the user's query (the `_search`
-     * sub-action of the table endpoint).
+     * sub-action of the table endpoint). Targets are namespaced — `filter:<key>.<field>`
+     * addresses a dedicated filter's schema field, `column:<key>` a column filter — so
+     * a filter key can never shadow a dot-keyed relation column.
      *
      * @return array{options: list<Option>}
      */
     public function searchFilterOptions(string $key, Request $request, ?TableDefinition $definition = null): array
     {
         $definition ??= $this->resolve($key);
-        $filterKey = $request->string('_search')->toString();
+        $searchKey = $request->string('_search')->toString();
         $query = $request->string('q')->toString();
 
-        $filter = collect($definition->filters())
-            ->first(fn (BaseFilter $filter): bool => $filter->key() === $filterKey);
-
-        if ($filter !== null) {
-            abort_unless($filter instanceof SelectFilter && $filter->isSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
-
-            return ['options' => $filter->searchOptions($query)];
+        if (str_starts_with($searchKey, 'filter:')) {
+            return ['options' => $this->searchFilterFieldOptions($definition, substr($searchKey, strlen('filter:')), $query, $request)];
         }
 
+        if (str_starts_with($searchKey, 'column:')) {
+            return ['options' => $this->searchColumnFilterOptions($definition, substr($searchKey, strlen('column:')), $query)];
+        }
+
+        abort(Response::HTTP_NOT_FOUND);
+    }
+
+    /**
+     * @return list<Option>
+     */
+    private function searchFilterFieldOptions(TableDefinition $definition, string $target, string $query, Request $request): array
+    {
+        [$filterKey, $fieldKey] = str_contains($target, '.')
+            ? explode('.', $target, 2)
+            : [$target, 'value'];
+
+        $filter = collect($definition->filters())
+            ->first(fn (Filter $filter): bool => $filter->key() === $filterKey);
+
+        abort_if($filter === null, Response::HTTP_NOT_FOUND);
+
+        $instance = app(FormSchemaWalker::class)->find($filter->schema(), $fieldKey, FormData::fromRequest($request));
+
+        abort_if($instance === null, Response::HTTP_NOT_FOUND);
+
+        $field = $instance->field;
+
+        abort_unless($field instanceof Select && $field->isSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        return $field->resolveSearch($query, $instance->scope, $request);
+    }
+
+    /**
+     * @return list<Option>
+     */
+    private function searchColumnFilterOptions(TableDefinition $definition, string $columnKey, string $query): array
+    {
         $column = collect($definition->columns())
-            ->first(fn (Column $column): bool => $column->key() === $filterKey);
+            ->first(fn (Column $column): bool => $column->key() === $columnKey);
 
         abort_unless($column instanceof Filterable, Response::HTTP_NOT_FOUND);
         abort_unless($column->filterSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        return ['options' => $column->searchFilterOptions($query)];
+        return $column->searchFilterOptions($query);
     }
 
     /**

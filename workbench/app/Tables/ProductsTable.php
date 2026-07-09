@@ -15,10 +15,10 @@ use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\ImageColumn;
 use Lattice\Lattice\Tables\Columns\MoneyColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Filters\BaseFilter;
 use Lattice\Lattice\Tables\Filters\DateRangeFilter;
 use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\Filters\TernaryFilter;
+use Lattice\Lattice\Tables\Filters\ToggleFilter;
 use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Actions\ArchiveProductAction;
@@ -58,7 +58,7 @@ class ProductsTable extends EloquentTableDefinition
     }
 
     /**
-     * @return array<int, BaseFilter>
+     * @return array<int, Filter>
      */
     #[\Override]
     public function filters(): array
@@ -68,7 +68,7 @@ class ProductsTable extends EloquentTableDefinition
                 ->label(__('workbench.tables.columns.featured')),
             DateRangeFilter::make('updated_at')
                 ->label(__('workbench.tables.columns.updated-at')),
-            Filter::make('high_value')
+            ToggleFilter::make('high_value')
                 ->label('High value')
                 ->query(fn (Builder $query): Builder => $query->whereHas(
                     'salesPrices',

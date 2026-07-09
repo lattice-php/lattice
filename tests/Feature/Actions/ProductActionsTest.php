@@ -82,7 +82,7 @@ test('bulk actions resolve all matching rows with dedicated table filters', func
     $this->callBulkAction(ArchiveSelectedProductsAction::class, [
         'allMatching' => true,
         'tf' => [
-            'featured' => 'true',
+            'featured' => ['value' => 'true'],
         ],
     ], ['table' => 'workbench.products'])
         ->assertOk()

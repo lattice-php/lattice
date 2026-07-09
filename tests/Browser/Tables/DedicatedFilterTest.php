@@ -26,7 +26,8 @@ it('narrows rows with the ternary featured filter and restores them via reset', 
         ->assertSee('Active Featured')
         ->assertSee('Draft Plain')
         ->click('@table-filters-menu')
-        ->select('@table-filter-featured', 'true')
+        ->click('#table-filter-featured-value')
+        ->click('[data-test="select-value-option-true"]')
         ->assertSee('Active Featured')
         ->assertDontSee('Draft Plain')
         ->click('@table-filters-reset')
@@ -51,7 +52,8 @@ it('narrows rows with the status column select filter', function (): void {
     seedFilterProducts();
 
     visit('/products')
-        ->select('@table-filter-status', 'active')
+        ->click('#table-filter-status-value')
+        ->click('[data-test="select-value-option-active"]')
         ->assertSee('Active Featured')
         ->assertDontSee('Draft Plain')
         ->assertNoSmoke();

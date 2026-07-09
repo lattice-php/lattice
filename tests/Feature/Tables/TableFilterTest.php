@@ -24,23 +24,23 @@ test('a table serializes its declared filters and starts with no active values',
 
     $table = wire(Table::use(WorkbenchFilteredProductsTable::class));
 
-    expect($table['props']['filters'])->toBe([
-        [
-            'key' => 'status',
-            'label' => 'Status',
-            'type' => 'select',
-            'props' => [
-                'multiple' => false,
-                'searchable' => false,
-                'options' => [
-                    ['label' => 'Draft', 'value' => 'draft'],
-                    ['label' => 'Active', 'value' => 'active'],
-                ],
-                'placeholder' => null,
+    expect($table['props']['filters'][0])->toMatchArray([
+        'key' => 'status',
+        'label' => 'Status',
+        'type' => 'filter.select',
+        'props' => [
+            'multiple' => false,
+            'searchable' => false,
+            'options' => [
+                ['label' => 'Draft', 'value' => 'draft'],
+                ['label' => 'Active', 'value' => 'active'],
             ],
+            'placeholder' => null,
         ],
     ])
-        ->and($table['props']['state']['tableFilters'])->toBe([]);
+        ->and($table['props']['filters'][0]['schema'])->toHaveCount(1)
+        ->and($table['props']['state']['tableFilters'])->toBe([])
+        ->and($table['props']['state']['tableFilterIndicators'])->toBe([]);
 });
 
 test('a table applies a dedicated select filter from the request', function (): void {
@@ -49,10 +49,11 @@ test('a table applies a dedicated select filter from the request', function (): 
     Product::factory()->create(['name' => 'Active One', 'status' => 'active']);
     Product::factory()->create(['name' => 'Draft One', 'status' => 'draft']);
 
-    $response = $this->loadTable(WorkbenchFilteredProductsTable::class, ['tf' => ['status' => 'active']])
+    $response = $this->loadTable(WorkbenchFilteredProductsTable::class, ['tf' => ['status' => ['value' => 'active']]])
         ->assertOk()
         ->assertJsonPath('data.0.name', 'Active One')
-        ->assertJsonPath('state.tableFilters.status', 'active');
+        ->assertJsonPath('state.tableFilters.status.value', 'active')
+        ->assertJsonPath('state.tableFilterIndicators.0.value', 'Active');
 
     expect($response->json('data'))->toHaveCount(1);
 });
@@ -60,7 +61,7 @@ test('a table applies a dedicated select filter from the request', function (): 
 test('a table rejects a filter key that is not declared', function (): void {
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
 
-    $this->loadTable(WorkbenchFilteredProductsTable::class, ['tf' => ['unknown' => 'x']])
+    $this->loadTable(WorkbenchFilteredProductsTable::class, ['tf' => ['unknown' => ['value' => 'x']]])
         ->assertUnprocessable()
         ->assertJsonPath('message', 'Filter [unknown] is not allowed for table [workbench.filtered-products].');
 });
@@ -68,7 +69,7 @@ test('a table rejects a filter key that is not declared', function (): void {
 test('a table searches a searchable filter\'s options through the endpoint', function (): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
-    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'author', 'q' => 'ad'])
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'filter:author.value', 'q' => 'ad'])
         ->assertOk()
         ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
 });
@@ -76,7 +77,7 @@ test('a table searches a searchable filter\'s options through the endpoint', fun
 test('a table searches a searchable column filter through the endpoint', function (): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
-    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'owner', 'q' => 'ad'])
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'column:owner', 'q' => 'ad'])
         ->assertOk()
         ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
 });
@@ -84,14 +85,29 @@ test('a table searches a searchable column filter through the endpoint', functio
 test('a table 404s searching an unknown filter key', function (): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
-    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'nope', 'q' => 'a'])
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'filter:nope', 'q' => 'a'])
         ->assertNotFound();
+});
+
+test('a table 404s searching without a namespaced target', function (): void {
+    Lattice::tables([WorkbenchSearchableFilterTable::class]);
+
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'owner', 'q' => 'a'])
+        ->assertNotFound();
+});
+
+test('a filter key does not shadow a column of the same name', function (): void {
+    Lattice::tables([WorkbenchSearchableFilterTable::class]);
+
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'column:author', 'q' => 'ad'])
+        ->assertOk()
+        ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
 });
 
 test('a table rejects searching a filter that is not searchable', function (): void {
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
 
-    $this->loadTable(WorkbenchFilteredProductsTable::class, ['_search' => 'status', 'q' => 'a'])
+    $this->loadTable(WorkbenchFilteredProductsTable::class, ['_search' => 'filter:status', 'q' => 'a'])
         ->assertStatus(422);
 });
 
@@ -121,6 +137,7 @@ class WorkbenchSearchableFilterTable extends EloquentTableDefinition
         return [
             TextColumn::make('name')->label('Name'),
             TextColumn::make('owner')->label('Owner')->filterOptions(peopleOptionSource(), searchable: true),
+            TextColumn::make('author')->label('Author')->filterOptions(peopleOptionSource(), searchable: true),
         ];
     }
 

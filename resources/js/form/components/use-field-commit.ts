@@ -1,3 +1,5 @@
+import { createContext, createElement, useContext } from "react";
+import type { ReactNode } from "react";
 import { useFieldScope } from "./field-scope";
 import { useFormContext } from "./context";
 import { usePrefillController } from "./prefill-context";
@@ -12,6 +14,18 @@ type FieldCommit = {
   blur: (name: string) => void;
 };
 
+const FieldCommitOverrideContext = createContext<FieldCommit | null>(null);
+
+export function FieldCommitOverrideProvider({
+  children,
+  value,
+}: {
+  children: ReactNode;
+  value: FieldCommit;
+}) {
+  return createElement(FieldCommitOverrideContext.Provider, { value }, children);
+}
+
 /**
  * The shared field-mutation contract every form field uses to write its value
  * and drive precognition. Fields that validate on change call `commit`; fields
@@ -22,10 +36,15 @@ type FieldCommit = {
  * behavior is identical to before.
  */
 export function useFieldCommit(): FieldCommit {
+  const override = useContext(FieldCommitOverrideContext);
   const { clearErrors, precognitive, validate } = useFormContext();
   const setGlobal = useSetFormValue();
   const scope = useFieldScope();
   const prefill = usePrefillController();
+
+  if (override) {
+    return override;
+  }
 
   const write = (name: string, value: unknown): void => {
     if (scope) {

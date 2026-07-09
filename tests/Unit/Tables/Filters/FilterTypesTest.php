@@ -3,37 +3,46 @@ declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Filters\DateRangeFilter;
-use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\Filters\SelectFilter;
 use Lattice\Lattice\Tables\Filters\TernaryFilter;
+use Lattice\Lattice\Tables\Filters\ToggleFilter;
 use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Models\Product;
 
 test('ternary filter serializes its wire shape', function (): void {
-    expect(wire(TernaryFilter::make('featured')
+    $filter = wire(TernaryFilter::make('featured')
         ->trueLabel('Featured')
-        ->falseLabel('Not featured')))
-        ->toBe([
-            'key' => 'featured',
-            'label' => 'Featured',
-            'type' => 'ternary',
-            'props' => [
-                'trueLabel' => 'Featured',
-                'falseLabel' => 'Not featured',
-                'placeholder' => 'All',
-            ],
+        ->falseLabel('Not featured'));
+
+    expect($filter)->toMatchArray([
+        'key' => 'featured',
+        'label' => 'Featured',
+        'type' => 'filter.ternary',
+        'props' => [
+            'trueLabel' => 'Featured',
+            'falseLabel' => 'Not featured',
+            'placeholder' => 'All',
+        ],
+    ])
+        ->and($filter['schema'])->toHaveCount(1)
+        ->and($filter['schema'][0]['type'])->toBe('field.select')
+        ->and($filter['schema'][0]['props']['name'])->toBe('value')
+        ->and($filter['schema'][0]['props']['options'])->toBe([
+            ['label' => 'Featured', 'value' => 'true'],
+            ['label' => 'Not featured', 'value' => 'false'],
         ]);
 });
 
 test('a ternary filter applies a boolean constraint', function (): void {
     $builder = Product::query();
-    TernaryFilter::make('featured')->apply($builder, 'true');
+    TernaryFilter::make('featured')->apply($builder, FormData::make(['value' => 'true']));
     expect($builder->toSql())->toContain('"featured" = ?')
         ->and($builder->getBindings())->toBe([true]);
 
     $other = Product::query();
-    TernaryFilter::make('featured')->apply($other, 'false');
+    TernaryFilter::make('featured')->apply($other, FormData::make(['value' => 'false']));
     expect($other->getBindings())->toBe([false]);
 });
 
@@ -45,32 +54,30 @@ test('a ternary filter runs custom queries when provided', function (): void {
             true: fn (Builder $query) => $query->whereNotNull('verified_at'),
             false: fn (Builder $query) => $query->whereNull('verified_at'),
         )
-        ->apply($builder, 'true');
+        ->apply($builder, FormData::make(['value' => 'true']));
 
     expect($builder->toSql())->toContain('"verified_at" is not null');
 });
 
-test('a ternary filter rejects non-boolean values', function (): void {
-    $filter = TernaryFilter::make('featured');
-    expect($filter->accepts('true'))->toBeTrue()
-        ->and($filter->accepts('false'))->toBeTrue()
-        ->and($filter->accepts('garbage'))->toBeFalse();
-});
-
 test('date range filter serializes its wire shape', function (): void {
-    expect(wire(DateRangeFilter::make('created_at')->label('Created')))
-        ->toBe([
-            'key' => 'created_at',
-            'label' => 'Created',
-            'type' => 'date-range',
-            'props' => [],
-        ]);
+    $filter = wire(DateRangeFilter::make('created_at')->label('Created'));
+
+    expect($filter)->toMatchArray([
+        'key' => 'created_at',
+        'label' => 'Created',
+        'type' => 'filter.date-range',
+        'props' => [],
+    ])
+        ->and($filter['schema'])->toHaveCount(2)
+        ->and($filter['schema'][0]['type'])->toBe('field.date-input')
+        ->and($filter['schema'][0]['props']['name'])->toBe('from')
+        ->and($filter['schema'][1]['props']['name'])->toBe('until');
 });
 
 test('a date range filter applies from and until bounds', function (): void {
     $builder = Product::query();
 
-    DateRangeFilter::make('created_at')->apply($builder, ['from' => '2026-01-01', 'until' => '2026-06-30']);
+    DateRangeFilter::make('created_at')->apply($builder, FormData::make(['from' => '2026-01-01', 'until' => '2026-06-30']));
 
     expect($builder->toSql())->toContain('"created_at')->and($builder->toSql())->toContain('>=')
         ->and($builder->toSql())->toContain('<=')
@@ -80,47 +87,48 @@ test('a date range filter applies from and until bounds', function (): void {
 test('a date range filter applies only the provided bound', function (): void {
     $builder = Product::query();
 
-    DateRangeFilter::make('created_at')->apply($builder, ['from' => '2026-01-01']);
+    DateRangeFilter::make('created_at')->apply($builder, FormData::make(['from' => '2026-01-01']));
 
     expect($builder->getBindings())->toBe(['2026-01-01'])
         ->and($builder->toSql())->not->toContain('<=');
 });
 
-test('a generic filter serializes as a toggle', function (): void {
-    expect(wire(Filter::make('high_value')->label('High value')))
+test('a toggle filter serializes as a toggle', function (): void {
+    expect(wire(ToggleFilter::make('high_value')->label('High value')))
         ->toBe([
             'key' => 'high_value',
             'label' => 'High value',
-            'type' => 'toggle',
+            'type' => 'filter.toggle',
+            'schema' => [],
             'props' => [],
         ]);
 });
 
-test('a generic filter runs its query closure when toggled on', function (): void {
+test('a toggle filter runs its query closure when toggled on', function (): void {
     $builder = Product::query();
 
-    Filter::make('high_value')
+    ToggleFilter::make('high_value')
         ->query(fn (Builder $query) => $query->where('price', '>', 1000))
-        ->apply($builder, '1');
+        ->apply($builder, FormData::make(['value' => '1']));
 
     expect($builder->toSql())->toContain('"price" > ?')
         ->and($builder->getBindings())->toBe([1000]);
 });
 
-test('a generic filter is a no-op when toggled off', function (): void {
+test('a toggle filter is a no-op when toggled off', function (): void {
     $builder = Product::query();
 
-    Filter::make('high_value')
+    ToggleFilter::make('high_value')
         ->query(fn (Builder $query) => $query->where('price', '>', 1000))
-        ->apply($builder, '0');
+        ->apply($builder, FormData::make(['value' => '0']));
 
     expect($builder->toSql())->not->toContain('where');
 });
 
-test('a generic filter without a query applies a boolean constraint on its column', function (): void {
+test('a toggle filter without a query applies a boolean constraint on its column', function (): void {
     $builder = Product::query();
 
-    Filter::make('featured')->apply($builder, '1');
+    ToggleFilter::make('featured')->apply($builder, FormData::make(['value' => '1']));
 
     expect($builder->toSql())->toContain('"featured" = ?')
         ->and($builder->getBindings())->toBe([true]);
@@ -134,7 +142,7 @@ test('a ternary filter runs the false query branch', function (): void {
             true: fn (Builder $query) => $query->whereNotNull('verified_at'),
             false: fn (Builder $query) => $query->whereNull('verified_at'),
         )
-        ->apply($builder, 'false');
+        ->apply($builder, FormData::make(['value' => 'false']));
 
     expect($builder->toSql())->toContain('"verified_at" is null');
 });
@@ -142,65 +150,86 @@ test('a ternary filter runs the false query branch', function (): void {
 test('a ternary filter ignores an unparseable value', function (): void {
     $builder = Product::query();
 
-    TernaryFilter::make('featured')->apply($builder, 'garbage');
+    TernaryFilter::make('featured')->apply($builder, FormData::make(['value' => 'garbage']));
 
     expect($builder->toSql())->not->toContain('where');
 });
 
-test('a date range filter ignores a non-array value', function (): void {
-    $filter = DateRangeFilter::make('created_at');
+test('a date range filter ignores missing bounds', function (): void {
     $builder = Product::query();
 
-    $filter->apply($builder, 'not-an-array');
+    DateRangeFilter::make('created_at')->apply($builder, FormData::make([]));
 
-    expect($filter->accepts('not-an-array'))->toBeFalse()
-        ->and($builder->toSql())->not->toContain('where');
+    expect($builder->toSql())->not->toContain('where');
 });
 
 it('serialises a toggle filter', function (): void {
-    expect(Filter::make('active')->toData()->jsonSerialize())->toEqual([
+    expect(ToggleFilter::make('active')->toData()->jsonSerialize())->toEqual([
         'key' => 'active',
         'label' => 'Active',
-        'type' => 'toggle',
+        'type' => 'filter.toggle',
+        'schema' => [],
         'props' => new stdClass,
     ]);
 });
 
 it('serialises a date-range filter', function (): void {
-    expect(DateRangeFilter::make('created')->toData()->jsonSerialize())->toEqual([
+    $filter = DateRangeFilter::make('created')->toData()->jsonSerialize();
+
+    expect($filter)->toMatchArray([
         'key' => 'created',
         'label' => 'Created',
-        'type' => 'date-range',
+        'type' => 'filter.date-range',
         'props' => new stdClass,
-    ]);
+    ])
+        ->and($filter['schema'])->toHaveCount(2);
 });
 
 it('serialises a ternary filter', function (): void {
-    expect(TernaryFilter::make('verified')->toData()->jsonSerialize())->toBe([
+    $filter = TernaryFilter::make('verified')->toData()->jsonSerialize();
+
+    expect($filter)->toMatchArray([
         'key' => 'verified',
         'label' => 'Verified',
-        'type' => 'ternary',
+        'type' => 'filter.ternary',
         'props' => [
             'trueLabel' => 'Yes',
             'falseLabel' => 'No',
             'placeholder' => 'All',
         ],
-    ]);
+    ])
+        ->and($filter['schema'])->toHaveCount(1);
 });
 
 test('a filter constrains the column named by attribute()', function (): void {
     $builder = Product::query();
 
-    SelectFilter::make('state')->attribute('status')->apply($builder, 'active');
+    SelectFilter::make('state')->attribute('status')->apply($builder, FormData::make(['value' => 'active']));
 
     expect($builder->toSql())->toContain('"status" = ?')
         ->and($builder->getBindings())->toBe(['active']);
 });
 
-test('table query drops a table-filter value the filter rejects', function (): void {
-    $request = Request::create('/', 'GET', ['tf' => ['featured' => 'garbage']]);
+test('table query drops a table-filter value the filter schema rejects', function (): void {
+    $request = Request::create('/', 'GET', ['tf' => ['featured' => ['value' => 'garbage']]]);
 
     $query = TableQuery::fromRequest($request, [], 'demo', 25, [TernaryFilter::make('featured')]);
 
     expect($query->tableFilters)->toBe([]);
+});
+
+test('table query drops invalid select values while keeping valid selections', function (): void {
+    $request = Request::create('/', 'GET', [
+        'tf' => ['status' => ['value' => ['active', 'garbage', 'draft']]],
+    ]);
+    $filter = SelectFilter::make('status')
+        ->multiple()
+        ->options([
+            SelectFilter::option('Active', 'active'),
+            SelectFilter::option('Draft', 'draft'),
+        ]);
+
+    $query = TableQuery::fromRequest($request, [], 'demo', 25, [$filter]);
+
+    expect($query->tableFilters)->toBe(['status' => ['value' => ['active', 'draft']]]);
 });
