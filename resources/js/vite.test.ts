@@ -167,6 +167,11 @@ describe("lattice Vite helper", () => {
       searchForWorkspaceRoot("/app"),
       "/app/vendor/acme/signature",
     ]);
+    // With no configured root, it falls back to the cwd's workspace root.
+    expect(config({}).server.fs.allow).toEqual([
+      searchForWorkspaceRoot(process.cwd()),
+      "/app/vendor/acme/signature",
+    ]);
   });
 
   it("degrades to an empty plugin list when nothing is discoverable", () => {

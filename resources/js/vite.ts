@@ -121,7 +121,7 @@ export function componentPackagesPlugin(packages: LatticeComponentPackage[]): Pl
         return {};
       }
 
-      const workspaceRoot = searchForWorkspaceRoot(config?.root ?? process.cwd());
+      const workspaceRoot = searchForWorkspaceRoot(config.root ?? process.cwd());
 
       return { server: { fs: { allow: [workspaceRoot, ...packages.map((pkg) => pkg.dir)] } } };
     },
