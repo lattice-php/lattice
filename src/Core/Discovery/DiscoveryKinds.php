@@ -13,19 +13,13 @@ final class DiscoveryKinds
     public const string PAGE_ATTRIBUTE = AsPage::class;
 
     /**
-     * Discovery groups keyed by group name. Registration is the only way to add a
-     * kind: core registers its built-ins from `LatticeServiceProvider`, and
-     * packages/apps register theirs the same way. Keyed by group so a provider
-     * that boots more than once (as in the test suite) stays idempotent.
+     * Keyed by group so re-registering on each provider boot stays idempotent.
      *
      * @var array<string, class-string<DefinitionAttribute>>
      */
     private static array $registered = [];
 
     /**
-     * Register a discovery group so `DiscoveryManifest` scans for its marker
-     * attribute.
-     *
      * @param  class-string<DefinitionAttribute>  $attributeClass
      */
     public static function register(string $group, string $attributeClass): void
@@ -34,8 +28,6 @@ final class DiscoveryKinds
     }
 
     /**
-     * The registered discovery groups.
-     *
      * @return array<string, class-string<DefinitionAttribute>>
      */
     public static function components(): array
@@ -44,8 +36,7 @@ final class DiscoveryKinds
     }
 
     /**
-     * Drop all registrations. Intended for test isolation; providers re-register
-     * on the next boot.
+     * For test isolation; providers re-register on the next boot.
      */
     public static function flush(): void
     {
