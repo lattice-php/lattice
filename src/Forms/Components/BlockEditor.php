@@ -12,31 +12,32 @@ use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Enums\FieldType;
 
 #[AsField(FieldType::BlockEditor)]
-class BlockEditor extends Builder
+class BlockEditor extends TypedRowsField
 {
     use IsInteractive;
 
     public ?string $endpoint = null;
 
     /**
-     * @param  array<int, class-string<BlockDefinition>|Block>  $blocks
+     * @param  array<int, class-string<BlockDefinition>>  $blocks
      */
-    #[\Override]
     public function blocks(array $blocks): static
     {
         $registry = app(BlockRegistry::class);
 
-        $this->blocks = array_map(
-            fn (string|Block $block): Block => $block instanceof Block
-                ? $block
-                : Block::make($registry->keyFor($block))->schema(app($block)->attributes()),
+        $this->templates(array_map(
+            fn (string $block): RowTemplate => RowTemplate::make($registry->keyFor($block))
+                ->schema(app($block)->attributes()),
             $blocks,
-        );
+        ));
 
         $this->id ??= $this->name;
         $this->endpoint ??= '/'.ltrim((string) config('lattice.blocks.endpoint', 'lattice/blocks/render'), '/');
         $this->signedAs('block-editor');
-        $this->context(['allowedBlocks' => array_map(fn (Block $block): string => $block->type, $this->blocks)]);
+        $this->context(['allowedBlocks' => array_map(
+            static fn (RowTemplate $template): string => $template->type,
+            $this->templates,
+        )]);
 
         return $this;
     }

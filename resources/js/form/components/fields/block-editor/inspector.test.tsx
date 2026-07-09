@@ -43,7 +43,7 @@ it("renders the block fields and commits on blur", () => {
     <BlockInspector
       base="content"
       index={0}
-      row={{ __rowId: "a", type: "hero", title: "Hi" }}
+      row={{ rowId: "a", type: "hero", title: "Hi" }}
       template={template}
       onField={vi.fn<(index: number, field: string, value: unknown) => void>()}
       onCommit={onCommit}
@@ -63,7 +63,7 @@ it("does not commit when focus moves between fields inside the inspector", () =>
     <BlockInspector
       base="content"
       index={0}
-      row={{ __rowId: "a", type: "hero", title: "Hi" }}
+      row={{ rowId: "a", type: "hero", title: "Hi" }}
       template={template}
       onField={vi.fn<(index: number, field: string, value: unknown) => void>()}
       onCommit={onCommit}
@@ -82,7 +82,7 @@ it("shows an unknown-block note when there is no template", () => {
     <BlockInspector
       base="content"
       index={0}
-      row={{ __rowId: "a", type: "gone" }}
+      row={{ rowId: "a", type: "gone" }}
       onField={vi.fn<(index: number, field: string, value: unknown) => void>()}
       onCommit={vi.fn<() => void>()}
     />,

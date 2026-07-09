@@ -44,12 +44,12 @@ it('persists attributes for every block, not just the selected one', function ()
     $page->click('@builder-add')
         ->click('[data-test="builder-add-workbench.hero"]');
 
-    $page->assertPresent('[data-test="block-shell-r0"]')
-        ->assertPresent('[data-test="block-shell-r1"]');
+    $page->assertPresent('[data-test^="block-shell-"]:nth-child(1)')
+        ->assertPresent('[data-test^="block-shell-"]:nth-child(2)');
 
-    $page->click('[data-test="block-shell-r0"]');
+    $page->click('[data-test^="block-shell-"]:nth-child(1)');
     $page->fill('input[name="content[0][title]"]', 'First title');
-    $page->click('[data-test="block-shell-r1"]');
+    $page->click('[data-test^="block-shell-"]:nth-child(2)');
 
     retryUntil(function () use ($page): void {
         $page->assertSee('First title');

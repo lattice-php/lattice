@@ -2,20 +2,20 @@ import { useMemo, useState } from "react";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { useT } from "@lattice-php/lattice/i18n";
 import { FormFieldFrame } from "../../base/field";
-import { useFormContext } from "../../context";
 import { appendPath, toHtmlName } from "../../form-path";
+import { useFormContext } from "../../context";
 import { useDependentField } from "../../use-dependent-field";
 import { useSetFormValue } from "../../values";
-import { BlockAddMenu, type BlockOption } from "../block-add-menu";
+import { AddRowMenu, type AddRowOption } from "../add-row-menu";
 import { ROW_ID_KEY, type RepeaterRow } from "../repeater-rows";
+import { RowKeyInputs } from "../row-key-inputs";
+import { rowTemplatesOf, type RowTemplate } from "../row-templates";
 import { useRowCollection } from "../use-row-collection";
 import { BlockCanvas } from "./canvas";
 import { hiddenInputsFor } from "./hidden-inputs";
 import { BlockInspector } from "./inspector";
 import { moveBlock, type BlockPath } from "./move-block";
 import { useBlockPreview, type BlockSource } from "./use-block-preview";
-
-type BlockTemplate = { type: string; label: string; schema: Node[] };
 
 function rowAttributes(row: RepeaterRow): Record<string, unknown> {
   return Object.fromEntries(Object.entries(row).filter(([key]) => key !== ROW_ID_KEY));
@@ -24,8 +24,7 @@ function rowAttributes(row: RepeaterRow): Record<string, unknown> {
 export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ node }) => {
   const props = node.props;
   const name = props.name;
-  const blocks = ((node as unknown as { blocks?: BlockTemplate[] }).blocks ??
-    []) as BlockTemplate[];
+  const templates = rowTemplatesOf(node) ?? [];
   const rendered = ((node as unknown as { rendered?: Node[][] }).rendered ?? []) as Node[][];
 
   const { errors } = useFormContext();
@@ -61,9 +60,12 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
     return null;
   }
 
-  const templateFor = (type: unknown): BlockTemplate | undefined =>
-    blocks.find((b) => b.type === type);
-  const options: BlockOption[] = blocks.map((b) => ({ type: b.type, label: b.label }));
+  const templateFor = (type: unknown): RowTemplate | undefined =>
+    templates.find((template) => template.type === type);
+  const options: AddRowOption[] = templates.map((template) => ({
+    type: template.type,
+    label: template.label,
+  }));
   const atMax = props.maxItems != null && rows.length >= props.maxItems;
 
   const selectedRow = rows.find((row) => String(row[ROW_ID_KEY]) === selectedId) ?? null;
@@ -83,14 +85,8 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
       name={path}
       required={required}
     >
-      {rows.map((row, index) => (
-        <input
-          key={String(row[ROW_ID_KEY])}
-          type="hidden"
-          name={toHtmlName(appendPath(path, index, "type"))}
-          value={String(row.type ?? "")}
-        />
-      ))}
+      <RowKeyInputs path={path} rows={rows} rowKey={ROW_ID_KEY} />
+      <RowKeyInputs path={path} rows={rows} rowKey="type" />
 
       {rows.flatMap((row, index) =>
         row.slots == null
@@ -108,9 +104,9 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
             onMoveBlock={onMoveBlock}
           />
           {!atMax && (
-            <BlockAddMenu
+            <AddRowMenu
               addLabel={props.addLabel ?? "Add"}
-              blocks={options}
+              options={options}
               onSelect={(type) => append({ type })}
             />
           )}

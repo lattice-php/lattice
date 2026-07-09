@@ -23,7 +23,8 @@ test('rejects a row whose type is not an allowed block', function (): void {
     $rules = $field->nestedRules($data, Request::create('/'));
 
     expect($rules)->toHaveKey('content.0.type')
-        ->and($rules['content.0.type'])->toBe(['required', 'in:validation.hero']);
+        ->and($rules['content.0.type'][0])->toBe('required')
+        ->and((string) $rules['content.0.type'][1])->toBe('in:"validation.hero"');
 });
 
 #[AsBlock('validation.hero')]

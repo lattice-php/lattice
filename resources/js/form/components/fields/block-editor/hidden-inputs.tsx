@@ -1,5 +1,4 @@
 import type { ReactElement } from "react";
-import { ROW_ID_KEY } from "../repeater-rows";
 
 export function hiddenInputsFor(name: string, value: unknown): ReactElement[] {
   if (value == null) {
@@ -12,7 +11,7 @@ export function hiddenInputsFor(name: string, value: unknown): ReactElement[] {
 
   if (typeof value === "object") {
     return Object.entries(value as Record<string, unknown>).flatMap(([key, child]) =>
-      key === ROW_ID_KEY ? [] : hiddenInputsFor(`${name}[${key}]`, child),
+      hiddenInputsFor(`${name}[${key}]`, child),
     );
   }
 

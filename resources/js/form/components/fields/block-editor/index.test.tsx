@@ -45,7 +45,7 @@ const baseNode = {
   id: "content",
   type: "field.block-editor",
   props: { name: "content", ref: "sealed", endpoint: "/lattice/blocks/render", defaultItems: 0 },
-  blocks: [
+  templates: [
     {
       type: "hero",
       label: "Hero",
@@ -58,7 +58,7 @@ const node = baseNode as never;
 
 it("renders stored blocks on the canvas from the rendered prop", () => {
   wrap(<BlockEditorComponent node={node}>{null}</BlockEditorComponent>, {
-    content: [{ __rowId: "a", type: "hero", title: "Stored" }],
+    content: [{ rowId: "a", type: "hero", title: "Stored" }],
   });
 
   expect(screen.getByText("Stored")).toBeInTheDocument();
@@ -69,7 +69,7 @@ it("renders nothing when the field is hidden", () => {
   const hiddenNode = { ...baseNode, props: { ...baseNode.props, hidden: true } } as never;
 
   wrap(<BlockEditorComponent node={hiddenNode}>{null}</BlockEditorComponent>, {
-    content: [{ __rowId: "a", type: "hero", title: "Stored" }],
+    content: [{ rowId: "a", type: "hero", title: "Stored" }],
   });
 
   expect(screen.queryByTestId("block-editor-inspector")).not.toBeInTheDocument();
@@ -78,7 +78,7 @@ it("renders nothing when the field is hidden", () => {
 it("shows the field error from the form context", () => {
   wrap(
     <BlockEditorComponent node={node}>{null}</BlockEditorComponent>,
-    { content: [{ __rowId: "a", type: "hero", title: "Stored" }] },
+    { content: [{ rowId: "a", type: "hero", title: "Stored" }] },
     { content: "At least one block is required." },
   );
 

@@ -14,8 +14,8 @@ import { BlockCanvas } from "./canvas";
 it("renders each row's wire and selects on click", () => {
   const onSelect = vi.fn<(rowId: string) => void>();
   const rows = [
-    { __rowId: "a", type: "hero" },
-    { __rowId: "b", type: "text" },
+    { rowId: "a", type: "hero" },
+    { rowId: "b", type: "text" },
   ];
   const wire = {
     a: [{ type: "heading", props: { text: "Alpha" } }],

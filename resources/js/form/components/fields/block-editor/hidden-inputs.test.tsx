@@ -11,9 +11,9 @@ function renderInputs(name: string, value: unknown) {
 }
 
 describe("hiddenInputsFor", () => {
-  it("emits hidden inputs for nested slot rows, skipping __rowId", () => {
+  it("emits hidden inputs for nested slot rows including their rowId", () => {
     const inputs = renderInputs("content[0][slots]", {
-      left: [{ __rowId: "x", type: "text", body: "L" }],
+      left: [{ rowId: "x", type: "text", body: "L" }],
     });
 
     const byName = Object.fromEntries(
@@ -22,8 +22,8 @@ describe("hiddenInputsFor", () => {
 
     expect(byName["content[0][slots][left][0][type]"]).toBe("text");
     expect(byName["content[0][slots][left][0][body]"]).toBe("L");
-    expect(byName["content[0][slots][left][0][__rowId]"]).toBeUndefined();
-    expect(inputs).toHaveLength(2);
+    expect(byName["content[0][slots][left][0][rowId]"]).toBe("x");
+    expect(inputs).toHaveLength(3);
   });
 
   it("emits nothing for null or undefined", () => {

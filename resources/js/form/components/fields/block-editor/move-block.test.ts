@@ -2,13 +2,13 @@ import { describe, expect, it } from "vitest";
 import { moveBlock } from "./move-block";
 
 const rows = () => [
-  { __rowId: "a", type: "text", body: "A" },
+  { rowId: "a", type: "text", body: "A" },
   {
-    __rowId: "cols",
+    rowId: "cols",
     type: "columns",
     slots: {
-      left: [{ __rowId: "l1", type: "text", body: "L1" }],
-      right: [{ __rowId: "r1", type: "text", body: "R1" }],
+      left: [{ rowId: "l1", type: "text", body: "L1" }],
+      right: [{ rowId: "r1", type: "text", body: "R1" }],
     },
   },
 ];
@@ -16,14 +16,14 @@ const rows = () => [
 describe("moveBlock", () => {
   it("reorders at the top level", () => {
     const out = moveBlock(rows(), [{ index: 0 }], [{ index: 1 }]);
-    expect(out.map((r) => r.__rowId)).toEqual(["cols", "a"]);
+    expect(out.map((r) => r.rowId)).toEqual(["cols", "a"]);
   });
 
   it("moves a top-level block into a slot", () => {
     const out = moveBlock(rows(), [{ index: 0 }], [{ index: 1, slot: "left" }, { index: 1 }]);
-    const cols = out.find((r) => r.__rowId === "cols") as Record<string, any>;
-    expect(cols.slots.left.map((r: any) => r.__rowId)).toEqual(["l1", "a"]);
-    expect(out.map((r) => r.__rowId)).toEqual(["cols"]);
+    const cols = out.find((r) => r.rowId === "cols") as Record<string, any>;
+    expect(cols.slots.left.map((r: any) => r.rowId)).toEqual(["l1", "a"]);
+    expect(out.map((r) => r.rowId)).toEqual(["cols"]);
   });
 
   it("moves a block between slots", () => {
@@ -32,14 +32,14 @@ describe("moveBlock", () => {
       [{ index: 1, slot: "left" }, { index: 0 }],
       [{ index: 1, slot: "right" }, { index: 0 }],
     );
-    const cols = out.find((r) => r.__rowId === "cols") as Record<string, any>;
+    const cols = out.find((r) => r.rowId === "cols") as Record<string, any>;
     expect(cols.slots.left).toEqual([]);
-    expect(cols.slots.right.map((r: any) => r.__rowId)).toEqual(["l1", "r1"]);
+    expect(cols.slots.right.map((r: any) => r.rowId)).toEqual(["l1", "r1"]);
   });
 
   it("moves a block out of a slot back to the top level", () => {
     const out = moveBlock(rows(), [{ index: 1, slot: "left" }, { index: 0 }], [{ index: 0 }]);
-    expect(out.map((r) => r.__rowId)).toEqual(["l1", "a", "cols"]);
+    expect(out.map((r) => r.rowId)).toEqual(["l1", "a", "cols"]);
   });
 
   it("returns rows unchanged for an invalid source", () => {
@@ -50,9 +50,9 @@ describe("moveBlock", () => {
   it("moves a block into a deeper nested container without dropping a later sibling", () => {
     const nested = [
       {
-        __rowId: "outer",
+        rowId: "outer",
         slots: {
-          left: [{ __rowId: "P" }, { __rowId: "Q", slots: { inner: [{ __rowId: "R" }] } }],
+          left: [{ rowId: "P" }, { rowId: "Q", slots: { inner: [{ rowId: "R" }] } }],
         },
       },
     ];
@@ -63,10 +63,10 @@ describe("moveBlock", () => {
       [{ index: 0, slot: "left" }, { index: 1, slot: "inner" }, { index: 0 }],
     );
 
-    const outer = out.find((r) => r.__rowId === "outer") as Record<string, any>;
-    expect(outer.slots.left.map((r: any) => r.__rowId)).toEqual(["Q"]);
-    const q = outer.slots.left.find((r: any) => r.__rowId === "Q");
-    expect(q.slots.inner.map((r: any) => r.__rowId)).toEqual(["P", "R"]);
+    const outer = out.find((r) => r.rowId === "outer") as Record<string, any>;
+    expect(outer.slots.left.map((r: any) => r.rowId)).toEqual(["Q"]);
+    const q = outer.slots.left.find((r: any) => r.rowId === "Q");
+    expect(q.slots.inner.map((r: any) => r.rowId)).toEqual(["P", "R"]);
   });
 
   it("returns rows unchanged for an invalid target", () => {

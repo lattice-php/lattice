@@ -18,9 +18,9 @@ test('serializes as a block-editor field with a template per block', function ()
 
     expect($wire['type'])->toBe('field.block-editor')
         ->and($wire['props']['endpoint'])->toBe('/lattice/blocks/render')
-        ->and($wire['blocks'])->toHaveCount(1)
-        ->and($wire['blocks'][0]['type'])->toBe('editor.hero')
-        ->and($wire['blocks'][0]['schema'][0]['props']['name'])->toBe('title');
+        ->and($wire['templates'])->toHaveCount(1)
+        ->and($wire['templates'][0]['type'])->toBe('editor.hero')
+        ->and($wire['templates'][0]['schema'][0]['props']['name'])->toBe('title');
 });
 
 test('serializes rendered wire for each stored row aligned by index', function (): void {
