@@ -149,7 +149,9 @@ describe("lattice Vite helper", () => {
     ]);
     const resolveId = plugin.resolveId as unknown as (id: string) => string | null;
     const load = plugin.load as unknown as (id: string) => string | null;
-    const config = plugin.config as unknown as () => unknown;
+    const config = plugin.config as unknown as (c?: { root?: string }) => {
+      server: { fs: { allow: string[] } };
+    };
 
     const resolved = resolveId("virtual:lattice/plugins");
 
@@ -159,7 +161,12 @@ describe("lattice Vite helper", () => {
 
     expect(code).toContain('import p0 from "/app/vendor/acme/signature/resources/js/plugin.ts";');
     expect(code).toContain("export default [p0];");
-    expect(config()).toMatchObject({ server: { fs: { allow: ["/app/vendor/acme/signature"] } } });
+    // The workspace root must stay in the allow list: specifying server.fs.allow at all
+    // replaces Vite's default root allowance, so the app's own files 403 without it.
+    expect(config({ root: "/app" }).server.fs.allow).toEqual([
+      searchForWorkspaceRoot("/app"),
+      "/app/vendor/acme/signature",
+    ]);
   });
 
   it("degrades to an empty plugin list when nothing is discoverable", () => {
