@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import "../../provider";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TableNode, TablePagination, TableResponse, TableState } from "../types";
 import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
