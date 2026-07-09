@@ -4,7 +4,7 @@ export type Action = {
   form: WireNode | null;
   icon: string | null;
   label: string | null;
-  lazyForm: boolean | null;
+  lazyForm: boolean;
   method: HttpMethod | null;
   ref: string | null;
   variant: ButtonVariant | null;
@@ -93,7 +93,7 @@ export type BulkAction = {
   form: WireNode | null;
   icon: string | null;
   label: string | null;
-  lazyForm: boolean | null;
+  lazyForm: boolean;
   method: HttpMethod | null;
   ref: string | null;
   variant: ButtonVariant | null;
@@ -573,7 +573,7 @@ export type FormNodeType =
   | "form";
 export type Fragment = {
   endpoint: string | null;
-  lazy: boolean | null;
+  lazy: boolean;
   ref: string | null;
   size: Size;
 };
@@ -682,7 +682,7 @@ export type MenuItem = {
 export type Modal = {
   closeLabel: string;
   description: string | null;
-  open: boolean | null;
+  open: boolean;
   ref: string | null;
   title: string | null;
 };
@@ -1118,11 +1118,11 @@ export type Table = {
   endpoint: string | null;
   filters: FilterData[];
   layout: string | null;
-  lazy: boolean | null;
+  lazy: boolean;
   ref: string | null;
-  resizableColumns: boolean | null;
+  resizableColumns: boolean;
   resizeIndicator: boolean;
-  striped: boolean | null;
+  striped: boolean;
 };
 export type TablePagination = {
   readonly mode: PaginationType;

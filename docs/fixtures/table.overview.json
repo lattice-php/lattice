@@ -134,7 +134,7 @@
             "endpoint": null,
             "filters": [],
             "layout": null,
-            "lazy": null,
+            "lazy": false,
             "pagination": {
                 "currentPage": null,
                 "from": 1,
@@ -146,7 +146,7 @@
                 "to": 3,
                 "total": 3
             },
-            "resizableColumns": null,
+            "resizableColumns": false,
             "resizeIndicator": false,
             "state": {
                 "filters": [],

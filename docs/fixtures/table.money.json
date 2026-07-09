@@ -76,7 +76,7 @@
             "endpoint": null,
             "filters": [],
             "layout": null,
-            "lazy": null,
+            "lazy": false,
             "pagination": {
                 "currentPage": null,
                 "from": 1,
@@ -88,7 +88,7 @@
                 "to": 2,
                 "total": 2
             },
-            "resizableColumns": null,
+            "resizableColumns": false,
             "resizeIndicator": false,
             "state": {
                 "filters": [],
@@ -97,7 +97,7 @@
                 "sorts": [],
                 "tableFilters": {}
             },
-            "striped": null
+            "striped": false
         },
         "type": "table"
     }
