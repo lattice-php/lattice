@@ -1,5 +1,5 @@
 import { echoIsConfigured, useConnectionStatus } from "@laravel/echo-react";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/lattice";
 
 function ConnectionStatus() {
   const status = useConnectionStatus();

@@ -216,7 +216,7 @@ needs to declare its `audience` and `scopes` — the consumer stamps the trusted
 The `remote.data-list` renderer ships in a separate plugin that you add to your registry:
 
 ```ts
-import { createRegistry } from "@lattice-php/lattice/core/registry";
+import { createRegistry } from "@lattice-php/lattice/core";
 import { remoteComponents } from "@lattice-php/lattice/remote";
 
 export const registry = createRegistry(/* …core plugins…, */ remoteComponents);

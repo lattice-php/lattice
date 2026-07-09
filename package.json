@@ -35,77 +35,37 @@
       "types": "./dist/action/index.d.ts",
       "import": "./dist/action/index.js"
     },
-    "./action/*": {
-      "types": "./dist/action/*.d.ts",
-      "import": "./dist/action/*.js"
-    },
     "./appearance": {
       "types": "./dist/appearance/index.d.ts",
       "import": "./dist/appearance/index.js"
-    },
-    "./appearance/*": {
-      "types": "./dist/appearance/*.d.ts",
-      "import": "./dist/appearance/*.js"
     },
     "./chat": {
       "types": "./dist/chat/index.d.ts",
       "import": "./dist/chat/index.js"
     },
-    "./chat/*": {
-      "types": "./dist/chat/*.d.ts",
-      "import": "./dist/chat/*.js"
-    },
     "./clipboard": {
       "types": "./dist/clipboard/index.d.ts",
       "import": "./dist/clipboard/index.js"
     },
-    "./core/components": {
-      "types": "./dist/core/components/index.d.ts",
-      "import": "./dist/core/components/index.js"
-    },
-    "./core/*": {
-      "types": "./dist/core/*.d.ts",
-      "import": "./dist/core/*.js"
-    },
-    "./effects/*": {
-      "types": "./dist/effects/*.d.ts",
-      "import": "./dist/effects/*.js"
-    },
-    "./events/*": {
-      "types": "./dist/events/*.d.ts",
-      "import": "./dist/events/*.js"
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
     },
     "./form": {
       "types": "./dist/form/index.d.ts",
       "import": "./dist/form/index.js"
     },
-    "./form/components": {
-      "types": "./dist/form/components/index.d.ts",
-      "import": "./dist/form/components/index.js"
-    },
-    "./form/*": {
-      "types": "./dist/form/*.d.ts",
-      "import": "./dist/form/*.js"
-    },
-    "./format/*": {
-      "types": "./dist/format/*.d.ts",
-      "import": "./dist/format/*.js"
+    "./form/toolkit": {
+      "types": "./dist/form/toolkit.d.ts",
+      "import": "./dist/form/toolkit.js"
     },
     "./i18n": {
       "types": "./dist/i18n/index.d.ts",
       "import": "./dist/i18n/index.js"
     },
-    "./i18n/*": {
-      "types": "./dist/i18n/*.d.ts",
-      "import": "./dist/i18n/*.js"
-    },
     "./icons": {
       "types": "./dist/icons/index.d.ts",
       "import": "./dist/icons/index.js"
-    },
-    "./icons/*": {
-      "types": "./dist/icons/*.d.ts",
-      "import": "./dist/icons/*.js"
     },
     "./inertia": {
       "types": "./dist/inertia.d.ts",
@@ -115,21 +75,9 @@
       "types": "./dist/layout/index.d.ts",
       "import": "./dist/layout/index.js"
     },
-    "./layout/*": {
-      "types": "./dist/layout/*.d.ts",
-      "import": "./dist/layout/*.js"
-    },
-    "./lib/*": {
-      "types": "./dist/lib/*.d.ts",
-      "import": "./dist/lib/*.js"
-    },
     "./notifications": {
       "types": "./dist/notifications/index.d.ts",
       "import": "./dist/notifications/index.js"
-    },
-    "./notifications/*": {
-      "types": "./dist/notifications/*.d.ts",
-      "import": "./dist/notifications/*.js"
     },
     "./page": {
       "types": "./dist/page.d.ts",
@@ -139,10 +87,6 @@
       "types": "./dist/provider.d.ts",
       "import": "./dist/provider.js"
     },
-    "./realtime/*": {
-      "types": "./dist/realtime/*.d.ts",
-      "import": "./dist/realtime/*.js"
-    },
     "./registry": {
       "types": "./dist/registry.d.ts",
       "import": "./dist/registry.js"
@@ -151,41 +95,25 @@
       "types": "./dist/remote/index.d.ts",
       "import": "./dist/remote/index.js"
     },
-    "./remote/*": {
-      "types": "./dist/remote/*.d.ts",
-      "import": "./dist/remote/*.js"
-    },
     "./table": {
       "types": "./dist/table/index.d.ts",
       "import": "./dist/table/index.js"
-    },
-    "./table/*": {
-      "types": "./dist/table/*.d.ts",
-      "import": "./dist/table/*.js"
     },
     "./toast": {
       "types": "./dist/toast/index.d.ts",
       "import": "./dist/toast/index.js"
     },
-    "./toast/*": {
-      "types": "./dist/toast/*.d.ts",
-      "import": "./dist/toast/*.js"
-    },
     "./types": {
       "types": "./dist/types/index.d.ts",
       "import": "./dist/types/index.js"
     },
-    "./types/*": {
-      "types": "./dist/types/*.d.ts",
-      "import": "./dist/types/*.js"
+    "./ui": {
+      "types": "./dist/ui/index.d.ts",
+      "import": "./dist/ui/index.js"
     },
     "./svg-sprite-client": {
       "types": "./dist/svg-sprite-client.d.ts",
       "import": "./dist/svg-sprite-client/index.js"
-    },
-    "./svg-sprite-client/*": {
-      "types": "./dist/svg-sprite-client/*.d.ts",
-      "import": "./dist/svg-sprite-client/*.js"
     },
     "./vite": {
       "types": "./dist/vite.d.ts",
