@@ -8,6 +8,7 @@ use Lattice\Lattice\Attributes\AsBlock;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Blocks\BlockDefinition;
 use Lattice\Lattice\Blocks\BlockRenderer;
+use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Enums\FieldType;
 use Spatie\Attributes\Attributes;
@@ -15,6 +16,10 @@ use Spatie\Attributes\Attributes;
 #[AsField(FieldType::BlockEditor)]
 class BlockEditor extends Builder
 {
+    use IsInteractive;
+
+    public ?string $endpoint = null;
+
     /**
      * @param  array<int, class-string<BlockDefinition>>  $blocks
      */
@@ -25,6 +30,11 @@ class BlockEditor extends Builder
             fn (string $class): Block => Block::make($this->keyFor($class))->schema(app($class)->attributes()),
             $blocks,
         );
+
+        $this->id ??= $this->name;
+        $this->endpoint ??= (string) config('lattice.blocks.endpoint', 'lattice/blocks/render');
+        $this->signedAs('block-editor');
+        $this->context(['allowedBlocks' => array_map(fn (Block $block): string => $block->type, $this->blocks)]);
 
         return $this;
     }
