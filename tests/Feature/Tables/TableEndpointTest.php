@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\Components\Link;
+use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\CallbackTableSource;
@@ -230,42 +231,28 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                     'filter' => null,
                     'width' => 'xl',
                     'align' => 'start',
-                    'columns' => [
-                        [
-                            'key' => 'name',
-                            'type' => 'column.text',
-                            'props' => [
-                                'label' => 'Name',
-                                'sortable' => true,
-                                'toggleable' => null,
-                                'hiddenByDefault' => null,
-                                'filter' => null,
-                                'date' => null,
-                                'copyable' => false,
-                                'link' => null,
-                                'badge' => null,
-                                'multiple' => null,
-                                'width' => 'md',
-                                'align' => 'start',
-                            ],
+                ],
+                'schema' => [
+                    [
+                        'type' => 'text',
+                        'props' => [
+                            'text' => '',
+                            'align' => null,
+                            'size' => 'md',
+                            'color' => 'muted',
+                            'copyable' => false,
+                            'dataBindings' => ['text' => 'name'],
                         ],
-                        [
-                            'key' => 'email',
-                            'type' => 'column.text',
-                            'props' => [
-                                'label' => 'Email',
-                                'sortable' => null,
-                                'toggleable' => null,
-                                'hiddenByDefault' => null,
-                                'filter' => null,
-                                'date' => null,
-                                'copyable' => false,
-                                'link' => null,
-                                'badge' => null,
-                                'multiple' => null,
-                                'width' => 'md',
-                                'align' => 'start',
-                            ],
+                    ],
+                    [
+                        'type' => 'text',
+                        'props' => [
+                            'text' => '',
+                            'align' => null,
+                            'size' => 'md',
+                            'color' => 'muted',
+                            'copyable' => false,
+                            'dataBindings' => ['text' => 'email'],
                         ],
                     ],
                 ],
@@ -547,9 +534,9 @@ class WorkbenchStackedUsersTable extends TableDefinition
         return [
             StackColumn::make('identity')
                 ->label('Identity')
-                ->columns([
-                    TextColumn::make('name')->label('Name')->sortable(),
-                    TextColumn::make('email')->label('Email'),
+                ->schema([
+                    Text::make('')->dataKey('text', 'name'),
+                    Text::make('')->dataKey('text', 'email'),
                 ]),
             TextColumn::make('status')->label('Status'),
         ];
@@ -587,9 +574,9 @@ class WorkbenchProjectedProductsTable extends EloquentTableDefinition
         return [
             StackColumn::make('identity')
                 ->label('Identity')
-                ->columns([
-                    TextColumn::make('name')->label('Name'),
-                    TextColumn::make('sku')->label('SKU'),
+                ->schema([
+                    Text::make('')->dataKey('text', 'name'),
+                    Text::make('')->dataKey('text', 'sku'),
                 ]),
             TextColumn::make('status')->label('Status'),
         ];

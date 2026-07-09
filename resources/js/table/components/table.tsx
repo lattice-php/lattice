@@ -9,7 +9,7 @@ import { Icon } from "@lattice-php/lattice/icons";
 import { alignJustifyItems, alignText } from "../align";
 import type { TableNode } from "../types";
 import { getBulkActions } from "../bulk";
-import { flattenColumns, getRowActions, getRowKey } from "../payload";
+import { getRowActions, getRowKey } from "../payload";
 import {
   getQueryParams,
   getTableSizingColumns,
@@ -67,7 +67,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   const selection = useTableSelection(rowEntries.map((entry) => entry.key));
 
   const columnsByKey = useMemo(
-    () => new Map(flattenColumns(columns).map((column) => [column.key, column])),
+    () => new Map(columns.map((column) => [column.key, column])),
     [columns],
   );
   const visibilityIdentity = nodeIdentity(node);

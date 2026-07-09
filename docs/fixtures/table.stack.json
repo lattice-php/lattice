@@ -9,44 +9,6 @@
                     "key": "identity",
                     "props": {
                         "align": "start",
-                        "columns": [
-                            {
-                                "key": "name",
-                                "props": {
-                                    "align": "start",
-                                    "badge": null,
-                                    "copyable": false,
-                                    "date": null,
-                                    "filter": null,
-                                    "hiddenByDefault": null,
-                                    "label": "Name",
-                                    "link": null,
-                                    "multiple": null,
-                                    "sortable": true,
-                                    "toggleable": null,
-                                    "width": "md"
-                                },
-                                "type": "column.text"
-                            },
-                            {
-                                "key": "email",
-                                "props": {
-                                    "align": "start",
-                                    "badge": null,
-                                    "copyable": true,
-                                    "date": null,
-                                    "filter": null,
-                                    "hiddenByDefault": null,
-                                    "label": "Email",
-                                    "link": null,
-                                    "multiple": null,
-                                    "sortable": null,
-                                    "toggleable": null,
-                                    "width": "md"
-                                },
-                                "type": "column.text"
-                            }
-                        ],
                         "filter": null,
                         "hiddenByDefault": null,
                         "label": "User",
@@ -54,6 +16,34 @@
                         "toggleable": null,
                         "width": "xl"
                     },
+                    "schema": [
+                        {
+                            "props": {
+                                "align": null,
+                                "color": "default",
+                                "copyable": false,
+                                "dataBindings": {
+                                    "text": "name"
+                                },
+                                "size": "md",
+                                "text": ""
+                            },
+                            "type": "text"
+                        },
+                        {
+                            "props": {
+                                "align": null,
+                                "color": "muted",
+                                "copyable": false,
+                                "dataBindings": {
+                                    "text": "email"
+                                },
+                                "size": "sm",
+                                "text": ""
+                            },
+                            "type": "text"
+                        }
+                    ],
                     "type": "column.stack"
                 },
                 {

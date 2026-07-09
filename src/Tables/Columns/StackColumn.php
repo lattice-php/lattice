@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
+use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
@@ -14,43 +15,41 @@ class StackColumn extends Column
     use FiltersRenderableComponents;
 
     /**
-     * @var array<int, Column>
+     * @var array<int, Component>
      */
-    protected array $columns = [];
+    protected array $children = [];
 
     /**
-     * @param  array<int, Column>  $columns
+     * @param  array<int, Component>  $components
      */
-    public function columns(array $columns): static
+    public function schema(array $components): static
     {
-        $this->columns = $columns;
+        $this->children = $components;
 
         return $this;
     }
 
     /**
-     * @return array<int, Column>
+     * @return array<int, Component>
      */
     public function children(): array
     {
-        return $this->columns;
+        return $this->children;
     }
 
     /**
-     * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */
     #[\Override]
-    protected function decorateProps(array $props): array
+    public function jsonSerialize(): array
     {
-        $props = parent::decorateProps($props);
-
-        $props['columns'] = array_map(
-            fn (Column $column): array => $column->jsonSerialize(),
-            array_values($this->renderableComponents($this->columns)),
-        );
-
-        return $props;
+        return [
+            ...parent::jsonSerialize(),
+            'schema' => array_map(
+                fn (Component $component): array => $component->jsonSerialize(),
+                array_values($this->renderableComponents($this->children)),
+            ),
+        ];
     }
 
     #[\Override]

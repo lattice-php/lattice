@@ -1,8 +1,11 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Core\Enums\Color;
 use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Core\Enums\NumberFormatUnit;
+use Lattice\Lattice\Core\Enums\Size;
 use Lattice\Lattice\Tables\Columns\BadgeColumn;
 use Lattice\Lattice\Tables\Columns\BooleanColumn;
 use Lattice\Lattice\Tables\Columns\IconColumn;
@@ -43,9 +46,9 @@ describe('docs fixtures', function (): void {
         dumpFixture('table.stack', [
             Table::make('users')
                 ->columns([
-                    StackColumn::make('identity')->label('User')->columns([
-                        TextColumn::make('name')->label('Name')->sortable(),
-                        TextColumn::make('email')->label('Email')->copyable(),
+                    StackColumn::make('identity')->label('User')->schema([
+                        Text::make('')->dataKey('text', 'name')->color(Color::Default),
+                        Text::make('')->dataKey('text', 'email')->size(Size::Sm),
                     ]),
                     TextColumn::make('role')->label('Role'),
                 ])

@@ -207,18 +207,20 @@ final class TableRegistry extends DefinitionRegistry
      */
     private function columnKeys(Column $column): array
     {
-        $keys = [$column->key()];
-
         if ($column instanceof StackColumn) {
+            $keys = [];
+
             foreach ($column->children() as $child) {
                 if (! $child->shouldRender()) {
                     continue;
                 }
 
-                array_push($keys, ...$this->columnKeys($child));
+                array_push($keys, ...$child->boundRowKeys());
             }
+
+            return array_values(array_unique($keys));
         }
 
-        return $keys;
+        return [$column->key()];
     }
 }

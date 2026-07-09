@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
-import type { Node, NodeProps, RendererComponent, Schema } from "@lattice-php/lattice/core/types";
+import type { RendererComponent, Schema } from "@lattice-php/lattice/core/types";
 import { remoteJson } from "@lattice-php/lattice/core/api";
+import { materializeSchema, type RemoteRow } from "@lattice-php/lattice/core/materialize";
 import type { DataList as DataListProps } from "@lattice-php/lattice/types/generated";
 import { useT } from "@lattice-php/lattice/i18n";
 
 type RemotePayload = {
   data?: Array<Record<string, unknown>>;
 };
-
-type RemoteRow = Record<string, unknown>;
-
-type DataBindings = Record<string, string>;
 
 type RemoteDataListProps = DataListProps & {
   schema?: Schema;
@@ -23,62 +20,6 @@ function label(value: unknown): string {
   }
 
   return String(value);
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function dataBindings(value: unknown): DataBindings {
-  if (!isRecord(value)) {
-    return {};
-  }
-
-  return Object.fromEntries(
-    Object.entries(value).filter((entry): entry is [string, string] => {
-      return typeof entry[1] === "string";
-    }),
-  );
-}
-
-function rowValue(row: RemoteRow, key: string): unknown {
-  if (key in row) {
-    return row[key];
-  }
-
-  return key.split(".").reduce<unknown>((value, segment) => {
-    return isRecord(value) ? value[segment] : undefined;
-  }, row);
-}
-
-function materializeProps(props: unknown, row: RemoteRow): NodeProps {
-  if (!isRecord(props)) {
-    return {};
-  }
-
-  const { dataBindings: bindings, ...materialized } = props;
-
-  for (const [prop, key] of Object.entries(dataBindings(bindings))) {
-    const value = rowValue(row, key);
-
-    if (value !== undefined) {
-      materialized[prop] = value;
-    }
-  }
-
-  return materialized;
-}
-
-function materializeNode(node: Node, row: RemoteRow): Node {
-  return {
-    ...node,
-    props: materializeProps(node.props, row),
-    schema: node.schema?.map((child) => materializeNode(child, row)),
-  } as Node;
-}
-
-function materializeSchema(schema: Schema | undefined, row: RemoteRow): Schema {
-  return schema?.map((node) => materializeNode(node, row)) ?? [];
 }
 
 export function RemoteDataList({ props }: { props: RemoteDataListProps }) {

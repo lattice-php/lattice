@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
@@ -17,12 +18,12 @@ it('omits a column hidden via visible(false) from the serialized table', functio
 });
 
 it('omits a hidden child from a stack column', function (): void {
-    $wire = StackColumn::make('stack')->columns([
-        TextColumn::make('shown'),
-        TextColumn::make('hidden')->visible(false),
+    $wire = StackColumn::make('stack')->schema([
+        Text::make('Shown', 'shown'),
+        Text::make('Hidden', 'hidden')->when(false),
     ])->jsonSerialize();
 
-    $childKeys = array_map(fn (array $c): string => $c['key'], $wire['props']['columns']);
+    $childKeys = array_map(fn (array $c): string => $c['key'], $wire['schema']);
 
     expect($childKeys)->toBe(['shown']);
 });

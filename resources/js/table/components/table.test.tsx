@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TableNode, TablePagination, TableResponse, TableState } from "../types";
 import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
+import type { Node } from "@lattice-php/lattice/core/types";
 import type { TableColumn } from "../types";
 import TableComponent from "./table";
 
@@ -12,10 +13,10 @@ function col(partial: {
   width?: TableColumn["props"]["width"];
   sortable?: boolean | null;
   filter?: ColumnFilter | null;
-  columns?: TableColumn[];
+  schema?: Node[];
   props?: Record<string, unknown>;
 }): TableColumn {
-  const { key, label, type = "column.text", width, sortable, filter, columns, props } = partial;
+  const { key, label, type = "column.text", width, sortable, filter, schema, props } = partial;
 
   return {
     key,
@@ -28,9 +29,9 @@ function col(partial: {
       toggleable: null,
       hiddenByDefault: null,
       filter: filter ?? null,
-      ...(columns ? { columns } : {}),
       ...props,
     },
+    ...(schema ? { schema } : {}),
   } as TableColumn;
 }
 
@@ -394,19 +395,10 @@ describe("Lattice table component", () => {
             key: "identity",
             label: "Identity",
             type: "column.stack",
-            columns: [
-              col({
-                key: "name",
-                label: "Name",
-                type: "column.text",
-                sortable: true,
-              }),
-              col({
-                key: "email",
-                label: "Email",
-                type: "column.text",
-              }),
-            ],
+            schema: [
+              { type: "text", props: { dataBindings: { text: "name" } } },
+              { type: "text", props: { dataBindings: { text: "email" } } },
+            ] as Node[],
           }),
           col({
             key: "status",

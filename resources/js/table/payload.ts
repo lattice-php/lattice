@@ -64,10 +64,6 @@ export function getPagination(value: unknown): TablePagination {
   return value as TablePagination;
 }
 
-export function flattenColumns(columns: TableColumn[]): TableColumn[] {
-  return columns.flatMap((column) => [column, ...flattenColumns(column.props.columns ?? [])]);
-}
-
 export function getState(value: unknown): TableState {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return {

@@ -1,4 +1,4 @@
-import type { NodeUnionOf, ResolveProps } from "@lattice-php/lattice/core/types";
+import type { NodeUnionOf, ResolveProps, Schema } from "@lattice-php/lattice/core/types";
 import type {
   ActionNodeType,
   ColumnAlign,
@@ -75,7 +75,6 @@ export type CommonColumnProps = {
   toggleable: boolean | null;
   hiddenByDefault: boolean | null;
   filter: ColumnFilter | null;
-  columns?: ColumnNode[];
 };
 
 export type ColumnPropsOf<TType extends string> = ResolveProps<
@@ -89,12 +88,15 @@ export type ColumnPropsOf<TType extends string> = ResolveProps<
 /**
  * A column node, authored and consumed like a field/component: `key`/`type`
  * stay top-level, every common concern (`label`/`width`/`filter`/…) lives in
- * `props` via `CommonColumnProps`. The column counterpart of `NodeOfType`.
+ * `props` via `CommonColumnProps`. `schema` is only present for a
+ * `StackColumn`: the bound component nodes rendered per row (see
+ * `materializeSchema`). The column counterpart of `NodeOfType`.
  */
 export type ColumnNode<TType extends string = string> = {
   type: TType;
   key: string;
   props: ColumnPropsOf<TType>;
+  schema?: Schema;
 };
 
 export type TableColumn = ColumnNode;
