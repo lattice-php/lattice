@@ -5,18 +5,23 @@ namespace Lattice\Lattice\Forms\Components\Concerns;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Forms\Components\Field;
+use Lattice\Lattice\Forms\Components\RowsField;
 use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
 use Lattice\Lattice\Forms\FormData;
+use LogicException;
 
 /**
  * Per-row validation + casting for array-valued fields whose rows each render a
  * schema of child Fields. Implementers supply the template for a given row.
+ *
+ * @internal Implementation detail of RowsField — extend RowsField (or
+ *           TypedRowsField) instead of using this trait directly.
  */
 trait HandlesRowSchemas
 {
     /**
      * The child Fields that validate/cast the given submitted row. Repeater
-     * returns a fixed schema; Builder resolves the block matching the row's type.
+     * returns a fixed schema; Builder resolves the template matching the row's type.
      *
      * @param  array<string, mixed>  $row
      * @return array<int, Field>
@@ -36,6 +41,13 @@ trait HandlesRowSchemas
             $scope = $this->rowScope($data, $row);
 
             foreach ($this->rowFields($row) as $child) {
+                if ($child->name() === RowsField::ROW_ID) {
+                    throw new LogicException(sprintf(
+                        'Row schemas must not declare a [%s] field: the key is reserved for the per-row identity.',
+                        RowsField::ROW_ID,
+                    ));
+                }
+
                 if (! $child->isVisible($scope)) {
                     continue;
                 }

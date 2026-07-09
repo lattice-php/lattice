@@ -4,23 +4,25 @@ import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { appendPath, toHtmlName } from "../form-path";
 import { useDependentField } from "../use-dependent-field";
-import { BlockAddMenu, type BlockOption } from "./block-add-menu";
+import { AddRowMenu, type AddRowOption } from "./add-row-menu";
 import { ROW_ID_KEY } from "./repeater-rows";
 import { buildRowActions } from "./row-action-menu";
 import { RowActions } from "./row-actions";
+import { RowIdInputs } from "./row-id-inputs";
 import { RowItem } from "./row-item";
 import { columnsFromSchema, TableRows } from "./table-rows";
 import { useFlipReorder } from "./use-flip-reorder";
 import { useRowCollection } from "./use-row-collection";
 
-type Block = { type: string; label: string; schema: Node[] };
+type RowTemplate = { type: string; label: string; schema: Node[] };
 
 const EMPTY_TEMPLATE: Node[] = [];
 
 export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) => {
   const props = node.props;
   const name = props.name;
-  const blocks = ((node as unknown as { blocks?: Block[] }).blocks ?? []) as Block[];
+  const templates = ((node as unknown as { templates?: RowTemplate[] }).templates ??
+    []) as RowTemplate[];
   const { errors } = useFormContext();
   const { hidden, required } = useDependentField(node);
   const { path, rows, onField, onRemove, onMove, onDuplicate, append } = useRowCollection(
@@ -34,10 +36,11 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
   const atMin = props.minItems != null && rows.length <= props.minItems;
   const isTable = props.layout === "table";
 
-  const blockFor = (type: unknown): Block | undefined => blocks.find((b) => b.type === type);
-  const options: BlockOption[] = blocks.map((b) => ({
-    type: b.type,
-    label: b.label,
+  const templateFor = (type: unknown): RowTemplate | undefined =>
+    templates.find((template) => template.type === type);
+  const options: AddRowOption[] = templates.map((template) => ({
+    type: template.type,
+    label: template.label,
   }));
 
   if (hidden) {
@@ -53,17 +56,17 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
     />
   ));
 
-  const primary = blocks[0];
+  const primary = templates[0];
   const tableRows = rows.map((row, index) => {
-    const block = blockFor(row.type);
-    const isPrimary = !!block && !!primary && block.type === primary.type;
+    const template = templateFor(row.type);
+    const isPrimary = !!template && !!primary && template.type === primary.type;
     return {
       key: String(row[ROW_ID_KEY] ?? index),
       index,
       row,
-      template: block?.schema ?? EMPTY_TEMPLATE,
+      template: template?.schema ?? EMPTY_TEMPLATE,
       span: !isPrimary,
-      heading: block?.label ?? `Unknown block: ${String(row.type)}`,
+      heading: template?.label ?? `Unknown block: ${String(row.type)}`,
     };
   });
 
@@ -77,6 +80,7 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
       required={required}
     >
       <div className="flex flex-col gap-3">
+        <RowIdInputs path={path} rows={rows} />
         {isTable ? (
           <>
             {hiddenTypeInputs}
@@ -98,7 +102,7 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
           </>
         ) : (
           rows.map((row, index) => {
-            const block = blockFor(row.type);
+            const template = templateFor(row.type);
             const key = String(row[ROW_ID_KEY] ?? index);
 
             return (
@@ -108,13 +112,13 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
                   name={toHtmlName(appendPath(path, index, "type"))}
                   value={String(row.type ?? "")}
                 />
-                {block ? (
+                {template ? (
                   <RowItem
                     base={path}
                     index={index}
                     row={row}
-                    template={block.schema ?? EMPTY_TEMPLATE}
-                    heading={block.label}
+                    template={template.schema ?? EMPTY_TEMPLATE}
+                    heading={template.label}
                     reorderable={props.reorderable ?? false}
                     isFirst={index === 0}
                     isLast={index === rows.length - 1}
@@ -148,9 +152,9 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
         )}
 
         {!atMax && (
-          <BlockAddMenu
+          <AddRowMenu
             addLabel={props.addLabel ?? "Add"}
-            blocks={options}
+            options={options}
             onSelect={(type) => append({ type })}
           />
         )}

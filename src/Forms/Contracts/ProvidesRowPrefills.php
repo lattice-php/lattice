@@ -6,6 +6,9 @@ namespace Lattice\Lattice\Forms\Contracts;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Forms\FormData;
 
+/**
+ * @api Consumed by the form walker/validator; implemented by RowsField.
+ */
 interface ProvidesRowPrefills
 {
     /**

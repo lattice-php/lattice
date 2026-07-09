@@ -20,7 +20,7 @@ it('passes a valid row set and returns the array', function (): void {
 
     $validated = (new FieldValidator)->validate([repeaterField()], $request);
 
-    expect($validated['items'])->toBe([['name' => 'A']]);
+    expect(withoutRowIds($validated['items']))->toBe([['name' => 'A']]);
 });
 
 it('rejects a row missing a required child', function (): void {
@@ -48,7 +48,7 @@ it('casts each row through child field casts', function (): void {
 
     $validated = (new FieldValidator)->validate([repeaterField()], $request);
 
-    expect($validated['items'])->toBe([['name' => 'A'], ['name' => 'B']]);
+    expect(withoutRowIds($validated['items']))->toBe([['name' => 'A'], ['name' => 'B']]);
 });
 
 it('requires row children from same-row sibling conditions', function (): void {
@@ -182,7 +182,7 @@ it('returns recursively cast repeater values', function (): void {
 
     $validated = (new FieldValidator)->validate([$field], $request);
 
-    expect($validated['sections'])->toBe([[
+    expect(withoutRowIds($validated['sections']))->toBe([[
         'title' => 'Hardware',
         'items' => [
             ['name' => 'Desk'],

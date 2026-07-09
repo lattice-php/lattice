@@ -100,7 +100,7 @@ describe("SelectComponent search", () => {
   it("posts a row search path with current form values inside a row", async () => {
     vi.useFakeTimers();
 
-    const row = { __rowId: "r1", category: "chairs", product: "" };
+    const row = { rowId: "r1", category: "chairs", product: "" };
     const initial = { customer: "acme", items: [row] };
 
     renderSelect({ initial, row });

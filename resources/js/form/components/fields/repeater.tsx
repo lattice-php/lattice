@@ -4,6 +4,7 @@ import { FormFieldFrame } from "../base/field";
 import { useFormContext } from "../context";
 import { useDependentField } from "../use-dependent-field";
 import { ROW_ID_KEY } from "./repeater-rows";
+import { RowIdInputs } from "./row-id-inputs";
 import { RowItem } from "./row-item";
 import { columnsFromSchema, TableRows } from "./table-rows";
 import { useFlipReorder } from "./use-flip-reorder";
@@ -60,6 +61,7 @@ export const RepeaterComponent: RendererComponent<"field.repeater"> = ({ node })
       required={required}
     >
       <div className="flex flex-col gap-3">
+        <RowIdInputs path={path} rows={rows} />
         {isTable ? (
           <TableRows
             base={path}

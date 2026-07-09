@@ -15,9 +15,18 @@ type PrefillSnapshot = {
   values: Record<string, unknown>;
 };
 
-type Block = { type: string; label: string; schema: Node[] };
+type RowTemplate = { type: string; label: string; schema: Node[] };
 
 const ROW_COLLECTION_TYPES = new Set(["field.builder", "field.repeater"]);
+
+/**
+ * Registers a custom node type as a row collection so the prefill walker
+ * recurses into its rows. Call once at module scope from the package or app
+ * that ships the field.
+ */
+export function registerRowCollectionType(type: string): void {
+  ROW_COLLECTION_TYPES.add(type);
+}
 
 export { getPath } from "./form-path";
 
@@ -79,11 +88,11 @@ export function collectPrefillTargets(
           const rows = Array.isArray(storedRows)
             ? (storedRows as Array<Record<string, unknown>>)
             : [];
-          const blocks = (node as unknown as { blocks?: Block[] }).blocks;
+          const templates = (node as unknown as { templates?: RowTemplate[] }).templates;
 
           rows.forEach((childRow, childIndex) => {
-            const template = blocks
-              ? (blocks.find((block) => block.type === childRow.type)?.schema ?? [])
+            const template = templates
+              ? (templates.find((t) => t.type === childRow.type)?.schema ?? [])
               : (node.schema ?? []);
 
             walk(

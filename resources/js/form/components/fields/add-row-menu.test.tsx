@@ -1,13 +1,13 @@
 import { expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { BlockAddMenu } from "./block-add-menu";
+import { AddRowMenu } from "./add-row-menu";
 
-it("lists blocks and emits the chosen type", () => {
+it("lists row options and emits the chosen type", () => {
   const onSelect = vi.fn<(type: string) => void>();
   render(
-    <BlockAddMenu
+    <AddRowMenu
       addLabel="Add block"
-      blocks={[
+      options={[
         { type: "text", label: "Text" },
         { type: "product", label: "Product line" },
       ]}

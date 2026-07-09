@@ -2,16 +2,16 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Forms\Components\Block;
 use Lattice\Lattice\Forms\Components\Builder;
 use Lattice\Lattice\Forms\Components\Repeater;
+use Lattice\Lattice\Forms\Components\RowTemplate;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FieldValidator;
 
 it('retains a builder row field that declares no validation rules', function (): void {
     $field = Builder::make('items')
-        ->blocks([
-            Block::make('text')->schema([
+        ->templates([
+            RowTemplate::make('text')->schema([
                 TextInput::make('title'),
             ]),
         ]);
@@ -22,7 +22,7 @@ it('retains a builder row field that declares no validation rules', function ():
 
     $validated = (new FieldValidator)->validate([$field], $request);
 
-    expect($validated['items'])->toBe([
+    expect(withoutRowIds($validated['items']))->toBe([
         ['type' => 'text', 'title' => 'Hello world'],
     ]);
 });
@@ -40,7 +40,7 @@ it('retains a repeater row field that declares no validation rules alongside a r
 
     $validated = (new FieldValidator)->validate([$field], $request);
 
-    expect($validated['items'])->toBe([
+    expect(withoutRowIds($validated['items']))->toBe([
         ['name' => 'Row', 'title' => 'Hello world'],
     ]);
 });

@@ -30,8 +30,15 @@ with `Repeater::make()` and define the row template with `->schema()`.
 keeps its own label, placeholder, default value, and rules. The example above submits as:
 
 ```php
-['items' => [['name' => 'Widget', 'qty' => '3'], ['name' => 'Gadget', 'qty' => '1']]]
+['items' => [
+    ['rowId' => '9f3c…', 'name' => 'Widget', 'qty' => '3'],
+    ['rowId' => 'a2b1…', 'name' => 'Gadget', 'qty' => '1'],
+]]
 ```
+
+Every row carries a stable UUID under the reserved `rowId` key: rows filled from stored data keep
+theirs, new rows get one when they are added, and it survives validation into your `handle()` data.
+Row schemas must not declare their own `rowId` field.
 
 ## Row counts
 

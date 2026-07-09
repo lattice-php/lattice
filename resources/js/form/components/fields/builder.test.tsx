@@ -30,7 +30,7 @@ const node = {
     minItems: 0,
     maxItems: 5,
   },
-  blocks: [
+  templates: [
     {
       type: "text",
       label: "Text",
@@ -110,7 +110,7 @@ it("renders the table layout: primary columns, spanning non-primary rows", () =>
       minItems: 0,
       maxItems: 9,
     },
-    blocks: [
+    templates: [
       {
         type: "product",
         label: "Product",

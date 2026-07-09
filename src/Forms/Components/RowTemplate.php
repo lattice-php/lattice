@@ -8,7 +8,14 @@ use JsonSerializable;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
 
-final class Block implements JsonSerializable
+/**
+ * A typed row template for a TypedRowsField: the schema of child Fields a row
+ * of this type is built, validated, and cast from. Serializes as
+ * `{type, label, schema}`.
+ *
+ * @api
+ */
+final class RowTemplate implements JsonSerializable
 {
     use HasChildSchema;
 

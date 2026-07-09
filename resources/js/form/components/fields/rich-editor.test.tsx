@@ -20,7 +20,7 @@ function renderField(
         <FieldScopeProvider
           base="items.0.children"
           index={1}
-          row={{ __rowId: "r1", body: nested.items?.[0]?.children?.[1]?.body }}
+          row={{ rowId: "r1", body: nested.items?.[0]?.children?.[1]?.body }}
           onChange={() => {}}
         >
           {field}

@@ -2,10 +2,10 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Forms\Components\Block;
 use Lattice\Lattice\Forms\Components\Builder;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\Repeater;
+use Lattice\Lattice\Forms\Components\RowTemplate;
 use Lattice\Lattice\Forms\Components\Select;
 
 /**
@@ -37,7 +37,7 @@ function nestedRepeaterPrefilledOptions(Form $form): array
  */
 function builderPrefilledOptions(Form $form): array
 {
-    return wire($form)['schema'][0]['blocks'][0]['schema'][0]['props']['options'] ?? [];
+    return wire($form)['schema'][0]['templates'][0]['schema'][0]['props']['options'] ?? [];
 }
 
 it('resolves the label for a single filled id', function (): void {
@@ -159,8 +159,8 @@ it('resolves labels for filled ids inside builder rows', function (): void {
             ['type' => 'product', 'product' => '8'],
         ]])
         ->schema([
-            Builder::make('items')->blocks([
-                Block::make('product')->schema([
+            Builder::make('items')->templates([
+                RowTemplate::make('product')->schema([
                     Select::make('product', 'Product')
                         ->resolveSelectedUsing(function (array $values) use (&$received) {
                             $received = $values;

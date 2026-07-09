@@ -1,6 +1,33 @@
 [
     {
-        "blocks": [
+        "props": {
+            "addLabel": "Add block",
+            "columnWidth": "md",
+            "conditions": null,
+            "defaultItems": 0,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "editablePrefill": false,
+            "helperText": null,
+            "hidden": false,
+            "label": "Line items",
+            "layout": "stack",
+            "maxItems": null,
+            "minItems": 1,
+            "name": "items",
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "readOnly": false,
+            "reorderable": true,
+            "required": false,
+            "resizableColumns": false,
+            "resizeIndicator": false,
+            "rowActions": null,
+            "tooltip": null,
+            "value": null
+        },
+        "templates": [
             {
                 "label": "Text",
                 "schema": [
@@ -123,33 +150,6 @@
                 "type": "product"
             }
         ],
-        "props": {
-            "addLabel": "Add block",
-            "columnWidth": "md",
-            "conditions": null,
-            "defaultItems": 0,
-            "dependsOnAny": false,
-            "dependsOnKeys": null,
-            "disabled": false,
-            "editablePrefill": false,
-            "helperText": null,
-            "hidden": false,
-            "label": "Line items",
-            "layout": "stack",
-            "maxItems": null,
-            "minItems": 1,
-            "name": "items",
-            "prefillRefreshOn": null,
-            "prefillResetOn": null,
-            "readOnly": false,
-            "reorderable": true,
-            "required": false,
-            "resizableColumns": false,
-            "resizeIndicator": false,
-            "rowActions": null,
-            "tooltip": null,
-            "value": null
-        },
         "type": "field.builder"
     }
 ]
