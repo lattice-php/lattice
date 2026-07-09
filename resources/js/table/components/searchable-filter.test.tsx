@@ -1,13 +1,28 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { FilterData } from "@lattice-php/lattice/types/generated";
+import { registry } from "@lattice-php/lattice/registry";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { TableColumn, TableNode } from "../types";
 import TableComponent from "./table";
 
 const filter: FilterData = {
   key: "author",
   label: "Author",
-  type: "select",
+  type: "filter.select",
+  schema: [
+    {
+      type: "field.select",
+      props: {
+        name: "value",
+        label: "Author",
+        options: [{ label: "Ada", value: "1" }],
+        multiple: false,
+        searchable: true,
+        placeholder: null,
+      },
+    },
+  ],
   props: {
     options: [{ label: "Ada", value: "1" }],
     multiple: false,
@@ -40,7 +55,14 @@ const node: TableNode = {
     filters: [filter],
     data: [],
     endpoint: "/lattice/tables/workbench.products",
-    state: { filters: [], page: 1, perPage: 25, sorts: [], tableFilters: {} },
+    state: {
+      filters: [],
+      page: 1,
+      perPage: 25,
+      sorts: [],
+      tableFilters: {},
+      tableFilterIndicators: [],
+    },
   },
 };
 
@@ -58,7 +80,14 @@ function stubFetch() {
     return Response.json({
       data: [],
       pagination: {},
-      state: { filters: [], page: 1, perPage: 25, sorts: [], tableFilters: {} },
+      state: {
+        filters: [],
+        page: 1,
+        perPage: 25,
+        sorts: [],
+        tableFilters: {},
+        tableFilterIndicators: [],
+      },
     });
   });
 
@@ -79,14 +108,14 @@ describe("searchable select filter", () => {
   it("applies the chosen option through the table endpoint", async () => {
     const fetch = stubFetch();
 
-    render(<TableComponent node={node} />);
+    renderWithRegistry(<TableComponent node={node} />, registry);
 
     openFilters();
     fireEvent.click(screen.getByRole("button", { name: "Author" }));
     fireEvent.click(await screen.findByRole("option", { name: "Ada" }));
 
     await waitFor(() => {
-      expect(fetch.mock.calls.at(-1)?.[0]).toContain("tf%5Bauthor%5D=1");
+      expect(fetch.mock.calls.at(-1)?.[0]).toContain("tf%5Bauthor%5D%5Bvalue%5D=1");
     });
   });
 
@@ -96,34 +125,48 @@ describe("searchable select filter", () => {
       ...node,
       props: {
         ...node.props,
-        filters: [{ ...filter, props: { ...filter.props, multiple: true } }],
+        filters: [
+          {
+            ...filter,
+            schema: [
+              {
+                type: "field.select",
+                props: {
+                  ...filter.schema[0].props,
+                  multiple: true,
+                },
+              },
+            ],
+            props: { ...filter.props, multiple: true },
+          },
+        ],
       },
     };
 
-    render(<TableComponent node={multiNode} />);
+    renderWithRegistry(<TableComponent node={multiNode} />, registry);
 
     openFilters();
     fireEvent.click(screen.getByRole("button", { name: "Author" }));
     fireEvent.click(await screen.findByRole("option", { name: "Ada" }));
 
     await waitFor(() => {
-      expect(fetch.mock.calls.at(-1)?.[0]).toContain("tf%5Bauthor%5D%5B%5D=1");
+      expect(fetch.mock.calls.at(-1)?.[0]).toContain("tf%5Bauthor%5D%5Bvalue%5D%5B%5D=1");
     });
   });
 
   it("issues a _search request as the user types", async () => {
     const fetch = stubFetch();
 
-    render(<TableComponent node={node} />);
+    renderWithRegistry(<TableComponent node={node} />, registry);
 
     openFilters();
     fireEvent.click(screen.getByRole("button", { name: "Author" }));
-    fireEvent.change(screen.getByLabelText("Search"), { target: { value: "ad" } });
+    fireEvent.change(screen.getByLabelText("Search options"), { target: { value: "ad" } });
 
     await waitFor(() => {
-      expect(fetch.mock.calls.some((call) => String(call[0]).includes("_search=author&q=ad"))).toBe(
-        true,
-      );
+      expect(
+        fetch.mock.calls.some((call) => String(call[0]).includes("_search=author.value&q=ad")),
+      ).toBe(true);
     });
   });
 });

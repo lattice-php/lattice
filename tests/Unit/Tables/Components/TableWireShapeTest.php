@@ -48,6 +48,7 @@ it('serializes the table component wire shape', function (): void {
         'page' => 1,
         'perPage' => 25,
         'tableFilters' => [],
+        'tableFilterIndicators' => [],
     ]);
     expect($payload['props']['bulkActions'])->toBe([]);
     expect($payload['props']['filters'])->toBe([]);

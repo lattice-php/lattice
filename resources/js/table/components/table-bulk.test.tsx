@@ -103,9 +103,13 @@ describe("table bulk actions", () => {
           filters: [{ field: "status", operator: "eq", value: "active" }],
           sorts: [],
           tableFilters: {
-            featured: "true",
+            featured: { value: "true" },
             updated_at: { from: "2026-01-01", until: "" },
           },
+          tableFilterIndicators: [
+            { filter: "featured", label: "Featured", value: "Yes" },
+            { filter: "updated_at", label: "Updated", value: "2026-01-01" },
+          ],
           page: 1,
           perPage: 25,
         },
@@ -137,7 +141,7 @@ describe("table bulk actions", () => {
       allMatching: true,
       filter: "status:eq:active",
       tf: {
-        featured: "true",
+        featured: { value: "true" },
         updated_at: { from: "2026-01-01" },
       },
     });

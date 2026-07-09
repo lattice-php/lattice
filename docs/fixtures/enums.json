@@ -839,19 +839,19 @@
         "cases": [
             {
                 "name": "Select",
-                "value": "select"
+                "value": "filter.select"
             },
             {
                 "name": "Ternary",
-                "value": "ternary"
+                "value": "filter.ternary"
             },
             {
                 "name": "DateRange",
-                "value": "date-range"
+                "value": "filter.date-range"
             },
             {
                 "name": "Toggle",
-                "value": "toggle"
+                "value": "filter.toggle"
             }
         ]
     },

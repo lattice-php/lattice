@@ -13,8 +13,8 @@ use Lattice\Lattice\Attributes\TypeScript;
 #[TypeScript]
 enum FilterControl: string
 {
-    case Select = 'select';
-    case Ternary = 'ternary';
-    case DateRange = 'date-range';
-    case Toggle = 'toggle';
+    case Select = 'filter.select';
+    case Ternary = 'filter.ternary';
+    case DateRange = 'filter.date-range';
+    case Toggle = 'filter.toggle';
 }

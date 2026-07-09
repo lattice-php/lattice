@@ -1,6 +1,8 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
+import { registry } from "@lattice-php/lattice/registry";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { TableColumn, TableNode } from "../types";
 import TableComponent from "./table";
 
@@ -9,7 +11,7 @@ function selectFilter(multiple: boolean): ColumnFilter {
     type: "text",
     operators: multiple ? ["in", "not_in"] : ["eq", "neq"],
     defaultOperator: multiple ? "in" : "eq",
-    control: "select",
+    control: "filter.select",
     options: [
       { label: "Active", value: "active" },
       { label: "Draft", value: "draft" },
@@ -25,7 +27,7 @@ function clauseFilter(): ColumnFilter {
     type: "boolean",
     operators: ["eq", "neq", "empty"],
     defaultOperator: "eq",
-    control: "select",
+    control: "filter.select",
     options: [
       { label: "Yes", value: "yes" },
       { label: "No", value: "no" },
@@ -46,7 +48,7 @@ function rangeFilter(): ColumnFilter {
     type: "date",
     operators: ["eq", "neq", "gte", "lte"],
     defaultOperator: "eq",
-    control: "select",
+    control: "filter.select",
     options: [{ label: "June 2026", value: "june-2026" }],
     clauseOptions: [
       {
@@ -114,11 +116,10 @@ describe("column select filter", () => {
   it("emits an eq clause for a single select column", async () => {
     const fetch = stubFetch();
 
-    render(<TableComponent node={node(selectFilter(false))} />);
+    renderWithRegistry(<TableComponent node={node(selectFilter(false))} />, registry);
 
-    fireEvent.change(screen.getByRole("combobox", { name: "Status" }), {
-      target: { value: "active" },
-    });
+    fireEvent.click(screen.getByRole("button", { name: "Status" }));
+    fireEvent.click(screen.getByRole("option", { name: "Active" }));
 
     await waitFor(() => {
       expect(fetch.mock.calls.at(-1)?.[0]).toContain("filter=status%3Aeq%3Aactive");
@@ -128,10 +129,10 @@ describe("column select filter", () => {
   it("emits an in clause for a multiple select column", async () => {
     const fetch = stubFetch();
 
-    render(<TableComponent node={node(selectFilter(true))} />);
+    renderWithRegistry(<TableComponent node={node(selectFilter(true))} />, registry);
 
     fireEvent.click(screen.getByRole("button", { name: "Status" }));
-    fireEvent.click(screen.getByRole("checkbox", { name: "Active" }));
+    fireEvent.click(screen.getByRole("option", { name: "Active" }));
 
     await waitFor(() => {
       expect(fetch.mock.calls.at(-1)?.[0]).toContain("filter=status%3Ain%3Aactive");
@@ -153,7 +154,10 @@ describe("column select filter", () => {
 
     vi.stubGlobal("fetch", fetch);
 
-    render(<TableComponent node={node({ ...selectFilter(false), searchable: true })} />);
+    renderWithRegistry(
+      <TableComponent node={node({ ...selectFilter(false), searchable: true })} />,
+      registry,
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Status" }));
     fireEvent.click(await screen.findByRole("option", { name: "Active" }));
@@ -166,11 +170,10 @@ describe("column select filter", () => {
   it("emits a valueless clause when a clause option is chosen", async () => {
     const fetch = stubFetch();
 
-    render(<TableComponent node={node(clauseFilter())} />);
+    renderWithRegistry(<TableComponent node={node(clauseFilter())} />, registry);
 
-    fireEvent.change(screen.getByRole("combobox", { name: "Status" }), {
-      target: { value: "unset" },
-    });
+    fireEvent.click(screen.getByRole("button", { name: "Status" }));
+    fireEvent.click(screen.getByRole("option", { name: "Unset" }));
 
     await waitFor(() => {
       expect(fetch.mock.calls.at(-1)?.[0]).toContain("filter=status%3Aempty%3A");
@@ -180,11 +183,10 @@ describe("column select filter", () => {
   it("emits multiple clauses when a range clause option is chosen", async () => {
     const fetch = stubFetch();
 
-    render(<TableComponent node={node(rangeFilter())} />);
+    renderWithRegistry(<TableComponent node={node(rangeFilter())} />, registry);
 
-    fireEvent.change(screen.getByRole("combobox", { name: "Status" }), {
-      target: { value: "june-2026" },
-    });
+    fireEvent.click(screen.getByRole("button", { name: "Status" }));
+    fireEvent.click(screen.getByRole("option", { name: "June 2026" }));
 
     await waitFor(() => {
       expect(decodeURIComponent(String(fetch.mock.calls.at(-1)?.[0]))).toContain(
@@ -196,7 +198,7 @@ describe("column select filter", () => {
   it("does not render the operator popover for a select column", () => {
     stubFetch();
 
-    render(<TableComponent node={node(selectFilter(false))} />);
+    renderWithRegistry(<TableComponent node={node(selectFilter(false))} />, registry);
 
     expect(screen.queryByRole("button", { name: "Status filters" })).not.toBeInTheDocument();
   });

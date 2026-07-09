@@ -1,12 +1,30 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { FilterData } from "@lattice-php/lattice/types/generated";
+import { registry } from "@lattice-php/lattice/registry";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { FilterBar, FilterMenu } from "./filter-bar";
 
 const selectFilter: FilterData = {
   key: "status",
   label: "Status",
-  type: "select",
+  type: "filter.select",
+  schema: [
+    {
+      type: "field.select",
+      props: {
+        name: "value",
+        label: "Status",
+        options: [
+          { label: "Active", value: "active" },
+          { label: "Draft", value: "draft" },
+        ],
+        multiple: false,
+        searchable: false,
+        placeholder: null,
+      },
+    },
+  ],
   props: {
     options: [
       { label: "Active", value: "active" },
@@ -21,7 +39,8 @@ const selectFilter: FilterData = {
 const toggleFilter: FilterData = {
   key: "high_value",
   label: "High value",
-  type: "toggle",
+  type: "filter.toggle",
+  schema: [],
   props: {},
 };
 
@@ -29,16 +48,16 @@ function renderBar(props: Partial<Parameters<typeof FilterBar>[0]> = {}) {
   const onChange = vi.fn<(key: string, value: unknown) => void>();
   const onReset = vi.fn<() => void>();
 
-  render(
+  renderWithRegistry(
     <FilterBar
-      filters={[selectFilter, toggleFilter]}
-      values={{}}
+      indicators={[]}
       processing={false}
       hasActiveFilters={false}
       onChange={onChange}
       onReset={onReset}
       {...props}
     />,
+    registry,
   );
 
   return { onChange, onReset };
@@ -47,7 +66,7 @@ function renderBar(props: Partial<Parameters<typeof FilterBar>[0]> = {}) {
 function renderMenu(props: Partial<Parameters<typeof FilterMenu>[0]> = {}) {
   const onChange = vi.fn<(key: string, value: unknown) => void>();
 
-  render(
+  renderWithRegistry(
     <FilterMenu
       filters={[selectFilter, toggleFilter]}
       values={{}}
@@ -55,6 +74,7 @@ function renderMenu(props: Partial<Parameters<typeof FilterMenu>[0]> = {}) {
       onChange={onChange}
       {...props}
     />,
+    registry,
   );
 
   return { onChange };
@@ -67,11 +87,10 @@ describe("FilterBar", () => {
     expect(screen.queryByRole("combobox", { name: "Status" })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Filters" }));
-    fireEvent.change(screen.getByRole("combobox", { name: "Status" }), {
-      target: { value: "active" },
-    });
+    fireEvent.click(screen.getByRole("button", { name: "Status" }));
+    fireEvent.click(screen.getByRole("option", { name: "Active" }));
 
-    expect(onChange).toHaveBeenCalledWith("status", "active");
+    expect(onChange).toHaveBeenCalledWith("status", { value: "active" });
   });
 
   it("emits the on state when a toggle is checked", () => {
@@ -80,11 +99,14 @@ describe("FilterBar", () => {
     fireEvent.click(screen.getByRole("button", { name: "Filters" }));
     fireEvent.click(screen.getByRole("checkbox", { name: "High value" }));
 
-    expect(onChange).toHaveBeenCalledWith("high_value", "1");
+    expect(onChange).toHaveBeenCalledWith("high_value", { value: "1" });
   });
 
   it("renders an active-value chip whose remove clears the filter", () => {
-    const { onChange } = renderBar({ values: { status: "active" }, hasActiveFilters: true });
+    const { onChange } = renderBar({
+      indicators: [{ filter: "status", label: "Status", value: "Active" }],
+      hasActiveFilters: true,
+    });
 
     const remove = screen.getByRole("button", { name: "Remove Status filter" });
     expect(remove).toBeInTheDocument();
@@ -95,7 +117,10 @@ describe("FilterBar", () => {
   });
 
   it("resets all filters", () => {
-    const { onReset } = renderBar({ values: { status: "active" }, hasActiveFilters: true });
+    const { onReset } = renderBar({
+      indicators: [{ filter: "status", label: "Status", value: "Active" }],
+      hasActiveFilters: true,
+    });
 
     fireEvent.click(screen.getByRole("button", { name: "Reset all" }));
 

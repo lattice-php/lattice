@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\InvalidTableQuery;
 use Lattice\Lattice\Tables\TableQuery;
@@ -151,7 +152,7 @@ test('the products table high value filter matches by default sales price', func
     $highValue = collect($table->filters())->firstOrFail(fn ($filter): bool => $filter->key() === 'high_value');
 
     $builder = $table->builder(TableQuery::fromRequest(Request::create('/'), $table->columns(), 'workbench.products'));
-    $highValue->apply($builder, true);
+    $highValue->apply($builder, FormData::make(['value' => true]));
 
     expect($builder->pluck('products.id')->all())->toBe([$expensive->getKey()]);
 });

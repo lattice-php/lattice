@@ -10,13 +10,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Filterable;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\FilterApplier;
-use Lattice\Lattice\Tables\Filters\BaseFilter;
+use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\RelationBinding;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
@@ -34,7 +35,7 @@ final readonly class EloquentTableSource implements TableSource
     /**
      * @param  Closure(TableQuery): Builder<TModel>  $builder  produces a fresh base query per request
      * @param  array<int, Column>  $columns
-     * @param  array<int, BaseFilter>  $filters
+     * @param  array<int, Filter>  $filters
      */
     public function __construct(
         private Closure $builder,
@@ -128,13 +129,13 @@ final readonly class EloquentTableSource implements TableSource
             $this->filterApplier->apply($operator, $builder, $column->filterType(), $clause->field, $clause->value);
         }
 
-        $filters = collect($this->filters)->keyBy(fn (BaseFilter $filter): string => $filter->key());
+        $filters = collect($this->filters)->keyBy(fn (Filter $filter): string => $filter->key());
 
         foreach ($query->tableFilters as $key => $value) {
             $filter = $filters->get($key);
 
-            if ($filter instanceof BaseFilter) {
-                $filter->apply($builder, $value);
+            if ($filter instanceof Filter) {
+                $filter->apply($builder, FormData::make((array) $value));
             }
         }
 

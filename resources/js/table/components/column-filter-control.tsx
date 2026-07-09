@@ -11,11 +11,12 @@ import type {
   ColumnFilterOption,
   FilterData,
   FilterType,
+  Option,
   Op,
 } from "@lattice-php/lattice/types/generated";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../query";
 import type { FilterClause, TableColumn } from "../types";
-import { type FilterOptionSearch, TableFilterControl } from "./filter-controls";
+import { TableFilterControl } from "./filter-controls";
 import { fieldClass, FilterValueInput } from "./filter-value-input";
 
 type ColumnClause = { clause: FilterClause; index: number };
@@ -37,7 +38,7 @@ export function ColumnFilterControl({
   onUpdate: (index: number, clause: FilterClause) => void;
   onRemove: (index: number) => void;
   onReplace: (field: string, clauses: FilterClause[]) => void;
-  onSearch?: FilterOptionSearch;
+  onSearch?: (query: string, signal?: AbortSignal) => Promise<Option[]>;
 }) {
   const { t } = useT("lattice");
   const { filter, label } = column.props;
@@ -46,7 +47,7 @@ export function ColumnFilterControl({
     return null;
   }
 
-  if (filter.control === "select") {
+  if (filter.control === "filter.select") {
     return (
       <ColumnSelectFilter
         column={column}
@@ -150,7 +151,7 @@ function ColumnSelectFilter({
   clauses: ColumnClause[];
   processing: boolean;
   onReplace: (field: string, clauses: FilterClause[]) => void;
-  onSearch?: FilterOptionSearch;
+  onSearch?: (query: string, signal?: AbortSignal) => Promise<Option[]>;
 }) {
   const { filter, label } = column.props;
 
@@ -177,12 +178,26 @@ function ColumnSelectFilter({
   const data: FilterData = {
     key: column.key,
     label,
-    type: "select",
+    type: "filter.select",
+    schema: [
+      {
+        type: "field.select",
+        key: column.key,
+        props: {
+          name: "value",
+          label,
+          options: filter.options,
+          multiple,
+          searchable: filter.searchable,
+          placeholder: null,
+        },
+      },
+    ],
     props: { options: filter.options, multiple, searchable: filter.searchable, placeholder: null },
   };
 
   function change(next: unknown): void {
-    const serialized = serializeColumnValue(next);
+    const serialized = serializeColumnValue(filterValue(next).value);
 
     if (serialized === "") {
       onReplace(column.key, []);
@@ -204,12 +219,18 @@ function ColumnSelectFilter({
   return (
     <TableFilterControl
       filter={data}
-      value={value}
+      value={{ value }}
       processing={processing}
       onChange={change}
-      onSearch={onSearch}
+      onSearch={onSearch ? (_field, query, signal) => onSearch(query, signal) : undefined}
     />
   );
+}
+
+function filterValue(value: unknown): Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
 }
 
 function clausesForOption(field: string, option: ColumnFilterOption): FilterClause[] {

@@ -4,6 +4,7 @@ import { cn } from "@lattice-php/lattice/lib/utils";
 import { FormFieldFrame } from "../base/field";
 import { toBoolean } from "../conditions";
 import { useFormContext } from "../context";
+import { fieldDomName } from "../field-dom-name";
 import { useFieldScope } from "../field-scope";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
@@ -15,14 +16,14 @@ export const ToggleComponent: RendererComponent<"field.toggle"> = ({ node }) => 
   const props = node.props;
   const localName = props.name;
   const scope = useFieldScope();
-  const name = scope ? scope.scopedName(localName) : localName;
+  const { errors, fieldIdPrefix } = useFormContext();
+  const name = fieldDomName(scope ? scope.scopedName(localName) : localName, fieldIdPrefix);
   const errorKey = scope ? scope.errorKey(localName) : localName;
   const globalValue = useFormValue(localName);
   const storedValue = scope ? scope.getValue(localName) : globalValue;
   const defaultChecked = toBoolean(props.value);
   const checked = storedValue !== undefined ? toBoolean(storedValue) : defaultChecked;
   const locked = readOnly || disabled;
-  const { errors } = useFormContext();
   const { commit } = useFieldCommit();
 
   useSeedDefault(localName, defaultChecked);

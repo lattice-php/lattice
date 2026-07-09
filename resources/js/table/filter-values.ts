@@ -18,11 +18,11 @@ export function isEmptyFilterValue(value: unknown): boolean {
   }
 
   if (Array.isArray(value)) {
-    return value.length === 0;
+    return value.every(isEmptyFilterValue);
   }
 
-  if (typeof value === "object") {
-    return Object.values(value).every(isEmptyMember);
+  if (typeof value === "object" && value !== null) {
+    return Object.values(value).every(isEmptyFilterValue);
   }
 
   return false;

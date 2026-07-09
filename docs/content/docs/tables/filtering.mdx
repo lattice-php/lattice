@@ -79,7 +79,7 @@ TextColumn::make('status')->filterOptions(Status::class);
 TextColumn::make('status')->filterOptions([...], multiple: true);
 ```
 
-`filterOptions()` implies `filterable()`, sets the column's filter `control` to `select`, and
+`filterOptions()` implies `filterable()`, sets the column's filter `control` to `filter.select`, and
 restricts the offered operators to `=` / `≠` (or `in` / `not in` when `multiple`). The selected value
 rides the same column-filter clause as any other operator filter, so the data source applies it with no
 extra wiring.
@@ -134,9 +134,9 @@ logic, and isn't tied to a column. Declare them by overriding `filters()`:
 ```php
 use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Tables\Filters\DateRangeFilter;
-use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\Filters\SelectFilter;
 use Lattice\Lattice\Tables\Filters\TernaryFilter;
+use Lattice\Lattice\Tables\Filters\ToggleFilter;
 
 public function filters(): array
 {
@@ -154,7 +154,7 @@ public function filters(): array
 
         DateRangeFilter::make('created_at'),       // from / until, inclusive
 
-        Filter::make('high_value')                 // custom toggle + query
+        ToggleFilter::make('high_value')           // simple on/off query
             ->query(fn (Builder $query): Builder => $query->where('price', '>', 1000)),
     ];
 }
@@ -165,7 +165,7 @@ public function filters(): array
 | `SelectFilter`    | dropdown       | `where` (single) or `whereIn` (`->multiple()`); `->attribute()` to remap |
 | `TernaryFilter`   | yes / no / all | boolean `where`, or custom `->queries(true: …, false: …)`                |
 | `DateRangeFilter` | from / until   | inclusive `whereDate` on each provided bound                             |
-| `Filter`          | toggle         | your `->query()` closure when on                                         |
+| `ToggleFilter`    | toggle         | your `->query()` closure when on, or boolean `where` by default          |
 
 The filter dropdown opens from the icon button in the trailing header cell, where the actions heading
 would otherwise sit. Active values show as removable chips with a **Reset all** that clears every
@@ -183,13 +183,63 @@ SelectFilter::make('author')
     ->searchable();
 ```
 
+### Custom dedicated filters
+
+For anything beyond the built-ins, extend the abstract `Filter` class. A filter's `schema()` returns
+normal form fields, so field modifiers like `->rules()` are reused directly. Lattice validates those
+rules before `apply()` receives the sanitized `FormData`.
+
+```php
+use Illuminate\Database\Eloquent\Builder;
+use Lattice\Lattice\Forms\Components\NumberInput;
+use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Tables\Attributes\AsFilter;
+use Lattice\Lattice\Tables\Filters\Filter;
+
+#[AsFilter('filter.price-band')]
+final class PriceBandFilter extends Filter
+{
+    public function schema(): array
+    {
+        return [
+            NumberInput::make('min', 'Min')->rules(['numeric', 'min:0']),
+            NumberInput::make('max', 'Max')->rules(['numeric', 'min:0']),
+        ];
+    }
+
+    public function apply(Builder $builder, FormData $data): void
+    {
+        if ($data->has('min')) {
+            $builder->where('price', '>=', $data->float('min'));
+        }
+
+        if ($data->has('max')) {
+            $builder->where('price', '<=', $data->float('max'));
+        }
+    }
+
+    public function indicator(FormData $data): string|array|null
+    {
+        return null;
+    }
+}
+```
+
+Returning `null` from `indicator()` uses the default chips built from the active schema fields. Return
+a string, an array of strings, or `['Label' => $value]` pairs when you need custom indicator text. If
+`schema()` returns an empty array, the client renders the filter as a simple toggle with a `value`
+field; use `ToggleFilter` unless you need a custom subclass.
+
 ### How values reach the server
 
-Dedicated filter values post as Laravel bracket params — `tf[status]=active`, repeated
-`tf[status][]=…` for multi-select, and `tf[created][from]=…` / `[until]` for a range. They're validated
-against the declared filters, then applied by the [data source](/tables/data-sources/). A custom
-`Filter::query()` closure runs server-side with utility injection — type-hint `Builder` to receive the
-query. See [Closure evaluation](/core/closure-evaluation/) for the resolver contract.
+Dedicated filter values post as objects under the filter key: `tf[status][value]=active`,
+`tf[status][value][]=…` for multi-select, `tf[created_at][from]=…` / `[until]` for a range, and
+`tf[high_value][value]=1` for an empty-schema toggle. Unknown filter keys return a `422` response.
+Known filters whose values fail their field rules are ignored instead of being applied.
+
+After validation, the [data source](/tables/data-sources/) calls each active filter's `apply()` method.
+`ToggleFilter::query()` closures run server-side with utility injection — type-hint `Builder` to
+receive the query. See [Closure evaluation](/core/closure-evaluation/) for the resolver contract.
 
 <Info>
   Dedicated filters are independent of a column's `->filterable()`: column filters compare one column

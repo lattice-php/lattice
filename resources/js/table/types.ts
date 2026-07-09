@@ -28,8 +28,15 @@ export type FilterClause = Omit<WireFilterClause, "operator"> & {
   operator: Op;
 };
 
-export type TableState = Omit<TableQuery, "filters"> & {
+export type TableFilterIndicator = {
+  filter: string;
+  label: string;
+  value: string;
+};
+
+export type TableState = Omit<TableQuery, "filters" | "tableFilterIndicators"> & {
   filters: FilterClause[];
+  tableFilterIndicators: TableFilterIndicator[];
 };
 
 export type TableResponse = {
@@ -97,8 +104,8 @@ export type TableColumn = ColumnNode;
 
 /**
  * Consumer apps augment this via `declare module` to type their custom filters'
- * props; built-ins resolve through `FilterPropsMap`. The filter counterpart of
- * `ColumnProps`.
+ * props. Schema-based filters no longer need custom client props, but the map
+ * remains for existing custom controls during the migration.
  */
 export interface FilterProps {}
 

@@ -3,6 +3,8 @@ import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import { Checkbox } from "@lattice-php/lattice/core/components/checkbox";
 import { Label } from "../base/label";
 import { toBoolean } from "../conditions";
+import { useFormContext } from "../context";
+import { fieldDomName } from "../field-dom-name";
 import { useFieldScope } from "../field-scope";
 import { useDependentField } from "../use-dependent-field";
 import { useFieldCommit } from "../use-field-commit";
@@ -13,7 +15,8 @@ export const CheckboxComponent: RendererComponent<"field.checkbox"> = ({ node })
   const { hidden, readOnly, disabled } = useDependentField(node);
   const localName = node.props.name;
   const scope = useFieldScope();
-  const name = scope ? scope.scopedName(localName) : localName;
+  const { fieldIdPrefix } = useFormContext();
+  const name = fieldDomName(scope ? scope.scopedName(localName) : localName, fieldIdPrefix);
   const globalValue = useFormValue(localName);
   const storedValue = scope ? scope.getValue(localName) : globalValue;
   const { commit } = useFieldCommit();

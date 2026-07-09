@@ -41,35 +41,9 @@ export function buildEndpoint(endpoint: string, state: TableState): string {
   return `${url.pathname}${url.search}`;
 }
 
-/**
- * Serialize the dedicated table filters as Laravel-native bracket params:
- * `tf[key]=v`, repeated `tf[key][]=v` for multi-value, and `tf[key][sub]=v`
- * for structured values (e.g. a date range's from/until). Empty values are
- * dropped so an unset filter never reaches the server.
- */
 function appendTableFilters(url: URL, tableFilters: Record<string, unknown>): void {
   for (const [key, value] of Object.entries(getTableFilterParams(tableFilters))) {
-    if (typeof value === "string") {
-      url.searchParams.set(`tf[${key}]`, value);
-
-      continue;
-    }
-
-    if (Array.isArray(value)) {
-      for (const item of value) {
-        if (!isEmptyMember(item)) {
-          url.searchParams.append(`tf[${key}][]`, String(item));
-        }
-      }
-
-      continue;
-    }
-
-    if (typeof value === "object" && value !== null) {
-      for (const [subKey, subValue] of Object.entries(value as Record<string, unknown>)) {
-        url.searchParams.set(`tf[${key}][${subKey}]`, String(subValue));
-      }
-    }
+    appendTableFilterParam(url, `tf[${key}]`, value);
   }
 }
 
@@ -88,29 +62,61 @@ function getTableFilterParams(tableFilters: Record<string, unknown>): Record<str
 }
 
 function normalizeTableFilterValue(value: unknown): unknown | undefined {
+  if (isEmptyMember(value) || Array.isArray(value) || typeof value !== "object") {
+    return undefined;
+  }
+
+  const entries = Object.entries(value)
+    .map(([subKey, subValue]) => [subKey, normalizeTableFilterMember(subValue)] as const)
+    .filter((entry): entry is readonly [string, unknown] => entry[1] !== undefined);
+
+  return entries.length > 0 ? Object.fromEntries(entries) : undefined;
+}
+
+function normalizeTableFilterMember(value: unknown): unknown | undefined {
   if (isEmptyMember(value)) {
     return undefined;
   }
 
-  if (typeof value === "string") {
-    return value;
-  }
-
   if (Array.isArray(value)) {
-    const items = value.filter((item) => !isEmptyMember(item)).map(String);
+    const values = value.map(normalizeTableFilterMember).filter((item) => item !== undefined);
 
-    return items.length > 0 ? items : undefined;
+    return values.length > 0 ? values : undefined;
   }
 
   if (typeof value === "object") {
+    if (value === null) {
+      return undefined;
+    }
+
     const entries = Object.entries(value)
-      .filter(([, subValue]) => !isEmptyMember(subValue))
-      .map(([subKey, subValue]) => [subKey, String(subValue)]);
+      .map(([key, item]) => [key, normalizeTableFilterMember(item)] as const)
+      .filter((entry): entry is readonly [string, unknown] => entry[1] !== undefined);
 
     return entries.length > 0 ? Object.fromEntries(entries) : undefined;
   }
 
   return String(value);
+}
+
+function appendTableFilterParam(url: URL, key: string, value: unknown): void {
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      appendTableFilterParam(url, `${key}[]`, item);
+    }
+
+    return;
+  }
+
+  if (typeof value === "object" && value !== null) {
+    for (const [subKey, subValue] of Object.entries(value)) {
+      appendTableFilterParam(url, `${key}[${subKey}]`, subValue);
+    }
+
+    return;
+  }
+
+  url.searchParams.append(key, String(value));
 }
 
 export function getQueryParams(state: TableState): Record<string, unknown> {

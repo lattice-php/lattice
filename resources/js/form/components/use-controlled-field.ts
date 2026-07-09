@@ -4,6 +4,7 @@ import type { FieldState } from "./conditions";
 import { fieldProps } from "./field-props";
 import { useFieldScope } from "./field-scope";
 import { useFormContext } from "./context";
+import { fieldDomName } from "./field-dom-name";
 import { useDependentField } from "./use-dependent-field";
 import { useFieldCommit } from "./use-field-commit";
 import { useFormValue } from "./values";
@@ -20,7 +21,7 @@ export type ControlledField = FieldState & {
 };
 
 export function useControlledField(node: Node): ControlledField {
-  const { errors } = useFormContext();
+  const { errors, fieldIdPrefix } = useFormContext();
   const scope = useFieldScope();
   const state = useDependentField(node);
   const props = fieldProps(node);
@@ -34,7 +35,7 @@ export function useControlledField(node: Node): ControlledField {
       ? String(currentValue)
       : "";
 
-  const domName = scope ? scope.scopedName(localName) : localName;
+  const domName = fieldDomName(scope ? scope.scopedName(localName) : localName, fieldIdPrefix);
   const errorKey = scope ? scope.errorKey(localName) : localName;
 
   const { commit: commitField, change: changeField, blur: blurField } = useFieldCommit();

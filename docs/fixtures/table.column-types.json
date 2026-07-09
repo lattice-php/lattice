@@ -122,6 +122,7 @@
                 "page": 1,
                 "perPage": 25,
                 "sorts": [],
+                "tableFilterIndicators": [],
                 "tableFilters": {}
             },
             "striped": false

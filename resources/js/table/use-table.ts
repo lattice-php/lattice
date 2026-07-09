@@ -102,37 +102,51 @@ export function useTable(node: TableNode) {
   function setTableFilter(key: string, value: unknown): void {
     const next = { ...state.tableFilters };
 
-    if (isEmptyFilterValue(value)) {
+    if (isEmptyFilterValue(value) || !isFilterValue(value)) {
       delete next[key];
     } else {
       next[key] = value;
     }
 
-    const nextState = { ...state, tableFilters: next, page: 1 };
+    const nextState = {
+      ...state,
+      tableFilters: next,
+      tableFilterIndicators: state.tableFilterIndicators.filter(
+        (indicator) => indicator.filter !== key,
+      ),
+      page: 1,
+    };
 
     setState(nextState);
     void load(nextState);
   }
 
   function resetFilters(): void {
-    const nextState = { ...state, filters: [], tableFilters: {}, page: 1 };
+    const nextState = {
+      ...state,
+      filters: [],
+      tableFilters: {},
+      tableFilterIndicators: [],
+      page: 1,
+    };
 
     setState(nextState);
     void load(nextState);
   }
 
   const searchFilterOptions = useCallback(
-    async (filterKey: string, query: string): Promise<Option[]> => {
+    async (searchKey: string, query: string, signal?: AbortSignal): Promise<Option[]> => {
       if (!endpoint) {
         return [];
       }
 
       const url = new URL(endpoint, window.location.origin);
-      url.searchParams.set("_search", filterKey);
+      url.searchParams.set("_search", searchKey);
       url.searchParams.set("q", query);
 
       const response = await apiFetch(`${url.pathname}${url.search}`, {
         ref: componentRef,
+        signal,
         throwOnError: false,
       });
 
@@ -249,4 +263,8 @@ export function useTable(node: TableNode) {
     goToPage,
     loadMore,
   };
+}
+
+function isFilterValue(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
 }

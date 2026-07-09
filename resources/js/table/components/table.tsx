@@ -141,8 +141,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
       >
         {hasDedicatedFilters && hasActiveFilters && (
           <FilterBar
-            filters={filterDefinitions}
-            values={tableFilters}
+            indicators={state.tableFilterIndicators}
             processing={processing}
             hasActiveFilters={hasActiveFilters}
             onChange={setTableFilter}
@@ -262,7 +261,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                         onUpdate={updateFilter}
                         onRemove={removeFilter}
                         onReplace={replaceColumnFilters}
-                        onSearch={(query) => searchFilterOptions(column.key, query)}
+                        onSearch={(query, signal) => searchFilterOptions(column.key, query, signal)}
                       />
                     )}
                   </div>
