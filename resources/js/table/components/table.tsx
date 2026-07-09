@@ -92,7 +92,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   const hasNextPage = pagination.hasMore ?? currentPage < lastPage;
   const hasActions = rowEntries.some((entry) => entry.actions.length > 0);
   const striped = node.props?.striped === true;
-  const hasFilters = visibleColumns.some((column) => column.filter?.enabled);
+  const hasFilters = visibleColumns.some((column) => column.props.filter?.enabled);
   const filterEntries = filters.map((clause, index) => ({ clause, index }));
   const filterDefinitions = useMemo(
     () => (Array.isArray(node.props?.filters) ? node.props.filters : []),
@@ -253,7 +253,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                 {hasBulkActions && <div className="px-4 py-2" role="cell" />}
                 {visibleColumns.map((column) => (
                   <div key={column.key} className="min-w-0 px-2 py-2" role="cell">
-                    {column.filter?.enabled && (
+                    {column.props.filter?.enabled && (
                       <ColumnFilterControl
                         column={column}
                         clauses={filterEntries.filter((entry) => entry.clause.field === column.key)}
@@ -308,8 +308,8 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                         data-slot="table-cell"
                         className={cn(
                           "grid min-w-0 gap-1 overflow-hidden px-lt-cell-x py-lt-cell-y align-middle",
-                          alignText(column.align),
-                          alignJustifyItems(column.align),
+                          alignText(column.props.align),
+                          alignJustifyItems(column.props.align),
                         )}
                         role="cell"
                       >
@@ -317,7 +317,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                           aria-hidden="true"
                           className="text-xs font-medium text-lt-muted-fg md:hidden"
                         >
-                          {column.label}
+                          {column.props.label}
                         </span>
                         <div
                           data-slot="table-cell-content"

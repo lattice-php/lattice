@@ -220,19 +220,6 @@ export type Collapsible = {
 };
 export type Color = "default" | "muted" | "primary" | "success" | "info" | "warning" | "danger";
 export type ColumnAlign = "start" | "center" | "end";
-export type ColumnData = {
-  readonly key: string;
-  readonly label: string;
-  readonly type: ColumnType | string;
-  readonly width: ColumnWidth;
-  readonly align: ColumnAlign;
-  readonly sortable: boolean | null;
-  readonly toggleable: boolean | null;
-  readonly hiddenByDefault: boolean | null;
-  readonly filter: ColumnFilter | null;
-  readonly columns: ColumnData[] | null;
-  readonly props: Record<string, unknown>;
-};
 export type ColumnFilter = {
   readonly enabled: boolean;
   readonly type: FilterType;
@@ -260,6 +247,7 @@ export type ColumnPropsMap = {
   "column.image": ImageColumn;
   "column.money": MoneyColumn;
   "column.number": NumberColumn;
+  "column.stack": StackColumn;
   "column.text": TextColumn;
 };
 export type ColumnType =
@@ -1062,6 +1050,7 @@ export type Stack = {
   justify: Justify | null;
   width: Width | null;
 };
+export type StackColumn = Record<string, never>;
 export type Tab = {
   confirm: {
     required: boolean;
@@ -1074,7 +1063,7 @@ export type Tab = {
 export type Table = {
   actionsLabel: string;
   bulkActions: WireNode[];
-  columns: ColumnData[];
+  columns: Record<string, unknown>[];
   emptyLabel: string;
   endpoint: string | null;
   filters: FilterData[];

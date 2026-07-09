@@ -6,82 +6,78 @@
             "bulkActions": [],
             "columns": [
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "name",
-                    "label": "Name",
                     "props": {
+                        "align": "start",
                         "badge": null,
                         "copyable": false,
                         "date": null,
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Name",
                         "link": null,
-                        "multiple": null
+                        "multiple": null,
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.text",
-                    "width": "md"
+                    "type": "column.text"
                 },
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "sku",
-                    "label": "SKU",
                     "props": {
+                        "align": "start",
                         "badge": null,
                         "copyable": false,
                         "date": null,
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "SKU",
                         "link": null,
-                        "multiple": null
+                        "multiple": null,
+                        "sortable": null,
+                        "toggleable": true,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": true,
-                    "type": "column.text",
-                    "width": "md"
+                    "type": "column.text"
                 },
                 {
-                    "align": "end",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "price",
-                    "label": "Price",
                     "props": {
+                        "align": "end",
                         "compact": false,
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Price",
                         "maximumFractionDigits": null,
                         "minimumFractionDigits": null,
-                        "unit": null
+                        "sortable": null,
+                        "toggleable": true,
+                        "unit": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": true,
-                    "type": "column.number",
-                    "width": "md"
+                    "type": "column.number"
                 },
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": true,
                     "key": "updated_at",
-                    "label": "Updated",
                     "props": {
+                        "align": "start",
                         "badge": null,
                         "copyable": false,
                         "date": {
                             "dateStyle": "medium",
                             "timeStyle": "medium"
                         },
+                        "filter": null,
+                        "hiddenByDefault": true,
+                        "label": "Updated",
                         "link": null,
-                        "multiple": null
+                        "multiple": null,
+                        "sortable": null,
+                        "toggleable": true,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": true,
-                    "type": "column.text",
-                    "width": "md"
+                    "type": "column.text"
                 }
             ],
             "data": [

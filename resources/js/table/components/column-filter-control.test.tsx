@@ -22,16 +22,16 @@ function textFilter(overrides: Partial<ColumnFilter> = {}): ColumnFilter {
 function col(filter: ColumnFilter | null): TableColumn {
   return {
     key: "name",
-    label: "Name",
     type: "column.text",
-    width: "md",
-    sortable: null,
-    toggleable: null,
-    hiddenByDefault: null,
-    filter,
-    columns: null,
-    props: {},
-    align: "start",
+    props: {
+      label: "Name",
+      width: "md",
+      align: "start",
+      sortable: null,
+      toggleable: null,
+      hiddenByDefault: null,
+      filter,
+    },
   };
 }
 

@@ -1,10 +1,11 @@
 import type { NodeUnionOf, ResolveProps } from "@lattice-php/lattice/core/types";
 import type {
   ActionNodeType,
-  ColumnData,
+  ColumnAlign,
   ColumnFilter,
   ColumnPropsMap,
   ColumnType,
+  ColumnWidth,
   FilterClause as WireFilterClause,
   FilterPropsMap,
   Op,
@@ -14,11 +15,9 @@ import type {
   TableSort,
 } from "@lattice-php/lattice/types/generated";
 
-export type { ColumnData, ColumnFilter, ColumnType, TablePagination, TableSort };
+export type { ColumnFilter, ColumnType, TablePagination, TableSort };
 
 export type ActionNode = NodeUnionOf<ActionNodeType>;
-
-export type TableColumn = ColumnData;
 
 export type TableRow = Record<string, unknown>;
 
@@ -42,8 +41,9 @@ export type TableResponse = {
 };
 
 /** The generated wire props plus the rows/pagination/state the server hydrates on for the first render. */
-export type TableNodeProps = Partial<Omit<Table, "bulkActions">> & {
+export type TableNodeProps = Partial<Omit<Table, "bulkActions" | "columns">> & {
   bulkActions?: ActionNode[];
+  columns?: ColumnNode[];
   data?: TableRow[];
   pagination?: TablePagination;
   state?: Partial<TableState>;
@@ -63,12 +63,41 @@ export type TableNode = {
  */
 export interface ColumnProps {}
 
+/**
+ * Mirrors `CommonNodeProps`: the concerns `Column::decorateProps` injects into
+ * every column's `props` on the wire, regardless of type.
+ */
+export type CommonColumnProps = {
+  label: string;
+  width: ColumnWidth;
+  align: ColumnAlign;
+  sortable: boolean | null;
+  toggleable: boolean | null;
+  hiddenByDefault: boolean | null;
+  filter: ColumnFilter | null;
+  columns?: ColumnNode[];
+};
+
 export type ColumnPropsOf<TType extends string> = ResolveProps<
   ColumnProps,
   ColumnPropsMap,
   TType,
-  Record<string, unknown> | undefined
->;
+  Record<string, unknown>
+> &
+  CommonColumnProps;
+
+/**
+ * A column node, authored and consumed like a field/component: `key`/`type`
+ * stay top-level, every common concern (`label`/`width`/`filter`/…) lives in
+ * `props` via `CommonColumnProps`. The column counterpart of `NodeOfType`.
+ */
+export type ColumnNode<TType extends string = string> = {
+  type: TType;
+  key: string;
+  props: ColumnPropsOf<TType>;
+};
+
+export type TableColumn = ColumnNode;
 
 /**
  * Consumer apps augment this via `declare module` to type their custom filters'

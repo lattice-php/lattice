@@ -116,14 +116,7 @@ final readonly class TableAssertions
      */
     private function filterFor(string $key): ?array
     {
-        $column = $this->columnFor($key);
-        $filter = $column['filter'] ?? null;
-
-        if (is_array($filter) && ($filter['enabled'] ?? false) === true) {
-            return $filter;
-        }
-
-        return null;
+        return $this->filterOf($this->columnFor($key));
     }
 
     /**
@@ -134,13 +127,27 @@ final readonly class TableAssertions
         $keys = [];
 
         foreach ($this->columns() as $column) {
-            $filter = $column['filter'] ?? null;
-
-            if (is_array($filter) && ($filter['enabled'] ?? false) === true) {
+            if ($this->filterOf($column) !== null) {
                 $keys[] = (string) ($column['key'] ?? '?');
             }
         }
 
         return $keys;
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $column
+     * @return array<string, mixed>|null
+     */
+    private function filterOf(?array $column): ?array
+    {
+        $props = is_array($column['props'] ?? null) ? $column['props'] : [];
+        $filter = $props['filter'] ?? null;
+
+        if (is_array($filter) && ($filter['enabled'] ?? false) === true) {
+            return $filter;
+        }
+
+        return null;
     }
 }

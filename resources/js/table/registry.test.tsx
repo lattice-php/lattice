@@ -1,25 +1,34 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { ColumnData } from "@lattice-php/lattice/types/generated";
+import type { TableColumn } from "./types";
 import { Provider } from "../provider";
 import { createPlugin, createRegistry } from "../core/registry";
 import { ColumnCell } from "./components/table-cell";
 
-function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
-  const type = partial.type ?? "column.text";
+function col(partial: {
+  key: string;
+  label: string;
+  type?: string;
+  columns?: TableColumn[];
+  props?: Record<string, unknown>;
+}): TableColumn {
+  const { key, label, type = "column.text", columns, props } = partial;
 
   return {
+    key,
     type,
-    width: type === "column.stack" ? "xl" : "md",
-    sortable: null,
-    toggleable: null,
-    hiddenByDefault: null,
-    filter: null,
-    columns: null,
-    props: {},
-    align: "start",
-    ...partial,
-  };
+    props: {
+      label,
+      width: type === "column.stack" ? "xl" : "md",
+      align: "start",
+      sortable: null,
+      toggleable: null,
+      hiddenByDefault: null,
+      filter: null,
+      ...(columns ? { columns } : {}),
+      ...props,
+    },
+  } as TableColumn;
 }
 
 const clipboardDescriptor = Object.getOwnPropertyDescriptor(navigator, "clipboard");
@@ -155,7 +164,7 @@ describe("column registry", () => {
     expect(screen.getByText("custom-stack")).toBeVisible();
   });
 
-  function renderCell(column: ColumnData, row: Record<string, unknown>) {
+  function renderCell(column: TableColumn, row: Record<string, unknown>) {
     return render(
       <Provider registry={createRegistry()}>
         <table>

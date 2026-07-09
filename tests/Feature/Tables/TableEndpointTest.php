@@ -50,62 +50,77 @@ test('registered tables serialize their configured endpoint columns state and in
                 'columns' => [
                     [
                         'key' => 'name',
-                        'label' => 'Name',
                         'type' => 'column.text',
-                        'sortable' => true,
-                        'toggleable' => null,
-                        'hiddenByDefault' => null,
-                        'filter' => [
-                            'enabled' => true,
-                            'type' => 'text',
-                            'operators' => ['contains', 'starts_with', 'ends_with', 'eq', 'neq', 'empty', 'filled'],
-                            'defaultOperator' => 'contains',
-                            'control' => null,
-                            'options' => [],
-                            'clauseOptions' => [],
-                            'multiple' => false,
-                            'searchable' => false,
+                        'props' => [
+                            'label' => 'Name',
+                            'sortable' => true,
+                            'toggleable' => null,
+                            'hiddenByDefault' => null,
+                            'filter' => [
+                                'enabled' => true,
+                                'type' => 'text',
+                                'operators' => ['contains', 'starts_with', 'ends_with', 'eq', 'neq', 'empty', 'filled'],
+                                'defaultOperator' => 'contains',
+                                'control' => null,
+                                'options' => [],
+                                'clauseOptions' => [],
+                                'multiple' => false,
+                                'searchable' => false,
+                            ],
+                            'date' => null,
+                            'copyable' => false,
+                            'link' => null,
+                            'badge' => null,
+                            'multiple' => null,
+                            'width' => 'md',
+                            'align' => 'start',
                         ],
-                        'columns' => null,
-                        'props' => ['date' => null, 'copyable' => false, 'link' => null, 'badge' => null, 'multiple' => null],
-                        'width' => 'md',
-                        'align' => 'start',
                     ],
                     [
                         'key' => 'status',
-                        'label' => 'Status',
                         'type' => 'column.text',
-                        'sortable' => null,
-                        'toggleable' => null,
-                        'hiddenByDefault' => null,
-                        'filter' => [
-                            'enabled' => true,
-                            'type' => 'text',
-                            'operators' => ['contains', 'starts_with', 'ends_with', 'eq', 'neq', 'empty', 'filled'],
-                            'defaultOperator' => 'eq',
-                            'control' => null,
-                            'options' => [],
-                            'clauseOptions' => [],
-                            'multiple' => false,
-                            'searchable' => false,
+                        'props' => [
+                            'label' => 'Status',
+                            'sortable' => null,
+                            'toggleable' => null,
+                            'hiddenByDefault' => null,
+                            'filter' => [
+                                'enabled' => true,
+                                'type' => 'text',
+                                'operators' => ['contains', 'starts_with', 'ends_with', 'eq', 'neq', 'empty', 'filled'],
+                                'defaultOperator' => 'eq',
+                                'control' => null,
+                                'options' => [],
+                                'clauseOptions' => [],
+                                'multiple' => false,
+                                'searchable' => false,
+                            ],
+                            'date' => null,
+                            'copyable' => false,
+                            'link' => null,
+                            'badge' => null,
+                            'multiple' => null,
+                            'width' => 'md',
+                            'align' => 'start',
                         ],
-                        'columns' => null,
-                        'props' => ['date' => null, 'copyable' => false, 'link' => null, 'badge' => null, 'multiple' => null],
-                        'width' => 'md',
-                        'align' => 'start',
                     ],
                     [
                         'key' => 'email',
-                        'label' => 'Email',
                         'type' => 'column.text',
-                        'sortable' => true,
-                        'toggleable' => null,
-                        'hiddenByDefault' => null,
-                        'filter' => null,
-                        'columns' => null,
-                        'props' => ['date' => null, 'copyable' => false, 'link' => null, 'badge' => null, 'multiple' => null],
-                        'width' => 'md',
-                        'align' => 'start',
+                        'props' => [
+                            'label' => 'Email',
+                            'sortable' => true,
+                            'toggleable' => null,
+                            'hiddenByDefault' => null,
+                            'filter' => null,
+                            'date' => null,
+                            'copyable' => false,
+                            'link' => null,
+                            'badge' => null,
+                            'multiple' => null,
+                            'width' => 'md',
+                            'align' => 'start',
+                        ],
                     ],
                 ],
                 'data' => [
@@ -151,16 +166,21 @@ test('registered tables can serialize lazily without running their query', funct
                 'columns' => [
                     [
                         'key' => 'name',
-                        'label' => 'Name',
                         'type' => 'column.text',
-                        'sortable' => null,
-                        'toggleable' => null,
-                        'hiddenByDefault' => null,
-                        'filter' => null,
-                        'columns' => null,
-                        'props' => ['date' => null, 'copyable' => false, 'link' => null, 'badge' => null, 'multiple' => null],
-                        'width' => 'md',
-                        'align' => 'start',
+                        'props' => [
+                            'label' => 'Name',
+                            'sortable' => null,
+                            'toggleable' => null,
+                            'hiddenByDefault' => null,
+                            'filter' => null,
+                            'date' => null,
+                            'copyable' => false,
+                            'link' => null,
+                            'badge' => null,
+                            'multiple' => null,
+                            'width' => 'md',
+                            'align' => 'start',
+                        ],
                     ],
                 ],
                 'data' => [],
@@ -201,56 +221,72 @@ test('registered tables serialize grid layout stack columns and row actions', fu
         ->and($table['props']['columns'])->toMatchArray([
             [
                 'key' => 'identity',
-                'label' => 'Identity',
                 'type' => 'column.stack',
-                'sortable' => null,
-                'toggleable' => null,
-                'hiddenByDefault' => null,
-                'filter' => null,
-                'columns' => [
-                    [
-                        'key' => 'name',
-                        'label' => 'Name',
-                        'type' => 'column.text',
-                        'sortable' => true,
-                        'toggleable' => null,
-                        'hiddenByDefault' => null,
-                        'filter' => null,
-                        'columns' => null,
-                        'props' => ['date' => null, 'copyable' => false, 'link' => null, 'badge' => null, 'multiple' => null],
-                        'width' => 'md',
-                        'align' => 'start',
-                    ],
-                    [
-                        'key' => 'email',
-                        'label' => 'Email',
-                        'type' => 'column.text',
-                        'sortable' => null,
-                        'toggleable' => null,
-                        'hiddenByDefault' => null,
-                        'filter' => null,
-                        'columns' => null,
-                        'props' => ['date' => null, 'copyable' => false, 'link' => null, 'badge' => null, 'multiple' => null],
-                        'width' => 'md',
-                        'align' => 'start',
+                'props' => [
+                    'label' => 'Identity',
+                    'sortable' => null,
+                    'toggleable' => null,
+                    'hiddenByDefault' => null,
+                    'filter' => null,
+                    'width' => 'xl',
+                    'align' => 'start',
+                    'columns' => [
+                        [
+                            'key' => 'name',
+                            'type' => 'column.text',
+                            'props' => [
+                                'label' => 'Name',
+                                'sortable' => true,
+                                'toggleable' => null,
+                                'hiddenByDefault' => null,
+                                'filter' => null,
+                                'date' => null,
+                                'copyable' => false,
+                                'link' => null,
+                                'badge' => null,
+                                'multiple' => null,
+                                'width' => 'md',
+                                'align' => 'start',
+                            ],
+                        ],
+                        [
+                            'key' => 'email',
+                            'type' => 'column.text',
+                            'props' => [
+                                'label' => 'Email',
+                                'sortable' => null,
+                                'toggleable' => null,
+                                'hiddenByDefault' => null,
+                                'filter' => null,
+                                'date' => null,
+                                'copyable' => false,
+                                'link' => null,
+                                'badge' => null,
+                                'multiple' => null,
+                                'width' => 'md',
+                                'align' => 'start',
+                            ],
+                        ],
                     ],
                 ],
-                'props' => [],
-                'width' => 'xl',
-                'align' => 'start',
             ],
             [
                 'key' => 'status',
-                'label' => 'Status',
                 'type' => 'column.text',
-                'sortable' => null,
-                'toggleable' => null,
-                'hiddenByDefault' => null,
-                'filter' => null,
-                'columns' => null,
-                'props' => ['date' => null, 'copyable' => false, 'link' => null, 'badge' => null, 'multiple' => null],
-                'width' => 'md',
-                'align' => 'start',
+                'props' => [
+                    'label' => 'Status',
+                    'sortable' => null,
+                    'toggleable' => null,
+                    'hiddenByDefault' => null,
+                    'filter' => null,
+                    'date' => null,
+                    'copyable' => false,
+                    'link' => null,
+                    'badge' => null,
+                    'multiple' => null,
+                    'width' => 'md',
+                    'align' => 'start',
+                ],
             ],
         ])
         ->and($table['props']['data'][0]['actions'][0])->toMatchArray([
@@ -391,23 +427,25 @@ test('a hidden column referenced by a visible badge column is still pruned from 
 });
 
 test('text columns serialize display modifiers', function (): void {
-    expect(wire(TextColumn::make('published_at')
+    $wire = wire(TextColumn::make('published_at')
         ->label('Published')
         ->dateTime()
         ->copyable()
-        ->link('/posts/{id}')))
-        ->toMatchArray([
-            'key' => 'published_at',
-            'label' => 'Published',
-            'type' => 'column.text',
-            'props' => [
-                'date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'],
-                'copyable' => true,
-                'link' => ['href' => '/posts/{id}', 'external' => false],
-                'badge' => null,
-                'multiple' => null,
-            ],
-        ]);
+        ->link('/posts/{id}'));
+
+    expect($wire)->toMatchArray([
+        'key' => 'published_at',
+        'type' => 'column.text',
+    ]);
+
+    expect($wire['props'])->toMatchArray([
+        'label' => 'Published',
+        'date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'],
+        'copyable' => true,
+        'link' => ['href' => '/posts/{id}', 'external' => false],
+        'badge' => null,
+        'multiple' => null,
+    ]);
 });
 
 test('workbench users table exposes timestamp columns for each row', function (): void {
@@ -416,17 +454,25 @@ test('workbench users table exposes timestamp columns for each row', function ()
     $columns = wire(Table::use(WorkbenchAppUsersTable::class))['props']['columns'];
 
     expect(array_column($columns, 'key'))->toBe(['name', 'email', 'created_at', 'updated_at'])
-        ->and($columns[2])->toMatchArray([
-            'key' => 'created_at',
+        ->and($columns[2])->toMatchArray(['key' => 'created_at'])
+        ->and($columns[2]['props'])->toMatchArray([
             'label' => 'Created at',
             'sortable' => true,
-            'props' => ['date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'], 'copyable' => false, 'link' => null, 'badge' => null, 'multiple' => null],
+            'date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'],
+            'copyable' => false,
+            'link' => null,
+            'badge' => null,
+            'multiple' => null,
         ])
-        ->and($columns[3])->toMatchArray([
-            'key' => 'updated_at',
+        ->and($columns[3])->toMatchArray(['key' => 'updated_at'])
+        ->and($columns[3]['props'])->toMatchArray([
             'label' => 'Updated at',
             'sortable' => true,
-            'props' => ['date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'], 'copyable' => false, 'link' => null, 'badge' => null, 'multiple' => null],
+            'date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'],
+            'copyable' => false,
+            'link' => null,
+            'badge' => null,
+            'multiple' => null,
         ]);
 });
 

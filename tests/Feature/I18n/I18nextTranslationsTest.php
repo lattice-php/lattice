@@ -104,11 +104,11 @@ it('localizes workbench page props and table column labels from the accept langu
         ->component('stack', 'products-header', fn ($header) => $header
             ->component('heading', tap: fn ($heading) => $heading->assertProp('text', 'Produkte')))
         ->component('table', 'workbench.products', fn ($table) => $table->assertProps([
-            'columns.0.label' => 'Bild',
-            'columns.3.label' => 'Standardpreis',
-            'columns.5.label' => 'Hervorgehoben',
-            'columns.6.label' => 'Schlagwörter',
-            'columns.7.label' => 'Aktualisiert am',
+            'columns.0.props.label' => 'Bild',
+            'columns.3.props.label' => 'Standardpreis',
+            'columns.5.props.label' => 'Hervorgehoben',
+            'columns.6.props.label' => 'Schlagwörter',
+            'columns.7.props.label' => 'Aktualisiert am',
         ]));
 });
 

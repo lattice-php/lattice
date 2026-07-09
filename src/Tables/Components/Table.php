@@ -10,7 +10,6 @@ use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Filters\BaseFilter;
 use Lattice\Lattice\Tables\Filters\FilterData;
 use Lattice\Lattice\Tables\TableDefinition;
@@ -27,7 +26,7 @@ class Table extends Component
     public ?string $endpoint = null;
 
     /**
-     * @var array<int, ColumnData>
+     * @var array<int, array<string, mixed>>
      */
     public array $columns = [];
 
@@ -106,8 +105,8 @@ class Table extends Component
     public function columns(array $columns): static
     {
         $this->columns = array_map(
-            fn (Column $column): ColumnData => $column->toData(),
-            $this->renderableComponents($columns),
+            fn (Column $column): array => $column->jsonSerialize(),
+            array_values($this->renderableComponents($columns)),
         );
 
         return $this;

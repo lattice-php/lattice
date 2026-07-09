@@ -6,7 +6,7 @@ use Lattice\Lattice\Tables\Columns\BooleanColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 
 it('reflects a column\'s public properties into the full props shape', function (): void {
-    expect(wire(TextColumn::make('name'))['props'])->toBe([
+    expect(wire(TextColumn::make('name'))['props'])->toMatchArray([
         'date' => null,
         'link' => null,
         'badge' => null,
@@ -18,7 +18,7 @@ it('reflects a column\'s public properties into the full props shape', function 
         TextColumn::make('tags')->dateTime()->copyable()->link('/x', external: true)->badge('color')->multiple('name'),
     );
 
-    expect($configured['props'])->toBe([
+    expect($configured['props'])->toMatchArray([
         'date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'],
         'link' => ['href' => '/x', 'external' => true],
         'badge' => ['colorKey' => 'color'],
@@ -38,14 +38,24 @@ it('maps each date style method to its dateStyle/timeStyle shape', function (): 
         ->toBe(['dateStyle' => 'long', 'timeStyle' => 'long']);
 });
 
-it('serializes an empty props array for columns that expose no public properties', function (): void {
-    expect(wire(BooleanColumn::make('active'))['props'])->toBe([]);
+it('reflects only the common concerns for columns that expose no public properties', function (): void {
+    expect(wire(BooleanColumn::make('active'))['props'])->toBe([
+        'label' => 'Active',
+        'width' => 'md',
+        'align' => 'start',
+        'sortable' => null,
+        'toggleable' => null,
+        'hiddenByDefault' => null,
+        'filter' => null,
+    ]);
 });
 
 it('keeps protected filter and sort state off the wire props', function (): void {
     $props = wire(TextColumn::make('name')->sortable()->filterable())['props'];
 
-    expect($props)->toBe([
+    expect($props)->not->toHaveKeys(['filterable', 'defaultOperator', 'operators', 'filterControl']);
+
+    expect($props)->toMatchArray([
         'date' => null,
         'link' => null,
         'badge' => null,

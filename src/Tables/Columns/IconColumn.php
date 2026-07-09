@@ -56,6 +56,8 @@ class IconColumn extends Column
     #[\Override]
     protected function decorateProps(array $props): array
     {
+        $props = parent::decorateProps($props);
+
         foreach (['colors', 'icons'] as $key) {
             if (is_array($props[$key] ?? null)) {
                 $props[$key] = Wire::map($props[$key]);

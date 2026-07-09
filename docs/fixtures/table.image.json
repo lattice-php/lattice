@@ -6,58 +6,55 @@
             "bulkActions": [],
             "columns": [
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "avatar",
-                    "label": "",
                     "props": {
+                        "align": "start",
                         "circular": true,
-                        "size": 32
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "",
+                        "size": 32,
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.image",
-                    "width": "md"
+                    "type": "column.image"
                 },
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "name",
-                    "label": "Name",
                     "props": {
+                        "align": "start",
                         "badge": null,
                         "copyable": false,
                         "date": null,
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Name",
                         "link": null,
-                        "multiple": null
+                        "multiple": null,
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.text",
-                    "width": "md"
+                    "type": "column.text"
                 },
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "role",
-                    "label": "Role",
                     "props": {
+                        "align": "start",
                         "badge": null,
                         "copyable": false,
                         "date": null,
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Role",
                         "link": null,
-                        "multiple": null
+                        "multiple": null,
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.text",
-                    "width": "md"
+                    "type": "column.text"
                 }
             ],
             "data": [

@@ -6,63 +6,62 @@
             "bulkActions": [],
             "columns": [
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "name",
-                    "label": "Name",
                     "props": {
+                        "align": "start",
                         "badge": null,
                         "copyable": false,
                         "date": null,
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Name",
                         "link": null,
-                        "multiple": null
+                        "multiple": null,
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.text",
-                    "width": "md"
+                    "type": "column.text"
                 },
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": {
-                        "clauseOptions": [],
-                        "control": null,
-                        "defaultOperator": "eq",
-                        "enabled": true,
-                        "multiple": false,
-                        "operators": [
-                            "eq",
-                            "empty",
-                            "filled"
-                        ],
-                        "options": [],
-                        "searchable": false,
-                        "type": "boolean"
-                    },
-                    "hiddenByDefault": null,
                     "key": "featured",
-                    "label": "Featured",
-                    "props": {},
-                    "sortable": true,
-                    "toggleable": null,
-                    "type": "column.boolean",
-                    "width": "md"
+                    "props": {
+                        "align": "start",
+                        "filter": {
+                            "clauseOptions": [],
+                            "control": null,
+                            "defaultOperator": "eq",
+                            "enabled": true,
+                            "multiple": false,
+                            "operators": [
+                                "eq",
+                                "empty",
+                                "filled"
+                            ],
+                            "options": [],
+                            "searchable": false,
+                            "type": "boolean"
+                        },
+                        "hiddenByDefault": null,
+                        "label": "Featured",
+                        "sortable": true,
+                        "toggleable": null,
+                        "width": "md"
+                    },
+                    "type": "column.boolean"
                 },
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "archived",
-                    "label": "Archived",
-                    "props": {},
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.boolean",
-                    "width": "md"
+                    "props": {
+                        "align": "start",
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Archived",
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
+                    },
+                    "type": "column.boolean"
                 }
             ],
             "data": [

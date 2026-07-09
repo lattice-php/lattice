@@ -6,7 +6,7 @@ use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
 it('defaults a numeric column to end alignment', function (): void {
-    expect(wire(NumberColumn::make('price'))['align'])->toBe('end');
+    expect(wire(NumberColumn::make('price'))['props']['align'])->toBe('end');
 });
 
 it('emits fixed fraction digits', function (): void {
@@ -26,7 +26,7 @@ it('emits a fraction-digit range', function (): void {
 it('filters a numeric column as a number', function (): void {
     $data = wire(NumberColumn::make('price')->filterable());
 
-    expect($data['filter']['type'])->toBe(FilterType::Number->value);
+    expect($data['props']['filter']['type'])->toBe(FilterType::Number->value);
 });
 
 it('emits the Intl unit as its backed value', function (): void {

@@ -10,8 +10,8 @@ use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Columns\ColumnData;
 use Lattice\Lattice\Tables\Columns\Filterable;
+use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Components\Table as TableComponent;
 use Lattice\Lattice\Tables\Filters\BaseFilter;
 use Lattice\Lattice\Tables\Filters\SelectFilter;
@@ -196,7 +196,7 @@ final class TableRegistry extends DefinitionRegistry
                 continue;
             }
 
-            array_push($keys, ...$this->columnKeys($column->toData()));
+            array_push($keys, ...$this->columnKeys($column));
         }
 
         return array_values(array_unique($keys));
@@ -205,12 +205,18 @@ final class TableRegistry extends DefinitionRegistry
     /**
      * @return array<int, string>
      */
-    private function columnKeys(ColumnData $column): array
+    private function columnKeys(Column $column): array
     {
-        $keys = [$column->key];
+        $keys = [$column->key()];
 
-        foreach ($column->columns ?? [] as $child) {
-            array_push($keys, ...$this->columnKeys($child));
+        if ($column instanceof StackColumn) {
+            foreach ($column->children() as $child) {
+                if (! $child->shouldRender()) {
+                    continue;
+                }
+
+                array_push($keys, ...$this->columnKeys($child));
+            }
         }
 
         return $keys;

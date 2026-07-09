@@ -6,81 +6,77 @@
             "bulkActions": [],
             "columns": [
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "avatar",
-                    "label": "",
                     "props": {
+                        "align": "start",
                         "circular": true,
-                        "size": 32
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "",
+                        "size": 32,
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.image",
-                    "width": "md"
+                    "type": "column.image"
                 },
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "name",
-                    "label": "Name",
                     "props": {
+                        "align": "start",
                         "badge": null,
                         "copyable": false,
                         "date": null,
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Name",
                         "link": null,
-                        "multiple": null
+                        "multiple": null,
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.text",
-                    "width": "md"
+                    "type": "column.text"
                 },
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "status",
-                    "label": "Status",
                     "props": {
+                        "align": "start",
                         "colors": {
                             "active": "green",
                             "archived": "gray",
                             "invited": "yellow"
-                        }
+                        },
+                        "filter": null,
+                        "hiddenByDefault": null,
+                        "label": "Status",
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.badge",
-                    "width": "md"
+                    "type": "column.badge"
                 },
                 {
-                    "align": "start",
-                    "columns": null,
-                    "filter": null,
-                    "hiddenByDefault": null,
                     "key": "verified",
-                    "label": "Verified",
                     "props": {
+                        "align": "start",
                         "colors": {
                             "0": "gray",
                             "1": "green"
                         },
+                        "filter": null,
+                        "hiddenByDefault": null,
                         "icon": null,
                         "icons": {
                             "0": "minus",
                             "1": "check"
-                        }
+                        },
+                        "label": "Verified",
+                        "sortable": null,
+                        "toggleable": null,
+                        "width": "md"
                     },
-                    "sortable": null,
-                    "toggleable": null,
-                    "type": "column.icon",
-                    "width": "md"
+                    "type": "column.icon"
                 }
             ],
             "data": [
