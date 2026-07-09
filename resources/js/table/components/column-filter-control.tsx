@@ -40,7 +40,7 @@ export function ColumnFilterControl({
   onSearch?: FilterOptionSearch;
 }) {
   const { t } = useT("lattice");
-  const filter = column.filter;
+  const { filter, label } = column.props;
 
   if (!filter) {
     return null;
@@ -84,7 +84,7 @@ export function ColumnFilterControl({
       <div className="min-w-0 flex-1">
         <FilterValueInput
           type={type}
-          label={column.label}
+          label={label}
           value={primary?.clause.value ?? ""}
           processing={processing}
           withSearchIcon={type === "text" || type === "number"}
@@ -99,7 +99,7 @@ export function ColumnFilterControl({
           <button
             type="button"
             aria-label={t("table.filter.columnFilters", "{{label}} filters", {
-              label: column.label,
+              label,
             })}
             data-test={`filter-${column.key}`}
             className="relative -ml-px inline-flex size-lt-control-md shrink-0 items-center justify-center rounded-r-lt-sm border border-lt-input disabled:opacity-50 data-[state=open]:z-10 data-[state=open]:border-lt-primary"
@@ -152,7 +152,7 @@ function ColumnSelectFilter({
   onReplace: (field: string, clauses: FilterClause[]) => void;
   onSearch?: FilterOptionSearch;
 }) {
-  const filter = column.filter;
+  const { filter, label } = column.props;
 
   if (!filter) {
     return null;
@@ -176,7 +176,7 @@ function ColumnSelectFilter({
 
   const data: FilterData = {
     key: column.key,
-    label: column.label,
+    label,
     type: "select",
     props: { options: filter.options, multiple, searchable: filter.searchable, placeholder: null },
   };
@@ -259,7 +259,7 @@ function FilterClauseList({
   onRemove: (index: number) => void;
 }) {
   const { t } = useT("lattice");
-  const type = column.filter?.type ?? "text";
+  const type = column.props.filter?.type ?? "text";
   const [draftOperator, setDraftOperator] = useState(defaultOperator);
   const [adding, setAdding] = useState(clauses.length === 0);
 
@@ -344,6 +344,7 @@ function FilterClauseRow({
   onRemove: () => void;
 }) {
   const { t } = useT("lattice");
+  const { label } = column.props;
   const valueless = VALUELESS_FILTER_OPERATORS.has(clause.operator);
 
   return (
@@ -351,7 +352,7 @@ function FilterClauseRow({
       <div className="flex items-center gap-2">
         {operators.length > 1 ? (
           <select
-            aria-label={t("table.filter.operator", "{{label}} operator", { label: column.label })}
+            aria-label={t("table.filter.operator", "{{label}} operator", { label })}
             data-test={`filter-${column.key}-operator`}
             className={cn(fieldClass, "flex-1")}
             disabled={processing}
@@ -369,7 +370,7 @@ function FilterClauseRow({
         )}
         <button
           type="button"
-          aria-label={t("table.filter.remove", "Remove {{label}} filter", { label: column.label })}
+          aria-label={t("table.filter.remove", "Remove {{label}} filter", { label })}
           data-test={`filter-${column.key}-remove`}
           className="inline-flex size-lt-control-md items-center justify-center rounded-lt-sm border border-lt-border hover:bg-lt-muted disabled:opacity-50"
           disabled={processing}
@@ -381,8 +382,8 @@ function FilterClauseRow({
       {!valueless && (
         <FilterValueInput
           type={type}
-          label={column.label}
-          ariaLabel={t("table.filter.value", "{{label}} filter value", { label: column.label })}
+          label={label}
+          ariaLabel={t("table.filter.value", "{{label}} filter value", { label })}
           value={clause.value}
           processing={processing}
           onCommit={onValue}

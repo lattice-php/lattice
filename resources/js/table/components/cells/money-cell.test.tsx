@@ -4,7 +4,20 @@ import type { TableColumn, TableRow } from "../../types";
 import { MoneyCell } from "./money-cell";
 
 function column(props: Record<string, unknown>): TableColumn {
-  return { key: "total", label: "Total", type: "column.money", align: "end", props } as TableColumn;
+  return {
+    key: "total",
+    type: "column.money",
+    props: {
+      label: "Total",
+      width: "md",
+      align: "end",
+      sortable: null,
+      toggleable: null,
+      hiddenByDefault: null,
+      filter: null,
+      ...props,
+    },
+  } as TableColumn;
 }
 
 function renderCell(value: unknown, props: Record<string, unknown>, row: TableRow = {}) {

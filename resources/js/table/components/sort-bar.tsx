@@ -17,7 +17,7 @@ export function SortBar({
     <div className="flex flex-wrap items-center gap-4 border-b border-lt-border px-4 py-2.5 text-sm">
       {state.sorts.map((sort, index) => {
         const column = columnsByKey.get(sort.key);
-        const label = column?.label ?? sort.key;
+        const label = column?.props.label ?? sort.key;
         const arrow = sort.direction === "desc" ? "arrow-down" : "arrow-up";
 
         return (

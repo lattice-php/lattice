@@ -4,7 +4,7 @@ import { TextCell } from "./text-cell";
 
 export const StackCell: ColumnCellComponent<"column.stack"> = ({ column, row }) => (
   <div className="grid gap-1">
-    {(column.columns ?? []).map((stackedColumn) => (
+    {(column.props.columns ?? []).map((stackedColumn) => (
       <span key={stackedColumn.key}>
         <TextCell
           column={stackedColumn}

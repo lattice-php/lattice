@@ -1,4 +1,4 @@
-import type { ColumnProps, ColumnPropsOf, FilterPropsOf } from "./types";
+import type { ColumnProps, ColumnPropsOf, CommonColumnProps, FilterPropsOf } from "./types";
 
 // Augment ColumnProps locally — scoped to this module (has top-level imports).
 declare module "./types" {
@@ -7,13 +7,23 @@ declare module "./types" {
   }
 }
 
+const commonColumnProps: CommonColumnProps = {
+  label: "Rating",
+  width: "md",
+  align: "start",
+  sortable: null,
+  toggleable: null,
+  hiddenByDefault: null,
+  filter: null,
+};
+
 // 1. Augmented type narrows correctly.
-const _ok: ColumnPropsOf<"column.rating"> = { max: 5 };
+const _ok: ColumnPropsOf<"column.rating"> = { ...commonColumnProps, max: 5 };
 // @ts-expect-error max must be a number, not a string
-const _bad: ColumnPropsOf<"column.rating"> = { max: "five" };
+const _bad: ColumnPropsOf<"column.rating"> = { ...commonColumnProps, max: "five" };
 
 // 2. Unaugmented type falls back to the loose bag.
-const _loose: ColumnPropsOf<"totally.unknown"> = { anything: true };
+const _loose: ColumnPropsOf<"totally.unknown"> = { ...commonColumnProps, anything: true };
 
 void _ok;
 void _bad;
@@ -22,9 +32,12 @@ void _loose;
 type _ColumnProps = ColumnProps;
 
 // 3. Built-in column type resolves from the generated map.
-const _builtin: ColumnPropsOf<"column.badge"> = { colors: { active: "green" } };
+const _builtin: ColumnPropsOf<"column.badge"> = {
+  ...commonColumnProps,
+  colors: { active: "green" },
+};
 // @ts-expect-error colors must be a record of strings, not a number
-const _builtinBad: ColumnPropsOf<"column.badge"> = { colors: 1 };
+const _builtinBad: ColumnPropsOf<"column.badge"> = { ...commonColumnProps, colors: 1 };
 void _builtin;
 void _builtinBad;
 

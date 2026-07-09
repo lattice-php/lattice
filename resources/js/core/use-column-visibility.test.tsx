@@ -3,9 +3,9 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { type ToggleableColumn, useColumnVisibility } from "./use-column-visibility";
 
 const columns: ToggleableColumn[] = [
-  { key: "name", label: "Name" },
-  { key: "sku", label: "SKU", toggleable: true },
-  { key: "notes", label: "Notes", toggleable: true, hiddenByDefault: true },
+  { key: "name", props: { label: "Name" } },
+  { key: "sku", props: { label: "SKU", toggleable: true } },
+  { key: "notes", props: { label: "Notes", toggleable: true, hiddenByDefault: true } },
 ];
 
 function Harness({ storageKey }: { storageKey?: string }) {

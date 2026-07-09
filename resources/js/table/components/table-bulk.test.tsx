@@ -1,21 +1,21 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { TableNode } from "../types";
-import type { ColumnData } from "@lattice-php/lattice/types/generated";
+import type { TableColumn, TableNode } from "../types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 
-function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
+function col(partial: { key: string; label: string }): TableColumn {
   return {
+    key: partial.key,
     type: "column.text",
-    width: "md",
-    sortable: null,
-    toggleable: null,
-    hiddenByDefault: null,
-    filter: null,
-    columns: null,
-    props: {},
-    align: "start",
-    ...partial,
+    props: {
+      label: partial.label,
+      width: "md",
+      align: "start",
+      sortable: null,
+      toggleable: null,
+      hiddenByDefault: null,
+      filter: null,
+    },
   };
 }
 

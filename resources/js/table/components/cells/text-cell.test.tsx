@@ -4,7 +4,20 @@ import type { TableColumn, TableRow } from "../../types";
 import { TextCell } from "./text-cell";
 
 function renderCell(props: Record<string, unknown>, value: unknown, row: TableRow = {}) {
-  const column = { key: "tags", label: "Tags", type: "column.text", props } as TableColumn;
+  const column = {
+    key: "tags",
+    type: "column.text",
+    props: {
+      label: "Tags",
+      width: "md",
+      align: "start",
+      sortable: null,
+      toggleable: null,
+      hiddenByDefault: null,
+      filter: null,
+      ...props,
+    },
+  } as TableColumn;
 
   return render(<TextCell column={column} props={props as never} row={row} value={value} />);
 }

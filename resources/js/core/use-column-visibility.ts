@@ -2,9 +2,11 @@ import { useCallback, useMemo, useState } from "react";
 
 export type ToggleableColumn = {
   key: string;
-  label?: string;
-  toggleable?: boolean | null;
-  hiddenByDefault?: boolean | null;
+  props: {
+    label?: string;
+    toggleable?: boolean | null;
+    hiddenByDefault?: boolean | null;
+  };
 };
 
 type StoredColumnVisibility = {
@@ -20,7 +22,7 @@ export function useColumnVisibility<TColumn extends ToggleableColumn>({
   storageKey?: string;
 }) {
   const toggleableColumns = useMemo(
-    () => columns.filter((column) => column.toggleable === true),
+    () => columns.filter((column) => column.props.toggleable === true),
     [columns],
   );
   const toggleableKeys = useMemo(
@@ -34,11 +36,11 @@ export function useColumnVisibility<TColumn extends ToggleableColumn>({
 
   const isVisible = useCallback(
     (column: ToggleableColumn): boolean => {
-      if (column.toggleable !== true) {
+      if (column.props.toggleable !== true) {
         return true;
       }
 
-      return overrides[column.key] ?? column.hiddenByDefault !== true;
+      return overrides[column.key] ?? column.props.hiddenByDefault !== true;
     },
     [overrides],
   );

@@ -37,7 +37,7 @@ export function ColumnHeader({
   state: TableState;
 }) {
   const columnSort = getColumnSort(state, column);
-  const align = column.align;
+  const { align, label, sortable } = column.props;
 
   return (
     <div
@@ -48,20 +48,20 @@ export function ColumnHeader({
       )}
       role="columnheader"
     >
-      {column.sortable ? (
+      {sortable ? (
         <button
           type="button"
-          aria-label={`Sort ${column.label}`}
+          aria-label={`Sort ${label}`}
           className={cn("flex w-full items-center gap-1.5 font-semibold", alignJustify(align))}
           data-test={`sort-${column.key}`}
           disabled={processing}
           onClick={() => sort(column)}
         >
-          <span className={cn("min-w-0 flex-1 truncate", alignText(align))}>{column.label}</span>
+          <span className={cn("min-w-0 flex-1 truncate", alignText(align))}>{label}</span>
           <SortIndicator sort={columnSort} />
         </button>
       ) : (
-        <span className={cn("block truncate", alignText(align))}>{column.label}</span>
+        <span className={cn("block truncate", alignText(align))}>{label}</span>
       )}
       {resizeHandleProps && <div {...resizeHandleProps} />}
     </div>

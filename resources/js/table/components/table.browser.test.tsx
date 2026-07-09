@@ -1,25 +1,34 @@
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { ColumnData } from "@lattice-php/lattice/types/generated";
 import type { TableNode, TableResponse, TableState } from "../types";
+import type { TableColumn } from "../types";
 import TableComponent from "./table";
 
 const storageKey = "lattice:table-columns:browser.products";
 
-function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
+function col(partial: {
+  key: string;
+  label: string;
+  type?: string;
+  width?: TableColumn["props"]["width"];
+  sortable?: boolean | null;
+}): TableColumn {
+  const { key, label, type = "column.text", width, sortable } = partial;
+
   return {
-    type: partial.type ?? "column.text",
-    width: "md",
-    sortable: null,
-    toggleable: null,
-    hiddenByDefault: null,
-    filter: null,
-    columns: null,
-    props: {},
-    align: "start",
-    ...partial,
-  };
+    key,
+    type,
+    props: {
+      label,
+      width: width ?? "md",
+      align: "start",
+      sortable: sortable ?? null,
+      toggleable: null,
+      hiddenByDefault: null,
+      filter: null,
+    },
+  } as TableColumn;
 }
 
 function tableState(overrides: Partial<TableState> = {}): Partial<TableState> {

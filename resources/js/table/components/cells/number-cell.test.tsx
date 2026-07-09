@@ -6,10 +6,17 @@ import { NumberCell } from "./number-cell";
 function column(props: Record<string, unknown> = {}): TableColumn {
   return {
     key: "price",
-    label: "Price",
     type: "column.number",
-    align: "end",
-    props,
+    props: {
+      label: "Price",
+      width: "md",
+      align: "end",
+      sortable: null,
+      toggleable: null,
+      hiddenByDefault: null,
+      filter: null,
+      ...props,
+    },
   } as TableColumn;
 }
 

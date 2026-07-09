@@ -55,7 +55,7 @@ export function ColumnVisibilityMenu({
                   disabled={lockedLast}
                   onCheckedChange={(next) => onToggle(column.key, next === true)}
                 />
-                <span>{column.label ?? column.key}</span>
+                <span>{column.props.label ?? column.key}</span>
               </label>
             );
           })}

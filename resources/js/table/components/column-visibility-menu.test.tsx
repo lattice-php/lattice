@@ -4,8 +4,8 @@ import { describe, expect, it, vi } from "vitest";
 import { ColumnVisibilityMenu } from "./column-visibility-menu";
 
 const columns: ToggleableColumn[] = [
-  { key: "sku", label: "SKU", toggleable: true },
-  { key: "notes", label: "Notes", toggleable: true },
+  { key: "sku", props: { label: "SKU", toggleable: true } },
+  { key: "notes", props: { label: "Notes", toggleable: true } },
 ];
 
 function setup(overrides: Partial<Parameters<typeof ColumnVisibilityMenu>[0]> = {}) {

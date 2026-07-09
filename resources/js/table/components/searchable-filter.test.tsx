@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { ColumnData, FilterData } from "@lattice-php/lattice/types/generated";
-import type { TableNode } from "../types";
+import type { FilterData } from "@lattice-php/lattice/types/generated";
+import type { TableColumn, TableNode } from "../types";
 import TableComponent from "./table";
 
 const filter: FilterData = {
@@ -16,19 +16,19 @@ const filter: FilterData = {
   },
 };
 
-function col(): ColumnData {
+function col(): TableColumn {
   return {
     key: "name",
-    label: "Name",
     type: "column.text",
-    width: "md",
-    sortable: null,
-    toggleable: null,
-    hiddenByDefault: null,
-    filter: null,
-    columns: null,
-    props: {},
-    align: "start",
+    props: {
+      label: "Name",
+      width: "md",
+      align: "start",
+      sortable: null,
+      toggleable: null,
+      hiddenByDefault: null,
+      filter: null,
+    },
   };
 }
 

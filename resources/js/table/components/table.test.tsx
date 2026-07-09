@@ -1,24 +1,37 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TableNode, TablePagination, TableResponse, TableState } from "../types";
-import type { ColumnData } from "@lattice-php/lattice/types/generated";
+import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
+import type { TableColumn } from "../types";
 import TableComponent from "./table";
 
-function col(partial: Partial<ColumnData> & Pick<ColumnData, "key" | "label">): ColumnData {
-  const type = partial.type ?? "column.text";
+function col(partial: {
+  key: string;
+  label: string;
+  type?: string;
+  width?: TableColumn["props"]["width"];
+  sortable?: boolean | null;
+  filter?: ColumnFilter | null;
+  columns?: TableColumn[];
+  props?: Record<string, unknown>;
+}): TableColumn {
+  const { key, label, type = "column.text", width, sortable, filter, columns, props } = partial;
 
   return {
+    key,
     type,
-    width: type === "column.stack" ? "xl" : "md",
-    sortable: null,
-    toggleable: null,
-    hiddenByDefault: null,
-    filter: null,
-    columns: null,
-    props: {},
-    align: "start",
-    ...partial,
-  };
+    props: {
+      label,
+      width: width ?? (type === "column.stack" ? "xl" : "md"),
+      align: "start",
+      sortable: sortable ?? null,
+      toggleable: null,
+      hiddenByDefault: null,
+      filter: filter ?? null,
+      ...(columns ? { columns } : {}),
+      ...props,
+    },
+  } as TableColumn;
 }
 
 function pagination(overrides: Partial<TablePagination> = {}): TablePagination {

@@ -19,7 +19,7 @@ export function FilterStackBar({
   return (
     <div className="flex flex-wrap items-center gap-4 border-b border-lt-border px-4 py-2.5 text-sm">
       {filters.map((clause, index) => {
-        const label = columnsByKey.get(clause.field)?.label ?? clause.field;
+        const label = columnsByKey.get(clause.field)?.props.label ?? clause.field;
         const valueless = VALUELESS_FILTER_OPERATORS.has(clause.operator);
 
         return (

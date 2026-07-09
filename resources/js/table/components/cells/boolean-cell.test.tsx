@@ -3,10 +3,24 @@ import { describe, expect, it } from "vitest";
 import type { TableColumn } from "../../types";
 import { BooleanCell } from "./boolean-cell";
 
-const column = { key: "featured", label: "Featured", type: "column.boolean" } as TableColumn;
+const column = {
+  key: "featured",
+  type: "column.boolean",
+  props: {
+    label: "Featured",
+    width: "md",
+    align: "start",
+    sortable: null,
+    toggleable: null,
+    hiddenByDefault: null,
+    filter: null,
+  },
+} as TableColumn;
 
 function renderCell(value: unknown) {
-  return render(<BooleanCell column={column} props={{}} row={{}} value={value} />);
+  return render(
+    <BooleanCell column={column} props={column.props as never} row={{}} value={value} />,
+  );
 }
 
 describe("BooleanCell", () => {

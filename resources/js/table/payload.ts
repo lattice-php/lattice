@@ -26,9 +26,11 @@ export function getColumns(value: unknown): TableColumn[] {
       typeof column === "object" &&
       column !== null &&
       "key" in column &&
-      "label" in column &&
+      "props" in column &&
       typeof column.key === "string" &&
-      typeof column.label === "string",
+      typeof column.props === "object" &&
+      column.props !== null &&
+      typeof (column.props as Record<string, unknown>).label === "string",
   );
 }
 
@@ -63,7 +65,7 @@ export function getPagination(value: unknown): TablePagination {
 }
 
 export function flattenColumns(columns: TableColumn[]): TableColumn[] {
-  return columns.flatMap((column) => [column, ...flattenColumns(column.columns ?? [])]);
+  return columns.flatMap((column) => [column, ...flattenColumns(column.props.columns ?? [])]);
 }
 
 export function getState(value: unknown): TableState {

@@ -174,7 +174,7 @@ export function getSortDirectionLabel(direction: string): string {
 }
 
 export function nextSort(sorts: TableSort[], column: TableColumn): TableSort[] {
-  if (!column.sortable) {
+  if (!column.props.sortable) {
     return sorts;
   }
 
@@ -205,13 +205,13 @@ export function getVisiblePages(currentPage: number, lastPage: number): number[]
 export function getTableSizingColumns(columns: TableColumn[]) {
   return columns.map((column) => ({
     key: column.key,
-    label: column.label,
+    label: column.props.label,
     width: columnWidthOrDefault(column),
   }));
 }
 
 function columnWidthOrDefault(column: TableColumn): ColumnWidth {
-  return (column.width ??
+  return (column.props.width ??
     (column.type === "column.stack" ? "xl" : DEFAULT_COLUMN_WIDTH)) as ColumnWidth;
 }
 
