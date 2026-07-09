@@ -31,13 +31,9 @@ class BlockPageForm extends FormDefinition
 
     public function handle(Request $request): Response
     {
-        $this->validate($request);
+        $data = $this->validate($request);
 
-        // BlockEditor rows only validate fields with explicit rules (see
-        // HandlesRowSchemas::rowRules), so an optional field like the hero's
-        // "title" is absent from validate()'s output. Read the raw, already
-        // structurally-validated payload back for display/persistence instead.
-        session()->flash('block-editor.saved', $request->input('content', []));
+        session()->flash('block-editor.saved', $data['content'] ?? []);
 
         return redirect('/block-editor');
     }
