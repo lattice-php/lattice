@@ -125,7 +125,7 @@ class Action extends Component
     #[SerializationHook(priority: 250)]
     protected function stripUnauthorizedForm(array $data): array
     {
-        if ($this->form !== null && ! $this->form->shouldRender()) {
+        if ($this->form instanceof Form && ! $this->form->shouldRender()) {
             $data['props']['form'] = null;
         }
 

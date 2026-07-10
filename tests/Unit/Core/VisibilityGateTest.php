@@ -54,6 +54,6 @@ it('injects the component itself by name and by type', function (): void {
 it('throws when a visibility closure requests an unresolvable parameter', function (): void {
     $component = Text::make('a')->visible(fn (string $somethingUnresolvable): bool => true);
 
-    expect(fn () => $component->shouldRender())
+    expect(fn (): bool => $component->shouldRender())
         ->toThrow(UnresolvableEvaluationParameter::class);
 });
