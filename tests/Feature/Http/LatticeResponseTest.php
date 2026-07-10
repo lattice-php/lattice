@@ -7,7 +7,6 @@ use Lattice\Lattice\Effects\EffectFlasher;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Forms\FormResponse;
 use Lattice\Lattice\Http\LatticeResponse;
 use Lattice\Lattice\Ui\Enums\Variant;
 use Lattice\Lattice\Ui\Values\Callout;
@@ -71,13 +70,6 @@ test('Effects::respond starts a fluent response', function (): void {
 
     expect($response->headers->get('Location'))->toBe(route('after-save'));
     expect(app(EffectFlasher::class)->all())->toHaveCount(1);
-});
-
-test('the deprecated FormResponse alias still builds a working response', function (): void {
-    $response = FormResponse::make()->toast('Saved.')->toRoute('after-save')->toResponse(request());
-
-    expect($response->getStatusCode())->toBe(302);
-    expect($response->headers->get('Location'))->toBe(route('after-save'));
 });
 
 test('FormDefinition::toast starts a fluent response from the handler', function (): void {

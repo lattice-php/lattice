@@ -12,7 +12,6 @@
 /.github export-ignore
 /.idea export-ignore
 /docs export-ignore
-/public export-ignore
 /tests export-ignore
 /workbench export-ignore
 /node_modules export-ignore
