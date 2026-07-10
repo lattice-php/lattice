@@ -6,16 +6,14 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Rules\FileUploadItem;
-use Pest\Browser\Api\Webpage;
 
 it('uploads a file through a multipart payload', function (): void {
     $this->actingAs(workbenchTestUser());
 
     $page = visit('/uploads/create')
         ->assertSee('Drop files here or click to browse');
-    $webpage = new Webpage($page->page(), $page->url());
 
-    attachBrowserFilePayload($webpage, '@avatar-input', __DIR__.'/fixtures/avatar.jpg', 'image/jpeg');
+    attachBrowserFilePayload($page, '@avatar-input', __DIR__.'/fixtures/avatar.jpg', 'image/jpeg');
 
     eventually(fn () => $page->assertSee('avatar.jpg'));
 
@@ -43,9 +41,8 @@ it('uploads directly to s3 via the signed flow', function (): void {
 
     $page = visit('/uploads/create?signed=1')
         ->assertPresent('@document-input');
-    $webpage = new Webpage($page->page(), $page->url());
 
-    attachBrowserFilePayload($webpage, '@document-input', __DIR__.'/fixtures/avatar.jpg', 'image/jpeg');
+    attachBrowserFilePayload($page, '@document-input', __DIR__.'/fixtures/avatar.jpg', 'image/jpeg');
 
     eventually(fn () => $page->assertSee('avatar.jpg'));
     eventually(fn () => $page->assertPresent('[data-test="document-uploaded"]'));

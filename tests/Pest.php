@@ -18,6 +18,7 @@ use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tests\BrowserTestCase;
 use Lattice\Lattice\Tests\TestCase;
 use Orchestra\Testbench\Factories\UserFactory;
+use Pest\Browser\Api\AwaitableWebpage;
 use Pest\Browser\Api\Webpage;
 use Workbench\App\Models\User;
 
@@ -71,7 +72,7 @@ function browserSelector(string $selector): string
     return $selector;
 }
 
-function attachBrowserFilePayload(Webpage $page, string $selector, string $path, string $mimeType = 'application/octet-stream'): void
+function attachBrowserFilePayload(AwaitableWebpage|Webpage $page, string $selector, string $path, string $mimeType = 'application/octet-stream'): void
 {
     $fileName = basename($path);
     $base64 = base64_encode((string) file_get_contents($path));
