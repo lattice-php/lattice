@@ -42,6 +42,10 @@ abstract class TestCase extends BaseTestCase
         $_SERVER['LATTICE_TEST_DATABASE'] = $database;
 
         $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
+        // The default manifest cache path (bootstrapPath) lives in the shared
+        // Testbench skeleton, so parallel workers would read each other's cache;
+        // isolate it per worker process like the database.
+        $app['config']->set('lattice.discovery.cache_path', $workspace.'/discovery-manifest-'.getmypid().'.php');
         $app['config']->set('database.default', 'sqlite');
         $app['config']->set('database.connections.sqlite.database', $database);
         $app['config']->set('inertia.pages.paths', [
