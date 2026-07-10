@@ -39,6 +39,7 @@ use Lattice\Lattice\Core\Contracts\ResolvesReferenceIdentity;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Lattice\Core\PageMetadataResolver;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Core\Services\RequestReferenceIdentity;
 use Lattice\Lattice\Effects\EffectFlasher;
@@ -109,6 +110,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->alias(ComponentReferenceSigner::class, SignsComponentReferences::class);
         $this->app->singleton(LatticeRegistry::class);
         $this->app->singleton(DiscoveryManifest::class);
+        $this->app->singleton(PageMetadataResolver::class);
         $this->app->singleton(Evaluator::class, fn ($app): Evaluator => new Evaluator($app, [Component::class]));
         $this->app->scoped(EffectFlasher::class);
 

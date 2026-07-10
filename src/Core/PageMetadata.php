@@ -6,7 +6,6 @@ namespace Lattice\Lattice\Core;
 
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Contracts\PageContract;
-use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Support\Wire;
@@ -29,19 +28,7 @@ final readonly class PageMetadata
 
     public static function for(PageContract|string $page): self
     {
-        $class = is_object($page) ? $page::class : $page;
-
-        $manifest = app(DiscoveryManifest::class);
-
-        if ($manifest->isCached()) {
-            $descriptor = $manifest->descriptorFor($class);
-
-            if ($descriptor !== null) {
-                return self::fromArray($descriptor);
-            }
-        }
-
-        return self::reflect($class);
+        return app(PageMetadataResolver::class)->for($page);
     }
 
     public static function reflect(PageContract|string $page): self
