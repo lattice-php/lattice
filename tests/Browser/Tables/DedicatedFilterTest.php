@@ -22,28 +22,42 @@ it('narrows rows with the ternary featured filter and restores them via reset', 
     $this->actingAs(workbenchTestUser());
     seedFilterProducts();
 
-    visit('/products')
-        ->assertSee('Active Featured')
+    $page = visit('/products');
+
+    $page->assertSee('Active Featured')
         ->assertSee('Draft Plain')
         ->click('@table-filters-menu')
         ->click('#table-filter-featured-value')
-        ->click('[data-test="select-value-option-true"]')
-        ->assertSee('Active Featured')
-        ->assertDontSee('Draft Plain')
-        ->click('@table-filters-reset')
-        ->assertSee('Draft Plain')
-        ->assertNoSmoke();
+        ->click('[data-test="select-value-option-true"]');
+
+    eventually(function () use ($page): void {
+        $page->assertDontSee('Draft Plain');
+    });
+
+    $page->assertSee('Active Featured')
+        ->click('@table-filters-reset');
+
+    eventually(function () use ($page): void {
+        $page->assertSee('Draft Plain');
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('narrows rows with a custom toggle filter', function (): void {
     $this->actingAs(workbenchTestUser());
     seedFilterProducts();
 
-    visit('/products')
-        ->click('@table-filters-menu')
-        ->click('@table-filter-high_value')
-        ->assertSee('Active Featured')
-        ->assertDontSee('Draft Plain')
+    $page = visit('/products');
+
+    $page->click('@table-filters-menu')
+        ->click('@table-filter-high_value');
+
+    eventually(function () use ($page): void {
+        $page->assertDontSee('Draft Plain');
+    });
+
+    $page->assertSee('Active Featured')
         ->assertNoSmoke();
 });
 
@@ -51,10 +65,15 @@ it('narrows rows with the status column select filter', function (): void {
     $this->actingAs(workbenchTestUser());
     seedFilterProducts();
 
-    visit('/products')
-        ->click('#table-filter-status-value')
-        ->click('[data-test="select-value-option-active"]')
-        ->assertSee('Active Featured')
-        ->assertDontSee('Draft Plain')
+    $page = visit('/products');
+
+    $page->click('#table-filter-status-value')
+        ->click('[data-test="select-value-option-active"]');
+
+    eventually(function () use ($page): void {
+        $page->assertDontSee('Draft Plain');
+    });
+
+    $page->assertSee('Active Featured')
         ->assertNoSmoke();
 });

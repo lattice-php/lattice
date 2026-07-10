@@ -30,7 +30,7 @@ composer require lattice-php/lattice
 npm install @lattice-php/lattice
 ```
 
-See [Installation](https://latticephp.com/introduction/installation/) for the full setup.
+See [Installation](https://latticephp.com/introduction/installation/) for the full setup. No Node toolchain? Lattice also ships prebuilt assets — publish them with `php artisan lattice:assets` and skip the npm step entirely; see [No-build setup](https://latticephp.com/introduction/no-build/).
 
 ## Documentation
 

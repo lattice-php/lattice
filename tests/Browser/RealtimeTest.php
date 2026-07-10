@@ -28,4 +28,6 @@ it('delivers a broadcast to the browser and shows a toast', function (): void {
             OrderShipped::dispatch(7);
         },
     );
+
+    $page->assertNoJavaScriptErrors();
 });

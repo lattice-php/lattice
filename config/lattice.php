@@ -6,6 +6,10 @@ return [
         base_path('app'),
     ],
 
+    'discovery' => [
+        'cache_path' => null,
+    ],
+
     'security' => [
         'ref_lifetime' => 30,
     ],

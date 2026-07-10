@@ -33,10 +33,18 @@ class BrowserTestCase extends TestCase
             return;
         }
 
-        $manifest = package_path('vendor/orchestra/testbench-core/laravel/public/build/manifest.json');
+        $public = package_path('vendor/orchestra/testbench-core/laravel/public');
+        $manifest = $public.'/build/manifest.json';
+        $hot = $public.'/hot';
 
         if (! is_file($manifest)) {
             throw new \RuntimeException("Missing workbench Vite manifest [{$manifest}]. Run `npm run build` before `composer test:browser`.");
+        }
+
+        // A leftover dev-server marker makes every page load assets from a dead
+        // server, which renders blank pages and times out interactive tests.
+        if (is_file($hot)) {
+            throw new \RuntimeException("Stale Vite hot file [{$hot}]. Delete it (a `composer serve` leftover), then rerun the browser suite.");
         }
 
         self::$checkedWorkbenchManifest = true;

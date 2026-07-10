@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Tests\Browser\Support;
 
 use Pest\Browser\Support\Port;
 use RuntimeException;
+use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
 
 /**
@@ -41,11 +42,23 @@ final readonly class ReverbServer
             self::environment($port),
         );
 
-        $process->setTimeout(0);
+        // Bound only the startup wait — a wedged reverb:start would otherwise
+        // hang the suite until the CI global timeout with no diagnostics. The
+        // timeout is lifted once ready so the server can outlive the wait.
+        $process->setTimeout(30);
         $process->start();
-        $process->waitUntil(
-            fn (string $type, string $output): bool => str_contains($output, self::READY_MARKER),
-        );
+
+        try {
+            $process->waitUntil(
+                fn (string $type, string $output): bool => str_contains($output, self::READY_MARKER),
+            );
+        } catch (ProcessTimedOutException) {
+            throw new RuntimeException(
+                'Reverb did not become ready within 30 seconds. Output: '.$process->getOutput().' Error: '.$process->getErrorOutput(),
+            );
+        }
+
+        $process->setTimeout(null);
 
         if (! $process->isRunning()) {
             throw new RuntimeException(

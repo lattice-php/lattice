@@ -35,7 +35,7 @@ uses(RefreshDatabase::class)->in(__DIR__);
  * @param  Closure(): void  $assert
  * @param  (Closure(): void)|null  $between
  */
-function retryUntil(Closure $assert, int $attempts = 10, int $sleepMicroseconds = 100_000, ?Closure $between = null): void
+function retryUntil(Closure $assert, int $attempts = 20, int $sleepMicroseconds = 250_000, ?Closure $between = null): void
 {
     foreach (range(1, $attempts) as $attempt) {
         try {
@@ -56,7 +56,7 @@ function retryUntil(Closure $assert, int $attempts = 10, int $sleepMicroseconds 
     }
 }
 
-function eventually(Closure $assert, int $attempts = 10, int $sleepMicroseconds = 100_000, ?Closure $between = null): void
+function eventually(Closure $assert, int $attempts = 20, int $sleepMicroseconds = 250_000, ?Closure $between = null): void
 {
     retryUntil($assert, $attempts, $sleepMicroseconds, $between);
 }

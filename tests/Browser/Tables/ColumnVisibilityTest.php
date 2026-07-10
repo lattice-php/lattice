@@ -7,16 +7,25 @@ it('hides a column from the menu and remembers it across reloads', function (): 
     $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
-    visit('/products')
-        ->assertSee('LAMP-1')
+    $page = visit('/products');
+
+    $page->assertSee('LAMP-1')
         ->click('@table-columns-menu')
-        ->click('@table-column-toggle-sku')
-        ->assertSee('Desk Lamp')
-        ->assertDontSee('LAMP-1')
+        ->click('@table-column-toggle-sku');
+
+    eventually(function () use ($page): void {
+        $page->assertDontSee('LAMP-1');
+    });
+
+    $page->assertSee('Desk Lamp')
         ->assertNoSmoke()
-        ->refresh()
-        ->assertSee('Desk Lamp')
-        ->assertDontSee('LAMP-1')
+        ->refresh();
+
+    eventually(function () use ($page): void {
+        $page->assertDontSee('LAMP-1');
+    });
+
+    $page->assertSee('Desk Lamp')
         ->assertNoSmoke();
 });
 

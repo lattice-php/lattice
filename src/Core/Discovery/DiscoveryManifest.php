@@ -61,7 +61,11 @@ final class DiscoveryManifest
 
     public function path(): string
     {
-        return $this->app->bootstrapPath('cache/lattice.php');
+        $configured = config('lattice.discovery.cache_path');
+
+        return is_string($configured) && $configured !== ''
+            ? $configured
+            : $this->app->bootstrapPath('cache/lattice.php');
     }
 
     public function cache(): void

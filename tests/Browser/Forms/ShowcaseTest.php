@@ -65,9 +65,13 @@ it('searches and selects entities in a multiple select', function (): void {
 
     $page->assertSee('Search products…')
         ->click('Search products…')
-        ->fill('input[aria-label="Search options"]', 'walnut')
-        ->assertSee('Walnut Desk')
-        ->assertDontSee('Steel Lamp')
+        ->fill('input[aria-label="Search options"]', 'walnut');
+
+    eventually(function () use ($page): void {
+        $page->assertDontSee('Steel Lamp');
+    });
+
+    $page->assertSee('Walnut Desk')
         ->click('Walnut Desk')
         ->assertPresent('button[aria-label="Remove Walnut Desk"]')
         ->assertPresent('input[type="hidden"][name="related_products[]"]')

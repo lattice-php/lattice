@@ -34,6 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v6
         with:
@@ -47,7 +48,12 @@ jobs:
 
       - run: npm ci
 
+      # `files` includes dist-standalone, but `npm pack` silently skips missing
+      # entries — without this gate a tag whose asset commit never landed would
+      # publish a package with no standalone assets.
+      - run: npm run verify:standalone
+
       # The prepack hook builds dist/ and runs the build guardrail before publish.
-      - run: npm publish --access public
+      - run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

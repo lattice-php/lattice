@@ -62,9 +62,9 @@ describe("builtinEffectHandlers", () => {
     const fired: string[] = [];
     const listener = (event: Event) => fired.push(event.type);
 
-    window.addEventListener(LATTICE_EVENT.reloadPage, listener);
-    window.addEventListener(LATTICE_EVENT.redirect, listener);
-    window.addEventListener(LATTICE_EVENT.download, listener);
+    window.addEventListener("lattice:reload-page", listener);
+    window.addEventListener("lattice:redirect", listener);
+    window.addEventListener("lattice:download", listener);
     window.addEventListener(LATTICE_EVENT.localeChange, listener);
 
     builtinEffectHandlers["reload-page"]({ type: "reload-page" } as never);
@@ -72,9 +72,9 @@ describe("builtinEffectHandlers", () => {
     builtinEffectHandlers.download({ type: "download", url: "/f.csv" } as never);
     builtinEffectHandlers["locale-change"]({ type: "locale-change", locale: "fr" } as never);
 
-    window.removeEventListener(LATTICE_EVENT.reloadPage, listener);
-    window.removeEventListener(LATTICE_EVENT.redirect, listener);
-    window.removeEventListener(LATTICE_EVENT.download, listener);
+    window.removeEventListener("lattice:reload-page", listener);
+    window.removeEventListener("lattice:redirect", listener);
+    window.removeEventListener("lattice:download", listener);
     window.removeEventListener(LATTICE_EVENT.localeChange, listener);
 
     expect(fired).toEqual([]);
