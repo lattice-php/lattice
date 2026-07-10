@@ -1,6 +1,5 @@
 import type { Node } from "@lattice-php/lattice/core/types";
-import ActionComponent from "@lattice-php/lattice/action/components/action";
-import ActionGroupComponent from "@lattice-php/lattice/action/components/action-group";
+import { ActionComponent, ActionGroupComponent } from "@lattice-php/lattice/action";
 import LinkComponent from "@lattice-php/lattice/ui/link";
 
 export function TableActionNode({ node }: { node: Node }) {

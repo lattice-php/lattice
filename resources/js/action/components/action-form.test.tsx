@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, Renderer } from "@lattice-php/lattice";
 import type { Node } from "@lattice-php/lattice";
-import { formComponents } from "@lattice-php/lattice/form/plugin";
+import { formComponents } from "@lattice-php/lattice/form";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { actionComponents } from "../plugin";

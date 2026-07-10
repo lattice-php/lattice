@@ -2,7 +2,7 @@ import { type ReactNode, useMemo } from "react";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useColumnResizing } from "@lattice-php/lattice/core/hooks/use-column-resizing";
-import { useColumnVisibility } from "@lattice-php/lattice/table/hooks/use-column-visibility";
+import { useColumnVisibility } from "../hooks/use-column-visibility";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import { Checkbox } from "@lattice-php/lattice/ui/checkbox";
 import { Icon } from "@lattice-php/lattice/icons";

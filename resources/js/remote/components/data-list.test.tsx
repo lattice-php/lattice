@@ -3,7 +3,7 @@ import type { Node } from "@lattice-php/lattice/core/types";
 import { clearRemoteTokenCache } from "@lattice-php/lattice/core/api";
 import { createRegistry } from "@lattice-php/lattice/core/registry";
 import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
-import { actionComponents } from "@lattice-php/lattice/action/plugin";
+import { actionComponents } from "@lattice-php/lattice/action";
 import { coreComponents } from "@lattice-php/lattice/ui/plugin";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";

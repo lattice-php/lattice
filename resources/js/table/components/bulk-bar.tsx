@@ -1,7 +1,6 @@
 import { useHttp } from "@inertiajs/react";
 import { useState } from "react";
-import { ActionForm } from "@lattice-php/lattice/action/components/action-form";
-import { runAction } from "@lattice-php/lattice/action/lib/run-action";
+import { ActionForm, runAction } from "@lattice-php/lattice/action";
 import { getActionEffects } from "@lattice-php/lattice/effects/dispatch";
 import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";

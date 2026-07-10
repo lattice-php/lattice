@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeCallout } from "@lattice-php/lattice/toast/callout";
+import { normalizeCallout } from "./callout";
 
 describe("normalizeCallout", () => {
   it("coerces a raw effect detail into a Callout", () => {
