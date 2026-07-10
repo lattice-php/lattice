@@ -1,5 +1,137 @@
 # Changelog
 
+## [0.18.0](https://github.com/lattice-php/lattice/compare/0.17.2...0.18.0) (2026-07-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* reshape shared concerns around one nullable label and serializer-owned keys
+* drop the dead client hidden-field reads
+* extract shared label, size, color concerns and localize the action-group default
+* hide components whose definition denies authorization at render time
+* drop the orphaned field visibility assertions
+* merge the field hidden flag into the shared render gate
+* when() is removed with no alias; use visible()/hidden() instead.
+* consume dedicated filters as standard wire nodes
+* serialize dedicated table filters as standard wire nodes
+* unify wire type discriminators
+* tighten package exports to deliberate entrypoints
+* rebuild the row-field substrate as a blessed extension API
+* narrow disguised-false component flags to explicit booleans
+* wire column flags as explicit booleans and drop ColumnFilter::enabled
+
+### Features
+
+* add schema-based table filters ([f71db16](https://github.com/lattice-php/lattice/commit/f71db164bd20c411185b41febbf00d0904a45aec))
+* add schema-based table filters ([1fb8c57](https://github.com/lattice-php/lattice/commit/1fb8c57abbc6861d2422794e53f7941c12b975eb))
+* add visible() to columns, omitting hidden columns server-side ([582d08a](https://github.com/lattice-php/lattice/commit/582d08a516d7187f78dfc39ee978b7ac137e7263))
+* align select and filter closure contexts with the field surfaces ([ba96bda](https://github.com/lattice-php/lattice/commit/ba96bdaf6751463065677bba9fc915abad4c737b))
+* allow packages to register discovery groups ([c61474f](https://github.com/lattice-php/lattice/commit/c61474ff2ad1777c08bbf067561778b9bc6e5522))
+* extensible discovery groups + retain optional Builder row fields ([df4d157](https://github.com/lattice-php/lattice/commit/df4d157127bc10a6992d3747323252ad6bbf9317))
+* gate table filters and row actions through the shared visibility gate ([df14533](https://github.com/lattice-php/lattice/commit/df145331578e070f3e4b5d42034d1d681548d35d))
+* generate FilterPropsMap for typed table-filter props ([e210ca0](https://github.com/lattice-php/lattice/commit/e210ca04f605985d0d86a2447c1737f06b729288))
+* hide components whose definition denies authorization at render time ([f9dfb24](https://github.com/lattice-php/lattice/commit/f9dfb24cde92e27d7c41f8d3eba55e006cd4fe60))
+* let table filters declare custom string controls, mirroring columns ([ec462b8](https://github.com/lattice-php/lattice/commit/ec462b8b0d8ae2422311d36d0b8a465236cfff1b))
+* merge the field hidden flag into the shared render gate ([c21e720](https://github.com/lattice-php/lattice/commit/c21e720f89a2f4cfa317124c37d1ad2141458333))
+* stack columns render a bound component schema per row ([8624615](https://github.com/lattice-php/lattice/commit/862461507458f756a2dada1afd9277f22fe44337))
+* tighten package exports to deliberate entrypoints ([721b0b4](https://github.com/lattice-php/lattice/commit/721b0b46ed11debd413d2bcdbea31164565b6af2))
+* typed table-filter props via FilterPropsOf ([64e57bc](https://github.com/lattice-php/lattice/commit/64e57bccd3916f37075575e0041b7229b6168099))
+* unify filter chips into one bar and namespace filter option search ([f5fc918](https://github.com/lattice-php/lattice/commit/f5fc918aebe5ab91299fb548481fd349f563e953))
+* unify render gating behind visible() and hidden() with closure support ([1678919](https://github.com/lattice-php/lattice/commit/1678919a7d1a5d1e69b4e578bb30700f57bf36a6))
+* unify wire type discriminators ([92d111d](https://github.com/lattice-php/lattice/commit/92d111d9242d7f36215a92c8141303f9fe588280))
+
+
+### Bug Fixes
+
+* add #[Override] attribute to Field::decorateProps ([ea9101a](https://github.com/lattice-php/lattice/commit/ea9101a74a7be274c868f67c3dc042a609e8b393))
+* address performance review followups ([bd673cc](https://github.com/lattice-php/lattice/commit/bd673cccb6f8a3c4c8648ebb50084a09b63c7fa9))
+* align fixture dump unicode encoding ([a2a7164](https://github.com/lattice-php/lattice/commit/a2a7164f1b62f2b262f05e638cd13ccdfa0a2f7f))
+* categorize table filters as their own discovery category ([1ee2fd7](https://github.com/lattice-php/lattice/commit/1ee2fd720618b58f8ff79fa9a9c2adce4f252dd0))
+* **deps:** keep playwright at 1.60.0 ([c74f757](https://github.com/lattice-php/lattice/commit/c74f757e546a7fc948db940effcd216efd62f3ee))
+* fail closed when a gated node reaches wire serialization ([2560d6f](https://github.com/lattice-php/lattice/commit/2560d6f69e7ed20e80f826af9666830f3506be31))
+* gate row, notification and embedded-form components behind render authorization ([d0e93d5](https://github.com/lattice-php/lattice/commit/d0e93d58878feae12fd44dee5ac86df5ac7b469a))
+* handle failed rustfs probe writes ([c449405](https://github.com/lattice-php/lattice/commit/c4494052a9dc2d9168ed792e4c8d252d5fcf5108))
+* keep generated types formatted in ci ([5593f11](https://github.com/lattice-php/lattice/commit/5593f1178245f58343a4ff63ea21ecb555a39db6))
+* keep the workspace root in the Vite dev-server fs.allow ([830a43a](https://github.com/lattice-php/lattice/commit/830a43abe00325f106c3fe8a7ad1c55dafb005f4))
+* match generated type property order to the CI regeneration ([693c10d](https://github.com/lattice-php/lattice/commit/693c10d5c007093e50f556e577b7ffc5f5197782))
+* prune hidden columns from table row-data projection ([869896f](https://github.com/lattice-php/lattice/commit/869896f35aeccb5627b1d087a9e994078bf5589a))
+* resolve component packages from composer metadata ([fcf5092](https://github.com/lattice-php/lattice/commit/fcf5092c56eb4a8e1f56e2949bc7860bf75e7e01))
+* resolve hidden closures against the live instance and share the render-authorization guard ([5f8e8f1](https://github.com/lattice-php/lattice/commit/5f8e8f17565b601ae36f17593833262a6d0b04ae))
+* restore the workspace root in the Vite dev-server fs.allow ([8294cce](https://github.com/lattice-php/lattice/commit/8294ccef02969d419661987ecbbfa7e819b752fb))
+* retain optional builder/block row fields through validation ([9ed7c94](https://github.com/lattice-php/lattice/commit/9ed7c94b44a797532876dab1dd28f091dad8bb46))
+* serialize colors/icons value-maps as objects regardless of key style ([1b46e21](https://github.com/lattice-php/lattice/commit/1b46e219b37c99c3ff85bf6b5917500c45d6c5d6))
+* serialize empty wire maps as JSON objects, not arrays ([8b41269](https://github.com/lattice-php/lattice/commit/8b41269d012ab4771c2d2f78c00507bca70f5f4d))
+* serialize map-typed wire fields as objects, not arrays ([04d9630](https://github.com/lattice-php/lattice/commit/04d9630dd6d89c919a2dc39306e26216eccae0d3))
+* **test:** identify prune notifications by title, not created_at order ([697c6cd](https://github.com/lattice-php/lattice/commit/697c6cd55ba5a9f3516b4f4b2013064214ac6852))
+* **types:** include filter in DiscoveredComponent category ([fe08f9c](https://github.com/lattice-php/lattice/commit/fe08f9c96a104b84ff79d145fb499c1ef63493d2))
+
+
+### Performance
+
+* materialize wire trees with a direct walk instead of a JSON round-trip ([f39cdea](https://github.com/lattice-php/lattice/commit/f39cdea2d575630b7b6ea14b60ffe9e46b1471ae))
+
+
+### Refactoring
+
+* add form/embed as the deliberate form-hosting surface ([cf09e62](https://github.com/lattice-php/lattice/commit/cf09e62966f4779f3d06d3c3656d9ac7d311dc85))
+* add selector-based form value store ([969f89c](https://github.com/lattice-php/lattice/commit/969f89c41c9d46e6a85ca482452824f44a007f26))
+* build column props via the shared decorateProps seam; empty props serialize as [] ([e9d8763](https://github.com/lattice-php/lattice/commit/e9d876392bc20f7787bf028967235945198202ca))
+* classify wire types by explicit attribute precedence ([e5e4472](https://github.com/lattice-php/lattice/commit/e5e4472a3594bdf266e31065c743f6830dcf541c))
+* ColumnData.props is always present; drop client null-guards ([7a2736e](https://github.com/lattice-php/lattice/commit/7a2736e58f696fb704ebfbd498be90fcb7331428))
+* columns cleanup — WireMap attribute, public common props, stack schema ([06f7300](https://github.com/lattice-php/lattice/commit/06f7300df0a48dd97a882aa8cc8cda95d814ac73))
+* compute field wire props in decorateProps instead of mutating state ([d53597e](https://github.com/lattice-php/lattice/commit/d53597ea43d5d54ee3fe163bd5e9d5b82056713e))
+* consume dedicated filters as standard wire nodes ([b735a18](https://github.com/lattice-php/lattice/commit/b735a1877b9b1702b6ed20a138c5c619d93155e6))
+* converge wire-node serialization onto one convention ([a1f6bc3](https://github.com/lattice-php/lattice/commit/a1f6bc3f58df980f3ef8c7e4fae98b058a7c8492))
+* derive TypeScript domain nodes from discovery ([c4fa950](https://github.com/lattice-php/lattice/commit/c4fa9505d255bb9f7fdcac94c5a758dafa36f5a3))
+* drop hand-rolled value-object serializers where native encoding is identical ([ca662b7](https://github.com/lattice-php/lattice/commit/ca662b772f3c8ea711aaf15f1d748d5298b8eaca))
+* drop the dead client hidden-field reads ([ee11cec](https://github.com/lattice-php/lattice/commit/ee11cec157be223566edb31232b89909d1338230))
+* drop the orphaned field visibility assertions ([b5cc308](https://github.com/lattice-php/lattice/commit/b5cc308da0e8e81435ac6d0b68c604332275481e))
+* drop unreachable filter rules and dedupe filter value plumbing ([aeaf42c](https://github.com/lattice-php/lattice/commit/aeaf42c2149635340f570a0414a8b89ff2ec9396))
+* emit schema children lazily through one shared convention ([9529797](https://github.com/lattice-php/lattice/commit/9529797f557045f34feb653ae3b069bc29d34efa))
+* extract GatesRendering trait and Renderable contract from Component ([a7a2279](https://github.com/lattice-php/lattice/commit/a7a22793c0062d1f053529e6df9310efb4bf769c))
+* extract SerializesToWire from ReflectsWireProps with a decorateProps seam ([1f0ab58](https://github.com/lattice-php/lattice/commit/1f0ab5873785c34bb7d08a9247bc551faeee45cd))
+* extract shared label, size, color concerns and localize the action-group default ([b6c7657](https://github.com/lattice-php/lattice/commit/b6c76575eff6146f570e77d8275f2d705329e121))
+* extract the node serialization pipeline into SerializesWireNode ([ae13c39](https://github.com/lattice-php/lattice/commit/ae13c3990ff95f9925e30fd2772f38b3c53c27d9))
+* extract the shared readonly-key and keyed-label concerns ([988434a](https://github.com/lattice-php/lattice/commit/988434a9deac43a6d681f2fa2cb72a182b977f0a))
+* filters reflect props through the shared seam via #[AsFilter] ([4a3161b](https://github.com/lattice-php/lattice/commit/4a3161b896b751a9b6b3c67a1e1b6954beeffac2))
+* finish TypeScript layering ([e4c5a12](https://github.com/lattice-php/lattice/commit/e4c5a12546d68cf0782b52adc91b8bc872b309b0))
+* flatten table columns to {type,key,props} nodes ([aaabe13](https://github.com/lattice-php/lattice/commit/aaabe13e2e149c39c661eca9c0afb5c06d388f14))
+* flatten table columns to {type,key,props} nodes (PHP) ([f4e6c2a](https://github.com/lattice-php/lattice/commit/f4e6c2a8dd6f0ebdb13f90f379f75a4b39f96217))
+* fold the row-schema trait into RowsField and dedupe reserved-key plumbing ([2044d8c](https://github.com/lattice-php/lattice/commit/2044d8c4af35df09a036beece155e6116e617509))
+* improve render and resize performance ([a08dbc2](https://github.com/lattice-php/lattice/commit/a08dbc2132feb0bc3a7c9e3a0970f7dcb6be2d8b))
+* internal domain boundaries — form/embed, click-model ownership, lint enforcement ([8a3b524](https://github.com/lattice-php/lattice/commit/8a3b52431258da1f25e68c6136a826135b15a71d))
+* make column common concerns public wire props (Field pattern) ([cef331b](https://github.com/lattice-php/lattice/commit/cef331b7d541fc268d316251a747a97d437bd380))
+* make TypeScript the base marker attribute for the wire surface ([bc9339e](https://github.com/lattice-php/lattice/commit/bc9339e3e2851483a02097a784a68910309c2ab4))
+* memoize node renderer ([a995f96](https://github.com/lattice-php/lattice/commit/a995f9689404b7c55fdceb70fc0d96a168f8639f))
+* memoize page metadata resolution ([528ac45](https://github.com/lattice-php/lattice/commit/528ac4516d7373dd7d0a5be6a49ab91d880cd1b3))
+* move columns onto the shared node pipeline without serialization side effects ([d11d6f7](https://github.com/lattice-php/lattice/commit/d11d6f7d3522a6d1c001c2b36995be5269a25549))
+* narrow disguised-false component flags to explicit booleans ([a3a61e3](https://github.com/lattice-php/lattice/commit/a3a61e39c012a7633fa642883f683ddad057da50))
+* normalize resources/js into per-domain components/hooks/lib folders ([940f8b3](https://github.com/lattice-php/lattice/commit/940f8b31f4f799ae41ff373a10843c0d6bda2fd6))
+* optimize table column resizing ([43a9a05](https://github.com/lattice-php/lattice/commit/43a9a053ab78d1db6685bf2d109887106b2072bc))
+* polish PHP domain structure ([1bf92fb](https://github.com/lattice-php/lattice/commit/1bf92fb690e7253239b12f9a496c51174e350033))
+* polish PHP structure and TypeScript layering ([87948d5](https://github.com/lattice-php/lattice/commit/87948d50816eca41239e4a0d254359e4d8fa1ffb))
+* re-home the click model into the action domain ([9561efa](https://github.com/lattice-php/lattice/commit/9561efaace50d940e68aa30dcde322683ff48014))
+* re-home the serialization purity test and drop a stale docblock line ([3af37ea](https://github.com/lattice-php/lattice/commit/3af37ea787e8d21e898964eee5c0fa53f34c7f22))
+* read flattened column props on the client (JS) ([dc51204](https://github.com/lattice-php/lattice/commit/dc512045a9635f99ea36ec05fb30b6485dd7e630))
+* rebuild the row-field substrate as a blessed extension API ([4d3aff8](https://github.com/lattice-php/lattice/commit/4d3aff80b96a3f71e80ecb1384aab8af85e8c7ea))
+* register built-in discovery kinds via the service provider ([39a27e7](https://github.com/lattice-php/lattice/commit/39a27e735025d00eb2e2585948ec81b5f77cdf94))
+* reshape shared concerns around one nullable label and serializer-owned keys ([cd52fae](https://github.com/lattice-php/lattice/commit/cd52fae360bda6ae779498405cca05779e1af42c))
+* route feature-domain imports through barrels and enforce with lint ([421e759](https://github.com/lattice-php/lattice/commit/421e7590ad07dfe54a23ac1b0e49d9a5ae7944df))
+* serialize dedicated table filters as standard wire nodes ([dfe8b42](https://github.com/lattice-php/lattice/commit/dfe8b42b6ed33162b64763170d553c9c87bf586b))
+* serialize effects through shared wire reflection ([180bc6c](https://github.com/lattice-php/lattice/commit/180bc6cd4c7ab379d772a233bc854e590ca4ea58))
+* serialize map-typed wire props declaratively via #[WireMap] ([e69fe34](https://github.com/lattice-php/lattice/commit/e69fe34a82de1b4c281e01a25d1db6a4b194ffcd))
+* trim comments to why-only ([30260ea](https://github.com/lattice-php/lattice/commit/30260eafad284d46f0cb4b6281d7bfedf8d2f49c))
+* unify TypeScript generation discovery behind WireTypeDiscovery ([9671aa6](https://github.com/lattice-php/lattice/commit/9671aa68d819051ab0f268e147830337ab4a4dd7))
+* wire column flags as explicit booleans and drop ColumnFilter::enabled ([5e159f4](https://github.com/lattice-php/lattice/commit/5e159f47b9fc195271b29fcc254cacccc99229f2))
+
+
+### Documentation
+
+* describe render-time authorization hiding ([3e51df6](https://github.com/lattice-php/lattice/commit/3e51df6949effc98807f64d63f69f47f0ed4d205))
+* design schema-based table filters ([15b263d](https://github.com/lattice-php/lattice/commit/15b263dab9cfcfd0a3911d9316ddd89c512063b1))
+* drop redundant and stale decorateProps docblocks ([d7784fb](https://github.com/lattice-php/lattice/commit/d7784fb83a73aeaedccdbe5c4e9859c2a7fd072e))
+* plan schema-based table filters ([257e020](https://github.com/lattice-php/lattice/commit/257e0202c3cc01b805bf81ac3086cc617e601bb1))
+
 ## [0.17.2](https://github.com/lattice-php/lattice/compare/0.17.1...0.17.2) (2026-07-08)
 
 
