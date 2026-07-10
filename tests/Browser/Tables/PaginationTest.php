@@ -1,15 +1,28 @@
 <?php
 declare(strict_types=1);
 
+use Pest\Browser\Api\PendingAwaitablePage;
+
+/**
+ * The infinite tab's IntersectionObserver auto-fires loadMore() when the
+ * sentinel enters its 240px root margin — which can happen before the first
+ * page paints under CI load, unmounting the "Load more" button mid-test.
+ * use-table bails when the API is undefined, pinning these tests to the
+ * manual load path.
+ */
+function disableInfiniteScrollAutoLoad(PendingAwaitablePage $page): void
+{
+    $page->script('window.IntersectionObserver = undefined');
+}
+
 it('shows pagination modes in lazily loaded tabs', function (): void {
     $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
-    // A short viewport keeps the infinite-scroll sentinel below the fold so its
-    // IntersectionObserver cannot auto-load page two before we assert "Load more".
-    visit('/tables')
-        ->resize(1280, 720)
-        ->assertSee('Pagination modes')
+    $page = visit('/tables');
+    disableInfiniteScrollAutoLoad($page);
+
+    $page->assertSee('Pagination modes')
         ->assertSee('No pagination')
         ->assertSee('Maya Chen')
         ->assertDontSee('Simple pagination')
@@ -18,41 +31,66 @@ it('shows pagination modes in lazily loaded tabs', function (): void {
         ->click('@tab-simple')
         ->assertSee('Simple pagination')
         ->click('@tab-table')
-        ->assertSee('Table pagination')
-        ->assertSee('Showing 1-25 of 30')
-        ->click('@tab-infinite')
-        ->assertSee('Infinite pagination')
-        ->assertSee('Load more')
-        ->assertNoSmoke();
+        ->assertSee('Table pagination');
+
+    eventually(function () use ($page): void {
+        $page->assertSee('Showing 1-25 of 30');
+    });
+
+    $page->click('@tab-infinite')
+        ->assertSee('Infinite pagination');
+
+    eventually(function () use ($page): void {
+        $page->assertSee('Load more');
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('navigates between pages in table pagination mode', function (): void {
     $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
-    visit('/tables')
-        ->click('@tab-table')
-        ->assertSee('Showing 1-25 of 30')
-        ->click('@pagination-next')
-        ->assertSee('Showing 26-30 of 30')
-        ->click('@pagination-page-1')
-        ->assertSee('Showing 1-25 of 30')
-        ->assertNoSmoke();
+    $page = visit('/tables');
+
+    $page->click('@tab-table');
+    eventually(function () use ($page): void {
+        $page->assertSee('Showing 1-25 of 30');
+    });
+
+    $page->click('@pagination-next');
+    eventually(function () use ($page): void {
+        $page->assertSee('Showing 26-30 of 30');
+    });
+
+    $page->click('@pagination-page-1');
+    eventually(function () use ($page): void {
+        $page->assertSee('Showing 1-25 of 30');
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('loads more rows in infinite mode', function (): void {
     $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
-    // A short viewport keeps the infinite-scroll sentinel below the fold so its
-    // IntersectionObserver cannot auto-load page two before the explicit click.
-    visit('/tables')
-        ->resize(1280, 720)
-        ->click('@tab-infinite')
-        ->assertDontSee('Browser User 26')
-        ->click('@pagination-load-more')
-        ->assertSee('Browser User 26')
-        ->assertNoSmoke();
+    $page = visit('/tables');
+    disableInfiniteScrollAutoLoad($page);
+
+    $page->click('@tab-infinite');
+    eventually(function () use ($page): void {
+        $page->assertSee('Load more');
+    });
+
+    $page->assertDontSee('Browser User 26')
+        ->click('@pagination-load-more');
+
+    eventually(function () use ($page): void {
+        $page->assertSee('Browser User 26');
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('keeps the topbar user menu visible on infinite pagination pages', function (): void {
@@ -60,12 +98,19 @@ it('keeps the topbar user menu visible on infinite pagination pages', function (
     seedWorkbenchUsers();
 
     $page = visit('/tables');
+    disableInfiniteScrollAutoLoad($page);
 
-    $page->resize(1280, 720)
-        ->click('@tab-infinite')
-        ->click('@pagination-load-more')
-        ->assertSee('Browser User 26')
-        ->assertVisible('@user-menu');
+    $page->click('@tab-infinite');
+    eventually(function () use ($page): void {
+        $page->assertSee('Load more');
+    });
+
+    $page->click('@pagination-load-more');
+    eventually(function () use ($page): void {
+        $page->assertSee('Browser User 26');
+    });
+
+    $page->assertVisible('@user-menu');
 
     expect($page->script(<<<'JS'
         () => {
