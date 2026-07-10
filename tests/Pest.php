@@ -380,7 +380,7 @@ function dumpFixture(string $key, array $nodes): void
 
     file_put_contents(
         dirname(__DIR__).'/docs/fixtures/'.$key.'.json',
-        json_encode(sortFixtureKeys(stripFixtureRefs($normalized)), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)."\n",
+        json_encode(sortFixtureKeys(stripFixtureRefs($normalized)), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR)."\n",
     );
 }
 
