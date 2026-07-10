@@ -109,8 +109,13 @@ function rustfsIsReachable(): bool
     $key = 'lattice-test-probes/'.Str::uuid().'.txt';
 
     try {
-        Storage::disk('s3')->put($key, 'ok');
-        Storage::disk('s3')->delete($key);
+        $disk = Storage::disk('s3');
+
+        if ($disk->put($key, 'ok') !== true) {
+            return false;
+        }
+
+        $disk->delete($key);
 
         return true;
     } catch (Throwable) {
