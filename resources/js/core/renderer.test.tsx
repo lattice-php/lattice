@@ -1,4 +1,5 @@
-import { screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
+import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent, lazyComponent } from "@lattice-php/lattice";
 import { Renderer } from "@lattice-php/lattice";
@@ -140,5 +141,41 @@ describe("Renderer", () => {
     );
 
     expect(screen.getByTestId("lazy-node-fallback")).toBeVisible();
+  });
+
+  it("does not rerender stable nodes when a parent updates", () => {
+    let renders = 0;
+    const node = { id: "stable-node", type: "test.counter" };
+    const CounterComponent: RendererComponent<"test.counter"> = ({ node }) => {
+      renders++;
+
+      return <div data-test={node.id} />;
+    };
+    const Parent = () => {
+      const [count, setCount] = useState(0);
+
+      return (
+        <>
+          <button type="button" onClick={() => setCount((current) => current + 1)}>
+            {count}
+          </button>
+          <Renderer nodes={[node]} />
+        </>
+      );
+    };
+    const registry = createRegistry({
+      components: {
+        "test.counter": eagerComponent(CounterComponent),
+      },
+      name: "test",
+    });
+
+    renderWithRegistry(<Parent />, registry);
+
+    expect(renders).toBe(1);
+
+    fireEvent.click(screen.getByRole("button"));
+
+    expect(renders).toBe(1);
   });
 });

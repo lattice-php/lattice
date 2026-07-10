@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { memo, Suspense } from "react";
 import type { ReactNode } from "react";
 import type { Node } from "./types";
 import { useCollapsed } from "./collapsed-context";
@@ -74,7 +74,7 @@ export function RenderNode({ node }: { node: Node }): ReactNode {
   return <NodeRenderer node={node} />;
 }
 
-function NodeRenderer({ node }: { node: Node }) {
+const NodeRenderer = memo(function NodeRenderer({ node }: { node: Node }) {
   const collapsed = useCollapsed();
   const registry = useComponentRegistry();
   const registration = registry[node.type];
@@ -101,4 +101,4 @@ function NodeRenderer({ node }: { node: Node }) {
   }
 
   return renderedComponent;
-}
+});
