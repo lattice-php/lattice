@@ -1,13 +1,15 @@
 import type { Node } from "@lattice-php/lattice/core/types";
-import { type FieldState, evaluateConditions } from "../lib/conditions";
+import { useMemo } from "react";
+import { conditionFields, type FieldState, evaluateConditions } from "../lib/conditions";
 import { fieldProps } from "../lib/field-props";
 import { useFieldScope } from "./field-scope";
-import { useFormValues } from "./values";
+import { useFormValuesFor } from "./values";
 
 export function useDependentField(node: Node): FieldState {
-  const values = useFormValues();
   const scope = useFieldScope();
   const props = fieldProps(node);
+  const fields = useMemo(() => conditionFields(props.conditions), [props.conditions]);
+  const values = useFormValuesFor(fields);
   // Bare condition names resolve to row siblings first; form values remain the fallback.
   const conditionValues = scope ? { ...values, ...scope.values } : values;
 
