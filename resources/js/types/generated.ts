@@ -10,7 +10,7 @@ export type Action = {
   variant: ButtonVariant | null;
 };
 export type ActionGroup = {
-  label: string;
+  label: string | null;
   orientation: Orientation | null;
   ref: string | null;
 };
@@ -70,7 +70,6 @@ export type Builder = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   layout: RowLayout;
   maxItems: number | null;
@@ -187,7 +186,6 @@ export type Checkbox = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   prefillRefreshOn: string[] | null;
@@ -212,7 +210,6 @@ export type Choice = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   options: Option[];
@@ -368,7 +365,6 @@ export type DateInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   max: string | null;
   min: string | null;
@@ -399,7 +395,6 @@ export type DateTimeInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   max: string | null;
   min: string | null;
@@ -479,7 +474,6 @@ export type FileUpload = {
       }[]
     | null;
   helperText: string | null;
-  hidden: boolean;
   image: boolean;
   label: string | null;
   maxFiles: number | null;
@@ -604,7 +598,6 @@ export type HiddenInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   prefillRefreshOn: string[] | null;
@@ -827,7 +820,6 @@ export type NumberInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   max: number | null;
   min: number | null;
@@ -883,7 +875,6 @@ export type OtpInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   length: number;
   name: string;
@@ -918,7 +909,6 @@ export type PasswordInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   labelAction: {
     href: string;
@@ -973,7 +963,6 @@ export type Repeater = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   itemLabel: string | null;
   label: string | null;
   layout: RowLayout;
@@ -1007,7 +996,6 @@ export type RichEditor = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   placeholder: string | null;
@@ -1021,9 +1009,9 @@ export type RichEditor = {
 export type RowAction = {
   type: RowActionType;
   key: string;
-  label: string | null;
-  icon: string | null;
   destructive: boolean;
+  icon: string | null;
+  label: string | null;
 };
 export type RowActionType = "duplicate" | "remove";
 export type RowLayout = "stack" | "table";
@@ -1058,7 +1046,6 @@ export type Select = {
   editablePrefill: boolean;
   emptyLabel: string;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   multiple: boolean;
   name: string;
@@ -1210,7 +1197,6 @@ export type TextInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   placeholder: string | null;
@@ -1242,7 +1228,6 @@ export type Textarea = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   placeholder: string | null;
@@ -1269,7 +1254,6 @@ export type TimeInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   max: string | null;
   min: string | null;
@@ -1308,7 +1292,6 @@ export type Toggle = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   prefillRefreshOn: string[] | null;
