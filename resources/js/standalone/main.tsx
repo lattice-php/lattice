@@ -1,6 +1,6 @@
-import "../../css/standalone.css";
-import { createLatticeApp } from "../create-app";
-import { withVisitHeaders } from "../inertia";
+import "./standalone.css";
+import { createLatticeApp } from "@lattice-php/lattice/create-app";
+import { withVisitHeaders } from "@lattice-php/lattice/inertia";
 import { readStandaloneConfig } from "./config";
 
 const config = readStandaloneConfig(document);
