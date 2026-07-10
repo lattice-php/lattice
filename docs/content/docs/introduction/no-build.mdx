@@ -73,12 +73,13 @@ php artisan vendor:publish --tag="lattice-config"
 ## Limitations
 
 <Warning title="What the no-build path can't do">
-  Because there is no build step, the bundle can only ship what was compiled into the package release:
+  Because there is no build step, the bundle can only ship what was compiled into the package
+  release. The list below is what requires switching to the regular Vite-based installation.
+</Warning>
 
 - No custom JS components, pages, or table columns — [extending Lattice](/extending/overview/) requires the Vite build.
 - Only Lattice's built-in icon set; you can't add your own `resources/icons` sprite.
 - English-only chrome. There's no i18n backend wired in, so [Internationalization](/core/i18n/) locale switching doesn't apply here.
 - The bundle includes its own copy of React. If the page already loads React from elsewhere, you end up with two React runtimes on the page.
-  </Warning>
 
 If you outgrow any of these, switch to the [regular installation](/introduction/installation/) — the PHP side (pages, forms, tables, config) is identical either way; only the frontend delivery changes.
