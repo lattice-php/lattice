@@ -106,7 +106,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   );
   const resizingEnabled = node.props?.resizableColumns === true;
   const resizeStorageIdentity = nodeIdentity(node);
-  const { getResizeHandleProps, gridTemplateColumns, hasOverrides, resetColumns } =
+  const { getResizeHandleProps, gridTemplateColumns, hasOverrides, resizeRootRef, resetColumns } =
     useColumnResizing({
       columns: sizingColumns,
       enabled: resizingEnabled,
@@ -171,7 +171,12 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             onClear={clearSort}
           />
         )}
-        <div className="min-w-full text-base" role="table">
+        <div
+          ref={resizeRootRef}
+          className="min-w-full text-base"
+          role="table"
+          style={{ "--lattice-table-columns": gridTemplateColumns } as never}
+        >
           <div
             data-slot="table-header"
             className="border-b border-lt-border bg-lt-muted/50"
@@ -180,7 +185,6 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             <div
               className="hidden min-w-full md:grid md:grid-cols-[var(--lattice-table-columns)]"
               role="row"
-              style={{ "--lattice-table-columns": gridTemplateColumns } as never}
             >
               {hasBulkActions && (
                 <div className="flex items-center px-4 py-3" role="columnheader">
@@ -237,7 +241,6 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
               <div
                 className="hidden min-w-full border-t border-lt-border md:grid md:grid-cols-[var(--lattice-table-columns)]"
                 role="row"
-                style={{ "--lattice-table-columns": gridTemplateColumns } as never}
               >
                 {hasBulkActions && <div className="px-4 py-2" role="cell" />}
                 {visibleColumns.map((column) => (
@@ -281,7 +284,6 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                       striped ? "odd:bg-lt-muted/30" : ""
                     }`}
                     role="row"
-                    style={{ "--lattice-table-columns": gridTemplateColumns } as never}
                   >
                     {hasBulkActions && (
                       <div className="flex items-center px-lt-cell-x py-lt-cell-y" role="cell">

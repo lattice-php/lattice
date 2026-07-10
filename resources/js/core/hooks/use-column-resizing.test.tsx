@@ -59,7 +59,7 @@ function Harness({
   storageKey?: string;
   trailingTracks?: string[];
 }) {
-  const { gridTemplateColumns, getResizeHandleProps, hasOverrides, resetColumns } =
+  const { gridTemplateColumns, getResizeHandleProps, hasOverrides, resizeRootRef, resetColumns } =
     useColumnResizing({
       enabled,
       columns: hookColumns,
@@ -73,7 +73,7 @@ function Harness({
   onGetter?.(getResizeHandleProps);
 
   return (
-    <div data-test="grid" style={{ gridTemplateColumns }}>
+    <div ref={resizeRootRef} data-test="grid" style={{ gridTemplateColumns }}>
       <span data-test="has-overrides">{String(hasOverrides)}</span>
       <button data-test="reset" onClick={resetColumns} type="button">
         reset
@@ -102,6 +102,11 @@ describe("useColumnResizing", () => {
     fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
 
     expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "208px" });
+    expect(screen.getByTestId("has-overrides")).toHaveTextContent("false");
+    expect(window.localStorage.getItem("cols")).toBeNull();
+
+    fireEvent.pointerUp(handle, { clientX: 180, pointerId: 1 });
+
     expect(screen.getByTestId("has-overrides")).toHaveTextContent("true");
     expect(window.localStorage.getItem("cols")).not.toBeNull();
 
@@ -243,6 +248,10 @@ describe("useColumnResizing", () => {
     fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
     fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
 
+    expect(window.localStorage.getItem("lattice:table-columns:orders")).toBeNull();
+
+    fireEvent.pointerUp(handle, { clientX: 180, pointerId: 1 });
+
     expect(JSON.parse(window.localStorage.getItem("lattice:table-columns:orders") ?? "")).toEqual({
       columns: ["qty", "price"],
       overrides: {
@@ -272,6 +281,10 @@ describe("useColumnResizing", () => {
 
     fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
     fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
+
+    expect(getters).toHaveLength(1);
+
+    fireEvent.pointerUp(handle, { clientX: 180, pointerId: 1 });
 
     expect(getters.length).toBeGreaterThan(1);
     expect(new Set(getters).size).toBe(1);

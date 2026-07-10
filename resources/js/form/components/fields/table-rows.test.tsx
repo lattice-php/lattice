@@ -152,9 +152,9 @@ it("uses column width hints when building the table grid", () => {
     />,
   );
 
-  expect(screen.getByText("Qty").parentElement).toHaveStyle({
-    gridTemplateColumns: "3rem minmax(4rem, 0.35fr) minmax(16rem, 2fr) 3rem",
-  });
+  expect(screen.getByText("Qty").parentElement?.parentElement).toHaveStyle(
+    "--lattice-table-columns: 3rem minmax(4rem, 0.35fr) minmax(16rem, 2fr) 3rem",
+  );
 });
 
 it("does not render column resize handles unless enabled", () => {
@@ -217,6 +217,10 @@ it("stores table layout column widths under the field base", () => {
 
   fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
   fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
+
+  expect(window.localStorage.getItem("lattice:table-columns:form:items")).toBeNull();
+
+  fireEvent.pointerUp(handle, { clientX: 180, pointerId: 1 });
 
   expect(JSON.parse(window.localStorage.getItem("lattice:table-columns:form:items") ?? "")).toEqual(
     {

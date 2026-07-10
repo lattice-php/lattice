@@ -376,6 +376,10 @@ describe("Lattice table component", () => {
     fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
     fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
 
+    expect(window.localStorage.getItem("lattice:table-columns:workbench.products")).toBeNull();
+
+    fireEvent.pointerUp(handle, { clientX: 180, pointerId: 1 });
+
     expect(
       JSON.parse(window.localStorage.getItem("lattice:table-columns:workbench.products") ?? ""),
     ).toEqual({
@@ -384,6 +388,41 @@ describe("Lattice table component", () => {
         qty: 256,
       },
     });
+  });
+
+  it("keeps resized table column styles on the table root instead of every row", () => {
+    const node = {
+      id: "workbench.products",
+      props: {
+        columns: [
+          col({
+            key: "qty",
+            label: "Qty",
+          }),
+          col({
+            key: "price",
+            label: "Price",
+          }),
+        ],
+        data: [{ id: 1, qty: 1, price: "$10" }],
+        resizableColumns: true,
+        state: {
+          filters: [],
+          page: 1,
+          perPage: 25,
+          sorts: [],
+        },
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    const row = screen.getByRole("cell", { name: "1" }).closest('[data-slot="table-row"]');
+    const table = row?.parentElement?.parentElement;
+
+    expect(table).toHaveStyle("--lattice-table-columns: minmax(8rem, 1fr) minmax(8rem, 1fr)");
+    expect(row?.getAttribute("style") ?? "").not.toContain("--lattice-table-columns");
   });
 
   it("renders grid rows with stack columns and row actions without table cells", async () => {
