@@ -66,11 +66,6 @@ abstract class Column implements JsonSerializable, Renderable
         return $this;
     }
 
-    public function visible(bool $visible = true): static
-    {
-        return $this->when($visible);
-    }
-
     public function width(ColumnWidth $width): static
     {
         $this->width = $width;

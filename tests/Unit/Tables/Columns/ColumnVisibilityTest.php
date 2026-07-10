@@ -20,7 +20,7 @@ it('omits a column hidden via visible(false) from the serialized table', functio
 it('omits a hidden child from a stack column', function (): void {
     $wire = wire(StackColumn::make('stack')->schema([
         Text::make('Shown', 'shown'),
-        Text::make('Hidden', 'hidden')->when(false),
+        Text::make('Hidden', 'hidden')->hidden(),
     ]));
 
     $childKeys = array_map(fn (array $c): string => $c['key'], $wire['schema']);

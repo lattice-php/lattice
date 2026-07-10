@@ -250,10 +250,10 @@ test('components can opt out of rendering with when', function (): void {
         {
             return $schema->schema([
                 Text::make('Visible root'),
-                Text::make('Hidden root')->when(false),
+                Text::make('Hidden root')->hidden(),
                 Stack::make('nested')->schema([
                     Text::make('Visible child'),
-                    Text::make('Hidden child')->when(false),
+                    Text::make('Hidden child')->hidden(),
                 ]),
             ]);
         }
@@ -402,7 +402,7 @@ test('tabs ignore hidden tab children when resolving their active value', functi
         ->defaultValue('security')
         ->schema([
             Tab::make('profile', 'Profile'),
-            Tab::make('security', 'Security')->when(false),
+            Tab::make('security', 'Security')->hidden(),
         ]));
 
     expect($tabs['props']['activeValue'])->toBe('profile')

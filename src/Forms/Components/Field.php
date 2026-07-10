@@ -311,16 +311,20 @@ abstract class Field extends Component
         return $this;
     }
 
-    public function hidden(bool $hidden = true): static
+    public function hidden(Closure|bool $condition = true): static
     {
-        $this->hidden = $hidden;
+        $this->hidden = $condition instanceof Closure
+            ? (bool) Evaluate::resolve($condition, $this->renderContext())
+            : $condition;
 
         return $this;
     }
 
-    public function visible(bool $visible = true): static
+    public function visible(Closure|bool $condition = true): static
     {
-        $this->hidden = ! $visible;
+        $this->hidden = $condition instanceof Closure
+            ? ! (bool) Evaluate::resolve($condition, $this->renderContext())
+            : ! $condition;
 
         return $this;
     }
