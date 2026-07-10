@@ -245,7 +245,6 @@ export default defineConfig(({ mode }) => {
               tsconfigPath: path.resolve(__dirname, "tsconfig.json"),
               include: ["resources/js"],
               copyDtsFiles: true,
-              // Exclude test files and declaration sources from .d.ts generation.
               exclude: [
                 "resources/js/**/*.test.*",
                 "resources/js/**/*.test-d.*",

@@ -29,10 +29,6 @@ class Action extends Component
 
     public ?string $endpoint = null;
 
-    /**
-     * The confirmation dialog shown before the action runs, or `null` until
-     * {@see confirm()} sets one.
-     */
     public ?Confirmation $confirmation = null;
 
     public ?Form $form = null;

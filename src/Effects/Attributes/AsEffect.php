@@ -25,8 +25,6 @@ final readonly class AsEffect extends TypeScript
     }
 
     /**
-     * Resolve the wire type declared by the #[AsEffect] attribute on $class.
-     *
      * @param  class-string  $class
      */
     public static function wireTypeForClass(string $class): string

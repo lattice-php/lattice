@@ -25,7 +25,6 @@
   --lt-success-fg: var(--success-foreground, oklch(0.985 0 0));
   --lt-info: var(--info, oklch(0.62 0.14 240));
   --lt-info-fg: var(--info-foreground, oklch(0.985 0 0));
-  /* Interaction states (hover / active / disabled) */
   --lt-primary-hover: var(--primary-hover, oklch(0.43 0.092 182));
   --lt-primary-active: var(--primary-active, oklch(0.39 0.092 182));
   --lt-danger-hover: var(--destructive-hover, oklch(0.53 0.21 27.3));
@@ -60,15 +59,14 @@
   --lt-control-h-lg: 2.5rem;
 
   /* Table cell padding — table density lever */
-  --lt-table-cell-x: calc(var(--spacing) * 4); /* 1rem */
-  --lt-table-cell-y: calc(var(--spacing) * 4); /* 1rem */
+  --lt-table-cell-x: calc(var(--spacing) * 4);
+  --lt-table-cell-y: calc(var(--spacing) * 4);
 
   --lt-font-weight-normal: 400;
   --lt-font-weight-medium: 500;
   --lt-font-weight-semibold: 600;
   --lt-font-weight-bold: 700;
 
-  /* Elevation */
   --lt-shadow-xs: 0 1px 1px 0 oklch(0 0 0 / 0.04);
   --lt-shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.05);
   --lt-shadow-md:
@@ -76,7 +74,6 @@
   --lt-shadow-lg:
     0 8px 16px -4px oklch(0 0 0 / 0.12), 0 2px 4px -2px oklch(0 0 0 / 0.08);
 
-  /* Z-index scale */
   --lt-z-dropdown: 1000;
   --lt-z-sticky: 1100;
   --lt-z-overlay: 1200;
@@ -84,17 +81,15 @@
   --lt-z-popover: 1400;
   --lt-z-toast: 1500;
 
-  /* Motion */
   --lt-duration-fast: 120ms;
   --lt-duration-base: 160ms;
 
-  /* Layout dimensions */
   --lt-sidebar-w: 16rem;
   --lt-sidebar-w-collapsed: 4rem;
   --lt-container-max: 80rem;
 
   /* Card / section content inset — the gutter apps can break out of */
-  --lt-gutter: calc(var(--spacing) * 6); /* 1.5rem */
+  --lt-gutter: calc(var(--spacing) * 6);
 
   color-scheme: light;
 }
@@ -127,7 +122,6 @@
   --lt-info: var(--info, oklch(0.7 0.14 240));
   --lt-info-fg: var(--info-foreground, oklch(0.205 0 0));
 
-  /* Interaction states (dark) */
   --lt-primary-hover: var(--primary-hover, oklch(0.79 0.105 182));
   --lt-primary-active: var(--primary-active, oklch(0.84 0.105 182));
   --lt-danger-hover: var(--destructive-hover, oklch(0.47 0.13 26));
@@ -217,7 +211,6 @@
     "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
 
-  /* Base spacing unit */
   --spacing: 0.25rem;
 
   --text-xs: 0.625rem;
