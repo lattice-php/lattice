@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Lattice\Lattice\Forms\Components\DateTimeInput;
 use Lattice\Lattice\Forms\FieldValidator;
+use Lattice\Lattice\Support\Wire;
 
 it('serializes a datetime input', function (): void {
     $node = wire(DateTimeInput::make('starts_at', 'Starts at')
@@ -75,11 +76,9 @@ it('hydrates Carbon values to datetime plus timezone', function (): void {
 });
 
 describe('docs fixtures', function (): void {
-    it('dumps the datetime input example', function (): void {
-        dumpFixture('date-time-input.basic', [
+    it('matches the datetime input example fixture', function (): void {
+        assertFixtureMatches('date-time-input.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             DateTimeInput::make('starts_at', 'Starts at'),
-        ]);
-
-        expect('docs/fixtures/date-time-input.basic.json')->toBeReadableFile();
+        ]))));
     });
 });

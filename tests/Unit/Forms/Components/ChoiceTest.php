@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Forms\Components\Choice;
+use Lattice\Lattice\Support\Wire;
 
 it('serializes the shared focus options', function (): void {
     $node = wire(Choice::make('plan', 'Plan')->autoFocus()->tabIndex(2));
@@ -11,15 +12,13 @@ it('serializes the shared focus options', function (): void {
 });
 
 describe('docs fixtures', function (): void {
-    it('dumps the choice example', function (): void {
-        dumpFixture('choice.basic', [
+    it('matches the choice example fixture', function (): void {
+        assertFixtureMatches('choice.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Choice::make('plan', 'Plan')->options([
                 Choice::option('Free', 'free'),
                 Choice::option('Pro', 'pro'),
                 Choice::option('Enterprise', 'enterprise'),
             ]),
-        ]);
-
-        expect('docs/fixtures/choice.basic.json')->toBeReadableFile();
+        ]))));
     });
 });

@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Lattice\Lattice\Forms\Components\TimeInput;
 use Lattice\Lattice\Forms\FieldValidator;
+use Lattice\Lattice\Support\Wire;
 
 it('serializes a time input', function (): void {
     $node = wire(TimeInput::make('starts_at', 'Start time')->min('08:00')->max('18:00')->step(900));
@@ -45,11 +46,9 @@ it('rejects malformed time values', function (): void {
 });
 
 describe('docs fixtures', function (): void {
-    it('dumps the time input example', function (): void {
-        dumpFixture('time-input.basic', [
+    it('matches the time input example fixture', function (): void {
+        assertFixtureMatches('time-input.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             TimeInput::make('starts_at', 'Start time')->min('08:00')->max('18:00'),
-        ]);
-
-        expect('docs/fixtures/time-input.basic.json')->toBeReadableFile();
+        ]))));
     });
 });

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Forms\Components\Toggle;
+use Lattice\Lattice\Support\Wire;
 
 it('serializes the shared focus options', function (): void {
     $node = wire(Toggle::make('published', 'Published')->autoFocus()->tabIndex(3));
@@ -21,11 +22,9 @@ it('serializes a default boolean value', function (): void {
 });
 
 describe('docs fixtures', function (): void {
-    it('dumps the toggle example', function (): void {
-        dumpFixture('toggle.basic', [
+    it('matches the toggle example fixture', function (): void {
+        assertFixtureMatches('toggle.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Toggle::make('published', 'Published')->helperText('Show this item publicly.'),
-        ]);
-
-        expect('docs/fixtures/toggle.basic.json')->toBeReadableFile();
+        ]))));
     });
 });

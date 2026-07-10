@@ -6,6 +6,7 @@ use Lattice\Lattice\Core\Enums\DateTimeStyle;
 use Lattice\Lattice\Core\Values\ChartSeries;
 use Lattice\Lattice\Core\Values\DateFormat;
 use Lattice\Lattice\Core\Values\NumberFormat;
+use Lattice\Lattice\Support\Wire;
 
 it('serializes a cartesian chart with fluent series helpers', function (): void {
     $node = wire(
@@ -146,8 +147,8 @@ it('defaults both formats to null', function (): void {
 });
 
 describe('docs fixtures', function (): void {
-    it('dumps the line chart example', function (): void {
-        dumpFixture('charts.line', [
+    it('matches the line chart example fixture', function (): void {
+        assertFixtureMatches('charts.line', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Chart::make('Signups', 'signups-chart')
                 ->description('New users per month')
                 ->categoryKey('month')
@@ -161,13 +162,11 @@ describe('docs fixtures', function (): void {
                 ->line('free', 'Free')
                 ->line('pro', 'Pro')
                 ->height(260),
-        ]);
-
-        expect('docs/fixtures/charts.line.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the grouped bar chart example', function (): void {
-        dumpFixture('charts.grouped-bar', [
+    it('matches the grouped bar chart example fixture', function (): void {
+        assertFixtureMatches('charts.grouped-bar', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Chart::make('Orders by channel', 'orders-chart')
                 ->categoryKey('week')
                 ->data([
@@ -179,13 +178,11 @@ describe('docs fixtures', function (): void {
                 ->bar('online', 'Online')
                 ->bar('store', 'In-store')
                 ->height(260),
-        ]);
-
-        expect('docs/fixtures/charts.grouped-bar.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the stacked bar chart example', function (): void {
-        dumpFixture('charts.stacked-bar', [
+    it('matches the stacked bar chart example fixture', function (): void {
+        assertFixtureMatches('charts.stacked-bar', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Chart::make('Monthly recurring revenue', 'mrr-chart')
                 ->description('Stacked by revenue type')
                 ->categoryKey('month')
@@ -198,13 +195,11 @@ describe('docs fixtures', function (): void {
                 ->bar('new', 'New', stackId: 'mrr')
                 ->bar('expansion', 'Expansion', stackId: 'mrr')
                 ->height(260),
-        ]);
-
-        expect('docs/fixtures/charts.stacked-bar.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the composed area and line chart example', function (): void {
-        dumpFixture('charts.composed', [
+    it('matches the composed area and line chart example fixture', function (): void {
+        assertFixtureMatches('charts.composed', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Chart::make('Revenue vs forecast', 'revenue-forecast-chart')
                 ->description('Actuals as a line over the forecast band')
                 ->categoryKey('month')
@@ -218,13 +213,11 @@ describe('docs fixtures', function (): void {
                 ->area('forecast', 'Forecast')
                 ->line('revenue', 'Revenue')
                 ->height(260),
-        ]);
-
-        expect('docs/fixtures/charts.composed.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the pie chart example', function (): void {
-        dumpFixture('charts.pie', [
+    it('matches the pie chart example fixture', function (): void {
+        assertFixtureMatches('charts.pie', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Chart::make('Revenue by channel', 'channel-mix-chart')
                 ->description('Share of total revenue')
                 ->data([
@@ -235,13 +228,11 @@ describe('docs fixtures', function (): void {
                 ])
                 ->pie('amount', nameKey: 'channel')
                 ->height(260),
-        ]);
-
-        expect('docs/fixtures/charts.pie.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the formatting example', function (): void {
-        dumpFixture('charts.formatting', [
+    it('matches the formatting example fixture', function (): void {
+        assertFixtureMatches('charts.formatting', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Chart::make('Revenue', 'formatting-chart')
                 ->description('Compact currency on the value axis, month labels on the category axis')
                 ->categoryKey('month')
@@ -255,8 +246,6 @@ describe('docs fixtures', function (): void {
                 ->categoryFormat(DateFormat::monthYear())
                 ->valueFormat(NumberFormat::currency('USD')->compact())
                 ->height(260),
-        ]);
-
-        expect('docs/fixtures/charts.formatting.json')->toBeReadableFile();
+        ]))));
     });
 });

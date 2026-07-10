@@ -5,10 +5,11 @@ use Lattice\Lattice\Forms\Components\Builder;
 use Lattice\Lattice\Forms\Components\RowTemplate;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Support\Wire;
 
 describe('docs fixtures', function (): void {
-    it('dumps the builder example', function (): void {
-        dumpFixture('builder.basic', [
+    it('matches the builder example fixture', function (): void {
+        assertFixtureMatches('builder.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Builder::make('items', 'Line items')
                 ->templates([
                     RowTemplate::make('text')->label('Text')->schema([
@@ -22,8 +23,6 @@ describe('docs fixtures', function (): void {
                 ])
                 ->minItems(1)
                 ->addLabel('Add block'),
-        ]);
-
-        expect('docs/fixtures/builder.basic.json')->toBeReadableFile();
+        ]))));
     });
 });

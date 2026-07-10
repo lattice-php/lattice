@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Support\Wire;
 
 it('serializes static options without search flags', function (): void {
     $field = Select::make('plan', 'Plan')->options([
@@ -75,8 +76,8 @@ it('serializes the shared focus options', function (): void {
 });
 
 describe('docs fixtures', function (): void {
-    it('dumps the select examples', function (): void {
-        dumpFixture('select.basic', [
+    it('matches the select examples fixture', function (): void {
+        assertFixtureMatches('select.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Select::make('country', 'Country')
                 ->placeholder('Pick a country')
                 ->options([
@@ -85,9 +86,9 @@ describe('docs fixtures', function (): void {
                     Select::option('Spain', 'es'),
                     Select::option('Italy', 'it'),
                 ]),
-        ]);
+        ]))));
 
-        dumpFixture('select.multiple', [
+        assertFixtureMatches('select.multiple', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Select::make('languages', 'Languages')
                 ->multiple()
                 ->placeholder('Choose languages')
@@ -97,9 +98,6 @@ describe('docs fixtures', function (): void {
                     Select::option('Go', 'go'),
                     Select::option('Rust', 'rust'),
                 ]),
-        ]);
-
-        expect('docs/fixtures/select.basic.json')->toBeReadableFile()
-            ->and('docs/fixtures/select.multiple.json')->toBeReadableFile();
+        ]))));
     });
 });
