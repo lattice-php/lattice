@@ -144,3 +144,13 @@ it('classifies AsRemoteComponent with correct precedence in components', functio
         ->and($dataList->category)->toBe('component')
         ->and($manifest->valueObjects)->not->toContain(DataList::class);
 });
+
+it('resolves a domain for every discovered src component', function (): void {
+    $components = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src')->components;
+
+    $orphans = collect($components)
+        ->filter(fn (DiscoveredComponent $dc): bool => $dc->category === 'component' && $dc->domain === '')
+        ->map(fn (DiscoveredComponent $dc): string => $dc->class);
+
+    expect($orphans->all())->toBe([]);
+});

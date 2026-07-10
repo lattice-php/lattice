@@ -25,12 +25,14 @@ abstract class Column implements JsonSerializable, Renderable
 
     public ColumnAlign $align = ColumnAlign::Start;
 
+    /** Generation-source declaration only; the wire value is computed in {@see self::decorateProps()}. */
     public bool $sortable = false;
 
     public bool $toggleable = false;
 
     public bool $hiddenByDefault = false;
 
+    /** Generation-source declaration only; the wire value is computed in {@see self::decorateProps()}. */
     public ?ColumnFilter $filter = null;
 
     public function __construct(protected readonly string $key)
