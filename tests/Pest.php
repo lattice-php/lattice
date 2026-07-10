@@ -5,6 +5,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use Lattice\Lattice\Core\Contracts\OptionSource;
@@ -17,6 +18,7 @@ use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tests\BrowserTestCase;
 use Lattice\Lattice\Tests\TestCase;
 use Orchestra\Testbench\Factories\UserFactory;
+use Pest\Browser\Api\Webpage;
 use Workbench\App\Models\User;
 
 use function Pest\Laravel\getJson;
@@ -52,6 +54,67 @@ function retryUntil(Closure $assert, int $attempts = 10, int $sleepMicroseconds 
 
             usleep($sleepMicroseconds);
         }
+    }
+}
+
+function eventually(Closure $assert, int $attempts = 10, int $sleepMicroseconds = 100_000, ?Closure $between = null): void
+{
+    retryUntil($assert, $attempts, $sleepMicroseconds, $between);
+}
+
+function browserSelector(string $selector): string
+{
+    if (str_starts_with($selector, '@')) {
+        return sprintf('[data-test="%s"]', substr($selector, 1));
+    }
+
+    return $selector;
+}
+
+function attachBrowserFilePayload(Webpage $page, string $selector, string $path, string $mimeType = 'application/octet-stream'): void
+{
+    $fileName = basename($path);
+    $base64 = base64_encode((string) file_get_contents($path));
+    $cssSelector = browserSelector($selector);
+    $selectorJson = json_encode($cssSelector, JSON_THROW_ON_ERROR);
+    $fileNameJson = json_encode($fileName, JSON_THROW_ON_ERROR);
+    $mimeTypeJson = json_encode($mimeType, JSON_THROW_ON_ERROR);
+    $base64Json = json_encode($base64, JSON_THROW_ON_ERROR);
+
+    $page->script(<<<JS
+        (() => {
+            const input = document.querySelector({$selectorJson});
+            if (! input) {
+                throw new Error('File input not found: ' + {$selectorJson});
+            }
+
+            const binary = atob({$base64Json});
+            const bytes = new Uint8Array(binary.length);
+
+            for (let index = 0; index < binary.length; index += 1) {
+                bytes[index] = binary.charCodeAt(index);
+            }
+
+            const transfer = new DataTransfer();
+            transfer.items.add(new File([bytes], {$fileNameJson}, { type: {$mimeTypeJson} }));
+            input.files = transfer.files;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        })();
+    JS);
+}
+
+function rustfsIsReachable(): bool
+{
+    $key = 'lattice-test-probes/'.Str::uuid().'.txt';
+
+    try {
+        Storage::disk('s3')->put($key, 'ok');
+        Storage::disk('s3')->delete($key);
+
+        return true;
+    } catch (Throwable) {
+        return false;
     }
 }
 
@@ -314,6 +377,15 @@ function dumpFixture(string $key, array $nodes): void
         dirname(__DIR__).'/docs/fixtures/'.$key.'.json',
         json_encode(sortFixtureKeys(stripFixtureRefs($normalized)), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)."\n",
     );
+}
+
+function assertFixtureMatches(string $fixtureKey, mixed $payload): void
+{
+    $path = dirname(__DIR__).'/docs/fixtures/'.$fixtureKey.'.json';
+    $json = json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+
+    expect(File::exists($path))->toBeTrue("Missing fixture: {$path}");
+    expect(File::get($path))->toBe($json.PHP_EOL);
 }
 
 /**
