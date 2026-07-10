@@ -18,7 +18,7 @@ use ReflectionClass;
 /**
  * The single wire-surface discovery: one walk over a path, classifying every
  * #[TypeScript]-instanceof-marked class into the manifest the generation
- * profiles consume. Replaces the separate component / marked-type / effect scans.
+ * profiles consume.
  */
 final class WireTypeDiscovery
 {
