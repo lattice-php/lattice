@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Notifications\Components\Notifications;
+use Lattice\Lattice\Support\Wire;
 use Workbench\App\Models\User;
 
 use function Pest\Laravel\actingAs;
@@ -35,11 +36,9 @@ test('the bell defaults to popover mode', function (): void {
 });
 
 describe('docs fixtures', function (): void {
-    it('dumps the bell example', function (): void {
-        dumpFixture('notifications.bell', [
+    it('matches the bell example fixture', function (): void {
+        assertFixtureMatches('notifications.bell', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Notifications::make('notifications-bell'),
-        ]);
-
-        expect('docs/fixtures/notifications.bell.json')->toBeReadableFile();
+        ]))));
     });
 });

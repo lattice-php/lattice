@@ -11,7 +11,7 @@
             "hidden": false,
             "label": "Article",
             "name": "article",
-            "placeholder": "Write your article\u2026",
+            "placeholder": "Write your article…",
             "prefillRefreshOn": null,
             "prefillResetOn": null,
             "readOnly": false,

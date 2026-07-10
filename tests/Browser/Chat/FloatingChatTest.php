@@ -28,11 +28,42 @@ it('shows an optimistic user bubble when a message is sent', function (): void {
 
     $page = visit('/')
         ->click('@assistant-chat-trigger')
-        ->assertVisible('@chat-box')
-        ->type('@chat-input', 'How do I export a table?')
+        ->assertVisible('@chat-box');
+
+    $page->script(<<<'JS_WRAP'
+        (() => {
+            const originalFetch = window.fetch.bind(window);
+
+            window.fetch = (input, init) => {
+                const url = typeof input === 'string' ? input : input.url;
+
+                if (url.includes('/workbench/chat/stream')) {
+                    const body = [
+                        JSON.stringify({ type: 'text', value: 'Stubbed assistant response.' }),
+                        JSON.stringify({ type: 'done' }),
+                        '',
+                    ].join('\n');
+
+                    return Promise.resolve(new Response(body, {
+                        status: 200,
+                        headers: { 'Content-Type': 'application/x-ndjson' },
+                    }));
+                }
+
+                return originalFetch(input, init);
+            };
+        })();
+    JS_WRAP);
+
+    $page->type('@chat-input', 'Hello from the browser test')
         ->click('@chat-send');
 
-    $page->assertSee('How do I export a table?');
+    eventually(function () use ($page): void {
+        $page->assertSee('Hello from the browser test');
+    });
+    eventually(function () use ($page): void {
+        $page->assertSee('Stubbed assistant response.');
+    });
 
     $page->assertNoSmoke()
         ->assertNoJavaScriptErrors();

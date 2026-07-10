@@ -140,10 +140,21 @@ class AppLayout extends LayoutDefinition
                             ->icon(Icon::Settings)
                             ->href('/settings'),
                     ]),
-                    Notifications::make(),
+                    $this->notifications(),
                     $this->userMenu(),
                 ]),
         ]);
+    }
+
+    private function notifications(): Notifications
+    {
+        $notifications = Notifications::make();
+
+        if (request()->is('notifications-slide-out')) {
+            $notifications->slideOut();
+        }
+
+        return $notifications;
     }
 
     protected function userMenu(): Dropdown

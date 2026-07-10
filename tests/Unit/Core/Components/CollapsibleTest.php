@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Core\Components\Collapsible;
 use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Support\Wire;
 
 it('serializes its trigger, content, and default flags', function (): void {
     $node = wire(
@@ -49,14 +50,12 @@ it('omits trigger components hidden by a condition', function (): void {
 });
 
 describe('docs fixtures', function (): void {
-    it('dumps the collapsible example', function (): void {
-        dumpFixture('components.collapsible', [
+    it('matches the collapsible example fixture', function (): void {
+        assertFixtureMatches('components.collapsible', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Collapsible::make('account-name')
                 ->trigger([Text::make('Name')])
                 ->tooltip('Shown on invoices and receipts.')
                 ->content([Text::make('Update the name shown on your account.')]),
-        ]);
-
-        expect('docs/fixtures/components.collapsible.json')->toBeReadableFile();
+        ]))));
     });
 });

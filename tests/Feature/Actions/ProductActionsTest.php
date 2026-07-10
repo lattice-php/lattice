@@ -128,12 +128,12 @@ test('bulk form actions validate the submitted reason before archiving', functio
         ['table' => 'workbench.products'],
     );
 
-    $headers = ['Accept' => 'application/json', 'X-Lattice-Ref' => $ref];
+    $headers = $this->latticeHeaders($ref, ['Accept' => 'application/json']);
 
     patch('/lattice/bulk-actions/workbench.products.reject-selected', [
         'selected' => [$product->getKey()],
     ], $headers)
-        ->assertStatus(422)
+        ->assertUnprocessable()
         ->assertJsonValidationErrors('reason');
 
     expect($product->fresh()->status)->toBe('active');
@@ -161,16 +161,15 @@ test('bulk form actions validate precognitively without archiving', function ():
         ['table' => 'workbench.products'],
     );
 
-    $precognition = [
-        'X-Lattice-Ref' => $ref,
+    $precognition = $this->latticeHeaders($ref, [
         'Precognition' => 'true',
         'Precognition-Validate-Only' => 'reason',
-    ];
+    ]);
 
     patch('/lattice/bulk-actions/workbench.products.reject-selected', [
         'reason' => '',
         'selected' => [$product->getKey()],
-    ], $precognition)->assertStatus(422)->assertJsonValidationErrors('reason');
+    ], $precognition)->assertUnprocessable()->assertJsonValidationErrors('reason');
 
     patch('/lattice/bulk-actions/workbench.products.reject-selected', [
         'reason' => 'Counterfeit',

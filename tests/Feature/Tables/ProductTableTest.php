@@ -101,7 +101,7 @@ test('bulk actions can target every row matching the current filter', function (
     patch('/lattice/bulk-actions/workbench.products.archive-selected', [
         'allMatching' => true,
         'filter' => 'status:eq:active',
-    ], ['X-Lattice-Ref' => $ref])
+    ], $this->latticeHeaders($ref))
         ->assertOk()
         ->assertJsonPath('data.archived', 3);
 
@@ -122,7 +122,7 @@ test('bulk all-matching validates the filter against the table columns', functio
     patch('/lattice/bulk-actions/workbench.products.archive-selected', [
         'allMatching' => true,
         'filter' => 'id:eq:1',
-    ], ['X-Lattice-Ref' => $ref])
+    ], $this->latticeHeaders($ref))
         ->assertUnprocessable()
         ->assertJsonPath('errors.filter.0', 'Filter [id] is not allowed for table [workbench.products].');
 });

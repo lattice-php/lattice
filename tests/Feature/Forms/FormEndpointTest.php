@@ -80,7 +80,7 @@ test('registered form endpoints require a valid component reference', function (
 
     patch('/lattice/forms/settings.profile', [
         'name' => 'Taylor',
-    ], latticeHeaders('tampered'))
+    ], $this->latticeHeaders('tampered'))
         ->assertForbidden();
 });
 
@@ -89,8 +89,8 @@ test('registered form submissions validate before handle is called', function ()
 
     $ref = componentRef(wire(Form::use(WorkbenchRequiredProfileForm::class)));
 
-    patchJson('/lattice/forms/workbench.required-profile', [], latticeHeaders($ref))
-        ->assertStatus(422)
+    patchJson('/lattice/forms/workbench.required-profile', [], $this->latticeHeaders($ref))
+        ->assertUnprocessable()
         ->assertJsonValidationErrors('name');
 
     expect(session('handled-required-profile'))->toBeNull();

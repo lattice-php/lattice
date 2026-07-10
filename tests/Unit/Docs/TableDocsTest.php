@@ -6,6 +6,7 @@ use Lattice\Lattice\Core\Enums\Color;
 use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Core\Enums\NumberFormatUnit;
 use Lattice\Lattice\Core\Enums\Size;
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Columns\BadgeColumn;
 use Lattice\Lattice\Tables\Columns\BooleanColumn;
 use Lattice\Lattice\Tables\Columns\IconColumn;
@@ -19,8 +20,8 @@ use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
 
 describe('docs fixtures', function (): void {
-    it('dumps the overview table example', function (): void {
-        dumpFixture('table.overview', [
+    it('matches the overview table example fixture', function (): void {
+        assertFixtureMatches('table.overview', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Table::make('products')
                 ->striped(true)
                 ->columns([
@@ -37,13 +38,11 @@ describe('docs fixtures', function (): void {
                     ])),
                     TableQuery::empty(),
                 ),
-        ]);
-
-        expect('docs/fixtures/table.overview.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the stack column table example', function (): void {
-        dumpFixture('table.stack', [
+    it('matches the stack column table example fixture', function (): void {
+        assertFixtureMatches('table.stack', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Table::make('users')
                 ->columns([
                     StackColumn::make('identity')->label('User')->schema([
@@ -59,13 +58,11 @@ describe('docs fixtures', function (): void {
                     ])),
                     TableQuery::empty(),
                 ),
-        ]);
-
-        expect('docs/fixtures/table.stack.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the toggleable columns table example', function (): void {
-        dumpFixture('table.toggleable', [
+    it('matches the toggleable columns table example fixture', function (): void {
+        assertFixtureMatches('table.toggleable', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Table::make('products')
                 ->columns([
                     TextColumn::make('name')->label('Name'),
@@ -80,13 +77,11 @@ describe('docs fixtures', function (): void {
                     ])),
                     TableQuery::empty(),
                 ),
-        ]);
-
-        expect('docs/fixtures/table.toggleable.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the column types table example', function (): void {
-        dumpFixture('table.column-types', [
+    it('matches the column types table example fixture', function (): void {
+        assertFixtureMatches('table.column-types', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Table::make('members')
                 ->columns([
                     ImageColumn::make('avatar')->label('')->circular()->size(32),
@@ -105,13 +100,11 @@ describe('docs fixtures', function (): void {
                     ])),
                     TableQuery::empty(),
                 ),
-        ]);
-
-        expect('docs/fixtures/table.column-types.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the text column example', function (): void {
-        dumpFixture('table.text', [
+    it('matches the text column example fixture', function (): void {
+        assertFixtureMatches('table.text', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Table::make('people')
                 ->columns([
                     TextColumn::make('name')->label('Name')->link('/people/{value}')->sortable(),
@@ -125,13 +118,11 @@ describe('docs fixtures', function (): void {
                     ])),
                     TableQuery::empty(),
                 ),
-        ]);
-
-        expect('docs/fixtures/table.text.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the number column example', function (): void {
-        dumpFixture('table.number', [
+    it('matches the number column example fixture', function (): void {
+        assertFixtureMatches('table.number', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Table::make('metrics')
                 ->columns([
                     TextColumn::make('label')->label('Metric'),
@@ -147,13 +138,11 @@ describe('docs fixtures', function (): void {
                     ])),
                     TableQuery::empty(),
                 ),
-        ]);
-
-        expect('docs/fixtures/table.number.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the money column example', function (): void {
-        dumpFixture('table.money', [
+    it('matches the money column example fixture', function (): void {
+        assertFixtureMatches('table.money', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Table::make('invoices')
                 ->columns([
                     TextColumn::make('number')->label('Invoice'),
@@ -167,13 +156,11 @@ describe('docs fixtures', function (): void {
                     ])),
                     TableQuery::empty(),
                 ),
-        ]);
-
-        expect('docs/fixtures/table.money.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the boolean column example', function (): void {
-        dumpFixture('table.boolean', [
+    it('matches the boolean column example fixture', function (): void {
+        assertFixtureMatches('table.boolean', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Table::make('flags')
                 ->columns([
                     TextColumn::make('name')->label('Name'),
@@ -188,13 +175,11 @@ describe('docs fixtures', function (): void {
                     ])),
                     TableQuery::empty(),
                 ),
-        ]);
-
-        expect('docs/fixtures/table.boolean.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the badge column example', function (): void {
-        dumpFixture('table.badge', [
+    it('matches the badge column example fixture', function (): void {
+        assertFixtureMatches('table.badge', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Table::make('orders')
                 ->columns([
                     TextColumn::make('reference')->label('Reference'),
@@ -210,13 +195,11 @@ describe('docs fixtures', function (): void {
                     ])),
                     TableQuery::empty(),
                 ),
-        ]);
-
-        expect('docs/fixtures/table.badge.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the icon column example', function (): void {
-        dumpFixture('table.icon', [
+    it('matches the icon column example fixture', function (): void {
+        assertFixtureMatches('table.icon', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Table::make('checks')
                 ->columns([
                     TextColumn::make('name')->label('Name'),
@@ -231,13 +214,11 @@ describe('docs fixtures', function (): void {
                     ])),
                     TableQuery::empty(),
                 ),
-        ]);
-
-        expect('docs/fixtures/table.icon.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the image column example', function (): void {
-        dumpFixture('table.image', [
+    it('matches the image column example fixture', function (): void {
+        assertFixtureMatches('table.image', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Table::make('members')
                 ->columns([
                     ImageColumn::make('avatar')->label('')->circular()->size(32),
@@ -251,8 +232,6 @@ describe('docs fixtures', function (): void {
                     ])),
                     TableQuery::empty(),
                 ),
-        ]);
-
-        expect('docs/fixtures/table.image.json')->toBeReadableFile();
+        ]))));
     });
 });

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Forms\Components\NumberInput;
+use Lattice\Lattice\Support\Wire;
 
 it('serializes a number input', function (): void {
     $node = wire(NumberInput::make('qty', 'Qty')->min(0)->max(100)->step(1));
@@ -17,16 +18,13 @@ it('serializes a number input with a slider flag', function (): void {
 });
 
 describe('docs fixtures', function (): void {
-    it('dumps the number input examples', function (): void {
-        dumpFixture('number-input.basic', [
+    it('matches the number input examples fixture', function (): void {
+        assertFixtureMatches('number-input.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             NumberInput::make('age', 'Age')->min(0)->max(120),
-        ]);
+        ]))));
 
-        dumpFixture('number-input.slider', [
+        assertFixtureMatches('number-input.slider', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             NumberInput::make('satisfaction', 'Satisfaction')->slider()->min(0)->max(10),
-        ]);
-
-        expect('docs/fixtures/number-input.basic.json')->toBeReadableFile()
-            ->and('docs/fixtures/number-input.slider.json')->toBeReadableFile();
+        ]))));
     });
 });

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Forms\Components\Checkbox;
+use Lattice\Lattice\Support\Wire;
 
 it('serializes the shared focus options', function (): void {
     $node = wire(Checkbox::make('terms', 'Accept terms')->autoFocus()->tabIndex(3));
@@ -11,11 +12,9 @@ it('serializes the shared focus options', function (): void {
 });
 
 describe('docs fixtures', function (): void {
-    it('dumps the checkbox example', function (): void {
-        dumpFixture('checkbox.basic', [
+    it('matches the checkbox example fixture', function (): void {
+        assertFixtureMatches('checkbox.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Checkbox::make('newsletter', 'Subscribe to the newsletter'),
-        ]);
-
-        expect('docs/fixtures/checkbox.basic.json')->toBeReadableFile();
+        ]))));
     });
 });

@@ -10,7 +10,6 @@ use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Support\Testing\Assertions\FieldAssertions;
 use Lattice\Lattice\Support\Testing\Assertions\FormAssertions;
-use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Actions\EditProductAction;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\File;
@@ -20,16 +19,6 @@ use function Pest\Laravel\get;
 use function Pest\Laravel\patch;
 use function Pest\Laravel\post;
 use function Pest\Laravel\withoutVite;
-
-/**
- * @param  array<string, mixed>  $component
- * @param  array<string, string>  $extra
- * @return array<string, string>
- */
-function productHeaders(array $component, array $extra = []): array
-{
-    return ['X-Lattice-Ref' => componentRef($component), ...$extra];
-}
 
 test('forms serialize initial state for bound edit values', function (): void {
     $form = Form::make('product-form')
@@ -288,14 +277,14 @@ test('the product form validates required fields', function (): void {
         'sales_prices' => [
             ['group_id' => '', 'amount' => 'invalid'],
         ],
-    ], productHeaders($form))
+    ], $this->latticeHeaders($form))
         ->assertSessionHasErrors([
             'name',
             'sku',
             'status',
             'sales_prices.0.amount',
         ])
-        ->assertStatus(Response::HTTP_FOUND);
+        ->assertFound();
 });
 
 test('the product form returns precognitive validation errors without creating products', function (): void {
@@ -310,14 +299,14 @@ test('the product form returns precognitive validation errors without creating p
         'sales_prices' => [
             ['group_id' => '', 'amount' => 'invalid'],
         ],
-    ], productHeaders($form, [
+    ], $this->latticeHeaders($form, [
         'Accept' => 'application/json',
         'Precognition' => 'true',
         'Precognition-Validate-Only' => 'name,sales_prices.0.amount',
     ]))
         ->assertHeader('Precognition', 'true')
         ->assertJsonValidationErrors(['name', 'sales_prices.0.amount'])
-        ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        ->assertUnprocessable();
 
     expect(Product::query()->count())->toBe(0);
 });
@@ -334,7 +323,7 @@ test('the product form accepts valid precognitive validation without creating pr
         'sales_prices' => [
             ['group_id' => '', 'amount' => '49.99'],
         ],
-    ], productHeaders($form, [
+    ], $this->latticeHeaders($form, [
         'Accept' => 'application/json',
         'Precognition' => 'true',
     ]))
@@ -366,7 +355,7 @@ test('the product form validates edit uniqueness from sealed context during prec
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
         'status' => 'active',
-    ], productHeaders($form, [
+    ], $this->latticeHeaders($form, [
         'Accept' => 'application/json',
         'Precognition' => 'true',
         'Precognition-Validate-Only' => 'sku',
@@ -379,14 +368,14 @@ test('the product form validates edit uniqueness from sealed context during prec
         'name' => 'Desk Lamp',
         'sku' => 'SHELF-001',
         'status' => 'active',
-    ], productHeaders($form, [
+    ], $this->latticeHeaders($form, [
         'Accept' => 'application/json',
         'Precognition' => 'true',
         'Precognition-Validate-Only' => 'sku',
     ]))
         ->assertHeader('Precognition', 'true')
         ->assertJsonValidationErrors(['sku'])
-        ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        ->assertUnprocessable();
 
     $trustedProduct->refresh();
 
@@ -407,7 +396,7 @@ test('the product form create rejects two default sales prices', function (): vo
             ['group_id' => '', 'amount' => '49.99'],
             ['group_id' => '', 'amount' => '59.99'],
         ],
-    ], productHeaders($form))
+    ], $this->latticeHeaders($form))
         ->assertSessionHasErrors(['sales_prices']);
 
     expect(Product::query()->count())->toBe(0);
@@ -434,7 +423,7 @@ test('the product form update rejects two default sales prices', function (): vo
             ['group_id' => '', 'amount' => '49.99'],
             ['group_id' => '', 'amount' => '59.99'],
         ],
-    ], productHeaders($form))
+    ], $this->latticeHeaders($form))
         ->assertSessionHasErrors(['sales_prices']);
 
     expect($product->salesPrices()->whereNull('group_id')->count())->toBeLessThanOrEqual(1);
@@ -558,7 +547,7 @@ test('the edit product action rejects two default sales prices with a 422', func
             ['group_id' => '', 'amount' => '59.99'],
         ],
     ], ['product_id' => $product->getKey()])
-        ->assertStatus(422)
+        ->assertUnprocessable()
         ->assertJsonValidationErrors(['sales_prices']);
 
     expect($product->salesPrices()->whereNull('group_id')->count())->toBe(1);

@@ -31,10 +31,15 @@ it('collapses to an icon rail and opens a group submenu as a flyout', function (
     $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Desk Lamp']);
 
-    visit('/')
+    $page = visit('/')
         ->assertPresent('[data-test="sidebar"][data-collapsed="false"]')
-        ->click('@sidebar-toggle')
-        ->assertPresent('[data-test="sidebar"][data-collapsed="true"]')
+        ->click('@sidebar-toggle');
+
+    eventually(function () use ($page): void {
+        $page->assertAttribute('[data-test="sidebar"]', 'data-collapsed', 'true');
+    });
+
+    $page
         ->click('@menu-commerce')
         ->click('@menu-products')
         ->assertSee('Desk Lamp')
@@ -45,11 +50,16 @@ it('collapses to an icon rail and opens a group submenu as a flyout', function (
 it('opens the sidebar as an off-canvas drawer on mobile', function (): void {
     $this->actingAs(workbenchTestUser());
 
-    visit('/')
+    $page = visit('/')
         ->on()->mobile()
         ->assertMissing('[data-test="sidebar-backdrop"]')
-        ->click('@sidebar-toggle')
-        ->assertPresent('[data-test="sidebar-backdrop"]')
+        ->click('@sidebar-toggle');
+
+    eventually(function () use ($page): void {
+        $page->assertPresent('[data-test="sidebar-backdrop"]');
+    });
+
+    $page
         ->click('@menu-tabs')
         ->assertMissing('[data-test="sidebar-backdrop"]')
         ->assertNoSmoke();

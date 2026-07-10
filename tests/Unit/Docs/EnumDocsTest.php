@@ -46,15 +46,10 @@ function generateEnumReference(): array
 }
 
 describe('docs fixtures', function (): void {
-    it('dumps the enum reference the docs page renders from', function (): void {
+    it('matches the enum reference fixture the docs page renders from', function (): void {
         $enums = generateEnumReference();
 
-        file_put_contents(
-            dirname(__DIR__, 3).'/docs/fixtures/enums.json',
-            json_encode($enums, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)."\n",
-        );
-
-        expect('docs/fixtures/enums.json')->toBeReadableFile();
+        assertFixtureMatches('enums', $enums);
     });
 });
 

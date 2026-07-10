@@ -91,7 +91,7 @@ it('returns 422 when the field does not use signed uploads', function (): void {
     Lattice::forms([UploadForm::class]);
 
     $this->submitForm(UploadForm::class, ['_upload' => 'avatar', 'filename' => 'photo.jpg'])
-        ->assertStatus(422);
+        ->assertUnprocessable();
 });
 
 it('returns 404 when the upload field does not exist', function (): void {
@@ -129,7 +129,7 @@ it('rejects a multipart image upload that exceeds maxSize', function (): void {
 
     post('/lattice/forms/workbench.upload.form', [
         'avatar' => UploadedFile::fake()->create('huge.jpg', 5000, 'image/jpeg'),
-    ], ['X-Lattice-Ref' => componentRef($form)])
+    ], $this->latticeHeaders($form))
         ->assertSessionHasErrors(['avatar']);
 });
 
@@ -142,10 +142,10 @@ it('accepts a signed tmp key that exists and rejects an out-of-prefix key', func
 
     $form = wire(Form::use(UploadForm::class));
 
-    post('/lattice/forms/workbench.upload.form', ['document' => 'tmp/real.pdf'], ['X-Lattice-Ref' => componentRef($form)])
+    post('/lattice/forms/workbench.upload.form', ['document' => 'tmp/real.pdf'], $this->latticeHeaders($form))
         ->assertRedirect('/uploads');
 
-    post('/lattice/forms/workbench.upload.form', ['document' => 'uploads/secret.pdf'], ['X-Lattice-Ref' => componentRef($form)])
+    post('/lattice/forms/workbench.upload.form', ['document' => 'uploads/secret.pdf'], $this->latticeHeaders($form))
         ->assertSessionHasErrors(['document']);
 });
 

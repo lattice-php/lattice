@@ -20,6 +20,29 @@ it('shows the bell, opens the panel, and marks notifications read', function ():
         ->assertNoSmoke();
 });
 
-it('renders the slide-out variant when configured')->todo(
-    'Requires a workbench route/layout variant using Notifications::make()->slideOut(); add a dedicated workbench demo page if AppLayout uses the default popover bell.'
-);
+it('renders the slide-out variant when configured', function (): void {
+    $user = workbenchTestUser();
+
+    Notification::make()
+        ->title('Slide out notice')
+        ->body('This notification opens inside the slide-out panel.')
+        ->sendToDatabase($user);
+
+    $this->actingAs($user);
+
+    $page = visit('/notifications-slide-out')
+        ->assertSee('Notification Slide Out')
+        ->click('@notifications-trigger');
+
+    eventually(function () use ($page): void {
+        $page
+            ->assertVisible('[data-slot="dialog-overlay"]')
+            ->assertVisible('[data-slot="dialog-content"]')
+            ->assertNotPresent('[data-slot="popover-content"]')
+            ->assertVisible('@notifications-panel')
+            ->assertSee('Slide out notice')
+            ->assertSee('This notification opens inside the slide-out panel.');
+    });
+
+    $page->assertNoSmoke();
+});

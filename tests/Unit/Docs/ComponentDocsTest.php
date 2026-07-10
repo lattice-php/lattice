@@ -16,6 +16,7 @@ use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Components\Tooltip;
 use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\Gap;
+use Lattice\Lattice\Support\Wire;
 
 it('serializes a card tooltip', function (): void {
     $node = wire(Card::make('Plan')->tooltip('Billed monthly.'));
@@ -30,8 +31,8 @@ it('serializes a null card tooltip when unset', function (): void {
 });
 
 describe('docs fixtures', function (): void {
-    it('dumps the card example', function (): void {
-        dumpFixture('components.card', [
+    it('matches the card example fixture', function (): void {
+        assertFixtureMatches('components.card', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Card::make('Team settings', 'Manage how your team appears.')
                 ->tooltip('These settings affect everyone on the team.')
                 ->schema([
@@ -42,25 +43,21 @@ describe('docs fixtures', function (): void {
                     ]),
                     Button::make('Invite member')->variant(ButtonVariant::Default),
                 ]),
-        ]);
-
-        expect('docs/fixtures/components.card.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the grid example', function (): void {
-        dumpFixture('components.grid', [
+    it('matches the grid example fixture', function (): void {
+        assertFixtureMatches('components.grid', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Grid::make()->columns(3)->schema([
                 Badge::make('First'),
                 Badge::make('Second'),
                 Badge::make('Third'),
             ]),
-        ]);
-
-        expect('docs/fixtures/components.grid.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the section example', function (): void {
-        dumpFixture('components.section', [
+    it('matches the section example fixture', function (): void {
+        assertFixtureMatches('components.section', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Section::make('Members', 'People with access to this team.')
                 ->collapsible()
                 ->tooltip('Only admins can change who has access.')
@@ -69,24 +66,20 @@ describe('docs fixtures', function (): void {
                     Text::make('Three people have access to this team.'),
                     Badge::make('3 active'),
                 ]),
-        ]);
-
-        expect('docs/fixtures/components.section.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the tooltip example', function (): void {
-        dumpFixture('components.tooltip', [
+    it('matches the tooltip example fixture', function (): void {
+        assertFixtureMatches('components.tooltip', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Stack::make()->direction('row')->gap(Gap::Small)->schema([
                 Badge::make('Plan: Pro'),
                 Tooltip::make()->content('Includes unlimited seats and priority support.'),
             ]),
-        ]);
-
-        expect('docs/fixtures/components.tooltip.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the button variants example', function (): void {
-        dumpFixture('components.buttons', [
+    it('matches the button variants example fixture', function (): void {
+        assertFixtureMatches('components.buttons', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Stack::make()->direction('row')->gap(Gap::Small)->schema([
                 Button::make('Default')->variant(ButtonVariant::Default),
                 Button::make('Secondary')->variant(ButtonVariant::Secondary),
@@ -96,44 +89,36 @@ describe('docs fixtures', function (): void {
                 Button::make('Outline')->variant(ButtonVariant::Outline),
                 Button::make('Ghost')->variant(ButtonVariant::Ghost),
             ]),
-        ]);
-
-        expect('docs/fixtures/components.buttons.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the stack example', function (): void {
-        dumpFixture('components.stack', [
+    it('matches the stack example fixture', function (): void {
+        assertFixtureMatches('components.stack', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Stack::make()->direction('row')->gap(Gap::Small)->schema([
                 Button::make('Save')->variant(ButtonVariant::Default),
                 Button::make('Cancel')->variant(ButtonVariant::Ghost),
             ]),
-        ]);
-
-        expect('docs/fixtures/components.stack.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the display example', function (): void {
-        dumpFixture('components.text', [
+    it('matches the display example fixture', function (): void {
+        assertFixtureMatches('components.text', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Stack::make()->gap(Gap::Small)->schema([
                 Heading::make('Billing', 2),
                 Text::make('Invoices are sent on the first of each month.'),
                 Badge::make('Trialing'),
             ]),
-        ]);
-
-        expect('docs/fixtures/components.text.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the raw block example', function (): void {
-        dumpFixture('components.raw-block', [
+    it('matches the raw block example fixture', function (): void {
+        assertFixtureMatches('components.raw-block', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             RawBlock::make()->html('<p>Rendered from <strong>trusted</strong> server HTML.</p>'),
-        ]);
-
-        expect('docs/fixtures/components.raw-block.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the segmented control example', function (): void {
-        dumpFixture('components.segmented-control', [
+    it('matches the segmented control example fixture', function (): void {
+        assertFixtureMatches('components.segmented-control', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             SegmentedControl::make('appearance', 'Appearance')
                 ->options([
                     SegmentedControl::option('Light', 'light'),
@@ -142,13 +127,11 @@ describe('docs fixtures', function (): void {
                 ])
                 ->value('light')
                 ->emits('appearance-changed'),
-        ]);
-
-        expect('docs/fixtures/components.segmented-control.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the tabs example', function (): void {
-        dumpFixture('components.tabs', [
+    it('matches the tabs example fixture', function (): void {
+        assertFixtureMatches('components.tabs', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Tabs::make()->defaultValue('details')->schema([
                 Tab::make('details', 'Details')->schema([
                     Text::make('Team details go here.'),
@@ -157,8 +140,6 @@ describe('docs fixtures', function (): void {
                     Text::make('Recent activity for the team.'),
                 ]),
             ]),
-        ]);
-
-        expect('docs/fixtures/components.tabs.json')->toBeReadableFile();
+        ]))));
     });
 });

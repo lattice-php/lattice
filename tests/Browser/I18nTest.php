@@ -47,7 +47,7 @@ it('dumps missing React lattice keys back into the package lang file', function 
 
     try {
         $page->assertSee('Article')
-            ->assertPresent('[aria-label="Italic"]')
+            ->assertPresent('@editor-italic')
             ->assertNoJavaScriptErrors();
 
         expect(waitForLatticeBrowserTestTranslation($file, 'editor.italic'))
@@ -57,7 +57,9 @@ it('dumps missing React lattice keys back into the package lang file', function 
     } finally {
         try {
             $page->script('window.location.assign("/")');
-            $page->wait(0.5);
+            eventually(function () use ($page): void {
+                $page->assertPathIs('/');
+            }, attempts: 15, sleepMicroseconds: 100_000);
         } finally {
             File::replace($file, $original, 0644);
         }

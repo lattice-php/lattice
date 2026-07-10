@@ -7,13 +7,19 @@ use Illuminate\Support\Facades\Validator;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Rules\FileUploadItem;
 
-it('uploads a file via multipart and shows it in the dropzone', function (): void {
+it('uploads a file through a multipart payload', function (): void {
     $this->actingAs(workbenchTestUser());
-    visit('/uploads/create')
-        ->assertSee('Drop files here or click to browse')
-        ->attach('@avatar-input', __DIR__.'/fixtures/avatar.jpg')
-        ->assertSee('avatar.jpg')
-        ->click('@form-submit')
+
+    $page = visit('/uploads/create')
+        ->assertSee('Drop files here or click to browse');
+
+    $page->attach('@avatar-input', __DIR__.'/fixtures/avatar.jpg');
+
+    eventually(function () use ($page): void {
+        $page->assertSee('avatar.jpg');
+    });
+
+    $page->click('@form-submit')
         ->assertSee('Uploads')
         ->assertNoSmoke();
 });
@@ -29,16 +35,33 @@ it('removes an existing file from the edit form', function (): void {
 });
 
 it('uploads directly to s3 via the signed flow', function (): void {
+    if (! rustfsIsReachable()) {
+        $this->markTestSkipped('RustFS/S3 is not reachable.');
+    }
+
     $this->actingAs(workbenchTestUser());
-    visit('/uploads/create')
-        ->assertSee('Drop files here or click to browse')
-        ->attach('@document-input', __DIR__.'/fixtures/avatar.jpg')
-        ->assertPresent('[data-test="document-uploaded"]')
-        ->click('@form-submit')
+
+    $page = visit('/uploads/create?signed=1')
+        ->assertPresent('@document-input');
+
+    $page->attach('@document-input', __DIR__.'/fixtures/avatar.jpg');
+
+    eventually(function () use ($page): void {
+        $page->assertSee('avatar.jpg');
+    });
+    eventually(function () use ($page): void {
+        $page->assertPresent('[data-test="document-uploaded"]');
+    });
+
+    $page->click('@form-submit')
         ->assertNoSmoke();
 })->group('rustfs');
 
 it('signs, uploads, and validates a key against rustfs end-to-end', function (): void {
+    if (! rustfsIsReachable()) {
+        $this->markTestSkipped('RustFS/S3 is not reachable.');
+    }
+
     $this->actingAs(workbenchTestUser());
     $signed = FileUpload::make('document')->disk('s3')->signedUpload()
         ->signUpload(Request::create('/', 'POST', ['filename' => 'invoice.pdf']));

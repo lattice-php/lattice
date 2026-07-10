@@ -37,7 +37,7 @@
             "prefillResetOn": null,
             "readOnly": false,
             "required": false,
-            "searchPlaceholder": "Search\u2026",
+            "searchPlaceholder": "Search…",
             "searchable": false,
             "tabIndex": null,
             "tooltip": null,

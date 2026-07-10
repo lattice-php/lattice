@@ -2,13 +2,12 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Forms\Components\FileUpload;
+use Lattice\Lattice\Support\Wire;
 
 describe('docs fixtures', function (): void {
-    it('dumps the file upload example', function (): void {
-        dumpFixture('file-upload.basic', [
+    it('matches the file upload example fixture', function (): void {
+        assertFixtureMatches('file-upload.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             FileUpload::make('avatar', 'Avatar')->image()->maxSize(2048),
-        ]);
-
-        expect('docs/fixtures/file-upload.basic.json')->toBeReadableFile();
+        ]))));
     });
 });

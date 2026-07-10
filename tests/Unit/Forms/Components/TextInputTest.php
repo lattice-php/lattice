@@ -7,6 +7,7 @@ use Lattice\Lattice\Forms\Components\NumberInput;
 use Lattice\Lattice\Forms\Components\PasswordInput;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Support\Affix;
+use Lattice\Lattice\Support\Wire;
 
 it('serializes a text input', function (): void {
     $node = wire(TextInput::make('name', 'Team name')->placeholder('My team')->required());
@@ -66,77 +67,66 @@ describe('affixes', function (): void {
 });
 
 describe('docs fixtures', function (): void {
-    it('dumps the required text input example', function (): void {
-        dumpFixture('text-input.required', [
+    it('matches the required text input example fixture', function (): void {
+        assertFixtureMatches('text-input.required', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             TextInput::make('name', 'Team name')->placeholder('My team')->required(),
-        ]);
-
-        expect('docs/fixtures/text-input.required.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the email text input example', function (): void {
-        dumpFixture('text-input.email', [
+    it('matches the email text input example fixture', function (): void {
+        assertFixtureMatches('text-input.email', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             TextInput::make('email', 'Email address')->email()->placeholder('you@example.com'),
-        ]);
-
-        expect('docs/fixtures/text-input.email.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the affix examples', function (): void {
-        dumpFixture('text-input.affixes', [
+    it('matches the affix examples fixture', function (): void {
+        assertFixtureMatches('text-input.affixes', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             TextInput::make('price', 'Price')->prefix('$')->suffix('USD'),
-        ]);
+        ]))));
 
-        dumpFixture('text-input.affix-icon', [
+        assertFixtureMatches('text-input.affix-icon', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             TextInput::make('search', 'Search')->prefix(Icon::Search),
-        ]);
-
-        expect('docs/fixtures/text-input.affixes.json')->toBeReadableFile()
-            ->and('docs/fixtures/text-input.affix-icon.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the common field option examples', function (): void {
-        dumpFixture('field.required', [
+    it('matches the common field option examples fixture', function (): void {
+        assertFixtureMatches('field.required', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             TextInput::make('name', 'Team name')->required(),
-        ]);
+        ]))));
 
-        dumpFixture('field.default-value', [
+        assertFixtureMatches('field.default-value', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             TextInput::make('name', 'Team name')->value('Acme Inc'),
-        ]);
+        ]))));
 
-        dumpFixture('field.disabled', [
+        assertFixtureMatches('field.disabled', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             TextInput::make('name', 'Team name')->value('Acme Inc')->disabled(),
-        ]);
+        ]))));
 
-        dumpFixture('field.read-only', [
+        assertFixtureMatches('field.read-only', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             TextInput::make('slug', 'Slug')->value('acme-inc')->readOnly(),
-        ]);
+        ]))));
 
-        dumpFixture('field.helper-text', [
+        assertFixtureMatches('field.helper-text', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             TextInput::make('slug', 'Slug')->helperText('Used in the public URL for your team.'),
-        ]);
-
-        expect('docs/fixtures/field.required.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the conditional field examples', function (): void {
-        dumpFixture('field.visible-when', [
+    it('matches the conditional field examples fixture', function (): void {
+        assertFixtureMatches('field.visible-when', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Choice::make('type', 'Account type')->options([
                 Choice::option('Business', 'business'),
                 Choice::option('Individual', 'individual'),
             ]),
             TextInput::make('vat', 'VAT ID')->visibleWhen('type', 'business'),
-        ]);
+        ]))));
 
-        dumpFixture('field.required-when', [
+        assertFixtureMatches('field.required-when', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Choice::make('country', 'Country')->options([
                 Choice::option('Germany', 'DE'),
                 Choice::option('Austria', 'AT'),
                 Choice::option('United States', 'US'),
             ]),
             TextInput::make('vat', 'VAT ID')->requiredWhen('country', 'DE'),
-        ]);
-
-        expect('docs/fixtures/field.required-when.json')->toBeReadableFile();
+        ]))));
     });
 });

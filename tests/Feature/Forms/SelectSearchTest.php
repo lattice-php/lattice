@@ -228,7 +228,7 @@ it('searches options through the form endpoint with a signed reference', functio
     post('/lattice/forms/workbench.showcase.form', [
         '_search' => 'related_products',
         'q' => 'walnut',
-    ], ['X-Lattice-Ref' => $ref])
+    ], $this->latticeHeaders($ref))
         ->assertOk()
         ->assertExactJson([
             'options' => [

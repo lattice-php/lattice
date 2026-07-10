@@ -5,6 +5,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use Lattice\Lattice\Core\Contracts\OptionSource;
@@ -52,6 +53,30 @@ function retryUntil(Closure $assert, int $attempts = 10, int $sleepMicroseconds 
 
             usleep($sleepMicroseconds);
         }
+    }
+}
+
+function eventually(Closure $assert, int $attempts = 10, int $sleepMicroseconds = 100_000, ?Closure $between = null): void
+{
+    retryUntil($assert, $attempts, $sleepMicroseconds, $between);
+}
+
+function rustfsIsReachable(): bool
+{
+    $key = 'lattice-test-probes/'.Str::uuid().'.txt';
+
+    try {
+        $disk = Storage::disk('s3');
+
+        if ($disk->put($key, 'ok') !== true) {
+            return false;
+        }
+
+        $disk->delete($key);
+
+        return true;
+    } catch (Throwable) {
+        return false;
     }
 }
 
@@ -312,8 +337,17 @@ function dumpFixture(string $key, array $nodes): void
 
     file_put_contents(
         dirname(__DIR__).'/docs/fixtures/'.$key.'.json',
-        json_encode(sortFixtureKeys(stripFixtureRefs($normalized)), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)."\n",
+        json_encode(sortFixtureKeys(stripFixtureRefs($normalized)), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR)."\n",
     );
+}
+
+function assertFixtureMatches(string $fixtureKey, mixed $payload): void
+{
+    $path = dirname(__DIR__).'/docs/fixtures/'.$fixtureKey.'.json';
+    $json = json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+
+    expect(File::exists($path))->toBeTrue("Missing fixture: {$path}");
+    expect(File::get($path))->toBe($json.PHP_EOL);
 }
 
 /**

@@ -2,18 +2,16 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Forms\Components\PasswordInput;
+use Lattice\Lattice\Support\Wire;
 
 describe('docs fixtures', function (): void {
-    it('dumps the password input examples', function (): void {
-        dumpFixture('password-input.basic', [
+    it('matches the password input examples fixture', function (): void {
+        assertFixtureMatches('password-input.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             PasswordInput::make('password', 'Password')->placeholder('Your password'),
-        ]);
+        ]))));
 
-        dumpFixture('password-input.confirmation', [
+        assertFixtureMatches('password-input.confirmation', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             PasswordInput::make('password', 'Password')->needsConfirmation(),
-        ]);
-
-        expect('docs/fixtures/password-input.basic.json')->toBeReadableFile()
-            ->and('docs/fixtures/password-input.confirmation.json')->toBeReadableFile();
+        ]))));
     });
 });

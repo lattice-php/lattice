@@ -4,10 +4,11 @@ declare(strict_types=1);
 use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\Components\RowAction;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Support\Wire;
 
 describe('docs fixtures', function (): void {
-    it('dumps the repeater example', function (): void {
-        dumpFixture('repeater.basic', [
+    it('matches the repeater example fixture', function (): void {
+        assertFixtureMatches('repeater.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Repeater::make('items', 'Line items')
                 ->schema([
                     TextInput::make('name', 'Name')->required(),
@@ -18,13 +19,11 @@ describe('docs fixtures', function (): void {
                 ->reorderable()
                 ->addLabel('Add line')
                 ->defaultItems(1),
-        ]);
-
-        expect('docs/fixtures/repeater.basic.json')->toBeReadableFile();
+        ]))));
     });
 
-    it('dumps the repeater row-actions example', function (): void {
-        dumpFixture('repeater.row-actions', [
+    it('matches the repeater row-actions example fixture', function (): void {
+        assertFixtureMatches('repeater.row-actions', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Repeater::make('items', 'Line items')
                 ->schema([
                     TextInput::make('name', 'Name'),
@@ -34,8 +33,6 @@ describe('docs fixtures', function (): void {
                     RowAction::duplicate(),
                     RowAction::remove()->label('Delete'),
                 ]),
-        ]);
-
-        expect('docs/fixtures/repeater.row-actions.json')->toBeReadableFile();
+        ]))));
     });
 });

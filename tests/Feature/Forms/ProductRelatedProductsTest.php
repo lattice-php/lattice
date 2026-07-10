@@ -24,7 +24,7 @@ test('the product form syncs related products on create', function (): void {
         'sku' => 'GAD-001',
         'status' => 'active',
         'related_products' => [$alpha->getKey(), $beta->getKey()],
-    ], ['X-Lattice-Ref' => $form['props']['ref']])
+    ], $this->latticeHeaders($form))
         ->assertRedirect('/products');
 
     $product = Product::query()->where('sku', 'GAD-001')->firstOrFail();
@@ -55,7 +55,7 @@ test('the product form replaces related products on update', function (): void {
         'sku' => 'LAMP-001',
         'status' => 'draft',
         'related_products' => [$gamma->getKey()],
-    ], ['X-Lattice-Ref' => $form['props']['ref']])
+    ], $this->latticeHeaders($form))
         ->assertRedirect('/products');
 
     expect($product->fresh()->relatedProducts->pluck('id')->all())
@@ -74,7 +74,7 @@ test('the product form ignores related ids that do not exist', function (): void
         'sku' => 'GAD-002',
         'status' => 'active',
         'related_products' => [$alpha->getKey(), 999999],
-    ], ['X-Lattice-Ref' => $form['props']['ref']])
+    ], $this->latticeHeaders($form))
         ->assertRedirect('/products');
 
     $product = Product::query()->where('sku', 'GAD-002')->firstOrFail();
