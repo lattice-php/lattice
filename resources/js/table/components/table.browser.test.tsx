@@ -177,10 +177,10 @@ describe("Lattice table component in a browser", () => {
       </div>,
     );
     const skuHeader = screen.getByRole("columnheader", { name: "SKU" }).element();
-    const headerRow = skuHeader.parentElement;
+    const table = skuHeader.closest('[role="table"]');
 
-    expect(headerRow).toBeInstanceOf(HTMLElement);
-    expect((headerRow as HTMLElement).style.getPropertyValue("--lattice-table-columns")).toBe(
+    expect(table).toBeInstanceOf(HTMLElement);
+    expect((table as HTMLElement).style.getPropertyValue("--lattice-table-columns")).toBe(
       "180px minmax(8rem, 1fr)",
     );
     await expect.element(screen.getByTestId("table-reset-columns")).toBeInTheDocument();
@@ -198,10 +198,10 @@ describe("Lattice table component in a browser", () => {
       </div>,
     );
     const skuHeader = screen.getByRole("columnheader", { name: "SKU" }).element();
-    const headerRow = skuHeader.parentElement;
+    const table = skuHeader.closest('[role="table"]');
 
-    expect(headerRow).toBeInstanceOf(HTMLElement);
-    expect((headerRow as HTMLElement).style.getPropertyValue("--lattice-table-columns")).toBe(
+    expect(table).toBeInstanceOf(HTMLElement);
+    expect((table as HTMLElement).style.getPropertyValue("--lattice-table-columns")).toBe(
       "240px minmax(8rem, 1fr)",
     );
     await expect.element(screen.getByTestId("table-reset-columns")).toBeInTheDocument();
@@ -241,15 +241,15 @@ describe("Lattice table component in a browser", () => {
     );
     const handle = screen.getByRole("separator", { name: "Resize SKU" }).element();
     const skuHeader = screen.getByRole("columnheader", { name: "SKU" }).element();
-    const headerRow = skuHeader.parentElement;
+    const table = skuHeader.closest('[role="table"]');
 
     handle.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
 
     await expect
       .poll(() => window.localStorage.getItem(storageKey))
       .toBe(JSON.stringify({ columns: ["sku", "name"], overrides: { name: 224 } }));
-    expect(headerRow).toBeInstanceOf(HTMLElement);
-    expect((headerRow as HTMLElement).style.getPropertyValue("--lattice-table-columns")).toBe(
+    expect(table).toBeInstanceOf(HTMLElement);
+    expect((table as HTMLElement).style.getPropertyValue("--lattice-table-columns")).toBe(
       "minmax(6rem, 0.5fr) 224px",
     );
     await expect.element(screen.getByTestId("table-reset-columns")).toBeInTheDocument();

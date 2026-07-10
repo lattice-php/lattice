@@ -1,11 +1,11 @@
-import { renderHook } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FieldScopeProvider } from "./field-scope";
 import { useDependentField } from "./use-dependent-field";
-import { FormValuesProvider } from "./values";
+import { FormValuesProvider, useSetFormValue } from "./values";
 
 function conditionNode(field: string, value: string): Node {
   return fakeNode({
@@ -70,6 +70,15 @@ describe("useDependentField", () => {
     expect(result.current.hidden).toBe(false);
   });
 
+  it("evaluates dotted condition fields against nested form values", () => {
+    const { result } = renderScopedField({
+      global: { address: { city: "Berlin" } },
+      node: conditionNode(".address..city", "Berlin"),
+    });
+
+    expect(result.current.hidden).toBe(false);
+  });
+
   it("falls back to ancestor row values from inside nested rows", () => {
     const wrapper = ({ children }: { children: ReactNode }) => (
       <FormValuesProvider
@@ -106,5 +115,38 @@ describe("useDependentField", () => {
     });
 
     expect(result.current.hidden).toBe(false);
+  });
+
+  it("does not rerender when unrelated form values change", () => {
+    let renders = 0;
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <FormValuesProvider initial={{ product: "sku-1", unrelated: "A" }}>
+        {children}
+      </FormValuesProvider>
+    );
+
+    const { result } = renderHook(
+      () => {
+        renders++;
+
+        return {
+          state: useDependentField(conditionNode("product", "sku-1")),
+          setValue: useSetFormValue(),
+        };
+      },
+      { wrapper },
+    );
+
+    expect(result.current.state.hidden).toBe(false);
+    expect(renders).toBe(1);
+
+    act(() => result.current.setValue("unrelated", "B"));
+
+    expect(renders).toBe(1);
+
+    act(() => result.current.setValue("product", "other"));
+
+    expect(result.current.state.hidden).toBe(true);
+    expect(renders).toBe(2);
   });
 });

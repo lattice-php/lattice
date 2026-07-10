@@ -7,6 +7,7 @@ namespace Lattice\Lattice\Http;
 use Lattice\Lattice\Core\Contracts\PageContract;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\PageMetadata;
+use Lattice\Lattice\Core\PageMetadataResolver;
 use ReflectionClass;
 
 final class PageRegistry
@@ -14,7 +15,10 @@ final class PageRegistry
     /** @var array<class-string, class-string> */
     private array $registered = [];
 
-    public function __construct(private readonly DiscoveryManifest $manifest) {}
+    public function __construct(
+        private readonly DiscoveryManifest $manifest,
+        private readonly PageMetadataResolver $metadata,
+    ) {}
 
     /**
      * @param  class-string|array<int, class-string>  $pages
@@ -34,7 +38,7 @@ final class PageRegistry
         $pages = [];
 
         foreach ($this->manifest->pageDescriptors() as $descriptor) {
-            $pages[$descriptor['class']] = PageMetadata::fromArray($descriptor);
+            $pages[$descriptor['class']] = $this->metadata->for($descriptor['class']);
         }
 
         foreach ($this->registered as $page) {
@@ -46,7 +50,7 @@ final class PageRegistry
                 continue;
             }
 
-            $metadata = PageMetadata::reflect($page);
+            $metadata = $this->metadata->for($page);
 
             if ($metadata->route !== null) {
                 $pages[$page] = $metadata;

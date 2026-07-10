@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { evaluateConditions, type Condition } from "./conditions";
+import { conditionFields, evaluateConditions, type Condition } from "./conditions";
 
 describe("evaluateConditions", () => {
   it("hides when a visible condition fails", () => {
@@ -125,5 +125,15 @@ describe("evaluateConditions", () => {
   it("treats equal dates as neither before nor after", () => {
     expect(shows("before", "2024-01-01", "2024-01-01")).toBe(false);
     expect(shows("after", "2024-01-01", "2024-01-01")).toBe(false);
+  });
+
+  it("lists each condition field once in declaration order", () => {
+    expect(
+      conditionFields({
+        visible: [{ field: "type", operator: "eq", value: "business" }],
+        required: [{ field: "type", operator: "eq", value: "business" }],
+        disabled: [{ field: "status", operator: "neq", value: "archived" }],
+      }),
+    ).toEqual(["type", "status"]);
   });
 });

@@ -85,7 +85,6 @@ type TableRowItemProps = {
   isFirst: boolean;
   isLast: boolean;
   columnCount: number;
-  gridTemplateColumns: string;
   flipKey: string;
   reorderable: boolean;
   removable: boolean;
@@ -106,7 +105,6 @@ const TableRowItem = memo(function TableRowItem({
   isFirst,
   isLast,
   columnCount,
-  gridTemplateColumns,
   flipKey,
   reorderable,
   removable,
@@ -124,8 +122,7 @@ const TableRowItem = memo(function TableRowItem({
       ref={(el) => registerRow?.(flipKey, el)}
       data-flip-key={flipKey}
       data-test={`table-row-${base}-${index}`}
-      className="grid items-start gap-x-3"
-      style={{ gridTemplateColumns }}
+      className="grid grid-cols-[var(--lattice-table-columns)] items-start gap-x-3"
     >
       <div className="flex items-center gap-1 [&_svg]:size-lt-icon-sm">
         {reorderable && !isFirst && (
@@ -224,7 +221,7 @@ export function TableRows({
       })),
     [columns],
   );
-  const { getResizeHandleProps, gridTemplateColumns, hasOverrides, resetColumns } =
+  const { getResizeHandleProps, gridTemplateColumns, hasOverrides, resizeRootRef, resetColumns } =
     useColumnResizing({
       columns: sizingColumns,
       enabled: resizableColumns,
@@ -277,8 +274,12 @@ export function TableRows({
         </button>
       )}
       <div className="overflow-x-auto">
-        <div className="flex min-w-max flex-col gap-2">
-          <div className="grid items-center gap-x-3" style={{ gridTemplateColumns }}>
+        <div
+          ref={resizeRootRef}
+          className="flex min-w-max flex-col gap-2"
+          style={{ "--lattice-table-columns": gridTemplateColumns } as never}
+        >
+          <div className="grid grid-cols-[var(--lattice-table-columns)] items-center gap-x-3">
             <div />
             {columns.map((column, index) => (
               <div
@@ -303,7 +304,6 @@ export function TableRows({
               isFirst={row.index === 0}
               isLast={row.index === rows.length - 1}
               columnCount={columns.length}
-              gridTemplateColumns={gridTemplateColumns}
               flipKey={row.key}
               reorderable={reorderable}
               removable={removable(row.index)}

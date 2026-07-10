@@ -9,7 +9,7 @@ const columns: SizableColumn[] = [
 ];
 
 function Harness() {
-  const { gridTemplateColumns, getResizeHandleProps } = useColumnResizing({
+  const { gridTemplateColumns, getResizeHandleProps, resizeRootRef } = useColumnResizing({
     enabled: true,
     columns,
     columnGapPx: 12,
@@ -19,6 +19,7 @@ function Harness() {
 
   return (
     <div
+      ref={resizeRootRef}
       data-test="grid"
       style={{
         columnGap: "12px",

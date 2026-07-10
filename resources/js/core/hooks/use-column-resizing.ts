@@ -11,6 +11,7 @@ import {
 type DragState = {
   key: string;
   maxWidth: number;
+  overrides: Record<string, number | undefined> | null;
   startWidth: number;
   startX: number;
 };
@@ -55,58 +56,81 @@ export function useColumnResizing({
   );
   const overridesRef = useRef(overrides);
   const drag = useRef<DragState | null>(null);
+  const resizeRootRef = useRef<HTMLDivElement | null>(null);
 
-  const gridTemplateColumns = useMemo(
-    () =>
+  const templateForOverrides = useCallback(
+    (nextOverrides: Record<string, number | undefined>): string =>
       buildColumnGridTemplate({
         columns,
         leadingTracks,
         trailingTracks,
-        overrides: enabled ? overrides : {},
+        overrides: enabled ? nextOverrides : {},
       }),
-    [columns, enabled, leadingTracks, overrides, trailingTracks],
+    [columns, enabled, leadingTracks, trailingTracks],
+  );
+
+  const gridTemplateColumns = useMemo(
+    () => templateForOverrides(overrides),
+    [overrides, templateForOverrides],
+  );
+
+  const applyTemplate = useCallback((template: string): void => {
+    const root = resizeRootRef.current;
+
+    if (!root) {
+      return;
+    }
+
+    root.style.gridTemplateColumns = template;
+    root.style.setProperty("--lattice-table-columns", template);
+  }, []);
+
+  const commitOverrides = useCallback(
+    (next: Record<string, number | undefined>) => {
+      overridesRef.current = next;
+      setOverrides(next);
+      writeStoredOverrides(storageKey, columnKeys, next);
+      applyTemplate(templateForOverrides(next));
+    },
+    [applyTemplate, columnKeys, storageKey, templateForOverrides],
+  );
+
+  const overridesWithColumnWidth = useCallback(
+    (
+      current: Record<string, number | undefined>,
+      column: SizableColumn,
+      width: number,
+      maxWidth?: number,
+    ): Record<string, number | undefined> => ({
+      ...current,
+      [column.key]: Math.min(
+        maxWidth ?? maxColumnWidthPx(column),
+        Math.max(minColumnWidthPx(column), width),
+      ),
+    }),
+    [],
   );
 
   const setColumnWidth = useCallback(
     (column: SizableColumn, width: number, maxWidth?: number) => {
-      setOverrides((current) => {
-        const next = {
-          ...current,
-          [column.key]: Math.min(
-            maxWidth ?? maxColumnWidthPx(column),
-            Math.max(minColumnWidthPx(column), width),
-          ),
-        };
-
-        overridesRef.current = next;
-        writeStoredOverrides(storageKey, columnKeys, next);
-
-        return next;
-      });
+      commitOverrides(overridesWithColumnWidth(overridesRef.current, column, width, maxWidth));
     },
-    [columnKeys, storageKey],
+    [commitOverrides, overridesWithColumnWidth],
   );
 
   const resetColumnWidth = useCallback(
     (column: SizableColumn) => {
-      setOverrides((current) => {
-        const next = { ...current };
-        delete next[column.key];
+      const next = { ...overridesRef.current };
+      delete next[column.key];
 
-        overridesRef.current = next;
-        writeStoredOverrides(storageKey, columnKeys, next);
-
-        return next;
-      });
+      commitOverrides(next);
     },
-    [columnKeys, storageKey],
+    [commitOverrides],
   );
 
   const resetColumns = useCallback(() => {
-    setOverrides({});
-    overridesRef.current = {};
-    writeStoredOverrides(storageKey, columnKeys, {});
-  }, [columnKeys, storageKey]);
+    commitOverrides({});
+  }, [commitOverrides]);
 
   const hasOverrides =
     enabled && Object.values(overrides).some((width) => typeof width === "number");
@@ -130,13 +154,30 @@ export function useColumnResizing({
           column,
           columnGapPx,
           columns,
-          grid: handle.parentElement?.parentElement,
+          grid: resizeRootRef.current ?? handle.parentElement?.parentElement,
           leadingTracks,
           trailingTracks,
         });
 
       const resizeBy = (handle: HTMLDivElement, delta: number): void =>
         setColumnWidth(column, current + delta, maxWidthForHandle(handle));
+
+      const finishDrag = (event: PointerEvent<HTMLDivElement>, releaseCapture: boolean): void => {
+        const active = drag.current;
+
+        if (active?.key !== column.key) {
+          return;
+        }
+
+        drag.current = null;
+        if (active.overrides !== null) {
+          commitOverrides(active.overrides);
+        }
+
+        if (releaseCapture) {
+          event.currentTarget.releasePointerCapture?.(event.pointerId);
+        }
+      };
 
       return {
         "aria-label": `Resize ${label}`,
@@ -188,6 +229,7 @@ export function useColumnResizing({
           drag.current = {
             key: column.key,
             maxWidth: maxWidthForHandle(event.currentTarget),
+            overrides: null,
             startWidth: parentWidth > 0 ? parentWidth : current,
             startX: event.clientX,
           };
@@ -201,21 +243,25 @@ export function useColumnResizing({
             return;
           }
 
-          setColumnWidth(
+          const next = overridesWithColumnWidth(
+            overridesRef.current,
             column,
             active.startWidth + event.clientX - active.startX,
             active.maxWidth,
           );
+
+          active.overrides = next;
+          overridesRef.current = next;
+          applyTemplate(templateForOverrides(next));
         },
         onPointerUp: (event: PointerEvent<HTMLDivElement>) => {
-          const active = drag.current;
-
-          if (active?.key !== column.key) {
-            return;
-          }
-
-          drag.current = null;
-          event.currentTarget.releasePointerCapture?.(event.pointerId);
+          finishDrag(event, true);
+        },
+        onPointerCancel: (event: PointerEvent<HTMLDivElement>) => {
+          finishDrag(event, true);
+        },
+        onLostPointerCapture: (event: PointerEvent<HTMLDivElement>) => {
+          finishDrag(event, false);
         },
         role: "separator",
         tabIndex: 0,
@@ -227,9 +273,13 @@ export function useColumnResizing({
       currentColumnWidth,
       enabled,
       leadingTracks,
+      applyTemplate,
+      commitOverrides,
+      overridesWithColumnWidth,
       resetColumnWidth,
       setColumnWidth,
       showIndicator,
+      templateForOverrides,
       trailingTracks,
     ],
   );
@@ -238,6 +288,7 @@ export function useColumnResizing({
     getResizeHandleProps,
     gridTemplateColumns,
     hasOverrides,
+    resizeRootRef,
     resetColumns,
     resetColumnWidth,
   };

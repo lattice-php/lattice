@@ -23,6 +23,23 @@ export type FieldState = {
   disabled: boolean;
 };
 
+export function conditionFields(conditions: FieldConditions | undefined | null): string[] {
+  const fields = new Set<string>();
+
+  for (const group of [
+    conditions?.visible,
+    conditions?.required,
+    conditions?.readOnly,
+    conditions?.disabled,
+  ]) {
+    for (const condition of group ?? []) {
+      fields.add(condition.field);
+    }
+  }
+
+  return Array.from(fields);
+}
+
 const BOOLEAN_TRUE_VALUES = new Set(["1", "true", "on", "yes"]);
 
 // Mirrors PHP filter_var(FILTER_VALIDATE_BOOLEAN) so conditions evaluate
