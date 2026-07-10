@@ -25,7 +25,7 @@ final readonly class InternalStateEffect extends Effect
 {
     public function __construct(
         public string $url,
-        private string $internal = 'secret',
+        protected string $internal = 'secret',
     ) {}
 }
 
