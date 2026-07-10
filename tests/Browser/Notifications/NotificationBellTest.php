@@ -35,6 +35,9 @@ it('renders the slide-out variant when configured', function (): void {
         ->click('@notifications-trigger');
 
     eventually(fn () => $page
+        ->assertVisible('[data-slot="dialog-overlay"]')
+        ->assertVisible('[data-slot="dialog-content"]')
+        ->assertNotPresent('[data-slot="popover-content"]')
         ->assertVisible('@notifications-panel')
         ->assertSee('Slide out notice')
         ->assertSee('This notification opens inside the slide-out panel.'));
