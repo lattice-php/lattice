@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support\TypeScript;
 
 use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Tables\Filters\Filter;
 use ReflectionClass;
 use Roave\BetterReflection\Reflection\ReflectionClass as RoaveReflectionClass;
 use Spatie\TypeScriptTransformer\Data\TransformationContext;
@@ -123,6 +124,7 @@ final class ComponentTransformer extends ClassTransformer
         return [
             ...parent::classPropertyProcessors(),
             new MarkerRewriteClassPropertyProcessor(Component::class, fn (): TypeScriptNode => new TypeScriptIdentifier('WireNode')),
+            new MarkerRewriteClassPropertyProcessor(Filter::class, fn (): TypeScriptNode => new TypeScriptIdentifier('WireNode')),
             new MixedToUnknownClassPropertyProcessor,
         ];
     }

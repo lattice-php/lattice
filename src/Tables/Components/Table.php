@@ -11,7 +11,6 @@ use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Filters\Filter;
-use Lattice\Lattice\Tables\Filters\FilterData;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableRegistry;
@@ -31,7 +30,7 @@ class Table extends Component
     public array $columns = [];
 
     /**
-     * @var array<int, FilterData>
+     * @var array<int, Filter>
      */
     public array $filters = [];
 
@@ -117,7 +116,7 @@ class Table extends Component
      */
     public function filters(array $filters): static
     {
-        $this->filters = array_map(fn (Filter $filter): FilterData => $filter->toData(), $filters);
+        $this->filters = array_values($filters);
 
         return $this;
     }
