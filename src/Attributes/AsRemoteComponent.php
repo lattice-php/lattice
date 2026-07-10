@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Attributes;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-final class AsRemoteComponent extends AsComponent
+final readonly class AsRemoteComponent extends AsComponent
 {
     public function __construct(string $type)
     {

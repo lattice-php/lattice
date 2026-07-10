@@ -8,7 +8,7 @@ use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Forms\Enums\FieldType;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class AsField extends AsComponent
+readonly class AsField extends AsComponent
 {
     public function __construct(FieldType|string $type)
     {

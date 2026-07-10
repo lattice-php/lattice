@@ -15,7 +15,7 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
  * wire props are reflected from its public properties, so no props class is declared.
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-class AsFilter extends AsComponent
+readonly class AsFilter extends AsComponent
 {
     public function __construct(FilterControl|string $control)
     {

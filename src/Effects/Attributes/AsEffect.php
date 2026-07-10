@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Effects\Attributes;
 
 use Attribute;
 use InvalidArgumentException;
+use Lattice\Lattice\Attributes\TypeScript;
 use Spatie\Attributes\Attributes;
 
 /**
@@ -14,7 +15,7 @@ use Spatie\Attributes\Attributes;
  * `Effect` union, not the node hierarchy).
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-final readonly class AsEffect
+final readonly class AsEffect extends TypeScript
 {
     public function __construct(public string $type) {}
 
