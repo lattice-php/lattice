@@ -34,6 +34,13 @@ final class BaseProfile implements TypeScriptProfile
         $packageRoot = dirname(__DIR__, 4);
         $src = $packageRoot.'/src';
 
+        // Overridable so the snapshot test regenerates into a scratch dir instead
+        // of rewriting the committed resources/js/types mid-suite.
+        $configuredOutput = config('lattice.typescript.base_output');
+        $outputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
+            ? $configuredOutput
+            : $packageRoot.'/resources/js/types';
+
         $manifest = new WireTypeDiscovery()->discover($src);
         $effects = $manifest->effects;
 
@@ -75,7 +82,7 @@ final class BaseProfile implements TypeScriptProfile
                 ),
             ],
             new FlatModuleWriter('generated.ts'),
-            $packageRoot.'/resources/js/types',
+            $outputDirectory,
             new OxfmtFormatter,
         );
 

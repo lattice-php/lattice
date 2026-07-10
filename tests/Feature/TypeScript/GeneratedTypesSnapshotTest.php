@@ -1,25 +1,21 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\File;
+
 use function Pest\Laravel\artisan;
 
 it('keeps the committed generated.ts in sync with the transformer', function (): void {
-    $path = dirname(__DIR__, 3).'/resources/js/types/generated.ts';
-    $manifest = dirname(__DIR__, 3).'/resources/js/types/typescript-transformer-manifest.json';
+    $committed = dirname(__DIR__, 3).'/resources/js/types/generated.ts';
+    $output = sys_get_temp_dir().'/lattice-package-tests/generated-types-'.getmypid();
 
-    expect(file_exists($path))->toBeTrue();
-
-    $before = file_get_contents($path);
-    $manifestBefore = file_exists($manifest) ? file_get_contents($manifest) : null;
+    config()->set('lattice.typescript.base_output', $output);
 
     try {
         artisan('lattice:typescript')->assertSuccessful();
 
-        $after = file_get_contents($path);
-
-        expect($after)->toBe($before);
+        expect(file_get_contents($output.'/generated.ts'))->toBe(file_get_contents($committed));
     } finally {
-        file_put_contents($path, $before);
-        $manifestBefore === null ? @unlink($manifest) : file_put_contents($manifest, $manifestBefore);
+        File::deleteDirectory($output);
     }
 });
