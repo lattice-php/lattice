@@ -99,7 +99,6 @@ $this->assertLatticeComponent($form)
     ->form('product', fn (FormAssertions $form) => $form
         ->assertSubmitsTo('/products')
         ->field('name', fn (FieldAssertions $field) => $field
-            ->assertVisible()
             ->assertInitialValue('Desk Lamp')));
 ```
 
@@ -167,20 +166,15 @@ $this->assertLatticeComponent($form)
         ->assertHasField('name')
         ->assertMissingField('secret')
         ->field('name', fn (FieldAssertions $field) => $field
-            ->assertVisible()
             ->assertRequired()
             ->assertInitialValue('Desk Lamp')));
 ```
 
-Field assertions: `assertVisible` / `assertHidden`, `assertVisibleWhen($state)` /
-`assertHiddenWhen($state)`, `assertRequired` / `assertOptional`, `assertDisabled` /
-`assertEnabled`, `assertReadOnly`, `assertInitialValue($value)`, and
-`assertHasCondition($type, $field, $operator, $value)`.
+Field assertions: `assertVisibleWhen($state)` / `assertHiddenWhen($state)`,
+`assertRequired` / `assertOptional`, `assertDisabled` / `assertEnabled`, `assertReadOnly`,
+`assertInitialValue($value)`, and `assertHasCondition($type, $field, $operator, $value)`.
 
-`assertVisible` / `assertHidden` check whether a field is force-hidden via `->hidden()`. A
-field shown only by a condition (`->visibleWhen(...)`) is not statically hidden, so it passes
-`assertVisible`. To evaluate conditional visibility for a given form state, use
-`assertVisibleWhen` / `assertHiddenWhen`, which run the field's conditions against the state
+`assertVisibleWhen` / `assertHiddenWhen` run the field's conditions against the form state
 you pass:
 
 ```php

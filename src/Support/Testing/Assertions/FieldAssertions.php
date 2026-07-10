@@ -19,37 +19,6 @@ final readonly class FieldAssertions
     ) {}
 
     /**
-     * Asserts the field's shared render gate did not hide it (no truthy ->hidden()
-     * or false ->visible()). It does NOT evaluate conditional visibility: a field
-     * shown only by ->visibleWhen(...) still passes here because the render gate is
-     * independent of the condition DSL. Use assertVisibleWhen($state) to evaluate
-     * visibility for a given form state.
-     *
-     * A gate-hidden field never reaches the wire — the shared gate drops it from
-     * the schema before serialization — so resolving this field's node already
-     * proves its render gate passed (shouldRender() was true).
-     */
-    public function assertVisible(): self
-    {
-        return $this;
-    }
-
-    /**
-     * A gate-hidden field never reaches the wire — the shared gate drops it from
-     * the schema before serialization — so it cannot be resolved to a node and
-     * handed to this assertion in the first place. Use
-     * FormAssertions::assertMissingField($name) to assert that instead.
-     */
-    public function assertHidden(): self
-    {
-        Assert::fail(sprintf(
-            'Field [%s] is present, so its render gate did not hide it. A gate-hidden field is dropped from the schema entirely — use assertMissingField(\'%s\') to assert that.',
-            $this->name(),
-            $this->name(),
-        ));
-    }
-
-    /**
      * Evaluates this field's own `visible` conditions against the given form
      * state. It does not account for an ancestor (section/tab) being hidden — a
      * field visible by its own rule reports visible even inside a hidden section.
