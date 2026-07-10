@@ -24,6 +24,19 @@ The check runs on the definition's own endpoint before any work happens:
 Because the same definition class owns both the rendered component and the endpoint that backs it,
 the authorization lives in one place and can't be bypassed by calling the endpoint directly.
 
+## Hidden at render time, not just at the endpoint
+
+An unauthorized definition-backed component doesn't just 403 if you call its endpoint — it's hidden
+from the page in the first place. Registries resolve a failed `authorize()` check to an unsealed,
+hidden component, and every place that embeds definition-backed components (page schemas, table row
+actions, notification actions, a form nested under an action) filters them out before serializing.
+The client never sees a trace of it: no id, no endpoint, no signed reference.
+
+:::note
+The endpoint's own `authorize()` check still runs on every request — hiding at render time is
+defense in depth, not a replacement for it. A forged or stale reference is still rejected.
+:::
+
 ## Reading trusted context
 
 A definition often needs the record it acts on. Pass it as [context](/actions/overview/#placing-an-action)

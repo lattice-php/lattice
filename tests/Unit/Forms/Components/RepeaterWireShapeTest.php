@@ -76,6 +76,16 @@ it('omits a rowAction hidden via visible(false) from the serialized rowActions',
         ->and($wire['props']['rowActions'][0]['type'])->toBe('duplicate');
 });
 
+it('serialises rowActions as an empty array, not null, when every declared action is hidden', function (): void {
+    $wire = wire(
+        Repeater::make('items')
+            ->schema([TextInput::make('name')])
+            ->rowActions([RowAction::duplicate()->visible(false), RowAction::remove()->visible(false)]),
+    );
+
+    expect($wire['props']['rowActions'])->toBe([]);
+});
+
 it('resolves closure item labels from filled row state', function (): void {
     $wire = wire(
         Form::make('order')->fill([

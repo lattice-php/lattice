@@ -134,6 +134,14 @@ test('a table omits a filter hidden via a visibility closure from the serialized
     expect($keys)->toBe(['status']);
 });
 
+test('a table serializes filters as an empty array, not null, when every declared filter is hidden', function (): void {
+    $wire = wire(Table::make('t')->filters([
+        SelectFilter::make('secret')->options([SelectFilter::option('Active', 'active')])->visible(false),
+    ]));
+
+    expect($wire['props']['filters'])->toBe([]);
+});
+
 test('a table accepts column filter clause option operators', function (): void {
     Lattice::tables([WorkbenchClauseOptionProductsTable::class]);
 

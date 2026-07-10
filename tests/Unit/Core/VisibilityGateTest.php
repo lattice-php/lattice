@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Support\Evaluation\UnresolvableEvaluationParameter;
 
 it('gates with a boolean through visible and hidden', function (): void {
     expect(Text::make('a')->visible(false)->shouldRender())->toBeFalse()
@@ -48,4 +49,11 @@ it('injects the component itself by name and by type', function (): void {
     $component = Text::make('a')->visible(fn ($component): bool => $component instanceof Text);
 
     expect($component->shouldRender())->toBeTrue();
+});
+
+it('throws when a visibility closure requests an unresolvable parameter', function (): void {
+    $component = Text::make('a')->visible(fn (string $somethingUnresolvable): bool => true);
+
+    expect(fn () => $component->shouldRender())
+        ->toThrow(UnresolvableEvaluationParameter::class);
 });
