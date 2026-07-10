@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
+use Pest\Browser\Api\Webpage;
 
 use function Orchestra\Testbench\package_path;
 
@@ -57,7 +58,7 @@ it('dumps missing React lattice keys back into the package lang file', function 
     } finally {
         try {
             $page->script('window.location.assign("/")');
-            eventually(fn () => $page->assertPathIs('/'), attempts: 15, sleepMicroseconds: 100_000);
+            eventually(fn (): Webpage => $page->assertPathIs('/'), attempts: 15, sleepMicroseconds: 100_000);
         } finally {
             File::replace($file, $original, 0644);
         }

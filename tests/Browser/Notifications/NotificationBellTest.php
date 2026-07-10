@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Notifications\Notification;
+use Pest\Browser\Api\Webpage;
 
 it('shows the bell, opens the panel, and marks notifications read', function (): void {
     $user = workbenchTestUser();
@@ -34,7 +35,7 @@ it('renders the slide-out variant when configured', function (): void {
         ->assertSee('Notification Slide Out')
         ->click('@notifications-trigger');
 
-    eventually(fn () => $page
+    eventually(fn (): Webpage => $page
         ->assertVisible('[data-slot="dialog-overlay"]')
         ->assertVisible('[data-slot="dialog-content"]')
         ->assertNotPresent('[data-slot="popover-content"]')

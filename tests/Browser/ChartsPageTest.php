@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+use Pest\Browser\Api\Webpage;
 
 it('loads dashboard chart examples through lazy fragments', function (): void {
     $this->actingAs(workbenchTestUser());
@@ -23,7 +24,7 @@ it('translates dashboard chart examples in lazy fragments', function (): void {
         ->click('@locale-switcher')
         ->click('@locale-de');
 
-    eventually(fn () => $page->assertSee('Umsatz'));
+    eventually(fn (): Webpage => $page->assertSee('Umsatz'));
 
     $page
         ->assertSee('Dashboard-Diagramme')
