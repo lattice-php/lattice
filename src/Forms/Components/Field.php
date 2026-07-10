@@ -564,6 +564,7 @@ abstract class Field extends Component
      * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */
+    #[\Override]
     protected function decorateProps(array $props): array
     {
         $props = parent::decorateProps($props);
