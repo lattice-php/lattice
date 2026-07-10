@@ -141,6 +141,7 @@
     "build:lib": "vite build --mode lib",
     "build:lib:watch": "vite build --mode lib --watch",
     "build:standalone": "vite build --mode standalone",
+    "verify:standalone": "node -e \"const fs = require('fs'); if (!fs.existsSync('./dist-standalone/manifest.json')) { console.error('dist-standalone/manifest.json is missing; run npm run build:standalone.'); process.exit(1); } const m = require('./dist-standalone/manifest.json'); const pkg = require('./package.json'); if (m.version !== pkg.version) { console.error('dist-standalone manifest ' + m.version + ' != package ' + pkg.version + '; run npm run build:standalone.'); process.exit(1); }\"",
     "prepack": "npm run build:lib",
     "test": "vitest run",
     "test:browser": "vitest run --project browser",
