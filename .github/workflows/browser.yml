@@ -1,0 +1,132 @@
+name: Browser
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  pest-browser:
+    name: Browser (Pest)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_ACCESS_KEY_ID: herd
+      AWS_SECRET_ACCESS_KEY: secretkey
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_BUCKET: herd-bucket
+      AWS_ENDPOINT: http://localhost:9000
+      AWS_URL: http://localhost:9000/herd-bucket
+      AWS_USE_PATH_STYLE_ENDPOINT: "true"
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Start RustFS (S3-compatible)
+        run: |
+          docker run -d --name rustfs \
+            -p 9000:9000 \
+            -e RUSTFS_ACCESS_KEY=herd \
+            -e RUSTFS_SECRET_KEY=secretkey \
+            -e RUSTFS_CORS_ALLOWED_ORIGINS=* \
+            rustfs/rustfs:latest /data
+          for i in $(seq 1 30); do
+            if curl -s -o /dev/null http://localhost:9000/; then
+              echo "RustFS is up"; exit 0
+            fi
+            echo "waiting for RustFS ($i)..."; sleep 1
+          done
+          echo "RustFS did not become ready"; docker logs rustfs; exit 1
+
+      - name: Create RustFS bucket
+        run: |
+          aws configure set default.s3.addressing_style path
+          aws --endpoint-url http://localhost:9000 s3 mb "s3://${AWS_BUCKET}"
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: pcov
+          tools: composer:v2
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Resolve composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-8.4-${{ hashFiles('**/composer.json') }}
+          restore-keys: composer-${{ runner.os }}-8.4-
+
+      - run: composer install --prefer-dist --no-progress --no-interaction
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Resolve Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+
+      - name: Install Playwright browser and system deps
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright system deps only
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Pest (browser coverage)
+        run: composer test:browser:coverage
+
+      - name: Upload Pest browser coverage to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v7
+        with:
+          use_oidc: true
+          files: coverage_phpunit/browser-clover.xml
+          flags: pest
+          name: pest-browser
+          disable_search: true
+          fail_ci_if_error: true
+
+      - name: Upload Pest browser test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v7
+        with:
+          use_oidc: true
+          files: coverage_phpunit/pest-browser.junit.xml
+          flags: pest-browser
+          name: pest-browser-tests
+          report_type: test_results
+          disable_search: true
+          fail_ci_if_error: true
+
+      - name: Upload browser screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: browser-screenshots
+          path: tests/Browser/Screenshots
+          if-no-files-found: ignore
