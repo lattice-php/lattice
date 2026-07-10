@@ -7,15 +7,14 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  js:
-    name: JS (lint, format, typecheck, type coverage, vitest, build)
+  js-static:
+    name: JS Static (format, lint, types)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -27,25 +26,6 @@ jobs:
 
       - run: npm ci
 
-      - name: Resolve Playwright version
-        id: js-pw
-        run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Playwright browsers
-        id: js-pw-cache
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.js-pw.outputs.version }}
-
-      - name: Install Playwright browser and system deps
-        if: steps.js-pw-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
-
-      - name: Install Playwright system deps only
-        if: steps.js-pw-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
-
       - run: npm run format:check
 
       - run: npm run lint:github
@@ -54,9 +34,25 @@ jobs:
 
       - run: npm run type-coverage
 
+  vitest:
+    name: Vitest (jsdom coverage)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci
+
       - run: |
           mkdir -p coverage_vitest
-          npm run test:coverage -- --reporter=default --reporter=junit --outputFile.junit=coverage_vitest/junit.xml
+          npm run test:coverage -- --project jsdom resources/js --reporter=default --reporter=junit --outputFile.junit=coverage_vitest/junit.xml
 
       - name: Upload Vitest coverage to Codecov
         if: ${{ !cancelled() }}
@@ -81,16 +77,180 @@ jobs:
           disable_search: true
           fail_ci_if_error: true
 
+  vitest-browser:
+    name: Vitest Browser
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci
+
+      - name: Resolve Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+
+      - name: Install Playwright browser and system deps
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright system deps only
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - run: |
+          mkdir -p coverage_vitest
+          npm run test:coverage -- --project browser --reporter=default --reporter=junit --outputFile.junit=coverage_vitest/browser-junit.xml
+
+      - name: Upload Vitest browser coverage to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v7
+        with:
+          use_oidc: true
+          files: coverage_vitest/lcov.info
+          flags: vitest-browser
+          name: vitest-browser
+          disable_search: true
+          fail_ci_if_error: true
+
+      - name: Upload Vitest browser test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v7
+        with:
+          use_oidc: true
+          files: coverage_vitest/browser-junit.xml
+          flags: vitest-browser
+          name: vitest-browser-tests
+          report_type: test_results
+          disable_search: true
+          fail_ci_if_error: true
+
+  build-lib:
+    name: Library Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci
+
       - run: npm run build:lib
+
+  bundle-analysis:
+    name: Workbench Bundle Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci
 
       - name: Upload workbench bundle analysis to Codecov
         env:
           CODECOV_BUNDLE: "1"
         run: npm run build
 
-  php:
-    name: PHP (pint, phpstan, pest)
+  php-static:
+    name: PHP Static (pint, phpstan, rector)
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: none
+          tools: composer:v2
+
+      - name: Resolve composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-8.4-${{ hashFiles('**/composer.json') }}
+          restore-keys: composer-${{ runner.os }}-8.4-
+
+      - run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Pint (style check)
+        run: composer test:lint
+
+      - name: PHPStan
+        run: composer analyse
+
+      - name: Rector (dry-run)
+        run: composer rector:test
+
+  generated-types:
+    name: Generated TypeScript Types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: none
+          tools: composer:v2
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci
+
+      - name: Resolve composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-8.4-${{ hashFiles('**/composer.json') }}
+          restore-keys: composer-${{ runner.os }}-8.4-
+
+      - run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Generated TypeScript types are up to date
+        run: |
+          composer types
+          git add --intent-to-add resources/js/types/generated.ts
+          git diff --exit-code resources/js/types/generated.ts
+
+  php-tests:
+    name: PHP Tests (${{ matrix.php-version }}, ${{ matrix.coverage }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -108,13 +268,6 @@ jobs:
           coverage: ${{ matrix.coverage }}
           tools: composer:v2
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
-          cache: npm
-
-      - run: npm ci
-
       - name: Resolve composer cache directory
         id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
@@ -126,15 +279,6 @@ jobs:
           restore-keys: composer-${{ runner.os }}-${{ matrix.php-version }}-
 
       - run: composer install --prefer-dist --no-progress --no-interaction
-
-      - name: Pint (style check)
-        run: composer test:lint
-
-      - name: PHPStan
-        run: composer analyse
-
-      - name: Rector (dry-run)
-        run: composer rector:test
 
       - name: Pest (parallel)
         if: ${{ matrix.php-version != '8.4' }}
@@ -167,13 +311,8 @@ jobs:
           disable_search: true
           fail_ci_if_error: true
 
-      - name: Generated TypeScript types are up to date
-        run: |
-          composer types
-          git add --intent-to-add resources/js/types/generated.ts
-          git diff --exit-code resources/js/types/generated.ts
-
       - name: Docs fixtures are up to date
+        if: ${{ matrix.php-version == '8.4' }}
         run: |
           git add --intent-to-add docs/fixtures
           git diff --exit-code docs/fixtures
@@ -181,6 +320,9 @@ jobs:
   browser:
     name: Browser (Pest)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     env:
       AWS_ACCESS_KEY_ID: herd
       AWS_SECRET_ACCESS_KEY: secretkey

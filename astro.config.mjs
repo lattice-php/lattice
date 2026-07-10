@@ -215,6 +215,8 @@ export default defineConfig({
     plugins: [tailwindcss(), svgSprite({ iconDirs: [path.resolve("./resources/icons")] })],
     resolve: {
       alias: {
+        "@lattice-php/lattice/css": path.resolve("./resources/css/lattice.css"),
+        "@lattice-php/lattice": path.resolve("./resources/js"),
         "@lattice/lattice": path.resolve("./resources/js"),
         "@components": path.resolve("./docs/components"),
         "@lib": path.resolve("./docs/lib"),
