@@ -86,14 +86,14 @@
             "@rector:test",
             "@test:parallel"
         ],
-        "lint": "./vendor/bin/pint",
+        "lint:fix": "./vendor/bin/pint",
         "test:lint": "./vendor/bin/pint --test",
         "rector": "./vendor/bin/rector process",
         "rector:test": "./vendor/bin/rector process --dry-run",
         "types": "@php vendor/bin/testbench lattice:typescript",
         "fix": [
             "@rector",
-            "@lint",
+            "@lint:fix",
             "npm run lint:fix",
             "npm run format",
             "@types"
