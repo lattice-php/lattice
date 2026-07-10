@@ -39,7 +39,6 @@ export function IconRenderer({ className, icon }: IconRendererProps) {
   const renderers = useContext(IconRenderersContext);
   const { ids } = useSprite();
 
-  // Custom renderers (the override stack) take precedence over the sprite.
   for (const renderer of renderers) {
     const rendered = renderer({ className, icon });
 

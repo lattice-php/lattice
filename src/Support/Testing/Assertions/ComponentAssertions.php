@@ -192,10 +192,6 @@ final readonly class ComponentAssertions
         );
     }
 
-    /**
-     * Accept either a wire type (`'menu-item'`) or a component class
-     * (`MenuItem::class`), resolving the class to its declared wire type.
-     */
     private function resolveType(string $type): string
     {
         if (is_subclass_of($type, Component::class)) {

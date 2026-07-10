@@ -45,8 +45,6 @@ trait HasOptions
     }
 
     /**
-     * The configured option values.
-     *
      * @return list<string>
      */
     public function optionValues(): array

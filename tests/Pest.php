@@ -309,8 +309,6 @@ function withoutRowIds(array $rows): array
 }
 
 /**
- * Perform a JSON GET request with a Lattice component ref header.
- *
  * @return TestResponse<JsonResponse>
  */
 function latticeGet(string $url, string $ref): TestResponse

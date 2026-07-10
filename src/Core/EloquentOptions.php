@@ -114,9 +114,6 @@ final class EloquentOptions implements OptionSource
         return $this->toOptions($this->query()->whereIn($this->valueColumn(), $values)->get());
     }
 
-    /**
-     * The value column, defaulting to the model's primary key when not set explicitly.
-     */
     private function valueColumn(): string
     {
         return $this->resolvedValueKey ??= $this->valueKey ?? (new $this->model)->getKeyName();
