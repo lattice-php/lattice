@@ -1,4 +1,5 @@
 export { AffixGroup } from "./affix-group";
+export { ActionMenuProvider, actionMenuItemClassName, useActionMenu } from "./action-menu-context";
 export { Badge, badgeVariants } from "./badge";
 export { Button, buttonVariants } from "./button";
 export type { ButtonVariant } from "./button";
@@ -7,6 +8,13 @@ export { Checkbox } from "./checkbox";
 export { Combobox } from "./combobox";
 export { ConfirmDialog } from "./confirm-dialog";
 export {
+  ActionTrigger,
+  ActionTriggerProvider,
+  useActionTrigger,
+  useClickBehavior,
+} from "./click-behavior";
+export type { ActionTriggerRenderer, ClickBehavior, TriggerState } from "./click-behavior";
+export {
   Dialog,
   DialogClose,
   DialogContent,
@@ -14,6 +22,7 @@ export {
   DialogHeader,
   DialogTitle,
 } from "./dialog";
+export { CopyableText, copyToClipboard } from "./copyable-text";
 export {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,4 +41,4 @@ export { SegmentedPills } from "./segmented-pills";
 export { Skeleton } from "./skeleton";
 export { Spinner } from "./spinner";
 export { Textarea } from "./textarea";
-export { coreComponents } from "./plugin";
+export { uiComponents } from "./plugin";

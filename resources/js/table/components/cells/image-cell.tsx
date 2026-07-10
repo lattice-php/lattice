@@ -1,5 +1,5 @@
 import { cn } from "@lattice-php/lattice/lib/utils";
-import type { ColumnCellComponent } from "../../registry";
+import type { ColumnCellComponent } from "@lattice-php/lattice/table/registry";
 
 export const ImageCell: ColumnCellComponent<"column.image"> = ({ column, props, value }) => {
   const url = typeof value === "string" ? value : "";

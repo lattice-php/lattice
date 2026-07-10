@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
-import type { ChatMessage } from "../types";
+import type { ChatMessage } from "@lattice-php/lattice/chat/types";
 import { Message } from "./message";
 
 export function MessageList({ messages }: { messages: ChatMessage[] }): ReactNode {

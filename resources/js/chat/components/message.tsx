@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
-import type { ChatMessage } from "../types";
+import type { ChatMessage } from "@lattice-php/lattice/chat/types";
 
 export function Message({ message }: { message: ChatMessage }): ReactNode {
   const isUser = message.role === "user";

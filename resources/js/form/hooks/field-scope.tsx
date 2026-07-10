@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo } from "react";
-import { appendPath, getPath, toHtmlName } from "../lib/form-path";
-import { buildOverrideKey, rowIdFrom } from "../lib/override-keys";
+import { appendPath, getPath, toHtmlName } from "@lattice-php/lattice/form/lib/form-path";
+import { buildOverrideKey, rowIdFrom } from "@lattice-php/lattice/form/lib/override-keys";
 
 type FieldScopeValue = {
   row: Record<string, unknown>;

@@ -9,7 +9,7 @@ import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
-import { ActionMenuProvider } from "./action-menu-context";
+import { ActionMenuProvider } from "@lattice-php/lattice/ui/action-menu-context";
 
 const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, node }) => {
   const { t } = useT("lattice");

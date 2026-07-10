@@ -8,8 +8,8 @@ import type { Node } from "@lattice-php/lattice/core/types";
 import { getActionEffects } from "@lattice-php/lattice/effects/dispatch";
 import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
-import { runAction } from "../lib/run-action";
-import { ActionForm, useLazyActionForm } from "../components/action-form";
+import { runAction } from "@lattice-php/lattice/action/lib/run-action";
+import { ActionForm, useLazyActionForm } from "@lattice-php/lattice/action/components/action-form";
 
 type UseAction = {
   /** Whether the action request is in flight. */

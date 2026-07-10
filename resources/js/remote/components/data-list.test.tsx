@@ -4,7 +4,7 @@ import { clearRemoteTokenCache } from "@lattice-php/lattice/core/api";
 import { createRegistry } from "@lattice-php/lattice/core/registry";
 import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
 import { actionComponents } from "@lattice-php/lattice/action";
-import { coreComponents } from "@lattice-php/lattice/ui/plugin";
+import { uiComponents } from "@lattice-php/lattice/ui/plugin";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
 import { DataList } from "./data-list";
@@ -112,7 +112,7 @@ function schemaNode(): Node<"remote.data-list"> {
 
 function withRegistry(ui: ReactNode): ReactNode {
   return (
-    <RegistryContext.Provider value={createRegistry(coreComponents, actionComponents)}>
+    <RegistryContext.Provider value={createRegistry(uiComponents, actionComponents)}>
       {ui}
     </RegistryContext.Provider>
   );

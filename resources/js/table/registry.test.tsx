@@ -2,8 +2,8 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import type { TableColumn } from "./types";
-import { Provider } from "../provider";
-import { createPlugin, createRegistry } from "../core/registry";
+import { Provider } from "@lattice-php/lattice/provider";
+import { createPlugin, createRegistry } from "@lattice-php/lattice/core/registry";
 import { ColumnCell } from "./components/table-cell";
 
 function col(partial: {

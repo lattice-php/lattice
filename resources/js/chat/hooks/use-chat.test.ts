@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { foldFrame, useChat } from "./use-chat";
-import type { ChatFrame, ChatMessage, ChatTransport } from "../types";
+import type { ChatFrame, ChatMessage, ChatTransport } from "@lattice-php/lattice/chat/types";
 
 function scriptedTransport(frames: ChatFrame[]): ChatTransport {
   return async function* () {

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { createRegistry } from "@lattice-php/lattice/core/registry";
 import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
-import { coreComponents } from "./plugin";
+import { uiComponents } from "./plugin";
 import FloatingPanelComponent from "./floating-panel";
 
 describe("Floating panel", () => {
@@ -62,7 +62,7 @@ describe("Floating panel", () => {
     });
 
     render(
-      <RegistryContext.Provider value={createRegistry(coreComponents)}>
+      <RegistryContext.Provider value={createRegistry(uiComponents)}>
         <FloatingPanelComponent node={node}>
           <section>Conversation</section>
         </FloatingPanelComponent>

@@ -6,7 +6,7 @@ import type { Node } from "@lattice-php/lattice";
 import { formComponents } from "@lattice-php/lattice/form";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { actionComponents } from "../plugin";
+import { actionComponents } from "@lattice-php/lattice/action/plugin";
 
 vi.mock("@inertiajs/react", () => ({
   router: { reload: vi.fn<() => void>(), visit: vi.fn<() => void>() },

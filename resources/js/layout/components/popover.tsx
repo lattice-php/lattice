@@ -7,7 +7,7 @@ import {
   PopoverTrigger,
 } from "@lattice-php/lattice/ui/popover";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import { CollapsedContext } from "../../core/collapsed-context";
+import { CollapsedContext } from "@lattice-php/lattice/core/collapsed-context";
 
 /**
  * A navigation-aware popover for the sidebar: it wraps the shared popover

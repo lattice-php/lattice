@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { ActionMenuProvider } from "@lattice-php/lattice/action";
 import { fakeNode } from "@lattice-php/lattice/test-support";
+import { ActionMenuProvider } from "./action-menu-context";
 import LinkComponent, { TextLink } from "./link";
 
 describe("Lattice link component", () => {

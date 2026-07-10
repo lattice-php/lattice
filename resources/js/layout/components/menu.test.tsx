@@ -4,7 +4,7 @@ import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/regist
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { Node } from "@lattice-php/lattice/core/types";
-import { SidebarCollapsedContext } from "../hooks/context";
+import { SidebarCollapsedContext } from "@lattice-php/lattice/layout/hooks/context";
 import MenuComponent from "./menu";
 import MenuItemComponent from "./menu-item";
 

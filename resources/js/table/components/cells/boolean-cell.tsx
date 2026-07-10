@@ -1,6 +1,6 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import type { ColumnCellComponent } from "../../registry";
+import type { ColumnCellComponent } from "@lattice-php/lattice/table/registry";
 
 function isTruthy(value: unknown): boolean {
   return value === true || value === 1 || value === "1" || value === "true";

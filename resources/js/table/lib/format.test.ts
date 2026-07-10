@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { TableColumn, TableRow } from "../types";
+import type { TableColumn, TableRow } from "@lattice-php/lattice/table/types";
 import { formatCell, resolveLink } from "./format";
 
 const dateColumn = {

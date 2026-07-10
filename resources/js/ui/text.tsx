@@ -1,7 +1,7 @@
-import { CopyableText } from "@lattice-php/lattice/clipboard";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { Color, Size } from "@lattice-php/lattice/types/generated";
+import { CopyableText } from "./copyable-text";
 
 const textAlignments: Record<string, string> = {
   center: "text-center",

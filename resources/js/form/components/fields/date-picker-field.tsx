@@ -6,7 +6,7 @@ import { Button } from "@lattice-php/lattice/ui/button";
 import { Icon } from "@lattice-php/lattice/icons";
 import { useLocale } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import { Input } from "../../../ui/input";
+import { Input } from "@lattice-php/lattice/ui/input";
 import {
   formatDateDisplayValue,
   formatDateTimeDisplayValue,

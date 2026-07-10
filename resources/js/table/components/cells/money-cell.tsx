@@ -1,8 +1,8 @@
 import { useLocale } from "@lattice-php/lattice/i18n";
-import { formatNumber } from "../../../format/number";
-import { numericValue } from "../../../format/numeric";
-import { formatCell } from "../../lib/format";
-import type { ColumnCellComponent } from "../../registry";
+import { formatNumber } from "@lattice-php/lattice/format/number";
+import { numericValue } from "@lattice-php/lattice/format/numeric";
+import { formatCell } from "@lattice-php/lattice/table/lib/format";
+import type { ColumnCellComponent } from "@lattice-php/lattice/table/registry";
 
 export const MoneyCell: ColumnCellComponent<"column.money"> = ({ column, props, row, value }) => {
   const { locale } = useLocale();

@@ -1,6 +1,6 @@
 import { cn } from "@lattice-php/lattice/lib/utils";
-import { formatCell } from "../../lib/format";
-import type { ColumnCellComponent } from "../../registry";
+import { formatCell } from "@lattice-php/lattice/table/lib/format";
+import type { ColumnCellComponent } from "@lattice-php/lattice/table/registry";
 
 export const BadgeCell: ColumnCellComponent<"column.badge"> = ({ column, props, value }) => {
   const label = formatCell(value, column);

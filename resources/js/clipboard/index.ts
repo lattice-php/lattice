@@ -1,24 +1,11 @@
 import { useState } from "react";
+import { copyToClipboard } from "@lattice-php/lattice/ui/copyable-text";
 
-export { CopyableText } from "./copyable-text";
+export { CopyableText, copyToClipboard } from "@lattice-php/lattice/ui/copyable-text";
 
 export type CopiedValue = string | null;
 export type CopyFn = (text: string) => Promise<boolean>;
 export type UseClipboardReturn = [CopiedValue, CopyFn];
-
-export async function copyToClipboard(text: string): Promise<boolean> {
-  if (!navigator?.clipboard) {
-    return false;
-  }
-
-  try {
-    await navigator.clipboard.writeText(text);
-
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 export function useClipboard(): UseClipboardReturn {
   const [copiedText, setCopiedText] = useState<CopiedValue>(null);

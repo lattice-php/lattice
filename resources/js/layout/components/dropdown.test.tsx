@@ -6,7 +6,7 @@ import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { Node } from "@lattice-php/lattice/core/types";
 import RawBlockComponent from "@lattice-php/lattice/ui/raw-block";
 import TextComponent from "@lattice-php/lattice/ui/text";
-import { SidebarCollapsedContext } from "../hooks/context";
+import { SidebarCollapsedContext } from "@lattice-php/lattice/layout/hooks/context";
 import DropdownComponent from "./dropdown";
 import MenuItemComponent from "./menu-item";
 

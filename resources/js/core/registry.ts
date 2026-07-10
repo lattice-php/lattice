@@ -1,8 +1,9 @@
 import { lazy } from "react";
 import type { LazyExoticComponent } from "react";
 import type { RendererComponent, RendererComponentModule } from "./types";
-import type { ColumnRegistry } from "../table/registry";
-import type { EffectHandlerRegistry } from "../effects/registry";
+import type { EffectHandlerRegistry } from "@lattice-php/lattice/effects/registry";
+import type { ColumnRegistry } from "@lattice-php/lattice/table/registry";
+import type { ComponentPropsMap } from "@lattice-php/lattice/types/generated";
 
 export type EagerComponentRegistration = {
   component: RendererComponent;
@@ -19,6 +20,11 @@ export type LazyComponentRegistration = {
 export type ComponentRegistration = EagerComponentRegistration | LazyComponentRegistration;
 
 export type ComponentRegistry = Record<string, ComponentRegistration>;
+
+export type ComponentRegistryFor<TTypes extends keyof ComponentPropsMap & string> = Record<
+  TTypes,
+  ComponentRegistration
+>;
 
 export type Plugin = {
   name: string;

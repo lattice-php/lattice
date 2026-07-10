@@ -1,6 +1,6 @@
 import { Icon } from "@lattice-php/lattice/icons";
-import { getSortDirectionLabel } from "../lib/query";
-import type { TableColumn, TableSort, TableState } from "../types";
+import { getSortDirectionLabel } from "@lattice-php/lattice/table/lib/query";
+import type { TableColumn, TableSort, TableState } from "@lattice-php/lattice/table/types";
 
 export function SortBar({
   columnsByKey,

@@ -4,7 +4,7 @@ import type { Node } from "@lattice-php/lattice/core/types";
 import { setLocale } from "@lattice-php/lattice/i18n/locale";
 import { setTimezone } from "@lattice-php/lattice/i18n/timezone";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { FormValuesProvider } from "../../hooks/values";
+import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { DateTimeInputComponent } from "./date-time-input";
 
 function renderField(node: Node<"field.date-time-input">, initial: Record<string, unknown> = {}) {

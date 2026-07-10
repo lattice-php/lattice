@@ -2,9 +2,14 @@ import { Icon } from "@lattice-php/lattice/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/lattice/ui/popover";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { Option } from "@lattice-php/lattice/types/generated";
-import { isActiveFilterValue } from "../lib/filter-values";
-import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../lib/query";
-import type { FilterClause, FilterNode, TableColumn, TableFilterIndicator } from "../types";
+import { isActiveFilterValue } from "@lattice-php/lattice/table/lib/filter-values";
+import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "@lattice-php/lattice/table/lib/query";
+import type {
+  FilterClause,
+  FilterNode,
+  TableColumn,
+  TableFilterIndicator,
+} from "@lattice-php/lattice/table/types";
 import { TableFilterControl } from "./filter-controls";
 
 export function FilterBar({

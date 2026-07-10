@@ -1,5 +1,8 @@
 import { useSyncExternalStore } from "react";
-import type { Appearance } from "../events/event-bridge";
+
+const appearances = ["light", "dark", "system"] as const;
+
+export type Appearance = (typeof appearances)[number];
 
 export type ResolvedAppearance = "light" | "dark";
 
@@ -11,6 +14,10 @@ export type UseAppearanceReturn = {
 
 const listeners = new Set<() => void>();
 let currentAppearance: Appearance = "system";
+
+export function isAppearance(value: unknown): value is Appearance {
+  return appearances.some((appearance) => appearance === value);
+}
 
 const prefersDark = (): boolean => {
   if (typeof window === "undefined") {
@@ -34,7 +41,9 @@ const getStoredAppearance = (): Appearance => {
     return "system";
   }
 
-  return (localStorage.getItem("appearance") as Appearance) || "system";
+  const stored = localStorage.getItem("appearance");
+
+  return isAppearance(stored) ? stored : "system";
 };
 
 const isDarkMode = (appearance: Appearance): boolean => {

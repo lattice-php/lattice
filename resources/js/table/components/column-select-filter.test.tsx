@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
 import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
-import type { TableColumn, TableNode } from "../types";
+import type { TableColumn, TableNode } from "@lattice-php/lattice/table/types";
 import TableComponent from "./table";
 
 function selectFilter(multiple: boolean): ColumnFilter {

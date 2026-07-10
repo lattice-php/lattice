@@ -1,11 +1,8 @@
 import { useEffect } from "react";
 import { onToast as subscribeToToasts } from "@lattice-php/lattice/toast";
 import type { ToastMessage } from "@lattice-php/lattice/toast";
-import { LATTICE_EVENT } from "./event-names";
-
-const appearances = ["light", "dark", "system"] as const;
-
-export type Appearance = (typeof appearances)[number];
+import { isAppearance, type Appearance } from "./appearance";
+import { LATTICE_EVENT } from "./events/event-names";
 
 type EventBridgeProps = {
   onAppearanceChange?: (appearance: Appearance) => void;
@@ -20,10 +17,6 @@ type AppearanceEvent = CustomEvent<{
 type LocaleEvent = CustomEvent<{
   locale?: unknown;
 }>;
-
-function isAppearance(value: unknown): value is Appearance {
-  return appearances.some((appearance) => appearance === value);
-}
 
 export function EventBridge({ onAppearanceChange, onLocaleChange, onToast }: EventBridgeProps) {
   useEffect(() => {

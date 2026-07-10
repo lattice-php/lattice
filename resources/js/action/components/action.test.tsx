@@ -4,8 +4,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { IconRendererProvider } from "@lattice-php/lattice/icons";
 import type { IconRendererFunction } from "@lattice-php/lattice/icons";
+import { ActionMenuProvider } from "@lattice-php/lattice/ui/action-menu-context";
 import ActionComponent from "./action";
-import { ActionMenuProvider } from "./action-menu-context";
 
 const http = vi.hoisted(() => ({
   delete: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),

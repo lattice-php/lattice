@@ -1,10 +1,10 @@
-import { CopyableText } from "@lattice-php/lattice/clipboard";
 import { DateTime } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { CopyableText } from "@lattice-php/lattice/ui/copyable-text";
 import type { ReactNode } from "react";
-import { formatCell, resolveLink } from "../../lib/format";
-import type { ColumnCellArgs, ColumnCellComponent } from "../../registry";
-import type { ColumnPropsOf } from "../../types";
+import { formatCell, resolveLink } from "@lattice-php/lattice/table/lib/format";
+import type { ColumnCellArgs, ColumnCellComponent } from "@lattice-php/lattice/table/registry";
+import type { ColumnPropsOf } from "@lattice-php/lattice/table/types";
 
 type TextProps = ColumnCellArgs<"column.text">["props"];
 

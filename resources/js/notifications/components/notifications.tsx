@@ -9,8 +9,8 @@ import {
 import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { useNotifications } from "../store";
-import type { NotificationItem } from "../types";
+import { useNotifications } from "@lattice-php/lattice/notifications/store";
+import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 import { NotificationList } from "./notification-list";
 
 const NotificationsEcho = lazy(() =>

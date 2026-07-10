@@ -1,5 +1,5 @@
 import { useEchoNotification } from "@laravel/echo-react";
-import type { NotificationItem } from "../types";
+import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 
 export function NotificationsEcho({
   channel,

@@ -2,8 +2,8 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { FieldScopeProvider } from "../../hooks/field-scope";
-import { FormValuesProvider } from "../../hooks/values";
+import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
+import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { TimeInputComponent } from "./time-input";
 
 function renderField(node: Node<"field.time-input">, initial: Record<string, unknown> = {}) {

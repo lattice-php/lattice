@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
+import { ActionInteractionProvider } from "./action/components/action-trigger-provider";
 import type { Registry } from "./core/registry";
 import { RegistryContext } from "./core/registry-context";
 import { useFlashEffects } from "./effects/use-flash-effects";
-import { EventBridge } from "./events/event-bridge";
+import { EventBridge } from "./event-bridge";
 import type { SpriteValue } from "./icons/sprite";
 import { SpriteProvider } from "./icons/sprite";
 import { Toaster } from "./toast";
@@ -27,11 +28,13 @@ export function ProviderBase({
 
   return (
     <RegistryContext.Provider value={registry}>
-      <SpriteProvider sprite={sprite}>
-        {children}
-        <EventBridge onAppearanceChange={updateAppearance} />
-        {toaster ? <Toaster /> : null}
-      </SpriteProvider>
+      <ActionInteractionProvider>
+        <SpriteProvider sprite={sprite}>
+          {children}
+          <EventBridge onAppearanceChange={updateAppearance} />
+          {toaster ? <Toaster /> : null}
+        </SpriteProvider>
+      </ActionInteractionProvider>
     </RegistryContext.Provider>
   );
 }

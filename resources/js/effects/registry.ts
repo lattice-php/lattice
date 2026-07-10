@@ -26,6 +26,11 @@ export type EffectHandler<TType extends string = string> = (effect: EffectOf<TTy
 
 export type EffectHandlerRegistry = Record<string, EffectHandler>;
 
+export type EffectHandlerRegistryFor<TTypes extends keyof EffectPropsMap & string> = Record<
+  TTypes,
+  EffectHandler
+>;
+
 /**
  * Author a handler against `EffectHandler<"my.type">` for a typed payload, then
  * register it through this — it erases the type parameter for the loose registry.
@@ -54,7 +59,7 @@ function bridge(event: string): EffectHandler {
  * Imperative effects act directly; the rest bridge to the `lattice:*` DOM events
  * that toast/callout/modal/fragment/form subscribe to.
  */
-export const builtinEffectHandlers: EffectHandlerRegistry = {
+export const builtinEffectHandlers: EffectHandlerRegistryFor<keyof EffectPropsMap & string> = {
   "reload-page": () => router.reload(),
   redirect: effectHandler("redirect", (effect) => router.visit(effect.url)),
   download: effectHandler("download", (effect) => triggerDownload(effect.url)),

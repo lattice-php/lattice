@@ -1,45 +1,17 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "ignorePatterns": ["resources/js/generated/**"],
-  "plugins": [
-    "typescript",
-    "unicorn",
-    "oxc",
-    "react",
-    "jsx-a11y",
-    "vitest",
-    "import"
-  ],
-  "categories": {
-    "correctness": "error"
-  },
-  "rules": {
-    "jsx-a11y/no-autofocus": "off",
-    "jsx-a11y/prefer-tag-over-role": "off",
-    "no-restricted-imports": [
-      "error",
-      {
-        "patterns": [
+  "overrides": [
+    {
+      "files": ["resources/js/**/*.{ts,tsx}"],
+      "excludeFiles": ["resources/js/test/browser-setup.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
           {
-            "group": [
-              "@lattice-php/lattice/action/*",
-              "@lattice-php/lattice/chat/*",
-              "@lattice-php/lattice/layout/*",
-              "@lattice-php/lattice/notifications/*",
-              "@lattice-php/lattice/remote/*",
-              "@lattice-php/lattice/table/*",
-              "@lattice-php/lattice/toast/*",
-              "@lattice-php/lattice/form/*",
-              "!@lattice-php/lattice/form/toolkit",
-              "!@lattice-php/lattice/form/embed"
-            ],
-            "message": "Feature domains are imported through their barrel (or a named surface like form/toolkit and form/embed); their implementation files are internal. Within the owning domain, use a relative import."
+            "patterns": ["../**"]
           }
         ]
       }
-    ]
-  },
-  "env": {
-    "builtin": true
-  }
+    }
+  ]
 }

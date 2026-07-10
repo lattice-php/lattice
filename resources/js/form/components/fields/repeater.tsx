@@ -1,8 +1,8 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
-import { FormFieldFrame } from "../base/field";
-import { useFormContext } from "../../hooks/context";
-import { useDependentField } from "../../hooks/use-dependent-field";
+import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
+import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
+import { useDependentField } from "@lattice-php/lattice/form/hooks/use-dependent-field";
 import { ROW_ID_KEY } from "./repeater-rows";
 import { RowKeyInputs } from "./row-key-inputs";
 import { RowItem } from "./row-item";

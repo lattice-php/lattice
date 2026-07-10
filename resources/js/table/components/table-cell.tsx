@@ -1,6 +1,11 @@
 import { useColumnRegistry } from "@lattice-php/lattice/core/registry-context";
-import { columnCell, type ColumnRegistry } from "../registry";
-import type { TableColumn, TableRow } from "../types";
+import type { ColumnType } from "@lattice-php/lattice/types/generated";
+import {
+  columnCell,
+  type ColumnRegistry,
+  type ColumnRegistryFor,
+} from "@lattice-php/lattice/table/registry";
+import type { TableColumn, TableRow } from "@lattice-php/lattice/table/types";
 import { BadgeCell } from "./cells/badge-cell";
 import { BooleanCell } from "./cells/boolean-cell";
 import { IconCell } from "./cells/icon-cell";
@@ -22,7 +27,7 @@ const builtinColumnCells: ColumnRegistry = {
   "column.number": columnCell(NumberCell),
   "column.stack": columnCell(StackCell),
   "column.text": columnCell(TextCell),
-};
+} satisfies ColumnRegistryFor<ColumnType>;
 
 export function ColumnCell({ column, row }: { column: TableColumn; row: TableRow }) {
   const customCells = useColumnRegistry();

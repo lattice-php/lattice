@@ -5,8 +5,8 @@ import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
 import { createPlugin, createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import type { ComponentRegistry } from "@lattice-php/lattice/core/registry";
-import type { ChatMessage } from "../types";
-import { chatComponents } from "../plugin";
+import type { ChatMessage } from "@lattice-php/lattice/chat/types";
+import { chatComponents } from "@lattice-php/lattice/chat/plugin";
 import { Message } from "./message";
 
 function withRegistry(ui: ReactNode, extraComponents?: ComponentRegistry): ReactNode {

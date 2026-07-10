@@ -2,7 +2,7 @@ import { translate } from "@lattice-php/lattice/i18n";
 import { DEFAULT_COLUMN_WIDTH } from "@lattice-php/lattice/core/hooks/column-sizing";
 import type { ColumnWidth } from "@lattice-php/lattice/types/generated";
 import { isEmptyMember } from "./filter-values";
-import type { TableColumn, TableSort, TableState } from "../types";
+import type { TableColumn, TableSort, TableState } from "@lattice-php/lattice/table/types";
 
 export function getColumnSort(state: TableState, column: TableColumn): TableSort | undefined {
   return state.sorts.find((currentSort) => currentSort.key === column.key);

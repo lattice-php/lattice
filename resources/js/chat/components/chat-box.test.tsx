@@ -6,7 +6,7 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
 import { createRegistry } from "@lattice-php/lattice/core/registry";
 import { clearRemoteTokenCache } from "@lattice-php/lattice/core/api";
-import { chatComponents } from "../plugin";
+import { chatComponents } from "@lattice-php/lattice/chat/plugin";
 import { ChatBox } from "./chat-box";
 
 function withRegistry(ui: ReactNode): ReactNode {

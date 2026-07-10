@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Node } from "@lattice-php/lattice/core/types";
-import { walkFields } from "../lib/field-props";
-import { FORM_DEBOUNCE_MS, postFormAction } from "../lib/form-transport";
+import { walkFields } from "@lattice-php/lattice/form/lib/field-props";
+import { FORM_DEBOUNCE_MS, postFormAction } from "@lattice-php/lattice/form/lib/form-transport";
 import {
   collectPrefillTargets,
   getPath,
   pathsToClear,
   pruneOverrides,
   seededOverrides,
-} from "../lib/prefill-targets";
+} from "@lattice-php/lattice/form/lib/prefill-targets";
 import type { PrefillController } from "./prefill-context";
 import { useFormValues, useSetFormValue } from "./values";
 

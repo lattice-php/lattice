@@ -4,11 +4,11 @@ import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { FormFieldFrame } from "../base/field";
-import { useFormContext } from "../../hooks/context";
-import { useDependentField } from "../../hooks/use-dependent-field";
-import { useFieldScope } from "../../hooks/field-scope";
-import { useFormValues, useSetFormValue } from "../../hooks/values";
+import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
+import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
+import { useDependentField } from "@lattice-php/lattice/form/hooks/use-dependent-field";
+import { useFieldScope } from "@lattice-php/lattice/form/hooks/field-scope";
+import { useFormValues, useSetFormValue } from "@lattice-php/lattice/form/hooks/values";
 
 type Item = {
   id: string;

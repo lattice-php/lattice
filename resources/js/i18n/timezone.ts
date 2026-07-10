@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { LATTICE_EVENT } from "../events/event-names";
+import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 import { configTimezone, subscribeConfig } from "./config";
 
 export type UseTimezoneReturn = {

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { ColumnFilter, Op } from "@lattice-php/lattice/types/generated";
 import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
-import type { FilterClause, TableColumn } from "../types";
+import type { FilterClause, TableColumn } from "@lattice-php/lattice/table/types";
 import { ColumnFilterControl } from "./column-filter-control";
 
 function textFilter(overrides: Partial<ColumnFilter> = {}): ColumnFilter {

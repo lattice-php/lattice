@@ -1,4 +1,9 @@
-import { createPlugin, eagerComponent } from "@lattice-php/lattice/core/registry";
+import {
+  createPlugin,
+  eagerComponent,
+  type ComponentRegistryFor,
+} from "@lattice-php/lattice/core/registry";
+import type { FormNodeType } from "@lattice-php/lattice/types/generated";
 import {
   BuilderComponent,
   CheckboxComponent,
@@ -40,6 +45,6 @@ export const formComponents = createPlugin({
     "field.text-input": eagerComponent(TextInputComponent),
     "field.time-input": eagerComponent(TimeInputComponent),
     "field.toggle": eagerComponent(ToggleComponent),
-  },
+  } satisfies ComponentRegistryFor<FormNodeType>,
   name: "lattice/form",
 });

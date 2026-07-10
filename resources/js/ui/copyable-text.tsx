@@ -1,7 +1,20 @@
 import { useT } from "@lattice-php/lattice/i18n";
 import { Icon } from "@lattice-php/lattice/icons";
 import { type ReactNode, useEffect, useState } from "react";
-import { copyToClipboard } from ".";
+
+export async function copyToClipboard(text: string): Promise<boolean> {
+  if (!navigator?.clipboard) {
+    return false;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 interface CopyableTextProps {
   value: string;

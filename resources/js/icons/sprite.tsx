@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import type { ReactNode } from "react";
-import { cn } from "../lib/utils";
+import { cn } from "@lattice-php/lattice/lib/utils";
 
 // Augmentable registry of icon names. The sprite plugin can generate a
 // `declare module "@lattice-php/lattice" { interface KnownIcons { … } }` block

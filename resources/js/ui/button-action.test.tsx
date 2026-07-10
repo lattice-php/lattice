@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ActionInteractionProvider } from "@lattice-php/lattice/action";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import type { Node } from "@lattice-php/lattice/core/types";
 import ButtonComponent from "./button";
@@ -40,6 +41,14 @@ function actionButton(props: Record<string, unknown> = {}): Node<"button"> {
   });
 }
 
+function renderActionButton(node: Node<"button">) {
+  return render(
+    <ActionInteractionProvider>
+      <ButtonComponent node={node}>{null}</ButtonComponent>
+    </ActionInteractionProvider>,
+  );
+}
+
 describe("button action trigger", () => {
   beforeEach(() => {
     http.post.mockReset();
@@ -49,7 +58,7 @@ describe("button action trigger", () => {
   it("dispatches its nested action with the ref header on click", async () => {
     http.post.mockResolvedValue({ ok: true, effects: [] });
 
-    render(<ButtonComponent node={actionButton()}>{null}</ButtonComponent>);
+    renderActionButton(actionButton());
 
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
@@ -72,7 +81,7 @@ describe("button action trigger", () => {
       },
     });
 
-    render(<ButtonComponent node={node}>{null}</ButtonComponent>);
+    renderActionButton(node);
 
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
 

@@ -1,7 +1,7 @@
 import { Skeleton } from "@lattice-php/lattice/ui/skeleton";
 import { useT } from "@lattice-php/lattice/i18n";
-import type { NotificationItem } from "../types";
-import type { NotificationsStatus } from "../store";
+import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
+import type { NotificationsStatus } from "@lattice-php/lattice/notifications/store";
 import { EmptyState } from "./empty-state";
 import { NotificationItemRow } from "./notification-item";
 

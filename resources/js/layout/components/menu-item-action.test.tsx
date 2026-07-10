@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ActionInteractionProvider } from "@lattice-php/lattice/action";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import type { Node } from "@lattice-php/lattice/core/types";
 import MenuItemComponent from "./menu-item";
@@ -40,6 +41,14 @@ function actionMenuItem(props: Record<string, unknown> = {}): Node<"menu-item"> 
   });
 }
 
+function renderActionMenuItem(node: Node<"menu-item">) {
+  return render(
+    <ActionInteractionProvider>
+      <MenuItemComponent node={node}>{null}</MenuItemComponent>
+    </ActionInteractionProvider>,
+  );
+}
+
 describe("menu item action trigger", () => {
   beforeEach(() => {
     http.delete.mockReset();
@@ -52,7 +61,7 @@ describe("menu item action trigger", () => {
   it("dispatches the nested action with the ref header", async () => {
     http.post.mockResolvedValue({ ok: true, effects: [] });
 
-    render(<MenuItemComponent node={actionMenuItem()}>{null}</MenuItemComponent>);
+    renderActionMenuItem(actionMenuItem());
 
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
@@ -72,7 +81,7 @@ describe("menu item action trigger", () => {
     const toastListener = vi.fn<(event: Event) => void>();
     window.addEventListener("lattice:toast", toastListener);
 
-    render(<MenuItemComponent node={actionMenuItem()}>{null}</MenuItemComponent>);
+    renderActionMenuItem(actionMenuItem());
 
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
@@ -95,7 +104,7 @@ describe("menu item action trigger", () => {
       },
     });
 
-    render(<MenuItemComponent node={node}>{null}</MenuItemComponent>);
+    renderActionMenuItem(node);
 
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
@@ -115,7 +124,7 @@ describe("menu item action trigger", () => {
       form: { id: "reason-form", type: "form", props: {}, schema: [] },
     });
 
-    render(<MenuItemComponent node={node}>{null}</MenuItemComponent>);
+    renderActionMenuItem(node);
 
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
