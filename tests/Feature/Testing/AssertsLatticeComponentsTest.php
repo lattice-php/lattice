@@ -63,14 +63,14 @@ it('asserts field visibility, conditions and initial value', function (): void {
             ->assertSubmitsTo('/products')
             ->assertHasField('email')
             ->assertMissingField('nope')
+            ->assertMissingField('secret')
             ->field('email', fn (FieldAssertions $f): FieldAssertions => $f
                 ->assertVisible()
                 ->assertInitialValue('a@b.c'))
             ->field('company', fn (FieldAssertions $f): FieldAssertions => $f
                 ->assertVisibleWhen(['type' => 'business'])
                 ->assertHiddenWhen(['type' => 'personal'])
-                ->assertHasCondition('visible', 'type', Op::Equals, 'business'))
-            ->field('secret', fn (FieldAssertions $f): FieldAssertions => $f->assertHidden()));
+                ->assertHasCondition('visible', 'type', Op::Equals, 'business')));
 });
 
 it('asserts table filters, columns and operators', function (): void {

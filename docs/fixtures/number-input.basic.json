@@ -9,7 +9,6 @@
             "disabled": false,
             "editablePrefill": false,
             "helperText": null,
-            "hidden": false,
             "label": "Age",
             "max": 120,
             "min": 0,

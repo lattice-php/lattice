@@ -50,7 +50,6 @@ test('password inputs can request automatic confirmation fields', function (): v
                 'required' => true,
                 'labelAction' => null,
                 'value' => null,
-                'hidden' => false,
                 'readOnly' => false,
                 'disabled' => false,
                 'conditions' => null,

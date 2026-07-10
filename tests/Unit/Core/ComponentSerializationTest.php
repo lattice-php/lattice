@@ -243,7 +243,7 @@ test('private serialization hooks are ignored', function (): void {
     ]);
 });
 
-test('components can opt out of rendering with when', function (): void {
+test('components can opt out of rendering with hidden', function (): void {
     $page = new class extends Page
     {
         public function render(PageSchema $schema): PageSchema

@@ -9,7 +9,6 @@
             "disabled": false,
             "editablePrefill": false,
             "helperText": null,
-            "hidden": false,
             "label": "Birthday",
             "max": "2026-01-01",
             "min": null,

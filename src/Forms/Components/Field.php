@@ -29,8 +29,6 @@ abstract class Field extends Component
 
     public mixed $value = null;
 
-    public bool $hidden = false;
-
     public bool $required = false;
 
     public bool $readOnly = false;
@@ -311,24 +309,6 @@ abstract class Field extends Component
         return $this;
     }
 
-    public function hidden(Closure|bool $condition = true): static
-    {
-        $this->hidden = $condition instanceof Closure
-            ? (bool) Evaluate::resolve($condition, $this->renderContext())
-            : $condition;
-
-        return $this;
-    }
-
-    public function visible(Closure|bool $condition = true): static
-    {
-        $this->hidden = $condition instanceof Closure
-            ? ! (bool) Evaluate::resolve($condition, $this->renderContext())
-            : ! $condition;
-
-        return $this;
-    }
-
     public function required(bool $required = true): static
     {
         $this->required = $required;
@@ -472,7 +452,7 @@ abstract class Field extends Component
      */
     public function isVisible(FormData $data): bool
     {
-        return ! $this->hidden && $this->allConditionsMatch('visible', $data);
+        return $this->shouldRender() && $this->allConditionsMatch('visible', $data);
     }
 
     /**

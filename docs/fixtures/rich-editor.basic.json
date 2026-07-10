@@ -8,7 +8,6 @@
             "disabled": false,
             "editablePrefill": false,
             "helperText": null,
-            "hidden": false,
             "label": "Article",
             "name": "article",
             "placeholder": "Write your article…",

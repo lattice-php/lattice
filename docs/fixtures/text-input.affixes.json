@@ -10,7 +10,6 @@
             "disabled": false,
             "editablePrefill": false,
             "helperText": null,
-            "hidden": false,
             "label": "Price",
             "name": "price",
             "placeholder": null,

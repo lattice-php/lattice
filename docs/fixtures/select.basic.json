@@ -10,7 +10,6 @@
             "editablePrefill": false,
             "emptyLabel": "No options",
             "helperText": null,
-            "hidden": false,
             "label": "Country",
             "multiple": false,
             "name": "country",

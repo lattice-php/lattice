@@ -19,33 +19,34 @@ final readonly class FieldAssertions
     ) {}
 
     /**
-     * Asserts the field is not force-hidden via ->hidden(). It does NOT evaluate
-     * conditional visibility: a field shown only by ->visibleWhen(...) still passes
-     * here because its default `hidden` flag is null. Use assertVisibleWhen($state)
-     * to evaluate visibility for a given form state.
+     * Asserts the field's shared render gate did not hide it (no truthy ->hidden()
+     * or false ->visible()). It does NOT evaluate conditional visibility: a field
+     * shown only by ->visibleWhen(...) still passes here because the render gate is
+     * independent of the condition DSL. Use assertVisibleWhen($state) to evaluate
+     * visibility for a given form state.
+     *
+     * A gate-hidden field never reaches the wire — the shared gate drops it from
+     * the schema before serialization — so resolving this field's node already
+     * proves its render gate passed (shouldRender() was true).
      */
     public function assertVisible(): self
     {
-        Assert::assertNotSame(true, $this->node->prop('hidden'), sprintf(
-            'Expected field [%s] to be visible, but hidden=true.',
-            $this->name(),
-        ));
-
         return $this;
     }
 
     /**
-     * Asserts the field is force-hidden via ->hidden(). It does NOT evaluate
-     * conditional visibility; use assertHiddenWhen($state) for that.
+     * A gate-hidden field never reaches the wire — the shared gate drops it from
+     * the schema before serialization — so it cannot be resolved to a node and
+     * handed to this assertion in the first place. Use
+     * FormAssertions::assertMissingField($name) to assert that instead.
      */
     public function assertHidden(): self
     {
-        Assert::assertSame(true, $this->node->prop('hidden'), sprintf(
-            'Expected field [%s] to be hidden, but hidden is not true.',
+        Assert::fail(sprintf(
+            'Field [%s] is present, so its render gate did not hide it. A gate-hidden field is dropped from the schema entirely — use assertMissingField(\'%s\') to assert that.',
+            $this->name(),
             $this->name(),
         ));
-
-        return $this;
     }
 
     /**
