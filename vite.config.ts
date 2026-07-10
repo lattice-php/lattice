@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { playwright } from "@vitest/browser-playwright";
 import laravel from "laravel-vite-plugin";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import Sonda from "sonda/vite";
 import type { Plugin } from "vite";
@@ -90,7 +90,42 @@ function libraryEntries(): string[] {
       .filter((file) => !/\.(test(-d)?|d)\.(ts|tsx)$/.test(file))
       .filter((file) => !file.startsWith("test/"))
       .filter((file) => file !== "test-support.ts")
+      // Type-only sources compile to empty chunks; they ship as .d.ts via the
+      // dts plugin and are exposed through types-only export conditions.
+      .filter((file) => !file.startsWith("types/"))
       .map((file) => path.join(sourceRoot, file))
+  );
+}
+
+/**
+ * TypeScript's node16/nodenext resolution requires explicit runtime extensions
+ * on relative imports. Sources use bundler-style extensionless specifiers, so
+ * the emitted declarations must be rewritten to stay resolvable outside
+ * bundlers (verified by `attw` in check:package).
+ */
+function withExplicitExtensions(filePath: string, content: string): string {
+  const sourceDir = path.join(
+    sourceRoot,
+    path.relative(path.resolve(__dirname, "dist"), path.dirname(filePath)),
+  );
+  const existsAsModule = (base: string): boolean =>
+    ["ts", "tsx"].some((extension) => existsSync(`${base}.${extension}`));
+
+  return content.replace(
+    /(\b(?:from|import)\s*\(?\s*)(["'])(\.\.?(?:\/[^"']+)?)\2/g,
+    (match, prefix: string, quote: string, specifier: string) => {
+      const target = path.join(sourceDir, specifier);
+
+      if (existsAsModule(target)) {
+        return `${prefix}${quote}${specifier}.js${quote}`;
+      }
+
+      if (existsAsModule(path.join(target, "index"))) {
+        return `${prefix}${quote}${specifier}/index.js${quote}`;
+      }
+
+      return match;
+    },
   );
 }
 
@@ -179,6 +214,10 @@ export default defineConfig(({ mode }) => {
               ],
               compilerOptions: { rootDir: sourceRoot },
               outDir: "dist",
+              beforeWriteFile: (filePath, content) => ({
+                filePath,
+                content: withExplicitExtensions(filePath, content),
+              }),
             }),
             stylesheet(),
           ]
