@@ -25,6 +25,13 @@ return [
         'enabled' => env('LATTICE_REALTIME_ENABLED', true),
     ],
 
+    'frontend' => [
+        'dist_path' => null,
+        'path' => 'vendor/lattice',
+        'theme' => [],
+        'echo' => null,
+    ],
+
     'forms' => [
         'endpoint' => 'lattice/forms/{form}',
         'middleware' => ['web', 'auth'],

@@ -33,6 +33,7 @@ use Lattice\Lattice\Console\Commands\MakePageCommand;
 use Lattice\Lattice\Console\Commands\MakeRemoteSourceCommand;
 use Lattice\Lattice\Console\Commands\MakeTableCommand;
 use Lattice\Lattice\Console\Commands\PruneNotificationsCommand;
+use Lattice\Lattice\Console\Commands\PublishAssetsCommand;
 use Lattice\Lattice\Console\Commands\TypeScriptCommand;
 use Lattice\Lattice\Core\Contracts\ResolvesReferenceIdentity;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
@@ -84,6 +85,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
                 DiscoverCacheCommand::class,
                 DiscoverClearCommand::class,
                 PruneNotificationsCommand::class,
+                PublishAssetsCommand::class,
             ]);
     }
 
