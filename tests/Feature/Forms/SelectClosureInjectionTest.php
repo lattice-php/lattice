@@ -27,3 +27,17 @@ it('injects selected values into the selected resolver', function (): void {
     expect($field->options)->toHaveCount(1)
         ->and($field->options[0]->label)->toBe('User 7');
 });
+
+it('injects form utilities into the selected resolver when hydrating from a bound form', function (): void {
+    $field = Select::make('user')->resolveSelectedUsing(
+        fn (array $values, callable $get, Request $request): array => array_map(
+            fn (string $value): Option => new Option($get('scope').'/'.$value, $value),
+            $values,
+        ),
+    );
+
+    $field->hydrateState(['7'], FormData::make(['scope' => 'admins']), Request::create('/'));
+
+    expect($field->options)->toHaveCount(1)
+        ->and($field->options[0]->label)->toBe('admins/7');
+});

@@ -134,6 +134,20 @@ test('a toggle filter runs its query closure when toggled on', function (): void
         ->and($builder->getBindings())->toBe([1000]);
 });
 
+test('a toggle filter query closure resolves the current request', function (): void {
+    $builder = Product::query();
+    $received = null;
+
+    ToggleFilter::make('high_value')
+        ->query(function (Builder $query, ?Request $request = null) use (&$received): void {
+            $received = $request;
+            $query->where('price', '>', 1000);
+        })
+        ->apply($builder, FormData::make(['value' => '1']));
+
+    expect($received)->toBeInstanceOf(Request::class);
+});
+
 test('a toggle filter is a no-op when toggled off', function (): void {
     $builder = Product::query();
 
@@ -164,6 +178,23 @@ test('a ternary filter runs the false query branch', function (): void {
         ->apply($builder, FormData::make(['value' => 'false']));
 
     expect($builder->toSql())->toContain('"verified_at" is null');
+});
+
+test('a ternary filter query closure resolves the current request', function (): void {
+    $builder = Product::query();
+    $received = null;
+
+    TernaryFilter::make('verified')
+        ->queries(
+            true: function (Builder $query, ?Request $request = null) use (&$received): void {
+                $received = $request;
+                $query->whereNotNull('verified_at');
+            },
+            false: fn (Builder $query) => $query->whereNull('verified_at'),
+        )
+        ->apply($builder, FormData::make(['value' => 'true']));
+
+    expect($received)->toBeInstanceOf(Request::class);
 });
 
 test('a ternary filter ignores an unparseable value', function (): void {

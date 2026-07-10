@@ -98,8 +98,11 @@ class Select extends Field
      * Resolve the currently selected value(s) to options for display on edit forms.
      * The resolver is evaluated with utility injection: `$values` (the currently-selected
      * values, always an array so a `whereIn` query works for both single and multiple
-     * selects), plus `$component` and any container-resolved type (e.g. `Request`). It
-     * returns the matching options.
+     * selects), plus `$component` and any container-resolved type (e.g. `Request`). When
+     * hydrated from a bound form (the normal `hydrateState` path), the full field surface
+     * is also available: `$state`, `$get`, `$value`, and typed `FormData`/`Request`. Direct
+     * calls to `hydrateState()` without a form/request (e.g. in isolation) fall back to
+     * `$values`/`$component` only.
      */
     public function resolveSelectedUsing(Closure $resolver): static
     {
@@ -144,11 +147,15 @@ class Select extends Field
             return;
         }
 
+        $context = ($form instanceof FormData && $request instanceof Request)
+            ? $this->evaluationContext($form, $request)
+            : Evaluate::context()->named('component', $this);
+
         $resolved = $this->optionSource instanceof OptionSource
             ? $this->normalizeOptions($this->optionSource->selected($values))
             : $this->normalizeOptions(Evaluate::resolve(
                 $this->selectedResolver,
-                Evaluate::context()->named('values', $values)->named('component', $this),
+                $context->named('values', $values),
             ));
         $existing = $this->options;
 
