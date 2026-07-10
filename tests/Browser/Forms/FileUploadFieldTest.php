@@ -13,7 +13,7 @@ it('uploads a file through a multipart payload', function (): void {
     $page = visit('/uploads/create')
         ->assertSee('Drop files here or click to browse');
 
-    attachBrowserFilePayload($page, '@avatar-input', __DIR__.'/fixtures/avatar.jpg', 'image/jpeg');
+    $page->attach('@avatar-input', __DIR__.'/fixtures/avatar.jpg');
 
     eventually(function () use ($page): void {
         $page->assertSee('avatar.jpg');
@@ -44,7 +44,7 @@ it('uploads directly to s3 via the signed flow', function (): void {
     $page = visit('/uploads/create?signed=1')
         ->assertPresent('@document-input');
 
-    attachBrowserFilePayload($page, '@document-input', __DIR__.'/fixtures/avatar.jpg', 'image/jpeg');
+    $page->attach('@document-input', __DIR__.'/fixtures/avatar.jpg');
 
     eventually(function () use ($page): void {
         $page->assertSee('avatar.jpg');

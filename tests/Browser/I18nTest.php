@@ -47,7 +47,7 @@ it('dumps missing React lattice keys back into the package lang file', function 
 
     try {
         $page->assertSee('Article')
-            ->assertPresent('[aria-label="Italic"]')
+            ->assertPresent('@editor-italic')
             ->assertNoJavaScriptErrors();
 
         expect(waitForLatticeBrowserTestTranslation($file, 'editor.italic'))

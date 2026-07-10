@@ -18,8 +18,6 @@ use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tests\BrowserTestCase;
 use Lattice\Lattice\Tests\TestCase;
 use Orchestra\Testbench\Factories\UserFactory;
-use Pest\Browser\Api\AwaitableWebpage;
-use Pest\Browser\Api\Webpage;
 use Workbench\App\Models\User;
 
 use function Pest\Laravel\getJson;
@@ -61,48 +59,6 @@ function retryUntil(Closure $assert, int $attempts = 10, int $sleepMicroseconds 
 function eventually(Closure $assert, int $attempts = 10, int $sleepMicroseconds = 100_000, ?Closure $between = null): void
 {
     retryUntil($assert, $attempts, $sleepMicroseconds, $between);
-}
-
-function browserSelector(string $selector): string
-{
-    if (str_starts_with($selector, '@')) {
-        return sprintf('[data-test="%s"]', substr($selector, 1));
-    }
-
-    return $selector;
-}
-
-function attachBrowserFilePayload(AwaitableWebpage|Webpage $page, string $selector, string $path, string $mimeType = 'application/octet-stream'): void
-{
-    $fileName = basename($path);
-    $base64 = base64_encode((string) file_get_contents($path));
-    $cssSelector = browserSelector($selector);
-    $selectorJson = json_encode($cssSelector, JSON_THROW_ON_ERROR);
-    $fileNameJson = json_encode($fileName, JSON_THROW_ON_ERROR);
-    $mimeTypeJson = json_encode($mimeType, JSON_THROW_ON_ERROR);
-    $base64Json = json_encode($base64, JSON_THROW_ON_ERROR);
-
-    $page->script(<<<JS
-        (() => {
-            const input = document.querySelector({$selectorJson});
-            if (! input) {
-                throw new Error('File input not found: ' + {$selectorJson});
-            }
-
-            const binary = atob({$base64Json});
-            const bytes = new Uint8Array(binary.length);
-
-            for (let index = 0; index < binary.length; index += 1) {
-                bytes[index] = binary.charCodeAt(index);
-            }
-
-            const transfer = new DataTransfer();
-            transfer.items.add(new File([bytes], {$fileNameJson}, { type: {$mimeTypeJson} }));
-            input.files = transfer.files;
-            input.dispatchEvent(new Event('input', { bubbles: true }));
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-        })();
-    JS);
 }
 
 function rustfsIsReachable(): bool
