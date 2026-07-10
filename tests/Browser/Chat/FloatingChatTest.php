@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-use Pest\Browser\Api\Webpage;
 
 it('mounts the floating chat trigger on every page', function (): void {
     $this->actingAs(workbenchTestUser());
@@ -59,8 +58,12 @@ it('shows an optimistic user bubble when a message is sent', function (): void {
     $page->type('@chat-input', 'Hello from the browser test')
         ->click('@chat-send');
 
-    eventually(fn (): Webpage => $page->assertSee('Hello from the browser test'));
-    eventually(fn (): Webpage => $page->assertSee('Stubbed assistant response.'));
+    eventually(function () use ($page): void {
+        $page->assertSee('Hello from the browser test');
+    });
+    eventually(function () use ($page): void {
+        $page->assertSee('Stubbed assistant response.');
+    });
 
     $page->assertNoSmoke()
         ->assertNoJavaScriptErrors();

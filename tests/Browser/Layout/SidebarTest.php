@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Pest\Browser\Api\Webpage;
 use Workbench\App\Models\Product;
 
 it('expands a collapsed menu group and navigates to a sub-page', function (): void {
@@ -36,7 +35,9 @@ it('collapses to an icon rail and opens a group submenu as a flyout', function (
         ->assertPresent('[data-test="sidebar"][data-collapsed="false"]')
         ->click('@sidebar-toggle');
 
-    eventually(fn (): Webpage => $page->assertAttribute('[data-test="sidebar"]', 'data-collapsed', 'true'));
+    eventually(function () use ($page): void {
+        $page->assertAttribute('[data-test="sidebar"]', 'data-collapsed', 'true');
+    });
 
     $page
         ->click('@menu-commerce')
@@ -54,7 +55,9 @@ it('opens the sidebar as an off-canvas drawer on mobile', function (): void {
         ->assertMissing('[data-test="sidebar-backdrop"]')
         ->click('@sidebar-toggle');
 
-    eventually(fn (): Webpage => $page->assertPresent('[data-test="sidebar-backdrop"]'));
+    eventually(function () use ($page): void {
+        $page->assertPresent('[data-test="sidebar-backdrop"]');
+    });
 
     $page
         ->click('@menu-tabs')

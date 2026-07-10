@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Pest\Browser\Api\Webpage;
 use Workbench\App\Models\Product;
 
 it('switches the server-driven UI language in place when the locale changes', function (): void {
@@ -13,9 +12,11 @@ it('switches the server-driven UI language in place when the locale changes', fu
         ->click('@locale-switcher')
         ->click('@locale-de');
 
-    eventually(fn (): Webpage => $page
-        ->assertSee('Aktualisiert am')
-        ->assertDontSee('Updated at'));
+    eventually(function () use ($page): void {
+        $page
+            ->assertSee('Aktualisiert am')
+            ->assertDontSee('Updated at');
+    });
 
     $page
         ->assertNoSmoke();

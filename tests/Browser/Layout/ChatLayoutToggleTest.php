@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-use Pest\Browser\Api\Webpage;
 
 it('reveals the docked chat panel when the chat layout is toggled', function (): void {
     $this->actingAs(workbenchTestUser());
@@ -13,7 +12,9 @@ it('reveals the docked chat panel when the chat layout is toggled', function ():
         ->assertSee('Reveal chat in a side rail')
         ->click('@chat-layout-toggle');
 
-    eventually(fn (): Webpage => $page->assertVisible('@chat-box'));
+    eventually(function () use ($page): void {
+        $page->assertVisible('@chat-box');
+    });
 
     $page
         ->assertMissing('@assistant-chat-trigger')

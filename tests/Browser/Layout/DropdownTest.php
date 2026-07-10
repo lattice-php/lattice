@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-use Pest\Browser\Api\Webpage;
 
 it('opens the composed user dropdown and reveals its items', function (): void {
     $this->actingAs(workbenchTestUser());
@@ -18,7 +17,9 @@ it('keeps the user dropdown usable when the sidebar is collapsed', function (): 
     $page = visit('/')
         ->click('@sidebar-toggle');
 
-    eventually(fn (): Webpage => $page->assertAttribute('[data-test="sidebar"]', 'data-collapsed', 'true'));
+    eventually(function () use ($page): void {
+        $page->assertAttribute('[data-test="sidebar"]', 'data-collapsed', 'true');
+    });
 
     $page
         ->click('@user-menu')
