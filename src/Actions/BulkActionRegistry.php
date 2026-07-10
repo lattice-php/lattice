@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Actions;
 
+use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Components\BulkAction as BulkActionComponent;
 use Lattice\Lattice\Attributes\AsBulkAction;
@@ -21,9 +22,13 @@ final class BulkActionRegistry extends DefinitionRegistry
     public function component(string $bulkAction, array $context = []): ActionComponent
     {
         $key = $this->registeredKeyFor($bulkAction);
+        $definition = $this->make($bulkAction)->withContext($context);
 
-        return $this->make($bulkAction)
-            ->withContext($context)
+        if (! $definition->authorize($this->container->make(Request::class))) {
+            return BulkActionComponent::make($key)->hidden();
+        }
+
+        return $definition
             ->definition(BulkActionComponent::make($key))
             ->signedAs($key)
             ->context($context)

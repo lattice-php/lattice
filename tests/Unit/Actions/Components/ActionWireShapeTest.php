@@ -12,6 +12,7 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
+use Workbench\App\Models\Product;
 
 it('serializes the action wire shape', function (): void {
     $action = Action::make('archive')
@@ -139,8 +140,9 @@ it('serializes an inline action group orientation', function (): void {
 
 it('carries typed props through Action::use from the registry', function (): void {
     Lattice::actions([ArchiveProductAction::class]);
+    $product = Product::factory()->create(['status' => 'active']);
 
-    $payload = wire(Action::use(ArchiveProductAction::class));
+    $payload = wire(Action::use(ArchiveProductAction::class, ['product_id' => $product->getKey()]));
 
     expect($payload['type'])->toBe('action');
     expect($payload['id'])->toBe('workbench.products.archive');

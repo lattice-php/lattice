@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
+use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Select;
@@ -24,6 +25,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final class TableRegistry extends DefinitionRegistry
 {
+    use FiltersRenderableComponents;
+
     private const array ROW_IDENTITY_KEYS = ['id', 'uuid', 'key'];
 
     /**
@@ -63,6 +66,11 @@ final class TableRegistry extends DefinitionRegistry
     {
         $key = $this->registeredKeyFor($table);
         $definition = $this->make($table)->withContext($context);
+
+        if (! $definition->authorize($this->container->make(Request::class))) {
+            return TableComponent::make($key)->hidden();
+        }
+
         $columns = $definition->columns();
         $query = TableQuery::empty($definition->perPage());
 
@@ -168,7 +176,7 @@ final class TableRegistry extends DefinitionRegistry
     {
         return array_map(
             fn (ActionComponent $action): ActionComponent => $action->context([...$context, 'table' => $key]),
-            $definition->bulkActions(),
+            $this->renderableComponents($definition->bulkActions()),
         );
     }
 
