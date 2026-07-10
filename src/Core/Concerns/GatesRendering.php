@@ -21,11 +21,14 @@ trait GatesRendering
 {
     private Closure|bool $visibleCondition = true;
 
+    private bool $negatesCondition = false;
+
     private ?bool $resolvedVisibility = null;
 
     public function visible(Closure|bool $condition = true): static
     {
         $this->visibleCondition = $condition;
+        $this->negatesCondition = false;
         $this->resolvedVisibility = null;
 
         return $this;
@@ -33,9 +36,8 @@ trait GatesRendering
 
     public function hidden(Closure|bool $condition = true): static
     {
-        $this->visibleCondition = $condition instanceof Closure
-            ? fn (): bool => ! (bool) app(Evaluator::class)->resolve($condition, $this->renderContext())
-            : ! $condition;
+        $this->visibleCondition = $condition;
+        $this->negatesCondition = true;
         $this->resolvedVisibility = null;
 
         return $this;
@@ -43,9 +45,15 @@ trait GatesRendering
 
     public function shouldRender(): bool
     {
-        return $this->resolvedVisibility ??= $this->visibleCondition instanceof Closure
-            ? (bool) app(Evaluator::class)->resolve($this->visibleCondition, $this->renderContext())
-            : $this->visibleCondition;
+        if ($this->resolvedVisibility === null) {
+            $condition = $this->visibleCondition instanceof Closure
+                ? (bool) app(Evaluator::class)->resolve($this->visibleCondition, $this->renderContext())
+                : $this->visibleCondition;
+
+            $this->resolvedVisibility = $this->negatesCondition ? ! $condition : $condition;
+        }
+
+        return $this->resolvedVisibility;
     }
 
     protected function renderContext(): EvaluationContext

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core;
 
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Lattice\Lattice\Core\Contracts\DefinitionRegistry as DefinitionRegistryContract;
@@ -29,6 +30,11 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
         protected readonly Container $container,
         protected readonly DiscoveryManifest $manifest,
     ) {}
+
+    protected function authorizedToRender(Definition $definition): bool
+    {
+        return $definition->authorize($this->container->make(Request::class));
+    }
 
     /**
      * Explicit registrations layered over the discovered manifest entries.

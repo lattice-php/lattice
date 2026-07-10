@@ -7,6 +7,7 @@ use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Concerns\GatesRendering;
 use Lattice\Lattice\Core\Concerns\HasIcon;
 use Lattice\Lattice\Core\Concerns\HasLabel;
+use Lattice\Lattice\Core\Contracts\Renderable;
 use Lattice\Lattice\Forms\Enums\RowActionType;
 
 /**
@@ -23,7 +24,7 @@ use Lattice\Lattice\Forms\Enums\RowActionType;
  * promotion.
  */
 #[TypeScript]
-final class RowAction
+final class RowAction implements Renderable
 {
     use GatesRendering;
     use HasIcon;

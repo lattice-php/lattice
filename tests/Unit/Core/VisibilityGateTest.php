@@ -51,6 +51,42 @@ it('injects the component itself by name and by type', function (): void {
     expect($component->shouldRender())->toBeTrue();
 });
 
+it('resolves a hidden closure once with injected utilities', function (): void {
+    $calls = 0;
+    $component = Text::make('a')->hidden(function (Text $component) use (&$calls): bool {
+        $calls++;
+
+        return true;
+    });
+
+    expect($component->shouldRender())->toBeFalse();
+
+    $component->shouldRender();
+
+    expect($calls)->toBe(1);
+});
+
+it('resolves visibility closures against the clone, not the template', function (): void {
+    $received = [];
+    $collect = function ($component) use (&$received): bool {
+        $received[] = $component;
+
+        return true;
+    };
+
+    $visibleTemplate = Text::make('a')->visible($collect);
+    $hiddenTemplate = Text::make('a')->hidden($collect);
+
+    $visibleClone = clone $visibleTemplate;
+    $hiddenClone = clone $hiddenTemplate;
+
+    $visibleClone->shouldRender();
+    $hiddenClone->shouldRender();
+
+    expect($received[0])->toBe($visibleClone)
+        ->and($received[1])->toBe($hiddenClone);
+});
+
 it('throws when a visibility closure requests an unresolvable parameter', function (): void {
     $component = Text::make('a')->visible(fn (string $somethingUnresolvable): bool => true);
 

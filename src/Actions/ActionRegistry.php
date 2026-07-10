@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Actions;
 
-use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
@@ -24,7 +23,7 @@ final class ActionRegistry extends DefinitionRegistry
 
         $definition = $this->make($action)->withContext($context);
 
-        if (! $definition->authorize($this->container->make(Request::class))) {
+        if (! $this->authorizedToRender($definition)) {
             return ActionComponent::make($key)->hidden();
         }
 

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Fragments;
 
-use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Lattice\Lattice\Core\Components\Component;
@@ -25,7 +24,7 @@ final class FragmentRegistry extends DefinitionRegistry
         $key = $this->registeredKeyFor($fragment);
         $definition = $this->make($fragment)->withContext($context);
 
-        if (! $definition->authorize($this->container->make(Request::class))) {
+        if (! $this->authorizedToRender($definition)) {
             return FragmentComponent::make($key)->hidden();
         }
 

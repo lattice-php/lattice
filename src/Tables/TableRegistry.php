@@ -67,7 +67,7 @@ final class TableRegistry extends DefinitionRegistry
         $key = $this->registeredKeyFor($table);
         $definition = $this->make($table)->withContext($context);
 
-        if (! $definition->authorize($this->container->make(Request::class))) {
+        if (! $this->authorizedToRender($definition)) {
             return TableComponent::make($key)->hidden();
         }
 

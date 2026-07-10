@@ -24,7 +24,7 @@ final class FormRegistry extends DefinitionRegistry
         $definition = $this->make($form)->withContext($context);
         $request = $this->container->make(Request::class);
 
-        if (! $definition->authorize($request)) {
+        if (! $this->authorizedToRender($definition)) {
             return FormComponent::make($key)->hidden();
         }
 
