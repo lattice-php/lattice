@@ -1,0 +1,39 @@
+name: standalone-assets
+
+on:
+  push:
+    branches: ["release-please--**"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.RELEASE_TOKEN }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build:standalone
+
+      - name: Commit refreshed standalone assets
+        run: |
+          if [ -n "$(git status --porcelain dist-standalone)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add dist-standalone
+            git commit -m "chore: build standalone assets"
+            git push
+          fi
