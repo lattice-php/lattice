@@ -33,7 +33,7 @@
                         {
                             "props": {
                                 "align": null,
-                                "color": "muted",
+                                "color": null,
                                 "copyable": false,
                                 "dataBindings": {
                                     "text": "email"

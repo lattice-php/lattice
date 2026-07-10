@@ -28,7 +28,7 @@
                     {
                         "props": {
                             "align": null,
-                            "color": "muted",
+                            "color": null,
                             "copyable": false,
                             "size": "md",
                             "text": "Three people have access to this team."

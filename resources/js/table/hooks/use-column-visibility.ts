@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from "react";
 export type ToggleableColumn = {
   key: string;
   props: {
-    label?: string;
+    label?: string | null;
     toggleable?: boolean;
     hiddenByDefault?: boolean;
   };

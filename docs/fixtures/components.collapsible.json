@@ -9,7 +9,7 @@
                 {
                     "props": {
                         "align": null,
-                        "color": "muted",
+                        "color": null,
                         "copyable": false,
                         "size": "md",
                         "text": "Name"
@@ -22,7 +22,7 @@
             {
                 "props": {
                     "align": null,
-                    "color": "muted",
+                    "color": null,
                     "copyable": false,
                     "size": "md",
                     "text": "Update the name shown on your account."

@@ -38,4 +38,18 @@ describe("Lattice text component", () => {
       "text-sm",
     );
   });
+
+  it("falls back to muted styling when no color is set", () => {
+    const node = fakeNode({
+      props: {
+        color: null,
+        text: "Helper text",
+      },
+      type: "text",
+    });
+
+    render(<TextComponent node={node}>{null}</TextComponent>);
+
+    expect(screen.getByText("Helper text")).toHaveClass("text-lt-muted-fg");
+  });
 });

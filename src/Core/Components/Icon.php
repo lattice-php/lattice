@@ -7,7 +7,6 @@ use BackedEnum;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Concerns\HasColor;
 use Lattice\Lattice\Core\Concerns\HasSize;
-use Lattice\Lattice\Core\Enums\Color;
 use Lattice\Lattice\Support\Wire;
 
 #[AsComponent('icon')]
@@ -17,8 +16,6 @@ class Icon extends Component
     use HasSize;
 
     public string $name = '';
-
-    public ?Color $color = null;
 
     public ?string $class = null;
 

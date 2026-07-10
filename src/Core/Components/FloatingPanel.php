@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Concerns\HasOptionalLabel;
+use Lattice\Lattice\Core\Concerns\HasLabel;
 use Lattice\Lattice\Core\Enums\FloatingPlacement;
 
 #[AsComponent('floating-panel')]
 class FloatingPanel extends ContainerComponent
 {
-    use HasOptionalLabel;
+    use HasLabel;
 
     public FloatingPlacement $placement = FloatingPlacement::BottomEnd;
 

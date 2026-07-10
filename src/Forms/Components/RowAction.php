@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Forms\Components;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Concerns\GatesRendering;
 use Lattice\Lattice\Core\Concerns\HasIcon;
-use Lattice\Lattice\Core\Concerns\HasOptionalLabel;
+use Lattice\Lattice\Core\Concerns\HasLabel;
 use Lattice\Lattice\Forms\Enums\RowActionType;
 
 /**
@@ -27,7 +27,7 @@ final class RowAction
 {
     use GatesRendering;
     use HasIcon;
-    use HasOptionalLabel;
+    use HasLabel;
 
     private function __construct(
         public RowActionType $type,

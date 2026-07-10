@@ -33,7 +33,7 @@ export type BadgeColumn = {
   colors: Record<string | number, string> | null;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -42,7 +42,7 @@ export type BooleanColumn = {
   align: ColumnAlign;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -103,7 +103,7 @@ export type Button = {
   effects: Effect[];
   href: string | null;
   icon: string | null;
-  label: string;
+  label: string | null;
   method: HttpMethod | null;
   variant: ButtonVariant | null;
 };
@@ -378,7 +378,7 @@ export type DateInput = {
   value: unknown;
 };
 export type DateRangeFilter = {
-  label: string;
+  label: string | null;
 };
 export type DateTimeInput = {
   autoFocus: boolean;
@@ -628,7 +628,7 @@ export type IconColumn = {
   hiddenByDefault: boolean;
   icon: string | null;
   icons: Record<string | number, string> | null;
-  label: string;
+  label: string | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -638,7 +638,7 @@ export type ImageColumn = {
   circular: boolean;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   size: number | null;
   sortable: boolean;
   toggleable: boolean;
@@ -650,7 +650,7 @@ export type Link = {
   effects: Effect[];
   href: string | null;
   icon: string | null;
-  label: string;
+  label: string | null;
   method: HttpMethod | null;
   prefix: Affix | null;
   suffix: Affix | null;
@@ -671,7 +671,7 @@ export type MenuItem = {
   effects: Effect[];
   href: string | null;
   icon: string | null;
-  label: string;
+  label: string | null;
   method: HttpMethod | null;
   prefix: Affix | null;
   suffix: Affix | null;
@@ -689,7 +689,7 @@ export type MoneyColumn = {
   currencyField: string | null;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
   sortable: boolean;
@@ -774,7 +774,7 @@ export type NumberColumn = {
   compact: boolean;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
   sortable: boolean;
@@ -1062,7 +1062,7 @@ export type Select = {
   value: unknown;
 };
 export type SelectFilter = {
-  label: string;
+  label: string | null;
   multiple: boolean;
   options: Option[];
   placeholder: string | null;
@@ -1088,7 +1088,7 @@ export type StackColumn = {
   align: ColumnAlign;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -1149,13 +1149,13 @@ export type Tabs = {
 export type TabsAlignment = "start" | "center" | "end" | "stretch";
 export type TernaryFilter = {
   falseLabel: string;
-  label: string;
+  label: string | null;
   placeholder: string;
   trueLabel: string;
 };
 export type Text = {
   align: Align | null;
-  color: Color;
+  color: Color | null;
   copyable: boolean;
   size: Size;
   text: string;
@@ -1172,7 +1172,7 @@ export type TextColumn = {
   } | null;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   link: {
     href: string | null;
     external: boolean;
@@ -1303,7 +1303,7 @@ export type Toggle = {
   value: unknown;
 };
 export type ToggleFilter = {
-  label: string;
+  label: string | null;
 };
 export type ToggleSidebarEffect = {
   readonly target: string | null;

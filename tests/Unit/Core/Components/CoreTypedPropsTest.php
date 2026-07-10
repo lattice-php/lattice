@@ -38,7 +38,7 @@ test('stack serializes enums direction and key wire-identically', function (): v
                 'float' => null,
             ],
             'schema' => [
-                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => 'muted', 'copyable' => false]],
+                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => null, 'copyable' => false]],
             ],
         ]);
 });
@@ -84,7 +84,7 @@ test('modal serializes id title description and children', function (): void {
                 'ref' => null,
             ],
             'schema' => [
-                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => 'muted', 'copyable' => false]],
+                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => null, 'copyable' => false]],
             ],
         ]);
 });
@@ -125,12 +125,12 @@ test('tabs serialize defaultValue queryKey and computed activeValue', function (
                 [
                     'type' => 'tab',
                     'props' => ['label' => 'Profile', 'value' => 'profile', 'confirm' => null],
-                    'schema' => [['type' => 'text', 'props' => ['text' => 'Profile form', 'align' => null, 'size' => 'md', 'color' => 'muted', 'copyable' => false]]],
+                    'schema' => [['type' => 'text', 'props' => ['text' => 'Profile form', 'align' => null, 'size' => 'md', 'color' => null, 'copyable' => false]]],
                 ],
                 [
                     'type' => 'tab',
                     'props' => ['label' => 'Security', 'value' => 'security', 'confirm' => null],
-                    'schema' => [['type' => 'text', 'props' => ['text' => 'Security form', 'align' => null, 'size' => 'md', 'color' => 'muted', 'copyable' => false]]],
+                    'schema' => [['type' => 'text', 'props' => ['text' => 'Security form', 'align' => null, 'size' => 'md', 'color' => null, 'copyable' => false]]],
                 ],
             ],
         ]);
@@ -214,7 +214,7 @@ it('serializes default text styling props', function (): void {
             'text' => 'Default copy',
             'align' => null,
             'size' => 'md',
-            'color' => 'muted',
+            'color' => null,
             'copyable' => false,
         ]);
 });

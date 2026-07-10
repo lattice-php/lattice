@@ -38,7 +38,10 @@ trait SerializesWireNode
         return AsComponent::typeForClass(static::class);
     }
 
-    abstract protected function wireKey(): ?string;
+    protected function wireKey(): ?string
+    {
+        return $this->key;
+    }
 
     /**
      * @param  array<string, mixed>  $data

@@ -12,7 +12,7 @@ use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasIcon;
-use Lattice\Lattice\Core\Concerns\HasOptionalLabel;
+use Lattice\Lattice\Core\Concerns\HasLabel;
 use Lattice\Lattice\Core\Concerns\HasVariant;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
@@ -22,7 +22,7 @@ class Action extends Component
 {
     use HasHttpMethod;
     use HasIcon;
-    use HasOptionalLabel;
+    use HasLabel;
     use HasVariant;
     use IsInteractive;
 

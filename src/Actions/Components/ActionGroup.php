@@ -7,13 +7,13 @@ use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\ContainerComponent;
 use Lattice\Lattice\Core\Components\IsInteractive;
-use Lattice\Lattice\Core\Concerns\HasOptionalLabel;
+use Lattice\Lattice\Core\Concerns\HasLabel;
 use Lattice\Lattice\Core\Enums\Orientation;
 
 #[AsComponent('action.group')]
 class ActionGroup extends ContainerComponent
 {
-    use HasOptionalLabel;
+    use HasLabel;
     use IsInteractive;
 
     public ?Orientation $orientation = null;

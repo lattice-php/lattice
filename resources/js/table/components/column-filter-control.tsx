@@ -37,7 +37,8 @@ export function ColumnFilterControl({
   onSearch?: (query: string, signal?: AbortSignal) => Promise<Option[]>;
 }) {
   const { t } = useT("lattice");
-  const { filter, label } = column.props;
+  const { filter, label: rawLabel } = column.props;
+  const label = rawLabel ?? column.key;
 
   if (!filter) {
     return null;
@@ -360,7 +361,7 @@ function FilterClauseRow({
   onRemove: () => void;
 }) {
   const { t } = useT("lattice");
-  const { label } = column.props;
+  const label = column.props.label ?? column.key;
   const valueless = VALUELESS_FILTER_OPERATORS.has(clause.operator);
 
   return (

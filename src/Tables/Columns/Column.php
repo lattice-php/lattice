@@ -7,8 +7,7 @@ use Illuminate\Support\Collection;
 use JsonSerializable;
 use Lattice\Lattice\Core\Components\Concerns\SerializesWireNode;
 use Lattice\Lattice\Core\Concerns\GatesRendering;
-use Lattice\Lattice\Core\Concerns\HasKeyedLabel;
-use Lattice\Lattice\Core\Concerns\HasReadonlyKey;
+use Lattice\Lattice\Core\Concerns\HasLabel;
 use Lattice\Lattice\Core\Contracts\Renderable;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
@@ -19,8 +18,7 @@ use Lattice\Lattice\Tables\Enums\ColumnAlign;
 abstract class Column implements JsonSerializable, Renderable
 {
     use GatesRendering;
-    use HasKeyedLabel;
-    use HasReadonlyKey;
+    use HasLabel;
     use SerializesWireNode;
 
     public ColumnWidth $width = ColumnWidth::Md;
@@ -39,12 +37,22 @@ abstract class Column implements JsonSerializable, Renderable
 
     public function __construct(protected readonly string $key)
     {
-        $this->initializeLabel();
+        $this->label = str($key)->headline()->toString();
     }
 
     public static function make(string $key): static
     {
         return new static($key);
+    }
+
+    /**
+     * The instance's data identity. Distinct from Component's `key(string)`,
+     * which is a setter for the render/reconciliation hint — a different
+     * concept entirely, not unified here on purpose.
+     */
+    public function key(): string
+    {
+        return $this->key;
     }
 
     /**

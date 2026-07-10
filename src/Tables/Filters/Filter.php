@@ -10,8 +10,7 @@ use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Concerns\SerializesWireNode;
 use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Core\Concerns\GatesRendering;
-use Lattice\Lattice\Core\Concerns\HasKeyedLabel;
-use Lattice\Lattice\Core\Concerns\HasReadonlyKey;
+use Lattice\Lattice\Core\Concerns\HasLabel;
 use Lattice\Lattice\Core\Contracts\Renderable;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\FormData;
@@ -26,20 +25,24 @@ abstract class Filter implements JsonSerializable, Renderable
 {
     use FiltersRenderableComponents;
     use GatesRendering;
-    use HasKeyedLabel;
-    use HasReadonlyKey;
+    use HasLabel;
     use SerializesWireNode;
 
     protected ?string $attribute = null;
 
     public function __construct(protected readonly string $key)
     {
-        $this->initializeLabel();
+        $this->label = str($key)->headline()->toString();
     }
 
     public static function make(string $key): static
     {
         return new static($key);
+    }
+
+    public function key(): string
+    {
+        return $this->key;
     }
 
     /**

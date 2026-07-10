@@ -21,7 +21,7 @@
             {
                 "props": {
                     "align": null,
-                    "color": "muted",
+                    "color": null,
                     "copyable": false,
                     "size": "md",
                     "text": "Invoices are sent on the first of each month."

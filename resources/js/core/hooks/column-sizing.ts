@@ -2,7 +2,7 @@ import type { ColumnWidth } from "@lattice-php/lattice/types/generated";
 
 export type SizableColumn = {
   key: string;
-  label?: string;
+  label?: string | null;
   width: ColumnWidth;
 };
 

@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Forms\Components;
 use Closure;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Concerns\HasOptionalLabel;
+use Lattice\Lattice\Core\Concerns\HasLabel;
 use Lattice\Lattice\Core\Concerns\HasTooltip;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Core\Enums\Op;
@@ -18,7 +18,7 @@ use Lattice\Lattice\Support\Evaluation\EvaluationContext;
 
 abstract class Field extends Component
 {
-    use HasOptionalLabel;
+    use HasLabel;
     use HasTooltip;
 
     public string $name = '';

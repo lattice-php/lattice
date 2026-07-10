@@ -3,14 +3,9 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Concerns;
 
-trait HasKeyedLabel
+trait HasLabel
 {
-    public string $label;
-
-    protected function initializeLabel(): void
-    {
-        $this->label = str($this->key)->headline()->toString();
-    }
+    public ?string $label = null;
 
     public function label(string $label): static
     {

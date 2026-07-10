@@ -85,7 +85,11 @@ function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.tex
   }
 
   return (
-    <CopyableText value={text} label={column.props.label} testId={`copy-${column.key}`}>
+    <CopyableText
+      value={text}
+      label={column.props.label ?? column.key}
+      testId={`copy-${column.key}`}
+    >
       {content}
     </CopyableText>
   );

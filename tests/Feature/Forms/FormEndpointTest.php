@@ -49,7 +49,7 @@ test('registered forms serialize their configured endpoint and isolated error ba
                         'text' => 'Profile details',
                         'align' => null,
                         'size' => 'md',
-                        'color' => 'muted',
+                        'color' => null,
                         'copyable' => false,
                     ],
                 ],

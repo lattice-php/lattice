@@ -8,7 +8,6 @@ use Lattice\Lattice\Core\Concerns\HasColor;
 use Lattice\Lattice\Core\Concerns\HasCopyable;
 use Lattice\Lattice\Core\Concerns\HasSize;
 use Lattice\Lattice\Core\Enums\Align;
-use Lattice\Lattice\Core\Enums\Color;
 
 #[AsComponent('text')]
 class Text extends Component
@@ -20,8 +19,6 @@ class Text extends Component
     public string $text = '';
 
     public ?Align $align = null;
-
-    public Color $color = Color::Muted;
 
     public static function make(string $text, ?string $key = null): static
     {

@@ -21,7 +21,7 @@ test('forms serialize schema children like pages', function (): void {
                         'text' => 'Profile details',
                         'align' => null,
                         'size' => 'md',
-                        'color' => 'muted',
+                        'color' => null,
                         'copyable' => false,
                     ],
                 ],
