@@ -104,7 +104,7 @@ trait InteractsWithLatticeComponents
             $url .= '?'.http_build_query($query);
         }
 
-        return $this->getJson($url, $this->latticeHeaders($this->latticeRef($component)));
+        return $this->getJson($url, $this->latticeHeaders($component));
     }
 
     /**
@@ -118,7 +118,7 @@ trait InteractsWithLatticeComponents
 
         return $this->getJson(
             $component['props']['endpoint'],
-            $this->latticeHeaders($this->latticeRef($component)),
+            $this->latticeHeaders($component),
         );
     }
 
@@ -131,10 +131,14 @@ trait InteractsWithLatticeComponents
     }
 
     /**
-     * @param  array<string, mixed>  $component
+     * @param  array<string, mixed>|string  $component
      */
-    private function latticeRef(array $component): string
+    protected function latticeRef(array|string $component): string
     {
+        if (is_string($component)) {
+            return $component;
+        }
+
         $props = $component['props'] ?? [];
         $ref = is_array($props) ? ($props['ref'] ?? null) : null;
 
@@ -146,11 +150,13 @@ trait InteractsWithLatticeComponents
     }
 
     /**
+     * @param  array<string, mixed>|string  $component
+     * @param  array<string, string>  $headers
      * @return array<string, string>
      */
-    private function latticeHeaders(string $ref): array
+    protected function latticeHeaders(array|string $component, array $headers = []): array
     {
-        return ['X-Lattice-Ref' => $ref];
+        return array_merge(['X-Lattice-Ref' => $this->latticeRef($component)], $headers);
     }
 
     /**

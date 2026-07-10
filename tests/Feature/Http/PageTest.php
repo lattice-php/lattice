@@ -250,7 +250,7 @@ test('directly returned pages resolve render dependencies through the container,
     // The form request is resolved and validated on the responsable path too,
     // so a missing required field fails validation rather than rendering.
     get('/responsable-form-request')
-        ->assertStatus(302);
+        ->assertFound();
 });
 
 final class WorkbenchTabsPage extends Page

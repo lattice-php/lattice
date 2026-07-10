@@ -40,7 +40,7 @@ it('validates submitted values against a lazy form schema', function (): void {
     $ref = componentRef(wire(ActionComponent::use(EditActionFixture::class)->context(['current_title' => 'Existing'])));
 
     postJson('/lattice/actions/test.edit', ['title' => ''], latticeHeaders($ref))
-        ->assertStatus(422)
+        ->assertUnprocessable()
         ->assertJsonValidationErrors('title');
 
     postJson('/lattice/actions/test.edit', ['title' => 'Renamed'], latticeHeaders($ref))
@@ -82,7 +82,7 @@ it('rejects an invalid embedded form with a 422', function (): void {
     Lattice::actions([RejectActionFixture::class]);
 
     $this->callAction(RejectActionFixture::class, ['reason' => ''])
-        ->assertStatus(422)
+        ->assertUnprocessable()
         ->assertJsonValidationErrors('reason');
 });
 
@@ -90,7 +90,7 @@ it('validates final embedded form submissions before handle is called', function
     Lattice::actions([UnvalidatedRejectActionFixture::class]);
 
     $this->callAction(UnvalidatedRejectActionFixture::class, ['reason' => ''])
-        ->assertStatus(422)
+        ->assertUnprocessable()
         ->assertJsonValidationErrors('reason');
 
     expect(session('handled-unvalidated-reject'))->toBeNull();
@@ -106,7 +106,7 @@ it('validates the embedded form precognitively without running handle', function
     ]);
 
     postJson('/lattice/actions/test.reject', ['reason' => 'this reason is far too long'], $precognition)
-        ->assertStatus(422)
+        ->assertUnprocessable()
         ->assertJsonValidationErrors('reason');
 
     postJson('/lattice/actions/test.reject', ['reason' => 'ok'], $precognition)

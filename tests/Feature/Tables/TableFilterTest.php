@@ -108,7 +108,7 @@ test('a table rejects searching a filter that is not searchable', function (): v
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
 
     $this->loadTable(WorkbenchFilteredProductsTable::class, ['_search' => 'filter:status', 'q' => 'a'])
-        ->assertStatus(422);
+        ->assertUnprocessable();
 });
 
 test('a table accepts column filter clause option operators', function (): void {
