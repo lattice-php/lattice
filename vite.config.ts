@@ -1,12 +1,13 @@
 import inertia from "@inertiajs/vite";
 import { codecovVitePlugin } from "@codecov/vite-plugin";
-import { svgSprite, writePhpEnum } from "@lattice-php/vite-svg-sprite";
+import { buildSprite, svgSprite, writePhpEnum } from "@lattice-php/vite-svg-sprite";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { playwright } from "@vitest/browser-playwright";
 import laravel from "laravel-vite-plugin";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { createHash } from "node:crypto";
 import Sonda from "sonda/vite";
 import type { Plugin } from "vite";
 import { componentPackagesPlugin, discoverComponentPackages } from "./resources/js/vite";
@@ -93,6 +94,7 @@ function libraryEntries(): string[] {
       // Type-only sources compile to empty chunks; they ship as .d.ts via the
       // dts plugin and are exposed through types-only export conditions.
       .filter((file) => !file.startsWith("types/"))
+      .filter((file) => !file.startsWith("standalone/"))
       .map((file) => path.join(sourceRoot, file))
   );
 }
@@ -129,6 +131,43 @@ function withExplicitExtensions(filePath: string, content: string): string {
   );
 }
 
+function standaloneSprite(): Plugin {
+  return {
+    name: "lattice:standalone-sprite",
+    generateBundle() {
+      const sprite = buildSprite([path.resolve(__dirname, "resources/icons")]);
+
+      this.emitFile({ type: "asset", fileName: "sprite.svg", source: sprite.source });
+    },
+  };
+}
+
+function standaloneManifest(): Plugin {
+  return {
+    name: "lattice:standalone-manifest",
+    generateBundle(_options, bundle) {
+      const { version } = JSON.parse(
+        readFileSync(path.resolve(__dirname, "package.json"), "utf8"),
+      ) as {
+        version: string;
+      };
+      const files: Record<string, string> = {};
+
+      for (const [fileName, output] of Object.entries(bundle)) {
+        const source = output.type === "chunk" ? output.code : output.source;
+
+        files[fileName] = createHash("sha256").update(source).digest("hex").slice(0, 12);
+      }
+
+      this.emitFile({
+        type: "asset",
+        fileName: "manifest.json",
+        source: `${JSON.stringify({ version, files }, null, 2)}\n`,
+      });
+    },
+  };
+}
+
 function stylesheet(): Plugin {
   return {
     name: "lattice:stylesheet",
@@ -148,6 +187,7 @@ function stylesheet(): Plugin {
 
 export default defineConfig(({ mode }) => {
   const isLibrary = mode === "lib";
+  const isStandalone = mode === "standalone";
   // Sonda analyses the real app bundle (the workbench build). Gated behind an
   // env flag so it only runs for `npm run analyze` / the docs build, writing an
   // interactive report + JSON the bundle-size docs page reads at build time.
@@ -155,9 +195,9 @@ export default defineConfig(({ mode }) => {
   const isCodecovBundle = !isLibrary && !isVitest && process.env.CODECOV_BUNDLE === "1";
 
   return {
-    publicDir: isLibrary ? false : undefined,
+    publicDir: isLibrary || isStandalone ? false : undefined,
     plugins: [
-      ...(isVitest || isLibrary
+      ...(isVitest || isLibrary || isStandalone
         ? []
         : [
             // Lattice's lucide icons (vendored into resources/icons) + the
@@ -180,8 +220,8 @@ export default defineConfig(({ mode }) => {
               name: "lattice:icon-enum",
               buildStart() {
                 writePhpEnum([...latticeIcons].sort(), {
-                  file: "src/Core/Enums/Icon.php",
-                  namespace: "Lattice\\Lattice\\Core\\Enums",
+                  file: "src/Ui/Enums/Icon.php",
+                  namespace: "Lattice\\Lattice\\Ui\\Enums",
                   enum: "Icon",
                 });
               },
@@ -211,6 +251,7 @@ export default defineConfig(({ mode }) => {
                 "resources/js/**/*.test-d.*",
                 "resources/js/test/**",
                 "resources/js/test-support.ts",
+                "resources/js/standalone/**",
               ],
               compilerOptions: { rootDir: sourceRoot },
               outDir: "dist",
@@ -222,6 +263,7 @@ export default defineConfig(({ mode }) => {
             stylesheet(),
           ]
         : [tailwindcss()]),
+      ...(isStandalone ? [standaloneSprite(), standaloneManifest()] : []),
       ...(isSonda
         ? [
             Sonda({
@@ -251,49 +293,70 @@ export default defineConfig(({ mode }) => {
         "@lattice-php/lattice": sourceRoot,
       },
     },
-    ...(isLibrary
+    ...(isStandalone
       ? {
+          base: "./",
           build: {
-            outDir: "dist",
+            outDir: "dist-standalone",
             emptyOutDir: true,
-            minify: false,
-            sourcemap: true,
-            lib: {
-              entry: libraryEntries(),
-              formats: ["es"] as const,
-            },
+            sourcemap: false,
+            cssCodeSplit: false,
             rollupOptions: {
-              external: [
-                /^node:/,
-                /^react($|\/)/,
-                /^react-dom($|\/)/,
-                /^@inertiajs\//,
-                /^@internationalized\/date($|\/)/,
-                /^@lattice-php\/vite-svg-sprite($|\/)/,
-                /^@radix-ui\//,
-                /^@tiptap\//,
-                /^@zag-js\//,
-                /^clsx($|\/)/,
-                /^class-variance-authority($|\/)/,
-                /^input-otp($|\/)/,
-                /^tailwind-merge($|\/)/,
-                /^vite($|\/)/,
-                /^@laravel\/echo-react($|\/)/,
-                /^i18next($|\/)/,
-                /^react-i18next($|\/)/,
-                /^i18next-http-backend($|\/)/,
-                /^recharts($|\/)/,
-                /^use-sync-external-store($|\/)/,
-              ],
+              input: { lattice: path.resolve(sourceRoot, "standalone/main.tsx") },
               output: {
-                preserveModules: true,
-                preserveModulesRoot: "resources/js",
                 entryFileNames: "[name].js",
+                chunkFileNames: "chunks/[name]-[hash].js",
+                assetFileNames: (info) =>
+                  info.names.some((name) => name.endsWith(".css"))
+                    ? "lattice.css"
+                    : "assets/[name]-[hash][extname]",
               },
             },
           },
         }
-      : { build: { sourcemap: true, chunkSizeWarningLimit: 600 } }),
+      : isLibrary
+        ? {
+            build: {
+              outDir: "dist",
+              emptyOutDir: true,
+              minify: false,
+              sourcemap: true,
+              lib: {
+                entry: libraryEntries(),
+                formats: ["es"] as const,
+              },
+              rollupOptions: {
+                external: [
+                  /^node:/,
+                  /^react($|\/)/,
+                  /^react-dom($|\/)/,
+                  /^@inertiajs\//,
+                  /^@internationalized\/date($|\/)/,
+                  /^@lattice-php\/vite-svg-sprite($|\/)/,
+                  /^@radix-ui\//,
+                  /^@tiptap\//,
+                  /^@zag-js\//,
+                  /^clsx($|\/)/,
+                  /^class-variance-authority($|\/)/,
+                  /^input-otp($|\/)/,
+                  /^tailwind-merge($|\/)/,
+                  /^vite($|\/)/,
+                  /^@laravel\/echo-react($|\/)/,
+                  /^i18next($|\/)/,
+                  /^react-i18next($|\/)/,
+                  /^i18next-http-backend($|\/)/,
+                  /^recharts($|\/)/,
+                  /^use-sync-external-store($|\/)/,
+                ],
+                output: {
+                  preserveModules: true,
+                  preserveModulesRoot: "resources/js",
+                  entryFileNames: "[name].js",
+                },
+              },
+            },
+          }
+        : { build: { sourcemap: true, chunkSizeWarningLimit: 600 } }),
     test: {
       projects: [
         {

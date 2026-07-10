@@ -78,6 +78,8 @@ jobs:
 
       - run: npm run build
 
+      - run: npm run build:standalone
+
       - name: Resolve Playwright version
         id: pw
         run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"

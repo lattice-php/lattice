@@ -128,6 +128,7 @@
   },
   "files": [
     "dist",
+    "dist-standalone",
     "resources/icons"
   ],
   "publishConfig": {
@@ -139,6 +140,7 @@
     "build": "vite build",
     "build:lib": "vite build --mode lib",
     "build:lib:watch": "vite build --mode lib --watch",
+    "build:standalone": "vite build --mode standalone",
     "prepack": "npm run build:lib",
     "test": "vitest run",
     "test:browser": "vitest run --project browser",

@@ -1,0 +1,85 @@
+---
+title: No-Build Installation
+description: Wire Lattice into a Blade layout with a prebuilt asset bundle — no Node, no Vite, no npm install.
+---
+
+import Warning from "@components/Warning.astro";
+
+The standard setup in [Installation](/introduction/installation/) installs `@lattice-php/lattice` from npm and builds it with Vite alongside your own frontend. If your application is server-driven only — no hand-written React pages, no Node tooling in the deploy pipeline at all — Lattice can ship its own prebuilt bundle instead. One Artisan command and two Blade directives replace the entire npm/Vite half of the setup.
+
+This path is for apps that render everything through Lattice's PHP-defined pages, forms, and tables and don't need to write custom React components. If you already have (or plan to add) custom fields, pages, or table columns, use the [regular installation](/introduction/installation/) — those require the Vite build.
+
+## Install
+
+Require the Composer package as usual, then publish the prebuilt bundle:
+
+```bash
+composer require lattice-php/lattice
+php artisan lattice:assets
+```
+
+`lattice:assets` copies the bundle that ships inside the Composer package into `public/vendor/lattice/` — the JS entry, its lazily-loaded chunks, the compiled stylesheet, the icon sprite, and a `manifest.json` that pins their versions.
+
+Re-run it after every `composer update` that touches `lattice-php/lattice`. The bundle version must match the installed package; in debug mode, the `@latticeHead` directive throws if they drift, so a stale bundle fails loudly instead of silently serving old JS. Automate the republish by adding it to your `post-autoload-dump` script in `composer.json`:
+
+```json
+"scripts": {
+    "post-autoload-dump": [
+        "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+        "@php artisan package:discover --ansi",
+        "@php artisan lattice:assets"
+    ]
+}
+```
+
+## Wire it into your layout
+
+Add `@latticeHead` before `@inertiaHead`, and `@latticeScripts` after `@inertia`:
+
+```blade
+<head>
+    @latticeHead(['theme' => ['primary' => 'oklch(0.48 0.09 182)']])
+    @inertiaHead
+</head>
+<body>
+    @inertia
+    @latticeScripts
+</body>
+```
+
+`@latticeHead` renders the stylesheet link, an optional inline theme `<style>` block, and a small JSON config script the bundle reads on boot. `@latticeScripts` renders the module `<script>` tag for the JS entry. Both read the published `manifest.json` to version their URLs (`?v=<hash>`), so browsers pick up new assets after every republish without manual cache-busting.
+
+## Configuring theme and realtime
+
+`@latticeHead` takes an optional array with the same two keys as the `lattice.frontend` config — anything passed to the directive merges over the config file's values for that render. Publish the config to set defaults that apply everywhere:
+
+```bash
+php artisan vendor:publish --tag="lattice-config"
+```
+
+```php
+'frontend' => [
+    'path' => 'vendor/lattice',
+    'theme' => [
+        'primary' => 'oklch(0.48 0.09 182)',
+    ],
+    'echo' => null,
+],
+```
+
+- **`theme`** — a map of CSS custom properties written to `:root` in an inline `<style>` tag. Bare keys get a `--` prefix, so `'primary'` becomes `--primary`; these are the same shadcn-style variables (`--primary`, `--background`, …) the [regular install](/introduction/installation/#import-the-stylesheet) reads as theme overrides. Pass an explicit `--lt-*` key (e.g. `'--lt-radius' => '0.5rem'`) to target a Lattice component token directly instead — it passes through unchanged.
+- **`echo`** — passed verbatim to `configureEcho()` from `@laravel/echo-react`. When you set it, the boot script dynamically imports the realtime chunk instead of bundling it into the initial `lattice.js`, so apps that don't use [Realtime](/core/realtime/) pay nothing for it.
+
+## Limitations
+
+<Warning title="What the no-build path can't do">
+  Because there is no build step, the bundle can only ship what was compiled into the package
+  release. The list below is what requires switching to the regular Vite-based installation.
+</Warning>
+
+- No custom JS components, pages, or table columns — [extending Lattice](/extending/overview/) requires the Vite build.
+- Only Lattice's built-in icon set; you can't add your own `resources/icons` sprite.
+- English-only chrome. There's no i18n backend wired in, so [Internationalization](/core/i18n/) locale switching doesn't apply here.
+- The bundle includes its own copy of React. If the page already loads React from elsewhere, you end up with two React runtimes on the page.
+
+If you outgrow any of these, switch to the [regular installation](/introduction/installation/) — the PHP side (pages, forms, tables, config) is identical either way; only the frontend delivery changes.

@@ -61,6 +61,7 @@ export default defineConfig({
             { label: "Installation", link: "/introduction/installation/" },
             { label: "Getting Started", link: "/introduction/getting-started/" },
             { label: "Configuration", link: "/introduction/configuration/" },
+            { label: "No-Build Installation", link: "/introduction/no-build/" },
             { label: "Development with AI", link: "/introduction/development-with-ai/" },
           ],
         },

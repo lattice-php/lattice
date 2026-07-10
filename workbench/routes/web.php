@@ -5,15 +5,23 @@ declare(strict_types=1);
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 use Workbench\App\Http\Controllers\ChatAgentController;
 use Workbench\App\Http\Controllers\ConversationHistoryController;
 use Workbench\App\Http\Controllers\FakeRemoteChatHistoryController;
 use Workbench\App\Http\Controllers\FakeRemoteChatStreamController;
 use Workbench\App\Http\Controllers\FakeRemoteTodosController;
 use Workbench\App\Http\Controllers\SessionController;
+use Workbench\App\Pages\HomePage;
 
 Route::post('/login', [SessionController::class, 'store'])->name('login.store');
 Route::post('/logout', [SessionController::class, 'destroy'])->name('logout');
+
+Route::middleware('web')->get('/standalone-demo', function () {
+    Inertia::setRootView('standalone');
+
+    return app(HomePage::class);
+});
 
 Route::middleware(['web', 'auth'])->group(function (): void {
     Route::get('/workbench/chat/history', ConversationHistoryController::class)

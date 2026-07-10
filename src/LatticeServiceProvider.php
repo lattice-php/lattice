@@ -8,6 +8,7 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Inertia\ResponseFactory;
 use Lattice\Lattice\Actions\ActionRegistry;
@@ -33,6 +34,7 @@ use Lattice\Lattice\Console\Commands\MakePageCommand;
 use Lattice\Lattice\Console\Commands\MakeRemoteSourceCommand;
 use Lattice\Lattice\Console\Commands\MakeTableCommand;
 use Lattice\Lattice\Console\Commands\PruneNotificationsCommand;
+use Lattice\Lattice\Console\Commands\PublishAssetsCommand;
 use Lattice\Lattice\Console\Commands\TypeScriptCommand;
 use Lattice\Lattice\Core\Contracts\ResolvesReferenceIdentity;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
@@ -51,6 +53,7 @@ use Lattice\Lattice\Http\PageRegistry;
 use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Lattice\Support\Evaluation\Evaluator;
+use Lattice\Lattice\Support\Frontend\StandaloneAssets;
 use Lattice\Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Tables\TableRegistry;
@@ -84,6 +87,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
                 DiscoverCacheCommand::class,
                 DiscoverClearCommand::class,
                 PruneNotificationsCommand::class,
+                PublishAssetsCommand::class,
             ]);
     }
 
@@ -111,6 +115,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(LatticeRegistry::class);
         $this->app->singleton(DiscoveryManifest::class);
         $this->app->singleton(PageMetadataResolver::class);
+        $this->app->singleton(StandaloneAssets::class);
         $this->app->singleton(Evaluator::class, fn ($app): Evaluator => new Evaluator($app, [Component::class]));
         $this->app->scoped(EffectFlasher::class);
 
@@ -166,6 +171,9 @@ final class LatticeServiceProvider extends PackageServiceProvider
         // Deferred so pages registered by any provider's boot() (e.g. an app's
         // own `Lattice::pages([...])`) are collected before the routes are built.
         $this->app->booted(fn () => $this->bootPages());
+
+        Blade::directive('latticeHead', static fn (string $expression): string => sprintf('<?php echo app(\%s::class)->head(%s); ?>', StandaloneAssets::class, $expression));
+        Blade::directive('latticeScripts', static fn (): string => sprintf('<?php echo app(\%s::class)->scripts(); ?>', StandaloneAssets::class));
     }
 
     /**
