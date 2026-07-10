@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Support\Evaluation\UnresolvableEvaluationParameter;
+use Lattice\Lattice\Tables\Columns\TextColumn;
 
 it('gates with a boolean through visible and hidden', function (): void {
     expect(Text::make('a')->visible(false)->shouldRender())->toBeFalse()
@@ -92,4 +93,16 @@ it('throws when a visibility closure requests an unresolvable parameter', functi
 
     expect(fn (): bool => $component->shouldRender())
         ->toThrow(UnresolvableEvaluationParameter::class);
+});
+
+it('refuses to serialize a component whose render gate is closed', function (): void {
+    $component = Text::make('a')->visible(false);
+
+    expect(fn (): array => $component->jsonSerialize())->toThrow(LogicException::class);
+});
+
+it('refuses to serialize a column whose render gate is closed', function (): void {
+    $column = TextColumn::make('name')->hidden();
+
+    expect(fn (): array => $column->jsonSerialize())->toThrow(LogicException::class);
 });

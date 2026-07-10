@@ -5,7 +5,9 @@ namespace Lattice\Lattice\Core\Components\Concerns;
 
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Core\Contracts\Renderable;
 use Lattice\Lattice\Support\Wire;
+use LogicException;
 use ReflectionMethod;
 use Spatie\Attributes\Attributes;
 use Spatie\Attributes\AttributeTarget;
@@ -26,6 +28,13 @@ trait SerializesWireNode
      */
     public function jsonSerialize(): array
     {
+        if ($this instanceof Renderable && ! $this->shouldRender()) {
+            throw new LogicException(sprintf(
+                '%s must not serialize: shouldRender() is false. Filter it at its collection seam before it reaches the wire.',
+                static::class,
+            ));
+        }
+
         return array_reduce(
             $this->serializationHooks(),
             fn (array $data, string $hook): array => $this->{$hook}($data),

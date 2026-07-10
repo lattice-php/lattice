@@ -108,16 +108,14 @@
       "import": "./dist/toast/index.js"
     },
     "./types": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/types/index.js"
+      "types": "./dist/types/index.d.ts"
     },
     "./ui": {
       "types": "./dist/ui/index.d.ts",
       "import": "./dist/ui/index.js"
     },
     "./svg-sprite-client": {
-      "types": "./dist/svg-sprite-client.d.ts",
-      "import": "./dist/svg-sprite-client/index.js"
+      "types": "./dist/svg-sprite-client.d.ts"
     },
     "./vite": {
       "types": "./dist/vite.d.ts",
@@ -147,6 +145,7 @@
     "typecheck": "tsc --noEmit",
     "type-coverage": "type-coverage --project tsconfig.json --at-least 99.5",
     "check": "npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:lib",
+    "check:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./css",
     "fix": "npm run lint:fix && npm run format",
     "docs:typecheck": "tsc --noEmit -p docs/tsconfig.json",
     "docs:test": "vitest run --project jsdom docs",
@@ -203,6 +202,7 @@
     }
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@astrojs/react": "^6.0.1",
     "@astrojs/starlight": "^0.41.3",
     "@astrojs/starlight-tailwind": "^5.0.0",
@@ -230,6 +230,7 @@
     "oxfmt": "^0.54.0",
     "oxlint": "^1.68.0",
     "playwright": "^1.60.0",
+    "publint": "^0.3.21",
     "pusher-js": "^8.5.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

@@ -154,6 +154,8 @@ jobs:
 
       - run: npm run build:lib
 
+      - run: npm run check:package
+
   bundle-analysis:
     name: Workbench Bundle Analysis
     runs-on: ubuntu-latest
