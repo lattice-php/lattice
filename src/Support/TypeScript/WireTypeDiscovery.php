@@ -35,26 +35,24 @@ final class WireTypeDiscovery
 
         foreach (ClassWalker::all($path) as $class) {
             $reflection = new ReflectionClass($class);
-            $attributes = $reflection->getAttributes(TypeScript::class, ReflectionAttribute::IS_INSTANCEOF);
 
-            if ($attributes === []) {
-                continue;
-            }
+            $effect = $reflection->getAttributes(AsEffect::class)[0] ?? null;
+            $component = $reflection->getAttributes(AsComponent::class, ReflectionAttribute::IS_INSTANCEOF)[0] ?? null;
 
-            $attribute = $attributes[0]->newInstance();
-
-            if ($attribute instanceof AsEffect) {
+            if ($effect !== null) {
                 if (! $reflection->isAbstract()) {
-                    $effects[$class] = $attribute->wireType();
+                    $effects[$class] = $effect->newInstance()->wireType();
                 }
-            } elseif ($attribute instanceof AsComponent) {
+            } elseif ($component !== null) {
                 if (! $reflection->isAbstract()) {
-                    $components[] = $this->component($reflection, $attribute);
+                    $components[] = $this->component($reflection, $component->newInstance());
                 }
-            } elseif (enum_exists($class)) {
-                $enums[] = $class;
-            } else {
-                $valueObjects[] = $class;
+            } elseif ($reflection->getAttributes(TypeScript::class, ReflectionAttribute::IS_INSTANCEOF) !== []) {
+                if (enum_exists($class)) {
+                    $enums[] = $class;
+                } else {
+                    $valueObjects[] = $class;
+                }
             }
         }
 
