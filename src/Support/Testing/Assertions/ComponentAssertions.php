@@ -6,8 +6,8 @@ namespace Lattice\Lattice\Support\Testing\Assertions;
 
 use Closure;
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Support\Testing\ComponentNode;
+use Lattice\Lattice\Ui\Components\Component;
 use PHPUnit\Framework\Assert;
 
 final readonly class ComponentAssertions

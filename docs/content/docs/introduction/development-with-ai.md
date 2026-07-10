@@ -42,7 +42,7 @@ php artisan boost:update --discover
 ```
 
 :::tip
-You can automate this by adding `@php artisan boost:update --ansi` to your `composer.json` `post-update-cmd` scripts, so the resources stay in sync whenever you update dependencies.
+If your app also has npm-managed frontend packages, run the refresh after `npm install` so Boost can discover package-specific skills such as React, Inertia, and Tailwind.
 :::
 
 ## A habit worth keeping

@@ -5,13 +5,13 @@ namespace Lattice\Lattice\Support\TypeScript;
 
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
-use Lattice\Lattice\Core\Components\ContainerComponent;
-use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Attributes\AsFilter;
+use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
+use Lattice\Lattice\Ui\Components\ContainerComponent;
+use Lattice\Lattice\Ui\Components\IsInteractive;
 use ReflectionAttribute;
 use ReflectionClass;
 

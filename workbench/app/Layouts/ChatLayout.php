@@ -5,12 +5,12 @@ namespace Workbench\App\Layouts;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsLayout;
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Enums\Gap;
-use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Layouts\Components\Breadcrumbs;
 use Lattice\Lattice\Layouts\Components\Outlet;
+use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\Width;
 
 #[AsLayout('app-chat')]
 final class ChatLayout extends AppLayout

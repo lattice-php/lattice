@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Components;
 
-use Lattice\Lattice\Core\Concerns\HasAutoFocus;
-use Lattice\Lattice\Core\Concerns\HasTabIndex;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Enums\FieldType;
+use Lattice\Lattice\Ui\Concerns\HasAutoFocus;
+use Lattice\Lattice\Ui\Concerns\HasTabIndex;
 
 #[AsField(FieldType::Toggle)]
 class Toggle extends Field

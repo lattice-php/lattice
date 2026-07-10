@@ -1,11 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Text;
-use Lattice\Lattice\Core\Enums\Color;
-use Lattice\Lattice\Core\Enums\Icon;
-use Lattice\Lattice\Core\Enums\NumberFormatUnit;
-use Lattice\Lattice\Core\Enums\Size;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Columns\BadgeColumn;
 use Lattice\Lattice\Tables\Columns\BooleanColumn;
@@ -18,6 +13,11 @@ use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
+use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\Color;
+use Lattice\Lattice\Ui\Enums\Icon;
+use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
+use Lattice\Lattice\Ui\Enums\Size;
 
 describe('docs fixtures', function (): void {
     it('matches the overview table example fixture', function (): void {

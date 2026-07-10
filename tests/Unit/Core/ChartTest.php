@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Chart;
-use Lattice\Lattice\Core\Enums\DateTimeStyle;
-use Lattice\Lattice\Core\Values\ChartSeries;
-use Lattice\Lattice\Core\Values\DateFormat;
-use Lattice\Lattice\Core\Values\NumberFormat;
 use Lattice\Lattice\Support\Wire;
+use Lattice\Lattice\Ui\Components\Chart;
+use Lattice\Lattice\Ui\Enums\DateTimeStyle;
+use Lattice\Lattice\Ui\Values\ChartSeries;
+use Lattice\Lattice\Ui\Values\DateFormat;
+use Lattice\Lattice\Ui\Values\NumberFormat;
 
 it('serializes a cartesian chart with fluent series helpers', function (): void {
     $node = wire(

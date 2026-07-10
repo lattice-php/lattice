@@ -8,9 +8,9 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Variant;
 
 #[AsAction('workbench.ping')]
 class WorkbenchPingAction extends ActionDefinition

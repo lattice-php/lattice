@@ -7,15 +7,15 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Core\Definition;
-use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Core\Values\ToastMessage;
-use Lattice\Lattice\Core\Values\Translatable;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Concerns\ResolvesFormFields;
 use Lattice\Lattice\Forms\Contracts\HandlesUploads;
 use Lattice\Lattice\Forms\Contracts\ProvidesForm;
 use Lattice\Lattice\Http\LatticeResponse;
+use Lattice\Lattice\I18n\Values\Translatable;
+use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Lattice\Ui\Values\ToastMessage;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class FormDefinition extends Definition implements HandlesUploads, ProvidesForm

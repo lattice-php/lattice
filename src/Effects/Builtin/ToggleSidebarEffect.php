@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Effects\Builtin;
 
-use Lattice\Lattice\Core\Components\Button;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Ui\Components\Button;
 
 /**
  * Toggles a sidebar entirely on the client: it collapses the icon rail on

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Chat\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Remote\Components\RemoteComponent;
+use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
 
 /**
  * A streaming chat box. Same-origin by default; call source()/audience() to

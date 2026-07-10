@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Support\Evaluation\UnresolvableEvaluationParameter;
 use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Lattice\Ui\Components\Text;
 
 it('gates with a boolean through visible and hidden', function (): void {
     expect(Text::make('a')->visible(false)->shouldRender())->toBeFalse()

@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Icon as IconComponent;
-use Lattice\Lattice\Core\Components\Text;
-use Lattice\Lattice\Core\Enums\Icon;
-use Lattice\Lattice\Core\Enums\Placement;
 use Lattice\Lattice\Layouts\Components\Dropdown;
 use Lattice\Lattice\Layouts\Components\MenuItem;
+use Lattice\Lattice\Ui\Components\Icon as IconComponent;
+use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\Icon;
+use Lattice\Lattice\Ui\Enums\Placement;
 
 it('builds a dropdown with trigger components, placement and menu items', function (): void {
     $dropdown = Dropdown::make('account-menu')

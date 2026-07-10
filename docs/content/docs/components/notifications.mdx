@@ -58,7 +58,7 @@ in your app it hydrates from the [config-driven endpoint](#configuration) on mou
 it to any notifiable:
 
 ```php
-use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Ui\Enums\Variant;
 use Lattice\Lattice\Notifications\Notification;
 
 Notification::make()
@@ -108,7 +108,7 @@ base class. Write a plain Laravel notification and return the `Notification` bui
 ```php
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification as LaravelNotification;
-use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Ui\Enums\Variant;
 use Lattice\Lattice\Notifications\Notification;
 
 class OrderShipped extends LaravelNotification
@@ -157,8 +157,8 @@ Drop `Notifications::make()` into a [`Topbar`](/core/layouts/#the-header-bar) li
 component:
 
 ```php
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Enums\Side;
+use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Lattice\Ui\Enums\Side;
 use Lattice\Lattice\Layouts\Components\Topbar;
 use Lattice\Lattice\Notifications\Components\Notifications;
 

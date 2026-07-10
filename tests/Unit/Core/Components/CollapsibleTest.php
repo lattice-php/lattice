@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Collapsible;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Support\Wire;
+use Lattice\Lattice\Ui\Components\Collapsible;
+use Lattice\Lattice\Ui\Components\Text;
 
 it('serializes its trigger, content, and default flags', function (): void {
     $node = wire(

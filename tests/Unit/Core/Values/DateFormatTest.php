@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\DateTimeStyle;
-use Lattice\Lattice\Core\Values\DateFormat;
+use Lattice\Lattice\Ui\Enums\DateTimeStyle;
+use Lattice\Lattice\Ui\Values\DateFormat;
 
 it('serializes date, time and dateTime formats', function (): void {
     expect(wire(DateFormat::date(DateTimeStyle::Short)))

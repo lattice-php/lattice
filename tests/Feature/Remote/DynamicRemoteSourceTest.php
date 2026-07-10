@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Facades\Http;
-use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Exceptions\UnknownComponent;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Facades\Lattice;
@@ -11,6 +10,7 @@ use Lattice\Lattice\Remote\RemoteSchemaEndpoint;
 use Lattice\Lattice\Remote\RemoteSourceDefinition;
 use Lattice\Lattice\Tests\Fixtures\Remote\DynamicExternalAppRemoteSource;
 use Lattice\Lattice\Tests\Fixtures\Remote\DynamicExternalAppStore;
+use Lattice\Lattice\Ui\Components\Component;
 
 function registerDynamicExternalAppSource(string $sourceKey, RemoteSchemaEndpoint $schemaEndpoint): void
 {

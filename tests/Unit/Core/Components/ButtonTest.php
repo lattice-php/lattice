@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Button;
-use Lattice\Lattice\Core\Enums\ButtonType;
+use Lattice\Lattice\Ui\Components\Button;
+use Lattice\Lattice\Ui\Enums\ButtonType;
 
 it('defaults a plain button to the button type', function (): void {
     $node = wire(Button::make('Save'));

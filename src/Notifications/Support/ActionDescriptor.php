@@ -6,8 +6,8 @@ namespace Lattice\Lattice\Notifications\Support;
 
 use InvalidArgumentException;
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Components\Link;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Components\Link;
 
 final class ActionDescriptor
 {

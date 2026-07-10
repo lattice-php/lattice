@@ -4,20 +4,20 @@ declare(strict_types=1);
 namespace Workbench\App\Pages;
 
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Components\Heading;
-use Lattice\Lattice\Core\Components\RawBlock;
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Components\Text;
-use Lattice\Lattice\Core\Enums\Align;
-use Lattice\Lattice\Core\Enums\Gap;
-use Lattice\Lattice\Core\Enums\PageContainer;
-use Lattice\Lattice\Core\Enums\PageLayout;
-use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\PasswordInput;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Http\Page as BasePage;
+use Lattice\Lattice\Ui\Components\Heading;
+use Lattice\Lattice\Ui\Components\RawBlock;
+use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\Align;
+use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\PageContainer;
+use Lattice\Lattice\Ui\Enums\PageLayout;
+use Lattice\Lattice\Ui\Enums\Width;
 use Workbench\App\Support\Logo;
 
 #[AsPage(route: '/login', name: 'login', layout: PageLayout::None, container: PageContainer::Centered, middleware: ['web'])]

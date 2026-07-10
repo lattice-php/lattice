@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Tables\Columns\BadgeColumn;
 use Lattice\Lattice\Tables\Columns\BooleanColumn;
 use Lattice\Lattice\Tables\Columns\IconColumn;
 use Lattice\Lattice\Tables\Columns\ImageColumn;
 use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Lattice\Ui\Enums\Icon;
 
 it('serializes a badge column with its colour map', function (): void {
     $data = wire(

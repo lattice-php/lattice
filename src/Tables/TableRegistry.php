@@ -7,17 +7,17 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormSchemaWalker;
 use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Columns\Filterable;
 use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Components\Table as TableComponent;
+use Lattice\Lattice\Tables\Contracts\Filterable;
 use Lattice\Lattice\Tables\Filters\Filter;
+use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

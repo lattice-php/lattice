@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Ui\Components\Component;
 
 enum WirePropsProbeStatus: string
 {

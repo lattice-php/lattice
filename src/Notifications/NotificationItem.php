@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Notifications;
 
 use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Enums\Variant;
 
 /**
  * A single notification as it reaches the client. Generated to TypeScript so the

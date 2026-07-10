@@ -8,11 +8,11 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Core\Components\Link;
-use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Ui\Components\Link;
+use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Lattice\Ui\Values\ToastMessage;
 use Workbench\App\Models\Product;
 
 #[AsAction('workbench.products.archive')]

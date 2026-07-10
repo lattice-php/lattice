@@ -3,13 +3,15 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
-use Lattice\Lattice\Core\Concerns\HasCopyable;
-use Lattice\Lattice\Core\Enums\DateTimeStyle;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
+use Lattice\Lattice\Tables\Contracts\Filterable;
+use Lattice\Lattice\Tables\Contracts\Sortable;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Lattice\Ui\Concerns\HasCopyable;
+use Lattice\Lattice\Ui\Enums\DateTimeStyle;
 
 #[AsColumn(ColumnType::Text)]
 class TextColumn extends Column implements Filterable, Sortable

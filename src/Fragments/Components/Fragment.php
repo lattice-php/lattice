@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Fragments\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Components\ContainerComponent;
-use Lattice\Lattice\Core\Components\IsInteractive;
-use Lattice\Lattice\Core\Concerns\HasSize;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
+use Lattice\Lattice\Ui\Components\ContainerComponent;
+use Lattice\Lattice\Ui\Components\IsInteractive;
+use Lattice\Lattice\Ui\Concerns\HasSize;
 
 #[AsComponent('fragment')]
 class Fragment extends ContainerComponent

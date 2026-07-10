@@ -5,8 +5,6 @@ namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Core\Components\Card;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\EloquentOptions;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
@@ -15,6 +13,8 @@ use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Ui\Components\Card;
+use Lattice\Lattice\Ui\Components\Text;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Models\Address;
 use Workbench\App\Models\BusinessPartner;

@@ -8,15 +8,15 @@ use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\Confirmation;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Components\IsInteractive;
-use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
-use Lattice\Lattice\Core\Concerns\HasHttpMethod;
-use Lattice\Lattice\Core\Concerns\HasIcon;
-use Lattice\Lattice\Core\Concerns\HasLabel;
-use Lattice\Lattice\Core\Concerns\HasVariant;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Components\IsInteractive;
+use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
+use Lattice\Lattice\Ui\Concerns\HasHttpMethod;
+use Lattice\Lattice\Ui\Concerns\HasIcon;
+use Lattice\Lattice\Ui\Concerns\HasLabel;
+use Lattice\Lattice\Ui\Concerns\HasVariant;
 
 #[AsComponent('action')]
 class Action extends Component

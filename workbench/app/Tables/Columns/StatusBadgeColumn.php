@@ -6,7 +6,7 @@ namespace Workbench\App\Tables\Columns;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
-use Lattice\Lattice\Tables\Columns\Filterable;
+use Lattice\Lattice\Tables\Contracts\Filterable;
 
 #[AsColumn(type: 'status-badge')]
 class StatusBadgeColumn extends Column implements Filterable

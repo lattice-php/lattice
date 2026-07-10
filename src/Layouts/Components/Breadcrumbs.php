@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Layouts\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Ui\Components\Component;
 
 #[AsComponent('breadcrumbs')]
 class Breadcrumbs extends Component

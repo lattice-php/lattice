@@ -4,15 +4,15 @@ declare(strict_types=1);
 namespace Workbench\App\Pages;
 
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Components\Heading;
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Components\Tab;
-use Lattice\Lattice\Core\Components\Tabs;
-use Lattice\Lattice\Core\Components\Text;
-use Lattice\Lattice\Core\Enums\Gap;
-use Lattice\Lattice\Core\Enums\Orientation;
-use Lattice\Lattice\Core\Enums\TabsAlignment;
 use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Ui\Components\Heading;
+use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Lattice\Ui\Components\Tab;
+use Lattice\Lattice\Ui\Components\Tabs;
+use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Lattice\Ui\Enums\TabsAlignment;
 
 #[AsPage(route: '/tabs')]
 final class TabsPage extends WorkbenchPage

@@ -138,7 +138,6 @@ use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Fragments\FragmentDefinition;
@@ -148,6 +147,7 @@ use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
+use Lattice\Lattice\Ui\Components\Text;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AsAction('workbench.denied')]

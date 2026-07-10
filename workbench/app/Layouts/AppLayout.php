@@ -7,22 +7,8 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Chat\Components\ChatBox;
-use Lattice\Lattice\Core\Components\Badge;
-use Lattice\Lattice\Core\Components\Button;
-use Lattice\Lattice\Core\Components\FloatingPanel;
-use Lattice\Lattice\Core\Components\RawBlock;
-use Lattice\Lattice\Core\Components\SegmentedControl;
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Enums\Align;
-use Lattice\Lattice\Core\Enums\ButtonVariant;
-use Lattice\Lattice\Core\Enums\FloatingPlacement;
-use Lattice\Lattice\Core\Enums\Gap;
-use Lattice\Lattice\Core\Enums\Icon;
-use Lattice\Lattice\Core\Enums\Placement;
-use Lattice\Lattice\Core\Enums\Side;
-use Lattice\Lattice\Core\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Layouts\Components\Breadcrumbs;
 use Lattice\Lattice\Layouts\Components\Dropdown;
 use Lattice\Lattice\Layouts\Components\Menu;
@@ -33,6 +19,20 @@ use Lattice\Lattice\Layouts\Components\Topbar;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Notifications\Components\Notifications;
 use Lattice\Lattice\Support\Affix;
+use Lattice\Lattice\Ui\Components\Badge;
+use Lattice\Lattice\Ui\Components\Button;
+use Lattice\Lattice\Ui\Components\FloatingPanel;
+use Lattice\Lattice\Ui\Components\RawBlock;
+use Lattice\Lattice\Ui\Components\SegmentedControl;
+use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Lattice\Ui\Enums\Align;
+use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\FloatingPlacement;
+use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\Icon;
+use Lattice\Lattice\Ui\Enums\Placement;
+use Lattice\Lattice\Ui\Enums\Side;
+use Lattice\Lattice\Ui\Enums\Width;
 use Workbench\App\Actions\LogoutAction;
 use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Actions\ToggleChatLayoutAction;
@@ -125,7 +125,7 @@ class AppLayout extends LayoutDefinition
             Button::make(__('workbench.navigation.toggle-sidebar'), 'sidebar-toggle')
                 ->icon('panel-left')
                 ->variant(ButtonVariant::Ghost)
-                ->effects(Effect::toggleSidebar('app-sidebar')),
+                ->effects(Effects::toggleSidebar('app-sidebar')),
             Stack::make('topbar-end')
                 ->direction('row')
                 ->align(Align::Center)

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\Testing\Assertions;
 
-use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Support\Testing\ComponentNode;
+use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use PHPUnit\Framework\Assert;
 
 final readonly class ActionAssertions

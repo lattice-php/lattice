@@ -10,10 +10,10 @@ use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Actions\FormActionDefinition;
 use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Core\Values\ToastMessage;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Lattice\Ui\Values\ToastMessage;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 

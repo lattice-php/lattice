@@ -5,16 +5,16 @@ namespace Lattice\Lattice\Forms\Components;
 
 use Closure;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Concerns\HasLabel;
-use Lattice\Lattice\Core\Concerns\HasTooltip;
-use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Facades\Evaluate;
 use Lattice\Lattice\Forms\Conditions\Condition;
 use Lattice\Lattice\Forms\Conditions\ConditionSet;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Support\Evaluation\EvaluationContext;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Concerns\HasLabel;
+use Lattice\Lattice\Ui\Concerns\HasTooltip;
+use Lattice\Lattice\Ui\Enums\ColumnWidth;
 
 abstract class Field extends Component
 {

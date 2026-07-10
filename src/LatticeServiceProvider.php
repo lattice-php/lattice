@@ -34,7 +34,6 @@ use Lattice\Lattice\Console\Commands\MakeRemoteSourceCommand;
 use Lattice\Lattice\Console\Commands\MakeTableCommand;
 use Lattice\Lattice\Console\Commands\PruneNotificationsCommand;
 use Lattice\Lattice\Console\Commands\TypeScriptCommand;
-use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Contracts\ResolvesReferenceIdentity;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
@@ -55,6 +54,7 @@ use Lattice\Lattice\Support\Evaluation\Evaluator;
 use Lattice\Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Tables\TableRegistry;
+use Lattice\Lattice\Ui\Components\Component;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 

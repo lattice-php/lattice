@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Notifications;
 
 use BackedEnum;
-use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Notifications\Support\ActionDescriptor;
 use Lattice\Lattice\Support\Wire;
+use Lattice\Lattice\Ui\Enums\Variant;
 
 final class Notification
 {

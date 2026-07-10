@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Core\Enums\Icon;
+use Lattice\Lattice\Ui\Enums\Icon;
 
 test('actions serialize lucide icon enum values', function (): void {
     expect(wire(Action::make('send-message')

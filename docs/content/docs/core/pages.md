@@ -10,7 +10,7 @@ component of your own.
 
 ```php
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Components\Heading;
+use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Tables\Components\Table;
@@ -89,8 +89,8 @@ too.
 | `middleware` | Middleware for the page's route — a string or an array.                                                                                                              |
 
 ```php
-use Lattice\Lattice\Core\Enums\PageContainer;
-use Lattice\Lattice\Core\Enums\PageLayout;
+use Lattice\Lattice\Ui\Enums\PageContainer;
+use Lattice\Lattice\Ui\Enums\PageLayout;
 
 #[AsPage(
     route: '/products',

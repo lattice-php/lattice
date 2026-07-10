@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables;
 
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Definition;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\Filters\Filter;
+use Lattice\Lattice\Ui\Components\Component;
 
 abstract class TableDefinition extends Definition
 {

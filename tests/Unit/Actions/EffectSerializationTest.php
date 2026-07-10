@@ -5,16 +5,16 @@ use Illuminate\Support\Facades\Route;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Components\ActionGroup;
-use Lattice\Lattice\Core\Enums\ButtonVariant;
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Core\Values\Callout;
-use Lattice\Lattice\Core\Values\ToastMessage;
-use Lattice\Lattice\Core\Values\Translatable;
-use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Facades\Effects;
+use Lattice\Lattice\I18n\Values\Translatable;
+use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Lattice\Ui\Values\Callout;
+use Lattice\Lattice\Ui\Values\ToastMessage;
 
 test('a toast serializes its lifetime, dismissibility and link', function (): void {
-    $wire = wire(Effect::toast(
+    $wire = wire(Effects::toast(
         ToastMessage::make(Variant::Success, 'Saved.')
             ->duration(8000)
             ->dismissible(false)
@@ -32,7 +32,7 @@ test('a toast serializes its lifetime, dismissibility and link', function (): vo
 });
 
 test('a toast can carry an action component', function (): void {
-    $wire = wire(Effect::toast(
+    $wire = wire(Effects::toast(
         ToastMessage::make(Variant::Info, 'Done.')
             ->persistent()
             ->action(ActionComponent::make('demo.toast-action')->endpoint('/x')->label('Open')),
@@ -59,8 +59,8 @@ test('action results expose the full effect vocabulary', function (): void {
         ['type' => 'reset-form', 'form' => 'teams.create'],
         ['type' => 'locale-change', 'locale' => 'de'],
     ])
-        ->and(wire(Effect::resetForm()))->toBe(['type' => 'reset-form', 'form' => null])
-        ->and(wire(Effect::reloadPage()))->toBe(['type' => 'reload-page']);
+        ->and(wire(Effects::resetForm()))->toBe(['type' => 'reset-form', 'form' => null])
+        ->and(wire(Effects::reloadPage()))->toBe(['type' => 'reload-page']);
 });
 
 test('action result navigation verbs emit a redirect effect', function (): void {
@@ -83,7 +83,7 @@ test('action result toasts accept a translatable message', function (): void {
 });
 
 test('a callout effect serializes its callout payload', function (): void {
-    $wire = wire(Effect::callout(
+    $wire = wire(Effects::callout(
         Callout::make(Variant::Warning, 'Your trial ends in 3 days.')
             ->title('Trial ending')
             ->link('Upgrade', '/billing'),

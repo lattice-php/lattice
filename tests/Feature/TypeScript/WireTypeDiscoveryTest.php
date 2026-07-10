@@ -1,13 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Card;
-use Lattice\Lattice\Core\Enums\Align;
-use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Core\Values\ToastMessage;
-use Lattice\Lattice\Core\Values\Translatable;
 use Lattice\Lattice\Effects\Builtin\ToastEffect;
+use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Remote\Components\DataList;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
@@ -16,6 +12,10 @@ use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleColumn;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleDualMarkedA;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleDualMarkedB;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleUnattributed;
+use Lattice\Lattice\Ui\Components\Card;
+use Lattice\Lattice\Ui\Enums\Align;
+use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Lattice\Ui\Values\ToastMessage;
 
 it('classifies the src tree into enums, value objects, components and effects', function (): void {
     $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
@@ -79,13 +79,13 @@ it('classifies dual-marked classes as components regardless of attribute declara
 });
 
 it('derives the domain from the namespace segment before Components', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src/Core/Components');
+    $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src/Ui/Components');
 
     $card = collect($manifest->components)->keyBy->type->get('card');
 
     assert($card instanceof DiscoveredComponent);
 
-    expect($card->domain)->toBe('Core');
+    expect($card->domain)->toBe('Ui');
 });
 
 it('discovers columns via attribute inheritance and captures the column class', function (): void {

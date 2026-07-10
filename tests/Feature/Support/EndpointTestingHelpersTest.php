@@ -12,7 +12,6 @@ use Lattice\Lattice\Attributes\AsBulkAction;
 use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
@@ -25,6 +24,7 @@ use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
+use Lattice\Lattice\Ui\Components\Text;
 use Symfony\Component\HttpFoundation\Response;
 
 test('submitForm seals the ref and submits to the form endpoint with the declared method', function (): void {

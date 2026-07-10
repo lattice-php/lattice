@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Inertia\Testing\AssertableInertia;
-use Lattice\Lattice\Contracts\HasTimezonePreference;
+use Lattice\Lattice\Core\Contracts\HasTimezonePreference;
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\withoutVite;

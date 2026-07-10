@@ -5,12 +5,14 @@ namespace Lattice\Lattice\Tables\Columns;
 
 use Illuminate\Support\Collection;
 use JsonSerializable;
-use Lattice\Lattice\Core\Components\Concerns\SerializesWireNode;
-use Lattice\Lattice\Core\Concerns\GatesRendering;
-use Lattice\Lattice\Core\Concerns\HasLabel;
-use Lattice\Lattice\Core\Contracts\Renderable;
-use Lattice\Lattice\Core\Enums\ColumnWidth;
+use Lattice\Lattice\Tables\Contracts\Filterable;
+use Lattice\Lattice\Tables\Contracts\Sortable;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
+use Lattice\Lattice\Ui\Components\Concerns\SerializesWireNode;
+use Lattice\Lattice\Ui\Concerns\GatesRendering;
+use Lattice\Lattice\Ui\Concerns\HasLabel;
+use Lattice\Lattice\Ui\Contracts\Renderable;
+use Lattice\Lattice\Ui\Enums\ColumnWidth;
 
 /**
  * @phpstan-consistent-constructor

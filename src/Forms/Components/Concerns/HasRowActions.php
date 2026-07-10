@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Components\Concerns;
 
-use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Forms\Components\RowAction;
+use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
 
 trait HasRowActions
 {

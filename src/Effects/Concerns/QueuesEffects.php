@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Effects\Concerns;
 
-use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Core\Values\Callout;
-use Lattice\Lattice\Core\Values\ToastMessage;
-use Lattice\Lattice\Core\Values\Translatable;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
-use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Facades\Effects;
+use Lattice\Lattice\I18n\Values\Translatable;
+use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Lattice\Ui\Values\Callout;
+use Lattice\Lattice\Ui\Values\ToastMessage;
 
 trait QueuesEffects
 {
@@ -16,51 +16,51 @@ trait QueuesEffects
 
     public function toast(string|Translatable|ToastMessage|Variant $message, Variant|string|null $variant = null): static
     {
-        return $this->effect(Effect::toast($message, $variant));
+        return $this->effect(Effects::toast($message, $variant));
     }
 
     public function callout(Callout $callout): static
     {
-        return $this->effect(Effect::callout($callout));
+        return $this->effect(Effects::callout($callout));
     }
 
     public function reloadComponent(string $component): static
     {
-        return $this->effect(Effect::reloadComponent($component));
+        return $this->effect(Effects::reloadComponent($component));
     }
 
     public function reloadPage(): static
     {
-        return $this->effect(Effect::reloadPage());
+        return $this->effect(Effects::reloadPage());
     }
 
     public function openModal(string $modal): static
     {
-        return $this->effect(Effect::openModal($modal));
+        return $this->effect(Effects::openModal($modal));
     }
 
     public function closeModal(?string $modal = null): static
     {
-        return $this->effect(Effect::closeModal($modal));
+        return $this->effect(Effects::closeModal($modal));
     }
 
     public function resetForm(?string $form = null): static
     {
-        return $this->effect(Effect::resetForm($form));
+        return $this->effect(Effects::resetForm($form));
     }
 
     public function localeChange(string $locale): static
     {
-        return $this->effect(Effect::localeChange($locale));
+        return $this->effect(Effects::localeChange($locale));
     }
 
     public function download(string $url): static
     {
-        return $this->effect(Effect::download($url));
+        return $this->effect(Effects::download($url));
     }
 
     public function toggleSidebar(?string $target = null): static
     {
-        return $this->effect(Effect::toggleSidebar($target));
+        return $this->effect(Effects::toggleSidebar($target));
     }
 }

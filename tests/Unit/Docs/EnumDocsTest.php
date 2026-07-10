@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\Icon;
+use Lattice\Lattice\Ui\Enums\Icon;
 
 /**
  * The enums reference page renders its case lists from this generated file

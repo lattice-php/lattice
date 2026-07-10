@@ -14,7 +14,6 @@ use Lattice\Lattice\Attributes\AsBulkAction;
 use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Facades\Lattice;
@@ -30,6 +29,7 @@ use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
+use Lattice\Lattice\Ui\Components\Text;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Pest\Laravel\get;

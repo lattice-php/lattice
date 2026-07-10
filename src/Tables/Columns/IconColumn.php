@@ -5,10 +5,10 @@ namespace Lattice\Lattice\Tables\Columns;
 
 use BackedEnum;
 use Lattice\Lattice\Attributes\WireMap;
-use Lattice\Lattice\Core\Concerns\HasIcon;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Enums\ColumnType;
+use Lattice\Lattice\Ui\Concerns\HasIcon;
 
 #[AsColumn(ColumnType::Icon)]
 class IconColumn extends Column

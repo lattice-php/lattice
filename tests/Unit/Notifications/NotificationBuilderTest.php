@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Notifications\Notification;
+use Lattice\Lattice\Ui\Enums\Variant;
 
 test('the builder produces a self-describing lattice payload', function (): void {
     $payload = Notification::make()

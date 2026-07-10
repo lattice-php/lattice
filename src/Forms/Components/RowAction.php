@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Forms\Components;
 
 use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Core\Concerns\GatesRendering;
-use Lattice\Lattice\Core\Concerns\HasIcon;
-use Lattice\Lattice\Core\Concerns\HasLabel;
-use Lattice\Lattice\Core\Contracts\Renderable;
 use Lattice\Lattice\Forms\Enums\RowActionType;
+use Lattice\Lattice\Ui\Concerns\GatesRendering;
+use Lattice\Lattice\Ui\Concerns\HasIcon;
+use Lattice\Lattice\Ui\Concerns\HasLabel;
+use Lattice\Lattice\Ui\Contracts\Renderable;
 
 /**
  * A per-row action declared on a Repeater or Builder. The built-in types map to

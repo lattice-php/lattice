@@ -6,9 +6,9 @@ namespace Lattice\Lattice\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
-use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Notifications\NotificationItem;
 use Lattice\Lattice\Notifications\Support\ActionDescriptor;
+use Lattice\Lattice\Ui\Enums\Variant;
 
 final class NotificationController
 {

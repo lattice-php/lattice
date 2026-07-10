@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\NumberFormatUnit;
-use Lattice\Lattice\Core\Values\NumberFormat;
+use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
+use Lattice\Lattice\Ui\Values\NumberFormat;
 
 it('serializes a compact currency format', function (): void {
     expect(wire(NumberFormat::currency('USD')->compact()))->toBe([

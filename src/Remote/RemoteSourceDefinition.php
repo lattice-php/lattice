@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Remote;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Definition;
+use Lattice\Lattice\Ui\Components\Component;
 
 abstract class RemoteSourceDefinition extends Definition
 {

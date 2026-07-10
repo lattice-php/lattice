@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tests\Fixtures\Discovery;
 
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page as BasePage;
+use Lattice\Lattice\Ui\Components\Text;
 
 #[AsPage(route: '/discovered-demo', name: 'discovered.demo', middleware: ['web'])]
 final class DiscoveredDemoPage extends BasePage

@@ -211,7 +211,7 @@ objects and hand them to `->series([...])` instead of the per-type helpers. The 
 mirror the fluent methods:
 
 ```php
-use Lattice\Lattice\Core\Values\ChartSeries;
+use Lattice\Lattice\Ui\Values\ChartSeries;
 
 $series = collect($metrics)
     ->map(fn (string $key): ChartSeries => ChartSeries::line($key, ucfirst($key)))

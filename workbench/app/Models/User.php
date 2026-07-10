@@ -6,7 +6,7 @@ namespace Workbench\App\Models;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Lattice\Lattice\Contracts\HasTimezonePreference;
+use Lattice\Lattice\Core\Contracts\HasTimezonePreference;
 
 /**
  * @property string|null $locale

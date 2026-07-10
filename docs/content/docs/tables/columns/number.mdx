@@ -24,7 +24,7 @@ NumberColumn::make('conversion')->label('Conversion')
 - `->compact()` renders large numbers compactly (`1.2K`, `3.4M`).
 
 ```php
-use Lattice\Lattice\Core\Enums\NumberFormatUnit;
+use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
 
 NumberColumn::make('weight')->unit(NumberFormatUnit::Kilogram)->decimals(1);
 NumberColumn::make('downloads')->compact();

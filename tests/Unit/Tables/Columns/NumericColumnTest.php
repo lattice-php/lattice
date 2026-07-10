@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\NumberFormatUnit;
 use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
 
 it('defaults a numeric column to end alignment', function (): void {
     expect(wire(NumberColumn::make('price'))['props']['align'])->toBe('end');

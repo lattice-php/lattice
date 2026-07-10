@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Core\Enums\HttpMethod;
-use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Core\Values\Callout;
+use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Lattice\Ui\Values\Callout;
 
 test('a callout serializes its variant, title, body, dismissibility and action', function (): void {
     $wire = wire(

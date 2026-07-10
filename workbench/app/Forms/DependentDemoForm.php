@@ -5,8 +5,6 @@ namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Core\Components\Card;
-use Lattice\Lattice\Core\Components\Grid;
 use Lattice\Lattice\Forms\Components\Choice;
 use Lattice\Lattice\Forms\Components\DateInput;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
@@ -16,6 +14,8 @@ use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Ui\Components\Card;
+use Lattice\Lattice\Ui\Components\Grid;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AsForm('workbench.dependent.form')]

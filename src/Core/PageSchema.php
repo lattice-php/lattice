@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core;
 
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
 
 final class PageSchema
 {

@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Badge;
-use Lattice\Lattice\Core\Components\Tooltip;
+use Lattice\Lattice\Ui\Components\Badge;
+use Lattice\Lattice\Ui\Components\Tooltip;
 
 it('serializes content and an empty trigger by default', function (): void {
     $node = wire(Tooltip::make()->content('More about this metric.'));

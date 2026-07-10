@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\Columns\NumberColumn;
@@ -10,6 +9,7 @@ use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableRegistry;
 use Lattice\Lattice\Tables\TableResult;
+use Lattice\Lattice\Ui\Enums\ColumnWidth;
 use Workbench\App\Tables\ProductsTable;
 
 it('serializes the table component wire shape', function (): void {
