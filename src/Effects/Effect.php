@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Effects;
 
 use InvalidArgumentException;
+use Lattice\Lattice\Core\Components\Concerns\SerializesToWire;
 use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Core\Values\Callout;
 use Lattice\Lattice\Core\Values\ToastMessage;
@@ -24,6 +25,8 @@ use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 
 abstract readonly class Effect implements EffectContract
 {
+    use SerializesToWire;
+
     public static function callout(Callout $callout): CalloutEffect
     {
         return new CalloutEffect($callout);
@@ -92,7 +95,7 @@ abstract readonly class Effect implements EffectContract
      */
     public function jsonSerialize(): array
     {
-        return ['type' => $this->wireType(), ...get_object_vars($this)];
+        return ['type' => $this->wireType(), ...$this->wireProps()];
     }
 
     public function wireType(): string
