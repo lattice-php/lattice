@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Discovery;
 
+use Composer\InstalledVersions;
+use ReflectionClass;
+
 /**
  * Resolves the discovery roots contributed by installed Composer packages that
  * declare `extra.lattice.discover` in their composer.json — the PHP counterpart
@@ -16,7 +19,11 @@ final class ComponentPackages
     /** @return list<string> */
     public static function discoverRoots(): array
     {
-        return self::fromInstalled(base_path('vendor/composer/installed.json'));
+        $file = new ReflectionClass(InstalledVersions::class)->getFileName();
+
+        return is_string($file)
+            ? self::fromInstalled(dirname($file).'/installed.json')
+            : [];
     }
 
     /**

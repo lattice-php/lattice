@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Composer\InstalledVersions;
 use Lattice\Lattice\Core\Discovery\ComponentPackages;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
@@ -21,8 +22,13 @@ it('returns nothing when installed.json is absent', function (): void {
 });
 
 it('merges installed component-package roots into the configured discover paths', function (): void {
+    $packagePath = InstalledVersions::getInstallPath('lattice-php/signature-example') ?? '';
+    $discoverPath = realpath($packagePath.'/src');
+
+    expect($discoverPath)->not->toBeFalse();
+
     expect(DiscoveryManifest::configuredPaths())->toContain(
-        realpath(base_path('vendor/lattice-php/signature-example/src')),
+        $discoverPath,
     );
 });
 
