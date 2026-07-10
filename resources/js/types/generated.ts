@@ -1075,11 +1075,11 @@ export type Select = {
   value: unknown;
 };
 export type SelectFilter = {
+  label: string;
   multiple: boolean;
   options: Option[];
   placeholder: string | null;
   searchable: boolean;
-  label: string;
 };
 export type Side = "start" | "end";
 export type Sidebar = {
@@ -1162,9 +1162,9 @@ export type Tabs = {
 export type TabsAlignment = "start" | "center" | "end" | "stretch";
 export type TernaryFilter = {
   falseLabel: string;
+  label: string;
   placeholder: string;
   trueLabel: string;
-  label: string;
 };
 export type Text = {
   align: Align | null;
