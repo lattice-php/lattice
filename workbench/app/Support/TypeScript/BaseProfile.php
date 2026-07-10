@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
+use Illuminate\Support\Str;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
@@ -22,39 +23,11 @@ use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 final class BaseProfile implements TypeScriptProfile
 {
     /**
-     * Component domains in output order, mapped to their node-alias name. The
-     * order and (singular) names are meaningful, so they stay declared here.
-     */
-    private const array DOMAIN_NODES = [
-        'Core' => 'CoreNode',
-        'Actions' => 'ActionNode',
-        'Fragments' => 'FragmentNode',
-        'Remote' => 'RemoteNode',
-        'Tables' => 'TableNode',
-        'Layouts' => 'LayoutNode',
-        'Chat' => 'ChatNode',
-        'Notifications' => 'NotificationNode',
-    ];
-
-    /**
      * Node aliases whose per-domain `…Type` string union a client actually consumes
      * (via `NodeUnionOf`). Only these are emitted — the rest would be dead exports.
      * Add one here when a client starts deriving a node union for that domain.
      */
     private const array NODE_TYPE_ALIASES = ['ActionNode'];
-
-    /**
-     * The component domains this profile emits a node type for. Exposed so the
-     * drift-guard test can assert no src/ domain is missing from the hand-list —
-     * an unregistered domain's components would silently vanish from the generated
-     * `ComponentPropsMap`/`NodeType`.
-     *
-     * @return list<string>
-     */
-    public static function domainNodeNames(): array
-    {
-        return array_keys(self::DOMAIN_NODES);
-    }
 
     public function run(TypeScriptGenerator $generator): string
     {
@@ -178,17 +151,27 @@ final class BaseProfile implements TypeScriptProfile
     }
 
     /**
-     * The components for each domain, keyed by node-alias name in DOMAIN_NODES order.
-     *
      * @param  list<DiscoveredComponent>  $discovered
      * @return array<string, array<class-string, array{type: string, container?: bool, interactive?: bool}>>
      */
     private function buildDomainNodes(array $discovered): array
     {
+        $domains = array_values(array_unique(array_map(
+            static fn (DiscoveredComponent $dc): string => $dc->domain,
+            array_filter(
+                $discovered,
+                static fn (DiscoveredComponent $dc): bool => $dc->category === 'component'
+                    && $dc->domain !== ''
+                    && $dc->domain !== 'Forms',
+            ),
+        )));
+
+        sort($domains);
+
         $domainNodes = [];
 
-        foreach (self::DOMAIN_NODES as $domain => $nodeName) {
-            $domainNodes[$nodeName] = $this->buildBucket($discovered, $domain);
+        foreach ($domains as $domain) {
+            $domainNodes[Str::singular($domain).'Node'] = $this->buildBucket($discovered, $domain);
         }
 
         return $domainNodes;
@@ -202,7 +185,7 @@ final class BaseProfile implements TypeScriptProfile
     {
         $components = array_filter(
             $discovered,
-            fn (DiscoveredComponent $dc): bool => $dc->domain === $domain,
+            fn (DiscoveredComponent $dc): bool => $dc->domain === $domain && $dc->category === 'component',
         );
 
         usort($components, fn (DiscoveredComponent $a, DiscoveredComponent $b): int => $a->type <=> $b->type);
