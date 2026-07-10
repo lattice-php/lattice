@@ -32,3 +32,18 @@ it("warns and falls back to an empty config on invalid JSON", () => {
 
   warn.mockRestore();
 });
+
+it.each(["[1,2]", "42", "null", '"a string"'])(
+  "warns and falls back to an empty config when the JSON is not a config object (%s)",
+  (json) => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const doc = documentWith(
+      `<script type="application/json" data-lattice-config>${json}</script>`,
+    );
+
+    expect(readStandaloneConfig(doc)).toEqual({});
+    expect(warn).toHaveBeenCalledOnce();
+
+    warn.mockRestore();
+  },
+);

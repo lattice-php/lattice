@@ -300,6 +300,7 @@ export default defineConfig(({ mode }) => {
             outDir: "dist-standalone",
             emptyOutDir: true,
             sourcemap: false,
+            cssCodeSplit: false,
             rollupOptions: {
               input: { lattice: path.resolve(sourceRoot, "standalone/main.tsx") },
               output: {

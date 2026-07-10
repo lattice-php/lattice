@@ -7,9 +7,13 @@ const config = readStandaloneConfig(document);
 
 async function boot(): Promise<void> {
   if (config.echo) {
-    const { configureEcho } = await import("@laravel/echo-react");
+    try {
+      const { configureEcho } = await import("@laravel/echo-react");
 
-    configureEcho(config.echo as Parameters<typeof configureEcho>[0]);
+      configureEcho(config.echo as Parameters<typeof configureEcho>[0]);
+    } catch (error) {
+      console.warn("[lattice] Failed to load the realtime chunk; continuing without Echo.", error);
+    }
   }
 
   void createLatticeApp({

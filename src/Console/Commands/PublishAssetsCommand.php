@@ -22,7 +22,21 @@ final class PublishAssetsCommand extends Command
             return self::FAILURE;
         }
 
-        $target = public_path(config('lattice.frontend.path'));
+        $path = config('lattice.frontend.path');
+
+        if (empty($path)) {
+            $this->components->error('The [lattice.frontend.path] config value must be a non-empty subdirectory of the public path.');
+
+            return self::FAILURE;
+        }
+
+        $target = public_path($path);
+
+        if (rtrim($target, '/') === rtrim(public_path(), '/')) {
+            $this->components->error('The [lattice.frontend.path] config value must not resolve to the public root.');
+
+            return self::FAILURE;
+        }
 
         $files->deleteDirectory($target);
         $files->copyDirectory($source, $target);

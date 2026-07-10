@@ -56,3 +56,13 @@ it('fails when no standalone build is available', function (): void {
 
     artisan('lattice:assets')->assertFailed();
 });
+
+it('refuses to publish into the public root', function (): void {
+    File::put(public_path('existing.txt'), 'keep me');
+
+    config()->set('lattice.frontend.path', '');
+
+    artisan('lattice:assets')->assertFailed();
+
+    expect(File::exists(public_path('existing.txt')))->toBeTrue();
+});
