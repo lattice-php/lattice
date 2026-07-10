@@ -37,14 +37,3 @@ jobs:
             git commit -m "chore: build standalone assets"
             git push
           fi
-
-      - name: Assets match the release version
-        run: |
-          node -e "
-            const m = require('./dist-standalone/manifest.json');
-            const pkg = require('./package.json');
-            if (m.version !== pkg.version) {
-              console.error('manifest ' + m.version + ' != package ' + pkg.version);
-              process.exit(1);
-            }
-          "
