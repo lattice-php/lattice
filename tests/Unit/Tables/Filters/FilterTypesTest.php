@@ -35,6 +35,28 @@ test('ternary filter serializes its wire shape', function (): void {
         ]);
 });
 
+test('ternary filter serializes its default labels', function (): void {
+    $filter = wire(TernaryFilter::make('verified'));
+
+    expect($filter)->toMatchArray([
+        'type' => 'filter.ternary',
+        'key' => 'verified',
+        'props' => [
+            'label' => 'Verified',
+            'trueLabel' => 'Yes',
+            'falseLabel' => 'No',
+            'placeholder' => 'All',
+        ],
+    ])
+        ->and($filter['schema'])->toHaveCount(1)
+        ->and($filter['schema'][0]['type'])->toBe('field.select')
+        ->and($filter['schema'][0]['props']['name'])->toBe('value')
+        ->and($filter['schema'][0]['props']['options'])->toBe([
+            ['label' => 'Yes', 'value' => 'true'],
+            ['label' => 'No', 'value' => 'false'],
+        ]);
+});
+
 test('a ternary filter applies a boolean constraint', function (): void {
     $builder = Product::query();
     TernaryFilter::make('featured')->apply($builder, FormData::make(['value' => 'true']));
