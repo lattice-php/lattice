@@ -5,7 +5,6 @@ namespace Lattice\Lattice\Forms\Components;
 
 use Closure;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Concerns\HasTooltip;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
@@ -562,12 +561,13 @@ abstract class Field extends Component
     }
 
     /**
-     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */
-    #[SerializationHook(priority: 190)]
-    protected function projectComputedProps(array $data): array
+    protected function decorateProps(array $props): array
     {
+        $props = parent::decorateProps($props);
+
         $conditions = array_filter([
             'visible' => $this->conditionsFor('visible'),
             'required' => $this->conditionsFor('required'),
@@ -575,7 +575,7 @@ abstract class Field extends Component
             'disabled' => $this->conditionsFor('disabled'),
         ], static fn (array $set): bool => $set !== []);
 
-        $this->conditions = $conditions === [] ? null : $conditions;
+        $props['conditions'] = $conditions === [] ? null : $conditions;
 
         $keys = [];
 
@@ -585,9 +585,9 @@ abstract class Field extends Component
             }
         }
 
-        $this->dependsOnKeys = $keys === [] ? null : array_keys($keys);
-        $this->dependsOnAny = $this->valueResolver instanceof Closure;
+        $props['dependsOnKeys'] = $keys === [] ? null : array_keys($keys);
+        $props['dependsOnAny'] = $this->valueResolver instanceof Closure;
 
-        return $data;
+        return $props;
     }
 }
