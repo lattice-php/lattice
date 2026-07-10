@@ -122,8 +122,6 @@ test('eloquent tables can disable pagination for small datasets', function (): v
 
 /**
  * @extends EloquentTableDefinition<User>
- *
- * @phpstan-extends EloquentTableDefinition<User>
  */
 #[AsTable('workbench.infinite-users')]
 class WorkbenchInfiniteUsersTable extends EloquentTableDefinition
@@ -159,8 +157,6 @@ class WorkbenchInfiniteUsersTable extends EloquentTableDefinition
 
 /**
  * @extends EloquentTableDefinition<User>
- *
- * @phpstan-extends EloquentTableDefinition<User>
  */
 #[AsTable('workbench.default-users')]
 class WorkbenchDefaultUsersTable extends EloquentTableDefinition
@@ -189,8 +185,6 @@ class WorkbenchDefaultUsersTable extends EloquentTableDefinition
 
 /**
  * @extends EloquentTableDefinition<User>
- *
- * @phpstan-extends EloquentTableDefinition<User>
  */
 #[AsTable('workbench.simple-users')]
 class WorkbenchSimpleUsersTable extends EloquentTableDefinition
@@ -225,8 +219,6 @@ class WorkbenchSimpleUsersTable extends EloquentTableDefinition
 
 /**
  * @extends EloquentTableDefinition<User>
- *
- * @phpstan-extends EloquentTableDefinition<User>
  */
 #[AsTable('workbench.small-users')]
 class WorkbenchSmallUsersTable extends EloquentTableDefinition
