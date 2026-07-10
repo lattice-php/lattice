@@ -162,6 +162,23 @@ export function useColumnResizing({
       const resizeBy = (handle: HTMLDivElement, delta: number): void =>
         setColumnWidth(column, current + delta, maxWidthForHandle(handle));
 
+      const finishDrag = (event: PointerEvent<HTMLDivElement>, releaseCapture: boolean): void => {
+        const active = drag.current;
+
+        if (active?.key !== column.key) {
+          return;
+        }
+
+        drag.current = null;
+        if (active.overrides !== null) {
+          commitOverrides(active.overrides);
+        }
+
+        if (releaseCapture) {
+          event.currentTarget.releasePointerCapture?.(event.pointerId);
+        }
+      };
+
       return {
         "aria-label": `Resize ${label}`,
         "aria-orientation": "vertical",
@@ -238,17 +255,13 @@ export function useColumnResizing({
           applyTemplate(templateForOverrides(next));
         },
         onPointerUp: (event: PointerEvent<HTMLDivElement>) => {
-          const active = drag.current;
-
-          if (active?.key !== column.key) {
-            return;
-          }
-
-          drag.current = null;
-          if (active.overrides !== null) {
-            commitOverrides(active.overrides);
-          }
-          event.currentTarget.releasePointerCapture?.(event.pointerId);
+          finishDrag(event, true);
+        },
+        onPointerCancel: (event: PointerEvent<HTMLDivElement>) => {
+          finishDrag(event, true);
+        },
+        onLostPointerCapture: (event: PointerEvent<HTMLDivElement>) => {
+          finishDrag(event, false);
         },
         role: "separator",
         tabIndex: 0,

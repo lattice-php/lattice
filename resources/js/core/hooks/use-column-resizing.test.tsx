@@ -379,6 +379,25 @@ describe("useColumnResizing", () => {
     expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "208px" });
   });
 
+  it("commits pending widths when a pointer drag is cancelled", () => {
+    render(<Harness storageKey="cols" />);
+
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
+
+    fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
+    fireEvent.pointerCancel(handle, { clientX: 180, pointerId: 1 });
+
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "208px" });
+    expect(screen.getByTestId("has-overrides")).toHaveTextContent("true");
+    expect(JSON.parse(window.localStorage.getItem("cols") ?? "")).toEqual({
+      columns: ["qty"],
+      overrides: {
+        qty: 208,
+      },
+    });
+  });
+
   it("ignores a pointer up for a column that is not actively dragging", () => {
     render(<Harness hookColumns={twoColumns} />);
 

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Filesystem\Filesystem;
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Enums\PageContainer;
@@ -48,3 +49,27 @@ test('resolver memoizes metadata loaded from the discovery manifest', function (
         $manifest->clear();
     }
 });
+
+test('resolver checks the manifest mode once per instance', function (): void {
+    $files = new CountingManifestFilesystem;
+    $manifest = new DiscoveryManifest(app(), $files);
+    $resolver = new PageMetadataResolver($manifest);
+
+    $resolver->for(ResolverPage::class);
+    $resolver->for(new ResolverPage);
+
+    expect($files->existsCalls)->toBe(1);
+});
+
+final class CountingManifestFilesystem extends Filesystem
+{
+    public int $existsCalls = 0;
+
+    #[Override]
+    public function exists($path): bool
+    {
+        $this->existsCalls++;
+
+        return false;
+    }
+}

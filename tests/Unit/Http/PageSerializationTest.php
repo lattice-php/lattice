@@ -32,6 +32,15 @@ test('pages serialize layout and container metadata', function (): void {
         ->toMatchArray(['layout' => null, 'container' => 'default']);
 });
 
+test('page array serialization keeps the public contract narrow', function (): void {
+    $parameters = array_map(
+        static fn (ReflectionParameter $parameter): string => $parameter->getName(),
+        new ReflectionMethod(Page::class, 'toArray')->getParameters(),
+    );
+
+    expect($parameters)->toBe(['schema', 'request']);
+});
+
 test('the layout() method takes precedence over the page attribute', function (): void {
     $page = new #[AsPage(layout: PageLayout::App)] class extends Page
     {

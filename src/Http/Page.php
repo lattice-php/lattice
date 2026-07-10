@@ -12,7 +12,7 @@ use Inertia\Response;
 use Lattice\Lattice\Core\Contracts\PageContract;
 use Lattice\Lattice\Core\Enums\PageContainer;
 use Lattice\Lattice\Core\Enums\PageLayout;
-use Lattice\Lattice\Core\PageMetadataResolver;
+use Lattice\Lattice\Core\PageMetadata;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Realtime\Listen;
@@ -124,9 +124,9 @@ abstract class Page implements PageContract, Responsable
     /**
      * @return array{title: string|null, layout: array{key: string, schema: mixed}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, schema: mixed, listeners?: mixed}
      */
-    public function toArray(PageSchema $schema, Request $request, ?PageMetadataResolver $metadataResolver = null): array
+    public function toArray(PageSchema $schema, Request $request): array
     {
-        $metadata = ($metadataResolver ?? app(PageMetadataResolver::class))->for($this);
+        $metadata = PageMetadata::for($this);
         $layout = $this->layout() ?? $metadata->layout;
         $container = $this->container() ?? $metadata->container;
 
@@ -196,7 +196,7 @@ abstract class Page implements PageContract, Responsable
     private function response(PageSchema $schema): Response
     {
         return Inertia::render($this->component(), [
-            'lattice' => app()->call($this->toArray(...), ['schema' => $schema]),
+            'lattice' => $this->toArray($schema, app(Request::class)),
         ]);
     }
 

@@ -70,6 +70,15 @@ describe("useDependentField", () => {
     expect(result.current.hidden).toBe(false);
   });
 
+  it("evaluates dotted condition fields against nested form values", () => {
+    const { result } = renderScopedField({
+      global: { address: { city: "Berlin" } },
+      node: conditionNode(".address..city", "Berlin"),
+    });
+
+    expect(result.current.hidden).toBe(false);
+  });
+
   it("falls back to ancestor row values from inside nested rows", () => {
     const wrapper = ({ children }: { children: ReactNode }) => (
       <FormValuesProvider

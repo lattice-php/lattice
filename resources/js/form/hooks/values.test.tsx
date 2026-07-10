@@ -1,7 +1,13 @@
 import { act, render, renderHook } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
-import { FormValuesProvider, useFormValue, useFormValues, useSetFormValue } from "./values";
+import {
+  FormValuesProvider,
+  useFormValue,
+  useFormValues,
+  useFormValuesFor,
+  useSetFormValue,
+} from "./values";
 
 function wrapper(initial: Record<string, unknown>) {
   return ({ children }: { children: ReactNode }) => (
@@ -165,5 +171,40 @@ describe("FormValues", () => {
     expect(parentRenders).toBe(2);
     expect(childRenders).toBe(2);
     expect(siblingRenders).toBe(1);
+  });
+
+  it("uses a stable fallback store outside a provider", () => {
+    const snapshots: Record<string, unknown>[] = [];
+
+    function Probe({ tick }: { tick: number }) {
+      snapshots.push(useFormValuesFor(["field"]));
+
+      return <span>{tick}</span>;
+    }
+
+    const { rerender } = render(<Probe tick={1} />);
+
+    rerender(<Probe tick={2} />);
+
+    expect(snapshots).toHaveLength(2);
+    expect(snapshots[1]).toBe(snapshots[0]);
+  });
+
+  it("returns selected values keyed by the caller's original path", () => {
+    let selected: Record<string, unknown> = {};
+
+    function Probe() {
+      selected = useFormValuesFor([".address..city"]);
+
+      return null;
+    }
+
+    render(
+      <FormValuesProvider initial={{ address: { city: "Berlin" } }}>
+        <Probe />
+      </FormValuesProvider>,
+    );
+
+    expect(selected).toEqual({ ".address..city": "Berlin" });
   });
 });

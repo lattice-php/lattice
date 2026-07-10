@@ -134,7 +134,7 @@ function createFormValuesStore(initial: Record<string, unknown>): FormValuesStor
       }
 
       const normalizedPaths = paths.map(normalizePath);
-      const key = normalizedPaths.join("\0");
+      const key = JSON.stringify(paths);
       const selectedValues = normalizedPaths.map((path) => getPath(values, path));
       const cached = selectedCache.get(key);
 
@@ -147,7 +147,7 @@ function createFormValuesStore(initial: Record<string, unknown>): FormValuesStor
       }
 
       const snapshot = Object.fromEntries(
-        normalizedPaths.map((path, index) => [path, selectedValues[index]]),
+        paths.map((path, index) => [path, selectedValues[index]]),
       );
 
       selectedCache.set(key, { snapshot, values: selectedValues });
@@ -193,6 +193,8 @@ function createFormValuesStore(initial: Record<string, unknown>): FormValuesStor
   };
 }
 
+const fallbackFormValuesStore = createFormValuesStore(emptyValues);
+
 export function FormValuesProvider({
   initial,
   children,
@@ -220,7 +222,7 @@ export function FormValuesProvider({
 }
 
 function useFormValuesStore(): FormValuesStore {
-  return useContext(FormValuesStoreContext) ?? createFormValuesStore(emptyValues);
+  return useContext(FormValuesStoreContext) ?? fallbackFormValuesStore;
 }
 
 export function useFormValues(): Record<string, unknown> {
@@ -242,14 +244,15 @@ export function useFormValue(name: string): unknown {
 
 export function useFormValuesFor(paths: string[]): Record<string, unknown> {
   const store = useFormValuesStore();
-  const normalizedPaths = useMemo(() => paths.map(normalizePath), [paths]);
+  const pathsKey = JSON.stringify(paths);
+  const selectedPaths = useMemo(() => JSON.parse(pathsKey) as string[], [pathsKey]);
   const subscribe = useCallback(
-    (listener: () => void) => store.subscribePaths(normalizedPaths, listener),
-    [normalizedPaths, store],
+    (listener: () => void) => store.subscribePaths(selectedPaths, listener),
+    [selectedPaths, store],
   );
   const getSnapshot = useCallback(
-    () => store.getPathsSnapshot(normalizedPaths),
-    [normalizedPaths, store],
+    () => store.getPathsSnapshot(selectedPaths),
+    [selectedPaths, store],
   );
 
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
