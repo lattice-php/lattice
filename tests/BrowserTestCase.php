@@ -7,18 +7,39 @@ namespace Lattice\Lattice\Tests;
 use Lattice\Lattice\Tests\Browser\Support\ReverbServer;
 use Pest\Browser\Playwright\Playwright;
 
+use function Orchestra\Testbench\package_path;
+
 class BrowserTestCase extends TestCase
 {
     private static ?ReverbServer $reverb = null;
+
+    private static bool $checkedWorkbenchManifest = false;
 
     #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->assertWorkbenchManifestExists();
+
         // CI runners are slower than Playwright's tight 5s default, which
         // intermittently trips browser actions/assertions under load.
         Playwright::setTimeout(15_000);
+    }
+
+    private function assertWorkbenchManifestExists(): void
+    {
+        if (self::$checkedWorkbenchManifest) {
+            return;
+        }
+
+        $manifest = package_path('vendor/orchestra/testbench-core/laravel/public/build/manifest.json');
+
+        if (! is_file($manifest)) {
+            throw new \RuntimeException("Missing workbench Vite manifest [{$manifest}]. Run `npm run build` before `composer test:browser`.");
+        }
+
+        self::$checkedWorkbenchManifest = true;
     }
 
     protected function bootReverb(): void

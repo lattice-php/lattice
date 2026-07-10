@@ -1,17 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
 import { FormValuesProvider, useFormValue } from "@lattice-php/lattice/form/hooks/values";
 import { PasswordInputComponent } from "./password-input";
 
-function renderField(node: Node<"field.password-input">, initial: Record<string, unknown> = {}) {
-  return render(
-    <FormValuesProvider initial={initial}>
-      <PasswordInputComponent node={node}>{null}</PasswordInputComponent>
-    </FormValuesProvider>,
-  );
-}
+const renderField = createFieldRenderer(PasswordInputComponent);
 
 function CommittedValue({ name }: { name: string }) {
   return <output data-test={`value-${name}`}>{String(useFormValue(name) ?? "")}</output>;

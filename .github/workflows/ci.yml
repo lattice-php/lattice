@@ -222,13 +222,6 @@ jobs:
           coverage: none
           tools: composer:v2
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
-          cache: npm
-
-      - run: npm ci
-
       - name: Resolve composer cache directory
         id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"

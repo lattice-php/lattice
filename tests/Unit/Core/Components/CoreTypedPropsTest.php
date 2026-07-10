@@ -18,7 +18,7 @@ use Lattice\Lattice\Ui\Enums\Size;
 use Lattice\Lattice\Ui\Enums\TabsAlignment;
 use Lattice\Lattice\Ui\Enums\Width;
 
-test('stack serializes enums direction and key wire-identically', function (): void {
+it('stack serializes enums direction and key wire-identically', function (): void {
     expect(wire(Stack::make('layout')
         ->direction('row')
         ->gap(Gap::Large)
@@ -43,7 +43,7 @@ test('stack serializes enums direction and key wire-identically', function (): v
         ]);
 });
 
-test('segmented control serializes name label value emits options', function (): void {
+it('segmented control serializes name label value emits options', function (): void {
     expect(wire(SegmentedControl::make('appearance', 'Appearance')
         ->value('system')
         ->emits('lattice:appearance-change')
@@ -66,7 +66,7 @@ test('segmented control serializes name label value emits options', function ():
         ]);
 });
 
-test('modal serializes id title description and children', function (): void {
+it('modal serializes id title description and children', function (): void {
     expect(wire(Modal::make('settings.modal')
         ->title('Title')
         ->description('Desc')
@@ -89,7 +89,7 @@ test('modal serializes id title description and children', function (): void {
         ]);
 });
 
-test('modal without optional props includes them as null', function (): void {
+it('modal without optional props includes them as null', function (): void {
     expect(wire(Modal::make('bare.modal')))
         ->toEqual([
             'type' => 'modal',
@@ -104,7 +104,7 @@ test('modal without optional props includes them as null', function (): void {
         ]);
 });
 
-test('tabs serialize defaultValue queryKey and computed activeValue', function (): void {
+it('tabs serialize defaultValue queryKey and computed activeValue', function (): void {
     expect(wire(Tabs::make('settings-tabs')
         ->defaultValue('security')
         ->schema([
@@ -136,7 +136,7 @@ test('tabs serialize defaultValue queryKey and computed activeValue', function (
         ]);
 });
 
-test('tabs with custom queryKey and no defaultValue keep empty activeValue', function (): void {
+it('tabs with custom queryKey and no defaultValue keep empty activeValue', function (): void {
     expect(wire(Tabs::make('settings-tabs')->queryKey('settings-tab')))
         ->toEqual([
             'type' => 'tabs',
@@ -151,19 +151,19 @@ test('tabs with custom queryKey and no defaultValue keep empty activeValue', fun
         ]);
 });
 
-test('tabs serialize a vertical orientation', function (): void {
+it('tabs serialize a vertical orientation', function (): void {
     expect(wire(Tabs::make('settings-tabs')->orientation(Orientation::Vertical))['props']['orientation'])
         ->toBe('vertical');
 });
 
-test('tabs serialize a stretched alignment by default and honour an override', function (): void {
+it('tabs serialize a stretched alignment by default and honour an override', function (): void {
     expect(wire(Tabs::make('settings-tabs'))['props']['alignment'])->toBe('stretch');
 
     expect(wire(Tabs::make('settings-tabs')->alignment(TabsAlignment::Center))['props']['alignment'])
         ->toBe('center');
 });
 
-test('confirmed inactive tab serializes confirm metadata and drops its children', function (): void {
+it('confirmed inactive tab serializes confirm metadata and drops its children', function (): void {
     $tabs = wire(Tabs::make('settings-tabs')
         ->defaultValue('profile')
         ->schema([
@@ -184,7 +184,7 @@ test('confirmed inactive tab serializes confirm metadata and drops its children'
     ]);
 });
 
-test('tab confirm keeps a provided timeout and custom redirect', function (): void {
+it('tab confirm keeps a provided timeout and custom redirect', function (): void {
     expect(wire(Tab::make('security', 'Security')->confirm('/auth/confirm', 60)))
         ->toEqual([
             'type' => 'tab',
