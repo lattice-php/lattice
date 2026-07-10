@@ -7,6 +7,8 @@ use Illuminate\Support\Collection;
 use JsonSerializable;
 use Lattice\Lattice\Core\Components\Concerns\SerializesWireNode;
 use Lattice\Lattice\Core\Concerns\GatesRendering;
+use Lattice\Lattice\Core\Concerns\HasKeyedLabel;
+use Lattice\Lattice\Core\Concerns\HasReadonlyKey;
 use Lattice\Lattice\Core\Contracts\Renderable;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
@@ -17,9 +19,9 @@ use Lattice\Lattice\Tables\Enums\ColumnAlign;
 abstract class Column implements JsonSerializable, Renderable
 {
     use GatesRendering;
+    use HasKeyedLabel;
+    use HasReadonlyKey;
     use SerializesWireNode;
-
-    public string $label;
 
     public ColumnWidth $width = ColumnWidth::Md;
 
@@ -37,12 +39,7 @@ abstract class Column implements JsonSerializable, Renderable
 
     public function __construct(protected readonly string $key)
     {
-        $this->label = str($key)->headline()->toString();
-    }
-
-    public function key(): string
-    {
-        return $this->key;
+        $this->initializeLabel();
     }
 
     public static function make(string $key): static
@@ -57,13 +54,6 @@ abstract class Column implements JsonSerializable, Renderable
     public static function index(array $columns): Collection
     {
         return collect($columns)->keyBy(fn (Column $column): string => $column->key());
-    }
-
-    public function label(string $label): static
-    {
-        $this->label = $label;
-
-        return $this;
     }
 
     public function width(ColumnWidth $width): static
@@ -117,11 +107,6 @@ abstract class Column implements JsonSerializable, Renderable
             searchable: $this->filterSearchable(),
             clauseOptions: $this->filterClauseOptions(),
         );
-    }
-
-    protected function wireKey(): ?string
-    {
-        return $this->key;
     }
 
     /**
