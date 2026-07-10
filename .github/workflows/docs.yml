@@ -1,19 +1,11 @@
 name: Docs
 
+# The PR trigger deliberately has no paths filter: "Docs (typecheck, tests,
+# build)" is a required status check, and a path-filtered workflow that never
+# triggers leaves the check "Expected" forever, blocking the merge. The changes
+# job skips the build instead — a skipped required check counts as passed.
 on:
   pull_request:
-    paths:
-      - "docs/**"
-      - "resources/**"
-      - "workbench/resources/**"
-      - "vite.config.ts"
-      - "astro.config.mjs"
-      - "tsconfig.json"
-      - "docs/tsconfig.json"
-      - "package.json"
-      - "package-lock.json"
-      - ".npmrc"
-      - ".github/workflows/docs.yml"
   push:
     branches: [main]
     paths:
@@ -38,8 +30,35 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
+  changes:
+    name: Detect docs-relevant changes
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    outputs:
+      docs: ${{ steps.filter.outputs.docs }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            docs:
+              - "docs/**"
+              - "resources/**"
+              - "workbench/resources/**"
+              - "vite.config.ts"
+              - "astro.config.mjs"
+              - "tsconfig.json"
+              - "package.json"
+              - "package-lock.json"
+              - ".npmrc"
+              - ".github/workflows/docs.yml"
+
   docs:
     name: Docs (typecheck, tests, build)
+    needs: changes
+    # Fails open: if change detection itself broke, run the build rather than
+    # silently skipping a required check.
+    if: ${{ !cancelled() && (github.event_name != 'pull_request' || needs.changes.result != 'success' || needs.changes.outputs.docs == 'true') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
