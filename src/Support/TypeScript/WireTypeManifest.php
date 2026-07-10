@@ -3,9 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\TypeScript;
 
-/**
- * @phpstan-type EffectMap array<class-string, string>
- */
 final readonly class WireTypeManifest
 {
     /**

@@ -8,6 +8,7 @@ use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Core\Values\ToastMessage;
 use Lattice\Lattice\Core\Values\Translatable;
 use Lattice\Lattice\Effects\Builtin\ToastEffect;
+use Lattice\Lattice\Remote\Components\DataList;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
 use Lattice\Lattice\Tables\Columns\TextColumn;
@@ -130,4 +131,16 @@ it('does not classify an effect as a value object', function (): void {
 
     expect($manifest->valueObjects)->not->toContain(ToastEffect::class)
         ->and($manifest->enums)->not->toContain(ToastEffect::class);
+});
+
+it('classifies AsRemoteComponent with correct precedence in components', function (): void {
+    $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
+
+    $dataList = collect($manifest->components)->firstWhere('class', DataList::class);
+
+    assert($dataList instanceof DiscoveredComponent);
+
+    expect($dataList->type)->toBe('remote.data-list')
+        ->and($dataList->category)->toBe('component')
+        ->and($manifest->valueObjects)->not->toContain(DataList::class);
 });
