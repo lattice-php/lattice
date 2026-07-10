@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Chat;
 
 use Lattice\Lattice\Chat\Components\TextPart;
 use Lattice\Lattice\Chat\Components\ToolCallPart;
-use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Ui\Components\Component;
 
 /**
  * A chat part is a component: it serializes to a `{type, props}` node and renders

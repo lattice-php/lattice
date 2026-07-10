@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Components\Concerns;
 
-use Lattice\Lattice\Core\Enums\RowLayout;
+use Lattice\Lattice\Forms\Enums\RowLayout;
 
 trait HasRowLayout
 {

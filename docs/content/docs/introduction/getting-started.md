@@ -15,13 +15,13 @@ A page extends `Lattice\Lattice\Http\Page`. It returns a `title()` and builds it
 namespace App\Pages;
 
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Components\Card;
-use Lattice\Lattice\Core\Components\Grid;
-use Lattice\Lattice\Core\Components\Heading;
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Components\Text;
-use Lattice\Lattice\Core\Enums\Gap;
-use Lattice\Lattice\Core\Enums\PageLayout;
+use Lattice\Lattice\Ui\Components\Card;
+use Lattice\Lattice\Ui\Components\Grid;
+use Lattice\Lattice\Ui\Components\Heading;
+use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\PageLayout;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page as BasePage;
 
@@ -65,7 +65,7 @@ Rather than repeating `layout:` and `middleware:` on every page, declare a share
 
 ```php
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Enums\PageLayout;
+use Lattice\Lattice\Ui\Enums\PageLayout;
 use Lattice\Lattice\Http\Page as BasePage;
 
 #[AsPage(layout: PageLayout::App, middleware: ['web'])]

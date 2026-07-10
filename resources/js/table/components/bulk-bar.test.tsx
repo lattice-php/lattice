@@ -6,7 +6,7 @@ import { createPlugin, createRegistry } from "@lattice-php/lattice/core/registry
 import { Provider } from "@lattice-php/lattice/provider";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { BulkBar } from "./bulk-bar";
-import type { BulkAction } from "../lib/bulk";
+import type { BulkAction } from "@lattice-php/lattice/table/lib/bulk";
 
 const http = vi.hoisted(() => ({
   processing: false,

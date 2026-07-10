@@ -14,7 +14,7 @@ data, so you can build links and actions scoped to that record:
 
 ```php
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Core\Components\Link;
+use Lattice\Lattice\Ui\Components\Link;
 
 public function actions(array $row): array
 {

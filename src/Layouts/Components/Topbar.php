@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Layouts\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Components\ContainerComponent;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Components\ContainerComponent;
 
 /**
  * A horizontal application bar at the top of the page content. Give a child

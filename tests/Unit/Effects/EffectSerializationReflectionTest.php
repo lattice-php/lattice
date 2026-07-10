@@ -3,9 +3,10 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Attributes\WireMap;
-use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Facades\Effects;
+use Lattice\Lattice\Ui\Enums\Variant;
 
 #[AsEffect('test.enum-effect')]
 final readonly class EnumPayloadEffect extends Effect
@@ -42,7 +43,7 @@ it('wire-maps an empty array prop to a JSON object, not an array', function (): 
 });
 
 it('keeps the builtin close-modal shape', function (): void {
-    expect(wire(Effect::closeModal()))->toEqual(['type' => 'close-modal', 'modal' => null]);
+    expect(wire(Effects::closeModal()))->toEqual(['type' => 'close-modal', 'modal' => null]);
 });
 
 it('never serializes non-public props', function (): void {

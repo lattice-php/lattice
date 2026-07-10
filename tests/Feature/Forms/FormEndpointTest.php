@@ -4,12 +4,12 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Ui\Components\Text;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Pest\Laravel\getJson;

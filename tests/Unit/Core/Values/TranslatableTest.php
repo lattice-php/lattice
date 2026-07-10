@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Values\Translatable;
+use Lattice\Lattice\I18n\Values\Translatable;
 
 test('it serializes key, payload paths, and static replacements', function (): void {
     $translatable = Translatable::make('orders.shipped-live')

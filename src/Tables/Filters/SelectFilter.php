@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Core\Concerns\HasOptions;
-use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Select;
@@ -13,6 +11,8 @@ use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Attributes\AsFilter;
 use Lattice\Lattice\Tables\Concerns\ResolvesFilterOptions;
 use Lattice\Lattice\Tables\Enums\FilterControl;
+use Lattice\Lattice\Ui\Concerns\HasOptions;
+use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
 
 /**
  * A dropdown filter. Single by default ({@see Builder::where}); `multiple()`

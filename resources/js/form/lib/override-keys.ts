@@ -1,4 +1,4 @@
-import { ROW_ID_KEY } from "../components/fields/repeater-rows";
+import { ROW_ID_KEY } from "@lattice-php/lattice/form/components/fields/repeater-rows";
 
 export function rowIdFrom(row: Record<string, unknown>): string | null {
   return typeof row[ROW_ID_KEY] === "string" ? row[ROW_ID_KEY] : null;

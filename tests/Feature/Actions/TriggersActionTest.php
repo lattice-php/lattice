@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Button;
-use Lattice\Lattice\Core\Components\Link;
-use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Layouts\Components\MenuItem;
 use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
+use Lattice\Lattice\Ui\Components\Button;
+use Lattice\Lattice\Ui\Components\Link;
 
 use function Pest\Laravel\postJson;
 
@@ -104,7 +104,7 @@ test('the nested action node of a button dispatches through the action endpoint'
 });
 
 test('a link bound to effects serializes them without an href or action', function (): void {
-    $wire = wire(Link::make('Collapse', 'collapse')->effects(Effect::toggleSidebar('app-sidebar')));
+    $wire = wire(Link::make('Collapse', 'collapse')->effects(Effects::toggleSidebar('app-sidebar')));
 
     expect($wire['type'])->toBe('link')
         ->and($wire['props']['href'])->toBeNull()
@@ -114,12 +114,12 @@ test('a link bound to effects serializes them without an href or action', functi
 
 test('a button cannot bind both effects and an action', function (): void {
     Button::make('Collapse', 'collapse')
-        ->effects(Effect::toggleSidebar('app-sidebar'))
+        ->effects(Effects::toggleSidebar('app-sidebar'))
         ->action(WorkbenchPingAction::class);
 })->throws(InvalidArgumentException::class);
 
 test('a link cannot set an href after binding effects', function (): void {
     Link::make('Collapse', 'collapse')
-        ->effects(Effect::toggleSidebar('app-sidebar'))
+        ->effects(Effects::toggleSidebar('app-sidebar'))
         ->href('/logout');
 })->throws(InvalidArgumentException::class);

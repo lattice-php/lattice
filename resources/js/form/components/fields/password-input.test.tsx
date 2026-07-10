@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { FormValuesProvider, useFormValue } from "../../hooks/values";
+import { FormValuesProvider, useFormValue } from "@lattice-php/lattice/form/hooks/values";
 import { PasswordInputComponent } from "./password-input";
 
 function renderField(node: Node<"field.password-input">, initial: Record<string, unknown> = {}) {

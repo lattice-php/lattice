@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Notifications\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Notifications\NotificationChannel;
+use Lattice\Lattice\Ui\Components\Component;
 
 #[AsComponent('notifications')]
 class Notifications extends Component

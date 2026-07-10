@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Remote\Components;
 
 use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Components\IsInteractive;
 
 final class RemoteNode extends Component
 {

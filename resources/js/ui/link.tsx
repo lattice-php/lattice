@@ -3,10 +3,10 @@ import type { ComponentProps } from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { ActionTrigger, type TriggerState, useClickBehavior } from "@lattice-php/lattice/action";
 import { IconRenderer } from "@lattice-php/lattice/icons";
 import type { Affix } from "@lattice-php/lattice/types/generated";
-import { actionMenuItemClassName, useActionMenu } from "@lattice-php/lattice/action";
+import { actionMenuItemClassName, useActionMenu } from "./action-menu-context";
+import { ActionTrigger, type TriggerState, useClickBehavior } from "./click-behavior";
 
 const textLinkClassName =
   "text-lt-fg underline decoration-lt-border underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-lt-border";

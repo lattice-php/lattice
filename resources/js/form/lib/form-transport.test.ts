@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ROW_ID_KEY } from "../components/fields/repeater-rows";
+import { ROW_ID_KEY } from "@lattice-php/lattice/form/components/fields/repeater-rows";
 import { postFormAction } from "./form-transport";
 
 describe("postFormAction", () => {

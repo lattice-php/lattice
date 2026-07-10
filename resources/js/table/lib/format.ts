@@ -1,5 +1,5 @@
 import { type FormatOptions, formatDateValue } from "@lattice-php/lattice/format/date-time";
-import type { ColumnPropsOf, TableColumn, TableRow } from "../types";
+import type { ColumnPropsOf, TableColumn, TableRow } from "@lattice-php/lattice/table/types";
 
 export function formatCell(value: unknown, column?: TableColumn, options?: FormatOptions): string {
   if (value === null || value === undefined) {

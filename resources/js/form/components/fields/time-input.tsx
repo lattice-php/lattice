@@ -2,7 +2,7 @@ import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { Button } from "@lattice-php/lattice/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/lattice/ui/popover";
 import { Icon } from "@lattice-php/lattice/icons";
-import { Input } from "../../../ui/input";
+import { Input } from "@lattice-php/lattice/ui/input";
 import { SimpleField } from "./simple-field";
 import { TimePicker } from "./time-picker";
 import { formatTimeValue, parseTimeString, secondsEnabled } from "./time-picker-columns";

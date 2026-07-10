@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Core\Components\Concerns\SerializesWireNode;
-use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
-use Lattice\Lattice\Core\Concerns\GatesRendering;
-use Lattice\Lattice\Core\Concerns\HasLabel;
-use Lattice\Lattice\Core\Contracts\Renderable;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Ui\Components\Concerns\SerializesWireNode;
+use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
+use Lattice\Lattice\Ui\Concerns\GatesRendering;
+use Lattice\Lattice\Ui\Concerns\HasLabel;
+use Lattice\Lattice\Ui\Contracts\Renderable;
 
 /**
  * A dedicated, table-level filter: it owns its form schema, server-side

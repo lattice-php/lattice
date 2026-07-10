@@ -29,8 +29,8 @@ use Lattice\Lattice\Tables\TableRegistry;
  * only intentional cross-domain couplings are tables -> actions (row and bulk
  * actions), tables -> forms (table filters are form-field schemas), actions ->
  * forms (action forms), and layouts -> actions (menu items that trigger an
- * action). The Core link primitive may likewise trigger an action, the one
- * deliberate Core -> Actions coupling.
+ * action). The UI link primitive may likewise trigger an action, the one
+ * deliberate UI -> Actions coupling.
  *
  * Top: the orchestration and tooling layers — Http (which renders and routes
  * pages, including the page registry, by consuming the feature domains),
@@ -149,10 +149,8 @@ arch('the support utilities do not depend on the feature domains')
 
 /*
  * Cross-boundary contracts live in a `Contracts` namespace and are interfaces.
- * Capability interfaces that exist only to be implemented by a single local
- * hierarchy (e.g. Tables\Columns\{Filterable, Sortable},
- * Support\TypeScript\TypeScriptProfile) deliberately sit beside their
- * implementations and are not part of this convention.
+ * Local capability interfaces that are not cross-boundary contracts, such as
+ * Support\TypeScript\TypeScriptProfile, can sit beside their implementations.
  */
 arch('contracts are interfaces')
     ->expect([

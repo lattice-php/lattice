@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { FormValuesProvider } from "../../hooks/values";
+import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { TextInputComponent } from "./text-input";
 
 function renderField(node: Node<"field.text-input">, initial: Record<string, unknown> = {}) {

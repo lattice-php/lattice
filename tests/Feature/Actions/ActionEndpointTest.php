@@ -4,10 +4,10 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
+use Lattice\Lattice\Ui\Enums\Variant;
 use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Models\User;
 
@@ -70,7 +70,7 @@ test('registered actions can return a locale change effect', function (): void {
 });
 
 test('toast effects serialize correctly for action results', function (): void {
-    expect(wire(Effect::toast(Variant::Warning, 'Review the settings.')))
+    expect(wire(Effects::toast(Variant::Warning, 'Review the settings.')))
         ->toBe([
             'type' => 'toast',
             'toast' => [

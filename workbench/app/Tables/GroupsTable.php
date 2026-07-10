@@ -5,12 +5,12 @@ namespace Workbench\App\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Components\Link;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Components\Link;
 use Workbench\App\Models\Group;
 
 /**

@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tests\Fixtures\Discovery;
 
 use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Fragments\FragmentDefinition;
+use Lattice\Lattice\Ui\Components\Text;
 
 #[AsFragment('fixtures.panel')]
 class DiscoveredPanelFragment extends FragmentDefinition

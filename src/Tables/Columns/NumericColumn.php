@@ -5,6 +5,8 @@ namespace Lattice\Lattice\Tables\Columns;
 
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
+use Lattice\Lattice\Tables\Contracts\Filterable;
+use Lattice\Lattice\Tables\Contracts\Sortable;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
 use Lattice\Lattice\Tables\Enums\FilterType;
 

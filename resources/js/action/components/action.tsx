@@ -3,8 +3,11 @@ import { Spinner } from "@lattice-php/lattice/ui/spinner";
 import { prefixedTestId } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { IconRenderer } from "@lattice-php/lattice/icons";
-import { useAction } from "../hooks/use-action";
-import { actionMenuItemClassName, useActionMenu } from "./action-menu-context";
+import {
+  actionMenuItemClassName,
+  useActionMenu,
+} from "@lattice-php/lattice/ui/action-menu-context";
+import { useAction } from "@lattice-php/lattice/action/hooks/use-action";
 
 const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const endpoint = node.props.endpoint ?? "";

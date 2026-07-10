@@ -8,7 +8,7 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Core\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\ButtonVariant;
 
 #[AsAction('workbench.chat-layout.toggle')]
 class ToggleChatLayoutAction extends ActionDefinition

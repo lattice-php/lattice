@@ -25,8 +25,7 @@ To show a toast after a controller redirect, from a listener, middleware, or any
 is not available, use `Effects::flash()`:
 
 ```php
-use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Ui\Enums\Variant;
 use Lattice\Lattice\Facades\Effects;
 
 public function handle(Request $request): Response
@@ -34,7 +33,7 @@ public function handle(Request $request): Response
     $this->validate($request);
     // … persist …
 
-    Effects::flash(Effect::toast(Variant::Success, 'Profile saved.'));
+    Effects::flash(Effects::toast(Variant::Success, 'Profile saved.'));
 
     return redirect('/profile');
 }
@@ -47,10 +46,10 @@ and more — see [Effects & results](/actions/effects/#flashing-effects-without-
 ## Building a message directly
 
 Both paths wrap a `ToastMessage` value object. Build one explicitly to set a lifetime, control
-dismissal, or attach an action, then pass it to `->toast()` (or `Effect::toast()`):
+dismissal, or attach an action, then pass it to `->toast()` (or `Effects::toast()`):
 
 ```php
-use Lattice\Lattice\Core\Values\ToastMessage;
+use Lattice\Lattice\Ui\Values\ToastMessage;
 
 return ActionResult::success()->toast(
     ToastMessage::make(Variant::Success, 'Product archived.')

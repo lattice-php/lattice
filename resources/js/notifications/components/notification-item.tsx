@@ -3,7 +3,7 @@ import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import { IconRenderer } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import type { NotificationItem } from "../types";
+import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 
 const variantIconClass: Record<NonNullable<NotificationItem["variant"]>, string> = {
   success: "text-lt-success",

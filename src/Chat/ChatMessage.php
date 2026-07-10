@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Chat;
 
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Chat\Enums\ChatRole;
-use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Ui\Components\Component;
 
 #[TypeScript]
 final readonly class ChatMessage

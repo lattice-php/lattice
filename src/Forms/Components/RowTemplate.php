@@ -5,8 +5,8 @@ namespace Lattice\Lattice\Forms\Components;
 
 use Illuminate\Support\Str;
 use JsonSerializable;
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
 
 /**
  * A typed row template for a TypedRowsField: the schema of child Fields a row

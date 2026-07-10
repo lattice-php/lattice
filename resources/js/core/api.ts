@@ -7,11 +7,11 @@
  */
 
 import { withHeaders } from "./headers";
-import { localeHeader } from "../i18n/locale";
+import { localeHeader } from "@lattice-php/lattice/i18n/locale";
 import type {
   BrowserToken as GeneratedBrowserToken,
   RemoteAccess as GeneratedRemoteAccess,
-} from "../types/generated";
+} from "@lattice-php/lattice/types/generated";
 
 export class ApiError extends Error {
   constructor(readonly response: Response) {

@@ -5,10 +5,10 @@ namespace Lattice\Lattice\Fragments;
 
 use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
+use Lattice\Lattice\Ui\Components\Component;
 
 /**
  * @extends DefinitionRegistry<FragmentDefinition>

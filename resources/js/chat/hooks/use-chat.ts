@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ndjsonChatTransport } from "../lib/transport";
-import type { ChatFrame, ChatMessage, ChatStatus, ChatTransport, UseChatReturn } from "../types";
+import { ndjsonChatTransport } from "@lattice-php/lattice/chat/lib/transport";
+import type {
+  ChatFrame,
+  ChatMessage,
+  ChatStatus,
+  ChatTransport,
+  UseChatReturn,
+} from "@lattice-php/lattice/chat/types";
 
 export type UseChatOptions = {
   endpoint: string;

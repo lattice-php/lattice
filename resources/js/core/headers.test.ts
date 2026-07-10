@@ -8,7 +8,7 @@ afterEach(() => {
 });
 
 it("composes the locale header with the component reference header", async () => {
-  const { setLocale } = await import("../i18n/locale");
+  const { setLocale } = await import("@lattice-php/lattice/i18n/locale");
   const { withHeaders } = await import("./headers");
 
   setLocale("de");

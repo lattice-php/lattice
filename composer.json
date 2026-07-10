@@ -109,11 +109,9 @@
             "@prepare"
         ],
         "post-install-cmd": [
-            "@boost:refresh",
             "@hooks:install"
         ],
         "post-update-cmd": [
-            "@boost:refresh",
             "@hooks:install"
         ],
         "hooks:install": "git config core.hooksPath .githooks 2>/dev/null || true",

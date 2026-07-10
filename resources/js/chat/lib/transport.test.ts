@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { clearRemoteTokenCache } from "../../core/api";
+import { clearRemoteTokenCache } from "@lattice-php/lattice/core/api";
 import { createRemoteNdjsonChatTransport, ndjsonChatTransport } from "./transport";
-import type { ChatFrame } from "../types";
+import type { ChatFrame } from "@lattice-php/lattice/chat/types";
 
 function streamResponse(lines: string[]): Response {
   const enc = new TextEncoder();

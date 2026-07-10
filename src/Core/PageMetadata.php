@@ -6,9 +6,9 @@ namespace Lattice\Lattice\Core;
 
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Contracts\PageContract;
-use Lattice\Lattice\Core\Enums\PageContainer;
-use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Support\Wire;
+use Lattice\Lattice\Ui\Enums\PageContainer;
+use Lattice\Lattice\Ui\Enums\PageLayout;
 use ReflectionClass;
 
 final readonly class PageMetadata

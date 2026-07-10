@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Components;
 
-use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\RichContent;
+use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
 
 #[AsField(FieldType::RichEditor)]
 class RichEditor extends Field

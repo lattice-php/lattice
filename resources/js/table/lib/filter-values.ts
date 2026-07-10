@@ -1,5 +1,5 @@
 import type { Option } from "@lattice-php/lattice/types/generated";
-import type { FilterNode } from "../types";
+import type { FilterNode } from "@lattice-php/lattice/table/types";
 
 /**
  * Whether a single scalar filter member is absent — the atomic rule the

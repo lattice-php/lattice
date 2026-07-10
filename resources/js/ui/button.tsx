@@ -6,7 +6,7 @@ import { cn } from "@lattice-php/lattice/lib/utils";
 import { IconRenderer } from "@lattice-php/lattice/icons";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { ActionTrigger, type TriggerState, useClickBehavior } from "@lattice-php/lattice/action";
+import { ActionTrigger, type TriggerState, useClickBehavior } from "./click-behavior";
 import type { ButtonVariant } from "@lattice-php/lattice/types/generated";
 
 export type { ButtonVariant };

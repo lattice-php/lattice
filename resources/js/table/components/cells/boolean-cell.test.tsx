@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { TableColumn } from "../../types";
+import type { TableColumn } from "@lattice-php/lattice/table/types";
 import { BooleanCell } from "./boolean-cell";
 
 const column = {

@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { TableColumn } from "../../types";
+import type { TableColumn } from "@lattice-php/lattice/table/types";
 import { NumberCell } from "./number-cell";
 
 function column(props: Record<string, unknown> = {}): TableColumn {

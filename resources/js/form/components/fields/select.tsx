@@ -5,15 +5,15 @@ import { controlSurface } from "@lattice-php/lattice/ui/control";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { Option, RendererComponent } from "@lattice-php/lattice/core/types";
-import { FormFieldFrame } from "../base/field";
-import { useFormContext } from "../../hooks/context";
-import { fieldDomName } from "../../lib/field-dom-name";
-import { postFormAction } from "../../lib/form-transport";
-import { useResolvedNode } from "../../hooks/resolved-nodes";
-import { useDependentField } from "../../hooks/use-dependent-field";
-import { useFieldCommit } from "../../hooks/use-field-commit";
-import { useFieldScope } from "../../hooks/field-scope";
-import { useFormValue, useFormValues } from "../../hooks/values";
+import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
+import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
+import { fieldDomName } from "@lattice-php/lattice/form/lib/field-dom-name";
+import { postFormAction } from "@lattice-php/lattice/form/lib/form-transport";
+import { useResolvedNode } from "@lattice-php/lattice/form/hooks/resolved-nodes";
+import { useDependentField } from "@lattice-php/lattice/form/hooks/use-dependent-field";
+import { useFieldCommit } from "@lattice-php/lattice/form/hooks/use-field-commit";
+import { useFieldScope } from "@lattice-php/lattice/form/hooks/field-scope";
+import { useFormValue, useFormValues } from "@lattice-php/lattice/form/hooks/values";
 
 function toValues(stored: unknown, fallback: unknown): string[] {
   const source = stored ?? fallback;

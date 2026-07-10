@@ -5,14 +5,14 @@ namespace Lattice\Lattice\Forms\Components;
 
 use Closure;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Components\Concerns\HasChildSchema;
 use Lattice\Lattice\Facades\Evaluate;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Components\Concerns\HasRowActions;
 use Lattice\Lattice\Forms\Components\Concerns\HasRowLayout;
 use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
 use Stringable;
 
 #[AsField(FieldType::Repeater)]

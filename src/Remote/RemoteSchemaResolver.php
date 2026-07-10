@@ -7,8 +7,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use JsonException;
-use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Ui\Components\Component;
 
 final readonly class RemoteSchemaResolver
 {

@@ -3,8 +3,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
 import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
 import { createRegistry } from "@lattice-php/lattice/core/registry";
-import type { ChatMessage } from "../types";
-import { chatComponents } from "../plugin";
+import type { ChatMessage } from "@lattice-php/lattice/chat/types";
+import { chatComponents } from "@lattice-php/lattice/chat/plugin";
 import { MessageList } from "./message-list";
 
 function withRegistry(ui: ReactNode): ReactNode {

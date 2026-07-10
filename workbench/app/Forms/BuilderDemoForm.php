@@ -5,13 +5,13 @@ namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Core\Components\Card;
 use Lattice\Lattice\Forms\Components\Builder;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\RowTemplate;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Ui\Components\Card;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AsForm('workbench.builder.form')]

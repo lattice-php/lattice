@@ -4,8 +4,6 @@ declare(strict_types=1);
 use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Core\Components\Link;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\CallbackTableSource;
@@ -20,6 +18,8 @@ use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
 use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
+use Lattice\Lattice\Ui\Components\Link;
+use Lattice\Lattice\Ui\Components\Text;
 use Workbench\App\Models\Product;
 use Workbench\App\Tables\UsersTable as WorkbenchAppUsersTable;
 

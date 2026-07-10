@@ -15,8 +15,8 @@ under a key, and `Outlet::make()` marks where the page's content appears:
 ```php
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsLayout;
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Enums\Width;
+use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Lattice\Ui\Enums\Width;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Layouts\Components\Menu;
 use Lattice\Lattice\Layouts\Components\MenuItem;
@@ -95,8 +95,8 @@ method. Pass a [`PageLayout`](/advanced/enums/#pages) for the common shells, or 
 `#[AsLayout]` key:
 
 ```php
-use Lattice\Lattice\Core\Enums\PageContainer;
-use Lattice\Lattice\Core\Enums\PageLayout;
+use Lattice\Lattice\Ui\Enums\PageContainer;
+use Lattice\Lattice\Ui\Enums\PageLayout;
 
 #[AsPage(route: '/products', layout: PageLayout::App, container: PageContainer::Default)]
 class ProductsPage extends Page {}

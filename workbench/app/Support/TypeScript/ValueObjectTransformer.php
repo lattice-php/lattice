@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
-use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Support\TypeScript\AllowsListedClasses;
 use Lattice\Lattice\Support\TypeScript\MarkerRewriteClassPropertyProcessor;
 use Lattice\Lattice\Support\TypeScript\MixedToUnknownClassPropertyProcessor;
+use Lattice\Lattice\Ui\Components\Component;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
 use Spatie\TypeScriptTransformer\Transformers\ClassPropertyProcessors\ClassPropertyProcessor;
 use Spatie\TypeScriptTransformer\Transformers\ClassTransformer;

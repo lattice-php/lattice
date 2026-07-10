@@ -6,7 +6,7 @@ import type {
   TablePagination,
   TableRow,
   TableState,
-} from "../types";
+} from "@lattice-php/lattice/table/types";
 
 function getFilters(value: unknown): FilterClause[] {
   if (!Array.isArray(value)) {

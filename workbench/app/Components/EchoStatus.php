@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Workbench\App\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Ui\Components\Component;
 
 #[AsComponent('echo-status')]
 final class EchoStatus extends Component

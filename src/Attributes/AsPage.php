@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Attributes;
 
 use Attribute;
-use Lattice\Lattice\Core\Enums\PageContainer;
-use Lattice\Lattice\Core\Enums\PageLayout;
+use Lattice\Lattice\Ui\Enums\PageContainer;
+use Lattice\Lattice\Ui\Enums\PageLayout;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 final readonly class AsPage

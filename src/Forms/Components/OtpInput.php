@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Components;
 
-use Lattice\Lattice\Core\Concerns\HasAutoFocus;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Enums\FieldType;
+use Lattice\Lattice\Ui\Concerns\HasAutoFocus;
 
 #[AsField(FieldType::Otp)]
 class OtpInput extends Field

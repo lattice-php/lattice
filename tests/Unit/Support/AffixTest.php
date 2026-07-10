@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Support\Affix;
+use Lattice\Lattice\Ui\Enums\Icon;
 
 it('builds an icon affix from a backed enum', function (): void {
     expect(wire(Affix::icon(Icon::Eye)))->toBe(['icon' => 'eye', 'text' => null]);

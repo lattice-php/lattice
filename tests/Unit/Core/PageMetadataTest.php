@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Core\Enums\PageContainer;
-use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\PageMetadata;
 use Lattice\Lattice\Http\Page as BasePage;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
+use Lattice\Lattice\Ui\Enums\PageContainer;
+use Lattice\Lattice\Ui\Enums\PageLayout;
 
 #[AsPage(layout: PageLayout::App, container: PageContainer::Default)]
 abstract class FixtureBasePage extends BasePage {}

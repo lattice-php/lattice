@@ -10,12 +10,12 @@ import { useEffect, useState } from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { FormFieldFrame } from "../base/field";
-import { useFormContext } from "../../hooks/context";
-import { useFieldScope } from "../../hooks/field-scope";
-import { useDependentField } from "../../hooks/use-dependent-field";
-import { useFieldCommit } from "../../hooks/use-field-commit";
-import { useFormValue } from "../../hooks/values";
+import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
+import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
+import { useFieldScope } from "@lattice-php/lattice/form/hooks/field-scope";
+import { useDependentField } from "@lattice-php/lattice/form/hooks/use-dependent-field";
+import { useFieldCommit } from "@lattice-php/lattice/form/hooks/use-field-commit";
+import { useFormValue } from "@lattice-php/lattice/form/hooks/values";
 
 type ToolbarItem =
   | "separator"

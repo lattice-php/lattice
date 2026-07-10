@@ -10,13 +10,13 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lattice\Lattice\Core\Contracts\PageContract;
-use Lattice\Lattice\Core\Enums\PageContainer;
-use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\PageMetadata;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Realtime\Listen;
 use Lattice\Lattice\Support\Wire;
+use Lattice\Lattice\Ui\Enums\PageContainer;
+use Lattice\Lattice\Ui\Enums\PageLayout;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use UnexpectedValueException;
 

@@ -16,8 +16,8 @@ import {
 } from "@lattice-php/lattice/form/embed";
 import { Icon } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import { filterValue, isActiveFilterValue } from "../lib/filter-values";
-import type { FilterNode } from "../types";
+import { filterValue, isActiveFilterValue } from "@lattice-php/lattice/table/lib/filter-values";
+import type { FilterNode } from "@lattice-php/lattice/table/types";
 
 export type FilterOptionSearch = (
   field: string,

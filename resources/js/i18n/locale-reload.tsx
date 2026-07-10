@@ -1,7 +1,7 @@
 import type { VisitOptions } from "@inertiajs/core";
 import { router } from "@inertiajs/react";
 import { useCallback } from "react";
-import { EventBridge } from "../events/event-bridge";
+import { EventBridge } from "@lattice-php/lattice/event-bridge";
 
 type LocaleReloadProps = Pick<VisitOptions, "preserveScroll" | "preserveState">;
 

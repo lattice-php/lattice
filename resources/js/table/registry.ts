@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { ColumnPropsOf, TableColumn, TableRow } from "./types";
+import type { ColumnPropsMap } from "@lattice-php/lattice/types/generated";
 
 export type ColumnCellArgs<TType extends string = string> = {
   column: TableColumn;
@@ -13,6 +14,11 @@ export type ColumnCellComponent<TType extends string = string> = (
 ) => ReactNode;
 
 export type ColumnRegistry = Record<string, ColumnCellComponent>;
+
+export type ColumnRegistryFor<TTypes extends keyof ColumnPropsMap & string> = Record<
+  TTypes,
+  ColumnCellComponent
+>;
 
 /**
  * Registers a typed column cell, erasing the type parameter so it fits the

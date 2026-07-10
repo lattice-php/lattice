@@ -8,12 +8,12 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Components\ContainerComponent;
-use Lattice\Lattice\Core\Concerns\HasAffixes;
-use Lattice\Lattice\Core\Concerns\HasIcon;
-use Lattice\Lattice\Core\Concerns\Triggerable;
 use Lattice\Lattice\Core\Contracts\PageContract;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Components\ContainerComponent;
+use Lattice\Lattice\Ui\Concerns\HasAffixes;
+use Lattice\Lattice\Ui\Concerns\HasIcon;
+use Lattice\Lattice\Ui\Concerns\Triggerable;
 
 /**
  * A single menu entry. Renders an Inertia link when it has an href, triggers a

@@ -13,14 +13,14 @@ afterEach(() => {
 });
 
 vi.mock("@lattice-php/lattice/core/renderer", async () => {
-  const { RenderNode } = await import("../../../test/form-renderer-probe");
+  const { RenderNode } = await import("@lattice-php/lattice/test/form-renderer-probe");
 
   return { RenderNode };
 });
 
-import { FormProvider } from "../../hooks/context";
-import { FormValuesProvider } from "../../hooks/values";
-import { renderCounts } from "../../../test/form-renderer-probe";
+import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
+import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
+import { renderCounts } from "@lattice-php/lattice/test/form-renderer-probe";
 import { RepeaterComponent } from "./repeater";
 import { TableRows, type TableColumn } from "./table-rows";
 

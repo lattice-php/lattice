@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Enums\PageContainer;
-use Lattice\Lattice\Core\Enums\PageLayout;
+use Lattice\Lattice\Ui\Enums\PageContainer;
+use Lattice\Lattice\Ui\Enums\PageLayout;
 
 test('AsPage attribute stores route metadata', function (): void {
     $attribute = new AsPage(

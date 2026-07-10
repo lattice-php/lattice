@@ -22,7 +22,7 @@ timezone. Pass a [`DateTimeStyle`](/advanced/enums/#tables) case — `Short`, `M
 `Long`, or `Full` — to control the style. A dated column filters as a [date](/tables/filtering/).
 
 ```php
-use Lattice\Lattice\Core\Enums\DateTimeStyle;
+use Lattice\Lattice\Ui\Enums\DateTimeStyle;
 
 TextColumn::make('created_at')->date();
 TextColumn::make('updated_at')->dateTime(DateTimeStyle::Short);

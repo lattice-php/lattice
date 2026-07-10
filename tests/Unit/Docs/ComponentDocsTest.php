@@ -1,22 +1,22 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Badge;
-use Lattice\Lattice\Core\Components\Button;
-use Lattice\Lattice\Core\Components\Card;
-use Lattice\Lattice\Core\Components\Grid;
-use Lattice\Lattice\Core\Components\Heading;
-use Lattice\Lattice\Core\Components\RawBlock;
-use Lattice\Lattice\Core\Components\Section;
-use Lattice\Lattice\Core\Components\SegmentedControl;
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Components\Tab;
-use Lattice\Lattice\Core\Components\Tabs;
-use Lattice\Lattice\Core\Components\Text;
-use Lattice\Lattice\Core\Components\Tooltip;
-use Lattice\Lattice\Core\Enums\ButtonVariant;
-use Lattice\Lattice\Core\Enums\Gap;
 use Lattice\Lattice\Support\Wire;
+use Lattice\Lattice\Ui\Components\Badge;
+use Lattice\Lattice\Ui\Components\Button;
+use Lattice\Lattice\Ui\Components\Card;
+use Lattice\Lattice\Ui\Components\Grid;
+use Lattice\Lattice\Ui\Components\Heading;
+use Lattice\Lattice\Ui\Components\RawBlock;
+use Lattice\Lattice\Ui\Components\Section;
+use Lattice\Lattice\Ui\Components\SegmentedControl;
+use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Lattice\Ui\Components\Tab;
+use Lattice\Lattice\Ui\Components\Tabs;
+use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Components\Tooltip;
+use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Gap;
 
 it('serializes a card tooltip', function (): void {
     $node = wire(Card::make('Plan')->tooltip('Billed monthly.'));

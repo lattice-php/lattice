@@ -10,7 +10,7 @@ import { ConfirmDialog } from "@lattice-php/lattice/ui/confirm-dialog";
 import { Spinner } from "@lattice-php/lattice/ui/spinner";
 import { prefixedTestId } from "@lattice-php/lattice/core/test-id";
 import { useT } from "@lattice-php/lattice/i18n";
-import type { BulkAction } from "../lib/bulk";
+import type { BulkAction } from "@lattice-php/lattice/table/lib/bulk";
 
 type BulkData = {
   allMatching?: boolean;

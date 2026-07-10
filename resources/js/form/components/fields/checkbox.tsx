@@ -1,15 +1,15 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import { Checkbox } from "@lattice-php/lattice/ui/checkbox";
-import { Label } from "../../../ui/label";
-import { toBoolean } from "../../lib/conditions";
-import { useFormContext } from "../../hooks/context";
-import { fieldDomName } from "../../lib/field-dom-name";
-import { useFieldScope } from "../../hooks/field-scope";
-import { useDependentField } from "../../hooks/use-dependent-field";
-import { useFieldCommit } from "../../hooks/use-field-commit";
-import { useSeedDefault } from "../../hooks/use-seed-default";
-import { useFormValue } from "../../hooks/values";
+import { Label } from "@lattice-php/lattice/ui/label";
+import { toBoolean } from "@lattice-php/lattice/form/lib/conditions";
+import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
+import { fieldDomName } from "@lattice-php/lattice/form/lib/field-dom-name";
+import { useFieldScope } from "@lattice-php/lattice/form/hooks/field-scope";
+import { useDependentField } from "@lattice-php/lattice/form/hooks/use-dependent-field";
+import { useFieldCommit } from "@lattice-php/lattice/form/hooks/use-field-commit";
+import { useSeedDefault } from "@lattice-php/lattice/form/hooks/use-seed-default";
+import { useFormValue } from "@lattice-php/lattice/form/hooks/values";
 
 export const CheckboxComponent: RendererComponent<"field.checkbox"> = ({ node }) => {
   const { hidden, readOnly, disabled } = useDependentField(node);

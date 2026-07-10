@@ -5,9 +5,12 @@ import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import type { ChatBox as ChatBoxProps } from "@lattice-php/lattice/types/generated";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import { createRemoteNdjsonChatTransport, ndjsonChatTransport } from "../lib/transport";
-import { useChat } from "../hooks/use-chat";
-import type { ChatMessage } from "../types";
+import {
+  createRemoteNdjsonChatTransport,
+  ndjsonChatTransport,
+} from "@lattice-php/lattice/chat/lib/transport";
+import { useChat } from "@lattice-php/lattice/chat/hooks/use-chat";
+import type { ChatMessage } from "@lattice-php/lattice/chat/types";
 import { MessageList } from "./message-list";
 import { PromptInput } from "./prompt-input";
 

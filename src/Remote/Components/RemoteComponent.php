@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Remote\Components;
 
 use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Remote\RemoteAccess;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
+use Lattice\Lattice\Ui\Components\Component;
 use LogicException;
 
 abstract class RemoteComponent extends Component

@@ -6,12 +6,12 @@ namespace Lattice\Lattice\Forms\Components;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Concerns\HasAutoFocus;
-use Lattice\Lattice\Core\Concerns\HasTabIndex;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\Rules\DateTimeWithTimezone;
+use Lattice\Lattice\Ui\Concerns\HasAutoFocus;
+use Lattice\Lattice\Ui\Concerns\HasTabIndex;
 
 #[AsField(FieldType::DateTimeInput)]
 class DateTimeInput extends Field

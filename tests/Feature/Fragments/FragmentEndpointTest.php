@@ -2,11 +2,11 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
 use Lattice\Lattice\Fragments\FragmentDefinition;
+use Lattice\Lattice\Ui\Components\Text;
 
 use function Pest\Laravel\getJson;
 

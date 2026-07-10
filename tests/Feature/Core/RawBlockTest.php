@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\RawBlock;
+use Lattice\Lattice\Ui\Components\RawBlock;
 
 it('serializes trusted raw html', function (): void {
     $node = wire(RawBlock::make('avatar')->html('<span class="avatar">AL</span>'));

@@ -9,9 +9,9 @@ import type {
   Option,
   Op,
 } from "@lattice-php/lattice/types/generated";
-import { filterValue } from "../lib/filter-values";
-import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../lib/query";
-import type { FilterClause, FilterNode, TableColumn } from "../types";
+import { filterValue } from "@lattice-php/lattice/table/lib/filter-values";
+import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "@lattice-php/lattice/table/lib/query";
+import type { FilterClause, FilterNode, TableColumn } from "@lattice-php/lattice/table/types";
 import { TableFilterControl } from "./filter-controls";
 import { fieldClass, FilterValueInput } from "./filter-value-input";
 

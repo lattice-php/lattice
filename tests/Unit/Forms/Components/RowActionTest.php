@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\Icon;
 use Lattice\Lattice\Forms\Components\RowAction;
+use Lattice\Lattice\Ui\Enums\Icon;
 
 /**
  * @return array<string, mixed>

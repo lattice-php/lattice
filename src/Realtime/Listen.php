@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Realtime;
 
 use JsonSerializable;
-use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Core\Values\Callout;
-use Lattice\Lattice\Core\Values\ToastMessage;
-use Lattice\Lattice\Core\Values\Translatable;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
-use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Facades\Effects;
+use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Realtime\Enums\ChannelVisibility;
+use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Lattice\Ui\Values\Callout;
+use Lattice\Lattice\Ui\Values\ToastMessage;
 
 /**
  * Declares a websocket listener for a page: a channel, the broadcast event
@@ -57,21 +57,21 @@ final class Listen implements JsonSerializable
 
     public function toast(string|Translatable|ToastMessage|Variant $message, Variant|string|null $variant = null): self
     {
-        $this->effects[] = Effect::toast($message, $variant);
+        $this->effects[] = Effects::toast($message, $variant);
 
         return $this;
     }
 
     public function callout(Callout $callout): self
     {
-        $this->effects[] = Effect::callout($callout);
+        $this->effects[] = Effects::callout($callout);
 
         return $this;
     }
 
     public function reloadPage(): self
     {
-        $this->effects[] = Effect::reloadPage();
+        $this->effects[] = Effects::reloadPage();
 
         return $this;
     }

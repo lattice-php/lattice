@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { FormValuesProvider } from "../../hooks/values";
+import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { TextareaComponent } from "./textarea";
 
 const node = fakeNode({

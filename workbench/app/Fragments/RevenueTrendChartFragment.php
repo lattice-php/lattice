@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Workbench\App\Fragments;
 
 use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Core\Components\Chart;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Core\Values\DateFormat;
 use Lattice\Lattice\Fragments\FragmentDefinition;
+use Lattice\Lattice\Ui\Components\Chart;
+use Lattice\Lattice\Ui\Values\DateFormat;
 
 #[AsFragment('workbench.revenue-trend-chart')]
 final class RevenueTrendChartFragment extends FragmentDefinition

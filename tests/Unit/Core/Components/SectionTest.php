@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Button;
-use Lattice\Lattice\Core\Components\Section;
-use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Ui\Components\Button;
+use Lattice\Lattice\Ui\Components\Section;
+use Lattice\Lattice\Ui\Components\Text;
 
 it('serializes a section with its content and header', function (): void {
     $node = wire(

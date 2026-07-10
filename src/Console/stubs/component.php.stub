@@ -3,7 +3,7 @@
 namespace {{ namespace }};
 
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Ui\Components\Component;
 
 #[AsComponent('{{ type }}')]
 class {{ class }} extends Component

@@ -73,8 +73,8 @@ clear it.
 Build a `Callout` value object and pass it to `->callout()`:
 
 ```php
-use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Core\Values\Callout;
+use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Lattice\Ui\Values\Callout;
 
 return ActionResult::success()
     ->callout(
@@ -147,14 +147,13 @@ response — no `ActionResult` needed. Use it from a controller, before returnin
 event listener, or in middleware — anywhere outside an action:
 
 ```php
-use Lattice\Lattice\Core\Values\Callout;
-use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Ui\Values\Callout;
+use Lattice\Lattice\Ui\Enums\Variant;
 use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Effects\Effect;
 
 // Flash a callout after a controller redirect
 Effects::flash(
-    Effect::callout(
+    Effects::callout(
         Callout::make(Variant::Info, 'Your export is being processed.')
             ->title('Export queued')
     )
@@ -167,8 +166,8 @@ Pass multiple effects to flash them all at once:
 
 ```php
 Effects::flash(
-    Effect::toast(Variant::Success, 'Settings saved.'),
-    Effect::callout(Callout::make(Variant::Warning, 'Some changes require a page reload.')),
+    Effects::toast(Variant::Success, 'Settings saved.'),
+    Effects::callout(Callout::make(Variant::Warning, 'Some changes require a page reload.')),
 );
 ```
 
@@ -178,7 +177,7 @@ run through the normal client-side effect pipeline in order.
 <Info>
   `Effects::flash()` replaces the old toast-only flash helper (`CreatesToastMessages` trait and
   `flash.toast` bag). Any code using that trait should switch to
-  `Effects::flash(Effect::toast(...))`.
+  `Effects::flash(Effects::toast(...))`.
 </Info>
 
 ## How effects reach the client

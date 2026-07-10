@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Heading;
+use Lattice\Lattice\Ui\Components\Heading;
 
 it('serializes a heading tooltip', function (): void {
     $node = wire(Heading::make('Billing', 2)->tooltip('Invoices go out monthly.'));

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { NotificationList } from "./notification-list";
-import type { NotificationItem } from "../types";
+import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 
 vi.mock("@inertiajs/react", () => ({
   Link: ({ children, ...props }: React.ComponentProps<"a">) => <a {...props}>{children}</a>,

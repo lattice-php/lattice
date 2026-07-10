@@ -1,7 +1,7 @@
 import type { Method } from "@inertiajs/core";
 import type { Node } from "@lattice-php/lattice/core/types";
 import type { Action, ButtonVariant } from "@lattice-php/lattice/types/generated";
-import type { ActionNode } from "../types";
+import type { ActionNode } from "@lattice-php/lattice/table/types";
 
 export type BulkAction = {
   id: string;

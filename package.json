@@ -134,6 +134,7 @@
     "access": "public"
   },
   "scripts": {
+    "postinstall": "test ! -f vendor/bin/testbench || npm run boost:refresh",
     "dev": "vite",
     "build": "vite build",
     "build:lib": "vite build --mode lib",
@@ -142,6 +143,7 @@
     "test": "vitest run",
     "test:browser": "vitest run --project browser",
     "test:coverage": "vitest run --coverage",
+    "boost:refresh": "php vendor/bin/testbench boost:update --no-interaction",
     "typecheck": "tsc --noEmit",
     "type-coverage": "type-coverage --project tsconfig.json --at-least 99.5",
     "check": "npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:lib",

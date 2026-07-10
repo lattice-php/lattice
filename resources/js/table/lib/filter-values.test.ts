@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { FilterNode } from "../types";
+import type { FilterNode } from "@lattice-php/lattice/table/types";
 import {
   filterOptions,
   isActiveFilterValue,

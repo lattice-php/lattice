@@ -12,7 +12,7 @@ export { builtinEffectHandlers, effectHandler, mergeEffectHandlers } from "./eff
 export { initializeTheme, updateAppearance, useAppearance } from "./appearance";
 export { copyToClipboard, useClipboard } from "./clipboard";
 export { createLatticeApp, type CreateLatticeAppOptions } from "./create-app";
-export { EventBridge } from "./events/event-bridge";
+export { EventBridge } from "./event-bridge";
 export { Icon, IconRenderer, IconRendererProvider, SpriteProvider } from "./icons";
 export {
   createLayoutResolver,
@@ -91,9 +91,8 @@ export type {
   EffectOf,
   EffectProps,
 } from "./effects/registry";
-export type { ResolvedAppearance, UseAppearanceReturn } from "./appearance";
+export type { Appearance, ResolvedAppearance, UseAppearanceReturn } from "./appearance";
 export type { CopiedValue, CopyFn, UseClipboardReturn } from "./clipboard";
-export type { Appearance } from "./events/event-bridge";
 export type { Callout, ToastMessage, Variant } from "./toast";
 export type {
   IconName,

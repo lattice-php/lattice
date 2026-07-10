@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Workbench\App\Pages;
 
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Ui\Components\Text;
 
 #[AsPage(route: '/notifications-slide-out')]
 final class NotificationSlideOutPage extends WorkbenchPage

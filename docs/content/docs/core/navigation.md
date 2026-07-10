@@ -44,14 +44,14 @@ A `Button` can dispatch effects on the client when clicked — no request to the
 the toggle button can live anywhere (here, in the `Topbar`):
 
 ```php
-use Lattice\Lattice\Core\Components\Button;
-use Lattice\Lattice\Core\Enums\ButtonVariant;
-use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Ui\Components\Button;
+use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Facades\Effects;
 
 Button::make('Toggle sidebar', 'sidebar-toggle')
     ->icon('panel-left')
     ->variant(ButtonVariant::Ghost)
-    ->effects(Effect::toggleSidebar('app-sidebar'));
+    ->effects(Effects::toggleSidebar('app-sidebar'));
 ```
 
 `->effects()` accepts any effect, giving a button instant client-side behavior (open a modal, show a
@@ -63,9 +63,9 @@ toast, reset a form) without a round-trip.
 without nesting them in the sidebar tree:
 
 ```php
-use Lattice\Lattice\Core\Components\Icon;
-use Lattice\Lattice\Core\Components\Text;
-use Lattice\Lattice\Core\Enums\Placement;
+use Lattice\Lattice\Ui\Components\Icon;
+use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\Placement;
 use Lattice\Lattice\Layouts\Components\Dropdown;
 use Lattice\Lattice\Layouts\Components\MenuItem;
 
@@ -87,7 +87,7 @@ Dropdown::make('account-menu')
 team glyph, or badge when a dedicated Lattice component would be too specific:
 
 ```php
-use Lattice\Lattice\Core\Components\RawBlock;
+use Lattice\Lattice\Ui\Components\RawBlock;
 
 RawBlock::make('avatar')->blade('components.avatar', [
     'name' => $user->name,
@@ -107,10 +107,10 @@ Build user menus from the same dropdown shell. The avatar, identity text, and me
 server-driven, so there is no dedicated frontend component:
 
 ```php
-use Lattice\Lattice\Core\Components\RawBlock;
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Components\Text;
-use Lattice\Lattice\Core\Enums\Placement;
+use Lattice\Lattice\Ui\Components\RawBlock;
+use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\Placement;
 use Lattice\Lattice\Layouts\Components\Dropdown;
 use Lattice\Lattice\Layouts\Components\MenuItem;
 
@@ -158,12 +158,12 @@ full-height `Stack` with `->justify(Justify::Between)`. A column `Stack` lays ou
 giving it a `justify` switches it to a flex column so the space distributes:
 
 ```php
-use Lattice\Lattice\Core\Enums\Justify;
-use Lattice\Lattice\Core\Enums\Placement;
-use Lattice\Lattice\Core\Enums\Width;
-use Lattice\Lattice\Core\Components\RawBlock;
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Ui\Enums\Justify;
+use Lattice\Lattice\Ui\Enums\Placement;
+use Lattice\Lattice\Ui\Enums\Width;
+use Lattice\Lattice\Ui\Components\RawBlock;
+use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Layouts\Components\Dropdown;
 use Lattice\Lattice\Layouts\Components\Menu;
 use Lattice\Lattice\Layouts\Components\MenuItem;

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { TableColumn, TableNode } from "../types";
+import type { TableColumn, TableNode } from "@lattice-php/lattice/table/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 
 function col(partial: { key: string; label: string }): TableColumn {

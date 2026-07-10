@@ -31,254 +31,6 @@
             }
         ]
     },
-    "Lattice\\Lattice\\Core\\Enums\\Align": {
-        "name": "Align",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Center",
-                "value": "center"
-            },
-            {
-                "name": "Left",
-                "value": "left"
-            },
-            {
-                "name": "Start",
-                "value": "start"
-            },
-            {
-                "name": "Stretch",
-                "value": "stretch"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\ButtonType": {
-        "name": "ButtonType",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Button",
-                "value": "button"
-            },
-            {
-                "name": "Submit",
-                "value": "submit"
-            },
-            {
-                "name": "Reset",
-                "value": "reset"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\ButtonVariant": {
-        "name": "ButtonVariant",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Default",
-                "value": "default"
-            },
-            {
-                "name": "Destructive",
-                "value": "destructive"
-            },
-            {
-                "name": "Ghost",
-                "value": "ghost"
-            },
-            {
-                "name": "Info",
-                "value": "info"
-            },
-            {
-                "name": "Link",
-                "value": "link"
-            },
-            {
-                "name": "Outline",
-                "value": "outline"
-            },
-            {
-                "name": "Secondary",
-                "value": "secondary"
-            },
-            {
-                "name": "Success",
-                "value": "success"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\ChartSeriesType": {
-        "name": "ChartSeriesType",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Area",
-                "value": "area"
-            },
-            {
-                "name": "Bar",
-                "value": "bar"
-            },
-            {
-                "name": "Line",
-                "value": "line"
-            },
-            {
-                "name": "Pie",
-                "value": "pie"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\Color": {
-        "name": "Color",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Default",
-                "value": "default"
-            },
-            {
-                "name": "Muted",
-                "value": "muted"
-            },
-            {
-                "name": "Primary",
-                "value": "primary"
-            },
-            {
-                "name": "Success",
-                "value": "success"
-            },
-            {
-                "name": "Info",
-                "value": "info"
-            },
-            {
-                "name": "Warning",
-                "value": "warning"
-            },
-            {
-                "name": "Danger",
-                "value": "danger"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\ColumnWidth": {
-        "name": "ColumnWidth",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Xs",
-                "value": "xs"
-            },
-            {
-                "name": "Sm",
-                "value": "sm"
-            },
-            {
-                "name": "Md",
-                "value": "md"
-            },
-            {
-                "name": "Lg",
-                "value": "lg"
-            },
-            {
-                "name": "Xl",
-                "value": "xl"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\DateTimeStyle": {
-        "name": "DateTimeStyle",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Full",
-                "value": "full"
-            },
-            {
-                "name": "Long",
-                "value": "long"
-            },
-            {
-                "name": "Medium",
-                "value": "medium"
-            },
-            {
-                "name": "Short",
-                "value": "short"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\FloatingPlacement": {
-        "name": "FloatingPlacement",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "BottomEnd",
-                "value": "bottom-end"
-            },
-            {
-                "name": "BottomStart",
-                "value": "bottom-start"
-            },
-            {
-                "name": "TopEnd",
-                "value": "top-end"
-            },
-            {
-                "name": "TopStart",
-                "value": "top-start"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\Gap": {
-        "name": "Gap",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "None",
-                "value": "none"
-            },
-            {
-                "name": "ExtraSmall",
-                "value": "xs"
-            },
-            {
-                "name": "Small",
-                "value": "sm"
-            },
-            {
-                "name": "Medium",
-                "value": "md"
-            },
-            {
-                "name": "Large",
-                "value": "lg"
-            },
-            {
-                "name": "ExtraLarge",
-                "value": "xl"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\Height": {
-        "name": "Height",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Full",
-                "value": "full"
-            },
-            {
-                "name": "Screen",
-                "value": "screen"
-            }
-        ]
-    },
     "Lattice\\Lattice\\Core\\Enums\\HttpMethod": {
         "name": "HttpMethod",
         "namespace": "Lattice\\Lattice\\Core\\Enums",
@@ -302,102 +54,6 @@
             {
                 "name": "Delete",
                 "value": "delete"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\Justify": {
-        "name": "Justify",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Start",
-                "value": "start"
-            },
-            {
-                "name": "Center",
-                "value": "center"
-            },
-            {
-                "name": "End",
-                "value": "end"
-            },
-            {
-                "name": "Between",
-                "value": "between"
-            },
-            {
-                "name": "Around",
-                "value": "around"
-            },
-            {
-                "name": "Evenly",
-                "value": "evenly"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\NumberFormatUnit": {
-        "name": "NumberFormatUnit",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Percent",
-                "value": "percent"
-            },
-            {
-                "name": "Kilogram",
-                "value": "kilogram"
-            },
-            {
-                "name": "Gram",
-                "value": "gram"
-            },
-            {
-                "name": "Kilometer",
-                "value": "kilometer"
-            },
-            {
-                "name": "Meter",
-                "value": "meter"
-            },
-            {
-                "name": "Byte",
-                "value": "byte"
-            },
-            {
-                "name": "Kilobyte",
-                "value": "kilobyte"
-            },
-            {
-                "name": "Megabyte",
-                "value": "megabyte"
-            },
-            {
-                "name": "Gigabyte",
-                "value": "gigabyte"
-            },
-            {
-                "name": "Millisecond",
-                "value": "millisecond"
-            },
-            {
-                "name": "Second",
-                "value": "second"
-            },
-            {
-                "name": "Minute",
-                "value": "minute"
-            },
-            {
-                "name": "Hour",
-                "value": "hour"
-            },
-            {
-                "name": "Celsius",
-                "value": "celsius"
-            },
-            {
-                "name": "Fahrenheit",
-                "value": "fahrenheit"
             }
         ]
     },
@@ -464,210 +120,6 @@
             {
                 "name": "Filled",
                 "value": "filled"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\Orientation": {
-        "name": "Orientation",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Horizontal",
-                "value": "horizontal"
-            },
-            {
-                "name": "Vertical",
-                "value": "vertical"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\PageContainer": {
-        "name": "PageContainer",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Centered",
-                "value": "centered"
-            },
-            {
-                "name": "Default",
-                "value": "default"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\PageLayout": {
-        "name": "PageLayout",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "App",
-                "value": "app"
-            },
-            {
-                "name": "Auth",
-                "value": "auth"
-            },
-            {
-                "name": "None",
-                "value": "none"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\Placement": {
-        "name": "Placement",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Top",
-                "value": "top"
-            },
-            {
-                "name": "Bottom",
-                "value": "bottom"
-            },
-            {
-                "name": "Right",
-                "value": "right"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\RowLayout": {
-        "name": "RowLayout",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Stack",
-                "value": "stack"
-            },
-            {
-                "name": "Table",
-                "value": "table"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\Side": {
-        "name": "Side",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Start",
-                "value": "start"
-            },
-            {
-                "name": "End",
-                "value": "end"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\Size": {
-        "name": "Size",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Xs",
-                "value": "xs"
-            },
-            {
-                "name": "Sm",
-                "value": "sm"
-            },
-            {
-                "name": "Md",
-                "value": "md"
-            },
-            {
-                "name": "Lg",
-                "value": "lg"
-            },
-            {
-                "name": "Xl",
-                "value": "xl"
-            },
-            {
-                "name": "Xl2",
-                "value": "2xl"
-            },
-            {
-                "name": "Xl3",
-                "value": "3xl"
-            },
-            {
-                "name": "Xl4",
-                "value": "4xl"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\TabsAlignment": {
-        "name": "TabsAlignment",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Start",
-                "value": "start"
-            },
-            {
-                "name": "Center",
-                "value": "center"
-            },
-            {
-                "name": "End",
-                "value": "end"
-            },
-            {
-                "name": "Stretch",
-                "value": "stretch"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\Variant": {
-        "name": "Variant",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Success",
-                "value": "success"
-            },
-            {
-                "name": "Info",
-                "value": "info"
-            },
-            {
-                "name": "Warning",
-                "value": "warning"
-            },
-            {
-                "name": "Error",
-                "value": "error"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Core\\Enums\\Width": {
-        "name": "Width",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Full",
-                "value": "full"
-            },
-            {
-                "name": "Auto",
-                "value": "auto"
-            },
-            {
-                "name": "Small",
-                "value": "sm"
-            },
-            {
-                "name": "Medium",
-                "value": "md"
-            },
-            {
-                "name": "Large",
-                "value": "lg"
-            },
-            {
-                "name": "Fill",
-                "value": "fill"
             }
         ]
     },
@@ -756,6 +208,20 @@
             {
                 "name": "Remove",
                 "value": "remove"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Forms\\Enums\\RowLayout": {
+        "name": "RowLayout",
+        "namespace": "Lattice\\Lattice\\Forms\\Enums",
+        "cases": [
+            {
+                "name": "Stack",
+                "value": "stack"
+            },
+            {
+                "name": "Table",
+                "value": "table"
             }
         ]
     },
@@ -910,6 +376,540 @@
             {
                 "name": "Desc",
                 "value": "desc"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Align": {
+        "name": "Align",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Center",
+                "value": "center"
+            },
+            {
+                "name": "Left",
+                "value": "left"
+            },
+            {
+                "name": "Start",
+                "value": "start"
+            },
+            {
+                "name": "Stretch",
+                "value": "stretch"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\ButtonType": {
+        "name": "ButtonType",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Button",
+                "value": "button"
+            },
+            {
+                "name": "Submit",
+                "value": "submit"
+            },
+            {
+                "name": "Reset",
+                "value": "reset"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\ButtonVariant": {
+        "name": "ButtonVariant",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Default",
+                "value": "default"
+            },
+            {
+                "name": "Destructive",
+                "value": "destructive"
+            },
+            {
+                "name": "Ghost",
+                "value": "ghost"
+            },
+            {
+                "name": "Info",
+                "value": "info"
+            },
+            {
+                "name": "Link",
+                "value": "link"
+            },
+            {
+                "name": "Outline",
+                "value": "outline"
+            },
+            {
+                "name": "Secondary",
+                "value": "secondary"
+            },
+            {
+                "name": "Success",
+                "value": "success"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\ChartSeriesType": {
+        "name": "ChartSeriesType",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Area",
+                "value": "area"
+            },
+            {
+                "name": "Bar",
+                "value": "bar"
+            },
+            {
+                "name": "Line",
+                "value": "line"
+            },
+            {
+                "name": "Pie",
+                "value": "pie"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Color": {
+        "name": "Color",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Default",
+                "value": "default"
+            },
+            {
+                "name": "Muted",
+                "value": "muted"
+            },
+            {
+                "name": "Primary",
+                "value": "primary"
+            },
+            {
+                "name": "Success",
+                "value": "success"
+            },
+            {
+                "name": "Info",
+                "value": "info"
+            },
+            {
+                "name": "Warning",
+                "value": "warning"
+            },
+            {
+                "name": "Danger",
+                "value": "danger"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\ColumnWidth": {
+        "name": "ColumnWidth",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Xs",
+                "value": "xs"
+            },
+            {
+                "name": "Sm",
+                "value": "sm"
+            },
+            {
+                "name": "Md",
+                "value": "md"
+            },
+            {
+                "name": "Lg",
+                "value": "lg"
+            },
+            {
+                "name": "Xl",
+                "value": "xl"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\DateTimeStyle": {
+        "name": "DateTimeStyle",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Full",
+                "value": "full"
+            },
+            {
+                "name": "Long",
+                "value": "long"
+            },
+            {
+                "name": "Medium",
+                "value": "medium"
+            },
+            {
+                "name": "Short",
+                "value": "short"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\FloatingPlacement": {
+        "name": "FloatingPlacement",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "BottomEnd",
+                "value": "bottom-end"
+            },
+            {
+                "name": "BottomStart",
+                "value": "bottom-start"
+            },
+            {
+                "name": "TopEnd",
+                "value": "top-end"
+            },
+            {
+                "name": "TopStart",
+                "value": "top-start"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Gap": {
+        "name": "Gap",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "None",
+                "value": "none"
+            },
+            {
+                "name": "ExtraSmall",
+                "value": "xs"
+            },
+            {
+                "name": "Small",
+                "value": "sm"
+            },
+            {
+                "name": "Medium",
+                "value": "md"
+            },
+            {
+                "name": "Large",
+                "value": "lg"
+            },
+            {
+                "name": "ExtraLarge",
+                "value": "xl"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Height": {
+        "name": "Height",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Full",
+                "value": "full"
+            },
+            {
+                "name": "Screen",
+                "value": "screen"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Justify": {
+        "name": "Justify",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Start",
+                "value": "start"
+            },
+            {
+                "name": "Center",
+                "value": "center"
+            },
+            {
+                "name": "End",
+                "value": "end"
+            },
+            {
+                "name": "Between",
+                "value": "between"
+            },
+            {
+                "name": "Around",
+                "value": "around"
+            },
+            {
+                "name": "Evenly",
+                "value": "evenly"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\NumberFormatUnit": {
+        "name": "NumberFormatUnit",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Percent",
+                "value": "percent"
+            },
+            {
+                "name": "Kilogram",
+                "value": "kilogram"
+            },
+            {
+                "name": "Gram",
+                "value": "gram"
+            },
+            {
+                "name": "Kilometer",
+                "value": "kilometer"
+            },
+            {
+                "name": "Meter",
+                "value": "meter"
+            },
+            {
+                "name": "Byte",
+                "value": "byte"
+            },
+            {
+                "name": "Kilobyte",
+                "value": "kilobyte"
+            },
+            {
+                "name": "Megabyte",
+                "value": "megabyte"
+            },
+            {
+                "name": "Gigabyte",
+                "value": "gigabyte"
+            },
+            {
+                "name": "Millisecond",
+                "value": "millisecond"
+            },
+            {
+                "name": "Second",
+                "value": "second"
+            },
+            {
+                "name": "Minute",
+                "value": "minute"
+            },
+            {
+                "name": "Hour",
+                "value": "hour"
+            },
+            {
+                "name": "Celsius",
+                "value": "celsius"
+            },
+            {
+                "name": "Fahrenheit",
+                "value": "fahrenheit"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Orientation": {
+        "name": "Orientation",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Horizontal",
+                "value": "horizontal"
+            },
+            {
+                "name": "Vertical",
+                "value": "vertical"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\PageContainer": {
+        "name": "PageContainer",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Centered",
+                "value": "centered"
+            },
+            {
+                "name": "Default",
+                "value": "default"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\PageLayout": {
+        "name": "PageLayout",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "App",
+                "value": "app"
+            },
+            {
+                "name": "Auth",
+                "value": "auth"
+            },
+            {
+                "name": "None",
+                "value": "none"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Placement": {
+        "name": "Placement",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Top",
+                "value": "top"
+            },
+            {
+                "name": "Bottom",
+                "value": "bottom"
+            },
+            {
+                "name": "Right",
+                "value": "right"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Side": {
+        "name": "Side",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Start",
+                "value": "start"
+            },
+            {
+                "name": "End",
+                "value": "end"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Size": {
+        "name": "Size",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Xs",
+                "value": "xs"
+            },
+            {
+                "name": "Sm",
+                "value": "sm"
+            },
+            {
+                "name": "Md",
+                "value": "md"
+            },
+            {
+                "name": "Lg",
+                "value": "lg"
+            },
+            {
+                "name": "Xl",
+                "value": "xl"
+            },
+            {
+                "name": "Xl2",
+                "value": "2xl"
+            },
+            {
+                "name": "Xl3",
+                "value": "3xl"
+            },
+            {
+                "name": "Xl4",
+                "value": "4xl"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\TabsAlignment": {
+        "name": "TabsAlignment",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Start",
+                "value": "start"
+            },
+            {
+                "name": "Center",
+                "value": "center"
+            },
+            {
+                "name": "End",
+                "value": "end"
+            },
+            {
+                "name": "Stretch",
+                "value": "stretch"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Variant": {
+        "name": "Variant",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Success",
+                "value": "success"
+            },
+            {
+                "name": "Info",
+                "value": "info"
+            },
+            {
+                "name": "Warning",
+                "value": "warning"
+            },
+            {
+                "name": "Error",
+                "value": "error"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Width": {
+        "name": "Width",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Full",
+                "value": "full"
+            },
+            {
+                "name": "Auto",
+                "value": "auto"
+            },
+            {
+                "name": "Small",
+                "value": "sm"
+            },
+            {
+                "name": "Medium",
+                "value": "md"
+            },
+            {
+                "name": "Large",
+                "value": "lg"
+            },
+            {
+                "name": "Fill",
+                "value": "fill"
             }
         ]
     }

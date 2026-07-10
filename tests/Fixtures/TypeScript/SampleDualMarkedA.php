@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Tests\Fixtures\TypeScript;
 
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Ui\Components\Component;
 
 #[TypeScript]
 #[AsComponent('sample.dual-a')]

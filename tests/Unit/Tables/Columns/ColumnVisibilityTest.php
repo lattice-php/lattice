@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
+use Lattice\Lattice\Ui\Components\Text;
 
 it('omits a column hidden via visible(false) from the serialized table', function (): void {
     $table = Table::make('t')->columns([

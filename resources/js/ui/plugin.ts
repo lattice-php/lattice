@@ -1,4 +1,14 @@
-import { createPlugin, eagerComponent } from "@lattice-php/lattice/core/registry";
+import {
+  createPlugin,
+  eagerComponent,
+  type ComponentRegistryFor,
+} from "@lattice-php/lattice/core/registry";
+import type { ActionNodeType, FormNodeType, NodeType } from "@lattice-php/lattice/types/generated";
+import type { ChatComponentType } from "@lattice-php/lattice/chat/plugin";
+import type { LayoutComponentType } from "@lattice-php/lattice/layout/plugin";
+import type { NotificationsComponentType } from "@lattice-php/lattice/notifications/plugin";
+import type { RemoteComponentType } from "@lattice-php/lattice/remote/plugin";
+import type { TableComponentType } from "@lattice-php/lattice/table/plugin";
 import BadgeComponent from "./badge";
 import ButtonComponent from "./button";
 import CardComponent from "./card";
@@ -19,7 +29,18 @@ import TabComponent, { TabsComponent } from "./tabs";
 import TextComponent from "./text";
 import TooltipComponent from "./tooltip";
 
-export const coreComponents = createPlugin({
+type NonUiComponentType =
+  | ActionNodeType
+  | ChatComponentType
+  | FormNodeType
+  | LayoutComponentType
+  | NotificationsComponentType
+  | RemoteComponentType
+  | TableComponentType;
+
+type UiComponentType = Exclude<NodeType, NonUiComponentType>;
+
+export const uiComponents = createPlugin({
   components: {
     badge: eagerComponent(BadgeComponent),
     button: eagerComponent(ButtonComponent),
@@ -41,6 +62,6 @@ export const coreComponents = createPlugin({
     tabs: eagerComponent(TabsComponent),
     text: eagerComponent(TextComponent),
     tooltip: eagerComponent(TooltipComponent),
-  },
-  name: "lattice/core",
+  } satisfies ComponentRegistryFor<UiComponentType>,
+  name: "lattice/ui",
 });

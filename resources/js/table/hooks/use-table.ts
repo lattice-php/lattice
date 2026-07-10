@@ -2,9 +2,14 @@ import { apiFetch, apiJson } from "@lattice-php/lattice/core/api";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Option } from "@lattice-php/lattice/types/generated";
-import { isEmptyFilterValue, isFilterValue } from "../lib/filter-values";
-import { getColumns, getPagination, getRows, getState } from "../lib/payload";
-import { buildEndpoint, nextSort } from "../lib/query";
+import { isEmptyFilterValue, isFilterValue } from "@lattice-php/lattice/table/lib/filter-values";
+import {
+  getColumns,
+  getPagination,
+  getRows,
+  getState,
+} from "@lattice-php/lattice/table/lib/payload";
+import { buildEndpoint, nextSort } from "@lattice-php/lattice/table/lib/query";
 import type {
   FilterClause,
   TableColumn,
@@ -12,7 +17,7 @@ import type {
   TableResponse,
   TableSort,
   TableState,
-} from "../types";
+} from "@lattice-php/lattice/table/types";
 
 export function useTable(node: TableNode) {
   const columns = useMemo(() => getColumns(node.props?.columns), [node.props?.columns]);

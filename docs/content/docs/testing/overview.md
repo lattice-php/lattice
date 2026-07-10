@@ -216,7 +216,7 @@ $this->assertLatticePage($this->get('/products'))
 ## Actions
 
 ```php
-use Lattice\Lattice\Core\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Support\Testing\Assertions\ActionAssertions;
 
 $this->assertLatticeComponent($action)

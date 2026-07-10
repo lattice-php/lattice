@@ -2,9 +2,9 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useEffect } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { FormProvider } from "../../hooks/context";
-import { FieldScopeProvider } from "../../hooks/field-scope";
-import { FormValuesProvider, useFormValues } from "../../hooks/values";
+import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
+import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
+import { FormValuesProvider, useFormValues } from "@lattice-php/lattice/form/hooks/values";
 import { FileUploadComponent } from "./file-upload";
 
 const apiFetch = vi.hoisted(() =>

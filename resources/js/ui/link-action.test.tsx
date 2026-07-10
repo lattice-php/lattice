@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ActionInteractionProvider } from "@lattice-php/lattice/action";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import type { Node } from "@lattice-php/lattice/core/types";
 import LinkComponent from "./link";
@@ -39,6 +40,14 @@ function actionLink(props: Record<string, unknown> = {}): Node<"link"> {
   });
 }
 
+function renderActionLink(node: Node<"link">) {
+  return render(
+    <ActionInteractionProvider>
+      <LinkComponent node={node}>{null}</LinkComponent>
+    </ActionInteractionProvider>,
+  );
+}
+
 describe("link action trigger", () => {
   beforeEach(() => {
     http.delete.mockReset();
@@ -51,7 +60,7 @@ describe("link action trigger", () => {
   it("dispatches the nested action with the ref header", async () => {
     http.post.mockResolvedValue({ ok: true, effects: [] });
 
-    render(<LinkComponent node={actionLink()}>{null}</LinkComponent>);
+    renderActionLink(actionLink());
 
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
@@ -74,7 +83,7 @@ describe("link action trigger", () => {
       },
     });
 
-    render(<LinkComponent node={node}>{null}</LinkComponent>);
+    renderActionLink(node);
 
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
@@ -94,7 +103,7 @@ describe("link action trigger", () => {
       form: { id: "reason-form", type: "form", props: {}, schema: [] },
     });
 
-    render(<LinkComponent node={node}>{null}</LinkComponent>);
+    renderActionLink(node);
 
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 

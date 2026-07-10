@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Forms\Components\Builder;
 use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Ui\Enums\ColumnWidth;
 
 it('defaults to the stack layout', function (): void {
     $wire = wire(Repeater::make('items')->schema([TextInput::make('a')]));

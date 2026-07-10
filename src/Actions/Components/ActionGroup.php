@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Actions\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Components\ContainerComponent;
-use Lattice\Lattice\Core\Components\IsInteractive;
-use Lattice\Lattice\Core\Concerns\HasLabel;
-use Lattice\Lattice\Core\Enums\Orientation;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Components\ContainerComponent;
+use Lattice\Lattice\Ui\Components\IsInteractive;
+use Lattice\Lattice\Ui\Concerns\HasLabel;
+use Lattice\Lattice\Ui\Enums\Orientation;
 
 #[AsComponent('action.group')]
 class ActionGroup extends ContainerComponent

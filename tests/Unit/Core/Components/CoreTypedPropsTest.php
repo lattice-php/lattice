@@ -1,22 +1,22 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Icon;
-use Lattice\Lattice\Core\Components\Modal;
-use Lattice\Lattice\Core\Components\SegmentedControl;
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Components\Tab;
-use Lattice\Lattice\Core\Components\Tabs;
-use Lattice\Lattice\Core\Components\Text;
-use Lattice\Lattice\Core\Enums\Align;
-use Lattice\Lattice\Core\Enums\Color;
-use Lattice\Lattice\Core\Enums\Gap;
-use Lattice\Lattice\Core\Enums\Icon as IconName;
-use Lattice\Lattice\Core\Enums\Justify;
-use Lattice\Lattice\Core\Enums\Orientation;
-use Lattice\Lattice\Core\Enums\Size;
-use Lattice\Lattice\Core\Enums\TabsAlignment;
-use Lattice\Lattice\Core\Enums\Width;
+use Lattice\Lattice\Ui\Components\Icon;
+use Lattice\Lattice\Ui\Components\Modal;
+use Lattice\Lattice\Ui\Components\SegmentedControl;
+use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Lattice\Ui\Components\Tab;
+use Lattice\Lattice\Ui\Components\Tabs;
+use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\Align;
+use Lattice\Lattice\Ui\Enums\Color;
+use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\Icon as IconName;
+use Lattice\Lattice\Ui\Enums\Justify;
+use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Lattice\Ui\Enums\Size;
+use Lattice\Lattice\Ui\Enums\TabsAlignment;
+use Lattice\Lattice\Ui\Enums\Width;
 
 test('stack serializes enums direction and key wire-identically', function (): void {
     expect(wire(Stack::make('layout')

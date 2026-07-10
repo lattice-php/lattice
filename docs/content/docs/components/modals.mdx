@@ -10,6 +10,8 @@ opened, and it is driven from the server: an [action](/actions/overview/) return
 `close-modal` [effect](/actions/effects/) targeting the modal's `$id`.
 
 ```php
+use Lattice\Lattice\Ui\Components\Modal;
+
 Modal::make('invite-member')
     ->title('Invite a member')
     ->description('They will receive an email invitation.')
@@ -21,8 +23,11 @@ Modal::make('invite-member')
 The dialog's `$id` is how effects find it:
 
 ```php
+use Lattice\Lattice\Actions\Components\Action;
+use Lattice\Lattice\Facades\Effects;
+
 Action::make('invite')
-    ->effects(Effect::openModal('invite-member'));
+    ->effects(Effects::openModal('invite-member'));
 ```
 
 - `->title('…')` and `->description('…')` set the dialog header.

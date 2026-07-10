@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { getBulkActions } from "./bulk";
-import type { ActionNode } from "../types";
+import type { ActionNode } from "@lattice-php/lattice/table/types";
 
 describe("getBulkActions", () => {
   it("returns an empty list when actions is undefined", () => {

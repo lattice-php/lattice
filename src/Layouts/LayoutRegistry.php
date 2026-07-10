@@ -6,9 +6,9 @@ namespace Lattice\Lattice\Layouts;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Ui\Components\Component;
 
 /**
  * @extends DefinitionRegistry<LayoutDefinition>

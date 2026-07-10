@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Remote;
 
 use InvalidArgumentException;
-use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Remote\Components\RemoteNode;
+use Lattice\Lattice\Ui\Components\Component;
 
 final class RemoteSchemaNormalizer
 {

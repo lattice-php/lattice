@@ -14,7 +14,7 @@ dumps them to `docs/fixtures/enums.json`), so this page can never fall behind th
 
 ## Layout & spacing
 
-`Lattice\Lattice\Core\Enums` — the vocabulary for arranging components, used by `Stack` and the other
+`Lattice\Lattice\Ui\Enums` — the vocabulary for arranging components, used by `Stack` and the other
 layout primitives.
 
 <EnumTable
@@ -24,38 +24,43 @@ layout primitives.
     "Gap",
     "Width",
     "Height",
+    "ColumnWidth",
     "Orientation",
     "Placement",
     "FloatingPlacement",
     "Side",
     "TabsAlignment",
-    "RowLayout",
   ]}
 />
 
 ## Pages
 
-`Lattice\Lattice\Core\Enums` — how a [page](/core/pages/) frames itself and which
+`Lattice\Lattice\Ui\Enums` — how a [page](/core/pages/) frames itself and which
 [layout](/core/layouts/) it renders into.
 
 <EnumTable enums={["PageLayout", "PageContainer"]} />
 
 ## Text & sizing
 
-`Lattice\Lattice\Core\Enums` — sizing and color for `Text`, `Icon`, table columns, and form-field
-width.
+`Lattice\Lattice\Ui\Enums` — sizing and color for `Text` and `Icon`.
 
-<EnumTable enums={["Size", "Color", "ColumnWidth"]} />
+<EnumTable enums={["Size", "Color"]} />
 
-The icon names a `Lattice\Lattice\Core\Enums\Icon` accepts are listed on the [Icons](/core/icons/) page.
+The icon names a `Lattice\Lattice\Ui\Enums\Icon` accepts are listed on the [Icons](/core/icons/) page.
 
 ## Buttons & feedback
 
-`Lattice\Lattice\Core\Enums`
+`Lattice\Lattice\Ui\Enums`
 
-<EnumTable enums={["ButtonVariant", "ButtonType", "HttpMethod", "Variant"]} />
+<EnumTable enums={["ButtonVariant", "ButtonType", "Variant"]} />
 
 `Variant` is used by toasts and [callouts](/actions/effects/#callouts).
+
+## HTTP
+
+`Lattice\Lattice\Core\Enums\HttpMethod` — the request method used by links, forms, and actions.
+
+<EnumTable enums={["HttpMethod"]} />
 
 ## Operators
 
@@ -66,15 +71,13 @@ The icon names a `Lattice\Lattice\Core\Enums\Icon` accepts are listed on the [Ic
 
 ## Tables
 
-`Lattice\Lattice\Tables\Enums` — column types, alignment, number formatting, filtering, and
-pagination for [tables](/tables/overview/).
+`Lattice\Lattice\Tables\Enums` — column types, alignment, width, filtering, and pagination for
+[tables](/tables/overview/).
 
 <EnumTable
   enums={[
     "ColumnType",
     "ColumnAlign",
-    "DateTimeStyle",
-    "NumberFormatUnit",
     "FilterType",
     "FilterControl",
     "PaginationType",
@@ -87,11 +90,18 @@ pagination for [tables](/tables/overview/).
 The row layout and built-in row actions used by the [repeater and builder](/forms/fields/repeater/)
 fields, plus the field-type vocabulary.
 
-<EnumTable enums={["FieldType", "RowActionType"]} showNamespace />
+<EnumTable enums={["FieldType", "RowActionType", "RowLayout"]} showNamespace />
+
+## Formatting
+
+`Lattice\Lattice\Ui\Enums` — date/time and number formatting options shared by UI components and
+tables.
+
+<EnumTable enums={["DateTimeStyle", "NumberFormatUnit"]} />
 
 ## Charts
 
-`Lattice\Lattice\Core\Enums` — the series shapes a `Chart` component can render.
+`Lattice\Lattice\Ui\Enums` — the series shapes a `Chart` component can render.
 
 <EnumTable enums={["ChartSeriesType"]} />
 

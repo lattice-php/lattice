@@ -8,7 +8,7 @@ use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
-use Lattice\Lattice\Contracts\HasTimezonePreference;
+use Lattice\Lattice\Core\Contracts\HasTimezonePreference;
 use Lattice\Lattice\Http\I18nConfig;
 use Symfony\Component\HttpFoundation\Response;
 

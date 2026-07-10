@@ -20,7 +20,7 @@ import type { ComponentType, ReactNode } from "react";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { PropsOf, RendererComponent } from "@lattice-php/lattice/core/types";
 import { useLocale, useTimezone } from "@lattice-php/lattice/i18n";
-import { formatValue } from "../format/value";
+import { formatValue } from "@lattice-php/lattice/format/value";
 
 type ChartProps = PropsOf<"chart">;
 type ChartSeries = ChartProps["series"][number];

@@ -6,15 +6,15 @@ namespace Lattice\Lattice\Tables\Components;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Components\IsInteractive;
-use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableRegistry;
 use Lattice\Lattice\Tables\TableResult;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Components\IsInteractive;
+use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
 
 #[AsComponent('table')]
 class Table extends Component

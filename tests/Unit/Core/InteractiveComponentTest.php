@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Components\IsInteractive;
 
 function makeInteractiveComponent(?string $endpoint = null): Component
 {

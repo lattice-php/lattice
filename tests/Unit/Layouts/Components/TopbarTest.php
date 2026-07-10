@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Enums\Side;
 use Lattice\Lattice\Layouts\Components\Topbar;
+use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Lattice\Ui\Enums\Side;
 
 test('the topbar serializes to its wire type, not sticky by default', function (): void {
     $wire = Topbar::make('app-topbar')->jsonSerialize();

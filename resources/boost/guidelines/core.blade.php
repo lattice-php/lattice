@@ -14,13 +14,13 @@ A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its 
 @verbatim
 <code-snippet name="A page and its route" lang="php">
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Components\Heading;
-use Lattice\Lattice\Core\Components\Stack;
-use Lattice\Lattice\Core\Enums\Gap;
-use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page as BasePage;
 use Lattice\Lattice\Tables\Components\Table;
+use Lattice\Lattice\Ui\Components\Heading;
+use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\PageLayout;
 
 #[AsPage(route: '/products', layout: PageLayout::App, middleware: ['web'])]
 final class ProductsPage extends BasePage
@@ -50,7 +50,7 @@ Drop a form or a table into the tree with `Form::use(MyForm::class)` and `Table:
 
 ### Building blocks
 
-- **Components** — layout/visual builders in `Lattice\Lattice\Core\Components`: `Card`, `Grid`, `Stack`, `Heading`, `Text`, `Tabs`, `Badge`, `Link`, `Button`. Composed into the page tree.
+- **Components** — layout/visual builders in `Lattice\Lattice\Ui\Components`: `Card`, `Grid`, `Stack`, `Heading`, `Text`, `Tabs`, `Badge`, `Link`, `Button`. Composed into the page tree.
 - **Forms** — `FormDefinition` classes with fields + server-side (and live, Precognition) validation. **Reach for the `lattice-forms` skill.**
 - **Tables** — `EloquentTableDefinition` classes with columns, sorting, filtering, pagination, and row/bulk actions. **Reach for the `lattice-tables` skill.**
 - **Actions** — `ActionDefinition` / `BulkActionDefinition` that run on the server and return effects (toast, redirect, refresh, modal) via `ActionResult`. **Reach for the `lattice-actions` skill.**

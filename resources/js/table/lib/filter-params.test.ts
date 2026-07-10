@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildEndpoint } from "./query";
-import type { TableState } from "../types";
+import type { TableState } from "@lattice-php/lattice/table/types";
 
 function state(overrides: Partial<TableState>): TableState {
   return {

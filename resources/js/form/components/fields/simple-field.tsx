@@ -1,8 +1,11 @@
 import type { ReactNode } from "react";
 import type { Node } from "@lattice-php/lattice/core/types";
-import { FormFieldFrame } from "../base/field";
-import { fieldProps } from "../../lib/field-props";
-import { type ControlledField, useControlledField } from "../../hooks/use-controlled-field";
+import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
+import { fieldProps } from "@lattice-php/lattice/form/lib/field-props";
+import {
+  type ControlledField,
+  useControlledField,
+} from "@lattice-php/lattice/form/hooks/use-controlled-field";
 
 export function SimpleField({
   node,

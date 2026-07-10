@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\TypeScript;
 
-use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Tables\Filters\Filter;
+use Lattice\Lattice\Ui\Components\Component;
 use ReflectionClass;
 use Roave\BetterReflection\Reflection\ReflectionClass as RoaveReflectionClass;
 use Spatie\TypeScriptTransformer\Data\TransformationContext;

@@ -17,8 +17,8 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Core\Enums\ButtonVariant;
-use Lattice\Lattice\Core\Enums\Variant;
+use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Variant;
 
 #[AsAction('app.products.archive')]
 class ArchiveProductAction extends ActionDefinition
@@ -50,7 +50,7 @@ class ArchiveProductAction extends ActionDefinition
 | Effect | What it does |
 | --- | --- |
 | `->toast($message, $variant?)` | Show a toast (`Variant::Success`/`Error`/`Warning`/`Info`; defaults to success; message and variant are order-insensitive). |
-| `->callout($callout)` | Show a persistent in-flow banner in the layout's `Callouts::make()` slot. Pass a `Callout` value object (`Lattice\Lattice\Core\Values\Callout`). |
+| `->callout($callout)` | Show a persistent in-flow banner in the layout's `Callouts::make()` slot. Pass a `Callout` value object (`Lattice\Lattice\Ui\Values\Callout`). |
 | `->reloadComponent($id)` | Re-fetch one component — pass a `#[AsTable]`/component id so only it refreshes. |
 | `->reloadPage()` | Reload the current page's props. |
 | `->redirect($url)` | Navigate to a URL. |
@@ -67,8 +67,8 @@ return ActionResult::success()->toast('Saved.')->reloadComponent('app.products')
 `Callout::make(Variant $variant, string $message)` builds a persistent banner. Chain `->title()`, `->dismissible()`, `->link()`, or `->action()` to configure it:
 
 ```php
-use Lattice\Lattice\Core\Enums\Variant;
-use Lattice\Lattice\Core\Values\Callout;
+use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Lattice\Ui\Values\Callout;
 
 return ActionResult::success()
     ->callout(
@@ -85,14 +85,13 @@ The callout renders in the layout slot `Callouts::make()` (placed between the he
 `Effects::flash()` (facade `Lattice\Lattice\Facades\Effects`) delivers any effect(s) with the next Inertia response — no `ActionResult` needed. Use from controllers, listeners, middleware, or anywhere a redirect is returned:
 
 ```php
-use Lattice\Lattice\Core\Values\Callout;
-use Lattice\Lattice\Core\Enums\Variant;
 use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Lattice\Ui\Values\Callout;
 
 Effects::flash(
-    Effect::toast(Variant::Success, 'Settings saved.'),
-    Effect::callout(
+    Effects::toast(Variant::Success, 'Settings saved.'),
+    Effects::callout(
         Callout::make(Variant::Info, 'Export is being processed.')->title('Export queued')
     )
 );
@@ -100,7 +99,7 @@ Effects::flash(
 return redirect('/dashboard');
 ```
 
-`Effects::flash()` replaces the old `CreatesToastMessages` trait — migrate any `$this->toast(...)` calls to `Effects::flash(Effect::toast(...))`.
+`Effects::flash()` replaces the old `CreatesToastMessages` trait — migrate any `$this->toast(...)` calls to `Effects::flash(Effects::toast(...))`.
 
 ## Reading context
 
