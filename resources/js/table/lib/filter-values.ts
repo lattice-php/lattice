@@ -1,4 +1,5 @@
-import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
+import type { Option } from "@lattice-php/lattice/types/generated";
+import type { FilterNode } from "../types";
 
 /**
  * Whether a single scalar filter member is absent — the atomic rule the
@@ -48,13 +49,13 @@ export function filterValue(value: unknown): Record<string, unknown> {
  * Read a string entry from a filter's loose `props` bag, falling back when the
  * key is absent or not a string.
  */
-export function stringProp(filter: FilterData, key: string, fallback: string): string {
+export function stringProp(filter: FilterNode<string>, key: string, fallback: string): string {
   const value = filter.props[key];
 
   return typeof value === "string" ? value : fallback;
 }
 
-export function filterOptions(filter: FilterData): Option[] {
+export function filterOptions(filter: FilterNode<string>): Option[] {
   const value = filter.props.options;
 
   return Array.isArray(value) ? (value as Option[]) : [];

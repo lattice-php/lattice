@@ -1,15 +1,23 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import type { FilterData } from "@lattice-php/lattice/types/generated";
-import type { TableColumn } from "../types";
+import type { FilterNode, TableColumn } from "../types";
 import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { FilterBar, FilterMenu } from "./filter-bar";
 
-const selectFilter: FilterData = {
+const selectFilter: FilterNode = {
   key: "status",
-  label: "Status",
   type: "filter.select",
+  props: {
+    label: "Status",
+    options: [
+      { label: "Active", value: "active" },
+      { label: "Draft", value: "draft" },
+    ],
+    multiple: false,
+    searchable: false,
+    placeholder: null,
+  },
   schema: [
     {
       type: "field.select",
@@ -26,23 +34,12 @@ const selectFilter: FilterData = {
       },
     },
   ],
-  props: {
-    options: [
-      { label: "Active", value: "active" },
-      { label: "Draft", value: "draft" },
-    ],
-    multiple: false,
-    searchable: false,
-    placeholder: null,
-  },
 };
 
-const toggleFilter: FilterData = {
+const toggleFilter: FilterNode = {
   key: "high_value",
-  label: "High value",
   type: "filter.toggle",
-  schema: [],
-  props: {},
+  props: { label: "High value" },
 };
 
 const nameColumn: TableColumn = {

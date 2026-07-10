@@ -43,6 +43,7 @@ void _builtinBad;
 
 // Built-in select filter props resolve through the generated FilterPropsMap.
 const _selectFilter: FilterPropsOf<"filter.select"> = {
+  label: "Status",
   multiple: false,
   searchable: false,
   options: [],
