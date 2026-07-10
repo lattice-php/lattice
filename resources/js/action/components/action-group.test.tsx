@@ -78,4 +78,20 @@ describe("Lattice action group component", () => {
 
     expect(screen.getByRole("group", { name: "Language" })).toHaveClass("flex-col");
   });
+
+  it("renders the localized default label when none is set", () => {
+    const node = fakeNode({
+      id: "row-actions",
+      props: {},
+      type: "action.group",
+    });
+
+    render(
+      <ActionGroupComponent node={node}>
+        <button type="button">Edit</button>
+      </ActionGroupComponent>,
+    );
+
+    expect(screen.getByRole("button", { name: "Actions" })).toBeVisible();
+  });
 });

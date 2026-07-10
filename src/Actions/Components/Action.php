@@ -12,6 +12,7 @@ use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasIcon;
+use Lattice\Lattice\Core\Concerns\HasOptionalLabel;
 use Lattice\Lattice\Core\Concerns\HasVariant;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
@@ -21,12 +22,11 @@ class Action extends Component
 {
     use HasHttpMethod;
     use HasIcon;
+    use HasOptionalLabel;
     use HasVariant;
     use IsInteractive;
 
     public ?string $endpoint = null;
-
-    public ?string $label = null;
 
     /**
      * The confirmation dialog shown before the action runs, or `null` until
@@ -58,13 +58,6 @@ class Action extends Component
     public function endpoint(string $endpoint): static
     {
         $this->endpoint = $endpoint;
-
-        return $this;
-    }
-
-    public function label(string $label): static
-    {
-        $this->label = $label;
 
         return $this;
     }

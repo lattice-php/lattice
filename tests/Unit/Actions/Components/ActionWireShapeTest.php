@@ -120,6 +120,14 @@ it('serializes the action group wire shape', function (): void {
     expect($payload['schema'][0]['type'])->toBe('action');
 });
 
+it('serializes a null label by default', function (): void {
+    $group = ActionGroup::make('row-actions')->actions([Action::make('a')->label('A')]);
+
+    $payload = wire($group);
+
+    expect($payload['props'])->toMatchArray(['label' => null]);
+});
+
 it('serializes an inline action group orientation', function (): void {
     $group = ActionGroup::make('locale-switcher')
         ->label('Language')

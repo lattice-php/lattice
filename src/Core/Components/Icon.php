@@ -5,16 +5,18 @@ namespace Lattice\Lattice\Core\Components;
 
 use BackedEnum;
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Core\Concerns\HasColor;
+use Lattice\Lattice\Core\Concerns\HasSize;
 use Lattice\Lattice\Core\Enums\Color;
-use Lattice\Lattice\Core\Enums\Size;
 use Lattice\Lattice\Support\Wire;
 
 #[AsComponent('icon')]
 class Icon extends Component
 {
-    public string $name = '';
+    use HasColor;
+    use HasSize;
 
-    public Size $size = Size::Md;
+    public string $name = '';
 
     public ?Color $color = null;
 
@@ -26,20 +28,6 @@ class Icon extends Component
         $icon->name = Wire::scalar($name);
 
         return $icon;
-    }
-
-    public function size(Size $size): static
-    {
-        $this->size = $size;
-
-        return $this;
-    }
-
-    public function color(Color $color): static
-    {
-        $this->color = $color;
-
-        return $this;
     }
 
     public function class(string $class): static

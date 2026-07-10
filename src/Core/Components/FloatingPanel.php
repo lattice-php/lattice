@@ -4,12 +4,13 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Core\Concerns\HasOptionalLabel;
 use Lattice\Lattice\Core\Enums\FloatingPlacement;
 
 #[AsComponent('floating-panel')]
 class FloatingPanel extends ContainerComponent
 {
-    public ?string $label = null;
+    use HasOptionalLabel;
 
     public FloatingPlacement $placement = FloatingPlacement::BottomEnd;
 
@@ -23,13 +24,6 @@ class FloatingPanel extends ContainerComponent
     public static function make(?string $key = null): static
     {
         return new static($key);
-    }
-
-    public function label(string $label): static
-    {
-        $this->label = $label;
-
-        return $this;
     }
 
     public function placement(FloatingPlacement $placement): static

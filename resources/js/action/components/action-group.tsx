@@ -8,10 +8,12 @@ import {
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { useT } from "@lattice-php/lattice/i18n";
 import { ActionMenuProvider } from "./action-menu-context";
 
 const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, node }) => {
-  const label = node.props.label;
+  const { t } = useT("lattice");
+  const label = node.props.label ?? t("common.action-group.label", "Actions");
   const orientation = node.props.orientation;
 
   if (orientation) {
