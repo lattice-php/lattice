@@ -4,7 +4,8 @@
 #
 # The generated-types and docs-fixtures diffs are intentionally left to CI: a local run
 # regenerates resources/js/types/generated.ts with a different property ordering than main,
-# so a local diff check would fail spuriously.
+# so a local diff check would fail spuriously. Pest Browser stays CI-only because it
+# needs the built workbench assets and Playwright browsers.
 set -e
 
 root="$(git rev-parse --show-toplevel)"

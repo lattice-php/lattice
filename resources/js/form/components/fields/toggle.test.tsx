@@ -1,18 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
 import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { ToggleComponent } from "./toggle";
 
-function renderField(node: Node<"field.toggle">, initial: Record<string, unknown> = {}) {
-  return render(
-    <FormValuesProvider initial={initial}>
-      <ToggleComponent node={node}>{null}</ToggleComponent>
-    </FormValuesProvider>,
-  );
-}
+const renderField = createFieldRenderer(ToggleComponent);
 
 describe("ToggleComponent", () => {
   it("renders helper text and toggles a boolean value", () => {

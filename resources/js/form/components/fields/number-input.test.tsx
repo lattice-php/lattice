@@ -1,17 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
-import { fakeNode } from "@lattice-php/lattice/test-support";
-import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
+import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
 import { NumberInputComponent } from "./number-input";
 
-function renderField(node: Node<"field.number-input">, initial: Record<string, unknown> = {}) {
-  return render(
-    <FormValuesProvider initial={initial}>
-      <NumberInputComponent node={node}>{null}</NumberInputComponent>
-    </FormValuesProvider>,
-  );
-}
+const renderField = createFieldRenderer(NumberInputComponent);
 
 describe("NumberInputComponent", () => {
   it("renders a number input and writes to the store", () => {

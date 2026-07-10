@@ -9,10 +9,34 @@ coverage:
       default:
         target: 90%
         threshold: 1%
+      javascript:
+        target: 90%
+        threshold: 1%
+        flags:
+          - vitest
+          - vitest-browser
+        paths:
+          - resources/js
     patch:
       default:
         target: 80%
         threshold: 1%
+      javascript:
+        target: 80%
+        threshold: 1%
+        flags:
+          - vitest
+          - vitest-browser
+        paths:
+          - resources/js
+
+flags:
+  vitest:
+    paths:
+      - resources/js
+  vitest-browser:
+    paths:
+      - resources/js
 
 comment:
   after_n_builds: 3

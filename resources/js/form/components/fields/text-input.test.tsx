@@ -1,17 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
-import { fakeNode } from "@lattice-php/lattice/test-support";
-import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
+import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
 import { TextInputComponent } from "./text-input";
 
-function renderField(node: Node<"field.text-input">, initial: Record<string, unknown> = {}) {
-  return render(
-    <FormValuesProvider initial={initial}>
-      <TextInputComponent node={node}>{null}</TextInputComponent>
-    </FormValuesProvider>,
-  );
-}
+const renderField = createFieldRenderer(TextInputComponent);
 
 describe("TextInputComponent conditions", () => {
   it("hides when its visible condition fails", () => {

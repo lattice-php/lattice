@@ -1,18 +1,10 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
 import { setLocale } from "@lattice-php/lattice/i18n/locale";
-import { fakeNode } from "@lattice-php/lattice/test-support";
-import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
+import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
 import { DateInputComponent } from "./date-input";
 
-function renderField(node: Node<"field.date-input">, initial: Record<string, unknown> = {}) {
-  return render(
-    <FormValuesProvider initial={initial}>
-      <DateInputComponent node={node}>{null}</DateInputComponent>
-    </FormValuesProvider>,
-  );
-}
+const renderField = createFieldRenderer(DateInputComponent);
 
 async function findNamedInput(name: string): Promise<HTMLInputElement> {
   let input: HTMLInputElement | null = null;
