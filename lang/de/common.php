@@ -12,6 +12,9 @@ return [
     'copied' => 'Kopiert',
     'copyValue' => ':label kopieren',
     'copiedValue' => ':label kopiert',
+    'action-group' => [
+        'label' => 'Aktionen',
+    ],
     'chat' => [
         'launcher' => 'Chat',
         'title' => 'Chat',

@@ -451,8 +451,10 @@ describe("FileUploadComponent image previews", () => {
     );
   });
 
-  it("renders nothing when hidden", () => {
-    const { container } = renderUpload({ props: { hidden: true } });
+  it("renders nothing when its visible condition fails", () => {
+    const { container } = renderUpload({
+      props: { conditions: { visible: [{ field: "flag", operator: "eq", value: "yes" }] } },
+    });
 
     expect(container).toBeEmptyDOMElement();
   });

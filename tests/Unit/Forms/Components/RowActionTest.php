@@ -13,13 +13,16 @@ function serializeRowAction(RowAction $action): array
 }
 
 it('serialises the built-in duplicate action with client-defaulted label and icon', function (): void {
-    expect(serializeRowAction(RowAction::duplicate()))->toBe([
-        'type' => 'duplicate',
-        'key' => 'duplicate',
-        'label' => null,
-        'icon' => null,
-        'destructive' => false,
-    ]);
+    $wire = serializeRowAction(RowAction::duplicate());
+
+    expect($wire)->toHaveCount(5)
+        ->and($wire)->toMatchArray([
+            'type' => 'duplicate',
+            'key' => 'duplicate',
+            'label' => null,
+            'icon' => null,
+            'destructive' => false,
+        ]);
 });
 
 it('marks the remove action destructive by default', function (): void {

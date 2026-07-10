@@ -79,7 +79,8 @@ function labelWithTextAffixes(label: string, prefix?: Affix | null, suffix?: Aff
 
 const LinkComponent: RendererComponent<"link"> = ({ node }) => {
   const isMenuItem = useActionMenu();
-  const { icon, label, prefix, suffix } = node.props;
+  const { icon, label: rawLabel, prefix, suffix } = node.props;
+  const label = rawLabel ?? "";
   const behavior = useClickBehavior(node.props);
   const className = isMenuItem ? actionMenuItemClassName : undefined;
   const testId = nodeIdentity(node);

@@ -17,8 +17,7 @@ use Lattice\Lattice\Effects\Contracts\Effect;
 trait Triggerable
 {
     use HasHttpMethod;
-
-    public string $label = '';
+    use HasLabel;
 
     public ?string $href = null;
 
@@ -32,13 +31,6 @@ trait Triggerable
      * @var array<int, Effect>
      */
     public array $effects = [];
-
-    public function label(string $label): static
-    {
-        $this->label = $label;
-
-        return $this;
-    }
 
     public function href(string $href): static
     {

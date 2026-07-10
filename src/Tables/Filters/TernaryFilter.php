@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Tables\Filters;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Lattice\Lattice\Facades\Evaluate;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\FormData;
@@ -109,7 +110,10 @@ class TernaryFilter extends Filter
         $query = $state ? $this->trueQuery : $this->falseQuery;
 
         if ($query instanceof Closure) {
-            Evaluate::resolve($query, Evaluate::context()->typed($builder::class, $builder));
+            Evaluate::resolve(
+                $query,
+                Evaluate::context()->typed($builder::class, $builder)->typed(Request::class, request()),
+            );
 
             return;
         }

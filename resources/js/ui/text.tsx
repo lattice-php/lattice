@@ -38,7 +38,7 @@ const TextComponent: RendererComponent<"text"> = ({ node }) => {
         "m-0",
         "max-w-2xl",
         textAlignments[align] ?? textAlignments.left,
-        textColors[node.props.color],
+        textColors[node.props.color ?? "muted"],
         textSizes[node.props.size],
       )}
     >

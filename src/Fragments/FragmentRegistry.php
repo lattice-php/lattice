@@ -22,6 +22,11 @@ final class FragmentRegistry extends DefinitionRegistry
     public function lazyComponent(string $fragment, array $context = []): FragmentComponent
     {
         $key = $this->registeredKeyFor($fragment);
+        $definition = $this->make($fragment)->withContext($context);
+
+        if (! $this->authorizedToRender($definition)) {
+            return FragmentComponent::make($key)->hidden();
+        }
 
         $component = FragmentComponent::make($key)
             ->signedAs($key)

@@ -9,7 +9,6 @@
             "disabled": false,
             "editablePrefill": false,
             "helperText": null,
-            "hidden": false,
             "label": "Account type",
             "name": "type",
             "options": [
@@ -51,7 +50,6 @@
             "disabled": false,
             "editablePrefill": false,
             "helperText": null,
-            "hidden": false,
             "label": "VAT ID",
             "name": "vat",
             "placeholder": null,

@@ -9,7 +9,6 @@
             "disabled": false,
             "editablePrefill": false,
             "helperText": null,
-            "hidden": false,
             "label": "Plan",
             "name": "plan",
             "options": [

@@ -98,14 +98,23 @@ server-set `->value()` (as in the example below).
 
 ## Hidden and visible
 
-`->hidden()` removes the field from the rendered form; `->visible()` is the inverse and reads more
-naturally when toggling on a condition. Both accept a boolean.
+`->hidden()` drops the field from the rendered form entirely — it is absent from the payload and its
+validation is skipped, exactly like every other Lattice component's shared render gate. `->visible()`
+is the inverse and reads more naturally when toggling on a condition. Both accept a boolean or a
+closure resolved once per request with [Lattice's closure evaluation](/core/closure-evaluation/)
+utilities.
 
 ```php
 TextInput::make('internal_note', 'Internal note')->hidden();
 
 TextInput::make('internal_note', 'Internal note')->visible($user->isAdmin());
+
+TextInput::make('internal_note', 'Internal note')->visible(fn ($user) => $user?->isAdmin() ?? false);
 ```
+
+This is a one-time server decision, not a reactive one — for a field that should show or hide as the
+user fills in the rest of the form, use [`->visibleWhen()`](/forms/conditional-fields/#visible-when)
+instead.
 
 To show or hide a field based on another field's value, see
 [Conditional fields](/forms/conditional-fields/).

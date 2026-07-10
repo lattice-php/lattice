@@ -10,8 +10,10 @@ use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasIcon;
+use Lattice\Lattice\Core\Concerns\HasLabel;
 use Lattice\Lattice\Core\Concerns\HasVariant;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
@@ -21,12 +23,11 @@ class Action extends Component
 {
     use HasHttpMethod;
     use HasIcon;
+    use HasLabel;
     use HasVariant;
     use IsInteractive;
 
     public ?string $endpoint = null;
-
-    public ?string $label = null;
 
     /**
      * The confirmation dialog shown before the action runs, or `null` until
@@ -58,13 +59,6 @@ class Action extends Component
     public function endpoint(string $endpoint): static
     {
         $this->endpoint = $endpoint;
-
-        return $this;
-    }
-
-    public function label(string $label): static
-    {
-        $this->label = $label;
 
         return $this;
     }
@@ -114,6 +108,24 @@ class Action extends Component
     protected function stripLazyFormSchema(array $data): array
     {
         if ($this->lazyForm) {
+            $data['props']['form'] = null;
+        }
+
+        return $data;
+    }
+
+    /**
+     * An unauthorized (or explicitly hidden) attached form has no filter point of its own
+     * once embedded in `props.form` — it never reaches a collect-time pass like
+     * {@see FiltersRenderableComponents}. Drop it here, at the seam where it is embedded.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 250)]
+    protected function stripUnauthorizedForm(array $data): array
+    {
+        if ($this->form instanceof Form && ! $this->form->shouldRender()) {
             $data['props']['form'] = null;
         }
 

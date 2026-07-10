@@ -38,7 +38,7 @@ test('stack serializes enums direction and key wire-identically', function (): v
                 'float' => null,
             ],
             'schema' => [
-                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => 'muted', 'copyable' => false]],
+                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => null, 'copyable' => false]],
             ],
         ]);
 });
@@ -84,7 +84,7 @@ test('modal serializes id title description and children', function (): void {
                 'ref' => null,
             ],
             'schema' => [
-                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => 'muted', 'copyable' => false]],
+                ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => null, 'copyable' => false]],
             ],
         ]);
 });
@@ -125,12 +125,12 @@ test('tabs serialize defaultValue queryKey and computed activeValue', function (
                 [
                     'type' => 'tab',
                     'props' => ['label' => 'Profile', 'value' => 'profile', 'confirm' => null],
-                    'schema' => [['type' => 'text', 'props' => ['text' => 'Profile form', 'align' => null, 'size' => 'md', 'color' => 'muted', 'copyable' => false]]],
+                    'schema' => [['type' => 'text', 'props' => ['text' => 'Profile form', 'align' => null, 'size' => 'md', 'color' => null, 'copyable' => false]]],
                 ],
                 [
                     'type' => 'tab',
                     'props' => ['label' => 'Security', 'value' => 'security', 'confirm' => null],
-                    'schema' => [['type' => 'text', 'props' => ['text' => 'Security form', 'align' => null, 'size' => 'md', 'color' => 'muted', 'copyable' => false]]],
+                    'schema' => [['type' => 'text', 'props' => ['text' => 'Security form', 'align' => null, 'size' => 'md', 'color' => null, 'copyable' => false]]],
                 ],
             ],
         ]);
@@ -207,13 +207,16 @@ it('serializes the justify prop', function (): void {
 });
 
 it('serializes default text styling props', function (): void {
-    expect(wire(Text::make('Default copy'))['props'])->toBe([
-        'text' => 'Default copy',
-        'align' => null,
-        'size' => 'md',
-        'color' => 'muted',
-        'copyable' => false,
-    ]);
+    $props = wire(Text::make('Default copy'))['props'];
+
+    expect($props)->toHaveCount(5)
+        ->and($props)->toMatchArray([
+            'text' => 'Default copy',
+            'align' => null,
+            'size' => 'md',
+            'color' => null,
+            'copyable' => false,
+        ]);
 });
 
 it('serializes text size and color styling', function (): void {
@@ -225,7 +228,8 @@ it('serializes text size and color styling', function (): void {
     );
 
     expect($data['type'])->toBe('text')
-        ->and($data['props'])->toBe([
+        ->and($data['props'])->toHaveCount(5)
+        ->and($data['props'])->toMatchArray([
             'text' => 'Manuel Christlieb',
             'align' => 'center',
             'size' => 'sm',
@@ -244,7 +248,8 @@ it('serializes an icon with name, size, color and class', function (): void {
     );
 
     expect($data['type'])->toBe('icon')
-        ->and($data['props'])->toBe([
+        ->and($data['props'])->toHaveCount(4)
+        ->and($data['props'])->toMatchArray([
             'name' => 'house',
             'size' => 'lg',
             'color' => 'danger',
@@ -256,7 +261,8 @@ it('resolves a backed enum name and defaults size to md', function (): void {
     $data = wire(Icon::make(IconName::Send));
 
     expect($data['type'])->toBe('icon')
-        ->and($data['props'])->toBe([
+        ->and($data['props'])->toHaveCount(4)
+        ->and($data['props'])->toMatchArray([
             'name' => 'send',
             'size' => 'md',
             'color' => null,

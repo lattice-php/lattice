@@ -9,7 +9,6 @@
             "disabled": false,
             "editablePrefill": false,
             "helperText": null,
-            "hidden": false,
             "label": "Country",
             "name": "country",
             "options": [
@@ -55,7 +54,6 @@
             "disabled": false,
             "editablePrefill": false,
             "helperText": null,
-            "hidden": false,
             "label": "VAT ID",
             "name": "vat",
             "placeholder": null,

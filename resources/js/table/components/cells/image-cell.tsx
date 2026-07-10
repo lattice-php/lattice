@@ -12,7 +12,7 @@ export const ImageCell: ColumnCellComponent<"column.image"> = ({ column, props, 
 
   return (
     <img
-      alt={column.props.label}
+      alt={column.props.label ?? undefined}
       src={url}
       width={size}
       height={size}

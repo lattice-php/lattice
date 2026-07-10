@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Components\Concerns;
 
+use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Forms\Components\RowAction;
 
 trait HasRowActions
 {
+    use FiltersRenderableComponents;
+
     /**
      * Null until declared, so the client can tell "undeclared" (use the default
      * menu) apart from an explicit empty list (no row actions at all).
@@ -20,7 +23,7 @@ trait HasRowActions
      */
     public function rowActions(array $actions): static
     {
-        $this->rowActions = $actions;
+        $this->rowActions = array_values($this->renderableComponents($actions));
 
         return $this;
     }

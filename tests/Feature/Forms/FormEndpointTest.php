@@ -49,7 +49,7 @@ test('registered forms serialize their configured endpoint and isolated error ba
                         'text' => 'Profile details',
                         'align' => null,
                         'size' => 'md',
-                        'color' => 'muted',
+                        'color' => null,
                         'copyable' => false,
                     ],
                 ],
@@ -107,6 +107,32 @@ test('registered forms receive the current request while serializing definitions
         ->assertJsonPath('schema.0.props.text', 'Request aware');
 });
 
+test('a gate-hidden field is omitted from the form payload and its validation is skipped', function (): void {
+    Lattice::forms([WorkbenchGateHiddenForm::class]);
+
+    $schema = wire(Form::use(WorkbenchGateHiddenForm::class))['schema'];
+
+    expect(array_map(fn (array $field): mixed => $field['props']['name'], $schema))->toBe(['name']);
+
+    $this->submitForm(WorkbenchGateHiddenForm::class, ['name' => 'Taylor'])
+        ->assertOk();
+
+    expect(session('handled-gate-hidden-form'))->toBe('Taylor');
+});
+
+test('a field hidden by the condition DSL stays in the payload but its validation is still skipped', function (): void {
+    Lattice::forms([WorkbenchConditionHiddenForm::class]);
+
+    $schema = wire(Form::use(WorkbenchConditionHiddenForm::class))['schema'];
+
+    expect(array_map(fn (array $field): mixed => $field['props']['name'], $schema))->toBe(['type', 'vat']);
+
+    $this->submitForm(WorkbenchConditionHiddenForm::class, ['type' => 'individual'])
+        ->assertOk();
+
+    expect(session('handled-condition-hidden-form'))->toBe('individual');
+});
+
 #[AsForm('settings.profile')]
 class WorkbenchProfileForm extends FormDefinition
 {
@@ -162,5 +188,43 @@ class WorkbenchRequestAwareForm extends FormDefinition
     public function handle(Request $request): Response
     {
         return response()->noContent();
+    }
+}
+
+#[AsForm('workbench.gate-hidden')]
+class WorkbenchGateHiddenForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form->schema([
+            TextInput::make('name', 'Name'),
+            TextInput::make('secret', 'Secret')->hidden()->required(),
+        ]);
+    }
+
+    public function handle(Request $request): Response
+    {
+        $request->session()->put('handled-gate-hidden-form', $request->string('name')->toString());
+
+        return response()->json(['handled' => true]);
+    }
+}
+
+#[AsForm('workbench.condition-hidden')]
+class WorkbenchConditionHiddenForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form->schema([
+            TextInput::make('type', 'Type'),
+            TextInput::make('vat', 'VAT ID')->visibleWhen('type', 'business')->required(),
+        ]);
+    }
+
+    public function handle(Request $request): Response
+    {
+        $request->session()->put('handled-condition-hidden-form', $request->string('type')->toString());
+
+        return response()->json(['handled' => true]);
     }
 }

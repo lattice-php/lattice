@@ -243,17 +243,17 @@ test('private serialization hooks are ignored', function (): void {
     ]);
 });
 
-test('components can opt out of rendering with when', function (): void {
+test('components can opt out of rendering with hidden', function (): void {
     $page = new class extends Page
     {
         public function render(PageSchema $schema): PageSchema
         {
             return $schema->schema([
                 Text::make('Visible root'),
-                Text::make('Hidden root')->when(false),
+                Text::make('Hidden root')->hidden(),
                 Stack::make('nested')->schema([
                     Text::make('Visible child'),
-                    Text::make('Hidden child')->when(false),
+                    Text::make('Hidden child')->hidden(),
                 ]),
             ]);
         }
@@ -325,7 +325,7 @@ test('modals serialize composable children for action driven dialogs', function 
                         'text' => 'Recovery codes will appear here.',
                         'align' => null,
                         'size' => 'md',
-                        'color' => 'muted',
+                        'color' => null,
                         'copyable' => false,
                     ],
                 ],
@@ -357,7 +357,7 @@ test('links and horizontal stacks serialize as separate composable primitives', 
                         'text' => 'Need access?',
                         'align' => null,
                         'size' => 'md',
-                        'color' => 'muted',
+                        'color' => null,
                         'copyable' => false,
                     ],
                 ],
@@ -402,7 +402,7 @@ test('tabs ignore hidden tab children when resolving their active value', functi
         ->defaultValue('security')
         ->schema([
             Tab::make('profile', 'Profile'),
-            Tab::make('security', 'Security')->when(false),
+            Tab::make('security', 'Security')->hidden(),
         ]));
 
     expect($tabs['props']['activeValue'])->toBe('profile')

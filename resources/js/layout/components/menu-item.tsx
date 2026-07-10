@@ -29,7 +29,8 @@ function schemaContainsPath(schema: Schema | undefined, path: string): boolean {
 
 const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) => {
   const collapsed = useSidebarCollapsed();
-  const { icon, label, prefix, suffix } = node.props;
+  const { icon, label: rawLabel, prefix, suffix } = node.props;
+  const label = rawLabel ?? "";
   const iconOnly = Boolean(icon);
   const flyoutIcon = icon ?? prefix?.icon ?? null;
   const currentPath = usePage().url.split("?")[0];

@@ -23,6 +23,10 @@ final class ActionRegistry extends DefinitionRegistry
 
         $definition = $this->make($action)->withContext($context);
 
+        if (! $this->authorizedToRender($definition)) {
+            return ActionComponent::make($key)->hidden();
+        }
+
         $component = $definition->definition(ActionComponent::make($key))
             ->signedAs($key)
             ->context($context)

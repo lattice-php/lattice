@@ -51,6 +51,10 @@ final class ActionDescriptor
             return null;
         }
 
+        if (! $action->shouldRender()) {
+            return null;
+        }
+
         if (($descriptor['label'] ?? null) !== null) {
             $action->label($descriptor['label']);
         }

@@ -9,6 +9,7 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\Columns\ColumnFilterOption;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
+use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\Filters\SelectFilter;
 use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
@@ -109,6 +110,36 @@ test('a table rejects searching a filter that is not searchable', function (): v
 
     $this->loadTable(WorkbenchFilteredProductsTable::class, ['_search' => 'filter:status', 'q' => 'a'])
         ->assertUnprocessable();
+});
+
+test('a table omits a filter hidden via visible(false) from the serialized filters', function (): void {
+    $table = Table::make('t')->filters([
+        SelectFilter::make('status')->options([SelectFilter::option('Active', 'active')]),
+        SelectFilter::make('secret')->options([SelectFilter::option('Active', 'active')])->visible(false),
+    ]);
+
+    $keys = array_map(fn (Filter $filter): string => $filter->key(), $table->filters);
+
+    expect($keys)->toBe(['status']);
+});
+
+test('a table omits a filter hidden via a visibility closure from the serialized filters', function (): void {
+    $table = Table::make('t')->filters([
+        SelectFilter::make('status')->options([SelectFilter::option('Active', 'active')]),
+        SelectFilter::make('secret')->options([SelectFilter::option('Active', 'active')])->visible(fn (): bool => false),
+    ]);
+
+    $keys = array_map(fn (Filter $filter): string => $filter->key(), $table->filters);
+
+    expect($keys)->toBe(['status']);
+});
+
+test('a table serializes filters as an empty array, not null, when every declared filter is hidden', function (): void {
+    $wire = wire(Table::make('t')->filters([
+        SelectFilter::make('secret')->options([SelectFilter::option('Active', 'active')])->visible(false),
+    ]));
+
+    expect($wire['props']['filters'])->toBe([]);
 });
 
 test('a table accepts column filter clause option operators', function (): void {

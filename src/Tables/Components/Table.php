@@ -116,7 +116,7 @@ class Table extends Component
      */
     public function filters(array $filters): static
     {
-        $this->filters = array_values($filters);
+        $this->filters = array_values($this->renderableComponents($filters));
 
         return $this;
     }

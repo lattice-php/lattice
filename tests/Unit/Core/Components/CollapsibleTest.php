@@ -41,7 +41,7 @@ it('omits trigger components hidden by a condition', function (): void {
     $node = wire(
         Collapsible::make()->trigger([
             Text::make('Visible'),
-            Text::make('Hidden')->when(false),
+            Text::make('Hidden')->hidden(),
         ]),
     );
 

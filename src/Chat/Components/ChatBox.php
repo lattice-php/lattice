@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Chat\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Core\Concerns\HasPlaceholder;
 use Lattice\Lattice\Remote\Components\RemoteComponent;
 
 /**
@@ -14,11 +15,11 @@ use Lattice\Lattice\Remote\Components\RemoteComponent;
 #[AsComponent('chat.box')]
 class ChatBox extends RemoteComponent
 {
+    use HasPlaceholder;
+
     public ?string $streamEndpoint = null;
 
     public ?string $historyEndpoint = null;
-
-    public ?string $placeholder = null;
 
     public ?string $title = null;
 
@@ -39,13 +40,6 @@ class ChatBox extends RemoteComponent
     public function historyEndpoint(string $historyEndpoint): static
     {
         $this->historyEndpoint = $historyEndpoint;
-
-        return $this;
-    }
-
-    public function placeholder(string $placeholder): static
-    {
-        $this->placeholder = $placeholder;
 
         return $this;
     }

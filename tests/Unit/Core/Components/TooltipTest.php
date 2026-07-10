@@ -25,7 +25,7 @@ it('omits trigger components hidden by a condition', function (): void {
     $node = wire(
         Tooltip::make()->content('x')->trigger([
             Badge::make('Visible'),
-            Badge::make('Hidden')->when(false),
+            Badge::make('Hidden')->hidden(),
         ]),
     );
 

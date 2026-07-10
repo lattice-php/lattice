@@ -1,7 +1,12 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Lattice\Lattice\Actions\ActionDefinition;
+use Lattice\Lattice\Actions\ActionResult;
+use Lattice\Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Notifications\Notification;
 use Workbench\App\Actions\MarkNotificationSeenAction;
@@ -54,6 +59,22 @@ test('index materializes action descriptors into signed action nodes', function 
         ->assertJsonPath('notifications.0.actions.1.type', 'link');
 });
 
+test('index omits an action descriptor whose action denies authorization', function (): void {
+    Lattice::actions([NotificationIndexTestDeniedAction::class]);
+    $user = workbenchTestUser();
+    Notification::make()->title('Order shipped')
+        ->action(NotificationIndexTestDeniedAction::class, ['order' => 1234])
+        ->link('Track', '/orders/1234/track')
+        ->send($user);
+
+    actingAs($user);
+
+    getJson('/lattice/notifications')
+        ->assertOk()
+        ->assertJsonCount(1, 'notifications.0.actions')
+        ->assertJsonPath('notifications.0.actions.0.type', 'link');
+});
+
 test('index gracefully drops an action descriptor referencing an unregistered action', function (): void {
     $user = workbenchTestUser();
     Notification::make()->title('Order shipped')
@@ -82,3 +103,23 @@ test('index renders a legacy non-lattice notification row with a best-effort fal
         ->assertOk()
         ->assertJsonPath('notifications.0.title', 'Legacy message');
 });
+
+#[AsAction('notification-index-test.denied')]
+final class NotificationIndexTestDeniedAction extends ActionDefinition
+{
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Denied');
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        return ActionResult::success();
+    }
+
+    #[Override]
+    public function authorize(Request $request): bool
+    {
+        return false;
+    }
+}

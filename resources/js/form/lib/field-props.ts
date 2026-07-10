@@ -13,7 +13,6 @@ type FieldProps = {
   dependsOnKeys?: string[] | null;
   disabled?: boolean | null;
   helperText?: string | null;
-  hidden?: boolean | null;
   label?: string | null;
   name?: string;
   editablePrefill?: boolean | null;

@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Tables\Filters;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Lattice\Lattice\Facades\Evaluate;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Attributes\AsFilter;
@@ -41,7 +42,10 @@ class ToggleFilter extends Filter
         if ($this->query instanceof Closure) {
             Evaluate::resolve(
                 $this->query,
-                Evaluate::context()->typed($builder::class, $builder)->named('value', $data->get('value')),
+                Evaluate::context()
+                    ->typed($builder::class, $builder)
+                    ->typed(Request::class, request())
+                    ->named('value', $data->get('value')),
             );
 
             return;

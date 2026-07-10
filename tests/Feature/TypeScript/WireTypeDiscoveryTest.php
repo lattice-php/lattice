@@ -13,6 +13,8 @@ use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleColumn;
+use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleDualMarkedA;
+use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleDualMarkedB;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleUnattributed;
 
 it('classifies the src tree into enums, value objects, components and effects', function (): void {
@@ -61,6 +63,19 @@ it('excludes classes without the AsComponent attribute from component discovery'
 
     $classes = collect($manifest->components)->pluck('class')->all();
     expect($classes)->not->toContain(SampleUnattributed::class);
+});
+
+it('classifies dual-marked classes as components regardless of attribute declaration order', function (): void {
+    $manifest = new WireTypeDiscovery()->discover(__DIR__.'/../../Fixtures/TypeScript');
+
+    $classes = collect($manifest->components)->pluck('class')->all();
+
+    expect($classes)->toContain(SampleDualMarkedA::class)
+        ->and($classes)->toContain(SampleDualMarkedB::class)
+        ->and($manifest->valueObjects)->not->toContain(SampleDualMarkedA::class)
+        ->and($manifest->valueObjects)->not->toContain(SampleDualMarkedB::class)
+        ->and($manifest->enums)->not->toContain(SampleDualMarkedA::class)
+        ->and($manifest->enums)->not->toContain(SampleDualMarkedB::class);
 });
 
 it('derives the domain from the namespace segment before Components', function (): void {

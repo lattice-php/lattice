@@ -21,9 +21,13 @@ final class BulkActionRegistry extends DefinitionRegistry
     public function component(string $bulkAction, array $context = []): ActionComponent
     {
         $key = $this->registeredKeyFor($bulkAction);
+        $definition = $this->make($bulkAction)->withContext($context);
 
-        return $this->make($bulkAction)
-            ->withContext($context)
+        if (! $this->authorizedToRender($definition)) {
+            return BulkActionComponent::make($key)->hidden();
+        }
+
+        return $definition
             ->definition(BulkActionComponent::make($key))
             ->signedAs($key)
             ->context($context)

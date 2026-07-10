@@ -10,7 +10,7 @@ export type Action = {
   variant: ButtonVariant | null;
 };
 export type ActionGroup = {
-  label: string;
+  label: string | null;
   orientation: Orientation | null;
   ref: string | null;
 };
@@ -33,7 +33,7 @@ export type BadgeColumn = {
   colors: Record<string | number, string> | null;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -42,7 +42,7 @@ export type BooleanColumn = {
   align: ColumnAlign;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -70,7 +70,6 @@ export type Builder = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   layout: RowLayout;
   maxItems: number | null;
@@ -104,7 +103,7 @@ export type Button = {
   effects: Effect[];
   href: string | null;
   icon: string | null;
-  label: string;
+  label: string | null;
   method: HttpMethod | null;
   variant: ButtonVariant | null;
 };
@@ -187,7 +186,6 @@ export type Checkbox = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   prefillRefreshOn: string[] | null;
@@ -212,7 +210,6 @@ export type Choice = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   options: Option[];
@@ -368,7 +365,6 @@ export type DateInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   max: string | null;
   min: string | null;
@@ -382,7 +378,7 @@ export type DateInput = {
   value: unknown;
 };
 export type DateRangeFilter = {
-  label: string;
+  label: string | null;
 };
 export type DateTimeInput = {
   autoFocus: boolean;
@@ -399,7 +395,6 @@ export type DateTimeInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   max: string | null;
   min: string | null;
@@ -479,7 +474,6 @@ export type FileUpload = {
       }[]
     | null;
   helperText: string | null;
-  hidden: boolean;
   image: boolean;
   label: string | null;
   maxFiles: number | null;
@@ -604,7 +598,6 @@ export type HiddenInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   prefillRefreshOn: string[] | null;
@@ -635,7 +628,7 @@ export type IconColumn = {
   hiddenByDefault: boolean;
   icon: string | null;
   icons: Record<string | number, string> | null;
-  label: string;
+  label: string | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -645,7 +638,7 @@ export type ImageColumn = {
   circular: boolean;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   size: number | null;
   sortable: boolean;
   toggleable: boolean;
@@ -657,7 +650,7 @@ export type Link = {
   effects: Effect[];
   href: string | null;
   icon: string | null;
-  label: string;
+  label: string | null;
   method: HttpMethod | null;
   prefix: Affix | null;
   suffix: Affix | null;
@@ -678,7 +671,7 @@ export type MenuItem = {
   effects: Effect[];
   href: string | null;
   icon: string | null;
-  label: string;
+  label: string | null;
   method: HttpMethod | null;
   prefix: Affix | null;
   suffix: Affix | null;
@@ -696,7 +689,7 @@ export type MoneyColumn = {
   currencyField: string | null;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
   sortable: boolean;
@@ -781,7 +774,7 @@ export type NumberColumn = {
   compact: boolean;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
   sortable: boolean;
@@ -827,7 +820,6 @@ export type NumberInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   max: number | null;
   min: number | null;
@@ -883,7 +875,6 @@ export type OtpInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   length: number;
   name: string;
@@ -918,7 +909,6 @@ export type PasswordInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   labelAction: {
     href: string;
@@ -973,7 +963,6 @@ export type Repeater = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   itemLabel: string | null;
   label: string | null;
   layout: RowLayout;
@@ -1007,7 +996,6 @@ export type RichEditor = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   placeholder: string | null;
@@ -1021,9 +1009,9 @@ export type RichEditor = {
 export type RowAction = {
   type: RowActionType;
   key: string;
-  label: string | null;
-  icon: string | null;
   destructive: boolean;
+  icon: string | null;
+  label: string | null;
 };
 export type RowActionType = "duplicate" | "remove";
 export type RowLayout = "stack" | "table";
@@ -1058,7 +1046,6 @@ export type Select = {
   editablePrefill: boolean;
   emptyLabel: string;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   multiple: boolean;
   name: string;
@@ -1075,7 +1062,7 @@ export type Select = {
   value: unknown;
 };
 export type SelectFilter = {
-  label: string;
+  label: string | null;
   multiple: boolean;
   options: Option[];
   placeholder: string | null;
@@ -1101,7 +1088,7 @@ export type StackColumn = {
   align: ColumnAlign;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -1162,13 +1149,13 @@ export type Tabs = {
 export type TabsAlignment = "start" | "center" | "end" | "stretch";
 export type TernaryFilter = {
   falseLabel: string;
-  label: string;
+  label: string | null;
   placeholder: string;
   trueLabel: string;
 };
 export type Text = {
   align: Align | null;
-  color: Color;
+  color: Color | null;
   copyable: boolean;
   size: Size;
   text: string;
@@ -1185,7 +1172,7 @@ export type TextColumn = {
   } | null;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
-  label: string;
+  label: string | null;
   link: {
     href: string | null;
     external: boolean;
@@ -1210,7 +1197,6 @@ export type TextInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   placeholder: string | null;
@@ -1242,7 +1228,6 @@ export type Textarea = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   placeholder: string | null;
@@ -1269,7 +1254,6 @@ export type TimeInput = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   max: string | null;
   min: string | null;
@@ -1308,7 +1292,6 @@ export type Toggle = {
   disabled: boolean;
   editablePrefill: boolean;
   helperText: string | null;
-  hidden: boolean;
   label: string | null;
   name: string;
   prefillRefreshOn: string[] | null;
@@ -1320,7 +1303,7 @@ export type Toggle = {
   value: unknown;
 };
 export type ToggleFilter = {
-  label: string;
+  label: string | null;
 };
 export type ToggleSidebarEffect = {
   readonly target: string | null;

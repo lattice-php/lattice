@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Forms\Components;
 use Closure;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Components\Component;
+use Lattice\Lattice\Core\Concerns\HasLabel;
 use Lattice\Lattice\Core\Concerns\HasTooltip;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
 use Lattice\Lattice\Core\Enums\Op;
@@ -17,19 +18,16 @@ use Lattice\Lattice\Support\Evaluation\EvaluationContext;
 
 abstract class Field extends Component
 {
+    use HasLabel;
     use HasTooltip;
 
     public string $name = '';
-
-    public ?string $label = null;
 
     public ?string $helperText = null;
 
     public ColumnWidth $columnWidth = ColumnWidth::Md;
 
     public mixed $value = null;
-
-    public bool $hidden = false;
 
     public bool $required = false;
 
@@ -117,13 +115,6 @@ abstract class Field extends Component
     public function name(): string
     {
         return $this->name;
-    }
-
-    public function label(string $label): static
-    {
-        $this->label = $label;
-
-        return $this;
     }
 
     public function columnWidth(ColumnWidth $width): static
@@ -311,20 +302,6 @@ abstract class Field extends Component
         return $this;
     }
 
-    public function hidden(bool $hidden = true): static
-    {
-        $this->hidden = $hidden;
-
-        return $this;
-    }
-
-    public function visible(bool $visible = true): static
-    {
-        $this->hidden = ! $visible;
-
-        return $this;
-    }
-
     public function required(bool $required = true): static
     {
         $this->required = $required;
@@ -468,7 +445,7 @@ abstract class Field extends Component
      */
     public function isVisible(FormData $data): bool
     {
-        return ! $this->hidden && $this->allConditionsMatch('visible', $data);
+        return $this->shouldRender() && $this->allConditionsMatch('visible', $data);
     }
 
     /**

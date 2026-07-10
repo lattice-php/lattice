@@ -9,7 +9,6 @@
             "disabled": false,
             "editablePrefill": false,
             "helperText": "Show this item publicly.",
-            "hidden": false,
             "label": "Published",
             "name": "published",
             "prefillRefreshOn": null,

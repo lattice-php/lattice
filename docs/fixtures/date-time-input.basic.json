@@ -10,7 +10,6 @@
             "disabled": false,
             "editablePrefill": false,
             "helperText": null,
-            "hidden": false,
             "label": "Starts at",
             "max": null,
             "min": null,

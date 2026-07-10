@@ -14,7 +14,6 @@ export function useDependentField(node: Node): FieldState {
   const conditionValues = scope ? { ...values, ...scope.values } : values;
 
   return evaluateConditions(props.conditions ?? undefined, conditionValues, {
-    hidden: props.hidden ?? false,
     required: props.required ?? false,
     readOnly: props.readOnly ?? false,
     disabled: props.disabled ?? false,

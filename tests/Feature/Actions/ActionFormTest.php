@@ -7,6 +7,7 @@ use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\FormActionDefinition;
 use Lattice\Lattice\Attributes\AsAction;
+use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
@@ -14,6 +15,8 @@ use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Forms\FormDefinition;
+use Symfony\Component\HttpFoundation\Response;
 
 use function Pest\Laravel\postJson;
 
@@ -192,5 +195,50 @@ class UnvalidatedRejectActionFixture extends ActionDefinition
         $request->session()->put('handled-unvalidated-reject', true);
 
         return ActionResult::success(['handled' => true]);
+    }
+}
+
+it('nulls out an unauthorized form embedded in the action props', function (): void {
+    Lattice::forms([DeniedEmbeddedFormFixture::class]);
+    Lattice::actions([ActionWithDeniedEmbeddedFormFixture::class]);
+
+    $payload = wire(ActionComponent::use(ActionWithDeniedEmbeddedFormFixture::class));
+
+    expect($payload['props']['form'])->toBeNull();
+});
+
+#[AsForm('test.denied-embedded-form')]
+class DeniedEmbeddedFormFixture extends FormDefinition
+{
+    public function definition(FormComponent $form, Request $request): FormComponent
+    {
+        return $form->schema([TextInput::make('title', 'Title')]);
+    }
+
+    public function handle(Request $request): Response
+    {
+        return new Response;
+    }
+
+    #[Override]
+    public function authorize(Request $request): bool
+    {
+        return false;
+    }
+}
+
+#[AsAction('test.action-with-denied-embedded-form')]
+class ActionWithDeniedEmbeddedFormFixture extends ActionDefinition
+{
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        $action->form = FormComponent::use(DeniedEmbeddedFormFixture::class);
+
+        return $action->label('Do it');
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        return ActionResult::success();
     }
 }

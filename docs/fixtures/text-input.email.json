@@ -10,7 +10,6 @@
             "disabled": false,
             "editablePrefill": false,
             "helperText": null,
-            "hidden": false,
             "label": "Email address",
             "name": "email",
             "placeholder": "you@example.com",

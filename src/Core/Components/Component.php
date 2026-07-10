@@ -22,11 +22,11 @@ abstract class Component implements JsonSerializable, Renderable
 
     public function __construct(protected ?string $key = null) {}
 
-    protected function wireKey(): ?string
-    {
-        return $this->key;
-    }
-
+    /**
+     * The render/reconciliation hint. Distinct from Column/Filter's `key(): string`
+     * getter, which is data identity — a different concept entirely, not unified
+     * here on purpose.
+     */
     public function key(string $key): static
     {
         $this->key = $key;

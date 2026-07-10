@@ -19,36 +19,6 @@ final readonly class FieldAssertions
     ) {}
 
     /**
-     * Asserts the field is not force-hidden via ->hidden(). It does NOT evaluate
-     * conditional visibility: a field shown only by ->visibleWhen(...) still passes
-     * here because its default `hidden` flag is null. Use assertVisibleWhen($state)
-     * to evaluate visibility for a given form state.
-     */
-    public function assertVisible(): self
-    {
-        Assert::assertNotSame(true, $this->node->prop('hidden'), sprintf(
-            'Expected field [%s] to be visible, but hidden=true.',
-            $this->name(),
-        ));
-
-        return $this;
-    }
-
-    /**
-     * Asserts the field is force-hidden via ->hidden(). It does NOT evaluate
-     * conditional visibility; use assertHiddenWhen($state) for that.
-     */
-    public function assertHidden(): self
-    {
-        Assert::assertSame(true, $this->node->prop('hidden'), sprintf(
-            'Expected field [%s] to be hidden, but hidden is not true.',
-            $this->name(),
-        ));
-
-        return $this;
-    }
-
-    /**
      * Evaluates this field's own `visible` conditions against the given form
      * state. It does not account for an ancestor (section/tab) being hidden — a
      * field visible by its own rule reports visible even inside a hidden section.
