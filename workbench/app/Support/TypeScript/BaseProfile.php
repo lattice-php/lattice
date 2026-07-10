@@ -4,14 +4,13 @@ declare(strict_types=1);
 namespace Workbench\App\Support\TypeScript;
 
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
-use Lattice\Lattice\Effects\EffectRegistry;
 use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
+use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 
 /**
@@ -62,10 +61,10 @@ final class BaseProfile implements TypeScriptProfile
         $packageRoot = dirname(__DIR__, 4);
         $src = $packageRoot.'/src';
 
-        $effects = $this->discoverEffects();
-        $marked = (new MarkedTypeDiscovery)->discover($src);
+        $manifest = new WireTypeDiscovery()->discover($src);
+        $effects = $manifest->effects;
 
-        $discovered = (new ComponentDiscovery)->discover($src);
+        $discovered = $manifest->components;
         $columnProps = $this->buildColumnProps($discovered);
         $filterProps = $this->buildFilterProps($discovered);
 
@@ -76,9 +75,9 @@ final class BaseProfile implements TypeScriptProfile
             [$src],
             [
                 new HttpMethodTransformer,
-                new EnumTransformer($marked['enums']),
+                new EnumTransformer($manifest->enums),
                 new ValueObjectTransformer([
-                    ...$marked['valueObjects'],
+                    ...$manifest->valueObjects,
                     ...array_keys($effects),
                 ]),
                 new ComponentTransformer([
@@ -108,23 +107,6 @@ final class BaseProfile implements TypeScriptProfile
         );
 
         return 'Regenerated built-in TypeScript types.';
-    }
-
-    /**
-     * Effect value objects keyed by class-string, valued by wire type — for the
-     * allow-list and the generated `EffectPropsMap`.
-     *
-     * This profile generates the package's OWN built-in types only, so it builds
-     * a fresh registry over src/Effects/Builtin rather than resolving the
-     * container singleton: a consumer app's runtime-registered effects must not
-     * leak into the package's generated.ts. Typed augmentation of consumer
-     * effects is the AugmentProfile's job (deferred — see the effects-domain spec).
-     *
-     * @return array<class-string, string>
-     */
-    private function discoverEffects(): array
-    {
-        return array_flip(EffectRegistry::withBuiltins()->all());
     }
 
     /**

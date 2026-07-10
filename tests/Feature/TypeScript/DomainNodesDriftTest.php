@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
+use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
 use Workbench\App\Support\TypeScript\BaseProfile;
 
 /**
@@ -13,7 +13,7 @@ use Workbench\App\Support\TypeScript\BaseProfile;
  * so its components would render with untyped props and never fail a build.
  */
 test('every src component domain is registered for node generation', function (): void {
-    $components = (new ComponentDiscovery)->discover(dirname(__DIR__, 3).'/src');
+    $components = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src')->components;
 
     $handledOutOfBand = ['Forms'];
     $registered = [...BaseProfile::domainNodeNames(), ...$handledOutOfBand];
