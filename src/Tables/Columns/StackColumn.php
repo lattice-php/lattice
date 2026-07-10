@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
+use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
@@ -40,17 +41,17 @@ class StackColumn extends Column
     }
 
     /**
+     * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    #[\Override]
-    public function jsonSerialize(): array
+    #[SerializationHook(priority: 300)]
+    protected function serialiseChildren(array $data): array
     {
-        return [
-            ...parent::jsonSerialize(),
-            'schema' => array_map(
-                fn (Component $component): array => $component->jsonSerialize(),
-                array_values($this->renderableComponents($this->children)),
-            ),
-        ];
+        $data['schema'] = array_map(
+            fn (Component $component): array => $component->jsonSerialize(),
+            array_values($this->renderableComponents($this->children)),
+        );
+
+        return $data;
     }
 }
