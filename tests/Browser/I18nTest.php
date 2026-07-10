@@ -64,4 +64,6 @@ it('dumps missing React lattice keys back into the package lang file', function 
             File::replace($file, $original, 0644);
         }
     }
-});
+    // Mutates the package's tracked lang/en/form.php — other workers reading
+    // translations mid-mutation would flake, so this never runs in parallel.
+})->group('serial');

@@ -107,7 +107,7 @@ jobs:
         uses: codecov/codecov-action@v7
         with:
           use_oidc: true
-          files: coverage_phpunit/browser-clover.xml
+          files: coverage_phpunit/browser-clover.xml,coverage_phpunit/browser-serial-clover.xml
           flags: pest
           name: pest-browser
           disable_search: true
@@ -118,7 +118,7 @@ jobs:
         uses: codecov/codecov-action@v7
         with:
           use_oidc: true
-          files: coverage_phpunit/pest-browser.junit.xml
+          files: coverage_phpunit/pest-browser.junit.xml,coverage_phpunit/pest-browser-serial.junit.xml
           flags: pest-browser
           name: pest-browser-tests
           report_type: test_results
