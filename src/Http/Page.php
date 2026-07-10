@@ -196,7 +196,7 @@ abstract class Page implements PageContract, Responsable
     private function response(PageSchema $schema): Response
     {
         return Inertia::render($this->component(), [
-            'lattice' => app()->call([$this, 'toArray'], ['schema' => $schema]),
+            'lattice' => app()->call($this->toArray(...), ['schema' => $schema]),
         ]);
     }
 
