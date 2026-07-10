@@ -12,7 +12,10 @@ use Lattice\Lattice\Support\Evaluation\Evaluator;
  * The single server-side render gate: a node that should not render is dropped
  * by its parent's collection pass (FiltersRenderableComponents) and never
  * serializes. Closures resolve lazily, once, against a request-scoped context —
- * no form or row state exists at render time.
+ * no form or row state exists at render time. Some adopters resolve the gate at
+ * set-time instead of collect-time (e.g. Table::filters(), TableDefinition::actions()
+ * row actions), filtering with the same shouldRender() check at the seam where the
+ * value is embedded rather than in a shared collection pass.
  */
 trait GatesRendering
 {

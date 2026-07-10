@@ -45,11 +45,6 @@ abstract class Column implements JsonSerializable, Renderable
         return new static($key);
     }
 
-    /**
-     * The instance's data identity. Distinct from Component's `key(string)`,
-     * which is a setter for the render/reconciliation hint — a different
-     * concept entirely, not unified here on purpose.
-     */
     public function key(): string
     {
         return $this->key;

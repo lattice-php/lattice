@@ -33,11 +33,11 @@ test('the product archive row action authorizes per row', function (): void {
 
     $archived = Product::factory()->create(['status' => 'archived']);
 
-    // The render-time gate already hides this action for an archived row (see
-    // Authorization/RenderAuthorizationTest.php), so a legitimate render never
-    // produces a sealed ref here. Seal one directly to prove the endpoint still
-    // enforces its own authorize() check regardless — defense in depth against a
-    // forged or stale ref.
+    // The row-actions gate (TableRegistry::decorateResult filtering by shouldRender())
+    // hides this action for an archived row (see Authorization/RenderAuthorizationTest.php),
+    // so a legitimate render never produces a sealed ref here. Seal one directly to
+    // prove the endpoint still enforces its own authorize() check regardless —
+    // defense in depth against a forged or stale ref.
     $ref = app(ComponentReferenceSigner::class)->seal('action', 'workbench.products.archive', [
         'product_id' => $archived->getKey(),
     ]);

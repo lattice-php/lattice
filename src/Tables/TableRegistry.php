@@ -214,7 +214,7 @@ final class TableRegistry extends DefinitionRegistry
         $rowKeys = $this->rowKeys($columns);
 
         return $result->decorateRows(function (array $row) use ($definition, $rowKeys): array {
-            $actions = $definition->actions($row);
+            $actions = $this->renderableComponents($definition->actions($row));
             $projected = array_intersect_key($row, array_flip($rowKeys));
 
             unset($projected['actions']);

@@ -10,6 +10,7 @@ use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Components\Component;
 use Lattice\Lattice\Core\Components\IsInteractive;
+use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Core\Concerns\HasHttpMethod;
 use Lattice\Lattice\Core\Concerns\HasIcon;
 use Lattice\Lattice\Core\Concerns\HasLabel;
@@ -107,6 +108,24 @@ class Action extends Component
     protected function stripLazyFormSchema(array $data): array
     {
         if ($this->lazyForm) {
+            $data['props']['form'] = null;
+        }
+
+        return $data;
+    }
+
+    /**
+     * An unauthorized (or explicitly hidden) attached form has no filter point of its own
+     * once embedded in `props.form` — it never reaches a collect-time pass like
+     * {@see FiltersRenderableComponents}. Drop it here, at the seam where it is embedded.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 250)]
+    protected function stripUnauthorizedForm(array $data): array
+    {
+        if ($this->form !== null && ! $this->form->shouldRender()) {
             $data['props']['form'] = null;
         }
 

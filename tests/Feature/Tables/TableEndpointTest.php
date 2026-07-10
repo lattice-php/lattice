@@ -287,6 +287,16 @@ test('registered tables serialize grid layout stack columns and row actions', fu
         ]);
 });
 
+test('an unauthorized bare row action is filtered out of the row payload', function (): void {
+    Lattice::actions([WorkbenchPingAction::class]);
+    Lattice::tables([WorkbenchGatedRowActionsUsersTable::class]);
+
+    $table = wire(Table::use(WorkbenchGatedRowActionsUsersTable::class));
+
+    expect($table['props']['data'][0]['actions'])->toHaveCount(1)
+        ->and($table['props']['data'][0]['actions'][0]['id'])->toBe('workbench.ping');
+});
+
 test('registered tables parse clause filters sorts and pagination through the endpoint', function (): void {
     Lattice::tables([WorkbenchUsersTable::class]);
 
@@ -559,6 +569,31 @@ class WorkbenchStackedUsersTable extends TableDefinition
                 'email' => 'taylor@example.com',
                 'status' => 'Active',
             ],
+        ]));
+    }
+}
+
+#[AsTable('workbench.gated-row-actions-users')]
+class WorkbenchGatedRowActionsUsersTable extends TableDefinition
+{
+    public function columns(): array
+    {
+        return [TextColumn::make('name')];
+    }
+
+    #[Override]
+    public function actions(array $row): array
+    {
+        return [
+            Action::use(WorkbenchPingAction::class),
+            Action::make('secret')->label('Secret')->visible(false),
+        ];
+    }
+
+    public function source(): TableSource
+    {
+        return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([
+            ['id' => 1, 'name' => 'Taylor'],
         ]));
     }
 }
