@@ -37,13 +37,10 @@ final class ConditionSet implements JsonSerializable
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return list<Condition>
      */
     public function jsonSerialize(): array
     {
-        return array_map(
-            static fn (Condition $condition): array => $condition->jsonSerialize(),
-            $this->conditions,
-        );
+        return $this->conditions;
     }
 }

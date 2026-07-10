@@ -1,10 +1,10 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/lattice/ui/popover";
 import { useT } from "@lattice-php/lattice/i18n";
-import type { FilterData, Option } from "@lattice-php/lattice/types/generated";
+import type { Option } from "@lattice-php/lattice/types/generated";
 import { isActiveFilterValue } from "../lib/filter-values";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../lib/query";
-import type { FilterClause, TableColumn, TableFilterIndicator } from "../types";
+import type { FilterClause, FilterNode, TableColumn, TableFilterIndicator } from "../types";
 import { TableFilterControl } from "./filter-controls";
 
 export function FilterBar({
@@ -124,7 +124,7 @@ export function FilterMenu({
   onChange,
   onSearch,
 }: {
-  filters: FilterData[];
+  filters: FilterNode[];
   values: Record<string, unknown>;
   processing: boolean;
   onChange: (key: string, value: unknown) => void;

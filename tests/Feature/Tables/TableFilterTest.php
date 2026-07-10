@@ -25,10 +25,10 @@ test('a table serializes its declared filters and starts with no active values',
     $table = wire(Table::use(WorkbenchFilteredProductsTable::class));
 
     expect($table['props']['filters'][0])->toMatchArray([
-        'key' => 'status',
-        'label' => 'Status',
         'type' => 'filter.select',
+        'key' => 'status',
         'props' => [
+            'label' => 'Status',
             'multiple' => false,
             'searchable' => false,
             'options' => [

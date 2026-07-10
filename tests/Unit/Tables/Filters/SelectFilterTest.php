@@ -14,10 +14,10 @@ test('select filter serializes its wire shape', function (): void {
         ]));
 
     expect($filter)->toMatchArray([
-        'key' => 'status',
-        'label' => 'Status',
         'type' => 'filter.select',
+        'key' => 'status',
         'props' => [
+            'label' => 'Status',
             'multiple' => false,
             'searchable' => false,
             'options' => [
@@ -33,7 +33,7 @@ test('select filter serializes its wire shape', function (): void {
 });
 
 test('select filter defaults its label from the key', function (): void {
-    expect(wire(SelectFilter::make('order_status'))['label'])->toBe('Order Status');
+    expect(wire(SelectFilter::make('order_status'))['props']['label'])->toBe('Order Status');
 });
 
 test('a single select filter applies an equality constraint', function (): void {

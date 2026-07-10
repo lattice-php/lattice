@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Actions;
 
 use BackedEnum;
-use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Effects\Concerns\QueuesEffects;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
@@ -12,7 +11,7 @@ use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Support\Wire;
 
 #[TypeScript]
-final readonly class ActionResult implements JsonSerializable
+final readonly class ActionResult
 {
     use QueuesEffects;
 
@@ -68,17 +67,5 @@ final readonly class ActionResult implements JsonSerializable
     public function back(): static
     {
         return $this->effect(Effect::redirect(redirect()->back()->getTargetUrl()));
-    }
-
-    /**
-     * @return array{ok: bool, data: array<string, mixed>, effects: array<int, EffectContract>}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'ok' => $this->ok,
-            'data' => $this->data,
-            'effects' => $this->effects,
-        ];
     }
 }

@@ -1,4 +1,4 @@
-import type { NodeUnionOf, ResolveProps, Schema } from "@lattice-php/lattice/core/types";
+import type { NodeUnionOf, ResolveProps, Schema, WireNode } from "@lattice-php/lattice/core/types";
 import type {
   ActionNodeType,
   ColumnFilter,
@@ -46,10 +46,11 @@ export type TableResponse = {
 };
 
 /** The generated wire props plus the rows/pagination/state the server hydrates on for the first render. */
-export type TableNodeProps = Partial<Omit<Table, "bulkActions" | "columns">> & {
+export type TableNodeProps = Partial<Omit<Table, "bulkActions" | "columns" | "filters">> & {
   bulkActions?: ActionNode[];
   columns?: ColumnNode[];
   data?: TableRow[];
+  filters?: FilterNode[];
   pagination?: TablePagination;
   state?: Partial<TableState>;
 };
@@ -115,3 +116,19 @@ export type FilterPropsOf<TType extends string> = ResolveProps<
   TType,
   Record<string, unknown>
 >;
+
+export type FilterNodeType = keyof FilterPropsMap & string;
+
+/**
+ * A dedicated table filter, authored and consumed like a field/component:
+ * `key`/`type` stay top-level, `props` carries `label` plus whatever the
+ * filter type contributes. `schema` is the bound field(s) rendering the
+ * filter's control and is absent when empty. The filter counterpart of
+ * `ColumnNode`.
+ */
+export type FilterNode<TType extends string = FilterNodeType> = {
+  type: TType;
+  key: string;
+  props: FilterPropsOf<TType>;
+  schema?: WireNode[];
+};

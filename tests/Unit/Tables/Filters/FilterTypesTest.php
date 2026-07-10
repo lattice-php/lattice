@@ -17,10 +17,10 @@ test('ternary filter serializes its wire shape', function (): void {
         ->falseLabel('Not featured'));
 
     expect($filter)->toMatchArray([
-        'key' => 'featured',
-        'label' => 'Featured',
         'type' => 'filter.ternary',
+        'key' => 'featured',
         'props' => [
+            'label' => 'Featured',
             'trueLabel' => 'Featured',
             'falseLabel' => 'Not featured',
             'placeholder' => 'All',
@@ -32,6 +32,28 @@ test('ternary filter serializes its wire shape', function (): void {
         ->and($filter['schema'][0]['props']['options'])->toBe([
             ['label' => 'Featured', 'value' => 'true'],
             ['label' => 'Not featured', 'value' => 'false'],
+        ]);
+});
+
+test('ternary filter serializes its default labels', function (): void {
+    $filter = wire(TernaryFilter::make('verified'));
+
+    expect($filter)->toMatchArray([
+        'type' => 'filter.ternary',
+        'key' => 'verified',
+        'props' => [
+            'label' => 'Verified',
+            'trueLabel' => 'Yes',
+            'falseLabel' => 'No',
+            'placeholder' => 'All',
+        ],
+    ])
+        ->and($filter['schema'])->toHaveCount(1)
+        ->and($filter['schema'][0]['type'])->toBe('field.select')
+        ->and($filter['schema'][0]['props']['name'])->toBe('value')
+        ->and($filter['schema'][0]['props']['options'])->toBe([
+            ['label' => 'Yes', 'value' => 'true'],
+            ['label' => 'No', 'value' => 'false'],
         ]);
 });
 
@@ -63,10 +85,9 @@ test('date range filter serializes its wire shape', function (): void {
     $filter = wire(DateRangeFilter::make('created_at')->label('Created'));
 
     expect($filter)->toMatchArray([
-        'key' => 'created_at',
-        'label' => 'Created',
         'type' => 'filter.date-range',
-        'props' => [],
+        'key' => 'created_at',
+        'props' => ['label' => 'Created'],
     ])
         ->and($filter['schema'])->toHaveCount(2)
         ->and($filter['schema'][0]['type'])->toBe('field.date-input')
@@ -96,11 +117,9 @@ test('a date range filter applies only the provided bound', function (): void {
 test('a toggle filter serializes as a toggle', function (): void {
     expect(wire(ToggleFilter::make('high_value')->label('High value')))
         ->toBe([
-            'key' => 'high_value',
-            'label' => 'High value',
             'type' => 'filter.toggle',
-            'schema' => [],
-            'props' => [],
+            'key' => 'high_value',
+            'props' => ['label' => 'High value'],
         ]);
 });
 
@@ -161,44 +180,6 @@ test('a date range filter ignores missing bounds', function (): void {
     DateRangeFilter::make('created_at')->apply($builder, FormData::make([]));
 
     expect($builder->toSql())->not->toContain('where');
-});
-
-it('serialises a toggle filter', function (): void {
-    expect(ToggleFilter::make('active')->toData()->jsonSerialize())->toEqual([
-        'key' => 'active',
-        'label' => 'Active',
-        'type' => 'filter.toggle',
-        'schema' => [],
-        'props' => new stdClass,
-    ]);
-});
-
-it('serialises a date-range filter', function (): void {
-    $filter = DateRangeFilter::make('created')->toData()->jsonSerialize();
-
-    expect($filter)->toMatchArray([
-        'key' => 'created',
-        'label' => 'Created',
-        'type' => 'filter.date-range',
-        'props' => new stdClass,
-    ])
-        ->and($filter['schema'])->toHaveCount(2);
-});
-
-it('serialises a ternary filter', function (): void {
-    $filter = TernaryFilter::make('verified')->toData()->jsonSerialize();
-
-    expect($filter)->toMatchArray([
-        'key' => 'verified',
-        'label' => 'Verified',
-        'type' => 'filter.ternary',
-        'props' => [
-            'trueLabel' => 'Yes',
-            'falseLabel' => 'No',
-            'placeholder' => 'All',
-        ],
-    ])
-        ->and($filter['schema'])->toHaveCount(1);
 });
 
 test('a filter constrains the column named by attribute()', function (): void {

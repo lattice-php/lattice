@@ -4,12 +4,11 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Columns;
 
 use DateTimeInterface;
-use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\Op;
 
 #[TypeScript]
-final readonly class ColumnFilterOption implements JsonSerializable
+final readonly class ColumnFilterOption
 {
     /**
      * @param  list<ColumnFilterOptionClause>  $clauses
@@ -35,18 +34,6 @@ final readonly class ColumnFilterOption implements JsonSerializable
             new ColumnFilterOptionClause(Op::GreaterThanOrEqual, self::dateValue($from)),
             new ColumnFilterOptionClause(Op::LessThanOrEqual, self::dateValue($until)),
         ]);
-    }
-
-    /**
-     * @return array{label: string, value: string, clauses: list<ColumnFilterOptionClause>}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'label' => $this->label,
-            'value' => $this->value,
-            'clauses' => $this->clauses,
-        ];
     }
 
     private static function dateValue(DateTimeInterface|string $date): string

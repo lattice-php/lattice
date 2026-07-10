@@ -5,23 +5,23 @@ use Lattice\Lattice\Core\Enums\DateTimeStyle;
 use Lattice\Lattice\Core\Values\DateFormat;
 
 it('serializes date, time and dateTime formats', function (): void {
-    expect(DateFormat::date(DateTimeStyle::Short)->jsonSerialize())
+    expect(wire(DateFormat::date(DateTimeStyle::Short)))
         ->toBe(['kind' => 'date', 'dateStyle' => 'short', 'timeStyle' => null, 'month' => null, 'year' => null]);
 
-    expect(DateFormat::time(DateTimeStyle::Medium)->jsonSerialize())
+    expect(wire(DateFormat::time(DateTimeStyle::Medium)))
         ->toBe(['kind' => 'date', 'dateStyle' => null, 'timeStyle' => 'medium', 'month' => null, 'year' => null]);
 
-    expect(DateFormat::dateTime(DateTimeStyle::Long)->jsonSerialize())
+    expect(wire(DateFormat::dateTime(DateTimeStyle::Long)))
         ->toBe(['kind' => 'date', 'dateStyle' => 'long', 'timeStyle' => 'long', 'month' => null, 'year' => null]);
 });
 
 it('serializes month and monthYear formats with Intl field options', function (): void {
-    expect(DateFormat::month()->jsonSerialize())
+    expect(wire(DateFormat::month()))
         ->toBe(['kind' => 'date', 'dateStyle' => null, 'timeStyle' => null, 'month' => 'short', 'year' => null]);
 
-    expect(DateFormat::month(long: true)->jsonSerialize())
+    expect(wire(DateFormat::month(long: true)))
         ->toBe(['kind' => 'date', 'dateStyle' => null, 'timeStyle' => null, 'month' => 'long', 'year' => null]);
 
-    expect(DateFormat::monthYear()->jsonSerialize())
+    expect(wire(DateFormat::monthYear()))
         ->toBe(['kind' => 'date', 'dateStyle' => null, 'timeStyle' => null, 'month' => 'short', 'year' => 'numeric']);
 });

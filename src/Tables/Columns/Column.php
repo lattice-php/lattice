@@ -5,12 +5,10 @@ namespace Lattice\Lattice\Tables\Columns;
 
 use Illuminate\Support\Collection;
 use JsonSerializable;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Components\Concerns\SerializesToWire;
+use Lattice\Lattice\Core\Components\Concerns\SerializesWireNode;
 use Lattice\Lattice\Core\Concerns\GatesRendering;
 use Lattice\Lattice\Core\Contracts\Renderable;
 use Lattice\Lattice\Core\Enums\ColumnWidth;
-use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
 
 /**
@@ -19,7 +17,7 @@ use Lattice\Lattice\Tables\Enums\ColumnAlign;
 abstract class Column implements JsonSerializable, Renderable
 {
     use GatesRendering;
-    use SerializesToWire;
+    use SerializesWireNode;
 
     public string $label;
 
@@ -27,12 +25,14 @@ abstract class Column implements JsonSerializable, Renderable
 
     public ColumnAlign $align = ColumnAlign::Start;
 
+    /** Generation-source declaration only; the wire value is computed in {@see self::decorateProps()}. */
     public bool $sortable = false;
 
     public bool $toggleable = false;
 
     public bool $hiddenByDefault = false;
 
+    /** Generation-source declaration only; the wire value is computed in {@see self::decorateProps()}. */
     public ?ColumnFilter $filter = null;
 
     public function __construct(protected readonly string $key)
@@ -124,18 +124,20 @@ abstract class Column implements JsonSerializable, Renderable
         );
     }
 
+    protected function wireKey(): ?string
+    {
+        return $this->key;
+    }
+
     /**
+     * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */
-    public function jsonSerialize(): array
+    protected function decorateProps(array $props): array
     {
-        $this->sortable = $this->sortableValue();
-        $this->filter = $this->filterValue();
+        $props['sortable'] = $this->sortableValue();
+        $props['filter'] = $this->filterValue();
 
-        return [
-            'type' => AsComponent::typeForClass(static::class),
-            'key' => $this->key,
-            'props' => Wire::map($this->decorateProps($this->wireProps())),
-        ];
+        return $props;
     }
 }

@@ -12,7 +12,7 @@ test('a chat message serializes id, role value, and its parts as nodes', functio
         ChatPart::toolCall('lookup', ['q' => 'x']),
     ]);
 
-    expect($message->jsonSerialize())->toBe([
+    expect(wire($message))->toBe([
         'id' => 'm-1',
         'role' => 'assistant',
         'parts' => [

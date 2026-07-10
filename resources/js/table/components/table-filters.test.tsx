@@ -1,9 +1,8 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { FilterData } from "@lattice-php/lattice/types/generated";
 import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
-import type { TableColumn, TableNode } from "../types";
+import type { FilterNode, TableColumn, TableNode } from "../types";
 import TableComponent from "./table";
 
 function col(key: string, label: string): TableColumn {
@@ -22,11 +21,20 @@ function col(key: string, label: string): TableColumn {
   };
 }
 
-const filters: FilterData[] = [
+const filters: FilterNode[] = [
   {
     key: "status",
-    label: "Status",
     type: "filter.select",
+    props: {
+      label: "Status",
+      options: [
+        { label: "Active", value: "active" },
+        { label: "Draft", value: "draft" },
+      ],
+      multiple: true,
+      searchable: false,
+      placeholder: null,
+    },
     schema: [
       {
         type: "field.select",
@@ -43,20 +51,11 @@ const filters: FilterData[] = [
         },
       },
     ],
-    props: {
-      options: [
-        { label: "Active", value: "active" },
-        { label: "Draft", value: "draft" },
-      ],
-      multiple: true,
-      searchable: false,
-      placeholder: null,
-    },
   },
   {
     key: "featured",
-    label: "Featured",
     type: "filter.ternary",
+    props: { label: "Featured", trueLabel: "Yes", falseLabel: "No", placeholder: "All" },
     schema: [
       {
         type: "field.select",
@@ -73,19 +72,17 @@ const filters: FilterData[] = [
         },
       },
     ],
-    props: { trueLabel: "Yes", falseLabel: "No", placeholder: "All" },
   },
   {
     key: "created",
-    label: "Created",
     type: "filter.date-range",
+    props: { label: "Created" },
     schema: [
       { type: "field.date-input", props: { name: "from", label: "Created from" } },
       { type: "field.date-input", props: { name: "until", label: "Created until" } },
     ],
-    props: {},
   },
-  { key: "high", label: "High value", type: "filter.toggle", schema: [], props: {} },
+  { key: "high", type: "filter.toggle", props: { label: "High value" } },
 ];
 
 function stubFetch() {

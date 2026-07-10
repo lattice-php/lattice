@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core\Values;
 
-use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\DateTimeStyle;
 
 #[TypeScript]
-final class DateFormat implements JsonSerializable
+final class DateFormat
 {
     public string $kind = 'date';
 
@@ -60,19 +59,5 @@ final class DateFormat implements JsonSerializable
         $format->timeStyle = $style->value;
 
         return $format;
-    }
-
-    /**
-     * @return array{kind: string, dateStyle: string|null, timeStyle: string|null, month: string|null, year: string|null}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'kind' => $this->kind,
-            'dateStyle' => $this->dateStyle,
-            'timeStyle' => $this->timeStyle,
-            'month' => $this->month,
-            'year' => $this->year,
-        ];
     }
 }

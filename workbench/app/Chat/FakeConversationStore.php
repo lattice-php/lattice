@@ -8,6 +8,7 @@ use Illuminate\Contracts\Session\Session;
 use Lattice\Lattice\Chat\ChatMessage;
 use Lattice\Lattice\Chat\ChatPart;
 use Lattice\Lattice\Chat\Enums\ChatRole;
+use Lattice\Lattice\Support\Wire;
 
 final readonly class FakeConversationStore
 {
@@ -49,12 +50,12 @@ final readonly class FakeConversationStore
     private function seed(): array
     {
         return [
-            new ChatMessage('seed-user', ChatRole::User, [
+            Wire::toArray(new ChatMessage('seed-user', ChatRole::User, [
                 ChatPart::text('What can you help me with?'),
-            ])->jsonSerialize(),
-            new ChatMessage('seed-assistant', ChatRole::Assistant, [
+            ])),
+            Wire::toArray(new ChatMessage('seed-assistant', ChatRole::Assistant, [
                 ChatPart::text('I can answer questions about this workbench and look things up for you.'),
-            ])->jsonSerialize(),
+            ])),
         ];
     }
 }

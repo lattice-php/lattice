@@ -6,14 +6,14 @@ use Lattice\Lattice\Http\I18nConfig;
 it('serializes a null timezone by default', function (): void {
     config(['lattice.i18n.locales' => ['en', 'de']]);
 
-    expect(I18nConfig::fromConfig()->jsonSerialize())
+    expect(wire(I18nConfig::fromConfig()))
         ->toHaveKey('timezone')
-        ->and(I18nConfig::fromConfig()->jsonSerialize()['timezone'])->toBeNull();
+        ->and(wire(I18nConfig::fromConfig())['timezone'])->toBeNull();
 });
 
 it('serializes the timezone passed to fromConfig', function (): void {
     config(['lattice.i18n.locales' => ['en', 'de']]);
 
-    expect(I18nConfig::fromConfig(timezone: 'Europe/Berlin')->jsonSerialize()['timezone'])
+    expect(wire(I18nConfig::fromConfig(timezone: 'Europe/Berlin'))['timezone'])
         ->toBe('Europe/Berlin');
 });

@@ -5,7 +5,6 @@ namespace Lattice\Lattice\Core;
 
 use BackedEnum;
 use Illuminate\Support\Str;
-use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Contracts\HasLabel;
 use UnitEnum;
@@ -16,7 +15,7 @@ use UnitEnum;
  * type rather than re-declaring the shape per field.
  */
 #[TypeScript]
-final readonly class Option implements JsonSerializable
+final readonly class Option
 {
     public function __construct(
         public string $label,
@@ -66,16 +65,5 @@ final readonly class Option implements JsonSerializable
         }
 
         return new self((string) $option['label'], (string) $option['value']);
-    }
-
-    /**
-     * @return array{label: string, value: string}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'label' => $this->label,
-            'value' => $this->value,
-        ];
     }
 }

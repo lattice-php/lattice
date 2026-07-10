@@ -12,14 +12,9 @@ use ReflectionClass;
  * Marks a renderable node for the generated node types and registry.
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-class AsComponent
+readonly class AsComponent extends TypeScript
 {
-    /**
-     * @var array<class-string, string>
-     */
-    private static array $typeCache = [];
-
-    public function __construct(public readonly string $type) {}
+    public function __construct(public string $type) {}
 
     /**
      * Resolve the wire type declared by an #[AsComponent] or subclass attribute
@@ -29,7 +24,10 @@ class AsComponent
      */
     public static function typeForClass(string $class): string
     {
-        return self::$typeCache[$class] ??= self::resolveType($class);
+        /** @var array<class-string, string> $cache */
+        static $cache = [];
+
+        return $cache[$class] ??= self::resolveType($class);
     }
 
     /**

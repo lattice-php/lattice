@@ -4,7 +4,10 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support;
 
 use BackedEnum;
+use JsonException;
+use JsonSerializable;
 use stdClass;
+use UnitEnum;
 
 /**
  * Helpers for turning PHP values into the scalar shape the frontend receives.
@@ -23,25 +26,28 @@ final class Wire
     }
 
     /**
-     * Materialize a value into its plain wire array by round-tripping through
-     * JSON, realizing every nested JsonSerializable eagerly (inside the current
-     * request) rather than lazily during the final response encode.
+     * Materialize a value into its plain wire array, realizing every nested
+     * JsonSerializable eagerly (inside the current request) rather than lazily
+     * during the final response encode. Maps arrive as assoc arrays, so an
+     * empty map collapses to `[]` — use {@see toWire()} where the `{}` vs `[]`
+     * distinction must survive.
      *
      * @return array<mixed>
      */
     public static function toArray(mixed $value): array
     {
-        return (array) json_decode(json_encode($value, JSON_THROW_ON_ERROR), true);
+        return (array) self::materialize($value, assoc: true);
     }
 
     /**
-     * Like toArray(), but decodes as objects instead of associative arrays, so
-     * an empty map (wrapped via {@see map()} as an stdClass) survives the
-     * round-trip as `{}` instead of collapsing to `[]`.
+     * Like {@see toArray()}, but keeps map shape: every map — a string-keyed
+     * array, a non-list one, or an stdClass from {@see map()} — comes back as
+     * an stdClass, so an empty map reaches the final encode as `{}` instead of
+     * collapsing to `[]` and downstream walks can tell maps from lists.
      */
     public static function toWire(mixed $value): mixed
     {
-        return json_decode(json_encode($value, JSON_THROW_ON_ERROR), false);
+        return self::materialize($value, assoc: false);
     }
 
     /**
@@ -60,5 +66,44 @@ final class Wire
     public static function map(array $map): array|stdClass
     {
         return $map === [] || array_is_list($map) ? (object) $map : $map;
+    }
+
+    /**
+     * The recursive walk behind {@see toArray()}/{@see toWire()}: the same
+     * realization a json_encode/json_decode round-trip produces — nested
+     * JsonSerializable resolved, backed enums to their values, objects to
+     * their public properties — without encoding the whole tree to a string
+     * and back on every request.
+     */
+    private static function materialize(mixed $value, bool $assoc): mixed
+    {
+        if ($value instanceof JsonSerializable) {
+            return self::materialize($value->jsonSerialize(), $assoc);
+        }
+
+        if ($value instanceof BackedEnum) {
+            return $value->value;
+        }
+
+        if ($value instanceof UnitEnum) {
+            throw new JsonException(sprintf('Non-backed enum [%s] has no wire representation.', $value::class));
+        }
+
+        if (is_object($value)) {
+            $properties = array_map(
+                fn (mixed $property): mixed => self::materialize($property, $assoc),
+                get_object_vars($value),
+            );
+
+            return $assoc ? $properties : (object) $properties;
+        }
+
+        if (is_array($value)) {
+            $items = array_map(fn (mixed $item): mixed => self::materialize($item, $assoc), $value);
+
+            return $assoc || array_is_list($items) ? $items : (object) $items;
+        }
+
+        return $value;
     }
 }

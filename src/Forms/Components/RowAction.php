@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Forms\Components;
 
 use BackedEnum;
-use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Forms\Enums\RowActionType;
 use Lattice\Lattice\Support\Wire;
@@ -15,7 +14,7 @@ use Lattice\Lattice\Support\Wire;
  * default so the client supplies the localised defaults.
  */
 #[TypeScript]
-final class RowAction implements JsonSerializable
+final class RowAction
 {
     private function __construct(
         public RowActionType $type,
@@ -54,19 +53,5 @@ final class RowAction implements JsonSerializable
         $this->destructive = $destructive;
 
         return $this;
-    }
-
-    /**
-     * @return array{type: string, key: string, label: string|null, icon: string|null, destructive: bool}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'type' => $this->type->value,
-            'key' => $this->key,
-            'label' => $this->label,
-            'icon' => $this->icon,
-            'destructive' => $this->destructive,
-        ];
     }
 }

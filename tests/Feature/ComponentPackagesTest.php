@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Core\Discovery\ComponentPackages;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Support\TypeScript\ComponentDiscovery;
+use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
 
 it('resolves discover roots from packages that declare extra.lattice.discover', function (): void {
     $roots = ComponentPackages::fromInstalled(
@@ -27,12 +27,12 @@ it('merges installed component-package roots into the configured discover paths'
 });
 
 it('discovers a vendor package component so lattice:typescript can type it', function (): void {
-    $discovery = app(ComponentDiscovery::class);
+    $discovery = app(WireTypeDiscovery::class);
 
     $types = [];
 
     foreach (DiscoveryManifest::configuredPaths() as $path) {
-        foreach ($discovery->discover($path) as $component) {
+        foreach ($discovery->discover($path)->components as $component) {
             $types[] = $component->type;
         }
     }

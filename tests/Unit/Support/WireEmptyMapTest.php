@@ -14,7 +14,7 @@ it('encodes an empty list field as a JSON array, not an object', function (): vo
 });
 
 it('encodes a non-empty filter props map as a JSON object unaffected by the empty-map wrapping', function (): void {
-    $json = wireJson(TernaryFilter::make('active')->toData());
+    $json = wireJson(TernaryFilter::make('active'));
 
     expect($json)->toContain('"trueLabel":"Yes"')
         ->and($json)->not->toContain('"props":{}');

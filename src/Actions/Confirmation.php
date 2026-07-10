@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Actions;
 
-use JsonSerializable;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\TypeScript;
 
@@ -13,7 +12,7 @@ use Lattice\Lattice\Attributes\TypeScript;
  * `null` rather than this object.
  */
 #[TypeScript]
-final readonly class Confirmation implements JsonSerializable
+final readonly class Confirmation
 {
     public function __construct(
         public string $title,
@@ -21,17 +20,4 @@ final readonly class Confirmation implements JsonSerializable
         public ?string $confirmLabel = null,
         public ?string $cancelLabel = null,
     ) {}
-
-    /**
-     * @return array{title: string, description: string|null, confirmLabel: string|null, cancelLabel: string|null}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'title' => $this->title,
-            'description' => $this->description,
-            'confirmLabel' => $this->confirmLabel,
-            'cancelLabel' => $this->cancelLabel,
-        ];
-    }
 }

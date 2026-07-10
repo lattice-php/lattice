@@ -1,15 +1,20 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { FilterData } from "@lattice-php/lattice/types/generated";
 import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
-import type { TableColumn, TableNode } from "../types";
+import type { FilterNode, TableColumn, TableNode } from "../types";
 import TableComponent from "./table";
 
-const filter: FilterData = {
+const filter: FilterNode = {
   key: "author",
-  label: "Author",
   type: "filter.select",
+  props: {
+    label: "Author",
+    options: [{ label: "Ada", value: "1" }],
+    multiple: false,
+    searchable: true,
+    placeholder: null,
+  },
   schema: [
     {
       type: "field.select",
@@ -23,12 +28,6 @@ const filter: FilterData = {
       },
     },
   ],
-  props: {
-    options: [{ label: "Ada", value: "1" }],
-    multiple: false,
-    searchable: true,
-    placeholder: null,
-  },
 };
 
 function col(): TableColumn {
@@ -132,7 +131,7 @@ describe("searchable select filter", () => {
               {
                 type: "field.select",
                 props: {
-                  ...filter.schema[0].props,
+                  ...filter.schema?.[0]?.props,
                   multiple: true,
                 },
               },

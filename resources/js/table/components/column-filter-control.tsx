@@ -5,14 +5,13 @@ import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type {
   ColumnFilterOption,
-  FilterData,
   FilterType,
   Option,
   Op,
 } from "@lattice-php/lattice/types/generated";
 import { filterValue } from "../lib/filter-values";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "../lib/query";
-import type { FilterClause, TableColumn } from "../types";
+import type { FilterClause, FilterNode, TableColumn } from "../types";
 import { TableFilterControl } from "./filter-controls";
 import { fieldClass, FilterValueInput } from "./filter-value-input";
 
@@ -172,10 +171,16 @@ function ColumnSelectFilter({
         : []
       : (active?.clause.value ?? "");
 
-  const data: FilterData = {
+  const data: FilterNode<"filter.select"> = {
     key: column.key,
-    label,
     type: "filter.select",
+    props: {
+      label,
+      options: filter.options,
+      multiple,
+      searchable: filter.searchable,
+      placeholder: null,
+    },
     schema: [
       {
         type: "field.select",
@@ -190,7 +195,6 @@ function ColumnSelectFilter({
         },
       },
     ],
-    props: { options: filter.options, multiple, searchable: filter.searchable, placeholder: null },
   };
 
   function change(next: unknown): void {

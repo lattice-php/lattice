@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { FilterData } from "@lattice-php/lattice/types/generated";
+import type { FilterNode } from "../types";
 import {
   filterOptions,
   isActiveFilterValue,
@@ -22,12 +22,10 @@ describe("isEmptyFilterValue", () => {
   });
 });
 
-const filter: FilterData = {
+const filter: FilterNode<string> = {
   key: "status",
-  label: "Status",
   type: "filter.select",
-  schema: [],
-  props: { placeholder: "Pick", options: [{ label: "Active", value: "active" }] },
+  props: { label: "Status", placeholder: "Pick", options: [{ label: "Active", value: "active" }] },
 };
 
 describe("stringProp", () => {

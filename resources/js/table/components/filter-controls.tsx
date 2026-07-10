@@ -16,8 +16,8 @@ import {
 } from "@lattice-php/lattice/form/embed";
 import { Icon } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import type { FilterData } from "@lattice-php/lattice/types/generated";
 import { filterValue, isActiveFilterValue } from "../lib/filter-values";
+import type { FilterNode } from "../types";
 
 export type FilterOptionSearch = (
   field: string,
@@ -34,13 +34,13 @@ export function TableFilterControl({
   onChange,
   onSearch,
 }: {
-  filter: FilterData;
+  filter: FilterNode;
   value: unknown;
   processing: boolean;
   onChange: (value: unknown) => void;
   onSearch?: FilterOptionSearch;
 }) {
-  const schema = filter.schema as Node[];
+  const schema = filter.schema ?? [];
 
   if (schema.length === 0) {
     return (
@@ -62,7 +62,7 @@ export function TableFilterControl({
       </div>
       {isActiveFilterValue(value) && (
         <button
-          aria-label={`Clear ${filter.label} filter`}
+          aria-label={`Clear ${filter.props.label} filter`}
           className="inline-flex size-lt-control-md shrink-0 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg disabled:opacity-50"
           disabled={processing}
           onClick={() => onChange(undefined)}
@@ -83,7 +83,7 @@ function SchemaControl({
   onChange,
   onSearch,
 }: {
-  filter: FilterData;
+  filter: FilterNode;
   schema: Node[];
   value: unknown;
   processing: boolean;
@@ -178,7 +178,7 @@ function ToggleControl({
   processing,
   onChange,
 }: {
-  filter: FilterData;
+  filter: FilterNode;
   value: unknown;
   processing: boolean;
   onChange: (value: unknown) => void;
@@ -188,13 +188,13 @@ function ToggleControl({
   return (
     <label className="flex h-lt-control-md cursor-pointer items-center gap-2 text-sm">
       <Checkbox
-        aria-label={filter.label}
+        aria-label={filter.props.label}
         data-test={`table-filter-${filter.key}`}
         checked={checked}
         disabled={processing}
         onCheckedChange={(next) => onChange(next === true ? { value: "1" } : undefined)}
       />
-      <span>{filter.label}</span>
+      <span>{filter.props.label}</span>
     </label>
   );
 }

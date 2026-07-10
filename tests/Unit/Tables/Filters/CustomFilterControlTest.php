@@ -16,11 +16,9 @@ class CustomControlFilter extends Filter
 }
 
 it('lets a filter declare a custom string control decoupled from FilterControl', function (): void {
-    expect(CustomControlFilter::make('rating')->toData()->jsonSerialize())->toBe([
-        'key' => 'rating',
-        'label' => 'Rating',
+    expect(wire(CustomControlFilter::make('rating')))->toBe([
         'type' => 'rating-slider',
-        'schema' => [],
-        'props' => ['max' => 5],
+        'key' => 'rating',
+        'props' => ['max' => 5, 'label' => 'Rating'],
     ]);
 });

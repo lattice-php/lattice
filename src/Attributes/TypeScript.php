@@ -6,7 +6,9 @@ namespace Lattice\Lattice\Attributes;
 use Attribute;
 
 /**
- * Marks an enum or value object for inclusion in the built-in TypeScript module.
+ * Base marker for every class that appears in the generated TypeScript module:
+ * plain on enums and value objects; extended by AsComponent/AsEffect, which add
+ * the wire discriminator. One IS_INSTANCEOF scan finds the whole wire surface.
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-final class TypeScript {}
+readonly class TypeScript {}

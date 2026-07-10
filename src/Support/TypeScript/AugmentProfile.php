@@ -12,7 +12,7 @@ use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
  */
 final readonly class AugmentProfile implements TypeScriptProfile
 {
-    public function __construct(private ComponentDiscovery $discovery) {}
+    public function __construct(private WireTypeDiscovery $discovery) {}
 
     public function run(TypeScriptGenerator $generator): string
     {
@@ -30,7 +30,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
         $discovered = [];
 
         foreach ($roots as $path) {
-            $discovered = [...$discovered, ...$this->discovery->discover($path)];
+            $discovered = [...$discovered, ...$this->discovery->discover($path)->components];
         }
 
         $entries = [];

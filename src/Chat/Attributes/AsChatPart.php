@@ -16,7 +16,7 @@ use Lattice\Lattice\Chat\Enums\ChatPartType;
  * pass a raw string.
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-final class AsChatPart extends AsComponent
+final readonly class AsChatPart extends AsComponent
 {
     public function __construct(ChatPartType|string $type)
     {

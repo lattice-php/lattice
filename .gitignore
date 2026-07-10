@@ -4,6 +4,7 @@ node_modules
 /composer.lock
 /coverage_phpunit
 /coverage_vitest
+/.playwright-mcp
 /.phpunit.cache
 /.phpunit.result.cache
 /vendor/orchestra/testbench-core/laravel

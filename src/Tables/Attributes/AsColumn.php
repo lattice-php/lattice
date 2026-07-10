@@ -15,7 +15,7 @@ use Lattice\Lattice\Tables\Enums\ColumnType;
  * reflected from its public properties, so no props class is declared.
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-class AsColumn extends AsComponent
+readonly class AsColumn extends AsComponent
 {
     public function __construct(ColumnType|string $type)
     {

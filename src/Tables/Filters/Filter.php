@@ -6,12 +6,11 @@ namespace Lattice\Lattice\Tables\Filters;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use JsonSerializable;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Components\Concerns\SerializesToWire;
+use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Core\Components\Concerns\SerializesWireNode;
 use Lattice\Lattice\Core\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Tables\Enums\FilterControl;
 
 /**
  * A dedicated, table-level filter: it owns its form schema, server-side
@@ -22,9 +21,9 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
 abstract class Filter implements JsonSerializable
 {
     use FiltersRenderableComponents;
-    use SerializesToWire;
+    use SerializesWireNode;
 
-    protected string $label;
+    public string $label;
 
     protected ?string $attribute = null;
 
@@ -68,22 +67,21 @@ abstract class Filter implements JsonSerializable
         return [];
     }
 
-    public function toData(): FilterData
+    protected function wireKey(): ?string
     {
-        return new FilterData(
-            $this->key,
-            $this->label,
-            $this->wireControl(),
-            $this->renderSchema(),
-            $this->decorateProps($this->wireProps()),
-        );
+        return $this->key;
     }
 
-    private function wireControl(): FilterControl|string
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 300)]
+    protected function serialiseSchema(array $data): array
     {
-        $control = AsComponent::typeForClass(static::class);
+        $data['schema'] = $this->renderSchema();
 
-        return FilterControl::tryFrom($control) ?? $control;
+        return $data;
     }
 
     /**
@@ -116,11 +114,6 @@ abstract class Filter implements JsonSerializable
     protected function column(): string
     {
         return $this->attribute ?? $this->key;
-    }
-
-    public function jsonSerialize(): FilterData
-    {
-        return $this->toData();
     }
 
     /**
