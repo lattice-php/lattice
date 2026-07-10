@@ -7,11 +7,15 @@ it('switches the server-driven UI language in place when the locale changes', fu
     $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
-    visit('/products')
+    $page = visit('/products')
         ->assertSee('Updated at')
         ->click('@locale-switcher')
-        ->click('@locale-de')
+        ->click('@locale-de');
+
+    eventually(fn () => $page
         ->assertSee('Aktualisiert am')
-        ->assertDontSee('Updated at')
+        ->assertDontSee('Updated at'));
+
+    $page
         ->assertNoSmoke();
 });

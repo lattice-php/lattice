@@ -57,7 +57,7 @@ it('dumps missing React lattice keys back into the package lang file', function 
     } finally {
         try {
             $page->script('window.location.assign("/")');
-            $page->wait(0.5);
+            eventually(fn () => $page->assertPathIs('/'), attempts: 15, sleepMicroseconds: 100_000);
         } finally {
             File::replace($file, $original, 0644);
         }

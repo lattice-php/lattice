@@ -13,9 +13,13 @@ it('opens the composed user dropdown and reveals its items', function (): void {
 
 it('keeps the user dropdown usable when the sidebar is collapsed', function (): void {
     $this->actingAs(workbenchTestUser());
-    visit('/')
-        ->click('@sidebar-toggle')
-        ->assertPresent('[data-test="sidebar"][data-collapsed="true"]')
+
+    $page = visit('/')
+        ->click('@sidebar-toggle');
+
+    eventually(fn () => $page->assertAttribute('[data-test="sidebar"]', 'data-collapsed', 'true'));
+
+    $page
         ->click('@user-menu')
         ->assertSee('Log out')
         ->assertNoSmoke();

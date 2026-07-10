@@ -19,9 +19,13 @@ it('loads dashboard chart examples through lazy fragments', function (): void {
 it('translates dashboard chart examples in lazy fragments', function (): void {
     $this->actingAs(workbenchTestUser());
 
-    visit('/')
+    $page = visit('/')
         ->click('@locale-switcher')
-        ->click('@locale-de')
+        ->click('@locale-de');
+
+    eventually(fn () => $page->assertSee('Umsatz'));
+
+    $page
         ->assertSee('Dashboard-Diagramme')
         ->assertSee('Umsatztrend')
         ->assertSee('Prognose')
