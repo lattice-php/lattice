@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables;
 
-use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Tables\Enums\SortDirection;
 
 #[TypeScript]
-final readonly class TableSort implements JsonSerializable
+final readonly class TableSort
 {
     public function __construct(public string $key, public SortDirection $direction) {}
 
@@ -19,16 +18,5 @@ final readonly class TableSort implements JsonSerializable
         }
 
         return new self($sort, SortDirection::Asc);
-    }
-
-    /**
-     * @return array{key: string, direction: string}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'key' => $this->key,
-            'direction' => $this->direction->value,
-        ];
     }
 }

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
-use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Core\Option;
@@ -18,7 +17,7 @@ use Spatie\TypeScriptTransformer\Attributes\Optional;
  * control components).
  */
 #[TypeScript]
-final readonly class ColumnFilter implements JsonSerializable
+final readonly class ColumnFilter
 {
     /**
      * @param  array<int, Op>  $operators
@@ -36,21 +35,4 @@ final readonly class ColumnFilter implements JsonSerializable
         #[Optional]
         public array $clauseOptions = [],
     ) {}
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'type' => $this->type->value,
-            'operators' => array_map(fn (Op $operator): string => $operator->value, $this->operators),
-            'defaultOperator' => $this->defaultOperator->value,
-            'control' => $this->control?->value,
-            'options' => $this->options,
-            'multiple' => $this->multiple,
-            'searchable' => $this->searchable,
-            'clauseOptions' => $this->clauseOptions,
-        ];
-    }
 }

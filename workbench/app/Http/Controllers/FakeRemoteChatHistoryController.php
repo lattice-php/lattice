@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Chat\ChatMessage;
 use Lattice\Lattice\Chat\ChatPart;
 use Lattice\Lattice\Chat\Enums\ChatRole;
+use Lattice\Lattice\Support\Wire;
 
 final readonly class FakeRemoteChatHistoryController
 {
@@ -17,9 +18,9 @@ final readonly class FakeRemoteChatHistoryController
 
         return response()->json([
             'messages' => [
-                new ChatMessage('remote-assistant-1', ChatRole::Assistant, [
+                Wire::toArray(new ChatMessage('remote-assistant-1', ChatRole::Assistant, [
                     ChatPart::text('Remote todo history loaded with a browser token.'),
-                ])->jsonSerialize(),
+                ])),
             ],
         ]);
     }

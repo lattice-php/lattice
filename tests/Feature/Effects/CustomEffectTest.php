@@ -20,7 +20,7 @@ it('serializes a custom effect with its wire type and payload', function (): voi
 it('carries a custom effect through an ActionResult', function (): void {
     $result = ActionResult::success()->effect(new ConfettiEffect('gold'));
 
-    expect($result->jsonSerialize()['effects'][0]->jsonSerialize())
+    expect(wire($result)['effects'][0])
         ->toBe(['type' => 'confetti', 'color' => 'gold']);
 });
 

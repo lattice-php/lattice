@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support;
 
 use BackedEnum;
-use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 
 /**
@@ -12,7 +11,7 @@ use Lattice\Lattice\Attributes\TypeScript;
  * (a sprite name) or literal text such as a unit, but never both.
  */
 #[TypeScript]
-final readonly class Affix implements JsonSerializable
+final readonly class Affix
 {
     private function __construct(
         public ?string $icon = null,
@@ -36,16 +35,5 @@ final readonly class Affix implements JsonSerializable
             $value instanceof BackedEnum => self::icon($value),
             default => self::text($value),
         };
-    }
-
-    /**
-     * @return array{icon: string|null, text: string|null}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'icon' => $this->icon,
-            'text' => $this->text,
-        ];
     }
 }

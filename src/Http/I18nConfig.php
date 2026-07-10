@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Http;
 
-use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 
 #[TypeScript]
-final readonly class I18nConfig implements JsonSerializable
+final readonly class I18nConfig
 {
     /**
      * @param  array<int, string>  $locales
@@ -33,20 +32,6 @@ final readonly class I18nConfig implements JsonSerializable
             preloadLocales: self::configuredList('lattice.i18n.preload_locales'),
             timezone: $timezone,
         );
-    }
-
-    /**
-     * @return array{enabled: bool, saveMissing: bool, locales: array<int, string>, preloadLocales: array<int, string>, timezone: string|null}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'enabled' => $this->enabled,
-            'saveMissing' => $this->saveMissing,
-            'locales' => $this->locales,
-            'preloadLocales' => $this->preloadLocales,
-            'timezone' => $this->timezone,
-        ];
     }
 
     /**

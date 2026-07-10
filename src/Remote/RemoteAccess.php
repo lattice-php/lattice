@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Remote;
 
-use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 
 #[TypeScript]
-final readonly class RemoteAccess implements JsonSerializable
+final readonly class RemoteAccess
 {
     /**
      * @param  list<string>  $scopes
@@ -21,20 +20,4 @@ final readonly class RemoteAccess implements JsonSerializable
         public string $tokenEndpoint,
         public string $ref,
     ) {}
-
-    /**
-     * @return array{source: string, audience: string, scopes: list<string>, nodeId: string, nodeType: string, tokenEndpoint: string, ref: string}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'source' => $this->source,
-            'audience' => $this->audience,
-            'scopes' => $this->scopes,
-            'nodeId' => $this->nodeId,
-            'nodeType' => $this->nodeType,
-            'tokenEndpoint' => $this->tokenEndpoint,
-            'ref' => $this->ref,
-        ];
-    }
 }
