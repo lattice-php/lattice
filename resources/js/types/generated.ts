@@ -381,7 +381,9 @@ export type DateInput = {
   tooltip: string | null;
   value: unknown;
 };
-export type DateRangeFilter = Record<string, never>;
+export type DateRangeFilter = {
+  label: string;
+};
 export type DateTimeInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
@@ -502,13 +504,6 @@ export type FilterControl =
   | "filter.ternary"
   | "filter.date-range"
   | "filter.toggle";
-export type FilterData = {
-  readonly key: string;
-  readonly label: string;
-  readonly type: FilterControl | string;
-  readonly schema: WireNode[];
-  readonly props: Record<string, unknown>;
-};
 export type FilterIndicator = {
   readonly filter: string;
   readonly label: string;
@@ -1084,6 +1079,7 @@ export type SelectFilter = {
   options: Option[];
   placeholder: string | null;
   searchable: boolean;
+  label: string;
 };
 export type Side = "start" | "end";
 export type Sidebar = {
@@ -1125,7 +1121,7 @@ export type Table = {
   columns: Record<string, unknown>[];
   emptyLabel: string;
   endpoint: string | null;
-  filters: FilterData[];
+  filters: WireNode[];
   layout: string | null;
   lazy: boolean;
   ref: string | null;
@@ -1168,6 +1164,7 @@ export type TernaryFilter = {
   falseLabel: string;
   placeholder: string;
   trueLabel: string;
+  label: string;
 };
 export type Text = {
   align: Align | null;
@@ -1322,7 +1319,9 @@ export type Toggle = {
   tooltip: string | null;
   value: unknown;
 };
-export type ToggleFilter = Record<string, never>;
+export type ToggleFilter = {
+  label: string;
+};
 export type ToggleSidebarEffect = {
   readonly target: string | null;
 };
