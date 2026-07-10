@@ -20,7 +20,10 @@ trait HasRowActions
      */
     public function rowActions(array $actions): static
     {
-        $this->rowActions = $actions;
+        $this->rowActions = array_values(array_filter(
+            $actions,
+            static fn (RowAction $action): bool => $action->shouldRender(),
+        ));
 
         return $this;
     }
