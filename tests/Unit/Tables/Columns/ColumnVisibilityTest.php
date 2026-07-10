@@ -18,10 +18,10 @@ it('omits a column hidden via visible(false) from the serialized table', functio
 });
 
 it('omits a hidden child from a stack column', function (): void {
-    $wire = StackColumn::make('stack')->schema([
+    $wire = wire(StackColumn::make('stack')->schema([
         Text::make('Shown', 'shown'),
         Text::make('Hidden', 'hidden')->when(false),
-    ])->jsonSerialize();
+    ]));
 
     $childKeys = array_map(fn (array $c): string => $c['key'], $wire['schema']);
 

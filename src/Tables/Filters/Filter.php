@@ -79,10 +79,7 @@ abstract class Filter implements JsonSerializable
     #[SerializationHook(priority: 300)]
     protected function serialiseSchema(array $data): array
     {
-        $data['schema'] = array_map(
-            static fn (Field $field): array => $field->jsonSerialize(),
-            $this->renderSchema(),
-        );
+        $data['schema'] = $this->renderSchema();
 
         return $data;
     }
