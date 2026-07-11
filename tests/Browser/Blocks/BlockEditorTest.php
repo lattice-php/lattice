@@ -34,6 +34,58 @@ it('adds a block, edits it on the canvas, and persists it on submit', function (
         ->assertNoJavaScriptErrors();
 });
 
+it('nests a block inside a columns slot and persists the tree', function (): void {
+    actingAs(workbenchTestUser());
+
+    $page = visit('/block-editor');
+
+    $page->assertSee('Block Editor Demo');
+
+    $page->click('@builder-add')
+        ->click('[data-test="builder-add-workbench.columns"]');
+
+    $page->assertPresent('[data-test="block-slot-main"]');
+
+    $page->click('[data-test="block-slot-main"] [data-test="builder-add"]')
+        ->click('[data-test="builder-add-workbench.hero"]');
+
+    $page->assertPresent('[data-test="block-slot-main"] [data-test^="block-shell-"]');
+
+    $page->click('[data-test="block-slot-main"] [data-test^="block-shell-"]');
+    $page->fill('input[name="content[0][slots][main][0][title]"]', 'Nested hello');
+    $page->click('Block Editor Demo');
+
+    retryUntil(function () use ($page): void {
+        $page->assertSee('Nested hello');
+    });
+
+    $page->click('Save');
+
+    retryUntil(function () use ($page): void {
+        $page->assertSee('Saved: Nested hello');
+    });
+
+    $page->assertNoSmoke()
+        ->assertNoJavaScriptErrors();
+});
+
+it('removes a block from the canvas', function (): void {
+    actingAs(workbenchTestUser());
+
+    $page = visit('/block-editor');
+
+    $page->click('@builder-add')
+        ->click('[data-test="builder-add-workbench.hero"]');
+
+    $page->assertPresent('[data-test^="block-shell-"]');
+
+    $page->click('[data-test^="block-remove-"]');
+
+    $page->assertNotPresent('[data-test^="block-shell-"]');
+
+    $page->assertNoJavaScriptErrors();
+});
+
 it('persists attributes for every block, not just the selected one', function (): void {
     actingAs(workbenchTestUser());
 

@@ -25,9 +25,7 @@ class BlockPageEditorPage extends WorkbenchPage
     public function render(PageSchema $schema): PageSchema
     {
         $saved = session('block-editor.saved');
-        $savedTitles = Collection::make(is_array($saved) ? $saved : [])
-            ->pluck('title')
-            ->filter(fn (mixed $title): bool => is_string($title) && $title !== '');
+        $savedTitles = Collection::make($this->blockTitles($saved));
 
         return $schema->schema([
             Stack::make('block-editor-page')
@@ -42,5 +40,29 @@ class BlockPageEditorPage extends WorkbenchPage
                         : []),
                 ]),
         ]);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function blockTitles(mixed $rows): array
+    {
+        $titles = [];
+
+        foreach (is_array($rows) ? $rows : [] as $row) {
+            if (! is_array($row)) {
+                continue;
+            }
+
+            if (is_string($row['title'] ?? null) && $row['title'] !== '') {
+                $titles[] = $row['title'];
+            }
+
+            foreach (is_array($row['slots'] ?? null) ? $row['slots'] : [] as $childRows) {
+                $titles = [...$titles, ...$this->blockTitles($childRows)];
+            }
+        }
+
+        return $titles;
     }
 }
