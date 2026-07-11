@@ -26,8 +26,13 @@ class BlockEditor extends TypedRowsField
         $registry = app(BlockRegistry::class);
 
         $this->templates(array_map(
-            fn (string $block): RowTemplate => RowTemplate::make($registry->keyFor($block))
-                ->schema(app($block)->attributes()),
+            function (string $block) use ($registry): RowTemplate {
+                $definition = app($block);
+
+                return RowTemplate::make($registry->keyFor($block))
+                    ->schema($definition->attributes())
+                    ->slots($definition->slots());
+            },
             $blocks,
         ));
 
