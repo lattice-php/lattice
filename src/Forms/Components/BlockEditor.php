@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Forms\Components;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Blocks\BlockDefinition;
 use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockRenderer;
+use Lattice\Lattice\Blocks\Slot;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\FormData;
@@ -38,10 +40,22 @@ class BlockEditor extends TypedRowsField
 
                 return RowTemplate::make($registry->keyFor($block))
                     ->schema($definition->attributes())
-                    ->slots($definition->slots());
+                    ->slots(array_map(
+                        static fn (Slot|string $slot): array|string => $slot instanceof Slot
+                            ? [
+                                'name' => $slot->name,
+                                ...($slot->allowedBlocks() === []
+                                    ? []
+                                    : ['blocks' => array_map($registry->keyFor(...), $slot->allowedBlocks())]),
+                            ]
+                            : $slot,
+                        $definition->slots(),
+                    ));
             },
             $blocks,
         ));
+
+        $editorTypes = array_map(static fn (RowTemplate $template): string => $template->type, $this->templates);
 
         foreach ($this->templates as $template) {
             foreach ($template->fields() as $field) {
@@ -50,6 +64,19 @@ class BlockEditor extends TypedRowsField
                         'Block schemas must not declare a [%s] field: the key is reserved for nested block rows.',
                         self::SLOTS,
                     ));
+                }
+            }
+
+            foreach ($template->slotNames() as $slot) {
+                foreach ($template->slotAllowedTypes($slot) ?? [] as $type) {
+                    if (! in_array($type, $editorTypes, true)) {
+                        throw new LogicException(sprintf(
+                            'Slot [%s] of block [%s] allows [%s], which the editor does not offer.',
+                            $slot,
+                            $template->type,
+                            $type,
+                        ));
+                    }
                 }
             }
         }
@@ -67,26 +94,35 @@ class BlockEditor extends TypedRowsField
 
     /**
      * @param  array<string, mixed>  $row
-     * @return array<int, string>
      */
-    private function slotNamesFor(array $row): array
+    private function templateForRow(array $row): ?RowTemplate
     {
         $type = $row[self::TYPE] ?? null;
 
         foreach ($this->templates as $template) {
             if ($template->type === $type) {
-                return $template->slotNames();
+                return $template;
             }
         }
 
-        return [];
+        return null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     * @return array<int, string>
+     */
+    private function slotNamesFor(array $row): array
+    {
+        return $this->templateForRow($row)?->slotNames() ?? [];
     }
 
     #[\Override]
     protected function rowRulesAt(string $prefix, array $row, FormData $data, Request $request): array
     {
         $rules = parent::rowRulesAt($prefix, $row, $data, $request);
-        $slots = $this->slotNamesFor($row);
+        $template = $this->templateForRow($row);
+        $slots = $template?->slotNames() ?? [];
 
         if ($slots === []) {
             return $rules;
@@ -97,15 +133,22 @@ class BlockEditor extends TypedRowsField
         foreach ($slots as $slot) {
             $rules["{$prefix}.".self::SLOTS.".{$slot}"] = ['sometimes', 'array'];
 
+            $allowedTypes = $template?->slotAllowedTypes($slot);
             $childRows = $row[self::SLOTS][$slot] ?? [];
 
             foreach (array_values(is_array($childRows) ? $childRows : []) as $index => $childRow) {
+                $childPrefix = "{$prefix}.".self::SLOTS.".{$slot}.{$index}";
+
                 $rules = [...$rules, ...$this->rowRulesAt(
-                    "{$prefix}.".self::SLOTS.".{$slot}.{$index}",
+                    $childPrefix,
                     is_array($childRow) ? $childRow : [],
                     $data,
                     $request,
                 )];
+
+                if ($allowedTypes !== null) {
+                    $rules["{$childPrefix}.".self::TYPE] = ['required', Rule::in($allowedTypes)];
+                }
             }
         }
 

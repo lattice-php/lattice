@@ -24,7 +24,15 @@ import { useRowCollection } from "@lattice-php/lattice/form/components/fields/us
 import { BlockCanvas } from "./canvas";
 import { BlockInspector } from "./inspector";
 import { moveBlock } from "./move-block";
-import { appendBlockAt, removeBlockAt, updateBlockAt, walkBlocks, type BlockPath } from "./tree";
+import {
+  appendBlockAt,
+  blockAt,
+  removeBlockAt,
+  slotAllowedTypes,
+  updateBlockAt,
+  walkBlocks,
+  type BlockPath,
+} from "./tree";
 import { useBlockPreview, type BlockSource, type RenderedBlock } from "./use-block-preview";
 
 function rowAttributes(row: RepeaterRow): Record<string, unknown> {
@@ -99,7 +107,17 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
     Array.isArray(prev) ? (prev as RepeaterRow[]) : [];
 
   const onMoveBlock = (from: BlockPath, to: BlockPath): void => {
-    setValue(path, (prev: unknown) => moveBlock(asRows(prev), from, to));
+    setValue(path, (prev: unknown) => {
+      const current = asRows(prev);
+      const moved = blockAt(current, from);
+      const allowed = slotAllowedTypes(templates, current, to);
+
+      if (moved && allowed && !allowed.includes(String(moved.type))) {
+        return current;
+      }
+
+      return moveBlock(current, from, to);
+    });
   };
 
   const onFieldAt = (blockPath: BlockPath, field: string, value: unknown): void => {

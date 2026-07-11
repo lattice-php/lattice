@@ -68,7 +68,8 @@ final readonly class BlockRenderer
     {
         $rendered = [];
 
-        foreach ($block->slots() as $name) {
+        foreach ($block->slots() as $slot) {
+            $name = $slot instanceof Slot ? $slot->name : $slot;
             $childRows = $row['slots'][$name] ?? [];
             $rendered[$name] = is_array($childRows) ? $this->components($childRows) : [];
         }

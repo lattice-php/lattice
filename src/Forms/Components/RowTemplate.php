@@ -23,7 +23,7 @@ final class RowTemplate implements JsonSerializable
     private ?string $label = null;
 
     /**
-     * @var array<int, string>
+     * @var array<int, array{name: string, blocks?: array<int, string>}>
      */
     private array $slots = [];
 
@@ -42,11 +42,17 @@ final class RowTemplate implements JsonSerializable
     }
 
     /**
-     * @param  array<int, string>  $names
+     * Declare the row type's named child-row lists: plain names for
+     * unrestricted slots, or shapes restricting a slot to certain row types.
+     *
+     * @param  array<int, array{name: string, blocks?: array<int, string>}|string>  $slots
      */
-    public function slots(array $names): self
+    public function slots(array $slots): self
     {
-        $this->slots = array_values($names);
+        $this->slots = array_values(array_map(
+            static fn (array|string $slot): array => is_string($slot) ? ['name' => $slot] : $slot,
+            $slots,
+        ));
 
         return $this;
     }
@@ -56,7 +62,23 @@ final class RowTemplate implements JsonSerializable
      */
     public function slotNames(): array
     {
-        return $this->slots;
+        return array_column($this->slots, 'name');
+    }
+
+    /**
+     * The row types a slot accepts, or null when the slot is unrestricted.
+     *
+     * @return array<int, string>|null
+     */
+    public function slotAllowedTypes(string $name): ?array
+    {
+        foreach ($this->slots as $slot) {
+            if ($slot['name'] === $name) {
+                return $slot['blocks'] ?? null;
+            }
+        }
+
+        return null;
     }
 
     /**

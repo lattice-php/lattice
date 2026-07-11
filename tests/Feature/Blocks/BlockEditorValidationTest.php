@@ -7,6 +7,7 @@ use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Blocks\BlockDefinition;
 use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockSlots;
+use Lattice\Lattice\Blocks\Slot;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\BlockEditor;
@@ -53,6 +54,37 @@ test('slot child rows validate through their own template', function (): void {
         ->toHaveKey('content.0.slots.main.0.title')
         ->toHaveKey('content.0.slots.main.0.rowId')
         ->and((string) $rules['content.0.slots.main.0.type'][1])->toBe('in:"validation.hero","validation.columns"');
+});
+
+test('a restricted slot limits its child types to the allowed blocks', function (): void {
+    app(BlockRegistry::class)->register([ValidationRestrictedColumnsBlock::class]);
+
+    $field = BlockEditor::make('content')->blocks([
+        ValidationHeroBlock::class,
+        ValidationColumnsBlock::class,
+        ValidationRestrictedColumnsBlock::class,
+    ]);
+
+    $data = FormData::make(['content' => [[
+        'type' => 'validation.restricted-columns',
+        'slots' => ['main' => [['type' => 'validation.columns']]],
+    ]]]);
+    $rules = $field->nestedRules($data, Request::create('/'));
+
+    expect((string) $rules['content.0.slots.main.0.type'][1])->toBe('in:"validation.hero"');
+});
+
+test('an unrestricted slot accepts every editor block', function (): void {
+    $field = validationEditor();
+
+    $data = FormData::make(['content' => [[
+        'type' => 'validation.columns',
+        'slots' => ['main' => [['type' => 'validation.columns']]],
+    ]]]);
+    $rules = $field->nestedRules($data, Request::create('/'));
+
+    expect((string) $rules['content.0.slots.main.0.type'][1])
+        ->toBe('in:"validation.hero","validation.columns"');
 });
 
 test('a slotless row type gets no slot rules', function (): void {
@@ -155,6 +187,26 @@ final class ValidationColumnsBlock extends BlockDefinition
     public function slots(): array
     {
         return ['main'];
+    }
+
+    public function render(FormData $data, BlockSlots $slots): PageSchema
+    {
+        return PageSchema::make()->component(Grid::make()->schema($slots->get('main')));
+    }
+}
+
+#[AsBlock('validation.restricted-columns')]
+final class ValidationRestrictedColumnsBlock extends BlockDefinition
+{
+    public function attributes(): array
+    {
+        return [];
+    }
+
+    #[Override]
+    public function slots(): array
+    {
+        return [Slot::make('main')->blocks([ValidationHeroBlock::class])];
     }
 
     public function render(FormData $data, BlockSlots $slots): PageSchema

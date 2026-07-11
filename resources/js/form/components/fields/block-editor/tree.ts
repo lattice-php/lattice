@@ -1,4 +1,5 @@
 import type { RepeaterRow } from "@lattice-php/lattice/form/components/fields/repeater-rows";
+import type { RowTemplate } from "@lattice-php/lattice/form/components/fields/row-templates";
 
 export type BlockStep = { index: number; slot?: string };
 export type BlockPath = BlockStep[];
@@ -94,6 +95,31 @@ export function appendBlockAt(
       i === index ? withChildList(parent, slot, [...childList(parent, slot), row]) : parent,
     ),
   );
+}
+
+/**
+ * The block types the slot containing the given path accepts, or null when the
+ * path is top-level or the slot is unrestricted.
+ */
+export function slotAllowedTypes(
+  templates: RowTemplate[],
+  rows: RepeaterRow[],
+  path: BlockPath,
+): string[] | null {
+  if (path.length < 2) {
+    return null;
+  }
+
+  const parentStep = path[path.length - 2];
+
+  if (parentStep.slot === undefined) {
+    return null;
+  }
+
+  const parent = blockAt(rows, [...path.slice(0, -2), { index: parentStep.index }]);
+  const template = templates.find((candidate) => candidate.type === parent?.type);
+
+  return template?.slots?.find((slot) => slot.name === parentStep.slot)?.blocks ?? null;
 }
 
 export type BlockWalkEntry = { row: RepeaterRow; path: BlockPath };

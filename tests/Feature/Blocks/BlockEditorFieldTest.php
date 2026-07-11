@@ -5,6 +5,7 @@ use Lattice\Lattice\Attributes\AsBlock;
 use Lattice\Lattice\Blocks\BlockDefinition;
 use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockSlots;
+use Lattice\Lattice\Blocks\Slot;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\BlockEditor;
 use Lattice\Lattice\Forms\Components\TextInput;
@@ -31,8 +32,20 @@ test('serializes the declared slots on each template', function (): void {
 
     expect($wire['templates'][0])->not->toHaveKey('slots')
         ->and($wire['templates'][1]['type'])->toBe('editor.columns')
-        ->and($wire['templates'][1]['slots'])->toBe(['main']);
+        ->and($wire['templates'][1]['slots'])->toBe([['name' => 'main']]);
 });
+
+test('serializes the allowed block types of a restricted slot', function (): void {
+    $field = BlockEditor::make('content')->blocks([EditorHeroBlock::class, EditorRestrictedColumnsBlock::class]);
+
+    $wire = wire($field);
+
+    expect($wire['templates'][1]['slots'])->toBe([['name' => 'main', 'blocks' => ['editor.hero']]]);
+});
+
+test('rejects a slot allowing a block the editor does not offer', function (): void {
+    BlockEditor::make('content')->blocks([EditorRestrictedColumnsBlock::class]);
+})->throws(LogicException::class, 'editor.hero');
 
 test('serializes rendered wire for each stored row aligned by index', function (): void {
     app(BlockRegistry::class)->register([EditorHeroBlock::class]);
@@ -98,6 +111,26 @@ final class EditorColumnsBlock extends BlockDefinition
     public function slots(): array
     {
         return ['main'];
+    }
+
+    public function render(FormData $data, BlockSlots $slots): PageSchema
+    {
+        return PageSchema::make()->component(Grid::make()->schema($slots->get('main')));
+    }
+}
+
+#[AsBlock('editor.restricted-columns')]
+final class EditorRestrictedColumnsBlock extends BlockDefinition
+{
+    public function attributes(): array
+    {
+        return [];
+    }
+
+    #[Override]
+    public function slots(): array
+    {
+        return [Slot::make('main')->blocks([EditorHeroBlock::class])];
     }
 
     public function render(FormData $data, BlockSlots $slots): PageSchema

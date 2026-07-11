@@ -14,7 +14,13 @@ import { BlockCanvas } from "./canvas";
 const templates = [
   { type: "hero", label: "Hero", schema: [] },
   { type: "text", label: "Text", schema: [] },
-  { type: "columns", label: "Columns", schema: [], slots: ["main"] },
+  { type: "columns", label: "Columns", schema: [], slots: [{ name: "main" }] },
+  {
+    type: "restricted",
+    label: "Restricted",
+    schema: [],
+    slots: [{ name: "main", blocks: ["hero"] }],
+  },
 ] as never[];
 
 function renderCanvas(rows: Record<string, unknown>[], overrides: Record<string, unknown> = {}) {
@@ -114,6 +120,25 @@ it("selects a nested child without selecting its parent", () => {
 
   expect(onSelect).toHaveBeenCalledTimes(1);
   expect(onSelect).toHaveBeenCalledWith("h1");
+});
+
+it("offers only the allowed blocks in a restricted slot's add menu", () => {
+  renderCanvas([{ rowId: "r1", type: "restricted", slots: { main: [] } }]);
+
+  fireEvent.click(screen.getByTestId("builder-add"));
+
+  expect(screen.getByTestId("builder-add-hero")).toBeInTheDocument();
+  expect(screen.queryByTestId("builder-add-columns")).not.toBeInTheDocument();
+  expect(screen.queryByTestId("builder-add-text")).not.toBeInTheDocument();
+});
+
+it("appends an allowed block into a slot through its add menu", () => {
+  const { onAppend } = renderCanvas([{ rowId: "c1", type: "columns", slots: { main: [] } }]);
+
+  fireEvent.click(screen.getByTestId("builder-add"));
+  fireEvent.click(screen.getByTestId("builder-add-hero"));
+
+  expect(onAppend).toHaveBeenCalledWith([{ index: 0 }], "main", "hero");
 });
 
 it("removes a nested child with its slot path", () => {

@@ -21,7 +21,10 @@ import {
   ROW_ID_KEY,
   type RepeaterRow,
 } from "@lattice-php/lattice/form/components/fields/repeater-rows";
-import type { RowTemplate } from "@lattice-php/lattice/form/components/fields/row-templates";
+import type {
+  RowTemplate,
+  RowTemplateSlot,
+} from "@lattice-php/lattice/form/components/fields/row-templates";
 import { encodePath, resolveMove } from "./dnd";
 import { childList, type BlockPath } from "./tree";
 
@@ -65,21 +68,26 @@ function SlotArea({
   shared,
 }: {
   parentPath: BlockPath;
-  slot: string;
+  slot: RowTemplateSlot;
   rows: RepeaterRow[];
   shared: CanvasShared;
 }) {
   const last = parentPath[parentPath.length - 1];
-  const prefix: BlockPath = [...parentPath.slice(0, -1), { ...last, slot }];
+  const prefix: BlockPath = [...parentPath.slice(0, -1), { ...last, slot: slot.name }];
   const ids = rows.map((_, index) => encodePath([...prefix, { index }]));
-  const options = shared.templates.map((template) => ({
+  const allowed = slot.blocks
+    ? shared.templates.filter((template) => slot.blocks?.includes(template.type))
+    : shared.templates;
+  const options = allowed.map((template) => ({
     type: template.type,
     label: template.label,
   }));
 
   return (
-    <div data-test={`block-slot-${slot}`} className="flex flex-col gap-2">
-      <span className="text-xs font-medium uppercase tracking-wide text-lt-muted-fg">{slot}</span>
+    <div data-test={`block-slot-${slot.name}`} className="flex flex-col gap-2">
+      <span className="text-xs font-medium uppercase tracking-wide text-lt-muted-fg">
+        {slot.name}
+      </span>
       <SortableContext items={ids} strategy={verticalListSortingStrategy}>
         <div className="flex flex-col gap-2">
           {rows.map((row, index) => (
@@ -96,7 +104,7 @@ function SlotArea({
       <AddRowMenu
         addLabel={shared.addLabel}
         options={options}
-        onSelect={(type) => shared.onAppend(parentPath, slot, type)}
+        onSelect={(type) => shared.onAppend(parentPath, slot.name, type)}
       />
     </div>
   );
@@ -180,10 +188,10 @@ function Shell({ row, path, shared }: { row: RepeaterRow; path: BlockPath; share
         <div className="flex flex-col gap-3">
           {slots.map((slot) => (
             <SlotArea
-              key={slot}
+              key={slot.name}
               parentPath={path}
               slot={slot}
-              rows={childList(row, slot)}
+              rows={childList(row, slot.name)}
               shared={shared}
             />
           ))}

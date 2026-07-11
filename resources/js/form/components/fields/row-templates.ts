@@ -1,6 +1,13 @@
 import type { Node } from "@lattice-php/lattice/core/types";
 
-export type RowTemplate = { type: string; label: string; schema: Node[]; slots?: string[] };
+export type RowTemplateSlot = { name: string; blocks?: string[] };
+
+export type RowTemplate = {
+  type: string;
+  label: string;
+  schema: Node[];
+  slots?: RowTemplateSlot[];
+};
 
 export function rowTemplatesOf(node: Node): RowTemplate[] | undefined {
   return (node as unknown as { templates?: RowTemplate[] }).templates;

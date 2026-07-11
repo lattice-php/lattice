@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { appendBlockAt, blockAt, removeBlockAt, updateBlockAt, walkBlocks } from "./tree";
+import {
+  appendBlockAt,
+  blockAt,
+  removeBlockAt,
+  slotAllowedTypes,
+  updateBlockAt,
+  walkBlocks,
+} from "./tree";
 
 const rows = () => [
   { rowId: "a", type: "text", body: "A" },
@@ -63,6 +70,37 @@ describe("appendBlockAt", () => {
 
     const slot = blockAt(out, [{ index: 0 }])?.slots as Record<string, { rowId: string }[]>;
     expect(slot.main.map((row) => row.rowId)).toEqual(["new"]);
+  });
+});
+
+describe("slotAllowedTypes", () => {
+  const templates = [
+    { type: "hero", label: "Hero", schema: [] },
+    { type: "columns", label: "Columns", schema: [], slots: [{ name: "main" }] },
+    {
+      type: "restricted",
+      label: "Restricted",
+      schema: [],
+      slots: [{ name: "main", blocks: ["hero"] }],
+    },
+  ] as never[];
+
+  it("returns the restriction of the containing slot", () => {
+    const value = [{ rowId: "r1", type: "restricted", slots: { main: [] } }];
+
+    expect(
+      slotAllowedTypes(templates as never, value, [{ index: 0, slot: "main" }, { index: 0 }]),
+    ).toEqual(["hero"]);
+  });
+
+  it("returns null for an unrestricted slot", () => {
+    expect(
+      slotAllowedTypes(templates as never, rows(), [{ index: 1, slot: "main" }, { index: 0 }]),
+    ).toBeNull();
+  });
+
+  it("returns null at the top level", () => {
+    expect(slotAllowedTypes(templates as never, rows(), [{ index: 0 }])).toBeNull();
   });
 });
 

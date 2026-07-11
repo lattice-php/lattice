@@ -51,7 +51,7 @@ const baseNode = {
       label: "Hero",
       schema: [{ id: "t", type: "field.text-input", props: { name: "title" } }],
     },
-    { type: "columns", label: "Columns", schema: [], slots: ["main"] },
+    { type: "columns", label: "Columns", schema: [], slots: [{ name: "main" }] },
   ],
   rendered: [{ wire: [{ type: "heading", props: { text: "Stored" } }], slots: {} }],
 };

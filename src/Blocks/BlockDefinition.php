@@ -26,7 +26,10 @@ abstract class BlockDefinition extends Definition
     }
 
     /**
-     * @return array<int, string>
+     * The named child-row lists of this block: plain names for unrestricted
+     * slots, or {@see Slot} instances to restrict a slot to certain blocks.
+     *
+     * @return array<int, Slot|string>
      */
     public function slots(): array
     {
