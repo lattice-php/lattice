@@ -52,7 +52,7 @@ const baseNode = {
       schema: [{ id: "t", type: "field.text-input", props: { name: "title" } }],
     },
   ],
-  rendered: [[{ type: "heading", props: { text: "Stored" } }]],
+  rendered: [{ wire: [{ type: "heading", props: { text: "Stored" } }], slots: {} }],
 };
 const node = baseNode as never;
 

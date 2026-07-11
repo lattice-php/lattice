@@ -24,17 +24,21 @@ import { BlockCanvas } from "./canvas";
 import { hiddenInputsFor } from "./hidden-inputs";
 import { BlockInspector } from "./inspector";
 import { moveBlock, type BlockPath } from "./move-block";
-import { useBlockPreview, type BlockSource } from "./use-block-preview";
+import { useBlockPreview, type BlockSource, type RenderedBlock } from "./use-block-preview";
 
 function rowAttributes(row: RepeaterRow): Record<string, unknown> {
   return Object.fromEntries(Object.entries(row).filter(([key]) => key !== ROW_ID_KEY));
+}
+
+function rowSlots(row: RepeaterRow): Record<string, RepeaterRow[]> {
+  return (row.slots ?? {}) as Record<string, RepeaterRow[]>;
 }
 
 export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ node }) => {
   const props = node.props;
   const name = props.name;
   const templates = rowTemplatesOf(node) ?? [];
-  const rendered = ((node as unknown as { rendered?: Node[][] }).rendered ?? []) as Node[][];
+  const rendered = (node as unknown as { rendered?: RenderedBlock[] }).rendered ?? [];
 
   const { errors } = useFormContext();
   const { hidden, required } = useDependentField(node);
@@ -45,11 +49,20 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
   const seeds = useMemo(() => {
     const wire: Record<string, Node[]> = {};
     const sources: Record<string, BlockSource> = {};
-    rows.forEach((row, i) => {
-      const rowId = String(row[ROW_ID_KEY]);
-      wire[rowId] = rendered[i] ?? [];
-      sources[rowId] = { type: String(row.type ?? ""), attributes: rowAttributes(row) };
-    });
+    const walk = (seedRows: RepeaterRow[], seedRendered: RenderedBlock[]): void => {
+      seedRows.forEach((row, i) => {
+        const rowId = String(row[ROW_ID_KEY]);
+        wire[rowId] = seedRendered[i]?.wire ?? [];
+        sources[rowId] = { type: String(row.type ?? ""), attributes: rowAttributes(row) };
+
+        for (const [slot, children] of Object.entries(rowSlots(row))) {
+          if (Array.isArray(children)) {
+            walk(children, seedRendered[i]?.slots?.[slot] ?? []);
+          }
+        }
+      });
+    };
+    walk(rows, rendered);
 
     return { wire, sources };
     // seed once from the server-rendered payload

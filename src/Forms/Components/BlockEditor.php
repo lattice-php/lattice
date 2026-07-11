@@ -175,15 +175,35 @@ class BlockEditor extends TypedRowsField
     #[SerializationHook(priority: 350)]
     protected function serialiseRenderedRows(array $data): array
     {
-        $renderer = app(BlockRenderer::class);
-
         $rows = is_array($this->value) ? array_values($this->value) : [];
 
-        $rendered = array_map(
-            fn (mixed $row): array => $renderer->render([is_array($row) ? $row : []])->renderable(),
-            $rows,
-        );
+        return [...$data, 'rendered' => $this->renderedTree($rows)];
+    }
 
-        return [...$data, 'rendered' => $rendered];
+    /**
+     * The per-row previews the canvas seeds from, mirroring the value's slot
+     * nesting so every block at any depth ships its own rendered wire.
+     *
+     * @param  array<int, mixed>  $rows
+     * @return array<int, array{wire: array<int, mixed>, slots: array<string, mixed>}>
+     */
+    private function renderedTree(array $rows): array
+    {
+        $renderer = app(BlockRenderer::class);
+
+        return array_map(function (mixed $row) use ($renderer): array {
+            $row = is_array($row) ? $row : [];
+            $slots = [];
+
+            foreach ($this->slotNamesFor($row) as $slot) {
+                $childRows = $row[self::SLOTS][$slot] ?? [];
+                $slots[$slot] = $this->renderedTree(is_array($childRows) ? array_values($childRows) : []);
+            }
+
+            return [
+                'wire' => $renderer->render([$row])->renderable(),
+                'slots' => $slots,
+            ];
+        }, $rows);
     }
 }

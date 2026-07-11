@@ -47,9 +47,29 @@ test('serializes rendered wire for each stored row aligned by index', function (
     $wire = wire($field);
 
     expect($wire['rendered'])->toHaveCount(2)
-        ->and($wire['rendered'][0][0]['type'])->toBe('heading')
-        ->and($wire['rendered'][0][0]['props']['text'])->toBe('First')
-        ->and($wire['rendered'][1][0]['props']['text'])->toBe('Second');
+        ->and($wire['rendered'][0]['wire'][0]['type'])->toBe('heading')
+        ->and($wire['rendered'][0]['wire'][0]['props']['text'])->toBe('First')
+        ->and($wire['rendered'][1]['wire'][0]['props']['text'])->toBe('Second');
+});
+
+test('serializes a rendered tree for slot children', function (): void {
+    app(BlockRegistry::class)->register([EditorHeroBlock::class, EditorColumnsBlock::class]);
+
+    $field = BlockEditor::make('content')
+        ->blocks([EditorHeroBlock::class, EditorColumnsBlock::class])
+        ->value([
+            [
+                'type' => 'editor.columns',
+                'slots' => ['main' => [['type' => 'editor.hero', 'title' => 'Nested']]],
+            ],
+        ]);
+
+    $wire = wire($field);
+
+    expect($wire['rendered'][0]['wire'][0]['type'])->toBe('grid')
+        ->and($wire['rendered'][0]['slots']['main'])->toHaveCount(1)
+        ->and($wire['rendered'][0]['slots']['main'][0]['wire'][0]['type'])->toBe('heading')
+        ->and($wire['rendered'][0]['slots']['main'][0]['wire'][0]['props']['text'])->toBe('Nested');
 });
 
 #[AsBlock('editor.hero')]

@@ -4,6 +4,9 @@ import type { Node } from "@lattice-php/lattice/core/types";
 
 export type BlockSource = { type: string; attributes: Record<string, unknown> };
 
+/** The server-rendered preview for one block row, mirroring the value's slot nesting. */
+export type RenderedBlock = { wire: Node[]; slots?: Record<string, RenderedBlock[]> };
+
 type Options = {
   endpoint: string;
   ref: string;
