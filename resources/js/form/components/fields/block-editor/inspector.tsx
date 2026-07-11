@@ -1,8 +1,8 @@
 import type { Node } from "@lattice-php/lattice/core/types";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import { useT } from "@lattice-php/lattice/i18n";
-import { FieldScopeProvider } from "../../field-scope";
-import type { RepeaterRow } from "../repeater-rows";
+import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
+import type { RepeaterRow } from "@lattice-php/lattice/form/components/fields/repeater-rows";
 
 type Props = {
   base: string;

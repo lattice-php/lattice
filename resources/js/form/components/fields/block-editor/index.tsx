@@ -1,16 +1,25 @@
 import { useMemo, useState } from "react";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { useT } from "@lattice-php/lattice/i18n";
-import { FormFieldFrame } from "../../base/field";
-import { appendPath, toHtmlName } from "../../form-path";
-import { useFormContext } from "../../context";
-import { useDependentField } from "../../use-dependent-field";
-import { useSetFormValue } from "../../values";
-import { AddRowMenu, type AddRowOption } from "../add-row-menu";
-import { ROW_ID_KEY, type RepeaterRow } from "../repeater-rows";
-import { RowKeyInputs } from "../row-key-inputs";
-import { rowTemplatesOf, type RowTemplate } from "../row-templates";
-import { useRowCollection } from "../use-row-collection";
+import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
+import { appendPath, toHtmlName } from "@lattice-php/lattice/form/lib/form-path";
+import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
+import { useDependentField } from "@lattice-php/lattice/form/hooks/use-dependent-field";
+import { useSetFormValue } from "@lattice-php/lattice/form/hooks/values";
+import {
+  AddRowMenu,
+  type AddRowOption,
+} from "@lattice-php/lattice/form/components/fields/add-row-menu";
+import {
+  ROW_ID_KEY,
+  type RepeaterRow,
+} from "@lattice-php/lattice/form/components/fields/repeater-rows";
+import { RowKeyInputs } from "@lattice-php/lattice/form/components/fields/row-key-inputs";
+import {
+  rowTemplatesOf,
+  type RowTemplate,
+} from "@lattice-php/lattice/form/components/fields/row-templates";
+import { useRowCollection } from "@lattice-php/lattice/form/components/fields/use-row-collection";
 import { BlockCanvas } from "./canvas";
 import { hiddenInputsFor } from "./hidden-inputs";
 import { BlockInspector } from "./inspector";

@@ -13,7 +13,10 @@ import type { Node } from "@lattice-php/lattice/core/types";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import { ROW_ID_KEY, type RepeaterRow } from "../repeater-rows";
+import {
+  ROW_ID_KEY,
+  type RepeaterRow,
+} from "@lattice-php/lattice/form/components/fields/repeater-rows";
 import { encodePath, resolveMove } from "./dnd";
 import type { BlockPath } from "./move-block";
 

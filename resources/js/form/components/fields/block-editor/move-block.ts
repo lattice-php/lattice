@@ -1,4 +1,4 @@
-import type { RepeaterRow } from "../repeater-rows";
+import type { RepeaterRow } from "@lattice-php/lattice/form/components/fields/repeater-rows";
 
 export type BlockStep = { index: number; slot?: string };
 export type BlockPath = BlockStep[];

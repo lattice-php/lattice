@@ -10,8 +10,8 @@ vi.mock("@lattice-php/lattice/core/renderer", () => ({
   ),
 }));
 
-import { FormProvider } from "../../context";
-import { FormValuesProvider } from "../../values";
+import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
+import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { BlockInspector } from "./inspector";
 
 // Copy the full FormProvider value shape from builder.test.tsx (see Global Constraints).

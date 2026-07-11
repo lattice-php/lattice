@@ -14,8 +14,8 @@ vi.mock("@lattice-php/lattice/core/api", () => ({
 }));
 
 import type React from "react";
-import { FormProvider } from "../../context";
-import { FormValuesProvider } from "../../values";
+import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
+import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { BlockEditorComponent } from "./index";
 
 function wrap(
@@ -65,8 +65,14 @@ it("renders stored blocks on the canvas from the rendered prop", () => {
   expect(screen.getByTestId("block-shell-a")).toBeInTheDocument();
 });
 
-it("renders nothing when the field is hidden", () => {
-  const hiddenNode = { ...baseNode, props: { ...baseNode.props, hidden: true } } as never;
+it("renders nothing when its visible condition fails", () => {
+  const hiddenNode = {
+    ...baseNode,
+    props: {
+      ...baseNode.props,
+      conditions: { visible: [{ field: "status", operator: "eq", value: "live" }] },
+    },
+  } as never;
 
   wrap(<BlockEditorComponent node={hiddenNode}>{null}</BlockEditorComponent>, {
     content: [{ rowId: "a", type: "hero", title: "Stored" }],
