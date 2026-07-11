@@ -57,6 +57,7 @@ function EmptySlot({ parentRowId, slot }: { parentRowId: string; slot: string })
   return (
     <div
       ref={setNodeRef}
+      data-test={`block-slot-drop-${slot}`}
       className={cn(
         "rounded-lt border border-dashed border-lt-border p-3 text-center text-sm text-lt-muted-fg",
         isOver && "border-lt-primary",

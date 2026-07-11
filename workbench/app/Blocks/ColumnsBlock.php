@@ -6,6 +6,7 @@ namespace Workbench\App\Blocks;
 use Lattice\Lattice\Attributes\AsBlock;
 use Lattice\Lattice\Blocks\BlockDefinition;
 use Lattice\Lattice\Blocks\BlockSlots;
+use Lattice\Lattice\Blocks\Slot;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Ui\Components\Grid;
@@ -21,7 +22,7 @@ final class ColumnsBlock extends BlockDefinition
     #[\Override]
     public function slots(): array
     {
-        return ['main'];
+        return [Slot::make('main')->blocks([HeroBlock::class])];
     }
 
     public function render(FormData $data, BlockSlots $slots): PageSchema
