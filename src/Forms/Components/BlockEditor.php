@@ -133,7 +133,7 @@ class BlockEditor extends TypedRowsField
         foreach ($slots as $slot) {
             $rules["{$prefix}.".self::SLOTS.".{$slot}"] = ['sometimes', 'array'];
 
-            $allowedTypes = $template?->slotAllowedTypes($slot);
+            $allowedTypes = $template->slotAllowedTypes($slot);
             $childRows = $row[self::SLOTS][$slot] ?? [];
 
             foreach (array_values(is_array($childRows) ? $childRows : []) as $index => $childRow) {

@@ -93,7 +93,7 @@ final class RowTemplate implements JsonSerializable
     }
 
     /**
-     * @return array{type: string, label: string, schema: array<int, mixed>, slots?: array<int, string>}
+     * @return array{type: string, label: string, schema: array<int, mixed>, slots?: array<int, array{name: string, blocks?: array<int, string>}>}
      */
     public function jsonSerialize(): array
     {
