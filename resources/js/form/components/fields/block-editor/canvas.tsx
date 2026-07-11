@@ -2,13 +2,19 @@ import {
   closestCenter,
   DndContext,
   KeyboardSensor,
+  pointerWithin,
   PointerSensor,
   useDroppable,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import type { DragEndEvent } from "@dnd-kit/core";
-import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import type { CollisionDetection, DragEndEvent } from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useEffect } from "react";
 import type { Node } from "@lattice-php/lattice/core/types";
@@ -25,7 +31,7 @@ import type {
   RowTemplate,
   RowTemplateSlot,
 } from "@lattice-php/lattice/form/components/fields/row-templates";
-import { encodePath, resolveMove } from "./dnd";
+import { dropDepth, resolveDrop, slotDropId } from "./dnd";
 import { childList, type BlockPath } from "./tree";
 
 type CanvasShared = {
@@ -44,8 +50,8 @@ type Props = CanvasShared & {
   onMoveBlock: (from: BlockPath, to: BlockPath) => void;
 };
 
-function EmptySlot({ prefix }: { prefix: BlockPath }) {
-  const { setNodeRef, isOver } = useDroppable({ id: encodePath([...prefix, { index: 0 }]) });
+function EmptySlot({ parentRowId, slot }: { parentRowId: string; slot: string }) {
+  const { setNodeRef, isOver } = useDroppable({ id: slotDropId(parentRowId, slot) });
   const { t } = useT("lattice");
 
   return (
@@ -63,18 +69,20 @@ function EmptySlot({ prefix }: { prefix: BlockPath }) {
 
 function SlotArea({
   parentPath,
+  parentRowId,
   slot,
   rows,
   shared,
 }: {
   parentPath: BlockPath;
+  parentRowId: string;
   slot: RowTemplateSlot;
   rows: RepeaterRow[];
   shared: CanvasShared;
 }) {
   const last = parentPath[parentPath.length - 1];
   const prefix: BlockPath = [...parentPath.slice(0, -1), { ...last, slot: slot.name }];
-  const ids = rows.map((_, index) => encodePath([...prefix, { index }]));
+  const ids = rows.map((row) => String(row[ROW_ID_KEY]));
   const allowed = slot.blocks
     ? shared.templates.filter((template) => slot.blocks?.includes(template.type))
     : shared.templates;
@@ -98,7 +106,7 @@ function SlotArea({
               shared={shared}
             />
           ))}
-          {rows.length === 0 && <EmptySlot prefix={prefix} />}
+          {rows.length === 0 && <EmptySlot parentRowId={parentRowId} slot={slot.name} />}
         </div>
       </SortableContext>
       <AddRowMenu
@@ -111,9 +119,8 @@ function SlotArea({
 }
 
 function Shell({ row, path, shared }: { row: RepeaterRow; path: BlockPath; shared: CanvasShared }) {
-  const id = encodePath(path);
   const rowId = String(row[ROW_ID_KEY]);
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: rowId });
   const { t } = useT("lattice");
   const template = shared.templates.find((candidate) => candidate.type === row.type);
   const slots = template?.slots ?? [];
@@ -190,6 +197,7 @@ function Shell({ row, path, shared }: { row: RepeaterRow; path: BlockPath; share
             <SlotArea
               key={slot.name}
               parentPath={path}
+              parentRowId={rowId}
               slot={slot}
               rows={childList(row, slot.name)}
               shared={shared}
@@ -202,7 +210,28 @@ function Shell({ row, path, shared }: { row: RepeaterRow; path: BlockPath; share
 }
 
 export function BlockCanvas({ rows, onMoveBlock, ...shared }: Props) {
-  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  // Prefer the deepest droppable under the pointer so nested shells and slot
+  // placeholders win over the ancestors that spatially contain them.
+  const deepestUnderPointer: CollisionDetection = (args) => {
+    const within = pointerWithin(args).filter((collision) => collision.id !== args.active.id);
+
+    if (within.length > 0) {
+      return [
+        within.reduce((best, collision) =>
+          dropDepth(rows, String(collision.id)) > dropDepth(rows, String(best.id))
+            ? collision
+            : best,
+        ),
+      ];
+    }
+
+    return closestCenter(args);
+  };
 
   const onDragEnd = (event: DragEndEvent): void => {
     const over = event.over;
@@ -211,14 +240,17 @@ export function BlockCanvas({ rows, onMoveBlock, ...shared }: Props) {
       return;
     }
 
-    const { from, to } = resolveMove(String(event.active.id), String(over.id));
-    onMoveBlock(from, to);
+    const move = resolveDrop(rows, String(event.active.id), String(over.id));
+
+    if (move) {
+      onMoveBlock(move.from, move.to);
+    }
   };
 
-  const ids = rows.map((_, index) => encodePath([{ index }]));
+  const ids = rows.map((row) => String(row[ROW_ID_KEY]));
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+    <DndContext sensors={sensors} collisionDetection={deepestUnderPointer} onDragEnd={onDragEnd}>
       <SortableContext items={ids} strategy={verticalListSortingStrategy}>
         <div className="flex flex-col gap-2" role="listbox" aria-label="Blocks">
           {rows.map((row, index) => (

@@ -1,30 +1,63 @@
-import type { BlockPath } from "./tree";
+import {
+  ROW_ID_KEY,
+  type RepeaterRow,
+} from "@lattice-php/lattice/form/components/fields/repeater-rows";
+import { walkBlocks, type BlockPath } from "./tree";
 
-export function encodePath(path: BlockPath): string {
-  return path
-    .map((step) => (step.slot === undefined ? String(step.index) : `${step.index}.${step.slot}`))
-    .join(".");
+/**
+ * Drag identities are row ids: they stay stable while the tree mutates, unlike
+ * position paths. Empty slots get a synthetic droppable id so blocks can be
+ * dropped into them.
+ */
+const SLOT_DROP_PREFIX = "slot:";
+
+export function slotDropId(parentRowId: string, slot: string): string {
+  return `${SLOT_DROP_PREFIX}${parentRowId}:${slot}`;
 }
 
-export function decodePath(id: string): BlockPath {
-  const parts = id.split(".");
-  const path: BlockPath = [];
+function pathsByRowId(rows: RepeaterRow[]): Map<string, BlockPath> {
+  return new Map(walkBlocks(rows).map(({ row, path }) => [String(row[ROW_ID_KEY]), path]));
+}
 
-  for (let i = 0; i < parts.length; ) {
-    const index = Number(parts[i]);
+function slotDropPath(paths: Map<string, BlockPath>, id: string): BlockPath | null {
+  const separator = id.lastIndexOf(":");
+  const parent = paths.get(id.slice(SLOT_DROP_PREFIX.length, separator));
 
-    if (i + 1 < parts.length && Number.isNaN(Number(parts[i + 1]))) {
-      path.push({ index, slot: parts[i + 1] });
-      i += 2;
-    } else {
-      path.push({ index });
-      i += 1;
-    }
+  if (!parent) {
+    return null;
   }
 
-  return path;
+  const last = parent[parent.length - 1];
+
+  return [...parent.slice(0, -1), { ...last, slot: id.slice(separator + 1) }, { index: 0 }];
 }
 
-export function resolveMove(activeId: string, overId: string): { from: BlockPath; to: BlockPath } {
-  return { from: decodePath(activeId), to: decodePath(overId) };
+export function resolveDrop(
+  rows: RepeaterRow[],
+  activeId: string,
+  overId: string,
+): { from: BlockPath; to: BlockPath } | null {
+  const paths = pathsByRowId(rows);
+  const from = paths.get(activeId);
+
+  if (!from) {
+    return null;
+  }
+
+  const to = overId.startsWith(SLOT_DROP_PREFIX)
+    ? slotDropPath(paths, overId)
+    : (paths.get(overId) ?? null);
+
+  return to ? { from, to } : null;
+}
+
+/** How deep a droppable sits in the tree, so collisions prefer the most specific target. */
+export function dropDepth(rows: RepeaterRow[], id: string): number {
+  const paths = pathsByRowId(rows);
+
+  if (id.startsWith(SLOT_DROP_PREFIX)) {
+    return (slotDropPath(paths, id)?.length ?? 0) + 1;
+  }
+
+  return paths.get(id)?.length ?? 0;
 }
