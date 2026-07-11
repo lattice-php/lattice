@@ -1,6 +1,6 @@
 {
   "name": "@lattice-php/lattice",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "description": "Server-driven React components for Laravel and Inertia.",
   "license": "MIT",
   "author": "Manuel Christlieb <manuel@christlieb.eu>",
