@@ -154,19 +154,19 @@ final class EditorColumnsBlock extends BlockDefinition
 final class EditorLabelledBlock extends BlockDefinition
 {
     #[Override]
-    public function label(): ?string
+    public function label(): string
     {
         return 'Big hero';
     }
 
     #[Override]
-    public function icon(): Icon|string|null
+    public function icon(): Icon
     {
         return Icon::LayoutDashboard;
     }
 
     #[Override]
-    public function description(): ?string
+    public function description(): string
     {
         return 'A prominent heading.';
     }
