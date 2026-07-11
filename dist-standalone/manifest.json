@@ -1,0 +1,18 @@
+{
+  "version": "0.19.0",
+  "files": {
+    "lattice.js": "aa5be6cb4137",
+    "chunks/chart-view-CK5fKIkR.js": "2eeccf85a1a7",
+    "chunks/date-picker-field-BlCPFhZd.js": "4ac75534edaa",
+    "chunks/dist-PaT1gYi_.js": "4da471d00496",
+    "chunks/jsx-runtime-CJ_btYLc.js": "f0c7238eb3d2",
+    "chunks/notifications-echo-DsfNc4Ge.js": "5db566efbeff",
+    "chunks/react-B8IZ02wI.js": "20382cff872b",
+    "chunks/rich-editor-field-DH5dS5c1.js": "fb4463a09d30",
+    "chunks/subscriptions-B3UuDBmx.js": "3c8bd3afa171",
+    "chunks/test-id-Dh3L6Gfh.js": "7958de4f0270",
+    "chunks/use-effect-dispatcher-k98Nzf9M.js": "548e6c06b0cd",
+    "chunks/with-selector-BwDoCrJJ.js": "6ccd3ad62b42",
+    "sprite.svg": "07943f837bd1"
+  }
+}
