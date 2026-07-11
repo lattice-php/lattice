@@ -14,3 +14,11 @@ export function toNodes(value: unknown): Node[] {
       typeof node === "object" && node !== null && "type" in node && typeof node.type === "string",
   );
 }
+
+/**
+ * Stable list key for a node: the reconciliation key, then the id, then a
+ * type-scoped index fallback so keyless template children never collide.
+ */
+export function nodeKey(node: Node, index: number): string {
+  return node.key ?? node.id ?? `${node.type}-${index}`;
+}

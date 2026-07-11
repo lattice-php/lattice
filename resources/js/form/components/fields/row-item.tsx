@@ -2,6 +2,7 @@ import { Icon } from "@lattice-php/lattice/icons";
 import type { ReactNode } from "react";
 import { memo } from "react";
 import type { Node } from "@lattice-php/lattice/core/types";
+import { nodeKey } from "@lattice-php/lattice/core/nodes";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { RowAction as WireRowAction } from "@lattice-php/lattice/types/generated";
@@ -111,8 +112,8 @@ export const RowItem = memo(function RowItem({
         onChange={(field, value) => onField(index, field, value)}
       >
         <div className="flex flex-col gap-4">
-          {template.map((child) => (
-            <RenderNode key={child.key ?? child.id} node={child} />
+          {template.map((child, childIndex) => (
+            <RenderNode key={nodeKey(child, childIndex)} node={child} />
           ))}
         </div>
       </FieldScopeProvider>
