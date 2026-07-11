@@ -393,6 +393,15 @@
   margin: calc(var(--spacing) * 2) 0;
 }
 
+/* TipTap renders the empty-editor placeholder via this attribute hook. */
+.lattice-prose :where(p.is-editor-empty:first-child)::before {
+  content: attr(data-placeholder);
+  color: var(--lt-muted-fg);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
 .lattice-prose :where(ul) {
   list-style: disc;
   padding-left: calc(var(--spacing) * 6);

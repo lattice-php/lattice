@@ -115,6 +115,23 @@ describe("RichEditorComponent", () => {
     prompt.mockRestore();
   });
 
+  it("shows the placeholder while the editor is empty", async () => {
+    renderField(
+      fakeNode({
+        type: "field.rich-editor",
+        props: { name: "body", label: "Body", placeholder: "Write your article…" },
+      }),
+    );
+
+    await screen.findByLabelText("Bold");
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('[data-placeholder="Write your article…"]'),
+      ).toBeInTheDocument(),
+    );
+  });
+
   it("inserts an emoji from the picker", async () => {
     renderField(fakeNode({ type: "field.rich-editor", props: { name: "body", label: "Body" } }));
 
