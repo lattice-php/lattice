@@ -7,6 +7,7 @@ use Lattice\Lattice\Core\Definition;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Ui\Enums\Icon;
 
 abstract class BlockDefinition extends Definition
 {
@@ -16,6 +17,31 @@ abstract class BlockDefinition extends Definition
     abstract public function attributes(): array;
 
     abstract public function render(FormData $data, BlockSlots $slots): PageSchema;
+
+    /**
+     * The human-readable name shown in the editor; defaults to a headline of
+     * the registry key.
+     */
+    public function label(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * The icon shown next to the block in the editor.
+     */
+    public function icon(): Icon|string|null
+    {
+        return null;
+    }
+
+    /**
+     * A short explanation shown in the editor's add menu.
+     */
+    public function description(): ?string
+    {
+        return null;
+    }
 
     /**
      * @return array<int, string>

@@ -90,12 +90,14 @@ function SlotArea({
   const options = allowed.map((template) => ({
     type: template.type,
     label: template.label,
+    icon: template.icon,
+    description: template.description,
   }));
 
   return (
     <div data-test={`block-slot-${slot.name}`} className="flex flex-col gap-2">
       <span className="text-xs font-medium uppercase tracking-wide text-lt-muted-fg">
-        {slot.name}
+        {slot.label ?? slot.name}
       </span>
       <SortableContext items={ids} strategy={verticalListSortingStrategy}>
         <div className="flex flex-col gap-2">
@@ -174,7 +176,8 @@ function Shell({ row, path, shared }: { row: RepeaterRow; path: BlockPath; share
         >
           {t("form.block-editor.drag", "Drag")}
         </button>
-        <span className="text-xs font-medium text-lt-muted-fg">
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-lt-muted-fg [&_svg]:size-lt-icon-sm">
+          {template?.icon && <Icon name={template.icon} aria-hidden="true" />}
           {template?.label ?? String(row.type ?? "")}
         </span>
         <button

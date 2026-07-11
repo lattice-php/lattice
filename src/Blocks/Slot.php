@@ -17,11 +17,28 @@ final class Slot
      */
     private array $blocks = [];
 
+    private ?string $label = null;
+
     private function __construct(public readonly string $name) {}
 
     public static function make(string $name): self
     {
         return new self($name);
+    }
+
+    /**
+     * The heading shown above the slot in the editor; defaults to the name.
+     */
+    public function label(string $label): self
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    public function labelText(): ?string
+    {
+        return $this->label;
     }
 
     /**

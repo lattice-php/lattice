@@ -22,8 +22,12 @@ final class RowTemplate implements JsonSerializable
 
     private ?string $label = null;
 
+    private ?string $icon = null;
+
+    private ?string $description = null;
+
     /**
-     * @var array<int, array{name: string, blocks?: array<int, string>}>
+     * @var array<int, array{name: string, label?: string, blocks?: array<int, string>}>
      */
     private array $slots = [];
 
@@ -41,11 +45,26 @@ final class RowTemplate implements JsonSerializable
         return $this;
     }
 
+    public function icon(?string $icon): self
+    {
+        $this->icon = $icon;
+
+        return $this;
+    }
+
+    public function description(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
     /**
      * Declare the row type's named child-row lists: plain names for
-     * unrestricted slots, or shapes restricting a slot to certain row types.
+     * unrestricted slots, or shapes carrying a label and the row types the
+     * slot is restricted to.
      *
-     * @param  array<int, array{name: string, blocks?: array<int, string>}|string>  $slots
+     * @param  array<int, array{name: string, label?: string, blocks?: array<int, string>}|string>  $slots
      */
     public function slots(array $slots): self
     {
@@ -93,13 +112,15 @@ final class RowTemplate implements JsonSerializable
     }
 
     /**
-     * @return array{type: string, label: string, schema: array<int, mixed>, slots?: array<int, array{name: string, blocks?: array<int, string>}>}
+     * @return array{type: string, label: string, icon?: string, description?: string, schema: array<int, mixed>, slots?: array<int, array{name: string, label?: string, blocks?: array<int, string>}>}
      */
     public function jsonSerialize(): array
     {
         return [
             'type' => $this->type,
             'label' => $this->label ?? Str::headline($this->type),
+            ...($this->icon === null ? [] : ['icon' => $this->icon]),
+            ...($this->description === null ? [] : ['description' => $this->description]),
             'schema' => $this->renderableChildren(),
             ...($this->slots === [] ? [] : ['slots' => $this->slots]),
         ];

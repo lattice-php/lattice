@@ -12,9 +12,20 @@ vi.mock("@lattice-php/lattice/core/renderer", () => ({
 import { BlockCanvas } from "./canvas";
 
 const templates = [
-  { type: "hero", label: "Hero", schema: [] },
+  {
+    type: "hero",
+    label: "Hero",
+    icon: "layout-dashboard",
+    description: "A big heading.",
+    schema: [],
+  },
   { type: "text", label: "Text", schema: [] },
-  { type: "columns", label: "Columns", schema: [], slots: [{ name: "main" }] },
+  {
+    type: "columns",
+    label: "Columns",
+    schema: [],
+    slots: [{ name: "main", label: "Main column" }],
+  },
   {
     type: "restricted",
     label: "Restricted",
@@ -99,6 +110,16 @@ it("renders slot areas with nested child shells for a slotted block", () => {
   expect(screen.getByTestId("block-slot-main")).toBeInTheDocument();
   expect(screen.getByTestId("block-shell-h1")).toBeInTheDocument();
   expect(screen.getByText("Inner")).toBeInTheDocument();
+});
+
+it("labels a slot heading and describes blocks in the add menu", () => {
+  renderCanvas([{ rowId: "c1", type: "columns", slots: { main: [] } }]);
+
+  expect(screen.getByText("Main column")).toBeInTheDocument();
+
+  fireEvent.click(screen.getByTestId("builder-add"));
+
+  expect(screen.getByText("A big heading.")).toBeInTheDocument();
 });
 
 it("shows an empty-slot drop target when a slot has no children", () => {

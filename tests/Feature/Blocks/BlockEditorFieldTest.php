@@ -12,6 +12,7 @@ use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Ui\Components\Grid;
 use Lattice\Lattice\Ui\Components\Heading;
+use Lattice\Lattice\Ui\Enums\Icon;
 
 test('serializes as a block-editor field with a template per block', function (): void {
     $field = BlockEditor::make('content')->blocks([EditorHeroBlock::class]);
@@ -33,6 +34,36 @@ test('serializes the declared slots on each template', function (): void {
     expect($wire['templates'][0])->not->toHaveKey('slots')
         ->and($wire['templates'][1]['type'])->toBe('editor.columns')
         ->and($wire['templates'][1]['slots'])->toBe([['name' => 'main']]);
+});
+
+test('serializes the block metadata onto its template', function (): void {
+    $field = BlockEditor::make('content')->blocks([EditorLabelledBlock::class]);
+
+    $wire = wire($field);
+
+    expect($wire['templates'][0]['label'])->toBe('Big hero')
+        ->and($wire['templates'][0]['icon'])->toBe('layout-dashboard')
+        ->and($wire['templates'][0]['description'])->toBe('A prominent heading.');
+});
+
+test('falls back to a headline label and omits missing metadata', function (): void {
+    $field = BlockEditor::make('content')->blocks([EditorHeroBlock::class]);
+
+    $wire = wire($field);
+
+    expect($wire['templates'][0]['label'])->toBe('Hero')
+        ->and($wire['templates'][0])->not->toHaveKey('icon')
+        ->and($wire['templates'][0])->not->toHaveKey('description');
+});
+
+test('serializes the label of a labelled slot', function (): void {
+    $field = BlockEditor::make('content')->blocks([EditorHeroBlock::class, EditorLabelledColumnsBlock::class]);
+
+    $wire = wire($field);
+
+    expect($wire['templates'][1]['slots'])->toBe([
+        ['name' => 'main', 'label' => 'Main column', 'blocks' => ['editor.hero']],
+    ]);
 });
 
 test('serializes the allowed block types of a restricted slot', function (): void {
@@ -111,6 +142,58 @@ final class EditorColumnsBlock extends BlockDefinition
     public function slots(): array
     {
         return ['main'];
+    }
+
+    public function render(FormData $data, BlockSlots $slots): PageSchema
+    {
+        return PageSchema::make()->component(Grid::make()->schema($slots->get('main')));
+    }
+}
+
+#[AsBlock('editor.labelled')]
+final class EditorLabelledBlock extends BlockDefinition
+{
+    #[Override]
+    public function label(): ?string
+    {
+        return 'Big hero';
+    }
+
+    #[Override]
+    public function icon(): Icon|string|null
+    {
+        return Icon::LayoutDashboard;
+    }
+
+    #[Override]
+    public function description(): ?string
+    {
+        return 'A prominent heading.';
+    }
+
+    public function attributes(): array
+    {
+        return [TextInput::make('title')];
+    }
+
+    public function render(FormData $data, BlockSlots $slots): PageSchema
+    {
+        return PageSchema::make()->component(Heading::make($data->string('title')));
+    }
+}
+
+#[AsBlock('editor.labelled-columns')]
+final class EditorLabelledColumnsBlock extends BlockDefinition
+{
+    public function attributes(): array
+    {
+        return [];
+    }
+
+    #[Override]
+    public function slots(): array
+    {
+        return [Slot::make('main')->label('Main column')->blocks([EditorHeroBlock::class])];
     }
 
     public function render(FormData $data, BlockSlots $slots): PageSchema

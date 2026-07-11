@@ -96,6 +96,8 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
   const options: AddRowOption[] = templates.map((template) => ({
     type: template.type,
     label: template.label,
+    icon: template.icon,
+    description: template.description,
   }));
   const atMax = props.maxItems != null && rows.length >= props.maxItems;
 

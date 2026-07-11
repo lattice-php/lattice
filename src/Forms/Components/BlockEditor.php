@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Forms\Components;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Blocks\BlockDefinition;
@@ -14,6 +15,7 @@ use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Ui\Components\IsInteractive;
+use Lattice\Lattice\Ui\Enums\Icon;
 use LogicException;
 
 #[AsField(FieldType::BlockEditor)]
@@ -37,13 +39,17 @@ class BlockEditor extends TypedRowsField
         $this->templates(array_map(
             function (string $block) use ($registry): RowTemplate {
                 $definition = app($block);
+                $icon = $definition->icon();
 
-                return RowTemplate::make($registry->keyFor($block))
+                $template = RowTemplate::make($registry->keyFor($block))
                     ->schema($definition->attributes())
+                    ->icon($icon instanceof Icon ? $icon->value : $icon)
+                    ->description($definition->description())
                     ->slots(array_map(
                         static fn (Slot|string $slot): array|string => $slot instanceof Slot
                             ? [
                                 'name' => $slot->name,
+                                ...($slot->labelText() === null ? [] : ['label' => $slot->labelText()]),
                                 ...($slot->allowedBlocks() === []
                                     ? []
                                     : ['blocks' => array_map($registry->keyFor(...), $slot->allowedBlocks())]),
@@ -51,6 +57,12 @@ class BlockEditor extends TypedRowsField
                             : $slot,
                         $definition->slots(),
                     ));
+
+                // Block keys are vendor-dotted; the bare RowTemplate fallback would
+                // headline the whole key ("Workbench.hero"), so derive from the last segment.
+                $template->label($definition->label() ?? Str::headline(Str::afterLast($template->type, '.')));
+
+                return $template;
             },
             $blocks,
         ));

@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@lattice-php/lattice/ui/dropdown-menu";
 
-export type AddRowOption = { type: string; label: string };
+export type AddRowOption = { type: string; label: string; icon?: string; description?: string };
 
 export function AddRowMenu({
   addLabel,
@@ -34,9 +34,17 @@ export function AddRowMenu({
           <DropdownMenuItem
             key={option.type}
             data-test={`builder-add-${option.type}`}
+            icon={option.icon}
             onClick={() => onSelect(option.type)}
           >
-            {option.label}
+            {option.description ? (
+              <span className="flex flex-col">
+                <span>{option.label}</span>
+                <span className="text-xs text-lt-muted-fg">{option.description}</span>
+              </span>
+            ) : (
+              option.label
+            )}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
