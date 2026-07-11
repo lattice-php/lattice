@@ -178,4 +178,3 @@ public function authorize(Request $request): bool
 
 This is the same `authorize()` every Lattice definition carries — see
 [Authorization](/core/authorization/) for how it behaves across forms, tables, and actions.
-</content>
