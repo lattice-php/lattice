@@ -9,6 +9,7 @@ use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\BlockEditor;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Ui\Components\Grid;
 use Lattice\Lattice\Ui\Components\Heading;
 
 use function Pest\Laravel\postJson;
@@ -46,6 +47,43 @@ test('forbids rendering a block the field does not allow', function (): void {
     ])->assertForbidden();
 });
 
+test('renders allowed slot children nested in the attributes', function (): void {
+    app(BlockRegistry::class)->register([EndpointHeroBlock::class, EndpointColumnsBlock::class]);
+    $field = BlockEditor::make('content')
+        ->blocks([EndpointHeroBlock::class, EndpointColumnsBlock::class])
+        ->id('content');
+    $ref = componentRef(wire($field));
+
+    latticePost('/lattice/blocks/render', $ref, [
+        'type' => 'endpoint.columns',
+        'attributes' => [
+            'slots' => ['main' => [['type' => 'endpoint.hero', 'title' => 'Nested']]],
+        ],
+    ])
+        ->assertOk()
+        ->assertJsonPath('wire.0.type', 'grid')
+        ->assertJsonPath('wire.0.schema.0.props.text', 'Nested');
+});
+
+test('forbids slot children the field does not allow', function (): void {
+    app(BlockRegistry::class)->register([
+        EndpointHeroBlock::class,
+        EndpointColumnsBlock::class,
+        EndpointOtherBlock::class,
+    ]);
+    $field = BlockEditor::make('content')
+        ->blocks([EndpointHeroBlock::class, EndpointColumnsBlock::class])
+        ->id('content');
+    $ref = componentRef(wire($field));
+
+    latticePost('/lattice/blocks/render', $ref, [
+        'type' => 'endpoint.columns',
+        'attributes' => [
+            'slots' => ['main' => [['type' => 'endpoint.other']]],
+        ],
+    ])->assertForbidden();
+});
+
 #[AsBlock('endpoint.hero')]
 final class EndpointHeroBlock extends BlockDefinition
 {
@@ -71,5 +109,25 @@ final class EndpointOtherBlock extends BlockDefinition
     public function render(FormData $data, BlockSlots $slots): PageSchema
     {
         return PageSchema::make();
+    }
+}
+
+#[AsBlock('endpoint.columns')]
+final class EndpointColumnsBlock extends BlockDefinition
+{
+    public function attributes(): array
+    {
+        return [];
+    }
+
+    #[Override]
+    public function slots(): array
+    {
+        return ['main'];
+    }
+
+    public function render(FormData $data, BlockSlots $slots): PageSchema
+    {
+        return PageSchema::make()->component(Grid::make()->schema($slots->get('main')));
     }
 }

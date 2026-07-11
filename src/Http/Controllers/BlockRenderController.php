@@ -24,7 +24,11 @@ final readonly class BlockRenderController
 
         $type = (string) $request->input('type');
         $allowed = is_array($context['allowedBlocks'] ?? null) ? $context['allowedBlocks'] : [];
-        abort_unless(in_array($type, $allowed, true), 403);
+        $attributes = is_array($request->input('attributes')) ? $request->input('attributes') : [];
+
+        foreach ([$type, ...$this->slotTypes($attributes)] as $rowType) {
+            abort_unless(in_array($rowType, $allowed, true), 403);
+        }
 
         try {
             $this->blocks->resolve($type);
@@ -32,9 +36,33 @@ final readonly class BlockRenderController
             abort(404);
         }
 
-        $attributes = is_array($request->input('attributes')) ? $request->input('attributes') : [];
         $wire = $this->renderer->render([['type' => $type, ...$attributes]])->renderable();
 
         return response()->json(['wire' => $wire]);
+    }
+
+    /**
+     * Every block type nested in the row's slots, at any depth.
+     *
+     * @param  array<string, mixed>  $attributes
+     * @return array<int, mixed>
+     */
+    private function slotTypes(array $attributes): array
+    {
+        $slots = is_array($attributes['slots'] ?? null) ? $attributes['slots'] : [];
+        $types = [];
+
+        foreach ($slots as $rows) {
+            foreach (is_array($rows) ? $rows : [] as $row) {
+                if (! is_array($row)) {
+                    continue;
+                }
+
+                $types[] = $row['type'] ?? null;
+                $types = [...$types, ...$this->slotTypes($row)];
+            }
+        }
+
+        return $types;
     }
 }
