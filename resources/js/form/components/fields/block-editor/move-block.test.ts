@@ -78,4 +78,28 @@ describe("moveBlock", () => {
     );
     expect(out).toBe(input);
   });
+
+  it("refuses to move a block into its own subtree", () => {
+    const input = rows();
+    const out = moveBlock(input, [{ index: 1 }], [{ index: 1, slot: "left" }, { index: 0 }]);
+    expect(out).toBe(input);
+  });
+
+  it("refuses to move a block into a deeper descendant of itself", () => {
+    const nested = [
+      {
+        rowId: "outer",
+        slots: {
+          left: [{ rowId: "Q", slots: { inner: [{ rowId: "R" }] } }],
+        },
+      },
+    ];
+
+    const out = moveBlock(
+      nested,
+      [{ index: 0 }],
+      [{ index: 0, slot: "left" }, { index: 0, slot: "inner" }, { index: 0 }],
+    );
+    expect(out).toBe(nested);
+  });
 });

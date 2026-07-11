@@ -1,62 +1,27 @@
 import type { RepeaterRow } from "@lattice-php/lattice/form/components/fields/repeater-rows";
+import { getContainer, replaceContainer, type BlockPath, type BlockStep } from "./tree";
 
-export type BlockStep = { index: number; slot?: string };
-export type BlockPath = BlockStep[];
-
-function childList(row: RepeaterRow, slot: string): RepeaterRow[] {
-  const slots = (row.slots ?? {}) as Record<string, RepeaterRow[]>;
-
-  return Array.isArray(slots[slot]) ? slots[slot] : [];
-}
-
-function withChildList(row: RepeaterRow, slot: string, list: RepeaterRow[]): RepeaterRow {
-  const slots = { ...((row.slots ?? {}) as Record<string, RepeaterRow[]>), [slot]: list };
-
-  return { ...row, slots };
-}
-
-function getContainer(rows: RepeaterRow[], path: BlockPath): RepeaterRow[] | null {
-  let list = rows;
-
-  for (let i = 0; i < path.length - 1; i++) {
-    const step = path[i];
-    const parent = list[step.index];
-
-    if (!parent || step.slot === undefined) {
-      return null;
-    }
-
-    list = childList(parent, step.slot);
-  }
-
-  return list;
-}
-
-function replaceContainer(
-  rows: RepeaterRow[],
-  path: BlockPath,
-  update: (list: RepeaterRow[]) => RepeaterRow[],
-): RepeaterRow[] {
-  if (path.length <= 1) {
-    return update(rows);
-  }
-
-  const [head, ...rest] = path;
-  const slot = head.slot;
-
-  if (slot === undefined) {
-    return rows;
-  }
-
-  return rows.map((row, i) =>
-    i === head.index
-      ? withChildList(row, slot, replaceContainer(childList(row, slot), rest, update))
-      : row,
-  );
-}
+export type { BlockPath, BlockStep } from "./tree";
 
 function sameStep(a: BlockStep, b: BlockStep): boolean {
   return a.index === b.index && a.slot === b.slot;
+}
+
+/** A target below the moved block itself would orphan the subtree into a cycle. */
+function descendsIntoMoved(from: BlockPath, to: BlockPath): boolean {
+  if (to.length < from.length) {
+    return false;
+  }
+
+  for (let i = 0; i < from.length - 1; i++) {
+    if (!sameStep(from[i], to[i])) {
+      return false;
+    }
+  }
+
+  const branch = to[from.length - 1];
+
+  return branch.index === from[from.length - 1].index && branch.slot !== undefined;
 }
 
 function adjustToForRemoval(from: BlockPath, to: BlockPath): BlockPath {
@@ -94,7 +59,7 @@ export function moveBlock(rows: RepeaterRow[], from: BlockPath, to: BlockPath): 
   const source = getContainer(rows, from);
   const fromIndex = from[from.length - 1]?.index ?? -1;
 
-  if (!source || fromIndex < 0 || fromIndex >= source.length) {
+  if (!source || fromIndex < 0 || fromIndex >= source.length || descendsIntoMoved(from, to)) {
     return rows;
   }
 
