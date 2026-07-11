@@ -147,7 +147,7 @@ createLatticeApp({
 });
 ```
 
-It forwards any other `createInertiaApp` option — `title`, `progress`, SSR setup — and accepts a custom `registry` and a `defaultLayout`.
+It forwards any other `createInertiaApp` option — `title`, `progress`, SSR setup — and accepts a custom `registry` and a `defaultLayout`. Three hooks cover the app-specific bootstrap without falling back to manual wiring: `i18n` configures the [translation frontend](/core/i18n/#wire-the-frontend) from the shared page props (on by default; pass namespaces, or `false` to opt out), `boot` runs before the first render with the initial page (e.g. `configureEcho` from a shared connection prop — a returned promise delays that render), and `wrap` composes your own providers around the app inside the Lattice `Provider`.
 
 Once you scaffold your own fields, components, or columns (see [Custom fields](/extending/custom-fields/)), they are registered in `resources/js/registry.ts`. Pass that file's exported `registry` here so `createLatticeApp` renders them — `createLatticeApp({ registry, plugins, sprite, pages })`. Omit it and your custom types have no renderer, so their nodes render a muted missing-component placeholder instead (and log a `[lattice]` warning in development).
 
