@@ -5,6 +5,9 @@ return [
     'block-editor' => [
         'drag' => 'Ziehen',
         'drag-to-reorder' => 'Zum Neuanordnen ziehen',
+        'empty-slot' => 'Blöcke hier ablegen',
+        'no-settings' => 'Dieser Block hat keine Einstellungen.',
+        'remove' => 'Block entfernen',
         'select-block' => 'Block auswählen, um ihn zu bearbeiten.',
         'unknown-block' => 'Unbekannter Block',
     ],

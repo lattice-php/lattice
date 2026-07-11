@@ -1,4 +1,4 @@
-import type { BlockPath } from "./move-block";
+import type { BlockPath } from "./tree";
 
 export function encodePath(path: BlockPath): string {
   return path

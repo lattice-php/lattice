@@ -45,7 +45,7 @@ it("renders the block fields and commits on blur", () => {
       index={0}
       row={{ rowId: "a", type: "hero", title: "Hi" }}
       template={template}
-      onField={vi.fn<(index: number, field: string, value: unknown) => void>()}
+      onField={vi.fn<(field: string, value: unknown) => void>()}
       onCommit={onCommit}
     />,
   );
@@ -65,7 +65,7 @@ it("does not commit when focus moves between fields inside the inspector", () =>
       index={0}
       row={{ rowId: "a", type: "hero", title: "Hi" }}
       template={template}
-      onField={vi.fn<(index: number, field: string, value: unknown) => void>()}
+      onField={vi.fn<(field: string, value: unknown) => void>()}
       onCommit={onCommit}
     />,
   );
@@ -83,10 +83,25 @@ it("shows an unknown-block note when there is no template", () => {
       base="content"
       index={0}
       row={{ rowId: "a", type: "gone" }}
-      onField={vi.fn<(index: number, field: string, value: unknown) => void>()}
+      onField={vi.fn<(field: string, value: unknown) => void>()}
       onCommit={vi.fn<() => void>()}
     />,
   );
 
   expect(screen.getByTestId("block-inspector-unknown")).toBeInTheDocument();
+});
+
+it("shows a no-settings note for a block without attributes", () => {
+  wrap(
+    <BlockInspector
+      base="content"
+      index={0}
+      row={{ rowId: "a", type: "columns" }}
+      template={[] as never}
+      onField={vi.fn<(field: string, value: unknown) => void>()}
+      onCommit={vi.fn<() => void>()}
+    />,
+  );
+
+  expect(screen.getByText("This block has no settings.")).toBeInTheDocument();
 });

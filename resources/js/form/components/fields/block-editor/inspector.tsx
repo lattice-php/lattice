@@ -9,7 +9,7 @@ type Props = {
   index: number;
   row: RepeaterRow;
   template?: Node[];
-  onField: (index: number, field: string, value: unknown) => void;
+  onField: (field: string, value: unknown) => void;
   onCommit: () => void;
 };
 
@@ -21,6 +21,14 @@ export function BlockInspector({ base, index, row, template, onField, onCommit }
       <div data-test="block-inspector-unknown" className="text-sm text-lt-muted-fg">
         {t("form.block-editor.unknown-block", "Unknown block")}
       </div>
+    );
+  }
+
+  if (template.length === 0) {
+    return (
+      <p data-test="block-inspector" className="text-sm text-lt-muted-fg">
+        {t("form.block-editor.no-settings", "This block has no settings.")}
+      </p>
     );
   }
 
@@ -37,12 +45,7 @@ export function BlockInspector({ base, index, row, template, onField, onCommit }
         }
       }}
     >
-      <FieldScopeProvider
-        base={base}
-        index={index}
-        row={row}
-        onChange={(field, value) => onField(index, field, value)}
-      >
+      <FieldScopeProvider base={base} index={index} row={row} onChange={onField}>
         <div className="flex flex-col gap-4">
           {template.map((child) => (
             <RenderNode key={child.key ?? child.id} node={child} />

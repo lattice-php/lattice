@@ -12,6 +12,7 @@ import {
 } from "@lattice-php/lattice/form/components/fields/add-row-menu";
 import {
   ROW_ID_KEY,
+  withRowId,
   type RepeaterRow,
 } from "@lattice-php/lattice/form/components/fields/repeater-rows";
 import { RowKeyInputs } from "@lattice-php/lattice/form/components/fields/row-key-inputs";
@@ -21,9 +22,9 @@ import {
 } from "@lattice-php/lattice/form/components/fields/row-templates";
 import { useRowCollection } from "@lattice-php/lattice/form/components/fields/use-row-collection";
 import { BlockCanvas } from "./canvas";
-import { hiddenInputsFor } from "./hidden-inputs";
 import { BlockInspector } from "./inspector";
-import { moveBlock, type BlockPath } from "./move-block";
+import { moveBlock } from "./move-block";
+import { appendBlockAt, removeBlockAt, updateBlockAt, walkBlocks, type BlockPath } from "./tree";
 import { useBlockPreview, type BlockSource, type RenderedBlock } from "./use-block-preview";
 
 function rowAttributes(row: RepeaterRow): Record<string, unknown> {
@@ -42,7 +43,7 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
 
   const { errors } = useFormContext();
   const { hidden, required } = useDependentField(node);
-  const { path, rows, onField, append } = useRowCollection(name, props.defaultItems ?? 0);
+  const { path, rows, append } = useRowCollection(name, props.defaultItems ?? 0);
   const setValue = useSetFormValue();
   const { t } = useT("lattice");
 
@@ -90,12 +91,45 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
   }));
   const atMax = props.maxItems != null && rows.length >= props.maxItems;
 
-  const selectedRow = rows.find((row) => String(row[ROW_ID_KEY]) === selectedId) ?? null;
+  const entries = walkBlocks(rows);
+  const selectedRow =
+    entries.find(({ row }) => String(row[ROW_ID_KEY]) === selectedId)?.row ?? null;
+
+  const asRows = (prev: unknown): RepeaterRow[] =>
+    Array.isArray(prev) ? (prev as RepeaterRow[]) : [];
 
   const onMoveBlock = (from: BlockPath, to: BlockPath): void => {
+    setValue(path, (prev: unknown) => moveBlock(asRows(prev), from, to));
+  };
+
+  const onFieldAt = (blockPath: BlockPath, field: string, value: unknown): void => {
+    setValue(path, (prev: unknown) => updateBlockAt(asRows(prev), blockPath, field, value));
+  };
+
+  const onRemove = (blockPath: BlockPath): void => {
+    setValue(path, (prev: unknown) => removeBlockAt(asRows(prev), blockPath));
+  };
+
+  const onAppend = (parentPath: BlockPath, slot: string, type: string): void => {
     setValue(path, (prev: unknown) =>
-      moveBlock(Array.isArray(prev) ? (prev as RepeaterRow[]) : [], from, to),
+      appendBlockAt(asRows(prev), parentPath, slot, withRowId({ type })),
     );
+  };
+
+  /** The store path of the list containing the block at the given path. */
+  const listBaseFor = (blockPath: BlockPath): string => {
+    let current = path;
+
+    for (let i = 0; i < blockPath.length - 1; i++) {
+      const step = blockPath[i];
+      current = appendPath(current, step.index, "slots", String(step.slot));
+    }
+
+    return current;
+  };
+
+  const refreshRow = (row: RepeaterRow): void => {
+    void refresh(String(row[ROW_ID_KEY]), String(row.type ?? ""), rowAttributes(row));
   };
 
   return (
@@ -110,20 +144,34 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
       <RowKeyInputs path={path} rows={rows} rowKey={ROW_ID_KEY} />
       <RowKeyInputs path={path} rows={rows} rowKey="type" />
 
-      {rows.flatMap((row, index) =>
-        row.slots == null
-          ? []
-          : hiddenInputsFor(toHtmlName(appendPath(path, index, "slots")), row.slots),
-      )}
+      {entries
+        .filter((entry) => entry.path.length > 1)
+        .flatMap(({ row, path: blockPath }) => {
+          const rowBase = appendPath(listBaseFor(blockPath), blockPath[blockPath.length - 1].index);
+
+          return [ROW_ID_KEY, "type"].map((key) => (
+            <input
+              key={appendPath(rowBase, key)}
+              type="hidden"
+              name={toHtmlName(appendPath(rowBase, key))}
+              value={String(row[key] ?? "")}
+            />
+          ));
+        })}
 
       <div className="grid grid-cols-[1fr_18rem] gap-4">
         <div className="flex flex-col gap-3">
           <BlockCanvas
             rows={rows}
+            templates={templates}
+            addLabel={props.addLabel ?? "Add"}
             wireFor={wireFor}
+            onPreviewSeed={refreshRow}
             selectedId={selectedId}
             onSelect={setSelectedId}
             onMoveBlock={onMoveBlock}
+            onRemove={onRemove}
+            onAppend={onAppend}
           />
           {!atMax && (
             <AddRowMenu
@@ -135,21 +183,19 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
         </div>
 
         <div data-test="block-editor-inspector">
-          {rows.map((row, index) => {
-            const isSelected = String(row[ROW_ID_KEY]) === selectedId;
+          {entries.map(({ row, path: blockPath }) => {
+            const rowId = String(row[ROW_ID_KEY]);
             const template = templateFor(row.type);
 
             return (
-              <div key={String(row[ROW_ID_KEY])} className={isSelected ? undefined : "hidden"}>
+              <div key={rowId} className={rowId === selectedId ? undefined : "hidden"}>
                 <BlockInspector
-                  base={path}
-                  index={index}
+                  base={listBaseFor(blockPath)}
+                  index={blockPath[blockPath.length - 1].index}
                   row={row}
                   template={template?.schema}
-                  onField={onField}
-                  onCommit={() =>
-                    refresh(String(row[ROW_ID_KEY]), String(row.type), rowAttributes(row))
-                  }
+                  onField={(field, value) => onFieldAt(blockPath, field, value)}
+                  onCommit={() => refreshRow(row)}
                 />
               </div>
             );

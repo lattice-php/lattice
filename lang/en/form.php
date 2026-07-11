@@ -5,6 +5,9 @@ return [
     'block-editor' => [
         'drag' => 'Drag',
         'drag-to-reorder' => 'Drag to reorder',
+        'empty-slot' => 'Drop blocks here',
+        'no-settings' => 'This block has no settings.',
+        'remove' => 'Remove block',
         'select-block' => 'Select a block to edit it.',
         'unknown-block' => 'Unknown block',
     ],
