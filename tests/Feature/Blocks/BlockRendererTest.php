@@ -6,12 +6,12 @@ use Lattice\Lattice\Blocks\BlockDefinition;
 use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockRenderer;
 use Lattice\Lattice\Blocks\BlockSlots;
-use Lattice\Lattice\Core\Components\Heading;
-use Lattice\Lattice\Core\Components\Section;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Ui\Components\Heading;
+use Lattice\Lattice\Ui\Components\Section;
+use Lattice\Lattice\Ui\Components\Text;
 
 test('renders each stored row through its block definition in order', function (): void {
     app(BlockRegistry::class)->register([RendererHeroBlock::class]);

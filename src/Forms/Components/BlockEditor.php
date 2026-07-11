@@ -7,9 +7,9 @@ use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Blocks\BlockDefinition;
 use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockRenderer;
-use Lattice\Lattice\Core\Components\IsInteractive;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Enums\FieldType;
+use Lattice\Lattice\Ui\Components\IsInteractive;
 
 #[AsField(FieldType::BlockEditor)]
 class BlockEditor extends TypedRowsField

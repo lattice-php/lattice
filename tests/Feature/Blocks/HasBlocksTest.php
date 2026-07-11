@@ -9,10 +9,10 @@ use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockSlots;
 use Lattice\Lattice\Blocks\Casts\AsBlocks;
 use Lattice\Lattice\Blocks\Concerns\HasBlocks;
-use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Ui\Components\Heading;
 
 beforeEach(function (): void {
     Schema::create('landing_pages', function ($table): void {

@@ -6,9 +6,9 @@ namespace Workbench\App\Blocks;
 use Lattice\Lattice\Attributes\AsBlock;
 use Lattice\Lattice\Blocks\BlockDefinition;
 use Lattice\Lattice\Blocks\BlockSlots;
-use Lattice\Lattice\Core\Components\Grid;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Ui\Components\Grid;
 
 #[AsBlock('workbench.columns')]
 final class ColumnsBlock extends BlockDefinition

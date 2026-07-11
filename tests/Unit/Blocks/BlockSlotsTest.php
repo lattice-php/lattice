@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Blocks\BlockSlots;
-use Lattice\Lattice\Core\Components\Text;
+use Lattice\Lattice\Ui\Components\Text;
 
 test('returns rendered children for a named slot', function (): void {
     $text = Text::make('left content');

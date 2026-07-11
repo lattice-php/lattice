@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Blocks;
 
-use Lattice\Lattice\Core\Components\Component;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\Exceptions\UnknownComponent;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Components\Text;
 
 final readonly class BlockRenderer
 {

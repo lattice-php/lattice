@@ -6,10 +6,10 @@ use Lattice\Lattice\Blocks\BlockDefinition;
 use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockRenderer;
 use Lattice\Lattice\Blocks\BlockSlots;
-use Lattice\Lattice\Core\Components\Grid;
-use Lattice\Lattice\Core\Components\Text;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Ui\Components\Grid;
+use Lattice\Lattice\Ui\Components\Text;
 
 test('renders child rows declared in a layout block slot', function (): void {
     app(BlockRegistry::class)->register([NestingColumnsBlock::class, NestingTextBlock::class]);

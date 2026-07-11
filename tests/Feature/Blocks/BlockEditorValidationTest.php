@@ -6,11 +6,11 @@ use Lattice\Lattice\Attributes\AsBlock;
 use Lattice\Lattice\Blocks\BlockDefinition;
 use Lattice\Lattice\Blocks\BlockRegistry;
 use Lattice\Lattice\Blocks\BlockSlots;
-use Lattice\Lattice\Core\Components\Heading;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\BlockEditor;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Ui\Components\Heading;
 
 beforeEach(function (): void {
     app(BlockRegistry::class)->register([ValidationHeroBlock::class]);
