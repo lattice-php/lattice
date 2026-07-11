@@ -53,18 +53,14 @@ abstract class TypedRowsField extends RowsField
     }
 
     #[\Override]
-    protected function rulesForRows(array $rows, FormData $data, Request $request): array
+    protected function rowRulesAt(string $prefix, array $row, FormData $data, Request $request): array
     {
-        $rules = parent::rulesForRows($rows, $data, $request);
+        $rules = parent::rowRulesAt($prefix, $row, $data, $request);
 
-        $typeRules = [
+        $rules["{$prefix}.".self::TYPE] = [
             'required',
             Rule::in(array_map(static fn (RowTemplate $template): string => $template->type, $this->templates)),
         ];
-
-        foreach (array_keys($rows) as $index) {
-            $rules["{$this->name}.{$index}.".self::TYPE] = $typeRules;
-        }
 
         return $rules;
     }
