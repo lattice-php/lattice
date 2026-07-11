@@ -1,0 +1,1 @@
+import{useEchoNotification as e}from"./dist-PaT1gYi_.js";function t({channel:t,onReceive:n}){return e(t,e=>{n({id:e.id,title:e.title??null,body:e.body??null,icon:e.icon??null,variant:e.variant??null,href:e.href??null,isRead:!1,createdAt:null,actions:[]})}),null}export{t as NotificationsEcho};

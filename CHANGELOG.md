@@ -1,5 +1,42 @@
 # Changelog
 
+## [0.19.0](https://github.com/lattice-php/lattice/compare/0.18.0...0.19.0) (2026-07-11)
+
+
+### Features
+
+* no-build standalone assets published via lattice:assets ([e860ee9](https://github.com/lattice-php/lattice/commit/e860ee9fc4bfc24ba6e6221e961ce3c7e25936cb))
+
+
+### Bug Fixes
+
+* bump undici to patched versions for security advisory ([e82f219](https://github.com/lattice-php/lattice/commit/e82f219ce255268b81588ac410f7e87002f9933f))
+* bump undici to patched versions for security advisory ([6478c7d](https://github.com/lattice-php/lattice/commit/6478c7dc060bea2aa9253d7535a686d87e5e5e6e))
+* **ci:** stop the required docs check from deadlocking non-docs PRs ([5c5273c](https://github.com/lattice-php/lattice/commit/5c5273cf1c5c3092817e1c5f43eab396bcfff8eb))
+* **deps:** align lucide-static with the vendored 1.24.0 icons ([7ee89e9](https://github.com/lattice-php/lattice/commit/7ee89e9306ecc9f934252e78e9d93316a947de8f))
+* **discovery:** isolate the manifest cache per test worker ([5c6705c](https://github.com/lattice-php/lattice/commit/5c6705ce8a5a4d63b97215daa4dc12ba5558fa54))
+* **docs:** restore preflight inside live example previews ([bfc4051](https://github.com/lattice-php/lattice/commit/bfc40519be295f45a696e5989d28fae2798461d8))
+* **form:** key row templates by the renderer's node key ([476e488](https://github.com/lattice-php/lattice/commit/476e4883a2826e37f1623d2c5f8530cd6425b51f))
+* **form:** render the rich editor placeholder ([81a21a7](https://github.com/lattice-php/lattice/commit/81a21a7ec39e9ff2b8429c30f50c44d8a6b3ebd0))
+* gate standalone-asset releases and kill known test flakes ([2ed1e82](https://github.com/lattice-php/lattice/commit/2ed1e8247c56a9713b47aa76848017c32ac19b1c))
+* **release:** gate npm publish on fresh standalone assets ([11a20a2](https://github.com/lattice-php/lattice/commit/11a20a2ea293044796b2ad2fca8ff2f4081e1b5a))
+* write the generated icon enum to its post-refactor path ([a16e42f](https://github.com/lattice-php/lattice/commit/a16e42f7f0f5f7a5db3ccc943b4df98ae63986f2))
+
+
+### Refactoring
+
+* delete dead code surfaced by the audit ([1e03ae4](https://github.com/lattice-php/lattice/commit/1e03ae4180bacb6d32596e2eb19a3fb70dda4c78))
+
+
+### Documentation
+
+* correct API drift found by the correctness sweep ([861b978](https://github.com/lattice-php/lattice/commit/861b978965937cfbaebd700cb8cf06e95ae897ad))
+* correct the core and advanced reference pages ([213973c](https://github.com/lattice-php/lattice/commit/213973c408581bfefe67781515e47391de39c70e))
+* full correctness sweep, live-example styling, and intro reframe ([720bf9c](https://github.com/lattice-php/lattice/commit/720bf9c225eb54e3ce8ef8a6866c88fa23d8ae41))
+* keep the no-build limitations list outside the callout ([bdf4a0a](https://github.com/lattice-php/lattice/commit/bdf4a0aaca58b829ce56f1adc05978ca2e96f135))
+* point the README at the no-build install path ([d6268f1](https://github.com/lattice-php/lattice/commit/d6268f1c0b7e31ae52ade98ca757e4d19bf4a0fd))
+* reframe the intro around the duplicated UI contract ([700b40d](https://github.com/lattice-php/lattice/commit/700b40d8d57c41c7caa7d4f141c535b3c0d59ac5))
+
 ## [0.18.0](https://github.com/lattice-php/lattice/compare/0.17.2...0.18.0) (2026-07-10)
 
 
