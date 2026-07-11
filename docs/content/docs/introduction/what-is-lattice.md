@@ -1,15 +1,17 @@
 ---
 title: What is Lattice?
-description: A server-driven UI layer for Laravel and Inertia — describe pages, forms, and tables in PHP and render them as real React components.
+description: Describe your interface once, as a schema the server owns — Lattice renders it with real React components over Inertia.
 ---
 
 Lattice is a server-driven UI layer for Laravel applications running [Inertia](https://inertiajs.com/) with React. You describe your interface — pages, components, forms, tables, actions, and menus — in PHP, and Lattice serializes that description to a typed component tree that real React components render in the browser.
 
 ## The problem it solves
 
-A typical Inertia app splits every screen across two languages: the data and rules live in PHP, while the page, its forms, and its tables are rebuilt by hand in React. The two sides duplicate the same contract — field names, validation, table columns, what an action does — and drift apart as the app grows.
+Every web application maintains its user interface twice. The backend already knows what a screen is made of: which fields an entity has, which rules validate them, who is allowed to see which actions, how a collection is sorted, filtered, and paged. The frontend then restates all of that in a second codebase — the same fields as inputs, the same rules as error handling, the same permissions as conditionally hidden buttons, the same columns and filters as table state. Two codebases, one contract, and nothing enforcing that they agree. Every feature is built twice, and the two copies drift apart as the app grows.
 
-Lattice removes that duplication. The server is the single source of truth for what a screen _is_; the client's only job is to render it. There is no hand-written API between them and no UI contract to keep in sync, because the renderer always receives exactly what the server produced.
+The way out is to notice that most application UI is not free-form. Forms, tables, actions, navigation, notifications — the day-to-day surface of a business application — are structured and repetitive enough to be _described_ rather than hand-built. When a consistent schema can describe the interface, the duplication disappears: the side that owns the data and the rules declares the screen once, the schema _is_ the contract, and the other side's only job is to render it. There is no hand-written API between them and no parallel implementation to keep in sync, because the renderer always receives exactly what the server produced.
+
+Lattice is that idea applied to Laravel. The server is the single source of truth for what a screen _is_; a typed schema carries it over the wire; real React components render it.
 
 ## How it works
 
@@ -27,6 +29,6 @@ Because the wire format is generated into TypeScript types, the React side is ty
 
 ## Is it for you?
 
-Lattice fits teams already building Laravel + Inertia + React who want to keep their UI logic in PHP and stop maintaining a parallel front end. You still write React when you want custom components — Lattice renders them through the same registry — but the day-to-day screens come from the server.
+Lattice fits teams building Laravel + Inertia + React who want one place to define what their screens are — and one contract instead of two implementations. You still write React when you want custom components — Lattice renders them through the same registry — but the day-to-day screens come from the server.
 
 Read the [Core Concepts](/introduction/core-concepts/) next for the mental model, then [Installation](/introduction/installation/) to add it to your app.
