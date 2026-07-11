@@ -10,8 +10,9 @@ the current sort and page to its [endpoint](/advanced/security/), and the
 [data source](/tables/data-sources/) applies them.
 
 <ComponentExample
-  php={`TextColumn::make('name')->label('Name')->sortable();
-NumberColumn::make('price')->label('Price')->sortable();
+  php={`TextColumn::make('name')->label('Name')->sortable()->filterable();
+NumberColumn::make('price')->label('Price')->sortable()->filterable();
+BooleanColumn::make('featured')->label('Featured')->filterable();
 TextColumn::make('updated_at')->label('Updated')->dateTime()->sortable();`}
   fixture="table.overview"
 />
@@ -57,5 +58,6 @@ public function perPage(): int
 ```
 
 A [custom data source](/tables/data-sources/) chooses its own `TableResult` builder to match the mode —
-`fromPaginator()` for a full pager, `fromSimplePaginator()` for previous/next. The
+`fromPaginator()` for a full pager, `fromSimplePaginator()` for infinite scroll-to-load, or
+`fromSimplePaginator($paginator, PaginationType::Simple)` for previous/next. The
 [Eloquent source](/tables/eloquent-tables/) picks the right one from the mode automatically.

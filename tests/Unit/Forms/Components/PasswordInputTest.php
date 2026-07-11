@@ -11,7 +11,9 @@ describe('docs fixtures', function (): void {
         ]))));
 
         assertFixtureMatches('password-input.confirmation', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
-            PasswordInput::make('password', 'Password')->needsConfirmation(),
+            PasswordInput::make('password', 'Password')
+                ->needsConfirmation()
+                ->rules(['required', 'min:8', 'confirmed']),
         ]))));
     });
 });

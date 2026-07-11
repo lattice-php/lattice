@@ -23,10 +23,10 @@ Modal::make('invite-member')
 The dialog's `$id` is how effects find it:
 
 ```php
-use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Facades\Effects;
+use Lattice\Lattice\Ui\Components\Button;
 
-Action::make('invite')
+Button::make('Invite')
     ->effects(Effects::openModal('invite-member'));
 ```
 

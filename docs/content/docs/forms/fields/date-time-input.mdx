@@ -16,8 +16,10 @@ returns a `CarbonImmutable`.
 
 ## Timezone behavior
 
-The picker uses the frontend timezone configured through `lattice.i18n.timezone`. Submitted values
-include that timezone, so validation returns a `CarbonImmutable` in the user's timezone by default.
+The picker uses the authenticated user's timezone when the user model implements
+`HasTimezonePreference` (`preferredTimezone()`), falling back to the browser timezone. Submitted
+values include that timezone, so validation returns a `CarbonImmutable` in the user's timezone by
+default.
 
 ```php
 DateTimeInput::make('starts_at', 'Starts at');

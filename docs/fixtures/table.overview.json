@@ -79,7 +79,20 @@
                     "key": "featured",
                     "props": {
                         "align": "start",
-                        "filter": null,
+                        "filter": {
+                            "clauseOptions": [],
+                            "control": null,
+                            "defaultOperator": "eq",
+                            "multiple": false,
+                            "operators": [
+                                "eq",
+                                "empty",
+                                "filled"
+                            ],
+                            "options": [],
+                            "searchable": false,
+                            "type": "boolean"
+                        },
                         "hiddenByDefault": false,
                         "label": "Featured",
                         "sortable": false,
@@ -156,7 +169,7 @@
                 "tableFilterIndicators": [],
                 "tableFilters": {}
             },
-            "striped": true
+            "striped": false
         },
         "type": "table"
     }

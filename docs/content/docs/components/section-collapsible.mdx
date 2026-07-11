@@ -20,6 +20,7 @@ start folded, or `rememberState: false` to not persist the state across reloads 
 <ComponentExample
   php={`Section::make('Members', 'People with access to this team.')
     ->collapsible()
+    ->tooltip('Only admins can change who has access.')
     ->headerActions([
         Button::make('Invite member')->variant(ButtonVariant::Outline),
     ])
@@ -42,6 +43,7 @@ Call `->tooltip('…')` to attach an ⓘ info popover in the trigger row; the co
 <ComponentExample
   php={`Collapsible::make('account-name')
     ->trigger([Text::make('Name')])
+    ->tooltip('Shown on invoices and receipts.')
     ->content([Text::make('Update the name shown on your account.')]);`}
   fixture="components.collapsible"
 />

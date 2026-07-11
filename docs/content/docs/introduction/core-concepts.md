@@ -26,7 +26,7 @@ The same flow powers interactive pieces: a form submit, a table page change, or 
 
 ### Pages
 
-A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its UI in `render()`. You annotate it with `#[AsPage(route: '…')]`; Lattice discovers the page and registers its route — no Inertia page component or controller to write by hand. A page also carries its layout, container, breadcrumbs, and menus.
+A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its UI in `render()`. You annotate it with `#[AsPage(route: '…')]`; Lattice discovers the page and registers its route — no Inertia page component or controller to write by hand. A page also carries its layout, container, breadcrumbs, and middleware.
 
 [Learn more →](/core/pages/)
 

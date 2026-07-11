@@ -13,7 +13,7 @@ line, bar, area, or pie. The PHP builder serializes to a typed node the renderer
 [Recharts](https://recharts.org).
 
 <ComponentExample
-  php={`Chart::make('Signups')
+  php={`Chart::make('Signups', 'signups-chart')
     ->description('New users per month')
     ->categoryKey('month')
     ->data([
@@ -50,7 +50,7 @@ still plot, but the axis ticks are hidden. Always set it for line, bar, and area
 Two `->bar()` series render grouped side by side:
 
 <ComponentExample
-  php={`Chart::make('Orders by channel')
+  php={`Chart::make('Orders by channel', 'orders-chart')
     ->categoryKey('week')
     ->data([
         ['week' => 'W1', 'online' => 120, 'store' => 80],
@@ -69,7 +69,7 @@ Two `->bar()` series render grouped side by side:
 Give bars — or areas — the same `stackId` to stack them into one column instead:
 
 <ComponentExample
-  php={`Chart::make('Monthly recurring revenue')
+  php={`Chart::make('Monthly recurring revenue', 'mrr-chart')
     ->description('Stacked by revenue type')
     ->categoryKey('month')
     ->data([
@@ -90,7 +90,7 @@ Series types mix freely in one chart. Declaring an `->area()` and a `->line()` t
 line over the filled band:
 
 <ComponentExample
-  php={`Chart::make('Revenue vs forecast')
+  php={`Chart::make('Revenue vs forecast', 'revenue-forecast-chart')
     ->description('Actuals as a line over the forecast band')
     ->categoryKey('month')
     ->data([
@@ -118,7 +118,7 @@ A `->pie()` series plots one value per row as slices. `nameKey` names each slice
 field to color its slice, or let the theme palette pick:
 
 <ComponentExample
-  php={`Chart::make('Revenue by channel')
+  php={`Chart::make('Revenue by channel', 'channel-mix-chart')
     ->description('Share of total revenue')
     ->data([
         ['channel' => 'Direct', 'amount' => 42000, 'color' => '#2563eb'],
@@ -140,8 +140,8 @@ field to color its slice, or let the theme palette pick:
 ## Colors and theming
 
 Omit a series color and Lattice cycles a palette built on your [theme tokens](/theming/) —
-`--lt-primary`, `--lt-success`, `--lt-info`, `--lt-warning`, `--lt-danger` — so charts follow light and
-dark mode automatically. Pass an explicit `color` to override: a hex value, or a CSS variable like
+`--lt-primary`, `--lt-success`, `--lt-info`, `--lt-warning`, `--lt-danger`, `--lt-muted-fg` — so
+charts follow light and dark mode automatically. Pass an explicit `color` to override: a hex value, or a CSS variable like
 `var(--lt-primary)` to stay theme-aware. For pies, a per-row `color` field wins over the series color.
 
 ## Formatting values and categories
@@ -151,8 +151,8 @@ the same Intl formatting the tables use. The **value** axis (always numeric) tak
 **category** axis takes either a `NumberFormat` or a `DateFormat`.
 
 <ComponentExample
-  php={`Chart::make('Revenue')
-    ->description('Compact currency on the value axis, short dates on the category axis')
+  php={`Chart::make('Revenue', 'formatting-chart')
+    ->description('Compact currency on the value axis, month labels on the category axis')
     ->categoryKey('month')
     ->data([
         ['month' => '2026-01-01', 'revenue' => 28000],
@@ -206,8 +206,8 @@ Chart::make('Signups')
 
 ## Dynamic series
 
-When the series aren't known ahead of time, build [`ChartSeries`](/advanced/enums/#charts) value
-objects and hand them to `->series([...])` instead of the per-type helpers. The static factories
+When the series aren't known ahead of time, build `ChartSeries` value objects
+(typed by [`ChartSeriesType`](/advanced/enums/#charts)) and hand them to `->series([...])` instead of the per-type helpers. The static factories
 mirror the fluent methods:
 
 ```php

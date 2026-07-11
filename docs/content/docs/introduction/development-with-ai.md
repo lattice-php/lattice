@@ -52,3 +52,5 @@ One Lattice-specific step the core guideline already teaches your agent — wort
 ```bash
 php artisan lattice:typescript
 ```
+
+The command requires the suggested dev dependency: `composer require --dev spatie/typescript-transformer`.

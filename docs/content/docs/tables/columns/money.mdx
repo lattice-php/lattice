@@ -10,7 +10,8 @@ places follow the viewer's locale and the currency itself, so you feed it a plai
 sortable and filters as a [number](/tables/filtering/).
 
 <ComponentExample
-  php={`MoneyColumn::make('total')->label('Total')->currency('EUR')->sortable();
+  php={`TextColumn::make('number')->label('Invoice');
+MoneyColumn::make('total')->label('Total')->currency('EUR')->sortable();
 MoneyColumn::make('refunded')->label('Refunded')->currencyField('currency');`}
   fixture="table.money"
 />

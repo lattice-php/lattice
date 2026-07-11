@@ -20,7 +20,7 @@ php artisan lattice:component Signature --package=packages/acme-signature
 
 ```json
 {
-  "name": "acme/lattice-signature",
+  "name": "acme/signature",
   "autoload": { "psr-4": { "Acme\\Signature\\": "src/" } },
   "extra": {
     "lattice": {
@@ -41,6 +41,18 @@ use Lattice\Lattice\Ui\Components\Component;
 final class Signature extends Component
 {
     public string $label = 'Sign here';
+
+    public static function make(?string $key = null): static
+    {
+        return new self($key);
+    }
+
+    public function label(string $label): static
+    {
+        $this->label = $label;
+
+        return $this;
+    }
 }
 ```
 

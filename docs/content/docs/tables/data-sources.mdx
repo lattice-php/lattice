@@ -48,8 +48,9 @@ state as public properties:
   page the data yourself or don't paginate.
 - **`TableResult::fromPaginator($paginator)`** — a `LengthAwarePaginator`, carrying the total count for
   a full pager.
-- **`TableResult::fromSimplePaginator($paginator)`** — a simple paginator, for previous/next paging
-  without a total.
+- **`TableResult::fromSimplePaginator($paginator, $type)`** — a simple paginator without a total. The
+  mode defaults to `PaginationType::Infinite` (scroll-to-load); pass `PaginationType::Simple` for
+  previous/next paging.
 
 ## Backing a table with your own source
 

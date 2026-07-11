@@ -18,8 +18,9 @@ and its label.
 
 ## Rows
 
-`->rows()` sets the visible height of the field in text rows. It is a starting height only — the
-field still grows as the user types past it.
+`->rows()` sets the textarea's `rows` attribute. The shipped field auto-sizes to its content
+(`field-sizing: content`) with a minimum height, so in supporting browsers the attribute only
+matters as the starting height where `field-sizing` is unavailable.
 
 ```php
 Textarea::make('bio', 'Bio')->rows(4);

@@ -70,12 +70,12 @@ and never appear in it. Pass `hiddenByDefault: true` to ship a column hidden —
 when they need it.
 
 <ComponentExample
-  php={`TextColumn::make('name');                        // pinned, always visible
-TextColumn::make('sku')->toggleable();           // hide-able, shown by default
-NumberColumn::make('price')->toggleable();
+  php={`TextColumn::make('name')->label('Name');          // pinned, always visible
+TextColumn::make('sku')->label('SKU')->toggleable(); // hide-able, shown by default
+NumberColumn::make('price')->label('Price')->toggleable();
 TextColumn::make('updated_at')->label('Updated')
     ->dateTime()
-    ->toggleable(hiddenByDefault: true);         // hide-able, starts hidden`}
+    ->toggleable(hiddenByDefault: true);             // hide-able, starts hidden`}
   fixture="table.toggleable"
 />
 

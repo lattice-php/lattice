@@ -23,11 +23,10 @@ describe('docs fixtures', function (): void {
     it('matches the overview table example fixture', function (): void {
         assertFixtureMatches('table.overview', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Table::make('products')
-                ->striped(true)
                 ->columns([
                     TextColumn::make('name')->label('Name')->sortable()->filterable(),
                     NumberColumn::make('price')->label('Price')->sortable()->filterable(),
-                    BooleanColumn::make('featured')->label('Featured'),
+                    BooleanColumn::make('featured')->label('Featured')->filterable(),
                     TextColumn::make('updated_at')->label('Updated')->dateTime()->sortable(),
                 ])
                 ->result(
@@ -132,9 +131,9 @@ describe('docs fixtures', function (): void {
                 ])
                 ->result(
                     TableResult::fromItems(collect([
-                        ['label' => 'Landing page', 'views' => 12400, 'conversion' => 0.128],
-                        ['label' => 'Pricing', 'views' => 3820, 'conversion' => 0.064],
-                        ['label' => 'Blog', 'views' => 1045000, 'conversion' => 0.011],
+                        ['label' => 'Landing page', 'views' => 12400, 'conversion' => 12.8],
+                        ['label' => 'Pricing', 'views' => 3820, 'conversion' => 6.4],
+                        ['label' => 'Blog', 'views' => 1045000, 'conversion' => 1.1],
                     ])),
                     TableQuery::empty(),
                 ),

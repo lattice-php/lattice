@@ -41,7 +41,7 @@ describe('docs fixtures', function (): void {
                         Text::make('Three people have access to this team.'),
                         Badge::make('3 active'),
                     ]),
-                    Button::make('Invite member')->variant(ButtonVariant::Default),
+                    Button::make('Invite member'),
                 ]),
         ]))));
     });
