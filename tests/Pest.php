@@ -317,32 +317,23 @@ function latticeGet(string $url, string $ref): TestResponse
 }
 
 /**
- * Dump an array of nodes to docs/fixtures/<key>.json so the docs site can render
- * a real, test-generated example instead of hand-maintained JSON.
+ * Guard a docs/fixtures/<key>.json file against the payload its test builds, so
+ * the docs site renders real, test-generated examples instead of hand-maintained
+ * JSON. Regenerate deliberately with LATTICE_UPDATE_FIXTURES=1 — the assertion
+ * still runs, so a nondeterministic payload fails immediately.
  *
- * Object keys are sorted so the output is identical across PHP versions, keeping
- * the committed fixtures stable for the CI guard. List order (nodes, options,
- * conditions) is preserved.
- *
- * Materializes object-preserving (Wire::toWire(), not the assoc wire()) so an
- * empty map reaches the fixture as `{}` rather than collapsing to `[]`.
- *
- * @param  array<int, mixed>  $nodes
+ * Build payloads with sortFixtureKeys(stripFixtureRefs(Wire::toWire([...]))) —
+ * sorted keys keep the output identical across PHP versions, and the
+ * object-preserving Wire::toWire() keeps an empty map as `{}` rather than `[]`.
  */
-function dumpFixture(string $key, array $nodes): void
-{
-    $normalized = Wire::toWire($nodes);
-
-    file_put_contents(
-        dirname(__DIR__).'/docs/fixtures/'.$key.'.json',
-        json_encode(sortFixtureKeys(stripFixtureRefs($normalized)), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR)."\n",
-    );
-}
-
 function assertFixtureMatches(string $fixtureKey, mixed $payload): void
 {
     $path = dirname(__DIR__).'/docs/fixtures/'.$fixtureKey.'.json';
     $json = json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+
+    if (getenv('LATTICE_UPDATE_FIXTURES') !== false) {
+        File::put($path, $json.PHP_EOL);
+    }
 
     expect(File::exists($path))->toBeTrue("Missing fixture: {$path}");
     expect(File::get($path))->toBe($json.PHP_EOL);
