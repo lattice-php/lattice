@@ -5,7 +5,11 @@ return [
     'block-editor' => [
         'drag' => 'Ziehen',
         'drag-to-reorder' => 'Zum Neuanordnen ziehen',
+        'duplicate' => 'Duplizieren',
         'empty-slot' => 'Blöcke hier ablegen',
+        'has-errors' => 'Dieser Block enthält Fehler.',
+        'move-down' => 'Nach unten',
+        'move-up' => 'Nach oben',
         'no-settings' => 'Dieser Block hat keine Einstellungen.',
         'remove' => 'Block entfernen',
         'select-block' => 'Block auswählen, um ihn zu bearbeiten.',

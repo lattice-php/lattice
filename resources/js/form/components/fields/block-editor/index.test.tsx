@@ -1,4 +1,4 @@
-import { configure, fireEvent, render, screen } from "@testing-library/react";
+import { configure, fireEvent, render, screen, within } from "@testing-library/react";
 import { beforeAll, expect, it, vi } from "vitest";
 
 beforeAll(() => configure({ testIdAttribute: "data-test" }));
@@ -143,11 +143,46 @@ it("removes a nested block from the value", () => {
     slottedValue(),
   );
 
-  fireEvent.click(screen.getByTestId("block-remove-h1"));
+  fireEvent.click(within(screen.getByTestId("block-shell-h1")).getByTestId("row-actions-menu"));
+  fireEvent.click(screen.getByTestId("row-action-remove"));
 
   expect(screen.queryByTestId("block-shell-h1")).not.toBeInTheDocument();
   expect(screen.getByText("Drop blocks here")).toBeInTheDocument();
   expect(
     container.querySelector('input[name="content[0][slots][main][0][type]"]'),
   ).not.toBeInTheDocument();
+});
+
+it("selects a newly added block", () => {
+  wrap(<BlockEditorComponent node={node}>{null}</BlockEditorComponent>, { content: [] });
+
+  fireEvent.click(screen.getByTestId("builder-add"));
+  fireEvent.click(screen.getByTestId("builder-add-hero"));
+
+  const shell = screen
+    .getByTestId("block-editor-inspector")
+    .ownerDocument.querySelector('[data-test^="block-shell-"]');
+  expect(shell).toHaveAttribute("aria-selected", "true");
+});
+
+it("duplicates a block with a fresh identity through its action menu", () => {
+  wrap(<BlockEditorComponent node={node}>{null}</BlockEditorComponent>, {
+    content: [{ rowId: "a", type: "hero", title: "Stored" }],
+  });
+
+  fireEvent.click(within(screen.getByTestId("block-shell-a")).getByTestId("row-actions-menu"));
+  fireEvent.click(screen.getByTestId("row-action-duplicate"));
+
+  const shells = screen.getAllByTestId(/^block-shell-/);
+  expect(shells).toHaveLength(2);
+  expect(shells[1].getAttribute("data-test")).not.toBe("block-shell-a");
+});
+
+it("flags the block owning a field error on the canvas", () => {
+  wrap(<BlockEditorComponent node={slottedNode}>{null}</BlockEditorComponent>, slottedValue(), {
+    "content.0.slots.main.0.title": "Required.",
+  });
+
+  expect(screen.getByTestId("block-error-h1")).toBeInTheDocument();
+  expect(screen.queryByTestId("block-error-c1")).not.toBeInTheDocument();
 });

@@ -1,4 +1,7 @@
-import type { RepeaterRow } from "@lattice-php/lattice/form/components/fields/repeater-rows";
+import {
+  ROW_ID_KEY,
+  type RepeaterRow,
+} from "@lattice-php/lattice/form/components/fields/repeater-rows";
 import type { RowTemplate } from "@lattice-php/lattice/form/components/fields/row-templates";
 
 export type BlockStep = { index: number; slot?: string };
@@ -74,6 +77,59 @@ export function updateBlockAt(
   return replaceContainer(rows, path, (list) =>
     list.map((row, i) => (i === index ? { ...row, [field]: value } : row)),
   );
+}
+
+function remintRowIds(row: RepeaterRow): RepeaterRow {
+  const next: RepeaterRow = { ...row, [ROW_ID_KEY]: crypto.randomUUID() };
+  const slots = row.slots as Record<string, RepeaterRow[]> | undefined;
+
+  if (slots && typeof slots === "object") {
+    next.slots = Object.fromEntries(
+      Object.entries(slots).map(([slot, children]) => [
+        slot,
+        Array.isArray(children) ? children.map(remintRowIds) : children,
+      ]),
+    );
+  }
+
+  return next;
+}
+
+/** Insert a deep copy after the original; every copied row gets a fresh id. */
+export function duplicateBlockAt(rows: RepeaterRow[], path: BlockPath): RepeaterRow[] {
+  const index = path[path.length - 1]?.index ?? -1;
+
+  return replaceContainer(rows, path, (list) => {
+    const source = list[index];
+
+    if (!source) {
+      return list;
+    }
+
+    const next = [...list];
+    next.splice(index + 1, 0, remintRowIds(source));
+
+    return next;
+  });
+}
+
+/** Move a block within its own container by the given offset, clamped at the edges. */
+export function shiftBlockAt(rows: RepeaterRow[], path: BlockPath, delta: number): RepeaterRow[] {
+  const index = path[path.length - 1]?.index ?? -1;
+
+  return replaceContainer(rows, path, (list) => {
+    const target = index + delta;
+
+    if (index < 0 || index >= list.length || target < 0 || target >= list.length) {
+      return list;
+    }
+
+    const next = [...list];
+    const [moved] = next.splice(index, 1);
+    next.splice(target, 0, moved);
+
+    return next;
+  });
 }
 
 export function removeBlockAt(rows: RepeaterRow[], path: BlockPath): RepeaterRow[] {

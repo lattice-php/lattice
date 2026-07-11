@@ -27,7 +27,9 @@ import { moveBlock } from "./move-block";
 import {
   appendBlockAt,
   blockAt,
+  duplicateBlockAt,
   removeBlockAt,
+  shiftBlockAt,
   slotAllowedTypes,
   updateBlockAt,
   walkBlocks,
@@ -130,10 +132,24 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
     setValue(path, (prev: unknown) => removeBlockAt(asRows(prev), blockPath));
   };
 
+  const onDuplicate = (blockPath: BlockPath): void => {
+    setValue(path, (prev: unknown) => duplicateBlockAt(asRows(prev), blockPath));
+  };
+
+  const onShift = (blockPath: BlockPath, delta: number): void => {
+    setValue(path, (prev: unknown) => shiftBlockAt(asRows(prev), blockPath, delta));
+  };
+
+  const addRow = (type: string): void => {
+    const row = withRowId({ type });
+    append(row);
+    setSelectedId(String(row[ROW_ID_KEY]));
+  };
+
   const onAppend = (parentPath: BlockPath, slot: string, type: string): void => {
-    setValue(path, (prev: unknown) =>
-      appendBlockAt(asRows(prev), parentPath, slot, withRowId({ type })),
-    );
+    const row = withRowId({ type });
+    setValue(path, (prev: unknown) => appendBlockAt(asRows(prev), parentPath, slot, row));
+    setSelectedId(String(row[ROW_ID_KEY]));
   };
 
   /** The store path of the list containing the block at the given path. */
@@ -147,6 +163,22 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
 
     return current;
   };
+
+  // A block is flagged when one of its own keys errs; descendant errors flag the descendant.
+  const errorIds = new Set(
+    entries
+      .filter(({ path: blockPath }) => {
+        const prefix = appendPath(listBaseFor(blockPath), blockPath[blockPath.length - 1].index);
+
+        return Object.entries(errors).some(
+          ([key, message]) =>
+            Boolean(message) &&
+            key.startsWith(`${prefix}.`) &&
+            !key.slice(prefix.length + 1).includes("."),
+        );
+      })
+      .map(({ row }) => String(row[ROW_ID_KEY])),
+  );
 
   const refreshRow = (row: RepeaterRow): void => {
     void refresh(String(row[ROW_ID_KEY]), String(row.type ?? ""), rowAttributes(row));
@@ -188,17 +220,16 @@ export const BlockEditorComponent: RendererComponent<"field.block-editor"> = ({ 
             wireFor={wireFor}
             onPreviewSeed={refreshRow}
             selectedId={selectedId}
+            errorIds={errorIds}
             onSelect={setSelectedId}
             onMoveBlock={onMoveBlock}
             onRemove={onRemove}
+            onDuplicate={onDuplicate}
+            onShift={onShift}
             onAppend={onAppend}
           />
           {!atMax && (
-            <AddRowMenu
-              addLabel={props.addLabel ?? "Add"}
-              options={options}
-              onSelect={(type) => append({ type })}
-            />
+            <AddRowMenu addLabel={props.addLabel ?? "Add"} options={options} onSelect={addRow} />
           )}
         </div>
 

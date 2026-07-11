@@ -1,4 +1,4 @@
-import { configure, fireEvent, render, screen } from "@testing-library/react";
+import { configure, fireEvent, render, screen, within } from "@testing-library/react";
 import { beforeAll, expect, it, vi } from "vitest";
 
 beforeAll(() => configure({ testIdAttribute: "data-test" }));
@@ -38,6 +38,8 @@ function renderCanvas(rows: Record<string, unknown>[], overrides: Record<string,
   const handlers = {
     onSelect: vi.fn<(rowId: string) => void>(),
     onRemove: vi.fn<(path: unknown) => void>(),
+    onDuplicate: vi.fn<(path: unknown) => void>(),
+    onShift: vi.fn<(path: unknown, delta: number) => void>(),
     onAppend: vi.fn<(path: unknown, slot: string, type: string) => void>(),
   };
 
@@ -51,14 +53,23 @@ function renderCanvas(rows: Record<string, unknown>[], overrides: Record<string,
       }
       onPreviewSeed={() => {}}
       selectedId={(overrides.selectedId as string) ?? null}
+      errorIds={(overrides.errorIds as Set<string>) ?? new Set()}
       onSelect={handlers.onSelect}
       onMoveBlock={() => {}}
       onRemove={handlers.onRemove}
+      onDuplicate={handlers.onDuplicate}
+      onShift={handlers.onShift}
       onAppend={handlers.onAppend}
     />,
   );
 
   return handlers;
+}
+
+function openActions(rowId: string): void {
+  fireEvent.click(
+    within(screen.getByTestId(`block-shell-${rowId}`)).getByTestId("row-actions-menu"),
+  );
 }
 
 it("renders each row's wire and selects on click", () => {
@@ -82,15 +93,37 @@ it("renders each row's wire and selects on click", () => {
   expect(onSelect).toHaveBeenCalledWith("b");
 });
 
-it("removes a block through its shell header", () => {
+it("removes a block through its action menu", () => {
   const { onRemove } = renderCanvas([
     { rowId: "a", type: "hero" },
     { rowId: "b", type: "text" },
   ]);
 
-  fireEvent.click(screen.getByTestId("block-remove-b"));
+  openActions("b");
+  fireEvent.click(screen.getByTestId("row-action-remove"));
 
   expect(onRemove).toHaveBeenCalledWith([{ index: 1 }]);
+});
+
+it("duplicates and reorders a block through its action menu", () => {
+  const { onDuplicate, onShift } = renderCanvas([
+    { rowId: "a", type: "hero" },
+    { rowId: "b", type: "text" },
+  ]);
+
+  openActions("a");
+  fireEvent.click(screen.getByTestId("row-action-duplicate"));
+  expect(onDuplicate).toHaveBeenCalledWith([{ index: 0 }]);
+
+  openActions("a");
+  fireEvent.click(screen.getByTestId("row-action-move-down"));
+  expect(onShift).toHaveBeenCalledWith([{ index: 0 }], 1);
+});
+
+it("flags a block whose fields have errors", () => {
+  renderCanvas([{ rowId: "a", type: "hero" }], { errorIds: new Set(["a"]) });
+
+  expect(screen.getByTestId("block-error-a")).toBeInTheDocument();
 });
 
 it("renders slot areas with nested child shells for a slotted block", () => {
@@ -171,7 +204,8 @@ it("removes a nested child with its slot path", () => {
     },
   ]);
 
-  fireEvent.click(screen.getByTestId("block-remove-h1"));
+  openActions("h1");
+  fireEvent.click(screen.getByTestId("row-action-remove"));
 
   expect(onRemove).toHaveBeenCalledWith([{ index: 0, slot: "main" }, { index: 0 }]);
 });

@@ -23,6 +23,7 @@ import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { AddRowMenu } from "@lattice-php/lattice/form/components/fields/add-row-menu";
+import { RowActions } from "@lattice-php/lattice/form/components/fields/row-actions";
 import {
   ROW_ID_KEY,
   type RepeaterRow,
@@ -40,8 +41,11 @@ type CanvasShared = {
   wireFor: (rowId: string) => Node[];
   onPreviewSeed: (row: RepeaterRow) => void;
   selectedId: string | null;
+  errorIds: ReadonlySet<string>;
   onSelect: (rowId: string) => void;
   onRemove: (path: BlockPath) => void;
+  onDuplicate: (path: BlockPath) => void;
+  onShift: (path: BlockPath, delta: number) => void;
   onAppend: (path: BlockPath, slot: string, type: string) => void;
 };
 
@@ -180,18 +184,45 @@ function Shell({ row, path, shared }: { row: RepeaterRow; path: BlockPath; share
           {template?.icon && <Icon name={template.icon} aria-hidden="true" />}
           {template?.label ?? String(row.type ?? "")}
         </span>
-        <button
-          type="button"
-          aria-label={t("form.block-editor.remove", "Remove block")}
-          data-test={`block-remove-${rowId}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            shared.onRemove(path);
-          }}
-          className="ml-auto text-lt-muted-fg hover:text-lt-danger [&_svg]:size-lt-icon-sm"
-        >
-          <Icon name="x" />
-        </button>
+        {shared.errorIds.has(rowId) && (
+          <span
+            data-test={`block-error-${rowId}`}
+            role="img"
+            aria-label={t("form.block-editor.has-errors", "This block has errors.")}
+            className="size-2 rounded-full bg-lt-danger"
+          />
+        )}
+        <span className="ml-auto" onClick={(e) => e.stopPropagation()}>
+          <RowActions
+            actions={[
+              {
+                key: "move-up",
+                label: t("form.block-editor.move-up", "Move up"),
+                icon: "arrow-up",
+                onClick: () => shared.onShift(path, -1),
+              },
+              {
+                key: "move-down",
+                label: t("form.block-editor.move-down", "Move down"),
+                icon: "arrow-down",
+                onClick: () => shared.onShift(path, 1),
+              },
+              {
+                key: "duplicate",
+                label: t("form.block-editor.duplicate", "Duplicate"),
+                icon: "copy",
+                onClick: () => shared.onDuplicate(path),
+              },
+              {
+                key: "remove",
+                label: t("form.block-editor.remove", "Remove block"),
+                icon: "trash-2",
+                onClick: () => shared.onRemove(path),
+                destructive: true,
+              },
+            ]}
+          />
+        </span>
       </div>
       {slots.length === 0 ? (
         <Renderer nodes={shared.wireFor(rowId)} />

@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   appendBlockAt,
   blockAt,
+  duplicateBlockAt,
   removeBlockAt,
+  shiftBlockAt,
   slotAllowedTypes,
   updateBlockAt,
   walkBlocks,
@@ -70,6 +72,43 @@ describe("appendBlockAt", () => {
 
     const slot = blockAt(out, [{ index: 0 }])?.slots as Record<string, { rowId: string }[]>;
     expect(slot.main.map((row) => row.rowId)).toEqual(["new"]);
+  });
+});
+
+describe("duplicateBlockAt", () => {
+  it("inserts a copy after the original with fresh row ids at every depth", () => {
+    const out = duplicateBlockAt(rows(), [{ index: 1 }]);
+
+    expect(out).toHaveLength(3);
+    expect(out[2].type).toBe("columns");
+    expect(out[2].rowId).not.toBe("cols");
+
+    const copyChildren = (out[2].slots as Record<string, { rowId: string; body: string }[]>).main;
+    expect(copyChildren[0].body).toBe("M1");
+    expect(copyChildren[0].rowId).not.toBe("m1");
+  });
+
+  it("duplicates a nested block in place", () => {
+    const out = duplicateBlockAt(rows(), [{ index: 1, slot: "main" }, { index: 0 }]);
+
+    const children = (out[1].slots as Record<string, { rowId: string }[]>).main;
+    expect(children).toHaveLength(2);
+    expect(children[1].rowId).not.toBe(children[0].rowId);
+  });
+});
+
+describe("shiftBlockAt", () => {
+  it("moves a block within its container", () => {
+    const out = shiftBlockAt(rows(), [{ index: 0 }], 1);
+
+    expect(out.map((row) => row.rowId)).toEqual(["cols", "a"]);
+  });
+
+  it("clamps at the container edges", () => {
+    const input = rows();
+
+    expect(shiftBlockAt(input, [{ index: 0 }], -1)).toBe(input);
+    expect(shiftBlockAt(input, [{ index: 1 }], 1)).toBe(input);
   });
 });
 

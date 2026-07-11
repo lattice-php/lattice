@@ -107,7 +107,7 @@ it('drags a top-level block into an empty slot', function (): void {
         ->assertNoJavaScriptErrors();
 });
 
-it('removes a block from the canvas', function (): void {
+it('removes a block through its action menu', function (): void {
     actingAs(workbenchTestUser());
 
     $page = visit('/block-editor');
@@ -117,11 +117,39 @@ it('removes a block from the canvas', function (): void {
 
     $page->assertPresent('[data-test^="block-shell-"]');
 
-    $page->click('[data-test^="block-remove-"]');
+    $page->click('[data-test="row-actions-menu"]')
+        ->click('[data-test="row-action-remove"]');
 
     $page->assertNotPresent('[data-test^="block-shell-"]');
 
     $page->assertNoJavaScriptErrors();
+});
+
+it('duplicates a block with its attributes through its action menu', function (): void {
+    actingAs(workbenchTestUser());
+
+    $page = visit('/block-editor');
+
+    $page->click('@builder-add')
+        ->click('[data-test="builder-add-workbench.hero"]');
+    $page->fill('input[name="content[0][title]"]', 'Original');
+    $page->click('Block Editor Demo');
+
+    $page->click('[data-test="row-actions-menu"]')
+        ->click('[data-test="row-action-duplicate"]');
+
+    retryUntil(function () use ($page): void {
+        $page->assertValue('input[name="content[1][title]"]', 'Original');
+    });
+
+    $page->click('Save');
+
+    retryUntil(function () use ($page): void {
+        $page->assertSee('Saved: Original, Original');
+    });
+
+    $page->assertNoSmoke()
+        ->assertNoJavaScriptErrors();
 });
 
 it('persists attributes for every block, not just the selected one', function (): void {
