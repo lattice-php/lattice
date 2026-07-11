@@ -1,4 +1,5 @@
 import type { Node } from "@lattice-php/lattice/core/types";
+import { nodeKey } from "@lattice-php/lattice/core/nodes";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import {
   DEFAULT_COLUMN_WIDTH,
@@ -158,13 +159,13 @@ const TableRowItem = memo(function TableRowItem({
               className="flex flex-col gap-2"
               style={{ gridColumn: `span ${columnCount}` }}
             >
-              {template.map((child) => (
-                <RenderNode key={child.key ?? child.id} node={child} />
+              {template.map((child, childIndex) => (
+                <RenderNode key={nodeKey(child, childIndex)} node={child} />
               ))}
             </div>
           ) : (
-            template.map((child) => (
-              <div key={child.key ?? child.id}>
+            template.map((child, childIndex) => (
+              <div key={nodeKey(child, childIndex)}>
                 <RenderNode node={child} />
               </div>
             ))

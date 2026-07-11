@@ -25,8 +25,8 @@ issued to. Only then does it run.
 ## Why context is trustworthy
 
 Because the context travels inside the encrypted reference — not as ordinary request input — a client
-can't change it. The endpoint merges the **trusted** context back onto the request, so
-`$this->context($request, 'product_id')` always returns the value the server sealed. This is what lets
+can't change it. The endpoint restores the **trusted** context onto the definition, so
+`$this->context('product_id')` always returns the value the server sealed. This is what lets
 [row actions](/tables/actions/) safely carry a record id and [authorization](/core/authorization/)
 trust it.
 

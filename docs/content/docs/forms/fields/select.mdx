@@ -59,8 +59,9 @@ Select::make('status', 'Status')->enum(OrderStatus::class);
 ## Searchable
 
 A static `->options()` select has no search box — the dropdown shows the full list. Call
-`->searchable()` to add a search box and resolve options on the server (`->searchPlaceholder()` then
-sets its placeholder). For a static list long enough to need filtering, prefer `->searchable()`.
+`->searchable()` with a resolver to add a search box and resolve options on the server
+(`->searchPlaceholder()` then sets its placeholder). There is no client-side filter for static
+options — a list long enough to need filtering belongs behind a resolver.
 
 `->searchable()` turns the select into a server-driven search. The resolver receives `$search` (the
 query string) and returns the matching options; it may also inject `$get`/`$state`/`$component` and

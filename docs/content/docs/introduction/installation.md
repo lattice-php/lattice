@@ -196,7 +196,7 @@ The renderer resolves component types from a registry. Lattice exports the piece
 import { Provider, Renderer, registry, createRegistry, extendRegistry } from "@lattice-php/lattice";
 ```
 
-Pass a custom registry to the same `Provider` when you register your own component types, or use `extendRegistry` to add to the defaults. Heavy built-ins (forms, tables, the rich editor) are registered lazily and code-split, so you only ship what a page actually renders.
+Pass a custom registry to the same `Provider` when you register your own component types, or use `extendRegistry` to add to the defaults. The heaviest built-ins — the rich editor, charts, the date picker — are code-split behind `React.lazy`, so their weight only loads when a page actually renders them.
 
 ## Next steps
 

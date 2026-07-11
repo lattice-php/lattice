@@ -69,7 +69,7 @@ pass an operator as the middle argument for other comparisons.
 TextInput::make('vat', 'VAT ID')
     ->visibleWhen('country', ['DE', 'AT', 'CH']);
 
-NumberInput::make('guardian', 'Guardian name')
+TextInput::make('guardian', 'Guardian name')
     ->requiredWhen('age', '<', 18);
 ```
 
@@ -83,8 +83,11 @@ The operator accepts a comparison string or an [`Op`](/advanced/enums/#operators
 | less       | `<`, `<=`                              | `Op::LessThan`, `Op::LessThanOrEqual`            |
 | substring  | `contains`, `starts_with`, `ends_with` | `Op::Contains`, `Op::StartsWith`, `Op::EndsWith` |
 | membership | `in`, `not_in`                         | `Op::In`, `Op::NotIn`                            |
-| presence   | `empty`, `filled`                      | `Op::Empty`, `Op::Filled`                        |
+| presence   | — (use the `Op` case)                  | `Op::Empty`, `Op::Filled`                        |
 | dates      | `before`, `after`                      | `Op::Before`, `Op::After`                        |
+
+For presence checks, pass the `Op` case — `->visibleWhen('coupon', Op::Filled)`. A bare `'empty'` or
+`'filled'` string with no third argument is treated as a value to compare against, not an operator.
 
 ## Server and client agreement
 

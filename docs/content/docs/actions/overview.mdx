@@ -45,6 +45,7 @@ icon, variant, confirmation), and `handle()` runs the work and returns an `Actio
 [endpoint](/advanced/security/).
 
 ```php
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
@@ -66,7 +67,7 @@ class ArchiveProductAction extends ActionDefinition
 
     public function handle(Request $request): ActionResult
     {
-        $product = $this->product($request);
+        $product = Product::findOrFail($this->context('product_id'));
         $product->update(['status' => 'archived']);
 
         return ActionResult::success()
@@ -87,7 +88,7 @@ Action::use(ArchiveProductAction::class)
 ```
 
 `context()` carries data from the page to the action; `handle()` reads it back with
-`$this->context($request, 'product_id')`. The context is signed into the action's reference, so it
+`$this->context('product_id')`. The context is signed into the action's reference, so it
 can't be tampered with on the way back.
 
 Group related actions behind a single trigger with `ActionGroup`:
@@ -128,13 +129,13 @@ return ActionResult::success(['id' => $product->id])
 
 ## Authorization
 
-Override `authorize()` to gate an action. It receives the request (with the trusted context merged
-in) and returns a boolean; a denied action never reaches `handle()`.
+Override `authorize()` to gate an action. It receives the request — the signed context is available
+through `$this->context()` — and returns a boolean; a denied action never reaches `handle()`.
 
 ```php
 public function authorize(Request $request): bool
 {
-    return $this->product($request)->status !== 'archived';
+    return Product::findOrFail($this->context('product_id'))->status !== 'archived';
 }
 ```
 

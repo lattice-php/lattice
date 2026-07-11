@@ -1,6 +1,7 @@
 import { memo, Suspense } from "react";
 import type { ReactNode } from "react";
 import type { Node } from "./types";
+import { nodeKey } from "./nodes";
 import { useCollapsed } from "./collapsed-context";
 import { useComponentRegistry } from "./registry-context";
 
@@ -60,10 +61,6 @@ function MissingComponent({ node }: { node: Node }) {
       <span className={import.meta.env.DEV ? "text-sm" : "sr-only"}>{label}</span>
     </span>
   );
-}
-
-function nodeKey(node: Node, index: number): string {
-  return node.key ?? node.id ?? `${node.type}-${index}`;
 }
 
 export function Renderer({ nodes }: { nodes: Node[] }): ReactNode {

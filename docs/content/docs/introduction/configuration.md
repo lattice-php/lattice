@@ -7,7 +7,7 @@ After publishing the config with `php artisan vendor:publish --tag="lattice-conf
 
 ## Discovery
 
-Lattice automatically discovers form, table, fragment, action, layout, and page definitions by scanning the configured paths for classes carrying the matching attribute:
+Lattice automatically discovers form, table, fragment, action, bulk action, remote source, layout, and page definitions by scanning the configured paths for classes carrying the matching attribute:
 
 ```php
 'discover' => [
@@ -16,6 +16,8 @@ Lattice automatically discovers form, table, fragment, action, layout, and page 
 ```
 
 List every path Lattice should scan. Discovery walks the files directly, so no namespace mapping is needed.
+
+The cached discovery manifest (`php artisan lattice:discover-cache`) is written to `bootstrap/cache/lattice.php`; set `'discovery' => ['cache_path' => …]` to relocate it.
 
 ## Registering definitions explicitly
 
@@ -106,9 +108,13 @@ Component references embedded in the page payload are signed. `security.ref_life
 ],
 ```
 
+## Frontend (no-build)
+
+The `'frontend'` block configures the prebuilt-asset path, theme variables, and Echo settings for the no-build installation — see [No-Build Installation](/introduction/no-build/).
+
 ## TypeScript
 
-Where `php artisan lattice:typescript` writes the generated type definitions, and the module name they are published under:
+Where `php artisan lattice:typescript` writes the generated type definitions, and the module name they are published under (the command requires the suggested dev dependency: `composer require --dev spatie/typescript-transformer`):
 
 ```php
 'typescript' => [

@@ -24,8 +24,8 @@ If none of those match, Lattice throws an exception that lists the named utiliti
 closure.
 
 Named utilities win before type resolution. This is why `fn ($state)` receives the named form state
-even without a type, while `fn (FormData $state)` receives the typed `FormData` object from the same
-context.
+even without a type — and `fn (FormData $state)` receives that same object because the name matches
+first; the type annotation documents it rather than driving the resolution.
 
 ```php
 TextInput::make('slug', 'Slug')
@@ -70,7 +70,7 @@ Some callbacks add more named utilities:
 | `Select::searchable()`             | `$search`, the query string.                                                                       |
 | `Select::resolveSelectedUsing()`   | `$values`, the selected value list, plus `$component`.                                             |
 | Repeater and builder row callbacks | `$row` for the current row and `$form` for the whole form. A typed `FormData` parameter is `$row`. |
-| `Filter::query()`                  | A typed Eloquent `Builder` and `$value`, the submitted toggle state.                               |
+| `ToggleFilter::query()`            | A typed Eloquent `Builder` and `$value`, the submitted toggle state.                               |
 | `TernaryFilter::queries()`         | A typed Eloquent `Builder`.                                                                        |
 
 ```php

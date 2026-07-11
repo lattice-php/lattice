@@ -8,6 +8,67 @@
 @import "../../resources/css/lattice.css";
 @source "../../resources/js";
 
+/*
+ * This setup deliberately omits Tailwind's global preflight (Starlight owns the
+ * page's base styles), so package components inside a live preview would render
+ * on user-agent defaults — toolbar buttons become bordered chips, headings keep
+ * browser margins. Restore the preflight subset the components assume, scoped
+ * to the preview box and layered below the component utilities.
+ */
+@layer base {
+  .example-preview *,
+  .example-preview ::after,
+  .example-preview ::before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+  }
+
+  .example-preview :where(h1, h2, h3, h4, h5, h6) {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  .example-preview :where(a) {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  .example-preview :where(ol, ul, menu) {
+    list-style: none;
+  }
+
+  .example-preview :where(img, svg, video, canvas) {
+    display: block;
+    vertical-align: middle;
+  }
+
+  .example-preview :where(button, input, select, optgroup, textarea) {
+    font: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    border-radius: 0;
+    background-color: transparent;
+    opacity: 1;
+  }
+
+  .example-preview :where(button, input[type="button"], input[type="reset"], input[type="submit"]) {
+    appearance: button;
+  }
+
+  .example-preview :where(textarea) {
+    resize: vertical;
+  }
+
+  .example-preview ::placeholder {
+    opacity: 1;
+    color: color-mix(in oklab, currentcolor 50%, transparent);
+  }
+}
+
 @theme {
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;

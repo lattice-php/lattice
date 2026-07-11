@@ -4,6 +4,7 @@ import { Highlight } from "@tiptap/extension-highlight";
 import { Link } from "@tiptap/extension-link";
 import { TableKit } from "@tiptap/extension-table";
 import { TextAlign } from "@tiptap/extension-text-align";
+import { Placeholder } from "@tiptap/extensions";
 import { type Editor, EditorContent, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { useEffect, useState } from "react";
@@ -340,6 +341,7 @@ const RichEditorField: RendererComponent<"field.rich-editor"> = ({ node }) => {
       Details,
       DetailsSummary,
       DetailsContent,
+      Placeholder.configure({ placeholder: node.props.placeholder ?? "" }),
     ],
     content: initialContent,
     editable: !locked,

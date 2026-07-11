@@ -1,9 +1,16 @@
 import { fireEvent, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
 import { OtpInputComponent } from "./otp-input";
 
 const renderField = createFieldRenderer(OtpInputComponent);
+
+// input-otp schedules uncancelled 0/10/50ms layout timers that call setState;
+// one firing after this file's jsdom is torn down crashes the whole run with
+// "window is not defined". Let them fire while the environment still exists.
+afterEach(async () => {
+  await new Promise((resolve) => setTimeout(resolve, 60));
+});
 
 describe("OtpInputComponent", () => {
   it("renders a one-time-code input with the configured length", () => {

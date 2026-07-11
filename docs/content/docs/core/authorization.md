@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 public function authorize(Request $request): bool
 {
-    return $request->user()?->can('update', $this->product($request)) ?? false;
+    return $request->user()?->can('update', $this->product()) ?? false;
 }
 ```
 
@@ -46,9 +46,9 @@ when placing the component, and read it back with `context()`:
 Action::use(ArchiveProductAction::class)->context(['product_id' => $row['id']]);
 
 // inside the action:
-protected function product(Request $request): Product
+protected function product(): Product
 {
-    return Product::query()->findOrFail($this->context($request, 'product_id'));
+    return Product::query()->findOrFail($this->context('product_id'));
 }
 ```
 

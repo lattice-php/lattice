@@ -53,7 +53,7 @@
                     "icon": null,
                     "label": "Invite member",
                     "method": null,
-                    "variant": "default"
+                    "variant": null
                 },
                 "type": "button"
             }

@@ -54,10 +54,11 @@ php artisan vendor:publish --tag=lattice-js
 
 All three accept:
 
-| Option    | Purpose                                                                                     |
-| --------- | ------------------------------------------------------------------------------------------- |
-| `--type=` | Override the derived type string.                                                           |
-| `--force` | Overwrite generated files that already exist. Existing registry entries are not duplicated. |
+| Option       | Purpose                                                                                          |
+| ------------ | ------------------------------------------------------------------------------------------------ |
+| `--type=`    | Override the derived type string.                                                                |
+| `--package=` | Scaffold into a Composer [component package](/extending/component-packages/) instead of the app. |
+| `--force`    | Overwrite generated files that already exist. Existing registry entries are not duplicated.      |
 
 By default, `ColorPicker` becomes `field.color-picker`, `Rating` becomes `rating`, and `StatusBadge`
 becomes `column.status-badge`. The commands run `lattice:typescript` after updating the registry so
@@ -95,6 +96,15 @@ php artisan lattice:discover-clear
 
 Lattice also registers these with Laravel's optimization flow, so the cache command runs with
 `php artisan optimize` and the clear command runs with `php artisan optimize:clear`.
+
+## Assets & maintenance
+
+`php artisan lattice:assets` publishes the prebuilt standalone assets into your public directory —
+the [no-build installation](/introduction/no-build/) covers when and why.
+
+`php artisan lattice:notifications:prune` deletes read [notifications](/components/notifications/)
+older than the configured `lattice.notifications.prune_after_days` (unread ones are never pruned) —
+schedule it daily.
 
 ## Common workflow
 

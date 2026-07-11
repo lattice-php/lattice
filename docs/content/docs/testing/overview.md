@@ -269,8 +269,8 @@ reuse a single sealed ref, build the request by hand instead.
 
 Lattice uses `data-test` as its standard test-hook attribute. `data-testid` is **not** used.
 
-**Pest browser tests** target `data-test` via the `@shorthand` selector. `->click('@foo')` is
-equivalent to clicking `[data-test="foo"]`.
+**Pest browser tests** target `data-test` via the `@shorthand` selector. `->click('@foo')` clicks
+`[data-test="foo"]` (the shorthand also matches `data-testid`, which Lattice never emits).
 
 **Vitest + Testing Library unit tests** query it via `getByTestId`, `queryByTestId`, and friends.
 The resolver is pointed at `data-test` by the `configure({ testIdAttribute: "data-test" })` call
@@ -283,6 +283,6 @@ unrendered selector lists what was rendered; a missing filter lists the table's 
 so you spend less time printing the payload to find a typo.
 
 ```
-Lattice form field [emial] not found at [page › form#product].
+Lattice form field [emial] not found at [page › product].
 Available fields: [name, sku, price].
 ```

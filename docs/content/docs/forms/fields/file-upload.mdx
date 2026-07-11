@@ -7,9 +7,10 @@ import ComponentExample from "@components/ComponentExample.astro";
 import Info from "@components/Info.astro";
 import Warning from "@components/Warning.astro";
 
-The file upload field stores uploaded files on a filesystem disk and submits their paths. It supports
-single or multiple files, image-only mode, size and count limits, and direct-to-storage signed uploads.
-Create one with `FileUpload::make()`.
+The file upload field submits the chosen files with the form — `handle()` receives `UploadedFile`
+instances for your code to store — or, in signed mode, uploads them straight to storage and submits
+temporary keys. It supports single or multiple files, image-only mode, size and count limits, and
+direct-to-storage signed uploads. Create one with `FileUpload::make()`.
 
 <ComponentExample
   php={`FileUpload::make('avatar', 'Avatar')

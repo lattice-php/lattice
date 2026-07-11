@@ -101,16 +101,17 @@ A callout only renders where the `Callouts` layout slot is placed. Add `Callouts
 layout's `schema()`, typically between the header bar and `Outlet::make()`:
 
 ```php
+use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Layouts\Components\Callouts;
 use Lattice\Lattice\Layouts\Components\Outlet;
 
-public function schema(): array
+public function schema(PageSchema $schema, Request $request): PageSchema
 {
-    return [
+    return $schema->schema([
         $this->headerBar(),
         Callouts::make(),
         Outlet::make(),
-    ];
+    ]);
 }
 ```
 

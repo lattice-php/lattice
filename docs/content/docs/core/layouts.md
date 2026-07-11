@@ -127,4 +127,3 @@ Lattice::layouts([AppLayout::class]);
 The shell is built from the same components as a page, plus a set made for navigation chrome —
 `Sidebar`, `Topbar`, `Menu`, `MenuItem`, `Dropdown`, and `Breadcrumbs`. Those are covered in
 [Navigation](/core/navigation/).
-</content>

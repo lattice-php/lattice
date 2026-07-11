@@ -7,7 +7,7 @@ import Info from "@components/Info.astro";
 
 Backing a table with an Eloquent model is common enough that Lattice ships a source for it. Extend
 `EloquentTableDefinition` and implement `builder()` instead of `source()` — Lattice wires up an
-`EloquentTableSource` from your builder, columns, and pagination mode. It is the same
+`EloquentTableSource` from your builder, columns, dedicated filters, and pagination mode. It is the same
 [`TableSource`](/tables/data-sources/) contract underneath, with the query-building done for you.
 
 ```php

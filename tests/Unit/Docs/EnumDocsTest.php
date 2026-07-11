@@ -7,7 +7,7 @@ use Lattice\Lattice\Ui\Enums\Icon;
  * The enums reference page renders its case lists from this generated file
  * instead of a hand-maintained table, so the documented cases can never drift
  * from the real enums. `Icon` is excluded: its cases are the full icon catalog,
- * which the Icons page lists on its own.
+ * generated from the bundled SVGs rather than documented case by case.
  *
  * @return array<class-string, array{name: string, namespace: string, cases: list<array{name: string, value: string|int|null}>}>
  */

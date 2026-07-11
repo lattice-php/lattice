@@ -9,7 +9,8 @@ import ComponentExample from "@components/ComponentExample.astro";
 sortable and filters as a [number](/tables/filtering/).
 
 <ComponentExample
-  php={`NumberColumn::make('views')->label('Views')->compact()->sortable();
+  php={`TextColumn::make('label')->label('Metric');
+NumberColumn::make('views')->label('Views')->compact()->sortable();
 NumberColumn::make('conversion')->label('Conversion')
     ->unit(NumberFormatUnit::Percent)
     ->decimals(1);`}
@@ -19,8 +20,8 @@ NumberColumn::make('conversion')->label('Conversion')
 - `->decimals($min, $max?)` fixes the fraction digits — `->decimals(2)` for exactly two, or
   `->decimals(0, 2)` for a min–max range.
 - `->unit(NumberFormatUnit::…)` adds a locale-correct unit suffix — `Percent`, `Kilogram`, `Byte`, and
-  the rest of the [`NumberFormatUnit`](/advanced/enums/) cases. A percent value is scaled by the
-  formatter, so store `0.128` to render `12.8%`.
+  the rest of the [`NumberFormatUnit`](/advanced/enums/) cases. The value is rendered as-is with the
+  unit appended — no scaling — so store `12.8` to render `12.8%`.
 - `->compact()` renders large numbers compactly (`1.2K`, `3.4M`).
 
 ```php

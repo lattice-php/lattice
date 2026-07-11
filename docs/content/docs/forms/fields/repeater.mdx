@@ -137,7 +137,7 @@ Repeater::make('items', 'Line items')
 
 ## Validation
 
-Each child field's rules apply to every row through the `items.*.field` wildcard, so a child marked
+Each child field's rules are registered per row — `items.{index}.field` — so a child marked
 `->required()` is required in each row and an error points at the offending row. The array-level
 `minItems`/`maxItems` rules validate the number of rows independently of the per-row rules. See
 [Validation](/forms/validation/) for how field rules are resolved.
@@ -163,7 +163,6 @@ Repeater::make('items', 'Line items')
 
 These are follow-ups, not part of the first release:
 
-- Nested repeaters (a repeater inside a repeater row).
 - Relationship auto-save (persisting rows straight to a related model).
 
 ## Common options

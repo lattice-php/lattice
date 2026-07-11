@@ -60,17 +60,17 @@
             ],
             "data": [
                 {
-                    "conversion": 0.128,
+                    "conversion": 12.8,
                     "label": "Landing page",
                     "views": 12400
                 },
                 {
-                    "conversion": 0.064,
+                    "conversion": 6.4,
                     "label": "Pricing",
                     "views": 3820
                 },
                 {
-                    "conversion": 0.011,
+                    "conversion": 1.1,
                     "label": "Blog",
                     "views": 1045000
                 }

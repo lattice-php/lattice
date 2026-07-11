@@ -51,14 +51,16 @@ omit them for a plain panel. Call `->tooltip('…')` to attach an ⓘ info popov
 content is trusted HTML and may include links.
 
 <ComponentExample
-  php={`Card::make('Team settings', 'Manage how your team appears.')->schema([
-    Stack::make()->gap(Gap::Small)->schema([
-        Heading::make('Members', 2),
-        Text::make('Three people have access to this team.'),
-        Badge::make('3 active'),
-    ]),
-    Button::make('Invite member'),
-]);`}
+  php={`Card::make('Team settings', 'Manage how your team appears.')
+    ->tooltip('These settings affect everyone on the team.')
+    ->schema([
+        Stack::make()->gap(Gap::Small)->schema([
+            Heading::make('Members', 2),
+            Text::make('Three people have access to this team.'),
+            Badge::make('3 active'),
+        ]),
+        Button::make('Invite member'),
+    ]);`}
   fixture="components.card"
 />
 

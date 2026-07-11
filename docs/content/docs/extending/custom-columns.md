@@ -170,7 +170,7 @@ createLatticeApp({
 });
 ```
 
-Passing `registry` is what makes your cell render. Without it, `createLatticeApp` falls back to the built-in registry, your custom type has no renderer, and the node renders a muted missing-component placeholder instead of your cell (Lattice also logs a `[lattice] No component registered…` warning in development to flag exactly this).
+Passing `registry` is what makes your cell render. Without it, `createLatticeApp` falls back to the built-in registry, your custom type has no cell, and the column silently falls back to the built-in text cell — the value renders as plain text instead of through your component.
 
 Custom fields, components, and columns all live in this same `registry.ts` — there is no second registry to merge.
 
