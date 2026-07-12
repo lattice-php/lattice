@@ -1,6 +1,6 @@
 ---
 title: Charts
-description: Data charts — line, bar, area, and pie series that serialize to Recharts.
+description: Data charts — line, bar, area, pie, and doughnut series that serialize to Recharts.
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
@@ -38,6 +38,7 @@ plots, with an optional display name and color:
 - **`->bar($dataKey, $name?, $color?, $stackId?)`** — a bar; stackable via `$stackId`.
 - **`->area($dataKey, $name?, $color?, $stackId?)`** — a filled area; stackable via `$stackId`.
 - **`->pie($dataKey, $nameKey?, $name?, $color?)`** — a pie; `$nameKey` names each slice.
+- **`->doughnut($dataKey, $nameKey?, $name?, $color?, $innerRadius = '60%')`** — a pie with a hole; `$innerRadius` sizes it.
 
 `->categoryKey($key)` names the row field used for the X axis. `->height($px)` sets the plot height
 (default `320`).
@@ -136,6 +137,25 @@ field to color its slice, or let the theme palette pick:
   or area series, only the cartesian series render and the pie is dropped. Put the pie in its own
   chart.
 </Warning>
+
+### Doughnut
+
+`->doughnut()` is a pie with a hole in the middle — same data shape, same `nameKey` and coloring. It
+takes an optional `$innerRadius` (default `'60%'`) that sets the size of the hole:
+
+<ComponentExample
+  php={`Chart::make('Revenue by channel', 'channel-mix-doughnut-chart')
+    ->description('Share of total revenue')
+    ->data([
+        ['channel' => 'Direct', 'amount' => 42000, 'color' => '#2563eb'],
+        ['channel' => 'Partner', 'amount' => 27000, 'color' => '#16a34a'],
+        ['channel' => 'Marketplace', 'amount' => 19000, 'color' => '#f59e0b'],
+        ['channel' => 'Retail', 'amount' => 12000, 'color' => '#dc2626'],
+    ])
+    ->doughnut('amount', nameKey: 'channel')
+    ->height(260);`}
+  fixture="charts.doughnut"
+/>
 
 ## Colors and theming
 

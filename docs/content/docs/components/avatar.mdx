@@ -1,0 +1,41 @@
+---
+title: Avatar
+description: A circular user image with initials and icon fallbacks.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+
+`Avatar::make($src?)` renders a circular avatar. Pass an image URL to show a photo; when no image is
+available it falls back to the person's initials, and with no name at all it shows a neutral user icon.
+
+<ComponentExample
+  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+    Avatar::make('https://i.pravatar.cc/96?img=13')->name('Ada Lovelace'),
+    Avatar::make()->name('Grace Hopper'),
+    Avatar::make()->name('Katherine Johnson')->size(Size::Lg),
+    Avatar::make(),
+]);`}
+  fixture="components.avatar"
+/>
+
+## Source, name, and fallbacks
+
+- `->src($url)` sets the image. When present, the image renders and its `alt` is the name.
+- `->name($name)` provides the accessible label and the initials fallback — the first letter of the
+  first two words, uppercased (`Grace Hopper` → `GH`).
+- With neither a source nor a name, the avatar shows a neutral user glyph.
+
+<Info>
+  The name is used for both the `alt` text and the initials, so set it even when you pass an image —
+  it keeps the avatar accessible and gives it something to fall back to if the image fails.
+</Info>
+
+## Size
+
+`->size(Size $size)` scales the avatar. It defaults to `Size::Md` and accepts any
+[`Size`](/advanced/enums/) from `Xs` through `Xl4`.
+
+```php
+Avatar::make()->name('Ada Lovelace')->size(Size::Xl);
+```

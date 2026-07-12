@@ -1,6 +1,6 @@
 [
     {
-        "key": "channel-mix-chart",
+        "key": "channel-mix-doughnut-chart",
         "props": {
             "categoryFormat": null,
             "categoryKey": null,
@@ -34,7 +34,7 @@
                 {
                     "color": null,
                     "dataKey": "amount",
-                    "innerRadius": "0%",
+                    "innerRadius": "60%",
                     "name": "amount",
                     "nameKey": "channel",
                     "stackId": null,

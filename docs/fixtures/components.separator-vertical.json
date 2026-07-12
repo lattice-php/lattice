@@ -1,0 +1,58 @@
+[
+    {
+        "props": {
+            "align": null,
+            "direction": "row",
+            "float": null,
+            "gap": "sm",
+            "height": null,
+            "justify": null,
+            "width": null
+        },
+        "schema": [
+            {
+                "props": {
+                    "align": null,
+                    "color": null,
+                    "copyable": false,
+                    "size": "md",
+                    "text": "Draft"
+                },
+                "type": "text"
+            },
+            {
+                "props": {
+                    "orientation": "vertical"
+                },
+                "type": "separator"
+            },
+            {
+                "props": {
+                    "align": null,
+                    "color": null,
+                    "copyable": false,
+                    "size": "md",
+                    "text": "Published"
+                },
+                "type": "text"
+            },
+            {
+                "props": {
+                    "orientation": "vertical"
+                },
+                "type": "separator"
+            },
+            {
+                "props": {
+                    "align": null,
+                    "color": null,
+                    "copyable": false,
+                    "size": "md",
+                    "text": "Archived"
+                },
+                "type": "text"
+            }
+        ],
+        "type": "stack"
+    }
+]

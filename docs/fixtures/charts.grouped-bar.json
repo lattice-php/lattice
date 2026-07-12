@@ -34,6 +34,7 @@
                 {
                     "color": null,
                     "dataKey": "online",
+                    "innerRadius": "0%",
                     "name": "Online",
                     "nameKey": null,
                     "stackId": null,
@@ -42,6 +43,7 @@
                 {
                     "color": null,
                     "dataKey": "store",
+                    "innerRadius": "0%",
                     "name": "In-store",
                     "nameKey": null,
                     "stackId": null,

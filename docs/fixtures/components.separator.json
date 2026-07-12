@@ -1,0 +1,58 @@
+[
+    {
+        "props": {
+            "align": null,
+            "direction": null,
+            "float": null,
+            "gap": "sm",
+            "height": null,
+            "justify": null,
+            "width": null
+        },
+        "schema": [
+            {
+                "props": {
+                    "align": null,
+                    "color": null,
+                    "copyable": false,
+                    "size": "md",
+                    "text": "Profile"
+                },
+                "type": "text"
+            },
+            {
+                "props": {
+                    "orientation": "horizontal"
+                },
+                "type": "separator"
+            },
+            {
+                "props": {
+                    "align": null,
+                    "color": null,
+                    "copyable": false,
+                    "size": "md",
+                    "text": "Billing"
+                },
+                "type": "text"
+            },
+            {
+                "props": {
+                    "orientation": "horizontal"
+                },
+                "type": "separator"
+            },
+            {
+                "props": {
+                    "align": null,
+                    "color": null,
+                    "copyable": false,
+                    "size": "md",
+                    "text": "Security"
+                },
+                "type": "text"
+            }
+        ],
+        "type": "stack"
+    }
+]

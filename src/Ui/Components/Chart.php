@@ -151,6 +151,11 @@ class Chart extends Component
         return $this->addSeries(ChartSeries::pie($dataKey, $nameKey, $name, $color));
     }
 
+    public function doughnut(string $dataKey, ?string $nameKey = null, ?string $name = null, ?string $color = null, string $innerRadius = '60%'): static
+    {
+        return $this->addSeries(ChartSeries::doughnut($dataKey, $nameKey, $name, $color, $innerRadius));
+    }
+
     /**
      * @param  array<int, ChartSeries>  $series
      */

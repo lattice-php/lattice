@@ -1,0 +1,48 @@
+[
+    {
+        "props": {
+            "align": null,
+            "direction": "row",
+            "float": null,
+            "gap": "sm",
+            "height": null,
+            "justify": null,
+            "width": null
+        },
+        "schema": [
+            {
+                "props": {
+                    "name": "Ada Lovelace",
+                    "size": "md",
+                    "src": "https://i.pravatar.cc/96?img=13"
+                },
+                "type": "avatar"
+            },
+            {
+                "props": {
+                    "name": "Grace Hopper",
+                    "size": "md",
+                    "src": null
+                },
+                "type": "avatar"
+            },
+            {
+                "props": {
+                    "name": "Katherine Johnson",
+                    "size": "lg",
+                    "src": null
+                },
+                "type": "avatar"
+            },
+            {
+                "props": {
+                    "name": null,
+                    "size": "md",
+                    "src": null
+                },
+                "type": "avatar"
+            }
+        ],
+        "type": "stack"
+    }
+]

@@ -48,6 +48,7 @@ vi.mock("recharts", async () => {
       h(
         "div",
         {
+          "data-inner-radius": String(props.innerRadius),
           "data-key": String(props.dataKey),
           "data-name-key": props.nameKey === undefined ? undefined : String(props.nameKey),
           "data-test": "series-pie",
@@ -138,6 +139,7 @@ describe("Chart component", () => {
             name: "Revenue",
             nameKey: null,
             stackId: null,
+            innerRadius: "0%",
             type: "line",
           },
           {
@@ -146,6 +148,7 @@ describe("Chart component", () => {
             name: "Orders",
             nameKey: null,
             stackId: "volume",
+            innerRadius: "0%",
             type: "bar",
           },
           {
@@ -154,6 +157,7 @@ describe("Chart component", () => {
             name: "Forecast",
             nameKey: null,
             stackId: null,
+            innerRadius: "0%",
             type: "area",
           },
         ],
@@ -203,9 +207,10 @@ describe("Chart component", () => {
           {
             color: null,
             dataKey: "amount",
-            name: null,
+            name: "Series",
             nameKey: "channel",
             stackId: null,
+            innerRadius: "0%",
             type: "pie",
           },
         ],
@@ -219,6 +224,45 @@ describe("Chart component", () => {
     expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
     expect(screen.getByTestId("series-pie")).toHaveAttribute("data-key", "amount");
     expect(screen.getByTestId("series-pie")).toHaveAttribute("data-name-key", "channel");
+    expect(screen.getByTestId("series-pie")).toHaveAttribute("data-inner-radius", "0%");
+    expect(screen.getAllByTestId("cell")).toHaveLength(2);
+  });
+
+  it("renders a doughnut as a pie with a non-zero inner radius", () => {
+    renderChart({
+      type: "chart",
+      props: {
+        categoryFormat: null,
+        categoryKey: null,
+        data: [
+          { amount: 4200, channel: "Direct" },
+          { amount: 2600, channel: "Partner" },
+        ],
+        description: null,
+        valueFormat: null,
+        grid: true,
+        height: 320,
+        legend: true,
+        series: [
+          {
+            color: null,
+            dataKey: "amount",
+            name: "Series",
+            nameKey: "channel",
+            stackId: null,
+            innerRadius: "60%",
+            type: "pie",
+          },
+        ],
+        title: "Revenue by channel",
+        tooltip: true,
+        xAxis: true,
+        yAxis: true,
+      },
+    });
+
+    expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
+    expect(screen.getByTestId("series-pie")).toHaveAttribute("data-inner-radius", "60%");
     expect(screen.getAllByTestId("cell")).toHaveLength(2);
   });
 
@@ -241,9 +285,10 @@ describe("Chart component", () => {
           {
             color: "#2563eb",
             dataKey: "amount",
-            name: null,
+            name: "Series",
             nameKey: "channel",
             stackId: null,
+            innerRadius: "0%",
             type: "pie",
           },
         ],
@@ -279,6 +324,7 @@ describe("Chart component", () => {
             name: "Forecast",
             nameKey: null,
             stackId: null,
+            innerRadius: "0%",
             type: "area",
           },
         ],
@@ -311,6 +357,7 @@ describe("Chart component", () => {
             name: "Orders",
             nameKey: null,
             stackId: null,
+            innerRadius: "0%",
             type: "bar",
           },
         ],
@@ -363,9 +410,10 @@ describe("Chart component", () => {
           {
             color: null,
             dataKey: "amount",
-            name: null,
+            name: "Series",
             nameKey: "month",
             stackId: null,
+            innerRadius: "0%",
             type: "pie",
           },
           {
@@ -374,6 +422,7 @@ describe("Chart component", () => {
             name: "Revenue",
             nameKey: null,
             stackId: null,
+            innerRadius: "0%",
             type: "line",
           },
         ],
@@ -418,9 +467,10 @@ describe("Chart component", () => {
           {
             color: null,
             dataKey: "revenue",
-            name: null,
+            name: "Series",
             nameKey: null,
             stackId: null,
+            innerRadius: "0%",
             type: "line",
           },
         ],
@@ -457,6 +507,7 @@ describe("Chart component", () => {
                 name: "Revenue",
                 nameKey: null,
                 stackId: null,
+                innerRadius: "0%",
                 type: "line",
               },
             ],
