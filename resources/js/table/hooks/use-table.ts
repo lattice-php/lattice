@@ -14,7 +14,7 @@ import type {
   FilterClause,
   TableColumn,
   TableNode,
-  TableResponse,
+  TableResult,
   TableSort,
   TableState,
 } from "@lattice-php/lattice/table/types";
@@ -48,7 +48,7 @@ export function useTable(node: TableNode) {
       setProcessing(true);
 
       try {
-        const result = await apiJson<TableResponse>(buildEndpoint(endpoint, nextState), {
+        const result = await apiJson<TableResult>(buildEndpoint(endpoint, nextState), {
           ref: componentRef,
         });
         const resultState = getState(result.state);

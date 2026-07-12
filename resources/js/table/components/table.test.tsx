@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type {
   TableNode,
   TablePagination,
-  TableResponse,
+  TableResult,
   TableState,
 } from "@lattice-php/lattice/table/types";
 import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
@@ -66,7 +66,9 @@ function tableState(overrides: Partial<TableState> = {}): Partial<TableState> {
   };
 }
 
-function tableResponse(overrides: TableResponse = {}): Response {
+type TableResultOverrides = Partial<Omit<TableResult, "state">> & { state?: Partial<TableState> };
+
+function tableResponse(overrides: TableResultOverrides = {}): Response {
   return Response.json({
     data: [],
     pagination: {},
@@ -75,7 +77,7 @@ function tableResponse(overrides: TableResponse = {}): Response {
   });
 }
 
-function tableFetch(...responses: TableResponse[]) {
+function tableFetch(...responses: TableResultOverrides[]) {
   let calls = 0;
   const fetch = vi.fn<typeof globalThis.fetch>(async () => {
     const response = responses[Math.min(calls, responses.length - 1)] ?? {};

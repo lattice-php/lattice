@@ -82,7 +82,7 @@ it('signs an upload for a file field inside nested repeater rows', function (): 
         ]],
     ]));
 
-    expect($result)->toHaveKeys(['key', 'url', 'headers', 'method']);
+    expect((array) $result)->toHaveKeys(['key', 'url', 'headers', 'method']);
 });
 
 it('returns 422 when the field does not use signed uploads', function (): void {

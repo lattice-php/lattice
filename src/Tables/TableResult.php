@@ -7,19 +7,30 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
-use JsonSerializable;
+use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 
-final readonly class TableResult implements JsonSerializable
+/**
+ * The table query endpoint payload and the value table sources return: the rows for
+ * the current page, the pagination summary, and the query state the client echoes
+ * back. Built through the static factories and immutable withers below; its public
+ * shape is the wire contract.
+ */
+#[TypeScript]
+final readonly class TableResult
 {
+    public TableQuery $state;
+
     /**
      * @param  array<int, array<string, mixed>>  $data
      */
     private function __construct(
-        private array $data,
-        private ?TablePagination $pagination = null,
-        private ?TableQuery $query = null,
-    ) {}
+        public array $data,
+        public ?TablePagination $pagination = null,
+        ?TableQuery $state = null,
+    ) {
+        $this->state = $state ?? TableQuery::empty();
+    }
 
     /**
      * @param  array<int, array<string, mixed>>  $data
@@ -93,7 +104,7 @@ final readonly class TableResult implements JsonSerializable
 
     public function pagination(TablePagination $pagination): self
     {
-        return new self($this->data, $pagination, $this->query);
+        return new self($this->data, $pagination, $this->state);
     }
 
     public function forQuery(TableQuery $query): self
@@ -112,20 +123,8 @@ final readonly class TableResult implements JsonSerializable
         return new self(
             array_map($callback, $this->data, array_keys($this->data)),
             $this->pagination,
-            $this->query,
+            $this->state,
         );
-    }
-
-    /**
-     * @return array{data: array<int, array<string, mixed>>, pagination: TablePagination|null, state: TableQuery}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'data' => $this->data,
-            'pagination' => $this->pagination,
-            'state' => $this->query ?? TableQuery::empty(),
-        ];
     }
 
     /**

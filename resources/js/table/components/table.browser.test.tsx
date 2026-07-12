@@ -1,7 +1,7 @@
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { TableNode, TableResponse, TableState } from "@lattice-php/lattice/table/types";
+import type { TableNode, TableResult, TableState } from "@lattice-php/lattice/table/types";
 import type { TableColumn } from "@lattice-php/lattice/table/types";
 import TableComponent from "./table";
 
@@ -42,7 +42,9 @@ function tableState(overrides: Partial<TableState> = {}): Partial<TableState> {
   };
 }
 
-function tableResponse(overrides: TableResponse = {}): Response {
+type TableResultOverrides = Partial<Omit<TableResult, "state">> & { state?: Partial<TableState> };
+
+function tableResponse(overrides: TableResultOverrides = {}): Response {
   return Response.json({
     data: [],
     pagination: {},
@@ -51,7 +53,7 @@ function tableResponse(overrides: TableResponse = {}): Response {
   });
 }
 
-function tableFetch(...responses: TableResponse[]) {
+function tableFetch(...responses: TableResultOverrides[]) {
   let calls = 0;
   const fetch = vi.fn<typeof globalThis.fetch>(async () => {
     const response = responses[Math.min(calls, responses.length - 1)] ?? {};

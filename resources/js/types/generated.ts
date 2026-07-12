@@ -750,6 +750,11 @@ export type NotificationItem = {
   readonly createdAt: string | null;
   readonly actions: Node[];
 };
+export type NotificationList = {
+  readonly notifications: NotificationItem[];
+  readonly unreadCount: number;
+  readonly hasMore: boolean;
+};
 export type Notifications = {
   channel: string;
   endpoint: string;
@@ -1029,6 +1034,12 @@ export type Sidebar = {
   collapsible: boolean;
   rememberState: boolean;
 };
+export type SignedUpload = {
+  readonly key: string;
+  readonly url: string;
+  readonly headers: Record<string, unknown>;
+  readonly method: string;
+};
 export type Size = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
 export type SortDirection = "asc" | "desc";
 export type Stack = {
@@ -1090,6 +1101,11 @@ export type TableQuery = {
   readonly perPage: number;
   readonly tableFilters: Record<string, Record<string, unknown>>;
   readonly tableFilterIndicators: FilterIndicator[];
+};
+export type TableResult = {
+  readonly state: TableQuery;
+  readonly data: Record<string, unknown>[];
+  readonly pagination: TablePagination | null;
 };
 export type TableSort = {
   readonly key: string;
@@ -1259,6 +1275,9 @@ export type Translatable = {
   payload: Record<string, string>;
   replacements: Record<string, string | number | boolean>;
   key: string;
+};
+export type UnreadCount = {
+  readonly unreadCount: number;
 };
 export type Variant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "auto" | "sm" | "md" | "lg" | "fill";

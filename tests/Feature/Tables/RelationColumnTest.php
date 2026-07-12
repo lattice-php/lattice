@@ -23,7 +23,7 @@ function salesOrderRows(array $params = []): array
         'workbench.sales-orders',
     );
 
-    return $table->source()->query($query)->jsonSerialize()['data'];
+    return $table->source()->query($query)->data;
 }
 
 test('a relation column eager-loads its value onto a flat key without N+1', function (): void {

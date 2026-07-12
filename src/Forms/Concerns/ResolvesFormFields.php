@@ -9,6 +9,7 @@ use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Components\Select;
+use Lattice\Lattice\Forms\Components\SignedUpload;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormSchemaWalker;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,10 +50,7 @@ trait ResolvesFormFields
         return ['options' => $field->resolveSearch($query, $instance->scope, $request)];
     }
 
-    /**
-     * @return array{key: string, url: string, headers: array<string, mixed>, method: string}
-     */
-    public function signUpload(Request $request): array
+    public function signUpload(Request $request): SignedUpload
     {
         $name = $request->string('_upload')->toString();
         $data = FormData::fromRequest($request);

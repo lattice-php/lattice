@@ -66,13 +66,13 @@ it('signs, uploads, and validates a key against rustfs end-to-end', function ():
     $signed = FileUpload::make('document')->disk('s3')->signedUpload()
         ->signUpload(Request::create('/', 'POST', ['filename' => 'invoice.pdf']));
 
-    expect($signed['method'])->toBe('PUT')
-        ->and($signed['key'])->toStartWith('tmp/');
+    expect($signed->method)->toBe('PUT')
+        ->and($signed->key)->toStartWith('tmp/');
 
-    $put = Http::withHeaders($signed['headers'])->send('PUT', $signed['url'], ['body' => 'hello rustfs']);
+    $put = Http::withHeaders($signed->headers)->send('PUT', $signed->url, ['body' => 'hello rustfs']);
 
     expect($put->successful())->toBeTrue()
-        ->and(Storage::disk('s3')->exists($signed['key']))->toBeTrue();
+        ->and(Storage::disk('s3')->exists($signed->key))->toBeTrue();
 
     Storage::disk('s3')->put('uploads/secret.pdf', 'data');
     $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: null, disk: 's3', signed: true, tempPrefix: 'tmp');

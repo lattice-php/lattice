@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Tables\Components;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\TableDefinition;
@@ -169,7 +170,7 @@ class Table extends Component
 
     public function result(TableResult $result, TableQuery $query): static
     {
-        $this->result = $result->forQuery($query)->jsonSerialize();
+        $this->result = Wire::toArray($result->forQuery($query));
 
         return $this;
     }

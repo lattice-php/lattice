@@ -11,10 +11,11 @@ import type {
   Table,
   TablePagination,
   TableQuery,
+  TableResult,
   TableSort,
 } from "@lattice-php/lattice/types/generated";
 
-export type { ColumnFilter, ColumnType, FilterIndicator, TablePagination, TableSort };
+export type { ColumnFilter, ColumnType, FilterIndicator, TablePagination, TableResult, TableSort };
 
 export type ActionNode = NodeUnionOf<ActionNodeType>;
 
@@ -31,12 +32,6 @@ export type FilterClause = Omit<WireFilterClause, "operator"> & {
 
 export type TableState = Omit<TableQuery, "filters"> & {
   filters: FilterClause[];
-};
-
-export type TableResponse = {
-  data?: TableRow[];
-  pagination?: TablePagination;
-  state?: Partial<TableState>;
 };
 
 /** The generated wire props plus the rows/pagination/state the server hydrates on for the first render. */

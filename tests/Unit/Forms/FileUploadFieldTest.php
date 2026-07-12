@@ -168,11 +168,11 @@ it('signs an upload returning key url headers and method', function (): void {
     $field = FileUpload::make('document')->disk('s3')->signedUpload();
     $result = $field->signUpload(Request::create('/', 'POST', ['filename' => 'invoice.pdf']));
 
-    expect($result['method'])->toBe('PUT')
-        ->and($result['headers'])->toBe(['x-test' => '1'])
-        ->and($result['key'])->toStartWith('tmp/')
-        ->and($result['key'])->toEndWith('.pdf')
-        ->and($result['url'])->toBe("https://s3.test/{$result['key']}");
+    expect($result->method)->toBe('PUT')
+        ->and($result->headers)->toBe(['x-test' => '1'])
+        ->and($result->key)->toStartWith('tmp/')
+        ->and($result->key)->toEndWith('.pdf')
+        ->and($result->url)->toBe("https://s3.test/{$result->key}");
 });
 
 it('finalizes signed uploads on the configured disk', function (): void {
