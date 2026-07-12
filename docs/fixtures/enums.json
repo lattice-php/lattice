@@ -839,6 +839,20 @@
             }
         ]
     },
+    "Lattice\\Lattice\\Ui\\Enums\\StackDirection": {
+        "name": "StackDirection",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Row",
+                "value": "row"
+            },
+            {
+                "name": "Column",
+                "value": "column"
+            }
+        ]
+    },
     "Lattice\\Lattice\\Ui\\Enums\\TabsAlignment": {
         "name": "TabsAlignment",
         "namespace": "Lattice\\Lattice\\Ui\\Enums",

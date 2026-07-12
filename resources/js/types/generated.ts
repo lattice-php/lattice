@@ -340,8 +340,8 @@ export type DataList = {
 };
 export type DateFormat = {
   kind: string;
-  dateStyle: string | null;
-  timeStyle: string | null;
+  dateStyle: DateTimeStyle | null;
+  timeStyle: DateTimeStyle | null;
   month: string | null;
   year: string | null;
 };
@@ -1046,13 +1046,13 @@ export type SignedUpload = {
   readonly key: string;
   readonly url: string;
   readonly headers: Record<string, unknown>;
-  readonly method: string;
+  readonly method: HttpMethod;
 };
 export type Size = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
 export type SortDirection = "asc" | "desc";
 export type Stack = {
   align: Align | null;
-  direction: string | null;
+  direction: StackDirection | null;
   float: Side | null;
   gap: Gap | null;
   height: Height | null;
@@ -1068,6 +1068,7 @@ export type StackColumn = {
   toggleable: boolean;
   width: ColumnWidth;
 };
+export type StackDirection = "row" | "column";
 export type Tab = {
   confirm: {
     required: boolean;
@@ -1147,8 +1148,8 @@ export type TextColumn = {
   } | null;
   copyable: boolean;
   date: {
-    dateStyle: string | null;
-    timeStyle: string | null;
+    dateStyle: DateTimeStyle | null;
+    timeStyle: DateTimeStyle | null;
   } | null;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;

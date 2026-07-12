@@ -169,7 +169,7 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
 
     await new Promise<void>((resolve) => {
       const request = new XMLHttpRequest();
-      request.open(sign.method, sign.url, true);
+      request.open(sign.method.toUpperCase(), sign.url, true);
       Object.entries(sign.headers).forEach(([key, value]) =>
         request.setRequestHeader(key, String(value)),
       );

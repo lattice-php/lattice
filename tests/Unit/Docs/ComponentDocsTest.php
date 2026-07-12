@@ -21,6 +21,7 @@ use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Orientation;
 use Lattice\Lattice\Ui\Enums\Size;
+use Lattice\Lattice\Ui\Enums\StackDirection;
 
 it('serializes a card tooltip', function (): void {
     $node = wire(Card::make('Plan')->tooltip('Billed monthly.'));
@@ -75,7 +76,7 @@ describe('docs fixtures', function (): void {
 
     it('matches the tooltip example fixture', function (): void {
         assertFixtureMatches('components.tooltip', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
-            Stack::make()->direction('row')->gap(Gap::Small)->schema([
+            Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
                 Badge::make('Plan: Pro'),
                 Tooltip::make()->content('Includes unlimited seats and priority support.'),
             ]),
@@ -84,7 +85,7 @@ describe('docs fixtures', function (): void {
 
     it('matches the button variants example fixture', function (): void {
         assertFixtureMatches('components.buttons', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
-            Stack::make()->direction('row')->gap(Gap::Small)->schema([
+            Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
                 Button::make('Default')->variant(ButtonVariant::Default),
                 Button::make('Secondary')->variant(ButtonVariant::Secondary),
                 Button::make('Success')->variant(ButtonVariant::Success),
@@ -98,7 +99,7 @@ describe('docs fixtures', function (): void {
 
     it('matches the stack example fixture', function (): void {
         assertFixtureMatches('components.stack', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
-            Stack::make()->direction('row')->gap(Gap::Small)->schema([
+            Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
                 Button::make('Save')->variant(ButtonVariant::Default),
                 Button::make('Cancel')->variant(ButtonVariant::Ghost),
             ]),
@@ -136,7 +137,7 @@ describe('docs fixtures', function (): void {
 
     it('matches the avatar example fixture', function (): void {
         assertFixtureMatches('components.avatar', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
-            Stack::make()->direction('row')->gap(Gap::Small)->schema([
+            Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
                 Avatar::make('https://i.pravatar.cc/96?img=13')->name('Ada Lovelace'),
                 Avatar::make()->name('Grace Hopper'),
                 Avatar::make()->name('Katherine Johnson')->size(Size::Lg),
@@ -159,7 +160,7 @@ describe('docs fixtures', function (): void {
 
     it('matches the vertical separator example fixture', function (): void {
         assertFixtureMatches('components.separator-vertical', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
-            Stack::make()->direction('row')->gap(Gap::Small)->schema([
+            Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
                 Text::make('Draft'),
                 Separator::make()->orientation(Orientation::Vertical),
                 Text::make('Published'),

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\FormData;
@@ -134,7 +135,7 @@ class FileUpload extends Field
             key: $key,
             url: $signed['url'],
             headers: $signed['headers'],
-            method: 'PUT',
+            method: HttpMethod::Put,
         );
     }
 

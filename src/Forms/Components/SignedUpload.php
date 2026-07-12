@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Forms\Components;
 
 use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Lattice\Core\Enums\HttpMethod;
 
 #[TypeScript]
 final readonly class SignedUpload
@@ -15,6 +16,6 @@ final readonly class SignedUpload
         public string $key,
         public string $url,
         public array $headers,
-        public string $method,
+        public HttpMethod $method,
     ) {}
 }

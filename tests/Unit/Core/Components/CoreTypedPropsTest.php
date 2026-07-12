@@ -15,12 +15,13 @@ use Lattice\Lattice\Ui\Enums\Icon as IconName;
 use Lattice\Lattice\Ui\Enums\Justify;
 use Lattice\Lattice\Ui\Enums\Orientation;
 use Lattice\Lattice\Ui\Enums\Size;
+use Lattice\Lattice\Ui\Enums\StackDirection;
 use Lattice\Lattice\Ui\Enums\TabsAlignment;
 use Lattice\Lattice\Ui\Enums\Width;
 
 it('stack serializes enums direction and key wire-identically', function (): void {
     expect(wire(Stack::make('layout')
-        ->direction('row')
+        ->direction(StackDirection::Row)
         ->gap(Gap::Large)
         ->align(Align::Center)
         ->width(Width::Small)

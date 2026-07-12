@@ -32,6 +32,7 @@ use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Icon;
 use Lattice\Lattice\Ui\Enums\Placement;
 use Lattice\Lattice\Ui\Enums\Side;
+use Lattice\Lattice\Ui\Enums\StackDirection;
 use Lattice\Lattice\Ui\Enums\Width;
 use Workbench\App\Actions\LogoutAction;
 use Workbench\App\Actions\SetLocaleAction;
@@ -58,7 +59,7 @@ class AppLayout extends LayoutDefinition
     {
         return $schema->schema([
             Stack::make('app-shell')
-                ->direction('row')
+                ->direction(StackDirection::Row)
                 ->gap(Gap::None)
                 ->schema([
                     $this->sidebar(),
@@ -86,7 +87,7 @@ class AppLayout extends LayoutDefinition
     {
         return Sidebar::make('app-sidebar')->collapsible()->items([
             Stack::make('sidebar-brand')
-                ->direction('row')
+                ->direction(StackDirection::Row)
                 ->align(Align::Center)
                 ->gap(Gap::Small)
                 ->schema([
@@ -127,7 +128,7 @@ class AppLayout extends LayoutDefinition
                 ->variant(ButtonVariant::Ghost)
                 ->effects(Effects::toggleSidebar('app-sidebar')),
             Stack::make('topbar-end')
-                ->direction('row')
+                ->direction(StackDirection::Row)
                 ->align(Align::Center)
                 ->gap(Gap::Small)
                 ->width(Width::Auto)
@@ -163,7 +164,7 @@ class AppLayout extends LayoutDefinition
             ->placement(Placement::Bottom)
             ->trigger([
                 Stack::make('user-menu-trigger')
-                    ->direction('row')
+                    ->direction(StackDirection::Row)
                     ->align(Align::Center)
                     ->gap(Gap::Small)
                     ->width(Width::Auto)

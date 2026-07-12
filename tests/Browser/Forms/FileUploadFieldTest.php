@@ -1,9 +1,11 @@
 <?php
 declare(strict_types=1);
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Rules\FileUploadItem;
 
@@ -66,7 +68,7 @@ it('signs, uploads, and validates a key against rustfs end-to-end', function ():
     $signed = FileUpload::make('document')->disk('s3')->signedUpload()
         ->signUpload(Request::create('/', 'POST', ['filename' => 'invoice.pdf']));
 
-    expect($signed->method)->toBe('PUT')
+    expect($signed->method)->toBe(HttpMethod::Put)
         ->and($signed->key)->toStartWith('tmp/');
 
     $put = Http::withHeaders($signed->headers)->send('PUT', $signed->url, ['body' => 'hello rustfs']);

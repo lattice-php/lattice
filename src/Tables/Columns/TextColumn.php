@@ -21,7 +21,7 @@ class TextColumn extends Column implements Filterable, Sortable
     use IsSortable;
 
     /**
-     * @var array{dateStyle: string|null, timeStyle: string|null}|null
+     * @var array{dateStyle: DateTimeStyle|null, timeStyle: DateTimeStyle|null}|null
      */
     public ?array $date = null;
 
@@ -39,21 +39,21 @@ class TextColumn extends Column implements Filterable, Sortable
 
     public function date(DateTimeStyle $style = DateTimeStyle::Medium): static
     {
-        $this->date = ['dateStyle' => $style->value, 'timeStyle' => null];
+        $this->date = ['dateStyle' => $style, 'timeStyle' => null];
 
         return $this;
     }
 
     public function time(DateTimeStyle $style = DateTimeStyle::Medium): static
     {
-        $this->date = ['dateStyle' => null, 'timeStyle' => $style->value];
+        $this->date = ['dateStyle' => null, 'timeStyle' => $style];
 
         return $this;
     }
 
     public function dateTime(DateTimeStyle $style = DateTimeStyle::Medium): static
     {
-        $this->date = ['dateStyle' => $style->value, 'timeStyle' => $style->value];
+        $this->date = ['dateStyle' => $style, 'timeStyle' => $style];
 
         return $this;
     }

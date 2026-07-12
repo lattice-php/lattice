@@ -25,6 +25,7 @@ use Lattice\Lattice\Tables\TableResult;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\Side;
+use Lattice\Lattice\Ui\Enums\StackDirection;
 use PHPUnit\Framework\AssertionFailedError;
 
 use function Pest\Laravel\withoutVite;
@@ -166,7 +167,7 @@ it('asserts against a rendered Inertia page', function (): void {
 
 it('addresses layout components by key and asserts their props', function (): void {
     $topbar = Topbar::make('app-topbar')->sticky()->items([
-        Stack::make('end')->direction('row')->float(Side::End)->schema([
+        Stack::make('end')->direction(StackDirection::Row)->float(Side::End)->schema([
             Menu::make('nav')->items([
                 MenuItem::make('Settings', 'settings')->icon('settings')->href('/settings'),
             ]),
