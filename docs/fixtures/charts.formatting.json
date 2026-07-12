@@ -36,6 +36,7 @@
                 {
                     "color": null,
                     "dataKey": "revenue",
+                    "innerRadius": "0%",
                     "name": "Revenue",
                     "nameKey": null,
                     "stackId": null,

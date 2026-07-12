@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Support\Wire;
+use Lattice\Lattice\Ui\Components\Avatar;
 use Lattice\Lattice\Ui\Components\Badge;
 use Lattice\Lattice\Ui\Components\Button;
 use Lattice\Lattice\Ui\Components\Card;
@@ -10,6 +11,7 @@ use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\RawBlock;
 use Lattice\Lattice\Ui\Components\Section;
 use Lattice\Lattice\Ui\Components\SegmentedControl;
+use Lattice\Lattice\Ui\Components\Separator;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
@@ -17,6 +19,8 @@ use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Components\Tooltip;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Lattice\Ui\Enums\Size;
 
 it('serializes a card tooltip', function (): void {
     $node = wire(Card::make('Plan')->tooltip('Billed monthly.'));
@@ -127,6 +131,41 @@ describe('docs fixtures', function (): void {
                 ])
                 ->value('light')
                 ->emits('appearance-changed'),
+        ]))));
+    });
+
+    it('matches the avatar example fixture', function (): void {
+        assertFixtureMatches('components.avatar', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Stack::make()->direction('row')->gap(Gap::Small)->schema([
+                Avatar::make('https://i.pravatar.cc/96?img=13')->name('Ada Lovelace'),
+                Avatar::make()->name('Grace Hopper'),
+                Avatar::make()->name('Katherine Johnson')->size(Size::Lg),
+                Avatar::make(),
+            ]),
+        ]))));
+    });
+
+    it('matches the separator example fixture', function (): void {
+        assertFixtureMatches('components.separator', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Stack::make()->gap(Gap::Small)->schema([
+                Text::make('Profile'),
+                Separator::make(),
+                Text::make('Billing'),
+                Separator::make(),
+                Text::make('Security'),
+            ]),
+        ]))));
+    });
+
+    it('matches the vertical separator example fixture', function (): void {
+        assertFixtureMatches('components.separator-vertical', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Stack::make()->direction('row')->gap(Gap::Small)->schema([
+                Text::make('Draft'),
+                Separator::make()->orientation(Orientation::Vertical),
+                Text::make('Published'),
+                Separator::make()->orientation(Orientation::Vertical),
+                Text::make('Archived'),
+            ]),
         ]))));
     });
 

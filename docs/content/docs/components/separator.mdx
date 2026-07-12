@@ -1,0 +1,36 @@
+---
+title: Separator
+description: A thin rule that divides content horizontally or vertically.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+`Separator::make()` renders a thin hairline rule that visually divides content. It defaults to a
+full-width **horizontal** line — drop it between stacked items to group them:
+
+<ComponentExample
+  php={`Stack::make()->gap(Gap::Small)->schema([
+    Text::make('Profile'),
+    Separator::make(),
+    Text::make('Billing'),
+    Separator::make(),
+    Text::make('Security'),
+]);`}
+  fixture="components.separator"
+/>
+
+## Orientation
+
+`->orientation(Orientation $orientation)` switches between `Horizontal` (the default) and `Vertical`.
+A vertical separator fills the height of its row — use it between inline items:
+
+<ComponentExample
+  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+    Text::make('Draft'),
+    Separator::make()->orientation(Orientation::Vertical),
+    Text::make('Published'),
+    Separator::make()->orientation(Orientation::Vertical),
+    Text::make('Archived'),
+]);`}
+  fixture="components.separator-vertical"
+/>

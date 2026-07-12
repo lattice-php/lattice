@@ -188,7 +188,7 @@ function CartesianChart({ props }: { props: ChartProps }) {
                 dataKey={item.dataKey}
                 fill={color}
                 fillOpacity={0.16}
-                name={item.name ?? undefined}
+                name={item.name}
                 stackId={item.stackId ?? undefined}
                 stroke={color}
                 type="monotone"
@@ -202,7 +202,7 @@ function CartesianChart({ props }: { props: ChartProps }) {
                 key={key}
                 dataKey={item.dataKey}
                 fill={color}
-                name={item.name ?? undefined}
+                name={item.name}
                 radius={[4, 4, 0, 0]}
                 stackId={item.stackId ?? undefined}
               />
@@ -214,7 +214,7 @@ function CartesianChart({ props }: { props: ChartProps }) {
               key={key}
               dataKey={item.dataKey}
               dot={false}
-              name={item.name ?? undefined}
+              name={item.name}
               stroke={color}
               strokeWidth={2}
               type="monotone"
@@ -245,8 +245,9 @@ function PieChartView({ props, series }: { props: ChartProps; series: ChartSerie
         <Pie
           data={props.data}
           dataKey={series.dataKey}
-          name={series.name ?? undefined}
+          name={series.name}
           nameKey={series.nameKey ?? undefined}
+          innerRadius={series.innerRadius}
           outerRadius="68%"
         >
           {props.data.map((datum, index) => (

@@ -25,6 +25,11 @@ export type Affix = {
   readonly text: string | null;
 };
 export type Align = "center" | "left" | "start" | "stretch";
+export type Avatar = {
+  name: string | null;
+  size: Size;
+  src: string | null;
+};
 export type Badge = {
   label: string;
 };
@@ -152,10 +157,11 @@ export type Chart = {
 export type ChartSeries = {
   readonly type: ChartSeriesType;
   readonly dataKey: string;
-  readonly name: string | null;
+  readonly name: string;
   readonly color: string | null;
   readonly stackId: string | null;
   readonly nameKey: string | null;
+  readonly innerRadius: string;
 };
 export type ChartSeriesType = "area" | "bar" | "line" | "pie";
 export type ChatBox = {
@@ -275,6 +281,7 @@ export type ComponentPropsMap = {
   action: Action;
   "action.bulk": BulkAction;
   "action.group": ActionGroup;
+  avatar: Avatar;
   badge: Badge;
   breadcrumbs: Breadcrumbs;
   button: Button;
@@ -319,6 +326,7 @@ export type ComponentPropsMap = {
   "remote.data-list": DataList;
   section: Section;
   "segmented-control": SegmentedControl;
+  separator: Separator;
   sidebar: Sidebar;
   stack: Stack;
   tab: Tab;
@@ -700,6 +708,7 @@ export type NodeType =
   | "action"
   | "action.bulk"
   | "action.group"
+  | "avatar"
   | "badge"
   | "breadcrumbs"
   | "button"
@@ -744,6 +753,7 @@ export type NodeType =
   | "remote.data-list"
   | "section"
   | "segmented-control"
+  | "separator"
   | "sidebar"
   | "stack"
   | "tab"
@@ -1067,6 +1077,9 @@ export type SelectFilter = {
   options: Option[];
   placeholder: string | null;
   searchable: boolean;
+};
+export type Separator = {
+  orientation: Orientation;
 };
 export type Side = "start" | "end";
 export type Sidebar = {

@@ -39,6 +39,7 @@
                 {
                     "color": null,
                     "dataKey": "forecast",
+                    "innerRadius": "0%",
                     "name": "Forecast",
                     "nameKey": null,
                     "stackId": null,
@@ -47,6 +48,7 @@
                 {
                     "color": null,
                     "dataKey": "revenue",
+                    "innerRadius": "0%",
                     "name": "Revenue",
                     "nameKey": null,
                     "stackId": null,

@@ -9,6 +9,7 @@ import type { LayoutComponentType } from "@lattice-php/lattice/layout/plugin";
 import type { NotificationsComponentType } from "@lattice-php/lattice/notifications/plugin";
 import type { RemoteComponentType } from "@lattice-php/lattice/remote/plugin";
 import type { TableComponentType } from "@lattice-php/lattice/table/plugin";
+import AvatarComponent from "./avatar";
 import BadgeComponent from "./badge";
 import ButtonComponent from "./button";
 import CardComponent from "./card";
@@ -24,6 +25,7 @@ import ModalComponent from "./modal";
 import RawBlockComponent from "./raw-block";
 import SectionComponent from "./section";
 import SegmentedControlComponent from "./segmented-control";
+import SeparatorComponent from "./separator";
 import StackComponent from "./stack";
 import TabComponent, { TabsComponent } from "./tabs";
 import TextComponent from "./text";
@@ -42,6 +44,7 @@ type UiComponentType = Exclude<NodeType, NonUiComponentType>;
 
 export const uiComponents = createPlugin({
   components: {
+    avatar: eagerComponent(AvatarComponent),
     badge: eagerComponent(BadgeComponent),
     button: eagerComponent(ButtonComponent),
     card: eagerComponent(CardComponent),
@@ -57,6 +60,7 @@ export const uiComponents = createPlugin({
     "raw-block": eagerComponent(RawBlockComponent),
     section: eagerComponent(SectionComponent),
     "segmented-control": eagerComponent(SegmentedControlComponent),
+    separator: eagerComponent(SeparatorComponent),
     stack: eagerComponent(StackComponent),
     tab: eagerComponent(TabComponent),
     tabs: eagerComponent(TabsComponent),

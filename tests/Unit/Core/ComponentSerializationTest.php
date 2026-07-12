@@ -16,6 +16,7 @@ use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\LatticeRegistry;
 use Lattice\Lattice\Support\Affix;
 use Lattice\Lattice\Tables\Components\Table;
+use Lattice\Lattice\Ui\Components\Avatar;
 use Lattice\Lattice\Ui\Components\Badge;
 use Lattice\Lattice\Ui\Components\Button;
 use Lattice\Lattice\Ui\Components\Card;
@@ -25,6 +26,7 @@ use Lattice\Lattice\Ui\Components\Grid;
 use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Link;
 use Lattice\Lattice\Ui\Components\Modal;
+use Lattice\Lattice\Ui\Components\Separator;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
@@ -33,6 +35,8 @@ use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\FloatingPlacement;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Icon;
+use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Lattice\Ui\Enums\Size;
 
 test('lattice component factories stay open for extension', function (): void {
     $badgeClass = (new class extends Badge {})::class;
@@ -40,6 +44,44 @@ test('lattice component factories stay open for extension', function (): void {
 
     expect($badge::class)->toBe($badgeClass)
         ->and(new ReflectionClass(Badge::class)->isFinal())->toBeFalse();
+});
+
+test('avatars serialize their source, name, and size with sensible defaults', function (): void {
+    expect(wire(Avatar::make()))
+        ->toMatchArray([
+            'type' => 'avatar',
+            'props' => [
+                'src' => null,
+                'name' => null,
+                'size' => 'md',
+            ],
+        ]);
+
+    expect(wire(Avatar::make('https://example.test/a.png')
+        ->name('Ada Lovelace')
+        ->size(Size::Lg)))
+        ->toMatchArray([
+            'type' => 'avatar',
+            'props' => [
+                'src' => 'https://example.test/a.png',
+                'name' => 'Ada Lovelace',
+                'size' => 'lg',
+            ],
+        ]);
+});
+
+test('separators default to horizontal and serialize their orientation', function (): void {
+    expect(wire(Separator::make()))
+        ->toMatchArray([
+            'type' => 'separator',
+            'props' => ['orientation' => 'horizontal'],
+        ]);
+
+    expect(wire(Separator::make()->orientation(Orientation::Vertical)))
+        ->toMatchArray([
+            'type' => 'separator',
+            'props' => ['orientation' => 'vertical'],
+        ]);
 });
 
 test('lattice facade resolves the registry', function (): void {
@@ -103,10 +145,12 @@ test('only container components expose a schema', function (): void {
     ];
 
     $leafComponents = [
+        Avatar::make(),
         Badge::make('Badge'),
         Button::make('Button'),
         Heading::make('Heading'),
         Link::make('Link'),
+        Separator::make(),
         Text::make('Text'),
         ActionComponent::make('action'),
         Table::make('users'),

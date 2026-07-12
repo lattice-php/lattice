@@ -79,7 +79,29 @@ it('serializes a pie chart series', function (): void {
         ->and($node['props']['series'][0])->toMatchArray([
             'type' => 'pie',
             'dataKey' => 'amount',
+            'name' => 'amount',
             'nameKey' => 'channel',
+            'innerRadius' => '0%',
+        ]);
+});
+
+it('serializes a doughnut series as a pie with an inner radius', function (): void {
+    $node = wire(
+        Chart::make('Revenue by channel')
+            ->data([
+                ['channel' => 'Direct', 'amount' => 4200],
+                ['channel' => 'Partner', 'amount' => 2600],
+            ])
+            ->doughnut('amount', nameKey: 'channel'),
+    );
+
+    expect($node['props']['series'])->toHaveCount(1)
+        ->and($node['props']['series'][0])->toMatchArray([
+            'type' => 'pie',
+            'dataKey' => 'amount',
+            'name' => 'amount',
+            'nameKey' => 'channel',
+            'innerRadius' => '60%',
         ]);
 });
 
@@ -109,10 +131,11 @@ it('serializes explicit axis toggles and configured series arrays', function ():
         ->and($node['props']['series'][0])->toMatchArray([
             'type' => 'line',
             'dataKey' => 'revenue',
-            'name' => null,
+            'name' => 'revenue',
             'color' => null,
             'stackId' => null,
             'nameKey' => null,
+            'innerRadius' => '0%',
         ]);
 });
 
@@ -227,6 +250,21 @@ describe('docs fixtures', function (): void {
                     ['channel' => 'Retail', 'amount' => 12_000, 'color' => '#dc2626'],
                 ])
                 ->pie('amount', nameKey: 'channel')
+                ->height(260),
+        ]))));
+    });
+
+    it('matches the doughnut chart example fixture', function (): void {
+        assertFixtureMatches('charts.doughnut', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Chart::make('Revenue by channel', 'channel-mix-doughnut-chart')
+                ->description('Share of total revenue')
+                ->data([
+                    ['channel' => 'Direct', 'amount' => 42_000, 'color' => '#2563eb'],
+                    ['channel' => 'Partner', 'amount' => 27_000, 'color' => '#16a34a'],
+                    ['channel' => 'Marketplace', 'amount' => 19_000, 'color' => '#f59e0b'],
+                    ['channel' => 'Retail', 'amount' => 12_000, 'color' => '#dc2626'],
+                ])
+                ->doughnut('amount', nameKey: 'channel')
                 ->height(260),
         ]))));
     });
