@@ -52,11 +52,24 @@ export type PropsOf<TType extends string> = ResolveProps<
   CommonNodeProps;
 
 /**
+ * The loose wire node an unknown/untyped `type` resolves to: the shape every node
+ * shares, with a loose `props` bag. The single source of the wire-node shape;
+ * generated `WireNode` aliases `Node` (i.e. `Node<string>`), which is this.
+ */
+type LooseNode = {
+  id?: string;
+  key?: string;
+  type: string;
+  props?: NodeProps;
+  schema?: Schema;
+};
+
+/**
  * Built-in `props` is required, not optional — the wire serializes the full prop
- * object, so reads need no optional chaining. Unknown types fall back to `WireNode`.
+ * object, so reads need no optional chaining. Unknown types fall back to `LooseNode`.
  */
 export type NodeOfType<TType extends string = string> = string extends TType
-  ? WireNode
+  ? LooseNode
   : {
       id?: string;
       key?: string;

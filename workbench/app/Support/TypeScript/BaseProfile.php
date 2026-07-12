@@ -8,11 +8,11 @@ use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
+use Lattice\Lattice\Support\TypeScript\NodeModuleWriter;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
-use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 
 /**
  * The package's own dev profile: regenerates the built-in TypeScript module
@@ -81,7 +81,7 @@ final class BaseProfile implements TypeScriptProfile
                     self::NODE_TYPE_ALIASES,
                 ),
             ],
-            new FlatModuleWriter('generated.ts'),
+            new NodeModuleWriter('generated.ts'),
             $outputDirectory,
             new OxfmtFormatter,
         );

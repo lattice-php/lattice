@@ -8,7 +8,6 @@ use Spatie\TypeScriptTransformer\References\CustomReference;
 use Spatie\TypeScriptTransformer\Transformed\Transformed;
 use Spatie\TypeScriptTransformer\TransformedProviders\TransformedProvider;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptAlias;
-use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptArray;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptGeneric;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIdentifier;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIntersection;
@@ -23,8 +22,9 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptUnion;
 /**
  * Emits the type-level glue that ties wire `type` strings to their generated props:
  * a per-domain `…NodeType` string union (the client builds its typed node union
- * from it with `NodeUnionOf`), the loose `WireNode`/`Effect` wire shapes, the
- * `NodeType` union, and the augmentable `…PropsMap` maps ({@see AugmentableMap}).
+ * from it with `NodeUnionOf`), the `WireNode` alias of core's `Node` and the loose
+ * `Effect` shape, the `NodeType` union, and the augmentable `…PropsMap` maps
+ * ({@see AugmentableMap}).
  *
  * @phpstan-type ComponentSpec array{type: string, container?: bool, interactive?: bool}
  */
@@ -75,7 +75,7 @@ final readonly class NodesProvider implements TransformedProvider
             $transformed[] = $this->alias($nodeName.'Type', $this->typeUnion($types));
         }
 
-        $transformed[] = $this->alias('WireNode', $this->wireNode());
+        $transformed[] = $this->alias('WireNode', new TypeScriptIdentifier('Node'));
         $transformed[] = $this->alias('NodeType', $this->typeUnion(array_keys($this->componentClassesByType())));
         $transformed[] = $this->alias('ComponentPropsMap', $this->propsMap($this->componentClassesByType()));
 
@@ -151,25 +151,6 @@ final readonly class NodesProvider implements TransformedProvider
         ));
     }
 
-    /**
-     * The loose shape `Component`-typed fields serialize as; core/types' typed
-     * `Node<TType>` resolves props per type through `ComponentPropsMap`.
-     */
-    private function wireNode(): TypeScriptObject
-    {
-        return new TypeScriptObject([
-            new TypeScriptProperty('id', new TypeScriptString, isOptional: true),
-            new TypeScriptProperty('key', new TypeScriptString, isOptional: true),
-            new TypeScriptProperty('type', new TypeScriptString),
-            new TypeScriptProperty('props', $this->looseProps(), isOptional: true),
-            new TypeScriptProperty(
-                'schema',
-                new TypeScriptArray([new TypeScriptReference($this->selfReference('WireNode'))]),
-                isOptional: true,
-            ),
-        ]);
-    }
-
     private function looseProps(): TypeScriptGeneric
     {
         return new TypeScriptGeneric(
@@ -201,11 +182,6 @@ final readonly class NodesProvider implements TransformedProvider
         }
 
         return $map;
-    }
-
-    public static function wireNodeReference(): CustomReference
-    {
-        return new CustomReference(self::REFERENCE_KEY, 'WireNode');
     }
 
     private function selfReference(string $name): CustomReference

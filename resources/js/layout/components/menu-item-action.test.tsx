@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionInteractionProvider } from "@lattice-php/lattice/action";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node, PropsOf } from "@lattice-php/lattice/core/types";
 import MenuItemComponent from "./menu-item";
 
 const http = vi.hoisted(() => ({
@@ -20,13 +20,13 @@ vi.mock("@inertiajs/react", () => ({
   Link: ({ children, ...rest }: { children: React.ReactNode }) => <a {...rest}>{children}</a>,
 }));
 
-function actionMenuItem(props: Record<string, unknown> = {}): Node<"menu-item"> {
+function actionMenuItem(props: Partial<PropsOf<"action">> = {}): Node<"menu-item"> {
   return fakeNode({
     id: "log-out",
     type: "menu-item",
     props: {
       label: "Log out",
-      action: {
+      action: fakeNode({
         id: "workbench.logout",
         type: "action",
         props: {
@@ -36,7 +36,7 @@ function actionMenuItem(props: Record<string, unknown> = {}): Node<"menu-item"> 
           ref: "sealed-reference",
           ...props,
         },
-      },
+      }),
     },
   });
 }
@@ -121,7 +121,7 @@ describe("menu item action trigger", () => {
 
   it("opens the modal form when the action carries one", () => {
     const node = actionMenuItem({
-      form: { id: "reason-form", type: "form", props: {}, schema: [] },
+      form: fakeNode({ id: "reason-form", type: "form", props: {}, schema: [] }),
     });
 
     renderActionMenuItem(node);

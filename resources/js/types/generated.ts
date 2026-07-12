@@ -1,7 +1,8 @@
+import type { Node } from "@lattice-php/lattice/core/types";
 export type Action = {
   confirmation: Confirmation | null;
   endpoint: string | null;
-  form: WireNode | null;
+  form: Node<"form"> | null;
   icon: string | null;
   label: string | null;
   lazyForm: boolean;
@@ -84,7 +85,7 @@ export type Builder = {
 export type BulkAction = {
   confirmation: Confirmation | null;
   endpoint: string | null;
-  form: WireNode | null;
+  form: Node<"form"> | null;
   icon: string | null;
   label: string | null;
   lazyForm: boolean;
@@ -93,7 +94,7 @@ export type BulkAction = {
   variant: ButtonVariant | null;
 };
 export type Button = {
-  action: WireNode | null;
+  action: Node<"action"> | null;
   buttonType: ButtonType;
   effects: Effect[];
   href: string | null;
@@ -115,7 +116,7 @@ export type ButtonVariant =
 export type Callout = {
   title: string | null;
   dismissible: boolean;
-  action: WireNode | null;
+  action: Node | null;
   variant: Variant;
   message: string;
 };
@@ -164,7 +165,7 @@ export type ChatBox = {
 export type ChatMessage = {
   readonly id: string;
   readonly role: ChatRole;
-  readonly parts: WireNode[];
+  readonly parts: Node[];
 };
 export type ChatRole = "user" | "assistant" | "system";
 export type Checkbox = {
@@ -213,7 +214,7 @@ export type Collapsible = {
   collapsed: boolean;
   rememberState: boolean;
   tooltip: string | null;
-  trigger: WireNode[];
+  trigger: Node[];
 };
 export type Color = "default" | "muted" | "primary" | "success" | "info" | "warning" | "danger";
 export type ColumnAlign = "start" | "center" | "end";
@@ -390,7 +391,7 @@ export type DownloadEffect = {
 };
 export type Dropdown = {
   placement: Placement;
-  trigger: WireNode[];
+  trigger: Node[];
 };
 export type Effect = {
   type: string;
@@ -490,7 +491,7 @@ export type FloatingPanel = {
   label: string | null;
   offset: number;
   placement: FloatingPlacement;
-  trigger: WireNode[];
+  trigger: Node[];
 };
 export type FloatingPlacement = "bottom-end" | "bottom-start" | "top-end" | "top-start";
 export type Form = {
@@ -622,7 +623,7 @@ export type LabelAction = {
   readonly tabIndex: number | null;
 };
 export type Link = {
-  action: WireNode | null;
+  action: Node<"action"> | null;
   effects: Effect[];
   href: string | null;
   icon: string | null;
@@ -643,7 +644,7 @@ export type LocaleChangeEffect = {
 };
 export type Menu = Record<string, never>;
 export type MenuItem = {
-  action: WireNode | null;
+  action: Node<"action"> | null;
   effects: Effect[];
   href: string | null;
   icon: string | null;
@@ -737,7 +738,7 @@ export type NotificationItem = {
   readonly href: string | null;
   readonly isRead: boolean;
   readonly createdAt: string | null;
-  readonly actions: WireNode[];
+  readonly actions: Node[];
 };
 export type Notifications = {
   channel: string;
@@ -966,7 +967,7 @@ export type Section = {
   collapsed: boolean;
   collapsible: boolean;
   description: string | null;
-  headerActions: WireNode[];
+  headerActions: Node[];
   rememberState: boolean;
   title: string | null;
   tooltip: string | null;
@@ -1046,11 +1047,11 @@ export type Tab = {
 };
 export type Table = {
   actionsLabel: string;
-  bulkActions: WireNode[];
+  bulkActions: Node<"action">[];
   columns: Record<string, unknown>[];
   emptyLabel: string;
   endpoint: string | null;
-  filters: WireNode[];
+  filters: Node[];
   layout: string | null;
   lazy: boolean;
   ref: string | null;
@@ -1201,7 +1202,7 @@ export type ToastMessage = {
   duration: number | null;
   persistent: boolean;
   dismissible: boolean;
-  action: WireNode | null;
+  action: Node | null;
   variant: Variant;
   message: Translatable | string;
 };
@@ -1236,7 +1237,7 @@ export type ToolCallPart = {
 };
 export type Tooltip = {
   content: string | null;
-  trigger: WireNode[];
+  trigger: Node[];
 };
 export type Topbar = {
   sticky: boolean;
@@ -1248,10 +1249,4 @@ export type Translatable = {
 };
 export type Variant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "auto" | "sm" | "md" | "lg" | "fill";
-export type WireNode = {
-  id?: string;
-  key?: string;
-  type: string;
-  props?: Record<string, unknown>;
-  schema?: WireNode[];
-};
+export type WireNode = Node;

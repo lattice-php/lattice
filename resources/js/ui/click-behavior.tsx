@@ -53,11 +53,11 @@ export function ActionTrigger({
 export function useClickBehavior(props: {
   href?: string | null;
   method?: Method | null;
-  action?: Node | null;
+  action?: Node<"action"> | null;
   effects?: Effect[] | null;
 }): ClickBehavior {
   const dispatch = useEffectDispatcher();
-  const action = (props.action ?? null) as Node<"action"> | null;
+  const action = props.action ?? null;
   const effects = props.effects ?? [];
 
   if (action) {
