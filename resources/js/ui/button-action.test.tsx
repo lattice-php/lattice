@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionInteractionProvider } from "@lattice-php/lattice/action";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node, PropsOf } from "@lattice-php/lattice/core/types";
 import ButtonComponent from "./button";
 
 const http = vi.hoisted(() => ({
@@ -19,14 +19,14 @@ vi.mock("@inertiajs/react", () => ({
   Link: ({ children, ...rest }: { children: React.ReactNode }) => <a {...rest}>{children}</a>,
 }));
 
-function actionButton(props: Record<string, unknown> = {}): Node<"button"> {
+function actionButton(props: Partial<PropsOf<"action">> = {}): Node<"button"> {
   return fakeNode({
     id: "save",
     type: "button",
     props: {
       label: "Save",
       buttonType: "button",
-      action: {
+      action: fakeNode({
         id: "workbench.save",
         type: "action",
         props: {
@@ -36,7 +36,7 @@ function actionButton(props: Record<string, unknown> = {}): Node<"button"> {
           ref: "sealed-reference",
           ...props,
         },
-      },
+      }),
     },
   });
 }

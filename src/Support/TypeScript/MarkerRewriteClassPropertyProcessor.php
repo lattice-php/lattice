@@ -15,10 +15,10 @@ use Spatie\TypeScriptTransformer\Visitor\Visitor;
 use Spatie\TypeScriptTransformer\Visitor\VisitorOperation;
 
 /**
- * Rewrites any property whose type references the given marker class to a fixed
- * TypeScript node — e.g. the abstract Component base to the loose `WireNode`. Such
- * markers have no generated type of their own; the replacement is built per match
- * so nodes are never shared.
+ * Rewrites any property whose type references the given marker class to a
+ * TypeScript node derived from the matched class — e.g. a Component subclass to
+ * the augmentable `Node`/`Node<"type">`. Such markers have no generated type of
+ * their own; the replacement is built per match so nodes are never shared.
  */
 final readonly class MarkerRewriteClassPropertyProcessor implements ClassPropertyProcessor
 {
@@ -26,7 +26,7 @@ final readonly class MarkerRewriteClassPropertyProcessor implements ClassPropert
 
     /**
      * @param  class-string  $marker
-     * @param  Closure(): TypeScriptNode  $replacement
+     * @param  Closure(class-string): TypeScriptNode  $replacement  Receives the matched class-string.
      */
     public function __construct(string $marker, Closure $replacement)
     {
@@ -34,7 +34,7 @@ final readonly class MarkerRewriteClassPropertyProcessor implements ClassPropert
             $target = $reference->reference;
 
             if ($target instanceof ClassStringReference && is_a($target->classString, $marker, true)) {
-                return VisitorOperation::replace($replacement());
+                return VisitorOperation::replace($replacement($target->classString));
             }
 
             return VisitorOperation::keep();

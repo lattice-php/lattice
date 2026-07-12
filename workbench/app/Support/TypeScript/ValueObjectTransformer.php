@@ -6,11 +6,11 @@ namespace Workbench\App\Support\TypeScript;
 use Lattice\Lattice\Support\TypeScript\AllowsListedClasses;
 use Lattice\Lattice\Support\TypeScript\MarkerRewriteClassPropertyProcessor;
 use Lattice\Lattice\Support\TypeScript\MixedToUnknownClassPropertyProcessor;
+use Lattice\Lattice\Support\TypeScript\NodeTypeReference;
 use Lattice\Lattice\Ui\Components\Component;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
 use Spatie\TypeScriptTransformer\Transformers\ClassPropertyProcessors\ClassPropertyProcessor;
 use Spatie\TypeScriptTransformer\Transformers\ClassTransformer;
-use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptReference;
 
 /**
  * Emits TypeScript object types only for an explicit allow-list of value
@@ -44,10 +44,7 @@ final class ValueObjectTransformer extends ClassTransformer
         return [
             ...parent::classPropertyProcessors(),
             new MixedToUnknownClassPropertyProcessor,
-            new MarkerRewriteClassPropertyProcessor(
-                Component::class,
-                fn (): TypeScriptReference => new TypeScriptReference(NodesProvider::wireNodeReference()),
-            ),
+            new MarkerRewriteClassPropertyProcessor(Component::class, NodeTypeReference::for(...)),
         ];
     }
 }
