@@ -5,10 +5,6 @@ namespace Lattice\Lattice\Notifications;
 
 use Lattice\Lattice\Attributes\TypeScript;
 
-/**
- * The notifications-list endpoint payload: a page of items plus the unread total
- * and whether more pages remain.
- */
 #[TypeScript]
 final readonly class NotificationList
 {

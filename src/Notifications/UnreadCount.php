@@ -5,10 +5,6 @@ namespace Lattice\Lattice\Notifications;
 
 use Lattice\Lattice\Attributes\TypeScript;
 
-/**
- * The payload every notification mutation (read, dismiss, clear) returns: the
- * unread total after the change.
- */
 #[TypeScript]
 final readonly class UnreadCount
 {

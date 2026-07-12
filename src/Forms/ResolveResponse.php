@@ -6,10 +6,6 @@ namespace Lattice\Lattice\Forms;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Forms\Components\Field;
 
-/**
- * The form `_resolve` round-trip payload: the recomputed computed fields, their
- * resolved values, and prefilled values, each keyed by field path.
- */
 #[TypeScript]
 final readonly class ResolveResponse
 {
