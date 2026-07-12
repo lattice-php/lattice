@@ -12,6 +12,7 @@ use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\SignedUpload;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormSchemaWalker;
+use Lattice\Lattice\Forms\ResolveResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -64,10 +65,7 @@ trait ResolvesFormFields
         return $field->signUpload($request);
     }
 
-    /**
-     * @return array{fields: array<string, mixed>, values: array<string, mixed>, prefill: array<string, mixed>}
-     */
-    public function resolveFields(Request $request): array
+    public function resolveFields(Request $request): ResolveResponse
     {
         $data = FormData::fromRequest($request);
         $fields = [];
@@ -93,6 +91,6 @@ trait ResolvesFormFields
             }
         }
 
-        return ['fields' => $fields, 'values' => $values, 'prefill' => $prefill];
+        return new ResolveResponse($fields, $values, $prefill);
     }
 }

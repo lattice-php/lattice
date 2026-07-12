@@ -78,8 +78,8 @@ it('signs, uploads, and validates a key against rustfs end-to-end', function ():
     $rule = new FileUploadItem(image: false, acceptedTypes: null, maxSizeKb: null, disk: 's3', signed: true, tempPrefix: 'tmp');
     $fails = fn (mixed $value): bool => Validator::make(['document' => $value], ['document' => [$rule]])->fails();
 
-    expect($fails($signed['key']))->toBeFalse()
+    expect($fails($signed->key))->toBeFalse()
         ->and($fails('uploads/secret.pdf'))->toBeTrue();
 
-    Storage::disk('s3')->delete([$signed['key'], 'uploads/secret.pdf']);
+    Storage::disk('s3')->delete([$signed->key, 'uploads/secret.pdf']);
 })->group('rustfs');

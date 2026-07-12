@@ -560,6 +560,9 @@ export type Fragment = {
   ref: string | null;
   size: Size;
 };
+export type FragmentResponse = {
+  readonly schema: Node[];
+};
 export type Gap = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type Grid = {
   columns: number | null;
@@ -950,6 +953,11 @@ export type Repeater = {
 };
 export type ResetFormEffect = {
   readonly form: string | null;
+};
+export type ResolveResponse = {
+  readonly fields: Record<string, Node>;
+  readonly values: Record<string, unknown>;
+  readonly prefill: Record<string, unknown>;
 };
 export type RichEditor = {
   columnWidth: ColumnWidth;
