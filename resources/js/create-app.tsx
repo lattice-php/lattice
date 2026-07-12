@@ -109,15 +109,15 @@ export function createLatticeApp({
 
   setDefaultRegistry(activeRegistry);
 
+  const i18nEnabled = i18n !== false;
   const userVisitOptions = inertiaOptions.defaults?.visitOptions;
-  const defaults =
-    i18n === false
-      ? inertiaOptions.defaults
-      : {
-          ...inertiaOptions.defaults,
-          visitOptions: (href: string, options: VisitOptions): VisitOptions =>
-            withVisitHeaders(href, userVisitOptions?.(href, options) ?? options),
-        };
+  const defaults = i18nEnabled
+    ? {
+        ...inertiaOptions.defaults,
+        visitOptions: (href: string, options: VisitOptions): VisitOptions =>
+          withVisitHeaders(href, userVisitOptions?.(href, options) ?? options),
+      }
+    : inertiaOptions.defaults;
 
   const app = createInertiaApp({
     ...inertiaOptions,
@@ -131,7 +131,7 @@ export function createLatticeApp({
       if (!ssr) {
         // Loaded on demand so apps without the shared i18n prop never ship the
         // i18next backend; the disabled-config call still stores the timezone.
-        if (i18n !== false && i18nConfigFromPageProps(page.props) !== undefined) {
+        if (i18nEnabled && i18nConfigFromPageProps(page.props) !== undefined) {
           pending.push(
             import("./i18n/page-props").then((module) =>
               module.configureI18nFromPageProps(page.props, i18n ?? {}),
@@ -149,7 +149,7 @@ export function createLatticeApp({
       const inner = (
         <>
           {node}
-          {i18n === false ? null : <LocaleReload />}
+          {i18nEnabled ? <LocaleReload /> : null}
         </>
       );
 
