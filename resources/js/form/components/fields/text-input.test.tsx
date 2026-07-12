@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
+import { createFieldRenderer, fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
 import { TextInputComponent } from "./text-input";
 
 const renderField = createFieldRenderer(TextInputComponent);
@@ -13,7 +13,9 @@ describe("TextInputComponent conditions", () => {
         props: {
           name: "company",
           label: "Company",
-          conditions: { visible: [{ field: "type", operator: "eq", value: "business" }] },
+          conditions: fakeConditions({
+            visible: [{ field: "type", operator: "eq", value: "business" }],
+          }),
         },
       }),
       { type: "personal" },
@@ -29,7 +31,9 @@ describe("TextInputComponent conditions", () => {
         props: {
           name: "company",
           label: "Company",
-          conditions: { visible: [{ field: "type", operator: "eq", value: "business" }] },
+          conditions: fakeConditions({
+            visible: [{ field: "type", operator: "eq", value: "business" }],
+          }),
         },
       }),
       { type: "business" },

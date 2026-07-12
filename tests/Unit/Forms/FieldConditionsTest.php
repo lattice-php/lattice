@@ -16,6 +16,19 @@ it('serializes declarative conditions into props', function (): void {
     ]);
 });
 
+it('serializes every intent, using empty arrays for the unset ones', function (): void {
+    $props = wire(TextInput::make('company', 'Company')->requiredWhen('type', 'business'))['props'];
+
+    expect($props['conditions'])->toBe([
+        'visible' => [],
+        'required' => [
+            ['field' => 'type', 'operator' => 'eq', 'value' => 'business'],
+        ],
+        'readOnly' => [],
+        'disabled' => [],
+    ]);
+});
+
 it('supports the operator form and array in', function (): void {
     $props = wire(TextInput::make('x', 'X')
         ->dependsOn('age', 'gte', 18)

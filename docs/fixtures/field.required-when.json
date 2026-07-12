@@ -41,13 +41,16 @@
             "autoFocus": false,
             "columnWidth": "md",
             "conditions": {
+                "disabled": [],
+                "readOnly": [],
                 "required": [
                     {
                         "field": "country",
                         "operator": "eq",
                         "value": "DE"
                     }
-                ]
+                ],
+                "visible": []
             },
             "dependsOnAny": false,
             "dependsOnKeys": null,

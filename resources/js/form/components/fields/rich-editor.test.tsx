@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
 import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { RichEditorComponent } from "./rich-editor";
@@ -40,7 +40,9 @@ describe("RichEditorComponent", () => {
         props: {
           name: "body",
           label: "Body",
-          conditions: { visible: [{ field: "mode", operator: "eq", value: "edit" }] },
+          conditions: fakeConditions({
+            visible: [{ field: "mode", operator: "eq", value: "edit" }],
+          }),
         },
       }),
       { mode: "view" },

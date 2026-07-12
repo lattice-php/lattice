@@ -3,7 +3,7 @@ import { InfoTooltip } from "@lattice-php/lattice/ui/info-tooltip";
 import { TextLink } from "@lattice-php/lattice/ui/link";
 import { Label } from "@lattice-php/lattice/ui/label";
 import { useInTableCell } from "@lattice-php/lattice/form/hooks/row-layout-context";
-import type { FormLabelAction } from "@lattice-php/lattice/form/types";
+import type { LabelAction } from "@lattice-php/lattice/form/types";
 
 export function FormFieldFrame({
   children,
@@ -19,7 +19,7 @@ export function FormFieldFrame({
   error?: string;
   helperText?: string;
   label: string;
-  labelAction?: FormLabelAction;
+  labelAction?: LabelAction;
   name: string;
   required?: boolean;
   tooltip?: string;
@@ -51,7 +51,7 @@ export function FormFieldFrame({
         {labelAction && (
           <TextLink
             href={labelAction.href}
-            tabIndex={labelAction.tabIndex}
+            tabIndex={labelAction.tabIndex ?? undefined}
             className="ml-auto text-sm"
           >
             {labelAction.label}

@@ -37,6 +37,9 @@
             "autoFocus": false,
             "columnWidth": "md",
             "conditions": {
+                "disabled": [],
+                "readOnly": [],
+                "required": [],
                 "visible": [
                     {
                         "field": "type",

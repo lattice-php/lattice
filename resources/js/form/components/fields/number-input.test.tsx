@@ -1,6 +1,6 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
+import { createFieldRenderer, fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
 import { NumberInputComponent } from "./number-input";
 
 const renderField = createFieldRenderer(NumberInputComponent);
@@ -37,7 +37,9 @@ describe("NumberInputComponent", () => {
         props: {
           name: "qty",
           label: "Qty",
-          conditions: { visible: [{ field: "type", operator: "eq", value: "order" }] },
+          conditions: fakeConditions({
+            visible: [{ field: "type", operator: "eq", value: "order" }],
+          }),
         },
       }),
       { type: "quote" },

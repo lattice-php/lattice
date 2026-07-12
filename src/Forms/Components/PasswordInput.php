@@ -22,10 +22,7 @@ class PasswordInput extends Field
 
     public ?string $passwordRules = null;
 
-    /**
-     * @var array{href: string, label: string, tabIndex?: int}|null
-     */
-    public ?array $labelAction = null;
+    public ?LabelAction $labelAction = null;
 
     /**
      * @var array{label: string, name: string, placeholder: string}|null
@@ -34,11 +31,7 @@ class PasswordInput extends Field
 
     public function labelAction(string $label, string $href, ?int $tabIndex = null): static
     {
-        $this->labelAction = array_filter([
-            'href' => $href,
-            'label' => $label,
-            'tabIndex' => $tabIndex,
-        ], fn (mixed $value): bool => $value !== null);
+        $this->labelAction = new LabelAction($href, $label, $tabIndex);
 
         return $this;
     }

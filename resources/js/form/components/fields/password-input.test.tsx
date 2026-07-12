@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
+import { createFieldRenderer, fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
 import { FormValuesProvider, useFormValue } from "@lattice-php/lattice/form/hooks/values";
 import { PasswordInputComponent } from "./password-input";
 
@@ -18,7 +18,9 @@ describe("PasswordInputComponent conditions", () => {
         props: {
           name: "password",
           label: "Password",
-          conditions: { visible: [{ field: "mode", operator: "eq", value: "reset" }] },
+          conditions: fakeConditions({
+            visible: [{ field: "mode", operator: "eq", value: "reset" }],
+          }),
         },
       }),
       { mode: "login" },
@@ -34,7 +36,9 @@ describe("PasswordInputComponent conditions", () => {
         props: {
           name: "password",
           label: "Password",
-          conditions: { visible: [{ field: "mode", operator: "eq", value: "reset" }] },
+          conditions: fakeConditions({
+            visible: [{ field: "mode", operator: "eq", value: "reset" }],
+          }),
         },
       }),
       { mode: "reset" },
