@@ -475,7 +475,7 @@ export type FileUpload = {
 };
 export type FilterClause = {
   readonly field: string;
-  readonly operator: string;
+  readonly operator: Op;
   readonly value: string;
 };
 export type FilterControl =
@@ -644,11 +644,11 @@ export type Link = {
   suffix: Affix | null;
   tabIndex: number | null;
 };
-export type ListenerPayload = {
+export type Listen = {
   readonly channel: string;
   readonly visibility: ChannelVisibility;
-  readonly events: string[];
-  readonly effects: Effect[];
+  events: string[];
+  effects: Effect[];
 };
 export type LocaleChangeEffect = {
   readonly locale: string;
@@ -1111,7 +1111,7 @@ export type TableQuery = {
   readonly tableFilterIndicators: FilterIndicator[];
 };
 export type TableResult = {
-  readonly state: TableQuery;
+  readonly query: TableQuery;
   readonly data: Record<string, unknown>[];
   readonly pagination: TablePagination | null;
 };

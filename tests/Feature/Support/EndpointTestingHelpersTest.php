@@ -66,7 +66,7 @@ test('loadTable seals the ref and gets the table endpoint with query parameters'
     $this->loadTable(HelperDemoTable::class, ['per_page' => 10])
         ->assertOk()
         ->assertJsonPath('data.0.name', 'Ada')
-        ->assertJsonPath('state.perPage', 10);
+        ->assertJsonPath('query.perPage', 10);
 });
 
 test('loadFragment seals the ref and gets the lazy fragment endpoint', function (): void {

@@ -90,7 +90,7 @@ function stubFetch() {
     Response.json({
       data: [{ name: "Alpha" }],
       pagination: {},
-      state: {
+      query: {
         filters: [],
         page: 1,
         perPage: 25,
@@ -131,7 +131,7 @@ function node(tableFilters: Record<string, Record<string, unknown>>): TableNode 
       filters,
       data: [{ name: "Alpha" }],
       endpoint: "/lattice/tables/workbench.products",
-      state: {
+      query: {
         filters: [],
         page: 1,
         perPage: 25,

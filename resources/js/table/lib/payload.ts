@@ -5,7 +5,7 @@ import type {
   TableColumn,
   TablePagination,
   TableRow,
-  TableState,
+  TableQuery,
 } from "@lattice-php/lattice/table/types";
 
 function getFilters(value: unknown): FilterClause[] {
@@ -71,7 +71,7 @@ export function getPagination(value: unknown): TablePagination {
   return value as TablePagination;
 }
 
-export function getState(value: unknown): TableState {
+export function getQuery(value: unknown): TableQuery {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return {
       filters: [],
@@ -83,15 +83,15 @@ export function getState(value: unknown): TableState {
     };
   }
 
-  const state = value as Partial<TableState>;
+  const query = value as Partial<TableQuery>;
 
   return {
-    filters: getFilters(state.filters),
-    sorts: Array.isArray(state.sorts) ? state.sorts : [],
-    page: typeof state.page === "number" ? state.page : 1,
-    perPage: typeof state.perPage === "number" ? state.perPage : 25,
-    tableFilters: getTableFilters(state.tableFilters),
-    tableFilterIndicators: getTableFilterIndicators(state.tableFilterIndicators),
+    filters: getFilters(query.filters),
+    sorts: Array.isArray(query.sorts) ? query.sorts : [],
+    page: typeof query.page === "number" ? query.page : 1,
+    perPage: typeof query.perPage === "number" ? query.perPage : 25,
+    tableFilters: getTableFilters(query.tableFilters),
+    tableFilterIndicators: getTableFilterIndicators(query.tableFilterIndicators),
   };
 }
 

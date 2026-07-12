@@ -54,7 +54,7 @@ const node: TableNode = {
     filters: [filter],
     data: [],
     endpoint: "/lattice/tables/workbench.products",
-    state: {
+    query: {
       filters: [],
       page: 1,
       perPage: 25,
@@ -79,7 +79,7 @@ function stubFetch() {
     return Response.json({
       data: [],
       pagination: {},
-      state: {
+      query: {
         filters: [],
         page: 1,
         perPage: 25,

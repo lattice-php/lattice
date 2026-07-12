@@ -159,9 +159,7 @@
                 "to": 3,
                 "total": 3
             },
-            "resizableColumns": false,
-            "resizeIndicator": false,
-            "state": {
+            "query": {
                 "filters": [],
                 "page": 1,
                 "perPage": 25,
@@ -169,6 +167,8 @@
                 "tableFilterIndicators": [],
                 "tableFilters": {}
             },
+            "resizableColumns": false,
+            "resizeIndicator": false,
             "striped": false
         },
         "type": "table"

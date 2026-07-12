@@ -3,7 +3,7 @@ import { cn } from "@lattice-php/lattice/lib/utils";
 import type { HTMLAttributes } from "react";
 import { alignJustify, alignText } from "@lattice-php/lattice/table/lib/align";
 import { getColumnAriaSort, getColumnSort } from "@lattice-php/lattice/table/lib/query";
-import type { TableColumn, TableSort, TableState } from "@lattice-php/lattice/table/types";
+import type { TableColumn, TableSort, TableQuery } from "@lattice-php/lattice/table/types";
 
 function SortIndicator({ sort }: { sort: TableSort | undefined }) {
   if (sort?.direction === "asc") {
@@ -28,15 +28,15 @@ export function ColumnHeader({
   processing,
   resizeHandleProps,
   sort,
-  state,
+  query,
 }: {
   column: TableColumn;
   processing: boolean;
   resizeHandleProps?: HTMLAttributes<HTMLDivElement>;
   sort: (column: TableColumn) => void;
-  state: TableState;
+  query: TableQuery;
 }) {
-  const columnSort = getColumnSort(state, column);
+  const columnSort = getColumnSort(query, column);
   const { align, label, sortable } = column.props;
 
   return (

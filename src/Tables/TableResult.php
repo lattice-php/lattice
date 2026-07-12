@@ -10,16 +10,10 @@ use Illuminate\Support\Collection;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 
-/**
- * The table query endpoint payload and the value table sources return: the rows for
- * the current page, the pagination summary, and the query state the client echoes
- * back. Built through the static factories and immutable withers below; its public
- * shape is the wire contract.
- */
 #[TypeScript]
 final readonly class TableResult
 {
-    public TableQuery $state;
+    public TableQuery $query;
 
     /**
      * @param  array<int, array<string, mixed>>  $data
@@ -27,9 +21,9 @@ final readonly class TableResult
     private function __construct(
         public array $data,
         public ?TablePagination $pagination = null,
-        ?TableQuery $state = null,
+        ?TableQuery $query = null,
     ) {
-        $this->state = $state ?? TableQuery::empty();
+        $this->query = $query ?? TableQuery::empty();
     }
 
     /**
@@ -104,7 +98,7 @@ final readonly class TableResult
 
     public function pagination(TablePagination $pagination): self
     {
-        return new self($this->data, $pagination, $this->state);
+        return new self($this->data, $pagination, $this->query);
     }
 
     public function forQuery(TableQuery $query): self
@@ -123,7 +117,7 @@ final readonly class TableResult
         return new self(
             array_map($callback, $this->data, array_keys($this->data)),
             $this->pagination,
-            $this->state,
+            $this->query,
         );
     }
 

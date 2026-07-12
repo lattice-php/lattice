@@ -45,8 +45,8 @@ test('eloquent tables can use infinite pagination metadata', function (): void {
         ->assertJsonPath('pagination.currentPage', 1)
         ->assertJsonPath('pagination.hasMore', true)
         ->assertJsonPath('pagination.nextPage', 2)
-        ->assertJsonPath('state.page', 1)
-        ->assertJsonPath('state.perPage', 2);
+        ->assertJsonPath('query.page', 1)
+        ->assertJsonPath('query.perPage', 2);
 
     latticeGet('/lattice/tables/workbench.infinite-users?per_page=2&page=2', $ref)
         ->assertOk()

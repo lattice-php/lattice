@@ -72,9 +72,7 @@
                 "to": 2,
                 "total": 2
             },
-            "resizableColumns": false,
-            "resizeIndicator": false,
-            "state": {
+            "query": {
                 "filters": [],
                 "page": 1,
                 "perPage": 25,
@@ -82,6 +80,8 @@
                 "tableFilterIndicators": [],
                 "tableFilters": {}
             },
+            "resizableColumns": false,
+            "resizeIndicator": false,
             "striped": false
         },
         "type": "table"

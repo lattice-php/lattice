@@ -1,7 +1,7 @@
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { TableNode, TableResult, TableState } from "@lattice-php/lattice/table/types";
+import type { TableNode, TableResult, TableQuery } from "@lattice-php/lattice/table/types";
 import type { TableColumn } from "@lattice-php/lattice/table/types";
 import TableComponent from "./table";
 
@@ -31,7 +31,7 @@ function col(partial: {
   } as TableColumn;
 }
 
-function tableState(overrides: Partial<TableState> = {}): Partial<TableState> {
+function tableQuery(overrides: Partial<TableQuery> = {}): Partial<TableQuery> {
   return {
     filters: [],
     page: 1,
@@ -42,14 +42,14 @@ function tableState(overrides: Partial<TableState> = {}): Partial<TableState> {
   };
 }
 
-type TableResultOverrides = Partial<Omit<TableResult, "state">> & { state?: Partial<TableState> };
+type TableResultOverrides = Partial<Omit<TableResult, "query">> & { query?: Partial<TableQuery> };
 
 function tableResponse(overrides: TableResultOverrides = {}): Response {
   return Response.json({
     data: [],
     pagination: {},
     ...overrides,
-    state: tableState(overrides.state),
+    query: tableQuery(overrides.query),
   });
 }
 
@@ -77,7 +77,7 @@ function node(overrides: Partial<TableNode["props"]> = {}): TableNode {
         col({ key: "name", label: "Name", width: "md" }),
       ],
       data: [{ id: 1, sku: "SKU-001", name: "Desk Lamp" }],
-      state: {
+      query: {
         filters: [],
         page: 1,
         perPage: 25,
@@ -261,11 +261,11 @@ describe("Lattice table component in a browser", () => {
     const fetch = tableFetch(
       {
         data: [{ id: 1, sku: "SKU-001", name: "Ada Lovelace" }],
-        state: tableState({ sorts: [{ key: "sku", direction: "asc" }] }),
+        query: tableQuery({ sorts: [{ key: "sku", direction: "asc" }] }),
       },
       {
         data: [{ id: 1, sku: "SKU-001", name: "Ada Lovelace" }],
-        state: tableState({
+        query: tableQuery({
           sorts: [
             { key: "sku", direction: "asc" },
             { key: "name", direction: "asc" },
@@ -274,7 +274,7 @@ describe("Lattice table component in a browser", () => {
       },
       {
         data: [{ id: 1, sku: "SKU-001", name: "Ada Lovelace" }],
-        state: tableState({ sorts: [{ key: "name", direction: "asc" }] }),
+        query: tableQuery({ sorts: [{ key: "name", direction: "asc" }] }),
       },
     );
     const screen = await render(
@@ -286,7 +286,7 @@ describe("Lattice table component in a browser", () => {
           ],
           data: [{ id: 1, sku: "SKU-001", name: "Desk Lamp" }],
           endpoint: "/lattice/tables/workbench.users",
-          state: tableState(),
+          query: tableQuery(),
         })}
       />,
     );

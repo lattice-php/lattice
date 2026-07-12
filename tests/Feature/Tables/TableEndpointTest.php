@@ -127,7 +127,7 @@ test('registered tables serialize their configured endpoint columns state and in
                         'name' => 'Taylor',
                     ],
                 ],
-                'state' => [
+                'query' => [
                     'filters' => [],
                     'sorts' => [],
                     'page' => 1,
@@ -184,7 +184,7 @@ test('registered tables can serialize lazily without running their query', funct
                     ],
                 ],
                 'data' => [],
-                'state' => [
+                'query' => [
                     'filters' => [],
                     'sorts' => [],
                     'page' => 1,
@@ -308,10 +308,10 @@ test('registered tables parse clause filters sorts and pagination through the en
     ])
         ->assertOk()
         ->assertJsonPath('data.0.name', 'Taylor')
-        ->assertJsonPath('state.filters.0.field', 'name')
-        ->assertJsonPath('state.filters.1.field', 'status')
-        ->assertJsonPath('state.page', 2)
-        ->assertJsonPath('state.perPage', 50);
+        ->assertJsonPath('query.filters.0.field', 'name')
+        ->assertJsonPath('query.filters.1.field', 'status')
+        ->assertJsonPath('query.page', 2)
+        ->assertJsonPath('query.perPage', 50);
 
     expect(session('workbench-users-table-query'))->toMatchArray([
         'filters' => [

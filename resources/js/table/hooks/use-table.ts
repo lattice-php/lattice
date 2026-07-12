@@ -7,7 +7,7 @@ import {
   getColumns,
   getPagination,
   getRows,
-  getState,
+  getQuery,
 } from "@lattice-php/lattice/table/lib/payload";
 import { buildEndpoint, nextSort } from "@lattice-php/lattice/table/lib/query";
 import type {
@@ -16,7 +16,7 @@ import type {
   TableNode,
   TableResult,
   TableSort,
-  TableState,
+  TableQuery,
 } from "@lattice-php/lattice/table/types";
 
 export function useTable(node: TableNode) {
@@ -24,7 +24,7 @@ export function useTable(node: TableNode) {
   const endpoint = typeof node.props?.endpoint === "string" ? node.props.endpoint : null;
   const componentRef = typeof node.props?.ref === "string" ? node.props.ref : "";
   const isLazy = node.props?.lazy === true;
-  const initialState = useMemo(() => getState(node.props?.state), [node.props?.state]);
+  const initialQuery = useMemo(() => getQuery(node.props?.query), [node.props?.query]);
   const initialRows = useMemo(() => getRows(node.props?.data), [node.props?.data]);
   const initialPagination = useMemo(
     () => getPagination(node.props?.pagination),
@@ -32,15 +32,15 @@ export function useTable(node: TableNode) {
   );
   const [rows, setRows] = useState(initialRows);
   const [pagination, setPagination] = useState(initialPagination);
-  const [state, setState] = useState(initialState);
+  const [query, setQuery] = useState(initialQuery);
   const [processing, setProcessing] = useState(isLazy);
   const [hasLoaded, setHasLoaded] = useState(!isLazy);
   const infiniteLoaderRef = useRef<HTMLDivElement | null>(null);
-  const currentPage = pagination.currentPage ?? state.page;
+  const currentPage = pagination.currentPage ?? query.page;
   const isInfinite = (pagination.mode ?? "table") === "infinite";
 
   const load = useCallback(
-    async (nextState: TableState, append = false): Promise<void> => {
+    async (nextQuery: TableQuery, append = false): Promise<void> => {
       if (!endpoint) {
         return;
       }
@@ -48,15 +48,15 @@ export function useTable(node: TableNode) {
       setProcessing(true);
 
       try {
-        const result = await apiJson<TableResult>(buildEndpoint(endpoint, nextState), {
+        const result = await apiJson<TableResult>(buildEndpoint(endpoint, nextQuery), {
           ref: componentRef,
         });
-        const resultState = getState(result.state);
+        const resultQuery = getQuery(result.query);
         const resultRows = getRows(result.data);
 
         setRows((currentRows) => (append ? [...currentRows, ...resultRows] : resultRows));
         setPagination(getPagination(result.pagination));
-        setState(resultState);
+        setQuery(resultQuery);
         setHasLoaded(true);
       } finally {
         setProcessing(false);
@@ -67,45 +67,45 @@ export function useTable(node: TableNode) {
 
   function sort(column: TableColumn): void {
     void load({
-      ...state,
+      ...query,
       page: 1,
-      sorts: nextSort(state.sorts, column),
+      sorts: nextSort(query.sorts, column),
     });
   }
 
   function clearSort(sort: TableSort): void {
     void load({
-      ...state,
+      ...query,
       page: 1,
-      sorts: state.sorts.filter((currentSort) => currentSort.key !== sort.key),
+      sorts: query.sorts.filter((currentSort) => currentSort.key !== sort.key),
     });
   }
 
   function applyFilters(next: FilterClause[]): void {
-    const nextState = { ...state, filters: next, page: 1 };
+    const nextQuery = { ...query, filters: next, page: 1 };
 
-    setState(nextState);
-    void load(nextState);
+    setQuery(nextQuery);
+    void load(nextQuery);
   }
 
   function addFilter(clause: FilterClause): void {
-    applyFilters([...state.filters, clause]);
+    applyFilters([...query.filters, clause]);
   }
 
   function updateFilter(index: number, clause: FilterClause): void {
-    applyFilters(state.filters.map((current, position) => (position === index ? clause : current)));
+    applyFilters(query.filters.map((current, position) => (position === index ? clause : current)));
   }
 
   function removeFilter(index: number): void {
-    applyFilters(state.filters.filter((_, current) => current !== index));
+    applyFilters(query.filters.filter((_, current) => current !== index));
   }
 
   function replaceColumnFilters(field: string, clauses: FilterClause[]): void {
-    applyFilters([...state.filters.filter((clause) => clause.field !== field), ...clauses]);
+    applyFilters([...query.filters.filter((clause) => clause.field !== field), ...clauses]);
   }
 
   function setTableFilter(key: string, value: unknown): void {
-    const next = { ...state.tableFilters };
+    const next = { ...query.tableFilters };
 
     if (isEmptyFilterValue(value) || !isFilterValue(value)) {
       delete next[key];
@@ -113,41 +113,41 @@ export function useTable(node: TableNode) {
       next[key] = value;
     }
 
-    const nextState = {
-      ...state,
+    const nextQuery = {
+      ...query,
       tableFilters: next,
-      tableFilterIndicators: state.tableFilterIndicators.filter(
+      tableFilterIndicators: query.tableFilterIndicators.filter(
         (indicator) => indicator.filter !== key,
       ),
       page: 1,
     };
 
-    setState(nextState);
-    void load(nextState);
+    setQuery(nextQuery);
+    void load(nextQuery);
   }
 
   function resetFilters(): void {
-    const nextState = {
-      ...state,
+    const nextQuery = {
+      ...query,
       filters: [],
       tableFilters: {},
       tableFilterIndicators: [],
       page: 1,
     };
 
-    setState(nextState);
-    void load(nextState);
+    setQuery(nextQuery);
+    void load(nextQuery);
   }
 
   const searchFilterOptions = useCallback(
-    async (searchKey: string, query: string, signal?: AbortSignal): Promise<Option[]> => {
+    async (searchKey: string, search: string, signal?: AbortSignal): Promise<Option[]> => {
       if (!endpoint) {
         return [];
       }
 
       const url = new URL(endpoint, window.location.origin);
       url.searchParams.set("_search", searchKey);
-      url.searchParams.set("q", query);
+      url.searchParams.set("q", search);
 
       const response = await apiFetch(`${url.pathname}${url.search}`, {
         ref: componentRef,
@@ -168,7 +168,7 @@ export function useTable(node: TableNode) {
 
   function goToPage(page: number): void {
     void load({
-      ...state,
+      ...query,
       page,
     });
   }
@@ -180,28 +180,28 @@ export function useTable(node: TableNode) {
 
     void load(
       {
-        ...state,
+        ...query,
         page: pagination.nextPage ?? currentPage + 1,
       },
       true,
     );
-  }, [currentPage, load, pagination.hasMore, pagination.nextPage, processing, state]);
+  }, [currentPage, load, pagination.hasMore, pagination.nextPage, processing, query]);
 
   useEffect(() => {
     setRows(initialRows);
     setPagination(initialPagination);
-    setState(initialState);
+    setQuery(initialQuery);
     setProcessing(isLazy);
     setHasLoaded(!isLazy);
-  }, [initialRows, initialPagination, initialState, isLazy]);
+  }, [initialRows, initialPagination, initialQuery, isLazy]);
 
   useEffect(() => {
     if (!isLazy || hasLoaded) {
       return;
     }
 
-    void load(state);
-  }, [hasLoaded, isLazy, load, state]);
+    void load(query);
+  }, [hasLoaded, isLazy, load, query]);
 
   useEffect(() => {
     function reload(event: Event): void {
@@ -211,13 +211,13 @@ export function useTable(node: TableNode) {
         return;
       }
 
-      void load(state);
+      void load(query);
     }
 
     window.addEventListener(LATTICE_EVENT.reloadComponent, reload);
 
     return () => window.removeEventListener(LATTICE_EVENT.reloadComponent, reload);
-  }, [load, node.id, state]);
+  }, [load, node.id, query]);
 
   useEffect(() => {
     if (
@@ -250,9 +250,9 @@ export function useTable(node: TableNode) {
     columns,
     rows,
     pagination,
-    state,
-    filters: state.filters,
-    tableFilters: state.tableFilters,
+    query,
+    filters: query.filters,
+    tableFilters: query.tableFilters,
     addFilter,
     updateFilter,
     removeFilter,
