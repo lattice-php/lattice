@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Realtime;
 
-use JsonSerializable;
+use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\I18n\Values\Translatable;
@@ -17,17 +17,18 @@ use Lattice\Lattice\Ui\Values\ToastMessage;
  * name(s) to react to, and the effects to dispatch on the client when one
  * arrives. Effects are limited to the broadcast-safe subset.
  */
-final class Listen implements JsonSerializable
+#[TypeScript]
+final class Listen
 {
-    /** @var list<string> */
-    private array $events = [];
-
-    /** @var list<EffectContract> */
-    private array $effects = [];
-
+    /**
+     * @param  list<string>  $events
+     * @param  list<EffectContract>  $effects
+     */
     private function __construct(
-        private readonly string $channel,
-        private readonly ChannelVisibility $visibility,
+        public readonly string $channel,
+        public readonly ChannelVisibility $visibility,
+        public array $events = [],
+        public array $effects = [],
     ) {}
 
     public static function channel(string $name): self
@@ -74,10 +75,5 @@ final class Listen implements JsonSerializable
         $this->effects[] = Effects::reloadPage();
 
         return $this;
-    }
-
-    public function jsonSerialize(): ListenerPayload
-    {
-        return new ListenerPayload($this->channel, $this->visibility, $this->events, $this->effects);
     }
 }

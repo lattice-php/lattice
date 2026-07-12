@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { ListenerPayload } from "@lattice-php/lattice/types/generated";
+import type { Listen } from "@lattice-php/lattice/types/generated";
 
 const handlers: { current: ((payload: unknown) => void) | null } = { current: null };
 
@@ -40,7 +40,7 @@ afterEach(() => {
 
 describe("Subscriptions", () => {
   it("dispatches a resolved toast effect when its event fires", () => {
-    const listeners: ListenerPayload[] = [
+    const listeners: Listen[] = [
       {
         channel: "orders",
         visibility: "private",
@@ -75,7 +75,7 @@ describe("Subscriptions", () => {
   it.each(["public", "private", "presence"] as const)(
     "subscribes to %s channels and dispatches their effects",
     (visibility) => {
-      const listeners: ListenerPayload[] = [
+      const listeners: Listen[] = [
         {
           channel: "orders",
           visibility,
@@ -104,7 +104,7 @@ describe("Subscriptions", () => {
     const collect = (event: Event) => closed.push((event as CustomEvent).detail);
     window.addEventListener("lattice:close-modal", collect);
 
-    const listeners: ListenerPayload[] = [
+    const listeners: Listen[] = [
       {
         channel: "orders",
         visibility: "public",

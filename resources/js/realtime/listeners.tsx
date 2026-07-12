@@ -1,6 +1,6 @@
 import { Component, lazy, Suspense } from "react";
 import type { ReactNode } from "react";
-import type { ListenerPayload } from "@lattice-php/lattice/types/generated";
+import type { Listen } from "@lattice-php/lattice/types/generated";
 
 const Subscriptions = lazy(() => import("./subscriptions"));
 
@@ -26,7 +26,7 @@ class EchoBoundary extends Component<{ children: ReactNode }, { failed: boolean 
  * Renders nothing when a page declares no listeners, so the echo-react chunk
  * is only fetched where it is actually needed.
  */
-export function RealtimeListeners({ listeners }: { listeners?: ListenerPayload[] }) {
+export function RealtimeListeners({ listeners }: { listeners?: Listen[] }) {
   if (listeners === undefined || listeners.length === 0) {
     return null;
   }

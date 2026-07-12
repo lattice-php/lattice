@@ -74,12 +74,7 @@ export type {
   WireNode,
 } from "./core/types";
 export { RealtimeListeners } from "./realtime/listeners";
-export type {
-  ChannelVisibility,
-  DateFormat,
-  ListenerPayload,
-  NumberFormat,
-} from "./types/generated";
+export type { ChannelVisibility, DateFormat, Listen, NumberFormat } from "./types/generated";
 export { columnCell } from "./table/registry";
 export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "./table/registry";
 export type { ColumnProps, ColumnPropsOf } from "./table/types";
