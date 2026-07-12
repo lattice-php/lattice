@@ -1,8 +1,8 @@
 import type { Node } from "@lattice-php/lattice/core/types";
 import type {
   FilterClause,
+  FilterIndicator,
   TableColumn,
-  TableFilterIndicator,
   TablePagination,
   TableRow,
   TableState,
@@ -112,13 +112,13 @@ function getTableFilters(value: unknown): Record<string, Record<string, unknown>
   );
 }
 
-function getTableFilterIndicators(value: unknown): TableFilterIndicator[] {
+function getTableFilterIndicators(value: unknown): FilterIndicator[] {
   if (!Array.isArray(value)) {
     return [];
   }
 
   return value.filter(
-    (indicator): indicator is TableFilterIndicator =>
+    (indicator): indicator is FilterIndicator =>
       typeof indicator === "object" &&
       indicator !== null &&
       typeof indicator.filter === "string" &&

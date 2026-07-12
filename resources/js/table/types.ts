@@ -5,6 +5,7 @@ import type {
   ColumnPropsMap,
   ColumnType,
   FilterClause as WireFilterClause,
+  FilterIndicator,
   FilterPropsMap,
   Op,
   Table,
@@ -13,7 +14,7 @@ import type {
   TableSort,
 } from "@lattice-php/lattice/types/generated";
 
-export type { ColumnFilter, ColumnType, TablePagination, TableSort };
+export type { ColumnFilter, ColumnType, FilterIndicator, TablePagination, TableSort };
 
 export type ActionNode = NodeUnionOf<ActionNodeType>;
 
@@ -28,15 +29,8 @@ export type FilterClause = Omit<WireFilterClause, "operator"> & {
   operator: Op;
 };
 
-export type TableFilterIndicator = {
-  filter: string;
-  label: string;
-  value: string;
-};
-
-export type TableState = Omit<TableQuery, "filters" | "tableFilterIndicators"> & {
+export type TableState = Omit<TableQuery, "filters"> & {
   filters: FilterClause[];
-  tableFilterIndicators: TableFilterIndicator[];
 };
 
 export type TableResponse = {

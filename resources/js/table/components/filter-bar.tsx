@@ -6,9 +6,9 @@ import { isActiveFilterValue } from "@lattice-php/lattice/table/lib/filter-value
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "@lattice-php/lattice/table/lib/query";
 import type {
   FilterClause,
+  FilterIndicator,
   FilterNode,
   TableColumn,
-  TableFilterIndicator,
 } from "@lattice-php/lattice/table/types";
 import { TableFilterControl } from "./filter-controls";
 
@@ -23,7 +23,7 @@ export function FilterBar({
 }: {
   clauses: FilterClause[];
   columnsByKey: Map<string, TableColumn>;
-  indicators: TableFilterIndicator[];
+  indicators: FilterIndicator[];
   processing: boolean;
   onRemoveClause: (index: number) => void;
   onChange: (key: string, value: unknown) => void;
