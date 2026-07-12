@@ -1,28 +1,32 @@
 import type { Node } from "@lattice-php/lattice/core/types";
-import type { FieldConditions } from "./conditions";
+import type { ComponentPropsMap } from "@lattice-php/lattice/types/generated";
 
 /**
  * The props every form-field node shares (the PHP Field base). Nodes flow through
  * the form framework loosely typed via the generic schema, so this is the typed
  * lens the shared hooks read them through. Everything is optional because the
- * lens is also applied to non-field nodes while walking the schema.
+ * lens is also applied to non-field nodes while walking the schema. Derived from
+ * a generated field type (every field bakes the base in) rather than hand-written.
  */
-type FieldProps = {
-  conditions?: FieldConditions | null;
-  dependsOnAny?: boolean | null;
-  dependsOnKeys?: string[] | null;
-  disabled?: boolean | null;
-  helperText?: string | null;
-  label?: string | null;
-  name?: string;
-  editablePrefill?: boolean | null;
-  prefillRefreshOn?: string[] | null;
-  prefillResetOn?: string[] | null;
-  readOnly?: boolean | null;
-  required?: boolean | null;
-  tooltip?: string | null;
-  value?: unknown;
-};
+type FieldProps = Partial<
+  Pick<
+    ComponentPropsMap["field.text-input"],
+    | "conditions"
+    | "dependsOnAny"
+    | "dependsOnKeys"
+    | "disabled"
+    | "editablePrefill"
+    | "helperText"
+    | "label"
+    | "name"
+    | "prefillRefreshOn"
+    | "prefillResetOn"
+    | "readOnly"
+    | "required"
+    | "tooltip"
+    | "value"
+  >
+>;
 
 export function fieldProps(node: Node): FieldProps {
   return node.props as FieldProps;

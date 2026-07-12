@@ -9,6 +9,7 @@ use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Facades\Evaluate;
 use Lattice\Lattice\Forms\Conditions\Condition;
 use Lattice\Lattice\Forms\Conditions\ConditionSet;
+use Lattice\Lattice\Forms\Conditions\FieldConditions;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Support\Evaluation\EvaluationContext;
 use Lattice\Lattice\Ui\Components\Component;
@@ -35,15 +36,7 @@ abstract class Field extends Component
 
     public bool $disabled = false;
 
-    /**
-     * @var array{
-     *     visible?: list<Condition>,
-     *     required?: list<Condition>,
-     *     readOnly?: list<Condition>,
-     *     disabled?: list<Condition>,
-     * }|null
-     */
-    public ?array $conditions = null;
+    public ?FieldConditions $conditions = null;
 
     /**
      * @var array<int, string>|null
@@ -546,14 +539,14 @@ abstract class Field extends Component
     {
         $props = parent::decorateProps($props);
 
-        $conditions = array_filter([
-            'visible' => $this->conditionsFor('visible'),
-            'required' => $this->conditionsFor('required'),
-            'readOnly' => $this->conditionsFor('readOnly'),
-            'disabled' => $this->conditionsFor('disabled'),
-        ], static fn (array $set): bool => $set !== []);
+        $visible = $this->conditionsFor('visible');
+        $required = $this->conditionsFor('required');
+        $readOnly = $this->conditionsFor('readOnly');
+        $disabled = $this->conditionsFor('disabled');
 
-        $props['conditions'] = $conditions === [] ? null : $conditions;
+        $props['conditions'] = ($visible === [] && $required === [] && $readOnly === [] && $disabled === [])
+            ? null
+            : new FieldConditions($visible, $required, $readOnly, $disabled);
 
         $keys = [];
 

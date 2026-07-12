@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { setLocale } from "@lattice-php/lattice/i18n/locale";
-import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
+import { createFieldRenderer, fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
 import { DateInputComponent } from "./date-input";
 
 const renderField = createFieldRenderer(DateInputComponent);
@@ -98,7 +98,9 @@ describe("DateInputComponent", () => {
         props: {
           name: "due",
           label: "Due",
-          conditions: { visible: [{ field: "scheduled", operator: "eq", value: "1" }] },
+          conditions: fakeConditions({
+            visible: [{ field: "scheduled", operator: "eq", value: "1" }],
+          }),
         },
       }),
       { scheduled: "0" },

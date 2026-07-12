@@ -1,13 +1,6 @@
-import type { Condition, Op } from "@lattice-php/lattice/types/generated";
+import type { Condition, FieldConditions, Op } from "@lattice-php/lattice/types/generated";
 
-export type { Condition };
-
-export type FieldConditions = {
-  visible?: Condition[];
-  required?: Condition[];
-  readOnly?: Condition[];
-  disabled?: Condition[];
-};
+export type { Condition, FieldConditions };
 
 type FieldFlags = {
   hidden?: boolean;
@@ -23,7 +16,7 @@ export type FieldState = {
   disabled: boolean;
 };
 
-export function conditionFields(conditions: FieldConditions | undefined | null): string[] {
+export function conditionFields(conditions: Partial<FieldConditions> | undefined | null): string[] {
   const fields = new Set<string>();
 
   for (const group of [
@@ -143,7 +136,7 @@ function anyMatch(conditions: Condition[] | undefined, values: Record<string, un
 }
 
 export function evaluateConditions(
-  conditions: FieldConditions | undefined,
+  conditions: Partial<FieldConditions> | undefined,
   values: Record<string, unknown>,
   flags: FieldFlags,
 ): FieldState {

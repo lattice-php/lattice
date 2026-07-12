@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { TextareaComponent } from "./textarea";
 
@@ -9,7 +9,7 @@ const node = fakeNode({
   props: {
     name: "bio",
     label: "Bio",
-    conditions: { visible: [{ field: "mode", operator: "eq", value: "edit" }] },
+    conditions: fakeConditions({ visible: [{ field: "mode", operator: "eq", value: "edit" }] }),
   },
 });
 

@@ -63,12 +63,7 @@ export type BrowserToken = {
 export type Builder = {
   addLabel: string | null;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   defaultItems: number;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
@@ -181,12 +176,7 @@ export type ChatRole = "user" | "assistant" | "system";
 export type Checkbox = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
@@ -205,12 +195,7 @@ export type Checkbox = {
 export type Choice = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
@@ -362,12 +347,7 @@ export type DateFormat = {
 export type DateInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
@@ -391,12 +371,7 @@ export type DateRangeFilter = {
 export type DateTimeInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   convertTimezone: boolean;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
@@ -441,6 +416,12 @@ export type EffectPropsMap = {
   toast: ToastEffect;
   "toggle-sidebar": ToggleSidebarEffect;
 };
+export type FieldConditions = {
+  readonly visible: Condition[];
+  readonly required: Condition[];
+  readonly readOnly: Condition[];
+  readonly disabled: Condition[];
+};
 export type FieldType =
   | "field.builder"
   | "field.checkbox"
@@ -462,12 +443,7 @@ export type FieldType =
 export type FileUpload = {
   accept: string | null;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
@@ -595,12 +571,7 @@ export type Heading = {
 export type Height = "full" | "screen";
 export type HiddenInput = {
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
@@ -653,6 +624,11 @@ export type ImageColumn = {
   width: ColumnWidth;
 };
 export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
+export type LabelAction = {
+  readonly href: string;
+  readonly label: string;
+  readonly tabIndex: number | null;
+};
 export type Link = {
   action: WireNode | null;
   effects: Effect[];
@@ -819,12 +795,7 @@ export type NumberFormatUnit =
 export type NumberInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
@@ -874,12 +845,7 @@ export type Orientation = "horizontal" | "vertical";
 export type OtpInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
@@ -903,12 +869,7 @@ export type PasswordInput = {
   autoComplete: string | null;
   autoFocus: boolean;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   confirmation: {
     label: string;
     name: string;
@@ -920,11 +881,7 @@ export type PasswordInput = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
-  labelAction: {
-    href: string;
-    label: string;
-    tabIndex?: number;
-  } | null;
+  labelAction: LabelAction | null;
   name: string;
   passwordRules: string | null;
   placeholder: string | null;
@@ -961,12 +918,7 @@ export type RemoteAccess = {
 export type Repeater = {
   addLabel: string | null;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   defaultItems: number;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
@@ -995,12 +947,7 @@ export type ResetFormEffect = {
 };
 export type RichEditor = {
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
@@ -1044,12 +991,7 @@ export type SegmentedControl = {
 export type Select = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
@@ -1199,12 +1141,7 @@ export type TextInput = {
   autoComplete: string | null;
   autoFocus: boolean;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
@@ -1230,12 +1167,7 @@ export type TextPart = {
 export type Textarea = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
@@ -1256,12 +1188,7 @@ export type Textarea = {
 export type TimeInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;
@@ -1294,12 +1221,7 @@ export type ToastMessage = {
 export type Toggle = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
-  conditions: {
-    visible?: Condition[];
-    required?: Condition[];
-    readOnly?: Condition[];
-    disabled?: Condition[];
-  } | null;
+  conditions: FieldConditions | null;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;

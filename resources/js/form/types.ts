@@ -10,6 +10,7 @@ export type {
   Form,
   FormNodeType,
   HiddenInput,
+  LabelAction,
   NumberInput,
   PasswordInput,
   RichEditor,
@@ -24,9 +25,3 @@ export type FormFieldNode = NodeUnionOf<FormFieldNodeType>;
 export type FormNode = NodeUnionOf<FormNodeType>;
 
 export type FormMethod = Method;
-
-export type FormLabelAction = {
-  href: string;
-  label: string;
-  tabIndex?: number;
-};

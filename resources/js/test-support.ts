@@ -2,6 +2,12 @@ import { render, type RenderResult } from "@testing-library/react";
 import { createElement, type ComponentType, type ReactNode } from "react";
 import type { Node, PropsOf, Schema } from "./core/types";
 import { FormValuesProvider } from "./form/hooks/values";
+import type { FieldConditions } from "./types/generated";
+
+/** Fill the intents a case omits so a partial reads as the full wire `conditions` shape. */
+export function fakeConditions(partial: Partial<FieldConditions>): FieldConditions {
+  return { visible: [], required: [], readOnly: [], disabled: [], ...partial };
+}
 
 /**
  * Build a node fixture for tests with only the props a case cares about. The wire

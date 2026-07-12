@@ -1,6 +1,6 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
+import { createFieldRenderer, fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
 import { OtpInputComponent } from "./otp-input";
 
 const renderField = createFieldRenderer(OtpInputComponent);
@@ -38,7 +38,9 @@ describe("OtpInputComponent", () => {
           name: "code",
           label: "Code",
           length: 6,
-          conditions: { visible: [{ field: "mode", operator: "eq", value: "2fa" }] },
+          conditions: fakeConditions({
+            visible: [{ field: "mode", operator: "eq", value: "2fa" }],
+          }),
         },
       }),
       { mode: "off" },

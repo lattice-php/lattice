@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
+import { createFieldRenderer, fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
 import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { ToggleComponent } from "./toggle";
@@ -71,7 +71,9 @@ describe("ToggleComponent", () => {
         props: {
           label: "Published",
           name: "published",
-          conditions: { visible: [{ field: "status", operator: "eq", value: "live" }] },
+          conditions: fakeConditions({
+            visible: [{ field: "status", operator: "eq", value: "live" }],
+          }),
         },
       }),
       { status: "draft" },
