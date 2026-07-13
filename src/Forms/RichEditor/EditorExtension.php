@@ -10,9 +10,9 @@ use Lattice\Lattice\Ui\Components\Concerns\SerializesToWire;
 
 /**
  * A rich-editor extension: a `{type, props}` wire value whose props are the
- * public typed properties (the shared wire convention). The type
- * comes from #[AsEditorExtension]; configuration mutates through fluent setters
- * like a form field, so `Heading::make()->levels(1, 2)` reads naturally.
+ * public typed properties (the shared wire convention). The type comes from
+ * #[AsEditorExtension]; configuration mutates through fluent setters like a
+ * form field.
  *
  * @phpstan-consistent-constructor
  */

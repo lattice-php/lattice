@@ -44,11 +44,9 @@ export type ToolbarItem = ToolbarButton | ToolbarControl;
 export type ToolbarEntry = ToolbarItem | "separator";
 
 export type RichEditorExtensionDefinition<P = Record<string, unknown>> = {
-  /** Tiptap extension instances this wire type activates. */
   extensions?: (props: P) => AnyExtension[];
   /** Contribution to the single shared StarterKit configuration. */
   starterKit?: (props: P) => Partial<StarterKitOptions>;
-  /** Toolbar items, in contribution order. */
   toolbar?: (props: P) => ToolbarItem[];
   /**
    * Adjacent toolbar contributions from the same group render without a
