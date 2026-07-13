@@ -21,9 +21,6 @@ abstract readonly class Effect implements EffectContract
 
     public function wireType(): string
     {
-        /** @var array<class-string, string> $cache */
-        static $cache = [];
-
-        return $cache[static::class] ??= AsEffect::wireTypeForClass(static::class);
+        return AsEffect::wireTypeForClass(static::class);
     }
 }

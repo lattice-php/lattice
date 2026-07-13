@@ -44,7 +44,7 @@ trait SerializesWireNode
 
     protected function type(): string
     {
-        return AsComponent::typeForClass(static::class);
+        return AsComponent::wireTypeForClass(static::class);
     }
 
     protected function wireKey(): ?string

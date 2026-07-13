@@ -3,24 +3,20 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Effects;
 
-use InvalidArgumentException;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
-use Lattice\Lattice\Support\Discovery\ClassWalker;
+use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
+use Lattice\Lattice\Support\WireTypeRegistry;
 
 /**
  * The single source of truth for effect value objects: wire type → class-string.
- * Built-ins auto-register at boot; consumers register their own effects in a
- * service provider. Drives TypeScript generation and guards wire-type
- * uniqueness. It is NOT a gate for emitting — ActionResult::effect() and
- * Effects::flash() accept any Effect regardless of registration.
+ * Drives TypeScript generation and guards wire-type uniqueness. It is NOT a
+ * gate for emitting — ActionResult::effect() and Effects::flash() accept any
+ * Effect regardless of registration.
+ *
+ * @extends WireTypeRegistry<EffectContract>
  */
-final class EffectRegistry
+final class EffectRegistry extends WireTypeRegistry
 {
-    /**
-     * @var array<string, class-string>
-     */
-    private array $effects = [];
-
     /**
      * A fresh registry holding only the package's built-in effects. Used by the
      * container binding and by TypeScript generation, both of which need the
@@ -29,37 +25,20 @@ final class EffectRegistry
     public static function withBuiltins(): self
     {
         $registry = new self;
-
-        foreach (ClassWalker::classes(__DIR__.'/Builtin') as $effect) {
-            $registry->register($effect);
-        }
+        $registry->registerAllIn(__DIR__.'/Builtin');
 
         return $registry;
     }
 
-    /**
-     * @param  class-string  $effect
-     */
-    public function register(string $effect): void
+    #[\Override]
+    protected function attribute(): string
     {
-        $type = AsEffect::wireTypeForClass($effect);
-
-        if (isset($this->effects[$type]) && $this->effects[$type] !== $effect) {
-            throw new InvalidArgumentException(sprintf(
-                'Effect wire type [%s] is already registered to [%s].',
-                $type,
-                $this->effects[$type],
-            ));
-        }
-
-        $this->effects[$type] = $effect;
+        return AsEffect::class;
     }
 
-    /**
-     * @return array<string, class-string>
-     */
-    public function all(): array
+    #[\Override]
+    protected function baseClass(): string
     {
-        return $this->effects;
+        return EffectContract::class;
     }
 }

@@ -195,7 +195,7 @@ final readonly class ComponentAssertions
     private function resolveType(string $type): string
     {
         if (is_subclass_of($type, Component::class)) {
-            return AsComponent::typeForClass($type);
+            return AsComponent::wireTypeForClass($type);
         }
 
         return $type;

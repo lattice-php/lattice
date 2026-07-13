@@ -9,7 +9,7 @@ use Lattice\Lattice\Core\Contracts\PageContract;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Enums\PageContainer;
 use Lattice\Lattice\Ui\Enums\PageLayout;
-use ReflectionClass;
+use Spatie\Attributes\Attributes;
 
 final readonly class PageMetadata
 {
@@ -84,9 +84,7 @@ final readonly class PageMetadata
 
     private static function attributeOn(string $class): ?AsPage
     {
-        $attributes = new ReflectionClass($class)->getAttributes(AsPage::class);
-
-        return $attributes === [] ? null : $attributes[0]->newInstance();
+        return Attributes::get($class, AsPage::class);
     }
 
     /**
