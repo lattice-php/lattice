@@ -67,7 +67,9 @@ const latticeIcons = [
   "align-right",
   "bold",
   "code",
+  "code-xml",
   "columns-3",
+  "heading",
   "heading-1",
   "heading-2",
   "heading-3",
@@ -87,7 +89,6 @@ function libraryEntries(): string[] {
   return (
     readdirSync(sourceRoot, { recursive: true, encoding: "utf8" })
       .filter((file) => /\.(ts|tsx)$/.test(file))
-      // Exclude declaration files and type-level test files — *.test.ts, *.test-d.ts, *.d.ts — from the published bundle.
       .filter((file) => !/\.(test(-d)?|d)\.(ts|tsx)$/.test(file))
       .filter((file) => !file.startsWith("test/"))
       .filter((file) => file !== "test-support.ts")

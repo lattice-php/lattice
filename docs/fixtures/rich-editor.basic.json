@@ -7,6 +7,122 @@
             "dependsOnKeys": null,
             "disabled": false,
             "editablePrefill": false,
+            "extensions": [
+                {
+                    "props": {},
+                    "type": "bold"
+                },
+                {
+                    "props": {},
+                    "type": "italic"
+                },
+                {
+                    "props": {},
+                    "type": "strike"
+                },
+                {
+                    "props": {},
+                    "type": "underline"
+                },
+                {
+                    "props": {},
+                    "type": "highlight"
+                },
+                {
+                    "props": {},
+                    "type": "code"
+                },
+                {
+                    "props": {
+                        "levels": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ]
+                    },
+                    "type": "heading"
+                },
+                {
+                    "props": {},
+                    "type": "bullet-list"
+                },
+                {
+                    "props": {},
+                    "type": "ordered-list"
+                },
+                {
+                    "props": {},
+                    "type": "blockquote"
+                },
+                {
+                    "props": {},
+                    "type": "code-block"
+                },
+                {
+                    "props": {},
+                    "type": "horizontal-rule"
+                },
+                {
+                    "props": {
+                        "alignments": [
+                            "left",
+                            "center",
+                            "right",
+                            "justify"
+                        ]
+                    },
+                    "type": "text-align"
+                },
+                {
+                    "props": {
+                        "openOnClick": false,
+                        "protocols": [
+                            "http",
+                            "https",
+                            "mailto"
+                        ]
+                    },
+                    "type": "link"
+                },
+                {
+                    "props": {
+                        "cols": 3,
+                        "rows": 3,
+                        "withHeaderRow": true
+                    },
+                    "type": "table"
+                },
+                {
+                    "props": {},
+                    "type": "details"
+                },
+                {
+                    "props": {
+                        "emojis": [
+                            "😀",
+                            "😅",
+                            "😂",
+                            "🥳",
+                            "😎",
+                            "🤔",
+                            "👍",
+                            "🙏",
+                            "🔥",
+                            "🎉",
+                            "🚀",
+                            "💡",
+                            "✅",
+                            "❌",
+                            "⭐",
+                            "❤️"
+                        ]
+                    },
+                    "type": "emoji"
+                }
+            ],
             "helperText": null,
             "label": "Article",
             "name": "article",

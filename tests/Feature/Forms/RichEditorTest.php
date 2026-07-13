@@ -6,6 +6,9 @@ use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\RichEditor;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\RichContent;
+use Lattice\Lattice\Forms\RichEditor\EditorExtension;
+use Lattice\Lattice\Forms\RichEditor\Extensions\Bold;
+use Lattice\Lattice\Forms\RichEditor\Extensions\Italic;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -46,7 +49,8 @@ it('strips nodes that are not in the schema', function (): void {
     ];
 
     expect(RichContent::make($doc)->toHtml())->not->toContain('evilScript')
-        ->and(RichContent::make($doc)->toHtml())->not->toContain('onload');
+        ->and(RichContent::make($doc)->toHtml())->not->toContain('onload')
+        ->and(json_encode(RichContent::make($doc)->toArray()))->not->toContain('evilScript');
 });
 
 it('renders a table to sanitized html', function (): void {
@@ -228,4 +232,225 @@ it('preserves submitted links during validation', function (): void {
         ->and($html)->toContain('<a ')
         ->and($html)->toContain('href="https://openai.com"')
         ->and($html)->toContain('OpenAI</a>');
+});
+
+it('strips node types outside the active extension set during validation', function (): void {
+    $definition = new class extends FormDefinition
+    {
+        public function definition(Form $form, Request $request): Form
+        {
+            return $form->schema([
+                RichEditor::make('body', 'Body')->rules(['required'])->extensions([
+                    Bold::make(),
+                    Italic::make(),
+                ]),
+            ]);
+        }
+
+        public function handle(Request $request): Response
+        {
+            return new Response('ok');
+        }
+    };
+
+    $document = [
+        'type' => 'doc',
+        'content' => [
+            [
+                'type' => 'paragraph',
+                'content' => [['type' => 'text', 'text' => 'keep', 'marks' => [['type' => 'bold']]]],
+            ],
+            [
+                'type' => 'heading',
+                'attrs' => ['level' => 2],
+                'content' => [['type' => 'text', 'text' => 'smuggled']],
+            ],
+        ],
+    ];
+
+    $validated = $definition->validate(Request::create('/', 'POST', [
+        'body' => json_encode($document),
+    ]));
+
+    $types = array_column($validated['body']['content'], 'type');
+
+    expect($types)->not->toContain('heading')
+        ->and(data_get($validated, 'body.content.0.content.0.marks.0.type'))->toBe('bold');
+});
+
+it('strips marks outside the active extension set during validation', function (): void {
+    $definition = new class extends FormDefinition
+    {
+        public function definition(Form $form, Request $request): Form
+        {
+            return $form->schema([
+                RichEditor::make('body', 'Body')->rules(['required'])->extensions([
+                    Bold::make(),
+                ]),
+            ]);
+        }
+
+        public function handle(Request $request): Response
+        {
+            return new Response('ok');
+        }
+    };
+
+    $document = [
+        'type' => 'doc',
+        'content' => [
+            [
+                'type' => 'paragraph',
+                'content' => [
+                    [
+                        'type' => 'text',
+                        'text' => 'linked',
+                        'marks' => [['type' => 'link', 'attrs' => ['href' => 'https://example.com']]],
+                    ],
+                ],
+            ],
+        ],
+    ];
+
+    $validated = $definition->validate(Request::create('/', 'POST', [
+        'body' => json_encode($document),
+    ]));
+
+    expect(data_get($validated, 'body.content.0.content.0.text'))->toBe('linked')
+        ->and(data_get($validated, 'body.content.0.content.0.marks'))->toBeNull();
+});
+
+it('keeps the full document for the default extension set', function (): void {
+    $definition = new class extends FormDefinition
+    {
+        public function definition(Form $form, Request $request): Form
+        {
+            return $form->schema([
+                RichEditor::make('body', 'Body')->rules(['required']),
+            ]);
+        }
+
+        public function handle(Request $request): Response
+        {
+            return new Response('ok');
+        }
+    };
+
+    $document = [
+        'type' => 'doc',
+        'content' => [
+            ['type' => 'heading', 'attrs' => ['level' => 3], 'content' => [['type' => 'text', 'text' => 'Title']]],
+            [
+                'type' => 'table',
+                'content' => [
+                    [
+                        'type' => 'tableRow',
+                        'content' => [
+                            ['type' => 'tableCell', 'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => 'cell']]]]],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'type' => 'details',
+                'content' => [
+                    ['type' => 'detailsSummary', 'content' => [['type' => 'text', 'text' => 'More']]],
+                    ['type' => 'detailsContent', 'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => 'Body']]]]],
+                ],
+            ],
+        ],
+    ];
+
+    $validated = $definition->validate(Request::create('/', 'POST', [
+        'body' => json_encode($document),
+    ]));
+
+    expect(array_column($validated['body']['content'], 'type'))->toBe(['heading', 'table', 'details']);
+});
+
+it('strips nodes of client-only extension types during validation', function (): void {
+    $definition = new class extends FormDefinition
+    {
+        public function definition(Form $form, Request $request): Form
+        {
+            return $form->schema([
+                RichEditor::make('body', 'Body')->rules(['required'])->extensions([
+                    Bold::make(),
+                    'mention',
+                ]),
+            ]);
+        }
+
+        public function handle(Request $request): Response
+        {
+            return new Response('ok');
+        }
+    };
+
+    $document = [
+        'type' => 'doc',
+        'content' => [
+            [
+                'type' => 'paragraph',
+                'content' => [
+                    ['type' => 'text', 'text' => 'hi '],
+                    ['type' => 'mention', 'attrs' => ['id' => '7']],
+                ],
+            ],
+        ],
+    ];
+
+    $validated = $definition->validate(Request::create('/', 'POST', [
+        'body' => json_encode($document),
+    ]));
+
+    expect(json_encode($validated['body']))->not->toContain('mention');
+});
+
+it('keeps nodes of a custom extension that declares their server types', function (): void {
+    $definition = new class extends FormDefinition
+    {
+        public function definition(Form $form, Request $request): Form
+        {
+            return $form->schema([
+                RichEditor::make('body', 'Body')->rules(['required'])->extensions([
+                    Bold::make(),
+                    new class extends EditorExtension
+                    {
+                        protected array $serverTypes = ['mention'];
+
+                        #[Override]
+                        public function wireType(): string
+                        {
+                            return 'mention';
+                        }
+                    },
+                ]),
+            ]);
+        }
+
+        public function handle(Request $request): Response
+        {
+            return new Response('ok');
+        }
+    };
+
+    $document = [
+        'type' => 'doc',
+        'content' => [
+            [
+                'type' => 'paragraph',
+                'content' => [
+                    ['type' => 'text', 'text' => 'hi '],
+                    ['type' => 'mention', 'attrs' => ['id' => '7']],
+                ],
+            ],
+        ],
+    ];
+
+    $validated = $definition->validate(Request::create('/', 'POST', [
+        'body' => json_encode($document),
+    ]));
+
+    expect(data_get($validated, 'body.content.0.content.1.type'))->toBe('mention');
 });
