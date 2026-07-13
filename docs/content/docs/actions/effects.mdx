@@ -93,8 +93,6 @@ The `Callout` builder options:
 | `->link($label, $href, $method?)` | Render a link in the callout (`$method` defaults to `HttpMethod::Get`). |
 | `->action($component)`            | Render an action instead of a link.                                     |
 
-Callouts are always persistent — there is no duration or auto-dismiss.
-
 **Placing the slot in your layout**
 
 A callout only renders where the `Callouts` layout slot is placed. Add `Callouts::make()` to the
@@ -174,12 +172,6 @@ Effects::flash(
 
 The flashed effects are stored in the `latticeEffects` session bag, drained on the next request, and
 run through the normal client-side effect pipeline in order.
-
-<Info>
-  `Effects::flash()` replaces the old toast-only flash helper (`CreatesToastMessages` trait and
-  `flash.toast` bag). Any code using that trait should switch to
-  `Effects::flash(Effects::toast(...))`.
-</Info>
 
 ## How effects reach the client
 
