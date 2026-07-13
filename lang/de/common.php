@@ -4,14 +4,14 @@ declare(strict_types=1);
 return [
     'tabs' => 'Tabs',
     'loading' => 'Lädt',
-    'moreInfo' => 'Mehr Informationen',
-    'closeMenu' => 'Menü schließen',
+    'more-info' => 'Mehr Informationen',
+    'close-menu' => 'Menü schließen',
     'dismiss' => 'Schließen',
     'close' => 'Schließen',
     'copy' => 'Kopieren',
     'copied' => 'Kopiert',
-    'copyValue' => ':label kopieren',
-    'copiedValue' => ':label kopiert',
+    'copy-value' => ':label kopieren',
+    'copied-value' => ':label kopiert',
     'image' => [
         'open-preview' => 'Bild ansehen',
     ],

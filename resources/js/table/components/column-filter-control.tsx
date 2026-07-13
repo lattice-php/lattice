@@ -96,7 +96,7 @@ export function ColumnFilterControl({
         <PopoverTrigger asChild>
           <button
             type="button"
-            aria-label={t("table.filter.columnFilters", "{{label}} filters", {
+            aria-label={t("table.filter.column-filters", "{{label}} filters", {
               label,
             })}
             data-test={`filter-${column.key}`}

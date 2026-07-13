@@ -172,7 +172,11 @@ const operatorLabels: Record<string, string> = {
 export const VALUELESS_FILTER_OPERATORS = new Set<string>(["empty", "filled"]);
 
 export function operatorLabel(operator: string): string {
-  return translate("lattice", `table.operators.${operator}`, operatorLabels[operator] ?? operator);
+  return translate(
+    "lattice",
+    `table.operators.${operator.replaceAll("_", "-")}`,
+    operatorLabels[operator] ?? operator,
+  );
 }
 
 export function getSortDirectionLabel(direction: string): string {

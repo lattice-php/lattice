@@ -34,6 +34,6 @@ return [
         'remove-label' => 'Remove',
         'failed' => 'Failed',
     ],
-    'searchOptions' => 'Search options',
-    'removeOption' => 'Remove :label',
+    'search-options' => 'Search options',
+    'remove-option' => 'Remove :label',
 ];

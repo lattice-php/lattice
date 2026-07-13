@@ -44,8 +44,8 @@ export function CopyButton({ value, label, testId, className }: CopyButtonProps)
   }
 
   const ariaLabel = copied
-    ? t("common.copiedValue", "Copied {{label}}", { label })
-    : t("common.copyValue", "Copy {{label}}", { label });
+    ? t("common.copied-value", "Copied {{label}}", { label })
+    : t("common.copy-value", "Copy {{label}}", { label });
 
   return (
     <button

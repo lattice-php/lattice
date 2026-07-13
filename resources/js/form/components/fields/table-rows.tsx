@@ -264,11 +264,11 @@ export function TableRows({
     <div className="relative">
       {hasOverrides && (
         <button
-          aria-label={t("table.resetColumnWidths", "Reset column widths")}
+          aria-label={t("table.reset-column-widths", "Reset column widths")}
           className="absolute right-1 top-1 z-10 hidden rounded-lt-sm p-1 text-lt-muted-fg hover:text-lt-fg md:inline-flex"
           data-test="table-reset-columns"
           onClick={resetColumns}
-          title={t("table.resetColumnWidths", "Reset column widths")}
+          title={t("table.reset-column-widths", "Reset column widths")}
           type="button"
         >
           <Icon name="rotate-ccw" className="size-lt-icon-sm" />

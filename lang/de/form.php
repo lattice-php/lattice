@@ -34,6 +34,6 @@ return [
         'remove-label' => 'Entfernen',
         'failed' => 'Fehlgeschlagen',
     ],
-    'searchOptions' => 'Optionen durchsuchen',
-    'removeOption' => ':label entfernen',
+    'search-options' => 'Optionen durchsuchen',
+    'remove-option' => ':label entfernen',
 ];

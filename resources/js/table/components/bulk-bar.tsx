@@ -81,7 +81,7 @@ export function BulkBar({
     <div className="flex flex-wrap items-center gap-3 border-b border-lt-border bg-lt-muted/50 p-4 text-sm">
       <span className="font-medium">
         {allMatching
-          ? t("table.bulk.allSelected", "All {{count}} selected", { count })
+          ? t("table.bulk.all-selected", "All {{count}} selected", { count })
           : t("table.bulk.selected", "{{count}} selected", { count })}
       </span>
       {canSelectAllMatching && (
@@ -91,7 +91,7 @@ export function BulkBar({
           className="font-medium text-lt-primary underline underline-offset-2"
           onClick={onSelectAllMatching}
         >
-          {t("table.bulk.selectAllMatching", "Select all {{total}} matching", { total })}
+          {t("table.bulk.select-all-matching", "Select all {{total}} matching", { total })}
         </button>
       )}
       <div className="flex flex-wrap items-center gap-2">

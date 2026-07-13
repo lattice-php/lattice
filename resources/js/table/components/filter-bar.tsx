@@ -74,7 +74,7 @@ export function FilterBar({
           disabled={processing}
           onClick={onReset}
         >
-          {t("table.filter.resetAll", "Reset all")}
+          {t("table.filter.reset-all", "Reset all")}
         </button>
       </div>
     </div>
