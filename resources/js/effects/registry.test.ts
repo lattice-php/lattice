@@ -88,11 +88,11 @@ describe("builtinEffectHandlers", () => {
     window.addEventListener(LATTICE_EVENT.toast, listener);
     builtinEffectHandlers.toast({
       type: "toast",
-      props: { toast: { variant: "success", message: "hi" } },
+      props: { variant: "success", message: "hi" },
     } as never);
     expect(listener).toHaveBeenCalledOnce();
     const detail = (listener.mock.calls[0][0] as CustomEvent).detail;
-    expect(detail).toMatchObject({ toast: { message: "hi" } });
+    expect(detail).toMatchObject({ message: "hi" });
     window.removeEventListener(LATTICE_EVENT.toast, listener);
   });
 
@@ -103,14 +103,12 @@ describe("builtinEffectHandlers", () => {
 
     builtinEffectHandlers.callout({
       type: "callout",
-      props: {
-        callout: { variant: "info", title: null, message: "Hi", dismissible: true, action: null },
-      },
+      props: { variant: "info", title: null, message: "Hi", dismissible: true, action: null },
     } as never);
 
     window.removeEventListener(LATTICE_EVENT.callout, listener);
     expect(received).toHaveLength(1);
-    expect(received[0]).toMatchObject({ callout: { message: "Hi" } });
+    expect(received[0]).toMatchObject({ message: "Hi" });
   });
 
   it("reloadComponent bridges to the lattice:reload-component DOM event", () => {

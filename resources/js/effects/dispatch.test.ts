@@ -8,7 +8,7 @@ describe("dispatchEffects", () => {
     const handlers: EffectHandlerRegistry = { toast };
 
     dispatchEffects(
-      [{ type: "toast", toast: { variant: "success", message: "hi" } }] as never,
+      [{ type: "toast", props: { variant: "success", message: "hi" } }] as never,
       handlers,
     );
 

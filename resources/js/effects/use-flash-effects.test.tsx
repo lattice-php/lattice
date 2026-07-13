@@ -51,13 +51,11 @@ describe("useFlashEffects", () => {
                 {
                   type: "callout",
                   props: {
-                    callout: {
-                      variant: "info",
-                      title: null,
-                      message: "Hi",
-                      dismissible: true,
-                      action: null,
-                    },
+                    variant: "info",
+                    title: null,
+                    message: "Hi",
+                    dismissible: true,
+                    action: null,
                   },
                 },
               ],
@@ -68,7 +66,7 @@ describe("useFlashEffects", () => {
 
       expect(received).toHaveBeenCalledTimes(1);
       const dispatched = received.mock.calls[0]?.[0] as CustomEvent;
-      expect(dispatched.detail.callout.message).toBe("Hi");
+      expect(dispatched.detail.message).toBe("Hi");
     } finally {
       window.removeEventListener(LATTICE_EVENT.callout, received);
     }
