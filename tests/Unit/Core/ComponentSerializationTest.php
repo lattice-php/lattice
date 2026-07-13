@@ -24,6 +24,7 @@ use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\FloatingPanel;
 use Lattice\Lattice\Ui\Components\Grid;
 use Lattice\Lattice\Ui\Components\Heading;
+use Lattice\Lattice\Ui\Components\Image;
 use Lattice\Lattice\Ui\Components\Link;
 use Lattice\Lattice\Ui\Components\Modal;
 use Lattice\Lattice\Ui\Components\Separator;
@@ -67,6 +68,36 @@ test('avatars serialize their source, name, and size with sensible defaults', fu
                 'src' => 'https://example.test/a.png',
                 'name' => 'Ada Lovelace',
                 'size' => 'lg',
+            ],
+        ]);
+});
+
+test('images serialize their source and preview configuration', function (): void {
+    expect(wire(Image::make('https://example.test/p.png')))
+        ->toMatchArray([
+            'type' => 'image',
+            'props' => [
+                'src' => 'https://example.test/p.png',
+                'alt' => null,
+                'size' => null,
+                'circular' => false,
+                'previewable' => true,
+            ],
+        ]);
+
+    expect(wire(Image::make('https://example.test/p.png')
+        ->alt('Product photo')
+        ->size(64)
+        ->circular()
+        ->previewable(false)))
+        ->toMatchArray([
+            'type' => 'image',
+            'props' => [
+                'src' => 'https://example.test/p.png',
+                'alt' => 'Product photo',
+                'size' => 64,
+                'circular' => true,
+                'previewable' => false,
             ],
         ]);
 });

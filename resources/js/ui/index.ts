@@ -22,13 +22,14 @@ export {
   DialogHeader,
   DialogTitle,
 } from "./dialog";
-export { CopyableText, copyToClipboard } from "./copyable-text";
+export { CopyButton, CopyableText, copyToClipboard } from "./copyable-text";
 export {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
+export { PreviewableImage } from "./image-preview";
 export { InfoTooltip } from "./info-tooltip";
 export { Input } from "./input";
 export { default as InputError } from "./input-error";

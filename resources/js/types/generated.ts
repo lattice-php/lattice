@@ -299,6 +299,7 @@ export type ComponentPropsMap = {
   grid: Grid;
   heading: Heading;
   icon: Icon;
+  image: Image;
   link: Link;
   menu: Menu;
   "menu-item": MenuItem;
@@ -597,6 +598,13 @@ export type IconColumn = {
   toggleable: boolean;
   width: ColumnWidth;
 };
+export type Image = {
+  alt: string | null;
+  circular: boolean;
+  previewable: boolean;
+  size: number | null;
+  src: string;
+};
 export type ImageColumn = {
   align: ColumnAlign;
   circular: boolean;
@@ -705,6 +713,7 @@ export type NodeType =
   | "grid"
   | "heading"
   | "icon"
+  | "image"
   | "link"
   | "menu"
   | "menu-item"

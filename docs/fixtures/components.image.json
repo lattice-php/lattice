@@ -1,0 +1,46 @@
+[
+    {
+        "props": {
+            "align": null,
+            "direction": "row",
+            "float": null,
+            "gap": "sm",
+            "height": null,
+            "justify": null,
+            "width": null
+        },
+        "schema": [
+            {
+                "props": {
+                    "alt": "Coffee brewing setup",
+                    "circular": false,
+                    "previewable": true,
+                    "size": 96,
+                    "src": "https://picsum.photos/id/1060/600/400"
+                },
+                "type": "image"
+            },
+            {
+                "props": {
+                    "alt": "Strawberries",
+                    "circular": true,
+                    "previewable": true,
+                    "size": 96,
+                    "src": "https://picsum.photos/id/1080/600/400"
+                },
+                "type": "image"
+            },
+            {
+                "props": {
+                    "alt": "Walrus resting",
+                    "circular": false,
+                    "previewable": false,
+                    "size": 96,
+                    "src": "https://picsum.photos/id/1084/600/400"
+                },
+                "type": "image"
+            }
+        ],
+        "type": "stack"
+    }
+]
