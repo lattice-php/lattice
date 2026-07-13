@@ -7,4 +7,10 @@ use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
 use Lattice\Lattice\Forms\RichEditor\EditorExtension;
 
 #[AsEditorExtension('bullet-list')]
-final class BulletList extends EditorExtension {}
+final class BulletList extends EditorExtension
+{
+    /**
+     * @var list<string>
+     */
+    protected array $serverTypes = ['bulletList', 'listItem'];
+}

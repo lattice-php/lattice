@@ -7,4 +7,10 @@ use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
 use Lattice\Lattice\Forms\RichEditor\EditorExtension;
 
 #[AsEditorExtension('strike')]
-final class Strike extends EditorExtension {}
+final class Strike extends EditorExtension
+{
+    /**
+     * @var list<string>
+     */
+    protected array $serverTypes = ['strike'];
+}

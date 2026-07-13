@@ -15,6 +15,11 @@ final class Heading extends EditorExtension
      */
     public array $levels = [1, 2, 3, 4, 5, 6];
 
+    /**
+     * @var list<string>
+     */
+    protected array $serverTypes = ['heading'];
+
     public function levels(int ...$levels): static
     {
         if ($levels === []) {

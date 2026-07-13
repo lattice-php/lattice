@@ -19,9 +19,27 @@ abstract class EditorExtension implements JsonSerializable
 {
     use SerializesToWire;
 
+    /**
+     * The tiptap schema names (nodes and marks) this type activates in
+     * submitted documents. Types outside every active extension are stripped
+     * server-side, so an extension leaving this empty (the default) must not
+     * produce document nodes of its own.
+     *
+     * @var list<string>
+     */
+    protected array $serverTypes = [];
+
     public static function make(): static
     {
         return new static;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function serverTypes(): array
+    {
+        return $this->serverTypes;
     }
 
     /**

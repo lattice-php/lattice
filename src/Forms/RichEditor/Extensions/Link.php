@@ -15,6 +15,11 @@ final class Link extends EditorExtension
      */
     public array $protocols = ['http', 'https', 'mailto'];
 
+    /**
+     * @var list<string>
+     */
+    protected array $serverTypes = ['link'];
+
     public bool $openOnClick = false;
 
     public function protocols(string ...$protocols): static

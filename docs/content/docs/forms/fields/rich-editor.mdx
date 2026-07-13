@@ -19,9 +19,11 @@ Create one with `RichEditor::make()`.
 
 ## Stored value
 
-The field submits a JSON document. Before it reaches `handle()`, Lattice decodes and validates it
-against the editor's schema (unknown nodes are stripped), so you receive a clean document array you
-can store as-is and render later by wrapping it in `RichContent`:
+The field submits a JSON document. Before it reaches `handle()`, Lattice decodes it and strips
+every node and mark the field's [active extensions](#extensions) don't allow — the client editor
+constrains what an honest user can produce, but the submitted JSON is client-controlled, so the
+server enforces the configured set the same way a `Choice` field validates its options. You receive
+a clean document array you can store as-is and render later by wrapping it in `RichContent`:
 
 ```php
 use Lattice\Lattice\Forms\RichContent;
@@ -140,6 +142,11 @@ app(EditorExtensionRegistry::class)->register(Mention::class);
 Public typed properties become the extension's `props` on the wire, exactly like a component. Once
 registered, `Mention::make()->triggers('@', '#')` works in `->extensions()`, and so does the plain
 string `'mention'` (it instantiates the class with its defaults).
+
+An extension that adds its own document nodes must also declare their schema type names via the
+protected `$serverTypes` property (e.g. `['mention']`) — submitted nodes of types no active
+extension declares are stripped server-side. Toolbar-only extensions that insert plain text, like
+the built-in emoji picker, don't need this.
 
 On the client, register a definition for the same wire type before the app boots:
 

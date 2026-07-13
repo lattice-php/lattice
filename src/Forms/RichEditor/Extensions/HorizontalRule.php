@@ -7,4 +7,10 @@ use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
 use Lattice\Lattice\Forms\RichEditor\EditorExtension;
 
 #[AsEditorExtension('horizontal-rule')]
-final class HorizontalRule extends EditorExtension {}
+final class HorizontalRule extends EditorExtension
+{
+    /**
+     * @var list<string>
+     */
+    protected array $serverTypes = ['horizontalRule'];
+}

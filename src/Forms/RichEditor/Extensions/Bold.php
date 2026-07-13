@@ -7,4 +7,10 @@ use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
 use Lattice\Lattice\Forms\RichEditor\EditorExtension;
 
 #[AsEditorExtension('bold')]
-final class Bold extends EditorExtension {}
+final class Bold extends EditorExtension
+{
+    /**
+     * @var list<string>
+     */
+    protected array $serverTypes = ['bold'];
+}

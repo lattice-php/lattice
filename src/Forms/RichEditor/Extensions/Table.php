@@ -12,6 +12,11 @@ final class Table extends EditorExtension
 {
     public int $rows = 3;
 
+    /**
+     * @var list<string>
+     */
+    protected array $serverTypes = ['table', 'tableRow', 'tableHeader', 'tableCell'];
+
     public int $cols = 3;
 
     public bool $withHeaderRow = true;

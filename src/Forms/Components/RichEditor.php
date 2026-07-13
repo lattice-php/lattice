@@ -154,7 +154,27 @@ class RichEditor extends Field
             return $value;
         }
 
-        return RichContent::make($decoded)->toArray();
+        return RichContent::make($decoded, $this->allowedServerTypes())->toArray();
+    }
+
+    /**
+     * The schema type names the active set allows in submitted documents.
+     * Strings contribute nothing, so client-only extension types never store
+     * content.
+     *
+     * @return list<string>
+     */
+    protected function allowedServerTypes(): array
+    {
+        $types = [];
+
+        foreach ($this->activeExtensions() as $extension) {
+            if ($extension instanceof EditorExtension) {
+                $types = [...$types, ...$extension->serverTypes()];
+            }
+        }
+
+        return array_values(array_unique($types));
     }
 
     /**

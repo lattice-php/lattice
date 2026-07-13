@@ -17,6 +17,11 @@ final class TextAlign extends EditorExtension
      */
     public array $alignments = self::ALIGNMENTS;
 
+    /**
+     * @var list<string>
+     */
+    protected array $serverTypes = ['textAlign'];
+
     public function alignments(string ...$alignments): static
     {
         if ($alignments === []) {
