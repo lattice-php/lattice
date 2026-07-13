@@ -144,6 +144,22 @@ describe("RichEditorComponent", () => {
     fireEvent.click(screen.getByLabelText("Details"));
   });
 
+  it("reflects mark state in the toolbar on selection-only transactions", async () => {
+    renderField(
+      fakeNode({
+        type: "field.rich-editor",
+        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
+      }),
+    );
+
+    const bold = await screen.findByLabelText("Bold");
+    expect(bold).toHaveAttribute("aria-pressed", "false");
+
+    fireEvent.click(bold);
+
+    await waitFor(() => expect(bold).toHaveAttribute("aria-pressed", "true"));
+  });
+
   it("toggles a heading level through the dropdown", async () => {
     renderField(
       fakeNode({

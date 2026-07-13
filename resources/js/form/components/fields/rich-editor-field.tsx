@@ -93,6 +93,10 @@ const RichEditorField: RendererComponent<"field.rich-editor"> = ({ node }) => {
     content: initialContent,
     editable: !locked,
     immediatelyRender: false,
+    // Tiptap v3 stops re-rendering per transaction by default, but the toolbar
+    // reads isActive/isDisabled during render — without this, selection-only
+    // transactions leave those states stale.
+    shouldRerenderOnTransaction: true,
     editorProps: {
       attributes: {
         class: "lattice-prose min-h-32 px-3 py-2 outline-none",
