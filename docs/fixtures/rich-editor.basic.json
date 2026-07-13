@@ -7,6 +7,107 @@
             "dependsOnKeys": null,
             "disabled": false,
             "editablePrefill": false,
+            "extensions": [
+                {
+                    "type": "bold"
+                },
+                {
+                    "type": "italic"
+                },
+                {
+                    "type": "strike"
+                },
+                {
+                    "type": "underline"
+                },
+                {
+                    "type": "highlight"
+                },
+                {
+                    "props": {
+                        "levels": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ]
+                    },
+                    "type": "heading"
+                },
+                {
+                    "type": "bullet-list"
+                },
+                {
+                    "type": "ordered-list"
+                },
+                {
+                    "type": "blockquote"
+                },
+                {
+                    "type": "code-block"
+                },
+                {
+                    "type": "horizontal-rule"
+                },
+                {
+                    "props": {
+                        "alignments": [
+                            "left",
+                            "center",
+                            "right",
+                            "justify"
+                        ]
+                    },
+                    "type": "text-align"
+                },
+                {
+                    "props": {
+                        "openOnClick": false,
+                        "protocols": [
+                            "http",
+                            "https",
+                            "mailto"
+                        ]
+                    },
+                    "type": "link"
+                },
+                {
+                    "props": {
+                        "cols": 3,
+                        "rows": 3,
+                        "withHeaderRow": true
+                    },
+                    "type": "table"
+                },
+                {
+                    "type": "details"
+                },
+                {
+                    "props": {
+                        "emojis": [
+                            "😀",
+                            "😅",
+                            "😂",
+                            "🥳",
+                            "😎",
+                            "🤔",
+                            "👍",
+                            "🙏",
+                            "🔥",
+                            "🎉",
+                            "🚀",
+                            "💡",
+                            "✅",
+                            "❌",
+                            "⭐",
+                            "❤️"
+                        ]
+                    },
+                    "type": "emoji"
+                }
+            ],
             "helperText": null,
             "label": "Article",
             "name": "article",

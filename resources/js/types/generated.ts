@@ -997,6 +997,7 @@ export type RichEditor = {
   dependsOnKeys: string[] | null;
   disabled: boolean;
   editablePrefill: boolean;
+  extensions: EditorExtension[] | null;
   helperText: string | null;
   label: string | null;
   name: string;
