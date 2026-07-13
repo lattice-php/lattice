@@ -71,6 +71,13 @@ test('avatars serialize their source, name, and size with sensible defaults', fu
         ]);
 });
 
+test('headings serialize their copyable flag', function (): void {
+    expect(wire(Heading::make('API Key')->copyable())['props'])
+        ->toHaveKey('copyable', true)
+        ->and(wire(Heading::make('Plain'))['props'])
+        ->toHaveKey('copyable', false);
+});
+
 test('separators default to horizontal and serialize their orientation', function (): void {
     expect(wire(Separator::make()))
         ->toMatchArray([

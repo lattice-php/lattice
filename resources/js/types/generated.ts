@@ -548,6 +548,7 @@ export type Grid = {
   columns: number | null;
 };
 export type Heading = {
+  copyable: boolean;
   level: number;
   text: string;
   tooltip: string | null;

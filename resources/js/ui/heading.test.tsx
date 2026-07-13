@@ -41,6 +41,23 @@ describe("HeadingComponent", () => {
     expect(screen.getByRole("heading", { level: 2 })).toHaveClass("text-xl");
   });
 
+  it("renders no copy control by default", () => {
+    renderHeading(2);
+
+    expect(screen.queryByRole("button", { name: /Copy/ })).not.toBeInTheDocument();
+  });
+
+  it("wraps the heading in a copy control when copyable", () => {
+    const node = {
+      type: "heading",
+      props: { level: 2, text: "API Key", tooltip: null, copyable: true },
+    } as Node<"heading">;
+    render(<HeadingComponent node={node}>{null}</HeadingComponent>);
+
+    expect(screen.getByRole("heading", { level: 2 })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Copy API Key" })).toBeInTheDocument();
+  });
+
   it("reveals a tooltip after the heading text on click", () => {
     const node = {
       type: "heading",
