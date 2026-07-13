@@ -21,6 +21,13 @@ it('serializes a text input', function (): void {
         ]);
 });
 
+it('serializes the copyable flag', function (): void {
+    expect(wire(TextInput::make('api_key', 'API key')->copyable())['props'])
+        ->toHaveKey('copyable', true)
+        ->and(wire(TextInput::make('name', 'Name'))['props'])
+        ->toHaveKey('copyable', false);
+});
+
 it('serializes an email text input', function (): void {
     $node = wire(TextInput::make('email', 'Email address')->email()->placeholder('you@example.com'));
 
@@ -86,6 +93,12 @@ describe('docs fixtures', function (): void {
 
         assertFixtureMatches('text-input.affix-icon', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             TextInput::make('search', 'Search')->prefix(Icon::Search),
+        ]))));
+    });
+
+    it('matches the copyable example fixture', function (): void {
+        assertFixtureMatches('text-input.copyable', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            TextInput::make('api_key', 'API key')->value('sk-live-4242')->readOnly()->copyable(),
         ]))));
     });
 

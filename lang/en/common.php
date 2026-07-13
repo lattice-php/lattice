@@ -12,6 +12,9 @@ return [
     'copied' => 'Copied',
     'copyValue' => 'Copy :label',
     'copiedValue' => 'Copied :label',
+    'image' => [
+        'open-preview' => 'View image',
+    ],
     'action-group' => [
         'label' => 'Actions',
     ],

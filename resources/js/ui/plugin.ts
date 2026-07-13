@@ -20,6 +20,7 @@ import FragmentComponent from "./fragment";
 import GridComponent from "./grid";
 import HeadingComponent from "./heading";
 import IconComponent from "./icon";
+import ImageComponent from "./image";
 import LinkComponent from "./link";
 import ModalComponent from "./modal";
 import RawBlockComponent from "./raw-block";
@@ -55,6 +56,7 @@ export const uiComponents = createPlugin({
     grid: eagerComponent(GridComponent),
     heading: eagerComponent(HeadingComponent),
     icon: eagerComponent(IconComponent),
+    image: eagerComponent(ImageComponent),
     link: eagerComponent(LinkComponent),
     modal: eagerComponent(ModalComponent),
     "raw-block": eagerComponent(RawBlockComponent),

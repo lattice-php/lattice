@@ -53,6 +53,9 @@ class ShowcaseForm extends FormDefinition
                     PasswordInput::make('password', __('workbench.forms.showcase.password'))
                         ->needsConfirmation()
                         ->rules(['required', 'string', 'min:8', 'confirmed']),
+                    TextInput::make('referral_code', __('workbench.forms.showcase.referral-code'))
+                        ->value('REF-2026-LATTICE')
+                        ->copyable(),
                     Textarea::make('bio', __('workbench.common.bio'))
                         ->rows(4)
                         ->placeholder(__('workbench.forms.showcase.your-bio'))

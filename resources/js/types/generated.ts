@@ -299,6 +299,7 @@ export type ComponentPropsMap = {
   grid: Grid;
   heading: Heading;
   icon: Icon;
+  image: Image;
   link: Link;
   menu: Menu;
   "menu-item": MenuItem;
@@ -548,6 +549,7 @@ export type Grid = {
   columns: number | null;
 };
 export type Heading = {
+  copyable: boolean;
   level: number;
   text: string;
   tooltip: string | null;
@@ -596,12 +598,20 @@ export type IconColumn = {
   toggleable: boolean;
   width: ColumnWidth;
 };
+export type Image = {
+  alt: string | null;
+  circular: boolean;
+  previewable: boolean;
+  size: number | null;
+  src: string;
+};
 export type ImageColumn = {
   align: ColumnAlign;
   circular: boolean;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
+  previewable: boolean;
   size: number | null;
   sortable: boolean;
   toggleable: boolean;
@@ -653,6 +663,7 @@ export type Modal = {
 };
 export type MoneyColumn = {
   align: ColumnAlign;
+  copyable: boolean;
   currency: string | null;
   currencyField: string | null;
   filter: ColumnFilter | null;
@@ -703,6 +714,7 @@ export type NodeType =
   | "grid"
   | "heading"
   | "icon"
+  | "image"
   | "link"
   | "menu"
   | "menu-item"
@@ -747,6 +759,7 @@ export type Notifications = {
 export type NumberColumn = {
   align: ColumnAlign;
   compact: boolean;
+  copyable: boolean;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
@@ -1148,6 +1161,7 @@ export type TextInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
   conditions: FieldConditions | null;
+  copyable: boolean;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;

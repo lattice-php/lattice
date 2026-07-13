@@ -1,9 +1,14 @@
-import { screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { createFieldRenderer, fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
 import { TextInputComponent } from "./text-input";
 
 const renderField = createFieldRenderer(TextInputComponent);
+
+afterEach(() => {
+  Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
+  vi.restoreAllMocks();
+});
 
 describe("TextInputComponent conditions", () => {
   it("hides when its visible condition fails", () => {
@@ -127,5 +132,49 @@ describe("TextInputComponent affixes", () => {
 
     const input = screen.getByRole("textbox", { name: "Plain" });
     expect(input).not.toHaveClass("rounded-l-none", "rounded-r-none");
+  });
+});
+
+describe("TextInputComponent copy affix", () => {
+  it("renders no copy button by default", () => {
+    renderField(
+      fakeNode({
+        type: "field.text-input",
+        props: { name: "plain", label: "Plain" },
+      }),
+    );
+
+    expect(screen.queryByRole("button", { name: /Copy/ })).not.toBeInTheDocument();
+  });
+
+  it("copies the current input value", () => {
+    const writeText = vi.fn<(text: string) => Promise<void>>().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
+
+    renderField(
+      fakeNode({
+        type: "field.text-input",
+        props: { name: "api_key", label: "API key", copyable: true },
+      }),
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: "API key" }), {
+      target: { value: "tok_secret" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Copy API key" }));
+
+    expect(writeText).toHaveBeenCalledWith("tok_secret");
+    expect(screen.getByRole("button", { name: "Copied API key" })).toBeInTheDocument();
+  });
+
+  it("squares the input corner adjacent to the copy button", () => {
+    renderField(
+      fakeNode({
+        type: "field.text-input",
+        props: { name: "api_key", label: "API key", copyable: true },
+      }),
+    );
+
+    expect(screen.getByRole("textbox", { name: "API key" })).toHaveClass("rounded-r-none");
   });
 });

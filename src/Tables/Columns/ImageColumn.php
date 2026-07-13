@@ -13,6 +13,8 @@ class ImageColumn extends Column
 
     public ?int $size = null;
 
+    public bool $previewable = true;
+
     /**
      * Render the image as a circle — useful for avatars.
      */
@@ -29,6 +31,16 @@ class ImageColumn extends Column
     public function size(int $size): static
     {
         $this->size = $size;
+
+        return $this;
+    }
+
+    /**
+     * Whether clicking the cell opens the image in a lightbox. On by default.
+     */
+    public function previewable(bool $previewable = true): static
+    {
+        $this->previewable = $previewable;
 
         return $this;
     }

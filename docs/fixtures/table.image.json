@@ -13,6 +13,7 @@
                         "filter": null,
                         "hiddenByDefault": false,
                         "label": "",
+                        "previewable": true,
                         "size": 32,
                         "sortable": false,
                         "toggleable": false,
