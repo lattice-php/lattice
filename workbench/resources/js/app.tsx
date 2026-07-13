@@ -1,10 +1,25 @@
 import "../css/app.css";
 import { configureEcho } from "@laravel/echo-react";
-import { createLatticeApp } from "@lattice-php/lattice";
+import { createLatticeApp, registerRichEditorExtension } from "@lattice-php/lattice";
 import sprite from "virtual:svg-sprite";
 import plugins from "virtual:lattice/plugins";
 import { appColumns } from "./columns";
 import { WORKBENCH_I18N_NAMESPACE } from "./i18n";
+
+// Exercises the custom rich-editor extension seam: the PHP side ships the bare
+// "stamp" wire type (see RichEditorDemoForm) and this client registration
+// provides its behavior.
+registerRichEditorExtension("stamp", {
+  toolbar: () => [
+    {
+      icon: "check",
+      key: "stamp",
+      label: "Stamp",
+      isActive: () => false,
+      run: (editor) => editor.chain().focus().insertContent("Stamped!").run(),
+    },
+  ],
+});
 
 type ReverbProp = {
   host: string;

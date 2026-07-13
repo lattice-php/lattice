@@ -34,6 +34,7 @@ return [
         'delete-table' => 'Tabelle löschen',
         'details' => 'Details',
         'insert-emoji' => 'Emoji einfügen',
+        'stamp' => 'Stempel',
     ],
     'file-upload' => [
         'dropzone' => 'Dateien hierher ziehen oder zum Auswählen klicken',
