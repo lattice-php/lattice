@@ -9,21 +9,27 @@
             "editablePrefill": false,
             "extensions": [
                 {
+                    "props": {},
                     "type": "bold"
                 },
                 {
+                    "props": {},
                     "type": "italic"
                 },
                 {
+                    "props": {},
                     "type": "strike"
                 },
                 {
+                    "props": {},
                     "type": "underline"
                 },
                 {
+                    "props": {},
                     "type": "highlight"
                 },
                 {
+                    "props": {},
                     "type": "code"
                 },
                 {
@@ -40,18 +46,23 @@
                     "type": "heading"
                 },
                 {
+                    "props": {},
                     "type": "bullet-list"
                 },
                 {
+                    "props": {},
                     "type": "ordered-list"
                 },
                 {
+                    "props": {},
                     "type": "blockquote"
                 },
                 {
+                    "props": {},
                     "type": "code-block"
                 },
                 {
+                    "props": {},
                     "type": "horizontal-rule"
                 },
                 {
@@ -85,6 +96,7 @@
                     "type": "table"
                 },
                 {
+                    "props": {},
                     "type": "details"
                 },
                 {

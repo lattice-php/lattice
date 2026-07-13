@@ -20,8 +20,8 @@ use Lattice\Lattice\Forms\RichEditor\Extensions\Table;
 use Lattice\Lattice\Forms\RichEditor\Extensions\TextAlign;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Underline;
 
-it('wires the prop-less built-ins as a bare type', function (string $class, string $type): void {
-    expect($class::make()->toWire())->toBe(['type' => $type]);
+it('wires the prop-less built-ins with empty props', function (string $class, string $type): void {
+    expect($class::make()->toWire())->toEqual(['type' => $type, 'props' => new stdClass]);
 })->with([
     [Bold::class, 'bold'],
     [Italic::class, 'italic'],

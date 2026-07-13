@@ -9,23 +9,23 @@ import type { EditorExtension } from "@lattice-php/lattice/types/generated";
 import { RichEditorComponent } from "./rich-editor";
 
 const DEFAULT_EXTENSIONS: EditorExtension[] = [
-  { type: "bold" },
-  { type: "italic" },
-  { type: "strike" },
-  { type: "underline" },
-  { type: "highlight" },
-  { type: "code" },
-  { type: "heading" },
-  { type: "bullet-list" },
-  { type: "ordered-list" },
-  { type: "blockquote" },
-  { type: "code-block" },
-  { type: "horizontal-rule" },
-  { type: "text-align" },
-  { type: "link" },
-  { type: "table" },
-  { type: "details" },
-  { type: "emoji" },
+  { type: "bold", props: {} },
+  { type: "italic", props: {} },
+  { type: "strike", props: {} },
+  { type: "underline", props: {} },
+  { type: "highlight", props: {} },
+  { type: "code", props: {} },
+  { type: "heading", props: {} },
+  { type: "bullet-list", props: {} },
+  { type: "ordered-list", props: {} },
+  { type: "blockquote", props: {} },
+  { type: "code-block", props: {} },
+  { type: "horizontal-rule", props: {} },
+  { type: "text-align", props: {} },
+  { type: "link", props: {} },
+  { type: "table", props: {} },
+  { type: "details", props: {} },
+  { type: "emoji", props: {} },
 ];
 
 function renderField(
@@ -227,7 +227,11 @@ describe("RichEditorComponent", () => {
         props: {
           name: "body",
           label: "Body",
-          extensions: [{ type: "bold" }, { type: "italic" }, { type: "link" }],
+          extensions: [
+            { type: "bold", props: {} },
+            { type: "italic", props: {} },
+            { type: "link", props: {} },
+          ],
         },
       }),
     );
@@ -259,7 +263,10 @@ describe("RichEditorComponent", () => {
         props: {
           name: "body",
           label: "Body",
-          extensions: [{ type: "bold" }, { type: "stamp" }],
+          extensions: [
+            { type: "bold", props: {} },
+            { type: "stamp", props: {} },
+          ],
         },
       }),
     );

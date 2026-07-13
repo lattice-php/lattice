@@ -177,7 +177,7 @@ Toolbar contributions from different extensions are separated automatically; def
 `group` render side by side.
 
 For an extension that only exists client-side, skip the PHP class entirely: pass its wire type as a
-string — `->extensions([Bold::make(), 'mention'])` — and it serializes as a bare `{"type": "mention"}`.
+string — `->extensions([Bold::make(), 'mention'])` — and it serializes as `{"type": "mention", "props": {}}`.
 Unknown types the client has no definition for are skipped (with a console warning in dev). See
 [Registry and types](/extending/registry-and-types/) for how generated types and the
 `EditorExtensionProps` augmentation give `props` a concrete shape on the client.

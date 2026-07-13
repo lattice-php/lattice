@@ -51,9 +51,9 @@ describe('extensions', function (): void {
         ]);
 
         expect(editorExtensions($field))->toBe([
-            ['type' => 'bold'],
+            ['type' => 'bold', 'props' => []],
             ['type' => 'heading', 'props' => ['levels' => [1, 2]]],
-            ['type' => 'mention'],
+            ['type' => 'mention', 'props' => []],
         ]);
     });
 
@@ -67,7 +67,7 @@ describe('extensions', function (): void {
 
     it('passes an unknown string through as a bare type', function (): void {
         expect(editorExtensions(RichEditor::make('body')->extensions(['mention'])))
-            ->toBe([['type' => 'mention']]);
+            ->toBe([['type' => 'mention', 'props' => []]]);
     });
 
     it('dedupes by wire type, keeping the first position and the last configuration', function (): void {
@@ -79,7 +79,7 @@ describe('extensions', function (): void {
 
         expect(editorExtensions($field))->toBe([
             ['type' => 'heading', 'props' => ['levels' => [2]]],
-            ['type' => 'bold'],
+            ['type' => 'bold', 'props' => []],
         ]);
     });
 
@@ -124,7 +124,7 @@ describe('extensions', function (): void {
         RichEditor::defaultExtensionsUsing(fn (): array => [Bold::make(), Link::make()->openOnClick()]);
 
         expect(editorExtensions($field))->toBe([
-            ['type' => 'bold'],
+            ['type' => 'bold', 'props' => []],
             ['type' => 'link', 'props' => ['protocols' => ['http', 'https', 'mailto'], 'openOnClick' => true]],
         ]);
     });

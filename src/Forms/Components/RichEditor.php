@@ -27,6 +27,7 @@ use Lattice\Lattice\Forms\RichEditor\Extensions\Strike;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Table;
 use Lattice\Lattice\Forms\RichEditor\Extensions\TextAlign;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Underline;
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
 
 #[AsField(FieldType::RichEditor)]
@@ -189,7 +190,7 @@ class RichEditor extends Field
         $props['extensions'] = array_map(
             static fn (EditorExtension|string $extension): array => $extension instanceof EditorExtension
                 ? $extension->toWire()
-                : ['type' => $extension],
+                : ['type' => $extension, 'props' => Wire::map([])],
             array_values($this->activeExtensions()),
         );
 

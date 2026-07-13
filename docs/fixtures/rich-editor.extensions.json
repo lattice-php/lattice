@@ -9,9 +9,11 @@
             "editablePrefill": false,
             "extensions": [
                 {
+                    "props": {},
                     "type": "bold"
                 },
                 {
+                    "props": {},
                     "type": "italic"
                 },
                 {

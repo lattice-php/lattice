@@ -5,11 +5,12 @@ namespace Lattice\Lattice\Forms\RichEditor;
 
 use JsonSerializable;
 use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Concerns\SerializesToWire;
 
 /**
- * A rich-editor extension: `{type}` plus `{props}` when configured, following
- * the shared wire convention (a public typed property is a wire prop). The type
+ * A rich-editor extension: a `{type, props}` wire value whose props are the
+ * public typed properties (the shared wire convention). The type
  * comes from #[AsEditorExtension]; configuration mutates through fluent setters
  * like a form field, so `Heading::make()->levels(1, 2)` reads naturally.
  *
@@ -47,11 +48,7 @@ abstract class EditorExtension implements JsonSerializable
      */
     public function toWire(): array
     {
-        $props = $this->wireProps();
-
-        return $props === []
-            ? ['type' => $this->wireType()]
-            : ['type' => $this->wireType(), 'props' => $props];
+        return ['type' => $this->wireType(), 'props' => Wire::map($this->wireProps())];
     }
 
     /**

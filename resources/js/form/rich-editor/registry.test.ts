@@ -37,15 +37,15 @@ describe("resolveRichEditorExtensions", () => {
   it("defaults missing props to an empty object", () => {
     registerRichEditorExtension("custom-b", {});
 
-    expect(resolveRichEditorExtensions([{ type: "custom-b" }])[0].props).toEqual({});
+    expect(resolveRichEditorExtensions([{ type: "custom-b", props: {} }])[0].props).toEqual({});
   });
 
   it("warns once and skips unknown types", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const resolved = resolveRichEditorExtensions([
-      { type: "never-registered" },
-      { type: "never-registered" },
+      { type: "never-registered", props: {} },
+      { type: "never-registered", props: {} },
     ]);
 
     expect(resolved).toEqual([]);
@@ -90,7 +90,11 @@ describe("assembleToolbar", () => {
     registerRichEditorExtension("block-c", { toolbar: () => [button("c"), button("d")] });
 
     const entries = assembleToolbar(
-      resolveRichEditorExtensions([{ type: "mark-a" }, { type: "mark-b" }, { type: "block-c" }]),
+      resolveRichEditorExtensions([
+        { type: "mark-a", props: {} },
+        { type: "mark-b", props: {} },
+        { type: "block-c", props: {} },
+      ]),
     );
 
     expect(entries.map((entry) => (entry === "separator" ? entry : `item:${entry.key}`))).toEqual([
@@ -107,7 +111,11 @@ describe("assembleToolbar", () => {
     registerRichEditorExtension("loud", { toolbar: () => [button("loud")] });
 
     const entries = assembleToolbar(
-      resolveRichEditorExtensions([{ type: "loud" }, { type: "silent" }, { type: "loud" }]),
+      resolveRichEditorExtensions([
+        { type: "loud", props: {} },
+        { type: "silent", props: {} },
+        { type: "loud", props: {} },
+      ]),
     );
 
     expect(entries.filter((entry) => entry === "separator")).toHaveLength(0);
@@ -124,7 +132,10 @@ describe("assembleTiptapExtensions", () => {
 
     expect(
       assembleTiptapExtensions(
-        resolveRichEditorExtensions([{ type: "with-instances" }, { type: "without-instances" }]),
+        resolveRichEditorExtensions([
+          { type: "with-instances", props: {} },
+          { type: "without-instances", props: {} },
+        ]),
       ),
     ).toEqual([fakeExtension]);
   });

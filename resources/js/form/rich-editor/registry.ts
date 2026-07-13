@@ -67,8 +67,8 @@ export type ResolvedRichEditorExtension = {
 const registry = new Map<string, RichEditorExtensionDefinition>();
 
 /**
- * Wire props arrive as `Partial` because a spec may omit `props` entirely;
- * definitions default each field themselves.
+ * Wire props stay `Partial` at the definition boundary — a client-registered
+ * type's props carry no generated shape, so definitions default each field.
  */
 export function registerRichEditorExtension<TType extends string>(
   type: TType,
@@ -114,7 +114,7 @@ export function resolveRichEditorExtensions(
 
     resolved.push({
       type: spec.type,
-      props: spec.props ?? {},
+      props: spec.props,
       definition,
       group: definition.group ?? spec.type,
     });

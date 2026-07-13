@@ -16,8 +16,8 @@ final class ConfigurableSampleExtension extends EditorExtension
     public array $levels = [1, 2];
 }
 
-it('wires as a bare type when it has no props', function (): void {
-    expect(PlainSampleExtension::make()->toWire())->toBe(['type' => 'plain']);
+it('wires empty props as an object', function (): void {
+    expect(PlainSampleExtension::make()->toWire())->toEqual(['type' => 'plain', 'props' => new stdClass]);
 });
 
 it('wires its public properties as props', function (): void {

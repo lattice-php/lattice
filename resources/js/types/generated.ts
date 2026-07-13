@@ -398,18 +398,18 @@ export type Dropdown = {
   placement: Placement;
   trigger: Node[];
 };
-export type EditorBlockquote = object;
-export type EditorBold = object;
-export type EditorBulletList = object;
-export type EditorCode = object;
-export type EditorCodeBlock = object;
-export type EditorDetails = object;
+export type EditorBlockquote = Record<string, never>;
+export type EditorBold = Record<string, never>;
+export type EditorBulletList = Record<string, never>;
+export type EditorCode = Record<string, never>;
+export type EditorCodeBlock = Record<string, never>;
+export type EditorDetails = Record<string, never>;
 export type EditorEmoji = {
   emojis: string[];
 };
 export type EditorExtension = {
   type: string;
-  props?: Record<string, unknown>;
+  props: Record<string, unknown>;
 };
 export type EditorExtensionPropsMap = {
   blockquote: EditorBlockquote;
@@ -433,15 +433,15 @@ export type EditorExtensionPropsMap = {
 export type EditorHeading = {
   levels: number[];
 };
-export type EditorHighlight = object;
-export type EditorHorizontalRule = object;
-export type EditorItalic = object;
+export type EditorHighlight = Record<string, never>;
+export type EditorHorizontalRule = Record<string, never>;
+export type EditorItalic = Record<string, never>;
 export type EditorLink = {
   protocols: string[];
   openOnClick: boolean;
 };
-export type EditorOrderedList = object;
-export type EditorStrike = object;
+export type EditorOrderedList = Record<string, never>;
+export type EditorStrike = Record<string, never>;
 export type EditorTable = {
   rows: number;
   cols: number;
@@ -450,7 +450,7 @@ export type EditorTable = {
 export type EditorTextAlign = {
   alignments: string[];
 };
-export type EditorUnderline = object;
+export type EditorUnderline = Record<string, never>;
 export type Effect = {
   type: string;
   props: Record<string, unknown>;
