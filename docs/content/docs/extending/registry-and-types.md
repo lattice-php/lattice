@@ -175,14 +175,16 @@ const columnRegistry = useColumnRegistry();
 - `ComponentProps` — maps a type string to its props shape for fields and UI components.
 - `ColumnProps` — maps a type string to its props shape for column cells.
 - `FilterProps` — maps a filter control to its props shape.
-- `EffectProps` — maps an effect type to its payload shape.
+- `EffectProps` — maps an effect type to its props shape.
+- `EditorExtensionProps` — maps a [rich-editor extension](/forms/fields/rich-editor/#custom-extensions) type to its props shape.
 
 All of them use TypeScript's declaration merging. You can augment them manually or let `lattice:typescript` do it.
 
 ### php artisan lattice:typescript
 
 Run this command whenever your PHP classes gain or lose public properties. It discovers your
-`#[AsComponent]`-marked components, columns and filters, plus `#[AsEffect]` effects:
+`#[AsComponent]`-marked components, columns and filters, plus `#[AsEffect]` effects and
+`#[AsEditorExtension]` rich-editor extensions:
 
 ```bash
 php artisan lattice:typescript

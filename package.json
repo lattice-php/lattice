@@ -63,6 +63,10 @@
       "types": "./dist/form/toolkit.d.ts",
       "import": "./dist/form/toolkit.js"
     },
+    "./form/rich-editor": {
+      "types": "./dist/form/rich-editor/index.d.ts",
+      "import": "./dist/form/rich-editor/index.js"
+    },
     "./i18n": {
       "types": "./dist/i18n/index.d.ts",
       "import": "./dist/i18n/index.js"

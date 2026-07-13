@@ -47,6 +47,7 @@ use Lattice\Lattice\Effects\EffectFlasher;
 use Lattice\Lattice\Effects\EffectRegistry;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\FormRegistry;
+use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Http\Middleware\SetLocale;
 use Lattice\Lattice\Http\PageRegistry;
@@ -120,6 +121,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->scoped(EffectFlasher::class);
 
         $this->app->singleton(EffectRegistry::class, fn (): EffectRegistry => EffectRegistry::withBuiltins());
+        $this->app->singleton(EditorExtensionRegistry::class, fn (): EditorExtensionRegistry => EditorExtensionRegistry::withBuiltins());
 
         // Default role; the workbench rebinds this to BaseProfile.
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);

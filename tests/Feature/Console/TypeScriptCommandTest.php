@@ -36,7 +36,12 @@ it('writes an augmentation file for app components, not built-ins', function ():
             ->toContain('label: string | null')
             ->toContain('interface EffectProps')
             ->toContain('"sample-effect": {')
-            ->toContain('target: string');
+            ->toContain('interface EffectProps')
+            ->toContain('"sample-effect": {')
+            ->toContain('target: string')
+            ->toContain('interface EditorExtensionProps')
+            ->toContain('"sample-extension": {')
+            ->toContain('enabled: boolean');
 
         expect(is_string($contents) && str_contains($contents, '"badge"'))->toBeFalse();
     });

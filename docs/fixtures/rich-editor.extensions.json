@@ -1,0 +1,52 @@
+[
+    {
+        "props": {
+            "columnWidth": "md",
+            "conditions": null,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "editablePrefill": false,
+            "extensions": [
+                {
+                    "props": {},
+                    "type": "bold"
+                },
+                {
+                    "props": {},
+                    "type": "italic"
+                },
+                {
+                    "props": {
+                        "levels": [
+                            2,
+                            3
+                        ]
+                    },
+                    "type": "heading"
+                },
+                {
+                    "props": {
+                        "openOnClick": false,
+                        "protocols": [
+                            "https",
+                            "mailto"
+                        ]
+                    },
+                    "type": "link"
+                }
+            ],
+            "helperText": null,
+            "label": "Summary",
+            "name": "summary",
+            "placeholder": null,
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "readOnly": false,
+            "required": false,
+            "tooltip": null,
+            "value": null
+        },
+        "type": "field.rich-editor"
+    }
+]
