@@ -10,16 +10,11 @@ use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\IconColumn;
 use Lattice\Lattice\Tables\Columns\ImageColumn;
 use Lattice\Lattice\Tables\Columns\StackColumn;
-use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
-use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Ui\Components\Text;
 use Workbench\App\Models\Product;
 
-/**
- * @extends EloquentTableDefinition<Product>
- */
 #[AsTable('workbench.demo.visual-columns')]
-class VisualColumnsTable extends EloquentTableDefinition
+class VisualColumnsTable extends BaseProductsDemoTable
 {
     /**
      * @return array<int, Column>
@@ -53,16 +48,10 @@ class VisualColumnsTable extends EloquentTableDefinition
     /**
      * @return Builder<Product>
      */
-    public function builder(TableQuery $query): Builder
+    protected function query(): Builder
     {
-        $builder = Product::query()
+        return Product::query()
             ->with('images')
             ->select(['id', 'name', 'sku', 'status', 'featured']);
-
-        if ($query->sorts === []) {
-            $builder->latest('id');
-        }
-
-        return $builder;
     }
 }

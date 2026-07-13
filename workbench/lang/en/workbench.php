@@ -352,9 +352,6 @@ return [
             'terms' => 'I accept the terms and conditions',
             'your-bio' => 'Tell us about yourself',
         ],
-        'validation' => [
-            'nickname' => 'Nickname',
-        ],
     ],
     'language' => [
         'de' => 'German',
@@ -401,14 +398,10 @@ return [
         'realtime' => 'Realtime',
         'remote-schema' => 'Remote Schema',
         'sales-orders' => 'Sales orders',
-        'settings' => 'Settings',
-        'table-actions' => 'Actions',
-        'table-behavior' => 'Behavior',
         'table-filters' => 'Filters',
         'tables' => 'Tables',
         'tabs' => 'Tabs',
         'toggle-sidebar' => 'Toggle sidebar',
-        'validation' => 'Validation',
     ],
     'pages' => [
         'charts' => [
@@ -616,14 +609,6 @@ return [
             'title' => 'Products',
         ],
         'tables' => [
-            'actions' => [
-                'description' => 'Row actions, bulk actions, and modal form actions on a table.',
-                'title' => 'Table actions',
-            ],
-            'behavior' => [
-                'description' => 'Sorting, column visibility, resizing, and striped rows.',
-                'title' => 'Table behavior',
-            ],
             'custom-column' => [
                 'description' => 'An app-defined column type with its own React renderer.',
                 'title' => 'Custom column',
@@ -657,11 +642,6 @@ return [
                 'title' => 'Icon, image & boolean columns',
             ],
         ],
-        'settings' => [
-            'heading' => 'Settings',
-            'placeholder' => 'Workspace settings live here.',
-            'title' => 'Settings',
-        ],
         'tabs' => [
             'account' => 'Account',
             'account-panel' => 'Account panel',
@@ -680,10 +660,6 @@ return [
             'title' => 'Lattice Tabs',
             'vertical' => 'Vertical tabs',
             'vertical-end' => 'Vertical tabs (right)',
-        ],
-        'validation' => [
-            'description' => 'Precognitive validation against server-side rules.',
-            'title' => 'Validation',
         ],
     ],
     'status' => [

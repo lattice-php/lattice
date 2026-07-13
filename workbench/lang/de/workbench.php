@@ -352,9 +352,6 @@ return [
             'terms' => 'Ich akzeptiere die Geschäftsbedingungen',
             'your-bio' => 'Erzähle etwas über dich',
         ],
-        'validation' => [
-            'nickname' => 'Spitzname',
-        ],
     ],
     'language' => [
         'de' => 'Deutsch',
@@ -401,14 +398,10 @@ return [
         'realtime' => 'Echtzeit',
         'remote-schema' => 'Remote-Schema',
         'sales-orders' => 'Aufträge',
-        'settings' => 'Einstellungen',
-        'table-actions' => 'Aktionen',
-        'table-behavior' => 'Verhalten',
         'table-filters' => 'Filter',
         'tables' => 'Tabellen',
         'tabs' => 'Tabs',
         'toggle-sidebar' => 'Seitenleiste umschalten',
-        'validation' => 'Validierung',
     ],
     'pages' => [
         'charts' => [
@@ -616,14 +609,6 @@ return [
             'title' => 'Produkte',
         ],
         'tables' => [
-            'actions' => [
-                'description' => 'Zeilenaktionen, Massenaktionen und modale Formularaktionen einer Tabelle.',
-                'title' => 'Tabellenaktionen',
-            ],
-            'behavior' => [
-                'description' => 'Sortierung, Spaltensichtbarkeit, Größenänderung und Zebrastreifen.',
-                'title' => 'Tabellenverhalten',
-            ],
             'custom-column' => [
                 'description' => 'Ein app-definierter Spaltentyp mit eigenem React-Renderer.',
                 'title' => 'Eigene Spalte',
@@ -657,11 +642,6 @@ return [
                 'title' => 'Icon-, Bild- & Boolean-Spalten',
             ],
         ],
-        'settings' => [
-            'heading' => 'Einstellungen',
-            'placeholder' => 'Hier befinden sich die Arbeitsbereich-Einstellungen.',
-            'title' => 'Einstellungen',
-        ],
         'tabs' => [
             'account' => 'Konto',
             'account-panel' => 'Konto-Panel',
@@ -680,10 +660,6 @@ return [
             'title' => 'Lattice Tabs',
             'vertical' => 'Vertikale Tabs',
             'vertical-end' => 'Vertikale Tabs (rechts)',
-        ],
-        'validation' => [
-            'description' => 'Precognitive Validierung gegen serverseitige Regeln.',
-            'title' => 'Validierung',
         ],
     ],
     'status' => [

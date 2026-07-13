@@ -13,15 +13,10 @@ use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\Filters\SelectFilter;
 use Lattice\Lattice\Tables\Filters\TernaryFilter;
 use Lattice\Lattice\Tables\Filters\ToggleFilter;
-use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
-use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Models\Product;
 
-/**
- * @extends EloquentTableDefinition<Product>
- */
 #[AsTable('workbench.demo.filters')]
-class ProductFiltersTable extends EloquentTableDefinition
+class ProductFiltersTable extends BaseProductsDemoTable
 {
     /**
      * @return array<int, Column>
@@ -68,14 +63,8 @@ class ProductFiltersTable extends EloquentTableDefinition
     /**
      * @return Builder<Product>
      */
-    public function builder(TableQuery $query): Builder
+    protected function query(): Builder
     {
-        $builder = Product::query()->select(['id', 'name', 'status', 'featured', 'updated_at']);
-
-        if ($query->sorts === []) {
-            $builder->latest('id');
-        }
-
-        return $builder;
+        return Product::query()->select(['id', 'name', 'status', 'featured', 'updated_at']);
     }
 }

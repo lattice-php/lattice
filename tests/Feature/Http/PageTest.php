@@ -123,7 +123,6 @@ test('workbench pages serialize package component trees for inertia', function (
         ->component('topbar', tap: fn ($topbar) => $topbar->assertProp('sticky', true))
         ->assertRendered('dropdown:locale-switcher')
         ->assertRendered('action:locale-en')
-        ->component('menu-item', 'settings', fn ($menu) => $menu->assertProp('icon', 'settings'))
         ->assertRendered('menu-item:log-out')
         ->assertRendered('breadcrumbs')
         ->assertRendered('outlet');

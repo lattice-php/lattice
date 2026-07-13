@@ -65,15 +65,12 @@ use Workbench\App\Pages\Platform\RealtimePage;
 use Workbench\App\Pages\Platform\RemoteSchemaPage;
 use Workbench\App\Pages\ProductsPage;
 use Workbench\App\Pages\SalesOrdersPage;
-use Workbench\App\Pages\Tables\ActionsPage;
-use Workbench\App\Pages\Tables\BehaviorPage;
 use Workbench\App\Pages\Tables\CustomColumnPage;
 use Workbench\App\Pages\Tables\FiltersPage;
 use Workbench\App\Pages\Tables\NumberColumnsPage;
 use Workbench\App\Pages\Tables\PaginationPage;
 use Workbench\App\Pages\Tables\TextColumnsPage;
 use Workbench\App\Pages\Tables\VisualColumnsPage;
-use Workbench\App\Pages\ValidationDemoPage;
 use Workbench\App\Support\Logo;
 
 #[AsLayout('app')]
@@ -139,7 +136,6 @@ class AppLayout extends LayoutDefinition
                         MenuItem::fromPage(BuilderPage::class)->key('field-builder')->label(__('workbench.navigation.field-builder')),
                     ]),
                     MenuItem::fromPage(DependentFieldsPage::class)->key('dependent-fields')->label(__('workbench.navigation.dependent-fields')),
-                    MenuItem::fromPage(ValidationDemoPage::class)->key('validation')->label(__('workbench.navigation.validation')),
                 ]),
                 MenuItem::make(__('workbench.navigation.tables'), 'tables')->prefix(Icon::Table)->children([
                     MenuItem::make(__('workbench.navigation.columns'), 'columns')->children([
@@ -150,8 +146,6 @@ class AppLayout extends LayoutDefinition
                     ]),
                     MenuItem::fromPage(FiltersPage::class)->key('table-filters')->label(__('workbench.navigation.table-filters')),
                     MenuItem::fromPage(PaginationPage::class)->key('pagination-modes')->label(__('workbench.navigation.pagination-modes')),
-                    MenuItem::fromPage(ActionsPage::class)->key('table-actions')->label(__('workbench.navigation.table-actions')),
-                    MenuItem::fromPage(BehaviorPage::class)->key('table-behavior')->label(__('workbench.navigation.table-behavior')),
                 ]),
                 MenuItem::make(__('workbench.navigation.components'), 'components')->prefix(Affix::icon('spark'))->children([
                     MenuItem::fromPage(ButtonsPage::class)->key('buttons')->label(__('workbench.navigation.buttons')),
@@ -192,11 +186,6 @@ class AppLayout extends LayoutDefinition
                 ->schema([
                     $this->appearanceSwitcher(),
                     $this->localeSwitcher(),
-                    Menu::make('topbar-settings')->items([
-                        MenuItem::make(__('workbench.navigation.settings'), 'settings')
-                            ->icon(Icon::Settings)
-                            ->href('/settings'),
-                    ]),
                     $this->notifications(),
                     $this->userMenu(),
                 ]),

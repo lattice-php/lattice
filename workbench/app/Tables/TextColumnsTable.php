@@ -7,15 +7,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
-use Lattice\Lattice\Tables\TableQuery;
 use Workbench\App\Models\Product;
 
-/**
- * @extends EloquentTableDefinition<Product>
- */
 #[AsTable('workbench.demo.text-columns')]
-class TextColumnsTable extends EloquentTableDefinition
+class TextColumnsTable extends BaseProductsDemoTable
 {
     /**
      * @return array<int, Column>
@@ -33,14 +28,8 @@ class TextColumnsTable extends EloquentTableDefinition
     /**
      * @return Builder<Product>
      */
-    public function builder(TableQuery $query): Builder
+    protected function query(): Builder
     {
-        $builder = Product::query()->select(['id', 'name', 'sku', 'updated_at']);
-
-        if ($query->sorts === []) {
-            $builder->latest('id');
-        }
-
-        return $builder;
+        return Product::query()->select(['id', 'name', 'sku', 'updated_at']);
     }
 }
