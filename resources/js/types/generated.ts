@@ -1151,6 +1151,7 @@ export type TextInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
   conditions: FieldConditions | null;
+  copyable: boolean;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;

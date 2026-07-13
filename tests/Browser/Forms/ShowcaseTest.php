@@ -3,6 +3,14 @@ declare(strict_types=1);
 
 use Workbench\App\Models\Product;
 
+it('copies a copyable text input value via the copy affix', function (): void {
+    $this->actingAs(workbenchTestUser());
+    visit('/showcase')
+        ->click('@referral_code-copy')
+        ->assertSee('Copied')
+        ->assertNoSmoke();
+});
+
 it('renders the form showcase with every field type', function (): void {
     $this->actingAs(workbenchTestUser());
     visit('/showcase')

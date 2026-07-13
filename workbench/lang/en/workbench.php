@@ -305,6 +305,7 @@ return [
             'profile' => 'Profile',
             'profile-description' => 'Your basic account information.',
             'quantity' => 'Quantity',
+            'referral-code' => 'Referral code',
             'satisfaction' => 'Satisfaction',
             'selection' => 'Selection',
             'selection-description' => 'Static and searchable selects.',

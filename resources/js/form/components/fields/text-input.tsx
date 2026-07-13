@@ -1,5 +1,6 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { AffixGroup } from "@lattice-php/lattice/ui/affix-group";
+import { CopyButton } from "@lattice-php/lattice/ui/copyable-text";
 import { Input } from "@lattice-php/lattice/ui/input";
 import { SimpleField } from "./simple-field";
 
@@ -9,7 +10,20 @@ export const TextInputComponent: RendererComponent<"field.text-input"> = ({ node
   return (
     <SimpleField node={node} label={props.label ?? ""}>
       {({ name, testId, value, readOnly, disabled, commit }) => (
-        <AffixGroup prefix={props.prefix} suffix={props.suffix}>
+        <AffixGroup
+          prefix={props.prefix}
+          suffix={props.suffix}
+          end={
+            props.copyable ? (
+              <CopyButton
+                className="h-lt-control-md gap-1.5 rounded-l-none rounded-r-lt-sm border-l-0 border-lt-input px-3 group-has-[:focus-visible]:border-lt-ring"
+                label={props.label ?? name}
+                testId={`${testId}-copy`}
+                value={value}
+              />
+            ) : null
+          }
+        >
           {(controlClassName) => (
             <Input
               autoComplete={props.autoComplete ?? ""}
