@@ -2,10 +2,10 @@ import { translate } from "@lattice-php/lattice/i18n";
 import { DEFAULT_COLUMN_WIDTH } from "@lattice-php/lattice/core/hooks/column-sizing";
 import type { ColumnWidth } from "@lattice-php/lattice/types/generated";
 import { isEmptyMember } from "./filter-values";
-import type { TableColumn, TableSort, TableState } from "@lattice-php/lattice/table/types";
+import type { TableColumn, TableSort, TableQuery } from "@lattice-php/lattice/table/types";
 
-export function getColumnSort(state: TableState, column: TableColumn): TableSort | undefined {
-  return state.sorts.find((currentSort) => currentSort.key === column.key);
+export function getColumnSort(query: TableQuery, column: TableColumn): TableSort | undefined {
+  return query.sorts.find((currentSort) => currentSort.key === column.key);
 }
 
 export function getColumnAriaSort(
@@ -22,21 +22,21 @@ export function getColumnAriaSort(
   return undefined;
 }
 
-export function buildEndpoint(endpoint: string, state: TableState): string {
+export function buildEndpoint(endpoint: string, query: TableQuery): string {
   const url = new URL(endpoint, window.location.origin);
 
-  if (state.filters.length > 0) {
-    url.searchParams.set("filter", serializeFilters(state));
+  if (query.filters.length > 0) {
+    url.searchParams.set("filter", serializeFilters(query));
   }
 
-  if (state.sorts.length > 0) {
-    url.searchParams.set("sort", serializeSorts(state));
+  if (query.sorts.length > 0) {
+    url.searchParams.set("sort", serializeSorts(query));
   }
 
-  appendTableFilters(url, state.tableFilters);
+  appendTableFilters(url, query.tableFilters);
 
-  url.searchParams.set("page", String(state.page));
-  url.searchParams.set("per_page", String(state.perPage));
+  url.searchParams.set("page", String(query.page));
+  url.searchParams.set("per_page", String(query.perPage));
 
   return `${url.pathname}${url.search}`;
 }
@@ -119,18 +119,18 @@ function appendTableFilterParam(url: URL, key: string, value: unknown): void {
   url.searchParams.append(key, String(value));
 }
 
-export function getQueryParams(state: TableState): Record<string, unknown> {
+export function getQueryParams(query: TableQuery): Record<string, unknown> {
   const params: Record<string, unknown> = {};
 
-  if (state.filters.length > 0) {
-    params.filter = serializeFilters(state);
+  if (query.filters.length > 0) {
+    params.filter = serializeFilters(query);
   }
 
-  if (state.sorts.length > 0) {
-    params.sort = serializeSorts(state);
+  if (query.sorts.length > 0) {
+    params.sort = serializeSorts(query);
   }
 
-  const tableFilters = getTableFilterParams(state.tableFilters);
+  const tableFilters = getTableFilterParams(query.tableFilters);
 
   if (Object.keys(tableFilters).length > 0) {
     params.tf = tableFilters;
@@ -139,14 +139,14 @@ export function getQueryParams(state: TableState): Record<string, unknown> {
   return params;
 }
 
-function serializeFilters(state: TableState): string {
-  return state.filters
+function serializeFilters(query: TableQuery): string {
+  return query.filters
     .map((clause) => `${clause.field}:${clause.operator}:${encodeURIComponent(clause.value)}`)
     .join(",");
 }
 
-function serializeSorts(state: TableState): string {
-  return state.sorts
+function serializeSorts(query: TableQuery): string {
+  return query.sorts
     .map((sort) => (sort.direction === "desc" ? `-${sort.key}` : sort.key))
     .join(",");
 }

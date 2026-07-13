@@ -11,6 +11,7 @@ use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Enums\Align;
 use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\StackDirection;
 use Workbench\App\Tables\ProductsTable;
 
 #[AsPage(route: '/products', name: 'products.index')]
@@ -28,7 +29,7 @@ class ProductsPage extends WorkbenchPage
                 ->gap(Gap::Large)
                 ->schema([
                     Stack::make('products-header')
-                        ->direction('row')
+                        ->direction(StackDirection::Row)
                         ->align(Align::Center)
                         ->schema([
                             Heading::make(__('workbench.pages.products.heading')),

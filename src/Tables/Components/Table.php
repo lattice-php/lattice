@@ -169,7 +169,7 @@ class Table extends Component
 
     public function result(TableResult $result, TableQuery $query): static
     {
-        $this->result = $result->forQuery($query)->jsonSerialize();
+        $this->result = (array) $result->forQuery($query);
 
         return $this;
     }

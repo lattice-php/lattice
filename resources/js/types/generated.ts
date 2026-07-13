@@ -340,8 +340,8 @@ export type DataList = {
 };
 export type DateFormat = {
   kind: string;
-  dateStyle: string | null;
-  timeStyle: string | null;
+  dateStyle: DateTimeStyle | null;
+  timeStyle: DateTimeStyle | null;
   month: string | null;
   year: string | null;
 };
@@ -475,7 +475,7 @@ export type FileUpload = {
 };
 export type FilterClause = {
   readonly field: string;
-  readonly operator: string;
+  readonly operator: Op;
   readonly value: string;
 };
 export type FilterControl =
@@ -560,6 +560,9 @@ export type Fragment = {
   ref: string | null;
   size: Size;
 };
+export type FragmentResponse = {
+  readonly schema: Node[];
+};
 export type Gap = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type Grid = {
   columns: number | null;
@@ -641,11 +644,11 @@ export type Link = {
   suffix: Affix | null;
   tabIndex: number | null;
 };
-export type ListenerPayload = {
+export type Listen = {
   readonly channel: string;
   readonly visibility: ChannelVisibility;
-  readonly events: string[];
-  readonly effects: Effect[];
+  events: string[];
+  effects: Effect[];
 };
 export type LocaleChangeEffect = {
   readonly locale: string;
@@ -749,6 +752,11 @@ export type NotificationItem = {
   readonly isRead: boolean;
   readonly createdAt: string | null;
   readonly actions: Node[];
+};
+export type NotificationList = {
+  readonly notifications: NotificationItem[];
+  readonly unreadCount: number;
+  readonly hasMore: boolean;
 };
 export type Notifications = {
   channel: string;
@@ -946,6 +954,11 @@ export type Repeater = {
 export type ResetFormEffect = {
   readonly form: string | null;
 };
+export type ResolveResponse = {
+  readonly fields: Record<string, Node>;
+  readonly values: Record<string, unknown>;
+  readonly prefill: Record<string, unknown>;
+};
 export type RichEditor = {
   columnWidth: ColumnWidth;
   conditions: FieldConditions | null;
@@ -1029,11 +1042,17 @@ export type Sidebar = {
   collapsible: boolean;
   rememberState: boolean;
 };
+export type SignedUpload = {
+  readonly key: string;
+  readonly url: string;
+  readonly headers: Record<string, unknown>;
+  readonly method: HttpMethod;
+};
 export type Size = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
 export type SortDirection = "asc" | "desc";
 export type Stack = {
   align: Align | null;
-  direction: string | null;
+  direction: StackDirection | null;
   float: Side | null;
   gap: Gap | null;
   height: Height | null;
@@ -1049,6 +1068,7 @@ export type StackColumn = {
   toggleable: boolean;
   width: ColumnWidth;
 };
+export type StackDirection = "row" | "column";
 export type Tab = {
   confirm: {
     required: boolean;
@@ -1091,6 +1111,11 @@ export type TableQuery = {
   readonly tableFilters: Record<string, Record<string, unknown>>;
   readonly tableFilterIndicators: FilterIndicator[];
 };
+export type TableResult = {
+  readonly query: TableQuery;
+  readonly data: Record<string, unknown>[];
+  readonly pagination: TablePagination | null;
+};
 export type TableSort = {
   readonly key: string;
   readonly direction: SortDirection;
@@ -1123,8 +1148,8 @@ export type TextColumn = {
   } | null;
   copyable: boolean;
   date: {
-    dateStyle: string | null;
-    timeStyle: string | null;
+    dateStyle: DateTimeStyle | null;
+    timeStyle: DateTimeStyle | null;
   } | null;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
@@ -1259,6 +1284,9 @@ export type Translatable = {
   payload: Record<string, string>;
   replacements: Record<string, string | number | boolean>;
   key: string;
+};
+export type UnreadCount = {
+  readonly unreadCount: number;
 };
 export type Variant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "auto" | "sm" | "md" | "lg" | "fill";

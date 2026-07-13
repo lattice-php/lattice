@@ -99,7 +99,7 @@ describe("table bulk actions", () => {
       ...node,
       props: {
         ...node.props,
-        state: {
+        query: {
           filters: [{ field: "status", operator: "eq", value: "active" }],
           sorts: [],
           tableFilters: {

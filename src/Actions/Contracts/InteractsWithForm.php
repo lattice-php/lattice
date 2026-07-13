@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Actions\Contracts;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Forms\ResolveResponse;
 
 /**
  * An action definition that drives an embedded form: it validates the submission
@@ -26,8 +27,5 @@ interface InteractsWithForm
      */
     public function searchOptions(Request $request): array;
 
-    /**
-     * @return array{fields: array<string, mixed>, values: array<string, mixed>}
-     */
-    public function resolveFields(Request $request): array;
+    public function resolveFields(Request $request): ResolveResponse;
 }

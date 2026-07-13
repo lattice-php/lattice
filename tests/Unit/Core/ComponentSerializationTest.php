@@ -37,6 +37,7 @@ use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Icon;
 use Lattice\Lattice\Ui\Enums\Orientation;
 use Lattice\Lattice\Ui\Enums\Size;
+use Lattice\Lattice\Ui\Enums\StackDirection;
 
 test('lattice component factories stay open for extension', function (): void {
     $badgeClass = (new class extends Badge {})::class;
@@ -378,7 +379,7 @@ test('modals serialize composable children for action driven dialogs', function 
 });
 
 test('links and horizontal stacks serialize as separate composable primitives', function (): void {
-    expect(wire(Stack::make('prompt')->direction('row')->gap(Gap::ExtraSmall)->schema([
+    expect(wire(Stack::make('prompt')->direction(StackDirection::Row)->gap(Gap::ExtraSmall)->schema([
         Text::make('Need access?'),
         Link::make('Register')->href('/register'),
     ])))

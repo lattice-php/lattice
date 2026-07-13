@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\FormData;
@@ -116,10 +117,7 @@ class FileUpload extends Field
         return (string) config('lattice.files.temp_prefix', 'tmp');
     }
 
-    /**
-     * @return array{key: string, url: string, headers: array<string, mixed>, method: string}
-     */
-    public function signUpload(Request $request): array
+    public function signUpload(Request $request): SignedUpload
     {
         $filename = $request->string('filename')->toString();
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
@@ -133,12 +131,12 @@ class FileUpload extends Field
         $disk = Storage::disk($this->resolveDisk());
         $signed = $disk->temporaryUploadUrl($key, now()->addMinutes($ttl));
 
-        return [
-            'key' => $key,
-            'url' => $signed['url'],
-            'headers' => $signed['headers'],
-            'method' => 'PUT',
-        ];
+        return new SignedUpload(
+            key: $key,
+            url: $signed['url'],
+            headers: $signed['headers'],
+            method: HttpMethod::Put,
+        );
     }
 
     /**

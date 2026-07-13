@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\TextColumn;
@@ -111,7 +110,7 @@ final readonly class EloquentTableSource implements TableSource
                 continue;
             }
 
-            $operator = Op::from($clause->operator);
+            $operator = $clause->operator;
             $relation = $relations[$clause->field] ?? null;
 
             if ($relation instanceof RelationProjection) {

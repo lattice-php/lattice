@@ -11,9 +11,9 @@ final class DateFormat
 {
     public string $kind = 'date';
 
-    public ?string $dateStyle = null;
+    public ?DateTimeStyle $dateStyle = null;
 
-    public ?string $timeStyle = null;
+    public ?DateTimeStyle $timeStyle = null;
 
     public ?string $month = null;
 
@@ -22,7 +22,7 @@ final class DateFormat
     public static function date(DateTimeStyle $style = DateTimeStyle::Medium): self
     {
         $format = new self;
-        $format->dateStyle = $style->value;
+        $format->dateStyle = $style;
 
         return $format;
     }
@@ -47,7 +47,7 @@ final class DateFormat
     public static function time(DateTimeStyle $style = DateTimeStyle::Medium): self
     {
         $format = new self;
-        $format->timeStyle = $style->value;
+        $format->timeStyle = $style;
 
         return $format;
     }
@@ -55,8 +55,8 @@ final class DateFormat
     public static function dateTime(DateTimeStyle $style = DateTimeStyle::Medium): self
     {
         $format = new self;
-        $format->dateStyle = $style->value;
-        $format->timeStyle = $style->value;
+        $format->dateStyle = $style;
+        $format->timeStyle = $style;
 
         return $format;
     }

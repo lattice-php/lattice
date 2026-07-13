@@ -47,7 +47,7 @@ final readonly class TableQuery implements JsonSerializable
      */
     public static function fromRequest(Request $request, array $columns, string $table, int $defaultPerPage = 25, array $filters = []): self
     {
-        $clauses = self::parseFilters($request->input('filter'));
+        $clauses = self::parseFilters($request->input('filter'), $table);
         $sorts = self::parseSorts($request->input('sort'));
         $index = Column::index($columns);
 
@@ -125,13 +125,42 @@ final readonly class TableQuery implements JsonSerializable
     /**
      * @return array<int, FilterClause>
      */
-    private static function parseFilters(mixed $filter): array
+    private static function parseFilters(mixed $filter, string $table): array
     {
         return self::parseList(
             $filter,
-            fn (string $clause): FilterClause => FilterClause::fromString($clause),
-            fn (FilterClause $clause): bool => $clause->isComplete(),
+            fn (string $clause): ?FilterClause => self::parseClause($clause, $table),
+            fn (?FilterClause $clause): bool => $clause instanceof FilterClause,
         );
+    }
+
+    /**
+     * Parse a `field:operator:value` clause into a validated FilterClause: an
+     * incomplete clause (blank field/operator, or a value-taking operator with no
+     * value) is dropped; a non-empty operator that isn't a known Op is rejected.
+     */
+    private static function parseClause(string $clause, string $table): ?FilterClause
+    {
+        $parts = explode(':', $clause, 3);
+        $field = $parts[0];
+        $rawOperator = $parts[1] ?? '';
+        $value = isset($parts[2]) ? rawurldecode($parts[2]) : '';
+
+        if ($field === '' || $rawOperator === '') {
+            return null;
+        }
+
+        $operator = Op::tryFrom($rawOperator);
+
+        if ($operator === null) {
+            throw InvalidTableQuery::operator($rawOperator, $field, $table);
+        }
+
+        if ($operator->requiresValue() && $value === '') {
+            return null;
+        }
+
+        return new FilterClause($field, $operator, $value);
     }
 
     /**
@@ -181,13 +210,11 @@ final readonly class TableQuery implements JsonSerializable
                 throw InvalidTableQuery::filter($filter->field, $table);
             }
 
-            $operator = Op::tryFrom($filter->operator);
-
-            if ($operator === null || ! in_array($operator, $column->availableOperators(), true)) {
-                throw InvalidTableQuery::operator($filter->operator, $filter->field, $table);
+            if (! in_array($filter->operator, $column->availableOperators(), true)) {
+                throw InvalidTableQuery::operator($filter->operator->value, $filter->field, $table);
             }
 
-            if ($operator->requiresValue() && ! $column->filterType()->acceptsValue($filter->value)) {
+            if ($filter->operator->requiresValue() && ! $column->filterType()->acceptsValue($filter->value)) {
                 throw InvalidTableQuery::value($filter->value, $filter->field, $table);
             }
         }

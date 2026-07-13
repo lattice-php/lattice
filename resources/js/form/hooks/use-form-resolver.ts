@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Node } from "@lattice-php/lattice/core/types";
+import type { ResolveResponse } from "@lattice-php/lattice/types/generated";
 import { walkFields } from "@lattice-php/lattice/form/lib/field-props";
 import { FORM_DEBOUNCE_MS, postFormAction } from "@lattice-php/lattice/form/lib/form-transport";
 import {
@@ -11,12 +12,6 @@ import {
 } from "@lattice-php/lattice/form/lib/prefill-targets";
 import type { PrefillController } from "./prefill-context";
 import { useFormValues, useSetFormValue } from "./values";
-
-type ResolveResponse = {
-  fields?: Record<string, Node>;
-  values?: Record<string, unknown>;
-  prefill?: Record<string, unknown>;
-};
 
 type FormResolver = {
   nodes: Record<string, Node>;

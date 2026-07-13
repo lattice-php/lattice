@@ -17,6 +17,7 @@ use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Size;
+use Lattice\Lattice\Ui\Enums\StackDirection;
 use Workbench\App\Fragments\OrderVolumeChartFragment;
 use Workbench\App\Fragments\RevenueTrendChartFragment;
 use Workbench\App\Fragments\SalesMixChartFragment;
@@ -59,7 +60,7 @@ final class HomePage extends WorkbenchPage
                         ]),
                     Heading::make(__('workbench.pages.home.button-variants'), 2),
                     Stack::make('workbench-buttons')
-                        ->direction('row')
+                        ->direction(StackDirection::Row)
                         ->gap(Gap::Small)
                         ->schema([
                             Button::make(__('workbench.pages.home.buttons.default'), 'button-default')->variant(ButtonVariant::Default),

@@ -10,6 +10,7 @@ use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Enums\Align;
 use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\StackDirection;
 
 #[AsPage(route: '/uploads', name: 'uploads.index')]
 class UploadsPage extends WorkbenchPage
@@ -26,7 +27,7 @@ class UploadsPage extends WorkbenchPage
                 ->gap(Gap::Large)
                 ->schema([
                     Stack::make('uploads-header')
-                        ->direction('row')
+                        ->direction(StackDirection::Row)
                         ->align(Align::Center)
                         ->schema([
                             Heading::make(__('workbench.pages.uploads.heading')),

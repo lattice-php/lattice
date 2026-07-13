@@ -4,49 +4,38 @@ import type {
   ColumnFilter,
   ColumnPropsMap,
   ColumnType,
-  FilterClause as WireFilterClause,
+  FilterClause,
   FilterIndicator,
   FilterPropsMap,
-  Op,
   Table,
   TablePagination,
   TableQuery,
+  TableResult,
   TableSort,
 } from "@lattice-php/lattice/types/generated";
 
-export type { ColumnFilter, ColumnType, FilterIndicator, TablePagination, TableSort };
+export type {
+  ColumnFilter,
+  ColumnType,
+  FilterClause,
+  FilterIndicator,
+  TablePagination,
+  TableQuery,
+  TableResult,
+  TableSort,
+};
 
 export type ActionNode = NodeUnionOf<ActionNodeType>;
 
 export type TableRow = Record<string, unknown>;
 
-/**
- * The wire types `operator` as a free string (validated server-side); on the
- * client a clause always carries a known Op, built from a column's
- * allowed operators.
- */
-export type FilterClause = Omit<WireFilterClause, "operator"> & {
-  operator: Op;
-};
-
-export type TableState = Omit<TableQuery, "filters"> & {
-  filters: FilterClause[];
-};
-
-export type TableResponse = {
-  data?: TableRow[];
-  pagination?: TablePagination;
-  state?: Partial<TableState>;
-};
-
-/** The generated wire props plus the rows/pagination/state the server hydrates on for the first render. */
 export type TableNodeProps = Partial<Omit<Table, "bulkActions" | "columns" | "filters">> & {
   bulkActions?: ActionNode[];
   columns?: ColumnNode[];
   data?: TableRow[];
   filters?: FilterNode[];
   pagination?: TablePagination;
-  state?: Partial<TableState>;
+  query?: Partial<TableQuery>;
 };
 
 export type TableNode = {

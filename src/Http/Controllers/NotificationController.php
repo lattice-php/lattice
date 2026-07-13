@@ -7,7 +7,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
 use Lattice\Lattice\Notifications\NotificationItem;
+use Lattice\Lattice\Notifications\NotificationList;
 use Lattice\Lattice\Notifications\Support\ActionDescriptor;
+use Lattice\Lattice\Notifications\UnreadCount;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 final class NotificationController
@@ -19,11 +21,11 @@ final class NotificationController
 
         $notifications = $notifiable->notifications()->paginate($perPage);
 
-        return response()->json([
-            'notifications' => array_map($this->present(...), $notifications->items()),
-            'unreadCount' => $notifiable->unreadNotifications()->count(),
-            'hasMore' => $notifications->hasMorePages(),
-        ]);
+        return response()->json(new NotificationList(
+            notifications: array_map($this->present(...), $notifications->items()),
+            unreadCount: $notifiable->unreadNotifications()->count(),
+            hasMore: $notifications->hasMorePages(),
+        ));
     }
 
     public function read(Request $request, string $id): JsonResponse
@@ -60,7 +62,7 @@ final class NotificationController
 
     private function count(object $notifiable): JsonResponse
     {
-        return response()->json(['unreadCount' => $notifiable->unreadNotifications()->count()]);
+        return response()->json(new UnreadCount($notifiable->unreadNotifications()->count()));
     }
 
     private function present(DatabaseNotification $notification): NotificationItem

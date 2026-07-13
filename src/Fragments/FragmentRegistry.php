@@ -8,7 +8,6 @@ use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
-use Lattice\Lattice\Ui\Components\Component;
 
 /**
  * @extends DefinitionRegistry<FragmentDefinition>
@@ -38,18 +37,13 @@ final class FragmentRegistry extends DefinitionRegistry
         return $component;
     }
 
-    /**
-     * @return array{schema: array<int, Component>}
-     */
-    public function response(string $key, ?FragmentDefinition $definition = null): array
+    public function response(string $key, ?FragmentDefinition $definition = null): FragmentResponse
     {
         $definition ??= $this->resolve($key);
 
-        return [
-            'schema' => $definition
-                ->schema(PageSchema::make())
-                ->renderable(),
-        ];
+        return new FragmentResponse(
+            $definition->schema(PageSchema::make())->renderable(),
+        );
     }
 
     /**

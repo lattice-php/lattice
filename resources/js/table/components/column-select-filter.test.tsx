@@ -86,7 +86,7 @@ function stubFetch() {
     Response.json({
       data: [],
       pagination: {},
-      state: { filters: [], page: 1, perPage: 25, sorts: [], tableFilters: {} },
+      query: { filters: [], page: 1, perPage: 25, sorts: [], tableFilters: {} },
     }),
   );
 
@@ -103,7 +103,7 @@ function node(filter: ColumnFilter): TableNode {
       columns: [col(filter)],
       data: [],
       endpoint: "/lattice/tables/workbench.products",
-      state: { filters: [], page: 1, perPage: 25, sorts: [], tableFilters: {} },
+      query: { filters: [], page: 1, perPage: 25, sorts: [], tableFilters: {} },
     },
   } satisfies TableNode;
 }
@@ -148,7 +148,7 @@ describe("column select filter", () => {
       return Response.json({
         data: [],
         pagination: {},
-        state: { filters: [], page: 1, perPage: 25, sorts: [], tableFilters: {} },
+        query: { filters: [], page: 1, perPage: 25, sorts: [], tableFilters: {} },
       });
     });
 

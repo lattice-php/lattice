@@ -1,12 +1,12 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { ListenerPayload } from "@lattice-php/lattice/types/generated";
+import type { Listen } from "@lattice-php/lattice/types/generated";
 import { RealtimeListeners } from "./listeners";
 
 const state = vi.hoisted(() => ({ shouldThrow: false }));
 
 vi.mock("./subscriptions", () => ({
-  default: ({ listeners }: { listeners: ListenerPayload[] }) => {
+  default: ({ listeners }: { listeners: Listen[] }) => {
     if (state.shouldThrow) {
       throw new Error("Echo is unavailable");
     }
@@ -14,7 +14,7 @@ vi.mock("./subscriptions", () => ({
   },
 }));
 
-const listener: ListenerPayload = {
+const listener: Listen = {
   channel: "orders",
   visibility: "public",
   events: ["OrderShipped"],

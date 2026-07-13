@@ -1,11 +1,7 @@
-import type { NotificationItem } from "@lattice-php/lattice/types/generated";
+import type {
+  NotificationItem,
+  NotificationList,
+  UnreadCount,
+} from "@lattice-php/lattice/types/generated";
 
-export type { NotificationItem };
-
-export type NotificationsResponse = {
-  notifications: NotificationItem[];
-  unreadCount: number;
-  hasMore: boolean;
-};
-
-export type UnreadCountResponse = { unreadCount: number };
+export type { NotificationItem, NotificationList, UnreadCount };

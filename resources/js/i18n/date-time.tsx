@@ -4,13 +4,14 @@ import {
   formatDateValue,
   preciseDateTime,
 } from "@lattice-php/lattice/format/date-time";
+import type { DateTimeStyle } from "@lattice-php/lattice/types/generated";
 import { useLocale } from "./locale";
 import { useTimezone } from "./timezone";
 
 export type DateTimeProps = {
   value: unknown;
-  dateStyle?: string | null;
-  timeStyle?: string | null;
+  dateStyle?: DateTimeStyle | null;
+  timeStyle?: DateTimeStyle | null;
 };
 
 export function DateTime({

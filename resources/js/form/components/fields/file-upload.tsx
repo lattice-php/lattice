@@ -1,6 +1,7 @@
 import { apiFetch } from "@lattice-php/lattice/core/api";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { SignedUpload } from "@lattice-php/lattice/types/generated";
 import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
@@ -21,13 +22,6 @@ type Item = {
   url?: string | null;
   token?: string;
   existing: boolean;
-};
-
-type SignResponse = {
-  key: string;
-  url: string;
-  headers: Record<string, string>;
-  method: string;
 };
 
 function uploadValueEquals(current: unknown, next: string[] | string): boolean {
@@ -171,11 +165,11 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
       return;
     }
 
-    const sign = (await response.json()) as SignResponse;
+    const sign = (await response.json()) as SignedUpload;
 
     await new Promise<void>((resolve) => {
       const request = new XMLHttpRequest();
-      request.open(sign.method, sign.url, true);
+      request.open(sign.method.toUpperCase(), sign.url, true);
       Object.entries(sign.headers).forEach(([key, value]) =>
         request.setRequestHeader(key, String(value)),
       );

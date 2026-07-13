@@ -35,8 +35,8 @@ function computedDefinition(): FormDefinition
 it('resolves computed field values', function (): void {
     $result = computedDefinition()->resolveFields(Request::create('/', 'POST', ['qty' => '3', 'price' => '4']));
 
-    expect($result['values'])->toBe(['total' => 12.0])
-        ->and($result['fields'])->toHaveKey('total');
+    expect($result->values)->toBe(['total' => 12.0])
+        ->and($result->fields)->toHaveKey('total');
 });
 
 function pricingDefinition(): FormDefinition
@@ -77,7 +77,7 @@ it('resolves row prefill values keyed by full path, reading a form-level field',
         ],
     ]));
 
-    expect($result['prefill'])->toBe([
+    expect($result->prefill)->toBe([
         'items.0.price' => 50.0,
         'items.1.price' => 20.0,
     ]);
@@ -89,7 +89,7 @@ it('emits no prefill for an unknown row type', function (): void {
         'items' => [['type' => 'mystery', 'product' => '100']],
     ]));
 
-    expect($result['prefill'])->toBe([]);
+    expect($result->prefill)->toBe([]);
 });
 
 it('resolves repeater row prefill values from the fixed schema', function (): void {
@@ -119,7 +119,7 @@ it('resolves repeater row prefill values from the fixed schema', function (): vo
         'lines' => [['base' => '5'], ['base' => '8']],
     ]));
 
-    expect($result['prefill'])->toBe([
+    expect($result->prefill)->toBe([
         'lines.0.doubled' => 10.0,
         'lines.1.doubled' => 16.0,
     ]);
@@ -164,7 +164,7 @@ it('resolves nested repeater prefill values keyed by recursive full path', funct
         ]],
     ]));
 
-    expect($result['prefill'])->toBe([
+    expect($result->prefill)->toBe([
         'sections.0.lines.0.price' => 15.0,
         'sections.0.lines.1.price' => 18.0,
     ]);

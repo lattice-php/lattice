@@ -4,8 +4,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type {
   TableNode,
   TablePagination,
-  TableResponse,
-  TableState,
+  TableResult,
+  TableQuery,
 } from "@lattice-php/lattice/table/types";
 import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
 import type { Node } from "@lattice-php/lattice/core/types";
@@ -56,7 +56,7 @@ function pagination(overrides: Partial<TablePagination> = {}): TablePagination {
   };
 }
 
-function tableState(overrides: Partial<TableState> = {}): Partial<TableState> {
+function tableQuery(overrides: Partial<TableQuery> = {}): Partial<TableQuery> {
   return {
     filters: [],
     page: 1,
@@ -66,16 +66,18 @@ function tableState(overrides: Partial<TableState> = {}): Partial<TableState> {
   };
 }
 
-function tableResponse(overrides: TableResponse = {}): Response {
+type TableResultOverrides = Partial<Omit<TableResult, "query">> & { query?: Partial<TableQuery> };
+
+function tableResponse(overrides: TableResultOverrides = {}): Response {
   return Response.json({
     data: [],
     pagination: {},
     ...overrides,
-    state: tableState(overrides.state),
+    query: tableQuery(overrides.query),
   });
 }
 
-function tableFetch(...responses: TableResponse[]) {
+function tableFetch(...responses: TableResultOverrides[]) {
   let calls = 0;
   const fetch = vi.fn<typeof globalThis.fetch>(async () => {
     const response = responses[Math.min(calls, responses.length - 1)] ?? {};
@@ -162,7 +164,7 @@ describe("Lattice table component", () => {
           },
         ],
         endpoint: "/lattice/tables/workbench.users",
-        state: {
+        query: {
           filters: [],
           page: 1,
           perPage: 25,
@@ -216,7 +218,7 @@ describe("Lattice table component", () => {
         ],
         data: [{ name: "Taylor" }],
         endpoint: "/lattice/tables/workbench.users",
-        state: {
+        query: {
           filters: [],
           page: 1,
           perPage: 25,
@@ -265,7 +267,7 @@ describe("Lattice table component", () => {
           }),
         ],
         data: [],
-        state: {
+        query: {
           filters: [],
           page: 1,
           perPage: 25,
@@ -295,7 +297,7 @@ describe("Lattice table component", () => {
           }),
         ],
         data: [{ sku: longToken }],
-        state: {
+        query: {
           filters: [],
           page: 1,
           perPage: 25,
@@ -325,7 +327,7 @@ describe("Lattice table component", () => {
           }),
         ],
         data: [],
-        state: {
+        query: {
           filters: [],
           page: 1,
           perPage: 25,
@@ -364,7 +366,7 @@ describe("Lattice table component", () => {
         ],
         data: [],
         resizableColumns: true,
-        state: {
+        query: {
           filters: [],
           page: 1,
           perPage: 25,
@@ -411,7 +413,7 @@ describe("Lattice table component", () => {
         ],
         data: [{ id: 1, qty: 1, price: "$10" }],
         resizableColumns: true,
-        state: {
+        query: {
           filters: [],
           page: 1,
           perPage: 25,
@@ -493,7 +495,7 @@ describe("Lattice table component", () => {
           },
         ],
         layout: "grid",
-        state: {
+        query: {
           filters: [],
           page: 1,
           perPage: 25,
@@ -531,7 +533,7 @@ describe("Lattice table component", () => {
 
   it("adds and clears individual sorts through the table endpoint", async () => {
     const fetch = tableFetch({
-      state: tableState({
+      query: tableQuery({
         sorts: [
           { key: "name", direction: "asc" },
           { key: "email", direction: "asc" },
@@ -556,7 +558,7 @@ describe("Lattice table component", () => {
         ],
         data: [],
         endpoint: "/lattice/tables/workbench.users",
-        state: tableState({ sorts: [{ key: "name", direction: "asc" }] }),
+        query: tableQuery({ sorts: [{ key: "name", direction: "asc" }] }),
       },
       type: "table",
     } satisfies TableNode;
@@ -586,7 +588,7 @@ describe("Lattice table component", () => {
 
   it("sends component refs with table state requests", async () => {
     const fetch = tableFetch({
-      state: tableState({ sorts: [{ key: "name", direction: "asc" }] }),
+      query: tableQuery({ sorts: [{ key: "name", direction: "asc" }] }),
     });
 
     const node = {
@@ -602,7 +604,7 @@ describe("Lattice table component", () => {
         data: [],
         endpoint: "/lattice/tables/teams.members",
         ref: "sealed-reference",
-        state: tableState(),
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;
@@ -639,7 +641,7 @@ describe("Lattice table component", () => {
         data: [{ id: 1, name: "Taylor" }],
         endpoint: "/lattice/tables/settings.passkeys",
         pagination: pagination(),
-        state: tableState(),
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;
@@ -675,7 +677,7 @@ describe("Lattice table component", () => {
           nextPage: null,
           perPage: 1,
         }),
-        state: tableState({ page: 2, perPage: 1 }),
+        query: tableQuery({ page: 2, perPage: 1 }),
       },
       {
         data: [{ id: 3, name: "Grace" }],
@@ -686,7 +688,7 @@ describe("Lattice table component", () => {
           nextPage: null,
           perPage: 1,
         }),
-        state: tableState({ perPage: 1, sorts: [{ key: "name", direction: "asc" }] }),
+        query: tableQuery({ perPage: 1, sorts: [{ key: "name", direction: "asc" }] }),
       },
     );
 
@@ -709,7 +711,7 @@ describe("Lattice table component", () => {
           hasMore: true,
           nextPage: 2,
         }),
-        state: tableState({ perPage: 1 }),
+        query: tableQuery({ perPage: 1 }),
       },
       type: "table",
     } satisfies TableNode;
@@ -752,7 +754,7 @@ describe("Lattice table component", () => {
         ],
         data: [{ id: 1, name: "Taylor" }],
         pagination: pagination({ total: 1 }),
-        state: {
+        query: {
           filters: [],
           page: 1,
           perPage: 25,
@@ -784,7 +786,7 @@ describe("Lattice table component", () => {
         to: 3,
         total: 4,
       },
-      state: tableState({ page: 3, perPage: 1 }),
+      query: tableQuery({ page: 3, perPage: 1 }),
     });
 
     const node = {
@@ -809,7 +811,7 @@ describe("Lattice table component", () => {
           to: 2,
           total: 4,
         },
-        state: tableState({ page: 2, perPage: 1 }),
+        query: tableQuery({ page: 2, perPage: 1 }),
       },
       type: "table",
     } satisfies TableNode;
@@ -855,7 +857,7 @@ describe("Lattice table component", () => {
         endpoint: "/lattice/tables/workbench.users.none",
         lazy: true,
         pagination: pagination(),
-        state: tableState(),
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;
@@ -923,7 +925,7 @@ describe("Lattice table component", () => {
         ],
         data: [],
         endpoint: "/lattice/tables/workbench.products",
-        state: tableState(),
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;
@@ -968,7 +970,7 @@ describe("Lattice table component", () => {
         columns: [col({ key: "name", label: "Name" })],
         data: [{ name: "Taylor" }],
         striped: true,
-        state: tableState(),
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;
@@ -1003,7 +1005,7 @@ describe("Lattice table component", () => {
         ],
         data: [],
         endpoint: "/lattice/tables/workbench.products",
-        state: tableState(),
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;

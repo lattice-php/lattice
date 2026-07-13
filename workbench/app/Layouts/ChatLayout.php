@@ -10,6 +10,7 @@ use Lattice\Lattice\Layouts\Components\Breadcrumbs;
 use Lattice\Lattice\Layouts\Components\Outlet;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\StackDirection;
 use Lattice\Lattice\Ui\Enums\Width;
 
 #[AsLayout('app-chat')]
@@ -20,7 +21,7 @@ final class ChatLayout extends AppLayout
     {
         return $schema->schema([
             Stack::make('app-shell')
-                ->direction('row')
+                ->direction(StackDirection::Row)
                 ->gap(Gap::None)
                 ->schema([
                     $this->sidebar(),

@@ -1,11 +1,13 @@
+import type { DateTimeStyle } from "@lattice-php/lattice/types/generated";
+
 export type FormatOptions = {
   locale?: string;
   timeZone?: string;
 };
 
 export type DateConfig = {
-  dateStyle: string | null;
-  timeStyle: string | null;
+  dateStyle: DateTimeStyle | null;
+  timeStyle: DateTimeStyle | null;
   month?: string | null;
   year?: string | null;
 };
@@ -20,11 +22,11 @@ export function formatDateValue(value: unknown, date: DateConfig, options?: Form
   const intl: Intl.DateTimeFormatOptions = { timeZone: options?.timeZone };
 
   if (date.dateStyle) {
-    intl.dateStyle = date.dateStyle as Intl.DateTimeFormatOptions["dateStyle"];
+    intl.dateStyle = date.dateStyle;
   }
 
   if (date.timeStyle) {
-    intl.timeStyle = date.timeStyle as Intl.DateTimeFormatOptions["timeStyle"];
+    intl.timeStyle = date.timeStyle;
   }
 
   if (date.month) {

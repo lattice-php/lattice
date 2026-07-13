@@ -11,6 +11,7 @@ use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Enums\Align;
 use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\StackDirection;
 use Workbench\App\Tables\BusinessPartnersTable;
 
 #[AsPage(route: '/business-partners', name: 'business-partners.index')]
@@ -28,7 +29,7 @@ class BusinessPartnersPage extends WorkbenchPage
                 ->gap(Gap::Large)
                 ->schema([
                     Stack::make('business-partners-header')
-                        ->direction('row')
+                        ->direction(StackDirection::Row)
                         ->align(Align::Center)
                         ->schema([
                             Heading::make(__('workbench.commerce.business-partners.pages.index.heading')),

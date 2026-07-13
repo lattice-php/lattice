@@ -40,8 +40,8 @@ test('a table serializes its declared filters and starts with no active values',
         ],
     ])
         ->and($table['props']['filters'][0]['schema'])->toHaveCount(1)
-        ->and($table['props']['state']['tableFilters'])->toBe([])
-        ->and($table['props']['state']['tableFilterIndicators'])->toBe([]);
+        ->and($table['props']['query']['tableFilters'])->toBe([])
+        ->and($table['props']['query']['tableFilterIndicators'])->toBe([]);
 });
 
 test('a table applies a dedicated select filter from the request', function (): void {
@@ -53,8 +53,8 @@ test('a table applies a dedicated select filter from the request', function (): 
     $response = $this->loadTable(WorkbenchFilteredProductsTable::class, ['tf' => ['status' => ['value' => 'active']]])
         ->assertOk()
         ->assertJsonPath('data.0.name', 'Active One')
-        ->assertJsonPath('state.tableFilters.status.value', 'active')
-        ->assertJsonPath('state.tableFilterIndicators.0.value', 'Active');
+        ->assertJsonPath('query.tableFilters.status.value', 'active')
+        ->assertJsonPath('query.tableFilterIndicators.0.value', 'Active');
 
     expect($response->json('data'))->toHaveCount(1);
 });

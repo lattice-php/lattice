@@ -3,9 +3,9 @@ import { useCallback } from "react";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import { useT } from "@lattice-php/lattice/i18n";
 import { buildEffects } from "./build-effects";
-import type { ListenerPayload } from "@lattice-php/lattice/types/generated";
+import type { Listen } from "@lattice-php/lattice/types/generated";
 
-function useListenerHandler(listener: ListenerPayload): (payload: unknown) => void {
+function useListenerHandler(listener: Listen): (payload: unknown) => void {
   const { t } = useT("lattice");
   const dispatch = useEffectDispatcher();
 
@@ -21,22 +21,22 @@ function useListenerHandler(listener: ListenerPayload): (payload: unknown) => vo
   );
 }
 
-function PublicListener({ listener }: { listener: ListenerPayload }) {
+function PublicListener({ listener }: { listener: Listen }) {
   useEchoPublic(listener.channel, listener.events, useListenerHandler(listener));
   return null;
 }
 
-function PrivateListener({ listener }: { listener: ListenerPayload }) {
+function PrivateListener({ listener }: { listener: Listen }) {
   useEcho(listener.channel, listener.events, useListenerHandler(listener));
   return null;
 }
 
-function PresenceListener({ listener }: { listener: ListenerPayload }) {
+function PresenceListener({ listener }: { listener: Listen }) {
   useEchoPresence(listener.channel, listener.events, useListenerHandler(listener));
   return null;
 }
 
-function Listener({ listener }: { listener: ListenerPayload }) {
+function Listener({ listener }: { listener: Listen }) {
   switch (listener.visibility) {
     case "private":
       return <PrivateListener listener={listener} />;
@@ -47,7 +47,7 @@ function Listener({ listener }: { listener: ListenerPayload }) {
   }
 }
 
-export default function Subscriptions({ listeners }: { listeners: ListenerPayload[] }) {
+export default function Subscriptions({ listeners }: { listeners: Listen[] }) {
   return (
     <>
       {listeners.map((listener, index) => (

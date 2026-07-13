@@ -7,19 +7,24 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
-use JsonSerializable;
+use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 
-final readonly class TableResult implements JsonSerializable
+#[TypeScript]
+final readonly class TableResult
 {
+    public TableQuery $query;
+
     /**
      * @param  array<int, array<string, mixed>>  $data
      */
     private function __construct(
-        private array $data,
-        private ?TablePagination $pagination = null,
-        private ?TableQuery $query = null,
-    ) {}
+        public array $data,
+        public ?TablePagination $pagination = null,
+        ?TableQuery $query = null,
+    ) {
+        $this->query = $query ?? TableQuery::empty();
+    }
 
     /**
      * @param  array<int, array<string, mixed>>  $data
@@ -114,18 +119,6 @@ final readonly class TableResult implements JsonSerializable
             $this->pagination,
             $this->query,
         );
-    }
-
-    /**
-     * @return array{data: array<int, array<string, mixed>>, pagination: TablePagination|null, state: TableQuery}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'data' => $this->data,
-            'pagination' => $this->pagination,
-            'state' => $this->query ?? TableQuery::empty(),
-        ];
     }
 
     /**

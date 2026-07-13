@@ -34,7 +34,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     columns,
     rows,
     pagination,
-    state,
+    query,
     filters,
     tableFilters,
     addFilter,
@@ -84,7 +84,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
       ? `lattice:table-column-visibility:${visibilityIdentity}`
       : undefined,
   });
-  const currentPage = pagination.currentPage ?? state.page;
+  const currentPage = pagination.currentPage ?? query.page;
   const lastPage = pagination.lastPage ?? currentPage;
   const mode = pagination.mode ?? "table";
   const visiblePages = getVisiblePages(currentPage, lastPage);
@@ -140,7 +140,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
         <FilterBar
           clauses={filters}
           columnsByKey={columnsByKey}
-          indicators={state.tableFilterIndicators}
+          indicators={query.tableFilterIndicators}
           processing={processing}
           onRemoveClause={removeFilter}
           onChange={setTableFilter}
@@ -152,7 +152,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             selectedKeys={selection.selectedKeys}
             allMatching={selection.allMatching}
             total={pagination.total ?? undefined}
-            query={getQueryParams(state)}
+            query={getQueryParams(query)}
             canSelectAllMatching={
               selection.allVisibleSelected &&
               !selection.allMatching &&
@@ -163,10 +163,10 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             onCompleted={selection.clear}
           />
         )}
-        {state.sorts.length > 0 && (
+        {query.sorts.length > 0 && (
           <SortBar
             columnsByKey={columnsByKey}
-            state={state}
+            query={query}
             processing={processing}
             onClear={clearSort}
           />
@@ -205,7 +205,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                     resizingEnabled ? getResizeHandleProps(sizingColumns[index]) : undefined
                   }
                   sort={sort}
-                  state={state}
+                  query={query}
                 />
               ))}
               {hasTrailingUtility && (
