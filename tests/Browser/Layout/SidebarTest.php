@@ -3,17 +3,19 @@ declare(strict_types=1);
 
 use Workbench\App\Models\Product;
 
-it('expands a collapsed menu group and navigates to a sub-page', function (): void {
+it('expands nested menu groups and navigates to a field page', function (): void {
     $this->actingAs(workbenchTestUser());
     visit('/')
         ->assertSee('Home')
         ->assertSee('Forms')
         ->assertSee('Tables')
-        ->assertDontSee('Showcase')
+        ->assertDontSee('Text input')
         ->click('@menu-forms')
-        ->assertSee('Showcase')
-        ->assertSee('Builder Table Demo')
-        ->click('@menu-builder-table-demo')
+        ->assertSee('Fields')
+        ->assertSee('Dependent & computed')
+        ->click('@menu-fields')
+        ->assertSee('Text input')
+        ->click('@menu-field-repeater')
         ->assertSee('Line items')
         ->assertNoSmoke();
 });
@@ -40,7 +42,7 @@ it('collapses to an icon rail and opens a group submenu as a flyout', function (
     });
 
     $page
-        ->click('@menu-commerce')
+        ->click('@menu-app')
         ->click('@menu-products')
         ->assertSee('Desk Lamp')
         ->assertPresent('[data-test="sidebar"][data-collapsed="true"]')
@@ -60,6 +62,7 @@ it('opens the sidebar as an off-canvas drawer on mobile', function (): void {
     });
 
     $page
+        ->click('@menu-components')
         ->click('@menu-tabs')
         ->assertMissing('[data-test="sidebar-backdrop"]')
         ->assertNoSmoke();

@@ -43,11 +43,11 @@ it('dumps missing React lattice keys back into the package lang file', function 
     Arr::forget($translations, 'editor.italic');
     writeLatticeBrowserTestTranslations($file, $translations);
 
-    $page = visit('/dependent-demo');
+    $page = visit('/form/fields/rich-editor');
 
     try {
         $page->assertSee('Article')
-            ->assertPresent('@editor-italic')
+            ->assertPresent('[id="default-panel"] [data-test="editor-italic"]')
             ->assertNoJavaScriptErrors();
 
         expect(waitForLatticeBrowserTestTranslation($file, 'editor.italic'))

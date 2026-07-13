@@ -37,19 +37,43 @@ use Lattice\Lattice\Ui\Enums\Width;
 use Workbench\App\Actions\LogoutAction;
 use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Actions\ToggleChatLayoutAction;
-use Workbench\App\Pages\BuilderTableDemoPage;
 use Workbench\App\Pages\BusinessPartnersPage;
-use Workbench\App\Pages\ChartsPage;
-use Workbench\App\Pages\DependentDemoPage;
+use Workbench\App\Pages\Components\ButtonsPage;
+use Workbench\App\Pages\Components\ChartsPage;
+use Workbench\App\Pages\Components\ChatPage;
+use Workbench\App\Pages\Components\ContainersPage;
+use Workbench\App\Pages\Components\NotificationsPage;
+use Workbench\App\Pages\Components\TabsPage;
+use Workbench\App\Pages\DependentFieldsPage;
+use Workbench\App\Pages\Fields\BooleanFieldsPage;
+use Workbench\App\Pages\Fields\BuilderPage;
+use Workbench\App\Pages\Fields\ChoicePage;
+use Workbench\App\Pages\Fields\DateTimePage;
+use Workbench\App\Pages\Fields\FileUploadPage;
+use Workbench\App\Pages\Fields\NumberInputPage;
+use Workbench\App\Pages\Fields\OtpInputPage;
+use Workbench\App\Pages\Fields\PasswordInputPage;
+use Workbench\App\Pages\Fields\RepeaterPage;
+use Workbench\App\Pages\Fields\RichEditorPage;
+use Workbench\App\Pages\Fields\SelectPage;
+use Workbench\App\Pages\Fields\TextareaPage;
+use Workbench\App\Pages\Fields\TextInputPage;
 use Workbench\App\Pages\GroupsPage;
 use Workbench\App\Pages\HomePage;
-use Workbench\App\Pages\ProductCreatePage;
+use Workbench\App\Pages\Platform\PackageComponentPage;
+use Workbench\App\Pages\Platform\RealtimePage;
+use Workbench\App\Pages\Platform\RemoteSchemaPage;
 use Workbench\App\Pages\ProductsPage;
-use Workbench\App\Pages\RemoteSchemaPage;
 use Workbench\App\Pages\SalesOrdersPage;
-use Workbench\App\Pages\ShowcasePage;
-use Workbench\App\Pages\TablesPage;
-use Workbench\App\Pages\TabsPage;
+use Workbench\App\Pages\Tables\ActionsPage;
+use Workbench\App\Pages\Tables\BehaviorPage;
+use Workbench\App\Pages\Tables\CustomColumnPage;
+use Workbench\App\Pages\Tables\FiltersPage;
+use Workbench\App\Pages\Tables\NumberColumnsPage;
+use Workbench\App\Pages\Tables\PaginationPage;
+use Workbench\App\Pages\Tables\TextColumnsPage;
+use Workbench\App\Pages\Tables\VisualColumnsPage;
+use Workbench\App\Pages\ValidationDemoPage;
 use Workbench\App\Support\Logo;
 
 #[AsLayout('app')]
@@ -98,24 +122,56 @@ class AppLayout extends LayoutDefinition
                 ]),
             Menu::make('sidebar')->items([
                 MenuItem::fromPage(HomePage::class)->key('home')->label(__('workbench.navigation.home'))->prefix(Affix::icon('house')),
-                MenuItem::fromPage(ChartsPage::class)->key('charts')->label(__('workbench.navigation.charts'))->prefix(Affix::icon('chart-column')),
                 MenuItem::make(__('workbench.navigation.forms'), 'forms')->prefix(Affix::icon('form-input'))->children([
-                    MenuItem::fromPage(ShowcasePage::class)->key('showcase')->label(__('workbench.navigation.showcase')),
-                    MenuItem::fromPage(DependentDemoPage::class)->key('dependent-fields')->label(__('workbench.navigation.dependent-fields')),
-                    MenuItem::fromPage(BuilderTableDemoPage::class)->key('builder-table-demo')->label(__('workbench.navigation.builder-table-demo')),
-                    MenuItem::fromPage(ProductCreatePage::class)->key('create-product')->label(__('workbench.navigation.create-product')),
+                    MenuItem::make(__('workbench.navigation.fields'), 'fields')->children([
+                        MenuItem::fromPage(TextInputPage::class)->key('field-text')->label(__('workbench.navigation.field-text')),
+                        MenuItem::fromPage(TextareaPage::class)->key('field-textarea')->label(__('workbench.navigation.field-textarea')),
+                        MenuItem::fromPage(NumberInputPage::class)->key('field-number')->label(__('workbench.navigation.field-number')),
+                        MenuItem::fromPage(PasswordInputPage::class)->key('field-password')->label(__('workbench.navigation.field-password')),
+                        MenuItem::fromPage(SelectPage::class)->key('field-select')->label(__('workbench.navigation.field-select')),
+                        MenuItem::fromPage(ChoicePage::class)->key('field-choice')->label(__('workbench.navigation.field-choice')),
+                        MenuItem::fromPage(BooleanFieldsPage::class)->key('field-boolean')->label(__('workbench.navigation.field-boolean')),
+                        MenuItem::fromPage(DateTimePage::class)->key('field-date-time')->label(__('workbench.navigation.field-date-time')),
+                        MenuItem::fromPage(FileUploadPage::class)->key('field-file-upload')->label(__('workbench.navigation.field-file-upload')),
+                        MenuItem::fromPage(OtpInputPage::class)->key('field-otp')->label(__('workbench.navigation.field-otp')),
+                        MenuItem::fromPage(RichEditorPage::class)->key('field-rich-editor')->label(__('workbench.navigation.field-rich-editor')),
+                        MenuItem::fromPage(RepeaterPage::class)->key('field-repeater')->label(__('workbench.navigation.field-repeater')),
+                        MenuItem::fromPage(BuilderPage::class)->key('field-builder')->label(__('workbench.navigation.field-builder')),
+                    ]),
+                    MenuItem::fromPage(DependentFieldsPage::class)->key('dependent-fields')->label(__('workbench.navigation.dependent-fields')),
+                    MenuItem::fromPage(ValidationDemoPage::class)->key('validation')->label(__('workbench.navigation.validation')),
                 ]),
-                MenuItem::make(__('workbench.navigation.commerce'), 'commerce')->prefix(Icon::LayoutDashboard)->children([
+                MenuItem::make(__('workbench.navigation.tables'), 'tables')->prefix(Icon::Table)->children([
+                    MenuItem::make(__('workbench.navigation.columns'), 'columns')->children([
+                        MenuItem::fromPage(TextColumnsPage::class)->key('columns-text')->label(__('workbench.navigation.columns-text')),
+                        MenuItem::fromPage(NumberColumnsPage::class)->key('columns-number')->label(__('workbench.navigation.columns-number')),
+                        MenuItem::fromPage(VisualColumnsPage::class)->key('columns-visual')->label(__('workbench.navigation.columns-visual')),
+                        MenuItem::fromPage(CustomColumnPage::class)->key('columns-custom')->label(__('workbench.navigation.columns-custom')),
+                    ]),
+                    MenuItem::fromPage(FiltersPage::class)->key('table-filters')->label(__('workbench.navigation.table-filters')),
+                    MenuItem::fromPage(PaginationPage::class)->key('pagination-modes')->label(__('workbench.navigation.pagination-modes')),
+                    MenuItem::fromPage(ActionsPage::class)->key('table-actions')->label(__('workbench.navigation.table-actions')),
+                    MenuItem::fromPage(BehaviorPage::class)->key('table-behavior')->label(__('workbench.navigation.table-behavior')),
+                ]),
+                MenuItem::make(__('workbench.navigation.components'), 'components')->prefix(Affix::icon('spark'))->children([
+                    MenuItem::fromPage(ButtonsPage::class)->key('buttons')->label(__('workbench.navigation.buttons')),
+                    MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs')),
+                    MenuItem::fromPage(ChartsPage::class)->key('charts')->label(__('workbench.navigation.charts')),
+                    MenuItem::fromPage(ContainersPage::class)->key('containers')->label(__('workbench.navigation.containers')),
+                    MenuItem::fromPage(NotificationsPage::class)->key('notifications')->label(__('workbench.navigation.notifications')),
+                    MenuItem::fromPage(ChatPage::class)->key('chat')->label(__('workbench.navigation.chat')),
+                ]),
+                MenuItem::make(__('workbench.navigation.platform'), 'platform')->prefix(Affix::icon('plug'))->children([
+                    MenuItem::fromPage(RealtimePage::class)->key('realtime')->label(__('workbench.navigation.realtime')),
+                    MenuItem::fromPage(RemoteSchemaPage::class)->key('remote-schema')->label(__('workbench.navigation.remote-schema')),
+                    MenuItem::fromPage(PackageComponentPage::class)->key('package')->label(__('workbench.navigation.package')),
+                ]),
+                MenuItem::make(__('workbench.navigation.app'), 'app')->prefix(Icon::LayoutDashboard)->children([
                     MenuItem::fromPage(BusinessPartnersPage::class)->key('business-partners')->label(__('workbench.navigation.business-partners')),
                     MenuItem::fromPage(GroupsPage::class)->key('groups')->label(__('workbench.navigation.groups')),
                     MenuItem::fromPage(ProductsPage::class)->key('products')->label(__('workbench.navigation.products')),
                     MenuItem::fromPage(SalesOrdersPage::class)->key('sales-orders')->label(__('workbench.navigation.sales-orders')),
                 ]),
-                MenuItem::make(__('workbench.navigation.tables'), 'tables')->prefix(Icon::Table)->children([
-                    MenuItem::fromPage(TablesPage::class)->key('pagination-modes')->label(__('workbench.navigation.pagination-modes')),
-                ]),
-                MenuItem::fromPage(RemoteSchemaPage::class)->key('remote-schema')->label(__('workbench.navigation.remote-schema'))->prefix(Affix::icon('plug')),
-                MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs'))->prefix(Affix::icon('spark')),
             ]),
         ]);
     }
@@ -151,7 +207,7 @@ class AppLayout extends LayoutDefinition
     {
         $notifications = Notifications::make();
 
-        if (request()->is('notifications-slide-out')) {
+        if (request()->is('components/notifications') && request()->query('mode') === 'slide-out') {
             $notifications->slideOut();
         }
 

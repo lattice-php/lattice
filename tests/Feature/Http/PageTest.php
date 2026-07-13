@@ -15,7 +15,7 @@ use Lattice\Lattice\Ui\Components\Tabs;
 use Lattice\Lattice\Ui\Components\Text;
 use Orchestra\Testbench\Factories\UserFactory;
 use Workbench\App\Pages\HomePage;
-use Workbench\App\Pages\TablesPage;
+use Workbench\App\Pages\Tables\PaginationPage;
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\withoutVite;
@@ -67,7 +67,7 @@ test('the workbench home route uses a workbench-owned page directly', function (
 });
 
 test('the workbench tables route uses lazy pagination tab tables', function (): void {
-    expect(Route::getRoutes()->getByName('tables')?->getActionName())->toBe(TablesPage::class.'@render');
+    expect(Route::getRoutes()->getByName('tables.pagination')?->getActionName())->toBe(PaginationPage::class.'@render');
 });
 
 test('pages use laravel controller resolution for constructor dependencies render dependencies and route arguments', function (): void {
@@ -117,8 +117,9 @@ test('workbench pages serialize package component trees for inertia', function (
     $this->assertLatticeLayout($response)
         ->assertRendered('menu-item:home')
         ->component('menu-item', 'forms', fn ($menu) => $menu->assertProp('label', 'Forms'))
-        ->component('menu-item', 'builder-table-demo', fn ($menu) => $menu
-            ->assertProps(['label' => 'Builder Table Demo', 'href' => '/builder-table']))
+        ->component('menu-item', 'fields', fn ($menu) => $menu->assertProp('label', 'Fields'))
+        ->component('menu-item', 'field-builder', fn ($menu) => $menu
+            ->assertProps(['label' => 'Builder', 'href' => '/form/fields/builder']))
         ->component('topbar', tap: fn ($topbar) => $topbar->assertProp('sticky', true))
         ->assertRendered('dropdown:locale-switcher')
         ->assertRendered('action:locale-en')
@@ -158,7 +159,7 @@ test('workbench tables page serializes lazy tables for each pagination type', fu
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
-    $response = get('/tables')->assertOk();
+    $response = get('/tables/pagination')->assertOk();
 
     // Tables addressed by id — resilient to tab/stack reordering.
     $this->assertLatticePage($response)
@@ -187,15 +188,15 @@ test('workbench tables page serializes lazy tables for each pagination type', fu
 
     $response->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
         ->component('lattice/page')
-        ->where('lattice.title', 'Lattice Tables')
+        ->where('lattice.title', 'Pagination')
         ->where('lattice.schema.0.type', 'stack')
-        ->where('lattice.schema.0.key', 'tables-page')
-        ->where('lattice.schema.0.schema.1.type', 'tabs')
-        ->where('lattice.schema.0.schema.1.props.defaultValue', 'none')
-        ->where('lattice.schema.0.schema.1.schema.0.props.value', 'none')
-        ->where('lattice.schema.0.schema.1.schema.1.props.value', 'simple')
-        ->where('lattice.schema.0.schema.1.schema.2.props.value', 'table')
-        ->where('lattice.schema.0.schema.1.schema.3.props.value', 'infinite')
+        ->where('lattice.schema.0.key', 'pagination-page')
+        ->where('lattice.schema.0.schema.2.type', 'tabs')
+        ->where('lattice.schema.0.schema.2.props.defaultValue', 'none')
+        ->where('lattice.schema.0.schema.2.schema.0.props.value', 'none')
+        ->where('lattice.schema.0.schema.2.schema.1.props.value', 'simple')
+        ->where('lattice.schema.0.schema.2.schema.2.props.value', 'table')
+        ->where('lattice.schema.0.schema.2.schema.3.props.value', 'infinite')
         ->etc());
 });
 

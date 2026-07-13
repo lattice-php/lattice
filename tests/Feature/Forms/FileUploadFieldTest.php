@@ -11,7 +11,7 @@ use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
-use Workbench\App\Forms\UploadForm;
+use Workbench\App\Forms\Fields\FileUploadFieldForm;
 
 use function Pest\Laravel\post;
 
@@ -21,9 +21,9 @@ it('signs an upload through the form endpoint', function (): void {
         fn (string $path, $expiration, array $options = []): array => ['url' => "https://s3.test/{$path}", 'headers' => []],
     );
 
-    Lattice::forms([UploadForm::class]);
+    Lattice::forms([FileUploadFieldForm::class]);
 
-    $this->submitForm(UploadForm::class, ['_upload' => 'document', 'filename' => 'invoice.pdf'])
+    $this->submitForm(FileUploadFieldForm::class, ['_upload' => 'document', 'filename' => 'invoice.pdf'])
         ->assertOk()
         ->assertJsonStructure(['key', 'url', 'headers', 'method']);
 });
@@ -34,9 +34,9 @@ it('signs an upload for a file field inside a repeater row', function (): void {
         fn (string $path, $expiration, array $options = []): array => ['url' => "https://s3.test/{$path}", 'headers' => []],
     );
 
-    Lattice::forms([UploadForm::class]);
+    Lattice::forms([FileUploadFieldForm::class]);
 
-    $this->submitForm(UploadForm::class, [
+    $this->submitForm(FileUploadFieldForm::class, [
         '_upload' => 'documents.0.file',
         'filename' => 'invoice.pdf',
         'documents' => [
@@ -88,30 +88,30 @@ it('signs an upload for a file field inside nested repeater rows', function (): 
 it('returns 422 when the field does not use signed uploads', function (): void {
     Storage::fake('s3');
 
-    Lattice::forms([UploadForm::class]);
+    Lattice::forms([FileUploadFieldForm::class]);
 
-    $this->submitForm(UploadForm::class, ['_upload' => 'avatar', 'filename' => 'photo.jpg'])
+    $this->submitForm(FileUploadFieldForm::class, ['_upload' => 'avatar', 'filename' => 'photo.jpg'])
         ->assertUnprocessable();
 });
 
 it('returns 404 when the upload field does not exist', function (): void {
     Storage::fake('s3');
 
-    Lattice::forms([UploadForm::class]);
+    Lattice::forms([FileUploadFieldForm::class]);
 
-    $this->submitForm(UploadForm::class, ['_upload' => 'nonexistent', 'filename' => 'file.pdf'])
+    $this->submitForm(FileUploadFieldForm::class, ['_upload' => 'nonexistent', 'filename' => 'file.pdf'])
         ->assertNotFound();
 });
 
 it('stores a multipart upload through the form', function (): void {
     Storage::fake('public');
 
-    Lattice::forms([UploadForm::class]);
+    Lattice::forms([FileUploadFieldForm::class]);
 
-    $this->submitForm(UploadForm::class, [
+    $this->submitForm(FileUploadFieldForm::class, [
         'avatar' => UploadedFile::fake()->image('me.jpg'),
     ])
-        ->assertRedirect('/uploads');
+        ->assertRedirect('/form/fields/file-upload');
 
     $stored = session('upload')['avatar'];
 
@@ -123,11 +123,11 @@ it('stores a multipart upload through the form', function (): void {
 it('rejects a multipart image upload that exceeds maxSize', function (): void {
     Storage::fake('public');
 
-    Lattice::forms([UploadForm::class]);
+    Lattice::forms([FileUploadFieldForm::class]);
 
-    $form = wire(Form::use(UploadForm::class));
+    $form = wire(Form::use(FileUploadFieldForm::class));
 
-    post('/lattice/forms/workbench.upload.form', [
+    post('/lattice/forms/workbench.fields.file-upload.form', [
         'avatar' => UploadedFile::fake()->create('huge.jpg', 5000, 'image/jpeg'),
     ], $this->latticeHeaders($form))
         ->assertSessionHasErrors(['avatar']);
@@ -138,14 +138,14 @@ it('accepts a signed tmp key that exists and rejects an out-of-prefix key', func
     Storage::disk('s3')->put('tmp/real.pdf', 'data');
     Storage::disk('s3')->put('uploads/secret.pdf', 'data');
 
-    Lattice::forms([UploadForm::class]);
+    Lattice::forms([FileUploadFieldForm::class]);
 
-    $form = wire(Form::use(UploadForm::class));
+    $form = wire(Form::use(FileUploadFieldForm::class));
 
-    post('/lattice/forms/workbench.upload.form', ['document' => 'tmp/real.pdf'], $this->latticeHeaders($form))
-        ->assertRedirect('/uploads');
+    post('/lattice/forms/workbench.fields.file-upload.form', ['document' => 'tmp/real.pdf'], $this->latticeHeaders($form))
+        ->assertRedirect('/form/fields/file-upload');
 
-    post('/lattice/forms/workbench.upload.form', ['document' => 'uploads/secret.pdf'], $this->latticeHeaders($form))
+    post('/lattice/forms/workbench.fields.file-upload.form', ['document' => 'uploads/secret.pdf'], $this->latticeHeaders($form))
         ->assertSessionHasErrors(['document']);
 });
 
@@ -155,10 +155,10 @@ it('deletes an existing file when its removal token is submitted', function (): 
     $signer = app(SignsComponentReferences::class);
     $token = $signer->seal('file', 'avatar', ['disk' => 'public', 'path' => 'uploads/old.jpg']);
 
-    Lattice::forms([UploadForm::class]);
+    Lattice::forms([FileUploadFieldForm::class]);
 
-    $this->submitForm(UploadForm::class, ['avatar__removed' => [$token]])
-        ->assertRedirect('/uploads');
+    $this->submitForm(FileUploadFieldForm::class, ['avatar__removed' => [$token]])
+        ->assertRedirect('/form/fields/file-upload');
 
     Storage::disk('public')->assertMissing('uploads/old.jpg');
 });
@@ -167,10 +167,10 @@ it('ignores a forged removal token (no deletion)', function (): void {
     Storage::fake('public');
     Storage::disk('public')->put('uploads/keep.jpg', 'data');
 
-    Lattice::forms([UploadForm::class]);
+    Lattice::forms([FileUploadFieldForm::class]);
 
-    $this->submitForm(UploadForm::class, ['avatar__removed' => ['forged']])
-        ->assertRedirect('/uploads');
+    $this->submitForm(FileUploadFieldForm::class, ['avatar__removed' => ['forged']])
+        ->assertRedirect('/form/fields/file-upload');
 
     Storage::disk('public')->assertExists('uploads/keep.jpg');
 });
