@@ -11,7 +11,7 @@ import { useFieldScope } from "@lattice-php/lattice/form/hooks/field-scope";
 import { useDependentField } from "@lattice-php/lattice/form/hooks/use-dependent-field";
 import { useFieldCommit } from "@lattice-php/lattice/form/hooks/use-field-commit";
 import { useFormValue } from "@lattice-php/lattice/form/hooks/values";
-import { DEFAULT_RICH_EDITOR_EXTENSIONS } from "@lattice-php/lattice/form/rich-editor/builtins";
+import { registerBuiltinRichEditorExtensions } from "@lattice-php/lattice/form/rich-editor/builtins";
 import {
   assembleStarterKitOptions,
   assembleTiptapExtensions,
@@ -20,6 +20,8 @@ import {
   type ToolbarEntry,
 } from "@lattice-php/lattice/form/rich-editor/registry";
 import { ToolbarIconButton } from "@lattice-php/lattice/form/rich-editor/toolbar-button";
+
+registerBuiltinRichEditorExtensions();
 
 function Toolbar({ editor, items }: { editor: Editor; items: ToolbarEntry[] }) {
   const { t } = useT("lattice");
@@ -73,7 +75,7 @@ const RichEditorField: RendererComponent<"field.rich-editor"> = ({ node }) => {
       : ((node.props.value as object | undefined) ?? "");
 
   const resolved = useMemo(
-    () => resolveRichEditorExtensions(node.props.extensions ?? DEFAULT_RICH_EDITOR_EXTENSIONS),
+    () => resolveRichEditorExtensions(node.props.extensions),
     [node.props.extensions],
   );
   const toolbar = useMemo(() => assembleToolbar(resolved), [resolved]);

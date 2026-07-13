@@ -5,6 +5,7 @@ use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Blockquote;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Bold;
 use Lattice\Lattice\Forms\RichEditor\Extensions\BulletList;
+use Lattice\Lattice\Forms\RichEditor\Extensions\Code;
 use Lattice\Lattice\Forms\RichEditor\Extensions\CodeBlock;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Details;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Emoji;
@@ -30,6 +31,7 @@ it('wires the prop-less built-ins as a bare type', function (string $class, stri
     [BulletList::class, 'bullet-list'],
     [OrderedList::class, 'ordered-list'],
     [Blockquote::class, 'blockquote'],
+    [Code::class, 'code'],
     [CodeBlock::class, 'code-block'],
     [HorizontalRule::class, 'horizontal-rule'],
     [Details::class, 'details'],
@@ -146,6 +148,7 @@ it('discovers every built-in extension', function (): void {
         'blockquote',
         'bold',
         'bullet-list',
+        'code',
         'code-block',
         'details',
         'emoji',

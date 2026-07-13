@@ -5,7 +5,28 @@ import { fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
 import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { registerRichEditorExtension } from "@lattice-php/lattice/form/rich-editor/registry";
+import type { EditorExtension } from "@lattice-php/lattice/types/generated";
 import { RichEditorComponent } from "./rich-editor";
+
+const DEFAULT_EXTENSIONS: EditorExtension[] = [
+  { type: "bold" },
+  { type: "italic" },
+  { type: "strike" },
+  { type: "underline" },
+  { type: "highlight" },
+  { type: "code" },
+  { type: "heading" },
+  { type: "bullet-list" },
+  { type: "ordered-list" },
+  { type: "blockquote" },
+  { type: "code-block" },
+  { type: "horizontal-rule" },
+  { type: "text-align" },
+  { type: "link" },
+  { type: "table" },
+  { type: "details" },
+  { type: "emoji" },
+];
 
 function renderField(
   node: Node<"field.rich-editor">,
@@ -41,6 +62,7 @@ describe("RichEditorComponent", () => {
         props: {
           name: "body",
           label: "Body",
+          extensions: DEFAULT_EXTENSIONS,
           conditions: fakeConditions({
             visible: [{ field: "mode", operator: "eq", value: "edit" }],
           }),
@@ -53,7 +75,12 @@ describe("RichEditorComponent", () => {
   });
 
   it("renders the toolbar and a hidden input for submission", async () => {
-    renderField(fakeNode({ type: "field.rich-editor", props: { name: "body", label: "Body" } }));
+    renderField(
+      fakeNode({
+        type: "field.rich-editor",
+        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
+      }),
+    );
 
     expect(await screen.findByLabelText("Bold")).toBeInTheDocument();
     expect(document.querySelector('input[type="hidden"][name="body"]')).toBeInTheDocument();
@@ -61,7 +88,10 @@ describe("RichEditorComponent", () => {
 
   it("uses scoped names inside row fields", async () => {
     renderField(
-      fakeNode({ type: "field.rich-editor", props: { name: "body", label: "Body" } }),
+      fakeNode({
+        type: "field.rich-editor",
+        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
+      }),
       { items: [{ children: [{}, { body: { type: "doc", content: [] } }] }] },
       true,
     );
@@ -73,7 +103,12 @@ describe("RichEditorComponent", () => {
   });
 
   it("runs every toolbar command without error", async () => {
-    renderField(fakeNode({ type: "field.rich-editor", props: { name: "body", label: "Body" } }));
+    renderField(
+      fakeNode({
+        type: "field.rich-editor",
+        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
+      }),
+    );
 
     await screen.findByLabelText("Bold");
 
@@ -83,6 +118,7 @@ describe("RichEditorComponent", () => {
       "Strikethrough",
       "Underline",
       "Highlight",
+      "Code",
       "Bullet list",
       "Ordered list",
       "Blockquote",
@@ -109,7 +145,12 @@ describe("RichEditorComponent", () => {
   });
 
   it("toggles a heading level through the dropdown", async () => {
-    renderField(fakeNode({ type: "field.rich-editor", props: { name: "body", label: "Body" } }));
+    renderField(
+      fakeNode({
+        type: "field.rich-editor",
+        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
+      }),
+    );
 
     fireEvent.click(await screen.findByLabelText("Heading"));
 
@@ -142,7 +183,12 @@ describe("RichEditorComponent", () => {
   });
 
   it("sets and removes a link through the popover", async () => {
-    renderField(fakeNode({ type: "field.rich-editor", props: { name: "body", label: "Body" } }));
+    renderField(
+      fakeNode({
+        type: "field.rich-editor",
+        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
+      }),
+    );
 
     fireEvent.click(await screen.findByLabelText("Link"));
 
@@ -213,7 +259,12 @@ describe("RichEditorComponent", () => {
     renderField(
       fakeNode({
         type: "field.rich-editor",
-        props: { name: "body", label: "Body", placeholder: "Write your article…" },
+        props: {
+          name: "body",
+          label: "Body",
+          extensions: DEFAULT_EXTENSIONS,
+          placeholder: "Write your article…",
+        },
       }),
     );
 
@@ -227,7 +278,12 @@ describe("RichEditorComponent", () => {
   });
 
   it("inserts an emoji from the picker", async () => {
-    renderField(fakeNode({ type: "field.rich-editor", props: { name: "body", label: "Body" } }));
+    renderField(
+      fakeNode({
+        type: "field.rich-editor",
+        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
+      }),
+    );
 
     await screen.findByLabelText("Insert emoji");
 

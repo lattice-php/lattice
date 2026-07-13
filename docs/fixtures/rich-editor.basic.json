@@ -24,6 +24,9 @@
                     "type": "highlight"
                 },
                 {
+                    "type": "code"
+                },
+                {
                     "props": {
                         "levels": [
                             1,

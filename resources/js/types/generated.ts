@@ -401,6 +401,7 @@ export type Dropdown = {
 export type EditorBlockquote = object;
 export type EditorBold = object;
 export type EditorBulletList = object;
+export type EditorCode = object;
 export type EditorCodeBlock = object;
 export type EditorDetails = object;
 export type EditorEmoji = {
@@ -414,6 +415,7 @@ export type EditorExtensionPropsMap = {
   blockquote: EditorBlockquote;
   bold: EditorBold;
   "bullet-list": EditorBulletList;
+  code: EditorCode;
   "code-block": EditorCodeBlock;
   details: EditorDetails;
   emoji: EditorEmoji;
@@ -997,7 +999,7 @@ export type RichEditor = {
   dependsOnKeys: string[] | null;
   disabled: boolean;
   editablePrefill: boolean;
-  extensions: EditorExtension[] | null;
+  extensions: EditorExtension[];
   helperText: string | null;
   label: string | null;
   name: string;

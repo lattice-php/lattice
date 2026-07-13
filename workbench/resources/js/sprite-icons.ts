@@ -22,6 +22,7 @@ export const iconNames = [
   "circle-x",
   "clock",
   "code",
+  "code-xml",
   "columns-3",
   "copy",
   "external-link",
@@ -89,6 +90,7 @@ declare module "@lattice-php/lattice" {
     "circle-x": true;
     clock: true;
     code: true;
+    "code-xml": true;
     "columns-3": true;
     copy: true;
     "external-link": true;

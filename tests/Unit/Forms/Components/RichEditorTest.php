@@ -33,7 +33,7 @@ function editorExtensionTypes(RichEditor $field): array
 describe('extensions', function (): void {
     it('serializes the default set in toolbar order', function (): void {
         expect(editorExtensionTypes(RichEditor::make('body')))->toBe([
-            'bold', 'italic', 'strike', 'underline', 'highlight',
+            'bold', 'italic', 'strike', 'underline', 'highlight', 'code',
             'heading',
             'bullet-list', 'ordered-list', 'blockquote', 'code-block', 'horizontal-rule',
             'text-align',
@@ -94,9 +94,9 @@ describe('extensions', function (): void {
     it('adds to the default set when nothing was configured', function (): void {
         $types = editorExtensionTypes(RichEditor::make('body')->withExtensions('mention'));
 
-        expect($types)->toHaveCount(17)
+        expect($types)->toHaveCount(18)
             ->and($types[0])->toBe('bold')
-            ->and($types[16])->toBe('mention');
+            ->and($types[17])->toBe('mention');
     });
 
     it('reconfigures a default extension in place', function (): void {
@@ -104,8 +104,8 @@ describe('extensions', function (): void {
 
         $extensions = editorExtensions($field);
 
-        expect(array_column($extensions, 'type'))->toHaveCount(16)
-            ->and($extensions[5])->toBe(['type' => 'heading', 'props' => ['levels' => [2, 3]]]);
+        expect(array_column($extensions, 'type'))->toHaveCount(17)
+            ->and($extensions[6])->toBe(['type' => 'heading', 'props' => ['levels' => [2, 3]]]);
     });
 
     it('subtracts by class-string and by wire type', function (): void {
@@ -113,7 +113,7 @@ describe('extensions', function (): void {
             RichEditor::make('body')->withoutExtensions(Details::class, 'emoji'),
         );
 
-        expect($types)->toHaveCount(14)
+        expect($types)->toHaveCount(15)
             ->and($types)->not->toContain('details')
             ->and($types)->not->toContain('emoji');
     });

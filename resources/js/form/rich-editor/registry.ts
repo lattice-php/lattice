@@ -67,14 +67,30 @@ export type ResolvedRichEditorExtension = {
 const registry = new Map<string, RichEditorExtensionDefinition>();
 
 /**
- * Wire props arrive as `Partial` because a spec may omit `props` entirely (the
- * client-side default set does); definitions default each field themselves.
+ * Wire props arrive as `Partial` because a spec may omit `props` entirely;
+ * definitions default each field themselves.
  */
 export function registerRichEditorExtension<TType extends string>(
   type: TType,
   definition: RichEditorExtensionDefinition<Partial<EditorExtensionPayloadOf<TType>>>,
 ): void {
   registry.set(type, definition as unknown as RichEditorExtensionDefinition);
+}
+
+/**
+ * Registration that yields to an existing entry. The built-ins load with the
+ * lazy editor chunk — after app boot code ran — so seeding (instead of
+ * registering) keeps a consumer's deliberate override of a built-in type.
+ *
+ * @internal
+ */
+export function seedRichEditorExtension<TType extends string>(
+  type: TType,
+  definition: RichEditorExtensionDefinition<Partial<EditorExtensionPayloadOf<TType>>>,
+): void {
+  if (!registry.has(type)) {
+    registerRichEditorExtension(type, definition);
+  }
 }
 
 const warned = new Set<string>();

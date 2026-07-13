@@ -1,31 +1,52 @@
 import { describe, expect, it, vi } from "vitest";
-import { DEFAULT_RICH_EDITOR_EXTENSIONS } from "./builtins";
+import type { EditorExtension } from "@lattice-php/lattice/types/generated";
+import { registerBuiltinRichEditorExtensions } from "./builtins";
 import {
   assembleStarterKitOptions,
   assembleToolbar,
   resolveRichEditorExtensions,
 } from "./registry";
 
+registerBuiltinRichEditorExtensions();
+
+const DEFAULT_SET: EditorExtension[] = [
+  { type: "bold" },
+  { type: "italic" },
+  { type: "strike" },
+  { type: "underline" },
+  { type: "highlight" },
+  { type: "code" },
+  { type: "heading" },
+  { type: "bullet-list" },
+  { type: "ordered-list" },
+  { type: "blockquote" },
+  { type: "code-block" },
+  { type: "horizontal-rule" },
+  { type: "text-align" },
+  { type: "link" },
+  { type: "table" },
+  { type: "details" },
+  { type: "emoji" },
+];
+
 describe("built-in definitions", () => {
   it("resolves the whole default set without warnings", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    expect(resolveRichEditorExtensions(DEFAULT_RICH_EDITOR_EXTENSIONS)).toHaveLength(16);
+    expect(resolveRichEditorExtensions(DEFAULT_SET)).toHaveLength(17);
     expect(warn).not.toHaveBeenCalled();
 
     warn.mockRestore();
   });
 
   it("assembles the default StarterKit with the previously hardcoded features", () => {
-    const options = assembleStarterKitOptions(
-      resolveRichEditorExtensions(DEFAULT_RICH_EDITOR_EXTENSIONS),
-    );
+    const options = assembleStarterKitOptions(resolveRichEditorExtensions(DEFAULT_SET));
 
     expect(options.bold).toEqual({});
     expect(options.heading).toEqual({ levels: [1, 2, 3, 4, 5, 6] });
     expect(options.listItem).toEqual({});
     expect(options.link).toEqual({ openOnClick: false });
-    expect(options.code).toBe(false);
+    expect(options.code).toEqual({});
   });
 
   it("passes heading levels and link options from the wire props into StarterKit", () => {
@@ -41,7 +62,7 @@ describe("built-in definitions", () => {
   });
 
   it("renders the default toolbar in the previously hardcoded group order", () => {
-    const entries = assembleToolbar(resolveRichEditorExtensions(DEFAULT_RICH_EDITOR_EXTENSIONS));
+    const entries = assembleToolbar(resolveRichEditorExtensions(DEFAULT_SET));
 
     expect(entries.map((entry) => (entry === "separator" ? "|" : entry.key))).toEqual([
       "bold",
@@ -49,6 +70,7 @@ describe("built-in definitions", () => {
       "strikethrough",
       "underline",
       "highlight",
+      "code",
       "|",
       "heading",
       "|",

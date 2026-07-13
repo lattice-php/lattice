@@ -13,6 +13,7 @@ use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Blockquote;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Bold;
 use Lattice\Lattice\Forms\RichEditor\Extensions\BulletList;
+use Lattice\Lattice\Forms\RichEditor\Extensions\Code;
 use Lattice\Lattice\Forms\RichEditor\Extensions\CodeBlock;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Details;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Emoji;
@@ -37,9 +38,9 @@ class RichEditor extends Field
      * Computed in decorateProps() from the configured set — declared for the
      * generated wire type, like Field::$conditions.
      *
-     * @var list<EditorExtension>|null
+     * @var list<EditorExtension>
      */
-    public ?array $extensions = null;
+    public array $extensions = [];
 
     /**
      * The active set keyed by wire type (insertion-ordered), null while the
@@ -125,6 +126,7 @@ class RichEditor extends Field
             Strike::make(),
             Underline::make(),
             Highlight::make(),
+            Code::make(),
             Heading::make(),
             BulletList::make(),
             OrderedList::make(),

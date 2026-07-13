@@ -27,6 +27,7 @@ enum Icon: string
     case CircleX = 'circle-x';
     case Clock = 'clock';
     case Code = 'code';
+    case CodeXml = 'code-xml';
     case Columns3 = 'columns-3';
     case Copy = 'copy';
     case ExternalLink = 'external-link';

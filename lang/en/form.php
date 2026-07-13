@@ -18,6 +18,7 @@ return [
         'bullet-list' => 'Bullet list',
         'ordered-list' => 'Ordered list',
         'blockquote' => 'Blockquote',
+        'code' => 'Code',
         'code-block' => 'Code block',
         'horizontal-rule' => 'Horizontal rule',
         'align-left' => 'Align left',

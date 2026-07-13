@@ -67,6 +67,7 @@ const latticeIcons = [
   "align-right",
   "bold",
   "code",
+  "code-xml",
   "columns-3",
   "heading",
   "heading-1",

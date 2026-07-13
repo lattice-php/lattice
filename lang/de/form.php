@@ -18,6 +18,7 @@ return [
         'bullet-list' => 'Aufzählung',
         'ordered-list' => 'Nummerierte Liste',
         'blockquote' => 'Zitat',
+        'code' => 'Code',
         'code-block' => 'Codeblock',
         'horizontal-rule' => 'Trennlinie',
         'align-left' => 'Linksbündig',

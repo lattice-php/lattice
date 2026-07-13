@@ -7,7 +7,6 @@ import type { StarterKitOptions } from "@tiptap/starter-kit";
 import { useState } from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
-import type { EditorExtension } from "@lattice-php/lattice/types/generated";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@lattice-php/lattice/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/lattice/ui/popover";
-import { registerRichEditorExtension, type ToolbarButton } from "./registry";
+import { seedRichEditorExtension, type ToolbarButton } from "./registry";
 import { ToolbarIconButton } from "./toolbar-button";
 
 type HeadingLevels = NonNullable<Exclude<StarterKitOptions["heading"], false>["levels"]>;
@@ -41,30 +40,6 @@ const DEFAULT_EMOJIS = [
   "❌",
   "⭐",
   "❤️",
-];
-
-/**
- * The set the editor falls back to when a node carries no `extensions` prop —
- * payloads from servers that predate configurable extensions. Mirrors
- * RichEditor::defaultExtensions() on the PHP side.
- */
-export const DEFAULT_RICH_EDITOR_EXTENSIONS: EditorExtension[] = [
-  { type: "bold" },
-  { type: "italic" },
-  { type: "strike" },
-  { type: "underline" },
-  { type: "highlight" },
-  { type: "heading" },
-  { type: "bullet-list" },
-  { type: "ordered-list" },
-  { type: "blockquote" },
-  { type: "code-block" },
-  { type: "horizontal-rule" },
-  { type: "text-align" },
-  { type: "link" },
-  { type: "table" },
-  { type: "details" },
-  { type: "emoji" },
 ];
 
 function headingLevels(levels: number[] | undefined): HeadingLevels {
@@ -226,237 +201,258 @@ function markButton(key: string, icon: string, label: string, mark: string): Too
   };
 }
 
-registerRichEditorExtension("bold", {
-  group: "marks",
-  starterKit: () => ({ bold: {} }),
-  toolbar: () => [markButton("bold", "bold", "Bold", "bold")],
-});
+let registered = false;
 
-registerRichEditorExtension("italic", {
-  group: "marks",
-  starterKit: () => ({ italic: {} }),
-  toolbar: () => [markButton("italic", "italic", "Italic", "italic")],
-});
+/**
+ * Called by the editor field when its chunk loads. Registration must be an
+ * explicitly invoked export: the package ships side-effect-free modules, so a
+ * bare `import "./builtins"` would be tree-shaken out of production builds.
+ */
+export function registerBuiltinRichEditorExtensions(): void {
+  if (registered) {
+    return;
+  }
 
-registerRichEditorExtension("strike", {
-  group: "marks",
-  starterKit: () => ({ strike: {} }),
-  toolbar: () => [markButton("strikethrough", "strikethrough", "Strikethrough", "strike")],
-});
+  registered = true;
 
-registerRichEditorExtension("underline", {
-  group: "marks",
-  starterKit: () => ({ underline: {} }),
-  toolbar: () => [markButton("underline", "underline", "Underline", "underline")],
-});
+  seedRichEditorExtension("bold", {
+    group: "marks",
+    starterKit: () => ({ bold: {} }),
+    toolbar: () => [markButton("bold", "bold", "Bold", "bold")],
+  });
 
-registerRichEditorExtension("highlight", {
-  group: "marks",
-  extensions: () => [Highlight],
-  toolbar: () => [markButton("highlight", "highlighter", "Highlight", "highlight")],
-});
+  seedRichEditorExtension("italic", {
+    group: "marks",
+    starterKit: () => ({ italic: {} }),
+    toolbar: () => [markButton("italic", "italic", "Italic", "italic")],
+  });
 
-registerRichEditorExtension("heading", {
-  starterKit: (props) => ({ heading: { levels: headingLevels(props.levels) } }),
-  toolbar: (props) => {
-    const levels = headingLevels(props.levels);
+  seedRichEditorExtension("strike", {
+    group: "marks",
+    starterKit: () => ({ strike: {} }),
+    toolbar: () => [markButton("strikethrough", "strikethrough", "Strikethrough", "strike")],
+  });
 
-    return [
+  seedRichEditorExtension("underline", {
+    group: "marks",
+    starterKit: () => ({ underline: {} }),
+    toolbar: () => [markButton("underline", "underline", "Underline", "underline")],
+  });
+
+  seedRichEditorExtension("highlight", {
+    group: "marks",
+    extensions: () => [Highlight],
+    toolbar: () => [markButton("highlight", "highlighter", "Highlight", "highlight")],
+  });
+
+  seedRichEditorExtension("code", {
+    group: "marks",
+    starterKit: () => ({ code: {} }),
+    toolbar: () => [markButton("code", "code-xml", "Code", "code")],
+  });
+
+  seedRichEditorExtension("heading", {
+    starterKit: (props) => ({ heading: { levels: headingLevels(props.levels) } }),
+    toolbar: (props) => {
+      const levels = headingLevels(props.levels);
+
+      return [
+        {
+          key: "heading",
+          component: ({ editor }) => <HeadingMenu editor={editor} levels={levels} />,
+        },
+      ];
+    },
+  });
+
+  seedRichEditorExtension("bullet-list", {
+    group: "blocks",
+    starterKit: () => ({ bulletList: {}, listItem: {} }),
+    toolbar: () => [
       {
-        key: "heading",
-        component: ({ editor }) => <HeadingMenu editor={editor} levels={levels} />,
+        icon: "list",
+        key: "bullet-list",
+        label: "Bullet list",
+        isActive: (editor) => editor.isActive("bulletList"),
+        run: (editor) => editor.chain().focus().toggleBulletList().run(),
       },
-    ];
-  },
-});
+    ],
+  });
 
-registerRichEditorExtension("bullet-list", {
-  group: "blocks",
-  starterKit: () => ({ bulletList: {}, listItem: {} }),
-  toolbar: () => [
-    {
-      icon: "list",
-      key: "bullet-list",
-      label: "Bullet list",
-      isActive: (editor) => editor.isActive("bulletList"),
-      run: (editor) => editor.chain().focus().toggleBulletList().run(),
-    },
-  ],
-});
+  seedRichEditorExtension("ordered-list", {
+    group: "blocks",
+    starterKit: () => ({ orderedList: {}, listItem: {} }),
+    toolbar: () => [
+      {
+        icon: "list-ordered",
+        key: "ordered-list",
+        label: "Ordered list",
+        isActive: (editor) => editor.isActive("orderedList"),
+        run: (editor) => editor.chain().focus().toggleOrderedList().run(),
+      },
+    ],
+  });
 
-registerRichEditorExtension("ordered-list", {
-  group: "blocks",
-  starterKit: () => ({ orderedList: {}, listItem: {} }),
-  toolbar: () => [
-    {
-      icon: "list-ordered",
-      key: "ordered-list",
-      label: "Ordered list",
-      isActive: (editor) => editor.isActive("orderedList"),
-      run: (editor) => editor.chain().focus().toggleOrderedList().run(),
-    },
-  ],
-});
+  seedRichEditorExtension("blockquote", {
+    group: "blocks",
+    starterKit: () => ({ blockquote: {} }),
+    toolbar: () => [
+      {
+        icon: "quote",
+        key: "blockquote",
+        label: "Blockquote",
+        isActive: (editor) => editor.isActive("blockquote"),
+        run: (editor) => editor.chain().focus().toggleBlockquote().run(),
+      },
+    ],
+  });
 
-registerRichEditorExtension("blockquote", {
-  group: "blocks",
-  starterKit: () => ({ blockquote: {} }),
-  toolbar: () => [
-    {
-      icon: "quote",
-      key: "blockquote",
-      label: "Blockquote",
-      isActive: (editor) => editor.isActive("blockquote"),
-      run: (editor) => editor.chain().focus().toggleBlockquote().run(),
-    },
-  ],
-});
+  seedRichEditorExtension("code-block", {
+    group: "blocks",
+    starterKit: () => ({ codeBlock: {} }),
+    toolbar: () => [
+      {
+        icon: "code",
+        key: "code-block",
+        label: "Code block",
+        isActive: (editor) => editor.isActive("codeBlock"),
+        run: (editor) => editor.chain().focus().toggleCodeBlock().run(),
+      },
+    ],
+  });
 
-registerRichEditorExtension("code-block", {
-  group: "blocks",
-  starterKit: () => ({ codeBlock: {} }),
-  toolbar: () => [
-    {
-      icon: "code",
-      key: "code-block",
-      label: "Code block",
-      isActive: (editor) => editor.isActive("codeBlock"),
-      run: (editor) => editor.chain().focus().toggleCodeBlock().run(),
-    },
-  ],
-});
+  seedRichEditorExtension("horizontal-rule", {
+    group: "blocks",
+    starterKit: () => ({ horizontalRule: {} }),
+    toolbar: () => [
+      {
+        icon: "minus",
+        key: "horizontal-rule",
+        label: "Horizontal rule",
+        isActive: () => false,
+        run: (editor) => editor.chain().focus().setHorizontalRule().run(),
+      },
+    ],
+  });
 
-registerRichEditorExtension("horizontal-rule", {
-  group: "blocks",
-  starterKit: () => ({ horizontalRule: {} }),
-  toolbar: () => [
-    {
-      icon: "minus",
-      key: "horizontal-rule",
-      label: "Horizontal rule",
-      isActive: () => false,
-      run: (editor) => editor.chain().focus().setHorizontalRule().run(),
-    },
-  ],
-});
+  const ALIGNMENT_BUTTONS: Record<string, { icon: string; key: string; label: string }> = {
+    left: { icon: "align-left", key: "align-left", label: "Align left" },
+    center: { icon: "align-center", key: "align-center", label: "Align center" },
+    right: { icon: "align-right", key: "align-right", label: "Align right" },
+    justify: { icon: "align-justify", key: "justify", label: "Justify" },
+  };
 
-const ALIGNMENT_BUTTONS: Record<string, { icon: string; key: string; label: string }> = {
-  left: { icon: "align-left", key: "align-left", label: "Align left" },
-  center: { icon: "align-center", key: "align-center", label: "Align center" },
-  right: { icon: "align-right", key: "align-right", label: "Align right" },
-  justify: { icon: "align-justify", key: "justify", label: "Justify" },
-};
+  seedRichEditorExtension("text-align", {
+    extensions: (props) => [
+      TextAlign.configure({
+        alignments: props.alignments ?? ALL_ALIGNMENTS,
+        types: ["heading", "paragraph"],
+      }),
+    ],
+    toolbar: (props) =>
+      (props.alignments ?? ALL_ALIGNMENTS)
+        .filter((alignment) => alignment in ALIGNMENT_BUTTONS)
+        .map((alignment) => ({
+          ...ALIGNMENT_BUTTONS[alignment],
+          isActive: (editor: Editor) => editor.isActive({ textAlign: alignment }),
+          run: (editor: Editor) => editor.chain().focus().setTextAlign(alignment).run(),
+        })),
+  });
 
-registerRichEditorExtension("text-align", {
-  extensions: (props) => [
-    TextAlign.configure({
-      alignments: props.alignments ?? ALL_ALIGNMENTS,
-      types: ["heading", "paragraph"],
+  seedRichEditorExtension("link", {
+    starterKit: (props) => ({
+      link: {
+        openOnClick: props.openOnClick ?? false,
+        ...(props.protocols ? { protocols: props.protocols } : {}),
+      },
     }),
-  ],
-  toolbar: (props) =>
-    (props.alignments ?? ALL_ALIGNMENTS)
-      .filter((alignment) => alignment in ALIGNMENT_BUTTONS)
-      .map((alignment) => ({
-        ...ALIGNMENT_BUTTONS[alignment],
-        isActive: (editor: Editor) => editor.isActive({ textAlign: alignment }),
-        run: (editor: Editor) => editor.chain().focus().setTextAlign(alignment).run(),
-      })),
-});
-
-registerRichEditorExtension("link", {
-  starterKit: (props) => ({
-    link: {
-      openOnClick: props.openOnClick ?? false,
-      ...(props.protocols ? { protocols: props.protocols } : {}),
-    },
-  }),
-  toolbar: () => [
-    {
-      key: "link",
-      component: ({ editor }) => <LinkControl editor={editor} />,
-    },
-  ],
-});
-
-registerRichEditorExtension("table", {
-  group: "insert",
-  extensions: () => [TableKit.configure({ table: { resizable: false } })],
-  toolbar: (props) => [
-    {
-      icon: "table",
-      key: "insert-table",
-      label: "Insert table",
-      isActive: (editor) => editor.isActive("table"),
-      run: (editor) =>
-        editor
-          .chain()
-          .focus()
-          .insertTable({
-            rows: props.rows ?? 3,
-            cols: props.cols ?? 3,
-            withHeaderRow: props.withHeaderRow ?? true,
-          })
-          .run(),
-    },
-    {
-      icon: "columns-3",
-      key: "add-column",
-      label: "Add column",
-      isActive: () => false,
-      isDisabled: (editor) => !editor.can().addColumnAfter(),
-      run: (editor) => editor.chain().focus().addColumnAfter().run(),
-    },
-    {
-      icon: "rows-3",
-      key: "add-row",
-      label: "Add row",
-      isActive: () => false,
-      isDisabled: (editor) => !editor.can().addRowAfter(),
-      run: (editor) => editor.chain().focus().addRowAfter().run(),
-    },
-    {
-      icon: "trash-2",
-      key: "delete-table",
-      label: "Delete table",
-      isActive: () => false,
-      isDisabled: (editor) => !editor.can().deleteTable(),
-      run: (editor) => editor.chain().focus().deleteTable().run(),
-    },
-  ],
-});
-
-registerRichEditorExtension("details", {
-  group: "insert",
-  extensions: () => [Details, DetailsSummary, DetailsContent],
-  toolbar: () => [
-    {
-      icon: "chevron-right",
-      key: "details",
-      label: "Details",
-      isActive: (editor) => editor.isActive("details"),
-      run: (editor) => {
-        if (editor.isActive("details")) {
-          editor.chain().focus().unsetDetails().run();
-
-          return;
-        }
-
-        editor.chain().focus().setDetails().run();
-      },
-    },
-  ],
-});
-
-registerRichEditorExtension("emoji", {
-  toolbar: (props) => {
-    const emojis = props.emojis ?? DEFAULT_EMOJIS;
-
-    return [
+    toolbar: () => [
       {
-        key: "insert-emoji",
-        component: ({ editor }) => <EmojiPicker editor={editor} emojis={emojis} />,
+        key: "link",
+        component: ({ editor }) => <LinkControl editor={editor} />,
       },
-    ];
-  },
-});
+    ],
+  });
+
+  seedRichEditorExtension("table", {
+    group: "insert",
+    extensions: () => [TableKit.configure({ table: { resizable: false } })],
+    toolbar: (props) => [
+      {
+        icon: "table",
+        key: "insert-table",
+        label: "Insert table",
+        isActive: (editor) => editor.isActive("table"),
+        run: (editor) =>
+          editor
+            .chain()
+            .focus()
+            .insertTable({
+              rows: props.rows ?? 3,
+              cols: props.cols ?? 3,
+              withHeaderRow: props.withHeaderRow ?? true,
+            })
+            .run(),
+      },
+      {
+        icon: "columns-3",
+        key: "add-column",
+        label: "Add column",
+        isActive: () => false,
+        isDisabled: (editor) => !editor.can().addColumnAfter(),
+        run: (editor) => editor.chain().focus().addColumnAfter().run(),
+      },
+      {
+        icon: "rows-3",
+        key: "add-row",
+        label: "Add row",
+        isActive: () => false,
+        isDisabled: (editor) => !editor.can().addRowAfter(),
+        run: (editor) => editor.chain().focus().addRowAfter().run(),
+      },
+      {
+        icon: "trash-2",
+        key: "delete-table",
+        label: "Delete table",
+        isActive: () => false,
+        isDisabled: (editor) => !editor.can().deleteTable(),
+        run: (editor) => editor.chain().focus().deleteTable().run(),
+      },
+    ],
+  });
+
+  seedRichEditorExtension("details", {
+    group: "insert",
+    extensions: () => [Details, DetailsSummary, DetailsContent],
+    toolbar: () => [
+      {
+        icon: "chevron-right",
+        key: "details",
+        label: "Details",
+        isActive: (editor) => editor.isActive("details"),
+        run: (editor) => {
+          if (editor.isActive("details")) {
+            editor.chain().focus().unsetDetails().run();
+
+            return;
+          }
+
+          editor.chain().focus().setDetails().run();
+        },
+      },
+    ],
+  });
+
+  seedRichEditorExtension("emoji", {
+    toolbar: (props) => {
+      const emojis = props.emojis ?? DEFAULT_EMOJIS;
+
+      return [
+        {
+          key: "insert-emoji",
+          component: ({ editor }) => <EmojiPicker editor={editor} emojis={emojis} />,
+        },
+      ];
+    },
+  });
+}
