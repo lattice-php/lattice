@@ -1,0 +1,30 @@
+[
+    {
+        "props": {
+            "autoComplete": null,
+            "autoFocus": false,
+            "columnWidth": "md",
+            "conditions": null,
+            "copyable": true,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "editablePrefill": false,
+            "helperText": null,
+            "label": "API key",
+            "name": "api_key",
+            "placeholder": null,
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "prefix": null,
+            "readOnly": true,
+            "required": false,
+            "suffix": null,
+            "tabIndex": null,
+            "tooltip": null,
+            "type": null,
+            "value": "sk-live-4242"
+        },
+        "type": "field.text-input"
+    }
+]

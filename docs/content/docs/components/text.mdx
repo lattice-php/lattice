@@ -21,10 +21,12 @@ Display components render content and carry no interaction. Compose them inside 
 ## Heading
 
 `Heading::make($text, $level)` renders a heading; `$level` is `1`–`6` and defaults to `1`. Call
-`->tooltip('…')` to attach an ⓘ info popover next to it.
+`->tooltip('…')` to attach an ⓘ info popover next to it, and `->copyable()` to render a
+copy-to-clipboard affordance beside the text.
 
 ```php
 Heading::make('Billing', 2);
+Heading::make('sk-live-4242', 3)->copyable();
 ```
 
 ## Text

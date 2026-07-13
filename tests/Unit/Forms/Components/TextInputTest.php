@@ -96,6 +96,12 @@ describe('docs fixtures', function (): void {
         ]))));
     });
 
+    it('matches the copyable example fixture', function (): void {
+        assertFixtureMatches('text-input.copyable', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            TextInput::make('api_key', 'API key')->value('sk-live-4242')->readOnly()->copyable(),
+        ]))));
+    });
+
     it('matches the common field option examples fixture', function (): void {
         assertFixtureMatches('field.required', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             TextInput::make('name', 'Team name')->required(),

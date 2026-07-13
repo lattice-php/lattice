@@ -4,8 +4,11 @@ description: Render the cell value as an image or a round avatar.
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
 
-`ImageColumn` renders the cell value as an image URL — an avatar, a logo, a thumbnail.
+`ImageColumn` renders the cell value as an image URL — an avatar, a logo, a thumbnail. Clicking a
+cell opens the full-size image in a lightbox, the same overlay the [Image](/components/image/)
+component uses.
 
 <ComponentExample
   php={`ImageColumn::make('avatar')->label('')->circular()->size(32);
@@ -16,10 +19,17 @@ TextColumn::make('role')->label('Role');`}
 
 - `->circular()` clips the image to a circle — an avatar.
 - `->size(40)` sets the rendered size in pixels (square).
+- `->previewable(false)` turns the click-to-zoom lightbox off for the column.
 
 ```php
 ImageColumn::make('logo')->size(24);
 ImageColumn::make('photo')->circular()->size(48);
+ImageColumn::make('avatar')->previewable(false);
 ```
+
+<Info>
+  The lightbox is on by default — every image cell is clickable unless the column opts out with
+  `->previewable(false)`.
+</Info>
 
 Give the column an empty `->label('')` to drop its header, which reads better for a leading avatar.

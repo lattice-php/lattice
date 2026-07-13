@@ -70,6 +70,21 @@ TextInput::make('weight', 'Weight')->suffix(Affix::text('kg'));
   input](/forms/fields/password-input/).
 </Info>
 
+## Copyable
+
+`->copyable()` attaches a copy button to the end of the input. It copies whatever the field currently
+holds — handy for generated values like API keys or invite links, usually combined with
+`->readOnly()`:
+
+<ComponentExample
+  php={`TextInput::make('api_key', 'API key')
+    ->value('sk-live-4242')
+    ->readOnly()
+    ->copyable()`}
+  fixture="text-input.copyable"
+  values={{ api_key: "sk-live-4242" }}
+/>
+
 ## Autocomplete
 
 `->autoComplete()` sets the HTML `autocomplete` attribute so the browser can offer saved values.
