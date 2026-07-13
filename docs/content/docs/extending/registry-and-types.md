@@ -168,18 +168,21 @@ const columnRegistry = useColumnRegistry();
 
 ## TypeScript augmentation
 
-### The ComponentProps and ColumnProps interfaces
+### The augmentable interfaces
 
-`@lattice-php/lattice` exports two augmentable interfaces:
+`@lattice-php/lattice` exports one augmentable interface per wire-type family:
 
 - `ComponentProps` — maps a type string to its props shape for fields and UI components.
 - `ColumnProps` — maps a type string to its props shape for column cells.
+- `FilterProps` — maps a filter control to its props shape.
+- `EffectProps` — maps an effect type to its payload shape.
 
-Both interfaces use TypeScript's declaration merging. You can augment them manually or let `lattice:typescript` do it.
+All of them use TypeScript's declaration merging. You can augment them manually or let `lattice:typescript` do it.
 
 ### php artisan lattice:typescript
 
-Run this command whenever your PHP classes gain or lose public properties:
+Run this command whenever your PHP classes gain or lose public properties. It discovers your
+`#[AsComponent]`-marked components, columns and filters, plus `#[AsEffect]` effects:
 
 ```bash
 php artisan lattice:typescript
@@ -234,4 +237,4 @@ declare module "@lattice-php/lattice" {
 }
 ```
 
-The interface names are `ComponentProps` and `ColumnProps` — there is no `Lattice` prefix.
+The interface names carry no `Lattice` prefix — `ComponentProps`, `ColumnProps`, `FilterProps`, `EffectProps`.

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Workbench\App\Support\TypeScript;
 
 use Illuminate\Support\Str;
-use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
@@ -12,6 +11,7 @@ use Lattice\Lattice\Support\TypeScript\NodeModuleWriter;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
+use Lattice\Lattice\Support\TypeScript\WireFamily;
 use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
 
 /**
@@ -42,30 +42,40 @@ final class BaseProfile implements TypeScriptProfile
             : $packageRoot.'/resources/js/types';
 
         $manifest = new WireTypeDiscovery()->discover($src);
-        $effects = $manifest->effects;
 
         $discovered = $manifest->components;
-        $columnProps = $this->buildColumnProps($discovered);
-        $filterProps = $this->buildFilterProps($discovered);
-
         $formFields = $this->buildFormFields($discovered);
         $domainNodes = $this->buildDomainNodes($discovered);
+
+        $familyProps = [
+            'column' => $this->buildComponentProps($discovered, 'column'),
+            'filter' => $this->buildComponentProps($discovered, 'filter'),
+        ];
+        $valueObjectTransformers = [new ValueObjectTransformer($manifest->valueObjects)];
+
+        foreach (WireFamily::attributeFamilies() as $family) {
+            $classes = $manifest->family($family->category);
+
+            if ($classes === []) {
+                continue;
+            }
+
+            $familyProps[$family->category] = array_flip($classes);
+            $valueObjectTransformers[] = new ValueObjectTransformer(array_keys($classes), namePrefix: $family->typeNamePrefix);
+        }
 
         $generator->generate(
             [$src],
             [
                 new HttpMethodTransformer,
                 new EnumTransformer($manifest->enums),
-                new ValueObjectTransformer([
-                    ...$manifest->valueObjects,
-                    ...array_keys($effects),
-                ]),
+                ...$valueObjectTransformers,
                 new ComponentTransformer([
                     ...array_keys($formFields),
                     Form::class,
                     ...$this->componentClasses($domainNodes),
-                    ...array_values($columnProps),
-                    ...array_values($filterProps),
+                    ...array_values($familyProps['column']),
+                    ...array_values($familyProps['filter']),
                 ]),
             ],
             [
@@ -74,10 +84,7 @@ final class BaseProfile implements TypeScriptProfile
                     Form::class,
                     $domainNodes,
                     'form',
-                    EffectContract::class,
-                    $effects,
-                    $columnProps,
-                    $filterProps,
+                    $familyProps,
                     self::NODE_TYPE_ALIASES,
                 ),
             ],
@@ -90,48 +97,21 @@ final class BaseProfile implements TypeScriptProfile
     }
 
     /**
-     * Built-in column classes keyed by wire column type. A column reflects its
-     * public properties into its props, exactly like a component, so the column
-     * class itself is the source of the generated props type.
+     * Built-in classes of one component-sourced family (columns, filters) keyed
+     * by wire type. Like a component, they reflect their public properties into
+     * their props, so the class itself is the source of the generated props type.
      *
      * @param  list<DiscoveredComponent>  $discovered
      * @return array<string, class-string>
      */
-    private function buildColumnProps(array $discovered): array
+    private function buildComponentProps(array $discovered, string $category): array
     {
-        $columns = array_filter(
-            $discovered,
-            fn (DiscoveredComponent $dc): bool => $dc->category === 'column',
-        );
-
         $map = [];
 
-        foreach ($columns as $dc) {
-            $map[$dc->type] = $dc->class;
-        }
-
-        return $map;
-    }
-
-    /**
-     * Built-in filter classes keyed by wire filter type. A filter reflects its
-     * public properties into its props, exactly like a component, so the filter
-     * class itself is the source of the generated props type.
-     *
-     * @param  list<DiscoveredComponent>  $discovered
-     * @return array<string, class-string>
-     */
-    private function buildFilterProps(array $discovered): array
-    {
-        $filters = array_filter(
-            $discovered,
-            fn (DiscoveredComponent $dc): bool => $dc->category === 'filter',
-        );
-
-        $map = [];
-
-        foreach ($filters as $dc) {
-            $map[$dc->type] = $dc->class;
+        foreach ($discovered as $dc) {
+            if ($dc->category === $category) {
+                $map[$dc->type] = $dc->class;
+            }
         }
 
         return $map;

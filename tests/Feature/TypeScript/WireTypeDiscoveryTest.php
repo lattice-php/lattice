@@ -20,7 +20,7 @@ use Lattice\Lattice\Ui\Values\ToastMessage;
 it('classifies the src tree into enums, value objects, components and effects', function (): void {
     $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
 
-    expect($manifest->effects)->toHaveKey(ToastEffect::class, 'toast')
+    expect($manifest->family('effect'))->toHaveKey(ToastEffect::class, 'toast')
         ->and($manifest->enums)->toContain(Variant::class)
         ->and($manifest->valueObjects)->toContain(Translatable::class)
         ->and($manifest->valueObjects)->not->toContain(ToastEffect::class)
@@ -33,7 +33,7 @@ it('returns an empty manifest for a missing path', function (): void {
     expect($manifest->enums)->toBe([])
         ->and($manifest->valueObjects)->toBe([])
         ->and($manifest->components)->toBe([])
-        ->and($manifest->effects)->toBe([]);
+        ->and($manifest->families)->toBe([]);
 });
 
 it('discovers attributed components under a path with type, flags and category', function (): void {
@@ -132,9 +132,9 @@ it('sorts enums and value objects deterministically by class-string', function (
 it('keys effects by class-string, valued by wire type, sorted by class-string', function (): void {
     $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
 
-    expect($manifest->effects[ToastEffect::class])->toBe('toast');
+    expect($manifest->family('effect')[ToastEffect::class])->toBe('toast');
 
-    $classes = array_keys($manifest->effects);
+    $classes = array_keys($manifest->family('effect'));
     $sorted = $classes;
     sort($sorted);
 

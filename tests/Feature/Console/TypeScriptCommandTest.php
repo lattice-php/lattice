@@ -33,7 +33,10 @@ it('writes an augmentation file for app components, not built-ins', function ():
             ->toContain('"sample.widget"')
             ->toContain('"field.sample": {')
             ->toContain('name: string')
-            ->toContain('label: string | null');
+            ->toContain('label: string | null')
+            ->toContain('interface EffectProps')
+            ->toContain('"sample-effect": {')
+            ->toContain('target: string');
 
         expect(is_string($contents) && str_contains($contents, '"badge"'))->toBeFalse();
     });

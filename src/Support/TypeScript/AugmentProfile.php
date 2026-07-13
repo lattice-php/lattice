@@ -7,8 +7,9 @@ use Illuminate\Support\Facades\File;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 
 /**
- * Default profile: discovers an app's own #[AsComponent] classes and writes a
- * module augmentation extending the package's published types.
+ * Default profile: discovers an app's own wire-typed classes — components,
+ * columns, filters and every attribute-sourced family in the WireFamily table —
+ * and writes a module augmentation extending the package's published types.
  */
 final readonly class AugmentProfile implements TypeScriptProfile
 {
@@ -27,16 +28,20 @@ final readonly class AugmentProfile implements TypeScriptProfile
             return sprintf('Generated 0 type(s) → %s', $output);
         }
 
-        $discovered = [];
-
-        foreach ($roots as $path) {
-            $discovered = [...$discovered, ...$this->discovery->discover($path)->components];
-        }
-
         $entries = [];
 
-        foreach ($discovered as $component) {
-            $entries[$component->class] = [$component->type, $component->category];
+        foreach ($roots as $path) {
+            $manifest = $this->discovery->discover($path);
+
+            foreach ($manifest->components as $component) {
+                $entries[$component->class] = [$component->type, $component->category];
+            }
+
+            foreach (WireFamily::attributeFamilies() as $family) {
+                foreach ($manifest->family($family->category) as $class => $type) {
+                    $entries[$class] = [$type, $family->category];
+                }
+            }
         }
 
         $generator->generate(
