@@ -33,6 +33,7 @@ enum Icon: string
     case Eye = 'eye';
     case EyeOff = 'eye-off';
     case Filter = 'filter';
+    case Heading = 'heading';
     case Heading1 = 'heading-1';
     case Heading2 = 'heading-2';
     case Heading3 = 'heading-3';

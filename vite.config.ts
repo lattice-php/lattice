@@ -68,6 +68,7 @@ const latticeIcons = [
   "bold",
   "code",
   "columns-3",
+  "heading",
   "heading-1",
   "heading-2",
   "heading-3",

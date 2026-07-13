@@ -1,9 +1,10 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
 import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
+import { registerRichEditorExtension } from "@lattice-php/lattice/form/rich-editor/registry";
 import { RichEditorComponent } from "./rich-editor";
 
 function renderField(
@@ -72,7 +73,6 @@ describe("RichEditorComponent", () => {
   });
 
   it("runs every toolbar command without error", async () => {
-    const prompt = vi.spyOn(window, "prompt").mockReturnValue("https://example.com");
     renderField(fakeNode({ type: "field.rich-editor", props: { name: "body", label: "Body" } }));
 
     await screen.findByLabelText("Bold");
@@ -83,9 +83,6 @@ describe("RichEditorComponent", () => {
       "Strikethrough",
       "Underline",
       "Highlight",
-      "Heading 1",
-      "Heading 2",
-      "Heading 3",
       "Bullet list",
       "Ordered list",
       "Blockquote",
@@ -100,10 +97,6 @@ describe("RichEditorComponent", () => {
       fireEvent.click(screen.getByLabelText(label));
     }
 
-    fireEvent.click(screen.getByLabelText("Link"));
-    fireEvent.click(screen.getByLabelText("Link"));
-    expect(prompt).toHaveBeenCalled();
-
     fireEvent.click(screen.getByLabelText("Insert table"));
     for (const label of ["Add column", "Add row", "Delete table"]) {
       const button = await screen.findByLabelText(label);
@@ -113,8 +106,107 @@ describe("RichEditorComponent", () => {
 
     fireEvent.click(screen.getByLabelText("Details"));
     fireEvent.click(screen.getByLabelText("Details"));
+  });
 
-    prompt.mockRestore();
+  it("toggles a heading level through the dropdown", async () => {
+    renderField(fakeNode({ type: "field.rich-editor", props: { name: "body", label: "Body" } }));
+
+    fireEvent.click(await screen.findByLabelText("Heading"));
+
+    for (const level of [1, 2, 3, 4, 5, 6]) {
+      expect(screen.getByText(`Heading ${level}`)).toBeInTheDocument();
+    }
+
+    fireEvent.click(screen.getByText("Heading 2"));
+
+    await waitFor(() => expect(document.querySelector(".lattice-prose h2")).toBeInTheDocument());
+  });
+
+  it("limits the heading dropdown to the configured levels", async () => {
+    renderField(
+      fakeNode({
+        type: "field.rich-editor",
+        props: {
+          name: "body",
+          label: "Body",
+          extensions: [{ type: "heading", props: { levels: [1, 2] } }],
+        },
+      }),
+    );
+
+    fireEvent.click(await screen.findByLabelText("Heading"));
+
+    expect(screen.getByText("Heading 1")).toBeInTheDocument();
+    expect(screen.getByText("Heading 2")).toBeInTheDocument();
+    expect(screen.queryByText("Heading 3")).not.toBeInTheDocument();
+  });
+
+  it("sets and removes a link through the popover", async () => {
+    renderField(fakeNode({ type: "field.rich-editor", props: { name: "body", label: "Body" } }));
+
+    fireEvent.click(await screen.findByLabelText("Link"));
+
+    const input = await screen.findByLabelText("Link URL");
+    fireEvent.change(input, { target: { value: "https://example.com" } });
+    fireEvent.click(screen.getByLabelText("Apply link"));
+
+    await waitFor(() => expect(screen.queryByLabelText("Link URL")).not.toBeInTheDocument());
+
+    fireEvent.click(screen.getByLabelText("Link"));
+    fireEvent.click(await screen.findByLabelText("Remove link"));
+
+    await waitFor(() => expect(screen.queryByLabelText("Link URL")).not.toBeInTheDocument());
+  });
+
+  it("renders only the configured extensions", async () => {
+    renderField(
+      fakeNode({
+        type: "field.rich-editor",
+        props: {
+          name: "body",
+          label: "Body",
+          extensions: [{ type: "bold" }, { type: "italic" }, { type: "link" }],
+        },
+      }),
+    );
+
+    expect(await screen.findByLabelText("Bold")).toBeInTheDocument();
+    expect(screen.getByLabelText("Italic")).toBeInTheDocument();
+    expect(screen.getByLabelText("Link")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Heading")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Insert table")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Insert emoji")).not.toBeInTheDocument();
+  });
+
+  it("renders a client-registered custom extension", async () => {
+    registerRichEditorExtension("stamp", {
+      toolbar: () => [
+        {
+          icon: "check",
+          key: "stamp",
+          label: "Stamp",
+          isActive: () => false,
+          run: (editor) => editor.chain().focus().insertContent("STAMPED").run(),
+        },
+      ],
+    });
+
+    renderField(
+      fakeNode({
+        type: "field.rich-editor",
+        props: {
+          name: "body",
+          label: "Body",
+          extensions: [{ type: "bold" }, { type: "stamp" }],
+        },
+      }),
+    );
+
+    fireEvent.click(await screen.findByLabelText("Stamp"));
+
+    await waitFor(() =>
+      expect(document.querySelector(".lattice-prose")).toHaveTextContent("STAMPED"),
+    );
   });
 
   it("shows the placeholder while the editor is empty", async () => {
