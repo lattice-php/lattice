@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Support\TypeScript;
 use Illuminate\Support\Str;
 use Lattice\Lattice\Attributes\WireType;
 use Lattice\Lattice\Effects\EffectRegistry;
+use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
 use Lattice\Lattice\Support\WireTypeRegistry;
 use LogicException;
 
@@ -37,6 +38,7 @@ final readonly class WireFamily
             new self('column'),
             new self('effect', EffectRegistry::class),
             new self('filter'),
+            new self('editor-extension', EditorExtensionRegistry::class),
         ];
     }
 

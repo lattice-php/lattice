@@ -11,6 +11,7 @@ use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleColumn;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleDualMarkedA;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleDualMarkedB;
+use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleEditorExtension;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleUnattributed;
 use Lattice\Lattice\Ui\Components\Card;
 use Lattice\Lattice\Ui\Enums\Align;
@@ -145,6 +146,20 @@ it('does not classify an effect as a value object', function (): void {
 
     expect($manifest->valueObjects)->not->toContain(Toast::class)
         ->and($manifest->enums)->not->toContain(Toast::class);
+});
+
+it('keys editor extensions by class-string, valued by wire type', function (): void {
+    $manifest = new WireTypeDiscovery()->discover(__DIR__.'/../../Fixtures/TypeScript');
+
+    expect($manifest->family('editor-extension'))->toBe([SampleEditorExtension::class => 'sample-extension']);
+});
+
+it('does not classify an editor extension as a value object', function (): void {
+    $manifest = new WireTypeDiscovery()->discover(__DIR__.'/../../Fixtures/TypeScript');
+
+    expect($manifest->valueObjects)->not->toContain(SampleEditorExtension::class)
+        ->and($manifest->enums)->not->toContain(SampleEditorExtension::class)
+        ->and(collect($manifest->components)->pluck('class')->all())->not->toContain(SampleEditorExtension::class);
 });
 
 it('classifies AsRemoteComponent with correct precedence in components', function (): void {
