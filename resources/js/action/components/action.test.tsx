@@ -260,14 +260,15 @@ describe("Lattice action component", () => {
     http.patch.mockResolvedValue({
       effects: [
         {
-          message: "Profile updated.",
+          props: { message: "Profile updated." },
           type: "toast",
         },
         {
-          component: "settings.profile",
+          props: { component: "settings.profile" },
           type: "reload-component",
         },
         {
+          props: {},
           type: "reload-page",
         },
       ],
@@ -309,11 +310,9 @@ describe("Lattice action component", () => {
 
     expect(toastEvent.detail).toEqual({
       message: "Profile updated.",
-      type: "toast",
     });
     expect(reloadEvent.detail).toEqual({
       component: "settings.profile",
-      type: "reload-component",
     });
     expect(router.reload).toHaveBeenCalledWith();
 

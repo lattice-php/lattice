@@ -14,9 +14,9 @@ use Lattice\Lattice\Ui\Components\Button;
  * trigger can live anywhere in the layout.
  */
 #[AsEffect('toggle-sidebar')]
-final readonly class ToggleSidebarEffect extends Effect
+final class ToggleSidebar extends Effect
 {
     public function __construct(
-        public ?string $target = null,
+        public readonly ?string $target = null,
     ) {}
 }

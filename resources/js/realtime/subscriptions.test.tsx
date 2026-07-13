@@ -24,7 +24,7 @@ import Subscriptions from "./subscriptions";
 const toasts: unknown[] = [];
 
 const collectToast = (event: Event) => {
-  toasts.push((event as CustomEvent).detail.toast);
+  toasts.push((event as CustomEvent).detail);
 };
 
 beforeEach(() => {
@@ -47,9 +47,8 @@ describe("Subscriptions", () => {
         events: ["OrderShipped"],
         effects: [
           {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             type: "toast",
-            toast: {
+            props: {
               variant: "success",
               message: {
                 key: "orders.shipped-live",
@@ -83,7 +82,7 @@ describe("Subscriptions", () => {
           effects: [
             {
               type: "toast",
-              toast: {
+              props: {
                 variant: "success",
                 message: { key: "orders.live", payload: {}, replacements: {} },
               },
@@ -109,7 +108,7 @@ describe("Subscriptions", () => {
         channel: "orders",
         visibility: "public",
         events: ["OrderShipped"],
-        effects: [{ type: "close-modal", target: "checkout" } as never],
+        effects: [{ type: "close-modal", props: { target: "checkout" } } as never],
       },
     ];
 

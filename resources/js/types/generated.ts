@@ -119,14 +119,11 @@ export type ButtonVariant =
   | "secondary"
   | "success";
 export type Callout = {
+  variant: Variant;
+  message: string;
   title: string | null;
   dismissible: boolean;
   action: Node | null;
-  variant: Variant;
-  message: string;
-};
-export type CalloutEffect = {
-  readonly callout: Callout;
 };
 export type Callouts = Record<string, never>;
 export type Card = {
@@ -213,7 +210,7 @@ export type Choice = {
   tooltip: string | null;
   value: unknown;
 };
-export type CloseModalEffect = {
+export type CloseModal = {
   readonly modal: string | null;
 };
 export type Collapsible = {
@@ -232,7 +229,7 @@ export type ColumnFilter = {
   readonly options: Option[];
   readonly multiple: boolean;
   readonly searchable: boolean;
-  readonly clauseOptions?: ColumnFilterOption[];
+  readonly clauseOptions: ColumnFilterOption[];
 };
 export type ColumnFilterOption = {
   readonly label: string;
@@ -394,7 +391,7 @@ export type DateTimeInput = {
   value: unknown;
 };
 export type DateTimeStyle = "full" | "long" | "medium" | "short";
-export type DownloadEffect = {
+export type Download = {
   readonly url: string;
 };
 export type Dropdown = {
@@ -403,19 +400,20 @@ export type Dropdown = {
 };
 export type Effect = {
   type: string;
-} & Record<string, unknown>;
+  props: Record<string, unknown>;
+};
 export type EffectPropsMap = {
-  callout: CalloutEffect;
-  "close-modal": CloseModalEffect;
-  download: DownloadEffect;
-  "locale-change": LocaleChangeEffect;
-  "open-modal": OpenModalEffect;
-  redirect: RedirectEffect;
-  "reload-component": ReloadComponentEffect;
-  "reload-page": ReloadPageEffect;
-  "reset-form": ResetFormEffect;
-  toast: ToastEffect;
-  "toggle-sidebar": ToggleSidebarEffect;
+  callout: Callout;
+  "close-modal": CloseModal;
+  download: Download;
+  "locale-change": LocaleChange;
+  "open-modal": OpenModal;
+  redirect: Redirect;
+  "reload-component": ReloadComponent;
+  "reload-page": ReloadPage;
+  "reset-form": ResetForm;
+  toast: Toast;
+  "toggle-sidebar": ToggleSidebar;
 };
 export type FieldConditions = {
   readonly visible: Condition[];
@@ -423,24 +421,6 @@ export type FieldConditions = {
   readonly readOnly: Condition[];
   readonly disabled: Condition[];
 };
-export type FieldType =
-  | "field.builder"
-  | "field.checkbox"
-  | "field.choice"
-  | "field.date-input"
-  | "field.date-time-input"
-  | "field.file-upload"
-  | "field.hidden-input"
-  | "field.number-input"
-  | "field.otp"
-  | "field.password-input"
-  | "field.repeater"
-  | "field.rich-editor"
-  | "field.select"
-  | "field.textarea"
-  | "field.text-input"
-  | "field.time-input"
-  | "field.toggle";
 export type FileUpload = {
   accept: string | null;
   columnWidth: ColumnWidth;
@@ -650,7 +630,7 @@ export type Listen = {
   events: string[];
   effects: Effect[];
 };
-export type LocaleChangeEffect = {
+export type LocaleChange = {
   readonly locale: string;
 };
 export type Menu = Record<string, never>;
@@ -843,7 +823,7 @@ export type Op =
   | "after"
   | "empty"
   | "filled";
-export type OpenModalEffect = {
+export type OpenModal = {
   readonly modal: string;
 };
 export type Option = {
@@ -908,13 +888,13 @@ export type Placement = "top" | "bottom" | "right";
 export type RawBlock = {
   html: string;
 };
-export type RedirectEffect = {
+export type Redirect = {
   readonly url: string;
 };
-export type ReloadComponentEffect = {
+export type ReloadComponent = {
   readonly component: string;
 };
-export type ReloadPageEffect = object;
+export type ReloadPage = Record<string, never>;
 export type RemoteAccess = {
   readonly source: string;
   readonly audience: string;
@@ -951,7 +931,7 @@ export type Repeater = {
   tooltip: string | null;
   value: unknown;
 };
-export type ResetFormEffect = {
+export type ResetForm = {
   readonly form: string | null;
 };
 export type ResolveResponse = {
@@ -1073,7 +1053,7 @@ export type Tab = {
   confirm: {
     required: boolean;
     redirectUrl: string;
-    timeout?: number;
+    timeout: number | null;
   } | null;
   label: string;
   value: string;
@@ -1081,7 +1061,7 @@ export type Tab = {
 export type Table = {
   actionsLabel: string;
   bulkActions: Node<"action">[];
-  columns: Record<string, unknown>[];
+  columns: Node[];
   emptyLabel: string;
   endpoint: string | null;
   filters: Node[];
@@ -1233,16 +1213,13 @@ export type TimeInput = {
   tooltip: string | null;
   value: unknown;
 };
-export type ToastEffect = {
-  readonly toast: ToastMessage;
-};
-export type ToastMessage = {
+export type Toast = {
+  variant: Variant;
+  message: Translatable | string;
   duration: number | null;
   persistent: boolean;
   dismissible: boolean;
   action: Node | null;
-  variant: Variant;
-  message: Translatable | string;
 };
 export type Toggle = {
   autoFocus: boolean;
@@ -1266,7 +1243,7 @@ export type Toggle = {
 export type ToggleFilter = {
   label: string | null;
 };
-export type ToggleSidebarEffect = {
+export type ToggleSidebar = {
   readonly target: string | null;
 };
 export type ToolCallPart = {

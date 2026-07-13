@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Realtime;
 
 use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Lattice\Effects\Builtin\Callout;
+use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Realtime\Enums\ChannelVisibility;
 use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Ui\Values\Callout;
-use Lattice\Lattice\Ui\Values\ToastMessage;
 
 /**
  * Declares a websocket listener for a page: a channel, the broadcast event
@@ -56,7 +56,7 @@ final class Listen
         return $this;
     }
 
-    public function toast(string|Translatable|ToastMessage|Variant $message, Variant|string|null $variant = null): self
+    public function toast(string|Translatable|Toast|Variant $message, Variant|string|null $variant = null): self
     {
         $this->effects[] = Effects::toast($message, $variant);
 

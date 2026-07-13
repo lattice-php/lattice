@@ -26,7 +26,7 @@ describe("builtinEffectHandlers", () => {
   });
 
   it("redirect visits the url", () => {
-    builtinEffectHandlers.redirect({ type: "redirect", url: "/next" } as never);
+    builtinEffectHandlers.redirect({ type: "redirect", props: { url: "/next" } } as never);
     expect(router.visit).toHaveBeenCalledWith("/next");
   });
 
@@ -40,7 +40,7 @@ describe("builtinEffectHandlers", () => {
 
     builtinEffectHandlers.download({
       type: "download",
-      url: "/exports/report.csv",
+      props: { url: "/exports/report.csv" },
     } as never);
 
     expect(click).toHaveBeenCalledOnce();
@@ -51,7 +51,7 @@ describe("builtinEffectHandlers", () => {
   it("localeChange calls setLocale with the locale", () => {
     builtinEffectHandlers["locale-change"]({
       type: "locale-change",
-      locale: "de",
+      props: { locale: "de" },
     } as never);
     expect(setLocale).toHaveBeenCalledWith("de");
   });
@@ -68,9 +68,12 @@ describe("builtinEffectHandlers", () => {
     window.addEventListener(LATTICE_EVENT.localeChange, listener);
 
     builtinEffectHandlers["reload-page"]({ type: "reload-page" } as never);
-    builtinEffectHandlers.redirect({ type: "redirect", url: "/x" } as never);
-    builtinEffectHandlers.download({ type: "download", url: "/f.csv" } as never);
-    builtinEffectHandlers["locale-change"]({ type: "locale-change", locale: "fr" } as never);
+    builtinEffectHandlers.redirect({ type: "redirect", props: { url: "/x" } } as never);
+    builtinEffectHandlers.download({ type: "download", props: { url: "/f.csv" } } as never);
+    builtinEffectHandlers["locale-change"]({
+      type: "locale-change",
+      props: { locale: "fr" },
+    } as never);
 
     window.removeEventListener("lattice:reload-page", listener);
     window.removeEventListener("lattice:redirect", listener);
@@ -85,38 +88,41 @@ describe("builtinEffectHandlers", () => {
     window.addEventListener(LATTICE_EVENT.toast, listener);
     builtinEffectHandlers.toast({
       type: "toast",
-      toast: { variant: "success", message: "hi" },
+      props: { variant: "success", message: "hi" },
     } as never);
     expect(listener).toHaveBeenCalledOnce();
     const detail = (listener.mock.calls[0][0] as CustomEvent).detail;
-    expect(detail).toMatchObject({ type: "toast" });
+    expect(detail).toMatchObject({ message: "hi" });
     window.removeEventListener(LATTICE_EVENT.toast, listener);
   });
 
-  it("callout bridges to the lattice:callout DOM event with the full effect as detail", () => {
+  it("callout bridges to the lattice:callout DOM event with the props as detail", () => {
     const received: unknown[] = [];
     const listener = (event: Event) => received.push((event as CustomEvent).detail);
     window.addEventListener(LATTICE_EVENT.callout, listener);
 
     builtinEffectHandlers.callout({
       type: "callout",
-      callout: { variant: "info", title: null, message: "Hi", dismissible: true, action: null },
+      props: { variant: "info", title: null, message: "Hi", dismissible: true, action: null },
     } as never);
 
     window.removeEventListener(LATTICE_EVENT.callout, listener);
     expect(received).toHaveLength(1);
-    expect(received[0]).toMatchObject({ type: "callout", callout: { message: "Hi" } });
+    expect(received[0]).toMatchObject({ message: "Hi" });
   });
 
   it("reloadComponent bridges to the lattice:reload-component DOM event", () => {
     const listener = vi.fn<(event: Event) => void>();
     window.addEventListener(LATTICE_EVENT.reloadComponent, listener);
 
-    builtinEffectHandlers["reload-component"]({ type: "reload-component" } as never);
+    builtinEffectHandlers["reload-component"]({
+      type: "reload-component",
+      props: { component: "orders" },
+    } as never);
 
     expect(listener).toHaveBeenCalledOnce();
     expect((listener.mock.calls[0][0] as CustomEvent).detail).toMatchObject({
-      type: "reload-component",
+      component: "orders",
     });
     window.removeEventListener(LATTICE_EVENT.reloadComponent, listener);
   });
@@ -125,11 +131,14 @@ describe("builtinEffectHandlers", () => {
     const listener = vi.fn<(event: Event) => void>();
     window.addEventListener(LATTICE_EVENT.openModal, listener);
 
-    builtinEffectHandlers["open-modal"]({ type: "open-modal", modal: "confirm" } as never);
+    builtinEffectHandlers["open-modal"]({
+      type: "open-modal",
+      props: { modal: "confirm" },
+    } as never);
 
     expect(listener).toHaveBeenCalledOnce();
     expect((listener.mock.calls[0][0] as CustomEvent).detail).toMatchObject({
-      type: "open-modal",
+      modal: "confirm",
     });
     window.removeEventListener(LATTICE_EVENT.openModal, listener);
   });
@@ -138,37 +147,40 @@ describe("builtinEffectHandlers", () => {
     const listener = vi.fn<(event: Event) => void>();
     window.addEventListener(LATTICE_EVENT.closeModal, listener);
 
-    builtinEffectHandlers["close-modal"]({ type: "close-modal" } as never);
+    builtinEffectHandlers["close-modal"]({ type: "close-modal", props: { modal: null } } as never);
 
     expect(listener).toHaveBeenCalledOnce();
     expect((listener.mock.calls[0][0] as CustomEvent).detail).toMatchObject({
-      type: "close-modal",
+      modal: null,
     });
     window.removeEventListener(LATTICE_EVENT.closeModal, listener);
   });
 
-  it("resetForm bridges to the lattice:reset-form DOM event with detail equal to the effect", () => {
+  it("resetForm bridges to the lattice:reset-form DOM event with detail equal to the props", () => {
     const received: unknown[] = [];
     const listener = (event: Event) => received.push((event as CustomEvent).detail);
     window.addEventListener(LATTICE_EVENT.resetForm, listener);
 
-    builtinEffectHandlers["reset-form"]({ type: "reset-form", form: "teams.create" } as never);
+    builtinEffectHandlers["reset-form"]({
+      type: "reset-form",
+      props: { form: "teams.create" },
+    } as never);
 
     window.removeEventListener(LATTICE_EVENT.resetForm, listener);
-    expect(received).toEqual([{ type: "reset-form", form: "teams.create" }]);
+    expect(received).toEqual([{ form: "teams.create" }]);
   });
 
-  it("toggleSidebar bridges to the lattice:toggle-sidebar DOM event with the target as detail", () => {
+  it("toggleSidebar bridges to the lattice:toggle-sidebar DOM event with the props as detail", () => {
     const received: unknown[] = [];
     const listener = (event: Event) => received.push((event as CustomEvent).detail);
     window.addEventListener(LATTICE_EVENT.toggleSidebar, listener);
 
     builtinEffectHandlers["toggle-sidebar"]({
       type: "toggle-sidebar",
-      target: "app-sidebar",
+      props: { target: "app-sidebar" },
     } as never);
 
     window.removeEventListener(LATTICE_EVENT.toggleSidebar, listener);
-    expect(received).toEqual([{ type: "toggle-sidebar", target: "app-sidebar" }]);
+    expect(received).toEqual([{ target: "app-sidebar" }]);
   });
 });

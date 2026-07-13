@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support\TypeScript;
 
 use Lattice\Lattice\Attributes\AsComponent;
-use ReflectionAttribute;
 use ReflectionClass;
+use Spatie\Attributes\Attributes;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptGeneric;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIdentifier;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptLiteral;
@@ -25,16 +25,13 @@ final class NodeTypeReference
      */
     public static function for(string $class): TypeScriptNode
     {
-        $reflection = new ReflectionClass($class);
-
-        if (! $reflection->isInstantiable()
-            || $reflection->getAttributes(AsComponent::class, ReflectionAttribute::IS_INSTANCEOF) === []) {
+        if (! new ReflectionClass($class)->isInstantiable() || ! Attributes::has($class, AsComponent::class)) {
             return new TypeScriptIdentifier('Node');
         }
 
         return new TypeScriptGeneric(
             new TypeScriptIdentifier('Node'),
-            [new TypeScriptLiteral(AsComponent::typeForClass($class))],
+            [new TypeScriptLiteral(AsComponent::wireTypeForClass($class))],
         );
     }
 }

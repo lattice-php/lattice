@@ -11,10 +11,7 @@ describe("EventBridge", () => {
 
     window.dispatchEvent(
       new CustomEvent("lattice:toast", {
-        detail: {
-          type: "toast",
-          toast: { message: "Action handled.", variant: "warning" },
-        },
+        detail: { message: "Action handled.", variant: "warning" },
       }),
     );
 
@@ -67,7 +64,7 @@ describe("EventBridge", () => {
 
     window.dispatchEvent(
       new CustomEvent("lattice:toast", {
-        detail: { type: "toast", toast: { variant: "warning" } },
+        detail: { variant: "warning" },
       }),
     );
 

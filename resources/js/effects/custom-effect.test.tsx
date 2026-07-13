@@ -24,8 +24,8 @@ describe("custom effect end to end", () => {
 
     window.addEventListener("lattice:toast", toastListener);
     result.current([
-      { type: "confetti", color: "gold" },
-      { type: "toast", toast: { variant: "success", message: "ok" } },
+      { type: "confetti", props: { color: "gold" } },
+      { type: "toast", props: { variant: "success", message: "ok" } },
     ] as never);
 
     expect(confetti).toHaveBeenCalledOnce();

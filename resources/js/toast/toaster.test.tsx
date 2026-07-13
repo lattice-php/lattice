@@ -18,9 +18,7 @@ vi.mock("@inertiajs/react", () => ({
 
 function emit(toast: unknown): void {
   act(() => {
-    window.dispatchEvent(
-      new CustomEvent(LATTICE_EVENT.toast, { detail: { type: "toast", toast } }),
-    );
+    window.dispatchEvent(new CustomEvent(LATTICE_EVENT.toast, { detail: toast }));
   });
 }
 

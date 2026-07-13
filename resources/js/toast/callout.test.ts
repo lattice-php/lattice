@@ -4,7 +4,10 @@ import { normalizeCallout } from "./callout";
 describe("normalizeCallout", () => {
   it("coerces a raw effect detail into a Callout", () => {
     const callout = normalizeCallout({
-      callout: { variant: "warning", title: "Trial", message: "Ends soon", dismissible: false },
+      variant: "warning",
+      title: "Trial",
+      message: "Ends soon",
+      dismissible: false,
     });
 
     expect(callout).toEqual({
@@ -17,11 +20,11 @@ describe("normalizeCallout", () => {
   });
 
   it("returns null when the message is missing", () => {
-    expect(normalizeCallout({ callout: { variant: "info" } })).toBeNull();
+    expect(normalizeCallout({ variant: "info" })).toBeNull();
   });
 
   it("defaults variant and dismissible", () => {
-    const callout = normalizeCallout({ callout: { message: "Hi" } });
+    const callout = normalizeCallout({ message: "Hi" });
     expect(callout?.variant).toBe("info");
     expect(callout?.dismissible).toBe(true);
   });

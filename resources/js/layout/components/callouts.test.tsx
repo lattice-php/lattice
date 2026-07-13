@@ -25,13 +25,11 @@ function emitCallout(
     window.dispatchEvent(
       new CustomEvent(LATTICE_EVENT.callout, {
         detail: {
-          callout: {
-            variant: "warning",
-            title: "Heads up",
-            message,
-            dismissible: options.dismissible ?? true,
-            action: options.action ?? null,
-          },
+          variant: "warning",
+          title: "Heads up",
+          message,
+          dismissible: options.dismissible ?? true,
+          action: options.action ?? null,
         },
       }),
     );

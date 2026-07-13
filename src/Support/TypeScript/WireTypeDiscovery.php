@@ -5,20 +5,20 @@ namespace Lattice\Lattice\Support\TypeScript;
 
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Attributes\AsFilter;
 use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
 use Lattice\Lattice\Ui\Components\ContainerComponent;
 use Lattice\Lattice\Ui\Components\IsInteractive;
-use ReflectionAttribute;
 use ReflectionClass;
+use Spatie\Attributes\Attributes;
 
 /**
  * The single wire-surface discovery: one walk over a path, classifying every
  * #[TypeScript]-instanceof-marked class into the manifest the generation
- * profiles consume.
+ * profiles consume. Attribute-sourced families come from the WireFamily table,
+ * so a new family needs no branch here.
  */
 final class WireTypeDiscovery
 {
@@ -31,23 +31,22 @@ final class WireTypeDiscovery
         $enums = [];
         $valueObjects = [];
         $components = [];
-        $effects = [];
+        $families = [];
 
         foreach (ClassWalker::all($path) as $class) {
-            $reflection = new ReflectionClass($class);
+            $abstract = new ReflectionClass($class)->isAbstract();
 
-            $effect = $reflection->getAttributes(AsEffect::class)[0] ?? null;
-            $component = $reflection->getAttributes(AsComponent::class, ReflectionAttribute::IS_INSTANCEOF)[0] ?? null;
+            if ($this->collectFamilyMember($class, $abstract, $families)) {
+                continue;
+            }
 
-            if ($effect !== null) {
-                if (! $reflection->isAbstract()) {
-                    $effects[$class] = $effect->newInstance()->wireType();
+            $component = Attributes::get($class, AsComponent::class);
+
+            if ($component !== null) {
+                if (! $abstract) {
+                    $components[] = $this->component($class, $component);
                 }
-            } elseif ($component !== null) {
-                if (! $reflection->isAbstract()) {
-                    $components[] = $this->component($reflection, $component->newInstance());
-                }
-            } elseif ($reflection->getAttributes(TypeScript::class, ReflectionAttribute::IS_INSTANCEOF) !== []) {
+            } elseif (Attributes::has($class, TypeScript::class)) {
                 if (enum_exists($class)) {
                     $enums[] = $class;
                 } else {
@@ -58,18 +57,42 @@ final class WireTypeDiscovery
 
         sort($enums);
         sort($valueObjects);
-        ksort($effects);
 
-        return new WireTypeManifest($enums, $valueObjects, $components, $effects);
+        foreach ($families as &$family) {
+            ksort($family);
+        }
+
+        return new WireTypeManifest($enums, $valueObjects, $components, $families);
     }
 
     /**
-     * @param  ReflectionClass<object>  $reflection
+     * @param  class-string  $class
+     * @param  array<string, array<class-string, string>>  $families
      */
-    private function component(ReflectionClass $reflection, AsComponent $attribute): DiscoveredComponent
+    private function collectFamilyMember(string $class, bool $abstract, array &$families): bool
     {
-        $class = $reflection->getName();
+        foreach (WireFamily::registryFamilies() as $family) {
+            $attribute = Attributes::get($class, $family->attribute());
 
+            if ($attribute === null) {
+                continue;
+            }
+
+            if (! $abstract) {
+                $families[$family->category][$class] = $attribute->wireType();
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param  class-string  $class
+     */
+    private function component(string $class, AsComponent $attribute): DiscoveredComponent
+    {
         return new DiscoveredComponent(
             class: $class,
             type: $attribute->type,

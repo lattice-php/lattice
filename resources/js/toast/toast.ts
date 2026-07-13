@@ -1,4 +1,4 @@
-import type { ToastMessage, Variant } from "@lattice-php/lattice/types/generated";
+import type { Toast as ToastMessage, Variant } from "@lattice-php/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
 import { isTranslatable } from "@lattice-php/lattice/i18n/translatable";
 
@@ -10,10 +10,6 @@ export function isVariant(value: unknown): value is Variant {
   return variants.some((variant) => variant === value);
 }
 
-/**
- * Coerce a raw toast value (server flash payload or event detail) into a
- * ToastMessage, defaulting optional fields, or null when it is malformed.
- */
 export function normalizeToastMessage(value: unknown): ToastMessage | null {
   if (typeof value !== "object" || value === null) {
     return null;
@@ -40,11 +36,7 @@ export function normalizeToastMessage(value: unknown): ToastMessage | null {
 }
 
 export function normalizeToast(detail: unknown): ToastMessage | null {
-  if (typeof detail !== "object" || detail === null) {
-    return null;
-  }
-
-  return normalizeToastMessage((detail as { toast?: unknown }).toast);
+  return normalizeToastMessage(detail);
 }
 
 export function showToast(toast: ToastMessage): void {
@@ -52,7 +44,7 @@ export function showToast(toast: ToastMessage): void {
     return;
   }
 
-  window.dispatchEvent(new CustomEvent(LATTICE_EVENT.toast, { detail: { toast } }));
+  window.dispatchEvent(new CustomEvent(LATTICE_EVENT.toast, { detail: toast }));
 }
 
 export function onToast(callback: (toast: ToastMessage) => void): () => void {

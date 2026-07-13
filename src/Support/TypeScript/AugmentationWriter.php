@@ -14,14 +14,14 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptAlias;
 use Spatie\TypeScriptTransformer\Writers\Writer;
 
 /**
- * Writes the discovered components as a TypeScript module augmentation of the app's
+ * Writes the discovered classes as a TypeScript module augmentation of the app's
  * `@lattice-php/lattice` module, keying each transformed prop body by wire type
- * under the augmentable interface for its category ({@see AugmentableMap}).
+ * under the augmentable interface for its category ({@see WireFamily}).
  */
 final readonly class AugmentationWriter implements Writer
 {
     /**
-     * @param  array<class-string, array{0: string, 1: 'component'|'column'}>  $components  FQCN (component or column class) => [wire type, category]
+     * @param  array<class-string, array{0: string, 1: string}>  $components  FQCN => [wire type, family category]
      */
     public function __construct(
         private array $components,
@@ -74,17 +74,17 @@ final readonly class AugmentationWriter implements Writer
     {
         $interfaces = [];
 
-        foreach (AugmentableMap::all() as $map) {
-            $entries = $entriesByCategory[$map->category] ?? [];
+        foreach (WireFamily::all() as $family) {
+            $entries = $entriesByCategory[$family->category] ?? [];
 
             // The component interface is always emitted so the module augmentation is
             // valid even for an app with no custom components; the rest only when populated.
-            if ($entries === [] && $map->category !== 'component') {
+            if ($entries === [] && $family->category !== 'component') {
                 continue;
             }
 
             ksort($entries);
-            $interfaces[] = self::interface($map->interface, $entries);
+            $interfaces[] = self::interface($family->propsInterface(), $entries);
         }
 
         return implode("\n", [

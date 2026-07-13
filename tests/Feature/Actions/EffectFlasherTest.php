@@ -2,14 +2,14 @@
 declare(strict_types=1);
 
 use Inertia\Inertia;
+use Lattice\Lattice\Effects\Builtin\Callout;
+use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Effects\EffectFlasher;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Ui\Values\Callout;
-use Lattice\Lattice\Ui\Values\ToastMessage;
 
 test('effects accumulate across multiple flash calls', function (): void {
-    Effects::flash(Effects::toast(ToastMessage::make(Variant::Success, 'Saved.')));
+    Effects::flash(Effects::toast(Toast::make(Variant::Success, 'Saved.')));
     Effects::flash(Effects::callout(Callout::make(Variant::Warning, 'Heads up.')));
 
     $effects = app(EffectFlasher::class)->all();
@@ -26,7 +26,7 @@ test('flashing no effects is a no-op', function (): void {
 });
 
 test('the scoped buffer resets between request cycles', function (): void {
-    Effects::flash(Effects::toast(ToastMessage::make(Variant::Info, 'One.')));
+    Effects::flash(Effects::toast(Toast::make(Variant::Info, 'One.')));
     expect(app(EffectFlasher::class)->all())->toHaveCount(1);
 
     app()->forgetScopedInstances();
@@ -45,7 +45,7 @@ test('flash sends the accumulated effects to the latticeEffects bag', function (
             return true;
         }));
 
-    Effects::flash(Effects::toast(ToastMessage::make(Variant::Success, 'Saved.')));
+    Effects::flash(Effects::toast(Toast::make(Variant::Success, 'Saved.')));
     Effects::flash(Effects::callout(Callout::make(Variant::Warning, 'Heads up.')));
 
     expect($flashed)->toHaveCount(2)

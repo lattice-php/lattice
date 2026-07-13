@@ -1,35 +1,31 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Values;
+namespace Lattice\Lattice\Effects\Builtin;
 
-use JsonSerializable;
-use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Effects\Attributes\AsEffect;
+use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\Link;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 /**
- * Builder for a toast notification: a message and variant plus optional lifetime,
- * a close button, and an action rendered in the toast (a link or a full Action
- * that can open a confirm dialog or modal form).
+ * A toast notification: a message and variant plus optional lifetime, a close
+ * button, and an action rendered in the toast (a link or a full Action that
+ * can open a confirm dialog or modal form).
  */
-#[TypeScript]
-final class ToastMessage implements JsonSerializable
+#[AsEffect('toast')]
+final class Toast extends Effect
 {
-    public ?int $duration = null;
-
-    public bool $persistent = false;
-
-    public bool $dismissible = true;
-
-    public ?Component $action = null;
-
     private function __construct(
         public Variant $variant,
         public string|Translatable $message,
+        public ?int $duration = null,
+        public bool $persistent = false,
+        public bool $dismissible = true,
+        public ?Component $action = null,
     ) {}
 
     public static function make(Variant $variant, string|Translatable $message): self
@@ -68,20 +64,5 @@ final class ToastMessage implements JsonSerializable
         $this->action = $action;
 
         return $this;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'variant' => $this->variant->value,
-            'message' => $this->message instanceof Translatable ? $this->message->jsonSerialize() : $this->message,
-            'duration' => $this->duration,
-            'persistent' => $this->persistent,
-            'dismissible' => $this->dismissible,
-            'action' => $this->action,
-        ];
     }
 }

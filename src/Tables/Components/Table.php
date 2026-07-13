@@ -25,7 +25,7 @@ class Table extends Component
     public ?string $endpoint = null;
 
     /**
-     * @var array<int, array<string, mixed>>
+     * @var array<int, Column>
      */
     public array $columns = [];
 
@@ -103,10 +103,7 @@ class Table extends Component
      */
     public function columns(array $columns): static
     {
-        $this->columns = array_map(
-            fn (Column $column): array => $column->jsonSerialize(),
-            array_values($this->renderableComponents($columns)),
-        );
+        $this->columns = array_values($this->renderableComponents($columns));
 
         return $this;
     }

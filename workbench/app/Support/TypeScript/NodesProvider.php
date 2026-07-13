@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
+use Lattice\Lattice\Support\TypeScript\WireFamily;
 use Spatie\TypeScriptTransformer\References\ClassStringReference;
 use Spatie\TypeScriptTransformer\References\CustomReference;
 use Spatie\TypeScriptTransformer\Transformed\Transformed;
@@ -10,7 +11,6 @@ use Spatie\TypeScriptTransformer\TransformedProviders\TransformedProvider;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptAlias;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptGeneric;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIdentifier;
-use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIntersection;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptLiteral;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptNode;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptObject;
@@ -22,9 +22,9 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptUnion;
 /**
  * Emits the type-level glue that ties wire `type` strings to their generated props:
  * a per-domain `…NodeType` string union (the client builds its typed node union
- * from it with `NodeUnionOf`), the `WireNode` alias of core's `Node` and the loose
- * `Effect` shape, the `NodeType` union, and the augmentable `…PropsMap` maps
- * ({@see AugmentableMap}).
+ * from it with `NodeUnionOf`), the `WireNode` alias of core's `Node`, the `NodeType`
+ * union, and — per {@see WireFamily} — each family's augmentable `…PropsMap` plus
+ * its loose union alias.
  *
  * @phpstan-type ComponentSpec array{type: string, container?: bool, interactive?: bool}
  */
@@ -36,10 +36,7 @@ final readonly class NodesProvider implements TransformedProvider
      * @param  array<class-string, string>  $formFields  Form field components keyed by class-string, valued by wire type.
      * @param  class-string  $formClass
      * @param  array<string, array<class-string, ComponentSpec>>  $domainNodes  Node-alias name (e.g. 'CoreNode') to its components, in emission order.
-     * @param  class-string|null  $effectContract
-     * @param  array<class-string, string>  $effects  Effect value objects keyed by class-string, valued by wire type.
-     * @param  array<string, class-string>  $columnProps  wire column type => props VO class-string
-     * @param  array<string, class-string>  $filterProps  wire filter type => props VO class-string
+     * @param  array<string, array<string, class-string>>  $familyProps  Family category => (wire type => props class-string) for every non-component family.
      * @param  list<string>  $nodeTypeAliases  Node-alias names (e.g. 'ActionNode') whose per-domain `…Type` union a client consumes via `NodeUnionOf`; others are not emitted.
      */
     public function __construct(
@@ -47,10 +44,7 @@ final readonly class NodesProvider implements TransformedProvider
         private string $formClass,
         private array $domainNodes,
         private string $formType = 'form',
-        private ?string $effectContract = null,
-        private array $effects = [],
-        private array $columnProps = [],
-        private array $filterProps = [],
+        private array $familyProps = [],
         private array $nodeTypeAliases = [],
     ) {}
 
@@ -77,23 +71,25 @@ final readonly class NodesProvider implements TransformedProvider
 
         $transformed[] = $this->alias('WireNode', new TypeScriptIdentifier('Node'));
         $transformed[] = $this->alias('NodeType', $this->typeUnion(array_keys($this->componentClassesByType())));
-        $transformed[] = $this->alias('ComponentPropsMap', $this->propsMap($this->componentClassesByType()));
 
-        if ($this->effectContract !== null && $this->effects !== []) {
-            $transformed[] = new Transformed(
-                new TypeScriptAlias('Effect', $this->looseEffect()),
-                new ClassStringReference($this->effectContract),
-                [],
-            );
-            $transformed[] = $this->alias('EffectPropsMap', $this->propsMap(array_flip($this->effects)));
-        }
+        $familyProps = ['component' => $this->componentClassesByType()] + $this->familyProps;
 
-        if ($this->columnProps !== []) {
-            $transformed[] = $this->alias('ColumnPropsMap', $this->propsMap($this->columnProps));
-        }
+        foreach (WireFamily::all() as $family) {
+            $entries = $familyProps[$family->category] ?? [];
 
-        if ($this->filterProps !== []) {
-            $transformed[] = $this->alias('FilterPropsMap', $this->propsMap($this->filterProps));
+            if ($entries === []) {
+                continue;
+            }
+
+            if ($family->registry !== null) {
+                $transformed[] = new Transformed(
+                    new TypeScriptAlias($family->looseAlias(), $this->loosePayload()),
+                    new ClassStringReference($family->reference()),
+                    [],
+                );
+            }
+
+            $transformed[] = $this->alias($family->propsMap(), $this->propsMap($entries));
         }
 
         return $transformed;
@@ -101,8 +97,7 @@ final readonly class NodesProvider implements TransformedProvider
 
     /**
      * An augmentable props map (`{ type: Props }`), the built-in source consumed by
-     * a `ResolveProps<…Props, …PropsMap, …>` resolver. Shared by components, columns
-     * and effects — see {@see AugmentableMap}.
+     * a `ResolveProps<…Props, …PropsMap, …>` resolver ({@see WireFamily}).
      *
      * @param  array<string, class-string>  $entries  wire type => the class whose generated type is its props
      */
@@ -123,14 +118,16 @@ final readonly class NodesProvider implements TransformedProvider
     }
 
     /**
-     * `Effect` stays loose (typed resolution is `EffectPropsMap`'s job) so that
-     * `Effect[]` fields and the dispatch layer pass consumer effects through by `type`.
+     * A family's loose alias keeps the one wire envelope — `{type, props}` with
+     * required props, like a node — while staying loose (typed resolution is its
+     * props map's job) so lists and dispatch layers pass consumer types through
+     * by `type`.
      */
-    private function looseEffect(): TypeScriptIntersection
+    private function loosePayload(): TypeScriptObject
     {
-        return new TypeScriptIntersection([
-            new TypeScriptObject([new TypeScriptProperty('type', new TypeScriptString)]),
-            $this->looseProps(),
+        return new TypeScriptObject([
+            new TypeScriptProperty('type', new TypeScriptString),
+            new TypeScriptProperty('props', $this->looseProps()),
         ]);
     }
 

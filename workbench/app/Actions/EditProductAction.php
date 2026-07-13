@@ -10,10 +10,10 @@ use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Actions\FormActionDefinition;
 use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Ui\Values\ToastMessage;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 
@@ -67,7 +67,7 @@ class EditProductAction extends FormActionDefinition
 
         return ActionResult::success(['id' => $product->getKey()])
             ->toast(
-                ToastMessage::make(Variant::Success, __('workbench.actions.edit.toast'))
+                Toast::make(Variant::Success, __('workbench.actions.edit.toast'))
                     ->action(
                         Action::use(RejectProductAction::class, ['product_id' => $product->getKey()])
                             ->label(__('workbench.actions.edit.reject-product')),

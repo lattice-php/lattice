@@ -8,7 +8,6 @@ use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 use Lattice\Lattice\Tables\Enums\FilterType;
-use Spatie\TypeScriptTransformer\Attributes\Optional;
 
 /**
  * The wire shape of a column's filter capability. Built by a Filterable column
@@ -32,7 +31,6 @@ final readonly class ColumnFilter
         public array $options = [],
         public bool $multiple = false,
         public bool $searchable = false,
-        #[Optional]
         public array $clauseOptions = [],
     ) {}
 }

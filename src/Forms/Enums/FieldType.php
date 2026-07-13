@@ -3,9 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Enums;
 
-use Lattice\Lattice\Attributes\TypeScript;
-
-#[TypeScript]
 enum FieldType: string
 {
     private const string Prefix = 'field.';

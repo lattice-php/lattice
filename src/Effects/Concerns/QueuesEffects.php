@@ -3,18 +3,18 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Effects\Concerns;
 
+use Lattice\Lattice\Effects\Builtin\Callout;
+use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Ui\Values\Callout;
-use Lattice\Lattice\Ui\Values\ToastMessage;
 
 trait QueuesEffects
 {
     abstract public function effect(EffectContract $effect): static;
 
-    public function toast(string|Translatable|ToastMessage|Variant $message, Variant|string|null $variant = null): static
+    public function toast(string|Translatable|Toast|Variant $message, Variant|string|null $variant = null): static
     {
         return $this->effect(Effects::toast($message, $variant));
     }

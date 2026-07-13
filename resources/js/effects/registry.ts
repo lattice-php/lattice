@@ -11,7 +11,7 @@ import { setLocale } from "@lattice-php/lattice/i18n/locale";
  */
 export interface EffectProps {}
 
-type EffectPayloadOf<TType extends string> = ResolveProps<
+export type EffectPropsOf<TType extends string> = ResolveProps<
   EffectProps,
   EffectPropsMap,
   TType,
@@ -20,7 +20,7 @@ type EffectPayloadOf<TType extends string> = ResolveProps<
 
 export type EffectOf<TType extends string> = string extends TType
   ? Effect
-  : { type: TType } & EffectPayloadOf<TType>;
+  : { type: TType; props: EffectPropsOf<TType> };
 
 export type EffectHandler<TType extends string = string> = (effect: EffectOf<TType>) => void;
 
@@ -52,7 +52,7 @@ function triggerDownload(url: string): void {
 }
 
 function bridge(event: string): EffectHandler {
-  return (effect) => window.dispatchEvent(new CustomEvent(event, { detail: effect }));
+  return (effect) => window.dispatchEvent(new CustomEvent(event, { detail: effect.props }));
 }
 
 /**
@@ -61,9 +61,9 @@ function bridge(event: string): EffectHandler {
  */
 export const builtinEffectHandlers: EffectHandlerRegistryFor<keyof EffectPropsMap & string> = {
   "reload-page": () => router.reload(),
-  redirect: effectHandler("redirect", (effect) => router.visit(effect.url)),
-  download: effectHandler("download", (effect) => triggerDownload(effect.url)),
-  "locale-change": effectHandler("locale-change", (effect) => setLocale(effect.locale)),
+  redirect: effectHandler("redirect", (effect) => router.visit(effect.props.url)),
+  download: effectHandler("download", (effect) => triggerDownload(effect.props.url)),
+  "locale-change": effectHandler("locale-change", (effect) => setLocale(effect.props.locale)),
   toast: bridge(LATTICE_EVENT.toast),
   callout: bridge(LATTICE_EVENT.callout),
   "reload-component": bridge(LATTICE_EVENT.reloadComponent),

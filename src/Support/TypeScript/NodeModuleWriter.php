@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\TypeScript;
 
+use RuntimeException;
 use Spatie\TypeScriptTransformer\Collections\TransformedCollection;
 use Spatie\TypeScriptTransformer\Data\WriteableFile;
+use Spatie\TypeScriptTransformer\Transformed\Transformed;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 
 /**
@@ -25,6 +27,8 @@ final class NodeModuleWriter extends FlatModuleWriter
     #[\Override]
     public function output(array $transformed, TransformedCollection $transformedCollection): array
     {
+        $this->guardUniqueNames($transformed);
+
         return array_map(
             fn (WriteableFile $file): WriteableFile => new WriteableFile(
                 $file->path,
@@ -33,5 +37,34 @@ final class NodeModuleWriter extends FlatModuleWriter
             ),
             parent::output($transformed, $transformedCollection),
         );
+    }
+
+    /**
+     * @param  array<mixed>  $transformed
+     */
+    private function guardUniqueNames(array $transformed): void
+    {
+        $seen = [];
+
+        foreach ($transformed as $item) {
+            if (! $item instanceof Transformed) {
+                continue;
+            }
+
+            $name = $item->getName();
+
+            if ($name === null) {
+                continue;
+            }
+
+            if (isset($seen[$name])) {
+                throw new RuntimeException(sprintf(
+                    'Duplicate generated type name [%s]. Rename the class, or prefix its family via the wire-type attribute\'s typeNamePrefix().',
+                    $name,
+                ));
+            }
+
+            $seen[$name] = true;
+        }
     }
 }
