@@ -140,4 +140,17 @@ describe('docs fixtures', function (): void {
             RichEditor::make('article', 'Article')->placeholder('Write your article…'),
         ]))));
     });
+
+    it('matches the rich editor extensions example fixture', function (): void {
+        assertFixtureMatches('rich-editor.extensions', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            RichEditor::make('summary', 'Summary')->extensions([
+                Bold::make(),
+                Italic::make(),
+                Heading::make()->levels(2, 3),
+                Link::make()->protocols('https', 'mailto'),
+            ]),
+        ]))));
+
+        expect('docs/fixtures/rich-editor.extensions.json')->toBeReadableFile();
+    });
 });

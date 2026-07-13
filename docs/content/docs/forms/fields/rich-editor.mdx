@@ -4,6 +4,7 @@ description: A formatted-text editor that stores a structured document, not raw 
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
 
 The rich editor lets the user write formatted text — headings, lists, links, tables, and more. It
 stores a structured TipTap document rather than raw HTML, which keeps the stored value safe to render.
@@ -34,6 +35,142 @@ sanitizes the output, so it is safe to render directly. `toText()` returns a pla
 ## Placeholder
 
 `->placeholder()` sets the muted hint shown while the editor is empty.
+
+## Extensions
+
+Which editor features are active — and their toolbar order — is controlled from PHP. Every feature
+is an extension class under `Lattice\Lattice\Forms\RichEditor\Extensions`; a field without
+configuration ships the full [default set](#default-extensions). `->extensions()` replaces it:
+
+<ComponentExample
+  php={`RichEditor::make('summary', 'Summary')
+    ->extensions([
+        Bold::make(),
+        Italic::make(),
+        Heading::make()->levels(2, 3),
+        Link::make()->protocols('https', 'mailto'),
+    ])`}
+  fixture="rich-editor.extensions"
+  values={{ summary: "" }}
+/>
+
+The array order defines the toolbar order. `->withExtensions()` adds to the active set (or
+reconfigures an extension already in it, keeping its position), and `->withoutExtensions()`
+subtracts by class or wire type:
+
+```php
+RichEditor::make('body')
+    ->withExtensions(Heading::make()->levels(1, 2))   // reconfigure the default heading
+    ->withoutExtensions(Details::class, 'emoji');     // drop by class-string or wire type
+```
+
+To change the default set for every editor in the app, register a resolver in a service provider:
+
+```php
+RichEditor::defaultExtensionsUsing(fn (): array => [
+    Bold::make(),
+    Italic::make(),
+    Link::make(),
+]);
+```
+
+<Info>
+  The editor always keeps paragraphs, hard breaks, undo/redo and drag cursors active — extensions
+  only control the optional features. The placeholder stays a field prop, not an extension.
+</Info>
+
+### Default extensions
+
+| Extension        | Wire type         | Configuration                                                                                 |
+| ---------------- | ----------------- | --------------------------------------------------------------------------------------------- |
+| `Bold`           | `bold`            | —                                                                                             |
+| `Italic`         | `italic`          | —                                                                                             |
+| `Strike`         | `strike`          | —                                                                                             |
+| `Underline`      | `underline`       | —                                                                                             |
+| `Highlight`      | `highlight`       | —                                                                                             |
+| `Heading`        | `heading`         | `->levels(1, 2, 3)` — allowed levels, 1–6 (default all six)                                   |
+| `BulletList`     | `bullet-list`     | —                                                                                             |
+| `OrderedList`    | `ordered-list`    | —                                                                                             |
+| `Blockquote`     | `blockquote`      | —                                                                                             |
+| `CodeBlock`      | `code-block`      | —                                                                                             |
+| `HorizontalRule` | `horizontal-rule` | —                                                                                             |
+| `TextAlign`      | `text-align`      | `->alignments('left', 'right')` — subset of left/center/right/justify (default all)           |
+| `Link`           | `link`            | `->protocols('https', 'mailto')` (default http/https/mailto), `->openOnClick()` (default off) |
+| `Table`          | `table`           | Insert defaults: `->rows(3)`, `->cols(3)`, `->withHeaderRow()`                                |
+| `Details`        | `details`         | —                                                                                             |
+| `Emoji`          | `emoji`           | `->emojis('🍕', '🌮')` — the picker set (default 16 common emoji)                             |
+
+Configured extensions serialize their props onto the wire — `Heading::make()->levels(2, 3)` becomes
+`{"type": "heading", "props": {"levels": [2, 3]}}` — and the client reads them when it assembles
+the editor.
+
+### Custom extensions
+
+An extension is a pair: a PHP class that declares the wire type (and any typed configuration), and
+a client definition that maps that type to [Tiptap](https://tiptap.dev) behavior and toolbar items.
+
+On the PHP side, extend `EditorExtension` and register the class in a service provider:
+
+```php
+use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
+use Lattice\Lattice\Forms\RichEditor\EditorExtension;
+use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
+
+#[AsEditorExtension('mention')]
+class Mention extends EditorExtension
+{
+    /**
+     * @var list<string>
+     */
+    public array $triggers = ['@'];
+
+    public function triggers(string ...$triggers): static
+    {
+        $this->triggers = array_values($triggers);
+
+        return $this;
+    }
+}
+
+// AppServiceProvider::boot()
+app(EditorExtensionRegistry::class)->register(Mention::class);
+```
+
+Public typed properties become the extension's `props` on the wire, exactly like a component. Once
+registered, `Mention::make()->triggers('@', '#')` works in `->extensions()`, and so does the plain
+string `'mention'` (it instantiates the class with its defaults).
+
+On the client, register a definition for the same wire type before the app boots:
+
+```tsx
+import { registerRichEditorExtension } from "@lattice-php/lattice/form/rich-editor";
+import { Mention } from "./tiptap/mention";
+
+registerRichEditorExtension("mention", {
+  extensions: (props) => [Mention.configure({ triggers: props.triggers ?? ["@"] })],
+  toolbar: () => [
+    {
+      icon: "at-sign",
+      key: "mention",
+      label: "Mention",
+      isActive: (editor) => editor.isActive("mention"),
+      run: (editor) => editor.chain().focus().insertContent("@").run(),
+    },
+  ],
+});
+```
+
+A definition can contribute three things, all optional: `extensions` (Tiptap instances),
+`starterKit` (options merged into the one shared StarterKit — how the built-in marks re-enable
+features), and `toolbar` (buttons, or a `component` for custom controls like the heading dropdown).
+Toolbar contributions from different extensions are separated automatically; definitions sharing a
+`group` render side by side.
+
+For an extension that only exists client-side, skip the PHP class entirely: pass its wire type as a
+string — `->extensions([Bold::make(), 'mention'])` — and it serializes as a bare `{"type": "mention"}`.
+Unknown types the client has no definition for are skipped (with a console warning in dev). See
+[Registry and types](/extending/registry-and-types/) for how generated types and the
+`EditorExtensionProps` augmentation give `props` a concrete shape on the client.
 
 ## Common options
 
