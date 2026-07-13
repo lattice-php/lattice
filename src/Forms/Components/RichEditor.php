@@ -213,6 +213,6 @@ class RichEditor extends Field
     {
         $class = app(EditorExtensionRegistry::class)->classFor($type);
 
-        return $class !== null && is_a($class, EditorExtension::class, true) ? $class::make() : $type;
+        return $class !== null ? $class::make() : $type;
     }
 }

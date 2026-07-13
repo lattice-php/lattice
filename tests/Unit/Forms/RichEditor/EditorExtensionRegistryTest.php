@@ -11,6 +11,9 @@ final class SampleRegistryExtension extends EditorExtension {}
 #[AsEditorExtension('sample')]
 final class ConflictingRegistryExtension extends EditorExtension {}
 
+#[AsEditorExtension('attributed-non-extension')]
+final class AttributedNonExtension {}
+
 it('registers an extension by its wire type', function (): void {
     $registry = new EditorExtensionRegistry;
 
@@ -19,10 +22,16 @@ it('registers an extension by its wire type', function (): void {
     expect($registry->all())->toBe(['sample' => SampleRegistryExtension::class]);
 });
 
-it('rejects a class without the AsEditorExtension attribute', function (): void {
+it('rejects a class that does not extend EditorExtension', function (): void {
     $registry = new EditorExtensionRegistry;
 
     $registry->register(stdClass::class);
+})->throws(InvalidArgumentException::class);
+
+it('rejects an attributed class that does not extend EditorExtension', function (): void {
+    $registry = new EditorExtensionRegistry;
+
+    $registry->register(AttributedNonExtension::class);
 })->throws(InvalidArgumentException::class);
 
 it('rejects a different class claiming an already-used wire type', function (): void {

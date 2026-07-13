@@ -8,9 +8,8 @@ export {
   type EditorExtensionPayloadOf,
   type EditorExtensionProps,
   type RichEditorExtensionDefinition,
-  type ResolvedRichEditorExtension,
   type ToolbarButton,
   type ToolbarControl,
-  type ToolbarEntry,
   type ToolbarItem,
 } from "./registry";
+export { ToolbarIconButton } from "./toolbar-button";

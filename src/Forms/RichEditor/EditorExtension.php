@@ -27,17 +27,9 @@ abstract class EditorExtension implements JsonSerializable
     /**
      * @return array<string, mixed>
      */
-    protected function props(): array
-    {
-        return $this->wireProps();
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
     public function toWire(): array
     {
-        $props = $this->props();
+        $props = $this->wireProps();
 
         return $props === []
             ? ['type' => $this->wireType()]

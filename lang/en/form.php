@@ -35,7 +35,6 @@ return [
         'delete-table' => 'Delete table',
         'details' => 'Details',
         'insert-emoji' => 'Insert emoji',
-        'stamp' => 'Stamp',
     ],
     'file-upload' => [
         'dropzone' => 'Drop files here or click to browse',

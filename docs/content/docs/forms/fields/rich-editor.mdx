@@ -163,7 +163,9 @@ registerRichEditorExtension("mention", {
 
 A definition can contribute three things, all optional: `extensions` (Tiptap instances),
 `starterKit` (options merged into the one shared StarterKit — how the built-in marks re-enable
-features), and `toolbar` (buttons, or a `component` for custom controls like the heading dropdown).
+features), and `toolbar` (buttons, or a `component` for custom controls like the heading dropdown;
+`ToolbarIconButton` is exported from the same entry point so custom controls match the built-in
+styling).
 Toolbar contributions from different extensions are separated automatically; definitions sharing a
 `group` render side by side.
 
