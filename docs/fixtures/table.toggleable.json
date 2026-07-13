@@ -46,6 +46,7 @@
                     "props": {
                         "align": "end",
                         "compact": false,
+                        "copyable": false,
                         "filter": null,
                         "hiddenByDefault": false,
                         "label": "Price",

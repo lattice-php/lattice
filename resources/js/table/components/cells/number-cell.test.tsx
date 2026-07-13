@@ -1,5 +1,5 @@
-import { render } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TableColumn } from "@lattice-php/lattice/table/types";
 import { NumberCell } from "./number-cell";
 
@@ -24,6 +24,11 @@ function renderCell(value: unknown, props: Record<string, unknown> = {}) {
   const col = column(props);
   return render(<NumberCell column={col} props={col.props as never} row={{}} value={value} />);
 }
+
+afterEach(() => {
+  Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
+  vi.restoreAllMocks();
+});
 
 describe("NumberCell", () => {
   it("formats with the configured fraction digits", () => {
@@ -57,5 +62,22 @@ describe("NumberCell", () => {
   it("renders compact notation", () => {
     const { container } = renderCell(28000, { compact: true });
     expect(container.textContent).toBe("28K");
+  });
+
+  it("renders no copy button by default", () => {
+    renderCell(1234.5);
+
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+
+  it("copies the raw value instead of the formatted text when copyable", () => {
+    const writeText = vi.fn<(text: string) => Promise<void>>().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
+
+    renderCell(1234.5, { copyable: true, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    fireEvent.click(screen.getByRole("button", { name: "Copy Price" }));
+
+    expect(writeText).toHaveBeenCalledWith("1234.5");
   });
 });

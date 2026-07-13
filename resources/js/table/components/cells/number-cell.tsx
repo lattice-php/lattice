@@ -3,6 +3,7 @@ import { formatNumber } from "@lattice-php/lattice/format/number";
 import { numericValue } from "@lattice-php/lattice/format/numeric";
 import { formatCell } from "@lattice-php/lattice/table/lib/format";
 import type { ColumnCellComponent } from "@lattice-php/lattice/table/registry";
+import { CopyableText } from "@lattice-php/lattice/ui/copyable-text";
 
 export const NumberCell: ColumnCellComponent<"column.number"> = ({ column, props, value }) => {
   const { locale } = useLocale();
@@ -24,5 +25,19 @@ export const NumberCell: ColumnCellComponent<"column.number"> = ({ column, props
     locale,
   );
 
-  return <span className="tabular-nums">{text}</span>;
+  const content = <span className="tabular-nums">{text}</span>;
+
+  if (!props.copyable) {
+    return content;
+  }
+
+  return (
+    <CopyableText
+      value={String(value)}
+      label={column.props.label ?? column.key}
+      testId={`copy-${column.key}`}
+    >
+      {content}
+    </CopyableText>
+  );
 };

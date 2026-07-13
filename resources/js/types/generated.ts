@@ -654,6 +654,7 @@ export type Modal = {
 };
 export type MoneyColumn = {
   align: ColumnAlign;
+  copyable: boolean;
   currency: string | null;
   currencyField: string | null;
   filter: ColumnFilter | null;
@@ -748,6 +749,7 @@ export type Notifications = {
 export type NumberColumn = {
   align: ColumnAlign;
   compact: boolean;
+  copyable: boolean;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;

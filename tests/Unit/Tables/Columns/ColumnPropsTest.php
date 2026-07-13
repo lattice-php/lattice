@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Tables\Columns\BooleanColumn;
+use Lattice\Lattice\Tables\Columns\MoneyColumn;
+use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Ui\Enums\DateTimeStyle;
 
@@ -25,6 +27,13 @@ it('reflects a column\'s public properties into the full props shape', function 
         'multiple' => 'name',
         'copyable' => true,
     ]);
+});
+
+it('serializes the copyable flag on numeric columns', function (): void {
+    expect(wire(NumberColumn::make('qty')->copyable())['props'])
+        ->toHaveKey('copyable', true)
+        ->and(wire(MoneyColumn::make('price'))['props'])
+        ->toHaveKey('copyable', false);
 });
 
 it('maps each date style method to its dateStyle/timeStyle shape', function (): void {
