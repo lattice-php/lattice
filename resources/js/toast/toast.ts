@@ -10,10 +10,6 @@ export function isVariant(value: unknown): value is Variant {
   return variants.some((variant) => variant === value);
 }
 
-/**
- * Coerce a raw toast value (server flash payload or event detail) into a
- * ToastMessage, defaulting optional fields, or null when it is malformed.
- */
 export function normalizeToastMessage(value: unknown): ToastMessage | null {
   if (typeof value !== "object" || value === null) {
     return null;

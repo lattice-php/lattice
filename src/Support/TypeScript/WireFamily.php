@@ -56,8 +56,6 @@ final readonly class WireFamily
     }
 
     /**
-     * The families whose value objects carry their own wire-type attribute.
-     *
      * @return list<self>
      */
     public static function attributeFamilies(): array

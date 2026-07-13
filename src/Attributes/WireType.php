@@ -22,9 +22,6 @@ abstract readonly class WireType extends TypeScript
     }
 
     /**
-     * The wire type declared by this attribute (or a subclass of it) on $class,
-     * cached per attribute family and class.
-     *
      * @param  class-string  $class
      */
     public static function wireTypeForClass(string $class): string

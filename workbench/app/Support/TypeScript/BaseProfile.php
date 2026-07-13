@@ -97,10 +97,6 @@ final class BaseProfile implements TypeScriptProfile
     }
 
     /**
-     * Built-in classes of one component-sourced family (columns, filters) keyed
-     * by wire type. Like a component, they reflect their public properties into
-     * their props, so the class itself is the source of the generated props type.
-     *
      * @param  list<DiscoveredComponent>  $discovered
      * @return array<string, class-string>
      */
@@ -197,8 +193,6 @@ final class BaseProfile implements TypeScriptProfile
     }
 
     /**
-     * Flatten the per-domain component class-strings into one allow-list.
-     *
      * @param  array<string, array<class-string, array{type: string, container?: bool, interactive?: bool}>>  $domainNodes
      * @return list<class-string>
      */

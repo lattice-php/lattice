@@ -26,17 +26,11 @@ abstract class FormDefinition extends Definition implements HandlesUploads, Prov
 
     abstract public function handle(Request $request): Response|Responsable;
 
-    /**
-     * Start a fluent response — queue effects and a redirect.
-     */
     protected function respond(): LatticeResponse
     {
         return LatticeResponse::make();
     }
 
-    /**
-     * Start a fluent response with a toast already queued.
-     */
     protected function toast(string|Translatable|Toast|Variant $message, Variant|string|null $variant = null): LatticeResponse
     {
         return LatticeResponse::make()->toast($message, $variant);
