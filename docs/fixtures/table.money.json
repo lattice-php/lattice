@@ -27,6 +27,7 @@
                     "key": "total",
                     "props": {
                         "align": "end",
+                        "copyable": false,
                         "currency": "EUR",
                         "currencyField": null,
                         "filter": null,
@@ -44,6 +45,7 @@
                     "key": "refunded",
                     "props": {
                         "align": "end",
+                        "copyable": false,
                         "currency": null,
                         "currencyField": "currency",
                         "filter": null,

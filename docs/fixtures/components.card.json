@@ -19,6 +19,7 @@
                 "schema": [
                     {
                         "props": {
+                            "copyable": false,
                             "level": 2,
                             "text": "Members",
                             "tooltip": null

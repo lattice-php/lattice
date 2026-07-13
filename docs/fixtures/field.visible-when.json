@@ -48,6 +48,7 @@
                     }
                 ]
             },
+            "copyable": false,
             "dependsOnAny": false,
             "dependsOnKeys": null,
             "disabled": false,

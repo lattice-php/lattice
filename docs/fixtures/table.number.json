@@ -28,6 +28,7 @@
                     "props": {
                         "align": "end",
                         "compact": true,
+                        "copyable": false,
                         "filter": null,
                         "hiddenByDefault": false,
                         "label": "Views",
@@ -45,6 +46,7 @@
                     "props": {
                         "align": "end",
                         "compact": false,
+                        "copyable": false,
                         "filter": null,
                         "hiddenByDefault": false,
                         "label": "Conversion",

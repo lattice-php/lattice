@@ -39,10 +39,10 @@ it('exposes only the intended wire props on each built-in column', function (str
 })->with([
     'text' => [TextColumn::class, ['date', 'copyable', 'link', 'badge', 'multiple']],
     'boolean' => [BooleanColumn::class, []],
-    'number' => [NumberColumn::class, ['minimumFractionDigits', 'maximumFractionDigits', 'unit', 'compact']],
-    'money' => [MoneyColumn::class, ['minimumFractionDigits', 'maximumFractionDigits', 'currency', 'currencyField']],
+    'number' => [NumberColumn::class, ['minimumFractionDigits', 'maximumFractionDigits', 'unit', 'compact', 'copyable']],
+    'money' => [MoneyColumn::class, ['minimumFractionDigits', 'maximumFractionDigits', 'currency', 'currencyField', 'copyable']],
     'badge' => [BadgeColumn::class, ['colors']],
     'icon' => [IconColumn::class, ['icon', 'icons', 'colors']],
-    'image' => [ImageColumn::class, ['circular', 'size']],
+    'image' => [ImageColumn::class, ['circular', 'size', 'previewable']],
     'stack' => [StackColumn::class, []],
 ]);

@@ -92,6 +92,7 @@ export default defineConfig({
             { label: "Floating panel", link: "/components/floating-panel/" },
             { label: "Text & badges", link: "/components/text/" },
             { label: "Avatar", link: "/components/avatar/" },
+            { label: "Image", link: "/components/image/" },
             { label: "Buttons & links", link: "/components/buttons/" },
             { label: "Tabs", link: "/components/tabs/" },
             { label: "Modals", link: "/components/modals/" },

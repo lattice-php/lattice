@@ -12,6 +12,9 @@ return [
     'copied' => 'Kopiert',
     'copyValue' => ':label kopieren',
     'copiedValue' => ':label kopiert',
+    'image' => [
+        'open-preview' => 'Bild ansehen',
+    ],
     'action-group' => [
         'label' => 'Aktionen',
     ],

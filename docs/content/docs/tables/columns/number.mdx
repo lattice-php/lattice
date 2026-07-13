@@ -23,6 +23,8 @@ NumberColumn::make('conversion')->label('Conversion')
   the rest of the [`NumberFormatUnit`](/advanced/enums/) cases. The value is rendered as-is with the
   unit appended — no scaling — so store `12.8` to render `12.8%`.
 - `->compact()` renders large numbers compactly (`1.2K`, `3.4M`).
+- `->copyable()` adds a click-to-copy affordance. It copies the **raw value** (`1234.5`), not the
+  formatted text — what you want when pasting into a spreadsheet.
 
 ```php
 use Lattice\Lattice\Ui\Enums\NumberFormatUnit;

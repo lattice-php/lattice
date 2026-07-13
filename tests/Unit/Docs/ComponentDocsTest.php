@@ -8,6 +8,7 @@ use Lattice\Lattice\Ui\Components\Button;
 use Lattice\Lattice\Ui\Components\Card;
 use Lattice\Lattice\Ui\Components\Grid;
 use Lattice\Lattice\Ui\Components\Heading;
+use Lattice\Lattice\Ui\Components\Image;
 use Lattice\Lattice\Ui\Components\RawBlock;
 use Lattice\Lattice\Ui\Components\Section;
 use Lattice\Lattice\Ui\Components\SegmentedControl;
@@ -142,6 +143,24 @@ describe('docs fixtures', function (): void {
                 Avatar::make()->name('Grace Hopper'),
                 Avatar::make()->name('Katherine Johnson')->size(Size::Lg),
                 Avatar::make(),
+            ]),
+        ]))));
+    });
+
+    it('matches the image example fixture', function (): void {
+        assertFixtureMatches('components.image', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
+                Image::make('https://picsum.photos/id/1060/600/400')
+                    ->alt('Coffee brewing setup')
+                    ->size(96),
+                Image::make('https://picsum.photos/id/1080/600/400')
+                    ->alt('Strawberries')
+                    ->size(96)
+                    ->circular(),
+                Image::make('https://picsum.photos/id/1084/600/400')
+                    ->alt('Walrus resting')
+                    ->size(96)
+                    ->previewable(false),
             ]),
         ]))));
     });

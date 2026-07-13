@@ -1,0 +1,41 @@
+---
+title: Image
+description: A server-addressable image with a built-in click-to-zoom lightbox.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+
+`Image::make($src)` renders an image. Clicking it opens the full-size image in a lightbox overlay —
+press <kbd>Esc</kbd>, click the backdrop, or use the close button to dismiss it.
+
+<ComponentExample
+  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+    Image::make('https://picsum.photos/id/1060/600/400')
+        ->alt('Coffee brewing setup')
+        ->size(96),
+    Image::make('https://picsum.photos/id/1080/600/400')
+        ->alt('Strawberries')
+        ->size(96)
+        ->circular(),
+    Image::make('https://picsum.photos/id/1084/600/400')
+        ->alt('Walrus resting')
+        ->size(96)
+        ->previewable(false),
+]);`}
+  fixture="components.image"
+/>
+
+## Options
+
+- `->alt($text)` sets the accessible description. Always set it — it labels both the inline image and
+  the lightbox for screen readers.
+- `->size(96)` fixes the rendered size in pixels (square). Without it the image keeps its natural size.
+- `->circular()` clips the image to a circle. For people, prefer the [Avatar](/components/avatar/)
+  component and its initials fallback.
+- `->previewable(false)` turns the lightbox off and renders a plain image.
+
+<Info>
+  The [Image column](/tables/columns/image/) renders through the same lightbox, so table thumbnails
+  get click-to-zoom for free.
+</Info>

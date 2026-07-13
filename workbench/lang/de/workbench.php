@@ -305,6 +305,7 @@ return [
             'profile' => 'Profil',
             'profile-description' => 'Deine grundlegenden Kontoinformationen.',
             'quantity' => 'Anzahl',
+            'referral-code' => 'Empfehlungscode',
             'satisfaction' => 'Zufriedenheit',
             'selection' => 'Auswahl',
             'selection-description' => 'Statische und durchsuchbare Auswahlfelder.',

@@ -12,6 +12,7 @@
         "schema": [
             {
                 "props": {
+                    "copyable": false,
                     "level": 2,
                     "text": "Billing",
                     "tooltip": null

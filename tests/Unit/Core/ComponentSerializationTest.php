@@ -24,6 +24,7 @@ use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\FloatingPanel;
 use Lattice\Lattice\Ui\Components\Grid;
 use Lattice\Lattice\Ui\Components\Heading;
+use Lattice\Lattice\Ui\Components\Image;
 use Lattice\Lattice\Ui\Components\Link;
 use Lattice\Lattice\Ui\Components\Modal;
 use Lattice\Lattice\Ui\Components\Separator;
@@ -69,6 +70,43 @@ test('avatars serialize their source, name, and size with sensible defaults', fu
                 'size' => 'lg',
             ],
         ]);
+});
+
+test('images serialize their source and preview configuration', function (): void {
+    expect(wire(Image::make('https://example.test/p.png')))
+        ->toMatchArray([
+            'type' => 'image',
+            'props' => [
+                'src' => 'https://example.test/p.png',
+                'alt' => null,
+                'size' => null,
+                'circular' => false,
+                'previewable' => true,
+            ],
+        ]);
+
+    expect(wire(Image::make('https://example.test/p.png')
+        ->alt('Product photo')
+        ->size(64)
+        ->circular()
+        ->previewable(false)))
+        ->toMatchArray([
+            'type' => 'image',
+            'props' => [
+                'src' => 'https://example.test/p.png',
+                'alt' => 'Product photo',
+                'size' => 64,
+                'circular' => true,
+                'previewable' => false,
+            ],
+        ]);
+});
+
+test('headings serialize their copyable flag', function (): void {
+    expect(wire(Heading::make('API Key')->copyable())['props'])
+        ->toHaveKey('copyable', true)
+        ->and(wire(Heading::make('Plain'))['props'])
+        ->toHaveKey('copyable', false);
 });
 
 test('separators default to horizontal and serialize their orientation', function (): void {

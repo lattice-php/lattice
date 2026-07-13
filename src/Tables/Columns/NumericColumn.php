@@ -9,9 +9,11 @@ use Lattice\Lattice\Tables\Contracts\Filterable;
 use Lattice\Lattice\Tables\Contracts\Sortable;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
 use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Lattice\Ui\Concerns\HasCopyable;
 
 abstract class NumericColumn extends Column implements Filterable, Sortable
 {
+    use HasCopyable;
     use IsFilterable;
     use IsSortable;
 
