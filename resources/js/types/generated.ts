@@ -398,6 +398,57 @@ export type Dropdown = {
   placement: Placement;
   trigger: Node[];
 };
+export type EditorBlockquote = object;
+export type EditorBold = object;
+export type EditorBulletList = object;
+export type EditorCodeBlock = object;
+export type EditorDetails = object;
+export type EditorEmoji = {
+  emojis: string[];
+};
+export type EditorExtension = {
+  type: string;
+  props?: Record<string, unknown>;
+};
+export type EditorExtensionPropsMap = {
+  blockquote: EditorBlockquote;
+  bold: EditorBold;
+  "bullet-list": EditorBulletList;
+  "code-block": EditorCodeBlock;
+  details: EditorDetails;
+  emoji: EditorEmoji;
+  heading: EditorHeading;
+  highlight: EditorHighlight;
+  "horizontal-rule": EditorHorizontalRule;
+  italic: EditorItalic;
+  link: EditorLink;
+  "ordered-list": EditorOrderedList;
+  strike: EditorStrike;
+  table: EditorTable;
+  "text-align": EditorTextAlign;
+  underline: EditorUnderline;
+};
+export type EditorHeading = {
+  levels: number[];
+};
+export type EditorHighlight = object;
+export type EditorHorizontalRule = object;
+export type EditorItalic = object;
+export type EditorLink = {
+  protocols: string[];
+  openOnClick: boolean;
+};
+export type EditorOrderedList = object;
+export type EditorStrike = object;
+export type EditorTable = {
+  rows: number;
+  cols: number;
+  withHeaderRow: boolean;
+};
+export type EditorTextAlign = {
+  alignments: string[];
+};
+export type EditorUnderline = object;
 export type Effect = {
   type: string;
   props: Record<string, unknown>;
