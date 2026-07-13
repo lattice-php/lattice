@@ -7,4 +7,4 @@ use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
 #[AsEffect('reload-page')]
-final class ReloadPageEffect extends Effect {}
+final class ReloadPage extends Effect {}

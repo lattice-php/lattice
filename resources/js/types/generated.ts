@@ -210,7 +210,7 @@ export type Choice = {
   tooltip: string | null;
   value: unknown;
 };
-export type CloseModalEffect = {
+export type CloseModal = {
   readonly modal: string | null;
 };
 export type Collapsible = {
@@ -391,7 +391,7 @@ export type DateTimeInput = {
   value: unknown;
 };
 export type DateTimeStyle = "full" | "long" | "medium" | "short";
-export type DownloadEffect = {
+export type Download = {
   readonly url: string;
 };
 export type Dropdown = {
@@ -404,16 +404,16 @@ export type Effect = {
 };
 export type EffectPropsMap = {
   callout: Callout;
-  "close-modal": CloseModalEffect;
-  download: DownloadEffect;
-  "locale-change": LocaleChangeEffect;
-  "open-modal": OpenModalEffect;
-  redirect: RedirectEffect;
-  "reload-component": ReloadComponentEffect;
-  "reload-page": ReloadPageEffect;
-  "reset-form": ResetFormEffect;
+  "close-modal": CloseModal;
+  download: Download;
+  "locale-change": LocaleChange;
+  "open-modal": OpenModal;
+  redirect: Redirect;
+  "reload-component": ReloadComponent;
+  "reload-page": ReloadPage;
+  "reset-form": ResetForm;
   toast: Toast;
-  "toggle-sidebar": ToggleSidebarEffect;
+  "toggle-sidebar": ToggleSidebar;
 };
 export type FieldConditions = {
   readonly visible: Condition[];
@@ -630,7 +630,7 @@ export type Listen = {
   events: string[];
   effects: Effect[];
 };
-export type LocaleChangeEffect = {
+export type LocaleChange = {
   readonly locale: string;
 };
 export type Menu = Record<string, never>;
@@ -823,7 +823,7 @@ export type Op =
   | "after"
   | "empty"
   | "filled";
-export type OpenModalEffect = {
+export type OpenModal = {
   readonly modal: string;
 };
 export type Option = {
@@ -888,13 +888,13 @@ export type Placement = "top" | "bottom" | "right";
 export type RawBlock = {
   html: string;
 };
-export type RedirectEffect = {
+export type Redirect = {
   readonly url: string;
 };
-export type ReloadComponentEffect = {
+export type ReloadComponent = {
   readonly component: string;
 };
-export type ReloadPageEffect = Record<string, never>;
+export type ReloadPage = Record<string, never>;
 export type RemoteAccess = {
   readonly source: string;
   readonly audience: string;
@@ -931,7 +931,7 @@ export type Repeater = {
   tooltip: string | null;
   value: unknown;
 };
-export type ResetFormEffect = {
+export type ResetForm = {
   readonly form: string | null;
 };
 export type ResolveResponse = {
@@ -1243,7 +1243,7 @@ export type Toggle = {
 export type ToggleFilter = {
   label: string | null;
 };
-export type ToggleSidebarEffect = {
+export type ToggleSidebar = {
   readonly target: string | null;
 };
 export type ToolCallPart = {

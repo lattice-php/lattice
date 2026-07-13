@@ -6,10 +6,10 @@ namespace Lattice\Lattice\Effects\Builtin;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
-#[AsEffect('locale-change')]
-final class LocaleChangeEffect extends Effect
+#[AsEffect('download')]
+final class Download extends Effect
 {
     public function __construct(
-        public readonly string $locale,
+        public readonly string $url,
     ) {}
 }

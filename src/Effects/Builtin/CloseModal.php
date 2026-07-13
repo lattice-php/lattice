@@ -6,10 +6,10 @@ namespace Lattice\Lattice\Effects\Builtin;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
-#[AsEffect('reload-component')]
-final class ReloadComponentEffect extends Effect
+#[AsEffect('close-modal')]
+final class CloseModal extends Effect
 {
     public function __construct(
-        public readonly string $component,
+        public readonly ?string $modal = null,
     ) {}
 }

@@ -6,16 +6,16 @@ namespace Lattice\Lattice\Facades;
 use Illuminate\Support\Facades\Facade;
 use InvalidArgumentException;
 use Lattice\Lattice\Effects\Builtin\Callout;
-use Lattice\Lattice\Effects\Builtin\CloseModalEffect;
-use Lattice\Lattice\Effects\Builtin\DownloadEffect;
-use Lattice\Lattice\Effects\Builtin\LocaleChangeEffect;
-use Lattice\Lattice\Effects\Builtin\OpenModalEffect;
-use Lattice\Lattice\Effects\Builtin\RedirectEffect;
-use Lattice\Lattice\Effects\Builtin\ReloadComponentEffect;
-use Lattice\Lattice\Effects\Builtin\ReloadPageEffect;
-use Lattice\Lattice\Effects\Builtin\ResetFormEffect;
+use Lattice\Lattice\Effects\Builtin\CloseModal;
+use Lattice\Lattice\Effects\Builtin\Download;
+use Lattice\Lattice\Effects\Builtin\LocaleChange;
+use Lattice\Lattice\Effects\Builtin\OpenModal;
+use Lattice\Lattice\Effects\Builtin\Redirect;
+use Lattice\Lattice\Effects\Builtin\ReloadComponent;
+use Lattice\Lattice\Effects\Builtin\ReloadPage;
+use Lattice\Lattice\Effects\Builtin\ResetForm;
 use Lattice\Lattice\Effects\Builtin\Toast;
-use Lattice\Lattice\Effects\Builtin\ToggleSidebarEffect;
+use Lattice\Lattice\Effects\Builtin\ToggleSidebar;
 use Lattice\Lattice\Effects\EffectFlasher;
 use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Ui\Enums\Variant;
@@ -44,49 +44,49 @@ final class Effects extends Facade
         };
     }
 
-    public static function reloadComponent(string $component): ReloadComponentEffect
+    public static function reloadComponent(string $component): ReloadComponent
     {
-        return new ReloadComponentEffect($component);
+        return new ReloadComponent($component);
     }
 
-    public static function reloadPage(): ReloadPageEffect
+    public static function reloadPage(): ReloadPage
     {
-        return new ReloadPageEffect;
+        return new ReloadPage;
     }
 
-    public static function redirect(string $url): RedirectEffect
+    public static function redirect(string $url): Redirect
     {
-        return new RedirectEffect($url);
+        return new Redirect($url);
     }
 
-    public static function download(string $url): DownloadEffect
+    public static function download(string $url): Download
     {
-        return new DownloadEffect($url);
+        return new Download($url);
     }
 
-    public static function openModal(string $modal): OpenModalEffect
+    public static function openModal(string $modal): OpenModal
     {
-        return new OpenModalEffect($modal);
+        return new OpenModal($modal);
     }
 
-    public static function closeModal(?string $modal = null): CloseModalEffect
+    public static function closeModal(?string $modal = null): CloseModal
     {
-        return new CloseModalEffect($modal);
+        return new CloseModal($modal);
     }
 
-    public static function resetForm(?string $form = null): ResetFormEffect
+    public static function resetForm(?string $form = null): ResetForm
     {
-        return new ResetFormEffect($form);
+        return new ResetForm($form);
     }
 
-    public static function localeChange(string $locale): LocaleChangeEffect
+    public static function localeChange(string $locale): LocaleChange
     {
-        return new LocaleChangeEffect($locale);
+        return new LocaleChange($locale);
     }
 
-    public static function toggleSidebar(?string $target = null): ToggleSidebarEffect
+    public static function toggleSidebar(?string $target = null): ToggleSidebar
     {
-        return new ToggleSidebarEffect($target);
+        return new ToggleSidebar($target);
     }
 
     protected static function getFacadeAccessor(): string
