@@ -22,7 +22,6 @@ final readonly class WireFamily
      * @param  string  $interface  the consumer-augmentable interface
      * @param  class-string<WireType>|null  $attribute  discovers the family's value objects; null for families sourced from discovered components
      * @param  string|null  $looseAlias  the loose union alias the base pass emits
-     * @param  WireShape  $shape  the loose alias' payload shape
      * @param  class-string|null  $reference  the PHP class whose references resolve to the loose alias
      * @param  string  $typeNamePrefix  prefixes the family's generated value-object type names, keeping them unique in the flat module
      */
@@ -32,7 +31,6 @@ final readonly class WireFamily
         public string $interface,
         public ?string $attribute = null,
         public ?string $looseAlias = null,
-        public WireShape $shape = WireShape::Flat,
         public ?string $reference = null,
         public string $typeNamePrefix = '',
     ) {}
@@ -51,7 +49,6 @@ final readonly class WireFamily
                 'EffectProps',
                 attribute: AsEffect::class,
                 looseAlias: 'Effect',
-                shape: WireShape::Flat,
                 reference: EffectContract::class,
             ),
             new self('filter', 'FilterPropsMap', 'FilterProps'),

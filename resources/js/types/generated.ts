@@ -232,7 +232,7 @@ export type ColumnFilter = {
   readonly options: Option[];
   readonly multiple: boolean;
   readonly searchable: boolean;
-  readonly clauseOptions?: ColumnFilterOption[];
+  readonly clauseOptions: ColumnFilterOption[];
 };
 export type ColumnFilterOption = {
   readonly label: string;
@@ -403,7 +403,8 @@ export type Dropdown = {
 };
 export type Effect = {
   type: string;
-} & Record<string, unknown>;
+  props: Record<string, unknown>;
+};
 export type EffectPropsMap = {
   callout: CalloutEffect;
   "close-modal": CloseModalEffect;
@@ -423,24 +424,6 @@ export type FieldConditions = {
   readonly readOnly: Condition[];
   readonly disabled: Condition[];
 };
-export type FieldType =
-  | "field.builder"
-  | "field.checkbox"
-  | "field.choice"
-  | "field.date-input"
-  | "field.date-time-input"
-  | "field.file-upload"
-  | "field.hidden-input"
-  | "field.number-input"
-  | "field.otp"
-  | "field.password-input"
-  | "field.repeater"
-  | "field.rich-editor"
-  | "field.select"
-  | "field.textarea"
-  | "field.text-input"
-  | "field.time-input"
-  | "field.toggle";
 export type FileUpload = {
   accept: string | null;
   columnWidth: ColumnWidth;
@@ -914,7 +897,7 @@ export type RedirectEffect = {
 export type ReloadComponentEffect = {
   readonly component: string;
 };
-export type ReloadPageEffect = object;
+export type ReloadPageEffect = Record<string, never>;
 export type RemoteAccess = {
   readonly source: string;
   readonly audience: string;
@@ -1073,7 +1056,7 @@ export type Tab = {
   confirm: {
     required: boolean;
     redirectUrl: string;
-    timeout?: number;
+    timeout: number | null;
   } | null;
   label: string;
   value: string;
@@ -1081,7 +1064,7 @@ export type Tab = {
 export type Table = {
   actionsLabel: string;
   bulkActions: Node<"action">[];
-  columns: Record<string, unknown>[];
+  columns: Node[];
   emptyLabel: string;
   endpoint: string | null;
   filters: Node[];

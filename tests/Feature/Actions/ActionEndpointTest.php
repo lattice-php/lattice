@@ -52,10 +52,10 @@ test('registered actions can be handled through the package endpoint', function 
         ->assertJsonPath('data.handled', 'Taylor')
         ->assertJsonPath('data.team', 'trusted-team')
         ->assertJsonPath('effects.0.type', 'toast')
-        ->assertJsonPath('effects.0.toast.message', 'Action handled.')
-        ->assertJsonPath('effects.0.toast.variant', 'info')
+        ->assertJsonPath('effects.0.props.toast.message', 'Action handled.')
+        ->assertJsonPath('effects.0.props.toast.variant', 'info')
         ->assertJsonPath('effects.1.type', 'reload-component')
-        ->assertJsonPath('effects.1.component', 'workbench.users');
+        ->assertJsonPath('effects.1.props.component', 'workbench.users');
 });
 
 test('registered actions can return a locale change effect', function (): void {
@@ -66,20 +66,22 @@ test('registered actions can return a locale change effect', function (): void {
         ->assertOk()
         ->assertJsonPath('ok', true)
         ->assertJsonPath('effects.0.type', 'locale-change')
-        ->assertJsonPath('effects.0.locale', 'de');
+        ->assertJsonPath('effects.0.props.locale', 'de');
 });
 
 test('toast effects serialize correctly for action results', function (): void {
     expect(wire(Effects::toast(Variant::Warning, 'Review the settings.')))
         ->toBe([
             'type' => 'toast',
-            'toast' => [
-                'variant' => 'warning',
-                'message' => 'Review the settings.',
-                'duration' => null,
-                'persistent' => false,
-                'dismissible' => true,
-                'action' => null,
+            'props' => [
+                'toast' => [
+                    'variant' => 'warning',
+                    'message' => 'Review the settings.',
+                    'duration' => null,
+                    'persistent' => false,
+                    'dismissible' => true,
+                    'action' => null,
+                ],
             ],
         ])
         ->and(wire(ActionResult::success()->toast('Saved.')))
@@ -87,13 +89,15 @@ test('toast effects serialize correctly for action results', function (): void {
             'effects' => [
                 [
                     'type' => 'toast',
-                    'toast' => [
-                        'variant' => 'success',
-                        'message' => 'Saved.',
-                        'duration' => null,
-                        'persistent' => false,
-                        'dismissible' => true,
-                        'action' => null,
+                    'props' => [
+                        'toast' => [
+                            'variant' => 'success',
+                            'message' => 'Saved.',
+                            'duration' => null,
+                            'persistent' => false,
+                            'dismissible' => true,
+                            'action' => null,
+                        ],
                     ],
                 ],
             ],
@@ -103,13 +107,15 @@ test('toast effects serialize correctly for action results', function (): void {
             'effects' => [
                 [
                     'type' => 'toast',
-                    'toast' => [
-                        'variant' => 'warning',
-                        'message' => 'Review the settings.',
-                        'duration' => null,
-                        'persistent' => false,
-                        'dismissible' => true,
-                        'action' => null,
+                    'props' => [
+                        'toast' => [
+                            'variant' => 'warning',
+                            'message' => 'Review the settings.',
+                            'duration' => null,
+                            'persistent' => false,
+                            'dismissible' => true,
+                            'action' => null,
+                        ],
                     ],
                 ],
             ],

@@ -14,6 +14,13 @@ use Spatie\TypeScriptTransformer\Transformed\Transformed;
 use Spatie\TypeScriptTransformer\Transformed\Untransformable;
 use Spatie\TypeScriptTransformer\Transformers\ClassPropertyProcessors\ClassPropertyProcessor;
 use Spatie\TypeScriptTransformer\Transformers\ClassTransformer;
+use Spatie\TypeScriptTransformer\TypeResolvers\Data\ParsedClass;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptGeneric;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIdentifier;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptNever;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptNode;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptObject;
+use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptString;
 
 /**
  * Emits TypeScript object types only for an explicit allow-list of value
@@ -49,6 +56,28 @@ final class ValueObjectTransformer extends ClassTransformer
         }
 
         return parent::transform($phpClassNode, $context);
+    }
+
+    /**
+     * Propless value objects emit `Record<string, never>` like propless
+     * components do, keeping one spelling for "no props" in the flat module.
+     */
+    #[\Override]
+    protected function getTypeScriptNode(
+        PhpClassNode $phpClassNode,
+        TransformationContext $context,
+        ?ParsedClass $parsedClass = null,
+    ): TypeScriptNode {
+        $node = parent::getTypeScriptNode($phpClassNode, $context, $parsedClass);
+
+        if ($node instanceof TypeScriptObject && $node->properties === []) {
+            return new TypeScriptGeneric(
+                new TypeScriptIdentifier('Record'),
+                [new TypeScriptString, new TypeScriptNever],
+            );
+        }
+
+        return $node;
     }
 
     /**

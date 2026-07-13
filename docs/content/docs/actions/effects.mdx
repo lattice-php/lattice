@@ -183,10 +183,10 @@ run through the normal client-side effect pipeline in order.
 
 ## How effects reach the client
 
-The result serializes to `{ ok, data, effects }`. Each effect carries a `type` discriminant
-(`toast`, `callout`, `reload-component`, `reload-page`, `redirect`, `download`, `open-modal`,
-`close-modal`, `reset-form`, `locale-change`, `toggle-sidebar`) and its payload; the client dispatches
-them in order.
+The result serializes to `{ ok, data, effects }`. Each effect is a `{ type, props }` envelope — the
+`type` discriminant (`toast`, `callout`, `reload-component`, `reload-page`, `redirect`, `download`,
+`open-modal`, `close-modal`, `reset-form`, `locale-change`, `toggle-sidebar`) plus its props, exactly
+like a node; the client dispatches them in order.
 Each `type` is declared once on its PHP class via `#[AsEffect('…')]` and generated into the
 discriminated `Effect` union, so the PHP helpers and the client dispatcher stay in lockstep.
 
@@ -196,7 +196,7 @@ The effect system is extensible — define your own effect type and a client han
 way [components](/extending/registry-and-types/) and columns extend the renderer.
 
 On the server, an effect is a readonly value object marked with `#[AsEffect]`, where the constructor
-arguments are the wire payload:
+arguments become the wire `props`:
 
 ```php
 use Lattice\Lattice\Effects\Attributes\AsEffect;
@@ -225,7 +225,7 @@ the typed payload:
 import { effectHandler } from "@lattice-php/lattice";
 
 const confetti = effectHandler("confetti", (effect) => {
-  launchConfetti(effect.pieces);
+  launchConfetti(effect.props.pieces);
 });
 ```
 

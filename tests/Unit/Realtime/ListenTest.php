@@ -17,7 +17,7 @@ test('it serializes channel, visibility, events and a toast effect', function ()
     ]);
 
     expect($array['effects'][0])->toMatchArray(['type' => 'toast']);
-    expect($array['effects'][0]['toast']['message'])->toBe([
+    expect($array['effects'][0]['props']['toast']['message'])->toBe([
         'key' => 'orders.shipped-live',
         'payload' => ['id' => 'order.id'],
         'replacements' => [],

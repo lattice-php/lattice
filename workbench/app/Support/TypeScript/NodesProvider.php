@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Workbench\App\Support\TypeScript;
 
 use Lattice\Lattice\Support\TypeScript\WireFamily;
-use Lattice\Lattice\Support\TypeScript\WireShape;
 use Spatie\TypeScriptTransformer\References\ClassStringReference;
 use Spatie\TypeScriptTransformer\References\CustomReference;
 use Spatie\TypeScriptTransformer\Transformed\Transformed;
@@ -12,7 +11,6 @@ use Spatie\TypeScriptTransformer\TransformedProviders\TransformedProvider;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptAlias;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptGeneric;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIdentifier;
-use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptIntersection;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptLiteral;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptNode;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptObject;
@@ -88,7 +86,7 @@ final readonly class NodesProvider implements TransformedProvider
 
             if ($family->looseAlias !== null && $family->reference !== null) {
                 $transformed[] = new Transformed(
-                    new TypeScriptAlias($family->looseAlias, $this->loosePayload($family->shape)),
+                    new TypeScriptAlias($family->looseAlias, $this->loosePayload()),
                     new ClassStringReference($family->reference),
                     [],
                 );
@@ -123,23 +121,17 @@ final readonly class NodesProvider implements TransformedProvider
     }
 
     /**
-     * A family's loose alias stays loose (typed resolution is its props map's
-     * job) so lists and dispatch layers pass consumer types through by `type`.
+     * A family's loose alias keeps the one wire envelope — `{type, props}` with
+     * required props, like a node — while staying loose (typed resolution is its
+     * props map's job) so lists and dispatch layers pass consumer types through
+     * by `type`.
      */
-    private function loosePayload(WireShape $shape): TypeScriptNode
+    private function loosePayload(): TypeScriptObject
     {
-        $type = new TypeScriptProperty('type', new TypeScriptString);
-
-        return match ($shape) {
-            WireShape::Flat => new TypeScriptIntersection([
-                new TypeScriptObject([$type]),
-                $this->looseProps(),
-            ]),
-            WireShape::Nested => new TypeScriptObject([
-                $type,
-                new TypeScriptProperty('props', $this->looseProps(), isOptional: true),
-            ]),
-        };
+        return new TypeScriptObject([
+            new TypeScriptProperty('type', new TypeScriptString),
+            new TypeScriptProperty('props', $this->looseProps()),
+        ]);
     }
 
     /**

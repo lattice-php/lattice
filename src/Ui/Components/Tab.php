@@ -13,7 +13,7 @@ class Tab extends ContainerComponent
     public string $value = '';
 
     /**
-     * @var array{required: bool, redirectUrl: string, timeout?: int}|null
+     * @var array{required: bool, redirectUrl: string, timeout: int|null}|null
      */
     public ?array $confirm = null;
 
@@ -28,16 +28,11 @@ class Tab extends ContainerComponent
 
     public function confirm(?string $redirectUrl = null, ?int $timeout = null): static
     {
-        $confirm = [
+        $this->confirm = [
             'required' => true,
             'redirectUrl' => $redirectUrl ?? '/user/confirm-password',
+            'timeout' => $timeout,
         ];
-
-        if ($timeout !== null) {
-            $confirm['timeout'] = $timeout;
-        }
-
-        $this->confirm = $confirm;
 
         return $this;
     }

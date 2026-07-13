@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\TypeScript;
 
+use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Ui\Components\Component;
 use ReflectionClass;
@@ -124,6 +125,7 @@ final class ComponentTransformer extends ClassTransformer
         return [
             ...parent::classPropertyProcessors(),
             new MarkerRewriteClassPropertyProcessor(Component::class, NodeTypeReference::for(...)),
+            new MarkerRewriteClassPropertyProcessor(Column::class, NodeTypeReference::for(...)),
             new MarkerRewriteClassPropertyProcessor(Filter::class, NodeTypeReference::for(...)),
             new MixedToUnknownClassPropertyProcessor,
         ];

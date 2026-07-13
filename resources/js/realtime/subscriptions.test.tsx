@@ -47,14 +47,15 @@ describe("Subscriptions", () => {
         events: ["OrderShipped"],
         effects: [
           {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             type: "toast",
-            toast: {
-              variant: "success",
-              message: {
-                key: "orders.shipped-live",
-                payload: { id: "order.id" },
-                replacements: {},
+            props: {
+              toast: {
+                variant: "success",
+                message: {
+                  key: "orders.shipped-live",
+                  payload: { id: "order.id" },
+                  replacements: {},
+                },
               },
             },
           } as never,
@@ -83,9 +84,11 @@ describe("Subscriptions", () => {
           effects: [
             {
               type: "toast",
-              toast: {
-                variant: "success",
-                message: { key: "orders.live", payload: {}, replacements: {} },
+              props: {
+                toast: {
+                  variant: "success",
+                  message: { key: "orders.live", payload: {}, replacements: {} },
+                },
               },
             } as never,
           ],
@@ -109,7 +112,7 @@ describe("Subscriptions", () => {
         channel: "orders",
         visibility: "public",
         events: ["OrderShipped"],
-        effects: [{ type: "close-modal", target: "checkout" } as never],
+        effects: [{ type: "close-modal", props: { target: "checkout" } } as never],
       },
     ];
 

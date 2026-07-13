@@ -20,14 +20,14 @@ test('Effects::toast accepts a Translatable message', function (): void {
 
     expect($effect->jsonSerialize())
         ->toHaveKey('type', 'toast')
-        ->and($effect->jsonSerialize()['toast']->jsonSerialize()['message'])
+        ->and($effect->jsonSerialize()['props']['toast']->jsonSerialize()['message'])
         ->toEqual(['key' => 'orders.shipped-live', 'payload' => new stdClass, 'replacements' => new stdClass]);
 });
 
 test('Effects::toast accepts a Translatable message with an explicit variant', function (): void {
     $effect = Effects::toast(rt('orders.shipped-live'), Variant::Warning);
 
-    $toast = $effect->jsonSerialize()['toast'];
+    $toast = $effect->jsonSerialize()['props']['toast'];
 
     expect($toast->variant)->toBe(Variant::Warning)
         ->and($toast->jsonSerialize()['message'])->toEqual([
@@ -40,5 +40,5 @@ test('Effects::toast accepts a Translatable message with an explicit variant', f
 test('Effects::toast still accepts a plain string', function (): void {
     $effect = Effects::toast('Order shipped');
 
-    expect($effect->jsonSerialize()['toast']->jsonSerialize()['message'])->toBe('Order shipped');
+    expect($effect->jsonSerialize()['props']['toast']->jsonSerialize()['message'])->toBe('Order shipped');
 });

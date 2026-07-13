@@ -180,6 +180,7 @@ it('confirmed inactive tab serializes confirm metadata and drops its children', 
             'confirm' => [
                 'required' => true,
                 'redirectUrl' => '/user/confirm-password',
+                'timeout' => null,
             ],
         ],
     ]);

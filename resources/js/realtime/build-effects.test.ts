@@ -9,23 +9,27 @@ const t = vi.fn<(key: string, defaultValue?: string, options?: Record<string, un
 
 describe("buildEffects", () => {
   it("passes a plain-string toast message through unchanged", () => {
-    const effects = [{ type: "toast", toast: { variant: "success", message: "Order shipped" } }];
+    const effects = [
+      { type: "toast", props: { toast: { variant: "success", message: "Order shipped" } } },
+    ];
 
     const [effect] = buildEffects(effects, {}, t) as EffectOf<"toast">[];
 
-    expect(effect.toast.message).toBe("Order shipped");
+    expect(effect.props.toast.message).toBe("Order shipped");
   });
 
   it("resolves a Translatable toast message via t() with merged replacements", () => {
     const effects = [
       {
         type: "toast",
-        toast: {
-          variant: "success",
-          message: {
-            key: "orders.shipped-live",
-            payload: { id: "order.id" },
-            replacements: { warehouse: "Berlin" },
+        props: {
+          toast: {
+            variant: "success",
+            message: {
+              key: "orders.shipped-live",
+              payload: { id: "order.id" },
+              replacements: { warehouse: "Berlin" },
+            },
           },
         },
       },
@@ -37,14 +41,16 @@ describe("buildEffects", () => {
       warehouse: "Berlin",
       id: 42,
     });
-    expect(effect.toast.message).toBe('t:orders.shipped-live:{"warehouse":"Berlin","id":42}');
+    expect(effect.props.toast.message).toBe('t:orders.shipped-live:{"warehouse":"Berlin","id":42}');
   });
 
   it("resolves a missing payload path to an empty string", () => {
     const effects = [
       {
         type: "toast",
-        toast: { message: { key: "k", payload: { id: "order.missing" }, replacements: {} } },
+        props: {
+          toast: { message: { key: "k", payload: { id: "order.missing" }, replacements: {} } },
+        },
       },
     ];
 
@@ -61,10 +67,10 @@ describe("buildEffects", () => {
 
   it("does not mutate the input effect objects", () => {
     const message = { key: "k", payload: {}, replacements: {} };
-    const effects = [{ type: "toast", toast: { message } }];
+    const effects = [{ type: "toast", props: { toast: { message } } }];
 
     buildEffects(effects, {}, t);
 
-    expect(effects[0]).toEqual({ type: "toast", toast: { message } });
+    expect(effects[0]).toEqual({ type: "toast", props: { toast: { message } } });
   });
 });

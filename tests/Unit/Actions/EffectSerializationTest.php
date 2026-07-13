@@ -22,13 +22,13 @@ test('a toast serializes its lifetime, dismissibility and link', function (): vo
     ));
 
     expect($wire['type'])->toBe('toast')
-        ->and($wire['toast']['duration'])->toBe(8000)
-        ->and($wire['toast']['persistent'])->toBeFalse()
-        ->and($wire['toast']['dismissible'])->toBeFalse()
-        ->and($wire['toast']['action']['type'])->toBe('link')
-        ->and($wire['toast']['action']['props']['label'])->toBe('Undo')
-        ->and($wire['toast']['action']['props']['href'])->toBe('/undo')
-        ->and($wire['toast']['action']['props']['method'])->toBe('patch');
+        ->and($wire['props']['toast']['duration'])->toBe(8000)
+        ->and($wire['props']['toast']['persistent'])->toBeFalse()
+        ->and($wire['props']['toast']['dismissible'])->toBeFalse()
+        ->and($wire['props']['toast']['action']['type'])->toBe('link')
+        ->and($wire['props']['toast']['action']['props']['label'])->toBe('Undo')
+        ->and($wire['props']['toast']['action']['props']['href'])->toBe('/undo')
+        ->and($wire['props']['toast']['action']['props']['method'])->toBe('patch');
 });
 
 test('a toast can carry an action component', function (): void {
@@ -38,10 +38,10 @@ test('a toast can carry an action component', function (): void {
             ->action(ActionComponent::make('demo.toast-action')->endpoint('/x')->label('Open')),
     ));
 
-    expect($wire['toast']['persistent'])->toBeTrue()
-        ->and($wire['toast']['action']['type'])->toBe('action')
-        ->and($wire['toast']['action']['props']['label'])->toBe('Open')
-        ->and($wire['toast']['action']['props']['endpoint'])->toBe('/x');
+    expect($wire['props']['toast']['persistent'])->toBeTrue()
+        ->and($wire['props']['toast']['action']['type'])->toBe('action')
+        ->and($wire['props']['toast']['action']['props']['label'])->toBe('Open')
+        ->and($wire['props']['toast']['action']['props']['endpoint'])->toBe('/x');
 });
 
 test('action results expose the full effect vocabulary', function (): void {
@@ -53,14 +53,14 @@ test('action results expose the full effect vocabulary', function (): void {
         ->localeChange('de');
 
     expect(wire($result)['effects'])->toBe([
-        ['type' => 'reload-page'],
-        ['type' => 'redirect', 'url' => '/dashboard'],
-        ['type' => 'download', 'url' => '/exports/report.csv'],
-        ['type' => 'reset-form', 'form' => 'teams.create'],
-        ['type' => 'locale-change', 'locale' => 'de'],
+        ['type' => 'reload-page', 'props' => []],
+        ['type' => 'redirect', 'props' => ['url' => '/dashboard']],
+        ['type' => 'download', 'props' => ['url' => '/exports/report.csv']],
+        ['type' => 'reset-form', 'props' => ['form' => 'teams.create']],
+        ['type' => 'locale-change', 'props' => ['locale' => 'de']],
     ])
-        ->and(wire(Effects::resetForm()))->toBe(['type' => 'reset-form', 'form' => null])
-        ->and(wire(Effects::reloadPage()))->toBe(['type' => 'reload-page']);
+        ->and(wire(Effects::resetForm()))->toBe(['type' => 'reset-form', 'props' => ['form' => null]])
+        ->and(wire(Effects::reloadPage()))->toBe(['type' => 'reload-page', 'props' => []]);
 });
 
 test('action result navigation verbs emit a redirect effect', function (): void {
@@ -70,8 +70,8 @@ test('action result navigation verbs emit a redirect effect', function (): void 
     $toRoute = ActionResult::success()->toRoute('action-target');
     $back = ActionResult::success()->back();
 
-    expect(wire($to)['effects'])->toBe([['type' => 'redirect', 'url' => '/dashboard']])
-        ->and(wire($toRoute)['effects'])->toBe([['type' => 'redirect', 'url' => route('action-target')]])
+    expect(wire($to)['effects'])->toBe([['type' => 'redirect', 'props' => ['url' => '/dashboard']]])
+        ->and(wire($toRoute)['effects'])->toBe([['type' => 'redirect', 'props' => ['url' => route('action-target')]]])
         ->and(wire($back)['effects'][0]['type'])->toBe('redirect');
 });
 
@@ -79,7 +79,7 @@ test('action result toasts accept a translatable message', function (): void {
     $result = ActionResult::success()->toast(Translatable::make('common.action.save'), Variant::Info);
 
     expect(wire($result)['effects'][0]['type'])->toBe('toast')
-        ->and(wire($result)['effects'][0]['toast']['variant'])->toBe('info');
+        ->and(wire($result)['effects'][0]['props']['toast']['variant'])->toBe('info');
 });
 
 test('a callout effect serializes its callout payload', function (): void {
@@ -90,10 +90,10 @@ test('a callout effect serializes its callout payload', function (): void {
     ));
 
     expect($wire['type'])->toBe('callout')
-        ->and($wire['callout']['variant'])->toBe('warning')
-        ->and($wire['callout']['title'])->toBe('Trial ending')
-        ->and($wire['callout']['message'])->toBe('Your trial ends in 3 days.')
-        ->and($wire['callout']['action']['props']['label'])->toBe('Upgrade');
+        ->and($wire['props']['callout']['variant'])->toBe('warning')
+        ->and($wire['props']['callout']['title'])->toBe('Trial ending')
+        ->and($wire['props']['callout']['message'])->toBe('Your trial ends in 3 days.')
+        ->and($wire['props']['callout']['action']['props']['label'])->toBe('Upgrade');
 });
 
 test('action results expose the callout effect', function (): void {
@@ -102,7 +102,7 @@ test('action results expose the callout effect', function (): void {
     );
 
     expect(wire($result)['effects'][0]['type'])->toBe('callout')
-        ->and(wire($result)['effects'][0]['callout']['variant'])->toBe('info');
+        ->and(wire($result)['effects'][0]['props']['callout']['variant'])->toBe('info');
 });
 
 test('action groups serialize grouped child actions', function (): void {
