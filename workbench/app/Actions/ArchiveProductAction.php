@@ -9,10 +9,10 @@ use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Ui\Components\Link;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Ui\Values\ToastMessage;
 use Workbench\App\Models\Product;
 
 #[AsAction('workbench.products.archive')]
@@ -40,7 +40,7 @@ class ArchiveProductAction extends ActionDefinition
 
         return ActionResult::success(['id' => $product->getKey()])
             ->toast(
-                ToastMessage::make(Variant::Success, __('workbench.actions.archive.toast'))
+                Toast::make(Variant::Success, __('workbench.actions.archive.toast'))
                     ->action(Link::make(__('workbench.actions.archive.view-products'), 'view-products')->href('/products'))
                     ->persistent(),
             )

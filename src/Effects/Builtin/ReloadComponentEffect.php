@@ -7,9 +7,9 @@ use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
 #[AsEffect('reload-component')]
-final readonly class ReloadComponentEffect extends Effect
+final class ReloadComponentEffect extends Effect
 {
     public function __construct(
-        public string $component,
+        public readonly string $component,
     ) {}
 }

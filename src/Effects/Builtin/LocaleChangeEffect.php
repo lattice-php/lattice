@@ -7,9 +7,9 @@ use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
 #[AsEffect('locale-change')]
-final readonly class LocaleChangeEffect extends Effect
+final class LocaleChangeEffect extends Effect
 {
     public function __construct(
-        public string $locale,
+        public readonly string $locale,
     ) {}
 }

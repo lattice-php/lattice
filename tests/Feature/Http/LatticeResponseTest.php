@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Lattice\Lattice\Effects\Builtin\Callout;
 use Lattice\Lattice\Effects\EffectFlasher;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Http\LatticeResponse;
 use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Ui\Values\Callout;
 
 beforeEach(function (): void {
     app()->forgetScopedInstances();

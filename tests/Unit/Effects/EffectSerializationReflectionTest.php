@@ -9,23 +9,23 @@ use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 #[AsEffect('test.enum-effect')]
-final readonly class EnumPayloadEffect extends Effect
+final class EnumPayloadEffect extends Effect
 {
     /**
      * @param  array<string, string>  $meta
      */
     public function __construct(
-        public Variant $variant,
+        public readonly Variant $variant,
         #[WireMap]
-        public array $meta = [],
+        public readonly array $meta = [],
     ) {}
 }
 
 #[AsEffect('test.internal-state')]
-final readonly class InternalStateEffect extends Effect
+final class InternalStateEffect extends Effect
 {
     public function __construct(
-        public string $url,
+        public readonly string $url,
         protected string $internal = 'secret',
     ) {}
 }

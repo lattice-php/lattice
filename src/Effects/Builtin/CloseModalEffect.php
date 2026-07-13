@@ -7,9 +7,9 @@ use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
 #[AsEffect('close-modal')]
-final readonly class CloseModalEffect extends Effect
+final class CloseModalEffect extends Effect
 {
     public function __construct(
-        public ?string $modal = null,
+        public readonly ?string $modal = null,
     ) {}
 }

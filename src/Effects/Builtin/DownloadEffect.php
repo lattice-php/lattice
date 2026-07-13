@@ -7,9 +7,9 @@ use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
 #[AsEffect('download')]
-final readonly class DownloadEffect extends Effect
+final class DownloadEffect extends Effect
 {
     public function __construct(
-        public string $url,
+        public readonly string $url,
     ) {}
 }

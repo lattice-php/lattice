@@ -1,32 +1,29 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Values;
+namespace Lattice\Lattice\Effects\Builtin;
 
-use JsonSerializable;
-use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Effects\Attributes\AsEffect;
+use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\Link;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 /**
- * Builder for a callout: a prominent, persistent banner rendered in a layout's
- * Callouts slot. A heading plus body and variant, with an optional dismiss
- * button and an action (a link or a full Action).
+ * A callout: a prominent, persistent banner rendered in a layout's Callouts
+ * slot. A heading plus body and variant, with an optional dismiss button and
+ * an action (a link or a full Action).
  */
-#[TypeScript]
-final class Callout implements JsonSerializable
+#[AsEffect('callout')]
+final class Callout extends Effect
 {
-    public ?string $title = null;
-
-    public bool $dismissible = true;
-
-    public ?Component $action = null;
-
     private function __construct(
         public Variant $variant,
         public string $message,
+        public ?string $title = null,
+        public bool $dismissible = true,
+        public ?Component $action = null,
     ) {}
 
     public static function make(Variant $variant, string $message): self
@@ -58,19 +55,5 @@ final class Callout implements JsonSerializable
         $this->action = $action;
 
         return $this;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'variant' => $this->variant->value,
-            'title' => $this->title,
-            'message' => $this->message,
-            'dismissible' => $this->dismissible,
-            'action' => $this->action,
-        ];
     }
 }

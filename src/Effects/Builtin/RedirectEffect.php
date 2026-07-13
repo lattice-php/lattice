@@ -7,9 +7,9 @@ use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
 #[AsEffect('redirect')]
-final readonly class RedirectEffect extends Effect
+final class RedirectEffect extends Effect
 {
     public function __construct(
-        public string $url,
+        public readonly string $url,
     ) {}
 }

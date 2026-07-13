@@ -45,14 +45,14 @@ and more — see [Effects & results](/actions/effects/#flashing-effects-without-
 
 ## Building a message directly
 
-Both paths wrap a `ToastMessage` value object. Build one explicitly to set a lifetime, control
+Both paths accept a `Toast` effect. Build one explicitly to set a lifetime, control
 dismissal, or attach an action, then pass it to `->toast()` (or `Effects::toast()`):
 
 ```php
-use Lattice\Lattice\Ui\Values\ToastMessage;
+use Lattice\Lattice\Effects\Builtin\Toast;
 
 return ActionResult::success()->toast(
-    ToastMessage::make(Variant::Success, 'Product archived.')
+    Toast::make(Variant::Success, 'Product archived.')
         ->duration(8000)                       // auto-dismiss after 8s (default 4000ms)
         ->link('View products', '/products'),  // a link rendered in the toast
 );

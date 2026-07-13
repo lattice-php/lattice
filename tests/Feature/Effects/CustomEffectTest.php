@@ -7,7 +7,7 @@ use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Effects\EffectRegistry;
 
 #[AsEffect('confetti')]
-final readonly class ConfettiEffect extends Effect
+final class ConfettiEffect extends Effect
 {
     public function __construct(public string $color) {}
 }

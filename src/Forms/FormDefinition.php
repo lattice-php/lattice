@@ -7,6 +7,7 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Core\Definition;
+use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Concerns\ResolvesFormFields;
@@ -15,7 +16,6 @@ use Lattice\Lattice\Forms\Contracts\ProvidesForm;
 use Lattice\Lattice\Http\LatticeResponse;
 use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Ui\Values\ToastMessage;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class FormDefinition extends Definition implements HandlesUploads, ProvidesForm
@@ -37,7 +37,7 @@ abstract class FormDefinition extends Definition implements HandlesUploads, Prov
     /**
      * Start a fluent response with a toast already queued.
      */
-    protected function toast(string|Translatable|ToastMessage|Variant $message, Variant|string|null $variant = null): LatticeResponse
+    protected function toast(string|Translatable|Toast|Variant $message, Variant|string|null $variant = null): LatticeResponse
     {
         return LatticeResponse::make()->toast($message, $variant);
     }

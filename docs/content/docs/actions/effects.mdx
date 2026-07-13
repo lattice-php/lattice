@@ -59,7 +59,7 @@ return ActionResult::success()
 
 `->toast()` accepts a message and an optional `Variant` (`Success`, `Error`, `Warning`, `Info`).
 The variant can come first or second — both `->toast('Saved.')` and
-`->toast(Variant::Error, 'Could not save.')` read naturally. Pass a `ToastMessage` instead to
+`->toast(Variant::Error, 'Could not save.')` read naturally. Pass a `Toast` instead to
 set a lifetime, control dismissal, or attach a link or action — see [Toasts](/actions/toasts/).
 
 ### Callouts
@@ -74,7 +74,7 @@ Build a `Callout` value object and pass it to `->callout()`:
 
 ```php
 use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Ui\Values\Callout;
+use Lattice\Lattice\Effects\Builtin\Callout;
 
 return ActionResult::success()
     ->callout(
@@ -148,7 +148,7 @@ response — no `ActionResult` needed. Use it from a controller, before returnin
 event listener, or in middleware — anywhere outside an action:
 
 ```php
-use Lattice\Lattice\Ui\Values\Callout;
+use Lattice\Lattice\Effects\Builtin\Callout;
 use Lattice\Lattice\Ui\Enums\Variant;
 use Lattice\Lattice\Facades\Effects;
 
@@ -203,9 +203,9 @@ use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
 #[AsEffect('confetti')]
-final readonly class ConfettiEffect extends Effect
+final class ConfettiEffect extends Effect
 {
-    public function __construct(public int $pieces = 100) {}
+    public function __construct(public readonly int $pieces = 100) {}
 }
 ```
 

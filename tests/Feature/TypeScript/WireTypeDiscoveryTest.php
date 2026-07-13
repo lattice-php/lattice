@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Effects\Builtin\ToastEffect;
+use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Remote\Components\DataList;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
@@ -15,15 +15,14 @@ use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleUnattributed;
 use Lattice\Lattice\Ui\Components\Card;
 use Lattice\Lattice\Ui\Enums\Align;
 use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Ui\Values\ToastMessage;
 
 it('classifies the src tree into enums, value objects, components and effects', function (): void {
     $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
 
-    expect($manifest->family('effect'))->toHaveKey(ToastEffect::class, 'toast')
+    expect($manifest->family('effect'))->toHaveKey(Toast::class, 'toast')
         ->and($manifest->enums)->toContain(Variant::class)
         ->and($manifest->valueObjects)->toContain(Translatable::class)
-        ->and($manifest->valueObjects)->not->toContain(ToastEffect::class)
+        ->and($manifest->valueObjects)->not->toContain(Toast::class)
         ->and(collect($manifest->components)->firstWhere('class', TextColumn::class)?->category)->toBe('column');
 });
 
@@ -105,7 +104,7 @@ it('splits #[TypeScript]-marked classes into enums and value objects', function 
     expect($manifest->enums)->toContain(Align::class)->toContain(Variant::class);
     expect($manifest->enums)->not->toContain(Option::class);
 
-    expect($manifest->valueObjects)->toContain(Option::class)->toContain(ToastMessage::class);
+    expect($manifest->valueObjects)->toContain(Option::class)->toContain(Translatable::class);
     expect($manifest->valueObjects)->not->toContain(Align::class);
 });
 
@@ -132,7 +131,7 @@ it('sorts enums and value objects deterministically by class-string', function (
 it('keys effects by class-string, valued by wire type, sorted by class-string', function (): void {
     $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
 
-    expect($manifest->family('effect')[ToastEffect::class])->toBe('toast');
+    expect($manifest->family('effect')[Toast::class])->toBe('toast');
 
     $classes = array_keys($manifest->family('effect'));
     $sorted = $classes;
@@ -144,8 +143,8 @@ it('keys effects by class-string, valued by wire type, sorted by class-string', 
 it('does not classify an effect as a value object', function (): void {
     $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
 
-    expect($manifest->valueObjects)->not->toContain(ToastEffect::class)
-        ->and($manifest->enums)->not->toContain(ToastEffect::class);
+    expect($manifest->valueObjects)->not->toContain(Toast::class)
+        ->and($manifest->enums)->not->toContain(Toast::class);
 });
 
 it('classifies AsRemoteComponent with correct precedence in components', function (): void {

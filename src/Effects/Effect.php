@@ -8,7 +8,7 @@ use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Concerns\SerializesToWire;
 
-abstract readonly class Effect implements EffectContract
+abstract class Effect implements EffectContract
 {
     use SerializesToWire;
 

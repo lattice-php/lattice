@@ -7,9 +7,9 @@ use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
 #[AsEffect('reset-form')]
-final readonly class ResetFormEffect extends Effect
+final class ResetFormEffect extends Effect
 {
     public function __construct(
-        public ?string $form = null,
+        public readonly ?string $form = null,
     ) {}
 }

@@ -27,13 +27,7 @@ function resolveEffect(
     return effect;
   }
 
-  const toast = (props as Record<string, unknown>).toast;
-
-  if (typeof toast !== "object" || toast === null) {
-    return effect;
-  }
-
-  const message = (toast as Record<string, unknown>).message;
+  const message = (props as Record<string, unknown>).message;
 
   if (!isTranslatable(message)) {
     return effect;
@@ -43,10 +37,7 @@ function resolveEffect(
     ...effect,
     props: {
       ...(props as Record<string, unknown>),
-      toast: {
-        ...(toast as Record<string, unknown>),
-        message: resolveTranslatable(message, payload, t),
-      },
+      message: resolveTranslatable(message, payload, t),
     },
   };
 }

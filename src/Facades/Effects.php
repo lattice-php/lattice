@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use InvalidArgumentException;
-use Lattice\Lattice\Effects\Builtin\CalloutEffect;
+use Lattice\Lattice\Effects\Builtin\Callout;
 use Lattice\Lattice\Effects\Builtin\CloseModalEffect;
 use Lattice\Lattice\Effects\Builtin\DownloadEffect;
 use Lattice\Lattice\Effects\Builtin\LocaleChangeEffect;
@@ -14,13 +14,11 @@ use Lattice\Lattice\Effects\Builtin\RedirectEffect;
 use Lattice\Lattice\Effects\Builtin\ReloadComponentEffect;
 use Lattice\Lattice\Effects\Builtin\ReloadPageEffect;
 use Lattice\Lattice\Effects\Builtin\ResetFormEffect;
-use Lattice\Lattice\Effects\Builtin\ToastEffect;
+use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Effects\Builtin\ToggleSidebarEffect;
 use Lattice\Lattice\Effects\EffectFlasher;
 use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Ui\Values\Callout;
-use Lattice\Lattice\Ui\Values\ToastMessage;
 
 /**
  * @method static void flash(\Lattice\Lattice\Effects\Contracts\Effect ...$effects)
@@ -30,22 +28,20 @@ use Lattice\Lattice\Ui\Values\ToastMessage;
  */
 final class Effects extends Facade
 {
-    public static function callout(Callout $callout): CalloutEffect
+    public static function callout(Callout $callout): Callout
     {
-        return new CalloutEffect($callout);
+        return $callout;
     }
 
-    public static function toast(string|Translatable|ToastMessage|Variant $message, Variant|string|null $variant = null): ToastEffect
+    public static function toast(string|Translatable|Toast|Variant $message, Variant|string|null $variant = null): Toast
     {
-        $toast = match (true) {
-            $message instanceof ToastMessage => $message,
-            $message instanceof Variant && is_string($variant) => ToastMessage::make($message, $variant),
-            ($message instanceof Translatable || is_string($message)) && $variant instanceof Variant => ToastMessage::make($variant, $message),
-            $message instanceof Translatable || is_string($message) => ToastMessage::make(Variant::Success, $message),
+        return match (true) {
+            $message instanceof Toast => $message,
+            $message instanceof Variant && is_string($variant) => Toast::make($message, $variant),
+            ($message instanceof Translatable || is_string($message)) && $variant instanceof Variant => Toast::make($variant, $message),
+            $message instanceof Translatable || is_string($message) => Toast::make(Variant::Success, $message),
             default => throw new InvalidArgumentException('A toast message string is required.'),
         };
-
-        return new ToastEffect($toast);
     }
 
     public static function reloadComponent(string $component): ReloadComponentEffect

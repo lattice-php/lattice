@@ -7,7 +7,7 @@ use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 
 #[AsEffect('sample-effect')]
-final readonly class SampleEffect extends Effect
+final class SampleEffect extends Effect
 {
     public function __construct(public string $target) {}
 }

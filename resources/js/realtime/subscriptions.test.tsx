@@ -24,7 +24,7 @@ import Subscriptions from "./subscriptions";
 const toasts: unknown[] = [];
 
 const collectToast = (event: Event) => {
-  toasts.push((event as CustomEvent).detail.toast);
+  toasts.push((event as CustomEvent).detail);
 };
 
 beforeEach(() => {
@@ -49,13 +49,11 @@ describe("Subscriptions", () => {
           {
             type: "toast",
             props: {
-              toast: {
-                variant: "success",
-                message: {
-                  key: "orders.shipped-live",
-                  payload: { id: "order.id" },
-                  replacements: {},
-                },
+              variant: "success",
+              message: {
+                key: "orders.shipped-live",
+                payload: { id: "order.id" },
+                replacements: {},
               },
             },
           } as never,
@@ -85,10 +83,8 @@ describe("Subscriptions", () => {
             {
               type: "toast",
               props: {
-                toast: {
-                  variant: "success",
-                  message: { key: "orders.live", payload: {}, replacements: {} },
-                },
+                variant: "success",
+                message: { key: "orders.live", payload: {}, replacements: {} },
               },
             } as never,
           ],

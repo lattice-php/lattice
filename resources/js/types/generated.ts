@@ -119,14 +119,11 @@ export type ButtonVariant =
   | "secondary"
   | "success";
 export type Callout = {
+  variant: Variant;
+  message: string;
   title: string | null;
   dismissible: boolean;
   action: Node | null;
-  variant: Variant;
-  message: string;
-};
-export type CalloutEffect = {
-  readonly callout: Callout;
 };
 export type Callouts = Record<string, never>;
 export type Card = {
@@ -406,7 +403,7 @@ export type Effect = {
   props: Record<string, unknown>;
 };
 export type EffectPropsMap = {
-  callout: CalloutEffect;
+  callout: Callout;
   "close-modal": CloseModalEffect;
   download: DownloadEffect;
   "locale-change": LocaleChangeEffect;
@@ -415,7 +412,7 @@ export type EffectPropsMap = {
   "reload-component": ReloadComponentEffect;
   "reload-page": ReloadPageEffect;
   "reset-form": ResetFormEffect;
-  toast: ToastEffect;
+  toast: Toast;
   "toggle-sidebar": ToggleSidebarEffect;
 };
 export type FieldConditions = {
@@ -1216,16 +1213,13 @@ export type TimeInput = {
   tooltip: string | null;
   value: unknown;
 };
-export type ToastEffect = {
-  readonly toast: ToastMessage;
-};
-export type ToastMessage = {
+export type Toast = {
+  variant: Variant;
+  message: Translatable | string;
   duration: number | null;
   persistent: boolean;
   dismissible: boolean;
   action: Node | null;
-  variant: Variant;
-  message: Translatable | string;
 };
 export type Toggle = {
   autoFocus: boolean;

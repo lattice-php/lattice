@@ -9,13 +9,7 @@ export function normalizeCallout(detail: unknown): Callout | null {
     return null;
   }
 
-  const value = (detail as { callout?: unknown }).callout;
-
-  if (typeof value !== "object" || value === null) {
-    return null;
-  }
-
-  const callout = value as Record<string, unknown>;
+  const callout = detail as Record<string, unknown>;
 
   if (typeof callout.message !== "string" || callout.message === "") {
     return null;
