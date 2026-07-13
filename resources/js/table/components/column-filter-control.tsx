@@ -99,7 +99,7 @@ export function ColumnFilterControl({
             variant="segmented"
             size="md"
             icon="filter"
-            label={t("table.filter.columnFilters", "{{label}} filters", { label })}
+            label={t("table.filter.column-filters", "{{label}} filters", { label })}
             data-test={`filter-${column.key}`}
             disabled={processing}
           >

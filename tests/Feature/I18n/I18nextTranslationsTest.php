@@ -74,7 +74,7 @@ it('serves the lattice namespace from the package lang dir as nested i18next JSO
         ->assertJsonPath('form.editor.heading-1', 'Überschrift 1')
         ->assertJsonPath('table.pagination.next', 'Weiter')
         ->assertJsonPath('table.operators.eq', 'ist gleich')
-        ->assertJsonPath('table.selectRow', 'Zeile {{key}} auswählen')
+        ->assertJsonPath('table.select-row', 'Zeile {{key}} auswählen')
         ->assertJsonPath('table.bulk.selected', '{{count}} ausgewählt');
 });
 

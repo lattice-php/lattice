@@ -4,20 +4,20 @@ declare(strict_types=1);
 return [
     'loading' => 'Loading rows...',
     'pagination' => [
-        'allLoaded' => 'All rows loaded',
+        'all-loaded' => 'All rows loaded',
         'page' => 'Page :page',
         'showing' => 'Showing :from-:to of :total',
-        'loadMore' => 'Load more',
+        'load-more' => 'Load more',
         'loading' => 'Loading...',
         'previous' => 'Previous',
         'next' => 'Next',
     ],
     'bulk' => [
         'selected' => ':count selected',
-        'allSelected' => 'All :count selected',
-        'selectAllMatching' => 'Select all :total matching',
+        'all-selected' => 'All :count selected',
+        'select-all-matching' => 'Select all :total matching',
     ],
-    'rowActions' => [
+    'row-actions' => [
         'duplicate' => 'Duplicate',
         'remove' => 'Remove',
     ],
@@ -29,16 +29,16 @@ return [
         'placeholder' => 'Search',
         'clear' => 'Clear search',
     ],
-    'rowDetail' => [
+    'row-detail' => [
         'toggle' => 'Toggle detail',
     ],
     'filter' => [
         'all' => 'All',
         'true' => 'True',
         'false' => 'False',
-        'filterBy' => 'Filter :label',
+        'filter-by' => 'Filter :label',
         'clear' => 'Clear :label filter',
-        'columnFilters' => ':label filters',
+        'column-filters' => ':label filters',
         'operator' => ':label operator',
         'remove' => 'Remove :label filter',
         'value' => ':label filter value',
@@ -46,8 +46,8 @@ return [
         'filters' => 'Filters',
         'from' => ':label from',
         'until' => ':label until',
-        'selectedCount' => ':amount selected',
-        'resetAll' => 'Reset all',
+        'selected-count' => ':amount selected',
+        'reset-all' => 'Reset all',
         'search' => 'Search',
     ],
     'operators' => [
@@ -67,7 +67,7 @@ return [
         'empty' => 'is empty',
         'filled' => 'is not empty',
     ],
-    'selectRow' => 'Select row :key',
-    'selectAllRows' => 'Select all rows',
-    'resetColumnWidths' => 'Reset column widths',
+    'select-row' => 'Select row :key',
+    'select-all-rows' => 'Select all rows',
+    'reset-column-widths' => 'Reset column widths',
 ];
