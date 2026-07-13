@@ -31,13 +31,13 @@ final class EffectRegistry extends WireTypeRegistry
     }
 
     #[\Override]
-    protected function attribute(): string
+    public static function attribute(): string
     {
         return AsEffect::class;
     }
 
     #[\Override]
-    protected function baseClass(): string
+    public static function baseClass(): string
     {
         return EffectContract::class;
     }

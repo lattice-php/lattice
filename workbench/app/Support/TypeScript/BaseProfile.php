@@ -51,9 +51,9 @@ final class BaseProfile implements TypeScriptProfile
             'column' => $this->buildComponentProps($discovered, 'column'),
             'filter' => $this->buildComponentProps($discovered, 'filter'),
         ];
-        $valueObjectTransformers = [new ValueObjectTransformer($manifest->valueObjects)];
+        $valueObjectClasses = $manifest->valueObjects;
 
-        foreach (WireFamily::attributeFamilies() as $family) {
+        foreach (WireFamily::registryFamilies() as $family) {
             $classes = $manifest->family($family->category);
 
             if ($classes === []) {
@@ -61,7 +61,7 @@ final class BaseProfile implements TypeScriptProfile
             }
 
             $familyProps[$family->category] = array_flip($classes);
-            $valueObjectTransformers[] = new ValueObjectTransformer(array_keys($classes), namePrefix: $family->typeNamePrefix);
+            $valueObjectClasses = [...$valueObjectClasses, ...array_keys($classes)];
         }
 
         $generator->generate(
@@ -69,7 +69,7 @@ final class BaseProfile implements TypeScriptProfile
             [
                 new HttpMethodTransformer,
                 new EnumTransformer($manifest->enums),
-                ...$valueObjectTransformers,
+                new ValueObjectTransformer($valueObjectClasses),
                 new ComponentTransformer([
                     ...array_keys($formFields),
                     Form::class,

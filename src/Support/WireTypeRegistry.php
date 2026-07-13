@@ -25,27 +25,27 @@ abstract class WireTypeRegistry
     /**
      * @return class-string<WireType> the attribute declaring the family's wire types
      */
-    abstract protected function attribute(): string;
+    abstract public static function attribute(): string;
 
     /**
-     * @return class-string<T> the base every registered class must extend or implement
+     * @return class-string the base every registered class must extend or implement
      */
-    abstract protected function baseClass(): string;
+    abstract public static function baseClass(): string;
 
     /**
      * @param  class-string  $class
      */
     public function register(string $class): void
     {
-        if (! is_a($class, $this->baseClass(), true)) {
+        if (! is_a($class, static::baseClass(), true)) {
             throw new InvalidArgumentException(sprintf(
                 '[%s] must extend or implement [%s].',
                 $class,
-                $this->baseClass(),
+                static::baseClass(),
             ));
         }
 
-        $attribute = $this->attribute();
+        $attribute = static::attribute();
         $type = $attribute::wireTypeForClass($class);
 
         if (isset($this->entries[$type]) && $this->entries[$type] !== $class) {

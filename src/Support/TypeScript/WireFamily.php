@@ -3,36 +3,28 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\TypeScript;
 
+use Illuminate\Support\Str;
 use Lattice\Lattice\Attributes\WireType;
-use Lattice\Lattice\Effects\Attributes\AsEffect;
-use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
+use Lattice\Lattice\Effects\EffectRegistry;
+use Lattice\Lattice\Support\WireTypeRegistry;
+use LogicException;
 
 /**
- * One wire-type family: where its classes come from and the type surface they
- * generate. The single table every generation stage shares — discovery buckets
- * attribute-sourced families by category, the base pass emits each `mapType`
- * (plus the loose alias), and the augment pass emits each `interface`. Adding
- * an augmentable family is one entry here plus its attribute.
+ * One wire-type family: a category, optionally backed by the registry that
+ * declares its marking attribute and base class. Everything else derives from
+ * the category — `{Stem}Props` (the augmentable interface), `{Stem}PropsMap`
+ * (the generated map) and, for registry families, the loose `{Stem}` union
+ * alias. The single table every generation stage shares; adding a family is
+ * one entry here.
  */
 final readonly class WireFamily
 {
     /**
-     * @param  string  $category  the discovery bucket entries are keyed under
-     * @param  string  $mapType  the generated `type => props` map alias
-     * @param  string  $interface  the consumer-augmentable interface
-     * @param  class-string<WireType>|null  $attribute  discovers the family's value objects; null for families sourced from discovered components
-     * @param  string|null  $looseAlias  the loose union alias the base pass emits
-     * @param  class-string|null  $reference  the PHP class whose references resolve to the loose alias
-     * @param  string  $typeNamePrefix  prefixes the family's generated value-object type names, keeping them unique in the flat module
+     * @param  class-string<WireTypeRegistry<covariant object>>|null  $registry
      */
     public function __construct(
         public string $category,
-        public string $mapType,
-        public string $interface,
-        public ?string $attribute = null,
-        public ?string $looseAlias = null,
-        public ?string $reference = null,
-        public string $typeNamePrefix = '',
+        public ?string $registry = null,
     ) {}
 
     /**
@@ -41,28 +33,68 @@ final readonly class WireFamily
     public static function all(): array
     {
         return [
-            new self('component', 'ComponentPropsMap', 'ComponentProps'),
-            new self('column', 'ColumnPropsMap', 'ColumnProps'),
-            new self(
-                'effect',
-                'EffectPropsMap',
-                'EffectProps',
-                attribute: AsEffect::class,
-                looseAlias: 'Effect',
-                reference: EffectContract::class,
-            ),
-            new self('filter', 'FilterPropsMap', 'FilterProps'),
+            new self('component'),
+            new self('column'),
+            new self('effect', EffectRegistry::class),
+            new self('filter'),
         ];
     }
 
     /**
      * @return list<self>
      */
-    public static function attributeFamilies(): array
+    public static function registryFamilies(): array
     {
         return array_values(array_filter(
             self::all(),
-            static fn (self $family): bool => $family->attribute !== null,
+            static fn (self $family): bool => $family->registry !== null,
+        ));
+    }
+
+    public function propsMap(): string
+    {
+        return $this->stem().'PropsMap';
+    }
+
+    public function propsInterface(): string
+    {
+        return $this->stem().'Props';
+    }
+
+    public function looseAlias(): string
+    {
+        return $this->stem();
+    }
+
+    /**
+     * @return class-string<WireType>
+     */
+    public function attribute(): string
+    {
+        return $this->registry()::attribute();
+    }
+
+    /**
+     * @return class-string
+     */
+    public function reference(): string
+    {
+        return $this->registry()::baseClass();
+    }
+
+    private function stem(): string
+    {
+        return Str::studly($this->category);
+    }
+
+    /**
+     * @return class-string<WireTypeRegistry<covariant object>>
+     */
+    private function registry(): string
+    {
+        return $this->registry ?? throw new LogicException(sprintf(
+            'The [%s] family is not backed by a registry.',
+            $this->category,
         ));
     }
 }

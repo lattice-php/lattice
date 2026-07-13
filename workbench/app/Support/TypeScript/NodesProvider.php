@@ -71,28 +71,25 @@ final readonly class NodesProvider implements TransformedProvider
 
         $transformed[] = $this->alias('WireNode', new TypeScriptIdentifier('Node'));
         $transformed[] = $this->alias('NodeType', $this->typeUnion(array_keys($this->componentClassesByType())));
-        $transformed[] = $this->alias('ComponentPropsMap', $this->propsMap($this->componentClassesByType()));
+
+        $familyProps = ['component' => $this->componentClassesByType()] + $this->familyProps;
 
         foreach (WireFamily::all() as $family) {
-            if ($family->category === 'component') {
-                continue;
-            }
-
-            $entries = $this->familyProps[$family->category] ?? [];
+            $entries = $familyProps[$family->category] ?? [];
 
             if ($entries === []) {
                 continue;
             }
 
-            if ($family->looseAlias !== null && $family->reference !== null) {
+            if ($family->registry !== null) {
                 $transformed[] = new Transformed(
-                    new TypeScriptAlias($family->looseAlias, $this->loosePayload()),
-                    new ClassStringReference($family->reference),
+                    new TypeScriptAlias($family->looseAlias(), $this->loosePayload()),
+                    new ClassStringReference($family->reference()),
                     [],
                 );
             }
 
-            $transformed[] = $this->alias($family->mapType, $this->propsMap($entries));
+            $transformed[] = $this->alias($family->propsMap(), $this->propsMap($entries));
         }
 
         return $transformed;

@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
+use Lattice\Lattice\Attributes\WireType;
 use Lattice\Lattice\Support\TypeScript\AllowsListedClasses;
 use Lattice\Lattice\Support\TypeScript\MarkerRewriteClassPropertyProcessor;
 use Lattice\Lattice\Support\TypeScript\MixedToUnknownClassPropertyProcessor;
 use Lattice\Lattice\Support\TypeScript\NodeTypeReference;
 use Lattice\Lattice\Ui\Components\Component;
+use Spatie\Attributes\Attributes;
 use Spatie\TypeScriptTransformer\Data\TransformationContext;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
 use Spatie\TypeScriptTransformer\Transformed\Transformed;
@@ -32,11 +34,8 @@ final class ValueObjectTransformer extends ClassTransformer
 
     /**
      * @param  array<int, class-string>  $allowed
-     * @param  string  $namePrefix  Prefixes the generated type names, so a family whose
-     *                              class short names collide with already-generated types
-     *                              stays unique in the flat module.
      */
-    public function __construct(array $allowed, private readonly string $namePrefix = '')
+    public function __construct(array $allowed)
     {
         $this->allowed = $allowed;
 
@@ -51,8 +50,10 @@ final class ValueObjectTransformer extends ClassTransformer
     #[\Override]
     public function transform(PhpClassNode $phpClassNode, TransformationContext $context): Transformed|Untransformable
     {
-        if ($this->namePrefix !== '' && $this->isListed($phpClassNode)) {
-            $context->name = $this->namePrefix.$context->name;
+        if ($this->isListed($phpClassNode)) {
+            /** @var class-string $class */
+            $class = $phpClassNode->getName();
+            $context->name = Attributes::get($class, WireType::class)?->typeNamePrefix().$context->name;
         }
 
         return parent::transform($phpClassNode, $context);

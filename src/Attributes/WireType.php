@@ -22,6 +22,15 @@ abstract readonly class WireType extends TypeScript
     }
 
     /**
+     * Prefixes the family's generated TypeScript type names, keeping class
+     * short names unique in the flat generated module.
+     */
+    public function typeNamePrefix(): string
+    {
+        return '';
+    }
+
+    /**
      * @param  class-string  $class
      */
     public static function wireTypeForClass(string $class): string

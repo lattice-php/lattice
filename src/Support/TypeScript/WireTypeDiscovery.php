@@ -71,10 +71,8 @@ final class WireTypeDiscovery
      */
     private function collectFamilyMember(string $class, bool $abstract, array &$families): bool
     {
-        foreach (WireFamily::attributeFamilies() as $family) {
-            assert($family->attribute !== null);
-
-            $attribute = Attributes::get($class, $family->attribute);
+        foreach (WireFamily::registryFamilies() as $family) {
+            $attribute = Attributes::get($class, $family->attribute());
 
             if ($attribute === null) {
                 continue;

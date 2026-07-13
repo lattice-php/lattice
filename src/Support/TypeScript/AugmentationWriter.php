@@ -74,17 +74,17 @@ final readonly class AugmentationWriter implements Writer
     {
         $interfaces = [];
 
-        foreach (WireFamily::all() as $map) {
-            $entries = $entriesByCategory[$map->category] ?? [];
+        foreach (WireFamily::all() as $family) {
+            $entries = $entriesByCategory[$family->category] ?? [];
 
             // The component interface is always emitted so the module augmentation is
             // valid even for an app with no custom components; the rest only when populated.
-            if ($entries === [] && $map->category !== 'component') {
+            if ($entries === [] && $family->category !== 'component') {
                 continue;
             }
 
             ksort($entries);
-            $interfaces[] = self::interface($map->interface, $entries);
+            $interfaces[] = self::interface($family->propsInterface(), $entries);
         }
 
         return implode("\n", [

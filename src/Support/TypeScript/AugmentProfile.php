@@ -37,7 +37,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
                 $entries[$component->class] = [$component->type, $component->category];
             }
 
-            foreach (WireFamily::attributeFamilies() as $family) {
+            foreach (WireFamily::registryFamilies() as $family) {
                 foreach ($manifest->family($family->category) as $class => $type) {
                     $entries[$class] = [$type, $family->category];
                 }
