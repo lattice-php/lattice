@@ -89,6 +89,7 @@ export type {
   EffectHandlerRegistry,
   EffectOf,
   EffectProps,
+  EffectPropsOf,
 } from "./effects/registry";
 export type { Appearance, ResolvedAppearance, UseAppearanceReturn } from "./appearance";
 export type { CopiedValue, CopyFn, UseClipboardReturn } from "./clipboard";

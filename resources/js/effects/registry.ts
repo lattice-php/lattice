@@ -11,7 +11,7 @@ import { setLocale } from "@lattice-php/lattice/i18n/locale";
  */
 export interface EffectProps {}
 
-type EffectPayloadOf<TType extends string> = ResolveProps<
+export type EffectPropsOf<TType extends string> = ResolveProps<
   EffectProps,
   EffectPropsMap,
   TType,
@@ -20,7 +20,7 @@ type EffectPayloadOf<TType extends string> = ResolveProps<
 
 export type EffectOf<TType extends string> = string extends TType
   ? Effect
-  : { type: TType } & EffectPayloadOf<TType>;
+  : { type: TType } & EffectPropsOf<TType>;
 
 export type EffectHandler<TType extends string = string> = (effect: EffectOf<TType>) => void;
 
