@@ -1,3 +1,4 @@
+export { BlockEditorComponent } from "./fields/block-editor";
 export { BuilderComponent } from "./fields/builder";
 export { CheckboxComponent } from "./fields/checkbox";
 export { ChoiceComponent } from "./fields/choice";

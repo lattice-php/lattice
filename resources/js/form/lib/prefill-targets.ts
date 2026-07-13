@@ -16,7 +16,7 @@ type PrefillSnapshot = {
   values: Record<string, unknown>;
 };
 
-const ROW_COLLECTION_TYPES = new Set(["field.builder", "field.repeater"]);
+const ROW_COLLECTION_TYPES = new Set(["field.block-editor", "field.builder", "field.repeater"]);
 
 export { getPath } from "./form-path";
 

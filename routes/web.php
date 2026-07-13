@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Lattice\Lattice\Http\Controllers\ActionController;
+use Lattice\Lattice\Http\Controllers\BlockRenderController;
 use Lattice\Lattice\Http\Controllers\BulkActionController;
 use Lattice\Lattice\Http\Controllers\FormController;
 use Lattice\Lattice\Http\Controllers\FragmentController;
@@ -24,6 +25,10 @@ Route::middleware(config('lattice.fragments.middleware', ['web', 'auth']))
     ->get(config('lattice.fragments.endpoint', 'lattice/fragments/{fragment}'), FragmentController::class)
     ->where('fragment', '.*')
     ->name('lattice.fragments.show');
+
+Route::middleware(config('lattice.blocks.middleware', ['web', 'auth']))
+    ->post(config('lattice.blocks.endpoint', 'lattice/blocks/render'), BlockRenderController::class)
+    ->name('lattice.blocks.render');
 
 Route::middleware(config('lattice.remote-sources.middleware', ['web', 'auth']))
     ->post(config('lattice.remote-sources.endpoint', 'lattice/remote-sources/{source}/token'), RemoteSourceTokenController::class)

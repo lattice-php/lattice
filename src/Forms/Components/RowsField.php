@@ -115,30 +115,44 @@ abstract class RowsField extends Field implements ProvidesRowFields, ProvidesRow
         $rules = [];
 
         foreach ($rows as $index => $row) {
-            $row = is_array($row) ? $row : [];
-            $scope = $this->rowScope($data, $row);
+            $rules = [...$rules, ...$this->rowRulesAt("{$this->name}.{$index}", is_array($row) ? $row : [], $data, $request)];
+        }
 
-            foreach ($this->rowFields($row) as $child) {
-                if ($child->name() === self::ROW_ID) {
-                    throw new LogicException(sprintf(
-                        'Row schemas must not declare a [%s] field: the key is reserved for the per-row identity.',
-                        self::ROW_ID,
-                    ));
-                }
+        return $rules;
+    }
 
-                if (! $child->isVisible($scope)) {
-                    continue;
-                }
+    /**
+     * The rules for one row at the given dot-notation prefix; the seam nested
+     * row structures extend to validate rows below the top level.
+     *
+     * @param  array<string, mixed>  $row
+     * @return array<string, array<int, mixed>>
+     */
+    protected function rowRulesAt(string $prefix, array $row, FormData $data, Request $request): array
+    {
+        $rules = [];
+        $scope = $this->rowScope($data, $row);
 
-                $childRules = $child->resolvedRulesWithRequired($scope, $request);
-
-                // excludeUnvalidatedArrayKeys drops a row's unruled keys once a sibling
-                // (e.g. the type discriminator) has a rule, so give every field a passthrough.
-                $rules["{$this->name}.{$index}.{$child->name()}"] = $childRules !== [] ? $childRules : ['sometimes', 'nullable'];
+        foreach ($this->rowFields($row) as $child) {
+            if ($child->name() === self::ROW_ID) {
+                throw new LogicException(sprintf(
+                    'Row schemas must not declare a [%s] field: the key is reserved for the per-row identity.',
+                    self::ROW_ID,
+                ));
             }
 
-            $rules["{$this->name}.{$index}.".self::ROW_ID] = ['sometimes', 'nullable', 'uuid'];
+            if (! $child->isVisible($scope)) {
+                continue;
+            }
+
+            $childRules = $child->resolvedRulesWithRequired($scope, $request);
+
+            // excludeUnvalidatedArrayKeys drops a row's unruled keys once a sibling
+            // (e.g. the type discriminator) has a rule, so give every field a passthrough.
+            $rules["{$prefix}.{$child->name()}"] = $childRules !== [] ? $childRules : ['sometimes', 'nullable'];
         }
+
+        $rules["{$prefix}.".self::ROW_ID] = ['sometimes', 'nullable', 'uuid'];
 
         return $rules;
     }

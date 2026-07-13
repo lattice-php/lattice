@@ -225,6 +225,9 @@ return [
         'unit-price' => 'Unit price',
     ],
     'forms' => [
+        'block-editor' => [
+            'card' => 'Content',
+        ],
         'builder' => [
             'card' => 'Line items',
         ],
@@ -341,6 +344,12 @@ return [
         'toggle-sidebar' => 'Toggle sidebar',
     ],
     'pages' => [
+        'block-editor' => [
+            'heading' => 'Block Editor Demo',
+            'saved' => 'Saved: :titles',
+            'submit' => 'Save',
+            'title' => 'Block Editor Demo',
+        ],
         'builder' => [
             'heading' => 'Builder Demo',
             'submit' => 'Save',

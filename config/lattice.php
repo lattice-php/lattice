@@ -51,6 +51,11 @@ return [
         'middleware' => ['web', 'auth'],
     ],
 
+    'blocks' => [
+        'endpoint' => 'lattice/blocks/render',
+        'middleware' => ['web', 'auth'],
+    ],
+
     'remote-sources' => [
         'endpoint' => 'lattice/remote-sources/{source}/token',
         'middleware' => ['web', 'auth'],

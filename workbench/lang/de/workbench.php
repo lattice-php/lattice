@@ -225,6 +225,9 @@ return [
         'unit-price' => 'Stückpreis',
     ],
     'forms' => [
+        'block-editor' => [
+            'card' => 'Inhalt',
+        ],
         'builder' => [
             'card' => 'Positionen',
         ],
@@ -341,6 +344,12 @@ return [
         'toggle-sidebar' => 'Seitenleiste umschalten',
     ],
     'pages' => [
+        'block-editor' => [
+            'heading' => 'Block-Editor-Demo',
+            'saved' => 'Gespeichert: :titles',
+            'submit' => 'Speichern',
+            'title' => 'Block-Editor-Demo',
+        ],
         'builder' => [
             'heading' => 'Builder-Demo',
             'submit' => 'Speichern',

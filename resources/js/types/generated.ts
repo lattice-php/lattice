@@ -44,6 +44,35 @@ export type BadgeColumn = {
   toggleable: boolean;
   width: ColumnWidth;
 };
+export type BlockEditor = {
+  addLabel: string | null;
+  columnWidth: ColumnWidth;
+  conditions: {
+    visible?: Condition[];
+    required?: Condition[];
+    readOnly?: Condition[];
+    disabled?: Condition[];
+  } | null;
+  defaultItems: number;
+  dependsOnAny: boolean;
+  dependsOnKeys: string[] | null;
+  disabled: boolean;
+  editablePrefill: boolean;
+  endpoint: string | null;
+  helperText: string | null;
+  label: string | null;
+  maxItems: number | null;
+  minItems: number | null;
+  name: string;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
+  readOnly: boolean;
+  ref: string | null;
+  reorderable: boolean;
+  required: boolean;
+  tooltip: string | null;
+  value: unknown;
+};
 export type BooleanColumn = {
   align: ColumnAlign;
   filter: ColumnFilter | null;
@@ -279,6 +308,7 @@ export type ComponentPropsMap = {
   "chat.part.tool-call": ToolCallPart;
   collapsible: Collapsible;
   dropdown: Dropdown;
+  "field.block-editor": BlockEditor;
   "field.builder": Builder;
   "field.checkbox": Checkbox;
   "field.choice": Choice;
@@ -425,6 +455,7 @@ export type FieldConditions = {
 };
 export type FieldType =
   | "field.builder"
+  | "field.block-editor"
   | "field.checkbox"
   | "field.choice"
   | "field.date-input"
@@ -518,6 +549,7 @@ export type Form = {
   validationTimeout: number | null;
 };
 export type FormFieldNodeType =
+  | "field.block-editor"
   | "field.builder"
   | "field.checkbox"
   | "field.choice"
@@ -536,6 +568,7 @@ export type FormFieldNodeType =
   | "field.time-input"
   | "field.toggle";
 export type FormNodeType =
+  | "field.block-editor"
   | "field.builder"
   | "field.checkbox"
   | "field.choice"
@@ -700,6 +733,7 @@ export type NodeType =
   | "chat.part.tool-call"
   | "collapsible"
   | "dropdown"
+  | "field.block-editor"
   | "field.builder"
   | "field.checkbox"
   | "field.choice"

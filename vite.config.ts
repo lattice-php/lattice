@@ -333,6 +333,7 @@ export default defineConfig(({ mode }) => {
                   /^@internationalized\/date($|\/)/,
                   /^@lattice-php\/vite-svg-sprite($|\/)/,
                   /^@radix-ui\//,
+                  /^@dnd-kit\//,
                   /^@tiptap\//,
                   /^@zag-js\//,
                   /^clsx($|\/)/,

@@ -132,6 +132,10 @@
                 "value": "field.builder"
             },
             {
+                "name": "BlockEditor",
+                "value": "field.block-editor"
+            },
+            {
                 "name": "Checkbox",
                 "value": "field.checkbox"
             },

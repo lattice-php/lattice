@@ -21,6 +21,7 @@ use Orchestra\Testbench\Factories\UserFactory;
 use Workbench\App\Models\User;
 
 use function Pest\Laravel\getJson;
+use function Pest\Laravel\postJson;
 
 uses(TestCase::class)->in('Feature', 'Unit');
 uses(BrowserTestCase::class)->in('Browser');
@@ -314,6 +315,17 @@ function withoutRowIds(array $rows): array
 function latticeGet(string $url, string $ref): TestResponse
 {
     return getJson($url, latticeHeaders($ref));
+}
+
+/**
+ * Perform a JSON POST request with a Lattice component ref header.
+ *
+ * @param  array<string, mixed>  $body
+ * @return TestResponse<JsonResponse>
+ */
+function latticePost(string $url, string $ref, array $body = []): TestResponse
+{
+    return postJson($url, $body, latticeHeaders($ref));
 }
 
 /**

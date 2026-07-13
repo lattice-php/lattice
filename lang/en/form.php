@@ -2,6 +2,19 @@
 declare(strict_types=1);
 
 return [
+    'block-editor' => [
+        'drag' => 'Drag',
+        'drag-to-reorder' => 'Drag to reorder',
+        'duplicate' => 'Duplicate',
+        'empty-slot' => 'Drop blocks here',
+        'has-errors' => 'This block has errors.',
+        'move-down' => 'Move down',
+        'move-up' => 'Move up',
+        'no-settings' => 'This block has no settings.',
+        'remove' => 'Remove block',
+        'select-block' => 'Select a block to edit it.',
+        'unknown-block' => 'Unknown block',
+    ],
     'editor' => [
         'bold' => 'Bold',
         'italic' => 'Italic',
