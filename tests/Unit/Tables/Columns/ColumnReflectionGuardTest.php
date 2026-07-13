@@ -43,6 +43,6 @@ it('exposes only the intended wire props on each built-in column', function (str
     'money' => [MoneyColumn::class, ['minimumFractionDigits', 'maximumFractionDigits', 'currency', 'currencyField', 'copyable']],
     'badge' => [BadgeColumn::class, ['colors']],
     'icon' => [IconColumn::class, ['icon', 'icons', 'colors']],
-    'image' => [ImageColumn::class, ['circular', 'size']],
+    'image' => [ImageColumn::class, ['circular', 'size', 'previewable']],
     'stack' => [StackColumn::class, []],
 ]);

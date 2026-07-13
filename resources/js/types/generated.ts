@@ -611,6 +611,7 @@ export type ImageColumn = {
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
+  previewable: boolean;
   size: number | null;
   sortable: boolean;
   toggleable: boolean;

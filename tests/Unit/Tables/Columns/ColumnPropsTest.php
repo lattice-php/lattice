@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Tables\Columns\BooleanColumn;
+use Lattice\Lattice\Tables\Columns\ImageColumn;
 use Lattice\Lattice\Tables\Columns\MoneyColumn;
 use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
@@ -34,6 +35,13 @@ it('serializes the copyable flag on numeric columns', function (): void {
         ->toHaveKey('copyable', true)
         ->and(wire(MoneyColumn::make('price'))['props'])
         ->toHaveKey('copyable', false);
+});
+
+it('serializes image columns as previewable unless opted out', function (): void {
+    expect(wire(ImageColumn::make('image'))['props'])
+        ->toHaveKey('previewable', true)
+        ->and(wire(ImageColumn::make('image')->previewable(false))['props'])
+        ->toHaveKey('previewable', false);
 });
 
 it('maps each date style method to its dateStyle/timeStyle shape', function (): void {
