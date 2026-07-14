@@ -91,7 +91,7 @@ it('attaches per-option data from a closure, on search and selected alike', func
 
     $source = EloquentOptions::make(Product::class)
         ->label('name')
-        ->data(fn ($product): array => ['badge' => mb_strtolower($product->sku)]);
+        ->data(fn ($product): array => ['badge' => mb_strtolower((string) $product->getAttribute('sku'))]);
 
     expect($source->search('beta')[0]->data)->toBe(['badge' => 'sku-2'])
         ->and($source->selected([(string) $product->getKey()])[0]->data)->toBe(['badge' => 'sku-2']);
