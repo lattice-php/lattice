@@ -339,6 +339,7 @@ export default defineConfig(({ mode }) => {
                   /^clsx($|\/)/,
                   /^class-variance-authority($|\/)/,
                   /^input-otp($|\/)/,
+                  /^react-colorful($|\/)/,
                   /^tailwind-merge($|\/)/,
                   /^vite($|\/)/,
                   /^@laravel\/echo-react($|\/)/,

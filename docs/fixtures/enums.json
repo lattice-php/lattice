@@ -140,6 +140,10 @@
                 "value": "field.choice"
             },
             {
+                "name": "ColorPicker",
+                "value": "field.color-picker"
+            },
+            {
                 "name": "DateInput",
                 "value": "field.date-input"
             },

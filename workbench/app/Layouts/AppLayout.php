@@ -49,6 +49,7 @@ use Workbench\App\Pages\DependentFieldsPage;
 use Workbench\App\Pages\Fields\BooleanFieldsPage;
 use Workbench\App\Pages\Fields\BuilderPage;
 use Workbench\App\Pages\Fields\ChoicePage;
+use Workbench\App\Pages\Fields\ColorPickerPage;
 use Workbench\App\Pages\Fields\DateTimePage;
 use Workbench\App\Pages\Fields\FileUploadPage;
 use Workbench\App\Pages\Fields\NumberInputPage;
@@ -128,6 +129,7 @@ class AppLayout extends LayoutDefinition
                         MenuItem::fromPage(PasswordInputPage::class)->key('field-password')->label(__('workbench.navigation.field-password')),
                         MenuItem::fromPage(SelectPage::class)->key('field-select')->label(__('workbench.navigation.field-select')),
                         MenuItem::fromPage(ChoicePage::class)->key('field-choice')->label(__('workbench.navigation.field-choice')),
+                        MenuItem::fromPage(ColorPickerPage::class)->key('field-color-picker')->label(__('workbench.navigation.field-color-picker')),
                         MenuItem::fromPage(BooleanFieldsPage::class)->key('field-boolean')->label(__('workbench.navigation.field-boolean')),
                         MenuItem::fromPage(DateTimePage::class)->key('field-date-time')->label(__('workbench.navigation.field-date-time')),
                         MenuItem::fromPage(FileUploadPage::class)->key('field-file-upload')->label(__('workbench.navigation.field-file-upload')),

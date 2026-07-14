@@ -233,6 +233,11 @@ return [
             'stack' => 'Stapel-Layout',
             'table' => 'Tabellen-Layout',
         ],
+        'color-picker' => [
+            'brand-color' => 'Markenfarbe',
+            'color' => 'Tag-Farbe',
+            'placeholder' => 'Farbe wählen',
+        ],
         'date-time' => [
             'date' => 'Datum',
             'datetime' => 'Datum & Uhrzeit',
@@ -375,6 +380,7 @@ return [
         'field-boolean' => 'Checkbox & Schalter',
         'field-builder' => 'Builder',
         'field-choice' => 'Auswahl',
+        'field-color-picker' => 'Farbwähler',
         'field-date-time' => 'Datum & Uhrzeit',
         'field-file-upload' => 'Datei-Upload',
         'field-number' => 'Zahl',
@@ -541,6 +547,10 @@ return [
             'choice' => [
                 'description' => 'Einfachauswahl mit statischen Optionen.',
                 'title' => 'Auswahl',
+            ],
+            'color-picker' => [
+                'description' => 'Palettenfarben plus freie Farbwahl, gespeichert als Hex-Wert.',
+                'title' => 'Farbwähler',
             ],
             'date-time' => [
                 'description' => 'Datums-, Zeit- und kombinierte Datum-Zeit-Auswahl.',
