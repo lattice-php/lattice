@@ -233,6 +233,11 @@ return [
             'stack' => 'Stack layout',
             'table' => 'Table layout',
         ],
+        'color-picker' => [
+            'brand-color' => 'Brand color',
+            'color' => 'Tag color',
+            'placeholder' => 'Pick a color',
+        ],
         'date-time' => [
             'date' => 'Date',
             'datetime' => 'Date & time',
@@ -375,6 +380,7 @@ return [
         'field-boolean' => 'Checkbox & toggle',
         'field-builder' => 'Builder',
         'field-choice' => 'Choice',
+        'field-color-picker' => 'Color picker',
         'field-date-time' => 'Date & time',
         'field-file-upload' => 'File upload',
         'field-number' => 'Number',
@@ -541,6 +547,10 @@ return [
             'choice' => [
                 'description' => 'Single-select choice control with static options.',
                 'title' => 'Choice',
+            ],
+            'color-picker' => [
+                'description' => 'Palette swatches plus free color selection, stored as a hex string.',
+                'title' => 'Color picker',
             ],
             'date-time' => [
                 'description' => 'Date, time, and combined date-time pickers.',
