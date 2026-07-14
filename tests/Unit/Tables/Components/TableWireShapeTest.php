@@ -49,6 +49,7 @@ it('serializes the table component wire shape', function (): void {
         'perPage' => 25,
         'tableFilters' => [],
         'tableFilterIndicators' => [],
+        'search' => '',
     ]);
     expect($payload['props']['bulkActions'])->toBe([]);
     expect($payload['props']['filters'])->toBe([]);
@@ -59,6 +60,11 @@ it('serializes visible resize indicators on table components', function (): void
 
     expect($payload['props']['resizableColumns'])->toBeTrue()
         ->and($payload['props']['resizeIndicator'])->toBeTrue();
+});
+
+it('serializes the searchable flag on table components', function (): void {
+    expect(wire(Table::make('demo')->searchable())['props']['searchable'])->toBeTrue()
+        ->and(wire(Table::make('demo'))['props']['searchable'])->toBeFalse();
 });
 
 it('defaults a column to its value type operator set', function (): void {

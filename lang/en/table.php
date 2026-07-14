@@ -25,6 +25,10 @@ return [
         'label' => 'Columns',
         'reset' => 'Reset',
     ],
+    'search' => [
+        'placeholder' => 'Search',
+        'clear' => 'Clear search',
+    ],
     'filter' => [
         'all' => 'All',
         'true' => 'True',

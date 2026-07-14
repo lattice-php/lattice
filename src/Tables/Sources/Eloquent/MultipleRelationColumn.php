@@ -110,6 +110,15 @@ final readonly class MultipleRelationColumn implements RelationProjection
     }
 
     /**
+     * @param  Builder<*>  $builder
+     * @param  Closure(Builder<*>): void  $constrain
+     */
+    public function applyOrFilter(Builder $builder, Closure $constrain): void
+    {
+        $builder->orWhereHas($this->key, $constrain);
+    }
+
+    /**
      * A to-many list has no scalar ordering, so sorting is a no-op. Such columns
      * also report not-sortable, so a validated query never reaches here.
      */

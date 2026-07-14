@@ -54,6 +54,15 @@ interface RelationProjection
     public function applyFilter(Builder $builder, Closure $constrain): void;
 
     /**
+     * OR-constrain the base query to rows whose relation matches the filter —
+     * the OR sibling of {@see applyFilter()}, used to build a search group.
+     *
+     * @param  Builder<*>  $builder
+     * @param  Closure(Builder<*>): void  $constrain
+     */
+    public function applyOrFilter(Builder $builder, Closure $constrain): void;
+
+    /**
      * Order the base query by the relation. To-one projections sort through a
      * correlated subquery; projections with no scalar ordering (a to-many list)
      * leave the query untouched.

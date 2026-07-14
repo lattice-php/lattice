@@ -43,6 +43,8 @@ class Table extends Component
 
     public bool $striped = false;
 
+    public bool $searchable = false;
+
     public bool $lazy = false;
 
     public bool $resizableColumns = false;
@@ -152,6 +154,13 @@ class Table extends Component
     public function striped(bool $striped): static
     {
         $this->striped = $striped;
+
+        return $this;
+    }
+
+    public function searchable(bool $searchable = true): static
+    {
+        $this->searchable = $searchable;
 
         return $this;
     }

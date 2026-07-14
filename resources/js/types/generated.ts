@@ -1173,6 +1173,7 @@ export type Table = {
   ref: string | null;
   resizableColumns: boolean;
   resizeIndicator: boolean;
+  searchable: boolean;
   striped: boolean;
 };
 export type TablePagination = {
@@ -1193,6 +1194,7 @@ export type TableQuery = {
   readonly perPage: number;
   readonly tableFilters: Record<string, Record<string, unknown>>;
   readonly tableFilterIndicators: FilterIndicator[];
+  readonly search: string;
 };
 export type TableResult = {
   readonly query: TableQuery;

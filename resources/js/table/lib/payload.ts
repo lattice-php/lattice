@@ -80,6 +80,7 @@ export function getQuery(value: unknown): TableQuery {
       perPage: 25,
       tableFilters: {},
       tableFilterIndicators: [],
+      search: "",
     };
   }
 
@@ -92,6 +93,7 @@ export function getQuery(value: unknown): TableQuery {
     perPage: typeof query.perPage === "number" ? query.perPage : 25,
     tableFilters: getTableFilters(query.tableFilters),
     tableFilterIndicators: getTableFilterIndicators(query.tableFilterIndicators),
+    search: typeof query.search === "string" ? query.search : "",
   };
 }
 

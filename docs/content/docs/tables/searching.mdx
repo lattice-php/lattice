@@ -1,0 +1,54 @@
+---
+title: Searching
+description: A table-level quick-search box that matches a term across the columns you mark searchable, including relation columns.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+
+Mark any text column `->searchable()` and Lattice renders a search box above the table. Typing filters
+rows server-side, matching the term against every searchable column at once. The box appears only when a
+table has at least one searchable column.
+
+<ComponentExample
+  php={`TextColumn::make('name')->label('Name')->sortable()->searchable();
+TextColumn::make('email')->label('Email')->link('mailto:{value}')->searchable();
+TextColumn::make('team')->label('Team');`}
+  fixture="table.search"
+/>
+
+## Declaring searchable columns
+
+`->searchable()` opts a column into the global search. It is independent of `->filterable()` — a column
+can be searchable, filterable, both, or neither:
+
+```php
+use Lattice\Lattice\Tables\Columns\TextColumn;
+
+TextColumn::make('name')->searchable();
+TextColumn::make('email')->searchable()->filterable();  // both
+TextColumn::make('internal_note');                      // neither
+```
+
+Relation columns are searchable too — a dotted to-one key or a `->multiple()` to-many list matches
+through `whereHas`, the same machinery [filtering](/tables/filtering/) uses:
+
+```php
+TextColumn::make('businessPartner.name')->searchable();   // to-one relation
+TextColumn::make('tags')->multiple('name')->searchable(); // to-many relation
+```
+
+## How it matches
+
+The term is a single, case-insensitive `contains` match, OR-grouped across the searchable columns and
+combined with any active [filters](/tables/filtering/) using `AND` — so a search narrows within the
+current filter set rather than replacing it. LIKE wildcards in the term are escaped.
+
+The box debounces input and resets to the first page on each change. The term rides the table endpoint
+as `?q=…`, so it is part of the shareable table state and is respected by bulk "select all matching"
+[actions](/tables/actions/).
+
+<Info>
+  Search always matches text with `contains`. For exact matches, ranges, or a fixed set of choices,
+  reach for a [column filter](/tables/filtering/) instead.
+</Info>

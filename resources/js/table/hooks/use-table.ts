@@ -132,8 +132,16 @@ export function useTable(node: TableNode) {
       filters: [],
       tableFilters: {},
       tableFilterIndicators: [],
+      search: "",
       page: 1,
     };
+
+    setQuery(nextQuery);
+    void load(nextQuery);
+  }
+
+  function setSearch(search: string): void {
+    const nextQuery = { ...query, search, page: 1 };
 
     setQuery(nextQuery);
     void load(nextQuery);
@@ -147,7 +155,7 @@ export function useTable(node: TableNode) {
 
       const url = new URL(endpoint, window.location.origin);
       url.searchParams.set("_search", searchKey);
-      url.searchParams.set("q", search);
+      url.searchParams.set("_q", search);
 
       const response = await apiFetch(`${url.pathname}${url.search}`, {
         ref: componentRef,
@@ -253,12 +261,14 @@ export function useTable(node: TableNode) {
     query,
     filters: query.filters,
     tableFilters: query.tableFilters,
+    search: query.search,
     addFilter,
     updateFilter,
     removeFilter,
     replaceColumnFilters,
     setTableFilter,
     resetFilters,
+    setSearch,
     searchFilterOptions,
     processing,
     hasLoaded,

@@ -16,6 +16,7 @@ use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Components\Table as TableComponent;
 use Lattice\Lattice\Tables\Contracts\Filterable;
+use Lattice\Lattice\Tables\Contracts\Searchable;
 use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
 use Symfony\Component\HttpFoundation\Response;
@@ -80,6 +81,7 @@ final class TableRegistry extends DefinitionRegistry
             ->endpoint($this->endpointFor($key))
             ->columns($columns)
             ->filters($definition->filters())
+            ->searchable($this->hasSearchableColumns($columns))
             ->layout($definition->layout())
             ->striped($definition->striped())
             ->resizableColumns($definition->resizableColumns(), $definition->resizeIndicator())
@@ -116,7 +118,7 @@ final class TableRegistry extends DefinitionRegistry
     {
         $definition ??= $this->resolve($key);
         $searchKey = $request->string('_search')->toString();
-        $query = $request->string('q')->toString();
+        $query = $request->string('_q')->toString();
 
         if (str_starts_with($searchKey, 'filter:')) {
             return ['options' => $this->searchFilterFieldOptions($definition, substr($searchKey, strlen('filter:')), $query, $request)];
@@ -177,6 +179,16 @@ final class TableRegistry extends DefinitionRegistry
         return array_map(
             fn (ActionComponent $action): ActionComponent => $action->context([...$context, 'table' => $key]),
             $this->renderableComponents($definition->bulkActions()),
+        );
+    }
+
+    /**
+     * @param  array<int, Column>  $columns
+     */
+    private function hasSearchableColumns(array $columns): bool
+    {
+        return collect($columns)->contains(
+            static fn (Column $column): bool => $column instanceof Searchable && $column->isSearchable(),
         );
     }
 

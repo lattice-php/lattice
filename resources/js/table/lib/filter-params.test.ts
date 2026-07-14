@@ -10,6 +10,7 @@ function query(overrides: Partial<TableQuery>): TableQuery {
     perPage: 25,
     tableFilters: {},
     tableFilterIndicators: [],
+    search: "",
     ...overrides,
   };
 }

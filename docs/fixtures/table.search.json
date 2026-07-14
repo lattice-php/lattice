@@ -1,53 +1,12 @@
 [
     {
-        "id": "users",
+        "id": "directory",
         "props": {
             "actionsLabel": "Actions",
             "bulkActions": [],
             "columns": [
                 {
-                    "key": "identity",
-                    "props": {
-                        "align": "start",
-                        "filter": null,
-                        "hiddenByDefault": false,
-                        "label": "User",
-                        "sortable": false,
-                        "toggleable": false,
-                        "width": "xl"
-                    },
-                    "schema": [
-                        {
-                            "props": {
-                                "align": null,
-                                "color": "default",
-                                "copyable": false,
-                                "dataBindings": {
-                                    "text": "name"
-                                },
-                                "size": "md",
-                                "text": ""
-                            },
-                            "type": "text"
-                        },
-                        {
-                            "props": {
-                                "align": null,
-                                "color": null,
-                                "copyable": false,
-                                "dataBindings": {
-                                    "text": "email"
-                                },
-                                "size": "sm",
-                                "text": ""
-                            },
-                            "type": "text"
-                        }
-                    ],
-                    "type": "column.stack"
-                },
-                {
-                    "key": "role",
+                    "key": "name",
                     "props": {
                         "align": "start",
                         "badge": null,
@@ -55,7 +14,46 @@
                         "date": null,
                         "filter": null,
                         "hiddenByDefault": false,
-                        "label": "Role",
+                        "label": "Name",
+                        "link": null,
+                        "multiple": null,
+                        "sortable": true,
+                        "toggleable": false,
+                        "width": "md"
+                    },
+                    "type": "column.text"
+                },
+                {
+                    "key": "email",
+                    "props": {
+                        "align": "start",
+                        "badge": null,
+                        "copyable": false,
+                        "date": null,
+                        "filter": null,
+                        "hiddenByDefault": false,
+                        "label": "Email",
+                        "link": {
+                            "external": false,
+                            "href": "mailto:{value}"
+                        },
+                        "multiple": null,
+                        "sortable": false,
+                        "toggleable": false,
+                        "width": "md"
+                    },
+                    "type": "column.text"
+                },
+                {
+                    "key": "team",
+                    "props": {
+                        "align": "start",
+                        "badge": null,
+                        "copyable": false,
+                        "date": null,
+                        "filter": null,
+                        "hiddenByDefault": false,
+                        "label": "Team",
                         "link": null,
                         "multiple": null,
                         "sortable": false,
@@ -69,12 +67,17 @@
                 {
                     "email": "ada@example.com",
                     "name": "Ada Lovelace",
-                    "role": "Admin"
+                    "team": "Engineering"
                 },
                 {
-                    "email": "alan@example.com",
-                    "name": "Alan Turing",
-                    "role": "Editor"
+                    "email": "grace@example.com",
+                    "name": "Grace Hopper",
+                    "team": "Engineering"
+                },
+                {
+                    "email": "katherine@example.com",
+                    "name": "Katherine Johnson",
+                    "team": "Research"
                 }
             ],
             "emptyLabel": "No results",
@@ -90,8 +93,8 @@
                 "mode": "none",
                 "nextPage": null,
                 "perPage": null,
-                "to": 2,
-                "total": 2
+                "to": 3,
+                "total": 3
             },
             "query": {
                 "filters": [],
@@ -104,7 +107,7 @@
             },
             "resizableColumns": false,
             "resizeIndicator": false,
-            "searchable": false,
+            "searchable": true,
             "striped": false
         },
         "type": "table"
