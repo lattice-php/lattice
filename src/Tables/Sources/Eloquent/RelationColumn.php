@@ -102,6 +102,15 @@ final readonly class RelationColumn implements RelationProjection
 
     /**
      * @param  Builder<*>  $builder
+     * @param  Closure(Builder<*>): void  $constrain
+     */
+    public function applyOrFilter(Builder $builder, Closure $constrain): void
+    {
+        $builder->orWhereHas($this->relation, $constrain);
+    }
+
+    /**
+     * @param  Builder<*>  $builder
      */
     public function applySort(Builder $builder, string $direction): void
     {

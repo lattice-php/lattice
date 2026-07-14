@@ -33,6 +33,10 @@ export function buildEndpoint(endpoint: string, query: TableQuery): string {
     url.searchParams.set("sort", serializeSorts(query));
   }
 
+  if (query.search !== "") {
+    url.searchParams.set("q", query.search);
+  }
+
   appendTableFilters(url, query.tableFilters);
 
   url.searchParams.set("page", String(query.page));
@@ -134,6 +138,10 @@ export function getQueryParams(query: TableQuery): Record<string, unknown> {
 
   if (Object.keys(tableFilters).length > 0) {
     params.tf = tableFilters;
+  }
+
+  if (query.search !== "") {
+    params.q = query.search;
   }
 
   return params;

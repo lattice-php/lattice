@@ -34,11 +34,12 @@ final readonly class TableQuery implements JsonSerializable
         public int $perPage,
         public array $tableFilters = [],
         public array $tableFilterIndicators = [],
+        public string $search = '',
     ) {}
 
     public static function empty(int $defaultPerPage = 25): self
     {
-        return new self([], [], 1, self::clampPerPage($defaultPerPage), [], []);
+        return new self([], [], 1, self::clampPerPage($defaultPerPage), [], [], '');
     }
 
     /**
@@ -63,6 +64,7 @@ final readonly class TableQuery implements JsonSerializable
             self::clampPerPage($request->integer('per_page', $defaultPerPage)),
             $tableFilters,
             $tableFilterIndicators,
+            $request->string('q')->trim()->toString(),
         );
     }
 
@@ -72,7 +74,7 @@ final readonly class TableQuery implements JsonSerializable
     }
 
     /**
-     * @return array{filters: array<int, FilterClause>, sorts: array<int, TableSort>, page: int, perPage: int, tableFilters: array<string, mixed>|stdClass, tableFilterIndicators: list<FilterIndicator>}
+     * @return array{filters: array<int, FilterClause>, sorts: array<int, TableSort>, page: int, perPage: int, tableFilters: array<string, mixed>|stdClass, tableFilterIndicators: list<FilterIndicator>, search: string}
      */
     public function jsonSerialize(): array
     {
@@ -83,6 +85,7 @@ final readonly class TableQuery implements JsonSerializable
             'perPage' => $this->perPage,
             'tableFilters' => Wire::map($this->tableFilters),
             'tableFilterIndicators' => $this->tableFilterIndicators,
+            'search' => $this->search,
         ];
     }
 

@@ -9,11 +9,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Contracts\Filterable;
+use Lattice\Lattice\Tables\Contracts\Searchable;
 use Lattice\Lattice\Tables\Contracts\TableSource;
+use Lattice\Lattice\Tables\Enums\FilterType;
 use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\FilterApplier;
 use Lattice\Lattice\Tables\Filters\Filter;
@@ -138,6 +141,8 @@ final readonly class EloquentTableSource implements TableSource
             }
         }
 
+        $this->applySearch($builder, $query, $relations);
+
         foreach ($query->sorts as $sort) {
             $relation = $relations[$sort->key] ?? null;
 
@@ -149,6 +154,59 @@ final readonly class EloquentTableSource implements TableSource
 
             $builder->orderBy($sort->key, $sort->direction->value);
         }
+    }
+
+    /**
+     * Constrain the query to rows where the search term matches any searchable
+     * column, OR-grouped so the whole match ANDs with the active filters.
+     * Relation columns match through `orWhereHas`; the term is always a
+     * case-insensitive `contains`.
+     *
+     * @param  Builder<TModel>  $builder
+     * @param  array<string, RelationProjection>  $relations
+     */
+    private function applySearch(Builder $builder, TableQuery $query, array $relations): void
+    {
+        $term = $query->search;
+
+        if ($term === '') {
+            return;
+        }
+
+        $searchable = array_filter(
+            $this->columns,
+            static fn (Column $column): bool => $column instanceof Searchable && $column->isSearchable(),
+        );
+
+        if ($searchable === []) {
+            return;
+        }
+
+        $builder->where(function (Builder $group) use ($searchable, $relations, $term): void {
+            foreach ($searchable as $column) {
+                $relation = $relations[$column->key()] ?? null;
+
+                if ($relation instanceof RelationProjection) {
+                    $relation->applyOrFilter($group, fn (Builder $related) => $this->filterApplier->apply(
+                        Op::Contains,
+                        $related,
+                        FilterType::Text,
+                        $relation->field(),
+                        $term,
+                    ));
+
+                    continue;
+                }
+
+                $group->orWhere(fn (Builder $nested) => $this->filterApplier->apply(
+                    Op::Contains,
+                    $nested,
+                    FilterType::Text,
+                    $column->key(),
+                    $term,
+                ));
+            }
+        });
     }
 
     /**

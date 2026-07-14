@@ -25,6 +25,7 @@ import { ColumnVisibilityMenu } from "./column-visibility-menu";
 import { FilterBar, FilterMenu } from "./filter-bar";
 import { TablePagination } from "./pagination";
 import { SortBar } from "./sort-bar";
+import { TableSearch } from "./table-search";
 import { TableActionNode } from "./table-action-node";
 import { ColumnCell } from "./table-cell";
 
@@ -37,12 +38,14 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     query,
     filters,
     tableFilters,
+    search,
     addFilter,
     updateFilter,
     removeFilter,
     replaceColumnFilters,
     setTableFilter,
     resetFilters,
+    setSearch,
     searchFilterOptions,
     processing,
     hasLoaded,
@@ -137,6 +140,14 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
         data-slot="table-scroll"
         className="overflow-x-auto rounded-lt-sm border border-lt-border"
       >
+        {node.props?.searchable && (
+          <div
+            data-slot="table-toolbar"
+            className="flex items-center gap-2 border-b border-lt-border px-4 py-2"
+          >
+            <TableSearch value={search} onSearch={setSearch} />
+          </div>
+        )}
         <FilterBar
           clauses={filters}
           columnsByKey={columnsByKey}

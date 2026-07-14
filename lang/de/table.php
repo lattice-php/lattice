@@ -25,6 +25,10 @@ return [
         'label' => 'Spalten',
         'reset' => 'Zurücksetzen',
     ],
+    'search' => [
+        'placeholder' => 'Suchen',
+        'clear' => 'Suche löschen',
+    ],
     'filter' => [
         'all' => 'Alle',
         'true' => 'Ja',
