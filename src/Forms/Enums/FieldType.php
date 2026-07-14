@@ -10,6 +10,7 @@ enum FieldType: string
     case Builder = 'field.builder';
     case Checkbox = 'field.checkbox';
     case Choice = 'field.choice';
+    case ColorPicker = 'field.color-picker';
     case DateInput = 'field.date-input';
     case DateTimeInput = 'field.date-time-input';
     case FileUpload = 'field.file-upload';
