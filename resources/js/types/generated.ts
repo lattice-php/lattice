@@ -221,6 +221,25 @@ export type Collapsible = {
   trigger: Node[];
 };
 export type Color = "default" | "muted" | "primary" | "success" | "info" | "warning" | "danger";
+export type ColorPicker = {
+  columnWidth: ColumnWidth;
+  conditions: FieldConditions | null;
+  dependsOnAny: boolean;
+  dependsOnKeys: string[] | null;
+  disabled: boolean;
+  editablePrefill: boolean;
+  helperText: string | null;
+  label: string | null;
+  name: string;
+  palette: string[];
+  placeholder: string | null;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
+  readOnly: boolean;
+  required: boolean;
+  tooltip: string | null;
+  value: unknown;
+};
 export type ColumnAlign = "start" | "center" | "end";
 export type ColumnFilter = {
   readonly type: FilterType;
@@ -280,6 +299,7 @@ export type ComponentPropsMap = {
   "field.builder": Builder;
   "field.checkbox": Checkbox;
   "field.choice": Choice;
+  "field.color-picker": ColorPicker;
   "field.date-input": DateInput;
   "field.date-time-input": DateTimeInput;
   "field.file-upload": FileUpload;
@@ -557,6 +577,7 @@ export type FormFieldNodeType =
   | "field.builder"
   | "field.checkbox"
   | "field.choice"
+  | "field.color-picker"
   | "field.date-input"
   | "field.date-time-input"
   | "field.file-upload"
@@ -575,6 +596,7 @@ export type FormNodeType =
   | "field.builder"
   | "field.checkbox"
   | "field.choice"
+  | "field.color-picker"
   | "field.date-input"
   | "field.date-time-input"
   | "field.file-upload"
@@ -749,6 +771,7 @@ export type NodeType =
   | "field.builder"
   | "field.checkbox"
   | "field.choice"
+  | "field.color-picker"
   | "field.date-input"
   | "field.date-time-input"
   | "field.file-upload"
