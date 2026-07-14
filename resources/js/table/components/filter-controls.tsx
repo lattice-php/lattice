@@ -11,10 +11,12 @@ import {
   PrefillProvider,
   ResolvedNodesProvider,
   setPath,
+  TableCellProvider,
   useFormValues,
   useSetFormValue,
 } from "@lattice-php/lattice/form/embed";
 import { Icon } from "@lattice-php/lattice/icons";
+import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { filterValue, isActiveFilterValue } from "@lattice-php/lattice/table/lib/filter-values";
 import type { FilterNode } from "@lattice-php/lattice/table/types";
@@ -31,15 +33,18 @@ export function TableFilterControl({
   filter,
   value,
   processing,
+  bare = false,
   onChange,
   onSearch,
 }: {
   filter: FilterNode;
   value: unknown;
   processing: boolean;
+  bare?: boolean;
   onChange: (value: unknown) => void;
   onSearch?: FilterOptionSearch;
 }) {
+  const { t } = useT("lattice");
   const schema = filter.schema ?? [];
 
   if (schema.length === 0) {
@@ -56,13 +61,16 @@ export function TableFilterControl({
           schema={schema}
           value={value}
           processing={processing}
+          bare={bare}
           onChange={onChange}
           onSearch={onSearch}
         />
       </div>
       {isActiveFilterValue(value) && (
         <button
-          aria-label={`Clear ${filter.props.label} filter`}
+          aria-label={t("table.filter.clear", "Clear {{label}} filter", {
+            label: filter.props.label ?? "",
+          })}
           className="inline-flex size-lt-control-md shrink-0 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg disabled:opacity-50"
           disabled={processing}
           onClick={() => onChange(undefined)}
@@ -80,6 +88,7 @@ function SchemaControl({
   schema,
   value,
   processing,
+  bare,
   onChange,
   onSearch,
 }: {
@@ -87,6 +96,7 @@ function SchemaControl({
   schema: Node[];
   value: unknown;
   processing: boolean;
+  bare: boolean;
   onChange: (value: unknown) => void;
   onSearch?: FilterOptionSearch;
 }) {
@@ -113,18 +123,22 @@ function SchemaControl({
     [filter.key, onSearch, processing],
   );
 
+  const content = (
+    <div
+      aria-disabled={processing}
+      className={cn("grid gap-3", processing && "pointer-events-none opacity-60")}
+    >
+      <Renderer nodes={schema} />
+    </div>
+  );
+
   return (
     <FormProvider value={form}>
       <PrefillProvider value={{ markUserEdit: () => {} }}>
         <ResolvedNodesProvider nodes={{}}>
           <FormValuesProvider initial={initial}>
             <TableFilterCommitBridge onChange={onChange}>
-              <div
-                aria-disabled={processing}
-                className={cn("grid gap-3", processing && "pointer-events-none opacity-60")}
-              >
-                <Renderer nodes={schema} />
-              </div>
+              {bare ? <TableCellProvider>{content}</TableCellProvider> : content}
             </TableFilterCommitBridge>
           </FormValuesProvider>
         </ResolvedNodesProvider>

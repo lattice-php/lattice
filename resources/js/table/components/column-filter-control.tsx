@@ -223,6 +223,7 @@ function ColumnSelectFilter({
       filter={data}
       value={{ value }}
       processing={processing}
+      bare
       onChange={change}
       onSearch={onSearch ? (_field, query, signal) => onSearch(query, signal) : undefined}
     />

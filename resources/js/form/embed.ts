@@ -10,6 +10,7 @@ export { FormProvider } from "./hooks/context";
 export { PrefillProvider } from "./hooks/prefill-context";
 export { ResolvedNodesProvider } from "./hooks/resolved-nodes";
 export { FieldCommitOverrideProvider } from "./hooks/use-field-commit";
+export { TableCellProvider } from "./hooks/row-layout-context";
 export { useFormResolver } from "./hooks/use-form-resolver";
 export { FormValuesProvider, useFormValues, useSetFormValue } from "./hooks/values";
 export { walkFields } from "./lib/field-props";

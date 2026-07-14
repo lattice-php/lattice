@@ -202,4 +202,23 @@ describe("column select filter", () => {
 
     expect(screen.queryByRole("button", { name: "Status filters" })).not.toBeInTheDocument();
   });
+
+  it("keeps the select field label screen-reader-only so it does not duplicate the column header", () => {
+    stubFetch();
+
+    const { container } = renderWithRegistry(
+      <TableComponent node={node(selectFilter(false))} />,
+      registry,
+    );
+
+    const fieldLabels = Array.from(container.querySelectorAll("label")).filter(
+      (element) => element.textContent === "Status",
+    );
+
+    expect(fieldLabels.length).toBeGreaterThan(0);
+
+    for (const label of fieldLabels) {
+      expect(label).toHaveClass("sr-only");
+    }
+  });
 });
