@@ -105,4 +105,31 @@ describe("Combobox", () => {
     expect(onSearch).toHaveBeenCalledWith("x");
     expect(screen.getByRole("option", { name: "Red" })).toBeVisible();
   });
+
+  it("renders rich option content while keeping the label as accessible name", () => {
+    const onSelect = vi.fn<(v: string) => void>();
+    render(
+      <Combobox
+        onOpenChange={() => {}}
+        onSelect={onSelect}
+        open
+        options={OPTIONS}
+        renderOption={(option) => (
+          <span>
+            {option.label}
+            <span>{option.value.toUpperCase()}</span>
+          </span>
+        )}
+        selected={[]}
+        testId="cb"
+        trigger={<span>Open</span>}
+      />,
+    );
+
+    const red = screen.getByRole("option", { name: "Red" });
+    expect(red).toHaveTextContent("RED");
+
+    fireEvent.click(red);
+    expect(onSelect).toHaveBeenCalledWith("red");
+  });
 });
