@@ -23,6 +23,7 @@ import IconComponent from "./icon";
 import ImageComponent from "./image";
 import LinkComponent from "./link";
 import ModalComponent from "./modal";
+import ProgressComponent from "./progress";
 import RawBlockComponent from "./raw-block";
 import SectionComponent from "./section";
 import SegmentedControlComponent from "./segmented-control";
@@ -59,6 +60,7 @@ export const uiComponents = createPlugin({
     image: eagerComponent(ImageComponent),
     link: eagerComponent(LinkComponent),
     modal: eagerComponent(ModalComponent),
+    progress: eagerComponent(ProgressComponent),
     "raw-block": eagerComponent(RawBlockComponent),
     section: eagerComponent(SectionComponent),
     "segmented-control": eagerComponent(SegmentedControlComponent),

@@ -307,6 +307,7 @@ export type ComponentPropsMap = {
   modal: Modal;
   notifications: Notifications;
   outlet: Outlet;
+  progress: Progress;
   "raw-block": RawBlock;
   "remote.data-list": DataList;
   section: Section;
@@ -775,6 +776,7 @@ export type NodeType =
   | "modal"
   | "notifications"
   | "outlet"
+  | "progress"
   | "raw-block"
   | "remote.data-list"
   | "section"
@@ -953,6 +955,15 @@ export type PasswordInput = {
   value: unknown;
 };
 export type Placement = "top" | "bottom" | "right";
+export type Progress = {
+  color: Color | null;
+  max: number;
+  showValue: boolean;
+  size: Size;
+  value: number;
+  variant: ProgressVariant;
+};
+export type ProgressVariant = "bar" | "circle";
 export type RawBlock = {
   html: string;
 };
