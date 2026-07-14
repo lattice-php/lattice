@@ -6,6 +6,8 @@ use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Support\Wire;
+use Lattice\Lattice\Ui\Components\Badge;
+use Lattice\Lattice\Ui\Components\Text;
 
 it('serializes static options without search flags', function (): void {
     $field = Select::make('plan', 'Plan')->options([
@@ -95,6 +97,49 @@ it('expands array options carrying data', function (): void {
 
     expect($options[0]->data)->toBe(['email' => 'jane@example.com'])
         ->and($options[1]->data)->toBeNull();
+});
+
+it('serializes the option schema only when set', function (): void {
+    $plain = Select::make('plan', 'Plan')->options([Select::option('Free', 'free')]);
+
+    expect(wire($plain)['props'])->not->toHaveKey('optionSchema');
+
+    $rich = Select::make('customer', 'Customer')->optionSchema([
+        Text::make('')->dataKey('text', 'label'),
+        Badge::make('')->dataKey('label', 'number'),
+    ]);
+
+    $schema = wire($rich)['props']['optionSchema'];
+
+    expect($schema)->toHaveCount(2)
+        ->and($schema[0]['type'])->toBe('text')
+        ->and($schema[0]['props']['dataBindings'])->toBe(['text' => 'label'])
+        ->and($schema[1]['type'])->toBe('badge')
+        ->and($schema[1]['props']['dataBindings'])->toBe(['label' => 'number']);
+});
+
+it('keeps per-option data when normalizing resolver options', function (): void {
+    $field = Select::make('author_id', 'Author')
+        ->searchable(fn (string $search): array => [
+            ['label' => 'Jane Doe', 'value' => 5, 'data' => ['email' => 'jane@example.com']],
+        ]);
+
+    expect($field->resolveSearch('ja', FormData::make([]), Request::create('/')))
+        ->toEqual([new Option('Jane Doe', '5', ['email' => 'jane@example.com'])]);
+});
+
+it('keeps per-option data when hydrating selected values', function (): void {
+    $field = Select::make('author_id', 'Author')
+        ->searchable(fn (): array => [])
+        ->resolveSelectedUsing(fn (array $values): array => [
+            ['label' => 'Jane Doe', 'value' => $values[0], 'data' => ['email' => 'jane@example.com']],
+        ]);
+
+    $field->hydrateState('5');
+
+    expect(wire($field)['props']['options'])->toBe([
+        ['label' => 'Jane Doe', 'value' => '5', 'data' => ['email' => 'jane@example.com']],
+    ]);
 });
 
 describe('docs fixtures', function (): void {
