@@ -182,12 +182,6 @@ final class EloquentOptions implements OptionSource
             return ($this->data)($model);
         }
 
-        $data = [];
-
-        foreach ($this->data as $column) {
-            $data[$column] = $model->getAttribute($column);
-        }
-
-        return $data;
+        return $model->only($this->data);
     }
 }
