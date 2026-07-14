@@ -395,6 +395,7 @@ return [
         'pagination-modes' => 'Paginierung',
         'platform' => 'Plattform',
         'products' => 'Produkte',
+        'progress' => 'Fortschritt',
         'realtime' => 'Echtzeit',
         'remote-schema' => 'Remote-Schema',
         'sales-orders' => 'Aufträge',
@@ -517,6 +518,11 @@ return [
                 'popover' => 'Die Glocke öffnet Benachrichtigungen in einem Popover.',
                 'slide-out' => 'Die Glocke öffnet Benachrichtigungen in einem Slide-out-Panel.',
                 'title' => 'Benachrichtigungen',
+            ],
+            'progress' => [
+                'bars' => 'Fortschrittsbalken',
+                'circles' => 'Fortschrittskreise',
+                'title' => 'Fortschritt',
             ],
         ],
         'dependent' => [

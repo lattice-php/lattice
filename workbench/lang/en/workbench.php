@@ -395,6 +395,7 @@ return [
         'pagination-modes' => 'Pagination',
         'platform' => 'Platform',
         'products' => 'Products',
+        'progress' => 'Progress',
         'realtime' => 'Realtime',
         'remote-schema' => 'Remote Schema',
         'sales-orders' => 'Sales orders',
@@ -517,6 +518,11 @@ return [
                 'popover' => 'The bell opens notifications in a popover.',
                 'slide-out' => 'The bell opens notifications in a slide-out panel.',
                 'title' => 'Notifications',
+            ],
+            'progress' => [
+                'bars' => 'Progress bars',
+                'circles' => 'Progress circles',
+                'title' => 'Progress',
             ],
         ],
         'dependent' => [

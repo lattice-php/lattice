@@ -1,0 +1,74 @@
+[
+    {
+        "props": {
+            "align": null,
+            "direction": null,
+            "float": null,
+            "gap": "sm",
+            "height": null,
+            "justify": null,
+            "width": null
+        },
+        "schema": [
+            {
+                "props": {
+                    "color": null,
+                    "max": 100,
+                    "showValue": true,
+                    "size": "md",
+                    "value": 65,
+                    "variant": "bar"
+                },
+                "type": "progress"
+            },
+            {
+                "props": {
+                    "color": "success",
+                    "max": 100,
+                    "showValue": false,
+                    "size": "lg",
+                    "value": 80,
+                    "variant": "bar"
+                },
+                "type": "progress"
+            },
+            {
+                "props": {
+                    "align": null,
+                    "direction": "row",
+                    "float": null,
+                    "gap": "md",
+                    "height": null,
+                    "justify": null,
+                    "width": null
+                },
+                "schema": [
+                    {
+                        "props": {
+                            "color": null,
+                            "max": 100,
+                            "showValue": true,
+                            "size": "md",
+                            "value": 65,
+                            "variant": "circle"
+                        },
+                        "type": "progress"
+                    },
+                    {
+                        "props": {
+                            "color": "warning",
+                            "max": 50,
+                            "showValue": true,
+                            "size": "xl",
+                            "value": 35,
+                            "variant": "circle"
+                        },
+                        "type": "progress"
+                    }
+                ],
+                "type": "stack"
+            }
+        ],
+        "type": "stack"
+    }
+]

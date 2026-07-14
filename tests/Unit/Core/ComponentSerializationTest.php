@@ -27,12 +27,14 @@ use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Image;
 use Lattice\Lattice\Ui\Components\Link;
 use Lattice\Lattice\Ui\Components\Modal;
+use Lattice\Lattice\Ui\Components\Progress;
 use Lattice\Lattice\Ui\Components\Separator;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Color;
 use Lattice\Lattice\Ui\Enums\FloatingPlacement;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Icon;
@@ -477,6 +479,31 @@ test('links serialize their icon and affixes', function (): void {
         'label' => 'Docs',
         'prefix' => ['icon' => 'book-open', 'text' => null],
         'suffix' => ['icon' => null, 'text' => 'new'],
+    ]);
+});
+
+it('serializes progress bars and circles', function (): void {
+    $bar = wire(Progress::bar(72.5)->color(Color::Success)->showValue());
+
+    expect($bar['type'])->toBe('progress')
+        ->and($bar['props'])->toMatchArray([
+            'value' => 72.5,
+            'max' => 100.0,
+            'variant' => 'bar',
+            'showValue' => true,
+            'color' => 'success',
+            'size' => 'md',
+        ]);
+
+    $circle = wire(Progress::circle(35)->max(50)->size(Size::Lg));
+
+    expect($circle['props'])->toMatchArray([
+        'value' => 35.0,
+        'max' => 50.0,
+        'variant' => 'circle',
+        'showValue' => false,
+        'color' => null,
+        'size' => 'lg',
     ]);
 });
 

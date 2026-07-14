@@ -9,6 +9,7 @@ use Lattice\Lattice\Ui\Components\Card;
 use Lattice\Lattice\Ui\Components\Grid;
 use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Image;
+use Lattice\Lattice\Ui\Components\Progress;
 use Lattice\Lattice\Ui\Components\RawBlock;
 use Lattice\Lattice\Ui\Components\Section;
 use Lattice\Lattice\Ui\Components\SegmentedControl;
@@ -19,6 +20,7 @@ use Lattice\Lattice\Ui\Components\Tabs;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Components\Tooltip;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Color;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Orientation;
 use Lattice\Lattice\Ui\Enums\Size;
@@ -72,6 +74,19 @@ describe('docs fixtures', function (): void {
                     Text::make('Three people have access to this team.'),
                     Badge::make('3 active'),
                 ]),
+        ]))));
+    });
+
+    it('matches the progress example fixture', function (): void {
+        assertFixtureMatches('components.progress', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Stack::make()->gap(Gap::Small)->schema([
+                Progress::bar(65)->showValue(),
+                Progress::bar(80)->color(Color::Success)->size(Size::Lg),
+                Stack::make()->direction(StackDirection::Row)->gap(Gap::Medium)->schema([
+                    Progress::circle(65)->showValue(),
+                    Progress::circle(35)->max(50)->color(Color::Warning)->size(Size::Xl)->showValue(),
+                ]),
+            ]),
         ]))));
     });
 
