@@ -62,20 +62,12 @@ class SelectFieldForm extends FormDefinition
                                 ->orderBy('name')
                                 ->limit(10)
                                 ->get()
-                                ->map(fn (Product $product): Option => Select::option(
-                                    $product->name,
-                                    (string) $product->id,
-                                    ['sku' => $product->sku, 'status' => $product->status],
-                                ))
+                                ->map($this->productOption(...))
                                 ->all())
                             ->resolveSelectedUsing(fn (array $values) => Product::query()
                                 ->whereIn('id', $values)
                                 ->get()
-                                ->map(fn (Product $product): Option => Select::option(
-                                    $product->name,
-                                    (string) $product->id,
-                                    ['sku' => $product->sku, 'status' => $product->status],
-                                ))
+                                ->map($this->productOption(...))
                                 ->all())
                             ->optionSchema([
                                 Stack::make()->schema([
@@ -105,5 +97,14 @@ class SelectFieldForm extends FormDefinition
         $this->validate($request);
 
         return redirect('/form/fields/select');
+    }
+
+    private function productOption(Product $product): Option
+    {
+        return Select::option(
+            $product->name,
+            (string) $product->id,
+            ['sku' => $product->sku, 'status' => $product->status],
+        );
     }
 }
