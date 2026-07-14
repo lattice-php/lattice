@@ -74,6 +74,10 @@ return [
                 'status' => 'Status',
                 'total' => 'Total',
             ],
+            'detail' => [
+                'empty' => 'This order has no line items.',
+                'missing' => 'Order not found.',
+            ],
             'fields' => [
                 'add-line' => 'Add line',
                 'billing-address' => 'Billing address',

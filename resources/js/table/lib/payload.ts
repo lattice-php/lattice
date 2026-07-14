@@ -138,3 +138,11 @@ export function getRowKey(row: TableRow, index: number): string {
 export function getRowActions(row: TableRow): Node[] {
   return Array.isArray(row.actions) ? (row.actions as Node[]) : [];
 }
+
+export function getRowDetail(row: TableRow): Node | null {
+  const detail = row.detail;
+
+  return typeof detail === "object" && detail !== null && !Array.isArray(detail)
+    ? (detail as Node)
+    : null;
+}

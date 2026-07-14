@@ -74,6 +74,10 @@ return [
                 'status' => 'Status',
                 'total' => 'Gesamt',
             ],
+            'detail' => [
+                'empty' => 'Dieser Auftrag hat keine Positionen.',
+                'missing' => 'Auftrag nicht gefunden.',
+            ],
             'fields' => [
                 'add-line' => 'Position hinzufügen',
                 'billing-address' => 'Rechnungsadresse',

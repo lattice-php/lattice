@@ -157,6 +157,7 @@ export default defineConfig({
             },
             { label: "Filtering", link: "/tables/filtering/" },
             { label: "Searching", link: "/tables/searching/" },
+            { label: "Row detail", link: "/tables/row-detail/" },
             { label: "Sorting & pagination", link: "/tables/sorting-and-pagination/" },
             { label: "Actions", link: "/tables/actions/" },
           ],

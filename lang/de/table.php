@@ -29,6 +29,9 @@ return [
         'placeholder' => 'Suchen',
         'clear' => 'Suche löschen',
     ],
+    'rowDetail' => [
+        'toggle' => 'Details ein-/ausklappen',
+    ],
     'filter' => [
         'all' => 'Alle',
         'true' => 'Ja',
