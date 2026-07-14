@@ -238,6 +238,3 @@ declare module "@lattice-php/lattice" {
   }
 }
 ```
-
-The interface names carry no `Lattice` prefix — `ComponentProps`, `ColumnProps`, `FilterProps`,
-`EffectProps`, `EditorExtensionProps`.

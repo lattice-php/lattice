@@ -267,10 +267,10 @@ reuse a single sealed ref, build the request by hand instead.
 
 ## Test selectors
 
-Lattice uses `data-test` as its standard test-hook attribute. `data-testid` is **not** used.
+Lattice uses `data-test` as its standard test-hook attribute.
 
-**Pest browser tests** target `data-test` via the `@shorthand` selector. `->click('@foo')` clicks
-`[data-test="foo"]` (the shorthand also matches `data-testid`, which Lattice never emits).
+**Pest browser tests** target `data-test` via the `@shorthand` selector: `->click('@foo')` clicks
+`[data-test="foo"]`.
 
 **Vitest + Testing Library unit tests** query it via `getByTestId`, `queryByTestId`, and friends.
 The resolver is pointed at `data-test` by the `configure({ testIdAttribute: "data-test" })` call

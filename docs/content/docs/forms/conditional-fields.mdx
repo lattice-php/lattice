@@ -103,9 +103,8 @@ cannot be bypassed. For that to be safe, both sides must coerce values identical
 - **`empty` / `filled`** treat `null` and the empty string as empty.
 - **`before` / `after`** parse both sides as dates; a value that cannot be parsed never matches.
 
-A shared truth-table fixture (`tests/Fixtures/condition-operator-parity.json`) is run by both a PHP
-test and a TypeScript test, so the server (`ConditionEvaluator`) and client (`evaluateOp`) evaluators
-cannot drift apart.
+Both evaluators are tested against one shared truth table, so the server and the client cannot
+drift apart.
 
 ## Computed values
 
