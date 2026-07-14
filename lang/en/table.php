@@ -3,6 +3,12 @@ declare(strict_types=1);
 
 return [
     'loading' => 'Loading rows...',
+    'empty' => 'No results',
+    'actions' => 'Actions',
+    'sort' => [
+        'column' => 'Sort :label',
+        'clear' => 'Clear :label sort',
+    ],
     'pagination' => [
         'all-loaded' => 'All rows loaded',
         'page' => 'Page :page',

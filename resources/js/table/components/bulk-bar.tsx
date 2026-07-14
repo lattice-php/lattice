@@ -115,7 +115,7 @@ export function BulkBar({
           title={confirming.confirmation.title ?? confirming.label}
           description={confirming.confirmation.description ?? undefined}
           confirmLabel={confirming.confirmation.confirmLabel ?? confirming.label}
-          cancelLabel={confirming.confirmation.cancelLabel ?? "Cancel"}
+          cancelLabel={confirming.confirmation.cancelLabel ?? t("common.cancel", "Cancel")}
           confirmVariant={confirming.variant}
           processing={http.processing}
           onConfirm={() => void submit(confirming)}
@@ -125,7 +125,7 @@ export function BulkBar({
 
       {filling?.form && (
         <ActionForm
-          cancelLabel={filling.confirmation?.cancelLabel ?? "Cancel"}
+          cancelLabel={filling.confirmation?.cancelLabel ?? t("common.cancel", "Cancel")}
           componentRef={filling.ref}
           description={filling.confirmation?.description ?? undefined}
           endpoint={filling.endpoint}

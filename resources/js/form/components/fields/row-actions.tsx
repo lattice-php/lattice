@@ -1,4 +1,5 @@
 import { Icon } from "@lattice-php/lattice/icons";
+import { useT } from "@lattice-php/lattice/i18n";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +22,7 @@ function inlineClass(destructive?: boolean): string {
 }
 
 export function RowActions({ actions }: { actions: RowAction[] }) {
+  const { t } = useT("lattice");
   if (actions.length === 0) {
     return null;
   }
@@ -45,7 +47,7 @@ export function RowActions({ actions }: { actions: RowAction[] }) {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          aria-label="Actions"
+          aria-label={t("common.action-group.label", "Actions")}
           data-test="row-actions-menu"
           className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-sm"
         >

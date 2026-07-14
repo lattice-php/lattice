@@ -2,7 +2,7 @@
     {
         "id": "flags",
         "props": {
-            "actionsLabel": "Actions",
+            "actionsLabel": null,
             "bulkActions": [],
             "columns": [
                 {
@@ -80,7 +80,7 @@
                     "name": "Monitor Stand"
                 }
             ],
-            "emptyLabel": "No results",
+            "emptyLabel": null,
             "endpoint": null,
             "filters": [],
             "layout": null,

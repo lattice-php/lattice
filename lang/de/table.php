@@ -3,6 +3,12 @@ declare(strict_types=1);
 
 return [
     'loading' => 'Zeilen werden geladen...',
+    'empty' => 'Keine Ergebnisse',
+    'actions' => 'Aktionen',
+    'sort' => [
+        'column' => ':label sortieren',
+        'clear' => 'Sortierung :label entfernen',
+    ],
     'pagination' => [
         'all-loaded' => 'Alle Zeilen geladen',
         'page' => 'Seite :page',

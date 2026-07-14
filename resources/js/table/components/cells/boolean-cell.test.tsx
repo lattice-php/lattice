@@ -27,14 +27,14 @@ describe("BooleanCell", () => {
   it("renders a check for truthy values", () => {
     const { container } = renderCell(true);
 
-    expect(screen.getByRole("img")).toHaveAttribute("aria-label", "true");
+    expect(screen.getByRole("img")).toHaveAttribute("aria-label", "Yes");
     expect(container.querySelector("use")).toHaveAttribute("href", "#check");
   });
 
   it("renders a cross for falsy values", () => {
     const { container } = renderCell(false);
 
-    expect(screen.getByRole("img")).toHaveAttribute("aria-label", "false");
+    expect(screen.getByRole("img")).toHaveAttribute("aria-label", "No");
     expect(container.querySelector("use")).toHaveAttribute("href", "#x");
   });
 

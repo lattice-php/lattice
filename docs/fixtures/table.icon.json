@@ -2,7 +2,7 @@
     {
         "id": "checks",
         "props": {
-            "actionsLabel": "Actions",
+            "actionsLabel": null,
             "bulkActions": [],
             "columns": [
                 {
@@ -56,7 +56,7 @@
                     "verified": "0"
                 }
             ],
-            "emptyLabel": "No results",
+            "emptyLabel": null,
             "endpoint": null,
             "filters": [],
             "layout": null,

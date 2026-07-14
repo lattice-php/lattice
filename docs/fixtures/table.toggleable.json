@@ -2,7 +2,7 @@
     {
         "id": "products",
         "props": {
-            "actionsLabel": "Actions",
+            "actionsLabel": null,
             "bulkActions": [],
             "columns": [
                 {
@@ -95,7 +95,7 @@
                     "updated_at": "2026-06-02 14:40:00"
                 }
             ],
-            "emptyLabel": "No results",
+            "emptyLabel": null,
             "endpoint": null,
             "filters": [],
             "layout": null,

@@ -256,7 +256,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                       processing={processing}
                     />
                   )}
-                  {hasActions && <span className="sr-only">{node.props?.actionsLabel}</span>}
+                  {hasActions && (
+                    <span className="sr-only">
+                      {node.props?.actionsLabel ?? t("table.actions", "Actions")}
+                    </span>
+                  )}
                 </div>
               )}
             </div>
@@ -296,7 +300,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
               </div>
             ) : rowEntries.length === 0 ? (
               <div data-slot="table-empty" className="p-8 text-center text-lt-muted-fg" role="row">
-                <div role="cell">{node.props?.emptyLabel}</div>
+                <div role="cell">{node.props?.emptyLabel ?? t("table.empty", "No results")}</div>
               </div>
             ) : (
               rowEntries.map(({ row, actions, detail, key }) => {

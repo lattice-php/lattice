@@ -51,9 +51,9 @@ class Table extends Component
 
     public bool $resizeIndicator = false;
 
-    public string $actionsLabel = 'Actions';
+    public ?string $actionsLabel = null;
 
-    public string $emptyLabel = 'No results';
+    public ?string $emptyLabel = null;
 
     /**
      * The serialized {data, pagination, state} result, projected into props
@@ -127,14 +127,14 @@ class Table extends Component
         return $this;
     }
 
-    public function actionsLabel(string $label): static
+    public function actionsLabel(?string $label): static
     {
         $this->actionsLabel = $label;
 
         return $this;
     }
 
-    public function emptyLabel(string $label): static
+    public function emptyLabel(?string $label): static
     {
         $this->emptyLabel = $label;
 
