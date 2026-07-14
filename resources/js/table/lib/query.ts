@@ -229,10 +229,14 @@ function columnWidthOrDefault(column: TableColumn): ColumnWidth {
     (column.type === "column.stack" ? "xl" : DEFAULT_COLUMN_WIDTH)) as ColumnWidth;
 }
 
-export function getTableUtilityTracks(hasActions: boolean, hasSelection: boolean) {
+export function getTableUtilityTracks(
+  hasActions: boolean,
+  hasSelection: boolean,
+  hasExpander = false,
+) {
   // Utility tracks are fixed because the independent header/filter/body grids would drift with content-sized tracks.
   return {
-    leadingTracks: hasSelection ? ["3rem"] : [],
+    leadingTracks: [...(hasExpander ? ["2.5rem"] : []), ...(hasSelection ? ["3rem"] : [])],
     trailingTracks: hasActions ? ["10rem"] : [],
   };
 }

@@ -54,10 +54,9 @@ arch('actions depend on no feature domain other than forms')
         'Lattice\Lattice\Layouts',
     ]);
 
-arch('tables depend on no feature domain other than actions and forms')
+arch('tables depend on no feature domain other than actions, forms, and fragments')
     ->expect('Lattice\Lattice\Tables')
     ->not->toUse([
-        'Lattice\Lattice\Fragments',
         'Lattice\Lattice\Layouts',
     ]);
 

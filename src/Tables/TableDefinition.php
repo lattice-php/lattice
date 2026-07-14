@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Tables;
 
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Core\Definition;
+use Lattice\Lattice\Fragments\Components\Fragment;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\Enums\PaginationType;
@@ -82,6 +83,18 @@ abstract class TableDefinition extends Definition
     public function actions(array $row): array
     {
         return [];
+    }
+
+    /**
+     * The lazy detail fragment revealed when this row is expanded, or null when
+     * the row does not expand. Return `Fragment::lazy(...)` so the detail loads
+     * over AJAX on open.
+     *
+     * @param  array<string, mixed>  $row
+     */
+    public function rowDetail(array $row): ?Fragment
+    {
+        return null;
     }
 
     /**

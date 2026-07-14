@@ -29,6 +29,9 @@ return [
         'placeholder' => 'Search',
         'clear' => 'Clear search',
     ],
+    'rowDetail' => [
+        'toggle' => 'Toggle detail',
+    ],
     'filter' => [
         'all' => 'All',
         'true' => 'True',

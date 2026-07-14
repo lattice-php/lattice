@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Lattice\Fragments\Components\Fragment;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
@@ -14,6 +15,7 @@ use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\Link;
+use Workbench\App\Fragments\SalesOrderLinesFragment;
 use Workbench\App\Models\SalesOrder;
 use Workbench\App\Models\SalesOrderLine;
 use Workbench\App\Tables\Columns\StatusBadgeColumn;
@@ -72,5 +74,14 @@ class SalesOrdersTable extends EloquentTableDefinition
             Link::make(__('workbench.commerce.sales-orders.actions.edit'), 'sales-order-edit')
                 ->href('/sales-orders/'.$row['id'].'/edit'),
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     */
+    #[\Override]
+    public function rowDetail(array $row): ?Fragment
+    {
+        return Fragment::lazy(SalesOrderLinesFragment::class, ['orderId' => $row['id']]);
     }
 }
