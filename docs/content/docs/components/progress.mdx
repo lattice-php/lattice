@@ -1,0 +1,47 @@
+---
+title: Progress
+description: Linear bars and radial circles for determinate progress.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+
+`Progress::bar($value)` renders a linear progress bar and `Progress::circle($value)` a radial
+ring. Values count against `->max()` (default `100`) and are clamped into that range, so a
+completed import with `Progress::bar(340)->max(340)` fills exactly once.
+
+<ComponentExample
+  php={`Stack::make()->gap(Gap::Small)->schema([
+    Progress::bar(65)->showValue(),
+    Progress::bar(80)->color(Color::Success)->size(Size::Lg),
+    Stack::make()->direction(StackDirection::Row)->gap(Gap::Medium)->schema([
+        Progress::circle(65)->showValue(),
+        Progress::circle(35)->max(50)->color(Color::Warning)->size(Size::Xl)->showValue(),
+    ]),
+]);`}
+  fixture="components.progress"
+/>
+
+## Value and readout
+
+- `->value($value)` and the constructor argument set the current value; `->max($max)` sets the
+  scale. Values clamp into `0..max`.
+- `->showValue()` adds a percent readout — right of the bar, centered in the circle. The
+  percentage is formatted for the active locale.
+- Screen readers get the same state through `role="progressbar"` with
+  `aria-valuenow`/`aria-valuemax` and the formatted percent as `aria-valuetext`.
+
+## Color and size
+
+`->color(Color $color)` tints the fill and defaults to the primary color;
+`->size(Size $size)` scales bar height or circle diameter and defaults to `Size::Md`.
+
+```php
+Progress::circle(90)->color(Color::Danger)->size(Size::Lg);
+```
+
+<Info>
+  Progress is bindable like any component: `Progress::bar()->dataKey('value', 'completion')`
+  fills it per row in a [stack column](/tables/columns/stack/) or per option in a select's
+  [option schema](/forms/fields/select/).
+</Info>
