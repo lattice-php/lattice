@@ -1,5 +1,8 @@
 import { act, configure, fireEvent, getConfig, render, screen } from "@testing-library/react";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { createRegistry, eagerComponent } from "@lattice-php/lattice";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
 import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
@@ -242,5 +245,58 @@ describe("SelectComponent options", () => {
 
     expect(screen.getByTestId("select-color-option-red")).toHaveAttribute("aria-selected", "true");
     expect(screen.getByTestId("select-color-option-blue")).toHaveAttribute("aria-selected", "true");
+  });
+});
+
+describe("SelectComponent option schema", () => {
+  const MetaText: RendererComponent = ({ node }) => <span>{String(node.props?.text ?? "")}</span>;
+
+  it("materializes the option schema against each option's data", () => {
+    const registry = createRegistry({
+      components: { "test.meta": eagerComponent(MetaText) },
+      name: "test",
+    });
+
+    const node = fakeNode({
+      type: "field.select",
+      props: {
+        name: "customer",
+        label: "Customer",
+        emptyLabel: "No customers",
+        searchPlaceholder: "Search",
+        options: [
+          { label: "Acme GmbH", value: "42", data: { email: "kontakt@acme.de" } },
+          { label: "Globex AG", value: "43", data: { email: "info@globex.de" } },
+        ],
+      },
+    });
+    (node.props as { optionSchema?: Node[] }).optionSchema = [
+      { type: "test.meta", props: { dataBindings: { text: "email" } } },
+    ];
+
+    renderWithRegistry(
+      <FormProvider
+        value={{
+          action: "/forms/customers",
+          clearErrors: () => {},
+          componentRef: "ref-1",
+          errors: {},
+          fieldLabels: {},
+          precognitive: false,
+          processing: false,
+          validate: () => {},
+        }}
+      >
+        <FormValuesProvider initial={{}}>
+          <SelectComponent node={node}>{null}</SelectComponent>
+        </FormValuesProvider>
+      </FormProvider>,
+      registry,
+    );
+
+    fireEvent.click(screen.getByTestId("select-customer"));
+
+    expect(screen.getByRole("option", { name: "Acme GmbH" })).toHaveTextContent("kontakt@acme.de");
+    expect(screen.getByRole("option", { name: "Globex AG" })).toHaveTextContent("info@globex.de");
   });
 });
