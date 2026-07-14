@@ -10,9 +10,14 @@ use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Ui\Components\Badge;
+use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
+use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\Color;
 use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Lattice\Ui\Enums\Size;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Models\Product;
 
@@ -57,13 +62,28 @@ class SelectFieldForm extends FormDefinition
                                 ->orderBy('name')
                                 ->limit(10)
                                 ->get()
-                                ->map(fn (Product $product): Option => Select::option($product->name, (string) $product->id))
+                                ->map(fn (Product $product): Option => Select::option(
+                                    $product->name,
+                                    (string) $product->id,
+                                    ['sku' => $product->sku, 'status' => $product->status],
+                                ))
                                 ->all())
                             ->resolveSelectedUsing(fn (array $values) => Product::query()
                                 ->whereIn('id', $values)
                                 ->get()
-                                ->map(fn (Product $product): Option => Select::option($product->name, (string) $product->id))
+                                ->map(fn (Product $product): Option => Select::option(
+                                    $product->name,
+                                    (string) $product->id,
+                                    ['sku' => $product->sku, 'status' => $product->status],
+                                ))
                                 ->all())
+                            ->optionSchema([
+                                Stack::make()->schema([
+                                    Text::make('')->dataKey('text', 'label'),
+                                    Text::make('')->dataKey('text', 'status')->size(Size::Sm)->color(Color::Muted),
+                                ]),
+                                Badge::make('')->dataKey('label', 'sku'),
+                            ])
                             ->rules(['nullable', 'array']),
                     ]),
                     Tab::make('eloquent', __('workbench.fields.select.eloquent'))->schema([
