@@ -795,6 +795,20 @@
             }
         ]
     },
+    "Lattice\\Lattice\\Ui\\Enums\\ProgressVariant": {
+        "name": "ProgressVariant",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Bar",
+                "value": "bar"
+            },
+            {
+                "name": "Circle",
+                "value": "circle"
+            }
+        ]
+    },
     "Lattice\\Lattice\\Ui\\Enums\\Side": {
         "name": "Side",
         "namespace": "Lattice\\Lattice\\Ui\\Enums",
