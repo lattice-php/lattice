@@ -17,6 +17,7 @@ final readonly class ChartSeries
         public ?string $stackId = null,
         public ?string $nameKey = null,
         public string $innerRadius = '0%',
+        public ?float $maxValue = null,
     ) {}
 
     public static function line(string $dataKey, ?string $name = null, ?string $color = null): self
@@ -42,5 +43,15 @@ final readonly class ChartSeries
     public static function doughnut(string $dataKey, ?string $nameKey = null, ?string $name = null, ?string $color = null, string $innerRadius = '60%'): self
     {
         return new self(ChartSeriesType::Pie, $dataKey, $name ?? $dataKey, $color, nameKey: $nameKey, innerRadius: $innerRadius);
+    }
+
+    public static function gauge(string $dataKey, ?string $nameKey = null, ?string $name = null, ?string $color = null, ?float $maxValue = null, string $innerRadius = '70%'): self
+    {
+        return new self(ChartSeriesType::Gauge, $dataKey, $name ?? $dataKey, $color, nameKey: $nameKey, innerRadius: $innerRadius, maxValue: $maxValue);
+    }
+
+    public static function distribution(string $dataKey, ?string $nameKey = null, ?string $name = null, ?string $color = null): self
+    {
+        return new self(ChartSeriesType::Distribution, $dataKey, $name ?? $dataKey, $color, nameKey: $nameKey);
     }
 }

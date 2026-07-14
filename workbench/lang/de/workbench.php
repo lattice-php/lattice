@@ -417,10 +417,19 @@ return [
                     'rate' => 'Konversionsrate',
                     'title' => 'Konversionsrate',
                 ],
+                'distribution' => [
+                    'description' => 'Umsatzanteile als proportionaler Segmentbalken.',
+                    'title' => 'Kanalanteile',
+                ],
                 'formatting' => [
                     'description' => 'Kompakte Währung auf der Werteachse, kurze lokalisierte Daten auf der Kategorieachse.',
                     'revenue' => 'Umsatz',
                     'title' => 'Umsatz (formatiert)',
+                ],
+                'gauge' => [
+                    'cpu' => 'CPU',
+                    'description' => 'Auslastung als Halbkreis-Tacho mit festem Maximalwert.',
+                    'title' => 'CPU-Auslastung',
                 ],
                 'heading' => 'Diagramm-Galerie',
                 'intro' => 'Alle vom Diagramm unterstützten Serientypen sowie sprach- und zeitzonenbewusste Werte- und Kategorieformatierung.',

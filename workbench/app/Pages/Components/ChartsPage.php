@@ -50,6 +50,8 @@ final class ChartsPage extends WorkbenchPage
                             $this->ordersBarChart(),
                             $this->trafficAreaChart(),
                             Fragment::lazy(SalesMixChartFragment::class),
+                            $this->cpuGaugeChart(),
+                            $this->channelDistributionChart(),
                         ]),
                     Heading::make(__('workbench.pages.charts.gallery.sections.combining'), 2),
                     Grid::make('charts-combining')
@@ -120,6 +122,32 @@ final class ChartsPage extends WorkbenchPage
             ])
             ->area('visits', __('workbench.pages.charts.gallery.traffic.visits'))
             ->categoryFormat(DateFormat::month());
+    }
+
+    private function channelDistributionChart(): Chart
+    {
+        return Chart::make(__('workbench.pages.charts.gallery.distribution.title'))
+            ->description(__('workbench.pages.charts.gallery.distribution.description'))
+            ->data([
+                ['channel' => __('workbench.pages.charts.channels.direct'), 'amount' => 42000],
+                ['channel' => __('workbench.pages.charts.channels.partner'), 'amount' => 27000],
+                ['channel' => __('workbench.pages.charts.channels.marketplace'), 'amount' => 19000],
+                ['channel' => __('workbench.pages.charts.channels.retail'), 'amount' => 12000],
+            ])
+            ->distribution('amount', nameKey: 'channel')
+            ->valueFormat(NumberFormat::currency('USD')->compact());
+    }
+
+    private function cpuGaugeChart(): Chart
+    {
+        return Chart::make(__('workbench.pages.charts.gallery.gauge.title'))
+            ->description(__('workbench.pages.charts.gallery.gauge.description'))
+            ->height(240)
+            ->data([
+                ['label' => __('workbench.pages.charts.gallery.gauge.cpu'), 'value' => 72],
+            ])
+            ->gauge('value', nameKey: 'label', maxValue: 100)
+            ->valueFormat(NumberFormat::make()->unit(NumberFormatUnit::Percent));
     }
 
     private function revenueFormattingChart(): Chart

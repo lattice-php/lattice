@@ -1,34 +1,30 @@
 [
     {
-        "key": "channel-mix-chart",
+        "key": "channel-distribution-chart",
         "props": {
             "categoryFormat": null,
             "categoryKey": null,
             "data": [
                 {
                     "amount": 42000,
-                    "channel": "Direct",
-                    "color": "#2563eb"
+                    "channel": "Direct"
                 },
                 {
                     "amount": 27000,
-                    "channel": "Partner",
-                    "color": "#16a34a"
+                    "channel": "Partner"
                 },
                 {
                     "amount": 19000,
-                    "channel": "Marketplace",
-                    "color": "#f59e0b"
+                    "channel": "Marketplace"
                 },
                 {
                     "amount": 12000,
-                    "channel": "Retail",
-                    "color": "#dc2626"
+                    "channel": "Retail"
                 }
             ],
             "description": "Share of total revenue",
             "grid": true,
-            "height": 260,
+            "height": 320,
             "legend": true,
             "series": [
                 {
@@ -39,12 +35,19 @@
                     "name": "amount",
                     "nameKey": "channel",
                     "stackId": null,
-                    "type": "pie"
+                    "type": "distribution"
                 }
             ],
             "title": "Revenue by channel",
             "tooltip": true,
-            "valueFormat": null,
+            "valueFormat": {
+                "currency": "USD",
+                "kind": "number",
+                "maximumFractionDigits": null,
+                "minimumFractionDigits": null,
+                "notation": "compact",
+                "unit": null
+            },
             "xAxis": true,
             "yAxis": true
         },

@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Chart;
 use Lattice\Lattice\Ui\Enums\DateTimeStyle;
+use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
 use Lattice\Lattice\Ui\Values\ChartSeries;
 use Lattice\Lattice\Ui\Values\DateFormat;
 use Lattice\Lattice\Ui\Values\NumberFormat;
@@ -105,6 +106,61 @@ it('serializes a doughnut series as a pie with an inner radius', function (): vo
         ]);
 });
 
+it('serializes a distribution series', function (): void {
+    $node = wire(
+        Chart::make('Revenue by channel')
+            ->data([
+                ['channel' => 'Direct', 'amount' => 4200],
+                ['channel' => 'Partner', 'amount' => 2600],
+            ])
+            ->distribution('amount', nameKey: 'channel'),
+    );
+
+    expect($node['props']['series'])->toHaveCount(1)
+        ->and($node['props']['series'][0])->toMatchArray([
+            'type' => 'distribution',
+            'dataKey' => 'amount',
+            'name' => 'amount',
+            'nameKey' => 'channel',
+            'innerRadius' => '0%',
+            'maxValue' => null,
+        ]);
+});
+
+it('serializes a gauge series', function (): void {
+    $node = wire(
+        Chart::make('CPU usage')
+            ->data([
+                ['label' => 'CPU', 'value' => 72],
+            ])
+            ->gauge('value', nameKey: 'label', maxValue: 100),
+    );
+
+    expect($node['props']['series'])->toHaveCount(1)
+        ->and($node['props']['series'][0])->toMatchArray([
+            'type' => 'gauge',
+            'dataKey' => 'value',
+            'name' => 'value',
+            'nameKey' => 'label',
+            'innerRadius' => '70%',
+            'maxValue' => 100.0,
+        ]);
+});
+
+it('defaults the gauge max value to null for data-derived scaling', function (): void {
+    $node = wire(
+        Chart::make('Quota')
+            ->data([['label' => 'Used', 'value' => 3.5]])
+            ->gauge('value'),
+    );
+
+    expect($node['props']['series'][0])->toMatchArray([
+        'type' => 'gauge',
+        'nameKey' => null,
+        'maxValue' => null,
+    ]);
+});
+
 it('serializes explicit axis toggles and configured series arrays', function (): void {
     $node = wire(
         Chart::make(key: 'revenue-chart')
@@ -136,6 +192,7 @@ it('serializes explicit axis toggles and configured series arrays', function ():
             'stackId' => null,
             'nameKey' => null,
             'innerRadius' => '0%',
+            'maxValue' => null,
         ]);
 });
 
@@ -265,6 +322,34 @@ describe('docs fixtures', function (): void {
                     ['channel' => 'Retail', 'amount' => 12_000, 'color' => '#dc2626'],
                 ])
                 ->doughnut('amount', nameKey: 'channel')
+                ->height(260),
+        ]))));
+    });
+
+    it('matches the distribution chart example fixture', function (): void {
+        assertFixtureMatches('charts.distribution', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Chart::make('Revenue by channel', 'channel-distribution-chart')
+                ->description('Share of total revenue')
+                ->data([
+                    ['channel' => 'Direct', 'amount' => 42_000],
+                    ['channel' => 'Partner', 'amount' => 27_000],
+                    ['channel' => 'Marketplace', 'amount' => 19_000],
+                    ['channel' => 'Retail', 'amount' => 12_000],
+                ])
+                ->distribution('amount', nameKey: 'channel')
+                ->valueFormat(NumberFormat::currency('USD')->compact()),
+        ]))));
+    });
+
+    it('matches the gauge chart example fixture', function (): void {
+        assertFixtureMatches('charts.gauge', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Chart::make('CPU usage', 'cpu-gauge-chart')
+                ->description('Current utilization')
+                ->data([
+                    ['label' => 'CPU', 'value' => 72],
+                ])
+                ->gauge('value', nameKey: 'label', maxValue: 100)
+                ->valueFormat(NumberFormat::make()->unit(NumberFormatUnit::Percent))
                 ->height(260),
         ]))));
     });

@@ -155,8 +155,9 @@ export type ChartSeries = {
   readonly stackId: string | null;
   readonly nameKey: string | null;
   readonly innerRadius: string;
+  readonly maxValue: number | null;
 };
-export type ChartSeriesType = "area" | "bar" | "line" | "pie";
+export type ChartSeriesType = "area" | "bar" | "distribution" | "gauge" | "line" | "pie";
 export type ChatBox = {
   fill: boolean;
   historyEndpoint: string | null;

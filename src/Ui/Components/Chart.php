@@ -156,6 +156,16 @@ class Chart extends Component
         return $this->addSeries(ChartSeries::doughnut($dataKey, $nameKey, $name, $color, $innerRadius));
     }
 
+    public function gauge(string $dataKey, ?string $nameKey = null, ?string $name = null, ?string $color = null, ?float $maxValue = null, string $innerRadius = '70%'): static
+    {
+        return $this->addSeries(ChartSeries::gauge($dataKey, $nameKey, $name, $color, $maxValue, $innerRadius));
+    }
+
+    public function distribution(string $dataKey, ?string $nameKey = null, ?string $name = null, ?string $color = null): static
+    {
+        return $this->addSeries(ChartSeries::distribution($dataKey, $nameKey, $name, $color));
+    }
+
     /**
      * @param  array<int, ChartSeries>  $series
      */

@@ -47,6 +47,8 @@ it('renders the charts gallery with every demo chart', function (): void {
         ->assertSee('Traffic')
         ->assertSee('Revenue (formatted)')
         ->assertSee('Conversion rate')
+        ->assertSee('CPU usage')
+        ->assertSee('Channel share')
         ->assertPresent('[data-lattice-fragment="workbench.sales-mix-chart"]')
         ->assertPresent('[data-lattice-fragment="workbench.order-volume-chart"]')
         ->assertPresent('[data-lattice-fragment="workbench.revenue-trend-chart"]')

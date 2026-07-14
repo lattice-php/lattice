@@ -470,6 +470,14 @@
                 "value": "bar"
             },
             {
+                "name": "Distribution",
+                "value": "distribution"
+            },
+            {
+                "name": "Gauge",
+                "value": "gauge"
+            },
+            {
                 "name": "Line",
                 "value": "line"
             },
