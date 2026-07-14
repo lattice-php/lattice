@@ -11,8 +11,8 @@ describe("Lattice form choice component", () => {
         label: "Plan",
         name: "plan",
         options: [
-          { label: "Free", value: "free" },
-          { label: "Pro", value: "pro" },
+          { label: "Free", value: "free", data: null },
+          { label: "Pro", value: "pro", data: null },
         ],
         value: "free",
       },

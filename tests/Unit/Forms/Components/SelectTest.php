@@ -17,8 +17,8 @@ it('serializes static options without search flags', function (): void {
 
     expect(wire($field)['type'])->toBe('field.select')
         ->and($props['options'])->toBe([
-            ['label' => 'Free', 'value' => 'free'],
-            ['label' => 'Pro', 'value' => 'pro'],
+            ['label' => 'Free', 'value' => 'free', 'data' => null],
+            ['label' => 'Pro', 'value' => 'pro', 'data' => null],
         ])
         ->and($props['searchable'])->toBeFalse()
         ->and($props['multiple'])->toBeFalse()
@@ -73,6 +73,28 @@ it('serializes the shared focus options', function (): void {
     $node = wire(Select::make('country', 'Country')->autoFocus()->tabIndex(1));
 
     expect($node['props'])->toMatchArray(['autoFocus' => true, 'tabIndex' => 1]);
+});
+
+it('serializes per-option data', function (): void {
+    $field = Select::make('customer', 'Customer')->options([
+        Select::option('Acme GmbH', '42', ['email' => 'kontakt@acme.de']),
+        Select::option('Beta AG', '43'),
+    ]);
+
+    expect(wire($field)['props']['options'])->toBe([
+        ['label' => 'Acme GmbH', 'value' => '42', 'data' => ['email' => 'kontakt@acme.de']],
+        ['label' => 'Beta AG', 'value' => '43', 'data' => null],
+    ]);
+});
+
+it('expands array options carrying data', function (): void {
+    $options = Option::expand([
+        ['label' => 'Jane', 'value' => '1', 'data' => ['email' => 'jane@example.com']],
+        ['label' => 'Joe', 'value' => '2'],
+    ]);
+
+    expect($options[0]->data)->toBe(['email' => 'jane@example.com'])
+        ->and($options[1]->data)->toBeNull();
 });
 
 describe('docs fixtures', function (): void {

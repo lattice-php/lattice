@@ -5,8 +5,8 @@ import type { Option } from "@lattice-php/lattice/core/types";
 import { Combobox } from "./combobox";
 
 const OPTIONS: Option[] = [
-  { label: "Red", value: "red" },
-  { label: "Blue", value: "blue" },
+  { label: "Red", value: "red", data: null },
+  { label: "Blue", value: "blue", data: null },
 ];
 
 function Harness({

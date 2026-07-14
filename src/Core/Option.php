@@ -11,15 +11,20 @@ use UnitEnum;
 
 /**
  * A `{ label, value }` pair backing every option-driven control (choice, select,
- * segmented control). Generated to TypeScript so the client shares one `Option`
+ * segmented control), optionally carrying a `data` record that a select's option
+ * schema binds against. Generated to TypeScript so the client shares one `Option`
  * type rather than re-declaring the shape per field.
  */
 #[TypeScript]
 final readonly class Option
 {
+    /**
+     * @param  array<string, mixed>|null  $data
+     */
     public function __construct(
         public string $label,
         public string $value,
+        public ?array $data = null,
     ) {}
 
     /**
@@ -49,7 +54,7 @@ final readonly class Option
     }
 
     /**
-     * @param  Option|array{label: string, value: string}|UnitEnum  $option
+     * @param  Option|array{label: string, value: string, data?: array<string, mixed>|null}|UnitEnum  $option
      */
     private static function from(mixed $option): self
     {
@@ -64,6 +69,6 @@ final readonly class Option
             );
         }
 
-        return new self((string) $option['label'], (string) $option['value']);
+        return new self((string) $option['label'], (string) $option['value'], $option['data'] ?? null);
     }
 }

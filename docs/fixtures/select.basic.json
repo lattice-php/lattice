@@ -15,18 +15,22 @@
             "name": "country",
             "options": [
                 {
+                    "data": null,
                     "label": "Germany",
                     "value": "de"
                 },
                 {
+                    "data": null,
                     "label": "France",
                     "value": "fr"
                 },
                 {
+                    "data": null,
                     "label": "Spain",
                     "value": "es"
                 },
                 {
+                    "data": null,
                     "label": "Italy",
                     "value": "it"
                 }

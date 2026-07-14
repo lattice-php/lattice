@@ -99,8 +99,8 @@ describe("ColumnFilterControl", () => {
         operators: ["eq", "neq"],
         defaultOperator: "eq",
         options: [
-          { label: "Active", value: "active" },
-          { label: "Draft", value: "draft" },
+          { label: "Active", value: "active", data: null },
+          { label: "Draft", value: "draft", data: null },
         ],
         clauseOptions: [],
         ...overrides,
@@ -147,7 +147,7 @@ describe("ColumnFilterControl", () => {
     it("expands a clause option into its underlying clauses", () => {
       const h = handlers();
       const filter = selectFilter({
-        options: [{ label: "Unset", value: "unset" }],
+        options: [{ label: "Unset", value: "unset", data: null }],
         clauseOptions: [
           { label: "Unset", value: "unset", clauses: [{ operator: "empty", value: "" }] },
         ],
@@ -166,7 +166,7 @@ describe("ColumnFilterControl", () => {
     it("reflects the active clause-option as the current selection", () => {
       const h = handlers();
       const filter = selectFilter({
-        options: [{ label: "Unset", value: "unset" }],
+        options: [{ label: "Unset", value: "unset", data: null }],
         clauseOptions: [
           { label: "Unset", value: "unset", clauses: [{ operator: "empty", value: "" }] },
         ],

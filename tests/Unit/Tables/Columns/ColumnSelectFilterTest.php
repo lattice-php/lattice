@@ -19,8 +19,8 @@ test('a column filter accepts an associative value => label array', function ():
     ]))['props']['filter'];
 
     expect($filter['options'])->toBe([
-        ['label' => 'Draft', 'value' => 'draft'],
-        ['label' => 'Active', 'value' => 'active'],
+        ['label' => 'Draft', 'value' => 'draft', 'data' => null],
+        ['label' => 'Active', 'value' => 'active', 'data' => null],
     ]);
 });
 
@@ -28,8 +28,8 @@ test('a column filter accepts an enum', function (): void {
     $filter = wire(TextColumn::make('status')->filterOptions(ColumnFilterStatus::class))['props']['filter'];
 
     expect($filter['options'])->toBe([
-        ['label' => 'Draft', 'value' => 'draft'],
-        ['label' => 'Active', 'value' => 'active'],
+        ['label' => 'Draft', 'value' => 'draft', 'data' => null],
+        ['label' => 'Active', 'value' => 'active', 'data' => null],
     ]);
 });
 
@@ -43,8 +43,8 @@ test('a column with filter options serializes a select control', function (): vo
         'control' => 'filter.select',
         'multiple' => false,
         'options' => [
-            ['label' => 'Draft', 'value' => 'draft'],
-            ['label' => 'Active', 'value' => 'active'],
+            ['label' => 'Draft', 'value' => 'draft', 'data' => null],
+            ['label' => 'Active', 'value' => 'active', 'data' => null],
         ],
         'operators' => ['eq', 'neq'],
         'defaultOperator' => 'eq',
@@ -90,8 +90,8 @@ test('a column filter resolves options from an option source', function (): void
 
     expect($filter['control'])->toBe('filter.select')
         ->and($filter['options'])->toBe([
-            ['label' => 'Ada', 'value' => '1'],
-            ['label' => 'Linus', 'value' => '2'],
+            ['label' => 'Ada', 'value' => '1', 'data' => null],
+            ['label' => 'Linus', 'value' => '2', 'data' => null],
         ]);
 });
 
@@ -113,9 +113,9 @@ test('a column filter serializes clause options', function (): void {
     expect($filter)->toMatchArray([
         'control' => 'filter.select',
         'options' => [
-            ['label' => 'Yes', 'value' => 'yes'],
-            ['label' => 'No', 'value' => 'no'],
-            ['label' => 'Unset', 'value' => 'unset'],
+            ['label' => 'Yes', 'value' => 'yes', 'data' => null],
+            ['label' => 'No', 'value' => 'no', 'data' => null],
+            ['label' => 'Unset', 'value' => 'unset', 'data' => null],
         ],
         'clauseOptions' => [
             [
@@ -145,7 +145,7 @@ test('a column filter range option serializes date bounds as clauses', function 
 
     expect($filter)->toMatchArray([
         'options' => [
-            ['label' => 'This month', 'value' => 'this-month'],
+            ['label' => 'This month', 'value' => 'this-month', 'data' => null],
         ],
         'clauseOptions' => [
             [

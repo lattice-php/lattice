@@ -232,7 +232,7 @@ it('searches options through the form endpoint with a signed reference', functio
         ->assertOk()
         ->assertExactJson([
             'options' => [
-                ['label' => 'Walnut Desk', 'value' => (string) Product::query()->where('name', 'Walnut Desk')->value('id')],
+                ['label' => 'Walnut Desk', 'value' => (string) Product::query()->where('name', 'Walnut Desk')->value('id'), 'data' => null],
             ],
         ]);
 });

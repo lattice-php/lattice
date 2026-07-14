@@ -13,8 +13,8 @@ function selectFilter(multiple: boolean): ColumnFilter {
     defaultOperator: multiple ? "in" : "eq",
     control: "filter.select",
     options: [
-      { label: "Active", value: "active" },
-      { label: "Draft", value: "draft" },
+      { label: "Active", value: "active", data: null },
+      { label: "Draft", value: "draft", data: null },
     ],
     clauseOptions: [],
     multiple,
@@ -29,9 +29,9 @@ function clauseFilter(): ColumnFilter {
     defaultOperator: "eq",
     control: "filter.select",
     options: [
-      { label: "Yes", value: "yes" },
-      { label: "No", value: "no" },
-      { label: "Unset", value: "unset" },
+      { label: "Yes", value: "yes", data: null },
+      { label: "No", value: "no", data: null },
+      { label: "Unset", value: "unset", data: null },
     ],
     clauseOptions: [
       { label: "Yes", value: "yes", clauses: [{ operator: "eq", value: "true" }] },
@@ -49,7 +49,7 @@ function rangeFilter(): ColumnFilter {
     operators: ["eq", "neq", "gte", "lte"],
     defaultOperator: "eq",
     control: "filter.select",
-    options: [{ label: "June 2026", value: "june-2026" }],
+    options: [{ label: "June 2026", value: "june-2026", data: null }],
     clauseOptions: [
       {
         label: "June 2026",

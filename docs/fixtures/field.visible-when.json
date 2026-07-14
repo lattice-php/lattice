@@ -13,10 +13,12 @@
             "name": "type",
             "options": [
                 {
+                    "data": null,
                     "label": "Business",
                     "value": "business"
                 },
                 {
+                    "data": null,
                     "label": "Individual",
                     "value": "individual"
                 }

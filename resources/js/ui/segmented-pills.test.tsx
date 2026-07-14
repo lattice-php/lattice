@@ -4,8 +4,8 @@ import type { Option } from "@lattice-php/lattice/core/types";
 import { SegmentedPills } from "./segmented-pills";
 
 const options: Option[] = [
-  { label: "Light", value: "light" },
-  { label: "Dark", value: "dark" },
+  { label: "Light", value: "light", data: null },
+  { label: "Dark", value: "dark", data: null },
 ];
 
 describe("SegmentedPills", () => {

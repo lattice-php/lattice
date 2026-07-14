@@ -13,14 +13,17 @@
             "name": "country",
             "options": [
                 {
+                    "data": null,
                     "label": "Germany",
                     "value": "DE"
                 },
                 {
+                    "data": null,
                     "label": "Austria",
                     "value": "AT"
                 },
                 {
+                    "data": null,
                     "label": "United States",
                     "value": "US"
                 }

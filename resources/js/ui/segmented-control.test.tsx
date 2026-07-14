@@ -12,9 +12,9 @@ describe("SegmentedControl", () => {
         label: "Appearance",
         name: "appearance",
         options: [
-          { label: "Light", value: "light" },
-          { label: "Dark", value: "dark" },
-          { label: "System", value: "system" },
+          { label: "Light", value: "light", data: null },
+          { label: "Dark", value: "dark", data: null },
+          { label: "System", value: "system", data: null },
         ],
         value: "system",
       },
@@ -58,8 +58,8 @@ describe("SegmentedControl", () => {
       props: {
         name: "size",
         options: [
-          { label: "Small", value: "s" },
-          { label: "Large", value: "l" },
+          { label: "Small", value: "s", data: null },
+          { label: "Large", value: "l", data: null },
         ],
       },
     });

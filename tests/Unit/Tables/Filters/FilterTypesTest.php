@@ -30,8 +30,8 @@ test('ternary filter serializes its wire shape', function (): void {
         ->and($filter['schema'][0]['type'])->toBe('field.select')
         ->and($filter['schema'][0]['props']['name'])->toBe('value')
         ->and($filter['schema'][0]['props']['options'])->toBe([
-            ['label' => 'Featured', 'value' => 'true'],
-            ['label' => 'Not featured', 'value' => 'false'],
+            ['label' => 'Featured', 'value' => 'true', 'data' => null],
+            ['label' => 'Not featured', 'value' => 'false', 'data' => null],
         ]);
 });
 
@@ -52,8 +52,8 @@ test('ternary filter serializes its default labels', function (): void {
         ->and($filter['schema'][0]['type'])->toBe('field.select')
         ->and($filter['schema'][0]['props']['name'])->toBe('value')
         ->and($filter['schema'][0]['props']['options'])->toBe([
-            ['label' => 'Yes', 'value' => 'true'],
-            ['label' => 'No', 'value' => 'false'],
+            ['label' => 'Yes', 'value' => 'true', 'data' => null],
+            ['label' => 'No', 'value' => 'false', 'data' => null],
         ]);
 });
 

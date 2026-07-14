@@ -21,8 +21,8 @@ test('select filter serializes its wire shape', function (): void {
             'multiple' => false,
             'searchable' => false,
             'options' => [
-                ['label' => 'Draft', 'value' => 'draft'],
-                ['label' => 'Active', 'value' => 'active'],
+                ['label' => 'Draft', 'value' => 'draft', 'data' => null],
+                ['label' => 'Active', 'value' => 'active', 'data' => null],
             ],
             'placeholder' => null,
         ],
@@ -74,8 +74,8 @@ test('a select filter accepts an associative value => label array', function ():
     $props = wire(SelectFilter::make('status')->options(['draft' => 'Draft', 'active' => 'Active']))['props'];
 
     expect($props['options'])->toBe([
-        ['label' => 'Draft', 'value' => 'draft'],
-        ['label' => 'Active', 'value' => 'active'],
+        ['label' => 'Draft', 'value' => 'draft', 'data' => null],
+        ['label' => 'Active', 'value' => 'active', 'data' => null],
     ]);
 });
 
@@ -85,7 +85,7 @@ test('a select filter resolves its options from an option source', function (): 
     $props = wire(SelectFilter::make('author_id')->optionsFrom($source))['props'];
 
     expect($props['options'])->toBe([
-        ['label' => 'Ada', 'value' => '1'],
-        ['label' => 'Linus', 'value' => '2'],
+        ['label' => 'Ada', 'value' => '1', 'data' => null],
+        ['label' => 'Linus', 'value' => '2', 'data' => null],
     ]);
 });
