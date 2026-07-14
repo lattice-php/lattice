@@ -7,7 +7,10 @@ use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Badge;
+use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\Color;
+use Lattice\Lattice\Ui\Enums\Size;
 
 it('serializes static options without search flags', function (): void {
     $field = Select::make('plan', 'Plan')->options([
@@ -164,6 +167,22 @@ describe('docs fixtures', function (): void {
                     Select::option('JavaScript', 'js'),
                     Select::option('Go', 'go'),
                     Select::option('Rust', 'rust'),
+                ]),
+        ]))));
+
+        assertFixtureMatches('select.rich', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Select::make('customer', 'Customer')
+                ->placeholder('Pick a customer')
+                ->options([
+                    Select::option('Acme GmbH', '1', ['email' => 'kontakt@acme.de', 'number' => 'K-10021']),
+                    Select::option('Globex AG', '2', ['email' => 'info@globex.de', 'number' => 'K-10022']),
+                ])
+                ->optionSchema([
+                    Stack::make()->schema([
+                        Text::make('')->dataKey('text', 'label'),
+                        Text::make('')->dataKey('text', 'email')->size(Size::Sm)->color(Color::Muted),
+                    ]),
+                    Badge::make('')->dataKey('label', 'number'),
                 ]),
         ]))));
     });
