@@ -1,4 +1,5 @@
 import type { RefObject } from "react";
+import { Button } from "@lattice-php/lattice/ui/button";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { PaginationType } from "@lattice-php/lattice/types/generated";
 import type { TablePagination as TablePaginationData } from "@lattice-php/lattice/table/types";
@@ -43,17 +44,16 @@ export function TablePagination({
       {mode === "infinite" ? (
         <div ref={infiniteLoaderRef} className="flex items-center gap-2">
           {pagination.hasMore ? (
-            <button
-              type="button"
+            <Button
+              variant="outline"
               data-test="pagination-load-more"
-              className="h-lt-control-md rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
               disabled={processing}
               onClick={onLoadMore}
             >
               {processing
                 ? t("table.pagination.loading", "Loading...")
                 : t("table.pagination.loadMore", "Load more")}
-            </button>
+            </Button>
           ) : (
             <span className="text-lt-muted-fg">
               {t("table.pagination.allLoaded", "All rows loaded")}
@@ -62,59 +62,55 @@ export function TablePagination({
         </div>
       ) : mode === "simple" ? (
         <div className="flex items-center gap-2">
-          <button
-            type="button"
+          <Button
+            variant="outline"
             data-test="pagination-previous"
-            className="h-lt-control-md rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
             disabled={processing || currentPage <= 1}
             onClick={() => onPage(currentPage - 1)}
           >
             {t("table.pagination.previous", "Previous")}
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="outline"
             data-test="pagination-next"
-            className="h-lt-control-md rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
             disabled={processing || !hasNextPage}
             onClick={() => onPage(currentPage + 1)}
           >
             {t("table.pagination.next", "Next")}
-          </button>
+          </Button>
         </div>
       ) : mode === "table" ? (
         <div className="flex items-center gap-2">
-          <button
-            type="button"
+          <Button
+            variant="outline"
             data-test="pagination-previous"
-            className="h-lt-control-md rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
             disabled={processing || currentPage <= 1}
             onClick={() => onPage(currentPage - 1)}
           >
             {t("table.pagination.previous", "Previous")}
-          </button>
+          </Button>
           {visiblePages.map((pageNumber) => (
-            <button
+            <Button
               key={pageNumber}
-              type="button"
+              variant="outline"
+              size="icon"
               data-test={`pagination-page-${pageNumber}`}
-              className="inline-flex size-lt-control-md items-center justify-center rounded-lt-sm border border-lt-border font-medium disabled:opacity-50"
               disabled={processing || pageNumber === currentPage}
               aria-current={pageNumber === currentPage ? "page" : undefined}
               aria-label={t("table.pagination.page", "Page {{page}}", { page: pageNumber })}
               onClick={() => onPage(pageNumber)}
             >
               {pageNumber}
-            </button>
+            </Button>
           ))}
-          <button
-            type="button"
+          <Button
+            variant="outline"
             data-test="pagination-next"
-            className="h-lt-control-md rounded-lt-sm border border-lt-border px-3 font-medium disabled:opacity-50"
             disabled={processing || !hasNextPage}
             onClick={() => onPage(currentPage + 1)}
           >
             {t("table.pagination.next", "Next")}
-          </button>
+          </Button>
         </div>
       ) : null}
     </div>

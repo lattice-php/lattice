@@ -15,7 +15,7 @@ import {
   useFormValues,
   useSetFormValue,
 } from "@lattice-php/lattice/form/embed";
-import { Icon } from "@lattice-php/lattice/icons";
+import { IconButton } from "@lattice-php/lattice/ui/icon-button";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { filterValue, isActiveFilterValue } from "@lattice-php/lattice/table/lib/filter-values";
@@ -67,17 +67,15 @@ export function TableFilterControl({
         />
       </div>
       {isActiveFilterValue(value) && (
-        <button
-          aria-label={t("table.filter.clear", "Clear {{label}} filter", {
+        <IconButton
+          size="md"
+          icon="x"
+          label={t("table.filter.clear", "Clear {{label}} filter", {
             label: filter.props.label ?? "",
           })}
-          className="inline-flex size-lt-control-md shrink-0 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg disabled:opacity-50"
           disabled={processing}
           onClick={() => onChange(undefined)}
-          type="button"
-        >
-          <Icon name="x" aria-hidden="true" className="size-lt-icon-md" />
-        </button>
+        />
       )}
     </div>
   );

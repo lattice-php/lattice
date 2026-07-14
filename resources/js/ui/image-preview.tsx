@@ -1,5 +1,4 @@
 import { useT } from "@lattice-php/lattice/i18n";
-import { Icon } from "@lattice-php/lattice/icons";
 import { type ReactNode, useState } from "react";
 import { Button } from "@lattice-php/lattice/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "./dialog";
@@ -68,14 +67,13 @@ export function PreviewableImage({
           />
           <DialogClose asChild>
             <Button
+              icon="x"
               aria-label={t("common.close", "Close")}
               data-test="lightbox-close"
               size="icon"
               variant="ghost"
               className="absolute top-2 right-2 bg-lt-bg/80 hover:bg-lt-bg"
-            >
-              <Icon name="x" aria-hidden="true" className="size-lt-icon-md" />
-            </Button>
+            />
           </DialogClose>
         </DialogContent>
       </Dialog>

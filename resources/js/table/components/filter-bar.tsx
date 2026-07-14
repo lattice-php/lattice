@@ -1,4 +1,4 @@
-import { Icon } from "@lattice-php/lattice/icons";
+import { IconButton } from "@lattice-php/lattice/ui/icon-button";
 import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/lattice/ui/popover";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { Option } from "@lattice-php/lattice/types/generated";
@@ -108,16 +108,14 @@ function FilterChip({
           </>
         )}
       </span>
-      <button
-        type="button"
+      <IconButton
+        size="xs"
+        icon="x"
+        label={removeLabel}
         data-test={removeTestId}
-        className="inline-flex size-5 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-border disabled:opacity-50"
         disabled={processing}
-        aria-label={removeLabel}
         onClick={onRemove}
-      >
-        <Icon name="x" aria-hidden="true" className="size-lt-icon-sm" />
-      </button>
+      />
     </span>
   );
 }
@@ -142,20 +140,19 @@ export function FilterMenu({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button
-          type="button"
-          aria-label={filtersLabel}
+        <IconButton
+          size="sm"
+          icon="filter"
+          label={filtersLabel}
           data-test="table-filters-menu"
-          className="relative inline-flex size-7 shrink-0 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lt-ring/50 data-[state=open]:bg-lt-muted data-[state=open]:text-lt-fg"
           disabled={processing}
         >
-          <Icon name="filter" aria-hidden="true" className="size-lt-icon-md" />
           {active.length > 0 && (
             <span className="absolute -right-1 -top-1 inline-flex size-3.5 items-center justify-center rounded-full bg-lt-primary text-[10px] font-medium leading-none text-lt-primary-fg">
               {active.length}
             </span>
           )}
-        </button>
+        </IconButton>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 p-4">
         <div className="grid gap-3">

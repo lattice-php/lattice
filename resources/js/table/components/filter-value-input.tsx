@@ -1,10 +1,11 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { useEffect, useState } from "react";
-import { controlSurface } from "@lattice-php/lattice/ui/control";
+import { IconButton } from "@lattice-php/lattice/ui/icon-button";
+import { Input } from "@lattice-php/lattice/ui/input";
+import { NativeSelect } from "@lattice-php/lattice/ui/native-select";
+import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { FilterType } from "@lattice-php/lattice/types/generated";
-
-export const fieldClass = controlSurface({ density: "compact" });
 
 export function FilterValueInput({
   type,
@@ -40,10 +41,11 @@ export function FilterValueInput({
 
   if (type === "boolean") {
     return (
-      <select
+      <NativeSelect
+        density="compact"
         aria-label={inputLabel}
         data-test={testId}
-        className={`${fieldClass} ${groupedClass}`}
+        className={groupedClass}
         disabled={processing}
         value={value}
         onChange={(event) => onCommit(event.target.value)}
@@ -51,17 +53,18 @@ export function FilterValueInput({
         <option value="">{t("table.filter.all", "All")}</option>
         <option value="true">{t("table.filter.true", "True")}</option>
         <option value="false">{t("table.filter.false", "False")}</option>
-      </select>
+      </NativeSelect>
     );
   }
 
   if (type === "date") {
     return (
-      <input
+      <Input
         type="date"
+        density="compact"
         aria-label={inputLabel}
         data-test={testId}
-        className={`${fieldClass} ${groupedClass}`}
+        className={groupedClass}
         disabled={processing}
         value={draft}
         onChange={(event) => {
@@ -81,11 +84,12 @@ export function FilterValueInput({
           className="pointer-events-none absolute left-2 size-lt-icon-md text-lt-muted-fg"
         />
       )}
-      <input
+      <Input
         type={type === "number" ? "number" : "text"}
+        density="compact"
         aria-label={inputLabel}
         data-test={testId}
-        className={`${fieldClass} ${groupedClass} ${withSearchIcon ? "pl-8" : ""} ${onClear ? "pr-8" : ""}`}
+        className={cn(groupedClass, withSearchIcon && "pl-8", onClear && "pr-8")}
         disabled={processing}
         value={draft}
         onChange={(event) => setDraft(event.target.value)}
@@ -101,16 +105,15 @@ export function FilterValueInput({
         }}
       />
       {onClear && draft !== "" && (
-        <button
-          type="button"
-          aria-label={t("table.filter.clear", "Clear {{label}} filter", { label })}
+        <IconButton
+          size="xs"
+          icon="x"
+          label={t("table.filter.clear", "Clear {{label}} filter", { label })}
           data-test={testId ? `${testId}-clear` : undefined}
-          className="absolute right-1 inline-flex size-6 items-center justify-center rounded-lt-sm hover:bg-lt-muted disabled:opacity-50"
+          className="absolute right-1 size-6"
           disabled={processing}
           onClick={onClear}
-        >
-          <Icon name="x" aria-hidden="true" className="size-lt-icon-sm" />
-        </button>
+        />
       )}
     </div>
   );

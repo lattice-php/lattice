@@ -2,7 +2,7 @@ import { apiFetch } from "@lattice-php/lattice/core/api";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import type { SignedUpload } from "@lattice-php/lattice/types/generated";
-import { Icon } from "@lattice-php/lattice/icons";
+import { IconButton } from "@lattice-php/lattice/ui/icon-button";
 import { useT } from "@lattice-php/lattice/i18n";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
@@ -324,18 +324,16 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
                 )}
               </div>
               {(!item.existing || !scope) && (
-                <button
-                  aria-label={t("form.file-upload.remove", "Remove {{name}}", { name: item.name })}
-                  className="inline-flex size-7 shrink-0 items-center justify-center rounded-lt-sm text-lt-muted-fg transition-colors hover:bg-lt-accent hover:text-lt-accent-fg disabled:pointer-events-none disabled:opacity-50"
+                <IconButton
+                  size="sm"
+                  icon="x"
+                  label={t("form.file-upload.remove", "Remove {{name}}", { name: item.name })}
                   data-test={testIdentity(
                     item.existing ? `${name}-remove-existing` : `${name}-remove`,
                   )}
                   disabled={locked}
                   onClick={() => removeItem(item.id)}
-                  type="button"
-                >
-                  <Icon name="x" aria-hidden="true" className="size-lt-icon-sm" />
-                </button>
+                />
               )}
               {signed && !item.existing && item.key && item.status === "ready" && (
                 <input
