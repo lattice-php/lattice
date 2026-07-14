@@ -142,7 +142,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
 
   const options = searchable ? (results ?? staticOptions) : staticOptions;
 
-  const renderOption = optionSchema
+  const renderOption = optionSchema?.length
     ? (option: Option) => (
         <Renderer
           nodes={materializeSchema(optionSchema, {

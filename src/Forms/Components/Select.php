@@ -121,7 +121,13 @@ class Select extends Field
             return $data;
         }
 
-        $data['props']['optionSchema'] = $this->renderableComponents($this->optionSchema);
+        $schema = $this->renderableComponents($this->optionSchema);
+
+        if ($schema === []) {
+            return $data;
+        }
+
+        $data['props']['optionSchema'] = $schema;
 
         return $data;
     }

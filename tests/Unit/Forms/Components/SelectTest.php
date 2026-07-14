@@ -121,6 +121,14 @@ it('serializes the option schema only when set', function (): void {
         ->and($schema[1]['props']['dataBindings'])->toBe(['label' => 'number']);
 });
 
+it('omits the option schema when every component is hidden', function (): void {
+    $field = Select::make('customer', 'Customer')->optionSchema([
+        Text::make('')->dataKey('text', 'label')->hidden(),
+    ]);
+
+    expect(wire($field)['props'])->not->toHaveKey('optionSchema');
+});
+
 it('keeps per-option data when normalizing resolver options', function (): void {
     $field = Select::make('author_id', 'Author')
         ->searchable(fn (string $search): array => [
