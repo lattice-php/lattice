@@ -1,6 +1,7 @@
 export { BuilderComponent } from "./fields/builder";
 export { CheckboxComponent } from "./fields/checkbox";
 export { ChoiceComponent } from "./fields/choice";
+export { ColorPickerFieldComponent } from "./fields/color-picker-field";
 export { DateInputComponent } from "./fields/date-input";
 export { DateTimeInputComponent } from "./fields/date-time-input";
 export { FileUploadComponent } from "./fields/file-upload";
