@@ -1,4 +1,5 @@
 import { Icon } from "@lattice-php/lattice/icons";
+import { IconButton } from "@lattice-php/lattice/ui/icon-button";
 import { getSortDirectionLabel } from "@lattice-php/lattice/table/lib/query";
 import type { TableColumn, TableSort, TableQuery } from "@lattice-php/lattice/table/types";
 
@@ -30,16 +31,14 @@ export function SortBar({
               aria-label={getSortDirectionLabel(sort.direction)}
               className="size-lt-icon-sm text-lt-muted-fg"
             />
-            <button
-              type="button"
-              className="inline-flex size-5 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-muted disabled:opacity-50"
-              disabled={processing}
-              aria-label={`Clear ${label} sort`}
+            <IconButton
+              size="xs"
+              icon="x"
+              label={`Clear ${label} sort`}
               data-test={`clear-${sort.key}-sort`}
+              disabled={processing}
               onClick={() => onClear(sort)}
-            >
-              <Icon name="x" className="size-lt-icon-sm" />
-            </button>
+            />
           </span>
         );
       })}

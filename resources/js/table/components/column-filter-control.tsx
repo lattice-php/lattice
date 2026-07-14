@@ -1,8 +1,9 @@
-import { Icon } from "@lattice-php/lattice/icons";
 import { useState } from "react";
+import { Button } from "@lattice-php/lattice/ui/button";
+import { IconButton } from "@lattice-php/lattice/ui/icon-button";
+import { NativeSelect } from "@lattice-php/lattice/ui/native-select";
 import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/lattice/ui/popover";
 import { useT } from "@lattice-php/lattice/i18n";
-import { cn } from "@lattice-php/lattice/lib/utils";
 import type {
   ColumnFilterOption,
   FilterType,
@@ -13,7 +14,7 @@ import { filterValue } from "@lattice-php/lattice/table/lib/filter-values";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "@lattice-php/lattice/table/lib/query";
 import type { FilterClause, FilterNode, TableColumn } from "@lattice-php/lattice/table/types";
 import { TableFilterControl } from "./filter-controls";
-import { fieldClass, FilterValueInput } from "./filter-value-input";
+import { FilterValueInput } from "./filter-value-input";
 
 type ColumnClause = { clause: FilterClause; index: number };
 
@@ -94,22 +95,20 @@ export function ColumnFilterControl({
       </div>
       <Popover>
         <PopoverTrigger asChild>
-          <button
-            type="button"
-            aria-label={t("table.filter.columnFilters", "{{label}} filters", {
-              label,
-            })}
+          <IconButton
+            variant="segmented"
+            size="md"
+            icon="filter"
+            label={t("table.filter.columnFilters", "{{label}} filters", { label })}
             data-test={`filter-${column.key}`}
-            className="relative -ml-px inline-flex size-lt-control-md shrink-0 items-center justify-center rounded-r-lt-sm border border-lt-input disabled:opacity-50 data-[state=open]:z-10 data-[state=open]:border-lt-primary"
             disabled={processing}
           >
-            <Icon name="filter" aria-hidden="true" className="size-lt-icon-md" />
             {clauses.length > 0 && (
               <span className="absolute -right-1.5 -top-1.5 inline-flex size-4 items-center justify-center rounded-full bg-lt-primary text-xs font-medium text-lt-primary-fg">
                 {clauses.length}
               </span>
             )}
-          </button>
+          </IconButton>
         </PopoverTrigger>
 
         <PopoverContent align="start" className="w-80 p-4">
@@ -223,6 +222,7 @@ function ColumnSelectFilter({
       filter={data}
       value={{ value }}
       processing={processing}
+      bare
       onChange={change}
       onSearch={onSearch ? (_field, query, signal) => onSearch(query, signal) : undefined}
     />
@@ -326,16 +326,16 @@ function FilterClauseList({
       )}
 
       <div className="border-t border-lt-border pt-3">
-        <button
-          type="button"
+        <Button
+          variant="secondary"
+          icon="plus"
           data-test={`filter-${column.key}-add`}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-lt-sm bg-lt-muted px-3 py-2 text-sm font-medium hover:bg-lt-muted/70 disabled:opacity-50"
+          className="w-full"
           disabled={processing}
           onClick={() => setAdding(true)}
         >
-          <Icon name="plus" aria-hidden="true" className="size-lt-icon-md" />
           {t("table.filter.add", "Add filter")}
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -368,10 +368,11 @@ function FilterClauseRow({
     <div className="grid gap-2">
       <div className="flex items-center gap-2">
         {operators.length > 1 ? (
-          <select
+          <NativeSelect
+            density="compact"
             aria-label={t("table.filter.operator", "{{label}} operator", { label })}
             data-test={`filter-${column.key}-operator`}
-            className={cn(fieldClass, "flex-1")}
+            className="flex-1"
             disabled={processing}
             value={clause.operator}
             onChange={(event) => onOperator(event.target.value as Op)}
@@ -381,20 +382,19 @@ function FilterClauseRow({
                 {operatorLabel(operator)}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         ) : (
           <span className="flex-1 text-sm font-medium">{operatorLabel(clause.operator)}</span>
         )}
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          size="icon"
+          icon="trash-2"
           aria-label={t("table.filter.remove", "Remove {{label}} filter", { label })}
           data-test={`filter-${column.key}-remove`}
-          className="inline-flex size-lt-control-md items-center justify-center rounded-lt-sm border border-lt-border hover:bg-lt-muted disabled:opacity-50"
           disabled={processing}
           onClick={onRemove}
-        >
-          <Icon name="trash-2" aria-hidden="true" className="size-lt-icon-md" />
-        </button>
+        />
       </div>
       {!valueless && (
         <FilterValueInput

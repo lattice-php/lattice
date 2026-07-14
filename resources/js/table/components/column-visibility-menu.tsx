@@ -1,6 +1,6 @@
 import { Checkbox } from "@lattice-php/lattice/ui/checkbox";
 import type { ToggleableColumn } from "@lattice-php/lattice/table/hooks/use-column-visibility";
-import { Icon } from "@lattice-php/lattice/icons";
+import { IconButton } from "@lattice-php/lattice/ui/icon-button";
 import { useT } from "@lattice-php/lattice/i18n";
 import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/lattice/ui/popover";
 
@@ -27,15 +27,13 @@ export function ColumnVisibilityMenu({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button
-          type="button"
-          aria-label={columnsLabel}
+        <IconButton
+          size="sm"
+          icon="columns-3"
+          label={columnsLabel}
           data-test="table-columns-menu"
-          className="relative inline-flex size-7 shrink-0 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lt-ring/50 data-[state=open]:bg-lt-muted data-[state=open]:text-lt-fg"
           disabled={processing}
-        >
-          <Icon name="columns-3" aria-hidden="true" className="size-lt-icon-md" />
-        </button>
+        />
       </PopoverTrigger>
       <PopoverContent align="end" className="w-64 p-4">
         <div className="grid gap-3">

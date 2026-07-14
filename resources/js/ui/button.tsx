@@ -3,7 +3,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import { IconRenderer } from "@lattice-php/lattice/icons";
+import { Icon, IconRenderer } from "@lattice-php/lattice/icons";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { ActionTrigger, type TriggerState, useClickBehavior } from "./click-behavior";
@@ -49,19 +49,34 @@ function Button({
   variant,
   size,
   asChild = false,
+  icon,
+  children,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    /** Leading icon glyph. Ignored with `asChild` (Slot needs a single child). */
+    icon?: string;
   }) {
   const Comp = asChild ? Slot : "button";
+  const content =
+    icon && !asChild ? (
+      <>
+        <Icon name={icon} aria-hidden="true" />
+        {children}
+      </>
+    ) : (
+      children
+    );
 
   return (
     <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
-    />
+    >
+      {content}
+    </Comp>
   );
 }
 
