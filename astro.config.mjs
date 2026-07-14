@@ -115,6 +115,7 @@ export default defineConfig({
                 { label: "Textarea", link: "/forms/fields/textarea/" },
                 { label: "Select", link: "/forms/fields/select/" },
                 { label: "Choice", link: "/forms/fields/choice/" },
+                { label: "Color picker", link: "/forms/fields/color-picker/" },
                 { label: "Checkbox", link: "/forms/fields/checkbox/" },
                 { label: "Toggle", link: "/forms/fields/toggle/" },
                 { label: "Date input", link: "/forms/fields/date-input/" },

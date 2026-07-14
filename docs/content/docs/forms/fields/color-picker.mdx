@@ -1,0 +1,51 @@
+---
+title: Color picker
+description: Palette swatches plus free color selection, stored as a hex string.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+
+`ColorPicker::make($name, $label)` renders a compact trigger — a color dot plus the current hex
+value — that opens a picker in a popover: a saturation/hue area for free colors, a swatch palette,
+and a hex input. The value is a lowercase hex string like `#3b82f6`.
+
+<ComponentExample
+  php={`ColorPicker::make('color', 'Tag color')
+    ->placeholder('Pick a color')
+    ->rules(['nullable', 'hex_color']);`}
+  fixture="color-picker.basic"
+  values={{ color: "#3b82f6" }}
+/>
+
+## Palette
+
+The field ships a nine-color default palette. `->palette([...])` replaces it with your own
+swatches:
+
+```php
+ColorPicker::make('color', 'Brand color')
+    ->palette(['#0ea5e9', '#6366f1', '#f43f5e']);
+```
+
+Swatches preselect a color with one click; the saturation area and hex input remain available for
+any other color.
+
+## Validation
+
+The submitted value is a plain string, so validate it like one — Laravel's `hex_color` rule
+matches exactly what the picker produces:
+
+```php
+ColorPicker::make('color', 'Tag color')->rules(['required', 'hex_color']);
+```
+
+<Info>
+  The client normalizes everything it commits to lowercase `#rrggbb` — three-digit input like
+  `#f53` is expanded, and invalid text is never committed.
+</Info>
+
+## Common options
+
+`ColorPicker` shares label, default value, required, disabled, read-only, and visibility options
+with every field — see [fields overview](/forms/fields/overview/).
