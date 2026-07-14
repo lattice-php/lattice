@@ -90,12 +90,14 @@
                 "filters": [],
                 "page": 1,
                 "perPage": 25,
+                "search": "",
                 "sorts": [],
                 "tableFilterIndicators": [],
                 "tableFilters": {}
             },
             "resizableColumns": false,
             "resizeIndicator": false,
+            "searchable": false,
             "striped": false
         },
         "type": "table"

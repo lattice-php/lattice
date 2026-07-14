@@ -40,6 +40,26 @@ describe('docs fixtures', function (): void {
         ]))));
     });
 
+    it('matches the search table example fixture', function (): void {
+        assertFixtureMatches('table.search', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Table::make('directory')
+                ->searchable()
+                ->columns([
+                    TextColumn::make('name')->label('Name')->sortable()->searchable(),
+                    TextColumn::make('email')->label('Email')->link('mailto:{value}')->searchable(),
+                    TextColumn::make('team')->label('Team'),
+                ])
+                ->result(
+                    TableResult::fromItems(collect([
+                        ['name' => 'Ada Lovelace', 'email' => 'ada@example.com', 'team' => 'Engineering'],
+                        ['name' => 'Grace Hopper', 'email' => 'grace@example.com', 'team' => 'Engineering'],
+                        ['name' => 'Katherine Johnson', 'email' => 'katherine@example.com', 'team' => 'Research'],
+                    ])),
+                    TableQuery::empty(),
+                ),
+        ]))));
+    });
+
     it('matches the stack column table example fixture', function (): void {
         assertFixtureMatches('table.stack', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Table::make('users')
