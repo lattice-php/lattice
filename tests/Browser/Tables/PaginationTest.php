@@ -19,10 +19,10 @@ it('shows pagination modes in lazily loaded tabs', function (): void {
     $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
-    $page = visit('/tables');
+    $page = visit('/tables/pagination');
     disableInfiniteScrollAutoLoad($page);
 
-    $page->assertSee('Pagination modes')
+    $page->assertSee('Pagination')
         ->assertSee('No pagination')
         ->assertSee('Maya Chen')
         ->assertDontSee('Simple pagination')
@@ -51,7 +51,7 @@ it('navigates between pages in table pagination mode', function (): void {
     $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
-    $page = visit('/tables');
+    $page = visit('/tables/pagination');
 
     $page->click('@tab-table');
     eventually(function () use ($page): void {
@@ -75,7 +75,7 @@ it('loads more rows in infinite mode', function (): void {
     $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
-    $page = visit('/tables');
+    $page = visit('/tables/pagination');
     disableInfiniteScrollAutoLoad($page);
 
     $page->click('@tab-infinite');
@@ -97,7 +97,7 @@ it('keeps the topbar user menu visible on infinite pagination pages', function (
     $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
-    $page = visit('/tables');
+    $page = visit('/tables/pagination');
     disableInfiniteScrollAutoLoad($page);
 
     $page->click('@tab-infinite');

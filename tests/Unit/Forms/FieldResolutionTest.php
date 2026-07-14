@@ -2,8 +2,10 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Components\Choice;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\FormData;
 
 it('serializes dependsOn keys and the any-change marker', function (): void {
@@ -75,4 +77,13 @@ it('keeps read-only value(fn) behavior unchanged', function (): void {
 
     expect($field->isComputed())->toBeTrue()
         ->and($field->hasPrefill())->toBeFalse();
+});
+
+it('carries a built-in type from the FieldType enum', function (): void {
+    expect(new AsField(FieldType::TextInput)->type)->toBe('field.text-input');
+});
+
+it('prefixes a custom field type when the field namespace is omitted', function (): void {
+    expect(new AsField('color-picker')->type)->toBe('field.color-picker')
+        ->and(new AsField('field.color-picker')->type)->toBe('field.color-picker');
 });

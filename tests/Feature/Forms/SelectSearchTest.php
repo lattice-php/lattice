@@ -15,7 +15,7 @@ use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Workbench\App\Forms\ShowcaseForm;
+use Workbench\App\Forms\Fields\SelectFieldForm;
 use Workbench\App\Models\Product;
 
 use function Pest\Laravel\post;
@@ -218,14 +218,14 @@ it('aborts with 422 when a row select is not searchable', function (): void {
 });
 
 it('searches options through the form endpoint with a signed reference', function (): void {
-    Lattice::forms([ShowcaseForm::class]);
+    Lattice::forms([SelectFieldForm::class]);
 
     Product::factory()->create(['name' => 'Walnut Desk']);
     Product::factory()->create(['name' => 'Steel Lamp']);
 
-    $ref = wire(Form::use(ShowcaseForm::class))['props']['ref'];
+    $ref = wire(Form::use(SelectFieldForm::class))['props']['ref'];
 
-    post('/lattice/forms/workbench.showcase.form', [
+    post('/lattice/forms/workbench.fields.select.form', [
         '_search' => 'related_products',
         'q' => 'walnut',
     ], $this->latticeHeaders($ref))

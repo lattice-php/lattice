@@ -11,6 +11,9 @@ use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Support\Discovery\ClassWalker;
+use Lattice\Lattice\Tables\Columns\BadgeColumn;
+use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
@@ -91,4 +94,13 @@ test('discovered pages are available through the page registry', function (): vo
     $classes = collect(Lattice::pageRegistry()->all())->pluck('class');
 
     expect($classes)->toContain(DiscoveredDemoPage::class);
+});
+
+test('the class walker returns classes under a path and an empty list for a missing path', function (): void {
+    expect(ClassWalker::classes(dirname(__DIR__, 3).'/src/Tables/Columns'))->toContain(BadgeColumn::class)
+        ->and(ClassWalker::classes('/no/such/path'))->toBe([]);
+});
+
+test('the class walker includes enums via all()', function (): void {
+    expect(ClassWalker::all(dirname(__DIR__, 3).'/src/Tables/Enums'))->toContain(ColumnType::class);
 });

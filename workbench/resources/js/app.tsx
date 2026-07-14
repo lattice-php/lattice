@@ -8,7 +8,7 @@ import { appColumns } from "./columns";
 import { WORKBENCH_I18N_NAMESPACE } from "./i18n";
 
 // Exercises the custom rich-editor extension seam: the PHP side ships the bare
-// "stamp" wire type (see RichEditorDemoForm) and this client registration
+// "stamp" wire type (see RichEditorFieldForm) and this client registration
 // provides its behavior. A custom control labels itself, so the demo adds no
 // key to the package's `form.editor.*` namespace.
 registerRichEditorExtension("stamp", {

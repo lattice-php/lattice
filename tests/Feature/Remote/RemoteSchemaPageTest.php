@@ -9,7 +9,7 @@ test('workbench remote schema page renders the remote todo list beside a full re
     withoutVite();
     $this->actingAs(workbenchTestUser());
 
-    $this->assertLatticePage(get('/workbench/remote-schema')->assertOk())
+    $this->assertLatticePage(get('/platform/remote-schema')->assertOk())
         ->assertRendered('section')
         ->component('grid', tap: fn ($grid) => $grid->assertProp('columns', 2))
         ->component('remote.data-list', tap: fn ($list) => $list
