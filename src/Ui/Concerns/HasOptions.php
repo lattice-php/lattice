@@ -13,9 +13,12 @@ trait HasOptions
      */
     public array $options = [];
 
-    public static function option(string $label, string $value): Option
+    /**
+     * @param  array<string, mixed>|null  $data
+     */
+    public static function option(string $label, string $value, ?array $data = null): Option
     {
-        return new Option($label, $value);
+        return new Option($label, $value, $data);
     }
 
     /**

@@ -9,7 +9,7 @@ use Lattice\Lattice\Forms\Components\RowTemplate;
 use Lattice\Lattice\Forms\Components\Select;
 
 /**
- * @return array<int, array{label: string, value: string}>
+ * @return array<int, array{label: string, value: string, data: array<string, mixed>|null}>
  */
 function prefilledOptions(Form $form): array
 {
@@ -17,7 +17,7 @@ function prefilledOptions(Form $form): array
 }
 
 /**
- * @return array<int, array{label: string, value: string}>
+ * @return array<int, array{label: string, value: string, data: array<string, mixed>|null}>
  */
 function repeaterPrefilledOptions(Form $form): array
 {
@@ -25,7 +25,7 @@ function repeaterPrefilledOptions(Form $form): array
 }
 
 /**
- * @return array<int, array{label: string, value: string}>
+ * @return array<int, array{label: string, value: string, data: array<string, mixed>|null}>
  */
 function nestedRepeaterPrefilledOptions(Form $form): array
 {
@@ -33,7 +33,7 @@ function nestedRepeaterPrefilledOptions(Form $form): array
 }
 
 /**
- * @return array<int, array{label: string, value: string}>
+ * @return array<int, array{label: string, value: string, data: array<string, mixed>|null}>
  */
 function builderPrefilledOptions(Form $form): array
 {
@@ -52,7 +52,7 @@ it('resolves the label for a single filled id', function (): void {
         ]);
 
     expect(prefilledOptions($form))->toBe([
-        ['label' => 'User 5', 'value' => '5'],
+        ['label' => 'User 5', 'value' => '5', 'data' => null],
     ]);
 });
 
@@ -69,8 +69,8 @@ it('resolves labels for multiple filled ids', function (): void {
         ]);
 
     expect(prefilledOptions($form))->toBe([
-        ['label' => 'Tag 1', 'value' => '1'],
-        ['label' => 'Tag 2', 'value' => '2'],
+        ['label' => 'Tag 1', 'value' => '1', 'data' => null],
+        ['label' => 'Tag 2', 'value' => '2', 'data' => null],
     ]);
 });
 
@@ -101,7 +101,7 @@ it('does nothing when the field has no resolver', function (): void {
         ]);
 
     expect(prefilledOptions($form))->toBe([
-        ['label' => 'Pro', 'value' => 'pro'],
+        ['label' => 'Pro', 'value' => 'pro', 'data' => null],
     ]);
 });
 
@@ -145,8 +145,8 @@ it('resolves labels for filled ids inside repeater rows', function (): void {
         ]);
 
     expect(repeaterPrefilledOptions($form))->toBe([
-        ['label' => 'Product 5', 'value' => '5'],
-        ['label' => 'Product 8', 'value' => '8'],
+        ['label' => 'Product 5', 'value' => '5', 'data' => null],
+        ['label' => 'Product 8', 'value' => '8', 'data' => null],
     ])->and($received)->toBe(['5', '8']);
 });
 
@@ -174,8 +174,8 @@ it('resolves labels for filled ids inside builder rows', function (): void {
         ]);
 
     expect(builderPrefilledOptions($form))->toBe([
-        ['label' => 'Product 5', 'value' => '5'],
-        ['label' => 'Product 8', 'value' => '8'],
+        ['label' => 'Product 5', 'value' => '5', 'data' => null],
+        ['label' => 'Product 8', 'value' => '8', 'data' => null],
     ])->and($received)->toBe(['5', '8']);
 });
 
@@ -205,7 +205,7 @@ it('resolves labels for filled ids inside nested repeater rows', function (): vo
         ]);
 
     expect(nestedRepeaterPrefilledOptions($form))->toBe([
-        ['label' => 'Product 5', 'value' => '5'],
-        ['label' => 'Product 8', 'value' => '8'],
+        ['label' => 'Product 5', 'value' => '5', 'data' => null],
+        ['label' => 'Product 8', 'value' => '8', 'data' => null],
     ])->and($received)->toBe(['5', '8']);
 });

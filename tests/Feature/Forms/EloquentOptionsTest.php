@@ -74,3 +74,31 @@ it('applies a query scope to both search and selected', function (): void {
     expect($source->search(''))->toHaveCount(1)
         ->and($source->selected([(string) $hidden->getKey()]))->toBe([]);
 });
+
+it('attaches per-option data from columns', function (): void {
+    Product::factory()->create(['name' => 'Alpha Chair', 'sku' => 'SKU-1', 'status' => 'active']);
+
+    $options = EloquentOptions::make(Product::class)
+        ->label('name')
+        ->data(['sku', 'status'])
+        ->search('alpha');
+
+    expect($options[0]->data)->toBe(['sku' => 'SKU-1', 'status' => 'active']);
+});
+
+it('attaches per-option data from a closure, on search and selected alike', function (): void {
+    $product = Product::factory()->create(['name' => 'Beta Table', 'sku' => 'SKU-2']);
+
+    $source = EloquentOptions::make(Product::class)
+        ->label('name')
+        ->data(fn ($product): array => ['badge' => mb_strtolower((string) $product->getAttribute('sku'))]);
+
+    expect($source->search('beta')[0]->data)->toBe(['badge' => 'sku-2'])
+        ->and($source->selected([(string) $product->getKey()])[0]->data)->toBe(['badge' => 'sku-2']);
+});
+
+it('omits option data when none is configured', function (): void {
+    Product::factory()->create(['name' => 'Gamma Shelf']);
+
+    expect(EloquentOptions::make(Product::class)->label('name')->search('gamma')[0]->data)->toBeNull();
+});

@@ -24,6 +24,9 @@ final class EloquentOptions implements OptionSource
 
     private int $limit = 50;
 
+    /** @var list<string>|Closure(Model): array<string, mixed>|null */
+    private array|Closure|null $data = null;
+
     private ?string $resolvedValueKey = null;
 
     /**
@@ -89,6 +92,19 @@ final class EloquentOptions implements OptionSource
         return $this;
     }
 
+    /**
+     * Attach a per-option data record for the select's option schema: the
+     * columns to include, or a closure receiving the model for computed values.
+     *
+     * @param  list<string>|Closure(Model): array<string, mixed>  $data
+     */
+    public function data(array|Closure $data): self
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
     public function search(string $query): array
     {
         $builder = $this->query();
@@ -147,8 +163,25 @@ final class EloquentOptions implements OptionSource
             ->map(fn (Model $model): Option => new Option(
                 (string) $model->getAttribute($this->labelKey),
                 (string) $model->getAttribute($this->valueColumn()),
+                $this->optionData($model),
             ))
             ->values()
             ->all();
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function optionData(Model $model): ?array
+    {
+        if ($this->data === null) {
+            return null;
+        }
+
+        if ($this->data instanceof Closure) {
+            return ($this->data)($model);
+        }
+
+        return $model->only($this->data);
     }
 }

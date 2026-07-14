@@ -33,8 +33,8 @@ test('a table serializes its declared filters and starts with no active values',
             'multiple' => false,
             'searchable' => false,
             'options' => [
-                ['label' => 'Draft', 'value' => 'draft'],
-                ['label' => 'Active', 'value' => 'active'],
+                ['label' => 'Draft', 'value' => 'draft', 'data' => null],
+                ['label' => 'Active', 'value' => 'active', 'data' => null],
             ],
             'placeholder' => null,
         ],
@@ -72,7 +72,7 @@ test('a table searches a searchable filter\'s options through the endpoint', fun
 
     $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'filter:author.value', 'q' => 'ad'])
         ->assertOk()
-        ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
+        ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1', 'data' => null]]]);
 });
 
 test('a table searches a searchable column filter through the endpoint', function (): void {
@@ -80,7 +80,7 @@ test('a table searches a searchable column filter through the endpoint', functio
 
     $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'column:owner', 'q' => 'ad'])
         ->assertOk()
-        ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
+        ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1', 'data' => null]]]);
 });
 
 test('a table 404s searching an unknown filter key', function (): void {
@@ -102,7 +102,7 @@ test('a filter key does not shadow a column of the same name', function (): void
 
     $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => 'column:author', 'q' => 'ad'])
         ->assertOk()
-        ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1']]]);
+        ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1', 'data' => null]]]);
 });
 
 test('a table rejects searching a filter that is not searchable', function (): void {

@@ -13,14 +13,17 @@
             "name": "plan",
             "options": [
                 {
+                    "data": null,
                     "label": "Free",
                     "value": "free"
                 },
                 {
+                    "data": null,
                     "label": "Pro",
                     "value": "pro"
                 },
                 {
+                    "data": null,
                     "label": "Enterprise",
                     "value": "enterprise"
                 }

@@ -237,8 +237,8 @@ describe("Lattice form schema components", () => {
         label: "Status",
         name: "status",
         options: [
-          { label: "Draft", value: "draft" },
-          { label: "Active", value: "active" },
+          { label: "Draft", value: "draft", data: null },
+          { label: "Active", value: "active", data: null },
         ],
       },
       type: "field.choice",

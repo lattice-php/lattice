@@ -896,6 +896,7 @@ export type OpenModal = {
 export type Option = {
   readonly label: string;
   readonly value: string;
+  readonly data: Record<string, unknown> | null;
 };
 export type Orientation = "horizontal" | "vertical";
 export type OtpInput = {

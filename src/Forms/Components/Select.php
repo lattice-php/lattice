@@ -6,12 +6,15 @@ namespace Lattice\Lattice\Forms\Components;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Facades\Evaluate;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Ui\Concerns\HasAutoFocus;
 use Lattice\Lattice\Ui\Concerns\HasOptions;
 use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
@@ -20,6 +23,7 @@ use Lattice\Lattice\Ui\Concerns\HasTabIndex;
 #[AsField(FieldType::Select)]
 class Select extends Field
 {
+    use FiltersRenderableComponents;
     use HasAutoFocus;
     use HasOptions;
     use HasPlaceholder;
@@ -30,6 +34,11 @@ class Select extends Field
     private ?Closure $selectedResolver = null;
 
     private ?OptionSource $optionSource = null;
+
+    /**
+     * @var array<int, Component>
+     */
+    protected array $optionSchema = [];
 
     public bool $multiple = false;
 
@@ -84,6 +93,43 @@ class Select extends Field
         $this->searchable = true;
 
         return $this;
+    }
+
+    /**
+     * Render each option through a schema of bound components instead of the
+     * plain label. Components bind option fields with `->dataKey($prop, $key)`;
+     * bindings resolve against the option's `data` record plus its `label` and
+     * `value`. The schema ships once on the wire — options only carry data.
+     *
+     * @param  array<int, Component>  $components
+     */
+    public function optionSchema(array $components): static
+    {
+        $this->optionSchema = $components;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 300)]
+    protected function serialiseOptionSchema(array $data): array
+    {
+        if ($this->optionSchema === []) {
+            return $data;
+        }
+
+        $schema = $this->renderableComponents($this->optionSchema);
+
+        if ($schema === []) {
+            return $data;
+        }
+
+        $data['props']['optionSchema'] = $schema;
+
+        return $data;
     }
 
     /**
@@ -172,7 +218,7 @@ class Select extends Field
     }
 
     /**
-     * @param  array<int, Option|array{label: string, value: string|int}>|Collection<int, Option|array{label: string, value: string|int}>  $options
+     * @param  array<int, Option|array{label: string, value: string|int, data?: array<string, mixed>|null}>|Collection<int, Option|array{label: string, value: string|int, data?: array<string, mixed>|null}>  $options
      * @return list<Option>
      */
     private function normalizeOptions(array|Collection $options): array
@@ -184,7 +230,7 @@ class Select extends Field
         return array_values(array_map(
             static fn (Option|array $option): Option => $option instanceof Option
                 ? $option
-                : new Option((string) $option['label'], (string) $option['value']),
+                : new Option((string) $option['label'], (string) $option['value'], $option['data'] ?? null),
             $options,
         ));
     }

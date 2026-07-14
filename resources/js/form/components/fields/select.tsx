@@ -4,7 +4,9 @@ import { Combobox } from "@lattice-php/lattice/ui/combobox";
 import { controlSurface } from "@lattice-php/lattice/ui/control";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
-import type { Option, RendererComponent } from "@lattice-php/lattice/core/types";
+import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { materializeSchema } from "@lattice-php/lattice/core/materialize";
+import type { Node, Option, RendererComponent } from "@lattice-php/lattice/core/types";
 import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
 import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
 import { fieldDomName } from "@lattice-php/lattice/form/lib/field-dom-name";
@@ -48,6 +50,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
     () => (resolvedNode.props as { options?: Option[] }).options ?? [],
     [resolvedNode.props],
   );
+  const optionSchema = (resolvedNode.props as { optionSchema?: Node[] }).optionSchema;
 
   const globalValue = useFormValue(name);
   const values = useFormValues();
@@ -139,6 +142,18 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
 
   const options = searchable ? (results ?? staticOptions) : staticOptions;
 
+  const renderOption = optionSchema?.length
+    ? (option: Option) => (
+        <Renderer
+          nodes={materializeSchema(optionSchema, {
+            ...option.data,
+            label: option.label,
+            value: option.value,
+          })}
+        />
+      )
+    : undefined;
+
   return (
     <FormFieldFrame
       error={errors[errorKey]}
@@ -198,6 +213,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
             }
           }}
           options={options}
+          renderOption={renderOption}
           searchPlaceholder={props.searchPlaceholder ?? undefined}
           showSearch={Boolean(searchable)}
           selected={selected}

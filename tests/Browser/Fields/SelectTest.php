@@ -36,3 +36,22 @@ it('searches and selects entities in a multiple select', function (): void {
         ->assertPresent('input[type="hidden"][name="related_products[]"]')
         ->assertNoJavaScriptErrors();
 });
+
+it('renders rich option rows in the products search', function (): void {
+    $this->actingAs(workbenchTestUser());
+    Product::factory()->create(['name' => 'Walnut Desk', 'sku' => 'WD-100', 'status' => 'active']);
+
+    $page = visit('/form/fields/select?type=searchable');
+
+    $page->click('Search products…')
+        ->fill('input[aria-label="Search options"]', 'walnut');
+
+    eventually(function () use ($page): void {
+        $page->assertSee('WD-100');
+    });
+
+    $page->click('Walnut Desk')
+        ->assertPresent('button[aria-label="Remove Walnut Desk"]')
+        ->assertPresent('input[type="hidden"][name="related_products[]"]')
+        ->assertNoJavaScriptErrors();
+});

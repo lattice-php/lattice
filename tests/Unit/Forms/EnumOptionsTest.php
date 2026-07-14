@@ -25,8 +25,8 @@ it('builds options from an enum class using humanised names by default', functio
     $options = wire(Choice::make('status', 'Status')->enum(PlainStatus::class))['props']['options'];
 
     expect($options)->toBe([
-        ['label' => 'Draft', 'value' => 'draft'],
-        ['label' => 'In Review', 'value' => 'in_review'],
+        ['label' => 'Draft', 'value' => 'draft', 'data' => null],
+        ['label' => 'In Review', 'value' => 'in_review', 'data' => null],
     ]);
 });
 
@@ -40,8 +40,8 @@ it('uses the HasLabel contract for labels and supports translations', function (
     $options = wire(Choice::make('status', 'Status')->enum(LabelledStatus::class))['props']['options'];
 
     expect($options)->toBe([
-        ['label' => 'Aktiv', 'value' => 'active'],
-        ['label' => 'Archiviert', 'value' => 'archived'],
+        ['label' => 'Aktiv', 'value' => 'active', 'data' => null],
+        ['label' => 'Archiviert', 'value' => 'archived', 'data' => null],
     ]);
 });
 
@@ -50,6 +50,6 @@ it('builds options from a subset of enum cases', function (): void {
         ->enum([PlainStatus::Draft]))['props']['options'];
 
     expect($options)->toBe([
-        ['label' => 'Draft', 'value' => 'draft'],
+        ['label' => 'Draft', 'value' => 'draft', 'data' => null],
     ]);
 });

@@ -28,8 +28,8 @@ const filters: FilterNode[] = [
     props: {
       label: "Status",
       options: [
-        { label: "Active", value: "active" },
-        { label: "Draft", value: "draft" },
+        { label: "Active", value: "active", data: null },
+        { label: "Draft", value: "draft", data: null },
       ],
       multiple: true,
       searchable: false,

@@ -15,18 +15,22 @@
             "name": "languages",
             "options": [
                 {
+                    "data": null,
                     "label": "PHP",
                     "value": "php"
                 },
                 {
+                    "data": null,
                     "label": "JavaScript",
                     "value": "js"
                 },
                 {
+                    "data": null,
                     "label": "Go",
                     "value": "go"
                 },
                 {
+                    "data": null,
                     "label": "Rust",
                     "value": "rust"
                 }

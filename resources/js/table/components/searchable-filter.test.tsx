@@ -10,7 +10,7 @@ const filter: FilterNode = {
   type: "filter.select",
   props: {
     label: "Author",
-    options: [{ label: "Ada", value: "1" }],
+    options: [{ label: "Ada", value: "1", data: null }],
     multiple: false,
     searchable: true,
     placeholder: null,

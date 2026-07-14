@@ -220,7 +220,7 @@ it('aborts with 422 when a row select is not searchable', function (): void {
 it('searches options through the form endpoint with a signed reference', function (): void {
     Lattice::forms([SelectFieldForm::class]);
 
-    Product::factory()->create(['name' => 'Walnut Desk']);
+    $walnutDesk = Product::factory()->create(['name' => 'Walnut Desk']);
     Product::factory()->create(['name' => 'Steel Lamp']);
 
     $ref = wire(Form::use(SelectFieldForm::class))['props']['ref'];
@@ -232,7 +232,11 @@ it('searches options through the form endpoint with a signed reference', functio
         ->assertOk()
         ->assertExactJson([
             'options' => [
-                ['label' => 'Walnut Desk', 'value' => (string) Product::query()->where('name', 'Walnut Desk')->value('id')],
+                [
+                    'label' => 'Walnut Desk',
+                    'value' => (string) $walnutDesk->id,
+                    'data' => ['sku' => $walnutDesk->sku, 'status' => $walnutDesk->status],
+                ],
             ],
         ]);
 });

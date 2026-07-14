@@ -1,0 +1,98 @@
+[
+    {
+        "props": {
+            "autoFocus": false,
+            "columnWidth": "md",
+            "conditions": null,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "editablePrefill": false,
+            "emptyLabel": "No options",
+            "helperText": null,
+            "label": "Customer",
+            "multiple": false,
+            "name": "customer",
+            "optionSchema": [
+                {
+                    "props": {
+                        "align": null,
+                        "direction": null,
+                        "float": null,
+                        "gap": null,
+                        "height": null,
+                        "justify": null,
+                        "width": null
+                    },
+                    "schema": [
+                        {
+                            "props": {
+                                "align": null,
+                                "color": null,
+                                "copyable": false,
+                                "dataBindings": {
+                                    "text": "label"
+                                },
+                                "size": "md",
+                                "text": ""
+                            },
+                            "type": "text"
+                        },
+                        {
+                            "props": {
+                                "align": null,
+                                "color": "muted",
+                                "copyable": false,
+                                "dataBindings": {
+                                    "text": "email"
+                                },
+                                "size": "sm",
+                                "text": ""
+                            },
+                            "type": "text"
+                        }
+                    ],
+                    "type": "stack"
+                },
+                {
+                    "props": {
+                        "dataBindings": {
+                            "label": "number"
+                        },
+                        "label": ""
+                    },
+                    "type": "badge"
+                }
+            ],
+            "options": [
+                {
+                    "data": {
+                        "email": "kontakt@acme.de",
+                        "number": "K-10021"
+                    },
+                    "label": "Acme GmbH",
+                    "value": "1"
+                },
+                {
+                    "data": {
+                        "email": "info@globex.de",
+                        "number": "K-10022"
+                    },
+                    "label": "Globex AG",
+                    "value": "2"
+                }
+            ],
+            "placeholder": "Pick a customer",
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "readOnly": false,
+            "required": false,
+            "searchPlaceholder": "Search…",
+            "searchable": false,
+            "tabIndex": null,
+            "tooltip": null,
+            "value": null
+        },
+        "type": "field.select"
+    }
+]

@@ -6,14 +6,17 @@
             "name": "appearance",
             "options": [
                 {
+                    "data": null,
                     "label": "Light",
                     "value": "light"
                 },
                 {
+                    "data": null,
                     "label": "Dark",
                     "value": "dark"
                 },
                 {
+                    "data": null,
                     "label": "System",
                     "value": "system"
                 }

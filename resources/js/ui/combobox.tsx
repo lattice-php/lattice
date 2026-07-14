@@ -15,7 +15,8 @@ const SEARCH_DEBOUNCE_MS = 250;
  * consumer also owns option fetching. Pass `onSearch` for remote search (the
  * combobox debounces the query and renders `options` as given); omit it to
  * filter the provided `options` locally by label. The combobox closes itself
- * after a single-select.
+ * after a single-select. Pass `renderOption` to render rich option rows; the
+ * option's label stays the accessible name.
  */
 function Combobox({
   contentClassName,
@@ -27,6 +28,7 @@ function Combobox({
   open,
   onOpenChange,
   options,
+  renderOption,
   searchLabel,
   searchPlaceholder,
   selected,
@@ -45,6 +47,7 @@ function Combobox({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   options: Option[];
+  renderOption?: (option: Option) => React.ReactNode;
   searchLabel?: string;
   searchPlaceholder?: string;
   selected: string[];
@@ -129,6 +132,7 @@ function Combobox({
 
               return (
                 <button
+                  aria-label={renderOption ? option.label : undefined}
                   aria-selected={isSelected}
                   className={cn(
                     "flex w-full items-center justify-between gap-2 rounded-lt-sm px-3 py-1.5 text-left text-sm transition-colors hover:bg-lt-accent hover:text-lt-accent-fg",
@@ -142,7 +146,13 @@ function Combobox({
                   role="option"
                   type="button"
                 >
-                  {option.label}
+                  {renderOption ? (
+                    <span className="flex min-w-0 flex-1 items-center gap-2">
+                      {renderOption(option)}
+                    </span>
+                  ) : (
+                    option.label
+                  )}
                   {isSelected && (
                     <Icon name="check" aria-hidden="true" className="size-lt-icon-md shrink-0" />
                   )}
