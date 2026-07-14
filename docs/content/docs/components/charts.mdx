@@ -1,6 +1,6 @@
 ---
 title: Charts
-description: Data charts — line, bar, area, pie, and doughnut series that serialize to Recharts.
+description: Data charts — line, bar, area, pie, doughnut, and gauge series that serialize to Recharts.
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
@@ -39,6 +39,7 @@ plots, with an optional display name and color:
 - **`->area($dataKey, $name?, $color?, $stackId?)`** — a filled area; stackable via `$stackId`.
 - **`->pie($dataKey, $nameKey?, $name?, $color?)`** — a pie; `$nameKey` names each slice.
 - **`->doughnut($dataKey, $nameKey?, $name?, $color?, $innerRadius = '60%')`** — a pie with a hole; `$innerRadius` sizes it.
+- **`->gauge($dataKey, $nameKey?, $name?, $color?, $maxValue?, $innerRadius = '70%')`** — a semicircle gauge; one ring per row, scaled against `$maxValue`.
 
 `->categoryKey($key)` names the row field used for the X axis. `->height($px)` sets the plot height
 (default `320`).
@@ -133,9 +134,9 @@ field to color its slice, or let the theme palette pick:
 />
 
 <Warning>
-  A pie can't share a chart with cartesian series. If a chart declares a pie **and** any line, bar,
-  or area series, only the cartesian series render and the pie is dropped. Put the pie in its own
-  chart.
+  Pies and gauges can't share a chart with cartesian series. If a chart declares any line, bar, or
+  area series, only those render and the pie or gauge is dropped. Declaring several pie or gauge
+  series together renders only the first. Give each its own chart.
 </Warning>
 
 ### Doughnut
@@ -157,12 +158,35 @@ takes an optional `$innerRadius` (default `'60%'`) that sets the size of the hol
   fixture="charts.doughnut"
 />
 
+## Gauges
+
+`->gauge()` plots each row as a radial ring sweeping a semicircle — a value read against a maximum.
+`$maxValue` sets the scale; omit it to scale against the largest row value. `nameKey` labels each
+ring, and `$innerRadius` (default `'70%'`) sets the ring thickness. A single-row gauge prints its
+formatted value in the center of the arc; multiple rows render as concentric rings sharing one scale:
+
+<ComponentExample
+  php={`Chart::make('CPU usage', 'cpu-gauge-chart')
+    ->description('Current utilization')
+    ->data([
+        ['label' => 'CPU', 'value' => 72],
+    ])
+    ->gauge('value', nameKey: 'label', maxValue: 100)
+    ->valueFormat(NumberFormat::make()->unit(NumberFormatUnit::Percent))
+    ->height(260);`}
+  fixture="charts.gauge"
+/>
+
+Gauges ignore the grid and axes, so `->categoryKey()` and `->categoryFormat()` have no effect —
+`->valueFormat()` drives the center label and tooltip.
+
 ## Colors and theming
 
 Omit a series color and Lattice cycles a palette built on your [theme tokens](/theming/) —
 `--lt-primary`, `--lt-success`, `--lt-info`, `--lt-warning`, `--lt-danger`, `--lt-muted-fg` — so
 charts follow light and dark mode automatically. Pass an explicit `color` to override: a hex value, or a CSS variable like
-`var(--lt-primary)` to stay theme-aware. For pies, a per-row `color` field wins over the series color.
+`var(--lt-primary)` to stay theme-aware. For pies and gauges, a per-row `color` field wins over the
+series color.
 
 ## Formatting values and categories
 

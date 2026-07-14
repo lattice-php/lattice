@@ -1,0 +1,44 @@
+[
+    {
+        "key": "cpu-gauge-chart",
+        "props": {
+            "categoryFormat": null,
+            "categoryKey": null,
+            "data": [
+                {
+                    "label": "CPU",
+                    "value": 72
+                }
+            ],
+            "description": "Current utilization",
+            "grid": true,
+            "height": 260,
+            "legend": true,
+            "series": [
+                {
+                    "color": null,
+                    "dataKey": "value",
+                    "innerRadius": "70%",
+                    "maxValue": 100,
+                    "name": "value",
+                    "nameKey": "label",
+                    "stackId": null,
+                    "type": "gauge"
+                }
+            ],
+            "title": "CPU usage",
+            "tooltip": true,
+            "valueFormat": {
+                "currency": null,
+                "kind": "number",
+                "maximumFractionDigits": null,
+                "minimumFractionDigits": null,
+                "notation": "standard",
+                "unit": "percent"
+            },
+            "xAxis": true,
+            "yAxis": true
+        },
+        "type": "chart"
+    }
+]

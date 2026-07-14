@@ -422,6 +422,11 @@ return [
                     'revenue' => 'Umsatz',
                     'title' => 'Umsatz (formatiert)',
                 ],
+                'gauge' => [
+                    'cpu' => 'CPU',
+                    'description' => 'Auslastung als Halbkreis-Tacho mit festem Maximalwert.',
+                    'title' => 'CPU-Auslastung',
+                ],
                 'heading' => 'Diagramm-Galerie',
                 'intro' => 'Alle vom Diagramm unterstützten Serientypen sowie sprach- und zeitzonenbewusste Werte- und Kategorieformatierung.',
                 'orders' => [

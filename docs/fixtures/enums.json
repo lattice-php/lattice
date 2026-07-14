@@ -470,6 +470,10 @@
                 "value": "bar"
             },
             {
+                "name": "Gauge",
+                "value": "gauge"
+            },
+            {
                 "name": "Line",
                 "value": "line"
             },

@@ -37,6 +37,7 @@
                     "color": null,
                     "dataKey": "revenue",
                     "innerRadius": "0%",
+                    "maxValue": null,
                     "name": "Revenue",
                     "nameKey": null,
                     "stackId": null,

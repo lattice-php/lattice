@@ -422,6 +422,11 @@ return [
                     'revenue' => 'Revenue',
                     'title' => 'Revenue (formatted)',
                 ],
+                'gauge' => [
+                    'cpu' => 'CPU',
+                    'description' => 'Utilization as a semicircle gauge scaled to a maximum.',
+                    'title' => 'CPU usage',
+                ],
                 'heading' => 'Chart gallery',
                 'intro' => 'Every series type the chart component supports, plus locale- and timezone-aware value and category formatting.',
                 'orders' => [

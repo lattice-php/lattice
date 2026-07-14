@@ -35,6 +35,7 @@
                     "color": null,
                     "dataKey": "amount",
                     "innerRadius": "60%",
+                    "maxValue": null,
                     "name": "amount",
                     "nameKey": "channel",
                     "stackId": null,
