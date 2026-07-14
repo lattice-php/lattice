@@ -126,7 +126,8 @@ label — a second line, a badge, an avatar. Components bind option fields with
 `->dataKey($prop, $key)`, exactly like the [stack column](/tables/columns/stack/). The bindings
 resolve against the option's `data` record plus its `label` and `value` (`label` and `value` are
 reserved and always resolve to the option's own fields). The schema is declared once and ships once;
-each option only carries its `data`, passed as the third argument to `Select::option()`.
+each option only carries its `data`, passed as the third argument to `Select::option()`. For static
+options, the dropdown filter matches the option label; text rendered from `data` stays display-only.
 
 <ComponentExample
   php={`Select::make('customer', 'Customer')
