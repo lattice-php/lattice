@@ -106,6 +106,27 @@ it('serializes a doughnut series as a pie with an inner radius', function (): vo
         ]);
 });
 
+it('serializes a distribution series', function (): void {
+    $node = wire(
+        Chart::make('Revenue by channel')
+            ->data([
+                ['channel' => 'Direct', 'amount' => 4200],
+                ['channel' => 'Partner', 'amount' => 2600],
+            ])
+            ->distribution('amount', nameKey: 'channel'),
+    );
+
+    expect($node['props']['series'])->toHaveCount(1)
+        ->and($node['props']['series'][0])->toMatchArray([
+            'type' => 'distribution',
+            'dataKey' => 'amount',
+            'name' => 'amount',
+            'nameKey' => 'channel',
+            'innerRadius' => '0%',
+            'maxValue' => null,
+        ]);
+});
+
 it('serializes a gauge series', function (): void {
     $node = wire(
         Chart::make('CPU usage')
@@ -302,6 +323,21 @@ describe('docs fixtures', function (): void {
                 ])
                 ->doughnut('amount', nameKey: 'channel')
                 ->height(260),
+        ]))));
+    });
+
+    it('matches the distribution chart example fixture', function (): void {
+        assertFixtureMatches('charts.distribution', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Chart::make('Revenue by channel', 'channel-distribution-chart')
+                ->description('Share of total revenue')
+                ->data([
+                    ['channel' => 'Direct', 'amount' => 42_000],
+                    ['channel' => 'Partner', 'amount' => 27_000],
+                    ['channel' => 'Marketplace', 'amount' => 19_000],
+                    ['channel' => 'Retail', 'amount' => 12_000],
+                ])
+                ->distribution('amount', nameKey: 'channel')
+                ->valueFormat(NumberFormat::currency('USD')->compact()),
         ]))));
     });
 

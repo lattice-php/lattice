@@ -30,7 +30,7 @@ type ChartProps = PropsOf<"chart">;
 type ChartSeries = ChartProps["series"][number];
 type ChartDatum = ChartProps["data"][number];
 type CartesianSeries = ChartSeries & { type: "area" | "bar" | "line" };
-type SpecialSeries = ChartSeries & { type: "gauge" | "pie" };
+type SpecialSeries = ChartSeries & { type: "distribution" | "gauge" | "pie" };
 type ChartMargin = { bottom: number; left: number; right: number; top: number };
 type CartesianChartComponent = ComponentType<{
   children: ReactNode;
@@ -282,9 +282,13 @@ function PieChartView({ props, series }: { props: ChartProps; series: ChartSerie
   );
 }
 
-function ChartLegend({ entries }: { entries: Array<{ color: string; label: string }> }) {
+function ChartLegend({
+  entries,
+}: {
+  entries: Array<{ color: string; label: string; value?: string }>;
+}) {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 pb-1.5">
+    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
       {entries.map((entry, index) => (
         <span
           key={index}
@@ -296,6 +300,9 @@ function ChartLegend({ entries }: { entries: Array<{ color: string; label: strin
             style={{ background: entry.color }}
           />
           {entry.label}
+          {entry.value !== undefined && (
+            <span className="font-medium text-lt-surface-fg">{entry.value}</span>
+          )}
         </span>
       ))}
     </div>
@@ -314,7 +321,7 @@ function GaugeChartView({ props, series }: { props: ChartProps; series: ChartSer
   }));
 
   return (
-    <>
+    <div className="flex flex-col gap-1.5">
       {props.legend && <ChartLegend entries={legendEntries} />}
       <div className="relative">
         <ResponsiveContainer width="100%" height={props.height} debounce={100}>
@@ -353,12 +360,67 @@ function GaugeChartView({ props, series }: { props: ChartProps; series: ChartSer
           </div>
         )}
       </div>
-    </>
+    </div>
+  );
+}
+
+function DistributionChartView({ props, series }: { props: ChartProps; series: ChartSeries }) {
+  const { locale } = useLocale();
+  const { timezone } = useTimezone();
+  const ctx = { locale, timezone };
+  const segments = props.data
+    .map((datum, index) => ({
+      color: datumColor(datum, series, index),
+      label: datumName(datum, series),
+      value: datumValue(datum, series.dataKey),
+    }))
+    .filter((segment) => segment.value > 0);
+  const total = segments.reduce((sum, segment) => sum + segment.value, 0);
+
+  if (total <= 0) {
+    return <div className="h-2.5 w-full rounded-full bg-lt-muted" data-lattice-distribution="" />;
+  }
+
+  const formatPercent = new Intl.NumberFormat(locale, {
+    maximumFractionDigits: 1,
+    style: "percent",
+  });
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      <div
+        className="flex h-2.5 w-full gap-0.5 overflow-hidden rounded-full"
+        data-lattice-distribution=""
+      >
+        {segments.map((segment, index) => (
+          <div
+            key={index}
+            style={{ background: segment.color, width: `${(segment.value / total) * 100}%` }}
+            title={
+              props.tooltip
+                ? `${segment.label}: ${formatValue(segment.value, props.valueFormat, ctx)}`
+                : undefined
+            }
+          />
+        ))}
+      </div>
+      {props.legend && (
+        <ChartLegend
+          entries={segments.map((segment) => ({
+            color: segment.color,
+            label: segment.label,
+            value: formatPercent.format(segment.value / total),
+          }))}
+        />
+      )}
+    </div>
   );
 }
 
 function SpecialChart({ props, series }: { props: ChartProps; series: SpecialSeries }) {
   switch (series.type) {
+    case "distribution":
+      return <DistributionChartView props={props} series={series} />;
     case "gauge":
       return <GaugeChartView props={props} series={series} />;
     case "pie":

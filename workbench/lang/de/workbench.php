@@ -417,6 +417,10 @@ return [
                     'rate' => 'Konversionsrate',
                     'title' => 'Konversionsrate',
                 ],
+                'distribution' => [
+                    'description' => 'Umsatzanteile als proportionaler Segmentbalken.',
+                    'title' => 'Kanalanteile',
+                ],
                 'formatting' => [
                     'description' => 'Kompakte Währung auf der Werteachse, kurze lokalisierte Daten auf der Kategorieachse.',
                     'revenue' => 'Umsatz',

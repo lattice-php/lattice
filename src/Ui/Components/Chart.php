@@ -161,6 +161,11 @@ class Chart extends Component
         return $this->addSeries(ChartSeries::gauge($dataKey, $nameKey, $name, $color, $maxValue, $innerRadius));
     }
 
+    public function distribution(string $dataKey, ?string $nameKey = null, ?string $name = null, ?string $color = null): static
+    {
+        return $this->addSeries(ChartSeries::distribution($dataKey, $nameKey, $name, $color));
+    }
+
     /**
      * @param  array<int, ChartSeries>  $series
      */

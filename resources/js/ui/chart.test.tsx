@@ -445,6 +445,186 @@ describe("Chart component", () => {
     expect(screen.queryByText("5")).not.toBeInTheDocument();
   });
 
+  it("renders a distribution as a proportional segmented bar with a percent legend", () => {
+    const { container } = renderChart({
+      type: "chart",
+      props: {
+        categoryFormat: null,
+        categoryKey: null,
+        data: [
+          { amount: 3, channel: "Direct", color: "#111827" },
+          { amount: 1, channel: "Partner" },
+        ],
+        description: null,
+        valueFormat: {
+          kind: "number",
+          notation: "compact",
+          minimumFractionDigits: null,
+          maximumFractionDigits: null,
+          currency: "USD",
+          unit: null,
+        },
+        grid: true,
+        height: 320,
+        legend: true,
+        series: [
+          {
+            color: "#2563eb",
+            dataKey: "amount",
+            name: "amount",
+            nameKey: "channel",
+            stackId: null,
+            innerRadius: "0%",
+            maxValue: null,
+            type: "distribution",
+          },
+        ],
+        title: "Revenue by channel",
+        tooltip: true,
+        xAxis: true,
+        yAxis: true,
+      },
+    });
+
+    const track = container.querySelector("[data-lattice-distribution]");
+    const segments = Array.from(track?.children ?? []);
+
+    expect(segments).toHaveLength(2);
+    expect(segments[0]).toHaveStyle({ background: "#111827", width: "75%" });
+    expect(segments[1]).toHaveStyle({ background: "#2563eb", width: "25%" });
+    expect(segments[0]).toHaveAttribute("title", "Direct: $3");
+    expect(segments[1]).toHaveAttribute("title", "Partner: $1");
+    expect(screen.getByText("Direct")).toBeVisible();
+    expect(screen.getByText("75%")).toBeVisible();
+    expect(screen.getByText("Partner")).toBeVisible();
+    expect(screen.getByText("25%")).toBeVisible();
+    expect(screen.queryByTestId("responsive-container")).not.toBeInTheDocument();
+  });
+
+  it("skips non-positive distribution rows", () => {
+    const { container } = renderChart({
+      type: "chart",
+      props: {
+        categoryFormat: null,
+        categoryKey: null,
+        data: [
+          { amount: 0, channel: "Zero" },
+          { amount: -5, channel: "Negative" },
+          { amount: 4, channel: "Direct" },
+        ],
+        description: null,
+        valueFormat: null,
+        grid: true,
+        height: 320,
+        legend: true,
+        series: [
+          {
+            color: null,
+            dataKey: "amount",
+            name: "amount",
+            nameKey: "channel",
+            stackId: null,
+            innerRadius: "0%",
+            maxValue: null,
+            type: "distribution",
+          },
+        ],
+        title: null,
+        tooltip: true,
+        xAxis: true,
+        yAxis: true,
+      },
+    });
+
+    const track = container.querySelector("[data-lattice-distribution]");
+    const segments = Array.from(track?.children ?? []);
+
+    expect(segments).toHaveLength(1);
+    expect(segments[0]).toHaveStyle({ width: "100%" });
+    expect(screen.queryByText("Zero")).not.toBeInTheDocument();
+    expect(screen.queryByText("Negative")).not.toBeInTheDocument();
+  });
+
+  it("renders a muted empty track when a distribution has no positive values", () => {
+    const { container } = renderChart({
+      type: "chart",
+      props: {
+        categoryFormat: null,
+        categoryKey: null,
+        data: [],
+        description: null,
+        valueFormat: null,
+        grid: true,
+        height: 320,
+        legend: true,
+        series: [
+          {
+            color: null,
+            dataKey: "amount",
+            name: "amount",
+            nameKey: "channel",
+            stackId: null,
+            innerRadius: "0%",
+            maxValue: null,
+            type: "distribution",
+          },
+        ],
+        title: null,
+        tooltip: true,
+        xAxis: true,
+        yAxis: true,
+      },
+    });
+
+    const track = container.querySelector("[data-lattice-distribution]");
+
+    expect(track).toHaveClass("bg-lt-muted");
+    expect(track?.children).toHaveLength(0);
+  });
+
+  it("omits distribution titles and legend when tooltip and legend are off", () => {
+    const { container } = renderChart({
+      type: "chart",
+      props: {
+        categoryFormat: null,
+        categoryKey: null,
+        data: [
+          { amount: 3, channel: "Direct" },
+          { amount: 1, channel: "Partner" },
+        ],
+        description: null,
+        valueFormat: null,
+        grid: true,
+        height: 320,
+        legend: false,
+        series: [
+          {
+            color: null,
+            dataKey: "amount",
+            name: "amount",
+            nameKey: "channel",
+            stackId: null,
+            innerRadius: "0%",
+            maxValue: null,
+            type: "distribution",
+          },
+        ],
+        title: null,
+        tooltip: false,
+        xAxis: true,
+        yAxis: true,
+      },
+    });
+
+    const track = container.querySelector("[data-lattice-distribution]");
+    const segments = Array.from(track?.children ?? []);
+
+    expect(segments).toHaveLength(2);
+    expect(segments[0]).not.toHaveAttribute("title");
+    expect(screen.queryByText("Direct")).not.toBeInTheDocument();
+    expect(screen.queryByText("75%")).not.toBeInTheDocument();
+  });
+
   it("keeps cartesian series visible when a gauge series is also present", () => {
     renderChart({
       type: "chart",

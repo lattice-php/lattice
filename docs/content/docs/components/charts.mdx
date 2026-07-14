@@ -1,6 +1,6 @@
 ---
 title: Charts
-description: Data charts — line, bar, area, pie, doughnut, and gauge series that serialize to Recharts.
+description: Data charts — line, bar, area, pie, doughnut, gauge, and distribution series from a single builder.
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
@@ -40,6 +40,7 @@ plots, with an optional display name and color:
 - **`->pie($dataKey, $nameKey?, $name?, $color?)`** — a pie; `$nameKey` names each slice.
 - **`->doughnut($dataKey, $nameKey?, $name?, $color?, $innerRadius = '60%')`** — a pie with a hole; `$innerRadius` sizes it.
 - **`->gauge($dataKey, $nameKey?, $name?, $color?, $maxValue?, $innerRadius = '70%')`** — a semicircle gauge; one ring per row, scaled against `$maxValue`.
+- **`->distribution($dataKey, $nameKey?, $name?, $color?)`** — a proportional segmented bar; one segment per row.
 
 `->categoryKey($key)` names the row field used for the X axis. `->height($px)` sets the plot height
 (default `320`).
@@ -134,9 +135,10 @@ field to color its slice, or let the theme palette pick:
 />
 
 <Warning>
-  Pies and gauges can't share a chart with cartesian series. If a chart declares any line, bar, or
-  area series, only those render and the pie or gauge is dropped. Declaring several pie or gauge
-  series together renders only the first. Give each its own chart.
+  Pies, gauges, and distribution bars can't share a chart with cartesian series. If a chart declares
+  any line, bar, or area series, only those render and the other series are dropped. Declaring
+  several pie, gauge, or distribution series together renders only the first. Give each its own
+  chart.
 </Warning>
 
 ### Doughnut
@@ -180,13 +182,37 @@ formatted value in the center of the arc; multiple rows render as concentric rin
 Gauges ignore the grid and axes, so `->categoryKey()` and `->categoryFormat()` have no effect —
 `->valueFormat()` drives the center label and tooltip.
 
+## Distribution bars
+
+`->distribution()` plots each row as a segment of one proportional bar — the linear sibling of a
+pie. Segments size themselves against the row total, the legend prints each share as a percentage,
+and hovering a segment shows its exact value formatted with `->valueFormat()`. Rows with zero or
+negative values are skipped:
+
+<ComponentExample
+  php={`Chart::make('Revenue by channel', 'channel-distribution-chart')
+    ->description('Share of total revenue')
+    ->data([
+        ['channel' => 'Direct', 'amount' => 42000],
+        ['channel' => 'Partner', 'amount' => 27000],
+        ['channel' => 'Marketplace', 'amount' => 19000],
+        ['channel' => 'Retail', 'amount' => 12000],
+    ])
+    ->distribution('amount', nameKey: 'channel')
+    ->valueFormat(NumberFormat::currency('USD')->compact());`}
+  fixture="charts.distribution"
+/>
+
+Distribution bars render as plain markup and size to their content, so `->height()`, the grid, and
+the axes have no effect.
+
 ## Colors and theming
 
 Omit a series color and Lattice cycles a palette built on your [theme tokens](/theming/) —
 `--lt-primary`, `--lt-success`, `--lt-info`, `--lt-warning`, `--lt-danger`, `--lt-muted-fg` — so
 charts follow light and dark mode automatically. Pass an explicit `color` to override: a hex value, or a CSS variable like
-`var(--lt-primary)` to stay theme-aware. For pies and gauges, a per-row `color` field wins over the
-series color.
+`var(--lt-primary)` to stay theme-aware. For pies, gauges, and distribution bars, a per-row `color`
+field wins over the series color.
 
 ## Formatting values and categories
 

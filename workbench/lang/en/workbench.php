@@ -417,6 +417,10 @@ return [
                     'rate' => 'Conversion rate',
                     'title' => 'Conversion rate',
                 ],
+                'distribution' => [
+                    'description' => 'Revenue share as one proportional segmented bar.',
+                    'title' => 'Channel share',
+                ],
                 'formatting' => [
                     'description' => 'Compact currency on the value axis, short localized dates on the category axis.',
                     'revenue' => 'Revenue',

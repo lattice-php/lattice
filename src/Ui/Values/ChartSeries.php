@@ -49,4 +49,9 @@ final readonly class ChartSeries
     {
         return new self(ChartSeriesType::Gauge, $dataKey, $name ?? $dataKey, $color, nameKey: $nameKey, innerRadius: $innerRadius, maxValue: $maxValue);
     }
+
+    public static function distribution(string $dataKey, ?string $nameKey = null, ?string $name = null, ?string $color = null): self
+    {
+        return new self(ChartSeriesType::Distribution, $dataKey, $name ?? $dataKey, $color, nameKey: $nameKey);
+    }
 }

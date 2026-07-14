@@ -1,0 +1,56 @@
+[
+    {
+        "key": "channel-distribution-chart",
+        "props": {
+            "categoryFormat": null,
+            "categoryKey": null,
+            "data": [
+                {
+                    "amount": 42000,
+                    "channel": "Direct"
+                },
+                {
+                    "amount": 27000,
+                    "channel": "Partner"
+                },
+                {
+                    "amount": 19000,
+                    "channel": "Marketplace"
+                },
+                {
+                    "amount": 12000,
+                    "channel": "Retail"
+                }
+            ],
+            "description": "Share of total revenue",
+            "grid": true,
+            "height": 320,
+            "legend": true,
+            "series": [
+                {
+                    "color": null,
+                    "dataKey": "amount",
+                    "innerRadius": "0%",
+                    "maxValue": null,
+                    "name": "amount",
+                    "nameKey": "channel",
+                    "stackId": null,
+                    "type": "distribution"
+                }
+            ],
+            "title": "Revenue by channel",
+            "tooltip": true,
+            "valueFormat": {
+                "currency": "USD",
+                "kind": "number",
+                "maximumFractionDigits": null,
+                "minimumFractionDigits": null,
+                "notation": "compact",
+                "unit": null
+            },
+            "xAxis": true,
+            "yAxis": true
+        },
+        "type": "chart"
+    }
+]

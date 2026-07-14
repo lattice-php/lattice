@@ -157,7 +157,7 @@ export type ChartSeries = {
   readonly innerRadius: string;
   readonly maxValue: number | null;
 };
-export type ChartSeriesType = "area" | "bar" | "gauge" | "line" | "pie";
+export type ChartSeriesType = "area" | "bar" | "distribution" | "gauge" | "line" | "pie";
 export type ChatBox = {
   fill: boolean;
   historyEndpoint: string | null;
