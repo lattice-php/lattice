@@ -55,3 +55,29 @@ it('renders rich option rows in the products search', function (): void {
         ->assertPresent('input[type="hidden"][name="related_products[]"]')
         ->assertNoJavaScriptErrors();
 });
+
+it('adds free-text tags on the creatable tab', function (): void {
+    $this->actingAs(workbenchTestUser());
+    $page = visit('/form/fields/select?type=creatable');
+
+    $page->click('[data-test="select-keywords"]')
+        ->fill('[data-test="select-keywords-search"]', 'steel')
+        ->keys('[data-test="select-keywords-search"]', ['Enter'])
+        ->assertPresent('input[type="hidden"][name="keywords[]"][value="steel"]')
+        ->assertNoJavaScriptErrors();
+});
+
+it('creates a colored entity tag on the tags tab', function (): void {
+    $this->actingAs(workbenchTestUser());
+    $page = visit('/form/fields/select?type=tags');
+
+    $page->click('[data-test="select-topics"]')
+        ->fill('[data-test="select-topics-search"]', 'Logistics')
+        ->keys('[data-test="select-topics-search"]', ['Enter']);
+
+    eventually(function () use ($page): void {
+        $page->assertPresent('input[type="hidden"][name="topics[]"][value="logistics"]');
+    });
+
+    $page->assertNoJavaScriptErrors();
+});
