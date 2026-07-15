@@ -145,13 +145,13 @@ own), generate an enum — see below.
 same renderer as `->icon()`, with structured `size`/`color` plus a raw `class` escape hatch:
 
 ```php
+use Lattice\Lattice\Core\Color;
 use Lattice\Lattice\Ui\Components\Icon;
-use Lattice\Lattice\Ui\Enums\Color;
 use Lattice\Lattice\Ui\Enums\Size;
 
 Stack::make()->schema([
     Icon::make('house'),                                       // size defaults to Md
-    Icon::make('circle-check')->size(Size::Lg)->color(Color::Success),
+    Icon::make('circle-check')->size(Size::Lg)->color(Color::success()),
     Icon::make('spark')->class('opacity-70'),
 ]);
 ```

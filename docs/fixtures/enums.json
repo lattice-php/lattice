@@ -491,40 +491,6 @@
             }
         ]
     },
-    "Lattice\\Lattice\\Ui\\Enums\\Color": {
-        "name": "Color",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums",
-        "cases": [
-            {
-                "name": "Default",
-                "value": "default"
-            },
-            {
-                "name": "Muted",
-                "value": "muted"
-            },
-            {
-                "name": "Primary",
-                "value": "primary"
-            },
-            {
-                "name": "Success",
-                "value": "success"
-            },
-            {
-                "name": "Info",
-                "value": "info"
-            },
-            {
-                "name": "Warning",
-                "value": "warning"
-            },
-            {
-                "name": "Danger",
-                "value": "danger"
-            }
-        ]
-    },
     "Lattice\\Lattice\\Ui\\Enums\\ColumnWidth": {
         "name": "ColumnWidth",
         "namespace": "Lattice\\Lattice\\Ui\\Enums",

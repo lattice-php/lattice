@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Color;
 use Lattice\Lattice\Ui\Components\Icon;
 use Lattice\Lattice\Ui\Components\Modal;
 use Lattice\Lattice\Ui\Components\SegmentedControl;
@@ -9,7 +10,6 @@ use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Enums\Align;
-use Lattice\Lattice\Ui\Enums\Color;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Icon as IconName;
 use Lattice\Lattice\Ui\Enums\Justify;
@@ -226,7 +226,7 @@ it('serializes text size and color styling', function (): void {
         Text::make('Manuel Christlieb')
             ->align(Align::Center)
             ->size(Size::Sm)
-            ->color(Color::Default),
+            ->color(Color::default()),
     );
 
     expect($data['type'])->toBe('text')
@@ -235,7 +235,7 @@ it('serializes text size and color styling', function (): void {
             'text' => 'Manuel Christlieb',
             'align' => 'center',
             'size' => 'sm',
-            'color' => 'default',
+            'color' => ['kind' => 'named', 'value' => 'default', 'dark' => null],
             'copyable' => false,
         ]);
 });
@@ -246,7 +246,7 @@ it('marks text as copyable', function (): void {
 
 it('serializes an icon with name, size, color and class', function (): void {
     $data = wire(
-        Icon::make('house')->size(Size::Lg)->color(Color::Danger)->class('opacity-80'),
+        Icon::make('house')->size(Size::Lg)->color(Color::danger())->class('opacity-80'),
     );
 
     expect($data['type'])->toBe('icon')
@@ -254,7 +254,7 @@ it('serializes an icon with name, size, color and class', function (): void {
         ->and($data['props'])->toMatchArray([
             'name' => 'house',
             'size' => 'lg',
-            'color' => 'danger',
+            'color' => ['kind' => 'named', 'value' => 'danger', 'dark' => null],
             'class' => 'opacity-80',
         ]);
 });

@@ -20,7 +20,11 @@
                         {
                             "props": {
                                 "align": null,
-                                "color": "default",
+                                "color": {
+                                    "dark": null,
+                                    "kind": "named",
+                                    "value": "default"
+                                },
                                 "copyable": false,
                                 "dataBindings": {
                                     "text": "name"

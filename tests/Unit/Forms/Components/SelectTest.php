@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Color;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\FormData;
@@ -9,7 +10,6 @@ use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Badge;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\Color;
 use Lattice\Lattice\Ui\Enums\Size;
 
 it('serializes static options without search flags', function (): void {
@@ -211,7 +211,7 @@ describe('docs fixtures', function (): void {
                 ->optionSchema([
                     Stack::make()->schema([
                         Text::make('')->dataKey('text', 'label'),
-                        Text::make('')->dataKey('text', 'email')->size(Size::Sm)->color(Color::Muted),
+                        Text::make('')->dataKey('text', 'email')->size(Size::Sm)->color(Color::muted()),
                     ]),
                     Badge::make('')->dataKey('label', 'number'),
                 ]),

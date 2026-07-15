@@ -5,6 +5,7 @@ namespace Workbench\App\Forms\Fields;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsForm;
+use Lattice\Lattice\Core\Color;
 use Lattice\Lattice\Core\EloquentOptions;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
@@ -15,7 +16,6 @@ use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
 use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\Color;
 use Lattice\Lattice\Ui\Enums\Orientation;
 use Lattice\Lattice\Ui\Enums\Size;
 use Symfony\Component\HttpFoundation\Response;
@@ -72,7 +72,7 @@ class SelectFieldForm extends FormDefinition
                             ->optionSchema([
                                 Stack::make()->schema([
                                     Text::make('')->dataKey('text', 'label'),
-                                    Text::make('')->dataKey('text', 'status')->size(Size::Sm)->color(Color::Muted),
+                                    Text::make('')->dataKey('text', 'status')->size(Size::Sm)->color(Color::muted()),
                                 ]),
                                 Badge::make('')->dataKey('label', 'sku'),
                             ])

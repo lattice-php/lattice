@@ -6,6 +6,7 @@ use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Components\ActionGroup;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Chat\Components\ChatBox;
+use Lattice\Lattice\Core\Color;
 use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
@@ -34,7 +35,6 @@ use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
-use Lattice\Lattice\Ui\Enums\Color;
 use Lattice\Lattice\Ui\Enums\FloatingPlacement;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Icon;
@@ -483,7 +483,7 @@ test('links serialize their icon and affixes', function (): void {
 });
 
 it('serializes progress bars and circles', function (): void {
-    $bar = wire(Progress::bar(72.5)->color(Color::Success)->showValue());
+    $bar = wire(Progress::bar(72.5)->color(Color::success())->showValue());
 
     expect($bar['type'])->toBe('progress')
         ->and($bar['props'])->toMatchArray([
@@ -491,7 +491,7 @@ it('serializes progress bars and circles', function (): void {
             'max' => 100.0,
             'variant' => 'bar',
             'showValue' => true,
-            'color' => 'success',
+            'color' => ['kind' => 'named', 'value' => 'success', 'dark' => null],
             'size' => 'md',
         ]);
 

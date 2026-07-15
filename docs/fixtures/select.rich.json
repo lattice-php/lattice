@@ -42,7 +42,11 @@
                         {
                             "props": {
                                 "align": null,
-                                "color": "muted",
+                                "color": {
+                                    "dark": null,
+                                    "kind": "named",
+                                    "value": "muted"
+                                },
                                 "copyable": false,
                                 "dataBindings": {
                                     "text": "email"
