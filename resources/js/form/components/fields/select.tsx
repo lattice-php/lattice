@@ -47,7 +47,6 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
   const multiple = props.multiple;
   const searchable = props.searchable;
   const creatable = props.creatable;
-  const createOnServer = props.createOnServer;
   const staticOptions = useMemo(
     () => (resolvedNode.props as { options?: Option[] }).options ?? [],
     [resolvedNode.props],
@@ -66,18 +65,17 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
   const [open, setOpen] = useState(false);
   const [results, setResults] = useState<Option[] | null>(null);
   const [loading, setLoading] = useState(false);
-  const [created, setCreated] = useState<Option[]>([]);
   const searchAbort = useRef<AbortController | null>(null);
 
   const optionsByValue = useMemo(() => {
     const map = new Map<string, Option>();
 
-    for (const option of [...staticOptions, ...created, ...(results ?? [])]) {
+    for (const option of [...staticOptions, ...(results ?? [])]) {
       map.set(option.value, option);
     }
 
     return map;
-  }, [staticOptions, created, results]);
+  }, [staticOptions, results]);
   const labelFor = (value: string) => optionsByValue.get(value)?.label ?? value;
   const colorFor = (value: string) =>
     (optionsByValue.get(value)?.data as { color?: string } | undefined)?.color;
@@ -163,34 +161,6 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
     }
   }
 
-  function handleCreate(label: string): void {
-    if (createOnServer) {
-      const controller = new AbortController();
-
-      void postFormAction<{ option?: Option }>(
-        action,
-        componentRef,
-        { ...valuesRef.current, _create: searchKey, q: label },
-        controller.signal,
-      )
-        .then((response) => {
-          const option = response?.option;
-
-          if (!option) {
-            return;
-          }
-
-          setCreated((prev) => [...prev, option]);
-          applyCreated(option.value);
-        })
-        .catch(() => {});
-
-      return;
-    }
-
-    applyCreated(label);
-  }
-
   if (hidden) {
     return null;
   }
@@ -270,7 +240,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
           loading={loading}
           multiple={multiple}
           onCommit={applyCreated}
-          onCreate={handleCreate}
+          onCreate={applyCreated}
           onSearch={searchable ? search : undefined}
           onSelect={select}
           open={open && !locked}

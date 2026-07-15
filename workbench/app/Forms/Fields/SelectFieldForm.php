@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Workbench\App\Forms\Fields;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Core\EloquentOptions;
 use Lattice\Lattice\Core\Option;
@@ -103,7 +102,7 @@ class SelectFieldForm extends FormDefinition
                                 Select::option(__('workbench.fields.select.sales'), 'sales', ['color' => '#3b82f6']),
                                 Select::option(__('workbench.fields.select.design'), 'design', ['color' => '#8b5cf6']),
                             ])
-                            ->creatable(fn (string $label): Option => Select::option($label, Str::slug($label), ['color' => '#22c55e']))
+                            ->creatable()
                             ->rules(['nullable', 'array']),
                     ]),
                 ]),

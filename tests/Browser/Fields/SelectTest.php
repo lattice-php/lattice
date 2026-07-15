@@ -76,7 +76,7 @@ it('creates a colored entity tag on the tags tab', function (): void {
         ->keys('[data-test="select-topics-search"]', ['Enter']);
 
     eventually(function () use ($page): void {
-        $page->assertPresent('input[type="hidden"][name="topics[]"][value="logistics"]');
+        $page->assertPresent('input[type="hidden"][name="topics[]"][value="Logistics"]');
     });
 
     $page->assertNoJavaScriptErrors();

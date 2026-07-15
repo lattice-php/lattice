@@ -27,10 +27,5 @@ interface InteractsWithForm
      */
     public function searchOptions(Request $request): array;
 
-    /**
-     * @return array{option: Option|null}
-     */
-    public function createOption(Request $request): array;
-
     public function resolveFields(Request $request): ResolveResponse;
 }

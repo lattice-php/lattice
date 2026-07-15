@@ -1090,7 +1090,6 @@ export type Select = {
   columnWidth: ColumnWidth;
   conditions: FieldConditions | null;
   creatable: boolean;
-  createOnServer: boolean;
   dependsOnAny: boolean;
   dependsOnKeys: string[] | null;
   disabled: boolean;

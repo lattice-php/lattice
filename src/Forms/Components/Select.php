@@ -46,10 +46,6 @@ class Select extends Field
 
     public bool $creatable = false;
 
-    public bool $createOnServer = false;
-
-    private ?Closure $createResolver = null;
-
     /** @var array<int, mixed>|Closure */
     private array|Closure $itemRules = [];
 
@@ -64,22 +60,9 @@ class Select extends Field
         return $this;
     }
 
-    public function creatable(bool|Closure $create = true): static
+    public function creatable(bool $create = true): static
     {
-        if ($create instanceof Closure) {
-            $this->createResolver = $create;
-            $this->creatable = true;
-            $this->createOnServer = true;
-
-            return $this;
-        }
-
         $this->creatable = $create;
-
-        if (! $create) {
-            $this->createResolver = null;
-            $this->createOnServer = false;
-        }
 
         return $this;
     }
@@ -94,41 +77,6 @@ class Select extends Field
         $this->itemRules = $rules;
 
         return $this;
-    }
-
-    /**
-     * @internal
-     */
-    public function isCreatable(): bool
-    {
-        return $this->creatable;
-    }
-
-    /**
-     * @internal
-     */
-    public function acceptsServerCreate(): bool
-    {
-        return $this->creatable && $this->createResolver instanceof Closure;
-    }
-
-    /**
-     * @internal
-     */
-    public function resolveCreate(string $label, FormData $data, Request $request): ?Option
-    {
-        if (! $this->createResolver instanceof Closure) {
-            return null;
-        }
-
-        $context = $this->evaluationContext($data, $request)->named('label', $label);
-        $result = Evaluate::resolve($this->createResolver, $context);
-
-        if ($result === null) {
-            return null;
-        }
-
-        return $this->normalizeOptions([$result])[0] ?? null;
     }
 
     /**

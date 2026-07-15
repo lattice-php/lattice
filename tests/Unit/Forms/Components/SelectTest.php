@@ -156,41 +156,11 @@ it('keeps per-option data when hydrating selected values', function (): void {
 it('serializes creatable flags and defaults them off', function (): void {
     $off = wire(Select::make('plan', 'Plan')->options([Select::option('Free', 'free')]))['props'];
 
-    expect($off['creatable'])->toBeFalse()
-        ->and($off['createOnServer'])->toBeFalse();
+    expect($off['creatable'])->toBeFalse();
 
     $freeText = wire(Select::make('keywords', 'Keywords')->multiple()->creatable())['props'];
 
-    expect($freeText['creatable'])->toBeTrue()
-        ->and($freeText['createOnServer'])->toBeFalse();
-});
-
-it('marks create-on-server when a create resolver is given, never serializing it', function (): void {
-    $field = Select::make('tags', 'Tags')->multiple()
-        ->creatable(fn (string $label): Option => new Option($label, $label, ['color' => '#ef4444']));
-
-    $props = wire($field)['props'];
-
-    expect($props['creatable'])->toBeTrue()
-        ->and($props['createOnServer'])->toBeTrue()
-        ->and($props)->not->toHaveKey('createResolver')
-        ->and($field->isCreatable())->toBeTrue()
-        ->and($field->acceptsServerCreate())->toBeTrue();
-});
-
-it('resolves a created option with color data through the resolver', function (): void {
-    $field = Select::make('tags', 'Tags')->multiple()
-        ->creatable(fn (string $label): Option => new Option($label, strtolower($label), ['color' => '#22c55e']));
-
-    expect($field->resolveCreate('Steel', FormData::make([]), Request::create('/')))
-        ->toEqual(new Option('Steel', 'steel', ['color' => '#22c55e']));
-});
-
-it('returns null from resolveCreate when there is no server resolver', function (): void {
-    $field = Select::make('keywords', 'Keywords')->multiple()->creatable();
-
-    expect($field->resolveCreate('anything', FormData::make([]), Request::create('/')))->toBeNull()
-        ->and($field->acceptsServerCreate())->toBeFalse();
+    expect($freeText['creatable'])->toBeTrue();
 });
 
 it('contributes per-tag rules as nested name.* rules', function (): void {
