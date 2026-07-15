@@ -9,6 +9,8 @@ import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope"
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { SelectComponent } from "./select";
 
+type MockOption = { label: string; value: string; data?: { color?: string } };
+
 const { postFormAction } = vi.hoisted(() => ({
   postFormAction: vi.fn<
     (
@@ -16,7 +18,7 @@ const { postFormAction } = vi.hoisted(() => ({
       componentRef: string,
       body: Record<string, unknown>,
       signal: AbortSignal,
-    ) => Promise<{ options: { label: string; value: string }[] }>
+    ) => Promise<{ options?: MockOption[]; option?: MockOption }>
   >(() => Promise.resolve({ options: [] })),
 }));
 
