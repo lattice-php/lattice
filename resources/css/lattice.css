@@ -309,6 +309,7 @@
   --lt-color-purple: oklch(0.53 0.19 305);
 }
 
+[data-theme="dark"],
 .dark {
   --lt-color-red: oklch(0.83 0.11 27);
   --lt-color-orange: oklch(0.84 0.1 65);
@@ -396,21 +397,27 @@
   --lt-tone-fg: var(--lt-color-danger);
 }
 
+[data-theme="dark"] .lt-tone-red,
 .dark .lt-tone-red {
   --lt-tone-bg: oklch(0.29 0.08 27);
 }
+[data-theme="dark"] .lt-tone-orange,
 .dark .lt-tone-orange {
   --lt-tone-bg: oklch(0.3 0.07 65);
 }
+[data-theme="dark"] .lt-tone-yellow,
 .dark .lt-tone-yellow {
   --lt-tone-bg: oklch(0.31 0.06 100);
 }
+[data-theme="dark"] .lt-tone-green,
 .dark .lt-tone-green {
   --lt-tone-bg: oklch(0.3 0.07 155);
 }
+[data-theme="dark"] .lt-tone-blue,
 .dark .lt-tone-blue {
   --lt-tone-bg: oklch(0.3 0.07 245);
 }
+[data-theme="dark"] .lt-tone-purple,
 .dark .lt-tone-purple {
   --lt-tone-bg: oklch(0.3 0.07 305);
 }
