@@ -63,6 +63,18 @@ function item(id: string): HTMLElement {
   return screen.getByTestId(`tree-node-${id}`);
 }
 
+const outOfOrderNodes: TreeNodeData[] = [
+  {
+    children: [
+      { id: "20", label: "Second Child" },
+      { id: "10", label: "First Child" },
+    ],
+    id: "9",
+    label: "First Root",
+  },
+  { id: "1", label: "Second Root" },
+];
+
 describe("Tree keyboard navigation", () => {
   it("focuses the first root by default with a single roving tabindex", () => {
     renderTree({ defaultExpanded: ["1"], nodes });
@@ -84,6 +96,22 @@ describe("Tree keyboard navigation", () => {
 
     fireEvent.keyDown(item("9"), { key: "ArrowUp" });
     expect(item("1")).toHaveFocus();
+  });
+
+  it("moves focus by authored position even when sibling ids are not in ascending order", () => {
+    renderTree({ defaultExpanded: [], nodes: outOfOrderNodes });
+    item("9").focus();
+
+    fireEvent.keyDown(item("9"), { key: "ArrowDown" });
+    expect(item("1")).toHaveFocus();
+  });
+
+  it("descends to the first authored child even when child ids are not in ascending order", () => {
+    renderTree({ defaultExpanded: ["9"], nodes: outOfOrderNodes });
+    item("9").focus();
+
+    fireEvent.keyDown(item("9"), { key: "ArrowRight" });
+    expect(item("20")).toHaveFocus();
   });
 
   it("does not double-move focus when a keydown bubbles from a nested treeitem", () => {

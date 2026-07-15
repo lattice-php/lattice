@@ -35,15 +35,23 @@ function hasExpandableChildren(node: TreeNodeData): boolean {
   return Boolean(node.children?.length) || node.hasChildren === true;
 }
 
+const ORDER_PATH_SEGMENT_WIDTH = 6;
+
+function orderPathSegment(index: number): string {
+  return String(index).padStart(ORDER_PATH_SEGMENT_WIDTH, "0");
+}
+
 function TreeItem({
   depth,
   node,
+  orderPath,
   parentPath,
   siblingCount,
   siblingIndex,
 }: {
   depth: number;
   node: TreeNodeData;
+  orderPath: string;
   parentPath: string | null;
   siblingCount: number;
   siblingIndex: number;
@@ -69,10 +77,10 @@ function TreeItem({
   const expandable = hasExpandableChildren(node);
 
   useEffect(() => {
-    register({ id: node.id, label: node.label, parentPath, path, ref });
+    register({ id: node.id, label: node.label, orderPath, parentPath, path, ref });
 
     return () => unregister(path);
-  }, [node.id, node.label, parentPath, path, register, unregister]);
+  }, [node.id, node.label, orderPath, parentPath, path, register, unregister]);
 
   function onKeyDown(event: KeyboardEvent<HTMLLIElement>): void {
     if (event.target !== event.currentTarget) {
@@ -195,6 +203,7 @@ function TreeItem({
               depth={depth + 1}
               key={child.id}
               node={child}
+              orderPath={`${orderPath}.${orderPathSegment(index)}`}
               parentPath={path}
               siblingCount={node.children?.length ?? 1}
               siblingIndex={index + 1}
@@ -224,6 +233,7 @@ const TreeComponent: RendererComponent<"tree"> = ({ node }) => {
             depth={1}
             key={child.id}
             node={child}
+            orderPath={orderPathSegment(index)}
             parentPath={null}
             siblingCount={node.props.nodes.length}
             siblingIndex={index + 1}

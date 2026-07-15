@@ -4,6 +4,7 @@ import type { RefObject } from "react";
 export type TreeItemRegistration = {
   id: string;
   label: string;
+  orderPath: string;
   parentPath: string | null;
   path: string;
   ref: RefObject<HTMLLIElement | null>;
@@ -66,9 +67,7 @@ function readStoredExpanded(key: string, remember: boolean, fallback: string[]):
 }
 
 function visibleOrder(registry: Map<string, TreeItemRegistration>): TreeItemRegistration[] {
-  return [...registry.values()].sort((a, b) =>
-    a.path.localeCompare(b.path, undefined, { numeric: true }),
-  );
+  return [...registry.values()].sort((a, b) => a.orderPath.localeCompare(b.orderPath));
 }
 
 const TYPEAHEAD_IDLE_MS = 800;
