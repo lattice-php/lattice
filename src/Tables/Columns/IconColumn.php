@@ -5,6 +5,8 @@ namespace Lattice\Lattice\Tables\Columns;
 
 use BackedEnum;
 use Lattice\Lattice\Attributes\WireMap;
+use Lattice\Lattice\Core\Color;
+use Lattice\Lattice\Core\Enums\ColorName;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Enums\ColumnType;
@@ -22,7 +24,7 @@ class IconColumn extends Column
     public ?array $icons = null;
 
     /**
-     * @var array<array-key, string>|null
+     * @var array<array-key, Color>|null
      */
     #[WireMap]
     public ?array $colors = null;
@@ -40,14 +42,15 @@ class IconColumn extends Column
     }
 
     /**
-     * Map cell values to a colour name (gray, red, green, yellow, blue, purple,
-     * orange).
+     * Map cell values to a colour — a named colour (`Color::green()`, `'green'`)
+     * or any CSS colour (`Color::hex('#16a34a')`, `'#16a34a'`). Unmapped values
+     * render in the default icon colour.
      *
-     * @param  array<array-key, string>  $colors
+     * @param  array<array-key, Color|ColorName|string>  $colors
      */
     public function colors(array $colors): static
     {
-        $this->colors = $colors === [] ? null : $colors;
+        $this->colors = $colors === [] ? null : array_map(Color::from(...), $colors);
 
         return $this;
     }

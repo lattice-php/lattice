@@ -62,10 +62,10 @@ class TextColumn extends Column implements Filterable, Searchable, Sortable
     }
 
     /**
-     * Render the value as a coloured badge. The tone colour is read from the
-     * sibling field named by $colorKey — a key on the row for a scalar column, or
-     * a key on each related row for a {@see multiple()} column. An unset colour
-     * falls back to gray.
+     * Render the value as a coloured badge. The colour is read from the sibling
+     * field named by $colorKey — a colour name (`green`) or any CSS colour
+     * (`#16a34a`); unset falls back to gray. $colorKey is a key on the row for a
+     * scalar column, or a key on each related row for a {@see multiple()} column.
      */
     public function badge(string $colorKey = 'color'): static
     {
