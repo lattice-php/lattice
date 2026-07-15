@@ -28,8 +28,16 @@
                     "props": {
                         "align": "start",
                         "colors": {
-                            "0": "gray",
-                            "1": "green"
+                            "0": {
+                                "dark": null,
+                                "kind": "named",
+                                "value": "gray"
+                            },
+                            "1": {
+                                "dark": null,
+                                "kind": "named",
+                                "value": "green"
+                            }
                         },
                         "filter": null,
                         "hiddenByDefault": false,

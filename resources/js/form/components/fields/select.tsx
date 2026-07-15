@@ -2,6 +2,7 @@ import { Icon } from "@lattice-php/lattice/icons";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Combobox } from "@lattice-php/lattice/ui/combobox";
 import { controlSurface } from "@lattice-php/lattice/ui/control";
+import { coerceColor, colorValue } from "@lattice-php/lattice/lib/color";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
@@ -78,7 +79,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
   }, [staticOptions, results]);
   const labelFor = (value: string) => optionsByValue.get(value)?.label ?? value;
   const colorFor = (value: string) =>
-    (optionsByValue.get(value)?.data as { color?: string } | undefined)?.color;
+    coerceColor((optionsByValue.get(value)?.data as { color?: unknown } | undefined)?.color);
 
   const locked = readOnly || disabled;
 
@@ -211,7 +212,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
                     <span
                       aria-hidden="true"
                       className="size-2 shrink-0 rounded-full"
-                      style={{ background: color }}
+                      style={{ background: colorValue(color) }}
                     />
                   )}
                   {labelFor(value)}

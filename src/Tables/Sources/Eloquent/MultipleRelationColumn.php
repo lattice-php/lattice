@@ -16,8 +16,9 @@ use Lattice\Lattice\Tables\RelationBinding;
  * The Eloquent resolution of a to-many {@see RelationBinding} (`tags`), reading a
  * label field — and optionally a colour field — from each related row. The
  * relation is eager-loaded once (no N+1) and projected to a list: plain values,
- * or `{value, color}` pairs when a colour field is configured. Filtering matches
- * any related row through `whereHas`; the column is not sortable.
+ * or `{value, color}` pairs when a colour field is configured — colour values
+ * are names or CSS colours, resolved client-side. Filtering matches any related
+ * row through `whereHas`; the column is not sortable.
  */
 final readonly class MultipleRelationColumn implements RelationProjection
 {

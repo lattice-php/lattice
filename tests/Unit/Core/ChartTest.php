@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Color;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Chart;
 use Lattice\Lattice\Ui\Enums\DateTimeStyle;
@@ -8,6 +9,17 @@ use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
 use Lattice\Lattice\Ui\Values\ChartSeries;
 use Lattice\Lattice\Ui\Values\DateFormat;
 use Lattice\Lattice\Ui\Values\NumberFormat;
+
+it('coerces series colors to tagged color values', function (): void {
+    expect(json_decode(json_encode(ChartSeries::line('revenue', color: '#2563eb')), true)['color'])
+        ->toBe(['kind' => 'css', 'value' => '#2563eb', 'dark' => null])
+        ->and(json_decode(json_encode(ChartSeries::bar('orders', color: 'success')), true)['color'])
+        ->toBe(['kind' => 'named', 'value' => 'success', 'dark' => null])
+        ->and(json_decode(json_encode(ChartSeries::line('plain')), true)['color'])
+        ->toBeNull()
+        ->and(json_decode(json_encode(ChartSeries::area('forecast', color: Color::hex('#8b5cf6')->dark('#a78bfa'))), true)['color'])
+        ->toBe(['kind' => 'css', 'value' => '#8b5cf6', 'dark' => '#a78bfa']);
+});
 
 it('serializes a cartesian chart with fluent series helpers', function (): void {
     $node = wire(
@@ -44,7 +56,7 @@ it('serializes a cartesian chart with fluent series helpers', function (): void 
             'type' => 'line',
             'dataKey' => 'revenue',
             'name' => 'Revenue',
-            'color' => '#2563eb',
+            'color' => ['kind' => 'css', 'value' => '#2563eb', 'dark' => null],
             'stackId' => null,
             'nameKey' => null,
         ])
@@ -52,7 +64,7 @@ it('serializes a cartesian chart with fluent series helpers', function (): void 
             'type' => 'bar',
             'dataKey' => 'orders',
             'name' => 'Orders',
-            'color' => '#16a34a',
+            'color' => ['kind' => 'css', 'value' => '#16a34a', 'dark' => null],
             'stackId' => 'volume',
             'nameKey' => null,
         ])
@@ -60,7 +72,7 @@ it('serializes a cartesian chart with fluent series helpers', function (): void 
             'type' => 'area',
             'dataKey' => 'forecast',
             'name' => 'Forecast',
-            'color' => '#9333ea',
+            'color' => ['kind' => 'css', 'value' => '#9333ea', 'dark' => null],
             'stackId' => 'projection',
             'nameKey' => null,
         ]);

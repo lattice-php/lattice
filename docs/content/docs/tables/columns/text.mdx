@@ -48,9 +48,12 @@ TextColumn::make('api_token')->copyable();
 
 ## As a badge
 
-`->badge()` renders the value as a coloured pill. The tone is read from a sibling field on the row —
-`->badge('status_color')` reads the colour from `status_color`, defaulting to the `color` field.
-For a fixed value-to-colour map instead, use a dedicated [Badge column](/tables/columns/badge/).
+`->badge()` renders the value as a coloured pill. The colour is read from a sibling field on the row —
+`->badge('status_color')` reads it from `status_color`, defaulting to the `color` field. That field
+may hold a colour name (`green`, `success`, …) or any CSS colour — a hex value stored by a
+[ColorPicker](/forms/fields/color-picker/) field works as-is — falling back to gray when unset or
+unrecognized. For a fixed value-to-colour map instead, use a dedicated
+[Badge column](/tables/columns/badge/).
 
 ```php
 TextColumn::make('status')->badge('status_color');

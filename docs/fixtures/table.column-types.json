@@ -44,9 +44,21 @@
                     "props": {
                         "align": "start",
                         "colors": {
-                            "active": "green",
-                            "archived": "gray",
-                            "invited": "yellow"
+                            "active": {
+                                "dark": null,
+                                "kind": "named",
+                                "value": "green"
+                            },
+                            "archived": {
+                                "dark": null,
+                                "kind": "named",
+                                "value": "gray"
+                            },
+                            "invited": {
+                                "dark": null,
+                                "kind": "named",
+                                "value": "yellow"
+                            }
                         },
                         "filter": null,
                         "hiddenByDefault": false,
@@ -62,8 +74,16 @@
                     "props": {
                         "align": "start",
                         "colors": {
-                            "0": "gray",
-                            "1": "green"
+                            "0": {
+                                "dark": null,
+                                "kind": "named",
+                                "value": "gray"
+                            },
+                            "1": {
+                                "dark": null,
+                                "kind": "named",
+                                "value": "green"
+                            }
                         },
                         "filter": null,
                         "hiddenByDefault": false,

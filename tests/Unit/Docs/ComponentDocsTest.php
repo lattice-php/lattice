@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Color;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Avatar;
 use Lattice\Lattice\Ui\Components\Badge;
@@ -20,7 +21,6 @@ use Lattice\Lattice\Ui\Components\Tabs;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Components\Tooltip;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
-use Lattice\Lattice\Ui\Enums\Color;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Orientation;
 use Lattice\Lattice\Ui\Enums\Size;
@@ -81,10 +81,10 @@ describe('docs fixtures', function (): void {
         assertFixtureMatches('components.progress', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Stack::make()->gap(Gap::Small)->schema([
                 Progress::bar(65)->showValue(),
-                Progress::bar(80)->color(Color::Success)->size(Size::Lg),
+                Progress::bar(80)->color(Color::success())->size(Size::Lg),
                 Stack::make()->direction(StackDirection::Row)->gap(Gap::Medium)->schema([
                     Progress::circle(65)->showValue(),
-                    Progress::circle(35)->max(50)->color(Color::Warning)->size(Size::Xl)->showValue(),
+                    Progress::circle(35)->max(50)->color(Color::warning())->size(Size::Xl)->showValue(),
                 ]),
             ]),
         ]))));

@@ -22,7 +22,7 @@ describe("Lattice text component", () => {
     const node = fakeNode({
       props: {
         align: "center",
-        color: "default",
+        color: { kind: "named", value: "default", dark: null },
         size: "sm",
         text: "Manuel Christlieb",
       },
@@ -31,12 +31,9 @@ describe("Lattice text component", () => {
 
     render(<TextComponent node={node}>{null}</TextComponent>);
 
-    expect(screen.getByText("Manuel Christlieb")).toHaveClass(
-      "m-0",
-      "text-center",
-      "text-lt-fg",
-      "text-sm",
-    );
+    const text = screen.getByText("Manuel Christlieb");
+    expect(text).toHaveClass("m-0", "text-center", "text-sm");
+    expect(text.style.getPropertyValue("color")).toBe("var(--lt-color-default)");
   });
 
   it("falls back to muted styling when no color is set", () => {
@@ -50,6 +47,8 @@ describe("Lattice text component", () => {
 
     render(<TextComponent node={node}>{null}</TextComponent>);
 
-    expect(screen.getByText("Helper text")).toHaveClass("text-lt-muted-fg");
+    expect(screen.getByText("Helper text").style.getPropertyValue("color")).toBe(
+      "var(--lt-color-muted)",
+    );
   });
 });

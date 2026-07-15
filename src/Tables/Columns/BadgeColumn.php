@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Columns;
 
 use Lattice\Lattice\Attributes\WireMap;
+use Lattice\Lattice\Core\Color;
+use Lattice\Lattice\Core\Enums\ColorName;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
 use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
@@ -18,20 +20,21 @@ class BadgeColumn extends Column implements Filterable, Sortable
     use IsSortable;
 
     /**
-     * @var array<array-key, string>|null
+     * @var array<array-key, Color>|null
      */
     #[WireMap]
     public ?array $colors = null;
 
     /**
-     * Map cell values to a colour name (gray, red, green, yellow, blue, purple,
-     * orange). Unmapped values fall back to gray.
+     * Map cell values to a colour — a named colour (`Color::green()`, `'green'`)
+     * or any CSS colour (`Color::hex('#16a34a')`, `'#16a34a'`). Unmapped values
+     * fall back to gray.
      *
-     * @param  array<array-key, string>  $colors
+     * @param  array<array-key, Color|ColorName|string>  $colors
      */
     public function colors(array $colors): static
     {
-        $this->colors = $colors === [] ? null : $colors;
+        $this->colors = $colors === [] ? null : array_map(Color::from(...), $colors);
 
         return $this;
     }

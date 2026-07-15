@@ -139,7 +139,7 @@ options, the dropdown filter matches the option label; text rendered from `data`
     ->optionSchema([
         Stack::make()->schema([
             Text::make('')->dataKey('text', 'label'),
-            Text::make('')->dataKey('text', 'email')->size(Size::Sm)->color(Color::Muted),
+            Text::make('')->dataKey('text', 'email')->size(Size::Sm)->color(Color::muted()),
         ]),
         Badge::make('')->dataKey('label', 'number'),
     ])`}
@@ -162,7 +162,7 @@ Select::make('customer_id', 'Customer')
     ->optionSchema([
         Stack::make()->schema([
             Text::make('')->dataKey('text', 'label'),
-            Text::make('')->dataKey('text', 'email')->size(Size::Sm)->color(Color::Muted),
+            Text::make('')->dataKey('text', 'email')->size(Size::Sm)->color(Color::muted()),
         ]),
         Badge::make('')->dataKey('label', 'customer_number'),
     ]);

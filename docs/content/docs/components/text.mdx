@@ -35,7 +35,8 @@ Heading::make('sk-live-4242', 3)->copyable();
 [enums reference](/advanced/enums/)):
 
 - `->size(Size::…)` — text size (`Md` by default).
-- `->color(Color::…)` — color (`Muted` by default).
+- `->color()` — a colour name (`Color::success()`, `'success'`) or any CSS colour; text renders in
+  the `muted` colour when unset.
 - `->align(Align::Center)` — alignment.
 - `->copyable()` — render a copy-to-clipboard affordance.
 
@@ -54,11 +55,11 @@ Badge::make('Trialing');
 ## Icon
 
 `Icon::make($name)` renders an icon from your app's SVG sprite by name — a string, or a backed enum
-whose value is the name. Set `->size(Size::…)`, `->color(Color::…)`, or add classes with
-`->class('…')`.
+whose value is the name. Set `->size(Size::…)`, `->color()` (a colour name or any CSS colour), or
+add classes with `->class('…')`.
 
 ```php
-Icon::make('check-circle')->color(Color::Success);
+Icon::make('check-circle')->color(Color::success());
 ```
 
 See [Icons](/core/icons/) for how the sprite is built and how to add or type your own icon names.

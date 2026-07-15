@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Enums;
+namespace Lattice\Lattice\Core\Enums;
 
 use Lattice\Lattice\Attributes\TypeScript;
 
 #[TypeScript]
-enum Color: string
+enum ColorName: string
 {
     case Default = 'default';
     case Muted = 'muted';
@@ -15,4 +15,11 @@ enum Color: string
     case Info = 'info';
     case Warning = 'warning';
     case Danger = 'danger';
+    case Gray = 'gray';
+    case Red = 'red';
+    case Orange = 'orange';
+    case Yellow = 'yellow';
+    case Green = 'green';
+    case Blue = 'blue';
+    case Purple = 'purple';
 }
