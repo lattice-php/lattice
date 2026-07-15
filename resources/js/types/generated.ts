@@ -1369,6 +1369,17 @@ export type Translatable = {
   replacements: Record<string, string | number | boolean>;
   key: string;
 };
+export type TreeNode = {
+  icon: string | null;
+  badge: string | null;
+  href: string | null;
+  actions: Node<"action"> | Node<"action.group"> | null;
+  children: TreeNode[];
+  hasChildren: boolean;
+  disabled: boolean;
+  readonly label: string;
+  readonly id: string;
+};
 export type UnreadCount = {
   readonly unreadCount: number;
 };
