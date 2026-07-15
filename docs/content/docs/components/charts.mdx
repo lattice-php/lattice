@@ -210,9 +210,18 @@ the axes have no effect.
 
 Omit a series color and Lattice cycles a palette built on your [theme tokens](/theming/) —
 `--lt-primary`, `--lt-success`, `--lt-info`, `--lt-warning`, `--lt-danger`, `--lt-muted-fg` — so
-charts follow light and dark mode automatically. Pass an explicit `color` to override: a hex value, or a CSS variable like
-`var(--lt-primary)` to stay theme-aware. For pies, gauges, and distribution bars, a per-row `color`
-field wins over the series color.
+charts follow light and dark mode automatically. Pass an explicit `color` to override — a colour
+name (`'success'`, `Color::success()`) resolves to the matching theme token, and any CSS colour
+(`'#2563eb'`, `Color::hex('#2563eb')`) is used as-is. Give a CSS colour a `->dark()` counterpart to
+swap it in dark mode:
+
+```php
+Chart::make('Signups')
+    ->line('total', color: Color::hex('#2563eb')->dark('#60a5fa'));
+```
+
+For pies, gauges, and distribution bars, a per-row `color` data field — the same named colours or
+CSS colours — wins over the series color.
 
 ## Formatting values and categories
 

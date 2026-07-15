@@ -19,8 +19,9 @@ IconColumn::make('verified')->label('Verified')
 - `->icon('star')` shows the same icon for every row.
 - `->icons([value => icon])` picks an icon per value — each key is a cell value, each icon a sprite
   name or a backed enum case (e.g. the built-in `Icon` enum).
-- `->colors([value => color])` tints the icon per value, with the same palette as a
-  [badge](/tables/columns/badge/).
+- `->colors([value => color])` tints the icon per value — a colour name (`gray`, `red`, `orange`,
+  `yellow`, `green`, `blue`, `purple`, or the semantic `default`, `muted`, `primary`, `success`,
+  `info`, `warning`, `danger`) or any CSS colour, same as a [badge](/tables/columns/badge/).
 
 ```php
 use Lattice\Lattice\Ui\Enums\Icon;
