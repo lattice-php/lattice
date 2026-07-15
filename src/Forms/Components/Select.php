@@ -44,6 +44,11 @@ class Select extends Field
 
     public bool $searchable = false;
 
+    public bool $creatable = false;
+
+    /** @var array<int, mixed>|Closure */
+    private array|Closure $itemRules = [];
+
     public string $emptyLabel = 'No options';
 
     public string $searchPlaceholder = 'Search…';
@@ -53,6 +58,42 @@ class Select extends Field
         $this->multiple = $multiple;
 
         return $this;
+    }
+
+    public function creatable(bool $create = true): static
+    {
+        $this->creatable = $create;
+
+        return $this;
+    }
+
+    /**
+     * Per-tag validation rules, applied to each entry as `{name}.*`.
+     *
+     * @param  array<int, mixed>|Closure  $rules
+     */
+    public function itemRules(array|Closure $rules): static
+    {
+        $this->itemRules = $rules;
+
+        return $this;
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    #[\Override]
+    public function nestedRules(FormData $data, Request $request): array
+    {
+        $rules = $this->itemRules instanceof Closure
+            ? Evaluate::resolve($this->itemRules, $this->evaluationContext($data, $request))
+            : $this->itemRules;
+
+        if ($rules === []) {
+            return [];
+        }
+
+        return ["{$this->name()}.*" => array_values($rules)];
     }
 
     public function emptyLabel(string $label): static

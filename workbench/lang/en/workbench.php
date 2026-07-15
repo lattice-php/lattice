@@ -274,14 +274,18 @@ return [
             'summary' => 'Summary',
         ],
         'select' => [
+            'creatable' => 'Creatable',
             'design' => 'Design',
             'eloquent' => 'Eloquent options',
             'engineering' => 'Engineering',
             'interests' => 'Interests',
+            'keywords' => 'Keywords',
             'multiple' => 'Multiple',
             'pick-product' => 'Pick a product',
             'sales' => 'Sales',
             'searchable' => 'Searchable',
+            'tags' => 'Tags',
+            'topics' => 'Topics',
         ],
         'text' => [
             'copyable' => 'Copyable',

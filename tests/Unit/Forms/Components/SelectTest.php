@@ -153,6 +153,29 @@ it('keeps per-option data when hydrating selected values', function (): void {
     ]);
 });
 
+it('serializes creatable flags and defaults them off', function (): void {
+    $off = wire(Select::make('plan', 'Plan')->options([Select::option('Free', 'free')]))['props'];
+
+    expect($off['creatable'])->toBeFalse();
+
+    $freeText = wire(Select::make('keywords', 'Keywords')->multiple()->creatable())['props'];
+
+    expect($freeText['creatable'])->toBeTrue();
+});
+
+it('contributes per-tag rules as nested name.* rules', function (): void {
+    $field = Select::make('tags', 'Tags')->multiple()->creatable()->itemRules(['string', 'max:40']);
+
+    expect($field->nestedRules(FormData::make([]), Request::create('/')))
+        ->toBe(['tags.*' => ['string', 'max:40']]);
+});
+
+it('contributes no nested rules without item rules', function (): void {
+    $field = Select::make('tags', 'Tags')->multiple()->creatable();
+
+    expect($field->nestedRules(FormData::make([]), Request::create('/')))->toBe([]);
+});
+
 describe('docs fixtures', function (): void {
     it('matches the select examples fixture', function (): void {
         assertFixtureMatches('select.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
@@ -192,6 +215,13 @@ describe('docs fixtures', function (): void {
                     ]),
                     Badge::make('')->dataKey('label', 'number'),
                 ]),
+        ]))));
+
+        assertFixtureMatches('select.creatable', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Select::make('keywords', 'Keywords')
+                ->multiple()
+                ->creatable()
+                ->placeholder('Add a keyword'),
         ]))));
     });
 });

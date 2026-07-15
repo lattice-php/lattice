@@ -176,6 +176,47 @@ Select::make('customer_id', 'Customer')
 
 The selected value renders as the plain option label in the trigger and in multi-select chips.
 
+## Creatable / tags
+
+`->creatable()` turns the select into a tag input: typing a value that isn't in the list and pressing
+Enter (or a comma, or pasting a comma-separated list) adds it as a new option. Pair it with
+`->multiple()` for a field that holds a set of tags.
+
+<ComponentExample
+  php={`Select::make('keywords', 'Keywords')
+    ->multiple()
+    ->creatable()
+    ->placeholder('Add a keyword')`}
+  fixture="select.creatable"
+  values={{ keywords: [] }}
+/>
+
+The typed label becomes the value — free-text tags submit as a plain array of strings, and the
+consumer creates matching records in `handle()`.
+
+Pair `->creatable()` with `->optionsFrom()` to back the tags with real records instead of plain
+strings, and give an option a `color` in its `data` to color its chip:
+
+```php
+Select::make('tags', 'Tags')
+    ->multiple()
+    ->optionsFrom(EloquentOptions::make(Tag::class)->label('name')->data(['color']))
+    ->creatable();
+```
+
+A typed tag that matches no existing option still submits as its raw label, so the submitted array
+mixes real ids (picked options) with new labels (typed tags) — the consumer resolves the array in
+`handle()`, keeping the ids and creating records for the remaining labels.
+
+`->itemRules()` validates each tag instead of the field as a whole:
+
+```php
+Select::make('keywords', 'Keywords')
+    ->multiple()
+    ->creatable()
+    ->itemRules(['string', 'max:40']);
+```
+
 ## Common options
 
 `Select` shares label, default value, required, disabled, read-only, and visibility options with

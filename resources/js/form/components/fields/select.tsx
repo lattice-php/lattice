@@ -46,6 +46,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
   const placeholder = props.placeholder || "Select…";
   const multiple = props.multiple;
   const searchable = props.searchable;
+  const creatable = props.creatable;
   const staticOptions = useMemo(
     () => (resolvedNode.props as { options?: Option[] }).options ?? [],
     [resolvedNode.props],
@@ -58,20 +59,26 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
   valuesRef.current = values;
   const storedValue = scope ? scope.getValue(name) : globalValue;
   const selected = useMemo(() => toValues(storedValue, props.value), [storedValue, props.value]);
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
 
   const [open, setOpen] = useState(false);
   const [results, setResults] = useState<Option[] | null>(null);
   const [loading, setLoading] = useState(false);
   const searchAbort = useRef<AbortController | null>(null);
 
-  const labels = useMemo(() => {
-    const map = new Map<string, string>();
+  const optionsByValue = useMemo(() => {
+    const map = new Map<string, Option>();
+
     for (const option of [...staticOptions, ...(results ?? [])]) {
-      map.set(option.value, option.label);
+      map.set(option.value, option);
     }
+
     return map;
   }, [staticOptions, results]);
-  const labelFor = (value: string) => labels.get(value) ?? value;
+  const labelFor = (value: string) => optionsByValue.get(value)?.label ?? value;
+  const colorFor = (value: string) =>
+    (optionsByValue.get(value)?.data as { color?: string } | undefined)?.color;
 
   const locked = readOnly || disabled;
 
@@ -122,18 +129,36 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
 
   function select(value: string): void {
     if (multiple) {
-      commit(
-        selected.includes(value) ? selected.filter((item) => item !== value) : [...selected, value],
-      );
+      const next = selectedRef.current.includes(value)
+        ? selectedRef.current.filter((item) => item !== value)
+        : [...selectedRef.current, value];
+      selectedRef.current = next;
+      commit(next);
 
       return;
     }
 
+    selectedRef.current = [value];
     commit([value]);
   }
 
   function remove(value: string): void {
     commit(selected.filter((item) => item !== value));
+  }
+
+  function applyCreated(value: string): void {
+    if (!multiple) {
+      selectedRef.current = [value];
+      commit([value]);
+
+      return;
+    }
+
+    if (!selectedRef.current.includes(value)) {
+      const next = [...selectedRef.current, value];
+      selectedRef.current = next;
+      commit(next);
+    }
   }
 
   if (hidden) {
@@ -174,34 +199,48 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
       <div>
         {multiple && selected.length > 0 && (
           <div className="mb-1.5 flex flex-wrap gap-1">
-            {selected.map((value) => (
-              <span
-                className="inline-flex items-center gap-1 rounded-lt-sm bg-lt-muted px-2 py-0.5 text-xs"
-                key={value}
-              >
-                {labelFor(value)}
-                {!locked && (
-                  <button
-                    aria-label={t("form.remove-option", "Remove {{label}}", {
-                      label: labelFor(value),
-                    })}
-                    data-test={`select-${name}-remove-${value}`}
-                    className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-xs"
-                    onClick={() => remove(value)}
-                    type="button"
-                  >
-                    <Icon name="x" />
-                  </button>
-                )}
-              </span>
-            ))}
+            {selected.map((value) => {
+              const color = colorFor(value);
+
+              return (
+                <span
+                  className="inline-flex items-center gap-1 rounded-lt-sm bg-lt-muted px-2 py-0.5 text-xs"
+                  key={value}
+                >
+                  {color && (
+                    <span
+                      aria-hidden="true"
+                      className="size-2 shrink-0 rounded-full"
+                      style={{ background: color }}
+                    />
+                  )}
+                  {labelFor(value)}
+                  {!locked && (
+                    <button
+                      aria-label={t("form.remove-option", "Remove {{label}}", {
+                        label: labelFor(value),
+                      })}
+                      data-test={`select-${name}-remove-${value}`}
+                      className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-xs"
+                      onClick={() => remove(value)}
+                      type="button"
+                    >
+                      <Icon name="x" />
+                    </button>
+                  )}
+                </span>
+              );
+            })}
           </div>
         )}
 
         <Combobox
+          creatable={creatable}
           emptyLabel={props.emptyLabel ?? undefined}
           loading={loading}
           multiple={multiple}
+          onCommit={applyCreated}
+          onCreate={applyCreated}
           onSearch={searchable ? search : undefined}
           onSelect={select}
           open={open && !locked}
@@ -215,7 +254,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
           options={options}
           renderOption={renderOption}
           searchPlaceholder={props.searchPlaceholder ?? undefined}
-          showSearch={Boolean(searchable)}
+          showSearch={Boolean(searchable || creatable)}
           selected={selected}
           testId={`select-${name}`}
           trigger={

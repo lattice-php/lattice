@@ -4,6 +4,7 @@
             "autoFocus": false,
             "columnWidth": "md",
             "conditions": null,
+            "creatable": false,
             "dependsOnAny": false,
             "dependsOnKeys": null,
             "disabled": false,

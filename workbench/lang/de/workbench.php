@@ -274,14 +274,18 @@ return [
             'summary' => 'Zusammenfassung',
         ],
         'select' => [
+            'creatable' => 'Erstellbar',
             'design' => 'Design',
             'eloquent' => 'Eloquent-Optionen',
             'engineering' => 'Engineering',
             'interests' => 'Interessen',
+            'keywords' => 'Schlagwörter',
             'multiple' => 'Mehrfach',
             'pick-product' => 'Produkt auswählen',
             'sales' => 'Vertrieb',
             'searchable' => 'Durchsuchbar',
+            'tags' => 'Tags',
+            'topics' => 'Themen',
         ],
         'text' => [
             'copyable' => 'Kopierbar',

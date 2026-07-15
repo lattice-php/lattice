@@ -88,6 +88,23 @@ class SelectFieldForm extends FormDefinition
                             )
                             ->rules(['nullable']),
                     ]),
+                    Tab::make('creatable', __('workbench.fields.select.creatable'))->schema([
+                        Select::make('keywords', __('workbench.fields.select.keywords'))
+                            ->multiple()
+                            ->creatable()
+                            ->itemRules(['string', 'max:40'])
+                            ->rules(['nullable', 'array']),
+                    ]),
+                    Tab::make('tags', __('workbench.fields.select.tags'))->schema([
+                        Select::make('topics', __('workbench.fields.select.topics'))
+                            ->multiple()
+                            ->options([
+                                Select::option(__('workbench.fields.select.sales'), 'sales', ['color' => '#3b82f6']),
+                                Select::option(__('workbench.fields.select.design'), 'design', ['color' => '#8b5cf6']),
+                            ])
+                            ->creatable()
+                            ->rules(['nullable', 'array']),
+                    ]),
                 ]),
         ]);
     }
