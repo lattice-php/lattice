@@ -10,6 +10,10 @@ it('renders the tree demo with categories, active state, and row actions', funct
         ->assertSee('Phones')
         ->assertSee('Clothing')
         ->assertSee('Documents')
+        ->assertSee('Furniture')
+        ->assertSee('Groceries')
+        ->assertSee('Automotive')
+        ->assertSee('Help')
         ->assertNotPresent('[data-test="tree-node-clothing-men"]')
         ->assertAriaAttribute('[data-test="tree-node-electronics-phones"]', 'selected', 'true')
         ->click('[data-test="tree-documents-actions"]')
@@ -81,4 +85,55 @@ it('navigates when an href node link is clicked', function (): void {
     $page
         ->assertSee('Team settings')
         ->assertNoJavaScriptErrors();
+});
+
+it('keeps row action controls out of the page tab order so Tab exits the tree cleanly', function (): void {
+    $this->actingAs(workbenchTestUser());
+
+    $page = visit('/components/tree')
+        ->assertAttribute('[data-test="tree-documents-actions"]', 'tabindex', '-1')
+        ->keys('[data-test="tree-node-electronics"]', ['Tab']);
+
+    $focusedInsideTree = $page->script(<<<'JS'
+        () => document.activeElement != null && document.activeElement.closest('[role="tree"]') != null
+    JS);
+
+    expect($focusedInsideTree)->toBeFalsy();
+
+    $page->assertNoJavaScriptErrors();
+});
+
+it('opens the info modal with Enter on the modal-action node and returns focus on close', function (): void {
+    $this->actingAs(workbenchTestUser());
+
+    $page = visit('/components/tree')
+        ->keys('[data-test="tree-node-electronics"]', ['End']);
+
+    eventually(function () use ($page): void {
+        $page->assertAttribute('[data-test="tree-node-help"]', 'tabindex', '0');
+    });
+
+    $page->keys('[data-test="tree-node-help"]', ['Enter']);
+
+    eventually(function () use ($page): void {
+        $page->assertSee('Keyboard navigation');
+    });
+
+    $page
+        ->assertSee('Arrow keys move focus between rows')
+        ->click('[data-test="dialog-close"]');
+
+    eventually(function () use ($page): void {
+        $page->assertDontSee('Keyboard navigation');
+    });
+
+    eventually(function () use ($page): void {
+        $focusedTestId = $page->script(<<<'JS'
+            () => document.activeElement?.getAttribute('data-test') ?? null
+        JS);
+
+        expect($focusedTestId)->toBe('tree-node-help');
+    });
+
+    $page->assertNoJavaScriptErrors();
 });

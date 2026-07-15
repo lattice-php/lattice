@@ -185,6 +185,9 @@ return [
             'label' => 'Reject selected',
             'toast' => 'Rejected :count products: :reason',
         ],
+        'tree-node-info' => [
+            'label' => 'About this tree',
+        ],
     ],
     'auth' => [
         'login' => [
@@ -541,7 +544,26 @@ return [
             ],
             'tree' => [
                 'categories' => [
+                    'automotive' => [
+                        'accessories' => [
+                            'floor-mats' => 'Floor mats',
+                            'label' => 'Accessories',
+                            'seat-covers' => 'Seat covers',
+                        ],
+                        'label' => 'Automotive',
+                        'parts' => [
+                            'brakes' => 'Brakes',
+                            'engine' => 'Engine',
+                            'label' => 'Parts',
+                        ],
+                    ],
                     'clothing' => [
+                        'accessories' => [
+                            'belts' => 'Belts',
+                            'hats' => 'Hats',
+                            'label' => 'Accessories',
+                        ],
+                        'kids' => 'Kids',
                         'label' => 'Clothing',
                         'men' => 'Men',
                         'women' => 'Women',
@@ -552,12 +574,46 @@ return [
                         'rename' => 'Rename',
                     ],
                     'electronics' => [
+                        'accessories' => [
+                            'cases' => 'Cases',
+                            'chargers' => 'Chargers',
+                            'label' => 'Accessories',
+                        ],
                         'label' => 'Electronics',
                         'laptops' => 'Laptops',
                         'phones' => 'Phones',
+                        'tablets' => 'Tablets',
+                    ],
+                    'furniture' => [
+                        'bedroom' => [
+                            'beds' => 'Beds',
+                            'label' => 'Bedroom',
+                            'wardrobes' => 'Wardrobes',
+                        ],
+                        'label' => 'Furniture',
+                        'living-room' => [
+                            'coffee-tables' => 'Coffee tables',
+                            'label' => 'Living room',
+                            'sofas' => 'Sofas',
+                        ],
+                    ],
+                    'groceries' => [
+                        'bakery' => 'Bakery',
+                        'dairy' => 'Dairy',
+                        'frozen' => 'Frozen',
+                        'label' => 'Groceries',
+                        'produce' => 'Produce',
+                    ],
+                    'help' => [
+                        'label' => 'Help',
                     ],
                 ],
-                'intro' => 'A keyboard-navigable hierarchy with active state, a linked node, and row actions.',
+                'info-modal' => [
+                    'body' => 'Arrow keys move focus between rows without leaving the page tab order. Enter or Space activates the focused row: it follows a link, runs an action, or marks the row active.',
+                    'description' => 'How keyboard navigation works in this component.',
+                    'title' => 'Keyboard navigation',
+                ],
+                'intro' => 'A keyboard-navigable hierarchy with active state, a linked node, row actions, and a modal-opening action.',
                 'title' => 'Tree',
             ],
         ],
