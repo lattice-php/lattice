@@ -1,21 +1,12 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { coerceColor, colorValue, namedColor } from "@lattice-php/lattice/lib/color";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import type { Color, Size } from "@lattice-php/lattice/types/generated";
+import type { Size } from "@lattice-php/lattice/types/generated";
 import { CopyableText } from "./copyable-text";
 
 const textAlignments: Record<string, string> = {
   center: "text-center",
   left: "text-left",
-};
-
-const textColors: Record<Color, string> = {
-  default: "text-lt-fg",
-  muted: "text-lt-muted-fg",
-  primary: "text-lt-primary",
-  success: "text-lt-success",
-  info: "text-lt-info",
-  warning: "text-lt-warning",
-  danger: "text-lt-danger",
 };
 
 const textSizes: Record<Size, string> = {
@@ -31,6 +22,7 @@ const textSizes: Record<Size, string> = {
 
 const TextComponent: RendererComponent<"text"> = ({ node }) => {
   const align = node.props.align ?? "left";
+  const color = colorValue(coerceColor(node.props.color) ?? namedColor("muted"));
 
   const text = (
     <p
@@ -38,9 +30,9 @@ const TextComponent: RendererComponent<"text"> = ({ node }) => {
         "m-0",
         "max-w-2xl",
         textAlignments[align] ?? textAlignments.left,
-        textColors[node.props.color ?? "muted"],
         textSizes[node.props.size],
       )}
+      style={{ color }}
     >
       {node.props.text}
     </p>

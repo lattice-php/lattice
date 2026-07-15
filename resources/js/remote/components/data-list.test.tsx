@@ -31,7 +31,7 @@ function node(): Node<"remote.data-list"> {
         key: "name",
         props: {
           align: null,
-          color: "default",
+          color: { kind: "named", value: "default", dark: null },
           dataBindings: {
             text: "name",
           },
@@ -44,7 +44,7 @@ function node(): Node<"remote.data-list"> {
         key: "email",
         props: {
           align: null,
-          color: "muted",
+          color: { kind: "named", value: "muted", dark: null },
           dataBindings: {
             text: "email",
           },
@@ -75,7 +75,7 @@ function schemaNode(): Node<"remote.data-list"> {
             key: "email",
             props: {
               align: null,
-              color: "muted",
+              color: { kind: "named", value: "muted", dark: null },
               dataBindings: {
                 text: "email",
               },

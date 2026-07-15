@@ -36,7 +36,7 @@
                       "type": "text",
                       "props": {
                         "text": "Each row below is a card generated from remote data. The status badge and button link are bound from row keys.",
-                        "color": "muted",
+                        "color": { "kind": "named", "value": "muted", "dark": null },
                         "size": "sm"
                       }
                     },

@@ -23,16 +23,20 @@ describe("Lattice icon component", () => {
     const { container } = renderIcon({
       name: "house",
       size: "lg",
-      color: "danger",
+      color: { kind: "named", value: "danger", dark: null },
       class: "opacity-80",
     });
 
     const svg = container.querySelector("svg");
 
-    expect(svg).toHaveClass("size-lt-icon-lg", "text-lt-danger", "opacity-80");
+    expect(svg).toHaveClass("size-lt-icon-lg", "opacity-80");
     // The sprite renderer applies size-lt-icon-md as a baseline; an explicit
     // size must override it rather than coexist with it.
     expect(svg).not.toHaveClass("size-lt-icon-md");
+
+    const wrapper = container.querySelector("span.contents");
+    expect(wrapper).not.toBeNull();
+    expect(wrapper?.style.getPropertyValue("color")).toBe("var(--lt-color-danger)");
   });
 
   it.each(["2xl", "3xl", "4xl"] as const)("supports the %s display size", (size) => {
@@ -48,6 +52,6 @@ describe("Lattice icon component", () => {
     const svg = container.querySelector("svg");
 
     expect(svg).toHaveClass("size-lt-icon-md");
-    expect(svg).not.toHaveClass("text-lt-danger");
+    expect(container.querySelector("span.contents")).toBeNull();
   });
 });
