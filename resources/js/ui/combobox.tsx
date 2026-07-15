@@ -16,7 +16,11 @@ const SEARCH_DEBOUNCE_MS = 250;
  * combobox debounces the query and renders `options` as given); omit it to
  * filter the provided `options` locally by label. The combobox closes itself
  * after a single-select. Pass `renderOption` to render rich option rows; the
- * option's label stays the accessible name.
+ * option's label stays the accessible name. `onSelect` toggles selection
+ * (used by dropdown-row clicks); tag-entry commits (Enter/comma/paste) that
+ * match an existing option call `onCommit` instead, falling back to
+ * `onSelect` when it is not provided, so consumers can make tag entry
+ * additive instead of toggling.
  */
 function Combobox({
   contentClassName,
@@ -24,6 +28,7 @@ function Combobox({
   emptyLabel,
   loading = false,
   multiple = false,
+  onCommit,
   onCreate,
   onSearch,
   onSelect,
@@ -45,6 +50,7 @@ function Combobox({
   emptyLabel?: string;
   loading?: boolean;
   multiple?: boolean;
+  onCommit?: (value: string) => void;
   onCreate?: (label: string) => void;
   onSearch?: (query: string) => void;
   onSelect: (value: string) => void;
@@ -74,13 +80,17 @@ function Combobox({
       const match = options.find((option) => option.label.toLowerCase() === token.toLowerCase());
 
       if (match) {
-        onSelect(match.value);
+        (onCommit ?? onSelect)(match.value);
       } else {
         onCreate?.(token);
       }
     }
 
-    setQuery("");
+    if (multiple) {
+      setQuery("");
+    } else {
+      close();
+    }
   }
 
   const exactMatch = options.some(

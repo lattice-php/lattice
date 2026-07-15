@@ -229,34 +229,38 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
       <div>
         {multiple && selected.length > 0 && (
           <div className="mb-1.5 flex flex-wrap gap-1">
-            {selected.map((value) => (
-              <span
-                className="inline-flex items-center gap-1 rounded-lt-sm bg-lt-muted px-2 py-0.5 text-xs"
-                key={value}
-              >
-                {colorFor(value) && (
-                  <span
-                    aria-hidden="true"
-                    className="size-2 shrink-0 rounded-full"
-                    style={{ background: colorFor(value) }}
-                  />
-                )}
-                {labelFor(value)}
-                {!locked && (
-                  <button
-                    aria-label={t("form.remove-option", "Remove {{label}}", {
-                      label: labelFor(value),
-                    })}
-                    data-test={`select-${name}-remove-${value}`}
-                    className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-xs"
-                    onClick={() => remove(value)}
-                    type="button"
-                  >
-                    <Icon name="x" />
-                  </button>
-                )}
-              </span>
-            ))}
+            {selected.map((value) => {
+              const color = colorFor(value);
+
+              return (
+                <span
+                  className="inline-flex items-center gap-1 rounded-lt-sm bg-lt-muted px-2 py-0.5 text-xs"
+                  key={value}
+                >
+                  {color && (
+                    <span
+                      aria-hidden="true"
+                      className="size-2 shrink-0 rounded-full"
+                      style={{ background: color }}
+                    />
+                  )}
+                  {labelFor(value)}
+                  {!locked && (
+                    <button
+                      aria-label={t("form.remove-option", "Remove {{label}}", {
+                        label: labelFor(value),
+                      })}
+                      data-test={`select-${name}-remove-${value}`}
+                      className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-xs"
+                      onClick={() => remove(value)}
+                      type="button"
+                    >
+                      <Icon name="x" />
+                    </button>
+                  )}
+                </span>
+              );
+            })}
           </div>
         )}
 
@@ -265,6 +269,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
           emptyLabel={props.emptyLabel ?? undefined}
           loading={loading}
           multiple={multiple}
+          onCommit={applyCreated}
           onCreate={handleCreate}
           onSearch={searchable ? search : undefined}
           onSelect={select}

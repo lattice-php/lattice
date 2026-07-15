@@ -353,6 +353,93 @@ describe("SelectComponent creatable", () => {
     expect(chip?.querySelector('[style*="rgb(239, 68, 68)"]')).not.toBeNull();
   });
 
+  it("keeps an already-selected tag selected when re-entered instead of toggling it off", () => {
+    renderStaticSelect(
+      {
+        multiple: true,
+        creatable: true,
+        options: [{ label: "Red", value: "red" }],
+      },
+      { color: ["red"] },
+    );
+
+    fireEvent.click(screen.getByTestId("select-color"));
+    const input = screen.getByTestId("select-color-search");
+    fireEvent.change(input, { target: { value: "Red" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(screen.getAllByTestId("select-color-remove-red")).toHaveLength(1);
+    expect(
+      document.querySelectorAll('input[type="hidden"][name="color[]"][value="red"]'),
+    ).toHaveLength(1);
+  });
+
+  it("closes the popover after committing a tag in a single-select", () => {
+    renderStaticSelect(
+      { creatable: true, options: [{ label: "Red", value: "red" }] },
+      { color: "" },
+    );
+
+    fireEvent.click(screen.getByTestId("select-color"));
+    const input = screen.getByTestId("select-color-search");
+    fireEvent.change(input, { target: { value: "Red" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(screen.queryByTestId("select-color-search")).not.toBeInTheDocument();
+  });
+
+  it("keeps the popover open after committing a tag in a multiple select", () => {
+    renderStaticSelect(
+      { multiple: true, creatable: true, options: [{ label: "Red", value: "red" }] },
+      { color: [] },
+    );
+
+    fireEvent.click(screen.getByTestId("select-color"));
+    const input = screen.getByTestId("select-color-search");
+    fireEvent.change(input, { target: { value: "Red" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(screen.getByTestId("select-color-search")).toBeInTheDocument();
+  });
+
+  it("accumulates all tags when creating multiple options on the fly from one paste", async () => {
+    postFormAction.mockImplementation((_action, _componentRef, body) => {
+      const label = String(body.q);
+
+      return Promise.resolve({ option: { label, value: label } });
+    });
+
+    renderStaticSelect(
+      { multiple: true, creatable: true, createOnServer: true, options: [] },
+      { color: [] },
+    );
+
+    fireEvent.click(screen.getByTestId("select-color"));
+    fireEvent.change(screen.getByTestId("select-color-search"), {
+      target: { value: "a,b,c" },
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(postFormAction).toHaveBeenCalledTimes(3);
+    expect(screen.getByText("a")).toBeVisible();
+    expect(screen.getByText("b")).toBeVisible();
+    expect(screen.getByText("c")).toBeVisible();
+    expect(
+      document.querySelector('input[type="hidden"][name="color[]"][value="a"]'),
+    ).not.toBeNull();
+    expect(
+      document.querySelector('input[type="hidden"][name="color[]"][value="b"]'),
+    ).not.toBeNull();
+    expect(
+      document.querySelector('input[type="hidden"][name="color[]"][value="c"]'),
+    ).not.toBeNull();
+  });
+
   it("posts _create and adds the returned option on create-on-the-fly", async () => {
     postFormAction.mockResolvedValue({
       option: { label: "Sealants", value: "sealants", data: { color: "#22c55e" } },
