@@ -10,7 +10,7 @@ use Lattice\Lattice\Ui\Values\ChartSeries;
 use Lattice\Lattice\Ui\Values\DateFormat;
 use Lattice\Lattice\Ui\Values\NumberFormat;
 
-it('coerces series colors to tagged color values', function () {
+it('coerces series colors to tagged color values', function (): void {
     expect(json_decode(json_encode(ChartSeries::line('revenue', color: '#2563eb')), true)['color'])
         ->toBe(['kind' => 'css', 'value' => '#2563eb', 'dark' => null])
         ->and(json_decode(json_encode(ChartSeries::bar('orders', color: 'success')), true)['color'])

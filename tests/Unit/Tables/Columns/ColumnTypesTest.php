@@ -25,7 +25,7 @@ it('serializes a badge column with its colour map', function (): void {
         ]);
 });
 
-it('normalizes badge colors to tagged color values', function () {
+it('normalizes badge colors to tagged color values', function (): void {
     $column = BadgeColumn::make('status')->colors([
         'active' => 'green',
         'archived' => Color::gray(),
