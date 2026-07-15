@@ -32,7 +32,7 @@ export function FilterValueInput({
 }) {
   const { t } = useT("lattice");
   const [draft, setDraft] = useState(value);
-  const inputLabel = ariaLabel ?? t("table.filter.filterBy", "Filter {{label}}", { label });
+  const inputLabel = ariaLabel ?? t("table.filter.filter-by", "Filter {{label}}", { label });
   const groupedClass = grouped ? "rounded-r-none" : "";
 
   useEffect(() => {

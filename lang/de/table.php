@@ -3,21 +3,27 @@ declare(strict_types=1);
 
 return [
     'loading' => 'Zeilen werden geladen...',
+    'empty' => 'Keine Ergebnisse',
+    'actions' => 'Aktionen',
+    'sort' => [
+        'column' => ':label sortieren',
+        'clear' => 'Sortierung :label entfernen',
+    ],
     'pagination' => [
-        'allLoaded' => 'Alle Zeilen geladen',
+        'all-loaded' => 'Alle Zeilen geladen',
         'page' => 'Seite :page',
         'showing' => 'Zeige :from–:to von :total',
-        'loadMore' => 'Mehr laden',
+        'load-more' => 'Mehr laden',
         'loading' => 'Lädt...',
         'previous' => 'Zurück',
         'next' => 'Weiter',
     ],
     'bulk' => [
         'selected' => ':count ausgewählt',
-        'allSelected' => 'Alle :count ausgewählt',
-        'selectAllMatching' => 'Alle :total passenden auswählen',
+        'all-selected' => 'Alle :count ausgewählt',
+        'select-all-matching' => 'Alle :total passenden auswählen',
     ],
-    'rowActions' => [
+    'row-actions' => [
         'duplicate' => 'Duplizieren',
         'remove' => 'Entfernen',
     ],
@@ -29,16 +35,16 @@ return [
         'placeholder' => 'Suchen',
         'clear' => 'Suche löschen',
     ],
-    'rowDetail' => [
+    'row-detail' => [
         'toggle' => 'Details ein-/ausklappen',
     ],
     'filter' => [
         'all' => 'Alle',
         'true' => 'Ja',
         'false' => 'Nein',
-        'filterBy' => ':label filtern',
+        'filter-by' => ':label filtern',
         'clear' => ':label-Filter löschen',
-        'columnFilters' => ':label-Filter',
+        'column-filters' => ':label-Filter',
         'operator' => ':label-Operator',
         'remove' => ':label-Filter entfernen',
         'value' => ':label-Filterwert',
@@ -46,8 +52,8 @@ return [
         'filters' => 'Filter',
         'from' => ':label ab',
         'until' => ':label bis',
-        'selectedCount' => ':amount ausgewählt',
-        'resetAll' => 'Alle zurücksetzen',
+        'selected-count' => ':amount ausgewählt',
+        'reset-all' => 'Alle zurücksetzen',
         'search' => 'Suchen',
     ],
     'operators' => [
@@ -67,7 +73,7 @@ return [
         'empty' => 'ist leer',
         'filled' => 'ist nicht leer',
     ],
-    'selectRow' => 'Zeile :key auswählen',
-    'selectAllRows' => 'Alle Zeilen auswählen',
-    'resetColumnWidths' => 'Spaltenbreiten zurücksetzen',
+    'select-row' => 'Zeile :key auswählen',
+    'select-all-rows' => 'Alle Zeilen auswählen',
+    'reset-column-widths' => 'Spaltenbreiten zurücksetzen',
 ];

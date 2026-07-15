@@ -2,7 +2,7 @@
     {
         "id": "members",
         "props": {
-            "actionsLabel": "Actions",
+            "actionsLabel": null,
             "bulkActions": [],
             "columns": [
                 {
@@ -70,7 +70,7 @@
                     "role": "Editor"
                 }
             ],
-            "emptyLabel": "No results",
+            "emptyLabel": null,
             "endpoint": null,
             "filters": [],
             "layout": null,

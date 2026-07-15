@@ -135,11 +135,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     <div data-slot="table" data-lattice-component={node.id} className="relative">
       {hasOverrides && (
         <button
-          aria-label={t("table.resetColumnWidths", "Reset column widths")}
+          aria-label={t("table.reset-column-widths", "Reset column widths")}
           className="absolute right-1 top-1 z-10 hidden rounded-lt-sm p-1 text-lt-muted-fg hover:text-lt-fg md:inline-flex"
           data-test="table-reset-columns"
           onClick={resetColumns}
-          title={t("table.resetColumnWidths", "Reset column widths")}
+          title={t("table.reset-column-widths", "Reset column widths")}
           type="button"
         >
           <Icon name="rotate-ccw" className="size-lt-icon-sm" />
@@ -212,7 +212,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
               {hasBulkActions && (
                 <div className="flex items-center px-4 py-3" role="columnheader">
                   <Checkbox
-                    aria-label={t("table.selectAllRows", "Select all rows")}
+                    aria-label={t("table.select-all-rows", "Select all rows")}
                     data-test="select-all"
                     checked={selection.allSelected}
                     onCheckedChange={() => selection.toggleAll()}
@@ -256,7 +256,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                       processing={processing}
                     />
                   )}
-                  {hasActions && <span className="sr-only">{node.props?.actionsLabel}</span>}
+                  {hasActions && (
+                    <span className="sr-only">
+                      {node.props?.actionsLabel ?? t("table.actions", "Actions")}
+                    </span>
+                  )}
                 </div>
               )}
             </div>
@@ -296,7 +300,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
               </div>
             ) : rowEntries.length === 0 ? (
               <div data-slot="table-empty" className="p-8 text-center text-lt-muted-fg" role="row">
-                <div role="cell">{node.props?.emptyLabel}</div>
+                <div role="cell">{node.props?.emptyLabel ?? t("table.empty", "No results")}</div>
               </div>
             ) : (
               rowEntries.map(({ row, actions, detail, key }) => {
@@ -320,7 +324,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                               data-test={`row-expand-${key}`}
                               aria-expanded={expanded}
                               aria-controls={detailId}
-                              aria-label={t("table.rowDetail.toggle", "Toggle detail")}
+                              aria-label={t("table.row-detail.toggle", "Toggle detail")}
                               className="inline-flex size-6 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg"
                               onClick={() => toggleRow(key)}
                             >
@@ -339,7 +343,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                       {hasBulkActions && (
                         <div className="flex items-center px-lt-cell-x py-lt-cell-y" role="cell">
                           <Checkbox
-                            aria-label={t("table.selectRow", "Select row {{key}}", { key })}
+                            aria-label={t("table.select-row", "Select row {{key}}", { key })}
                             data-test={`select-row-${key}`}
                             checked={selection.isSelected(key)}
                             onCheckedChange={() => selection.toggle(key)}

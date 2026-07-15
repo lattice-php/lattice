@@ -1,5 +1,6 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { IconButton } from "@lattice-php/lattice/ui/icon-button";
+import { useT } from "@lattice-php/lattice/i18n";
 import { getSortDirectionLabel } from "@lattice-php/lattice/table/lib/query";
 import type { TableColumn, TableSort, TableQuery } from "@lattice-php/lattice/table/types";
 
@@ -14,6 +15,8 @@ export function SortBar({
   processing: boolean;
   onClear: (sort: TableSort) => void;
 }) {
+  const { t } = useT("lattice");
+
   return (
     <div className="flex flex-wrap items-center gap-4 border-b border-lt-border px-4 py-2.5 text-sm">
       {query.sorts.map((sort, index) => {
@@ -34,7 +37,7 @@ export function SortBar({
             <IconButton
               size="xs"
               icon="x"
-              label={`Clear ${label} sort`}
+              label={t("table.sort.clear", "Clear {{label}} sort", { label })}
               data-test={`clear-${sort.key}-sort`}
               disabled={processing}
               onClick={() => onClear(sort)}

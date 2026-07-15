@@ -105,7 +105,7 @@ function Combobox({
         {showSearch && (
           <div className="flex items-center gap-2 border-b border-lt-border px-3 py-2">
             <input
-              aria-label={searchLabel ?? t("form.searchOptions", "Search options")}
+              aria-label={searchLabel ?? t("form.search-options", "Search options")}
               data-slot="combobox-search"
               data-test={testId ? `${testId}-search` : undefined}
               className="w-full bg-transparent text-sm outline-none placeholder:text-lt-muted-fg"

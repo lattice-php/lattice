@@ -52,11 +52,11 @@ export function TablePagination({
             >
               {processing
                 ? t("table.pagination.loading", "Loading...")
-                : t("table.pagination.loadMore", "Load more")}
+                : t("table.pagination.load-more", "Load more")}
             </Button>
           ) : (
             <span className="text-lt-muted-fg">
-              {t("table.pagination.allLoaded", "All rows loaded")}
+              {t("table.pagination.all-loaded", "All rows loaded")}
             </span>
           )}
         </div>

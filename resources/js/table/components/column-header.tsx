@@ -2,6 +2,7 @@ import { Icon } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { HTMLAttributes } from "react";
 import { alignJustify, alignText } from "@lattice-php/lattice/table/lib/align";
+import { useT } from "@lattice-php/lattice/i18n";
 import { getColumnAriaSort, getColumnSort } from "@lattice-php/lattice/table/lib/query";
 import type { TableColumn, TableSort, TableQuery } from "@lattice-php/lattice/table/types";
 
@@ -37,6 +38,7 @@ export function ColumnHeader({
   query: TableQuery;
 }) {
   const columnSort = getColumnSort(query, column);
+  const { t } = useT("lattice");
   const { align, label, sortable } = column.props;
 
   return (
@@ -51,7 +53,7 @@ export function ColumnHeader({
       {sortable ? (
         <button
           type="button"
-          aria-label={`Sort ${label}`}
+          aria-label={t("table.sort.column", "Sort {{label}}", { label })}
           className={cn("flex w-full items-center gap-1.5 font-semibold", alignJustify(align))}
           data-test={`sort-${column.key}`}
           disabled={processing}

@@ -212,3 +212,36 @@ arch('no debug statements ship in the package')
 arch('the package uses strict types throughout')
     ->expect('Lattice\Lattice')
     ->toUseStrictTypes();
+
+it('uses lower-case translation keys separated by - or _', function (): void {
+    $root = dirname(__DIR__);
+    $violations = [];
+
+    $inspect = function (array $translations, string $file, string $prefix = '') use (&$inspect, &$violations): void {
+        foreach ($translations as $key => $value) {
+            $path = $prefix === '' ? (string) $key : "{$prefix}.{$key}";
+
+            if (preg_match('/^[a-z0-9]+(?:[-_][a-z0-9]+)*$/D', (string) $key) !== 1) {
+                $violations[] = "{$file}: {$path}";
+            }
+
+            if (is_array($value)) {
+                $inspect($value, $file, $path);
+            }
+        }
+    };
+
+    foreach ([$root.'/lang', $root.'/workbench/lang'] as $directory) {
+        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS));
+
+        foreach ($files as $file) {
+            if (! $file->isFile() || $file->getExtension() !== 'php') {
+                continue;
+            }
+
+            $inspect(require $file->getPathname(), str_replace($root.'/', '', $file->getPathname()));
+        }
+    }
+
+    expect($violations)->toBeEmpty(implode(PHP_EOL, $violations));
+});

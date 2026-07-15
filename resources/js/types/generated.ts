@@ -1162,10 +1162,10 @@ export type Tab = {
   value: string;
 };
 export type Table = {
-  actionsLabel: string;
+  actionsLabel: string | null;
   bulkActions: Node<"action">[];
   columns: Node[];
-  emptyLabel: string;
+  emptyLabel: string | null;
   endpoint: string | null;
   filters: Node[];
   layout: string | null;

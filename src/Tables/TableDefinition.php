@@ -66,14 +66,14 @@ abstract class TableDefinition extends Definition
         return false;
     }
 
-    public function actionsLabel(): string
+    public function actionsLabel(): ?string
     {
-        return 'Actions';
+        return null;
     }
 
-    public function emptyLabel(): string
+    public function emptyLabel(): ?string
     {
-        return 'No results';
+        return null;
     }
 
     /**

@@ -2,7 +2,7 @@
     {
         "id": "metrics",
         "props": {
-            "actionsLabel": "Actions",
+            "actionsLabel": null,
             "bulkActions": [],
             "columns": [
                 {
@@ -77,7 +77,7 @@
                     "views": 1045000
                 }
             ],
-            "emptyLabel": "No results",
+            "emptyLabel": null,
             "endpoint": null,
             "filters": [],
             "layout": null,
