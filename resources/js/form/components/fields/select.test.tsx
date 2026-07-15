@@ -336,6 +336,48 @@ describe("SelectComponent creatable", () => {
 
     expect(document.querySelector('input[type="hidden"][name="color"]')).toHaveValue("steel");
   });
+
+  it("renders a color dot for an entity chip carrying data.color", () => {
+    renderStaticSelect(
+      {
+        multiple: true,
+        creatable: true,
+        options: [{ label: "Urgent", value: "5", data: { color: "#ef4444" } }],
+      },
+      { color: ["5"] },
+    );
+
+    const chip = screen.getByText("Urgent").closest("span");
+    expect(chip?.querySelector('[style*="rgb(239, 68, 68)"]')).not.toBeNull();
+  });
+
+  it("posts _create and adds the returned option on create-on-the-fly", async () => {
+    postFormAction.mockResolvedValue({
+      option: { label: "Sealants", value: "sealants", data: { color: "#22c55e" } },
+    });
+
+    renderStaticSelect(
+      { multiple: true, creatable: true, createOnServer: true, options: [] },
+      { color: [] },
+    );
+
+    fireEvent.click(screen.getByTestId("select-color"));
+    const input = screen.getByTestId("select-color-search");
+    fireEvent.change(input, { target: { value: "Sealants" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(postFormAction).toHaveBeenCalledWith(
+      "/forms/products",
+      "ref-1",
+      expect.objectContaining({ _create: "color", q: "Sealants" }),
+      expect.any(AbortSignal),
+    );
+    expect(screen.getByText("Sealants")).toBeVisible();
+  });
 });
 
 describe("SelectComponent option schema", () => {

@@ -66,16 +66,21 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
   const [open, setOpen] = useState(false);
   const [results, setResults] = useState<Option[] | null>(null);
   const [loading, setLoading] = useState(false);
+  const [created, setCreated] = useState<Option[]>([]);
   const searchAbort = useRef<AbortController | null>(null);
 
-  const labels = useMemo(() => {
-    const map = new Map<string, string>();
-    for (const option of [...staticOptions, ...(results ?? [])]) {
-      map.set(option.value, option.label);
+  const optionsByValue = useMemo(() => {
+    const map = new Map<string, Option>();
+
+    for (const option of [...staticOptions, ...created, ...(results ?? [])]) {
+      map.set(option.value, option);
     }
+
     return map;
-  }, [staticOptions, results]);
-  const labelFor = (value: string) => labels.get(value) ?? value;
+  }, [staticOptions, created, results]);
+  const labelFor = (value: string) => optionsByValue.get(value)?.label ?? value;
+  const colorFor = (value: string) =>
+    (optionsByValue.get(value)?.data as { color?: string } | undefined)?.color;
 
   const locked = readOnly || disabled;
 
@@ -143,23 +148,47 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
     commit(selected.filter((item) => item !== value));
   }
 
-  function handleCreate(label: string): void {
-    if (createOnServer) {
-      return;
-    }
-
+  function applyCreated(value: string): void {
     if (!multiple) {
-      selectedRef.current = [label];
-      commit([label]);
+      selectedRef.current = [value];
+      commit([value]);
 
       return;
     }
 
-    if (!selectedRef.current.includes(label)) {
-      const next = [...selectedRef.current, label];
+    if (!selectedRef.current.includes(value)) {
+      const next = [...selectedRef.current, value];
       selectedRef.current = next;
       commit(next);
     }
+  }
+
+  function handleCreate(label: string): void {
+    if (createOnServer) {
+      const controller = new AbortController();
+
+      void postFormAction<{ option?: Option }>(
+        action,
+        componentRef,
+        { ...valuesRef.current, _create: searchKey, q: label },
+        controller.signal,
+      )
+        .then((response) => {
+          const option = response?.option;
+
+          if (!option) {
+            return;
+          }
+
+          setCreated((prev) => [...prev, option]);
+          applyCreated(option.value);
+        })
+        .catch(() => {});
+
+      return;
+    }
+
+    applyCreated(label);
   }
 
   if (hidden) {
@@ -205,6 +234,13 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
                 className="inline-flex items-center gap-1 rounded-lt-sm bg-lt-muted px-2 py-0.5 text-xs"
                 key={value}
               >
+                {colorFor(value) && (
+                  <span
+                    aria-hidden="true"
+                    className="size-2 shrink-0 rounded-full"
+                    style={{ background: colorFor(value) }}
+                  />
+                )}
                 {labelFor(value)}
                 {!locked && (
                   <button
