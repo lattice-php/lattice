@@ -75,12 +75,25 @@ function TreeItem({
   const isFocused = focusedId === node.id;
   const isDisabled = node.disabled === true;
   const expandable = hasExpandableChildren(node);
+  const actionsRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     register({ id: node.id, label: node.label, orderPath, parentPath, path, ref });
 
     return () => unregister(path);
   }, [node.id, node.label, orderPath, parentPath, path, register, unregister]);
+
+  useEffect(() => {
+    const container = actionsRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    container.querySelectorAll<HTMLElement>("button, a[href], [tabindex]").forEach((control) => {
+      control.tabIndex = -1;
+    });
+  });
 
   function onKeyDown(event: KeyboardEvent<HTMLLIElement>): void {
     if (event.target !== event.currentTarget) {
@@ -128,6 +141,9 @@ function TreeItem({
         }
         if (node.href) {
           router.visit(node.href);
+        } else if (node.actions) {
+          actionsRef.current?.querySelector("button")?.click();
+          ref.current?.focus();
         } else {
           activate(node.id);
         }
@@ -191,7 +207,7 @@ function TreeItem({
         )}
         {node.badge ? <Badge variant="secondary">{node.badge}</Badge> : null}
         {node.actions ? (
-          <span className="ml-auto">
+          <span className="ml-auto" ref={actionsRef}>
             <Renderer nodes={[node.actions]} />
           </span>
         ) : null}

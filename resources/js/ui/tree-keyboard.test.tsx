@@ -4,6 +4,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { fakeNode } from "@lattice-php/lattice/test-support";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import TreeComponent, { type TreeNodeData } from "./tree";
 
 vi.mock("@inertiajs/react", () => ({
@@ -11,8 +12,16 @@ vi.mock("@inertiajs/react", () => ({
   Link: ({ children, ...rest }: { children: React.ReactNode }) => <a {...rest}>{children}</a>,
 }));
 
+const actionClicks: string[] = [];
+const TestAction: RendererComponent = ({ node }) => (
+  <button onClick={() => actionClicks.push(String(node.props?.label ?? ""))} type="button">
+    {String(node.props?.label ?? "")}
+  </button>
+);
+
 const registry = createRegistry({
   components: {
+    "test.action": eagerComponent(TestAction),
     tree: eagerComponent(TreeComponent),
   },
   name: "test/tree-keyboard",
@@ -31,6 +40,7 @@ afterAll(() => {
 
 beforeEach(() => {
   vi.mocked(router.visit).mockClear();
+  actionClicks.length = 0;
 });
 
 afterEach(() => {
@@ -267,5 +277,73 @@ describe("Tree keyboard navigation", () => {
     fireEvent.keyDown(item("3"), { key: " " });
     expect(item("3")).toHaveAttribute("aria-selected", "true");
     expect(router.visit).not.toHaveBeenCalled();
+  });
+
+  it("excludes a node's action control from the page tab order", () => {
+    const actionNodes: TreeNodeData[] = [
+      {
+        actions: { props: { label: "Delete" }, type: "test.action" },
+        id: "5",
+        label: "Accessories",
+      },
+    ] as unknown as TreeNodeData[];
+
+    renderTree({ nodes: actionNodes });
+
+    expect(screen.getByRole("button", { name: "Delete" })).toHaveAttribute("tabindex", "-1");
+  });
+
+  it("triggers the focused node's action control on Enter when it has no href", () => {
+    const actionNodes: TreeNodeData[] = [
+      {
+        actions: { props: { label: "Delete" }, type: "test.action" },
+        id: "5",
+        label: "Accessories",
+      },
+    ] as unknown as TreeNodeData[];
+
+    renderTree({ nodes: actionNodes });
+    item("5").focus();
+
+    fireEvent.keyDown(item("5"), { key: "Enter" });
+
+    expect(actionClicks).toEqual(["Delete"]);
+    expect(router.visit).not.toHaveBeenCalled();
+  });
+
+  it("triggers the focused node's action control on Space when it has no href", () => {
+    const actionNodes: TreeNodeData[] = [
+      {
+        actions: { props: { label: "Delete" }, type: "test.action" },
+        id: "5",
+        label: "Accessories",
+      },
+    ] as unknown as TreeNodeData[];
+
+    renderTree({ nodes: actionNodes });
+    item("5").focus();
+
+    fireEvent.keyDown(item("5"), { key: " " });
+
+    expect(actionClicks).toEqual(["Delete"]);
+  });
+
+  it("prefers href over an action when both are present", () => {
+    const hrefAndActionNodes: TreeNodeData[] = [
+      {
+        actions: { props: { label: "Delete" }, type: "test.action" },
+        href: "/c/5",
+        id: "5",
+        label: "Accessories",
+      },
+    ] as unknown as TreeNodeData[];
+
+    renderTree({ nodes: hrefAndActionNodes });
+    item("5").focus();
+
+    fireEvent.keyDown(item("5"), { key: "Enter" });
+
+    expect(router.visit).toHaveBeenCalledWith("/c/5");
+    expect(actionClicks).toEqual([]);
   });
 });
