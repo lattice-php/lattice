@@ -34,7 +34,7 @@ describe("Lattice icon component", () => {
     // size must override it rather than coexist with it.
     expect(svg).not.toHaveClass("size-lt-icon-md");
 
-    const wrapper = container.querySelector("span.contents");
+    const wrapper = container.querySelector<HTMLSpanElement>("span.contents");
     expect(wrapper).not.toBeNull();
     expect(wrapper?.style.getPropertyValue("color")).toBe("var(--lt-color-danger)");
   });

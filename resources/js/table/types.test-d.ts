@@ -34,9 +34,9 @@ type _ColumnProps = ColumnProps;
 // 3. Built-in column type resolves from the generated map, common concerns included.
 const _builtin: ColumnPropsOf<"column.badge"> = {
   ...commonColumnProps,
-  colors: { active: "green" },
+  colors: { active: { kind: "named", value: "green", dark: null } },
 };
-// @ts-expect-error colors must be a record of strings, not a number
+// @ts-expect-error colors must be a record of Color values, not a number
 const _builtinBad: ColumnPropsOf<"column.badge"> = { colors: 1 };
 void _builtin;
 void _builtinBad;

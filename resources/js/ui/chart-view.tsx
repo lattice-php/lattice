@@ -22,6 +22,7 @@ import {
 import type { ComponentType, ReactNode } from "react";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { PropsOf, RendererComponent } from "@lattice-php/lattice/core/types";
+import { coerceColor, colorValue } from "@lattice-php/lattice/lib/color";
 import { useLocale, useTimezone } from "@lattice-php/lattice/i18n";
 import { numericValue } from "@lattice-php/lattice/format/numeric";
 import { formatValue } from "@lattice-php/lattice/format/value";
@@ -78,11 +79,15 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function datumColor(datum: ChartDatum, series: ChartSeries, index: number): string {
-  if (isRecord(datum) && typeof datum.color === "string") {
-    return datum.color;
+  if (isRecord(datum)) {
+    const color = coerceColor(datum.color);
+
+    if (color) {
+      return colorValue(color);
+    }
   }
 
-  return series.color ?? colorAt(index);
+  return series.color ? colorValue(series.color) : colorAt(index);
 }
 
 function isCartesianSeries(series: ChartSeries): series is CartesianSeries {
@@ -201,7 +206,7 @@ function CartesianChart({ props }: { props: ChartProps }) {
         )}
         {props.legend && <Legend {...compactLegendProps} />}
         {series.map((item, index) => {
-          const color = item.color ?? colorAt(index);
+          const color = item.color ? colorValue(item.color) : colorAt(index);
           const key = `${item.type}:${item.dataKey}`;
 
           if (item.type === "area") {
