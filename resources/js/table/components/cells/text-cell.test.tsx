@@ -35,8 +35,8 @@ describe("TextCell", () => {
       { value: "Sale", color: "red" },
     ]);
 
-    expect(screen.getByText("New")).toHaveClass("lt-cell-badge", "lt-cell-tone-blue");
-    expect(screen.getByText("Sale")).toHaveClass("lt-cell-badge", "lt-cell-tone-red");
+    expect(screen.getByText("New")).toHaveClass("lt-cell-badge", "lt-tone-blue");
+    expect(screen.getByText("Sale")).toHaveClass("lt-cell-badge", "lt-tone-red");
   });
 
   it("joins a multiple column without a badge", () => {
@@ -48,13 +48,20 @@ describe("TextCell", () => {
   it("reads the badge colour from a sibling row key for a single value", () => {
     renderCell({ badge: { colorKey: "color" } }, "Active", { color: "green" });
 
-    expect(screen.getByText("Active")).toHaveClass("lt-cell-badge", "lt-cell-tone-green");
+    expect(screen.getByText("Active")).toHaveClass("lt-cell-badge", "lt-tone-green");
   });
 
   it("falls back to the gray tone when the sibling colour is missing", () => {
     renderCell({ badge: { colorKey: "color" } }, "Active", {});
 
-    expect(screen.getByText("Active")).toHaveClass("lt-cell-tone-gray");
+    expect(screen.getByText("Active")).toHaveClass("lt-tone-gray");
+  });
+
+  it("renders a css row colour as an inline tone pair", () => {
+    renderCell({ badge: { colorKey: "color" } }, "Active", { color: "#dc2626" });
+
+    const badge = screen.getByText("Active");
+    expect(badge.style.getPropertyValue("--lt-tone-fg")).toBe("#dc2626");
   });
 
   it("renders nothing for an empty multiple column", () => {

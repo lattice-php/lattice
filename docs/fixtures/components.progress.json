@@ -23,7 +23,11 @@
             },
             {
                 "props": {
-                    "color": "success",
+                    "color": {
+                        "dark": null,
+                        "kind": "named",
+                        "value": "success"
+                    },
                     "max": 100,
                     "showValue": false,
                     "size": "lg",
@@ -56,7 +60,11 @@
                     },
                     {
                         "props": {
-                            "color": "warning",
+                            "color": {
+                                "dark": null,
+                                "kind": "named",
+                                "value": "warning"
+                            },
                             "max": 50,
                             "showValue": true,
                             "size": "xl",

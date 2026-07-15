@@ -13,10 +13,10 @@ completed import with `Progress::bar(340)->max(340)` fills exactly once.
 <ComponentExample
   php={`Stack::make()->gap(Gap::Small)->schema([
     Progress::bar(65)->showValue(),
-    Progress::bar(80)->color(Color::Success)->size(Size::Lg),
+    Progress::bar(80)->color(Color::success())->size(Size::Lg),
     Stack::make()->direction(StackDirection::Row)->gap(Gap::Medium)->schema([
         Progress::circle(65)->showValue(),
-        Progress::circle(35)->max(50)->color(Color::Warning)->size(Size::Xl)->showValue(),
+        Progress::circle(35)->max(50)->color(Color::warning())->size(Size::Xl)->showValue(),
     ]),
 ]);`}
   fixture="components.progress"
@@ -33,11 +33,12 @@ completed import with `Progress::bar(340)->max(340)` fills exactly once.
 
 ## Color and size
 
-`->color(Color $color)` tints the fill and defaults to the primary color;
-`->size(Size $size)` scales bar height or circle diameter and defaults to `Size::Md`.
+`->color()` tints the fill — a colour name (`Color::danger()`, `'danger'`) or any CSS colour — and
+defaults to the primary color; `->size(Size $size)` scales bar height or circle diameter and
+defaults to `Size::Md`.
 
 ```php
-Progress::circle(90)->color(Color::Danger)->size(Size::Lg);
+Progress::circle(90)->color(Color::danger())->size(Size::Lg);
 ```
 
 <Info>

@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Color;
 use Lattice\Lattice\Tables\Columns\BadgeColumn;
 use Lattice\Lattice\Tables\Columns\BooleanColumn;
 use Lattice\Lattice\Tables\Columns\IconColumn;
@@ -18,7 +19,24 @@ it('serializes a badge column with its colour map', function (): void {
     expect($data['type'])->toBe('column.badge')
         ->and($data['props']['sortable'])->toBeTrue()
         ->and($data['props']['filter']['type'])->toBe('text')
-        ->and($data['props']['colors'])->toBe(['active' => 'green', 'archived' => 'red']);
+        ->and($data['props']['colors'])->toBe([
+            'active' => ['kind' => 'named', 'value' => 'green', 'dark' => null],
+            'archived' => ['kind' => 'named', 'value' => 'red', 'dark' => null],
+        ]);
+});
+
+it('normalizes badge colors to tagged color values', function (): void {
+    $column = BadgeColumn::make('status')->colors([
+        'active' => 'green',
+        'archived' => Color::gray(),
+        'flagged' => '#dc2626',
+    ]);
+
+    expect(json_decode(json_encode($column->colors), true))->toBe([
+        'active' => ['kind' => 'named', 'value' => 'green', 'dark' => null],
+        'archived' => ['kind' => 'named', 'value' => 'gray', 'dark' => null],
+        'flagged' => ['kind' => 'css', 'value' => '#dc2626', 'dark' => null],
+    ]);
 });
 
 it('serializes an icon column with a value map and colours', function (): void {
@@ -30,7 +48,10 @@ it('serializes an icon column with a value map and colours', function (): void {
 
     expect($data['type'])->toBe('column.icon')
         ->and($data['props']['icons'])->toBe(['1' => 'check', '0' => 'x'])
-        ->and($data['props']['colors'])->toBe(['1' => 'green', '0' => 'gray']);
+        ->and($data['props']['colors'])->toBe([
+            '1' => ['kind' => 'named', 'value' => 'green', 'dark' => null],
+            '0' => ['kind' => 'named', 'value' => 'gray', 'dark' => null],
+        ]);
 });
 
 it('serializes a static icon column', function (): void {

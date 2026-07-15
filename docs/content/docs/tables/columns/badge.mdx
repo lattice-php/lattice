@@ -16,8 +16,10 @@ BadgeColumn::make('status')->label('Status')
   fixture="table.badge"
 />
 
-`->colors([value => color])` maps cell values to a colour name — `gray`, `red`, `green`, `yellow`,
-`blue`, `purple`, or `orange`. Unmapped values fall back to gray.
+`->colors([value => color])` maps cell values to a colour name — `gray`, `red`, `orange`, `yellow`,
+`green`, `blue`, `purple`, or the semantic `default`, `muted`, `primary`, `success`, `info`,
+`warning`, `danger` — or any CSS colour. `'green'`, `Color::green()`, `Color::hex('#16a34a')`, and
+`Color::hex('#2563eb')->dark('#60a5fa')` are all accepted. Unmapped values fall back to gray.
 
 ```php
 BadgeColumn::make('status')->colors([

@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Core\Color;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Columns\BadgeColumn;
 use Lattice\Lattice\Tables\Columns\BooleanColumn;
@@ -14,7 +15,6 @@ use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
 use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\Color;
 use Lattice\Lattice\Ui\Enums\Icon;
 use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
 use Lattice\Lattice\Ui\Enums\Size;
@@ -65,7 +65,7 @@ describe('docs fixtures', function (): void {
             Table::make('users')
                 ->columns([
                     StackColumn::make('identity')->label('User')->schema([
-                        Text::make('')->dataKey('text', 'name')->color(Color::Default),
+                        Text::make('')->dataKey('text', 'name')->color(Color::default()),
                         Text::make('')->dataKey('text', 'email')->size(Size::Sm),
                     ]),
                     TextColumn::make('role')->label('Role'),

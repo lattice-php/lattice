@@ -28,9 +28,21 @@
                     "props": {
                         "align": "start",
                         "colors": {
-                            "paid": "green",
-                            "pending": "yellow",
-                            "refunded": "gray"
+                            "paid": {
+                                "dark": null,
+                                "kind": "named",
+                                "value": "green"
+                            },
+                            "pending": {
+                                "dark": null,
+                                "kind": "named",
+                                "value": "yellow"
+                            },
+                            "refunded": {
+                                "dark": null,
+                                "kind": "named",
+                                "value": "gray"
+                            }
                         },
                         "filter": {
                             "clauseOptions": [],

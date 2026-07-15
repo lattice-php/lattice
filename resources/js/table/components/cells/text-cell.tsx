@@ -1,5 +1,6 @@
 import { DateTime } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { coerceColor, namedColor, toneProps } from "@lattice-php/lattice/lib/color";
 import { CopyableText } from "@lattice-php/lattice/ui/copyable-text";
 import type { ReactNode } from "react";
 import { formatCell, resolveLink } from "@lattice-php/lattice/table/lib/format";
@@ -25,7 +26,13 @@ function Badge({ label, color }: { label: string; color?: string | null }): Reac
     return null;
   }
 
-  return <span className={cn("lt-cell-badge", `lt-cell-tone-${color || "gray"}`)}>{label}</span>;
+  const tone = toneProps(coerceColor(color) ?? namedColor("gray"));
+
+  return (
+    <span className={cn("lt-cell-badge", tone.className)} style={tone.style}>
+      {label}
+    </span>
+  );
 }
 
 function MultipleCell({ column, props, value }: ColumnCellArgs<"column.text">): ReactNode {

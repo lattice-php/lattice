@@ -57,11 +57,16 @@ describe("ProgressComponent bar", () => {
   });
 
   it("maps color and size onto the fill and track", () => {
-    renderProgress({ value: 40, color: "success", size: "lg" });
+    renderProgress({
+      value: 40,
+      color: { kind: "named", value: "success", dark: null },
+      size: "lg",
+    });
 
     const track = screen.getByRole("progressbar");
     expect(track.className).toContain("h-3");
-    expect((track.firstElementChild as HTMLElement).className).toContain("bg-lt-success");
+    const fill = track.firstElementChild as HTMLElement;
+    expect(fill.style.getPropertyValue("background")).toBe("var(--lt-color-success)");
   });
 });
 
@@ -98,9 +103,13 @@ describe("ProgressComponent circle", () => {
   });
 
   it("colors the ring stroke from the color prop", () => {
-    const { container } = renderProgress({ value: 10, variant: "circle", color: "danger" });
+    const { container } = renderProgress({
+      value: 10,
+      variant: "circle",
+      color: { kind: "named", value: "danger", dark: null },
+    });
 
     const ring = container.querySelectorAll("circle")[1];
-    expect(ring.getAttribute("class")).toContain("text-lt-danger");
+    expect(ring.style.getPropertyValue("color")).toBe("var(--lt-color-danger)");
   });
 });

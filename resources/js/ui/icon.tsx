@@ -1,7 +1,8 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { IconRenderer } from "@lattice-php/lattice/icons";
+import { coerceColor, colorValue } from "@lattice-php/lattice/lib/color";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import type { Color, Size } from "@lattice-php/lattice/types/generated";
+import type { Size } from "@lattice-php/lattice/types/generated";
 
 const sizeClass: Record<Size, string> = {
   xs: "size-lt-icon-xs",
@@ -14,24 +15,19 @@ const sizeClass: Record<Size, string> = {
   "4xl": "size-lt-icon-4xl",
 };
 
-const colorClass: Record<Color, string> = {
-  default: "text-lt-fg",
-  muted: "text-lt-muted-fg",
-  primary: "text-lt-primary",
-  success: "text-lt-success",
-  info: "text-lt-info",
-  warning: "text-lt-warning",
-  danger: "text-lt-danger",
-};
-
 const IconComponent: RendererComponent<"icon"> = ({ node }) => {
   const { name, size, color, class: className } = node.props;
+  const icon = <IconRenderer icon={name} className={cn(sizeClass[size], className)} />;
+  const coerced = coerceColor(color);
+
+  if (!coerced) {
+    return icon;
+  }
 
   return (
-    <IconRenderer
-      icon={name}
-      className={cn(sizeClass[size], color ? colorClass[color] : undefined, className)}
-    />
+    <span className="contents" style={{ color: colorValue(coerced) }}>
+      {icon}
+    </span>
   );
 };
 

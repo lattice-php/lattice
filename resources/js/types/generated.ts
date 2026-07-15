@@ -36,7 +36,7 @@ export type Badge = {
 };
 export type BadgeColumn = {
   align: ColumnAlign;
-  colors: Record<string | number, string> | null;
+  colors: Record<string | number, Color> | null;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
@@ -151,7 +151,7 @@ export type ChartSeries = {
   readonly type: ChartSeriesType;
   readonly dataKey: string;
   readonly name: string;
-  readonly color: string | null;
+  readonly color: Color | null;
   readonly stackId: string | null;
   readonly nameKey: string | null;
   readonly innerRadius: string;
@@ -220,7 +220,27 @@ export type Collapsible = {
   tooltip: string | null;
   trigger: Node[];
 };
-export type Color = "default" | "muted" | "primary" | "success" | "info" | "warning" | "danger";
+export type Color = {
+  readonly kind: ColorKind;
+  readonly value: string;
+  readonly dark: string | null;
+};
+export type ColorKind = "named" | "css";
+export type ColorName =
+  | "default"
+  | "muted"
+  | "primary"
+  | "success"
+  | "info"
+  | "warning"
+  | "danger"
+  | "gray"
+  | "red"
+  | "orange"
+  | "yellow"
+  | "green"
+  | "blue"
+  | "purple";
 export type ColorPicker = {
   columnWidth: ColumnWidth;
   conditions: FieldConditions | null;
@@ -666,7 +686,7 @@ export type Icon = {
 };
 export type IconColumn = {
   align: ColumnAlign;
-  colors: Record<string | number, string> | null;
+  colors: Record<string | number, Color> | null;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   icon: string | null;

@@ -11,7 +11,7 @@ showing a name and email together, or a title with a subtitle. Pass a schema of 
 
 <ComponentExample
   php={`StackColumn::make('identity')->label('User')->schema([
-    Text::make('')->dataKey('text', 'name')->color(Color::Default),
+    Text::make('')->dataKey('text', 'name')->color(Color::default()),
     Text::make('')->dataKey('text', 'email')->size(Size::Sm),
 ]);
 

@@ -284,12 +284,41 @@
 }
 
 /*
- * Status colours for Badge and Icon table cells. Each tone sets a soft
- * background and a readable foreground in oklch; the `.dark` block swaps them.
- * Defined here (not as utility strings in the renderer) so the palette lives
- * with the theme and can be overridden, and so the cells can pick a tone by
- * name without Tailwind needing to see every class. Gray follows the muted token.
+ * Named colours. Semantic names alias the theme tokens; hue names carry their
+ * own oklch values with `.dark` overrides. Renderers resolve a named colour to
+ * `var(--lt-color-<name>)` for paint, or to an `.lt-tone-<name>` class for the
+ * soft-background/strong-foreground pair used by badge and icon cells. Defined
+ * here (not as utility strings in the renderers) so the palette lives with the
+ * theme and can be overridden, and so a colour can be picked by name at
+ * runtime without Tailwind needing to see every class.
  */
+:root {
+  --lt-color-default: var(--lt-fg);
+  --lt-color-muted: var(--lt-muted-fg);
+  --lt-color-primary: var(--lt-primary);
+  --lt-color-success: var(--lt-success);
+  --lt-color-info: var(--lt-info);
+  --lt-color-warning: var(--lt-warning);
+  --lt-color-danger: var(--lt-danger);
+  --lt-color-gray: var(--lt-muted-fg);
+  --lt-color-red: oklch(0.51 0.19 27);
+  --lt-color-orange: oklch(0.55 0.14 55);
+  --lt-color-yellow: oklch(0.52 0.1 85);
+  --lt-color-green: oklch(0.52 0.13 152);
+  --lt-color-blue: oklch(0.54 0.17 252);
+  --lt-color-purple: oklch(0.53 0.19 305);
+}
+
+[data-theme="dark"],
+.dark {
+  --lt-color-red: oklch(0.83 0.11 27);
+  --lt-color-orange: oklch(0.84 0.1 65);
+  --lt-color-yellow: oklch(0.87 0.11 100);
+  --lt-color-green: oklch(0.85 0.13 155);
+  --lt-color-blue: oklch(0.84 0.11 250);
+  --lt-color-purple: oklch(0.85 0.11 305);
+}
+
 .lt-cell-badge {
   display: inline-flex;
   align-items: center;
@@ -299,67 +328,98 @@
   font-size: 0.75rem;
   line-height: 1rem;
   font-weight: 500;
-  background-color: var(--lt-cell-bg, var(--lt-muted));
-  color: var(--lt-cell-fg, var(--lt-muted-fg));
+  background-color: var(--lt-tone-bg, var(--lt-muted));
+  color: var(--lt-tone-fg, var(--lt-muted-fg));
 }
 
 .lt-cell-icon {
   display: inline-flex;
-  color: var(--lt-cell-fg, var(--lt-fg));
+  color: var(--lt-tone-fg, var(--lt-fg));
 }
 
-.lt-cell-tone-gray {
-  --lt-cell-bg: var(--lt-muted);
-  --lt-cell-fg: var(--lt-muted-fg);
+.lt-tone-gray {
+  --lt-tone-bg: var(--lt-muted);
+  --lt-tone-fg: var(--lt-color-gray);
 }
-.lt-cell-tone-red {
-  --lt-cell-bg: oklch(0.94 0.03 25);
-  --lt-cell-fg: oklch(0.51 0.19 27);
+.lt-tone-red {
+  --lt-tone-bg: oklch(0.94 0.03 25);
+  --lt-tone-fg: var(--lt-color-red);
 }
-.lt-cell-tone-orange {
-  --lt-cell-bg: oklch(0.95 0.04 65);
-  --lt-cell-fg: oklch(0.55 0.14 55);
+.lt-tone-orange {
+  --lt-tone-bg: oklch(0.95 0.04 65);
+  --lt-tone-fg: var(--lt-color-orange);
 }
-.lt-cell-tone-yellow {
-  --lt-cell-bg: oklch(0.96 0.05 100);
-  --lt-cell-fg: oklch(0.52 0.1 85);
+.lt-tone-yellow {
+  --lt-tone-bg: oklch(0.96 0.05 100);
+  --lt-tone-fg: var(--lt-color-yellow);
 }
-.lt-cell-tone-green {
-  --lt-cell-bg: oklch(0.95 0.05 155);
-  --lt-cell-fg: oklch(0.52 0.13 152);
+.lt-tone-green {
+  --lt-tone-bg: oklch(0.95 0.05 155);
+  --lt-tone-fg: var(--lt-color-green);
 }
-.lt-cell-tone-blue {
-  --lt-cell-bg: oklch(0.95 0.03 245);
-  --lt-cell-fg: oklch(0.54 0.17 252);
+.lt-tone-blue {
+  --lt-tone-bg: oklch(0.95 0.03 245);
+  --lt-tone-fg: var(--lt-color-blue);
 }
-.lt-cell-tone-purple {
-  --lt-cell-bg: oklch(0.95 0.03 305);
-  --lt-cell-fg: oklch(0.53 0.19 305);
+.lt-tone-purple {
+  --lt-tone-bg: oklch(0.95 0.03 305);
+  --lt-tone-fg: var(--lt-color-purple);
 }
 
-.dark .lt-cell-tone-red {
-  --lt-cell-bg: oklch(0.29 0.08 27);
-  --lt-cell-fg: oklch(0.83 0.11 27);
+.lt-tone-default,
+.lt-tone-primary,
+.lt-tone-success,
+.lt-tone-info,
+.lt-tone-warning,
+.lt-tone-danger {
+  --lt-tone-bg: color-mix(in oklab, var(--lt-tone-fg) 12%, transparent);
 }
-.dark .lt-cell-tone-orange {
-  --lt-cell-bg: oklch(0.3 0.07 65);
-  --lt-cell-fg: oklch(0.84 0.1 65);
+.lt-tone-default {
+  --lt-tone-fg: var(--lt-color-default);
 }
-.dark .lt-cell-tone-yellow {
-  --lt-cell-bg: oklch(0.31 0.06 100);
-  --lt-cell-fg: oklch(0.87 0.11 100);
+.lt-tone-muted {
+  --lt-tone-bg: var(--lt-muted);
+  --lt-tone-fg: var(--lt-color-muted);
 }
-.dark .lt-cell-tone-green {
-  --lt-cell-bg: oklch(0.3 0.07 155);
-  --lt-cell-fg: oklch(0.85 0.13 155);
+.lt-tone-primary {
+  --lt-tone-fg: var(--lt-color-primary);
 }
-.dark .lt-cell-tone-blue {
-  --lt-cell-bg: oklch(0.3 0.07 245);
-  --lt-cell-fg: oklch(0.84 0.11 250);
+.lt-tone-success {
+  --lt-tone-fg: var(--lt-color-success);
 }
-.dark .lt-cell-tone-purple {
-  --lt-cell-bg: oklch(0.3 0.07 305);
-  --lt-cell-fg: oklch(0.85 0.11 305);
+.lt-tone-info {
+  --lt-tone-fg: var(--lt-color-info);
+}
+.lt-tone-warning {
+  --lt-tone-fg: var(--lt-color-warning);
+}
+.lt-tone-danger {
+  --lt-tone-fg: var(--lt-color-danger);
+}
+
+[data-theme="dark"] .lt-tone-red,
+.dark .lt-tone-red {
+  --lt-tone-bg: oklch(0.29 0.08 27);
+}
+[data-theme="dark"] .lt-tone-orange,
+.dark .lt-tone-orange {
+  --lt-tone-bg: oklch(0.3 0.07 65);
+}
+[data-theme="dark"] .lt-tone-yellow,
+.dark .lt-tone-yellow {
+  --lt-tone-bg: oklch(0.31 0.06 100);
+}
+[data-theme="dark"] .lt-tone-green,
+.dark .lt-tone-green {
+  --lt-tone-bg: oklch(0.3 0.07 155);
+}
+[data-theme="dark"] .lt-tone-blue,
+.dark .lt-tone-blue {
+  --lt-tone-bg: oklch(0.3 0.07 245);
+}
+[data-theme="dark"] .lt-tone-purple,
+.dark .lt-tone-purple {
+  --lt-tone-bg: oklch(0.3 0.07 305);
 }
 
 /*

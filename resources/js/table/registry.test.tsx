@@ -187,14 +187,14 @@ describe("column registry", () => {
         key: "status",
         label: "Status",
         type: "column.badge",
-        props: { colors: { active: "green" } },
+        props: { colors: { active: { kind: "named", value: "green", dark: null } } },
       }),
       { status: "active" },
     );
 
     const badge = screen.getByText("active");
     expect(badge).toBeVisible();
-    expect(badge.className).toContain("lt-cell-tone-green");
+    expect(badge.className).toContain("lt-tone-green");
   });
 
   it("renders an icon cell from the value map", () => {
@@ -266,7 +266,7 @@ describe("column registry", () => {
       { status: "archived" },
     );
 
-    expect(screen.getByText("archived").className).toContain("lt-cell-tone-gray");
+    expect(screen.getByText("archived").className).toContain("lt-tone-gray");
   });
 
   it("renders nothing for a badge cell with an empty value", () => {
@@ -354,7 +354,7 @@ describe("column registry", () => {
       { s: "ok" },
     );
 
-    expect(screen.getByLabelText("ok").className).toContain("lt-cell-tone-green");
+    expect(screen.getByLabelText("ok").className).toContain("lt-tone-green");
   });
 
   it("renders a text cell as an internal link", () => {

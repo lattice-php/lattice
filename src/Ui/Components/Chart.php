@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Ui\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Core\Color;
+use Lattice\Lattice\Core\Enums\ColorName;
 use Lattice\Lattice\Ui\Values\ChartSeries;
 use Lattice\Lattice\Ui\Values\DateFormat;
 use Lattice\Lattice\Ui\Values\NumberFormat;
@@ -131,37 +133,37 @@ class Chart extends Component
         return $this;
     }
 
-    public function line(string $dataKey, ?string $name = null, ?string $color = null): static
+    public function line(string $dataKey, ?string $name = null, Color|ColorName|string|null $color = null): static
     {
         return $this->addSeries(ChartSeries::line($dataKey, $name, $color));
     }
 
-    public function bar(string $dataKey, ?string $name = null, ?string $color = null, ?string $stackId = null): static
+    public function bar(string $dataKey, ?string $name = null, Color|ColorName|string|null $color = null, ?string $stackId = null): static
     {
         return $this->addSeries(ChartSeries::bar($dataKey, $name, $color, $stackId));
     }
 
-    public function area(string $dataKey, ?string $name = null, ?string $color = null, ?string $stackId = null): static
+    public function area(string $dataKey, ?string $name = null, Color|ColorName|string|null $color = null, ?string $stackId = null): static
     {
         return $this->addSeries(ChartSeries::area($dataKey, $name, $color, $stackId));
     }
 
-    public function pie(string $dataKey, ?string $nameKey = null, ?string $name = null, ?string $color = null): static
+    public function pie(string $dataKey, ?string $nameKey = null, ?string $name = null, Color|ColorName|string|null $color = null): static
     {
         return $this->addSeries(ChartSeries::pie($dataKey, $nameKey, $name, $color));
     }
 
-    public function doughnut(string $dataKey, ?string $nameKey = null, ?string $name = null, ?string $color = null, string $innerRadius = '60%'): static
+    public function doughnut(string $dataKey, ?string $nameKey = null, ?string $name = null, Color|ColorName|string|null $color = null, string $innerRadius = '60%'): static
     {
         return $this->addSeries(ChartSeries::doughnut($dataKey, $nameKey, $name, $color, $innerRadius));
     }
 
-    public function gauge(string $dataKey, ?string $nameKey = null, ?string $name = null, ?string $color = null, ?float $maxValue = null, string $innerRadius = '70%'): static
+    public function gauge(string $dataKey, ?string $nameKey = null, ?string $name = null, Color|ColorName|string|null $color = null, ?float $maxValue = null, string $innerRadius = '70%'): static
     {
         return $this->addSeries(ChartSeries::gauge($dataKey, $nameKey, $name, $color, $maxValue, $innerRadius));
     }
 
-    public function distribution(string $dataKey, ?string $nameKey = null, ?string $name = null, ?string $color = null): static
+    public function distribution(string $dataKey, ?string $nameKey = null, ?string $name = null, Color|ColorName|string|null $color = null): static
     {
         return $this->addSeries(ChartSeries::distribution($dataKey, $nameKey, $name, $color));
     }

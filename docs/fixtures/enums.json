@@ -31,6 +31,82 @@
             }
         ]
     },
+    "Lattice\\Lattice\\Core\\Enums\\ColorKind": {
+        "name": "ColorKind",
+        "namespace": "Lattice\\Lattice\\Core\\Enums",
+        "cases": [
+            {
+                "name": "Named",
+                "value": "named"
+            },
+            {
+                "name": "Css",
+                "value": "css"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Core\\Enums\\ColorName": {
+        "name": "ColorName",
+        "namespace": "Lattice\\Lattice\\Core\\Enums",
+        "cases": [
+            {
+                "name": "Default",
+                "value": "default"
+            },
+            {
+                "name": "Muted",
+                "value": "muted"
+            },
+            {
+                "name": "Primary",
+                "value": "primary"
+            },
+            {
+                "name": "Success",
+                "value": "success"
+            },
+            {
+                "name": "Info",
+                "value": "info"
+            },
+            {
+                "name": "Warning",
+                "value": "warning"
+            },
+            {
+                "name": "Danger",
+                "value": "danger"
+            },
+            {
+                "name": "Gray",
+                "value": "gray"
+            },
+            {
+                "name": "Red",
+                "value": "red"
+            },
+            {
+                "name": "Orange",
+                "value": "orange"
+            },
+            {
+                "name": "Yellow",
+                "value": "yellow"
+            },
+            {
+                "name": "Green",
+                "value": "green"
+            },
+            {
+                "name": "Blue",
+                "value": "blue"
+            },
+            {
+                "name": "Purple",
+                "value": "purple"
+            }
+        ]
+    },
     "Lattice\\Lattice\\Core\\Enums\\HttpMethod": {
         "name": "HttpMethod",
         "namespace": "Lattice\\Lattice\\Core\\Enums",
@@ -488,40 +564,6 @@
             {
                 "name": "Pie",
                 "value": "pie"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Ui\\Enums\\Color": {
-        "name": "Color",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums",
-        "cases": [
-            {
-                "name": "Default",
-                "value": "default"
-            },
-            {
-                "name": "Muted",
-                "value": "muted"
-            },
-            {
-                "name": "Primary",
-                "value": "primary"
-            },
-            {
-                "name": "Success",
-                "value": "success"
-            },
-            {
-                "name": "Info",
-                "value": "info"
-            },
-            {
-                "name": "Warning",
-                "value": "warning"
-            },
-            {
-                "name": "Danger",
-                "value": "danger"
             }
         ]
     },

@@ -167,7 +167,7 @@ describe("Chart component", () => {
         legend: true,
         series: [
           {
-            color: "#2563eb",
+            color: { kind: "css", value: "#2563eb", dark: null },
             dataKey: "revenue",
             name: "Revenue",
             nameKey: null,
@@ -177,7 +177,7 @@ describe("Chart component", () => {
             type: "line",
           },
           {
-            color: "#16a34a",
+            color: { kind: "css", value: "#16a34a", dark: null },
             dataKey: "orders",
             name: "Orders",
             nameKey: null,
@@ -187,7 +187,7 @@ describe("Chart component", () => {
             type: "bar",
           },
           {
-            color: "#9333ea",
+            color: { kind: "css", value: "#9333ea", dark: null },
             dataKey: "forecast",
             name: "Forecast",
             nameKey: null,
@@ -321,7 +321,7 @@ describe("Chart component", () => {
         legend: true,
         series: [
           {
-            color: "#2563eb",
+            color: { kind: "css", value: "#2563eb", dark: null },
             dataKey: "amount",
             name: "Series",
             nameKey: "channel",
@@ -415,7 +415,7 @@ describe("Chart component", () => {
         legend: true,
         series: [
           {
-            color: "#2563eb",
+            color: { kind: "css", value: "#2563eb", dark: null },
             dataKey: "value",
             name: "value",
             nameKey: "label",
@@ -469,7 +469,7 @@ describe("Chart component", () => {
         legend: true,
         series: [
           {
-            color: "#2563eb",
+            color: { kind: "css", value: "#2563eb", dark: null },
             dataKey: "amount",
             name: "amount",
             nameKey: "channel",
@@ -729,7 +729,7 @@ describe("Chart component", () => {
         legend: true,
         series: [
           {
-            color: "#9333ea",
+            color: { kind: "css", value: "#9333ea", dark: null },
             dataKey: "forecast",
             name: "Forecast",
             nameKey: null,
@@ -763,7 +763,7 @@ describe("Chart component", () => {
         legend: true,
         series: [
           {
-            color: "#16a34a",
+            color: { kind: "css", value: "#16a34a", dark: null },
             dataKey: "orders",
             name: "Orders",
             nameKey: null,
@@ -917,7 +917,7 @@ describe("Chart component", () => {
             legend: false,
             series: [
               {
-                color: "#2563eb",
+                color: { kind: "css", value: "#2563eb", dark: null },
                 dataKey: "revenue",
                 name: "Revenue",
                 nameKey: null,
