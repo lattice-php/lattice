@@ -176,6 +176,66 @@ Select::make('customer_id', 'Customer')
 
 The selected value renders as the plain option label in the trigger and in multi-select chips.
 
+## Creatable / tags
+
+`->creatable()` turns the select into a tag input: typing a value that isn't in the list and pressing
+Enter (or a comma, or pasting a comma-separated list) adds it as a new option. Pair it with
+`->multiple()` for a field that holds a set of tags.
+
+<ComponentExample
+  php={`Select::make('keywords', 'Keywords')
+    ->multiple()
+    ->creatable()
+    ->placeholder('Add a keyword')`}
+  fixture="select.creatable"
+  values={{ keywords: [] }}
+/>
+
+Without a resolver, the typed label becomes the value — free-text tags submit as a plain array of
+strings.
+
+Pair `->creatable()` with `->optionsFrom()` to back the tags with real records instead of plain
+strings, and give an option a `color` in its `data` to color its chip:
+
+```php
+Select::make('tags', 'Tags')
+    ->multiple()
+    ->optionsFrom(EloquentOptions::make(Tag::class)->label('name')->data(['color']))
+    ->creatable();
+```
+
+A typed tag that matches no existing option still submits as its raw label, so the submitted array
+mixes real ids with new labels — the consumer creates the missing records and re-saves with their ids.
+
+Pass a closure to `->creatable()` instead to resolve new options immediately rather than on save. The
+closure receives the typed `$label` (plus the usual [closure evaluation](/core/closure-evaluation/)
+utilities) and returns an `Option`, so every submitted value is a real id:
+
+```php
+use Illuminate\Support\Str;
+use Lattice\Lattice\Core\Option;
+
+Select::make('topics', 'Topics')
+    ->multiple()
+    ->options([
+        Select::option('Sales', 'sales', ['color' => '#3b82f6']),
+        Select::option('Design', 'design', ['color' => '#8b5cf6']),
+    ])
+    ->creatable(fn (string $label): Option => Select::option($label, Str::slug($label), ['color' => '#22c55e']));
+```
+
+The closure resolves the option, not its persistence — it returns whatever the tag should show right
+away, and the consumer creates the underlying record. Lattice forms stay decoupled from the model.
+
+`->itemRules()` validates each tag instead of the field as a whole:
+
+```php
+Select::make('keywords', 'Keywords')
+    ->multiple()
+    ->creatable()
+    ->itemRules(['string', 'max:40']);
+```
+
 ## Common options
 
 `Select` shares label, default value, required, disabled, read-only, and visibility options with

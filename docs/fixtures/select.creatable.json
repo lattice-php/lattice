@@ -1,0 +1,32 @@
+[
+    {
+        "props": {
+            "autoFocus": false,
+            "columnWidth": "md",
+            "conditions": null,
+            "creatable": true,
+            "createOnServer": false,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "editablePrefill": false,
+            "emptyLabel": "No options",
+            "helperText": null,
+            "label": "Keywords",
+            "multiple": true,
+            "name": "keywords",
+            "options": [],
+            "placeholder": "Add a keyword",
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "readOnly": false,
+            "required": false,
+            "searchPlaceholder": "Search…",
+            "searchable": false,
+            "tabIndex": null,
+            "tooltip": null,
+            "value": null
+        },
+        "type": "field.select"
+    }
+]

@@ -246,5 +246,12 @@ describe('docs fixtures', function (): void {
                     Badge::make('')->dataKey('label', 'number'),
                 ]),
         ]))));
+
+        assertFixtureMatches('select.creatable', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Select::make('keywords', 'Keywords')
+                ->multiple()
+                ->creatable()
+                ->placeholder('Add a keyword'),
+        ]))));
     });
 });
