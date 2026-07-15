@@ -51,6 +51,28 @@ trait ResolvesFormFields
         return ['options' => $field->resolveSearch($query, $instance->scope, $request)];
     }
 
+    /**
+     * Resolve a newly-created option for a single creatable field. The field's own
+     * resolver bears any persistence; this never touches an arbitrary model.
+     *
+     * @return array{option: Option|null}
+     */
+    public function createOption(Request $request): array
+    {
+        $name = $request->string('_create')->toString();
+        $label = $request->string('q')->toString();
+        $data = FormData::fromRequest($request);
+        $fields = $this->formFields($request);
+
+        $instance = app(FormSchemaWalker::class)->find($fields, $name, $data);
+        $field = $instance?->field;
+
+        abort_if($field === null, Response::HTTP_NOT_FOUND);
+        abort_unless($field instanceof Select && $field->acceptsServerCreate(), Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        return ['option' => $field->resolveCreate($label, $instance->scope, $request)];
+    }
+
     public function signUpload(Request $request): SignedUpload
     {
         $name = $request->string('_upload')->toString();

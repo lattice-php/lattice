@@ -25,6 +25,10 @@ trait HandlesFormSubRequests
             return new JsonResponse($definition->searchOptions($request));
         }
 
+        if ($request->filled('_create')) {
+            return new JsonResponse($definition->createOption($request));
+        }
+
         if ($request->boolean('_resolve')) {
             return new JsonResponse($definition->resolveFields($request));
         }
