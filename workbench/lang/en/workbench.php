@@ -417,6 +417,7 @@ return [
         'tables' => 'Tables',
         'tabs' => 'Tabs',
         'toggle-sidebar' => 'Toggle sidebar',
+        'tree' => 'Tree',
     ],
     'pages' => [
         'charts' => [
@@ -537,6 +538,27 @@ return [
                 'bars' => 'Progress bars',
                 'circles' => 'Progress circles',
                 'title' => 'Progress',
+            ],
+            'tree' => [
+                'categories' => [
+                    'clothing' => [
+                        'label' => 'Clothing',
+                        'men' => 'Men',
+                        'women' => 'Women',
+                    ],
+                    'documents' => [
+                        'archive' => 'Archive',
+                        'label' => 'Documents',
+                        'rename' => 'Rename',
+                    ],
+                    'electronics' => [
+                        'label' => 'Electronics',
+                        'laptops' => 'Laptops',
+                        'phones' => 'Phones',
+                    ],
+                ],
+                'intro' => 'A keyboard-navigable hierarchy with active state, a linked node, and row actions.',
+                'title' => 'Tree',
             ],
         ],
         'dependent' => [

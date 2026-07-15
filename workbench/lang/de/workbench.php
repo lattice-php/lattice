@@ -417,6 +417,7 @@ return [
         'tables' => 'Tabellen',
         'tabs' => 'Tabs',
         'toggle-sidebar' => 'Seitenleiste umschalten',
+        'tree' => 'Baumstruktur',
     ],
     'pages' => [
         'charts' => [
@@ -537,6 +538,27 @@ return [
                 'bars' => 'Fortschrittsbalken',
                 'circles' => 'Fortschrittskreise',
                 'title' => 'Fortschritt',
+            ],
+            'tree' => [
+                'categories' => [
+                    'clothing' => [
+                        'label' => 'Kleidung',
+                        'men' => 'Herren',
+                        'women' => 'Damen',
+                    ],
+                    'documents' => [
+                        'archive' => 'Archivieren',
+                        'label' => 'Dokumente',
+                        'rename' => 'Umbenennen',
+                    ],
+                    'electronics' => [
+                        'label' => 'Elektronik',
+                        'laptops' => 'Laptops',
+                        'phones' => 'Smartphones',
+                    ],
+                ],
+                'intro' => 'Eine per Tastatur navigierbare Hierarchie mit aktivem Zustand, einem verlinkten Knoten und Zeilenaktionen.',
+                'title' => 'Baumstruktur',
             ],
         ],
         'dependent' => [
