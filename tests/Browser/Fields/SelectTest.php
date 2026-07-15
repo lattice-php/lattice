@@ -67,7 +67,7 @@ it('adds free-text tags on the creatable tab', function (): void {
         ->assertNoJavaScriptErrors();
 });
 
-it('creates a colored entity tag on the tags tab', function (): void {
+it('adds a new tag on the tags tab', function (): void {
     $this->actingAs(workbenchTestUser());
     $page = visit('/form/fields/select?type=tags');
 
