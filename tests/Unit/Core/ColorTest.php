@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Core\ColorKind;
-use Lattice\Lattice\Core\ColorName;
+use Lattice\Lattice\Core\Enums\ColorKind;
+use Lattice\Lattice\Core\Enums\ColorName;
 
 it('builds named colors from shortcuts', function () {
     $color = Color::success();

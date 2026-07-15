@@ -5,6 +5,8 @@ namespace Lattice\Lattice\Core;
 
 use InvalidArgumentException;
 use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Lattice\Core\Enums\ColorKind;
+use Lattice\Lattice\Core\Enums\ColorName;
 use LogicException;
 
 /**

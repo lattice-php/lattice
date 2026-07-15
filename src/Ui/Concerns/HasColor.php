@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Ui\Concerns;
 
 use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Core\ColorName;
+use Lattice\Lattice\Core\Enums\ColorName;
 
 trait HasColor
 {
