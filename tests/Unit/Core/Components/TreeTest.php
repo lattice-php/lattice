@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Tree;
 use Lattice\Lattice\Ui\Values\TreeNode;
 
@@ -40,4 +41,28 @@ it('truncates children beyond eagerDepth to a lazy boundary', function (): void 
     $l1 = $node['props']['nodes'][0]['children'][0];
     expect($l1)->toMatchArray(['id' => 'b', 'hasChildren' => true])
         ->and($l1)->not->toHaveKey('children');
+});
+
+describe('docs fixtures', function (): void {
+    it('matches the tree example fixture', function (): void {
+        assertFixtureMatches('components.tree', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+            Tree::make('category-tree')
+                ->nodes([
+                    TreeNode::make('Electronics', 'electronics')
+                        ->icon('cpu')
+                        ->children([
+                            TreeNode::make('Laptops', 'electronics-laptops'),
+                            TreeNode::make('Phones', 'electronics-phones')->href('/products/phones'),
+                        ]),
+                    TreeNode::make('Clothing', 'clothing')
+                        ->badge('New')
+                        ->children([
+                            TreeNode::make('Men', 'clothing-men'),
+                            TreeNode::make('Women', 'clothing-women'),
+                        ]),
+                ])
+                ->activeId('electronics-phones')
+                ->defaultExpanded(['electronics']),
+        ]))));
+    });
 });

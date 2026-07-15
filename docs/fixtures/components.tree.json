@@ -1,0 +1,46 @@
+[
+    {
+        "key": "category-tree",
+        "props": {
+            "activeId": "electronics-phones",
+            "defaultExpanded": [
+                "electronics"
+            ],
+            "nodes": [
+                {
+                    "children": [
+                        {
+                            "id": "electronics-laptops",
+                            "label": "Laptops"
+                        },
+                        {
+                            "href": "/products/phones",
+                            "id": "electronics-phones",
+                            "label": "Phones"
+                        }
+                    ],
+                    "icon": "cpu",
+                    "id": "electronics",
+                    "label": "Electronics"
+                },
+                {
+                    "badge": "New",
+                    "children": [
+                        {
+                            "id": "clothing-men",
+                            "label": "Men"
+                        },
+                        {
+                            "id": "clothing-women",
+                            "label": "Women"
+                        }
+                    ],
+                    "id": "clothing",
+                    "label": "Clothing"
+                }
+            ],
+            "rememberState": false
+        },
+        "type": "tree"
+    }
+]
