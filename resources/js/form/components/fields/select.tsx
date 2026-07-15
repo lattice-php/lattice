@@ -46,6 +46,8 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
   const placeholder = props.placeholder || "Select…";
   const multiple = props.multiple;
   const searchable = props.searchable;
+  const creatable = props.creatable;
+  const createOnServer = props.createOnServer;
   const staticOptions = useMemo(
     () => (resolvedNode.props as { options?: Option[] }).options ?? [],
     [resolvedNode.props],
@@ -58,6 +60,8 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
   valuesRef.current = values;
   const storedValue = scope ? scope.getValue(name) : globalValue;
   const selected = useMemo(() => toValues(storedValue, props.value), [storedValue, props.value]);
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
 
   const [open, setOpen] = useState(false);
   const [results, setResults] = useState<Option[] | null>(null);
@@ -136,6 +140,18 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
     commit(selected.filter((item) => item !== value));
   }
 
+  function handleCreate(label: string): void {
+    if (createOnServer) {
+      return;
+    }
+
+    if (!selectedRef.current.includes(label)) {
+      const next = [...selectedRef.current, label];
+      selectedRef.current = next;
+      commit(next);
+    }
+  }
+
   if (hidden) {
     return null;
   }
@@ -199,9 +215,11 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
         )}
 
         <Combobox
+          creatable={creatable}
           emptyLabel={props.emptyLabel ?? undefined}
           loading={loading}
           multiple={multiple}
+          onCreate={handleCreate}
           onSearch={searchable ? search : undefined}
           onSelect={select}
           open={open && !locked}
@@ -215,7 +233,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
           options={options}
           renderOption={renderOption}
           searchPlaceholder={props.searchPlaceholder ?? undefined}
-          showSearch={Boolean(searchable)}
+          showSearch={Boolean(searchable || creatable)}
           selected={selected}
           testId={`select-${name}`}
           trigger={

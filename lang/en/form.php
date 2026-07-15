@@ -44,4 +44,5 @@ return [
     ],
     'search-options' => 'Search options',
     'remove-option' => 'Remove :label',
+    'create-option' => 'Create ":label"',
 ];

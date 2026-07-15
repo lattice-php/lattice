@@ -20,9 +20,11 @@ const SEARCH_DEBOUNCE_MS = 250;
  */
 function Combobox({
   contentClassName,
+  creatable = false,
   emptyLabel,
   loading = false,
   multiple = false,
+  onCreate,
   onSearch,
   onSelect,
   open,
@@ -39,9 +41,11 @@ function Combobox({
   triggerProps,
 }: {
   contentClassName?: string;
+  creatable?: boolean;
   emptyLabel?: string;
   loading?: boolean;
   multiple?: boolean;
+  onCreate?: (label: string) => void;
   onSearch?: (query: string) => void;
   onSelect: (value: string) => void;
   open: boolean;
@@ -59,6 +63,29 @@ function Combobox({
 }) {
   const { t } = useT("lattice");
   const [query, setQuery] = useState("");
+
+  function commitCreate(raw: string): void {
+    const tokens = raw
+      .split(",")
+      .map((token) => token.trim())
+      .filter(Boolean);
+
+    for (const token of tokens) {
+      const match = options.find((option) => option.label.toLowerCase() === token.toLowerCase());
+
+      if (match) {
+        onSelect(match.value);
+      } else {
+        onCreate?.(token);
+      }
+    }
+
+    setQuery("");
+  }
+
+  const exactMatch = options.some(
+    (option) => option.label.toLowerCase() === query.trim().toLowerCase(),
+  );
 
   useEffect(() => {
     if (!onSearch || !open) {
@@ -109,7 +136,23 @@ function Combobox({
               data-slot="combobox-search"
               data-test={testId ? `${testId}-search` : undefined}
               className="w-full bg-transparent text-sm outline-none placeholder:text-lt-muted-fg"
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => {
+                const next = event.target.value;
+
+                if (creatable && next.includes(",")) {
+                  commitCreate(next);
+
+                  return;
+                }
+
+                setQuery(next);
+              }}
+              onKeyDown={(event) => {
+                if (creatable && event.key === "Enter" && query.trim() !== "") {
+                  event.preventDefault();
+                  commitCreate(query);
+                }
+              }}
               placeholder={searchPlaceholder}
               value={query}
             />
@@ -124,7 +167,19 @@ function Combobox({
         )}
 
         <div className="max-h-60 overflow-y-auto p-1" role="listbox">
-          {visibleOptions.length === 0 ? (
+          {creatable && query.trim() !== "" && !exactMatch && (
+            <button
+              className="flex w-full items-center gap-2 rounded-lt-sm px-3 py-1.5 text-left text-sm transition-colors hover:bg-lt-accent hover:text-lt-accent-fg"
+              data-test={testId ? `${testId}-create` : undefined}
+              onClick={() => commitCreate(query)}
+              type="button"
+            >
+              <Icon name="plus" aria-hidden="true" className="size-lt-icon-md shrink-0" />
+              {t("form.create-option", 'Create "{{label}}"', { label: query.trim() })}
+            </button>
+          )}
+
+          {visibleOptions.length === 0 && !(creatable && query.trim() !== "" && !exactMatch) ? (
             <p className="px-3 py-2 text-sm text-lt-muted-fg">{emptyLabel}</p>
           ) : (
             visibleOptions.map((option) => {

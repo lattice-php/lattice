@@ -44,4 +44,5 @@ return [
     ],
     'search-options' => 'Optionen durchsuchen',
     'remove-option' => ':label entfernen',
+    'create-option' => '":label" erstellen',
 ];

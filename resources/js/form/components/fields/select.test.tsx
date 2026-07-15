@@ -145,42 +145,39 @@ describe("SelectComponent search", () => {
   });
 });
 
+function renderStaticSelect(props: Record<string, unknown>, initial: Record<string, unknown> = {}) {
+  const node = fakeNode({
+    type: "field.select",
+    props: {
+      name: "color",
+      label: "Color",
+      emptyLabel: "No colors",
+      searchPlaceholder: "Search",
+      ...props,
+    },
+  });
+
+  return render(
+    <FormProvider
+      value={{
+        action: "/forms/products",
+        clearErrors: () => {},
+        componentRef: "ref-1",
+        errors: {},
+        fieldLabels: {},
+        precognitive: false,
+        processing: false,
+        validate: () => {},
+      }}
+    >
+      <FormValuesProvider initial={initial}>
+        <SelectComponent node={node}>{null}</SelectComponent>
+      </FormValuesProvider>
+    </FormProvider>,
+  );
+}
+
 describe("SelectComponent options", () => {
-  function renderStaticSelect(
-    props: Record<string, unknown>,
-    initial: Record<string, unknown> = {},
-  ) {
-    const node = fakeNode({
-      type: "field.select",
-      props: {
-        name: "color",
-        label: "Color",
-        emptyLabel: "No colors",
-        searchPlaceholder: "Search",
-        ...props,
-      },
-    });
-
-    return render(
-      <FormProvider
-        value={{
-          action: "/forms/products",
-          clearErrors: () => {},
-          componentRef: "ref-1",
-          errors: {},
-          fieldLabels: {},
-          precognitive: false,
-          processing: false,
-          validate: () => {},
-        }}
-      >
-        <FormValuesProvider initial={initial}>
-          <SelectComponent node={node}>{null}</SelectComponent>
-        </FormValuesProvider>
-      </FormProvider>,
-    );
-  }
-
   it("lists static options and selects one", () => {
     renderStaticSelect({
       options: [
@@ -245,6 +242,56 @@ describe("SelectComponent options", () => {
 
     expect(screen.getByTestId("select-color-option-red")).toHaveAttribute("aria-selected", "true");
     expect(screen.getByTestId("select-color-option-blue")).toHaveAttribute("aria-selected", "true");
+  });
+});
+
+describe("SelectComponent creatable", () => {
+  it("creates a free-text chip on Enter", () => {
+    renderStaticSelect({ multiple: true, creatable: true, options: [] }, { color: [] });
+
+    fireEvent.click(screen.getByTestId("select-color"));
+    const input = screen.getByTestId("select-color-search");
+    fireEvent.change(input, { target: { value: "steel" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(screen.getByText("steel")).toBeVisible();
+    expect(
+      document.querySelector('input[type="hidden"][name="color[]"][value="steel"]'),
+    ).not.toBeNull();
+  });
+
+  it("splits a comma-separated paste into multiple chips", () => {
+    renderStaticSelect({ multiple: true, creatable: true, options: [] }, { color: [] });
+
+    fireEvent.click(screen.getByTestId("select-color"));
+    fireEvent.change(screen.getByTestId("select-color-search"), {
+      target: { value: "a, b ,c" },
+    });
+
+    expect(screen.getByText("a")).toBeVisible();
+    expect(screen.getByText("b")).toBeVisible();
+    expect(screen.getByText("c")).toBeVisible();
+  });
+
+  it("does not add a duplicate chip", () => {
+    renderStaticSelect({ multiple: true, creatable: true, options: [] }, { color: ["steel"] });
+
+    fireEvent.click(screen.getByTestId("select-color"));
+    const input = screen.getByTestId("select-color-search");
+    fireEvent.change(input, { target: { value: "steel" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(screen.getAllByText("steel")).toHaveLength(1);
+  });
+
+  it("offers a create row for an unmatched query", () => {
+    renderStaticSelect({ multiple: true, creatable: true, options: [] }, { color: [] });
+
+    fireEvent.click(screen.getByTestId("select-color"));
+    fireEvent.change(screen.getByTestId("select-color-search"), { target: { value: "steel" } });
+    fireEvent.click(screen.getByTestId("select-color-create"));
+
+    expect(screen.getByText("steel")).toBeVisible();
   });
 });
 
