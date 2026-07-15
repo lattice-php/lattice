@@ -293,6 +293,49 @@ describe("SelectComponent creatable", () => {
 
     expect(screen.getByText("steel")).toBeVisible();
   });
+
+  it("selects multiple exact-match options pasted in one comma-separated paste", () => {
+    renderStaticSelect(
+      {
+        multiple: true,
+        creatable: true,
+        options: [
+          { label: "Red", value: "red" },
+          { label: "Blue", value: "blue" },
+        ],
+      },
+      { color: [] },
+    );
+
+    fireEvent.click(screen.getByTestId("select-color"));
+    fireEvent.change(screen.getByTestId("select-color-search"), {
+      target: { value: "Red,Blue" },
+    });
+
+    expect(
+      document.querySelector('input[type="hidden"][name="color[]"][value="red"]'),
+    ).not.toBeNull();
+    expect(
+      document.querySelector('input[type="hidden"][name="color[]"][value="blue"]'),
+    ).not.toBeNull();
+  });
+
+  it("replaces the value with a newly created label in a single-select", () => {
+    renderStaticSelect(
+      {
+        creatable: true,
+        options: [{ label: "Red", value: "red" }],
+      },
+      { color: "red" },
+    );
+
+    fireEvent.click(screen.getByTestId("select-color"));
+    const input = screen.getByTestId("select-color-search");
+    fireEvent.change(input, { target: { value: "steel" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(document.querySelector('input[type="hidden"][name="color"]')).toHaveValue("steel");
+  });
 });
 
 describe("SelectComponent option schema", () => {

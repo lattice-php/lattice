@@ -126,13 +126,16 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
 
   function select(value: string): void {
     if (multiple) {
-      commit(
-        selected.includes(value) ? selected.filter((item) => item !== value) : [...selected, value],
-      );
+      const next = selectedRef.current.includes(value)
+        ? selectedRef.current.filter((item) => item !== value)
+        : [...selectedRef.current, value];
+      selectedRef.current = next;
+      commit(next);
 
       return;
     }
 
+    selectedRef.current = [value];
     commit([value]);
   }
 
@@ -142,6 +145,13 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
 
   function handleCreate(label: string): void {
     if (createOnServer) {
+      return;
+    }
+
+    if (!multiple) {
+      selectedRef.current = [label];
+      commit([label]);
+
       return;
     }
 
