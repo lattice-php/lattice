@@ -4,6 +4,8 @@
             "autoFocus": false,
             "columnWidth": "md",
             "conditions": null,
+            "creatable": false,
+            "createOnServer": false,
             "dependsOnAny": false,
             "dependsOnKeys": null,
             "disabled": false,

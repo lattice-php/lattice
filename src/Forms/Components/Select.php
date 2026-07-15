@@ -44,6 +44,15 @@ class Select extends Field
 
     public bool $searchable = false;
 
+    public bool $creatable = false;
+
+    public bool $createOnServer = false;
+
+    private ?Closure $createResolver = null;
+
+    /** @var array<int, mixed>|Closure */
+    private array|Closure $itemRules = [];
+
     public string $emptyLabel = 'No options';
 
     public string $searchPlaceholder = 'Search…';
@@ -53,6 +62,90 @@ class Select extends Field
         $this->multiple = $multiple;
 
         return $this;
+    }
+
+    public function creatable(bool|Closure $create = true): static
+    {
+        if ($create instanceof Closure) {
+            $this->createResolver = $create;
+            $this->creatable = true;
+            $this->createOnServer = true;
+
+            return $this;
+        }
+
+        $this->creatable = $create;
+
+        if (! $create) {
+            $this->createResolver = null;
+            $this->createOnServer = false;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Per-tag validation rules, applied to each entry as `{name}.*`.
+     *
+     * @param  array<int, mixed>|Closure  $rules
+     */
+    public function itemRules(array|Closure $rules): static
+    {
+        $this->itemRules = $rules;
+
+        return $this;
+    }
+
+    /**
+     * @internal
+     */
+    public function isCreatable(): bool
+    {
+        return $this->creatable;
+    }
+
+    /**
+     * @internal
+     */
+    public function acceptsServerCreate(): bool
+    {
+        return $this->creatable && $this->createResolver instanceof Closure;
+    }
+
+    /**
+     * @internal
+     */
+    public function resolveCreate(string $label, FormData $data, Request $request): ?Option
+    {
+        if (! $this->createResolver instanceof Closure) {
+            return null;
+        }
+
+        $context = $this->evaluationContext($data, $request)->named('label', $label);
+        $result = Evaluate::resolve($this->createResolver, $context);
+
+        if ($result === null) {
+            return null;
+        }
+
+        return $this->normalizeOptions([$result])[0] ?? null;
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    #[\Override]
+    public function nestedRules(FormData $data, Request $request): array
+    {
+        $rules = $this->itemRules instanceof Closure
+            ? Evaluate::resolve($this->itemRules, $this->evaluationContext($data, $request))
+            : $this->itemRules;
+
+        if ($rules === []) {
+            return [];
+        }
+
+        return ["{$this->name()}.*" => array_values($rules)];
     }
 
     public function emptyLabel(string $label): static
