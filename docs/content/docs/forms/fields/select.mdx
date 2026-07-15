@@ -224,8 +224,8 @@ Select::make('topics', 'Topics')
     ->creatable(fn (string $label): Option => Select::option($label, Str::slug($label), ['color' => '#22c55e']));
 ```
 
-The closure resolves the option, not its persistence — it returns whatever the tag should show right
-away, and the consumer creates the underlying record. Lattice forms stay decoupled from the model.
+The closure returns the option to show immediately; the consumer persists the underlying record.
+Lattice forms stay decoupled from the model.
 
 `->itemRules()` validates each tag instead of the field as a whole:
 
