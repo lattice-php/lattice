@@ -1,8 +1,12 @@
+import { router } from "@inertiajs/react";
+import { useEffect, useRef } from "react";
+import type { KeyboardEvent } from "react";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { Icon, IconRenderer } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { useT } from "@lattice-php/lattice/i18n";
 import type {
   Tree as TreeProps,
   TreeNode as GeneratedTreeNode,
@@ -31,19 +35,115 @@ function hasExpandableChildren(node: TreeNodeData): boolean {
   return Boolean(node.children?.length) || node.hasChildren === true;
 }
 
-function TreeItem({ node }: { node: TreeNodeData }) {
-  const { activeId, expanded, toggle } = useTreeContext();
+function TreeItem({
+  depth,
+  node,
+  parentPath,
+  siblingCount,
+  siblingIndex,
+}: {
+  depth: number;
+  node: TreeNodeData;
+  parentPath: string | null;
+  siblingCount: number;
+  siblingIndex: number;
+}) {
+  const {
+    activate,
+    activeId,
+    expanded,
+    focusedId,
+    moveFocus,
+    register,
+    toggle,
+    typeAhead,
+    unregister,
+  } = useTreeContext();
+  const { t } = useT("lattice");
+  const ref = useRef<HTMLLIElement>(null);
+  const path = parentPath ? `${parentPath}/${node.id}` : node.id;
   const isExpanded = expanded.has(node.id);
   const isActive = activeId === node.id;
+  const isFocused = focusedId === node.id;
   const isDisabled = node.disabled === true;
   const expandable = hasExpandableChildren(node);
+
+  useEffect(() => {
+    register({ id: node.id, label: node.label, parentPath, path, ref });
+
+    return () => unregister(path);
+  }, [node.id, node.label, parentPath, path, register, unregister]);
+
+  function onKeyDown(event: KeyboardEvent<HTMLLIElement>): void {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault();
+        moveFocus(node.id, "next");
+        return;
+      case "ArrowUp":
+        event.preventDefault();
+        moveFocus(node.id, "prev");
+        return;
+      case "ArrowRight":
+        event.preventDefault();
+        if (expandable && !isExpanded) {
+          toggle(node.id);
+        } else if (expandable) {
+          moveFocus(node.id, "firstChild");
+        }
+        return;
+      case "ArrowLeft":
+        event.preventDefault();
+        if (expandable && isExpanded) {
+          toggle(node.id);
+        } else {
+          moveFocus(node.id, "parent");
+        }
+        return;
+      case "Home":
+        event.preventDefault();
+        moveFocus(node.id, "first");
+        return;
+      case "End":
+        event.preventDefault();
+        moveFocus(node.id, "last");
+        return;
+      case "Enter":
+      case " ":
+        event.preventDefault();
+        if (isDisabled) {
+          return;
+        }
+        if (node.href) {
+          router.visit(node.href);
+        } else {
+          activate(node.id);
+        }
+        return;
+      default:
+        if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+          typeAhead(node.id, event.key);
+        }
+    }
+  }
 
   return (
     <li
       aria-disabled={isDisabled}
+      aria-expanded={expandable ? isExpanded : undefined}
+      aria-level={depth}
+      aria-posinset={siblingIndex}
       aria-selected={isActive}
+      aria-setsize={siblingCount}
       data-test={`tree-node-${node.id}`}
+      onKeyDown={onKeyDown}
+      ref={ref}
       role="treeitem"
+      tabIndex={isFocused ? 0 : -1}
     >
       <div
         className={cn(
@@ -54,9 +154,14 @@ function TreeItem({ node }: { node: TreeNodeData }) {
       >
         {expandable ? (
           <button
-            aria-expanded={isExpanded}
+            aria-label={
+              isExpanded
+                ? t("common.tree.collapse", "Collapse {{label}}", { label: node.label })
+                : t("common.tree.expand", "Expand {{label}}", { label: node.label })
+            }
             data-test={`tree-node-${node.id}-toggle`}
             onClick={() => toggle(node.id)}
+            tabIndex={-1}
             type="button"
           >
             <Icon
@@ -70,7 +175,9 @@ function TreeItem({ node }: { node: TreeNodeData }) {
         ) : null}
         {node.icon ? <IconRenderer className="size-lt-icon-md shrink-0" icon={node.icon} /> : null}
         {node.href && !isDisabled ? (
-          <TextLink href={node.href}>{node.label}</TextLink>
+          <TextLink href={node.href} tabIndex={-1}>
+            {node.label}
+          </TextLink>
         ) : (
           <span>{node.label}</span>
         )}
@@ -83,8 +190,15 @@ function TreeItem({ node }: { node: TreeNodeData }) {
       </div>
       {expandable && isExpanded && node.children && node.children.length > 0 ? (
         <ul className="pl-6" role="group">
-          {node.children.map((child) => (
-            <TreeItem key={child.id} node={child} />
+          {node.children.map((child, index) => (
+            <TreeItem
+              depth={depth + 1}
+              key={child.id}
+              node={child}
+              parentPath={path}
+              siblingCount={node.children?.length ?? 1}
+              siblingIndex={index + 1}
+            />
           ))}
         </ul>
       ) : null}
@@ -97,6 +211,7 @@ const TreeComponent: RendererComponent<"tree"> = ({ node }) => {
   const value = useTreeState({
     activeId: node.props.activeId,
     defaultExpanded: node.props.defaultExpanded,
+    nodes: node.props.nodes,
     rememberState: node.props.rememberState,
     storageKey: `lattice:tree:${identity ?? "default"}`,
   });
@@ -104,8 +219,15 @@ const TreeComponent: RendererComponent<"tree"> = ({ node }) => {
   return (
     <TreeContext.Provider value={value}>
       <ul data-lattice-component={identity} role="tree">
-        {node.props.nodes.map((child) => (
-          <TreeItem key={child.id} node={child} />
+        {node.props.nodes.map((child, index) => (
+          <TreeItem
+            depth={1}
+            key={child.id}
+            node={child}
+            parentPath={null}
+            siblingCount={node.props.nodes.length}
+            siblingIndex={index + 1}
+          />
         ))}
       </ul>
     </TreeContext.Provider>

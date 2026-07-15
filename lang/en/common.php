@@ -22,6 +22,10 @@ return [
     'action-group' => [
         'label' => 'Actions',
     ],
+    'tree' => [
+        'expand' => 'Expand :label',
+        'collapse' => 'Collapse :label',
+    ],
     'chat' => [
         'launcher' => 'Chat',
         'title' => 'Chat',
