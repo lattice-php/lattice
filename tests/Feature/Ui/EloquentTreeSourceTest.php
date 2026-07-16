@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Ui\Components\Tree;
 use Lattice\Lattice\Ui\Sources\EloquentTreeSource;
 use Lattice\Lattice\Ui\Values\TreeNode;
 use Workbench\App\Models\Category;
@@ -30,6 +31,20 @@ it('resolves a category\'s immediate children ordered by label, flagging hasChil
         ['Cameras', (string) Category::query()->where('name', 'Cameras')->value('id'), false],
         ['Laptops', (string) $laptops->getKey(), true],
     ]);
+});
+
+it('serializes the whole hierarchy when wired through the Tree component', function (): void {
+    $electronics = Category::factory()->create(['name' => 'Electronics']);
+    $laptops = Category::factory()->childOf($electronics)->create(['name' => 'Laptops']);
+    Category::factory()->childOf($laptops)->create(['name' => 'Ultrabooks']);
+
+    $node = wire(Tree::make()->source(EloquentTreeSource::make(Category::class)));
+
+    $root = $node['props']['nodes'][0];
+    expect($root)->toMatchArray(['label' => 'Electronics', 'hasChildren' => true])
+        ->and($root['children'][0])->toMatchArray(['label' => 'Laptops', 'hasChildren' => true])
+        ->and($root['children'][0]['children'][0])->toMatchArray(['label' => 'Ultrabooks'])
+        ->and($root['children'][0]['children'][0])->not->toHaveKey('children');
 });
 
 it('applies a query scope to both roots and children', function (): void {

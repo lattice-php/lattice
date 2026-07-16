@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Tree;
+use Lattice\Lattice\Ui\Sources\CallbackTreeSource;
 use Lattice\Lattice\Ui\Values\TreeNode;
 
 it('serializes an eager node tree with defaults', function (): void {
@@ -27,6 +28,45 @@ it('serializes activeId, defaultExpanded, and rememberState', function (): void 
     expect($node['props'])->toMatchArray([
         'activeId' => '1', 'defaultExpanded' => ['1'], 'rememberState' => true,
     ]);
+});
+
+it('serializes source children recursively for hasChildren nodes', function (): void {
+    $childrenByParent = [
+        'root' => [TreeNode::make('Child', 'child')->hasChildren()],
+        'child' => [TreeNode::make('Grandchild', 'grandchild')],
+    ];
+
+    $node = wire(
+        Tree::make()->source(new CallbackTreeSource(
+            roots: fn (): array => [TreeNode::make('Root', 'root')->hasChildren()],
+            children: fn (string $parentId): array => $childrenByParent[$parentId] ?? [],
+        )),
+    );
+
+    $root = $node['props']['nodes'][0];
+    expect($root)->toMatchArray(['id' => 'root', 'hasChildren' => true])
+        ->and($root['children'][0])->toMatchArray(['id' => 'child'])
+        ->and($root['children'][0]['children'][0])->toMatchArray(['id' => 'grandchild', 'label' => 'Grandchild']);
+});
+
+it('stops fetching source children at the eagerDepth boundary', function (): void {
+    $fetched = [];
+
+    $node = wire(
+        Tree::make()->eagerDepth(1)->source(new CallbackTreeSource(
+            roots: fn (): array => [TreeNode::make('Root', 'root')->hasChildren()],
+            children: function (string $parentId) use (&$fetched): array {
+                $fetched[] = $parentId;
+
+                return [TreeNode::make("Child of {$parentId}", "{$parentId}.child")->hasChildren()];
+            },
+        )),
+    );
+
+    $boundary = $node['props']['nodes'][0]['children'][0];
+    expect($boundary)->toMatchArray(['id' => 'root.child', 'hasChildren' => true])
+        ->and($boundary)->not->toHaveKey('children')
+        ->and($fetched)->toBe(['root']);
 });
 
 it('truncates children beyond eagerDepth to a lazy boundary', function (): void {

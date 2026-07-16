@@ -84,11 +84,11 @@ class Tree extends Component
     #[SerializationHook(priority: 300)]
     protected function serialiseNodes(array $data): array
     {
-        $roots = $this->source instanceof TreeSource ? $this->source->roots() : [];
+        $roots = $this->source instanceof TreeSource ? $this->nodeList($this->source->roots()) : [];
 
         $data['props']['nodes'] = array_map(
             fn (TreeNode $node): array => $this->serialiseNode($node, 0),
-            is_array($roots) ? $roots : iterator_to_array($roots),
+            $roots,
         );
 
         return $data;
@@ -99,22 +99,47 @@ class Tree extends Component
      */
     private function serialiseNode(TreeNode $node, int $depth): array
     {
-        $data = $node->jsonSerialize();
-
-        if (! isset($data['children'])) {
-            return $data;
-        }
+        $data = $node->serialiseShallow();
 
         if ($depth >= $this->eagerDepth) {
-            unset($data['children']);
-            $data['hasChildren'] = true;
+            if ($node->children !== []) {
+                $data['hasChildren'] = true;
+            }
 
             return $data;
         }
 
-        $children = $node->childNodes();
-        $data['children'] = array_map(fn (TreeNode $child): array => $this->serialiseNode($child, $depth + 1), $children);
+        $children = $this->resolveChildren($node);
+
+        if ($children !== []) {
+            $data['children'] = array_map(fn (TreeNode $child): array => $this->serialiseNode($child, $depth + 1), $children);
+        }
 
         return $data;
+    }
+
+    /**
+     * @return list<TreeNode>
+     */
+    private function resolveChildren(TreeNode $node): array
+    {
+        if ($node->children !== []) {
+            return $node->children;
+        }
+
+        if ($node->hasChildren && $this->source instanceof TreeSource) {
+            return $this->nodeList($this->source->children($node->id));
+        }
+
+        return [];
+    }
+
+    /**
+     * @param  iterable<int, TreeNode>  $nodes
+     * @return list<TreeNode>
+     */
+    private function nodeList(iterable $nodes): array
+    {
+        return is_array($nodes) ? array_values($nodes) : iterator_to_array($nodes, false);
     }
 }

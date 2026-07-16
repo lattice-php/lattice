@@ -96,16 +96,6 @@ final class TreeNode implements JsonSerializable
     }
 
     /**
-     * The eager child nodes (used by Tree for depth-aware serialization).
-     *
-     * @return list<TreeNode>
-     */
-    public function childNodes(): array
-    {
-        return $this->children;
-    }
-
-    /**
      * @param  list<TreeNode|array<string, mixed>>  $nodes
      * @return list<TreeNode>
      */
@@ -150,6 +140,23 @@ final class TreeNode implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $data = $this->serialiseShallow();
+
+        if ($this->children !== []) {
+            $data['children'] = array_map(static fn (TreeNode $child): array => $child->jsonSerialize(), $this->children);
+        }
+
+        return $data;
+    }
+
+    /**
+     * This node's own fields without its children, so a depth-aware walk (see
+     * Tree) can serialize each level exactly once.
+     *
+     * @return array<string, mixed>
+     */
+    public function serialiseShallow(): array
+    {
         $data = ['id' => $this->id, 'label' => $this->label];
 
         foreach (['icon' => $this->icon, 'badge' => $this->badge, 'href' => $this->href] as $key => $value) {
@@ -168,10 +175,6 @@ final class TreeNode implements JsonSerializable
 
         if ($this->actions !== null) {
             $data['actions'] = $this->actions->jsonSerialize();
-        }
-
-        if ($this->children !== []) {
-            $data['children'] = array_map(static fn (TreeNode $child): array => $child->jsonSerialize(), $this->children);
         }
 
         return $data;
