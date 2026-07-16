@@ -46,8 +46,8 @@ siblings.
 - **`->children([...])`** — nested `TreeNode`s, or plain arrays shaped like `['id' => ..., 'label' => ...]`
   — both normalize through the same builder.
 - **`->hasChildren(bool $hasChildren = true)`** — marks a node as expandable without children attached
-  yet. `Tree` sets this for you at the `eagerDepth` boundary (below) and a [`TreeSource`](#data-sources)
-  sets it per row so a folder with unloaded children still shows a chevron.
+  yet. A [`TreeSource`](#data-sources) sets it per row so `Tree` knows which nodes to fetch children
+  for, and `Tree` sets it on nodes truncated at the `eagerDepth` boundary (below).
 - **`->disabled(bool $disabled = true)`** — grays the row out and blocks its link and activation.
 
 ## Tree
@@ -57,17 +57,21 @@ siblings.
 - **`->source(TreeSource $source)`** — a [data source](#data-sources) for nodes that live elsewhere.
 - **`->activeId($id)`** — marks a node selected (`aria-selected`); nothing is selected by default.
 - **`->defaultExpanded([$id, ...])`** — ids expanded on first render.
-- **`->eagerDepth($depth)`** — nodes at or beyond this depth serialize as a lazy boundary: their
-  children are dropped and `hasChildren` is set instead, so a very deep hierarchy only ships the
-  visible slice. The default (`50`) is effectively unlimited for realistic hierarchies.
+- **`->eagerDepth($depth)`** — nodes at or beyond this depth serialize as a truncation boundary:
+  their children are dropped and `hasChildren` is set instead, so a very deep hierarchy only ships
+  the top slice. Rows beyond the boundary cannot be expanded yet — lazy loading is a planned
+  follow-up — so lower the default (`50`, effectively unlimited) only to cap what an unbounded
+  source ships.
 - **`->rememberState(bool $remember = true)`** — persists the expanded set across reloads, keyed by
   the tree's identity, the same pattern as [`Collapsible`](/components/section-collapsible/#collapsible).
 
 ## Data sources
 
 Every node ultimately comes from a `TreeSource` — `roots(): iterable<TreeNode>` and
-`children(string $parentId): iterable<TreeNode>`. `->nodes([...])` is the array-backed source; for a
-database-backed hierarchy, use `EloquentTreeSource` against a self-referencing parent column:
+`children(string $parentId): iterable<TreeNode>`. `Tree` walks the source eagerly at render time:
+`roots()` first, then `children()` for every `hasChildren` row down to `eagerDepth`. `->nodes([...])`
+is the array-backed source; for a database-backed hierarchy, use `EloquentTreeSource` against a
+self-referencing parent column:
 
 ```php
 use Illuminate\Database\Eloquent\Builder;
@@ -103,6 +107,7 @@ one row sits in the tab order at a time — arrow keys move focus without touchi
 - **ArrowRight** — expands a collapsed node, or moves into its first child when already expanded.
 - **ArrowLeft** — collapses an expanded node, or moves focus to its parent.
 - **Home / End** — jump to the first or last visible row.
-- **Enter / Space** — activates the focused node: follows its `href`, or marks it active.
+- **Enter / Space** — activates the focused node: follows its `href`, triggers its attached action,
+  or marks it active.
 - **Typing a letter** — jumps to the next visible row whose label starts with what's typed, wrapping
   around the tree. Keep typing to extend the match; a short pause starts a new search.
