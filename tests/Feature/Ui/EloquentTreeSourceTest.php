@@ -48,7 +48,7 @@ it('serializes the whole hierarchy when wired through the Tree component', funct
 });
 
 it('applies a query scope to both roots and children', function (): void {
-    $hidden = Category::factory()->create(['name' => 'Hidden Root']);
+    Category::factory()->create(['name' => 'Hidden Root']);
     $visible = Category::factory()->create(['name' => 'Visible Root']);
     Category::factory()->childOf($visible)->create(['name' => 'Hidden Child']);
     Category::factory()->childOf($visible)->create(['name' => 'Visible Child']);
@@ -57,6 +57,4 @@ it('applies a query scope to both roots and children', function (): void {
 
     expect(array_map(fn (TreeNode $node): string => $node->label, $source->roots()))->toBe(['Visible Root'])
         ->and(array_map(fn (TreeNode $node): string => $node->label, $source->children((string) $visible->getKey())))->toBe(['Visible Child']);
-
-    expect($hidden)->not->toBeNull();
 });

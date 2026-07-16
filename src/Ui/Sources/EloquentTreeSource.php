@@ -99,17 +99,35 @@ final class EloquentTreeSource implements TreeSource
      */
     private function toNodes(Collection $models): array
     {
+        $parentIds = $this->parentIdsAmong($models);
+
         return $models
             ->map(fn (Model $model): TreeNode => TreeNode::make(
                 (string) $model->getAttribute($this->labelKey),
                 (string) $model->getKey(),
-            )->hasChildren($this->hasChildren($model)))
+            )->hasChildren(in_array((string) $model->getKey(), $parentIds, true)))
             ->values()
             ->all();
     }
 
-    private function hasChildren(Model $model): bool
+    /**
+     * The subset of the given models' keys that are referenced as a parent by
+     * at least one (scoped) row — one query instead of an exists() per model.
+     *
+     * @param  Collection<int, Model>  $models
+     * @return list<string>
+     */
+    private function parentIdsAmong(Collection $models): array
     {
-        return $this->query()->where($this->parentKey, $model->getKey())->exists();
+        if ($models->isEmpty()) {
+            return [];
+        }
+
+        return $this->query()
+            ->whereIn($this->parentKey, $models->map(fn (Model $model): mixed => $model->getKey()))
+            ->distinct()
+            ->pluck($this->parentKey)
+            ->map(fn (mixed $id): string => (string) $id)
+            ->all();
     }
 }
