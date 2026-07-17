@@ -1,5 +1,6 @@
 import { apiFetch, apiJson } from "@lattice-php/lattice/core/api";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/core/event-names";
+import { useWindowEvent } from "@lattice-php/lattice/core/hooks/use-window-event";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Option } from "@lattice-php/lattice/types/generated";
 import { isEmptyFilterValue, isFilterValue } from "@lattice-php/lattice/table/lib/filter-values";
@@ -211,21 +212,13 @@ export function useTable(node: TableNode) {
     void load(query);
   }, [hasLoaded, isLazy, load, query]);
 
-  useEffect(() => {
-    function reload(event: Event): void {
-      const detail = (event as ReloadComponentEvent).detail;
+  useWindowEvent(LATTICE_EVENT.reloadComponent, (event) => {
+    const detail = (event as ReloadComponentEvent).detail;
 
-      if (detail?.component !== node.id) {
-        return;
-      }
-
+    if (detail?.component === node.id) {
       void load(query);
     }
-
-    window.addEventListener(LATTICE_EVENT.reloadComponent, reload);
-
-    return () => window.removeEventListener(LATTICE_EVENT.reloadComponent, reload);
-  }, [load, node.id, query]);
+  });
 
   useEffect(() => {
     if (

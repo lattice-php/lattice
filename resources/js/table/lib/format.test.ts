@@ -48,7 +48,7 @@ describe("formatCell primitives", () => {
 describe("resolveLink", () => {
   const column = (link: unknown): TableColumn =>
     ({ key: "name", label: "Name", props: { link } }) as never;
-  const row: TableRow = { id: 7, name: "Ada" } as never;
+  const row: TableRow = { id: 7, name: "Ada" };
 
   it("returns null when the column has no link", () => {
     expect(resolveLink(column(null), row, "Ada")).toBeNull();

@@ -1,11 +1,11 @@
 import { DateTime } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { coerceColor, namedColor, toneProps } from "@lattice-php/lattice/lib/color";
-import { CopyableText } from "@lattice-php/lattice/ui/copyable-text";
 import type { ReactNode } from "react";
 import { formatCell, resolveLink } from "@lattice-php/lattice/table/lib/format";
 import type { ColumnCellArgs, ColumnCellComponent } from "@lattice-php/lattice/table/registry";
 import type { ColumnPropsOf } from "@lattice-php/lattice/table/types";
+import { CopyableCell } from "./copyable-cell";
 
 type TextProps = ColumnCellArgs<"column.text">["props"];
 
@@ -87,17 +87,9 @@ function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.tex
     );
   }
 
-  if (!props.copyable) {
-    return content;
-  }
-
   return (
-    <CopyableText
-      value={text}
-      label={column.props.label ?? column.key}
-      testId={`copy-${column.key}`}
-    >
+    <CopyableCell column={column} copyable={props.copyable} value={text}>
       {content}
-    </CopyableText>
+    </CopyableCell>
   );
 }

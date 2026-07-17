@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { TableColumn } from "@lattice-php/lattice/table/types";
+import type { ColumnPropsOf, TableColumn } from "@lattice-php/lattice/table/types";
 import { BooleanCell } from "./boolean-cell";
 
 const column = {
@@ -19,7 +19,12 @@ const column = {
 
 function renderCell(value: unknown) {
   return render(
-    <BooleanCell column={column} props={column.props as never} row={{}} value={value} />,
+    <BooleanCell
+      column={column}
+      props={column.props as ColumnPropsOf<"column.boolean">}
+      row={{}}
+      value={value}
+    />,
   );
 }
 

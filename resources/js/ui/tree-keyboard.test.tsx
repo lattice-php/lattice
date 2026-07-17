@@ -7,10 +7,9 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import TreeComponent, { type TreeNodeData } from "./tree";
 
-vi.mock("@inertiajs/react", () => ({
-  router: { visit: vi.fn<(url: string, options?: unknown) => void>() },
-  Link: ({ children, ...rest }: { children: React.ReactNode }) => <a {...rest}>{children}</a>,
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+);
 
 const actionClicks: string[] = [];
 const TestAction: RendererComponent = ({ node }) => (

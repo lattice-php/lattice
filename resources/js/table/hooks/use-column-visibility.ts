@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
+import { usePersistentState } from "@lattice-php/lattice/lib/use-persistent-state";
 
 export type ToggleableColumn = {
   key: string;
@@ -30,8 +31,14 @@ export function useColumnVisibility<TColumn extends ToggleableColumn>({
     [toggleableColumns],
   );
 
-  const [overrides, setOverrides] = useState<Record<string, boolean>>(() =>
-    readStoredVisibility(storageKey, toggleableKeys),
+  const [overrides, setOverrides] = usePersistentState<Record<string, boolean>>(
+    storageKey ?? "",
+    {},
+    {
+      enabled: Boolean(storageKey),
+      parse: (raw) => parseStoredVisibility(raw, toggleableKeys),
+      serialize: (value) => serializeVisibility(value, toggleableKeys),
+    },
   );
 
   const isVisible = useCallback(
@@ -52,20 +59,12 @@ export function useColumnVisibility<TColumn extends ToggleableColumn>({
 
   const setColumnVisible = useCallback(
     (key: string, visible: boolean) => {
-      setOverrides((current) => {
-        const next = { ...current, [key]: visible };
-        writeStoredVisibility(storageKey, toggleableKeys, next);
-
-        return next;
-      });
+      setOverrides((current) => ({ ...current, [key]: visible }));
     },
-    [storageKey, toggleableKeys],
+    [setOverrides],
   );
 
-  const resetVisibility = useCallback(() => {
-    setOverrides({});
-    writeStoredVisibility(storageKey, toggleableKeys, {});
-  }, [storageKey, toggleableKeys]);
+  const resetVisibility = useCallback(() => setOverrides({}), [setOverrides]);
 
   const hasToggleableColumns = toggleableColumns.length > 0;
   const hasHidden = toggleableColumns.some((column) => !isVisible(column));
@@ -81,94 +80,43 @@ export function useColumnVisibility<TColumn extends ToggleableColumn>({
   };
 }
 
-function readStoredVisibility(
-  storageKey: string | undefined,
+function pickKnownBooleans(
+  source: Record<string, unknown>,
   toggleableKeys: string[],
 ): Record<string, boolean> {
-  if (!storageKey || typeof window === "undefined") {
-    return {};
+  const known = new Set(toggleableKeys);
+  const result: Record<string, boolean> = {};
+
+  for (const [key, value] of Object.entries(source)) {
+    if (known.has(key) && typeof value === "boolean") {
+      result[key] = value;
+    }
   }
 
-  try {
-    const raw = window.localStorage.getItem(storageKey);
-
-    if (raw === null) {
-      return {};
-    }
-
-    const stored = JSON.parse(raw) as unknown;
-
-    if (!isStoredColumnVisibility(stored)) {
-      removeStoredVisibility(storageKey);
-
-      return {};
-    }
-
-    const known = new Set(toggleableKeys);
-    const overrides: Record<string, boolean> = {};
-
-    for (const [key, value] of Object.entries(stored.overrides)) {
-      if (known.has(key) && typeof value === "boolean") {
-        overrides[key] = value;
-      }
-    }
-
-    if (Object.keys(overrides).length === 0) {
-      removeStoredVisibility(storageKey);
-    }
-
-    return overrides;
-  } catch {
-    removeStoredVisibility(storageKey);
-
-    return {};
-  }
+  return result;
 }
 
-function writeStoredVisibility(
-  storageKey: string | undefined,
-  toggleableKeys: string[],
+function parseStoredVisibility(raw: string, toggleableKeys: string[]): Record<string, boolean> {
+  const stored = JSON.parse(raw) as unknown;
+
+  if (!isStoredColumnVisibility(stored)) {
+    throw new Error("unexpected stored column visibility shape");
+  }
+
+  return pickKnownBooleans(stored.overrides, toggleableKeys);
+}
+
+function serializeVisibility(
   overrides: Record<string, boolean>,
-): void {
-  if (!storageKey || typeof window === "undefined") {
-    return;
-  }
-
-  const known = new Set(toggleableKeys);
-  const stored: Record<string, boolean> = {};
-
-  for (const [key, value] of Object.entries(overrides)) {
-    if (known.has(key) && typeof value === "boolean") {
-      stored[key] = value;
-    }
-  }
+  toggleableKeys: string[],
+): string | null {
+  const stored = pickKnownBooleans(overrides, toggleableKeys);
 
   if (Object.keys(stored).length === 0) {
-    removeStoredVisibility(storageKey);
-
-    return;
+    return null;
   }
 
-  try {
-    window.localStorage.setItem(
-      storageKey,
-      JSON.stringify({ columns: toggleableKeys, overrides: stored }),
-    );
-  } catch {
-    return;
-  }
-}
-
-function removeStoredVisibility(storageKey: string): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    window.localStorage.removeItem(storageKey);
-  } catch {
-    return;
-  }
+  return JSON.stringify({ columns: toggleableKeys, overrides: stored });
 }
 
 function isStoredColumnVisibility(value: unknown): value is StoredColumnVisibility {

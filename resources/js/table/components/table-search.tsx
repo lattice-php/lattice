@@ -4,6 +4,7 @@ import { IconButton } from "@lattice-php/lattice/ui/icon-button";
 import { Input } from "@lattice-php/lattice/ui/input";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { useDebouncedCallback } from "@lattice-php/lattice/lib/use-debounced-callback";
 
 const DEBOUNCE_MS = 300;
 
@@ -21,7 +22,6 @@ export function TableSearch({
 }) {
   const { t } = useT("lattice");
   const [term, setTerm] = useState(value);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const committed = useRef(value);
 
   useEffect(() => {
@@ -31,35 +31,20 @@ export function TableSearch({
     }
   }, [value]);
 
-  useEffect(
-    () => () => {
-      if (timer.current) {
-        clearTimeout(timer.current);
-      }
-    },
-    [],
-  );
-
   function commit(next: string): void {
     committed.current = next;
     onSearch(next);
   }
 
+  const commitDebounced = useDebouncedCallback(commit, DEBOUNCE_MS);
+
   function change(next: string): void {
     setTerm(next);
-
-    if (timer.current) {
-      clearTimeout(timer.current);
-    }
-
-    timer.current = setTimeout(() => commit(next), DEBOUNCE_MS);
+    commitDebounced(next);
   }
 
   function clear(): void {
-    if (timer.current) {
-      clearTimeout(timer.current);
-    }
-
+    commitDebounced.cancel();
     setTerm("");
     commit("");
   }

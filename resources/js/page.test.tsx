@@ -4,14 +4,9 @@ import { createPlugin, createRegistry, eagerComponent, Provider } from "@lattice
 import type { PagePayload, RendererComponent } from "@lattice-php/lattice";
 import Page from "./page";
 
-vi.mock("@inertiajs/react", () => ({
-  Head: ({ title }: { title?: string }) => <title>{title}</title>,
-  router: {
-    on: vi.fn<(event: string, listener: (event: Event) => void) => () => void>(
-      () => () => undefined,
-    ),
-  },
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+);
 
 function payload(lattice: Partial<PagePayload> = {}): PagePayload {
   return {

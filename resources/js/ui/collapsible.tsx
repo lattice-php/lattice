@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Icon } from "@lattice-php/lattice/icons";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import { InfoTooltip } from "./info-tooltip";
@@ -6,39 +5,20 @@ import { nodeIdentity, prefixedTestId } from "@lattice-php/lattice/core/test-id"
 import { toNodes } from "@lattice-php/lattice/core/nodes";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
-
-function readStored(key: string, remember: boolean, fallback: boolean): boolean {
-  if (!remember || typeof window === "undefined") {
-    return fallback;
-  }
-
-  const stored = window.localStorage.getItem(key);
-
-  return stored === null ? fallback : stored === "true";
-}
+import { useCollapsibleState } from "./use-collapsible-state";
 
 const CollapsibleComponent: RendererComponent<"collapsible"> = ({ children, node }) => {
-  const rememberState = node.props.rememberState === true;
+  const rememberState = node.props.rememberState !== false;
   const trigger = toNodes(node.props.trigger);
   const identity = nodeIdentity(node);
   const storageKey = `lattice:collapsible:${identity ?? "default"}`;
   const contentId = `${identity ?? "collapsible"}-content`;
 
-  const [open, setOpen] = useState(() =>
-    readStored(storageKey, rememberState, node.props.collapsed === false),
+  const [open, toggle] = useCollapsibleState(
+    storageKey,
+    node.props.collapsed === false,
+    rememberState,
   );
-
-  function toggle(): void {
-    setOpen((value) => {
-      const next = !value;
-
-      if (rememberState && typeof window !== "undefined") {
-        window.localStorage.setItem(storageKey, String(next));
-      }
-
-      return next;
-    });
-  }
 
   return (
     <div data-slot="collapsible" data-lattice-component={identity}>

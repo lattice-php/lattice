@@ -21,9 +21,10 @@ import {
 } from "recharts";
 import type { ComponentType, ReactNode } from "react";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
+import { isRecord } from "@lattice-php/lattice/core/materialize";
 import type { ComponentPropsOf, RendererComponent } from "@lattice-php/lattice/core/types";
 import { coerceColor, colorValue } from "@lattice-php/lattice/lib/color";
-import { useLocale, useTimezone } from "@lattice-php/lattice/i18n";
+import { useFormatContext } from "@lattice-php/lattice/format/format-context";
 import { numericValue } from "@lattice-php/lattice/format/numeric";
 import { formatValue } from "@lattice-php/lattice/format/value";
 
@@ -72,10 +73,6 @@ const palette = [
 
 function colorAt(index: number): string {
   return palette[index % palette.length] ?? "var(--lt-primary)";
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function datumColor(datum: ChartDatum, series: ChartSeries, index: number): string {
@@ -164,9 +161,7 @@ function ChartFrame({
 function CartesianChart({ props }: { props: ChartProps }) {
   const series = props.series.filter(isCartesianSeries);
   const RechartsChart = cartesianChartFor(series);
-  const { locale } = useLocale();
-  const { timezone } = useTimezone();
-  const ctx = { locale, timezone };
+  const ctx = useFormatContext();
   const formatCategory = (value: unknown) => formatValue(value, props.categoryFormat, ctx);
   const formatValueTick = (value: unknown) => formatValue(value, props.valueFormat, ctx);
   const hasBarSeries = series.some((item) => item.type === "bar");
@@ -255,9 +250,7 @@ function CartesianChart({ props }: { props: ChartProps }) {
 }
 
 function PieChartView({ props, series }: { props: ChartProps; series: ChartSeries }) {
-  const { locale } = useLocale();
-  const { timezone } = useTimezone();
-  const ctx = { locale, timezone };
+  const ctx = useFormatContext();
 
   return (
     <ResponsiveContainer width="100%" height={props.height} debounce={100}>
@@ -315,9 +308,7 @@ function ChartLegend({
 }
 
 function GaugeChartView({ props, series }: { props: ChartProps; series: ChartSeries }) {
-  const { locale } = useLocale();
-  const { timezone } = useTimezone();
-  const ctx = { locale, timezone };
+  const ctx = useFormatContext();
   const values = props.data.map((datum) => datumValue(datum, series.dataKey));
   const max = series.maxValue ?? Math.max(0, ...values);
   const legendEntries = props.data.map((datum, index) => ({
@@ -370,9 +361,7 @@ function GaugeChartView({ props, series }: { props: ChartProps; series: ChartSer
 }
 
 function DistributionChartView({ props, series }: { props: ChartProps; series: ChartSeries }) {
-  const { locale } = useLocale();
-  const { timezone } = useTimezone();
-  const ctx = { locale, timezone };
+  const ctx = useFormatContext();
   const segments = props.data
     .map((datum, index) => ({
       color: datumColor(datum, series, index),
@@ -386,7 +375,7 @@ function DistributionChartView({ props, series }: { props: ChartProps; series: C
     return <div className="h-2.5 w-full rounded-full bg-lt-muted" data-lattice-distribution="" />;
   }
 
-  const formatPercent = new Intl.NumberFormat(locale, {
+  const formatPercent = new Intl.NumberFormat(ctx.locale, {
     maximumFractionDigits: 1,
     style: "percent",
   });

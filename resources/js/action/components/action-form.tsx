@@ -13,20 +13,21 @@ import { Renderer } from "@lattice-php/lattice/core/renderer";
 import type { Node } from "@lattice-php/lattice/core/types";
 import type { ModalWidth } from "@lattice-php/lattice/types/generated";
 import {
+  collectFields,
   FORM_DEBOUNCE_MS,
   FormProvider,
   FormValuesProvider,
+  firstErrors,
   PrefillProvider,
   ResolvedNodesProvider,
   useFormResolver,
   useFormValues,
-  walkFields,
 } from "@lattice-php/lattice/form/embed";
+import type { FieldErrors } from "@lattice-php/lattice/form/embed";
+import { useDebouncedCallback } from "@lattice-php/lattice/lib/use-debounced-callback";
 import { useT } from "@lattice-php/lattice/i18n";
 import { dispatchActionError } from "@lattice-php/lattice/effects/dispatch";
 import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
-
-type FieldErrors = Record<string, string | undefined>;
 
 type ActionFormProps = {
   cancelLabel: string;
@@ -84,16 +85,6 @@ export function useLazyActionForm(
   return node;
 }
 
-function firstErrors(errors: Record<string, string[] | string> | undefined): FieldErrors {
-  const result: FieldErrors = {};
-
-  for (const [key, value] of Object.entries(errors ?? {})) {
-    result[key] = Array.isArray(value) ? value[0] : value;
-  }
-
-  return result;
-}
-
 function ActionFormSkeleton() {
   return (
     <div className="space-y-4" data-lattice-action-form-loading>
@@ -102,33 +93,6 @@ function ActionFormSkeleton() {
       <Skeleton className="h-10 w-full" />
     </div>
   );
-}
-
-type CollectedFields = {
-  labels: Record<string, string>;
-  values: Record<string, unknown>;
-};
-
-function collectFields(formNode: Node): CollectedFields {
-  const labels: Record<string, string> = {};
-  const values: Record<string, unknown> = {};
-
-  walkFields(formNode.schema, (props) => {
-    if (!props.name) {
-      return;
-    }
-    if (props.label) {
-      labels[props.name] = props.label;
-    }
-    if (props.value !== undefined) {
-      values[props.name] = props.value;
-    }
-  });
-
-  return {
-    labels,
-    values: { ...values, ...(formNode.props?.state as Record<string, unknown> | undefined) },
-  };
 }
 
 function ActionFormBody({
@@ -161,7 +125,6 @@ function ActionFormBody({
 
   const [errors, setErrors] = useState<FieldErrors>({});
   const [processing, setProcessing] = useState(false);
-  const timer = useRef<number | undefined>(undefined);
 
   const request = useCallback(
     (extraHeaders?: Record<string, string>): Promise<Response> =>
@@ -181,29 +144,28 @@ function ActionFormBody({
     );
   }, []);
 
+  const runValidation = useDebouncedCallback((field: string) => {
+    void request({ Precognition: "true", "Precognition-Validate-Only": field })
+      .then(async (response) => {
+        if (response.status === 422) {
+          const body = (await response.json()) as { errors?: Record<string, string[]> };
+          setErrors((current) => ({ ...current, ...firstErrors(body.errors) }));
+
+          return;
+        }
+
+        clearErrors(field);
+      })
+      .catch(() => {});
+  }, FORM_DEBOUNCE_MS);
+
   const validate = useCallback(
     (field: string) => {
-      if (!precognitive) {
-        return;
+      if (precognitive) {
+        runValidation(field);
       }
-
-      window.clearTimeout(timer.current);
-      timer.current = window.setTimeout(() => {
-        void request({ Precognition: "true", "Precognition-Validate-Only": field })
-          .then(async (response) => {
-            if (response.status === 422) {
-              const body = (await response.json()) as { errors?: Record<string, string[]> };
-              setErrors((current) => ({ ...current, ...firstErrors(body.errors) }));
-
-              return;
-            }
-
-            clearErrors(field);
-          })
-          .catch(() => {});
-      }, FORM_DEBOUNCE_MS);
     },
-    [clearErrors, precognitive, request],
+    [precognitive, runValidation],
   );
 
   const submit = useCallback(() => {
@@ -285,10 +247,14 @@ function ActionFormContent({
   ...rest
 }: Omit<ActionFormProps, "description" | "title"> & { formNode: Node }) {
   const precognitive = Boolean(formNode.props?.precognitive);
-  const { labels: fieldLabels, values: initialValues } = useMemo(
-    () => collectFields(formNode),
-    [formNode],
-  );
+  const { labels: fieldLabels, values: initialValues } = useMemo(() => {
+    const { labels, values } = collectFields(formNode.schema);
+
+    return {
+      labels,
+      values: { ...values, ...(formNode.props?.state as Record<string, unknown> | undefined) },
+    };
+  }, [formNode]);
 
   return (
     <FormValuesProvider initial={initialValues}>

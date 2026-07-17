@@ -3,18 +3,13 @@ import { useEffect, useState } from "react";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { CollapsedContext } from "@lattice-php/lattice/core/collapsed-context";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import { useWindowEvent } from "@lattice-php/lattice/core/hooks/use-window-event";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { useMediaQuery } from "@lattice-php/lattice/lib/use-media-query";
+import { useCollapsibleState } from "@lattice-php/lattice/ui/use-collapsible-state";
 
 const DESKTOP_QUERY = "(min-width: 768px)";
-
-function readStored(key: string, remember: boolean): boolean {
-  if (!remember || typeof window === "undefined") {
-    return false;
-  }
-
-  return window.localStorage.getItem(key) === "true";
-}
 
 function matchesTarget(event: Event, identity: string | undefined): boolean {
   const target = (event as CustomEvent<{ target?: string }>).detail?.target;
@@ -22,88 +17,45 @@ function matchesTarget(event: Event, identity: string | undefined): boolean {
   return target == null || target === identity;
 }
 
-function useIsDesktop(): boolean {
-  const supported = () => typeof window !== "undefined" && typeof window.matchMedia === "function";
-  const [isDesktop, setIsDesktop] = useState(() =>
-    supported() ? window.matchMedia(DESKTOP_QUERY).matches : true,
-  );
-
-  useEffect(() => {
-    if (!supported()) {
-      return;
-    }
-
-    const query = window.matchMedia(DESKTOP_QUERY);
-    const update = (): void => setIsDesktop(query.matches);
-
-    update();
-    query.addEventListener("change", update);
-
-    return () => query.removeEventListener("change", update);
-  }, []);
-
-  return isDesktop;
-}
-
 const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
   const collapsible = node.props.collapsible;
   const rememberState = node.props.rememberState;
   const identity = nodeIdentity(node);
   const storageKey = `lattice:sidebar:${identity ?? "default"}`;
-  const isDesktop = useIsDesktop();
+  const isDesktop = useMediaQuery(DESKTOP_QUERY, true);
 
-  const [collapsed, setCollapsed] = useState(() =>
-    readStored(storageKey, collapsible && rememberState),
+  const [collapsed, toggleCollapsed] = useCollapsibleState(
+    storageKey,
+    false,
+    collapsible && rememberState,
   );
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  useEffect(() => {
-    function toggle(event: Event): void {
-      if (!matchesTarget(event, identity)) {
-        return;
-      }
-
-      if (window.matchMedia?.(DESKTOP_QUERY).matches ?? true) {
-        if (!collapsible) {
-          return;
-        }
-
-        setCollapsed((value) => {
-          const next = !value;
-
-          if (rememberState && typeof window !== "undefined") {
-            window.localStorage.setItem(storageKey, String(next));
-          }
-
-          return next;
-        });
-      } else {
-        setMobileOpen((open) => !open);
-      }
-    }
-
-    window.addEventListener(LATTICE_EVENT.toggleSidebar, toggle);
-
-    return () => window.removeEventListener(LATTICE_EVENT.toggleSidebar, toggle);
-  }, [identity, collapsible, rememberState, storageKey]);
-
-  useEffect(() => router.on("navigate", () => setMobileOpen(false)), []);
-
-  useEffect(() => {
-    if (!mobileOpen) {
+  useWindowEvent(LATTICE_EVENT.toggleSidebar, (event) => {
+    if (!matchesTarget(event, identity)) {
       return;
     }
 
-    function close(event: KeyboardEvent): void {
-      if (event.key === "Escape") {
+    if (window.matchMedia?.(DESKTOP_QUERY).matches ?? true) {
+      if (collapsible) {
+        toggleCollapsed();
+      }
+    } else {
+      setMobileOpen((open) => !open);
+    }
+  });
+
+  useEffect(() => router.on("navigate", () => setMobileOpen(false)), []);
+
+  useWindowEvent(
+    "keydown",
+    (event) => {
+      if ((event as KeyboardEvent).key === "Escape") {
         setMobileOpen(false);
       }
-    }
-
-    window.addEventListener("keydown", close);
-
-    return () => window.removeEventListener("keydown", close);
-  }, [mobileOpen]);
+    },
+    { enabled: mobileOpen },
+  );
 
   const isCollapsed = collapsible && collapsed && isDesktop;
 

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { Option } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { pillClassName } from "./pill";
 
 /**
  * Presentational segmented pill group. Used by the form choice field (bound to a
@@ -54,13 +55,7 @@ export function SegmentedPills({
           <button
             aria-checked={isSelected}
             data-test={`${name ?? "segment"}-${option.value}`}
-            className={cn(
-              "whitespace-nowrap rounded-lt-sm px-3 py-1.5 text-sm font-medium transition-colors",
-              isSelected
-                ? "bg-lt-bg text-lt-fg shadow-lt-xs"
-                : "text-lt-muted-fg hover:bg-lt-bg/60 hover:text-lt-fg",
-              disabled && "cursor-not-allowed opacity-60",
-            )}
+            className={cn(pillClassName(isSelected), disabled && "cursor-not-allowed opacity-60")}
             disabled={disabled}
             key={option.value}
             onClick={() => onSelect(option.value)}

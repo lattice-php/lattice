@@ -93,7 +93,7 @@ function TreeItem({
     container.querySelectorAll<HTMLElement>("button, a[href], [tabindex]").forEach((control) => {
       control.tabIndex = -1;
     });
-  });
+  }, [node.actions]);
 
   function onKeyDown(event: KeyboardEvent<HTMLLIElement>): void {
     if (event.target !== event.currentTarget) {

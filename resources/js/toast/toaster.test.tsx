@@ -1,20 +1,12 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { ReactNode } from "react";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { Provider } from "@lattice-php/lattice/provider";
 import { Toaster } from "./toaster";
 
-vi.mock("@inertiajs/react", () => ({
-  Link: ({ children, href }: { children: ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
-  ),
-  router: {
-    on: vi.fn<(event: string, listener: (event: Event) => void) => () => void>(
-      () => () => undefined,
-    ),
-  },
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+);
 
 function emit(toast: unknown): void {
   act(() => {

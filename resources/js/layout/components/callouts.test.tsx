@@ -1,21 +1,14 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { ReactNode } from "react";
 import { vi } from "vitest";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { Provider } from "@lattice-php/lattice/provider";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 
-vi.mock("@inertiajs/react", () => ({
-  Link: ({ children, href }: { children: ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
-  ),
-  router: {
-    on: vi.fn<(event: string, listener: (event: Event) => void) => () => void>(
-      () => () => undefined,
-    ),
-  },
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+);
 
 function emitCallout(
   message: string,
@@ -40,7 +33,7 @@ describe("Callouts slot", () => {
   it("renders callouts emitted on the bus and dismisses them", () => {
     render(
       <Provider toaster={false}>
-        <Renderer nodes={[{ type: "callouts", id: "c", props: {} } as never]} />
+        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
       </Provider>,
     );
 
@@ -54,7 +47,7 @@ describe("Callouts slot", () => {
   it("omits the dismiss button when the callout is not dismissible", () => {
     render(
       <Provider toaster={false}>
-        <Renderer nodes={[{ type: "callouts", id: "c", props: {} } as never]} />
+        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
       </Provider>,
     );
 
@@ -67,7 +60,7 @@ describe("Callouts slot", () => {
   it("renders a link action inside the callout", () => {
     render(
       <Provider toaster={false}>
-        <Renderer nodes={[{ type: "callouts", id: "c", props: {} } as never]} />
+        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
       </Provider>,
     );
 

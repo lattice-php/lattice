@@ -32,7 +32,7 @@ it('normalizes badge colors to tagged color values', function (): void {
         'flagged' => '#dc2626',
     ]);
 
-    expect(json_decode(json_encode($column->colors), true))->toBe([
+    expect(wire($column->colors))->toBe([
         'active' => ['kind' => 'named', 'value' => 'green', 'dark' => null],
         'archived' => ['kind' => 'named', 'value' => 'gray', 'dark' => null],
         'flagged' => ['kind' => 'css', 'value' => '#dc2626', 'dark' => null],

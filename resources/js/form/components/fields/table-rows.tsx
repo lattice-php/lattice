@@ -8,7 +8,8 @@ import {
 import { useColumnResizing } from "@lattice-php/lattice/core/hooks/use-column-resizing";
 import { Icon } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useMemo } from "react";
+import { useMediaQuery } from "@lattice-php/lattice/lib/use-media-query";
 import type { ColumnWidth, RowAction as WireRowAction } from "@lattice-php/lattice/types/generated";
 import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
 import { TableCellProvider } from "@lattice-php/lattice/form/hooks/row-layout-context";
@@ -25,6 +26,10 @@ const tableViewportQuery = "(min-width: 768px)";
 
 export type TableColumn = { name: string; label: string; columnWidth: ColumnWidth };
 
+function useTableViewport(): boolean {
+  return useMediaQuery(tableViewportQuery, true);
+}
+
 type TableRowModel = {
   key: string;
   index: number;
@@ -33,34 +38,6 @@ type TableRowModel = {
   span: boolean;
   heading?: string;
 };
-
-function tableViewportMatches(): boolean {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-    return true;
-  }
-
-  return window.matchMedia(tableViewportQuery).matches;
-}
-
-function useTableViewport(): boolean {
-  const [matches, setMatches] = useState(tableViewportMatches);
-
-  useEffect(() => {
-    if (typeof window.matchMedia !== "function") {
-      return;
-    }
-
-    const query = window.matchMedia(tableViewportQuery);
-    const update = () => setMatches(query.matches);
-
-    update();
-    query.addEventListener("change", update);
-
-    return () => query.removeEventListener("change", update);
-  }, []);
-
-  return matches;
-}
 
 export function columnsFromSchema(nodes: Node[]): TableColumn[] {
   return nodes.map((node) => {

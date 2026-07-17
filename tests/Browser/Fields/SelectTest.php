@@ -26,9 +26,7 @@ it('searches and selects entities in a multiple select', function (): void {
         ->click('Search products…')
         ->fill('input[aria-label="Search options"]', 'walnut');
 
-    eventually(function () use ($page): void {
-        $page->assertDontSee('Steel Lamp');
-    });
+    assertDontSeeEventually($page, 'Steel Lamp');
 
     $page->assertSee('Walnut Desk')
         ->click('Walnut Desk')
@@ -46,9 +44,7 @@ it('renders rich option rows in the products search', function (): void {
     $page->click('Search products…')
         ->fill('input[aria-label="Search options"]', 'walnut');
 
-    eventually(function () use ($page): void {
-        $page->assertSee('WD-100');
-    });
+    assertSeeEventually($page, 'WD-100');
 
     $page->click('Walnut Desk')
         ->assertPresent('button[aria-label="Remove Walnut Desk"]')
@@ -75,9 +71,7 @@ it('adds a new tag on the tags tab', function (): void {
         ->fill('[data-test="select-topics-search"]', 'Logistics')
         ->keys('[data-test="select-topics-search"]', ['Enter']);
 
-    eventually(function () use ($page): void {
-        $page->assertPresent('input[type="hidden"][name="topics[]"][value="Logistics"]');
-    });
+    assertPresentEventually($page, 'input[type="hidden"][name="topics[]"][value="Logistics"]');
 
     $page->assertNoJavaScriptErrors();
 });

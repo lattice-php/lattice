@@ -7,11 +7,9 @@ import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import TabComponent, { TabsComponent } from "./tabs";
 
-vi.mock("@inertiajs/react", () => ({
-  router: {
-    visit: vi.fn<(url: string, options?: unknown) => void>(),
-  },
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+);
 
 const TextProbe: RendererComponent<"text"> = ({ node }) => <span>{String(node.props?.text)}</span>;
 

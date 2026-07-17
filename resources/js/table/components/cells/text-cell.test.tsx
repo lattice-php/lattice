@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { TableColumn, TableRow } from "@lattice-php/lattice/table/types";
+import type { ColumnPropsOf, TableColumn, TableRow } from "@lattice-php/lattice/table/types";
 import { TextCell } from "./text-cell";
 
 function renderCell(props: Record<string, unknown>, value: unknown, row: TableRow = {}) {
@@ -19,7 +19,14 @@ function renderCell(props: Record<string, unknown>, value: unknown, row: TableRo
     },
   } as TableColumn;
 
-  return render(<TextCell column={column} props={props as never} row={row} value={value} />);
+  return render(
+    <TextCell
+      column={column}
+      props={column.props as ColumnPropsOf<"column.text">}
+      row={row}
+      value={value}
+    />,
+  );
 }
 
 describe("TextCell", () => {

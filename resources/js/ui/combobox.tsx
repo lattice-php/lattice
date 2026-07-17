@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { Option } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { useDebouncedCallback } from "@lattice-php/lattice/lib/use-debounced-callback";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 const SEARCH_DEBOUNCE_MS = 250;
@@ -97,15 +98,17 @@ function Combobox({
     (option) => option.label.toLowerCase() === query.trim().toLowerCase(),
   );
 
+  const runSearch = useDebouncedCallback((next: string) => onSearch?.(next), SEARCH_DEBOUNCE_MS);
+
   useEffect(() => {
     if (!onSearch || !open) {
       return;
     }
 
-    const timer = window.setTimeout(() => onSearch(query), SEARCH_DEBOUNCE_MS);
+    runSearch(query);
 
-    return () => window.clearTimeout(timer);
-  }, [query, onSearch, open]);
+    return () => runSearch.cancel();
+  }, [query, onSearch, open, runSearch]);
 
   const visibleOptions = onSearch
     ? options

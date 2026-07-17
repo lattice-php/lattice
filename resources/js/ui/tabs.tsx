@@ -1,9 +1,18 @@
 import { router } from "@inertiajs/react";
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { KeyboardEvent, ReactNode } from "react";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import type { Tab } from "@lattice-php/lattice/types/generated";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { pillClassName } from "./pill";
 import { useT } from "@lattice-php/lattice/i18n";
 
 type TabsContextValue = {
@@ -100,26 +109,37 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
     () => serverActiveValue || (queryValue(queryKey, tabs) ?? defaultValue) || firstValue,
   );
 
-  function selectTab(tab: TabItem): void {
-    if (tab.confirm?.required) {
-      router.visit(queryUrl(queryKey, tab.value), {
-        preserveScroll: true,
-      });
+  const selectTab = useCallback(
+    (tab: TabItem): void => {
+      if (tab.confirm?.required) {
+        router.visit(queryUrl(queryKey, tab.value), {
+          preserveScroll: true,
+        });
 
-      return;
-    }
+        return;
+      }
 
-    setActiveTabValue(tab.value);
-    replaceQueryValue(queryKey, tab.value);
-  }
+      setActiveTabValue(tab.value);
+      replaceQueryValue(queryKey, tab.value);
+    },
+    [queryKey],
+  );
 
-  function selectTabValue(value: string): void {
-    const tab = tabs.find((item) => item.value === value);
+  const selectTabValue = useCallback(
+    (value: string): void => {
+      const tab = tabs.find((item) => item.value === value);
 
-    if (tab) {
-      selectTab(tab);
-    }
-  }
+      if (tab) {
+        selectTab(tab);
+      }
+    },
+    [selectTab, tabs],
+  );
+
+  const contextValue = useMemo(
+    () => ({ activeValue, setActiveValue: selectTabValue }),
+    [activeValue, selectTabValue],
+  );
 
   function onTablistKeyDown(event: KeyboardEvent<HTMLButtonElement>): void {
     const nextKey = isVertical ? "ArrowDown" : "ArrowRight";
@@ -160,7 +180,7 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
   }
 
   return (
-    <TabsContext.Provider value={{ activeValue, setActiveValue: selectTabValue }}>
+    <TabsContext.Provider value={contextValue}>
       <div
         className={cn(
           "gap-6",
@@ -194,10 +214,7 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
                 aria-selected={isActive}
                 data-test={`tab-${tab.value}`}
                 className={cn(
-                  "whitespace-nowrap rounded-lt-sm px-3 py-1.5 text-sm font-medium transition-colors",
-                  isActive
-                    ? "bg-lt-bg text-lt-fg shadow-lt-xs"
-                    : "text-lt-muted-fg hover:bg-lt-bg/60 hover:text-lt-fg",
+                  pillClassName(isActive),
                   isVertical && "text-left",
                   isStretched && "flex-1",
                 )}

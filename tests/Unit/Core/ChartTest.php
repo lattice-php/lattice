@@ -11,13 +11,13 @@ use Lattice\Lattice\Ui\Values\DateFormat;
 use Lattice\Lattice\Ui\Values\NumberFormat;
 
 it('coerces series colors to tagged color values', function (): void {
-    expect(json_decode(json_encode(ChartSeries::line('revenue', color: '#2563eb')), true)['color'])
+    expect(wire(ChartSeries::line('revenue', color: '#2563eb'))['color'])
         ->toBe(['kind' => 'css', 'value' => '#2563eb', 'dark' => null])
-        ->and(json_decode(json_encode(ChartSeries::bar('orders', color: 'success')), true)['color'])
+        ->and(wire(ChartSeries::bar('orders', color: 'success'))['color'])
         ->toBe(['kind' => 'named', 'value' => 'success', 'dark' => null])
-        ->and(json_decode(json_encode(ChartSeries::line('plain')), true)['color'])
+        ->and(wire(ChartSeries::line('plain'))['color'])
         ->toBeNull()
-        ->and(json_decode(json_encode(ChartSeries::area('forecast', color: Color::hex('#8b5cf6')->dark('#a78bfa'))), true)['color'])
+        ->and(wire(ChartSeries::area('forecast', color: Color::hex('#8b5cf6')->dark('#a78bfa')))['color'])
         ->toBe(['kind' => 'css', 'value' => '#8b5cf6', 'dark' => '#a78bfa']);
 });
 
