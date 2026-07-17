@@ -1,11 +1,8 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { isTruthy } from "@lattice-php/lattice/lib/is-truthy";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { ColumnCellComponent } from "@lattice-php/lattice/table/registry";
-
-function isTruthy(value: unknown): boolean {
-  return value === true || value === 1 || value === "1" || value === "true";
-}
 
 export const BooleanCell: ColumnCellComponent<"column.boolean"> = ({ value }) => {
   const { t } = useT("lattice");
