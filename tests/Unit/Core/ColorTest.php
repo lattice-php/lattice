@@ -42,8 +42,8 @@ it('rejects dark() on named colors', function (): void {
 })->throws(LogicException::class);
 
 it('serializes to the tagged wire shape', function (): void {
-    expect(json_decode(json_encode(Color::warning()), true))
+    expect(wire(Color::warning()))
         ->toBe(['kind' => 'named', 'value' => 'warning', 'dark' => null])
-        ->and(json_decode(json_encode(Color::hex('#2563eb')->dark('#60a5fa')), true))
+        ->and(wire(Color::hex('#2563eb')->dark('#60a5fa')))
         ->toBe(['kind' => 'css', 'value' => '#2563eb', 'dark' => '#60a5fa']);
 });
