@@ -138,8 +138,10 @@ export function BulkBar({
             setFilling(null);
             onCompleted();
           }}
+          placement={filling.modalSide ?? "center"}
           submitLabel={filling.confirmation?.confirmLabel ?? filling.label}
           title={filling.confirmation?.title ?? filling.label}
+          width={filling.modalWidth ?? undefined}
         />
       )}
     </div>

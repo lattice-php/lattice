@@ -76,6 +76,8 @@ function action(partial: Partial<BulkAction> & Pick<BulkAction, "id">): BulkActi
     variant: "default",
     confirmation: null,
     form: null,
+    modalSide: null,
+    modalWidth: null,
     ...partial,
   };
 }
