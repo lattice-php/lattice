@@ -1,5 +1,7 @@
 import { vi } from "vitest";
-vi.mock("@inertiajs/react", () => ({ usePage: () => ({ url: "/" }) }));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+);
 
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";

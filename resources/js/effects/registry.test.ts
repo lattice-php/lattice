@@ -8,7 +8,9 @@ const router = vi.hoisted(() => ({
   visit: vi.fn<(url: string) => void>(),
 }));
 
-vi.mock("@inertiajs/react", () => ({ router }));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({ router }),
+);
 
 const setLocale = vi.hoisted(() => vi.fn<(locale: string) => void>());
 vi.mock("@lattice-php/lattice/i18n/locale", () => ({ setLocale }));

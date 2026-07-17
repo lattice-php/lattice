@@ -13,12 +13,11 @@ const usePage = vi.fn<
   }
 >();
 
-vi.mock("@inertiajs/react", () => ({
-  usePage: () => usePage(),
-  Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
-  ),
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+    usePage: () => usePage(),
+  }),
+);
 
 const registry = createRegistry({
   components: { breadcrumbs: eagerComponent(BreadcrumbsComponent) },

@@ -12,7 +12,12 @@ const configureI18nFromPageProps = vi.hoisted(() =>
   vi.fn<(props: unknown, options?: unknown) => Promise<void>>(() => Promise.resolve()),
 );
 
-vi.mock("@inertiajs/react", () => ({ createInertiaApp, router }));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+    createInertiaApp,
+    router,
+  }),
+);
 vi.mock("./i18n/page-props", () => ({ configureI18nFromPageProps }));
 
 import { createLatticeApp } from "./create-app";

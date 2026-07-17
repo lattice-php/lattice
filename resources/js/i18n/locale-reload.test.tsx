@@ -6,7 +6,9 @@ const router = vi.hoisted(() => ({
   visit: vi.fn<(url: string, options: Record<string, unknown>) => void>(),
 }));
 
-vi.mock("@inertiajs/react", () => ({ router }));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({ router }),
+);
 
 describe("LocaleReload", () => {
   beforeEach(() => {

@@ -19,55 +19,57 @@ const formSlotState = vi.hoisted(() => ({
   validate: vi.fn<(field: string) => void>(),
 }));
 
-vi.mock("@inertiajs/react", () => ({
-  Form: ({
-    children,
-    errorBag: _errorBag,
-    resetOnError: _resetOnError,
-    resetOnSuccess: _resetOnSuccess,
-    headers,
-    validationTimeout,
-    ...props
-  }: {
-    children: (state: {
-      clearErrors: (field: string) => void;
-      errors: Record<string, string>;
-      invalid: (field: string) => boolean;
-      processing: boolean;
-      reset: (...fields: string[]) => void;
-      touch: (field: string) => void;
-      validate: (field: string) => void;
-      validating: boolean;
-      valid: (field: string) => boolean;
-    }) => ReactNode;
-    errorBag?: string;
-    resetOnError?: boolean | string[];
-    resetOnSuccess?: boolean | string[];
-    headers?: Record<string, string>;
-    validationTimeout?: number;
-  }) => (
-    <form
-      {...props}
-      data-headers={JSON.stringify(headers ?? null)}
-      data-validation-timeout={validationTimeout}
-    >
-      {children({
-        clearErrors: formSlotState.clearErrors,
-        errors: {},
-        invalid: () => false,
-        processing: false,
-        reset: formSlotState.reset,
-        touch: formSlotState.touch,
-        validate: formSlotState.validate,
-        validating: false,
-        valid: () => false,
-      })}
-    </form>
-  ),
-  Link: ({ children, ...props }: { children: ReactNode; href: string }) => (
-    <a {...props}>{children}</a>
-  ),
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+    Form: ({
+      children,
+      errorBag: _errorBag,
+      resetOnError: _resetOnError,
+      resetOnSuccess: _resetOnSuccess,
+      headers,
+      validationTimeout,
+      ...props
+    }: {
+      children: (state: {
+        clearErrors: (field: string) => void;
+        errors: Record<string, string>;
+        invalid: (field: string) => boolean;
+        processing: boolean;
+        reset: (...fields: string[]) => void;
+        touch: (field: string) => void;
+        validate: (field: string) => void;
+        validating: boolean;
+        valid: (field: string) => boolean;
+      }) => ReactNode;
+      errorBag?: string;
+      resetOnError?: boolean | string[];
+      resetOnSuccess?: boolean | string[];
+      headers?: Record<string, string>;
+      validationTimeout?: number;
+    }) => (
+      <form
+        {...props}
+        data-headers={JSON.stringify(headers ?? null)}
+        data-validation-timeout={validationTimeout}
+      >
+        {children({
+          clearErrors: formSlotState.clearErrors,
+          errors: {},
+          invalid: () => false,
+          processing: false,
+          reset: formSlotState.reset,
+          touch: formSlotState.touch,
+          validate: formSlotState.validate,
+          validating: false,
+          valid: () => false,
+        })}
+      </form>
+    ),
+    Link: ({ children, ...props }: { children: ReactNode; href: string }) => (
+      <a {...props}>{children}</a>
+    ),
+  }),
+);
 
 describe("Lattice form schema components", () => {
   beforeEach(() => {

@@ -30,10 +30,12 @@ const router = vi.hoisted(() => ({
   visit: vi.fn<(url: string) => void>(),
 }));
 
-vi.mock("@inertiajs/react", () => ({
-  router,
-  useHttp: () => http,
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+    router,
+    useHttp: () => http,
+  }),
+);
 
 type ActionFormProps = {
   cancelLabel: string;
