@@ -126,7 +126,13 @@ abstract class Page implements PageContract, Responsable
     }
 
     /**
-     * @return array{title: string|null, layout: array{key: string, schema: mixed}|null, container: string, breadcrumbs: array<int, array{title: string, href: string}>, schema: mixed, listeners?: mixed}
+     * The realized `lattice` prop ({@see PagePayload} is its typed shape). The
+     * component tree is realized eagerly here, inside the request lifecycle, so
+     * serialization side effects (such as a Tabs confirmation redirect) fire
+     * before the response view is rendered rather than during the final
+     * json_encode.
+     *
+     * @return array<string, mixed>
      */
     public function toArray(PageSchema $schema, Request $request): array
     {
@@ -134,25 +140,28 @@ abstract class Page implements PageContract, Responsable
         $layout = $this->layout() ?? $metadata->layout;
         $container = $this->container() ?? $metadata->container;
 
-        return [
-            'title' => $this->title(),
-            'layout' => $this->resolveLayout($layout, $request),
-            'container' => $this->serializePageMetadata($container),
-            'breadcrumbs' => $this->breadcrumbs(),
-            'schema' => $this->serializeSchema($schema),
-            ...$this->serializeListeners(),
-        ];
+        $payload = new PagePayload(
+            title: $this->title(),
+            layout: $this->resolveLayout($layout, $request),
+            container: $this->serializePageMetadata($container),
+            breadcrumbs: array_map(
+                static fn (array $breadcrumb): Breadcrumb => new Breadcrumb($breadcrumb['title'], $breadcrumb['href']),
+                $this->breadcrumbs(),
+            ),
+            schema: $schema->renderable(),
+            listeners: $this->resolveListeners(),
+        );
+
+        return (array) Wire::toWire($payload);
     }
 
     /**
-     * Resolve the page's layout to its wire shape: the layout key plus its
-     * realized schema (a component tree containing an Outlet that marks where
-     * this page's content renders). Returns null when the page opts out of a
-     * layout (rendered standalone, e.g. centered auth screens).
-     *
-     * @return array{key: string, schema: mixed}|null
+     * Resolve the page's layout: the layout key plus its rendered component
+     * tree (containing an Outlet that marks where this page's content
+     * renders). Returns null when the page opts out of a layout (rendered
+     * standalone, e.g. centered auth screens).
      */
-    private function resolveLayout(PageLayout|string $layout, Request $request): ?array
+    private function resolveLayout(PageLayout|string $layout, Request $request): ?PageLayoutPayload
     {
         $key = $this->serializePageMetadata($layout);
 
@@ -162,39 +171,21 @@ abstract class Page implements PageContract, Responsable
 
         $rendered = Lattice::layoutRegistry()->render($key, $request);
 
-        return [
-            'key' => $rendered['key'],
-            'schema' => Wire::toWire($rendered['schema']),
-        ];
+        return new PageLayoutPayload($rendered['key'], $rendered['schema']);
     }
 
     /**
-     * Realize the component tree to its wire array eagerly, inside the request
-     * lifecycle, so serialization side effects (such as a Tabs confirmation
-     * redirect) fire before the response view is rendered rather than during
-     * the final json_encode.
+     * @return array<int, Listen>|null
      */
-    private function serializeSchema(PageSchema $schema): mixed
-    {
-        return Wire::toWire($schema->renderable());
-    }
-
-    /**
-     * @return array{listeners?: mixed}
-     */
-    private function serializeListeners(): array
+    private function resolveListeners(): ?array
     {
         if (! config('lattice.realtime.enabled', true)) {
-            return [];
+            return null;
         }
 
         $listeners = array_values($this->listeners());
 
-        if ($listeners === []) {
-            return [];
-        }
-
-        return ['listeners' => Wire::toWire($listeners)];
+        return $listeners === [] ? null : $listeners;
     }
 
     private function response(PageSchema $schema): Response

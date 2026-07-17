@@ -6,7 +6,11 @@ import type {
   PageContainer as KnownPageContainer,
   WireNode,
 } from "@lattice-php/lattice/types/generated";
-import type { Listen } from "@lattice-php/lattice/types/generated";
+import type {
+  Breadcrumb,
+  PageLayoutPayload,
+  PagePayload as GeneratedPagePayload,
+} from "@lattice-php/lattice/types/generated";
 
 export type { KnownPageContainer, NodeType, Option, WireNode };
 
@@ -90,29 +94,17 @@ export type NodeUnionOf<TTypes extends string> = TTypes extends string ? NodeOfT
 export type Schema = Node[];
 
 /** Its `schema` holds exactly one Outlet node. */
-export type LayoutPayload = {
-  key: string;
-  schema: Schema;
-};
+export type LayoutPayload = PageLayoutPayload;
+
+export type PageBreadcrumb = Breadcrumb;
 
 /**
- * The page payload the server hydrates onto `lattice` (see PHP `Page::toArray`).
- * Hand-written rather than generated: its `schema`/`layout.schema` are component
- * trees serialized eagerly during the request (to fire side effects before the
- * final encode), so they cannot be derived from a value object as typed `Node[]`.
+ * The page payload the server hydrates onto `lattice` — the generated
+ * `PagePayload` (PHP `Http\PagePayload`), with `container` refined to the
+ * known-container union custom containers extend.
  */
-export type PagePayload = {
-  breadcrumbs: PageBreadcrumb[];
+export type PagePayload = Omit<GeneratedPagePayload, "container"> & {
   container: PageContainer;
-  layout: LayoutPayload | null;
-  listeners?: Listen[];
-  schema: Schema;
-  title: string | null;
-};
-
-export type PageBreadcrumb = {
-  href: string;
-  title: string;
 };
 
 export type PageContainer = KnownPageContainer | (string & {});

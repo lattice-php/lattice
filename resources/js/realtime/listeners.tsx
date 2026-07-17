@@ -26,8 +26,8 @@ class EchoBoundary extends Component<{ children: ReactNode }, { failed: boolean 
  * Renders nothing when a page declares no listeners, so the echo-react chunk
  * is only fetched where it is actually needed.
  */
-export function RealtimeListeners({ listeners }: { listeners?: Listen[] }) {
-  if (listeners === undefined || listeners.length === 0) {
+export function RealtimeListeners({ listeners }: { listeners?: Listen[] | null }) {
+  if (listeners == null || listeners.length === 0) {
     return null;
   }
 

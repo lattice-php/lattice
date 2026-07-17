@@ -53,6 +53,10 @@ export type BooleanColumn = {
   toggleable: boolean;
   width: ColumnWidth;
 };
+export type Breadcrumb = {
+  readonly href: string;
+  readonly title: string;
+};
 export type Breadcrumbs = Record<string, never>;
 export type BrowserToken = {
   readonly accessToken: string;
@@ -980,6 +984,18 @@ export type OtpInput = {
 export type Outlet = Record<string, never>;
 export type PageContainer = "centered" | "default";
 export type PageLayout = "app" | "auth" | "none";
+export type PageLayoutPayload = {
+  readonly key: string;
+  readonly schema: Node[];
+};
+export type PagePayload = {
+  readonly breadcrumbs: Breadcrumb[];
+  readonly container: string;
+  readonly layout: PageLayoutPayload | null;
+  readonly listeners: Listen[] | null;
+  readonly schema: Node[];
+  readonly title: string | null;
+};
 export type PaginationType = "none" | "simple" | "table" | "infinite";
 export type PasswordInput = {
   autoComplete: string | null;

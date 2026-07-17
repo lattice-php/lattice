@@ -16,6 +16,7 @@ vi.mock("@inertiajs/react", () => ({
 function payload(lattice: Partial<PagePayload> = {}): PagePayload {
   return {
     breadcrumbs: [],
+    listeners: null,
     schema: [],
     container: "default",
     layout: null,
