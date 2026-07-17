@@ -87,7 +87,7 @@ final class BaseProfile implements TypeScriptProfile
             ],
             new NodeModuleWriter('generated.ts'),
             $outputDirectory,
-            new OxfmtFormatter(strict: true),
+            new OxfmtFormatter,
         );
 
         return 'Regenerated built-in TypeScript types.';

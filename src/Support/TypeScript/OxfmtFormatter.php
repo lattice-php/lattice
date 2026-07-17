@@ -9,15 +9,12 @@ use Symfony\Component\Process\Process;
 
 /**
  * Formats generated TypeScript with the host app's oxfmt binary when available,
- * falling back to the package checkout for local development. In consumer apps
- * a missing binary is a no-op so generation still produces valid TypeScript;
- * strict mode (the package's own base profile) fails instead, because an
- * unformatted generated.ts would spuriously diff against the committed file.
+ * falling back to the package checkout for local development. A missing binary
+ * is a no-op: the byte-exact snapshot test catches any formatting divergence,
+ * and the PHP CI test jobs deliberately run without node_modules.
  */
 final readonly class OxfmtFormatter implements Formatter
 {
-    public function __construct(private bool $strict = false) {}
-
     /**
      * @param  array<int, string>  $files
      */
@@ -30,12 +27,6 @@ final readonly class OxfmtFormatter implements Formatter
         $binary = $this->resolveBinary();
 
         if ($binary === null) {
-            if ($this->strict) {
-                throw new \RuntimeException(
-                    'oxfmt binary not found (run `npm install`); refusing to write unformatted generated types.',
-                );
-            }
-
             return;
         }
 
