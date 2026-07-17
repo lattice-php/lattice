@@ -1,5 +1,5 @@
 import type { Callout } from "@lattice-php/lattice/types/generated";
-import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { isVariant } from "./toast";
 
 export type { Callout };

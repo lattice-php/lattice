@@ -1,5 +1,5 @@
 import type { Toast as ToastMessage, Variant } from "@lattice-php/lattice/types/generated";
-import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { isTranslatable } from "@lattice-php/lattice/i18n/translatable";
 
 export type { ToastMessage, Variant };

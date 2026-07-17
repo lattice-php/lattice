@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { onToast as subscribeToToasts } from "@lattice-php/lattice/toast";
 import type { ToastMessage } from "@lattice-php/lattice/toast";
 import { isAppearance, type Appearance } from "./appearance";
-import { LATTICE_EVENT } from "./events/event-names";
+import { LATTICE_EVENT } from "./core/event-names";
 
 type EventBridgeProps = {
   onAppearanceChange?: (appearance: Appearance) => void;

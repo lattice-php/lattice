@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
-import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { Node } from "@lattice-php/lattice/core/types";

@@ -56,9 +56,9 @@ export type {
 export { Renderer } from "./core/renderer";
 export { LATTICE_REF_HEADER, withRefHeader } from "./core/component-ref";
 export { withHeaders } from "./core/headers";
-export { LATTICE_EVENT } from "./events/event-names";
+export { LATTICE_EVENT } from "./core/event-names";
 export type { ButtonVariant } from "./ui/button";
-export type { ReloadComponentEvent } from "./events/event-names";
+export type { ReloadComponentEvent } from "./core/event-names";
 export type {
   ComponentProps,
   KnownPageContainer,
