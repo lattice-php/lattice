@@ -34,8 +34,12 @@ final class ComponentTransformer extends ClassTransformer
     /**
      * @param  array<int, class-string>  $allowed
      */
-    public function __construct(array $allowed)
-    {
+    public function __construct(
+        array $allowed,
+        private readonly NodeTypeReference $componentRef = new NodeTypeReference,
+        private readonly NodeTypeReference $columnRef = new NodeTypeReference(envelope: 'ColumnNode'),
+        private readonly NodeTypeReference $filterRef = new NodeTypeReference(envelope: 'FilterNode'),
+    ) {
         $this->allowed = $allowed;
 
         parent::__construct();
@@ -125,9 +129,9 @@ final class ComponentTransformer extends ClassTransformer
     {
         return [
             ...parent::classPropertyProcessors(),
-            new MarkerRewriteClassPropertyProcessor(Component::class, NodeTypeReference::for(...)),
-            new MarkerRewriteClassPropertyProcessor(Column::class, NodeTypeReference::for(...)),
-            new MarkerRewriteClassPropertyProcessor(Filter::class, NodeTypeReference::for(...)),
+            new MarkerRewriteClassPropertyProcessor(Component::class, ($this->componentRef)(...)),
+            new MarkerRewriteClassPropertyProcessor(Column::class, ($this->columnRef)(...)),
+            new MarkerRewriteClassPropertyProcessor(Filter::class, ($this->filterRef)(...)),
             new MixedToUnknownClassPropertyProcessor,
         ];
     }

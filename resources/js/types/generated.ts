@@ -1,4 +1,5 @@
 import type { Node } from "@lattice-php/lattice/core/types";
+import type { ColumnNode, FilterNode } from "@lattice-php/lattice/table/types";
 export type Action = {
   confirmation: Confirmation | null;
   endpoint: string | null;
@@ -98,7 +99,7 @@ export type BulkAction = {
   variant: ButtonVariant | null;
 };
 export type Button = {
-  action: Node<"action"> | null;
+  action: Node<"action"> | Node<"action.bulk"> | null;
   buttonType: ButtonType;
   effects: Effect[];
   href: string | null;
@@ -732,7 +733,7 @@ export type LayoutNodeType =
   | "sidebar"
   | "topbar";
 export type Link = {
-  action: Node<"action"> | null;
+  action: Node<"action"> | Node<"action.bulk"> | null;
   effects: Effect[];
   href: string | null;
   icon: string | null;
@@ -753,7 +754,7 @@ export type LocaleChange = {
 };
 export type Menu = Record<string, never>;
 export type MenuItem = {
-  action: Node<"action"> | null;
+  action: Node<"action"> | Node<"action.bulk"> | null;
   effects: Effect[];
   href: string | null;
   icon: string | null;
@@ -1198,11 +1199,11 @@ export type Tab = {
 };
 export type Table = {
   actionsLabel: string | null;
-  bulkActions: Node<"action">[];
-  columns: Node[];
+  bulkActions: (Node<"action"> | Node<"action.bulk">)[];
+  columns: ColumnNode[];
   emptyLabel: string | null;
   endpoint: string | null;
-  filters: Node[];
+  filters: FilterNode[];
   layout: string | null;
   lazy: boolean;
   ref: string | null;
@@ -1410,7 +1411,7 @@ export type Tree = {
   rememberState: boolean;
 };
 export type TreeNode = {
-  actions: Node<"action"> | Node<"action.group"> | null;
+  actions: Node<"action"> | Node<"action.bulk"> | Node<"action.group"> | null;
   badge: string | null;
   children: TreeNode[];
   disabled: boolean;

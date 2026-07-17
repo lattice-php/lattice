@@ -7,14 +7,14 @@ import type { Effect } from "@lattice-php/lattice/types/generated";
 
 export type ClickBehavior =
   | { kind: "navigate"; href: string; method: Method }
-  | { kind: "action"; action: Node<"action"> }
+  | { kind: "action"; action: Node<"action" | "action.bulk"> }
   | { kind: "effects"; onClick: () => void }
   | { kind: "none" };
 
 export type TriggerState = { onClick: () => void; processing: boolean };
 
 export type ActionTriggerRenderer = (props: {
-  action: Node<"action">;
+  action: Node<"action" | "action.bulk">;
   children: (trigger: TriggerState) => ReactNode;
 }) => ReactNode;
 
@@ -38,7 +38,7 @@ export function ActionTrigger({
   action,
   children,
 }: {
-  action: Node<"action">;
+  action: Node<"action" | "action.bulk">;
   children: (trigger: TriggerState) => ReactNode;
 }) {
   const render = useActionTrigger();
@@ -53,7 +53,7 @@ export function ActionTrigger({
 export function useClickBehavior(props: {
   href?: string | null;
   method?: Method | null;
-  action?: Node<"action"> | null;
+  action?: Node<"action" | "action.bulk"> | null;
   effects?: Effect[] | null;
 }): ClickBehavior {
   const dispatch = useEffectDispatcher();

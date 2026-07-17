@@ -44,9 +44,22 @@ final readonly class AugmentProfile implements TypeScriptProfile
             }
         }
 
+        $byCategory = ['component' => [], 'column' => [], 'filter' => []];
+
+        foreach ($entries as $class => [$type, $category]) {
+            if (isset($byCategory[$category])) {
+                $byCategory[$category][$class] = $type;
+            }
+        }
+
         $generator->generate(
             $roots,
-            [new ComponentTransformer(array_keys($entries))],
+            [new ComponentTransformer(
+                array_keys($entries),
+                new NodeTypeReference($byCategory['component']),
+                new NodeTypeReference($byCategory['column'], 'ColumnNode'),
+                new NodeTypeReference($byCategory['filter'], 'FilterNode'),
+            )],
             [],
             new AugmentationWriter($entries, $module, basename($output)),
             dirname($output),

@@ -10,16 +10,15 @@ use Spatie\TypeScriptTransformer\Transformed\Transformed;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 
 /**
- * The base-module writer, plus the one import the generated module can't declare
- * itself: the augmentable `Node` from core/types. Component-typed props generate as
- * `Node<"type">`/`Node` (see {@see ComponentTransformer}), and `WireNode` aliases it,
- * so the flat module references `Node` but never defines it. The core↔generated
- * import cycle is type-only, so it erases at runtime.
+ * The base-module writer, plus the imports the generated module can't declare
+ * itself: the augmentable envelopes. Component-typed props generate as
+ * `Node<"type">`/`Node` (see {@see ComponentTransformer}), Column/Filter-typed
+ * props as `ColumnNode`/`FilterNode`, and `WireNode` aliases `Node` — the flat
+ * module references those envelopes but never defines them. The resulting
+ * import cycles are type-only, so they erase at runtime.
  */
 final class NodeModuleWriter extends FlatModuleWriter
 {
-    private const string HEADER = 'import type { Node } from "@lattice-php/lattice/core/types";'."\n";
-
     /**
      * @param  array<mixed>  $transformed
      * @return array<WriteableFile>
@@ -32,11 +31,30 @@ final class NodeModuleWriter extends FlatModuleWriter
         return array_map(
             fn (WriteableFile $file): WriteableFile => new WriteableFile(
                 $file->path,
-                self::HEADER.$file->contents,
+                $this->header($file->contents).$file->contents,
                 $file->changed,
             ),
             parent::output($transformed, $transformedCollection),
         );
+    }
+
+    private function header(string $contents): string
+    {
+        $header = 'import type { Node } from "@lattice-php/lattice/core/types";'."\n";
+
+        $envelopes = array_values(array_filter(
+            ['ColumnNode', 'FilterNode'],
+            fn (string $envelope): bool => preg_match('/\b'.$envelope.'\b/', $contents) === 1,
+        ));
+
+        if ($envelopes !== []) {
+            $header .= sprintf(
+                'import type { %s } from "@lattice-php/lattice/table/types";'."\n",
+                implode(', ', $envelopes),
+            );
+        }
+
+        return $header;
     }
 
     /**

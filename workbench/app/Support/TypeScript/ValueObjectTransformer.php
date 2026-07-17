@@ -37,8 +37,10 @@ final class ValueObjectTransformer extends ClassTransformer
     /**
      * @param  array<int, class-string>  $allowed
      */
-    public function __construct(array $allowed)
-    {
+    public function __construct(
+        array $allowed,
+        private readonly NodeTypeReference $componentRef = new NodeTypeReference,
+    ) {
         $this->allowed = $allowed;
 
         parent::__construct();
@@ -92,7 +94,7 @@ final class ValueObjectTransformer extends ClassTransformer
         return [
             ...parent::classPropertyProcessors(),
             new MixedToUnknownClassPropertyProcessor,
-            new MarkerRewriteClassPropertyProcessor(Component::class, NodeTypeReference::for(...)),
+            new MarkerRewriteClassPropertyProcessor(Component::class, ($this->componentRef)(...)),
         ];
     }
 }

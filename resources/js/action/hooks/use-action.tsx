@@ -26,7 +26,7 @@ type UseAction = {
  * otherwise dispatch) and renders the matching overlays. The host owns the
  * trigger element so each surface keeps its own styling.
  */
-export function useAction(node: Node<"action">): UseAction {
+export function useAction(node: Node<"action" | "action.bulk">): UseAction {
   const endpoint = node.props.endpoint ?? "";
   const componentRef = node.props.ref ?? "";
   const method: Method = node.props.method ?? "post";

@@ -8,6 +8,7 @@ use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Support\TypeScript\NodeModuleWriter;
+use Lattice\Lattice\Support\TypeScript\NodeTypeReference;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
@@ -44,6 +45,10 @@ final class BaseProfile implements TypeScriptProfile
             'column' => $this->buildComponentProps($discovered, 'column'),
             'filter' => $this->buildComponentProps($discovered, 'filter'),
         ];
+
+        $componentRef = new NodeTypeReference($this->buildClassTypes($discovered, 'component'));
+        $columnRef = new NodeTypeReference($this->buildClassTypes($discovered, 'column'), 'ColumnNode');
+        $filterRef = new NodeTypeReference($this->buildClassTypes($discovered, 'filter'), 'FilterNode');
         $valueObjectClasses = $manifest->valueObjects;
 
         foreach (WireFamily::registryFamilies() as $family) {
@@ -62,14 +67,14 @@ final class BaseProfile implements TypeScriptProfile
             [
                 new HttpMethodTransformer,
                 new EnumTransformer($manifest->enums),
-                new ValueObjectTransformer($valueObjectClasses),
+                new ValueObjectTransformer($valueObjectClasses, $componentRef),
                 new ComponentTransformer([
                     ...array_keys($formFields),
                     Form::class,
                     ...$this->componentClasses($domainNodes),
                     ...array_values($familyProps['column']),
                     ...array_values($familyProps['filter']),
-                ]),
+                ], $componentRef, $columnRef, $filterRef),
             ],
             [
                 new NodesProvider(
@@ -86,6 +91,23 @@ final class BaseProfile implements TypeScriptProfile
         );
 
         return 'Regenerated built-in TypeScript types.';
+    }
+
+    /**
+     * @param  list<DiscoveredComponent>  $discovered
+     * @return array<class-string, string>
+     */
+    private function buildClassTypes(array $discovered, string $category): array
+    {
+        $map = [];
+
+        foreach ($discovered as $dc) {
+            if ($dc->category === $category) {
+                $map[$dc->class] = $dc->type;
+            }
+        }
+
+        return $map;
     }
 
     /**

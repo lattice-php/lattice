@@ -29,11 +29,8 @@ export type ActionNode = NodeUnionOf<ActionNodeType>;
 
 export type TableRow = Record<string, unknown>;
 
-export type TableNodeProps = Partial<Omit<Table, "bulkActions" | "columns" | "filters">> & {
-  bulkActions?: ActionNode[];
-  columns?: ColumnNode[];
+export type TableNodeProps = Partial<Table> & {
   data?: TableRow[];
-  filters?: FilterNode[];
   pagination?: TablePagination;
   query?: Partial<TableQuery>;
 };
