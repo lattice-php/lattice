@@ -28,10 +28,9 @@ const http = vi.hoisted(() => ({
   patch: vi.fn<(url: string) => Promise<{ effects: never[] }>>(async () => ({ effects: [] })),
 }));
 
-vi.mock("@inertiajs/react", () => ({
-  useHttp: () => http,
-  router: { reload: vi.fn<() => void>(), visit: vi.fn<(url: string) => void>() },
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({ useHttp: () => http }),
+);
 
 const { default: TableComponent } = await import("./table");
 

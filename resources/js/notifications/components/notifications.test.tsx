@@ -6,12 +6,9 @@ import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { Node } from "@lattice-php/lattice/core/types";
 import NotificationsComponent from "./notifications";
 
-vi.mock("@inertiajs/react", () => ({
-  usePage: () => ({ url: "/" }),
-  Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
-  ),
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+);
 vi.mock("./notifications-echo", () => ({ NotificationsEcho: () => null }));
 
 const registry = createRegistry({

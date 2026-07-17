@@ -33,16 +33,12 @@ it('shows pagination modes in lazily loaded tabs', function (): void {
         ->click('@tab-table')
         ->assertSee('Table pagination');
 
-    eventually(function () use ($page): void {
-        $page->assertSee('Showing 1-25 of 30');
-    });
+    assertSeeEventually($page, 'Showing 1-25 of 30');
 
     $page->click('@tab-infinite')
         ->assertSee('Infinite pagination');
 
-    eventually(function () use ($page): void {
-        $page->assertSee('Load more');
-    });
+    assertSeeEventually($page, 'Load more');
 
     $page->assertNoSmoke();
 });
@@ -54,19 +50,13 @@ it('navigates between pages in table pagination mode', function (): void {
     $page = visit('/tables/pagination');
 
     $page->click('@tab-table');
-    eventually(function () use ($page): void {
-        $page->assertSee('Showing 1-25 of 30');
-    });
+    assertSeeEventually($page, 'Showing 1-25 of 30');
 
     $page->click('@pagination-next');
-    eventually(function () use ($page): void {
-        $page->assertSee('Showing 26-30 of 30');
-    });
+    assertSeeEventually($page, 'Showing 26-30 of 30');
 
     $page->click('@pagination-page-1');
-    eventually(function () use ($page): void {
-        $page->assertSee('Showing 1-25 of 30');
-    });
+    assertSeeEventually($page, 'Showing 1-25 of 30');
 
     $page->assertNoSmoke();
 });
@@ -79,16 +69,12 @@ it('loads more rows in infinite mode', function (): void {
     disableInfiniteScrollAutoLoad($page);
 
     $page->click('@tab-infinite');
-    eventually(function () use ($page): void {
-        $page->assertSee('Load more');
-    });
+    assertSeeEventually($page, 'Load more');
 
     $page->assertDontSee('Browser User 26')
         ->click('@pagination-load-more');
 
-    eventually(function () use ($page): void {
-        $page->assertSee('Browser User 26');
-    });
+    assertSeeEventually($page, 'Browser User 26');
 
     $page->assertNoSmoke();
 });
@@ -101,14 +87,10 @@ it('keeps the topbar user menu visible on infinite pagination pages', function (
     disableInfiniteScrollAutoLoad($page);
 
     $page->click('@tab-infinite');
-    eventually(function () use ($page): void {
-        $page->assertSee('Load more');
-    });
+    assertSeeEventually($page, 'Load more');
 
     $page->click('@pagination-load-more');
-    eventually(function () use ($page): void {
-        $page->assertSee('Browser User 26');
-    });
+    assertSeeEventually($page, 'Browser User 26');
 
     $page->assertVisible('@user-menu');
 

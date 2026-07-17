@@ -17,9 +17,7 @@ it('uploads a file through a multipart payload', function (): void {
 
     $page->attach('@avatar-input', __DIR__.'/fixtures/avatar.jpg');
 
-    eventually(function () use ($page): void {
-        $page->assertSee('avatar.jpg');
-    });
+    assertSeeEventually($page, 'avatar.jpg');
 
     $page->click('@form-submit')
         ->assertSee('File upload')
@@ -48,12 +46,8 @@ it('uploads directly to s3 via the signed flow', function (): void {
 
     $page->attach('@document-input', __DIR__.'/fixtures/avatar.jpg');
 
-    eventually(function () use ($page): void {
-        $page->assertSee('avatar.jpg');
-    });
-    eventually(function () use ($page): void {
-        $page->assertPresent('[data-test="document-uploaded"]');
-    });
+    assertSeeEventually($page, 'avatar.jpg');
+    assertPresentEventually($page, '[data-test="document-uploaded"]');
 
     $page->click('@form-submit')
         ->assertNoSmoke();

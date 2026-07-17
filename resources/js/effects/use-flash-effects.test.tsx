@@ -16,7 +16,9 @@ const router = vi.hoisted(() => ({
   on: vi.fn<(event: string, listener: FlashListener) => () => void>(() => () => undefined),
 }));
 
-vi.mock("@inertiajs/react", () => ({ router }));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({ router }),
+);
 
 import { useFlashEffects } from "@lattice-php/lattice/effects/use-flash-effects";
 

@@ -4,19 +4,21 @@ import type { Node } from "@lattice-php/lattice/core/types";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 import { NotificationItemRow } from "./notification-item";
 
-vi.mock("@inertiajs/react", () => ({
-  Link: ({ children, onClick, ...props }: React.ComponentProps<"a">) => (
-    <a
-      {...props}
-      onClick={(event) => {
-        event.preventDefault();
-        onClick?.(event);
-      }}
-    >
-      {children}
-    </a>
-  ),
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+    Link: ({ children, onClick, ...props }: React.ComponentProps<"a">) => (
+      <a
+        {...props}
+        onClick={(event) => {
+          event.preventDefault();
+          onClick?.(event);
+        }}
+      >
+        {children}
+      </a>
+    ),
+  }),
+);
 
 vi.mock("@lattice-php/lattice/icons", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@lattice-php/lattice/icons")>();

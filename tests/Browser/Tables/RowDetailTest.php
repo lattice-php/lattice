@@ -19,15 +19,11 @@ it('expands a sales-order row to load its line items over ajax and collapses aga
         ->assertDontSee('Gizmo')
         ->click('@row-expand-'.$order->getKey());
 
-    eventually(function () use ($page): void {
-        $page->assertSee('Gizmo');
-    });
+    assertSeeEventually($page, 'Gizmo');
 
     $page->click('@row-expand-'.$order->getKey());
 
-    eventually(function () use ($page): void {
-        $page->assertDontSee('Gizmo');
-    });
+    assertDontSeeEventually($page, 'Gizmo');
 
     $page->assertNoSmoke();
 });

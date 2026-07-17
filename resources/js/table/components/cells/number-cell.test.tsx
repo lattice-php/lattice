@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { TableColumn } from "@lattice-php/lattice/table/types";
+import type { ColumnPropsOf, TableColumn } from "@lattice-php/lattice/table/types";
 import { NumberCell } from "./number-cell";
 
 function column(props: Record<string, unknown> = {}): TableColumn {
@@ -22,7 +22,14 @@ function column(props: Record<string, unknown> = {}): TableColumn {
 
 function renderCell(value: unknown, props: Record<string, unknown> = {}) {
   const col = column(props);
-  return render(<NumberCell column={col} props={col.props as never} row={{}} value={value} />);
+  return render(
+    <NumberCell
+      column={col}
+      props={col.props as ColumnPropsOf<"column.number">}
+      row={{}}
+      value={value}
+    />,
+  );
 }
 
 afterEach(() => {

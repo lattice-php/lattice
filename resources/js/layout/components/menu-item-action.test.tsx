@@ -13,12 +13,12 @@ const http = vi.hoisted(() => ({
   put: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
 }));
 
-vi.mock("@inertiajs/react", () => ({
-  router: { reload: vi.fn<() => void>(), visit: vi.fn<(url: string) => void>() },
-  useHttp: () => http,
-  usePage: vi.fn<() => { url: string }>(() => ({ url: "/products" })),
-  Link: ({ children, ...rest }: { children: React.ReactNode }) => <a {...rest}>{children}</a>,
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+    useHttp: () => http,
+    usePage: () => ({ url: "/products" }),
+  }),
+);
 
 function actionMenuItem(props: Partial<ComponentPropsOf<"action">> = {}): Node<"menu-item"> {
   return fakeNode({

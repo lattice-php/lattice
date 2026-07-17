@@ -8,25 +8,27 @@ import { SidebarCollapsedContext } from "@lattice-php/lattice/layout/hooks/conte
 import MenuComponent from "./menu";
 import MenuItemComponent from "./menu-item";
 
-vi.mock("@inertiajs/react", () => ({
-  usePage: vi.fn<() => { url: string }>(() => ({ url: "/products" })),
-  Link: ({
-    children,
-    href,
-    method,
-    as,
-    ...rest
-  }: {
-    children: React.ReactNode;
-    href: string;
-    method?: string;
-    as?: string;
-  }) => (
-    <a data-method={method} data-as={as} href={href} {...rest}>
-      {children}
-    </a>
-  ),
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+    usePage: vi.fn<() => { url: string }>(() => ({ url: "/products" })),
+    Link: ({
+      children,
+      href,
+      method,
+      as,
+      ...rest
+    }: {
+      children: React.ReactNode;
+      href: string;
+      method?: string;
+      as?: string;
+    }) => (
+      <a data-method={method} data-as={as} href={href} {...rest}>
+        {children}
+      </a>
+    ),
+  }),
+);
 
 const registry = createRegistry({
   components: {

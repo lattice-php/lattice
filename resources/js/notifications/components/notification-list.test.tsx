@@ -3,9 +3,9 @@ import { describe, expect, it, vi } from "vitest";
 import { NotificationList } from "./notification-list";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 
-vi.mock("@inertiajs/react", () => ({
-  Link: ({ children, ...props }: React.ComponentProps<"a">) => <a {...props}>{children}</a>,
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+);
 
 function item(id: string, title: string): NotificationItem {
   return {

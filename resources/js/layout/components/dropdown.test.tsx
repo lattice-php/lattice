@@ -10,12 +10,9 @@ import { SidebarCollapsedContext } from "@lattice-php/lattice/layout/hooks/conte
 import DropdownComponent from "./dropdown";
 import MenuItemComponent from "./menu-item";
 
-vi.mock("@inertiajs/react", () => ({
-  usePage: vi.fn<() => { url: string }>(() => ({ url: "/" })),
-  Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
-  ),
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+);
 
 const registry = createRegistry({
   components: {

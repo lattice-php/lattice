@@ -58,12 +58,8 @@ it('shows an optimistic user bubble when a message is sent', function (): void {
     $page->type('@chat-input', 'Hello from the browser test')
         ->click('@chat-send');
 
-    eventually(function () use ($page): void {
-        $page->assertSee('Hello from the browser test');
-    });
-    eventually(function () use ($page): void {
-        $page->assertSee('Stubbed assistant response.');
-    });
+    assertSeeEventually($page, 'Hello from the browser test');
+    assertSeeEventually($page, 'Stubbed assistant response.');
 
     $page->assertNoSmoke()
         ->assertNoJavaScriptErrors();

@@ -18,6 +18,9 @@ use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tests\BrowserTestCase;
 use Lattice\Lattice\Tests\TestCase;
 use Orchestra\Testbench\Factories\UserFactory;
+use Pest\Browser\Api\AwaitableWebpage;
+use Pest\Browser\Api\PendingAwaitablePage;
+use Pest\Browser\Api\Webpage;
 use Workbench\App\Models\User;
 
 use function Pest\Laravel\getJson;
@@ -59,6 +62,32 @@ function retryUntil(Closure $assert, int $attempts = 20, int $sleepMicroseconds 
 function eventually(Closure $assert, int $attempts = 20, int $sleepMicroseconds = 500_000, ?Closure $between = null): void
 {
     retryUntil($assert, $attempts, $sleepMicroseconds, $between);
+}
+
+/**
+ * Poll {@see eventually()} until the text is present on the page. The polled
+ * closure must be a statement body — an arrow closure returns the page rather
+ * than void and breaks the `Closure(): void` contract.
+ */
+function assertSeeEventually(AwaitableWebpage|PendingAwaitablePage|Webpage $page, string|int|float $text): void
+{
+    eventually(function () use ($page, $text): void {
+        $page->assertSee($text);
+    });
+}
+
+function assertDontSeeEventually(AwaitableWebpage|PendingAwaitablePage|Webpage $page, string|int|float $text): void
+{
+    eventually(function () use ($page, $text): void {
+        $page->assertDontSee($text);
+    });
+}
+
+function assertPresentEventually(AwaitableWebpage|PendingAwaitablePage|Webpage $page, string $selector): void
+{
+    eventually(function () use ($page, $selector): void {
+        $page->assertPresent($selector);
+    });
 }
 
 function rustfsIsReachable(): bool

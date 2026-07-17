@@ -9,21 +9,9 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import { actionComponents } from "@lattice-php/lattice/action/plugin";
 import { ActionForm } from "./action-form";
 
-vi.mock("@inertiajs/react", () => ({
-  router: { reload: vi.fn<() => void>(), visit: vi.fn<() => void>() },
-  useHttp: () => ({
-    delete: vi.fn<() => void>(),
-    get: vi.fn<() => void>(),
-    patch: vi.fn<() => void>(),
-    post: vi.fn<() => void>(),
-    processing: false,
-    put: vi.fn<() => void>(),
-  }),
-  Form: ({ children }: { children: ReactNode }) => <form>{children}</form>,
-  Link: ({ children, ...props }: { children: ReactNode; href: string }) => (
-    <a {...props}>{children}</a>
-  ),
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+);
 
 type FetchMock = (input: string, init: RequestInit) => Promise<Response>;
 

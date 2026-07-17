@@ -11,16 +11,12 @@ it('filters rows through the global search box and restores them on clear', func
         ->assertSee('Maya Chen')
         ->fill('@table-search', 'Ada');
 
-    eventually(function () use ($page): void {
-        $page->assertDontSee('Maya Chen');
-    });
+    assertDontSeeEventually($page, 'Maya Chen');
 
     $page->assertSee('Ada Lovelace')
         ->click('@table-search-clear');
 
-    eventually(function () use ($page): void {
-        $page->assertSee('Maya Chen');
-    });
+    assertSeeEventually($page, 'Maya Chen');
 
     $page->assertNoSmoke();
 });
@@ -33,9 +29,7 @@ it('matches against a searchable relation-free email column', function (): void 
 
     $page->fill('@table-search', 'grace@example.com');
 
-    eventually(function () use ($page): void {
-        $page->assertDontSee('Ada Lovelace');
-    });
+    assertDontSeeEventually($page, 'Ada Lovelace');
 
     $page->assertSee('Grace Hopper')
         ->assertNoSmoke();

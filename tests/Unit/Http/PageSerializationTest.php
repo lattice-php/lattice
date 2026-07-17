@@ -98,7 +98,7 @@ test('pages serialize breadcrumb metadata', function (): void {
 
     $payload = $page->toArray($page->render(PageSchema::make()), new Request);
 
-    expect(json_decode(json_encode($payload['breadcrumbs']), associative: true))
+    expect(wire($payload['breadcrumbs']))
         ->toBe([
             [
                 'title' => 'Dashboard',

@@ -17,13 +17,9 @@ const http = vi.hoisted(() => ({
     vi.fn<(callback: (data: Record<string, unknown>) => Record<string, unknown>) => void>(),
 }));
 
-vi.mock("@inertiajs/react", () => ({
-  router: {
-    reload: vi.fn<() => void>(),
-    visit: vi.fn<(url: string) => void>(),
-  },
-  useHttp: () => http,
-}));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({ useHttp: () => http }),
+);
 
 describe("Lattice action component", () => {
   beforeEach(() => {
