@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Ui\Sources;
 
-use Closure;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
+use Lattice\Lattice\Core\Concerns\ScopedEloquentQuery;
 use Lattice\Lattice\Core\EloquentOptions;
 use Lattice\Lattice\Ui\Contracts\TreeSource;
 use Lattice\Lattice\Ui\Values\TreeNode;
@@ -15,11 +13,19 @@ use Lattice\Lattice\Ui\Values\TreeNode;
  * A {@see TreeSource} backed by an Eloquent adjacency-list hierarchy (a
  * self-referencing parent column), mirroring how {@see EloquentOptions}
  * bridges Eloquent into the option contract.
+ *
+ * The whole scoped table is loaded once and served from an in-memory
+ * adjacency map — for an adjacency list one scan beats a query per parent,
+ * and the eager Tree walk asks for every level anyway.
  */
 final class EloquentTreeSource implements TreeSource
 {
-    /** @var Closure(Builder<Model>): mixed|null */
-    private ?Closure $scope = null;
+    use ScopedEloquentQuery;
+
+    private const string ROOTS = '';
+
+    /** @var array<string, list<TreeNode>>|null */
+    private ?array $childrenByParent = null;
 
     /**
      * @param  class-string<Model>  $model
@@ -41,6 +47,7 @@ final class EloquentTreeSource implements TreeSource
     public function label(string $column): self
     {
         $this->labelKey = $column;
+        $this->childrenByParent = null;
 
         return $this;
     }
@@ -48,86 +55,50 @@ final class EloquentTreeSource implements TreeSource
     public function parent(string $column): self
     {
         $this->parentKey = $column;
-
-        return $this;
-    }
-
-    /**
-     * Constrain the query (e.g. only active rows). Applied to roots, children,
-     * and the hasChildren existence check alike.
-     *
-     * @param  Closure(Builder<Model>): mixed  $scope
-     */
-    public function scope(Closure $scope): self
-    {
-        $this->scope = $scope;
+        $this->childrenByParent = null;
 
         return $this;
     }
 
     public function roots(): iterable
     {
-        return $this->toNodes($this->query()->whereNull($this->parentKey)->orderBy($this->labelKey)->get());
+        return $this->childrenByParent()[self::ROOTS] ?? [];
     }
 
     public function children(string $parentId): iterable
     {
-        return $this->toNodes($this->query()->where($this->parentKey, $parentId)->orderBy($this->labelKey)->get());
+        return $this->childrenByParent()[$parentId] ?? [];
     }
 
     /**
-     * @return Builder<Model>
+     * @return array<string, list<TreeNode>>
      */
-    private function query(): Builder
+    private function childrenByParent(): array
     {
-        $builder = $this->model::query();
-
-        if ($this->scope instanceof Closure) {
-            $scoped = ($this->scope)($builder);
-
-            if ($scoped instanceof Builder) {
-                $builder = $scoped;
-            }
+        if ($this->childrenByParent !== null) {
+            return $this->childrenByParent;
         }
 
-        return $builder;
-    }
+        /** @var array<string, list<Model>> $modelsByParent */
+        $modelsByParent = [];
 
-    /**
-     * @param  Collection<int, Model>  $models
-     * @return list<TreeNode>
-     */
-    private function toNodes(Collection $models): array
-    {
-        $parentIds = $this->parentIdsAmong($models);
-
-        return $models
-            ->map(fn (Model $model): TreeNode => TreeNode::make(
-                (string) $model->getAttribute($this->labelKey),
-                (string) $model->getKey(),
-            )->hasChildren(in_array((string) $model->getKey(), $parentIds, true)))
-            ->values()
-            ->all();
-    }
-
-    /**
-     * The subset of the given models' keys that are referenced as a parent by
-     * at least one (scoped) row — one query instead of an exists() per model.
-     *
-     * @param  Collection<int, Model>  $models
-     * @return list<string>
-     */
-    private function parentIdsAmong(Collection $models): array
-    {
-        if ($models->isEmpty()) {
-            return [];
+        foreach ($this->query()->orderBy($this->labelKey)->get() as $model) {
+            $parent = $model->getAttribute($this->parentKey);
+            $modelsByParent[$parent === null ? self::ROOTS : (string) $parent][] = $model;
         }
 
-        return $this->query()
-            ->whereIn($this->parentKey, $models->map(fn (Model $model): mixed => $model->getKey()))
-            ->distinct()
-            ->pluck($this->parentKey)
-            ->map(fn (mixed $id): string => (string) $id)
-            ->all();
+        $this->childrenByParent = [];
+
+        foreach ($modelsByParent as $parent => $models) {
+            $this->childrenByParent[$parent] = array_map(
+                fn (Model $model): TreeNode => TreeNode::make(
+                    (string) $model->getAttribute($this->labelKey),
+                    (string) $model->getKey(),
+                )->hasChildren(isset($modelsByParent[(string) $model->getKey()])),
+                $models,
+            );
+        }
+
+        return $this->childrenByParent;
     }
 }
