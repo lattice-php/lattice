@@ -34,6 +34,39 @@ Button::make('Invite')
 - `->closeLabel('…')` relabels the close button (defaults to `Close`).
 - `->open()` renders the modal already open — for a dialog that should show on load, rather than in
   response to an effect.
+- `->slideOut()` docks the dialog to a viewport edge as a full-height sheet; `->slideOut(Side::Start)`
+  picks the leading edge instead of the trailing one.
+- `->width(ModalWidth::…)` sets the dialog width — the max width of a centered dialog and the panel
+  width of a sheet. Defaults to `ModalWidth::Lg` (32rem).
+
+## Slide-out sheets
+
+`->slideOut()` presents the dialog as a full-height sheet docked to a viewport edge instead of a
+centered window — the pattern for quick previews and edits alongside a table. The default edge is
+the trailing one; pass a `Side` to dock it to the leading edge.
+
+```php
+use Lattice\Lattice\Ui\Enums\ModalWidth;
+use Lattice\Lattice\Ui\Enums\Side;
+
+Modal::make('order-preview')
+    ->title('Order #1042')
+    ->slideOut()
+    ->width(ModalWidth::Xl2)
+    ->schema([
+        // …
+    ]);
+
+Modal::make('saved-filters')
+    ->title('Saved filters')
+    ->slideOut(Side::Start)
+    ->schema([
+        // …
+    ]);
+```
+
+Sheets and centered dialogs share the same width scale: `->width()` caps a centered dialog and sets
+a sheet's panel width.
 
 <Info>
   Modals are normally opened and closed by [effects](/actions/effects/), never by the client on its

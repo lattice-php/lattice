@@ -711,6 +711,36 @@
             }
         ]
     },
+    "Lattice\\Lattice\\Ui\\Enums\\ModalWidth": {
+        "name": "ModalWidth",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Sm",
+                "value": "sm"
+            },
+            {
+                "name": "Md",
+                "value": "md"
+            },
+            {
+                "name": "Lg",
+                "value": "lg"
+            },
+            {
+                "name": "Xl",
+                "value": "xl"
+            },
+            {
+                "name": "Xl2",
+                "value": "2xl"
+            },
+            {
+                "name": "Xl3",
+                "value": "3xl"
+            }
+        ]
+    },
     "Lattice\\Lattice\\Ui\\Enums\\NumberFormatUnit": {
         "name": "NumberFormatUnit",
         "namespace": "Lattice\\Lattice\\Ui\\Enums",

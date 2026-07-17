@@ -68,6 +68,27 @@ public function handle(Request $request): ActionResult
 }
 ```
 
+### Sheet presentation and width
+
+A form modal opens as a centered dialog at the default width. `->slideOut()` presents it as a
+full-height sheet docked to a viewport edge, and `->modalWidth()` adjusts its width on the same
+scale the [Modal component](/components/modals/) uses:
+
+```php
+use Lattice\Lattice\Ui\Enums\ModalWidth;
+
+public function definition(Action $action): Action
+{
+    return $action
+        ->label('Edit')
+        ->slideOut()
+        ->modalWidth(ModalWidth::Xl)
+        ->form([
+            // …
+        ]);
+}
+```
+
 ### Deferring the schema
 
 By default the form schema ships inline with the action. For a per-record form — one prefilled from
