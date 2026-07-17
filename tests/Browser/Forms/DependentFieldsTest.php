@@ -23,9 +23,7 @@ it('requires the company field for business on submit', function (): void {
         ->assertPresent('input[name="company"]')
         ->click('@form-submit');
 
-    eventually(function () use ($page): void {
-        $page->assertSee('The Company field is required.');
-    });
+    assertSeeEventually($page, 'The Company field is required.');
 
     $page->assertNoSmoke();
 });

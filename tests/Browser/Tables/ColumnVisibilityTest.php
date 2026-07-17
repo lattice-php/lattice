@@ -13,17 +13,13 @@ it('hides a column from the menu and remembers it across reloads', function (): 
         ->click('@table-columns-menu')
         ->click('@table-column-toggle-sku');
 
-    eventually(function () use ($page): void {
-        $page->assertDontSee('LAMP-1');
-    });
+    assertDontSeeEventually($page, 'LAMP-1');
 
     $page->assertSee('Desk Lamp')
         ->assertNoSmoke()
         ->refresh();
 
-    eventually(function () use ($page): void {
-        $page->assertDontSee('LAMP-1');
-    });
+    assertDontSeeEventually($page, 'LAMP-1');
 
     $page->assertSee('Desk Lamp')
         ->assertNoSmoke();

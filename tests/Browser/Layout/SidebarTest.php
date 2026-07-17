@@ -57,9 +57,7 @@ it('opens the sidebar as an off-canvas drawer on mobile', function (): void {
         ->assertMissing('[data-test="sidebar-backdrop"]')
         ->click('@sidebar-toggle');
 
-    eventually(function () use ($page): void {
-        $page->assertPresent('[data-test="sidebar-backdrop"]');
-    });
+    assertPresentEventually($page, '[data-test="sidebar-backdrop"]');
 
     $page
         ->click('@menu-components')

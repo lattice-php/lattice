@@ -23,9 +23,7 @@ it('translates dashboard chart examples in lazy fragments', function (): void {
         ->click('@locale-switcher')
         ->click('@locale-de');
 
-    eventually(function () use ($page): void {
-        $page->assertSee('Umsatz');
-    });
+    assertSeeEventually($page, 'Umsatz');
 
     $page
         ->assertSee('Dashboard-Diagramme')

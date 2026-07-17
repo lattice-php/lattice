@@ -31,9 +31,7 @@ it('expands a collapsed subtree and reveals its children when the chevron is cli
         ->assertNotPresent('[data-test="tree-node-clothing-men"]')
         ->click('[data-test="tree-node-clothing-toggle"]');
 
-    eventually(function () use ($page): void {
-        $page->assertPresent('[data-test="tree-node-clothing-men"]');
-    });
+    assertPresentEventually($page, '[data-test="tree-node-clothing-men"]');
 
     $page
         ->assertSee('Men')
@@ -57,9 +55,7 @@ it('moves focus with ArrowDown and expands a node with ArrowRight', function ():
         ->assertNotPresent('[data-test="tree-node-clothing-men"]')
         ->keys('[data-test="tree-node-clothing"]', ['ArrowRight']);
 
-    eventually(function () use ($page): void {
-        $page->assertPresent('[data-test="tree-node-clothing-men"]');
-    });
+    assertPresentEventually($page, '[data-test="tree-node-clothing-men"]');
 
     $page->assertNoJavaScriptErrors();
 });
@@ -70,9 +66,7 @@ it('navigates when an href node link is clicked', function (): void {
     $page = visit('/components/tree')
         ->click('[data-test="tree-node-clothing-toggle"]');
 
-    eventually(function () use ($page): void {
-        $page->assertPresent('[data-test="tree-node-clothing-women"]');
-    });
+    assertPresentEventually($page, '[data-test="tree-node-clothing-women"]');
 
     $page
         ->assertAttribute('[data-test="tree-node-clothing-women"] a', 'href', '/components/containers')
@@ -115,17 +109,13 @@ it('opens the info modal with Enter on the modal-action node and returns focus o
 
     $page->keys('[data-test="tree-node-help"]', ['Enter']);
 
-    eventually(function () use ($page): void {
-        $page->assertSee('Keyboard navigation');
-    });
+    assertSeeEventually($page, 'Keyboard navigation');
 
     $page
         ->assertSee('Arrow keys move focus between rows')
         ->click('[data-test="dialog-close"]');
 
-    eventually(function () use ($page): void {
-        $page->assertDontSee('Keyboard navigation');
-    });
+    assertDontSeeEventually($page, 'Keyboard navigation');
 
     eventually(function () use ($page): void {
         $focusedTestId = $page->script(<<<'JS'

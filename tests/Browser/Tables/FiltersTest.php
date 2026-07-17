@@ -27,16 +27,12 @@ it('filters by text and clears via the filter chip', function (): void {
     $page->fill('@filter-name-value', 'Ada')
         ->keys('@filter-name-value', 'Enter');
 
-    eventually(function () use ($page): void {
-        $page->assertDontSee('Maya Chen');
-    });
+    assertDontSeeEventually($page, 'Maya Chen');
 
     $page->assertSee('Ada Lovelace')
         ->click('@filter-chip-name-remove');
 
-    eventually(function () use ($page): void {
-        $page->assertSee('Maya Chen');
-    });
+    assertSeeEventually($page, 'Maya Chen');
 
     $page->assertNoSmoke();
 });
@@ -52,9 +48,7 @@ it('adds a filter through the column popover', function (): void {
         ->fill('[aria-label="Name filter value"]', 'Grace')
         ->keys('[aria-label="Name filter value"]', 'Enter');
 
-    eventually(function () use ($page): void {
-        $page->assertDontSee('Ada Lovelace');
-    });
+    assertDontSeeEventually($page, 'Ada Lovelace');
 
     $page->assertSee('Grace Hopper')
         ->assertNoSmoke();
@@ -71,9 +65,7 @@ it('filters products by the boolean featured column', function (): void {
         ->assertSee('Plain Item')
         ->select('@filter-featured-value', 'true');
 
-    eventually(function () use ($page): void {
-        $page->assertDontSee('Plain Item');
-    });
+    assertDontSeeEventually($page, 'Plain Item');
 
     $page->assertSee('Featured Item')
         ->assertNoSmoke();
@@ -91,16 +83,12 @@ it('narrows rows with the ternary featured filter and restores them via reset', 
         ->click('#table-filter-featured-value')
         ->click('[data-test="select-value-option-true"]');
 
-    eventually(function () use ($page): void {
-        $page->assertDontSee('Draft Plain');
-    });
+    assertDontSeeEventually($page, 'Draft Plain');
 
     $page->assertSee('Active Featured')
         ->click('@table-filters-reset');
 
-    eventually(function () use ($page): void {
-        $page->assertSee('Draft Plain');
-    });
+    assertSeeEventually($page, 'Draft Plain');
 
     $page->assertNoSmoke();
 });
@@ -114,9 +102,7 @@ it('narrows rows with a custom toggle filter', function (): void {
     $page->click('@table-filters-menu')
         ->click('@table-filter-high_value');
 
-    eventually(function () use ($page): void {
-        $page->assertDontSee('Draft Plain');
-    });
+    assertDontSeeEventually($page, 'Draft Plain');
 
     $page->assertSee('Active Featured')
         ->assertNoSmoke();
@@ -131,9 +117,7 @@ it('narrows rows with the status column select filter', function (): void {
     $page->click('#table-filter-status-value')
         ->click('[data-test="select-value-option-active"]');
 
-    eventually(function () use ($page): void {
-        $page->assertDontSee('Draft Plain');
-    });
+    assertDontSeeEventually($page, 'Draft Plain');
 
     $page->assertSee('Active Featured')
         ->assertNoSmoke();
