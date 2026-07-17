@@ -5,7 +5,6 @@ namespace Lattice\Lattice\Support;
 
 use InvalidArgumentException;
 use Lattice\Lattice\Attributes\WireType;
-use Lattice\Lattice\Support\Discovery\ClassWalker;
 
 /**
  * A wire type → class-string registry for one value-object family (effects,
@@ -74,12 +73,5 @@ abstract class WireTypeRegistry
     public function classFor(string $type): ?string
     {
         return $this->entries[$type] ?? null;
-    }
-
-    protected function registerAllIn(string $path): void
-    {
-        foreach (ClassWalker::classes($path) as $class) {
-            $this->register($class);
-        }
     }
 }
