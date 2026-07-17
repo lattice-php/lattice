@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support\Testing;
 
 use Illuminate\Foundation\Testing\TestCase;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Testing\TestResponse;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\BulkActionDefinition;
@@ -19,6 +18,7 @@ use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Tables\TableDefinition;
 use RuntimeException;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Submit to the generic Lattice endpoints with a ref sealed from a component
@@ -36,9 +36,9 @@ trait InteractsWithLatticeComponents
      * @param  class-string<FormDefinition>  $form
      * @param  array<string, mixed>  $data
      * @param  array<string, mixed>  $context
-     * @return TestResponse<JsonResponse>
+     * @return LatticeTestResponse<Response>
      */
-    public function submitForm(string $form, array $data = [], array $context = []): TestResponse
+    public function submitForm(string $form, array $data = [], array $context = []): LatticeTestResponse
     {
         $component = $this->sealLatticeComponent(Form::use($form, $context));
 
@@ -54,9 +54,9 @@ trait InteractsWithLatticeComponents
      * @param  class-string<ActionDefinition>  $action
      * @param  array<string, mixed>  $data
      * @param  array<string, mixed>  $context
-     * @return TestResponse<JsonResponse>
+     * @return LatticeTestResponse<Response>
      */
-    public function callAction(string $action, array $data = [], array $context = []): TestResponse
+    public function callAction(string $action, array $data = [], array $context = []): LatticeTestResponse
     {
         $component = $this->sealLatticeComponent(Action::use($action, $context));
 
@@ -75,9 +75,9 @@ trait InteractsWithLatticeComponents
      * @param  class-string<BulkActionDefinition>  $bulkAction
      * @param  array<string, mixed>  $data
      * @param  array<string, mixed>  $context
-     * @return TestResponse<JsonResponse>
+     * @return LatticeTestResponse<Response>
      */
-    public function callBulkAction(string $bulkAction, array $data = [], array $context = []): TestResponse
+    public function callBulkAction(string $bulkAction, array $data = [], array $context = []): LatticeTestResponse
     {
         $component = $this->sealLatticeComponent(BulkAction::use($bulkAction, $context));
 
@@ -93,9 +93,9 @@ trait InteractsWithLatticeComponents
      * @param  class-string<TableDefinition>  $table
      * @param  array<string, mixed>  $query
      * @param  array<string, mixed>  $context
-     * @return TestResponse<JsonResponse>
+     * @return LatticeTestResponse<Response>
      */
-    public function loadTable(string $table, array $query = [], array $context = []): TestResponse
+    public function loadTable(string $table, array $query = [], array $context = []): LatticeTestResponse
     {
         $component = $this->sealLatticeComponent(Table::use($table, $context));
         $url = $component['props']['endpoint'];
@@ -104,21 +104,25 @@ trait InteractsWithLatticeComponents
             $url .= '?'.http_build_query($query);
         }
 
-        return $this->getJson($url, $this->latticeHeaders($component));
+        return $this->latticeTestResponse(
+            $this->getJson($url, $this->latticeHeaders($component)),
+        );
     }
 
     /**
      * @param  class-string<FragmentDefinition>  $fragment
      * @param  array<string, mixed>  $context
-     * @return TestResponse<JsonResponse>
+     * @return LatticeTestResponse<Response>
      */
-    public function loadFragment(string $fragment, array $context = []): TestResponse
+    public function loadFragment(string $fragment, array $context = []): LatticeTestResponse
     {
         $component = $this->sealLatticeComponent(Fragment::lazy($fragment, $context));
 
-        return $this->getJson(
-            $component['props']['endpoint'],
-            $this->latticeHeaders($component),
+        return $this->latticeTestResponse(
+            $this->getJson(
+                $component['props']['endpoint'],
+                $this->latticeHeaders($component),
+            ),
         );
     }
 
@@ -161,17 +165,31 @@ trait InteractsWithLatticeComponents
 
     /**
      * @param  array<string, mixed>  $data
-     * @return TestResponse<JsonResponse>
+     * @return LatticeTestResponse<Response>
      */
-    private function latticeRequest(string $method, string $url, array $data, string $ref): TestResponse
+    private function latticeRequest(string $method, string $url, array $data, string $ref): LatticeTestResponse
     {
         $headers = $this->latticeHeaders($ref);
 
-        return match (strtolower($method)) {
+        $response = match (strtolower($method)) {
             'put' => $this->putJson($url, $data, $headers),
             'patch' => $this->patchJson($url, $data, $headers),
             'delete' => $this->deleteJson($url, $data, $headers),
             default => $this->postJson($url, $data, $headers),
         };
+
+        return $this->latticeTestResponse($response);
+    }
+
+    /**
+     * @template TResponse of Response
+     *
+     * @param  TestResponse<TResponse>  $response
+     * @return LatticeTestResponse<TResponse>
+     */
+    private function latticeTestResponse(TestResponse $response): LatticeTestResponse
+    {
+        return LatticeTestResponse::fromBaseResponse($response->baseResponse, $response->baseRequest)
+            ->withExceptions($response->exceptions);
     }
 }

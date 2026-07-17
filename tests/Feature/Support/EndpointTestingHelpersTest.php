@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Route;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\BulkActionDefinition;
@@ -18,6 +19,7 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Fragments\FragmentDefinition;
+use Lattice\Lattice\Support\Testing\LatticeTestResponse;
 use Lattice\Lattice\Tables\CallbackTableSource;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Contracts\TableSource;
@@ -25,13 +27,18 @@ use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
 use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\Variant;
+use PHPUnit\Framework\AssertionFailedError;
 use Symfony\Component\HttpFoundation\Response;
 
 test('submitForm seals the ref and submits to the form endpoint with the declared method', function (): void {
     Lattice::forms([HelperDemoForm::class]);
 
-    $this->submitForm(HelperDemoForm::class, ['name' => 'Taylor'], ['team' => 'lattice-core'])
-        ->assertRedirect('/submitted');
+    $response = $this->submitForm(HelperDemoForm::class, ['name' => 'Taylor'], ['team' => 'lattice-core']);
+
+    expect($response::class)->toBe(LatticeTestResponse::class);
+
+    $response->assertRedirect('/submitted');
 
     expect(session('helper-demo-form'))->toBe('Taylor')
         ->and(session('helper-demo-team'))->toBe('lattice-core');
@@ -40,30 +47,80 @@ test('submitForm seals the ref and submits to the form endpoint with the declare
 test('callAction seals the ref and posts to the action endpoint', function (): void {
     Lattice::actions([HelperDemoAction::class]);
 
-    $this->callAction(HelperDemoAction::class, ['name' => 'Taylor'], ['team' => 'trusted-team'])
-        ->assertOk()
+    $response = $this->callAction(HelperDemoAction::class, ['name' => 'Taylor'], ['team' => 'trusted-team']);
+
+    expect($response::class)->toBe(LatticeTestResponse::class);
+
+    $response->assertOk()
         ->assertJsonPath('data.handled', 'Taylor')
-        ->assertJsonPath('data.team', 'trusted-team');
+        ->assertJsonPath('data.team', 'trusted-team')
+        ->assertNoEffects();
+});
+
+test('typed effect assertions match action response effects regardless of order', function (): void {
+    Route::get('/helper/projects/{project}', fn (string $project): string => $project)
+        ->name('helper.projects.show');
+    Lattice::actions([HelperEffectsAction::class]);
+
+    $response = $this->callAction(HelperEffectsAction::class);
+
+    $response
+        ->assertOk()
+        ->assertReloadsComponent('profile.passkeys')
+        ->assertRedirectsTo('/dashboard')
+        ->assertRedirectsToRoute('helper.projects.show', 'lattice')
+        ->assertToast(Variant::Success)
+        ->assertToast(Variant::Success, 'Saved.')
+        ->assertOpensModal('two-factor')
+        ->assertReloadsPage();
+});
+
+test('typed effect assertion failures identify the expected and received effects', function (): void {
+    Route::get('/helper/projects/{project}', fn (string $project): string => $project)
+        ->name('helper.projects.show');
+    Lattice::actions([HelperEffectsAction::class]);
+
+    expect(fn () => $this->callAction(HelperEffectsAction::class)
+        ->assertReloadsComponent('billing.summary'))
+        ->toThrow(
+            AssertionFailedError::class,
+            'Expected Lattice effect [reload-component] with props {"component":"billing.summary"}. Received effects:',
+        );
+});
+
+test('assertNoEffects failures include the received effects', function (): void {
+    Route::get('/helper/projects/{project}', fn (string $project): string => $project)
+        ->name('helper.projects.show');
+    Lattice::actions([HelperEffectsAction::class]);
+
+    expect(fn () => $this->callAction(HelperEffectsAction::class)->assertNoEffects())
+        ->toThrow(AssertionFailedError::class, 'Expected no Lattice effects. Received effects:');
 });
 
 test('callBulkAction seals the ref against the bound table and patches the endpoint', function (): void {
     Lattice::tables([HelperDemoTable::class]);
     Lattice::bulkActions([HelperDemoBulkAction::class]);
 
-    $this->callBulkAction(
+    $response = $this->callBulkAction(
         HelperDemoBulkAction::class,
         ['selected' => [1, 2]],
         ['table' => 'helper.demo'],
-    )
-        ->assertOk()
+    );
+
+    expect($response::class)->toBe(LatticeTestResponse::class);
+
+    $response->assertOk()
         ->assertJsonPath('data.count', 2);
 });
 
 test('loadTable seals the ref and gets the table endpoint with query parameters', function (): void {
     Lattice::tables([HelperDemoTable::class]);
 
-    $this->loadTable(HelperDemoTable::class, ['per_page' => 10])
-        ->assertOk()
+    $response = $this->loadTable(HelperDemoTable::class, ['per_page' => 10]);
+
+    expect($response::class)->toBe(LatticeTestResponse::class);
+
+    $response->assertOk()
         ->assertJsonPath('data.0.name', 'Ada')
         ->assertJsonPath('query.perPage', 10);
 });
@@ -71,8 +128,11 @@ test('loadTable seals the ref and gets the table endpoint with query parameters'
 test('loadFragment seals the ref and gets the lazy fragment endpoint', function (): void {
     Lattice::fragments([HelperDemoFragment::class]);
 
-    $this->loadFragment(HelperDemoFragment::class)
-        ->assertOk()
+    $response = $this->loadFragment(HelperDemoFragment::class);
+
+    expect($response::class)->toBe(LatticeTestResponse::class);
+
+    $response->assertOk()
         ->assertJsonPath('schema.0.type', 'text')
         ->assertJsonPath('schema.0.props.text', 'Fragment loaded.');
 });
@@ -157,5 +217,25 @@ final class HelperDemoFragment extends FragmentDefinition
     public function schema(PageSchema $schema): PageSchema
     {
         return $schema->component(Text::make('Fragment loaded.'));
+    }
+}
+
+#[AsAction('helper.effects')]
+final class HelperEffectsAction extends ActionDefinition
+{
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Effects');
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        return ActionResult::success()
+            ->openModal('two-factor')
+            ->toast('Saved.', Variant::Success)
+            ->to('/dashboard')
+            ->reloadPage()
+            ->toRoute('helper.projects.show', 'lattice')
+            ->reloadComponent('profile.passkeys');
     }
 }
