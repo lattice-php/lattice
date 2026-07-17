@@ -3,8 +3,12 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms\Enums;
 
+use Lattice\Lattice\Core\Enums\Concerns\HasPrefixedWireType;
+
 enum FieldType: string
 {
+    use HasPrefixedWireType;
+
     private const string Prefix = 'field.';
 
     case Builder = 'field.builder';
@@ -25,20 +29,4 @@ enum FieldType: string
     case TextInput = 'field.text-input';
     case TimeInput = 'field.time-input';
     case Toggle = 'field.toggle';
-
-    public static function wireType(self|string $type): string
-    {
-        if ($type instanceof self) {
-            return $type->value;
-        }
-
-        return str_starts_with($type, self::Prefix) ? $type : self::Prefix.$type;
-    }
-
-    public static function localType(self|string $type): string
-    {
-        $value = $type instanceof self ? $type->value : $type;
-
-        return str_starts_with($value, self::Prefix) ? substr($value, strlen(self::Prefix)) : $value;
-    }
 }
