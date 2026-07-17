@@ -1,5 +1,185 @@
 # Changelog
 
+## [0.20.0](https://github.com/lattice-php/lattice/compare/0.19.0...0.20.0) (2026-07-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ui:** charts and select tags resolve tagged colours
+* **tables:** cells resolve tagged and row-driven colours via the colour lib
+* **ui:** text, icon, and progress render tagged colours
+* **theme:** named colour palette vars and lt-tone classes replace cell tones
+* **ui:** chart series colors take Color values
+* **tables:** badge and icon column colors take Color values
+* **ui:** replace the Color enum with a tagged Color value object
+* **forms:** extension wire specs always contain props; client code and hand-authored specs must include it.
+* **forms:** reduced editors now strip previously-accepted built-in node types from submissions; client-only extension types are stripped unless a PHP extension declares them.
+* **editor:** field.rich-editor nodes must carry props.extensions; the client no longer falls back to a default set when it is absent.
+* **effects:** drop the Effect suffix from builtin effect classes
+* **types:** shrink WireFamily to category and registry
+* **effects:** toast/callout payload fields sit directly under props; ToastMessage is now Effects\Builtin\Toast, Callout moved to Effects\Builtin\Callout; custom effect classes may no longer be declared readonly at class level.
+* **types:** effect payloads are nested under props on the wire and in EffectOf; consumer effect handlers must read effect.props.*.
+* **typescript:** WireTypeManifest buckets attribute-sourced families under families/family() instead of a per-family property; AugmentableMap is gone.
+* **attributes:** AsComponent::typeForClass() is now wireTypeForClass(); registering a class that does not implement the effect contract throws.
+* **types:** Stack::direction() takes a StackDirection; SignedUpload.method is the HttpMethod enum; the generated dateStyle/timeStyle/direction/method fields are now enum unions rather than string.
+* **tables:** the table result's `state` wire field is renamed to `query`, and `FilterClause.operator` is now the `Op` union rather than `string`.
+* **realtime:** the generated ListenerPayload type is replaced by Listen.
+* **types:** FragmentDefinition/InteractsWithForm resolveFields return FragmentResponse/ResolveResponse objects, not arrays. The client FragmentResponse/ ResolveResponse types are now generated.
+* **types:** signUpload returns SignedUpload, not an array; TableResult is no longer JsonSerializable and exposes public data/pagination/state. The client types NotificationsResponse/UnreadCountResponse/SignResponse/TableResponse are replaced by generated NotificationList/UnreadCount/SignedUpload/TableResult.
+* **forms:** the wire shape shifts optional keys to present/nullable to match value-object serialization: labelAction.tabIndex is now number | null, and conditions always carries visible/required/readOnly/disabled as arrays (empty when unset). The FormLabelAction type export is replaced by the generated LabelAction.
+
+### Features
+
+* **charts:** add distribution series as a segmented bar ([093cff6](https://github.com/lattice-php/lattice/commit/093cff608a76b7cae84b5d53a18e56d0c1a4a016))
+* **charts:** add gauge series rendered as a radial bar ([494f483](https://github.com/lattice-php/lattice/commit/494f483db333e059cbeefa21277890b2ff7eb949))
+* **charts:** gauge and distribution series ([95d3ae2](https://github.com/lattice-php/lattice/commit/95d3ae266cbf6bc0b269f55bcf9851268cad6d3f))
+* color picker form field ([1726eb6](https://github.com/lattice-php/lattice/commit/1726eb6fc9ecef2dda95c45ec31b6d5ac22d0b07))
+* **core:** per-option data from EloquentOptions ([a4747d1](https://github.com/lattice-php/lattice/commit/a4747d186dd5087e20ad8fe2958cf68536cdf15a))
+* **core:** support a per-option data record on Option ([a1dfc9a](https://github.com/lattice-php/lattice/commit/a1dfc9a5700a52c8e611acce91a2e5b1be89f2f0))
+* **editor:** add inline code and require the extensions prop ([e645c63](https://github.com/lattice-php/lattice/commit/e645c63590a6bdc155d340f6395b1b7aeee2d691))
+* **editor:** drive the rich editor from wire extension specs ([86b2103](https://github.com/lattice-php/lattice/commit/86b2103bd0c7a42b1a304591dd1b58b3fe5939cd))
+* **forms:** add a copy affix to copyable text inputs ([7c14faa](https://github.com/lattice-php/lattice/commit/7c14faa930b5c9a33d2a180ad79bbef748d56337))
+* **forms:** add creatable + itemRules to Select ([3167c97](https://github.com/lattice-php/lattice/commit/3167c97c04fb7b3f25e22651ed67951f26ce0c70))
+* **forms:** add editor-extension attribute, base class and registry ([1430e92](https://github.com/lattice-php/lattice/commit/1430e9271c9e50908cc03f2ff7ef9ee6864f287c))
+* **forms:** add the built-in editor extensions ([c0b11af](https://github.com/lattice-php/lattice/commit/c0b11af5366c9decb6b7a3444821e8aa17dda284))
+* **forms:** color picker field with palette and hex value ([c3e4c7c](https://github.com/lattice-php/lattice/commit/c3e4c7cc33c42c8f60f0c6b8259b453a603e9a15))
+* **forms:** creatable Select — tags/chips (free-text + entity tags with color) ([4582d89](https://github.com/lattice-php/lattice/commit/4582d897020b9938b3e2a850ddd93a78546c9c11))
+* **forms:** dispatch _create round-trip for creatable Select ([2409daa](https://github.com/lattice-php/lattice/commit/2409daa8ee886fd24d258191e2f0954b56e683b7))
+* **forms:** make RichEditor extensions configurable ([133ef58](https://github.com/lattice-php/lattice/commit/133ef58cc2e4024171e70e68ada34e58e61e01a3))
+* **forms:** materialize the option schema per select option ([9ded456](https://github.com/lattice-php/lattice/commit/9ded456c533bb40d00f2ecaba4276d50f266a9c3))
+* **forms:** per-option schema on Select ([e6442d2](https://github.com/lattice-php/lattice/commit/e6442d2fff9ed95d4ad98d7a6d847b245fb90626))
+* **forms:** render the color picker field in a popover ([cc0cb67](https://github.com/lattice-php/lattice/commit/cc0cb67aa1aad30b7510f14e8e84ad243209e2a1))
+* **forms:** validate submissions against the field's active extensions ([00fb5d2](https://github.com/lattice-php/lattice/commit/00fb5d2e8b201a9300fea5bf613322c70555b45e))
+* let createLatticeApp own the i18n bootstrap, plus boot/wrap hooks ([aa4c013](https://github.com/lattice-php/lattice/commit/aa4c013209092c4fbc3dc796f8a9c8d049bae01e))
+* **lib:** colour resolver for tagged Color wire values ([6504a86](https://github.com/lattice-php/lattice/commit/6504a8691be9d479027dd024ae82e0a57c1cd98f))
+* own the i18n bootstrap in createLatticeApp and expose boot/wrap hooks ([e6bd50b](https://github.com/lattice-php/lattice/commit/e6bd50b41d0843deba19860f97472a87566c56ce))
+* progress component (bar + circle) ([c01fd8e](https://github.com/lattice-php/lattice/commit/c01fd8e393b6047161aa959558292b4cf308181b))
+* rich select options via per-option schema ([08e8578](https://github.com/lattice-php/lattice/commit/08e85789ff1d50e41d5697023e3dc1a13f1973da))
+* **tables:** expandable rows with lazy fragment detail ([921135c](https://github.com/lattice-php/lattice/commit/921135c1196578950bcbf2be3d6ca985501c6166))
+* **tables:** expandable rows with lazy fragment detail ([c892cc5](https://github.com/lattice-php/lattice/commit/c892cc54bd57abe049d1fb714052f7ca34a1c5fe))
+* **tables:** global cross-column search ([462a1b8](https://github.com/lattice-php/lattice/commit/462a1b83d941bab88b203c19ba2bdcd5bc6eb888))
+* **tables:** global cross-column search ([5b19a92](https://github.com/lattice-php/lattice/commit/5b19a9262f2def789642a8d9cec7c2bd6b986374))
+* **tables:** make number and money columns copyable ([c21890c](https://github.com/lattice-php/lattice/commit/c21890cd3bb307eadbfb5aaf16eda9fac4f5e2c9))
+* **tables:** open image column cells in the image lightbox ([fe87117](https://github.com/lattice-php/lattice/commit/fe8711776fd724330f9b1dddc9d3cac8c919590d))
+* **theme:** named colour palette vars and lt-tone classes replace cell tones ([9ab34bb](https://github.com/lattice-php/lattice/commit/9ab34bb738c8fe5dd6a8c7673b065651866c4bdd))
+* **typescript:** augment app-defined effects and editor extensions ([efdcb9c](https://github.com/lattice-php/lattice/commit/efdcb9c4db6a1f38af41c8a0397c6ab6756387df))
+* **types:** generate node-carrying response payloads ([7df4665](https://github.com/lattice-php/lattice/commit/7df4665f9e8abdef0199710fad6e64298b89fa67))
+* **types:** generate response payloads + tighten the table query type ([5d0fd58](https://github.com/lattice-php/lattice/commit/5d0fd580f7152f129cc38147c22093b52cdc170b))
+* **types:** generate response payloads as value objects ([ad4d2a1](https://github.com/lattice-php/lattice/commit/ad4d2a1d7fec34278ccb79cad726d77ed6968a15))
+* **ui:** add Avatar and Separator components and a doughnut chart series ([c5e1e5b](https://github.com/lattice-php/lattice/commit/c5e1e5b35d17766a525149193739291b68aefc2e))
+* **ui:** add EloquentTreeSource (adjacency list) ([336214a](https://github.com/lattice-php/lattice/commit/336214ae0699e414b80ff69e5dbb3518334843cd))
+* **ui:** add image component with lightbox preview ([285f8e0](https://github.com/lattice-php/lattice/commit/285f8e0c1d7ab650cbd921d4dd5e15bf23c5a121))
+* **ui:** add Tree component with eager node serialization ([c91137e](https://github.com/lattice-php/lattice/commit/c91137eb5acf67ffbca3d2dca17fa8a2f92ce992))
+* **ui:** add TreeNode value object ([f487a9e](https://github.com/lattice-php/lattice/commit/f487a9ec2fcd9a8676b255a65c7f5d539e548835))
+* **ui:** add TreeSource contract and CallbackTreeSource ([d11c927](https://github.com/lattice-php/lattice/commit/d11c9275ba5904bfb3e9129e0d2d53c2c7e2c828))
+* **ui:** Avatar, Separator, and doughnut chart ([77243b7](https://github.com/lattice-php/lattice/commit/77243b753c334f2f44443792524368598b200f00))
+* **ui:** color picker primitive with palette swatches and hex input ([d48841c](https://github.com/lattice-php/lattice/commit/d48841cc3b3b9f22fb2ceaf3412dadbb6010c191))
+* **ui:** colored tag chips and create-on-the-fly round-trip ([c743d0c](https://github.com/lattice-php/lattice/commit/c743d0c15fba08044700bc504dcb71ed1babaa94))
+* **ui:** creatable combobox with free-text tag entry ([2ad9d77](https://github.com/lattice-php/lattice/commit/2ad9d77ab6bc3f1ecf4c4937091e69a81a83d9a6))
+* **ui:** icon-button + control primitives, dogfooded across the UI ([1a08340](https://github.com/lattice-php/lattice/commit/1a083408594ef6613503a17af83889ec36425f2a))
+* **ui:** IconButton + NativeSelect primitives; Input density, Button icon ([cb88a5a](https://github.com/lattice-php/lattice/commit/cb88a5a730d667906127a3c5699a32b59f3c7824))
+* **ui:** image lightbox and wider copyable coverage ([9945e2d](https://github.com/lattice-php/lattice/commit/9945e2d631094bbec6dcd5c6e6c414ad31aa5772))
+* **ui:** keyboard navigation and ARIA tree semantics for Tree ([6211b9f](https://github.com/lattice-php/lattice/commit/6211b9ff653fc947c8b0472d6b67f36435080fad))
+* **ui:** make headings copyable ([a71a903](https://github.com/lattice-php/lattice/commit/a71a9036eb18a8dacab891f564f147877d842d68))
+* **ui:** progress component with bar and circle variants ([12d3b88](https://github.com/lattice-php/lattice/commit/12d3b88f0ee0f9063850f3be173d5ca5e01b4d6a))
+* **ui:** render progress bars and circles on the client ([f9c3418](https://github.com/lattice-php/lattice/commit/f9c3418cdbabffb6be635ef135dd85f2da649e4d))
+* **ui:** render Tree component with expand/collapse, active state, links and actions ([0d61daa](https://github.com/lattice-php/lattice/commit/0d61daaa2ed64eda10ce59a072f8de6ced4235a1))
+* **ui:** rich option rendering via renderOption on Combobox ([e429e2e](https://github.com/lattice-php/lattice/commit/e429e2ef15e6a3bd2c6180a2cec478a8d0f93dff))
+* **ui:** Tree view component (hierarchies, expand/collapse, keyboard a11y) ([f49010f](https://github.com/lattice-php/lattice/commit/f49010f35b7366f85de3d92d9922283146d7e320))
+* **workbench:** color picker demo page with browser coverage ([a8dea12](https://github.com/lattice-php/lattice/commit/a8dea12b1e125576bd61bdb58ba5707f812be681))
+* **workbench:** progress demo page with browser coverage ([78667aa](https://github.com/lattice-php/lattice/commit/78667aa37d1074f1b6cf8962bcd2f550cd9f089b))
+* **workbench:** rich product options in the showcase select ([cffe12f](https://github.com/lattice-php/lattice/commit/cffe12fa2d39913e2eb54acbc49d0f6ba23ce571))
+
+
+### Bug Fixes
+
+* **editor:** re-render the toolbar on selection-only transactions ([fa570f8](https://github.com/lattice-php/lattice/commit/fa570f86d79107794e254809f585037f26f000fb))
+* **forms:** declare createOption on the InteractsWithForm contract ([ee7add3](https://github.com/lattice-php/lattice/commit/ee7add3bdd257a31347c75477e1268d5093b7970))
+* **forms:** fall back to plain labels when the option schema renders empty ([de815c0](https://github.com/lattice-php/lattice/commit/de815c03ba49f6b72109f7f6d2e4949a91d60663))
+* **i18n:** kebab-case keys + translate remaining strings ([aa11b35](https://github.com/lattice-php/lattice/commit/aa11b3531fc325c1250371721e671917c3f0212d))
+* **i18n:** kebab-case translation keys ([8ea7160](https://github.com/lattice-php/lattice/commit/8ea71607a4265b324540dadb60564f0a2c0c29be))
+* **i18n:** translate remaining hardcoded UI strings ([77cd9d1](https://github.com/lattice-php/lattice/commit/77cd9d18617cb04c98c590042827291e4c323abe))
+* **tables:** stop the column select filter printing its field label ([7074b01](https://github.com/lattice-php/lattice/commit/7074b01da168cd24ae7519dfb7ef7c44b9feffa3))
+* **theme:** apply dark colour overrides under the data-theme toggle ([dde4f5e](https://github.com/lattice-php/lattice/commit/dde4f5ec40e9a84608e088c79fb3848b612abf22))
+* **ui:** accumulate sequential creatable commits and replace single-select value ([35bf5fa](https://github.com/lattice-php/lattice/commit/35bf5fab3b3b9271a751a9d70b19c6a02b370677))
+* **ui:** make creatable tag-entry additive instead of toggling ([3bf9320](https://github.com/lattice-php/lattice/commit/3bf9320c7dbe9f079b7fda25182f41c2501b3687))
+* **ui:** make Tree a single tab stop and trigger node actions from the keyboard ([b0c308e](https://github.com/lattice-php/lattice/commit/b0c308e9e234f1c3c43ed1a2d11d3a8f88471306))
+* **ui:** order Tree keyboard traversal by position, not node id ([c22d823](https://github.com/lattice-php/lattice/commit/c22d8233001ff864808f8de61f759dbe74d3c804))
+* **ui:** restore focus after closing an imperatively-opened Modal ([f199141](https://github.com/lattice-php/lattice/commit/f199141805ab9a15b8d390d2357c25563003414f))
+* **ui:** restore focus to the opener after closing an imperatively-opened Modal ([999fa0d](https://github.com/lattice-php/lattice/commit/999fa0d039ffcda02555fade7f4f726e23d73989))
+* **ui:** serialise TreeSource children eagerly up to eagerDepth ([d4b19ab](https://github.com/lattice-php/lattice/commit/d4b19ab2114c7bc20c6d8b3b1e4305b5fd20e231))
+
+
+### Performance
+
+* **ui:** batch the EloquentTreeSource hasChildren check ([7b70f14](https://github.com/lattice-php/lattice/commit/7b70f14bb3c0bf4cc7d4be8c40be0e6380e32029))
+
+
+### Refactoring
+
+* **attributes:** unify wire-type attributes and value-object registries ([a1d04a9](https://github.com/lattice-php/lattice/commit/a1d04a9becba9b61e08239f1a90c1c9299306faf))
+* boot the workbench through createLatticeApp ([72481fd](https://github.com/lattice-php/lattice/commit/72481fdd824bb3141f559102207a01db01b08de8))
+* **core:** move colour enums into Core/Enums for docs discovery ([b609354](https://github.com/lattice-php/lattice/commit/b609354591f29bed913661749d7ccc000117bc71))
+* drop redundant value-object docblocks ([af68b1f](https://github.com/lattice-php/lattice/commit/af68b1fe86ba5f9ee726dbfbf219daf0805c3fb3))
+* **editor:** tighten the registry and public surface after review ([e07027a](https://github.com/lattice-php/lattice/commit/e07027a5e0a63210a7edbd7f5464dbbfdb3768ee))
+* **effects:** drop the Effect suffix from builtin effect classes ([0a1bb9d](https://github.com/lattice-php/lattice/commit/0a1bb9dd1c233a73bfb63db796e46721d63d5423))
+* **effects:** toast and callout become their own props ([2c53e2e](https://github.com/lattice-php/lattice/commit/2c53e2e56934285b70b2019446acd02a42e88c81))
+* **forms:** drop create-on-the-fly from creatable Select ([4ac4902](https://github.com/lattice-php/lattice/commit/4ac49028181db232d3299b8ee3493e8d95d73c66))
+* **forms:** editor extensions adopt the required-props envelope ([bdd4889](https://github.com/lattice-php/lattice/commit/bdd48892f6cc87a7b226f580ab11f25d78f91cff))
+* **forms:** generate LabelAction and FieldConditions value objects ([76ade92](https://github.com/lattice-php/lattice/commit/76ade9260c1f43fdfcae2db561e9afb4ca0ab6a0))
+* name the i18n-enabled flag in createLatticeApp ([b5e0c91](https://github.com/lattice-php/lattice/commit/b5e0c91047288ac80fa1bc274cc9d96151fd776d))
+* **realtime:** collapse Listen into its wire shape ([9e31ffa](https://github.com/lattice-php/lattice/commit/9e31ffa94b133c723467c2b4dafb05486601b559))
+* reuse Model::only for column-based option data ([fd44b40](https://github.com/lattice-php/lattice/commit/fd44b40e76892cf554bddf950e108b17f05eb4a1))
+* **tables:** badge and icon column colors take Color values ([b462812](https://github.com/lattice-php/lattice/commit/b462812916138aab1775b730fa0f1d1d5d2ecca7))
+* **tables:** cells resolve tagged and row-driven colours via the colour lib ([addb5fc](https://github.com/lattice-php/lattice/commit/addb5fc376d635f81aa39e2e667b442fdd00936f))
+* **tables:** reuse generated FilterIndicator ([2b7954c](https://github.com/lattice-php/lattice/commit/2b7954ce4dc27bf54c8d3f5ef90fb44a2ef12a90))
+* **tables:** unify the table query wire type ([055a8e3](https://github.com/lattice-php/lattice/commit/055a8e30c229c0e679bf5def61d87ea23fc90b44))
+* **typescript:** drive generation from one wire-family table ([e5c1b6d](https://github.com/lattice-php/lattice/commit/e5c1b6da52a05f914a5d61d4a422b565606c1036))
+* **types:** generate drifting handwritten types ([cbbd16c](https://github.com/lattice-php/lattice/commit/cbbd16c68248dad72270ec449520f099f4b5b392))
+* **types:** generate the augmentable Node, unifying it with WireNode ([2620fcd](https://github.com/lattice-php/lattice/commit/2620fcd80c7028d6c9e74f72d752e8c7b0fe9c03))
+* **types:** one {type, props} envelope and a tighter generated module ([928e75c](https://github.com/lattice-php/lattice/commit/928e75c8040a7923b5b04555395a326d2e27ee1e))
+* **types:** rename the effect payload resolver to EffectPropsOf ([af33931](https://github.com/lattice-php/lattice/commit/af339317c81cc068a9176cae1556ef3cbe894444))
+* **types:** shrink WireFamily to category and registry ([7b7193a](https://github.com/lattice-php/lattice/commit/7b7193a88cf36863104ac468cbf0215c7597f848))
+* **types:** type enum-like string wire fields as their enums ([08f1017](https://github.com/lattice-php/lattice/commit/08f1017485d594a9152719756d93ac542fcde6a1))
+* **types:** unify Node/WireNode — generate the augmentable Node ([d239f7e](https://github.com/lattice-php/lattice/commit/d239f7e04955c183f4b1ca9049921741fcdba730))
+* **ui:** chart series colors take Color values ([72a2a19](https://github.com/lattice-php/lattice/commit/72a2a1998665e6caf1f3731d2e3f62f30fa5e823))
+* **ui:** charts and select tags resolve tagged colours ([ce95c72](https://github.com/lattice-php/lattice/commit/ce95c72d89519a8eb81685708fa1e2cb283d88ec))
+* **ui:** dogfood the icon-button and control primitives ([f360813](https://github.com/lattice-php/lattice/commit/f3608131a3e3ee2e85aa49a47f33a2af091b0459))
+* **ui:** replace the Color enum with a tagged Color value object ([dc1dad2](https://github.com/lattice-php/lattice/commit/dc1dad2664fb0b67e1e753ad7332260c0e2d9939))
+* **ui:** replace Tree::eagerDepth() with an internal depth cap ([a6c6a1b](https://github.com/lattice-php/lattice/commit/a6c6a1b86faddf03de21296d3d16c85640545576))
+* **ui:** text, icon, and progress render tagged colours ([0b72b30](https://github.com/lattice-php/lattice/commit/0b72b3036fa1b93dc920cb2080d53c26589dbe36))
+* **workbench:** drop duplicated demo pages and share the products demo builder ([a54d1a9](https://github.com/lattice-php/lattice/commit/a54d1a9c04c10b4209805d6806ba538371a068bb))
+* **workbench:** extract shared product option mapping ([9755044](https://github.com/lattice-php/lattice/commit/97550442c462ef46689d7a41a289742346b6d5d2))
+* **workbench:** restructure demo pages into field, table, component, and platform groups ([2bf027b](https://github.com/lattice-php/lattice/commit/2bf027b72547f208cbf1511ff105ad6ca606f918))
+* **workbench:** restructure demo pages into field, table, component, and platform groups ([a001c69](https://github.com/lattice-php/lattice/commit/a001c69c11db703b511a871de7cc45d2c0a7fce2))
+
+
+### Documentation
+
+* clarify text colour default wording ([331ae07](https://github.com/lattice-php/lattice/commit/331ae0794d17b4cbaed212004c75fdb37790abb4))
+* color picker field page ([55dd808](https://github.com/lattice-php/lattice/commit/55dd808260f731705fe0ed27055275cb6d35e6b6))
+* colour value object across component, table, and chart pages ([7d0f41d](https://github.com/lattice-php/lattice/commit/7d0f41d36edce872e8a5ff6d214b90ec20caa8fe))
+* **forms:** document creatable Select and tags ([02b4073](https://github.com/lattice-php/lattice/commit/02b4073dc16e112e535d2d7a6cd2c4f3a18a70b1))
+* **forms:** document rich editor extensions ([57bfb48](https://github.com/lattice-php/lattice/commit/57bfb48bcdb1379c6654e34a366455ac3c8d9be0))
+* **forms:** reword negative-definition sentence in select docs ([33f4799](https://github.com/lattice-php/lattice/commit/33f479992d07d2aa9ac34f81b139a91d2a6d07fb))
+* **forms:** simplify creatable Select docs to create-on-save ([a7b308e](https://github.com/lattice-php/lattice/commit/a7b308ea47f51fb35e20df0eb3c6c2c983f0956a))
+* image lightbox and copyable coverage ([6af5138](https://github.com/lattice-php/lattice/commit/6af513824b3cd1e89d0325884d1f5831c19a1765))
+* list ProgressVariant on the enums reference ([f0e5b6c](https://github.com/lattice-php/lattice/commit/f0e5b6c592e4ea3caace1cfeb388e1b126bb53f0))
+* note label-only filtering for rich options ([a7a75ce](https://github.com/lattice-php/lattice/commit/a7a75ce58acaea94c1cd02511ddf3decfa51370e))
+* progress component page ([e9d5539](https://github.com/lattice-php/lattice/commit/e9d5539d061d94936bdd42c14d64a2530f092d31))
+* refresh enum fixture and docs formatting for the color picker ([995fae4](https://github.com/lattice-php/lattice/commit/995fae4e3f45280498b409d3223520ce464788a9))
+* rewrap select field docs prose ([428e1fe](https://github.com/lattice-php/lattice/commit/428e1fe60b83fb3fb913a00a7e44d33a71c52c16))
+* rich select options ([9ca2ebd](https://github.com/lattice-php/lattice/commit/9ca2ebda0282a6de239553f5e8d358907b0d0e3c))
+* state icon column colour fallback ([fe04311](https://github.com/lattice-php/lattice/commit/fe043115f751d248202e442856130fc6aa0224ee))
+* **tables:** document global table search ([c8ddb98](https://github.com/lattice-php/lattice/commit/c8ddb98017f6c7565bceb21a35bbd7aa24ba4dd2))
+* **tables:** row detail page ([0d0c934](https://github.com/lattice-php/lattice/commit/0d0c934e83e6f7e142bd64dfb69dacc75ed340a1))
+* tree source traversal, Enter action behaviour, eagerDepth limits ([d1c0bb4](https://github.com/lattice-php/lattice/commit/d1c0bb4092c9ca34f46ff1ae293863dbe5a6ae6d))
+* trim comments that restate the code ([dbb779c](https://github.com/lattice-php/lattice/commit/dbb779cbfd4ba26df03196f35628f715bdf708bf))
+* trim comments that restate the code ([d422137](https://github.com/lattice-php/lattice/commit/d422137399ee963dfe125a9502c6b2dc6891f68f))
+* **ui:** document the Tree component ([2db7026](https://github.com/lattice-php/lattice/commit/2db7026f5121781129ea559b1876fb9e72789f47))
+* unify tone across the docs pages ([564475a](https://github.com/lattice-php/lattice/commit/564475a6f8a6bd0235d13ccd521eccdd2bb9360b))
+* unify tone across the docs pages ([7bd1bf7](https://github.com/lattice-php/lattice/commit/7bd1bf7c643656690dccc3396e98b57f64b74441))
+
 ## [0.19.0](https://github.com/lattice-php/lattice/compare/0.18.0...0.19.0) (2026-07-11)
 
 
