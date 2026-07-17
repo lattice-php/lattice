@@ -41,7 +41,7 @@ final class RowTemplate implements JsonSerializable
     public function fields(): array
     {
         return array_values(array_filter(
-            $this->children,
+            $this->resolvedChildren(),
             static fn (Component $child): bool => $child instanceof Field,
         ));
     }

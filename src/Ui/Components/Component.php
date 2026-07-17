@@ -9,12 +9,13 @@ use Lattice\Lattice\Ui\Components\Concerns\HasDataBindings;
 use Lattice\Lattice\Ui\Components\Concerns\SerializesWireNode;
 use Lattice\Lattice\Ui\Concerns\GatesRendering;
 use Lattice\Lattice\Ui\Contracts\Renderable;
+use Lattice\Lattice\Ui\Contracts\SchemaEntry;
 
 /**
  * @phpstan-consistent-constructor
  */
 #[WireEnvelope('Node')]
-abstract class Component implements JsonSerializable, Renderable
+abstract class Component implements JsonSerializable, Renderable, SchemaEntry
 {
     use GatesRendering;
     use HasDataBindings;
@@ -41,6 +42,14 @@ abstract class Component implements JsonSerializable, Renderable
         $this->hideWhenCollapsed = $hide;
 
         return $this;
+    }
+
+    /**
+     * @return array<int, Component>
+     */
+    final public function resolveComponents(): array
+    {
+        return [$this];
     }
 
     /**

@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Layouts\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\ContainerComponent;
+use Lattice\Lattice\Ui\Contracts\SchemaEntry;
 
 /**
  * A horizontal application bar at the top of the page content. Give a child
@@ -29,7 +29,7 @@ class Topbar extends ContainerComponent
     }
 
     /**
-     * @param  array<int, Component>  $components
+     * @param  array<int, SchemaEntry>  $components
      */
     public function items(array $components): static
     {

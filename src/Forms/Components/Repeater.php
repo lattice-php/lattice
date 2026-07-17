@@ -54,7 +54,7 @@ class Repeater extends RowsField
     public function childFields(): array
     {
         return array_values(array_filter(
-            $this->children,
+            $this->resolvedChildren(),
             static fn (Component $child): bool => $child instanceof Field,
         ));
     }

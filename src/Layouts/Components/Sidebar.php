@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Layouts\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\ContainerComponent;
+use Lattice\Lattice\Ui\Contracts\SchemaEntry;
 
 /**
  * A fixed-width navigation column rendered alongside the page content in a
@@ -32,7 +32,7 @@ class Sidebar extends ContainerComponent
     }
 
     /**
-     * @param  array<int, Component>  $components
+     * @param  array<int, SchemaEntry>  $components
      */
     public function items(array $components): static
     {
