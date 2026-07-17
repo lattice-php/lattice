@@ -1,18 +1,20 @@
 {
-  "version": "0.19.0",
+  "version": "0.20.0",
   "files": {
-    "lattice.js": "aa5be6cb4137",
-    "chunks/chart-view-CK5fKIkR.js": "2eeccf85a1a7",
-    "chunks/date-picker-field-BlCPFhZd.js": "4ac75534edaa",
+    "lattice.js": "2296fc265d7f",
+    "chunks/chart-view-wJmnVu7L.js": "86aa7a987a93",
+    "chunks/date-picker-field-VbH9xrQO.js": "a4ddf387c390",
     "chunks/dist-PaT1gYi_.js": "4da471d00496",
-    "chunks/jsx-runtime-CJ_btYLc.js": "f0c7238eb3d2",
+    "chunks/jsx-runtime-Drll_-DD.js": "8b19a461876f",
+    "chunks/locale-CXqr7LPR.js": "2a76bdb158f8",
     "chunks/notifications-echo-DsfNc4Ge.js": "5db566efbeff",
+    "chunks/page-props-AIa5UR6n.js": "dffceb4e41ec",
     "chunks/react-B8IZ02wI.js": "20382cff872b",
-    "chunks/rich-editor-field-DH5dS5c1.js": "fb4463a09d30",
-    "chunks/subscriptions-B3UuDBmx.js": "3c8bd3afa171",
+    "chunks/rich-editor-field-DLQTyt36.js": "3cfc72cc6d32",
+    "chunks/subscriptions-DY2tj9Im.js": "38e659249829",
     "chunks/test-id-Dh3L6Gfh.js": "7958de4f0270",
-    "chunks/use-effect-dispatcher-k98Nzf9M.js": "548e6c06b0cd",
+    "chunks/use-effect-dispatcher-feEs0GCP.js": "9006c2be38db",
     "chunks/with-selector-BwDoCrJJ.js": "6ccd3ad62b42",
-    "sprite.svg": "07943f837bd1"
+    "sprite.svg": "f30900fb9d54"
   }
 }
