@@ -41,7 +41,7 @@ export function ConfirmDialog({
     >
       <DialogContent
         {...(description ? {} : { "aria-describedby": undefined })}
-        className="w-full max-w-md"
+        width="md"
         onEscapeKeyDown={blockWhileProcessing}
         onInteractOutside={blockWhileProcessing}
       >
