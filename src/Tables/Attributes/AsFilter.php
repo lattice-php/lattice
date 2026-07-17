@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Tables\Attributes;
 
 use Attribute;
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Enums\FilterControl;
 
 /**
@@ -19,6 +20,6 @@ readonly class AsFilter extends AsComponent
 {
     public function __construct(FilterControl|string $control)
     {
-        parent::__construct($control instanceof FilterControl ? $control->value : $control);
+        parent::__construct(Wire::scalar($control));
     }
 }
