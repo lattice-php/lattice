@@ -170,6 +170,7 @@ export type ChatMessage = {
   readonly parts: Node[];
   readonly role: ChatRole;
 };
+export type ChatNodeType = "chat.box" | "chat.part.text" | "chat.part.tool-call";
 export type ChatRole = "user" | "assistant" | "system";
 export type Checkbox = {
   autoFocus: boolean;
@@ -638,6 +639,7 @@ export type Fragment = {
   ref: string | null;
   size: Size;
 };
+export type FragmentNodeType = "fragment";
 export type FragmentResponse = {
   readonly schema: Node[];
 };
@@ -720,6 +722,15 @@ export type LabelAction = {
   readonly label: string;
   readonly tabIndex: number | null;
 };
+export type LayoutNodeType =
+  | "breadcrumbs"
+  | "callouts"
+  | "dropdown"
+  | "menu"
+  | "menu-item"
+  | "outlet"
+  | "sidebar"
+  | "topbar";
 export type Link = {
   action: Node<"action"> | null;
   effects: Effect[];
@@ -850,6 +861,7 @@ export type NotificationList = {
   readonly notifications: NotificationItem[];
   readonly unreadCount: number;
 };
+export type NotificationNodeType = "notifications";
 export type Notifications = {
   channel: string;
   endpoint: string;
@@ -1027,6 +1039,7 @@ export type RemoteAccess = {
   readonly source: string;
   readonly tokenEndpoint: string;
 };
+export type RemoteNodeType = "remote.data-list";
 export type Repeater = {
   addLabel: string | null;
   columnWidth: ColumnWidth;
@@ -1198,6 +1211,7 @@ export type Table = {
   searchable: boolean;
   striped: boolean;
 };
+export type TableNodeType = "table";
 export type TablePagination = {
   readonly currentPage: number | null;
   readonly from: number | null;
@@ -1406,6 +1420,31 @@ export type TreeNode = {
   readonly id: string;
   readonly label: string;
 };
+export type UiNodeType =
+  | "avatar"
+  | "badge"
+  | "button"
+  | "card"
+  | "chart"
+  | "collapsible"
+  | "floating-panel"
+  | "grid"
+  | "heading"
+  | "icon"
+  | "image"
+  | "link"
+  | "modal"
+  | "progress"
+  | "raw-block"
+  | "section"
+  | "segmented-control"
+  | "separator"
+  | "stack"
+  | "tab"
+  | "tabs"
+  | "text"
+  | "tooltip"
+  | "tree";
 export type UnreadCount = {
   readonly unreadCount: number;
 };

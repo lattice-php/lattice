@@ -22,13 +22,6 @@ use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
  */
 final class BaseProfile implements TypeScriptProfile
 {
-    /**
-     * Node aliases whose per-domain `…Type` string union a client actually consumes
-     * (via `NodeUnionOf`). Only these are emitted — the rest would be dead exports.
-     * Add one here when a client starts deriving a node union for that domain.
-     */
-    private const array NODE_TYPE_ALIASES = ['ActionNode'];
-
     public function run(TypeScriptGenerator $generator): string
     {
         $packageRoot = dirname(__DIR__, 4);
@@ -85,7 +78,6 @@ final class BaseProfile implements TypeScriptProfile
                     $domainNodes,
                     'form',
                     $familyProps,
-                    self::NODE_TYPE_ALIASES,
                 ),
             ],
             new NodeModuleWriter('generated.ts'),
