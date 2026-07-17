@@ -380,6 +380,8 @@ test('actions can serialize confirmation modal configuration', function (): void
                 ],
                 'form' => null,
                 'lazyForm' => false,
+                'modalSide' => null,
+                'modalWidth' => null,
                 'variant' => 'destructive',
                 'ref' => null,
             ],
