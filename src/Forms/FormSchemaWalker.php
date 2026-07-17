@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms;
 
+use Generator;
 use Illuminate\Support\Arr;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
@@ -15,13 +16,7 @@ final class FormSchemaWalker
      */
     public function instances(iterable $fields, FormData $form): array
     {
-        $instances = [];
-
-        foreach ($fields as $field) {
-            $this->walkField($instances, $field, $field->name(), $form, $form);
-        }
-
-        return $instances;
+        return iterator_to_array($this->walk($fields, $form), false);
     }
 
     /**
@@ -29,7 +24,7 @@ final class FormSchemaWalker
      */
     public function find(iterable $fields, string $path, FormData $form): ?FormFieldInstance
     {
-        foreach ($this->instances($fields, $form) as $instance) {
+        foreach ($this->walk($fields, $form) as $instance) {
             if ($instance->path === $path) {
                 return $instance;
             }
@@ -39,13 +34,24 @@ final class FormSchemaWalker
     }
 
     /**
-     * @param  array<int, FormFieldInstance>  $instances
+     * @param  iterable<int, Field>  $fields
+     * @return Generator<int, FormFieldInstance>
      */
-    private function walkField(array &$instances, Field $template, string $path, FormData $scope, FormData $form): void
+    private function walk(iterable $fields, FormData $form): Generator
+    {
+        foreach ($fields as $field) {
+            yield from $this->walkField($field, $field->name(), $form, $form);
+        }
+    }
+
+    /**
+     * @return Generator<int, FormFieldInstance>
+     */
+    private function walkField(Field $template, string $path, FormData $scope, FormData $form): Generator
     {
         $field = clone $template;
 
-        $instances[] = new FormFieldInstance($field, $path, $scope, $form);
+        yield new FormFieldInstance($field, $path, $scope, $form);
 
         if (! $field instanceof ProvidesRowFields) {
             return;
@@ -62,8 +68,7 @@ final class FormSchemaWalker
             $rowScope = FormData::make([...$scope->all(), ...$row]);
 
             foreach ($field->rowFields($row) as $child) {
-                $this->walkField(
-                    $instances,
+                yield from $this->walkField(
                     $child,
                     "{$path}.{$index}.{$child->name()}",
                     $rowScope,
