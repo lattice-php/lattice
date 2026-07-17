@@ -52,6 +52,52 @@ primitives like `Stack`, content like `Heading` and `Text`, and the interactive
 [forms](/forms/overview/), [tables](/tables/overview/), and [actions](/actions/overview/) that carry
 their own endpoints.
 
+## Named extension slots
+
+A page can expose part of its component tree to other modules without owning their components. Place
+a named `Slot` wherever contributions should appear and pass any context their factories need:
+
+```php
+use Lattice\Lattice\Ui\Components\Tabs;
+use Lattice\Lattice\Ui\Slot;
+
+Tabs::make('project-settings-tabs')->schema([
+    Slot::make('project.settings.tabs')->context([
+        'project' => $project,
+    ]),
+]);
+```
+
+Register each contribution from the module's service provider:
+
+```php
+use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Ui\Components\Tab;
+
+Lattice::extend(
+    'project.settings.tabs',
+    fn (Project $project, $user): Tab => Tab::make('api-tokens', 'API tokens')
+        ->visible($user?->can('update', $project) ?? false)
+        ->schema([
+            ApiTokensPanel::make($project),
+        ]),
+    priority: 20,
+);
+```
+
+Each factory returns exactly one component. Lower priorities render first; contributions with the same
+priority retain registration order. Return the component with `->visible(false)` when it should not
+render rather than returning `null`.
+
+Slot context is available to the factory by parameter name. Object values also resolve by type, as the
+`Project $project` parameter does above. Factories additionally receive `$user`, `$slot` (or a typed
+`Slot`), a typed `Request`, and services from Laravel's container. See
+[Closure evaluation](/core/closure-evaluation/#hook-specific-utilities) for the complete rules.
+
+An unregistered slot renders nothing. Each rendered slot receives fresh component instances, and the
+`Slot` itself is expanded on the server before component visibility, tab selection, or
+serialization—it never becomes a client-side node.
+
 ## Route parameters
 
 `render()` is dispatched like a controller method, so route parameters and route-model binding resolve

@@ -72,6 +72,7 @@ Some callbacks add more named utilities:
 | Repeater and builder row callbacks | `$row` for the current row and `$form` for the whole form. A typed `FormData` parameter is `$row`. |
 | `ToggleFilter::query()`            | A typed Eloquent `Builder` and `$value`, the submitted toggle state.                               |
 | `TernaryFilter::queries()`         | A typed Eloquent `Builder`.                                                                        |
+| `Lattice::extend()`                | Named slot context, typed context objects, `$user`, `$slot`/typed `Slot`, and typed `Request`.     |
 
 ```php
 Select::make('author_id', 'Author')
@@ -90,6 +91,10 @@ Inside row hooks, use the named `$form` utility when you need values outside the
 Repeater::make('lines')
     ->itemLabel(fn (FormData $row, FormData $form) => $row->string('name') ?: $form->string('currency'));
 ```
+
+Named slot factories also resolve any remaining class or interface from Laravel's container. A
+context object is registered under its concrete type and can satisfy a parameter typed as that class,
+a parent class, or an implemented interface.
 
 ## Server-side timing
 

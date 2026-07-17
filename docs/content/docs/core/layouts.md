@@ -55,6 +55,39 @@ A layout's schema must contain **exactly one** `Outlet`. It carries no markup of
 seam where Lattice drops the active page's component tree. Everything around it — sidebar, breadcrumbs,
 header — is shared chrome rendered once and left in place as the page changes.
 
+## Named layout slots
+
+Named [`Slot` extension points](/core/pages/#named-extension-slots) use the same server-side schema
+mechanism in layouts. They are useful when a module needs to contribute navigation or chrome without
+replacing the application layout:
+
+```php
+use Lattice\Lattice\Ui\Slot;
+
+Stack::make('app-shell')->schema([
+    Sidebar::make('app-sidebar')->items([
+        Menu::make('navigation')->items([
+            MenuItem::fromPage(HomePage::class),
+            Slot::make('app.sidebar.navigation'),
+        ]),
+    ]),
+    Stack::make('app-main')->schema([
+        Outlet::make(),
+    ]),
+]);
+```
+
+`Slot` and `Outlet` can therefore appear in the same layout tree, but they solve different boundaries:
+
+|                     | `Slot`                                                                   | `Outlet`                                                  |
+| ------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------- |
+| Resolved by         | PHP on the server                                                        | The React layout renderer                                 |
+| Filled with         | Components registered through `Lattice::extend()`                        | The active page's complete schema                         |
+| Serialized itself   | No—the registered components replace it before the wire payload is built | Yes—it remains an `outlet` node in the layout wire schema |
+| Allowed occurrences | Any number of named slots                                                | Exactly one per layout                                    |
+
+An empty named slot disappears without affecting the `Outlet` or the page tree inserted there.
+
 ## The header bar
 
 `Topbar` is a horizontal bar for chrome that sits above the page — a logo, search, settings menu, or
