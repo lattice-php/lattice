@@ -49,38 +49,43 @@ it('serializes source children recursively for hasChildren nodes', function (): 
         ->and($root['children'][0]['children'][0])->toMatchArray(['id' => 'grandchild', 'label' => 'Grandchild']);
 });
 
-it('stops fetching source children at the eagerDepth boundary', function (): void {
-    $fetched = [];
+it('stops fetching source children at the depth cap so cyclic data terminates', function (): void {
+    $fetches = 0;
 
     $node = wire(
-        Tree::make()->eagerDepth(1)->source(new CallbackTreeSource(
-            roots: fn (): array => [TreeNode::make('Root', 'root')->hasChildren()],
-            children: function (string $parentId) use (&$fetched): array {
-                $fetched[] = $parentId;
+        Tree::make()->source(new CallbackTreeSource(
+            roots: fn (): array => [TreeNode::make('Root', 'n0')->hasChildren()],
+            children: function (string $parentId) use (&$fetches): array {
+                $fetches++;
 
-                return [TreeNode::make("Child of {$parentId}", "{$parentId}.child")->hasChildren()];
+                return [TreeNode::make('Child', "n{$fetches}")->hasChildren()];
             },
         )),
     );
 
-    $boundary = $node['props']['nodes'][0]['children'][0];
-    expect($boundary)->toMatchArray(['id' => 'root.child', 'hasChildren' => true])
-        ->and($boundary)->not->toHaveKey('children')
-        ->and($fetched)->toBe(['root']);
+    $boundary = $node['props']['nodes'][0];
+    while (isset($boundary['children'])) {
+        $boundary = $boundary['children'][0];
+    }
+
+    expect($fetches)->toBe(50)
+        ->and($boundary)->toMatchArray(['id' => 'n50', 'hasChildren' => true]);
 });
 
-it('truncates children beyond eagerDepth to a lazy boundary', function (): void {
-    $node = wire(
-        Tree::make()->eagerDepth(1)->nodes([
-            TreeNode::make('L0', 'a')->children([
-                TreeNode::make('L1', 'b')->children([TreeNode::make('L2', 'c')]),
-            ]),
-        ]),
-    );
+it('truncates eager children at the depth cap with a hasChildren marker', function (): void {
+    $subtree = TreeNode::make('Leaf', 'leaf');
+    foreach (range(51, 0) as $level) {
+        $subtree = TreeNode::make("Level {$level}", "n{$level}")->children([$subtree]);
+    }
 
-    $l1 = $node['props']['nodes'][0]['children'][0];
-    expect($l1)->toMatchArray(['id' => 'b', 'hasChildren' => true])
-        ->and($l1)->not->toHaveKey('children');
+    $node = wire(Tree::make()->nodes([$subtree]));
+
+    $boundary = $node['props']['nodes'][0];
+    while (isset($boundary['children'])) {
+        $boundary = $boundary['children'][0];
+    }
+
+    expect($boundary)->toMatchArray(['id' => 'n50', 'hasChildren' => true]);
 });
 
 describe('docs fixtures', function (): void {

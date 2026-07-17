@@ -47,7 +47,7 @@ siblings.
   — both normalize through the same builder.
 - **`->hasChildren(bool $hasChildren = true)`** — marks a node as expandable without children attached
   yet. A [`TreeSource`](#data-sources) sets it per row so `Tree` knows which nodes to fetch children
-  for, and `Tree` sets it on nodes truncated at the `eagerDepth` boundary (below).
+  for.
 - **`->disabled(bool $disabled = true)`** — grays the row out and blocks its link and activation.
 
 ## Tree
@@ -57,11 +57,6 @@ siblings.
 - **`->source(TreeSource $source)`** — a [data source](#data-sources) for nodes that live elsewhere.
 - **`->activeId($id)`** — marks a node selected (`aria-selected`); nothing is selected by default.
 - **`->defaultExpanded([$id, ...])`** — ids expanded on first render.
-- **`->eagerDepth($depth)`** — nodes at or beyond this depth serialize as a truncation boundary:
-  their children are dropped and `hasChildren` is set instead, so a very deep hierarchy only ships
-  the top slice. Rows beyond the boundary cannot be expanded yet — lazy loading is a planned
-  follow-up — so lower the default (`50`, effectively unlimited) only to cap what an unbounded
-  source ships.
 - **`->rememberState(bool $remember = true)`** — persists the expanded set across reloads, keyed by
   the tree's identity, the same pattern as [`Collapsible`](/components/section-collapsible/#collapsible).
 
@@ -69,9 +64,10 @@ siblings.
 
 Every node ultimately comes from a `TreeSource` — `roots(): iterable<TreeNode>` and
 `children(string $parentId): iterable<TreeNode>`. `Tree` walks the source eagerly at render time:
-`roots()` first, then `children()` for every `hasChildren` row down to `eagerDepth`. `->nodes([...])`
-is the array-backed source; for a database-backed hierarchy, use `EloquentTreeSource` against a
-self-referencing parent column:
+`roots()` first, then `children()` for every `hasChildren` row. Serialization depth is capped at 50
+purely as a safety bound against cyclic adjacency data; lazy loading is the planned path for
+genuinely deep hierarchies. `->nodes([...])` is the array-backed source; for a database-backed
+hierarchy, use `EloquentTreeSource` against a self-referencing parent column:
 
 ```php
 use Illuminate\Database\Eloquent\Builder;

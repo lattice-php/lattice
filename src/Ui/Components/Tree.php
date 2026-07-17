@@ -21,7 +21,12 @@ class Tree extends Component
 
     public bool $rememberState = false;
 
-    protected int $eagerDepth = 50;
+    /**
+     * Serialization depth cap: the termination guarantee for source-backed
+     * trees whose adjacency data contains a cycle. Not a feature knob — lazy
+     * loading is the planned path for genuinely deep hierarchies.
+     */
+    private const int MAX_DEPTH = 50;
 
     public static function make(?string $key = null): static
     {
@@ -63,13 +68,6 @@ class Tree extends Component
         return $this;
     }
 
-    public function eagerDepth(int $depth): static
-    {
-        $this->eagerDepth = $depth;
-
-        return $this;
-    }
-
     public function rememberState(bool $remember = true): static
     {
         $this->rememberState = $remember;
@@ -101,7 +99,7 @@ class Tree extends Component
     {
         $data = $node->serialiseShallow();
 
-        if ($depth >= $this->eagerDepth) {
+        if ($depth >= self::MAX_DEPTH) {
             if ($node->children !== []) {
                 $data['hasChildren'] = true;
             }
