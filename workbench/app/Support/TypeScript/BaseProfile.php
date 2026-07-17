@@ -14,6 +14,8 @@ use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Support\TypeScript\WireFamily;
 use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
+use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Filters\Filter;
 
 /**
  * The package's own dev profile: regenerates the built-in TypeScript module
@@ -71,6 +73,8 @@ final class BaseProfile implements TypeScriptProfile
                 new ComponentTransformer([
                     ...array_keys($formFields),
                     Form::class,
+                    Column::class,
+                    Filter::class,
                     ...$this->componentClasses($domainNodes),
                     ...array_values($familyProps['column']),
                     ...array_values($familyProps['filter']),

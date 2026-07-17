@@ -1,26 +1,14 @@
 import { router } from "@inertiajs/react";
-import type { ResolveProps } from "@lattice-php/lattice/core/types";
-import type { Effect, EffectPropsMap } from "@lattice-php/lattice/types/generated";
+import type {
+  EffectOf,
+  EffectProps,
+  EffectPropsMap,
+  EffectPropsOf,
+} from "@lattice-php/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { setLocale } from "@lattice-php/lattice/i18n/locale";
 
-/**
- * Consumer apps augment this via `declare module "@lattice-php/lattice"` to type
- * their custom effects' payloads; built-ins resolve through `EffectPropsMap`. The
- * effect counterpart of `ComponentProps`.
- */
-export interface EffectProps {}
-
-export type EffectPropsOf<TType extends string> = ResolveProps<
-  EffectProps,
-  EffectPropsMap,
-  TType,
-  Record<string, unknown>
->;
-
-export type EffectOf<TType extends string> = string extends TType
-  ? Effect
-  : { type: TType; props: EffectPropsOf<TType> };
+export type { EffectOf, EffectProps, EffectPropsOf };
 
 export type EffectHandler<TType extends string = string> = (effect: EffectOf<TType>) => void;
 

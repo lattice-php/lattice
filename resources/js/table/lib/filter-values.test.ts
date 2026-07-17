@@ -35,9 +35,13 @@ describe("stringProp", () => {
 
   it("falls back when the prop is absent or not a string", () => {
     expect(stringProp(filter, "missing", "fallback")).toBe("fallback");
-    expect(stringProp({ ...filter, props: { placeholder: 3 } }, "placeholder", "fallback")).toBe(
-      "fallback",
-    );
+    expect(
+      stringProp(
+        { ...filter, props: { label: "Status", placeholder: 3 } },
+        "placeholder",
+        "fallback",
+      ),
+    ).toBe("fallback");
   });
 });
 
@@ -47,6 +51,6 @@ describe("filterOptions", () => {
   });
 
   it("returns an empty array when options are absent", () => {
-    expect(filterOptions({ ...filter, props: {} })).toEqual([]);
+    expect(filterOptions({ ...filter, props: { label: null } })).toEqual([]);
   });
 });
