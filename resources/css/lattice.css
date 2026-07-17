@@ -101,7 +101,8 @@
  * animation events still fire and close stays instant.
  */
 @media (prefers-reduced-motion: reduce) {
-  :root {
+  :root,
+  [data-theme="light"] {
     --lt-duration-fast: 0ms;
     --lt-duration-base: 0ms;
     --lt-duration-slow: 0ms;
@@ -323,27 +324,28 @@
   }
 }
 
-/* The dialog keyframes carry the centering translate so the animation does
-   not override the positioning classes mid-flight. */
+/* Centering uses Tailwind's standalone translate property, which composes
+   with transform — so these keyframes may only animate opacity and scale,
+   never a translate of their own. */
 @keyframes lt-dialog-in {
   from {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.98);
+    transform: scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
 }
 
 @keyframes lt-dialog-out {
   from {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
   to {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.98);
+    transform: scale(0.98);
   }
 }
 
