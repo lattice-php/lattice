@@ -7,6 +7,8 @@ use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Forms\Attributes\AsField;
+use Lattice\Lattice\Forms\Components\Concerns\HasMinMax;
+use Lattice\Lattice\Forms\Components\Concerns\HasStep;
 use Lattice\Lattice\Forms\Enums\FieldType;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\Rules\DateTimeWithTimezone;
@@ -17,38 +19,13 @@ use Lattice\Lattice\Ui\Concerns\HasTabIndex;
 class DateTimeInput extends Field
 {
     use HasAutoFocus;
+    use HasMinMax;
+    use HasStep;
     use HasTabIndex;
-
-    public ?string $min = null;
-
-    public ?string $max = null;
-
-    public ?int $step = null;
 
     public bool $convertTimezone = false;
 
     public ?string $timezone = null;
-
-    public function min(string $min): static
-    {
-        $this->min = $min;
-
-        return $this;
-    }
-
-    public function max(string $max): static
-    {
-        $this->max = $max;
-
-        return $this;
-    }
-
-    public function step(int $step): static
-    {
-        $this->step = $step;
-
-        return $this;
-    }
 
     public function convertTimeZone(?string $timezone = null): static
     {
