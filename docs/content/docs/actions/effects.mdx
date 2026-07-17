@@ -11,11 +11,10 @@ the client runs in order once the action responds.
 
 ## Results
 
-Build a result from one of two constructors, optionally passing data:
+Build a result with `success()`, optionally passing data:
 
 ```php
 ActionResult::success(['id' => $product->id]);
-ActionResult::failure(['reason' => 'locked']);
 ```
 
 Then chain effects — each returns a new result, so they read as a pipeline:

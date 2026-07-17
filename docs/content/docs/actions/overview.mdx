@@ -118,8 +118,8 @@ ActionGroup::make('locale-switcher')
 
 ## The result
 
-`handle()` returns an `ActionResult`. Start from `ActionResult::success()` or
-`ActionResult::failure()`, optionally attaching data, then chain [effects](/actions/effects/):
+`handle()` returns an `ActionResult`. Start from `ActionResult::success()`,
+optionally attaching data, then chain [effects](/actions/effects/):
 
 ```php
 return ActionResult::success(['id' => $product->id])

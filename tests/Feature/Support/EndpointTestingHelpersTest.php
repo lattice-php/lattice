@@ -42,7 +42,6 @@ test('callAction seals the ref and posts to the action endpoint', function (): v
 
     $this->callAction(HelperDemoAction::class, ['name' => 'Taylor'], ['team' => 'trusted-team'])
         ->assertOk()
-        ->assertJsonPath('ok', true)
         ->assertJsonPath('data.handled', 'Taylor')
         ->assertJsonPath('data.team', 'trusted-team');
 });

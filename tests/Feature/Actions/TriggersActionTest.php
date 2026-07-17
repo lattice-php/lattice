@@ -40,7 +40,6 @@ test('the nested action node of a menu item dispatches through the action endpoi
 
     postJson($action['props']['endpoint'], ['name' => 'Taylor'], latticeHeaders($action['props']['ref']))
         ->assertOk()
-        ->assertJsonPath('ok', true)
         ->assertJsonPath('data.handled', 'Taylor')
         ->assertJsonPath('effects.0.type', 'toast');
 });
@@ -51,7 +50,6 @@ test('the nested action node of a link dispatches through the action endpoint', 
 
     postJson($action['props']['endpoint'], ['name' => 'Jess'], latticeHeaders($action['props']['ref']))
         ->assertOk()
-        ->assertJsonPath('ok', true)
         ->assertJsonPath('data.handled', 'Jess');
 });
 
@@ -99,7 +97,6 @@ test('the nested action node of a button dispatches through the action endpoint'
 
     postJson($action['props']['endpoint'], ['name' => 'Sam'], latticeHeaders($action['props']['ref']))
         ->assertOk()
-        ->assertJsonPath('ok', true)
         ->assertJsonPath('data.handled', 'Sam');
 });
 

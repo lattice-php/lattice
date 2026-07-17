@@ -20,7 +20,6 @@ final readonly class ActionResult
      * @param  array<int, Effect>  $effects
      */
     private function __construct(
-        public bool $ok,
         public array $data = [],
         public array $effects = [],
     ) {}
@@ -30,20 +29,12 @@ final readonly class ActionResult
      */
     public static function success(array $data = []): self
     {
-        return new self(true, $data);
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     */
-    public static function failure(array $data = []): self
-    {
-        return new self(false, $data);
+        return new self($data);
     }
 
     public function effect(Effect $effect): static
     {
-        return new self($this->ok, $this->data, [
+        return new self($this->data, [
             ...$this->effects,
             $effect,
         ]);

@@ -77,7 +77,6 @@ it('validates the embedded form and hands the data to handle', function (): void
 
     $this->callAction(RejectActionFixture::class, ['reason' => 'spam'])
         ->assertOk()
-        ->assertJsonPath('ok', true)
         ->assertJsonPath('data.reason', 'spam');
 });
 
