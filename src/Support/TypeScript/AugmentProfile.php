@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support\TypeScript;
 
 use Illuminate\Support\Facades\File;
+use Lattice\Lattice\Attributes\WireEnvelope;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 
 /**
@@ -52,14 +53,19 @@ final readonly class AugmentProfile implements TypeScriptProfile
             }
         }
 
+        $markerRefs = [];
+
+        foreach (WireFamily::markerFamilies() as $family) {
+            $markerRefs[$family->marker] = new NodeTypeReference(
+                $byCategory[$family->category] ?? [],
+                WireEnvelope::forClass($family->marker),
+                attributeFallback: $family->category === 'component',
+            );
+        }
+
         $generator->generate(
             $roots,
-            [new ComponentTransformer(
-                array_keys($entries),
-                new NodeTypeReference($byCategory['component']),
-                new NodeTypeReference($byCategory['column'], 'ColumnNode'),
-                new NodeTypeReference($byCategory['filter'], 'FilterNode'),
-            )],
+            [new ComponentTransformer(array_keys($entries), $markerRefs)],
             [],
             new AugmentationWriter($entries, $module, basename($output)),
             dirname($output),

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Attributes\WireEnvelope;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Ui\Components\Concerns\SerializesWireNode;
@@ -21,6 +22,7 @@ use Lattice\Lattice\Ui\Contracts\Renderable;
  *
  * @phpstan-consistent-constructor
  */
+#[WireEnvelope('FilterNode')]
 abstract class Filter implements JsonSerializable, Renderable
 {
     use FiltersRenderableComponents;

@@ -8,6 +8,9 @@ use Lattice\Lattice\Attributes\WireType;
 use Lattice\Lattice\Effects\EffectRegistry;
 use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
 use Lattice\Lattice\Support\WireTypeRegistry;
+use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Filters\Filter;
+use Lattice\Lattice\Ui\Components\Component;
 use LogicException;
 
 /**
@@ -22,10 +25,12 @@ final readonly class WireFamily
 {
     /**
      * @param  class-string<WireTypeRegistry<covariant object>>|null  $registry
+     * @param  class-string|null  $marker  The abstract base whose #[WireEnvelope] names the client envelope.
      */
     public function __construct(
         public string $category,
         public ?string $registry = null,
+        public ?string $marker = null,
     ) {}
 
     /**
@@ -34,12 +39,23 @@ final readonly class WireFamily
     public static function all(): array
     {
         return [
-            new self('component'),
-            new self('column'),
+            new self('component', marker: Component::class),
+            new self('column', marker: Column::class),
             new self('effect', EffectRegistry::class),
-            new self('filter'),
+            new self('filter', marker: Filter::class),
             new self('editor-extension', EditorExtensionRegistry::class),
         ];
+    }
+
+    /**
+     * @return list<self>
+     */
+    public static function markerFamilies(): array
+    {
+        return array_values(array_filter(
+            self::all(),
+            static fn (self $family): bool => $family->marker !== null,
+        ));
     }
 
     /**
