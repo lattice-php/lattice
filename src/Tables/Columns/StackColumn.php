@@ -21,7 +21,7 @@ class StackColumn extends Column
      */
     public function children(): array
     {
-        return $this->children;
+        return $this->resolvedChildren();
     }
 
     /**
@@ -32,11 +32,7 @@ class StackColumn extends Column
     {
         $keys = [];
 
-        foreach ($this->children as $child) {
-            if (! $child->shouldRender()) {
-                continue;
-            }
-
+        foreach ($this->renderableChildren() as $child) {
             array_push($keys, ...$child->boundRowKeys());
         }
 

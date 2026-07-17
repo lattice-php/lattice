@@ -9,11 +9,11 @@ use InvalidArgumentException;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Contracts\PageContract;
-use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\ContainerComponent;
 use Lattice\Lattice\Ui\Concerns\HasAffixes;
 use Lattice\Lattice\Ui\Concerns\HasIcon;
 use Lattice\Lattice\Ui\Concerns\Triggerable;
+use Lattice\Lattice\Ui\Contracts\SchemaEntry;
 
 /**
  * A single menu entry. Renders an Inertia link when it has an href, triggers a
@@ -83,7 +83,7 @@ class MenuItem extends ContainerComponent
     }
 
     /**
-     * @param  array<int, Component>  $children
+     * @param  array<int, SchemaEntry>  $children
      */
     public function children(array $children): static
     {

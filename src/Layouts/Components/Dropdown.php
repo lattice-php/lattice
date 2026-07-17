@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Layouts\Components;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\ContainerComponent;
+use Lattice\Lattice\Ui\Contracts\SchemaEntry;
 use Lattice\Lattice\Ui\Enums\Placement;
 
 #[AsComponent('dropdown')]
@@ -41,7 +42,7 @@ class Dropdown extends ContainerComponent
     }
 
     /**
-     * @param  array<int, Component>  $items
+     * @param  array<int, SchemaEntry>  $items
      */
     public function items(array $items): static
     {

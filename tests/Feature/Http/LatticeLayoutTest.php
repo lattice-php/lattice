@@ -14,6 +14,7 @@ use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Slot;
 
 #[AsLayout('app')]
 final class WorkbenchAppLayout extends LayoutDefinition
@@ -23,6 +24,7 @@ final class WorkbenchAppLayout extends LayoutDefinition
         return $schema->schema([
             Stack::make('app-shell')->schema([
                 Heading::make('Workbench'),
+                Slot::make('app.layout.header'),
                 Outlet::make(),
             ]),
         ]);
@@ -62,6 +64,18 @@ test('the layout registry resolves a registered layout to its wire schema', func
 test('the layout registry rejects an unregistered layout key', function (): void {
     expect(fn () => app(LayoutRegistry::class)->render('missing', new Request))
         ->toThrow(UnknownComponent::class);
+});
+
+test('a server slot expands beside the client layout outlet', function (): void {
+    Lattice::layouts([WorkbenchAppLayout::class]);
+    Lattice::extend('app.layout.header', fn (): Text => Text::make('Extension', 'extension'));
+
+    $rendered = app(LayoutRegistry::class)->render('app', new Request);
+    $children = wire($rendered['schema'])[0]['schema'];
+
+    expect(array_column($children, 'type'))->toBe(['heading', 'text', 'outlet'])
+        ->and($children[1]['key'])->toBe('extension')
+        ->and($children[2]['type'])->toBe('outlet');
 });
 
 test('a page serializes its layout as key and schema with an outlet', function (): void {

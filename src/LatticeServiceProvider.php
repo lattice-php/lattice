@@ -59,6 +59,7 @@ use Lattice\Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Tables\TableRegistry;
 use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\SlotRegistry;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -110,6 +111,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(BulkActionRegistry::class);
         $this->app->singleton(PageRegistry::class);
         $this->app->singleton(RemoteSourceRegistry::class);
+        $this->app->singleton(SlotRegistry::class);
         $this->app->singleton(ResolvesReferenceIdentity::class, RequestReferenceIdentity::class);
         $this->app->singleton(ComponentReferenceSigner::class);
         $this->app->alias(ComponentReferenceSigner::class, SignsComponentReferences::class);

@@ -16,7 +16,7 @@ abstract class ContainerComponent extends Component
     {
         $result = [];
 
-        foreach ($this->children as $child) {
+        foreach ($this->resolvedChildren() as $child) {
             $result[] = $child;
 
             if ($child instanceof ContainerComponent) {

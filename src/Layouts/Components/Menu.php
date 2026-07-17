@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Layouts\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\ContainerComponent;
+use Lattice\Lattice\Ui\Contracts\SchemaEntry;
 
 /**
  * A navigation menu composed of MenuItems, rendered inside a layout schema.
@@ -19,7 +19,7 @@ class Menu extends ContainerComponent
     }
 
     /**
-     * @param  array<int, Component>  $items
+     * @param  array<int, SchemaEntry>  $items
      */
     public function items(array $items): static
     {

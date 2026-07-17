@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Ui\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Ui\Concerns\HasTooltip;
+use Lattice\Lattice\Ui\Contracts\SchemaEntry;
 
 #[AsComponent('collapsible')]
 class Collapsible extends ContainerComponent
@@ -50,7 +51,7 @@ class Collapsible extends ContainerComponent
     }
 
     /**
-     * @param  array<int, Component>  $components
+     * @param  array<int, SchemaEntry>  $components
      */
     public function content(array $components): static
     {

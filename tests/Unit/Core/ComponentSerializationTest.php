@@ -34,6 +34,7 @@ use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
 use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Contracts\SchemaEntry;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\FloatingPlacement;
 use Lattice\Lattice\Ui\Enums\Gap;
@@ -522,4 +523,29 @@ test('tabs ignore hidden tab children when resolving their active value', functi
     expect($tabs['props']['activeValue'])->toBe('profile')
         ->and($tabs['schema'])->toHaveCount(1)
         ->and($tabs['schema'][0]['props']['value'])->toBe('profile');
+});
+
+test('tabs resolve schema entries once before inspecting their children', function (): void {
+    $entry = new class implements SchemaEntry
+    {
+        public int $resolutions = 0;
+
+        public function resolveComponents(): array
+        {
+            $this->resolutions++;
+
+            return [
+                Tab::make('profile', 'Profile'),
+                Tab::make('security', 'Security'),
+            ];
+        }
+    };
+
+    $tabs = wire(Tabs::make('settings-tabs')
+        ->defaultValue('security')
+        ->schema([$entry]));
+
+    expect($tabs['props']['activeValue'])->toBe('security')
+        ->and(array_column(array_column($tabs['schema'], 'props'), 'value'))->toBe(['profile', 'security'])
+        ->and($entry->resolutions)->toBe(1);
 });

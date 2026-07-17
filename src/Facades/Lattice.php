@@ -19,6 +19,7 @@ use Lattice\Lattice\LatticeRegistry;
  * @method static void remoteSources(class-string<\Lattice\Lattice\Remote\RemoteSourceDefinition>|array<int, class-string<\Lattice\Lattice\Remote\RemoteSourceDefinition>> $remoteSources)
  * @method static void remoteSourceResolver(callable $resolver)
  * @method static \Lattice\Lattice\Remote\RemoteSourceRegistry remoteSourceRegistry()
+ * @method static void extend(string $name, \Closure $factory, int $priority = 0)
  *
  * @see LatticeRegistry
  */

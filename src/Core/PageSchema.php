@@ -5,13 +5,16 @@ namespace Lattice\Lattice\Core;
 
 use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
+use Lattice\Lattice\Ui\Concerns\ResolvesSchemaEntries;
+use Lattice\Lattice\Ui\Contracts\SchemaEntry;
 
 final class PageSchema
 {
     use FiltersRenderableComponents;
+    use ResolvesSchemaEntries;
 
     /**
-     * @var array<int, Component>
+     * @var array<int, SchemaEntry>
      */
     private array $components = [];
 
@@ -21,7 +24,7 @@ final class PageSchema
     }
 
     /**
-     * @param  array<int, Component>  $components
+     * @param  array<int, SchemaEntry>  $components
      */
     public function schema(array $components): static
     {
@@ -42,6 +45,6 @@ final class PageSchema
      */
     public function renderable(): array
     {
-        return $this->renderableComponents($this->components);
+        return $this->renderableComponents($this->resolveSchemaEntries($this->components));
     }
 }
