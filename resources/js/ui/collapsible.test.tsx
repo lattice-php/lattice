@@ -1,5 +1,5 @@
 import { fireEvent, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
@@ -20,6 +20,8 @@ function renderCollapsible(node: Node) {
 }
 
 describe("Collapsible component", () => {
+  beforeEach(() => window.localStorage.clear());
+
   it("renders the trigger and hides the content until opened", () => {
     renderCollapsible({
       id: "name",

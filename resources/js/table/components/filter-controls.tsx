@@ -18,6 +18,7 @@ import {
 import { IconButton } from "@lattice-php/lattice/ui/icon-button";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import { isTruthy } from "@lattice-php/lattice/lib/is-truthy";
 import { filterValue, isActiveFilterValue } from "@lattice-php/lattice/table/lib/filter-values";
 import type { FilterNode } from "@lattice-php/lattice/table/types";
 
@@ -209,8 +210,4 @@ function ToggleControl({
       <span>{filter.props.label}</span>
     </label>
   );
-}
-
-function isTruthy(value: unknown): boolean {
-  return value === true || value === "1" || value === 1 || value === "true";
 }

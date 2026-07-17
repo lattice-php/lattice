@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 import type { RefObject } from "react";
+import { usePersistentState } from "@lattice-php/lattice/lib/use-persistent-state";
 
 export type TreeItemRegistration = {
   id: string;
@@ -44,26 +45,14 @@ export function useTreeContext(): TreeContextValue {
   return useContext(TreeContext);
 }
 
-function readStoredExpanded(key: string, remember: boolean, fallback: string[]): Set<string> {
-  if (!remember || typeof window === "undefined") {
-    return new Set(fallback);
+function parseExpanded(raw: string): Set<string> {
+  const parsed: unknown = JSON.parse(raw);
+
+  if (!Array.isArray(parsed)) {
+    throw new Error("expected an array of ids");
   }
 
-  const stored = window.localStorage.getItem(key);
-
-  if (stored === null) {
-    return new Set(fallback);
-  }
-
-  try {
-    const parsed: unknown = JSON.parse(stored);
-
-    return Array.isArray(parsed)
-      ? new Set(parsed.filter((id): id is string => typeof id === "string"))
-      : new Set(fallback);
-  } catch {
-    return new Set(fallback);
-  }
+  return new Set(parsed.filter((id): id is string => typeof id === "string"));
 }
 
 function visibleOrder(registry: Map<string, TreeItemRegistration>): TreeItemRegistration[] {
@@ -85,8 +74,14 @@ export function useTreeState({
   rememberState: boolean;
   storageKey: string;
 }): TreeContextValue {
-  const [expanded, setExpanded] = useState<Set<string>>(() =>
-    readStoredExpanded(storageKey, rememberState, defaultExpanded),
+  const [expanded, setExpanded] = usePersistentState<Set<string>>(
+    storageKey,
+    () => new Set(defaultExpanded),
+    {
+      enabled: rememberState,
+      parse: parseExpanded,
+      serialize: (value) => JSON.stringify([...value]),
+    },
   );
   const [activeId, setActiveId] = useState<string | null>(initialActiveId);
   const [focusedId, setFocusedId] = useState<string | null>(() => nodes[0]?.id ?? null);
@@ -104,14 +99,10 @@ export function useTreeState({
           next.add(id);
         }
 
-        if (rememberState && typeof window !== "undefined") {
-          window.localStorage.setItem(storageKey, JSON.stringify([...next]));
-        }
-
         return next;
       });
     },
-    [rememberState, storageKey],
+    [setExpanded],
   );
 
   const activate = useCallback((id: string) => setActiveId(id), []);

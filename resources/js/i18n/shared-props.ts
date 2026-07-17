@@ -1,8 +1,5 @@
+import { isRecord } from "@lattice-php/lattice/core/materialize";
 import type { I18nConfig } from "@lattice-php/lattice/types/generated";
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
 
 function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === "string");
