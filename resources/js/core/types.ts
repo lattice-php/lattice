@@ -3,16 +3,14 @@ import type {
   CommonNodeProps,
   ComponentProps,
   Node,
-  NodeOfType,
   NodeProps,
   NodeType,
   NodeUnionOf,
   Option,
   PageContainer as KnownPageContainer,
-  PropsOf,
+  ComponentPropsOf,
   ResolveProps,
   Schema,
-  WireNode,
 } from "@lattice-php/lattice/types/generated";
 import type {
   Breadcrumb,
@@ -25,15 +23,13 @@ export type {
   ComponentProps,
   KnownPageContainer,
   Node,
-  NodeOfType,
   NodeProps,
   NodeType,
   NodeUnionOf,
   Option,
-  PropsOf,
+  ComponentPropsOf,
   ResolveProps,
   Schema,
-  WireNode,
 };
 
 /** Its `schema` holds exactly one Outlet node. */

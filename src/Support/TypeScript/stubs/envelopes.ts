@@ -46,7 +46,7 @@ export type ResolveProps<
     ? TBuiltins[TType]
     : TFallback;
 
-export type PropsOf<TType extends string> = ResolveProps<
+export type ComponentPropsOf<TType extends string> = ResolveProps<
   ComponentProps,
   ComponentPropsMap,
   TType,
@@ -56,8 +56,8 @@ export type PropsOf<TType extends string> = ResolveProps<
 
 /**
  * The loose wire node an unknown/untyped `type` resolves to: the shape every node
- * shares, with a loose `props` bag. The single source of the wire-node shape;
- * generated `WireNode` aliases `Node` (i.e. `Node<string>`), which is this.
+ * shares, with a loose `props` bag. The single source of the wire-node shape —
+ * `Node` (i.e. `Node<string>`) is this.
  */
 type LooseNode = {
   id?: string;
@@ -71,24 +71,22 @@ type LooseNode = {
  * Built-in `props` is required, not optional — the wire serializes the full prop
  * object, so reads need no optional chaining. Unknown types fall back to `LooseNode`.
  */
-export type NodeOfType<TType extends string = string> = string extends TType
+export type Node<TType extends string = string> = string extends TType
   ? LooseNode
   : {
       id?: string;
       key?: string;
-      props: PropsOf<TType>;
+      props: ComponentPropsOf<TType>;
       schema?: Schema;
       type: TType;
     };
 
-export type Node<TType extends string = string> = NodeOfType<TType>;
-
 /**
- * Distributes so `NodeUnionOf<"a" | "b">` is `NodeOfType<"a"> | NodeOfType<"b">`
- * — a discriminated union where `node.type` narrows `node.props`. Domains build
+ * Distributes so `NodeUnionOf<"a" | "b">` is `Node<"a"> | Node<"b">` — a
+ * discriminated union where `node.type` narrows `node.props`. Domains build
  * their node union from a generated `…NodeType` string union with this.
  */
-export type NodeUnionOf<TTypes extends string> = TTypes extends string ? NodeOfType<TTypes> : never;
+export type NodeUnionOf<TTypes extends string> = TTypes extends string ? Node<TTypes> : never;
 
 export type Schema = Node[];
 
@@ -111,7 +109,7 @@ export type CommonColumnProps = Column;
  * stay top-level, every common concern (`label`/`width`/`filter`/…) lives in
  * `props` on each generated column type. `schema` is only present for a
  * container column: the bound component nodes rendered per row. The column
- * counterpart of `NodeOfType`.
+ * counterpart of `Node`.
  */
 export type ColumnNode<TType extends string = string> = {
   type: TType;
@@ -127,8 +125,6 @@ export type FilterPropsOf<TType extends string> = ResolveProps<
   Filter & Record<string, unknown>
 >;
 
-export type FilterNodeType = keyof FilterPropsMap & string;
-
 /**
  * A dedicated table filter, authored and consumed like a field/component:
  * `key`/`type` stay top-level, `props` carries `label` plus whatever the
@@ -136,11 +132,11 @@ export type FilterNodeType = keyof FilterPropsMap & string;
  * filter's control and is absent when empty. The filter counterpart of
  * `ColumnNode`.
  */
-export type FilterNode<TType extends string = FilterNodeType> = {
+export type FilterNode<TType extends string = string> = {
   type: TType;
   key: string;
   props: FilterPropsOf<TType>;
-  schema?: Node[];
+  schema?: Schema;
 };
 
 export type EffectPropsOf<TType extends string> = ResolveProps<
@@ -150,6 +146,10 @@ export type EffectPropsOf<TType extends string> = ResolveProps<
   Record<string, unknown>
 >;
 
+/**
+ * Deliberate exception to the `XNode` naming: an effect is a `{type, props}`
+ * envelope without id/key/schema — it is not a node.
+ */
 export type EffectOf<TType extends string> = string extends TType
   ? Effect
   : { type: TType; props: EffectPropsOf<TType> };

@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionInteractionProvider } from "@lattice-php/lattice/action";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import type { Node, PropsOf } from "@lattice-php/lattice/core/types";
+import type { Node, ComponentPropsOf } from "@lattice-php/lattice/core/types";
 import MenuItemComponent from "./menu-item";
 
 const http = vi.hoisted(() => ({
@@ -20,7 +20,7 @@ vi.mock("@inertiajs/react", () => ({
   Link: ({ children, ...rest }: { children: React.ReactNode }) => <a {...rest}>{children}</a>,
 }));
 
-function actionMenuItem(props: Partial<PropsOf<"action">> = {}): Node<"menu-item"> {
+function actionMenuItem(props: Partial<ComponentPropsOf<"action">> = {}): Node<"menu-item"> {
   return fakeNode({
     id: "log-out",
     type: "menu-item",
