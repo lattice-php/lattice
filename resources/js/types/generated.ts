@@ -361,6 +361,7 @@ export type ComponentPropsMap = {
   text: Text;
   tooltip: Tooltip;
   topbar: Topbar;
+  tree: Tree;
 };
 export type Condition = {
   readonly field: string;
@@ -832,7 +833,8 @@ export type NodeType =
   | "tabs"
   | "text"
   | "tooltip"
-  | "topbar";
+  | "topbar"
+  | "tree";
 export type NotificationItem = {
   readonly id: string;
   readonly title: string | null;
@@ -1388,6 +1390,22 @@ export type Translatable = {
   payload: Record<string, string>;
   replacements: Record<string, string | number | boolean>;
   key: string;
+};
+export type Tree = {
+  activeId: string | null;
+  defaultExpanded: string[];
+  rememberState: boolean;
+};
+export type TreeNode = {
+  icon: string | null;
+  badge: string | null;
+  href: string | null;
+  actions: Node<"action"> | Node<"action.group"> | null;
+  children: TreeNode[];
+  hasChildren: boolean;
+  disabled: boolean;
+  readonly label: string;
+  readonly id: string;
 };
 export type UnreadCount = {
   readonly unreadCount: number;

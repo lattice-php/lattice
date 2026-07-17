@@ -1,0 +1,109 @@
+---
+title: Tree
+description: A keyboard-navigable hierarchy — expandable nodes with icons, badges, links, and actions, backed by an eager array or a data source.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+
+`Tree::make()` renders a hierarchy of `TreeNode` rows the user can expand, collapse, and navigate with
+the keyboard. Feed it a `->nodes([...])` array for a hierarchy you already have in hand, or hand it a
+`->source(...)` for one that lives in a database.
+
+<ComponentExample
+  php={`Tree::make('category-tree')
+    ->nodes([
+        TreeNode::make('Electronics', 'electronics')
+            ->icon('cpu')
+            ->children([
+                TreeNode::make('Laptops', 'electronics-laptops'),
+                TreeNode::make('Phones', 'electronics-phones')->href('/products/phones'),
+            ]),
+        TreeNode::make('Clothing', 'clothing')
+            ->badge('New')
+            ->children([
+                TreeNode::make('Men', 'clothing-men'),
+                TreeNode::make('Women', 'clothing-women'),
+            ]),
+    ])
+    ->activeId('electronics-phones')
+    ->defaultExpanded(['electronics']);`}
+  fixture="components.tree"
+/>
+
+## TreeNode
+
+`TreeNode::make($label, $id)` builds one row. `$id` is a stable identifier — it drives `activeId`,
+`defaultExpanded`, and keyboard focus, so keep it unique across the whole tree, not just among
+siblings.
+
+- **`->icon($name)`** — a sprite icon before the label (see [Icons](/core/icons/)).
+- **`->badge($text)`** — a small pill after the label.
+- **`->href($url)`** — turns the label into a link. Clicking it, or activating the focused node with
+  Enter, navigates through Inertia's client-side router.
+- **`->action(Action $action)`** / **`->actions(ActionGroup $group)`** — attaches a single
+  [action](/actions/overview/) or a grouped action menu at the end of the row.
+- **`->children([...])`** — nested `TreeNode`s, or plain arrays shaped like `['id' => ..., 'label' => ...]`
+  — both normalize through the same builder.
+- **`->hasChildren(bool $hasChildren = true)`** — marks a node as expandable without children attached
+  yet. A [`TreeSource`](#data-sources) sets it per row so `Tree` knows which nodes to fetch children
+  for.
+- **`->disabled(bool $disabled = true)`** — grays the row out and blocks its link and activation.
+
+## Tree
+
+- **`->nodes([...])`** — an eager array of `TreeNode`s. Internally this wraps the array in a
+  `CallbackTreeSource`, so it's the same mechanism as `->source()` with the roots already in hand.
+- **`->source(TreeSource $source)`** — a [data source](#data-sources) for nodes that live elsewhere.
+- **`->activeId($id)`** — marks a node selected (`aria-selected`); nothing is selected by default.
+- **`->defaultExpanded([$id, ...])`** — ids expanded on first render.
+- **`->rememberState(bool $remember = true)`** — persists the expanded set across reloads, keyed by
+  the tree's identity, the same pattern as [`Collapsible`](/components/section-collapsible/#collapsible).
+
+## Data sources
+
+Every node ultimately comes from a `TreeSource` — `roots(): iterable<TreeNode>` and
+`children(string $parentId): iterable<TreeNode>`. `Tree` walks the source eagerly at render time:
+`roots()` first, then `children()` for every `hasChildren` row. Serialization depth is capped at 50
+purely as a safety bound against cyclic adjacency data; lazy loading is the planned path for
+genuinely deep hierarchies. `->nodes([...])` is the array-backed source; for a database-backed
+hierarchy, use `EloquentTreeSource` against a self-referencing parent column:
+
+```php
+use Illuminate\Database\Eloquent\Builder;
+use Lattice\Lattice\Ui\Components\Tree;
+use Lattice\Lattice\Ui\Sources\EloquentTreeSource;
+
+Tree::make('categories')
+    ->source(
+        EloquentTreeSource::make(Category::class)
+            ->label('title')
+            ->parent('parent_category_id')
+            ->scope(fn (Builder $query) => $query->where('team_id', $this->team->id)),
+    );
+```
+
+- **`label($column)`** — the column shown as the node label (default `name`).
+- **`parent($column)`** — the self-referencing foreign key column (default `parent_id`).
+- **`scope($callback)`** — constrains the query; applied to roots, children, and the `hasChildren`
+  check alike, so a scoped-out row never renders an expand chevron for hidden children.
+
+<Info>
+  Implement the `TreeSource` contract directly for any other backing store — the same shape
+  [`TableSource`](/tables/data-sources/) uses for tables.
+</Info>
+
+## Keyboard & accessibility
+
+The tree renders `role="tree"` with `role="treeitem"` rows carrying `aria-level`, `aria-posinset`,
+`aria-setsize`, `aria-expanded` on expandable nodes, and `aria-selected` on the active node. Exactly
+one row sits in the tab order at a time — arrow keys move focus without touching Tab:
+
+- **ArrowDown / ArrowUp** — move to the next or previous visible row, skipping collapsed subtrees.
+- **ArrowRight** — expands a collapsed node, or moves into its first child when already expanded.
+- **ArrowLeft** — collapses an expanded node, or moves focus to its parent.
+- **Home / End** — jump to the first or last visible row.
+- **Enter / Space** — activates the focused node: follows its `href`, triggers its attached action,
+  or marks it active.
+- **Typing a letter** — jumps to the next visible row whose label starts with what's typed, wrapping
+  around the tree. Keep typing to extend the match; a short pause starts a new search.

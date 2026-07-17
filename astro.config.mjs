@@ -99,6 +99,7 @@ export default defineConfig({
             { label: "Tooltip", link: "/components/tooltip/" },
             { label: "Progress", link: "/components/progress/" },
             { label: "Charts", link: "/components/charts/" },
+            { label: "Tree", link: "/components/tree/" },
             { label: "Notifications", link: "/components/notifications/" },
           ],
         },
