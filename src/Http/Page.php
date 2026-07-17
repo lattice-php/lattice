@@ -175,17 +175,15 @@ abstract class Page implements PageContract, Responsable
     }
 
     /**
-     * @return array<int, Listen>|null
+     * @return array<int, Listen>
      */
-    private function resolveListeners(): ?array
+    private function resolveListeners(): array
     {
         if (! config('lattice.realtime.enabled', true)) {
-            return null;
+            return [];
         }
 
-        $listeners = array_values($this->listeners());
-
-        return $listeners === [] ? null : $listeners;
+        return array_values($this->listeners());
     }
 
     private function response(PageSchema $schema): Response

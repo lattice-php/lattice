@@ -30,12 +30,6 @@ afterEach(() => {
 });
 
 describe("RealtimeListeners", () => {
-  it("renders nothing when no listeners are declared", () => {
-    const { container } = render(<RealtimeListeners />);
-
-    expect(container).toBeEmptyDOMElement();
-  });
-
   it("renders nothing for an empty listener list", () => {
     const { container } = render(<RealtimeListeners listeners={[]} />);
 

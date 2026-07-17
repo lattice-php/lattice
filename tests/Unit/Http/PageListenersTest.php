@@ -35,7 +35,7 @@ test('pages serialize declared listeners when realtime is enabled', function ():
         ]);
 });
 
-test('pages send null listeners when none are declared', function (): void {
+test('pages send empty listeners when none are declared', function (): void {
     config()->set('lattice.realtime.enabled', true);
 
     $page = new class extends Page
@@ -47,10 +47,10 @@ test('pages send null listeners when none are declared', function (): void {
     };
 
     expect($page->toArray($page->render(PageSchema::make()), new Request))
-        ->toHaveKey('listeners', null);
+        ->toHaveKey('listeners', []);
 });
 
-test('pages send null listeners when realtime is disabled', function (): void {
+test('pages send empty listeners when realtime is disabled', function (): void {
     config()->set('lattice.realtime.enabled', false);
 
     $page = new class extends Page
@@ -69,5 +69,5 @@ test('pages send null listeners when realtime is disabled', function (): void {
     };
 
     expect($page->toArray($page->render(PageSchema::make()), new Request))
-        ->toHaveKey('listeners', null);
+        ->toHaveKey('listeners', []);
 });

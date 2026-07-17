@@ -1159,7 +1159,7 @@ export type PagePayload = {
   readonly breadcrumbs: Breadcrumb[];
   readonly container: string;
   readonly layout: PageLayoutPayload | null;
-  readonly listeners: Listen[] | null;
+  readonly listeners: Listen[];
   readonly schema: Node[];
   readonly title: string | null;
 };

@@ -18,7 +18,7 @@ final readonly class PagePayload
     /**
      * @param  array<int, Breadcrumb>  $breadcrumbs
      * @param  array<int, Component>  $schema
-     * @param  array<int, Listen>|null  $listeners
+     * @param  array<int, Listen>  $listeners
      */
     public function __construct(
         public ?string $title,
@@ -26,6 +26,6 @@ final readonly class PagePayload
         public string $container,
         public array $breadcrumbs,
         public array $schema,
-        public ?array $listeners,
+        public array $listeners,
     ) {}
 }
