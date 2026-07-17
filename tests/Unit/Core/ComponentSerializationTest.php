@@ -380,6 +380,8 @@ test('actions can serialize confirmation modal configuration', function (): void
                 ],
                 'form' => null,
                 'lazyForm' => false,
+                'modalSide' => null,
+                'modalWidth' => null,
                 'variant' => 'destructive',
                 'ref' => null,
             ],
@@ -401,6 +403,8 @@ test('modals serialize composable children for action driven dialogs', function 
                 'description' => 'Scan the QR code with your authenticator app.',
                 'closeLabel' => 'Close',
                 'open' => false,
+                'side' => null,
+                'width' => 'lg',
                 'ref' => null,
             ],
             'schema' => [

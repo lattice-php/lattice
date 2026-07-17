@@ -34,6 +34,8 @@ test('registered actions serialize their configured endpoint method and label', 
                 'confirmation' => null,
                 'form' => null,
                 'lazyForm' => false,
+                'modalSide' => null,
+                'modalWidth' => null,
             ],
         ]);
 });

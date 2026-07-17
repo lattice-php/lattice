@@ -17,6 +17,8 @@ use Lattice\Lattice\Ui\Concerns\HasHttpMethod;
 use Lattice\Lattice\Ui\Concerns\HasIcon;
 use Lattice\Lattice\Ui\Concerns\HasLabel;
 use Lattice\Lattice\Ui\Concerns\HasVariant;
+use Lattice\Lattice\Ui\Enums\ModalWidth;
+use Lattice\Lattice\Ui\Enums\Side;
 
 #[AsComponent('action')]
 class Action extends Component
@@ -34,6 +36,10 @@ class Action extends Component
     public ?Form $form = null;
 
     public bool $lazyForm = false;
+
+    public ?Side $modalSide = null;
+
+    public ?ModalWidth $modalWidth = null;
 
     public static function make(string $id): static
     {
@@ -92,6 +98,23 @@ class Action extends Component
     public function lazyForm(): static
     {
         $this->lazyForm = true;
+
+        return $this;
+    }
+
+    /**
+     * Present the attached form modal as a slide-out sheet instead of a centered dialog.
+     */
+    public function slideOut(Side $side = Side::End): static
+    {
+        $this->modalSide = $side;
+
+        return $this;
+    }
+
+    public function modalWidth(ModalWidth $width): static
+    {
+        $this->modalWidth = $width;
 
         return $this;
     }

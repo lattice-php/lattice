@@ -49,6 +49,8 @@ describe("getBulkActions", () => {
           cancelLabel: null,
         },
         form: null,
+        modalSide: "end",
+        modalWidth: "2xl",
       },
     }) as ActionNode;
 
@@ -67,6 +69,8 @@ describe("getBulkActions", () => {
           cancelLabel: null,
         },
         form: null,
+        modalSide: "end",
+        modalWidth: "2xl",
       },
     ]);
   });
@@ -87,6 +91,8 @@ describe("getBulkActions", () => {
         variant: "default",
         confirmation: undefined,
         form: undefined,
+        modalSide: undefined,
+        modalWidth: undefined,
       },
     ]);
   });

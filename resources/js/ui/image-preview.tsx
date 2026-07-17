@@ -56,7 +56,7 @@ export function PreviewableImage({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent
           aria-describedby={undefined}
-          className="max-h-[90vh] max-w-[90vw] border-none bg-transparent p-0 shadow-none"
+          className="max-h-[90vh] w-auto max-w-[90vw] border-none bg-transparent p-0 shadow-none"
         >
           <DialogTitle className="sr-only">{alt || openLabel}</DialogTitle>
           <img

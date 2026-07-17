@@ -115,8 +115,10 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
             dispatch(getActionEffects(response.effects));
             setIsFilling(false);
           }}
+          placement={node.props.modalSide ?? "center"}
           submitLabel={confirmationConfirmLabel}
           title={confirmationTitle}
+          width={node.props.modalWidth ?? undefined}
         />
       )}
     </>

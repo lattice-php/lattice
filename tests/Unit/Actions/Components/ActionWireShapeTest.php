@@ -9,6 +9,7 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\Icon;
+use Lattice\Lattice\Ui\Enums\ModalWidth;
 use Lattice\Lattice\Ui\Enums\Orientation;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
@@ -183,4 +184,23 @@ it('carries typed props through BulkAction::use from the registry', function ():
         'variant' => 'destructive',
     ]);
     expect($payload['props']['ref'])->toBeString();
+});
+
+it('serializes the form modal presentation', function (): void {
+    $action = Action::make('give-feedback')
+        ->form([Textarea::make('note', 'Note')])
+        ->slideOut()
+        ->modalWidth(ModalWidth::Xl);
+
+    expect(wire($action)['props'])->toMatchArray([
+        'modalSide' => 'end',
+        'modalWidth' => 'xl',
+    ]);
+});
+
+it('serializes a null modal presentation by default', function (): void {
+    expect(wire(Action::make('plain')->label('Plain'))['props'])->toMatchArray([
+        'modalSide' => null,
+        'modalWidth' => null,
+    ]);
 });

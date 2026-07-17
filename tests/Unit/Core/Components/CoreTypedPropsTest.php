@@ -13,7 +13,9 @@ use Lattice\Lattice\Ui\Enums\Align;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Icon as IconName;
 use Lattice\Lattice\Ui\Enums\Justify;
+use Lattice\Lattice\Ui\Enums\ModalWidth;
 use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Lattice\Ui\Enums\Side;
 use Lattice\Lattice\Ui\Enums\Size;
 use Lattice\Lattice\Ui\Enums\StackDirection;
 use Lattice\Lattice\Ui\Enums\TabsAlignment;
@@ -82,6 +84,8 @@ it('modal serializes id title description and children', function (): void {
                 'description' => 'Desc',
                 'closeLabel' => 'Close',
                 'open' => true,
+                'side' => null,
+                'width' => 'lg',
                 'ref' => null,
             ],
             'schema' => [
@@ -100,9 +104,27 @@ it('modal without optional props includes them as null', function (): void {
                 'description' => null,
                 'closeLabel' => 'Close',
                 'open' => false,
+                'side' => null,
+                'width' => 'lg',
                 'ref' => null,
             ],
         ]);
+});
+
+it('modal serializes slide-out side and width', function (): void {
+    $payload = wire(Modal::make('order.preview')
+        ->slideOut(Side::Start)
+        ->width(ModalWidth::Xl2));
+
+    expect($payload['props'])->toMatchArray([
+        'side' => 'start',
+        'width' => '2xl',
+    ]);
+});
+
+it('modal slide-out defaults to the end side', function (): void {
+    expect(wire(Modal::make('order.preview')->slideOut())['props'])
+        ->toMatchArray(['side' => 'end', 'width' => 'lg']);
 });
 
 it('tabs serialize defaultValue queryKey and computed activeValue', function (): void {

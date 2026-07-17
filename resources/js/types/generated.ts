@@ -163,6 +163,8 @@ export type Action = {
   label: string | null;
   lazyForm: boolean;
   method: HttpMethod | null;
+  modalSide: Side | null;
+  modalWidth: ModalWidth | null;
   ref: string | null;
   variant: ButtonVariant | null;
 };
@@ -254,6 +256,8 @@ export type BulkAction = {
   label: string | null;
   lazyForm: boolean;
   method: HttpMethod | null;
+  modalSide: Side | null;
+  modalWidth: ModalWidth | null;
   ref: string | null;
   variant: ButtonVariant | null;
 };
@@ -944,8 +948,11 @@ export type Modal = {
   description: string | null;
   open: boolean;
   ref: string | null;
+  side: Side | null;
   title: string | null;
+  width: ModalWidth;
 };
+export type ModalWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type MoneyColumn = {
   align: ColumnAlign;
   copyable: boolean;

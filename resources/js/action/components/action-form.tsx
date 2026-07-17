@@ -1,11 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { apiFetch } from "@lattice-php/lattice/core/api";
 import { Button } from "@lattice-php/lattice/ui/button";
-import { Dialog, DialogContent, DialogHeader } from "@lattice-php/lattice/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  type DialogPlacement,
+} from "@lattice-php/lattice/ui/dialog";
 import { Skeleton } from "@lattice-php/lattice/ui/skeleton";
 import { Spinner } from "@lattice-php/lattice/ui/spinner";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import type { Node } from "@lattice-php/lattice/core/types";
+import type { ModalWidth } from "@lattice-php/lattice/types/generated";
 import {
   FORM_DEBOUNCE_MS,
   FormProvider,
@@ -34,8 +40,11 @@ type ActionFormProps = {
   method: string;
   onClose: () => void;
   onSuccess: (response: ActionResponse) => void;
+  /** Dialog placement for the form modal; sheets dock to a viewport edge. */
+  placement?: DialogPlacement;
   submitLabel: string;
   title: string;
+  width?: ModalWidth;
 };
 
 /**
@@ -293,7 +302,15 @@ function ActionFormContent({
   );
 }
 
-export function ActionForm({ description, formNode, onClose, title, ...rest }: ActionFormProps) {
+export function ActionForm({
+  description,
+  formNode,
+  onClose,
+  placement,
+  title,
+  width,
+  ...rest
+}: ActionFormProps) {
   const { t } = useT("lattice");
 
   return (
@@ -307,7 +324,8 @@ export function ActionForm({ description, formNode, onClose, title, ...rest }: A
     >
       <DialogContent
         {...(description ? {} : { "aria-describedby": undefined })}
-        className="max-h-[min(680px,calc(100vh-2rem))] w-full max-w-lg overflow-y-auto"
+        placement={placement}
+        width={width}
       >
         <DialogHeader
           closeLabel={t("common.close", "Close")}

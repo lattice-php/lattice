@@ -146,4 +146,36 @@ describe("table bulk actions", () => {
       },
     });
   });
+
+  it("opens the bulk action form as a sheet when the action carries modal presentation", () => {
+    const sheetNode = {
+      ...node,
+      props: {
+        ...node.props,
+        bulkActions: [
+          fakeNode({
+            type: "action",
+            id: "workbench.products.tag-selected",
+            props: {
+              label: "Tag selected",
+              method: "patch",
+              endpoint: "/lattice/bulk-actions/workbench.products.tag-selected",
+              ref: "sealed-ref",
+              form: fakeNode({ type: "form", schema: [] }),
+              modalSide: "end",
+              modalWidth: "2xl",
+            },
+          }),
+        ],
+      },
+    } satisfies TableNode;
+
+    render(<TableComponent node={sheetNode}>{null}</TableComponent>);
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "Select row 1" }));
+    fireEvent.click(screen.getByRole("button", { name: "Tag selected" }));
+
+    const content = document.querySelector('[data-slot="dialog-content"]');
+    expect(content).toHaveClass("end-0", "max-w-2xl");
+  });
 });

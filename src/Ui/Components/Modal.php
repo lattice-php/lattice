@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Ui\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Ui\Enums\ModalWidth;
+use Lattice\Lattice\Ui\Enums\Side;
 
 #[AsComponent('modal')]
 class Modal extends ContainerComponent
@@ -17,6 +19,10 @@ class Modal extends ContainerComponent
     public string $closeLabel = 'Close';
 
     public bool $open = false;
+
+    public ?Side $side = null;
+
+    public ModalWidth $width = ModalWidth::Lg;
 
     public static function make(string $id): static
     {
@@ -47,6 +53,23 @@ class Modal extends ContainerComponent
     public function open(bool $open = true): static
     {
         $this->open = $open;
+
+        return $this;
+    }
+
+    /**
+     * Present the dialog as a full-height sheet docked to a viewport edge.
+     */
+    public function slideOut(Side $side = Side::End): static
+    {
+        $this->side = $side;
+
+        return $this;
+    }
+
+    public function width(ModalWidth $width): static
+    {
+        $this->width = $width;
 
         return $this;
     }

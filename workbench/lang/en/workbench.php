@@ -407,6 +407,7 @@ return [
         'groups' => 'Groups',
         'home' => 'Home',
         'log-out' => 'Log out',
+        'modals' => 'Modals',
         'notifications' => 'Notifications',
         'package' => 'Package components',
         'pagination-modes' => 'Pagination',
@@ -531,6 +532,32 @@ return [
                 'title' => 'Containers',
                 'tooltip-badge' => 'Plan: Pro',
                 'tooltip-content' => 'Includes unlimited seats and priority support.',
+            ],
+            'modals' => [
+                'dialog' => [
+                    'body' => 'A medium-width dialog centered in the viewport.',
+                    'description' => 'The default presentation.',
+                    'title' => 'Centered dialog',
+                    'trigger' => 'Open dialog',
+                ],
+                'feedback' => [
+                    'label' => 'Give feedback',
+                    'message' => 'Message',
+                    'toast' => 'Thanks for the feedback!',
+                ],
+                'intro' => 'Dialogs open centered by default; slideOut() docks them to a viewport edge.',
+                'sheet-end' => [
+                    'body' => 'An extra-wide sheet sliding in from the end edge.',
+                    'description' => 'Docked to the trailing edge.',
+                    'title' => 'End sheet',
+                    'trigger' => 'Open end sheet',
+                ],
+                'sheet-start' => [
+                    'body' => 'A sheet sliding in from the start edge.',
+                    'title' => 'Start sheet',
+                    'trigger' => 'Open start sheet',
+                ],
+                'title' => 'Modals & sheets',
             ],
             'notifications' => [
                 'popover' => 'The bell opens notifications in a popover.',

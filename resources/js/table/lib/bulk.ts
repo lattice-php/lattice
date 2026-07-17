@@ -12,6 +12,8 @@ export type BulkAction = {
   variant: ButtonVariant;
   confirmation: Action["confirmation"];
   form: Node | null;
+  modalSide: Action["modalSide"];
+  modalWidth: Action["modalWidth"];
 };
 
 export function getBulkActions(actions: ActionNode[] | undefined): BulkAction[] {
@@ -36,6 +38,8 @@ export function getBulkActions(actions: ActionNode[] | undefined): BulkAction[] 
         variant: props.variant ?? "default",
         confirmation: props.confirmation,
         form: props.form,
+        modalSide: props.modalSide,
+        modalWidth: props.modalWidth,
       },
     ];
   });
