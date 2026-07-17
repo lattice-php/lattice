@@ -407,6 +407,7 @@ return [
         'groups' => 'Gruppen',
         'home' => 'Home',
         'log-out' => 'Abmelden',
+        'modals' => 'Modals',
         'notifications' => 'Benachrichtigungen',
         'package' => 'Paket-Komponenten',
         'pagination-modes' => 'Paginierung',
@@ -531,6 +532,32 @@ return [
                 'title' => 'Container',
                 'tooltip-badge' => 'Tarif: Pro',
                 'tooltip-content' => 'Beinhaltet unbegrenzte Plätze und bevorzugten Support.',
+            ],
+            'modals' => [
+                'dialog' => [
+                    'body' => 'Ein mittelbreiter, im Viewport zentrierter Dialog.',
+                    'description' => 'Die Standard-Darstellung.',
+                    'title' => 'Zentrierter Dialog',
+                    'trigger' => 'Dialog öffnen',
+                ],
+                'feedback' => [
+                    'label' => 'Feedback geben',
+                    'message' => 'Nachricht',
+                    'toast' => 'Danke für das Feedback!',
+                ],
+                'intro' => 'Dialoge öffnen zentriert; slideOut() dockt sie an eine Viewport-Kante an.',
+                'sheet-end' => [
+                    'body' => 'Ein extra breites Sheet, das von der Endkante hereingleitet.',
+                    'description' => 'An der Endkante angedockt.',
+                    'title' => 'End-Sheet',
+                    'trigger' => 'End-Sheet öffnen',
+                ],
+                'sheet-start' => [
+                    'body' => 'Ein Sheet, das von der Startkante hereingleitet.',
+                    'title' => 'Start-Sheet',
+                    'trigger' => 'Start-Sheet öffnen',
+                ],
+                'title' => 'Modals & Sheets',
             ],
             'notifications' => [
                 'popover' => 'Die Glocke öffnet Benachrichtigungen in einem Popover.',
