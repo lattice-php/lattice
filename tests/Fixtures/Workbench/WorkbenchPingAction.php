@@ -29,7 +29,7 @@ class WorkbenchPingAction extends ActionDefinition
             'handled' => $request->string('name')->toString(),
             'team' => $this->context('team'),
         ])
-            ->toast(Variant::Info, 'Action handled.')
+            ->toast('Action handled.', Variant::Info)
             ->reloadComponent('workbench.users');
     }
 }

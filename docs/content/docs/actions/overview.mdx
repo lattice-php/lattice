@@ -71,7 +71,7 @@ class ArchiveProductAction extends ActionDefinition
         $product->update(['status' => 'archived']);
 
         return ActionResult::success()
-            ->toast(Variant::Success, 'Product archived.')
+            ->toast('Product archived.', Variant::Success)
             ->reloadComponent('app.products');
     }
 }
@@ -118,8 +118,8 @@ ActionGroup::make('locale-switcher')
 
 ## The result
 
-`handle()` returns an `ActionResult`. Start from `ActionResult::success()` or
-`ActionResult::failure()`, optionally attaching data, then chain [effects](/actions/effects/):
+`handle()` returns an `ActionResult`. Start from `ActionResult::success()`,
+optionally attaching data, then chain [effects](/actions/effects/):
 
 ```php
 return ActionResult::success(['id' => $product->id])

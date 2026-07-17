@@ -15,7 +15,7 @@ use Lattice\Lattice\Ui\Enums\Variant;
 
 test('a toast serializes its lifetime, dismissibility and link', function (): void {
     $wire = wire(Effects::toast(
-        Toast::make(Variant::Success, 'Saved.')
+        Toast::make('Saved.', Variant::Success)
             ->duration(8000)
             ->dismissible(false)
             ->link('Undo', '/undo', HttpMethod::Patch),
@@ -33,7 +33,7 @@ test('a toast serializes its lifetime, dismissibility and link', function (): vo
 
 test('a toast can carry an action component', function (): void {
     $wire = wire(Effects::toast(
-        Toast::make(Variant::Info, 'Done.')
+        Toast::make('Done.', Variant::Info)
             ->persistent()
             ->action(ActionComponent::make('demo.toast-action')->endpoint('/x')->label('Open')),
     ));
@@ -83,11 +83,11 @@ test('action result toasts accept a translatable message', function (): void {
 });
 
 test('a callout effect serializes its callout payload', function (): void {
-    $wire = wire(Effects::callout(
-        Callout::make(Variant::Warning, 'Your trial ends in 3 days.')
+    $wire = wire(
+        Callout::make('Your trial ends in 3 days.', Variant::Warning)
             ->title('Trial ending')
             ->link('Upgrade', '/billing'),
-    ));
+    );
 
     expect($wire['type'])->toBe('callout')
         ->and($wire['props']['variant'])->toBe('warning')
@@ -98,7 +98,7 @@ test('a callout effect serializes its callout payload', function (): void {
 
 test('action results expose the callout effect', function (): void {
     $result = ActionResult::success()->callout(
-        Callout::make(Variant::Info, 'Saved as draft.'),
+        Callout::make('Saved as draft.', Variant::Info),
     );
 
     expect(wire($result)['effects'][0]['type'])->toBe('callout')

@@ -48,7 +48,6 @@ test('registered actions can be handled through the package endpoint', function 
         ],
     ], ['team' => 'trusted-team'])
         ->assertOk()
-        ->assertJsonPath('ok', true)
         ->assertJsonPath('data.handled', 'Taylor')
         ->assertJsonPath('data.team', 'trusted-team')
         ->assertJsonPath('effects.0.type', 'toast')
@@ -64,13 +63,12 @@ test('registered actions can return a locale change effect', function (): void {
 
     postJson('/lattice/actions/workbench.locale.set', [], latticeHeaders($ref))
         ->assertOk()
-        ->assertJsonPath('ok', true)
         ->assertJsonPath('effects.0.type', 'locale-change')
         ->assertJsonPath('effects.0.props.locale', 'de');
 });
 
 test('toast effects serialize correctly for action results', function (): void {
-    expect(wire(Effects::toast(Variant::Warning, 'Review the settings.')))
+    expect(wire(Effects::toast('Review the settings.', Variant::Warning)))
         ->toBe([
             'type' => 'toast',
             'props' => [
@@ -98,7 +96,7 @@ test('toast effects serialize correctly for action results', function (): void {
                 ],
             ],
         ])
-        ->and(wire(ActionResult::success()->toast(Variant::Warning, 'Review the settings.')))
+        ->and(wire(ActionResult::success()->toast('Review the settings.', Variant::Warning)))
         ->toMatchArray([
             'effects' => [
                 [

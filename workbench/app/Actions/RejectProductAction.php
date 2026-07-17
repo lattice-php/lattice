@@ -55,7 +55,7 @@ class RejectProductAction extends ActionDefinition
         $product->update(['status' => 'archived']);
 
         return ActionResult::success(['id' => $product->getKey(), 'reason' => $data['reason']])
-            ->toast(Variant::Success, __('workbench.actions.reject.toast', ['reason' => $data['reason']]))
+            ->toast(__('workbench.actions.reject.toast', ['reason' => $data['reason']]), Variant::Success)
             ->reloadComponent('workbench.products');
     }
 

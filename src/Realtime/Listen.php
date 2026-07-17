@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Realtime;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Effects\Builtin\Callout;
 use Lattice\Lattice\Effects\Builtin\Toast;
-use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
+use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Realtime\Enums\ChannelVisibility;
@@ -22,7 +22,7 @@ final class Listen
 {
     /**
      * @param  list<string>  $events
-     * @param  list<EffectContract>  $effects
+     * @param  list<Effect>  $effects
      */
     private function __construct(
         public readonly string $channel,
@@ -56,7 +56,7 @@ final class Listen
         return $this;
     }
 
-    public function toast(string|Translatable|Toast|Variant $message, Variant|string|null $variant = null): self
+    public function toast(string|Translatable|Toast $message, Variant $variant = Variant::Success): self
     {
         $this->effects[] = Effects::toast($message, $variant);
 
@@ -65,7 +65,7 @@ final class Listen
 
     public function callout(Callout $callout): self
     {
-        $this->effects[] = Effects::callout($callout);
+        $this->effects[] = $callout;
 
         return $this;
     }

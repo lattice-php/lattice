@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use InvalidArgumentException;
-use Lattice\Lattice\Effects\Builtin\Callout;
 use Lattice\Lattice\Effects\Builtin\CloseModal;
 use Lattice\Lattice\Effects\Builtin\Download;
 use Lattice\Lattice\Effects\Builtin\LocaleChange;
@@ -21,27 +19,16 @@ use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 /**
- * @method static void flash(\Lattice\Lattice\Effects\Contracts\Effect ...$effects)
+ * @method static void flash(\Lattice\Lattice\Effects\Effect ...$effects)
  * @method static \Lattice\Lattice\Http\LatticeResponse respond()
  *
  * @see EffectFlasher
  */
 final class Effects extends Facade
 {
-    public static function callout(Callout $callout): Callout
+    public static function toast(string|Translatable|Toast $message, Variant $variant = Variant::Success): Toast
     {
-        return $callout;
-    }
-
-    public static function toast(string|Translatable|Toast|Variant $message, Variant|string|null $variant = null): Toast
-    {
-        return match (true) {
-            $message instanceof Toast => $message,
-            $message instanceof Variant && is_string($variant) => Toast::make($message, $variant),
-            ($message instanceof Translatable || is_string($message)) && $variant instanceof Variant => Toast::make($variant, $message),
-            $message instanceof Translatable || is_string($message) => Toast::make(Variant::Success, $message),
-            default => throw new InvalidArgumentException('A toast message string is required.'),
-        };
+        return $message instanceof Toast ? $message : Toast::make($message, $variant);
     }
 
     public static function reloadComponent(string $component): ReloadComponent

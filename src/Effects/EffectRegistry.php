@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Effects;
 
 use Lattice\Lattice\Effects\Attributes\AsEffect;
-use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Support\WireTypeRegistry;
 
 /**
@@ -13,7 +12,7 @@ use Lattice\Lattice\Support\WireTypeRegistry;
  * gate for emitting — ActionResult::effect() and Effects::flash() accept any
  * Effect regardless of registration.
  *
- * @extends WireTypeRegistry<EffectContract>
+ * @extends WireTypeRegistry<Effect>
  */
 final class EffectRegistry extends WireTypeRegistry
 {
@@ -39,6 +38,6 @@ final class EffectRegistry extends WireTypeRegistry
     #[\Override]
     public static function baseClass(): string
     {
-        return EffectContract::class;
+        return Effect::class;
     }
 }

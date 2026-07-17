@@ -11,14 +11,12 @@ use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Concerns\ResolvesFormFields;
-use Lattice\Lattice\Forms\Contracts\HandlesUploads;
-use Lattice\Lattice\Forms\Contracts\ProvidesForm;
 use Lattice\Lattice\Http\LatticeResponse;
 use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Ui\Enums\Variant;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class FormDefinition extends Definition implements HandlesUploads, ProvidesForm
+abstract class FormDefinition extends Definition
 {
     use ResolvesFormFields;
 
@@ -31,7 +29,7 @@ abstract class FormDefinition extends Definition implements HandlesUploads, Prov
         return LatticeResponse::make();
     }
 
-    protected function toast(string|Translatable|Toast|Variant $message, Variant|string|null $variant = null): LatticeResponse
+    protected function toast(string|Translatable|Toast $message, Variant $variant = Variant::Success): LatticeResponse
     {
         return LatticeResponse::make()->toast($message, $variant);
     }

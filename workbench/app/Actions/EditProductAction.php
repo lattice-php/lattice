@@ -67,7 +67,7 @@ class EditProductAction extends FormActionDefinition
 
         return ActionResult::success(['id' => $product->getKey()])
             ->toast(
-                Toast::make(Variant::Success, __('workbench.actions.edit.toast'))
+                Toast::make(__('workbench.actions.edit.toast'), Variant::Success)
                     ->action(
                         Action::use(RejectProductAction::class, ['product_id' => $product->getKey()])
                             ->label(__('workbench.actions.edit.reject-product')),

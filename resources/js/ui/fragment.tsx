@@ -5,7 +5,7 @@ import { Renderer } from "@lattice-php/lattice/core/renderer";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import type { FragmentResponse } from "@lattice-php/lattice/types/generated";
 import { toNodes } from "@lattice-php/lattice/core/nodes";
-import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
+import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/core/event-names";
 
 const fragmentSizeHeights = {
   lg: 320,

@@ -36,7 +36,7 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
         $records->each(fn (Product $product) => $product->update(['status' => 'archived']));
 
         return ActionResult::success(['archived' => $records->count()])
-            ->toast(Variant::Success, "Archived {$records->count()} products.")
+            ->toast("Archived {$records->count()} products.", Variant::Success)
             ->reloadComponent('app.products');
     }
 }

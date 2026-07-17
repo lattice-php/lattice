@@ -3,12 +3,16 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Effects;
 
+use JsonSerializable;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
-use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Concerns\SerializesToWire;
 
-abstract class Effect implements EffectContract
+/**
+ * A value object that serializes to `{ type, props }`; the wire `type` is the
+ * PHP↔JS discriminant. Custom effects extend this base.
+ */
+abstract class Effect implements JsonSerializable
 {
     use SerializesToWire;
 

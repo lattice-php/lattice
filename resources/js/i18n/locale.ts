@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 
 export type UseLocaleReturn = {
   readonly locale: string;

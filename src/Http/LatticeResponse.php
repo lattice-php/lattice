@@ -7,7 +7,7 @@ use BackedEnum;
 use Closure;
 use Illuminate\Contracts\Support\Responsable;
 use Lattice\Lattice\Effects\Concerns\QueuesEffects;
-use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
+use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Support\Wire;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +26,7 @@ readonly class LatticeResponse implements Responsable
     use QueuesEffects;
 
     /**
-     * @param  array<int, EffectContract>  $effects
+     * @param  array<int, Effect>  $effects
      * @param  (Closure(): Response)|null  $redirect
      */
     protected function __construct(
@@ -39,7 +39,7 @@ readonly class LatticeResponse implements Responsable
         return new static;
     }
 
-    public function effect(EffectContract $effect): static
+    public function effect(Effect $effect): static
     {
         return new static([...$this->effects, $effect], $this->redirect);
     }

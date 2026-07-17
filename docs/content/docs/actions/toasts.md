@@ -9,12 +9,12 @@ carry a `Variant` — `Success`, `Info`, `Warning`, or `Error` — that styles t
 ## From an action
 
 The most common source is an [action](/actions/overview/). Add a toast to the `ActionResult` it
-returns; the variant can come first or second:
+returns; the variant is optional and defaults to success:
 
 ```php
 return ActionResult::success()
     ->toast('Product archived.')                       // defaults to Success
-    ->toast(Variant::Error, 'Could not reach the warehouse.');
+    ->toast('Could not reach the warehouse.', Variant::Error);
 ```
 
 See [Effects & results](/actions/effects/#toasts) for the full effect list.
@@ -33,7 +33,7 @@ public function handle(Request $request): Response
     $this->validate($request);
     // … persist …
 
-    Effects::flash(Effects::toast(Variant::Success, 'Profile saved.'));
+    Effects::flash(Effects::toast('Profile saved.', Variant::Success));
 
     return redirect('/profile');
 }
@@ -52,7 +52,7 @@ dismissal, or attach an action, then pass it to `->toast()` (or `Effects::toast(
 use Lattice\Lattice\Effects\Builtin\Toast;
 
 return ActionResult::success()->toast(
-    Toast::make(Variant::Success, 'Product archived.')
+    Toast::make('Product archived.', Variant::Success)
         ->duration(8000)                       // auto-dismiss after 8s (default 4000ms)
         ->link('View products', '/products'),  // a link rendered in the toast
 );

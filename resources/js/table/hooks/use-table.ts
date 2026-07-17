@@ -1,5 +1,5 @@
 import { apiFetch, apiJson } from "@lattice-php/lattice/core/api";
-import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/events/event-names";
+import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/core/event-names";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Option } from "@lattice-php/lattice/types/generated";
 import { isEmptyFilterValue, isFilterValue } from "@lattice-php/lattice/table/lib/filter-values";

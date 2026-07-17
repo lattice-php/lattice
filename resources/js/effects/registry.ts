@@ -1,7 +1,7 @@
 import { router } from "@inertiajs/react";
 import type { ResolveProps } from "@lattice-php/lattice/core/types";
 import type { Effect, EffectPropsMap } from "@lattice-php/lattice/types/generated";
-import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { setLocale } from "@lattice-php/lattice/i18n/locale";
 
 /**

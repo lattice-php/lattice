@@ -1,5 +1,5 @@
 import type { ActionResult, Effect } from "@lattice-php/lattice/types/generated";
-import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { builtinEffectHandlers } from "./registry";
 import type { EffectHandlerRegistry } from "./registry";
 

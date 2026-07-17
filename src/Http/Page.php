@@ -67,6 +67,10 @@ abstract class Page implements PageContract, Responsable
     }
 
     /**
+     * Laravel's ControllerDispatcher invokes this (via method_exists) for every
+     * `[$page, 'render']` route, so the route path authorizes and converts the
+     * returned PageSchema here; it is never called with user-supplied input.
+     *
      * @param  array<int, mixed>  $parameters
      */
     public function callAction(string $method, array $parameters): Response

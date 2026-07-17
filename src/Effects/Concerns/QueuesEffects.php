@@ -5,23 +5,23 @@ namespace Lattice\Lattice\Effects\Concerns;
 
 use Lattice\Lattice\Effects\Builtin\Callout;
 use Lattice\Lattice\Effects\Builtin\Toast;
-use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
+use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 trait QueuesEffects
 {
-    abstract public function effect(EffectContract $effect): static;
+    abstract public function effect(Effect $effect): static;
 
-    public function toast(string|Translatable|Toast|Variant $message, Variant|string|null $variant = null): static
+    public function toast(string|Translatable|Toast $message, Variant $variant = Variant::Success): static
     {
         return $this->effect(Effects::toast($message, $variant));
     }
 
     public function callout(Callout $callout): static
     {
-        return $this->effect(Effects::callout($callout));
+        return $this->effect($callout);
     }
 
     public function reloadComponent(string $component): static

@@ -6,7 +6,6 @@ namespace Lattice\Lattice\Forms\Components;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
-use Lattice\Lattice\Forms\Contracts\ProvidesRowPrefills;
 use Lattice\Lattice\Forms\FormData;
 use LogicException;
 
@@ -21,7 +20,7 @@ use LogicException;
  *
  * @api
  */
-abstract class RowsField extends Field implements ProvidesRowFields, ProvidesRowPrefills
+abstract class RowsField extends Field implements ProvidesRowFields
 {
     public const string ROW_ID = 'rowId';
 

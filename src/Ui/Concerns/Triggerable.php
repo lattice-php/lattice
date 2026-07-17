@@ -7,7 +7,7 @@ namespace Lattice\Lattice\Ui\Concerns;
 use InvalidArgumentException;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Effects\Contracts\Effect;
+use Lattice\Lattice\Effects\Effect;
 
 /**
  * The shared click surface for clickable components (Link, Button, MenuItem): a

@@ -2,7 +2,7 @@ import { router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { CollapsedContext } from "@lattice-php/lattice/core/collapsed-context";
-import { LATTICE_EVENT } from "@lattice-php/lattice/events/event-names";
+import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
 import { cn } from "@lattice-php/lattice/lib/utils";
 

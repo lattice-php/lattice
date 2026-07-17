@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Actions;
 use BackedEnum;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Effects\Concerns\QueuesEffects;
-use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
+use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Support\Wire;
 
@@ -17,10 +17,9 @@ final readonly class ActionResult
 
     /**
      * @param  array<string, mixed>  $data
-     * @param  array<int, EffectContract>  $effects
+     * @param  array<int, Effect>  $effects
      */
     private function __construct(
-        public bool $ok,
         public array $data = [],
         public array $effects = [],
     ) {}
@@ -30,20 +29,12 @@ final readonly class ActionResult
      */
     public static function success(array $data = []): self
     {
-        return new self(true, $data);
+        return new self($data);
     }
 
-    /**
-     * @param  array<string, mixed>  $data
-     */
-    public static function failure(array $data = []): self
+    public function effect(Effect $effect): static
     {
-        return new self(false, $data);
-    }
-
-    public function effect(EffectContract $effect): static
-    {
-        return new self($this->ok, $this->data, [
+        return new self($this->data, [
             ...$this->effects,
             $effect,
         ]);

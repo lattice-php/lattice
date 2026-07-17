@@ -1,21 +1,20 @@
 ---
 title: Effects & results
-description: What an action returns — a success or failure result carrying effects the client dispatches.
+description: What an action returns — a result carrying effects the client dispatches.
 ---
 
 import Info from "@components/Info.astro";
 import Warning from "@components/Warning.astro";
 
-`handle()` returns an `ActionResult`: a success/failure flag, optional data, and a list of **effects**
+`handle()` returns an `ActionResult`: optional data and a list of **effects**
 the client runs in order once the action responds.
 
 ## Results
 
-Build a result from one of two constructors, optionally passing data:
+Build a result with `success()`, optionally passing data:
 
 ```php
 ActionResult::success(['id' => $product->id]);
-ActionResult::failure(['reason' => 'locked']);
 ```
 
 Then chain effects — each returns a new result, so they read as a pipeline:
@@ -57,10 +56,10 @@ return ActionResult::success()
 
 ### Toasts
 
-`->toast()` accepts a message and an optional `Variant` (`Success`, `Error`, `Warning`, `Info`).
-The variant can come first or second — both `->toast('Saved.')` and
-`->toast(Variant::Error, 'Could not save.')` read naturally. Pass a `Toast` instead to
-set a lifetime, control dismissal, or attach a link or action — see [Toasts](/actions/toasts/).
+`->toast()` accepts a message and an optional `Variant` (`Success`, `Error`, `Warning`, `Info`),
+defaulting to success: `->toast('Saved.')`, `->toast('Could not save.', Variant::Error)`. Pass a
+`Toast` instead to set a lifetime, control dismissal, or attach a link or action — see
+[Toasts](/actions/toasts/).
 
 ### Callouts
 
@@ -78,7 +77,7 @@ use Lattice\Lattice\Effects\Builtin\Callout;
 
 return ActionResult::success()
     ->callout(
-        Callout::make(Variant::Warning, 'Your trial ends in 3 days.')
+        Callout::make('Your trial ends in 3 days.', Variant::Warning)
             ->title('Trial ending')
             ->link('Upgrade', '/billing')
     );
@@ -152,10 +151,8 @@ use Lattice\Lattice\Facades\Effects;
 
 // Flash a callout after a controller redirect
 Effects::flash(
-    Effects::callout(
-        Callout::make(Variant::Info, 'Your export is being processed.')
-            ->title('Export queued')
-    )
+    Callout::make('Your export is being processed.', Variant::Info)
+        ->title('Export queued')
 );
 
 return redirect('/exports');
@@ -165,8 +162,8 @@ Pass multiple effects to flash them all at once:
 
 ```php
 Effects::flash(
-    Effects::toast(Variant::Success, 'Settings saved.'),
-    Effects::callout(Callout::make(Variant::Warning, 'Some changes require a page reload.')),
+    Effects::toast('Settings saved.', Variant::Success),
+    Callout::make('Some changes require a page reload.', Variant::Warning),
 );
 ```
 

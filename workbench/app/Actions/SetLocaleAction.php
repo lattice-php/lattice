@@ -28,7 +28,7 @@ class SetLocaleAction extends ActionDefinition
             : [];
 
         if (! is_string($locale) || ! in_array($locale, $locales, true)) {
-            return ActionResult::failure();
+            return ActionResult::success();
         }
 
         $user = $request->user();

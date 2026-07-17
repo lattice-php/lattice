@@ -17,7 +17,6 @@ export type ActionGroup = {
 };
 export type ActionNodeType = "action" | "action.bulk" | "action.group";
 export type ActionResult = {
-  readonly ok: boolean;
   readonly data: Record<string, unknown>;
   readonly effects: Effect[];
 };
