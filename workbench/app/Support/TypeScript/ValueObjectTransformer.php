@@ -8,6 +8,7 @@ use Lattice\Lattice\Support\TypeScript\AllowsListedClasses;
 use Lattice\Lattice\Support\TypeScript\MarkerRewriteClassPropertyProcessor;
 use Lattice\Lattice\Support\TypeScript\MixedToUnknownClassPropertyProcessor;
 use Lattice\Lattice\Support\TypeScript\NodeTypeReference;
+use Lattice\Lattice\Support\TypeScript\SortsPropertiesByName;
 use Lattice\Lattice\Ui\Components\Component;
 use Spatie\Attributes\Attributes;
 use Spatie\TypeScriptTransformer\Data\TransformationContext;
@@ -31,6 +32,7 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptString;
 final class ValueObjectTransformer extends ClassTransformer
 {
     use AllowsListedClasses;
+    use SortsPropertiesByName;
 
     /**
      * @param  array<int, class-string>  $allowed

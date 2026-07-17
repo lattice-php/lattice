@@ -55,10 +55,10 @@ export type BooleanColumn = {
 export type Breadcrumbs = Record<string, never>;
 export type BrowserToken = {
   readonly accessToken: string;
-  readonly tokenType: string;
-  readonly expiresIn: number;
   readonly audience: string;
+  readonly expiresIn: number;
   readonly scopes: string[];
+  readonly tokenType: string;
 };
 export type Builder = {
   addLabel: string | null;
@@ -118,11 +118,11 @@ export type ButtonVariant =
   | "secondary"
   | "success";
 export type Callout = {
-  variant: Variant;
+  action: Node | null;
+  dismissible: boolean;
   message: string;
   title: string | null;
-  dismissible: boolean;
-  action: Node | null;
+  variant: Variant;
 };
 export type Callouts = Record<string, never>;
 export type Card = {
@@ -147,14 +147,14 @@ export type Chart = {
   yAxis: boolean;
 };
 export type ChartSeries = {
-  readonly type: ChartSeriesType;
-  readonly dataKey: string;
-  readonly name: string;
   readonly color: Color | null;
-  readonly stackId: string | null;
-  readonly nameKey: string | null;
+  readonly dataKey: string;
   readonly innerRadius: string;
   readonly maxValue: number | null;
+  readonly name: string;
+  readonly nameKey: string | null;
+  readonly stackId: string | null;
+  readonly type: ChartSeriesType;
 };
 export type ChartSeriesType = "area" | "bar" | "distribution" | "gauge" | "line" | "pie";
 export type ChatBox = {
@@ -167,8 +167,8 @@ export type ChatBox = {
 };
 export type ChatMessage = {
   readonly id: string;
-  readonly role: ChatRole;
   readonly parts: Node[];
+  readonly role: ChatRole;
 };
 export type ChatRole = "user" | "assistant" | "system";
 export type Checkbox = {
@@ -220,9 +220,9 @@ export type Collapsible = {
   trigger: Node[];
 };
 export type Color = {
+  readonly dark: string | null;
   readonly kind: ColorKind;
   readonly value: string;
-  readonly dark: string | null;
 };
 export type ColorKind = "named" | "css";
 export type ColorName =
@@ -261,19 +261,19 @@ export type ColorPicker = {
 };
 export type ColumnAlign = "start" | "center" | "end";
 export type ColumnFilter = {
-  readonly type: FilterType;
-  readonly operators: Op[];
-  readonly defaultOperator: Op;
-  readonly control: FilterControl | null;
-  readonly options: Option[];
-  readonly multiple: boolean;
-  readonly searchable: boolean;
   readonly clauseOptions: ColumnFilterOption[];
+  readonly control: FilterControl | null;
+  readonly defaultOperator: Op;
+  readonly multiple: boolean;
+  readonly operators: Op[];
+  readonly options: Option[];
+  readonly searchable: boolean;
+  readonly type: FilterType;
 };
 export type ColumnFilterOption = {
+  readonly clauses: ColumnFilterOptionClause[];
   readonly label: string;
   readonly value: string;
-  readonly clauses: ColumnFilterOptionClause[];
 };
 export type ColumnFilterOptionClause = {
   readonly operator: Op;
@@ -368,10 +368,10 @@ export type Condition = {
   readonly value: unknown;
 };
 export type Confirmation = {
-  readonly title: string;
-  readonly description: string | null;
-  readonly confirmLabel: string | null;
   readonly cancelLabel: string | null;
+  readonly confirmLabel: string | null;
+  readonly description: string | null;
+  readonly title: string;
 };
 export type DataList = {
   dataEndpoint: string | null;
@@ -379,10 +379,10 @@ export type DataList = {
   remote: RemoteAccess | null;
 };
 export type DateFormat = {
-  kind: string;
   dateStyle: DateTimeStyle | null;
-  timeStyle: DateTimeStyle | null;
+  kind: string;
   month: string | null;
+  timeStyle: DateTimeStyle | null;
   year: string | null;
 };
 export type DateInput = {
@@ -480,14 +480,14 @@ export type EditorHighlight = Record<string, never>;
 export type EditorHorizontalRule = Record<string, never>;
 export type EditorItalic = Record<string, never>;
 export type EditorLink = {
-  protocols: string[];
   openOnClick: boolean;
+  protocols: string[];
 };
 export type EditorOrderedList = Record<string, never>;
 export type EditorStrike = Record<string, never>;
 export type EditorTable = {
-  rows: number;
   cols: number;
+  rows: number;
   withHeaderRow: boolean;
 };
 export type EditorTextAlign = {
@@ -512,10 +512,10 @@ export type EffectPropsMap = {
   "toggle-sidebar": ToggleSidebar;
 };
 export type FieldConditions = {
-  readonly visible: Condition[];
-  readonly required: Condition[];
-  readonly readOnly: Condition[];
   readonly disabled: Condition[];
+  readonly readOnly: Condition[];
+  readonly required: Condition[];
+  readonly visible: Condition[];
 };
 export type FileUpload = {
   accept: string | null;
@@ -672,9 +672,9 @@ export type HiddenInput = {
 export type HttpMethod = import("@inertiajs/core").Method;
 export type I18nConfig = {
   readonly enabled: boolean;
-  readonly saveMissing: boolean;
   readonly locales: string[];
   readonly preloadLocales: string[];
+  readonly saveMissing: boolean;
   readonly timezone: string | null;
 };
 export type Icon = {
@@ -733,9 +733,9 @@ export type Link = {
 };
 export type Listen = {
   readonly channel: string;
-  readonly visibility: ChannelVisibility;
-  events: string[];
   effects: Effect[];
+  events: string[];
+  readonly visibility: ChannelVisibility;
 };
 export type LocaleChange = {
   readonly locale: string;
@@ -835,20 +835,20 @@ export type NodeType =
   | "topbar"
   | "tree";
 export type NotificationItem = {
-  readonly id: string;
-  readonly title: string | null;
-  readonly body: string | null;
-  readonly icon: string | null;
-  readonly variant: Variant | null;
-  readonly href: string | null;
-  readonly isRead: boolean;
-  readonly createdAt: string | null;
   readonly actions: Node[];
+  readonly body: string | null;
+  readonly createdAt: string | null;
+  readonly href: string | null;
+  readonly icon: string | null;
+  readonly id: string;
+  readonly isRead: boolean;
+  readonly title: string | null;
+  readonly variant: Variant | null;
 };
 export type NotificationList = {
+  readonly hasMore: boolean;
   readonly notifications: NotificationItem[];
   readonly unreadCount: number;
-  readonly hasMore: boolean;
 };
 export type Notifications = {
   channel: string;
@@ -871,11 +871,11 @@ export type NumberColumn = {
   width: ColumnWidth;
 };
 export type NumberFormat = {
-  kind: string;
-  notation: string;
-  minimumFractionDigits: number | null;
-  maximumFractionDigits: number | null;
   currency: string | null;
+  kind: string;
+  maximumFractionDigits: number | null;
+  minimumFractionDigits: number | null;
+  notation: string;
   unit: NumberFormatUnit | null;
 };
 export type NumberFormatUnit =
@@ -940,9 +940,9 @@ export type OpenModal = {
   readonly modal: string;
 };
 export type Option = {
+  readonly data: Record<string, unknown> | null;
   readonly label: string;
   readonly value: string;
-  readonly data: Record<string, unknown> | null;
 };
 export type Orientation = "horizontal" | "vertical";
 export type OtpInput = {
@@ -1019,13 +1019,13 @@ export type ReloadComponent = {
 };
 export type ReloadPage = Record<string, never>;
 export type RemoteAccess = {
-  readonly source: string;
   readonly audience: string;
-  readonly scopes: string[];
   readonly nodeId: string;
   readonly nodeType: string;
-  readonly tokenEndpoint: string;
   readonly ref: string;
+  readonly scopes: string[];
+  readonly source: string;
+  readonly tokenEndpoint: string;
 };
 export type Repeater = {
   addLabel: string | null;
@@ -1059,8 +1059,8 @@ export type ResetForm = {
 };
 export type ResolveResponse = {
   readonly fields: Record<string, Node>;
-  readonly values: Record<string, unknown>;
   readonly prefill: Record<string, unknown>;
+  readonly values: Record<string, unknown>;
 };
 export type RichEditor = {
   columnWidth: ColumnWidth;
@@ -1082,11 +1082,11 @@ export type RichEditor = {
   value: unknown;
 };
 export type RowAction = {
-  type: RowActionType;
-  key: string;
   destructive: boolean;
   icon: string | null;
+  key: string;
   label: string | null;
+  type: RowActionType;
 };
 export type RowActionType = "duplicate" | "remove";
 export type RowLayout = "stack" | "table";
@@ -1148,10 +1148,10 @@ export type Sidebar = {
   rememberState: boolean;
 };
 export type SignedUpload = {
-  readonly key: string;
-  readonly url: string;
   readonly headers: Record<string, unknown>;
+  readonly key: string;
   readonly method: HttpMethod;
+  readonly url: string;
 };
 export type Size = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
 export type SortDirection = "asc" | "desc";
@@ -1199,33 +1199,33 @@ export type Table = {
   striped: boolean;
 };
 export type TablePagination = {
-  readonly mode: PaginationType;
   readonly currentPage: number | null;
-  readonly lastPage: number | null;
-  readonly perPage: number | null;
-  readonly total: number | null;
   readonly from: number | null;
-  readonly to: number | null;
   readonly hasMore: boolean;
+  readonly lastPage: number | null;
+  readonly mode: PaginationType;
   readonly nextPage: number | null;
+  readonly perPage: number | null;
+  readonly to: number | null;
+  readonly total: number | null;
 };
 export type TableQuery = {
   readonly filters: FilterClause[];
-  readonly sorts: TableSort[];
   readonly page: number;
   readonly perPage: number;
-  readonly tableFilters: Record<string, Record<string, unknown>>;
-  readonly tableFilterIndicators: FilterIndicator[];
   readonly search: string;
+  readonly sorts: TableSort[];
+  readonly tableFilterIndicators: FilterIndicator[];
+  readonly tableFilters: Record<string, Record<string, unknown>>;
 };
 export type TableResult = {
-  readonly query: TableQuery;
   readonly data: Record<string, unknown>[];
   readonly pagination: TablePagination | null;
+  readonly query: TableQuery;
 };
 export type TableSort = {
-  readonly key: string;
   readonly direction: SortDirection;
+  readonly key: string;
 };
 export type Tabs = {
   activeValue: string;
@@ -1342,12 +1342,12 @@ export type TimeInput = {
   value: unknown;
 };
 export type Toast = {
-  variant: Variant;
-  message: Translatable | string;
-  duration: number | null;
-  persistent: boolean;
-  dismissible: boolean;
   action: Node | null;
+  dismissible: boolean;
+  duration: number | null;
+  message: Translatable | string;
+  persistent: boolean;
+  variant: Variant;
 };
 export type Toggle = {
   autoFocus: boolean;
@@ -1386,9 +1386,9 @@ export type Topbar = {
   sticky: boolean;
 };
 export type Translatable = {
+  key: string;
   payload: Record<string, string>;
   replacements: Record<string, string | number | boolean>;
-  key: string;
 };
 export type Tree = {
   activeId: string | null;
@@ -1396,15 +1396,15 @@ export type Tree = {
   rememberState: boolean;
 };
 export type TreeNode = {
-  icon: string | null;
-  badge: string | null;
-  href: string | null;
   actions: Node<"action"> | Node<"action.group"> | null;
+  badge: string | null;
   children: TreeNode[];
-  hasChildren: boolean;
   disabled: boolean;
-  readonly label: string;
+  hasChildren: boolean;
+  href: string | null;
+  icon: string | null;
   readonly id: string;
+  readonly label: string;
 };
 export type UnreadCount = {
   readonly unreadCount: number;
