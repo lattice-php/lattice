@@ -14,9 +14,9 @@ use Symfony\Component\Process\Process;
  * strict mode (the package's own base profile) fails instead, because an
  * unformatted generated.ts would spuriously diff against the committed file.
  */
-final class OxfmtFormatter implements Formatter
+final readonly class OxfmtFormatter implements Formatter
 {
-    public function __construct(private readonly bool $strict = false) {}
+    public function __construct(private bool $strict = false) {}
 
     /**
      * @param  array<int, string>  $files

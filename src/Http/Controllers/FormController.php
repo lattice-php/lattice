@@ -29,7 +29,7 @@ final readonly class FormController
 
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->forms, 'form', $form);
 
-        if ($subRequest = $this->formSubRequest($request, $definition)) {
+        if (($subRequest = $this->formSubRequest($request, $definition)) instanceof Response) {
             return $subRequest;
         }
 
