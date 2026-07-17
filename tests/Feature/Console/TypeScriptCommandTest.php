@@ -31,6 +31,7 @@ it('writes an augmentation file for app components, not built-ins', function ():
             ->toContain('interface ComponentProps')
             ->toContain('"field.sample"')
             ->toContain('"sample.widget"')
+            ->toContain('Node<"action"> | Node<"action.bulk">')
             ->toContain('"field.sample": {')
             ->toContain('name: string')
             ->toContain('label: string | null')

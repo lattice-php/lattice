@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Ui\Sources;
 
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Lattice\Lattice\Core\Concerns\ScopedEloquentQuery;
 use Lattice\Lattice\Core\EloquentOptions;
@@ -20,7 +21,9 @@ use Lattice\Lattice\Ui\Values\TreeNode;
  */
 final class EloquentTreeSource implements TreeSource
 {
-    use ScopedEloquentQuery;
+    use ScopedEloquentQuery {
+        scope as private applyScope;
+    }
 
     private const string ROOTS = '';
 
@@ -42,6 +45,13 @@ final class EloquentTreeSource implements TreeSource
     public static function make(string $model): self
     {
         return new self($model);
+    }
+
+    public function scope(Closure $scope): static
+    {
+        $this->childrenByParent = null;
+
+        return $this->applyScope($scope);
     }
 
     public function label(string $column): self
