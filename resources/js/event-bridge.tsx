@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { onToast as subscribeToToasts } from "@lattice-php/lattice/toast";
 import type { ToastMessage } from "@lattice-php/lattice/toast";
+import { useWindowEvent } from "@lattice-php/lattice/core/hooks/use-window-event";
 import { isAppearance, type Appearance } from "./appearance";
 import { LATTICE_EVENT } from "./core/event-names";
 
@@ -27,45 +28,29 @@ export function EventBridge({ onAppearanceChange, onLocaleChange, onToast }: Eve
     return subscribeToToasts(onToast);
   }, [onToast]);
 
-  useEffect(() => {
-    if (!onAppearanceChange) {
-      return;
-    }
-
-    const listener = (event: Event): void => {
+  useWindowEvent(
+    LATTICE_EVENT.appearanceChange,
+    (event) => {
       const value = (event as AppearanceEvent).detail?.value;
 
       if (isAppearance(value)) {
-        onAppearanceChange(value);
+        onAppearanceChange?.(value);
       }
-    };
+    },
+    { enabled: Boolean(onAppearanceChange) },
+  );
 
-    window.addEventListener(LATTICE_EVENT.appearanceChange, listener);
-
-    return () => {
-      window.removeEventListener(LATTICE_EVENT.appearanceChange, listener);
-    };
-  }, [onAppearanceChange]);
-
-  useEffect(() => {
-    if (!onLocaleChange) {
-      return;
-    }
-
-    const listener = (event: Event): void => {
+  useWindowEvent(
+    LATTICE_EVENT.localeChange,
+    (event) => {
       const locale = (event as LocaleEvent).detail?.locale;
 
       if (typeof locale === "string" && locale !== "") {
-        onLocaleChange(locale);
+        onLocaleChange?.(locale);
       }
-    };
-
-    window.addEventListener(LATTICE_EVENT.localeChange, listener);
-
-    return () => {
-      window.removeEventListener(LATTICE_EVENT.localeChange, listener);
-    };
-  }, [onLocaleChange]);
+    },
+    { enabled: Boolean(onLocaleChange) },
+  );
 
   return null;
 }

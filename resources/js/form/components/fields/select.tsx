@@ -43,7 +43,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
   const scope = useFieldScope();
   const domName = fieldDomName(scope ? scope.scopedName(name) : name, fieldIdPrefix);
   const errorKey = scope ? scope.errorKey(name) : name;
-  const searchKey = scope ? scope.errorKey(name) : name;
+  const searchKey = errorKey;
   const placeholder = props.placeholder || "Select…";
   const multiple = props.multiple;
   const searchable = props.searchable;

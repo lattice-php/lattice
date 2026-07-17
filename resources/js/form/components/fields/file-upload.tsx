@@ -111,9 +111,10 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
     [],
   );
 
-  const multipartFiles = items
-    .filter((item) => item.file && !item.existing)
-    .map((item) => item.file as File);
+  const multipartFiles = useMemo(
+    () => items.filter((item) => item.file && !item.existing).map((item) => item.file as File),
+    [items],
+  );
   useEffect(() => {
     if (signed || !fileInputRef.current) {
       return;
@@ -122,7 +123,7 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
     const transfer = new DataTransfer();
     multipartFiles.forEach((file) => transfer.items.add(file));
     fileInputRef.current.files = transfer.files;
-  });
+  }, [multipartFiles, signed]);
 
   function createPreviewUrl(file: File): string | undefined {
     if (!props.image) {
@@ -251,12 +252,11 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
       revokePreviewUrl(target);
     }
 
-    setItems((prev) => {
-      if (target?.existing && target.token && !scope) {
-        setRemovedTokens((tokens) => [...tokens, target.token as string]);
-      }
-      return prev.filter((i) => i.id !== id);
-    });
+    if (target?.existing && target.token && !scope) {
+      setRemovedTokens((tokens) => [...tokens, target.token as string]);
+    }
+
+    setItems((prev) => prev.filter((i) => i.id !== id));
   }
 
   if (hidden) {

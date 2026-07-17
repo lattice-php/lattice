@@ -1,38 +1,16 @@
 import { Form as InertiaForm } from "@inertiajs/react";
 import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import { useWindowEvent } from "@lattice-php/lattice/core/hooks/use-window-event";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
-import { walkFields } from "@lattice-php/lattice/form/lib/field-props";
+import { collectFields } from "@lattice-php/lattice/form/lib/collect-fields";
 import { PrefillProvider } from "@lattice-php/lattice/form/hooks/prefill-context";
 import { ResolvedNodesProvider } from "@lattice-php/lattice/form/hooks/resolved-nodes";
 import { useFormResolver } from "@lattice-php/lattice/form/hooks/use-form-resolver";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
-
-type CollectedFields = {
-  labels: Record<string, string>;
-  values: Record<string, unknown>;
-};
-
-function collectFields(nodes: Node[] | undefined): CollectedFields {
-  const collected: CollectedFields = { labels: {}, values: {} };
-
-  walkFields(nodes, (props) => {
-    if (!props.name) {
-      return;
-    }
-    if (props.label) {
-      collected.labels[props.name] = props.label;
-    }
-    if (props.value !== undefined) {
-      collected.values[props.name] = props.value;
-    }
-  });
-
-  return collected;
-}
 
 function FormResetListener({
   componentId,
@@ -41,19 +19,13 @@ function FormResetListener({
   componentId?: string;
   reset: (...fields: string[]) => void;
 }) {
-  useEffect(() => {
-    const handler = (event: Event) => {
-      const detail = (event as CustomEvent<{ form: string | null }>).detail;
+  useWindowEvent(LATTICE_EVENT.resetForm, (event) => {
+    const detail = (event as CustomEvent<{ form: string | null }>).detail;
 
-      if (!detail?.form || detail.form === componentId) {
-        reset();
-      }
-    };
-
-    window.addEventListener(LATTICE_EVENT.resetForm, handler);
-
-    return () => window.removeEventListener(LATTICE_EVENT.resetForm, handler);
-  }, [componentId, reset]);
+    if (!detail?.form || detail.form === componentId) {
+      reset();
+    }
+  });
 
   return null;
 }
