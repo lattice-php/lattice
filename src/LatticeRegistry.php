@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice;
 
+use Closure;
 use Illuminate\Contracts\Container\Container;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
@@ -20,6 +21,7 @@ use Lattice\Lattice\Remote\RemoteSourceDefinition;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
+use Lattice\Lattice\Ui\SlotRegistry;
 
 final readonly class LatticeRegistry
 {
@@ -32,6 +34,7 @@ final readonly class LatticeRegistry
         private PageRegistry $pages,
         private TableRegistry $tables,
         private RemoteSourceRegistry $remoteSources,
+        private SlotRegistry $slots,
     ) {}
 
     /**
@@ -104,6 +107,11 @@ final readonly class LatticeRegistry
     public function remoteSourceResolver(callable $resolver): void
     {
         $this->remoteSources->resolveUsing($resolver);
+    }
+
+    public function extend(string $name, Closure $factory, int $priority = 0): void
+    {
+        $this->slots->extend($name, $factory, $priority);
     }
 
     public function layoutRegistry(): LayoutRegistry
