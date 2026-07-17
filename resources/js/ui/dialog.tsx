@@ -1,11 +1,36 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import * as React from "react";
+import { cva } from "class-variance-authority";
 import { Button } from "@lattice-php/lattice/ui/button";
 import { cn } from "@lattice-php/lattice/lib/utils";
+import type { ModalWidth, Side } from "@lattice-php/lattice/types/generated";
 
-export const DIALOG_SURFACE =
-  "fixed left-1/2 top-1/2 z-lt-modal -translate-x-1/2 -translate-y-1/2 rounded-lt border border-lt-border bg-lt-bg p-6 shadow-lt-lg";
+export type DialogPlacement = "center" | Side;
+
+const dialogContentVariants = cva(
+  "fixed z-lt-modal w-full overflow-y-auto bg-lt-bg p-6 shadow-lt-lg",
+  {
+    variants: {
+      placement: {
+        center:
+          "left-1/2 top-1/2 max-h-[min(680px,calc(100vh-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-lt border border-lt-border data-[state=open]:animate-lt-dialog-in data-[state=closed]:animate-lt-dialog-out",
+        start:
+          "inset-y-0 start-0 border-e border-lt-border data-[state=open]:animate-lt-sheet-in-start data-[state=closed]:animate-lt-sheet-out-start",
+        end: "inset-y-0 end-0 border-s border-lt-border data-[state=open]:animate-lt-sheet-in-end data-[state=closed]:animate-lt-sheet-out-end",
+      },
+      width: {
+        sm: "max-w-sm",
+        md: "max-w-md",
+        lg: "max-w-lg",
+        xl: "max-w-xl",
+        "2xl": "max-w-2xl",
+        "3xl": "max-w-3xl",
+      },
+    },
+    defaultVariants: { placement: "center", width: "lg" },
+  },
+);
 
 function Dialog(props: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
@@ -41,16 +66,21 @@ function DialogDescription({
 function DialogContent({
   children,
   className,
+  placement = "center",
+  width = "lg",
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content>) {
+}: React.ComponentProps<typeof DialogPrimitive.Content> & {
+  placement?: DialogPlacement;
+  width?: ModalWidth;
+}) {
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay
-        className="fixed inset-0 z-lt-overlay bg-lt-overlay"
+        className="fixed inset-0 z-lt-overlay bg-lt-overlay data-[state=open]:animate-lt-fade-in data-[state=closed]:animate-lt-fade-out"
         data-slot="dialog-overlay"
       />
       <DialogPrimitive.Content
-        className={cn(DIALOG_SURFACE, className)}
+        className={cn(dialogContentVariants({ placement, width }), className)}
         data-slot="dialog-content"
         {...props}
       >

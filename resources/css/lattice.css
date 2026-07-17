@@ -83,6 +83,7 @@
 
   --lt-duration-fast: 120ms;
   --lt-duration-base: 160ms;
+  --lt-duration-slow: 240ms;
 
   --lt-sidebar-w: 16rem;
   --lt-sidebar-w-collapsed: 4rem;
@@ -92,6 +93,19 @@
   --lt-gutter: calc(var(--spacing) * 6);
 
   color-scheme: light;
+}
+
+/*
+ * Radix keeps dialogs mounted until their exit animation ends, so reduced
+ * motion zeroes the durations instead of removing the animations — the
+ * animation events still fire and close stays instant.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --lt-duration-fast: 0ms;
+    --lt-duration-base: 0ms;
+    --lt-duration-slow: 0ms;
+  }
 }
 
 [data-theme="dark"],
@@ -203,6 +217,14 @@
   --font-weight-lt-bold: var(--lt-font-weight-bold);
   --animate-lt-toast-in: lt-toast-in var(--lt-duration-base) ease-out;
   --animate-lt-toast-out: lt-toast-out var(--lt-duration-fast) ease-in;
+  --animate-lt-fade-in: lt-fade-in var(--lt-duration-base) ease-out;
+  --animate-lt-fade-out: lt-fade-out var(--lt-duration-fast) ease-in;
+  --animate-lt-dialog-in: lt-dialog-in var(--lt-duration-base) ease-out;
+  --animate-lt-dialog-out: lt-dialog-out var(--lt-duration-fast) ease-in;
+  --animate-lt-sheet-in-start: lt-sheet-in-start var(--lt-duration-slow) ease-out;
+  --animate-lt-sheet-out-start: lt-sheet-out-start var(--lt-duration-fast) ease-in;
+  --animate-lt-sheet-in-end: lt-sheet-in-end var(--lt-duration-slow) ease-out;
+  --animate-lt-sheet-out-end: lt-sheet-out-end var(--lt-duration-fast) ease-in;
 }
 
 @theme {
@@ -280,6 +302,87 @@
   to {
     opacity: 0;
     transform: translateY(0.75rem);
+  }
+}
+
+@keyframes lt-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lt-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* The dialog keyframes carry the centering translate so the animation does
+   not override the positioning classes mid-flight. */
+@keyframes lt-dialog-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes lt-dialog-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.98);
+  }
+}
+
+/* Sheet slides are physical (translateX): under RTL a sheet docks to the
+   correct logical edge but enters from the mirrored side. Shipped locales
+   are LTR. */
+@keyframes lt-sheet-in-start {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes lt-sheet-out-start {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes lt-sheet-in-end {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes lt-sheet-out-end {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
   }
 }
 
