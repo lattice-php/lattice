@@ -45,9 +45,9 @@ function bridge<TType extends keyof EffectPropsMap & string>(event: string): Eff
 
 /**
  * Imperative effects act directly; the rest bridge to the `lattice:*` DOM events
- * that toast/callout/modal/fragment/form subscribe to. The mapped type keeps
- * every handler's payload checked against the generated EffectPropsMap; the
- * export erases to the loose registry shape like effectHandler does.
+ * that toast/callout/modal/fragment/form subscribe to. The export cast erases
+ * the mapped type to the loose registry shape — the same variance erasure
+ * effectHandler performs.
  */
 const typedBuiltinHandlers: { [K in keyof EffectPropsMap]: EffectHandler<K> } = {
   "reload-page": () => router.reload(),

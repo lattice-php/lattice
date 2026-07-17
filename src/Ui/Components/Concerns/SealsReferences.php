@@ -44,10 +44,6 @@ trait SealsReferences
         return app(SignsComponentReferences::class)->seal($this->type(), $key, $context);
     }
 
-    /**
-     * The component's id, or a LogicException naming the capability that
-     * requires one.
-     */
     protected function requireId(string $role, string $capability): string
     {
         if ($this->id === null) {
