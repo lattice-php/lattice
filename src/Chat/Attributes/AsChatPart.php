@@ -7,6 +7,7 @@ namespace Lattice\Lattice\Chat\Attributes;
 use Attribute;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Chat\Enums\ChatPartType;
+use Lattice\Lattice\Support\Wire;
 
 /**
  * Marks a chat-part component and declares its wire type — the PHP↔JS
@@ -20,6 +21,6 @@ final readonly class AsChatPart extends AsComponent
 {
     public function __construct(ChatPartType|string $type)
     {
-        parent::__construct($type instanceof ChatPartType ? $type->value : $type);
+        parent::__construct(Wire::scalar($type));
     }
 }
