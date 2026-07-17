@@ -51,27 +51,32 @@ function triggerDownload(url: string): void {
   link.remove();
 }
 
-function bridge(event: string): EffectHandler {
+function bridge<TType extends keyof EffectPropsMap & string>(event: string): EffectHandler<TType> {
   return (effect) => window.dispatchEvent(new CustomEvent(event, { detail: effect.props }));
 }
 
 /**
  * Imperative effects act directly; the rest bridge to the `lattice:*` DOM events
- * that toast/callout/modal/fragment/form subscribe to.
+ * that toast/callout/modal/fragment/form subscribe to. The mapped type keeps
+ * every handler's payload checked against the generated EffectPropsMap; the
+ * export erases to the loose registry shape like effectHandler does.
  */
-export const builtinEffectHandlers: EffectHandlerRegistryFor<keyof EffectPropsMap & string> = {
+const typedBuiltinHandlers: { [K in keyof EffectPropsMap]: EffectHandler<K> } = {
   "reload-page": () => router.reload(),
-  redirect: effectHandler("redirect", (effect) => router.visit(effect.props.url)),
-  download: effectHandler("download", (effect) => triggerDownload(effect.props.url)),
-  "locale-change": effectHandler("locale-change", (effect) => setLocale(effect.props.locale)),
-  toast: bridge(LATTICE_EVENT.toast),
-  callout: bridge(LATTICE_EVENT.callout),
-  "reload-component": bridge(LATTICE_EVENT.reloadComponent),
-  "open-modal": bridge(LATTICE_EVENT.openModal),
-  "close-modal": bridge(LATTICE_EVENT.closeModal),
-  "reset-form": bridge(LATTICE_EVENT.resetForm),
-  "toggle-sidebar": bridge(LATTICE_EVENT.toggleSidebar),
+  redirect: (effect) => router.visit(effect.props.url),
+  download: (effect) => triggerDownload(effect.props.url),
+  "locale-change": (effect) => setLocale(effect.props.locale),
+  toast: bridge<"toast">(LATTICE_EVENT.toast),
+  callout: bridge<"callout">(LATTICE_EVENT.callout),
+  "reload-component": bridge<"reload-component">(LATTICE_EVENT.reloadComponent),
+  "open-modal": bridge<"open-modal">(LATTICE_EVENT.openModal),
+  "close-modal": bridge<"close-modal">(LATTICE_EVENT.closeModal),
+  "reset-form": bridge<"reset-form">(LATTICE_EVENT.resetForm),
+  "toggle-sidebar": bridge<"toggle-sidebar">(LATTICE_EVENT.toggleSidebar),
 };
+
+export const builtinEffectHandlers: EffectHandlerRegistryFor<keyof EffectPropsMap & string> =
+  typedBuiltinHandlers as EffectHandlerRegistryFor<keyof EffectPropsMap & string>;
 
 export function mergeEffectHandlers(
   ...registries: Array<EffectHandlerRegistry | undefined>

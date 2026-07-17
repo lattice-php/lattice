@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import { effect } from "@lattice-php/lattice/test/effect-fixture";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Listen } from "@lattice-php/lattice/types/generated";
 
@@ -46,17 +47,18 @@ describe("Subscriptions", () => {
         visibility: "private",
         events: ["OrderShipped"],
         effects: [
-          {
-            type: "toast",
-            props: {
-              variant: "success",
-              message: {
-                key: "orders.shipped-live",
-                payload: { id: "order.id" },
-                replacements: {},
-              },
+          effect("toast", {
+            action: null,
+            dismissible: true,
+            duration: null,
+            message: {
+              key: "orders.shipped-live",
+              payload: { id: "order.id" },
+              replacements: {},
             },
-          } as never,
+            persistent: false,
+            variant: "success",
+          }),
         ],
       },
     ];
@@ -80,13 +82,14 @@ describe("Subscriptions", () => {
           visibility,
           events: ["OrderShipped"],
           effects: [
-            {
-              type: "toast",
-              props: {
-                variant: "success",
-                message: { key: "orders.live", payload: {}, replacements: {} },
-              },
-            } as never,
+            effect("toast", {
+              action: null,
+              dismissible: true,
+              duration: null,
+              message: { key: "orders.live", payload: {}, replacements: {} },
+              persistent: false,
+              variant: "success",
+            }),
           ],
         },
       ];
@@ -108,7 +111,7 @@ describe("Subscriptions", () => {
         channel: "orders",
         visibility: "public",
         events: ["OrderShipped"],
-        effects: [{ type: "close-modal", props: { target: "checkout" } } as never],
+        effects: [effect("close-modal", { modal: "checkout" })],
       },
     ];
 
