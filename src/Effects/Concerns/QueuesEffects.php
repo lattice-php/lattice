@@ -5,14 +5,14 @@ namespace Lattice\Lattice\Effects\Concerns;
 
 use Lattice\Lattice\Effects\Builtin\Callout;
 use Lattice\Lattice\Effects\Builtin\Toast;
-use Lattice\Lattice\Effects\Contracts\Effect as EffectContract;
+use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 trait QueuesEffects
 {
-    abstract public function effect(EffectContract $effect): static;
+    abstract public function effect(Effect $effect): static;
 
     public function toast(string|Translatable|Toast|Variant $message, Variant|string|null $variant = null): static
     {

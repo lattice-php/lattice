@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Effects;
 
 use Inertia\Inertia;
-use Lattice\Lattice\Effects\Contracts\Effect;
 use Lattice\Lattice\Http\LatticeResponse;
 
 /**
