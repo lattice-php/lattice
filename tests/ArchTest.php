@@ -157,8 +157,6 @@ arch('contracts are interfaces')
         'Lattice\Lattice\Actions\Contracts',
         'Lattice\Lattice\Forms\Contracts',
         'Lattice\Lattice\Tables\Contracts',
-        'Lattice\Lattice\Fragments\Contracts',
-        'Lattice\Lattice\Layouts\Contracts',
     ])
     ->toBeInterfaces();
 

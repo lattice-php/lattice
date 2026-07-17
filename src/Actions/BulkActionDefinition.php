@@ -8,10 +8,9 @@ use Illuminate\Support\Collection;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Actions\Concerns\InteractsWithActionForm;
 use Lattice\Lattice\Actions\Contracts\InteractsWithForm;
-use Lattice\Lattice\Actions\Contracts\ProvidesBulkAction;
 use Lattice\Lattice\Core\Definition;
 
-abstract class BulkActionDefinition extends Definition implements InteractsWithForm, ProvidesBulkAction
+abstract class BulkActionDefinition extends Definition implements InteractsWithForm
 {
     use InteractsWithActionForm;
 
