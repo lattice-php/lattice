@@ -66,6 +66,8 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'confirmation' => null,
                 'form' => null,
                 'lazyForm' => false,
+                'modalSide' => null,
+                'modalWidth' => null,
                 'variant' => null,
             ],
         ])
