@@ -96,13 +96,13 @@ test('pages serialize breadcrumb metadata', function (): void {
         }
     };
 
-    expect($page->toArray($page->render(PageSchema::make()), new Request))
-        ->toMatchArray([
-            'breadcrumbs' => [
-                [
-                    'title' => 'Dashboard',
-                    'href' => '/demo/dashboard',
-                ],
+    $payload = $page->toArray($page->render(PageSchema::make()), new Request);
+
+    expect(json_decode(json_encode($payload['breadcrumbs']), associative: true))
+        ->toBe([
+            [
+                'title' => 'Dashboard',
+                'href' => '/demo/dashboard',
             ],
         ]);
 });
