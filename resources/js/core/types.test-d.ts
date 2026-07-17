@@ -1,4 +1,4 @@
-import type { Node, NodeProps, PropsOf } from "./types";
+import type { Node, NodeProps, ComponentPropsOf } from "./types";
 
 // 1. Built-in type narrows correctly: badge requires props.label: string
 const _okBadge: Node<"badge"> = { type: "badge", props: { label: "x" } };
@@ -13,12 +13,12 @@ declare module "./types" {
     "custom.thing": { foo: number };
   }
 }
-const _customOk: PropsOf<"custom.thing"> = { foo: 1 };
+const _customOk: ComponentPropsOf<"custom.thing"> = { foo: 1 };
 // @ts-expect-error foo must be a number, not a string
-const _customBad: PropsOf<"custom.thing"> = { foo: "no" };
+const _customBad: ComponentPropsOf<"custom.thing"> = { foo: "no" };
 
 // 3. Unaugmented unknown type falls back to the loose NodeProps bag
-const _loose: PropsOf<"totally.unknown"> = { anything: true } satisfies NodeProps;
+const _loose: ComponentPropsOf<"totally.unknown"> = { anything: true } satisfies NodeProps;
 
 void _okBadge;
 void _badBadge;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Support\TypeScript;
 
 use Illuminate\Support\Str;
+use Lattice\Lattice\Attributes\WireEnvelope;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
@@ -48,9 +49,15 @@ final class BaseProfile implements TypeScriptProfile
             'filter' => $this->buildComponentProps($discovered, 'filter'),
         ];
 
-        $componentRef = new NodeTypeReference($this->buildClassTypes($discovered, 'component'));
-        $columnRef = new NodeTypeReference($this->buildClassTypes($discovered, 'column'), 'ColumnNode');
-        $filterRef = new NodeTypeReference($this->buildClassTypes($discovered, 'filter'), 'FilterNode');
+        $markerRefs = [];
+
+        foreach (WireFamily::markerFamilies() as $family) {
+            $markerRefs[$family->marker] = new NodeTypeReference(
+                $this->buildClassTypes($discovered, $family->category),
+                WireEnvelope::forClass($family->marker),
+                attributeFallback: $family->category === 'component',
+            );
+        }
         $valueObjectClasses = $manifest->valueObjects;
 
         foreach (WireFamily::registryFamilies() as $family) {
@@ -69,7 +76,7 @@ final class BaseProfile implements TypeScriptProfile
             [
                 new HttpMethodTransformer,
                 new EnumTransformer($manifest->enums),
-                new ValueObjectTransformer($valueObjectClasses, $componentRef),
+                new ValueObjectTransformer($valueObjectClasses, $markerRefs),
                 new ComponentTransformer([
                     ...array_keys($formFields),
                     Form::class,
@@ -78,7 +85,7 @@ final class BaseProfile implements TypeScriptProfile
                     ...$this->componentClasses($domainNodes),
                     ...array_values($familyProps['column']),
                     ...array_values($familyProps['filter']),
-                ], $componentRef, $columnRef, $filterRef),
+                ], $markerRefs),
             ],
             [
                 new NodesProvider(

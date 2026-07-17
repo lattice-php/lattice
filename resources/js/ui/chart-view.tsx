@@ -21,13 +21,13 @@ import {
 } from "recharts";
 import type { ComponentType, ReactNode } from "react";
 import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
-import type { PropsOf, RendererComponent } from "@lattice-php/lattice/core/types";
+import type { ComponentPropsOf, RendererComponent } from "@lattice-php/lattice/core/types";
 import { coerceColor, colorValue } from "@lattice-php/lattice/lib/color";
 import { useLocale, useTimezone } from "@lattice-php/lattice/i18n";
 import { numericValue } from "@lattice-php/lattice/format/numeric";
 import { formatValue } from "@lattice-php/lattice/format/value";
 
-type ChartProps = PropsOf<"chart">;
+type ChartProps = ComponentPropsOf<"chart">;
 type ChartSeries = ChartProps["series"][number];
 type ChartDatum = ChartProps["data"][number];
 type CartesianSeries = ChartSeries & { type: "area" | "bar" | "line" };

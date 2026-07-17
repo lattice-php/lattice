@@ -1,5 +1,5 @@
 import { useColumnRegistry } from "@lattice-php/lattice/core/registry-context";
-import type { ColumnType } from "@lattice-php/lattice/types/generated";
+import type { ColumnNodeType } from "@lattice-php/lattice/types/generated";
 import {
   columnCell,
   type ColumnRegistry,
@@ -27,7 +27,7 @@ const builtinColumnCells: ColumnRegistry = {
   "column.number": columnCell(NumberCell),
   "column.stack": columnCell(StackCell),
   "column.text": columnCell(TextCell),
-} satisfies ColumnRegistryFor<ColumnType>;
+} satisfies ColumnRegistryFor<ColumnNodeType>;
 
 export function ColumnCell({ column, row }: { column: TableColumn; row: TableRow }) {
   const customCells = useColumnRegistry();

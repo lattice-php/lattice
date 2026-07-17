@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Ui\Components;
 
 use JsonSerializable;
+use Lattice\Lattice\Attributes\WireEnvelope;
 use Lattice\Lattice\Ui\Components\Concerns\HasDataBindings;
 use Lattice\Lattice\Ui\Components\Concerns\SerializesWireNode;
 use Lattice\Lattice\Ui\Concerns\GatesRendering;
@@ -12,6 +13,7 @@ use Lattice\Lattice\Ui\Contracts\Renderable;
 /**
  * @phpstan-consistent-constructor
  */
+#[WireEnvelope('Node')]
 abstract class Component implements JsonSerializable, Renderable
 {
     use GatesRendering;

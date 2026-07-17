@@ -25,10 +25,12 @@ final readonly class NodeTypeReference
     /**
      * @param  array<class-string, string>  $known  Concrete wire classes of this marker's category => wire type.
      * @param  string  $envelope  The client envelope identifier: Node, ColumnNode, or FilterNode.
+     * @param  bool  $attributeFallback  Resolve concrete classes outside the map via their #[AsComponent] attribute.
      */
     public function __construct(
         private array $known = [],
         private string $envelope = 'Node',
+        private bool $attributeFallback = false,
     ) {}
 
     /**
@@ -73,7 +75,7 @@ final readonly class NodeTypeReference
      */
     private function attributedType(string $class): ?string
     {
-        if ($this->envelope !== 'Node') {
+        if (! $this->attributeFallback) {
             return null;
         }
 

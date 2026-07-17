@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\TypeScript;
 
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Filters\Filter;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Attributes\WireEnvelope;
 use ReflectionClass;
 use Roave\BetterReflection\Reflection\ReflectionClass as RoaveReflectionClass;
 use Spatie\TypeScriptTransformer\Data\TransformationContext;
@@ -33,16 +31,33 @@ final class ComponentTransformer extends ClassTransformer
 
     /**
      * @param  array<int, class-string>  $allowed
+     * @param  array<class-string, NodeTypeReference>|null  $markerRefs  Marker base class => its envelope resolver.
      */
     public function __construct(
         array $allowed,
-        private readonly NodeTypeReference $componentRef = new NodeTypeReference,
-        private readonly NodeTypeReference $columnRef = new NodeTypeReference(envelope: 'ColumnNode'),
-        private readonly NodeTypeReference $filterRef = new NodeTypeReference(envelope: 'FilterNode'),
+        private readonly ?array $markerRefs = null,
     ) {
         $this->allowed = $allowed;
 
         parent::__construct();
+    }
+
+    /**
+     * @return array<class-string, NodeTypeReference>
+     */
+    private function markerRefs(): array
+    {
+        if ($this->markerRefs !== null) {
+            return $this->markerRefs;
+        }
+
+        $refs = [];
+
+        foreach (WireFamily::markerFamilies() as $family) {
+            $refs[$family->marker] = new NodeTypeReference(envelope: WireEnvelope::forClass($family->marker));
+        }
+
+        return $refs;
     }
 
     protected function shouldTransform(PhpClassNode $phpClassNode): bool
@@ -127,12 +142,14 @@ final class ComponentTransformer extends ClassTransformer
     #[\Override]
     protected function classPropertyProcessors(): array
     {
-        return [
-            ...parent::classPropertyProcessors(),
-            new MarkerRewriteClassPropertyProcessor(Component::class, ($this->componentRef)(...)),
-            new MarkerRewriteClassPropertyProcessor(Column::class, ($this->columnRef)(...)),
-            new MarkerRewriteClassPropertyProcessor(Filter::class, ($this->filterRef)(...)),
-            new MixedToUnknownClassPropertyProcessor,
-        ];
+        $processors = parent::classPropertyProcessors();
+
+        foreach ($this->markerRefs() as $marker => $ref) {
+            $processors[] = new MarkerRewriteClassPropertyProcessor($marker, $ref(...));
+        }
+
+        $processors[] = new MixedToUnknownClassPropertyProcessor;
+
+        return $processors;
     }
 }

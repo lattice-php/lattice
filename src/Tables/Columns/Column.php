@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Tables\Columns;
 
 use Illuminate\Support\Collection;
 use JsonSerializable;
+use Lattice\Lattice\Attributes\WireEnvelope;
 use Lattice\Lattice\Tables\Contracts\Filterable;
 use Lattice\Lattice\Tables\Contracts\Sortable;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
@@ -18,6 +19,7 @@ use Lattice\Lattice\Ui\Enums\ColumnWidth;
 /**
  * @phpstan-consistent-constructor
  */
+#[WireEnvelope('ColumnNode')]
 abstract class Column implements JsonSerializable, Renderable
 {
     use GatesRendering;

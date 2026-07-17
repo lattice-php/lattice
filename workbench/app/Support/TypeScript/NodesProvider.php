@@ -63,8 +63,15 @@ final readonly class NodesProvider implements TransformedProvider
             $transformed[] = $this->alias($nodeName.'Type', $this->typeUnion($types));
         }
 
-        $transformed[] = $this->alias('WireNode', new TypeScriptIdentifier('Node'));
         $transformed[] = $this->alias('NodeType', $this->typeUnion(array_keys($this->componentClassesByType())));
+
+        foreach (['column' => 'ColumnNodeType', 'filter' => 'FilterNodeType'] as $category => $aliasName) {
+            $types = array_keys($this->familyProps[$category] ?? []);
+
+            if ($types !== []) {
+                $transformed[] = $this->alias($aliasName, $this->typeUnion($types));
+            }
+        }
 
         $familyProps = ['component' => $this->componentClassesByType()] + $this->familyProps;
 

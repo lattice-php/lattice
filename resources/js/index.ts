@@ -64,19 +64,17 @@ export type {
   KnownPageContainer,
   LayoutPayload,
   Node,
-  NodeOfType,
   NodeProps,
   NodeType,
   PageContainer,
   PageBreadcrumb,
   PagePayload,
-  PropsOf,
+  ComponentPropsOf,
   RendererComponent,
   RendererComponentModule,
   RendererComponentProps,
   Schema,
   UnknownComponent,
-  WireNode,
 } from "./core/types";
 export { RealtimeListeners } from "./realtime/listeners";
 export type { ChannelVisibility, DateFormat, Listen, NumberFormat } from "./types/generated";

@@ -9,7 +9,6 @@ use Lattice\Lattice\Support\TypeScript\MarkerRewriteClassPropertyProcessor;
 use Lattice\Lattice\Support\TypeScript\MixedToUnknownClassPropertyProcessor;
 use Lattice\Lattice\Support\TypeScript\NodeTypeReference;
 use Lattice\Lattice\Support\TypeScript\SortsPropertiesByName;
-use Lattice\Lattice\Ui\Components\Component;
 use Spatie\Attributes\Attributes;
 use Spatie\TypeScriptTransformer\Data\TransformationContext;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
@@ -36,10 +35,11 @@ final class ValueObjectTransformer extends ClassTransformer
 
     /**
      * @param  array<int, class-string>  $allowed
+     * @param  array<class-string, NodeTypeReference>  $markerRefs  Marker base class => its envelope resolver.
      */
     public function __construct(
         array $allowed,
-        private readonly NodeTypeReference $componentRef = new NodeTypeReference,
+        private readonly array $markerRefs = [],
     ) {
         $this->allowed = $allowed;
 
@@ -91,10 +91,15 @@ final class ValueObjectTransformer extends ClassTransformer
     #[\Override]
     protected function classPropertyProcessors(): array
     {
-        return [
+        $processors = [
             ...parent::classPropertyProcessors(),
             new MixedToUnknownClassPropertyProcessor,
-            new MarkerRewriteClassPropertyProcessor(Component::class, ($this->componentRef)(...)),
         ];
+
+        foreach ($this->markerRefs as $marker => $ref) {
+            $processors[] = new MarkerRewriteClassPropertyProcessor($marker, $ref(...));
+        }
+
+        return $processors;
     }
 }
