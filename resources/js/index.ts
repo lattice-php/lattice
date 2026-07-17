@@ -11,7 +11,7 @@ export { useEffectDispatcher } from "./effects/use-effect-dispatcher";
 export { builtinEffectHandlers, effectHandler, mergeEffectHandlers } from "./effects/registry";
 export { registerRichEditorExtension } from "./form/rich-editor/registry";
 export { initializeTheme, updateAppearance, useAppearance } from "./appearance";
-export { copyToClipboard, useClipboard } from "./clipboard";
+export { copyToClipboard } from "./clipboard";
 export {
   createLatticeApp,
   type CreateLatticeAppI18nOptions,
@@ -34,7 +34,7 @@ export {
   useSidebarCollapsed,
 } from "./layout";
 export { Provider, useColumnRegistry, useComponentRegistry } from "./provider";
-export { onCallout, onToast, showToast, Toaster } from "./toast";
+export { onCallout, onToast, Toaster } from "./toast";
 export {
   createPlugin,
   createRegistry,
@@ -101,7 +101,6 @@ export type {
   ToolbarItem,
 } from "./form/rich-editor/registry";
 export type { Appearance, ResolvedAppearance, UseAppearanceReturn } from "./appearance";
-export type { CopiedValue, CopyFn, UseClipboardReturn } from "./clipboard";
 export type { Callout, ToastMessage, Variant } from "./toast";
 export type {
   IconName,

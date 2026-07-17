@@ -35,21 +35,9 @@ export function normalizeToastMessage(value: unknown): ToastMessage | null {
   };
 }
 
-export function normalizeToast(detail: unknown): ToastMessage | null {
-  return normalizeToastMessage(detail);
-}
-
-export function showToast(toast: ToastMessage): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  window.dispatchEvent(new CustomEvent(LATTICE_EVENT.toast, { detail: toast }));
-}
-
 export function onToast(callback: (toast: ToastMessage) => void): () => void {
   const listener = (event: Event): void => {
-    const toast = normalizeToast((event as CustomEvent).detail);
+    const toast = normalizeToastMessage((event as CustomEvent).detail);
 
     if (toast) {
       callback(toast);
