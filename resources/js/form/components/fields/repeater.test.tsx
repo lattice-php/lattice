@@ -20,8 +20,9 @@ import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { renderCounts } from "@lattice-php/lattice/test/form-renderer-probe";
 import { RepeaterComponent } from "./repeater";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 
-const repeaterNode = {
+const repeaterNode = fakeNode({
   id: "r",
   type: "field.repeater",
   props: {
@@ -34,7 +35,7 @@ const repeaterNode = {
     label: "Line items",
   },
   schema: [{ id: "c", type: "field.text-input", props: { name: "name", label: "Name" } }],
-} as never;
+});
 
 function wrap(
   ui: React.ReactNode,
@@ -84,7 +85,7 @@ it("removes a row", () => {
 });
 
 it("renders declared row actions in a kebab and duplicates a row", () => {
-  const node = {
+  const node = fakeNode({
     id: "r",
     type: "field.repeater",
     props: {
@@ -100,7 +101,7 @@ it("renders declared row actions in a kebab and duplicates a row", () => {
       ],
     },
     schema: [{ id: "c", type: "field.text-input", props: { name: "name", label: "Name" } }],
-  } as never;
+  });
 
   wrap(<RepeaterComponent node={node}>{null}</RepeaterComponent>, {
     items: [{ name: "a" }],
@@ -125,7 +126,7 @@ it("shows the array-level error for the repeater field", () => {
 });
 
 it("renders the table layout with a header from the schema", () => {
-  const node = {
+  const node = fakeNode({
     id: "r",
     type: "field.repeater",
     props: {
@@ -141,7 +142,7 @@ it("renders the table layout with a header from the schema", () => {
       { id: "q", type: "field.text-input", props: { name: "qty", label: "Qty" } },
       { id: "p", type: "field.text-input", props: { name: "price", label: "Price" } },
     ],
-  } as never;
+  });
   wrap(<RepeaterComponent node={node}>{null}</RepeaterComponent>, {
     items: [{ qty: "1", price: "2" }],
   });

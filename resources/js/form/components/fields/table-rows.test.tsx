@@ -23,6 +23,7 @@ import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { renderCounts } from "@lattice-php/lattice/test/form-renderer-probe";
 import { RepeaterComponent } from "./repeater";
 import { TableRows, type TableColumn } from "./table-rows";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 
 const columns: TableColumn[] = [
   { name: "qty", label: "Qty", columnWidth: "md" },
@@ -32,9 +33,9 @@ const sizedColumns: TableColumn[] = [
   { name: "qty", label: "Qty", columnWidth: "xs" },
   { name: "description", label: "Description", columnWidth: "xl" },
 ];
-const qtyNode = { id: "q", type: "field.text-input", props: { name: "qty" } } as never;
-const priceNode = { id: "p", type: "field.text-input", props: { name: "price" } } as never;
-const contentNode = { id: "c", type: "field.textarea", props: { name: "content" } } as never;
+const qtyNode = fakeNode({ id: "q", type: "field.text-input", props: { name: "qty" } });
+const priceNode = fakeNode({ id: "p", type: "field.text-input", props: { name: "price" } });
+const contentNode = fakeNode({ id: "c", type: "field.textarea", props: { name: "content" } });
 
 function noop() {}
 
@@ -279,7 +280,7 @@ function wrap(ui: React.ReactNode, initial: Record<string, unknown> = {}) {
   );
 }
 
-const tableNode = {
+const tableNode = fakeNode({
   id: "r",
   type: "field.repeater",
   props: {
@@ -293,7 +294,7 @@ const tableNode = {
   schema: [
     { id: "q", type: "field.text-input", props: { name: "qty", label: "Qty", columnWidth: "md" } },
   ],
-} as never;
+});
 
 it("does not re-render sibling table rows when one row changes", () => {
   wrap(<RepeaterComponent node={tableNode}>{null}</RepeaterComponent>, {

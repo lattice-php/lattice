@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { TableColumn } from "@lattice-php/lattice/table/types";
+import type { ColumnPropsOf, TableColumn } from "@lattice-php/lattice/table/types";
 import { ImageCell } from "./image-cell";
 
 function column(props: Record<string, unknown> = {}): TableColumn {
@@ -25,7 +25,14 @@ function column(props: Record<string, unknown> = {}): TableColumn {
 
 function renderCell(value: unknown, props: Record<string, unknown> = {}) {
   const col = column(props);
-  return render(<ImageCell column={col} props={col.props as never} row={{}} value={value} />);
+  return render(
+    <ImageCell
+      column={col}
+      props={col.props as ColumnPropsOf<"column.image">}
+      row={{}}
+      value={value}
+    />,
+  );
 }
 
 describe("ImageCell", () => {
