@@ -234,7 +234,8 @@ $this->assertLatticeComponent($action)
 The assertions above check what a page _renders_. To exercise the other half — what happens
 when a form is submitted, an action is invoked, or a table is queried — `InteractsWithLatticeComponents`
 seals a signed ref from the component class and context and posts to the generic endpoint for
-you, returning the `TestResponse` to assert on with the usual Laravel helpers:
+you. Each helper returns a `LatticeTestResponse`, a Laravel `TestResponse` subclass, so the
+usual Laravel assertions remain available:
 
 ```php
 $this->submitForm(ProductForm::class, ['name' => 'Desk Lamp'])
@@ -252,6 +253,43 @@ $this->loadTable(ProductsTable::class, ['filter' => ['name' => 'lamp'], 'page' =
 $this->loadFragment(SalesChart::class)
     ->assertOk();
 ```
+
+Action responses also provide typed assertions for [effects](/actions/effects/), keeping tests
+independent of wire discriminators and payload structure:
+
+```php
+use Lattice\Lattice\Ui\Enums\Variant;
+
+$this->callAction(SaveProfile::class, ['name' => 'Taylor'])
+    ->assertOk()
+    ->assertToast(Variant::Success, 'Profile saved.')
+    ->assertReloadsComponent('profile.passkeys');
+
+$this->callAction(OpenSecuritySettings::class)
+    ->assertOpensModal('two-factor')
+    ->assertRedirectsToRoute('settings.security');
+
+$this->callAction(RefreshDashboard::class)
+    ->assertReloadsPage();
+
+$this->callAction(NoopAction::class)
+    ->assertNoEffects();
+```
+
+| Assertion                                     | Matches                                      |
+| --------------------------------------------- | -------------------------------------------- |
+| `assertReloadsComponent($component)`          | A component reload by id                     |
+| `assertRedirectsTo($url)`                     | A redirect to an exact URL                   |
+| `assertRedirectsToRoute($route, $parameters)` | A redirect to a named route                  |
+| `assertToast($variant, $message)`             | A toast variant and, optionally, its message |
+| `assertOpensModal($modal)`                    | A modal opened by key                        |
+| `assertReloadsPage()`                         | A full-page reload                           |
+| `assertNoEffects()`                           | An empty effect queue                        |
+
+Effect assertions are fluent and do not depend on queue order. They match the relevant props
+while allowing unrelated effect props, so `assertToast(Variant::Success)` checks only the
+variant and `assertToast(Variant::Success, 'Saved.')` also checks the message. A failed assertion
+prints the expected effect and every effect received in the response.
 
 Each helper builds the component exactly as a render would — same class, same context — extracts
 the signed ref, and issues the request with the component's declared HTTP method and the
