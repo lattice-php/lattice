@@ -56,7 +56,7 @@ final class Listen
         return $this;
     }
 
-    public function toast(string|Translatable|Toast|Variant $message, Variant|string|null $variant = null): self
+    public function toast(string|Translatable|Toast $message, Variant $variant = Variant::Success): self
     {
         $this->effects[] = Effects::toast($message, $variant);
 
@@ -65,7 +65,7 @@ final class Listen
 
     public function callout(Callout $callout): self
     {
-        $this->effects[] = Effects::callout($callout);
+        $this->effects[] = $callout;
 
         return $this;
     }

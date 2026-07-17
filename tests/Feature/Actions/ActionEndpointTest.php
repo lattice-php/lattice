@@ -68,7 +68,7 @@ test('registered actions can return a locale change effect', function (): void {
 });
 
 test('toast effects serialize correctly for action results', function (): void {
-    expect(wire(Effects::toast(Variant::Warning, 'Review the settings.')))
+    expect(wire(Effects::toast('Review the settings.', Variant::Warning)))
         ->toBe([
             'type' => 'toast',
             'props' => [
@@ -96,7 +96,7 @@ test('toast effects serialize correctly for action results', function (): void {
                 ],
             ],
         ])
-        ->and(wire(ActionResult::success()->toast(Variant::Warning, 'Review the settings.')))
+        ->and(wire(ActionResult::success()->toast('Review the settings.', Variant::Warning)))
         ->toMatchArray([
             'effects' => [
                 [

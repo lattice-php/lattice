@@ -71,7 +71,7 @@ class ArchiveProductAction extends ActionDefinition
         $product->update(['status' => 'archived']);
 
         return ActionResult::success()
-            ->toast(Variant::Success, 'Product archived.')
+            ->toast('Product archived.', Variant::Success)
             ->reloadComponent('app.products');
     }
 }

@@ -9,8 +9,8 @@ use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 test('effects accumulate across multiple flash calls', function (): void {
-    Effects::flash(Effects::toast(Toast::make(Variant::Success, 'Saved.')));
-    Effects::flash(Effects::callout(Callout::make(Variant::Warning, 'Heads up.')));
+    Effects::flash(Effects::toast(Toast::make('Saved.', Variant::Success)));
+    Effects::flash(Callout::make('Heads up.', Variant::Warning));
 
     $effects = app(EffectFlasher::class)->all();
 
@@ -26,7 +26,7 @@ test('flashing no effects is a no-op', function (): void {
 });
 
 test('the scoped buffer resets between request cycles', function (): void {
-    Effects::flash(Effects::toast(Toast::make(Variant::Info, 'One.')));
+    Effects::flash(Effects::toast(Toast::make('One.', Variant::Info)));
     expect(app(EffectFlasher::class)->all())->toHaveCount(1);
 
     app()->forgetScopedInstances();
@@ -45,8 +45,8 @@ test('flash sends the accumulated effects to the latticeEffects bag', function (
             return true;
         }));
 
-    Effects::flash(Effects::toast(Toast::make(Variant::Success, 'Saved.')));
-    Effects::flash(Effects::callout(Callout::make(Variant::Warning, 'Heads up.')));
+    Effects::flash(Effects::toast(Toast::make('Saved.', Variant::Success)));
+    Effects::flash(Callout::make('Heads up.', Variant::Warning));
 
     expect($flashed)->toHaveCount(2)
         ->and($flashed[0]->jsonSerialize()['type'])->toBe('toast')

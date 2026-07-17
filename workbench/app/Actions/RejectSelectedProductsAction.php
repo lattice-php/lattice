@@ -44,7 +44,7 @@ class RejectSelectedProductsAction extends BulkActionDefinition
         });
 
         return ActionResult::success(['archived' => $records->count(), 'reason' => $data['reason']])
-            ->toast(Variant::Success, __('workbench.actions.reject-selected.toast', ['count' => $records->count(), 'reason' => $data['reason']]))
+            ->toast(__('workbench.actions.reject-selected.toast', ['count' => $records->count(), 'reason' => $data['reason']]), Variant::Success)
             ->reloadComponent('workbench.products');
     }
 }

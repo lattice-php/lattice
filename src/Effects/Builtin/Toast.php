@@ -28,7 +28,7 @@ final class Toast extends Effect
         public ?Component $action = null,
     ) {}
 
-    public static function make(Variant $variant, string|Translatable $message): self
+    public static function make(string|Translatable $message, Variant $variant = Variant::Success): self
     {
         return new self($variant, $message);
     }

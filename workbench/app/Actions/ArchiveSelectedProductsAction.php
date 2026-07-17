@@ -37,7 +37,7 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
         });
 
         return ActionResult::success(['archived' => $records->count()])
-            ->toast(Variant::Success, __('workbench.actions.archive-selected.toast', ['count' => $records->count()]))
+            ->toast(__('workbench.actions.archive-selected.toast', ['count' => $records->count()]), Variant::Success)
             ->reloadComponent('workbench.products');
     }
 }

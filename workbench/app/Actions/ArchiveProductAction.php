@@ -40,7 +40,7 @@ class ArchiveProductAction extends ActionDefinition
 
         return ActionResult::success(['id' => $product->getKey()])
             ->toast(
-                Toast::make(Variant::Success, __('workbench.actions.archive.toast'))
+                Toast::make(__('workbench.actions.archive.toast'), Variant::Success)
                     ->action(Link::make(__('workbench.actions.archive.view-products'), 'view-products')->href('/products'))
                     ->persistent(),
             )

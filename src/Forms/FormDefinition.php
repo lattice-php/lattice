@@ -29,7 +29,7 @@ abstract class FormDefinition extends Definition
         return LatticeResponse::make();
     }
 
-    protected function toast(string|Translatable|Toast|Variant $message, Variant|string|null $variant = null): LatticeResponse
+    protected function toast(string|Translatable|Toast $message, Variant $variant = Variant::Success): LatticeResponse
     {
         return LatticeResponse::make()->toast($message, $variant);
     }

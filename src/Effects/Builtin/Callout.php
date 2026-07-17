@@ -26,7 +26,7 @@ final class Callout extends Effect
         public ?Component $action = null,
     ) {}
 
-    public static function make(Variant $variant, string $message): self
+    public static function make(string $message, Variant $variant = Variant::Info): self
     {
         return new self($variant, $message);
     }

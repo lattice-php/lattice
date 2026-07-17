@@ -37,7 +37,7 @@ test('a lattice response redirects back by default and flashes nothing', functio
 
 test('a lattice response queues every effect helper and redirects to a url', function (): void {
     $response = LatticeResponse::make()
-        ->callout(Callout::make(Variant::Info, 'Heads up'))
+        ->callout(Callout::make('Heads up', Variant::Info))
         ->reloadPage()
         ->closeModal('two-factor')
         ->effect(Effects::reloadComponent('teams.members'))

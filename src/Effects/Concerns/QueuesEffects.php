@@ -14,14 +14,14 @@ trait QueuesEffects
 {
     abstract public function effect(Effect $effect): static;
 
-    public function toast(string|Translatable|Toast|Variant $message, Variant|string|null $variant = null): static
+    public function toast(string|Translatable|Toast $message, Variant $variant = Variant::Success): static
     {
         return $this->effect(Effects::toast($message, $variant));
     }
 
     public function callout(Callout $callout): static
     {
-        return $this->effect(Effects::callout($callout));
+        return $this->effect($callout);
     }
 
     public function reloadComponent(string $component): static
