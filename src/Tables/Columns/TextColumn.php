@@ -12,6 +12,7 @@ use Lattice\Lattice\Tables\Contracts\Searchable;
 use Lattice\Lattice\Tables\Contracts\Sortable;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Lattice\Tables\RelationBinding;
 use Lattice\Lattice\Ui\Concerns\HasCopyable;
 use Lattice\Lattice\Ui\Enums\DateTimeStyle;
 
@@ -106,5 +107,15 @@ class TextColumn extends Column implements Filterable, Searchable, Sortable
         ];
 
         return $this;
+    }
+
+    #[\Override]
+    public function relationBinding(): ?RelationBinding
+    {
+        if ($this->multiple !== null) {
+            return new RelationBinding($this->key(), $this->multiple, many: true, colorField: $this->badge['colorKey'] ?? null);
+        }
+
+        return parent::relationBinding();
     }
 }

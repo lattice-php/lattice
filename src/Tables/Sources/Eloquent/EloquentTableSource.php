@@ -12,7 +12,6 @@ use Illuminate\Support\Collection;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Contracts\Filterable;
 use Lattice\Lattice\Tables\Contracts\Searchable;
 use Lattice\Lattice\Tables\Contracts\TableSource;
@@ -222,7 +221,7 @@ final readonly class EloquentTableSource implements TableSource
         $projections = [];
 
         foreach ($this->columns as $column) {
-            $binding = $this->relationBinding($column);
+            $binding = $column->relationBinding();
 
             if (! $binding instanceof RelationBinding) {
                 continue;
@@ -238,29 +237,6 @@ final readonly class EloquentTableSource implements TableSource
         }
 
         return $projections;
-    }
-
-    /**
-     * The relation a column draws its value from, as a driver-agnostic binding,
-     * or null when the column reads a plain attribute.
-     */
-    private function relationBinding(Column $column): ?RelationBinding
-    {
-        if ($column instanceof TextColumn && $column->multiple !== null) {
-            return new RelationBinding($column->key(), $column->multiple, many: true, colorField: $column->badge['colorKey'] ?? null);
-        }
-
-        if (! str_contains($column->key(), '.')) {
-            return null;
-        }
-
-        [$relation, $field] = explode('.', $column->key(), 2);
-
-        if ($field === '' || str_contains($field, '.')) {
-            return null;
-        }
-
-        return new RelationBinding($relation, $field, many: false);
     }
 
     /**
