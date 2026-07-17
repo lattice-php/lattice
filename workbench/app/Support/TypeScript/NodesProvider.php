@@ -37,7 +37,6 @@ final readonly class NodesProvider implements TransformedProvider
      * @param  class-string  $formClass
      * @param  array<string, array<class-string, ComponentSpec>>  $domainNodes  Node-alias name (e.g. 'CoreNode') to its components, in emission order.
      * @param  array<string, array<string, class-string>>  $familyProps  Family category => (wire type => props class-string) for every non-component family.
-     * @param  list<string>  $nodeTypeAliases  Node-alias names (e.g. 'ActionNode') whose per-domain `…Type` union a client consumes via `NodeUnionOf`; others are not emitted.
      */
     public function __construct(
         private array $formFields,
@@ -45,7 +44,6 @@ final readonly class NodesProvider implements TransformedProvider
         private array $domainNodes,
         private string $formType = 'form',
         private array $familyProps = [],
-        private array $nodeTypeAliases = [],
     ) {}
 
     /**
@@ -61,10 +59,6 @@ final readonly class NodesProvider implements TransformedProvider
         ];
 
         foreach ($this->domainNodes as $nodeName => $components) {
-            if (! in_array($nodeName, $this->nodeTypeAliases, true)) {
-                continue;
-            }
-
             $types = array_map(static fn (array $spec): string => $spec['type'], array_values($components));
             $transformed[] = $this->alias($nodeName.'Type', $this->typeUnion($types));
         }

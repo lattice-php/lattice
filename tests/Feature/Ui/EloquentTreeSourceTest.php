@@ -19,6 +19,18 @@ it('resolves root categories ordered by label, flagging hasChildren for parents 
     ]);
 });
 
+it('re-queries when the scope changes after a read', function (): void {
+    Category::factory()->create(['name' => 'Books']);
+    Category::factory()->create(['name' => 'Archive']);
+
+    $source = EloquentTreeSource::make(Category::class);
+    expect($source->roots())->toHaveCount(2);
+
+    $source->scope(fn ($query) => $query->where('name', 'Books'));
+
+    expect(array_map(fn (TreeNode $node): string => $node->label, $source->roots()))->toBe(['Books']);
+});
+
 it('resolves a category\'s immediate children ordered by label, flagging hasChildren for grandparents', function (): void {
     $electronics = Category::factory()->create(['name' => 'Electronics']);
     $laptops = Category::factory()->childOf($electronics)->create(['name' => 'Laptops']);

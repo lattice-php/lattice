@@ -6,19 +6,24 @@ namespace Lattice\Lattice\Http\Controllers\Concerns;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Contracts\InteractsWithForm;
+use Lattice\Lattice\Forms\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
 trait HandlesFormSubRequests
 {
     /**
-     * Dispatch the sub-requests an embedded action form makes against the action
-     * endpoint — lazy schema fetch, option search, field resolution — returning
-     * null when the request is the action invocation itself.
+     * Dispatch the form sub-requests made against a form or action endpoint —
+     * lazy schema fetch (actions only), signed uploads, option search, field
+     * resolution — returning null when the request is the submission itself.
      */
-    protected function formSubRequest(Request $request, InteractsWithForm $definition): ?Response
+    protected function formSubRequest(Request $request, FormDefinition|InteractsWithForm $definition): ?Response
     {
-        if ($request->boolean('_form')) {
+        if ($definition instanceof InteractsWithForm && $request->boolean('_form')) {
             return new JsonResponse($definition->resolveFormSchema($request));
+        }
+
+        if ($request->filled('_upload')) {
+            return new JsonResponse($definition->signUpload($request));
         }
 
         if ($request->filled('_search')) {

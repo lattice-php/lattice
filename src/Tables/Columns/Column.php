@@ -8,6 +8,7 @@ use JsonSerializable;
 use Lattice\Lattice\Tables\Contracts\Filterable;
 use Lattice\Lattice\Tables\Contracts\Sortable;
 use Lattice\Lattice\Tables\Enums\ColumnAlign;
+use Lattice\Lattice\Tables\RelationBinding;
 use Lattice\Lattice\Ui\Components\Concerns\SerializesWireNode;
 use Lattice\Lattice\Ui\Concerns\GatesRendering;
 use Lattice\Lattice\Ui\Concerns\HasLabel;
@@ -50,6 +51,38 @@ abstract class Column implements JsonSerializable, Renderable
     public function key(): string
     {
         return $this->key;
+    }
+
+    /**
+     * The row keys this column binds — what the registry whitelists into each
+     * decorated row. Container columns override to collect their children's.
+     *
+     * @return array<int, string>
+     */
+    public function boundRowKeys(): array
+    {
+        return [$this->key];
+    }
+
+    /**
+     * The relation this column draws its value from, as a driver-agnostic
+     * binding, or null when the column reads a plain attribute. A dotted key
+     * (`author.name`) binds one related row; columns with richer semantics
+     * (e.g. TextColumn's multiple()) override.
+     */
+    public function relationBinding(): ?RelationBinding
+    {
+        if (! str_contains($this->key, '.')) {
+            return null;
+        }
+
+        [$relation, $field] = explode('.', $this->key, 2);
+
+        if ($field === '' || str_contains($field, '.')) {
+            return null;
+        }
+
+        return new RelationBinding($relation, $field, many: false);
     }
 
     /**

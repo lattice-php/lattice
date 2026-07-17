@@ -9,10 +9,11 @@ use Symfony\Component\Process\Process;
 
 /**
  * Formats generated TypeScript with the host app's oxfmt binary when available,
- * falling back to the package checkout for local development. Missing binaries
- * are treated as a no-op so generation still produces valid TypeScript.
+ * falling back to the package checkout for local development. A missing binary
+ * is a no-op: the byte-exact snapshot test catches any formatting divergence,
+ * and the PHP CI test jobs deliberately run without node_modules.
  */
-final class OxfmtFormatter implements Formatter
+final readonly class OxfmtFormatter implements Formatter
 {
     /**
      * @param  array<int, string>  $files

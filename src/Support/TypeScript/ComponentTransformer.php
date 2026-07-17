@@ -29,12 +29,17 @@ use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptString;
 final class ComponentTransformer extends ClassTransformer
 {
     use AllowsListedClasses;
+    use SortsPropertiesByName;
 
     /**
      * @param  array<int, class-string>  $allowed
      */
-    public function __construct(array $allowed)
-    {
+    public function __construct(
+        array $allowed,
+        private readonly NodeTypeReference $componentRef = new NodeTypeReference,
+        private readonly NodeTypeReference $columnRef = new NodeTypeReference(envelope: 'ColumnNode'),
+        private readonly NodeTypeReference $filterRef = new NodeTypeReference(envelope: 'FilterNode'),
+    ) {
         $this->allowed = $allowed;
 
         parent::__construct();
@@ -124,30 +129,10 @@ final class ComponentTransformer extends ClassTransformer
     {
         return [
             ...parent::classPropertyProcessors(),
-            new MarkerRewriteClassPropertyProcessor(Component::class, NodeTypeReference::for(...)),
-            new MarkerRewriteClassPropertyProcessor(Column::class, NodeTypeReference::for(...)),
-            new MarkerRewriteClassPropertyProcessor(Filter::class, NodeTypeReference::for(...)),
+            new MarkerRewriteClassPropertyProcessor(Component::class, ($this->componentRef)(...)),
+            new MarkerRewriteClassPropertyProcessor(Column::class, ($this->columnRef)(...)),
+            new MarkerRewriteClassPropertyProcessor(Filter::class, ($this->filterRef)(...)),
             new MixedToUnknownClassPropertyProcessor,
         ];
-    }
-
-    /**
-     * Sort by name so the generated output is deterministic across PHP versions:
-     * ReflectionClass::getProperties() reports inherited and trait properties in a
-     * different order on 8.4 vs 8.5.
-     *
-     * @return array<PhpPropertyNode>
-     */
-    #[\Override]
-    protected function getProperties(PhpClassNode $phpClassNode): array
-    {
-        $properties = parent::getProperties($phpClassNode);
-
-        usort(
-            $properties,
-            fn (PhpPropertyNode $a, PhpPropertyNode $b): int => $a->getName() <=> $b->getName(),
-        );
-
-        return $properties;
     }
 }

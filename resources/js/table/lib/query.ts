@@ -225,8 +225,7 @@ export function getTableSizingColumns(columns: TableColumn[]) {
 }
 
 function columnWidthOrDefault(column: TableColumn): ColumnWidth {
-  return (column.props.width ??
-    (column.type === "column.stack" ? "xl" : DEFAULT_COLUMN_WIDTH)) as ColumnWidth;
+  return (column.props.width ?? DEFAULT_COLUMN_WIDTH) as ColumnWidth;
 }
 
 export function getTableUtilityTracks(

@@ -3,16 +3,15 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Remote\Components;
 
-use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Remote\RemoteAccess;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Components\Concerns\SealsReferences;
 use LogicException;
 
 abstract class RemoteComponent extends Component
 {
-    protected ?string $id = null;
+    use SealsReferences;
 
     public ?RemoteAccess $remote = null;
 
@@ -24,13 +23,6 @@ abstract class RemoteComponent extends Component
      * @var list<string>
      */
     private array $scopes = [];
-
-    public function id(string $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     public function source(string $source): static
     {
@@ -57,19 +49,6 @@ abstract class RemoteComponent extends Component
     }
 
     /**
-     * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
-     */
-    #[SerializationHook(priority: 150)]
-    protected function serialiseRemoteId(array $data): array
-    {
-        return [
-            ...$data,
-            'id' => $this->id,
-        ];
-    }
-
-    /**
      * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */
@@ -84,21 +63,16 @@ abstract class RemoteComponent extends Component
                 ));
             }
 
-            if ($this->id === null) {
-                throw new LogicException(sprintf(
-                    'Remote component [%s] must be given an id() before it can be serialised with remote access.',
-                    $this->type(),
-                ));
-            }
+            $id = $this->requireId('Remote', 'remote access');
 
             $props['remote'] = new RemoteAccess(
                 source: $this->source,
                 audience: $this->audience,
                 scopes: $this->scopes,
-                nodeId: $this->id,
+                nodeId: $id,
                 nodeType: $this->type(),
                 tokenEndpoint: app(RemoteSourceRegistry::class)->endpointFor($this->source),
-                ref: app(SignsComponentReferences::class)->seal($this->type(), $this->id, [
+                ref: $this->sealRef($id, [
                     'audience' => $this->audience,
                     'source' => $this->source,
                     'scopes' => $this->scopes,

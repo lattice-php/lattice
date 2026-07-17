@@ -19,6 +19,7 @@ const mockedUsePage = vi.mocked(usePage);
 function payload(lattice: Partial<PagePayload> = {}): PagePayload {
   return {
     breadcrumbs: [],
+    listeners: [],
     schema: [],
     container: "default",
     layout: null,

@@ -3,13 +3,11 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Ui\Components;
 
-use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use LogicException;
+use Lattice\Lattice\Ui\Components\Concerns\SealsReferences;
 
 trait IsInteractive
 {
-    protected ?string $id = null;
+    use SealsReferences;
 
     /**
      * The key the reference is sealed under (the registered definition slug).
@@ -26,13 +24,6 @@ trait IsInteractive
      * declared here so the wire prop is generated to TypeScript.
      */
     public ?string $ref = null;
-
-    public function id(string $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     /**
      * Set the key the reference is sealed under (the registered definition slug).
@@ -55,19 +46,6 @@ trait IsInteractive
     }
 
     /**
-     * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
-     */
-    #[SerializationHook(priority: 150)]
-    protected function serialiseInteractiveId(array $data): array
-    {
-        return [
-            ...$data,
-            'id' => $this->id,
-        ];
-    }
-
-    /**
      * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */
@@ -76,14 +54,9 @@ trait IsInteractive
         $props = parent::decorateProps($props);
 
         if ($this->hasEndpoint($props)) {
-            if ($this->id === null) {
-                throw new LogicException(sprintf(
-                    'Interactive component [%s] must be given an id() before it can be serialised with an endpoint.',
-                    $this->type(),
-                ));
-            }
+            $id = $this->requireId('Interactive', 'an endpoint');
 
-            $props['ref'] = app(SignsComponentReferences::class)->seal($this->type(), $this->signatureKey ?? $this->id, $this->context);
+            $props['ref'] = $this->sealRef($this->signatureKey ?? $id, $this->context);
         }
 
         return $props;

@@ -10,16 +10,13 @@ use Spatie\TypeScriptTransformer\Transformed\Transformed;
 use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
 
 /**
- * The base-module writer, plus the one import the generated module can't declare
- * itself: the augmentable `Node` from core/types. Component-typed props generate as
- * `Node<"type">`/`Node` (see {@see ComponentTransformer}), and `WireNode` aliases it,
- * so the flat module references `Node` but never defines it. The core↔generated
- * import cycle is type-only, so it erases at runtime.
+ * The base-module writer, plus the envelope machinery the generated shapes plug
+ * into (`Node`, `ColumnNode`, `FilterNode`, the `ResolveProps` calculus and the
+ * augmentable interfaces), inlined from the stubs directory so the module is
+ * fully self-contained; hand-written modules re-export from it.
  */
 final class NodeModuleWriter extends FlatModuleWriter
 {
-    private const string HEADER = 'import type { Node } from "@lattice-php/lattice/core/types";'."\n";
-
     /**
      * @param  array<mixed>  $transformed
      * @return array<WriteableFile>
@@ -29,10 +26,12 @@ final class NodeModuleWriter extends FlatModuleWriter
     {
         $this->guardUniqueNames($transformed);
 
+        $envelopes = (string) file_get_contents(__DIR__.'/stubs/envelopes.ts');
+
         return array_map(
             fn (WriteableFile $file): WriteableFile => new WriteableFile(
                 $file->path,
-                self::HEADER.$file->contents,
+                $envelopes.$file->contents,
                 $file->changed,
             ),
             parent::output($transformed, $transformedCollection),

@@ -82,7 +82,14 @@ export { RealtimeListeners } from "./realtime/listeners";
 export type { ChannelVisibility, DateFormat, Listen, NumberFormat } from "./types/generated";
 export { columnCell } from "./table/registry";
 export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "./table/registry";
-export type { ColumnProps, ColumnPropsOf } from "./table/types";
+export type {
+  ColumnNode,
+  ColumnProps,
+  ColumnPropsOf,
+  FilterNode,
+  FilterProps,
+  FilterPropsOf,
+} from "./table/types";
 export type { Method } from "@inertiajs/core";
 export type { ActionEffect, ActionResponse } from "./effects/dispatch";
 export type {

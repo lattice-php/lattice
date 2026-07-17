@@ -53,8 +53,8 @@ const _selectFilter: FilterPropsOf<"filter.select"> = {
 // @ts-expect-error - multiple must be a boolean
 const _selectFilterBad: FilterPropsOf<"filter.select"> = { multiple: 1 };
 
-// Unknown filter types fall back to the loose bag.
-const _looseFilter: FilterPropsOf<"totally.unknown"> = { anything: true };
+// Unknown filter types fall back to the generated Filter base plus a loose bag.
+const _looseFilter: FilterPropsOf<"totally.unknown"> = { anything: true, label: null };
 
 void _selectFilter;
 void _selectFilterBad;

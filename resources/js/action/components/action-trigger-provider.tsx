@@ -7,7 +7,7 @@ export function ActionTrigger({
   action,
   children,
 }: {
-  action: Node<"action">;
+  action: Node<"action" | "action.bulk">;
   children: (trigger: TriggerState) => ReactNode;
 }) {
   const { processing, requestSubmit, overlays } = useAction(action);

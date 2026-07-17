@@ -4,16 +4,17 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Http\Controllers;
 
 use Illuminate\Contracts\Support\Responsable;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Concerns\InteractsWithComponents;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Forms\FormRegistry;
+use Lattice\Lattice\Http\Controllers\Concerns\HandlesFormSubRequests;
 use Lattice\Lattice\Http\Controllers\Concerns\HandlesPrecognition;
 use Symfony\Component\HttpFoundation\Response;
 
 final readonly class FormController
 {
+    use HandlesFormSubRequests;
     use HandlesPrecognition;
     use InteractsWithComponents;
 
@@ -28,16 +29,8 @@ final readonly class FormController
 
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->forms, 'form', $form);
 
-        if ($request->filled('_upload')) {
-            return new JsonResponse($definition->signUpload($request));
-        }
-
-        if ($request->filled('_search')) {
-            return new JsonResponse($definition->searchOptions($request));
-        }
-
-        if ($request->boolean('_resolve')) {
-            return new JsonResponse($definition->resolveFields($request));
+        if (($subRequest = $this->formSubRequest($request, $definition)) instanceof Response) {
+            return $subRequest;
         }
 
         if ($request->isPrecognitive()) {

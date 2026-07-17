@@ -3,6 +3,7 @@ import {
   eagerComponent,
   type ComponentRegistryFor,
 } from "@lattice-php/lattice/core/registry";
+import type { LayoutNodeType } from "@lattice-php/lattice/types/generated";
 import BreadcrumbsComponent from "./components/breadcrumbs";
 import CalloutsComponent from "./components/callouts";
 import DropdownComponent from "./components/dropdown";
@@ -11,16 +12,6 @@ import MenuItemComponent from "./components/menu-item";
 import OutletComponent from "./components/outlet";
 import SidebarComponent from "./components/sidebar";
 import TopbarComponent from "./components/topbar";
-
-export type LayoutComponentType =
-  | "breadcrumbs"
-  | "callouts"
-  | "dropdown"
-  | "menu"
-  | "menu-item"
-  | "outlet"
-  | "sidebar"
-  | "topbar";
 
 export const layoutComponents = createPlugin({
   components: {
@@ -32,6 +23,6 @@ export const layoutComponents = createPlugin({
     outlet: eagerComponent(OutletComponent),
     sidebar: eagerComponent(SidebarComponent),
     topbar: eagerComponent(TopbarComponent),
-  } satisfies ComponentRegistryFor<LayoutComponentType>,
+  } satisfies ComponentRegistryFor<LayoutNodeType>,
   name: "lattice/layout",
 });

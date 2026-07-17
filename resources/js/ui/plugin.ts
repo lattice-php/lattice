@@ -3,12 +3,7 @@ import {
   eagerComponent,
   type ComponentRegistryFor,
 } from "@lattice-php/lattice/core/registry";
-import type { ActionNodeType, FormNodeType, NodeType } from "@lattice-php/lattice/types/generated";
-import type { ChatComponentType } from "@lattice-php/lattice/chat/plugin";
-import type { LayoutComponentType } from "@lattice-php/lattice/layout/plugin";
-import type { NotificationsComponentType } from "@lattice-php/lattice/notifications/plugin";
-import type { RemoteComponentType } from "@lattice-php/lattice/remote/plugin";
-import type { TableComponentType } from "@lattice-php/lattice/table/plugin";
+import type { FragmentNodeType, UiNodeType } from "@lattice-php/lattice/types/generated";
 import AvatarComponent from "./avatar";
 import BadgeComponent from "./badge";
 import ButtonComponent from "./button";
@@ -34,16 +29,7 @@ import TextComponent from "./text";
 import TooltipComponent from "./tooltip";
 import TreeComponent from "./tree";
 
-type NonUiComponentType =
-  | ActionNodeType
-  | ChatComponentType
-  | FormNodeType
-  | LayoutComponentType
-  | NotificationsComponentType
-  | RemoteComponentType
-  | TableComponentType;
-
-type UiComponentType = Exclude<NodeType, NonUiComponentType>;
+type UiComponentType = UiNodeType | FragmentNodeType;
 
 export const uiComponents = createPlugin({
   components: {

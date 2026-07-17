@@ -23,4 +23,23 @@ class StackColumn extends Column
     {
         return $this->children;
     }
+
+    /**
+     * @return array<int, string>
+     */
+    #[\Override]
+    public function boundRowKeys(): array
+    {
+        $keys = [];
+
+        foreach ($this->children as $child) {
+            if (! $child->shouldRender()) {
+                continue;
+            }
+
+            array_push($keys, ...$child->boundRowKeys());
+        }
+
+        return array_values(array_unique($keys));
+    }
 }

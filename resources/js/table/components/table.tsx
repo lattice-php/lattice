@@ -1,7 +1,7 @@
 import { type ReactNode, Fragment, useMemo } from "react";
 import { useT } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { Renderer, RenderNode } from "@lattice-php/lattice/core/renderer";
 import { useColumnResizing } from "@lattice-php/lattice/core/hooks/use-column-resizing";
 import { useColumnVisibility } from "@lattice-php/lattice/table/hooks/use-column-visibility";
 import { useExpandedRows } from "@lattice-php/lattice/table/hooks/use-expanded-rows";
@@ -28,7 +28,6 @@ import { FilterBar, FilterMenu } from "./filter-bar";
 import { TablePagination } from "./pagination";
 import { SortBar } from "./sort-bar";
 import { TableSearch } from "./table-search";
-import { TableActionNode } from "./table-action-node";
 import { ColumnCell } from "./table-cell";
 
 const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => {
@@ -384,7 +383,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                           role="cell"
                         >
                           {actions.map((action, actionIndex) => (
-                            <TableActionNode
+                            <RenderNode
                               key={action.key ?? action.id ?? actionIndex}
                               node={action}
                             />

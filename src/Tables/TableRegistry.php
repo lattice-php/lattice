@@ -13,7 +13,6 @@ use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormSchemaWalker;
 use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Columns\StackColumn;
 use Lattice\Lattice\Tables\Components\Table as TableComponent;
 use Lattice\Lattice\Tables\Contracts\Filterable;
 use Lattice\Lattice\Tables\Contracts\Searchable;
@@ -257,31 +256,9 @@ final class TableRegistry extends DefinitionRegistry
                 continue;
             }
 
-            array_push($keys, ...$this->columnKeys($column));
+            array_push($keys, ...$column->boundRowKeys());
         }
 
         return array_values(array_unique($keys));
-    }
-
-    /**
-     * @return array<int, string>
-     */
-    private function columnKeys(Column $column): array
-    {
-        if ($column instanceof StackColumn) {
-            $keys = [];
-
-            foreach ($column->children() as $child) {
-                if (! $child->shouldRender()) {
-                    continue;
-                }
-
-                array_push($keys, ...$child->boundRowKeys());
-            }
-
-            return array_values(array_unique($keys));
-        }
-
-        return [$column->key()];
     }
 }
