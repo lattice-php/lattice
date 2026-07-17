@@ -401,6 +401,8 @@ test('modals serialize composable children for action driven dialogs', function 
                 'description' => 'Scan the QR code with your authenticator app.',
                 'closeLabel' => 'Close',
                 'open' => false,
+                'side' => null,
+                'width' => 'lg',
                 'ref' => null,
             ],
             'schema' => [
