@@ -1,5 +1,82 @@
 # Changelog
 
+## [0.21.0](https://github.com/lattice-php/lattice/compare/0.20.0...0.21.0) (2026-07-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** one naming matrix per wire family
+* **http:** listeners default to an empty array
+* **types:** self-contained generated module; base Column/Filter props generated
+* **http:** generate PagePayload — the last hand-written wire payload
+* **types:** node references union known subclasses; Column/Filter map to their envelopes
+* **types:** generate every domain node union
+
+### Features
+
+* **actions:** slide-out and width presentation for action form modals ([d13675c](https://github.com/lattice-php/lattice/commit/d13675c6074fc04abba72e367504dc7d62f97ee4))
+* **actions:** thread modal presentation into action form and confirm dialogs ([dce9280](https://github.com/lattice-php/lattice/commit/dce92804f9792a0268470e304844c675d0a77400))
+* add named extension slots ([d311263](https://github.com/lattice-php/lattice/commit/d311263b46a83a46c38f1813a61d3d70a8f72575))
+* add typed effect response assertions ([6c3a37d](https://github.com/lattice-php/lattice/commit/6c3a37d8558dfe8fe968e3f8da3de740cdfc922c))
+* add typed effect response assertions ([8c58636](https://github.com/lattice-php/lattice/commit/8c58636c74f8c4e2c1aa21a45c7153bbd6586ba4))
+* **lib:** add shared hooks and helpers for dedup ([96c4097](https://github.com/lattice-php/lattice/commit/96c40973a1d5e6497c6fad1a48a64f27b277b84e))
+* **ui:** add named extension slots ([c0b2385](https://github.com/lattice-php/lattice/commit/c0b23851a01c23f4a367d901a9f6d71d93a9697f))
+* **ui:** Modal slide-out sheets + unified dialog sizing ([69613c9](https://github.com/lattice-php/lattice/commit/69613c9dbce93c7e206e6e58753f601f9ba7f1da))
+* **ui:** Modal slideOut side and width props ([4ed405c](https://github.com/lattice-php/lattice/commit/4ed405c6d9d60f6d12ea1b9f3a4d16b05acc089f))
+* **ui:** placement and width dialog variants with motion tokens ([6606a07](https://github.com/lattice-php/lattice/commit/6606a07e07f03785ddd8e740032a145507702365))
+* **ui:** render Modal as slide-out sheet from server props ([9aacdd9](https://github.com/lattice-php/lattice/commit/9aacdd955463c5f2f5e9cadfaad502dbbff02a71))
+
+
+### Bug Fixes
+
+* **http:** one sub-request dispatch — action forms gain signed uploads ([3d08ff3](https://github.com/lattice-php/lattice/commit/3d08ff3310a70ab16eeec1643663020cb1e71fda))
+* **table:** thread bulk action modal presentation into the form sheet ([46d177c](https://github.com/lattice-php/lattice/commit/46d177cf64d453c7c0cddf5b11a395e7d11a0e32))
+* **types:** drop strict oxfmt mode — PHP CI test jobs run without node_modules ([ca0abef](https://github.com/lattice-php/lattice/commit/ca0abefd87bf77c23c95b918b513deae8c89ee07))
+* **types:** make generation deterministic across PHP versions ([8567d80](https://github.com/lattice-php/lattice/commit/8567d80c22266854e2ebaf5f0f33add3298df09d))
+* **types:** node references union known subclasses; Column/Filter map to their envelopes ([3b8a386](https://github.com/lattice-php/lattice/commit/3b8a386a83c76fc6c0f8fd5d7b2e2522eab739f7))
+* **types:** seed consumer augment runs with the built-in wire classes ([1147cf4](https://github.com/lattice-php/lattice/commit/1147cf4716c338338c720b0e3473860a499bdd32))
+* **ui:** animate centered dialogs without duplicating the centering translate ([6adaa45](https://github.com/lattice-php/lattice/commit/6adaa45ae42e6df9501afcaef74f8ee625c00c4b))
+* **ui:** keep the image lightbox shrink-wrapped on the variant dialog surface ([17e062b](https://github.com/lattice-php/lattice/commit/17e062b09f03188d5878716678ddd97c9c06826e))
+
+
+### Performance
+
+* **core:** register builtin effects and editor extensions explicitly ([5939608](https://github.com/lattice-php/lattice/commit/5939608feeef46e0bbb98294d6ae2aae7407587b))
+* **forms:** early-exit FormSchemaWalker::find ([bd8e053](https://github.com/lattice-php/lattice/commit/bd8e05361de886ddf2bb5b3e09e67e8216f65b30))
+* **ui:** serve trees from one scoped scan; share the Eloquent scope concern ([e004c10](https://github.com/lattice-php/lattice/commit/e004c107f9f55473be0d58708625ea077f1d4229))
+
+
+### Refactoring
+
+* **attributes:** route enum unwrap through Wire::scalar ([c5d226c](https://github.com/lattice-php/lattice/commit/c5d226c8805fcd432e1cc468461366c055fbc531))
+* **enums:** extract HasPrefixedWireType trait ([18b290c](https://github.com/lattice-php/lattice/commit/18b290c1a64df7b9c4ce8a872c920a071fb58377))
+* **form,layout,i18n:** adopt shared hooks and fix field bugs ([09b8b0c](https://github.com/lattice-php/lattice/commit/09b8b0ce857c3bd72c08728a2b7152a370af86de))
+* **forms:** extract HasMinMax/HasStep for date-time inputs ([159afc0](https://github.com/lattice-php/lattice/commit/159afc0ea594a8b7f1c6d1f619ad78178c695eb9))
+* **http:** generate PagePayload — the last hand-written wire payload ([ba90bbe](https://github.com/lattice-php/lattice/commit/ba90bbee4ed4fb8b19fb1d8398c97e7108ad752a))
+* **http:** listeners default to an empty array ([99786f6](https://github.com/lattice-php/lattice/commit/99786f6e2aa0952311dc2239b19a4e5509f69c4e))
+* **js:** compile-check the builtin effect handlers against the wire contract ([2e53e5a](https://github.com/lattice-php/lattice/commit/2e53e5a0d154158182e9477965bfc1301afad8ff))
+* **js:** extract shared hooks and dedupe cells, storage, debounce, format ([e228f56](https://github.com/lattice-php/lattice/commit/e228f56ac76fdbaa4a212611b355d804b0ce7648))
+* **js:** render table row actions through the generic RenderNode ([9edc046](https://github.com/lattice-php/lattice/commit/9edc046d0ab0a0061c425e0d43d79749c8c2d2c9))
+* **notifications:** use dialog sheet variants for the slide-out panel ([8cd4c47](https://github.com/lattice-php/lattice/commit/8cd4c4744882f643a2de2bbe325544e4d30b16f4))
+* **php:** dedup the make-commands, enum prefix, date/time setters, and enum unwraps ([6eb6e81](https://github.com/lattice-php/lattice/commit/6eb6e812b7040af3ae910fdf59a79cd375a2443c))
+* **table:** dedupe cells, storage, debounce, and predicates ([0c054ed](https://github.com/lattice-php/lattice/commit/0c054ede2e23dd60d9249f32ead51529a23ebffb))
+* **tables:** make column row-keys and relation bindings declarative capabilities ([ffbc117](https://github.com/lattice-php/lattice/commit/ffbc117b790e62a6af59514da289f4e15cae02a6))
+* **types:** #[WireEnvelope] puts the marker→envelope mapping on the marker ([e964d7d](https://github.com/lattice-php/lattice/commit/e964d7dbc2968449a6a63459e9dcdf79fd2bf1fe))
+* **types:** generate every domain node union ([8876854](https://github.com/lattice-php/lattice/commit/88768542a5078cddbbf102b651dba61b861a21cf))
+* **types:** one naming matrix per wire family ([4fa2325](https://github.com/lattice-php/lattice/commit/4fa2325dde7c58afe21da869506ceb57078fac86))
+* **types:** self-contained generated module; base Column/Filter props generated ([821ba1d](https://github.com/lattice-php/lattice/commit/821ba1d87a93144cb5fee0554bf84057048a5888))
+* **ui:** adopt shared hooks and dedupe collapsible, pills, chart ([babbbec](https://github.com/lattice-php/lattice/commit/babbbec1584567feb0b0cc97ddbc3df6440078ae))
+* **ui:** extract SealsReferences from the duplicated sealing machinery ([922debf](https://github.com/lattice-php/lattice/commit/922debf952c59bb8f71a4e1eebee9089e2cc7d3c))
+* **ui:** resolve expandable schema entries ([bfd4fc8](https://github.com/lattice-php/lattice/commit/bfd4fc8091fe51db12b1e47dce794f31a81b6a75))
+
+
+### Documentation
+
+* document named extension slots ([f6a63b0](https://github.com/lattice-php/lattice/commit/f6a63b0764233f71fc2b1e64e164fdc22d5af7bf))
+* document typed effect assertions ([4770867](https://github.com/lattice-php/lattice/commit/4770867a884b1476a279916ae9b0d01a66cd60b9))
+* hold PR comments to the comment guidelines ([3a3df3a](https://github.com/lattice-php/lattice/commit/3a3df3a427f6e394bd89b918cd0da62b7a383c65))
+* **ui:** document Modal slideOut and width ([4bc1145](https://github.com/lattice-php/lattice/commit/4bc1145f93cfa8e6cde6f0533a4d47edcbe5ab48))
+
 ## [0.20.0](https://github.com/lattice-php/lattice/compare/0.19.0...0.20.0) (2026-07-17)
 
 
