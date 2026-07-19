@@ -16,6 +16,27 @@ final readonly class AugmentProfile implements TypeScriptProfile
 {
     public function __construct(private WireTypeDiscovery $discovery) {}
 
+    public function pendingTypeCount(): int
+    {
+        $entries = [];
+
+        foreach (DiscoveryManifest::configuredPaths() as $path) {
+            $manifest = $this->discovery->discover($path);
+
+            foreach ($manifest->components as $component) {
+                $entries[$component->class] = true;
+            }
+
+            foreach (WireFamily::registryFamilies() as $family) {
+                foreach (array_keys($manifest->family($family->category)) as $class) {
+                    $entries[$class] = true;
+                }
+            }
+        }
+
+        return count($entries);
+    }
+
     public function run(TypeScriptGenerator $generator): string
     {
         $roots = DiscoveryManifest::configuredPaths();

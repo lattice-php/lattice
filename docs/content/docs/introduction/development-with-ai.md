@@ -53,4 +53,4 @@ One Lattice-specific step the core guideline already teaches your agent — wort
 php artisan lattice:typescript
 ```
 
-The command requires the suggested dev dependency: `composer require --dev spatie/typescript-transformer`.
+You only need this when your app defines **custom** PHP wire types — your own components, fields, columns, filters, or effects. Projects that use only Lattice's bundled types never need it, and the command will tell you so. When you do have custom types, install the suggested dev dependency once: `composer require --dev spatie/laravel-typescript-transformer`.

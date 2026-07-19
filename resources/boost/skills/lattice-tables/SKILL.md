@@ -39,7 +39,7 @@ class ProductsTable extends EloquentTableDefinition
 }
 ```
 
-`builder()` returns the **base query** — your own scoping only (a `select()`, eager loads, tenant constraints, a default order). Lattice applies the request's filters and sorts **on top** of it, driven by the columns' capabilities. The `TableQuery` argument is the read model of the current request (`->filters()`, `->sorts()`, page, size), so the builder can react — e.g. apply a default order only when `$query->sorts() === []`.
+`builder()` returns the **base query** — your own scoping only (a `select()`, eager loads, tenant constraints, a default order). Lattice applies the request's filters and sorts **on top** of it, driven by the columns' capabilities. The `TableQuery` argument is the read model of the current request (public readonly properties `$filters`, `$sorts`, `$page`, `$perPage`), so the builder can react — e.g. apply a default order only when `$query->sorts === []`.
 
 `TableDefinition` hooks beyond `columns()`: `source()`, `perPage()` (default `25`), `pagination()`, `striped()`, `emptyLabel()`, `actionsLabel()`, `actions($row)`, `bulkActions()`.
 
@@ -54,7 +54,7 @@ Columns live in `Lattice\Lattice\Tables\Columns`. `Column::make('key')` reads `$
 - **`BadgeColumn`** — `->colors(['active' => 'green', 'invited' => 'yellow', 'archived' => 'gray'])`. Colors: `gray`, `red`, `green`, `yellow`, `blue`, `purple`, `orange` (unmapped → gray).
 - **`IconColumn`** — `->icon(Icon::Star)` for one icon, or `->icons(['1' => Icon::Check, '0' => Icon::Minus])`; add `->colors([...])` to tint.
 - **`ImageColumn`** — renders the value as an image URL: `->circular()`, `->size(40)`.
-- **`StackColumn`** — group child columns into one cell: `->columns([TextColumn::make('name'), TextColumn::make('email')])`.
+- **`StackColumn`** — group child columns into one cell: `->schema([TextColumn::make('name'), TextColumn::make('email')])`.
 
 ### Sortable & filterable
 

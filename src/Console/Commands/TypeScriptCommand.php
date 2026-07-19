@@ -16,8 +16,19 @@ final class TypeScriptCommand extends Command
 
     public function handle(TypeScriptProfile $profile, TypeScriptGenerator $generator): int
     {
+        $pending = $profile->pendingTypeCount();
+
+        if ($pending === 0) {
+            $this->components->info('No custom Lattice wire types found — the bundled TypeScript types already cover this project. Nothing to generate.');
+
+            return self::SUCCESS;
+        }
+
         if (! class_exists(TypeScriptTransformer::class)) {
-            $this->components->error('lattice:typescript needs spatie/typescript-transformer. Install it with: composer require --dev spatie/typescript-transformer');
+            $this->components->error(sprintf(
+                'Found %d custom Lattice wire type(s) to generate, but spatie/laravel-typescript-transformer is not installed. Install it with: composer require --dev spatie/laravel-typescript-transformer',
+                $pending,
+            ));
 
             return self::FAILURE;
         }

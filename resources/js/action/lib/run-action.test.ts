@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { ActionEffect, ActionResponse } from "@lattice-php/lattice/effects/dispatch";
+import type { ActionEffect } from "@lattice-php/lattice/effects/dispatch";
 import { dispatchActionError, getActionEffects } from "@lattice-php/lattice/effects/dispatch";
 import { runAction } from "./run-action";
 
@@ -13,31 +13,40 @@ beforeEach(() => {
 });
 
 describe("runAction", () => {
-  it("dispatches normalized effects and reports success", async () => {
+  it("dispatches effects and reports success on a 2xx response", async () => {
     const effect = { type: "toast" } as ActionEffect;
-    const response = { effects: [effect] } satisfies ActionResponse;
-    const request = vi.fn<() => Promise<ActionResponse>>().mockResolvedValue(response);
-    const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
-
     vi.mocked(getActionEffects).mockReturnValue([effect]);
+    const request = (): Promise<Response> =>
+      Promise.resolve(new Response(JSON.stringify({ effects: [effect] }), { status: 200 }));
+    const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
 
     await expect(runAction(request, dispatch)).resolves.toBe(true);
 
-    expect(request).toHaveBeenCalledTimes(1);
-    expect(getActionEffects).toHaveBeenCalledWith(response.effects);
     expect(dispatch).toHaveBeenCalledWith([effect]);
     expect(dispatchActionError).not.toHaveBeenCalled();
   });
 
-  it("routes failures through the action error event and reports failure", async () => {
-    const error = new Error("Action failed");
-    const request = vi.fn<() => Promise<ActionResponse>>().mockRejectedValue(error);
+  it("dispatches effects but reports failure on a non-2xx response", async () => {
+    const effect = { type: "toast" } as ActionEffect;
+    vi.mocked(getActionEffects).mockReturnValue([effect]);
+    const request = (): Promise<Response> =>
+      Promise.resolve(new Response(JSON.stringify({ effects: [effect] }), { status: 422 }));
     const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
 
     await expect(runAction(request, dispatch)).resolves.toBe(false);
 
-    expect(dispatch).not.toHaveBeenCalled();
-    expect(getActionEffects).not.toHaveBeenCalled();
+    expect(dispatch).toHaveBeenCalledWith([effect]);
+    expect(dispatchActionError).not.toHaveBeenCalled();
+  });
+
+  it("routes a thrown/network error through the action error event", async () => {
+    const error = new Error("network down");
+    const request = (): Promise<Response> => Promise.reject(error);
+    const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
+
+    await expect(runAction(request, dispatch)).resolves.toBe(false);
+
     expect(dispatchActionError).toHaveBeenCalledWith(error);
+    expect(dispatch).not.toHaveBeenCalled();
   });
 });

@@ -37,7 +37,7 @@ class ArchiveProductAction extends ActionDefinition
         $product->update(['status' => 'archived']);
 
         return ActionResult::success()
-            ->toast(Variant::Success, 'Product archived.')
+            ->toast('Product archived.')
             ->reloadComponent('app.products');
     }
 }
@@ -45,15 +45,15 @@ class ArchiveProductAction extends ActionDefinition
 
 ## The result and its effects
 
-`handle()` returns an `ActionResult`. Start from `ActionResult::success($data?)` or `ActionResult::failure($data?)`, then chain effects (each returns a new result, so they read as a pipeline) — the client runs them in order:
+`handle()` returns an `ActionResult`. Start from `ActionResult::success($data?)` for a successful result, or `ActionResult::failure($message?)` to **reject** the action (HTTP 422; a message auto-adds an error toast and any open confirm dialog or modal stays open). Then chain effects (each returns a new result, so they read as a pipeline) — the client runs them in order:
 
 | Effect | What it does |
 | --- | --- |
-| `->toast($message, $variant?)` | Show a toast (`Variant::Success`/`Error`/`Warning`/`Info`; defaults to success; message and variant are order-insensitive). |
-| `->callout($callout)` | Show a persistent in-flow banner in the layout's `Callouts::make()` slot. Pass a `Callout` value object (`Lattice\Lattice\Ui\Values\Callout`). |
+| `->toast($message, $variant?)` | Show a toast. `$message` first, then an optional `Variant` (`Success` default, or `Error`/`Warning`/`Info`). |
+| `->callout($callout)` | Show a persistent in-flow banner in the layout's `Callouts::make()` slot. Pass a `Callout` value object (`Lattice\Lattice\Effects\Builtin\Callout`). |
 | `->reloadComponent($id)` | Re-fetch one component — pass a `#[AsTable]`/component id so only it refreshes. |
 | `->reloadPage()` | Reload the current page's props. |
-| `->redirect($url)` | Navigate to a URL. |
+| `->to($url)` / `->toRoute($name, $params?)` / `->back()` | Navigate to a URL, a named route, or back. |
 | `->download($url)` | Trigger a file download. |
 | `->openModal($id)` / `->closeModal($id?)` | Open/close a modal (`closeModal()` closes the current one). |
 | `->resetForm($id?)` | Reset a form to its initial values (`resetForm()` resets the current form). |
@@ -64,15 +64,15 @@ return ActionResult::success()->toast('Saved.')->reloadComponent('app.products')
 
 ### Callout effect
 
-`Callout::make(Variant $variant, string $message)` builds a persistent banner. Chain `->title()`, `->dismissible()`, `->link()`, or `->action()` to configure it:
+`Callout::make(string $message, Variant $variant = Variant::Info)` builds a persistent banner. Chain `->title()`, `->dismissible()`, `->link()`, or `->action()` to configure it:
 
 ```php
+use Lattice\Lattice\Effects\Builtin\Callout;
 use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Ui\Values\Callout;
 
 return ActionResult::success()
     ->callout(
-        Callout::make(Variant::Warning, 'Your trial ends in 3 days.')
+        Callout::make('Your trial ends in 3 days.', Variant::Warning)
             ->title('Trial ending')
             ->link('Upgrade', '/billing')
     );
@@ -85,15 +85,13 @@ The callout renders in the layout slot `Callouts::make()` (placed between the he
 `Effects::flash()` (facade `Lattice\Lattice\Facades\Effects`) delivers any effect(s) with the next Inertia response — no `ActionResult` needed. Use from controllers, listeners, middleware, or anywhere a redirect is returned:
 
 ```php
+use Lattice\Lattice\Effects\Builtin\Callout;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Ui\Values\Callout;
 
 Effects::flash(
-    Effects::toast(Variant::Success, 'Settings saved.'),
-    Effects::callout(
-        Callout::make(Variant::Info, 'Export is being processed.')->title('Export queued')
-    )
+    Effects::toast('Settings saved.', Variant::Success),
+    Callout::make('Export is being processed.', Variant::Info)->title('Export queued')
 );
 
 return redirect('/dashboard');
@@ -154,7 +152,7 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
         $records->each(fn (Product $product) => $product->update(['status' => 'archived']));
 
         return ActionResult::success(['archived' => $records->count()])
-            ->toast(Variant::Success, "Archived {$records->count()} products.")
+            ->toast("Archived {$records->count()} products.")
             ->reloadComponent('app.products');
     }
 }
@@ -175,3 +173,4 @@ See the **`lattice-tables`** skill for the table wiring.
 - **Reading context off the raw request** — use `$this->context($request, $key)`; it is the signed, trusted copy.
 - **No `#[AsAction('id')]` / `#[AsBulkAction('id')]`** → the action is not discovered and has no endpoint.
 - **Callout not appearing** — the active layout's `schema()` must include `Callouts::make()`; without it the effect is silently dropped.
+- **Signalling failure with a 2xx** — return `ActionResult::failure('…')` (HTTP 422) to reject; a plain `success()` with an error toast still reads as success to the client and closes modals.

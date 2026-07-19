@@ -5,17 +5,12 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import type { Node, ComponentPropsOf } from "@lattice-php/lattice/core/types";
 import MenuItemComponent from "./menu-item";
 
-const http = vi.hoisted(() => ({
-  delete: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  patch: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  post: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  processing: false,
-  put: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-}));
+const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
+
+vi.mock("@lattice-php/lattice/core/api", () => ({ apiFetch }));
 
 vi.mock("@inertiajs/react", async () =>
   (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
-    useHttp: () => http,
     usePage: () => ({ url: "/products" }),
   }),
 );
@@ -51,32 +46,30 @@ function renderActionMenuItem(node: Node<"menu-item">) {
 
 describe("menu item action trigger", () => {
   beforeEach(() => {
-    http.delete.mockReset();
-    http.patch.mockReset();
-    http.post.mockReset();
-    http.put.mockReset();
-    http.processing = false;
+    apiFetch.mockReset();
+    apiFetch.mockResolvedValue(new Response(JSON.stringify({ effects: [] }), { status: 200 }));
   });
 
   it("dispatches the nested action with the ref header", async () => {
-    http.post.mockResolvedValue({ ok: true, effects: [] });
-
     renderActionMenuItem(actionMenuItem());
 
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
     await waitFor(() => {
-      expect(http.post).toHaveBeenCalledWith("/lattice/actions/workbench.logout", {
-        headers: { "Accept-Language": "en", "X-Lattice-Ref": "sealed-reference" },
+      expect(apiFetch).toHaveBeenCalledWith("/lattice/actions/workbench.logout", {
+        method: "post",
+        ref: "sealed-reference",
+        throwOnError: false,
       });
     });
   });
 
   it("runs effects from the action response", async () => {
-    http.post.mockResolvedValue({
-      ok: true,
-      effects: [{ message: "Signed out.", type: "toast" }],
-    });
+    apiFetch.mockResolvedValue(
+      new Response(JSON.stringify({ effects: [{ message: "Signed out.", type: "toast" }] }), {
+        status: 200,
+      }),
+    );
 
     const toastListener = vi.fn<(event: Event) => void>();
     window.addEventListener("lattice:toast", toastListener);
@@ -93,8 +86,6 @@ describe("menu item action trigger", () => {
   });
 
   it("confirms before dispatching when the action requires confirmation", async () => {
-    http.post.mockResolvedValue({ ok: true, effects: [] });
-
     const node = actionMenuItem({
       confirmation: {
         cancelLabel: "Stay",
@@ -108,14 +99,14 @@ describe("menu item action trigger", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
-    expect(http.post).not.toHaveBeenCalled();
+    expect(apiFetch).not.toHaveBeenCalled();
     const dialog = screen.getByRole("dialog", { name: "Log out?" });
     expect(dialog).toBeVisible();
 
     fireEvent.click(within(dialog).getByRole("button", { name: "Log out" }));
 
     await waitFor(() => {
-      expect(http.post).toHaveBeenCalledTimes(1);
+      expect(apiFetch).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -128,7 +119,7 @@ describe("menu item action trigger", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
-    expect(http.post).not.toHaveBeenCalled();
+    expect(apiFetch).not.toHaveBeenCalled();
     expect(screen.getByRole("dialog")).toBeVisible();
   });
 });

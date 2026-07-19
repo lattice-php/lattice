@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Support\TypeScript\AugmentProfile;
+use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 
 use function Pest\Laravel\artisan;
@@ -52,22 +53,35 @@ it('writes an augmentation file for app components, not built-ins', function ():
     });
 });
 
-it('produces a valid augmentation file even when discover config is empty', function (): void {
+it('no-ops with a friendly message when there are no custom wire types', function (): void {
     withScaffoldWorkspace(function (): void {
-        $output = base_path('resources/js/lattice/generated-empty.d.ts');
+        $output = base_path('resources/js/lattice/generated.d.ts');
 
         config()->set('lattice.typescript.output', $output);
-        config()->set('lattice.typescript.module', '@lattice-php/lattice');
         config()->set('lattice.discover', []);
 
-        artisan('lattice:typescript')->assertSuccessful();
+        // The workbench's require-dev fixture package (lattice-php/signature-example)
+        // always contributes a real component via ComponentPackages discovery, so
+        // AugmentProfile::pendingTypeCount() can never hit 0 in this repo's own dev
+        // environment. Stub the profile to isolate the command's no-op branch from
+        // that fixture, exercising the same contract a clean consumer app would hit.
+        app()->instance(TypeScriptProfile::class, new class implements TypeScriptProfile
+        {
+            public function pendingTypeCount(): int
+            {
+                return 0;
+            }
 
-        $contents = file_get_contents($output);
+            public function run(TypeScriptGenerator $generator): string
+            {
+                throw new RuntimeException('run() must not be called when pendingTypeCount() is 0.');
+            }
+        });
 
-        expect($contents)
-            ->toBeString()
-            ->toContain('declare module "@lattice-php/lattice"')
-            ->toContain('interface ComponentProps {')
-            ->toContain('export {};');
+        artisan('lattice:typescript')
+            ->expectsOutputToContain('No custom Lattice wire types found')
+            ->assertSuccessful();
+
+        expect(file_exists($output))->toBeFalse();
     });
 });

@@ -38,8 +38,8 @@ final readonly class ActionController
 
         $definition->validate($request);
 
-        return response()->json(
-            $definition->handle($request),
-        );
+        $result = $definition->handle($request);
+
+        return response()->json($result, $result->status());
     }
 }

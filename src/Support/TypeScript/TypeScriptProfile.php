@@ -9,6 +9,12 @@ namespace Lattice\Lattice\Support\TypeScript;
  */
 interface TypeScriptProfile
 {
+    /**
+     * App-defined wire types this profile would emit. Zero means the bundled
+     * types already cover the project and no transformer is needed.
+     */
+    public function pendingTypeCount(): int;
+
     /** Run a generation pass and return a summary line for the command to print. */
     public function run(TypeScriptGenerator $generator): string;
 }

@@ -172,6 +172,43 @@ describe("action form modal", () => {
     expect(await screen.findByText("The Reason field is required.")).toBeVisible();
   });
 
+  it("dispatches effects and keeps the modal open on a domain rejection (422 without errors)", async () => {
+    const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
+      json: async () => ({
+        effects: [{ props: { message: "Rejected." }, type: "toast" }],
+      }),
+      ok: false,
+      status: 422,
+    } as unknown as Response);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const toastListener = vi.fn<(event: Event) => void>();
+
+    window.addEventListener("lattice:toast", toastListener);
+
+    const { container } = renderAction(rejectAction());
+
+    fireEvent.click(screen.getByRole("button", { name: "Reject" }));
+
+    fireEvent.change(await screen.findByRole("textbox", { name: "Reason" }), {
+      target: { value: "spam" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+
+    await waitFor(() => {
+      expect(toastListener).toHaveBeenCalledTimes(1);
+    });
+
+    const [[toastEvent]] = toastListener.mock.calls as [[CustomEvent]];
+
+    expect(toastEvent.detail).toEqual({ message: "Rejected." });
+    expect(screen.getByRole("textbox", { name: "Reason" })).toBeVisible();
+    expect(container.querySelector("p.text-lt-danger")).toBeNull();
+
+    window.removeEventListener("lattice:toast", toastListener);
+  });
+
   it("lazily fetches the schema when the action declares a lazy form", async () => {
     const formNode = {
       id: "test.edit-form",

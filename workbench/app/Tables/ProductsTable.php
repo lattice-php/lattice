@@ -24,6 +24,7 @@ use Lattice\Lattice\Ui\Components\Link;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Actions\EditProductAction;
+use Workbench\App\Actions\FailingDemoAction;
 use Workbench\App\Actions\RejectProductAction;
 use Workbench\App\Actions\RejectSelectedProductsAction;
 use Workbench\App\Models\Product;
@@ -126,6 +127,7 @@ class ProductsTable extends EloquentTableDefinition
                     Action::use(EditProductAction::class, ['product_id' => $row['id']]),
                     Action::use(ArchiveProductAction::class, ['product_id' => $row['id']]),
                     Action::use(RejectProductAction::class, ['product_id' => $row['id']]),
+                    Action::use(FailingDemoAction::class, ['product_id' => $row['id']]),
                 ]),
         ];
     }

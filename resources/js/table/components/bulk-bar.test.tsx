@@ -8,19 +8,11 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import { BulkBar } from "./bulk-bar";
 import type { BulkAction } from "@lattice-php/lattice/table/lib/bulk";
 
-const http = vi.hoisted(() => ({
-  processing: false,
-  transformer: (data: Record<string, unknown>): Record<string, unknown> => data,
-  transform(fn: (data: Record<string, unknown>) => Record<string, unknown>): void {
-    this.transformer = fn;
-  },
-  patch: vi.fn<(url: string, options: unknown) => Promise<ActionResponse>>(async () => ({
-    effects: [],
-  })),
-  post: vi.fn<(url: string, options: unknown) => Promise<ActionResponse>>(async () => ({
-    effects: [],
-  })),
-}));
+const apiFetch = vi.hoisted(() =>
+  vi.fn<(url: string, init?: Record<string, unknown>) => Promise<Response>>(),
+);
+
+vi.mock("@lattice-php/lattice/core/api", () => ({ apiFetch }));
 
 const router = vi.hoisted(() => ({
   on: vi.fn<(event: string, listener: (event: Event) => void) => () => void>(() =>
@@ -31,10 +23,7 @@ const router = vi.hoisted(() => ({
 }));
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
-    router,
-    useHttp: () => http,
-  }),
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({ router }),
 );
 
 type ActionFormProps = {
@@ -118,13 +107,11 @@ function renderBar(props: Partial<Parameters<typeof BulkBar>[0]> = {}) {
 
 describe("BulkBar", () => {
   beforeEach(() => {
-    http.processing = false;
-    http.transformer = (data: Record<string, unknown>): Record<string, unknown> => data;
+    apiFetch.mockReset();
+    apiFetch.mockResolvedValue(new Response(JSON.stringify({ effects: [] }), { status: 200 }));
   });
 
   afterEach(() => {
-    http.patch.mockClear();
-    http.post.mockClear();
     router.on.mockClear();
     router.reload.mockClear();
     router.visit.mockClear();
@@ -174,10 +161,9 @@ describe("BulkBar", () => {
 
     fireEvent.click(screen.getByTestId("bulk-action-archive"));
 
-    await waitFor(() =>
-      expect(http.patch).toHaveBeenCalledWith("/bulk/archive", expect.anything()),
-    );
-    expect(http.transformer({})).toEqual({ selected: ["7"] });
+    await waitFor(() => expect(apiFetch).toHaveBeenCalledWith("/bulk/archive", expect.anything()));
+    const [, options] = apiFetch.mock.calls[0] as [string, { body: string }];
+    expect(JSON.parse(options.body)).toEqual({ selected: ["7"] });
     await waitFor(() => expect(onCompleted).toHaveBeenCalledTimes(1));
   });
 
@@ -190,11 +176,9 @@ describe("BulkBar", () => {
 
     fireEvent.click(screen.getByTestId("bulk-action-archive"));
 
-    await waitFor(() => expect(http.patch).toHaveBeenCalled());
-    const [, options] = http.patch.mock.calls[0] ?? [];
-    expect((options as { headers: Record<string, string> }).headers).not.toHaveProperty(
-      "X-Lattice-Ref",
-    );
+    await waitFor(() => expect(apiFetch).toHaveBeenCalled());
+    const [, options] = apiFetch.mock.calls[0] as [string, { ref: string }];
+    expect(options.ref).toBe("");
   });
 
   it("submits all-matching actions with the query payload", async () => {
@@ -206,8 +190,9 @@ describe("BulkBar", () => {
 
     fireEvent.click(screen.getByTestId("bulk-action-archive"));
 
-    await waitFor(() => expect(http.post).toHaveBeenCalled());
-    expect(http.transformer({})).toEqual({
+    await waitFor(() => expect(apiFetch).toHaveBeenCalled());
+    const [, options] = apiFetch.mock.calls[0] as [string, { body: string }];
+    expect(JSON.parse(options.body)).toEqual({
       allMatching: true,
       filter: "status:eq:active",
       tf: { featured: "true" },
@@ -217,7 +202,7 @@ describe("BulkBar", () => {
 
   it("does not complete when the request fails", async () => {
     const actionError = vi.fn<(event: Event) => void>();
-    http.post.mockRejectedValueOnce(new Error("failed"));
+    apiFetch.mockRejectedValueOnce(new Error("failed"));
     window.addEventListener("lattice:action-error", actionError, { once: true });
     const { onCompleted } = renderBar({ actions: [action({ id: "archive" })] });
 
@@ -227,11 +212,15 @@ describe("BulkBar", () => {
     expect(onCompleted).not.toHaveBeenCalled();
   });
 
-  it("disables the action buttons and shows a spinner while processing", () => {
-    http.processing = true;
+  it("disables the action buttons and shows a spinner while processing", async () => {
+    apiFetch.mockReturnValue(new Promise<Response>(() => {}));
     renderBar({ actions: [action({ id: "archive" })] });
 
-    expect(screen.getByTestId("bulk-action-archive")).toBeDisabled();
+    fireEvent.click(screen.getByTestId("bulk-action-archive"));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("bulk-action-archive")).toBeDisabled();
+    });
   });
 
   describe("confirmation flow", () => {
@@ -307,6 +296,36 @@ describe("BulkBar", () => {
       );
     });
 
+    it("dispatches effects, keeps the dialog open, and does not complete when the request is rejected with 422", async () => {
+      apiFetch.mockResolvedValueOnce(
+        new Response(JSON.stringify({ effects: [{ type: "test.bulk-success" }] }), {
+          status: 422,
+        }),
+      );
+
+      const { onCompleted } = renderBar({
+        actions: [
+          action({
+            id: "archive",
+            confirmation: {
+              title: "Sure?",
+              description: null,
+              confirmLabel: null,
+              cancelLabel: null,
+            },
+          }),
+        ],
+      });
+
+      fireEvent.click(screen.getByTestId("bulk-action-archive"));
+      fireEvent.click(screen.getByTestId("confirm-accept"));
+
+      await waitFor(() => expect(effectHandler).toHaveBeenCalledTimes(1));
+
+      expect(screen.getByRole("dialog", { name: "Sure?" })).toBeVisible();
+      expect(onCompleted).not.toHaveBeenCalled();
+    });
+
     it("closes without submitting when the confirmation is cancelled", () => {
       const { onCompleted } = renderBar({
         actions: [
@@ -376,7 +395,7 @@ describe("BulkBar", () => {
       expect(screen.getByTestId("form-cancel-label")).toHaveTextContent("Cancel");
     });
 
-    it("dispatches effects, closes and completes on form success", async () => {
+    it("closes and completes on form success without re-dispatching effects", async () => {
       const { onCompleted } = renderBar({
         actions: [action({ id: "tag", form: formNode, confirmation: null })],
       });
@@ -384,9 +403,9 @@ describe("BulkBar", () => {
       fireEvent.click(screen.getByTestId("bulk-action-tag"));
       fireEvent.click(screen.getByTestId("form-success"));
 
-      expect(effectHandler).toHaveBeenCalledWith({ type: "test.bulk-success" });
       await waitFor(() => expect(onCompleted).toHaveBeenCalledTimes(1));
       expect(screen.queryByTestId("action-form")).toBeNull();
+      expect(effectHandler).not.toHaveBeenCalled();
     });
 
     it("closes the form without completing on cancel", () => {

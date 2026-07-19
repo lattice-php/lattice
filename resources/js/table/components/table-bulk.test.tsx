@@ -19,17 +19,16 @@ function col(partial: { key: string; label: string }): TableColumn {
   };
 }
 
-const http = vi.hoisted(() => ({
-  processing: false,
-  transformer: (data: Record<string, unknown>): Record<string, unknown> => data,
-  transform(fn: (data: Record<string, unknown>) => Record<string, unknown>): void {
-    this.transformer = fn;
-  },
-  patch: vi.fn<(url: string) => Promise<{ effects: never[] }>>(async () => ({ effects: [] })),
-}));
+const apiFetch = vi.hoisted(() =>
+  vi.fn<(url: string, init?: Record<string, unknown>) => Promise<Response>>(
+    async () => new Response(JSON.stringify({ effects: [] }), { status: 200 }),
+  ),
+);
+
+vi.mock("@lattice-php/lattice/core/api", () => ({ apiFetch }));
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({ useHttp: () => http }),
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
 );
 
 const { default: TableComponent } = await import("./table");
@@ -62,7 +61,7 @@ const node = {
 
 describe("table bulk actions", () => {
   afterEach(() => {
-    http.patch.mockClear();
+    apiFetch.mockClear();
   });
 
   it("dispatches the selected rows when a bulk action runs", async () => {
@@ -77,12 +76,13 @@ describe("table bulk actions", () => {
     fireEvent.click(screen.getByRole("button", { name: "Archive selected" }));
 
     await waitFor(() =>
-      expect(http.patch).toHaveBeenCalledWith(
+      expect(apiFetch).toHaveBeenCalledWith(
         "/lattice/bulk-actions/workbench.products.archive-selected",
-        { headers: { "Accept-Language": "en", "X-Lattice-Ref": "sealed-ref" } },
+        expect.objectContaining({ method: "patch", ref: "sealed-ref" }),
       ),
     );
-    expect(http.transformer({})).toEqual({ selected: ["1"] });
+    const [, options] = apiFetch.mock.calls[0] as [string, { body: string }];
+    expect(JSON.parse(options.body)).toEqual({ selected: ["1"] });
   });
 
   it("selects every row from the header checkbox", () => {
@@ -135,8 +135,9 @@ describe("table bulk actions", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Archive selected" }));
 
-    await waitFor(() => expect(http.patch).toHaveBeenCalled());
-    expect(http.transformer({})).toEqual({
+    await waitFor(() => expect(apiFetch).toHaveBeenCalled());
+    const [, options] = apiFetch.mock.calls[0] as [string, { body: string }];
+    expect(JSON.parse(options.body)).toEqual({
       allMatching: true,
       filter: "status:eq:active",
       tf: {
