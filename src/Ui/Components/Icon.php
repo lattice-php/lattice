@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Ui\Components;
 use BackedEnum;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Support\Wire;
+use Lattice\Lattice\Ui\Components\Concerns\HasPrimaryBinding;
 use Lattice\Lattice\Ui\Concerns\HasColor;
 use Lattice\Lattice\Ui\Concerns\HasSize;
 
@@ -13,6 +14,7 @@ use Lattice\Lattice\Ui\Concerns\HasSize;
 class Icon extends Component
 {
     use HasColor;
+    use HasPrimaryBinding;
     use HasSize;
 
     public string $name = '';
@@ -32,5 +34,10 @@ class Icon extends Component
         $this->class = $class;
 
         return $this;
+    }
+
+    protected static function primaryBindableProp(): string
+    {
+        return 'name';
     }
 }

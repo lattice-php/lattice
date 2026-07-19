@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Ui\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Ui\Components\Concerns\HasPrimaryBinding;
 use Lattice\Lattice\Ui\Concerns\HasColor;
 use Lattice\Lattice\Ui\Concerns\HasCopyable;
 use Lattice\Lattice\Ui\Concerns\HasSize;
@@ -14,6 +15,7 @@ class Text extends Component
 {
     use HasColor;
     use HasCopyable;
+    use HasPrimaryBinding;
     use HasSize;
 
     public string $text = '';
@@ -33,5 +35,10 @@ class Text extends Component
         $this->align = $align;
 
         return $this;
+    }
+
+    protected static function primaryBindableProp(): string
+    {
+        return 'text';
     }
 }
