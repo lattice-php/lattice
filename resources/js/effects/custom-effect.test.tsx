@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { Provider } from "@lattice-php/lattice/provider";
 import { createPlugin, extendRegistry } from "@lattice-php/lattice/core/registry";
 import { registry as defaultRegistry } from "@lattice-php/lattice/registry";
+import { effect } from "@lattice-php/lattice/test/effect-fixture";
 import { useEffectDispatcher } from "./use-effect-dispatcher";
 
 describe("custom effect end to end", () => {
@@ -25,8 +26,15 @@ describe("custom effect end to end", () => {
     window.addEventListener("lattice:toast", toastListener);
     result.current([
       { type: "confetti", props: { color: "gold" } },
-      { type: "toast", props: { variant: "success", message: "ok" } },
-    ] as never);
+      effect("toast", {
+        action: null,
+        dismissible: true,
+        duration: null,
+        message: "ok",
+        persistent: false,
+        variant: "success",
+      }),
+    ]);
 
     expect(confetti).toHaveBeenCalledOnce();
     expect(toastListener).toHaveBeenCalledOnce();

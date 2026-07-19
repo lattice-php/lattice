@@ -1,5 +1,7 @@
 import { expect, it, vi, beforeAll, afterAll } from "vitest";
 import { configure, getConfig, fireEvent, render, screen, within } from "@testing-library/react";
+import type { ComponentPropsOf, Node } from "@lattice-php/lattice/core/types";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 
 let prev: string;
 beforeAll(() => {
@@ -18,11 +20,17 @@ import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { renderCounts } from "@lattice-php/lattice/test/form-renderer-probe";
 import { BuilderComponent } from "./builder";
+import type { RowTemplate } from "./row-templates";
 
-const node = {
-  id: "b",
-  type: "field.builder",
-  props: {
+function builderNode(
+  props: Partial<ComponentPropsOf<"field.builder">>,
+  templates: RowTemplate[],
+): Node<"field.builder"> & { templates: RowTemplate[] } {
+  return { ...fakeNode({ type: "field.builder", props }), templates };
+}
+
+const node = builderNode(
+  {
     name: "items",
     reorderable: true,
     defaultItems: 0,
@@ -30,19 +38,19 @@ const node = {
     minItems: 0,
     maxItems: 5,
   },
-  templates: [
+  [
     {
       type: "text",
       label: "Text",
-      schema: [{ id: "t", type: "field.textarea", props: { name: "content" } }],
+      schema: [fakeNode({ id: "t", type: "field.textarea", props: { name: "content" } })],
     },
     {
       type: "product",
       label: "Product line",
-      schema: [{ id: "p", type: "field.text-input", props: { name: "qty" } }],
+      schema: [fakeNode({ id: "p", type: "field.text-input", props: { name: "qty" } })],
     },
   ],
-} as never;
+);
 
 function wrap(ui: React.ReactNode, initial: Record<string, unknown> = {}) {
   return render(
@@ -98,10 +106,8 @@ it("can remove an unknown-block row", () => {
 });
 
 it("renders the table layout: primary columns, spanning non-primary rows", () => {
-  const node = {
-    id: "b",
-    type: "field.builder",
-    props: {
+  const node = builderNode(
+    {
       name: "items",
       layout: "table",
       reorderable: true,
@@ -110,22 +116,32 @@ it("renders the table layout: primary columns, spanning non-primary rows", () =>
       minItems: 0,
       maxItems: 9,
     },
-    templates: [
+    [
       {
         type: "product",
         label: "Product",
         schema: [
-          { id: "p", type: "field.text-input", props: { name: "product", label: "Product" } },
-          { id: "q", type: "field.text-input", props: { name: "qty", label: "Qty" } },
+          fakeNode({
+            id: "p",
+            type: "field.text-input",
+            props: { name: "product", label: "Product" },
+          }),
+          fakeNode({ id: "q", type: "field.text-input", props: { name: "qty", label: "Qty" } }),
         ],
       },
       {
         type: "text",
         label: "Text",
-        schema: [{ id: "c", type: "field.textarea", props: { name: "content", label: "Content" } }],
+        schema: [
+          fakeNode({
+            id: "c",
+            type: "field.textarea",
+            props: { name: "content", label: "Content" },
+          }),
+        ],
       },
     ],
-  } as never;
+  );
   wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
     items: [
       { type: "product", product: "SKU", qty: "2" },

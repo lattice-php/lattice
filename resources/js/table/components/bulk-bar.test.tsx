@@ -47,7 +47,7 @@ vi.mock("@lattice-php/lattice/action/components/action-form", () => ({
       <button
         type="button"
         data-test="form-success"
-        onClick={() => props.onSuccess({ effects: [{ type: "test.bulk-success" } as never] })}
+        onClick={() => props.onSuccess({ effects: [{ type: "test.bulk-success", props: {} }] })}
       >
         success
       </button>
@@ -170,7 +170,15 @@ describe("BulkBar", () => {
   it("sends an empty ref header when the action has no ref", async () => {
     renderBar({
       actions: [
-        action({ id: "archive", method: "patch", endpoint: "/bulk/archive", ref: null as never }),
+        action({
+          id: "archive",
+          method: "patch",
+          endpoint: "/bulk/archive",
+          // BulkAction.ref is non-nullable by contract (getBulkActions always
+          // defaults it); this forces the out-of-contract value the component's
+          // `action.ref ?? ""` defensively guards against.
+          ref: null as unknown as string,
+        }),
       ],
     });
 
@@ -255,11 +263,14 @@ describe("BulkBar", () => {
             id: "archive",
             label: "Archive",
             confirmation: {
-              title: null,
+              // Confirmation.title is non-nullable by contract; this forces the
+              // out-of-contract value the component's `?? label` fallback
+              // defensively guards against.
+              title: null as unknown as string,
               description: null,
               confirmLabel: null,
               cancelLabel: null,
-            } as never,
+            },
           }),
         ],
       });

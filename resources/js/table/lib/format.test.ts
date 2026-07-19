@@ -1,12 +1,30 @@
 import { describe, expect, it } from "vitest";
-import type { TableColumn, TableRow } from "@lattice-php/lattice/table/types";
+import type { ColumnNode, ColumnPropsOf, TableRow } from "@lattice-php/lattice/table/types";
 import { formatCell, resolveLink } from "./format";
 
-const dateColumn = {
-  key: "created",
-  label: "Created",
-  props: { date: { dateStyle: "medium", timeStyle: "short" } },
-} as never;
+function textColumn(props: Partial<ColumnPropsOf<"column.text">> = {}): ColumnNode<"column.text"> {
+  return {
+    key: "col",
+    type: "column.text",
+    props: {
+      align: "start",
+      badge: null,
+      copyable: false,
+      date: null,
+      filter: null,
+      hiddenByDefault: false,
+      label: null,
+      link: null,
+      multiple: null,
+      sortable: false,
+      toggleable: false,
+      width: "md",
+      ...props,
+    },
+  };
+}
+
+const dateColumn = textColumn({ date: { dateStyle: "medium", timeStyle: "short" } });
 
 describe("formatCell date rendering", () => {
   it("renders the default date format in the requested timezone", () => {
@@ -46,31 +64,28 @@ describe("formatCell primitives", () => {
 });
 
 describe("resolveLink", () => {
-  const column = (link: unknown): TableColumn =>
-    ({ key: "name", label: "Name", props: { link } }) as never;
+  const column = (href: string | null) => textColumn({ link: { href, external: false } });
   const row: TableRow = { id: 7, name: "Ada" };
 
   it("returns null when the column has no link", () => {
-    expect(resolveLink(column(null), row, "Ada")).toBeNull();
+    expect(resolveLink(textColumn(), row, "Ada")).toBeNull();
   });
 
   it("returns null when the resolved href is empty", () => {
-    expect(resolveLink(column({ href: null }), row, "")).toBeNull();
+    expect(resolveLink(column(null), row, "")).toBeNull();
   });
 
   it("interpolates the value and row tokens into the href", () => {
-    expect(resolveLink(column({ href: "/users/{id}?q={value}" }), row, "Ada & Co")).toBe(
+    expect(resolveLink(column("/users/{id}?q={value}"), row, "Ada & Co")).toBe(
       "/users/7?q=Ada%20%26%20Co",
     );
   });
 
   it("coerces missing row tokens to an empty string", () => {
-    expect(resolveLink(column({ href: "/x/{missing}" }), row, "v")).toBe("/x/");
+    expect(resolveLink(column("/x/{missing}"), row, "v")).toBe("/x/");
   });
 
   it("falls back to the cell value when no explicit href is set", () => {
-    expect(resolveLink(column({ href: null }), row, "https://example.test")).toBe(
-      "https://example.test",
-    );
+    expect(resolveLink(column(null), row, "https://example.test")).toBe("https://example.test");
   });
 });

@@ -1,3 +1,4 @@
+import type { AnyExtension } from "@tiptap/core";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   assembleStarterKitOptions,
@@ -124,9 +125,11 @@ describe("assembleToolbar", () => {
 
 describe("assembleTiptapExtensions", () => {
   it("flat-maps the instances of every active extension", () => {
-    const fakeExtension = { name: "fake" };
+    // Stands in for a real Tiptap extension instance; constructing one for real
+    // is unnecessary — assembleTiptapExtensions only flat-maps by reference.
+    const fakeExtension = { name: "fake" } as unknown as AnyExtension;
     registerRichEditorExtension("with-instances", {
-      extensions: () => [fakeExtension as never],
+      extensions: () => [fakeExtension],
     });
     registerRichEditorExtension("without-instances", {});
 
