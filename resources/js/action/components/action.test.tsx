@@ -7,35 +7,23 @@ import type { IconRendererFunction } from "@lattice-php/lattice/icons";
 import { ActionMenuProvider } from "@lattice-php/lattice/ui/action-menu-context";
 import ActionComponent from "./action";
 
-const http = vi.hoisted(() => ({
-  delete: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  patch: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  post: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  processing: false,
-  put: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  transform:
-    vi.fn<(callback: (data: Record<string, unknown>) => Record<string, unknown>) => void>(),
-}));
+const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
+
+vi.mock("@lattice-php/lattice/core/api", () => ({ apiFetch }));
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({ useHttp: () => http }),
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
 );
 
 describe("Lattice action component", () => {
   beforeEach(() => {
-    http.delete.mockReset();
-    http.patch.mockReset();
-    http.post.mockReset();
-    http.put.mockReset();
-    http.transform.mockReset();
-    http.processing = false;
+    apiFetch.mockReset();
+    apiFetch.mockResolvedValue(new Response(JSON.stringify({ effects: [] }), { status: 200 }));
     vi.mocked(router.reload).mockReset();
     vi.mocked(router.visit).mockReset();
   });
 
   it("submits the configured action endpoint", async () => {
-    http.post.mockResolvedValue({ ok: true });
-
     const node = fakeNode({
       props: {
         endpoint: "/lattice/actions/send-test-email",
@@ -50,8 +38,10 @@ describe("Lattice action component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Send test email" }));
 
     await waitFor(() => {
-      expect(http.post).toHaveBeenCalledWith("/lattice/actions/send-test-email", {
-        headers: { "Accept-Language": "en" },
+      expect(apiFetch).toHaveBeenCalledWith("/lattice/actions/send-test-email", {
+        method: "post",
+        ref: "",
+        throwOnError: false,
       });
     });
   });
@@ -74,12 +64,10 @@ describe("Lattice action component", () => {
     expect(router.visit).toHaveBeenCalledWith("/settings/teams/acme", {
       headers: { "Accept-Language": "en" },
     });
-    expect(http.post).not.toHaveBeenCalled();
+    expect(apiFetch).not.toHaveBeenCalled();
   });
 
   it("sends action refs with requests", async () => {
-    http.patch.mockResolvedValue({ ok: true });
-
     const node = fakeNode({
       props: {
         endpoint: "/lattice/actions/teams.sync",
@@ -95,8 +83,10 @@ describe("Lattice action component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Sync" }));
 
     await waitFor(() => {
-      expect(http.patch).toHaveBeenCalledWith("/lattice/actions/teams.sync", {
-        headers: { "Accept-Language": "en", "X-Lattice-Ref": "sealed-reference" },
+      expect(apiFetch).toHaveBeenCalledWith("/lattice/actions/teams.sync", {
+        method: "patch",
+        ref: "sealed-reference",
+        throwOnError: false,
       });
     });
   });
@@ -184,8 +174,8 @@ describe("Lattice action component", () => {
     expect(screen.getByTestId("action-icon")).toHaveClass("size-lt-icon-sm");
   });
 
-  it("uses a compact spinner inside action menus", () => {
-    http.processing = true;
+  it("uses a compact spinner inside action menus", async () => {
+    apiFetch.mockReturnValue(new Promise<Response>(() => {}));
 
     const node = fakeNode({
       props: {
@@ -202,12 +192,14 @@ describe("Lattice action component", () => {
       </ActionMenuProvider>,
     );
 
-    expect(screen.getByRole("status", { name: "Loading" })).toHaveClass("size-lt-icon-sm");
+    fireEvent.click(screen.getByRole("button", { name: "Archive" }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("status", { name: "Loading" })).toHaveClass("size-lt-icon-sm");
+    });
   });
 
   it("opens a confirmation modal before submitting destructive actions", async () => {
-    http.delete.mockResolvedValue({ ok: true });
-
     const node = fakeNode({
       props: {
         confirmation: {
@@ -228,7 +220,7 @@ describe("Lattice action component", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Delete account" }));
 
-    expect(http.delete).not.toHaveBeenCalled();
+    expect(apiFetch).not.toHaveBeenCalled();
     const firstDialog = screen.getByRole("dialog", { name: "Delete account?" });
 
     expect(firstDialog).toBeVisible();
@@ -246,30 +238,36 @@ describe("Lattice action component", () => {
     );
 
     await waitFor(() => {
-      expect(http.delete).toHaveBeenCalledWith("/lattice/actions/delete-account", {
-        headers: { "Accept-Language": "en" },
+      expect(apiFetch).toHaveBeenCalledWith("/lattice/actions/delete-account", {
+        method: "delete",
+        ref: "",
+        throwOnError: false,
       });
     });
   });
 
   it("dispatches event effects and handles page reloads imperatively", async () => {
-    http.patch.mockResolvedValue({
-      effects: [
-        {
-          props: { message: "Profile updated." },
-          type: "toast",
-        },
-        {
-          props: { component: "settings.profile" },
-          type: "reload-component",
-        },
-        {
-          props: {},
-          type: "reload-page",
-        },
-      ],
-      ok: true,
-    });
+    apiFetch.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          effects: [
+            {
+              props: { message: "Profile updated." },
+              type: "toast",
+            },
+            {
+              props: { component: "settings.profile" },
+              type: "reload-component",
+            },
+            {
+              props: {},
+              type: "reload-page",
+            },
+          ],
+        }),
+        { status: 200 },
+      ),
+    );
 
     const toastListener = vi.fn<(event: Event) => void>();
     const reloadListener = vi.fn<(event: Event) => void>();
@@ -320,7 +318,7 @@ describe("Lattice action component", () => {
   it("dispatches failed responses as action errors", async () => {
     const error = new Error("Request failed");
 
-    http.delete.mockRejectedValue(error);
+    apiFetch.mockRejectedValue(error);
 
     const errorListener = vi.fn<(event: Event) => void>();
 

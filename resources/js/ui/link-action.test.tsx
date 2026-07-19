@@ -5,16 +5,12 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import type { Node, ComponentPropsOf } from "@lattice-php/lattice/core/types";
 import LinkComponent from "./link";
 
-const http = vi.hoisted(() => ({
-  delete: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  patch: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  post: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  processing: false,
-  put: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-}));
+const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
+
+vi.mock("@lattice-php/lattice/core/api", () => ({ apiFetch }));
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({ useHttp: () => http }),
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
 );
 
 function actionLink(props: Partial<ComponentPropsOf<"action">> = {}): Node<"link"> {
@@ -48,30 +44,25 @@ function renderActionLink(node: Node<"link">) {
 
 describe("link action trigger", () => {
   beforeEach(() => {
-    http.delete.mockReset();
-    http.patch.mockReset();
-    http.post.mockReset();
-    http.put.mockReset();
-    http.processing = false;
+    apiFetch.mockReset();
+    apiFetch.mockResolvedValue(new Response(JSON.stringify({ effects: [] }), { status: 200 }));
   });
 
   it("dispatches the nested action with the ref header", async () => {
-    http.post.mockResolvedValue({ ok: true, effects: [] });
-
     renderActionLink(actionLink());
 
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
     await waitFor(() => {
-      expect(http.post).toHaveBeenCalledWith("/lattice/actions/workbench.logout", {
-        headers: { "Accept-Language": "en", "X-Lattice-Ref": "sealed-reference" },
+      expect(apiFetch).toHaveBeenCalledWith("/lattice/actions/workbench.logout", {
+        method: "post",
+        ref: "sealed-reference",
+        throwOnError: false,
       });
     });
   });
 
   it("confirms before dispatching when the action requires confirmation", async () => {
-    http.post.mockResolvedValue({ ok: true, effects: [] });
-
     const node = actionLink({
       confirmation: {
         cancelLabel: "Stay",
@@ -85,14 +76,14 @@ describe("link action trigger", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
-    expect(http.post).not.toHaveBeenCalled();
+    expect(apiFetch).not.toHaveBeenCalled();
     const dialog = screen.getByRole("dialog", { name: "Log out?" });
     expect(dialog).toBeVisible();
 
     fireEvent.click(within(dialog).getByRole("button", { name: "Log out" }));
 
     await waitFor(() => {
-      expect(http.post).toHaveBeenCalledTimes(1);
+      expect(apiFetch).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -105,7 +96,7 @@ describe("link action trigger", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
-    expect(http.post).not.toHaveBeenCalled();
+    expect(apiFetch).not.toHaveBeenCalled();
     expect(screen.getByRole("dialog")).toBeVisible();
   });
 });

@@ -26,8 +26,9 @@ import {
 import type { FieldErrors } from "@lattice-php/lattice/form/embed";
 import { useDebouncedCallback } from "@lattice-php/lattice/lib/use-debounced-callback";
 import { useT } from "@lattice-php/lattice/i18n";
-import { dispatchActionError } from "@lattice-php/lattice/effects/dispatch";
+import { dispatchActionError, getActionEffects } from "@lattice-php/lattice/effects/dispatch";
 import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
+import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 
 type ActionFormProps = {
   cancelLabel: string;
@@ -123,6 +124,7 @@ function ActionFormBody({
     formNode.schema,
   );
 
+  const dispatch = useEffectDispatcher();
   const [errors, setErrors] = useState<FieldErrors>({});
   const [processing, setProcessing] = useState(false);
 
@@ -173,24 +175,27 @@ function ActionFormBody({
 
     void request()
       .then(async (response) => {
-        if (response.status === 422) {
-          const body = (await response.json()) as { errors?: Record<string, string[]> };
+        const body = (await response.json().catch(() => ({}))) as ActionResponse & {
+          errors?: Record<string, string[]>;
+        };
+
+        dispatch(getActionEffects(body.effects));
+
+        if (response.status === 422 && body.errors) {
           setErrors(firstErrors(body.errors));
 
           return;
         }
 
         if (!response.ok) {
-          dispatchActionError(new Error(`Action request failed with status ${response.status}`));
-
           return;
         }
 
-        onSuccess((await response.json()) as ActionResponse);
+        onSuccess(body);
       })
       .catch((error: unknown) => dispatchActionError(error))
       .finally(() => setProcessing(false));
-  }, [onSuccess, request]);
+  }, [dispatch, onSuccess, request]);
 
   const context = useMemo(
     () => ({

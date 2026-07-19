@@ -5,16 +5,12 @@ import { fakeNode } from "@lattice-php/lattice/test-support";
 import type { Node, ComponentPropsOf } from "@lattice-php/lattice/core/types";
 import ButtonComponent from "./button";
 
-const http = vi.hoisted(() => ({
-  delete: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  patch: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  post: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-  processing: false,
-  put: vi.fn<(url: string, data?: Record<string, unknown>) => Promise<unknown>>(),
-}));
+const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
+
+vi.mock("@lattice-php/lattice/core/api", () => ({ apiFetch }));
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({ useHttp: () => http }),
+  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
 );
 
 function actionButton(props: Partial<ComponentPropsOf<"action">> = {}): Node<"button"> {
@@ -49,27 +45,25 @@ function renderActionButton(node: Node<"button">) {
 
 describe("button action trigger", () => {
   beforeEach(() => {
-    http.post.mockReset();
-    http.processing = false;
+    apiFetch.mockReset();
+    apiFetch.mockResolvedValue(new Response(JSON.stringify({ effects: [] }), { status: 200 }));
   });
 
   it("dispatches its nested action with the ref header on click", async () => {
-    http.post.mockResolvedValue({ ok: true, effects: [] });
-
     renderActionButton(actionButton());
 
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
     await waitFor(() => {
-      expect(http.post).toHaveBeenCalledWith("/lattice/actions/workbench.save", {
-        headers: { "Accept-Language": "en", "X-Lattice-Ref": "sealed-reference" },
+      expect(apiFetch).toHaveBeenCalledWith("/lattice/actions/workbench.save", {
+        method: "post",
+        ref: "sealed-reference",
+        throwOnError: false,
       });
     });
   });
 
   it("confirms before dispatching when the action requires confirmation", async () => {
-    http.post.mockResolvedValue({ ok: true, effects: [] });
-
     const node = actionButton({
       confirmation: {
         cancelLabel: "Cancel",
@@ -83,13 +77,13 @@ describe("button action trigger", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(http.post).not.toHaveBeenCalled();
+    expect(apiFetch).not.toHaveBeenCalled();
     const dialog = screen.getByRole("dialog", { name: "Save changes?" });
 
     fireEvent.click(within(dialog).getByRole("button", { name: "Save" }));
 
     await waitFor(() => {
-      expect(http.post).toHaveBeenCalledTimes(1);
+      expect(apiFetch).toHaveBeenCalledTimes(1);
     });
   });
 });

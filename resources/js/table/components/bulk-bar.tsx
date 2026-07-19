@@ -1,21 +1,13 @@
-import { useHttp } from "@inertiajs/react";
 import { useState } from "react";
 import { ActionForm, runAction } from "@lattice-php/lattice/action";
-import { getActionEffects } from "@lattice-php/lattice/effects/dispatch";
-import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
+import { apiFetch } from "@lattice-php/lattice/core/api";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
-import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { Button } from "@lattice-php/lattice/ui/button";
 import { ConfirmDialog } from "@lattice-php/lattice/ui/confirm-dialog";
 import { Spinner } from "@lattice-php/lattice/ui/spinner";
 import { prefixedTestId } from "@lattice-php/lattice/core/test-id";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { BulkAction } from "@lattice-php/lattice/table/lib/bulk";
-
-type BulkData = {
-  allMatching?: boolean;
-  selected?: string[];
-};
 
 export function BulkBar({
   actions,
@@ -37,7 +29,7 @@ export function BulkBar({
   onCompleted: () => void;
 }) {
   const { t } = useT("lattice");
-  const http = useHttp<BulkData, ActionResponse>({});
+  const [processing, setProcessing] = useState(false);
   const dispatch = useEffectDispatcher();
   const [confirming, setConfirming] = useState<BulkAction | null>(null);
   const [filling, setFilling] = useState<BulkAction | null>(null);
@@ -46,12 +38,20 @@ export function BulkBar({
     allMatching ? { allMatching: true, ...query } : { selected: selectedKeys };
 
   async function submit(action: BulkAction): Promise<void> {
-    http.transform((data) => ({ ...data, ...selectionPayload() }));
+    setProcessing(true);
 
     const ok = await runAction(
-      () => http[action.method](action.endpoint, { headers: withHeaders(action.ref ?? "") }),
+      () =>
+        apiFetch(action.endpoint, {
+          method: action.method,
+          ref: action.ref ?? "",
+          body: JSON.stringify(selectionPayload()),
+          throwOnError: false,
+        }),
       dispatch,
     );
+
+    setProcessing(false);
 
     if (ok) {
       setConfirming(null);
@@ -101,10 +101,10 @@ export function BulkBar({
             type="button"
             data-test={prefixedTestId("bulk-action", action.id)}
             variant={action.variant}
-            disabled={http.processing}
+            disabled={processing}
             onClick={() => run(action)}
           >
-            {http.processing && <Spinner />}
+            {processing && <Spinner />}
             {action.label}
           </Button>
         ))}
@@ -117,7 +117,7 @@ export function BulkBar({
           confirmLabel={confirming.confirmation.confirmLabel ?? confirming.label}
           cancelLabel={confirming.confirmation.cancelLabel ?? t("common.cancel", "Cancel")}
           confirmVariant={confirming.variant}
-          processing={http.processing}
+          processing={processing}
           onConfirm={() => void submit(confirming)}
           onCancel={() => setConfirming(null)}
         />
@@ -133,8 +133,7 @@ export function BulkBar({
           formNode={filling.form}
           method={filling.method}
           onClose={() => setFilling(null)}
-          onSuccess={(response) => {
-            dispatch(getActionEffects(response.effects));
+          onSuccess={() => {
             setFilling(null);
             onCompleted();
           }}

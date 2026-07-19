@@ -6,21 +6,22 @@ import {
 } from "@lattice-php/lattice/effects/dispatch";
 
 /**
- * Runs an action request and dispatches the effects from its response, routing
- * any failure through dispatchActionError. Returns whether the request
- * succeeded so callers run their own post-success cleanup (closing a dialog,
- * reloading a table). Shared by the single action button and the bulk bar so
- * the invocation contract stays in one place.
+ * Runs an action request and dispatches the effects from its response body,
+ * whether the action succeeded or was rejected (non-2xx). Returns whether the
+ * response was ok so callers run their own post-success cleanup (closing a
+ * dialog, reloading a table) only on success; a rejected action leaves the
+ * dialog open. A thrown/network error routes through dispatchActionError.
  */
 export async function runAction(
-  request: () => Promise<ActionResponse>,
+  request: () => Promise<Response>,
   dispatch: (effects: ActionEffect[]) => void,
 ): Promise<boolean> {
   try {
     const response = await request();
-    dispatch(getActionEffects(response.effects));
+    const body = (await response.json().catch(() => ({}))) as ActionResponse;
+    dispatch(getActionEffects(body.effects));
 
-    return true;
+    return response.ok;
   } catch (error) {
     dispatchActionError(error);
 

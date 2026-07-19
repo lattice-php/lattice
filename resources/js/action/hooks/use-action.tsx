@@ -1,12 +1,11 @@
-import { router, useHttp } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 import type { Method } from "@inertiajs/core";
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { ConfirmDialog } from "@lattice-php/lattice/ui/confirm-dialog";
+import { apiFetch } from "@lattice-php/lattice/core/api";
 import { withHeaders } from "@lattice-php/lattice/core/headers";
 import type { Node } from "@lattice-php/lattice/core/types";
-import { getActionEffects } from "@lattice-php/lattice/effects/dispatch";
-import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import { runAction } from "@lattice-php/lattice/action/lib/run-action";
 import { ActionForm, useLazyActionForm } from "@lattice-php/lattice/action/components/action-form";
@@ -37,7 +36,7 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
   const lazyForm = node.props.lazyForm === true;
   const hasForm = Boolean(inlineForm) || lazyForm;
 
-  const http = useHttp<Record<string, never>, ActionResponse>({});
+  const [processing, setProcessing] = useState(false);
   const dispatch = useEffectDispatcher();
   const [isConfirming, setIsConfirming] = useState(false);
   const [isFilling, setIsFilling] = useState(false);
@@ -56,10 +55,14 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
       return;
     }
 
+    setProcessing(true);
+
     const ok = await runAction(
-      () => http[method](endpoint, { headers: withHeaders(componentRef) }),
+      () => apiFetch(endpoint, { method, ref: componentRef, throwOnError: false }),
       dispatch,
     );
+
+    setProcessing(false);
 
     if (ok) {
       setIsConfirming(false);
@@ -95,7 +98,7 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
           confirmLabel={confirmationConfirmLabel}
           cancelLabel={confirmationCancelLabel}
           confirmVariant={variant}
-          processing={http.processing}
+          processing={processing}
           confirmDisabled={!endpoint}
           onConfirm={() => void submit()}
           onCancel={() => setIsConfirming(false)}
@@ -111,8 +114,7 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
           formNode={formNode}
           method={method}
           onClose={() => setIsFilling(false)}
-          onSuccess={(response) => {
-            dispatch(getActionEffects(response.effects));
+          onSuccess={() => {
             setIsFilling(false);
           }}
           placement={node.props.modalSide ?? "center"}
@@ -124,5 +126,5 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
     </>
   );
 
-  return { processing: http.processing, requestSubmit, overlays };
+  return { processing, requestSubmit, overlays };
 }
