@@ -5,7 +5,8 @@
 # The generated-types and docs-fixtures diffs are intentionally left to CI: a local run
 # regenerates resources/js/types/generated.ts with a different property ordering than main,
 # so a local diff check would fail spuriously. Pest Browser stays CI-only because it
-# needs the built workbench assets and Playwright browsers.
+# needs the built workbench assets and Playwright browsers. docs:typecheck (docs/tsconfig.json)
+# and the icons-freshness diff also stay CI-only for the same local-drift reasons.
 set -e
 
 root="$(git rev-parse --show-toplevel)"
@@ -14,7 +15,7 @@ cd "$root"
 echo "▶ pre-push: composer check (pint, phpstan, rector, pest)"
 composer check
 
-echo "▶ pre-push: npm run check (lint, format, typecheck, type-coverage, vitest, build:lib)"
+echo "▶ pre-push: npm run check (lint, format, typecheck, type-coverage, vitest, build:lib, check:package)"
 npm run check
 
 echo "✓ pre-push gate passed"

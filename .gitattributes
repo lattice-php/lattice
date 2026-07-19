@@ -38,6 +38,10 @@
 /testbench.yaml export-ignore
 /tsconfig.json export-ignore
 /vite.config.ts export-ignore
+/codecov.yml export-ignore
+/renovate.json export-ignore
+/.mcp.json export-ignore
+/solo.yml export-ignore
 /dist-standalone/** linguist-generated=true
 
 # Keep frontend tests out of the Composer distribution

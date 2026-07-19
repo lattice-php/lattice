@@ -108,7 +108,7 @@ jobs:
         with:
           use_oidc: true
           files: coverage_phpunit/browser-clover.xml,coverage_phpunit/browser-serial-clover.xml
-          flags: pest
+          flags: pest-browser
           name: pest-browser
           disable_search: true
           fail_ci_if_error: true
