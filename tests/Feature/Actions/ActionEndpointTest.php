@@ -6,6 +6,7 @@ use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchFailingAction;
 use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
 use Lattice\Lattice\Ui\Enums\Variant;
 use Workbench\App\Actions\SetLocaleAction;
@@ -114,6 +115,16 @@ test('toast effects serialize correctly for action results', function (): void {
                 ],
             ],
         ]);
+});
+
+test('a failure result returns 422 and still serializes its effects', function (): void {
+    Lattice::actions([WorkbenchFailingAction::class]);
+
+    $this->callAction(WorkbenchFailingAction::class, [])
+        ->assertStatus(422)
+        ->assertJsonPath('effects.0.type', 'toast')
+        ->assertJsonPath('effects.0.props.variant', 'error')
+        ->assertJsonPath('effects.0.props.message', 'Could not process.');
 });
 
 test('registered action endpoints require a valid component reference', function (): void {

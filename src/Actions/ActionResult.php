@@ -8,7 +8,10 @@ use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Effects\Concerns\QueuesEffects;
 use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Facades\Effects;
+use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Support\Wire;
+use Lattice\Lattice\Ui\Enums\Variant;
+use Symfony\Component\HttpFoundation\Response;
 
 #[TypeScript]
 final readonly class ActionResult
@@ -22,6 +25,7 @@ final readonly class ActionResult
     private function __construct(
         public array $data = [],
         public array $effects = [],
+        private int $status = Response::HTTP_OK,
     ) {}
 
     /**
@@ -32,12 +36,24 @@ final readonly class ActionResult
         return new self($data);
     }
 
+    public static function failure(string|Translatable|null $message = null): self
+    {
+        $result = new self(status: Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        return $message === null ? $result : $result->toast($message, Variant::Error);
+    }
+
+    public function status(): int
+    {
+        return $this->status;
+    }
+
     public function effect(Effect $effect): static
     {
         return new self($this->data, [
             ...$this->effects,
             $effect,
-        ]);
+        ], $this->status);
     }
 
     public function to(string $url): static

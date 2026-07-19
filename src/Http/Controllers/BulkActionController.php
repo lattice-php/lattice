@@ -49,7 +49,9 @@ final readonly class BulkActionController
 
         $records = $this->resolveRecords($request, $table, $tableKey);
 
-        return response()->json($definition->handle($records, $request));
+        $result = $definition->handle($records, $request);
+
+        return response()->json($result, $result->status());
     }
 
     /**
