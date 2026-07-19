@@ -16,13 +16,20 @@ class Modal extends ContainerComponent
 
     public ?string $description = null;
 
-    public string $closeLabel = 'Close';
+    public string $closeLabel;
 
     public bool $open = false;
 
     public ?Side $side = null;
 
     public ModalWidth $width = ModalWidth::Lg;
+
+    public function __construct(?string $key = null)
+    {
+        parent::__construct($key);
+
+        $this->closeLabel = __('lattice::common.close');
+    }
 
     public static function make(string $id): static
     {

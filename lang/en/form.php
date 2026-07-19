@@ -45,4 +45,10 @@ return [
     'search-options' => 'Search options',
     'remove-option' => 'Remove :label',
     'create-option' => 'Create ":label"',
+    'select' => [
+        'empty' => 'No options',
+        'search' => 'Search…',
+    ],
+    'submit' => 'Submit',
+    'validation-summary' => 'Fix these fields to continue:',
 ];

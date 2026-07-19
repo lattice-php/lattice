@@ -171,7 +171,7 @@ abstract class Filter implements JsonSerializable, Renderable
         }
 
         if (is_bool($value)) {
-            return $value ? 'Yes' : 'No';
+            return $value ? __('lattice::common.yes') : __('lattice::common.no');
         }
 
         return (string) $value;

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogHeader } from "@lattice-php/lattice/ui/dialog";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import { useT } from "@lattice-php/lattice/i18n";
 
 type ModalEvent = CustomEvent<{
   modal: string | null;
@@ -14,7 +15,8 @@ function matchesModal(event: Event, modal: string): boolean {
 }
 
 const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {
-  const title = node.props.title ?? "Dialog";
+  const { t } = useT("lattice");
+  const title = node.props.title ?? t("common.dialog", "Dialog");
   const description = node.props.description;
   const closeLabel = node.props.closeLabel;
   const [isOpen, setIsOpen] = useState(node.props.open === true);

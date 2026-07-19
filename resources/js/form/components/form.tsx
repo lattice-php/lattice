@@ -3,6 +3,7 @@ import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { useWindowEvent } from "@lattice-php/lattice/core/hooks/use-window-event";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
+import { useT } from "@lattice-php/lattice/i18n";
 import { useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
@@ -67,6 +68,7 @@ function FormBody({
 }
 
 export const FormComponent: RendererComponent<"form"> = ({ children, node }) => {
+  const { t } = useT("lattice");
   const props = node.props;
   const action = props.action ?? "#";
   const errorBag = props.errorBag;
@@ -82,7 +84,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   );
   const initialValues = useMemo(() => ({ ...fieldValues, ...state }), [fieldValues, state]);
   const shouldRenderSubmitButton = props.submitButton;
-  const submitLabel = props.submitLabel ?? "Submit";
+  const submitLabel = props.submitLabel ?? t("form.submit", "Submit");
   const summaryLabel = props.validationSummaryLabel;
   const validationTimeout = props.validationTimeout ?? undefined;
 

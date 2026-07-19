@@ -21,15 +21,24 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
 #[AsFilter(FilterControl::Ternary)]
 class TernaryFilter extends Filter
 {
-    public string $trueLabel = 'Yes';
+    public string $trueLabel;
 
-    public string $falseLabel = 'No';
+    public string $falseLabel;
 
-    public string $placeholder = 'All';
+    public string $placeholder;
 
     private ?Closure $trueQuery = null;
 
     private ?Closure $falseQuery = null;
+
+    public function __construct(string $key)
+    {
+        parent::__construct($key);
+
+        $this->trueLabel = __('lattice::common.yes');
+        $this->falseLabel = __('lattice::common.no');
+        $this->placeholder = __('lattice::common.all');
+    }
 
     public function trueLabel(string $label): static
     {

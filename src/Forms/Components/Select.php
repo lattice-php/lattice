@@ -49,9 +49,17 @@ class Select extends Field
     /** @var array<int, mixed>|Closure */
     private array|Closure $itemRules = [];
 
-    public string $emptyLabel = 'No options';
+    public string $emptyLabel;
 
-    public string $searchPlaceholder = 'Search…';
+    public string $searchPlaceholder;
+
+    public function __construct(?string $key = null)
+    {
+        parent::__construct($key);
+
+        $this->emptyLabel = __('lattice::form.select.empty');
+        $this->searchPlaceholder = __('lattice::form.select.search');
+    }
 
     public function multiple(bool $multiple = true): static
     {

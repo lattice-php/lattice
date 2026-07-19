@@ -6,9 +6,11 @@ import { ConfirmDialog } from "@lattice-php/lattice/ui/confirm-dialog";
 import { apiFetch } from "@lattice-php/lattice/core/api";
 import { withHeaders } from "@lattice-php/lattice/core/headers";
 import type { Node } from "@lattice-php/lattice/core/types";
+import { translate } from "@lattice-php/lattice/i18n";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import { runAction } from "@lattice-php/lattice/action/lib/run-action";
 import { ActionForm, useLazyActionForm } from "@lattice-php/lattice/action/components/action-form";
+import { actionLabel } from "@lattice-php/lattice/action/lib/action-label";
 
 type UseAction = {
   /** Whether the action request is in flight. */
@@ -29,7 +31,7 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
   const endpoint = node.props.endpoint ?? "";
   const componentRef = node.props.ref ?? "";
   const method: Method = node.props.method ?? "post";
-  const label = node.props.label ?? "Run action";
+  const label = actionLabel(node);
   const variant = node.props.variant ?? "default";
   const confirmation = node.props.confirmation;
   const inlineForm = node.props.form;
@@ -87,7 +89,8 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
 
   const confirmationTitle = confirmation?.title ?? label;
   const confirmationConfirmLabel = confirmation?.confirmLabel ?? label;
-  const confirmationCancelLabel = confirmation?.cancelLabel ?? "Cancel";
+  const confirmationCancelLabel =
+    confirmation?.cancelLabel ?? translate("lattice", "common.cancel", "Cancel");
 
   const overlays = (
     <>

@@ -2,6 +2,7 @@ import type { Method } from "@inertiajs/core";
 import type { Node } from "@lattice-php/lattice/core/types";
 import type { Action, ButtonVariant } from "@lattice-php/lattice/types/generated";
 import type { ActionNode } from "@lattice-php/lattice/table/types";
+import { actionLabel } from "@lattice-php/lattice/action/lib/action-label";
 
 export type BulkAction = {
   id: string;
@@ -31,7 +32,7 @@ export function getBulkActions(actions: ActionNode[] | undefined): BulkAction[] 
     return [
       {
         id: node.id ?? "",
-        label: props.label ?? "Run action",
+        label: actionLabel(node),
         method: props.method ?? "post",
         endpoint: props.endpoint,
         ref: props.ref ?? "",

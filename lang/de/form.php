@@ -45,4 +45,10 @@ return [
     'search-options' => 'Optionen durchsuchen',
     'remove-option' => ':label entfernen',
     'create-option' => '":label" erstellen',
+    'select' => [
+        'empty' => 'Keine Optionen',
+        'search' => 'Suchen…',
+    ],
+    'submit' => 'Absenden',
+    'validation-summary' => 'Bitte diese Felder korrigieren:',
 ];
