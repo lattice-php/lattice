@@ -315,6 +315,61 @@ describe("Lattice action component", () => {
     window.removeEventListener("lattice:reload-page", reloadPageListener);
   });
 
+  it("dispatches effects and keeps the confirm dialog open when the action is rejected with 422", async () => {
+    apiFetch.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          effects: [
+            {
+              props: { message: "Cannot delete account." },
+              type: "toast",
+            },
+          ],
+        }),
+        { status: 422 },
+      ),
+    );
+
+    const toastListener = vi.fn<(event: Event) => void>();
+
+    window.addEventListener("lattice:toast", toastListener);
+
+    const node = fakeNode({
+      props: {
+        confirmation: {
+          cancelLabel: "Keep account",
+          confirmLabel: "Delete account",
+          description: "This cannot be undone.",
+          title: "Delete account?",
+        },
+        endpoint: "/lattice/actions/delete-account",
+        label: "Delete account",
+        method: "delete",
+        variant: "destructive",
+      },
+      type: "action",
+    });
+
+    render(<ActionComponent node={node}>{null}</ActionComponent>);
+
+    fireEvent.click(screen.getByRole("button", { name: "Delete account" }));
+
+    const dialog = screen.getByRole("dialog", { name: "Delete account?" });
+
+    fireEvent.click(within(dialog).getByRole("button", { name: "Delete account" }));
+
+    await waitFor(() => {
+      expect(toastListener).toHaveBeenCalledTimes(1);
+    });
+
+    const [[toastEvent]] = toastListener.mock.calls as [[CustomEvent]];
+
+    expect(toastEvent.detail).toEqual({ message: "Cannot delete account." });
+    expect(screen.getByRole("dialog", { name: "Delete account?" })).toBeVisible();
+
+    window.removeEventListener("lattice:toast", toastListener);
+  });
+
   it("dispatches failed responses as action errors", async () => {
     const error = new Error("Request failed");
 

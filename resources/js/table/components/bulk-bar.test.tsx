@@ -296,6 +296,36 @@ describe("BulkBar", () => {
       );
     });
 
+    it("dispatches effects, keeps the dialog open, and does not complete when the request is rejected with 422", async () => {
+      apiFetch.mockResolvedValueOnce(
+        new Response(JSON.stringify({ effects: [{ type: "test.bulk-success" }] }), {
+          status: 422,
+        }),
+      );
+
+      const { onCompleted } = renderBar({
+        actions: [
+          action({
+            id: "archive",
+            confirmation: {
+              title: "Sure?",
+              description: null,
+              confirmLabel: null,
+              cancelLabel: null,
+            },
+          }),
+        ],
+      });
+
+      fireEvent.click(screen.getByTestId("bulk-action-archive"));
+      fireEvent.click(screen.getByTestId("confirm-accept"));
+
+      await waitFor(() => expect(effectHandler).toHaveBeenCalledTimes(1));
+
+      expect(screen.getByRole("dialog", { name: "Sure?" })).toBeVisible();
+      expect(onCompleted).not.toHaveBeenCalled();
+    });
+
     it("closes without submitting when the confirmation is cancelled", () => {
       const { onCompleted } = renderBar({
         actions: [
