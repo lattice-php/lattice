@@ -14,6 +14,12 @@ use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
+use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
+use Lattice\Lattice\Tables\Columns\Concerns\IsSearchable;
+use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
+use Lattice\Lattice\Tables\Columns\NumericColumn;
+use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
@@ -235,12 +241,12 @@ arch('table columns, table filters, and built-in effects are final')
     ])
     ->toBeFinal()
     ->ignoring([
-        'Lattice\Lattice\Tables\Columns\Column',
-        'Lattice\Lattice\Tables\Columns\NumericColumn',
-        'Lattice\Lattice\Tables\Columns\Concerns\IsFilterable',
-        'Lattice\Lattice\Tables\Columns\Concerns\IsSearchable',
-        'Lattice\Lattice\Tables\Columns\Concerns\IsSortable',
-        'Lattice\Lattice\Tables\Filters\Filter',
+        Column::class,
+        NumericColumn::class,
+        IsFilterable::class,
+        IsSearchable::class,
+        IsSortable::class,
+        Filter::class,
     ]);
 
 arch('no debug statements ship in the package')
