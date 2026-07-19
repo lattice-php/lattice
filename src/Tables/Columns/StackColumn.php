@@ -10,7 +10,7 @@ use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
 use Lattice\Lattice\Ui\Enums\ColumnWidth;
 
 #[AsColumn(ColumnType::Stack)]
-class StackColumn extends Column
+final class StackColumn extends Column
 {
     use HasChildSchema;
 

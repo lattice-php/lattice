@@ -19,7 +19,7 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
  * null-existence checks). Custom queries receive the `Builder` by type injection.
  */
 #[AsFilter(FilterControl::Ternary)]
-class TernaryFilter extends Filter
+final class TernaryFilter extends Filter
 {
     public string $trueLabel;
 

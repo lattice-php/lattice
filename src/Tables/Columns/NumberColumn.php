@@ -8,7 +8,7 @@ use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
 
 #[AsColumn(ColumnType::Number)]
-class NumberColumn extends NumericColumn
+final class NumberColumn extends NumericColumn
 {
     public ?NumberFormatUnit $unit = null;
 

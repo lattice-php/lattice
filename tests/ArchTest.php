@@ -108,6 +108,21 @@ arch('feature domains never depend upward on the orchestration or tooling layers
         'Lattice\Lattice\Console',
     ]);
 
+arch('the ui and secondary domains never depend upward on orchestration or tooling')
+    ->expect([
+        'Lattice\Lattice\Ui',
+        'Lattice\Lattice\Chat',
+        'Lattice\Lattice\Notifications',
+        'Lattice\Lattice\Realtime',
+        'Lattice\Lattice\Remote',
+        'Lattice\Lattice\Effects',
+        'Lattice\Lattice\I18n',
+    ])
+    ->not->toUse([
+        'Lattice\Lattice\Http',
+        'Lattice\Lattice\Console',
+    ]);
+
 /*
  * Attributes are a shared base layer of plain markers: they describe domain
  * objects without reaching into the domains. Actions is intentionally omitted
@@ -204,6 +219,29 @@ arch('the lattice facade extends the laravel facade')
 arch('columns never depend on eloquent')
     ->expect('Lattice\Lattice\Tables\Columns')
     ->not->toUse('Illuminate\Database\Eloquent');
+
+/*
+ * Ui\Components is intentionally excluded here: "lattice component factories
+ * stay open for extension" (tests/Unit/Core/ComponentSerializationTest.php)
+ * asserts consumers may subclass a component (e.g. Badge) and keep the
+ * static::make() factory working via late static binding, so those classes
+ * must not be final.
+ */
+arch('table columns, table filters, and built-in effects are final')
+    ->expect([
+        'Lattice\Lattice\Tables\Columns',
+        'Lattice\Lattice\Tables\Filters',
+        'Lattice\Lattice\Effects\Builtin',
+    ])
+    ->toBeFinal()
+    ->ignoring([
+        'Lattice\Lattice\Tables\Columns\Column',
+        'Lattice\Lattice\Tables\Columns\NumericColumn',
+        'Lattice\Lattice\Tables\Columns\Concerns\IsFilterable',
+        'Lattice\Lattice\Tables\Columns\Concerns\IsSearchable',
+        'Lattice\Lattice\Tables\Columns\Concerns\IsSortable',
+        'Lattice\Lattice\Tables\Filters\Filter',
+    ]);
 
 arch('no debug statements ship in the package')
     ->expect(['dd', 'ddd', 'dump', 'ray', 'var_dump', 'print_r'])

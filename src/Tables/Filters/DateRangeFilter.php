@@ -14,7 +14,7 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
  * inclusive `whereDate` comparison against the column.
  */
 #[AsFilter(FilterControl::DateRange)]
-class DateRangeFilter extends Filter
+final class DateRangeFilter extends Filter
 {
     /**
      * @return array<int, DateInput>

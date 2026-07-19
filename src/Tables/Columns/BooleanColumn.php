@@ -12,7 +12,7 @@ use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Tables\Enums\FilterType;
 
 #[AsColumn(ColumnType::Boolean)]
-class BooleanColumn extends Column implements Filterable, Sortable
+final class BooleanColumn extends Column implements Filterable, Sortable
 {
     use IsFilterable;
     use IsSortable;

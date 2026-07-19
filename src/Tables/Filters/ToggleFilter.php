@@ -17,7 +17,7 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
  * filter needs fields; use ToggleFilter when active state alone is enough.
  */
 #[AsFilter(FilterControl::Toggle)]
-class ToggleFilter extends Filter
+final class ToggleFilter extends Filter
 {
     private ?Closure $query = null;
 

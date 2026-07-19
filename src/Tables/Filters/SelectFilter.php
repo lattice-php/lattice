@@ -20,7 +20,7 @@ use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
  * fixed list ({@see options}) or come from an {@see OptionSource} via {@see optionsFrom}.
  */
 #[AsFilter(FilterControl::Select)]
-class SelectFilter extends Filter
+final class SelectFilter extends Filter
 {
     use HasOptions;
     use HasPlaceholder;
