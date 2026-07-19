@@ -38,7 +38,7 @@ test('registered tables serialize their configured endpoint columns state and in
             'id' => 'workbench.users',
             'props' => [
                 'endpoint' => '/custom/tables/workbench.users',
-                'ref' => componentRef($table),
+                'ref' => $this->latticeRef($table),
                 'layout' => null,
                 'bulkActions' => [],
                 'striped' => false,
@@ -156,7 +156,7 @@ test('registered tables can serialize lazily without running their query', funct
             'props' => [
                 'endpoint' => '/custom/tables/workbench.lazy-users',
                 'lazy' => true,
-                'ref' => componentRef($table),
+                'ref' => $this->latticeRef($table),
                 'layout' => null,
                 'bulkActions' => [],
                 'striped' => false,
@@ -334,14 +334,14 @@ test('registered tables parse clause filters sorts and pagination through the en
 test('registered tables reject filters and sorts that are not allowed by columns', function (): void {
     Lattice::tables([WorkbenchUsersTable::class]);
 
-    $ref = componentRef(wire(Table::use(WorkbenchUsersTable::class)));
+    $ref = $this->latticeRef(wire(Table::use(WorkbenchUsersTable::class)));
 
-    latticeGet('/lattice/tables/workbench.users?filter=password:contains:secret', $ref)
+    $this->latticeGet('/lattice/tables/workbench.users?filter=password:contains:secret', $ref)
         ->assertUnprocessable()
         ->assertJsonPath('message', 'Filter [password] is not allowed for table [workbench.users].')
         ->assertJsonPath('errors.filter.0', 'Filter [password] is not allowed for table [workbench.users].');
 
-    latticeGet('/lattice/tables/workbench.users?sort=password', $ref)
+    $this->latticeGet('/lattice/tables/workbench.users?sort=password', $ref)
         ->assertUnprocessable()
         ->assertJsonPath('message', 'Sort [password] is not allowed for table [workbench.users].')
         ->assertJsonPath('errors.sort.0', 'Sort [password] is not allowed for table [workbench.users].');
@@ -350,16 +350,16 @@ test('registered tables reject filters and sorts that are not allowed by columns
 test('registered table endpoints require a valid component reference and use trusted context', function (): void {
     discoverFixtures();
 
-    $ref = componentRef(wire(Table::use(DiscoveredUsersTable::class)
+    $ref = $this->latticeRef(wire(Table::use(DiscoveredUsersTable::class)
         ->context(['team' => 'trusted-team'])));
 
     getJson('/lattice/tables/fixtures.users')
         ->assertForbidden();
 
-    getJson('/lattice/tables/fixtures.users', latticeHeaders('tampered'))
+    getJson('/lattice/tables/fixtures.users', $this->latticeHeaders('tampered'))
         ->assertForbidden();
 
-    latticeGet('/lattice/tables/fixtures.users?context[team]=tampered-team', $ref)
+    $this->latticeGet('/lattice/tables/fixtures.users?context[team]=tampered-team', $ref)
         ->assertOk()
         ->assertJsonPath('data.0.name', 'trusted-team');
 });
@@ -379,8 +379,8 @@ test('registered table responses expose only declared columns row identity and g
 
     $product->relatedProducts()->attach($related);
 
-    $ref = componentRef(wire(Table::use(WorkbenchProjectedProductsTable::class)));
-    $row = latticeGet('/lattice/tables/workbench.projected-products', $ref)
+    $ref = $this->latticeRef(wire(Table::use(WorkbenchProjectedProductsTable::class)));
+    $row = $this->latticeGet('/lattice/tables/workbench.projected-products', $ref)
         ->assertOk()
         ->json('data.0');
 
@@ -400,8 +400,8 @@ test('registered table responses expose only declared columns row identity and g
 test('registered table responses prune hidden columns from the row payload', function (): void {
     Lattice::tables([WorkbenchHiddenColumnUsersTable::class]);
 
-    $ref = componentRef(wire(Table::use(WorkbenchHiddenColumnUsersTable::class)));
-    $row = latticeGet('/lattice/tables/workbench.hidden-column-users', $ref)
+    $ref = $this->latticeRef(wire(Table::use(WorkbenchHiddenColumnUsersTable::class)));
+    $row = $this->latticeGet('/lattice/tables/workbench.hidden-column-users', $ref)
         ->assertOk()
         ->json('data.0');
 
@@ -415,8 +415,8 @@ test('registered table responses prune hidden columns from the row payload', fun
 test('a hidden column referenced by a visible badge column is still pruned from the row payload', function (): void {
     Lattice::tables([WorkbenchHiddenBadgeHelperUsersTable::class]);
 
-    $ref = componentRef(wire(Table::use(WorkbenchHiddenBadgeHelperUsersTable::class)));
-    $row = latticeGet('/lattice/tables/workbench.hidden-badge-helper-users', $ref)
+    $ref = $this->latticeRef(wire(Table::use(WorkbenchHiddenBadgeHelperUsersTable::class)));
+    $row = $this->latticeGet('/lattice/tables/workbench.hidden-badge-helper-users', $ref)
         ->assertOk()
         ->json('data.0');
 
@@ -425,28 +425,6 @@ test('a hidden column referenced by a visible badge column is still pruned from 
 
     expect(array_keys($row))->toBe(['status'])
         ->and($row)->not->toHaveKey('helper');
-});
-
-test('text columns serialize display modifiers', function (): void {
-    $wire = wire(TextColumn::make('published_at')
-        ->label('Published')
-        ->dateTime()
-        ->copyable()
-        ->link('/posts/{id}'));
-
-    expect($wire)->toMatchArray([
-        'key' => 'published_at',
-        'type' => 'column.text',
-    ]);
-
-    expect($wire['props'])->toMatchArray([
-        'label' => 'Published',
-        'date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'],
-        'copyable' => true,
-        'link' => ['href' => '/posts/{id}', 'external' => false],
-        'badge' => null,
-        'multiple' => null,
-    ]);
 });
 
 test('workbench users table exposes timestamp columns for each row', function (): void {

@@ -82,7 +82,7 @@ test('dynamic remote source keys resolve the same source during token exchange',
         'nodeType' => 'remote.data-list',
         'audience' => 'https://acme.example.test',
         'scopes' => ['tickets.read'],
-    ], latticeHeaders($ref));
+    ], $this->latticeHeaders($ref));
 
     $response
         ->assertOk()

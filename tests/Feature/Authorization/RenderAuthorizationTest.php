@@ -70,12 +70,6 @@ test('an unauthorized action is hidden from the page payload, leaves no trace on
         ->assertForbidden();
 });
 
-test('an authorized action still renders on the page', function (): void {
-    $response = get('/render-authorization-test')->assertOk();
-
-    $this->assertLatticePage($response)->assertRendered('action:render-auth.action');
-});
-
 test('an unauthorized form is hidden from the page payload, and the endpoint still 403s', function (): void {
     RenderAuthorizationTestForm::$authorized = false;
 
@@ -89,12 +83,6 @@ test('an unauthorized form is hidden from the page payload, and the endpoint sti
         ->assertForbidden();
 });
 
-test('an authorized form still renders on the page', function (): void {
-    $response = get('/render-authorization-test')->assertOk();
-
-    $this->assertLatticePage($response)->assertRendered('form:render-auth.form');
-});
-
 test('an unauthorized fragment is hidden from the page payload, and the endpoint still 403s', function (): void {
     RenderAuthorizationTestFragment::$authorized = false;
 
@@ -104,14 +92,8 @@ test('an unauthorized fragment is hidden from the page payload, and the endpoint
     expect($response->getContent())->not->toContain('/lattice/fragments/render-auth.fragment');
 
     $ref = app(ComponentReferenceSigner::class)->seal('fragment', 'render-auth.fragment', []);
-    latticeGet('/lattice/fragments/render-auth.fragment', $ref)
+    $this->latticeGet('/lattice/fragments/render-auth.fragment', $ref)
         ->assertForbidden();
-});
-
-test('an authorized fragment still renders on the page', function (): void {
-    $response = get('/render-authorization-test')->assertOk();
-
-    $this->assertLatticePage($response)->assertRendered('fragment:render-auth.fragment');
 });
 
 test('an unauthorized table is hidden from the page payload, leaves no trace on the wire, and the endpoint still 403s', function (): void {
@@ -125,14 +107,8 @@ test('an unauthorized table is hidden from the page payload, leaves no trace on 
         ->not->toContain('render-auth.bulk-action');
 
     $ref = app(ComponentReferenceSigner::class)->seal('table', 'render-auth.table', []);
-    latticeGet('/lattice/tables/render-auth.table', $ref)
+    $this->latticeGet('/lattice/tables/render-auth.table', $ref)
         ->assertForbidden();
-});
-
-test('an authorized table still renders on the page', function (): void {
-    $response = get('/render-authorization-test')->assertOk();
-
-    $this->assertLatticePage($response)->assertRendered('table:render-auth.table');
 });
 
 test('an unauthorized bulk action is pruned from the table bulkActions prop, and the endpoint still 403s', function (): void {
@@ -153,13 +129,24 @@ test('an unauthorized bulk action is pruned from the table bulkActions prop, and
         ->assertForbidden();
 });
 
-test('an authorized bulk action still renders in the table bulkActions prop', function (): void {
+test('authorized definitions remain in their containing page payload', function (string $type, string $key, bool $nested): void {
     $response = get('/render-authorization-test')->assertOk();
+    $page = $this->assertLatticePage($response);
 
-    $this->assertLatticePage($response)
-        ->component('table', 'render-auth.table', fn ($table) => $table
-            ->assertRendered('action.bulk:render-auth.bulk-action'));
-});
+    if ($nested) {
+        $page->component('table', 'render-auth.table', fn ($table) => $table->assertRendered("{$type}:{$key}"));
+
+        return;
+    }
+
+    $page->assertRendered("{$type}:{$key}");
+})->with([
+    'action' => ['action', 'render-auth.action', false],
+    'form' => ['form', 'render-auth.form', false],
+    'fragment' => ['fragment', 'render-auth.fragment', false],
+    'table' => ['table', 'render-auth.table', false],
+    'bulk action' => ['action.bulk', 'render-auth.bulk-action', true],
+]);
 
 #[AsAction('render-auth.action')]
 final class RenderAuthorizationTestAction extends ActionDefinition

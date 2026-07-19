@@ -2,9 +2,7 @@
 declare(strict_types=1);
 
 it('renders every demo page without smoke failures', function (): void {
-    $this->actingAs(workbenchTestUser());
-
-    visit([
+    $this->visitAsWorkbenchUser([
         '/form/fields/text',
         '/form/fields/textarea',
         '/form/fields/number',

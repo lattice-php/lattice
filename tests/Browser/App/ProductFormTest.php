@@ -4,8 +4,7 @@ declare(strict_types=1);
 use Workbench\App\Models\Product;
 
 it('shows precognitive validation messages in the form', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/products/create')
+    $this->visitAsWorkbenchUser('/products/create')
         ->assertSee('Create Product')
         ->fill('input[name="sales_prices[0][amount]"]', 'invalid')
         ->assertSee('must be a number')
@@ -15,8 +14,7 @@ it('shows precognitive validation messages in the form', function (): void {
 });
 
 it('disables the submit button while precognition errors are active', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/products/create')
+    $this->visitAsWorkbenchUser('/products/create')
         ->assertSee('Create Product')
         ->assertEnabled('@form-submit')
         ->fill('input[name="sales_prices[0][amount]"]', 'invalid')
@@ -27,8 +25,7 @@ it('disables the submit button while precognition errors are active', function (
 });
 
 it('surfaces server validation errors after submitting an empty form', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/products/create')
+    $this->visitAsWorkbenchUser('/products/create')
         ->assertSee('Create Product')
         ->click('@form-submit')
         ->assertSee('The Name field is required.')
@@ -81,8 +78,7 @@ it('attaches related products via search when creating', function (): void {
 });
 
 it('creates and edits a product through the form flow', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/products')
+    $this->visitAsWorkbenchUser('/products')
         ->assertSee('Products')
         ->click('@create-product')
         ->assertSee('Create Product')

@@ -29,7 +29,7 @@ test('registered actions serialize their configured endpoint method and label', 
                 'endpoint' => '/custom/actions/workbench.ping',
                 'label' => 'Ping',
                 'method' => 'post',
-                'ref' => componentRef($action),
+                'ref' => $this->latticeRef($action),
                 'variant' => 'secondary',
                 'icon' => null,
                 'confirmation' => null,
@@ -61,10 +61,10 @@ test('registered actions can be handled through the package endpoint', function 
 });
 
 test('registered actions can return a locale change effect', function (): void {
-    $ref = componentRef(wire(ActionComponent::use(SetLocaleAction::class)
+    $ref = $this->latticeRef(wire(ActionComponent::use(SetLocaleAction::class)
         ->context(['locale' => 'de'])));
 
-    postJson('/lattice/actions/workbench.locale.set', [], latticeHeaders($ref))
+    postJson('/lattice/actions/workbench.locale.set', [], $this->latticeHeaders($ref))
         ->assertOk()
         ->assertJsonPath('effects.0.type', 'locale-change')
         ->assertJsonPath('effects.0.props.locale', 'de');
@@ -135,18 +135,18 @@ test('registered action endpoints require a valid component reference', function
 
     postJson('/lattice/actions/workbench.ping', [
         'name' => 'Taylor',
-    ], latticeHeaders('tampered'))
+    ], $this->latticeHeaders('tampered'))
         ->assertForbidden();
 });
 
 test('registered action endpoints reject an expired component reference', function (): void {
     Lattice::actions([WorkbenchPingAction::class]);
 
-    $ref = componentRef(wire(ActionComponent::use(WorkbenchPingAction::class)));
+    $ref = $this->latticeRef(wire(ActionComponent::use(WorkbenchPingAction::class)));
 
     $this->travel(config('lattice.security.ref_lifetime', 30) + 1)->minutes();
 
-    postJson('/lattice/actions/workbench.ping', ['name' => 'Taylor'], latticeHeaders($ref))
+    postJson('/lattice/actions/workbench.ping', ['name' => 'Taylor'], $this->latticeHeaders($ref))
         ->assertForbidden();
 });
 
@@ -156,10 +156,10 @@ test('registered action endpoints reject a reference sealed for another user', f
     $request = Request::create('/');
     app()->instance('request', $request);
     $request->setUserResolver(fn (): User => workbenchTestUser());
-    $ref = componentRef(wire(ActionComponent::use(WorkbenchPingAction::class)));
+    $ref = $this->latticeRef(wire(ActionComponent::use(WorkbenchPingAction::class)));
 
     $this->actingAs(workbenchTestUser());
 
-    postJson('/lattice/actions/workbench.ping', ['name' => 'Taylor'], latticeHeaders($ref))
+    postJson('/lattice/actions/workbench.ping', ['name' => 'Taylor'], $this->latticeHeaders($ref))
         ->assertForbidden();
 });

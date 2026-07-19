@@ -3,30 +3,22 @@
 declare(strict_types=1);
 
 it('mounts the floating chat trigger on every page', function (): void {
-    $this->actingAs(workbenchTestUser());
-
-    visit('/')
+    $this->visitAsWorkbenchUser('/')
         ->assertVisible('@assistant-chat-trigger')
         ->assertMissing('@chat-box')
-        ->assertNoSmoke()
-        ->assertNoJavaScriptErrors();
+        ->assertNoSmoke();
 });
 
 it('opens the chat panel and renders the seeded conversation history', function (): void {
-    $this->actingAs(workbenchTestUser());
-
-    visit('/')
+    $this->visitAsWorkbenchUser('/')
         ->click('@assistant-chat-trigger')
         ->assertVisible('@chat-box')
         ->assertSee('I can answer questions about this workbench and look things up for you.')
-        ->assertNoSmoke()
-        ->assertNoJavaScriptErrors();
+        ->assertNoSmoke();
 });
 
 it('shows an optimistic user bubble when a message is sent', function (): void {
-    $this->actingAs(workbenchTestUser());
-
-    $page = visit('/')
+    $page = $this->visitAsWorkbenchUser('/')
         ->click('@assistant-chat-trigger')
         ->assertVisible('@chat-box');
 
@@ -61,6 +53,5 @@ it('shows an optimistic user bubble when a message is sent', function (): void {
     assertSeeEventually($page, 'Hello from the browser test');
     assertSeeEventually($page, 'Stubbed assistant response.');
 
-    $page->assertNoSmoke()
-        ->assertNoJavaScriptErrors();
+    $page->assertNoSmoke();
 });

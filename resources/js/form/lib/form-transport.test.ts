@@ -1,12 +1,8 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { ROW_ID_KEY } from "@lattice-php/lattice/form/components/fields/repeater-rows";
 import { postFormAction } from "./form-transport";
 
 describe("postFormAction", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   it("sends the payload including row ids", async () => {
     const fetchMock = vi.fn<typeof fetch>(() =>
       Promise.resolve(new Response(JSON.stringify({ ok: true }), { status: 200 })),

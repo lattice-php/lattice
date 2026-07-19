@@ -1,20 +1,9 @@
-import { configure, fireEvent, getConfig, render, screen } from "@testing-library/react";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { ColorPickerFieldComponent } from "./color-picker-field";
-
-let previousTestIdAttribute: string;
-
-beforeAll(() => {
-  previousTestIdAttribute = getConfig().testIdAttribute;
-  configure({ testIdAttribute: "data-test" });
-});
-
-afterAll(() => {
-  configure({ testIdAttribute: previousTestIdAttribute });
-});
 
 function renderField(props: Record<string, unknown>, initial: Record<string, unknown> = {}) {
   const node = fakeNode({

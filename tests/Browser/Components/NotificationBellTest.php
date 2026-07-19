@@ -34,7 +34,7 @@ it('renders the slide-out variant when configured', function (): void {
         ->assertSee('The bell opens notifications in a slide-out panel.')
         ->click('@notifications-trigger');
 
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $page
             ->assertVisible('[data-slot="dialog-overlay"]')
             ->assertVisible('[data-slot="dialog-content"]')

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tests;
 
 use Lattice\Lattice\Tests\Browser\Support\ReverbServer;
+use Pest\Browser\Api\ArrayablePendingAwaitablePage;
+use Pest\Browser\Api\PendingAwaitablePage;
 use Pest\Browser\Playwright\Playwright;
 
 use function Orchestra\Testbench\package_path;
@@ -83,6 +85,19 @@ class BrowserTestCase extends TestCase
             ]],
             'workbench.reverb' => $this->reverbConfig(),
         ]);
+    }
+
+    /**
+     * @template TUrl of array<int, string>|string
+     *
+     * @param  TUrl  $url
+     * @return (TUrl is array<int, string> ? ArrayablePendingAwaitablePage : PendingAwaitablePage)
+     */
+    protected function visitAsWorkbenchUser(array|string $url): ArrayablePendingAwaitablePage|PendingAwaitablePage
+    {
+        $this->actingAs(\workbenchTestUser());
+
+        return \visit($url);
     }
 
     /**

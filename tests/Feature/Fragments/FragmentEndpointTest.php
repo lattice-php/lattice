@@ -14,7 +14,7 @@ test('registered fragments serialize lazy endpoints and return component schemas
     Lattice::fragments([WorkbenchTwoFactorSetupFragment::class]);
 
     $fragment = wire(FragmentComponent::lazy(WorkbenchTwoFactorSetupFragment::class));
-    $ref = componentRef($fragment);
+    $ref = $this->latticeRef($fragment);
 
     expect($fragment)
         ->toMatchArray([
@@ -31,10 +31,10 @@ test('registered fragments serialize lazy endpoints and return component schemas
     getJson('/lattice/fragments/workbench.two-factor-setup')
         ->assertForbidden();
 
-    getJson('/lattice/fragments/workbench.two-factor-setup', latticeHeaders('tampered'))
+    getJson('/lattice/fragments/workbench.two-factor-setup', $this->latticeHeaders('tampered'))
         ->assertForbidden();
 
-    latticeGet('/lattice/fragments/workbench.two-factor-setup', $ref)
+    $this->latticeGet('/lattice/fragments/workbench.two-factor-setup', $ref)
         ->assertOk()
         ->assertJsonPath('schema.0.type', 'text')
         ->assertJsonPath('schema.0.props.text', 'Authenticator setup loaded.');

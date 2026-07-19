@@ -38,7 +38,7 @@ test('the nested action node of a menu item dispatches through the action endpoi
     $wire = wire(MenuItem::make('Ping', 'ping')->action(WorkbenchPingAction::class));
     $action = $wire['props']['action'];
 
-    postJson($action['props']['endpoint'], ['name' => 'Taylor'], latticeHeaders($action['props']['ref']))
+    postJson($action['props']['endpoint'], ['name' => 'Taylor'], $this->latticeHeaders($action['props']['ref']))
         ->assertOk()
         ->assertJsonPath('data.handled', 'Taylor')
         ->assertJsonPath('effects.0.type', 'toast');
@@ -48,7 +48,7 @@ test('the nested action node of a link dispatches through the action endpoint', 
     $wire = wire(Link::make('Ping', 'ping')->action(WorkbenchPingAction::class));
     $action = $wire['props']['action'];
 
-    postJson($action['props']['endpoint'], ['name' => 'Jess'], latticeHeaders($action['props']['ref']))
+    postJson($action['props']['endpoint'], ['name' => 'Jess'], $this->latticeHeaders($action['props']['ref']))
         ->assertOk()
         ->assertJsonPath('data.handled', 'Jess');
 });
@@ -95,7 +95,7 @@ test('the nested action node of a button dispatches through the action endpoint'
     $wire = wire(Button::make('Ping', 'ping')->action(WorkbenchPingAction::class));
     $action = $wire['props']['action'];
 
-    postJson($action['props']['endpoint'], ['name' => 'Sam'], latticeHeaders($action['props']['ref']))
+    postJson($action['props']['endpoint'], ['name' => 'Sam'], $this->latticeHeaders($action['props']['ref']))
         ->assertOk()
         ->assertJsonPath('data.handled', 'Sam');
 });

@@ -50,7 +50,7 @@
 
 ## Translation Conventions
 
-- **Kebab-case keys only**: All translation keys use lowercase letters and dashes. Never use underscores or camelCase. Example: `billing.coming-soon`, not `billing.coming_soon`.
+- **Lowercase keys only**: Translation key segments may use lowercase letters, numbers, dashes, or underscores. Never use camelCase. Both `billing.coming-soon` and `billing.coming_soon` are valid.
 - **Dot notation via nested arrays**: Use nested PHP arrays to create dot-separated keys. Example: `'subscription' => ['heading' => '...']` resolves to `billing.subscription.heading`.
 - **`.title` suffix for notification titles**: When a field has both a title and body text, nest them
 - **`.label` suffix for form labels**: When a field has both a label and helper text, nest them: `'slug' => ['label' => '...', 'help-text' => '...']`. Reference as `__('team.field.slug.label')`.

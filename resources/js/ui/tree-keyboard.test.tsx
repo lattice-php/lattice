@@ -1,6 +1,6 @@
-import { act, configure, fireEvent, getConfig, screen } from "@testing-library/react";
+import { act, fireEvent, screen } from "@testing-library/react";
 import { router } from "@inertiajs/react";
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { fakeNode } from "@lattice-php/lattice/test-support";
@@ -24,17 +24,6 @@ const registry = createRegistry({
     tree: eagerComponent(TreeComponent),
   },
   name: "test/tree-keyboard",
-});
-
-let previousTestIdAttribute: string;
-
-beforeAll(() => {
-  previousTestIdAttribute = getConfig().testIdAttribute;
-  configure({ testIdAttribute: "data-test" });
-});
-
-afterAll(() => {
-  configure({ testIdAttribute: previousTestIdAttribute });
 });
 
 beforeEach(() => {

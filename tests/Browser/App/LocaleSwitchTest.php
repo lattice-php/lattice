@@ -12,7 +12,7 @@ it('switches the server-driven UI language in place when the locale changes', fu
         ->click('@locale-switcher')
         ->click('@locale-de');
 
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $page
             ->assertSee('Aktualisiert am')
             ->assertDontSee('Updated at');

@@ -1,11 +1,15 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Storage;
+use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Facades\Lattice;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
+use Workbench\App\Actions\EditProductAction;
 use Workbench\App\Actions\RejectSelectedProductsAction;
+use Workbench\App\Models\File;
 use Workbench\App\Models\Product;
 use Workbench\App\Tables\ProductsTable;
 
@@ -186,4 +190,128 @@ test('bulk form actions validate precognitively without archiving', function ():
     ], $precognition)->assertNoContent();
 
     expect($product->fresh()->status)->toBe('active');
+});
+
+test('the edit product action syncs sales prices', function (): void {
+    Lattice::actions([EditProductAction::class]);
+
+    $product = Product::factory()->withoutDefaultPrice()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+    ]);
+
+    $this->callAction(EditProductAction::class, [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+        'related_products' => [],
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => '79.99'],
+        ],
+    ], ['product_id' => $product->getKey()])
+        ->assertOk();
+
+    expect($product->salesPrices()->whereNull('group_id')->count())->toBe(1)
+        ->and($product->salesPrices()->whereNull('group_id')->first()->amount)->toBe('79.99');
+});
+
+test('the edit product action syncs images', function (): void {
+    Storage::fake('s3');
+    Storage::disk('s3')->put('tmp/modal.jpg', 'image-data');
+    Lattice::actions([EditProductAction::class]);
+
+    $product = Product::factory()->withoutDefaultPrice()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+    ]);
+
+    $this->callAction(EditProductAction::class, [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+        'related_products' => [],
+        'images' => ['tmp/modal.jpg'],
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => '79.99'],
+        ],
+    ], ['product_id' => $product->getKey()])
+        ->assertOk();
+
+    $image = $product->images()->firstOrFail();
+
+    expect($image->path)->toStartWith('workbench/products/lamp-001-')
+        ->and($image->path)->toEndWith('.jpg')
+        ->and($image->disk)->toBe('s3');
+
+    Storage::disk('s3')->assertMissing('tmp/modal.jpg');
+    Storage::disk('s3')->assertExists($image->path);
+});
+
+test('the edit product action removes existing images without new uploads', function (): void {
+    Storage::fake('s3');
+    Lattice::actions([EditProductAction::class]);
+
+    $product = Product::factory()->withoutDefaultPrice()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+    ]);
+    Storage::disk('s3')->put('workbench/products/lamp.jpg', 'image-data');
+    $image = File::factory()->create([
+        'disk' => 's3',
+        'path' => 'workbench/products/lamp.jpg',
+        'name' => 'lamp.jpg',
+        'mime_type' => 'image/jpeg',
+        'size' => 10,
+    ]);
+    $product->images()->attach($image->getKey(), ['sort_order' => 1]);
+
+    $removedToken = app(SignsComponentReferences::class)
+        ->seal('file', 'images', ['disk' => 's3', 'path' => 'workbench/products/lamp.jpg']);
+
+    $this->callAction(EditProductAction::class, [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+        'related_products' => [],
+        'images' => [],
+        'images__removed' => [$removedToken],
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => '79.99'],
+        ],
+    ], ['product_id' => $product->getKey()])
+        ->assertOk();
+
+    expect($product->images()->count())->toBe(0)
+        ->and(File::query()->whereKey($image->getKey())->exists())->toBeFalse();
+
+    Storage::disk('s3')->assertMissing('workbench/products/lamp.jpg');
+});
+
+test('the edit product action rejects two default sales prices with a 422', function (): void {
+    Lattice::actions([EditProductAction::class]);
+
+    $product = Product::factory()->withoutDefaultPrice()->create([
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+    ]);
+    $product->salesPrices()->create(['group_id' => null, 'amount' => '49.99']);
+
+    $this->callAction(EditProductAction::class, [
+        'name' => 'Desk Lamp',
+        'sku' => 'LAMP-001',
+        'status' => 'active',
+        'related_products' => [],
+        'sales_prices' => [
+            ['group_id' => '', 'amount' => '49.99'],
+            ['group_id' => '', 'amount' => '59.99'],
+        ],
+    ], ['product_id' => $product->getKey()])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['sales_prices']);
+
+    expect($product->salesPrices()->whereNull('group_id')->count())->toBe(1);
 });

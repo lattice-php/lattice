@@ -118,22 +118,18 @@ describe("BulkBar", () => {
     effectHandler.mockClear();
   });
 
-  it("shows the selected count when not selecting all matching", () => {
-    renderBar({ selectedKeys: ["1", "2", "3"] });
+  it.each([
+    ["selected keys", { selectedKeys: ["1", "2", "3"] }, "3 selected"],
+    ["all matching rows", { allMatching: true, total: 42, selectedKeys: ["1"] }, "All 42 selected"],
+    [
+      "selected keys when the total is absent",
+      { allMatching: true, selectedKeys: ["1", "2"] },
+      "All 2 selected",
+    ],
+  ])("shows the count for %s", (_case, props, expected) => {
+    renderBar(props);
 
-    expect(screen.getByText("3 selected")).toBeVisible();
-  });
-
-  it("shows the all-selected count using total when selecting all matching", () => {
-    renderBar({ allMatching: true, total: 42, selectedKeys: ["1"] });
-
-    expect(screen.getByText("All 42 selected")).toBeVisible();
-  });
-
-  it("falls back to the selected length when total is missing for all matching", () => {
-    renderBar({ allMatching: true, selectedKeys: ["1", "2"] });
-
-    expect(screen.getByText("All 2 selected")).toBeVisible();
+    expect(screen.getByText(expected)).toBeVisible();
   });
 
   it("hides the select-all-matching button when it is not allowed", () => {

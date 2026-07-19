@@ -10,9 +10,7 @@ use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Rules\FileUploadItem;
 
 it('uploads a file through a multipart payload', function (): void {
-    $this->actingAs(workbenchTestUser());
-
-    $page = visit('/form/fields/file-upload')
+    $page = $this->visitAsWorkbenchUser('/form/fields/file-upload')
         ->assertSee('Drop files here or click to browse');
 
     $page->attach('@avatar-input', __DIR__.'/fixtures/avatar.jpg');
@@ -25,8 +23,7 @@ it('uploads a file through a multipart payload', function (): void {
 });
 
 it('removes an existing file from the prefilled form', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/form/fields/file-upload?state=existing')
+    $this->visitAsWorkbenchUser('/form/fields/file-upload?state=existing')
         ->assertSee('avatar-existing.jpg')
         ->click('@avatar-remove-existing')
         ->assertDontSee('avatar-existing.jpg')
@@ -39,9 +36,7 @@ it('uploads directly to s3 via the signed flow', function (): void {
         $this->markTestSkipped('RustFS/S3 is not reachable.');
     }
 
-    $this->actingAs(workbenchTestUser());
-
-    $page = visit('/form/fields/file-upload?type=signed')
+    $page = $this->visitAsWorkbenchUser('/form/fields/file-upload?type=signed')
         ->assertPresent('@document-input');
 
     $page->attach('@document-input', __DIR__.'/fixtures/avatar.jpg');

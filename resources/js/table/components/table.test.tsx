@@ -9,6 +9,7 @@ import type {
 } from "@lattice-php/lattice/table/types";
 import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
 import type { Node } from "@lattice-php/lattice/core/types";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import type { TableColumn } from "@lattice-php/lattice/table/types";
 import TableComponent from "./table";
 
@@ -105,7 +106,6 @@ function requestOptions(headers: Record<string, string> = {}) {
 
 describe("Lattice table component", () => {
   afterEach(() => {
-    vi.unstubAllGlobals();
     window.localStorage.clear();
   });
 
@@ -443,9 +443,9 @@ describe("Lattice table component", () => {
             label: "Identity",
             type: "column.stack",
             schema: [
-              { type: "text", props: { dataBindings: { text: "name" } } },
-              { type: "text", props: { dataBindings: { text: "email" } } },
-            ] as Node[],
+              fakeNode({ type: "text", props: { dataBindings: { text: "name" } } }),
+              fakeNode({ type: "text", props: { dataBindings: { text: "email" } } }),
+            ],
           }),
           col({
             key: "status",

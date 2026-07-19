@@ -2,8 +2,7 @@
 declare(strict_types=1);
 
 it('renders only the configured extensions in the toolbar', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/form/fields/rich-editor?type=restricted')
+    $this->visitAsWorkbenchUser('/form/fields/rich-editor?type=restricted')
         ->assertPresent('[id="restricted-panel"] [data-test="editor-bold"]')
         ->assertPresent('[id="restricted-panel"] [data-test="editor-italic"]')
         ->assertPresent('[id="restricted-panel"] [data-test="editor-link"]')
@@ -15,8 +14,7 @@ it('renders only the configured extensions in the toolbar', function (): void {
 });
 
 it('runs a client-registered custom extension from the toolbar', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/form/fields/rich-editor?type=restricted')
+    $this->visitAsWorkbenchUser('/form/fields/rich-editor?type=restricted')
         ->assertPresent('@editor-stamp')
         ->click('@editor-stamp')
         ->assertSeeIn('[id="restricted-panel"] .lattice-prose', 'Stamped!')
@@ -24,8 +22,7 @@ it('runs a client-registered custom extension from the toolbar', function (): vo
 });
 
 it('inserts a table and a details block on the default set', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/form/fields/rich-editor')
+    $this->visitAsWorkbenchUser('/form/fields/rich-editor')
         ->assertPresent('[aria-label="Insert table"]')
         ->assertPresent('[aria-label="Details"]')
         ->assertPresent('[aria-label="Insert emoji"]')
@@ -40,8 +37,7 @@ it('inserts a table and a details block on the default set', function (): void {
 });
 
 it('toggles heading levels through the dropdown on the default set', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/form/fields/rich-editor')
+    $this->visitAsWorkbenchUser('/form/fields/rich-editor')
         ->assertPresent('@editor-heading')
         ->click('@editor-heading')
         ->assertPresent('@editor-heading-6')
@@ -51,8 +47,7 @@ it('toggles heading levels through the dropdown on the default set', function ()
 });
 
 it('sets a link through the popover', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/form/fields/rich-editor?type=restricted')
+    $this->visitAsWorkbenchUser('/form/fields/rich-editor?type=restricted')
         ->click('[id="restricted-panel"] .lattice-prose')
         ->type('[id="restricted-panel"] .lattice-prose', 'Docs')
         ->click('[id="restricted-panel"] [data-test="editor-link"]')

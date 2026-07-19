@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import SeparatorComponent from "./separator";
 
 function renderSeparator(orientation: "horizontal" | "vertical") {
-  const node = { type: "separator", props: { orientation } } as Node<"separator">;
+  const node = fakeNode({ type: "separator", props: { orientation } });
   return render(<SeparatorComponent node={node}>{null}</SeparatorComponent>);
 }
 

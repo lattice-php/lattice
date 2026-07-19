@@ -1,5 +1,5 @@
-import { configure, fireEvent, getConfig, screen } from "@testing-library/react";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fireEvent, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { fakeNode } from "@lattice-php/lattice/test-support";
@@ -16,17 +16,6 @@ const registry = createRegistry({
     tree: eagerComponent(TreeComponent),
   },
   name: "test/tree",
-});
-
-let previousTestIdAttribute: string;
-
-beforeAll(() => {
-  previousTestIdAttribute = getConfig().testIdAttribute;
-  configure({ testIdAttribute: "data-test" });
-});
-
-afterAll(() => {
-  configure({ testIdAttribute: previousTestIdAttribute });
 });
 
 function renderTree(props: Record<string, unknown>, id = "t1") {

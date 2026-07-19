@@ -1,5 +1,5 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { TableColumn, TableNode, TableRow } from "@lattice-php/lattice/table/types";
@@ -61,10 +61,6 @@ function stubFetch(text: string) {
 }
 
 describe("expandable table rows", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   it("renders an expander only for rows that carry a detail", () => {
     renderWithRegistry(
       <TableComponent

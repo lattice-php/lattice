@@ -1,5 +1,5 @@
 import { act, fireEvent, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
@@ -11,10 +11,6 @@ import TextComponent from "./text";
 const TextProbe: RendererComponent<"text"> = ({ node }) => <span>{String(node.props?.text)}</span>;
 
 describe("Lattice modal and fragment components", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   it("opens and closes modal content from lattice events", () => {
     const registry = createRegistry({
       components: {

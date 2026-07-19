@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import type { TableColumn } from "./types";
 import { Provider } from "@lattice-php/lattice/provider";
 import { createPlugin, createRegistry } from "@lattice-php/lattice/core/registry";
@@ -118,9 +119,9 @@ describe("column registry", () => {
                     label: "Identity",
                     type: "column.stack",
                     schema: [
-                      { type: "text", props: { dataBindings: { text: "name" } } },
-                      { type: "text", props: { dataBindings: { text: "email" } } },
-                    ] as Node[],
+                      fakeNode({ type: "text", props: { dataBindings: { text: "name" } } }),
+                      fakeNode({ type: "text", props: { dataBindings: { text: "email" } } }),
+                    ],
                   })}
                   row={{ name: "Ada", email: "ada@example.com" }}
                 />

@@ -359,6 +359,7 @@ export default defineConfig(({ mode }) => {
           }
         : { build: { sourcemap: true, chunkSizeWarningLimit: 600 } }),
     test: {
+      unstubGlobals: true,
       projects: [
         {
           extends: true,

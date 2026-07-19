@@ -1,16 +1,12 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { ReactNode } from "react";
-import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
 import { createRegistry } from "@lattice-php/lattice/core/registry";
 import type { ChatMessage } from "@lattice-php/lattice/chat/types";
 import { chatComponents } from "@lattice-php/lattice/chat/plugin";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { MessageList } from "./message-list";
 
-function withRegistry(ui: ReactNode): ReactNode {
-  const registry = createRegistry(chatComponents);
-  return <RegistryContext.Provider value={registry}>{ui}</RegistryContext.Provider>;
-}
+const registry = createRegistry(chatComponents);
 
 afterEach(() => {
   Reflect.deleteProperty(Element.prototype, "scrollIntoView");
@@ -28,7 +24,7 @@ const messages: ChatMessage[] = [
 
 describe("MessageList", () => {
   it("renders all messages in order", () => {
-    render(withRegistry(<MessageList messages={messages} />));
+    renderWithRegistry(<MessageList messages={messages} />, registry);
 
     expect(screen.getByText("First message")).toBeVisible();
     expect(screen.getByText("Second message")).toBeVisible();
@@ -36,7 +32,7 @@ describe("MessageList", () => {
   });
 
   it("renders the scrollable container with the correct data-test attribute", () => {
-    render(withRegistry(<MessageList messages={messages} />));
+    renderWithRegistry(<MessageList messages={messages} />, registry);
 
     const container = screen.getByTestId("chat-messages");
     expect(container).toBeInTheDocument();
@@ -44,7 +40,7 @@ describe("MessageList", () => {
   });
 
   it("renders an empty list without errors", () => {
-    render(withRegistry(<MessageList messages={[]} />));
+    renderWithRegistry(<MessageList messages={[]} />, registry);
 
     const container = screen.getByTestId("chat-messages");
     expect(container).toBeInTheDocument();
@@ -59,13 +55,13 @@ describe("MessageList", () => {
       value: scrollIntoView,
     });
 
-    render(withRegistry(<MessageList messages={messages} />));
+    renderWithRegistry(<MessageList messages={messages} />, registry);
 
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth" });
   });
 
   it("renders messages in document order", () => {
-    render(withRegistry(<MessageList messages={messages} />));
+    renderWithRegistry(<MessageList messages={messages} />, registry);
 
     const userMessages = screen.getAllByTestId("chat-message-user");
     const assistantMessages = screen.getAllByTestId("chat-message-assistant");

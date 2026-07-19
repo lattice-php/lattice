@@ -25,7 +25,7 @@ test('eloquent tables can use infinite pagination metadata', function (): void {
     Lattice::tables([WorkbenchInfiniteUsersTable::class]);
 
     $table = wire(Table::use(WorkbenchInfiniteUsersTable::class));
-    $ref = componentRef($table);
+    $ref = $this->latticeRef($table);
 
     expect($table['props']['pagination'])
         ->toMatchArray([
@@ -38,7 +38,7 @@ test('eloquent tables can use infinite pagination metadata', function (): void {
             'to' => 2,
         ]);
 
-    latticeGet('/lattice/tables/workbench.infinite-users?per_page=2', $ref)
+    $this->latticeGet('/lattice/tables/workbench.infinite-users?per_page=2', $ref)
         ->assertOk()
         ->assertJsonCount(2, 'data')
         ->assertJsonPath('pagination.mode', 'infinite')
@@ -48,7 +48,7 @@ test('eloquent tables can use infinite pagination metadata', function (): void {
         ->assertJsonPath('query.page', 1)
         ->assertJsonPath('query.perPage', 2);
 
-    latticeGet('/lattice/tables/workbench.infinite-users?per_page=2&page=2', $ref)
+    $this->latticeGet('/lattice/tables/workbench.infinite-users?per_page=2&page=2', $ref)
         ->assertOk()
         ->assertJsonCount(1, 'data')
         ->assertJsonPath('pagination.mode', 'infinite')

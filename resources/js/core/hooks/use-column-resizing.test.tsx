@@ -335,24 +335,17 @@ describe("useColumnResizing", () => {
     expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "136px" });
   });
 
-  it("clamps to the minimum width with Home", () => {
+  it.each([
+    ["minimum", "Home", "96px"],
+    ["maximum", "End", "1024px"],
+  ])("clamps to the %s width with %s", (_limit, key, expected) => {
     render(<Harness />);
 
     const handle = screen.getByRole("separator", { name: "Resize Qty" });
 
-    fireEvent.keyDown(handle, { key: "Home" });
+    fireEvent.keyDown(handle, { key });
 
-    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "96px" });
-  });
-
-  it("clamps to the maximum width with End", () => {
-    render(<Harness />);
-
-    const handle = screen.getByRole("separator", { name: "Resize Qty" });
-
-    fireEvent.keyDown(handle, { key: "End" });
-
-    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "1024px" });
+    expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: expected });
   });
 
   it("resets with Escape", () => {

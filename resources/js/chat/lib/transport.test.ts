@@ -19,7 +19,6 @@ function streamResponse(lines: string[]): Response {
 
 afterEach(() => {
   clearRemoteTokenCache();
-  vi.unstubAllGlobals();
 });
 
 describe("ndjsonChatTransport", () => {

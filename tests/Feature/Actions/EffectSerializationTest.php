@@ -144,7 +144,7 @@ test('action groups serialize grouped child actions', function (): void {
                         'modalSide' => null,
                         'modalWidth' => null,
                         'variant' => null,
-                        'ref' => componentRef($group['schema'][0]),
+                        'ref' => $this->latticeRef($group['schema'][0]),
                     ],
                 ],
                 [
@@ -161,7 +161,7 @@ test('action groups serialize grouped child actions', function (): void {
                         'modalSide' => null,
                         'modalWidth' => null,
                         'variant' => 'destructive',
-                        'ref' => componentRef($group['schema'][1]),
+                        'ref' => $this->latticeRef($group['schema'][1]),
                     ],
                 ],
             ],

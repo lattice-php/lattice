@@ -44,5 +44,4 @@ it("no-ops under prefers-reduced-motion", () => {
     return <div ref={(el) => register("a", el)} />;
   }
   expect(() => render(<Probe />)).not.toThrow();
-  vi.unstubAllGlobals();
 });

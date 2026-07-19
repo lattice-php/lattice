@@ -1,5 +1,5 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { FilterNode, TableColumn, TableNode } from "@lattice-php/lattice/table/types";
@@ -100,10 +100,6 @@ function openFilters(): void {
 }
 
 describe("searchable select filter", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   it("applies the chosen option through the table endpoint", async () => {
     const fetch = stubFetch();
 

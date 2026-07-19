@@ -2,8 +2,7 @@
 declare(strict_types=1);
 
 it('adds heterogeneous blocks and submits a typed payload', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/form/fields/builder')
+    $this->visitAsWorkbenchUser('/form/fields/builder')
         ->assertSee('Builder')
         ->assertSee('Line items')
         ->click('[id="stack-panel"] [data-test="builder-add"]')
@@ -16,25 +15,21 @@ it('adds heterogeneous blocks and submits a typed payload', function (): void {
         ->fill('input[name="items[1][price]"]', '9.50')
         ->click('@form-submit')
         ->assertSee('Builder')
-        ->assertNoSmoke()
-        ->assertNoJavaScriptErrors();
+        ->assertNoSmoke();
 });
 
 it('surfaces a per-row required error for the active block', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/form/fields/builder')
+    $this->visitAsWorkbenchUser('/form/fields/builder')
         ->assertSee('Line items')
         ->click('[id="stack-panel"] [data-test="builder-add"]')
         ->click('@builder-add-product')
         ->click('@form-submit')
         ->assertSee('The Product field is required.')
-        ->assertNoSmoke()
-        ->assertNoJavaScriptErrors();
+        ->assertNoSmoke();
 });
 
 it('renders the table layout with a shared header and round-trips a typed payload', function (): void {
-    $this->actingAs(workbenchTestUser());
-    $page = visit('/form/fields/builder?type=table');
+    $page = $this->visitAsWorkbenchUser('/form/fields/builder?type=table');
 
     $page->assertSee('Line items')->assertNoSmoke()
         ->assertSee('Product')->assertSee('Qty')->assertSee('Price')
@@ -50,13 +45,11 @@ it('renders the table layout with a shared header and round-trips a typed payloa
 
     $page->click('@form-submit')
         ->assertSee('Builder')
-        ->assertNoSmoke()
-        ->assertNoJavaScriptErrors();
+        ->assertNoSmoke();
 });
 
 it('reveals a reset control for custom row-table column widths and clears them on click', function (): void {
-    $this->actingAs(workbenchTestUser());
-    $page = visit('/form/fields/builder?type=table');
+    $page = $this->visitAsWorkbenchUser('/form/fields/builder?type=table');
     $page->resize(1280, 800);
 
     $page->script(<<<'JS_WRAP'

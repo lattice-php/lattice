@@ -1,14 +1,7 @@
-import { expect, it, vi, beforeAll, afterAll } from "vitest";
-import { configure, getConfig, fireEvent, render, screen, within } from "@testing-library/react";
+import { expect, it, vi } from "vitest";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import type { ComponentPropsOf, Node } from "@lattice-php/lattice/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-
-let prev: string;
-beforeAll(() => {
-  prev = getConfig().testIdAttribute;
-  configure({ testIdAttribute: "data-test" });
-});
-afterAll(() => configure({ testIdAttribute: prev }));
 
 vi.mock("@lattice-php/lattice/core/renderer", async () => {
   const { RenderNode } = await import("@lattice-php/lattice/test/form-renderer-probe");

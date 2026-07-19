@@ -5,17 +5,8 @@ use Illuminate\Support\Facades\File;
 
 use function Pest\Laravel\artisan;
 
-function withFieldScaffold(Closure $callback): mixed
-{
-    return withScaffoldWorkspace(function () use ($callback): mixed {
-        File::put(resource_path('js/registry.ts'), latticeRegistryStub());
-
-        return $callback();
-    });
-}
-
 it('scaffolds a field PHP class, a tsx renderer, registers it and derives the type', function (): void {
-    withFieldScaffold(function (): void {
+    withRegistryScaffold(function (): void {
         artisan('lattice:field', ['name' => 'ColorPicker'])->assertSuccessful();
 
         $php = File::get(app_path('Forms/Fields/ColorPicker.php'));
@@ -37,7 +28,7 @@ it('scaffolds a field PHP class, a tsx renderer, registers it and derives the ty
 });
 
 it('is idempotent — re-running does not duplicate the registration', function (): void {
-    withFieldScaffold(function (): void {
+    withRegistryScaffold(function (): void {
         artisan('lattice:field', ['name' => 'ColorPicker'])->assertSuccessful();
         artisan('lattice:field', ['name' => 'ColorPicker'])->assertSuccessful();
 
@@ -48,7 +39,7 @@ it('is idempotent — re-running does not duplicate the registration', function 
 });
 
 it('honors a --type override', function (): void {
-    withFieldScaffold(function (): void {
+    withRegistryScaffold(function (): void {
         artisan('lattice:field', ['name' => 'Swatch', '--type' => 'color'])->assertSuccessful();
 
         expect(File::get(app_path('Forms/Fields/Swatch.php')))
@@ -63,7 +54,7 @@ it('honors a --type override', function (): void {
 });
 
 it('registers multiple distinct fields without clobbering earlier ones', function (): void {
-    withFieldScaffold(function (): void {
+    withRegistryScaffold(function (): void {
         artisan('lattice:field', ['name' => 'ColorPicker'])->assertSuccessful();
         artisan('lattice:field', ['name' => 'StarRating'])->assertSuccessful();
 

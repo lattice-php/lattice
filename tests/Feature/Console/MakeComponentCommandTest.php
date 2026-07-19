@@ -6,17 +6,8 @@ use Illuminate\Support\Str;
 
 use function Pest\Laravel\artisan;
 
-function withComponentScaffold(Closure $callback): mixed
-{
-    return withScaffoldWorkspace(function () use ($callback): mixed {
-        File::put(resource_path('js/registry.ts'), latticeRegistryStub());
-
-        return $callback();
-    });
-}
-
 it('scaffolds a component class with the AsComponent attribute and registers it', function (): void {
-    withComponentScaffold(function (): void {
+    withRegistryScaffold(function (): void {
         artisan('lattice:component', ['name' => 'Rating'])->assertSuccessful();
 
         $php = File::get(app_path('Components/Rating.php'));
@@ -85,7 +76,7 @@ it('scaffolds a new package on first component when composer.json is absent', fu
 });
 
 it('honors a --type override', function (): void {
-    withComponentScaffold(function (): void {
+    withRegistryScaffold(function (): void {
         artisan('lattice:component', ['name' => 'Stars', '--type' => 'rating.stars'])->assertSuccessful();
 
         expect(File::get(app_path('Components/Stars.php')))->toContain("#[AsComponent('rating.stars')]");

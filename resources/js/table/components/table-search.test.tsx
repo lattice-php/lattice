@@ -1,5 +1,5 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { TableColumn, TableNode } from "@lattice-php/lattice/table/types";
@@ -68,10 +68,6 @@ function stubFetch() {
 }
 
 describe("global table search", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   it("renders the search box only when the table is searchable", () => {
     const { unmount } = renderWithRegistry(<TableComponent node={node(false)} />, registry);
 
