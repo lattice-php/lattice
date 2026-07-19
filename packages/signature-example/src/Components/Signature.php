@@ -10,7 +10,7 @@ use Lattice\Lattice\Ui\Components\Component;
 #[AsComponent('signature')]
 final class Signature extends Component
 {
-    public string $label = 'Sign here';
+    public ?string $label = null;
 
     public static function make(?string $key = null): static
     {
