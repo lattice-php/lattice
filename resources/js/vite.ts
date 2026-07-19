@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { svgSprite } from "@lattice-php/vite-svg-sprite";
-import type { SvgSpriteOptions } from "@lattice-php/vite-svg-sprite";
+import type { IconTypesOptions, SvgSpriteOptions } from "@lattice-php/vite-svg-sprite";
 import { searchForWorkspaceRoot } from "vite";
 import type { Plugin, PluginOption, UserConfig } from "vite";
 
@@ -19,7 +19,7 @@ type ConfigWithTest = UserConfig & {
 
 export type LatticeViteIconsOptions = Omit<SvgSpriteOptions, "dts" | "iconDirs"> & {
   dirs?: string[];
-  dts?: SvgSpriteOptions["dts"] | false;
+  dts?: Partial<IconTypesOptions> | false;
 };
 
 export type LatticeViteOptions = {
@@ -235,7 +235,7 @@ function optionalPeersPlugin(): Plugin {
   };
 }
 
-function resolveIconOptions(options: LatticeViteOptions): SvgSpriteOptions | null {
+export function resolveIconOptions(options: LatticeViteOptions): SvgSpriteOptions | null {
   const icons = options.icons ?? true;
 
   if (icons === false) {
@@ -254,7 +254,7 @@ function resolveIconOptions(options: LatticeViteOptions): SvgSpriteOptions | nul
   return {
     ...spriteOptions,
     iconDirs: [path.resolve(root, "resources/icons"), ...dirs],
-    ...(dts === false ? {} : { dts: dts ?? defaultTypes }),
+    ...(dts === false ? {} : { dts: { ...defaultTypes, ...dts } }),
   };
 }
 

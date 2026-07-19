@@ -180,6 +180,12 @@ lattice({
 });
 ```
 
+`dts` merges over the defaults, so a partial override like `dts: { indent: "\t" }` keeps the
+default file/augment targets and only changes the indentation used in the generated file — handy
+for matching your formatter's style. If the formatter still fights with the generated output, add
+`resources/js/types/sprite-icons.ts` to its ignore list; it's a generated file and shouldn't be
+rewritten.
+
 **PHP** — `phpEnum` emits a backed enum covering your full sprite:
 
 ```ts
