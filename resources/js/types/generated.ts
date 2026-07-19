@@ -771,7 +771,10 @@ export type Form = {
   state: Record<string, unknown>;
   status: string | null;
   submitButton: boolean;
+  submitButtons: Node<"button">[] | null;
+  submitJustify: Justify | null;
   submitLabel: string | null;
+  submitVariant: ButtonVariant | null;
   validationSummaryLabel: string;
   validationTimeout: number | null;
 };

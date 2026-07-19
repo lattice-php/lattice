@@ -11,10 +11,13 @@ use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
+use Lattice\Lattice\Ui\Components\Button;
 use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\ContainerComponent;
 use Lattice\Lattice\Ui\Components\IsInteractive;
 use Lattice\Lattice\Ui\Concerns\HasHttpMethod;
+use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Justify;
 
 #[AsComponent('form')]
 class Form extends ContainerComponent
@@ -35,6 +38,15 @@ class Form extends ContainerComponent
     public ?int $validationTimeout = null;
 
     public bool $submitButton = true;
+
+    public ?Justify $submitJustify = null;
+
+    public ?ButtonVariant $submitVariant = null;
+
+    /**
+     * @var array<int, Button>|null
+     */
+    public ?array $submitButtons = null;
 
     /**
      * @var array<int, string>|bool|null
@@ -89,6 +101,27 @@ class Form extends ContainerComponent
     public function submitLabel(string $submitLabel): static
     {
         $this->submitLabel = $submitLabel;
+
+        return $this;
+    }
+
+    public function submitJustify(Justify $justify): static
+    {
+        $this->submitJustify = $justify;
+
+        return $this;
+    }
+
+    public function submitVariant(ButtonVariant $variant): static
+    {
+        $this->submitVariant = $variant;
+
+        return $this;
+    }
+
+    public function submitButtons(Button ...$buttons): static
+    {
+        $this->submitButtons = array_values($buttons);
 
         return $this;
     }
