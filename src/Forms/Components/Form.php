@@ -28,7 +28,7 @@ class Form extends ContainerComponent
 
     public ?string $submitLabel = null;
 
-    public string $validationSummaryLabel = 'Fix these fields to continue:';
+    public string $validationSummaryLabel;
 
     public bool $precognitive = false;
 
@@ -54,6 +54,13 @@ class Form extends ContainerComponent
      * @var array<string, mixed>
      */
     public array $state = [];
+
+    public function __construct(?string $key = null)
+    {
+        parent::__construct($key);
+
+        $this->validationSummaryLabel = __('lattice::form.validation-summary');
+    }
 
     public static function make(string $id): static
     {

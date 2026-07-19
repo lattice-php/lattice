@@ -13,7 +13,7 @@ use Lattice\Lattice\Tables\Enums\ColumnType;
  * placement and per-currency decimals follow the active locale.
  */
 #[AsColumn(ColumnType::Money)]
-class MoneyColumn extends NumericColumn
+final class MoneyColumn extends NumericColumn
 {
     public ?string $currency = null;
 

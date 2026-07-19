@@ -14,7 +14,7 @@ use Lattice\Lattice\Tables\Contracts\Sortable;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
 #[AsColumn(ColumnType::Badge)]
-class BadgeColumn extends Column implements Filterable, Sortable
+final class BadgeColumn extends Column implements Filterable, Sortable
 {
     use IsFilterable;
     use IsSortable;

@@ -17,7 +17,7 @@ describe("useEffectDispatcher", () => {
     );
 
     const { result } = renderHook(() => useEffectDispatcher(), { wrapper });
-    result.current([{ type: "confetti" }] as never);
+    result.current([{ type: "confetti", props: {} }]);
 
     expect(confetti).toHaveBeenCalledOnce();
   });

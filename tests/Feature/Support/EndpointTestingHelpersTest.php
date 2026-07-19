@@ -125,6 +125,19 @@ test('loadTable seals the ref and gets the table endpoint with query parameters'
         ->assertJsonPath('query.perPage', 10);
 });
 
+test('submitForm followed by callAction in the same test both succeed', function (): void {
+    Lattice::forms([HelperDemoForm::class]);
+    Lattice::actions([HelperDemoAction::class]);
+
+    $this->submitForm(HelperDemoForm::class, ['name' => 'Taylor'], ['team' => 'lattice-core'])
+        ->assertRedirect('/submitted');
+
+    $this->callAction(HelperDemoAction::class, ['name' => 'Ada'], ['team' => 'trusted-team'])
+        ->assertOk()
+        ->assertJsonPath('data.handled', 'Ada')
+        ->assertJsonPath('data.team', 'trusted-team');
+});
+
 test('loadFragment seals the ref and gets the lazy fragment endpoint', function (): void {
     Lattice::fragments([HelperDemoFragment::class]);
 

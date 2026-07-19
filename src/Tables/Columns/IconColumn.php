@@ -13,7 +13,7 @@ use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Ui\Concerns\HasIcon;
 
 #[AsColumn(ColumnType::Icon)]
-class IconColumn extends Column
+final class IconColumn extends Column
 {
     use HasIcon;
 

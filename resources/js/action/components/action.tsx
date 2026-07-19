@@ -8,11 +8,12 @@ import {
   useActionMenu,
 } from "@lattice-php/lattice/ui/action-menu-context";
 import { useAction } from "@lattice-php/lattice/action/hooks/use-action";
+import { actionLabel } from "@lattice-php/lattice/action/lib/action-label";
 
 const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const endpoint = node.props.endpoint ?? "";
   const icon = node.props.icon;
-  const label = node.props.label ?? "Run action";
+  const label = actionLabel(node);
   const isMenuItem = useActionMenu();
   const variant = node.props.variant ?? "default";
   const { processing, requestSubmit, overlays } = useAction(node);

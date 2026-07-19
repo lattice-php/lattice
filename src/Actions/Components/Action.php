@@ -66,7 +66,7 @@ class Action extends Component
     }
 
     public function confirm(
-        string $title,
+        ?string $title = null,
         ?string $description = null,
         ?string $confirmLabel = null,
         ?string $cancelLabel = null,

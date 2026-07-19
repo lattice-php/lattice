@@ -14,6 +14,12 @@ use Lattice\Lattice\Fragments\FragmentDefinition;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
+use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
+use Lattice\Lattice\Tables\Columns\Concerns\IsSearchable;
+use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
+use Lattice\Lattice\Tables\Columns\NumericColumn;
+use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
@@ -29,8 +35,9 @@ use Lattice\Lattice\Tables\TableRegistry;
  * only intentional cross-domain couplings are tables -> actions (row and bulk
  * actions), tables -> forms (table filters are form-field schemas), actions ->
  * forms (action forms), and layouts -> actions (menu items that trigger an
- * action). The UI link primitive may likewise trigger an action, the one
- * deliberate UI -> Actions coupling.
+ * action). The UI layer likewise reaches Actions in two deliberate spots — the
+ * Triggerable primitive (links/buttons that trigger an action) and TreeNode
+ * (which can hold a row action).
  *
  * Top: the orchestration and tooling layers — Http (which renders and routes
  * pages, including the page registry, by consuming the feature domains),
@@ -101,6 +108,21 @@ arch('feature domains never depend upward on the orchestration or tooling layers
         'Lattice\Lattice\Tables',
         'Lattice\Lattice\Fragments',
         'Lattice\Lattice\Layouts',
+    ])
+    ->not->toUse([
+        'Lattice\Lattice\Http',
+        'Lattice\Lattice\Console',
+    ]);
+
+arch('the ui and secondary domains never depend upward on orchestration or tooling')
+    ->expect([
+        'Lattice\Lattice\Ui',
+        'Lattice\Lattice\Chat',
+        'Lattice\Lattice\Notifications',
+        'Lattice\Lattice\Realtime',
+        'Lattice\Lattice\Remote',
+        'Lattice\Lattice\Effects',
+        'Lattice\Lattice\I18n',
     ])
     ->not->toUse([
         'Lattice\Lattice\Http',
@@ -203,6 +225,29 @@ arch('the lattice facade extends the laravel facade')
 arch('columns never depend on eloquent')
     ->expect('Lattice\Lattice\Tables\Columns')
     ->not->toUse('Illuminate\Database\Eloquent');
+
+/*
+ * Ui\Components is intentionally excluded here: "lattice component factories
+ * stay open for extension" (tests/Unit/Core/ComponentSerializationTest.php)
+ * asserts consumers may subclass a component (e.g. Badge) and keep the
+ * static::make() factory working via late static binding, so those classes
+ * must not be final.
+ */
+arch('table columns, table filters, and built-in effects are final')
+    ->expect([
+        'Lattice\Lattice\Tables\Columns',
+        'Lattice\Lattice\Tables\Filters',
+        'Lattice\Lattice\Effects\Builtin',
+    ])
+    ->toBeFinal()
+    ->ignoring([
+        Column::class,
+        NumericColumn::class,
+        IsFilterable::class,
+        IsSearchable::class,
+        IsSortable::class,
+        Filter::class,
+    ]);
 
 arch('no debug statements ship in the package')
     ->expect(['dd', 'ddd', 'dump', 'ray', 'var_dump', 'print_r'])

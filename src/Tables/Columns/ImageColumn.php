@@ -7,7 +7,7 @@ use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
 #[AsColumn(ColumnType::Image)]
-class ImageColumn extends Column
+final class ImageColumn extends Column
 {
     public bool $circular = false;
 

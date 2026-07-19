@@ -11,6 +11,8 @@ return [
     'cancel' => 'Cancel',
     'yes' => 'Yes',
     'no' => 'No',
+    'all' => 'All',
+    'dialog' => 'Dialog',
     'breadcrumb' => 'Breadcrumb',
     'copy' => 'Copy',
     'copied' => 'Copied',
@@ -21,6 +23,9 @@ return [
     ],
     'action-group' => [
         'label' => 'Actions',
+    ],
+    'action' => [
+        'run' => 'Run action',
     ],
     'tree' => [
         'expand' => 'Expand :label',

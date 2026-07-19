@@ -7,10 +7,7 @@ describe("dispatchEffects", () => {
     const toast = vi.fn<() => void>();
     const handlers: EffectHandlerRegistry = { toast };
 
-    dispatchEffects(
-      [{ type: "toast", props: { variant: "success", message: "hi" } }] as never,
-      handlers,
-    );
+    dispatchEffects([{ type: "toast", props: { variant: "success", message: "hi" } }], handlers);
 
     expect(toast).toHaveBeenCalledOnce();
   });
@@ -18,7 +15,7 @@ describe("dispatchEffects", () => {
   it("warns and skips an effect with no registered handler", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    dispatchEffects([{ type: "confetti" }] as never, {});
+    dispatchEffects([{ type: "confetti", props: {} }], {});
 
     expect(warn).toHaveBeenCalledOnce();
     warn.mockRestore();

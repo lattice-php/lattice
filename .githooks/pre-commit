@@ -6,19 +6,16 @@ set -e
 root="$(git rev-parse --show-toplevel)"
 cd "$root"
 
-staged_php=$(git diff --cached --name-only --diff-filter=ACMR -- '*.php')
-staged_js=$(git diff --cached --name-only --diff-filter=ACMR -- '*.ts' '*.tsx')
-
-if [ -n "$staged_php" ]; then
+if ! git diff --cached --quiet --diff-filter=ACMR -- '*.php'; then
     echo "▶ pint (staged PHP)"
-    echo "$staged_php" | xargs ./vendor/bin/pint
-    echo "$staged_php" | xargs git add
+    git diff -z --cached --name-only --diff-filter=ACMR -- '*.php' | xargs -0 ./vendor/bin/pint
+    git diff -z --cached --name-only --diff-filter=ACMR -- '*.php' | xargs -0 git add
 fi
 
-if [ -n "$staged_js" ]; then
+if ! git diff --cached --quiet --diff-filter=ACMR -- '*.ts' '*.tsx'; then
     echo "▶ oxfmt + oxlint (staged JS)"
-    echo "$staged_js" | xargs ./node_modules/.bin/oxfmt --write
-    echo "$staged_js" | xargs ./node_modules/.bin/oxlint --fix
-    echo "$staged_js" | xargs git add
-    echo "$staged_js" | xargs ./node_modules/.bin/oxlint
+    git diff -z --cached --name-only --diff-filter=ACMR -- '*.ts' '*.tsx' | xargs -0 ./node_modules/.bin/oxfmt --write
+    git diff -z --cached --name-only --diff-filter=ACMR -- '*.ts' '*.tsx' | xargs -0 ./node_modules/.bin/oxlint --fix
+    git diff -z --cached --name-only --diff-filter=ACMR -- '*.ts' '*.tsx' | xargs -0 git add
+    git diff -z --cached --name-only --diff-filter=ACMR -- '*.ts' '*.tsx' | xargs -0 ./node_modules/.bin/oxlint
 fi

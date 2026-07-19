@@ -197,6 +197,9 @@ jobs:
           CODECOV_BUNDLE: "1"
         run: npm run build
 
+      - name: Icons are up to date
+        run: git diff --exit-code -- resources/icons src/Ui/Enums/Icon.php workbench/resources/js/sprite-icons.ts
+
   php-static:
     name: PHP Static (pint, phpstan, rector)
     runs-on: ubuntu-latest

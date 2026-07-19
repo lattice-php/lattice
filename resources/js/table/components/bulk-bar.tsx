@@ -44,7 +44,7 @@ export function BulkBar({
       () =>
         apiFetch(action.endpoint, {
           method: action.method,
-          ref: action.ref ?? "",
+          ref: action.ref,
           body: JSON.stringify(selectionPayload()),
           throwOnError: false,
         }),

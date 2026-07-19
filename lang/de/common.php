@@ -11,6 +11,8 @@ return [
     'cancel' => 'Abbrechen',
     'yes' => 'Ja',
     'no' => 'Nein',
+    'all' => 'Alle',
+    'dialog' => 'Dialog',
     'breadcrumb' => 'Navigationspfad',
     'copy' => 'Kopieren',
     'copied' => 'Kopiert',
@@ -21,6 +23,9 @@ return [
     ],
     'action-group' => [
         'label' => 'Aktionen',
+    ],
+    'action' => [
+        'run' => 'Aktion ausführen',
     ],
     'tree' => [
         'expand' => ':label ausklappen',

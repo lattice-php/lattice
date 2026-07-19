@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { DateFormat, NumberFormat } from "@lattice-php/lattice/types";
+import type { DateFormat, NumberFormat } from "@lattice-php/lattice/types/generated";
 import { formatValue } from "./value";
 
 const ctx = { locale: "en-US", timezone: "UTC" };

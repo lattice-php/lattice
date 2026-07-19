@@ -487,7 +487,7 @@ test('links serialize their icon and affixes', function (): void {
     ]);
 });
 
-it('serializes progress bars and circles', function (): void {
+test('serializes progress bars and circles', function (): void {
     $bar = wire(Progress::bar(72.5)->color(Color::success())->showValue());
 
     expect($bar['type'])->toBe('progress')

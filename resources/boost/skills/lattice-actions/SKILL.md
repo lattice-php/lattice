@@ -111,7 +111,7 @@ Action::use(ArchiveProductAction::class)->context(['product_id' => $row['id']]);
 
 ## Confirmation and input forms
 
-- `->confirm($title, $description?, $confirmLabel?, $cancelLabel?)` shows a confirmation dialog before the action runs.
+- `->confirm($title?, $description?, $confirmLabel?, $cancelLabel?)` shows a confirmation dialog before the action runs; `$title` defaults to the action's label when omitted.
 - `->form([...])` renders a [form](#) in a modal first; its values post to the action endpoint, validate server-side (precognitive by default), and are read in `handle()` with `$this->validate($request)`. Use the same `Field` builders as any form. Use `->lazyForm()->form([...])` for a per-record form prefilled from the row when the modal opens.
 
 ```php

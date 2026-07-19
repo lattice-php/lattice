@@ -17,7 +17,7 @@ use Lattice\Lattice\Ui\Concerns\HasCopyable;
 use Lattice\Lattice\Ui\Enums\DateTimeStyle;
 
 #[AsColumn(ColumnType::Text)]
-class TextColumn extends Column implements Filterable, Searchable, Sortable
+final class TextColumn extends Column implements Filterable, Searchable, Sortable
 {
     use HasCopyable;
     use IsFilterable;

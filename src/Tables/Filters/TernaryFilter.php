@@ -19,17 +19,26 @@ use Lattice\Lattice\Tables\Enums\FilterControl;
  * null-existence checks). Custom queries receive the `Builder` by type injection.
  */
 #[AsFilter(FilterControl::Ternary)]
-class TernaryFilter extends Filter
+final class TernaryFilter extends Filter
 {
-    public string $trueLabel = 'Yes';
+    public string $trueLabel;
 
-    public string $falseLabel = 'No';
+    public string $falseLabel;
 
-    public string $placeholder = 'All';
+    public string $placeholder;
 
     private ?Closure $trueQuery = null;
 
     private ?Closure $falseQuery = null;
+
+    public function __construct(string $key)
+    {
+        parent::__construct($key);
+
+        $this->trueLabel = __('lattice::common.yes');
+        $this->falseLabel = __('lattice::common.no');
+        $this->placeholder = __('lattice::common.all');
+    }
 
     public function trueLabel(string $label): static
     {
@@ -81,11 +90,8 @@ class TernaryFilter extends Filter
         ];
     }
 
-    /**
-     * @return string|list<string|FilterIndicator|array{label?: string, value: mixed}>|array<string, mixed>|null
-     */
     #[\Override]
-    public function indicator(FormData $data): string|array|null
+    public function indicator(FormData $data): ?string
     {
         $state = is_scalar($data->get('value'))
             ? filter_var($data->get('value'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)

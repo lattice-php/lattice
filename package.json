@@ -139,7 +139,7 @@
     "access": "public"
   },
   "scripts": {
-    "postinstall": "test ! -f vendor/bin/testbench || npm run boost:refresh",
+    "postinstall": "[ -n \"$CI\" ] || test ! -f vendor/bin/testbench || npm run boost:refresh",
     "dev": "vite",
     "build": "vite build",
     "build:lib": "vite build --mode lib",
@@ -153,7 +153,7 @@
     "boost:refresh": "php vendor/bin/testbench boost:update --no-interaction",
     "typecheck": "tsc --noEmit",
     "type-coverage": "type-coverage --project tsconfig.json --at-least 99.5",
-    "check": "npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:lib",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:lib && npm run check:package",
     "check:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./css",
     "fix": "npm run lint:fix && npm run format",
     "docs:typecheck": "tsc --noEmit -p docs/tsconfig.json",

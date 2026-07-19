@@ -545,7 +545,7 @@ export type Confirmation = {
   readonly cancelLabel: string | null;
   readonly confirmLabel: string | null;
   readonly description: string | null;
-  readonly title: string;
+  readonly title: string | null;
 };
 export type DataList = {
   dataEndpoint: string | null;
