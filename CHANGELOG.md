@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.23.0](https://github.com/lattice-php/lattice/compare/0.22.0...0.23.0) (2026-07-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* **forms:** the form submit button no longer renders inside a bordered surface bar; it renders in a plain flex row (right-aligned by default). Use submitJustify()/submitVariant()/submitButtons() to configure it, or withoutSubmitButton() to remove it.
+* Lattice\Lattice\Core\Enums\HttpMethod is now Lattice\Lattice\Ui\Enums\HttpMethod. Update imports with a one-line search-and-replace; cases and values are unchanged.
+
+### Features
+
+* **forms:** plain configurable submit row ([5d1e750](https://github.com/lattice-php/lattice/commit/5d1e750bba3996417d1128a85a4c347a7f464cd8))
+* **forms:** submit row configuration props (justify, variant, custom buttons) ([d882541](https://github.com/lattice-php/lattice/commit/d88254157cea7df60550128c32a9dbb9815c64ca))
+* **i18n:** let component-package plugins declare an i18n namespace ([ea8c70e](https://github.com/lattice-php/lattice/commit/ea8c70e95f4b76be91380a4edfa28978356d6d12))
+* **i18n:** plugin-declared i18n namespaces ([7f28a64](https://github.com/lattice-php/lattice/commit/7f28a64a3bb13e130c18d8a415094e99da4a522a))
+* **js:** export component-author helpers from the core subpath ([c859e4d](https://github.com/lattice-php/lattice/commit/c859e4d0423304b8f2b6059177a96d271fe8a2b4))
+* **js:** export component-author helpers from the core subpath ([b5f9cb7](https://github.com/lattice-php/lattice/commit/b5f9cb78797582d49a1b2b0dd9e9ad886ba90b2c))
+* **ui:** bound() shorthand for data-bindable components ([c317680](https://github.com/lattice-php/lattice/commit/c317680bb5462b1ca2db149caf48833dccb92bc2))
+
+
+### Bug Fixes
+
+* **icons:** configurable sprite dts indentation ([fb258c3](https://github.com/lattice-php/lattice/commit/fb258c307f1a7bd61d36ee8c2424a5fca1db2b3b))
+
+
+### Refactoring
+
+* move HttpMethod to Ui\Enums ([54d98e0](https://github.com/lattice-php/lattice/commit/54d98e0e50150fadfd47d00fb14961aa7c65a1e9))
+
 ## [0.22.0](https://github.com/lattice-php/lattice/compare/0.21.0...0.22.0) (2026-07-19)
 
 
