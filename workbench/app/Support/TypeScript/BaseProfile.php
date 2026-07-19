@@ -26,6 +26,11 @@ use Lattice\Lattice\Tables\Filters\Filter;
  */
 final class BaseProfile implements TypeScriptProfile
 {
+    public function pendingTypeCount(): int
+    {
+        return count(new WireTypeDiscovery()->discover(dirname(__DIR__, 4).'/src')->components);
+    }
+
     public function run(TypeScriptGenerator $generator): string
     {
         $packageRoot = dirname(__DIR__, 4);

@@ -36,6 +36,16 @@ See [Installation](https://latticephp.com/introduction/installation/) for the fu
 
 Full documentation, guides, and examples live at **[latticephp.com](https://latticephp.com)**.
 
+## Generating types for custom wire classes
+
+If you define your own Lattice components, fields, columns, filters, or effects in PHP, regenerate the matching TypeScript so the React side stays in lockstep:
+
+```bash
+php artisan lattice:typescript
+```
+
+Projects that use only Lattice's bundled components never need this — the command detects it and no-ops. Generating custom types requires the dev dependency `spatie/laravel-typescript-transformer`.
+
 ## License
 
 The MIT License (MIT). See [LICENSE.md](LICENSE.md) for details.
