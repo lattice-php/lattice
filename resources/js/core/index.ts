@@ -38,4 +38,8 @@ export {
   useEffectHandlerRegistry,
 } from "./registry-context";
 export { Renderer, RenderNode } from "./renderer";
+export { nodeIdentity } from "./test-id";
+export { usePersistentState } from "@lattice-php/lattice/lib/use-persistent-state";
+export type { PersistentStateOptions } from "@lattice-php/lattice/lib/use-persistent-state";
+export { cn } from "@lattice-php/lattice/lib/utils";
 export type * from "./types";
