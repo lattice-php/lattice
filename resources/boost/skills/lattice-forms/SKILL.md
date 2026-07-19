@@ -152,7 +152,7 @@ Form::use(ProfileForm::class)
     ->context(['user_id' => $user->id]);                      // extra data handle() can read
 ```
 
-The form renders its own submit button (disabled while submitting or while there are errors, with a spinner). To place it yourself, call `->withoutSubmitButton()` and add `Button::make('Save')->submit()` in the schema.
+The form renders its own submit button in a plain right-aligned row (disabled while submitting or while there are errors, with a spinner) — labelled by `->submitLabel()`, aligned with `->submitJustify(Justify::…)`, and styled with `->submitVariant(ButtonVariant::…)`. Replace the row's contents with `->submitButtons(Button::make('Cancel'), Button::make('Save')->submit())`; only a `->submit()`-marked button's label and variant carry over to the managed button, other props are ignored. To place the button yourself instead, call `->withoutSubmitButton()` (removes the row entirely) and add `Button::make('Save')->submit()` in the schema.
 
 ## Submit lifecycle
 
