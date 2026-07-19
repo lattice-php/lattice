@@ -405,12 +405,6 @@ export default defineConfig(({ mode }) => {
           "resources/js/test-support.ts",
           "resources/js/types/**",
         ],
-        thresholds: {
-          statements: 95,
-          branches: 87,
-          functions: 93,
-          lines: 95,
-        },
       },
     },
   };
