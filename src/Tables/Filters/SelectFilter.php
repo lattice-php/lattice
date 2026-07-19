@@ -94,11 +94,8 @@ final class SelectFilter extends Filter
         return [$field->rules($this->multiple ? ['array'] : ['string'])];
     }
 
-    /**
-     * @return string|list<string|FilterIndicator|array{label?: string, value: mixed}>|array<string, mixed>|null
-     */
     #[\Override]
-    public function indicator(FormData $data): string|array|null
+    public function indicator(FormData $data): ?string
     {
         $values = $this->normalizeValues($data->get('value'));
 

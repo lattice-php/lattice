@@ -28,11 +28,8 @@ final class DateRangeFilter extends Filter
         ];
     }
 
-    /**
-     * @return string|list<string|FilterIndicator|array{label?: string, value: mixed}>|array<string, mixed>|null
-     */
     #[\Override]
-    public function indicator(FormData $data): string|array|null
+    public function indicator(FormData $data): ?string
     {
         $from = $data->string('from');
         $until = $data->string('until');

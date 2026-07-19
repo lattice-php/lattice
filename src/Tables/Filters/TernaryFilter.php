@@ -90,11 +90,8 @@ final class TernaryFilter extends Filter
         ];
     }
 
-    /**
-     * @return string|list<string|FilterIndicator|array{label?: string, value: mixed}>|array<string, mixed>|null
-     */
     #[\Override]
-    public function indicator(FormData $data): string|array|null
+    public function indicator(FormData $data): ?string
     {
         $state = is_scalar($data->get('value'))
             ? filter_var($data->get('value'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)
