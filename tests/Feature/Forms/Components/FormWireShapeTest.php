@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Ui\Enums\HttpMethod;
 
 it('serializes the form container wire shape', function (): void {
     $form = Form::make('demo')

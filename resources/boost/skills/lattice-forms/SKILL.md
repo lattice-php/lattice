@@ -142,7 +142,7 @@ TextInput::make('total', 'Total')->dependsOn(
 Render with `Form::use(MyForm::class)` inside a page's component tree, configured fluently:
 
 ```php
-use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Ui\Enums\HttpMethod;
 use Lattice\Lattice\Forms\Components\Form;
 
 Form::use(ProfileForm::class)

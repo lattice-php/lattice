@@ -107,32 +107,6 @@
             }
         ]
     },
-    "Lattice\\Lattice\\Core\\Enums\\HttpMethod": {
-        "name": "HttpMethod",
-        "namespace": "Lattice\\Lattice\\Core\\Enums",
-        "cases": [
-            {
-                "name": "Get",
-                "value": "get"
-            },
-            {
-                "name": "Post",
-                "value": "post"
-            },
-            {
-                "name": "Put",
-                "value": "put"
-            },
-            {
-                "name": "Patch",
-                "value": "patch"
-            },
-            {
-                "name": "Delete",
-                "value": "delete"
-            }
-        ]
-    },
     "Lattice\\Lattice\\Core\\Enums\\Op": {
         "name": "Op",
         "namespace": "Lattice\\Lattice\\Core\\Enums",
@@ -678,6 +652,32 @@
             {
                 "name": "Screen",
                 "value": "screen"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\HttpMethod": {
+        "name": "HttpMethod",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Get",
+                "value": "get"
+            },
+            {
+                "name": "Post",
+                "value": "post"
+            },
+            {
+                "name": "Put",
+                "value": "put"
+            },
+            {
+                "name": "Patch",
+                "value": "patch"
+            },
+            {
+                "name": "Delete",
+                "value": "delete"
             }
         ]
     },

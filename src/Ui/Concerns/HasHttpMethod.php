@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Ui\Concerns;
 
-use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Ui\Enums\HttpMethod;
 
 trait HasHttpMethod
 {

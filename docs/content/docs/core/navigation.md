@@ -32,7 +32,7 @@ links to — a renamed route updates the link with no extra work.
 A menu item can submit with a non-GET method — useful for a logout link — by setting `->method()`:
 
 ```php
-use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Ui\Enums\HttpMethod;
 
 MenuItem::make('Log out')->href(route('logout', absolute: false))->icon('log-out')->method(HttpMethod::Post);
 ```

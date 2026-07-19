@@ -5,9 +5,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Rules\FileUploadItem;
+use Lattice\Lattice\Ui\Enums\HttpMethod;
 
 it('uploads a file through a multipart payload', function (): void {
     $page = $this->visitAsWorkbenchUser('/form/fields/file-upload')
